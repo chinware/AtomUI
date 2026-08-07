@@ -1,226 +1,226 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind">
-    <unit id="1" name="BasicTitle">
+    <unit id="ApiEventSelectionChanged">
       <segment>
-        <source>Basic</source>
-        <target state="translated">基础用法</target>
+        <source>Raised when the selected item changes.</source>
+        <target state="translated">选中项变化时触发。</target>
       </segment>
     </unit>
-    <unit id="2" name="BasicDescription">
+    <unit id="BasicDescription">
       <segment>
         <source>The most basic usage.</source>
         <target state="translated">最基础的用法。</target>
       </segment>
     </unit>
-    <unit id="3" name="VerticalTitle">
+    <unit id="BasicTitle">
       <segment>
-        <source>Vertical Direction</source>
-        <target state="translated">垂直方向</target>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
       </segment>
     </unit>
-    <unit id="4" name="VerticalDescription">
-      <segment>
-        <source>Make it vertical.</source>
-        <target state="translated">垂直方向。</target>
-      </segment>
-    </unit>
-    <unit id="5" name="BlockSegmentedTitle">
-      <segment>
-        <source>Block Segmented</source>
-        <target state="translated">块级分段控制器</target>
-      </segment>
-    </unit>
-    <unit id="6" name="BlockSegmentedDescription">
+    <unit id="BlockSegmentedDescription">
       <segment>
         <source>block property will make the Segmented fit to its parent width.</source>
         <target state="translated">block 属性会让 Segmented 适配父容器宽度。</target>
       </segment>
     </unit>
-    <unit id="7" name="RoundShapeTitle">
+    <unit id="BlockSegmentedTitle">
       <segment>
-        <source>Round Shape</source>
-        <target state="translated">胶囊形状</target>
+        <source>Block Segmented</source>
+        <target state="translated">块级分段控制器</target>
       </segment>
     </unit>
-    <unit id="8" name="RoundShapeDescription">
-      <segment>
-        <source>Round shape of Segmented.</source>
-        <target state="translated">胶囊型的 Segmented。</target>
-      </segment>
-    </unit>
-    <unit id="9" name="DisabledTitle">
-      <segment>
-        <source>Disabled</source>
-        <target state="translated">禁用</target>
-      </segment>
-    </unit>
-    <unit id="10" name="DisabledDescription">
-      <segment>
-        <source>Disabled Segmented.</source>
-        <target state="translated">禁用状态的 Segmented。</target>
-      </segment>
-    </unit>
-    <unit id="11" name="DynamicTitle">
-      <segment>
-        <source>Dynamic</source>
-        <target state="translated">动态数据</target>
-      </segment>
-    </unit>
-    <unit id="12" name="DynamicDescription">
-      <segment>
-        <source>Load options dynamically.</source>
-        <target state="translated">动态加载数据。</target>
-      </segment>
-    </unit>
-    <unit id="13" name="ThreeSizesTitle">
-      <segment>
-        <source>Sizes of Segmented</source>
-        <target state="translated">Segmented 尺寸</target>
-      </segment>
-    </unit>
-    <unit id="14" name="ThreeSizesDescription">
-      <segment>
-        <source>Segmented supports large (40px), default (32px), small (24px), and custom size.</source>
-        <target state="translated">Segmented 支持大号（40px）、默认（32px）、小号（24px）和自定义尺寸。</target>
-      </segment>
-    </unit>
-    <unit id="15" name="IconOnlyTitle">
-      <segment>
-        <source>With Icon only</source>
-        <target state="translated">仅图标</target>
-      </segment>
-    </unit>
-    <unit id="16" name="IconOnlyDescription">
-      <segment>
-        <source>Set icon without label for Segmented Item.</source>
-        <target state="translated">为 Segmented 项设置图标但不设置标签。</target>
-      </segment>
-    </unit>
-    <unit id="17" name="WithIconTitle">
-      <segment>
-        <source>With Icon</source>
-        <target state="translated">带图标</target>
-      </segment>
-    </unit>
-    <unit id="18" name="WithIconDescription">
-      <segment>
-        <source>Set icon for Segmented Item.</source>
-        <target state="translated">为 Segmented 项设置图标。</target>
-      </segment>
-    </unit>
-    <unit id="19" name="P2ContentDaily">
-      <segment>
-        <source>Daily</source>
-        <target state="translated">每日</target>
-      </segment>
-    </unit>
-    <unit id="20" name="P2ContentWeekly">
-      <segment>
-        <source>Weekly</source>
-        <target state="translated">每周</target>
-      </segment>
-    </unit>
-    <unit id="21" name="P2ContentMonthly">
-      <segment>
-        <source>Monthly</source>
-        <target state="translated">每月</target>
-      </segment>
-    </unit>
-    <unit id="22" name="P2ContentQuarterly">
-      <segment>
-        <source>Quarterly</source>
-        <target state="translated">每季度</target>
-      </segment>
-    </unit>
-    <unit id="23" name="P2ContentYearly">
-      <segment>
-        <source>Yearly</source>
-        <target state="translated">每年</target>
-      </segment>
-    </unit>
-    <unit id="24" name="P2ContentLongtextLongtextLongtextLongtext">
-      <segment>
-        <source>longtext-longtext-longtext-longtext</source>
-        <target state="translated">长文本-长文本-长文本-长文本</target>
-      </segment>
-    </unit>
-    <unit id="25" name="P2ContentMap">
-      <segment>
-        <source>Map</source>
-        <target state="translated">地图</target>
-      </segment>
-    </unit>
-    <unit id="26" name="P2ContentTransit">
-      <segment>
-        <source>Transit</source>
-        <target state="translated">公交</target>
-      </segment>
-    </unit>
-    <unit id="27" name="P2ContentSatellite">
-      <segment>
-        <source>Satellite</source>
-        <target state="translated">卫星</target>
-      </segment>
-    </unit>
-    <unit id="28" name="P2ContentList">
-      <segment>
-        <source>List</source>
-        <target state="translated">列表</target>
-      </segment>
-    </unit>
-    <unit id="29" name="P2ContentAva">
-      <segment>
-        <source>Ava</source>
-        <target state="translated">Ava</target>
-      </segment>
-    </unit>
-    <unit id="30" name="P2ContentKanban">
-      <segment>
-        <source>Kanban</source>
-        <target state="translated">看板</target>
-      </segment>
-    </unit>
-    <unit id="31" name="P2ContentAtomUI">
-      <segment>
-        <source>AtomUI</source>
-        <target state="translated">AtomUI</target>
-      </segment>
-    </unit>
-    <unit id="32" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">示例</target>
-      </segment>
-    </unit>
-    <unit id="33" name="PageSubtitle">
-      <segment>
-        <source>Group mutually exclusive options into a compact segmented selector.</source>
-        <target state="translated">将互斥选项组织成紧凑的分段选择器。</target>
-      </segment>
-    </unit>
-    <unit id="34" name="PageDescription">
-      <segment>
-        <source>Segmented presents a small set of related options with single selection, horizontal or vertical orientation, optional icons, shape variants, responsive expansion and token-based sizing.</source>
-        <target state="translated">Segmented 用于展示一组少量相关选项，支持单选、横向或纵向排列、图标、形状变体、横向铺满和基于 Token 的尺寸样式。</target>
-      </segment>
-    </unit>
-    <unit id="35" name="ComponentCategory">
+    <unit id="ComponentCategory">
       <segment>
         <source>Data Display</source>
         <target state="translated">数据展示</target>
       </segment>
     </unit>
-    <unit id="36" name="ComponentStatusStable">
+    <unit id="ComponentStatusStable">
       <segment>
         <source>Stable</source>
         <target state="translated">稳定</target>
       </segment>
     </unit>
-    <unit id="37" name="ApiEventSelectionChanged">
+    <unit id="DisabledDescription">
       <segment>
-        <source>Raised when the selected item changes.</source>
-        <target state="translated">选中项变化时触发。</target>
+        <source>Disabled Segmented.</source>
+        <target state="translated">禁用状态的 Segmented。</target>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">禁用</target>
+      </segment>
+    </unit>
+    <unit id="DynamicDescription">
+      <segment>
+        <source>Load options dynamically.</source>
+        <target state="translated">动态加载数据。</target>
+      </segment>
+    </unit>
+    <unit id="DynamicTitle">
+      <segment>
+        <source>Dynamic</source>
+        <target state="translated">动态数据</target>
+      </segment>
+    </unit>
+    <unit id="IconOnlyDescription">
+      <segment>
+        <source>Set icon without label for Segmented Item.</source>
+        <target state="translated">为 Segmented 项设置图标但不设置标签。</target>
+      </segment>
+    </unit>
+    <unit id="IconOnlyTitle">
+      <segment>
+        <source>With Icon only</source>
+        <target state="translated">仅图标</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAtomUI">
+      <segment>
+        <source>AtomUI</source>
+        <target state="translated">AtomUI</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAva">
+      <segment>
+        <source>Ava</source>
+        <target state="translated">Ava</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDaily">
+      <segment>
+        <source>Daily</source>
+        <target state="translated">每日</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentKanban">
+      <segment>
+        <source>Kanban</source>
+        <target state="translated">看板</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentList">
+      <segment>
+        <source>List</source>
+        <target state="translated">列表</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLongtextLongtextLongtextLongtext">
+      <segment>
+        <source>longtext-longtext-longtext-longtext</source>
+        <target state="translated">长文本-长文本-长文本-长文本</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentMap">
+      <segment>
+        <source>Map</source>
+        <target state="translated">地图</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentMonthly">
+      <segment>
+        <source>Monthly</source>
+        <target state="translated">每月</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentQuarterly">
+      <segment>
+        <source>Quarterly</source>
+        <target state="translated">每季度</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSatellite">
+      <segment>
+        <source>Satellite</source>
+        <target state="translated">卫星</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTransit">
+      <segment>
+        <source>Transit</source>
+        <target state="translated">公交</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentWeekly">
+      <segment>
+        <source>Weekly</source>
+        <target state="translated">每周</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentYearly">
+      <segment>
+        <source>Yearly</source>
+        <target state="translated">每年</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Segmented presents a small set of related options with single selection, horizontal or vertical orientation, optional icons, shape variants, responsive expansion and token-based sizing.</source>
+        <target state="translated">Segmented 用于展示一组少量相关选项，支持单选、横向或纵向排列、图标、形状变体、横向铺满和基于 Token 的尺寸样式。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Group mutually exclusive options into a compact segmented selector.</source>
+        <target state="translated">将互斥选项组织成紧凑的分段选择器。</target>
+      </segment>
+    </unit>
+    <unit id="RoundShapeDescription">
+      <segment>
+        <source>Round shape of Segmented.</source>
+        <target state="translated">胶囊型的 Segmented。</target>
+      </segment>
+    </unit>
+    <unit id="RoundShapeTitle">
+      <segment>
+        <source>Round Shape</source>
+        <target state="translated">胶囊形状</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="ThreeSizesDescription">
+      <segment>
+        <source>Segmented supports large (40px), default (32px), small (24px), and custom size.</source>
+        <target state="translated">Segmented 支持大号（40px）、默认（32px）、小号（24px）和自定义尺寸。</target>
+      </segment>
+    </unit>
+    <unit id="ThreeSizesTitle">
+      <segment>
+        <source>Sizes of Segmented</source>
+        <target state="translated">Segmented 尺寸</target>
+      </segment>
+    </unit>
+    <unit id="VerticalDescription">
+      <segment>
+        <source>Make it vertical.</source>
+        <target state="translated">垂直方向。</target>
+      </segment>
+    </unit>
+    <unit id="VerticalTitle">
+      <segment>
+        <source>Vertical Direction</source>
+        <target state="translated">垂直方向</target>
+      </segment>
+    </unit>
+    <unit id="WithIconDescription">
+      <segment>
+        <source>Set icon for Segmented Item.</source>
+        <target state="translated">为 Segmented 项设置图标。</target>
+      </segment>
+    </unit>
+    <unit id="WithIconTitle">
+      <segment>
+        <source>With Icon</source>
+        <target state="translated">带图标</target>
       </segment>
     </unit>
   </file>

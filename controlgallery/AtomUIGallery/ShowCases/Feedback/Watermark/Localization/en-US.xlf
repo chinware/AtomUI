@@ -1,84 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind">
-    <unit id="1" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-      </segment>
-    </unit>
-    <unit id="2" name="BasicDescription">
+    <unit id="BasicDescription">
       <segment>
         <source>The most basic usage.</source>
       </segment>
     </unit>
-    <unit id="3" name="MultiLineTitle">
+    <unit id="BasicTitle">
       <segment>
-        <source>Multi-line watermark</source>
+        <source>Basic</source>
       </segment>
     </unit>
-    <unit id="4" name="MultiLineDescription">
-      <segment>
-        <source>Use line-break to specify multi-line text watermark content.</source>
-      </segment>
-    </unit>
-    <unit id="5" name="ImageWatermarkTitle">
-      <segment>
-        <source>Image watermark</source>
-      </segment>
-    </unit>
-    <unit id="6" name="ImageWatermarkDescription">
-      <segment>
-        <source>Specify the image address via image. To ensure that the image is high definition and not stretched, set the width and height, and upload at least twice the width and height of the logo image address.</source>
-      </segment>
-    </unit>
-    <unit id="7" name="CustomConfigurationTitle">
-      <segment>
-        <source>Custom configuration</source>
-      </segment>
-    </unit>
-    <unit id="8" name="CustomConfigurationDescription">
-      <segment>
-        <source>Preview the watermark effect by configuring custom parameters.</source>
-      </segment>
-    </unit>
-    <unit id="9" name="PageSubtitle">
-      <segment>
-        <source>Text or image watermarks for protected content.</source>
-      </segment>
-    </unit>
-    <unit id="10" name="PageDescription">
-      <segment>
-        <source>Watermark attaches repeated text or image glyphs to a target area, helping identify ownership or prevent unauthorized reuse.</source>
-      </segment>
-    </unit>
-    <unit id="11" name="ComponentCategory">
+    <unit id="ComponentCategory">
       <segment>
         <source>Feedback</source>
       </segment>
     </unit>
-    <unit id="12" name="ComponentStatusStable">
+    <unit id="ComponentStatusStable">
       <segment>
         <source>.NET 10</source>
       </segment>
     </unit>
-    <unit id="13" name="ScenarioExamples">
+    <unit id="CustomConfigurationDescription">
       <segment>
-        <source>Examples</source>
+        <source>Preview the watermark effect by configuring custom parameters.</source>
       </segment>
     </unit>
-    <unit id="14" name="P2WatermarkMultiLineText">
+    <unit id="CustomConfigurationTitle">
       <segment>
-        <source>AtomUI
-Happy Working</source>
+        <source>Custom configuration</source>
       </segment>
     </unit>
-    <unit id="15" name="P2TextNaturalInteractionDescription">
+    <unit id="ImageWatermarkDescription">
+      <segment>
+        <source>Specify the image address via image. To ensure that the image is high definition and not stretched, set the width and height, and upload at least twice the width and height of the logo image address.</source>
+      </segment>
+    </unit>
+    <unit id="ImageWatermarkTitle">
+      <segment>
+        <source>Image watermark</source>
+      </segment>
+    </unit>
+    <unit id="MultiLineDescription">
+      <segment>
+        <source>Use line-break to specify multi-line text watermark content.</source>
+      </segment>
+    </unit>
+    <unit id="MultiLineTitle">
+      <segment>
+        <source>Multi-line watermark</source>
+      </segment>
+    </unit>
+    <unit id="P2TextNaturalInteractionDescription">
       <segment>
         <source>The light-speed iteration of the digital world makes products more complex. However, human consciousness and attention resources are limited. Facing this design contradiction, the pursuit of natural interaction will be the consistent direction of Ant Design.
 
 Natural user cognition: According to cognitive psychology, about 80% of external information is obtained through visual channels. The most important visual elements in the interface design, including layout, colors, illustrations, icons, etc., should fully absorb the laws of nature, thereby reducing the user's cognitive cost and bringing authentic and smooth feelings. In some scenarios, opportunely adding other sensory channels such as hearing, touch can create a richer and more natural product experience.
 
 Natural user behavior: In the interaction with the system, the designer should fully understand the relationship between users, system roles, and task objectives, and also contextually organize system functions and services. At the same time, a series of methods such as behavior analysis, artificial intelligence and sensors could be applied to assist users to make effective decisions and reduce extra operations of users, to save users' mental and physical resources and make human-computer interaction more natural.</source>
+      </segment>
+    </unit>
+    <unit id="P2WatermarkMultiLineText">
+      <segment>
+        <source>AtomUI
+Happy Working</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Watermark attaches repeated text or image glyphs to a target area, helping identify ownership or prevent unauthorized reuse.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Text or image watermarks for protected content.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
       </segment>
     </unit>
   </file>

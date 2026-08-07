@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="Acme.LocalizationComponent.Localization.WelcomeLangResourceKind">
-    <unit id="1" name="Greeting">
-      <segment><source>Welcome</source></segment>
+    <unit id="Greeting">
+      <segment>
+        <source>Welcome</source>
+      </segment>
     </unit>
-    <unit id="2" name="ItemCount">
-      <segment><source>You have {0} items.</source></segment>
+    <unit id="ItemCount">
+      <segment>
+        <source>You have {0} items.</source>
+      </segment>
     </unit>
   </file>
 </xliff>

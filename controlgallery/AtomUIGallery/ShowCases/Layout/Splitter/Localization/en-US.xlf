@@ -1,189 +1,189 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.SplitterShowCaseLangResourceKind">
-    <unit id="1" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-      </segment>
-    </unit>
-    <unit id="2" name="ComponentCategory">
-      <segment>
-        <source>Layout</source>
-      </segment>
-    </unit>
-    <unit id="3" name="ComponentStatusStable">
-      <segment>
-        <source>.NET 10</source>
-      </segment>
-    </unit>
-    <unit id="4" name="PageSubtitle">
-      <segment>
-        <source>Resize adjacent panes with draggable handles, constraints, collapse controls, and lazy updates.</source>
-      </segment>
-    </unit>
-    <unit id="5" name="PageDescription">
-      <segment>
-        <source>Splitter divides a region into resizable panels. It supports horizontal and vertical layouts, nested splitters, fixed or constrained panels, collapsible handles, multiple panels, and lazy resize feedback.</source>
-      </segment>
-    </unit>
-    <unit id="6" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-      </segment>
-    </unit>
-    <unit id="7" name="BasicDescription">
+    <unit id="BasicDescription">
       <segment>
         <source>Initial sizes with min/max constraints.</source>
       </segment>
     </unit>
-    <unit id="8" name="HorizontalTitle">
+    <unit id="BasicTitle">
       <segment>
-        <source>Horizontal</source>
+        <source>Basic</source>
       </segment>
     </unit>
-    <unit id="9" name="HorizontalDescription">
+    <unit id="ComponentCategory">
       <segment>
-        <source>Top-bottom splitter with collapsible icons.</source>
+        <source>Layout</source>
       </segment>
     </unit>
-    <unit id="10" name="CompositeTitle">
+    <unit id="ComponentStatusStable">
       <segment>
-        <source>Composite</source>
+        <source>.NET 10</source>
       </segment>
     </unit>
-    <unit id="11" name="CompositeDescription">
+    <unit id="CompositeDescription">
       <segment>
         <source>Nested horizontal splitter inside a vertical layout.</source>
       </segment>
     </unit>
-    <unit id="12" name="ResizableDisabledTitle">
+    <unit id="CompositeTitle">
       <segment>
-        <source>Resizable Disabled</source>
+        <source>Composite</source>
       </segment>
     </unit>
-    <unit id="13" name="ResizableDisabledDescription">
+    <unit id="HorizontalDescription">
       <segment>
-        <source>If either side disables resizable, dragging is blocked.</source>
+        <source>Top-bottom splitter with collapsible icons.</source>
       </segment>
     </unit>
-    <unit id="14" name="ShowCollapsibleIconTitle">
+    <unit id="HorizontalTitle">
       <segment>
-        <source>ShowCollapsibleIcon</source>
+        <source>Horizontal</source>
       </segment>
     </unit>
-    <unit id="15" name="ShowCollapsibleIconDescription">
-      <segment>
-        <source>Three panels with hover and always-visible collapsible icons.</source>
-      </segment>
-    </unit>
-    <unit id="16" name="MultiPanelsTitle">
-      <segment>
-        <source>Multi Panels</source>
-      </segment>
-    </unit>
-    <unit id="17" name="MultiPanelsDescription">
-      <segment>
-        <source>Multiple panels in vertical layout.</source>
-      </segment>
-    </unit>
-    <unit id="18" name="LazyTitle">
-      <segment>
-        <source>Lazy</source>
-      </segment>
-    </unit>
-    <unit id="19" name="LazyDescription">
+    <unit id="LazyDescription">
       <segment>
         <source>Lazy rendering mode: sizes update on drag release.</source>
       </segment>
     </unit>
-    <unit id="20" name="LineStyleTitle">
+    <unit id="LazyTitle">
       <segment>
-        <source>Line Style</source>
+        <source>Lazy</source>
       </segment>
     </unit>
-    <unit id="21" name="LineStyleDescription">
+    <unit id="LineStyleDescription">
       <segment>
         <source>Customize the root frame, visible divider thickness, and line corner radius.</source>
       </segment>
     </unit>
-    <unit id="22" name="P2TextFirst">
+    <unit id="LineStyleTitle">
       <segment>
-        <source>First</source>
+        <source>Line Style</source>
       </segment>
     </unit>
-    <unit id="23" name="P2TextSecond">
+    <unit id="MultiPanelsDescription">
       <segment>
-        <source>Second</source>
+        <source>Multiple panels in vertical layout.</source>
       </segment>
     </unit>
-    <unit id="24" name="P2TextTop">
+    <unit id="MultiPanelsTitle">
       <segment>
-        <source>Top</source>
+        <source>Multi Panels</source>
       </segment>
     </unit>
-    <unit id="25" name="P2TextBottom">
-      <segment>
-        <source>Bottom</source>
-      </segment>
-    </unit>
-    <unit id="26" name="P2TextLeft">
-      <segment>
-        <source>Left</source>
-      </segment>
-    </unit>
-    <unit id="27" name="P2TextResizable">
-      <segment>
-        <source>Resizable</source>
-      </segment>
-    </unit>
-    <unit id="28" name="P2TextNotResizable">
-      <segment>
-        <source>Not Resizable</source>
-      </segment>
-    </unit>
-    <unit id="29" name="P2TextShowcollapsibleicon">
-      <segment>
-        <source>ShowCollapsibleIcon:</source>
-      </segment>
-    </unit>
-    <unit id="30" name="P2ContentHover">
-      <segment>
-        <source>Hover</source>
-      </segment>
-    </unit>
-    <unit id="31" name="P2ContentTrue">
-      <segment>
-        <source>True</source>
-      </segment>
-    </unit>
-    <unit id="32" name="P2ContentFalse">
+    <unit id="P2ContentFalse">
       <segment>
         <source>False</source>
       </segment>
     </unit>
-    <unit id="33" name="P2TextThird">
+    <unit id="P2ContentHover">
       <segment>
-        <source>Third</source>
+        <source>Hover</source>
       </segment>
     </unit>
-    <unit id="34" name="P2TextA">
+    <unit id="P2ContentTrue">
+      <segment>
+        <source>True</source>
+      </segment>
+    </unit>
+    <unit id="P2TextA">
       <segment>
         <source>A</source>
       </segment>
     </unit>
-    <unit id="35" name="P2TextB">
+    <unit id="P2TextB">
       <segment>
         <source>B</source>
       </segment>
     </unit>
-    <unit id="36" name="P2TextC">
+    <unit id="P2TextBottom">
+      <segment>
+        <source>Bottom</source>
+      </segment>
+    </unit>
+    <unit id="P2TextC">
       <segment>
         <source>C</source>
       </segment>
     </unit>
-    <unit id="37" name="P2TextD">
+    <unit id="P2TextD">
       <segment>
         <source>D</source>
+      </segment>
+    </unit>
+    <unit id="P2TextFirst">
+      <segment>
+        <source>First</source>
+      </segment>
+    </unit>
+    <unit id="P2TextLeft">
+      <segment>
+        <source>Left</source>
+      </segment>
+    </unit>
+    <unit id="P2TextNotResizable">
+      <segment>
+        <source>Not Resizable</source>
+      </segment>
+    </unit>
+    <unit id="P2TextResizable">
+      <segment>
+        <source>Resizable</source>
+      </segment>
+    </unit>
+    <unit id="P2TextSecond">
+      <segment>
+        <source>Second</source>
+      </segment>
+    </unit>
+    <unit id="P2TextShowcollapsibleicon">
+      <segment>
+        <source>ShowCollapsibleIcon:</source>
+      </segment>
+    </unit>
+    <unit id="P2TextThird">
+      <segment>
+        <source>Third</source>
+      </segment>
+    </unit>
+    <unit id="P2TextTop">
+      <segment>
+        <source>Top</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Splitter divides a region into resizable panels. It supports horizontal and vertical layouts, nested splitters, fixed or constrained panels, collapsible handles, multiple panels, and lazy resize feedback.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Resize adjacent panes with draggable handles, constraints, collapse controls, and lazy updates.</source>
+      </segment>
+    </unit>
+    <unit id="ResizableDisabledDescription">
+      <segment>
+        <source>If either side disables resizable, dragging is blocked.</source>
+      </segment>
+    </unit>
+    <unit id="ResizableDisabledTitle">
+      <segment>
+        <source>Resizable Disabled</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="ShowCollapsibleIconDescription">
+      <segment>
+        <source>Three panels with hover and always-visible collapsible icons.</source>
+      </segment>
+    </unit>
+    <unit id="ShowCollapsibleIconTitle">
+      <segment>
+        <source>ShowCollapsibleIcon</source>
       </segment>
     </unit>
   </file>

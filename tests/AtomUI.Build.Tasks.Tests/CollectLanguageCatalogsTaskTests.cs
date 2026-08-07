@@ -80,7 +80,7 @@ public class CollectLanguageCatalogsTaskTests : IDisposable
     private const string CatalogXliff = """
         <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
           <file id="AtomUI.Desktop.Controls.DatePickerLang.DatePickerLangResourceKind">
-            <unit id="1" name="Today">
+            <unit id="Today">
               <segment><source>Today</source></segment>
             </unit>
           </file>

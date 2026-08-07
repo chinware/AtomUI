@@ -1,196 +1,196 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.TimelineShowCaseLangResourceKind">
-    <unit id="1" name="BasicUsageTitle">
-      <segment>
-        <source>Basic usage</source>
-        <target state="translated">基礎用法</target>
-      </segment>
-    </unit>
-    <unit id="2" name="BasicUsageDescription">
-      <segment>
-        <source>Basic usage example.</source>
-        <target state="translated">基礎用法示例。</target>
-      </segment>
-    </unit>
-    <unit id="3" name="ColorTitle">
-      <segment>
-        <source>Color</source>
-        <target state="translated">顏色</target>
-      </segment>
-    </unit>
-    <unit id="4" name="ColorDescription">
-      <segment>
-        <source>Set the color of circles. green means completed or success status, red means warning or error, and blue means ongoing or other default status, gray for unfinished or disabled status.</source>
-        <target state="translated">設置圓圈顏色。綠色表示完成或成功，紅色表示警告或錯誤，藍色表示進行中或其他默認狀態，灰色表示未完成或禁用。</target>
-      </segment>
-    </unit>
-    <unit id="5" name="LastNodeAndReversingTitle">
-      <segment>
-        <source>Last node and Reversing</source>
-        <target state="translated">最後節點和反轉</target>
-      </segment>
-    </unit>
-    <unit id="6" name="LastNodeAndReversingDescription">
-      <segment>
-        <source>When the timeline is incomplete and ongoing, put a pending node at the end. Set Pending to a truthy value to display the pending item. You can customize the pending content and pending icon. IsReverse is used for reversing nodes.</source>
-        <target state="translated">當時間軸未完成且仍在進行時，可在最後放置一個待處理節點。將 Pending 設置為有效值可顯示待處理項；也可以自定義待處理內容和待處理圖標。IsReverse 用於反轉節點。</target>
-      </segment>
-    </unit>
-    <unit id="7" name="AlternateTitle">
-      <segment>
-        <source>Alternate</source>
-        <target state="translated">交替展示</target>
-      </segment>
-    </unit>
-    <unit id="8" name="AlternateDescription">
+    <unit id="AlternateDescription">
       <segment>
         <source>Alternate timeline.</source>
         <target state="translated">交替展示的時間軸。</target>
       </segment>
     </unit>
-    <unit id="9" name="DynamicModeTitle">
-      <segment>
-        <source>Dynamic mode</source>
-        <target state="translated">動態模式</target>
-      </segment>
-    </unit>
-    <unit id="10" name="DynamicModeDescription">
-      <segment>
-        <source>Switch between Start, End, and Alternate placement at runtime.</source>
-        <target state="translated">執行階段切換 Start、End 和 Alternate 佈局。</target>
-      </segment>
-    </unit>
-    <unit id="11" name="HorizontalTitle">
-      <segment>
-        <source>Horizontal</source>
-        <target state="translated">水平方向</target>
-      </segment>
-    </unit>
-    <unit id="12" name="HorizontalDescription">
-      <segment>
-        <source>Horizontal timelines support Start, End, and Alternate placement.</source>
-        <target state="translated">水平時間軸支援 Start、End 和 Alternate 三種佈局。</target>
-      </segment>
-    </unit>
-    <unit id="13" name="P2ContentN2024N01N01AtomuiOfficiallyInitiated">
-      <segment>
-        <source>2024-01-01 AtomUI Officially Initiated</source>
-        <target state="translated">2024-01-01 AtomUI 正式啓動</target>
-      </segment>
-    </unit>
-    <unit id="14" name="P2ContentN2024N08N12AfterMoreThanN7Months">
-      <segment>
-        <source>2024-08-12 After more than 7 months of development, AtomUI is officially open-source. Welcome everyone to follow us.</source>
-        <target state="translated">2024-08-12 經過 7 個多月的開發，AtomUI 正式開源。歡迎大家關注我們。</target>
-      </segment>
-    </unit>
-    <unit id="15" name="P2ContentN2024N10N01ReleaseOfTheN0N0">
-      <segment>
-        <source>2024-10-01 Release of the 0.0.1 Preview Version</source>
-        <target state="translated">2024-10-01 發佈 0.0.1 預覽版</target>
-      </segment>
-    </unit>
-    <unit id="16" name="P2ContentN2024N01N01AtomuiOfficiallyInitiatedN1">
-      <segment>
-        <source>2024-01-01 AtomUI Officially Initiated. 1</source>
-        <target state="translated">2024-01-01 AtomUI 正式啓動。1</target>
-      </segment>
-    </unit>
-    <unit id="17" name="P2ContentN2024N01N01AtomuiOfficiallyInitiatedN2">
-      <segment>
-        <source>2024-01-01 AtomUI Officially Initiated. 2</source>
-        <target state="translated">2024-01-01 AtomUI 正式啓動。2</target>
-      </segment>
-    </unit>
-    <unit id="18" name="P2ContentN2024N01N01AtomuiOfficiallyInitiatedN3">
-      <segment>
-        <source>2024-01-01 AtomUI Officially Initiated. 3</source>
-        <target state="translated">2024-01-01 AtomUI 正式啓動。3</target>
-      </segment>
-    </unit>
-    <unit id="19" name="P2ContentToggleReverse">
-      <segment>
-        <source>Toggle Reverse</source>
-        <target state="translated">切換反轉</target>
-      </segment>
-    </unit>
-    <unit id="20" name="P2ContentRecording">
-      <segment>
-        <source>Recording...</source>
-        <target state="translated">記錄中...</target>
-      </segment>
-    </unit>
-    <unit id="21" name="P2ContentStart">
-      <segment>
-        <source>Start</source>
-        <target state="translated">起始</target>
-      </segment>
-    </unit>
-    <unit id="22" name="P2ContentEnd">
-      <segment>
-        <source>End</source>
-        <target state="translated">結束</target>
-      </segment>
-    </unit>
-    <unit id="23" name="P2ContentAlternate">
+    <unit id="AlternateTitle">
       <segment>
         <source>Alternate</source>
-        <target state="translated">交替</target>
+        <target state="translated">交替展示</target>
       </segment>
     </unit>
-    <unit id="24" name="P2ContentAtomuiOfficiallyInitiated">
+    <unit id="BasicUsageDescription">
       <segment>
-        <source>AtomUI Officially Initiated</source>
-        <target state="translated">AtomUI 正式啓動</target>
+        <source>Basic usage example.</source>
+        <target state="translated">基礎用法示例。</target>
       </segment>
     </unit>
-    <unit id="25" name="P2ContentCreateAServicesSite">
+    <unit id="BasicUsageTitle">
       <segment>
-        <source>Create a services site</source>
-        <target state="translated">創建服務站點</target>
+        <source>Basic usage</source>
+        <target state="translated">基礎用法</target>
       </segment>
     </unit>
-    <unit id="26" name="P2ContentQinwareWebsiteOnline">
+    <unit id="ColorDescription">
       <segment>
-        <source>Qinware website online</source>
-        <target state="translated">Qinware 網站上線</target>
+        <source>Set the color of circles. green means completed or success status, red means warning or error, and blue means ongoing or other default status, gray for unfinished or disabled status.</source>
+        <target state="translated">設置圓圈顏色。綠色表示完成或成功，紅色表示警告或錯誤，藍色表示進行中或其他默認狀態，灰色表示未完成或禁用。</target>
       </segment>
     </unit>
-    <unit id="27" name="P2ContentNetworkProblemsBeingSolved">
+    <unit id="ColorTitle">
       <segment>
-        <source>Network problems being solved</source>
-        <target state="translated">網絡問題正在解決</target>
+        <source>Color</source>
+        <target state="translated">顏色</target>
       </segment>
     </unit>
-    <unit id="28" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">示例</target>
-      </segment>
-    </unit>
-    <unit id="29" name="PageSubtitle">
-      <segment>
-        <source>Display a sequence of events in chronological order.</source>
-        <target state="translated">按時間順序展示一組事件。</target>
-      </segment>
-    </unit>
-    <unit id="30" name="PageDescription">
-      <segment>
-        <source>Timeline is used to organize milestones, progress updates and historical events with optional labels, custom indicators and pending nodes.</source>
-        <target state="translated">Timeline 用於組織里程碑、進度更新和歷史事件，支持標籤、自定義節點指示器和待處理節點。</target>
-      </segment>
-    </unit>
-    <unit id="31" name="ComponentCategory">
+    <unit id="ComponentCategory">
       <segment>
         <source>Data Display</source>
         <target state="translated">數據展示</target>
       </segment>
     </unit>
-    <unit id="32" name="ComponentStatusStable">
+    <unit id="ComponentStatusStable">
       <segment>
         <source>Stable</source>
         <target state="translated">穩定</target>
+      </segment>
+    </unit>
+    <unit id="DynamicModeDescription">
+      <segment>
+        <source>Switch between Start, End, and Alternate placement at runtime.</source>
+        <target state="translated">執行階段切換 Start、End 和 Alternate 佈局。</target>
+      </segment>
+    </unit>
+    <unit id="DynamicModeTitle">
+      <segment>
+        <source>Dynamic mode</source>
+        <target state="translated">動態模式</target>
+      </segment>
+    </unit>
+    <unit id="HorizontalDescription">
+      <segment>
+        <source>Horizontal timelines support Start, End, and Alternate placement.</source>
+        <target state="translated">水平時間軸支援 Start、End 和 Alternate 三種佈局。</target>
+      </segment>
+    </unit>
+    <unit id="HorizontalTitle">
+      <segment>
+        <source>Horizontal</source>
+        <target state="translated">水平方向</target>
+      </segment>
+    </unit>
+    <unit id="LastNodeAndReversingDescription">
+      <segment>
+        <source>When the timeline is incomplete and ongoing, put a pending node at the end. Set Pending to a truthy value to display the pending item. You can customize the pending content and pending icon. IsReverse is used for reversing nodes.</source>
+        <target state="translated">當時間軸未完成且仍在進行時，可在最後放置一個待處理節點。將 Pending 設置為有效值可顯示待處理項；也可以自定義待處理內容和待處理圖標。IsReverse 用於反轉節點。</target>
+      </segment>
+    </unit>
+    <unit id="LastNodeAndReversingTitle">
+      <segment>
+        <source>Last node and Reversing</source>
+        <target state="translated">最後節點和反轉</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAlternate">
+      <segment>
+        <source>Alternate</source>
+        <target state="translated">交替</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentAtomuiOfficiallyInitiated">
+      <segment>
+        <source>AtomUI Officially Initiated</source>
+        <target state="translated">AtomUI 正式啓動</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCreateAServicesSite">
+      <segment>
+        <source>Create a services site</source>
+        <target state="translated">創建服務站點</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentEnd">
+      <segment>
+        <source>End</source>
+        <target state="translated">結束</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentN2024N01N01AtomuiOfficiallyInitiated">
+      <segment>
+        <source>2024-01-01 AtomUI Officially Initiated</source>
+        <target state="translated">2024-01-01 AtomUI 正式啓動</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentN2024N01N01AtomuiOfficiallyInitiatedN1">
+      <segment>
+        <source>2024-01-01 AtomUI Officially Initiated. 1</source>
+        <target state="translated">2024-01-01 AtomUI 正式啓動。1</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentN2024N01N01AtomuiOfficiallyInitiatedN2">
+      <segment>
+        <source>2024-01-01 AtomUI Officially Initiated. 2</source>
+        <target state="translated">2024-01-01 AtomUI 正式啓動。2</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentN2024N01N01AtomuiOfficiallyInitiatedN3">
+      <segment>
+        <source>2024-01-01 AtomUI Officially Initiated. 3</source>
+        <target state="translated">2024-01-01 AtomUI 正式啓動。3</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentN2024N08N12AfterMoreThanN7Months">
+      <segment>
+        <source>2024-08-12 After more than 7 months of development, AtomUI is officially open-source. Welcome everyone to follow us.</source>
+        <target state="translated">2024-08-12 經過 7 個多月的開發，AtomUI 正式開源。歡迎大家關注我們。</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentN2024N10N01ReleaseOfTheN0N0">
+      <segment>
+        <source>2024-10-01 Release of the 0.0.1 Preview Version</source>
+        <target state="translated">2024-10-01 發佈 0.0.1 預覽版</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentNetworkProblemsBeingSolved">
+      <segment>
+        <source>Network problems being solved</source>
+        <target state="translated">網絡問題正在解決</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentQinwareWebsiteOnline">
+      <segment>
+        <source>Qinware website online</source>
+        <target state="translated">Qinware 網站上線</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRecording">
+      <segment>
+        <source>Recording...</source>
+        <target state="translated">記錄中...</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentStart">
+      <segment>
+        <source>Start</source>
+        <target state="translated">起始</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentToggleReverse">
+      <segment>
+        <source>Toggle Reverse</source>
+        <target state="translated">切換反轉</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Timeline is used to organize milestones, progress updates and historical events with optional labels, custom indicators and pending nodes.</source>
+        <target state="translated">Timeline 用於組織里程碑、進度更新和歷史事件，支持標籤、自定義節點指示器和待處理節點。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display a sequence of events in chronological order.</source>
+        <target state="translated">按時間順序展示一組事件。</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
       </segment>
     </unit>
   </file>

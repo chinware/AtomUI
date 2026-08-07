@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
+        <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
     </PropertyGroup>
 
     <ItemGroup>

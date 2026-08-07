@@ -42,7 +42,7 @@ public class ApplicationLocalizationStartupTests
             {
                 builder.Localization.AddTranslationBundle(new TranslationBundleDescriptor(
                     "AtomUI.Core.Tests:AtomUI.Core.Tests.Localization.GeneratedStartupLangResourceKind",
-                    1,
+                    2,
                     LanguageTags.ArSA,
                     TranslationSourceKind.ApplicationOverride,
                     "AtomUI.Core.Tests",

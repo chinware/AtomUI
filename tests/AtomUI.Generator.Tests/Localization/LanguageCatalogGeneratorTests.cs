@@ -10,15 +10,15 @@ namespace AtomUI.Generator.Tests.Localization;
 public class LanguageCatalogGeneratorTests
 {
     [Fact]
-    public void Accepts_A_Stable_Explicit_Catalog_Contract()
+    public void Accepts_A_Key_Based_Catalog_Contract()
     {
         var result = RunGenerator("""
             [LanguageCatalog(ContractVersion = 2)]
             public enum LoginLangResourceKind
             {
-                Title = 10,
-                SignIn = 30,
-                UserName = 20
+                Title,
+                SignIn,
+                UserName
             }
             """);
 
@@ -33,12 +33,12 @@ public class LanguageCatalogGeneratorTests
         "LoginLangResourceKind",
         "non-generic enum")]
     [InlineData(
-        "[System.Flags, LanguageCatalog] public enum LoginLangResourceKind { Title = 1 }",
+        "[System.Flags, LanguageCatalog] public enum LoginLangResourceKind { Title }",
         "ATOMUILOC003",
         "LoginLangResourceKind",
         "Flags")]
     [InlineData(
-        "[LanguageCatalog(ContractVersion = 0)] public enum LoginLangResourceKind { Title = 1 }",
+        "[LanguageCatalog(ContractVersion = 0)] public enum LoginLangResourceKind { Title }",
         "ATOMUILOC003",
         "LoginLangResourceKind",
         "ContractVersion")]
@@ -48,7 +48,7 @@ public class LanguageCatalogGeneratorTests
         "LoginLangResourceKind",
         "at least one")]
     [InlineData(
-        "[LanguageCatalog] internal enum LoginLangResourceKind { Title = 1 }",
+        "[LanguageCatalog] internal enum LoginLangResourceKind { Title }",
         "ATOMUILOC003",
         "LoginLangResourceKind",
         "public")]
@@ -65,18 +65,14 @@ public class LanguageCatalogGeneratorTests
 
     [Theory]
     [InlineData(
-        "[LanguageCatalog] public enum LoginLangResourceKind { Title }",
-        "Title",
-        "explicit")]
-    [InlineData(
         "[LanguageCatalog] public enum LoginLangResourceKind { Title = 0 }",
         "0",
-        "positive")]
+        "explicit numeric")]
     [InlineData(
         "[LanguageCatalog] public enum LoginLangResourceKind { Title = -1 }",
         "-1",
-        "positive")]
-    public void Reports_Invalid_Catalog_Unit_Ids(
+        "explicit numeric")]
+    public void Reports_Explicit_Catalog_Unit_Values(
         string declaration,
         string locationText,
         string messageFragment)
@@ -87,7 +83,7 @@ public class LanguageCatalogGeneratorTests
     }
 
     [Fact]
-    public void Reports_The_Second_Unit_When_Numeric_Id_Is_Duplicated()
+    public void Reports_Explicit_Values_On_All_Catalog_Units()
     {
         var diagnostic = RunGenerator("""
             [LanguageCatalog]
@@ -96,10 +92,12 @@ public class LanguageCatalogGeneratorTests
                 Title = 1,
                 Heading = 1
             }
-            """).Diagnostics.ShouldHaveSingleItem();
+            """).Diagnostics;
 
-        AssertDiagnostic(diagnostic, "ATOMUILOC004", "1", "duplicated");
-        diagnostic.GetMessage().ShouldContain("Heading");
+        diagnostic.Length.ShouldBe(2);
+        diagnostic.ShouldAllBe(item =>
+            item.Id == "ATOMUILOC004" &&
+            item.GetMessage().Contains("explicit numeric", StringComparison.Ordinal));
     }
 
     private static void AssertDiagnostic(

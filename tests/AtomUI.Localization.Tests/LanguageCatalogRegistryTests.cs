@@ -219,7 +219,7 @@ public class LanguageCatalogRegistryTests
         return new LanguageCatalogDescriptor<TResourceKind>(
             id,
             1,
-            unitNames.Select((name, index) => new LanguageCatalogUnitDescriptor(index + 1, name)).ToArray(),
+            unitNames.Select(name => new LanguageCatalogUnitDescriptor(name)).ToArray(),
             static key => Convert.ToInt32(key) - 1);
     }
 
@@ -241,12 +241,12 @@ public class LanguageCatalogRegistryTests
 
     private enum AlphaResourceKind
     {
-        First = 1,
-        Second = 2
+        First,
+        Second
     }
 
     private enum BetaResourceKind
     {
-        Value = 1
+        Value
     }
 }

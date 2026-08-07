@@ -231,7 +231,7 @@ public class LanguagePackageTasksTests : IDisposable
     private const string JapaneseXliff = """
         <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US" trgLang="ja-JP">
           <file id="AtomUI.Desktop.Controls.DatePickerLang.DatePickerLangResourceKind">
-            <unit id="1" name="Today">
+            <unit id="Today">
               <segment><source>Today</source><target state="reviewed">今日</target></segment>
             </unit>
           </file>
@@ -241,7 +241,7 @@ public class LanguagePackageTasksTests : IDisposable
     private const string ModuleEnglishXliff = """
         <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
           <file id="AtomUI.Desktop.Controls.DatePickerLang.DatePickerLangResourceKind">
-            <unit id="1" name="Today">
+            <unit id="Today">
               <segment><source>Today</source></segment>
             </unit>
           </file>

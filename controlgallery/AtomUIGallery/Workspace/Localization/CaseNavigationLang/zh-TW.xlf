@@ -1,526 +1,526 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.CaseNavigationLangResourceKind">
-    <unit id="1" name="Overview">
-      <segment>
-        <source>Overview</source>
-        <target state="translated">概覽</target>
-      </segment>
-    </unit>
-    <unit id="2" name="Community">
-      <segment>
-        <source>Community</source>
-        <target state="translated">社區</target>
-      </segment>
-    </unit>
-    <unit id="3" name="Components">
-      <segment>
-        <source>Components</source>
-        <target state="translated">組件</target>
-      </segment>
-    </unit>
-    <unit id="4" name="CollapseNavigation">
+    <unit id="CollapseNavigation">
       <segment>
         <source>Collapse navigation</source>
         <target state="translated">收起導覽</target>
       </segment>
     </unit>
-    <unit id="5" name="ExpandNavigation">
+    <unit id="Community">
       <segment>
-        <source>Expand navigation</source>
-        <target state="translated">展開導覽</target>
+        <source>Community</source>
+        <target state="translated">社區</target>
       </segment>
     </unit>
-    <unit id="6" name="General">
+    <unit id="Components">
       <segment>
-        <source>General</source>
-        <target state="translated">通用</target>
+        <source>Components</source>
+        <target state="translated">組件</target>
       </segment>
     </unit>
-    <unit id="7" name="General_AboutUs">
-      <segment>
-        <source>AboutUS</source>
-        <target state="translated">關於我們</target>
-      </segment>
-    </unit>
-    <unit id="8" name="General_Palette">
-      <segment>
-        <source>Palette</source>
-        <target state="translated">調色板</target>
-      </segment>
-    </unit>
-    <unit id="9" name="General_Icons">
-      <segment>
-        <source>Icons</source>
-        <target state="translated">Icons 圖標</target>
-      </segment>
-    </unit>
-    <unit id="10" name="General_Button">
-      <segment>
-        <source>Button</source>
-        <target state="translated">Button 按鈕</target>
-      </segment>
-    </unit>
-    <unit id="11" name="General_FloatButton">
-      <segment>
-        <source>FloatButton</source>
-        <target state="translated">FloatButton 懸浮按鈕</target>
-      </segment>
-    </unit>
-    <unit id="12" name="General_SplitButton">
-      <segment>
-        <source>SplitButton</source>
-        <target state="translated">SplitButton 分割按鈕</target>
-      </segment>
-    </unit>
-    <unit id="13" name="General_Separator">
-      <segment>
-        <source>Separator</source>
-        <target state="translated">Separator 分割線</target>
-      </segment>
-    </unit>
-    <unit id="14" name="General_CustomizeTheme">
-      <segment>
-        <source>CustomizeTheme</source>
-        <target state="translated">CustomizeTheme 主題</target>
-      </segment>
-    </unit>
-    <unit id="15" name="Layout">
-      <segment>
-        <source>Layout</source>
-        <target state="translated">佈局</target>
-      </segment>
-    </unit>
-    <unit id="16" name="Layout_FlexPanel">
-      <segment>
-        <source>FlexPanel</source>
-        <target state="translated">FlexPanel 彈性佈局</target>
-      </segment>
-    </unit>
-    <unit id="17" name="Layout_Grid">
-      <segment>
-        <source>Grid</source>
-        <target state="translated">Grid 柵格佈局</target>
-      </segment>
-    </unit>
-    <unit id="18" name="Layout_Space">
-      <segment>
-        <source>Space</source>
-        <target state="translated">Space 間距</target>
-      </segment>
-    </unit>
-    <unit id="19" name="Layout_Splitter">
-      <segment>
-        <source>Splitter</source>
-        <target state="translated">Splitter 分隔面板</target>
-      </segment>
-    </unit>
-    <unit id="20" name="Layout_Masonry">
-      <segment>
-        <source>Masonry</source>
-        <target state="translated">Masonry 瀑布流</target>
-      </segment>
-    </unit>
-    <unit id="21" name="Navigation">
-      <segment>
-        <source>Navigation</source>
-        <target state="translated">導航</target>
-      </segment>
-    </unit>
-    <unit id="22" name="Navigation_Breadcrumb">
-      <segment>
-        <source>Breadcrumb</source>
-        <target state="translated">Breadcrumb 麵包屑</target>
-      </segment>
-    </unit>
-    <unit id="23" name="Navigation_ButtonSpinner">
-      <segment>
-        <source>ButtonSpinner</source>
-        <target state="translated">ButtonSpinner 選項按鈕</target>
-      </segment>
-    </unit>
-    <unit id="24" name="Navigation_ComboBox">
-      <segment>
-        <source>ComboBox</source>
-        <target state="translated">ComboBox 組合框</target>
-      </segment>
-    </unit>
-    <unit id="25" name="Navigation_DropdownButton">
-      <segment>
-        <source>DropdownButton</source>
-        <target state="translated">DropdownButton 下拉菜單</target>
-      </segment>
-    </unit>
-    <unit id="26" name="Navigation_Menu">
-      <segment>
-        <source>Menu</source>
-        <target state="translated">Menu 菜單</target>
-      </segment>
-    </unit>
-    <unit id="27" name="Navigation_Pagination">
-      <segment>
-        <source>Pagination</source>
-        <target state="translated">Pagination 分頁</target>
-      </segment>
-    </unit>
-    <unit id="28" name="Navigation_Steps">
-      <segment>
-        <source>Steps</source>
-        <target state="translated">Steps 步驟條</target>
-      </segment>
-    </unit>
-    <unit id="29" name="Navigation_TabControl">
-      <segment>
-        <source>TabControl</source>
-        <target state="translated">TabControl 標籤頁</target>
-      </segment>
-    </unit>
-    <unit id="30" name="Navigation_TabStrip">
-      <segment>
-        <source>TabStrip</source>
-        <target state="translated">TabStrip 標籤欄</target>
-      </segment>
-    </unit>
-    <unit id="31" name="DataEntry">
-      <segment>
-        <source>Data Entry</source>
-        <target state="translated">數據錄入</target>
-      </segment>
-    </unit>
-    <unit id="32" name="DataEntry_AutoComplete">
-      <segment>
-        <source>AutoComplete</source>
-        <target state="translated">AutoComplete 自動完成</target>
-      </segment>
-    </unit>
-    <unit id="33" name="DataEntry_Cascader">
-      <segment>
-        <source>Cascader</source>
-        <target state="translated">Cascader 級聯選擇</target>
-      </segment>
-    </unit>
-    <unit id="34" name="DataEntry_CheckBox">
-      <segment>
-        <source>CheckBox</source>
-        <target state="translated">CheckBox 多選框</target>
-      </segment>
-    </unit>
-    <unit id="35" name="DataEntry_ColorPicker">
-      <segment>
-        <source>ColorPicker</source>
-        <target state="translated">ColorPicker 顏色選擇器</target>
-      </segment>
-    </unit>
-    <unit id="36" name="DataEntry_DatePicker">
-      <segment>
-        <source>DatePicker</source>
-        <target state="translated">DatePicker 日期選擇器</target>
-      </segment>
-    </unit>
-    <unit id="37" name="DataEntry_TimePicker">
-      <segment>
-        <source>TimePicker</source>
-        <target state="translated">TimePicker 時間選擇器</target>
-      </segment>
-    </unit>
-    <unit id="38" name="DataEntry_Form">
-      <segment>
-        <source>Form</source>
-        <target state="translated">Form 表單</target>
-      </segment>
-    </unit>
-    <unit id="39" name="DataEntry_LineEdit">
-      <segment>
-        <source>LineEdit</source>
-        <target state="translated">LineEdit 輸入框</target>
-      </segment>
-    </unit>
-    <unit id="40" name="DataEntry_Mentions">
-      <segment>
-        <source>Mentions</source>
-        <target state="translated">Mentions 提及</target>
-      </segment>
-    </unit>
-    <unit id="41" name="DataEntry_NumberUpDown">
-      <segment>
-        <source>NumberUpDown</source>
-        <target state="translated">NumberUpDown 數字輸入框</target>
-      </segment>
-    </unit>
-    <unit id="42" name="DataEntry_RadioButton">
-      <segment>
-        <source>RadioButton</source>
-        <target state="translated">RadioButton 單選框</target>
-      </segment>
-    </unit>
-    <unit id="43" name="DataEntry_Rate">
-      <segment>
-        <source>Rate</source>
-        <target state="translated">Rate 評分</target>
-      </segment>
-    </unit>
-    <unit id="44" name="DataEntry_Select">
-      <segment>
-        <source>Select</source>
-        <target state="translated">Select 選擇器</target>
-      </segment>
-    </unit>
-    <unit id="45" name="DataEntry_Slider">
-      <segment>
-        <source>Slider</source>
-        <target state="translated">Slider 滑動輸入條</target>
-      </segment>
-    </unit>
-    <unit id="46" name="DataEntry_ToggleSwitch">
-      <segment>
-        <source>ToggleSwitch</source>
-        <target state="translated">ToggleSwitch 開關</target>
-      </segment>
-    </unit>
-    <unit id="47" name="DataEntry_TreeSelect">
-      <segment>
-        <source>TreeSelect</source>
-        <target state="translated">TreeSelect 樹選擇</target>
-      </segment>
-    </unit>
-    <unit id="48" name="DataEntry_Transfer">
-      <segment>
-        <source>Transfer</source>
-        <target state="translated">Transfer 穿梭框</target>
-      </segment>
-    </unit>
-    <unit id="49" name="DataEntry_Upload">
-      <segment>
-        <source>Upload</source>
-        <target state="translated">Upload 上傳</target>
-      </segment>
-    </unit>
-    <unit id="50" name="DataDisplay">
+    <unit id="DataDisplay">
       <segment>
         <source>Data Display</source>
         <target state="translated">數據展示</target>
       </segment>
     </unit>
-    <unit id="51" name="DataDisplay_Avatar">
+    <unit id="DataDisplay_Avatar">
       <segment>
         <source>Avatar</source>
         <target state="translated">Avatar 頭像</target>
       </segment>
     </unit>
-    <unit id="52" name="DataDisplay_Badge">
+    <unit id="DataDisplay_Badge">
       <segment>
         <source>Badge</source>
         <target state="translated">Badge 徽標數</target>
       </segment>
     </unit>
-    <unit id="53" name="DataDisplay_Calendar">
+    <unit id="DataDisplay_Calendar">
       <segment>
         <source>Calendar</source>
         <target state="translated">Calendar 日曆</target>
       </segment>
     </unit>
-    <unit id="54" name="DataDisplay_Card">
+    <unit id="DataDisplay_Card">
       <segment>
         <source>Card</source>
         <target state="translated">Card 卡片</target>
       </segment>
     </unit>
-    <unit id="55" name="DataDisplay_Carousel">
+    <unit id="DataDisplay_Carousel">
       <segment>
         <source>Carousel</source>
         <target state="translated">Carousel 走馬燈</target>
       </segment>
     </unit>
-    <unit id="56" name="DataDisplay_Collapse">
+    <unit id="DataDisplay_Collapse">
       <segment>
         <source>Collapse</source>
         <target state="translated">Collapse 折疊面板</target>
       </segment>
     </unit>
-    <unit id="57" name="DataDisplay_Descriptions">
-      <segment>
-        <source>Descriptions</source>
-        <target state="translated">Descriptions 描述列表</target>
-      </segment>
-    </unit>
-    <unit id="58" name="DataDisplay_DataGrid">
+    <unit id="DataDisplay_DataGrid">
       <segment>
         <source>DataGrid</source>
         <target state="translated">DataGrid 數據表格</target>
       </segment>
     </unit>
-    <unit id="59" name="DataDisplay_Expander">
+    <unit id="DataDisplay_Descriptions">
       <segment>
-        <source>Expander</source>
-        <target state="translated">Expander 展開面板</target>
+        <source>Descriptions</source>
+        <target state="translated">Descriptions 描述列表</target>
       </segment>
     </unit>
-    <unit id="60" name="DataDisplay_Empty">
+    <unit id="DataDisplay_Empty">
       <segment>
         <source>Empty</source>
         <target state="translated">Empty 空狀態</target>
       </segment>
     </unit>
-    <unit id="61" name="DataDisplay_ImagePreviewer">
+    <unit id="DataDisplay_Expander">
       <segment>
-        <source>ImagePreviewer</source>
-        <target state="translated">ImagePreviewer 圖片預覽</target>
+        <source>Expander</source>
+        <target state="translated">Expander 展開面板</target>
       </segment>
     </unit>
-    <unit id="62" name="DataDisplay_GroupBox">
+    <unit id="DataDisplay_GroupBox">
       <segment>
         <source>GroupBox</source>
         <target state="translated">GroupBox 分組盒</target>
       </segment>
     </unit>
-    <unit id="63" name="DataDisplay_InfoFlyout">
+    <unit id="DataDisplay_ImagePreviewer">
+      <segment>
+        <source>ImagePreviewer</source>
+        <target state="translated">ImagePreviewer 圖片預覽</target>
+      </segment>
+    </unit>
+    <unit id="DataDisplay_InfoFlyout">
       <segment>
         <source>InfoFlyout</source>
         <target state="translated">InfoFlyout 信息提示</target>
       </segment>
     </unit>
-    <unit id="64" name="DataDisplay_List">
+    <unit id="DataDisplay_List">
       <segment>
         <source>List</source>
         <target state="translated">List 列表</target>
       </segment>
     </unit>
-    <unit id="65" name="DataDisplay_QRCode">
+    <unit id="DataDisplay_QRCode">
       <segment>
         <source>QRCode</source>
         <target state="translated">QRCode 二維碼</target>
       </segment>
     </unit>
-    <unit id="66" name="DataDisplay_Segmented">
+    <unit id="DataDisplay_Segmented">
       <segment>
         <source>Segmented</source>
         <target state="translated">Segmented 分段控制器</target>
       </segment>
     </unit>
-    <unit id="67" name="DataDisplay_Statistic">
+    <unit id="DataDisplay_Statistic">
       <segment>
         <source>Statistic</source>
         <target state="translated">Statistic 統計數值</target>
       </segment>
     </unit>
-    <unit id="68" name="DataDisplay_Tag">
+    <unit id="DataDisplay_Tag">
       <segment>
         <source>Tag</source>
         <target state="translated">Tag 標籤</target>
       </segment>
     </unit>
-    <unit id="69" name="DataDisplay_Timeline">
+    <unit id="DataDisplay_Timeline">
       <segment>
         <source>Timeline</source>
         <target state="translated">Timeline 時間軸</target>
       </segment>
     </unit>
-    <unit id="70" name="DataDisplay_TreeView">
-      <segment>
-        <source>TreeView</source>
-        <target state="translated">TreeView 樹形控件</target>
-      </segment>
-    </unit>
-    <unit id="71" name="DataDisplay_Tooltip">
+    <unit id="DataDisplay_Tooltip">
       <segment>
         <source>Tooltip</source>
         <target state="translated">Tooltip 文字提示</target>
       </segment>
     </unit>
-    <unit id="72" name="DataDisplay_Tour">
+    <unit id="DataDisplay_Tour">
       <segment>
         <source>Tour</source>
         <target state="translated">Tour 漫遊式引導</target>
       </segment>
     </unit>
-    <unit id="73" name="Feedback">
+    <unit id="DataDisplay_TreeView">
+      <segment>
+        <source>TreeView</source>
+        <target state="translated">TreeView 樹形控件</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">數據錄入</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_AutoComplete">
+      <segment>
+        <source>AutoComplete</source>
+        <target state="translated">AutoComplete 自動完成</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Cascader">
+      <segment>
+        <source>Cascader</source>
+        <target state="translated">Cascader 級聯選擇</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_CheckBox">
+      <segment>
+        <source>CheckBox</source>
+        <target state="translated">CheckBox 多選框</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_ColorPicker">
+      <segment>
+        <source>ColorPicker</source>
+        <target state="translated">ColorPicker 顏色選擇器</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_DatePicker">
+      <segment>
+        <source>DatePicker</source>
+        <target state="translated">DatePicker 日期選擇器</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Form">
+      <segment>
+        <source>Form</source>
+        <target state="translated">Form 表單</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_LineEdit">
+      <segment>
+        <source>LineEdit</source>
+        <target state="translated">LineEdit 輸入框</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Mentions">
+      <segment>
+        <source>Mentions</source>
+        <target state="translated">Mentions 提及</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_NumberUpDown">
+      <segment>
+        <source>NumberUpDown</source>
+        <target state="translated">NumberUpDown 數字輸入框</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_RadioButton">
+      <segment>
+        <source>RadioButton</source>
+        <target state="translated">RadioButton 單選框</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Rate">
+      <segment>
+        <source>Rate</source>
+        <target state="translated">Rate 評分</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Select">
+      <segment>
+        <source>Select</source>
+        <target state="translated">Select 選擇器</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Slider">
+      <segment>
+        <source>Slider</source>
+        <target state="translated">Slider 滑動輸入條</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_TimePicker">
+      <segment>
+        <source>TimePicker</source>
+        <target state="translated">TimePicker 時間選擇器</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_ToggleSwitch">
+      <segment>
+        <source>ToggleSwitch</source>
+        <target state="translated">ToggleSwitch 開關</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Transfer">
+      <segment>
+        <source>Transfer</source>
+        <target state="translated">Transfer 穿梭框</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_TreeSelect">
+      <segment>
+        <source>TreeSelect</source>
+        <target state="translated">TreeSelect 樹選擇</target>
+      </segment>
+    </unit>
+    <unit id="DataEntry_Upload">
+      <segment>
+        <source>Upload</source>
+        <target state="translated">Upload 上傳</target>
+      </segment>
+    </unit>
+    <unit id="ExpandNavigation">
+      <segment>
+        <source>Expand navigation</source>
+        <target state="translated">展開導覽</target>
+      </segment>
+    </unit>
+    <unit id="Feedback">
       <segment>
         <source>Feedback</source>
         <target state="translated">反饋</target>
       </segment>
     </unit>
-    <unit id="74" name="Feedback_Alert">
+    <unit id="Feedback_Alert">
       <segment>
         <source>Alert</source>
         <target state="translated">Alert 警告提示</target>
       </segment>
     </unit>
-    <unit id="75" name="Feedback_Drawer">
+    <unit id="Feedback_Drawer">
       <segment>
         <source>Drawer</source>
         <target state="translated">Drawer 抽屜</target>
       </segment>
     </unit>
-    <unit id="76" name="Feedback_Message">
+    <unit id="Feedback_Message">
       <segment>
         <source>Message</source>
         <target state="translated">Message 全局提示</target>
       </segment>
     </unit>
-    <unit id="77" name="Feedback_Modal">
+    <unit id="Feedback_Modal">
       <segment>
         <source>Modal</source>
         <target state="translated">Modal 對話框</target>
       </segment>
     </unit>
-    <unit id="78" name="Feedback_Notification">
+    <unit id="Feedback_Notification">
       <segment>
         <source>Notification</source>
         <target state="translated">Notification 通知提醒框</target>
       </segment>
     </unit>
-    <unit id="79" name="Feedback_PopupConfirm">
+    <unit id="Feedback_PopupConfirm">
       <segment>
         <source>PopupConfirm</source>
         <target state="translated">PopupConfirm 氣泡確認框</target>
       </segment>
     </unit>
-    <unit id="80" name="Feedback_ProgressBar">
+    <unit id="Feedback_ProgressBar">
       <segment>
         <source>ProgressBar</source>
         <target state="translated">ProgressBar 進度條</target>
       </segment>
     </unit>
-    <unit id="81" name="Feedback_Result">
+    <unit id="Feedback_Result">
       <segment>
         <source>Result</source>
         <target state="translated">Result 結果</target>
       </segment>
     </unit>
-    <unit id="82" name="Feedback_Skeleton">
+    <unit id="Feedback_Skeleton">
       <segment>
         <source>Skeleton</source>
         <target state="translated">Skeleton 骨架屏</target>
       </segment>
     </unit>
-    <unit id="83" name="Feedback_Spin">
+    <unit id="Feedback_Spin">
       <segment>
         <source>Spin</source>
         <target state="translated">Spin 加載提示</target>
       </segment>
     </unit>
-    <unit id="84" name="Feedback_Watermark">
+    <unit id="Feedback_Watermark">
       <segment>
         <source>Watermark</source>
         <target state="translated">Watermark 水印</target>
       </segment>
     </unit>
-    <unit id="85" name="Other">
+    <unit id="General">
+      <segment>
+        <source>General</source>
+        <target state="translated">通用</target>
+      </segment>
+    </unit>
+    <unit id="General_AboutUs">
+      <segment>
+        <source>AboutUS</source>
+        <target state="translated">關於我們</target>
+      </segment>
+    </unit>
+    <unit id="General_Button">
+      <segment>
+        <source>Button</source>
+        <target state="translated">Button 按鈕</target>
+      </segment>
+    </unit>
+    <unit id="General_CustomizeTheme">
+      <segment>
+        <source>CustomizeTheme</source>
+        <target state="translated">CustomizeTheme 主題</target>
+      </segment>
+    </unit>
+    <unit id="General_FloatButton">
+      <segment>
+        <source>FloatButton</source>
+        <target state="translated">FloatButton 懸浮按鈕</target>
+      </segment>
+    </unit>
+    <unit id="General_Icons">
+      <segment>
+        <source>Icons</source>
+        <target state="translated">Icons 圖標</target>
+      </segment>
+    </unit>
+    <unit id="General_Palette">
+      <segment>
+        <source>Palette</source>
+        <target state="translated">調色板</target>
+      </segment>
+    </unit>
+    <unit id="General_Separator">
+      <segment>
+        <source>Separator</source>
+        <target state="translated">Separator 分割線</target>
+      </segment>
+    </unit>
+    <unit id="General_SplitButton">
+      <segment>
+        <source>SplitButton</source>
+        <target state="translated">SplitButton 分割按鈕</target>
+      </segment>
+    </unit>
+    <unit id="Layout">
+      <segment>
+        <source>Layout</source>
+        <target state="translated">佈局</target>
+      </segment>
+    </unit>
+    <unit id="Layout_FlexPanel">
+      <segment>
+        <source>FlexPanel</source>
+        <target state="translated">FlexPanel 彈性佈局</target>
+      </segment>
+    </unit>
+    <unit id="Layout_Grid">
+      <segment>
+        <source>Grid</source>
+        <target state="translated">Grid 柵格佈局</target>
+      </segment>
+    </unit>
+    <unit id="Layout_Masonry">
+      <segment>
+        <source>Masonry</source>
+        <target state="translated">Masonry 瀑布流</target>
+      </segment>
+    </unit>
+    <unit id="Layout_Space">
+      <segment>
+        <source>Space</source>
+        <target state="translated">Space 間距</target>
+      </segment>
+    </unit>
+    <unit id="Layout_Splitter">
+      <segment>
+        <source>Splitter</source>
+        <target state="translated">Splitter 分隔面板</target>
+      </segment>
+    </unit>
+    <unit id="Navigation">
+      <segment>
+        <source>Navigation</source>
+        <target state="translated">導航</target>
+      </segment>
+    </unit>
+    <unit id="Navigation_Breadcrumb">
+      <segment>
+        <source>Breadcrumb</source>
+        <target state="translated">Breadcrumb 麵包屑</target>
+      </segment>
+    </unit>
+    <unit id="Navigation_ButtonSpinner">
+      <segment>
+        <source>ButtonSpinner</source>
+        <target state="translated">ButtonSpinner 選項按鈕</target>
+      </segment>
+    </unit>
+    <unit id="Navigation_ComboBox">
+      <segment>
+        <source>ComboBox</source>
+        <target state="translated">ComboBox 組合框</target>
+      </segment>
+    </unit>
+    <unit id="Navigation_DropdownButton">
+      <segment>
+        <source>DropdownButton</source>
+        <target state="translated">DropdownButton 下拉菜單</target>
+      </segment>
+    </unit>
+    <unit id="Navigation_Menu">
+      <segment>
+        <source>Menu</source>
+        <target state="translated">Menu 菜單</target>
+      </segment>
+    </unit>
+    <unit id="Navigation_Pagination">
+      <segment>
+        <source>Pagination</source>
+        <target state="translated">Pagination 分頁</target>
+      </segment>
+    </unit>
+    <unit id="Navigation_Steps">
+      <segment>
+        <source>Steps</source>
+        <target state="translated">Steps 步驟條</target>
+      </segment>
+    </unit>
+    <unit id="Navigation_TabControl">
+      <segment>
+        <source>TabControl</source>
+        <target state="translated">TabControl 標籤頁</target>
+      </segment>
+    </unit>
+    <unit id="Navigation_TabStrip">
+      <segment>
+        <source>TabStrip</source>
+        <target state="translated">TabStrip 標籤欄</target>
+      </segment>
+    </unit>
+    <unit id="Other">
       <segment>
         <source>Other</source>
         <target state="translated">其他</target>
       </segment>
     </unit>
-    <unit id="86" name="Other_BorderBeam">
+    <unit id="Other_BorderBeam">
       <segment>
         <source>BorderBeam</source>
         <target state="translated">BorderBeam 流光邊框</target>
       </segment>
     </unit>
-    <unit id="87" name="Other_Splash">
+    <unit id="Other_Splash">
       <segment>
         <source>Splash</source>
         <target state="translated">Splash 啟動頁</target>
+      </segment>
+    </unit>
+    <unit id="Overview">
+      <segment>
+        <source>Overview</source>
+        <target state="translated">概覽</target>
       </segment>
     </unit>
   </file>

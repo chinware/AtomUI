@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US" trgLang="zh-TW">
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUI.Desktop.Controls.Localization.PaginationLangResourceKind">
-    <unit id="1" name="JumpToText"><segment><source>Go to</source><target state="translated">跳至</target></segment></unit>
-    <unit id="2" name="PageText"><segment><source>Page</source><target state="translated">頁</target></segment></unit>
-    <unit id="3" name="TotalInfoFormat"><segment><source>Total ${Total} items</source><target state="translated">共 ${Total} 項</target></segment></unit>
+    <unit id="JumpToText">
+      <segment>
+        <source>Go to</source>
+        <target state="translated">跳至</target>
+      </segment>
+    </unit>
+    <unit id="PageText">
+      <segment>
+        <source>Page</source>
+        <target state="translated">頁</target>
+      </segment>
+    </unit>
+    <unit id="TotalInfoFormat">
+      <segment>
+        <source>Total ${Total} items</source>
+        <target state="translated">共 ${Total} 項</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

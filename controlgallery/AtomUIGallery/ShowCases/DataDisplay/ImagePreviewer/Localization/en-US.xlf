@@ -1,114 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind">
-    <unit id="1" name="ScenarioExamples">
+    <unit id="ApiEventDialogClosed">
       <segment>
-        <source>Examples</source>
+        <source>Raised after the preview dialog closes.</source>
       </segment>
     </unit>
-    <unit id="2" name="ComponentCategory">
-      <segment>
-        <source>Data Display</source>
-      </segment>
-    </unit>
-    <unit id="3" name="ComponentStatusStable">
-      <segment>
-        <source>Stable</source>
-      </segment>
-    </unit>
-    <unit id="4" name="PageSubtitle">
-      <segment>
-        <source>Preview single or multiple images in an overlay with zooming, moving, and switching controls.</source>
-      </segment>
-    </unit>
-    <unit id="5" name="PageDescription">
-      <segment>
-        <source>ImagePreviewer displays an image cover that opens a preview surface. It supports fallback images, cover indexes, image groups, scaling limits, and dialog lifecycle events.</source>
-      </segment>
-    </unit>
-    <unit id="6" name="BasicUsageTitle">
-      <segment>
-        <source>Basic Usage</source>
-      </segment>
-    </unit>
-    <unit id="7" name="BasicUsageDescription">
-      <segment>
-        <source>Click the image to zoom in.</source>
-      </segment>
-    </unit>
-    <unit id="8" name="RemoteImageLoadingTitle">
-      <segment>
-        <source>Remote image loading</source>
-      </segment>
-    </unit>
-    <unit id="9" name="RemoteImageLoadingDescription">
-      <segment>
-        <source>Load an image directly from an HTTPS source URI.</source>
-      </segment>
-    </unit>
-    <unit id="10" name="FaultTolerantTitle">
-      <segment>
-        <source>Fault tolerant</source>
-      </segment>
-    </unit>
-    <unit id="11" name="FaultTolerantDescription">
-      <segment>
-        <source>Load failed to display image placeholder.</source>
-      </segment>
-    </unit>
-    <unit id="12" name="TwentyRemoteImagesTitle">
-      <segment>
-        <source>20 remote images</source>
-      </segment>
-    </unit>
-    <unit id="13" name="TwentyRemoteImagesDescription">
-      <segment>
-        <source>Load a fixed set of 20 public images with cover-only loading and neighbor preloading.</source>
-      </segment>
-    </unit>
-    <unit id="14" name="PreviewFromOneImageTitle">
-      <segment>
-        <source>Preview from one image</source>
-      </segment>
-    </unit>
-    <unit id="15" name="PreviewFromOneImageDescription">
-      <segment>
-        <source>Preview a collection from one image.</source>
-      </segment>
-    </unit>
-    <unit id="16" name="CustomPreviewImageTitle">
-      <segment>
-        <source>Custom preview image</source>
-      </segment>
-    </unit>
-    <unit id="17" name="CustomPreviewImageDescription">
-      <segment>
-        <source>Choose which source image is displayed as the cover.</source>
-      </segment>
-    </unit>
-    <unit id="18" name="MultipleImagePreviewTitle">
-      <segment>
-        <source>Multiple image preview</source>
-      </segment>
-    </unit>
-    <unit id="19" name="MultipleImagePreviewDescription">
-      <segment>
-        <source>Click the left and right switch buttons to preview multiple images.</source>
-      </segment>
-    </unit>
-    <unit id="20" name="ApiEventDialogOpened">
-      <segment>
-        <source>Raised after the preview dialog opens.</source>
-      </segment>
-    </unit>
-    <unit id="21" name="ApiEventDialogClosing">
+    <unit id="ApiEventDialogClosing">
       <segment>
         <source>Raised before the preview dialog closes.</source>
       </segment>
     </unit>
-    <unit id="22" name="ApiEventDialogClosed">
+    <unit id="ApiEventDialogOpened">
       <segment>
-        <source>Raised after the preview dialog closes.</source>
+        <source>Raised after the preview dialog opens.</source>
+      </segment>
+    </unit>
+    <unit id="BasicUsageDescription">
+      <segment>
+        <source>Click the image to zoom in.</source>
+      </segment>
+    </unit>
+    <unit id="BasicUsageTitle">
+      <segment>
+        <source>Basic Usage</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="CustomPreviewImageDescription">
+      <segment>
+        <source>Choose which source image is displayed as the cover.</source>
+      </segment>
+    </unit>
+    <unit id="CustomPreviewImageTitle">
+      <segment>
+        <source>Custom preview image</source>
+      </segment>
+    </unit>
+    <unit id="FaultTolerantDescription">
+      <segment>
+        <source>Load failed to display image placeholder.</source>
+      </segment>
+    </unit>
+    <unit id="FaultTolerantTitle">
+      <segment>
+        <source>Fault tolerant</source>
+      </segment>
+    </unit>
+    <unit id="MultipleImagePreviewDescription">
+      <segment>
+        <source>Click the left and right switch buttons to preview multiple images.</source>
+      </segment>
+    </unit>
+    <unit id="MultipleImagePreviewTitle">
+      <segment>
+        <source>Multiple image preview</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>ImagePreviewer displays an image cover that opens a preview surface. It supports fallback images, cover indexes, image groups, scaling limits, and dialog lifecycle events.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Preview single or multiple images in an overlay with zooming, moving, and switching controls.</source>
+      </segment>
+    </unit>
+    <unit id="PreviewFromOneImageDescription">
+      <segment>
+        <source>Preview a collection from one image.</source>
+      </segment>
+    </unit>
+    <unit id="PreviewFromOneImageTitle">
+      <segment>
+        <source>Preview from one image</source>
+      </segment>
+    </unit>
+    <unit id="RemoteImageLoadingDescription">
+      <segment>
+        <source>Load an image directly from an HTTPS source URI.</source>
+      </segment>
+    </unit>
+    <unit id="RemoteImageLoadingTitle">
+      <segment>
+        <source>Remote image loading</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="TwentyRemoteImagesDescription">
+      <segment>
+        <source>Load a fixed set of 20 public images with cover-only loading and neighbor preloading.</source>
+      </segment>
+    </unit>
+    <unit id="TwentyRemoteImagesTitle">
+      <segment>
+        <source>20 remote images</source>
       </segment>
     </unit>
   </file>

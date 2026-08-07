@@ -1,69 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.OverviewPageLangResourceKind">
-    <unit id="1" name="InstallTitle">
-      <segment>
-        <source>Install AtomUI</source>
-      </segment>
-    </unit>
-    <unit id="2" name="InstallDescription">
-      <segment>
-        <source>Add the desktop controls package to an Avalonia application.</source>
-      </segment>
-    </unit>
-    <unit id="3" name="DotNetCliTab">
-      <segment>
-        <source>.NET CLI</source>
-      </segment>
-    </unit>
-    <unit id="4" name="PackageReferenceTab">
-      <segment>
-        <source>PackageReference</source>
-      </segment>
-    </unit>
-    <unit id="5" name="PackageManagerTab">
-      <segment>
-        <source>Package Manager</source>
-      </segment>
-    </unit>
-    <unit id="6" name="Copy">
-      <segment>
-        <source>Copy</source>
-      </segment>
-    </unit>
-    <unit id="7" name="LearningLinksTitle">
-      <segment>
-        <source>Keep learning</source>
-      </segment>
-    </unit>
-    <unit id="8" name="LearningLinksDescription">
-      <segment>
-        <source>After installing the package, continue with the manual or the API reference.</source>
-      </segment>
-    </unit>
-    <unit id="9" name="UserManualTitle">
-      <segment>
-        <source>User Manual</source>
-      </segment>
-    </unit>
-    <unit id="10" name="UserManualDescription">
-      <segment>
-        <source>Learn the project concepts, getting started flow, and practical development guidance.</source>
-      </segment>
-    </unit>
-    <unit id="11" name="ApiDocsTitle">
-      <segment>
-        <source>API Documentation</source>
-      </segment>
-    </unit>
-    <unit id="12" name="ApiDocsDescription">
+    <unit id="ApiDocsDescription">
       <segment>
         <source>Look up AtomUI OSS types, members, and versioned API details.</source>
       </segment>
     </unit>
-    <unit id="13" name="OpenLearningLink">
+    <unit id="ApiDocsTitle">
+      <segment>
+        <source>API Documentation</source>
+      </segment>
+    </unit>
+    <unit id="Copy">
+      <segment>
+        <source>Copy</source>
+      </segment>
+    </unit>
+    <unit id="DotNetCliTab">
+      <segment>
+        <source>.NET CLI</source>
+      </segment>
+    </unit>
+    <unit id="InstallDescription">
+      <segment>
+        <source>Add the desktop controls package to an Avalonia application.</source>
+      </segment>
+    </unit>
+    <unit id="InstallTitle">
+      <segment>
+        <source>Install AtomUI</source>
+      </segment>
+    </unit>
+    <unit id="LearningLinksDescription">
+      <segment>
+        <source>After installing the package, continue with the manual or the API reference.</source>
+      </segment>
+    </unit>
+    <unit id="LearningLinksTitle">
+      <segment>
+        <source>Keep learning</source>
+      </segment>
+    </unit>
+    <unit id="OpenLearningLink">
       <segment>
         <source>Open</source>
+      </segment>
+    </unit>
+    <unit id="PackageManagerTab">
+      <segment>
+        <source>Package Manager</source>
+      </segment>
+    </unit>
+    <unit id="PackageReferenceTab">
+      <segment>
+        <source>PackageReference</source>
+      </segment>
+    </unit>
+    <unit id="UserManualDescription">
+      <segment>
+        <source>Learn the project concepts, getting started flow, and practical development guidance.</source>
+      </segment>
+    </unit>
+    <unit id="UserManualTitle">
+      <segment>
+        <source>User Manual</source>
       </segment>
     </unit>
   </file>

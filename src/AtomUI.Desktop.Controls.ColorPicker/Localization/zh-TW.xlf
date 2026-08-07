@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US" trgLang="zh-TW">
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUI.Desktop.Controls.Localization.ColorPickerLangResourceKind">
-    <unit id="1" name="EmptyColorText"><segment><source>Transparent</source><target state="translated">無色</target></segment></unit>
+    <unit id="EmptyColorText">
+      <segment>
+        <source>Transparent</source>
+        <target state="translated">無色</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

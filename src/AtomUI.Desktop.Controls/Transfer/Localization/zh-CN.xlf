@@ -1,13 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US" trgLang="zh-CN">
+<xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUI.Desktop.Controls.Localization.TransferLangResourceKind">
-    <unit id="1" name="Item"><segment><source>item</source><target state="translated">项</target></segment></unit>
-    <unit id="2" name="Items"><segment><source>items</source><target state="translated">项</target></segment></unit>
-    <unit id="3" name="SelectAll"><segment><source>select all data</source><target state="translated">全选所有</target></segment></unit>
-    <unit id="4" name="DeSelectAll"><segment><source>deselect all data</source><target state="translated">取消全选</target></segment></unit>
-    <unit id="5" name="RemoveCurrentPage"><segment><source>remove current page</source><target state="translated">删除当页</target></segment></unit>
-    <unit id="6" name="RemoveAll"><segment><source>remove all data</source><target state="translated">删除所有</target></segment></unit>
-    <unit id="7" name="InvertSelectCurrentPage"><segment><source>invert current page</source><target state="translated">反选当页</target></segment></unit>
-    <unit id="8" name="SelectCurrentPage"><segment><source>select current page</source><target state="translated">选择当页</target></segment></unit>
+    <unit id="DeSelectAll">
+      <segment>
+        <source>deselect all data</source>
+        <target state="translated">取消全选</target>
+      </segment>
+    </unit>
+    <unit id="InvertSelectCurrentPage">
+      <segment>
+        <source>invert current page</source>
+        <target state="translated">反选当页</target>
+      </segment>
+    </unit>
+    <unit id="Item">
+      <segment>
+        <source>item</source>
+        <target state="translated">项</target>
+      </segment>
+    </unit>
+    <unit id="Items">
+      <segment>
+        <source>items</source>
+        <target state="translated">项</target>
+      </segment>
+    </unit>
+    <unit id="RemoveAll">
+      <segment>
+        <source>remove all data</source>
+        <target state="translated">删除所有</target>
+      </segment>
+    </unit>
+    <unit id="RemoveCurrentPage">
+      <segment>
+        <source>remove current page</source>
+        <target state="translated">删除当页</target>
+      </segment>
+    </unit>
+    <unit id="SelectAll">
+      <segment>
+        <source>select all data</source>
+        <target state="translated">全选所有</target>
+      </segment>
+    </unit>
+    <unit id="SelectCurrentPage">
+      <segment>
+        <source>select current page</source>
+        <target state="translated">选择当页</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

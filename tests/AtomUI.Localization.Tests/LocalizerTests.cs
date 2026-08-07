@@ -206,7 +206,7 @@ public class LocalizerTests
         return new LanguageCatalogDescriptor<ResourceKind>(
             "Acme:Acme.ResourceKind",
             1,
-            [new LanguageCatalogUnitDescriptor(1, "Value", isFormatted)],
+            [new LanguageCatalogUnitDescriptor("Value", isFormatted)],
             static key => key == ResourceKind.Value ? 0 : -1);
     }
 
@@ -216,11 +216,11 @@ public class LocalizerTests
 
     private enum ResourceKind
     {
-        Value = 1
+        Value
     }
 
     private enum OtherResourceKind
     {
-        Value = 1
+        Value
     }
 }

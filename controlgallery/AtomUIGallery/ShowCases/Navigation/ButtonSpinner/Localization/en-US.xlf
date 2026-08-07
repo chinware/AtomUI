@@ -1,119 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind">
-    <unit id="1" name="ComponentCategory">
-      <segment>
-        <source>Navigation</source>
-      </segment>
-    </unit>
-    <unit id="2" name="ComponentStatusStable">
-      <segment>
-        <source>Stable</source>
-      </segment>
-    </unit>
-    <unit id="3" name="PageSubtitle">
-      <segment>
-        <source>A compact spinner input with button handles.</source>
-      </segment>
-    </unit>
-    <unit id="4" name="PageDescription">
-      <segment>
-        <source>ButtonSpinner combines an input-like content area with increment and decrement handles, and supports add-ons, prefixes, suffixes, statuses, sizes, and visual variants.</source>
-      </segment>
-    </unit>
-    <unit id="5" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-      </segment>
-    </unit>
-    <unit id="6" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-      </segment>
-    </unit>
-    <unit id="7" name="BasicDescription">
+    <unit id="BasicDescription">
       <segment>
         <source>Basic button spinner.</source>
       </segment>
     </unit>
-    <unit id="8" name="ThreeSizesTitle">
+    <unit id="BasicTitle">
       <segment>
-        <source>ButtonSpinner sizes</source>
+        <source>Basic</source>
       </segment>
     </unit>
-    <unit id="9" name="ThreeSizesDescription">
+    <unit id="ComponentCategory">
       <segment>
-        <source>ButtonSpinner supports large (40px), default (32px), small (24px), and Custom with local size values.</source>
+        <source>Navigation</source>
       </segment>
     </unit>
-    <unit id="10" name="P2LabelSizeTypeLarge">
+    <unit id="ComponentStatusStable">
       <segment>
-        <source>Large</source>
+        <source>Stable</source>
       </segment>
     </unit>
-    <unit id="11" name="P2LabelSizeTypeMiddle">
-      <segment>
-        <source>Middle</source>
-      </segment>
-    </unit>
-    <unit id="12" name="P2LabelSizeTypeSmall">
-      <segment>
-        <source>Small</source>
-      </segment>
-    </unit>
-    <unit id="13" name="P2LabelSizeTypeCustom">
-      <segment>
-        <source>Custom</source>
-      </segment>
-    </unit>
-    <unit id="14" name="VariantsTitle">
-      <segment>
-        <source>Variants</source>
-      </segment>
-    </unit>
-    <unit id="15" name="VariantsDescription">
-      <segment>
-        <source>Variants of Input.</source>
-      </segment>
-    </unit>
-    <unit id="16" name="DisabledTitle">
-      <segment>
-        <source>Disabled</source>
-      </segment>
-    </unit>
-    <unit id="17" name="DisabledDescription">
+    <unit id="DisabledDescription">
       <segment>
         <source>Variants of disabled Input.</source>
       </segment>
     </unit>
-    <unit id="18" name="PrePostTabTitle">
+    <unit id="DisabledTitle">
       <segment>
-        <source>Pre / Post tab</source>
+        <source>Disabled</source>
       </segment>
     </unit>
-    <unit id="19" name="PrePostTabDescription">
+    <unit id="P2LabelSizeTypeCustom">
+      <segment>
+        <source>Custom</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeLarge">
+      <segment>
+        <source>Large</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeMiddle">
+      <segment>
+        <source>Middle</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeSmall">
+      <segment>
+        <source>Small</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>ButtonSpinner combines an input-like content area with increment and decrement handles, and supports add-ons, prefixes, suffixes, statuses, sizes, and visual variants.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>A compact spinner input with button handles.</source>
+      </segment>
+    </unit>
+    <unit id="PrePostTabDescription">
       <segment>
         <source>Using pre and post tabs example.</source>
       </segment>
     </unit>
-    <unit id="20" name="PrefixSuffixTitle">
+    <unit id="PrePostTabTitle">
       <segment>
-        <source>prefix and suffix</source>
+        <source>Pre / Post tab</source>
       </segment>
     </unit>
-    <unit id="21" name="PrefixSuffixDescription">
+    <unit id="PrefixSuffixDescription">
       <segment>
         <source>Add a prefix or suffix icons inside input.</source>
       </segment>
     </unit>
-    <unit id="22" name="StatusTitle">
+    <unit id="PrefixSuffixTitle">
+      <segment>
+        <source>prefix and suffix</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to Input with status, which could be error or warning.</source>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
       <segment>
         <source>Status</source>
       </segment>
     </unit>
-    <unit id="23" name="StatusDescription">
+    <unit id="ThreeSizesDescription">
       <segment>
-        <source>Add status to Input with status, which could be error or warning.</source>
+        <source>ButtonSpinner supports large (40px), default (32px), small (24px), and Custom with local size values.</source>
+      </segment>
+    </unit>
+    <unit id="ThreeSizesTitle">
+      <segment>
+        <source>ButtonSpinner sizes</source>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Variants of Input.</source>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
       </segment>
     </unit>
   </file>

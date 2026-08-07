@@ -26,27 +26,23 @@ public class CommonCatalogTests
     }
 
     [Fact]
-    public void Common_Catalog_Uses_Stable_Ids_For_All_Existing_Keys()
+    public void Common_Catalog_Uses_Stable_Keys_For_All_Existing_Entries()
     {
-        var expected = new Dictionary<CommonLangResourceKind, int>
+        var expectedKeys = new[]
         {
-            [CommonLangResourceKind.Ok]       = 1,
-            [CommonLangResourceKind.Submit]   = 2,
-            [CommonLangResourceKind.Cancel]   = 3,
-            [CommonLangResourceKind.Reset]    = 4,
-            [CommonLangResourceKind.Edit]     = 5,
-            [CommonLangResourceKind.Delete]   = 6,
-            [CommonLangResourceKind.Save]     = 7,
-            [CommonLangResourceKind.NoData]   = 8,
-            [CommonLangResourceKind.Loading]  = 9,
-            [CommonLangResourceKind.Optional] = 10
+            nameof(CommonLangResourceKind.Ok),
+            nameof(CommonLangResourceKind.Submit),
+            nameof(CommonLangResourceKind.Cancel),
+            nameof(CommonLangResourceKind.Reset),
+            nameof(CommonLangResourceKind.Edit),
+            nameof(CommonLangResourceKind.Delete),
+            nameof(CommonLangResourceKind.Save),
+            nameof(CommonLangResourceKind.NoData),
+            nameof(CommonLangResourceKind.Loading),
+            nameof(CommonLangResourceKind.Optional)
         };
 
-        Enum.GetValues<CommonLangResourceKind>().ShouldBe(expected.Keys, ignoreOrder: true);
-        foreach (var (kind, id) in expected)
-        {
-            Convert.ToInt32(kind).ShouldBe(id);
-        }
+        Enum.GetNames<CommonLangResourceKind>().ShouldBe(expectedKeys);
     }
 
     [Fact]

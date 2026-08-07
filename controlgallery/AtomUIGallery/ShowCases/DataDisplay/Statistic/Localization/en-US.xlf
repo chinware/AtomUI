@@ -1,149 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.StatisticShowCaseLangResourceKind">
-    <unit id="1" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-      </segment>
-    </unit>
-    <unit id="2" name="BasicDescription">
-      <segment>
-        <source>Simplest Usage.</source>
-      </segment>
-    </unit>
-    <unit id="3" name="UnitTitle">
-      <segment>
-        <source>Unit</source>
-      </segment>
-    </unit>
-    <unit id="4" name="UnitDescription">
-      <segment>
-        <source>Add unit through prefix and suffix.</source>
-      </segment>
-    </unit>
-    <unit id="5" name="InCardTitle">
-      <segment>
-        <source>In Card</source>
-      </segment>
-    </unit>
-    <unit id="6" name="InCardDescription">
-      <segment>
-        <source>Display statistic data in Card.</source>
-      </segment>
-    </unit>
-    <unit id="7" name="AnimatedNumberTitle">
-      <segment>
-        <source>Animated number</source>
-      </segment>
-    </unit>
-    <unit id="8" name="AnimatedNumberDescription">
+    <unit id="AnimatedNumberDescription">
       <segment>
         <source>Animated number with StatisticCountUp.</source>
       </segment>
     </unit>
-    <unit id="9" name="TimerTitle">
+    <unit id="AnimatedNumberTitle">
       <segment>
-        <source>Timer</source>
+        <source>Animated number</source>
       </segment>
     </unit>
-    <unit id="10" name="TimerDescription">
+    <unit id="ApiEventCountdownFinished">
       <segment>
-        <source>Timer component.</source>
+        <source>Raised when a TimerStatistic countdown reaches zero.</source>
       </segment>
     </unit>
-    <unit id="11" name="P2HeaderActiveUsers">
+    <unit id="BasicDescription">
       <segment>
-        <source>Active Users</source>
+        <source>Simplest Usage.</source>
       </segment>
     </unit>
-    <unit id="12" name="P2HeaderAccountBalanceCny">
+    <unit id="BasicTitle">
       <segment>
-        <source>Account Balance (CNY)</source>
+        <source>Basic</source>
       </segment>
     </unit>
-    <unit id="13" name="P2HeaderFeedback">
-      <segment>
-        <source>Feedback</source>
-      </segment>
-    </unit>
-    <unit id="14" name="P2HeaderUnmerged">
-      <segment>
-        <source>Unmerged</source>
-      </segment>
-    </unit>
-    <unit id="15" name="P2HeaderActive">
-      <segment>
-        <source>Active</source>
-      </segment>
-    </unit>
-    <unit id="16" name="P2HeaderIdle">
-      <segment>
-        <source>Idle</source>
-      </segment>
-    </unit>
-    <unit id="17" name="P2HeaderMillionSeconds">
-      <segment>
-        <source>Million Seconds</source>
-      </segment>
-    </unit>
-    <unit id="18" name="P2HeaderCountdown">
-      <segment>
-        <source>Countdown</source>
-      </segment>
-    </unit>
-    <unit id="19" name="P2HeaderCountup">
-      <segment>
-        <source>Countup</source>
-      </segment>
-    </unit>
-    <unit id="20" name="P2HeaderDayLevelCountdown">
-      <segment>
-        <source>Day Level (Countdown)</source>
-      </segment>
-    </unit>
-    <unit id="21" name="P2HeaderDayLevelCountup">
-      <segment>
-        <source>Day Level (Countup)</source>
-      </segment>
-    </unit>
-    <unit id="22" name="P2ContentRecharge">
-      <segment>
-        <source>Recharge</source>
-      </segment>
-    </unit>
-    <unit id="23" name="P2DayLevelFormat">
-      <segment>
-        <source>d\ \d\ h\ \h\ m\ \m\ s\ \s</source>
-      </segment>
-    </unit>
-    <unit id="24" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-      </segment>
-    </unit>
-    <unit id="25" name="PageSubtitle">
-      <segment>
-        <source>Display numeric facts, metrics and countdown values with clear visual emphasis.</source>
-      </segment>
-    </unit>
-    <unit id="26" name="PageDescription">
-      <segment>
-        <source>Statistic presents important numbers with optional units, icons, loading states, animated values and timer-based countdown or countup displays.</source>
-      </segment>
-    </unit>
-    <unit id="27" name="ComponentCategory">
+    <unit id="ComponentCategory">
       <segment>
         <source>Data Display</source>
       </segment>
     </unit>
-    <unit id="28" name="ComponentStatusStable">
+    <unit id="ComponentStatusStable">
       <segment>
         <source>Stable</source>
       </segment>
     </unit>
-    <unit id="29" name="ApiEventCountdownFinished">
+    <unit id="InCardDescription">
       <segment>
-        <source>Raised when a TimerStatistic countdown reaches zero.</source>
+        <source>Display statistic data in Card.</source>
+      </segment>
+    </unit>
+    <unit id="InCardTitle">
+      <segment>
+        <source>In Card</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRecharge">
+      <segment>
+        <source>Recharge</source>
+      </segment>
+    </unit>
+    <unit id="P2DayLevelFormat">
+      <segment>
+        <source>d\ \d\ h\ \h\ m\ \m\ s\ \s</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderAccountBalanceCny">
+      <segment>
+        <source>Account Balance (CNY)</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderActive">
+      <segment>
+        <source>Active</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderActiveUsers">
+      <segment>
+        <source>Active Users</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCountdown">
+      <segment>
+        <source>Countdown</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCountup">
+      <segment>
+        <source>Countup</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDayLevelCountdown">
+      <segment>
+        <source>Day Level (Countdown)</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDayLevelCountup">
+      <segment>
+        <source>Day Level (Countup)</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFeedback">
+      <segment>
+        <source>Feedback</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderIdle">
+      <segment>
+        <source>Idle</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMillionSeconds">
+      <segment>
+        <source>Million Seconds</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderUnmerged">
+      <segment>
+        <source>Unmerged</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Statistic presents important numbers with optional units, icons, loading states, animated values and timer-based countdown or countup displays.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display numeric facts, metrics and countdown values with clear visual emphasis.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="TimerDescription">
+      <segment>
+        <source>Timer component.</source>
+      </segment>
+    </unit>
+    <unit id="TimerTitle">
+      <segment>
+        <source>Timer</source>
+      </segment>
+    </unit>
+    <unit id="UnitDescription">
+      <segment>
+        <source>Add unit through prefix and suffix.</source>
+      </segment>
+    </unit>
+    <unit id="UnitTitle">
+      <segment>
+        <source>Unit</source>
       </segment>
     </unit>
   </file>

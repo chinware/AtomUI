@@ -2,8 +2,8 @@ using AtomUI.Localization;
 
 namespace Acme.LocalizationConsumer.Localization;
 
-[LanguageCatalog(ContractVersion = 1)]
+[LanguageCatalog(ContractVersion = 2)]
 public enum AppLangResourceKind
 {
-    Title = 1
+    Title
 }

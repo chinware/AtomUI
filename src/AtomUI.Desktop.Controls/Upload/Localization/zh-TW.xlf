@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US" trgLang="zh-TW">
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUI.Desktop.Controls.Localization.UploadLangResourceKind">
-    <unit id="1" name="Uploading"><segment><source>Uploading...</source><target state="translated">上傳中...</target></segment></unit>
-    <unit id="2" name="Pending"><segment><source>Pending...</source><target state="translated">等待調度...</target></segment></unit>
-    <unit id="3" name="DragUploadHead"><segment><source>Click or drag file to this area to upload</source><target state="translated">點擊或拖動文件到此區域進行上傳</target></segment></unit>
+    <unit id="DragUploadHead">
+      <segment>
+        <source>Click or drag file to this area to upload</source>
+        <target state="translated">點擊或拖動文件到此區域進行上傳</target>
+      </segment>
+    </unit>
+    <unit id="Pending">
+      <segment>
+        <source>Pending...</source>
+        <target state="translated">等待調度...</target>
+      </segment>
+    </unit>
+    <unit id="Uploading">
+      <segment>
+        <source>Uploading...</source>
+        <target state="translated">上傳中...</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

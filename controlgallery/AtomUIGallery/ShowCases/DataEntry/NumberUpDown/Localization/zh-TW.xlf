@@ -1,304 +1,304 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind">
-    <unit id="1" name="ScenarioBasic">
-      <segment>
-        <source>Basic</source>
-        <target state="translated">基礎</target>
-      </segment>
-    </unit>
-    <unit id="2" name="ScenarioRange">
-      <segment>
-        <source>Range</source>
-        <target state="translated">範圍</target>
-      </segment>
-    </unit>
-    <unit id="3" name="ScenarioStyle">
-      <segment>
-        <source>Style</source>
-        <target state="translated">樣式</target>
-      </segment>
-    </unit>
-    <unit id="4" name="ScenarioAddon">
-      <segment>
-        <source>Add-ons</source>
-        <target state="translated">附加內容</target>
-      </segment>
-    </unit>
-    <unit id="5" name="BasicUsageTitle">
-      <segment>
-        <source>Basic usage</source>
-        <target state="translated">基礎用法</target>
-      </segment>
-    </unit>
-    <unit id="6" name="BasicUsageDescription">
+    <unit id="BasicUsageDescription">
       <segment>
         <source>Numeric-only NumberUpDown.</source>
         <target state="translated">僅支持數字輸入的 NumberUpDown。</target>
       </segment>
     </unit>
-    <unit id="7" name="SpinnerModeTitle">
+    <unit id="BasicUsageTitle">
       <segment>
-        <source>Spinner</source>
-        <target state="translated">撥輪</target>
+        <source>Basic usage</source>
+        <target state="translated">基礎用法</target>
       </segment>
     </unit>
-    <unit id="8" name="SpinnerModeDescription">
-      <segment>
-        <source>Numeric spinner.</source>
-        <target state="translated">數字撥輪。</target>
-      </segment>
-    </unit>
-    <unit id="9" name="HideHandleTitle">
-      <segment>
-        <source>Hide handle</source>
-        <target state="translated">隱藏步進按鈕</target>
-      </segment>
-    </unit>
-    <unit id="10" name="HideHandleDescription">
-      <segment>
-        <source>Hide the spin handle with ShowButtonSpinner="False".</source>
-        <target state="translated">通過 ShowButtonSpinner="False" 隱藏步進按鈕。</target>
-      </segment>
-    </unit>
-    <unit id="11" name="StringModeTitle">
-      <segment>
-        <source>String mode (high precision)</source>
-        <target state="translated">字符串模式（高精度）</target>
-      </segment>
-    </unit>
-    <unit id="12" name="StringModeDescription">
-      <segment>
-        <source>Keep a high-precision value as a string.</source>
-        <target state="translated">以字符串形式保留高精度值。</target>
-      </segment>
-    </unit>
-    <unit id="13" name="KeyboardBehaviorTitle">
-      <segment>
-        <source>Keyboard behavior</source>
-        <target state="translated">鍵盤行為</target>
-      </segment>
-    </unit>
-    <unit id="14" name="KeyboardBehaviorDescription">
-      <segment>
-        <source>Disable keyboard spin with the Keyboard property.</source>
-        <target state="translated">通過 Keyboard 屬性禁用鍵盤步進。</target>
-      </segment>
-    </unit>
-    <unit id="15" name="MouseWheelBehaviorTitle">
-      <segment>
-        <source>Mouse wheel behavior</source>
-        <target state="translated">鼠標滾輪行為</target>
-      </segment>
-    </unit>
-    <unit id="16" name="MouseWheelBehaviorDescription">
-      <segment>
-        <source>Scroll the mouse wheel while the input is focused to increment or decrement by Increment.</source>
-        <target state="translated">輸入框獲得焦點時滾動鼠標滾輪，可按 Increment 增減值。</target>
-      </segment>
-    </unit>
-    <unit id="17" name="MinMaxTitle">
-      <segment>
-        <source>Min / Max</source>
-        <target state="translated">最小/最大值</target>
-      </segment>
-    </unit>
-    <unit id="18" name="MinMaxDescription">
-      <segment>
-        <source>Restrict the input value range.</source>
-        <target state="translated">限制輸入值範圍。</target>
-      </segment>
-    </unit>
-    <unit id="19" name="DecimalStepTitle">
-      <segment>
-        <source>Step (decimal)</source>
-        <target state="translated">小數步長</target>
-      </segment>
-    </unit>
-    <unit id="20" name="DecimalStepDescription">
-      <segment>
-        <source>Use decimal steps with Increment.</source>
-        <target state="translated">通過 Increment 使用小數步長。</target>
-      </segment>
-    </unit>
-    <unit id="21" name="SizesTitle">
-      <segment>
-        <source>Sizes of NumberUpDown</source>
-        <target state="translated">NumberUpDown 尺寸</target>
-      </segment>
-    </unit>
-    <unit id="22" name="SizesDescription">
-      <segment>
-        <source>NumberUpDown supports large (40px), default (32px), small (24px) and custom size.</source>
-        <target state="translated">NumberUpDown 支持大號（40px）、默認（32px）、小號（24px）和自定義尺寸。</target>
-      </segment>
-    </unit>
-    <unit id="23" name="VariantsTitle">
-      <segment>
-        <source>Variants</source>
-        <target state="translated">變體</target>
-      </segment>
-    </unit>
-    <unit id="24" name="VariantsDescription">
-      <segment>
-        <source>Variants of NumberUpDown.</source>
-        <target state="translated">NumberUpDown 的變體。</target>
-      </segment>
-    </unit>
-    <unit id="25" name="DisabledTitle">
-      <segment>
-        <source>Disabled</source>
-        <target state="translated">禁用</target>
-      </segment>
-    </unit>
-    <unit id="26" name="DisabledDescription">
-      <segment>
-        <source>Variants of NumberUpDown of disabled style.</source>
-        <target state="translated">NumberUpDown 禁用樣式的變體。</target>
-      </segment>
-    </unit>
-    <unit id="27" name="PrePostTabTitle">
-      <segment>
-        <source>Pre / Post tab</source>
-        <target state="translated">前置/後置標籤</target>
-      </segment>
-    </unit>
-    <unit id="28" name="PrePostTabDescription">
-      <segment>
-        <source>Using pre and post tabs example.</source>
-        <target state="translated">使用前置和後置標籤的示例。</target>
-      </segment>
-    </unit>
-    <unit id="29" name="WithClearIconTitle">
-      <segment>
-        <source>With clear icon</source>
-        <target state="translated">帶清除圖標</target>
-      </segment>
-    </unit>
-    <unit id="30" name="WithClearIconDescription">
-      <segment>
-        <source>Input box with the remove icon, click the icon to delete everything.</source>
-        <target state="translated">帶移除圖標的輸入框，點擊圖標可清空全部內容。</target>
-      </segment>
-    </unit>
-    <unit id="31" name="PrefixAndSuffixTitle">
-      <segment>
-        <source>prefix and suffix</source>
-        <target state="translated">前綴和後綴</target>
-      </segment>
-    </unit>
-    <unit id="32" name="PrefixAndSuffixDescription">
-      <segment>
-        <source>Add a prefix or suffix icons inside input.</source>
-        <target state="translated">在輸入框內部添加前綴或後綴圖標。</target>
-      </segment>
-    </unit>
-    <unit id="33" name="StatusTitle">
-      <segment>
-        <source>Status</source>
-        <target state="translated">狀態</target>
-      </segment>
-    </unit>
-    <unit id="34" name="StatusDescription">
-      <segment>
-        <source>Add status to Input with status, which could be error or warning.</source>
-        <target state="translated">通過 status 為 Input 添加狀態，可設置為錯誤或警告。</target>
-      </segment>
-    </unit>
-    <unit id="35" name="P2PlaceholderTextInputWeight">
-      <segment>
-        <source>Input weight</source>
-        <target state="translated">輸入重量</target>
-      </segment>
-    </unit>
-    <unit id="36" name="P2PlaceholderTextKeyboardDisabled">
-      <segment>
-        <source>Keyboard disabled</source>
-        <target state="translated">鍵盤已禁用</target>
-      </segment>
-    </unit>
-    <unit id="37" name="P2PlaceholderTextFocusAndScrollWheel">
-      <segment>
-        <source>Focus and scroll wheel</source>
-        <target state="translated">聚焦後滾動鼠標滾輪</target>
-      </segment>
-    </unit>
-    <unit id="38" name="P2PlaceholderTextInputWithClearIcon">
-      <segment>
-        <source>input with clear icon</source>
-        <target state="translated">帶清除圖標的輸入框</target>
-      </segment>
-    </unit>
-    <unit id="39" name="P2PlaceholderTextEnterYourValue">
-      <segment>
-        <source>Enter your value</source>
-        <target state="translated">輸入數值</target>
-      </segment>
-    </unit>
-    <unit id="40" name="P2PlaceholderTextError">
-      <segment>
-        <source>Error</source>
-        <target state="translated">錯誤</target>
-      </segment>
-    </unit>
-    <unit id="41" name="P2PlaceholderTextWarning">
-      <segment>
-        <source>Warning</source>
-        <target state="translated">警告</target>
-      </segment>
-    </unit>
-    <unit id="42" name="P2PlaceholderTextErrorWithPrefix">
-      <segment>
-        <source>Error with prefix</source>
-        <target state="translated">帶前綴的錯誤</target>
-      </segment>
-    </unit>
-    <unit id="43" name="P2PlaceholderTextWarningWithPrefix">
-      <segment>
-        <source>Warning with prefix</source>
-        <target state="translated">帶前綴的警告</target>
-      </segment>
-    </unit>
-    <unit id="44" name="P2TextRawValuePrefix">
-      <segment>
-        <source>Raw: </source>
-        <target state="translated">原始值：</target>
-      </segment>
-    </unit>
-    <unit id="45" name="P2ContentKeyboardEnabled">
-      <segment>
-        <source>Keyboard enabled</source>
-        <target state="translated">啓用鍵盤</target>
-      </segment>
-    </unit>
-    <unit id="46" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">示例</target>
-      </segment>
-    </unit>
-    <unit id="47" name="PageSubtitle">
-      <segment>
-        <source>Enter and adjust numeric values with keyboard, wheel and step controls.</source>
-        <target state="translated">輸入並通過鍵盤、滾輪和步進按鈕調整数值。</target>
-      </segment>
-    </unit>
-    <unit id="48" name="PageDescription">
-      <segment>
-        <source>NumberUpDown combines numeric input, precision string mode, min/max constraints, decimal steps, input variants, add-ons, clear affordances and validation status.</source>
-        <target state="translated">NumberUpDown 組合了數值輸入、高精度字符串模式、最小/最大約束、小數步長、輸入變體、附加內容、清除入口和校驗狀態。</target>
-      </segment>
-    </unit>
-    <unit id="49" name="ComponentCategory">
+    <unit id="ComponentCategory">
       <segment>
         <source>Data Entry</source>
         <target state="translated">數據錄入</target>
       </segment>
     </unit>
-    <unit id="50" name="ComponentStatusStable">
+    <unit id="ComponentStatusStable">
       <segment>
         <source>Stable</source>
         <target state="translated">穩定</target>
+      </segment>
+    </unit>
+    <unit id="DecimalStepDescription">
+      <segment>
+        <source>Use decimal steps with Increment.</source>
+        <target state="translated">通過 Increment 使用小數步長。</target>
+      </segment>
+    </unit>
+    <unit id="DecimalStepTitle">
+      <segment>
+        <source>Step (decimal)</source>
+        <target state="translated">小數步長</target>
+      </segment>
+    </unit>
+    <unit id="DisabledDescription">
+      <segment>
+        <source>Variants of NumberUpDown of disabled style.</source>
+        <target state="translated">NumberUpDown 禁用樣式的變體。</target>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">禁用</target>
+      </segment>
+    </unit>
+    <unit id="HideHandleDescription">
+      <segment>
+        <source>Hide the spin handle with ShowButtonSpinner="False".</source>
+        <target state="translated">通過 ShowButtonSpinner="False" 隱藏步進按鈕。</target>
+      </segment>
+    </unit>
+    <unit id="HideHandleTitle">
+      <segment>
+        <source>Hide handle</source>
+        <target state="translated">隱藏步進按鈕</target>
+      </segment>
+    </unit>
+    <unit id="KeyboardBehaviorDescription">
+      <segment>
+        <source>Disable keyboard spin with the Keyboard property.</source>
+        <target state="translated">通過 Keyboard 屬性禁用鍵盤步進。</target>
+      </segment>
+    </unit>
+    <unit id="KeyboardBehaviorTitle">
+      <segment>
+        <source>Keyboard behavior</source>
+        <target state="translated">鍵盤行為</target>
+      </segment>
+    </unit>
+    <unit id="MinMaxDescription">
+      <segment>
+        <source>Restrict the input value range.</source>
+        <target state="translated">限制輸入值範圍。</target>
+      </segment>
+    </unit>
+    <unit id="MinMaxTitle">
+      <segment>
+        <source>Min / Max</source>
+        <target state="translated">最小/最大值</target>
+      </segment>
+    </unit>
+    <unit id="MouseWheelBehaviorDescription">
+      <segment>
+        <source>Scroll the mouse wheel while the input is focused to increment or decrement by Increment.</source>
+        <target state="translated">輸入框獲得焦點時滾動鼠標滾輪，可按 Increment 增減值。</target>
+      </segment>
+    </unit>
+    <unit id="MouseWheelBehaviorTitle">
+      <segment>
+        <source>Mouse wheel behavior</source>
+        <target state="translated">鼠標滾輪行為</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentKeyboardEnabled">
+      <segment>
+        <source>Keyboard enabled</source>
+        <target state="translated">啓用鍵盤</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextEnterYourValue">
+      <segment>
+        <source>Enter your value</source>
+        <target state="translated">輸入數值</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextError">
+      <segment>
+        <source>Error</source>
+        <target state="translated">錯誤</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextErrorWithPrefix">
+      <segment>
+        <source>Error with prefix</source>
+        <target state="translated">帶前綴的錯誤</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextFocusAndScrollWheel">
+      <segment>
+        <source>Focus and scroll wheel</source>
+        <target state="translated">聚焦後滾動鼠標滾輪</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputWeight">
+      <segment>
+        <source>Input weight</source>
+        <target state="translated">輸入重量</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputWithClearIcon">
+      <segment>
+        <source>input with clear icon</source>
+        <target state="translated">帶清除圖標的輸入框</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextKeyboardDisabled">
+      <segment>
+        <source>Keyboard disabled</source>
+        <target state="translated">鍵盤已禁用</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWarning">
+      <segment>
+        <source>Warning</source>
+        <target state="translated">警告</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWarningWithPrefix">
+      <segment>
+        <source>Warning with prefix</source>
+        <target state="translated">帶前綴的警告</target>
+      </segment>
+    </unit>
+    <unit id="P2TextRawValuePrefix">
+      <segment>
+        <source>Raw: </source>
+        <target state="translated">原始值：</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>NumberUpDown combines numeric input, precision string mode, min/max constraints, decimal steps, input variants, add-ons, clear affordances and validation status.</source>
+        <target state="translated">NumberUpDown 組合了數值輸入、高精度字符串模式、最小/最大約束、小數步長、輸入變體、附加內容、清除入口和校驗狀態。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Enter and adjust numeric values with keyboard, wheel and step controls.</source>
+        <target state="translated">輸入並通過鍵盤、滾輪和步進按鈕調整数值。</target>
+      </segment>
+    </unit>
+    <unit id="PrePostTabDescription">
+      <segment>
+        <source>Using pre and post tabs example.</source>
+        <target state="translated">使用前置和後置標籤的示例。</target>
+      </segment>
+    </unit>
+    <unit id="PrePostTabTitle">
+      <segment>
+        <source>Pre / Post tab</source>
+        <target state="translated">前置/後置標籤</target>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixDescription">
+      <segment>
+        <source>Add a prefix or suffix icons inside input.</source>
+        <target state="translated">在輸入框內部添加前綴或後綴圖標。</target>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixTitle">
+      <segment>
+        <source>prefix and suffix</source>
+        <target state="translated">前綴和後綴</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioAddon">
+      <segment>
+        <source>Add-ons</source>
+        <target state="translated">附加內容</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioRange">
+      <segment>
+        <source>Range</source>
+        <target state="translated">範圍</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioStyle">
+      <segment>
+        <source>Style</source>
+        <target state="translated">樣式</target>
+      </segment>
+    </unit>
+    <unit id="SizesDescription">
+      <segment>
+        <source>NumberUpDown supports large (40px), default (32px), small (24px) and custom size.</source>
+        <target state="translated">NumberUpDown 支持大號（40px）、默認（32px）、小號（24px）和自定義尺寸。</target>
+      </segment>
+    </unit>
+    <unit id="SizesTitle">
+      <segment>
+        <source>Sizes of NumberUpDown</source>
+        <target state="translated">NumberUpDown 尺寸</target>
+      </segment>
+    </unit>
+    <unit id="SpinnerModeDescription">
+      <segment>
+        <source>Numeric spinner.</source>
+        <target state="translated">數字撥輪。</target>
+      </segment>
+    </unit>
+    <unit id="SpinnerModeTitle">
+      <segment>
+        <source>Spinner</source>
+        <target state="translated">撥輪</target>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to Input with status, which could be error or warning.</source>
+        <target state="translated">通過 status 為 Input 添加狀態，可設置為錯誤或警告。</target>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">狀態</target>
+      </segment>
+    </unit>
+    <unit id="StringModeDescription">
+      <segment>
+        <source>Keep a high-precision value as a string.</source>
+        <target state="translated">以字符串形式保留高精度值。</target>
+      </segment>
+    </unit>
+    <unit id="StringModeTitle">
+      <segment>
+        <source>String mode (high precision)</source>
+        <target state="translated">字符串模式（高精度）</target>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Variants of NumberUpDown.</source>
+        <target state="translated">NumberUpDown 的變體。</target>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">變體</target>
+      </segment>
+    </unit>
+    <unit id="WithClearIconDescription">
+      <segment>
+        <source>Input box with the remove icon, click the icon to delete everything.</source>
+        <target state="translated">帶移除圖標的輸入框，點擊圖標可清空全部內容。</target>
+      </segment>
+    </unit>
+    <unit id="WithClearIconTitle">
+      <segment>
+        <source>With clear icon</source>
+        <target state="translated">帶清除圖標</target>
       </segment>
     </unit>
   </file>

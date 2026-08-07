@@ -26,7 +26,7 @@ internal static class Xliff21Writer
         }
 
         var file = new XElement(ns + "file", new XAttribute("id", document.File.Id));
-        foreach (var unit in document.File.Units.OrderBy(static unit => unit.Id))
+        foreach (var unit in document.File.Units.OrderBy(static unit => unit.Key, StringComparer.Ordinal))
         {
             file.Add(CreateUnit(ns, unit));
         }
@@ -53,8 +53,7 @@ internal static class Xliff21Writer
     {
         var element = new XElement(
             ns + "unit",
-            new XAttribute("id", unit.Id),
-            new XAttribute("name", unit.Name));
+            new XAttribute("id", unit.Key));
         if (unit.IsObsolete)
         {
             element.Add(new XAttribute("translate", "no"));

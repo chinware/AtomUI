@@ -1,199 +1,199 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind">
-    <unit id="1" name="ComponentCategory">
-      <segment>
-        <source>Navigation</source>
-      </segment>
-    </unit>
-    <unit id="2" name="ComponentStatusStable">
-      <segment>
-        <source>Stable</source>
-      </segment>
-    </unit>
-    <unit id="3" name="PageSubtitle">
-      <segment>
-        <source>A selection input for choosing from a compact popup list.</source>
-      </segment>
-    </unit>
-    <unit id="4" name="PageDescription">
-      <segment>
-        <source>ComboBox combines input-style layout with dropdown selection, supporting item templates, add-ons, prefixes, suffixes, validation status, and size variants.</source>
-      </segment>
-    </unit>
-    <unit id="5" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-      </segment>
-    </unit>
-    <unit id="6" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-      </segment>
-    </unit>
-    <unit id="7" name="BasicDescription">
+    <unit id="BasicDescription">
       <segment>
         <source>Basic button spinner.</source>
       </segment>
     </unit>
-    <unit id="8" name="ItemsSourceTitle">
+    <unit id="BasicTitle">
       <segment>
-        <source>Generate ComboBoxItem by ItemsSource</source>
+        <source>Basic</source>
       </segment>
     </unit>
-    <unit id="9" name="ItemsSourceDescription">
-      <segment>
-        <source>Generate structure based on ItemsSource and template.</source>
-      </segment>
-    </unit>
-    <unit id="10" name="BindingTitle">
-      <segment>
-        <source>SelectedItem binding</source>
-      </segment>
-    </unit>
-    <unit id="11" name="BindingDescription">
-      <segment>
-        <source>SelectedItem synchronizes with the ViewModel and is also the value read and written by Form.</source>
-      </segment>
-    </unit>
-    <unit id="12" name="BindingSelectedItemLabel">
-      <segment>
-        <source>SelectedItem</source>
-      </segment>
-    </unit>
-    <unit id="13" name="BindingViewModelValueLabel">
-      <segment>
-        <source>ViewModel value</source>
-      </segment>
-    </unit>
-    <unit id="14" name="BindingSetButton">
-      <segment>
-        <source>Set third line</source>
-      </segment>
-    </unit>
-    <unit id="15" name="BindingClearButton">
+    <unit id="BindingClearButton">
       <segment>
         <source>Clear</source>
       </segment>
     </unit>
-    <unit id="16" name="EditableFilterTitle">
+    <unit id="BindingDescription">
       <segment>
-        <source>Editable filtering</source>
+        <source>SelectedItem synchronizes with the ViewModel and is also the value read and written by Form.</source>
       </segment>
     </unit>
-    <unit id="17" name="EditableFilterDescription">
+    <unit id="BindingSelectedItemLabel">
       <segment>
-        <source>Type in the ComboBox input to filter popup candidates without replacing the source items.</source>
+        <source>SelectedItem</source>
       </segment>
     </unit>
-    <unit id="18" name="DisabledTitle">
+    <unit id="BindingSetButton">
       <segment>
-        <source>Disabled</source>
+        <source>Set third line</source>
       </segment>
     </unit>
-    <unit id="19" name="DisabledDescription">
+    <unit id="BindingTitle">
+      <segment>
+        <source>SelectedItem binding</source>
+      </segment>
+    </unit>
+    <unit id="BindingViewModelValueLabel">
+      <segment>
+        <source>ViewModel value</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="DisabledDescription">
       <segment>
         <source>Disabled button spinner.</source>
       </segment>
     </unit>
-    <unit id="20" name="ThreeSizesTitle">
+    <unit id="DisabledTitle">
       <segment>
-        <source>Three sizes of Input</source>
+        <source>Disabled</source>
       </segment>
     </unit>
-    <unit id="21" name="ThreeSizesDescription">
+    <unit id="EditableFilterDescription">
       <segment>
-        <source>ComboBox supports large (40px), default (32px), small (24px), and Custom sizes with local size properties.</source>
+        <source>Type in the ComboBox input to filter popup candidates without replacing the source items.</source>
       </segment>
     </unit>
-    <unit id="22" name="VariantsTitle">
+    <unit id="EditableFilterTitle">
       <segment>
-        <source>Variants</source>
+        <source>Editable filtering</source>
       </segment>
     </unit>
-    <unit id="23" name="VariantsDescription">
+    <unit id="ItemsSourceDescription">
       <segment>
-        <source>Variants of Input.</source>
+        <source>Generate structure based on ItemsSource and template.</source>
       </segment>
     </unit>
-    <unit id="24" name="PrePostTabTitle">
+    <unit id="ItemsSourceTitle">
       <segment>
-        <source>Pre / Post tab</source>
+        <source>Generate ComboBoxItem by ItemsSource</source>
       </segment>
     </unit>
-    <unit id="25" name="PrePostTabDescription">
-      <segment>
-        <source>Using pre and post tabs example.</source>
-      </segment>
-    </unit>
-    <unit id="26" name="PrefixSuffixTitle">
-      <segment>
-        <source>prefix and suffix</source>
-      </segment>
-    </unit>
-    <unit id="27" name="PrefixSuffixDescription">
-      <segment>
-        <source>Add a prefix or suffix icons inside input.</source>
-      </segment>
-    </unit>
-    <unit id="28" name="StatusTitle">
-      <segment>
-        <source>Status</source>
-      </segment>
-    </unit>
-    <unit id="29" name="StatusDescription">
-      <segment>
-        <source>Add status to Input with status, which could be error or warning.</source>
-      </segment>
-    </unit>
-    <unit id="30" name="P2PlaceholderTextPleaseSelect">
-      <segment>
-        <source>Please select</source>
-      </segment>
-    </unit>
-    <unit id="31" name="P2PlaceholderTextTypeToFilter">
-      <segment>
-        <source>Type to filter</source>
-      </segment>
-    </unit>
-    <unit id="32" name="P2PlaceholderSizeTypeLarge">
-      <segment>
-        <source>SizeType: Large</source>
-      </segment>
-    </unit>
-    <unit id="33" name="P2PlaceholderSizeTypeMiddle">
-      <segment>
-        <source>SizeType: Middle</source>
-      </segment>
-    </unit>
-    <unit id="34" name="P2PlaceholderSizeTypeSmall">
-      <segment>
-        <source>SizeType: Small</source>
-      </segment>
-    </unit>
-    <unit id="35" name="P2PlaceholderSizeTypeCustom">
-      <segment>
-        <source>SizeType: Custom</source>
-      </segment>
-    </unit>
-    <unit id="36" name="P2ContentPoemLine1">
+    <unit id="P2ContentPoemLine1">
       <segment>
         <source>床前明月光</source>
       </segment>
     </unit>
-    <unit id="37" name="P2ContentPoemLine2">
+    <unit id="P2ContentPoemLine2">
       <segment>
         <source>疑是地上霜</source>
       </segment>
     </unit>
-    <unit id="38" name="P2ContentPoemLine3">
+    <unit id="P2ContentPoemLine3">
       <segment>
         <source>举头望明月</source>
       </segment>
     </unit>
-    <unit id="39" name="P2ContentPoemLine4">
+    <unit id="P2ContentPoemLine4">
       <segment>
         <source>低头思故乡</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeCustom">
+      <segment>
+        <source>SizeType: Custom</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeLarge">
+      <segment>
+        <source>SizeType: Large</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeMiddle">
+      <segment>
+        <source>SizeType: Middle</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeSmall">
+      <segment>
+        <source>SizeType: Small</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelect">
+      <segment>
+        <source>Please select</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextTypeToFilter">
+      <segment>
+        <source>Type to filter</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>ComboBox combines input-style layout with dropdown selection, supporting item templates, add-ons, prefixes, suffixes, validation status, and size variants.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>A selection input for choosing from a compact popup list.</source>
+      </segment>
+    </unit>
+    <unit id="PrePostTabDescription">
+      <segment>
+        <source>Using pre and post tabs example.</source>
+      </segment>
+    </unit>
+    <unit id="PrePostTabTitle">
+      <segment>
+        <source>Pre / Post tab</source>
+      </segment>
+    </unit>
+    <unit id="PrefixSuffixDescription">
+      <segment>
+        <source>Add a prefix or suffix icons inside input.</source>
+      </segment>
+    </unit>
+    <unit id="PrefixSuffixTitle">
+      <segment>
+        <source>prefix and suffix</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to Input with status, which could be error or warning.</source>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+      </segment>
+    </unit>
+    <unit id="ThreeSizesDescription">
+      <segment>
+        <source>ComboBox supports large (40px), default (32px), small (24px), and Custom sizes with local size properties.</source>
+      </segment>
+    </unit>
+    <unit id="ThreeSizesTitle">
+      <segment>
+        <source>Three sizes of Input</source>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Variants of Input.</source>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
       </segment>
     </unit>
   </file>

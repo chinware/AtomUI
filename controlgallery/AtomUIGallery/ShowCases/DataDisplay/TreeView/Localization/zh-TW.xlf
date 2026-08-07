@@ -1,568 +1,568 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind">
-    <unit id="1" name="ComponentCategory">
-      <segment>
-        <source>Data Display</source>
-        <target state="translated">數據展示</target>
-      </segment>
-    </unit>
-    <unit id="2" name="ComponentStatusStable">
-      <segment>
-        <source>Stable</source>
-        <target state="translated">穩定</target>
-      </segment>
-    </unit>
-    <unit id="3" name="PageSubtitle">
-      <segment>
-        <source>Display hierarchical data with selectable, checkable, searchable, draggable, and async-loaded nodes.</source>
-        <target state="translated">展示層級數據，支持選擇、勾選、搜索、拖拽和異步加載節點。</target>
-      </segment>
-    </unit>
-    <unit id="4" name="PageDescription">
-      <segment>
-        <source>TreeView organizes nested data into expandable nodes and supports templated data sources, checkbox selection, filtering, custom switcher icons, context menus, and lazy child loading.</source>
-        <target state="translated">TreeView 將嵌套數據組織爲可展開節點，並支持模板化數據源、複選選擇、過濾、自定義展開圖標、上下文菜單和懶加載子節點。</target>
-      </segment>
-    </unit>
-    <unit id="5" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">示例</target>
-      </segment>
-    </unit>
-    <unit id="6" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-        <target state="translated">基礎用法</target>
-      </segment>
-    </unit>
-    <unit id="7" name="BasicDescription">
-      <segment>
-        <source>The most basic usage, tell you how to use checkable, selectable, disabled, defaultExpandKeys, and etc.</source>
-        <target state="translated">最基礎的用法，展示如何使用 checkable、selectable、disabled、defaultExpandKeys 等屬性。</target>
-      </segment>
-    </unit>
-    <unit id="8" name="GenerateByTemplateTitle">
-      <segment>
-        <source>Generate by template</source>
-        <target state="translated">使用模板生成</target>
-      </segment>
-    </unit>
-    <unit id="9" name="GenerateByTemplateDescription">
-      <segment>
-        <source>You can use the Template mechanism to generate tree nodes</source>
-        <target state="translated">可以使用 Template 機制生成樹節點。</target>
-      </segment>
-    </unit>
-    <unit id="10" name="SelectionBindingTitle">
-      <segment>
-        <source>SelectedItem binding</source>
-        <target state="translated">SelectedItem 綁定</target>
-      </segment>
-    </unit>
-    <unit id="11" name="SelectionBindingDescription">
-      <segment>
-        <source>Bind SelectedItem to a node object instance, then click a node or action button to watch the bound value update.</source>
-        <target state="translated">將 SelectedItem 綁定到節點物件實例，點擊節點或操作按鈕即可觀察綁定值同步更新。</target>
-      </segment>
-    </unit>
-    <unit id="12" name="SelectionItemsBindingTitle">
-      <segment>
-        <source>SelectedItems binding</source>
-        <target state="translated">SelectedItems 綁定</target>
-      </segment>
-    </unit>
-    <unit id="13" name="SelectionItemsBindingDescription">
-      <segment>
-        <source>Bind SelectedItems to node object instances, then click nodes or action buttons to watch the selected collection update.</source>
-        <target state="translated">將 SelectedItems 綁定到節點物件實例集合，點擊節點或操作按鈕即可觀察選中集合更新。</target>
-      </segment>
-    </unit>
-    <unit id="14" name="SelectionBindingValueTitle">
-      <segment>
-        <source>Bound value</source>
-        <target state="translated">綁定值</target>
-      </segment>
-    </unit>
-    <unit id="15" name="SelectionBindingSelectFirst">
-      <segment>
-        <source>Select parent 1-0</source>
-        <target state="translated">選擇 parent 1-0</target>
-      </segment>
-    </unit>
-    <unit id="16" name="SelectionBindingSelectSecond">
-      <segment>
-        <source>Select parent 1-1</source>
-        <target state="translated">選擇 parent 1-1</target>
-      </segment>
-    </unit>
-    <unit id="17" name="SelectionBindingSelectBoth">
-      <segment>
-        <source>Select both</source>
-        <target state="translated">選擇兩個節點</target>
-      </segment>
-    </unit>
-    <unit id="18" name="SelectionBindingClear">
-      <segment>
-        <source>Clear</source>
-        <target state="translated">清除</target>
-      </segment>
-    </unit>
-    <unit id="19" name="BlockNodeTitle">
-      <segment>
-        <source>Block Node</source>
-        <target state="translated">塊級節點</target>
-      </segment>
-    </unit>
-    <unit id="20" name="BlockNodeDescription">
-      <segment>
-        <source>Block Node.</source>
-        <target state="translated">塊級節點。</target>
-      </segment>
-    </unit>
-    <unit id="21" name="TreeWithLineTitle">
-      <segment>
-        <source>Tree with line</source>
-        <target state="translated">帶連接線的樹</target>
-      </segment>
-    </unit>
-    <unit id="22" name="TreeWithLineDescription">
-      <segment>
-        <source>Tree with connected line between nodes, turn on by showLine, customize the preset icon by switcherIcon.</source>
-        <target state="translated">節點之間帶連接線的樹。通過 showLine 開啓，並可通過 switcherIcon 自定義預設圖標。</target>
-      </segment>
-    </unit>
-    <unit id="23" name="DraggableTitle">
-      <segment>
-        <source>draggable</source>
-        <target state="translated">可拖拽</target>
-      </segment>
-    </unit>
-    <unit id="24" name="DraggableDescription">
-      <segment>
-        <source>Drag treeNode to insert after the other treeNode or insert into the other parent TreeNode.</source>
-        <target state="translated">拖拽 treeNode 可將其插入到其他 treeNode 之後，或插入到其他父級 TreeNode 中。</target>
-      </segment>
-    </unit>
-    <unit id="25" name="CustomizeExpandIconTitle">
-      <segment>
-        <source>Customize collapse/expand icon</source>
-        <target state="translated">自定義展開/折疊圖標</target>
-      </segment>
-    </unit>
-    <unit id="26" name="CustomizeExpandIconDescription">
-      <segment>
-        <source>customize collapse/expand icon of tree node</source>
-        <target state="translated">自定義樹節點的展開/折疊圖標。</target>
-      </segment>
-    </unit>
-    <unit id="27" name="AsyncLoadDataTitle">
-      <segment>
-        <source>load data asynchronously</source>
-        <target state="translated">異步加載數據</target>
-      </segment>
-    </unit>
-    <unit id="28" name="AsyncLoadDataDescription">
+    <unit id="AsyncLoadDataDescription">
       <segment>
         <source>To load data asynchronously when click to expand a treeNode.</source>
         <target state="translated">點擊展開 treeNode 時異步加載數據。</target>
       </segment>
     </unit>
-    <unit id="29" name="SearchableByTemplateTitle">
+    <unit id="AsyncLoadDataTitle">
       <segment>
-        <source>Searchable by TreeDataTemplate</source>
-        <target state="translated">通過 TreeDataTemplate 搜索</target>
+        <source>load data asynchronously</source>
+        <target state="translated">異步加載數據</target>
       </segment>
     </unit>
-    <unit id="30" name="SearchableByTemplateDescription">
+    <unit id="BasicDescription">
       <segment>
-        <source>Searchable Tree use ItemsSource datasource.</source>
-        <target state="translated">使用 ItemsSource 數據源的可搜索樹。</target>
+        <source>The most basic usage, tell you how to use checkable, selectable, disabled, defaultExpandKeys, and etc.</source>
+        <target state="translated">最基礎的用法，展示如何使用 checkable、selectable、disabled、defaultExpandKeys 等屬性。</target>
       </segment>
     </unit>
-    <unit id="31" name="SearchableTitle">
+    <unit id="BasicTitle">
       <segment>
-        <source>Searchable</source>
-        <target state="translated">可搜索</target>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
       </segment>
     </unit>
-    <unit id="32" name="SearchableDescription">
+    <unit id="BlockNodeDescription">
       <segment>
-        <source>Searchable Tree.</source>
-        <target state="translated">可搜索的樹。</target>
+        <source>Block Node.</source>
+        <target state="translated">塊級節點。</target>
       </segment>
     </unit>
-    <unit id="33" name="ContextMenuTitle">
+    <unit id="BlockNodeTitle">
       <segment>
-        <source>Context menu</source>
-        <target state="translated">上下文菜單</target>
+        <source>Block Node</source>
+        <target state="translated">塊級節點</target>
       </segment>
     </unit>
-    <unit id="34" name="ContextMenuDescription">
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+        <target state="translated">數據展示</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
+      </segment>
+    </unit>
+    <unit id="ContextMenuDescription">
       <segment>
         <source>Right-click any node to open a context menu. Toggle IsSelectOnRightClick to switch between following the right-clicked node (default) and keeping the existing selection untouched.</source>
         <target state="translated">右鍵任意節點可打開上下文菜單。切換 IsSelectOnRightClick 可在跟隨右鍵節點（默認）和保持現有選擇不變之間切換。</target>
       </segment>
     </unit>
-    <unit id="35" name="EmptyIndicatorTitle">
+    <unit id="ContextMenuTitle">
       <segment>
-        <source>Custom empty indicator</source>
-        <target state="translated">自定義空狀態</target>
+        <source>Context menu</source>
+        <target state="translated">上下文菜單</target>
       </segment>
     </unit>
-    <unit id="36" name="EmptyIndicatorDescription">
+    <unit id="CustomizeExpandIconDescription">
+      <segment>
+        <source>customize collapse/expand icon of tree node</source>
+        <target state="translated">自定義樹節點的展開/折疊圖標。</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeExpandIconTitle">
+      <segment>
+        <source>Customize collapse/expand icon</source>
+        <target state="translated">自定義展開/折疊圖標</target>
+      </segment>
+    </unit>
+    <unit id="DraggableDescription">
+      <segment>
+        <source>Drag treeNode to insert after the other treeNode or insert into the other parent TreeNode.</source>
+        <target state="translated">拖拽 treeNode 可將其插入到其他 treeNode 之後，或插入到其他父級 TreeNode 中。</target>
+      </segment>
+    </unit>
+    <unit id="DraggableTitle">
+      <segment>
+        <source>draggable</source>
+        <target state="translated">可拖拽</target>
+      </segment>
+    </unit>
+    <unit id="EmptyIndicatorDescription">
       <segment>
         <source>Use EmptyIndicator to replace the default TreeView empty content.</source>
         <target state="translated">使用 EmptyIndicator 取代 TreeView 的預設空狀態內容。</target>
       </segment>
     </unit>
-    <unit id="37" name="P2HeaderParentN1">
+    <unit id="EmptyIndicatorTitle">
       <segment>
-        <source>parent 1</source>
-        <target state="translated">父節點 1</target>
+        <source>Custom empty indicator</source>
+        <target state="translated">自定義空狀態</target>
       </segment>
     </unit>
-    <unit id="38" name="P2HeaderParentN1N0">
+    <unit id="GenerateByTemplateDescription">
       <segment>
-        <source>parent 1-0</source>
-        <target state="translated">父節點 1-0</target>
+        <source>You can use the Template mechanism to generate tree nodes</source>
+        <target state="translated">可以使用 Template 機制生成樹節點。</target>
       </segment>
     </unit>
-    <unit id="39" name="P2HeaderLeaf">
+    <unit id="GenerateByTemplateTitle">
       <segment>
-        <source>leaf</source>
-        <target state="translated">葉子節點</target>
+        <source>Generate by template</source>
+        <target state="translated">使用模板生成</target>
       </segment>
     </unit>
-    <unit id="40" name="P2HeaderParentN1N1">
-      <segment>
-        <source>parent 1-1</source>
-        <target state="translated">父節點 1-1</target>
-      </segment>
-    </unit>
-    <unit id="41" name="P2HeaderSss">
-      <segment>
-        <source>sss</source>
-        <target state="translated">示例一</target>
-      </segment>
-    </unit>
-    <unit id="42" name="P2HeaderCcc">
-      <segment>
-        <source>ccc</source>
-        <target state="translated">示例二</target>
-      </segment>
-    </unit>
-    <unit id="43" name="P2HeaderXxx">
-      <segment>
-        <source>xxx</source>
-        <target state="translated">示例三</target>
-      </segment>
-    </unit>
-    <unit id="44" name="P2HeaderAaaa">
-      <segment>
-        <source>aaaa</source>
-        <target state="translated">示例四</target>
-      </segment>
-    </unit>
-    <unit id="45" name="P2HeaderParent">
-      <segment>
-        <source>parent</source>
-        <target state="translated">父節點</target>
-      </segment>
-    </unit>
-    <unit id="46" name="P2HeaderChildN1">
-      <segment>
-        <source>child 1</source>
-        <target state="translated">子節點 1</target>
-      </segment>
-    </unit>
-    <unit id="47" name="P2HeaderChildN2">
-      <segment>
-        <source>child 2</source>
-        <target state="translated">子節點 2</target>
-      </segment>
-    </unit>
-    <unit id="48" name="P2HeaderLeafN1">
-      <segment>
-        <source>leaf 1</source>
-        <target state="translated">葉子節點 1</target>
-      </segment>
-    </unit>
-    <unit id="49" name="P2HeaderLeafN2">
-      <segment>
-        <source>leaf 2</source>
-        <target state="translated">葉子節點 2</target>
-      </segment>
-    </unit>
-    <unit id="50" name="P2HeaderParentN1N2">
-      <segment>
-        <source>parent 1-2</source>
-        <target state="translated">父節點 1-2</target>
-      </segment>
-    </unit>
-    <unit id="51" name="P2HeaderParentN2">
-      <segment>
-        <source>parent 2</source>
-        <target state="translated">父節點 2</target>
-      </segment>
-    </unit>
-    <unit id="52" name="P2HeaderParentN2N0">
-      <segment>
-        <source>parent 2-0</source>
-        <target state="translated">父節點 2-0</target>
-      </segment>
-    </unit>
-    <unit id="53" name="P2HeaderN0N0">
-      <segment>
-        <source>0-0</source>
-        <target state="translated">0-0</target>
-      </segment>
-    </unit>
-    <unit id="54" name="P2HeaderN0N0N0">
-      <segment>
-        <source>0-0-0</source>
-        <target state="translated">0-0-0</target>
-      </segment>
-    </unit>
-    <unit id="55" name="P2HeaderN0N0N0N0">
-      <segment>
-        <source>0-0-0-0</source>
-        <target state="translated">0-0-0-0</target>
-      </segment>
-    </unit>
-    <unit id="56" name="P2HeaderN0N0N0N1">
-      <segment>
-        <source>0-0-0-1</source>
-        <target state="translated">0-0-0-1</target>
-      </segment>
-    </unit>
-    <unit id="57" name="P2HeaderN0N0N0N2">
-      <segment>
-        <source>0-0-0-2</source>
-        <target state="translated">0-0-0-2</target>
-      </segment>
-    </unit>
-    <unit id="58" name="P2HeaderN0N0N1">
-      <segment>
-        <source>0-0-1</source>
-        <target state="translated">0-0-1</target>
-      </segment>
-    </unit>
-    <unit id="59" name="P2HeaderN0N0N1N0">
-      <segment>
-        <source>0-0-1-0</source>
-        <target state="translated">0-0-1-0</target>
-      </segment>
-    </unit>
-    <unit id="60" name="P2HeaderN0N0N1N1">
-      <segment>
-        <source>0-0-1-1</source>
-        <target state="translated">0-0-1-1</target>
-      </segment>
-    </unit>
-    <unit id="61" name="P2HeaderN0N0N1N2">
-      <segment>
-        <source>0-0-1-2</source>
-        <target state="translated">0-0-1-2</target>
-      </segment>
-    </unit>
-    <unit id="62" name="P2HeaderN0N0N2">
-      <segment>
-        <source>0-0-2</source>
-        <target state="translated">0-0-2</target>
-      </segment>
-    </unit>
-    <unit id="63" name="P2HeaderN0N1">
-      <segment>
-        <source>0-1</source>
-        <target state="translated">0-1</target>
-      </segment>
-    </unit>
-    <unit id="64" name="P2HeaderN0N1N0">
-      <segment>
-        <source>0-1-0</source>
-        <target state="translated">0-1-0</target>
-      </segment>
-    </unit>
-    <unit id="65" name="P2HeaderN0N1N0N0">
-      <segment>
-        <source>0-1-0-0</source>
-        <target state="translated">0-1-0-0</target>
-      </segment>
-    </unit>
-    <unit id="66" name="P2HeaderN0N1N0N1">
-      <segment>
-        <source>0-1-0-1</source>
-        <target state="translated">0-1-0-1</target>
-      </segment>
-    </unit>
-    <unit id="67" name="P2HeaderN0N1N0N2">
-      <segment>
-        <source>0-1-0-2</source>
-        <target state="translated">0-1-0-2</target>
-      </segment>
-    </unit>
-    <unit id="68" name="P2HeaderN0N1N1">
-      <segment>
-        <source>0-1-1</source>
-        <target state="translated">0-1-1</target>
-      </segment>
-    </unit>
-    <unit id="69" name="P2HeaderN0N1N1N0">
-      <segment>
-        <source>0-1-1-0</source>
-        <target state="translated">0-1-1-0</target>
-      </segment>
-    </unit>
-    <unit id="70" name="P2HeaderN0N1N1N1">
-      <segment>
-        <source>0-1-1-1</source>
-        <target state="translated">0-1-1-1</target>
-      </segment>
-    </unit>
-    <unit id="71" name="P2HeaderN0N1N1N2">
-      <segment>
-        <source>0-1-1-2</source>
-        <target state="translated">0-1-1-2</target>
-      </segment>
-    </unit>
-    <unit id="72" name="P2HeaderN0N1N2">
-      <segment>
-        <source>0-1-2</source>
-        <target state="translated">0-1-2</target>
-      </segment>
-    </unit>
-    <unit id="73" name="P2HeaderN0N2">
-      <segment>
-        <source>0-2</source>
-        <target state="translated">0-2</target>
-      </segment>
-    </unit>
-    <unit id="74" name="P2PlaceholderTextSearch">
-      <segment>
-        <source>Search</source>
-        <target state="translated">搜索</target>
-      </segment>
-    </unit>
-    <unit id="75" name="P2HeaderNewNode">
-      <segment>
-        <source>New Node</source>
-        <target state="translated">新節點</target>
-      </segment>
-    </unit>
-    <unit id="76" name="P2HeaderRename">
-      <segment>
-        <source>Rename</source>
-        <target state="translated">重命名</target>
-      </segment>
-    </unit>
-    <unit id="77" name="P2HeaderDelete">
-      <segment>
-        <source>Delete</source>
-        <target state="translated">刪除</target>
-      </segment>
-    </unit>
-    <unit id="78" name="P2TextShowline">
-      <segment>
-        <source>showLine:</source>
-        <target state="translated">顯示連接線：</target>
-      </segment>
-    </unit>
-    <unit id="79" name="P2TextShowicon">
-      <segment>
-        <source>showIcon:</source>
-        <target state="translated">顯示圖標：</target>
-      </segment>
-    </unit>
-    <unit id="80" name="P2TextShowleaficon">
-      <segment>
-        <source>ShowLeafIcon:</source>
-        <target state="translated">顯示葉子節點圖標：</target>
-      </segment>
-    </unit>
-    <unit id="81" name="P2TextNodeHoverMode">
-      <segment>
-        <source>Node hover mode:</source>
-        <target state="translated">節點懸停模式：</target>
-      </segment>
-    </unit>
-    <unit id="82" name="P2TextSelectedItemBinding">
-      <segment>
-        <source>SelectedItem</source>
-        <target state="translated">SelectedItem</target>
-      </segment>
-    </unit>
-    <unit id="83" name="P2TextCustomEmptyIndicator">
-      <segment>
-        <source>No tree nodes to display</source>
-        <target state="translated">暫無可顯示的樹節點</target>
-      </segment>
-    </unit>
-    <unit id="84" name="P2TextSelectedItemsBinding">
-      <segment>
-        <source>SelectedItems</source>
-        <target state="translated">SelectedItems</target>
-      </segment>
-    </unit>
-    <unit id="85" name="P2ContentDefault">
-      <segment>
-        <source>Default</source>
-        <target state="translated">默認</target>
-      </segment>
-    </unit>
-    <unit id="86" name="P2ContentBlock">
+    <unit id="P2ContentBlock">
       <segment>
         <source>Block</source>
         <target state="translated">塊</target>
       </segment>
     </unit>
-    <unit id="87" name="P2ContentWholeline">
+    <unit id="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+        <target state="translated">默認</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentWholeline">
       <segment>
         <source>WholeLine</source>
         <target state="translated">整行</target>
       </segment>
     </unit>
-    <unit id="88" name="P2TextIsselectonrightclick">
+    <unit id="P2HeaderAaaa">
       <segment>
-        <source>IsSelectOnRightClick:</source>
-        <target state="translated">右鍵時選擇節點：</target>
+        <source>aaaa</source>
+        <target state="translated">示例四</target>
       </segment>
     </unit>
-    <unit id="89" name="P2HeaderExpandToLoad">
+    <unit id="P2HeaderCcc">
       <segment>
-        <source>Expand to load</source>
-        <target state="translated">展開加載</target>
+        <source>ccc</source>
+        <target state="translated">示例二</target>
       </segment>
     </unit>
-    <unit id="90" name="P2HeaderTreeNode">
+    <unit id="P2HeaderChildN1">
       <segment>
-        <source>Tree Node</source>
-        <target state="translated">樹節點</target>
+        <source>child 1</source>
+        <target state="translated">子節點 1</target>
       </segment>
     </unit>
-    <unit id="91" name="P2HeaderChildNode">
+    <unit id="P2HeaderChildN2">
+      <segment>
+        <source>child 2</source>
+        <target state="translated">子節點 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildNode">
       <segment>
         <source>Child Node</source>
         <target state="translated">子節點</target>
       </segment>
     </unit>
-    <unit id="92" name="P2HeaderNodeFallback">
+    <unit id="P2HeaderDelete">
       <segment>
-        <source>node</source>
-        <target state="translated">節點</target>
+        <source>Delete</source>
+        <target state="translated">刪除</target>
       </segment>
     </unit>
-    <unit id="93" name="P2HeaderNewNodeFormat">
+    <unit id="P2HeaderExpandToLoad">
+      <segment>
+        <source>Expand to load</source>
+        <target state="translated">展開加載</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf">
+      <segment>
+        <source>leaf</source>
+        <target state="translated">葉子節點</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeafN1">
+      <segment>
+        <source>leaf 1</source>
+        <target state="translated">葉子節點 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeafN2">
+      <segment>
+        <source>leaf 2</source>
+        <target state="translated">葉子節點 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N0">
+      <segment>
+        <source>0-0</source>
+        <target state="translated">0-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N0N0">
+      <segment>
+        <source>0-0-0</source>
+        <target state="translated">0-0-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N0N0N0">
+      <segment>
+        <source>0-0-0-0</source>
+        <target state="translated">0-0-0-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N0N0N1">
+      <segment>
+        <source>0-0-0-1</source>
+        <target state="translated">0-0-0-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N0N0N2">
+      <segment>
+        <source>0-0-0-2</source>
+        <target state="translated">0-0-0-2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N0N1">
+      <segment>
+        <source>0-0-1</source>
+        <target state="translated">0-0-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N0N1N0">
+      <segment>
+        <source>0-0-1-0</source>
+        <target state="translated">0-0-1-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N0N1N1">
+      <segment>
+        <source>0-0-1-1</source>
+        <target state="translated">0-0-1-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N0N1N2">
+      <segment>
+        <source>0-0-1-2</source>
+        <target state="translated">0-0-1-2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N0N2">
+      <segment>
+        <source>0-0-2</source>
+        <target state="translated">0-0-2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N1">
+      <segment>
+        <source>0-1</source>
+        <target state="translated">0-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N1N0">
+      <segment>
+        <source>0-1-0</source>
+        <target state="translated">0-1-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N1N0N0">
+      <segment>
+        <source>0-1-0-0</source>
+        <target state="translated">0-1-0-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N1N0N1">
+      <segment>
+        <source>0-1-0-1</source>
+        <target state="translated">0-1-0-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N1N0N2">
+      <segment>
+        <source>0-1-0-2</source>
+        <target state="translated">0-1-0-2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N1N1">
+      <segment>
+        <source>0-1-1</source>
+        <target state="translated">0-1-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N1N1N0">
+      <segment>
+        <source>0-1-1-0</source>
+        <target state="translated">0-1-1-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N1N1N1">
+      <segment>
+        <source>0-1-1-1</source>
+        <target state="translated">0-1-1-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N1N1N2">
+      <segment>
+        <source>0-1-1-2</source>
+        <target state="translated">0-1-1-2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N1N2">
+      <segment>
+        <source>0-1-2</source>
+        <target state="translated">0-1-2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN0N2">
+      <segment>
+        <source>0-2</source>
+        <target state="translated">0-2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNewNode">
+      <segment>
+        <source>New Node</source>
+        <target state="translated">新節點</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNewNodeFormat">
       <segment>
         <source>{0} / new ({1})</source>
         <target state="translated">{0} / 新建 ({1})</target>
       </segment>
     </unit>
-    <unit id="94" name="P2HeaderRenamedFormat">
+    <unit id="P2HeaderNodeFallback">
+      <segment>
+        <source>node</source>
+        <target state="translated">節點</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParent">
+      <segment>
+        <source>parent</source>
+        <target state="translated">父節點</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN1">
+      <segment>
+        <source>parent 1</source>
+        <target state="translated">父節點 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN1N0">
+      <segment>
+        <source>parent 1-0</source>
+        <target state="translated">父節點 1-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN1N1">
+      <segment>
+        <source>parent 1-1</source>
+        <target state="translated">父節點 1-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN1N2">
+      <segment>
+        <source>parent 1-2</source>
+        <target state="translated">父節點 1-2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN2">
+      <segment>
+        <source>parent 2</source>
+        <target state="translated">父節點 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN2N0">
+      <segment>
+        <source>parent 2-0</source>
+        <target state="translated">父節點 2-0</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderRename">
+      <segment>
+        <source>Rename</source>
+        <target state="translated">重命名</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderRenamedFormat">
       <segment>
         <source>{0} (renamed)</source>
         <target state="translated">{0}（已重命名）</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSss">
+      <segment>
+        <source>sss</source>
+        <target state="translated">示例一</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTreeNode">
+      <segment>
+        <source>Tree Node</source>
+        <target state="translated">樹節點</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderXxx">
+      <segment>
+        <source>xxx</source>
+        <target state="translated">示例三</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSearch">
+      <segment>
+        <source>Search</source>
+        <target state="translated">搜索</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCustomEmptyIndicator">
+      <segment>
+        <source>No tree nodes to display</source>
+        <target state="translated">暫無可顯示的樹節點</target>
+      </segment>
+    </unit>
+    <unit id="P2TextIsselectonrightclick">
+      <segment>
+        <source>IsSelectOnRightClick:</source>
+        <target state="translated">右鍵時選擇節點：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextNodeHoverMode">
+      <segment>
+        <source>Node hover mode:</source>
+        <target state="translated">節點懸停模式：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectedItemBinding">
+      <segment>
+        <source>SelectedItem</source>
+        <target state="translated">SelectedItem</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectedItemsBinding">
+      <segment>
+        <source>SelectedItems</source>
+        <target state="translated">SelectedItems</target>
+      </segment>
+    </unit>
+    <unit id="P2TextShowicon">
+      <segment>
+        <source>showIcon:</source>
+        <target state="translated">顯示圖標：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextShowleaficon">
+      <segment>
+        <source>ShowLeafIcon:</source>
+        <target state="translated">顯示葉子節點圖標：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextShowline">
+      <segment>
+        <source>showLine:</source>
+        <target state="translated">顯示連接線：</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>TreeView organizes nested data into expandable nodes and supports templated data sources, checkbox selection, filtering, custom switcher icons, context menus, and lazy child loading.</source>
+        <target state="translated">TreeView 將嵌套數據組織爲可展開節點，並支持模板化數據源、複選選擇、過濾、自定義展開圖標、上下文菜單和懶加載子節點。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display hierarchical data with selectable, checkable, searchable, draggable, and async-loaded nodes.</source>
+        <target state="translated">展示層級數據，支持選擇、勾選、搜索、拖拽和異步加載節點。</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="SearchableByTemplateDescription">
+      <segment>
+        <source>Searchable Tree use ItemsSource datasource.</source>
+        <target state="translated">使用 ItemsSource 數據源的可搜索樹。</target>
+      </segment>
+    </unit>
+    <unit id="SearchableByTemplateTitle">
+      <segment>
+        <source>Searchable by TreeDataTemplate</source>
+        <target state="translated">通過 TreeDataTemplate 搜索</target>
+      </segment>
+    </unit>
+    <unit id="SearchableDescription">
+      <segment>
+        <source>Searchable Tree.</source>
+        <target state="translated">可搜索的樹。</target>
+      </segment>
+    </unit>
+    <unit id="SearchableTitle">
+      <segment>
+        <source>Searchable</source>
+        <target state="translated">可搜索</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingClear">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">清除</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingDescription">
+      <segment>
+        <source>Bind SelectedItem to a node object instance, then click a node or action button to watch the bound value update.</source>
+        <target state="translated">將 SelectedItem 綁定到節點物件實例，點擊節點或操作按鈕即可觀察綁定值同步更新。</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingSelectBoth">
+      <segment>
+        <source>Select both</source>
+        <target state="translated">選擇兩個節點</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingSelectFirst">
+      <segment>
+        <source>Select parent 1-0</source>
+        <target state="translated">選擇 parent 1-0</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingSelectSecond">
+      <segment>
+        <source>Select parent 1-1</source>
+        <target state="translated">選擇 parent 1-1</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingTitle">
+      <segment>
+        <source>SelectedItem binding</source>
+        <target state="translated">SelectedItem 綁定</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingValueTitle">
+      <segment>
+        <source>Bound value</source>
+        <target state="translated">綁定值</target>
+      </segment>
+    </unit>
+    <unit id="SelectionItemsBindingDescription">
+      <segment>
+        <source>Bind SelectedItems to node object instances, then click nodes or action buttons to watch the selected collection update.</source>
+        <target state="translated">將 SelectedItems 綁定到節點物件實例集合，點擊節點或操作按鈕即可觀察選中集合更新。</target>
+      </segment>
+    </unit>
+    <unit id="SelectionItemsBindingTitle">
+      <segment>
+        <source>SelectedItems binding</source>
+        <target state="translated">SelectedItems 綁定</target>
+      </segment>
+    </unit>
+    <unit id="TreeWithLineDescription">
+      <segment>
+        <source>Tree with connected line between nodes, turn on by showLine, customize the preset icon by switcherIcon.</source>
+        <target state="translated">節點之間帶連接線的樹。通過 showLine 開啓，並可通過 switcherIcon 自定義預設圖標。</target>
+      </segment>
+    </unit>
+    <unit id="TreeWithLineTitle">
+      <segment>
+        <source>Tree with line</source>
+        <target state="translated">帶連接線的樹</target>
       </segment>
     </unit>
   </file>

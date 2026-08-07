@@ -12,12 +12,12 @@
         <AtomUILanguageOverride Include="$(MSBuildProjectDirectory)/Localization/Overrides/**/*.xlf"
                                 Exclude="$(_AtomUILanguageFileExcludes);@(AtomUILanguageOverride)">
             <AtomUILanguagePackagePath>%(RecursiveDir)%(Filename)%(Extension)</AtomUILanguagePackagePath>
-            <AtomUILanguageContractVersion Condition="'%(AtomUILanguageContractVersion)' == ''">1</AtomUILanguageContractVersion>
+            <AtomUILanguageContractVersion Condition="'%(AtomUILanguageContractVersion)' == ''">$(AtomUILanguageContractVersion)</AtomUILanguageContractVersion>
         </AtomUILanguageOverride>
         <AtomUILanguage Include="$(MSBuildProjectDirectory)/**/Localization/**/*.xlf"
                         Exclude="$(_AtomUILanguageFileExcludes);@(AtomUILanguage);@(AtomUILanguageOverride)">
             <AtomUILanguagePackagePath>%(RecursiveDir)%(Filename)%(Extension)</AtomUILanguagePackagePath>
-            <AtomUILanguageContractVersion Condition="'%(AtomUILanguageContractVersion)' == ''">1</AtomUILanguageContractVersion>
+            <AtomUILanguageContractVersion Condition="'%(AtomUILanguageContractVersion)' == ''">$(AtomUILanguageContractVersion)</AtomUILanguageContractVersion>
         </AtomUILanguage>
 
         <AdditionalFiles Remove="@(AtomUILanguage);@(AtomUILanguageOverride)" />
@@ -58,20 +58,15 @@
     </PropertyGroup>
 
     <UsingTask TaskName="AtomUI.Build.Tasks.CollectLanguageCatalogsTask"
-               AssemblyFile="$(AtomUILocalizationBuildTasksAssembly)"
-               Condition="Exists('$(AtomUILocalizationBuildTasksAssembly)')" />
+               AssemblyFile="$(AtomUILocalizationBuildTasksAssembly)" />
     <UsingTask TaskName="AtomUI.Build.Tasks.ValidateLanguageFilesTask"
-               AssemblyFile="$(AtomUILocalizationBuildTasksAssembly)"
-               Condition="Exists('$(AtomUILocalizationBuildTasksAssembly)')" />
+               AssemblyFile="$(AtomUILocalizationBuildTasksAssembly)" />
     <UsingTask TaskName="AtomUI.Build.Tasks.ExportLanguageTemplatesTask"
-               AssemblyFile="$(AtomUILocalizationBuildTasksAssembly)"
-               Condition="Exists('$(AtomUILocalizationBuildTasksAssembly)')" />
+               AssemblyFile="$(AtomUILocalizationBuildTasksAssembly)" />
     <UsingTask TaskName="AtomUI.Build.Tasks.PrepareLanguagePackageTask"
-               AssemblyFile="$(AtomUILocalizationBuildTasksAssembly)"
-               Condition="Exists('$(AtomUILocalizationBuildTasksAssembly)')" />
+               AssemblyFile="$(AtomUILocalizationBuildTasksAssembly)" />
     <UsingTask TaskName="AtomUI.Build.Tasks.GenerateLanguagePackagePropsTask"
-               AssemblyFile="$(AtomUILocalizationBuildTasksAssembly)"
-               Condition="Exists('$(AtomUILocalizationBuildTasksAssembly)')" />
+               AssemblyFile="$(AtomUILocalizationBuildTasksAssembly)" />
 
     <Target Name="AtomUICollectLanguageCatalogs"
             Condition="Exists('$(AtomUILocalizationBuildTasksAssembly)') and '@(AtomUILanguageCatalog)' != ''">

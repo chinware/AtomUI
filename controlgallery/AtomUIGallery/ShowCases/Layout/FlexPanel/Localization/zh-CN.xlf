@@ -1,622 +1,622 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind">
-    <unit id="1" name="ScenarioBasic">
-      <segment>
-        <source>Basic</source>
-        <target state="translated">基础</target>
-      </segment>
-    </unit>
-    <unit id="2" name="ScenarioAlignment">
-      <segment>
-        <source>Alignment</source>
-        <target state="translated">对齐</target>
-      </segment>
-    </unit>
-    <unit id="3" name="ScenarioItem">
-      <segment>
-        <source>Item</source>
-        <target state="translated">项目</target>
-      </segment>
-    </unit>
-    <unit id="4" name="ScenarioCombination">
-      <segment>
-        <source>Combination</source>
-        <target state="translated">组合</target>
-      </segment>
-    </unit>
-    <unit id="5" name="ScenarioPlayground">
-      <segment>
-        <source>Playground</source>
-        <target state="translated">演练场</target>
-      </segment>
-    </unit>
-    <unit id="6" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">示例</target>
-      </segment>
-    </unit>
-    <unit id="7" name="PageSubtitle">
-      <segment>
-        <source>Arrange children with CSS Flexbox-style layout rules.</source>
-        <target state="translated">使用类似 CSS Flexbox 的布局规则排列子控件。</target>
-      </segment>
-    </unit>
-    <unit id="8" name="PageDescription">
-      <segment>
-        <source>FlexPanel provides direction, wrapping, alignment, spacing, and per-item flex sizing for responsive layouts.</source>
-        <target state="translated">FlexPanel 提供方向、换行、对齐、间距和单项 flex 尺寸控制，适合响应式布局。</target>
-      </segment>
-    </unit>
-    <unit id="9" name="ComponentCategory">
-      <segment>
-        <source>Layout</source>
-        <target state="translated">布局</target>
-      </segment>
-    </unit>
-    <unit id="10" name="ComponentStatusStable">
-      <segment>
-        <source>Stable</source>
-        <target state="translated">稳定</target>
-      </segment>
-    </unit>
-    <unit id="11" name="BasicLayoutTitle">
-      <segment>
-        <source>Basic Layout</source>
-        <target state="translated">基础布局</target>
-      </segment>
-    </unit>
-    <unit id="12" name="BasicLayoutDescription">
-      <segment>
-        <source>The basic usage.</source>
-        <target state="translated">基础用法。</target>
-      </segment>
-    </unit>
-    <unit id="13" name="AlignmentTitle">
-      <segment>
-        <source>Alignment</source>
-        <target state="translated">对齐</target>
-      </segment>
-    </unit>
-    <unit id="14" name="AlignmentDescription">
-      <segment>
-        <source>Set justify and align.</source>
-        <target state="translated">设置 justify 和 align。</target>
-      </segment>
-    </unit>
-    <unit id="15" name="GapTitle">
-      <segment>
-        <source>Gap</source>
-        <target state="translated">间距</target>
-      </segment>
-    </unit>
-    <unit id="16" name="GapDescription">
-      <segment>
-        <source>Set spacing between items.</source>
-        <target state="translated">设置项目之间的间距。</target>
-      </segment>
-    </unit>
-    <unit id="17" name="AlignSelfTitle">
-      <segment>
-        <source>Align Self</source>
-        <target state="translated">单项对齐</target>
-      </segment>
-    </unit>
-    <unit id="18" name="AlignSelfDescription">
+    <unit id="AlignSelfDescription">
       <segment>
         <source>Override alignment per item with Flex.AlignSelf.</source>
         <target state="translated">使用 Flex.AlignSelf 覆盖单个项目的对齐方式。</target>
       </segment>
     </unit>
-    <unit id="19" name="AutoWrapTitle">
+    <unit id="AlignSelfTitle">
       <segment>
-        <source>Auto Wrap</source>
-        <target state="translated">自动换行</target>
+        <source>Align Self</source>
+        <target state="translated">单项对齐</target>
       </segment>
     </unit>
-    <unit id="20" name="AutoWrapDescription">
+    <unit id="AlignmentDescription">
+      <segment>
+        <source>Set justify and align.</source>
+        <target state="translated">设置 justify 和 align。</target>
+      </segment>
+    </unit>
+    <unit id="AlignmentTitle">
+      <segment>
+        <source>Alignment</source>
+        <target state="translated">对齐</target>
+      </segment>
+    </unit>
+    <unit id="AutoWrapDescription">
       <segment>
         <source>Items wrap automatically.</source>
         <target state="translated">项目会自动换行。</target>
       </segment>
     </unit>
-    <unit id="21" name="OrderTitle">
+    <unit id="AutoWrapTitle">
       <segment>
-        <source>Order</source>
-        <target state="translated">排序</target>
+        <source>Auto Wrap</source>
+        <target state="translated">自动换行</target>
       </segment>
     </unit>
-    <unit id="22" name="OrderDescription">
+    <unit id="BasicLayoutDescription">
       <segment>
-        <source>Change item order with Flex.Order.</source>
-        <target state="translated">使用 Flex.Order 改变项目顺序。</target>
+        <source>The basic usage.</source>
+        <target state="translated">基础用法。</target>
       </segment>
     </unit>
-    <unit id="23" name="BasisTitle">
+    <unit id="BasicLayoutTitle">
       <segment>
-        <source>Basis</source>
-        <target state="translated">基础尺寸</target>
+        <source>Basic Layout</source>
+        <target state="translated">基础布局</target>
       </segment>
     </unit>
-    <unit id="24" name="BasisDescription">
+    <unit id="BasisDescription">
       <segment>
         <source>Control initial size with Flex.Basis.</source>
         <target state="translated">使用 Flex.Basis 控制初始尺寸。</target>
       </segment>
     </unit>
-    <unit id="25" name="FlexGrowTitle">
+    <unit id="BasisTitle">
       <segment>
-        <source>Flex Grow</source>
-        <target state="translated">Flex 增长</target>
+        <source>Basis</source>
+        <target state="translated">基础尺寸</target>
       </segment>
     </unit>
-    <unit id="26" name="FlexGrowDescription">
-      <segment>
-        <source>Distribute free space with Flex.Grow.</source>
-        <target state="translated">使用 Flex.Grow 分配剩余空间。</target>
-      </segment>
-    </unit>
-    <unit id="27" name="FlexShrinkTitle">
-      <segment>
-        <source>Flex Shrink (Weighted)</source>
-        <target state="translated">Flex 收缩（加权）</target>
-      </segment>
-    </unit>
-    <unit id="28" name="FlexShrinkDescription">
-      <segment>
-        <source>Shrink is weighted by each item's base size.</source>
-        <target state="translated">收缩量按每个项目的基础尺寸加权。</target>
-      </segment>
-    </unit>
-    <unit id="29" name="CombinationTitle">
-      <segment>
-        <source>Combination</source>
-        <target state="translated">组合布局</target>
-      </segment>
-    </unit>
-    <unit id="30" name="CombinationDescription">
+    <unit id="CombinationDescription">
       <segment>
         <source>Nested flex panels for complex layouts.</source>
         <target state="translated">使用嵌套 FlexPanel 构建复杂布局。</target>
       </segment>
     </unit>
-    <unit id="31" name="PlaygroundTitle">
+    <unit id="CombinationTitle">
       <segment>
-        <source>Flex Playground</source>
-        <target state="translated">Flex 演练场</target>
+        <source>Combination</source>
+        <target state="translated">组合布局</target>
       </segment>
     </unit>
-    <unit id="32" name="PlaygroundDescription">
+    <unit id="ComponentCategory">
       <segment>
-        <source>Adjust all flex properties.</source>
-        <target state="translated">调整所有 flex 属性。</target>
+        <source>Layout</source>
+        <target state="translated">布局</target>
       </segment>
     </unit>
-    <unit id="33" name="P2TextItemA">
+    <unit id="ComponentStatusStable">
       <segment>
-        <source>Item A</source>
-        <target state="translated">项目 A</target>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
       </segment>
     </unit>
-    <unit id="34" name="P2TextA">
+    <unit id="FlexGrowDescription">
+      <segment>
+        <source>Distribute free space with Flex.Grow.</source>
+        <target state="translated">使用 Flex.Grow 分配剩余空间。</target>
+      </segment>
+    </unit>
+    <unit id="FlexGrowTitle">
+      <segment>
+        <source>Flex Grow</source>
+        <target state="translated">Flex 增长</target>
+      </segment>
+    </unit>
+    <unit id="FlexShrinkDescription">
+      <segment>
+        <source>Shrink is weighted by each item's base size.</source>
+        <target state="translated">收缩量按每个项目的基础尺寸加权。</target>
+      </segment>
+    </unit>
+    <unit id="FlexShrinkTitle">
+      <segment>
+        <source>Flex Shrink (Weighted)</source>
+        <target state="translated">Flex 收缩（加权）</target>
+      </segment>
+    </unit>
+    <unit id="GapDescription">
+      <segment>
+        <source>Set spacing between items.</source>
+        <target state="translated">设置项目之间的间距。</target>
+      </segment>
+    </unit>
+    <unit id="GapTitle">
+      <segment>
+        <source>Gap</source>
+        <target state="translated">间距</target>
+      </segment>
+    </unit>
+    <unit id="OrderDescription">
+      <segment>
+        <source>Change item order with Flex.Order.</source>
+        <target state="translated">使用 Flex.Order 改变项目顺序。</target>
+      </segment>
+    </unit>
+    <unit id="OrderTitle">
+      <segment>
+        <source>Order</source>
+        <target state="translated">排序</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentA">
       <segment>
         <source>A</source>
         <target state="translated">A</target>
       </segment>
     </unit>
-    <unit id="35" name="P2TextB">
-      <segment>
-        <source>B</source>
-        <target state="translated">B</target>
-      </segment>
-    </unit>
-    <unit id="36" name="P2TextC">
-      <segment>
-        <source>C</source>
-        <target state="translated">C</target>
-      </segment>
-    </unit>
-    <unit id="37" name="P2TextD">
-      <segment>
-        <source>D</source>
-        <target state="translated">D</target>
-      </segment>
-    </unit>
-    <unit id="38" name="P2TextPx">
-      <segment>
-        <source>px</source>
-        <target state="translated">px</target>
-      </segment>
-    </unit>
-    <unit id="39" name="P2TextGrow">
-      <segment>
-        <source>Grow</source>
-        <target state="translated">增长</target>
-      </segment>
-    </unit>
-    <unit id="40" name="P2TextItemB">
-      <segment>
-        <source>Item B</source>
-        <target state="translated">项目 B</target>
-      </segment>
-    </unit>
-    <unit id="41" name="P2TextBasisN200">
-      <segment>
-        <source>Basis 200</source>
-        <target state="translated">Basis 200</target>
-      </segment>
-    </unit>
-    <unit id="42" name="P2TextBasisN100">
-      <segment>
-        <source>Basis 100</source>
-        <target state="translated">Basis 100</target>
-      </segment>
-    </unit>
-    <unit id="43" name="P2TextAtomuiIsAnEnterpriseClassUiDesignLanguage">
-      <segment>
-        <source>"AtomUI is an enterprise-class UI design language and Avalonia UI library."</source>
-        <target state="translated">"AtomUI is an enterprise-class UI design language and Avalonia UI library."</target>
-      </segment>
-    </unit>
-    <unit id="44" name="P2ContentHorizontal">
-      <segment>
-        <source>horizontal</source>
-        <target state="translated">horizontal</target>
-      </segment>
-    </unit>
-    <unit id="45" name="P2ContentVertical">
-      <segment>
-        <source>vertical</source>
-        <target state="translated">vertical</target>
-      </segment>
-    </unit>
-    <unit id="46" name="P2TextSelectJustify">
-      <segment>
-        <source>Select justify:</source>
-        <target state="translated">选择 justify：</target>
-      </segment>
-    </unit>
-    <unit id="47" name="P2ContentFlexStart">
-      <segment>
-        <source>flex-start</source>
-        <target state="translated">flex-start</target>
-      </segment>
-    </unit>
-    <unit id="48" name="P2ContentCenter">
-      <segment>
-        <source>center</source>
-        <target state="translated">center</target>
-      </segment>
-    </unit>
-    <unit id="49" name="P2ContentFlexEnd">
-      <segment>
-        <source>flex-end</source>
-        <target state="translated">flex-end</target>
-      </segment>
-    </unit>
-    <unit id="50" name="P2ContentSpaceBetween">
-      <segment>
-        <source>space-between</source>
-        <target state="translated">space-between</target>
-      </segment>
-    </unit>
-    <unit id="51" name="P2ContentSpaceAround">
-      <segment>
-        <source>space-around</source>
-        <target state="translated">space-around</target>
-      </segment>
-    </unit>
-    <unit id="52" name="P2ContentSpaceEvenly">
-      <segment>
-        <source>space-evenly</source>
-        <target state="translated">space-evenly</target>
-      </segment>
-    </unit>
-    <unit id="53" name="P2TextSelectAlign">
-      <segment>
-        <source>Select align:</source>
-        <target state="translated">选择 align：</target>
-      </segment>
-    </unit>
-    <unit id="54" name="P2ContentStretch">
-      <segment>
-        <source>stretch</source>
-        <target state="translated">stretch</target>
-      </segment>
-    </unit>
-    <unit id="55" name="P2ContentPrimary">
-      <segment>
-        <source>Primary</source>
-        <target state="translated">主要</target>
-      </segment>
-    </unit>
-    <unit id="56" name="P2ContentSmall">
-      <segment>
-        <source>small</source>
-        <target state="translated">small</target>
-      </segment>
-    </unit>
-    <unit id="57" name="P2ContentMiddle">
-      <segment>
-        <source>middle</source>
-        <target state="translated">middle</target>
-      </segment>
-    </unit>
-    <unit id="58" name="P2ContentLarge">
-      <segment>
-        <source>large</source>
-        <target state="translated">large</target>
-      </segment>
-    </unit>
-    <unit id="59" name="P2ContentCustomize">
-      <segment>
-        <source>customize</source>
-        <target state="translated">customize</target>
-      </segment>
-    </unit>
-    <unit id="60" name="P2TextCustomGap">
-      <segment>
-        <source>Custom gap:</source>
-        <target state="translated">自定义间距：</target>
-      </segment>
-    </unit>
-    <unit id="61" name="P2ContentDefault">
-      <segment>
-        <source>Default</source>
-        <target state="translated">默认</target>
-      </segment>
-    </unit>
-    <unit id="62" name="P2ContentDashed">
-      <segment>
-        <source>Dashed</source>
-        <target state="translated">虚线</target>
-      </segment>
-    </unit>
-    <unit id="63" name="P2ContentLink">
-      <segment>
-        <source>Link</source>
-        <target state="translated">链接</target>
-      </segment>
-    </unit>
-    <unit id="64" name="P2ContentWrap">
-      <segment>
-        <source>wrap</source>
-        <target state="translated">wrap</target>
-      </segment>
-    </unit>
-    <unit id="65" name="P2ContentNowrap">
-      <segment>
-        <source>nowrap</source>
-        <target state="translated">nowrap</target>
-      </segment>
-    </unit>
-    <unit id="66" name="P2ContentButton">
-      <segment>
-        <source>Button</source>
-        <target state="translated">按钮</target>
-      </segment>
-    </unit>
-    <unit id="67" name="P2ContentDefault2">
-      <segment>
-        <source>default</source>
-        <target state="translated">default</target>
-      </segment>
-    </unit>
-    <unit id="68" name="P2ContentReverse">
-      <segment>
-        <source>reverse</source>
-        <target state="translated">reverse</target>
-      </segment>
-    </unit>
-    <unit id="69" name="P2ContentCustom">
-      <segment>
-        <source>custom</source>
-        <target state="translated">custom</target>
-      </segment>
-    </unit>
-    <unit id="70" name="P2ContentAuto">
-      <segment>
-        <source>auto</source>
-        <target state="translated">auto</target>
-      </segment>
-    </unit>
-    <unit id="71" name="P2ContentAbsolute">
+    <unit id="P2ContentAbsolute">
       <segment>
         <source>absolute</source>
         <target state="translated">absolute</target>
       </segment>
     </unit>
-    <unit id="72" name="P2ContentRelative">
+    <unit id="P2ContentAuto">
       <segment>
-        <source>relative</source>
-        <target state="translated">relative</target>
+        <source>auto</source>
+        <target state="translated">auto</target>
       </segment>
     </unit>
-    <unit id="73" name="P2TextValue">
-      <segment>
-        <source>Value:</source>
-        <target state="translated">值：</target>
-      </segment>
-    </unit>
-    <unit id="74" name="P2TextPercent">
-      <segment>
-        <source>Percent:</source>
-        <target state="translated">百分比：</target>
-      </segment>
-    </unit>
-    <unit id="75" name="P2TextItemA2">
-      <segment>
-        <source>Item A:</source>
-        <target state="translated">项目 A：</target>
-      </segment>
-    </unit>
-    <unit id="76" name="P2TextItemB2">
-      <segment>
-        <source>Item B:</source>
-        <target state="translated">项目 B：</target>
-      </segment>
-    </unit>
-    <unit id="77" name="P2TextContainerWidth">
-      <segment>
-        <source>Container width:</source>
-        <target state="translated">容器宽度：</target>
-      </segment>
-    </unit>
-    <unit id="78" name="P2ContentGetStarted">
-      <segment>
-        <source>Get Started</source>
-        <target state="translated">Get Started</target>
-      </segment>
-    </unit>
-    <unit id="79" name="P2TextPanel">
-      <segment>
-        <source>Panel</source>
-        <target state="translated">Panel</target>
-      </segment>
-    </unit>
-    <unit id="80" name="P2TextDirection">
-      <segment>
-        <source>Direction:</source>
-        <target state="translated">Direction:</target>
-      </segment>
-    </unit>
-    <unit id="81" name="P2ContentRow">
-      <segment>
-        <source>row</source>
-        <target state="translated">row</target>
-      </segment>
-    </unit>
-    <unit id="82" name="P2ContentColumn">
-      <segment>
-        <source>column</source>
-        <target state="translated">column</target>
-      </segment>
-    </unit>
-    <unit id="83" name="P2ContentRowReverse">
-      <segment>
-        <source>row-reverse</source>
-        <target state="translated">row-reverse</target>
-      </segment>
-    </unit>
-    <unit id="84" name="P2ContentColumnReverse">
-      <segment>
-        <source>column-reverse</source>
-        <target state="translated">column-reverse</target>
-      </segment>
-    </unit>
-    <unit id="85" name="P2TextWrap">
-      <segment>
-        <source>Wrap:</source>
-        <target state="translated">Wrap:</target>
-      </segment>
-    </unit>
-    <unit id="86" name="P2ContentWrapReverse">
-      <segment>
-        <source>wrap-reverse</source>
-        <target state="translated">wrap-reverse</target>
-      </segment>
-    </unit>
-    <unit id="87" name="P2TextJustify">
-      <segment>
-        <source>Justify:</source>
-        <target state="translated">Justify:</target>
-      </segment>
-    </unit>
-    <unit id="88" name="P2TextAlignItems">
-      <segment>
-        <source>Align items:</source>
-        <target state="translated">Align items:</target>
-      </segment>
-    </unit>
-    <unit id="89" name="P2TextAlignContent">
-      <segment>
-        <source>Align content:</source>
-        <target state="translated">Align content:</target>
-      </segment>
-    </unit>
-    <unit id="90" name="P2TextColumnGap">
-      <segment>
-        <source>Column gap:</source>
-        <target state="translated">Column gap:</target>
-      </segment>
-    </unit>
-    <unit id="91" name="P2TextRowGap">
-      <segment>
-        <source>Row gap:</source>
-        <target state="translated">Row gap:</target>
-      </segment>
-    </unit>
-    <unit id="92" name="P2TextWidth">
-      <segment>
-        <source>Width:</source>
-        <target state="translated">Width:</target>
-      </segment>
-    </unit>
-    <unit id="93" name="P2TextHeight">
-      <segment>
-        <source>Height:</source>
-        <target state="translated">Height:</target>
-      </segment>
-    </unit>
-    <unit id="94" name="P2TextItem">
-      <segment>
-        <source>Item</source>
-        <target state="translated">Item</target>
-      </segment>
-    </unit>
-    <unit id="95" name="P2TextSelect">
-      <segment>
-        <source>Select:</source>
-        <target state="translated">Select:</target>
-      </segment>
-    </unit>
-    <unit id="96" name="P2ContentA">
-      <segment>
-        <source>A</source>
-        <target state="translated">A</target>
-      </segment>
-    </unit>
-    <unit id="97" name="P2ContentB">
+    <unit id="P2ContentB">
       <segment>
         <source>B</source>
         <target state="translated">B</target>
       </segment>
     </unit>
-    <unit id="98" name="P2ContentC">
+    <unit id="P2ContentButton">
+      <segment>
+        <source>Button</source>
+        <target state="translated">按钮</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentC">
       <segment>
         <source>C</source>
         <target state="translated">C</target>
       </segment>
     </unit>
-    <unit id="99" name="P2TextAlignSelf">
+    <unit id="P2ContentCenter">
+      <segment>
+        <source>center</source>
+        <target state="translated">center</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentColumn">
+      <segment>
+        <source>column</source>
+        <target state="translated">column</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentColumnReverse">
+      <segment>
+        <source>column-reverse</source>
+        <target state="translated">column-reverse</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustom">
+      <segment>
+        <source>custom</source>
+        <target state="translated">custom</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustomize">
+      <segment>
+        <source>customize</source>
+        <target state="translated">customize</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDashed">
+      <segment>
+        <source>Dashed</source>
+        <target state="translated">虚线</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+        <target state="translated">默认</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefault2">
+      <segment>
+        <source>default</source>
+        <target state="translated">default</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentFlexEnd">
+      <segment>
+        <source>flex-end</source>
+        <target state="translated">flex-end</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentFlexStart">
+      <segment>
+        <source>flex-start</source>
+        <target state="translated">flex-start</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentGetStarted">
+      <segment>
+        <source>Get Started</source>
+        <target state="translated">Get Started</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentHorizontal">
+      <segment>
+        <source>horizontal</source>
+        <target state="translated">horizontal</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>large</source>
+        <target state="translated">large</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLink">
+      <segment>
+        <source>Link</source>
+        <target state="translated">链接</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentMiddle">
+      <segment>
+        <source>middle</source>
+        <target state="translated">middle</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentNowrap">
+      <segment>
+        <source>nowrap</source>
+        <target state="translated">nowrap</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPrimary">
+      <segment>
+        <source>Primary</source>
+        <target state="translated">主要</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRelative">
+      <segment>
+        <source>relative</source>
+        <target state="translated">relative</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentReverse">
+      <segment>
+        <source>reverse</source>
+        <target state="translated">reverse</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRow">
+      <segment>
+        <source>row</source>
+        <target state="translated">row</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRowReverse">
+      <segment>
+        <source>row-reverse</source>
+        <target state="translated">row-reverse</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>small</source>
+        <target state="translated">small</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSpaceAround">
+      <segment>
+        <source>space-around</source>
+        <target state="translated">space-around</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSpaceBetween">
+      <segment>
+        <source>space-between</source>
+        <target state="translated">space-between</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSpaceEvenly">
+      <segment>
+        <source>space-evenly</source>
+        <target state="translated">space-evenly</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentStretch">
+      <segment>
+        <source>stretch</source>
+        <target state="translated">stretch</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentVertical">
+      <segment>
+        <source>vertical</source>
+        <target state="translated">vertical</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentWrap">
+      <segment>
+        <source>wrap</source>
+        <target state="translated">wrap</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentWrapReverse">
+      <segment>
+        <source>wrap-reverse</source>
+        <target state="translated">wrap-reverse</target>
+      </segment>
+    </unit>
+    <unit id="P2TextA">
+      <segment>
+        <source>A</source>
+        <target state="translated">A</target>
+      </segment>
+    </unit>
+    <unit id="P2TextAlignContent">
+      <segment>
+        <source>Align content:</source>
+        <target state="translated">Align content:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextAlignItems">
+      <segment>
+        <source>Align items:</source>
+        <target state="translated">Align items:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextAlignSelf">
       <segment>
         <source>Align self:</source>
         <target state="translated">Align self:</target>
       </segment>
     </unit>
-    <unit id="100" name="P2TextBasis">
+    <unit id="P2TextAtomuiIsAnEnterpriseClassUiDesignLanguage">
+      <segment>
+        <source>"AtomUI is an enterprise-class UI design language and Avalonia UI library."</source>
+        <target state="translated">"AtomUI is an enterprise-class UI design language and Avalonia UI library."</target>
+      </segment>
+    </unit>
+    <unit id="P2TextB">
+      <segment>
+        <source>B</source>
+        <target state="translated">B</target>
+      </segment>
+    </unit>
+    <unit id="P2TextBasis">
       <segment>
         <source>Basis:</source>
         <target state="translated">Basis:</target>
       </segment>
     </unit>
-    <unit id="101" name="P2TextGrow2">
+    <unit id="P2TextBasisN100">
+      <segment>
+        <source>Basis 100</source>
+        <target state="translated">Basis 100</target>
+      </segment>
+    </unit>
+    <unit id="P2TextBasisN200">
+      <segment>
+        <source>Basis 200</source>
+        <target state="translated">Basis 200</target>
+      </segment>
+    </unit>
+    <unit id="P2TextC">
+      <segment>
+        <source>C</source>
+        <target state="translated">C</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColumnGap">
+      <segment>
+        <source>Column gap:</source>
+        <target state="translated">Column gap:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextContainerWidth">
+      <segment>
+        <source>Container width:</source>
+        <target state="translated">容器宽度：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCustomGap">
+      <segment>
+        <source>Custom gap:</source>
+        <target state="translated">自定义间距：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextD">
+      <segment>
+        <source>D</source>
+        <target state="translated">D</target>
+      </segment>
+    </unit>
+    <unit id="P2TextDirection">
+      <segment>
+        <source>Direction:</source>
+        <target state="translated">Direction:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextGrow">
+      <segment>
+        <source>Grow</source>
+        <target state="translated">增长</target>
+      </segment>
+    </unit>
+    <unit id="P2TextGrow2">
       <segment>
         <source>Grow:</source>
         <target state="translated">Grow:</target>
       </segment>
     </unit>
-    <unit id="102" name="P2TextShrink">
+    <unit id="P2TextHeight">
+      <segment>
+        <source>Height:</source>
+        <target state="translated">Height:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextItem">
+      <segment>
+        <source>Item</source>
+        <target state="translated">Item</target>
+      </segment>
+    </unit>
+    <unit id="P2TextItemA">
+      <segment>
+        <source>Item A</source>
+        <target state="translated">项目 A</target>
+      </segment>
+    </unit>
+    <unit id="P2TextItemA2">
+      <segment>
+        <source>Item A:</source>
+        <target state="translated">项目 A：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextItemB">
+      <segment>
+        <source>Item B</source>
+        <target state="translated">项目 B</target>
+      </segment>
+    </unit>
+    <unit id="P2TextItemB2">
+      <segment>
+        <source>Item B:</source>
+        <target state="translated">项目 B：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextJustify">
+      <segment>
+        <source>Justify:</source>
+        <target state="translated">Justify:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextOrder">
+      <segment>
+        <source>Order:</source>
+        <target state="translated">Order:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPanel">
+      <segment>
+        <source>Panel</source>
+        <target state="translated">Panel</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPercent">
+      <segment>
+        <source>Percent:</source>
+        <target state="translated">百分比：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPx">
+      <segment>
+        <source>px</source>
+        <target state="translated">px</target>
+      </segment>
+    </unit>
+    <unit id="P2TextRowGap">
+      <segment>
+        <source>Row gap:</source>
+        <target state="translated">Row gap:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSelect">
+      <segment>
+        <source>Select:</source>
+        <target state="translated">Select:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectAlign">
+      <segment>
+        <source>Select align:</source>
+        <target state="translated">选择 align：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectJustify">
+      <segment>
+        <source>Select justify:</source>
+        <target state="translated">选择 justify：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextShrink">
       <segment>
         <source>Shrink:</source>
         <target state="translated">Shrink:</target>
       </segment>
     </unit>
-    <unit id="103" name="P2TextOrder">
+    <unit id="P2TextValue">
       <segment>
-        <source>Order:</source>
-        <target state="translated">Order:</target>
+        <source>Value:</source>
+        <target state="translated">值：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextWidth">
+      <segment>
+        <source>Width:</source>
+        <target state="translated">Width:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextWrap">
+      <segment>
+        <source>Wrap:</source>
+        <target state="translated">Wrap:</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>FlexPanel provides direction, wrapping, alignment, spacing, and per-item flex sizing for responsive layouts.</source>
+        <target state="translated">FlexPanel 提供方向、换行、对齐、间距和单项 flex 尺寸控制，适合响应式布局。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Arrange children with CSS Flexbox-style layout rules.</source>
+        <target state="translated">使用类似 CSS Flexbox 的布局规则排列子控件。</target>
+      </segment>
+    </unit>
+    <unit id="PlaygroundDescription">
+      <segment>
+        <source>Adjust all flex properties.</source>
+        <target state="translated">调整所有 flex 属性。</target>
+      </segment>
+    </unit>
+    <unit id="PlaygroundTitle">
+      <segment>
+        <source>Flex Playground</source>
+        <target state="translated">Flex 演练场</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioAlignment">
+      <segment>
+        <source>Alignment</source>
+        <target state="translated">对齐</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioCombination">
+      <segment>
+        <source>Combination</source>
+        <target state="translated">组合</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioItem">
+      <segment>
+        <source>Item</source>
+        <target state="translated">项目</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioPlayground">
+      <segment>
+        <source>Playground</source>
+        <target state="translated">演练场</target>
       </segment>
     </unit>
   </file>

@@ -1,104 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.CommunityPageLangResourceKind">
-    <unit id="1" name="AboutAtomUI">
+    <unit id="AboutAtomUI">
       <segment>
         <source>About AtomUI</source>
       </segment>
     </unit>
-    <unit id="2" name="VisionLabel">
-      <segment>
-        <source>Vision:</source>
-      </segment>
-    </unit>
-    <unit id="3" name="VisionText">
-      <segment>
-        <source>To become a world-class provider of productivity software</source>
-      </segment>
-    </unit>
-    <unit id="4" name="MissionLabel">
-      <segment>
-        <source>Mission:</source>
-      </segment>
-    </unit>
-    <unit id="5" name="MissionText">
-      <segment>
-        <source>Make digital world builders more efficient</source>
-      </segment>
-    </unit>
-    <unit id="6" name="HomePage">
+    <unit id="HomePage">
       <segment>
         <source>Home Page</source>
       </segment>
     </unit>
-    <unit id="7" name="WeChatOfficial">
-      <segment>
-        <source>WeChat Press</source>
-      </segment>
-    </unit>
-    <unit id="8" name="WeChatOfficialDescription">
-      <segment>
-        <source>Follow release updates</source>
-      </segment>
-    </unit>
-    <unit id="9" name="TelegramGroup">
-      <segment>
-        <source>Telegram</source>
-      </segment>
-    </unit>
-    <unit id="10" name="TelegramGroupDescription">
-      <segment>
-        <source>Join the Telegram group</source>
-      </segment>
-    </unit>
-    <unit id="11" name="WeChatGroup">
-      <segment>
-        <source>WeChat Group</source>
-      </segment>
-    </unit>
-    <unit id="12" name="WeChatGroupDescription">
-      <segment>
-        <source>Join the WeChat group</source>
-      </segment>
-    </unit>
-    <unit id="13" name="QQGroup">
-      <segment>
-        <source>QQ Group</source>
-      </segment>
-    </unit>
-    <unit id="14" name="QQGroupDescription">
-      <segment>
-        <source>Join the QQ group</source>
-      </segment>
-    </unit>
-    <unit id="15" name="IncubationEyebrow">
-      <segment>
-        <source>INCUBATION SUPPORT</source>
-      </segment>
-    </unit>
-    <unit id="16" name="IncubationTitle">
-      <segment>
-        <source>AtomUI OSS joins the TLAIC open-source incubation program</source>
-      </segment>
-    </unit>
-    <unit id="17" name="IncubationDescription">
+    <unit id="IncubationDescription">
       <segment>
         <source>Supported by TLAIC, AtomUI OSS continues to advance cross-platform desktop software, open-source community operations, and the developer ecosystem.</source>
       </segment>
     </unit>
-    <unit id="18" name="IncubationPointOpenSource">
+    <unit id="IncubationEyebrow">
       <segment>
-        <source>Open-source incubation</source>
+        <source>INCUBATION SUPPORT</source>
       </segment>
     </unit>
-    <unit id="19" name="IncubationPointEcosystem">
+    <unit id="IncubationPointEcosystem">
       <segment>
         <source>Ecosystem building</source>
       </segment>
     </unit>
-    <unit id="20" name="IncubationPointLicense">
+    <unit id="IncubationPointLicense">
       <segment>
         <source>Open licensing</source>
+      </segment>
+    </unit>
+    <unit id="IncubationPointOpenSource">
+      <segment>
+        <source>Open-source incubation</source>
+      </segment>
+    </unit>
+    <unit id="IncubationTitle">
+      <segment>
+        <source>AtomUI OSS joins the TLAIC open-source incubation program</source>
+      </segment>
+    </unit>
+    <unit id="MissionLabel">
+      <segment>
+        <source>Mission:</source>
+      </segment>
+    </unit>
+    <unit id="MissionText">
+      <segment>
+        <source>Make digital world builders more efficient</source>
+      </segment>
+    </unit>
+    <unit id="QQGroup">
+      <segment>
+        <source>QQ Group</source>
+      </segment>
+    </unit>
+    <unit id="QQGroupDescription">
+      <segment>
+        <source>Join the QQ group</source>
+      </segment>
+    </unit>
+    <unit id="TelegramGroup">
+      <segment>
+        <source>Telegram</source>
+      </segment>
+    </unit>
+    <unit id="TelegramGroupDescription">
+      <segment>
+        <source>Join the Telegram group</source>
+      </segment>
+    </unit>
+    <unit id="VisionLabel">
+      <segment>
+        <source>Vision:</source>
+      </segment>
+    </unit>
+    <unit id="VisionText">
+      <segment>
+        <source>To become a world-class provider of productivity software</source>
+      </segment>
+    </unit>
+    <unit id="WeChatGroup">
+      <segment>
+        <source>WeChat Group</source>
+      </segment>
+    </unit>
+    <unit id="WeChatGroupDescription">
+      <segment>
+        <source>Join the WeChat group</source>
+      </segment>
+    </unit>
+    <unit id="WeChatOfficial">
+      <segment>
+        <source>WeChat Press</source>
+      </segment>
+    </unit>
+    <unit id="WeChatOfficialDescription">
+      <segment>
+        <source>Follow release updates</source>
       </segment>
     </unit>
   </file>

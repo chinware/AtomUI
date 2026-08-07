@@ -1,199 +1,199 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind">
-    <unit id="1" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-      </segment>
-    </unit>
-    <unit id="2" name="BasicDescription">
+    <unit id="BasicDescription">
       <segment>
         <source>Basic Usage.</source>
       </segment>
     </unit>
-    <unit id="3" name="ValueBindingTitle">
+    <unit id="BasicTitle">
       <segment>
-        <source>Value binding</source>
+        <source>Basic</source>
       </segment>
     </unit>
-    <unit id="4" name="ValueBindingDescription">
-      <segment>
-        <source>Value now defaults to TwoWay binding for both solid and gradient pickers, so edits update the ViewModel without an explicit binding mode.</source>
-      </segment>
-    </unit>
-    <unit id="5" name="TriggerSizeTitle">
-      <segment>
-        <source>Trigger size</source>
-      </segment>
-    </unit>
-    <unit id="6" name="TriggerSizeDescription">
-      <segment>
-        <source>Ant Design supports three trigger sizes: small, default and large.If a large or small trigger is desired, set the size property to either large or small.respectively. Omit the size property for a trigger with the default size.</source>
-      </segment>
-    </unit>
-    <unit id="7" name="P2LabelSizeTypeSmall">
-      <segment>
-        <source>Small</source>
-      </segment>
-    </unit>
-    <unit id="8" name="P2LabelSizeTypeMiddle">
-      <segment>
-        <source>Middle</source>
-      </segment>
-    </unit>
-    <unit id="9" name="P2LabelSizeTypeLarge">
-      <segment>
-        <source>Large</source>
-      </segment>
-    </unit>
-    <unit id="10" name="P2LabelSizeTypeCustom">
-      <segment>
-        <source>Custom</source>
-      </segment>
-    </unit>
-    <unit id="11" name="LineGradientTitle">
-      <segment>
-        <source>Line Gradient</source>
-      </segment>
-    </unit>
-    <unit id="12" name="LineGradientDescription">
-      <segment>
-        <source>Set the color to a single or a gradient color via mode.</source>
-      </segment>
-    </unit>
-    <unit id="13" name="RenderingTriggerTextTitle">
-      <segment>
-        <source>Rendering Trigger Text</source>
-      </segment>
-    </unit>
-    <unit id="14" name="RenderingTriggerTextDescription">
-      <segment>
-        <source>Renders the default text of the trigger, effective when showText is true. When customizing text, you can use showText as a function to return custom text.</source>
-      </segment>
-    </unit>
-    <unit id="15" name="DisabledTitle">
-      <segment>
-        <source>Disabled</source>
-      </segment>
-    </unit>
-    <unit id="16" name="DisabledDescription">
-      <segment>
-        <source>Set to disabled state.</source>
-      </segment>
-    </unit>
-    <unit id="17" name="DisabledAlphaTitle">
-      <segment>
-        <source>Disabled Alpha</source>
-      </segment>
-    </unit>
-    <unit id="18" name="DisabledAlphaDescription">
-      <segment>
-        <source>Disabled color alpha.</source>
-      </segment>
-    </unit>
-    <unit id="19" name="ClearColorTitle">
-      <segment>
-        <source>Clear Color</source>
-      </segment>
-    </unit>
-    <unit id="20" name="ClearColorDescription">
+    <unit id="ClearColorDescription">
       <segment>
         <source>Clear Color.</source>
       </segment>
     </unit>
-    <unit id="21" name="ControlledModeTitle">
+    <unit id="ClearColorTitle">
       <segment>
-        <source>controlled mode</source>
+        <source>Clear Color</source>
       </segment>
     </unit>
-    <unit id="22" name="ControlledModeDescription">
-      <segment>
-        <source>Set the component to controlled mode. Will lock the display color if controlled by.</source>
-      </segment>
-    </unit>
-    <unit id="23" name="CustomTriggerEventTitle">
-      <segment>
-        <source>Custom Trigger Event</source>
-      </segment>
-    </unit>
-    <unit id="24" name="CustomTriggerEventDescription">
-      <segment>
-        <source>Triggers event for customizing color panels, provide options click and hover.</source>
-      </segment>
-    </unit>
-    <unit id="25" name="ColorFormatTitle">
-      <segment>
-        <source>Color Format</source>
-      </segment>
-    </unit>
-    <unit id="26" name="ColorFormatDescription">
+    <unit id="ColorFormatDescription">
       <segment>
         <source>Encoding formats, support HEX, HSB, RGB.</source>
       </segment>
     </unit>
-    <unit id="27" name="PresetColorsTitle">
+    <unit id="ColorFormatTitle">
       <segment>
-        <source>Preset Colors</source>
+        <source>Color Format</source>
       </segment>
     </unit>
-    <unit id="28" name="PresetColorsDescription">
-      <segment>
-        <source>Set the presets color of the color picker.</source>
-      </segment>
-    </unit>
-    <unit id="29" name="PageSubtitle">
-      <segment>
-        <source>Pick solid colors or gradients from a compact trigger.</source>
-      </segment>
-    </unit>
-    <unit id="30" name="PageDescription">
-      <segment>
-        <source>ColorPicker supports solid and gradient values, trigger sizing, alpha control, text rendering, value synchronization, hover or click triggers, and preset palettes.</source>
-      </segment>
-    </unit>
-    <unit id="31" name="ComponentCategory">
+    <unit id="ComponentCategory">
       <segment>
         <source>Data Entry</source>
       </segment>
     </unit>
-    <unit id="32" name="ComponentStatusStable">
+    <unit id="ComponentStatusStable">
       <segment>
         <source>Stable</source>
       </segment>
     </unit>
-    <unit id="33" name="ScenarioExamples">
+    <unit id="ControlledModeDescription">
       <segment>
-        <source>Examples</source>
+        <source>Set the component to controlled mode. Will lock the display color if controlled by.</source>
       </segment>
     </unit>
-    <unit id="34" name="P2TextColorValue">
+    <unit id="ControlledModeTitle">
       <segment>
-        <source>Bound color:</source>
+        <source>controlled mode</source>
       </segment>
     </unit>
-    <unit id="35" name="P2TextGradientValue">
+    <unit id="CustomTriggerEventDescription">
       <segment>
-        <source>Bound gradient:</source>
+        <source>Triggers event for customizing color panels, provide options click and hover.</source>
       </segment>
     </unit>
-    <unit id="36" name="P2ContentSetColor">
+    <unit id="CustomTriggerEventTitle">
       <segment>
-        <source>Set color</source>
+        <source>Custom Trigger Event</source>
       </segment>
     </unit>
-    <unit id="37" name="P2ContentSetGradient">
+    <unit id="DisabledAlphaDescription">
       <segment>
-        <source>Set gradient</source>
+        <source>Disabled color alpha.</source>
       </segment>
     </unit>
-    <unit id="38" name="P2ContentClearColor">
+    <unit id="DisabledAlphaTitle">
+      <segment>
+        <source>Disabled Alpha</source>
+      </segment>
+    </unit>
+    <unit id="DisabledDescription">
+      <segment>
+        <source>Set to disabled state.</source>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+      </segment>
+    </unit>
+    <unit id="LineGradientDescription">
+      <segment>
+        <source>Set the color to a single or a gradient color via mode.</source>
+      </segment>
+    </unit>
+    <unit id="LineGradientTitle">
+      <segment>
+        <source>Line Gradient</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentClearColor">
       <segment>
         <source>Clear color</source>
       </segment>
     </unit>
-    <unit id="39" name="P2ContentClearGradient">
+    <unit id="P2ContentClearGradient">
       <segment>
         <source>Clear gradient</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetColor">
+      <segment>
+        <source>Set color</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetGradient">
+      <segment>
+        <source>Set gradient</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeCustom">
+      <segment>
+        <source>Custom</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeLarge">
+      <segment>
+        <source>Large</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeMiddle">
+      <segment>
+        <source>Middle</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeSmall">
+      <segment>
+        <source>Small</source>
+      </segment>
+    </unit>
+    <unit id="P2TextColorValue">
+      <segment>
+        <source>Bound color:</source>
+      </segment>
+    </unit>
+    <unit id="P2TextGradientValue">
+      <segment>
+        <source>Bound gradient:</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>ColorPicker supports solid and gradient values, trigger sizing, alpha control, text rendering, value synchronization, hover or click triggers, and preset palettes.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Pick solid colors or gradients from a compact trigger.</source>
+      </segment>
+    </unit>
+    <unit id="PresetColorsDescription">
+      <segment>
+        <source>Set the presets color of the color picker.</source>
+      </segment>
+    </unit>
+    <unit id="PresetColorsTitle">
+      <segment>
+        <source>Preset Colors</source>
+      </segment>
+    </unit>
+    <unit id="RenderingTriggerTextDescription">
+      <segment>
+        <source>Renders the default text of the trigger, effective when showText is true. When customizing text, you can use showText as a function to return custom text.</source>
+      </segment>
+    </unit>
+    <unit id="RenderingTriggerTextTitle">
+      <segment>
+        <source>Rendering Trigger Text</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="TriggerSizeDescription">
+      <segment>
+        <source>Ant Design supports three trigger sizes: small, default and large.If a large or small trigger is desired, set the size property to either large or small.respectively. Omit the size property for a trigger with the default size.</source>
+      </segment>
+    </unit>
+    <unit id="TriggerSizeTitle">
+      <segment>
+        <source>Trigger size</source>
+      </segment>
+    </unit>
+    <unit id="ValueBindingDescription">
+      <segment>
+        <source>Value now defaults to TwoWay binding for both solid and gradient pickers, so edits update the ViewModel without an explicit binding mode.</source>
+      </segment>
+    </unit>
+    <unit id="ValueBindingTitle">
+      <segment>
+        <source>Value binding</source>
       </segment>
     </unit>
   </file>

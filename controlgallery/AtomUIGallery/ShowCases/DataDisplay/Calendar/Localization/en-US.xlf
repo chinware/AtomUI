@@ -1,204 +1,204 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.CalendarShowCaseLangResourceKind">
-    <unit id="1" name="PageSubtitle">
-      <segment>
-        <source>Organize business content by date in a desktop calendar panel.</source>
-      </segment>
-    </unit>
-    <unit id="2" name="PageDescription">
-      <segment>
-        <source>Calendar presents a month date grid or a year month grid with valid range, disabled dates, cell customization, and selection events.</source>
-      </segment>
-    </unit>
-    <unit id="3" name="ComponentCategory">
-      <segment>
-        <source>Data Display</source>
-      </segment>
-    </unit>
-    <unit id="4" name="ComponentStatusStable">
-      <segment>
-        <source>Stable</source>
-      </segment>
-    </unit>
-    <unit id="5" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-      </segment>
-    </unit>
-    <unit id="6" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-      </segment>
-    </unit>
-    <unit id="7" name="BasicDescription">
+    <unit id="BasicDescription">
       <segment>
         <source>A full-screen month calendar.</source>
       </segment>
     </unit>
-    <unit id="8" name="CardTitle">
+    <unit id="BasicTitle">
       <segment>
-        <source>Card</source>
+        <source>Basic</source>
       </segment>
     </unit>
-    <unit id="9" name="CardDescription">
+    <unit id="CardDescription">
       <segment>
         <source>Nested inside a container element for rendering in limited space.</source>
       </segment>
     </unit>
-    <unit id="10" name="CustomHeaderTitle">
+    <unit id="CardTitle">
       <segment>
-        <source>Customize Header</source>
+        <source>Card</source>
       </segment>
     </unit>
-    <unit id="11" name="CustomHeaderDescription">
+    <unit id="ComponentCategory">
       <segment>
-        <source>Customize Calendar header content.</source>
+        <source>Data Display</source>
       </segment>
     </unit>
-    <unit id="12" name="CustomHeaderContentTitle">
+    <unit id="ComponentStatusStable">
       <segment>
-        <source>Custom header</source>
+        <source>Stable</source>
       </segment>
     </unit>
-    <unit id="13" name="CustomHeaderMonthText">
+    <unit id="CrossDateEventsBugFixText">
       <segment>
-        <source>Month</source>
+        <source>Bug fix</source>
       </segment>
     </unit>
-    <unit id="14" name="CustomHeaderYearText">
-      <segment>
-        <source>Year</source>
-      </segment>
-    </unit>
-    <unit id="15" name="LunarCalendarTitle">
-      <segment>
-        <source>Lunar Calendar</source>
-      </segment>
-    </unit>
-    <unit id="16" name="LunarCalendarDescription">
-      <segment>
-        <source>A full-screen calendar with lunar dates, solar terms, traditional festivals, and application-provided holiday annotations.</source>
-      </segment>
-    </unit>
-    <unit id="17" name="LunarCalendarCardTitle">
-      <segment>
-        <source>Lunar Calendar Card</source>
-      </segment>
-    </unit>
-    <unit id="18" name="LunarCalendarCardDescription">
-      <segment>
-        <source>A compact lunar calendar for limited spaces.</source>
-      </segment>
-    </unit>
-    <unit id="19" name="SelectableCalendarTitle">
-      <segment>
-        <source>Selectable Calendar</source>
-      </segment>
-    </unit>
-    <unit id="20" name="SelectableCalendarDescription">
-      <segment>
-        <source>A basic calendar component with Year/Month switch.</source>
-      </segment>
-    </unit>
-    <unit id="21" name="SelectableCalendarSelectedMessage">
-      <segment>
-        <source>You selected date: {0:yyyy-MM-dd}</source>
-      </segment>
-    </unit>
-    <unit id="22" name="ShowWeekTitle">
-      <segment>
-        <source>Show Week</source>
-      </segment>
-    </unit>
-    <unit id="23" name="ShowWeekDescription">
-      <segment>
-        <source>Show week numbers in full-screen and card calendars by setting ShowWeek to True.</source>
-      </segment>
-    </unit>
-    <unit id="24" name="NoticeCalendarTitle">
-      <segment>
-        <source>Notice Calendar</source>
-      </segment>
-    </unit>
-    <unit id="25" name="NoticeCalendarDescription">
-      <segment>
-        <source>Render notice items in date cells and backlog numbers in month cells.</source>
-      </segment>
-    </unit>
-    <unit id="26" name="NoticeCalendarWarningEventText">
-      <segment>
-        <source>This is warning event.</source>
-      </segment>
-    </unit>
-    <unit id="27" name="NoticeCalendarUsualEventText">
-      <segment>
-        <source>This is usual event.</source>
-      </segment>
-    </unit>
-    <unit id="28" name="NoticeCalendarErrorEventText">
-      <segment>
-        <source>This is error event.</source>
-      </segment>
-    </unit>
-    <unit id="29" name="NoticeCalendarLongUsualEventText">
-      <segment>
-        <source>This is very long usual event......</source>
-      </segment>
-    </unit>
-    <unit id="30" name="NoticeCalendarErrorEvent1Text">
-      <segment>
-        <source>This is error event 1.</source>
-      </segment>
-    </unit>
-    <unit id="31" name="NoticeCalendarErrorEvent2Text">
-      <segment>
-        <source>This is error event 2.</source>
-      </segment>
-    </unit>
-    <unit id="32" name="NoticeCalendarErrorEvent3Text">
-      <segment>
-        <source>This is error event 3.</source>
-      </segment>
-    </unit>
-    <unit id="33" name="NoticeCalendarErrorEvent4Text">
-      <segment>
-        <source>This is error event 4.</source>
-      </segment>
-    </unit>
-    <unit id="34" name="NoticeCalendarBacklogText">
-      <segment>
-        <source>Backlog number</source>
-      </segment>
-    </unit>
-    <unit id="35" name="CrossDateEventsTitle">
-      <segment>
-        <source>Event Range</source>
-      </segment>
-    </unit>
-    <unit id="36" name="CrossDateEventsDescription">
+    <unit id="CrossDateEventsDescription">
       <segment>
         <source>Declare RangeBars and let Calendar draw continuous event bars across dates.</source>
       </segment>
     </unit>
-    <unit id="37" name="CrossDateEventsReleaseText">
-      <segment>
-        <source>Release window</source>
-      </segment>
-    </unit>
-    <unit id="38" name="CrossDateEventsDesignReviewText">
+    <unit id="CrossDateEventsDesignReviewText">
       <segment>
         <source>Design review</source>
       </segment>
     </unit>
-    <unit id="39" name="CrossDateEventsMaintenanceText">
+    <unit id="CrossDateEventsMaintenanceText">
       <segment>
         <source>Maintenance</source>
       </segment>
     </unit>
-    <unit id="40" name="CrossDateEventsBugFixText">
+    <unit id="CrossDateEventsReleaseText">
       <segment>
-        <source>Bug fix</source>
+        <source>Release window</source>
+      </segment>
+    </unit>
+    <unit id="CrossDateEventsTitle">
+      <segment>
+        <source>Event Range</source>
+      </segment>
+    </unit>
+    <unit id="CustomHeaderContentTitle">
+      <segment>
+        <source>Custom header</source>
+      </segment>
+    </unit>
+    <unit id="CustomHeaderDescription">
+      <segment>
+        <source>Customize Calendar header content.</source>
+      </segment>
+    </unit>
+    <unit id="CustomHeaderMonthText">
+      <segment>
+        <source>Month</source>
+      </segment>
+    </unit>
+    <unit id="CustomHeaderTitle">
+      <segment>
+        <source>Customize Header</source>
+      </segment>
+    </unit>
+    <unit id="CustomHeaderYearText">
+      <segment>
+        <source>Year</source>
+      </segment>
+    </unit>
+    <unit id="LunarCalendarCardDescription">
+      <segment>
+        <source>A compact lunar calendar for limited spaces.</source>
+      </segment>
+    </unit>
+    <unit id="LunarCalendarCardTitle">
+      <segment>
+        <source>Lunar Calendar Card</source>
+      </segment>
+    </unit>
+    <unit id="LunarCalendarDescription">
+      <segment>
+        <source>A full-screen calendar with lunar dates, solar terms, traditional festivals, and application-provided holiday annotations.</source>
+      </segment>
+    </unit>
+    <unit id="LunarCalendarTitle">
+      <segment>
+        <source>Lunar Calendar</source>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarBacklogText">
+      <segment>
+        <source>Backlog number</source>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarDescription">
+      <segment>
+        <source>Render notice items in date cells and backlog numbers in month cells.</source>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarErrorEvent1Text">
+      <segment>
+        <source>This is error event 1.</source>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarErrorEvent2Text">
+      <segment>
+        <source>This is error event 2.</source>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarErrorEvent3Text">
+      <segment>
+        <source>This is error event 3.</source>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarErrorEvent4Text">
+      <segment>
+        <source>This is error event 4.</source>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarErrorEventText">
+      <segment>
+        <source>This is error event.</source>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarLongUsualEventText">
+      <segment>
+        <source>This is very long usual event......</source>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarTitle">
+      <segment>
+        <source>Notice Calendar</source>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarUsualEventText">
+      <segment>
+        <source>This is usual event.</source>
+      </segment>
+    </unit>
+    <unit id="NoticeCalendarWarningEventText">
+      <segment>
+        <source>This is warning event.</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Calendar presents a month date grid or a year month grid with valid range, disabled dates, cell customization, and selection events.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Organize business content by date in a desktop calendar panel.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="SelectableCalendarDescription">
+      <segment>
+        <source>A basic calendar component with Year/Month switch.</source>
+      </segment>
+    </unit>
+    <unit id="SelectableCalendarSelectedMessage">
+      <segment>
+        <source>You selected date: {0:yyyy-MM-dd}</source>
+      </segment>
+    </unit>
+    <unit id="SelectableCalendarTitle">
+      <segment>
+        <source>Selectable Calendar</source>
+      </segment>
+    </unit>
+    <unit id="ShowWeekDescription">
+      <segment>
+        <source>Show week numbers in full-screen and card calendars by setting ShowWeek to True.</source>
+      </segment>
+    </unit>
+    <unit id="ShowWeekTitle">
+      <segment>
+        <source>Show Week</source>
       </segment>
     </unit>
   </file>

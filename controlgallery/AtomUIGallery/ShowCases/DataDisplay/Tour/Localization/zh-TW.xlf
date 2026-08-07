@@ -1,250 +1,250 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.TourShowCaseLangResourceKind">
-    <unit id="1" name="PageSubtitle">
-      <segment>
-        <source>Guide users through important workflows with contextual overlays.</source>
-        <target state="translated">透過上下文浮層引導使用者完成關鍵流程。</target>
-      </segment>
-    </unit>
-    <unit id="2" name="PageDescription">
-      <segment>
-        <source>Tour combines step targets, masks, placement, indicators, and custom actions to build lightweight product guidance without leaving the current page.</source>
-        <target state="translated">Tour 組合步驟目標、遮罩、彈出位置、指示器和自定義操作，在不離開當前頁面的情況下構建輕量級產品引導。</target>
-      </segment>
-    </unit>
-    <unit id="3" name="ComponentCategory">
-      <segment>
-        <source>Data Display</source>
-        <target state="translated">資料展示</target>
-      </segment>
-    </unit>
-    <unit id="4" name="ComponentStatusStable">
-      <segment>
-        <source>.NET 10</source>
-        <target state="translated">.NET 10</target>
-      </segment>
-    </unit>
-    <unit id="5" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">示例</target>
-      </segment>
-    </unit>
-    <unit id="6" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-        <target state="translated">基礎用法</target>
-      </segment>
-    </unit>
-    <unit id="7" name="BasicDescription">
+    <unit id="BasicDescription">
       <segment>
         <source>The most basic usage.</source>
         <target state="translated">最基礎的用法。</target>
       </segment>
     </unit>
-    <unit id="8" name="NonModalTitle">
+    <unit id="BasicTitle">
       <segment>
-        <source>Non-modal</source>
-        <target state="translated">非模態</target>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
       </segment>
     </unit>
-    <unit id="9" name="NonModalDescription">
+    <unit id="ComponentCategory">
       <segment>
-        <source>Use mask={false} to make Tour non-modal. At the meantime it is recommended to use with type=primary to emphasize the guide itself.</source>
-        <target state="translated">使用 mask={false} 可以讓 Tour 變為非模態。同時建議配合 type=primary 使用，以突出引導本身。</target>
+        <source>Data Display</source>
+        <target state="translated">資料展示</target>
       </segment>
     </unit>
-    <unit id="10" name="PlacementTitle">
+    <unit id="ComponentStatusStable">
       <segment>
-        <source>Placement</source>
-        <target state="translated">位置</target>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
       </segment>
     </unit>
-    <unit id="11" name="PlacementDescription">
-      <segment>
-        <source>Change the placement of the guide relative to the target, there are 12 placements available. When target={null} the guide will show in the center.</source>
-        <target state="translated">改變引導相對於目標的位置，提供 12 種位置。當 target={null} 時，引導會顯示在中心。</target>
-      </segment>
-    </unit>
-    <unit id="12" name="CustomIndicatorTitle">
-      <segment>
-        <source>Custom indicator</source>
-        <target state="translated">自定義指示器</target>
-      </segment>
-    </unit>
-    <unit id="13" name="CustomIndicatorDescription">
-      <segment>
-        <source>Custom indicator.</source>
-        <target state="translated">自定義指示器。</target>
-      </segment>
-    </unit>
-    <unit id="14" name="CustomMaskTitle">
-      <segment>
-        <source>Custom mask</source>
-        <target state="translated">自定義遮罩</target>
-      </segment>
-    </unit>
-    <unit id="15" name="CustomMaskDescription">
-      <segment>
-        <source>Custom mask color.</source>
-        <target state="translated">自定義遮罩顏色。</target>
-      </segment>
-    </unit>
-    <unit id="16" name="CustomActionTitle">
-      <segment>
-        <source>Custom action</source>
-        <target state="translated">自定義操作</target>
-      </segment>
-    </unit>
-    <unit id="17" name="CustomActionDescription">
+    <unit id="CustomActionDescription">
       <segment>
         <source>Custom action.</source>
         <target state="translated">自定義操作。</target>
       </segment>
     </unit>
-    <unit id="18" name="CustomHighlightedAreaStyleTitle">
+    <unit id="CustomActionTitle">
       <segment>
-        <source>Custom highlighted area style</source>
-        <target state="translated">自定義高亮區域樣式</target>
+        <source>Custom action</source>
+        <target state="translated">自定義操作</target>
       </segment>
     </unit>
-    <unit id="19" name="CustomHighlightedAreaStyleDescription">
+    <unit id="CustomHighlightedAreaStyleDescription">
       <segment>
         <source>Using gap to control the radius of highlight area and the offset between highlight area and the element.</source>
         <target state="translated">使用 gap 控制高亮區域圓角半徑，以及高亮區域和元素之間的偏移。</target>
       </segment>
     </unit>
-    <unit id="20" name="P2TitleUploadFile">
+    <unit id="CustomHighlightedAreaStyleTitle">
       <segment>
-        <source>Upload File</source>
-        <target state="translated">上傳文件</target>
+        <source>Custom highlighted area style</source>
+        <target state="translated">自定義高亮區域樣式</target>
       </segment>
     </unit>
-    <unit id="21" name="P2DescriptionPutYourFilesHere">
+    <unit id="CustomIndicatorDescription">
       <segment>
-        <source>Put your files here.</source>
-        <target state="translated">在這裡放置你的文件。</target>
+        <source>Custom indicator.</source>
+        <target state="translated">自定義指示器。</target>
       </segment>
     </unit>
-    <unit id="22" name="P2TitleSave">
+    <unit id="CustomIndicatorTitle">
       <segment>
-        <source>Save</source>
-        <target state="translated">保存</target>
+        <source>Custom indicator</source>
+        <target state="translated">自定義指示器</target>
       </segment>
     </unit>
-    <unit id="23" name="P2DescriptionSaveYourChanges">
+    <unit id="CustomMaskDescription">
       <segment>
-        <source>Save your changes.</source>
-        <target state="translated">保存你的更改。</target>
+        <source>Custom mask color.</source>
+        <target state="translated">自定義遮罩顏色。</target>
       </segment>
     </unit>
-    <unit id="24" name="P2TitleOtherActions">
+    <unit id="CustomMaskTitle">
       <segment>
-        <source>Other Actions</source>
-        <target state="translated">其他操作</target>
+        <source>Custom mask</source>
+        <target state="translated">自定義遮罩</target>
       </segment>
     </unit>
-    <unit id="25" name="P2DescriptionClickToSeeOtherActions">
+    <unit id="NonModalDescription">
       <segment>
-        <source>Click to see other actions.</source>
-        <target state="translated">點擊查看其他操作。</target>
+        <source>Use mask={false} to make Tour non-modal. At the meantime it is recommended to use with type=primary to emphasize the guide itself.</source>
+        <target state="translated">使用 mask={false} 可以讓 Tour 變為非模態。同時建議配合 type=primary 使用，以突出引導本身。</target>
       </segment>
     </unit>
-    <unit id="26" name="P2TitleCenter">
+    <unit id="NonModalTitle">
       <segment>
-        <source>Center</source>
-        <target state="translated">居中</target>
+        <source>Non-modal</source>
+        <target state="translated">非模態</target>
       </segment>
     </unit>
-    <unit id="27" name="P2DescriptionDisplayedInTheCenterOfScreen">
-      <segment>
-        <source>Displayed in the center of screen.</source>
-        <target state="translated">顯示在屏幕中央。</target>
-      </segment>
-    </unit>
-    <unit id="28" name="P2TitleRight">
-      <segment>
-        <source>Right</source>
-        <target state="translated">右側</target>
-      </segment>
-    </unit>
-    <unit id="29" name="P2DescriptionOnTheRightOfTarget">
-      <segment>
-        <source>On the right of target.</source>
-        <target state="translated">位於目標右側。</target>
-      </segment>
-    </unit>
-    <unit id="30" name="P2TitleTop">
-      <segment>
-        <source>Top</source>
-        <target state="translated">頂部</target>
-      </segment>
-    </unit>
-    <unit id="31" name="P2DescriptionOnTheTopOfTarget">
-      <segment>
-        <source>On the top of target.</source>
-        <target state="translated">位於目標上方。</target>
-      </segment>
-    </unit>
-    <unit id="32" name="P2TitleLeft">
-      <segment>
-        <source>Left</source>
-        <target state="translated">左側</target>
-      </segment>
-    </unit>
-    <unit id="33" name="P2DescriptionOnTheLeftOfTarget">
-      <segment>
-        <source>On the left of target.</source>
-        <target state="translated">位於目標左側。</target>
-      </segment>
-    </unit>
-    <unit id="34" name="P2ContentBeginTour">
-      <segment>
-        <source>Begin Tour</source>
-        <target state="translated">開始引導</target>
-      </segment>
-    </unit>
-    <unit id="35" name="P2ContentUpload">
-      <segment>
-        <source>Upload</source>
-        <target state="translated">上傳</target>
-      </segment>
-    </unit>
-    <unit id="36" name="P2ContentSave">
-      <segment>
-        <source>Save</source>
-        <target state="translated">保存</target>
-      </segment>
-    </unit>
-    <unit id="37" name="P2ContentBeginNonModalTour">
+    <unit id="P2ContentBeginNonModalTour">
       <segment>
         <source>Begin non-modal Tour</source>
         <target state="translated">開始非模態引導</target>
       </segment>
     </unit>
-    <unit id="38" name="P2ContentSkip">
+    <unit id="P2ContentBeginTour">
+      <segment>
+        <source>Begin Tour</source>
+        <target state="translated">開始引導</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSave">
+      <segment>
+        <source>Save</source>
+        <target state="translated">保存</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSkip">
       <segment>
         <source>Skip</source>
         <target state="translated">跳過</target>
       </segment>
     </unit>
-    <unit id="39" name="P2TextRadius">
+    <unit id="P2ContentUpload">
       <segment>
-        <source>Radius:</source>
-        <target state="translated">圓角半徑：</target>
+        <source>Upload</source>
+        <target state="translated">上傳</target>
       </segment>
     </unit>
-    <unit id="40" name="P2TextHorizontalOffset">
+    <unit id="P2DescriptionClickToSeeOtherActions">
+      <segment>
+        <source>Click to see other actions.</source>
+        <target state="translated">點擊查看其他操作。</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionDisplayedInTheCenterOfScreen">
+      <segment>
+        <source>Displayed in the center of screen.</source>
+        <target state="translated">顯示在屏幕中央。</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionOnTheLeftOfTarget">
+      <segment>
+        <source>On the left of target.</source>
+        <target state="translated">位於目標左側。</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionOnTheRightOfTarget">
+      <segment>
+        <source>On the right of target.</source>
+        <target state="translated">位於目標右側。</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionOnTheTopOfTarget">
+      <segment>
+        <source>On the top of target.</source>
+        <target state="translated">位於目標上方。</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionPutYourFilesHere">
+      <segment>
+        <source>Put your files here.</source>
+        <target state="translated">在這裡放置你的文件。</target>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionSaveYourChanges">
+      <segment>
+        <source>Save your changes.</source>
+        <target state="translated">保存你的更改。</target>
+      </segment>
+    </unit>
+    <unit id="P2TextHorizontalOffset">
       <segment>
         <source>Horizontal offset:</source>
         <target state="translated">水平偏移：</target>
       </segment>
     </unit>
-    <unit id="41" name="P2TextVerticalOffset">
+    <unit id="P2TextRadius">
+      <segment>
+        <source>Radius:</source>
+        <target state="translated">圓角半徑：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextVerticalOffset">
       <segment>
         <source>Vertical offset:</source>
         <target state="translated">垂直偏移：</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleCenter">
+      <segment>
+        <source>Center</source>
+        <target state="translated">居中</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleLeft">
+      <segment>
+        <source>Left</source>
+        <target state="translated">左側</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleOtherActions">
+      <segment>
+        <source>Other Actions</source>
+        <target state="translated">其他操作</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleRight">
+      <segment>
+        <source>Right</source>
+        <target state="translated">右側</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleSave">
+      <segment>
+        <source>Save</source>
+        <target state="translated">保存</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleTop">
+      <segment>
+        <source>Top</source>
+        <target state="translated">頂部</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleUploadFile">
+      <segment>
+        <source>Upload File</source>
+        <target state="translated">上傳文件</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Tour combines step targets, masks, placement, indicators, and custom actions to build lightweight product guidance without leaving the current page.</source>
+        <target state="translated">Tour 組合步驟目標、遮罩、彈出位置、指示器和自定義操作，在不離開當前頁面的情況下構建輕量級產品引導。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Guide users through important workflows with contextual overlays.</source>
+        <target state="translated">透過上下文浮層引導使用者完成關鍵流程。</target>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>Change the placement of the guide relative to the target, there are 12 placements available. When target={null} the guide will show in the center.</source>
+        <target state="translated">改變引導相對於目標的位置，提供 12 種位置。當 target={null} 時，引導會顯示在中心。</target>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+        <target state="translated">位置</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
       </segment>
     </unit>
   </file>

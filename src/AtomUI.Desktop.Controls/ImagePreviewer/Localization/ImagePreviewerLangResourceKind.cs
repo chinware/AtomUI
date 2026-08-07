@@ -2,9 +2,9 @@ using AtomUI.Localization;
 
 namespace AtomUI.Desktop.Controls.Localization;
 
-[LanguageCatalog(ContractVersion = 1)]
+[LanguageCatalog(ContractVersion = 2)]
 public enum ImagePreviewerLangResourceKind
 {
-    ImageLoadFailed = 1,
-    Preview = 2
+    ImageLoadFailed,
+    Preview
 }

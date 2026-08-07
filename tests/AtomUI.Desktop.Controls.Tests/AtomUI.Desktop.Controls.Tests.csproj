@@ -19,5 +19,6 @@
         <ProjectReference Include="../../src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj" />
         <ProjectReference Include="../../src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj" />
         <ProjectReference Include="../../src/AtomUI.Desktop.Controls.Extras/AtomUI.Desktop.Controls.Extras.csproj" />
+        <ProjectReference Include="../../src/AtomUI.Localization/AtomUI.Localization.csproj" />
     </ItemGroup>
 </Project>

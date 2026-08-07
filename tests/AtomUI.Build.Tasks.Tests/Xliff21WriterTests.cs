@@ -16,9 +16,9 @@ public class Xliff21WriterTests
             new XliffFileModel(
                 "Test.Product.LoginLangResourceKind",
                 [
-                    Unit(20, "Body", "Use <safe> & sound", "安全使用", "reviewed", ["Translator & reviewer"]),
-                    Unit(10, "Title", "Sign in", "登录", "translated", ["Window title"]),
-                    Unit(30, "Retired", "Retired", "已停用", "final", [], isObsolete: true)
+                    Unit("Body", "Use <safe> & sound", "安全使用", "reviewed", ["Translator & reviewer"]),
+                    Unit("Title", "Sign in", "登录", "translated", ["Window title"]),
+                    Unit("Retired", "Retired", "已停用", "final", [], isObsolete: true)
                 ]));
 
         var first = Xliff21Writer.Write(document);
@@ -26,8 +26,9 @@ public class Xliff21WriterTests
 
         first.ShouldBe(second);
         first.ShouldStartWith("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-        first.IndexOf("id=\"10\"", StringComparison.Ordinal)
-             .ShouldBeLessThan(first.IndexOf("id=\"20\"", StringComparison.Ordinal));
+        first.IndexOf("id=\"Body\"", StringComparison.Ordinal)
+             .ShouldBeLessThan(first.IndexOf("id=\"Retired\"", StringComparison.Ordinal));
+        first.ShouldNotContain("name=\"");
         first.ShouldContain("Use &lt;safe&gt; &amp; sound");
         first.ShouldContain("Translator &amp; reviewer");
 
@@ -38,7 +39,7 @@ public class Xliff21WriterTests
         ((string?)root.Attribute("srcLang")).ShouldBe("en-US");
         ((string?)root.Attribute("trgLang")).ShouldBe("zh-CN");
         var retired = root.Descendants(ns + "unit")
-                          .Single(unit => (string?)unit.Attribute("id") == "30");
+                          .Single(unit => (string?)unit.Attribute("id") == "Retired");
         ((string?)retired.Attribute("translate")).ShouldBe("no");
     }
 
@@ -50,7 +51,7 @@ public class Xliff21WriterTests
             "ja-JP",
             new XliffFileModel(
                 "Test.Product.ItemsLangResourceKind",
-                [Unit(1, "Count", "{0} items", string.Empty, "initial", [])]));
+                [Unit("Count", "{0} items", string.Empty, "initial", [])]));
 
         var result = Xliff21Parser.Parse(Xliff21Writer.Write(document));
 
@@ -68,7 +69,7 @@ public class Xliff21WriterTests
             "zh-CN",
             new XliffFileModel(
                 "Test.Product.LoginLangResourceKind",
-                [Unit(1, "Title", "Sign in", "登录", "translated", [], "needs-review")]));
+                [Unit("Title", "Sign in", "登录", "translated", [], "needs-review")]));
 
         var result = Xliff21Parser.Parse(Xliff21Writer.Write(document));
 
@@ -77,9 +78,31 @@ public class Xliff21WriterTests
               .TargetSubState.ShouldBe("needs-review");
     }
 
+    [Fact]
+    public void Repository_Xliff_Files_Use_Canonical_Writer_Output()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var paths = new[] { "src", "controlgallery", "tests" }
+                    .SelectMany(directory => Directory.GetFiles(
+                        Path.Combine(repositoryRoot, directory),
+                        "*.xlf",
+                        SearchOption.AllDirectories))
+                    .OrderBy(static path => path, StringComparer.Ordinal)
+                    .ToArray();
+
+        paths.ShouldNotBeEmpty();
+        foreach (var path in paths)
+        {
+            var content = File.ReadAllText(path);
+            var parsed = Xliff21Parser.Parse(content);
+            parsed.Errors.ShouldBeEmpty($"XLIFF file '{path}' must be valid before formatting.");
+            Xliff21Writer.Write(parsed.Document.ShouldNotBeNull())
+                         .ShouldBe(content, $"XLIFF file '{path}' is not in canonical form.");
+        }
+    }
+
     private static XliffUnitModel Unit(
-        int id,
-        string name,
+        string key,
         string source,
         string? target,
         string? targetState,
@@ -89,8 +112,8 @@ public class Xliff21WriterTests
     {
         CompositeFormatContractParser.TryParse(source, out var placeholders, out _).ShouldBeTrue();
         return new XliffUnitModel(
-            id,
-            name,
+            key,
+            null,
             source,
             target,
             targetState,
@@ -100,5 +123,21 @@ public class Xliff21WriterTests
             1,
             1,
             isObsolete);
+    }
+
+    private static string FindRepositoryRoot()
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            if (File.Exists(Path.Combine(directory.FullName, "AtomUI.slnx")))
+            {
+                return directory.FullName;
+            }
+
+            directory = directory.Parent;
+        }
+
+        throw new DirectoryNotFoundException("The AtomUI repository root could not be located.");
     }
 }

@@ -63,7 +63,6 @@ internal static class LanguageCatalogSymbolParser
         }
 
         var units = ImmutableArray.CreateBuilder<LanguageCatalogUnitInfo>();
-        var ids = new HashSet<int>();
         foreach (var field in fields)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -71,37 +70,17 @@ internal static class LanguageCatalogSymbolParser
                                    .Select(reference => reference.GetSyntax(cancellationToken))
                                    .OfType<EnumMemberDeclarationSyntax>()
                                    .FirstOrDefault();
-            if (declaration?.EqualsValue is null)
-            {
-                diagnostics.Add(InvalidUnit(
-                    symbol,
-                    field,
-                    declaration?.Identifier.GetLocation() ?? field.Locations.FirstOrDefault() ?? typeLocation,
-                    "the unit must declare an explicit positive integer ID"));
-                continue;
-            }
-
-            if (!TryGetPositiveInt32(field.ConstantValue, out var id))
+            if (declaration?.EqualsValue is not null)
             {
                 diagnostics.Add(InvalidUnit(
                     symbol,
                     field,
                     declaration.EqualsValue.Value.GetLocation(),
-                    "the explicit unit ID must be a positive Int32 value"));
+                    "the unit must not declare an explicit numeric value"));
                 continue;
             }
 
-            if (!ids.Add(id))
-            {
-                diagnostics.Add(InvalidUnit(
-                    symbol,
-                    field,
-                    declaration.EqualsValue.Value.GetLocation(),
-                    $"unit ID '{id}' is duplicated"));
-                continue;
-            }
-
-            units.Add(new LanguageCatalogUnitInfo(id, field.Name, field.Locations[0]));
+            units.Add(new LanguageCatalogUnitInfo(field.Name, field.Locations[0]));
         }
 
         if (diagnostics.Count > 0)
@@ -120,7 +99,7 @@ internal static class LanguageCatalogSymbolParser
             namespaceName,
             typeName,
             contractVersion,
-            units.OrderBy(static unit => unit.Id).ToImmutableArray(),
+            units.OrderBy(static unit => unit.Key, StringComparer.Ordinal).ToImmutableArray(),
             typeLocation);
         return new LanguageCatalogParseResult(catalog, ImmutableArray<Diagnostic>.Empty);
     }
@@ -149,50 +128,6 @@ internal static class LanguageCatalogSymbolParser
         }
 
         return true;
-    }
-
-    private static bool TryGetPositiveInt32(object? value, out int result)
-    {
-        long converted;
-        switch (value)
-        {
-            case sbyte signedByte:
-                converted = signedByte;
-                break;
-            case byte unsignedByte:
-                converted = unsignedByte;
-                break;
-            case short signedShort:
-                converted = signedShort;
-                break;
-            case ushort unsignedShort:
-                converted = unsignedShort;
-                break;
-            case int signedInt:
-                converted = signedInt;
-                break;
-            case uint unsignedInt:
-                converted = unsignedInt;
-                break;
-            case long signedLong:
-                converted = signedLong;
-                break;
-            case ulong unsignedLong when unsignedLong <= int.MaxValue:
-                converted = (long)unsignedLong;
-                break;
-            default:
-                result = default;
-                return false;
-        }
-
-        if (converted is > 0 and <= int.MaxValue)
-        {
-            result = (int)converted;
-            return true;
-        }
-
-        result = default;
-        return false;
     }
 
     private static string GetMetadataName(INamedTypeSymbol symbol)

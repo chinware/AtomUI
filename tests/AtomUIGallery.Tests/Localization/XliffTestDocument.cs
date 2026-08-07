@@ -17,8 +17,8 @@ internal static class XliffTestDocument
         XNamespace xliff = "urn:oasis:names:tc:xliff:document:2.0";
         var values = document.Descendants(xliff + "unit")
                              .ToDictionary(
-                                 unit => (string?)unit.Attribute("name") ?? throw new InvalidDataException(
-                                     $"XLIFF unit in '{relativePath}' has no name."),
+                                 unit => (string?)unit.Attribute("id") ?? throw new InvalidDataException(
+                                     $"XLIFF unit in '{relativePath}' has no key."),
                                  unit => unit.Descendants(xliff + "target").SingleOrDefault()?.Value ??
                                          unit.Descendants(xliff + "source").Single().Value,
                                  StringComparer.Ordinal);

@@ -171,7 +171,7 @@ internal sealed record LanguageManagerTestRuntime(
         var catalog = new LanguageCatalogDescriptor<RuntimeResourceKind>(
             "Acme:Acme.RuntimeResourceKind",
             1,
-            [new LanguageCatalogUnitDescriptor(1, "Value")],
+            [new LanguageCatalogUnitDescriptor("Value")],
             static key => key == RuntimeResourceKind.Value ? 0 : -1);
         var builder = new LocalizationBuilder();
         builder.AddCatalog(catalog);
@@ -237,5 +237,5 @@ internal sealed record LanguageManagerTestRuntime(
 
 internal enum RuntimeResourceKind
 {
-    Value = 1
+    Value
 }

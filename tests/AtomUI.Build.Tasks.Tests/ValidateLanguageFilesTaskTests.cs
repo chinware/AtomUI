@@ -58,7 +58,7 @@ public class ValidateLanguageFilesTaskTests : IDisposable
         moduleTask.Execute().ShouldBeFalse();
         moduleEngine.Errors.Any(error =>
             error.Code == "ATOMUILOC007" &&
-            error.Message?.Contains("unit '2'", StringComparison.Ordinal) == true)
+            error.Message?.Contains("unit 'Body'", StringComparison.Ordinal) == true)
             .ShouldBeTrue();
 
         var overrideEngine = new RecordingBuildEngine();
@@ -151,7 +151,7 @@ public class ValidateLanguageFilesTaskTests : IDisposable
         task.Execute().ShouldBeFalse();
         var error = engine.Errors.ShouldHaveSingleItem();
         error.Code.ShouldBe("ATOMUILOC006");
-        error.Message.ShouldNotBeNull().ShouldContain("unit '1'");
+        error.Message.ShouldNotBeNull().ShouldContain("unit 'Title'");
         error.Message.ShouldNotBeNull().ShouldContain("TestApp.One");
         error.Message.ShouldNotBeNull().ShouldContain("TestApp.Two");
     }
@@ -213,7 +213,7 @@ public class ValidateLanguageFilesTaskTests : IDisposable
             """
             <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
               <file id="Test.Product.CalendarLangResourceKind">
-                <unit id="1" name="YearSuffix">
+                <unit id="YearSuffix">
                   <segment><source></source></segment>
                 </unit>
               </file>
@@ -270,14 +270,14 @@ public class ValidateLanguageFilesTaskTests : IDisposable
             : "<target state=\"reviewed\">正文</target>";
         var secondUnit = includeSecondUnit
             ? $$"""
-                <unit id="2" name="Body">
+                <unit id="Body">
                   <segment><source>Body</source>{{secondTarget}}</segment>
                 </unit>
                 """
             : string.Empty;
         var firstUnit = includeFirstUnit
             ? $$"""
-                <unit id="1" name="Title">
+                <unit id="Title">
                   <segment><source>Title</source>{{firstTarget}}</segment>
                 </unit>
                 """

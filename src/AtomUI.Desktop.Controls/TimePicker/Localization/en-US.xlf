@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUI.Desktop.Controls.Localization.TimePickerLangResourceKind">
-    <unit id="1" name="AMText"><segment><source>AM</source></segment></unit>
-    <unit id="2" name="PMText"><segment><source>PM</source></segment></unit>
-    <unit id="3" name="Now"><segment><source>Now</source></segment></unit>
+    <unit id="AMText">
+      <segment>
+        <source>AM</source>
+      </segment>
+    </unit>
+    <unit id="Now">
+      <segment>
+        <source>Now</source>
+      </segment>
+    </unit>
+    <unit id="PMText">
+      <segment>
+        <source>PM</source>
+      </segment>
+    </unit>
   </file>
 </xliff>

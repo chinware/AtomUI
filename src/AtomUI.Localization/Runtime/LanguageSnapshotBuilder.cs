@@ -52,7 +52,7 @@ internal static class LanguageSnapshotBuilder
                 {
                     var unit = catalog.Units[unitSlot];
                     throw new LanguageCatalogException(
-                        $"Catalog '{catalog.CatalogId}' unit '{unit.Name}' ({unit.Id}) has no value for " +
+                        $"Catalog '{catalog.CatalogId}' unit '{unit.Key}' has no value for " +
                         $"requested language '{requestedLanguage.Value}' or required en-US source.");
                 }
 
@@ -61,7 +61,7 @@ internal static class LanguageSnapshotBuilder
                 {
                     throw new LanguageCoverageException(
                         $"Supported language '{requestedLanguage.Value}' resolves Catalog '{catalog.CatalogId}' " +
-                        $"unit '{unitDescriptor.Name}' ({unitDescriptor.Id}) only through final en-US fallback. " +
+                        $"unit '{unitDescriptor.Key}' only through final en-US fallback. " +
                         "Add a translation for the exact language or a valid parent candidate.");
                 }
 
@@ -76,7 +76,7 @@ internal static class LanguageSnapshotBuilder
                     {
                         throw new LanguageCatalogException(
                             $"Compiled translation from '{sourceIdentity}' for Catalog '{catalog.CatalogId}' unit " +
-                            $"'{unitDescriptor.Name}' ({unitDescriptor.Id}) and language " +
+                            $"'{unitDescriptor.Key}' and language " +
                             $"'{resolvedLanguage.Value}' has an invalid CompositeFormat.",
                             exception);
                     }

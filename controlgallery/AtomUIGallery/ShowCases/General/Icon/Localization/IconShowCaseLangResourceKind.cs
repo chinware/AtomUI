@@ -2,14 +2,14 @@ using AtomUI.Localization;
 
 namespace AtomUIGallery.Localization;
 
-[LanguageCatalog(ContractVersion = 1)]
+[LanguageCatalog(ContractVersion = 2)]
 public enum IconShowCaseLangResourceKind
 {
-    ComponentCategory = 1,
-    ComponentStatusStable = 2,
-    PageSubtitle = 3,
-    PageDescription = 4,
-    P2HeaderOutlined = 5,
-    P2HeaderFilled = 6,
-    P2HeaderTwoTone = 7
+    ComponentCategory,
+    ComponentStatusStable,
+    PageSubtitle,
+    PageDescription,
+    P2HeaderOutlined,
+    P2HeaderFilled,
+    P2HeaderTwoTone
 }

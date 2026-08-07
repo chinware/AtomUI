@@ -1,94 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.MasonryShowCaseLangResourceKind">
-    <unit id="1" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">範例</target>
-      </segment>
-    </unit>
-    <unit id="2" name="PageSubtitle">
-      <segment>
-        <source>Lay out children of unequal heights into balanced columns.</source>
-        <target state="translated">將高度不一的子元素按列組織成均衡的瀑布流。</target>
-      </segment>
-    </unit>
-    <unit id="3" name="PageDescription">
-      <segment>
-        <source>Masonry arranges cards, images, or arbitrary controls into a shortest-column waterfall layout, with fixed or adaptive column counts and row/column gaps.</source>
-        <target state="translated">Masonry 把卡片、圖片或任意控件按最短列策略排列成瀑布流，支援固定列數或自適應列數以及行列間距。</target>
-      </segment>
-    </unit>
-    <unit id="4" name="ComponentCategory">
-      <segment>
-        <source>Layout</source>
-        <target state="translated">佈局</target>
-      </segment>
-    </unit>
-    <unit id="5" name="ComponentStatusStable">
-      <segment>
-        <source>Stable</source>
-        <target state="translated">穩定</target>
-      </segment>
-    </unit>
-    <unit id="6" name="ApiEventLayoutChanged">
+    <unit id="ApiEventLayoutChanged">
       <segment>
         <source>Raised when the effective column assignment of children changes, dispatched after the layout pass.</source>
         <target state="translated">當子項有效列分配變化時觸發，延遲到佈局週期結束後派發。</target>
       </segment>
     </unit>
-    <unit id="7" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-        <target state="translated">基礎用法</target>
-      </segment>
-    </unit>
-    <unit id="8" name="BasicDescription">
+    <unit id="BasicDescription">
       <segment>
         <source>Basic usage. Set the number of columns with ColumnCount and the spacing with ColumnGap and RowGap.</source>
         <target state="translated">基礎用法展示。透過 ColumnCount 設定列數，ColumnGap 和 RowGap 設定間距。</target>
       </segment>
     </unit>
-    <unit id="9" name="ResponsiveTitle">
+    <unit id="BasicTitle">
       <segment>
-        <source>Responsive</source>
-        <target state="translated">響應式</target>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
       </segment>
     </unit>
-    <unit id="10" name="ResponsiveDescription">
+    <unit id="ComponentCategory">
       <segment>
-        <source>Use responsive values to adapt to different screen widths. ColumnInfo controls the column count at each breakpoint, and Gutter controls the spacing.</source>
-        <target state="translated">使用響應式參數來適配不同螢幕寬度。ColumnInfo 可以設定在不同斷點下的列數，Gutter 可以設定不同斷點下的間距大小。</target>
+        <source>Layout</source>
+        <target state="translated">佈局</target>
       </segment>
     </unit>
-    <unit id="11" name="ImageTitle">
+    <unit id="ComponentStatusStable">
       <segment>
-        <source>Image</source>
-        <target state="translated">圖片</target>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
       </segment>
     </unit>
-    <unit id="12" name="ImageDescription">
+    <unit id="DynamicAddItemLabel">
       <segment>
-        <source>Positions are adjusted dynamically as images load.</source>
-        <target state="translated">隨載入動態調整位置。</target>
+        <source>Add Item</source>
+        <target state="translated">Add Item</target>
       </segment>
     </unit>
-    <unit id="13" name="DynamicTitle">
-      <segment>
-        <source>Dynamic</source>
-        <target state="translated">動態更新</target>
-      </segment>
-    </unit>
-    <unit id="14" name="DynamicDescription">
+    <unit id="DynamicDescription">
       <segment>
         <source>Demonstrate how masonry layout updates dynamically. Use item.column to keep items in place.</source>
         <target state="translated">展示瀑布流動態更新的效果，配合 item.column 固化位置。</target>
       </segment>
     </unit>
-    <unit id="15" name="DynamicAddItemLabel">
+    <unit id="DynamicTitle">
       <segment>
-        <source>Add Item</source>
-        <target state="translated">Add Item</target>
+        <source>Dynamic</source>
+        <target state="translated">動態更新</target>
+      </segment>
+    </unit>
+    <unit id="ImageDescription">
+      <segment>
+        <source>Positions are adjusted dynamically as images load.</source>
+        <target state="translated">隨載入動態調整位置。</target>
+      </segment>
+    </unit>
+    <unit id="ImageTitle">
+      <segment>
+        <source>Image</source>
+        <target state="translated">圖片</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Masonry arranges cards, images, or arbitrary controls into a shortest-column waterfall layout, with fixed or adaptive column counts and row/column gaps.</source>
+        <target state="translated">Masonry 把卡片、圖片或任意控件按最短列策略排列成瀑布流，支援固定列數或自適應列數以及行列間距。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Lay out children of unequal heights into balanced columns.</source>
+        <target state="translated">將高度不一的子元素按列組織成均衡的瀑布流。</target>
+      </segment>
+    </unit>
+    <unit id="ResponsiveDescription">
+      <segment>
+        <source>Use responsive values to adapt to different screen widths. ColumnInfo controls the column count at each breakpoint, and Gutter controls the spacing.</source>
+        <target state="translated">使用響應式參數來適配不同螢幕寬度。ColumnInfo 可以設定在不同斷點下的列數，Gutter 可以設定不同斷點下的間距大小。</target>
+      </segment>
+    </unit>
+    <unit id="ResponsiveTitle">
+      <segment>
+        <source>Responsive</source>
+        <target state="translated">響應式</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">範例</target>
       </segment>
     </unit>
   </file>

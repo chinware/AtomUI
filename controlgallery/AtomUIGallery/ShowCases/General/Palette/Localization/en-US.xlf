@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.PaletteShowCaseLangResourceKind">
-    <unit id="1" name="ComponentCategory">
+    <unit id="ComponentCategory">
       <segment>
         <source>General</source>
       </segment>
     </unit>
-    <unit id="2" name="ComponentStatusStable">
+    <unit id="ComponentStatusStable">
       <segment>
         <source>.NET 10</source>
       </segment>
     </unit>
-    <unit id="3" name="PageSubtitle">
+    <unit id="P2HeaderDark">
       <segment>
-        <source>Preview AtomUI preset color palettes in light and dark algorithms.</source>
+        <source>Dark</source>
       </segment>
     </unit>
-    <unit id="4" name="PageDescription">
-      <segment>
-        <source>Palette presents the preset primary color scales used by AtomUI theme algorithms. Use the tabs to compare the light and dark palettes generated from the same semantic color set.</source>
-      </segment>
-    </unit>
-    <unit id="5" name="P2HeaderLight">
+    <unit id="P2HeaderLight">
       <segment>
         <source>Light</source>
       </segment>
     </unit>
-    <unit id="6" name="P2HeaderDark">
+    <unit id="PageDescription">
       <segment>
-        <source>Dark</source>
+        <source>Palette presents the preset primary color scales used by AtomUI theme algorithms. Use the tabs to compare the light and dark palettes generated from the same semantic color set.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Preview AtomUI preset color palettes in light and dark algorithms.</source>
       </segment>
     </unit>
   </file>

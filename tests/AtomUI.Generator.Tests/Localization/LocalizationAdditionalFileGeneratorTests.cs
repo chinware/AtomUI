@@ -177,17 +177,17 @@ public class LocalizationAdditionalFileGeneratorTests
         namespace TestApp.Localization
         {
             [AtomUI.Localization.LanguageCatalog]
-            public enum LoginLangResourceKind { Title = 10 }
+            public enum LoginLangResourceKind { Title }
         }
         """;
 
     private const string SourceFingerprint =
-        "5485c3494c44cf2782af84adef0a5fbcd03303e63bf847b51543c3cdad303efe";
+        "ba7998290ad9e6a1345542058a39d88bd6023f5b1371fa184a89c6457e539041";
 
     private const string ValidXliff = """
         <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US" trgLang="zh-CN">
           <file id="TestApp.Localization.LoginLangResourceKind">
-            <unit id="10" name="Title">
+            <unit id="Title">
               <segment><source>Sign in</source><target state="translated">登录</target></segment>
             </unit>
           </file>
@@ -197,7 +197,7 @@ public class LocalizationAdditionalFileGeneratorTests
     private const string SourceXliff = """
         <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
           <file id="TestApp.Localization.LoginLangResourceKind">
-            <unit id="10" name="Title">
+            <unit id="Title">
               <segment><source>Sign in</source></segment>
             </unit>
           </file>

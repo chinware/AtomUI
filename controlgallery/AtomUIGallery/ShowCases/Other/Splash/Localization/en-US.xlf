@@ -1,239 +1,239 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.SplashShowCaseLangResourceKind">
-    <unit id="1" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-      </segment>
-    </unit>
-    <unit id="2" name="ComponentCategory">
-      <segment>
-        <source>Other</source>
-      </segment>
-    </unit>
-    <unit id="3" name="ComponentStatusPreview">
-      <segment>
-        <source>Preview</source>
-      </segment>
-    </unit>
-    <unit id="4" name="ComponentIntroducedVersion">
-      <segment>
-        <source>v6.0.7</source>
-      </segment>
-    </unit>
-    <unit id="5" name="PageSubtitle">
-      <segment>
-        <source>Present desktop startup progress before the main workspace is ready.</source>
-      </segment>
-    </unit>
-    <unit id="6" name="PageDescription">
-      <segment>
-        <source>Splash combines a compact branded surface, loading indicator, determinate progress, status copy, and optional footer. The service API can host it in a borderless startup window, while the visual control can be previewed directly in Gallery.</source>
-      </segment>
-    </unit>
-    <unit id="7" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-      </segment>
-    </unit>
-    <unit id="8" name="BasicDescription">
-      <segment>
-        <source>Use the visual Splash control to show startup copy with an indeterminate loading indicator.</source>
-      </segment>
-    </unit>
-    <unit id="9" name="DeterminateTitle">
-      <segment>
-        <source>Determinate progress</source>
-      </segment>
-    </unit>
-    <unit id="10" name="DeterminateDescription">
-      <segment>
-        <source>Set Progress and disable IsIndeterminate when startup has measurable phases.</source>
-      </segment>
-    </unit>
-    <unit id="11" name="StatusTitle">
-      <segment>
-        <source>Status</source>
-      </segment>
-    </unit>
-    <unit id="12" name="StatusDescription">
-      <segment>
-        <source>Switch Status to Success or Error when the startup flow reaches a terminal state.</source>
-      </segment>
-    </unit>
-    <unit id="13" name="ComposedTitle">
-      <segment>
-        <source>Logo, content and footer</source>
-      </segment>
-    </unit>
-    <unit id="14" name="ComposedDescription">
-      <segment>
-        <source>Template the logo and footer when a product needs richer startup metadata.</source>
-      </segment>
-    </unit>
-    <unit id="15" name="WindowServiceTitle">
-      <segment>
-        <source>Window service</source>
-      </segment>
-    </unit>
-    <unit id="16" name="WindowServiceDescription">
-      <segment>
-        <source>Open a real desktop Splash window, run a five-second mock startup flow, then close it automatically.</source>
-      </segment>
-    </unit>
-    <unit id="17" name="P2SubtitleDesktopBoot">
-      <segment>
-        <source>Desktop boot sequence</source>
-      </segment>
-    </unit>
-    <unit id="18" name="P2MessagePreparingShell">
-      <segment>
-        <source>Preparing workspace</source>
-      </segment>
-    </unit>
-    <unit id="19" name="P2DetailLoadingThemeAndResources">
-      <segment>
-        <source>Loading theme, language resources and cached state.</source>
-      </segment>
-    </unit>
-    <unit id="20" name="P2MessageLoadingModules">
-      <segment>
-        <source>Loading modules</source>
-      </segment>
-    </unit>
-    <unit id="21" name="P2DetailProgress">
-      <segment>
-        <source>Theme, icons and route catalog are ready. Optional packages are being initialized.</source>
-      </segment>
-    </unit>
-    <unit id="22" name="P2MessageReady">
-      <segment>
-        <source>Workspace ready</source>
-      </segment>
-    </unit>
-    <unit id="23" name="P2DetailReady">
-      <segment>
-        <source>The main window can be shown after the minimum splash duration.</source>
-      </segment>
-    </unit>
-    <unit id="24" name="P2MessageError">
-      <segment>
-        <source>Startup failed</source>
-      </segment>
-    </unit>
-    <unit id="25" name="P2DetailError">
-      <segment>
-        <source>Use SetErrorAsync to surface a blocking startup error before closing.</source>
-      </segment>
-    </unit>
-    <unit id="26" name="P2FooterStaticPreview">
-      <segment>
-        <source>Static Gallery preview</source>
-      </segment>
-    </unit>
-    <unit id="27" name="P2ContentModuleCore">
-      <segment>
-        <source>Core</source>
-      </segment>
-    </unit>
-    <unit id="28" name="P2ContentModuleTheme">
-      <segment>
-        <source>Theme</source>
-      </segment>
-    </unit>
-    <unit id="29" name="P2ContentModuleGallery">
-      <segment>
-        <source>Gallery</source>
-      </segment>
-    </unit>
-    <unit id="30" name="P2FooterDesktopOnly">
-      <segment>
-        <source>Window service is intended for desktop startup.</source>
-      </segment>
-    </unit>
-    <unit id="31" name="P2ContentShowWindowSplash">
-      <segment>
-        <source>Show window Splash</source>
-      </segment>
-    </unit>
-    <unit id="32" name="P2WindowSplashSubtitle">
-      <segment>
-        <source>Desktop startup simulation</source>
-      </segment>
-    </unit>
-    <unit id="33" name="P2WindowSplashMessageStarting">
-      <segment>
-        <source>Starting Gallery workspace</source>
-      </segment>
-    </unit>
-    <unit id="34" name="P2WindowSplashDetailStarting">
-      <segment>
-        <source>A temporary Splash window is showing a mocked five-second startup.</source>
-      </segment>
-    </unit>
-    <unit id="35" name="P2WindowSplashMessageLoadingTheme">
-      <segment>
-        <source>Loading theme resources</source>
-      </segment>
-    </unit>
-    <unit id="36" name="P2WindowSplashMessageLoadingControls">
-      <segment>
-        <source>Registering control packages</source>
-      </segment>
-    </unit>
-    <unit id="37" name="P2WindowSplashMessageLoadingRoutes">
-      <segment>
-        <source>Preparing route catalog</source>
-      </segment>
-    </unit>
-    <unit id="38" name="P2WindowSplashMessageWarmingCache">
-      <segment>
-        <source>Warming Gallery cache</source>
-      </segment>
-    </unit>
-    <unit id="39" name="P2WindowSplashMessageFinalizing">
-      <segment>
-        <source>Finalizing workspace</source>
-      </segment>
-    </unit>
-    <unit id="40" name="P2WindowSplashDetailProgress">
-      <segment>
-        <source>This is a fake loading step for the Gallery demo.</source>
-      </segment>
-    </unit>
-    <unit id="41" name="P2WindowSplashMessageComplete">
-      <segment>
-        <source>Gallery ready</source>
-      </segment>
-    </unit>
-    <unit id="42" name="P2WindowSplashDetailComplete">
-      <segment>
-        <source>The fake startup flow has completed and the window will close.</source>
-      </segment>
-    </unit>
-    <unit id="43" name="P2WindowSplashFooter">
-      <segment>
-        <source>Desktop Extras package / window-hosted startup surface</source>
-      </segment>
-    </unit>
-    <unit id="44" name="ApiStaticShowAsync">
-      <segment>
-        <source>Static convenience API that delegates to Splash.DefaultService.</source>
-      </segment>
-    </unit>
-    <unit id="45" name="ApiServiceShowAsync">
-      <segment>
-        <source>Instance service API for applications that want dependency-injected startup flow control.</source>
-      </segment>
-    </unit>
-    <unit id="46" name="ApiMethodSetProgress">
+    <unit id="ApiMethodSetProgress">
       <segment>
         <source>Updates progress, message and detail on the splash instance.</source>
       </segment>
     </unit>
-    <unit id="47" name="ApiOptionMinimumShowDuration">
+    <unit id="ApiOptionMinimumShowDuration">
       <segment>
         <source>Minimum display time before the splash window may close.</source>
+      </segment>
+    </unit>
+    <unit id="ApiServiceShowAsync">
+      <segment>
+        <source>Instance service API for applications that want dependency-injected startup flow control.</source>
+      </segment>
+    </unit>
+    <unit id="ApiStaticShowAsync">
+      <segment>
+        <source>Static convenience API that delegates to Splash.DefaultService.</source>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>Use the visual Splash control to show startup copy with an indeterminate loading indicator.</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Other</source>
+      </segment>
+    </unit>
+    <unit id="ComponentIntroducedVersion">
+      <segment>
+        <source>v6.0.7</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusPreview">
+      <segment>
+        <source>Preview</source>
+      </segment>
+    </unit>
+    <unit id="ComposedDescription">
+      <segment>
+        <source>Template the logo and footer when a product needs richer startup metadata.</source>
+      </segment>
+    </unit>
+    <unit id="ComposedTitle">
+      <segment>
+        <source>Logo, content and footer</source>
+      </segment>
+    </unit>
+    <unit id="DeterminateDescription">
+      <segment>
+        <source>Set Progress and disable IsIndeterminate when startup has measurable phases.</source>
+      </segment>
+    </unit>
+    <unit id="DeterminateTitle">
+      <segment>
+        <source>Determinate progress</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentModuleCore">
+      <segment>
+        <source>Core</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentModuleGallery">
+      <segment>
+        <source>Gallery</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentModuleTheme">
+      <segment>
+        <source>Theme</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentShowWindowSplash">
+      <segment>
+        <source>Show window Splash</source>
+      </segment>
+    </unit>
+    <unit id="P2DetailError">
+      <segment>
+        <source>Use SetErrorAsync to surface a blocking startup error before closing.</source>
+      </segment>
+    </unit>
+    <unit id="P2DetailLoadingThemeAndResources">
+      <segment>
+        <source>Loading theme, language resources and cached state.</source>
+      </segment>
+    </unit>
+    <unit id="P2DetailProgress">
+      <segment>
+        <source>Theme, icons and route catalog are ready. Optional packages are being initialized.</source>
+      </segment>
+    </unit>
+    <unit id="P2DetailReady">
+      <segment>
+        <source>The main window can be shown after the minimum splash duration.</source>
+      </segment>
+    </unit>
+    <unit id="P2FooterDesktopOnly">
+      <segment>
+        <source>Window service is intended for desktop startup.</source>
+      </segment>
+    </unit>
+    <unit id="P2FooterStaticPreview">
+      <segment>
+        <source>Static Gallery preview</source>
+      </segment>
+    </unit>
+    <unit id="P2MessageError">
+      <segment>
+        <source>Startup failed</source>
+      </segment>
+    </unit>
+    <unit id="P2MessageLoadingModules">
+      <segment>
+        <source>Loading modules</source>
+      </segment>
+    </unit>
+    <unit id="P2MessagePreparingShell">
+      <segment>
+        <source>Preparing workspace</source>
+      </segment>
+    </unit>
+    <unit id="P2MessageReady">
+      <segment>
+        <source>Workspace ready</source>
+      </segment>
+    </unit>
+    <unit id="P2SubtitleDesktopBoot">
+      <segment>
+        <source>Desktop boot sequence</source>
+      </segment>
+    </unit>
+    <unit id="P2WindowSplashDetailComplete">
+      <segment>
+        <source>The fake startup flow has completed and the window will close.</source>
+      </segment>
+    </unit>
+    <unit id="P2WindowSplashDetailProgress">
+      <segment>
+        <source>This is a fake loading step for the Gallery demo.</source>
+      </segment>
+    </unit>
+    <unit id="P2WindowSplashDetailStarting">
+      <segment>
+        <source>A temporary Splash window is showing a mocked five-second startup.</source>
+      </segment>
+    </unit>
+    <unit id="P2WindowSplashFooter">
+      <segment>
+        <source>Desktop Extras package / window-hosted startup surface</source>
+      </segment>
+    </unit>
+    <unit id="P2WindowSplashMessageComplete">
+      <segment>
+        <source>Gallery ready</source>
+      </segment>
+    </unit>
+    <unit id="P2WindowSplashMessageFinalizing">
+      <segment>
+        <source>Finalizing workspace</source>
+      </segment>
+    </unit>
+    <unit id="P2WindowSplashMessageLoadingControls">
+      <segment>
+        <source>Registering control packages</source>
+      </segment>
+    </unit>
+    <unit id="P2WindowSplashMessageLoadingRoutes">
+      <segment>
+        <source>Preparing route catalog</source>
+      </segment>
+    </unit>
+    <unit id="P2WindowSplashMessageLoadingTheme">
+      <segment>
+        <source>Loading theme resources</source>
+      </segment>
+    </unit>
+    <unit id="P2WindowSplashMessageStarting">
+      <segment>
+        <source>Starting Gallery workspace</source>
+      </segment>
+    </unit>
+    <unit id="P2WindowSplashMessageWarmingCache">
+      <segment>
+        <source>Warming Gallery cache</source>
+      </segment>
+    </unit>
+    <unit id="P2WindowSplashSubtitle">
+      <segment>
+        <source>Desktop startup simulation</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Splash combines a compact branded surface, loading indicator, determinate progress, status copy, and optional footer. The service API can host it in a borderless startup window, while the visual control can be previewed directly in Gallery.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Present desktop startup progress before the main workspace is ready.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Switch Status to Success or Error when the startup flow reaches a terminal state.</source>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+      </segment>
+    </unit>
+    <unit id="WindowServiceDescription">
+      <segment>
+        <source>Open a real desktop Splash window, run a five-second mock startup flow, then close it automatically.</source>
+      </segment>
+    </unit>
+    <unit id="WindowServiceTitle">
+      <segment>
+        <source>Window service</source>
       </segment>
     </unit>
   </file>

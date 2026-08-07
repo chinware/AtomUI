@@ -29,23 +29,16 @@ public abstract class LanguageCatalogDescriptor
         }
 
         var unitArray = new LanguageCatalogUnitDescriptor[units.Count];
-        var unitIds = new HashSet<int>();
-        var unitNames = new HashSet<string>(StringComparer.Ordinal);
+        var unitKeys = new HashSet<string>(StringComparer.Ordinal);
         for (var index = 0; index < units.Count; index++)
         {
             var unit = units[index] ?? throw new ArgumentException(
                 "A language Catalog cannot contain a null unit descriptor.",
                 nameof(units));
-            if (!unitIds.Add(unit.Id))
+            if (!unitKeys.Add(unit.Key))
             {
                 throw new ArgumentException(
-                    $"Language unit ID '{unit.Id}' is duplicated in Catalog '{catalogId}'.",
-                    nameof(units));
-            }
-            if (!unitNames.Add(unit.Name))
-            {
-                throw new ArgumentException(
-                    $"Language unit name '{unit.Name}' is duplicated in Catalog '{catalogId}'.",
+                    $"Language unit Key '{unit.Key}' is duplicated in Catalog '{catalogId}'.",
                     nameof(units));
             }
 

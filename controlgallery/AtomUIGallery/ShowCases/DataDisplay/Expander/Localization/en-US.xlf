@@ -1,249 +1,249 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind">
-    <unit id="1" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-      </segment>
-    </unit>
-    <unit id="2" name="ComponentCategory">
-      <segment>
-        <source>Data Display</source>
-      </segment>
-    </unit>
-    <unit id="3" name="ComponentStatusStable">
-      <segment>
-        <source>.NET 10</source>
-      </segment>
-    </unit>
-    <unit id="4" name="PageSubtitle">
-      <segment>
-        <source>Show or hide a single section of supporting content.</source>
-      </segment>
-    </unit>
-    <unit id="5" name="PageDescription">
-      <segment>
-        <source>Expander reveals content on demand without leaving the current context. It supports multiple expansion directions, size variants, icon placement, icon-only triggers, nested panels, ghost style, and custom spacing.</source>
-      </segment>
-    </unit>
-    <unit id="6" name="ScenarioBasic">
-      <segment>
-        <source>Basic</source>
-      </segment>
-    </unit>
-    <unit id="7" name="ScenarioAppearance">
-      <segment>
-        <source>Appearance</source>
-      </segment>
-    </unit>
-    <unit id="8" name="ScenarioBehavior">
-      <segment>
-        <source>Behavior</source>
-      </segment>
-    </unit>
-    <unit id="9" name="ExpanderTitle">
-      <segment>
-        <source>Expander</source>
-      </segment>
-    </unit>
-    <unit id="10" name="ExpanderDescription">
-      <segment>
-        <source>By default, The simplest usage is to expand downward.</source>
-      </segment>
-    </unit>
-    <unit id="11" name="SizeTitle">
-      <segment>
-        <source>Size</source>
-      </segment>
-    </unit>
-    <unit id="12" name="SizeDescription">
-      <segment>
-        <source>Ant Design supports a default Expander size as well as a large and small size. If a large or small Expander is desired, set the size property to either large or small respectively. Omit the size property for a Expander with the default size.</source>
-      </segment>
-    </unit>
-    <unit id="13" name="ExpandingDirectionTitle">
-      <segment>
-        <source>Expanding Direction</source>
-      </segment>
-    </unit>
-    <unit id="14" name="ExpandingDirectionDescription">
-      <segment>
-        <source>The content area supports expansion in four directions.</source>
-      </segment>
-    </unit>
-    <unit id="15" name="NestedPanelTitle">
-      <segment>
-        <source>Nested panel</source>
-      </segment>
-    </unit>
-    <unit id="16" name="NestedPanelDescription">
-      <segment>
-        <source>Expander is nested inside the Collapse.</source>
-      </segment>
-    </unit>
-    <unit id="17" name="BorderlessTitle">
-      <segment>
-        <source>Borderless</source>
-      </segment>
-    </unit>
-    <unit id="18" name="BorderlessDescription">
+    <unit id="BorderlessDescription">
       <segment>
         <source>A borderless style of Expander.</source>
       </segment>
     </unit>
-    <unit id="19" name="NoArrowTitle">
+    <unit id="BorderlessTitle">
       <segment>
-        <source>No Arrow</source>
+        <source>Borderless</source>
       </segment>
     </unit>
-    <unit id="20" name="NoArrowDescription">
-      <segment>
-        <source>You can hide the arrow icon by passing IsShowExpandIcon={False} to CollapsePanel component.</source>
-      </segment>
-    </unit>
-    <unit id="21" name="ExpandIconLocationTitle">
-      <segment>
-        <source>Expand icon location</source>
-      </segment>
-    </unit>
-    <unit id="22" name="ExpandIconLocationDescription">
-      <segment>
-        <source>The expand icon can be placed in front or in the back.</source>
-      </segment>
-    </unit>
-    <unit id="23" name="GhostCollapseTitle">
-      <segment>
-        <source>Ghost Collapse</source>
-      </segment>
-    </unit>
-    <unit id="24" name="GhostCollapseDescription">
-      <segment>
-        <source>Making collapse's background to transparent.</source>
-      </segment>
-    </unit>
-    <unit id="25" name="CollapsibleTitle">
-      <segment>
-        <source>Collapsible</source>
-      </segment>
-    </unit>
-    <unit id="26" name="CollapsibleDescription">
+    <unit id="CollapsibleDescription">
       <segment>
         <source>Specify the trigger area of collapsible by collapsible.</source>
       </segment>
     </unit>
-    <unit id="27" name="CustomPaddingTitle">
+    <unit id="CollapsibleTitle">
       <segment>
-        <source>Custom Header And Content Padding</source>
+        <source>Collapsible</source>
       </segment>
     </unit>
-    <unit id="28" name="CustomPaddingDescription">
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+      </segment>
+    </unit>
+    <unit id="CustomPaddingDescription">
       <segment>
         <source>Please set custom header margins and content spacing.</source>
       </segment>
     </unit>
-    <unit id="29" name="P2HeaderThisIsPanelHeaderN1">
+    <unit id="CustomPaddingTitle">
       <segment>
-        <source>This is panel header 1</source>
+        <source>Custom Header And Content Padding</source>
       </segment>
     </unit>
-    <unit id="30" name="P2TitleDefaultSize">
+    <unit id="ExpandIconLocationDescription">
       <segment>
-        <source>Default Size</source>
+        <source>The expand icon can be placed in front or in the back.</source>
       </segment>
     </unit>
-    <unit id="31" name="P2HeaderThisIsDefaultSizePanelHeader">
+    <unit id="ExpandIconLocationTitle">
       <segment>
-        <source>This is default size panel header</source>
+        <source>Expand icon location</source>
       </segment>
     </unit>
-    <unit id="32" name="P2TitleSmallSize">
+    <unit id="ExpanderDescription">
       <segment>
-        <source>Small Size</source>
+        <source>By default, The simplest usage is to expand downward.</source>
       </segment>
     </unit>
-    <unit id="33" name="P2HeaderThisIsSmallSizePanelHeader">
+    <unit id="ExpanderTitle">
       <segment>
-        <source>This is small size panel header</source>
+        <source>Expander</source>
       </segment>
     </unit>
-    <unit id="34" name="P2TitleLargeSize">
+    <unit id="ExpandingDirectionDescription">
       <segment>
-        <source>Large Size</source>
+        <source>The content area supports expansion in four directions.</source>
       </segment>
     </unit>
-    <unit id="35" name="P2HeaderThisIsLargeSizePanelHeader">
+    <unit id="ExpandingDirectionTitle">
       <segment>
-        <source>This is large size panel header</source>
+        <source>Expanding Direction</source>
       </segment>
     </unit>
-    <unit id="36" name="P2HeaderThisIsPanelHeader">
+    <unit id="GhostCollapseDescription">
       <segment>
-        <source>This is panel header</source>
+        <source>Making collapse's background to transparent.</source>
       </segment>
     </unit>
-    <unit id="37" name="P2HeaderThisIsNestedPanelHeader">
+    <unit id="GhostCollapseTitle">
       <segment>
-        <source>This is nested panel header</source>
+        <source>Ghost Collapse</source>
       </segment>
     </unit>
-    <unit id="38" name="P2HeaderThisPanelCanOnlyBeCollapsedByClicking">
+    <unit id="NestedPanelDescription">
       <segment>
-        <source>This panel can only be collapsed by clicking text</source>
+        <source>Expander is nested inside the Collapse.</source>
       </segment>
     </unit>
-    <unit id="39" name="P2HeaderThisPanelCanOnlyBeCollapsedByClicking2">
+    <unit id="NestedPanelTitle">
       <segment>
-        <source>This panel can only be collapsed by clicking icon</source>
+        <source>Nested panel</source>
       </segment>
     </unit>
-    <unit id="40" name="P2HeaderThisPanelCanTBeCollapsed">
+    <unit id="NoArrowDescription">
       <segment>
-        <source>This panel can't be collapsed</source>
+        <source>You can hide the arrow icon by passing IsShowExpandIcon={False} to CollapsePanel component.</source>
       </segment>
     </unit>
-    <unit id="41" name="P2TextADogIsATypeOfDomesticatedAnimal">
+    <unit id="NoArrowTitle">
       <segment>
-        <source>A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.</source>
+        <source>No Arrow</source>
       </segment>
     </unit>
-    <unit id="42" name="P2TextExpandDirection">
-      <segment>
-        <source>Expand direction:</source>
-      </segment>
-    </unit>
-    <unit id="43" name="P2ContentDown">
+    <unit id="P2ContentDown">
       <segment>
         <source>Down</source>
       </segment>
     </unit>
-    <unit id="44" name="P2ContentUp">
+    <unit id="P2ContentEnd">
       <segment>
-        <source>Up</source>
+        <source>End</source>
       </segment>
     </unit>
-    <unit id="45" name="P2ContentLeft">
+    <unit id="P2ContentLeft">
       <segment>
         <source>Left</source>
       </segment>
     </unit>
-    <unit id="46" name="P2ContentRight">
+    <unit id="P2ContentRight">
       <segment>
         <source>Right</source>
       </segment>
     </unit>
-    <unit id="47" name="P2TextExpandIconPosition">
-      <segment>
-        <source>Expand Icon Position:</source>
-      </segment>
-    </unit>
-    <unit id="48" name="P2ContentStart">
+    <unit id="P2ContentStart">
       <segment>
         <source>Start</source>
       </segment>
     </unit>
-    <unit id="49" name="P2ContentEnd">
+    <unit id="P2ContentUp">
       <segment>
-        <source>End</source>
+        <source>Up</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisIsDefaultSizePanelHeader">
+      <segment>
+        <source>This is default size panel header</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisIsLargeSizePanelHeader">
+      <segment>
+        <source>This is large size panel header</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisIsNestedPanelHeader">
+      <segment>
+        <source>This is nested panel header</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisIsPanelHeader">
+      <segment>
+        <source>This is panel header</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisIsPanelHeaderN1">
+      <segment>
+        <source>This is panel header 1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisIsSmallSizePanelHeader">
+      <segment>
+        <source>This is small size panel header</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisPanelCanOnlyBeCollapsedByClicking">
+      <segment>
+        <source>This panel can only be collapsed by clicking text</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisPanelCanOnlyBeCollapsedByClicking2">
+      <segment>
+        <source>This panel can only be collapsed by clicking icon</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisPanelCanTBeCollapsed">
+      <segment>
+        <source>This panel can't be collapsed</source>
+      </segment>
+    </unit>
+    <unit id="P2TextADogIsATypeOfDomesticatedAnimal">
+      <segment>
+        <source>A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.</source>
+      </segment>
+    </unit>
+    <unit id="P2TextExpandDirection">
+      <segment>
+        <source>Expand direction:</source>
+      </segment>
+    </unit>
+    <unit id="P2TextExpandIconPosition">
+      <segment>
+        <source>Expand Icon Position:</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleDefaultSize">
+      <segment>
+        <source>Default Size</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleLargeSize">
+      <segment>
+        <source>Large Size</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleSmallSize">
+      <segment>
+        <source>Small Size</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Expander reveals content on demand without leaving the current context. It supports multiple expansion directions, size variants, icon placement, icon-only triggers, nested panels, ghost style, and custom spacing.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Show or hide a single section of supporting content.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioAppearance">
+      <segment>
+        <source>Appearance</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioBehavior">
+      <segment>
+        <source>Behavior</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>Ant Design supports a default Expander size as well as a large and small size. If a large or small Expander is desired, set the size property to either large or small respectively. Omit the size property for a Expander with the default size.</source>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
       </segment>
     </unit>
   </file>

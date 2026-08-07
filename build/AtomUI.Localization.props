@@ -2,6 +2,7 @@
     <PropertyGroup>
         <AtomUILanguageModuleId Condition="'$(AtomUILanguageModuleId)' == '' and '$(PackageId)' != ''">$(PackageId)</AtomUILanguageModuleId>
         <AtomUILanguageModuleId Condition="'$(AtomUILanguageModuleId)' == ''">$(AssemblyName)</AtomUILanguageModuleId>
+        <AtomUILanguageContractVersion Condition="'$(AtomUILanguageContractVersion)' == ''">1</AtomUILanguageContractVersion>
     </PropertyGroup>
 
     <ItemDefinitionGroup>

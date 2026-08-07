@@ -6,6 +6,15 @@ namespace AtomUI.Localization.Tests;
 public class LanguageCatalogDescriptorTests
 {
     [Fact]
+    public void Unit_Descriptor_Uses_Key_As_The_Only_Identity()
+    {
+        typeof(LanguageCatalogUnitDescriptor).GetProperty("Key")
+            .ShouldNotBeNull();
+        typeof(LanguageCatalogUnitDescriptor).GetProperty("Id").ShouldBeNull();
+        typeof(LanguageCatalogUnitDescriptor).GetProperty("Name").ShouldBeNull();
+    }
+
+    [Fact]
     public void LanguageCatalogAttribute_Targets_Enums_And_Defaults_To_Version_One()
     {
         var usage = typeof(LanguageCatalogAttribute)
@@ -28,8 +37,7 @@ public class LanguageCatalogDescriptorTests
         descriptor.CatalogId.ShouldBe("Acme.App:Acme.LoginLangResourceKind");
         descriptor.ContractVersion.ShouldBe(1);
         descriptor.ResourceKindType.ShouldBe(typeof(LoginLangResourceKind));
-        descriptor.Units.Select(static unit => unit.Id).ShouldBe([1, 2]);
-        descriptor.Units.Select(static unit => unit.Name).ShouldBe(["Title", "ItemCount"]);
+        descriptor.Units.Select(static unit => unit.Key).ShouldBe(["Title", "ItemCount"]);
         descriptor.Units[1].IsFormatted.ShouldBeTrue();
         descriptor.TryGetUnitSlot(LoginLangResourceKind.Title, out var titleSlot).ShouldBeTrue();
         titleSlot.ShouldBe(0);
@@ -41,7 +49,7 @@ public class LanguageCatalogDescriptorTests
     {
         var units = new[]
         {
-            new LanguageCatalogUnitDescriptor(1, "Title")
+            new LanguageCatalogUnitDescriptor("Title")
         };
         var descriptor = new LanguageCatalogDescriptor<LoginLangResourceKind>(
             "Acme.App:Acme.LoginLangResourceKind",
@@ -49,10 +57,9 @@ public class LanguageCatalogDescriptorTests
             units,
             static key => key == LoginLangResourceKind.Title ? 0 : -1);
 
-        units[0] = new LanguageCatalogUnitDescriptor(2, "Changed");
+        units[0] = new LanguageCatalogUnitDescriptor("Changed");
 
-        descriptor.Units[0].Id.ShouldBe(1);
-        descriptor.Units[0].Name.ShouldBe("Title");
+        descriptor.Units[0].Key.ShouldBe("Title");
     }
 
     [Theory]
@@ -68,39 +75,37 @@ public class LanguageCatalogDescriptorTests
         Should.Throw<ArgumentException>(() => new LanguageCatalogDescriptor<LoginLangResourceKind>(
             catalogId,
             contractVersion,
-            [new LanguageCatalogUnitDescriptor(1, "Title")],
+            [new LanguageCatalogUnitDescriptor("Title")],
             static _ => 0));
     }
 
     [Fact]
-    public void Catalog_Descriptor_Rejects_Duplicate_Unit_Ids_And_Names()
+    public void Catalog_Descriptor_Rejects_Duplicate_Unit_Keys()
     {
         Should.Throw<ArgumentException>(() => new LanguageCatalogDescriptor<LoginLangResourceKind>(
             "Acme.App:Acme.LoginLangResourceKind",
             1,
             [
-                new LanguageCatalogUnitDescriptor(1, "Title"),
-                new LanguageCatalogUnitDescriptor(1, "Subtitle")
+                new LanguageCatalogUnitDescriptor("Title"),
+                new LanguageCatalogUnitDescriptor("Title")
             ],
             static _ => 0));
         Should.Throw<ArgumentException>(() => new LanguageCatalogDescriptor<LoginLangResourceKind>(
             "Acme.App:Acme.LoginLangResourceKind",
             1,
             [
-                new LanguageCatalogUnitDescriptor(1, "Title"),
-                new LanguageCatalogUnitDescriptor(2, "Title")
+                new LanguageCatalogUnitDescriptor("Title"),
+                new LanguageCatalogUnitDescriptor("Title")
             ],
             static _ => 0));
     }
 
     [Theory]
-    [InlineData(0, "Title")]
-    [InlineData(-1, "Title")]
-    [InlineData(1, "")]
-    [InlineData(1, " ")]
-    public void Unit_Descriptor_Rejects_Invalid_Identity(int id, string name)
+    [InlineData("")]
+    [InlineData(" ")]
+    public void Unit_Descriptor_Rejects_Invalid_Key(string key)
     {
-        Should.Throw<ArgumentException>(() => new LanguageCatalogUnitDescriptor(id, name));
+        Should.Throw<ArgumentException>(() => new LanguageCatalogUnitDescriptor(key));
     }
 
     [Fact]
@@ -171,8 +176,8 @@ public class LanguageCatalogDescriptorTests
             "Acme.App:Acme.LoginLangResourceKind",
             1,
             [
-                new LanguageCatalogUnitDescriptor(1, "Title"),
-                new LanguageCatalogUnitDescriptor(2, "ItemCount", isFormatted: true)
+                new LanguageCatalogUnitDescriptor("Title"),
+                new LanguageCatalogUnitDescriptor("ItemCount", isFormatted: true)
             ],
             static key => key switch
             {
@@ -185,7 +190,7 @@ public class LanguageCatalogDescriptorTests
     [LanguageCatalog(ContractVersion = 1)]
     private enum LoginLangResourceKind
     {
-        Title = 1,
-        ItemCount = 2
+        Title,
+        ItemCount
     }
 }

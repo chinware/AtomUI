@@ -1,309 +1,309 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind">
-    <unit id="1" name="PageSubtitle">
+    <unit id="BasicDescription">
       <segment>
-        <source>Display grouped read-only details in a responsive layout.</source>
+        <source>Simplest Usage.</source>
       </segment>
     </unit>
-    <unit id="2" name="PageDescription">
-      <segment>
-        <source>Descriptions presents related label-value pairs with optional borders, headers, extra actions, responsive columns, and vertical layouts.</source>
-      </segment>
-    </unit>
-    <unit id="3" name="ComponentCategory">
-      <segment>
-        <source>Data Display</source>
-      </segment>
-    </unit>
-    <unit id="4" name="ComponentStatusStable">
-      <segment>
-        <source>Stable</source>
-      </segment>
-    </unit>
-    <unit id="5" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-      </segment>
-    </unit>
-    <unit id="6" name="BasicTitle">
+    <unit id="BasicTitle">
       <segment>
         <source>Basic</source>
       </segment>
     </unit>
-    <unit id="7" name="BasicDescription">
+    <unit id="BorderDescription">
       <segment>
-        <source>Simplest Usage.</source>
+        <source>Descriptions with border and background color.</source>
       </segment>
     </unit>
-    <unit id="8" name="BorderTitle">
+    <unit id="BorderTitle">
       <segment>
         <source>border</source>
       </segment>
     </unit>
-    <unit id="9" name="BorderDescription">
+    <unit id="ComponentCategory">
       <segment>
-        <source>Descriptions with border and background color.</source>
+        <source>Data Display</source>
       </segment>
     </unit>
-    <unit id="10" name="CustomSizeTitle">
+    <unit id="ComponentStatusStable">
       <segment>
-        <source>Custom size</source>
+        <source>Stable</source>
       </segment>
     </unit>
-    <unit id="11" name="CustomSizeDescription">
+    <unit id="CustomSizeDescription">
       <segment>
         <source>Custom sizes to fit in a variety of containers.</source>
       </segment>
     </unit>
-    <unit id="12" name="ResponsiveTitle">
+    <unit id="CustomSizeTitle">
       <segment>
-        <source>responsive</source>
+        <source>Custom size</source>
       </segment>
     </unit>
-    <unit id="13" name="ResponsiveDescription">
-      <segment>
-        <source>Responsive configuration enables perfect presentation on small screen devices.</source>
-      </segment>
-    </unit>
-    <unit id="14" name="VerticalTitle">
-      <segment>
-        <source>Vertical</source>
-      </segment>
-    </unit>
-    <unit id="15" name="VerticalDescription">
-      <segment>
-        <source>Simplest Usage.</source>
-      </segment>
-    </unit>
-    <unit id="16" name="VerticalBorderTitle">
-      <segment>
-        <source>Vertical border</source>
-      </segment>
-    </unit>
-    <unit id="17" name="VerticalBorderDescription">
-      <segment>
-        <source>Descriptions with border and background color.</source>
-      </segment>
-    </unit>
-    <unit id="18" name="RowTitle">
-      <segment>
-        <source>Row</source>
-      </segment>
-    </unit>
-    <unit id="19" name="RowDescription">
-      <segment>
-        <source>Display of the entire line.</source>
-      </segment>
-    </unit>
-    <unit id="20" name="P2HeaderUserInfo">
-      <segment>
-        <source>User Info</source>
-      </segment>
-    </unit>
-    <unit id="21" name="P2HeaderCustomSize">
-      <segment>
-        <source>Custom Size</source>
-      </segment>
-    </unit>
-    <unit id="22" name="P2HeaderResponsiveDescriptions">
-      <segment>
-        <source>Responsive Descriptions</source>
-      </segment>
-    </unit>
-    <unit id="23" name="P2LabelUserName">
-      <segment>
-        <source>UserName</source>
-      </segment>
-    </unit>
-    <unit id="24" name="P2LabelTelephone">
-      <segment>
-        <source>Telephone</source>
-      </segment>
-    </unit>
-    <unit id="25" name="P2LabelLive">
-      <segment>
-        <source>Live</source>
-      </segment>
-    </unit>
-    <unit id="26" name="P2LabelRemark">
-      <segment>
-        <source>Remark</source>
-      </segment>
-    </unit>
-    <unit id="27" name="P2LabelAddress">
-      <segment>
-        <source>Address</source>
-      </segment>
-    </unit>
-    <unit id="28" name="P2LabelProduct">
-      <segment>
-        <source>Product</source>
-      </segment>
-    </unit>
-    <unit id="29" name="P2LabelBillingMode">
-      <segment>
-        <source>Billing Mode</source>
-      </segment>
-    </unit>
-    <unit id="30" name="P2LabelBilling">
-      <segment>
-        <source>Billing</source>
-      </segment>
-    </unit>
-    <unit id="31" name="P2LabelAutomaticRenewal">
-      <segment>
-        <source>Automatic Renewal</source>
-      </segment>
-    </unit>
-    <unit id="32" name="P2LabelOrderTime">
-      <segment>
-        <source>Order time</source>
-      </segment>
-    </unit>
-    <unit id="33" name="P2LabelUsageTime">
-      <segment>
-        <source>Usage Time</source>
-      </segment>
-    </unit>
-    <unit id="34" name="P2LabelStatus">
-      <segment>
-        <source>Status</source>
-      </segment>
-    </unit>
-    <unit id="35" name="P2LabelNegotiatedAmount">
-      <segment>
-        <source>Negotiated Amount</source>
-      </segment>
-    </unit>
-    <unit id="36" name="P2LabelDiscount">
-      <segment>
-        <source>Discount</source>
-      </segment>
-    </unit>
-    <unit id="37" name="P2LabelOfficialReceipts">
-      <segment>
-        <source>Official Receipts</source>
-      </segment>
-    </unit>
-    <unit id="38" name="P2LabelOfficial">
-      <segment>
-        <source>Official</source>
-      </segment>
-    </unit>
-    <unit id="39" name="P2LabelConfigInfo">
-      <segment>
-        <source>Config Info</source>
-      </segment>
-    </unit>
-    <unit id="40" name="P2LabelTime">
-      <segment>
-        <source>Time</source>
-      </segment>
-    </unit>
-    <unit id="41" name="P2LabelAmount">
-      <segment>
-        <source>Amount</source>
-      </segment>
-    </unit>
-    <unit id="42" name="P2LabelHardwareInfo">
-      <segment>
-        <source>Hardware Info</source>
-      </segment>
-    </unit>
-    <unit id="43" name="P2ContentZhouMaomao">
-      <segment>
-        <source>Zhou Maomao</source>
-      </segment>
-    </unit>
-    <unit id="44" name="P2ContentHangzhouZhejiang">
-      <segment>
-        <source>Hangzhou, Zhejiang</source>
-      </segment>
-    </unit>
-    <unit id="45" name="P2ContentEmpty">
-      <segment>
-        <source>empty</source>
-      </segment>
-    </unit>
-    <unit id="46" name="P2ContentAddress">
+    <unit id="P2ContentAddress">
       <segment>
         <source>No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China</source>
       </segment>
     </unit>
-    <unit id="47" name="P2ContentCloudDatabase">
+    <unit id="P2ContentCloudDatabase">
       <segment>
         <source>Cloud Database</source>
       </segment>
     </unit>
-    <unit id="48" name="P2ContentPrepaid">
-      <segment>
-        <source>Prepaid</source>
-      </segment>
-    </unit>
-    <unit id="49" name="P2ContentYes">
-      <segment>
-        <source>YES</source>
-      </segment>
-    </unit>
-    <unit id="50" name="P2ContentRunning">
-      <segment>
-        <source>Running</source>
-      </segment>
-    </unit>
-    <unit id="51" name="P2TextDataDiskTypeMongodb">
-      <segment>
-        <source>Data disk type: MongoDB</source>
-      </segment>
-    </unit>
-    <unit id="52" name="P2TextDatabaseVersionN3N4">
-      <segment>
-        <source>Database version: 3.4</source>
-      </segment>
-    </unit>
-    <unit id="53" name="P2TextPackageDdsMongoMid">
-      <segment>
-        <source>Package: dds.mongo.mid</source>
-      </segment>
-    </unit>
-    <unit id="54" name="P2TextStorageSpaceN10Gb">
-      <segment>
-        <source>Storage space: 10 GB</source>
-      </segment>
-    </unit>
-    <unit id="55" name="P2TextReplicationFactorN3">
-      <segment>
-        <source>Replication factor: 3</source>
-      </segment>
-    </unit>
-    <unit id="56" name="P2TextRegionEastChinaN1">
-      <segment>
-        <source>Region: East China 1</source>
-      </segment>
-    </unit>
-    <unit id="57" name="P2ContentLarge">
-      <segment>
-        <source>Large</source>
-      </segment>
-    </unit>
-    <unit id="58" name="P2ContentMiddle">
-      <segment>
-        <source>Middle</source>
-      </segment>
-    </unit>
-    <unit id="59" name="P2ContentSmall">
-      <segment>
-        <source>Small</source>
-      </segment>
-    </unit>
-    <unit id="60" name="P2ContentEdit">
+    <unit id="P2ContentEdit">
       <segment>
         <source>Edit</source>
       </segment>
     </unit>
-    <unit id="61" name="P2TextCpuN6CoreN3N5Ghz">
+    <unit id="P2ContentEmpty">
+      <segment>
+        <source>empty</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentHangzhouZhejiang">
+      <segment>
+        <source>Hangzhou, Zhejiang</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentMiddle">
+      <segment>
+        <source>Middle</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentPrepaid">
+      <segment>
+        <source>Prepaid</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRunning">
+      <segment>
+        <source>Running</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentYes">
+      <segment>
+        <source>YES</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentZhouMaomao">
+      <segment>
+        <source>Zhou Maomao</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCustomSize">
+      <segment>
+        <source>Custom Size</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderResponsiveDescriptions">
+      <segment>
+        <source>Responsive Descriptions</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderUserInfo">
+      <segment>
+        <source>User Info</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelAddress">
+      <segment>
+        <source>Address</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelAmount">
+      <segment>
+        <source>Amount</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelAutomaticRenewal">
+      <segment>
+        <source>Automatic Renewal</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelBilling">
+      <segment>
+        <source>Billing</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelBillingMode">
+      <segment>
+        <source>Billing Mode</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelConfigInfo">
+      <segment>
+        <source>Config Info</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelDiscount">
+      <segment>
+        <source>Discount</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelHardwareInfo">
+      <segment>
+        <source>Hardware Info</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelLive">
+      <segment>
+        <source>Live</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelNegotiatedAmount">
+      <segment>
+        <source>Negotiated Amount</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelOfficial">
+      <segment>
+        <source>Official</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelOfficialReceipts">
+      <segment>
+        <source>Official Receipts</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelOrderTime">
+      <segment>
+        <source>Order time</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelProduct">
+      <segment>
+        <source>Product</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelRemark">
+      <segment>
+        <source>Remark</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelStatus">
+      <segment>
+        <source>Status</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTelephone">
+      <segment>
+        <source>Telephone</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelTime">
+      <segment>
+        <source>Time</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelUsageTime">
+      <segment>
+        <source>Usage Time</source>
+      </segment>
+    </unit>
+    <unit id="P2LabelUserName">
+      <segment>
+        <source>UserName</source>
+      </segment>
+    </unit>
+    <unit id="P2TextCpuN6CoreN3N5Ghz">
       <segment>
         <source>CPU: 6 Core 3.5 GHz</source>
+      </segment>
+    </unit>
+    <unit id="P2TextDataDiskTypeMongodb">
+      <segment>
+        <source>Data disk type: MongoDB</source>
+      </segment>
+    </unit>
+    <unit id="P2TextDatabaseVersionN3N4">
+      <segment>
+        <source>Database version: 3.4</source>
+      </segment>
+    </unit>
+    <unit id="P2TextPackageDdsMongoMid">
+      <segment>
+        <source>Package: dds.mongo.mid</source>
+      </segment>
+    </unit>
+    <unit id="P2TextRegionEastChinaN1">
+      <segment>
+        <source>Region: East China 1</source>
+      </segment>
+    </unit>
+    <unit id="P2TextReplicationFactorN3">
+      <segment>
+        <source>Replication factor: 3</source>
+      </segment>
+    </unit>
+    <unit id="P2TextStorageSpaceN10Gb">
+      <segment>
+        <source>Storage space: 10 GB</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Descriptions presents related label-value pairs with optional borders, headers, extra actions, responsive columns, and vertical layouts.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display grouped read-only details in a responsive layout.</source>
+      </segment>
+    </unit>
+    <unit id="ResponsiveDescription">
+      <segment>
+        <source>Responsive configuration enables perfect presentation on small screen devices.</source>
+      </segment>
+    </unit>
+    <unit id="ResponsiveTitle">
+      <segment>
+        <source>responsive</source>
+      </segment>
+    </unit>
+    <unit id="RowDescription">
+      <segment>
+        <source>Display of the entire line.</source>
+      </segment>
+    </unit>
+    <unit id="RowTitle">
+      <segment>
+        <source>Row</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="VerticalBorderDescription">
+      <segment>
+        <source>Descriptions with border and background color.</source>
+      </segment>
+    </unit>
+    <unit id="VerticalBorderTitle">
+      <segment>
+        <source>Vertical border</source>
+      </segment>
+    </unit>
+    <unit id="VerticalDescription">
+      <segment>
+        <source>Simplest Usage.</source>
+      </segment>
+    </unit>
+    <unit id="VerticalTitle">
+      <segment>
+        <source>Vertical</source>
       </segment>
     </unit>
   </file>

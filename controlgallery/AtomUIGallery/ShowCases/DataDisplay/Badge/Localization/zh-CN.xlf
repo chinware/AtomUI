@@ -1,352 +1,352 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.BadgeShowCaseLangResourceKind">
-    <unit id="1" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">示例</target>
-      </segment>
-    </unit>
-    <unit id="2" name="ComponentCategory">
-      <segment>
-        <source>Data Display</source>
-        <target state="translated">数据展示</target>
-      </segment>
-    </unit>
-    <unit id="3" name="ComponentStatusStable">
-      <segment>
-        <source>Stable</source>
-        <target state="translated">稳定</target>
-      </segment>
-    </unit>
-    <unit id="4" name="PageSubtitle">
-      <segment>
-        <source>Highlight counts, statuses, and contextual labels near related content.</source>
-        <target state="translated">在相关内容旁突出数量、状态和上下文标签。</target>
-      </segment>
-    </unit>
-    <unit id="5" name="PageDescription">
-      <segment>
-        <source>Badge draws attention to notifications, counts, status dots, and ribbon labels without interrupting the user's workflow.</source>
-        <target state="translated">Badge 用于提示通知、计数、状态点和缎带标签，在不打断用户流程的情况下强调需要关注的信息。</target>
-      </segment>
-    </unit>
-    <unit id="6" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-        <target state="translated">基础用法</target>
-      </segment>
-    </unit>
-    <unit id="7" name="BasicDescription">
+    <unit id="BasicDescription">
       <segment>
         <source>Simplest Usage. Badge will be hidden when count is 0, but we can use showZero to show it.</source>
         <target state="translated">最简单的用法。count 为 0 时 Badge 会隐藏，但可以使用 showZero 显示。</target>
       </segment>
     </unit>
-    <unit id="8" name="OverflowCountTitle">
+    <unit id="BasicTitle">
       <segment>
-        <source>Overflow Count</source>
-        <target state="translated">封顶数字</target>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
       </segment>
     </unit>
-    <unit id="9" name="OverflowCountDescription">
-      <segment>
-        <source>${overflowCount}+ is displayed when count is larger than overflowCount. The default value of overflowCount is 99.</source>
-        <target state="translated">当 count 大于 overflowCount 时显示 ${overflowCount}+。overflowCount 的默认值是 99。</target>
-      </segment>
-    </unit>
-    <unit id="10" name="OffsetTitle">
-      <segment>
-        <source>Offset</source>
-        <target state="translated">偏移量</target>
-      </segment>
-    </unit>
-    <unit id="11" name="OffsetDescription">
-      <segment>
-        <source>Set offset of the badge dot, the format is [left, top], which represents the offset of the status dot from the left and top of the default position.</source>
-        <target state="translated">设置徽标点的偏移量，格式为 [left, top]，表示状态点相对于默认位置左侧和顶部的偏移。</target>
-      </segment>
-    </unit>
-    <unit id="12" name="SizeTitle">
-      <segment>
-        <source>Size</source>
-        <target state="translated">尺寸</target>
-      </segment>
-    </unit>
-    <unit id="13" name="SizeDescription">
-      <segment>
-        <source>Set size of numeral Badge.</source>
-        <target state="translated">设置数字 Badge 的尺寸。</target>
-      </segment>
-    </unit>
-    <unit id="14" name="StandaloneTitle">
-      <segment>
-        <source>Standalone</source>
-        <target state="translated">独立使用</target>
-      </segment>
-    </unit>
-    <unit id="15" name="StandaloneDescription">
-      <segment>
-        <source>Used in standalone when children is empty.</source>
-        <target state="translated">children 为空时可独立使用。</target>
-      </segment>
-    </unit>
-    <unit id="16" name="DynamicTitle">
-      <segment>
-        <source>Dynamic</source>
-        <target state="translated">动态变化</target>
-      </segment>
-    </unit>
-    <unit id="17" name="DynamicDescription">
-      <segment>
-        <source>The count will be animated as it changes.</source>
-        <target state="translated">数字变化时会带有动画。</target>
-      </segment>
-    </unit>
-    <unit id="18" name="RedBadgeTitle">
-      <segment>
-        <source>Red badge</source>
-        <target state="translated">红点徽标</target>
-      </segment>
-    </unit>
-    <unit id="19" name="RedBadgeDescription">
-      <segment>
-        <source>This will simply display a red badge, without a specific count. If count equals 0, it won't display the dot.</source>
-        <target state="translated">简单展示一个红色徽标，不显示具体数字。如果 count 等于 0，则不会显示圆点。</target>
-      </segment>
-    </unit>
-    <unit id="20" name="StatusTitle">
-      <segment>
-        <source>Status</source>
-        <target state="translated">状态</target>
-      </segment>
-    </unit>
-    <unit id="21" name="StatusDescription">
-      <segment>
-        <source>Standalone badge with status.</source>
-        <target state="translated">带状态的独立徽标。</target>
-      </segment>
-    </unit>
-    <unit id="22" name="RibbonTitle">
-      <segment>
-        <source>Ribbon</source>
-        <target state="translated">缎带徽标</target>
-      </segment>
-    </unit>
-    <unit id="23" name="RibbonDescription">
-      <segment>
-        <source>Use ribbon badge.</source>
-        <target state="translated">使用缎带样式徽标。</target>
-      </segment>
-    </unit>
-    <unit id="24" name="ColorfulBadgeTitle">
-      <segment>
-        <source>Colorful Badge</source>
-        <target state="translated">多彩徽标</target>
-      </segment>
-    </unit>
-    <unit id="25" name="ColorfulBadgeDescription">
+    <unit id="ColorfulBadgeDescription">
       <segment>
         <source>We preset a series of colorful Badge styles for use in different situations. You can also set it to a hex color string for custom color.</source>
         <target state="translated">预设了一系列多彩 Badge 样式，可用于不同场景。也可以设置十六进制颜色字符串来自定义颜色。</target>
       </segment>
     </unit>
-    <unit id="26" name="P2TextSuccess">
+    <unit id="ColorfulBadgeTitle">
       <segment>
-        <source>Success</source>
-        <target state="translated">成功</target>
+        <source>Colorful Badge</source>
+        <target state="translated">多彩徽标</target>
       </segment>
     </unit>
-    <unit id="27" name="P2TextError">
+    <unit id="ComponentCategory">
       <segment>
-        <source>Error</source>
-        <target state="translated">错误</target>
+        <source>Data Display</source>
+        <target state="translated">数据展示</target>
       </segment>
     </unit>
-    <unit id="28" name="P2TextDefault">
+    <unit id="ComponentStatusStable">
       <segment>
-        <source>Default</source>
-        <target state="translated">默认</target>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
       </segment>
     </unit>
-    <unit id="29" name="P2TextProcessing">
+    <unit id="DynamicDescription">
       <segment>
-        <source>Processing</source>
-        <target state="translated">处理中</target>
+        <source>The count will be animated as it changes.</source>
+        <target state="translated">数字变化时会带有动画。</target>
       </segment>
     </unit>
-    <unit id="30" name="P2TextWarning">
+    <unit id="DynamicTitle">
       <segment>
-        <source>Warning</source>
-        <target state="translated">警告</target>
+        <source>Dynamic</source>
+        <target state="translated">动态变化</target>
       </segment>
     </unit>
-    <unit id="31" name="P2TextPolishExperience">
+    <unit id="OffsetDescription">
       <segment>
-        <source>Polish every detail for an excellent UI SDK experience</source>
-        <target state="translated">精益求精，打造体验优秀的 UISDK</target>
+        <source>Set offset of the badge dot, the format is [left, top], which represents the offset of the status dot from the left and top of the default position.</source>
+        <target state="translated">设置徽标点的偏移量，格式为 [left, top]，表示状态点相对于默认位置左侧和顶部的偏移。</target>
       </segment>
     </unit>
-    <unit id="32" name="P2TextJiachenPlan">
+    <unit id="OffsetTitle">
       <segment>
-        <source>Jiachen Plan takes off</source>
-        <target state="translated">甲辰计划雄起</target>
+        <source>Offset</source>
+        <target state="translated">偏移量</target>
       </segment>
     </unit>
-    <unit id="33" name="P2TextAvaloniaExcellent">
+    <unit id="OverflowCountDescription">
       <segment>
-        <source>Avalonia is excellent</source>
-        <target state="translated">Avalonia 非常优秀</target>
+        <source>${overflowCount}+ is displayed when count is larger than overflowCount. The default value of overflowCount is 99.</source>
+        <target state="translated">当 count 大于 overflowCount 时显示 ${overflowCount}+。overflowCount 的默认值是 99。</target>
       </segment>
     </unit>
-    <unit id="34" name="P2TextHippies">
+    <unit id="OverflowCountTitle">
       <segment>
-        <source>Hippies</source>
-        <target state="translated">嬉皮士</target>
+        <source>Overflow Count</source>
+        <target state="translated">封顶数字</target>
       </segment>
     </unit>
-    <unit id="35" name="P2TitlePresets">
-      <segment>
-        <source>Presets</source>
-        <target state="translated">预设</target>
-      </segment>
-    </unit>
-    <unit id="36" name="P2TextPink">
-      <segment>
-        <source>Pink</source>
-        <target state="translated">粉色</target>
-      </segment>
-    </unit>
-    <unit id="37" name="P2TextRed">
-      <segment>
-        <source>Red</source>
-        <target state="translated">红色</target>
-      </segment>
-    </unit>
-    <unit id="38" name="P2TextYellow">
-      <segment>
-        <source>Yellow</source>
-        <target state="translated">黄色</target>
-      </segment>
-    </unit>
-    <unit id="39" name="P2TextOrange">
-      <segment>
-        <source>Orange</source>
-        <target state="translated">橙色</target>
-      </segment>
-    </unit>
-    <unit id="40" name="P2TextCyan">
-      <segment>
-        <source>Cyan</source>
-        <target state="translated">青色</target>
-      </segment>
-    </unit>
-    <unit id="41" name="P2TextGreen">
-      <segment>
-        <source>Green</source>
-        <target state="translated">绿色</target>
-      </segment>
-    </unit>
-    <unit id="42" name="P2TextBlue">
-      <segment>
-        <source>Blue</source>
-        <target state="translated">蓝色</target>
-      </segment>
-    </unit>
-    <unit id="43" name="P2TextPurple">
-      <segment>
-        <source>Purple</source>
-        <target state="translated">紫色</target>
-      </segment>
-    </unit>
-    <unit id="44" name="P2TextGeekblue">
-      <segment>
-        <source>GeekBlue</source>
-        <target state="translated">极客蓝</target>
-      </segment>
-    </unit>
-    <unit id="45" name="P2TextMagenta">
-      <segment>
-        <source>Magenta</source>
-        <target state="translated">品红</target>
-      </segment>
-    </unit>
-    <unit id="46" name="P2TextVolcano">
-      <segment>
-        <source>Volcano</source>
-        <target state="translated">火山色</target>
-      </segment>
-    </unit>
-    <unit id="47" name="P2TextGold">
-      <segment>
-        <source>Gold</source>
-        <target state="translated">金色</target>
-      </segment>
-    </unit>
-    <unit id="48" name="P2TextLime">
-      <segment>
-        <source>Lime</source>
-        <target state="translated">青柠</target>
-      </segment>
-    </unit>
-    <unit id="49" name="P2TitleCustom">
-      <segment>
-        <source>Custom</source>
-        <target state="translated">自定义</target>
-      </segment>
-    </unit>
-    <unit id="50" name="P2TextRgbN45N183N245">
-      <segment>
-        <source>rgb(45, 183, 245)</source>
-        <target state="translated">rgb(45, 183, 245)</target>
-      </segment>
-    </unit>
-    <unit id="51" name="P2TextHslN102N53N61">
-      <segment>
-        <source>hsl(102, 53%, 61%)</source>
-        <target state="translated">hsl(102, 53%, 61%)</target>
-      </segment>
-    </unit>
-    <unit id="52" name="P2TextRgbN15N141N230">
-      <segment>
-        <source>rgb(15, 141, 230)</source>
-        <target state="translated">rgb(15, 141, 230)</target>
-      </segment>
-    </unit>
-    <unit id="53" name="P2ContentAdd">
+    <unit id="P2ContentAdd">
       <segment>
         <source>Add</source>
         <target state="translated">增加</target>
       </segment>
     </unit>
-    <unit id="54" name="P2ContentSub">
+    <unit id="P2ContentLinkSomething">
       <segment>
-        <source>Sub</source>
-        <target state="translated">减少</target>
+        <source>Link something</source>
+        <target state="translated">链接内容</target>
       </segment>
     </unit>
-    <unit id="55" name="P2ContentRandom">
+    <unit id="P2ContentRandom">
       <segment>
         <source>Random</source>
         <target state="translated">随机</target>
       </segment>
     </unit>
-    <unit id="56" name="P2TextPushesOpenTheWindow">
+    <unit id="P2ContentSub">
       <segment>
-        <source>Pushes open the window</source>
-        <target state="translated">推开窗户</target>
+        <source>Sub</source>
+        <target state="translated">减少</target>
       </segment>
     </unit>
-    <unit id="57" name="P2TextAndRaisesTheSpyglass">
+    <unit id="P2TextAndRaisesTheSpyglass">
       <segment>
         <source>and raises the spyglass.</source>
         <target state="translated">并举起望远镜。</target>
       </segment>
     </unit>
-    <unit id="58" name="P2ContentLinkSomething">
+    <unit id="P2TextAvaloniaExcellent">
       <segment>
-        <source>Link something</source>
-        <target state="translated">链接内容</target>
+        <source>Avalonia is excellent</source>
+        <target state="translated">Avalonia 非常优秀</target>
+      </segment>
+    </unit>
+    <unit id="P2TextBlue">
+      <segment>
+        <source>Blue</source>
+        <target state="translated">蓝色</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCyan">
+      <segment>
+        <source>Cyan</source>
+        <target state="translated">青色</target>
+      </segment>
+    </unit>
+    <unit id="P2TextDefault">
+      <segment>
+        <source>Default</source>
+        <target state="translated">默认</target>
+      </segment>
+    </unit>
+    <unit id="P2TextError">
+      <segment>
+        <source>Error</source>
+        <target state="translated">错误</target>
+      </segment>
+    </unit>
+    <unit id="P2TextGeekblue">
+      <segment>
+        <source>GeekBlue</source>
+        <target state="translated">极客蓝</target>
+      </segment>
+    </unit>
+    <unit id="P2TextGold">
+      <segment>
+        <source>Gold</source>
+        <target state="translated">金色</target>
+      </segment>
+    </unit>
+    <unit id="P2TextGreen">
+      <segment>
+        <source>Green</source>
+        <target state="translated">绿色</target>
+      </segment>
+    </unit>
+    <unit id="P2TextHippies">
+      <segment>
+        <source>Hippies</source>
+        <target state="translated">嬉皮士</target>
+      </segment>
+    </unit>
+    <unit id="P2TextHslN102N53N61">
+      <segment>
+        <source>hsl(102, 53%, 61%)</source>
+        <target state="translated">hsl(102, 53%, 61%)</target>
+      </segment>
+    </unit>
+    <unit id="P2TextJiachenPlan">
+      <segment>
+        <source>Jiachen Plan takes off</source>
+        <target state="translated">甲辰计划雄起</target>
+      </segment>
+    </unit>
+    <unit id="P2TextLime">
+      <segment>
+        <source>Lime</source>
+        <target state="translated">青柠</target>
+      </segment>
+    </unit>
+    <unit id="P2TextMagenta">
+      <segment>
+        <source>Magenta</source>
+        <target state="translated">品红</target>
+      </segment>
+    </unit>
+    <unit id="P2TextOrange">
+      <segment>
+        <source>Orange</source>
+        <target state="translated">橙色</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPink">
+      <segment>
+        <source>Pink</source>
+        <target state="translated">粉色</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPolishExperience">
+      <segment>
+        <source>Polish every detail for an excellent UI SDK experience</source>
+        <target state="translated">精益求精，打造体验优秀的 UISDK</target>
+      </segment>
+    </unit>
+    <unit id="P2TextProcessing">
+      <segment>
+        <source>Processing</source>
+        <target state="translated">处理中</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPurple">
+      <segment>
+        <source>Purple</source>
+        <target state="translated">紫色</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPushesOpenTheWindow">
+      <segment>
+        <source>Pushes open the window</source>
+        <target state="translated">推开窗户</target>
+      </segment>
+    </unit>
+    <unit id="P2TextRed">
+      <segment>
+        <source>Red</source>
+        <target state="translated">红色</target>
+      </segment>
+    </unit>
+    <unit id="P2TextRgbN15N141N230">
+      <segment>
+        <source>rgb(15, 141, 230)</source>
+        <target state="translated">rgb(15, 141, 230)</target>
+      </segment>
+    </unit>
+    <unit id="P2TextRgbN45N183N245">
+      <segment>
+        <source>rgb(45, 183, 245)</source>
+        <target state="translated">rgb(45, 183, 245)</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSuccess">
+      <segment>
+        <source>Success</source>
+        <target state="translated">成功</target>
+      </segment>
+    </unit>
+    <unit id="P2TextVolcano">
+      <segment>
+        <source>Volcano</source>
+        <target state="translated">火山色</target>
+      </segment>
+    </unit>
+    <unit id="P2TextWarning">
+      <segment>
+        <source>Warning</source>
+        <target state="translated">警告</target>
+      </segment>
+    </unit>
+    <unit id="P2TextYellow">
+      <segment>
+        <source>Yellow</source>
+        <target state="translated">黄色</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">自定义</target>
+      </segment>
+    </unit>
+    <unit id="P2TitlePresets">
+      <segment>
+        <source>Presets</source>
+        <target state="translated">预设</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Badge draws attention to notifications, counts, status dots, and ribbon labels without interrupting the user's workflow.</source>
+        <target state="translated">Badge 用于提示通知、计数、状态点和缎带标签，在不打断用户流程的情况下强调需要关注的信息。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Highlight counts, statuses, and contextual labels near related content.</source>
+        <target state="translated">在相关内容旁突出数量、状态和上下文标签。</target>
+      </segment>
+    </unit>
+    <unit id="RedBadgeDescription">
+      <segment>
+        <source>This will simply display a red badge, without a specific count. If count equals 0, it won't display the dot.</source>
+        <target state="translated">简单展示一个红色徽标，不显示具体数字。如果 count 等于 0，则不会显示圆点。</target>
+      </segment>
+    </unit>
+    <unit id="RedBadgeTitle">
+      <segment>
+        <source>Red badge</source>
+        <target state="translated">红点徽标</target>
+      </segment>
+    </unit>
+    <unit id="RibbonDescription">
+      <segment>
+        <source>Use ribbon badge.</source>
+        <target state="translated">使用缎带样式徽标。</target>
+      </segment>
+    </unit>
+    <unit id="RibbonTitle">
+      <segment>
+        <source>Ribbon</source>
+        <target state="translated">缎带徽标</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>Set size of numeral Badge.</source>
+        <target state="translated">设置数字 Badge 的尺寸。</target>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
+        <target state="translated">尺寸</target>
+      </segment>
+    </unit>
+    <unit id="StandaloneDescription">
+      <segment>
+        <source>Used in standalone when children is empty.</source>
+        <target state="translated">children 为空时可独立使用。</target>
+      </segment>
+    </unit>
+    <unit id="StandaloneTitle">
+      <segment>
+        <source>Standalone</source>
+        <target state="translated">独立使用</target>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Standalone badge with status.</source>
+        <target state="translated">带状态的独立徽标。</target>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">状态</target>
       </segment>
     </unit>
   </file>

@@ -79,10 +79,10 @@ internal static class Xliff21Parser
         }
 
         var units = new List<XliffUnitModel>(unitElements.Length);
-        var unitIds = new HashSet<int>();
+        var unitKeys = new HashSet<string>(StringComparer.Ordinal);
         foreach (var unitElement in unitElements)
         {
-            ParseUnit(unitElement, ns, unitIds, units, errors);
+            ParseUnit(unitElement, ns, unitKeys, units, errors);
         }
 
         if (errors.Count > 0 || sourceLanguage is null || string.IsNullOrEmpty(fileId))
@@ -94,34 +94,34 @@ internal static class Xliff21Parser
             new XliffDocumentModel(
                 sourceLanguage,
                 targetLanguage,
-                new XliffFileModel(fileId!, units.OrderBy(static unit => unit.Id).ToArray())),
+                new XliffFileModel(fileId!, units.OrderBy(static unit => unit.Key, StringComparer.Ordinal).ToArray())),
             Array.Empty<XliffParseError>());
     }
 
     private static void ParseUnit(
         XElement unitElement,
         XNamespace ns,
-        HashSet<int> unitIds,
+        HashSet<string> unitKeys,
         List<XliffUnitModel> units,
         List<XliffParseError> errors)
     {
-        var idText = ((string?)unitElement.Attribute("id"))?.Trim();
-        if (!int.TryParse(idText, out var id) || id <= 0)
+        var keyText = ((string?)unitElement.Attribute("id"))?.Trim();
+        if (string.IsNullOrEmpty(keyText))
         {
-            errors.Add(Error((XObject?)unitElement.Attribute("id") ?? unitElement, "unit id must be a positive Int32 value"));
+            errors.Add(Error((XObject?)unitElement.Attribute("id") ?? unitElement, "unit id must be a non-empty Key"));
             return;
         }
-        if (!unitIds.Add(id))
+        var key = keyText!;
+        if (!unitKeys.Add(key))
         {
-            errors.Add(Error((XObject?)unitElement.Attribute("id") ?? unitElement, $"unit id '{id}' is duplicated"));
+            errors.Add(Error((XObject?)unitElement.Attribute("id") ?? unitElement, $"unit id '{key}' is duplicated"));
             return;
         }
 
         var name = ((string?)unitElement.Attribute("name"))?.Trim();
-        if (string.IsNullOrEmpty(name))
+        if (string.IsNullOrWhiteSpace(name))
         {
-            errors.Add(Error((XObject?)unitElement.Attribute("name") ?? unitElement, "unit name is required"));
-            return;
+            name = null;
         }
 
         var translate = ((string?)unitElement.Attribute("translate"))?.Trim();
@@ -203,8 +203,8 @@ internal static class Xliff21Parser
                                .ToArray();
         var (line, column) = GetLineInfo(unitElement);
         units.Add(new XliffUnitModel(
-            id,
-            name!,
+            key,
+            name,
             source,
             target,
             targetState,

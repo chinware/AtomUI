@@ -1,129 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind">
-    <unit id="1" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-      </segment>
-    </unit>
-    <unit id="2" name="ComponentCategory">
-      <segment>
-        <source>Navigation</source>
-      </segment>
-    </unit>
-    <unit id="3" name="ComponentStatusStable">
-      <segment>
-        <source>.NET 10</source>
-      </segment>
-    </unit>
-    <unit id="4" name="PageSubtitle">
-      <segment>
-        <source>Show the current page location in a navigation hierarchy.</source>
-      </segment>
-    </unit>
-    <unit id="5" name="PageDescription">
-      <segment>
-        <source>Breadcrumb helps users understand where they are and move back through parent levels. It supports icons, custom separators, route context, URI navigation, and item templates.</source>
-      </segment>
-    </unit>
-    <unit id="6" name="BasicUsageTitle">
-      <segment>
-        <source>Basic Usage</source>
-      </segment>
-    </unit>
-    <unit id="7" name="BasicUsageDescription">
+    <unit id="BasicUsageDescription">
       <segment>
         <source>The simplest use.</source>
       </segment>
     </unit>
-    <unit id="8" name="WithIconTitle">
+    <unit id="BasicUsageTitle">
       <segment>
-        <source>With an Icon</source>
+        <source>Basic Usage</source>
       </segment>
     </unit>
-    <unit id="9" name="WithIconDescription">
+    <unit id="ComponentCategory">
       <segment>
-        <source>The icon should be placed in front of the text.</source>
+        <source>Navigation</source>
       </segment>
     </unit>
-    <unit id="10" name="WithParamsTitle">
+    <unit id="ComponentStatusStable">
       <segment>
-        <source>With Params</source>
+        <source>.NET 10</source>
       </segment>
     </unit>
-    <unit id="11" name="WithParamsDescription">
-      <segment>
-        <source>With route params.</source>
-      </segment>
-    </unit>
-    <unit id="12" name="ConfiguringSeparatorTitle">
-      <segment>
-        <source>Configuring the Separator</source>
-      </segment>
-    </unit>
-    <unit id="13" name="ConfiguringSeparatorDescription">
+    <unit id="ConfiguringSeparatorDescription">
       <segment>
         <source>The separator can be customized by setting the separator property: separator equals &gt;</source>
       </segment>
     </unit>
-    <unit id="14" name="ConfiguringSeparatorIndependentlyTitle">
-      <segment>
-        <source>Configuring the Separator Independently</source>
-      </segment>
-    </unit>
-    <unit id="15" name="ConfiguringSeparatorIndependentlyDescription">
+    <unit id="ConfiguringSeparatorIndependentlyDescription">
       <segment>
         <source>Customize separator for each other.</source>
       </segment>
     </unit>
-    <unit id="16" name="GenerateByTemplateTitle">
+    <unit id="ConfiguringSeparatorIndependentlyTitle">
       <segment>
-        <source>Generate BreadcrumbItem by template</source>
+        <source>Configuring the Separator Independently</source>
       </segment>
     </unit>
-    <unit id="17" name="GenerateByTemplateDescription">
+    <unit id="ConfiguringSeparatorTitle">
+      <segment>
+        <source>Configuring the Separator</source>
+      </segment>
+    </unit>
+    <unit id="GenerateByTemplateDescription">
       <segment>
         <source>Generate BreadcrumbItem by template.</source>
       </segment>
     </unit>
-    <unit id="18" name="P2ContentHome">
+    <unit id="GenerateByTemplateTitle">
       <segment>
-        <source>Home</source>
+        <source>Generate BreadcrumbItem by template</source>
       </segment>
     </unit>
-    <unit id="19" name="P2ContentApplicationCenter">
-      <segment>
-        <source>Application Center</source>
-      </segment>
-    </unit>
-    <unit id="20" name="P2ContentApplicationList">
-      <segment>
-        <source>Application List</source>
-      </segment>
-    </unit>
-    <unit id="21" name="P2ContentAnApplication">
+    <unit id="P2ContentAnApplication">
       <segment>
         <source>An Application</source>
       </segment>
     </unit>
-    <unit id="22" name="P2ContentApplication">
+    <unit id="P2ContentApplication">
       <segment>
         <source>Application</source>
       </segment>
     </unit>
-    <unit id="23" name="P2ContentUsers">
+    <unit id="P2ContentApplicationCenter">
       <segment>
-        <source>Users</source>
+        <source>Application Center</source>
       </segment>
     </unit>
-    <unit id="24" name="P2ContentParam">
+    <unit id="P2ContentApplicationList">
+      <segment>
+        <source>Application List</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentHome">
+      <segment>
+        <source>Home</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLocation">
+      <segment>
+        <source>Location</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentParam">
       <segment>
         <source>Param</source>
       </segment>
     </unit>
-    <unit id="25" name="P2ContentLocation">
+    <unit id="P2ContentUsers">
       <segment>
-        <source>Location</source>
+        <source>Users</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Breadcrumb helps users understand where they are and move back through parent levels. It supports icons, custom separators, route context, URI navigation, and item templates.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Show the current page location in a navigation hierarchy.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="WithIconDescription">
+      <segment>
+        <source>The icon should be placed in front of the text.</source>
+      </segment>
+    </unit>
+    <unit id="WithIconTitle">
+      <segment>
+        <source>With an Icon</source>
+      </segment>
+    </unit>
+    <unit id="WithParamsDescription">
+      <segment>
+        <source>With route params.</source>
+      </segment>
+    </unit>
+    <unit id="WithParamsTitle">
+      <segment>
+        <source>With Params</source>
       </segment>
     </unit>
   </file>

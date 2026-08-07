@@ -1,1558 +1,1558 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.FormShowCaseLangResourceKind">
-    <unit id="1" name="BasicUsageTitle">
-      <segment>
-        <source>Basic usage</source>
-        <target state="translated">基础用法</target>
-      </segment>
-    </unit>
-    <unit id="2" name="BasicUsageDescription">
-      <segment>
-        <source>Basic Form data control. Includes layout, initial values, validation and submit.</source>
-        <target state="translated">基础表单数据控制，包含布局、初始值、校验和提交。</target>
-      </segment>
-    </unit>
-    <unit id="3" name="FormMethodsTitle">
-      <segment>
-        <source>Form methods</source>
-        <target state="translated">表单方法</target>
-      </segment>
-    </unit>
-    <unit id="4" name="FormMethodsDescription">
-      <segment>
-        <source>Call form method with Form.</source>
-        <target state="translated">通过 Form 调用表单方法。</target>
-      </segment>
-    </unit>
-    <unit id="5" name="CustomizedFormControlsTitle">
-      <segment>
-        <source>Customized Form Controls</source>
-        <target state="translated">自定义表单控件</target>
-      </segment>
-    </unit>
-    <unit id="6" name="CustomizedFormControlsDescription">
-      <segment>
-        <source>Customized or third-party form controls can be used in Form, too. Controls must implement IFormItemAware:</source>
-        <target state="translated">Form 中也可以使用自定义或第三方表单控件。控件必须实现 IFormItemAware：</target>
-      </segment>
-    </unit>
-    <unit id="7" name="OtherFormControlsTitle">
-      <segment>
-        <source>Other Form Controls</source>
-        <target state="translated">其他表单控件</target>
-      </segment>
-    </unit>
-    <unit id="8" name="OtherFormControlsDescription">
-      <segment>
-        <source>Demonstration of validation configuration for form controls which are not shown in the demos above.</source>
-        <target state="translated">演示上述示例中未展示的表单控件校验配置。</target>
-      </segment>
-    </unit>
-    <unit id="9" name="DynamicFormItemTitle">
-      <segment>
-        <source>Dynamic Form Item</source>
-        <target state="translated">动态表单项</target>
-      </segment>
-    </unit>
-    <unit id="10" name="DynamicFormItemDescription">
-      <segment>
-        <source>Add or remove form items dynamically. add function support config initial value.</source>
-        <target state="translated">动态添加或移除表单项。add 函数支持配置初始值。</target>
-      </segment>
-    </unit>
-    <unit id="11" name="FormLayoutTitle">
-      <segment>
-        <source>Form Layout</source>
-        <target state="translated">表单布局</target>
-      </segment>
-    </unit>
-    <unit id="12" name="FormLayoutDescription">
-      <segment>
-        <source>There are three layout for form: horizontal, vertical, inline.</source>
-        <target state="translated">表单有三种布局：水平、垂直和行内。</target>
-      </segment>
-    </unit>
-    <unit id="13" name="LabelCanWrapTitle">
-      <segment>
-        <source>label can wrap</source>
-        <target state="translated">标签可换行</target>
-      </segment>
-    </unit>
-    <unit id="14" name="LabelCanWrapDescription">
-      <segment>
-        <source>Turn on labelWrap to wrap label if text is long.</source>
-        <target state="translated">开启 labelWrap 后，标签文本过长时会自动换行。</target>
-      </segment>
-    </unit>
-    <unit id="15" name="InlineLoginFormTitle">
-      <segment>
-        <source>Inline Login Form</source>
-        <target state="translated">行内登录表单</target>
-      </segment>
-    </unit>
-    <unit id="16" name="InlineLoginFormDescription">
-      <segment>
-        <source>Inline login form is often used in navigation bar.</source>
-        <target state="translated">行内登录表单常用于导航栏。</target>
-      </segment>
-    </unit>
-    <unit id="17" name="LoginFormTitle">
-      <segment>
-        <source>Login Form</source>
-        <target state="translated">登录表单</target>
-      </segment>
-    </unit>
-    <unit id="18" name="LoginFormDescription">
-      <segment>
-        <source>Normal login form which can contain more elements.</source>
-        <target state="translated">普通登录表单，可以包含更多元素。</target>
-      </segment>
-    </unit>
-    <unit id="19" name="RegistrationTitle">
-      <segment>
-        <source>Registration</source>
-        <target state="translated">注册</target>
-      </segment>
-    </unit>
-    <unit id="20" name="RegistrationDescription">
-      <segment>
-        <source>Fill in this form to create a new account for you.</source>
-        <target state="translated">填写此表单创建新账号。</target>
-      </segment>
-    </unit>
-    <unit id="21" name="FormVariantsTitle">
-      <segment>
-        <source>Form variants</source>
-        <target state="translated">表单变体</target>
-      </segment>
-    </unit>
-    <unit id="22" name="FormVariantsDescription">
-      <segment>
-        <source>Change the variant of all components in the form, options include: outlined filled borderless and underlined.</source>
-        <target state="translated">改变表单中所有组件的变体，可选描边、填充、无边框和下划线。</target>
-      </segment>
-    </unit>
-    <unit id="23" name="RequiredStyleTitle">
-      <segment>
-        <source>Required style</source>
-        <target state="translated">必填样式</target>
-      </segment>
-    </unit>
-    <unit id="24" name="RequiredStyleDescription">
-      <segment>
-        <source>Switch required or optional style with requiredMark.</source>
-        <target state="translated">通过 requiredMark 切换必填或可选样式。</target>
-      </segment>
-    </unit>
-    <unit id="25" name="NoBlockRuleTitle">
-      <segment>
-        <source>No block rule</source>
-        <target state="translated">非阻塞规则</target>
-      </segment>
-    </unit>
-    <unit id="26" name="NoBlockRuleDescription">
-      <segment>
-        <source>rule with warningOnly will not block form submit.</source>
-        <target state="translated">带 warningOnly 的规则不会阻止表单提交。</target>
-      </segment>
-    </unit>
-    <unit id="27" name="ValidateTriggerTitle">
-      <segment>
-        <source>Validate Trigger</source>
-        <target state="translated">校验触发时机</target>
-      </segment>
-    </unit>
-    <unit id="28" name="ValidateTriggerDescription">
-      <segment>
-        <source>For the async validation scenario, high frequency of verification will cause backend pressure. You can change the verification timing through validateTrigger, or change the verification frequency through validateDebounce, or set the verification short circuit through validateFirst.</source>
-        <target state="translated">在异步校验场景中，高频校验会给后端带来压力。可以通过 validateTrigger 改变校验时机，通过 validateDebounce 改变校验频率，或通过 validateFirst 设置校验短路。</target>
-      </segment>
-    </unit>
-    <unit id="29" name="ValidateOnlyTitle">
-      <segment>
-        <source>Validate Only</source>
-        <target state="translated">仅校验</target>
-      </segment>
-    </unit>
-    <unit id="30" name="ValidateOnlyDescription">
-      <segment>
-        <source>Dynamic adjust submit button's disabled status by validateOnly of validateFields.</source>
-        <target state="translated">通过 validateFields 的 validateOnly 动态调整提交按钮的禁用状态。</target>
-      </segment>
-    </unit>
-    <unit id="31" name="TimeRelatedControlsTitle">
-      <segment>
-        <source>Time-related Controls</source>
-        <target state="translated">时间相关控件</target>
-      </segment>
-    </unit>
-    <unit id="32" name="TimeRelatedControlsDescription">
-      <segment>
-        <source>The value of time-related components is a dayjs object, which we need to pre-process it before we submit to server.</source>
-        <target state="translated">时间相关组件的值是 dayjs 对象，提交到服务端前需要预处理。</target>
-      </segment>
-    </unit>
-    <unit id="33" name="CustomizedValidationTitle">
-      <segment>
-        <source>Customized Validation</source>
-        <target state="translated">自定义校验</target>
-      </segment>
-    </unit>
-    <unit id="34" name="CustomizedValidationDescription">
-      <segment>
-        <source>We provide properties like validateStatus help hasFeedback to customize your own validate status and message, without using Form.</source>
-        <target state="translated">不使用 Form 时，也可以通过 validateStatus、help、hasFeedback 等属性自定义校验状态和信息。</target>
-      </segment>
-    </unit>
-    <unit id="35" name="ScenarioBasic">
-      <segment>
-        <source>Basic</source>
-        <target state="translated">基础</target>
-      </segment>
-    </unit>
-    <unit id="36" name="ScenarioLayout">
-      <segment>
-        <source>Layout</source>
-        <target state="translated">布局</target>
-      </segment>
-    </unit>
-    <unit id="37" name="ScenarioStates">
-      <segment>
-        <source>States</source>
-        <target state="translated">状态</target>
-      </segment>
-    </unit>
-    <unit id="38" name="ScenarioValidation">
-      <segment>
-        <source>Validation</source>
-        <target state="translated">校验</target>
-      </segment>
-    </unit>
-    <unit id="39" name="ScenarioDynamic">
-      <segment>
-        <source>Dynamic</source>
-        <target state="translated">动态</target>
-      </segment>
-    </unit>
-    <unit id="40" name="ScenarioPresets">
-      <segment>
-        <source>Presets</source>
-        <target state="translated">预设</target>
-      </segment>
-    </unit>
-    <unit id="41" name="ScenarioControls">
-      <segment>
-        <source>Controls</source>
-        <target state="translated">控件</target>
-      </segment>
-    </unit>
-    <unit id="42" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">示例</target>
-      </segment>
-    </unit>
-    <unit id="43" name="PageSubtitle">
-      <segment>
-        <source>High-performance data entry with validation, layout, and form item coordination.</source>
-        <target state="translated">支持校验、布局和表单项协同的高效数据录入。</target>
-      </segment>
-    </unit>
-    <unit id="44" name="PageDescription">
-      <segment>
-        <source>Form coordinates fields, validation rules, submit/reset actions, and reusable form item controls for structured data entry workflows.</source>
-        <target state="translated">Form 用于协调字段、校验规则、提交/重置动作以及可复用表单项控件，适合结构化数据录入场景。</target>
-      </segment>
-    </unit>
-    <unit id="45" name="ComponentCategory">
-      <segment>
-        <source>Data Entry</source>
-        <target state="translated">数据录入</target>
-      </segment>
-    </unit>
-    <unit id="46" name="ComponentStatusStable">
-      <segment>
-        <source>Stable</source>
-        <target state="translated">稳定</target>
-      </segment>
-    </unit>
-    <unit id="47" name="ApiEventSubmitted">
+    <unit id="ApiEventSubmitted">
       <segment>
         <source>Raised when the form submit action is invoked.</source>
         <target state="translated">表单提交动作触发时抛出。</target>
       </segment>
     </unit>
-    <unit id="48" name="ApiEventValidated">
+    <unit id="ApiEventValidated">
       <segment>
         <source>Raised after form validation completes.</source>
         <target state="translated">表单校验完成后抛出。</target>
       </segment>
     </unit>
-    <unit id="49" name="P2PlaceholderTextSelectAOptionAndChangeInputTextAbove">
+    <unit id="BasicUsageDescription">
       <segment>
-        <source>Select a option and change input text above</source>
-        <target state="translated">请选择一个选项并修改上方输入内容</target>
+        <source>Basic Form data control. Includes layout, initial values, validation and submit.</source>
+        <target state="translated">基础表单数据控制，包含布局、初始值、校验和提交。</target>
       </segment>
     </unit>
-    <unit id="50" name="P2HeaderMale">
+    <unit id="BasicUsageTitle">
       <segment>
-        <source>male</source>
-        <target state="translated">男</target>
+        <source>Basic usage</source>
+        <target state="translated">基础用法</target>
       </segment>
     </unit>
-    <unit id="51" name="P2HeaderFemale">
+    <unit id="ComponentCategory">
       <segment>
-        <source>female</source>
-        <target state="translated">女</target>
+        <source>Data Entry</source>
+        <target state="translated">数据录入</target>
       </segment>
     </unit>
-    <unit id="52" name="P2HeaderOther">
+    <unit id="ComponentStatusStable">
       <segment>
-        <source>other</source>
-        <target state="translated">其他</target>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
       </segment>
     </unit>
-    <unit id="53" name="P2TextChina">
+    <unit id="CustomizedFormControlsDescription">
       <segment>
-        <source>China</source>
-        <target state="translated">中国</target>
+        <source>Customized or third-party form controls can be used in Form, too. Controls must implement IFormItemAware:</source>
+        <target state="translated">Form 中也可以使用自定义或第三方表单控件。控件必须实现 IFormItemAware：</target>
       </segment>
     </unit>
-    <unit id="54" name="P2PlaceholderTextPleaseSelectACountry">
+    <unit id="CustomizedFormControlsTitle">
       <segment>
-        <source>Please select a country</source>
-        <target state="translated">请选择国家</target>
+        <source>Customized Form Controls</source>
+        <target state="translated">自定义表单控件</target>
       </segment>
     </unit>
-    <unit id="55" name="P2HeaderChina">
+    <unit id="CustomizedValidationDescription">
       <segment>
-        <source>China</source>
-        <target state="translated">中国</target>
+        <source>We provide properties like validateStatus help hasFeedback to customize your own validate status and message, without using Form.</source>
+        <target state="translated">不使用 Form 时，也可以通过 validateStatus、help、hasFeedback 等属性自定义校验状态和信息。</target>
       </segment>
     </unit>
-    <unit id="56" name="P2HeaderUSA">
+    <unit id="CustomizedValidationTitle">
       <segment>
-        <source>U.S.A</source>
-        <target state="translated">美国</target>
+        <source>Customized Validation</source>
+        <target state="translated">自定义校验</target>
       </segment>
     </unit>
-    <unit id="57" name="P2PlaceholderTextPleaseSelectFavouriteColors">
+    <unit id="DynamicFormItemDescription">
       <segment>
-        <source>Please select favourite colors</source>
-        <target state="translated">请选择喜欢的颜色</target>
+        <source>Add or remove form items dynamically. add function support config initial value.</source>
+        <target state="translated">动态添加或移除表单项。add 函数支持配置初始值。</target>
       </segment>
     </unit>
-    <unit id="58" name="P2HeaderRed">
+    <unit id="DynamicFormItemTitle">
       <segment>
-        <source>Red</source>
-        <target state="translated">红色</target>
+        <source>Dynamic Form Item</source>
+        <target state="translated">动态表单项</target>
       </segment>
     </unit>
-    <unit id="59" name="P2HeaderGreen">
+    <unit id="FormLayoutDescription">
       <segment>
-        <source>Green</source>
-        <target state="translated">绿色</target>
+        <source>There are three layout for form: horizontal, vertical, inline.</source>
+        <target state="translated">表单有三种布局：水平、垂直和行内。</target>
       </segment>
     </unit>
-    <unit id="60" name="P2HeaderBlue">
+    <unit id="FormLayoutTitle">
       <segment>
-        <source>Blue</source>
-        <target state="translated">蓝色</target>
+        <source>Form Layout</source>
+        <target state="translated">表单布局</target>
       </segment>
     </unit>
-    <unit id="61" name="P2PlaceholderTextUsername">
+    <unit id="FormMethodsDescription">
       <segment>
-        <source>Username</source>
-        <target state="translated">用户名</target>
+        <source>Call form method with Form.</source>
+        <target state="translated">通过 Form 调用表单方法。</target>
       </segment>
     </unit>
-    <unit id="62" name="P2PlaceholderTextPassword">
+    <unit id="FormMethodsTitle">
       <segment>
-        <source>Password</source>
-        <target state="translated">密码</target>
+        <source>Form methods</source>
+        <target state="translated">表单方法</target>
       </segment>
     </unit>
-    <unit id="63" name="P2TooltipWhatDoYouWantOthersToCallYou">
+    <unit id="FormVariantsDescription">
       <segment>
-        <source>What do you want others to call you?</source>
-        <target state="translated">你希望别人如何称呼你？</target>
+        <source>Change the variant of all components in the form, options include: outlined filled borderless and underlined.</source>
+        <target state="translated">改变表单中所有组件的变体，可选描边、填充、无边框和下划线。</target>
       </segment>
     </unit>
-    <unit id="64" name="P2HeaderZhejiang">
+    <unit id="FormVariantsTitle">
       <segment>
-        <source>Zhejiang</source>
-        <target state="translated">浙江</target>
+        <source>Form variants</source>
+        <target state="translated">表单变体</target>
       </segment>
     </unit>
-    <unit id="65" name="P2HeaderHangzhou">
+    <unit id="InlineLoginFormDescription">
       <segment>
-        <source>Hangzhou</source>
-        <target state="translated">杭州</target>
+        <source>Inline login form is often used in navigation bar.</source>
+        <target state="translated">行内登录表单常用于导航栏。</target>
       </segment>
     </unit>
-    <unit id="66" name="P2HeaderWestLake">
+    <unit id="InlineLoginFormTitle">
       <segment>
-        <source>West Lake</source>
-        <target state="translated">西湖</target>
+        <source>Inline Login Form</source>
+        <target state="translated">行内登录表单</target>
       </segment>
     </unit>
-    <unit id="67" name="P2HeaderJiangsu">
+    <unit id="LabelCanWrapDescription">
       <segment>
-        <source>Jiangsu</source>
-        <target state="translated">江苏</target>
+        <source>Turn on labelWrap to wrap label if text is long.</source>
+        <target state="translated">开启 labelWrap 后，标签文本过长时会自动换行。</target>
       </segment>
     </unit>
-    <unit id="68" name="P2HeaderNanjing">
+    <unit id="LabelCanWrapTitle">
       <segment>
-        <source>Nanjing</source>
-        <target state="translated">南京</target>
+        <source>label can wrap</source>
+        <target state="translated">标签可换行</target>
       </segment>
     </unit>
-    <unit id="69" name="P2HeaderZhongHuaMen">
+    <unit id="LoginFormDescription">
       <segment>
-        <source>Zhong Hua Men</source>
-        <target state="translated">中华门</target>
+        <source>Normal login form which can contain more elements.</source>
+        <target state="translated">普通登录表单，可以包含更多元素。</target>
       </segment>
     </unit>
-    <unit id="70" name="P2PlaceholderTextWebsite">
+    <unit id="LoginFormTitle">
       <segment>
-        <source>website</source>
-        <target state="translated">网站</target>
+        <source>Login Form</source>
+        <target state="translated">登录表单</target>
       </segment>
     </unit>
-    <unit id="71" name="P2HeaderMale2">
+    <unit id="NoBlockRuleDescription">
       <segment>
-        <source>Male</source>
-        <target state="translated">男</target>
+        <source>rule with warningOnly will not block form submit.</source>
+        <target state="translated">带 warningOnly 的规则不会阻止表单提交。</target>
       </segment>
     </unit>
-    <unit id="72" name="P2HeaderFemale2">
+    <unit id="NoBlockRuleTitle">
       <segment>
-        <source>Female</source>
-        <target state="translated">女</target>
+        <source>No block rule</source>
+        <target state="translated">非阻塞规则</target>
       </segment>
     </unit>
-    <unit id="73" name="P2HeaderOther2">
+    <unit id="OtherFormControlsDescription">
       <segment>
-        <source>Other</source>
-        <target state="translated">其他</target>
+        <source>Demonstration of validation configuration for form controls which are not shown in the demos above.</source>
+        <target state="translated">演示上述示例中未展示的表单控件校验配置。</target>
       </segment>
     </unit>
-    <unit id="74" name="P2HeaderDemo">
+    <unit id="OtherFormControlsTitle">
       <segment>
-        <source>Demo</source>
-        <target state="translated">演示</target>
+        <source>Other Form Controls</source>
+        <target state="translated">其他表单控件</target>
       </segment>
     </unit>
-    <unit id="75" name="P2HeaderLight">
-      <segment>
-        <source>Light</source>
-        <target state="translated">浅色</target>
-      </segment>
-    </unit>
-    <unit id="76" name="P2HeaderBamboo">
-      <segment>
-        <source>Bamboo</source>
-        <target state="translated">竹子</target>
-      </segment>
-    </unit>
-    <unit id="77" name="P2PlaceholderTextSelectDate">
-      <segment>
-        <source>Select date</source>
-        <target state="translated">选择日期</target>
-      </segment>
-    </unit>
-    <unit id="78" name="P2PlaceholderTextStartDate">
-      <segment>
-        <source>Start date</source>
-        <target state="translated">开始日期</target>
-      </segment>
-    </unit>
-    <unit id="79" name="P2SecondaryPlaceholderTextEndDate">
-      <segment>
-        <source>End date</source>
-        <target state="translated">结束日期</target>
-      </segment>
-    </unit>
-    <unit id="80" name="P2HeaderParentN1">
-      <segment>
-        <source>Parent 1</source>
-        <target state="translated">父节点 1</target>
-      </segment>
-    </unit>
-    <unit id="81" name="P2HeaderChildN1N1">
-      <segment>
-        <source>Child 1-1</source>
-        <target state="translated">子节点 1-1</target>
-      </segment>
-    </unit>
-    <unit id="82" name="P2HeaderGrandchildN1N1N1">
-      <segment>
-        <source>Grandchild 1-1-1</source>
-        <target state="translated">孙节点 1-1-1</target>
-      </segment>
-    </unit>
-    <unit id="83" name="P2HeaderChildN1N2">
-      <segment>
-        <source>Child 1-2</source>
-        <target state="translated">子节点 1-2</target>
-      </segment>
-    </unit>
-    <unit id="84" name="P2HeaderParentN2">
-      <segment>
-        <source>Parent 2</source>
-        <target state="translated">父节点 2</target>
-      </segment>
-    </unit>
-    <unit id="85" name="P2HeaderChildN2N1">
-      <segment>
-        <source>Child 2-1</source>
-        <target state="translated">子节点 2-1</target>
-      </segment>
-    </unit>
-    <unit id="86" name="P2PlaceholderTextPleaseSelect">
-      <segment>
-        <source>Please select</source>
-        <target state="translated">请选择</target>
-      </segment>
-    </unit>
-    <unit id="87" name="P2TooltipThisIsARequiredField">
-      <segment>
-        <source>This is a required field</source>
-        <target state="translated">这是必填字段</target>
-      </segment>
-    </unit>
-    <unit id="88" name="P2PlaceholderTextInputPlaceholder">
-      <segment>
-        <source>input placeholder</source>
-        <target state="translated">输入占位符</target>
-      </segment>
-    </unit>
-    <unit id="89" name="P2TooltipTooltipWithCustomizeIcon">
-      <segment>
-        <source>Tooltip with customize icon</source>
-        <target state="translated">带自定义图标的提示</target>
-      </segment>
-    </unit>
-    <unit id="90" name="P2HeaderBbb">
-      <segment>
-        <source>BBB</source>
-        <target state="translated">BBB</target>
-      </segment>
-    </unit>
-    <unit id="91" name="P2HeaderAaa">
-      <segment>
-        <source>AAA</source>
-        <target state="translated">AAA</target>
-      </segment>
-    </unit>
-    <unit id="92" name="P2PlaceholderTextValidateRequiredOnblur">
-      <segment>
-        <source>Validate required onBlur</source>
-        <target state="translated">失焦时校验必填</target>
-      </segment>
-    </unit>
-    <unit id="93" name="P2PlaceholderTextValidateRequiredDebounceAfterN1s">
-      <segment>
-        <source>Validate required debounce after 1s</source>
-        <target state="translated">1 秒防抖后校验必填</target>
-      </segment>
-    </unit>
-    <unit id="94" name="P2PlaceholderTextValidateOneByOne">
-      <segment>
-        <source>Validate one by one</source>
-        <target state="translated">逐项校验</target>
-      </segment>
-    </unit>
-    <unit id="95" name="P2PlaceholderTextSelectDate2">
-      <segment>
-        <source>Select date!</source>
-        <target state="translated">选择日期！</target>
-      </segment>
-    </unit>
-    <unit id="96" name="P2PlaceholderTextStartTime">
-      <segment>
-        <source>Start time</source>
-        <target state="translated">开始时间</target>
-      </segment>
-    </unit>
-    <unit id="97" name="P2PlaceholderTextUnavailableChoice">
-      <segment>
-        <source>unavailable choice</source>
-        <target state="translated">不可用选项</target>
-      </segment>
-    </unit>
-    <unit id="98" name="P2PlaceholderTextWarning">
-      <segment>
-        <source>warning</source>
-        <target state="translated">警告</target>
-      </segment>
-    </unit>
-    <unit id="99" name="P2PlaceholderTextIMTheContentIsBeingValidated">
-      <segment>
-        <source>I'm the content is being validated</source>
-        <target state="translated">我是正在校验的内容</target>
-      </segment>
-    </unit>
-    <unit id="100" name="P2PlaceholderTextIMTheContent">
-      <segment>
-        <source>I'm the content</source>
-        <target state="translated">我是内容</target>
-      </segment>
-    </unit>
-    <unit id="101" name="P2PlaceholderTextSelectTime">
-      <segment>
-        <source>Select time</source>
-        <target state="translated">选择时间</target>
-      </segment>
-    </unit>
-    <unit id="102" name="P2PlaceholderTextIMSelect">
-      <segment>
-        <source>I'm Select</source>
-        <target state="translated">我是选择器</target>
-      </segment>
-    </unit>
-    <unit id="103" name="P2HeaderOptionN1">
-      <segment>
-        <source>Option 1</source>
-        <target state="translated">选项 1</target>
-      </segment>
-    </unit>
-    <unit id="104" name="P2HeaderOptionN2">
-      <segment>
-        <source>Option 2</source>
-        <target state="translated">选项 2</target>
-      </segment>
-    </unit>
-    <unit id="105" name="P2HeaderOptionN3">
-      <segment>
-        <source>Option 3</source>
-        <target state="translated">选项 3</target>
-      </segment>
-    </unit>
-    <unit id="106" name="P2HeaderXx">
-      <segment>
-        <source>xx</source>
-        <target state="translated">xx</target>
-      </segment>
-    </unit>
-    <unit id="107" name="P2PlaceholderTextIMTreeselect">
-      <segment>
-        <source>I'm TreeSelect</source>
-        <target state="translated">我是树选择器</target>
-      </segment>
-    </unit>
-    <unit id="108" name="P2PlaceholderTextWithAllowclear">
-      <segment>
-        <source>with allowClear</source>
-        <target state="translated">带清除按钮</target>
-      </segment>
-    </unit>
-    <unit id="109" name="P2PlaceholderTextWithInputPassword">
-      <segment>
-        <source>with input password</source>
-        <target state="translated">密码输入框</target>
-      </segment>
-    </unit>
-    <unit id="110" name="P2PlaceholderTextWithInputPasswordAndAllowclear">
-      <segment>
-        <source>with input password and allowClear</source>
-        <target state="translated">带清除按钮的密码输入框</target>
-      </segment>
-    </unit>
-    <unit id="111" name="P2ContentRememberMe">
-      <segment>
-        <source>Remember me</source>
-        <target state="translated">记住我</target>
-      </segment>
-    </unit>
-    <unit id="112" name="P2ContentItemN1">
-      <segment>
-        <source>item 1</source>
-        <target state="translated">项目 1</target>
-      </segment>
-    </unit>
-    <unit id="113" name="P2ContentItemN2">
-      <segment>
-        <source>item 2</source>
-        <target state="translated">项目 2</target>
-      </segment>
-    </unit>
-    <unit id="114" name="P2ContentItemN3">
-      <segment>
-        <source>item 3</source>
-        <target state="translated">项目 3</target>
-      </segment>
-    </unit>
-    <unit id="115" name="P2ContentA">
+    <unit id="P2ContentA">
       <segment>
         <source>A</source>
         <target state="translated">A</target>
       </segment>
     </unit>
-    <unit id="116" name="P2ContentB">
-      <segment>
-        <source>B</source>
-        <target state="translated">B</target>
-      </segment>
-    </unit>
-    <unit id="117" name="P2ContentC">
-      <segment>
-        <source>C</source>
-        <target state="translated">C</target>
-      </segment>
-    </unit>
-    <unit id="118" name="P2ContentD">
-      <segment>
-        <source>D</source>
-        <target state="translated">D</target>
-      </segment>
-    </unit>
-    <unit id="119" name="P2ContentE">
-      <segment>
-        <source>E</source>
-        <target state="translated">E</target>
-      </segment>
-    </unit>
-    <unit id="120" name="P2ContentF">
-      <segment>
-        <source>F</source>
-        <target state="translated">F</target>
-      </segment>
-    </unit>
-    <unit id="121" name="P2ContentClickToUpload">
-      <segment>
-        <source>Click to Upload</source>
-        <target state="translated">点击上传</target>
-      </segment>
-    </unit>
-    <unit id="122" name="P2ContentAddField">
+    <unit id="P2ContentAddField">
       <segment>
         <source>Add field</source>
         <target state="translated">添加字段</target>
       </segment>
     </unit>
-    <unit id="123" name="P2ContentAddFieldAtHead">
+    <unit id="P2ContentAddFieldAtHead">
       <segment>
         <source>Add field at head</source>
         <target state="translated">在开头添加字段</target>
       </segment>
     </unit>
-    <unit id="124" name="P2TextFormLayout">
-      <segment>
-        <source>Form Layout :</source>
-        <target state="translated">表单布局：</target>
-      </segment>
-    </unit>
-    <unit id="125" name="P2ContentHorizontal">
-      <segment>
-        <source>Horizontal</source>
-        <target state="translated">水平</target>
-      </segment>
-    </unit>
-    <unit id="126" name="P2ContentVertical">
-      <segment>
-        <source>Vertical</source>
-        <target state="translated">垂直</target>
-      </segment>
-    </unit>
-    <unit id="127" name="P2ContentInline">
-      <segment>
-        <source>Inline</source>
-        <target state="translated">行内</target>
-      </segment>
-    </unit>
-    <unit id="128" name="P2ContentForgotPassword">
-      <segment>
-        <source>Forgot password</source>
-        <target state="translated">忘记密码</target>
-      </segment>
-    </unit>
-    <unit id="129" name="P2TextOr">
-      <segment>
-        <source>Or</source>
-        <target state="translated">或</target>
-      </segment>
-    </unit>
-    <unit id="130" name="P2ContentRegisterNow">
-      <segment>
-        <source>Register now!</source>
-        <target state="translated">立即注册！</target>
-      </segment>
-    </unit>
-    <unit id="131" name="P2TextIHaveReadThe">
-      <segment>
-        <source>I have read the</source>
-        <target state="translated">我已阅读</target>
-      </segment>
-    </unit>
-    <unit id="132" name="P2ContentAgreement">
+    <unit id="P2ContentAgreement">
       <segment>
         <source>agreement</source>
         <target state="translated">协议</target>
       </segment>
     </unit>
-    <unit id="133" name="P2ContentFormDisabled">
-      <segment>
-        <source>Form disabled</source>
-        <target state="translated">禁用表单</target>
-      </segment>
-    </unit>
-    <unit id="134" name="P2ContentCheckbox">
-      <segment>
-        <source>Checkbox</source>
-        <target state="translated">复选框</target>
-      </segment>
-    </unit>
-    <unit id="135" name="P2ContentApple">
+    <unit id="P2ContentApple">
       <segment>
         <source>Apple</source>
         <target state="translated">苹果</target>
       </segment>
     </unit>
-    <unit id="136" name="P2ContentPear">
+    <unit id="P2ContentB">
       <segment>
-        <source>Pear</source>
-        <target state="translated">梨</target>
+        <source>B</source>
+        <target state="translated">B</target>
       </segment>
     </unit>
-    <unit id="137" name="P2TextUpload">
-      <segment>
-        <source>Upload</source>
-        <target state="translated">上传</target>
-      </segment>
-    </unit>
-    <unit id="138" name="P2ContentButton">
-      <segment>
-        <source>Button</source>
-        <target state="translated">按钮</target>
-      </segment>
-    </unit>
-    <unit id="139" name="P2TextFormVariant">
-      <segment>
-        <source>Form variant:</source>
-        <target state="translated">表单变体：</target>
-      </segment>
-    </unit>
-    <unit id="140" name="P2ContentOutlined">
-      <segment>
-        <source>outlined</source>
-        <target state="translated">描边</target>
-      </segment>
-    </unit>
-    <unit id="141" name="P2ContentFilled">
-      <segment>
-        <source>filled</source>
-        <target state="translated">填充</target>
-      </segment>
-    </unit>
-    <unit id="142" name="P2ContentBorderless">
+    <unit id="P2ContentBorderless">
       <segment>
         <source>borderless</source>
         <target state="translated">无边框</target>
       </segment>
     </unit>
-    <unit id="143" name="P2ContentUnderlined">
-      <segment>
-        <source>underlined</source>
-        <target state="translated">下划线</target>
-      </segment>
-    </unit>
-    <unit id="144" name="P2TextRequiredMark">
-      <segment>
-        <source>Required Mark :</source>
-        <target state="translated">必填标记：</target>
-      </segment>
-    </unit>
-    <unit id="145" name="P2ContentDefault">
-      <segment>
-        <source>Default</source>
-        <target state="translated">默认</target>
-      </segment>
-    </unit>
-    <unit id="146" name="P2ContentOptional">
-      <segment>
-        <source>Optional</source>
-        <target state="translated">可选</target>
-      </segment>
-    </unit>
-    <unit id="147" name="P2ContentHidden">
-      <segment>
-        <source>Hidden</source>
-        <target state="translated">隐藏</target>
-      </segment>
-    </unit>
-    <unit id="148" name="P2ContentCustomize">
-      <segment>
-        <source>Customize</source>
-        <target state="translated">自定义</target>
-      </segment>
-    </unit>
-    <unit id="149" name="P2ContentRequired">
-      <segment>
-        <source>required</source>
-        <target state="translated">必填</target>
-      </segment>
-    </unit>
-    <unit id="150" name="P2ContentOptional2">
-      <segment>
-        <source>optional</source>
-        <target state="translated">可选</target>
-      </segment>
-    </unit>
-    <unit id="151" name="P2ContentSmall">
-      <segment>
-        <source>Small</source>
-        <target state="translated">小号</target>
-      </segment>
-    </unit>
-    <unit id="152" name="P2ContentMiddle">
-      <segment>
-        <source>Middle</source>
-        <target state="translated">中号</target>
-      </segment>
-    </unit>
-    <unit id="153" name="P2ContentLarge">
-      <segment>
-        <source>Large</source>
-        <target state="translated">大号</target>
-      </segment>
-    </unit>
-    <unit id="154" name="P2ContentFill">
-      <segment>
-        <source>Fill</source>
-        <target state="translated">填充</target>
-      </segment>
-    </unit>
-    <unit id="155" name="P2LabelTextUrl">
-      <segment>
-        <source>Url</source>
-        <target state="translated">URL</target>
-      </segment>
-    </unit>
-    <unit id="156" name="P2MessagePleaseEnterURL">
-      <segment>
-        <source>Please enter URL!</source>
-        <target state="translated">请输入 URL！</target>
-      </segment>
-    </unit>
-    <unit id="157" name="P2MessageURLIsNotAValidUrl">
-      <segment>
-        <source>URL is not a valid url!</source>
-        <target state="translated">URL 格式无效！</target>
-      </segment>
-    </unit>
-    <unit id="158" name="P2MessageURLMustBeAtLeastN6Characters">
-      <segment>
-        <source>URL must be at least 6 characters!</source>
-        <target state="translated">URL 至少需要 6 个字符！</target>
-      </segment>
-    </unit>
-    <unit id="159" name="P2LabelTextFieldA">
-      <segment>
-        <source>Field A</source>
-        <target state="translated">字段 A</target>
-      </segment>
-    </unit>
-    <unit id="160" name="P2MessageFieldAMustBeUpToN3Characters">
-      <segment>
-        <source>Field A must be up to 3 characters!</source>
-        <target state="translated">字段 A 最多 3 个字符！</target>
-      </segment>
-    </unit>
-    <unit id="161" name="P2LabelTextFieldB">
-      <segment>
-        <source>FieldB</source>
-        <target state="translated">字段 B</target>
-      </segment>
-    </unit>
-    <unit id="162" name="P2LabelTextFieldC">
-      <segment>
-        <source>FieldC</source>
-        <target state="translated">字段 C</target>
-      </segment>
-    </unit>
-    <unit id="163" name="P2MessageFieldAMustBeUpToN6Characters">
-      <segment>
-        <source>Field A must be up to 6 characters!</source>
-        <target state="translated">字段 A 最多 6 个字符！</target>
-      </segment>
-    </unit>
-    <unit id="164" name="P2MessageContinueInputToExceedN6Chars">
-      <segment>
-        <source>Continue input to exceed 6 chars!</source>
-        <target state="translated">继续输入直到超过 6 个字符！</target>
-      </segment>
-    </unit>
-    <unit id="165" name="P2LabelTextName">
-      <segment>
-        <source>Name</source>
-        <target state="translated">姓名</target>
-      </segment>
-    </unit>
-    <unit id="166" name="P2MessagePleaseEnterName">
-      <segment>
-        <source>Please enter Name!</source>
-        <target state="translated">请输入姓名！</target>
-      </segment>
-    </unit>
-    <unit id="167" name="P2LabelTextAge">
-      <segment>
-        <source>Age</source>
-        <target state="translated">年龄</target>
-      </segment>
-    </unit>
-    <unit id="168" name="P2MessagePleaseEnterAge">
-      <segment>
-        <source>Please enter Age!</source>
-        <target state="translated">请输入年龄！</target>
-      </segment>
-    </unit>
-    <unit id="169" name="P2LabelTextDatePicker">
-      <segment>
-        <source>DatePicker</source>
-        <target state="translated">日期选择器</target>
-      </segment>
-    </unit>
-    <unit id="170" name="P2MessagePleaseSelectTime">
-      <segment>
-        <source>Please select time!</source>
-        <target state="translated">请选择时间！</target>
-      </segment>
-    </unit>
-    <unit id="171" name="P2HelpShouldBeCombinationOfNumbersAndAlphabets">
-      <segment>
-        <source>Should be combination of numbers and alphabets</source>
-        <target state="translated">应由数字和字母组合而成</target>
-      </segment>
-    </unit>
-    <unit id="172" name="P2HelpTheInformationIsBeingValidated">
-      <segment>
-        <source>The information is being validated</source>
-        <target state="translated">信息正在校验中</target>
-      </segment>
-    </unit>
-    <unit id="173" name="P2HelpSomethingBreaksTheRule">
-      <segment>
-        <source>Something breaks the rule.</source>
-        <target state="translated">有内容违反了规则。</target>
-      </segment>
-    </unit>
-    <unit id="174" name="P2HelpNeedToBeChecked">
-      <segment>
-        <source>Need to be checked.</source>
-        <target state="translated">需要勾选。</target>
-      </segment>
-    </unit>
-    <unit id="175" name="P2HelpShouldHaveSomething">
-      <segment>
-        <source>Should have something</source>
-        <target state="translated">应填写一些内容</target>
-      </segment>
-    </unit>
-    <unit id="176" name="P2HelpLongUpload">
-      <segment>
-        <source>Long upload help text</source>
-        <target state="translated">一段较长的上传帮助文本</target>
-      </segment>
-    </unit>
-    <unit id="177" name="P2LabelTextDatePickerShowTime">
-      <segment>
-        <source>DatePicker[showTime]</source>
-        <target state="translated">日期选择器（显示时间）</target>
-      </segment>
-    </unit>
-    <unit id="178" name="P2LabelTextRangePicker">
-      <segment>
-        <source>RangePicker</source>
-        <target state="translated">范围选择器</target>
-      </segment>
-    </unit>
-    <unit id="179" name="P2LabelTextRangePickerShowTime">
-      <segment>
-        <source>RangePicker[showTime]</source>
-        <target state="translated">范围选择器（显示时间）</target>
-      </segment>
-    </unit>
-    <unit id="180" name="P2LabelTextTimePicker">
-      <segment>
-        <source>TimePicker</source>
-        <target state="translated">时间选择器</target>
-      </segment>
-    </unit>
-    <unit id="181" name="P2LabelTextFail">
-      <segment>
-        <source>Fail</source>
-        <target state="translated">失败</target>
-      </segment>
-    </unit>
-    <unit id="182" name="P2LabelTextWarning">
-      <segment>
-        <source>Warning</source>
-        <target state="translated">警告</target>
-      </segment>
-    </unit>
-    <unit id="183" name="P2LabelTextValidating">
-      <segment>
-        <source>Validating</source>
-        <target state="translated">校验中</target>
-      </segment>
-    </unit>
-    <unit id="184" name="P2LabelTextSuccess">
-      <segment>
-        <source>Success</source>
-        <target state="translated">成功</target>
-      </segment>
-    </unit>
-    <unit id="185" name="P2LabelTextError">
-      <segment>
-        <source>Error</source>
-        <target state="translated">错误</target>
-      </segment>
-    </unit>
-    <unit id="186" name="P2LabelTextHorizontal">
-      <segment>
-        <source>horizontal</source>
-        <target state="translated">水平</target>
-      </segment>
-    </unit>
-    <unit id="187" name="P2LabelTextVertical">
-      <segment>
-        <source>vertical</source>
-        <target state="translated">垂直</target>
-      </segment>
-    </unit>
-    <unit id="188" name="P2LabelTextVertical2">
-      <segment>
-        <source>vertical2</source>
-        <target state="translated">垂直2</target>
-      </segment>
-    </unit>
-    <unit id="189" name="P2LabelTextNormalLabel">
-      <segment>
-        <source>Normal label</source>
-        <target state="translated">普通标签</target>
-      </segment>
-    </unit>
-    <unit id="190" name="P2MessagePleaseInputYourUsername">
-      <segment>
-        <source>Please input your username!</source>
-        <target state="translated">请输入用户名！</target>
-      </segment>
-    </unit>
-    <unit id="191" name="P2LabelTextASuperLongLabelText">
-      <segment>
-        <source>A super long label text</source>
-        <target state="translated">一段超长标签文本</target>
-      </segment>
-    </unit>
-    <unit id="192" name="P2LabelTextPassengers">
-      <segment>
-        <source>Passengers</source>
-        <target state="translated">乘客</target>
-      </segment>
-    </unit>
-    <unit id="193" name="P2MessagePleaseInputPassengerSNameOrDeleteThisField">
-      <segment>
-        <source>Please input passenger's name or delete this field!</source>
-        <target state="translated">请输入乘客姓名，或删除该字段！</target>
-      </segment>
-    </unit>
-    <unit id="194" name="P2LabelTextPassengers1">
-      <segment>
-        <source>Passengers1</source>
-        <target state="translated">乘客1</target>
-      </segment>
-    </unit>
-    <unit id="195" name="P2LabelTextCheckbox">
-      <segment>
-        <source>Checkbox</source>
-        <target state="translated">复选框</target>
-      </segment>
-    </unit>
-    <unit id="196" name="P2LabelTextRadio">
-      <segment>
-        <source>Radio</source>
-        <target state="translated">单选框</target>
-      </segment>
-    </unit>
-    <unit id="197" name="P2LabelTextInput">
-      <segment>
-        <source>Input</source>
-        <target state="translated">输入框</target>
-      </segment>
-    </unit>
-    <unit id="198" name="P2LabelTextSelect">
-      <segment>
-        <source>Select</source>
-        <target state="translated">选择器</target>
-      </segment>
-    </unit>
-    <unit id="199" name="P2LabelTextTreeSelect">
-      <segment>
-        <source>TreeSelect</source>
-        <target state="translated">树选择</target>
-      </segment>
-    </unit>
-    <unit id="200" name="P2LabelTextCascader">
-      <segment>
-        <source>Cascader</source>
-        <target state="translated">级联选择</target>
-      </segment>
-    </unit>
-    <unit id="201" name="P2LabelTextInputNumber">
-      <segment>
-        <source>InputNumber</source>
-        <target state="translated">数字输入框</target>
-      </segment>
-    </unit>
-    <unit id="202" name="P2LabelTextTextArea">
-      <segment>
-        <source>TextArea</source>
-        <target state="translated">文本域</target>
-      </segment>
-    </unit>
-    <unit id="203" name="P2LabelTextSwitch">
-      <segment>
-        <source>Switch</source>
-        <target state="translated">开关</target>
-      </segment>
-    </unit>
-    <unit id="204" name="P2LabelTextUpload">
-      <segment>
-        <source>Upload</source>
-        <target state="translated">上传</target>
-      </segment>
-    </unit>
-    <unit id="205" name="P2LabelTextButton">
+    <unit id="P2ContentButton">
       <segment>
         <source>Button</source>
         <target state="translated">按钮</target>
       </segment>
     </unit>
-    <unit id="206" name="P2LabelTextSlider">
+    <unit id="P2ContentC">
       <segment>
-        <source>Slider</source>
-        <target state="translated">滑块</target>
+        <source>C</source>
+        <target state="translated">C</target>
       </segment>
     </unit>
-    <unit id="207" name="P2LabelTextColorPicker">
+    <unit id="P2ContentCheckbox">
       <segment>
-        <source>ColorPicker</source>
-        <target state="translated">颜色选择器</target>
+        <source>Checkbox</source>
+        <target state="translated">复选框</target>
       </segment>
     </unit>
-    <unit id="208" name="P2LabelTextRate">
+    <unit id="P2ContentClickToUpload">
       <segment>
-        <source>Rate</source>
-        <target state="translated">评分</target>
+        <source>Click to Upload</source>
+        <target state="translated">点击上传</target>
       </segment>
     </unit>
-    <unit id="209" name="P2LabelTextMentions">
+    <unit id="P2ContentCustomize">
       <segment>
-        <source>Mentions</source>
-        <target state="translated">提及</target>
+        <source>Customize</source>
+        <target state="translated">自定义</target>
       </segment>
     </unit>
-    <unit id="210" name="P2LabelTextTree">
+    <unit id="P2ContentD">
       <segment>
-        <source>Tree</source>
-        <target state="translated">树</target>
+        <source>D</source>
+        <target state="translated">D</target>
       </segment>
     </unit>
-    <unit id="211" name="P2MessagePleaseInput">
+    <unit id="P2ContentDefault">
       <segment>
-        <source>Please input!</source>
-        <target state="translated">请输入！</target>
+        <source>Default</source>
+        <target state="translated">默认</target>
       </segment>
     </unit>
-    <unit id="212" name="P2LabelTextUsername">
+    <unit id="P2ContentE">
       <segment>
-        <source>Username</source>
-        <target state="translated">用户名</target>
+        <source>E</source>
+        <target state="translated">E</target>
       </segment>
     </unit>
-    <unit id="213" name="P2LabelTextPassword">
+    <unit id="P2ContentF">
       <segment>
-        <source>Password</source>
-        <target state="translated">密码</target>
+        <source>F</source>
+        <target state="translated">F</target>
       </segment>
     </unit>
-    <unit id="214" name="P2MessagePleaseInputYourPassword">
+    <unit id="P2ContentFill">
       <segment>
-        <source>Please input your password!</source>
-        <target state="translated">请输入密码！</target>
+        <source>Fill</source>
+        <target state="translated">填充</target>
       </segment>
     </unit>
-    <unit id="215" name="P2LabelTextNote">
+    <unit id="P2ContentFilled">
       <segment>
-        <source>Note</source>
-        <target state="translated">备注</target>
+        <source>filled</source>
+        <target state="translated">填充</target>
       </segment>
     </unit>
-    <unit id="216" name="P2MessagePleaseEnterNote">
+    <unit id="P2ContentForgotPassword">
       <segment>
-        <source>Please enter Note</source>
-        <target state="translated">请输入备注</target>
+        <source>Forgot password</source>
+        <target state="translated">忘记密码</target>
       </segment>
     </unit>
-    <unit id="217" name="P2LabelTextGender">
+    <unit id="P2ContentFormDisabled">
       <segment>
-        <source>Gender</source>
-        <target state="translated">性别</target>
+        <source>Form disabled</source>
+        <target state="translated">禁用表单</target>
       </segment>
     </unit>
-    <unit id="218" name="P2MessagePleaseEnterGender">
+    <unit id="P2ContentHidden">
       <segment>
-        <source>Please enter Gender</source>
-        <target state="translated">请选择性别</target>
+        <source>Hidden</source>
+        <target state="translated">隐藏</target>
       </segment>
     </unit>
-    <unit id="219" name="P2LabelTextCustomizeGender">
+    <unit id="P2ContentHorizontal">
       <segment>
-        <source>Customize Gender</source>
-        <target state="translated">自定义性别</target>
+        <source>Horizontal</source>
+        <target state="translated">水平</target>
       </segment>
     </unit>
-    <unit id="220" name="P2MessagePleaseEnterCustomizeGender">
+    <unit id="P2ContentInline">
       <segment>
-        <source>Please enter Customize Gender</source>
-        <target state="translated">请输入自定义性别</target>
+        <source>Inline</source>
+        <target state="translated">行内</target>
       </segment>
     </unit>
-    <unit id="221" name="P2LabelTextPrice">
+    <unit id="P2ContentItemN1">
       <segment>
-        <source>Price</source>
-        <target state="translated">价格</target>
+        <source>item 1</source>
+        <target state="translated">项目 1</target>
       </segment>
     </unit>
-    <unit id="222" name="P2MessagePriceMustBeGreaterThanZero">
+    <unit id="P2ContentItemN2">
       <segment>
-        <source>Price must be greater than zero!</source>
-        <target state="translated">价格必须大于零！</target>
+        <source>item 2</source>
+        <target state="translated">项目 2</target>
       </segment>
     </unit>
-    <unit id="223" name="P2LabelTextPlainText">
+    <unit id="P2ContentItemN3">
       <segment>
-        <source>Plain Text</source>
-        <target state="translated">纯文本</target>
+        <source>item 3</source>
+        <target state="translated">项目 3</target>
       </segment>
     </unit>
-    <unit id="224" name="P2MessagePleaseSelectYourCountry">
+    <unit id="P2ContentLarge">
       <segment>
-        <source>Please select your country!</source>
-        <target state="translated">请选择国家！</target>
+        <source>Large</source>
+        <target state="translated">大号</target>
       </segment>
     </unit>
-    <unit id="225" name="P2LabelTextSelectMultiple">
-      <segment>
-        <source>Select[multiple]</source>
-        <target state="translated">选择器（多选）</target>
-      </segment>
-    </unit>
-    <unit id="226" name="P2MessagePleaseSelectYourFavouriteColors">
-      <segment>
-        <source>Please select your favourite colors!</source>
-        <target state="translated">请选择喜欢的颜色！</target>
-      </segment>
-    </unit>
-    <unit id="227" name="P2LabelTextRadioGroup">
-      <segment>
-        <source>radio-group</source>
-        <target state="translated">单选组</target>
-      </segment>
-    </unit>
-    <unit id="228" name="P2LabelTextOptionButtonGroup">
-      <segment>
-        <source>option-button-group</source>
-        <target state="translated">选项按钮组</target>
-      </segment>
-    </unit>
-    <unit id="229" name="P2LabelTextCheckboxGroup">
-      <segment>
-        <source>Checkbox.Group</source>
-        <target state="translated">复选框组</target>
-      </segment>
-    </unit>
-    <unit id="230" name="P2LabelTextDragger">
-      <segment>
-        <source>Dragger</source>
-        <target state="translated">拖拽上传</target>
-      </segment>
-    </unit>
-    <unit id="231" name="P2MessageColorIsRequired">
-      <segment>
-        <source>color is required!</source>
-        <target state="translated">颜色为必填项！</target>
-      </segment>
-    </unit>
-    <unit id="232" name="P2ContentLogIn">
+    <unit id="P2ContentLogIn">
       <segment>
         <source>Log in</source>
         <target state="translated">登录</target>
       </segment>
     </unit>
-    <unit id="233" name="P2LabelTextEmail">
+    <unit id="P2ContentMiddle">
       <segment>
-        <source>Email</source>
-        <target state="translated">邮箱</target>
+        <source>Middle</source>
+        <target state="translated">中号</target>
       </segment>
     </unit>
-    <unit id="234" name="P2MessagePleaseInputYourEMail">
+    <unit id="P2ContentOptional">
       <segment>
-        <source>Please input your E-mail!</source>
-        <target state="translated">请输入邮箱！</target>
+        <source>Optional</source>
+        <target state="translated">可选</target>
       </segment>
     </unit>
-    <unit id="235" name="P2LabelTextConfirmPassword">
+    <unit id="P2ContentOptional2">
       <segment>
-        <source>Confirm Password</source>
-        <target state="translated">确认密码</target>
+        <source>optional</source>
+        <target state="translated">可选</target>
       </segment>
     </unit>
-    <unit id="236" name="P2MessagePleaseConfirmYourPassword">
+    <unit id="P2ContentOutlined">
       <segment>
-        <source>Please confirm your password!</source>
-        <target state="translated">请确认密码！</target>
+        <source>outlined</source>
+        <target state="translated">描边</target>
       </segment>
     </unit>
-    <unit id="237" name="P2LabelTextNickname">
+    <unit id="P2ContentPear">
       <segment>
-        <source>Nickname</source>
-        <target state="translated">昵称</target>
+        <source>Pear</source>
+        <target state="translated">梨</target>
       </segment>
     </unit>
-    <unit id="238" name="P2MessagePleaseInputYourNickname">
-      <segment>
-        <source>Please input your nickname!</source>
-        <target state="translated">请输入昵称！</target>
-      </segment>
-    </unit>
-    <unit id="239" name="P2LabelTextHabitualResidence">
-      <segment>
-        <source>Habitual Residence</source>
-        <target state="translated">常住地</target>
-      </segment>
-    </unit>
-    <unit id="240" name="P2MessagePleaseSelectYourHabitualResidence">
-      <segment>
-        <source>Please select your habitual residence!</source>
-        <target state="translated">请选择常住地！</target>
-      </segment>
-    </unit>
-    <unit id="241" name="P2LabelTextPhoneNumber">
-      <segment>
-        <source>Phone Number</source>
-        <target state="translated">手机号</target>
-      </segment>
-    </unit>
-    <unit id="242" name="P2MessagePleaseInputYourPhoneNumber">
-      <segment>
-        <source>Please input your phone number!</source>
-        <target state="translated">请输入手机号！</target>
-      </segment>
-    </unit>
-    <unit id="243" name="P2LabelTextDonation">
-      <segment>
-        <source>Donation</source>
-        <target state="translated">捐赠</target>
-      </segment>
-    </unit>
-    <unit id="244" name="P2MessagePleaseInputDonationAmount">
-      <segment>
-        <source>Please input donation amount!</source>
-        <target state="translated">请输入捐赠金额！</target>
-      </segment>
-    </unit>
-    <unit id="245" name="P2LabelTextWebsite">
-      <segment>
-        <source>Website</source>
-        <target state="translated">网站</target>
-      </segment>
-    </unit>
-    <unit id="246" name="P2MessagePleaseInputWebsite">
-      <segment>
-        <source>Please input website!</source>
-        <target state="translated">请输入网站！</target>
-      </segment>
-    </unit>
-    <unit id="247" name="P2LabelTextIntro">
-      <segment>
-        <source>Intro</source>
-        <target state="translated">简介</target>
-      </segment>
-    </unit>
-    <unit id="248" name="P2MessagePleaseInputIntro">
-      <segment>
-        <source>Please input Intro!</source>
-        <target state="translated">请输入简介！</target>
-      </segment>
-    </unit>
-    <unit id="249" name="P2MessagePleaseSelectGender">
-      <segment>
-        <source>Please select gender!</source>
-        <target state="translated">请选择性别！</target>
-      </segment>
-    </unit>
-    <unit id="250" name="P2LabelTextCaptcha">
-      <segment>
-        <source>Captcha</source>
-        <target state="translated">验证码</target>
-      </segment>
-    </unit>
-    <unit id="251" name="P2MessagePleaseInputTheCaptchaYouGot">
-      <segment>
-        <source>Please input the captcha you got!</source>
-        <target state="translated">请输入收到的验证码！</target>
-      </segment>
-    </unit>
-    <unit id="252" name="P2ContentRegister">
+    <unit id="P2ContentRegister">
       <segment>
         <source>Register</source>
         <target state="translated">注册</target>
       </segment>
     </unit>
-    <unit id="253" name="P3DynamicPassengerLabelFormat">
+    <unit id="P2ContentRegisterNow">
       <segment>
-        <source>passengers_{0}</source>
-        <target state="translated">乘客_{0}</target>
+        <source>Register now!</source>
+        <target state="translated">立即注册！</target>
       </segment>
     </unit>
-    <unit id="254" name="P3SubmitSuccessMessage">
+    <unit id="P2ContentRememberMe">
       <segment>
-        <source>Submit success!</source>
-        <target state="translated">提交成功！</target>
+        <source>Remember me</source>
+        <target state="translated">记住我</target>
       </segment>
     </unit>
-    <unit id="255" name="P3SubmitFailedMessage">
+    <unit id="P2ContentRequired">
       <segment>
-        <source>Submit failed!</source>
-        <target state="translated">提交失败！</target>
+        <source>required</source>
+        <target state="translated">必填</target>
       </segment>
     </unit>
-    <unit id="256" name="P3GenderNoteFormat">
+    <unit id="P2ContentSmall">
       <segment>
-        <source>Hi, {0}!</source>
-        <target state="translated">你好，{0}！</target>
+        <source>Small</source>
+        <target state="translated">小号</target>
       </segment>
     </unit>
-    <unit id="257" name="P3GetCaptchaButtonText">
+    <unit id="P2ContentUnderlined">
       <segment>
-        <source>Get captcha</source>
-        <target state="translated">获取验证码</target>
+        <source>underlined</source>
+        <target state="translated">下划线</target>
       </segment>
     </unit>
-    <unit id="258" name="P3CurrencyRmbHeader">
+    <unit id="P2ContentVertical">
+      <segment>
+        <source>Vertical</source>
+        <target state="translated">垂直</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderAaa">
+      <segment>
+        <source>AAA</source>
+        <target state="translated">AAA</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBamboo">
+      <segment>
+        <source>Bamboo</source>
+        <target state="translated">竹子</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBbb">
+      <segment>
+        <source>BBB</source>
+        <target state="translated">BBB</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBlue">
+      <segment>
+        <source>Blue</source>
+        <target state="translated">蓝色</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildN1N1">
+      <segment>
+        <source>Child 1-1</source>
+        <target state="translated">子节点 1-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildN1N2">
+      <segment>
+        <source>Child 1-2</source>
+        <target state="translated">子节点 1-2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChildN2N1">
+      <segment>
+        <source>Child 2-1</source>
+        <target state="translated">子节点 2-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderChina">
+      <segment>
+        <source>China</source>
+        <target state="translated">中国</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDemo">
+      <segment>
+        <source>Demo</source>
+        <target state="translated">演示</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFemale">
+      <segment>
+        <source>female</source>
+        <target state="translated">女</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFemale2">
+      <segment>
+        <source>Female</source>
+        <target state="translated">女</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderGrandchildN1N1N1">
+      <segment>
+        <source>Grandchild 1-1-1</source>
+        <target state="translated">孙节点 1-1-1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderGreen">
+      <segment>
+        <source>Green</source>
+        <target state="translated">绿色</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderHangzhou">
+      <segment>
+        <source>Hangzhou</source>
+        <target state="translated">杭州</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderJiangsu">
+      <segment>
+        <source>Jiangsu</source>
+        <target state="translated">江苏</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLight">
+      <segment>
+        <source>Light</source>
+        <target state="translated">浅色</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMale">
+      <segment>
+        <source>male</source>
+        <target state="translated">男</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMale2">
+      <segment>
+        <source>Male</source>
+        <target state="translated">男</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNanjing">
+      <segment>
+        <source>Nanjing</source>
+        <target state="translated">南京</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN1">
+      <segment>
+        <source>Option 1</source>
+        <target state="translated">选项 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN2">
+      <segment>
+        <source>Option 2</source>
+        <target state="translated">选项 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOptionN3">
+      <segment>
+        <source>Option 3</source>
+        <target state="translated">选项 3</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOther">
+      <segment>
+        <source>other</source>
+        <target state="translated">其他</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOther2">
+      <segment>
+        <source>Other</source>
+        <target state="translated">其他</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN1">
+      <segment>
+        <source>Parent 1</source>
+        <target state="translated">父节点 1</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN2">
+      <segment>
+        <source>Parent 2</source>
+        <target state="translated">父节点 2</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderRed">
+      <segment>
+        <source>Red</source>
+        <target state="translated">红色</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderUSA">
+      <segment>
+        <source>U.S.A</source>
+        <target state="translated">美国</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderWestLake">
+      <segment>
+        <source>West Lake</source>
+        <target state="translated">西湖</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderXx">
+      <segment>
+        <source>xx</source>
+        <target state="translated">xx</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZhejiang">
+      <segment>
+        <source>Zhejiang</source>
+        <target state="translated">浙江</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZhongHuaMen">
+      <segment>
+        <source>Zhong Hua Men</source>
+        <target state="translated">中华门</target>
+      </segment>
+    </unit>
+    <unit id="P2HelpLongUpload">
+      <segment>
+        <source>Long upload help text</source>
+        <target state="translated">一段较长的上传帮助文本</target>
+      </segment>
+    </unit>
+    <unit id="P2HelpNeedToBeChecked">
+      <segment>
+        <source>Need to be checked.</source>
+        <target state="translated">需要勾选。</target>
+      </segment>
+    </unit>
+    <unit id="P2HelpShouldBeCombinationOfNumbersAndAlphabets">
+      <segment>
+        <source>Should be combination of numbers and alphabets</source>
+        <target state="translated">应由数字和字母组合而成</target>
+      </segment>
+    </unit>
+    <unit id="P2HelpShouldHaveSomething">
+      <segment>
+        <source>Should have something</source>
+        <target state="translated">应填写一些内容</target>
+      </segment>
+    </unit>
+    <unit id="P2HelpSomethingBreaksTheRule">
+      <segment>
+        <source>Something breaks the rule.</source>
+        <target state="translated">有内容违反了规则。</target>
+      </segment>
+    </unit>
+    <unit id="P2HelpTheInformationIsBeingValidated">
+      <segment>
+        <source>The information is being validated</source>
+        <target state="translated">信息正在校验中</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextASuperLongLabelText">
+      <segment>
+        <source>A super long label text</source>
+        <target state="translated">一段超长标签文本</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextAge">
+      <segment>
+        <source>Age</source>
+        <target state="translated">年龄</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextButton">
+      <segment>
+        <source>Button</source>
+        <target state="translated">按钮</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextCaptcha">
+      <segment>
+        <source>Captcha</source>
+        <target state="translated">验证码</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextCascader">
+      <segment>
+        <source>Cascader</source>
+        <target state="translated">级联选择</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextCheckbox">
+      <segment>
+        <source>Checkbox</source>
+        <target state="translated">复选框</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextCheckboxGroup">
+      <segment>
+        <source>Checkbox.Group</source>
+        <target state="translated">复选框组</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextColorPicker">
+      <segment>
+        <source>ColorPicker</source>
+        <target state="translated">颜色选择器</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextConfirmPassword">
+      <segment>
+        <source>Confirm Password</source>
+        <target state="translated">确认密码</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextCustomizeGender">
+      <segment>
+        <source>Customize Gender</source>
+        <target state="translated">自定义性别</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextDatePicker">
+      <segment>
+        <source>DatePicker</source>
+        <target state="translated">日期选择器</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextDatePickerShowTime">
+      <segment>
+        <source>DatePicker[showTime]</source>
+        <target state="translated">日期选择器（显示时间）</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextDonation">
+      <segment>
+        <source>Donation</source>
+        <target state="translated">捐赠</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextDragger">
+      <segment>
+        <source>Dragger</source>
+        <target state="translated">拖拽上传</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextEmail">
+      <segment>
+        <source>Email</source>
+        <target state="translated">邮箱</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextError">
+      <segment>
+        <source>Error</source>
+        <target state="translated">错误</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextFail">
+      <segment>
+        <source>Fail</source>
+        <target state="translated">失败</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextFieldA">
+      <segment>
+        <source>Field A</source>
+        <target state="translated">字段 A</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextFieldB">
+      <segment>
+        <source>FieldB</source>
+        <target state="translated">字段 B</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextFieldC">
+      <segment>
+        <source>FieldC</source>
+        <target state="translated">字段 C</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextGender">
+      <segment>
+        <source>Gender</source>
+        <target state="translated">性别</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextHabitualResidence">
+      <segment>
+        <source>Habitual Residence</source>
+        <target state="translated">常住地</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextHorizontal">
+      <segment>
+        <source>horizontal</source>
+        <target state="translated">水平</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextInput">
+      <segment>
+        <source>Input</source>
+        <target state="translated">输入框</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextInputNumber">
+      <segment>
+        <source>InputNumber</source>
+        <target state="translated">数字输入框</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextIntro">
+      <segment>
+        <source>Intro</source>
+        <target state="translated">简介</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextMentions">
+      <segment>
+        <source>Mentions</source>
+        <target state="translated">提及</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextName">
+      <segment>
+        <source>Name</source>
+        <target state="translated">姓名</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextNickname">
+      <segment>
+        <source>Nickname</source>
+        <target state="translated">昵称</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextNormalLabel">
+      <segment>
+        <source>Normal label</source>
+        <target state="translated">普通标签</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextNote">
+      <segment>
+        <source>Note</source>
+        <target state="translated">备注</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextOptionButtonGroup">
+      <segment>
+        <source>option-button-group</source>
+        <target state="translated">选项按钮组</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextPassengers">
+      <segment>
+        <source>Passengers</source>
+        <target state="translated">乘客</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextPassengers1">
+      <segment>
+        <source>Passengers1</source>
+        <target state="translated">乘客1</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextPassword">
+      <segment>
+        <source>Password</source>
+        <target state="translated">密码</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextPhoneNumber">
+      <segment>
+        <source>Phone Number</source>
+        <target state="translated">手机号</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextPlainText">
+      <segment>
+        <source>Plain Text</source>
+        <target state="translated">纯文本</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextPrice">
+      <segment>
+        <source>Price</source>
+        <target state="translated">价格</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextRadio">
+      <segment>
+        <source>Radio</source>
+        <target state="translated">单选框</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextRadioGroup">
+      <segment>
+        <source>radio-group</source>
+        <target state="translated">单选组</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextRangePicker">
+      <segment>
+        <source>RangePicker</source>
+        <target state="translated">范围选择器</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextRangePickerShowTime">
+      <segment>
+        <source>RangePicker[showTime]</source>
+        <target state="translated">范围选择器（显示时间）</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextRate">
+      <segment>
+        <source>Rate</source>
+        <target state="translated">评分</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextSelect">
+      <segment>
+        <source>Select</source>
+        <target state="translated">选择器</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextSelectMultiple">
+      <segment>
+        <source>Select[multiple]</source>
+        <target state="translated">选择器（多选）</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextSlider">
+      <segment>
+        <source>Slider</source>
+        <target state="translated">滑块</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextSuccess">
+      <segment>
+        <source>Success</source>
+        <target state="translated">成功</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextSwitch">
+      <segment>
+        <source>Switch</source>
+        <target state="translated">开关</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextTextArea">
+      <segment>
+        <source>TextArea</source>
+        <target state="translated">文本域</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextTimePicker">
+      <segment>
+        <source>TimePicker</source>
+        <target state="translated">时间选择器</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextTree">
+      <segment>
+        <source>Tree</source>
+        <target state="translated">树</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextTreeSelect">
+      <segment>
+        <source>TreeSelect</source>
+        <target state="translated">树选择</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextUpload">
+      <segment>
+        <source>Upload</source>
+        <target state="translated">上传</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextUrl">
+      <segment>
+        <source>Url</source>
+        <target state="translated">URL</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextUsername">
+      <segment>
+        <source>Username</source>
+        <target state="translated">用户名</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextValidating">
+      <segment>
+        <source>Validating</source>
+        <target state="translated">校验中</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextVertical">
+      <segment>
+        <source>vertical</source>
+        <target state="translated">垂直</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextVertical2">
+      <segment>
+        <source>vertical2</source>
+        <target state="translated">垂直2</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextWarning">
+      <segment>
+        <source>Warning</source>
+        <target state="translated">警告</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTextWebsite">
+      <segment>
+        <source>Website</source>
+        <target state="translated">网站</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageColorIsRequired">
+      <segment>
+        <source>color is required!</source>
+        <target state="translated">颜色为必填项！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageContinueInputToExceedN6Chars">
+      <segment>
+        <source>Continue input to exceed 6 chars!</source>
+        <target state="translated">继续输入直到超过 6 个字符！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageFieldAMustBeUpToN3Characters">
+      <segment>
+        <source>Field A must be up to 3 characters!</source>
+        <target state="translated">字段 A 最多 3 个字符！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageFieldAMustBeUpToN6Characters">
+      <segment>
+        <source>Field A must be up to 6 characters!</source>
+        <target state="translated">字段 A 最多 6 个字符！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseConfirmYourPassword">
+      <segment>
+        <source>Please confirm your password!</source>
+        <target state="translated">请确认密码！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseEnterAge">
+      <segment>
+        <source>Please enter Age!</source>
+        <target state="translated">请输入年龄！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseEnterCustomizeGender">
+      <segment>
+        <source>Please enter Customize Gender</source>
+        <target state="translated">请输入自定义性别</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseEnterGender">
+      <segment>
+        <source>Please enter Gender</source>
+        <target state="translated">请选择性别</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseEnterName">
+      <segment>
+        <source>Please enter Name!</source>
+        <target state="translated">请输入姓名！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseEnterNote">
+      <segment>
+        <source>Please enter Note</source>
+        <target state="translated">请输入备注</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseEnterURL">
+      <segment>
+        <source>Please enter URL!</source>
+        <target state="translated">请输入 URL！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInput">
+      <segment>
+        <source>Please input!</source>
+        <target state="translated">请输入！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputDonationAmount">
+      <segment>
+        <source>Please input donation amount!</source>
+        <target state="translated">请输入捐赠金额！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputIntro">
+      <segment>
+        <source>Please input Intro!</source>
+        <target state="translated">请输入简介！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputPassengerSNameOrDeleteThisField">
+      <segment>
+        <source>Please input passenger's name or delete this field!</source>
+        <target state="translated">请输入乘客姓名，或删除该字段！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputTheCaptchaYouGot">
+      <segment>
+        <source>Please input the captcha you got!</source>
+        <target state="translated">请输入收到的验证码！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputWebsite">
+      <segment>
+        <source>Please input website!</source>
+        <target state="translated">请输入网站！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputYourEMail">
+      <segment>
+        <source>Please input your E-mail!</source>
+        <target state="translated">请输入邮箱！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputYourNickname">
+      <segment>
+        <source>Please input your nickname!</source>
+        <target state="translated">请输入昵称！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputYourPassword">
+      <segment>
+        <source>Please input your password!</source>
+        <target state="translated">请输入密码！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputYourPhoneNumber">
+      <segment>
+        <source>Please input your phone number!</source>
+        <target state="translated">请输入手机号！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseInputYourUsername">
+      <segment>
+        <source>Please input your username!</source>
+        <target state="translated">请输入用户名！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseSelectGender">
+      <segment>
+        <source>Please select gender!</source>
+        <target state="translated">请选择性别！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseSelectTime">
+      <segment>
+        <source>Please select time!</source>
+        <target state="translated">请选择时间！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseSelectYourCountry">
+      <segment>
+        <source>Please select your country!</source>
+        <target state="translated">请选择国家！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseSelectYourFavouriteColors">
+      <segment>
+        <source>Please select your favourite colors!</source>
+        <target state="translated">请选择喜欢的颜色！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePleaseSelectYourHabitualResidence">
+      <segment>
+        <source>Please select your habitual residence!</source>
+        <target state="translated">请选择常住地！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessagePriceMustBeGreaterThanZero">
+      <segment>
+        <source>Price must be greater than zero!</source>
+        <target state="translated">价格必须大于零！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageURLIsNotAValidUrl">
+      <segment>
+        <source>URL is not a valid url!</source>
+        <target state="translated">URL 格式无效！</target>
+      </segment>
+    </unit>
+    <unit id="P2MessageURLMustBeAtLeastN6Characters">
+      <segment>
+        <source>URL must be at least 6 characters!</source>
+        <target state="translated">URL 至少需要 6 个字符！</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextIMSelect">
+      <segment>
+        <source>I'm Select</source>
+        <target state="translated">我是选择器</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextIMTheContent">
+      <segment>
+        <source>I'm the content</source>
+        <target state="translated">我是内容</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextIMTheContentIsBeingValidated">
+      <segment>
+        <source>I'm the content is being validated</source>
+        <target state="translated">我是正在校验的内容</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextIMTreeselect">
+      <segment>
+        <source>I'm TreeSelect</source>
+        <target state="translated">我是树选择器</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputPlaceholder">
+      <segment>
+        <source>input placeholder</source>
+        <target state="translated">输入占位符</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPassword">
+      <segment>
+        <source>Password</source>
+        <target state="translated">密码</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelect">
+      <segment>
+        <source>Please select</source>
+        <target state="translated">请选择</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelectACountry">
+      <segment>
+        <source>Please select a country</source>
+        <target state="translated">请选择国家</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelectFavouriteColors">
+      <segment>
+        <source>Please select favourite colors</source>
+        <target state="translated">请选择喜欢的颜色</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectAOptionAndChangeInputTextAbove">
+      <segment>
+        <source>Select a option and change input text above</source>
+        <target state="translated">请选择一个选项并修改上方输入内容</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectDate">
+      <segment>
+        <source>Select date</source>
+        <target state="translated">选择日期</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectDate2">
+      <segment>
+        <source>Select date!</source>
+        <target state="translated">选择日期！</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectTime">
+      <segment>
+        <source>Select time</source>
+        <target state="translated">选择时间</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextStartDate">
+      <segment>
+        <source>Start date</source>
+        <target state="translated">开始日期</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextStartTime">
+      <segment>
+        <source>Start time</source>
+        <target state="translated">开始时间</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextUnavailableChoice">
+      <segment>
+        <source>unavailable choice</source>
+        <target state="translated">不可用选项</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextUsername">
+      <segment>
+        <source>Username</source>
+        <target state="translated">用户名</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextValidateOneByOne">
+      <segment>
+        <source>Validate one by one</source>
+        <target state="translated">逐项校验</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextValidateRequiredDebounceAfterN1s">
+      <segment>
+        <source>Validate required debounce after 1s</source>
+        <target state="translated">1 秒防抖后校验必填</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextValidateRequiredOnblur">
+      <segment>
+        <source>Validate required onBlur</source>
+        <target state="translated">失焦时校验必填</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWarning">
+      <segment>
+        <source>warning</source>
+        <target state="translated">警告</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWebsite">
+      <segment>
+        <source>website</source>
+        <target state="translated">网站</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWithAllowclear">
+      <segment>
+        <source>with allowClear</source>
+        <target state="translated">带清除按钮</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWithInputPassword">
+      <segment>
+        <source>with input password</source>
+        <target state="translated">密码输入框</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWithInputPasswordAndAllowclear">
+      <segment>
+        <source>with input password and allowClear</source>
+        <target state="translated">带清除按钮的密码输入框</target>
+      </segment>
+    </unit>
+    <unit id="P2SecondaryPlaceholderTextEndDate">
+      <segment>
+        <source>End date</source>
+        <target state="translated">结束日期</target>
+      </segment>
+    </unit>
+    <unit id="P2TextChina">
+      <segment>
+        <source>China</source>
+        <target state="translated">中国</target>
+      </segment>
+    </unit>
+    <unit id="P2TextFormLayout">
+      <segment>
+        <source>Form Layout :</source>
+        <target state="translated">表单布局：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextFormVariant">
+      <segment>
+        <source>Form variant:</source>
+        <target state="translated">表单变体：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextIHaveReadThe">
+      <segment>
+        <source>I have read the</source>
+        <target state="translated">我已阅读</target>
+      </segment>
+    </unit>
+    <unit id="P2TextOr">
+      <segment>
+        <source>Or</source>
+        <target state="translated">或</target>
+      </segment>
+    </unit>
+    <unit id="P2TextRequiredMark">
+      <segment>
+        <source>Required Mark :</source>
+        <target state="translated">必填标记：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextUpload">
+      <segment>
+        <source>Upload</source>
+        <target state="translated">上传</target>
+      </segment>
+    </unit>
+    <unit id="P2TooltipThisIsARequiredField">
+      <segment>
+        <source>This is a required field</source>
+        <target state="translated">这是必填字段</target>
+      </segment>
+    </unit>
+    <unit id="P2TooltipTooltipWithCustomizeIcon">
+      <segment>
+        <source>Tooltip with customize icon</source>
+        <target state="translated">带自定义图标的提示</target>
+      </segment>
+    </unit>
+    <unit id="P2TooltipWhatDoYouWantOthersToCallYou">
+      <segment>
+        <source>What do you want others to call you?</source>
+        <target state="translated">你希望别人如何称呼你？</target>
+      </segment>
+    </unit>
+    <unit id="P3CurrencyDollarHeader">
+      <segment>
+        <source>Dollar</source>
+        <target state="translated">美元</target>
+      </segment>
+    </unit>
+    <unit id="P3CurrencyRmbHeader">
       <segment>
         <source>RMB</source>
         <target state="translated">人民币</target>
       </segment>
     </unit>
-    <unit id="259" name="P3CurrencyDollarHeader">
+    <unit id="P3DynamicPassengerLabelFormat">
       <segment>
-        <source>Dollar</source>
-        <target state="translated">美元</target>
+        <source>passengers_{0}</source>
+        <target state="translated">乘客_{0}</target>
+      </segment>
+    </unit>
+    <unit id="P3GenderNoteFormat">
+      <segment>
+        <source>Hi, {0}!</source>
+        <target state="translated">你好，{0}！</target>
+      </segment>
+    </unit>
+    <unit id="P3GetCaptchaButtonText">
+      <segment>
+        <source>Get captcha</source>
+        <target state="translated">获取验证码</target>
+      </segment>
+    </unit>
+    <unit id="P3SubmitFailedMessage">
+      <segment>
+        <source>Submit failed!</source>
+        <target state="translated">提交失败！</target>
+      </segment>
+    </unit>
+    <unit id="P3SubmitSuccessMessage">
+      <segment>
+        <source>Submit success!</source>
+        <target state="translated">提交成功！</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Form coordinates fields, validation rules, submit/reset actions, and reusable form item controls for structured data entry workflows.</source>
+        <target state="translated">Form 用于协调字段、校验规则、提交/重置动作以及可复用表单项控件，适合结构化数据录入场景。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>High-performance data entry with validation, layout, and form item coordination.</source>
+        <target state="translated">支持校验、布局和表单项协同的高效数据录入。</target>
+      </segment>
+    </unit>
+    <unit id="RegistrationDescription">
+      <segment>
+        <source>Fill in this form to create a new account for you.</source>
+        <target state="translated">填写此表单创建新账号。</target>
+      </segment>
+    </unit>
+    <unit id="RegistrationTitle">
+      <segment>
+        <source>Registration</source>
+        <target state="translated">注册</target>
+      </segment>
+    </unit>
+    <unit id="RequiredStyleDescription">
+      <segment>
+        <source>Switch required or optional style with requiredMark.</source>
+        <target state="translated">通过 requiredMark 切换必填或可选样式。</target>
+      </segment>
+    </unit>
+    <unit id="RequiredStyleTitle">
+      <segment>
+        <source>Required style</source>
+        <target state="translated">必填样式</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基础</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioControls">
+      <segment>
+        <source>Controls</source>
+        <target state="translated">控件</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioDynamic">
+      <segment>
+        <source>Dynamic</source>
+        <target state="translated">动态</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioLayout">
+      <segment>
+        <source>Layout</source>
+        <target state="translated">布局</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioPresets">
+      <segment>
+        <source>Presets</source>
+        <target state="translated">预设</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioStates">
+      <segment>
+        <source>States</source>
+        <target state="translated">状态</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioValidation">
+      <segment>
+        <source>Validation</source>
+        <target state="translated">校验</target>
+      </segment>
+    </unit>
+    <unit id="TimeRelatedControlsDescription">
+      <segment>
+        <source>The value of time-related components is a dayjs object, which we need to pre-process it before we submit to server.</source>
+        <target state="translated">时间相关组件的值是 dayjs 对象，提交到服务端前需要预处理。</target>
+      </segment>
+    </unit>
+    <unit id="TimeRelatedControlsTitle">
+      <segment>
+        <source>Time-related Controls</source>
+        <target state="translated">时间相关控件</target>
+      </segment>
+    </unit>
+    <unit id="ValidateOnlyDescription">
+      <segment>
+        <source>Dynamic adjust submit button's disabled status by validateOnly of validateFields.</source>
+        <target state="translated">通过 validateFields 的 validateOnly 动态调整提交按钮的禁用状态。</target>
+      </segment>
+    </unit>
+    <unit id="ValidateOnlyTitle">
+      <segment>
+        <source>Validate Only</source>
+        <target state="translated">仅校验</target>
+      </segment>
+    </unit>
+    <unit id="ValidateTriggerDescription">
+      <segment>
+        <source>For the async validation scenario, high frequency of verification will cause backend pressure. You can change the verification timing through validateTrigger, or change the verification frequency through validateDebounce, or set the verification short circuit through validateFirst.</source>
+        <target state="translated">在异步校验场景中，高频校验会给后端带来压力。可以通过 validateTrigger 改变校验时机，通过 validateDebounce 改变校验频率，或通过 validateFirst 设置校验短路。</target>
+      </segment>
+    </unit>
+    <unit id="ValidateTriggerTitle">
+      <segment>
+        <source>Validate Trigger</source>
+        <target state="translated">校验触发时机</target>
       </segment>
     </unit>
   </file>

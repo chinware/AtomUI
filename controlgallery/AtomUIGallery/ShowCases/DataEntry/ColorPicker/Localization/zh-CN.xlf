@@ -1,238 +1,238 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind">
-    <unit id="1" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-        <target state="translated">基础用法</target>
-      </segment>
-    </unit>
-    <unit id="2" name="BasicDescription">
+    <unit id="BasicDescription">
       <segment>
         <source>Basic Usage.</source>
         <target state="translated">基础用法。</target>
       </segment>
     </unit>
-    <unit id="3" name="ValueBindingTitle">
+    <unit id="BasicTitle">
       <segment>
-        <source>Value binding</source>
-        <target state="translated">Value 绑定</target>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
       </segment>
     </unit>
-    <unit id="4" name="ValueBindingDescription">
-      <segment>
-        <source>Value now defaults to TwoWay binding for both solid and gradient pickers, so edits update the ViewModel without an explicit binding mode.</source>
-        <target state="translated">纯色和渐变选择器的 Value 现在默认双向绑定，编辑颜色会直接更新 ViewModel，无需显式设置绑定模式。</target>
-      </segment>
-    </unit>
-    <unit id="5" name="TriggerSizeTitle">
-      <segment>
-        <source>Trigger size</source>
-        <target state="translated">触发器尺寸</target>
-      </segment>
-    </unit>
-    <unit id="6" name="TriggerSizeDescription">
-      <segment>
-        <source>Ant Design supports three trigger sizes: small, default and large.If a large or small trigger is desired, set the size property to either large or small.respectively. Omit the size property for a trigger with the default size.</source>
-        <target state="translated">Ant Design 支持小号、默认和大号三种触发器尺寸。需要大号或小号触发器时分别设置 size 属性；省略 size 属性时使用默认尺寸。</target>
-      </segment>
-    </unit>
-    <unit id="7" name="P2LabelSizeTypeSmall">
-      <segment>
-        <source>Small</source>
-        <target state="translated">小号</target>
-      </segment>
-    </unit>
-    <unit id="8" name="P2LabelSizeTypeMiddle">
-      <segment>
-        <source>Middle</source>
-        <target state="translated">中号</target>
-      </segment>
-    </unit>
-    <unit id="9" name="P2LabelSizeTypeLarge">
-      <segment>
-        <source>Large</source>
-        <target state="translated">大号</target>
-      </segment>
-    </unit>
-    <unit id="10" name="P2LabelSizeTypeCustom">
-      <segment>
-        <source>Custom</source>
-        <target state="translated">Custom</target>
-      </segment>
-    </unit>
-    <unit id="11" name="LineGradientTitle">
-      <segment>
-        <source>Line Gradient</source>
-        <target state="translated">线性渐变</target>
-      </segment>
-    </unit>
-    <unit id="12" name="LineGradientDescription">
-      <segment>
-        <source>Set the color to a single or a gradient color via mode.</source>
-        <target state="translated">通过 mode 将颜色设置为单色或渐变色。</target>
-      </segment>
-    </unit>
-    <unit id="13" name="RenderingTriggerTextTitle">
-      <segment>
-        <source>Rendering Trigger Text</source>
-        <target state="translated">渲染触发器文本</target>
-      </segment>
-    </unit>
-    <unit id="14" name="RenderingTriggerTextDescription">
-      <segment>
-        <source>Renders the default text of the trigger, effective when showText is true. When customizing text, you can use showText as a function to return custom text.</source>
-        <target state="translated">当 showText 为 true 时渲染触发器默认文本。自定义文本时，可以将 showText 作为函数返回自定义文本。</target>
-      </segment>
-    </unit>
-    <unit id="15" name="DisabledTitle">
-      <segment>
-        <source>Disabled</source>
-        <target state="translated">禁用</target>
-      </segment>
-    </unit>
-    <unit id="16" name="DisabledDescription">
-      <segment>
-        <source>Set to disabled state.</source>
-        <target state="translated">设置为禁用状态。</target>
-      </segment>
-    </unit>
-    <unit id="17" name="DisabledAlphaTitle">
-      <segment>
-        <source>Disabled Alpha</source>
-        <target state="translated">禁用透明度</target>
-      </segment>
-    </unit>
-    <unit id="18" name="DisabledAlphaDescription">
-      <segment>
-        <source>Disabled color alpha.</source>
-        <target state="translated">禁用颜色透明度。</target>
-      </segment>
-    </unit>
-    <unit id="19" name="ClearColorTitle">
-      <segment>
-        <source>Clear Color</source>
-        <target state="translated">清除颜色</target>
-      </segment>
-    </unit>
-    <unit id="20" name="ClearColorDescription">
+    <unit id="ClearColorDescription">
       <segment>
         <source>Clear Color.</source>
         <target state="translated">清除颜色。</target>
       </segment>
     </unit>
-    <unit id="21" name="ControlledModeTitle">
+    <unit id="ClearColorTitle">
       <segment>
-        <source>controlled mode</source>
-        <target state="translated">受控模式</target>
+        <source>Clear Color</source>
+        <target state="translated">清除颜色</target>
       </segment>
     </unit>
-    <unit id="22" name="ControlledModeDescription">
-      <segment>
-        <source>Set the component to controlled mode. Will lock the display color if controlled by.</source>
-        <target state="translated">将组件设置为受控模式。受控时会锁定显示颜色。</target>
-      </segment>
-    </unit>
-    <unit id="23" name="CustomTriggerEventTitle">
-      <segment>
-        <source>Custom Trigger Event</source>
-        <target state="translated">自定义触发事件</target>
-      </segment>
-    </unit>
-    <unit id="24" name="CustomTriggerEventDescription">
-      <segment>
-        <source>Triggers event for customizing color panels, provide options click and hover.</source>
-        <target state="translated">自定义颜色面板的触发事件，可选 click 和 hover。</target>
-      </segment>
-    </unit>
-    <unit id="25" name="ColorFormatTitle">
-      <segment>
-        <source>Color Format</source>
-        <target state="translated">颜色格式</target>
-      </segment>
-    </unit>
-    <unit id="26" name="ColorFormatDescription">
+    <unit id="ColorFormatDescription">
       <segment>
         <source>Encoding formats, support HEX, HSB, RGB.</source>
         <target state="translated">编码格式，支持 HEX、HSB、RGB。</target>
       </segment>
     </unit>
-    <unit id="27" name="PresetColorsTitle">
+    <unit id="ColorFormatTitle">
       <segment>
-        <source>Preset Colors</source>
-        <target state="translated">预设颜色</target>
+        <source>Color Format</source>
+        <target state="translated">颜色格式</target>
       </segment>
     </unit>
-    <unit id="28" name="PresetColorsDescription">
-      <segment>
-        <source>Set the presets color of the color picker.</source>
-        <target state="translated">设置颜色选择器的预设颜色。</target>
-      </segment>
-    </unit>
-    <unit id="29" name="PageSubtitle">
-      <segment>
-        <source>Pick solid colors or gradients from a compact trigger.</source>
-        <target state="translated">从紧凑触发器中选择纯色或渐变色。</target>
-      </segment>
-    </unit>
-    <unit id="30" name="PageDescription">
-      <segment>
-        <source>ColorPicker supports solid and gradient values, trigger sizing, alpha control, text rendering, value synchronization, hover or click triggers, and preset palettes.</source>
-        <target state="translated">ColorPicker 支持纯色与渐变值、触发器尺寸、透明度控制、文本渲染、值同步策略、点击或悬浮触发，以及预设调色板。</target>
-      </segment>
-    </unit>
-    <unit id="31" name="ComponentCategory">
+    <unit id="ComponentCategory">
       <segment>
         <source>Data Entry</source>
         <target state="translated">数据录入</target>
       </segment>
     </unit>
-    <unit id="32" name="ComponentStatusStable">
+    <unit id="ComponentStatusStable">
       <segment>
         <source>Stable</source>
         <target state="translated">稳定</target>
       </segment>
     </unit>
-    <unit id="33" name="ScenarioExamples">
+    <unit id="ControlledModeDescription">
       <segment>
-        <source>Examples</source>
-        <target state="translated">示例</target>
+        <source>Set the component to controlled mode. Will lock the display color if controlled by.</source>
+        <target state="translated">将组件设置为受控模式。受控时会锁定显示颜色。</target>
       </segment>
     </unit>
-    <unit id="34" name="P2TextColorValue">
+    <unit id="ControlledModeTitle">
       <segment>
-        <source>Bound color:</source>
-        <target state="translated">绑定颜色：</target>
+        <source>controlled mode</source>
+        <target state="translated">受控模式</target>
       </segment>
     </unit>
-    <unit id="35" name="P2TextGradientValue">
+    <unit id="CustomTriggerEventDescription">
       <segment>
-        <source>Bound gradient:</source>
-        <target state="translated">绑定渐变：</target>
+        <source>Triggers event for customizing color panels, provide options click and hover.</source>
+        <target state="translated">自定义颜色面板的触发事件，可选 click 和 hover。</target>
       </segment>
     </unit>
-    <unit id="36" name="P2ContentSetColor">
+    <unit id="CustomTriggerEventTitle">
       <segment>
-        <source>Set color</source>
-        <target state="translated">设置颜色</target>
+        <source>Custom Trigger Event</source>
+        <target state="translated">自定义触发事件</target>
       </segment>
     </unit>
-    <unit id="37" name="P2ContentSetGradient">
+    <unit id="DisabledAlphaDescription">
       <segment>
-        <source>Set gradient</source>
-        <target state="translated">设置渐变</target>
+        <source>Disabled color alpha.</source>
+        <target state="translated">禁用颜色透明度。</target>
       </segment>
     </unit>
-    <unit id="38" name="P2ContentClearColor">
+    <unit id="DisabledAlphaTitle">
+      <segment>
+        <source>Disabled Alpha</source>
+        <target state="translated">禁用透明度</target>
+      </segment>
+    </unit>
+    <unit id="DisabledDescription">
+      <segment>
+        <source>Set to disabled state.</source>
+        <target state="translated">设置为禁用状态。</target>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">禁用</target>
+      </segment>
+    </unit>
+    <unit id="LineGradientDescription">
+      <segment>
+        <source>Set the color to a single or a gradient color via mode.</source>
+        <target state="translated">通过 mode 将颜色设置为单色或渐变色。</target>
+      </segment>
+    </unit>
+    <unit id="LineGradientTitle">
+      <segment>
+        <source>Line Gradient</source>
+        <target state="translated">线性渐变</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClearColor">
       <segment>
         <source>Clear color</source>
         <target state="translated">清空颜色</target>
       </segment>
     </unit>
-    <unit id="39" name="P2ContentClearGradient">
+    <unit id="P2ContentClearGradient">
       <segment>
         <source>Clear gradient</source>
         <target state="translated">清空渐变</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetColor">
+      <segment>
+        <source>Set color</source>
+        <target state="translated">设置颜色</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetGradient">
+      <segment>
+        <source>Set gradient</source>
+        <target state="translated">设置渐变</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">Custom</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">大号</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeMiddle">
+      <segment>
+        <source>Middle</source>
+        <target state="translated">中号</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelSizeTypeSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">小号</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColorValue">
+      <segment>
+        <source>Bound color:</source>
+        <target state="translated">绑定颜色：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextGradientValue">
+      <segment>
+        <source>Bound gradient:</source>
+        <target state="translated">绑定渐变：</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>ColorPicker supports solid and gradient values, trigger sizing, alpha control, text rendering, value synchronization, hover or click triggers, and preset palettes.</source>
+        <target state="translated">ColorPicker 支持纯色与渐变值、触发器尺寸、透明度控制、文本渲染、值同步策略、点击或悬浮触发，以及预设调色板。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Pick solid colors or gradients from a compact trigger.</source>
+        <target state="translated">从紧凑触发器中选择纯色或渐变色。</target>
+      </segment>
+    </unit>
+    <unit id="PresetColorsDescription">
+      <segment>
+        <source>Set the presets color of the color picker.</source>
+        <target state="translated">设置颜色选择器的预设颜色。</target>
+      </segment>
+    </unit>
+    <unit id="PresetColorsTitle">
+      <segment>
+        <source>Preset Colors</source>
+        <target state="translated">预设颜色</target>
+      </segment>
+    </unit>
+    <unit id="RenderingTriggerTextDescription">
+      <segment>
+        <source>Renders the default text of the trigger, effective when showText is true. When customizing text, you can use showText as a function to return custom text.</source>
+        <target state="translated">当 showText 为 true 时渲染触发器默认文本。自定义文本时，可以将 showText 作为函数返回自定义文本。</target>
+      </segment>
+    </unit>
+    <unit id="RenderingTriggerTextTitle">
+      <segment>
+        <source>Rendering Trigger Text</source>
+        <target state="translated">渲染触发器文本</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="TriggerSizeDescription">
+      <segment>
+        <source>Ant Design supports three trigger sizes: small, default and large.If a large or small trigger is desired, set the size property to either large or small.respectively. Omit the size property for a trigger with the default size.</source>
+        <target state="translated">Ant Design 支持小号、默认和大号三种触发器尺寸。需要大号或小号触发器时分别设置 size 属性；省略 size 属性时使用默认尺寸。</target>
+      </segment>
+    </unit>
+    <unit id="TriggerSizeTitle">
+      <segment>
+        <source>Trigger size</source>
+        <target state="translated">触发器尺寸</target>
+      </segment>
+    </unit>
+    <unit id="ValueBindingDescription">
+      <segment>
+        <source>Value now defaults to TwoWay binding for both solid and gradient pickers, so edits update the ViewModel without an explicit binding mode.</source>
+        <target state="translated">纯色和渐变选择器的 Value 现在默认双向绑定，编辑颜色会直接更新 ViewModel，无需显式设置绑定模式。</target>
+      </segment>
+    </unit>
+    <unit id="ValueBindingTitle">
+      <segment>
+        <source>Value binding</source>
+        <target state="translated">Value 绑定</target>
       </segment>
     </unit>
   </file>

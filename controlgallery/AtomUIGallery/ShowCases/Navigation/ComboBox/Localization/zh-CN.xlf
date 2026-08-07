@@ -1,238 +1,238 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind">
-    <unit id="1" name="ComponentCategory">
-      <segment>
-        <source>Navigation</source>
-        <target state="translated">导航</target>
-      </segment>
-    </unit>
-    <unit id="2" name="ComponentStatusStable">
-      <segment>
-        <source>Stable</source>
-        <target state="translated">稳定</target>
-      </segment>
-    </unit>
-    <unit id="3" name="PageSubtitle">
-      <segment>
-        <source>A selection input for choosing from a compact popup list.</source>
-        <target state="translated">用于从紧凑弹出列表中选择内容的选择输入控件。</target>
-      </segment>
-    </unit>
-    <unit id="4" name="PageDescription">
-      <segment>
-        <source>ComboBox combines input-style layout with dropdown selection, supporting item templates, add-ons, prefixes, suffixes, validation status, and size variants.</source>
-        <target state="translated">ComboBox 将输入式布局与下拉选择结合，支持项模板、前后置标签、内部前后缀、校验状态和尺寸形态。</target>
-      </segment>
-    </unit>
-    <unit id="5" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">示例</target>
-      </segment>
-    </unit>
-    <unit id="6" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-        <target state="translated">基础用法</target>
-      </segment>
-    </unit>
-    <unit id="7" name="BasicDescription">
+    <unit id="BasicDescription">
       <segment>
         <source>Basic button spinner.</source>
         <target state="translated">基础的组合框用法。</target>
       </segment>
     </unit>
-    <unit id="8" name="ItemsSourceTitle">
+    <unit id="BasicTitle">
       <segment>
-        <source>Generate ComboBoxItem by ItemsSource</source>
-        <target state="translated">通过 ItemsSource 生成 ComboBoxItem</target>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
       </segment>
     </unit>
-    <unit id="9" name="ItemsSourceDescription">
-      <segment>
-        <source>Generate structure based on ItemsSource and template.</source>
-        <target state="translated">基于 ItemsSource 和模板生成结构。</target>
-      </segment>
-    </unit>
-    <unit id="10" name="BindingTitle">
-      <segment>
-        <source>SelectedItem binding</source>
-        <target state="translated">SelectedItem 绑定</target>
-      </segment>
-    </unit>
-    <unit id="11" name="BindingDescription">
-      <segment>
-        <source>SelectedItem synchronizes with the ViewModel and is also the value read and written by Form.</source>
-        <target state="translated">SelectedItem 会与 ViewModel 同步，也是 Form 读取和写入 ComboBox 的表单值。</target>
-      </segment>
-    </unit>
-    <unit id="12" name="BindingSelectedItemLabel">
-      <segment>
-        <source>SelectedItem</source>
-        <target state="translated">SelectedItem</target>
-      </segment>
-    </unit>
-    <unit id="13" name="BindingViewModelValueLabel">
-      <segment>
-        <source>ViewModel value</source>
-        <target state="translated">ViewModel 值</target>
-      </segment>
-    </unit>
-    <unit id="14" name="BindingSetButton">
-      <segment>
-        <source>Set third line</source>
-        <target state="translated">设为第三句</target>
-      </segment>
-    </unit>
-    <unit id="15" name="BindingClearButton">
+    <unit id="BindingClearButton">
       <segment>
         <source>Clear</source>
         <target state="translated">清空</target>
       </segment>
     </unit>
-    <unit id="16" name="EditableFilterTitle">
+    <unit id="BindingDescription">
       <segment>
-        <source>Editable filtering</source>
-        <target state="translated">可编辑过滤</target>
+        <source>SelectedItem synchronizes with the ViewModel and is also the value read and written by Form.</source>
+        <target state="translated">SelectedItem 会与 ViewModel 同步，也是 Form 读取和写入 ComboBox 的表单值。</target>
       </segment>
     </unit>
-    <unit id="17" name="EditableFilterDescription">
+    <unit id="BindingSelectedItemLabel">
       <segment>
-        <source>Type in the ComboBox input to filter popup candidates without replacing the source items.</source>
-        <target state="translated">在 ComboBox 输入区输入文本，过滤弹出候选项，同时不替换原始 ItemsSource。</target>
+        <source>SelectedItem</source>
+        <target state="translated">SelectedItem</target>
       </segment>
     </unit>
-    <unit id="18" name="DisabledTitle">
+    <unit id="BindingSetButton">
       <segment>
-        <source>Disabled</source>
-        <target state="translated">禁用状态</target>
+        <source>Set third line</source>
+        <target state="translated">设为第三句</target>
       </segment>
     </unit>
-    <unit id="19" name="DisabledDescription">
+    <unit id="BindingTitle">
+      <segment>
+        <source>SelectedItem binding</source>
+        <target state="translated">SelectedItem 绑定</target>
+      </segment>
+    </unit>
+    <unit id="BindingViewModelValueLabel">
+      <segment>
+        <source>ViewModel value</source>
+        <target state="translated">ViewModel 值</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+        <target state="translated">导航</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
+      </segment>
+    </unit>
+    <unit id="DisabledDescription">
       <segment>
         <source>Disabled button spinner.</source>
         <target state="translated">禁用状态的组合框。</target>
       </segment>
     </unit>
-    <unit id="20" name="ThreeSizesTitle">
+    <unit id="DisabledTitle">
       <segment>
-        <source>Three sizes of Input</source>
-        <target state="translated">三种尺寸</target>
+        <source>Disabled</source>
+        <target state="translated">禁用状态</target>
       </segment>
     </unit>
-    <unit id="21" name="ThreeSizesDescription">
+    <unit id="EditableFilterDescription">
       <segment>
-        <source>ComboBox supports large (40px), default (32px), small (24px), and Custom sizes with local size properties.</source>
-        <target state="translated">ComboBox 支持大号（40px）、默认（32px）、小号（24px），也支持通过 Custom 配合本地尺寸属性自定义。</target>
+        <source>Type in the ComboBox input to filter popup candidates without replacing the source items.</source>
+        <target state="translated">在 ComboBox 输入区输入文本，过滤弹出候选项，同时不替换原始 ItemsSource。</target>
       </segment>
     </unit>
-    <unit id="22" name="VariantsTitle">
+    <unit id="EditableFilterTitle">
       <segment>
-        <source>Variants</source>
-        <target state="translated">不同形态</target>
+        <source>Editable filtering</source>
+        <target state="translated">可编辑过滤</target>
       </segment>
     </unit>
-    <unit id="23" name="VariantsDescription">
+    <unit id="ItemsSourceDescription">
       <segment>
-        <source>Variants of Input.</source>
-        <target state="translated">输入框的不同形态。</target>
+        <source>Generate structure based on ItemsSource and template.</source>
+        <target state="translated">基于 ItemsSource 和模板生成结构。</target>
       </segment>
     </unit>
-    <unit id="24" name="PrePostTabTitle">
+    <unit id="ItemsSourceTitle">
       <segment>
-        <source>Pre / Post tab</source>
-        <target state="translated">前置/后置标签</target>
+        <source>Generate ComboBoxItem by ItemsSource</source>
+        <target state="translated">通过 ItemsSource 生成 ComboBoxItem</target>
       </segment>
     </unit>
-    <unit id="25" name="PrePostTabDescription">
-      <segment>
-        <source>Using pre and post tabs example.</source>
-        <target state="translated">前置和后置标签的使用示例。</target>
-      </segment>
-    </unit>
-    <unit id="26" name="PrefixSuffixTitle">
-      <segment>
-        <source>prefix and suffix</source>
-        <target state="translated">前缀和后缀</target>
-      </segment>
-    </unit>
-    <unit id="27" name="PrefixSuffixDescription">
-      <segment>
-        <source>Add a prefix or suffix icons inside input.</source>
-        <target state="translated">在输入框内部添加前缀或后缀图标。</target>
-      </segment>
-    </unit>
-    <unit id="28" name="StatusTitle">
-      <segment>
-        <source>Status</source>
-        <target state="translated">状态</target>
-      </segment>
-    </unit>
-    <unit id="29" name="StatusDescription">
-      <segment>
-        <source>Add status to Input with status, which could be error or warning.</source>
-        <target state="translated">通过 status 为输入框添加错误或警告状态。</target>
-      </segment>
-    </unit>
-    <unit id="30" name="P2PlaceholderTextPleaseSelect">
-      <segment>
-        <source>Please select</source>
-        <target state="translated">请选择</target>
-      </segment>
-    </unit>
-    <unit id="31" name="P2PlaceholderTextTypeToFilter">
-      <segment>
-        <source>Type to filter</source>
-        <target state="translated">输入内容过滤</target>
-      </segment>
-    </unit>
-    <unit id="32" name="P2PlaceholderSizeTypeLarge">
-      <segment>
-        <source>SizeType: Large</source>
-        <target state="translated">SizeType：Large</target>
-      </segment>
-    </unit>
-    <unit id="33" name="P2PlaceholderSizeTypeMiddle">
-      <segment>
-        <source>SizeType: Middle</source>
-        <target state="translated">SizeType：Middle</target>
-      </segment>
-    </unit>
-    <unit id="34" name="P2PlaceholderSizeTypeSmall">
-      <segment>
-        <source>SizeType: Small</source>
-        <target state="translated">SizeType：Small</target>
-      </segment>
-    </unit>
-    <unit id="35" name="P2PlaceholderSizeTypeCustom">
-      <segment>
-        <source>SizeType: Custom</source>
-        <target state="translated">SizeType：Custom</target>
-      </segment>
-    </unit>
-    <unit id="36" name="P2ContentPoemLine1">
+    <unit id="P2ContentPoemLine1">
       <segment>
         <source>床前明月光</source>
         <target state="translated">床前明月光</target>
       </segment>
     </unit>
-    <unit id="37" name="P2ContentPoemLine2">
+    <unit id="P2ContentPoemLine2">
       <segment>
         <source>疑是地上霜</source>
         <target state="translated">疑是地上霜</target>
       </segment>
     </unit>
-    <unit id="38" name="P2ContentPoemLine3">
+    <unit id="P2ContentPoemLine3">
       <segment>
         <source>举头望明月</source>
         <target state="translated">举头望明月</target>
       </segment>
     </unit>
-    <unit id="39" name="P2ContentPoemLine4">
+    <unit id="P2ContentPoemLine4">
       <segment>
         <source>低头思故乡</source>
         <target state="translated">低头思故乡</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeCustom">
+      <segment>
+        <source>SizeType: Custom</source>
+        <target state="translated">SizeType：Custom</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeLarge">
+      <segment>
+        <source>SizeType: Large</source>
+        <target state="translated">SizeType：Large</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeMiddle">
+      <segment>
+        <source>SizeType: Middle</source>
+        <target state="translated">SizeType：Middle</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeSmall">
+      <segment>
+        <source>SizeType: Small</source>
+        <target state="translated">SizeType：Small</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelect">
+      <segment>
+        <source>Please select</source>
+        <target state="translated">请选择</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextTypeToFilter">
+      <segment>
+        <source>Type to filter</source>
+        <target state="translated">输入内容过滤</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>ComboBox combines input-style layout with dropdown selection, supporting item templates, add-ons, prefixes, suffixes, validation status, and size variants.</source>
+        <target state="translated">ComboBox 将输入式布局与下拉选择结合，支持项模板、前后置标签、内部前后缀、校验状态和尺寸形态。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>A selection input for choosing from a compact popup list.</source>
+        <target state="translated">用于从紧凑弹出列表中选择内容的选择输入控件。</target>
+      </segment>
+    </unit>
+    <unit id="PrePostTabDescription">
+      <segment>
+        <source>Using pre and post tabs example.</source>
+        <target state="translated">前置和后置标签的使用示例。</target>
+      </segment>
+    </unit>
+    <unit id="PrePostTabTitle">
+      <segment>
+        <source>Pre / Post tab</source>
+        <target state="translated">前置/后置标签</target>
+      </segment>
+    </unit>
+    <unit id="PrefixSuffixDescription">
+      <segment>
+        <source>Add a prefix or suffix icons inside input.</source>
+        <target state="translated">在输入框内部添加前缀或后缀图标。</target>
+      </segment>
+    </unit>
+    <unit id="PrefixSuffixTitle">
+      <segment>
+        <source>prefix and suffix</source>
+        <target state="translated">前缀和后缀</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to Input with status, which could be error or warning.</source>
+        <target state="translated">通过 status 为输入框添加错误或警告状态。</target>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">状态</target>
+      </segment>
+    </unit>
+    <unit id="ThreeSizesDescription">
+      <segment>
+        <source>ComboBox supports large (40px), default (32px), small (24px), and Custom sizes with local size properties.</source>
+        <target state="translated">ComboBox 支持大号（40px）、默认（32px）、小号（24px），也支持通过 Custom 配合本地尺寸属性自定义。</target>
+      </segment>
+    </unit>
+    <unit id="ThreeSizesTitle">
+      <segment>
+        <source>Three sizes of Input</source>
+        <target state="translated">三种尺寸</target>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Variants of Input.</source>
+        <target state="translated">输入框的不同形态。</target>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">不同形态</target>
       </segment>
     </unit>
   </file>

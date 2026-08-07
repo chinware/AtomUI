@@ -2,13 +2,13 @@ using AtomUI.Localization;
 
 namespace AtomUIGallery.Localization;
 
-[LanguageCatalog(ContractVersion = 1)]
+[LanguageCatalog(ContractVersion = 2)]
 public enum PaletteShowCaseLangResourceKind
 {
-    ComponentCategory = 1,
-    ComponentStatusStable = 2,
-    PageSubtitle = 3,
-    PageDescription = 4,
-    P2HeaderLight = 5,
-    P2HeaderDark = 6
+    ComponentCategory,
+    ComponentStatusStable,
+    PageSubtitle,
+    PageDescription,
+    P2HeaderLight,
+    P2HeaderDark
 }

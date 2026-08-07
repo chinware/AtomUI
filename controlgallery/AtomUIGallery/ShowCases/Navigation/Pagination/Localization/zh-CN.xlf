@@ -1,142 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.PaginationShowCaseLangResourceKind">
-    <unit id="1" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">示例</target>
-      </segment>
-    </unit>
-    <unit id="2" name="ComponentCategory">
-      <segment>
-        <source>Navigation</source>
-        <target state="translated">导航</target>
-      </segment>
-    </unit>
-    <unit id="3" name="ComponentStatusStable">
-      <segment>
-        <source>.NET 10</source>
-        <target state="translated">.NET 10</target>
-      </segment>
-    </unit>
-    <unit id="4" name="PageSubtitle">
-      <segment>
-        <source>Navigate long lists with page numbers, sizes, totals, and quick jumps.</source>
-        <target state="translated">用页码、页大小、总数和快速跳转浏览长列表。</target>
-      </segment>
-    </unit>
-    <unit id="5" name="PageDescription">
-      <segment>
-        <source>Pagination divides large data sets into predictable pages. It supports alignment, page size selection, quick jump input, total information, mini size, and simple read-only or editable modes.</source>
-        <target state="translated">Pagination 将大型数据集拆分为可预测的页面，支持对齐方式、页大小选择、快速跳转、总数信息、迷你尺寸以及简洁只读或可编辑模式。</target>
-      </segment>
-    </unit>
-    <unit id="6" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-        <target state="translated">基础分页</target>
-      </segment>
-    </unit>
-    <unit id="7" name="BasicDescription">
-      <segment>
-        <source>Basic pagination.</source>
-        <target state="translated">基础分页。</target>
-      </segment>
-    </unit>
-    <unit id="8" name="BindingTitle">
-      <segment>
-        <source>Controlled binding</source>
-        <target state="translated">受控绑定</target>
-      </segment>
-    </unit>
-    <unit id="9" name="BindingDescription">
-      <segment>
-        <source>CurrentPage and PageSize can be bound without an explicit Mode=TwoWay; page clicks and size changes write back to the view model.</source>
-        <target state="translated">CurrentPage 和 PageSize 不需要显式设置 Mode=TwoWay；点击页码和修改页大小都会写回 ViewModel。</target>
-      </segment>
-    </unit>
-    <unit id="10" name="AlignTitle">
-      <segment>
-        <source>Align</source>
-        <target state="translated">对齐方式</target>
-      </segment>
-    </unit>
-    <unit id="11" name="AlignDescription">
+    <unit id="AlignDescription">
       <segment>
         <source>Support three alignment modes: left alignment, center alignment, right alignment.</source>
         <target state="translated">支持左对齐、居中对齐和右对齐三种对齐方式。</target>
       </segment>
     </unit>
-    <unit id="12" name="MoreTitle">
+    <unit id="AlignTitle">
       <segment>
-        <source>More</source>
-        <target state="translated">更多页码</target>
+        <source>Align</source>
+        <target state="translated">对齐方式</target>
       </segment>
     </unit>
-    <unit id="13" name="MoreDescription">
+    <unit id="BasicDescription">
       <segment>
-        <source>More pages.</source>
-        <target state="translated">更多页码。</target>
+        <source>Basic pagination.</source>
+        <target state="translated">基础分页。</target>
       </segment>
     </unit>
-    <unit id="14" name="MiniSizeTitle">
+    <unit id="BasicTitle">
       <segment>
-        <source>Mini size</source>
-        <target state="translated">迷你尺寸</target>
+        <source>Basic</source>
+        <target state="translated">基础分页</target>
       </segment>
     </unit>
-    <unit id="15" name="MiniSizeDescription">
+    <unit id="BindingDescription">
+      <segment>
+        <source>CurrentPage and PageSize can be bound without an explicit Mode=TwoWay; page clicks and size changes write back to the view model.</source>
+        <target state="translated">CurrentPage 和 PageSize 不需要显式设置 Mode=TwoWay；点击页码和修改页大小都会写回 ViewModel。</target>
+      </segment>
+    </unit>
+    <unit id="BindingTitle">
+      <segment>
+        <source>Controlled binding</source>
+        <target state="translated">受控绑定</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Navigation</source>
+        <target state="translated">导航</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
+      </segment>
+    </unit>
+    <unit id="MiniSizeDescription">
       <segment>
         <source>Mini size pagination.</source>
         <target state="translated">迷你尺寸分页。</target>
       </segment>
     </unit>
-    <unit id="16" name="TotalNumberTitle">
+    <unit id="MiniSizeTitle">
       <segment>
-        <source>Total number</source>
-        <target state="translated">总数</target>
+        <source>Mini size</source>
+        <target state="translated">迷你尺寸</target>
       </segment>
     </unit>
-    <unit id="17" name="TotalNumberDescription">
+    <unit id="MoreDescription">
       <segment>
-        <source>You can show the total number of data by setting showTotal.</source>
-        <target state="translated">可以通过设置 showTotal 展示数据总量。</target>
+        <source>More pages.</source>
+        <target state="translated">更多页码。</target>
       </segment>
     </unit>
-    <unit id="18" name="SimpleModeTitle">
+    <unit id="MoreTitle">
       <segment>
-        <source>Simple mode</source>
-        <target state="translated">简洁模式</target>
+        <source>More</source>
+        <target state="translated">更多页码</target>
       </segment>
     </unit>
-    <unit id="19" name="SimpleModeDescription">
+    <unit id="P2ContentReset">
       <segment>
-        <source>Simple mode.</source>
-        <target state="translated">简洁模式。</target>
+        <source>Reset</source>
+        <target state="translated">重置</target>
       </segment>
     </unit>
-    <unit id="20" name="P2TextCurrentPage">
-      <segment>
-        <source>CurrentPage:</source>
-        <target state="translated">CurrentPage：</target>
-      </segment>
-    </unit>
-    <unit id="21" name="P2TextPageSize">
-      <segment>
-        <source>PageSize:</source>
-        <target state="translated">PageSize：</target>
-      </segment>
-    </unit>
-    <unit id="22" name="P2ContentSetPage">
+    <unit id="P2ContentSetPage">
       <segment>
         <source>Set page 5 / 20</source>
         <target state="translated">设置第 5 页 / 20</target>
       </segment>
     </unit>
-    <unit id="23" name="P2ContentReset">
+    <unit id="P2TextCurrentPage">
       <segment>
-        <source>Reset</source>
-        <target state="translated">重置</target>
+        <source>CurrentPage:</source>
+        <target state="translated">CurrentPage：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPageSize">
+      <segment>
+        <source>PageSize:</source>
+        <target state="translated">PageSize：</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Pagination divides large data sets into predictable pages. It supports alignment, page size selection, quick jump input, total information, mini size, and simple read-only or editable modes.</source>
+        <target state="translated">Pagination 将大型数据集拆分为可预测的页面，支持对齐方式、页大小选择、快速跳转、总数信息、迷你尺寸以及简洁只读或可编辑模式。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Navigate long lists with page numbers, sizes, totals, and quick jumps.</source>
+        <target state="translated">用页码、页大小、总数和快速跳转浏览长列表。</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="SimpleModeDescription">
+      <segment>
+        <source>Simple mode.</source>
+        <target state="translated">简洁模式。</target>
+      </segment>
+    </unit>
+    <unit id="SimpleModeTitle">
+      <segment>
+        <source>Simple mode</source>
+        <target state="translated">简洁模式</target>
+      </segment>
+    </unit>
+    <unit id="TotalNumberDescription">
+      <segment>
+        <source>You can show the total number of data by setting showTotal.</source>
+        <target state="translated">可以通过设置 showTotal 展示数据总量。</target>
+      </segment>
+    </unit>
+    <unit id="TotalNumberTitle">
+      <segment>
+        <source>Total number</source>
+        <target state="translated">总数</target>
       </segment>
     </unit>
   </file>

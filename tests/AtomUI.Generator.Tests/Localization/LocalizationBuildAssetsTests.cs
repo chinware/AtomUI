@@ -25,6 +25,12 @@ public class LocalizationBuildAssetsTests
                  element.Value == "$(AssemblyName)" &&
                  (string?)element.Attribute("Condition") == "'$(AtomUILanguageModuleId)' == ''")
              .ShouldBeTrue();
+        var contractVersion = propertyGroups.SelectMany(static group => group.Elements())
+                                            .Single(element =>
+                                                element.Name.LocalName == "AtomUILanguageContractVersion");
+        contractVersion.Value.ShouldBe("1");
+        ((string?)contractVersion.Attribute("Condition"))
+            .ShouldBe("'$(AtomUILanguageContractVersion)' == ''");
 
         var languageDefaults = props.Descendants()
                                     .Single(element => element.Name.LocalName == "AtomUILanguage");
@@ -87,6 +93,10 @@ public class LocalizationBuildAssetsTests
         fileExcludes.ShouldContain("$(BaseOutputPath)");
         fileExcludes.ShouldContain("$(BaseIntermediateOutputPath)");
         fileExcludes.ShouldContain("GeneratedFiles");
+        discoveredLanguage.Elements()
+                          .Single(element =>
+                              element.Name.LocalName == "AtomUILanguageContractVersion")
+                          .Value.ShouldBe("$(AtomUILanguageContractVersion)");
 
         var additionalFiles = targets.Descendants()
                                      .Single(element =>
@@ -144,6 +154,26 @@ public class LocalizationBuildAssetsTests
         targets.Descendants("Target")
                .Single(element => (string?)element.Attribute("Name") == "AtomUIExportLanguageTemplates")
                .ShouldNotBeNull();
+    }
+
+    [Fact]
+    public void Localization_Targets_Registers_Build_Tasks_Before_Source_Outputs_Exist()
+    {
+        var targets = XDocument.Load(GetRepoFile("build/AtomUI.Localization.targets"));
+        var usingTasks = targets.Descendants("UsingTask")
+                                .Where(element =>
+                                    ((string?)element.Attribute("TaskName"))?.StartsWith(
+                                        "AtomUI.Build.Tasks.",
+                                        StringComparison.Ordinal) == true)
+                                .ToArray();
+
+        usingTasks.ShouldNotBeEmpty();
+        foreach (var usingTask in usingTasks)
+        {
+            ((string?)usingTask.Attribute("AssemblyFile"))
+                .ShouldBe("$(AtomUILocalizationBuildTasksAssembly)");
+            usingTask.Attribute("Condition").ShouldBeNull();
+        }
     }
 
     [Fact]

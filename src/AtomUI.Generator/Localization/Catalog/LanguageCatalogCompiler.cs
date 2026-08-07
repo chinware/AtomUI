@@ -72,13 +72,13 @@ internal static class LanguageCatalogCompiler
                 catalogsById.Add(catalogId, catalogInput);
             }
 
-            if (file.SourceKind != LanguageFileSourceKind.ModuleBuiltIn &&
-                file.ContractVersion != catalogInput.Catalog.ContractVersion)
+            if (file.ContractVersion is { } contractVersion &&
+                contractVersion != catalogInput.Catalog.ContractVersion)
             {
                 diagnostics.Add(Mismatch(
                     file,
                     catalogId,
-                    $"language input ContractVersion '{file.ContractVersion}' does not match " +
+                    $"language input ContractVersion '{contractVersion}' does not match " +
                     $"target Catalog ContractVersion '{catalogInput.Catalog.ContractVersion}'"));
                 continue;
             }
@@ -119,19 +119,19 @@ internal static class LanguageCatalogCompiler
             var sourceFile = englishFiles[0];
 
             var englishSource = sourceFile.Document.File.Units.ToDictionary(
-                static unit => unit.Id,
+                static unit => unit.Key,
                 static unit => unit.Source);
             var authoritativeFingerprint =
                 AtomUI.Localization.Build.LanguageSourceFingerprint.Compute(sourceFile.Document);
             var formattedUnits = catalog.Units
                                         .Select(unit => sourceFile.Document.File.Units
-                                            .FirstOrDefault(sourceUnit => sourceUnit.Id == unit.Id)?
+                                            .FirstOrDefault(sourceUnit => sourceUnit.Key == unit.Key)?
                                             .PlaceholderIndexes.Count > 0)
                                         .ToImmutableArray();
             var bundles = ImmutableArray.CreateBuilder<CompiledTranslationBundle>();
             var bundleOwners =
                 new Dictionary<(string Language, LanguageFileSourceKind SourceKind), AdditionalLanguageFile>();
-            var overrideOwners = new Dictionary<(string Language, int UnitId), AdditionalLanguageFile>();
+            var overrideOwners = new Dictionary<(string Language, string Key), AdditionalLanguageFile>();
             foreach (var file in catalogFiles
                          .OrderBy(GetLanguage, StringComparer.Ordinal)
                          .ThenBy(static item => item.SourceKind)
@@ -213,14 +213,14 @@ internal static class LanguageCatalogCompiler
         LanguageCatalogInfo catalog,
         AdditionalLanguageFile file,
         string language,
-        Dictionary<(string Language, int UnitId), AdditionalLanguageFile> owners,
+        Dictionary<(string Language, string Key), AdditionalLanguageFile> owners,
         ImmutableArray<Diagnostic>.Builder diagnostics)
     {
         foreach (var unit in file.Document.File.Units.Where(static unit =>
                      !unit.IsObsolete &&
                      AtomUI.Localization.Build.XliffTranslationTarget.IsPublishable(unit)))
         {
-            var ownerKey = (language, unit.Id);
+            var ownerKey = (language, unit.Key);
             if (!owners.TryGetValue(ownerKey, out var owner))
             {
                 owners.Add(ownerKey, file);
@@ -230,7 +230,7 @@ internal static class LanguageCatalogCompiler
             diagnostics.Add(Mismatch(
                 file,
                 catalog.CatalogId,
-                $"unit ID '{unit.Id}' ('{unit.Name}') language '{language}' has more than one " +
+                $"unit Key '{unit.Key}' ('{unit.Name ?? unit.Key}') language '{language}' has more than one " +
                 $"translation source at the same priority ('{owner.SourceIdentity}' and " +
                 $"'{file.SourceIdentity}')",
                 unit.Line,
@@ -256,42 +256,33 @@ internal static class LanguageCatalogCompiler
         bool requireComplete,
         ImmutableArray<Diagnostic>.Builder diagnostics)
     {
-        var unitsById = file.Document.File.Units
+        var unitsByKey = file.Document.File.Units
                             .Where(static unit => !unit.IsObsolete)
-                            .ToDictionary(static unit => unit.Id);
+                            .ToDictionary(static unit => unit.Key, StringComparer.Ordinal);
         foreach (var catalogUnit in catalog.Units)
         {
-            if (!unitsById.TryGetValue(catalogUnit.Id, out var fileUnit))
+            if (!unitsByKey.TryGetValue(catalogUnit.Key, out var fileUnit))
             {
                 if (requireComplete)
                 {
                     diagnostics.Add(Mismatch(
                         file,
                         catalog.CatalogId,
-                        $"unit ID '{catalogUnit.Id}' ('{catalogUnit.Name}') is missing"));
+                        $"unit Key '{catalogUnit.Key}' is missing"));
                 }
                 continue;
             }
-            if (!string.Equals(fileUnit.Name, catalogUnit.Name, StringComparison.Ordinal))
-            {
-                diagnostics.Add(Mismatch(
-                    file,
-                    catalog.CatalogId,
-                    $"unit ID '{catalogUnit.Id}' has name '{fileUnit.Name}' instead of '{catalogUnit.Name}'",
-                    fileUnit.Line,
-                    fileUnit.Column));
-            }
         }
 
-        var catalogIds = new HashSet<int>(catalog.Units.Select(static unit => unit.Id));
+        var catalogKeys = new HashSet<string>(catalog.Units.Select(static unit => unit.Key), StringComparer.Ordinal);
         foreach (var fileUnit in file.Document.File.Units)
         {
-            if (!fileUnit.IsObsolete && !catalogIds.Contains(fileUnit.Id))
+            if (!fileUnit.IsObsolete && !catalogKeys.Contains(fileUnit.Key))
             {
                 diagnostics.Add(Mismatch(
                     file,
                     catalog.CatalogId,
-                    $"unit ID '{fileUnit.Id}' is not declared by the Catalog",
+                    $"unit Key '{fileUnit.Key}' is not declared by the Catalog",
                     fileUnit.Line,
                     fileUnit.Column));
             }
@@ -300,20 +291,20 @@ internal static class LanguageCatalogCompiler
 
     private static void ValidateSourceText(
         LanguageCatalogInfo catalog,
-        IReadOnlyDictionary<int, string> englishSource,
+        IReadOnlyDictionary<string, string> englishSource,
         AdditionalLanguageFile file,
         ImmutableArray<Diagnostic>.Builder diagnostics)
     {
         foreach (var unit in file.Document.File.Units)
         {
             if (!unit.IsObsolete &&
-                englishSource.TryGetValue(unit.Id, out var expected) &&
+                englishSource.TryGetValue(unit.Key, out var expected) &&
                 !string.Equals(unit.Source, expected, StringComparison.Ordinal))
             {
                 diagnostics.Add(Mismatch(
                     file,
                     catalog.CatalogId,
-                    $"unit ID '{unit.Id}' source text differs from the en-US source bundle",
+                    $"unit Key '{unit.Key}' source text differs from the en-US source bundle",
                     unit.Line,
                     unit.Column));
             }
@@ -328,11 +319,11 @@ internal static class LanguageCatalogCompiler
     {
         var units = file.Document.File.Units
                         .Where(static unit => !unit.IsObsolete)
-                        .ToDictionary(static unit => unit.Id);
+                        .ToDictionary(static unit => unit.Key, StringComparer.Ordinal);
         var values = ImmutableArray.CreateBuilder<string?>(catalog.Units.Length);
         foreach (var catalogUnit in catalog.Units)
         {
-            if (!units.TryGetValue(catalogUnit.Id, out var unit))
+            if (!units.TryGetValue(catalogUnit.Key, out var unit))
             {
                 values.Add(null);
                 continue;
@@ -388,7 +379,7 @@ internal static class LanguageCatalogCompiler
         return Diagnostic.Create(
             AtomUIDiagnosticDescriptors.LocalizationInvalidTranslation,
             CreateLocation(file, unit.Line, unit.Column),
-            unit.Id,
+            unit.Key,
             language,
             reason);
     }

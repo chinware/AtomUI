@@ -1,256 +1,256 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind">
-    <unit id="1" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-        <target state="translated">基礎用法</target>
-      </segment>
-    </unit>
-    <unit id="2" name="BasicDescription">
+    <unit id="BasicDescription">
       <segment>
         <source>The simplest use.</source>
         <target state="translated">最簡單的用法。</target>
       </segment>
     </unit>
-    <unit id="3" name="DisabledTitle">
+    <unit id="BasicTitle">
       <segment>
-        <source>Disabled</source>
-        <target state="translated">禁用</target>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
       </segment>
     </unit>
-    <unit id="4" name="DisabledDescription">
-      <segment>
-        <source>Disabled checkbox.</source>
-        <target state="translated">禁用狀態的復選框。</target>
-      </segment>
-    </unit>
-    <unit id="5" name="ControlledCheckboxTitle">
-      <segment>
-        <source>Controlled Checkbox</source>
-        <target state="translated">受控復選框</target>
-      </segment>
-    </unit>
-    <unit id="6" name="ControlledCheckboxDescription">
-      <segment>
-        <source>Communicated with other components.</source>
-        <target state="translated">與其他組件聯動。</target>
-      </segment>
-    </unit>
-    <unit id="7" name="CheckboxGroupTitle">
-      <segment>
-        <source>Checkbox Group</source>
-        <target state="translated">復選框組</target>
-      </segment>
-    </unit>
-    <unit id="8" name="CheckboxGroupDescription">
-      <segment>
-        <source>Generate a group of checkboxes from an array.</source>
-        <target state="translated">通過數組生成一組復選框。</target>
-      </segment>
-    </unit>
-    <unit id="9" name="CheckedItemsBindingTitle">
-      <segment>
-        <source>CheckedItems binding</source>
-        <target state="translated">CheckedItems 綁定</target>
-      </segment>
-    </unit>
-    <unit id="10" name="CheckedItemsBindingDescription">
-      <segment>
-        <source>CheckedItems uses TwoWay binding by default and stays in sync when the bound collection changes.</source>
-        <target state="translated">CheckedItems 預設使用 TwoWay 綁定，並會在綁定集合變更時保持控件狀態同步。</target>
-      </segment>
-    </unit>
-    <unit id="11" name="CheckAllTitle">
-      <segment>
-        <source>Check all</source>
-        <target state="translated">全選</target>
-      </segment>
-    </unit>
-    <unit id="12" name="CheckAllDescription">
+    <unit id="CheckAllDescription">
       <segment>
         <source>The indeterminate property can help you to achieve a 'check all' effect.</source>
         <target state="translated">indeterminate 屬性可以幫助實現全選效果。</target>
       </segment>
     </unit>
-    <unit id="13" name="UseWithGridTitle">
-      <segment>
-        <source>Use with Grid</source>
-        <target state="translated">結合 Grid 使用</target>
-      </segment>
-    </unit>
-    <unit id="14" name="UseWithGridDescription">
-      <segment>
-        <source>We can use Checkbox and Grid in Checkbox.Group, to implement complex layout.</source>
-        <target state="translated">可以在 Checkbox.Group 中結合 Checkbox 和 Grid 實現複雜佈局。</target>
-      </segment>
-    </unit>
-    <unit id="15" name="PageSubtitle">
-      <segment>
-        <source>Collect binary or multiple choices from users.</source>
-        <target state="translated">從使用者處收集二元或多選選擇。</target>
-      </segment>
-    </unit>
-    <unit id="16" name="PageDescription">
-      <segment>
-        <source>CheckBox supports checked, unchecked, indeterminate, disabled, controlled, grouped, and check-all states for forms and option lists.</source>
-        <target state="translated">CheckBox 支援選中、未選中、半選、禁用、受控、分組和全選狀態，適用於表單和選項列表。</target>
-      </segment>
-    </unit>
-    <unit id="17" name="ComponentCategory">
-      <segment>
-        <source>Data Entry</source>
-        <target state="translated">資料錄入</target>
-      </segment>
-    </unit>
-    <unit id="18" name="ComponentStatusStable">
-      <segment>
-        <source>Stable</source>
-        <target state="translated">穩定</target>
-      </segment>
-    </unit>
-    <unit id="19" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">範例</target>
-      </segment>
-    </unit>
-    <unit id="20" name="P2ContentCheckbox">
-      <segment>
-        <source>Checkbox</source>
-        <target state="translated">復選框</target>
-      </segment>
-    </unit>
-    <unit id="21" name="P2ContentUnchecked">
-      <segment>
-        <source>UnChecked</source>
-        <target state="translated">未選中</target>
-      </segment>
-    </unit>
-    <unit id="22" name="P2ContentIndeterminate">
-      <segment>
-        <source>Indeterminate</source>
-        <target state="translated">半選</target>
-      </segment>
-    </unit>
-    <unit id="23" name="P2ContentChecked">
-      <segment>
-        <source>Checked</source>
-        <target state="translated">選中</target>
-      </segment>
-    </unit>
-    <unit id="24" name="P2ContentCheck">
-      <segment>
-        <source>Check</source>
-        <target state="translated">選中</target>
-      </segment>
-    </unit>
-    <unit id="25" name="P2ContentUncheck">
-      <segment>
-        <source>UnCheck</source>
-        <target state="translated">取消選中</target>
-      </segment>
-    </unit>
-    <unit id="26" name="P2ContentEnable">
-      <segment>
-        <source>Enable</source>
-        <target state="translated">啓用</target>
-      </segment>
-    </unit>
-    <unit id="27" name="P2ContentDisable">
-      <segment>
-        <source>Disable</source>
-        <target state="translated">禁用</target>
-      </segment>
-    </unit>
-    <unit id="28" name="P2ContentEnabled">
-      <segment>
-        <source>Enabled</source>
-        <target state="translated">已啓用</target>
-      </segment>
-    </unit>
-    <unit id="29" name="P2ContentDisabled">
-      <segment>
-        <source>Disabled</source>
-        <target state="translated">已禁用</target>
-      </segment>
-    </unit>
-    <unit id="30" name="P2ControlledStatusFormat">
-      <segment>
-        <source>{0}-{1}</source>
-        <target state="translated">{0}-{1}</target>
-      </segment>
-    </unit>
-    <unit id="31" name="P2ContentApple">
-      <segment>
-        <source>Apple</source>
-        <target state="translated">蘋果</target>
-      </segment>
-    </unit>
-    <unit id="32" name="P2ContentPear">
-      <segment>
-        <source>Pear</source>
-        <target state="translated">梨</target>
-      </segment>
-    </unit>
-    <unit id="33" name="P2ContentOrange">
-      <segment>
-        <source>Orange</source>
-        <target state="translated">橙子</target>
-      </segment>
-    </unit>
-    <unit id="34" name="P2ContentAddPear">
-      <segment>
-        <source>Add pear</source>
-        <target state="translated">添加梨</target>
-      </segment>
-    </unit>
-    <unit id="35" name="P2ContentClear">
-      <segment>
-        <source>Clear</source>
-        <target state="translated">清空</target>
-      </segment>
-    </unit>
-    <unit id="36" name="P2ContentNone">
-      <segment>
-        <source>None</source>
-        <target state="translated">無</target>
-      </segment>
-    </unit>
-    <unit id="37" name="P2TwoWayCheckedSummaryFormat">
-      <segment>
-        <source>Selected: {0}</source>
-        <target state="translated">已選擇：{0}</target>
-      </segment>
-    </unit>
-    <unit id="38" name="P2ContentCheckAll">
+    <unit id="CheckAllTitle">
       <segment>
         <source>Check all</source>
         <target state="translated">全選</target>
       </segment>
     </unit>
-    <unit id="39" name="P2ContentA">
+    <unit id="CheckboxGroupDescription">
+      <segment>
+        <source>Generate a group of checkboxes from an array.</source>
+        <target state="translated">通過數組生成一組復選框。</target>
+      </segment>
+    </unit>
+    <unit id="CheckboxGroupTitle">
+      <segment>
+        <source>Checkbox Group</source>
+        <target state="translated">復選框組</target>
+      </segment>
+    </unit>
+    <unit id="CheckedItemsBindingDescription">
+      <segment>
+        <source>CheckedItems uses TwoWay binding by default and stays in sync when the bound collection changes.</source>
+        <target state="translated">CheckedItems 預設使用 TwoWay 綁定，並會在綁定集合變更時保持控件狀態同步。</target>
+      </segment>
+    </unit>
+    <unit id="CheckedItemsBindingTitle">
+      <segment>
+        <source>CheckedItems binding</source>
+        <target state="translated">CheckedItems 綁定</target>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Entry</source>
+        <target state="translated">資料錄入</target>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
+      </segment>
+    </unit>
+    <unit id="ControlledCheckboxDescription">
+      <segment>
+        <source>Communicated with other components.</source>
+        <target state="translated">與其他組件聯動。</target>
+      </segment>
+    </unit>
+    <unit id="ControlledCheckboxTitle">
+      <segment>
+        <source>Controlled Checkbox</source>
+        <target state="translated">受控復選框</target>
+      </segment>
+    </unit>
+    <unit id="DisabledDescription">
+      <segment>
+        <source>Disabled checkbox.</source>
+        <target state="translated">禁用狀態的復選框。</target>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">禁用</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentA">
       <segment>
         <source>A</source>
         <target state="translated">A</target>
       </segment>
     </unit>
-    <unit id="40" name="P2ContentB">
+    <unit id="P2ContentAddPear">
+      <segment>
+        <source>Add pear</source>
+        <target state="translated">添加梨</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentApple">
+      <segment>
+        <source>Apple</source>
+        <target state="translated">蘋果</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentB">
       <segment>
         <source>B</source>
         <target state="translated">B</target>
       </segment>
     </unit>
-    <unit id="41" name="P2ContentC">
+    <unit id="P2ContentC">
       <segment>
         <source>C</source>
         <target state="translated">C</target>
       </segment>
     </unit>
-    <unit id="42" name="P2ContentD">
+    <unit id="P2ContentCheck">
+      <segment>
+        <source>Check</source>
+        <target state="translated">選中</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCheckAll">
+      <segment>
+        <source>Check all</source>
+        <target state="translated">全選</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentCheckbox">
+      <segment>
+        <source>Checkbox</source>
+        <target state="translated">復選框</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentChecked">
+      <segment>
+        <source>Checked</source>
+        <target state="translated">選中</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClear">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">清空</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentD">
       <segment>
         <source>D</source>
         <target state="translated">D</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDisable">
+      <segment>
+        <source>Disable</source>
+        <target state="translated">禁用</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentDisabled">
+      <segment>
+        <source>Disabled</source>
+        <target state="translated">已禁用</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentEnable">
+      <segment>
+        <source>Enable</source>
+        <target state="translated">啓用</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentEnabled">
+      <segment>
+        <source>Enabled</source>
+        <target state="translated">已啓用</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentIndeterminate">
+      <segment>
+        <source>Indeterminate</source>
+        <target state="translated">半選</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentNone">
+      <segment>
+        <source>None</source>
+        <target state="translated">無</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOrange">
+      <segment>
+        <source>Orange</source>
+        <target state="translated">橙子</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPear">
+      <segment>
+        <source>Pear</source>
+        <target state="translated">梨</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentUncheck">
+      <segment>
+        <source>UnCheck</source>
+        <target state="translated">取消選中</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentUnchecked">
+      <segment>
+        <source>UnChecked</source>
+        <target state="translated">未選中</target>
+      </segment>
+    </unit>
+    <unit id="P2ControlledStatusFormat">
+      <segment>
+        <source>{0}-{1}</source>
+        <target state="translated">{0}-{1}</target>
+      </segment>
+    </unit>
+    <unit id="P2TwoWayCheckedSummaryFormat">
+      <segment>
+        <source>Selected: {0}</source>
+        <target state="translated">已選擇：{0}</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>CheckBox supports checked, unchecked, indeterminate, disabled, controlled, grouped, and check-all states for forms and option lists.</source>
+        <target state="translated">CheckBox 支援選中、未選中、半選、禁用、受控、分組和全選狀態，適用於表單和選項列表。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Collect binary or multiple choices from users.</source>
+        <target state="translated">從使用者處收集二元或多選選擇。</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">範例</target>
+      </segment>
+    </unit>
+    <unit id="UseWithGridDescription">
+      <segment>
+        <source>We can use Checkbox and Grid in Checkbox.Group, to implement complex layout.</source>
+        <target state="translated">可以在 Checkbox.Group 中結合 Checkbox 和 Grid 實現複雜佈局。</target>
+      </segment>
+    </unit>
+    <unit id="UseWithGridTitle">
+      <segment>
+        <source>Use with Grid</source>
+        <target state="translated">結合 Grid 使用</target>
       </segment>
     </unit>
   </file>

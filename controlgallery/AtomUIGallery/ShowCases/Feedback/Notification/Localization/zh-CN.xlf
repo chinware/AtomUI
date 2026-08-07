@@ -1,256 +1,256 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.NotificationShowCaseLangResourceKind">
-    <unit id="1" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-        <target state="translated">基础用法</target>
-      </segment>
-    </unit>
-    <unit id="2" name="BasicDescription">
-      <segment>
-        <source>The simplest usage for Notification.</source>
-        <target state="translated">Notification 的最简单用法。</target>
-      </segment>
-    </unit>
-    <unit id="3" name="DurationTitle">
-      <segment>
-        <source>Duration after which the notification box is closed</source>
-        <target state="translated">自动关闭时长</target>
-      </segment>
-    </unit>
-    <unit id="4" name="DurationDescription">
-      <segment>
-        <source>Duration can be used to specify how long the notification stays open. After the duration time elapses, the notification closes automatically. If not specified, default value is 4.5 seconds. If you set the value to TimeSpan.Zero, the notification box will never close automatically.</source>
-        <target state="translated">Duration 可指定通知保持打开的时间。时间结束后通知会自动关闭。未指定时默认值为 4.5 秒；设置为 TimeSpan.Zero 时通知不会自动关闭。</target>
-      </segment>
-    </unit>
-    <unit id="5" name="WithIconTitle">
-      <segment>
-        <source>Notification with icon</source>
-        <target state="translated">带图标通知</target>
-      </segment>
-    </unit>
-    <unit id="6" name="WithIconDescription">
-      <segment>
-        <source>A notification box with a icon at the left side.</source>
-        <target state="translated">左侧带图标的通知框。</target>
-      </segment>
-    </unit>
-    <unit id="7" name="PlacementTitle">
-      <segment>
-        <source>Placement</source>
-        <target state="translated">弹出位置</target>
-      </segment>
-    </unit>
-    <unit id="8" name="PlacementDescription">
-      <segment>
-        <source>A notification box can appear from the top bottom topLeft topRight bottomLeft or bottomRight of the viewport via placement.</source>
-        <target state="translated">通知框可通过 placement 从视口顶部、底部、左上、右上、左下或右下出现。</target>
-      </segment>
-    </unit>
-    <unit id="9" name="CustomizedIconTitle">
-      <segment>
-        <source>Customized Icon</source>
-        <target state="translated">自定义图标</target>
-      </segment>
-    </unit>
-    <unit id="10" name="CustomizedIconDescription">
-      <segment>
-        <source>The icon can be customized to any icon node.</source>
-        <target state="translated">图标可以自定义为任意图标节点。</target>
-      </segment>
-    </unit>
-    <unit id="11" name="ProgressTitle">
-      <segment>
-        <source>Show with progress</source>
-        <target state="translated">显示进度</target>
-      </segment>
-    </unit>
-    <unit id="12" name="ProgressDescription">
-      <segment>
-        <source>Show progress bar for auto-closing notification.</source>
-        <target state="translated">为自动关闭的通知显示进度条。</target>
-      </segment>
-    </unit>
-    <unit id="13" name="ComponentCategory">
-      <segment>
-        <source>Feedback</source>
-        <target state="translated">反馈</target>
-      </segment>
-    </unit>
-    <unit id="14" name="ComponentStatusStable">
-      <segment>
-        <source>Stable</source>
-        <target state="translated">稳定</target>
-      </segment>
-    </unit>
-    <unit id="15" name="PageSubtitle">
-      <segment>
-        <source>Desktop notifications for longer feedback and non-blocking updates.</source>
-        <target state="translated">用于较长反馈和非阻塞更新的桌面通知。</target>
-      </segment>
-    </unit>
-    <unit id="16" name="PageDescription">
-      <segment>
-        <source>Notification displays rich feedback cards near the edge of the window. It supports semantic types, custom icons, placement, manual duration, hover pause, and auto-close progress.</source>
-        <target state="translated">Notification 在窗口边缘显示信息更丰富的反馈卡片，支持语义类型、自定义图标、弹出位置、手动时长、悬停暂停和自动关闭进度。</target>
-      </segment>
-    </unit>
-    <unit id="17" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">示例</target>
-      </segment>
-    </unit>
-    <unit id="18" name="ApiMethodManagerShow">
+    <unit id="ApiMethodManagerShow">
       <segment>
         <source>Shows an INotification instance and applies optional style classes.</source>
         <target state="translated">显示 INotification 实例并应用可选样式类。</target>
       </segment>
     </unit>
-    <unit id="19" name="P2ContentShowNotification">
+    <unit id="BasicDescription">
       <segment>
-        <source>Show Notification</source>
-        <target state="translated">显示通知</target>
+        <source>The simplest usage for Notification.</source>
+        <target state="translated">Notification 的最简单用法。</target>
       </segment>
     </unit>
-    <unit id="20" name="P2ContentOpenTheNotificationBox">
+    <unit id="BasicTitle">
       <segment>
-        <source>Open the notification box</source>
-        <target state="translated">打开通知框</target>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
       </segment>
     </unit>
-    <unit id="21" name="P2ContentSuccess">
+    <unit id="ComponentCategory">
       <segment>
-        <source>Success</source>
-        <target state="translated">成功</target>
+        <source>Feedback</source>
+        <target state="translated">反馈</target>
       </segment>
     </unit>
-    <unit id="22" name="P2ContentInfo">
+    <unit id="ComponentStatusStable">
       <segment>
-        <source>Info</source>
-        <target state="translated">信息</target>
+        <source>Stable</source>
+        <target state="translated">稳定</target>
       </segment>
     </unit>
-    <unit id="23" name="P2ContentWarning">
+    <unit id="CustomizedIconDescription">
       <segment>
-        <source>Warning</source>
-        <target state="translated">警告</target>
+        <source>The icon can be customized to any icon node.</source>
+        <target state="translated">图标可以自定义为任意图标节点。</target>
       </segment>
     </unit>
-    <unit id="24" name="P2ContentError">
+    <unit id="CustomizedIconTitle">
       <segment>
-        <source>Error</source>
-        <target state="translated">错误</target>
+        <source>Customized Icon</source>
+        <target state="translated">自定义图标</target>
       </segment>
     </unit>
-    <unit id="25" name="P2ContentTop">
+    <unit id="DurationDescription">
       <segment>
-        <source>Top</source>
-        <target state="translated">顶部</target>
+        <source>Duration can be used to specify how long the notification stays open. After the duration time elapses, the notification closes automatically. If not specified, default value is 4.5 seconds. If you set the value to TimeSpan.Zero, the notification box will never close automatically.</source>
+        <target state="translated">Duration 可指定通知保持打开的时间。时间结束后通知会自动关闭。未指定时默认值为 4.5 秒；设置为 TimeSpan.Zero 时通知不会自动关闭。</target>
       </segment>
     </unit>
-    <unit id="26" name="P2ContentBottom">
+    <unit id="DurationTitle">
+      <segment>
+        <source>Duration after which the notification box is closed</source>
+        <target state="translated">自动关闭时长</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottom">
       <segment>
         <source>Bottom</source>
         <target state="translated">底部</target>
       </segment>
     </unit>
-    <unit id="27" name="P2ContentTopleft">
-      <segment>
-        <source>TopLeft</source>
-        <target state="translated">左上</target>
-      </segment>
-    </unit>
-    <unit id="28" name="P2ContentTopright">
-      <segment>
-        <source>TopRight</source>
-        <target state="translated">右上</target>
-      </segment>
-    </unit>
-    <unit id="29" name="P2ContentBottomleft">
+    <unit id="P2ContentBottomleft">
       <segment>
         <source>BottomLeft</source>
         <target state="translated">左下</target>
       </segment>
     </unit>
-    <unit id="30" name="P2ContentBottomright">
+    <unit id="P2ContentBottomright">
       <segment>
         <source>BottomRight</source>
         <target state="translated">右下</target>
       </segment>
     </unit>
-    <unit id="31" name="P2ContentPauseOnHover">
-      <segment>
-        <source>Pause on hover</source>
-        <target state="translated">悬停时暂停</target>
-      </segment>
-    </unit>
-    <unit id="32" name="P2ContentDonTPauseOnHover">
+    <unit id="P2ContentDonTPauseOnHover">
       <segment>
         <source>Don't pause on hover</source>
         <target state="translated">悬停时不暂停</target>
       </segment>
     </unit>
-    <unit id="33" name="P2NotificationTitle">
+    <unit id="P2ContentError">
       <segment>
-        <source>Notification Title</source>
-        <target state="translated">通知标题</target>
+        <source>Error</source>
+        <target state="translated">错误</target>
       </segment>
     </unit>
-    <unit id="34" name="P2NotificationTopTitle">
+    <unit id="P2ContentInfo">
       <segment>
-        <source>Notification Top</source>
-        <target state="translated">顶部通知</target>
+        <source>Info</source>
+        <target state="translated">信息</target>
       </segment>
     </unit>
-    <unit id="35" name="P2NotificationBottomTitle">
+    <unit id="P2ContentOpenTheNotificationBox">
       <segment>
-        <source>Notification Bottom</source>
-        <target state="translated">底部通知</target>
+        <source>Open the notification box</source>
+        <target state="translated">打开通知框</target>
       </segment>
     </unit>
-    <unit id="36" name="P2NotificationTopLeftTitle">
+    <unit id="P2ContentPauseOnHover">
       <segment>
-        <source>Notification TopLeft</source>
-        <target state="translated">左上通知</target>
+        <source>Pause on hover</source>
+        <target state="translated">悬停时暂停</target>
       </segment>
     </unit>
-    <unit id="37" name="P2NotificationTopRightTitle">
+    <unit id="P2ContentShowNotification">
       <segment>
-        <source>Notification TopRight</source>
-        <target state="translated">右上通知</target>
+        <source>Show Notification</source>
+        <target state="translated">显示通知</target>
       </segment>
     </unit>
-    <unit id="38" name="P2NotificationBottomLeftTitle">
+    <unit id="P2ContentSuccess">
+      <segment>
+        <source>Success</source>
+        <target state="translated">成功</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTop">
+      <segment>
+        <source>Top</source>
+        <target state="translated">顶部</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopleft">
+      <segment>
+        <source>TopLeft</source>
+        <target state="translated">左上</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopright">
+      <segment>
+        <source>TopRight</source>
+        <target state="translated">右上</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentWarning">
+      <segment>
+        <source>Warning</source>
+        <target state="translated">警告</target>
+      </segment>
+    </unit>
+    <unit id="P2NotificationBottomLeftTitle">
       <segment>
         <source>Notification BottomLeft</source>
         <target state="translated">左下通知</target>
       </segment>
     </unit>
-    <unit id="39" name="P2NotificationBottomRightTitle">
+    <unit id="P2NotificationBottomRightTitle">
       <segment>
         <source>Notification BottomRight</source>
         <target state="translated">右下通知</target>
       </segment>
     </unit>
-    <unit id="40" name="P2NotificationHello">
+    <unit id="P2NotificationBottomTitle">
       <segment>
-        <source>Hello, AtomUI/Avalonia!</source>
-        <target state="translated">你好，AtomUI/Avalonia！</target>
+        <source>Notification Bottom</source>
+        <target state="translated">底部通知</target>
       </segment>
     </unit>
-    <unit id="41" name="P2NotificationContent">
+    <unit id="P2NotificationContent">
       <segment>
         <source>This is the content of the notification. This is the content of the notification. This is the content of the notification.</source>
         <target state="translated">这是通知内容。这是通知内容。这是通知内容。</target>
       </segment>
     </unit>
-    <unit id="42" name="P2NotificationNeverCloseContent">
+    <unit id="P2NotificationHello">
+      <segment>
+        <source>Hello, AtomUI/Avalonia!</source>
+        <target state="translated">你好，AtomUI/Avalonia！</target>
+      </segment>
+    </unit>
+    <unit id="P2NotificationNeverCloseContent">
       <segment>
         <source>I will never close automatically. This is a purposely very very long description that has many many characters and words.</source>
         <target state="translated">我不会自动关闭。这是一段特意写得很长的描述，包含很多字符和词语。</target>
+      </segment>
+    </unit>
+    <unit id="P2NotificationTitle">
+      <segment>
+        <source>Notification Title</source>
+        <target state="translated">通知标题</target>
+      </segment>
+    </unit>
+    <unit id="P2NotificationTopLeftTitle">
+      <segment>
+        <source>Notification TopLeft</source>
+        <target state="translated">左上通知</target>
+      </segment>
+    </unit>
+    <unit id="P2NotificationTopRightTitle">
+      <segment>
+        <source>Notification TopRight</source>
+        <target state="translated">右上通知</target>
+      </segment>
+    </unit>
+    <unit id="P2NotificationTopTitle">
+      <segment>
+        <source>Notification Top</source>
+        <target state="translated">顶部通知</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Notification displays rich feedback cards near the edge of the window. It supports semantic types, custom icons, placement, manual duration, hover pause, and auto-close progress.</source>
+        <target state="translated">Notification 在窗口边缘显示信息更丰富的反馈卡片，支持语义类型、自定义图标、弹出位置、手动时长、悬停暂停和自动关闭进度。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Desktop notifications for longer feedback and non-blocking updates.</source>
+        <target state="translated">用于较长反馈和非阻塞更新的桌面通知。</target>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>A notification box can appear from the top bottom topLeft topRight bottomLeft or bottomRight of the viewport via placement.</source>
+        <target state="translated">通知框可通过 placement 从视口顶部、底部、左上、右上、左下或右下出现。</target>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+        <target state="translated">弹出位置</target>
+      </segment>
+    </unit>
+    <unit id="ProgressDescription">
+      <segment>
+        <source>Show progress bar for auto-closing notification.</source>
+        <target state="translated">为自动关闭的通知显示进度条。</target>
+      </segment>
+    </unit>
+    <unit id="ProgressTitle">
+      <segment>
+        <source>Show with progress</source>
+        <target state="translated">显示进度</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="WithIconDescription">
+      <segment>
+        <source>A notification box with a icon at the left side.</source>
+        <target state="translated">左侧带图标的通知框。</target>
+      </segment>
+    </unit>
+    <unit id="WithIconTitle">
+      <segment>
+        <source>Notification with icon</source>
+        <target state="translated">带图标通知</target>
       </segment>
     </unit>
   </file>

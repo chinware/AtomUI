@@ -1,178 +1,178 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.StatisticShowCaseLangResourceKind">
-    <unit id="1" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-        <target state="translated">基礎用法</target>
-      </segment>
-    </unit>
-    <unit id="2" name="BasicDescription">
-      <segment>
-        <source>Simplest Usage.</source>
-        <target state="translated">最簡單的用法。</target>
-      </segment>
-    </unit>
-    <unit id="3" name="UnitTitle">
-      <segment>
-        <source>Unit</source>
-        <target state="translated">單位</target>
-      </segment>
-    </unit>
-    <unit id="4" name="UnitDescription">
-      <segment>
-        <source>Add unit through prefix and suffix.</source>
-        <target state="translated">通過 prefix 和 suffix 添加單位。</target>
-      </segment>
-    </unit>
-    <unit id="5" name="InCardTitle">
-      <segment>
-        <source>In Card</source>
-        <target state="translated">在卡片中展示</target>
-      </segment>
-    </unit>
-    <unit id="6" name="InCardDescription">
-      <segment>
-        <source>Display statistic data in Card.</source>
-        <target state="translated">在 Card 中展示統計數據。</target>
-      </segment>
-    </unit>
-    <unit id="7" name="AnimatedNumberTitle">
-      <segment>
-        <source>Animated number</source>
-        <target state="translated">動畫數字</target>
-      </segment>
-    </unit>
-    <unit id="8" name="AnimatedNumberDescription">
+    <unit id="AnimatedNumberDescription">
       <segment>
         <source>Animated number with StatisticCountUp.</source>
         <target state="translated">使用 StatisticCountUp 展示動畫數字。</target>
       </segment>
     </unit>
-    <unit id="9" name="TimerTitle">
+    <unit id="AnimatedNumberTitle">
       <segment>
-        <source>Timer</source>
-        <target state="translated">計時器</target>
+        <source>Animated number</source>
+        <target state="translated">動畫數字</target>
       </segment>
     </unit>
-    <unit id="10" name="TimerDescription">
+    <unit id="ApiEventCountdownFinished">
       <segment>
-        <source>Timer component.</source>
-        <target state="translated">計時器組件。</target>
+        <source>Raised when a TimerStatistic countdown reaches zero.</source>
+        <target state="translated">TimerStatistic 倒計時到零時觸發。</target>
       </segment>
     </unit>
-    <unit id="11" name="P2HeaderActiveUsers">
+    <unit id="BasicDescription">
       <segment>
-        <source>Active Users</source>
-        <target state="translated">活躍用戶</target>
+        <source>Simplest Usage.</source>
+        <target state="translated">最簡單的用法。</target>
       </segment>
     </unit>
-    <unit id="12" name="P2HeaderAccountBalanceCny">
+    <unit id="BasicTitle">
       <segment>
-        <source>Account Balance (CNY)</source>
-        <target state="translated">賬戶餘額（CNY）</target>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
       </segment>
     </unit>
-    <unit id="13" name="P2HeaderFeedback">
-      <segment>
-        <source>Feedback</source>
-        <target state="translated">反饋</target>
-      </segment>
-    </unit>
-    <unit id="14" name="P2HeaderUnmerged">
-      <segment>
-        <source>Unmerged</source>
-        <target state="translated">未合併</target>
-      </segment>
-    </unit>
-    <unit id="15" name="P2HeaderActive">
-      <segment>
-        <source>Active</source>
-        <target state="translated">啓用</target>
-      </segment>
-    </unit>
-    <unit id="16" name="P2HeaderIdle">
-      <segment>
-        <source>Idle</source>
-        <target state="translated">空閒</target>
-      </segment>
-    </unit>
-    <unit id="17" name="P2HeaderMillionSeconds">
-      <segment>
-        <source>Million Seconds</source>
-        <target state="translated">毫秒</target>
-      </segment>
-    </unit>
-    <unit id="18" name="P2HeaderCountdown">
-      <segment>
-        <source>Countdown</source>
-        <target state="translated">倒計時</target>
-      </segment>
-    </unit>
-    <unit id="19" name="P2HeaderCountup">
-      <segment>
-        <source>Countup</source>
-        <target state="translated">正計時</target>
-      </segment>
-    </unit>
-    <unit id="20" name="P2HeaderDayLevelCountdown">
-      <segment>
-        <source>Day Level (Countdown)</source>
-        <target state="translated">天級倒計時</target>
-      </segment>
-    </unit>
-    <unit id="21" name="P2HeaderDayLevelCountup">
-      <segment>
-        <source>Day Level (Countup)</source>
-        <target state="translated">天級正計時</target>
-      </segment>
-    </unit>
-    <unit id="22" name="P2ContentRecharge">
-      <segment>
-        <source>Recharge</source>
-        <target state="translated">充值</target>
-      </segment>
-    </unit>
-    <unit id="23" name="P2DayLevelFormat">
-      <segment>
-        <source>d\ \d\ h\ \h\ m\ \m\ s\ \s</source>
-        <target state="translated">d\ \天\ h\ \時\ m\ \分\ s\ \秒</target>
-      </segment>
-    </unit>
-    <unit id="24" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">示例</target>
-      </segment>
-    </unit>
-    <unit id="25" name="PageSubtitle">
-      <segment>
-        <source>Display numeric facts, metrics and countdown values with clear visual emphasis.</source>
-        <target state="translated">用清晰的視覺層級展示數字事實、指標和倒計時。</target>
-      </segment>
-    </unit>
-    <unit id="26" name="PageDescription">
-      <segment>
-        <source>Statistic presents important numbers with optional units, icons, loading states, animated values and timer-based countdown or countup displays.</source>
-        <target state="translated">Statistic 用於展示重要數值，支持單位、圖標、加載狀態、動畫數字，以及基於時間的倒計時或正計時。</target>
-      </segment>
-    </unit>
-    <unit id="27" name="ComponentCategory">
+    <unit id="ComponentCategory">
       <segment>
         <source>Data Display</source>
         <target state="translated">數據展示</target>
       </segment>
     </unit>
-    <unit id="28" name="ComponentStatusStable">
+    <unit id="ComponentStatusStable">
       <segment>
         <source>Stable</source>
         <target state="translated">穩定</target>
       </segment>
     </unit>
-    <unit id="29" name="ApiEventCountdownFinished">
+    <unit id="InCardDescription">
       <segment>
-        <source>Raised when a TimerStatistic countdown reaches zero.</source>
-        <target state="translated">TimerStatistic 倒計時到零時觸發。</target>
+        <source>Display statistic data in Card.</source>
+        <target state="translated">在 Card 中展示統計數據。</target>
+      </segment>
+    </unit>
+    <unit id="InCardTitle">
+      <segment>
+        <source>In Card</source>
+        <target state="translated">在卡片中展示</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRecharge">
+      <segment>
+        <source>Recharge</source>
+        <target state="translated">充值</target>
+      </segment>
+    </unit>
+    <unit id="P2DayLevelFormat">
+      <segment>
+        <source>d\ \d\ h\ \h\ m\ \m\ s\ \s</source>
+        <target state="translated">d\ \天\ h\ \時\ m\ \分\ s\ \秒</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderAccountBalanceCny">
+      <segment>
+        <source>Account Balance (CNY)</source>
+        <target state="translated">賬戶餘額（CNY）</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderActive">
+      <segment>
+        <source>Active</source>
+        <target state="translated">啓用</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderActiveUsers">
+      <segment>
+        <source>Active Users</source>
+        <target state="translated">活躍用戶</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCountdown">
+      <segment>
+        <source>Countdown</source>
+        <target state="translated">倒計時</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCountup">
+      <segment>
+        <source>Countup</source>
+        <target state="translated">正計時</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDayLevelCountdown">
+      <segment>
+        <source>Day Level (Countdown)</source>
+        <target state="translated">天級倒計時</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDayLevelCountup">
+      <segment>
+        <source>Day Level (Countup)</source>
+        <target state="translated">天級正計時</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFeedback">
+      <segment>
+        <source>Feedback</source>
+        <target state="translated">反饋</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderIdle">
+      <segment>
+        <source>Idle</source>
+        <target state="translated">空閒</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMillionSeconds">
+      <segment>
+        <source>Million Seconds</source>
+        <target state="translated">毫秒</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderUnmerged">
+      <segment>
+        <source>Unmerged</source>
+        <target state="translated">未合併</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Statistic presents important numbers with optional units, icons, loading states, animated values and timer-based countdown or countup displays.</source>
+        <target state="translated">Statistic 用於展示重要數值，支持單位、圖標、加載狀態、動畫數字，以及基於時間的倒計時或正計時。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display numeric facts, metrics and countdown values with clear visual emphasis.</source>
+        <target state="translated">用清晰的視覺層級展示數字事實、指標和倒計時。</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="TimerDescription">
+      <segment>
+        <source>Timer component.</source>
+        <target state="translated">計時器組件。</target>
+      </segment>
+    </unit>
+    <unit id="TimerTitle">
+      <segment>
+        <source>Timer</source>
+        <target state="translated">計時器</target>
+      </segment>
+    </unit>
+    <unit id="UnitDescription">
+      <segment>
+        <source>Add unit through prefix and suffix.</source>
+        <target state="translated">通過 prefix 和 suffix 添加單位。</target>
+      </segment>
+    </unit>
+    <unit id="UnitTitle">
+      <segment>
+        <source>Unit</source>
+        <target state="translated">單位</target>
       </segment>
     </unit>
   </file>

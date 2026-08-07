@@ -203,8 +203,8 @@ public sealed class LanguagePackEndToEndTests
                             .ToDictionary(
                                 static unit => (string)unit.Attribute("id")!,
                                 StringComparer.Ordinal);
-            AssertExportedUnit(units["1"], xliff, "Greeting", "Welcome");
-            AssertExportedUnit(units["2"], xliff, "ItemCount", "You have {0} items.");
+            AssertExportedUnit(units["Greeting"], xliff, "Welcome");
+            AssertExportedUnit(units["ItemCount"], xliff, "You have {0} items.");
 
             var packageCacheTemplate = Path.Combine(
                 packages,
@@ -280,10 +280,9 @@ public sealed class LanguagePackEndToEndTests
     private static void AssertExportedUnit(
         XElement unit,
         XNamespace xliff,
-        string expectedName,
         string expectedSource)
     {
-        ((string?)unit.Attribute("name")).ShouldBe(expectedName);
+        unit.Attribute("name").ShouldBeNull();
         var segment = unit.Element(xliff + "segment").ShouldNotBeNull();
         segment.Element(xliff + "source").ShouldNotBeNull().Value.ShouldBe(expectedSource);
         var target = segment.Element(xliff + "target").ShouldNotBeNull();

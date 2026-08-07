@@ -1,646 +1,646 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.CascaderShowCaseLangResourceKind">
-    <unit id="1" name="ScenarioBasic">
-      <segment>
-        <source>Basic</source>
-        <target state="translated">基礎</target>
-      </segment>
-    </unit>
-    <unit id="2" name="ScenarioMultiple">
-      <segment>
-        <source>Multiple</source>
-        <target state="translated">多選</target>
-      </segment>
-    </unit>
-    <unit id="3" name="ScenarioAdvanced">
-      <segment>
-        <source>Advanced</source>
-        <target state="translated">高級</target>
-      </segment>
-    </unit>
-    <unit id="4" name="ScenarioCascaderView">
-      <segment>
-        <source>CascaderView</source>
-        <target state="translated">級聯視圖</target>
-      </segment>
-    </unit>
-    <unit id="5" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">示例</target>
-      </segment>
-    </unit>
-    <unit id="6" name="PageSubtitle">
-      <segment>
-        <source>Hierarchical selection and cascaded option browsing.</source>
-        <target state="translated">分層選擇與級聯選項瀏覽。</target>
-      </segment>
-    </unit>
-    <unit id="7" name="PageDescription">
-      <segment>
-        <source>Cascader combines an input selector with linked option columns, while CascaderView exposes the column browser directly for embedded selection workflows.</source>
-        <target state="translated">Cascader 將輸入選擇器與聯動選項列組合起來，CascaderView 則直接暴露列式瀏覽器，用於嵌入式選擇場景。</target>
-      </segment>
-    </unit>
-    <unit id="8" name="ComponentCategory">
-      <segment>
-        <source>Data Entry</source>
-        <target state="translated">數據錄入</target>
-      </segment>
-    </unit>
-    <unit id="9" name="ComponentStatusStable">
-      <segment>
-        <source>Stable</source>
-        <target state="translated">穩定</target>
-      </segment>
-    </unit>
-    <unit id="10" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-        <target state="translated">基礎用法</target>
-      </segment>
-    </unit>
-    <unit id="11" name="BasicDescription">
-      <segment>
-        <source>Cascade selection box for selecting province/city/district.</source>
-        <target state="translated">用於選擇省、市、區的級聯選擇框。</target>
-      </segment>
-    </unit>
-    <unit id="12" name="DefaultValueTitle">
-      <segment>
-        <source>Default value</source>
-        <target state="translated">默認值</target>
-      </segment>
-    </unit>
-    <unit id="13" name="DefaultValueDescription">
-      <segment>
-        <source>Specifies default value by an array.</source>
-        <target state="translated">通過數組指定默認值。</target>
-      </segment>
-    </unit>
-    <unit id="14" name="HoverTitle">
-      <segment>
-        <source>Hover</source>
-        <target state="translated">懸停展開</target>
-      </segment>
-    </unit>
-    <unit id="15" name="HoverDescription">
-      <segment>
-        <source>Hover to expand sub menu, click to select option.</source>
-        <target state="translated">懸停展開子菜單，點擊選擇選項。</target>
-      </segment>
-    </unit>
-    <unit id="16" name="DisabledOptionTitle">
-      <segment>
-        <source>Disabled option</source>
-        <target state="translated">禁用選項</target>
-      </segment>
-    </unit>
-    <unit id="17" name="DisabledOptionDescription">
-      <segment>
-        <source>Disable option by specifying the disabled property in options.</source>
-        <target state="translated">通過在 options 中指定 disabled 屬性禁用選項。</target>
-      </segment>
-    </unit>
-    <unit id="18" name="ChangeOnSelectTitle">
-      <segment>
-        <source>Change on select</source>
-        <target state="translated">選擇即變化</target>
-      </segment>
-    </unit>
-    <unit id="19" name="ChangeOnSelectDescription">
-      <segment>
-        <source>Allows the selection of only parent options.</source>
-        <target state="translated">允許只選擇父級選項。</target>
-      </segment>
-    </unit>
-    <unit id="20" name="MultipleTitle">
-      <segment>
-        <source>Multiple</source>
-        <target state="translated">多選</target>
-      </segment>
-    </unit>
-    <unit id="21" name="MultipleDescription">
-      <segment>
-        <source>Select multiple options. Disable the checkbox by adding the disableCheckbox property and selecting a specific item. The style of the disable can be modified by the className.</source>
-        <target state="translated">選擇多個選項。可以通過添加 disableCheckbox 屬性禁用復選框並選擇特定項，禁用樣式可通過 className 修改。</target>
-      </segment>
-    </unit>
-    <unit id="22" name="SelectionBindingTitle">
-      <segment>
-        <source>SelectedOption / SelectedOptions binding</source>
-        <target state="translated">SelectedOption / SelectedOptions 綁定</target>
-      </segment>
-    </unit>
-    <unit id="23" name="SelectionBindingDescription">
-      <segment>
-        <source>Bind SelectedOption and SelectedOptions to view-model values, then click options or action buttons to watch both sides stay synchronized.</source>
-        <target state="translated">將 SelectedOption 和 SelectedOptions 綁定到 ViewModel，點擊選項或操作按鈕即可觀察兩側狀態同步。</target>
-      </segment>
-    </unit>
-    <unit id="24" name="SelectionBindingValueTitle">
-      <segment>
-        <source>Bound value</source>
-        <target state="translated">綁定值</target>
-      </segment>
-    </unit>
-    <unit id="25" name="SelectionBindingSelectFirst">
-      <segment>
-        <source>Select West Lake</source>
-        <target state="translated">選擇西湖</target>
-      </segment>
-    </unit>
-    <unit id="26" name="SelectionBindingSelectSecond">
-      <segment>
-        <source>Select Lingyin shi</source>
-        <target state="translated">選擇靈隱寺</target>
-      </segment>
-    </unit>
-    <unit id="27" name="SelectionBindingSelectBoth">
-      <segment>
-        <source>Select both</source>
-        <target state="translated">選擇兩項</target>
-      </segment>
-    </unit>
-    <unit id="28" name="SelectionBindingClear">
-      <segment>
-        <source>Clear</source>
-        <target state="translated">清空</target>
-      </segment>
-    </unit>
-    <unit id="29" name="ShowCheckedStrategyTitle">
-      <segment>
-        <source>ShowCheckedStrategy</source>
-        <target state="translated">顯示選中策略</target>
-      </segment>
-    </unit>
-    <unit id="30" name="ShowCheckedStrategyDescription">
-      <segment>
-        <source>Shows a selected item in a box using showCheckedStrategy.</source>
-        <target state="translated">使用 showCheckedStrategy 在選擇框中展示選中項。</target>
-      </segment>
-    </unit>
-    <unit id="31" name="SearchTitle">
-      <segment>
-        <source>Search</source>
-        <target state="translated">搜索</target>
-      </segment>
-    </unit>
-    <unit id="32" name="SearchDescription">
-      <segment>
-        <source>Search and select options directly.</source>
-        <target state="translated">直接搜索並選擇選項。</target>
-      </segment>
-    </unit>
-    <unit id="33" name="LoadOptionsLazilyTitle">
-      <segment>
-        <source>Load Options Lazily</source>
-        <target state="translated">懶加載選項</target>
-      </segment>
-    </unit>
-    <unit id="34" name="LoadOptionsLazilyDescription">
-      <segment>
-        <source>Load options lazily with loadData.</source>
-        <target state="translated">使用 loadData 懶加載選項。</target>
-      </segment>
-    </unit>
-    <unit id="35" name="PrefixAndSuffixTitle">
-      <segment>
-        <source>Prefix and Suffix</source>
-        <target state="translated">前綴和後綴</target>
-      </segment>
-    </unit>
-    <unit id="36" name="PrefixAndSuffixDescription">
-      <segment>
-        <source>Use prefix to customize the prefix content, use suffixIcon to customize the selection box suffix icon, and use expandIcon to customize the current item expand icon.</source>
-        <target state="translated">使用 prefix 自定義前綴內容，使用 suffixIcon 自定義選擇框後綴圖標，使用 expandIcon 自定義當前項展開圖標。</target>
-      </segment>
-    </unit>
-    <unit id="37" name="VariantsTitle">
-      <segment>
-        <source>Variants</source>
-        <target state="translated">變體</target>
-      </segment>
-    </unit>
-    <unit id="38" name="VariantsDescription">
-      <segment>
-        <source>Variants of Cascader, there are four variants: outlined filled borderless and underlined.</source>
-        <target state="translated">Cascader 提供四種變體：描邊、填充、無邊框和下划線。</target>
-      </segment>
-    </unit>
-    <unit id="39" name="PlacementTitle">
-      <segment>
-        <source>Placement</source>
-        <target state="translated">彈出位置</target>
-      </segment>
-    </unit>
-    <unit id="40" name="PlacementDescription">
-      <segment>
-        <source>You can manually specify the position of the popup via placement.</source>
-        <target state="translated">可以通過 placement 手動指定彈出層位置。</target>
-      </segment>
-    </unit>
-    <unit id="41" name="StatusTitle">
-      <segment>
-        <source>Status</source>
-        <target state="translated">狀態</target>
-      </segment>
-    </unit>
-    <unit id="42" name="StatusDescription">
-      <segment>
-        <source>Add status to Cascader with status, which could be error or warning.</source>
-        <target state="translated">通過 status 為 Cascader 添加狀態，可設置為錯誤或警告。</target>
-      </segment>
-    </unit>
-    <unit id="43" name="SizeTitle">
-      <segment>
-        <source>Size</source>
-        <target state="translated">尺寸</target>
-      </segment>
-    </unit>
-    <unit id="44" name="SizeDescription">
-      <segment>
-        <source>Cascader supports large, middle, small, and Custom sizes with local height overrides.</source>
-        <target state="translated">Cascader 支持大號、中號、小號，也支持通過 Custom 配合本地高度自定義。</target>
-      </segment>
-    </unit>
-    <unit id="45" name="BasicCascaderViewTitle">
-      <segment>
-        <source>Basic CascaderView</source>
-        <target state="translated">基礎 CascaderView</target>
-      </segment>
-    </unit>
-    <unit id="46" name="BasicCascaderViewDescription">
+    <unit id="BasicCascaderViewDescription">
       <segment>
         <source>The most basic usage.</source>
         <target state="translated">最基礎的用法。</target>
       </segment>
     </unit>
-    <unit id="47" name="EmptyIndicatorTitle">
+    <unit id="BasicCascaderViewTitle">
       <segment>
-        <source>Custom empty indicator</source>
-        <target state="translated">自定義空狀態</target>
+        <source>Basic CascaderView</source>
+        <target state="translated">基礎 CascaderView</target>
       </segment>
     </unit>
-    <unit id="48" name="EmptyIndicatorDescription">
+    <unit id="BasicDescription">
       <segment>
-        <source>Use EmptyIndicator to replace the default CascaderView empty content.</source>
-        <target state="translated">使用 EmptyIndicator 取代 CascaderView 的預設空狀態內容。</target>
+        <source>Cascade selection box for selecting province/city/district.</source>
+        <target state="translated">用於選擇省、市、區的級聯選擇框。</target>
       </segment>
     </unit>
-    <unit id="49" name="GenerateByTemplateTitle">
+    <unit id="BasicTitle">
       <segment>
-        <source>Generate by template</source>
-        <target state="translated">使用模板生成</target>
+        <source>Basic</source>
+        <target state="translated">基礎用法</target>
       </segment>
     </unit>
-    <unit id="50" name="GenerateByTemplateDescription">
+    <unit id="ChangeOnSelectDescription">
       <segment>
-        <source>You can use the Template mechanism to generate tree nodes</source>
-        <target state="translated">可以使用 Template 機制生成樹節點。</target>
+        <source>Allows the selection of only parent options.</source>
+        <target state="translated">允許只選擇父級選項。</target>
       </segment>
     </unit>
-    <unit id="51" name="SearchableTitle">
+    <unit id="ChangeOnSelectTitle">
       <segment>
-        <source>Searchable</source>
-        <target state="translated">可搜索</target>
+        <source>Change on select</source>
+        <target state="translated">選擇即變化</target>
       </segment>
     </unit>
-    <unit id="52" name="SearchableDescription">
+    <unit id="ComponentCategory">
       <segment>
-        <source>Searchable CascaderView.</source>
-        <target state="translated">可搜索的 CascaderView。</target>
+        <source>Data Entry</source>
+        <target state="translated">數據錄入</target>
       </segment>
     </unit>
-    <unit id="53" name="SearchableItemsSourceTitle">
+    <unit id="ComponentStatusStable">
       <segment>
-        <source>Searchable</source>
-        <target state="translated">可搜索</target>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
       </segment>
     </unit>
-    <unit id="54" name="SearchableItemsSourceDescription">
-      <segment>
-        <source>Searchable CascaderView with ItemsSource.</source>
-        <target state="translated">使用 ItemsSource 的可搜索 CascaderView。</target>
-      </segment>
-    </unit>
-    <unit id="55" name="DefaultExpandedTitle">
-      <segment>
-        <source>Default expanded</source>
-        <target state="translated">默認展開</target>
-      </segment>
-    </unit>
-    <unit id="56" name="DefaultExpandedDescription">
+    <unit id="DefaultExpandedDescription">
       <segment>
         <source>You can set the default expansion path..</source>
         <target state="translated">可以設置默認展開路徑。</target>
       </segment>
     </unit>
-    <unit id="57" name="P2PlaceholderTextPleaseSelect">
+    <unit id="DefaultExpandedTitle">
       <segment>
-        <source>Please select</source>
-        <target state="translated">請選擇</target>
+        <source>Default expanded</source>
+        <target state="translated">默認展開</target>
       </segment>
     </unit>
-    <unit id="58" name="P2TextCustomEmptyIndicator">
+    <unit id="DefaultValueDescription">
       <segment>
-        <source>No options to display</source>
-        <target state="translated">暫無可顯示的選項</target>
+        <source>Specifies default value by an array.</source>
+        <target state="translated">通過數組指定默認值。</target>
       </segment>
     </unit>
-    <unit id="59" name="P2PlaceholderSizeTypeLarge">
+    <unit id="DefaultValueTitle">
       <segment>
-        <source>SizeType: Large</source>
-        <target state="translated">SizeType：Large</target>
+        <source>Default value</source>
+        <target state="translated">默認值</target>
       </segment>
     </unit>
-    <unit id="60" name="P2PlaceholderSizeTypeMiddle">
+    <unit id="DisabledOptionDescription">
       <segment>
-        <source>SizeType: Middle</source>
-        <target state="translated">SizeType：Middle</target>
+        <source>Disable option by specifying the disabled property in options.</source>
+        <target state="translated">通過在 options 中指定 disabled 屬性禁用選項。</target>
       </segment>
     </unit>
-    <unit id="61" name="P2PlaceholderSizeTypeSmall">
+    <unit id="DisabledOptionTitle">
       <segment>
-        <source>SizeType: Small</source>
-        <target state="translated">SizeType：Small</target>
+        <source>Disabled option</source>
+        <target state="translated">禁用選項</target>
       </segment>
     </unit>
-    <unit id="62" name="P2PlaceholderSizeTypeCustom">
+    <unit id="EmptyIndicatorDescription">
       <segment>
-        <source>SizeType: Custom</source>
-        <target state="translated">SizeType：Custom</target>
+        <source>Use EmptyIndicator to replace the default CascaderView empty content.</source>
+        <target state="translated">使用 EmptyIndicator 取代 CascaderView 的預設空狀態內容。</target>
       </segment>
     </unit>
-    <unit id="63" name="P2TitleShowcheckedstrategyAll">
+    <unit id="EmptyIndicatorTitle">
       <segment>
-        <source>ShowCheckedStrategy=All</source>
-        <target state="translated">ShowCheckedStrategy=All</target>
+        <source>Custom empty indicator</source>
+        <target state="translated">自定義空狀態</target>
       </segment>
     </unit>
-    <unit id="64" name="P2TitleShowcheckedstrategyShowparent">
+    <unit id="GenerateByTemplateDescription">
       <segment>
-        <source>ShowCheckedStrategy=ShowParent</source>
-        <target state="translated">ShowCheckedStrategy=ShowParent</target>
+        <source>You can use the Template mechanism to generate tree nodes</source>
+        <target state="translated">可以使用 Template 機制生成樹節點。</target>
       </segment>
     </unit>
-    <unit id="65" name="P2TextSelectedOptionBinding">
+    <unit id="GenerateByTemplateTitle">
       <segment>
-        <source>SelectedOption</source>
-        <target state="translated">SelectedOption</target>
+        <source>Generate by template</source>
+        <target state="translated">使用模板生成</target>
       </segment>
     </unit>
-    <unit id="66" name="P2TextSelectedOptionsBinding">
+    <unit id="HoverDescription">
       <segment>
-        <source>SelectedOptions</source>
-        <target state="translated">SelectedOptions</target>
+        <source>Hover to expand sub menu, click to select option.</source>
+        <target state="translated">懸停展開子菜單，點擊選擇選項。</target>
       </segment>
     </unit>
-    <unit id="67" name="P2HeaderZhejiang">
+    <unit id="HoverTitle">
       <segment>
-        <source>Zhejiang</source>
-        <target state="translated">浙江</target>
+        <source>Hover</source>
+        <target state="translated">懸停展開</target>
       </segment>
     </unit>
-    <unit id="68" name="P2HeaderHangzhou">
+    <unit id="LoadOptionsLazilyDescription">
       <segment>
-        <source>Hangzhou</source>
-        <target state="translated">杭州</target>
+        <source>Load options lazily with loadData.</source>
+        <target state="translated">使用 loadData 懶加載選項。</target>
       </segment>
     </unit>
-    <unit id="69" name="P2HeaderWestLake">
+    <unit id="LoadOptionsLazilyTitle">
       <segment>
-        <source>West Lake</source>
-        <target state="translated">西湖</target>
+        <source>Load Options Lazily</source>
+        <target state="translated">懶加載選項</target>
       </segment>
     </unit>
-    <unit id="70" name="P2HeaderLingyinShi">
+    <unit id="MultipleDescription">
       <segment>
-        <source>Lingyin shi</source>
-        <target state="translated">靈隱寺</target>
+        <source>Select multiple options. Disable the checkbox by adding the disableCheckbox property and selecting a specific item. The style of the disable can be modified by the className.</source>
+        <target state="translated">選擇多個選項。可以通過添加 disableCheckbox 屬性禁用復選框並選擇特定項，禁用樣式可通過 className 修改。</target>
       </segment>
     </unit>
-    <unit id="71" name="P2HeaderHefangJie">
+    <unit id="MultipleTitle">
       <segment>
-        <source>Hefang jie</source>
-        <target state="translated">河坊街</target>
+        <source>Multiple</source>
+        <target state="translated">多選</target>
       </segment>
     </unit>
-    <unit id="72" name="P2HeaderNingbo">
-      <segment>
-        <source>Ningbo</source>
-        <target state="translated">寧波</target>
-      </segment>
-    </unit>
-    <unit id="73" name="P2HeaderTianyiPavilion">
-      <segment>
-        <source>Tianyi Pavilion</source>
-        <target state="translated">天一閣</target>
-      </segment>
-    </unit>
-    <unit id="74" name="P2HeaderMoonLake">
-      <segment>
-        <source>Moon Lake</source>
-        <target state="translated">月湖</target>
-      </segment>
-    </unit>
-    <unit id="75" name="P2HeaderJiangsu">
-      <segment>
-        <source>Jiangsu</source>
-        <target state="translated">江蘇</target>
-      </segment>
-    </unit>
-    <unit id="76" name="P2HeaderNanjing">
-      <segment>
-        <source>Nanjing</source>
-        <target state="translated">南京</target>
-      </segment>
-    </unit>
-    <unit id="77" name="P2HeaderZhongHuaMen">
-      <segment>
-        <source>Zhong Hua Men</source>
-        <target state="translated">中華門</target>
-      </segment>
-    </unit>
-    <unit id="78" name="P2HeaderSunYatSenMausoleum">
-      <segment>
-        <source>Sun Yat-sen Mausoleum</source>
-        <target state="translated">中山陵</target>
-      </segment>
-    </unit>
-    <unit id="79" name="P2HeaderSuzhou">
-      <segment>
-        <source>Suzhou</source>
-        <target state="translated">蘇州</target>
-      </segment>
-    </unit>
-    <unit id="80" name="P2HeaderHumbleAdministratorsGarden">
-      <segment>
-        <source>Humble Administrator's Garden</source>
-        <target state="translated">拙政園</target>
-      </segment>
-    </unit>
-    <unit id="81" name="P2HeaderLingeringGarden">
-      <segment>
-        <source>Lingering Garden</source>
-        <target state="translated">留園</target>
-      </segment>
-    </unit>
-    <unit id="82" name="P2PlaceholderTextSearch">
-      <segment>
-        <source>Search</source>
-        <target state="translated">搜索</target>
-      </segment>
-    </unit>
-    <unit id="83" name="P2HeaderXisha">
-      <segment>
-        <source>Xisha</source>
-        <target state="translated">西沙</target>
-      </segment>
-    </unit>
-    <unit id="84" name="P2HeaderLight">
-      <segment>
-        <source>Light</source>
-        <target state="translated">淺色</target>
-      </segment>
-    </unit>
-    <unit id="85" name="P2HeaderBamboo">
-      <segment>
-        <source>Bamboo</source>
-        <target state="translated">竹子</target>
-      </segment>
-    </unit>
-    <unit id="86" name="P2HeaderLittle">
-      <segment>
-        <source>Little</source>
-        <target state="translated">小</target>
-      </segment>
-    </unit>
-    <unit id="87" name="P2HeaderBambooBoy">
-      <segment>
-        <source>Bamboo Boy</source>
-        <target state="translated">竹子男孩</target>
-      </segment>
-    </unit>
-    <unit id="88" name="P2HeaderTadpole">
-      <segment>
-        <source>Tadpole</source>
-        <target state="translated">蝌蚪</target>
-      </segment>
-    </unit>
-    <unit id="89" name="P2HeaderLittleTadpole">
-      <segment>
-        <source>Little Tadpole</source>
-        <target state="translated">小蝌蚪</target>
-      </segment>
-    </unit>
-    <unit id="90" name="P2HeaderZhangSan">
-      <segment>
-        <source>Zhang San</source>
-        <target state="translated">張三</target>
-      </segment>
-    </unit>
-    <unit id="91" name="P2HeaderGreen">
-      <segment>
-        <source>Green</source>
-        <target state="translated">綠色</target>
-      </segment>
-    </unit>
-    <unit id="92" name="P2HeaderWildWolf">
-      <segment>
-        <source>Wild Wolf</source>
-        <target state="translated">野狼</target>
-      </segment>
-    </unit>
-    <unit id="93" name="P2HeaderGrayWolf">
-      <segment>
-        <source>Gray Wolf</source>
-        <target state="translated">灰狼</target>
-      </segment>
-    </unit>
-    <unit id="94" name="P2HeaderYellow">
-      <segment>
-        <source>Yellow</source>
-        <target state="translated">黃色</target>
-      </segment>
-    </unit>
-    <unit id="95" name="P2HeaderJiaoTailang">
-      <segment>
-        <source>Jiao Tailang</source>
-        <target state="translated">蕉太狼</target>
-      </segment>
-    </unit>
-    <unit id="96" name="P2HeaderBanban">
-      <segment>
-        <source>Banban</source>
-        <target state="translated">班班</target>
-      </segment>
-    </unit>
-    <unit id="97" name="P2HeaderBig">
-      <segment>
-        <source>Big</source>
-        <target state="translated">大</target>
-      </segment>
-    </unit>
-    <unit id="98" name="P2HeaderFeifei">
-      <segment>
-        <source>Feifei</source>
-        <target state="translated">飛飛</target>
-      </segment>
-    </unit>
-    <unit id="99" name="P2HeaderXiaoXingxing">
-      <segment>
-        <source>Xiao Xingxing</source>
-        <target state="translated">小星星</target>
-      </segment>
-    </unit>
-    <unit id="100" name="P2HeaderXiaoHuihui">
-      <segment>
-        <source>Xiao Huihui</source>
-        <target state="translated">小灰灰</target>
-      </segment>
-    </unit>
-    <unit id="101" name="P2HeaderDynamicOptionFormat">
-      <segment>
-        <source>{0} Dynamic {1}</source>
-        <target state="translated">{0} 動態 {1}</target>
-      </segment>
-    </unit>
-    <unit id="102" name="P2TitleByTemplate">
-      <segment>
-        <source>By template</source>
-        <target state="translated">通過模板</target>
-      </segment>
-    </unit>
-    <unit id="103" name="P2TextPlacement">
-      <segment>
-        <source>Placement:</source>
-        <target state="translated">彈出位置：</target>
-      </segment>
-    </unit>
-    <unit id="104" name="P2ContentTopleft">
-      <segment>
-        <source>TopLeft</source>
-        <target state="translated">左上</target>
-      </segment>
-    </unit>
-    <unit id="105" name="P2ContentTopright">
-      <segment>
-        <source>TopRight</source>
-        <target state="translated">右上</target>
-      </segment>
-    </unit>
-    <unit id="106" name="P2ContentBottomleft">
+    <unit id="P2ContentBottomleft">
       <segment>
         <source>BottomLeft</source>
         <target state="translated">左下</target>
       </segment>
     </unit>
-    <unit id="107" name="P2ContentBottomright">
+    <unit id="P2ContentBottomright">
       <segment>
         <source>BottomRight</source>
         <target state="translated">右下</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopleft">
+      <segment>
+        <source>TopLeft</source>
+        <target state="translated">左上</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentTopright">
+      <segment>
+        <source>TopRight</source>
+        <target state="translated">右上</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBamboo">
+      <segment>
+        <source>Bamboo</source>
+        <target state="translated">竹子</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBambooBoy">
+      <segment>
+        <source>Bamboo Boy</source>
+        <target state="translated">竹子男孩</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBanban">
+      <segment>
+        <source>Banban</source>
+        <target state="translated">班班</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBig">
+      <segment>
+        <source>Big</source>
+        <target state="translated">大</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDynamicOptionFormat">
+      <segment>
+        <source>{0} Dynamic {1}</source>
+        <target state="translated">{0} 動態 {1}</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderFeifei">
+      <segment>
+        <source>Feifei</source>
+        <target state="translated">飛飛</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderGrayWolf">
+      <segment>
+        <source>Gray Wolf</source>
+        <target state="translated">灰狼</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderGreen">
+      <segment>
+        <source>Green</source>
+        <target state="translated">綠色</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderHangzhou">
+      <segment>
+        <source>Hangzhou</source>
+        <target state="translated">杭州</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderHefangJie">
+      <segment>
+        <source>Hefang jie</source>
+        <target state="translated">河坊街</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderHumbleAdministratorsGarden">
+      <segment>
+        <source>Humble Administrator's Garden</source>
+        <target state="translated">拙政園</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderJiangsu">
+      <segment>
+        <source>Jiangsu</source>
+        <target state="translated">江蘇</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderJiaoTailang">
+      <segment>
+        <source>Jiao Tailang</source>
+        <target state="translated">蕉太狼</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLight">
+      <segment>
+        <source>Light</source>
+        <target state="translated">淺色</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLingeringGarden">
+      <segment>
+        <source>Lingering Garden</source>
+        <target state="translated">留園</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLingyinShi">
+      <segment>
+        <source>Lingyin shi</source>
+        <target state="translated">靈隱寺</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLittle">
+      <segment>
+        <source>Little</source>
+        <target state="translated">小</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLittleTadpole">
+      <segment>
+        <source>Little Tadpole</source>
+        <target state="translated">小蝌蚪</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMoonLake">
+      <segment>
+        <source>Moon Lake</source>
+        <target state="translated">月湖</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNanjing">
+      <segment>
+        <source>Nanjing</source>
+        <target state="translated">南京</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNingbo">
+      <segment>
+        <source>Ningbo</source>
+        <target state="translated">寧波</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSunYatSenMausoleum">
+      <segment>
+        <source>Sun Yat-sen Mausoleum</source>
+        <target state="translated">中山陵</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSuzhou">
+      <segment>
+        <source>Suzhou</source>
+        <target state="translated">蘇州</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTadpole">
+      <segment>
+        <source>Tadpole</source>
+        <target state="translated">蝌蚪</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTianyiPavilion">
+      <segment>
+        <source>Tianyi Pavilion</source>
+        <target state="translated">天一閣</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderWestLake">
+      <segment>
+        <source>West Lake</source>
+        <target state="translated">西湖</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderWildWolf">
+      <segment>
+        <source>Wild Wolf</source>
+        <target state="translated">野狼</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderXiaoHuihui">
+      <segment>
+        <source>Xiao Huihui</source>
+        <target state="translated">小灰灰</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderXiaoXingxing">
+      <segment>
+        <source>Xiao Xingxing</source>
+        <target state="translated">小星星</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderXisha">
+      <segment>
+        <source>Xisha</source>
+        <target state="translated">西沙</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderYellow">
+      <segment>
+        <source>Yellow</source>
+        <target state="translated">黃色</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZhangSan">
+      <segment>
+        <source>Zhang San</source>
+        <target state="translated">張三</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZhejiang">
+      <segment>
+        <source>Zhejiang</source>
+        <target state="translated">浙江</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZhongHuaMen">
+      <segment>
+        <source>Zhong Hua Men</source>
+        <target state="translated">中華門</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeCustom">
+      <segment>
+        <source>SizeType: Custom</source>
+        <target state="translated">SizeType：Custom</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeLarge">
+      <segment>
+        <source>SizeType: Large</source>
+        <target state="translated">SizeType：Large</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeMiddle">
+      <segment>
+        <source>SizeType: Middle</source>
+        <target state="translated">SizeType：Middle</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderSizeTypeSmall">
+      <segment>
+        <source>SizeType: Small</source>
+        <target state="translated">SizeType：Small</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelect">
+      <segment>
+        <source>Please select</source>
+        <target state="translated">請選擇</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSearch">
+      <segment>
+        <source>Search</source>
+        <target state="translated">搜索</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCustomEmptyIndicator">
+      <segment>
+        <source>No options to display</source>
+        <target state="translated">暫無可顯示的選項</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPlacement">
+      <segment>
+        <source>Placement:</source>
+        <target state="translated">彈出位置：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectedOptionBinding">
+      <segment>
+        <source>SelectedOption</source>
+        <target state="translated">SelectedOption</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectedOptionsBinding">
+      <segment>
+        <source>SelectedOptions</source>
+        <target state="translated">SelectedOptions</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleByTemplate">
+      <segment>
+        <source>By template</source>
+        <target state="translated">通過模板</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleShowcheckedstrategyAll">
+      <segment>
+        <source>ShowCheckedStrategy=All</source>
+        <target state="translated">ShowCheckedStrategy=All</target>
+      </segment>
+    </unit>
+    <unit id="P2TitleShowcheckedstrategyShowparent">
+      <segment>
+        <source>ShowCheckedStrategy=ShowParent</source>
+        <target state="translated">ShowCheckedStrategy=ShowParent</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Cascader combines an input selector with linked option columns, while CascaderView exposes the column browser directly for embedded selection workflows.</source>
+        <target state="translated">Cascader 將輸入選擇器與聯動選項列組合起來，CascaderView 則直接暴露列式瀏覽器，用於嵌入式選擇場景。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Hierarchical selection and cascaded option browsing.</source>
+        <target state="translated">分層選擇與級聯選項瀏覽。</target>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>You can manually specify the position of the popup via placement.</source>
+        <target state="translated">可以通過 placement 手動指定彈出層位置。</target>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+        <target state="translated">彈出位置</target>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixDescription">
+      <segment>
+        <source>Use prefix to customize the prefix content, use suffixIcon to customize the selection box suffix icon, and use expandIcon to customize the current item expand icon.</source>
+        <target state="translated">使用 prefix 自定義前綴內容，使用 suffixIcon 自定義選擇框後綴圖標，使用 expandIcon 自定義當前項展開圖標。</target>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixTitle">
+      <segment>
+        <source>Prefix and Suffix</source>
+        <target state="translated">前綴和後綴</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioAdvanced">
+      <segment>
+        <source>Advanced</source>
+        <target state="translated">高級</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioCascaderView">
+      <segment>
+        <source>CascaderView</source>
+        <target state="translated">級聯視圖</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioMultiple">
+      <segment>
+        <source>Multiple</source>
+        <target state="translated">多選</target>
+      </segment>
+    </unit>
+    <unit id="SearchDescription">
+      <segment>
+        <source>Search and select options directly.</source>
+        <target state="translated">直接搜索並選擇選項。</target>
+      </segment>
+    </unit>
+    <unit id="SearchTitle">
+      <segment>
+        <source>Search</source>
+        <target state="translated">搜索</target>
+      </segment>
+    </unit>
+    <unit id="SearchableDescription">
+      <segment>
+        <source>Searchable CascaderView.</source>
+        <target state="translated">可搜索的 CascaderView。</target>
+      </segment>
+    </unit>
+    <unit id="SearchableItemsSourceDescription">
+      <segment>
+        <source>Searchable CascaderView with ItemsSource.</source>
+        <target state="translated">使用 ItemsSource 的可搜索 CascaderView。</target>
+      </segment>
+    </unit>
+    <unit id="SearchableItemsSourceTitle">
+      <segment>
+        <source>Searchable</source>
+        <target state="translated">可搜索</target>
+      </segment>
+    </unit>
+    <unit id="SearchableTitle">
+      <segment>
+        <source>Searchable</source>
+        <target state="translated">可搜索</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingClear">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">清空</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingDescription">
+      <segment>
+        <source>Bind SelectedOption and SelectedOptions to view-model values, then click options or action buttons to watch both sides stay synchronized.</source>
+        <target state="translated">將 SelectedOption 和 SelectedOptions 綁定到 ViewModel，點擊選項或操作按鈕即可觀察兩側狀態同步。</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingSelectBoth">
+      <segment>
+        <source>Select both</source>
+        <target state="translated">選擇兩項</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingSelectFirst">
+      <segment>
+        <source>Select West Lake</source>
+        <target state="translated">選擇西湖</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingSelectSecond">
+      <segment>
+        <source>Select Lingyin shi</source>
+        <target state="translated">選擇靈隱寺</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingTitle">
+      <segment>
+        <source>SelectedOption / SelectedOptions binding</source>
+        <target state="translated">SelectedOption / SelectedOptions 綁定</target>
+      </segment>
+    </unit>
+    <unit id="SelectionBindingValueTitle">
+      <segment>
+        <source>Bound value</source>
+        <target state="translated">綁定值</target>
+      </segment>
+    </unit>
+    <unit id="ShowCheckedStrategyDescription">
+      <segment>
+        <source>Shows a selected item in a box using showCheckedStrategy.</source>
+        <target state="translated">使用 showCheckedStrategy 在選擇框中展示選中項。</target>
+      </segment>
+    </unit>
+    <unit id="ShowCheckedStrategyTitle">
+      <segment>
+        <source>ShowCheckedStrategy</source>
+        <target state="translated">顯示選中策略</target>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>Cascader supports large, middle, small, and Custom sizes with local height overrides.</source>
+        <target state="translated">Cascader 支持大號、中號、小號，也支持通過 Custom 配合本地高度自定義。</target>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
+        <target state="translated">尺寸</target>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to Cascader with status, which could be error or warning.</source>
+        <target state="translated">通過 status 為 Cascader 添加狀態，可設置為錯誤或警告。</target>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">狀態</target>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Variants of Cascader, there are four variants: outlined filled borderless and underlined.</source>
+        <target state="translated">Cascader 提供四種變體：描邊、填充、無邊框和下划線。</target>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">變體</target>
       </segment>
     </unit>
   </file>

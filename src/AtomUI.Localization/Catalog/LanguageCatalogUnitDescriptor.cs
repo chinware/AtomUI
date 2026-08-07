@@ -2,27 +2,19 @@ namespace AtomUI.Localization;
 
 public sealed record LanguageCatalogUnitDescriptor
 {
-    public LanguageCatalogUnitDescriptor(int id, string name, bool isFormatted = false)
+    public LanguageCatalogUnitDescriptor(string key, bool isFormatted = false)
     {
-        if (id <= 0)
+        ArgumentNullException.ThrowIfNull(key);
+        if (string.IsNullOrWhiteSpace(key))
         {
-            throw new ArgumentOutOfRangeException(nameof(id), id, "A language unit ID must be positive.");
+            throw new ArgumentException("A language unit Key cannot be empty or whitespace.", nameof(key));
         }
 
-        ArgumentNullException.ThrowIfNull(name);
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            throw new ArgumentException("A language unit name cannot be empty or whitespace.", nameof(name));
-        }
-
-        Id = id;
-        Name = name;
+        Key = key;
         IsFormatted = isFormatted;
     }
 
-    public int Id { get; }
-
-    public string Name { get; }
+    public string Key { get; }
 
     public bool IsFormatted { get; }
 }

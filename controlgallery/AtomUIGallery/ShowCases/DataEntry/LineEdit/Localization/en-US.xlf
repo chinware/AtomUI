@@ -1,474 +1,474 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.LineEditShowCaseLangResourceKind">
-    <unit id="1" name="ScenarioBasic">
-      <segment>
-        <source>Basic</source>
-      </segment>
-    </unit>
-    <unit id="2" name="ScenarioState">
-      <segment>
-        <source>State</source>
-      </segment>
-    </unit>
-    <unit id="3" name="ScenarioSearch">
-      <segment>
-        <source>Search</source>
-      </segment>
-    </unit>
-    <unit id="4" name="ScenarioTextArea">
-      <segment>
-        <source>TextArea</source>
-      </segment>
-    </unit>
-    <unit id="5" name="BasicUsageTitle">
-      <segment>
-        <source>Basic usage</source>
-      </segment>
-    </unit>
-    <unit id="6" name="BasicUsageDescription">
-      <segment>
-        <source>Basic usage example.</source>
-      </segment>
-    </unit>
-    <unit id="7" name="TextBoxTitle">
-      <segment>
-        <source>TextBox</source>
-      </segment>
-    </unit>
-    <unit id="8" name="TextBoxDescription">
-      <segment>
-        <source>AtomUI TextBox keeps the native TextBox API while using the LineEdit border, hover, and focus visuals.</source>
-      </segment>
-    </unit>
-    <unit id="9" name="InputSizesTitle">
-      <segment>
-        <source>Three sizes of Input</source>
-      </segment>
-    </unit>
-    <unit id="10" name="InputSizesDescription">
-      <segment>
-        <source>There are three sizes of an Input box: large (40px), default (32px) and small (24px).</source>
-      </segment>
-    </unit>
-    <unit id="11" name="VariantsTitle">
-      <segment>
-        <source>Variants</source>
-      </segment>
-    </unit>
-    <unit id="12" name="VariantsDescription">
-      <segment>
-        <source>Variants of Input.</source>
-      </segment>
-    </unit>
-    <unit id="13" name="DisabledTitle">
-      <segment>
-        <source>Disabled</source>
-      </segment>
-    </unit>
-    <unit id="14" name="DisabledDescription">
-      <segment>
-        <source>Variants of Input disabled style.</source>
-      </segment>
-    </unit>
-    <unit id="15" name="PrePostTabTitle">
-      <segment>
-        <source>Pre / Post tab</source>
-      </segment>
-    </unit>
-    <unit id="16" name="PrePostTabDescription">
-      <segment>
-        <source>Using pre and post tabs example.</source>
-      </segment>
-    </unit>
-    <unit id="17" name="WithClearIconTitle">
-      <segment>
-        <source>With clear icon</source>
-      </segment>
-    </unit>
-    <unit id="18" name="WithClearIconDescription">
-      <segment>
-        <source>Input box with the remove icon, click the icon to delete everything.</source>
-      </segment>
-    </unit>
-    <unit id="19" name="PasswordBoxTitle">
-      <segment>
-        <source>Password box</source>
-      </segment>
-    </unit>
-    <unit id="20" name="PasswordBoxDescription">
-      <segment>
-        <source>Input type of password.</source>
-      </segment>
-    </unit>
-    <unit id="21" name="OtpLineEditTwoWayBindingTitle">
-      <segment>
-        <source>OTP two-way binding</source>
-      </segment>
-    </unit>
-    <unit id="22" name="OtpLineEditTwoWayBindingDescription">
-      <segment>
-        <source>OtpLineEdit.Text uses one bindable value source and can be set or cleared from the ViewModel.</source>
-      </segment>
-    </unit>
-    <unit id="23" name="OtpLineEditFormTitle">
-      <segment>
-        <source>OTP form validation</source>
-      </segment>
-    </unit>
-    <unit id="24" name="OtpLineEditFormDescription">
-      <segment>
-        <source>Form validators write errors through Avalonia DataValidationErrors.</source>
-      </segment>
-    </unit>
-    <unit id="25" name="OtpLineEditAntDesignTitle">
-      <segment>
-        <source>One-time password</source>
-      </segment>
-    </unit>
-    <unit id="26" name="OtpLineEditAntDesignDescription">
-      <segment>
-        <source>One time password input.</source>
-      </segment>
-    </unit>
-    <unit id="27" name="OtpLineEditSetValueButtonText">
-      <segment>
-        <source>Set 654321</source>
-      </segment>
-    </unit>
-    <unit id="28" name="OtpLineEditClearButtonText">
-      <segment>
-        <source>Clear</source>
-      </segment>
-    </unit>
-    <unit id="29" name="OtpLineEditCurrentValueFormat">
-      <segment>
-        <source>Current value: {0}</source>
-      </segment>
-    </unit>
-    <unit id="30" name="OtpLineEditEmptyValueText">
-      <segment>
-        <source>(empty)</source>
-      </segment>
-    </unit>
-    <unit id="31" name="OtpLineEditFormLabelCode">
-      <segment>
-        <source>Code</source>
-      </segment>
-    </unit>
-    <unit id="32" name="OtpLineEditFormValidationMessage">
-      <segment>
-        <source>Please enter the code</source>
-      </segment>
-    </unit>
-    <unit id="33" name="PrefixAndSuffixTitle">
-      <segment>
-        <source>prefix and suffix</source>
-      </segment>
-    </unit>
-    <unit id="34" name="PrefixAndSuffixDescription">
-      <segment>
-        <source>Add a prefix or suffix icons inside input.</source>
-      </segment>
-    </unit>
-    <unit id="35" name="PrefixAndSuffixToolTip">
-      <segment>
-        <source>Helpful information about this field</source>
-      </segment>
-    </unit>
-    <unit id="36" name="InputStatusTitle">
-      <segment>
-        <source>Status</source>
-      </segment>
-    </unit>
-    <unit id="37" name="InputStatusDescription">
-      <segment>
-        <source>Add status to Input with status, which could be error or warning.</source>
-      </segment>
-    </unit>
-    <unit id="38" name="SearchBoxTitle">
-      <segment>
-        <source>Search box</source>
-      </segment>
-    </unit>
-    <unit id="39" name="SearchBoxDescription">
-      <segment>
-        <source>Example of creating a search box by grouping a standard input with a search button.</source>
-      </segment>
-    </unit>
-    <unit id="40" name="SearchEditSizeTypeTitle">
-      <segment>
-        <source>SearchEdit size</source>
-      </segment>
-    </unit>
-    <unit id="41" name="SearchEditSizeTypeDescription">
-      <segment>
-        <source>SearchEdit supports large, middle, small, and Custom sizes with local height and font overrides.</source>
-      </segment>
-    </unit>
-    <unit id="42" name="DisabledSearchBoxTitle">
-      <segment>
-        <source>Disabled search box</source>
-      </segment>
-    </unit>
-    <unit id="43" name="DisabledSearchBoxDescription">
-      <segment>
-        <source>Example of creating a search box by grouping a standard input with a search button.</source>
-      </segment>
-    </unit>
-    <unit id="44" name="SearchBoxWithLoadingTitle">
-      <segment>
-        <source>Search box with loading</source>
-      </segment>
-    </unit>
-    <unit id="45" name="SearchBoxWithLoadingDescription">
-      <segment>
-        <source>Search loading when onSearch.</source>
-      </segment>
-    </unit>
-    <unit id="46" name="TextAreaTitle">
-      <segment>
-        <source>TextArea</source>
-      </segment>
-    </unit>
-    <unit id="47" name="TextAreaDescription">
-      <segment>
-        <source>For multi-line input.</source>
-      </segment>
-    </unit>
-    <unit id="48" name="AutoSizeTextAreaTitle">
-      <segment>
-        <source>Autosizing the height to fit the content</source>
-      </segment>
-    </unit>
-    <unit id="49" name="AutoSizeTextAreaDescription">
+    <unit id="AutoSizeTextAreaDescription">
       <segment>
         <source>autoSize prop for a textarea type of Input makes the height to automatically adjust based on the content. An option object can be provided to autoSize to specify the minimum and maximum number of lines the textarea will automatically adjust.</source>
       </segment>
     </unit>
-    <unit id="50" name="CharacterCountingTitle">
+    <unit id="AutoSizeTextAreaTitle">
       <segment>
-        <source>With character counting</source>
+        <source>Autosizing the height to fit the content</source>
       </segment>
     </unit>
-    <unit id="51" name="CharacterCountingDescription">
+    <unit id="BasicUsageDescription">
       <segment>
-        <source>Show character counting.</source>
+        <source>Basic usage example.</source>
       </segment>
     </unit>
-    <unit id="52" name="TextAreaStatusTitle">
-      <segment>
-        <source>Status</source>
-      </segment>
-    </unit>
-    <unit id="53" name="TextAreaStatusDescription">
-      <segment>
-        <source>Add status to TextArea with status, which could be error or warning.</source>
-      </segment>
-    </unit>
-    <unit id="54" name="P2PlaceholderTextBasicUsage">
+    <unit id="BasicUsageTitle">
       <segment>
         <source>Basic usage</source>
       </segment>
     </unit>
-    <unit id="55" name="P2PlaceholderTextTextBox">
+    <unit id="CharacterCountingDescription">
       <segment>
-        <source>AtomUI TextBox</source>
+        <source>Show character counting.</source>
       </segment>
     </unit>
-    <unit id="56" name="P2PlaceholderTextLarge">
+    <unit id="CharacterCountingTitle">
       <segment>
-        <source>Large</source>
+        <source>With character counting</source>
       </segment>
     </unit>
-    <unit id="57" name="P2PlaceholderTextMiddle">
-      <segment>
-        <source>Middle</source>
-      </segment>
-    </unit>
-    <unit id="58" name="P2PlaceholderTextSmall">
-      <segment>
-        <source>Small</source>
-      </segment>
-    </unit>
-    <unit id="59" name="P2PlaceholderTextCustom">
-      <segment>
-        <source>Custom</source>
-      </segment>
-    </unit>
-    <unit id="60" name="P2TitleNormal">
-      <segment>
-        <source>Normal</source>
-      </segment>
-    </unit>
-    <unit id="61" name="P2PlaceholderTextOutlined">
-      <segment>
-        <source>Outlined</source>
-      </segment>
-    </unit>
-    <unit id="62" name="P2PlaceholderTextFilled">
-      <segment>
-        <source>Filled</source>
-      </segment>
-    </unit>
-    <unit id="63" name="P2PlaceholderTextBorderless">
-      <segment>
-        <source>Borderless</source>
-      </segment>
-    </unit>
-    <unit id="64" name="P2PlaceholderTextUnderlined">
-      <segment>
-        <source>Underlined</source>
-      </segment>
-    </unit>
-    <unit id="65" name="P2TitleLeftaddonAndRightaddon">
-      <segment>
-        <source>LeftAddOn and RightAddOn</source>
-      </segment>
-    </unit>
-    <unit id="66" name="P2TextMysite">
-      <segment>
-        <source>mysite</source>
-      </segment>
-    </unit>
-    <unit id="67" name="P2PlaceholderTextInputWithClearIcon">
-      <segment>
-        <source>input with clear icon</source>
-      </segment>
-    </unit>
-    <unit id="68" name="P2PlaceholderTextTextareaWithClearIcon">
-      <segment>
-        <source>textarea with clear icon</source>
-      </segment>
-    </unit>
-    <unit id="69" name="P2PlaceholderTextInputPassword">
-      <segment>
-        <source>input password</source>
-      </segment>
-    </unit>
-    <unit id="70" name="P2PlaceholderTextEnterYourUsername">
-      <segment>
-        <source>Enter your username</source>
-      </segment>
-    </unit>
-    <unit id="71" name="P2PlaceholderTextError">
-      <segment>
-        <source>Error</source>
-      </segment>
-    </unit>
-    <unit id="72" name="P2PlaceholderTextWarning">
-      <segment>
-        <source>Warning</source>
-      </segment>
-    </unit>
-    <unit id="73" name="P2PlaceholderTextErrorWithPrefix">
-      <segment>
-        <source>Error with prefix</source>
-      </segment>
-    </unit>
-    <unit id="74" name="P2PlaceholderTextWarningWithPrefix">
-      <segment>
-        <source>Warning with prefix</source>
-      </segment>
-    </unit>
-    <unit id="75" name="P2TitleSearch">
-      <segment>
-        <source>Search</source>
-      </segment>
-    </unit>
-    <unit id="76" name="P2PlaceholderTextInputSearchText">
-      <segment>
-        <source>input search text</source>
-      </segment>
-    </unit>
-    <unit id="77" name="P2TitleFilled">
-      <segment>
-        <source>Filled</source>
-      </segment>
-    </unit>
-    <unit id="78" name="P2TitleBorderless">
-      <segment>
-        <source>Borderless</source>
-      </segment>
-    </unit>
-    <unit id="79" name="P2TitleUnderlined">
-      <segment>
-        <source>Underlined</source>
-      </segment>
-    </unit>
-    <unit id="80" name="P2PlaceholderTextInputSearchLoadingDefault">
-      <segment>
-        <source>input search loading default</source>
-      </segment>
-    </unit>
-    <unit id="81" name="P2PlaceholderTextInputSearchLoadingWithEnterbutton">
-      <segment>
-        <source>input search loading with enterButton</source>
-      </segment>
-    </unit>
-    <unit id="82" name="P2PlaceholderTextMaxlengthIsN6">
-      <segment>
-        <source>maxLength is 6</source>
-      </segment>
-    </unit>
-    <unit id="83" name="P2PlaceholderTextDisabled">
-      <segment>
-        <source>disabled</source>
-      </segment>
-    </unit>
-    <unit id="84" name="P2PlaceholderTextAutosizeHeightBasedOnContentLines">
-      <segment>
-        <source>Autosize height based on content lines</source>
-      </segment>
-    </unit>
-    <unit id="85" name="P2PlaceholderTextAutosizeHeightWithMinimumAndMaximumNumberOf">
-      <segment>
-        <source>Autosize height with minimum and maximum number of lines</source>
-      </segment>
-    </unit>
-    <unit id="86" name="P2PlaceholderTextCanResize">
-      <segment>
-        <source>can resize</source>
-      </segment>
-    </unit>
-    <unit id="87" name="P2PlaceholderTextDisableResize">
-      <segment>
-        <source>disable resize</source>
-      </segment>
-    </unit>
-    <unit id="88" name="P2SearchButtonTextSearch">
-      <segment>
-        <source>Search</source>
-      </segment>
-    </unit>
-    <unit id="89" name="P2SearchButtonTextText">
-      <segment>
-        <source>Search</source>
-      </segment>
-    </unit>
-    <unit id="90" name="PageSubtitle">
-      <segment>
-        <source>Capture single-line text, search input, passwords, and multi-line text.</source>
-      </segment>
-    </unit>
-    <unit id="91" name="PageDescription">
-      <segment>
-        <source>LineEdit covers standard inputs, add-ons, clear actions, password reveal, prefixes and suffixes, validation status, SearchEdit, and TextArea scenarios.</source>
-      </segment>
-    </unit>
-    <unit id="92" name="ComponentCategory">
+    <unit id="ComponentCategory">
       <segment>
         <source>Data Entry</source>
       </segment>
     </unit>
-    <unit id="93" name="ComponentStatusStable">
+    <unit id="ComponentStatusStable">
       <segment>
         <source>Stable</source>
       </segment>
     </unit>
-    <unit id="94" name="ScenarioExamples">
+    <unit id="DisabledDescription">
+      <segment>
+        <source>Variants of Input disabled style.</source>
+      </segment>
+    </unit>
+    <unit id="DisabledSearchBoxDescription">
+      <segment>
+        <source>Example of creating a search box by grouping a standard input with a search button.</source>
+      </segment>
+    </unit>
+    <unit id="DisabledSearchBoxTitle">
+      <segment>
+        <source>Disabled search box</source>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+      </segment>
+    </unit>
+    <unit id="InputSizesDescription">
+      <segment>
+        <source>There are three sizes of an Input box: large (40px), default (32px) and small (24px).</source>
+      </segment>
+    </unit>
+    <unit id="InputSizesTitle">
+      <segment>
+        <source>Three sizes of Input</source>
+      </segment>
+    </unit>
+    <unit id="InputStatusDescription">
+      <segment>
+        <source>Add status to Input with status, which could be error or warning.</source>
+      </segment>
+    </unit>
+    <unit id="InputStatusTitle">
+      <segment>
+        <source>Status</source>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditAntDesignDescription">
+      <segment>
+        <source>One time password input.</source>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditAntDesignTitle">
+      <segment>
+        <source>One-time password</source>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditClearButtonText">
+      <segment>
+        <source>Clear</source>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditCurrentValueFormat">
+      <segment>
+        <source>Current value: {0}</source>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditEmptyValueText">
+      <segment>
+        <source>(empty)</source>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditFormDescription">
+      <segment>
+        <source>Form validators write errors through Avalonia DataValidationErrors.</source>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditFormLabelCode">
+      <segment>
+        <source>Code</source>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditFormTitle">
+      <segment>
+        <source>OTP form validation</source>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditFormValidationMessage">
+      <segment>
+        <source>Please enter the code</source>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditSetValueButtonText">
+      <segment>
+        <source>Set 654321</source>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditTwoWayBindingDescription">
+      <segment>
+        <source>OtpLineEdit.Text uses one bindable value source and can be set or cleared from the ViewModel.</source>
+      </segment>
+    </unit>
+    <unit id="OtpLineEditTwoWayBindingTitle">
+      <segment>
+        <source>OTP two-way binding</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextAutosizeHeightBasedOnContentLines">
+      <segment>
+        <source>Autosize height based on content lines</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextAutosizeHeightWithMinimumAndMaximumNumberOf">
+      <segment>
+        <source>Autosize height with minimum and maximum number of lines</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextBasicUsage">
+      <segment>
+        <source>Basic usage</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextBorderless">
+      <segment>
+        <source>Borderless</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextCanResize">
+      <segment>
+        <source>can resize</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextCustom">
+      <segment>
+        <source>Custom</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextDisableResize">
+      <segment>
+        <source>disable resize</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextDisabled">
+      <segment>
+        <source>disabled</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextEnterYourUsername">
+      <segment>
+        <source>Enter your username</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextError">
+      <segment>
+        <source>Error</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextErrorWithPrefix">
+      <segment>
+        <source>Error with prefix</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextFilled">
+      <segment>
+        <source>Filled</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputPassword">
+      <segment>
+        <source>input password</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputSearchLoadingDefault">
+      <segment>
+        <source>input search loading default</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputSearchLoadingWithEnterbutton">
+      <segment>
+        <source>input search loading with enterButton</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputSearchText">
+      <segment>
+        <source>input search text</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputWithClearIcon">
+      <segment>
+        <source>input with clear icon</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextLarge">
+      <segment>
+        <source>Large</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextMaxlengthIsN6">
+      <segment>
+        <source>maxLength is 6</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextMiddle">
+      <segment>
+        <source>Middle</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextOutlined">
+      <segment>
+        <source>Outlined</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSmall">
+      <segment>
+        <source>Small</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextTextBox">
+      <segment>
+        <source>AtomUI TextBox</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextTextareaWithClearIcon">
+      <segment>
+        <source>textarea with clear icon</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextUnderlined">
+      <segment>
+        <source>Underlined</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWarning">
+      <segment>
+        <source>Warning</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextWarningWithPrefix">
+      <segment>
+        <source>Warning with prefix</source>
+      </segment>
+    </unit>
+    <unit id="P2SearchButtonTextSearch">
+      <segment>
+        <source>Search</source>
+      </segment>
+    </unit>
+    <unit id="P2SearchButtonTextText">
+      <segment>
+        <source>Search</source>
+      </segment>
+    </unit>
+    <unit id="P2TextMysite">
+      <segment>
+        <source>mysite</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleBorderless">
+      <segment>
+        <source>Borderless</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleFilled">
+      <segment>
+        <source>Filled</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleLeftaddonAndRightaddon">
+      <segment>
+        <source>LeftAddOn and RightAddOn</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleNormal">
+      <segment>
+        <source>Normal</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleSearch">
+      <segment>
+        <source>Search</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleUnderlined">
+      <segment>
+        <source>Underlined</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>LineEdit covers standard inputs, add-ons, clear actions, password reveal, prefixes and suffixes, validation status, SearchEdit, and TextArea scenarios.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Capture single-line text, search input, passwords, and multi-line text.</source>
+      </segment>
+    </unit>
+    <unit id="PasswordBoxDescription">
+      <segment>
+        <source>Input type of password.</source>
+      </segment>
+    </unit>
+    <unit id="PasswordBoxTitle">
+      <segment>
+        <source>Password box</source>
+      </segment>
+    </unit>
+    <unit id="PrePostTabDescription">
+      <segment>
+        <source>Using pre and post tabs example.</source>
+      </segment>
+    </unit>
+    <unit id="PrePostTabTitle">
+      <segment>
+        <source>Pre / Post tab</source>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixDescription">
+      <segment>
+        <source>Add a prefix or suffix icons inside input.</source>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixTitle">
+      <segment>
+        <source>prefix and suffix</source>
+      </segment>
+    </unit>
+    <unit id="PrefixAndSuffixToolTip">
+      <segment>
+        <source>Helpful information about this field</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
       <segment>
         <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioSearch">
+      <segment>
+        <source>Search</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioState">
+      <segment>
+        <source>State</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioTextArea">
+      <segment>
+        <source>TextArea</source>
+      </segment>
+    </unit>
+    <unit id="SearchBoxDescription">
+      <segment>
+        <source>Example of creating a search box by grouping a standard input with a search button.</source>
+      </segment>
+    </unit>
+    <unit id="SearchBoxTitle">
+      <segment>
+        <source>Search box</source>
+      </segment>
+    </unit>
+    <unit id="SearchBoxWithLoadingDescription">
+      <segment>
+        <source>Search loading when onSearch.</source>
+      </segment>
+    </unit>
+    <unit id="SearchBoxWithLoadingTitle">
+      <segment>
+        <source>Search box with loading</source>
+      </segment>
+    </unit>
+    <unit id="SearchEditSizeTypeDescription">
+      <segment>
+        <source>SearchEdit supports large, middle, small, and Custom sizes with local height and font overrides.</source>
+      </segment>
+    </unit>
+    <unit id="SearchEditSizeTypeTitle">
+      <segment>
+        <source>SearchEdit size</source>
+      </segment>
+    </unit>
+    <unit id="TextAreaDescription">
+      <segment>
+        <source>For multi-line input.</source>
+      </segment>
+    </unit>
+    <unit id="TextAreaStatusDescription">
+      <segment>
+        <source>Add status to TextArea with status, which could be error or warning.</source>
+      </segment>
+    </unit>
+    <unit id="TextAreaStatusTitle">
+      <segment>
+        <source>Status</source>
+      </segment>
+    </unit>
+    <unit id="TextAreaTitle">
+      <segment>
+        <source>TextArea</source>
+      </segment>
+    </unit>
+    <unit id="TextBoxDescription">
+      <segment>
+        <source>AtomUI TextBox keeps the native TextBox API while using the LineEdit border, hover, and focus visuals.</source>
+      </segment>
+    </unit>
+    <unit id="TextBoxTitle">
+      <segment>
+        <source>TextBox</source>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Variants of Input.</source>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+      </segment>
+    </unit>
+    <unit id="WithClearIconDescription">
+      <segment>
+        <source>Input box with the remove icon, click the icon to delete everything.</source>
+      </segment>
+    </unit>
+    <unit id="WithClearIconTitle">
+      <segment>
+        <source>With clear icon</source>
       </segment>
     </unit>
   </file>

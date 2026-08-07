@@ -125,15 +125,15 @@ public class LocalizationGeneratorDeterminismTests
             [AtomUI.Localization.LanguageCatalog]
             public enum CatalogALangResourceKind
             {
-                Count = 30,
-                Title = 10
+                Count,
+                Title
             }
 
             [AtomUI.Localization.LanguageCatalog]
             public enum CatalogBLangResourceKind
             {
-                Confirm = 40,
-                Cancel = 20
+                Confirm,
+                Cancel
             }
         }
 
@@ -149,15 +149,15 @@ public class LocalizationGeneratorDeterminismTests
             [AtomUI.Localization.LanguageCatalog]
             public enum CatalogBLangResourceKind
             {
-                Cancel = 20,
-                Confirm = 40
+                Cancel,
+                Confirm
             }
 
             [AtomUI.Localization.LanguageCatalog]
             public enum CatalogALangResourceKind
             {
-                Title = 10,
-                Count = 30
+                Title,
+                Count
             }
         }
 
@@ -170,8 +170,8 @@ public class LocalizationGeneratorDeterminismTests
     private const string CatalogAXliff = """
         <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
           <file id="TestApp.Localization.CatalogALangResourceKind">
-            <unit id="30" name="Count"><segment><source>Alpha {0}</source></segment></unit>
-            <unit id="10" name="Title"><segment><source>Alpha</source></segment></unit>
+            <unit id="Count"><segment><source>Alpha {0}</source></segment></unit>
+            <unit id="Title"><segment><source>Alpha</source></segment></unit>
           </file>
         </xliff>
         """;
@@ -179,8 +179,8 @@ public class LocalizationGeneratorDeterminismTests
     private const string CatalogBXliff = """
         <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
           <file id="TestApp.Localization.CatalogBLangResourceKind">
-            <unit id="40" name="Confirm"><segment><source>Confirm</source></segment></unit>
-            <unit id="20" name="Cancel"><segment><source>Cancel</source></segment></unit>
+            <unit id="Confirm"><segment><source>Confirm</source></segment></unit>
+            <unit id="Cancel"><segment><source>Cancel</source></segment></unit>
           </file>
         </xliff>
         """;

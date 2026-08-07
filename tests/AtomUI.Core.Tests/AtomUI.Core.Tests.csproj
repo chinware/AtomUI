@@ -4,6 +4,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <RootNamespace>AtomUI.Core.Tests</RootNamespace>
+    <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia.Headless" />

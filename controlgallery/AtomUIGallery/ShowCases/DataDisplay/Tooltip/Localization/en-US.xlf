@@ -1,234 +1,234 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.TooltipShowCaseLangResourceKind">
-    <unit id="1" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-      </segment>
-    </unit>
-    <unit id="2" name="BasicDescription">
-      <segment>
-        <source>The simplest usage.</source>
-      </segment>
-    </unit>
-    <unit id="3" name="PlacementTitle">
-      <segment>
-        <source>Placement</source>
-      </segment>
-    </unit>
-    <unit id="4" name="PlacementDescription">
-      <segment>
-        <source>There are 12 placement options available.</source>
-      </segment>
-    </unit>
-    <unit id="5" name="ArrowTitle">
-      <segment>
-        <source>Arrow</source>
-      </segment>
-    </unit>
-    <unit id="6" name="ArrowDescription">
+    <unit id="ArrowDescription">
       <segment>
         <source>Support show, hide or keep arrow in the center.</source>
       </segment>
     </unit>
-    <unit id="7" name="ColorfulTooltipTitle">
+    <unit id="ArrowTitle">
       <segment>
-        <source>Colorful Tooltip</source>
+        <source>Arrow</source>
       </segment>
     </unit>
-    <unit id="8" name="ColorfulTooltipDescription">
+    <unit id="BasicDescription">
+      <segment>
+        <source>The simplest usage.</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ColorfulTooltipDescription">
       <segment>
         <source>We preset a series of colorful Tooltip styles for use in different situations.</source>
       </segment>
     </unit>
-    <unit id="9" name="P2TextTooltipWillShowOnMouseEnter">
+    <unit id="ColorfulTooltipTitle">
       <segment>
-        <source>Tooltip will show on mouse enter.</source>
+        <source>Colorful Tooltip</source>
       </segment>
     </unit>
-    <unit id="10" name="P2ContentShow">
-      <segment>
-        <source>Show</source>
-      </segment>
-    </unit>
-    <unit id="11" name="P2ContentHide">
-      <segment>
-        <source>Hide</source>
-      </segment>
-    </unit>
-    <unit id="12" name="P2ContentCenter">
-      <segment>
-        <source>Center</source>
-      </segment>
-    </unit>
-    <unit id="13" name="P2TextPresets">
-      <segment>
-        <source>Presets</source>
-      </segment>
-    </unit>
-    <unit id="14" name="P2TextCustom">
-      <segment>
-        <source>Custom</source>
-      </segment>
-    </unit>
-    <unit id="15" name="P2ToolTipTipPromptText">
-      <segment>
-        <source>prompt text</source>
-      </segment>
-    </unit>
-    <unit id="16" name="P2ContentLT">
-      <segment>
-        <source>LT</source>
-      </segment>
-    </unit>
-    <unit id="17" name="P2ContentLeft">
-      <segment>
-        <source>Left</source>
-      </segment>
-    </unit>
-    <unit id="18" name="P2ContentLB">
-      <segment>
-        <source>LB</source>
-      </segment>
-    </unit>
-    <unit id="19" name="P2ContentTL">
-      <segment>
-        <source>TL</source>
-      </segment>
-    </unit>
-    <unit id="20" name="P2ContentTop">
-      <segment>
-        <source>Top</source>
-      </segment>
-    </unit>
-    <unit id="21" name="P2ContentTR">
-      <segment>
-        <source>TR</source>
-      </segment>
-    </unit>
-    <unit id="22" name="P2ContentRT">
-      <segment>
-        <source>RT</source>
-      </segment>
-    </unit>
-    <unit id="23" name="P2ContentRight">
-      <segment>
-        <source>Right</source>
-      </segment>
-    </unit>
-    <unit id="24" name="P2ContentRB">
-      <segment>
-        <source>RB</source>
-      </segment>
-    </unit>
-    <unit id="25" name="P2ContentBL">
-      <segment>
-        <source>BL</source>
-      </segment>
-    </unit>
-    <unit id="26" name="P2ContentBottom">
-      <segment>
-        <source>Bottom</source>
-      </segment>
-    </unit>
-    <unit id="27" name="P2ContentBR">
-      <segment>
-        <source>BR</source>
-      </segment>
-    </unit>
-    <unit id="28" name="P2ContentBlue">
-      <segment>
-        <source>Blue</source>
-      </segment>
-    </unit>
-    <unit id="29" name="P2ContentRed">
-      <segment>
-        <source>Red</source>
-      </segment>
-    </unit>
-    <unit id="30" name="P2ContentVolcano">
-      <segment>
-        <source>Volcano</source>
-      </segment>
-    </unit>
-    <unit id="31" name="P2ContentOrange">
-      <segment>
-        <source>Orange</source>
-      </segment>
-    </unit>
-    <unit id="32" name="P2ContentGold">
-      <segment>
-        <source>Gold</source>
-      </segment>
-    </unit>
-    <unit id="33" name="P2ContentYellow">
-      <segment>
-        <source>Yellow</source>
-      </segment>
-    </unit>
-    <unit id="34" name="P2ContentLime">
-      <segment>
-        <source>Lime</source>
-      </segment>
-    </unit>
-    <unit id="35" name="P2ContentGreen">
-      <segment>
-        <source>Green</source>
-      </segment>
-    </unit>
-    <unit id="36" name="P2ContentCyan">
-      <segment>
-        <source>Cyan</source>
-      </segment>
-    </unit>
-    <unit id="37" name="P2ContentGeekBlue">
-      <segment>
-        <source>GeekBlue</source>
-      </segment>
-    </unit>
-    <unit id="38" name="P2ContentPurple">
-      <segment>
-        <source>Purple</source>
-      </segment>
-    </unit>
-    <unit id="39" name="P2ContentPink">
-      <segment>
-        <source>Pink</source>
-      </segment>
-    </unit>
-    <unit id="40" name="P2ContentMagenta">
-      <segment>
-        <source>Magenta</source>
-      </segment>
-    </unit>
-    <unit id="41" name="P2ContentGrey">
-      <segment>
-        <source>Grey</source>
-      </segment>
-    </unit>
-    <unit id="42" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-      </segment>
-    </unit>
-    <unit id="43" name="PageSubtitle">
-      <segment>
-        <source>Display contextual hints when users hover or focus an element.</source>
-      </segment>
-    </unit>
-    <unit id="44" name="PageDescription">
-      <segment>
-        <source>Tooltip provides concise helper text, placement control, arrow behavior and preset or custom colors for lightweight contextual guidance.</source>
-      </segment>
-    </unit>
-    <unit id="45" name="ComponentCategory">
+    <unit id="ComponentCategory">
       <segment>
         <source>Data Display</source>
       </segment>
     </unit>
-    <unit id="46" name="ComponentStatusStable">
+    <unit id="ComponentStatusStable">
       <segment>
         <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBL">
+      <segment>
+        <source>BL</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBR">
+      <segment>
+        <source>BR</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBlue">
+      <segment>
+        <source>Blue</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentCenter">
+      <segment>
+        <source>Center</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentCyan">
+      <segment>
+        <source>Cyan</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentGeekBlue">
+      <segment>
+        <source>GeekBlue</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentGold">
+      <segment>
+        <source>Gold</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentGreen">
+      <segment>
+        <source>Green</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentGrey">
+      <segment>
+        <source>Grey</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentHide">
+      <segment>
+        <source>Hide</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLB">
+      <segment>
+        <source>LB</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLT">
+      <segment>
+        <source>LT</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLeft">
+      <segment>
+        <source>Left</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLime">
+      <segment>
+        <source>Lime</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentMagenta">
+      <segment>
+        <source>Magenta</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentOrange">
+      <segment>
+        <source>Orange</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentPink">
+      <segment>
+        <source>Pink</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentPurple">
+      <segment>
+        <source>Purple</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRB">
+      <segment>
+        <source>RB</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRT">
+      <segment>
+        <source>RT</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRed">
+      <segment>
+        <source>Red</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRight">
+      <segment>
+        <source>Right</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentShow">
+      <segment>
+        <source>Show</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTL">
+      <segment>
+        <source>TL</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTR">
+      <segment>
+        <source>TR</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTop">
+      <segment>
+        <source>Top</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentVolcano">
+      <segment>
+        <source>Volcano</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentYellow">
+      <segment>
+        <source>Yellow</source>
+      </segment>
+    </unit>
+    <unit id="P2TextCustom">
+      <segment>
+        <source>Custom</source>
+      </segment>
+    </unit>
+    <unit id="P2TextPresets">
+      <segment>
+        <source>Presets</source>
+      </segment>
+    </unit>
+    <unit id="P2TextTooltipWillShowOnMouseEnter">
+      <segment>
+        <source>Tooltip will show on mouse enter.</source>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipPromptText">
+      <segment>
+        <source>prompt text</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Tooltip provides concise helper text, placement control, arrow behavior and preset or custom colors for lightweight contextual guidance.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display contextual hints when users hover or focus an element.</source>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>There are 12 placement options available.</source>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
       </segment>
     </unit>
   </file>

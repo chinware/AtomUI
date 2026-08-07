@@ -35,7 +35,7 @@ public class Xliff21ParserTests
                    srcLang="en-US"
                    trgLang="zh-CN">
               <file id="TestApp.Localization.LoginLangResourceKind">
-                <unit id="10" name="Title">
+                <unit id="Title">
                   <notes><note>Window title &amp; sign-in heading</note></notes>
                   <segment>
                     <source>Sign in as {0}</source>
@@ -52,14 +52,36 @@ public class Xliff21ParserTests
         document.TargetLanguage.ShouldBe("zh-CN");
         document.File.Id.ShouldBe("TestApp.Localization.LoginLangResourceKind");
         var unit = document.File.Units.ShouldHaveSingleItem();
-        unit.Id.ShouldBe(10);
-        unit.Name.ShouldBe("Title");
+        unit.Key.ShouldBe("Title");
+        unit.Name.ShouldBeNull();
         unit.Source.ShouldBe("Sign in as {0}");
         unit.Target.ShouldBe("以 {0} 登录");
         unit.TargetState.ShouldBe("translated");
         unit.TargetSubState.ShouldBe("atomui:approved");
         unit.Notes.ShouldHaveSingleItem().ShouldBe("Window title & sign-in heading");
         unit.PlaceholderIndexes.ShouldBe([0]);
+    }
+
+    [Fact]
+    public void Parses_A_Symbolic_Unit_Key_Without_A_Name()
+    {
+        var result = Xliff21Parser.Parse("""
+            <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0"
+                   version="2.1"
+                   srcLang="en-US">
+              <file id="TestApp.Localization.LoginLangResourceKind">
+                <unit id="Title">
+                  <segment>
+                    <source>Sign in</source>
+                  </segment>
+                </unit>
+              </file>
+            </xliff>
+            """);
+
+        result.Errors.ShouldBeEmpty();
+        var unit = result.Document!.File.Units.ShouldHaveSingleItem();
+        unit.Name.ShouldBeNull();
     }
 
     [Fact]
@@ -120,11 +142,10 @@ public class Xliff21ParserTests
     }
 
     [Theory]
-    [InlineData("<file id=\"First\"><unit id=\"10\" name=\"Title\"><segment><source>Title</source></segment></unit></file><file id=\"Second\"><unit id=\"20\" name=\"Body\"><segment><source>Body</source></segment></unit></file>", "exactly one file")]
+    [InlineData("<file id=\"First\"><unit id=\"Title\"><segment><source>Title</source></segment></unit></file><file id=\"Second\"><unit id=\"Body\"><segment><source>Body</source></segment></unit></file>", "exactly one file")]
     [InlineData("<file id=\"Catalog\" />", "at least one unit")]
-    [InlineData("<file id=\"Catalog\"><unit id=\"0\" name=\"Title\"><segment><source>Title</source></segment></unit></file>", "positive Int32")]
-    [InlineData("<file id=\"Catalog\"><unit id=\"10\" name=\"\"><segment><source>Title</source></segment></unit></file>", "name")]
-    [InlineData("<file id=\"Catalog\"><unit id=\"10\" name=\"Title\"><segment><source>Title</source></segment><segment><source>Again</source></segment></unit></file>", "exactly one segment")]
+    [InlineData("<file id=\"Catalog\"><unit id=\"\"><segment><source>Title</source></segment></unit></file>", "non-empty Key")]
+    [InlineData("<file id=\"Catalog\"><unit id=\"Title\"><segment><source>Title</source></segment><segment><source>Again</source></segment></unit></file>", "exactly one segment")]
     public void Rejects_Invalid_File_Or_Unit_Structure(string fileContent, string messageFragment)
     {
         var result = Xliff21Parser.Parse($$"""
@@ -144,8 +165,8 @@ public class Xliff21ParserTests
         var result = Xliff21Parser.Parse("""
             <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
               <file id="Catalog">
-                <unit id="10" name="Title"><segment><source>Title</source></segment></unit>
-                <unit id="10" name="Heading"><segment><source>Heading</source></segment></unit>
+                <unit id="Title"><segment><source>Title</source></segment></unit>
+                <unit id="Title"><segment><source>Heading</source></segment></unit>
               </file>
             </xliff>
             """);
@@ -160,7 +181,7 @@ public class Xliff21ParserTests
             <!DOCTYPE xliff [<!ENTITY secret SYSTEM "file:///etc/passwd">]>
             <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
               <file id="Catalog">
-                <unit id="10" name="Title"><segment><source>&secret;</source></segment></unit>
+                <unit id="Title"><segment><source>&secret;</source></segment></unit>
               </file>
             </xliff>
             """);
@@ -213,7 +234,7 @@ public class Xliff21ParserTests
                    srcLang="en-US"
                    trgLang="{{targetLanguage}}">
               <file id="TestApp.Localization.LoginLangResourceKind">
-                <unit id="10" name="Title">
+                <unit id="Title">
                   <segment>
                     <source>{{source}}</source>
                     <target state="{{targetState}}">{{target}}</target>

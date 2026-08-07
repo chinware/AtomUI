@@ -1,99 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.AvatarShowCaseLangResourceKind">
-    <unit id="1" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-      </segment>
-    </unit>
-    <unit id="2" name="ComponentCategory">
-      <segment>
-        <source>Data Display</source>
-      </segment>
-    </unit>
-    <unit id="3" name="ComponentStatusStable">
-      <segment>
-        <source>Stable</source>
-      </segment>
-    </unit>
-    <unit id="4" name="PageSubtitle">
-      <segment>
-        <source>Represent people or entities with image, icon, or text avatars.</source>
-      </segment>
-    </unit>
-    <unit id="5" name="PageDescription">
-      <segment>
-        <source>Avatar provides compact identity visuals for users, teams, and objects. It supports circle and square shapes, explicit sizes, automatic text scaling, and grouped overflow display.</source>
-      </segment>
-    </unit>
-    <unit id="6" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-      </segment>
-    </unit>
-    <unit id="7" name="BasicDescription">
-      <segment>
-        <source>Three sizes and two shapes are available.</source>
-      </segment>
-    </unit>
-    <unit id="8" name="TypeTitle">
-      <segment>
-        <source>Type</source>
-      </segment>
-    </unit>
-    <unit id="9" name="TypeDescription">
-      <segment>
-        <source>Image, Icon and letter are supported, and the latter two kinds of avatar can have custom colors and background colors.</source>
-      </segment>
-    </unit>
-    <unit id="10" name="AutoSetFontSizeTitle">
-      <segment>
-        <source>Autoset Font Size</source>
-      </segment>
-    </unit>
-    <unit id="11" name="AutoSetFontSizeDescription">
+    <unit id="AutoSetFontSizeDescription">
       <segment>
         <source>For letter type Avatar, when the letters are too long to display, the font size can be automatically adjusted according to the width of the Avatar. You can also use gap to set the unit distance between left and right sides.</source>
       </segment>
     </unit>
-    <unit id="12" name="AvatarGroupTitle">
+    <unit id="AutoSetFontSizeTitle">
       <segment>
-        <source>Avatar.Group</source>
+        <source>Autoset Font Size</source>
       </segment>
     </unit>
-    <unit id="13" name="AvatarGroupDescription">
+    <unit id="AvatarGroupDescription">
       <segment>
         <source>Avatar group display.</source>
       </segment>
     </unit>
-    <unit id="14" name="P2ContentU">
+    <unit id="AvatarGroupTitle">
       <segment>
-        <source>U</source>
+        <source>Avatar.Group</source>
       </segment>
     </unit>
-    <unit id="15" name="P2ContentUser">
+    <unit id="BasicDescription">
       <segment>
-        <source>USER</source>
+        <source>Three sizes and two shapes are available.</source>
       </segment>
     </unit>
-    <unit id="16" name="P2ContentChangeuser">
+    <unit id="BasicTitle">
       <segment>
-        <source>Change user</source>
+        <source>Basic</source>
       </segment>
     </unit>
-    <unit id="17" name="P2ContentChangegap">
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentA">
+      <segment>
+        <source>A</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentChangegap">
       <segment>
         <source>Change gap</source>
       </segment>
     </unit>
-    <unit id="18" name="P2ContentK">
+    <unit id="P2ContentChangeuser">
+      <segment>
+        <source>Change user</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentK">
       <segment>
         <source>K</source>
       </segment>
     </unit>
-    <unit id="19" name="P2ContentA">
+    <unit id="P2ContentU">
       <segment>
-        <source>A</source>
+        <source>U</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentUser">
+      <segment>
+        <source>USER</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Avatar provides compact identity visuals for users, teams, and objects. It supports circle and square shapes, explicit sizes, automatic text scaling, and grouped overflow display.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Represent people or entities with image, icon, or text avatars.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="TypeDescription">
+      <segment>
+        <source>Image, Icon and letter are supported, and the latter two kinds of avatar can have custom colors and background colors.</source>
+      </segment>
+    </unit>
+    <unit id="TypeTitle">
+      <segment>
+        <source>Type</source>
       </segment>
     </unit>
   </file>

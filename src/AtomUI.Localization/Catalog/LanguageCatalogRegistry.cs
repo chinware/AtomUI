@@ -141,7 +141,7 @@ internal sealed class LanguageCatalogRegistry
                 {
                     var unit = catalog.Units[unitSlot];
                     throw new LanguageCatalogException(
-                        $"Catalog '{catalog.CatalogId}' unit '{unit.Name}' ({unit.Id}) has conflicting " +
+                        $"Catalog '{catalog.CatalogId}' unit '{unit.Key}' has conflicting " +
                         $"'{bundle.Language.Value}' translations at priority '{bundle.SourceKind}' from " +
                         $"'{existing.SourceIdentity}' and '{bundle.SourceIdentity}'. Remove one source or use an " +
                         "explicit application override.");
@@ -165,7 +165,7 @@ internal sealed class LanguageCatalogRegistry
                 var unit = catalog.Units[unitSlot];
                 throw new LanguageCatalogException(
                     $"Catalog '{catalog.CatalogId}' is missing required en-US source text for unit " +
-                    $"'{unit.Name}' ({unit.Id}). Add the unit to the Catalog's en-US XLIFF source.");
+                    $"'{unit.Key}'. Add the unit to the Catalog's en-US XLIFF source.");
             }
         }
     }

@@ -1,149 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind">
-    <unit id="1" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-      </segment>
-    </unit>
-    <unit id="2" name="BasicDescription">
-      <segment>
-        <source>Simplest Skeleton usage.</source>
-      </segment>
-    </unit>
-    <unit id="3" name="ComplexCombinationTitle">
-      <segment>
-        <source>Complex combination</source>
-      </segment>
-    </unit>
-    <unit id="4" name="ComplexCombinationDescription">
-      <segment>
-        <source>Complex combination with avatar and multiple paragraphs.</source>
-      </segment>
-    </unit>
-    <unit id="5" name="ActiveAnimationTitle">
-      <segment>
-        <source>Active Animation</source>
-      </segment>
-    </unit>
-    <unit id="6" name="ActiveAnimationDescription">
+    <unit id="ActiveAnimationDescription">
       <segment>
         <source>Display active animation.</source>
       </segment>
     </unit>
-    <unit id="7" name="ButtonAvatarInputImageNodeTitle">
+    <unit id="ActiveAnimationTitle">
       <segment>
-        <source>Button/Avatar/Input/Image/Node</source>
+        <source>Active Animation</source>
       </segment>
     </unit>
-    <unit id="8" name="ButtonAvatarInputImageNodeDescription">
+    <unit id="BasicDescription">
+      <segment>
+        <source>Simplest Skeleton usage.</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ButtonAvatarInputImageNodeDescription">
       <segment>
         <source>Skeleton Button, Avatar, Input, Image and Node.</source>
       </segment>
     </unit>
-    <unit id="9" name="ContainsSubComponentTitle">
+    <unit id="ButtonAvatarInputImageNodeTitle">
       <segment>
-        <source>Contains sub component</source>
+        <source>Button/Avatar/Input/Image/Node</source>
       </segment>
     </unit>
-    <unit id="10" name="ContainsSubComponentDescription">
+    <unit id="ComplexCombinationDescription">
       <segment>
-        <source>Skeleton contains sub component.</source>
+        <source>Complex combination with avatar and multiple paragraphs.</source>
       </segment>
     </unit>
-    <unit id="11" name="PageSubtitle">
+    <unit id="ComplexCombinationTitle">
       <segment>
-        <source>Placeholder blocks for loading content.</source>
+        <source>Complex combination</source>
       </segment>
     </unit>
-    <unit id="12" name="PageDescription">
-      <segment>
-        <source>Skeleton provides lightweight visual placeholders before content is available, covering text, avatar, image, input, button, and custom node states.</source>
-      </segment>
-    </unit>
-    <unit id="13" name="ComponentCategory">
+    <unit id="ComponentCategory">
       <segment>
         <source>Feedback</source>
       </segment>
     </unit>
-    <unit id="14" name="ComponentStatusStable">
+    <unit id="ComponentStatusStable">
       <segment>
         <source>.NET 10</source>
       </segment>
     </unit>
-    <unit id="15" name="ScenarioExamples">
+    <unit id="ContainsSubComponentDescription">
       <segment>
-        <source>Examples</source>
+        <source>Skeleton contains sub component.</source>
       </segment>
     </unit>
-    <unit id="16" name="P2TextActive">
+    <unit id="ContainsSubComponentTitle">
       <segment>
-        <source>Active:</source>
+        <source>Contains sub component</source>
       </segment>
     </unit>
-    <unit id="17" name="P2TextButtonAndInputBlock">
-      <segment>
-        <source>Button and Input Block:</source>
-      </segment>
-    </unit>
-    <unit id="18" name="P2TextSize">
-      <segment>
-        <source>Size:</source>
-      </segment>
-    </unit>
-    <unit id="19" name="P2ContentDefault">
-      <segment>
-        <source>Default</source>
-      </segment>
-    </unit>
-    <unit id="20" name="P2ContentLarge">
-      <segment>
-        <source>Large</source>
-      </segment>
-    </unit>
-    <unit id="21" name="P2ContentSmall">
-      <segment>
-        <source>Small</source>
-      </segment>
-    </unit>
-    <unit id="22" name="P2TextButtonShape">
-      <segment>
-        <source>Button Shape:</source>
-      </segment>
-    </unit>
-    <unit id="23" name="P2ContentSquare">
-      <segment>
-        <source>Square</source>
-      </segment>
-    </unit>
-    <unit id="24" name="P2ContentRound">
-      <segment>
-        <source>Round</source>
-      </segment>
-    </unit>
-    <unit id="25" name="P2ContentCircle">
+    <unit id="P2ContentCircle">
       <segment>
         <source>Circle</source>
       </segment>
     </unit>
-    <unit id="26" name="P2TextAvatarShape">
+    <unit id="P2ContentDefault">
       <segment>
-        <source>Avatar Shape:</source>
+        <source>Default</source>
       </segment>
     </unit>
-    <unit id="27" name="P2TextAntDesignADesignLanguage">
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRound">
+      <segment>
+        <source>Round</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentShowSkeleton">
+      <segment>
+        <source>Show Skeleton</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSquare">
+      <segment>
+        <source>Square</source>
+      </segment>
+    </unit>
+    <unit id="P2TextActive">
+      <segment>
+        <source>Active:</source>
+      </segment>
+    </unit>
+    <unit id="P2TextAntDesignADesignLanguage">
       <segment>
         <source>Ant Design, a design language</source>
       </segment>
     </unit>
-    <unit id="28" name="P2TextWeSupplyASeriesOfDesignPrinciplesPractical">
+    <unit id="P2TextAvatarShape">
+      <segment>
+        <source>Avatar Shape:</source>
+      </segment>
+    </unit>
+    <unit id="P2TextButtonAndInputBlock">
+      <segment>
+        <source>Button and Input Block:</source>
+      </segment>
+    </unit>
+    <unit id="P2TextButtonShape">
+      <segment>
+        <source>Button Shape:</source>
+      </segment>
+    </unit>
+    <unit id="P2TextSize">
+      <segment>
+        <source>Size:</source>
+      </segment>
+    </unit>
+    <unit id="P2TextWeSupplyASeriesOfDesignPrinciplesPractical">
       <segment>
         <source>We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.</source>
       </segment>
     </unit>
-    <unit id="29" name="P2ContentShowSkeleton">
+    <unit id="PageDescription">
       <segment>
-        <source>Show Skeleton</source>
+        <source>Skeleton provides lightweight visual placeholders before content is available, covering text, avatar, image, input, button, and custom node states.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Placeholder blocks for loading content.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
       </segment>
     </unit>
   </file>

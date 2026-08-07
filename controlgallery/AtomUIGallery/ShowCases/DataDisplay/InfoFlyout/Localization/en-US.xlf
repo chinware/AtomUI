@@ -1,164 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind">
-    <unit id="1" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-      </segment>
-    </unit>
-    <unit id="2" name="BasicDescription">
-      <segment>
-        <source>The most basic example. The size of the floating layer depends on the contents region.</source>
-      </segment>
-    </unit>
-    <unit id="3" name="TriggerWaysTitle">
-      <segment>
-        <source>Three ways to trigger</source>
-      </segment>
-    </unit>
-    <unit id="4" name="TriggerWaysDescription">
-      <segment>
-        <source>Mouse to click, focus and move in.</source>
-      </segment>
-    </unit>
-    <unit id="5" name="PlacementTitle">
-      <segment>
-        <source>Placement</source>
-      </segment>
-    </unit>
-    <unit id="6" name="PlacementDescription">
-      <segment>
-        <source>There are 12 placement options available.</source>
-      </segment>
-    </unit>
-    <unit id="7" name="ArrowTitle">
-      <segment>
-        <source>Arrow</source>
-      </segment>
-    </unit>
-    <unit id="8" name="ArrowDescription">
+    <unit id="ArrowDescription">
       <segment>
         <source>Support show, hide or keep arrow in the center.</source>
       </segment>
     </unit>
-    <unit id="9" name="P2TextTheMostBasicExample">
+    <unit id="ArrowTitle">
       <segment>
-        <source>The most basic example.</source>
+        <source>Arrow</source>
       </segment>
     </unit>
-    <unit id="10" name="P2ContentHoverMe">
+    <unit id="BasicDescription">
       <segment>
-        <source>Hover me</source>
+        <source>The most basic example. The size of the floating layer depends on the contents region.</source>
       </segment>
     </unit>
-    <unit id="11" name="P2ContentFocusMe">
+    <unit id="BasicTitle">
       <segment>
-        <source>Focus me</source>
+        <source>Basic</source>
       </segment>
     </unit>
-    <unit id="12" name="P2ContentClickMe">
-      <segment>
-        <source>Click me</source>
-      </segment>
-    </unit>
-    <unit id="13" name="P2ContentShow">
-      <segment>
-        <source>Show</source>
-      </segment>
-    </unit>
-    <unit id="14" name="P2ContentHide">
-      <segment>
-        <source>Hide</source>
-      </segment>
-    </unit>
-    <unit id="15" name="P2ContentCenter">
-      <segment>
-        <source>Center</source>
-      </segment>
-    </unit>
-    <unit id="16" name="P2ContentLT">
-      <segment>
-        <source>LT</source>
-      </segment>
-    </unit>
-    <unit id="17" name="P2ContentLeft">
-      <segment>
-        <source>Left</source>
-      </segment>
-    </unit>
-    <unit id="18" name="P2ContentLB">
-      <segment>
-        <source>LB</source>
-      </segment>
-    </unit>
-    <unit id="19" name="P2ContentTL">
-      <segment>
-        <source>TL</source>
-      </segment>
-    </unit>
-    <unit id="20" name="P2ContentTop">
-      <segment>
-        <source>Top</source>
-      </segment>
-    </unit>
-    <unit id="21" name="P2ContentTR">
-      <segment>
-        <source>TR</source>
-      </segment>
-    </unit>
-    <unit id="22" name="P2ContentRT">
-      <segment>
-        <source>RT</source>
-      </segment>
-    </unit>
-    <unit id="23" name="P2ContentRight">
-      <segment>
-        <source>Right</source>
-      </segment>
-    </unit>
-    <unit id="24" name="P2ContentRB">
-      <segment>
-        <source>RB</source>
-      </segment>
-    </unit>
-    <unit id="25" name="P2ContentBL">
-      <segment>
-        <source>BL</source>
-      </segment>
-    </unit>
-    <unit id="26" name="P2ContentBottom">
-      <segment>
-        <source>Bottom</source>
-      </segment>
-    </unit>
-    <unit id="27" name="P2ContentBR">
-      <segment>
-        <source>BR</source>
-      </segment>
-    </unit>
-    <unit id="28" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-      </segment>
-    </unit>
-    <unit id="29" name="PageSubtitle">
-      <segment>
-        <source>Display rich contextual content in a floating layer.</source>
-      </segment>
-    </unit>
-    <unit id="30" name="PageDescription">
-      <segment>
-        <source>InfoFlyout anchors a custom floating panel to a target control, with configurable trigger modes, placement and arrow behavior.</source>
-      </segment>
-    </unit>
-    <unit id="31" name="ComponentCategory">
+    <unit id="ComponentCategory">
       <segment>
         <source>Data Display</source>
       </segment>
     </unit>
-    <unit id="32" name="ComponentStatusStable">
+    <unit id="ComponentStatusStable">
       <segment>
         <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBL">
+      <segment>
+        <source>BL</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBR">
+      <segment>
+        <source>BR</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentBottom">
+      <segment>
+        <source>Bottom</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentCenter">
+      <segment>
+        <source>Center</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentClickMe">
+      <segment>
+        <source>Click me</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentFocusMe">
+      <segment>
+        <source>Focus me</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentHide">
+      <segment>
+        <source>Hide</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentHoverMe">
+      <segment>
+        <source>Hover me</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLB">
+      <segment>
+        <source>LB</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLT">
+      <segment>
+        <source>LT</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLeft">
+      <segment>
+        <source>Left</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRB">
+      <segment>
+        <source>RB</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRT">
+      <segment>
+        <source>RT</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRight">
+      <segment>
+        <source>Right</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentShow">
+      <segment>
+        <source>Show</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTL">
+      <segment>
+        <source>TL</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTR">
+      <segment>
+        <source>TR</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentTop">
+      <segment>
+        <source>Top</source>
+      </segment>
+    </unit>
+    <unit id="P2TextTheMostBasicExample">
+      <segment>
+        <source>The most basic example.</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>InfoFlyout anchors a custom floating panel to a target control, with configurable trigger modes, placement and arrow behavior.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display rich contextual content in a floating layer.</source>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>There are 12 placement options available.</source>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="TriggerWaysDescription">
+      <segment>
+        <source>Mouse to click, focus and move in.</source>
+      </segment>
+    </unit>
+    <unit id="TriggerWaysTitle">
+      <segment>
+        <source>Three ways to trigger</source>
       </segment>
     </unit>
   </file>

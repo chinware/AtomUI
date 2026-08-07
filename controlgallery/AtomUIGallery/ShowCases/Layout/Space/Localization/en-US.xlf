@@ -1,534 +1,534 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.SpaceShowCaseLangResourceKind">
-    <unit id="1" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-      </segment>
-    </unit>
-    <unit id="2" name="BasicDescription">
-      <segment>
-        <source>Crowded components horizontal spacing.</source>
-      </segment>
-    </unit>
-    <unit id="3" name="VerticalSpaceTitle">
-      <segment>
-        <source>Vertical Space</source>
-      </segment>
-    </unit>
-    <unit id="4" name="VerticalSpaceDescription">
-      <segment>
-        <source>Crowded components vertical spacing.</source>
-      </segment>
-    </unit>
-    <unit id="5" name="SizeTitle">
-      <segment>
-        <source>Space Size</source>
-      </segment>
-    </unit>
-    <unit id="6" name="SizeDescription">
-      <segment>
-        <source>Use size to set the spacing. Three sizes are preset: small, middle, and large. You can also customize the spacing. If size is not set, the spacing is small.</source>
-      </segment>
-    </unit>
-    <unit id="7" name="AlignTitle">
-      <segment>
-        <source>Align</source>
-      </segment>
-    </unit>
-    <unit id="8" name="AlignDescription">
+    <unit id="AlignDescription">
       <segment>
         <source>Config item align.</source>
       </segment>
     </unit>
-    <unit id="9" name="WrapTitle">
-      <segment>
-        <source>Wrap</source>
-      </segment>
-    </unit>
-    <unit id="10" name="WrapDescription">
-      <segment>
-        <source>Auto wrap line.</source>
-      </segment>
-    </unit>
-    <unit id="11" name="SplitTitle">
-      <segment>
-        <source>Split</source>
-      </segment>
-    </unit>
-    <unit id="12" name="SplitDescription">
-      <segment>
-        <source>Crowded components split.</source>
-      </segment>
-    </unit>
-    <unit id="13" name="CompactFormTitle">
-      <segment>
-        <source>Compact Mode for form component</source>
-      </segment>
-    </unit>
-    <unit id="14" name="CompactFormDescription">
-      <segment>
-        <source>Compact Mode for form component.</source>
-      </segment>
-    </unit>
-    <unit id="15" name="CompactButtonTitle">
-      <segment>
-        <source>Button Compact Mode</source>
-      </segment>
-    </unit>
-    <unit id="16" name="CompactButtonDescription">
-      <segment>
-        <source>Button component compact example.</source>
-      </segment>
-    </unit>
-    <unit id="17" name="VerticalCompactTitle">
-      <segment>
-        <source>Vertical Compact Mode</source>
-      </segment>
-    </unit>
-    <unit id="18" name="VerticalCompactDescription">
-      <segment>
-        <source>Vertical Mode for Space.Compact, supports Button only.</source>
-      </segment>
-    </unit>
-    <unit id="19" name="ScenarioBasic">
-      <segment>
-        <source>Basic</source>
-      </segment>
-    </unit>
-    <unit id="20" name="ScenarioSize">
-      <segment>
-        <source>Size</source>
-      </segment>
-    </unit>
-    <unit id="21" name="ScenarioAlign">
+    <unit id="AlignTitle">
       <segment>
         <source>Align</source>
       </segment>
     </unit>
-    <unit id="22" name="ScenarioCompactForm">
+    <unit id="BasicDescription">
       <segment>
-        <source>Compact Form</source>
+        <source>Crowded components horizontal spacing.</source>
       </segment>
     </unit>
-    <unit id="23" name="ScenarioCompactButton">
+    <unit id="BasicTitle">
       <segment>
-        <source>Compact Button</source>
+        <source>Basic</source>
       </segment>
     </unit>
-    <unit id="24" name="ScenarioExamples">
+    <unit id="CompactButtonDescription">
       <segment>
-        <source>Examples</source>
+        <source>Button component compact example.</source>
       </segment>
     </unit>
-    <unit id="25" name="PageSubtitle">
+    <unit id="CompactButtonTitle">
       <segment>
-        <source>Arrange components with consistent spacing or compact grouping.</source>
+        <source>Button Compact Mode</source>
       </segment>
     </unit>
-    <unit id="26" name="PageDescription">
+    <unit id="CompactFormDescription">
       <segment>
-        <source>Space provides inline and vertical spacing, item alignment, split rendering, and compact input/button groups for dense tool surfaces.</source>
+        <source>Compact Mode for form component.</source>
       </segment>
     </unit>
-    <unit id="27" name="ComponentCategory">
+    <unit id="CompactFormTitle">
+      <segment>
+        <source>Compact Mode for form component</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
       <segment>
         <source>Layout</source>
       </segment>
     </unit>
-    <unit id="28" name="ComponentStatusStable">
+    <unit id="ComponentStatusStable">
       <segment>
         <source>Stable</source>
       </segment>
     </unit>
-    <unit id="29" name="P2ConfirmContentAreYouSureToDeleteThisTask">
-      <segment>
-        <source>Are you sure to delete this task?</source>
-      </segment>
-    </unit>
-    <unit id="30" name="P2OkTextOk">
-      <segment>
-        <source>Ok</source>
-      </segment>
-    </unit>
-    <unit id="31" name="P2CancelTextCancel">
+    <unit id="P2CancelTextCancel">
       <segment>
         <source>Cancel</source>
       </segment>
     </unit>
-    <unit id="32" name="P2TitleDeleteTheTask">
+    <unit id="P2ConfirmContentAreYouSureToDeleteThisTask">
       <segment>
-        <source>Delete the task</source>
+        <source>Are you sure to delete this task?</source>
       </segment>
     </unit>
-    <unit id="33" name="P2HeaderCard">
-      <segment>
-        <source>Card</source>
-      </segment>
-    </unit>
-    <unit id="34" name="P2HeaderReport">
-      <segment>
-        <source>Report</source>
-      </segment>
-    </unit>
-    <unit id="35" name="P2HeaderMail">
-      <segment>
-        <source>Mail</source>
-      </segment>
-    </unit>
-    <unit id="36" name="P2HeaderMobile">
-      <segment>
-        <source>Mobile</source>
-      </segment>
-    </unit>
-    <unit id="37" name="P2HeaderN1stItem">
-      <segment>
-        <source>1st item</source>
-      </segment>
-    </unit>
-    <unit id="38" name="P2HeaderN2ndItem">
-      <segment>
-        <source>2nd item</source>
-      </segment>
-    </unit>
-    <unit id="39" name="P2HeaderN3rdItem">
-      <segment>
-        <source>3rd item</source>
-      </segment>
-    </unit>
-    <unit id="40" name="P2HeaderZhejiang">
-      <segment>
-        <source>Zhejiang</source>
-      </segment>
-    </unit>
-    <unit id="41" name="P2HeaderJiangsu">
-      <segment>
-        <source>Jiangsu</source>
-      </segment>
-    </unit>
-    <unit id="42" name="P2TextXihuDistrictHangzhou">
-      <segment>
-        <source>Xihu District, Hangzhou</source>
-      </segment>
-    </unit>
-    <unit id="43" name="P2TextN1">
-      <segment>
-        <source>+1</source>
-      </segment>
-    </unit>
-    <unit id="44" name="P2HeaderOption1">
-      <segment>
-        <source>Option1</source>
-      </segment>
-    </unit>
-    <unit id="45" name="P2HeaderOption2">
-      <segment>
-        <source>Option2</source>
-      </segment>
-    </unit>
-    <unit id="46" name="P2TextInputContent">
-      <segment>
-        <source>input content</source>
-      </segment>
-    </unit>
-    <unit id="47" name="P2HeaderOption1N1">
-      <segment>
-        <source>Option1-1</source>
-      </segment>
-    </unit>
-    <unit id="48" name="P2HeaderOption2N1">
-      <segment>
-        <source>Option2-1</source>
-      </segment>
-    </unit>
-    <unit id="49" name="P2HeaderOption2N2">
-      <segment>
-        <source>Option2-2</source>
-      </segment>
-    </unit>
-    <unit id="50" name="P2HeaderBetween">
-      <segment>
-        <source>Between</source>
-      </segment>
-    </unit>
-    <unit id="51" name="P2HeaderExcept">
-      <segment>
-        <source>Except</source>
-      </segment>
-    </unit>
-    <unit id="52" name="P2PlaceholderTextMinimum">
-      <segment>
-        <source>Minimum</source>
-      </segment>
-    </unit>
-    <unit id="53" name="P2PlaceholderTextText">
-      <segment>
-        <source>~</source>
-      </segment>
-    </unit>
-    <unit id="54" name="P2PlaceholderTextMaximum">
-      <segment>
-        <source>Maximum</source>
-      </segment>
-    </unit>
-    <unit id="55" name="P2HeaderSignUp">
-      <segment>
-        <source>Sign Up</source>
-      </segment>
-    </unit>
-    <unit id="56" name="P2HeaderSignIn">
-      <segment>
-        <source>Sign In</source>
-      </segment>
-    </unit>
-    <unit id="57" name="P2PlaceholderTextEmail">
-      <segment>
-        <source>Email</source>
-      </segment>
-    </unit>
-    <unit id="58" name="P2HeaderTextN1">
-      <segment>
-        <source>text 1</source>
-      </segment>
-    </unit>
-    <unit id="59" name="P2HeaderTextN2">
-      <segment>
-        <source>text 2</source>
-      </segment>
-    </unit>
-    <unit id="60" name="P2PlaceholderTextSelectTime">
-      <segment>
-        <source>Select Time</source>
-      </segment>
-    </unit>
-    <unit id="61" name="P2PlaceholderTextSelectAddress">
-      <segment>
-        <source>Select Address</source>
-      </segment>
-    </unit>
-    <unit id="62" name="P2HeaderHangzhou">
-      <segment>
-        <source>Hangzhou</source>
-      </segment>
-    </unit>
-    <unit id="63" name="P2HeaderWestLake">
-      <segment>
-        <source>West Lake</source>
-      </segment>
-    </unit>
-    <unit id="64" name="P2HeaderLingyinShi">
-      <segment>
-        <source>Lingyin shi</source>
-      </segment>
-    </unit>
-    <unit id="65" name="P2HeaderNanjing">
-      <segment>
-        <source>Nanjing</source>
-      </segment>
-    </unit>
-    <unit id="66" name="P2HeaderZhongHuaMen">
-      <segment>
-        <source>Zhong Hua Men</source>
-      </segment>
-    </unit>
-    <unit id="67" name="P2PlaceholderTextStartTime">
-      <segment>
-        <source>Start time</source>
-      </segment>
-    </unit>
-    <unit id="68" name="P2SecondaryPlaceholderTextEndTime">
-      <segment>
-        <source>End time</source>
-      </segment>
-    </unit>
-    <unit id="69" name="P2PlaceholderTextPleaseSelect">
-      <segment>
-        <source>Please select</source>
-      </segment>
-    </unit>
-    <unit id="70" name="P2HeaderParentN1">
-      <segment>
-        <source>parent 1</source>
-      </segment>
-    </unit>
-    <unit id="71" name="P2HeaderParentN1N0">
-      <segment>
-        <source>parent 1-0</source>
-      </segment>
-    </unit>
-    <unit id="72" name="P2HeaderLeaf1">
-      <segment>
-        <source>leaf1</source>
-      </segment>
-    </unit>
-    <unit id="73" name="P2HeaderLeaf2">
-      <segment>
-        <source>leaf2</source>
-      </segment>
-    </unit>
-    <unit id="74" name="P2HeaderParentN1N1">
-      <segment>
-        <source>parent 1-1</source>
-      </segment>
-    </unit>
-    <unit id="75" name="P2HeaderLeaf3">
-      <segment>
-        <source>leaf3</source>
-      </segment>
-    </unit>
-    <unit id="76" name="P2PlaceholderTextInputHere">
-      <segment>
-        <source>input here</source>
-      </segment>
-    </unit>
-    <unit id="77" name="P2PlaceholderTextAnotherInput">
-      <segment>
-        <source>another input</source>
-      </segment>
-    </unit>
-    <unit id="78" name="P2TextCenter">
-      <segment>
-        <source>center</source>
-      </segment>
-    </unit>
-    <unit id="79" name="P2ContentPrimary">
-      <segment>
-        <source>Primary</source>
-      </segment>
-    </unit>
-    <unit id="80" name="P2TextBlock">
-      <segment>
-        <source>Block</source>
-      </segment>
-    </unit>
-    <unit id="81" name="P2ContentButton">
+    <unit id="P2ContentButton">
       <segment>
         <source>Button</source>
       </segment>
     </unit>
-    <unit id="82" name="P2ContentLink">
-      <segment>
-        <source>Link</source>
-      </segment>
-    </unit>
-    <unit id="83" name="P2TextSpace">
-      <segment>
-        <source>Space:</source>
-      </segment>
-    </unit>
-    <unit id="84" name="P2ContentClickToUpload">
-      <segment>
-        <source>Click to Upload</source>
-      </segment>
-    </unit>
-    <unit id="85" name="P2ContentConfirm">
-      <segment>
-        <source>Confirm</source>
-      </segment>
-    </unit>
-    <unit id="86" name="P2TextCardContent">
-      <segment>
-        <source>Card content</source>
-      </segment>
-    </unit>
-    <unit id="87" name="P2ContentButtonN1">
+    <unit id="P2ContentButtonN1">
       <segment>
         <source>Button 1</source>
       </segment>
     </unit>
-    <unit id="88" name="P2ContentButtonN2">
+    <unit id="P2ContentButtonN2">
       <segment>
         <source>Button 2</source>
       </segment>
     </unit>
-    <unit id="89" name="P2ContentButtonN3">
+    <unit id="P2ContentButtonN3">
       <segment>
         <source>Button 3</source>
       </segment>
     </unit>
-    <unit id="90" name="P2ContentButtonN4">
+    <unit id="P2ContentButtonN4">
       <segment>
         <source>Button 4</source>
       </segment>
     </unit>
-    <unit id="91" name="P2ContentSubmit">
+    <unit id="P2ContentClickToUpload">
       <segment>
-        <source>Submit</source>
+        <source>Click to Upload</source>
       </segment>
     </unit>
-    <unit id="92" name="P2ContentSearch">
+    <unit id="P2ContentConfirm">
       <segment>
-        <source>Search</source>
+        <source>Confirm</source>
       </segment>
     </unit>
-    <unit id="93" name="P2ContentSmall">
-      <segment>
-        <source>Small</source>
-      </segment>
-    </unit>
-    <unit id="94" name="P2ContentMiddle">
-      <segment>
-        <source>Middle</source>
-      </segment>
-    </unit>
-    <unit id="95" name="P2ContentLarge">
-      <segment>
-        <source>Large</source>
-      </segment>
-    </unit>
-    <unit id="96" name="P2ContentCustom">
+    <unit id="P2ContentCustom">
       <segment>
         <source>Custom</source>
       </segment>
     </unit>
-    <unit id="97" name="P2ContentDefault">
-      <segment>
-        <source>Default</source>
-      </segment>
-    </unit>
-    <unit id="98" name="P2ContentDashed">
+    <unit id="P2ContentDashed">
       <segment>
         <source>Dashed</source>
       </segment>
     </unit>
-    <unit id="99" name="P2ToolTipTipCopyGitUrl">
+    <unit id="P2ContentDefault">
       <segment>
-        <source>copy git url</source>
+        <source>Default</source>
       </segment>
     </unit>
-    <unit id="100" name="P2ToolTipTipLike">
+    <unit id="P2ContentLarge">
       <segment>
-        <source>Like</source>
+        <source>Large</source>
       </segment>
     </unit>
-    <unit id="101" name="P2ToolTipTipComment">
+    <unit id="P2ContentLink">
+      <segment>
+        <source>Link</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentMiddle">
+      <segment>
+        <source>Middle</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentPrimary">
+      <segment>
+        <source>Primary</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSearch">
+      <segment>
+        <source>Search</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSubmit">
+      <segment>
+        <source>Submit</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderBetween">
+      <segment>
+        <source>Between</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCard">
+      <segment>
+        <source>Card</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderExcept">
+      <segment>
+        <source>Except</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderHangzhou">
+      <segment>
+        <source>Hangzhou</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderJiangsu">
+      <segment>
+        <source>Jiangsu</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf1">
+      <segment>
+        <source>leaf1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf2">
+      <segment>
+        <source>leaf2</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLeaf3">
+      <segment>
+        <source>leaf3</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderLingyinShi">
+      <segment>
+        <source>Lingyin shi</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMail">
+      <segment>
+        <source>Mail</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderMobile">
+      <segment>
+        <source>Mobile</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN1stItem">
+      <segment>
+        <source>1st item</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN2ndItem">
+      <segment>
+        <source>2nd item</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderN3rdItem">
+      <segment>
+        <source>3rd item</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderNanjing">
+      <segment>
+        <source>Nanjing</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOption1">
+      <segment>
+        <source>Option1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOption1N1">
+      <segment>
+        <source>Option1-1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOption2">
+      <segment>
+        <source>Option2</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOption2N1">
+      <segment>
+        <source>Option2-1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderOption2N2">
+      <segment>
+        <source>Option2-2</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN1">
+      <segment>
+        <source>parent 1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN1N0">
+      <segment>
+        <source>parent 1-0</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderParentN1N1">
+      <segment>
+        <source>parent 1-1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderReport">
+      <segment>
+        <source>Report</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSignIn">
+      <segment>
+        <source>Sign In</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderSignUp">
+      <segment>
+        <source>Sign Up</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTextN1">
+      <segment>
+        <source>text 1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderTextN2">
+      <segment>
+        <source>text 2</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderWestLake">
+      <segment>
+        <source>West Lake</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZhejiang">
+      <segment>
+        <source>Zhejiang</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderZhongHuaMen">
+      <segment>
+        <source>Zhong Hua Men</source>
+      </segment>
+    </unit>
+    <unit id="P2OkTextOk">
+      <segment>
+        <source>Ok</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextAnotherInput">
+      <segment>
+        <source>another input</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextEmail">
+      <segment>
+        <source>Email</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputHere">
+      <segment>
+        <source>input here</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextMaximum">
+      <segment>
+        <source>Maximum</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextMinimum">
+      <segment>
+        <source>Minimum</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseSelect">
+      <segment>
+        <source>Please select</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectAddress">
+      <segment>
+        <source>Select Address</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectTime">
+      <segment>
+        <source>Select Time</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextStartTime">
+      <segment>
+        <source>Start time</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextText">
+      <segment>
+        <source>~</source>
+      </segment>
+    </unit>
+    <unit id="P2SecondaryPlaceholderTextEndTime">
+      <segment>
+        <source>End time</source>
+      </segment>
+    </unit>
+    <unit id="P2TextBlock">
+      <segment>
+        <source>Block</source>
+      </segment>
+    </unit>
+    <unit id="P2TextCardContent">
+      <segment>
+        <source>Card content</source>
+      </segment>
+    </unit>
+    <unit id="P2TextCenter">
+      <segment>
+        <source>center</source>
+      </segment>
+    </unit>
+    <unit id="P2TextInputContent">
+      <segment>
+        <source>input content</source>
+      </segment>
+    </unit>
+    <unit id="P2TextN1">
+      <segment>
+        <source>+1</source>
+      </segment>
+    </unit>
+    <unit id="P2TextSpace">
+      <segment>
+        <source>Space:</source>
+      </segment>
+    </unit>
+    <unit id="P2TextXihuDistrictHangzhou">
+      <segment>
+        <source>Xihu District, Hangzhou</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleDeleteTheTask">
+      <segment>
+        <source>Delete the task</source>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipComment">
       <segment>
         <source>Comment</source>
       </segment>
     </unit>
-    <unit id="102" name="P2ToolTipTipStar">
+    <unit id="P2ToolTipTipCopyGitUrl">
       <segment>
-        <source>Star</source>
+        <source>copy git url</source>
       </segment>
     </unit>
-    <unit id="103" name="P2ToolTipTipHeart">
-      <segment>
-        <source>Heart</source>
-      </segment>
-    </unit>
-    <unit id="104" name="P2ToolTipTipShare">
-      <segment>
-        <source>Share</source>
-      </segment>
-    </unit>
-    <unit id="105" name="P2ToolTipTipDownload">
+    <unit id="P2ToolTipTipDownload">
       <segment>
         <source>Download</source>
       </segment>
     </unit>
-    <unit id="106" name="P2ToolTipTipTooltip">
+    <unit id="P2ToolTipTipHeart">
+      <segment>
+        <source>Heart</source>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipLike">
+      <segment>
+        <source>Like</source>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipShare">
+      <segment>
+        <source>Share</source>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipStar">
+      <segment>
+        <source>Star</source>
+      </segment>
+    </unit>
+    <unit id="P2ToolTipTipTooltip">
       <segment>
         <source>Tooltip</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Space provides inline and vertical spacing, item alignment, split rendering, and compact input/button groups for dense tool surfaces.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Arrange components with consistent spacing or compact grouping.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioAlign">
+      <segment>
+        <source>Align</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioCompactButton">
+      <segment>
+        <source>Compact Button</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioCompactForm">
+      <segment>
+        <source>Compact Form</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioSize">
+      <segment>
+        <source>Size</source>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>Use size to set the spacing. Three sizes are preset: small, middle, and large. You can also customize the spacing. If size is not set, the spacing is small.</source>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Space Size</source>
+      </segment>
+    </unit>
+    <unit id="SplitDescription">
+      <segment>
+        <source>Crowded components split.</source>
+      </segment>
+    </unit>
+    <unit id="SplitTitle">
+      <segment>
+        <source>Split</source>
+      </segment>
+    </unit>
+    <unit id="VerticalCompactDescription">
+      <segment>
+        <source>Vertical Mode for Space.Compact, supports Button only.</source>
+      </segment>
+    </unit>
+    <unit id="VerticalCompactTitle">
+      <segment>
+        <source>Vertical Compact Mode</source>
+      </segment>
+    </unit>
+    <unit id="VerticalSpaceDescription">
+      <segment>
+        <source>Crowded components vertical spacing.</source>
+      </segment>
+    </unit>
+    <unit id="VerticalSpaceTitle">
+      <segment>
+        <source>Vertical Space</source>
+      </segment>
+    </unit>
+    <unit id="WrapDescription">
+      <segment>
+        <source>Auto wrap line.</source>
+      </segment>
+    </unit>
+    <unit id="WrapTitle">
+      <segment>
+        <source>Wrap</source>
       </segment>
     </unit>
   </file>

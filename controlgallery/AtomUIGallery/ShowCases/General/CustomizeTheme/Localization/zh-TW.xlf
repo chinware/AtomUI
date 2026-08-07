@@ -1,244 +1,244 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind">
-    <unit id="1" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">示例</target>
-      </segment>
-    </unit>
-    <unit id="2" name="ComponentCategory">
-      <segment>
-        <source>General</source>
-        <target state="translated">通用</target>
-      </segment>
-    </unit>
-    <unit id="3" name="ComponentStatusStable">
-      <segment>
-        <source>.NET 10</source>
-        <target state="translated">.NET 10</target>
-      </segment>
-    </unit>
-    <unit id="4" name="PageSubtitle">
-      <segment>
-        <source>Customize AtomUI themes with Global Tokens, algorithms, Control Tokens, and nested local theme scopes.</source>
-        <target state="translated">通過 Global Token、算法、控件 Token 和局部嵌套作用域定制 AtomUI 主題。</target>
-      </segment>
-    </unit>
-    <unit id="5" name="PageDescription">
-      <segment>
-        <source>Customize Theme demonstrates how ThemeConfigProvider overrides Global Tokens, applies preset algorithms, configures Control Tokens, and nests theme contexts without changing the global application theme.</source>
-        <target state="translated">Customize Theme 展示 ThemeConfigProvider 如何覆蓋 Global Token、應用預設算法、配置控件 Token 和嵌套主題上下文，而不需要修改應用全局主題。</target>
-      </segment>
-    </unit>
-    <unit id="6" name="ApiMemberThemeConfigProviderConfig">
-      <segment>
-        <source>Immutable scoped theme configuration. Runtime updates replace the complete value.</source>
-        <target state="translated">不可變的局部主題配置；運行期更新需要替換完整配置值。</target>
-      </segment>
-    </unit>
-    <unit id="7" name="ApiMemberThemeConfigInherit">
-      <segment>
-        <source>Whether this configuration inherits and merges the parent theme configuration.</source>
-        <target state="translated">是否繼承並合併父級主題配置。</target>
-      </segment>
-    </unit>
-    <unit id="8" name="ApiMemberThemeConfigAlgorithms">
-      <segment>
-        <source>Ordered ThemeAlgorithm values. A null value inherits the parent algorithm chain.</source>
-        <target state="translated">有序的 ThemeAlgorithm 枚舉值；null 表示繼承父級算法鏈。</target>
-      </segment>
-    </unit>
-    <unit id="9" name="ApiMemberThemeConfigTokens">
-      <segment>
-        <source>Global token overrides keyed by token name.</source>
-        <target state="translated">按 Token 名稱索引的全局 Token 覆蓋。</target>
-      </segment>
-    </unit>
-    <unit id="10" name="ApiMemberThemeConfigControls">
-      <segment>
-        <source>Control theme configurations keyed by ControlTokenIdentity.</source>
-        <target state="translated">按 ControlTokenIdentity 索引的控件主題配置。</target>
-      </segment>
-    </unit>
-    <unit id="11" name="ApiMemberControlThemeConfigAlgorithm">
+    <unit id="ApiMemberControlThemeConfigAlgorithm">
       <segment>
         <source>How the control applies algorithms: Unspecified, Disabled, Global, or Custom.</source>
         <target state="translated">控件算法模式：Unspecified、Disabled、Global 或 Custom。</target>
       </segment>
     </unit>
-    <unit id="12" name="ApiMemberControlThemeConfigAlgorithms">
+    <unit id="ApiMemberControlThemeConfigAlgorithms">
       <segment>
         <source>Ordered ThemeAlgorithm values used only when Algorithm is Custom.</source>
         <target state="translated">僅在 Algorithm 為 Custom 時使用的有序 ThemeAlgorithm 枚舉值。</target>
       </segment>
     </unit>
-    <unit id="13" name="ApiMemberControlThemeConfigTokens">
+    <unit id="ApiMemberControlThemeConfigTokens">
       <segment>
         <source>Global Token and Own Token overrides applied only to the selected Control identity.</source>
         <target state="translated">僅應用到目標 Control identity 的 Global Token 與 Own Token 覆蓋。</target>
       </segment>
     </unit>
-    <unit id="14" name="CustomizeDesignTokenTitle">
+    <unit id="ApiMemberThemeConfigAlgorithms">
       <segment>
-        <source>Customize Design Token</source>
-        <target state="translated">自定義設計令牌</target>
+        <source>Ordered ThemeAlgorithm values. A null value inherits the parent algorithm chain.</source>
+        <target state="translated">有序的 ThemeAlgorithm 枚舉值；null 表示繼承父級算法鏈。</target>
       </segment>
     </unit>
-    <unit id="15" name="CustomizeDesignTokenDescription">
+    <unit id="ApiMemberThemeConfigControls">
       <segment>
-        <source>By modifying token property of theme, we can modify Design Token globally. Some tokens will affect other tokens. We call these tokens Seed Token.</source>
-        <target state="translated">通過修改主題的 token 屬性，可以全局修改 Design Token。部分 token 會影響其他 token，這類 token 稱為 Seed Token。</target>
+        <source>Control theme configurations keyed by ControlTokenIdentity.</source>
+        <target state="translated">按 ControlTokenIdentity 索引的控件主題配置。</target>
       </segment>
     </unit>
-    <unit id="16" name="PresetAlgorithmsTitle">
+    <unit id="ApiMemberThemeConfigInherit">
       <segment>
-        <source>Use Preset Algorithms</source>
-        <target state="translated">使用預設算法</target>
+        <source>Whether this configuration inherits and merges the parent theme configuration.</source>
+        <target state="translated">是否繼承並合併父級主題配置。</target>
       </segment>
     </unit>
-    <unit id="17" name="PresetAlgorithmsDescription">
+    <unit id="ApiMemberThemeConfigProviderConfig">
       <segment>
-        <source>Themes with different styles can be quickly generated by modifying algorithm. Ant Design 5.0 provides three sets of preset algorithms by default: DefaultAlgorithm, DarkAlgorithm, CompactAlgorithm.</source>
-        <target state="translated">通過修改 algorithm 可以快速生成不同風格的主題。Ant Design 5.0 默認提供三套預設算法：DefaultAlgorithm、DarkAlgorithm、CompactAlgorithm。</target>
+        <source>Immutable scoped theme configuration. Runtime updates replace the complete value.</source>
+        <target state="translated">不可變的局部主題配置；運行期更新需要替換完整配置值。</target>
       </segment>
     </unit>
-    <unit id="18" name="RuntimeTokenUpdatesTitle">
+    <unit id="ApiMemberThemeConfigTokens">
       <segment>
-        <source>Runtime Token Updates</source>
-        <target state="translated">運行期令牌更新</target>
+        <source>Global token overrides keyed by token name.</source>
+        <target state="translated">按 Token 名稱索引的全局 Token 覆蓋。</target>
       </segment>
     </unit>
-    <unit id="19" name="RuntimeTokenUpdatesDescription">
+    <unit id="ComponentCategory">
       <segment>
-        <source>Replace ThemeConfigProvider.Config with a new immutable ThemeConfig to publish one scoped snapshot without adding resource provider layers.</source>
-        <target state="translated">使用新的不可變 ThemeConfig 替換 ThemeConfigProvider.Config，即可發布一個局部 Snapshot，並且不會追加資源 Provider 層。</target>
+        <source>General</source>
+        <target state="translated">通用</target>
       </segment>
     </unit>
-    <unit id="20" name="CustomizeControlTokenTitle">
+    <unit id="ComponentStatusStable">
       <segment>
-        <source>Customize Control Tokens</source>
-        <target state="translated">自定義控件 Token</target>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
       </segment>
     </unit>
-    <unit id="21" name="CustomizeControlTokenDescription">
+    <unit id="CustomizeControlTokenDescription">
       <segment>
         <source>Every publicly themeable Control has an independent identity. Its configuration can override any Global Token and that Control's Own Tokens; the overrides affect only the selected Control and do not leak to other Controls.</source>
         <target state="translated">每個對外可主題化的控件都有獨立 Control identity。可以在該控件配置下覆蓋任意 Global Token 以及該控件的 Own Token；覆蓋只影響目標控件，不會洩漏到其他控件。</target>
       </segment>
     </unit>
-    <unit id="22" name="NestedThemeTitle">
+    <unit id="CustomizeControlTokenTitle">
       <segment>
-        <source>Nested Theme</source>
-        <target state="translated">嵌套主題</target>
+        <source>Customize Control Tokens</source>
+        <target state="translated">自定義控件 Token</target>
       </segment>
     </unit>
-    <unit id="23" name="NestedThemeDescription">
+    <unit id="CustomizeDesignTokenDescription">
+      <segment>
+        <source>By modifying token property of theme, we can modify Design Token globally. Some tokens will affect other tokens. We call these tokens Seed Token.</source>
+        <target state="translated">通過修改主題的 token 屬性，可以全局修改 Design Token。部分 token 會影響其他 token，這類 token 稱為 Seed Token。</target>
+      </segment>
+    </unit>
+    <unit id="CustomizeDesignTokenTitle">
+      <segment>
+        <source>Customize Design Token</source>
+        <target state="translated">自定義設計令牌</target>
+      </segment>
+    </unit>
+    <unit id="NestedThemeDescription">
       <segment>
         <source>By nesting ConfigProvider you can apply a local theme to part of your page. Design Tokens that are not changed in the child theme inherit from the parent theme.</source>
         <target state="translated">通過嵌套 ConfigProvider，可以為頁面的局部區域應用局部主題。子主題中未修改的 Design Token 會繼承父主題。</target>
       </segment>
     </unit>
-    <unit id="24" name="P2PlaceholderTextPleaseInput">
+    <unit id="NestedThemeTitle">
       <segment>
-        <source>Please input</source>
-        <target state="translated">請輸入</target>
+        <source>Nested Theme</source>
+        <target state="translated">嵌套主題</target>
       </segment>
     </unit>
-    <unit id="25" name="P2ContentPrimaryButton">
-      <segment>
-        <source>Primary Button</source>
-        <target state="translated">主要按鈕</target>
-      </segment>
-    </unit>
-    <unit id="26" name="P2ContentDefaultButton">
-      <segment>
-        <source>Default Button</source>
-        <target state="translated">默認按鈕</target>
-      </segment>
-    </unit>
-    <unit id="27" name="P2ContentTextButton">
-      <segment>
-        <source>Text Button</source>
-        <target state="translated">文本按鈕</target>
-      </segment>
-    </unit>
-    <unit id="28" name="P2ContentLinkButton">
-      <segment>
-        <source>Link Button</source>
-        <target state="translated">鏈接按鈕</target>
-      </segment>
-    </unit>
-    <unit id="29" name="P2ContentApple">
+    <unit id="P2ContentApple">
       <segment>
         <source>Apple</source>
         <target state="translated">蘋果</target>
       </segment>
     </unit>
-    <unit id="30" name="P2ContentPear">
+    <unit id="P2ContentDefaultButton">
       <segment>
-        <source>Pear</source>
-        <target state="translated">梨</target>
+        <source>Default Button</source>
+        <target state="translated">默認按鈕</target>
       </segment>
     </unit>
-    <unit id="31" name="P2ContentOrange">
+    <unit id="P2ContentLinkButton">
+      <segment>
+        <source>Link Button</source>
+        <target state="translated">鏈接按鈕</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentOrange">
       <segment>
         <source>Orange</source>
         <target state="translated">橙子</target>
       </segment>
     </unit>
-    <unit id="32" name="P2ContentSubmit">
+    <unit id="P2ContentPear">
+      <segment>
+        <source>Pear</source>
+        <target state="translated">梨</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPrimaryButton">
+      <segment>
+        <source>Primary Button</source>
+        <target state="translated">主要按鈕</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSubmit">
       <segment>
         <source>Submit</source>
         <target state="translated">提交</target>
       </segment>
     </unit>
-    <unit id="33" name="P2ContentUseBlue">
+    <unit id="P2ContentTextButton">
       <segment>
-        <source>Blue</source>
-        <target state="translated">藍色</target>
+        <source>Text Button</source>
+        <target state="translated">文本按鈕</target>
       </segment>
     </unit>
-    <unit id="34" name="P2ContentUseGreen">
-      <segment>
-        <source>Green</source>
-        <target state="translated">綠色</target>
-      </segment>
-    </unit>
-    <unit id="35" name="P2ContentUseMagenta">
-      <segment>
-        <source>Magenta</source>
-        <target state="translated">洋紅</target>
-      </segment>
-    </unit>
-    <unit id="36" name="P2TextEnableAlgorithm">
-      <segment>
-        <source>Enable algorithm:</source>
-        <target state="translated">啓用算法：</target>
-      </segment>
-    </unit>
-    <unit id="37" name="P2TextDisableAlgorithm">
-      <segment>
-        <source>Disable algorithm:</source>
-        <target state="translated">禁用算法：</target>
-      </segment>
-    </unit>
-    <unit id="38" name="P2ContentThemeN1">
+    <unit id="P2ContentThemeN1">
       <segment>
         <source>Theme 1</source>
         <target state="translated">主題 1</target>
       </segment>
     </unit>
-    <unit id="39" name="P2ContentThemeN2">
+    <unit id="P2ContentThemeN2">
       <segment>
         <source>Theme 2</source>
         <target state="translated">主題 2</target>
       </segment>
     </unit>
-    <unit id="40" name="P2ContentThemeN3">
+    <unit id="P2ContentThemeN3">
       <segment>
         <source>No inherit</source>
         <target state="translated">不繼承</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentUseBlue">
+      <segment>
+        <source>Blue</source>
+        <target state="translated">藍色</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentUseGreen">
+      <segment>
+        <source>Green</source>
+        <target state="translated">綠色</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentUseMagenta">
+      <segment>
+        <source>Magenta</source>
+        <target state="translated">洋紅</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextPleaseInput">
+      <segment>
+        <source>Please input</source>
+        <target state="translated">請輸入</target>
+      </segment>
+    </unit>
+    <unit id="P2TextDisableAlgorithm">
+      <segment>
+        <source>Disable algorithm:</source>
+        <target state="translated">禁用算法：</target>
+      </segment>
+    </unit>
+    <unit id="P2TextEnableAlgorithm">
+      <segment>
+        <source>Enable algorithm:</source>
+        <target state="translated">啓用算法：</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Customize Theme demonstrates how ThemeConfigProvider overrides Global Tokens, applies preset algorithms, configures Control Tokens, and nests theme contexts without changing the global application theme.</source>
+        <target state="translated">Customize Theme 展示 ThemeConfigProvider 如何覆蓋 Global Token、應用預設算法、配置控件 Token 和嵌套主題上下文，而不需要修改應用全局主題。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Customize AtomUI themes with Global Tokens, algorithms, Control Tokens, and nested local theme scopes.</source>
+        <target state="translated">通過 Global Token、算法、控件 Token 和局部嵌套作用域定制 AtomUI 主題。</target>
+      </segment>
+    </unit>
+    <unit id="PresetAlgorithmsDescription">
+      <segment>
+        <source>Themes with different styles can be quickly generated by modifying algorithm. Ant Design 5.0 provides three sets of preset algorithms by default: DefaultAlgorithm, DarkAlgorithm, CompactAlgorithm.</source>
+        <target state="translated">通過修改 algorithm 可以快速生成不同風格的主題。Ant Design 5.0 默認提供三套預設算法：DefaultAlgorithm、DarkAlgorithm、CompactAlgorithm。</target>
+      </segment>
+    </unit>
+    <unit id="PresetAlgorithmsTitle">
+      <segment>
+        <source>Use Preset Algorithms</source>
+        <target state="translated">使用預設算法</target>
+      </segment>
+    </unit>
+    <unit id="RuntimeTokenUpdatesDescription">
+      <segment>
+        <source>Replace ThemeConfigProvider.Config with a new immutable ThemeConfig to publish one scoped snapshot without adding resource provider layers.</source>
+        <target state="translated">使用新的不可變 ThemeConfig 替換 ThemeConfigProvider.Config，即可發布一個局部 Snapshot，並且不會追加資源 Provider 層。</target>
+      </segment>
+    </unit>
+    <unit id="RuntimeTokenUpdatesTitle">
+      <segment>
+        <source>Runtime Token Updates</source>
+        <target state="translated">運行期令牌更新</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
       </segment>
     </unit>
   </file>

@@ -46,22 +46,24 @@ internal static class XliffMergeEngine
             }
         }
 
-        var existingUnits = existingTarget?.File.Units.ToDictionary(static unit => unit.Id) ??
-                            new Dictionary<int, XliffUnitModel>();
-        var sourceIds = new HashSet<int>();
+        var existingUnits = existingTarget?.File.Units.ToDictionary(
+                                static unit => unit.Key,
+                                StringComparer.Ordinal) ??
+                            new Dictionary<string, XliffUnitModel>(StringComparer.Ordinal);
+        var sourceKeys = new HashSet<string>(StringComparer.Ordinal);
         var mergedUnits = new List<XliffUnitModel>();
-        foreach (var sourceUnit in source.File.Units.OrderBy(static unit => unit.Id))
+        foreach (var sourceUnit in source.File.Units.OrderBy(static unit => unit.Key, StringComparer.Ordinal))
         {
-            sourceIds.Add(sourceUnit.Id);
-            existingUnits.TryGetValue(sourceUnit.Id, out var existingUnit);
+            sourceKeys.Add(sourceUnit.Key);
+            existingUnits.TryGetValue(sourceUnit.Key, out var existingUnit);
             var sourceChanged = existingUnit is not null &&
                                 !string.Equals(
                                     sourceUnit.Source,
                                     existingUnit.Source,
                                     StringComparison.Ordinal);
             mergedUnits.Add(new XliffUnitModel(
-                sourceUnit.Id,
-                sourceUnit.Name,
+                sourceUnit.Key,
+                null,
                 sourceUnit.Source,
                 existingUnit?.Target ?? string.Empty,
                 existingUnit is null || sourceChanged ? "initial" : existingUnit.TargetState,
@@ -73,12 +75,12 @@ internal static class XliffMergeEngine
         }
 
         foreach (var existingUnit in existingUnits.Values
-                                                  .Where(unit => !sourceIds.Contains(unit.Id))
-                                                  .OrderBy(static unit => unit.Id))
+                                                  .Where(unit => !sourceKeys.Contains(unit.Key))
+                                                  .OrderBy(static unit => unit.Key, StringComparer.Ordinal))
         {
             mergedUnits.Add(new XliffUnitModel(
-                existingUnit.Id,
-                existingUnit.Name,
+                existingUnit.Key,
+                null,
                 existingUnit.Source,
                 existingUnit.Target,
                 existingUnit.TargetState,
@@ -95,7 +97,7 @@ internal static class XliffMergeEngine
             canonicalTargetLanguage,
             new XliffFileModel(
                 source.File.Id,
-                mergedUnits.OrderBy(static unit => unit.Id).ToArray()));
+                mergedUnits.OrderBy(static unit => unit.Key, StringComparer.Ordinal).ToArray()));
     }
 
     private static IReadOnlyList<string> MergeNotes(

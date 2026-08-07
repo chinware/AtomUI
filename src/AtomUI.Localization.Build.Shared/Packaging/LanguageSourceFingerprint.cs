@@ -10,11 +10,9 @@ internal static class LanguageSourceFingerprint
         var builder = new StringBuilder();
         foreach (var unit in document.File.Units
                                      .Where(static unit => !unit.IsObsolete)
-                                     .OrderBy(static unit => unit.Id))
+                                     .OrderBy(static unit => unit.Key, StringComparer.Ordinal))
         {
-            builder.Append(unit.Id)
-                   .Append('\0')
-                   .Append(unit.Name)
+            builder.Append(unit.Key)
                    .Append('\0')
                    .Append(unit.Source)
                    .Append('\n');

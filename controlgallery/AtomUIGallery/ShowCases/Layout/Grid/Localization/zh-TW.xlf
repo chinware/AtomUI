@@ -1,484 +1,484 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.GridShowCaseLangResourceKind">
-    <unit id="1" name="ScenarioBasic">
-      <segment>
-        <source>Basic</source>
-        <target state="translated">基礎</target>
-      </segment>
-    </unit>
-    <unit id="2" name="ScenarioSpacing">
-      <segment>
-        <source>Spacing</source>
-        <target state="translated">間距</target>
-      </segment>
-    </unit>
-    <unit id="3" name="ScenarioAlignment">
-      <segment>
-        <source>Alignment</source>
-        <target state="translated">對齊</target>
-      </segment>
-    </unit>
-    <unit id="4" name="ScenarioOrder">
-      <segment>
-        <source>Order</source>
-        <target state="translated">排序</target>
-      </segment>
-    </unit>
-    <unit id="5" name="ScenarioColInfo">
-      <segment>
-        <source>ColInfo</source>
-        <target state="translated">ColInfo</target>
-      </segment>
-    </unit>
-    <unit id="6" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">示例</target>
-      </segment>
-    </unit>
-    <unit id="7" name="PageSubtitle">
-      <segment>
-        <source>Build responsive 24-column layouts with rows and columns.</source>
-        <target state="translated">使用行和列構建響應式 24 柵格佈局。</target>
-      </segment>
-    </unit>
-    <unit id="8" name="PageDescription">
-      <segment>
-        <source>Grid provides row gutters, alignment, offsets, ordering, and breakpoint-specific column sizing for application layouts.</source>
-        <target state="translated">Grid 提供行間距、對齊、偏移、排序和斷點級列尺寸控制，適合應用佈局。</target>
-      </segment>
-    </unit>
-    <unit id="9" name="ComponentCategory">
-      <segment>
-        <source>Layout</source>
-        <target state="translated">佈局</target>
-      </segment>
-    </unit>
-    <unit id="10" name="ComponentStatusStable">
-      <segment>
-        <source>Stable</source>
-        <target state="translated">穩定</target>
-      </segment>
-    </unit>
-    <unit id="11" name="BasicGridTitle">
-      <segment>
-        <source>Basic Grid</source>
-        <target state="translated">基礎柵格</target>
-      </segment>
-    </unit>
-    <unit id="12" name="BasicGridDescription">
-      <segment>
-        <source>Basic 24-column layout.</source>
-        <target state="translated">基礎的 24 柵格佈局。</target>
-      </segment>
-    </unit>
-    <unit id="13" name="GutterTitle">
-      <segment>
-        <source>Gutter</source>
-        <target state="translated">間距</target>
-      </segment>
-    </unit>
-    <unit id="14" name="GutterDescription">
-      <segment>
-        <source>Horizontal, vertical, and responsive gutter.</source>
-        <target state="translated">水平、垂直和響應式間距。</target>
-      </segment>
-    </unit>
-    <unit id="15" name="OffsetTitle">
-      <segment>
-        <source>Offset</source>
-        <target state="translated">偏移</target>
-      </segment>
-    </unit>
-    <unit id="16" name="OffsetDescription">
-      <segment>
-        <source>Move columns to the right.</source>
-        <target state="translated">將列向右移動。</target>
-      </segment>
-    </unit>
-    <unit id="17" name="PushPullTitle">
-      <segment>
-        <source>Push &amp; Pull</source>
-        <target state="translated">推拉排序</target>
-      </segment>
-    </unit>
-    <unit id="18" name="PushPullDescription">
-      <segment>
-        <source>Change column order with push/pull.</source>
-        <target state="translated">使用 push/pull 改變列順序。</target>
-      </segment>
-    </unit>
-    <unit id="19" name="JustifyTitle">
-      <segment>
-        <source>Justify</source>
-        <target state="translated">主軸對齊</target>
-      </segment>
-    </unit>
-    <unit id="20" name="JustifyDescription">
-      <segment>
-        <source>Sub-element alignment on the main axis.</source>
-        <target state="translated">子元素在主軸上的對齊方式。</target>
-      </segment>
-    </unit>
-    <unit id="21" name="AlignTitle">
-      <segment>
-        <source>Align</source>
-        <target state="translated">交叉軸對齊</target>
-      </segment>
-    </unit>
-    <unit id="22" name="AlignDescription">
+    <unit id="AlignDescription">
       <segment>
         <source>Sub-element alignment on the cross axis.</source>
         <target state="translated">子元素在交叉軸上的對齊方式。</target>
       </segment>
     </unit>
-    <unit id="23" name="OrderTitle">
+    <unit id="AlignTitle">
       <segment>
-        <source>Order</source>
-        <target state="translated">排序</target>
+        <source>Align</source>
+        <target state="translated">交叉軸對齊</target>
       </segment>
     </unit>
-    <unit id="24" name="OrderDescription">
+    <unit id="BasicGridDescription">
       <segment>
-        <source>Change column order.</source>
-        <target state="translated">改變列順序。</target>
+        <source>Basic 24-column layout.</source>
+        <target state="translated">基礎的 24 柵格佈局。</target>
       </segment>
     </unit>
-    <unit id="25" name="FlexTitle">
+    <unit id="BasicGridTitle">
       <segment>
-        <source>Flex</source>
-        <target state="translated">Flex</target>
+        <source>Basic Grid</source>
+        <target state="translated">基礎柵格</target>
       </segment>
     </unit>
-    <unit id="26" name="FlexDescription">
-      <segment>
-        <source>Fill remaining row space with fixed basis, auto, and responsive flex columns.</source>
-        <target state="translated">使用固定基準、auto 和響應式 flex 列填充行內剩餘空間。</target>
-      </segment>
-    </unit>
-    <unit id="27" name="ColInfoTitle">
-      <segment>
-        <source>ColInfo</source>
-        <target state="translated">ColInfo</target>
-      </segment>
-    </unit>
-    <unit id="28" name="ColInfoDescription">
+    <unit id="ColInfoDescription">
       <segment>
         <source>Use ColInfo for responsive overrides.</source>
         <target state="translated">使用 ColInfo 進行響應式覆蓋。</target>
       </segment>
     </unit>
-    <unit id="29" name="P2TextCol">
+    <unit id="ColInfoTitle">
       <segment>
-        <source>col</source>
-        <target state="translated">col</target>
+        <source>ColInfo</source>
+        <target state="translated">ColInfo</target>
       </segment>
     </unit>
-    <unit id="30" name="P2TextColN12">
+    <unit id="ComponentCategory">
       <segment>
-        <source>col-12</source>
-        <target state="translated">列-12</target>
+        <source>Layout</source>
+        <target state="translated">佈局</target>
       </segment>
     </unit>
-    <unit id="31" name="P2TextColN8">
+    <unit id="ComponentStatusStable">
       <segment>
-        <source>col-8</source>
-        <target state="translated">列-8</target>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
       </segment>
     </unit>
-    <unit id="32" name="P2TextColN6">
+    <unit id="FlexDescription">
       <segment>
-        <source>col-6</source>
-        <target state="translated">列-6</target>
+        <source>Fill remaining row space with fixed basis, auto, and responsive flex columns.</source>
+        <target state="translated">使用固定基準、auto 和響應式 flex 列填充行內剩餘空間。</target>
       </segment>
     </unit>
-    <unit id="33" name="P2TextHorizontal">
+    <unit id="FlexTitle">
       <segment>
-        <source>Horizontal</source>
-        <target state="translated">水平</target>
+        <source>Flex</source>
+        <target state="translated">Flex</target>
       </segment>
     </unit>
-    <unit id="34" name="P2TextResponsive">
+    <unit id="GutterDescription">
       <segment>
-        <source>Responsive</source>
-        <target state="translated">Responsive</target>
+        <source>Horizontal, vertical, and responsive gutter.</source>
+        <target state="translated">水平、垂直和響應式間距。</target>
       </segment>
     </unit>
-    <unit id="35" name="P2TextVertical">
+    <unit id="GutterTitle">
       <segment>
-        <source>Vertical</source>
-        <target state="translated">垂直</target>
+        <source>Gutter</source>
+        <target state="translated">間距</target>
       </segment>
     </unit>
-    <unit id="36" name="P2TextGutterString">
+    <unit id="JustifyDescription">
       <segment>
-        <source>Gutter (string)</source>
-        <target state="translated">Gutter (string)</target>
+        <source>Sub-element alignment on the main axis.</source>
+        <target state="translated">子元素在主軸上的對齊方式。</target>
       </segment>
     </unit>
-    <unit id="37" name="P2TextColN8ColOffsetN8">
+    <unit id="JustifyTitle">
       <segment>
-        <source>col-8 col-offset-8</source>
-        <target state="translated">列-8 列-offset-8</target>
+        <source>Justify</source>
+        <target state="translated">主軸對齊</target>
       </segment>
     </unit>
-    <unit id="38" name="P2TextColN6ColOffsetN6">
+    <unit id="OffsetDescription">
       <segment>
-        <source>col-6 col-offset-6</source>
-        <target state="translated">列-6 列-offset-6</target>
+        <source>Move columns to the right.</source>
+        <target state="translated">將列向右移動。</target>
       </segment>
     </unit>
-    <unit id="39" name="P2TextColN12ColOffsetN6">
+    <unit id="OffsetTitle">
       <segment>
-        <source>col-12 col-offset-6</source>
-        <target state="translated">列-12 列-offset-6</target>
+        <source>Offset</source>
+        <target state="translated">偏移</target>
       </segment>
     </unit>
-    <unit id="40" name="P2TextColN6ColOffsetN18">
+    <unit id="OrderDescription">
       <segment>
-        <source>col-6 col-offset-18</source>
-        <target state="translated">列-6 列-offset-18</target>
+        <source>Change column order.</source>
+        <target state="translated">改變列順序。</target>
       </segment>
     </unit>
-    <unit id="41" name="P2TextColN18ColPushN6">
+    <unit id="OrderTitle">
       <segment>
-        <source>col-18 col-push-6</source>
-        <target state="translated">列-18 列-push-6</target>
+        <source>Order</source>
+        <target state="translated">排序</target>
       </segment>
     </unit>
-    <unit id="42" name="P2TextColN6ColPullN18">
-      <segment>
-        <source>col-6 col-pull-18</source>
-        <target state="translated">列-6 列-pull-18</target>
-      </segment>
-    </unit>
-    <unit id="43" name="P2TextSubElementAlignLeft">
-      <segment>
-        <source>sub-element align left</source>
-        <target state="translated">sub-element align left</target>
-      </segment>
-    </unit>
-    <unit id="44" name="P2TextColN4">
-      <segment>
-        <source>col-4</source>
-        <target state="translated">列-4</target>
-      </segment>
-    </unit>
-    <unit id="45" name="P2TextSubElementAlignCenter">
-      <segment>
-        <source>sub-element align center</source>
-        <target state="translated">sub-element align center</target>
-      </segment>
-    </unit>
-    <unit id="46" name="P2TextSubElementAlignEnd">
-      <segment>
-        <source>sub-element align end</source>
-        <target state="translated">sub-element align end</target>
-      </segment>
-    </unit>
-    <unit id="47" name="P2TextSubElementAlignBetween">
-      <segment>
-        <source>sub-element align between</source>
-        <target state="translated">sub-element align between</target>
-      </segment>
-    </unit>
-    <unit id="48" name="P2TextSubElementAlignAround">
-      <segment>
-        <source>sub-element align around</source>
-        <target state="translated">sub-element align around</target>
-      </segment>
-    </unit>
-    <unit id="49" name="P2TextSubElementAlignEvenly">
-      <segment>
-        <source>sub-element align evenly</source>
-        <target state="translated">sub-element align evenly</target>
-      </segment>
-    </unit>
-    <unit id="50" name="P2TextAlignTop">
-      <segment>
-        <source>Align Top</source>
-        <target state="translated">Align Top</target>
-      </segment>
-    </unit>
-    <unit id="51" name="P2TextAlignMiddle">
-      <segment>
-        <source>Align Middle</source>
-        <target state="translated">Align Middle</target>
-      </segment>
-    </unit>
-    <unit id="52" name="P2TextAlignBottom">
+    <unit id="P2TextAlignBottom">
       <segment>
         <source>Align Bottom</source>
         <target state="translated">Align Bottom</target>
       </segment>
     </unit>
-    <unit id="53" name="P2TextNormal">
+    <unit id="P2TextAlignMiddle">
       <segment>
-        <source>Normal</source>
-        <target state="translated">普通</target>
+        <source>Align Middle</source>
+        <target state="translated">Align Middle</target>
       </segment>
     </unit>
-    <unit id="54" name="P2TextN4ColOrderN1">
+    <unit id="P2TextAlignTop">
       <segment>
-        <source>4 col-order-1</source>
-        <target state="translated">4 col-order-1</target>
+        <source>Align Top</source>
+        <target state="translated">Align Top</target>
       </segment>
     </unit>
-    <unit id="55" name="P2TextN3ColOrderN2">
-      <segment>
-        <source>3 col-order-2</source>
-        <target state="translated">3 col-order-2</target>
-      </segment>
-    </unit>
-    <unit id="56" name="P2TextN2ColOrderN3">
-      <segment>
-        <source>2 col-order-3</source>
-        <target state="translated">2 col-order-3</target>
-      </segment>
-    </unit>
-    <unit id="57" name="P2TextN1ColOrderN4">
-      <segment>
-        <source>1 col-order-4</source>
-        <target state="translated">1 col-order-4</target>
-      </segment>
-    </unit>
-    <unit id="58" name="P2TextN3ColOrderResponsive">
-      <segment>
-        <source>3 col-order-responsive</source>
-        <target state="translated">3 col-order-responsive</target>
-      </segment>
-    </unit>
-    <unit id="59" name="P2TextN4ColOrderResponsive">
-      <segment>
-        <source>4 col-order-responsive</source>
-        <target state="translated">4 col-order-responsive</target>
-      </segment>
-    </unit>
-    <unit id="60" name="P2TextN2ColOrderResponsive">
-      <segment>
-        <source>2 col-order-responsive</source>
-        <target state="translated">2 col-order-responsive</target>
-      </segment>
-    </unit>
-    <unit id="61" name="P2TextN1ColOrderResponsive">
-      <segment>
-        <source>1 col-order-responsive</source>
-        <target state="translated">1 col-order-responsive</target>
-      </segment>
-    </unit>
-    <unit id="62" name="P2TextPercentageColumns">
-      <segment>
-        <source>Percentage columns</source>
-        <target state="translated">比例列</target>
-      </segment>
-    </unit>
-    <unit id="63" name="P2TextFillRest">
-      <segment>
-        <source>Fill rest</source>
-        <target state="translated">填充剩餘空間</target>
-      </segment>
-    </unit>
-    <unit id="64" name="P2TextResponsiveFlex">
-      <segment>
-        <source>Responsive flex</source>
-        <target state="translated">響應式 flex</target>
-      </segment>
-    </unit>
-    <unit id="65" name="P2TextColFlex2">
-      <segment>
-        <source>2 / 5</source>
-        <target state="translated">2 / 5</target>
-      </segment>
-    </unit>
-    <unit id="66" name="P2TextColFlex3">
-      <segment>
-        <source>3 / 5</source>
-        <target state="translated">3 / 5</target>
-      </segment>
-    </unit>
-    <unit id="67" name="P2TextCol100Px">
-      <segment>
-        <source>100px</source>
-        <target state="translated">100px</target>
-      </segment>
-    </unit>
-    <unit id="68" name="P2TextColFlexAuto">
-      <segment>
-        <source>auto</source>
-        <target state="translated">auto</target>
-      </segment>
-    </unit>
-    <unit id="69" name="P2TextColFlexFill">
-      <segment>
-        <source>fill rest</source>
-        <target state="translated">填充剩餘</target>
-      </segment>
-    </unit>
-    <unit id="70" name="P2TextColFlexResponsive">
-      <segment>
-        <source>responsive flex</source>
-        <target state="translated">響應式 flex</target>
-      </segment>
-    </unit>
-    <unit id="71" name="P2TextBaseMdLgOverrides">
+    <unit id="P2TextBaseMdLgOverrides">
       <segment>
         <source>Base + Md/Lg overrides</source>
         <target state="translated">Base + Md/Lg overrides</target>
       </segment>
     </unit>
-    <unit id="72" name="P2TextColN1WithColinfo">
+    <unit id="P2TextCol">
+      <segment>
+        <source>col</source>
+        <target state="translated">col</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCol100Px">
+      <segment>
+        <source>100px</source>
+        <target state="translated">100px</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColFlex2">
+      <segment>
+        <source>2 / 5</source>
+        <target state="translated">2 / 5</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColFlex3">
+      <segment>
+        <source>3 / 5</source>
+        <target state="translated">3 / 5</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColFlexAuto">
+      <segment>
+        <source>auto</source>
+        <target state="translated">auto</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColFlexFill">
+      <segment>
+        <source>fill rest</source>
+        <target state="translated">填充剩餘</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColFlexResponsive">
+      <segment>
+        <source>responsive flex</source>
+        <target state="translated">響應式 flex</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN12">
+      <segment>
+        <source>col-12</source>
+        <target state="translated">列-12</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN12ColOffsetN6">
+      <segment>
+        <source>col-12 col-offset-6</source>
+        <target state="translated">列-12 列-offset-6</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN18ColPushN6">
+      <segment>
+        <source>col-18 col-push-6</source>
+        <target state="translated">列-18 列-push-6</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN1WithColinfo">
       <segment>
         <source>col-1 with ColInfo</source>
         <target state="translated">列-1 with ColInfo</target>
       </segment>
     </unit>
-    <unit id="73" name="P2TextColN2WithColinfo">
+    <unit id="P2TextColN2WithColinfo">
       <segment>
         <source>col-2 with ColInfo</source>
         <target state="translated">列-2 with ColInfo</target>
       </segment>
     </unit>
-    <unit id="74" name="P2TextColN3WithColinfo">
+    <unit id="P2TextColN3WithColinfo">
       <segment>
         <source>col-3 with ColInfo</source>
         <target state="translated">列-3 with ColInfo</target>
       </segment>
     </unit>
-    <unit id="75" name="P2TextColN4WithColinfo">
+    <unit id="P2TextColN4">
+      <segment>
+        <source>col-4</source>
+        <target state="translated">列-4</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN4WithColinfo">
       <segment>
         <source>col-4 with ColInfo</source>
         <target state="translated">列-4 with ColInfo</target>
       </segment>
     </unit>
-    <unit id="76" name="P2TextSharedResources">
+    <unit id="P2TextColN6">
       <segment>
-        <source>Shared resources</source>
-        <target state="translated">Shared resources</target>
+        <source>col-6</source>
+        <target state="translated">列-6</target>
       </segment>
     </unit>
-    <unit id="77" name="P2TextResColN1">
+    <unit id="P2TextColN6ColOffsetN18">
+      <segment>
+        <source>col-6 col-offset-18</source>
+        <target state="translated">列-6 列-offset-18</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN6ColOffsetN6">
+      <segment>
+        <source>col-6 col-offset-6</source>
+        <target state="translated">列-6 列-offset-6</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN6ColPullN18">
+      <segment>
+        <source>col-6 col-pull-18</source>
+        <target state="translated">列-6 列-pull-18</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN8">
+      <segment>
+        <source>col-8</source>
+        <target state="translated">列-8</target>
+      </segment>
+    </unit>
+    <unit id="P2TextColN8ColOffsetN8">
+      <segment>
+        <source>col-8 col-offset-8</source>
+        <target state="translated">列-8 列-offset-8</target>
+      </segment>
+    </unit>
+    <unit id="P2TextFillRest">
+      <segment>
+        <source>Fill rest</source>
+        <target state="translated">填充剩餘空間</target>
+      </segment>
+    </unit>
+    <unit id="P2TextGutterString">
+      <segment>
+        <source>Gutter (string)</source>
+        <target state="translated">Gutter (string)</target>
+      </segment>
+    </unit>
+    <unit id="P2TextHorizontal">
+      <segment>
+        <source>Horizontal</source>
+        <target state="translated">水平</target>
+      </segment>
+    </unit>
+    <unit id="P2TextN1ColOrderN4">
+      <segment>
+        <source>1 col-order-4</source>
+        <target state="translated">1 col-order-4</target>
+      </segment>
+    </unit>
+    <unit id="P2TextN1ColOrderResponsive">
+      <segment>
+        <source>1 col-order-responsive</source>
+        <target state="translated">1 col-order-responsive</target>
+      </segment>
+    </unit>
+    <unit id="P2TextN2ColOrderN3">
+      <segment>
+        <source>2 col-order-3</source>
+        <target state="translated">2 col-order-3</target>
+      </segment>
+    </unit>
+    <unit id="P2TextN2ColOrderResponsive">
+      <segment>
+        <source>2 col-order-responsive</source>
+        <target state="translated">2 col-order-responsive</target>
+      </segment>
+    </unit>
+    <unit id="P2TextN3ColOrderN2">
+      <segment>
+        <source>3 col-order-2</source>
+        <target state="translated">3 col-order-2</target>
+      </segment>
+    </unit>
+    <unit id="P2TextN3ColOrderResponsive">
+      <segment>
+        <source>3 col-order-responsive</source>
+        <target state="translated">3 col-order-responsive</target>
+      </segment>
+    </unit>
+    <unit id="P2TextN4ColOrderN1">
+      <segment>
+        <source>4 col-order-1</source>
+        <target state="translated">4 col-order-1</target>
+      </segment>
+    </unit>
+    <unit id="P2TextN4ColOrderResponsive">
+      <segment>
+        <source>4 col-order-responsive</source>
+        <target state="translated">4 col-order-responsive</target>
+      </segment>
+    </unit>
+    <unit id="P2TextNormal">
+      <segment>
+        <source>Normal</source>
+        <target state="translated">普通</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPercentageColumns">
+      <segment>
+        <source>Percentage columns</source>
+        <target state="translated">比例列</target>
+      </segment>
+    </unit>
+    <unit id="P2TextResColN1">
       <segment>
         <source>res-col-1</source>
         <target state="translated">res-col-1</target>
       </segment>
     </unit>
-    <unit id="78" name="P2TextResColN2">
+    <unit id="P2TextResColN2">
       <segment>
         <source>res-col-2</source>
         <target state="translated">res-col-2</target>
       </segment>
     </unit>
-    <unit id="79" name="P2TextResColN3">
+    <unit id="P2TextResColN3">
       <segment>
         <source>res-col-3</source>
         <target state="translated">res-col-3</target>
       </segment>
     </unit>
-    <unit id="80" name="P2TextResColN4">
+    <unit id="P2TextResColN4">
       <segment>
         <source>res-col-4</source>
         <target state="translated">res-col-4</target>
+      </segment>
+    </unit>
+    <unit id="P2TextResponsive">
+      <segment>
+        <source>Responsive</source>
+        <target state="translated">Responsive</target>
+      </segment>
+    </unit>
+    <unit id="P2TextResponsiveFlex">
+      <segment>
+        <source>Responsive flex</source>
+        <target state="translated">響應式 flex</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSharedResources">
+      <segment>
+        <source>Shared resources</source>
+        <target state="translated">Shared resources</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSubElementAlignAround">
+      <segment>
+        <source>sub-element align around</source>
+        <target state="translated">sub-element align around</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSubElementAlignBetween">
+      <segment>
+        <source>sub-element align between</source>
+        <target state="translated">sub-element align between</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSubElementAlignCenter">
+      <segment>
+        <source>sub-element align center</source>
+        <target state="translated">sub-element align center</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSubElementAlignEnd">
+      <segment>
+        <source>sub-element align end</source>
+        <target state="translated">sub-element align end</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSubElementAlignEvenly">
+      <segment>
+        <source>sub-element align evenly</source>
+        <target state="translated">sub-element align evenly</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSubElementAlignLeft">
+      <segment>
+        <source>sub-element align left</source>
+        <target state="translated">sub-element align left</target>
+      </segment>
+    </unit>
+    <unit id="P2TextVertical">
+      <segment>
+        <source>Vertical</source>
+        <target state="translated">垂直</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Grid provides row gutters, alignment, offsets, ordering, and breakpoint-specific column sizing for application layouts.</source>
+        <target state="translated">Grid 提供行間距、對齊、偏移、排序和斷點級列尺寸控制，適合應用佈局。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Build responsive 24-column layouts with rows and columns.</source>
+        <target state="translated">使用行和列構建響應式 24 柵格佈局。</target>
+      </segment>
+    </unit>
+    <unit id="PushPullDescription">
+      <segment>
+        <source>Change column order with push/pull.</source>
+        <target state="translated">使用 push/pull 改變列順序。</target>
+      </segment>
+    </unit>
+    <unit id="PushPullTitle">
+      <segment>
+        <source>Push &amp; Pull</source>
+        <target state="translated">推拉排序</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioAlignment">
+      <segment>
+        <source>Alignment</source>
+        <target state="translated">對齊</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+        <target state="translated">基礎</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioColInfo">
+      <segment>
+        <source>ColInfo</source>
+        <target state="translated">ColInfo</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioOrder">
+      <segment>
+        <source>Order</source>
+        <target state="translated">排序</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioSpacing">
+      <segment>
+        <source>Spacing</source>
+        <target state="translated">間距</target>
       </segment>
     </unit>
   </file>

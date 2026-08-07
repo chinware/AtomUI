@@ -1,250 +1,250 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.MentionsShowCaseLangResourceKind">
-    <unit id="1" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-        <target state="translated">基础用法</target>
-      </segment>
-    </unit>
-    <unit id="2" name="BasicDescription">
-      <segment>
-        <source>The simplest use.</source>
-        <target state="translated">最简单的用法。</target>
-      </segment>
-    </unit>
-    <unit id="3" name="ValueBindingTitle">
-      <segment>
-        <source>Value binding</source>
-        <target state="translated">Value 绑定</target>
-      </segment>
-    </unit>
-    <unit id="4" name="ValueBindingDescription">
-      <segment>
-        <source>Value now defaults to TwoWay binding, so typing or clearing the input updates the ViewModel without an explicit binding mode.</source>
-        <target state="translated">Value 现在默认双向绑定，输入或清空内容会直接更新 ViewModel，无需显式设置绑定模式。</target>
-      </segment>
-    </unit>
-    <unit id="5" name="SizeTypeTitle">
-      <segment>
-        <source>Mentions size</source>
-        <target state="translated">Mentions 尺寸</target>
-      </segment>
-    </unit>
-    <unit id="6" name="SizeTypeDescription">
-      <segment>
-        <source>Mentions supports large, middle, small, and Custom sizes with local height and font overrides.</source>
-        <target state="translated">Mentions 支持大号、中号、小号，也支持通过 Custom 配合本地高度和字号自定义。</target>
-      </segment>
-    </unit>
-    <unit id="7" name="VariantsTitle">
-      <segment>
-        <source>Variants</source>
-        <target state="translated">变体</target>
-      </segment>
-    </unit>
-    <unit id="8" name="VariantsDescription">
-      <segment>
-        <source>Variants of Mentions, there are four variants: outlined filled borderless and underlined.</source>
-        <target state="translated">Mentions 提供四种变体：描边、填充、无边框和下划线。</target>
-      </segment>
-    </unit>
-    <unit id="9" name="AsynchronousLoadingTitle">
-      <segment>
-        <source>Asynchronous loading</source>
-        <target state="translated">异步加载</target>
-      </segment>
-    </unit>
-    <unit id="10" name="AsynchronousLoadingDescription">
+    <unit id="AsynchronousLoadingDescription">
       <segment>
         <source>async.</source>
         <target state="translated">异步加载。</target>
       </segment>
     </unit>
-    <unit id="11" name="CustomizeTriggerTokenTitle">
+    <unit id="AsynchronousLoadingTitle">
       <segment>
-        <source>Customize Trigger Token</source>
-        <target state="translated">自定义触发标记</target>
+        <source>Asynchronous loading</source>
+        <target state="translated">异步加载</target>
       </segment>
     </unit>
-    <unit id="12" name="CustomizeTriggerTokenDescription">
-      <segment>
-        <source>Customize Trigger Token by prefix props. Default to @, array also supported.</source>
-        <target state="translated">通过 prefix 属性自定义触发标记，默认为 @，也支持数组。</target>
-      </segment>
-    </unit>
-    <unit id="13" name="DisabledOrReadOnlyTitle">
-      <segment>
-        <source>disabled or readOnly</source>
-        <target state="translated">禁用或只读</target>
-      </segment>
-    </unit>
-    <unit id="14" name="DisabledOrReadOnlyDescription">
-      <segment>
-        <source>Configure disabled and readOnly.</source>
-        <target state="translated">配置 disabled 和 readOnly。</target>
-      </segment>
-    </unit>
-    <unit id="15" name="PlacementTitle">
-      <segment>
-        <source>Placement</source>
-        <target state="translated">弹出位置</target>
-      </segment>
-    </unit>
-    <unit id="16" name="PlacementDescription">
-      <segment>
-        <source>Change the suggestions placement.</source>
-        <target state="translated">改变建议列表的弹出位置。</target>
-      </segment>
-    </unit>
-    <unit id="17" name="StatusTitle">
-      <segment>
-        <source>Status</source>
-        <target state="translated">状态</target>
-      </segment>
-    </unit>
-    <unit id="18" name="StatusDescription">
-      <segment>
-        <source>Add status to Mentions with status, which could be error or warning.</source>
-        <target state="translated">通过 status 为 Mentions 添加状态，可设置为错误或警告。</target>
-      </segment>
-    </unit>
-    <unit id="19" name="AutoSizeTitle">
-      <segment>
-        <source>autoSize</source>
-        <target state="translated">自动高度</target>
-      </segment>
-    </unit>
-    <unit id="20" name="AutoSizeDescription">
+    <unit id="AutoSizeDescription">
       <segment>
         <source>Height autoSize.</source>
         <target state="translated">高度自动调整。</target>
       </segment>
     </unit>
-    <unit id="21" name="WithClearIconTitle">
+    <unit id="AutoSizeTitle">
       <segment>
-        <source>With clear icon</source>
-        <target state="translated">带清除图标</target>
+        <source>autoSize</source>
+        <target state="translated">自动高度</target>
       </segment>
     </unit>
-    <unit id="22" name="WithClearIconDescription">
+    <unit id="BasicDescription">
       <segment>
-        <source>Customize clear button.</source>
-        <target state="translated">自定义清除按钮。</target>
+        <source>The simplest use.</source>
+        <target state="translated">最简单的用法。</target>
       </segment>
     </unit>
-    <unit id="23" name="P2PlaceholderTextLarge">
+    <unit id="BasicTitle">
       <segment>
-        <source>Large</source>
-        <target state="translated">大号</target>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
       </segment>
     </unit>
-    <unit id="24" name="P2PlaceholderTextMiddle">
-      <segment>
-        <source>Middle</source>
-        <target state="translated">中号</target>
-      </segment>
-    </unit>
-    <unit id="25" name="P2PlaceholderTextSmall">
-      <segment>
-        <source>Small</source>
-        <target state="translated">小号</target>
-      </segment>
-    </unit>
-    <unit id="26" name="P2PlaceholderTextCustom">
-      <segment>
-        <source>Custom</source>
-        <target state="translated">自定义</target>
-      </segment>
-    </unit>
-    <unit id="27" name="P2PlaceholderTextOutlined">
-      <segment>
-        <source>Outlined</source>
-        <target state="translated">线框风格</target>
-      </segment>
-    </unit>
-    <unit id="28" name="P2PlaceholderTextFilled">
-      <segment>
-        <source>Filled</source>
-        <target state="translated">填充风格</target>
-      </segment>
-    </unit>
-    <unit id="29" name="P2PlaceholderTextBorderless">
-      <segment>
-        <source>Borderless</source>
-        <target state="translated">无边框</target>
-      </segment>
-    </unit>
-    <unit id="30" name="P2PlaceholderTextUnderlined">
-      <segment>
-        <source>Underlined</source>
-        <target state="translated">下划线</target>
-      </segment>
-    </unit>
-    <unit id="31" name="P2PlaceholderTextInputToMentionPeopleToMentionTag">
-      <segment>
-        <source>input @ to mention people, # to mention tag</source>
-        <target state="translated">输入 @ 提及成员，输入 # 提及标签</target>
-      </segment>
-    </unit>
-    <unit id="32" name="P2PlaceholderTextThisIsDisabledMentions">
-      <segment>
-        <source>this is disabled Mentions</source>
-        <target state="translated">这是禁用状态的 Mentions</target>
-      </segment>
-    </unit>
-    <unit id="33" name="P2PlaceholderTextThisIsReadonlyMentions">
-      <segment>
-        <source>this is readOnly Mentions</source>
-        <target state="translated">这是只读状态的 Mentions</target>
-      </segment>
-    </unit>
-    <unit id="34" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">示例</target>
-      </segment>
-    </unit>
-    <unit id="35" name="PageSubtitle">
-      <segment>
-        <source>Mention people, tags or custom entities while typing.</source>
-        <target state="translated">在输入过程中提及成员、标签或自定义实体。</target>
-      </segment>
-    </unit>
-    <unit id="36" name="PageDescription">
-      <segment>
-        <source>Mentions provides trigger-based candidate popups, async option loading, custom trigger tokens, input variants, placement, status and auto-size scenarios.</source>
-        <target state="translated">Mentions 提供基于触发符的候选弹窗、异步选项加载、自定义触发符、输入变体、弹出位置、状态和自动高度场景。</target>
-      </segment>
-    </unit>
-    <unit id="37" name="ComponentCategory">
+    <unit id="ComponentCategory">
       <segment>
         <source>Data Entry</source>
         <target state="translated">数据录入</target>
       </segment>
     </unit>
-    <unit id="38" name="ComponentStatusStable">
+    <unit id="ComponentStatusStable">
       <segment>
         <source>Stable</source>
         <target state="translated">稳定</target>
       </segment>
     </unit>
-    <unit id="39" name="P2TextBoundValue">
+    <unit id="CustomizeTriggerTokenDescription">
       <segment>
-        <source>Bound value:</source>
-        <target state="translated">绑定值：</target>
+        <source>Customize Trigger Token by prefix props. Default to @, array also supported.</source>
+        <target state="translated">通过 prefix 属性自定义触发标记，默认为 @，也支持数组。</target>
       </segment>
     </unit>
-    <unit id="40" name="P2ContentSetMention">
+    <unit id="CustomizeTriggerTokenTitle">
+      <segment>
+        <source>Customize Trigger Token</source>
+        <target state="translated">自定义触发标记</target>
+      </segment>
+    </unit>
+    <unit id="DisabledOrReadOnlyDescription">
+      <segment>
+        <source>Configure disabled and readOnly.</source>
+        <target state="translated">配置 disabled 和 readOnly。</target>
+      </segment>
+    </unit>
+    <unit id="DisabledOrReadOnlyTitle">
+      <segment>
+        <source>disabled or readOnly</source>
+        <target state="translated">禁用或只读</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentClear">
+      <segment>
+        <source>Clear</source>
+        <target state="translated">清空</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetMention">
       <segment>
         <source>Set mention</source>
         <target state="translated">设置提及</target>
       </segment>
     </unit>
-    <unit id="41" name="P2ContentClear">
+    <unit id="P2PlaceholderTextBorderless">
       <segment>
-        <source>Clear</source>
-        <target state="translated">清空</target>
+        <source>Borderless</source>
+        <target state="translated">无边框</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextCustom">
+      <segment>
+        <source>Custom</source>
+        <target state="translated">自定义</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextFilled">
+      <segment>
+        <source>Filled</source>
+        <target state="translated">填充风格</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextInputToMentionPeopleToMentionTag">
+      <segment>
+        <source>input @ to mention people, # to mention tag</source>
+        <target state="translated">输入 @ 提及成员，输入 # 提及标签</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">大号</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextMiddle">
+      <segment>
+        <source>Middle</source>
+        <target state="translated">中号</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextOutlined">
+      <segment>
+        <source>Outlined</source>
+        <target state="translated">线框风格</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">小号</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextThisIsDisabledMentions">
+      <segment>
+        <source>this is disabled Mentions</source>
+        <target state="translated">这是禁用状态的 Mentions</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextThisIsReadonlyMentions">
+      <segment>
+        <source>this is readOnly Mentions</source>
+        <target state="translated">这是只读状态的 Mentions</target>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextUnderlined">
+      <segment>
+        <source>Underlined</source>
+        <target state="translated">下划线</target>
+      </segment>
+    </unit>
+    <unit id="P2TextBoundValue">
+      <segment>
+        <source>Bound value:</source>
+        <target state="translated">绑定值：</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Mentions provides trigger-based candidate popups, async option loading, custom trigger tokens, input variants, placement, status and auto-size scenarios.</source>
+        <target state="translated">Mentions 提供基于触发符的候选弹窗、异步选项加载、自定义触发符、输入变体、弹出位置、状态和自动高度场景。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Mention people, tags or custom entities while typing.</source>
+        <target state="translated">在输入过程中提及成员、标签或自定义实体。</target>
+      </segment>
+    </unit>
+    <unit id="PlacementDescription">
+      <segment>
+        <source>Change the suggestions placement.</source>
+        <target state="translated">改变建议列表的弹出位置。</target>
+      </segment>
+    </unit>
+    <unit id="PlacementTitle">
+      <segment>
+        <source>Placement</source>
+        <target state="translated">弹出位置</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="SizeTypeDescription">
+      <segment>
+        <source>Mentions supports large, middle, small, and Custom sizes with local height and font overrides.</source>
+        <target state="translated">Mentions 支持大号、中号、小号，也支持通过 Custom 配合本地高度和字号自定义。</target>
+      </segment>
+    </unit>
+    <unit id="SizeTypeTitle">
+      <segment>
+        <source>Mentions size</source>
+        <target state="translated">Mentions 尺寸</target>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to Mentions with status, which could be error or warning.</source>
+        <target state="translated">通过 status 为 Mentions 添加状态，可设置为错误或警告。</target>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+        <target state="translated">状态</target>
+      </segment>
+    </unit>
+    <unit id="ValueBindingDescription">
+      <segment>
+        <source>Value now defaults to TwoWay binding, so typing or clearing the input updates the ViewModel without an explicit binding mode.</source>
+        <target state="translated">Value 现在默认双向绑定，输入或清空内容会直接更新 ViewModel，无需显式设置绑定模式。</target>
+      </segment>
+    </unit>
+    <unit id="ValueBindingTitle">
+      <segment>
+        <source>Value binding</source>
+        <target state="translated">Value 绑定</target>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Variants of Mentions, there are four variants: outlined filled borderless and underlined.</source>
+        <target state="translated">Mentions 提供四种变体：描边、填充、无边框和下划线。</target>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
+        <target state="translated">变体</target>
+      </segment>
+    </unit>
+    <unit id="WithClearIconDescription">
+      <segment>
+        <source>Customize clear button.</source>
+        <target state="translated">自定义清除按钮。</target>
+      </segment>
+    </unit>
+    <unit id="WithClearIconTitle">
+      <segment>
+        <source>With clear icon</source>
+        <target state="translated">带清除图标</target>
       </segment>
     </unit>
   </file>

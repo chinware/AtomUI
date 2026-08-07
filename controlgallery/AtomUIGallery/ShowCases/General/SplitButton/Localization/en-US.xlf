@@ -1,134 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind">
-    <unit id="1" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-      </segment>
-    </unit>
-    <unit id="2" name="BasicDescription">
+    <unit id="BasicDescription">
       <segment>
         <source>The most basic SplitButton.</source>
       </segment>
     </unit>
-    <unit id="3" name="SizeTitle">
+    <unit id="BasicTitle">
       <segment>
-        <source>Size</source>
+        <source>Basic</source>
       </segment>
     </unit>
-    <unit id="4" name="SizeDescription">
-      <segment>
-        <source>AtomUI supports three sizes of buttons: small, default, and large. If a large or small button is desired, set the size property to large or small respectively. Omit the size property for a button with the default size.</source>
-      </segment>
-    </unit>
-    <unit id="5" name="DangerButtonsTitle">
-      <segment>
-        <source>Danger Buttons</source>
-      </segment>
-    </unit>
-    <unit id="6" name="DangerButtonsDescription">
-      <segment>
-        <source>danger is a button property after antd 4.0.</source>
-      </segment>
-    </unit>
-    <unit id="7" name="CustomIconTitle">
-      <segment>
-        <source>Custom Icon</source>
-      </segment>
-    </unit>
-    <unit id="8" name="CustomIconDescription">
-      <segment>
-        <source>Custom flyout button icon.</source>
-      </segment>
-    </unit>
-    <unit id="9" name="FlyoutTriggerTypeTitle">
-      <segment>
-        <source>Flyout trigger type</source>
-      </segment>
-    </unit>
-    <unit id="10" name="FlyoutTriggerTypeDescription">
-      <segment>
-        <source>Support two trigger types.</source>
-      </segment>
-    </unit>
-    <unit id="11" name="P2HeaderCut">
-      <segment>
-        <source>Cut</source>
-      </segment>
-    </unit>
-    <unit id="12" name="P2HeaderCopy">
-      <segment>
-        <source>Copy</source>
-      </segment>
-    </unit>
-    <unit id="13" name="P2HeaderDelete">
-      <segment>
-        <source>Delete</source>
-      </segment>
-    </unit>
-    <unit id="14" name="P2ContentHoverMe">
-      <segment>
-        <source>Hover me</source>
-      </segment>
-    </unit>
-    <unit id="15" name="P2ContentLarge">
-      <segment>
-        <source>Large</source>
-      </segment>
-    </unit>
-    <unit id="16" name="P2ContentMiddle">
-      <segment>
-        <source>Middle</source>
-      </segment>
-    </unit>
-    <unit id="17" name="P2ContentSmall">
-      <segment>
-        <source>Small</source>
-      </segment>
-    </unit>
-    <unit id="18" name="P2ContentCustom">
-      <segment>
-        <source>Custom</source>
-      </segment>
-    </unit>
-    <unit id="19" name="P2ContentDefault">
-      <segment>
-        <source>Default</source>
-      </segment>
-    </unit>
-    <unit id="20" name="P2ContentPrimary">
-      <segment>
-        <source>Primary</source>
-      </segment>
-    </unit>
-    <unit id="21" name="P2ContentClickMe">
-      <segment>
-        <source>Click Me</source>
-      </segment>
-    </unit>
-    <unit id="22" name="PageSubtitle">
-      <segment>
-        <source>A primary action with an attached flyout menu.</source>
-      </segment>
-    </unit>
-    <unit id="23" name="PageDescription">
-      <segment>
-        <source>SplitButton combines a main command and a secondary flyout trigger, supporting size, danger style, primary style, custom indicators, and hover or click menus.</source>
-      </segment>
-    </unit>
-    <unit id="24" name="ComponentCategory">
+    <unit id="ComponentCategory">
       <segment>
         <source>General</source>
       </segment>
     </unit>
-    <unit id="25" name="ComponentStatusStable">
+    <unit id="ComponentStatusStable">
       <segment>
         <source>.NET 10</source>
       </segment>
     </unit>
-    <unit id="26" name="ScenarioExamples">
+    <unit id="CustomIconDescription">
+      <segment>
+        <source>Custom flyout button icon.</source>
+      </segment>
+    </unit>
+    <unit id="CustomIconTitle">
+      <segment>
+        <source>Custom Icon</source>
+      </segment>
+    </unit>
+    <unit id="DangerButtonsDescription">
+      <segment>
+        <source>danger is a button property after antd 4.0.</source>
+      </segment>
+    </unit>
+    <unit id="DangerButtonsTitle">
+      <segment>
+        <source>Danger Buttons</source>
+      </segment>
+    </unit>
+    <unit id="FlyoutTriggerTypeDescription">
+      <segment>
+        <source>Support two trigger types.</source>
+      </segment>
+    </unit>
+    <unit id="FlyoutTriggerTypeTitle">
+      <segment>
+        <source>Flyout trigger type</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentClickMe">
+      <segment>
+        <source>Click Me</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustom">
+      <segment>
+        <source>Custom</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentHoverMe">
+      <segment>
+        <source>Hover me</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentMiddle">
+      <segment>
+        <source>Middle</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentPrimary">
+      <segment>
+        <source>Primary</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCopy">
+      <segment>
+        <source>Copy</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCut">
+      <segment>
+        <source>Cut</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderDelete">
+      <segment>
+        <source>Delete</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>SplitButton combines a main command and a secondary flyout trigger, supporting size, danger style, primary style, custom indicators, and hover or click menus.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>A primary action with an attached flyout menu.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
       <segment>
         <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>AtomUI supports three sizes of buttons: small, default, and large. If a large or small button is desired, set the size property to large or small respectively. Omit the size property for a button with the default size.</source>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
       </segment>
     </unit>
   </file>

@@ -1,370 +1,370 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind">
-    <unit id="1" name="PageSubtitle">
+    <unit id="BasicDescription">
       <segment>
-        <source>Display grouped read-only details in a responsive layout.</source>
-        <target state="translated">以響應式佈局展示分組的唯讀詳情。</target>
+        <source>Simplest Usage.</source>
+        <target state="translated">最簡單的用法。</target>
       </segment>
     </unit>
-    <unit id="2" name="PageDescription">
-      <segment>
-        <source>Descriptions presents related label-value pairs with optional borders, headers, extra actions, responsive columns, and vertical layouts.</source>
-        <target state="translated">Descriptions 用於展示相關的標籤和值，支援邊框、標題、額外操作、響應式列數和垂直佈局。</target>
-      </segment>
-    </unit>
-    <unit id="3" name="ComponentCategory">
-      <segment>
-        <source>Data Display</source>
-        <target state="translated">數據展示</target>
-      </segment>
-    </unit>
-    <unit id="4" name="ComponentStatusStable">
-      <segment>
-        <source>Stable</source>
-        <target state="translated">穩定</target>
-      </segment>
-    </unit>
-    <unit id="5" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">示例</target>
-      </segment>
-    </unit>
-    <unit id="6" name="BasicTitle">
+    <unit id="BasicTitle">
       <segment>
         <source>Basic</source>
         <target state="translated">基礎用法</target>
       </segment>
     </unit>
-    <unit id="7" name="BasicDescription">
+    <unit id="BorderDescription">
       <segment>
-        <source>Simplest Usage.</source>
-        <target state="translated">最簡單的用法。</target>
+        <source>Descriptions with border and background color.</source>
+        <target state="translated">帶邊框和背景色的 Descriptions。</target>
       </segment>
     </unit>
-    <unit id="8" name="BorderTitle">
+    <unit id="BorderTitle">
       <segment>
         <source>border</source>
         <target state="translated">邊框</target>
       </segment>
     </unit>
-    <unit id="9" name="BorderDescription">
+    <unit id="ComponentCategory">
       <segment>
-        <source>Descriptions with border and background color.</source>
-        <target state="translated">帶邊框和背景色的 Descriptions。</target>
+        <source>Data Display</source>
+        <target state="translated">數據展示</target>
       </segment>
     </unit>
-    <unit id="10" name="CustomSizeTitle">
+    <unit id="ComponentStatusStable">
       <segment>
-        <source>Custom size</source>
-        <target state="translated">自定義尺寸</target>
+        <source>Stable</source>
+        <target state="translated">穩定</target>
       </segment>
     </unit>
-    <unit id="11" name="CustomSizeDescription">
+    <unit id="CustomSizeDescription">
       <segment>
         <source>Custom sizes to fit in a variety of containers.</source>
         <target state="translated">自定義尺寸以適配不同容器。</target>
       </segment>
     </unit>
-    <unit id="12" name="ResponsiveTitle">
+    <unit id="CustomSizeTitle">
       <segment>
-        <source>responsive</source>
-        <target state="translated">響應式</target>
-      </segment>
-    </unit>
-    <unit id="13" name="ResponsiveDescription">
-      <segment>
-        <source>Responsive configuration enables perfect presentation on small screen devices.</source>
-        <target state="translated">響應式配置可以在小屏設備上更好展示。</target>
-      </segment>
-    </unit>
-    <unit id="14" name="VerticalTitle">
-      <segment>
-        <source>Vertical</source>
-        <target state="translated">垂直佈局</target>
-      </segment>
-    </unit>
-    <unit id="15" name="VerticalDescription">
-      <segment>
-        <source>Simplest Usage.</source>
-        <target state="translated">最簡單的用法。</target>
-      </segment>
-    </unit>
-    <unit id="16" name="VerticalBorderTitle">
-      <segment>
-        <source>Vertical border</source>
-        <target state="translated">垂直帶邊框</target>
-      </segment>
-    </unit>
-    <unit id="17" name="VerticalBorderDescription">
-      <segment>
-        <source>Descriptions with border and background color.</source>
-        <target state="translated">帶邊框和背景色的 Descriptions。</target>
-      </segment>
-    </unit>
-    <unit id="18" name="RowTitle">
-      <segment>
-        <source>Row</source>
-        <target state="translated">整行展示</target>
-      </segment>
-    </unit>
-    <unit id="19" name="RowDescription">
-      <segment>
-        <source>Display of the entire line.</source>
-        <target state="translated">整行展示。</target>
-      </segment>
-    </unit>
-    <unit id="20" name="P2HeaderUserInfo">
-      <segment>
-        <source>User Info</source>
-        <target state="translated">用戶信息</target>
-      </segment>
-    </unit>
-    <unit id="21" name="P2HeaderCustomSize">
-      <segment>
-        <source>Custom Size</source>
+        <source>Custom size</source>
         <target state="translated">自定義尺寸</target>
       </segment>
     </unit>
-    <unit id="22" name="P2HeaderResponsiveDescriptions">
-      <segment>
-        <source>Responsive Descriptions</source>
-        <target state="translated">響應式描述列表</target>
-      </segment>
-    </unit>
-    <unit id="23" name="P2LabelUserName">
-      <segment>
-        <source>UserName</source>
-        <target state="translated">用戶名</target>
-      </segment>
-    </unit>
-    <unit id="24" name="P2LabelTelephone">
-      <segment>
-        <source>Telephone</source>
-        <target state="translated">電話</target>
-      </segment>
-    </unit>
-    <unit id="25" name="P2LabelLive">
-      <segment>
-        <source>Live</source>
-        <target state="translated">居住地</target>
-      </segment>
-    </unit>
-    <unit id="26" name="P2LabelRemark">
-      <segment>
-        <source>Remark</source>
-        <target state="translated">備注</target>
-      </segment>
-    </unit>
-    <unit id="27" name="P2LabelAddress">
-      <segment>
-        <source>Address</source>
-        <target state="translated">地址</target>
-      </segment>
-    </unit>
-    <unit id="28" name="P2LabelProduct">
-      <segment>
-        <source>Product</source>
-        <target state="translated">產品</target>
-      </segment>
-    </unit>
-    <unit id="29" name="P2LabelBillingMode">
-      <segment>
-        <source>Billing Mode</source>
-        <target state="translated">計費方式</target>
-      </segment>
-    </unit>
-    <unit id="30" name="P2LabelBilling">
-      <segment>
-        <source>Billing</source>
-        <target state="translated">計費</target>
-      </segment>
-    </unit>
-    <unit id="31" name="P2LabelAutomaticRenewal">
-      <segment>
-        <source>Automatic Renewal</source>
-        <target state="translated">自動續費</target>
-      </segment>
-    </unit>
-    <unit id="32" name="P2LabelOrderTime">
-      <segment>
-        <source>Order time</source>
-        <target state="translated">訂購時間</target>
-      </segment>
-    </unit>
-    <unit id="33" name="P2LabelUsageTime">
-      <segment>
-        <source>Usage Time</source>
-        <target state="translated">使用時間</target>
-      </segment>
-    </unit>
-    <unit id="34" name="P2LabelStatus">
-      <segment>
-        <source>Status</source>
-        <target state="translated">狀態</target>
-      </segment>
-    </unit>
-    <unit id="35" name="P2LabelNegotiatedAmount">
-      <segment>
-        <source>Negotiated Amount</source>
-        <target state="translated">協商金額</target>
-      </segment>
-    </unit>
-    <unit id="36" name="P2LabelDiscount">
-      <segment>
-        <source>Discount</source>
-        <target state="translated">折扣</target>
-      </segment>
-    </unit>
-    <unit id="37" name="P2LabelOfficialReceipts">
-      <segment>
-        <source>Official Receipts</source>
-        <target state="translated">官方收據</target>
-      </segment>
-    </unit>
-    <unit id="38" name="P2LabelOfficial">
-      <segment>
-        <source>Official</source>
-        <target state="translated">官方</target>
-      </segment>
-    </unit>
-    <unit id="39" name="P2LabelConfigInfo">
-      <segment>
-        <source>Config Info</source>
-        <target state="translated">配置信息</target>
-      </segment>
-    </unit>
-    <unit id="40" name="P2LabelTime">
-      <segment>
-        <source>Time</source>
-        <target state="translated">時間</target>
-      </segment>
-    </unit>
-    <unit id="41" name="P2LabelAmount">
-      <segment>
-        <source>Amount</source>
-        <target state="translated">金額</target>
-      </segment>
-    </unit>
-    <unit id="42" name="P2LabelHardwareInfo">
-      <segment>
-        <source>Hardware Info</source>
-        <target state="translated">硬件信息</target>
-      </segment>
-    </unit>
-    <unit id="43" name="P2ContentZhouMaomao">
-      <segment>
-        <source>Zhou Maomao</source>
-        <target state="translated">周毛毛</target>
-      </segment>
-    </unit>
-    <unit id="44" name="P2ContentHangzhouZhejiang">
-      <segment>
-        <source>Hangzhou, Zhejiang</source>
-        <target state="translated">浙江杭州</target>
-      </segment>
-    </unit>
-    <unit id="45" name="P2ContentEmpty">
-      <segment>
-        <source>empty</source>
-        <target state="translated">暫無</target>
-      </segment>
-    </unit>
-    <unit id="46" name="P2ContentAddress">
+    <unit id="P2ContentAddress">
       <segment>
         <source>No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China</source>
         <target state="translated">中國浙江省杭州市西湖區萬塘路 18 號</target>
       </segment>
     </unit>
-    <unit id="47" name="P2ContentCloudDatabase">
+    <unit id="P2ContentCloudDatabase">
       <segment>
         <source>Cloud Database</source>
         <target state="translated">雲數據庫</target>
       </segment>
     </unit>
-    <unit id="48" name="P2ContentPrepaid">
-      <segment>
-        <source>Prepaid</source>
-        <target state="translated">預付費</target>
-      </segment>
-    </unit>
-    <unit id="49" name="P2ContentYes">
-      <segment>
-        <source>YES</source>
-        <target state="translated">是</target>
-      </segment>
-    </unit>
-    <unit id="50" name="P2ContentRunning">
-      <segment>
-        <source>Running</source>
-        <target state="translated">運行中</target>
-      </segment>
-    </unit>
-    <unit id="51" name="P2TextDataDiskTypeMongodb">
-      <segment>
-        <source>Data disk type: MongoDB</source>
-        <target state="translated">數據盤類型：MongoDB</target>
-      </segment>
-    </unit>
-    <unit id="52" name="P2TextDatabaseVersionN3N4">
-      <segment>
-        <source>Database version: 3.4</source>
-        <target state="translated">數據庫版本：3.4</target>
-      </segment>
-    </unit>
-    <unit id="53" name="P2TextPackageDdsMongoMid">
-      <segment>
-        <source>Package: dds.mongo.mid</source>
-        <target state="translated">套餐：dds.mongo.mid</target>
-      </segment>
-    </unit>
-    <unit id="54" name="P2TextStorageSpaceN10Gb">
-      <segment>
-        <source>Storage space: 10 GB</source>
-        <target state="translated">存儲空間：10 GB</target>
-      </segment>
-    </unit>
-    <unit id="55" name="P2TextReplicationFactorN3">
-      <segment>
-        <source>Replication factor: 3</source>
-        <target state="translated">副本因子：3</target>
-      </segment>
-    </unit>
-    <unit id="56" name="P2TextRegionEastChinaN1">
-      <segment>
-        <source>Region: East China 1</source>
-        <target state="translated">地域：華東 1</target>
-      </segment>
-    </unit>
-    <unit id="57" name="P2ContentLarge">
-      <segment>
-        <source>Large</source>
-        <target state="translated">大號</target>
-      </segment>
-    </unit>
-    <unit id="58" name="P2ContentMiddle">
-      <segment>
-        <source>Middle</source>
-        <target state="translated">中號</target>
-      </segment>
-    </unit>
-    <unit id="59" name="P2ContentSmall">
-      <segment>
-        <source>Small</source>
-        <target state="translated">小號</target>
-      </segment>
-    </unit>
-    <unit id="60" name="P2ContentEdit">
+    <unit id="P2ContentEdit">
       <segment>
         <source>Edit</source>
         <target state="translated">編輯</target>
       </segment>
     </unit>
-    <unit id="61" name="P2TextCpuN6CoreN3N5Ghz">
+    <unit id="P2ContentEmpty">
+      <segment>
+        <source>empty</source>
+        <target state="translated">暫無</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentHangzhouZhejiang">
+      <segment>
+        <source>Hangzhou, Zhejiang</source>
+        <target state="translated">浙江杭州</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+        <target state="translated">大號</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentMiddle">
+      <segment>
+        <source>Middle</source>
+        <target state="translated">中號</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentPrepaid">
+      <segment>
+        <source>Prepaid</source>
+        <target state="translated">預付費</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentRunning">
+      <segment>
+        <source>Running</source>
+        <target state="translated">運行中</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+        <target state="translated">小號</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentYes">
+      <segment>
+        <source>YES</source>
+        <target state="translated">是</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentZhouMaomao">
+      <segment>
+        <source>Zhou Maomao</source>
+        <target state="translated">周毛毛</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderCustomSize">
+      <segment>
+        <source>Custom Size</source>
+        <target state="translated">自定義尺寸</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderResponsiveDescriptions">
+      <segment>
+        <source>Responsive Descriptions</source>
+        <target state="translated">響應式描述列表</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderUserInfo">
+      <segment>
+        <source>User Info</source>
+        <target state="translated">用戶信息</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelAddress">
+      <segment>
+        <source>Address</source>
+        <target state="translated">地址</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelAmount">
+      <segment>
+        <source>Amount</source>
+        <target state="translated">金額</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelAutomaticRenewal">
+      <segment>
+        <source>Automatic Renewal</source>
+        <target state="translated">自動續費</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelBilling">
+      <segment>
+        <source>Billing</source>
+        <target state="translated">計費</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelBillingMode">
+      <segment>
+        <source>Billing Mode</source>
+        <target state="translated">計費方式</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelConfigInfo">
+      <segment>
+        <source>Config Info</source>
+        <target state="translated">配置信息</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelDiscount">
+      <segment>
+        <source>Discount</source>
+        <target state="translated">折扣</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelHardwareInfo">
+      <segment>
+        <source>Hardware Info</source>
+        <target state="translated">硬件信息</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelLive">
+      <segment>
+        <source>Live</source>
+        <target state="translated">居住地</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelNegotiatedAmount">
+      <segment>
+        <source>Negotiated Amount</source>
+        <target state="translated">協商金額</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelOfficial">
+      <segment>
+        <source>Official</source>
+        <target state="translated">官方</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelOfficialReceipts">
+      <segment>
+        <source>Official Receipts</source>
+        <target state="translated">官方收據</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelOrderTime">
+      <segment>
+        <source>Order time</source>
+        <target state="translated">訂購時間</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelProduct">
+      <segment>
+        <source>Product</source>
+        <target state="translated">產品</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelRemark">
+      <segment>
+        <source>Remark</source>
+        <target state="translated">備注</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelStatus">
+      <segment>
+        <source>Status</source>
+        <target state="translated">狀態</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTelephone">
+      <segment>
+        <source>Telephone</source>
+        <target state="translated">電話</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelTime">
+      <segment>
+        <source>Time</source>
+        <target state="translated">時間</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelUsageTime">
+      <segment>
+        <source>Usage Time</source>
+        <target state="translated">使用時間</target>
+      </segment>
+    </unit>
+    <unit id="P2LabelUserName">
+      <segment>
+        <source>UserName</source>
+        <target state="translated">用戶名</target>
+      </segment>
+    </unit>
+    <unit id="P2TextCpuN6CoreN3N5Ghz">
       <segment>
         <source>CPU: 6 Core 3.5 GHz</source>
         <target state="translated">CPU：6 核 3.5 GHz</target>
+      </segment>
+    </unit>
+    <unit id="P2TextDataDiskTypeMongodb">
+      <segment>
+        <source>Data disk type: MongoDB</source>
+        <target state="translated">數據盤類型：MongoDB</target>
+      </segment>
+    </unit>
+    <unit id="P2TextDatabaseVersionN3N4">
+      <segment>
+        <source>Database version: 3.4</source>
+        <target state="translated">數據庫版本：3.4</target>
+      </segment>
+    </unit>
+    <unit id="P2TextPackageDdsMongoMid">
+      <segment>
+        <source>Package: dds.mongo.mid</source>
+        <target state="translated">套餐：dds.mongo.mid</target>
+      </segment>
+    </unit>
+    <unit id="P2TextRegionEastChinaN1">
+      <segment>
+        <source>Region: East China 1</source>
+        <target state="translated">地域：華東 1</target>
+      </segment>
+    </unit>
+    <unit id="P2TextReplicationFactorN3">
+      <segment>
+        <source>Replication factor: 3</source>
+        <target state="translated">副本因子：3</target>
+      </segment>
+    </unit>
+    <unit id="P2TextStorageSpaceN10Gb">
+      <segment>
+        <source>Storage space: 10 GB</source>
+        <target state="translated">存儲空間：10 GB</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Descriptions presents related label-value pairs with optional borders, headers, extra actions, responsive columns, and vertical layouts.</source>
+        <target state="translated">Descriptions 用於展示相關的標籤和值，支援邊框、標題、額外操作、響應式列數和垂直佈局。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display grouped read-only details in a responsive layout.</source>
+        <target state="translated">以響應式佈局展示分組的唯讀詳情。</target>
+      </segment>
+    </unit>
+    <unit id="ResponsiveDescription">
+      <segment>
+        <source>Responsive configuration enables perfect presentation on small screen devices.</source>
+        <target state="translated">響應式配置可以在小屏設備上更好展示。</target>
+      </segment>
+    </unit>
+    <unit id="ResponsiveTitle">
+      <segment>
+        <source>responsive</source>
+        <target state="translated">響應式</target>
+      </segment>
+    </unit>
+    <unit id="RowDescription">
+      <segment>
+        <source>Display of the entire line.</source>
+        <target state="translated">整行展示。</target>
+      </segment>
+    </unit>
+    <unit id="RowTitle">
+      <segment>
+        <source>Row</source>
+        <target state="translated">整行展示</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="VerticalBorderDescription">
+      <segment>
+        <source>Descriptions with border and background color.</source>
+        <target state="translated">帶邊框和背景色的 Descriptions。</target>
+      </segment>
+    </unit>
+    <unit id="VerticalBorderTitle">
+      <segment>
+        <source>Vertical border</source>
+        <target state="translated">垂直帶邊框</target>
+      </segment>
+    </unit>
+    <unit id="VerticalDescription">
+      <segment>
+        <source>Simplest Usage.</source>
+        <target state="translated">最簡單的用法。</target>
+      </segment>
+    </unit>
+    <unit id="VerticalTitle">
+      <segment>
+        <source>Vertical</source>
+        <target state="translated">垂直佈局</target>
       </segment>
     </unit>
   </file>

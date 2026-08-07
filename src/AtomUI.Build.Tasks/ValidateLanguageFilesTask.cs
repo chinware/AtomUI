@@ -112,7 +112,7 @@ public sealed class ValidateLanguageFilesTask : AtomUILocalizationTask
         foreach (var unit in file.Document.File.Units.Where(static unit =>
                      !unit.IsObsolete && XliffTranslationTarget.IsPublishable(unit)))
         {
-            var unitIdentity = new OverrideUnitIdentity(identity, unit.Id);
+            var unitIdentity = new OverrideUnitIdentity(identity, unit.Key);
             if (!owners.TryGetValue(unitIdentity, out var owner))
             {
                 owners.Add(unitIdentity, file);
@@ -124,7 +124,7 @@ public sealed class ValidateLanguageFilesTask : AtomUILocalizationTask
                 file.Path,
                 unit.Line,
                 unit.Column,
-                $"Catalog '{identity.CatalogId}' unit '{unit.Id}' ('{unit.Name}') language " +
+                $"Catalog '{identity.CatalogId}' unit '{unit.Key}' ('{unit.Name ?? unit.Key}') language " +
                 $"'{identity.Language}' has more than one translation source at the same priority " +
                 $"('{owner.SourceIdentity}' and '{file.SourceIdentity}').");
         }
@@ -154,10 +154,10 @@ public sealed class ValidateLanguageFilesTask : AtomUILocalizationTask
     {
         var targetUnits = target.Document.File.Units
                                 .Where(static unit => !unit.IsObsolete)
-                                .ToDictionary(static unit => unit.Id);
-        IReadOnlyDictionary<int, XliffUnitModel>? sourceUnits = source?.Document.File.Units
+                                .ToDictionary(static unit => unit.Key, StringComparer.Ordinal);
+        IReadOnlyDictionary<string, XliffUnitModel>? sourceUnits = source?.Document.File.Units
             .Where(static unit => !unit.IsObsolete)
-            .ToDictionary(static unit => unit.Id);
+            .ToDictionary(static unit => unit.Key, StringComparer.Ordinal);
         var isPartial = string.Equals(
             target.SourceKind,
             "ApplicationOverride",
@@ -167,7 +167,7 @@ public sealed class ValidateLanguageFilesTask : AtomUILocalizationTask
         {
             foreach (var sourceUnit in sourceUnits.Values)
             {
-                if (!targetUnits.TryGetValue(sourceUnit.Id, out var targetUnit))
+                if (!targetUnits.TryGetValue(sourceUnit.Key, out var targetUnit))
                 {
                     if (!isPartial)
                     {
@@ -176,34 +176,33 @@ public sealed class ValidateLanguageFilesTask : AtomUILocalizationTask
                             target.Path,
                             1,
                             1,
-                            $"Translation unit '{sourceUnit.Id}' ('{sourceUnit.Name}') is missing from " +
+                            $"Translation unit '{sourceUnit.Key}' ('{sourceUnit.Name ?? sourceUnit.Key}') is missing from " +
                             $"the complete '{target.Document.TargetLanguage}' bundle.");
                     }
                     continue;
                 }
 
-                if (!string.Equals(sourceUnit.Name, targetUnit.Name, StringComparison.Ordinal) ||
-                    !string.Equals(sourceUnit.Source, targetUnit.Source, StringComparison.Ordinal))
+                if (!string.Equals(sourceUnit.Source, targetUnit.Source, StringComparison.Ordinal))
                 {
                     Error(
                         CatalogMismatchCode,
                         target.Path,
                         targetUnit.Line,
                         targetUnit.Column,
-                        $"Translation unit '{targetUnit.Id}' does not match the en-US Catalog source.");
+                        $"Translation unit '{targetUnit.Key}' does not match the en-US Catalog source.");
                 }
             }
 
             foreach (var targetUnit in targetUnits.Values)
             {
-                if (!sourceUnits.ContainsKey(targetUnit.Id))
+                if (!sourceUnits.ContainsKey(targetUnit.Key))
                 {
                     Error(
                         CatalogMismatchCode,
                         target.Path,
                         targetUnit.Line,
                         targetUnit.Column,
-                        $"Translation unit '{targetUnit.Id}' is not declared by the en-US Catalog source.");
+                        $"Translation unit '{targetUnit.Key}' is not declared by the en-US Catalog source.");
                 }
             }
         }
@@ -217,7 +216,7 @@ public sealed class ValidateLanguageFilesTask : AtomUILocalizationTask
                     target.Path,
                     unit.Line,
                     unit.Column,
-                    $"Translation unit '{unit.Id}' ('{unit.Name}') must contain a non-empty target " +
+                    $"Translation unit '{unit.Key}' ('{unit.Name ?? unit.Key}') must contain a non-empty target " +
                     "in translated, reviewed, or final state.");
             }
         }
@@ -316,19 +315,20 @@ public sealed class ValidateLanguageFilesTask : AtomUILocalizationTask
 
     private readonly struct OverrideUnitIdentity : IEquatable<OverrideUnitIdentity>
     {
-        internal OverrideUnitIdentity(BundleIdentity bundle, int unitId)
+        internal OverrideUnitIdentity(BundleIdentity bundle, string key)
         {
             Bundle = bundle;
-            UnitId = unitId;
+            Key = key;
         }
 
         private BundleIdentity Bundle { get; }
 
-        private int UnitId { get; }
+        private string Key { get; }
 
         public bool Equals(OverrideUnitIdentity other)
         {
-            return Bundle.Equals(other.Bundle) && UnitId == other.UnitId;
+            return Bundle.Equals(other.Bundle) &&
+                   string.Equals(Key, other.Key, StringComparison.Ordinal);
         }
 
         public override bool Equals(object? obj) => obj is OverrideUnitIdentity other && Equals(other);
@@ -337,7 +337,7 @@ public sealed class ValidateLanguageFilesTask : AtomUILocalizationTask
         {
             unchecked
             {
-                return (Bundle.GetHashCode() * 397) ^ UnitId;
+                return (Bundle.GetHashCode() * 397) ^ StringComparer.Ordinal.GetHashCode(Key);
             }
         }
     }

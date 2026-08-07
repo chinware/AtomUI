@@ -35,8 +35,8 @@ internal sealed class XliffFileModel
 internal sealed class XliffUnitModel
 {
     internal XliffUnitModel(
-        int id,
-        string name,
+        string key,
+        string? name,
         string source,
         string? target,
         string? targetState,
@@ -47,7 +47,7 @@ internal sealed class XliffUnitModel
         int column,
         bool isObsolete = false)
     {
-        Id = id;
+        Key = key;
         Name = name;
         Source = source;
         Target = target;
@@ -60,9 +60,9 @@ internal sealed class XliffUnitModel
         IsObsolete = isObsolete;
     }
 
-    internal int Id { get; }
+    internal string Key { get; }
 
-    internal string Name { get; }
+    internal string? Name { get; }
 
     internal string Source { get; }
 

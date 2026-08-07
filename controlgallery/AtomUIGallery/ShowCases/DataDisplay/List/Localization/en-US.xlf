@@ -1,394 +1,394 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.ListShowCaseLangResourceKind">
-    <unit id="1" name="ScenarioExamples">
+    <unit id="BasicUsageDescription">
       <segment>
-        <source>Examples</source>
+        <source>Basic usage example.</source>
       </segment>
     </unit>
-    <unit id="2" name="ComponentCategory">
-      <segment>
-        <source>Data Display</source>
-      </segment>
-    </unit>
-    <unit id="3" name="ComponentStatusStable">
-      <segment>
-        <source>.NET 10</source>
-      </segment>
-    </unit>
-    <unit id="4" name="PageSubtitle">
-      <segment>
-        <source>Display a collection of related items with selection, grouping, sorting, filtering, and paging.</source>
-      </segment>
-    </unit>
-    <unit id="5" name="PageDescription">
-      <segment>
-        <source>List presents repeated information in a compact vertical format. It supports ListView scenarios such as grouping, selection indicators, empty state, filtering, ordering, and pagination, plus simple ListBox usage.</source>
-      </segment>
-    </unit>
-    <unit id="6" name="ScenarioBasic">
-      <segment>
-        <source>Basic</source>
-      </segment>
-    </unit>
-    <unit id="7" name="ScenarioAdvanced">
-      <segment>
-        <source>Advanced</source>
-      </segment>
-    </unit>
-    <unit id="8" name="BasicUsageTitle">
+    <unit id="BasicUsageTitle">
       <segment>
         <source>Basic usage</source>
       </segment>
     </unit>
-    <unit id="9" name="BasicUsageDescription">
+    <unit id="ComponentCategory">
       <segment>
-        <source>Basic usage example.</source>
+        <source>Data Display</source>
       </segment>
     </unit>
-    <unit id="10" name="SelectionTitle">
+    <unit id="ComponentStatusStable">
       <segment>
-        <source>Selection</source>
+        <source>.NET 10</source>
       </segment>
     </unit>
-    <unit id="11" name="SelectionDescription">
-      <segment>
-        <source>You can set single selection, multiple selection or no selection.</source>
-      </segment>
-    </unit>
-    <unit id="12" name="SelectedItemsBindingTitle">
-      <segment>
-        <source>SelectedItems binding</source>
-      </segment>
-    </unit>
-    <unit id="13" name="SelectedItemsBindingDescription">
-      <segment>
-        <source>SelectedItems can be bound without an explicit Mode=TwoWay; both user selection and collection mutations stay synchronized.</source>
-      </segment>
-    </unit>
-    <unit id="14" name="GroupTitle">
-      <segment>
-        <source>Group</source>
-      </segment>
-    </unit>
-    <unit id="15" name="GroupDescription">
-      <segment>
-        <source>You can group the data based on conditions.</source>
-      </segment>
-    </unit>
-    <unit id="16" name="ItemDisabledTitle">
-      <segment>
-        <source>Item disabled</source>
-      </segment>
-    </unit>
-    <unit id="17" name="ItemDisabledDescription">
-      <segment>
-        <source>Disabled item.</source>
-      </segment>
-    </unit>
-    <unit id="18" name="EmptyTitle">
-      <segment>
-        <source>Empty</source>
-      </segment>
-    </unit>
-    <unit id="19" name="EmptyDescription">
+    <unit id="EmptyDescription">
       <segment>
         <source>show empty indicator when no data.</source>
       </segment>
     </unit>
-    <unit id="20" name="ListViewEmptyIndicatorTitle">
+    <unit id="EmptyTitle">
       <segment>
-        <source>ListView custom empty indicator</source>
+        <source>Empty</source>
       </segment>
     </unit>
-    <unit id="21" name="ListViewEmptyIndicatorDescription">
-      <segment>
-        <source>Use EmptyIndicator to replace the default ListView empty content.</source>
-      </segment>
-    </unit>
-    <unit id="22" name="ListBoxEmptyIndicatorTitle">
-      <segment>
-        <source>ListBox custom empty indicator</source>
-      </segment>
-    </unit>
-    <unit id="23" name="ListBoxEmptyIndicatorDescription">
-      <segment>
-        <source>Use EmptyIndicator to replace the default ListBox empty content.</source>
-      </segment>
-    </unit>
-    <unit id="24" name="FilterTitle">
-      <segment>
-        <source>Filter</source>
-      </segment>
-    </unit>
-    <unit id="25" name="FilterDescription">
+    <unit id="FilterDescription">
       <segment>
         <source>You can filter the data based on criteria; here we've filtered for items containing 'a'.</source>
       </segment>
     </unit>
-    <unit id="26" name="OrderedTitle">
+    <unit id="FilterTitle">
       <segment>
-        <source>Ordered</source>
+        <source>Filter</source>
       </segment>
     </unit>
-    <unit id="27" name="OrderedDescription">
+    <unit id="GroupDescription">
+      <segment>
+        <source>You can group the data based on conditions.</source>
+      </segment>
+    </unit>
+    <unit id="GroupTitle">
+      <segment>
+        <source>Group</source>
+      </segment>
+    </unit>
+    <unit id="ItemDisabledDescription">
+      <segment>
+        <source>Disabled item.</source>
+      </segment>
+    </unit>
+    <unit id="ItemDisabledTitle">
+      <segment>
+        <source>Item disabled</source>
+      </segment>
+    </unit>
+    <unit id="ListBoxEmptyIndicatorDescription">
+      <segment>
+        <source>Use EmptyIndicator to replace the default ListBox empty content.</source>
+      </segment>
+    </unit>
+    <unit id="ListBoxEmptyIndicatorTitle">
+      <segment>
+        <source>ListBox custom empty indicator</source>
+      </segment>
+    </unit>
+    <unit id="ListViewEmptyIndicatorDescription">
+      <segment>
+        <source>Use EmptyIndicator to replace the default ListView empty content.</source>
+      </segment>
+    </unit>
+    <unit id="ListViewEmptyIndicatorTitle">
+      <segment>
+        <source>ListView custom empty indicator</source>
+      </segment>
+    </unit>
+    <unit id="OrderedDescription">
       <segment>
         <source>We can sort according to specified attributes.</source>
       </segment>
     </unit>
-    <unit id="28" name="SimpleListBoxTitle">
+    <unit id="OrderedTitle">
       <segment>
-        <source>Simple listbox control</source>
+        <source>Ordered</source>
       </segment>
     </unit>
-    <unit id="29" name="SimpleListBoxDescription">
-      <segment>
-        <source>Basic usage example.</source>
-      </segment>
-    </unit>
-    <unit id="30" name="SimpleListBoxItemsSourceTitle">
-      <segment>
-        <source>Simple listbox control</source>
-      </segment>
-    </unit>
-    <unit id="31" name="SimpleListBoxItemsSourceDescription">
-      <segment>
-        <source>Basic ItemsSource and template usage example.</source>
-      </segment>
-    </unit>
-    <unit id="32" name="SearchableTitle">
-      <segment>
-        <source>Searchable</source>
-      </segment>
-    </unit>
-    <unit id="33" name="SearchableDescription">
-      <segment>
-        <source>Searchable List.</source>
-      </segment>
-    </unit>
-    <unit id="34" name="PaginationListTitle">
-      <segment>
-        <source>Pagination list</source>
-      </segment>
-    </unit>
-    <unit id="35" name="PaginationListDescription">
-      <segment>
-        <source>Pagination list.</source>
-      </segment>
-    </unit>
-    <unit id="36" name="P2PlaceholderTextSearch">
-      <segment>
-        <source>Search</source>
-      </segment>
-    </unit>
-    <unit id="37" name="P2TextCustomEmptyIndicator">
-      <segment>
-        <source>No items to display</source>
-      </segment>
-    </unit>
-    <unit id="38" name="P2FilterValue">
-      <segment>
-        <source>a</source>
-      </segment>
-    </unit>
-    <unit id="39" name="P2TextSelectionMode">
-      <segment>
-        <source>Selection Mode:</source>
-      </segment>
-    </unit>
-    <unit id="40" name="P2ContentSingle">
-      <segment>
-        <source>Single</source>
-      </segment>
-    </unit>
-    <unit id="41" name="P2ContentMultiple">
-      <segment>
-        <source>Multiple</source>
-      </segment>
-    </unit>
-    <unit id="42" name="P2ContentToggle">
-      <segment>
-        <source>Toggle</source>
-      </segment>
-    </unit>
-    <unit id="43" name="P2TextSelectedItems">
-      <segment>
-        <source>Selected:</source>
-      </segment>
-    </unit>
-    <unit id="44" name="P2TextNoSelection">
-      <segment>
-        <source>None</source>
-      </segment>
-    </unit>
-    <unit id="45" name="P2ContentSelectColors">
-      <segment>
-        <source>Select Green / Yellow</source>
-      </segment>
-    </unit>
-    <unit id="46" name="P2ContentClearSelection">
-      <segment>
-        <source>Clear</source>
-      </segment>
-    </unit>
-    <unit id="47" name="P2ColorBlue">
-      <segment>
-        <source>Blue</source>
-      </segment>
-    </unit>
-    <unit id="48" name="P2ColorGreen">
-      <segment>
-        <source>Green</source>
-      </segment>
-    </unit>
-    <unit id="49" name="P2ColorRed">
-      <segment>
-        <source>Red</source>
-      </segment>
-    </unit>
-    <unit id="50" name="P2ColorYellow">
-      <segment>
-        <source>Yellow</source>
-      </segment>
-    </unit>
-    <unit id="51" name="P2ColorOrange">
-      <segment>
-        <source>Orange</source>
-      </segment>
-    </unit>
-    <unit id="52" name="P2ColorPurple">
-      <segment>
-        <source>Purple</source>
-      </segment>
-    </unit>
-    <unit id="53" name="P2ColorPink">
-      <segment>
-        <source>Pink</source>
-      </segment>
-    </unit>
-    <unit id="54" name="P2ColorBrown">
-      <segment>
-        <source>Brown</source>
-      </segment>
-    </unit>
-    <unit id="55" name="P2ColorWhite">
-      <segment>
-        <source>White</source>
-      </segment>
-    </unit>
-    <unit id="56" name="P2ColorBlack">
-      <segment>
-        <source>Black</source>
-      </segment>
-    </unit>
-    <unit id="57" name="P2ColorGray">
-      <segment>
-        <source>Gray</source>
-      </segment>
-    </unit>
-    <unit id="58" name="P2ColorTurquoise">
-      <segment>
-        <source>Turquoise</source>
-      </segment>
-    </unit>
-    <unit id="59" name="P2ColorViolet">
-      <segment>
-        <source>Violet</source>
-      </segment>
-    </unit>
-    <unit id="60" name="P2ColorMagenta">
-      <segment>
-        <source>Magenta</source>
-      </segment>
-    </unit>
-    <unit id="61" name="P2ColorMaroon">
-      <segment>
-        <source>Maroon</source>
-      </segment>
-    </unit>
-    <unit id="62" name="P2ColorNavy">
-      <segment>
-        <source>Navy</source>
-      </segment>
-    </unit>
-    <unit id="63" name="P2ColorBeige">
+    <unit id="P2ColorBeige">
       <segment>
         <source>Beige</source>
       </segment>
     </unit>
-    <unit id="64" name="P2ColorCyan">
+    <unit id="P2ColorBlack">
+      <segment>
+        <source>Black</source>
+      </segment>
+    </unit>
+    <unit id="P2ColorBlue">
+      <segment>
+        <source>Blue</source>
+      </segment>
+    </unit>
+    <unit id="P2ColorBrown">
+      <segment>
+        <source>Brown</source>
+      </segment>
+    </unit>
+    <unit id="P2ColorCyan">
       <segment>
         <source>Cyan</source>
       </segment>
     </unit>
-    <unit id="65" name="P2ColorLavender">
+    <unit id="P2ColorGray">
+      <segment>
+        <source>Gray</source>
+      </segment>
+    </unit>
+    <unit id="P2ColorGreen">
+      <segment>
+        <source>Green</source>
+      </segment>
+    </unit>
+    <unit id="P2ColorLavender">
       <segment>
         <source>Lavender</source>
       </segment>
     </unit>
-    <unit id="66" name="P2ColorOlive">
+    <unit id="P2ColorMagenta">
+      <segment>
+        <source>Magenta</source>
+      </segment>
+    </unit>
+    <unit id="P2ColorMaroon">
+      <segment>
+        <source>Maroon</source>
+      </segment>
+    </unit>
+    <unit id="P2ColorNavy">
+      <segment>
+        <source>Navy</source>
+      </segment>
+    </unit>
+    <unit id="P2ColorOlive">
       <segment>
         <source>Olive</source>
       </segment>
     </unit>
-    <unit id="67" name="P2GroupBasicColors">
+    <unit id="P2ColorOrange">
       <segment>
-        <source>Basic Colors</source>
+        <source>Orange</source>
       </segment>
     </unit>
-    <unit id="68" name="P2GroupNeutralColors">
+    <unit id="P2ColorPink">
       <segment>
-        <source>Neutral Colors</source>
+        <source>Pink</source>
       </segment>
     </unit>
-    <unit id="69" name="P2GroupSpecificShades">
+    <unit id="P2ColorPurple">
       <segment>
-        <source>Specific Shades</source>
+        <source>Purple</source>
       </segment>
     </unit>
-    <unit id="70" name="P2ContentRacingCarSpraysBurningFuelIntoCrowd">
+    <unit id="P2ColorRed">
       <segment>
-        <source>Racing car sprays burning fuel into crowd.</source>
+        <source>Red</source>
       </segment>
     </unit>
-    <unit id="71" name="P2ContentJapanesePrincessToWedCommoner">
+    <unit id="P2ColorTurquoise">
       <segment>
-        <source>Japanese princess to wed commoner.</source>
+        <source>Turquoise</source>
       </segment>
     </unit>
-    <unit id="72" name="P2ContentAustralianWalksN100kmAfterOutbackCrash">
+    <unit id="P2ColorViolet">
       <segment>
-        <source>Australian walks 100km after outback crash.</source>
+        <source>Violet</source>
       </segment>
     </unit>
-    <unit id="73" name="P2ContentManChargedOverMissingWeddingGirl">
+    <unit id="P2ColorWhite">
       <segment>
-        <source>Man charged over missing wedding girl.</source>
+        <source>White</source>
       </segment>
     </unit>
-    <unit id="74" name="P2ContentLosAngelesBattlesHugeWildfires">
+    <unit id="P2ColorYellow">
       <segment>
-        <source>Los Angeles battles huge wildfires.</source>
+        <source>Yellow</source>
       </segment>
     </unit>
-    <unit id="75" name="P2ContentDynamicItem">
-      <segment>
-        <source>Dynamic item</source>
-      </segment>
-    </unit>
-    <unit id="76" name="P2ContentPaginationItemFormat">
-      <segment>
-        <source>Content {0}</source>
-      </segment>
-    </unit>
-    <unit id="77" name="P2ContentAddItem">
+    <unit id="P2ContentAddItem">
       <segment>
         <source>Add Item</source>
       </segment>
     </unit>
-    <unit id="78" name="P2ContentRemoveItem">
+    <unit id="P2ContentAustralianWalksN100kmAfterOutbackCrash">
+      <segment>
+        <source>Australian walks 100km after outback crash.</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentClearSelection">
+      <segment>
+        <source>Clear</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentDynamicItem">
+      <segment>
+        <source>Dynamic item</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentJapanesePrincessToWedCommoner">
+      <segment>
+        <source>Japanese princess to wed commoner.</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLosAngelesBattlesHugeWildfires">
+      <segment>
+        <source>Los Angeles battles huge wildfires.</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentManChargedOverMissingWeddingGirl">
+      <segment>
+        <source>Man charged over missing wedding girl.</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentMultiple">
+      <segment>
+        <source>Multiple</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentPaginationItemFormat">
+      <segment>
+        <source>Content {0}</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRacingCarSpraysBurningFuelIntoCrowd">
+      <segment>
+        <source>Racing car sprays burning fuel into crowd.</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentRemoveItem">
       <segment>
         <source>Remove Item</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSelectColors">
+      <segment>
+        <source>Select Green / Yellow</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSingle">
+      <segment>
+        <source>Single</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentToggle">
+      <segment>
+        <source>Toggle</source>
+      </segment>
+    </unit>
+    <unit id="P2FilterValue">
+      <segment>
+        <source>a</source>
+      </segment>
+    </unit>
+    <unit id="P2GroupBasicColors">
+      <segment>
+        <source>Basic Colors</source>
+      </segment>
+    </unit>
+    <unit id="P2GroupNeutralColors">
+      <segment>
+        <source>Neutral Colors</source>
+      </segment>
+    </unit>
+    <unit id="P2GroupSpecificShades">
+      <segment>
+        <source>Specific Shades</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSearch">
+      <segment>
+        <source>Search</source>
+      </segment>
+    </unit>
+    <unit id="P2TextCustomEmptyIndicator">
+      <segment>
+        <source>No items to display</source>
+      </segment>
+    </unit>
+    <unit id="P2TextNoSelection">
+      <segment>
+        <source>None</source>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectedItems">
+      <segment>
+        <source>Selected:</source>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectionMode">
+      <segment>
+        <source>Selection Mode:</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>List presents repeated information in a compact vertical format. It supports ListView scenarios such as grouping, selection indicators, empty state, filtering, ordering, and pagination, plus simple ListBox usage.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Display a collection of related items with selection, grouping, sorting, filtering, and paging.</source>
+      </segment>
+    </unit>
+    <unit id="PaginationListDescription">
+      <segment>
+        <source>Pagination list.</source>
+      </segment>
+    </unit>
+    <unit id="PaginationListTitle">
+      <segment>
+        <source>Pagination list</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioAdvanced">
+      <segment>
+        <source>Advanced</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="SearchableDescription">
+      <segment>
+        <source>Searchable List.</source>
+      </segment>
+    </unit>
+    <unit id="SearchableTitle">
+      <segment>
+        <source>Searchable</source>
+      </segment>
+    </unit>
+    <unit id="SelectedItemsBindingDescription">
+      <segment>
+        <source>SelectedItems can be bound without an explicit Mode=TwoWay; both user selection and collection mutations stay synchronized.</source>
+      </segment>
+    </unit>
+    <unit id="SelectedItemsBindingTitle">
+      <segment>
+        <source>SelectedItems binding</source>
+      </segment>
+    </unit>
+    <unit id="SelectionDescription">
+      <segment>
+        <source>You can set single selection, multiple selection or no selection.</source>
+      </segment>
+    </unit>
+    <unit id="SelectionTitle">
+      <segment>
+        <source>Selection</source>
+      </segment>
+    </unit>
+    <unit id="SimpleListBoxDescription">
+      <segment>
+        <source>Basic usage example.</source>
+      </segment>
+    </unit>
+    <unit id="SimpleListBoxItemsSourceDescription">
+      <segment>
+        <source>Basic ItemsSource and template usage example.</source>
+      </segment>
+    </unit>
+    <unit id="SimpleListBoxItemsSourceTitle">
+      <segment>
+        <source>Simple listbox control</source>
+      </segment>
+    </unit>
+    <unit id="SimpleListBoxTitle">
+      <segment>
+        <source>Simple listbox control</source>
       </segment>
     </unit>
   </file>

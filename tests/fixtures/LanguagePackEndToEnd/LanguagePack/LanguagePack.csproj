@@ -20,7 +20,7 @@
             <AtomUILanguageSourceKind>StaticLanguagePack</AtomUILanguageSourceKind>
             <AtomUILanguageSourceIdentity>$(PackageId)</AtomUILanguageSourceIdentity>
             <AtomUILanguageModuleId>$(AtomUILanguageModuleId)</AtomUILanguageModuleId>
-            <AtomUILanguageContractVersion>1</AtomUILanguageContractVersion>
+            <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
             <AtomUILanguagePackagePath>%(RecursiveDir)%(Filename)%(Extension)</AtomUILanguagePackagePath>
         </AtomUILanguage>
     </ItemGroup>

@@ -34,6 +34,11 @@ MSBuild 负责发现、分类、校验和传递文件；Generator 负责把文�
 targets 将这些 item 作为带元数据的 `AdditionalFiles` 传给 Generator。来源类型、source identity、module ID 和
 ContractVersion 必须保存在 item metadata 中，Generator 不从磁盘路径或 NuGet 包名猜测优先级。
 
+标准 targets 使用项目属性 `AtomUILanguageContractVersion` 作为自动发现 XLIFF 的默认 metadata，属性默认值为
+`1`。一个项目内 Catalog 版本一致时，应把该属性设置为 enum 上的 `ContractVersion`；存在不同版本的 Catalog
+时，必须通过 `AtomUILanguage Update="..."` 为对应文件显式覆盖 metadata。该值只是 MSBuild 和 NuGet 的契约
+传输副本，Generator 仍会与 Roslyn Catalog symbol 校验，不构成独立身份来源。
+
 第三方语言包的 `buildTransitive/*.props` 只能追加声明式 item，不能运行初始化代码、修改应用源码或注册运行时
 程序集。MSBuild item 层只排除相同文件的重复 Include；不同路径或不同包提供相同 Catalog/语言时，由 Generator
 根据 source identity 报告同优先级冲突，不执行按 package identity 合并。
@@ -184,6 +189,11 @@ RuntimeIdentifier 等全局发布属性，不能被最终应用当作运行时�
 manifest 和 props 真正进入 `PackTask`。静态语言包项目设置 `AtomUIBuildLanguagePackage=true` 后只由 Build Tasks
 校验和打包；它自身不运行 Localization Generator 生成 Catalog 或运行时注册。相同 XLIFF 进入消费应用后才由
 Generator 编译为静态字符串表。
+
+源码仓库构建中，`AtomUI.Build.Tasks.dll` 可能在消费项目完成 MSBuild 求值之后才由 Generator 的项目依赖生成。
+因此 targets 必须无条件登记 `UsingTask`，让 MSBuild 在任务首次执行时延迟加载程序集；不得在 `UsingTask` 上使用
+求值期 `Exists(...)` 条件。需要任务的 Target 仍在执行期检查程序集是否存在，这样冷构建、静态图构建和
+NativeAOT publish 都不会因“文件已经生成但任务未登记”而产生 `MSB4036`。
 
 ## 编译期与启动期校验边界
 

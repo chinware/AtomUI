@@ -62,19 +62,11 @@ internal static class ReferencedLanguageCatalogResolver
         }
 
         var units = ImmutableArray.CreateBuilder<LanguageCatalogUnitInfo>();
-        var ids = new HashSet<int>();
         foreach (var field in symbol.GetMembers().OfType<IFieldSymbol>()
                                     .Where(static field =>
                                         !field.IsImplicitlyDeclared && field.HasConstantValue))
         {
-            if (!TryGetPositiveInt32(field.ConstantValue, out var id) || !ids.Add(id))
-            {
-                catalog = null;
-                error = $"referenced Catalog '{file.Document.File.Id}' contains an invalid or duplicate " +
-                        $"unit ID on member '{field.Name}'";
-                return false;
-            }
-            units.Add(new LanguageCatalogUnitInfo(id, field.Name, Location.None));
+            units.Add(new LanguageCatalogUnitInfo(field.Name, Location.None));
         }
 
         if (units.Count == 0)
@@ -93,7 +85,7 @@ internal static class ReferencedLanguageCatalogResolver
             namespaceName,
             symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
             contractVersion,
-            units.OrderBy(static unit => unit.Id).ToImmutableArray(),
+            units.OrderBy(static unit => unit.Key, StringComparer.Ordinal).ToImmutableArray(),
             Location.None);
         error = string.Empty;
         return true;
@@ -132,47 +124,4 @@ internal static class ReferencedLanguageCatalogResolver
         return 1;
     }
 
-    private static bool TryGetPositiveInt32(object? value, out int result)
-    {
-        long converted;
-        switch (value)
-        {
-            case sbyte signedByte:
-                converted = signedByte;
-                break;
-            case byte unsignedByte:
-                converted = unsignedByte;
-                break;
-            case short signedShort:
-                converted = signedShort;
-                break;
-            case ushort unsignedShort:
-                converted = unsignedShort;
-                break;
-            case int signedInt:
-                converted = signedInt;
-                break;
-            case uint unsignedInt:
-                converted = unsignedInt;
-                break;
-            case long signedLong:
-                converted = signedLong;
-                break;
-            case ulong unsignedLong when unsignedLong <= int.MaxValue:
-                converted = (long)unsignedLong;
-                break;
-            default:
-                result = default;
-                return false;
-        }
-
-        if (converted is > 0 and <= int.MaxValue)
-        {
-            result = (int)converted;
-            return true;
-        }
-
-        result = default;
-        return false;
-    }
 }

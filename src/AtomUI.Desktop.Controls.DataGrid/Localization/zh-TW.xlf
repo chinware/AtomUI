@@ -1,12 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US" trgLang="zh-TW">
+<xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUI.Desktop.Controls.Localization.DataGridLangResourceKind">
-    <unit id="1" name="SelectAllFilterItems"><segment><source>Select all items</source><target state="translated">選擇所有</target></segment></unit>
-    <unit id="2" name="AscendTooltip"><segment><source>Click to sort ascending</source><target state="translated">點擊升序</target></segment></unit>
-    <unit id="3" name="DescendTooltip"><segment><source>Click to sort descending</source><target state="translated">點擊降序</target></segment></unit>
-    <unit id="4" name="CancelTooltip"><segment><source>Click to cancel sorting</source><target state="translated">取消排序</target></segment></unit>
-    <unit id="5" name="DeleteConfirmText"><segment><source>Sure to delete?</source><target state="translated">確認刪除？</target></segment></unit>
-    <unit id="6" name="CancelConfirmText"><segment><source>Sure to cancel?</source><target state="translated">確認取消？</target></segment></unit>
-    <unit id="7" name="Operating"><segment><source>Operation in progress, please wait.</source><target state="translated">正在操作中，請稍後</target></segment></unit>
+    <unit id="AscendTooltip">
+      <segment>
+        <source>Click to sort ascending</source>
+        <target state="translated">點擊升序</target>
+      </segment>
+    </unit>
+    <unit id="CancelConfirmText">
+      <segment>
+        <source>Sure to cancel?</source>
+        <target state="translated">確認取消？</target>
+      </segment>
+    </unit>
+    <unit id="CancelTooltip">
+      <segment>
+        <source>Click to cancel sorting</source>
+        <target state="translated">取消排序</target>
+      </segment>
+    </unit>
+    <unit id="DeleteConfirmText">
+      <segment>
+        <source>Sure to delete?</source>
+        <target state="translated">確認刪除？</target>
+      </segment>
+    </unit>
+    <unit id="DescendTooltip">
+      <segment>
+        <source>Click to sort descending</source>
+        <target state="translated">點擊降序</target>
+      </segment>
+    </unit>
+    <unit id="Operating">
+      <segment>
+        <source>Operation in progress, please wait.</source>
+        <target state="translated">正在操作中，請稍後</target>
+      </segment>
+    </unit>
+    <unit id="SelectAllFilterItems">
+      <segment>
+        <source>Select all items</source>
+        <target state="translated">選擇所有</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

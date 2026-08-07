@@ -1,99 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.SpinShowCaseLangResourceKind">
-    <unit id="1" name="BasicUsageTitle">
-      <segment>
-        <source>Basic Usage</source>
-      </segment>
-    </unit>
-    <unit id="2" name="BasicUsageDescription">
+    <unit id="BasicUsageDescription">
       <segment>
         <source>A simple loading status.</source>
       </segment>
     </unit>
-    <unit id="3" name="SizeTitle">
+    <unit id="BasicUsageTitle">
       <segment>
-        <source>Size</source>
+        <source>Basic Usage</source>
       </segment>
     </unit>
-    <unit id="4" name="SizeDescription">
-      <segment>
-        <source>SpinIndicator supports small, middle, large, and custom size types; the custom type follows the middle metrics by default and can override indicator metrics.</source>
-      </segment>
-    </unit>
-    <unit id="5" name="CustomIndicatorTitle">
-      <segment>
-        <source>Custom spinning indicator</source>
-      </segment>
-    </unit>
-    <unit id="6" name="CustomIndicatorDescription">
-      <segment>
-        <source>Use custom loading indicator.</source>
-      </segment>
-    </unit>
-    <unit id="7" name="CustomizedDescriptionTitle">
-      <segment>
-        <source>Customized description</source>
-      </segment>
-    </unit>
-    <unit id="8" name="CustomizedDescriptionDescription">
-      <segment>
-        <source>Customized description</source>
-      </segment>
-    </unit>
-    <unit id="9" name="EmbeddedModeTitle">
-      <segment>
-        <source>Embedded mode</source>
-      </segment>
-    </unit>
-    <unit id="10" name="EmbeddedModeDescription">
-      <segment>
-        <source>Embedding content into Spin will set it into loading state.</source>
-      </segment>
-    </unit>
-    <unit id="11" name="PageSubtitle">
-      <segment>
-        <source>Loading indicators for asynchronous content.</source>
-      </segment>
-    </unit>
-    <unit id="12" name="PageDescription">
-      <segment>
-        <source>Spin and SpinIndicator display activity while a region, card, or page is waiting for data, with optional tips, masks, and custom indicators.</source>
-      </segment>
-    </unit>
-    <unit id="13" name="ComponentCategory">
+    <unit id="ComponentCategory">
       <segment>
         <source>Feedback</source>
       </segment>
     </unit>
-    <unit id="14" name="ComponentStatusStable">
+    <unit id="ComponentStatusStable">
       <segment>
         <source>.NET 10</source>
       </segment>
     </unit>
-    <unit id="15" name="ScenarioExamples">
+    <unit id="CustomIndicatorDescription">
       <segment>
-        <source>Examples</source>
+        <source>Use custom loading indicator.</source>
       </segment>
     </unit>
-    <unit id="16" name="P2DescriptionFurtherDetailsAboutTheContextOfThisAlert">
+    <unit id="CustomIndicatorTitle">
+      <segment>
+        <source>Custom spinning indicator</source>
+      </segment>
+    </unit>
+    <unit id="CustomizedDescriptionDescription">
+      <segment>
+        <source>Customized description</source>
+      </segment>
+    </unit>
+    <unit id="CustomizedDescriptionTitle">
+      <segment>
+        <source>Customized description</source>
+      </segment>
+    </unit>
+    <unit id="EmbeddedModeDescription">
+      <segment>
+        <source>Embedding content into Spin will set it into loading state.</source>
+      </segment>
+    </unit>
+    <unit id="EmbeddedModeTitle">
+      <segment>
+        <source>Embedded mode</source>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionFurtherDetailsAboutTheContextOfThisAlert">
       <segment>
         <source>Further details about the context of this alert.</source>
       </segment>
     </unit>
-    <unit id="17" name="P2TextLoadingState">
+    <unit id="P2MessageAlertMessageTitle">
+      <segment>
+        <source>Alert message title</source>
+      </segment>
+    </unit>
+    <unit id="P2TextLoadingState">
       <segment>
         <source>Loading state：</source>
       </segment>
     </unit>
-    <unit id="18" name="P2TipLoading">
+    <unit id="P2TipLoading">
       <segment>
         <source>Loading...</source>
       </segment>
     </unit>
-    <unit id="19" name="P2MessageAlertMessageTitle">
+    <unit id="PageDescription">
       <segment>
-        <source>Alert message title</source>
+        <source>Spin and SpinIndicator display activity while a region, card, or page is waiting for data, with optional tips, masks, and custom indicators.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Loading indicators for asynchronous content.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>SpinIndicator supports small, middle, large, and custom size types; the custom type follows the middle metrics by default and can override indicator metrics.</source>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
       </segment>
     </unit>
   </file>

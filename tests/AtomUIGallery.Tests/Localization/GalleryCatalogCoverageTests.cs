@@ -43,17 +43,16 @@ public class GalleryCatalogCoverageTests
             .ToArray();
 
         catalogTypes.Length.ShouldBe(92);
+        var memberOrderBaseline = LoadCatalogMemberOrderBaseline();
+        memberOrderBaseline.Keys.ShouldBe(
+            catalogTypes.Select(static type => type.FullName!),
+            ignoreOrder: true);
         foreach (var catalogType in catalogTypes)
         {
             catalogType.GetCustomAttribute<LanguageCatalogAttribute>()
                        .ShouldNotBeNull()
-                       .ContractVersion.ShouldBe(1);
-            var ids = Enum.GetValues(catalogType)
-                          .Cast<object>()
-                          .Select(Convert.ToInt32)
-                          .Order()
-                          .ToArray();
-            ids.ShouldBe(Enumerable.Range(1, ids.Length));
+                       .ContractVersion.ShouldBe(2);
+            Enum.GetNames(catalogType).ShouldBe(memberOrderBaseline[catalogType.FullName!]);
 
             var extensionName = catalogType.Name[..^"Kind".Length] + "Extension";
             var extensionType = catalogType.Assembly
@@ -87,8 +86,7 @@ public class GalleryCatalogCoverageTests
                     var get = LocalizerGetMethod.MakeGenericMethod(file.CatalogType);
                     foreach (var entry in file.Entries)
                     {
-                        var kind = Enum.Parse(file.CatalogType, entry.Name);
-                        Convert.ToInt32(kind).ShouldBe(entry.Id);
+                        var kind = Enum.Parse(file.CatalogType, entry.Key);
                         get.Invoke(localizer, [kind]).ShouldBe(entry.Text);
                     }
                 }
@@ -131,9 +129,9 @@ public class GalleryCatalogCoverageTests
                         var source = segment.Element(xliff + "source").ShouldNotBeNull().Value;
                         var target = segment.Element(xliff + "target");
                         var text = targetLanguage is null ? source : target.ShouldNotBeNull().Value;
+                        unit.Attribute("name").ShouldBeNull();
                         return new CatalogEntry(
-                            int.Parse(unit.Attribute("id")!.Value),
-                            unit.Attribute("name")!.Value,
+                            unit.Attribute("id").ShouldNotBeNull().Value,
                             source,
                             text,
                             target?.Attribute("state")?.Value);
@@ -156,21 +154,19 @@ public class GalleryCatalogCoverageTests
             catalogFiles.ShouldAllBe(file => file.CatalogId == catalogType.FullName);
 
             var sourceEntries = catalogFiles.Single(file => file.Language == LanguageTags.EnUS).Entries;
-            var enumEntries = Enum.GetNames(catalogType)
-                                  .Select(name => new
-                                  {
-                                      Name = name,
-                                      Id = Convert.ToInt32(Enum.Parse(catalogType, name))
-                                  })
-                                  .OrderBy(static entry => entry.Id)
-                                  .ToArray();
-            sourceEntries.Select(static entry => (entry.Id, entry.Name))
-                         .ShouldBe(enumEntries.Select(static entry => (entry.Id, entry.Name)));
+            var enumKeys = Enum.GetNames(catalogType)
+                               .OrderBy(static key => key, StringComparer.Ordinal)
+                               .ToArray();
+            sourceEntries.Select(static entry => entry.Key)
+                         .OrderBy(static key => key, StringComparer.Ordinal)
+                         .ShouldBe(enumKeys);
 
             foreach (var targetFile in catalogFiles.Where(file => file.Language != LanguageTags.EnUS))
             {
-                targetFile.Entries.Select(static entry => (entry.Id, entry.Name, entry.Source))
-                          .ShouldBe(sourceEntries.Select(static entry => (entry.Id, entry.Name, entry.Source)));
+                targetFile.Entries.Select(static entry => (entry.Key, entry.Source))
+                          .OrderBy(static entry => entry.Key, StringComparer.Ordinal)
+                          .ShouldBe(sourceEntries.Select(static entry => (entry.Key, entry.Source))
+                                                 .OrderBy(static entry => entry.Key, StringComparer.Ordinal));
                 targetFile.Entries.ShouldAllBe(static entry =>
                     entry.TargetState == "translated" && !string.IsNullOrEmpty(entry.Text));
             }
@@ -192,6 +188,23 @@ public class GalleryCatalogCoverageTests
         throw new DirectoryNotFoundException("AtomUI repository root was not found.");
     }
 
+    private static IReadOnlyDictionary<string, string[]> LoadCatalogMemberOrderBaseline()
+    {
+        var path = Path.Combine(
+            GetRepoRoot(),
+            "tests",
+            "AtomUIGallery.Tests",
+            "Localization",
+            "CatalogMemberOrder.baseline");
+        return File.ReadLines(path)
+                   .Where(static line => !string.IsNullOrWhiteSpace(line))
+                   .Select(static line => line.Split('|', 2))
+                   .ToDictionary(
+                       static parts => parts[0],
+                       static parts => parts[1].Split(',', StringSplitOptions.RemoveEmptyEntries),
+                       StringComparer.Ordinal);
+    }
+
     private sealed record CatalogLanguageFile(
         string CatalogId,
         Type CatalogType,
@@ -199,8 +212,7 @@ public class GalleryCatalogCoverageTests
         CatalogEntry[] Entries);
 
     private sealed record CatalogEntry(
-        int Id,
-        string Name,
+        string Key,
         string Source,
         string Text,
         string? TargetState);

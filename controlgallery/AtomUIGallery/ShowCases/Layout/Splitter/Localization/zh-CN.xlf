@@ -1,226 +1,226 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-CN" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.SplitterShowCaseLangResourceKind">
-    <unit id="1" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">示例</target>
-      </segment>
-    </unit>
-    <unit id="2" name="ComponentCategory">
-      <segment>
-        <source>Layout</source>
-        <target state="translated">布局</target>
-      </segment>
-    </unit>
-    <unit id="3" name="ComponentStatusStable">
-      <segment>
-        <source>.NET 10</source>
-        <target state="translated">.NET 10</target>
-      </segment>
-    </unit>
-    <unit id="4" name="PageSubtitle">
-      <segment>
-        <source>Resize adjacent panes with draggable handles, constraints, collapse controls, and lazy updates.</source>
-        <target state="translated">通过可拖拽把手、约束、折叠控制和延迟更新调整相邻面板尺寸。</target>
-      </segment>
-    </unit>
-    <unit id="5" name="PageDescription">
-      <segment>
-        <source>Splitter divides a region into resizable panels. It supports horizontal and vertical layouts, nested splitters, fixed or constrained panels, collapsible handles, multiple panels, and lazy resize feedback.</source>
-        <target state="translated">Splitter 将区域拆分为可调整大小的面板，支持水平和垂直布局、嵌套分割器、固定或受约束面板、可折叠把手、多面板和延迟拖拽反馈。</target>
-      </segment>
-    </unit>
-    <unit id="6" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-        <target state="translated">基础用法</target>
-      </segment>
-    </unit>
-    <unit id="7" name="BasicDescription">
+    <unit id="BasicDescription">
       <segment>
         <source>Initial sizes with min/max constraints.</source>
         <target state="translated">带最小/最大约束的初始尺寸。</target>
       </segment>
     </unit>
-    <unit id="8" name="HorizontalTitle">
+    <unit id="BasicTitle">
       <segment>
-        <source>Horizontal</source>
-        <target state="translated">水平分割</target>
+        <source>Basic</source>
+        <target state="translated">基础用法</target>
       </segment>
     </unit>
-    <unit id="9" name="HorizontalDescription">
+    <unit id="ComponentCategory">
       <segment>
-        <source>Top-bottom splitter with collapsible icons.</source>
-        <target state="translated">带可折叠图标的上下分割器。</target>
+        <source>Layout</source>
+        <target state="translated">布局</target>
       </segment>
     </unit>
-    <unit id="10" name="CompositeTitle">
+    <unit id="ComponentStatusStable">
       <segment>
-        <source>Composite</source>
-        <target state="translated">组合布局</target>
+        <source>.NET 10</source>
+        <target state="translated">.NET 10</target>
       </segment>
     </unit>
-    <unit id="11" name="CompositeDescription">
+    <unit id="CompositeDescription">
       <segment>
         <source>Nested horizontal splitter inside a vertical layout.</source>
         <target state="translated">在垂直布局中嵌套水平分割器。</target>
       </segment>
     </unit>
-    <unit id="12" name="ResizableDisabledTitle">
+    <unit id="CompositeTitle">
       <segment>
-        <source>Resizable Disabled</source>
-        <target state="translated">禁用拖拽调整</target>
+        <source>Composite</source>
+        <target state="translated">组合布局</target>
       </segment>
     </unit>
-    <unit id="13" name="ResizableDisabledDescription">
+    <unit id="HorizontalDescription">
       <segment>
-        <source>If either side disables resizable, dragging is blocked.</source>
-        <target state="translated">任意一侧禁用 resizable 时，拖拽会被阻止。</target>
+        <source>Top-bottom splitter with collapsible icons.</source>
+        <target state="translated">带可折叠图标的上下分割器。</target>
       </segment>
     </unit>
-    <unit id="14" name="ShowCollapsibleIconTitle">
+    <unit id="HorizontalTitle">
       <segment>
-        <source>ShowCollapsibleIcon</source>
-        <target state="translated">显示折叠图标</target>
+        <source>Horizontal</source>
+        <target state="translated">水平分割</target>
       </segment>
     </unit>
-    <unit id="15" name="ShowCollapsibleIconDescription">
-      <segment>
-        <source>Three panels with hover and always-visible collapsible icons.</source>
-        <target state="translated">三个面板展示 hover 和始终可见的折叠图标。</target>
-      </segment>
-    </unit>
-    <unit id="16" name="MultiPanelsTitle">
-      <segment>
-        <source>Multi Panels</source>
-        <target state="translated">多个面板</target>
-      </segment>
-    </unit>
-    <unit id="17" name="MultiPanelsDescription">
-      <segment>
-        <source>Multiple panels in vertical layout.</source>
-        <target state="translated">垂直布局中的多个面板。</target>
-      </segment>
-    </unit>
-    <unit id="18" name="LazyTitle">
-      <segment>
-        <source>Lazy</source>
-        <target state="translated">延迟模式</target>
-      </segment>
-    </unit>
-    <unit id="19" name="LazyDescription">
+    <unit id="LazyDescription">
       <segment>
         <source>Lazy rendering mode: sizes update on drag release.</source>
         <target state="translated">延迟渲染模式：拖拽释放后更新尺寸。</target>
       </segment>
     </unit>
-    <unit id="20" name="LineStyleTitle">
+    <unit id="LazyTitle">
       <segment>
-        <source>Line Style</source>
-        <target state="translated">分割线样式</target>
+        <source>Lazy</source>
+        <target state="translated">延迟模式</target>
       </segment>
     </unit>
-    <unit id="21" name="LineStyleDescription">
+    <unit id="LineStyleDescription">
       <segment>
         <source>Customize the root frame, visible divider thickness, and line corner radius.</source>
         <target state="translated">定制根框架、可见分割线厚度和线条圆角。</target>
       </segment>
     </unit>
-    <unit id="22" name="P2TextFirst">
+    <unit id="LineStyleTitle">
       <segment>
-        <source>First</source>
-        <target state="translated">第一项</target>
+        <source>Line Style</source>
+        <target state="translated">分割线样式</target>
       </segment>
     </unit>
-    <unit id="23" name="P2TextSecond">
+    <unit id="MultiPanelsDescription">
       <segment>
-        <source>Second</source>
-        <target state="translated">第二项</target>
+        <source>Multiple panels in vertical layout.</source>
+        <target state="translated">垂直布局中的多个面板。</target>
       </segment>
     </unit>
-    <unit id="24" name="P2TextTop">
+    <unit id="MultiPanelsTitle">
       <segment>
-        <source>Top</source>
-        <target state="translated">顶部</target>
+        <source>Multi Panels</source>
+        <target state="translated">多个面板</target>
       </segment>
     </unit>
-    <unit id="25" name="P2TextBottom">
-      <segment>
-        <source>Bottom</source>
-        <target state="translated">底部</target>
-      </segment>
-    </unit>
-    <unit id="26" name="P2TextLeft">
-      <segment>
-        <source>Left</source>
-        <target state="translated">左侧</target>
-      </segment>
-    </unit>
-    <unit id="27" name="P2TextResizable">
-      <segment>
-        <source>Resizable</source>
-        <target state="translated">Resizable</target>
-      </segment>
-    </unit>
-    <unit id="28" name="P2TextNotResizable">
-      <segment>
-        <source>Not Resizable</source>
-        <target state="translated">Not Resizable</target>
-      </segment>
-    </unit>
-    <unit id="29" name="P2TextShowcollapsibleicon">
-      <segment>
-        <source>ShowCollapsibleIcon:</source>
-        <target state="translated">ShowCollapsibleIcon:</target>
-      </segment>
-    </unit>
-    <unit id="30" name="P2ContentHover">
-      <segment>
-        <source>Hover</source>
-        <target state="translated">悬停</target>
-      </segment>
-    </unit>
-    <unit id="31" name="P2ContentTrue">
-      <segment>
-        <source>True</source>
-        <target state="translated">True</target>
-      </segment>
-    </unit>
-    <unit id="32" name="P2ContentFalse">
+    <unit id="P2ContentFalse">
       <segment>
         <source>False</source>
         <target state="translated">False</target>
       </segment>
     </unit>
-    <unit id="33" name="P2TextThird">
+    <unit id="P2ContentHover">
       <segment>
-        <source>Third</source>
-        <target state="translated">第三项</target>
+        <source>Hover</source>
+        <target state="translated">悬停</target>
       </segment>
     </unit>
-    <unit id="34" name="P2TextA">
+    <unit id="P2ContentTrue">
+      <segment>
+        <source>True</source>
+        <target state="translated">True</target>
+      </segment>
+    </unit>
+    <unit id="P2TextA">
       <segment>
         <source>A</source>
         <target state="translated">A</target>
       </segment>
     </unit>
-    <unit id="35" name="P2TextB">
+    <unit id="P2TextB">
       <segment>
         <source>B</source>
         <target state="translated">B</target>
       </segment>
     </unit>
-    <unit id="36" name="P2TextC">
+    <unit id="P2TextBottom">
+      <segment>
+        <source>Bottom</source>
+        <target state="translated">底部</target>
+      </segment>
+    </unit>
+    <unit id="P2TextC">
       <segment>
         <source>C</source>
         <target state="translated">C</target>
       </segment>
     </unit>
-    <unit id="37" name="P2TextD">
+    <unit id="P2TextD">
       <segment>
         <source>D</source>
         <target state="translated">D</target>
+      </segment>
+    </unit>
+    <unit id="P2TextFirst">
+      <segment>
+        <source>First</source>
+        <target state="translated">第一项</target>
+      </segment>
+    </unit>
+    <unit id="P2TextLeft">
+      <segment>
+        <source>Left</source>
+        <target state="translated">左侧</target>
+      </segment>
+    </unit>
+    <unit id="P2TextNotResizable">
+      <segment>
+        <source>Not Resizable</source>
+        <target state="translated">Not Resizable</target>
+      </segment>
+    </unit>
+    <unit id="P2TextResizable">
+      <segment>
+        <source>Resizable</source>
+        <target state="translated">Resizable</target>
+      </segment>
+    </unit>
+    <unit id="P2TextSecond">
+      <segment>
+        <source>Second</source>
+        <target state="translated">第二项</target>
+      </segment>
+    </unit>
+    <unit id="P2TextShowcollapsibleicon">
+      <segment>
+        <source>ShowCollapsibleIcon:</source>
+        <target state="translated">ShowCollapsibleIcon:</target>
+      </segment>
+    </unit>
+    <unit id="P2TextThird">
+      <segment>
+        <source>Third</source>
+        <target state="translated">第三项</target>
+      </segment>
+    </unit>
+    <unit id="P2TextTop">
+      <segment>
+        <source>Top</source>
+        <target state="translated">顶部</target>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Splitter divides a region into resizable panels. It supports horizontal and vertical layouts, nested splitters, fixed or constrained panels, collapsible handles, multiple panels, and lazy resize feedback.</source>
+        <target state="translated">Splitter 将区域拆分为可调整大小的面板，支持水平和垂直布局、嵌套分割器、固定或受约束面板、可折叠把手、多面板和延迟拖拽反馈。</target>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Resize adjacent panes with draggable handles, constraints, collapse controls, and lazy updates.</source>
+        <target state="translated">通过可拖拽把手、约束、折叠控制和延迟更新调整相邻面板尺寸。</target>
+      </segment>
+    </unit>
+    <unit id="ResizableDisabledDescription">
+      <segment>
+        <source>If either side disables resizable, dragging is blocked.</source>
+        <target state="translated">任意一侧禁用 resizable 时，拖拽会被阻止。</target>
+      </segment>
+    </unit>
+    <unit id="ResizableDisabledTitle">
+      <segment>
+        <source>Resizable Disabled</source>
+        <target state="translated">禁用拖拽调整</target>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
+    <unit id="ShowCollapsibleIconDescription">
+      <segment>
+        <source>Three panels with hover and always-visible collapsible icons.</source>
+        <target state="translated">三个面板展示 hover 和始终可见的折叠图标。</target>
+      </segment>
+    </unit>
+    <unit id="ShowCollapsibleIconTitle">
+      <segment>
+        <source>ShowCollapsibleIcon</source>
+        <target state="translated">显示折叠图标</target>
       </segment>
     </unit>
   </file>

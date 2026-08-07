@@ -43,16 +43,15 @@ public class ExportLanguageTemplatesTaskTests : IDisposable
         var parsed = Xliff21Parser.Parse(first);
         parsed.Errors.ShouldBeEmpty();
         var units = parsed.Document.ShouldNotBeNull().File.Units;
-        units.Select(static unit => unit.Id).ShouldBe([1, 2, 3]);
-        units[0].Name.ShouldBe("Heading");
-        units[0].Target.ShouldBe("ログイン");
-        units[0].TargetState.ShouldBe("translated");
-        units[0].Notes.ShouldBe(["Current context", "Translator note"]);
-        units[1].Source.ShouldBe("Welcome back");
-        units[1].Target.ShouldBe("ようこそ");
+        units.Select(static unit => unit.Key).ShouldBe(["Body", "Count", "Title"]);
+        units[0].Source.ShouldBe("Welcome back");
+        units[0].Target.ShouldBe("ようこそ");
+        units[0].TargetState.ShouldBe("initial");
+        units[1].Target.ShouldBe(string.Empty);
         units[1].TargetState.ShouldBe("initial");
-        units[2].Target.ShouldBe(string.Empty);
-        units[2].TargetState.ShouldBe("initial");
+        units[2].Target.ShouldBe("ログイン");
+        units[2].TargetState.ShouldBe("translated");
+        units[2].Notes.ShouldBe(["Current context", "Translator note"]);
     }
 
     [Fact]
@@ -97,14 +96,14 @@ public class ExportLanguageTemplatesTaskTests : IDisposable
     private const string SourceXliff = """
         <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
           <file id="Test.Product.LoginLangResourceKind">
-            <unit id="1" name="Heading">
+            <unit id="Title">
               <notes><note>Current context</note></notes>
               <segment><source>Sign in</source></segment>
             </unit>
-            <unit id="2" name="Body">
+            <unit id="Body">
               <segment><source>Welcome back</source></segment>
             </unit>
-            <unit id="3" name="Count">
+            <unit id="Count">
               <segment><source>{0} items</source></segment>
             </unit>
           </file>
@@ -114,11 +113,11 @@ public class ExportLanguageTemplatesTaskTests : IDisposable
     private const string ExistingTargetXliff = """
         <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US" trgLang="ja-JP">
           <file id="Test.Product.LoginLangResourceKind">
-            <unit id="1" name="Title">
+            <unit id="Title">
               <notes><note>Translator note</note></notes>
               <segment><source>Sign in</source><target state="translated">ログイン</target></segment>
             </unit>
-            <unit id="2" name="Body">
+            <unit id="Body">
               <segment><source>Welcome</source><target state="final">ようこそ</target></segment>
             </unit>
           </file>

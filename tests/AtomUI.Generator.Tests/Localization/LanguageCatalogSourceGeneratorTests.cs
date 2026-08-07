@@ -75,10 +75,10 @@ public class LanguageCatalogSourceGeneratorTests
     [Fact]
     public void Escapes_Keyword_Unit_Identifiers_In_The_Generated_Switch()
     {
-        var source = CatalogAndRuntimeSource.Replace("Title = 10", "@class = 10");
-        var sourceXliff = SourceXliff.Replace("name=\"Title\"", "name=\"class\"");
+        var source = CatalogAndRuntimeSource.Replace("Title", "@class");
+        var sourceXliff = SourceXliff.Replace("id=\"Title\"", "id=\"class\"");
         var targetXliff = TargetXliff("zh-CN", "类型", "项目 {0}")
-            .Replace("name=\"Title\"", "name=\"class\"");
+            .Replace("id=\"Title\"", "id=\"class\"");
         var execution = RunWithOutputCompilation(
             source,
             LanguageFile("Localization/en-US.xlf", sourceXliff),
@@ -87,7 +87,7 @@ public class LanguageCatalogSourceGeneratorTests
         var moduleSource = GetGeneratedSource(
             execution.Result,
             "TestApp.Localization.LoginLangResourceKind.LanguageCatalogRegistration.g.cs");
-        moduleSource.ShouldContain("LoginLangResourceKind.@class => 0");
+        moduleSource.ShouldContain("LoginLangResourceKind.@class =>");
         execution.OutputCompilation.GetDiagnostics(TestContext.Current.CancellationToken)
                  .Where(static diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
                  .ShouldBeEmpty();
@@ -108,7 +108,7 @@ public class LanguageCatalogSourceGeneratorTests
                     [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
                     public enum CommonLangResourceKind
                     {
-                        Title = 10
+                        Title
                     }
                 }
 
@@ -117,7 +117,7 @@ public class LanguageCatalogSourceGeneratorTests
                     [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
                     public enum CommonLangResourceKind
                     {
-                        Title = 10
+                        Title
                     }
                 }
             }
@@ -162,7 +162,7 @@ public class LanguageCatalogSourceGeneratorTests
                         [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
                         public enum CommonLangResourceKind
                         {
-                            Title = 10
+                            Title
                         }
                     }
                 }
@@ -172,7 +172,7 @@ public class LanguageCatalogSourceGeneratorTests
                     [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
                     public enum CommonLangResourceKind
                     {
-                        Title = 10
+                            Title
                     }
                 }
             }
@@ -205,7 +205,7 @@ public class LanguageCatalogSourceGeneratorTests
                 [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
                 public enum Outer_CommonLangResourceKind
                 {
-                    Title = 10
+                    Title
                 }
 
                 public static class Outer
@@ -213,7 +213,7 @@ public class LanguageCatalogSourceGeneratorTests
                     [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
                     public enum CommonLangResourceKind
                     {
-                        Title = 10
+                    Title
                     }
                 }
             }
@@ -225,7 +225,7 @@ public class LanguageCatalogSourceGeneratorTests
                 """
                 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
                   <file id="TestApp.Localization.Outer_CommonLangResourceKind">
-                    <unit id="10" name="Title"><segment><source>Title</source></segment></unit>
+                    <unit id="Title"><segment><source>Title</source></segment></unit>
                   </file>
                 </xliff>
                 """),
@@ -282,8 +282,8 @@ public class LanguageCatalogSourceGeneratorTests
         return $$"""
             <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US" trgLang="{{language}}">
               <file id="TestApp.Localization.LoginLangResourceKind">
-                <unit id="30" name="ItemCount"><segment><source>Items {0}</source><target state="translated">{{itemCount}}</target></segment></unit>
-                <unit id="10" name="Title"><segment><source>Open "file" C:\Temp</source><target state="translated">{{title}}</target></segment></unit>
+                <unit id="ItemCount"><segment><source>Items {0}</source><target state="translated">{{itemCount}}</target></segment></unit>
+                <unit id="Title"><segment><source>Open "file" C:\Temp</source><target state="translated">{{title}}</target></segment></unit>
               </file>
             </xliff>
             """;
@@ -294,7 +294,7 @@ public class LanguageCatalogSourceGeneratorTests
         return $$"""
             <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
               <file id="TestApp.Localization.{{containingType}}+CommonLangResourceKind">
-                <unit id="10" name="Title"><segment><source>Title</source></segment></unit>
+                <unit id="Title"><segment><source>Title</source></segment></unit>
               </file>
             </xliff>
             """;
@@ -337,7 +337,7 @@ public class LanguageCatalogSourceGeneratorTests
 
             public sealed class LanguageCatalogUnitDescriptor
             {
-                public LanguageCatalogUnitDescriptor(int id, string name, bool isFormatted = false) { }
+                public LanguageCatalogUnitDescriptor(string key, bool isFormatted = false) { }
             }
 
             public readonly struct LanguageTag
@@ -369,8 +369,8 @@ public class LanguageCatalogSourceGeneratorTests
             [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
             public enum LoginLangResourceKind
             {
-                ItemCount = 30,
-                Title = 10
+                ItemCount,
+                Title
             }
         }
         """;
@@ -378,8 +378,8 @@ public class LanguageCatalogSourceGeneratorTests
     private const string SourceXliff = """
         <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
           <file id="TestApp.Localization.LoginLangResourceKind">
-            <unit id="30" name="ItemCount"><segment><source>Items {0}</source></segment></unit>
-            <unit id="10" name="Title"><segment><source>Open "file" C:\Temp</source></segment></unit>
+            <unit id="ItemCount"><segment><source>Items {0}</source></segment></unit>
+            <unit id="Title"><segment><source>Open "file" C:\Temp</source></segment></unit>
           </file>
         </xliff>
         """;
@@ -423,13 +423,13 @@ public class LanguageCatalogSourceGeneratorTests
                             1,
                             new global::AtomUI.Localization.LanguageCatalogUnitDescriptor[]
                             {
-                                new global::AtomUI.Localization.LanguageCatalogUnitDescriptor(10, "Title", false),
-                                new global::AtomUI.Localization.LanguageCatalogUnitDescriptor(30, "ItemCount", true),
+                                new global::AtomUI.Localization.LanguageCatalogUnitDescriptor("ItemCount", true),
+                                new global::AtomUI.Localization.LanguageCatalogUnitDescriptor("Title", false),
                             },
                             static kind => kind switch
                             {
-                                global::TestApp.Localization.LoginLangResourceKind.Title => 0,
-                                global::TestApp.Localization.LoginLangResourceKind.ItemCount => 1,
+                                global::TestApp.Localization.LoginLangResourceKind.ItemCount => 0,
+                                global::TestApp.Localization.LoginLangResourceKind.Title => 1,
                                 _ => -1,
                             }));
                     builder.AddTranslationBundle(
@@ -441,8 +441,8 @@ public class LanguageCatalogSourceGeneratorTests
                             "Test.Package",
                             new string?[]
                             {
-                                "Open \"file\" C:\\Temp",
                                 "Items {0}",
+                                "Open \"file\" C:\\Temp",
                             }));
                     builder.AddTranslationBundle(
                         new global::AtomUI.Localization.TranslationBundleDescriptor(
@@ -453,8 +453,8 @@ public class LanguageCatalogSourceGeneratorTests
                             "Test.Package",
                             new string?[]
                             {
-                                "打开 \"文件\" C:\\临时",
                                 "项目 {0}",
+                                "打开 \"文件\" C:\\临时",
                             }));
                     builder.AddTranslationBundle(
                         new global::AtomUI.Localization.TranslationBundleDescriptor(
@@ -465,8 +465,8 @@ public class LanguageCatalogSourceGeneratorTests
                             "Test.Package",
                             new string?[]
                             {
-                                "開啟 \"檔案\" C:\\暫存",
                                 "項目 {0}",
+                                "開啟 \"檔案\" C:\\暫存",
                             }));
                 }
             }

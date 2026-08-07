@@ -39,7 +39,7 @@ internal sealed class Localizer : ILocalizer
         {
             throw new LanguageCatalogException(
                 $"Formatting Catalog '{resolved.Catalog.CatalogId}' unit " +
-                $"'{resolved.Unit.Name}' ({resolved.Unit.Id}) for language " +
+                $"'{resolved.Unit.Key}' for language " +
                 $"'{revision.State.CurrentLanguage.Value}' failed.",
                 exception);
         }

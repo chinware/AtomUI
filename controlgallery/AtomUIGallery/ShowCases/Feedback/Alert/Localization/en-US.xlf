@@ -1,244 +1,244 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.AlertShowCaseLangResourceKind">
-    <unit id="1" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-      </segment>
-    </unit>
-    <unit id="2" name="BasicDescription">
-      <segment>
-        <source>The simplest usage for short messages.</source>
-      </segment>
-    </unit>
-    <unit id="3" name="MoreTypesTitle">
-      <segment>
-        <source>More types</source>
-      </segment>
-    </unit>
-    <unit id="4" name="MoreTypesDescription">
-      <segment>
-        <source>There are 4 types of Alert: success, info, warning, error.</source>
-      </segment>
-    </unit>
-    <unit id="5" name="ClosableTitle">
-      <segment>
-        <source>Closable</source>
-      </segment>
-    </unit>
-    <unit id="6" name="ClosableDescription">
-      <segment>
-        <source>To show close button.</source>
-      </segment>
-    </unit>
-    <unit id="7" name="DescriptionTitle">
-      <segment>
-        <source>Description</source>
-      </segment>
-    </unit>
-    <unit id="8" name="DescriptionDescription">
-      <segment>
-        <source>Additional description for alert message.</source>
-      </segment>
-    </unit>
-    <unit id="9" name="IconTitle">
-      <segment>
-        <source>Icon</source>
-      </segment>
-    </unit>
-    <unit id="10" name="IconDescription">
-      <segment>
-        <source>A relevant icon makes alert information clearer.</source>
-      </segment>
-    </unit>
-    <unit id="11" name="CustomActionTitle">
-      <segment>
-        <source>Custom action</source>
-      </segment>
-    </unit>
-    <unit id="12" name="CustomActionDescription">
-      <segment>
-        <source>Custom action.</source>
-      </segment>
-    </unit>
-    <unit id="13" name="LoopBannerTitle">
-      <segment>
-        <source>Loop Banner</source>
-      </segment>
-    </unit>
-    <unit id="14" name="LoopBannerDescription">
-      <segment>
-        <source>Show a loop banner.</source>
-      </segment>
-    </unit>
-    <unit id="15" name="PageSubtitle">
-      <segment>
-        <source>Prominent contextual feedback message.</source>
-      </segment>
-    </unit>
-    <unit id="16" name="PageDescription">
-      <segment>
-        <source>Alert displays important status information and optional actions without interrupting the current workflow.</source>
-      </segment>
-    </unit>
-    <unit id="17" name="ComponentCategory">
-      <segment>
-        <source>Feedback</source>
-      </segment>
-    </unit>
-    <unit id="18" name="ComponentStatusStable">
-      <segment>
-        <source>.NET 10</source>
-      </segment>
-    </unit>
-    <unit id="19" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-      </segment>
-    </unit>
-    <unit id="20" name="ApiEventCloseRequest">
+    <unit id="ApiEventCloseRequest">
       <segment>
         <source>Raised when the user clicks the close button.</source>
       </segment>
     </unit>
-    <unit id="21" name="P2DescriptionErrorDescriptionErrorDescriptionErrorDescriptionErrorDesc">
+    <unit id="BasicDescription">
       <segment>
-        <source>Error Description Error Description Error Description Error Description Error Description Error Description</source>
+        <source>The simplest usage for short messages.</source>
       </segment>
     </unit>
-    <unit id="22" name="P2DescriptionSuccessDescriptionSuccessDescriptionSuccessDescription">
+    <unit id="BasicTitle">
       <segment>
-        <source>Success Description Success Description Success Description</source>
+        <source>Basic</source>
       </segment>
     </unit>
-    <unit id="23" name="P2DescriptionInfoDescriptionInfoDescriptionInfoDescriptionInfoDescript">
+    <unit id="ClosableDescription">
       <segment>
-        <source>Info Description Info Description Info Description Info Description</source>
+        <source>To show close button.</source>
       </segment>
     </unit>
-    <unit id="24" name="P2DescriptionWarningDescriptionWarningDescriptionWarningDescriptionWar">
+    <unit id="ClosableTitle">
       <segment>
-        <source>Warning Description Warning Description Warning Description Warning Description</source>
+        <source>Closable</source>
       </segment>
     </unit>
-    <unit id="25" name="P2DescriptionErrorDescriptionErrorDescriptionErrorDescriptionErrorDesc2">
+    <unit id="ComponentCategory">
       <segment>
-        <source>Error Description Error Description Error Description Error Description</source>
+        <source>Feedback</source>
       </segment>
     </unit>
-    <unit id="26" name="P2DescriptionDetailedDescriptionAndAdviceAboutSuccessfulCopywriting">
+    <unit id="ComponentStatusStable">
       <segment>
-        <source>Detailed description and advice about successful copywriting.</source>
+        <source>.NET 10</source>
       </segment>
     </unit>
-    <unit id="27" name="P2DescriptionAdditionalDescriptionAndInformationAboutCopywriting">
+    <unit id="CustomActionDescription">
       <segment>
-        <source>Additional description and information about copywriting.</source>
+        <source>Custom action.</source>
       </segment>
     </unit>
-    <unit id="28" name="P2DescriptionThisIsAWarningNoticeAboutCopywriting">
+    <unit id="CustomActionTitle">
       <segment>
-        <source>This is a warning notice about copywriting.</source>
+        <source>Custom action</source>
       </segment>
     </unit>
-    <unit id="29" name="P2DescriptionThisIsAnErrorMessageAboutCopywriting">
+    <unit id="DescriptionDescription">
       <segment>
-        <source>This is an error message about copywriting.</source>
+        <source>Additional description for alert message.</source>
       </segment>
     </unit>
-    <unit id="30" name="P2ContentSuccessText">
+    <unit id="DescriptionTitle">
       <segment>
-        <source>Success Text</source>
+        <source>Description</source>
       </segment>
     </unit>
-    <unit id="31" name="P2ContentInfoText">
+    <unit id="IconDescription">
       <segment>
-        <source>Info Text</source>
+        <source>A relevant icon makes alert information clearer.</source>
       </segment>
     </unit>
-    <unit id="32" name="P2ContentWarningText">
+    <unit id="IconTitle">
       <segment>
-        <source>Warning Text</source>
+        <source>Icon</source>
       </segment>
     </unit>
-    <unit id="33" name="P2ContentErrorText">
+    <unit id="LoopBannerDescription">
       <segment>
-        <source>Error Text</source>
+        <source>Show a loop banner.</source>
       </segment>
     </unit>
-    <unit id="34" name="P2ContentWarningTextWarningTextWarningTextWarningText">
+    <unit id="LoopBannerTitle">
       <segment>
-        <source>Warning Text Warning Text Warning Text Warning Text Warning Text Warning TextWarning Text</source>
+        <source>Loop Banner</source>
       </segment>
     </unit>
-    <unit id="35" name="P2ContentUndo">
+    <unit id="MoreTypesDescription">
       <segment>
-        <source>UNDO</source>
+        <source>There are 4 types of Alert: success, info, warning, error.</source>
       </segment>
     </unit>
-    <unit id="36" name="P2ContentDetail">
+    <unit id="MoreTypesTitle">
       <segment>
-        <source>Detail</source>
+        <source>More types</source>
       </segment>
     </unit>
-    <unit id="37" name="P2ContentDone">
-      <segment>
-        <source>Done</source>
-      </segment>
-    </unit>
-    <unit id="38" name="P2ContentAccept">
+    <unit id="P2ContentAccept">
       <segment>
         <source>Accept</source>
       </segment>
     </unit>
-    <unit id="39" name="P2ContentDecline">
+    <unit id="P2ContentDecline">
       <segment>
         <source>Decline</source>
       </segment>
     </unit>
-    <unit id="40" name="P2ContentICanBeAReactComponentMultipleReact">
+    <unit id="P2ContentDetail">
       <segment>
-        <source>I can be custom content, multiple controls, or just some text, Info Description Info Description Info Description Info Description</source>
+        <source>Detail</source>
       </segment>
     </unit>
-    <unit id="41" name="P2MessageSuccessText">
+    <unit id="P2ContentDone">
       <segment>
-        <source>Success Text</source>
+        <source>Done</source>
       </segment>
     </unit>
-    <unit id="42" name="P2MessageInfoText">
-      <segment>
-        <source>Info Text</source>
-      </segment>
-    </unit>
-    <unit id="43" name="P2MessageWarningText">
-      <segment>
-        <source>Warning Text</source>
-      </segment>
-    </unit>
-    <unit id="44" name="P2MessageErrorText">
+    <unit id="P2ContentErrorText">
       <segment>
         <source>Error Text</source>
       </segment>
     </unit>
-    <unit id="45" name="P2MessageSuccessTips">
+    <unit id="P2ContentICanBeAReactComponentMultipleReact">
       <segment>
-        <source>Success Tips</source>
+        <source>I can be custom content, multiple controls, or just some text, Info Description Info Description Info Description Info Description</source>
       </segment>
     </unit>
-    <unit id="46" name="P2MessageInformationalNotes">
+    <unit id="P2ContentInfoText">
+      <segment>
+        <source>Info Text</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSuccessText">
+      <segment>
+        <source>Success Text</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentUndo">
+      <segment>
+        <source>UNDO</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentWarningText">
+      <segment>
+        <source>Warning Text</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentWarningTextWarningTextWarningTextWarningText">
+      <segment>
+        <source>Warning Text Warning Text Warning Text Warning Text Warning Text Warning TextWarning Text</source>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionAdditionalDescriptionAndInformationAboutCopywriting">
+      <segment>
+        <source>Additional description and information about copywriting.</source>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionDetailedDescriptionAndAdviceAboutSuccessfulCopywriting">
+      <segment>
+        <source>Detailed description and advice about successful copywriting.</source>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionErrorDescriptionErrorDescriptionErrorDescriptionErrorDesc">
+      <segment>
+        <source>Error Description Error Description Error Description Error Description Error Description Error Description</source>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionErrorDescriptionErrorDescriptionErrorDescriptionErrorDesc2">
+      <segment>
+        <source>Error Description Error Description Error Description Error Description</source>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionInfoDescriptionInfoDescriptionInfoDescriptionInfoDescript">
+      <segment>
+        <source>Info Description Info Description Info Description Info Description</source>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionSuccessDescriptionSuccessDescriptionSuccessDescription">
+      <segment>
+        <source>Success Description Success Description Success Description</source>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionThisIsAWarningNoticeAboutCopywriting">
+      <segment>
+        <source>This is a warning notice about copywriting.</source>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionThisIsAnErrorMessageAboutCopywriting">
+      <segment>
+        <source>This is an error message about copywriting.</source>
+      </segment>
+    </unit>
+    <unit id="P2DescriptionWarningDescriptionWarningDescriptionWarningDescriptionWar">
+      <segment>
+        <source>Warning Description Warning Description Warning Description Warning Description</source>
+      </segment>
+    </unit>
+    <unit id="P2MessageError">
+      <segment>
+        <source>Error</source>
+      </segment>
+    </unit>
+    <unit id="P2MessageErrorText">
+      <segment>
+        <source>Error Text</source>
+      </segment>
+    </unit>
+    <unit id="P2MessageInfoText">
+      <segment>
+        <source>Info Text</source>
+      </segment>
+    </unit>
+    <unit id="P2MessageInformationalNotes">
       <segment>
         <source>Informational Notes</source>
       </segment>
     </unit>
-    <unit id="47" name="P2MessageWarning">
+    <unit id="P2MessageSuccessText">
+      <segment>
+        <source>Success Text</source>
+      </segment>
+    </unit>
+    <unit id="P2MessageSuccessTips">
+      <segment>
+        <source>Success Tips</source>
+      </segment>
+    </unit>
+    <unit id="P2MessageWarning">
       <segment>
         <source>Warning</source>
       </segment>
     </unit>
-    <unit id="48" name="P2MessageError">
+    <unit id="P2MessageWarningText">
       <segment>
-        <source>Error</source>
+        <source>Warning Text</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Alert displays important status information and optional actions without interrupting the current workflow.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Prominent contextual feedback message.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
       </segment>
     </unit>
   </file>

@@ -1,224 +1,224 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.CollapseShowCaseLangResourceKind">
-    <unit id="1" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-      </segment>
-    </unit>
-    <unit id="2" name="ComponentCategory">
-      <segment>
-        <source>Data Display</source>
-      </segment>
-    </unit>
-    <unit id="3" name="ComponentStatusStable">
-      <segment>
-        <source>.NET 10</source>
-      </segment>
-    </unit>
-    <unit id="4" name="PageSubtitle">
-      <segment>
-        <source>Stack related content sections that can expand or collapse independently.</source>
-      </segment>
-    </unit>
-    <unit id="5" name="PageDescription">
-      <segment>
-        <source>Collapse organizes dense information into panels. It supports accordion behavior, nested panels, borderless and ghost styles, custom spacing, icon placement, and icon-only trigger mode.</source>
-      </segment>
-    </unit>
-    <unit id="6" name="ScenarioBasic">
-      <segment>
-        <source>Basic</source>
-      </segment>
-    </unit>
-    <unit id="7" name="ScenarioAppearance">
-      <segment>
-        <source>Appearance</source>
-      </segment>
-    </unit>
-    <unit id="8" name="ScenarioBehavior">
-      <segment>
-        <source>Behavior</source>
-      </segment>
-    </unit>
-    <unit id="9" name="CollapseTitle">
-      <segment>
-        <source>Collapse</source>
-      </segment>
-    </unit>
-    <unit id="10" name="CollapseDescription">
-      <segment>
-        <source>By default, any number of panels can be expanded at a time. The first panel is expanded in this example.</source>
-      </segment>
-    </unit>
-    <unit id="11" name="SizeTitle">
-      <segment>
-        <source>Size</source>
-      </segment>
-    </unit>
-    <unit id="12" name="SizeDescription">
-      <segment>
-        <source>Ant Design supports a default collapse size as well as a large and small size. If a large or small collapse is desired, set the size property to either large or small respectively. Omit the size property for a collapse with the default size.</source>
-      </segment>
-    </unit>
-    <unit id="13" name="AccordionTitle">
-      <segment>
-        <source>Accordion</source>
-      </segment>
-    </unit>
-    <unit id="14" name="AccordionDescription">
+    <unit id="AccordionDescription">
       <segment>
         <source>In accordion mode, only one panel can be expanded at a time.</source>
       </segment>
     </unit>
-    <unit id="15" name="NestedPanelTitle">
+    <unit id="AccordionTitle">
       <segment>
-        <source>Nested panel</source>
+        <source>Accordion</source>
       </segment>
     </unit>
-    <unit id="16" name="NestedPanelDescription">
-      <segment>
-        <source>Collapse is nested inside the Collapse.</source>
-      </segment>
-    </unit>
-    <unit id="17" name="BorderlessTitle">
-      <segment>
-        <source>Borderless</source>
-      </segment>
-    </unit>
-    <unit id="18" name="BorderlessDescription">
+    <unit id="BorderlessDescription">
       <segment>
         <source>A borderless style of Collapse.</source>
       </segment>
     </unit>
-    <unit id="19" name="NoArrowTitle">
+    <unit id="BorderlessTitle">
       <segment>
-        <source>No Arrow</source>
+        <source>Borderless</source>
       </segment>
     </unit>
-    <unit id="20" name="NoArrowDescription">
+    <unit id="CollapseDescription">
       <segment>
-        <source>You can hide the arrow icon by passing IsShowExpandIcon={False} to CollapsePanel component.</source>
+        <source>By default, any number of panels can be expanded at a time. The first panel is expanded in this example.</source>
       </segment>
     </unit>
-    <unit id="21" name="ExpandIconLocationTitle">
+    <unit id="CollapseTitle">
       <segment>
-        <source>Expand icon location</source>
+        <source>Collapse</source>
       </segment>
     </unit>
-    <unit id="22" name="ExpandIconLocationDescription">
-      <segment>
-        <source>The expand icon can be placed in front or in the back.</source>
-      </segment>
-    </unit>
-    <unit id="23" name="GhostCollapseTitle">
-      <segment>
-        <source>Ghost Collapse</source>
-      </segment>
-    </unit>
-    <unit id="24" name="GhostCollapseDescription">
-      <segment>
-        <source>Making collapse's background to transparent.</source>
-      </segment>
-    </unit>
-    <unit id="25" name="CollapsibleTitle">
-      <segment>
-        <source>Collapsible</source>
-      </segment>
-    </unit>
-    <unit id="26" name="CollapsibleDescription">
+    <unit id="CollapsibleDescription">
       <segment>
         <source>Specify the trigger area of collapsible by collapsible.</source>
       </segment>
     </unit>
-    <unit id="27" name="CustomPaddingTitle">
+    <unit id="CollapsibleTitle">
       <segment>
-        <source>Custom Header And Content Padding</source>
+        <source>Collapsible</source>
       </segment>
     </unit>
-    <unit id="28" name="CustomPaddingDescription">
+    <unit id="ComponentCategory">
+      <segment>
+        <source>Data Display</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>.NET 10</source>
+      </segment>
+    </unit>
+    <unit id="CustomPaddingDescription">
       <segment>
         <source>Please set custom header margins and content spacing.</source>
       </segment>
     </unit>
-    <unit id="29" name="P2HeaderThisIsPanelHeaderN1">
+    <unit id="CustomPaddingTitle">
       <segment>
-        <source>This is panel header 1</source>
+        <source>Custom Header And Content Padding</source>
       </segment>
     </unit>
-    <unit id="30" name="P2HeaderThisIsPanelHeaderN2">
+    <unit id="ExpandIconLocationDescription">
       <segment>
-        <source>This is panel header 2</source>
+        <source>The expand icon can be placed in front or in the back.</source>
       </segment>
     </unit>
-    <unit id="31" name="P2HeaderThisIsPanelHeaderN3">
+    <unit id="ExpandIconLocationTitle">
       <segment>
-        <source>This is panel header 3</source>
+        <source>Expand icon location</source>
       </segment>
     </unit>
-    <unit id="32" name="P2TitleDefaultSize">
+    <unit id="GhostCollapseDescription">
       <segment>
-        <source>Default Size</source>
+        <source>Making collapse's background to transparent.</source>
       </segment>
     </unit>
-    <unit id="33" name="P2HeaderThisIsDefaultSizePanelHeader">
+    <unit id="GhostCollapseTitle">
       <segment>
-        <source>This is default size panel header</source>
+        <source>Ghost Collapse</source>
       </segment>
     </unit>
-    <unit id="34" name="P2TitleSmallSize">
+    <unit id="NestedPanelDescription">
       <segment>
-        <source>Small Size</source>
+        <source>Collapse is nested inside the Collapse.</source>
       </segment>
     </unit>
-    <unit id="35" name="P2HeaderThisIsSmallSizePanelHeader">
+    <unit id="NestedPanelTitle">
       <segment>
-        <source>This is small size panel header</source>
+        <source>Nested panel</source>
       </segment>
     </unit>
-    <unit id="36" name="P2TitleLargeSize">
+    <unit id="NoArrowDescription">
       <segment>
-        <source>Large Size</source>
+        <source>You can hide the arrow icon by passing IsShowExpandIcon={False} to CollapsePanel component.</source>
       </segment>
     </unit>
-    <unit id="37" name="P2HeaderThisIsLargeSizePanelHeader">
+    <unit id="NoArrowTitle">
       <segment>
-        <source>This is large size panel header</source>
+        <source>No Arrow</source>
       </segment>
     </unit>
-    <unit id="38" name="P2HeaderThisPanelCanOnlyBeCollapsedByClicking">
+    <unit id="P2ContentEnd">
       <segment>
-        <source>This panel can only be collapsed by clicking text</source>
+        <source>End</source>
       </segment>
     </unit>
-    <unit id="39" name="P2HeaderThisPanelCanOnlyBeCollapsedByClicking2">
-      <segment>
-        <source>This panel can only be collapsed by clicking icon</source>
-      </segment>
-    </unit>
-    <unit id="40" name="P2HeaderThisPanelCanTBeCollapsed">
-      <segment>
-        <source>This panel can't be collapsed</source>
-      </segment>
-    </unit>
-    <unit id="41" name="P2TextADogIsATypeOfDomesticatedAnimal">
-      <segment>
-        <source>A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.</source>
-      </segment>
-    </unit>
-    <unit id="42" name="P2TextExpandIconPosition">
-      <segment>
-        <source>Expand Icon Position:</source>
-      </segment>
-    </unit>
-    <unit id="43" name="P2ContentStart">
+    <unit id="P2ContentStart">
       <segment>
         <source>Start</source>
       </segment>
     </unit>
-    <unit id="44" name="P2ContentEnd">
+    <unit id="P2HeaderThisIsDefaultSizePanelHeader">
       <segment>
-        <source>End</source>
+        <source>This is default size panel header</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisIsLargeSizePanelHeader">
+      <segment>
+        <source>This is large size panel header</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisIsPanelHeaderN1">
+      <segment>
+        <source>This is panel header 1</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisIsPanelHeaderN2">
+      <segment>
+        <source>This is panel header 2</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisIsPanelHeaderN3">
+      <segment>
+        <source>This is panel header 3</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisIsSmallSizePanelHeader">
+      <segment>
+        <source>This is small size panel header</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisPanelCanOnlyBeCollapsedByClicking">
+      <segment>
+        <source>This panel can only be collapsed by clicking text</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisPanelCanOnlyBeCollapsedByClicking2">
+      <segment>
+        <source>This panel can only be collapsed by clicking icon</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderThisPanelCanTBeCollapsed">
+      <segment>
+        <source>This panel can't be collapsed</source>
+      </segment>
+    </unit>
+    <unit id="P2TextADogIsATypeOfDomesticatedAnimal">
+      <segment>
+        <source>A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.</source>
+      </segment>
+    </unit>
+    <unit id="P2TextExpandIconPosition">
+      <segment>
+        <source>Expand Icon Position:</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleDefaultSize">
+      <segment>
+        <source>Default Size</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleLargeSize">
+      <segment>
+        <source>Large Size</source>
+      </segment>
+    </unit>
+    <unit id="P2TitleSmallSize">
+      <segment>
+        <source>Small Size</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Collapse organizes dense information into panels. It supports accordion behavior, nested panels, borderless and ghost styles, custom spacing, icon placement, and icon-only trigger mode.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Stack related content sections that can expand or collapse independently.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioAppearance">
+      <segment>
+        <source>Appearance</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioBasic">
+      <segment>
+        <source>Basic</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioBehavior">
+      <segment>
+        <source>Behavior</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>Ant Design supports a default collapse size as well as a large and small size. If a large or small collapse is desired, set the size property to either large or small respectively. Omit the size property for a collapse with the default size.</source>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
       </segment>
     </unit>
   </file>

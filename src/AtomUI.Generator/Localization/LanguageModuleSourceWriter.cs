@@ -83,8 +83,7 @@ internal static class LanguageModuleSourceWriter
         {
             var unit = catalog.Units[slot];
             source.Append(indent).Append("            new global::AtomUI.Localization.LanguageCatalogUnitDescriptor(")
-                  .Append(unit.Id).Append(", ")
-                  .Append(ToStringLiteral(unit.Name)).Append(", ")
+                  .Append(ToStringLiteral(unit.Key)).Append(", ")
                   .Append(compiledCatalog.FormattedUnits[slot] ? "true" : "false")
                   .AppendLine("),");
         }
@@ -94,7 +93,7 @@ internal static class LanguageModuleSourceWriter
         for (var slot = 0; slot < catalog.Units.Length; slot++)
         {
             source.Append(indent).Append("            ").Append(catalog.TypeName).Append('.')
-                  .Append(ToIdentifier(catalog.Units[slot].Name))
+                  .Append(ToIdentifier(catalog.Units[slot].Key))
                   .Append(" => ").Append(slot).AppendLine(",");
         }
         source.Append(indent).AppendLine("            _ => -1,");

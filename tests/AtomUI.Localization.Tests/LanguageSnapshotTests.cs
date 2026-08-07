@@ -145,8 +145,8 @@ public class LanguageSnapshotTests
             "Acme:Acme.ResourceKind",
             1,
             [
-                new LanguageCatalogUnitDescriptor(1, "First"),
-                new LanguageCatalogUnitDescriptor(2, "Second", isSecondFormatted)
+                new LanguageCatalogUnitDescriptor("First"),
+                new LanguageCatalogUnitDescriptor("Second", isSecondFormatted)
             ],
             static key => key switch
             {
@@ -193,7 +193,7 @@ public class LanguageSnapshotTests
 
     private enum ResourceKind
     {
-        First = 1,
-        Second = 2
+        First,
+        Second
     }
 }

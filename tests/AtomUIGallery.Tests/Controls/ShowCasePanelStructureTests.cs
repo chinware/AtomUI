@@ -114,10 +114,10 @@ public class ShowCasePanelStructureTests
         tokenResources.ShouldContain("ControlTokenIdentity(\"AtomUI\", \"GalleryShowCaseHeader\")");
         tokenResources.ShouldContain("GalleryShowCaseHeaderTokenResourceExtension");
         languageResources.ShouldContain("enum GalleryShowCaseHeaderLangResourceKind");
-        languageResources.ShouldContain("[LanguageCatalog(ContractVersion = 1)]");
-        languageResources.ShouldContain("NamespaceLabel = 1");
-        languageResources.ShouldContain("PackageLabel = 2");
-        languageResources.ShouldContain("BaseClassLabel = 3");
+        languageResources.ShouldContain("[LanguageCatalog(ContractVersion = 2)]");
+        languageResources.ShouldContain("NamespaceLabel");
+        languageResources.ShouldContain("PackageLabel");
+        languageResources.ShouldContain("BaseClassLabel");
         languageRegistration.ShouldContain("builder.AddCatalog(");
         languageRegistration.ShouldContain("LanguageTag.Parse(\"en-US\")");
         languageRegistration.ShouldContain("LanguageTag.Parse(\"zh-CN\")");

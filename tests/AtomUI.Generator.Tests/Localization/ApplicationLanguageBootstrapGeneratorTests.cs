@@ -266,7 +266,7 @@ public class ApplicationLanguageBootstrapGeneratorTests
             """
             <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
               <file id="External.Localization.ExternalLangResourceKind">
-                <unit id="10" name="Title"><segment><source>External title</source></segment></unit>
+                <unit id="Title"><segment><source>External title</source></segment></unit>
               </file>
             </xliff>
             """,
@@ -322,7 +322,7 @@ public class ApplicationLanguageBootstrapGeneratorTests
                 [AtomUI.Localization.LanguageCatalog(ContractVersion = 2)]
                 public enum ExternalLangResourceKind
                 {
-                    Title = 10
+                    Title
                 }
             }
             """);
@@ -337,7 +337,7 @@ public class ApplicationLanguageBootstrapGeneratorTests
         return $$"""
             <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US" trgLang="{{language}}">
               <file id="{{catalogMetadataName}}">
-                <unit id="10" name="Title"><segment><source>{{source}}</source><target state="translated">{{target}}</target></segment></unit>
+                <unit id="Title"><segment><source>{{source}}</source><target state="translated">{{target}}</target></segment></unit>
               </file>
             </xliff>
             """;
@@ -390,7 +390,7 @@ public class ApplicationLanguageBootstrapGeneratorTests
 
             public sealed class LanguageCatalogUnitDescriptor
             {
-                public LanguageCatalogUnitDescriptor(int id, string name, bool isFormatted = false) { }
+                public LanguageCatalogUnitDescriptor(string key, bool isFormatted = false) { }
             }
 
             public readonly struct LanguageTag
@@ -425,8 +425,8 @@ public class ApplicationLanguageBootstrapGeneratorTests
             [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
             public enum AppLangResourceKind
             {
-                Title = 10,
-                Description = 20
+                Title,
+                Description
             }
         }
         """;
@@ -434,8 +434,8 @@ public class ApplicationLanguageBootstrapGeneratorTests
     private const string SourceXliff = """
         <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
           <file id="TestApp.Localization.AppLangResourceKind">
-            <unit id="10" name="Title"><segment><source>Application title</source></segment></unit>
-            <unit id="20" name="Description"><segment><source>Application description</source></segment></unit>
+            <unit id="Title"><segment><source>Application title</source></segment></unit>
+            <unit id="Description"><segment><source>Application description</source></segment></unit>
           </file>
         </xliff>
         """;

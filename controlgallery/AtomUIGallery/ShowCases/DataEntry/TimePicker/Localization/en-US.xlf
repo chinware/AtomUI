@@ -1,219 +1,219 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind">
-    <unit id="1" name="BasicTitle">
-      <segment>
-        <source>Basic</source>
-      </segment>
-    </unit>
-    <unit id="2" name="BasicDescription">
+    <unit id="BasicDescription">
       <segment>
         <source>Click TimePicker, and then we could select or input a time in panel.</source>
       </segment>
     </unit>
-    <unit id="3" name="BindingTitle">
+    <unit id="BasicTitle">
       <segment>
-        <source>SelectedTime binding</source>
+        <source>Basic</source>
       </segment>
     </unit>
-    <unit id="4" name="BindingDescription">
+    <unit id="BindingDescription">
       <segment>
         <source>SelectedTime, RangeStartSelectedTime, and RangeEndSelectedTime synchronize with the ViewModel without explicitly setting Binding Mode=TwoWay.</source>
       </segment>
     </unit>
-    <unit id="5" name="PickerDisplayTimeTitle">
+    <unit id="BindingTitle">
       <segment>
-        <source>Popup display time</source>
+        <source>SelectedTime binding</source>
       </segment>
     </unit>
-    <unit id="6" name="PickerDisplayTimeDescription">
-      <segment>
-        <source>Open the popup panel at a specific display time without committing a selected value.</source>
-      </segment>
-    </unit>
-    <unit id="7" name="HourFormatsTitle">
-      <segment>
-        <source>12-hour and 24-hour formats</source>
-      </segment>
-    </unit>
-    <unit id="8" name="HourFormatsDescription">
-      <segment>
-        <source>TimePicker supports two time types, 12-hour and 24-hour.</source>
-      </segment>
-    </unit>
-    <unit id="9" name="ThreeSizesTitle">
-      <segment>
-        <source>Three Sizes</source>
-      </segment>
-    </unit>
-    <unit id="10" name="ThreeSizesDescription">
-      <segment>
-        <source>The input box comes in three sizes: large, middle and small. Large is used in the form, while the medium size is the default.</source>
-      </segment>
-    </unit>
-    <unit id="11" name="DisabledTitle">
-      <segment>
-        <source>Disabled</source>
-      </segment>
-    </unit>
-    <unit id="12" name="DisabledDescription">
-      <segment>
-        <source>A disabled state of the TimePicker.</source>
-      </segment>
-    </unit>
-    <unit id="13" name="IntervalOptionTitle">
-      <segment>
-        <source>Interval option</source>
-      </segment>
-    </unit>
-    <unit id="14" name="IntervalOptionDescription">
-      <segment>
-        <source>Show stepped options by MinuteIncrement SecondIncrement.</source>
-      </segment>
-    </unit>
-    <unit id="15" name="TwelveHoursTitle">
-      <segment>
-        <source>12 hours</source>
-      </segment>
-    </unit>
-    <unit id="16" name="TwelveHoursDescription">
-      <segment>
-        <source>TimePicker of 12 hours format, with default format h:mm:ss a.</source>
-      </segment>
-    </unit>
-    <unit id="17" name="VariantsTitle">
-      <segment>
-        <source>Variants</source>
-      </segment>
-    </unit>
-    <unit id="18" name="VariantsDescription">
-      <segment>
-        <source>Bordered-less style component.</source>
-      </segment>
-    </unit>
-    <unit id="19" name="StatusTitle">
-      <segment>
-        <source>Status</source>
-      </segment>
-    </unit>
-    <unit id="20" name="StatusDescription">
-      <segment>
-        <source>Add status to TimePicker with status, which could be error or warning.</source>
-      </segment>
-    </unit>
-    <unit id="21" name="TimeRangePickerTitle">
-      <segment>
-        <source>Time Range Picker</source>
-      </segment>
-    </unit>
-    <unit id="22" name="TimeRangePickerDescription">
-      <segment>
-        <source>Use time range picker with RangeTimePicker.</source>
-      </segment>
-    </unit>
-    <unit id="23" name="P2PlaceholderTextSelectTime">
-      <segment>
-        <source>Select time</source>
-      </segment>
-    </unit>
-    <unit id="24" name="P2PlaceholderTextOutline">
-      <segment>
-        <source>Outline</source>
-      </segment>
-    </unit>
-    <unit id="25" name="P2PlaceholderTextFilled">
-      <segment>
-        <source>Filled</source>
-      </segment>
-    </unit>
-    <unit id="26" name="P2PlaceholderTextBorderless">
-      <segment>
-        <source>Borderless</source>
-      </segment>
-    </unit>
-    <unit id="27" name="P2PlaceholderTextStartTime">
-      <segment>
-        <source>Start time</source>
-      </segment>
-    </unit>
-    <unit id="28" name="P2SecondaryPlaceholderTextEndTime">
-      <segment>
-        <source>End time</source>
-      </segment>
-    </unit>
-    <unit id="29" name="P2TextExpandDirection">
-      <segment>
-        <source>Picker size:</source>
-      </segment>
-    </unit>
-    <unit id="30" name="P2ContentLarge">
-      <segment>
-        <source>Large</source>
-      </segment>
-    </unit>
-    <unit id="31" name="P2ContentDefault">
-      <segment>
-        <source>Default</source>
-      </segment>
-    </unit>
-    <unit id="32" name="P2ContentSmall">
-      <segment>
-        <source>Small</source>
-      </segment>
-    </unit>
-    <unit id="33" name="P2ContentCustom">
-      <segment>
-        <source>Custom</source>
-      </segment>
-    </unit>
-    <unit id="34" name="P2TextSelectedTime">
-      <segment>
-        <source>Selected value:</source>
-      </segment>
-    </unit>
-    <unit id="35" name="P2TextSelectedTimeRange">
-      <segment>
-        <source>Selected range:</source>
-      </segment>
-    </unit>
-    <unit id="36" name="P2ContentSetNoon">
-      <segment>
-        <source>Set noon</source>
-      </segment>
-    </unit>
-    <unit id="37" name="P2ContentSetWorkHours">
-      <segment>
-        <source>Set work hours</source>
-      </segment>
-    </unit>
-    <unit id="38" name="P2ContentClear">
-      <segment>
-        <source>Clear</source>
-      </segment>
-    </unit>
-    <unit id="39" name="PageSubtitle">
-      <segment>
-        <source>Select a time or a time range from a popup time panel.</source>
-      </segment>
-    </unit>
-    <unit id="40" name="PageDescription">
-      <segment>
-        <source>TimePicker supports 12-hour and 24-hour clocks, size variants, disabled states, stepped minute and second options, visual variants, validation status, and range selection.</source>
-      </segment>
-    </unit>
-    <unit id="41" name="ComponentCategory">
+    <unit id="ComponentCategory">
       <segment>
         <source>Data Entry</source>
       </segment>
     </unit>
-    <unit id="42" name="ComponentStatusStable">
+    <unit id="ComponentStatusStable">
       <segment>
         <source>Stable</source>
       </segment>
     </unit>
-    <unit id="43" name="ScenarioExamples">
+    <unit id="DisabledDescription">
+      <segment>
+        <source>A disabled state of the TimePicker.</source>
+      </segment>
+    </unit>
+    <unit id="DisabledTitle">
+      <segment>
+        <source>Disabled</source>
+      </segment>
+    </unit>
+    <unit id="HourFormatsDescription">
+      <segment>
+        <source>TimePicker supports two time types, 12-hour and 24-hour.</source>
+      </segment>
+    </unit>
+    <unit id="HourFormatsTitle">
+      <segment>
+        <source>12-hour and 24-hour formats</source>
+      </segment>
+    </unit>
+    <unit id="IntervalOptionDescription">
+      <segment>
+        <source>Show stepped options by MinuteIncrement SecondIncrement.</source>
+      </segment>
+    </unit>
+    <unit id="IntervalOptionTitle">
+      <segment>
+        <source>Interval option</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentClear">
+      <segment>
+        <source>Clear</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentCustom">
+      <segment>
+        <source>Custom</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentDefault">
+      <segment>
+        <source>Default</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarge">
+      <segment>
+        <source>Large</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetNoon">
+      <segment>
+        <source>Set noon</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSetWorkHours">
+      <segment>
+        <source>Set work hours</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmall">
+      <segment>
+        <source>Small</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextBorderless">
+      <segment>
+        <source>Borderless</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextFilled">
+      <segment>
+        <source>Filled</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextOutline">
+      <segment>
+        <source>Outline</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextSelectTime">
+      <segment>
+        <source>Select time</source>
+      </segment>
+    </unit>
+    <unit id="P2PlaceholderTextStartTime">
+      <segment>
+        <source>Start time</source>
+      </segment>
+    </unit>
+    <unit id="P2SecondaryPlaceholderTextEndTime">
+      <segment>
+        <source>End time</source>
+      </segment>
+    </unit>
+    <unit id="P2TextExpandDirection">
+      <segment>
+        <source>Picker size:</source>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectedTime">
+      <segment>
+        <source>Selected value:</source>
+      </segment>
+    </unit>
+    <unit id="P2TextSelectedTimeRange">
+      <segment>
+        <source>Selected range:</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>TimePicker supports 12-hour and 24-hour clocks, size variants, disabled states, stepped minute and second options, visual variants, validation status, and range selection.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Select a time or a time range from a popup time panel.</source>
+      </segment>
+    </unit>
+    <unit id="PickerDisplayTimeDescription">
+      <segment>
+        <source>Open the popup panel at a specific display time without committing a selected value.</source>
+      </segment>
+    </unit>
+    <unit id="PickerDisplayTimeTitle">
+      <segment>
+        <source>Popup display time</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
       <segment>
         <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="StatusDescription">
+      <segment>
+        <source>Add status to TimePicker with status, which could be error or warning.</source>
+      </segment>
+    </unit>
+    <unit id="StatusTitle">
+      <segment>
+        <source>Status</source>
+      </segment>
+    </unit>
+    <unit id="ThreeSizesDescription">
+      <segment>
+        <source>The input box comes in three sizes: large, middle and small. Large is used in the form, while the medium size is the default.</source>
+      </segment>
+    </unit>
+    <unit id="ThreeSizesTitle">
+      <segment>
+        <source>Three Sizes</source>
+      </segment>
+    </unit>
+    <unit id="TimeRangePickerDescription">
+      <segment>
+        <source>Use time range picker with RangeTimePicker.</source>
+      </segment>
+    </unit>
+    <unit id="TimeRangePickerTitle">
+      <segment>
+        <source>Time Range Picker</source>
+      </segment>
+    </unit>
+    <unit id="TwelveHoursDescription">
+      <segment>
+        <source>TimePicker of 12 hours format, with default format h:mm:ss a.</source>
+      </segment>
+    </unit>
+    <unit id="TwelveHoursTitle">
+      <segment>
+        <source>12 hours</source>
+      </segment>
+    </unit>
+    <unit id="VariantsDescription">
+      <segment>
+        <source>Bordered-less style component.</source>
+      </segment>
+    </unit>
+    <unit id="VariantsTitle">
+      <segment>
+        <source>Variants</source>
       </segment>
     </unit>
   </file>

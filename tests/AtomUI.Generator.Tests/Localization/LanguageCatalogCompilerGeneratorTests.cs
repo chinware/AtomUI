@@ -13,7 +13,7 @@ namespace AtomUI.Generator.Tests.Localization;
 public class LanguageCatalogCompilerGeneratorTests
 {
     [Fact]
-    public void Compiled_Bundle_Slots_Follow_Numeric_Ids_Instead_Of_File_Order()
+    public void Compiled_Bundle_Slots_Follow_Ordinal_Keys_Instead_Of_File_Order()
     {
         var catalog = new LanguageCatalogInfo(
             "Test.Package",
@@ -22,8 +22,8 @@ public class LanguageCatalogCompilerGeneratorTests
             "global::TestApp.Localization.LoginLangResourceKind",
             1,
             [
-                new LanguageCatalogUnitInfo(10, "Title", Location.None),
-                new LanguageCatalogUnitInfo(30, "ItemCount", Location.None)
+                new LanguageCatalogUnitInfo("Title", Location.None),
+                new LanguageCatalogUnitInfo("ItemCount", Location.None)
             ],
             Location.None);
         var file = new AdditionalLanguageFile(
@@ -107,8 +107,7 @@ public class LanguageCatalogCompilerGeneratorTests
     }
 
     [Theory]
-    [InlineData("name=\"Title\"", "name=\"Heading\"", "name")]
-    [InlineData("id=\"10\"", "id=\"11\"", "unit ID")]
+    [InlineData("id=\"Title\"", "id=\"Heading\"", "unit Key")]
     public void Reports_A_Unit_Contract_Mismatch(
         string oldValue,
         string newValue,
@@ -140,7 +139,7 @@ public class LanguageCatalogCompilerGeneratorTests
         var target = TargetXliff("zh-CN", "标题", "项目 {0}")
             .Replace(
                 "  </file>",
-                "    <unit id=\"99\" name=\"Removed\" translate=\"no\"><segment>" +
+                "    <unit id=\"Removed\" translate=\"no\"><segment>" +
                 "<source>Removed</source><target state=\"reviewed\">已移除</target>" +
                 "</segment></unit>\n  </file>");
         var result = Run(
@@ -248,7 +247,17 @@ public class LanguageCatalogCompilerGeneratorTests
         var result = Run(
             CatalogSource,
             SourceFile(),
-            ApplicationOverrideFile(contractVersion: "2"));
+            ApplicationOverrideFile(contractVersion: "1"));
+
+        AssertHasDiagnostic(result, "ATOMUILOC006", "ContractVersion");
+    }
+
+    [Fact]
+    public void Reports_A_Local_ModuleBuiltIn_Contract_Version_Mismatch()
+    {
+        var result = Run(
+            CatalogSource,
+            SourceFile(contractVersion: "1"));
 
         AssertHasDiagnostic(result, "ATOMUILOC006", "ContractVersion");
     }
@@ -259,7 +268,7 @@ public class LanguageCatalogCompilerGeneratorTests
         var result = Run(
             CatalogSource,
             SourceFile(),
-            ApplicationOverrideFile(contractVersion: "1", includeItemCount: false));
+            ApplicationOverrideFile(contractVersion: "2", includeItemCount: false));
 
         result.Diagnostics.ShouldBeEmpty();
     }
@@ -271,12 +280,12 @@ public class LanguageCatalogCompilerGeneratorTests
             CatalogSource,
             SourceFile(),
             ApplicationOverrideFile(
-                contractVersion: "1",
+                contractVersion: "2",
                 includeItemCount: false,
                 path: "Localization/Overrides/title.zh-CN.xlf",
                 sourceIdentity: "TestApp.Title"),
             ApplicationOverrideFile(
-                contractVersion: "1",
+                contractVersion: "2",
                 includeTitle: false,
                 path: "Localization/Overrides/item-count.zh-CN.xlf",
                 sourceIdentity: "TestApp.ItemCount"));
@@ -291,17 +300,17 @@ public class LanguageCatalogCompilerGeneratorTests
             CatalogSource,
             SourceFile(),
             ApplicationOverrideFile(
-                contractVersion: "1",
+                contractVersion: "2",
                 includeItemCount: false,
                 path: "Localization/Overrides/first.zh-CN.xlf",
                 sourceIdentity: "TestApp.One"),
             ApplicationOverrideFile(
-                contractVersion: "1",
+                contractVersion: "2",
                 includeItemCount: false,
                 path: "Localization/Overrides/second.zh-CN.xlf",
                 sourceIdentity: "TestApp.Two"));
 
-        AssertHasDiagnostic(result, "ATOMUILOC006", "unit ID '10'");
+        AssertHasDiagnostic(result, "ATOMUILOC006", "unit Key 'Title'");
     }
 
     [Fact]
@@ -333,16 +342,16 @@ public class LanguageCatalogCompilerGeneratorTests
     }
 
     [Fact]
-    public void Accepts_A_Renamed_Referenced_Unit_When_The_Id_And_Current_Name_Match()
+    public void Reports_A_Renamed_Referenced_Unit_As_A_Key_Change()
     {
-        var reference = CreateExternalCatalogReference(unitName: "Heading");
+        var reference = CreateExternalCatalogReference();
         var result = Run(
             "namespace TestApp { public sealed class Marker { } }",
             [reference],
-            ReferencedSourceFile(unitName: "Heading"),
-            StaticPackFile(contractVersion: "2", unitName: "Heading"));
+            ReferencedSourceFile(unitKey: "Heading"),
+            StaticPackFile(contractVersion: "2"));
 
-        result.Diagnostics.ShouldBeEmpty();
+        AssertHasDiagnostic(result, "ATOMUILOC006", "unit Key");
     }
 
     private static void AssertHasDiagnostic(
@@ -357,16 +366,16 @@ public class LanguageCatalogCompilerGeneratorTests
         diagnostic.Severity.ShouldBe(DiagnosticSeverity.Error);
     }
 
-    private static TestAdditionalText SourceFile()
+    private static TestAdditionalText SourceFile(string? contractVersion = null)
     {
-        return LanguageFile("Localization/en-US.xlf", SourceXliff);
+        return LanguageFile("Localization/en-US.xlf", SourceXliff, contractVersion);
     }
 
     private static TestAdditionalText ReferencedSourceFile(
         string moduleId = "External.Package",
-        string unitName = "Title")
+        string unitKey = "Title")
     {
-        var content = SourceXliff.Replace("name=\"Title\"", $"name=\"{unitName}\"");
+        var content = SourceXliff.Replace("id=\"Title\"", $"id=\"{unitKey}\"");
         return new TestAdditionalText(
             $"packages/{moduleId}/Localization/en-US.xlf",
             content,
@@ -391,26 +400,35 @@ public class LanguageCatalogCompilerGeneratorTests
             TargetXliff(language, title, itemCount));
     }
 
-    private static TestAdditionalText LanguageFile(string path, string text)
+    private static TestAdditionalText LanguageFile(
+        string path,
+        string text,
+        string? contractVersion = null)
     {
+        var metadata = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["build_metadata.AdditionalFiles.AtomUILanguage"] = "true",
+            ["build_metadata.AdditionalFiles.AtomUILanguageSourceKind"] = "ModuleBuiltIn",
+            ["build_metadata.AdditionalFiles.AtomUILanguageSourceIdentity"] = "Test.Package"
+        };
+        if (contractVersion is not null)
+        {
+            metadata["build_metadata.AdditionalFiles.AtomUILanguageContractVersion"] = contractVersion;
+        }
+
         return new TestAdditionalText(
             path,
             text,
-            new Dictionary<string, string>(StringComparer.Ordinal)
-            {
-                ["build_metadata.AdditionalFiles.AtomUILanguage"] = "true",
-                ["build_metadata.AdditionalFiles.AtomUILanguageSourceKind"] = "ModuleBuiltIn",
-                ["build_metadata.AdditionalFiles.AtomUILanguageSourceIdentity"] = "Test.Package"
-            });
+            metadata);
     }
 
     private static TestAdditionalText StaticPackFile(
         string contractVersion,
         string moduleId = "External.Package",
-        string unitName = "Title")
+        string unitKey = "Title")
     {
         var content = TargetXliff("zh-CN", "标题", "项目 {0}")
-            .Replace("name=\"Title\"", $"name=\"{unitName}\"");
+            .Replace("id=\"Title\"", $"id=\"{unitKey}\"");
         var sourceFingerprint = LanguageSourceFingerprint.Compute(
             Xliff21Parser.Parse(content).Document!);
         return new TestAdditionalText(
@@ -438,14 +456,14 @@ public class LanguageCatalogCompilerGeneratorTests
         if (!includeItemCount)
         {
             const string itemCountUnit =
-                "  <unit id=\"30\" name=\"ItemCount\"><segment><source>Items {0}</source>" +
+                "<unit id=\"ItemCount\"><segment><source>Items {0}</source>" +
                 "<target state=\"translated\">覆盖项目 {0}</target></segment></unit>\n";
             content = content.Replace(itemCountUnit, string.Empty);
         }
         if (!includeTitle)
         {
             const string titleUnit =
-                "  <unit id=\"10\" name=\"Title\"><segment><source>Title</source>" +
+                "<unit id=\"Title\"><segment><source>Title</source>" +
                 "<target state=\"translated\">覆盖标题</target></segment></unit>\n";
             content = content.Replace(titleUnit, string.Empty);
         }
@@ -466,7 +484,7 @@ public class LanguageCatalogCompilerGeneratorTests
     private static MetadataReference CreateExternalCatalogReference(
         string assemblyName = "External.Package",
         string? moduleId = null,
-        string unitName = "Title")
+        string unitKey = "Title")
     {
         var assemblyMetadata = moduleId is null
             ? string.Empty
@@ -490,8 +508,8 @@ public class LanguageCatalogCompilerGeneratorTests
                 [AtomUI.Localization.LanguageCatalog(ContractVersion = 2)]
                 public enum LoginLangResourceKind
                 {
-                    ItemCount = 30,
-                    {{unitName}} = 10
+                    ItemCount,
+                    {{unitKey}}
                 }
             }
             """);
@@ -502,8 +520,8 @@ public class LanguageCatalogCompilerGeneratorTests
         return $$"""
             <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US" trgLang="{{language}}">
               <file id="{{CatalogMetadataName}}">
-                <unit id="30" name="ItemCount"><segment><source>Items {0}</source><target state="translated">{{itemCount}}</target></segment></unit>
-                <unit id="10" name="Title"><segment><source>Title</source><target state="translated">{{title}}</target></segment></unit>
+                <unit id="ItemCount"><segment><source>Items {0}</source><target state="translated">{{itemCount}}</target></segment></unit>
+                <unit id="Title"><segment><source>Title</source><target state="translated">{{title}}</target></segment></unit>
               </file>
             </xliff>
             """;
@@ -525,11 +543,11 @@ public class LanguageCatalogCompilerGeneratorTests
         {
             using AtomUI.Localization;
 
-            [LanguageCatalog(ContractVersion = 1)]
+            [LanguageCatalog(ContractVersion = 2)]
             public enum LoginLangResourceKind
             {
-                ItemCount = 30,
-                Title = 10
+                ItemCount,
+                Title
             }
         }
         """;
@@ -537,8 +555,8 @@ public class LanguageCatalogCompilerGeneratorTests
     private const string SourceXliff = """
         <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">
           <file id="TestApp.Localization.LoginLangResourceKind">
-            <unit id="30" name="ItemCount"><segment><source>Items {0}</source></segment></unit>
-            <unit id="10" name="Title"><segment><source>Title</source></segment></unit>
+            <unit id="ItemCount"><segment><source>Items {0}</source></segment></unit>
+            <unit id="Title"><segment><source>Title</source></segment></unit>
           </file>
         </xliff>
         """;

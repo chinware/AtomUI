@@ -19,21 +19,18 @@ public class GalleryBaseCatalogTests
     {
         var expected = new[]
         {
-            new ExpectedEntry(GalleryShowCaseHeaderLangResourceKind.NamespaceLabel, 1, "Namespace", "命名空间", "命名空間"),
-            new ExpectedEntry(GalleryShowCaseHeaderLangResourceKind.PackageLabel, 2, "Package", "包", "套件"),
-            new ExpectedEntry(GalleryShowCaseHeaderLangResourceKind.BaseClassLabel, 3, "Base class", "基类", "基底類別")
+            new ExpectedEntry(GalleryShowCaseHeaderLangResourceKind.NamespaceLabel, "Namespace", "命名空间", "命名空間"),
+            new ExpectedEntry(GalleryShowCaseHeaderLangResourceKind.PackageLabel, "Package", "包", "套件"),
+            new ExpectedEntry(GalleryShowCaseHeaderLangResourceKind.BaseClassLabel, "Base class", "基类", "基底類別")
         };
         var resourceKindType = typeof(GalleryShowCaseHeaderLangResourceKind);
 
         resourceKindType.GetCustomAttribute<LanguageCatalogAttribute>()
                         .ShouldNotBeNull()
-                        .ContractVersion.ShouldBe(1);
+                        .ContractVersion.ShouldBe(2);
         Enum.GetValues<GalleryShowCaseHeaderLangResourceKind>()
-            .ShouldBe(expected.Select(static entry => entry.Kind), ignoreOrder: true);
-        foreach (var entry in expected)
-        {
-            Convert.ToInt32(entry.Kind).ShouldBe(entry.Id);
-        }
+            .Select(static entry => entry.ToString())
+            .ShouldBe(expected.Select(static entry => entry.Kind.ToString()));
 
         typeof(GalleryShowCaseHeaderLangResourceExtension).IsSealed.ShouldBeTrue();
         typeof(GalleryShowCaseHeaderLangResourceExtension).BaseType.ShouldBe(
@@ -86,7 +83,6 @@ public class GalleryBaseCatalogTests
 
     private readonly record struct ExpectedEntry(
         GalleryShowCaseHeaderLangResourceKind Kind,
-        int Id,
         string En,
         string ZhCn,
         string ZhTw);

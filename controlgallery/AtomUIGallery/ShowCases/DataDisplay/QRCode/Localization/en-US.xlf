@@ -1,149 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind">
-    <unit id="1" name="BasicUsageTitle">
-      <segment>
-        <source>Basic usage</source>
-      </segment>
-    </unit>
-    <unit id="2" name="BasicUsageDescription">
-      <segment>
-        <source>Basic usage example.</source>
-      </segment>
-    </unit>
-    <unit id="3" name="WithIconTitle">
-      <segment>
-        <source>With Icon</source>
-      </segment>
-    </unit>
-    <unit id="4" name="WithIconDescription">
-      <segment>
-        <source>A QR code with an icon.</source>
-      </segment>
-    </unit>
-    <unit id="5" name="DifferentStatusTitle">
-      <segment>
-        <source>Different status</source>
-      </segment>
-    </unit>
-    <unit id="6" name="DifferentStatusDescription">
-      <segment>
-        <source>The QR code status can be controlled by Status. Active, Expired, Loading and Scanned are supported.</source>
-      </segment>
-    </unit>
-    <unit id="7" name="CustomStatusRendererTitle">
-      <segment>
-        <source>Custom status renderer</source>
-      </segment>
-    </unit>
-    <unit id="8" name="CustomStatusRendererDescription">
-      <segment>
-        <source>Use LoadingTemplate, ExpiredTemplate and ScannedTemplate to control rendering for different QR code states.</source>
-      </segment>
-    </unit>
-    <unit id="9" name="CustomSizeTitle">
-      <segment>
-        <source>Custom size</source>
-      </segment>
-    </unit>
-    <unit id="10" name="CustomSizeDescription">
-      <segment>
-        <source>Custom size.</source>
-      </segment>
-    </unit>
-    <unit id="11" name="CustomColorTitle">
-      <segment>
-        <source>Custom color</source>
-      </segment>
-    </unit>
-    <unit id="12" name="CustomColorDescription">
-      <segment>
-        <source>Custom color.</source>
-      </segment>
-    </unit>
-    <unit id="13" name="ErrorLevelTitle">
-      <segment>
-        <source>Error correction level</source>
-      </segment>
-    </unit>
-    <unit id="14" name="ErrorLevelDescription">
-      <segment>
-        <source>Set errorLevel to adjust different error correction levels.</source>
-      </segment>
-    </unit>
-    <unit id="15" name="AdvancedUsageTitle">
-      <segment>
-        <source>Advanced usage</source>
-      </segment>
-    </unit>
-    <unit id="16" name="AdvancedUsageDescription">
+    <unit id="AdvancedUsageDescription">
       <segment>
         <source>Example with a popover card.</source>
       </segment>
     </unit>
-    <unit id="17" name="P2TextLoading">
+    <unit id="AdvancedUsageTitle">
       <segment>
-        <source>Loading...</source>
+        <source>Advanced usage</source>
       </segment>
     </unit>
-    <unit id="18" name="P2TextQRCodeExpired">
+    <unit id="ApiEventRefreshRequested">
       <segment>
-        <source>QR code expired</source>
+        <source>Raised when the built-in refresh action is clicked.</source>
       </segment>
     </unit>
-    <unit id="19" name="P2ContentClickToRefresh">
+    <unit id="BasicUsageDescription">
       <segment>
-        <source>Click to refresh</source>
+        <source>Basic usage example.</source>
       </segment>
     </unit>
-    <unit id="20" name="P2TextScanned">
+    <unit id="BasicUsageTitle">
       <segment>
-        <source>Scanned</source>
+        <source>Basic usage</source>
       </segment>
     </unit>
-    <unit id="21" name="P2ContentSmaller">
-      <segment>
-        <source>Smaller</source>
-      </segment>
-    </unit>
-    <unit id="22" name="P2ContentLarger">
-      <segment>
-        <source>Larger</source>
-      </segment>
-    </unit>
-    <unit id="23" name="P2ContentHoverMe">
-      <segment>
-        <source>Hover me</source>
-      </segment>
-    </unit>
-    <unit id="24" name="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-      </segment>
-    </unit>
-    <unit id="25" name="PageSubtitle">
-      <segment>
-        <source>Render scannable QR codes with status overlays and optional branding.</source>
-      </segment>
-    </unit>
-    <unit id="26" name="PageDescription">
-      <segment>
-        <source>QRCode encodes text or URLs into a QR image, with configurable size, color, icon, error correction and status content.</source>
-      </segment>
-    </unit>
-    <unit id="27" name="ComponentCategory">
+    <unit id="ComponentCategory">
       <segment>
         <source>Data Display</source>
       </segment>
     </unit>
-    <unit id="28" name="ComponentStatusStable">
+    <unit id="ComponentStatusStable">
       <segment>
         <source>Stable</source>
       </segment>
     </unit>
-    <unit id="29" name="ApiEventRefreshRequested">
+    <unit id="CustomColorDescription">
       <segment>
-        <source>Raised when the built-in refresh action is clicked.</source>
+        <source>Custom color.</source>
+      </segment>
+    </unit>
+    <unit id="CustomColorTitle">
+      <segment>
+        <source>Custom color</source>
+      </segment>
+    </unit>
+    <unit id="CustomSizeDescription">
+      <segment>
+        <source>Custom size.</source>
+      </segment>
+    </unit>
+    <unit id="CustomSizeTitle">
+      <segment>
+        <source>Custom size</source>
+      </segment>
+    </unit>
+    <unit id="CustomStatusRendererDescription">
+      <segment>
+        <source>Use LoadingTemplate, ExpiredTemplate and ScannedTemplate to control rendering for different QR code states.</source>
+      </segment>
+    </unit>
+    <unit id="CustomStatusRendererTitle">
+      <segment>
+        <source>Custom status renderer</source>
+      </segment>
+    </unit>
+    <unit id="DifferentStatusDescription">
+      <segment>
+        <source>The QR code status can be controlled by Status. Active, Expired, Loading and Scanned are supported.</source>
+      </segment>
+    </unit>
+    <unit id="DifferentStatusTitle">
+      <segment>
+        <source>Different status</source>
+      </segment>
+    </unit>
+    <unit id="ErrorLevelDescription">
+      <segment>
+        <source>Set errorLevel to adjust different error correction levels.</source>
+      </segment>
+    </unit>
+    <unit id="ErrorLevelTitle">
+      <segment>
+        <source>Error correction level</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentClickToRefresh">
+      <segment>
+        <source>Click to refresh</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentHoverMe">
+      <segment>
+        <source>Hover me</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentLarger">
+      <segment>
+        <source>Larger</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSmaller">
+      <segment>
+        <source>Smaller</source>
+      </segment>
+    </unit>
+    <unit id="P2TextLoading">
+      <segment>
+        <source>Loading...</source>
+      </segment>
+    </unit>
+    <unit id="P2TextQRCodeExpired">
+      <segment>
+        <source>QR code expired</source>
+      </segment>
+    </unit>
+    <unit id="P2TextScanned">
+      <segment>
+        <source>Scanned</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>QRCode encodes text or URLs into a QR image, with configurable size, color, icon, error correction and status content.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Render scannable QR codes with status overlays and optional branding.</source>
+      </segment>
+    </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="WithIconDescription">
+      <segment>
+        <source>A QR code with an icon.</source>
+      </segment>
+    </unit>
+    <unit id="WithIconTitle">
+      <segment>
+        <source>With Icon</source>
       </segment>
     </unit>
   </file>
