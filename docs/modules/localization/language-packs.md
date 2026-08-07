@@ -12,9 +12,10 @@ zh-CN
 zh-TW
 ```
 
-三种翻译随拥有 Catalog 的组件程序集发布，不拆分为独立 I18n NuGet。`AtomUI.Controls`、
-`AtomUI.Desktop.Controls`、DataGrid、ColorPicker 和 Extras 各自编译并注册自己拥有的 Catalog，不由一个中央
-程序集复制所有翻译。
+三种翻译随拥有 Catalog 的组件程序集发布，不拆分为独立 I18n NuGet。当前由 `AtomUI.Controls`、
+`AtomUI.Desktop.Controls`、`AtomUI.Desktop.Controls.DataGrid` 和 `AtomUI.Desktop.Controls.ColorPicker` 各自编译并
+注册自己拥有的 Catalog，不由一个中央程序集复制所有翻译。Extras 等模块只有在实际拥有 Catalog 后才进入语言包
+发布集合，不预先创建空包。
 
 拥有 Catalog 的组件 NuGet 自动包含完整 `en-US.xlf` 和 `buildTransitive/<PackageId>.props`。这些构建资产既是
 语言包模板来源，也是最终应用校验源文本和 ContractVersion 的权威输入；它们不会在应用运行时解析。
@@ -31,6 +32,7 @@ BCP 47 标签转换为 PascalCase 标识后缀，包内 XLIFF 与审计 manifest
 
 | BCP 47 | 包名后缀 |
 |---|---|
+| `pt-BR` | `PtBR` |
 | `ja-JP` | `JaJP` |
 | `ko-KR` | `KoKR` |
 | `zh-Hant` | `ZhHant` |
@@ -40,7 +42,7 @@ BCP 47 标签转换为 PascalCase 标识后缀，包内 XLIFF 与审计 manifest
 NuGet package ID 不能充当语言身份解析来源。包内必须显式包含：
 
 ```xml
-<AtomUILanguageTag>ja-JP</AtomUILanguageTag>
+<AtomUILanguageTag>pt-BR</AtomUILanguageTag>
 ```
 
 ## 官方聚合包
@@ -48,36 +50,92 @@ NuGet package ID 不能充当语言身份解析来源。包内必须显式包含
 产品级官方附加翻译使用：
 
 ```text
+AtomUI.I18n.PtBR
 AtomUI.I18n.JaJP
 AtomUI.I18n.KoKR
 AtomUI.I18n.FrFR
 AtomUI.I18n.DeDE
 ```
 
-`AtomUI.I18n.JaJP` 表示 AtomUI 官方组件体系的日语聚合包。完整覆盖发布集合是官方包的发布策略；当前编译器
-不会根据产品级包名推断或单独校验“官方 Catalog 全集”。聚合包可以同时包含 Controls、Desktop Controls、
-DataGrid、ColorPicker 和 Extras 的 Translation Bundle；应用 Runtime 只为实际注册的 Catalog 构建 Snapshot。
+`AtomUI.I18n.PtBR` 表示 AtomUI 官方组件体系的巴西葡萄牙语聚合包。聚合包必须是纯依赖 Meta Package：
+
+- 不设置 `AtomUIBuildLanguagePackage=true`，也不运行语言包 Prepare/Props 任务。
+- 不包含 XLIFF、`AtomUI.LanguagePack.xml`、`buildTransitive` props 或运行时 DLL。
+- 只以同一精确版本依赖该语言的官方模块语言包。
+- 不依赖任何组件运行时包，也不隐式注册组件、主题或 Catalog。
+
+`AtomUI.I18n.PtBR` 的首个官方发布集合为：
+
+```text
+AtomUI.I18n.PtBR
+├── AtomUI.Controls.I18n.PtBR
+├── AtomUI.Desktop.Controls.I18n.PtBR
+├── AtomUI.Desktop.Controls.DataGrid.I18n.PtBR
+└── AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR
+```
+
+只有模块包携带 Translation Bundle。聚合包不复制翻译，因此聚合引用和显式模块包引用最终解析到同一个 NuGet
+package identity，不会形成两个同优先级翻译来源。未来模块首次拥有 Catalog 时，先发布相应模块语言包，再在同一
+AtomUI 版本的聚合包中增加精确依赖。
 
 普通用户优先只引用一个聚合包：
 
 ```xml
-<PackageReference Include="AtomUI.I18n.JaJP" Version="$(AtomUIVersion)" />
+<PackageReference Include="AtomUI.I18n.PtBR" Version="$(AtomUIVersion)" />
 ```
 
 ## 模块级包
 
-确实独立维护、发布或兼容某个模块时，名称必须包含目标模块：
+模块语言包是真正的翻译载体，名称必须包含目标 Language Module：
 
 ```text
-AtomUI.Controls.I18n.JaJP
-AtomUI.Desktop.Controls.I18n.JaJP
-AtomUI.Desktop.Controls.DataGrid.I18n.JaJP
-AtomUI.Desktop.Controls.ColorPicker.I18n.JaJP
+AtomUI.Controls.I18n.PtBR
+AtomUI.Desktop.Controls.I18n.PtBR
+AtomUI.Desktop.Controls.DataGrid.I18n.PtBR
+AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR
 ```
 
-产品聚合包与模块包不是两个可以任意叠加的覆盖层。它们提供相同 Catalog/语言时，应用构建报告同优先级冲突。
-当前协议没有 manifest 组成关系或按 package identity 合并翻译的语义；聚合包不能让消费图同时暴露自身副本和
-模块包中的同一份 XLIFF。
+每个模块包只包含该模块当前拥有的 Catalog。它可以在制作时通过 `PrivateAssets=all` 的项目或包引用取得权威
+`en-US` 模板，但生成的 I18n NuGet 不得依赖目标组件运行时包。应用仍需按自身功能引用组件包；聚合语言包不会为了
+翻译而把未使用的 DataGrid 或 ColorPicker DLL 带入应用。
+
+## 未引用模块与 dormant 输入
+
+聚合包会传递所有模块语言包的 `buildTransitive` 输入，但消费应用不一定引用所有组件模块。Generator 对
+`StaticLanguagePack` 使用以下激活规则：
+
+1. 所有输入都先完成 XLIFF 2.1 结构、语言标签和必需 item metadata 校验；格式损坏的文件不能进入 dormant。
+2. 当前 Compilation 已声明目标 Catalog，或引用程序集存在相同 `AtomUILanguageModuleId`，或 XLIFF `file id` 能解析
+   到 Catalog enum 时，该输入为 active，必须完成全部 Catalog、ContractVersion、unit、源文本和 fingerprint 校验。
+3. 基础校验通过后，目标 module ID 不存在且 `file id` 也无法解析的输入为 dormant：不生成 Bundle、不参与冲突和
+   覆盖计算，也不报告“referenced Catalog could not be found”。
+4. 模块存在但 Catalog 缺失、identity 错误或版本不兼容时仍然构建失败，不能用 dormant 规则隐藏损坏的语言包。
+5. dormant 只适用于 NuGet 提供的 `StaticLanguagePack`。ModuleBuiltIn、项目 XLIFF 和应用 Override 指向不存在的
+   Catalog 时仍然报错。
+
+因此应用可以始终引用 `AtomUI.I18n.PtBR`。未引用 DataGrid 时 DataGrid 翻译保持 dormant；以后增加 DataGrid 组件
+引用后，同一语言包输入会在下一次编译自动激活。运行时仍只为实际注册的 Catalog 构建 Snapshot。
+
+## 官方源码组织
+
+官方附加语言按规范 BCP 47 标签集中维护，每个 NuGet 仍拥有独立项目和 XLIFF：
+
+```text
+src/LanguagePacks/pt-BR/
+├── AtomUI.Controls.I18n.PtBR/
+│   └── Localization/Common/pt-BR.xlf
+├── AtomUI.Desktop.Controls.I18n.PtBR/
+│   └── Localization/<Control>/pt-BR.xlf
+├── AtomUI.Desktop.Controls.DataGrid.I18n.PtBR/
+│   └── Localization/pt-BR.xlf
+├── AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR/
+│   └── Localization/pt-BR.xlf
+└── AtomUI.I18n.PtBR/
+    └── AtomUI.I18n.PtBR.csproj
+```
+
+语言优先的目录使同一译者可以在一个边界内完成审校，也避免以后新增语言时把大量 I18n 项目散落到 `src/` 根目录。
+Catalog 的真实身份仍来自 module metadata 和 XLIFF `file id`，不能从目录推断。
 
 ## 第三方命名
 
@@ -94,14 +152,17 @@ Acme.ProductivitySuite.I18n.DeDE
 metadata、XLIFF `file id` 和消费应用引用的 Catalog enum 共同确定；构建系统不根据包名前缀或 manifest 猜测
 Catalog 所有权。
 
+第三方产品若以一个包聚合多个模块语言包，也必须使用相同的纯依赖 Meta Package 语义；不得同时在聚合包和模块包
+中发布同一 Catalog 的 XLIFF。
+
 ## NuGet 内容协议
 
-静态语言包是 content/build assets 包：
+模块级静态语言包是 content/build assets 包：
 
 ```text
-{TranslationScope}.I18n.JaJP.nupkg
+{TranslationScope}.I18n.PtBR.nupkg
 ├── contentFiles/any/any/AtomUI.LanguagePack.xml
-├── contentFiles/any/any/<CatalogPath>/ja-JP.xlf
+├── contentFiles/any/any/<CatalogPath>/pt-BR.xlf
 └── buildTransitive/{PackageId}.props
 ```
 
@@ -118,6 +179,19 @@ module ID、ContractVersion、包内路径和源 fingerprint 的 `AtomUILanguage
 加入 `AdditionalFiles`。manifest 不进入 `AdditionalFiles`，Generator 也不会独立发现或读取它。最终应用 Generator
 校验 metadata、实际 XLIFF 和引用 Catalog 后把翻译编译进应用程序集；运行时不需要知道翻译来自哪个 NuGet 文件。
 
+聚合包使用普通 SDK-style pack 项目，设置 `IncludeBuildOutput=false` 并保留模块语言包依赖；它不使用本节的静态
+语言包内容协议。NuGet package ID 仍只是分发 identity，不能作为编译期语言或 Catalog identity。
+
+## 官方翻译与发布门禁
+
+官方语言包从对应模块发布的权威 `en-US.xlf` 导出，XLIFF 必须保存 `srcLang="en-US"`、`trgLang="pt-BR"`、原始
+`file id` 和 enum Key。机器预翻译可以作为初稿，但不能自动获得官方发布状态。
+
+通用语言包默认接受 `translated`、`reviewed` 或 `final`。官方包项目必须设置
+`AtomUILanguageMinimumState=final`，要求所有非 obsolete unit 经过人工审校并达到 `final`；源文本变化、
+`subState="needs-review"`、占位符变化或缺少 target 都会阻止模块包发布。只有发布集合中的全部模块包通过门禁后，
+才允许生成并发布同版本聚合包。
+
 ## 语言包制作模板
 
 不提供 `AtomUI.Localization.Tool` CLI。保留标准 `dotnet new` 项目模板：
@@ -126,11 +200,11 @@ module ID、ContractVersion、包内路径和源 fingerprint 的 `AtomUILanguage
 dotnet new install AtomUI.LanguagePack.Template
 
 dotnet new atomui-language-pack \
-  --name Acme.AtomUI.I18n.JaJP \
-  --packageId Acme.AtomUI.I18n.JaJP \
+  --name Acme.AtomUI.Desktop.Controls.I18n.PtBR \
+  --packageId Acme.AtomUI.Desktop.Controls.I18n.PtBR \
   --moduleId AtomUI.Desktop.Controls \
-  --languageTag ja-JP \
-  --languageTagIdentifier JaJP
+  --languageTag pt-BR \
+  --languageTagIdentifier PtBR
 ```
 
 模板生成：
@@ -146,7 +220,7 @@ dotnet new atomui-language-pack \
 ```bash
 dotnet msbuild \
   -t:AtomUIExportLanguageTemplates \
-  -p:AtomUITargetLanguage=ja-JP
+  -p:AtomUITargetLanguage=pt-BR
 
 dotnet build
 dotnet pack
@@ -170,28 +244,39 @@ dotnet pack
 
 ```csharp
 builder.UseLanguages(
-    defaultLanguage: LanguageTags.JaJP,
+    defaultLanguage: LanguageTags.PtBR,
     supportedLanguages:
     [
         LanguageTags.EnUS,
-        LanguageTags.JaJP
+        LanguageTags.PtBR
     ]);
 ```
 
 ```xml
-<PackageReference Include="AtomUI.I18n.JaJP" Version="$(AtomUIVersion)" />
+<PackageReference Include="AtomUI.I18n.PtBR" Version="$(AtomUIVersion)" />
 ```
 
 还必须正常注册目标组件模块，例如 `builder.UseDesktopControls()`。语言包只提供 Translation Bundle，不会隐式
-注册组件、主题或 Catalog。应用 Generator 从模块程序集解析强类型 Catalog，并把语言包目标 XLIFF 编译进应用程序集。
+注册组件、主题或 Catalog。应用 Generator 从实际引用的模块程序集解析强类型 Catalog，把 active 的目标 XLIFF 编译
+进应用程序集，并忽略未安装模块的 dormant 输入。
 
 不存在以下 API：
 
 ```csharp
 builder.LoadLanguagePack(...);
 builder.AddLanguagePackDescriptor(...);
-builder.UseAtomUIJaJP();
+builder.UseAtomUIPtBR();
 ```
+
+## Gallery 应用级翻译
+
+AtomUIGallery 的页面、导航和示例文案属于应用 Catalog，不进入任何 `AtomUI.*.I18n.PtBR` 公共包。Gallery 在现有
+Catalog 目录中维护自己的 `pt-BR.xlf`，同时消费官方聚合包取得控件翻译。仓库内开发可以直接导入模块语言包项目的
+同一组 XLIFF；NuGet 集成测试必须从临时 feed 消费真实 nupkg，不能复制另一份控件译文。
+
+Gallery 支持语言配置加入 `LanguageTags.PtBR`。系统语言自动选择只将规范 `pt-BR` 和中性 `pt` 映射到巴西
+葡萄牙语；`pt-PT` 不自动映射为 `pt-BR`。格式化使用标准 `CultureInfo("pt-BR")` 和从语言数据生成的 LTR 定义，
+不得在译文中手工模拟日期、数字或货币格式。
 
 ## 冲突与兼容
 
@@ -200,6 +285,8 @@ builder.UseAtomUIJaJP();
 - props 中的源 fingerprint 必须是当前 XLIFF 源契约的 64 位小写 SHA-256；目标源文本还必须与权威 `en-US` 一致。
 - 两个来源提供相同 Catalog/语言且优先级相同时构建失败。
 - 语言包缺少目标 Catalog 的新增 unit 时视为覆盖不完整。
+- 未安装模块的 dormant 静态输入不参与上述冲突和覆盖判断；模块出现后立即恢复全部严格校验。
+- 官方聚合包与显式模块包必须解析到同一个精确 package identity；聚合包不得携带翻译副本。
 - 应用显式 Override 是唯一允许高于语言包的覆盖来源。
 
 ## 明确不支持

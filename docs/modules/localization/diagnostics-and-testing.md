@@ -55,9 +55,16 @@
 - props metadata 与实际 XLIFF、引用程序集中的 Catalog identity/ContractVersion/unit/source text 不一致。
 - 同一个 Catalog 和语言在同一优先级由多个包或文件提供。
 - 包含运行时 DLL、`.atomlang`、初始化代码或非声明式加载 target。
+- 官方语言包存在低于 `AtomUILanguageMinimumState=final` 的有效 unit，或任何需要重新审核的 target。
 
 `AtomUI.LanguagePack.xml` 由打包任务根据同一组 XLIFF 确定性生成，用于审计和工具读取。它不作为 Generator 的
 `AdditionalFile`，也不存在独立于 XLIFF/props 的“manifest 未声明 Catalog”编译契约。
+
+未安装 Language Module 的 `StaticLanguagePack` 输入保持 dormant，不属于错误。只有当 module ID 和 XLIFF
+`file id` 在当前 Compilation 中都无法关联目标模块时才允许 dormant；模块或 Catalog 一旦存在，identity、
+ContractVersion、权威 `en-US`、unit 和 fingerprint 的任何不匹配仍按 Error 处理。项目 XLIFF 和应用 Override 不使用
+该豁免。XLIFF 结构、BCP 47 标签和必需 AdditionalFiles metadata 在 dormant 分类前校验，不能因目标模块未安装而
+忽略损坏或不可信的包输入。
 
 ## Warning 边界
 
@@ -105,6 +112,8 @@ Warning 只用于产物仍然确定可用、但维护质量可能下降的场景
 | `AtomUIGallery.Tests` | 应用 Catalog、语言菜单、ViewModel/导航刷新和支持语言配置 |
 
 每个 Generator diagnostic 必须覆盖 ID、severity、最小 Location、message 关键字段、正确写法不报告和边界输入。
+Generator 还必须覆盖 dormant/active 分类的增量测试，证明增加或移除组件引用只改变对应 Catalog 的生成结果，不使
+无关模块 source 失效。
 
 ## 契约测试
 
@@ -118,6 +127,10 @@ Warning 只用于产物仍然确定可用、但维护质量可能下降的场景
 6. 删除或复用 Key、改变格式化参数契约、使用旧 identity 模型或错误 ContractVersion 必须失败。
 7. 静态语言包的 manifest 与 props 必须由同一组 XLIFF 确定性生成，并记录一致的 Catalog identity 和源指纹。
 8. 模块主包必须包含权威 `en-US` 与 `<PackageId>.props`，静态语言包不得包含 DLL，Consumer 必须只靠 PackageReference 生效。
+9. 纯聚合包不得包含 XLIFF、manifest、props、analyzer 或 DLL，只能精确依赖同语言、同版本的模块语言包。
+10. Consumer 引用聚合包但未引用 DataGrid 等组件时构建成功，dormant 模块不产生 Bundle 或 Catalog 诊断。
+11. Consumer 后续引用该组件时，同一静态输入自动激活；正确包生成 Bundle，错误 Catalog/module/contract 必须失败。
+12. 同时显式引用聚合包和其中一个模块包时，NuGet 只解析一个 package identity，不产生重复翻译来源。
 
 ## Avalonia 集成测试
 
@@ -146,7 +159,9 @@ Warning 只用于产物仍然确定可用、但维护质量可能下降的场景
 
 - 所有受影响项目的 AOT/trim/single-file analyzer。
 - Gallery 真实 NativeAOT publish。
-- 发布产物启动并切换内置语言与至少一个静态 I18n 包语言。
+- 发布产物启动并切换内置语言与至少一个静态 I18n 包语言；首个官方验收语言为 `pt-BR`。
+- Gallery 的 `pt-BR` 应用 Catalog、官方聚合包控件翻译、`CultureInfo("pt-BR")` 和 LTR 状态在同一 Snapshot 生效。
+- 聚合包完整引用、缺少 DataGrid 组件引用和随后加入 DataGrid 引用三种消费图都必须执行真实 pack/restore/build。
 - 检查发布目录不包含运行时 XLIFF、`.atomlang`、Build Tasks 或 Generator 程序集。
 - `git diff --check`。
 

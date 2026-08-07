@@ -43,6 +43,9 @@ ContractVersion 必须保存在 item metadata 中，Generator 不从磁盘路径
 程序集。MSBuild item 层只排除相同文件的重复 Include；不同路径或不同包提供相同 Catalog/语言时，由 Generator
 根据 source identity 报告同优先级冲突，不执行按 package identity 合并。
 
+产品级聚合语言包不追加 `AtomUILanguage` item。它只通过 NuGet 依赖传递模块语言包，因而同一模块包无论由聚合包
+还是应用显式引用，都只产生一组 `buildTransitive` 输入。
+
 ## Generator 输入
 
 Generator 使用 Incremental Generator API 组合以下输入：
@@ -55,6 +58,21 @@ Generator 使用 Incremental Generator API 组合以下输入：
 
 输入必须按规范化 Catalog ID、语言标签、来源优先级和 unit Key 排序，确保不同操作系统、文件枚举顺序和增量
 构建下生成结果一致。
+
+### 静态语言包激活
+
+Generator 在解析 `StaticLanguagePack` 的 Catalog 前建立当前项目和引用程序集的 Language Module/Catalog 索引。
+静态输入满足下列任一条件时为 active：当前项目拥有目标 Catalog、引用程序集声明相同
+`AtomUILanguageModuleId`，或 XLIFF `file id` 能解析到 Catalog enum。active 输入沿用全部严格校验。
+
+Generator 必须先解析并校验 XLIFF 2.1 结构、语言标签和 AdditionalFiles 必需 metadata。基础输入有效后，如果
+module ID 不存在且 `file id` 也不可解析，该静态输入为 dormant。dormant 输入不进入 Catalog compiler、冲突检测、
+覆盖计算或生成源码，因此聚合语言包不会要求应用安装所有组件。该判断必须只依赖 Roslyn symbol 和显式 assembly
+metadata，不扫描程序集、不读取 NuGet 目录，也不从包名或文件路径猜测模块。
+
+ModuleBuiltIn、项目本地 XLIFF 和 ApplicationOverride 不允许 dormant。模块存在但文件 ID、module ID、
+ContractVersion 或权威 `en-US` 不匹配时仍产生原有诊断。这样可以跳过真正未安装的模块，同时保留对已安装模块和
+损坏包的强校验。
 
 ## Generator 输出
 
@@ -116,6 +134,9 @@ Catalog 和内置翻译交给 `ILocalizationBuilder`；开发者不手写 descri
 语言包没有程序集，其 Translation Bundle 由最终应用 Generator 生成。Bundle 可以早于或晚于目标 Language Module
 进入 Builder，Registry 构建阶段统一关联，注册顺序不构成覆盖规则。
 
+dormant 静态输入不生成 Translation Bundle。应用以后增加相应组件引用时，Incremental Generator 将其重新分类为
+active，并在同一次编译中完成校验和生成；不需要新增运行时加载 API 或修改应用语言配置。
+
 ## AOT 约束
 
 生成代码必须直接包含：
@@ -168,6 +189,10 @@ PackagePropsWriter
 Generator 与 Build Tasks 对 XLIFF 使用同一规范化模型和诊断定义。纯 XLIFF 解析/模型代码以构建期内部共享源码
 编译进两个程序集，不增加公开运行时包，也不让 MSBuild Task 依赖 Roslyn workspace。
 
+`ValidateLanguageFilesTask` 接受 `AtomUILanguageMinimumState`。通用语言包默认值为 `translated`；官方附加语言包
+设置为 `final`。状态比较顺序为 `initial < translated < reviewed < final`，任何 `needs-review` subState 均不能满足
+官方发布门禁。
+
 ## Generator NuGet 布局
 
 ```text
@@ -189,6 +214,10 @@ RuntimeIdentifier 等全局发布属性，不能被最终应用当作运行时�
 manifest 和 props 真正进入 `PackTask`。静态语言包项目设置 `AtomUIBuildLanguagePackage=true` 后只由 Build Tasks
 校验和打包；它自身不运行 Localization Generator 生成 Catalog 或运行时注册。相同 XLIFF 进入消费应用后才由
 Generator 编译为静态字符串表。
+
+纯聚合语言包是单独的普通 pack 项目：`IncludeBuildOutput=false`，不设置 `AtomUIBuildLanguagePackage`，不调用上述
+任务，只保留同版本模块语言包的 NuGet dependencies。聚合包自身不得向消费项目传递 analyzer、AdditionalFiles 或
+build targets。
 
 源码仓库构建中，`AtomUI.Build.Tasks.dll` 可能在消费项目完成 MSBuild 求值之后才由 Generator 的项目依赖生成。
 因此 targets 必须无条件登记 `UsingTask`，让 MSBuild 在任务首次执行时延迟加载程序集；不得在 `UsingTask` 上使用

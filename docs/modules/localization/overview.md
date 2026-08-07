@@ -37,6 +37,7 @@
 | `src/AtomUI.Generator` / `AtomUI.Generator` | Catalog、翻译表、Markup Extension 和注册代码生成 | 否，Analyzer |
 | `src/AtomUI.Build.Tasks` | XLIFF 校验、模板导出/合并和语言包构建任务 | 否，MSBuild Task |
 | `AtomUI.LanguagePack.Template` | 创建静态 I18n NuGet 项目的模板 | 否 |
+| `src/LanguagePacks/<language-tag>` | AtomUI 官方附加语言的模块级静态包与纯依赖聚合包 | 否 |
 
 `AtomUI.Localization` 是运行时基础设施包。构建期共享源码使用内部命名空间
 `AtomUI.Localization.Build`，但没有同名项目或 NuGet 包；构建任务物理归属 `AtomUI.Build.Tasks`。
@@ -64,7 +65,8 @@ flowchart TD
 | Language Catalog | 由稳定 enum 定义的应用级本地化契约 |
 | Translation Bundle | 某个 Catalog 在某个语言标签下的完整翻译集合 |
 | Language Module | 一个应用或类库贡献的 Catalog 与内置 Translation Bundle 集合 |
-| Language Pack | 通过静态 NuGet 提供的一个或多个附加 Translation Bundle |
+| Module Language Pack | 通过静态 NuGet 为一个 Language Module 提供附加 Translation Bundle 的实际翻译载体 |
+| Aggregate Language Pack | 不含 XLIFF 或 DLL、仅依赖同语言模块包的产品级 Meta Package |
 | `LanguageSnapshot` | 某个当前语言已经完成回退解析的不可变资源快照 |
 | `LanguageState` | 当前语言、格式化 Culture、文字方向和 revision |
 
@@ -78,6 +80,8 @@ flowchart TD
 6. 资源 Provider 生命周期稳定；语言切换只发布完整 Snapshot，不暴露半更新状态。
 7. 应用支持语言是一项覆盖契约；缺失翻译不能通过最终 `en-US` 回退伪装成完整支持。
 8. 翻译包没有运行时 DLL、初始化类或隐式加载代码；重复翻译不按注册顺序覆盖。
+9. 官方聚合语言包不得复制模块 XLIFF；一个 Catalog 的附加翻译只由所属模块语言包维护。
+10. 未引用 Language Module 的静态包输入保持 dormant；模块一旦存在，Catalog 和源契约仍必须严格校验。
 
 ## 非目标
 
