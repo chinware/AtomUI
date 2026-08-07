@@ -6,7 +6,7 @@ using Xunit;
 
 namespace AtomUI.Localization.IntegrationTests;
 
-public sealed class LanguagePackEndToEndTests
+public sealed partial class LanguagePackEndToEndTests
 {
     private static readonly TimeSpan s_stageTimeout = TimeSpan.FromSeconds(60);
 
@@ -512,6 +512,23 @@ public sealed class LanguagePackEndToEndTests
         string executable,
         params string[] arguments)
     {
+        var result = await RunProcessUnchecked(
+            stage,
+            workingDirectory,
+            temporaryRoot,
+            executable,
+            arguments);
+        result.ExitCode.ShouldBe(0, FormatFailure(result, "failed"));
+        return result;
+    }
+
+    private static async Task<ProcessResult> RunProcessUnchecked(
+        string stage,
+        string workingDirectory,
+        string temporaryRoot,
+        string executable,
+        params string[] arguments)
+    {
         var startInfo = new ProcessStartInfo(executable)
         {
             WorkingDirectory = workingDirectory,
@@ -575,7 +592,6 @@ public sealed class LanguagePackEndToEndTests
             process.ExitCode,
             await standardOutput,
             await standardError);
-        result.ExitCode.ShouldBe(0, FormatFailure(result, "failed"));
         return result;
     }
 
