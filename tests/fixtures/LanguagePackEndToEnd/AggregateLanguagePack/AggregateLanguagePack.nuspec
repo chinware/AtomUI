@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>Acme.LocalizationAggregate.I18n.JaJP</id>
+    <version>$version$</version>
+    <authors>AtomUI Tests</authors>
+    <description>Aggregate Japanese language package fixture.</description>
+    <dependencies>
+      <group targetFramework="netstandard2.0">
+        <dependency id="Acme.LocalizationComponent.I18n.JaJP" version="[$version$]" />
+        <dependency id="Acme.OptionalComponent.I18n.JaJP" version="[$version$]" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

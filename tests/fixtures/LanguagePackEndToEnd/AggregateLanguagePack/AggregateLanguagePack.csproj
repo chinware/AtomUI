@@ -5,6 +5,9 @@
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <PackageId>Acme.LocalizationAggregate.I18n.JaJP</PackageId>
         <PackageVersion Condition="'$(PackageVersion)' == ''">1.0.0</PackageVersion>
+        <NuspecFile>AggregateLanguagePack.nuspec</NuspecFile>
+        <NuspecBasePath>$(MSBuildProjectDirectory)</NuspecBasePath>
+        <NuspecProperties>version=$(PackageVersion)</NuspecProperties>
     </PropertyGroup>
 
     <ItemGroup>

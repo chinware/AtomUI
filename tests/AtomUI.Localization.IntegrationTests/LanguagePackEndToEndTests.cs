@@ -134,7 +134,22 @@ public sealed class LanguagePackEndToEndTests
                 "project.assets.json");
             var assets = File.ReadAllText(assetsFile);
             assets.ShouldContain($"Acme.OptionalComponent.I18n.JaJP/{packageVersion}");
+            assets.ShouldNotContain($"Acme.OptionalComponent/{packageVersion}");
             assets.ShouldNotContain("Acme.OptionalComponent.dll");
+            var generatedPropsFile = Path.Combine(
+                Path.GetDirectoryName(assetsFile)!,
+                "Consumer.csproj.nuget.g.props");
+            var generatedImports = XDocument.Load(generatedPropsFile)
+                .Descendants()
+                .Where(static element =>
+                    string.Equals(element.Name.LocalName, "Import", StringComparison.Ordinal))
+                .Select(static import => (string?)import.Attribute("Project"))
+                .Where(static project => project is not null)
+                .ToArray();
+            generatedImports.ShouldContain(
+                $"$(NuGetPackageRoot)/acme.optionalcomponent.i18n.jajp/{packageVersion}/" +
+                "buildTransitive/Acme.OptionalComponent.I18n.JaJP.props");
+            var consumerOutput = Path.Combine(temporaryRoot, "consumer-output");
             await RunProcess(
                 "Build consumer",
                 repositoryRoot,
@@ -147,16 +162,13 @@ public sealed class LanguagePackEndToEndTests
                 "-m:1",
                 "-nr:false",
                 "-p:Configuration=Debug",
+                $"-p:OutputPath={consumerOutput}",
                 $"-p:FixturePackageVersion={packageVersion}",
                 $"-p:RestorePackagesPath={packages}",
                 $"-p:RestoreAdditionalProjectFallbackFolders={globalPackages}");
 
             var consumerExecutable = Path.Combine(
-                repositoryRoot,
-                "output",
-                "bin",
-                "Debug",
-                "net10.0",
+                consumerOutput,
                 OperatingSystem.IsWindows() ? "Consumer.exe" : "Consumer");
             Directory.EnumerateFiles(
                     Path.GetDirectoryName(consumerExecutable)!,
@@ -303,6 +315,9 @@ public sealed class LanguagePackEndToEndTests
         var languagePackage = Path.Combine(
             feed,
             $"Acme.LocalizationComponent.I18n.JaJP.{packageVersion}.nupkg");
+        var optionalModulePackage = Path.Combine(
+            feed,
+            $"Acme.OptionalComponent.{packageVersion}.nupkg");
 
         var moduleEntries = PackageEntries(modulePackage);
         moduleEntries.ShouldContain("buildTransitive/Acme.LocalizationComponent.props");
@@ -339,6 +354,10 @@ public sealed class LanguagePackEndToEndTests
             "contentFiles/any/any/AtomUI.LanguagePack.xml"));
         var manifestCatalog = manifest.Descendants("catalog").ShouldHaveSingleItem();
         ((string?)manifestCatalog.Attribute("sourceFingerprint")).ShouldBe(languageFingerprint);
+
+        var optionalModuleEntries = PackageEntries(optionalModulePackage);
+        optionalModuleEntries.ShouldContain("lib/net10.0/Acme.OptionalComponent.dll");
+        optionalModuleEntries.ShouldNotContain("lib/net10.0/OptionalModule.dll");
 
         AssertOptionalLanguagePackageLayout(feed, packageVersion);
         AssertAggregatePackageLayout(feed, packageVersion);
@@ -380,8 +399,8 @@ public sealed class LanguagePackEndToEndTests
             aggregatePackage,
             "Acme.LocalizationAggregate.I18n.JaJP.nuspec");
         dependencies.Count.ShouldBe(2);
-        dependencies["Acme.LocalizationComponent.I18n.JaJP"].ShouldBe(packageVersion);
-        dependencies["Acme.OptionalComponent.I18n.JaJP"].ShouldBe(packageVersion);
+        dependencies["Acme.LocalizationComponent.I18n.JaJP"].ShouldBe($"[{packageVersion}]");
+        dependencies["Acme.OptionalComponent.I18n.JaJP"].ShouldBe($"[{packageVersion}]");
     }
 
     private static void AssertExportedUnit(
