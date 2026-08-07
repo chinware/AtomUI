@@ -2,7 +2,7 @@ using AtomUI.Localization;
 using Avalonia.Controls;
 using Avalonia.Styling;
 
-namespace AtomUI.Performance;
+namespace AtomUI.Localization.Performance;
 
 internal static class LocalizationStateVerification
 {

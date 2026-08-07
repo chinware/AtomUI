@@ -14,8 +14,8 @@ internal static partial class Program
         return
         [
             new PerfScenario("DataGrid.Basic", _ => CreateBasicDataGrid()),
-            new PerfScenario("DataGrid.Filter.Menu.Closed", _ => CreateFilterDataGrid(DataGridFilterPresenterMode.Menu)),
-            new PerfScenario("DataGrid.Filter.Tree.Closed", _ => CreateFilterDataGrid(DataGridFilterPresenterMode.Tree)),
+            new PerfScenario("DataGrid.Filter.Menu.Closed", _ => CreateFilterDataGrid(DataGridFilterMode.Menu)),
+            new PerfScenario("DataGrid.Filter.Tree.Closed", _ => CreateFilterDataGrid(DataGridFilterMode.Tree)),
             new PerfScenario("DataGrid.RowHeaders", _ => CreateRowHeadersDataGrid()),
             new PerfScenario("DataGrid.RowDetails.Collapsed", _ => CreateRowDetailsDataGrid()),
             new PerfScenario("DataGrid.GroupHeaders", _ => CreateColumnGroupDataGrid()),
@@ -38,7 +38,7 @@ internal static partial class Program
         return grid;
     }
 
-    private static DataGrid CreateFilterDataGrid(DataGridFilterPresenterMode filterMode)
+    private static DataGrid CreateFilterDataGrid(DataGridFilterMode filterMode)
     {
         var grid = CreateDataGridShell(8);
         grid.CanUserFilterColumns = true;
@@ -85,8 +85,8 @@ internal static partial class Program
         };
 
         panel.Children.Add(CreateBasicDataGrid(rowCount: 8, columnCount: 4));
-        panel.Children.Add(CreateFilterDataGrid(DataGridFilterPresenterMode.Menu));
-        panel.Children.Add(CreateFilterDataGrid(DataGridFilterPresenterMode.Tree));
+        panel.Children.Add(CreateFilterDataGrid(DataGridFilterMode.Menu));
+        panel.Children.Add(CreateFilterDataGrid(DataGridFilterMode.Tree));
         panel.Children.Add(CreateBasicDataGrid(rowCount: 20, columnCount: 8));
 
         return panel;
@@ -204,17 +204,20 @@ internal static partial class Program
     private static DataGridTextColumn CreateFilterColumn(
         string header,
         string bindingPath,
-        DataGridFilterPresenterMode filterMode,
+        DataGridFilterMode filterMode,
         IEnumerable<DataGridFilterItem> filters)
     {
         var column = new DataGridTextColumn
         {
             Header           = header,
             Binding          = new Binding(bindingPath),
-            FilterPresenterMode = filterMode,
-            FilterMemberPath = bindingPath,
-            Filters          = new ObservableCollection<DataGridFilterItem>(filters)
+            FilterMode       = filterMode,
+            FilterMemberPath = bindingPath
         };
+        foreach (var filter in filters)
+        {
+            column.Filters.Add(filter);
+        }
         return column;
     }
 

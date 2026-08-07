@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -155,7 +154,7 @@ internal static partial class Program
 
     private static void VerifyDataGridFilterFlyoutContentIsLazy(ICollection<string> failures)
     {
-        var grid = CreateFilterDataGrid(DataGridFilterPresenterMode.Menu);
+        var grid = CreateFilterDataGrid(DataGridFilterMode.Menu);
         var realized = RealizeControl(grid);
 
         var indicators = GetDataGridFilterIndicators(grid);
@@ -198,7 +197,7 @@ internal static partial class Program
 
     private static void VerifyDataGridFilterFlyoutTreeGroupNameIsLazy(ICollection<string> failures)
     {
-        var menuGrid = CreateFilterDataGrid(DataGridFilterPresenterMode.Menu);
+        var menuGrid = CreateFilterDataGrid(DataGridFilterMode.Menu);
         using var realizedMenu = RealizeControl(menuGrid);
 
         var menuIndicators = GetDataGridFilterIndicators(menuGrid);
@@ -206,7 +205,7 @@ internal static partial class Program
             "DataGrid menu filter indicators should not allocate tree radio group names.",
             failures);
 
-        var treeGrid = CreateFilterDataGrid(DataGridFilterPresenterMode.Tree);
+        var treeGrid = CreateFilterDataGrid(DataGridFilterMode.Tree);
         using var realizedTree = RealizeControl(treeGrid);
 
         var treeIndicators = GetDataGridFilterIndicators(treeGrid);
@@ -249,17 +248,17 @@ internal static partial class Program
     private static void VerifyDataGridFilterFlyoutPresenterButtonsUseClassHandlers(ICollection<string> failures)
     {
         VerifyDataGridFilterFlyoutPresenterButtonsUseClassHandlers(
-            DataGridFilterPresenterMode.Menu,
+            DataGridFilterMode.Menu,
             "DataGridMenuFilterFlyoutPresenter",
             failures);
         VerifyDataGridFilterFlyoutPresenterButtonsUseClassHandlers(
-            DataGridFilterPresenterMode.Tree,
+            DataGridFilterMode.Tree,
             "DataGridTreeFilterFlyoutPresenter",
             failures);
     }
 
     private static void VerifyDataGridFilterFlyoutPresenterButtonsUseClassHandlers(
-        DataGridFilterPresenterMode filterMode,
+        DataGridFilterMode filterMode,
         string presenterTypeName,
         ICollection<string> failures)
     {
@@ -329,17 +328,17 @@ internal static partial class Program
     private static void VerifyDataGridFilterFlyoutPassiveCloseSkipsUnusedSelection(ICollection<string> failures)
     {
         VerifyDataGridFilterFlyoutPassiveCloseSkipsUnusedSelection(
-            DataGridFilterPresenterMode.Menu,
+            DataGridFilterMode.Menu,
             "DataGridMenuFilterFlyoutPresenter",
             failures);
         VerifyDataGridFilterFlyoutPassiveCloseSkipsUnusedSelection(
-            DataGridFilterPresenterMode.Tree,
+            DataGridFilterMode.Tree,
             "DataGridTreeFilterFlyoutPresenter",
             failures);
     }
 
     private static void VerifyDataGridFilterFlyoutPassiveCloseSkipsUnusedSelection(
-        DataGridFilterPresenterMode filterMode,
+        DataGridFilterMode filterMode,
         string presenterTypeName,
         ICollection<string> failures)
     {
@@ -379,20 +378,20 @@ internal static partial class Program
         flyout.Popup.Child = presenter;
         var skippedArgs = InvokeDataGridFilterFlyoutClosedAndCaptureSelection(flyout, failures);
         Expect(skippedArgs == null,
-            $"DataGrid {filterMode} Confirm filter close should not collect or report selected values.",
+            $"DataGrid {filterMode} default passive filter close should not collect or report selected values when FilterOnClose=false.",
             failures);
 
-        column.FilterApplyMode = DataGridFilterApplyMode.Close;
-        var closeArgs = InvokeDataGridFilterFlyoutClosedAndCaptureSelection(flyout, failures);
-        var closeValues = GetDataGridFilterSelectedValues(closeArgs);
-        Expect(closeValues.Count == 0,
-            $"DataGrid {filterMode} Close filter mode without checked containers should still report an empty selected value list. Actual: {string.Join(", ", closeValues)}.",
+        column.FilterOnClose = true;
+        var filterOnCloseArgs = InvokeDataGridFilterFlyoutClosedAndCaptureSelection(flyout, failures);
+        var filterOnCloseValues = GetDataGridFilterSelectedValues(filterOnCloseArgs);
+        Expect(filterOnCloseValues.Count == 0,
+            $"DataGrid {filterMode} FilterOnClose passive close without checked containers should still report an empty selected value list. Actual: {string.Join(", ", filterOnCloseValues)}.",
             failures);
-        Expect(GetDataGridFilterValuesSelectedIsConfirmed(closeArgs) == false,
-            $"DataGrid {filterMode} Close filter mode should preserve inactive shutdown state.",
+        Expect(GetDataGridFilterValuesSelectedIsConfirmed(filterOnCloseArgs) == false,
+            $"DataGrid {filterMode} FilterOnClose passive close should preserve inactive shutdown state.",
             failures);
 
-        column.FilterApplyMode = DataGridFilterApplyMode.Confirm;
+        column.FilterOnClose = false;
         SetDataGridFilterFlyoutActiveShutdown(flyout, true, failures);
         var activeCloseArgs = InvokeDataGridFilterFlyoutClosedAndCaptureSelection(flyout, failures);
         var activeCloseValues = GetDataGridFilterSelectedValues(activeCloseArgs);
@@ -408,17 +407,17 @@ internal static partial class Program
     private static void VerifyDataGridFilterFlyoutPresenterSelectedValuesPreallocateCapacity(ICollection<string> failures)
     {
         VerifyDataGridFilterFlyoutPresenterSelectedValuesPreallocateCapacity(
-            DataGridFilterPresenterMode.Menu,
+            DataGridFilterMode.Menu,
             "DataGridMenuFilterFlyoutPresenter",
             failures);
         VerifyDataGridFilterFlyoutPresenterSelectedValuesPreallocateCapacity(
-            DataGridFilterPresenterMode.Tree,
+            DataGridFilterMode.Tree,
             "DataGridTreeFilterFlyoutPresenter",
             failures);
     }
 
     private static void VerifyDataGridFilterFlyoutPresenterSelectedValuesPreallocateCapacity(
-        DataGridFilterPresenterMode filterMode,
+        DataGridFilterMode filterMode,
         string presenterTypeName,
         ICollection<string> failures)
     {
@@ -535,7 +534,7 @@ internal static partial class Program
             failures);
     }
 
-    private static DataGrid CreateFilterCapacityDataGrid(DataGridFilterPresenterMode filterMode)
+    private static DataGrid CreateFilterCapacityDataGrid(DataGridFilterMode filterMode)
     {
         var grid = CreateDataGridShell(8);
         grid.CanUserFilterColumns = true;
@@ -600,19 +599,19 @@ internal static partial class Program
             failures);
 
         VerifyDataGridFilterItemChildrenStayLazy(
-            DataGridFilterPresenterMode.Menu,
+            DataGridFilterMode.Menu,
             childrenField,
             hasChildrenProperty,
             failures);
         VerifyDataGridFilterItemChildrenStayLazy(
-            DataGridFilterPresenterMode.Tree,
+            DataGridFilterMode.Tree,
             childrenField,
             hasChildrenProperty,
             failures);
     }
 
     private static void VerifyDataGridFilterItemChildrenStayLazy(
-        DataGridFilterPresenterMode filterMode,
+        DataGridFilterMode filterMode,
         FieldInfo childrenField,
         PropertyInfo hasChildrenProperty,
         ICollection<string> failures)
@@ -665,13 +664,11 @@ internal static partial class Program
         var grid = CreateDataGridShell(4);
         grid.CanUserFilterColumns = true;
 
-        var filters = new ObservableCollection<DataGridFilterItem>();
         var filterColumn = new DataGridTextColumn
         {
             Header           = "Name",
             Binding          = new Binding(nameof(PerfDataGridRow.Name)),
-            FilterMemberPath = nameof(PerfDataGridRow.Name),
-            Filters          = filters
+            FilterMemberPath = nameof(PerfDataGridRow.Name)
         };
         grid.Columns.Add(filterColumn);
         grid.Columns.Add(new DataGridTextColumn
@@ -685,7 +682,7 @@ internal static partial class Program
             "Columns without filter items should keep filter indicators hidden even when filtering is enabled.",
             failures);
 
-        filters.Add(new DataGridFilterItem { Text = "Joe", Value = "Joe" });
+        filterColumn.Filters.Add(new DataGridFilterItem { Text = "Joe", Value = "Joe" });
         RefreshLayout(realized.Window);
         Expect(CountVisibleDataGridFilterIndicators(grid) == 1,
             $"Adding one filter item should reveal one filter indicator. Actual: {CountVisibleDataGridFilterIndicators(grid)}.",
@@ -694,7 +691,7 @@ internal static partial class Program
             "Adding one filter item should create exactly one closed filter flyout shell.",
             failures);
 
-        filters.Clear();
+        filterColumn.Filters.Clear();
         RefreshLayout(realized.Window);
         Expect(CountVisibleDataGridFilterIndicators(grid) == 0,
             $"Clearing filter items should hide the filter indicator. Actual: {CountVisibleDataGridFilterIndicators(grid)}.",
@@ -727,7 +724,7 @@ internal static partial class Program
             "DataGrid non-empty string filter values should still be copied into an independent snapshot.",
             failures);
 
-        var grid = CreateFilterDataGrid(DataGridFilterPresenterMode.Menu);
+        var grid = CreateFilterDataGrid(DataGridFilterMode.Menu);
         using var realized = RealizeControl(grid);
 
         var column = grid.Columns[0];
@@ -737,7 +734,7 @@ internal static partial class Program
             return;
         }
 
-        var requestedValues = new List<object> { "Joe" };
+        var requestedValues = new List<string> { "Joe" };
         InvokeDataGridColumnHeaderFilterRequest(header, column, requestedValues, failures);
         requestedValues[0] = "Jim";
         requestedValues.Add("Late mutation");
@@ -759,7 +756,7 @@ internal static partial class Program
             failures);
 
         var firstFilterDescription = filterDescriptions[0];
-        var sameSetValues = new List<object> { "Joe", "Joe" };
+        var sameSetValues = new List<string> { "Joe", "Joe" };
         InvokeDataGridColumnHeaderFilterRequest(header, column, sameSetValues, failures);
         sameSetValues[0] = "Jim";
         RefreshLayout(realized.Window);
@@ -767,7 +764,7 @@ internal static partial class Program
             "DataGrid filter request should keep the existing filter description when selected values are set-equal.",
             failures);
 
-        var replacementValues = new List<object> { "Jim" };
+        var replacementValues = new List<string> { "Jim" };
         InvokeDataGridColumnHeaderFilterRequest(header, column, replacementValues, failures);
         replacementValues[0] = "London";
         RefreshLayout(realized.Window);
@@ -5784,10 +5781,7 @@ internal static partial class Program
     {
         var initializeMethod = typeof(DataGridSortDescription).GetMethod(
             "Initialize",
-            BindingFlags.Instance | BindingFlags.NonPublic,
-            binder: null,
-            types: [typeof(Type)],
-            modifiers: null);
+            BindingFlags.Instance | BindingFlags.NonPublic);
         Expect(initializeMethod != null,
             "DataGridSortDescription should expose Initialize for path comparer cache verification.",
             failures);
@@ -5888,10 +5882,7 @@ internal static partial class Program
 
         var initializeMethod = typeof(DataGridSortDescription).GetMethod(
             "Initialize",
-            BindingFlags.Instance | BindingFlags.NonPublic,
-            binder: null,
-            types: [typeof(Type)],
-            modifiers: null);
+            BindingFlags.Instance | BindingFlags.NonPublic);
         Expect(initializeMethod != null,
             "DataGridSortDescription should expose Initialize for cached default comparer sorting verification.",
             failures);
@@ -5915,10 +5906,7 @@ internal static partial class Program
     {
         var initializeMethod = typeof(DataGridSortDescription).GetMethod(
             "Initialize",
-            BindingFlags.Instance | BindingFlags.NonPublic,
-            binder: null,
-            types: [typeof(Type)],
-            modifiers: null);
+            BindingFlags.Instance | BindingFlags.NonPublic);
         Expect(initializeMethod != null,
             "DataGridSortDescription should expose Initialize for sort key selector verification.",
             failures);
@@ -8895,7 +8883,7 @@ internal static partial class Program
     private static void InvokeDataGridColumnHeaderFilterRequest(
         Control header,
         DataGridColumn column,
-        List<object> filterValues,
+        List<string> filterValues,
         ICollection<string> failures)
     {
         var method = header.GetType().GetMethod(

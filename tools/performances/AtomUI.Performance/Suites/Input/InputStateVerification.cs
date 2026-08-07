@@ -1,7 +1,5 @@
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
-using AtomUI.Theme.Algorithms;
-using AtomUI.Theme.DesignTokens;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
@@ -38,9 +36,8 @@ internal static partial class Program
 
     private static void VerifyInputSelectionTokenMapping(ICollection<string> failures)
     {
-        var seed = new DesignToken();
         var defaultToken = new DesignToken();
-        new DefaultThemeVariantCalculator().Evaluate(seed, previousMap: null, defaultToken);
+        new DefaultThemeVariantCalculator().Calculate(defaultToken);
 
         Expect(defaultToken.SelectionBackground == defaultToken.ColorPrimary,
             $"Default SelectionBackground should use ColorPrimary ({defaultToken.ColorPrimary}), actual {defaultToken.SelectionBackground}.",
@@ -50,7 +47,7 @@ internal static partial class Program
             failures);
 
         var darkToken = new DesignToken();
-        new DarkThemeVariantCalculator().Evaluate(seed, defaultToken, darkToken);
+        new DarkThemeVariantCalculator(new DefaultThemeVariantCalculator()).Calculate(darkToken);
 
         Expect(darkToken.SelectionBackground == darkToken.ColorPrimary,
             $"Dark SelectionBackground should use ColorPrimary ({darkToken.ColorPrimary}), actual {darkToken.SelectionBackground}.",
@@ -322,7 +319,7 @@ internal static partial class Program
         };
         using var realized = RealizeControl(searchEdit);
 
-        Expect(FindVisualByName<Avalonia.Controls.Button>(searchEdit, "PART_RightAddOn") != null,
+        Expect(FindVisualByName<SearchButton>(searchEdit, "PART_RightAddOn") != null,
             "SearchEdit should keep its search button.", failures);
         Expect(FindVisualByName<InputClearIconButton>(searchEdit, "PART_ClearButton") == null,
             "SearchEdit default should not create a clear button.", failures);

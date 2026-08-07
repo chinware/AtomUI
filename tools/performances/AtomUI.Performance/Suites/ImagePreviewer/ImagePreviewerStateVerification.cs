@@ -13,9 +13,9 @@ internal static partial class Program
         var failures = new List<string>();
         VerifyImagePreviewerClosedStateMaterialization(failures);
         VerifyImagePreviewerDialogMaterialization(failures);
-        VerifyImagePreviewerOpenSourcesReplacement(failures);
+        VerifyImagePreviewerOpenItemsSourceReplacement(failures);
         VerifyImageGroupPreviewerMaterialization(failures);
-        VerifyImagePreviewerSourceReplacement(failures);
+        VerifyImagePreviewerCoverReplacement(failures);
 
         if (failures.Count == 0)
         {
@@ -46,13 +46,13 @@ internal static partial class Program
             "Single ImagePreviewer should keep one cover visual.",
             failures);
 
-        previewer.Sources = null;
+        previewer.ItemsSource = null;
         RefreshLayout(realized.Window);
         Expect(GetImagePreviewerEffectiveSourceCount(previewer) == 0,
-            "Clearing Sources should clear effective dialog sources.",
+            "Clearing ItemsSource should clear effective dialog sources.",
             failures);
         Expect(GetImagePreviewerEffectiveCoverImage(previewer) == null,
-            "Clearing Sources should release the effective cover image when no source or fallback exists.",
+            "Clearing ItemsSource should release the effective cover image when no custom cover or fallback exists.",
             failures);
     }
 
@@ -67,7 +67,7 @@ internal static partial class Program
         Expect(previewer.IsOpen,
             "OpenDialog should set IsOpen=true.",
             failures);
-        Expect(GetImagePreviewerEffectiveSourceCount(previewer) == ImagePreviewerThreeImages.Count,
+        Expect(GetImagePreviewerEffectiveSourceCount(previewer) == ImagePreviewerThreeImages.Length,
             "Opening ImagePreviewer should materialize all preview dialog sources.",
             failures);
 
@@ -78,18 +78,18 @@ internal static partial class Program
             failures);
     }
 
-    private static void VerifyImagePreviewerOpenSourcesReplacement(ICollection<string> failures)
+    private static void VerifyImagePreviewerOpenItemsSourceReplacement(ICollection<string> failures)
     {
         var previewer = CreateMultiSourceImagePreviewer();
         using var realized = RealizeControl(previewer);
 
         previewer.OpenDialog();
         Dispatcher.UIThread.RunJobs();
-        previewer.Sources = ImagePreviewerTwoImages;
+        previewer.ItemsSource = ImagePreviewerTwoImages;
         RefreshLayout(realized.Window);
 
-        Expect(GetImagePreviewerEffectiveSourceCount(previewer) == ImagePreviewerTwoImages.Count,
-            "Replacing Sources while ImagePreviewer is open should keep dialog sources materialized.",
+        Expect(GetImagePreviewerEffectiveSourceCount(previewer) == ImagePreviewerTwoImages.Length,
+            "Replacing ItemsSource while ImagePreviewer is open should keep dialog sources materialized.",
             failures);
 
         previewer.IsOpen = false;
@@ -101,41 +101,41 @@ internal static partial class Program
         AtomImageGroupPreviewer groupPreviewer = CreateImageGroupPreviewer();
         using var realized = RealizeControl(groupPreviewer);
 
-        Expect(GetImagePreviewerEffectiveSourceCount(groupPreviewer) == ImagePreviewerTwoImages.Count,
+        Expect(GetImagePreviewerEffectiveSourceCount(groupPreviewer) == ImagePreviewerTwoImages.Length,
             "ImageGroupPreviewer closed state should materialize all visible cover images.",
             failures);
-        Expect(CountVisualByTypeName(groupPreviewer, "ImagePreviewerCover") == ImagePreviewerTwoImages.Count,
+        Expect(CountVisualByTypeName(groupPreviewer, "ImagePreviewerCover") == ImagePreviewerTwoImages.Length,
             "ImageGroupPreviewer should create one cover visual per source.",
             failures);
     }
 
-    private static void VerifyImagePreviewerSourceReplacement(ICollection<string> failures)
+    private static void VerifyImagePreviewerCoverReplacement(ICollection<string> failures)
     {
-        AtomImagePreviewer previewer = CreateSingleSourceImagePreviewer();
+        AtomImagePreviewer previewer = CreateCustomCoverImagePreviewer();
         using var realized = RealizeControl(previewer);
 
         var firstCover = GetImagePreviewerEffectiveCoverImage(previewer);
         Expect(firstCover != null,
-            "Single-source ImagePreviewer should materialize its source cover image.",
+            "Custom cover ImagePreviewer should materialize its custom cover image.",
             failures);
         Expect(GetImagePreviewerEffectiveSourceCount(previewer) == 0,
-            "Single-source ImagePreviewer should not materialize dialog sources while closed.",
+            "Custom cover ImagePreviewer should not materialize dialog sources while closed.",
             failures);
 
-        previewer.Source = ImagePreviewerFallbackImage;
+        previewer.CoverImageSrc = ImagePreviewerFallbackImage;
         RefreshLayout(realized.Window);
         var secondCover = GetImagePreviewerEffectiveCoverImage(previewer);
         Expect(secondCover != null && !ReferenceEquals(firstCover, secondCover),
-            "Replacing Source should replace the effective cover image.",
+            "Replacing CoverImageSrc should replace the effective cover image.",
             failures);
 
-        previewer.Source = null;
+        previewer.CoverImageSrc = null;
         RefreshLayout(realized.Window);
-        Expect(GetImagePreviewerEffectiveCoverImage(previewer) == null,
-            "Clearing Source should release the effective cover image when no fallback is configured.",
+        Expect(GetImagePreviewerEffectiveCoverImage(previewer) != null,
+            "Clearing CoverImageSrc should fall back to the first ItemsSource image as the cover.",
             failures);
         Expect(GetImagePreviewerEffectiveSourceCount(previewer) == 0,
-            "Clearing Source should not materialize dialog sources while closed.",
+            "Clearing CoverImageSrc should not materialize dialog sources while closed.",
             failures);
     }
 
