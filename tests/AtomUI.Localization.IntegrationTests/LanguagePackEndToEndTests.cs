@@ -389,11 +389,7 @@ public sealed class LanguagePackEndToEndTests
             feed,
             $"Acme.LocalizationAggregate.I18n.JaJP.{packageVersion}.nupkg");
         var aggregateEntries = PackageEntries(aggregatePackage);
-        aggregateEntries.ShouldNotContain(static path =>
-            path.StartsWith("contentFiles/", StringComparison.OrdinalIgnoreCase) ||
-            path.StartsWith("analyzers/", StringComparison.OrdinalIgnoreCase) ||
-            IsBuildAsset(path) ||
-            IsRuntimeAsset(path));
+        aggregateEntries.ShouldAllBe(static path => IsAggregatePackageMetadataEntry(path));
 
         var dependencies = PackageDependencies(
             aggregatePackage,
@@ -474,6 +470,30 @@ public sealed class LanguagePackEndToEndTests
                path.StartsWith("runtimes/", StringComparison.OrdinalIgnoreCase) ||
                path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||
                path.EndsWith(".pdb", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsAggregatePackageMetadataEntry(string path)
+    {
+        const string corePropertiesPrefix = "package/services/metadata/core-properties/";
+
+        if (path.Equals("_rels/.rels", StringComparison.Ordinal) ||
+            path.Equals("[Content_Types].xml", StringComparison.Ordinal) ||
+            path.Equals(
+                "Acme.LocalizationAggregate.I18n.JaJP.nuspec",
+                StringComparison.Ordinal))
+        {
+            return true;
+        }
+
+        if (!path.StartsWith(corePropertiesPrefix, StringComparison.Ordinal) ||
+            !path.EndsWith(".psmdcp", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        var fileName = path[corePropertiesPrefix.Length..];
+        return fileName.IndexOf('/') < 0 &&
+               Guid.TryParse(fileName[..^".psmdcp".Length], out _);
     }
 
     private static bool IsUnexpectedBuildOrRuntimeAsset(string path)

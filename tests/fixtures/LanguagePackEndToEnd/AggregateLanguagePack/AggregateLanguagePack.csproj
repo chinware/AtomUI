@@ -6,7 +6,7 @@
         <PackageId>Acme.LocalizationAggregate.I18n.JaJP</PackageId>
         <PackageVersion Condition="'$(PackageVersion)' == ''">1.0.0</PackageVersion>
         <NuspecFile>AggregateLanguagePack.nuspec</NuspecFile>
-        <NuspecBasePath>$(MSBuildProjectDirectory)</NuspecBasePath>
+        <NuspecBasePath>$(IntermediateOutputPath)nuspec-base</NuspecBasePath>
         <NuspecProperties>version=$(PackageVersion)</NuspecProperties>
     </PropertyGroup>
 
@@ -14,4 +14,9 @@
         <ProjectReference Include="../LanguagePack/LanguagePack.csproj" />
         <ProjectReference Include="../OptionalLanguagePack/OptionalLanguagePack.csproj" />
     </ItemGroup>
+
+    <Target Name="PrepareAggregateNuspecBase" BeforeTargets="GenerateNuspec">
+        <RemoveDir Directories="$(NuspecBasePath)" />
+        <MakeDir Directories="$(NuspecBasePath)" />
+    </Target>
 </Project>
