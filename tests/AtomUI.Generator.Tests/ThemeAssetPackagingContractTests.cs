@@ -77,6 +77,23 @@ public class ThemeAssetPackagingContractTests
                       .Value.ShouldBe("AtomUI");
     }
 
+    [Fact]
+    public void Theme_Asset_Target_Uses_Build_Task_Instead_Of_Inline_Code()
+    {
+        var target = XDocument.Load(GetRepoFile("build/AtomUI.ThemeAssets.targets"));
+        target.Descendants()
+              .Where(element => element.Name.LocalName == "UsingTask")
+              .ShouldContain(element =>
+                  (string?)element.Attribute("TaskName") ==
+                  "AtomUI.Build.Tasks.GenerateThemeAssetWrappersTask");
+        target.Descendants()
+              .Where(element => element.Name.LocalName == "UsingTask")
+              .ShouldAllBe(element =>
+                  (string?)element.Attribute("TaskFactory") != "RoslynCodeTaskFactory");
+        target.Descendants()
+              .ShouldNotContain(element => element.Name.LocalName == "Code");
+    }
+
     private static string GetRepoFile(string relativePath)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

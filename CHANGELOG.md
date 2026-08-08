@@ -4,6 +4,48 @@ All notable changes to AtomUI are documented in this file.
 
 `AtomUI` follows Semantic Versioning 2.0.0.
 
+## 6.1.3
+
+`2026-08-08`
+
+- Breaking Changes
+  - Theme: custom theme and control packages must migrate from manually maintained token/theme registration to generated control-package descriptors and `Themes/**/*.axaml` asset manifests registered through `Application.UseAtomUI(...)` before the theme schema freezes. Replace string algorithm IDs in theme builders, attributes, descriptors and state with `ThemeAlgorithm` enum values.
+  - Localization: replace the removed `LanguageCode`, `LanguageVariant`, language provider/pool and ThemeManager language registration APIs with `LanguageTag`, catalog enums, XLIFF 2.1 resources, `UseLanguages()` and generated module registration. Catalog enum member names and XLIFF unit IDs are now the contract identity (`ContractVersion = 2`); applications and static language packages must be rebuilt together and must not mix the former numeric-ID catalogs with key-based catalogs.
+  - Upload: remove `Upload.IsOpenFileDialogOnClick` in favor of `UploadDropZone.IsOpenFileDialogOnClick` and `SourceKind`; replace `Upload.Accepts` with `AllowedFileTypes`; remove the old drop events and URI-only file contract; and migrate custom integrations to the typed source, input-batch, admission and completion contracts with `Files` as the single state owner.
+  - Timeline: add horizontal `Orientation`, replace `TimelineMode.Left` / `Right` with logical `Start` / `End`, and rename `IndicatorLeftModeMargin` / `IndicatorRightModeMargin` to `IndicatorStartModeMargin` / `IndicatorEndModeMargin`.
+  - Tag: replace `IsBordered` with `TagVariant` (`Filled`, `Solid` or `Outlined`), and use the new `CheckableTag` / `CheckableTagGroup` selection APIs for checkable tag scenarios.
+  - Separator: change `SizeType` from `SizeType` to `CustomizableSizeType` and implement `ICustomizableSizeTypeAware`; `Custom` spacing is owned by the control instance or its containing style. See [6.1.3 API change examples](docs/release-notes/6.1.3-api-changes.md) for migration guidance.
+- Calendar and DatePicker
+  - Add the new Calendar control with date, month and year views, Mini and Fullscreen densities, custom headers and cells, week-number display, notices, range bars, disabled-date composition, keyboard navigation and automation support.
+  - Add switchable DatePicker modes and `MinDate` / `MaxDate` constraints.
+- Localization, Generator and Build
+  - Replace runtime language providers with generated XLIFF 2.1 catalogs, strongly typed resource extensions, application bootstrap code and immutable language snapshots while preserving existing `{atom:XxxLangResource Key}` XAML usage.
+  - Add static language-package build contracts, generated registration for active and dormant modules, verified and deferred package manifests, partial overrides, catalog validation and NativeAOT-safe registration without runtime assembly scanning or XLIFF parsing.
+  - Add official Portuguese (Brazil) (`pt-BR`) packages for AtomUI modules and language switching in the Gallery.
+- Theme
+  - Compile theme definitions and generated control-theme manifests into complete immutable root and scoped snapshots, publish changes atomically, and cache equivalent definitions by normalized content digest.
+  - Align Ant Design token semantics, complete control token snapshots and composite input states, including generated exact control identities, resource keys and effective Global/Own token access.
+- Upload
+  - Rebuild picker, directory picker, drag-and-drop and programmatic input around one cross-platform admission pipeline with typed file-source ownership, serialized batches and deterministic terminal states.
+  - Add directory policies, traversal limits, count-overflow policy, snapshot error reporting and consistent `IsMultipleEnabled` behavior across picker and drop input.
+  - Harden replacement, cancellation, cleanup and upload progress finalization so accepted sources remain valid until execution exits and updates stop after terminal status.
+- Navigation and Selection Controls
+  - Add `Menu.IsScrollEnabled` for scrollable popup menus.
+  - Add hierarchical NavMenu composition, collapsible sidebar headers, improved inline-collapsed presentation and stale-selection cleanup when items are replaced.
+  - Add vertical and round Segmented variants, keyboard navigation and dynamic option loading.
+  - Add vertical OptionButtonGroup layout and horizontal Timeline layouts with logical Start/End/Alternate placement.
+- Data Entry, Display and General Controls
+  - Add Tag Filled/Solid/Outlined variants, preset/status/custom color handling, CheckableTag and single/multiple-selection CheckableTagGroup.
+  - Add multi-handle Slider values with per-handle disabled state.
+  - Add Button `IconWidth` and `IconHeight`, and Steps `ItemHeaderForeground`, `ItemSubHeaderForeground` and `ItemRailBackground` semantic styling properties.
+  - Improve TextBox and TextArea OverflowTip decisions with text viewport metrics, restore Separator preset spacing, and add a Gallery form-in-Drawer example.
+  - Add LunarCalendar with lunar date projection, solar terms, traditional festivals, holiday/workday markers and configurable weekend highlighting.
+- Window, DataGrid, Gallery and Dependencies
+  - Add the Window title-bar add-on facade and route ImagePreviewer toolbar requests correctly from client-side decoration overlays.
+  - Fix DataGrid row-reorder reset crashes, collection moves and reorder lifecycle handling, while reducing allocations in the reorder path.
+  - Include the Gallery Developer Tools runtime dependencies required by packaged builds.
+  - Upgrade Avalonia from `12.1.0` to `12.1.1`; this patch dependency upgrade does not require AtomUI source migration.
+
 ## 6.1.2
 
 `2026-07-27`
