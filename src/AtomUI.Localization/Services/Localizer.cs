@@ -2,9 +2,9 @@ namespace AtomUI.Localization;
 
 internal sealed class Localizer : ILocalizer
 {
-    private readonly LanguageRuntimeContext _context;
+    private readonly LanguageContext _context;
 
-    internal Localizer(LanguageRuntimeContext context)
+    internal Localizer(LanguageContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
@@ -46,7 +46,7 @@ internal sealed class Localizer : ILocalizer
     }
 
     private ResolvedLanguageValue Resolve<TResourceKind>(
-        LanguageRuntimeRevision revision,
+        LanguageRevision revision,
         TResourceKind key)
         where TResourceKind : struct, Enum
     {

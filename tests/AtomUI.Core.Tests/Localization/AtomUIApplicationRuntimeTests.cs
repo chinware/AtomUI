@@ -24,8 +24,8 @@ public class AtomUIApplicationRuntimeTests
                        .ShouldBe(1);
             runtime.ResourceProvider.Owner.ShouldBeSameAs(application);
             AtomUIApplicationRuntimeStore.Get(application).ShouldBeSameAs(runtime);
-            runtime.LanguageManager.ShouldBeSameAs(runtime.LocalizationRuntime.LanguageManager);
-            runtime.Localizer.ShouldBeSameAs(runtime.LocalizationRuntime.Localizer);
+            runtime.LanguageManager.ShouldBeSameAs(runtime.LocalizationHost.LanguageManager);
+            runtime.Localizer.ShouldBeSameAs(runtime.LocalizationHost.Localizer);
         });
     }
 

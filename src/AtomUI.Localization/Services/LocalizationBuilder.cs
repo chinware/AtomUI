@@ -6,7 +6,7 @@ internal sealed class LocalizationBuilder : ILocalizationBuilder
     private readonly List<TranslationBundleDescriptor> _bundles = [];
     private readonly List<LanguageDefinition> _definitions = [];
     private LanguageCatalogRegistry? _registry;
-    private LocalizationRuntime? _runtime;
+    private LocalizationHost? _host;
     private LanguageTag _defaultLanguage;
     private LanguageTag[]? _supportedLanguages;
     private bool _isFrozen;
@@ -59,11 +59,11 @@ internal sealed class LocalizationBuilder : ILocalizationBuilder
         return _registry;
     }
 
-    internal LocalizationRuntime Build(Func<bool>? checkAccess = null)
+    internal LocalizationHost Build(Func<bool>? checkAccess = null)
     {
-        if (_runtime is not null)
+        if (_host is not null)
         {
-            return _runtime;
+            return _host;
         }
 
         var (defaultLanguage, supportedLanguages) = NormalizeLanguageConfiguration();
@@ -86,9 +86,9 @@ internal sealed class LocalizationBuilder : ILocalizationBuilder
             defaultDefinition.FormattingCulture,
             defaultDefinition.TextDirection,
             revision: 0);
-        var context = new LanguageRuntimeContext(
+        var context = new LanguageContext(
             registry,
-            new LanguageRuntimeRevision(snapshots[defaultLanguage], initialState));
+            new LanguageRevision(snapshots[defaultLanguage], initialState));
         var provider = new LanguageResourceProvider(context);
         var manager = new LanguageManager(
             context,
@@ -97,13 +97,13 @@ internal sealed class LocalizationBuilder : ILocalizationBuilder
             provider,
             checkAccess);
         var localizer = new Localizer(context);
-        _runtime = new LocalizationRuntime(
+        _host = new LocalizationHost(
             registry,
             snapshots,
             manager,
             localizer,
             provider);
-        return _runtime;
+        return _host;
     }
 
     private (LanguageTag DefaultLanguage, IReadOnlyList<LanguageTag> SupportedLanguages)

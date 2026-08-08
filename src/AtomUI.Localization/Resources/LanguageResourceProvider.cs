@@ -6,9 +6,9 @@ namespace AtomUI.Localization;
 
 internal sealed class LanguageResourceProvider : ResourceProvider
 {
-    private readonly LanguageRuntimeContext _context;
+    private readonly LanguageContext _context;
 
-    internal LanguageResourceProvider(LanguageRuntimeContext context)
+    internal LanguageResourceProvider(LanguageContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
@@ -23,7 +23,7 @@ internal sealed class LanguageResourceProvider : ResourceProvider
         ArgumentNullException.ThrowIfNull(key);
 
         var revision = _context.Current;
-        if (ReferenceEquals(key, LanguageRuntimeResourceKeys.FlowDirection))
+        if (ReferenceEquals(key, LanguageResourceKeys.FlowDirection))
         {
             value = revision.State.TextDirection == LanguageTextDirection.RightToLeft
                 ? FlowDirection.RightToLeft

@@ -13,12 +13,12 @@ public class LanguageResourceProviderTests
         var runtime = LanguageManagerTestRuntime.Create();
 
         runtime.Provider.TryGetResource(
-            LanguageRuntimeResourceKeys.FlowDirection,
+            LanguageResourceKeys.FlowDirection,
             null,
             out var leftToRight).ShouldBeTrue();
         runtime.Manager.ChangeLanguage(LanguageTags.ArSA);
         runtime.Provider.TryGetResource(
-            LanguageRuntimeResourceKeys.FlowDirection,
+            LanguageResourceKeys.FlowDirection,
             null,
             out var rightToLeft).ShouldBeTrue();
 

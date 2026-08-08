@@ -16,26 +16,26 @@ internal sealed class AtomUIApplicationRuntime : IDisposable
     internal AtomUIApplicationRuntime(
         Application application,
         ThemeManager themeManager,
-        LocalizationRuntime localizationRuntime)
+        LocalizationHost localizationHost)
     {
         _application = application ?? throw new ArgumentNullException(nameof(application));
         ThemeManager = themeManager ?? throw new ArgumentNullException(nameof(themeManager));
-        LocalizationRuntime = localizationRuntime ?? throw new ArgumentNullException(nameof(localizationRuntime));
+        LocalizationHost = localizationHost ?? throw new ArgumentNullException(nameof(localizationHost));
         FlowDirectionStyle = new Style(selector => selector.Is<TopLevel>());
         FlowDirectionStyle.Setters.Add(new Setter(
             Visual.FlowDirectionProperty,
-            new DynamicResourceExtension(LanguageRuntimeResourceKeys.FlowDirection)));
+            new DynamicResourceExtension(LanguageResourceKeys.FlowDirection)));
     }
 
     internal ThemeManager ThemeManager { get; }
 
-    internal LocalizationRuntime LocalizationRuntime { get; }
+    internal LocalizationHost LocalizationHost { get; }
 
-    internal LanguageManager LanguageManager => LocalizationRuntime.LanguageManager;
+    internal LanguageManager LanguageManager => LocalizationHost.LanguageManager;
 
-    internal Localizer Localizer => LocalizationRuntime.Localizer;
+    internal Localizer Localizer => LocalizationHost.Localizer;
 
-    internal LanguageResourceProvider ResourceProvider => LocalizationRuntime.ResourceProvider;
+    internal LanguageResourceProvider ResourceProvider => LocalizationHost.ResourceProvider;
 
     internal Style FlowDirectionStyle { get; }
 
@@ -91,7 +91,7 @@ internal sealed class AtomUIApplicationRuntime : IDisposable
         }
         finally
         {
-            LocalizationRuntime.Dispose();
+            LocalizationHost.Dispose();
         }
     }
 

@@ -3,12 +3,18 @@
 本文定义本地化运行时的状态所有权、启动构建、查询、回退和语言切换语义。运行时位于
 `AtomUI.Localization`，不依赖 ThemeManager 的内部事务或语言字段。
 
+源码不使用 `Runtime/` 作为兜底目录，也不把 `Runtime` 作为内部类型的通用后缀。应用生命周期拥有的服务组合
+为 `LocalizationHost`，当前语言的原子状态持有者为 `LanguageContext`，一次完整发布为
+`LanguageRevision`。物理目录遵循概览文档定义的 `Catalog/`、`Resources/`、`Services/` 加根目录核心模型的
+紧凑分组。
+
 ## 核心组件
 
 ```text
 LanguageManager
 ├── LanguageCatalogRegistry
 ├── IReadOnlyDictionary<LanguageTag, LanguageSnapshot>
+├── LanguageContext
 ├── LanguageResourceProvider
 ├── LanguageState
 └── Localizer
@@ -18,9 +24,12 @@ LanguageManager
 |---|---|---|
 | `LanguageCatalogRegistry` | 冻结 Catalog schema、slot、翻译来源和语言元数据 | 当前语言、资源通知 |
 | `LanguageSnapshot` | 保存某一语言完成回退后的全部资源值 | 解析 XLIFF、动态修改 |
+| `LanguageContext` | 原子持有并发布当前 `LanguageRevision` | 构建 Snapshot、发布资源通知 |
+| `LanguageRevision` | 把同一次提交的 Snapshot 和 State 绑定为不可分割值 | 维护支持语言集合 |
 | `LanguageManager` | 验证并提交全局语言变化，发布状态和事件 | 主题事务、下载语言包 |
 | `LanguageResourceProvider` | 把当前 Snapshot 投影为 Avalonia 动态资源 | 保存第二份翻译状态 |
 | `Localizer` | 为 C# 调用提供强类型查询和格式化 | 字符串 Catalog 路径解析 |
+| `LocalizationHost` | 持有构建完成的 Manager、Localizer、Provider 和 Snapshot 集合并管理释放 | 执行查询或语言切换算法 |
 
 ## 启动构建
 
@@ -33,9 +42,11 @@ LanguageManager
    `LanguageDefinition` 仍要求标签唯一，并验证 Culture 与方向元数据。
 5. 构建并冻结 `LanguageCatalogRegistry`，解析来源优先级、Catalog 契约和 slot。
 6. 为每个支持语言构建完整不可变 `LanguageSnapshot`；任何必需资源无法解析时启动失败。
-7. 用默认语言 Snapshot 初始化唯一 `LanguageManager` 和稳定 `LanguageResourceProvider`。
+7. 创建初始 `LanguageRevision` 并交给唯一 `LanguageContext`，再初始化 `LanguageManager` 和稳定
+   `LanguageResourceProvider`。
 8. 将 Provider 挂载到 Application 资源链，并注册 `ILanguageManager`、`ILocalizer` 的同一运行时实例。
-9. 发布完整初始资源后再让应用进入首帧，不在首帧后补做默认语言切换。
+9. 由 `LocalizationHost` 持有构建完成的本地化服务和生命周期，在完整初始资源可用后再让应用进入首帧，
+   不在首帧后补做默认语言切换。
 
 Builder 只收集输入，`Build()` 后全部注册表冻结。运行时不允许追加 Catalog 或 Translation Bundle。
 
@@ -118,7 +129,7 @@ fr-CA      -> fr -> en-US
 1. 验证 UI 线程访问、Manager 未释放且目标属于支持语言；失败分别抛出文档规定的类型化异常。
 2. 目标与当前语言相同则返回 `NoOp`。
 3. 读取启动时构建的目标 Snapshot 和对应 `LanguageDefinition`。
-4. 在提交点原子替换当前 Snapshot 与 `LanguageState`。
+4. 创建包含目标 Snapshot 与新 `LanguageState` 的 `LanguageRevision`，并在提交点由 `LanguageContext` 原子发布。
 5. `LanguageResourceProvider` 发布一次 hosted resources changed 通知。
 6. 根文字方向投影与 Snapshot 属于同一提交，不暴露文本已变而方向未变的状态。
 7. 发布一次 `LanguageChanged`，事件参数包含旧/新 State 和结果 revision。

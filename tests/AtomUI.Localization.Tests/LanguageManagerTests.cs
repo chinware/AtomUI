@@ -206,9 +206,9 @@ internal sealed record LanguageManagerTestRuntime(
             definitions[0].FormattingCulture,
             definitions[0].TextDirection,
             revision: 0);
-        var context = new LanguageRuntimeContext(
+        var context = new LanguageContext(
             registry,
-            new LanguageRuntimeRevision(snapshots[LanguageTags.EnUS], initialState));
+            new LanguageRevision(snapshots[LanguageTags.EnUS], initialState));
         var provider = new LanguageResourceProvider(context);
         var manager = new LanguageManager(
             context,

@@ -24,16 +24,16 @@ public static class ApplicationExtensions
         }
         configure?.Invoke(builder);
 
-        LocalizationRuntime? localizationRuntime = null;
+        LocalizationHost? localizationHost = null;
         AtomUIApplicationRuntime? applicationRuntime = null;
         try
         {
-            localizationRuntime = builder.LocalizationBuilder.Build();
+            localizationHost = builder.LocalizationBuilder.Build();
             var themeManager = builder.ThemeManagerBuilder.Build();
             applicationRuntime = new AtomUIApplicationRuntime(
                 application,
                 themeManager,
-                localizationRuntime);
+                localizationHost);
             AvaloniaLocator.CurrentMutable.BindToSelf(themeManager);
             applicationRuntime.InitializeApplication();
             foreach (var initializer in builder.ThemeManagerBuilder.Initializers)
@@ -51,7 +51,7 @@ public static class ApplicationExtensions
             }
             else
             {
-                localizationRuntime?.Dispose();
+                localizationHost?.Dispose();
             }
             throw;
         }

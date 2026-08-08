@@ -42,6 +42,26 @@
 `AtomUI.Localization` 是运行时基础设施包。构建期共享源码使用内部命名空间
 `AtomUI.Localization.Build`，但没有同名项目或 NuGet 包；构建任务物理归属 `AtomUI.Build.Tasks`。
 
+## 源码职责分组
+
+`AtomUI.Localization` 使用紧凑职责分组，不使用含义宽泛的 `Runtime/`、`Engine/`、`Infrastructure/` 或
+`Core/` 目录：
+
+```text
+AtomUI.Localization/
+├── Catalog/    # Catalog schema、descriptor 和 registry
+├── Resources/  # Avalonia resource extension、provider 和 resource key
+├── Services/   # bootstrap、builder、host、manager、localizer 和日志入口
+├── LanguageData/ # LanguageTags Generator 的固定数据输入，不是源码职责分组
+└── *.cs        # LanguageTag、Definition、State、Snapshot、回退和原子发布模型
+```
+
+目录只表达源码维护职责，不改变所有类型统一使用的 `AtomUI.Localization` namespace，也不形成新的公共 API
+分层。内部应用级组合对象命名为 `LocalizationHost`；共享当前语言的原子状态持有者命名为
+`LanguageContext`；同一提交中的 `LanguageSnapshot` 与 `LanguageState` 组合命名为 `LanguageRevision`。
+Avalonia 资源键和日志入口分别使用职责明确的 `LanguageResourceKeys` 与 `LocalizationLogger`，不重复附加
+`Runtime` 前缀。
+
 ## 架构分层
 
 ```mermaid
@@ -67,6 +87,9 @@ flowchart TD
 | Language Module | 一个应用或类库贡献的 Catalog 与内置 Translation Bundle 集合 |
 | Module Language Pack | 通过静态 NuGet 为一个 Language Module 提供附加 Translation Bundle 的实际翻译载体 |
 | Aggregate Language Pack | 不含 XLIFF 或 DLL、仅依赖同语言模块包的产品级 Meta Package |
+| `LocalizationHost` | 应用拥有的本地化服务组合和生命周期边界 |
+| `LanguageContext` | 原子持有并发布当前 `LanguageRevision` 的共享上下文 |
+| `LanguageRevision` | 同一次提交中的不可分割 `LanguageSnapshot` 与 `LanguageState` 组合 |
 | `LanguageSnapshot` | 某个当前语言已经完成回退解析的不可变资源快照 |
 | `LanguageState` | 当前语言、格式化 Culture、文字方向和 revision |
 

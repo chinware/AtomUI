@@ -2,11 +2,11 @@ using System.Collections.ObjectModel;
 
 namespace AtomUI.Localization;
 
-internal sealed class LocalizationRuntime : IDisposable
+internal sealed class LocalizationHost : IDisposable
 {
     private int _disposed;
 
-    internal LocalizationRuntime(
+    internal LocalizationHost(
         LanguageCatalogRegistry registry,
         IReadOnlyDictionary<LanguageTag, LanguageSnapshot> snapshots,
         LanguageManager languageManager,

@@ -1,6 +1,6 @@
 namespace AtomUI.Localization;
 
-internal static class LanguageRuntimeResourceKeys
+internal static class LanguageResourceKeys
 {
     internal static object FlowDirection { get; } = new FlowDirectionResourceKey();
 

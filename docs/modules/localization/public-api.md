@@ -13,7 +13,7 @@ Catalog 和 XLIFF 的源文件规则见 [catalog-and-xliff.md](catalog-and-xliff
 IAtomUIBuilder
 ├── IThemeBuilder
 ├── ILocalizationBuilder
-└── Runtime initializers
+└── Application initializers
 ```
 
 常用能力继续通过根 Builder 扩展方法暴露，避免调用方依赖内部子 Builder：

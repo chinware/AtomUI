@@ -2,7 +2,7 @@ using Avalonia.Logging;
 
 namespace AtomUI.Localization;
 
-internal static class LocalizationRuntimeLogger
+internal static class LocalizationLogger
 {
     private const string LogArea = "Localization";
 

@@ -133,10 +133,10 @@ public class LocalizerTests
         var catalog = CreateCatalog(isFormatted);
         var registry = CreateRegistry(catalog, language, text);
         var revision = CreateRevision(registry, language, culture, text, revision: 0);
-        return new TestRuntime(registry, new LanguageRuntimeContext(registry, revision));
+        return new TestRuntime(registry, new LanguageContext(registry, revision));
     }
 
-    private static LanguageRuntimeRevision CreateRevision(
+    private static LanguageRevision CreateRevision(
         LanguageCatalogRegistry registry,
         LanguageTag language,
         CultureInfo culture,
@@ -171,7 +171,7 @@ public class LocalizerTests
             LanguageTextDirection.LeftToRight);
         var snapshot = LanguageSnapshotBuilder.Build(snapshotRegistry, language, definition);
         var state = new LanguageState(language, culture, LanguageTextDirection.LeftToRight, revision);
-        return new LanguageRuntimeRevision(snapshot, state);
+        return new LanguageRevision(snapshot, state);
     }
 
     private static LanguageCatalogRegistry CreateRegistry(
@@ -212,7 +212,7 @@ public class LocalizerTests
 
     private sealed record TestRuntime(
         LanguageCatalogRegistry Registry,
-        LanguageRuntimeContext Context);
+        LanguageContext Context);
 
     private enum ResourceKind
     {

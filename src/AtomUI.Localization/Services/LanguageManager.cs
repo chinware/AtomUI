@@ -5,7 +5,7 @@ namespace AtomUI.Localization;
 
 internal sealed class LanguageManager : ILanguageManager, IDisposable
 {
-    private readonly LanguageRuntimeContext _context;
+    private readonly LanguageContext _context;
     private readonly IReadOnlyDictionary<LanguageTag, LanguageSnapshot> _snapshots;
     private readonly IReadOnlyDictionary<LanguageTag, LanguageDefinition> _definitions;
     private readonly ReadOnlyCollection<LanguageDefinition> _supportedLanguages;
@@ -14,7 +14,7 @@ internal sealed class LanguageManager : ILanguageManager, IDisposable
     private int _disposed;
 
     internal LanguageManager(
-        LanguageRuntimeContext context,
+        LanguageContext context,
         IReadOnlyDictionary<LanguageTag, LanguageSnapshot> snapshots,
         IReadOnlyList<LanguageDefinition> supportedLanguages,
         LanguageResourceProvider resourceProvider,
@@ -101,7 +101,7 @@ internal sealed class LanguageManager : ILanguageManager, IDisposable
             definition.FormattingCulture,
             definition.TextDirection,
             checked(oldRevision.State.Revision + 1));
-        var newRevision = new LanguageRuntimeRevision(_snapshots[language], newState);
+        var newRevision = new LanguageRevision(_snapshots[language], newState);
         var result = LanguageChangeResult.Committed(oldRevision.State, newState);
 
         _context.Publish(newRevision);
@@ -142,7 +142,7 @@ internal sealed class LanguageManager : ILanguageManager, IDisposable
         }
         catch (Exception exception)
         {
-            LocalizationRuntimeLogger.LogPublishFailure(
+            LocalizationLogger.LogPublishFailure(
                 this,
                 nameof(LanguageResourceProvider),
                 exception);
@@ -170,7 +170,7 @@ internal sealed class LanguageManager : ILanguageManager, IDisposable
             }
             catch (Exception exception)
             {
-                LocalizationRuntimeLogger.LogPublishFailure(
+                LocalizationLogger.LogPublishFailure(
                     this,
                     nameof(LanguageChanged),
                     exception);
