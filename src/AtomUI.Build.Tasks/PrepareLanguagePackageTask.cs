@@ -46,6 +46,8 @@ public sealed class PrepareLanguagePackageTask : AtomUILocalizationTask
     [Required]
     public ITaskItem[] LanguageFiles { get; set; } = Array.Empty<ITaskItem>();
 
+    public ITaskItem[] SourceLanguageFiles { get; set; } = Array.Empty<ITaskItem>();
+
     public ITaskItem[] PackageFiles { get; set; } = Array.Empty<ITaskItem>();
 
     [Required]
@@ -55,29 +57,65 @@ public sealed class PrepareLanguagePackageTask : AtomUILocalizationTask
 
     public string MinimumTargetState { get; set; } = "translated";
 
+    public bool RequireVerifiedContract { get; set; }
+
     [Output]
     public ITaskItem[] PreparedLanguageFiles { get; private set; } = Array.Empty<ITaskItem>();
 
     public override bool Execute()
     {
         var succeeded = ValidatePackageContents();
+        var targetModuleIds = LanguageFiles
+            .Select(static item => item.GetMetadata("AtomUILanguageModuleId").Trim())
+            .ToArray();
+        foreach (var moduleId in targetModuleIds)
+        {
+            if (moduleId.Length == 0)
+            {
+                Error(string.Empty, "AtomUILanguageModuleId is required.");
+                succeeded = false;
+            }
+        }
+
+        var distinctModuleIds = targetModuleIds
+            .Where(static moduleId => moduleId.Length > 0)
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+        if (distinctModuleIds.Length > 1)
+        {
+            Error(string.Empty, "A module language package must target exactly one AtomUILanguageModuleId.");
+            succeeded = false;
+        }
+
+        var targetModuleId = distinctModuleIds.Length == 1 ? distinctModuleIds[0] : string.Empty;
+        var relevantSourceFiles = SourceLanguageFiles
+            .Where(item => string.Equals(
+                item.GetMetadata("AtomUILanguageModuleId").Trim(),
+                targetModuleId,
+                StringComparison.Ordinal))
+            .ToArray();
         var validation = new ValidateLanguageFilesTask
         {
             BuildEngine = BuildEngine,
             HostObject = HostObject,
-            LanguageFiles = LanguageFiles,
+            LanguageFiles = relevantSourceFiles.Concat(LanguageFiles).ToArray(),
             MinimumTargetState = MinimumTargetState
         };
         succeeded &= validation.Execute();
 
-        var entries = new List<LanguagePackageCatalogEntry>();
+        if (!succeeded || LanguageFiles.Length == 0 || targetModuleId.Length == 0)
+        {
+            return false;
+        }
+
+        var targets = new List<ParsedTargetLanguageFile>();
         string? language = null;
         foreach (var item in LanguageFiles)
         {
             var parsed = Xliff21Parser.Parse(File.ReadAllText(item.ItemSpec));
             if (parsed.Document is null)
             {
-                continue;
+                return false;
             }
             var document = parsed.Document;
             if (document.TargetLanguage is null)
@@ -96,24 +134,6 @@ public sealed class PrepareLanguagePackageTask : AtomUILocalizationTask
                 succeeded = false;
             }
 
-            var moduleId = item.GetMetadata("AtomUILanguageModuleId").Trim();
-            if (moduleId.Length == 0)
-            {
-                Error(item.ItemSpec, "AtomUILanguageModuleId is required.");
-                succeeded = false;
-                continue;
-            }
-            if (!int.TryParse(
-                    item.GetMetadata("AtomUILanguageContractVersion"),
-                    NumberStyles.None,
-                    CultureInfo.InvariantCulture,
-                    out var contractVersion) ||
-                contractVersion <= 0)
-            {
-                Error(item.ItemSpec, "AtomUILanguageContractVersion must be a positive integer.");
-                succeeded = false;
-                continue;
-            }
             if (!LanguagePackagePath.TryNormalize(
                     item.GetMetadata("AtomUILanguagePackagePath"),
                     out var packagePath))
@@ -122,18 +142,7 @@ public sealed class PrepareLanguagePackageTask : AtomUILocalizationTask
                 succeeded = false;
                 continue;
             }
-
-            var sourceFingerprint = LanguageSourceFingerprint.Compute(document);
-            item.SetMetadata("AtomUILanguageSourceKind", "StaticLanguagePack");
-            item.SetMetadata("AtomUILanguageSourceIdentity", PackageId);
-            item.SetMetadata("AtomUILanguagePackagePath", packagePath);
-            item.SetMetadata("AtomUILanguageSourceFingerprint", sourceFingerprint);
-            entries.Add(new LanguagePackageCatalogEntry(
-                moduleId,
-                document.File.Id,
-                contractVersion,
-                packagePath,
-                sourceFingerprint));
+            targets.Add(new ParsedTargetLanguageFile(item, document, packagePath));
         }
 
         if (!succeeded || language is null)
@@ -157,10 +166,209 @@ public sealed class PrepareLanguagePackageTask : AtomUILocalizationTask
             }
         }
 
+        var entries = relevantSourceFiles.Length == 0
+            ? PrepareDeferredEntries(targetModuleId, targets)
+            : PrepareVerifiedEntries(targetModuleId, targets, relevantSourceFiles);
+        if (entries is null)
+        {
+            return false;
+        }
+
         var manifest = new LanguagePackageManifest(PackageId, language, entries);
         WriteFile(OutputManifestPath, LanguagePackageManifestWriter.Write(manifest));
         PreparedLanguageFiles = LanguageFiles.ToArray();
         return true;
+    }
+
+    private IReadOnlyList<LanguagePackageCatalogEntry>? PrepareDeferredEntries(
+        string moduleId,
+        IReadOnlyList<ParsedTargetLanguageFile> targets)
+    {
+        if (RequireVerifiedContract)
+        {
+            Error(
+                string.Empty,
+                $"Language package '{PackageId}' requires a verified language contract for module " +
+                $"'{moduleId}', but no authoritative en-US source assets were found.");
+            return null;
+        }
+
+        var entries = new List<LanguagePackageCatalogEntry>(targets.Count);
+        foreach (var target in targets)
+        {
+            if (!string.IsNullOrWhiteSpace(target.Item.GetMetadata("AtomUILanguageContractVersion")))
+            {
+                Error(
+                    target.Item.ItemSpec,
+                    "A deferred language package must not declare AtomUILanguageContractVersion without " +
+                    "an authoritative source contract.");
+                return null;
+            }
+
+            var sourceFingerprint = LanguageSourceFingerprint.Compute(target.Document);
+            EnrichPreparedItem(
+                target.Item,
+                LanguagePackageContractValidation.Deferred,
+                contractVersion: null,
+                target.PackagePath,
+                sourceFingerprint);
+            entries.Add(new LanguagePackageCatalogEntry(
+                moduleId,
+                target.Document.File.Id,
+                LanguagePackageContractValidation.Deferred,
+                contractVersion: null,
+                target.PackagePath,
+                sourceFingerprint));
+        }
+
+        LogWarning(
+            "ATOMUILOC010",
+            string.Empty,
+            1,
+            1,
+            $"Language package '{PackageId}' is being packed without the authoritative en-US contract " +
+            $"for module '{moduleId}'. Contract validation is deferred to consuming applications. Add an " +
+            "authoring-only component PackageReference with PrivateAssets=all to enable verified validation.");
+        return entries;
+    }
+
+    private IReadOnlyList<LanguagePackageCatalogEntry>? PrepareVerifiedEntries(
+        string moduleId,
+        IReadOnlyList<ParsedTargetLanguageFile> targets,
+        IReadOnlyList<ITaskItem> sourceItems)
+    {
+        var sources = new Dictionary<string, ParsedSourceLanguageFile>(StringComparer.Ordinal);
+        foreach (var item in sourceItems)
+        {
+            var parsed = Xliff21Parser.Parse(File.ReadAllText(item.ItemSpec));
+            if (parsed.Document is null || parsed.Document.TargetLanguage is not null)
+            {
+                CatalogError(item.ItemSpec, "An authoritative language contract must be an en-US source XLIFF.");
+                return null;
+            }
+            if (!int.TryParse(
+                    item.GetMetadata("AtomUILanguageContractVersion"),
+                    NumberStyles.None,
+                    CultureInfo.InvariantCulture,
+                    out var contractVersion) ||
+                contractVersion <= 0)
+            {
+                Error(item.ItemSpec, "An authoritative language contract requires a positive ContractVersion.");
+                return null;
+            }
+            if (sources.ContainsKey(parsed.Document.File.Id))
+            {
+                CatalogError(
+                    item.ItemSpec,
+                    $"Authoritative Catalog '{parsed.Document.File.Id}' is declared more than once.");
+                return null;
+            }
+            sources.Add(
+                parsed.Document.File.Id,
+                new ParsedSourceLanguageFile(item, parsed.Document, contractVersion));
+        }
+
+        var targetsByCatalog = targets.ToDictionary(
+            static target => target.Document.File.Id,
+            StringComparer.Ordinal);
+        foreach (var source in sources.Values)
+        {
+            if (!targetsByCatalog.ContainsKey(source.Document.File.Id))
+            {
+                CatalogError(
+                    source.Item.ItemSpec,
+                    $"Authoritative Catalog '{source.Document.File.Id}' does not contain a target XLIFF " +
+                    $"in language package '{PackageId}'.");
+                return null;
+            }
+        }
+        foreach (var target in targets)
+        {
+            if (!sources.ContainsKey(target.Document.File.Id))
+            {
+                CatalogError(
+                    target.Item.ItemSpec,
+                    $"Target Catalog '{target.Document.File.Id}' is not declared by the authoritative " +
+                    $"en-US contract for module '{moduleId}'.");
+                return null;
+            }
+        }
+
+        var entries = new List<LanguagePackageCatalogEntry>(targets.Count);
+        foreach (var target in targets)
+        {
+            var source = sources[target.Document.File.Id];
+            var declaredContractVersion = target.Item.GetMetadata("AtomUILanguageContractVersion").Trim();
+            if (declaredContractVersion.Length > 0 &&
+                (!int.TryParse(
+                     declaredContractVersion,
+                     NumberStyles.None,
+                     CultureInfo.InvariantCulture,
+                     out var parsedContractVersion) ||
+                 parsedContractVersion != source.ContractVersion))
+            {
+                CatalogError(
+                    target.Item.ItemSpec,
+                    $"Target Catalog '{target.Document.File.Id}' ContractVersion '{declaredContractVersion}' " +
+                    $"does not match authoritative ContractVersion '{source.ContractVersion}'.");
+                return null;
+            }
+
+            var sourceFingerprint = LanguageSourceFingerprint.Compute(source.Document);
+            var targetFingerprint = LanguageSourceFingerprint.Compute(target.Document);
+            if (!string.Equals(sourceFingerprint, targetFingerprint, StringComparison.Ordinal))
+            {
+                CatalogError(
+                    target.Item.ItemSpec,
+                    $"Target Catalog '{target.Document.File.Id}' source fingerprint does not match the " +
+                    "authoritative en-US contract.");
+                return null;
+            }
+
+            EnrichPreparedItem(
+                target.Item,
+                LanguagePackageContractValidation.Verified,
+                source.ContractVersion,
+                target.PackagePath,
+                sourceFingerprint);
+            entries.Add(new LanguagePackageCatalogEntry(
+                moduleId,
+                target.Document.File.Id,
+                LanguagePackageContractValidation.Verified,
+                source.ContractVersion,
+                target.PackagePath,
+                sourceFingerprint));
+        }
+        return entries;
+    }
+
+    private void EnrichPreparedItem(
+        ITaskItem item,
+        LanguagePackageContractValidation contractValidation,
+        int? contractVersion,
+        string packagePath,
+        string sourceFingerprint)
+    {
+        item.SetMetadata("AtomUILanguageSourceKind", "StaticLanguagePack");
+        item.SetMetadata("AtomUILanguageSourceIdentity", PackageId);
+        item.SetMetadata("AtomUILanguageContractValidation", contractValidation.ToString());
+        if (contractVersion is { } version)
+        {
+            item.SetMetadata(
+                "AtomUILanguageContractVersion",
+                version.ToString(CultureInfo.InvariantCulture));
+        }
+        else
+        {
+            item.RemoveMetadata("AtomUILanguageContractVersion");
+        }
+        item.SetMetadata("AtomUILanguagePackagePath", packagePath);
+        item.SetMetadata("AtomUILanguageSourceFingerprint", sourceFingerprint);
+    }
+
+    private void CatalogError(string file, string message)
+    {
+        LogError("ATOMUILOC006", file, 1, 1, message);
     }
 
     private bool ValidatePackageContents()
@@ -255,5 +463,43 @@ public sealed class PrepareLanguagePackageTask : AtomUILocalizationTask
             Directory.CreateDirectory(directory);
         }
         File.WriteAllText(path, content, new UTF8Encoding(false));
+    }
+
+    private sealed class ParsedTargetLanguageFile
+    {
+        internal ParsedTargetLanguageFile(
+            ITaskItem item,
+            XliffDocumentModel document,
+            string packagePath)
+        {
+            Item = item;
+            Document = document;
+            PackagePath = packagePath;
+        }
+
+        internal ITaskItem Item { get; }
+
+        internal XliffDocumentModel Document { get; }
+
+        internal string PackagePath { get; }
+    }
+
+    private sealed class ParsedSourceLanguageFile
+    {
+        internal ParsedSourceLanguageFile(
+            ITaskItem item,
+            XliffDocumentModel document,
+            int contractVersion)
+        {
+            Item = item;
+            Document = document;
+            ContractVersion = contractVersion;
+        }
+
+        internal ITaskItem Item { get; }
+
+        internal XliffDocumentModel Document { get; }
+
+        internal int ContractVersion { get; }
     }
 }

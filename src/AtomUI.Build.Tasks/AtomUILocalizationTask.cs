@@ -29,4 +29,24 @@ public abstract class AtomUILocalizationTask : ITask
             helpKeyword: null,
             senderName: GetType().Name));
     }
+
+    protected void LogWarning(
+        string code,
+        string file,
+        int line,
+        int column,
+        string message)
+    {
+        BuildEngine.LogWarningEvent(new BuildWarningEventArgs(
+            subcategory: "Localization",
+            code,
+            file,
+            line,
+            column,
+            line,
+            column,
+            message,
+            helpKeyword: null,
+            senderName: GetType().Name));
+    }
 }

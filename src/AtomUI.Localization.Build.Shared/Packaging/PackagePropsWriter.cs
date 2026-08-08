@@ -14,7 +14,7 @@ internal static class PackagePropsWriter
                                         .OrderBy(static entry => entry.ModuleId, StringComparer.Ordinal)
                                         .ThenBy(static entry => entry.CatalogId, StringComparer.Ordinal))
         {
-            itemGroup.Add(new XElement(
+            var element = new XElement(
                 "AtomUILanguage",
                 new XAttribute(
                     "Include",
@@ -22,9 +22,14 @@ internal static class PackagePropsWriter
                 new XAttribute("AtomUILanguageSourceKind", sourceKind),
                 new XAttribute("AtomUILanguageSourceIdentity", packageId),
                 new XAttribute("AtomUILanguageModuleId", catalog.ModuleId),
-                new XAttribute("AtomUILanguageContractVersion", catalog.ContractVersion),
+                new XAttribute("AtomUILanguageContractValidation", catalog.ContractValidation),
                 new XAttribute("AtomUILanguagePackagePath", catalog.Path),
-                new XAttribute("AtomUILanguageSourceFingerprint", catalog.SourceFingerprint)));
+                new XAttribute("AtomUILanguageSourceFingerprint", catalog.SourceFingerprint));
+            if (catalog.ContractVersion is { } contractVersion)
+            {
+                element.Add(new XAttribute("AtomUILanguageContractVersion", contractVersion));
+            }
+            itemGroup.Add(element);
         }
 
         return DeterministicXml.Write(

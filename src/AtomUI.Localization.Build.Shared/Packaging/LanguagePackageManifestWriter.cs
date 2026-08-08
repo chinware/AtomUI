@@ -19,13 +19,18 @@ internal static class LanguagePackageManifestWriter
                                         .OrderBy(static entry => entry.ModuleId, StringComparer.Ordinal)
                                         .ThenBy(static entry => entry.CatalogId, StringComparer.Ordinal))
         {
-            root.Add(new XElement(
+            var element = new XElement(
                 "catalog",
                 new XAttribute("moduleId", catalog.ModuleId),
                 new XAttribute("catalogId", catalog.CatalogId),
-                new XAttribute("contractVersion", catalog.ContractVersion),
+                new XAttribute("contractValidation", catalog.ContractValidation),
                 new XAttribute("path", catalog.Path),
-                new XAttribute("sourceFingerprint", catalog.SourceFingerprint)));
+                new XAttribute("sourceFingerprint", catalog.SourceFingerprint));
+            if (catalog.ContractVersion is { } contractVersion)
+            {
+                element.Add(new XAttribute("contractVersion", contractVersion));
+            }
+            root.Add(element);
         }
 
         return DeterministicXml.Write(

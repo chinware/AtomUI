@@ -24,12 +24,14 @@ internal sealed class LanguagePackageCatalogEntry
     internal LanguagePackageCatalogEntry(
         string moduleId,
         string catalogId,
-        int contractVersion,
+        LanguagePackageContractValidation contractValidation,
+        int? contractVersion,
         string path,
         string sourceFingerprint)
     {
         ModuleId = moduleId;
         CatalogId = catalogId;
+        ContractValidation = contractValidation;
         ContractVersion = contractVersion;
         Path = path;
         SourceFingerprint = sourceFingerprint;
@@ -39,7 +41,9 @@ internal sealed class LanguagePackageCatalogEntry
 
     internal string CatalogId { get; }
 
-    internal int ContractVersion { get; }
+    internal LanguagePackageContractValidation ContractValidation { get; }
+
+    internal int? ContractVersion { get; }
 
     internal string Path { get; }
 

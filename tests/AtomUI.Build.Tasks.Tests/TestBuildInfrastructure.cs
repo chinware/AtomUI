@@ -7,6 +7,8 @@ internal sealed class RecordingBuildEngine : IBuildEngine
 {
     internal List<BuildErrorEventArgs> Errors { get; } = [];
 
+    internal List<BuildWarningEventArgs> Warnings { get; } = [];
+
     public bool ContinueOnError => false;
 
     public int LineNumberOfTaskNode => 0;
@@ -17,9 +19,7 @@ internal sealed class RecordingBuildEngine : IBuildEngine
 
     public void LogErrorEvent(BuildErrorEventArgs e) => Errors.Add(e);
 
-    public void LogWarningEvent(BuildWarningEventArgs e)
-    {
-    }
+    public void LogWarningEvent(BuildWarningEventArgs e) => Warnings.Add(e);
 
     public void LogMessageEvent(BuildMessageEventArgs e)
     {

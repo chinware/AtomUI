@@ -26,14 +26,7 @@ public sealed class GenerateLanguagePackagePropsTask : AtomUILocalizationTask
         foreach (var item in LanguageFiles)
         {
             var moduleId = item.GetMetadata("AtomUILanguageModuleId").Trim();
-            if (moduleId.Length == 0 ||
-                !int.TryParse(
-                    item.GetMetadata("AtomUILanguageContractVersion"),
-                    NumberStyles.None,
-                    CultureInfo.InvariantCulture,
-                    out var contractVersion) ||
-                contractVersion <= 0 ||
-                !LanguagePackagePath.TryNormalize(
+            if (moduleId.Length == 0 || !LanguagePackagePath.TryNormalize(
                     item.GetMetadata("AtomUILanguagePackagePath"),
                     out var packagePath))
             {
@@ -42,7 +35,58 @@ public sealed class GenerateLanguagePackagePropsTask : AtomUILocalizationTask
                     item.ItemSpec,
                     1,
                     1,
-                    "Language package items require module ID, positive ContractVersion, and normalized package path.");
+                    "Language package items require module ID and a normalized package path.");
+                return false;
+            }
+
+            var validationText = item.GetMetadata("AtomUILanguageContractValidation").Trim();
+            if (validationText.Length == 0 && string.Equals(SourceKind, "ModuleBuiltIn", StringComparison.Ordinal))
+            {
+                validationText = nameof(LanguagePackageContractValidation.Verified);
+            }
+            if (!Enum.TryParse(
+                    validationText,
+                    ignoreCase: false,
+                    out LanguagePackageContractValidation contractValidation))
+            {
+                LogError(
+                    "ATOMUILOC009",
+                    item.ItemSpec,
+                    1,
+                    1,
+                    "AtomUILanguageContractValidation must be Verified or Deferred.");
+                return false;
+            }
+
+            int? contractVersion = null;
+            var contractVersionText = item.GetMetadata("AtomUILanguageContractVersion").Trim();
+            if (contractValidation == LanguagePackageContractValidation.Verified)
+            {
+                if (!int.TryParse(
+                        contractVersionText,
+                        NumberStyles.None,
+                        CultureInfo.InvariantCulture,
+                        out var parsedContractVersion) ||
+                    parsedContractVersion <= 0)
+                {
+                    LogError(
+                        "ATOMUILOC009",
+                        item.ItemSpec,
+                        1,
+                        1,
+                        "Verified language package items require a positive ContractVersion.");
+                    return false;
+                }
+                contractVersion = parsedContractVersion;
+            }
+            else if (contractVersionText.Length > 0)
+            {
+                LogError(
+                    "ATOMUILOC009",
+                    item.ItemSpec,
+                    1,
+                    1,
+                    "Deferred language package items must not declare ContractVersion.");
                 return false;
             }
 
@@ -75,6 +119,7 @@ public sealed class GenerateLanguagePackagePropsTask : AtomUILocalizationTask
             entries.Add(new LanguagePackageCatalogEntry(
                 moduleId,
                 parsed.Document.File.Id,
+                contractValidation,
                 contractVersion,
                 packagePath,
                 LanguageSourceFingerprint.Compute(parsed.Document)));

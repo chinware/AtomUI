@@ -17,11 +17,11 @@ public class LanguagePackageTasksTests : IDisposable
     }
 
     [Fact]
-    public void Prepare_Writes_A_Deterministic_Manifest_For_Content_Only_Translations()
+    public void Prepare_Writes_A_Deferred_Manifest_When_No_Source_Contract_Is_Available()
     {
         var languagePath = Write("ja-JP.xlf", JapaneseXliff);
         var manifestPath = Path.Combine(_directory, "AtomUI.LanguagePack.xml");
-        var languageItem = LanguageItem(languagePath);
+        var languageItem = DeferredLanguageItem(languagePath);
         var engine = new RecordingBuildEngine();
         var task = new PrepareLanguagePackageTask
         {
@@ -34,6 +34,9 @@ public class LanguagePackageTasksTests : IDisposable
 
         task.Execute().ShouldBeTrue();
         engine.Errors.ShouldBeEmpty();
+        var warning = engine.Warnings.ShouldHaveSingleItem();
+        warning.Code.ShouldBe("ATOMUILOC010");
+        warning.Message.ShouldNotBeNull().ShouldContain("PrivateAssets=all");
         File.Exists(manifestPath).ShouldBeTrue();
 
         var manifest = XDocument.Load(manifestPath);
@@ -44,7 +47,8 @@ public class LanguagePackageTasksTests : IDisposable
         ((string?)catalog.Attribute("moduleId")).ShouldBe("AtomUI.Desktop.Controls");
         ((string?)catalog.Attribute("catalogId"))
             .ShouldBe("AtomUI.Desktop.Controls.DatePickerLang.DatePickerLangResourceKind");
-        ((string?)catalog.Attribute("contractVersion")).ShouldBe("1");
+        ((string?)catalog.Attribute("contractValidation")).ShouldBe("Deferred");
+        catalog.Attribute("contractVersion").ShouldBeNull();
         ((string?)catalog.Attribute("path")).ShouldBe("Localization/DatePicker/ja-JP.xlf");
         ((string?)catalog.Attribute("sourceFingerprint"))
             .ShouldNotBeNull()
@@ -52,10 +56,10 @@ public class LanguagePackageTasksTests : IDisposable
     }
 
     [Fact]
-    public void Prepare_Enriches_Returned_Language_Items_For_Direct_Project_Consumption()
+    public void Prepare_Enriches_Deferred_Items_Without_Fabricating_A_Contract_Version()
     {
         var languagePath = Write("ja-JP.xlf", JapaneseXliff);
-        var languageItem = LanguageItem(languagePath);
+        var languageItem = DeferredLanguageItem(languagePath);
         languageItem.SetMetadata(
             "AtomUILanguagePackagePath",
             "Localization\\DatePicker\\ja-JP.xlf");
@@ -71,13 +75,15 @@ public class LanguagePackageTasksTests : IDisposable
 
         task.Execute().ShouldBeTrue();
         engine.Errors.ShouldBeEmpty();
+        engine.Warnings.ShouldHaveSingleItem().Code.ShouldBe("ATOMUILOC010");
 
         var prepared = task.PreparedLanguageFiles.ShouldHaveSingleItem();
         prepared.GetMetadata("AtomUILanguageSourceKind").ShouldBe("StaticLanguagePack");
         prepared.GetMetadata("AtomUILanguageSourceIdentity")
                 .ShouldBe("AtomUI.Desktop.Controls.I18n.JaJP");
         prepared.GetMetadata("AtomUILanguageModuleId").ShouldBe("AtomUI.Desktop.Controls");
-        prepared.GetMetadata("AtomUILanguageContractVersion").ShouldBe("1");
+        prepared.GetMetadata("AtomUILanguageContractValidation").ShouldBe("Deferred");
+        prepared.GetMetadata("AtomUILanguageContractVersion").ShouldBeEmpty();
         prepared.GetMetadata("AtomUILanguagePackagePath")
                 .ShouldBe("Localization/DatePicker/ja-JP.xlf");
         prepared.GetMetadata("AtomUILanguageSourceFingerprint")
@@ -85,10 +91,121 @@ public class LanguagePackageTasksTests : IDisposable
     }
 
     [Fact]
+    public void Prepare_Binds_A_Verified_Contract_From_The_Authoritative_Source()
+    {
+        var sourcePath = Write("en-US.xlf", ModuleEnglishXliff);
+        var targetPath = Write("ja-JP.xlf", JapaneseXliff);
+        var manifestPath = Path.Combine(_directory, "verified.xml");
+        var engine = new RecordingBuildEngine();
+        var task = new PrepareLanguagePackageTask
+        {
+            BuildEngine = engine,
+            PackageId = "AtomUI.Desktop.Controls.I18n.JaJP",
+            SourceLanguageFiles = [SourceLanguageItem(sourcePath, contractVersion: "2")],
+            LanguageFiles = [DeferredLanguageItem(targetPath)],
+            PackageFiles = [new TestTaskItem(targetPath)],
+            OutputManifestPath = manifestPath
+        };
+
+        task.Execute().ShouldBeTrue();
+        engine.Errors.ShouldBeEmpty();
+        engine.Warnings.ShouldBeEmpty();
+
+        var prepared = task.PreparedLanguageFiles.ShouldHaveSingleItem();
+        prepared.GetMetadata("AtomUILanguageContractValidation").ShouldBe("Verified");
+        prepared.GetMetadata("AtomUILanguageContractVersion").ShouldBe("2");
+
+        var catalog = XDocument.Load(manifestPath).Descendants("catalog").ShouldHaveSingleItem();
+        ((string?)catalog.Attribute("contractValidation")).ShouldBe("Verified");
+        ((string?)catalog.Attribute("contractVersion")).ShouldBe("2");
+    }
+
+    [Fact]
+    public void Prepare_Rejects_Deferred_Output_When_Verified_Contract_Is_Required()
+    {
+        var languagePath = Write("ja-JP.xlf", JapaneseXliff);
+        var engine = new RecordingBuildEngine();
+        var task = new PrepareLanguagePackageTask
+        {
+            BuildEngine = engine,
+            PackageId = "AtomUI.Desktop.Controls.I18n.JaJP",
+            LanguageFiles = [DeferredLanguageItem(languagePath)],
+            PackageFiles = [new TestTaskItem(languagePath)],
+            OutputManifestPath = Path.Combine(_directory, "strict.xml"),
+            RequireVerifiedContract = true
+        };
+
+        task.Execute().ShouldBeFalse();
+        engine.Warnings.ShouldBeEmpty();
+        var error = engine.Errors.ShouldHaveSingleItem();
+        error.Code.ShouldBe("ATOMUILOC009");
+        error.Message.ShouldNotBeNull().ShouldContain("verified language contract");
+    }
+
+    [Fact]
+    public void Prepare_Rejects_A_Deferred_Target_With_A_Guessed_Contract_Version()
+    {
+        var languagePath = Write("ja-JP.xlf", JapaneseXliff);
+        var languageItem = DeferredLanguageItem(languagePath);
+        languageItem.SetMetadata("AtomUILanguageContractVersion", "2");
+        var engine = new RecordingBuildEngine();
+        var task = new PrepareLanguagePackageTask
+        {
+            BuildEngine = engine,
+            PackageId = "AtomUI.Desktop.Controls.I18n.JaJP",
+            LanguageFiles = [languageItem],
+            PackageFiles = [new TestTaskItem(languagePath)],
+            OutputManifestPath = Path.Combine(_directory, "guessed.xml")
+        };
+
+        task.Execute().ShouldBeFalse();
+        var error = engine.Errors.ShouldHaveSingleItem();
+        error.Code.ShouldBe("ATOMUILOC009");
+        error.Message.ShouldNotBeNull().ShouldContain("must not declare AtomUILanguageContractVersion");
+    }
+
+    [Fact]
+    public void Prepare_Rejects_A_Partially_Covered_Authoritative_Module_Contract()
+    {
+        var datePickerSource = Write("DatePicker.en-US.xlf", ModuleEnglishXliff);
+        var dialogSource = Write(
+            "Dialog.en-US.xlf",
+            ModuleEnglishXliff.Replace(
+                "AtomUI.Desktop.Controls.DatePickerLang.DatePickerLangResourceKind",
+                "AtomUI.Desktop.Controls.DialogLang.DialogLangResourceKind",
+                StringComparison.Ordinal));
+        var targetPath = Write("ja-JP.xlf", JapaneseXliff);
+        var engine = new RecordingBuildEngine();
+        var task = new PrepareLanguagePackageTask
+        {
+            BuildEngine = engine,
+            PackageId = "AtomUI.Desktop.Controls.I18n.JaJP",
+            SourceLanguageFiles =
+            [
+                SourceLanguageItem(datePickerSource, contractVersion: "2"),
+                SourceLanguageItem(
+                    dialogSource,
+                    contractVersion: "2",
+                    packagePath: "Localization/Dialog/en-US.xlf")
+            ],
+            LanguageFiles = [DeferredLanguageItem(targetPath)],
+            PackageFiles = [new TestTaskItem(targetPath)],
+            OutputManifestPath = Path.Combine(_directory, "partial.xml")
+        };
+
+        task.Execute().ShouldBeFalse();
+        engine.Warnings.ShouldBeEmpty();
+        var error = engine.Errors.ShouldHaveSingleItem();
+        error.Code.ShouldBe("ATOMUILOC006");
+        error.Message.ShouldNotBeNull().ShouldContain("does not contain a target XLIFF");
+        error.Message.ShouldNotBeNull().ShouldContain("DialogLangResourceKind");
+    }
+
+    [Fact]
     public void Prepare_Propagates_The_Minimum_Target_State()
     {
         var languagePath = Write("ja-JP.xlf", JapaneseXliff);
-        var languageItem = LanguageItem(languagePath);
+        var languageItem = DeferredLanguageItem(languagePath);
         var engine = new RecordingBuildEngine();
         var task = new PrepareLanguagePackageTask
         {
@@ -124,7 +241,7 @@ public class LanguagePackageTasksTests : IDisposable
     {
         var languagePath = Write("ja-JP.xlf", JapaneseXliff);
         var forbiddenPath = Write(forbiddenFileName, "forbidden content");
-        var languageItem = LanguageItem(languagePath);
+        var languageItem = DeferredLanguageItem(languagePath);
         var engine = new RecordingBuildEngine();
         var task = new PrepareLanguagePackageTask
         {
@@ -147,7 +264,7 @@ public class LanguagePackageTasksTests : IDisposable
     {
         var languagePath = Write("ja-JP.xlf", JapaneseXliff);
         var forbiddenPath = Write("Install.targets", "forbidden content");
-        var languageItem = LanguageItem(languagePath);
+        var languageItem = DeferredLanguageItem(languagePath);
         var engine = new RecordingBuildEngine();
         var task = new PrepareLanguagePackageTask
         {
@@ -177,7 +294,7 @@ public class LanguagePackageTasksTests : IDisposable
     {
         var languagePath = Write("ja-JP.xlf", JapaneseXliff);
         var sourcePath = Write("payload.dll", "documentation payload");
-        var languageItem = LanguageItem(languagePath);
+        var languageItem = DeferredLanguageItem(languagePath);
         var engine = new RecordingBuildEngine();
         var task = new PrepareLanguagePackageTask
         {
@@ -210,7 +327,7 @@ public class LanguagePackageTasksTests : IDisposable
         {
             BuildEngine = engine,
             PackageId = "AtomUI.Desktop.Controls.I18n.JaJP",
-            LanguageFiles = [LanguageItem(languagePath)],
+            LanguageFiles = [VerifiedLanguageItem(languagePath)],
             OutputPath = outputPath
         };
 
@@ -225,6 +342,7 @@ public class LanguagePackageTasksTests : IDisposable
         ((string?)item.Attribute("AtomUILanguageSourceIdentity"))
             .ShouldBe("AtomUI.Desktop.Controls.I18n.JaJP");
         ((string?)item.Attribute("AtomUILanguageModuleId")).ShouldBe("AtomUI.Desktop.Controls");
+        ((string?)item.Attribute("AtomUILanguageContractValidation")).ShouldBe("Verified");
         ((string?)item.Attribute("AtomUILanguageContractVersion")).ShouldBe("1");
         ((string?)item.Attribute("AtomUILanguagePackagePath"))
             .ShouldBe("Localization/DatePicker/ja-JP.xlf");
@@ -233,6 +351,28 @@ public class LanguagePackageTasksTests : IDisposable
             .ShouldMatch("^[0-9a-f]{64}$");
         props.Descendants("UsingTask").ShouldBeEmpty();
         props.Descendants("Target").ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void GenerateProps_Emits_Deferred_Items_Without_A_Contract_Version()
+    {
+        var languagePath = Write("ja-JP.xlf", JapaneseXliff);
+        var outputPath = Path.Combine(_directory, "Deferred.props");
+        var engine = new RecordingBuildEngine();
+        var task = new GenerateLanguagePackagePropsTask
+        {
+            BuildEngine = engine,
+            PackageId = "AtomUI.Desktop.Controls.I18n.JaJP",
+            LanguageFiles = [DeferredLanguageItem(languagePath, prepared: true)],
+            OutputPath = outputPath
+        };
+
+        task.Execute().ShouldBeTrue();
+        engine.Errors.ShouldBeEmpty();
+
+        var item = XDocument.Load(outputPath).Descendants("AtomUILanguage").ShouldHaveSingleItem();
+        ((string?)item.Attribute("AtomUILanguageContractValidation")).ShouldBe("Deferred");
+        item.Attribute("AtomUILanguageContractVersion").ShouldBeNull();
     }
 
     [Fact]
@@ -247,7 +387,7 @@ public class LanguagePackageTasksTests : IDisposable
             PackageId = "AtomUI.Desktop.Controls",
             SourceKind = "ModuleBuiltIn",
             RequireTargetLanguage = false,
-            LanguageFiles = [LanguageItem(languagePath)],
+            LanguageFiles = [SourceLanguageItem(languagePath, contractVersion: "1")],
             OutputPath = outputPath
         };
 
@@ -264,13 +404,46 @@ public class LanguagePackageTasksTests : IDisposable
         Directory.Delete(_directory, recursive: true);
     }
 
-    private TestTaskItem LanguageItem(string path)
+    private TestTaskItem VerifiedLanguageItem(string path)
     {
         return new TestTaskItem(
             path,
             ("AtomUILanguageModuleId", "AtomUI.Desktop.Controls"),
+            ("AtomUILanguageContractValidation", "Verified"),
             ("AtomUILanguageContractVersion", "1"),
             ("AtomUILanguagePackagePath", "Localization/DatePicker/ja-JP.xlf"));
+    }
+
+    private TestTaskItem DeferredLanguageItem(string path, bool prepared = false)
+    {
+        var item = new TestTaskItem(
+            path,
+            ("AtomUILanguageModuleId", "AtomUI.Desktop.Controls"),
+            ("AtomUILanguagePackagePath", "Localization/DatePicker/ja-JP.xlf"));
+        if (prepared)
+        {
+            item.SetMetadata("AtomUILanguageContractValidation", "Deferred");
+            item.SetMetadata(
+                "AtomUILanguageSourceFingerprint",
+                AtomUI.Localization.Build.LanguageSourceFingerprint.Compute(
+                    AtomUI.Localization.Build.Xliff21Parser.Parse(JapaneseXliff).Document!));
+        }
+        return item;
+    }
+
+    private TestTaskItem SourceLanguageItem(
+        string path,
+        string contractVersion,
+        string packagePath = "Localization/DatePicker/en-US.xlf")
+    {
+        return new TestTaskItem(
+            path,
+            ("AtomUILanguageSourceKind", "ModuleBuiltIn"),
+            ("AtomUILanguageSourceIdentity", "AtomUI.Desktop.Controls"),
+            ("AtomUILanguageModuleId", "AtomUI.Desktop.Controls"),
+            ("AtomUILanguageContractValidation", "Verified"),
+            ("AtomUILanguageContractVersion", contractVersion),
+            ("AtomUILanguagePackagePath", packagePath));
     }
 
     private string Write(string fileName, string content)
