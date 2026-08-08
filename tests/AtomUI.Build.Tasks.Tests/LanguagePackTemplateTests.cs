@@ -45,10 +45,11 @@ public class LanguagePackTemplateTests
         ((string?)generatorReference.Attribute("PrivateAssets")).ShouldBe("all");
         ((string?)generatorReference.Attribute("Version")).ShouldBe("__ATOMUI_VERSION__");
 
-        var languageItem = project.Descendants("AtomUILanguage").ShouldHaveSingleItem();
-        ((string?)languageItem.Attribute("Include")).ShouldBe("Localization/**/*.xlf");
-        languageItem.Element("AtomUILanguageSourceKind").ShouldNotBeNull().Value
-                    .ShouldBe("StaticLanguagePack");
+        project.Descendants("AtomUILanguage").ShouldBeEmpty();
+
+        var readme = File.ReadAllText(Path.Combine(GetTemplateRoot(), "README.md"));
+        readme.ShouldContain("PrivateAssets=\"all\"");
+        readme.ShouldContain("optional");
     }
 
     private static string ProjectProperty(XDocument project, string name)

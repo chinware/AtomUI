@@ -11,6 +11,7 @@
             <AtomUILanguageSourceKind>ModuleBuiltIn</AtomUILanguageSourceKind>
             <AtomUILanguageSourceIdentity>$(AtomUILanguageModuleId)</AtomUILanguageSourceIdentity>
             <AtomUILanguageModuleId>$(AtomUILanguageModuleId)</AtomUILanguageModuleId>
+            <AtomUILanguageContractValidation Condition="'$(AtomUIBuildLanguagePackage)' != 'true'">Verified</AtomUILanguageContractValidation>
         </AtomUILanguage>
         <AtomUILanguageOverride>
             <AtomUILanguageSourceKind>ApplicationOverride</AtomUILanguageSourceKind>

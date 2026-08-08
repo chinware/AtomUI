@@ -17,14 +17,4 @@
                           Version="__ATOMUI_VERSION__"
                           PrivateAssets="all" />
     </ItemGroup>
-
-    <ItemGroup>
-        <AtomUILanguage Include="Localization/**/*.xlf">
-            <AtomUILanguageSourceKind>StaticLanguagePack</AtomUILanguageSourceKind>
-            <AtomUILanguageSourceIdentity>$(PackageId)</AtomUILanguageSourceIdentity>
-            <AtomUILanguageModuleId>$(AtomUILanguageModuleId)</AtomUILanguageModuleId>
-            <AtomUILanguageContractVersion>1</AtomUILanguageContractVersion>
-            <AtomUILanguagePackagePath>%(RecursiveDir)%(Filename)%(Extension)</AtomUILanguagePackagePath>
-        </AtomUILanguage>
-    </ItemGroup>
 </Project>

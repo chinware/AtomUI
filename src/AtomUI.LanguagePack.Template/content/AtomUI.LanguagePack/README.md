@@ -4,7 +4,17 @@ This project contains declarative XLIFF translations and produces a NuGet packag
 
 ## 1. Export Catalog templates
 
-Add the AtomUI or third-party component packages whose Catalogs you translate, then run:
+Adding the AtomUI or third-party component package is optional. Without it, build and pack use deferred
+contract validation and emit `ATOMUILOC010`. To enable template export and verified validation, add an
+authoring-only reference:
+
+```xml
+<PackageReference Include="__ATOMUI_LANGUAGE_MODULE_ID__"
+                  Version="__ATOMUI_VERSION__"
+                  PrivateAssets="all" />
+```
+
+Then run:
 
 ```bash
 dotnet msbuild -t:AtomUIExportLanguageTemplates -p:AtomUITargetLanguage=__ATOMUI_LANGUAGE_TAG__

@@ -89,16 +89,22 @@ public class LocalizationBuildAssetsTests
         templateOutputRoot.Value.ShouldBe("$(MSBuildProjectDirectory)/Localization");
         ((string?)templateOutputRoot.Attribute("Condition"))
             .ShouldBe("'$(AtomUILanguageTemplateOutputRootDirectory)' == ''");
-        var discoveredLanguage = targets.Descendants()
-                                        .Single(element =>
-                                            element.Name.LocalName == "AtomUILanguage" &&
-                                            element.Attribute("Include") is not null);
-        var include = (string?)discoveredLanguage.Attribute("Include");
-        var exclude = (string?)discoveredLanguage.Attribute("Exclude");
-        var fileExcludes = targets.Descendants()
-                                  .Single(element =>
-                                      element.Name.LocalName == "_AtomUILanguageFileExcludes")
-                                  .Value;
+        var discoveredLanguages = targets.Descendants()
+                                         .Where(element =>
+                                             element.Name.LocalName == "AtomUILanguage" &&
+                                             element.Attribute("Include") is not null)
+                                         .ToArray();
+        var discoveredModuleLanguage = discoveredLanguages.Single(element =>
+            (string?)element.Attribute("Condition") == "'$(AtomUIBuildLanguagePackage)' != 'true'");
+        var discoveredPackLanguage = discoveredLanguages.Single(element =>
+            (string?)element.Attribute("Condition") == "'$(AtomUIBuildLanguagePackage)' == 'true'");
+        var include = (string?)discoveredModuleLanguage.Attribute("Include");
+        var exclude = (string?)discoveredModuleLanguage.Attribute("Exclude");
+        var fileExcludes = string.Join(
+            ";",
+            targets.Descendants()
+                   .Where(element => element.Name.LocalName == "_AtomUILanguageFileExcludes")
+                   .Select(static element => element.Value));
 
         include.ShouldBe("$(MSBuildProjectDirectory)/**/Localization/**/*.xlf");
         exclude.ShouldNotBeNull();
@@ -107,10 +113,32 @@ public class LocalizationBuildAssetsTests
         fileExcludes.ShouldContain("$(BaseOutputPath)");
         fileExcludes.ShouldContain("$(BaseIntermediateOutputPath)");
         fileExcludes.ShouldContain("GeneratedFiles");
-        discoveredLanguage.Elements()
-                          .Single(element =>
-                              element.Name.LocalName == "AtomUILanguageContractVersion")
-                          .Value.ShouldBe("$(AtomUILanguageContractVersion)");
+        var moduleContractVersion = discoveredModuleLanguage.Elements()
+                                                            .Single(element =>
+                                                                element.Name.LocalName ==
+                                                                "AtomUILanguageContractVersion");
+        moduleContractVersion.Value.ShouldBe("$(AtomUILanguageContractVersion)");
+        ((string?)moduleContractVersion.Attribute("Condition"))
+            .ShouldNotBeNull()
+            .ShouldContain("'%(AtomUILanguageContractVersion)' == ''");
+
+        ((string?)discoveredPackLanguage.Attribute("Include"))
+            .ShouldBe("$(MSBuildProjectDirectory)/Localization/**/*.xlf");
+        discoveredPackLanguage.Elements()
+                              .Single(element =>
+                                  element.Name.LocalName == "AtomUILanguageSourceKind")
+                              .Value.ShouldBe("StaticLanguagePack");
+        discoveredPackLanguage.Elements()
+                              .Single(element =>
+                                  element.Name.LocalName == "AtomUILanguageSourceIdentity")
+                              .Value.ShouldBe("$(PackageId)");
+        discoveredPackLanguage.Elements()
+                              .Single(element =>
+                                  element.Name.LocalName == "AtomUILanguageModuleId")
+                              .Value.ShouldBe("$(AtomUILanguageModuleId)");
+        discoveredPackLanguage.Elements()
+                              .ShouldNotContain(element =>
+                                  element.Name.LocalName == "AtomUILanguageContractVersion");
 
         var additionalFiles = targets.Descendants()
                                      .Single(element =>
@@ -122,6 +150,7 @@ public class LocalizationBuildAssetsTests
         AssertMetadataForwarded(additionalFiles, "AtomUILanguageSourceKind");
         AssertMetadataForwarded(additionalFiles, "AtomUILanguageSourceIdentity");
         AssertMetadataForwarded(additionalFiles, "AtomUILanguageModuleId");
+        AssertMetadataForwarded(additionalFiles, "AtomUILanguageContractValidation");
         AssertMetadataForwarded(additionalFiles, "AtomUILanguageContractVersion");
         AssertMetadataForwarded(additionalFiles, "AtomUILanguageSourceFingerprint");
 
@@ -137,6 +166,7 @@ public class LocalizationBuildAssetsTests
             "AtomUILanguageSourceKind",
             "AtomUILanguageSourceIdentity",
             "AtomUILanguageModuleId",
+            "AtomUILanguageContractValidation",
             "AtomUILanguageContractVersion",
             "AtomUILanguageSourceFingerprint"
         ],
@@ -181,16 +211,56 @@ public class LocalizationBuildAssetsTests
                                      element.Name.LocalName == "AtomUI.Build.Tasks.PrepareLanguagePackageTask");
         ((string?)prepareTask.Attribute("MinimumTargetState"))
             .ShouldBe("$(AtomUILanguageMinimumState)");
+        ((string?)prepareTask.Attribute("SourceLanguageFiles"))
+            .ShouldBe("@(_AtomUILanguagePackageSourceFile)");
+        ((string?)prepareTask.Attribute("RequireVerifiedContract"))
+            .ShouldBe("$(AtomUIRequireVerifiedLanguageContract)");
         var exportTarget = targets.Descendants("Target")
                                   .Single(element =>
                                       (string?)element.Attribute("Name") ==
                                       "AtomUIExportLanguageTemplates");
+        ((string?)exportTarget.Attribute("DependsOnTargets"))
+            .ShouldNotBeNull()
+            .ShouldContain("AtomUIResolveLanguageContractProjectReferences");
         ((string?)exportTarget.Descendants()
                               .Single(element =>
                                   element.Name.LocalName ==
                                   "AtomUI.Build.Tasks.ExportLanguageTemplatesTask")
                               .Attribute("OutputRootDirectory"))
             .ShouldBe("$(AtomUILanguageTemplateOutputRootDirectory)");
+    }
+
+    [Fact]
+    public void Localization_Targets_Resolve_Authoring_Project_References_As_Source_Contracts()
+    {
+        var targets = XDocument.Load(GetRepoFile("build/AtomUI.Localization.targets"));
+
+        var provider = targets.Descendants("Target")
+                              .Single(element =>
+                                  (string?)element.Attribute("Name") ==
+                                  "AtomUIGetLanguageModuleSourceAssets");
+        ((string?)provider.Attribute("Returns"))
+            .ShouldBe("@(_AtomUILanguageModuleSourceAsset)");
+        provider.Descendants("_AtomUILanguageModuleSourceAsset").ShouldHaveSingleItem();
+
+        var resolver = targets.Descendants("Target")
+                              .Single(element =>
+                                  (string?)element.Attribute("Name") ==
+                                  "AtomUIResolveLanguageContractProjectReferences");
+        ((string?)resolver.Attribute("Condition"))
+            .ShouldNotBeNull()
+            .ShouldContain("'$(AtomUIBuildLanguagePackage)' == 'true'");
+        var msbuild = resolver.Descendants("MSBuild").ShouldHaveSingleItem();
+        ((string?)msbuild.Attribute("Projects")).ShouldBe("@(ProjectReference)");
+        ((string?)msbuild.Attribute("Targets")).ShouldBe("AtomUIGetLanguageModuleSourceAssets");
+        msbuild.Descendants("Output")
+               .Single(element =>
+                   (string?)element.Attribute("TaskParameter") == "TargetOutputs")
+               .Attribute("ItemName")!.Value.ShouldBe("_AtomUIResolvedLanguageContractAsset");
+
+        var imported = resolver.Descendants("AtomUILanguage").ShouldHaveSingleItem();
+        ((string?)imported.Attribute("Include"))
+            .ShouldBe("@(_AtomUIResolvedLanguageContractAsset)");
     }
 
     [Fact]
@@ -215,6 +285,10 @@ public class LocalizationBuildAssetsTests
         ((string?)prepare.Attribute("ExpectedLanguage")).ShouldBe("$(AtomUILanguageTag)");
         ((string?)prepare.Attribute("MinimumTargetState"))
             .ShouldBe("$(AtomUILanguageMinimumState)");
+        ((string?)prepare.Attribute("SourceLanguageFiles"))
+            .ShouldBe("@(_AtomUILanguagePackProjectSourceFile)");
+        ((string?)prepare.Attribute("RequireVerifiedContract"))
+            .ShouldBe("$(AtomUIRequireVerifiedLanguageContract)");
         ((string?)prepare.Attribute("LanguageFiles"))
             .ShouldBe("@(_AtomUILanguagePackProjectTargetFile)");
         prepare.Elements("Output")
@@ -272,6 +346,10 @@ public class LocalizationBuildAssetsTests
             "%(_AtomUIResolvedLanguagePackProjectAsset.AtomUILanguageModuleId)");
         AssertMetadataForwarded(
             additionalFiles,
+            "AtomUILanguageContractValidation",
+            "%(_AtomUIResolvedLanguagePackProjectAsset.AtomUILanguageContractValidation)");
+        AssertMetadataForwarded(
+            additionalFiles,
             "AtomUILanguageContractVersion",
             "%(_AtomUIResolvedLanguagePackProjectAsset.AtomUILanguageContractVersion)");
         AssertMetadataForwarded(
@@ -309,19 +387,18 @@ public class LocalizationBuildAssetsTests
             Directory.CreateDirectory(packDirectory);
             Directory.CreateDirectory(consumerDirectory);
 
-            WriteProject(
+            WriteModuleProject(
                 Path.Combine(moduleDirectory, "Module.csproj"),
-                new XElement("PropertyGroup",
-                    new XElement("TargetFramework", "net10.0"),
-                    new XElement("Nullable", "enable")));
+                repoRoot);
             await File.WriteAllTextAsync(
                 Path.Combine(moduleDirectory, "Runtime.cs"),
                 FixtureRuntimeSource,
                 TestContext.Current.CancellationToken);
 
-            var sourceXliffPath = Path.Combine(packDirectory, "Localization", "en-US.xlf");
+            var sourceXliffPath = Path.Combine(moduleDirectory, "Localization", "en-US.xlf");
             var targetXliffPath = Path.Combine(packDirectory, "Localization", "pt-BR.xlf");
             Directory.CreateDirectory(Path.GetDirectoryName(sourceXliffPath)!);
+            Directory.CreateDirectory(Path.GetDirectoryName(targetXliffPath)!);
             await File.WriteAllTextAsync(
                 sourceXliffPath,
                 FixtureSourceXliff,
@@ -334,7 +411,8 @@ public class LocalizationBuildAssetsTests
             WriteLanguagePackProject(
                 Path.Combine(packDirectory, "Pack.csproj"),
                 repoRoot,
-                buildTasksAssembly);
+                buildTasksAssembly,
+                Path.Combine(moduleDirectory, "Module.csproj"));
             WriteConsumerProject(
                 Path.Combine(consumerDirectory, "Consumer.csproj"),
                 repoRoot,
@@ -775,6 +853,9 @@ public class LocalizationBuildAssetsTests
              .Single(element => element.Name.LocalName == "AtomUILanguageModuleId")
              .Value.ShouldBe("%(_AtomUIPreparedLanguagePackProjectTargetFile.AtomUILanguageModuleId)");
         asset.Elements()
+             .Single(element => element.Name.LocalName == "AtomUILanguageContractValidation")
+             .Value.ShouldBe("%(_AtomUIPreparedLanguagePackProjectTargetFile.AtomUILanguageContractValidation)");
+        asset.Elements()
              .Single(element => element.Name.LocalName == "AtomUILanguageContractVersion")
              .Value.ShouldBe("%(_AtomUIPreparedLanguagePackProjectTargetFile.AtomUILanguageContractVersion)");
         asset.Elements()
@@ -794,10 +875,33 @@ public class LocalizationBuildAssetsTests
             .Save(path);
     }
 
+    private static void WriteModuleProject(string path, string repoRoot)
+    {
+        new XDocument(
+            new XElement(
+                "Project",
+                new XAttribute("Sdk", "Microsoft.NET.Sdk"),
+                new XElement(
+                    "PropertyGroup",
+                    new XElement("TargetFramework", "net10.0"),
+                    new XElement("Nullable", "enable"),
+                    new XElement("PackageId", "Fixture.Module"),
+                    new XElement("AtomUILanguageModuleId", "Fixture.Module"),
+                    new XElement("AtomUILanguageContractVersion", "2")),
+                new XElement(
+                    "Import",
+                    new XAttribute("Project", Path.Combine(repoRoot, "build", "AtomUI.Localization.props"))),
+                new XElement(
+                    "Import",
+                    new XAttribute("Project", Path.Combine(repoRoot, "build", "AtomUI.Localization.targets")))))
+            .Save(path);
+    }
+
     private static void WriteLanguagePackProject(
         string path,
         string repoRoot,
-        string buildTasksAssembly)
+        string buildTasksAssembly,
+        string moduleProject)
     {
         new XDocument(
             new XElement(
@@ -811,32 +915,23 @@ public class LocalizationBuildAssetsTests
                     new XElement("AtomUIBuildLanguagePackage", "true"),
                     new XElement("AtomUILanguageTag", "pt-BR"),
                     new XElement("AtomUILanguageModuleId", "Fixture.Module"),
-                    new XElement("AtomUILanguageContractVersion", "2"),
                     new XElement("AtomUILanguageMinimumState", "final"),
+                    new XElement("AtomUIRequireVerifiedLanguageContract", "true"),
                     new XElement("AtomUILocalizationBuildTasksAssembly", buildTasksAssembly)),
                 new XElement(
                     "Import",
                     new XAttribute("Project", Path.Combine(repoRoot, "build", "AtomUI.Localization.props"))),
                 new XElement(
                     "ItemGroup",
-                    LanguageItem("Localization/en-US.xlf", "ModuleBuiltIn", "Fixture.Module"),
-                    LanguageItem("Localization/pt-BR.xlf", "StaticLanguagePack", "$(PackageId)")),
+                    new XElement(
+                        "ProjectReference",
+                        new XAttribute("Include", moduleProject),
+                        new XAttribute("ReferenceOutputAssembly", "false"),
+                        new XAttribute("PrivateAssets", "all"))),
                 new XElement(
                     "Import",
                     new XAttribute("Project", Path.Combine(repoRoot, "build", "AtomUI.Localization.targets")))))
             .Save(path);
-    }
-
-    private static XElement LanguageItem(string include, string sourceKind, string sourceIdentity)
-    {
-        return new XElement(
-            "AtomUILanguage",
-            new XAttribute("Include", include),
-            new XElement("AtomUILanguageSourceKind", sourceKind),
-            new XElement("AtomUILanguageSourceIdentity", sourceIdentity),
-            new XElement("AtomUILanguageModuleId", "Fixture.Module"),
-            new XElement("AtomUILanguageContractVersion", "2"),
-            new XElement("AtomUILanguagePackagePath", include));
     }
 
     private static void WriteConsumerProject(
