@@ -235,6 +235,29 @@ public class LocalizationBuildAssetsTests
     {
         var targets = XDocument.Load(GetRepoFile("build/AtomUI.Localization.targets"));
 
+        var configuredReference = targets.Root!
+                                         .Elements("ItemGroup")
+                                         .SelectMany(static group => group.Elements("ProjectReference"))
+                                         .Single(element =>
+                                             ((string?)element.Attribute("Update"))?.Contains(
+                                                 "WithMetadataValue",
+                                                 StringComparison.Ordinal) == true);
+        var configuration = configuredReference.Parent.ShouldNotBeNull();
+        ((string?)configuration.Attribute("Condition"))
+            .ShouldNotBeNull()
+            .ShouldContain("'$(AtomUIBuildLanguagePackage)' == 'true'");
+        ((string?)configuredReference.Attribute("Update"))
+            .ShouldNotBeNull()
+            .ShouldContain("OutputItemType");
+        configuredReference.Element("BuildReference").ShouldNotBeNull().Value.ShouldBe("false");
+        configuredReference.Element("ReferenceOutputAssembly")
+                           .ShouldNotBeNull()
+                           .Value.ShouldBe("false");
+        configuredReference.Element("PrivateAssets").ShouldNotBeNull().Value.ShouldBe("all");
+        configuredReference.Element("SkipGetTargetFrameworkProperties")
+                           .ShouldNotBeNull()
+                           .Value.ShouldBe("true");
+
         var provider = targets.Descendants("Target")
                               .Single(element =>
                                   (string?)element.Attribute("Name") ==
@@ -567,62 +590,19 @@ public class LocalizationBuildAssetsTests
             new LanguagePackageProjectContract(
                 "AtomUI.Controls.I18n.PtBR",
                 "AtomUI.Controls",
-                [
-                    new(
-                        "../../../AtomUI.Controls/Localization/Common/en-US.xlf",
-                        "Localization/Common/en-US.xlf")
-                ]),
+                "../../../AtomUI.Controls/AtomUI.Controls.csproj"),
             new LanguagePackageProjectContract(
                 "AtomUI.Desktop.Controls.I18n.PtBR",
                 "AtomUI.Desktop.Controls",
-                [
-                    new(
-                        "../../../AtomUI.Desktop.Controls/Calendar/Localization/en-US.xlf",
-                        "Localization/Calendar/en-US.xlf"),
-                    new(
-                        "../../../AtomUI.Desktop.Controls/DatePicker/Localization/en-US.xlf",
-                        "Localization/DatePicker/en-US.xlf"),
-                    new(
-                        "../../../AtomUI.Desktop.Controls/Dialog/Localization/en-US.xlf",
-                        "Localization/Dialog/en-US.xlf"),
-                    new(
-                        "../../../AtomUI.Desktop.Controls/ImagePreviewer/Localization/en-US.xlf",
-                        "Localization/ImagePreviewer/en-US.xlf"),
-                    new(
-                        "../../../AtomUI.Desktop.Controls/Pagination/Localization/en-US.xlf",
-                        "Localization/Pagination/en-US.xlf"),
-                    new(
-                        "../../../AtomUI.Desktop.Controls/QRCode/Localization/en-US.xlf",
-                        "Localization/QRCode/en-US.xlf"),
-                    new(
-                        "../../../AtomUI.Desktop.Controls/TimePicker/Localization/en-US.xlf",
-                        "Localization/TimePicker/en-US.xlf"),
-                    new(
-                        "../../../AtomUI.Desktop.Controls/Tour/Localization/en-US.xlf",
-                        "Localization/Tour/en-US.xlf"),
-                    new(
-                        "../../../AtomUI.Desktop.Controls/Transfer/Localization/en-US.xlf",
-                        "Localization/Transfer/en-US.xlf"),
-                    new(
-                        "../../../AtomUI.Desktop.Controls/Upload/Localization/en-US.xlf",
-                        "Localization/Upload/en-US.xlf")
-                ]),
+                "../../../AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj"),
             new LanguagePackageProjectContract(
                 "AtomUI.Desktop.Controls.DataGrid.I18n.PtBR",
                 "AtomUI.Desktop.Controls.DataGrid",
-                [
-                    new(
-                        "../../../AtomUI.Desktop.Controls.DataGrid/Localization/en-US.xlf",
-                        "Localization/en-US.xlf")
-                ]),
+                "../../../AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj"),
             new LanguagePackageProjectContract(
                 "AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR",
                 "AtomUI.Desktop.Controls.ColorPicker",
-                [
-                    new(
-                        "../../../AtomUI.Desktop.Controls.ColorPicker/Localization/en-US.xlf",
-                        "Localization/en-US.xlf")
-                ])
+                "../../../AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj")
         };
 
         foreach (var contract in moduleProjects)
@@ -764,46 +744,27 @@ public class LocalizationBuildAssetsTests
         properties["AtomUIBuildLanguagePackage"].ShouldBe("true");
         properties["AtomUILanguageTag"].ShouldBe("pt-BR");
         properties["AtomUILanguageModuleId"].ShouldBe(contract.ModuleId);
-        properties["AtomUILanguageContractVersion"].ShouldBe("2");
         properties["AtomUILanguageMinimumState"].ShouldBe("final");
+        properties["AtomUIRequireVerifiedLanguageContract"].ShouldBe("true");
+        properties.ShouldNotContainKey("AtomUILanguageContractVersion");
 
         var projectReferences = project.Descendants("ProjectReference").ToArray();
-        projectReferences.Length.ShouldBe(1);
-        var generatorReference = projectReferences.Single();
+        projectReferences.Length.ShouldBe(2);
+        var generatorReference = projectReferences.Single(reference =>
+            (string?)reference.Attribute("OutputItemType") == "Analyzer");
         ((string?)generatorReference.Attribute("Include"))
             .ShouldBe("../../../AtomUI.Generator/AtomUI.Generator.csproj");
         ((string?)generatorReference.Attribute("OutputItemType")).ShouldBe("Analyzer");
         ((string?)generatorReference.Attribute("ReferenceOutputAssembly")).ShouldBe("false");
         ((string?)generatorReference.Attribute("PrivateAssets")).ShouldBe("all");
 
-        var languageItems = project.Descendants("AtomUILanguage").ToArray();
-        languageItems.Length.ShouldBe(contract.SourceLanguages.Count + 1);
-        foreach (var sourceContract in contract.SourceLanguages)
-        {
-            var sourceLanguage = languageItems.Single(item =>
-                (string?)item.Attribute("Include") == sourceContract.Include);
-            AssertLanguageItemMetadata(
-                sourceLanguage,
-                "ModuleBuiltIn",
-                "$(AtomUILanguageModuleId)",
-                contract.ModuleId,
-                "2");
-            sourceLanguage.Elements()
-                          .Single(element => element.Name.LocalName == "AtomUILanguagePackagePath")
-                          .Value.ShouldBe(sourceContract.PackagePath);
-        }
+        var componentReference = projectReferences.Single(reference =>
+            (string?)reference.Attribute("OutputItemType") != "Analyzer");
+        ((string?)componentReference.Attribute("Include")).ShouldBe(contract.ComponentProjectReference);
+        componentReference.Attributes().Select(attribute => attribute.Name.LocalName)
+                          .ShouldBe(["Include"]);
 
-        var targetLanguage = languageItems.Single(item =>
-            (string?)item.Attribute("Include") == "Localization/**/pt-BR.xlf");
-        AssertLanguageItemMetadata(
-            targetLanguage,
-            "StaticLanguagePack",
-            "$(PackageId)",
-            contract.ModuleId,
-            "2");
-        targetLanguage.Elements()
-                      .Single(element => element.Name.LocalName == "AtomUILanguagePackagePath")
-                      .Value.ShouldBe("%(RecursiveDir)%(Filename)%(Extension)");
+        project.Descendants("AtomUILanguage").ShouldBeEmpty();
     }
 
     private static Dictionary<string, string> GetProjectProperties(XDocument project)
@@ -925,9 +886,7 @@ public class LocalizationBuildAssetsTests
                     "ItemGroup",
                     new XElement(
                         "ProjectReference",
-                        new XAttribute("Include", moduleProject),
-                        new XAttribute("ReferenceOutputAssembly", "false"),
-                        new XAttribute("PrivateAssets", "all"))),
+                        new XAttribute("Include", moduleProject))),
                 new XElement(
                     "Import",
                     new XAttribute("Project", Path.Combine(repoRoot, "build", "AtomUI.Localization.targets")))))
@@ -1012,9 +971,7 @@ public class LocalizationBuildAssetsTests
     private sealed record LanguagePackageProjectContract(
         string PackageId,
         string ModuleId,
-        IReadOnlyList<SourceLanguageContract> SourceLanguages);
-
-    private sealed record SourceLanguageContract(string Include, string PackagePath);
+        string ComponentProjectReference);
 
     private sealed record BuildResult(int ExitCode, string StandardOutput, string StandardError)
     {

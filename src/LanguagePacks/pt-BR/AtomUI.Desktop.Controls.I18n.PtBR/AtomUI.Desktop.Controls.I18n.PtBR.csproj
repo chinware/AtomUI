@@ -9,8 +9,8 @@
         <AtomUIBuildLanguagePackage>true</AtomUIBuildLanguagePackage>
         <AtomUILanguageTag>pt-BR</AtomUILanguageTag>
         <AtomUILanguageModuleId>AtomUI.Desktop.Controls</AtomUILanguageModuleId>
-        <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
         <AtomUILanguageMinimumState>final</AtomUILanguageMinimumState>
+        <AtomUIRequireVerifiedLanguageContract>true</AtomUIRequireVerifiedLanguageContract>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,85 +18,6 @@
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false"
                           PrivateAssets="all" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <AtomUILanguage Include="../../../AtomUI.Desktop.Controls/Calendar/Localization/en-US.xlf">
-            <AtomUILanguageSourceKind>ModuleBuiltIn</AtomUILanguageSourceKind>
-            <AtomUILanguageSourceIdentity>$(AtomUILanguageModuleId)</AtomUILanguageSourceIdentity>
-            <AtomUILanguageModuleId>AtomUI.Desktop.Controls</AtomUILanguageModuleId>
-            <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
-            <AtomUILanguagePackagePath>Localization/Calendar/en-US.xlf</AtomUILanguagePackagePath>
-        </AtomUILanguage>
-        <AtomUILanguage Include="../../../AtomUI.Desktop.Controls/DatePicker/Localization/en-US.xlf">
-            <AtomUILanguageSourceKind>ModuleBuiltIn</AtomUILanguageSourceKind>
-            <AtomUILanguageSourceIdentity>$(AtomUILanguageModuleId)</AtomUILanguageSourceIdentity>
-            <AtomUILanguageModuleId>AtomUI.Desktop.Controls</AtomUILanguageModuleId>
-            <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
-            <AtomUILanguagePackagePath>Localization/DatePicker/en-US.xlf</AtomUILanguagePackagePath>
-        </AtomUILanguage>
-        <AtomUILanguage Include="../../../AtomUI.Desktop.Controls/Dialog/Localization/en-US.xlf">
-            <AtomUILanguageSourceKind>ModuleBuiltIn</AtomUILanguageSourceKind>
-            <AtomUILanguageSourceIdentity>$(AtomUILanguageModuleId)</AtomUILanguageSourceIdentity>
-            <AtomUILanguageModuleId>AtomUI.Desktop.Controls</AtomUILanguageModuleId>
-            <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
-            <AtomUILanguagePackagePath>Localization/Dialog/en-US.xlf</AtomUILanguagePackagePath>
-        </AtomUILanguage>
-        <AtomUILanguage Include="../../../AtomUI.Desktop.Controls/ImagePreviewer/Localization/en-US.xlf">
-            <AtomUILanguageSourceKind>ModuleBuiltIn</AtomUILanguageSourceKind>
-            <AtomUILanguageSourceIdentity>$(AtomUILanguageModuleId)</AtomUILanguageSourceIdentity>
-            <AtomUILanguageModuleId>AtomUI.Desktop.Controls</AtomUILanguageModuleId>
-            <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
-            <AtomUILanguagePackagePath>Localization/ImagePreviewer/en-US.xlf</AtomUILanguagePackagePath>
-        </AtomUILanguage>
-        <AtomUILanguage Include="../../../AtomUI.Desktop.Controls/Pagination/Localization/en-US.xlf">
-            <AtomUILanguageSourceKind>ModuleBuiltIn</AtomUILanguageSourceKind>
-            <AtomUILanguageSourceIdentity>$(AtomUILanguageModuleId)</AtomUILanguageSourceIdentity>
-            <AtomUILanguageModuleId>AtomUI.Desktop.Controls</AtomUILanguageModuleId>
-            <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
-            <AtomUILanguagePackagePath>Localization/Pagination/en-US.xlf</AtomUILanguagePackagePath>
-        </AtomUILanguage>
-        <AtomUILanguage Include="../../../AtomUI.Desktop.Controls/QRCode/Localization/en-US.xlf">
-            <AtomUILanguageSourceKind>ModuleBuiltIn</AtomUILanguageSourceKind>
-            <AtomUILanguageSourceIdentity>$(AtomUILanguageModuleId)</AtomUILanguageSourceIdentity>
-            <AtomUILanguageModuleId>AtomUI.Desktop.Controls</AtomUILanguageModuleId>
-            <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
-            <AtomUILanguagePackagePath>Localization/QRCode/en-US.xlf</AtomUILanguagePackagePath>
-        </AtomUILanguage>
-        <AtomUILanguage Include="../../../AtomUI.Desktop.Controls/TimePicker/Localization/en-US.xlf">
-            <AtomUILanguageSourceKind>ModuleBuiltIn</AtomUILanguageSourceKind>
-            <AtomUILanguageSourceIdentity>$(AtomUILanguageModuleId)</AtomUILanguageSourceIdentity>
-            <AtomUILanguageModuleId>AtomUI.Desktop.Controls</AtomUILanguageModuleId>
-            <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
-            <AtomUILanguagePackagePath>Localization/TimePicker/en-US.xlf</AtomUILanguagePackagePath>
-        </AtomUILanguage>
-        <AtomUILanguage Include="../../../AtomUI.Desktop.Controls/Tour/Localization/en-US.xlf">
-            <AtomUILanguageSourceKind>ModuleBuiltIn</AtomUILanguageSourceKind>
-            <AtomUILanguageSourceIdentity>$(AtomUILanguageModuleId)</AtomUILanguageSourceIdentity>
-            <AtomUILanguageModuleId>AtomUI.Desktop.Controls</AtomUILanguageModuleId>
-            <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
-            <AtomUILanguagePackagePath>Localization/Tour/en-US.xlf</AtomUILanguagePackagePath>
-        </AtomUILanguage>
-        <AtomUILanguage Include="../../../AtomUI.Desktop.Controls/Transfer/Localization/en-US.xlf">
-            <AtomUILanguageSourceKind>ModuleBuiltIn</AtomUILanguageSourceKind>
-            <AtomUILanguageSourceIdentity>$(AtomUILanguageModuleId)</AtomUILanguageSourceIdentity>
-            <AtomUILanguageModuleId>AtomUI.Desktop.Controls</AtomUILanguageModuleId>
-            <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
-            <AtomUILanguagePackagePath>Localization/Transfer/en-US.xlf</AtomUILanguagePackagePath>
-        </AtomUILanguage>
-        <AtomUILanguage Include="../../../AtomUI.Desktop.Controls/Upload/Localization/en-US.xlf">
-            <AtomUILanguageSourceKind>ModuleBuiltIn</AtomUILanguageSourceKind>
-            <AtomUILanguageSourceIdentity>$(AtomUILanguageModuleId)</AtomUILanguageSourceIdentity>
-            <AtomUILanguageModuleId>AtomUI.Desktop.Controls</AtomUILanguageModuleId>
-            <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
-            <AtomUILanguagePackagePath>Localization/Upload/en-US.xlf</AtomUILanguagePackagePath>
-        </AtomUILanguage>
-        <AtomUILanguage Include="Localization/**/pt-BR.xlf">
-            <AtomUILanguageSourceKind>StaticLanguagePack</AtomUILanguageSourceKind>
-            <AtomUILanguageSourceIdentity>$(PackageId)</AtomUILanguageSourceIdentity>
-            <AtomUILanguageModuleId>AtomUI.Desktop.Controls</AtomUILanguageModuleId>
-            <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
-            <AtomUILanguagePackagePath>%(RecursiveDir)%(Filename)%(Extension)</AtomUILanguagePackagePath>
-        </AtomUILanguage>
+        <ProjectReference Include="../../../AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj" />
     </ItemGroup>
 </Project>

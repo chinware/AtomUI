@@ -16,12 +16,5 @@
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false"
                           PrivateAssets="all" />
-        <AtomUILanguage Include="Localization/**/*.xlf">
-            <AtomUILanguageSourceKind>StaticLanguagePack</AtomUILanguageSourceKind>
-            <AtomUILanguageSourceIdentity>$(PackageId)</AtomUILanguageSourceIdentity>
-            <AtomUILanguageModuleId>$(AtomUILanguageModuleId)</AtomUILanguageModuleId>
-            <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
-            <AtomUILanguagePackagePath>%(RecursiveDir)%(Filename)%(Extension)</AtomUILanguagePackagePath>
-        </AtomUILanguage>
     </ItemGroup>
 </Project>

@@ -8,7 +8,45 @@ namespace AtomUI.Localization.IntegrationTests;
 
 public sealed partial class LanguagePackEndToEndTests
 {
-    private static readonly TimeSpan s_stageTimeout = TimeSpan.FromSeconds(60);
+    private static readonly TimeSpan s_stageTimeout = TimeSpan.FromSeconds(120);
+
+    [Fact]
+    public void Language_Pack_Fixtures_Cover_Verified_And_Deferred_Authoring()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var fixtureRoot = Path.Combine(repositoryRoot, "tests", "fixtures", "LanguagePackEndToEnd");
+        var verifiedProject = XDocument.Load(
+            Path.Combine(fixtureRoot, "LanguagePack", "LanguagePack.csproj"));
+        verifiedProject.Descendants("AtomUILanguage").ShouldBeEmpty();
+        verifiedProject.Descendants("AtomUIRequireVerifiedLanguageContract")
+                       .ShouldHaveSingleItem()
+                       .Value.ShouldBe("true");
+        verifiedProject.Descendants("ProjectReference")
+                       .Any(reference =>
+                           ((string?)reference.Attribute("Include"))?.EndsWith(
+                               "Module/Module.csproj",
+                               StringComparison.Ordinal) == true)
+                       .ShouldBeTrue();
+
+        var deferredProject = XDocument.Load(
+            Path.Combine(fixtureRoot, "OptionalLanguagePack", "OptionalLanguagePack.csproj"));
+        deferredProject.Descendants("AtomUILanguage").ShouldBeEmpty();
+        deferredProject.Descendants("AtomUIRequireVerifiedLanguageContract").ShouldBeEmpty();
+        deferredProject.Descendants("ProjectReference")
+                       .Any(reference =>
+                           ((string?)reference.Attribute("Include"))?.EndsWith(
+                               "OptionalModule/OptionalModule.csproj",
+                               StringComparison.Ordinal) == true)
+                       .ShouldBeFalse();
+
+        var templateProject = XDocument.Load(
+            Path.Combine(fixtureRoot, "TemplateExport", "TemplateExport.csproj"));
+        var componentPackage = templateProject.Descendants("PackageReference")
+                                              .Single(reference =>
+                                                  (string?)reference.Attribute("Include") ==
+                                                  "Acme.LocalizationComponent");
+        ((string?)componentPackage.Attribute("PrivateAssets")).ShouldBe("all");
+    }
 
     [Fact(Timeout = 360_000)]
     public async Task Aggregate_Language_Pack_Dormantly_Consumes_Unreferenced_Module_Through_NuGet()
@@ -47,7 +85,7 @@ public sealed partial class LanguagePackEndToEndTests
                 $"-p:PackageOutputPath={feed}",
                 $"-p:RestorePackagesPath={globalPackages}",
                 "-p:NoPackageAnalysis=true");
-            await RunProcess(
+            var verifiedPackResult = await RunProcess(
                 "Pack language pack",
                 repositoryRoot,
                 temporaryRoot,
@@ -62,6 +100,7 @@ public sealed partial class LanguagePackEndToEndTests
                 $"-p:PackageVersion={packageVersion}",
                 $"-p:PackageOutputPath={feed}",
                 $"-p:RestorePackagesPath={globalPackages}");
+            verifiedPackResult.Output.ShouldNotContain("ATOMUILOC010");
             await RunProcess(
                 "Pack optional module",
                 repositoryRoot,
@@ -78,7 +117,7 @@ public sealed partial class LanguagePackEndToEndTests
                 $"-p:PackageOutputPath={feed}",
                 $"-p:RestorePackagesPath={globalPackages}",
                 "-p:NoPackageAnalysis=true");
-            await RunProcess(
+            var deferredPackResult = await RunProcess(
                 "Pack optional language pack",
                 repositoryRoot,
                 temporaryRoot,
@@ -93,6 +132,7 @@ public sealed partial class LanguagePackEndToEndTests
                 $"-p:PackageVersion={packageVersion}",
                 $"-p:PackageOutputPath={feed}",
                 $"-p:RestorePackagesPath={globalPackages}");
+            CountOccurrences(deferredPackResult.Output, "ATOMUILOC010").ShouldBe(1);
             await RunProcess(
                 "Pack aggregate language pack",
                 repositoryRoot,
@@ -332,7 +372,9 @@ public sealed partial class LanguagePackEndToEndTests
             modulePackage,
             "buildTransitive/Acme.LocalizationComponent.props",
             "ModuleBuiltIn",
-            "Localization/Welcome/en-US.xlf");
+            "Localization/Welcome/en-US.xlf",
+            "Verified",
+            "2");
 
         var languageEntries = PackageEntries(languagePackage);
         languageEntries.ShouldContain("buildTransitive/Acme.LocalizationComponent.I18n.JaJP.props");
@@ -346,13 +388,17 @@ public sealed partial class LanguagePackEndToEndTests
             languagePackage,
             "buildTransitive/Acme.LocalizationComponent.I18n.JaJP.props",
             "StaticLanguagePack",
-            "Welcome/ja-JP.xlf");
+            "Welcome/ja-JP.xlf",
+            "Verified",
+            "2");
         languageFingerprint.ShouldBe(moduleFingerprint);
 
         var manifest = XDocument.Parse(PackageEntryText(
             languagePackage,
             "contentFiles/any/any/AtomUI.LanguagePack.xml"));
         var manifestCatalog = manifest.Descendants("catalog").ShouldHaveSingleItem();
+        ((string?)manifestCatalog.Attribute("contractValidation")).ShouldBe("Verified");
+        ((string?)manifestCatalog.Attribute("contractVersion")).ShouldBe("2");
         ((string?)manifestCatalog.Attribute("sourceFingerprint")).ShouldBe(languageFingerprint);
 
         var optionalModuleEntries = PackageEntries(optionalModulePackage);
@@ -381,6 +427,21 @@ public sealed partial class LanguagePackEndToEndTests
             optionalLanguagePackage,
             "Acme.OptionalComponent.I18n.JaJP.nuspec");
         dependencies.ShouldNotContainKey("Acme.OptionalComponent");
+
+        var fingerprint = AssertLanguageProps(
+            optionalLanguagePackage,
+            "buildTransitive/Acme.OptionalComponent.I18n.JaJP.props",
+            "StaticLanguagePack",
+            "Optional/ja-JP.xlf",
+            "Deferred",
+            expectedContractVersion: null);
+        var manifest = XDocument.Parse(PackageEntryText(
+            optionalLanguagePackage,
+            "contentFiles/any/any/AtomUI.LanguagePack.xml"));
+        var catalog = manifest.Descendants("catalog").ShouldHaveSingleItem();
+        ((string?)catalog.Attribute("contractValidation")).ShouldBe("Deferred");
+        catalog.Attribute("contractVersion").ShouldBeNull();
+        ((string?)catalog.Attribute("sourceFingerprint")).ShouldBe(fingerprint);
     }
 
     private static void AssertAggregatePackageLayout(string feed, string packageVersion)
@@ -416,16 +477,25 @@ public sealed partial class LanguagePackEndToEndTests
         string packagePath,
         string entryPath,
         string sourceKind,
-        string packageLanguagePath)
+        string packageLanguagePath,
+        string contractValidation,
+        string? expectedContractVersion)
     {
         var props = XDocument.Parse(PackageEntryText(packagePath, entryPath));
         var item = props.Descendants("AtomUILanguage").ShouldHaveSingleItem();
         ((string?)item.Attribute("AtomUILanguageSourceKind")).ShouldBe(sourceKind);
         ((string?)item.Attribute("AtomUILanguagePackagePath")).ShouldBe(packageLanguagePath);
+        ((string?)item.Attribute("AtomUILanguageContractValidation")).ShouldBe(contractValidation);
+        ((string?)item.Attribute("AtomUILanguageContractVersion")).ShouldBe(expectedContractVersion);
         var fingerprint = ((string?)item.Attribute("AtomUILanguageSourceFingerprint"))
             .ShouldNotBeNull();
         fingerprint.ShouldMatch("^[0-9a-f]{64}$");
         return fingerprint;
+    }
+
+    private static int CountOccurrences(string value, string fragment)
+    {
+        return value.Split(fragment, StringSplitOptions.None).Length - 1;
     }
 
     private static string[] PackageEntries(string packagePath)

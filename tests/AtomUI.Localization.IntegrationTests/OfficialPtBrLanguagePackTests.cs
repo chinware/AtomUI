@@ -18,11 +18,13 @@ public sealed partial class LanguagePackEndToEndTests
             "AtomUI.Controls.I18n.PtBR",
             "AtomUI.Controls",
             "src/LanguagePacks/pt-BR/AtomUI.Controls.I18n.PtBR/AtomUI.Controls.I18n.PtBR.csproj",
+            "src/AtomUI.Controls/AtomUI.Controls.csproj",
             ["Common/pt-BR.xlf"]),
         new(
             "AtomUI.Desktop.Controls.I18n.PtBR",
             "AtomUI.Desktop.Controls",
             "src/LanguagePacks/pt-BR/AtomUI.Desktop.Controls.I18n.PtBR/AtomUI.Desktop.Controls.I18n.PtBR.csproj",
+            "src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj",
             [
                 "Calendar/pt-BR.xlf",
                 "DatePicker/pt-BR.xlf",
@@ -40,14 +42,50 @@ public sealed partial class LanguagePackEndToEndTests
             "AtomUI.Desktop.Controls.DataGrid",
             "src/LanguagePacks/pt-BR/AtomUI.Desktop.Controls.DataGrid.I18n.PtBR/" +
             "AtomUI.Desktop.Controls.DataGrid.I18n.PtBR.csproj",
+            "src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj",
             ["pt-BR.xlf"]),
         new(
             "AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR",
             "AtomUI.Desktop.Controls.ColorPicker",
             "src/LanguagePacks/pt-BR/AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR/" +
             "AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR.csproj",
+            "src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj",
             ["pt-BR.xlf"])
     ];
+
+    [Fact]
+    public void Official_PtBr_Module_Projects_Use_Automatic_Verified_Contract_Discovery()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        foreach (var package in s_officialLanguagePackages)
+        {
+            var projectPath = Path.Combine(repositoryRoot, package.ProjectPath);
+            var project = XDocument.Load(projectPath);
+            project.Descendants("AtomUILanguage").ShouldBeEmpty();
+            project.Descendants("AtomUILanguageContractVersion").ShouldBeEmpty();
+            project.Descendants("AtomUIRequireVerifiedLanguageContract")
+                   .ShouldHaveSingleItem()
+                   .Value.ShouldBe("true");
+
+            var expectedReference = Path.GetFullPath(
+                Path.Combine(repositoryRoot, package.SourceProjectPath));
+            project.Descendants("ProjectReference")
+                   .Any(reference =>
+                   {
+                       var include = (string?)reference.Attribute("Include");
+                       if (include is null ||
+                           (string?)reference.Attribute("OutputItemType") == "Analyzer")
+                       {
+                           return false;
+                       }
+
+                       var resolved = Path.GetFullPath(
+                           Path.Combine(Path.GetDirectoryName(projectPath)!, include));
+                       return resolved == expectedReference;
+                   })
+                   .ShouldBeTrue();
+        }
+    }
 
     [Fact(Timeout = 600_000)]
     public async Task Official_PtBr_Package_Graph_Is_Consumable()
@@ -191,7 +229,7 @@ public sealed partial class LanguagePackEndToEndTests
 
         foreach (var package in s_officialLanguagePackages)
         {
-            await RunProcess(
+            var result = await RunProcess(
                 $"Pack {package.PackageId}",
                 repositoryRoot,
                 temporaryRoot,
@@ -206,6 +244,7 @@ public sealed partial class LanguagePackEndToEndTests
                 $"-p:PackageOutputPath={feed}",
                 $"-p:RestorePackagesPath={globalPackages}",
                 "-p:NoPackageAnalysis=true");
+            result.Output.ShouldNotContain("ATOMUILOC010");
         }
 
         await RunProcess(
@@ -270,6 +309,7 @@ public sealed partial class LanguagePackEndToEndTests
             {
                 var catalog = manifestCatalogs[languagePath];
                 ((string?)catalog.Attribute("moduleId")).ShouldBe(package.ModuleId);
+                ((string?)catalog.Attribute("contractValidation")).ShouldBe("Verified");
                 ((string?)catalog.Attribute("contractVersion")).ShouldBe("2");
                 ((string?)catalog.Attribute("sourceFingerprint"))
                     .ShouldBe(propsFingerprints[languagePath]);
@@ -322,6 +362,10 @@ public sealed partial class LanguagePackEndToEndTests
             string.Equals(
                 (string?)item.Attribute("AtomUILanguageModuleId"),
                 package.ModuleId,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                (string?)item.Attribute("AtomUILanguageContractValidation"),
+                "Verified",
                 StringComparison.Ordinal) &&
             string.Equals(
                 (string?)item.Attribute("AtomUILanguageContractVersion"),
@@ -432,31 +476,45 @@ public sealed partial class LanguagePackEndToEndTests
                 continue;
             }
 
-            var packageProjectPath = Path.Combine(repositoryRoot, package.ProjectPath);
-            var project = XDocument.Load(packageProjectPath);
-            var projectDirectory = Path.GetDirectoryName(packageProjectPath).ShouldNotBeNull();
-            foreach (var item in project.Descendants("AtomUILanguage").Where(static item =>
-                         string.Equals(
-                             item.Element("AtomUILanguageSourceKind")?.Value,
-                             "ModuleBuiltIn",
-                             StringComparison.Ordinal)))
+            var sourceProjectPath = Path.Combine(repositoryRoot, package.SourceProjectPath);
+            var sourceDirectory = Path.GetDirectoryName(sourceProjectPath).ShouldNotBeNull();
+            var sourceFiles = Directory.EnumerateFiles(
+                                           sourceDirectory,
+                                           "en-US.xlf",
+                                           SearchOption.AllDirectories)
+                                       .ToDictionary(
+                                           path => GetLanguagePackagePath(sourceDirectory, path),
+                                           StringComparer.Ordinal);
+            foreach (var languagePath in package.LanguagePaths)
             {
-                var include = ((string?)item.Attribute("Include")).ShouldNotBeNull();
-                var packagePath = item.Element("AtomUILanguagePackagePath")
-                                      .ShouldNotBeNull()
-                                      .Value;
+                var sourcePackagePath = languagePath.Substring(
+                                            0,
+                                            languagePath.Length - "pt-BR.xlf".Length) +
+                                        "en-US.xlf";
+                var sourcePath = sourceFiles[sourcePackagePath];
                 yield return new XElement(
                     "AtomUILanguage",
-                    new XAttribute(
-                        "Include",
-                        Path.GetFullPath(Path.Combine(projectDirectory, include))),
+                    new XAttribute("Include", sourcePath),
                     new XElement("AtomUILanguageSourceKind", "ModuleBuiltIn"),
                     new XElement("AtomUILanguageSourceIdentity", package.ModuleId),
                     new XElement("AtomUILanguageModuleId", package.ModuleId),
+                    new XElement("AtomUILanguageContractValidation", "Verified"),
                     new XElement("AtomUILanguageContractVersion", "2"),
-                    new XElement("AtomUILanguagePackagePath", packagePath));
+                    new XElement(
+                        "AtomUILanguagePackagePath",
+                        "Localization/" + sourcePackagePath));
             }
         }
+    }
+
+    private static string GetLanguagePackagePath(string projectDirectory, string sourcePath)
+    {
+        var relativePath = Path.GetRelativePath(projectDirectory, sourcePath);
+        return string.Join(
+            '/',
+            relativePath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                        .Where(static segment =>
+                            !string.Equals(segment, "Localization", StringComparison.Ordinal)));
     }
 
     private static string ConsumerSource(bool includeDataGrid, bool includeColorPicker)
@@ -692,5 +750,6 @@ public sealed partial class LanguagePackEndToEndTests
         string PackageId,
         string ModuleId,
         string ProjectPath,
+        string SourceProjectPath,
         IReadOnlyList<string> LanguagePaths);
 }

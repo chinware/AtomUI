@@ -82,6 +82,15 @@
     <UsingTask TaskName="AtomUI.Build.Tasks.GenerateLanguagePackagePropsTask"
                AssemblyFile="$(AtomUILocalizationBuildTasksAssembly)" />
 
+    <ItemGroup Condition="'$(AtomUIBuildLanguagePackage)' == 'true' and '@(ProjectReference)' != ''">
+        <ProjectReference Update="@(ProjectReference->WithMetadataValue('OutputItemType', ''))">
+            <BuildReference>false</BuildReference>
+            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+            <PrivateAssets>all</PrivateAssets>
+            <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+        </ProjectReference>
+    </ItemGroup>
+
     <Target Name="AtomUIGetLanguageModuleSourceAssets"
             Returns="@(_AtomUILanguageModuleSourceAsset)"
             Condition="'$(AtomUIBuildLanguagePackage)' != 'true'">

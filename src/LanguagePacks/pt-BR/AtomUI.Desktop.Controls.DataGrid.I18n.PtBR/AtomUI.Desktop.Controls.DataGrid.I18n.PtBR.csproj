@@ -9,8 +9,8 @@
         <AtomUIBuildLanguagePackage>true</AtomUIBuildLanguagePackage>
         <AtomUILanguageTag>pt-BR</AtomUILanguageTag>
         <AtomUILanguageModuleId>AtomUI.Desktop.Controls.DataGrid</AtomUILanguageModuleId>
-        <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
         <AtomUILanguageMinimumState>final</AtomUILanguageMinimumState>
+        <AtomUIRequireVerifiedLanguageContract>true</AtomUIRequireVerifiedLanguageContract>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,22 +18,6 @@
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false"
                           PrivateAssets="all" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <AtomUILanguage Include="../../../AtomUI.Desktop.Controls.DataGrid/Localization/en-US.xlf">
-            <AtomUILanguageSourceKind>ModuleBuiltIn</AtomUILanguageSourceKind>
-            <AtomUILanguageSourceIdentity>$(AtomUILanguageModuleId)</AtomUILanguageSourceIdentity>
-            <AtomUILanguageModuleId>AtomUI.Desktop.Controls.DataGrid</AtomUILanguageModuleId>
-            <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
-            <AtomUILanguagePackagePath>Localization/en-US.xlf</AtomUILanguagePackagePath>
-        </AtomUILanguage>
-        <AtomUILanguage Include="Localization/**/pt-BR.xlf">
-            <AtomUILanguageSourceKind>StaticLanguagePack</AtomUILanguageSourceKind>
-            <AtomUILanguageSourceIdentity>$(PackageId)</AtomUILanguageSourceIdentity>
-            <AtomUILanguageModuleId>AtomUI.Desktop.Controls.DataGrid</AtomUILanguageModuleId>
-            <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
-            <AtomUILanguagePackagePath>%(RecursiveDir)%(Filename)%(Extension)</AtomUILanguagePackagePath>
-        </AtomUILanguage>
+        <ProjectReference Include="../../../AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj" />
     </ItemGroup>
 </Project>

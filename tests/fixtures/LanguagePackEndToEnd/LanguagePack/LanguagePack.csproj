@@ -9,6 +9,7 @@
         <AtomUIBuildLanguagePackage>true</AtomUIBuildLanguagePackage>
         <AtomUILanguageTag>ja-JP</AtomUILanguageTag>
         <AtomUILanguageModuleId>Acme.LocalizationComponent</AtomUILanguageModuleId>
+        <AtomUIRequireVerifiedLanguageContract>true</AtomUIRequireVerifiedLanguageContract>
     </PropertyGroup>
 
     <ItemGroup>
@@ -16,12 +17,6 @@
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false"
                           PrivateAssets="all" />
-        <AtomUILanguage Include="Localization/**/*.xlf">
-            <AtomUILanguageSourceKind>StaticLanguagePack</AtomUILanguageSourceKind>
-            <AtomUILanguageSourceIdentity>$(PackageId)</AtomUILanguageSourceIdentity>
-            <AtomUILanguageModuleId>$(AtomUILanguageModuleId)</AtomUILanguageModuleId>
-            <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
-            <AtomUILanguagePackagePath>%(RecursiveDir)%(Filename)%(Extension)</AtomUILanguagePackagePath>
-        </AtomUILanguage>
+        <ProjectReference Include="../Module/Module.csproj" />
     </ItemGroup>
 </Project>

@@ -103,6 +103,11 @@ Build Tasks 在打包阶段完成完整契约校验；组件引用不存在时�
 warning。两种模式生成的 I18n NuGet 都不得依赖目标组件运行时包。应用仍需按自身功能引用组件包；聚合语言包不会
 为了翻译而把未使用的 DataGrid 或 ColorPicker DLL 带入应用。
 
+仓库内语言包的组件 `ProjectReference` 使用普通 `Include` 即可。标准 localization targets 会自动把非 Analyzer
+项目引用配置为作者期契约输入：不参与程序集引用和常规引用构建，跳过 TFM 协商，也不形成语言包的运行时依赖；
+构建系统仍会显式调用组件项目的契约资产 target 读取权威 `en-US`。语言包项目不得手写 `BuildReference`、
+`SkipGetTargetFrameworkProperties` 或 AtomUI 专用识别 metadata。
+
 语言包项目仍必须在项目级声明唯一 `AtomUILanguageModuleId`。它用于没有安装目标组件时可靠地把静态输入分类为
 dormant，不是对每个 XLIFF 重复维护的 Catalog metadata。`AtomUILanguageContractVersion`、Catalog ID 和源
 fingerprint 不要求第三方作者手写；有权威源契约时由构建系统绑定，没有时由目标 XLIFF 和消费应用中的真实 Catalog
