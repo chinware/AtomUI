@@ -123,6 +123,11 @@ fingerprint 不要求第三方作者手写；有权威源契约时由构建系�
 | `Verified` | 存在目标组件发布的权威 `en-US` 契约 | 校验 Catalog 集合、Key 完整性、source、占位符、ContractVersion 和 fingerprint | 再次与消费应用实际引用的 Catalog 校验，防止错误版本组合 |
 | `Deferred` | 没有权威组件契约 | 校验 XLIFF 2.1、语言标签、目标状态、重复 Key、source/target 占位符、module ID 和包结构 | 目标模块 active 后根据真实 Catalog 完成全部契约校验；未安装模块保持 dormant |
 
+`Verified`/`Deferred` 只描述**打包时是否绑定权威源契约**，不描述消费应用是否安装目标组件。
+`Active`/`Dormant` 只描述**消费编译时目标 module 是否可见**。因此四种组合中，`Verified + Dormant`、
+`Deferred + Dormant`、`Verified + Active` 和 `Deferred + Active` 都是合法状态；不得把 `Deferred` 当成 dormant 的
+同义词，也不得因为输入已经 `Verified` 就强制应用安装目标 module。
+
 同一目标模块只允许整体 `Verified` 或整体 `Deferred`。如果已经发现该模块的任何权威源资产，则所有目标 Catalog 都
 必须与权威集合完整匹配；文件名、`file id` 或 Key 写错不能通过把单个文件降级为 `Deferred` 来隐藏。只有完全没有
 发现该模块的权威源资产时，才允许整个模块包进入 `Deferred`。
@@ -153,11 +158,13 @@ fingerprint 不要求第三方作者手写；有权威源契约时由构建系�
 聚合包会传递所有模块语言包的 `buildTransitive` 输入，但消费应用不一定引用所有组件模块。Generator 对
 `StaticLanguagePack` 使用以下激活规则：
 
-1. 所有输入都先完成 XLIFF 2.1 结构、语言标签和必需 item metadata 校验；格式损坏的文件不能进入 dormant。
-2. 当前 Compilation 已声明目标 Catalog，或引用程序集存在相同 `AtomUILanguageModuleId`，或 XLIFF `file id` 能解析
-   到 Catalog enum 时，该输入为 active，必须完成全部 Catalog、ContractVersion、unit、源文本和 fingerprint 校验。
-3. 基础校验通过后，目标 module ID 不存在且 `file id` 也无法解析的输入为 dormant：不生成 Bundle、不参与冲突和
-   覆盖计算，也不报告“referenced Catalog could not be found”。
+1. 所有输入都先完成 XLIFF 2.1 结构、语言标签和必需 item metadata 校验；source fingerprint 必须存在、具有
+   64 位小写 SHA-256 格式，并与当前目标 XLIFF 保存的 source 内容一致。格式损坏或 metadata 不可信的文件不能进入
+   dormant。
+2. 当前 Compilation 或引用程序集存在相同 `AtomUILanguageModuleId` 时，目标 module 为 active。XLIFF `file id`
+   必须绑定该 module 中唯一 Catalog，然后完成全部 Catalog、ContractVersion、unit、源文本和权威 fingerprint 校验。
+3. 基础校验通过后，目标 module ID 不存在时输入为 dormant：不生成 Bundle、不参与冲突和覆盖计算，也不报告
+   “referenced Catalog could not be found”。此时只延迟与不可见权威 `en-US` 源契约的比较，不延迟输入自身校验。
 4. 模块存在时，`Verified` 输入校验声明的 ContractVersion，`Deferred` 输入从实际 Catalog 绑定 ContractVersion；
    两者都必须完成 Catalog、unit、source、占位符和 fingerprint 校验。Catalog 缺失、identity 错误或版本不兼容时
    仍然构建失败，不能用 dormant 或 `Deferred` 隐藏损坏的语言包。
@@ -166,6 +173,20 @@ fingerprint 不要求第三方作者手写；有权威源契约时由构建系�
 
 因此应用可以始终引用 `AtomUI.I18n.PtBR`。未引用 DataGrid 时 DataGrid 翻译保持 dormant；以后增加 DataGrid 组件
 引用后，同一语言包输入会在下一次编译自动激活。运行时仍只为实际注册的 Catalog 构建 Snapshot。
+
+## 第三方语言包是正式场景
+
+第三方作者不依赖 AtomUI 仓库路径、官方包命名或私有构建逻辑。一个模块语言包项目只需显式声明 package ID、
+规范目标语言和唯一 `AtomUILanguageModuleId`，并在 `Localization/**/*.xlf` 维护目标文件：
+
+- 能取得目标组件包时，使用 `PrivateAssets="all"` 的作者期 `PackageReference`，通过标准 provider target 取得权威
+  `en-US`，生成 `Verified` 资产。
+- 无法取得目标组件包时，仍可 build/pack 为 `Deferred`；Build Tasks 完成可独立证明的 XLIFF、final 状态、
+  fingerprint、路径和包安全校验，并只报告一次 `ATOMUILOC010`。
+- 消费应用没有安装目标 module 时，两种资产都保持 dormant；安装后，两种资产都由 Generator 执行相同强度的
+  Catalog、unit、source、placeholder、ContractVersion 和 fingerprint 校验。
+- 一个实际语言包只对应一个 module。跨模块发行必须拆成模块包，再用不携带 XLIFF、props、analyzer 或 DLL 的纯依赖
+  Meta Package 聚合。
 
 ## 官方源码组织
 
@@ -226,11 +247,13 @@ Catalog 所有权。
 - `Verified` Catalog 的 ContractVersion；`Deferred` Catalog 省略该字段。
 - 每个目标 Catalog 的规范源文本指纹。
 
-`buildTransitive/<PackageId>.props` 是编译权威入口。它只把每个 XLIFF 作为带 source kind、source identity、
+`buildTransitive/<PackageId>.props` 是语言包的声明式编译入口。它把每个 XLIFF 作为带 source kind、source identity、
 module ID、契约校验级别、包内路径和源 fingerprint 的 `AtomUILanguage` item 注入；`Verified` 资产另外携带绑定后的
-ContractVersion，`Deferred` 资产不得伪造 ContractVersion。标准 targets 再将这些 XLIFF 加入 `AdditionalFiles`。
-manifest 不进入 `AdditionalFiles`，Generator 也不会独立发现或读取它。最终应用 Generator 校验 metadata、实际
-XLIFF 和引用 Catalog 后把翻译编译进应用程序集；运行时不需要知道翻译来自哪个 NuGet 文件。
+ContractVersion，`Deferred` 资产不得伪造 ContractVersion。标准 targets 只把 Generator 实际需要的 source kind、
+source identity、module ID、契约模式、ContractVersion 和 fingerprint 投影到 `AdditionalFiles`；包内路径继续属于
+pack/审计契约，不参与 Catalog identity。manifest 不进入 `AdditionalFiles`，Generator 也不会独立发现或读取它。
+最终应用 Generator 校验 metadata、实际 XLIFF 和引用 Catalog 后把翻译编译进应用程序集；运行时不需要知道翻译来自
+哪个 NuGet 文件。
 
 聚合包使用普通 SDK-style pack 项目，设置 `IncludeBuildOutput=false`，并保留指向模块语言包项目的
 `ProjectReference` 作为仓库构建顺序边。由于 .NET SDK pack 会把普通 `ProjectReference` 版本序列化为最低版本范围，
@@ -243,8 +266,8 @@ XLIFF 和引用 Catalog 后把翻译编译进应用程序集；运行时不需�
 官方语言包从对应模块发布的权威 `en-US.xlf` 导出，XLIFF 必须保存 `srcLang="en-US"`、`trgLang="pt-BR"`、原始
 `file id` 和 enum Key。机器预翻译可以作为初稿，但不能自动获得官方发布状态。
 
-通用语言包默认接受 `translated`、`reviewed` 或 `final`。官方包项目必须设置
-`AtomUILanguageMinimumState=final`，要求所有非 obsolete unit 经过人工审校并达到 `final`；源文本变化、
+所有静态语言包统一要求每个非 obsolete unit 经过人工审校并达到 `final`。该门禁由标准 build、项目引用消费和
+pack 路径固定执行，不提供可以降级为 `translated` 或 `reviewed` 的项目属性。源文本变化、
 `subState="needs-review"`、占位符变化或缺少 target 都会阻止模块包发布。只有发布集合中的全部模块包通过门禁后，
 才允许生成并发布同版本聚合包。
 

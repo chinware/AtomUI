@@ -9,7 +9,6 @@
         <AtomUIBuildLanguagePackage>true</AtomUIBuildLanguagePackage>
         <AtomUILanguageTag>pt-BR</AtomUILanguageTag>
         <AtomUILanguageModuleId>AtomUI.Desktop.Controls.ColorPicker</AtomUILanguageModuleId>
-        <AtomUILanguageMinimumState>final</AtomUILanguageMinimumState>
         <AtomUIRequireVerifiedLanguageContract>true</AtomUIRequireVerifiedLanguageContract>
     </PropertyGroup>
 

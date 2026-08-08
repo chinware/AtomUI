@@ -4,13 +4,13 @@
     <unit id="Greeting">
       <segment>
         <source>Welcome</source>
-        <target state="translated">ようこそ</target>
+        <target state="final">ようこそ</target>
       </segment>
     </unit>
     <unit id="ItemCount">
       <segment>
         <source>You have {0} items.</source>
-        <target state="translated">{0} 件の項目があります。</target>
+        <target state="final">{0} 件の項目があります。</target>
       </segment>
     </unit>
   </file>

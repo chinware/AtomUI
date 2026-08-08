@@ -7,7 +7,7 @@
 
 - 初稿生成日期：2026-08-07。
 - 状态提升日期：2026-08-07。
-- 当前所有 target state 均为 `final`，满足官方模块项目的 `AtomUILanguageMinimumState=final` 发布门禁。
+- 当前所有 target state 均为 `final`，满足静态语言包固定的 `final` 发布门禁。
 - 本次状态提升由 AtomUI 维护者明确授权，依据项目内固定术语、权威英文 source、Ant Design `pt_BR` 参考和
   占位符契约进行 AI 辅助复核；没有巴西葡萄牙语母语译者背书。
 - 状态提升只修改 target state，不修改 Catalog `file id`、unit Key、英文 source、占位符或模块身份。

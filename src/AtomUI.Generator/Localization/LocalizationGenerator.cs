@@ -1,9 +1,9 @@
-using System.Collections.Immutable;
 using AtomUI.Generator.Localization;
 using AtomUI.Generator.Localization.Catalog;
 using AtomUI.Generator.Localization.Xliff;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace AtomUI.Generator;
 
@@ -33,7 +33,7 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
                                        input.Left,
                                        input.Right))
                                    .Select(static (input, cancellationToken) =>
-                                       AdditionalLanguageFileParser.Parse(
+                                       LocalizationPipeline.ParseLanguageFile(
                                            input.Left,
                                            input.Right,
                                            cancellationToken))
@@ -51,73 +51,17 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
                                        .Combine(catalogs.Collect())
                                        .Combine(languageFiles.Collect())
                                        .Combine(applicationHosts.Collect())
-                                       .Select(static (input, _) => new LocalizationGenerationResult(
+                                       .Select(static (input, _) => LocalizationPipeline.Compile(
                                            input.Left.Left.Left.AssemblyName,
-                                           LanguageCatalogCompiler.Compile(
-                                               input.Left.Left.Right,
-                                               input.Left.Right,
-                                               input.Left.Left.Left),
+                                           input.Left.Left.Right,
+                                           input.Left.Right,
+                                           input.Left.Left.Left,
                                            input.Right))
                                        .WithTrackingName("LocalizationCompilation");
 
-        context.RegisterSourceOutput(catalogs, static (sourceContext, result) =>
-        {
-            foreach (var diagnostic in result.Diagnostics)
-            {
-                sourceContext.ReportDiagnostic(diagnostic);
-            }
-        });
-        context.RegisterSourceOutput(languageFiles, static (sourceContext, result) =>
-        {
-            foreach (var diagnostic in result.Diagnostics)
-            {
-                sourceContext.ReportDiagnostic(diagnostic);
-            }
-        });
         context.RegisterSourceOutput(compiledCatalogs, static (sourceContext, result) =>
         {
-            foreach (var diagnostic in result.Compilation.Diagnostics)
-            {
-                sourceContext.ReportDiagnostic(diagnostic);
-            }
-
-            if (!result.Compilation.Diagnostics.IsEmpty)
-            {
-                return;
-            }
-
-            foreach (var catalog in result.Compilation.Catalogs.Where(static catalog => catalog.OwnsCatalog))
-            {
-                LanguageCatalogSourceWriter.Write(sourceContext, result.AssemblyName, catalog);
-            }
-            LanguageModuleSourceWriter.Write(
-                sourceContext,
-                result.AssemblyName,
-                result.Compilation.Catalogs);
-            ApplicationLanguageBootstrapWriter.Write(
-                sourceContext,
-                result.AssemblyName,
-                result.Compilation.Catalogs,
-                result.ApplicationHosts);
+            LocalizationSourceEmitter.Emit(sourceContext, result);
         });
-    }
-
-    private sealed class LocalizationGenerationResult
-    {
-        internal LocalizationGenerationResult(
-            string? assemblyName,
-            LanguageCatalogCompilationResult compilation,
-            ImmutableArray<ApplicationLanguageHostInfo> applicationHosts)
-        {
-            AssemblyName = assemblyName;
-            Compilation = compilation;
-            ApplicationHosts = applicationHosts;
-        }
-
-        internal string? AssemblyName { get; }
-
-        internal LanguageCatalogCompilationResult Compilation { get; }
-
-        internal ImmutableArray<ApplicationLanguageHostInfo> ApplicationHosts { get; }
     }
 }

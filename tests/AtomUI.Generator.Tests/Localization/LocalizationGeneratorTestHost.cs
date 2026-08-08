@@ -101,7 +101,7 @@ internal static class LocalizationGeneratorTestHost
         return new TestIncrementalGeneratorExecution(firstRun, driver.GetRunResult());
     }
 
-    private static CSharpCompilation CreateCompilation(
+    internal static CSharpCompilation CreateCompilation(
         string source,
         IReadOnlyList<MetadataReference> additionalReferences,
         string assemblyName = "TestApp")
@@ -158,7 +158,7 @@ internal static class LocalizationGeneratorTestHost
             {
                 ["build_property.PackageId"] = "Test.Package",
                 ["build_property.AssemblyName"] = "TestApp",
-                ["build_property.RootNamespace"] = "TestApp"
+                ["build_property.AtomUILanguageModuleId"] = "Test.Package"
             });
         private readonly IReadOnlyDictionary<string, AnalyzerConfigOptions> _fileOptions;
 

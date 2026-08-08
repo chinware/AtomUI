@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace AtomUI.Localization.Build;
+namespace AtomUI.Build.Tasks.LocalizationBuild;
 
 internal static class LanguageSourceFingerprint
 {

@@ -1,6 +1,5 @@
 using System.Collections.Immutable;
 using System.Text;
-using AtomUI.Generator.Diagnostics;
 using AtomUI.Generator.Localization.Catalog;
 using AtomUI.Generator.Localization.Xliff;
 using Microsoft.CodeAnalysis;
@@ -13,54 +12,10 @@ internal static class ApplicationLanguageBootstrapWriter
         SourceProductionContext context,
         string? assemblyName,
         ImmutableArray<CompiledLanguageCatalog> compiledCatalogs,
-        ImmutableArray<ApplicationLanguageHostInfo> applicationHosts)
+        ApplicationLanguageHostInfo? application)
     {
-        if (compiledCatalogs.IsEmpty)
+        if (compiledCatalogs.IsEmpty || application is null)
         {
-            return;
-        }
-
-        var concreteHosts = applicationHosts
-                            .GroupBy(static host => host.MetadataName, StringComparer.Ordinal)
-                            .Select(static group => group.First())
-                            .Where(static host => !host.IsAbstract)
-                            .OrderBy(static host => host.MetadataName, StringComparer.Ordinal)
-                            .ToArray();
-        if (concreteHosts.Length == 0)
-        {
-            return;
-        }
-        if (concreteHosts.Length > 1)
-        {
-            foreach (var host in concreteHosts)
-            {
-                ReportInvalid(
-                    context,
-                    host,
-                    "more than one concrete Avalonia Application type is declared");
-            }
-            return;
-        }
-
-        var application = concreteHosts[0];
-        if (!application.IsTopLevel)
-        {
-            ReportInvalid(context, application, "the Application must be a top-level class");
-            return;
-        }
-        if (application.IsGeneric)
-        {
-            ReportInvalid(context, application, "the Application must be non-generic");
-            return;
-        }
-        if (!application.IsPartial)
-        {
-            ReportInvalid(context, application, "the Application must be declared partial");
-            return;
-        }
-        if (string.IsNullOrEmpty(application.AccessibilityModifier))
-        {
-            ReportInvalid(context, application, "the Application must be public or internal");
             return;
         }
 
@@ -132,17 +87,5 @@ internal static class ApplicationLanguageBootstrapWriter
             source.AppendLine("}");
         }
         return source.ToString();
-    }
-
-    private static void ReportInvalid(
-        SourceProductionContext context,
-        ApplicationLanguageHostInfo host,
-        string reason)
-    {
-        context.ReportDiagnostic(Diagnostic.Create(
-            AtomUIDiagnosticDescriptors.LocalizationInvalidApplicationHost,
-            host.Location,
-            host.MetadataName,
-            reason));
     }
 }

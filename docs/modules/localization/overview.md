@@ -1,7 +1,11 @@
 # AtomUI 多语言模块架构概览
 
-本文档集定义并记录 AtomUI 已落地的多语言模块。该模块是面向整个应用的本地化基础设施，不只服务控件。
-语言状态、Catalog、编译期翻译表和 Avalonia 资源桥由 `AtomUI.Localization` 拥有，主题系统不再承担语言职责。
+本文档集是 AtomUI 多语言模块的正式架构与长期维护规范。实现、重构计划和带日期的设计记录都必须以本目录为准。
+该模块是面向整个应用的本地化基础设施，不只服务控件；语言状态、Catalog、编译期翻译表和 Avalonia 资源桥由
+`AtomUI.Localization` 拥有，主题系统不再承担语言职责。
+
+`docs/superpowers/specs/` 和 `docs/superpowers/plans/` 下的带日期文档只记录一次重构的决策过程与执行步骤，用于补充说明
+本目录中的正式架构，不能替代、覆盖或成为多语言设计的事实来源。若两者出现差异，必须先更新本目录并以本目录为准。
 
 ## 设计目标
 
@@ -35,12 +39,27 @@
 | `src/AtomUI.Localization` / `AtomUI.Localization` | 公共类型、运行时 Registry、Snapshot、Manager、Localizer 和 Avalonia 资源桥 | 是 |
 | `src/AtomUI.Core` / `AtomUI.Core` | 主题、Token、动画等基础设施；引用 `AtomUI.Localization` | 是 |
 | `src/AtomUI.Generator` / `AtomUI.Generator` | Catalog、翻译表、Markup Extension 和注册代码生成 | 否，Analyzer |
-| `src/AtomUI.Build.Tasks` | XLIFF 校验、模板导出/合并和语言包构建任务 | 否，MSBuild Task |
+| `src/AtomUI.Build.Tasks` | 静态语言包 pack 前校验、模板导出/合并、manifest/props 和包内容安全 | 否，MSBuild Task |
 | `AtomUI.LanguagePack.Template` | 创建静态 I18n NuGet 项目的模板 | 否 |
 | `src/LanguagePacks/<language-tag>` | AtomUI 官方附加语言的模块级静态包与纯依赖聚合包 | 否 |
 
-`AtomUI.Localization` 是运行时基础设施包。构建期共享源码使用内部命名空间
-`AtomUI.Localization.Build`，但没有同名项目或 NuGet 包；构建任务物理归属 `AtomUI.Build.Tasks`。
+`AtomUI.Localization` 是运行时基础设施包。构建期共享源码位于
+`src/AtomUI.Build.Tasks/LocalizationBuild`，使用内部命名空间 `AtomUI.Build.Tasks.LocalizationBuild`，但没有同名项目或
+NuGet 包；构建任务物理归属 `AtomUI.Build.Tasks`，Generator 只通过源码链接复用这层无副作用模型。
+
+## 构建期权威边界
+
+多语言构建链有两个互补的权威边界：
+
+- `AtomUI.Generator` 是**编译项目中的 Catalog/Bundle 语义权威**。它负责解析 XLIFF、绑定当前及引用程序集的
+  Catalog/module、分类 active/dormant 输入、校验 ContractVersion、source fingerprint、unit、源文本、占位符、
+  翻译状态和来源冲突，并生成静态 Catalog、Bundle、模块注册和应用 bootstrap。
+- `AtomUI.Build.Tasks` 是**静态语言包产物与文件系统副作用权威**。它负责语言包 pack 前校验、包内容安全、
+  Verified/Deferred manifest、声明式 `buildTransitive` props 和模板导出；普通应用或模块编译不再重复执行
+  MSBuild XLIFF 语义校验 Task。
+
+两边共享不依赖 Roslyn/MSBuild 的 XLIFF parser、规范化文档模型、fingerprint 和文件级中立诊断。共享层不决定
+Catalog symbol 绑定，也不直接输出 Roslyn Diagnostic 或 MSBuild 日志。
 
 ## 源码职责分组
 
@@ -72,7 +91,7 @@ flowchart TD
     Libraries["Third-party libraries"] --> Localization
     Generator["AtomUI.Generator"] -. "generated registry" .-> App
     Generator -. "generated module registration" .-> Controls
-    BuildTasks["AtomUI.Build.Tasks"] -. "validate / export / package" .-> Generator
+    BuildTasks["AtomUI.Build.Tasks"] -. "pack / manifest / props / export" .-> Generator
     I18n["Static I18n NuGet packages"] -. "XLIFF AdditionalFiles" .-> Generator
 ```
 
@@ -105,6 +124,10 @@ flowchart TD
 8. 翻译包没有运行时 DLL、初始化类或隐式加载代码；重复翻译不按注册顺序覆盖。
 9. 官方聚合语言包不得复制模块 XLIFF；一个 Catalog 的附加翻译只由所属模块语言包维护。
 10. 未引用 Language Module 的静态包输入保持 dormant；模块一旦存在，Catalog 和源契约仍必须严格校验。
+11. `Verified`/`Deferred` 描述语言包的契约来源，`Active`/`Dormant` 描述消费项目的模块可见性；两组状态不得
+    合并为一个枚举或互相替代。
+12. dormant 只延迟依赖不可见目标 Catalog 的深层校验；XLIFF、语言标签、metadata、fingerprint 格式及其与当前
+    文件 source 内容的一致性始终在编译期校验。
 
 ## 非目标
 

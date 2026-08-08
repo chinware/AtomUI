@@ -1,4 +1,4 @@
-namespace AtomUI.Localization.Build;
+namespace AtomUI.Build.Tasks.LocalizationBuild;
 
 internal static class CompositeFormatContractParser
 {

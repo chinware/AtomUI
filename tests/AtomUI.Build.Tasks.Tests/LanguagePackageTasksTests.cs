@@ -91,6 +91,30 @@ public class LanguagePackageTasksTests : IDisposable
     }
 
     [Fact]
+    public void PrepareProjectReferenceAssets_Enriches_Deferred_Items_Without_Writing_A_Manifest()
+    {
+        var languagePath = Write("ja-JP.xlf", JapaneseXliff);
+        var languageItem = DeferredLanguageItem(languagePath);
+        var engine = new RecordingBuildEngine();
+        var task = new PrepareLanguagePackageAssetsTask
+        {
+            BuildEngine = engine,
+            PackageId = "AtomUI.Desktop.Controls.I18n.JaJP",
+            ExpectedLanguage = "ja-JP",
+            LanguageFiles = [languageItem]
+        };
+
+        task.Execute().ShouldBeTrue();
+        engine.Errors.ShouldBeEmpty();
+        engine.Warnings.ShouldHaveSingleItem().Code.ShouldBe("ATOMUILOC010");
+
+        var prepared = task.PreparedLanguageFiles.ShouldHaveSingleItem();
+        prepared.GetMetadata("AtomUILanguageContractValidation").ShouldBe("Deferred");
+        prepared.GetMetadata("AtomUILanguageContractVersion").ShouldBeEmpty();
+        Directory.EnumerateFiles(_directory, "AtomUI.LanguagePack*.xml").ShouldBeEmpty();
+    }
+
+    [Fact]
     public void Prepare_Binds_A_Verified_Contract_From_The_Authoritative_Source()
     {
         var sourcePath = Write("en-US.xlf", ModuleEnglishXliff);
@@ -202,9 +226,9 @@ public class LanguagePackageTasksTests : IDisposable
     }
 
     [Fact]
-    public void Prepare_Propagates_The_Minimum_Target_State()
+    public void Prepare_Rejects_An_Intermediate_Target_State_By_Default()
     {
-        var languagePath = Write("ja-JP.xlf", JapaneseXliff);
+        var languagePath = Write("ja-JP.xlf", ReviewedJapaneseXliff);
         var languageItem = DeferredLanguageItem(languagePath);
         var engine = new RecordingBuildEngine();
         var task = new PrepareLanguagePackageTask
@@ -213,8 +237,7 @@ public class LanguagePackageTasksTests : IDisposable
             PackageId = "AtomUI.Desktop.Controls.I18n.JaJP",
             LanguageFiles = [languageItem],
             PackageFiles = [languageItem],
-            OutputManifestPath = Path.Combine(_directory, "invalid-state.xml"),
-            MinimumTargetState = "final"
+            OutputManifestPath = Path.Combine(_directory, "invalid-state.xml")
         };
 
         task.Execute().ShouldBeFalse();
@@ -425,8 +448,8 @@ public class LanguagePackageTasksTests : IDisposable
             item.SetMetadata("AtomUILanguageContractValidation", "Deferred");
             item.SetMetadata(
                 "AtomUILanguageSourceFingerprint",
-                AtomUI.Localization.Build.LanguageSourceFingerprint.Compute(
-                    AtomUI.Localization.Build.Xliff21Parser.Parse(JapaneseXliff).Document!));
+                AtomUI.Build.Tasks.LocalizationBuild.LanguageSourceFingerprint.Compute(
+                    AtomUI.Build.Tasks.LocalizationBuild.Xliff21Parser.Parse(JapaneseXliff).Document!));
         }
         return item;
     }
@@ -462,11 +485,16 @@ public class LanguagePackageTasksTests : IDisposable
         <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US" trgLang="ja-JP">
           <file id="AtomUI.Desktop.Controls.DatePickerLang.DatePickerLangResourceKind">
             <unit id="Today">
-              <segment><source>Today</source><target state="reviewed">今日</target></segment>
+              <segment><source>Today</source><target state="final">今日</target></segment>
             </unit>
           </file>
         </xliff>
         """;
+
+    private static readonly string ReviewedJapaneseXliff = JapaneseXliff.Replace(
+        "state=\"final\"",
+        "state=\"reviewed\"",
+        StringComparison.Ordinal);
 
     private const string ModuleEnglishXliff = """
         <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US">

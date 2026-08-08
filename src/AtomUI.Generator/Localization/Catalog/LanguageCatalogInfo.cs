@@ -3,6 +3,44 @@ using Microsoft.CodeAnalysis;
 
 namespace AtomUI.Generator.Localization.Catalog;
 
+internal readonly struct CatalogKey : IEquatable<CatalogKey>
+{
+    internal CatalogKey(string moduleId, string fileId)
+    {
+        ModuleId = moduleId;
+        FileId = fileId;
+    }
+
+    internal string ModuleId { get; }
+
+    internal string FileId { get; }
+
+    public bool Equals(CatalogKey other)
+    {
+        return string.Equals(ModuleId, other.ModuleId, StringComparison.Ordinal) &&
+               string.Equals(FileId, other.FileId, StringComparison.Ordinal);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is CatalogKey other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            return (StringComparer.Ordinal.GetHashCode(ModuleId) * 397) ^
+                   StringComparer.Ordinal.GetHashCode(FileId);
+        }
+    }
+
+    public override string ToString()
+    {
+        return $"{ModuleId}:{FileId}";
+    }
+}
+
 internal sealed class LanguageCatalogInfo
 {
     internal LanguageCatalogInfo(
@@ -21,6 +59,7 @@ internal sealed class LanguageCatalogInfo
         ContractVersion = contractVersion;
         Units = units;
         Location = location;
+        Key = new CatalogKey(moduleId, metadataName);
     }
 
     internal string ModuleId { get; }
@@ -37,7 +76,9 @@ internal sealed class LanguageCatalogInfo
 
     internal Location Location { get; }
 
-    internal string CatalogId => $"{ModuleId}:{MetadataName}";
+    internal CatalogKey Key { get; }
+
+    internal string CatalogId => Key.ToString();
 }
 
 internal sealed class LanguageCatalogUnitInfo

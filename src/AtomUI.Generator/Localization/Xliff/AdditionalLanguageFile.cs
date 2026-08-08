@@ -1,8 +1,6 @@
 using System.Collections.Immutable;
-using System.Globalization;
-using AtomUI.Generator.Diagnostics;
+using AtomUI.Generator.Localization.Catalog;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 
 namespace AtomUI.Generator.Localization.Xliff;
@@ -20,31 +18,81 @@ internal enum LanguageFileContractValidation
     Deferred
 }
 
+internal enum LanguageInputActivationState
+{
+    Active,
+    Dormant
+}
+
 internal sealed class AdditionalLanguageFile
 {
     internal AdditionalLanguageFile(
         string path,
+        SourceText text,
+        AtomUI.Build.Tasks.LocalizationBuild.XliffDocumentModel document)
+    {
+        Path = path;
+        Text = text;
+        Document = document;
+    }
+
+    internal string Path { get; }
+
+    internal SourceText Text { get; }
+
+    internal AtomUI.Build.Tasks.LocalizationBuild.XliffDocumentModel Document { get; }
+}
+
+internal sealed class AdditionalLanguageFileParseResult
+{
+    internal AdditionalLanguageFileParseResult(
+        string path,
+        SourceText text,
+        AdditionalLanguageFile? file,
+        ImmutableArray<AtomUI.Build.Tasks.LocalizationBuild.XliffParseError> errors)
+    {
+        Path = path;
+        Text = text;
+        File = file;
+        Errors = errors;
+    }
+
+    internal string Path { get; }
+
+    internal SourceText Text { get; }
+
+    internal AdditionalLanguageFile? File { get; }
+
+    internal ImmutableArray<AtomUI.Build.Tasks.LocalizationBuild.XliffParseError> Errors { get; }
+}
+
+internal sealed class LanguageFileInput
+{
+    internal LanguageFileInput(
+        AdditionalLanguageFile file,
         string moduleId,
         LanguageFileSourceKind sourceKind,
         string sourceIdentity,
         LanguageFileContractValidation contractValidation,
         int? contractVersion,
-        string? sourceFingerprint,
-        SourceText text,
-        AtomUI.Localization.Build.XliffDocumentModel document)
+        string? sourceFingerprint)
     {
-        Path = path;
+        File = file;
         ModuleId = moduleId;
         SourceKind = sourceKind;
         SourceIdentity = sourceIdentity;
         ContractValidation = contractValidation;
         ContractVersion = contractVersion;
         SourceFingerprint = sourceFingerprint;
-        Text = text;
-        Document = document;
     }
 
-    internal string Path { get; }
+    internal AdditionalLanguageFile File { get; }
+
+    internal string Path => File.Path;
+
+    internal SourceText Text => File.Text;
+
+    internal AtomUI.Build.Tasks.LocalizationBuild.XliffDocumentModel Document => File.Document;
 
     internal string ModuleId { get; }
 
@@ -57,269 +105,42 @@ internal sealed class AdditionalLanguageFile
     internal int? ContractVersion { get; }
 
     internal string? SourceFingerprint { get; }
-
-    internal SourceText Text { get; }
-
-    internal AtomUI.Localization.Build.XliffDocumentModel Document { get; }
 }
 
-internal sealed class AdditionalLanguageFileParseResult
+internal sealed class LanguageFileInputResult
 {
-    internal AdditionalLanguageFileParseResult(
-        AdditionalLanguageFile? file,
+    internal LanguageFileInputResult(
+        LanguageFileInput? input,
         ImmutableArray<Diagnostic> diagnostics)
     {
-        File = file;
+        Input = input;
         Diagnostics = diagnostics;
     }
 
-    internal AdditionalLanguageFile? File { get; }
+    internal LanguageFileInput? Input { get; }
 
     internal ImmutableArray<Diagnostic> Diagnostics { get; }
 }
 
-internal static class AdditionalLanguageFileParser
+internal sealed class LanguageInputResolution
 {
-    internal static AdditionalLanguageFileParseResult Parse(
-        AdditionalText additionalText,
-        AnalyzerConfigOptionsProvider optionsProvider,
-        CancellationToken cancellationToken)
+    internal LanguageInputResolution(
+        LanguageFileInput input,
+        LanguageInputActivationState activationState,
+        LanguageCatalogInfo? catalog,
+        int? effectiveContractVersion)
     {
-        var text = additionalText.GetText(cancellationToken);
-        if (text is null)
-        {
-            return Invalid(
-                additionalText.Path,
-                null,
-                new AtomUI.Localization.Build.XliffParseError(
-                    "the file cannot be read",
-                    1,
-                    1));
-        }
-
-        var parseResult = AtomUI.Localization.Build.Xliff21Parser.Parse(text.ToString());
-        if (parseResult.Errors.Count > 0)
-        {
-            var diagnostics = parseResult.Errors
-                                         .Select(error => CreateDiagnostic(additionalText.Path, text, error))
-                                         .ToImmutableArray();
-            return new AdditionalLanguageFileParseResult(null, diagnostics);
-        }
-
-        var fileOptions = optionsProvider.GetOptions(additionalText);
-        var moduleId = LanguageGeneratorOptions.GetFileValue(
-            fileOptions,
-            LanguageGeneratorOptions.ModuleIdMetadata,
-            LanguageGeneratorOptions.GetModuleId(optionsProvider, "Application"));
-        var sourceIdentity = LanguageGeneratorOptions.GetFileValue(
-            fileOptions,
-            LanguageGeneratorOptions.SourceIdentityMetadata,
-            moduleId);
-        var sourceKindText = LanguageGeneratorOptions.GetFileValue(
-            fileOptions,
-            LanguageGeneratorOptions.SourceKindMetadata,
-            nameof(LanguageFileSourceKind.ModuleBuiltIn));
-        if (!Enum.TryParse(sourceKindText, ignoreCase: false, out LanguageFileSourceKind sourceKind))
-        {
-            return Invalid(
-                additionalText.Path,
-                text,
-                new AtomUI.Localization.Build.XliffParseError(
-                    $"AtomUILanguageSourceKind '{sourceKindText}' is not supported",
-                    1,
-                    1));
-        }
-
-        var contractValidation = LanguageFileContractValidation.Verified;
-        if (sourceKind == LanguageFileSourceKind.StaticLanguagePack)
-        {
-            var contractValidationText = LanguageGeneratorOptions.GetFileValue(
-                fileOptions,
-                LanguageGeneratorOptions.ContractValidationMetadata,
-                string.Empty);
-            if (contractValidationText == nameof(LanguageFileContractValidation.Verified))
-            {
-                contractValidation = LanguageFileContractValidation.Verified;
-            }
-            else if (contractValidationText == nameof(LanguageFileContractValidation.Deferred))
-            {
-                contractValidation = LanguageFileContractValidation.Deferred;
-            }
-            else
-            {
-                return Invalid(
-                    additionalText.Path,
-                    text,
-                    new AtomUI.Localization.Build.XliffParseError(
-                        $"AtomUILanguageContractValidation '{contractValidationText}' is not supported; " +
-                        "static language packages must declare Verified or Deferred",
-                        1,
-                        1));
-            }
-        }
-
-        int? contractVersion = null;
-        var contractVersionText = LanguageGeneratorOptions.GetFileValue(
-            fileOptions,
-            LanguageGeneratorOptions.ContractVersionMetadata,
-            string.Empty);
-        if (contractValidation == LanguageFileContractValidation.Deferred &&
-            contractVersionText.Length > 0)
-        {
-            return Invalid(
-                additionalText.Path,
-                text,
-                new AtomUI.Localization.Build.XliffParseError(
-                    "Deferred static language packages must not declare " +
-                    "AtomUILanguageContractVersion",
-                    1,
-                    1));
-        }
-
-        var contractVersionRequired = sourceKind == LanguageFileSourceKind.ApplicationOverride ||
-                                      sourceKind == LanguageFileSourceKind.StaticLanguagePack &&
-                                      contractValidation == LanguageFileContractValidation.Verified;
-        if (contractVersionRequired || contractVersionText.Length > 0)
-        {
-            if (!int.TryParse(
-                    contractVersionText,
-                    NumberStyles.None,
-                    CultureInfo.InvariantCulture,
-                    out var parsedContractVersion) ||
-                parsedContractVersion <= 0)
-            {
-                return Invalid(
-                    additionalText.Path,
-                    text,
-                    new AtomUI.Localization.Build.XliffParseError(
-                        "AtomUILanguageContractVersion must be a positive integer when specified and is " +
-                        "required for external language inputs",
-                        1,
-                        1));
-            }
-            contractVersion = parsedContractVersion;
-        }
-
-        var sourceFingerprint = LanguageGeneratorOptions.GetFileValue(
-            fileOptions,
-            LanguageGeneratorOptions.SourceFingerprintMetadata,
-            string.Empty);
-        if (sourceKind == LanguageFileSourceKind.StaticLanguagePack && sourceFingerprint.Length == 0)
-        {
-            return Invalid(
-                additionalText.Path,
-                text,
-                new AtomUI.Localization.Build.XliffParseError(
-                    "AtomUILanguageSourceFingerprint is required for static language packages",
-                    1,
-                    1));
-        }
-
-        if (sourceFingerprint.Length > 0)
-        {
-            if (!IsLowercaseSha256(sourceFingerprint))
-            {
-                return Invalid(
-                    additionalText.Path,
-                    text,
-                    new AtomUI.Localization.Build.XliffParseError(
-                        "AtomUILanguageSourceFingerprint must contain exactly 64 lowercase hexadecimal characters",
-                        1,
-                        1));
-            }
-
-            var actualFingerprint = AtomUI.Localization.Build.LanguageSourceFingerprint.Compute(
-                parseResult.Document!);
-            if (!string.Equals(sourceFingerprint, actualFingerprint, StringComparison.Ordinal))
-            {
-                return Invalid(
-                    additionalText.Path,
-                    text,
-                    new AtomUI.Localization.Build.XliffParseError(
-                        $"the declared source fingerprint '{sourceFingerprint}' does not match " +
-                        $"the XLIFF source contract fingerprint '{actualFingerprint}'",
-                        1,
-                        1));
-            }
-        }
-
-        return new AdditionalLanguageFileParseResult(
-            new AdditionalLanguageFile(
-                additionalText.Path,
-                moduleId,
-                sourceKind,
-                sourceIdentity,
-                contractValidation,
-                contractVersion,
-                sourceFingerprint.Length == 0 ? null : sourceFingerprint,
-                text,
-                parseResult.Document!),
-            ImmutableArray<Diagnostic>.Empty);
+        Input = input;
+        ActivationState = activationState;
+        Catalog = catalog;
+        EffectiveContractVersion = effectiveContractVersion;
     }
 
-    private static bool IsLowercaseSha256(string value)
-    {
-        if (value.Length != 64)
-        {
-            return false;
-        }
+    internal LanguageFileInput Input { get; }
 
-        foreach (var character in value)
-        {
-            if (character is not (>= '0' and <= '9') and not (>= 'a' and <= 'f'))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
+    internal LanguageInputActivationState ActivationState { get; }
 
-    private static AdditionalLanguageFileParseResult Invalid(
-        string path,
-        SourceText? text,
-        AtomUI.Localization.Build.XliffParseError error)
-    {
-        var sourceText = text ?? SourceText.From(string.Empty);
-        return new AdditionalLanguageFileParseResult(
-            null,
-            [CreateDiagnostic(path, sourceText, error)]);
-    }
+    internal LanguageCatalogInfo? Catalog { get; }
 
-    private static Diagnostic CreateDiagnostic(
-        string path,
-        SourceText text,
-        AtomUI.Localization.Build.XliffParseError error)
-    {
-        var location = CreateLocation(path, text, error.Line, error.Column);
-        return Diagnostic.Create(
-            AtomUIDiagnosticDescriptors.LocalizationInvalidXliff,
-            location,
-            path,
-            error.Message);
-    }
-
-    private static Location CreateLocation(
-        string path,
-        SourceText text,
-        int oneBasedLine,
-        int oneBasedColumn)
-    {
-        if (text.Lines.Count == 0)
-        {
-            return Location.Create(
-                path,
-                new TextSpan(0, 0),
-                new LinePositionSpan(new LinePosition(0, 0), new LinePosition(0, 0)));
-        }
-
-        var lineIndex = Math.Max(0, Math.Min(oneBasedLine - 1, text.Lines.Count - 1));
-        var line = text.Lines[lineIndex];
-        var column = Math.Max(0, Math.Min(oneBasedColumn - 1, line.Span.Length));
-        var position = line.Start + column;
-        var linePosition = new LinePosition(lineIndex, column);
-        return Location.Create(
-            path,
-            new TextSpan(position, 0),
-            new LinePositionSpan(linePosition, linePosition));
-    }
+    internal int? EffectiveContractVersion { get; }
 }

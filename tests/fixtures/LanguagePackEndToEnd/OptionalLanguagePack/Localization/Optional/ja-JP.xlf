@@ -4,7 +4,7 @@
     <unit id="OptionalTitle">
       <segment>
         <source>Optional title</source>
-        <target state="translated">オプションのタイトル</target>
+        <target state="final">オプションのタイトル</target>
       </segment>
     </unit>
   </file>

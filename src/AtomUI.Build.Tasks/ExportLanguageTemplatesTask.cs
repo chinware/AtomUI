@@ -1,5 +1,5 @@
 using System.Text;
-using AtomUI.Localization.Build;
+using AtomUI.Build.Tasks.LocalizationBuild;
 using Microsoft.Build.Framework;
 
 namespace AtomUI.Build.Tasks;

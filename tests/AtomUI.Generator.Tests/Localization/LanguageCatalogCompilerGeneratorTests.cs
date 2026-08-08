@@ -1,7 +1,7 @@
 using System.Collections.Immutable;
 using AtomUI.Generator.Localization.Catalog;
 using AtomUI.Generator.Localization.Xliff;
-using AtomUI.Localization.Build;
+using AtomUI.Build.Tasks.LocalizationBuild;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Shouldly;
@@ -26,20 +26,21 @@ public class LanguageCatalogCompilerGeneratorTests
                 new LanguageCatalogUnitInfo("ItemCount", Location.None)
             ],
             Location.None);
-        var file = new AdditionalLanguageFile(
-            "Localization/en-US.xlf",
+        var file = new LanguageFileInput(
+            new AdditionalLanguageFile(
+                "Localization/en-US.xlf",
+                SourceText.From(SourceXliff),
+                Xliff21Parser.Parse(SourceXliff).Document!),
             "Test.Package",
             LanguageFileSourceKind.ModuleBuiltIn,
             "Test.Package",
             LanguageFileContractValidation.Verified,
             null,
-            null,
-            SourceText.From(SourceXliff),
-            Xliff21Parser.Parse(SourceXliff).Document!);
+            null);
 
         var result = LanguageCatalogCompiler.Compile(
             [new LanguageCatalogParseResult(catalog, ImmutableArray<Diagnostic>.Empty)],
-            [new AdditionalLanguageFileParseResult(file, ImmutableArray<Diagnostic>.Empty)]);
+            [new LanguageFileInputResult(file, ImmutableArray<Diagnostic>.Empty)]);
 
         result.Diagnostics.ShouldBeEmpty();
         var compiled = result.Catalogs.ShouldHaveSingleItem();

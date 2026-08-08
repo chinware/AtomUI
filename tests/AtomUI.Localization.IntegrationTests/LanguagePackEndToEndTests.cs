@@ -18,6 +18,7 @@ public sealed partial class LanguagePackEndToEndTests
         var verifiedProject = XDocument.Load(
             Path.Combine(fixtureRoot, "LanguagePack", "LanguagePack.csproj"));
         verifiedProject.Descendants("AtomUILanguage").ShouldBeEmpty();
+        verifiedProject.Descendants("AtomUILanguageMinimumState").ShouldBeEmpty();
         verifiedProject.Descendants("AtomUIRequireVerifiedLanguageContract")
                        .ShouldHaveSingleItem()
                        .Value.ShouldBe("true");
@@ -31,6 +32,7 @@ public sealed partial class LanguagePackEndToEndTests
         var deferredProject = XDocument.Load(
             Path.Combine(fixtureRoot, "OptionalLanguagePack", "OptionalLanguagePack.csproj"));
         deferredProject.Descendants("AtomUILanguage").ShouldBeEmpty();
+        deferredProject.Descendants("AtomUILanguageMinimumState").ShouldBeEmpty();
         deferredProject.Descendants("AtomUIRequireVerifiedLanguageContract").ShouldBeEmpty();
         deferredProject.Descendants("ProjectReference")
                        .Any(reference =>
@@ -46,6 +48,20 @@ public sealed partial class LanguagePackEndToEndTests
                                                   (string?)reference.Attribute("Include") ==
                                                   "Acme.LocalizationComponent");
         ((string?)componentPackage.Attribute("PrivateAssets")).ShouldBe("all");
+
+        foreach (var languagePackDirectory in new[] { "LanguagePack", "OptionalLanguagePack" })
+        {
+            foreach (var target in Directory.EnumerateFiles(
+                         Path.Combine(fixtureRoot, languagePackDirectory, "Localization"),
+                         "*.xlf",
+                         SearchOption.AllDirectories)
+                     .Select(XDocument.Load)
+                     .SelectMany(document => document.Descendants().Where(element =>
+                         element.Name.LocalName == "target")))
+            {
+                ((string?)target.Attribute("state")).ShouldBe("final");
+            }
+        }
     }
 
     [Fact(Timeout = 360_000)]

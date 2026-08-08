@@ -12,11 +12,14 @@
 
 | 阶段 | 适合发现的问题 | 输出 |
 |---|---|---|
-| Roslyn Generator/Analyzer | enum symbol、Application partial、XLIFF、AdditionalFiles metadata 与引用 Catalog 对应 | `ATOMUILOCNNN` |
-| MSBuild Tasks | XLIFF 文档、模板导出、语言包内容和确定性 manifest/props 产物 | MSBuild error/warning |
+| Roslyn Generator/Analyzer | 编译项目中的 enum symbol、Application partial、XLIFF、AdditionalFiles metadata、Catalog/Bundle 绑定、来源冲突和引用 Catalog 对应 | `ATOMUILOCNNN` |
+| MSBuild Tasks | 静态语言包 pack 前 XLIFF/文件校验、模板导出、包内容安全和确定性 manifest/props 产物 | MSBuild error/warning |
 | Runtime Builder | 动态构造的支持语言、最终模块注册集合、Culture 元数据、首帧前完整覆盖 | typed startup exception |
 
 同一根因只由一个阶段提供主诊断。下游为了安全仍需 guard，但不能再次输出一串语义不同的重复错误。
+普通应用和模块编译不运行 MSBuild XLIFF 语义校验 Task；这些输入只由 Generator 报告。静态语言包项目不运行用于
+生成运行时代码的 Localization Generator，因此 pack 路径由 `PrepareLanguagePackageTask` 完整校验，源码项目引用消费
+路径由 `PrepareLanguagePackageAssetsTask` 执行不写 manifest 的轻量准备校验。
 
 ## 必须阻止生成或构建的问题
 
@@ -52,22 +55,28 @@
 
 ### Language Pack
 
-- XLIFF item 缺少 module ID、契约校验级别、规范包内路径或 64 位小写源 fingerprint；`Verified` item 另外要求正数
-  ContractVersion，`Deferred` item 不得伪造未绑定的 ContractVersion。
+- XLIFF item 缺少 module ID、契约校验级别或 64 位小写源 fingerprint；`Verified` item 另外要求正数
+  ContractVersion，`Deferred` item 不得伪造未绑定的 ContractVersion。规范包内路径由 pack/manifest 阶段校验，
+  不作为 Generator 的 Catalog identity。
 - props metadata 与实际 XLIFF、引用程序集中的 Catalog identity/ContractVersion/unit/source text 不一致。
 - 同一个 Catalog 和语言在同一优先级由多个包或文件提供。
 - 包含运行时 DLL、`.atomlang`、初始化代码或非声明式加载 target。
-- 官方语言包存在低于 `AtomUILanguageMinimumState=final` 的有效 unit，或任何需要重新审核的 target。
+- 静态语言包存在低于固定 `final` 发布门禁的有效 unit，或任何需要重新审核的 target。
 - 设置 `AtomUIRequireVerifiedLanguageContract=true` 的语言包包含任何 `Deferred` Catalog。
 
 `AtomUI.LanguagePack.xml` 由打包任务根据同一组 XLIFF 确定性生成，用于审计和工具读取。它不作为 Generator 的
 `AdditionalFile`，也不存在独立于 XLIFF/props 的“manifest 未声明 Catalog”编译契约。
 
-未安装 Language Module 的 `StaticLanguagePack` 输入保持 dormant，不属于错误。只有当 module ID 和 XLIFF
-`file id` 在当前 Compilation 中都无法关联目标模块时才允许 dormant；模块或 Catalog 一旦存在，identity、
+未安装 Language Module 的 `StaticLanguagePack` 输入保持 dormant，不属于错误。目标 module ID 在当前 Compilation
+和引用程序集都不存在时才允许 dormant；module 一旦存在，XLIFF `file id` 必须绑定该 module 中唯一 Catalog，identity、
 `Verified` 声明的 ContractVersion 或 `Deferred` 绑定的实际 ContractVersion、权威 `en-US`、unit 和 fingerprint 的
 任何不匹配仍按 Error 处理。项目 XLIFF 和应用 Override 不使用该豁免。XLIFF 结构、BCP 47 标签和必需
-AdditionalFiles metadata 在 dormant 分类前校验，不能因目标模块未安装而忽略损坏或不可信的包输入。
+AdditionalFiles metadata 在 dormant 分类前校验；fingerprint 还必须具有正确格式并与当前目标 XLIFF 的 source 内容
+一致。只有它与不可见权威 `en-US` fingerprint 的比较延迟到 active，不能因目标模块未安装而忽略损坏或不可信的
+包输入。
+
+`Verified`/`Deferred` 与 `Active`/`Dormant` 是正交状态。诊断和测试不得用“Deferred 输入自动 dormant”或
+“Verified 输入自动 active”推断消费行为。
 
 ## Warning 边界
 
@@ -111,8 +120,8 @@ Warning 只用于产物仍然确定可用、但维护质量可能下降的场景
 | 测试项目 | 必测内容 |
 |---|---|
 | `AtomUI.Localization.Tests` | BCP 47 规范化、CLDR 回退、Registry、Snapshot、优先级、切换、Culture、RTL、线程语义 |
-| `AtomUI.Generator.Tests` | Catalog/Extension/registration/bootstrap 输出、诊断正反例、确定性与增量更新 |
-| `AtomUI.Build.Tasks.Tests` | XLIFF reader/writer/merge、状态保留、manifest、props、冲突和模板导出 |
+| `AtomUI.Generator.Tests` | 输入 parser/metadata、Catalog symbol index、active/dormant planner、Catalog semantic validator、Bundle compiler、pipeline、Writer、诊断、确定性与增量更新 |
+| `AtomUI.Build.Tasks.Tests` | 共享 XLIFF 文件规则、reader/writer/merge、静态包 final 门禁、manifest、props、包安全和模板导出 |
 | `AtomUI.Localization.IntegrationTests` | 模块/静态语言包真实 pack 布局、临时 NuGet feed、Generator 消费和运行时切换 |
 | 控件测试项目 | 现有 XAML Extension、控件 C# 查询、三种内置语言完整性 |
 | `AtomUIGallery.Tests` | 应用 Catalog、语言菜单、ViewModel/导航刷新和支持语言配置 |
@@ -120,6 +129,11 @@ Warning 只用于产物仍然确定可用、但维护质量可能下降的场景
 每个 Generator diagnostic 必须覆盖 ID、severity、最小 Location、message 关键字段、正确写法不报告和边界输入。
 Generator 还必须覆盖 dormant/active 分类的增量测试，证明增加或移除组件引用只改变对应 Catalog 的生成结果，不使
 无关模块 source 失效。
+
+Generator 测试按生产职责拆分，避免继续扩张单个 `LanguageCatalogCompilerGeneratorTests`。Parser/metadata 测试不
+构造完整 Compilation；Symbol Index 测试只创建最小 Roslyn Compilation；semantic validator 和 Bundle compiler 使用
+不可变模型；pipeline/emitter 测试覆盖端到端诊断与生成结果。所有顺序相关测试必须主动打乱 AdditionalFiles、Catalog
+和 unit 输入，验证诊断和源码仍按 ordinal 规则稳定。
 
 ## 契约测试
 

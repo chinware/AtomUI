@@ -14,13 +14,32 @@ flowchart LR
     Pack["I18n package target XLIFF"] --> Additional
     Reference["Referenced Catalog enum assembly"] --> Generator
     Additional --> Generator
-    Tasks["AtomUI.Build.Tasks"] -->|"validate / export / merge"| Xlf
+    Tasks["AtomUI.Build.Tasks"] -->|"pack / manifest / props / export"| Xlf
     Generator --> Source["Generated descriptors / tables / extensions / bootstrap"]
     Source --> Assembly["Application or library assembly"]
 ```
 
-MSBuild 负责发现、分类、校验和传递文件；Generator 负责把文件模型与 Roslyn symbol 结合并生成强类型代码。
-两者都不得把 XLIFF 留给运行时处理。
+MSBuild 负责发现文件、项目引用桥接、AdditionalFiles metadata 投影以及 pack/export 副作用；Generator 负责
+编译项目中的输入规范化、Catalog/module 绑定、active/dormant 分类、Catalog/Bundle 语义校验和强类型代码生成。
+静态语言包项目不生成运行时代码，因此仍由 `PrepareLanguagePackageTask` 在 pack 前完整校验。两条路径共享中立的
+XLIFF 解析与文件级校验模型，但普通应用和模块编译不再运行重复的 MSBuild XLIFF 语义校验 Task。
+
+## 与重构前方案的比较
+
+| 维度 | 重构前方案 | Generator 优先方案 | 结论 |
+|---|---|---|---|
+| 编译语义权威 | MSBuild Task 与 Generator 都校验一部分 XLIFF/Catalog 规则，边界重叠 | Generator 独占编译项目中的 Catalog/Bundle 语义；Build Tasks 独占静态包产物和副作用 | 消除重复规则和诊断漂移，采用新方案 |
+| props/targets | 同时承载默认值、校验策略、Task 调度、输入投影、项目桥接和 pack 行为 | props 只保留稳定默认值/item 定义；targets 只负责发现、最小 metadata 投影、项目桥接和 pack/export | MSBuild 文件更短，职责可审计，采用新方案 |
+| Generator 内部复杂度 | 表面上类型较少，但解析、引用解析、冲突处理和输出容易集中到 `LanguageCatalogCompiler` | 使用 parser、metadata validator、symbol index、planner、semantic validator、Bundle compiler、plan 和 emitter 明确分责 | 增加的是可测试的结构化复杂度，不是缺点；禁止重新形成巨型 Compiler |
+| 第三方语言包 | 作者期组件契约与消费期组件可见性容易混成一个状态，缺少组件时的行为不够清楚 | `Verified`/`Deferred` 与 `Active`/`Dormant` 正交；允许社区包独立发布，并在实际激活时恢复严格校验 | 新方案覆盖真实第三方制作和可选组件场景 |
+| 诊断体验 | 同一根因可能先由 MSBuild、后由 Generator 以不同位置或消息重复报告 | 编译输入由 Generator 提供带 AdditionalText 位置的统一诊断；静态包 build/pack 由 Prepare task 报告 | 诊断来源与修复入口更明确 |
+| 增量与性能 | 普通编译可能先由 Task 扫描/解析，再由 Generator 再次解析和绑定 | Generator 增量输入只解析一次，并为当前及引用 Catalog 建立一次 `CatalogSymbolIndex` | 减少重复工作，但必须用增量失效和确定性测试保护 |
+| 静态语言包安全 | 通用编译校验 Task 与 pack 规则交织 | `PrepareLanguagePackageTask` 继续完整执行 final 门禁、manifest/props、路径和包内容安全 | 新方案没有削弱 pack 安全边界 |
+| 兼容性 | 现有属性、metadata 和 target 顺序继续累积历史负担 | 允许删除或重命名旧内部构建契约，只保留新的最小协议 | 本次重构明确不承担旧构建契约兼容成本 |
+
+新方案的核心不是把 XML 中的分支逐行翻译到一个 C# 类，而是把语义建立为不可变输入、一次性索引、显式规划、
+独立校验、编译计划和纯输出的流水线。文件和类型数量会适度增加，但规则所有权、测试边界和增量依赖同时变得清晰；
+这属于必要的架构组织。真正需要防止的是职责重新集中、阶段互相回查原始输入，或 Writer 再次实现语义规则。
 
 ## MSBuild items
 
@@ -66,11 +85,13 @@ targets 将这些 item 作为带元数据的 `AdditionalFiles` 传给 Generator�
 ```
 
 语言包项目通过 `AtomUIGetLanguagePackProjectAssets` target 返回当前可用的权威 `en-US` Catalog 源文件和经过
-`PrepareLanguagePackageTask` 校验、规范化并标记契约校验级别的目标语言文件。消费项目的
+`PrepareLanguagePackageAssetsTask` 校验并标记契约模式的目标语言文件。该轻量 Task 不扫描最终 NuGet 内容、
+不写 manifest，也不生成 props；它只为源码项目引用准备 Generator 所需的编译期资产。消费项目的
 `AtomUIResolveLanguagePackProjectReferences` target 在 `GenerateMSBuildEditorConfigFileShouldRun` 和 `CoreCompile` 之前调用
-这些项目 target，并把返回项加入 `AdditionalFiles`。返回项必须保留 `StaticLanguagePack`、source identity、module ID、
-`AtomUILanguageContractValidation`、规范化 package path 和 source fingerprint；`Verified` 返回项还必须保留
-ContractVersion。该协议只提供编译期输入，不复制 XLIFF、不产生运行时 DLL，也不改变聚合包的 NuGet 依赖图。
+这些项目 target，并把 Generator 所需的 `StaticLanguagePack` source kind、source identity、module ID、
+`AtomUILanguageContractValidation` 和 source fingerprint 投影到 `AdditionalFiles`；`Verified` 返回项另外投影
+ContractVersion。规范化 package path 只属于语言包 pack、manifest 和审计模型，不是 Generator 输入或 Catalog identity。
+该协议只提供编译期输入，不复制 XLIFF、不产生运行时 DLL，也不改变聚合包的 NuGet 依赖图。
 
 `AtomUILanguagePackProjectReference` 不跨普通 `ProjectReference` 传递。源码仓库中的最终应用宿主必须直接声明语言包
 项目引用，并直接以 Analyzer 方式引用 `AtomUI.Generator`；具体 `Application` 类型必须是可生成 partial 实现的
@@ -89,22 +110,61 @@ Generator 使用 Incremental Generator API 组合以下输入：
 2. 当前项目 XLIFF `AdditionalText`。
 3. 引用项目或 NuGet 程序集中的 `[LanguageCatalog]` enum symbol，以及模块主包携带的权威 `en-US` XLIFF。
 4. 静态 I18n 包和应用 Override 提供的目标 XLIFF。
-5. AnalyzerConfigOptions 提供的 `AssemblyName`、`PackageId`、RootNamespace 和构建策略。
+5. AnalyzerConfigOptions 提供的 `AtomUILanguageModuleId`、`PackageId`、`AssemblyName` 和 Generator 无法从 symbol
+   推断的最小 source metadata。
 
 输入必须按规范化 Catalog ID、语言标签、来源优先级和 unit Key 排序，确保不同操作系统、文件枚举顺序和增量
 构建下生成结果一致。
 
+## Generator 内部架构
+
+`src/AtomUI.Generator/Localization` 只使用三层物理结构。目录表达稳定领域边界，不为每个流水线阶段建立
+`Pipeline/`、`Model/`、`Symbols/` 或 `Semantics/` 子目录：
+
+```text
+Localization/
+├── LocalizationGenerator.cs             # 注册 Incremental Generator 输入
+├── LocalizationPipeline.cs              # 只编排阶段
+├── LocalizationGenerationResult.cs      # 整体编译计划与诊断
+├── LocalizationDiagnosticFactory.cs     # 共享诊断到 Roslyn Diagnostic 的适配
+├── LocalizationSourceEmitter.cs         # 唯一源码输出入口
+├── *SourceWriter.cs                      # 纯输出组件
+├── Catalog/                              # Catalog symbol、索引、规划、语义和 Bundle 编译
+└── Xliff/                                # AdditionalFiles 解析、metadata 校验和 typed 输入
+```
+
+核心模型使用结构化 `CatalogKey(ModuleId, FileId)`，不得使用拼接字符串作为字典 identity。`CatalogSymbolIndex`
+在一次 Generator compilation 中建立一次当前及引用 module/Catalog 索引；Catalog 语义校验器只消费规范化
+`CatalogDefinition`，不直接扫描 Roslyn `Compilation`。
+
+Generator 流水线固定为：
+
+1. 解析 AdditionalText XLIFF，保留源文件位置。
+2. 校验所有输入都必须满足的语言标签、metadata、ContractVersion/fingerprint 形态和当前文件 fingerprint。
+3. 统一解析当前和引用 Catalog symbol，建立 `CatalogSymbolIndex`。
+4. 保留 `Verified`/`Deferred` 契约模式，并独立分类 `Active`/`Dormant` 激活状态。
+5. 按 `CatalogKey` 建立工作集并选择唯一权威 `en-US` 源契约。
+6. 校验来源冲突、unit、source、placeholder、状态、ContractVersion 和权威 fingerprint。
+7. 将已验证 unit 编译为 ordinal slot 数组和不可变 `LocalizationCompilationPlan`。
+8. `LocalizationSourceEmitter` 调用 Catalog、module 和 application Writer 生成确定性源码。
+
+`LocalizationPipeline` 只能协调这些阶段，不能重新实现具体规则。`CatalogSemanticValidator` 可以在同一文件中用聚焦
+方法或内部策略组织规则；只有形成独立复用边界时才增加新 `.cs` 文件。Writer 的唯一输入是验证后的
+`LocalizationCompilationPlan`，不得重新查找 Catalog、判断 dormant 或解决 Bundle 冲突。
+
 ### 静态语言包激活
 
 Generator 在解析 `StaticLanguagePack` 的 Catalog 前建立当前项目和引用程序集的 Language Module/Catalog 索引。
-静态输入满足下列任一条件时为 active：当前项目拥有目标 Catalog、引用程序集声明相同
-`AtomUILanguageModuleId`，或 XLIFF `file id` 能解析到 Catalog enum。active 输入沿用全部严格校验。
+目标 module 存在且 XLIFF `file id` 能绑定该 module 中唯一 Catalog 时，静态输入为 active，并执行全部严格校验。
+module 存在但 Catalog 缺失、Catalog 属于其他 module 或 module identity 冲突都属于 Error，不得退回 dormant。
 
-Generator 必须先解析并校验 XLIFF 2.1 结构、语言标签、校验级别、module ID、package path 和 source fingerprint。
+Generator 必须先解析并校验 XLIFF 2.1 结构、语言标签、校验级别、module ID 和 source fingerprint。
 `Verified` 还必须携带正数 ContractVersion；`Deferred` 不允许携带构建系统没有绑定过的伪 ContractVersion。基础输入
-有效后，如果 module ID 不存在且 `file id` 也不可解析，该静态输入为 dormant。dormant 输入不进入 Catalog compiler、
-冲突检测、覆盖计算或生成源码，因此聚合语言包不会要求应用安装所有组件。该判断必须只依赖 Roslyn symbol 和显式
-assembly metadata，不扫描程序集、不读取 NuGet 目录，也不从包名或文件路径猜测模块。
+有效后，如果 module ID 不存在，该静态输入为 dormant。dormant 输入不进入 Catalog 深层校验、冲突检测、覆盖计算
+或生成源码，因此聚合语言包不会要求应用安装所有组件。fingerprint metadata 的存在、64 位小写 SHA-256 格式及其与
+当前目标 XLIFF source 内容的一致性仍必须通过；只有它与尚不可见权威 `en-US` fingerprint 的比较延迟到 active。
+激活判断必须只依赖 Roslyn symbol 和显式 assembly metadata，不扫描程序集、不读取 NuGet 目录，也不从包名或文件
+路径猜测模块。
 
 当 module active 时，`Deferred` 输入按 `file id` 解析唯一 Catalog symbol，并从该 symbol 和模块权威 `en-US` 输入
 绑定实际 ContractVersion，再执行与 `Verified` 相同的 Catalog、unit、source、占位符、fingerprint 和完整覆盖校验。
@@ -205,34 +265,39 @@ src/AtomUI.Build.Tasks
 ```
 
 它是内部编译型 MSBuild Task 程序集，不作为应用运行时引用，也不单独发布
-`AtomUI.Localization.Build`。主要 Task 为：
+`AtomUI.Build.Tasks.LocalizationBuild`。主要 Task 为：
 
 | Task | 职责 |
 |---|---|
-| `CollectLanguageCatalogsTask` | 收集显式 Catalog 模板 item，规范化 module、contract 和源指纹元数据 |
-| `ValidateLanguageFilesTask` | 校验 XLIFF 2.1、BCP 47、unit、状态、占位符和重复来源 |
 | `ExportLanguageTemplatesTask` | 按目标语言导出/更新可翻译 XLIFF 模板 |
-| `PrepareLanguagePackageTask` | 校验单一目标语言和包内容，绑定可用源契约，确定 `Verified`/`Deferred`，生成审计 XML manifest 和 contentFiles 清单 |
+| `PrepareLanguagePackageAssetsTask` | 为源码项目引用消费准备静态语言包资产，执行 final 状态、Verified/Deferred、fingerprint 和契约绑定校验，但不写 manifest 或扫描 NuGet 内容 |
+| `PrepareLanguagePackageTask` | 完整校验静态语言包 XLIFF、单一 module/目标语言和包内容，绑定可用源契约，确定 `Verified`/`Deferred`，生成审计 XML manifest 和 contentFiles 清单 |
 | `GenerateLanguagePackagePropsTask` | 为模块主包或静态语言包生成带契约校验级别的声明式 buildTransitive props |
 
 Task 内部协作组件包括：
 
 ```text
+src/AtomUI.Build.Tasks/LocalizationBuild/
 Xliff21Parser
 Xliff21Writer
 XliffMergeEngine
-XliffValidator
+LanguageFileValidation
 LanguagePackageManifestWriter
 PackagePropsWriter
 ```
 
-Generator 与 Build Tasks 对 XLIFF 使用同一规范化模型和诊断定义。纯 XLIFF 解析/模型代码以构建期内部共享源码
-编译进两个程序集，不增加公开运行时包，也不让 MSBuild Task 依赖 Roslyn workspace。
+Generator 与 Build Tasks 对 XLIFF 使用同一规范化模型、fingerprint 和文件级中立诊断。这些共享源码由
+`AtomUI.Build.Tasks` 物理拥有，使用 `AtomUI.Build.Tasks.LocalizationBuild` 命名空间，并以源码链接方式编译进
+Generator；共享模型不依赖 Roslyn `Diagnostic` 或 MSBuild
+`BuildEngine`。Generator 通过 `LocalizationDiagnosticFactory` 映射源位置和诊断描述符，Build Tasks 映射为
+MSBuild error/warning。该目录不增加公开运行时包，也不让 MSBuild Task 依赖 Roslyn workspace。
 
-`ValidateLanguageFilesTask` 接受 `AtomUILanguageMinimumState`。通用语言包默认值为 `translated`；官方附加语言包
-设置为 `final`。状态比较顺序为 `initial < translated < reviewed < final`，任何 `needs-review` subState 均不能满足
-官方发布门禁。`PrepareLanguagePackageTask` 还负责在完全缺少作者期源契约时报告 `ATOMUILOC010`，但继续生成
-`Deferred` 包；如果 `AtomUIRequireVerifiedLanguageContract=true`，相同情况升级为打包 Error。
+普通应用和模块资源由 Generator 固定要求 publishable `translated`、`reviewed` 或 `final` target。静态语言包的
+项目引用消费路径由 `PrepareLanguagePackageAssetsTask` 固定要求 `final`，pack 路径由
+`PrepareLanguagePackageTask` 固定要求 `final`，都不暴露可降低要求的 MSBuild 属性。状态顺序为
+`initial < translated < reviewed < final`，任何 `needs-review` subState 均不能满足语言包发布门禁。
+两个 Prepare task 在完全缺少作者期源契约时报告一次 `ATOMUILOC010` 并生成 `Deferred` 资产；如果
+`AtomUIRequireVerifiedLanguageContract=true`，相同情况升级为 Error。
 
 ## Generator NuGet 布局
 
@@ -252,9 +317,10 @@ AtomUI.Generator.nupkg
 RuntimeIdentifier 等全局发布属性，不能被最终应用当作运行时项目参与 NativeAOT publish。
 
 `AtomUI.Localization.targets` 在 NuGet `_GetPackageFiles` 收集之前准备模块/语言包资产，保证动态加入的 XLIFF、
-manifest 和 props 真正进入 `PackTask`。静态语言包项目设置 `AtomUIBuildLanguagePackage=true` 后只由 Build Tasks
-校验和打包；它自身不运行 Localization Generator 生成 Catalog 或运行时注册。相同 XLIFF 进入消费应用后才由
-Generator 编译为静态字符串表。
+manifest 和 props 真正进入 `PackTask`。普通应用和模块编译时，targets 只做文件发现、AdditionalFiles metadata
+投影和源码项目引用桥接；输入语义由 Generator 校验。静态语言包项目设置 `AtomUIBuildLanguagePackage=true` 后只由
+Build Tasks 校验和打包；它自身不运行 Localization Generator 生成 Catalog 或运行时注册。相同 XLIFF 进入消费应用后
+才由 Generator 编译为静态字符串表。
 
 纯聚合语言包是单独的普通 pack 项目：`IncludeBuildOutput=false`，不设置 `AtomUIBuildLanguagePackage`，不调用上述
 任务。源码项目中的模块语言包 `ProjectReference` 只作为仓库构建顺序边；.NET SDK pack 会把普通项目引用版本写成
@@ -269,8 +335,9 @@ NativeAOT publish 都不会因“文件已经生成但任务未登记”而产�
 
 ## 编译期与启动期校验边界
 
-XLIFF 结构、单个 Bundle 完整性、Catalog 契约、重复来源和语言包 props metadata 在构建期校验；manifest 由已校验
-的同一组 XLIFF 确定性生成，不是另一份编译输入。
+编译项目中的 XLIFF、Bundle 完整性、Catalog 契约、重复来源和语言包 props metadata 由 Generator 校验；静态语言包
+项目的相同文件规则和 pack 契约由 `PrepareLanguagePackageTask` 校验。manifest 由已校验的同一组 XLIFF 确定性生成，
+不是另一份编译输入。普通编译不得先运行 Build Task 再由 Generator 重复报告同一语义错误。
 
 `UseLanguages()` 是普通 C# 配置，不属于当前 Generator 的输入。完整支持语言集合、标准/显式
 `LanguageDefinition` 和最终 Catalog 覆盖在 Builder 冻结 Registry、预构建所有 Snapshot 时校验，并在首帧前失败。

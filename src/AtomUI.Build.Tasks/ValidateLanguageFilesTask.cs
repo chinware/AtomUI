@@ -1,4 +1,4 @@
-using AtomUI.Localization.Build;
+using AtomUI.Build.Tasks.LocalizationBuild;
 using Microsoft.Build.Framework;
 
 namespace AtomUI.Build.Tasks;
@@ -167,86 +167,37 @@ public sealed class ValidateLanguageFilesTask : AtomUILocalizationTask
         ParsedLanguageFile target,
         ParsedLanguageFile? source)
     {
-        var targetUnits = target.Document.File.Units
-                                .Where(static unit => !unit.IsObsolete)
-                                .ToDictionary(static unit => unit.Key, StringComparer.Ordinal);
-        IReadOnlyDictionary<string, XliffUnitModel>? sourceUnits = source?.Document.File.Units
-            .Where(static unit => !unit.IsObsolete)
-            .ToDictionary(static unit => unit.Key, StringComparer.Ordinal);
         var isPartial = string.Equals(
             target.SourceKind,
             "ApplicationOverride",
             StringComparison.Ordinal);
 
-        if (sourceUnits is not null)
+        var options = new LanguageFileValidationOptions(
+            requireCompleteBundle: !isPartial,
+            minimumTargetState: MinimumTargetState);
+        var diagnostics = source is null
+            ? LanguageFileValidation.ValidateTargetContent(target.Document, options)
+            : LanguageFileValidation.ValidateTarget(source.Document, target.Document, options);
+        foreach (var diagnostic in diagnostics)
         {
-            foreach (var sourceUnit in sourceUnits.Values)
-            {
-                if (!targetUnits.TryGetValue(sourceUnit.Key, out var targetUnit))
-                {
-                    if (!isPartial)
-                    {
-                        Error(
-                            InvalidTranslationCode,
-                            target.Path,
-                            1,
-                            1,
-                            $"Translation unit '{sourceUnit.Key}' ('{sourceUnit.Name ?? sourceUnit.Key}') is missing from " +
-                            $"the complete '{target.Document.TargetLanguage}' bundle.");
-                    }
-                    continue;
-                }
-
-                if (!string.Equals(sourceUnit.Source, targetUnit.Source, StringComparison.Ordinal))
-                {
-                    Error(
-                        CatalogMismatchCode,
-                        target.Path,
-                        targetUnit.Line,
-                        targetUnit.Column,
-                        $"Translation unit '{targetUnit.Key}' does not match the en-US Catalog source.");
-                }
-            }
-
-            foreach (var targetUnit in targetUnits.Values)
-            {
-                if (!sourceUnits.ContainsKey(targetUnit.Key))
-                {
-                    Error(
-                        CatalogMismatchCode,
-                        target.Path,
-                        targetUnit.Line,
-                        targetUnit.Column,
-                        $"Translation unit '{targetUnit.Key}' is not declared by the en-US Catalog source.");
-                }
-            }
+            Error(
+                GetDiagnosticCode(diagnostic.Kind),
+                target.Path,
+                diagnostic.Line,
+                diagnostic.Column,
+                diagnostic.Message);
         }
+    }
 
-        foreach (var unit in targetUnits.Values)
+    private static string GetDiagnosticCode(LanguageFileValidationDiagnosticKind kind)
+    {
+        return kind switch
         {
-            if (!XliffTranslationTarget.IsPublishable(unit))
-            {
-                Error(
-                    InvalidTranslationCode,
-                    target.Path,
-                    unit.Line,
-                    unit.Column,
-                    $"Translation unit '{unit.Key}' ('{unit.Name ?? unit.Key}') must contain a target " +
-                    "in translated, reviewed, or final state; an empty target is valid only when the source is empty.");
-                continue;
-            }
-
-            if (!XliffTranslationTarget.MeetsMinimumState(unit, MinimumTargetState))
-            {
-                Error(
-                    InvalidTranslationCode,
-                    target.Path,
-                    unit.Line,
-                    unit.Column,
-                    $"Translation unit '{unit.Key}' ('{unit.Name ?? unit.Key}') target state " +
-                    $"'{unit.TargetState}' does not meet the required minimum state '{MinimumTargetState}'.");
-            }
-        }
+            LanguageFileValidationDiagnosticKind.CatalogMismatch => CatalogMismatchCode,
+            LanguageFileValidationDiagnosticKind.InvalidTranslation => InvalidTranslationCode,
+            LanguageFileValidationDiagnosticKind.InvalidConfiguration => InvalidPackageCode,
+            _ => InvalidPackageCode
+        };
     }
 
     private void Error(

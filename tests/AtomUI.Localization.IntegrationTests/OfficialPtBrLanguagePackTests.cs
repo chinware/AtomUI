@@ -63,6 +63,7 @@ public sealed partial class LanguagePackEndToEndTests
             var project = XDocument.Load(projectPath);
             project.Descendants("AtomUILanguage").ShouldBeEmpty();
             project.Descendants("AtomUILanguageContractVersion").ShouldBeEmpty();
+            project.Descendants("AtomUILanguageMinimumState").ShouldBeEmpty();
             project.Descendants("AtomUIRequireVerifiedLanguageContract")
                    .ShouldHaveSingleItem()
                    .Value.ShouldBe("true");

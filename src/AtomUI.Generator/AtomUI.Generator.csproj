@@ -16,7 +16,6 @@
         <PublishTrimmed>false</PublishTrimmed>
         <PublishSingleFile>false</PublishSingleFile>
         <SelfContained>false</SelfContained>
-        <RuntimeIdentifier></RuntimeIdentifier>
     </PropertyGroup>
 
     <ItemGroup>
@@ -28,8 +27,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Include="../AtomUI.Localization.Build.Shared/**/*.cs"
-                 Link="LocalizationBuildShared/%(RecursiveDir)%(Filename)%(Extension)" />
+        <Compile Include="../AtomUI.Build.Tasks/LocalizationBuild/**/*.cs"
+                 Link="LocalizationBuild/%(RecursiveDir)%(Filename)%(Extension)" />
         <InternalsVisibleTo Include="AtomUI.Generator.Tests" />
     </ItemGroup>
 

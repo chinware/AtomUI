@@ -3,7 +3,6 @@
         <AtomUILanguageModuleId Condition="'$(AtomUILanguageModuleId)' == '' and '$(PackageId)' != ''">$(PackageId)</AtomUILanguageModuleId>
         <AtomUILanguageModuleId Condition="'$(AtomUILanguageModuleId)' == ''">$(AssemblyName)</AtomUILanguageModuleId>
         <AtomUILanguageContractVersion Condition="'$(AtomUILanguageContractVersion)' == ''">1</AtomUILanguageContractVersion>
-        <AtomUILanguageMinimumState Condition="'$(AtomUILanguageMinimumState)' == ''">translated</AtomUILanguageMinimumState>
     </PropertyGroup>
 
     <ItemDefinitionGroup>

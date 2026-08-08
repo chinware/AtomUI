@@ -1,5 +1,5 @@
 using Microsoft.CodeAnalysis;
-using AtomUI.Localization.Build;
+using AtomUI.Build.Tasks.LocalizationBuild;
 using Shouldly;
 using Xunit;
 using static AtomUI.Generator.Tests.Localization.LocalizationGeneratorTestHost;

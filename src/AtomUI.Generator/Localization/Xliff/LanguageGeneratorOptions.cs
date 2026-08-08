@@ -48,6 +48,11 @@ internal static class LanguageGeneratorOptions
         AnalyzerConfigOptionsProvider optionsProvider,
         string fallbackAssemblyName)
     {
+        if (TryGetNonEmpty(optionsProvider.GlobalOptions, "build_property.AtomUILanguageModuleId", out var moduleId))
+        {
+            return moduleId;
+        }
+
         if (TryGetNonEmpty(optionsProvider.GlobalOptions, "build_property.PackageId", out var packageId))
         {
             return packageId;

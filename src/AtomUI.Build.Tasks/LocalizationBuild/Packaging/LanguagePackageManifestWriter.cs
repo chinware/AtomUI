@@ -1,6 +1,6 @@
 using System.Xml.Linq;
 
-namespace AtomUI.Localization.Build;
+namespace AtomUI.Build.Tasks.LocalizationBuild;
 
 internal static class LanguagePackageManifestWriter
 {

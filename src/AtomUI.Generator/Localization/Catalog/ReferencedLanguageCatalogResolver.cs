@@ -4,6 +4,13 @@ using Microsoft.CodeAnalysis;
 
 namespace AtomUI.Generator.Localization.Catalog;
 
+internal enum ReferencedLanguageCatalogResolutionFailureKind
+{
+    CatalogNotFound,
+    InvalidCatalog,
+    ModuleMismatch
+}
+
 internal static class ReferencedLanguageCatalogResolver
 {
     private const string LanguageCatalogAttributeName =
@@ -14,15 +21,17 @@ internal static class ReferencedLanguageCatalogResolver
 
     internal static bool TryResolve(
         Compilation compilation,
-        AdditionalLanguageFile file,
+        LanguageFileInput file,
         out LanguageCatalogInfo? catalog,
-        out string error)
+        out string error,
+        out ReferencedLanguageCatalogResolutionFailureKind failureKind)
     {
         var symbol = compilation.GetTypeByMetadataName(file.Document.File.Id);
         if (symbol is null)
         {
             catalog = null;
             error = $"referenced Catalog '{file.Document.File.Id}' could not be found";
+            failureKind = ReferencedLanguageCatalogResolutionFailureKind.CatalogNotFound;
             return false;
         }
 
@@ -32,6 +41,7 @@ internal static class ReferencedLanguageCatalogResolver
         {
             catalog = null;
             error = $"referenced Catalog '{file.Document.File.Id}' is not a valid LanguageCatalog enum";
+            failureKind = ReferencedLanguageCatalogResolutionFailureKind.InvalidCatalog;
             return false;
         }
 
@@ -40,6 +50,7 @@ internal static class ReferencedLanguageCatalogResolver
         {
             catalog = null;
             error = $"referenced Catalog '{file.Document.File.Id}' cannot be a Flags enum";
+            failureKind = ReferencedLanguageCatalogResolutionFailureKind.InvalidCatalog;
             return false;
         }
 
@@ -49,19 +60,11 @@ internal static class ReferencedLanguageCatalogResolver
             catalog = null;
             error = $"referenced Catalog '{file.Document.File.Id}' belongs to language module " +
                     $"'{actualModuleId}' instead of '{file.ModuleId}'";
+            failureKind = ReferencedLanguageCatalogResolutionFailureKind.ModuleMismatch;
             return false;
         }
 
         var contractVersion = GetContractVersion(catalogAttribute);
-        if (file.ContractVersion is { } declaredContractVersion &&
-            declaredContractVersion != contractVersion)
-        {
-            catalog = null;
-            error = $"language input ContractVersion '{declaredContractVersion}' does not match " +
-                    $"referenced Catalog ContractVersion '{contractVersion}'";
-            return false;
-        }
-
         var units = ImmutableArray.CreateBuilder<LanguageCatalogUnitInfo>();
         foreach (var field in symbol.GetMembers().OfType<IFieldSymbol>()
                                     .Where(static field =>
@@ -74,6 +77,7 @@ internal static class ReferencedLanguageCatalogResolver
         {
             catalog = null;
             error = $"referenced Catalog '{file.Document.File.Id}' does not declare any units";
+            failureKind = ReferencedLanguageCatalogResolutionFailureKind.InvalidCatalog;
             return false;
         }
 
@@ -89,6 +93,7 @@ internal static class ReferencedLanguageCatalogResolver
             units.OrderBy(static unit => unit.Key, StringComparer.Ordinal).ToImmutableArray(),
             Location.None);
         error = string.Empty;
+        failureKind = default;
         return true;
     }
 
