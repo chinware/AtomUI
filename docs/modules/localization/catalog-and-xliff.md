@@ -201,8 +201,10 @@ en-US source
 
 可被外部翻译的类库 NuGet 必须发布完整 `en-US.xlf` 与自动生成的 `buildTransitive/<PackageId>.props`。XLIFF 包含
 稳定 Key、源文本和 translator notes；props 传递 module ID、ContractVersion、来源 identity、包内路径和
-源文本指纹。语言包 Build Tasks 另外生成包含相同审计字段的 manifest；Generator 只消费 props 注入的 XLIFF，
-这些资产都不作为运行时资源加载。
+源文本指纹。语言包作者可以通过作者期 `PrivateAssets=all` PackageReference 消费这些资产，获得模板导出和打包时
+完整契约校验；该引用不是社区语言包能够构建或发布的硬依赖。没有源契约时，语言包以 `Deferred` 级别打包，并在
+最终消费应用引用真实 Catalog 后完成相同强度的校验。语言包 Build Tasks 另外生成包含审计字段和校验级别的
+manifest；Generator 只消费 props 注入的 XLIFF，这些资产都不作为运行时资源加载。
 
 应用内部 Catalog 默认不导出到 NuGet；应用若需要把翻译工作拆成独立仓库，可通过同一个 MSBuild 导出目标
 生成受版本控制的模板，而不是复制内部 Generator 输出。

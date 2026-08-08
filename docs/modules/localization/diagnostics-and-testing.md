@@ -6,7 +6,7 @@
 ## 诊断所有权
 
 本地化领域使用 `LOC` 作为编译期诊断 domain，形成 `ATOMUILOCNNN`。`ATOMUILOC001` 到
-`ATOMUILOC009` 已在全局诊断规范中登记；ID 发布后不复用、不改变语义。
+`ATOMUILOC010` 已在全局诊断规范中登记；ID 发布后不复用、不改变语义。
 
 诊断由三个阶段拥有：
 
@@ -52,25 +52,30 @@
 
 ### Language Pack
 
-- XLIFF item 缺少 module ID、ContractVersion、规范包内路径或 64 位小写源 fingerprint。
+- XLIFF item 缺少 module ID、契约校验级别、规范包内路径或 64 位小写源 fingerprint；`Verified` item 另外要求正数
+  ContractVersion，`Deferred` item 不得伪造未绑定的 ContractVersion。
 - props metadata 与实际 XLIFF、引用程序集中的 Catalog identity/ContractVersion/unit/source text 不一致。
 - 同一个 Catalog 和语言在同一优先级由多个包或文件提供。
 - 包含运行时 DLL、`.atomlang`、初始化代码或非声明式加载 target。
 - 官方语言包存在低于 `AtomUILanguageMinimumState=final` 的有效 unit，或任何需要重新审核的 target。
+- 设置 `AtomUIRequireVerifiedLanguageContract=true` 的语言包包含任何 `Deferred` Catalog。
 
 `AtomUI.LanguagePack.xml` 由打包任务根据同一组 XLIFF 确定性生成，用于审计和工具读取。它不作为 Generator 的
 `AdditionalFile`，也不存在独立于 XLIFF/props 的“manifest 未声明 Catalog”编译契约。
 
 未安装 Language Module 的 `StaticLanguagePack` 输入保持 dormant，不属于错误。只有当 module ID 和 XLIFF
 `file id` 在当前 Compilation 中都无法关联目标模块时才允许 dormant；模块或 Catalog 一旦存在，identity、
-ContractVersion、权威 `en-US`、unit 和 fingerprint 的任何不匹配仍按 Error 处理。项目 XLIFF 和应用 Override 不使用
-该豁免。XLIFF 结构、BCP 47 标签和必需 AdditionalFiles metadata 在 dormant 分类前校验，不能因目标模块未安装而
-忽略损坏或不可信的包输入。
+`Verified` 声明的 ContractVersion 或 `Deferred` 绑定的实际 ContractVersion、权威 `en-US`、unit 和 fingerprint 的
+任何不匹配仍按 Error 处理。项目 XLIFF 和应用 Override 不使用该豁免。XLIFF 结构、BCP 47 标签和必需
+AdditionalFiles metadata 在 dormant 分类前校验，不能因目标模块未安装而忽略损坏或不可信的包输入。
 
 ## Warning 边界
 
 Warning 只用于产物仍然确定可用、但维护质量可能下降的场景，例如：
 
+- `ATOMUILOC010`：静态语言包项目没有取得目标 module 的权威 `en-US` 契约，因此只完成可独立证明的 XLIFF、状态、
+  占位符和包结构校验，并把完整 Catalog 校验推迟到消费应用。消息必须建议添加作者期
+  `PrivateAssets="all"` 组件 PackageReference，且每个打包项目只报告一次。
 - XLIFF 中存在已经标记 obsolete、当前生成不会使用的旧 unit。
 - translator note 缺少推荐上下文。
 - 应用显式 Override 的源文本指纹落后，但目标仍通过人工状态确认。
@@ -132,6 +137,13 @@ Generator 还必须覆盖 dormant/active 分类的增量测试，证明增加或
 10. Consumer 引用聚合包但未引用 DataGrid 等组件时构建成功，dormant 模块不产生 Bundle 或 Catalog 诊断。
 11. Consumer 后续引用该组件时，同一静态输入自动激活；正确包生成 Bundle，错误 Catalog/module/contract 必须失败。
 12. 同时显式引用聚合包和其中一个模块包时，NuGet 只解析一个 package identity，不产生重复翻译来源。
+13. 不引用组件契约的第三方语言包可以 build/pack，产生一次 `ATOMUILOC010`，manifest/props 标记为 `Deferred`，且
+    不包含伪 ContractVersion。
+14. 为同一项目添加 `PrivateAssets=all` 组件 PackageReference 后，模板可导出，打包不再报告 `ATOMUILOC010`，全部
+    Catalog 标记为 `Verified` 并携带权威 ContractVersion。
+15. `Deferred` 包在未安装目标模块时保持 dormant；安装正确模块后通过完整校验并生成 Bundle，安装不兼容模块或
+    使用错误 `file id`/Key/source 时应用构建失败。
+16. 官方语言包设置 `AtomUIRequireVerifiedLanguageContract=true` 后，缺少组件契约必须使 pack 失败。
 
 ## Avalonia 集成测试
 

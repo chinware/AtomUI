@@ -32,12 +32,26 @@ MSBuild 负责发现、分类、校验和传递文件；Generator 负责把文�
 ```
 
 targets 将这些 item 作为带元数据的 `AdditionalFiles` 传给 Generator。来源类型、source identity、module ID 和
-ContractVersion 必须保存在 item metadata 中，Generator 不从磁盘路径或 NuGet 包名猜测优先级。
+契约校验级别必须保存在 item metadata 中；`Verified` 输入另外携带 ContractVersion，`Deferred` 输入在 active 后从
+实际 Catalog 绑定 ContractVersion。Generator 不从磁盘路径或 NuGet 包名猜测优先级或身份。
 
-标准 targets 使用项目属性 `AtomUILanguageContractVersion` 作为自动发现 XLIFF 的默认 metadata，属性默认值为
+普通模块项目使用项目属性 `AtomUILanguageContractVersion` 作为自动发现内置 XLIFF 的默认 metadata，属性默认值为
 `1`。一个项目内 Catalog 版本一致时，应把该属性设置为 enum 上的 `ContractVersion`；存在不同版本的 Catalog
 时，必须通过 `AtomUILanguage Update="..."` 为对应文件显式覆盖 metadata。该值只是 MSBuild 和 NuGet 的契约
 传输副本，Generator 仍会与 Roslyn Catalog symbol 校验，不构成独立身份来源。
+
+静态语言包项目不使用默认值伪造目标 Catalog 的 ContractVersion。targets 自动扫描目标 XLIFF，并以项目级
+`AtomUILanguageModuleId` 作为唯一必需归属声明：
+
+- 如果作者期组件引用提供了该 module 的权威 `ModuleBuiltIn` `en-US` assets，Build Tasks 按 XLIFF `file id` 绑定
+  Catalog，补全 ContractVersion、package path 和 source fingerprint，并把资产标记为 `Verified`。
+- 如果该 module 完全没有权威源 assets，Build Tasks 只从目标 XLIFF 计算 package path 和 source fingerprint，把
+  资产标记为 `Deferred`，不填充或猜测 ContractVersion，并输出一次 `ATOMUILOC010` warning。
+- 如果已经存在部分权威源 assets，则所有目标 Catalog 必须完整匹配；缺失或未知 Catalog 是 Error，不能逐文件退回
+  `Deferred`。
+
+`AtomUIRequireVerifiedLanguageContract=true` 要求所有静态语言包资产为 `Verified`。AtomUI 官方模块语言包必须设置
+该属性；第三方社区包默认允许 `Deferred`。
 
 第三方语言包的 `buildTransitive/*.props` 只能追加声明式 item，不能运行初始化代码、修改应用源码或注册运行时
 程序集。MSBuild item 层只排除相同文件的重复 Include；不同路径或不同包提供相同 Catalog/语言时，由 Generator
@@ -51,12 +65,12 @@ ContractVersion 必须保存在 item metadata 中，Generator 不从磁盘路径
     Include="../../src/LanguagePacks/pt-BR/AtomUI.Controls.I18n.PtBR/AtomUI.Controls.I18n.PtBR.csproj" />
 ```
 
-语言包项目通过 `AtomUIGetLanguagePackProjectAssets` target 返回权威 `en-US` Catalog 源文件和经过
-`PrepareLanguagePackageTask` 校验、规范化并补全元数据的目标语言文件。消费项目的
+语言包项目通过 `AtomUIGetLanguagePackProjectAssets` target 返回当前可用的权威 `en-US` Catalog 源文件和经过
+`PrepareLanguagePackageTask` 校验、规范化并标记契约校验级别的目标语言文件。消费项目的
 `AtomUIResolveLanguagePackProjectReferences` target 在 `GenerateMSBuildEditorConfigFileShouldRun` 和 `CoreCompile` 之前调用
 这些项目 target，并把返回项加入 `AdditionalFiles`。返回项必须保留 `StaticLanguagePack`、source identity、module ID、
-ContractVersion、规范化 package path 和 source fingerprint；该协议只提供编译期输入，不复制 XLIFF、不产生运行时 DLL，
-也不改变聚合包的 NuGet 依赖图。
+`AtomUILanguageContractValidation`、规范化 package path 和 source fingerprint；`Verified` 返回项还必须保留
+ContractVersion。该协议只提供编译期输入，不复制 XLIFF、不产生运行时 DLL，也不改变聚合包的 NuGet 依赖图。
 
 `AtomUILanguagePackProjectReference` 不跨普通 `ProjectReference` 传递。源码仓库中的最终应用宿主必须直接声明语言包
 项目引用，并直接以 Analyzer 方式引用 `AtomUI.Generator`；具体 `Application` 类型必须是可生成 partial 实现的
@@ -86,10 +100,15 @@ Generator 在解析 `StaticLanguagePack` 的 Catalog 前建立当前项目和引
 静态输入满足下列任一条件时为 active：当前项目拥有目标 Catalog、引用程序集声明相同
 `AtomUILanguageModuleId`，或 XLIFF `file id` 能解析到 Catalog enum。active 输入沿用全部严格校验。
 
-Generator 必须先解析并校验 XLIFF 2.1 结构、语言标签和 AdditionalFiles 必需 metadata。基础输入有效后，如果
-module ID 不存在且 `file id` 也不可解析，该静态输入为 dormant。dormant 输入不进入 Catalog compiler、冲突检测、
-覆盖计算或生成源码，因此聚合语言包不会要求应用安装所有组件。该判断必须只依赖 Roslyn symbol 和显式 assembly
-metadata，不扫描程序集、不读取 NuGet 目录，也不从包名或文件路径猜测模块。
+Generator 必须先解析并校验 XLIFF 2.1 结构、语言标签、校验级别、module ID、package path 和 source fingerprint。
+`Verified` 还必须携带正数 ContractVersion；`Deferred` 不允许携带构建系统没有绑定过的伪 ContractVersion。基础输入
+有效后，如果 module ID 不存在且 `file id` 也不可解析，该静态输入为 dormant。dormant 输入不进入 Catalog compiler、
+冲突检测、覆盖计算或生成源码，因此聚合语言包不会要求应用安装所有组件。该判断必须只依赖 Roslyn symbol 和显式
+assembly metadata，不扫描程序集、不读取 NuGet 目录，也不从包名或文件路径猜测模块。
+
+当 module active 时，`Deferred` 输入按 `file id` 解析唯一 Catalog symbol，并从该 symbol 和模块权威 `en-US` 输入
+绑定实际 ContractVersion，再执行与 `Verified` 相同的 Catalog、unit、source、占位符、fingerprint 和完整覆盖校验。
+无法唯一解析、模块存在但 Catalog 缺失或源契约不一致时必须报错。延迟的是校验阶段，不是最终应用的校验强度。
 
 ModuleBuiltIn、项目本地 XLIFF 和 ApplicationOverride 不允许 dormant。模块存在但文件 ID、module ID、
 ContractVersion 或权威 `en-US` 不匹配时仍产生原有诊断。这样可以跳过真正未安装的模块，同时保留对已安装模块和
@@ -193,8 +212,8 @@ src/AtomUI.Build.Tasks
 | `CollectLanguageCatalogsTask` | 收集显式 Catalog 模板 item，规范化 module、contract 和源指纹元数据 |
 | `ValidateLanguageFilesTask` | 校验 XLIFF 2.1、BCP 47、unit、状态、占位符和重复来源 |
 | `ExportLanguageTemplatesTask` | 按目标语言导出/更新可翻译 XLIFF 模板 |
-| `PrepareLanguagePackageTask` | 校验单一目标语言、禁止运行时代码、生成审计 XML manifest 和 contentFiles 清单 |
-| `GenerateLanguagePackagePropsTask` | 为模块主包或静态语言包生成声明式 buildTransitive props |
+| `PrepareLanguagePackageTask` | 校验单一目标语言和包内容，绑定可用源契约，确定 `Verified`/`Deferred`，生成审计 XML manifest 和 contentFiles 清单 |
+| `GenerateLanguagePackagePropsTask` | 为模块主包或静态语言包生成带契约校验级别的声明式 buildTransitive props |
 
 Task 内部协作组件包括：
 
@@ -212,7 +231,8 @@ Generator 与 Build Tasks 对 XLIFF 使用同一规范化模型和诊断定义�
 
 `ValidateLanguageFilesTask` 接受 `AtomUILanguageMinimumState`。通用语言包默认值为 `translated`；官方附加语言包
 设置为 `final`。状态比较顺序为 `initial < translated < reviewed < final`，任何 `needs-review` subState 均不能满足
-官方发布门禁。
+官方发布门禁。`PrepareLanguagePackageTask` 还负责在完全缺少作者期源契约时报告 `ATOMUILOC010`，但继续生成
+`Deferred` 包；如果 `AtomUIRequireVerifiedLanguageContract=true`，相同情况升级为打包 Error。
 
 ## Generator NuGet 布局
 
@@ -267,4 +287,6 @@ dotnet msbuild \
 ```
 
 重复导出必须确定性合并：新增 unit 加入目标文件，删除 unit 标为 obsolete，源文本变化将目标标记为需复核，
-已有 target、state 和 notes 保留。工具不得静默删除译文或把旧译文视为新源文本的已确认翻译。
+已有 target、state 和 notes 保留。工具不得静默删除译文或把旧译文视为新源文本的已确认翻译。导出 target 必须至少
+发现一个权威 `en-US` 源资产；没有作者期组件引用时输出“添加 `PrivateAssets=all` 组件 PackageReference”的可操作
+提示，而不是从目标 XLIFF 反向伪造模板。

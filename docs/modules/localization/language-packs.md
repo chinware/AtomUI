@@ -97,9 +97,51 @@ AtomUI.Desktop.Controls.DataGrid.I18n.PtBR
 AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR
 ```
 
-每个模块包只包含该模块当前拥有的 Catalog。它可以在制作时通过 `PrivateAssets=all` 的项目或包引用取得权威
-`en-US` 模板，但生成的 I18n NuGet 不得依赖目标组件运行时包。应用仍需按自身功能引用组件包；聚合语言包不会为了
-翻译而把未使用的 DataGrid 或 ColorPicker DLL 带入应用。
+每个模块包只包含该模块当前拥有的 Catalog。制作项目可以通过作者期 `PackageReference` 或仓库内
+`ProjectReference` 取得权威 `en-US` 模板，但该引用不是第三方语言包能够构建和发布的前置条件。组件引用存在时，
+Build Tasks 在打包阶段完成完整契约校验；组件引用不存在时，打包降级为延迟契约校验，并输出一次带修复建议的
+warning。两种模式生成的 I18n NuGet 都不得依赖目标组件运行时包。应用仍需按自身功能引用组件包；聚合语言包不会
+为了翻译而把未使用的 DataGrid 或 ColorPicker DLL 带入应用。
+
+语言包项目仍必须在项目级声明唯一 `AtomUILanguageModuleId`。它用于没有安装目标组件时可靠地把静态输入分类为
+dormant，不是对每个 XLIFF 重复维护的 Catalog metadata。`AtomUILanguageContractVersion`、Catalog ID 和源
+fingerprint 不要求第三方作者手写；有权威源契约时由构建系统绑定，没有时由目标 XLIFF 和消费应用中的真实 Catalog
+完成延迟绑定。
+
+### 契约校验级别
+
+每个语言包 Catalog 资产具有以下校验级别，并通过 `AtomUILanguageContractValidation` 写入审计 manifest 和
+`buildTransitive` item metadata：
+
+| Level | 打包时输入 | 打包时保证 | 消费时行为 |
+|---|---|---|---|
+| `Verified` | 存在目标组件发布的权威 `en-US` 契约 | 校验 Catalog 集合、Key 完整性、source、占位符、ContractVersion 和 fingerprint | 再次与消费应用实际引用的 Catalog 校验，防止错误版本组合 |
+| `Deferred` | 没有权威组件契约 | 校验 XLIFF 2.1、语言标签、目标状态、重复 Key、source/target 占位符、module ID 和包结构 | 目标模块 active 后根据真实 Catalog 完成全部契约校验；未安装模块保持 dormant |
+
+同一目标模块只允许整体 `Verified` 或整体 `Deferred`。如果已经发现该模块的任何权威源资产，则所有目标 Catalog 都
+必须与权威集合完整匹配；文件名、`file id` 或 Key 写错不能通过把单个文件降级为 `Deferred` 来隐藏。只有完全没有
+发现该模块的权威源资产时，才允许整个模块包进入 `Deferred`。
+
+默认允许 `Deferred`，并由 MSBuild 输出一次 `ATOMUILOC010` warning，明确说明当前没有执行完整契约校验，并建议
+添加作者期 `PrivateAssets="all"` 组件包引用。warning 不阻止社区作者独立发布。AtomUI 官方语言包设置
+`AtomUIRequireVerifiedLanguageContract=true`；此时任何 `Deferred` 资产都使打包失败。
+
+生成的 props 形态为：
+
+```xml
+<AtomUILanguage
+    Include=".../Localization/Dialog/pt-BR.xlf"
+    AtomUILanguageSourceKind="StaticLanguagePack"
+    AtomUILanguageSourceIdentity="Acme.AtomUI.Desktop.Controls.I18n.PtBR"
+    AtomUILanguageModuleId="AtomUI.Desktop.Controls"
+    AtomUILanguageContractValidation="Deferred"
+    AtomUILanguagePackagePath="Localization/Dialog/pt-BR.xlf"
+    AtomUILanguageSourceFingerprint="..." />
+```
+
+`Verified` item 在此基础上增加 `AtomUILanguageContractVersion`。manifest 的对应 `catalog` 节点使用
+`contractValidation="Verified|Deferred"`；`Deferred` 节点省略 `contractVersion`，不能写入 `0`、默认值 `1` 或作者
+猜测的版本。
 
 ## 未引用模块与 dormant 输入
 
@@ -111,7 +153,9 @@ AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR
    到 Catalog enum 时，该输入为 active，必须完成全部 Catalog、ContractVersion、unit、源文本和 fingerprint 校验。
 3. 基础校验通过后，目标 module ID 不存在且 `file id` 也无法解析的输入为 dormant：不生成 Bundle、不参与冲突和
    覆盖计算，也不报告“referenced Catalog could not be found”。
-4. 模块存在但 Catalog 缺失、identity 错误或版本不兼容时仍然构建失败，不能用 dormant 规则隐藏损坏的语言包。
+4. 模块存在时，`Verified` 输入校验声明的 ContractVersion，`Deferred` 输入从实际 Catalog 绑定 ContractVersion；
+   两者都必须完成 Catalog、unit、source、占位符和 fingerprint 校验。Catalog 缺失、identity 错误或版本不兼容时
+   仍然构建失败，不能用 dormant 或 `Deferred` 隐藏损坏的语言包。
 5. dormant 只适用于 NuGet 提供的 `StaticLanguagePack`。ModuleBuiltIn、项目 XLIFF 和应用 Override 指向不存在的
    Catalog 时仍然报错。
 
@@ -173,13 +217,15 @@ Catalog 所有权。
 `AtomUI.LanguagePack.xml` 是由打包任务根据 XLIFF 确定性生成的审计和工具产物，至少记录：
 
 - package identity 和规范目标 `LanguageTag`。
-- 每个目标 Catalog 的 module ID、Catalog metadata ID、ContractVersion 和包内路径。
+- 每个目标 Catalog 的 module ID、Catalog metadata ID、契约校验级别和包内路径。
+- `Verified` Catalog 的 ContractVersion；`Deferred` Catalog 省略该字段。
 - 每个目标 Catalog 的规范源文本指纹。
 
 `buildTransitive/<PackageId>.props` 是编译权威入口。它只把每个 XLIFF 作为带 source kind、source identity、
-module ID、ContractVersion、包内路径和源 fingerprint 的 `AtomUILanguage` item 注入；标准 targets 再将这些 XLIFF
-加入 `AdditionalFiles`。manifest 不进入 `AdditionalFiles`，Generator 也不会独立发现或读取它。最终应用 Generator
-校验 metadata、实际 XLIFF 和引用 Catalog 后把翻译编译进应用程序集；运行时不需要知道翻译来自哪个 NuGet 文件。
+module ID、契约校验级别、包内路径和源 fingerprint 的 `AtomUILanguage` item 注入；`Verified` 资产另外携带绑定后的
+ContractVersion，`Deferred` 资产不得伪造 ContractVersion。标准 targets 再将这些 XLIFF 加入 `AdditionalFiles`。
+manifest 不进入 `AdditionalFiles`，Generator 也不会独立发现或读取它。最终应用 Generator 校验 metadata、实际
+XLIFF 和引用 Catalog 后把翻译编译进应用程序集；运行时不需要知道翻译来自哪个 NuGet 文件。
 
 聚合包使用普通 SDK-style pack 项目，设置 `IncludeBuildOutput=false`，并保留指向模块语言包项目的
 `ProjectReference` 作为仓库构建顺序边。由于 .NET SDK pack 会把普通 `ProjectReference` 版本序列化为最低版本范围，
@@ -215,12 +261,25 @@ dotnet new atomui-language-pack \
 模板生成：
 
 - 不产出 DLL 的 SDK-style pack 项目。
-- `AtomUILanguageTag`、PackageId 和 package metadata。
+- `AtomUILanguageTag`、唯一项目级 `AtomUILanguageModuleId`、PackageId 和 package metadata。
 - `AtomUI.Generator` 构建期 PackageReference。
-- `Localization/` 目录和带完整来源元数据的 `AtomUILanguage` item。
+- 自动扫描 `Localization/**/*.xlf`，不要求作者逐文件维护 ContractVersion、package path 或 fingerprint。
 - build/pack 校验 target 和最小翻译说明。
 
-模板不复制 AtomUI 当前 Catalog。作者通过项目引用和导出目标取得准确模板：
+模板不复制 AtomUI 当前 Catalog。作者可以直接维护已有 XLIFF，并以 `Deferred` 模式独立打包。推荐添加作者期组件
+NuGet 引用，以便导出准确模板并在打包时获得 `Verified`：
+
+```xml
+<PackageReference Include="AtomUI.Desktop.Controls"
+                  Version="6.0.0"
+                  PrivateAssets="all" />
+```
+
+`PrivateAssets="all"` 只阻止该作者期依赖传递到语言包消费者，不阻止当前项目读取组件包发布的
+`buildTransitive` 契约资产。语言包模板命令应根据 `--module` 和 `--atomui-version` 自动生成该引用，作者不需要手写
+路径、Catalog 或 ContractVersion。
+
+存在组件契约时，作者可运行：
 
 ```bash
 dotnet msbuild \
@@ -230,6 +289,9 @@ dotnet msbuild \
 dotnet build
 dotnet pack
 ```
+
+没有组件引用时，`AtomUIExportLanguageTemplates` 没有权威输入可导出，必须输出可操作提示；这不影响作者对已有 XLIFF
+执行 `dotnet build` 或 `dotnet pack`。打包产生 `ATOMUILOC010` warning，并将资产标记为 `Deferred`。
 
 ## 第三方组件作者职责
 
@@ -290,8 +352,9 @@ Localization Snapshot 的测试宿主直接声明。宿主项目还必须以 Ana
 
 ## 冲突与兼容
 
-- props metadata、XLIFF `file id` 或引用 Catalog identity 不一致时构建失败。
-- Catalog ContractVersion 不兼容时构建失败。
+- `Verified` props metadata、XLIFF `file id` 或引用 Catalog identity 不一致时构建失败。
+- `Verified` Catalog ContractVersion 不兼容时构建失败；`Deferred` 在目标模块 active 后绑定并校验消费应用实际
+  ContractVersion。
 - props 中的源 fingerprint 必须是当前 XLIFF 源契约的 64 位小写 SHA-256；目标源文本还必须与权威 `en-US` 一致。
 - 两个来源提供相同 Catalog/语言且优先级相同时构建失败。
 - 语言包缺少目标 Catalog 的新增 unit 时视为覆盖不完整。
