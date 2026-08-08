@@ -14,6 +14,12 @@ internal enum LanguageFileSourceKind
     ApplicationOverride
 }
 
+internal enum LanguageFileContractValidation
+{
+    Verified,
+    Deferred
+}
+
 internal sealed class AdditionalLanguageFile
 {
     internal AdditionalLanguageFile(
@@ -21,6 +27,7 @@ internal sealed class AdditionalLanguageFile
         string moduleId,
         LanguageFileSourceKind sourceKind,
         string sourceIdentity,
+        LanguageFileContractValidation contractValidation,
         int? contractVersion,
         string? sourceFingerprint,
         SourceText text,
@@ -30,6 +37,7 @@ internal sealed class AdditionalLanguageFile
         ModuleId = moduleId;
         SourceKind = sourceKind;
         SourceIdentity = sourceIdentity;
+        ContractValidation = contractValidation;
         ContractVersion = contractVersion;
         SourceFingerprint = sourceFingerprint;
         Text = text;
@@ -43,6 +51,8 @@ internal sealed class AdditionalLanguageFile
     internal LanguageFileSourceKind SourceKind { get; }
 
     internal string SourceIdentity { get; }
+
+    internal LanguageFileContractValidation ContractValidation { get; }
 
     internal int? ContractVersion { get; }
 
@@ -120,13 +130,55 @@ internal static class AdditionalLanguageFileParser
                     1));
         }
 
+        var contractValidation = LanguageFileContractValidation.Verified;
+        if (sourceKind == LanguageFileSourceKind.StaticLanguagePack)
+        {
+            var contractValidationText = LanguageGeneratorOptions.GetFileValue(
+                fileOptions,
+                LanguageGeneratorOptions.ContractValidationMetadata,
+                string.Empty);
+            if (contractValidationText == nameof(LanguageFileContractValidation.Verified))
+            {
+                contractValidation = LanguageFileContractValidation.Verified;
+            }
+            else if (contractValidationText == nameof(LanguageFileContractValidation.Deferred))
+            {
+                contractValidation = LanguageFileContractValidation.Deferred;
+            }
+            else
+            {
+                return Invalid(
+                    additionalText.Path,
+                    text,
+                    new AtomUI.Localization.Build.XliffParseError(
+                        $"AtomUILanguageContractValidation '{contractValidationText}' is not supported; " +
+                        "static language packages must declare Verified or Deferred",
+                        1,
+                        1));
+            }
+        }
+
         int? contractVersion = null;
         var contractVersionText = LanguageGeneratorOptions.GetFileValue(
             fileOptions,
             LanguageGeneratorOptions.ContractVersionMetadata,
             string.Empty);
-        var contractVersionRequired = sourceKind is LanguageFileSourceKind.StaticLanguagePack or
-                                      LanguageFileSourceKind.ApplicationOverride;
+        if (contractValidation == LanguageFileContractValidation.Deferred &&
+            contractVersionText.Length > 0)
+        {
+            return Invalid(
+                additionalText.Path,
+                text,
+                new AtomUI.Localization.Build.XliffParseError(
+                    "Deferred static language packages must not declare " +
+                    "AtomUILanguageContractVersion",
+                    1,
+                    1));
+        }
+
+        var contractVersionRequired = sourceKind == LanguageFileSourceKind.ApplicationOverride ||
+                                      sourceKind == LanguageFileSourceKind.StaticLanguagePack &&
+                                      contractValidation == LanguageFileContractValidation.Verified;
         if (contractVersionRequired || contractVersionText.Length > 0)
         {
             if (!int.TryParse(
@@ -197,6 +249,7 @@ internal static class AdditionalLanguageFileParser
                 moduleId,
                 sourceKind,
                 sourceIdentity,
+                contractValidation,
                 contractVersion,
                 sourceFingerprint.Length == 0 ? null : sourceFingerprint,
                 text,

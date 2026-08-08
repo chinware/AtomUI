@@ -53,10 +53,11 @@ internal static class ReferencedLanguageCatalogResolver
         }
 
         var contractVersion = GetContractVersion(catalogAttribute);
-        if (file.ContractVersion != contractVersion)
+        if (file.ContractVersion is { } declaredContractVersion &&
+            declaredContractVersion != contractVersion)
         {
             catalog = null;
-            error = $"language input ContractVersion '{file.ContractVersion}' does not match " +
+            error = $"language input ContractVersion '{declaredContractVersion}' does not match " +
                     $"referenced Catalog ContractVersion '{contractVersion}'";
             return false;
         }

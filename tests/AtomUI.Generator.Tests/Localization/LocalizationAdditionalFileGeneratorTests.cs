@@ -43,7 +43,7 @@ public class LocalizationAdditionalFileGeneratorTests
     }
 
     [Fact]
-    public void Requires_A_Positive_Contract_Version_For_A_Static_Language_Pack()
+    public void Requires_A_Positive_Contract_Version_For_A_Verified_Static_Language_Pack()
     {
         var result = Run(
             CatalogSource,
@@ -53,6 +53,57 @@ public class LocalizationAdditionalFileGeneratorTests
         var diagnostic = result.Diagnostics.ShouldHaveSingleItem();
         diagnostic.Id.ShouldBe("ATOMUILOC005");
         diagnostic.GetMessage().ShouldContain("AtomUILanguageContractVersion");
+    }
+
+    [Fact]
+    public void Accepts_A_Deferred_Static_Language_Pack_Without_A_Contract_Version()
+    {
+        var result = Run(
+            CatalogSource,
+            LanguageFile(SourceXliff),
+            ExternalLanguageFile(
+                contractVersion: null,
+                SourceFingerprint,
+                contractValidation: "Deferred"));
+
+        result.Diagnostics.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Rejects_A_Deferred_Static_Language_Pack_With_A_Contract_Version()
+    {
+        var result = Run(
+            CatalogSource,
+            LanguageFile(SourceXliff),
+            ExternalLanguageFile(
+                contractVersion: "1",
+                SourceFingerprint,
+                contractValidation: "Deferred"));
+
+        var diagnostic = result.Diagnostics.ShouldHaveSingleItem();
+        diagnostic.Id.ShouldBe("ATOMUILOC005");
+        diagnostic.GetMessage().ShouldContain("Deferred");
+        diagnostic.GetMessage().ShouldContain("AtomUILanguageContractVersion");
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("Unknown")]
+    [InlineData("0")]
+    public void Rejects_A_Static_Language_Pack_Without_A_Valid_Contract_Validation(
+        string? contractValidation)
+    {
+        var result = Run(
+            CatalogSource,
+            LanguageFile(SourceXliff),
+            ExternalLanguageFile(
+                contractVersion: "1",
+                SourceFingerprint,
+                contractValidation: contractValidation));
+
+        var diagnostic = result.Diagnostics.ShouldHaveSingleItem();
+        diagnostic.Id.ShouldBe("ATOMUILOC005");
+        diagnostic.GetMessage().ShouldContain("AtomUILanguageContractValidation");
     }
 
     [Fact]
@@ -118,9 +169,27 @@ public class LocalizationAdditionalFileGeneratorTests
             ExternalLanguageFile(
                 contractVersion: "1",
                 sourceFingerprint: null,
-                sourceKind: "ApplicationOverride"));
+                sourceKind: "ApplicationOverride",
+                contractValidation: null));
 
         result.Diagnostics.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Still_Requires_A_Contract_Version_For_An_Application_Override()
+    {
+        var result = Run(
+            CatalogSource,
+            LanguageFile(SourceXliff),
+            ExternalLanguageFile(
+                contractVersion: null,
+                sourceFingerprint: null,
+                sourceKind: "ApplicationOverride",
+                contractValidation: null));
+
+        var diagnostic = result.Diagnostics.ShouldHaveSingleItem();
+        diagnostic.Id.ShouldBe("ATOMUILOC005");
+        diagnostic.GetMessage().ShouldContain("AtomUILanguageContractVersion");
     }
 
     private static TestAdditionalText LanguageFile(string content)
@@ -139,7 +208,8 @@ public class LocalizationAdditionalFileGeneratorTests
     private static TestAdditionalText ExternalLanguageFile(
         string? contractVersion,
         string? sourceFingerprint,
-        string sourceKind = "StaticLanguagePack")
+        string sourceKind = "StaticLanguagePack",
+        string? contractValidation = "Verified")
     {
         var metadata = new Dictionary<string, string>(StringComparer.Ordinal)
         {
@@ -149,6 +219,11 @@ public class LocalizationAdditionalFileGeneratorTests
                 "Test.Package.I18n.ZhCN",
             ["build_metadata.AdditionalFiles.AtomUILanguageModuleId"] = "Test.Package"
         };
+        if (contractValidation is not null)
+        {
+            metadata["build_metadata.AdditionalFiles.AtomUILanguageContractValidation"] =
+                contractValidation;
+        }
         if (contractVersion is not null)
         {
             metadata["build_metadata.AdditionalFiles.AtomUILanguageContractVersion"] = contractVersion;

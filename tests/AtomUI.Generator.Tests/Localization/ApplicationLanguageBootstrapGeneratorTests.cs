@@ -297,6 +297,8 @@ public class ApplicationLanguageBootstrapGeneratorTests
         }
         if (sourceKind == "StaticLanguagePack")
         {
+            metadata["build_metadata.AdditionalFiles.AtomUILanguageContractValidation"] =
+                "Verified";
             metadata["build_metadata.AdditionalFiles.AtomUILanguageSourceFingerprint"] =
                 LanguageSourceFingerprint.Compute(Xliff21Parser.Parse(content).Document!);
         }

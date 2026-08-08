@@ -31,6 +31,7 @@ public class LanguageCatalogCompilerGeneratorTests
             "Test.Package",
             LanguageFileSourceKind.ModuleBuiltIn,
             "Test.Package",
+            LanguageFileContractValidation.Verified,
             null,
             null,
             SourceText.From(SourceXliff),
@@ -215,6 +216,62 @@ public class LanguageCatalogCompilerGeneratorTests
     }
 
     [Fact]
+    public void Resolves_An_Active_Deferred_Static_Language_Pack_Against_The_Referenced_Catalog()
+    {
+        var reference = CreateExternalCatalogReference();
+        var result = Run(
+            """
+            namespace Avalonia { public class Application { } }
+            namespace TestApp { public partial class App : Avalonia.Application { } }
+            """,
+            [reference],
+            ReferencedSourceFile(),
+            StaticPackFile(contractVersion: null, contractValidation: "Deferred"));
+
+        result.Diagnostics.ShouldBeEmpty();
+        var bootstrap = result.GeneratedSources
+                              .Single(source =>
+                                  source.HintName == "GeneratedApplicationLanguageBootstrap.g.cs")
+                              .SourceText
+                              .ToString();
+        bootstrap.ShouldContain("TranslationSourceKind.StaticLanguagePack");
+        bootstrap.ShouldContain("        2,");
+    }
+
+    [Fact]
+    public void Reports_A_Deferred_Static_Pack_With_An_Unknown_Unit_Key()
+    {
+        var reference = CreateExternalCatalogReference();
+        var result = Run(
+            "namespace TestApp { public sealed class Marker { } }",
+            [reference],
+            ReferencedSourceFile(),
+            StaticPackFile(
+                contractVersion: null,
+                unitKey: "Heading",
+                contractValidation: "Deferred"));
+
+        AssertHasDiagnostic(result, "ATOMUILOC006", "unit Key");
+    }
+
+    [Fact]
+    public void Reports_A_Deferred_Static_Pack_With_Changed_Source_Text()
+    {
+        var reference = CreateExternalCatalogReference();
+        var result = Run(
+            "namespace TestApp { public sealed class Marker { } }",
+            [reference],
+            ReferencedSourceFile(),
+            StaticPackFile(
+                contractVersion: null,
+                contractValidation: "Deferred",
+                titleSource: "Changed title"));
+
+        AssertHasDiagnostic(result, "ATOMUILOC006", "source text");
+        AssertHasDiagnostic(result, "ATOMUILOC006", "source fingerprint");
+    }
+
+    [Fact]
     public void Reports_A_Static_Language_Pack_Without_An_Authoritative_English_Source()
     {
         var reference = CreateExternalCatalogReference();
@@ -239,6 +296,18 @@ public class LanguageCatalogCompilerGeneratorTests
     }
 
     [Fact]
+    public void Keeps_A_Deferred_Static_Pack_Dormant_When_The_Target_Module_Is_Not_Referenced()
+    {
+        var result = Run(
+            "namespace TestApp { public sealed class Marker { } }",
+            [],
+            StaticPackFile(contractVersion: null, contractValidation: "Deferred"));
+
+        result.Diagnostics.ShouldBeEmpty();
+        result.GeneratedSources.ShouldBeEmpty();
+    }
+
+    [Fact]
     public void Reports_A_Static_Pack_For_An_Unknown_Catalog_In_A_Referenced_Module()
     {
         var reference = CreateExternalModuleReference();
@@ -246,6 +315,18 @@ public class LanguageCatalogCompilerGeneratorTests
             "namespace TestApp { public sealed class Marker { } }",
             [reference],
             StaticPackFile(contractVersion: "2"));
+
+        AssertHasDiagnostic(result, "ATOMUILOC006", "referenced Catalog");
+    }
+
+    [Fact]
+    public void Reports_A_Deferred_Static_Pack_For_An_Unknown_Catalog_In_An_Active_Module()
+    {
+        var reference = CreateExternalModuleReference();
+        var result = Run(
+            "namespace TestApp { public sealed class Marker { } }",
+            [reference],
+            StaticPackFile(contractVersion: null, contractValidation: "Deferred"));
 
         AssertHasDiagnostic(result, "ATOMUILOC006", "referenced Catalog");
     }
@@ -445,26 +526,35 @@ public class LanguageCatalogCompilerGeneratorTests
     }
 
     private static TestAdditionalText StaticPackFile(
-        string contractVersion,
+        string? contractVersion,
         string moduleId = "External.Package",
-        string unitKey = "Title")
+        string unitKey = "Title",
+        string contractValidation = "Verified",
+        string titleSource = "Title")
     {
         var content = TargetXliff("zh-CN", "标题", "项目 {0}")
-            .Replace("id=\"Title\"", $"id=\"{unitKey}\"");
+            .Replace("id=\"Title\"", $"id=\"{unitKey}\"")
+            .Replace("<source>Title</source>", $"<source>{titleSource}</source>");
         var sourceFingerprint = LanguageSourceFingerprint.Compute(
             Xliff21Parser.Parse(content).Document!);
+        var metadata = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["build_metadata.AdditionalFiles.AtomUILanguage"] = "true",
+            ["build_metadata.AdditionalFiles.AtomUILanguageSourceKind"] = "StaticLanguagePack",
+            ["build_metadata.AdditionalFiles.AtomUILanguageSourceIdentity"] = "External.Package.I18n.ZhCN",
+            ["build_metadata.AdditionalFiles.AtomUILanguageModuleId"] = moduleId,
+            ["build_metadata.AdditionalFiles.AtomUILanguageContractValidation"] = contractValidation,
+            ["build_metadata.AdditionalFiles.AtomUILanguageSourceFingerprint"] = sourceFingerprint
+        };
+        if (contractVersion is not null)
+        {
+            metadata["build_metadata.AdditionalFiles.AtomUILanguageContractVersion"] = contractVersion;
+        }
+
         return new TestAdditionalText(
             "packages/External.Package.I18n.ZhCN/zh-CN.xlf",
             content,
-            new Dictionary<string, string>(StringComparer.Ordinal)
-            {
-                ["build_metadata.AdditionalFiles.AtomUILanguage"] = "true",
-                ["build_metadata.AdditionalFiles.AtomUILanguageSourceKind"] = "StaticLanguagePack",
-                ["build_metadata.AdditionalFiles.AtomUILanguageSourceIdentity"] = "External.Package.I18n.ZhCN",
-                ["build_metadata.AdditionalFiles.AtomUILanguageModuleId"] = moduleId,
-                ["build_metadata.AdditionalFiles.AtomUILanguageContractVersion"] = contractVersion,
-                ["build_metadata.AdditionalFiles.AtomUILanguageSourceFingerprint"] = sourceFingerprint
-            });
+            metadata);
     }
 
     private static TestAdditionalText ApplicationOverrideFile(
