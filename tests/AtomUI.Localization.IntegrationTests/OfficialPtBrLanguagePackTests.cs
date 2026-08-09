@@ -88,6 +88,26 @@ public sealed partial class LanguagePackEndToEndTests
         }
     }
 
+    [Fact]
+    public void Official_PtBr_Aggregate_Package_Declares_Readme()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var nuspec = XDocument.Load(Path.Combine(
+            repositoryRoot,
+            "src/LanguagePacks/pt-BR/AtomUI.I18n.PtBR/AtomUI.I18n.PtBR.nuspec"));
+
+        nuspec.Descendants()
+              .Where(static element => element.Name.LocalName == "readme")
+              .ShouldHaveSingleItem()
+              .Value.ShouldBe("README.nuget.md");
+        var readmeFile = nuspec.Descendants()
+                               .Where(static element => element.Name.LocalName == "file")
+                               .Where(static element =>
+                                   (string?)element.Attribute("src") == "README.nuget.md")
+                               .ShouldHaveSingleItem();
+        ((string?)readmeFile.Attribute("target")).ShouldBeEmpty();
+    }
+
     [Fact(Timeout = 600_000)]
     public async Task Official_PtBr_Package_Graph_Is_Consumable()
     {
@@ -328,7 +348,17 @@ public sealed partial class LanguagePackEndToEndTests
 
         var aggregatePath = PackagePath(feed, AggregatePackageId, packageVersion);
         var aggregateEntries = PackageEntries(aggregatePath);
-        aggregateEntries.ShouldAllBe(static path => IsOfficialAggregateMetadataEntry(path));
+        aggregateEntries.ShouldContain("README.nuget.md");
+        aggregateEntries.ShouldAllBe(static path =>
+            IsOfficialAggregateMetadataEntry(path) ||
+            path.Equals("README.nuget.md", StringComparison.Ordinal));
+        var aggregateNuspec = XDocument.Parse(PackageEntryText(
+            aggregatePath,
+            $"{AggregatePackageId}.nuspec"));
+        aggregateNuspec.Descendants()
+                       .Where(static element => element.Name.LocalName == "readme")
+                       .ShouldHaveSingleItem()
+                       .Value.ShouldBe("README.nuget.md");
         var aggregateDependencies = PackageDependencies(
             aggregatePath,
             $"{AggregatePackageId}.nuspec");

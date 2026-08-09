@@ -90,13 +90,16 @@ public class IconPresenter : Control
     private void ConfigureIcon(PathIcon pathIcon)
     {
         _disposables?.Dispose();
-        _disposables = new CompositeDisposable(4);
+        _disposables = new CompositeDisposable(7);
         _disposables.Add(BindUtils.RelayBind(this, WidthProperty, pathIcon, WidthProperty));
         _disposables.Add(BindUtils.RelayBind(this, HeightProperty, pathIcon, HeightProperty));
         if (pathIcon is Icon icon)
         {
             _disposables.Add(BindUtils.RelayBind(this, IconBrushProperty, icon, IconControl.StrokeBrushProperty, BindingMode.Default, BindingPriority.Template));
             _disposables.Add(BindUtils.RelayBind(this, IconBrushProperty, icon, IconControl.FillBrushProperty, BindingMode.Default, BindingPriority.Template));
+            _disposables.Add(BindUtils.RelayBind(this, IconBrushProperty, icon, IconControl.SecondaryStrokeBrushProperty, BindingMode.Default, BindingPriority.Template));
+            _disposables.Add(BindUtils.RelayBind(this, IconBrushProperty, icon, IconControl.SecondaryFillBrushProperty, BindingMode.Default, BindingPriority.Template));
+            _disposables.Add(BindUtils.RelayBind(this, IconBrushProperty, icon, IconControl.FallbackBrushProperty, BindingMode.Default, BindingPriority.Template));
         }
         else
         {

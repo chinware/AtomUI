@@ -56,10 +56,12 @@ Public API / ItemsSource / Command / Event
 源码中的状态入口按以下语义维护：
 
 - 内容与数据：`Icon`、`IconBrush`、`IconTemplate`。
+- 单色宿主投影：`IconPresenter` 和 `IconTemplatePresenter` 在承载 AtomUI `Icon` 时，将 `IconBrush` 以 Template 优先级同步到 `StrokeBrush`、`FillBrush`、`SecondaryStrokeBrush`、`SecondaryFillBrush` 和 `FallbackBrush`。承载普通 Avalonia `PathIcon` 时，同步到 `PathIcon.Foreground`。
 
 维护要求：
 
 - 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
+- `IconBrush` 的单色投影不得只覆盖主画刷槽位；IconPark 等多画刷图标在宿主控件中必须能随宿主 `Foreground` 的 hover、pressed、disabled 状态完整同步。调用方在图标实例上设置的本地画刷值仍按 Avalonia 优先级高于 Template 投影。
 - 集合、选择、展开、过滤、分页、上传任务或异步 loader 必须能处理 reset、replace 和 clear。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
 - overview.md 的 API 契约说明应与源码实际状态流一致。

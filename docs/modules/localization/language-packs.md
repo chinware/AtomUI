@@ -60,9 +60,10 @@ AtomUI.I18n.DeDE
 `AtomUI.I18n.PtBR` 表示 AtomUI 官方组件体系的巴西葡萄牙语聚合包。聚合包必须是纯依赖 Meta Package：
 
 - 不设置 `AtomUIBuildLanguagePackage=true`，也不运行语言包 Prepare/Props 任务。
-- 不包含 XLIFF、`AtomUI.LanguagePack.xml`、`buildTransitive` props、analyzer、运行时 DLL 或其他文件 payload。
+- 除 NuGet 包 README 外，不包含 XLIFF、`AtomUI.LanguagePack.xml`、`buildTransitive` props、analyzer、运行时 DLL
+  或其他文件 payload。
 - 项目中的模块语言包 `ProjectReference` 只提供源码仓库内的构建顺序，不定义最终 NuGet 依赖版本。
-- 使用无文件 payload 的自定义 nuspec 作为聚合包依赖图的唯一权威来源；每个官方模块语言包依赖都写成
+- 使用只携带包 README 的自定义 nuspec 作为聚合包依赖图的唯一权威来源；每个官方模块语言包依赖都写成
   `[$version$]`，与聚合包版本精确一致。
 - 不依赖任何组件运行时包，也不隐式注册组件、主题或 Catalog。
 

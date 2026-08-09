@@ -25,5 +25,7 @@
     <Target Name="AtomUIPrepareAggregateNuspecBase" BeforeTargets="GenerateNuspec">
         <RemoveDir Directories="$(NuspecBasePath)" />
         <MakeDir Directories="$(NuspecBasePath)" />
+        <Copy SourceFiles="$(MSBuildThisFileDirectory)../../../../README.nuget.md"
+              DestinationFiles="$(NuspecBasePath)/README.nuget.md" />
     </Target>
 </Project>

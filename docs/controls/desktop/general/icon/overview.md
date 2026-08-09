@@ -27,7 +27,7 @@ Icon 的设计语言围绕控件职责、可观察状态和主题契约组织，
 | 维度 | 含义 | Icon 中的表达 |
 | --- | --- | --- |
 | 产品语义 | 控件在界面中承担的稳定职责。 | Icon 是 AtomUI 桌面控件体系中的图标渲染控件，用于在按钮、菜单、表格和独立图标场景中稳定呈现矢量图标。 |
-| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Icon`、`IconBrush`、`IconTemplate`。 |
+| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Icon`、`IconBrush`、`IconTemplate`；Presenter 的 `IconBrush` 表达宿主单色前景投影。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | 基础交互和主题状态。 |
 | 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Icon Token + ControlTheme。 |
 
@@ -39,7 +39,7 @@ Icon 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
-| 内容与数据 | `Icon`、`IconBrush`、`IconTemplate` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
+| 内容与数据 | `Icon`、`IconBrush`、`IconTemplate` | 定义控件展示内容、输入数据、模板或业务对象入口；Presenter 场景下 `IconBrush` 会投影到 AtomUI `Icon` 的主画刷、辅助画刷和 fallback 画刷槽位。 |
 
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
 
@@ -70,6 +70,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - 基础交互和主题状态 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `IconPresenter` 和 `IconTemplatePresenter` 的 `IconBrush` 是宿主控件单色前景状态入口；当承载对象是 AtomUI `Icon` 时，应同步到 `StrokeBrush`、`FillBrush`、`SecondaryStrokeBrush`、`SecondaryFillBrush` 和 `FallbackBrush`，保证 Button、Menu、List 等宿主的 hover、pressed、disabled 前景状态能够完整接管多画刷图标。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
