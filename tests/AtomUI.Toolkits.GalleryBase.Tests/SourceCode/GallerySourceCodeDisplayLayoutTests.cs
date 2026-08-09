@@ -53,6 +53,38 @@ public class GallerySourceCodeDisplayLayoutTests
     }
 
     [Fact]
+    public void Code_Viewer_Overrides_AvaloniaEdit_SearchPanel_With_Local_AtomUI_Theme()
+    {
+        var viewerMarkup = File.ReadAllText(GetRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryCodeViewer.axaml"));
+        var searchPanelTheme = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Toolkits.GalleryBase/Controls/GalleryCodeViewerSearchPanelTheme.axaml"));
+
+        viewerMarkup.ShouldContain("Controls/GalleryCodeViewerSearchPanelTheme.axaml");
+        viewerMarkup.ShouldNotContain("Controls/Themes/GalleryCodeViewerSearchPanelTheme.axaml");
+        searchPanelTheme.ShouldContain("x:Key=\"{x:Type search:SearchPanel}\"");
+        searchPanelTheme.ShouldContain("atom:LineEdit");
+        searchPanelTheme.ShouldContain("atom:IconButton");
+        searchPanelTheme.ShouldContain("atom:ToggleIconButton");
+        searchPanelTheme.ShouldNotContain("Avalonia.Controls.Primitives.ToggleButton");
+        searchPanelTheme.ShouldNotContain("BasedOn=\"{StaticResource {x:Type ToggleButton}}\"");
+        searchPanelTheme.ShouldNotContain("ToolTip.Tip");
+        searchPanelTheme.ShouldContain("SizeType=\"Middle\"");
+        searchPanelTheme.ShouldContain("{atom:SharedTokenResource ControlHeight}");
+        searchPanelTheme.ShouldContain("{atom:SharedTokenResource IconSize}");
+        searchPanelTheme.ShouldNotContain("SizeType=\"Small\"");
+        searchPanelTheme.ShouldNotContain("Width=\"28\"");
+        searchPanelTheme.ShouldNotContain("Height=\"28\"");
+        searchPanelTheme.ShouldNotContain("Width=\"24\"");
+        searchPanelTheme.ShouldNotContain("Height=\"24\"");
+
+        var innerRightContent = ExtractSearchPanelInnerRightContent(searchPanelTheme);
+        innerRightContent.ShouldContain("{atom:SharedTokenResource ControlInteractiveSize}");
+        innerRightContent.ShouldContain("{atom:SharedTokenResource IconSizeSM}");
+        innerRightContent.ShouldNotContain("Width=\"{atom:SharedTokenResource ControlHeight}\"");
+        innerRightContent.ShouldNotContain("Height=\"{atom:SharedTokenResource ControlHeight}\"");
+    }
+
+    [Fact]
     public void Code_Viewer_Does_Not_Keep_A_Permanent_LayoutUpdated_Scrollbar_Adjuster()
     {
         var viewerSource = File.ReadAllText(GetRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryCodeViewer.cs"));
@@ -105,5 +137,19 @@ public class GallerySourceCodeDisplayLayoutTests
         }
 
         throw new FileNotFoundException($"Could not find repository file: {relativePath}");
+    }
+
+    private static string ExtractSearchPanelInnerRightContent(string searchPanelTheme)
+    {
+        const string startMarker = "<TextBox.InnerRightContent>";
+        const string endMarker   = "</TextBox.InnerRightContent>";
+
+        var start = searchPanelTheme.IndexOf(startMarker, StringComparison.Ordinal);
+        start.ShouldBeGreaterThanOrEqualTo(0);
+
+        var end = searchPanelTheme.IndexOf(endMarker, start, StringComparison.Ordinal);
+        end.ShouldBeGreaterThan(start);
+
+        return searchPanelTheme.Substring(start, end - start);
     }
 }

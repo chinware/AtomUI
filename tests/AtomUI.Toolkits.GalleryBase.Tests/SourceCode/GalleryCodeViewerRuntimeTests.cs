@@ -52,6 +52,124 @@ public class GalleryCodeViewerRuntimeTests
     }
 
     [Fact]
+    public void GalleryCodeViewer_Opens_Find_SearchPanel_Without_Avalonia_Default_ToggleButton_Theme()
+    {
+        var viewer = new GalleryCodeViewer
+        {
+            CodeText = "public class Demo { }",
+            Language = "csharp"
+        };
+
+        ShowInWindow(viewer, editor =>
+        {
+            Should.NotThrow(() => OpenSearchPanel(editor, ApplicationCommands.Find));
+
+            editor.SearchPanel.IsOpened.ShouldBeTrue();
+            editor.SearchPanel.GetVisualDescendants()
+                  .OfType<AtomUI.Desktop.Controls.LineEdit>()
+                  .ShouldNotBeEmpty();
+            var searchInput = editor.SearchPanel.GetVisualDescendants()
+                                    .OfType<AtomUI.Desktop.Controls.LineEdit>()
+                                    .First();
+
+            searchInput.SetCurrentValue(Avalonia.Controls.TextBox.TextProperty, "Demo");
+            Dispatcher.UIThread.RunJobs();
+            editor.SearchPanel.SearchPattern.ShouldBe("Demo");
+
+            editor.SearchPanel.SearchPattern = "class";
+            Dispatcher.UIThread.RunJobs();
+            searchInput.Text.ShouldBe("class");
+
+            editor.SearchPanel.GetVisualDescendants()
+                  .OfType<AtomUI.Desktop.Controls.IconButton>()
+                  .ShouldNotBeEmpty();
+            var searchPanelButtons = editor.SearchPanel.GetVisualDescendants()
+                                           .OfType<Control>()
+                                           .Where(control => control.Classes.Contains("search-panel-icon-button"))
+                                           .ToArray();
+            searchPanelButtons.ShouldNotBeEmpty();
+            foreach (var button in searchPanelButtons)
+            {
+                ToolTip.GetTip(button).ShouldBeNull();
+            }
+
+            var optionButtons = editor.SearchPanel.GetVisualDescendants()
+                                      .OfType<AtomUI.Desktop.Controls.ToggleIconButton>()
+                                      .Where(button => button.Classes.Contains("search-option"))
+                                      .ToArray();
+            optionButtons.Length.ShouldBe(3);
+
+            optionButtons[0].IsChecked = true;
+            Dispatcher.UIThread.RunJobs();
+            editor.SearchPanel.MatchCase.ShouldBeTrue();
+
+            editor.SearchPanel.WholeWords = true;
+            editor.SearchPanel.UseRegex    = true;
+            Dispatcher.UIThread.RunJobs();
+            optionButtons[1].IsChecked.ShouldBe(true);
+            optionButtons[2].IsChecked.ShouldBe(true);
+        });
+    }
+
+    [Fact]
+    public void GalleryCodeViewer_SearchPanel_Search_Input_Uses_Normal_LineEdit_Middle_Height()
+    {
+        var normalInput = new AtomUI.Desktop.Controls.LineEdit
+        {
+            Width    = 265,
+            SizeType = CustomizableSizeType.Middle,
+            Text     = "Normal"
+        };
+        var viewer = new GalleryCodeViewer
+        {
+            CodeText = "public class Demo { }",
+            Language = "csharp",
+            Height   = 400
+        };
+        var host = new StackPanel
+        {
+            Children =
+            {
+                normalInput,
+                viewer
+            }
+        };
+
+        ShowInWindow(viewer, editor =>
+        {
+            OpenSearchPanel(editor, ApplicationCommands.Find);
+            Dispatcher.UIThread.RunJobs();
+
+            var searchInput = editor.SearchPanel.GetVisualDescendants()
+                                    .OfType<AtomUI.Desktop.Controls.LineEdit>()
+                                    .Single(input => input.Name == "PART_searchTextBox");
+
+            normalInput.Bounds.Height.ShouldBeGreaterThan(0);
+            searchInput.Bounds.Height.ShouldBe(normalInput.Bounds.Height, 0.5);
+        }, host);
+    }
+
+    [Fact]
+    public void GalleryCodeViewer_Opens_Replace_SearchPanel_Without_Avalonia_Default_ToggleButton_Theme()
+    {
+        var viewer = new GalleryCodeViewer
+        {
+            CodeText = "public class Demo { }",
+            Language = "csharp"
+        };
+
+        ShowInWindow(viewer, editor =>
+        {
+            Should.NotThrow(() => OpenSearchPanel(editor, ApplicationCommands.Replace));
+
+            editor.SearchPanel.IsOpened.ShouldBeTrue();
+            editor.SearchPanel.GetVisualDescendants()
+                  .OfType<AtomUI.Desktop.Controls.LineEdit>()
+                  .ShouldNotBeEmpty();
+        });
+    }
+
+    [Fact]
     public void GalleryCodeViewer_Uses_Light_And_Dark_Syntax_Theme_Defaults()
     {
         var viewer = new GalleryCodeViewer();
@@ -1311,6 +1429,14 @@ public class GalleryCodeViewerRuntimeTests
         }
 
         actualText.ShouldBe(expectedText);
+    }
+
+    private static void OpenSearchPanel(TextEditor editor, RoutedCommand command)
+    {
+        command.Execute(null, editor.TextArea);
+        Dispatcher.UIThread.RunJobs();
+        editor.SearchPanel.ApplyTemplate();
+        Dispatcher.UIThread.RunJobs();
     }
 
     private static string GetTextMateThemeColor(GalleryCodeViewer viewer, string colorKey)
