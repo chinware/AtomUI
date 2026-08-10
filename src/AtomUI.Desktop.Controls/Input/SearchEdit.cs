@@ -2,6 +2,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
 
@@ -28,6 +29,15 @@ public class SearchEdit : LineEdit
 
     public static readonly StyledProperty<ControlTheme?> SearchButtonThemeProperty =
         AvaloniaProperty.Register<SearchEdit, ControlTheme?>(nameof(SearchButtonTheme));
+    
+    public static readonly StyledProperty<bool> HandleEnterAsSearchProperty = AvaloniaProperty.Register<SearchEdit, bool>(
+        nameof(HandleEnterAsSearch), defaultValue: false); //为了不破坏老代码行为，默认值为false，即默认不处理Enter
+
+    public bool HandleEnterAsSearch
+    {
+        get => GetValue(HandleEnterAsSearchProperty);
+        set => SetValue(HandleEnterAsSearchProperty, value);
+    }
 
     public SearchEditButtonStyle SearchButtonStyle
     {
@@ -95,5 +105,26 @@ public class SearchEdit : LineEdit
         }
         var eventArgs = new RoutedEventArgs(SearchButtonClickEvent, this);
         RaiseEvent(eventArgs);
+    }
+    
+    
+    //Enter handler
+    //使用OnKeyUp而不是OnKeyDown，避免用户一直按着Enter一直触发Search
+    protected override void OnKeyUp(KeyEventArgs e)
+    {
+        base.OnKeyUp(e);
+
+        if (!HandleEnterAsSearch)
+        {
+            return;
+        }
+        
+        if (e is not { Key: Key.Enter, Handled: false })
+        {
+            return;
+        }
+
+        NotifySearchButtonClicked();
+        e.Handled = true;
     }
 }
