@@ -4,7 +4,7 @@ namespace AtomUI.Docs.LLMsGenerator.Catalog;
 
 public static class ControlInventory
 {
-    public const string DefaultOutputRoot = "docs/generated/llms";
+    public const string DefaultOutputRoot = "docs/AI/generated/llms";
     public const string DefaultLanguage = "cn";
 
     public static IReadOnlyList<ControlDocumentInfo> Discover(

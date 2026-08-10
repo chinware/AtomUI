@@ -221,7 +221,7 @@ LLMS 语义区域：
 | `trailing` | `PART_RightAddOn` + `PART_CaptionButtonGroup` | 承载结束侧应用操作和 managed window operations。 | `RightAddOn`、`RightAddOnTemplate`；Window caption 配置 | `HeaderHorizontalSpacing`、caption button 尺寸、间距与状态颜色 | template-stable |
 | `native-chrome` | 平台原生窗口按钮安全区 | 以逻辑像素 inset 约束标题安全空间，不进入 visual tree。 | 平台、CSD、WindowState | 不适用 | internal-observable |
 
-LLMS 生成使用以下来源，不手工修改 `docs/generated/llms` 产物。
+LLMS 生成使用以下来源，不手工修改 `docs/AI/generated/llms` 产物。
 
 LLMS 导出来源：
 

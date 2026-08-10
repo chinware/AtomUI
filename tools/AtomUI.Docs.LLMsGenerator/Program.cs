@@ -8,7 +8,7 @@ namespace AtomUI.Docs.LLMsGenerator;
 
 internal static class Program
 {
-    private const string DefaultConfigPath = "docs/generated/llms.config.json";
+    private const string DefaultConfigPath = "docs/AI/generated/llms.config.json";
 
     public static int Main(string[] args)
     {
@@ -140,7 +140,7 @@ internal static class Program
     private static void PrintUsage()
     {
         Console.WriteLine("Usage:");
-        Console.WriteLine("  dotnet run --project tools/AtomUI.Docs.LLMsGenerator/AtomUI.Docs.LLMsGenerator.csproj -- generate --config docs/generated/llms.config.json");
-        Console.WriteLine("  dotnet run --project tools/AtomUI.Docs.LLMsGenerator/AtomUI.Docs.LLMsGenerator.csproj -- verify --config docs/generated/llms.config.json");
+        Console.WriteLine("  dotnet run --project tools/AtomUI.Docs.LLMsGenerator/AtomUI.Docs.LLMsGenerator.csproj -- generate --config docs/AI/generated/llms.config.json");
+        Console.WriteLine("  dotnet run --project tools/AtomUI.Docs.LLMsGenerator/AtomUI.Docs.LLMsGenerator.csproj -- verify --config docs/AI/generated/llms.config.json");
     }
 }

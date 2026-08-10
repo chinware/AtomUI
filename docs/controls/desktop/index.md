@@ -19,8 +19,8 @@ docs/controls/desktop/
 ## 文档边界
 
 - 控件使用文档写在本目录。
-- 控件内部架构和包级注册写在 `docs/modules/desktop-controls/`。
-- DataGrid 和 ColorPicker 作为独立包，使用文档仍归到本目录，模块架构归到对应 `modules/` 子目录。
+- 控件内部实现、主题契约和维护不变量写入对应控件的 `implementation.md` 或专项设计文档。
+- DataGrid 和 ColorPicker 虽然使用独立发布包，其控件文档仍统一归到本目录，不额外维护包级模块文档。
 
 ## 分类入口
 

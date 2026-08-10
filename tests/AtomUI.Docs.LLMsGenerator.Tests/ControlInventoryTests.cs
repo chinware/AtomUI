@@ -34,12 +34,12 @@ public class ControlInventoryTests
         controls.Count.ShouldBe(78);
         controls.ShouldContain(control => control.Category == "general" &&
                                           control.Name == "button" &&
-                                          control.OutputIndexPath == "docs/generated/llms/controls/button/index-cn.md" &&
-                                          control.OutputSemanticPath == "docs/generated/llms/controls/button/semantic-cn.md");
+                                          control.OutputIndexPath == "docs/AI/generated/llms/controls/button/index-cn.md" &&
+                                          control.OutputSemanticPath == "docs/AI/generated/llms/controls/button/semantic-cn.md");
         controls.ShouldContain(control => control.Category == "data-entry" &&
                                           control.Name == "otp-line-edit" &&
-                                          control.OutputIndexPath == "docs/generated/llms/controls/otp-line-edit/index-cn.md" &&
-                                          control.OutputSemanticPath == "docs/generated/llms/controls/otp-line-edit/semantic-cn.md");
+                                          control.OutputIndexPath == "docs/AI/generated/llms/controls/otp-line-edit/index-cn.md" &&
+                                          control.OutputSemanticPath == "docs/AI/generated/llms/controls/otp-line-edit/semantic-cn.md");
         controls.ShouldAllBe(control => File.Exists(control.OverviewPath));
         controls.ShouldAllBe(control => File.Exists(control.ImplementationPath));
         controls.ShouldAllBe(control => File.Exists(control.ChangelogPath));

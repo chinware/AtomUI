@@ -531,7 +531,7 @@ this.UseAtomUI(builder =>
 });
 ```
 
-详细注册顺序见 [Desktop Controls 主题注册](../../modules/desktop-controls/theme-registration.md)。
+详细注册顺序见 [启动与注册链路](../../architecture/foundations/startup-and-registration.md)。
 
 ## 15. 一次主题切换为什么不会暴露半成品
 
@@ -622,4 +622,3 @@ Control 使用同一条确定性路径。
 - [Control Token 设计规范](../../engineering/development/control-token-guidelines.md)：Control 和第三方 Control 的研发约束。
 - [主题定义 XML v1 规范](../../reference/theming/theme-definition-xml-v1.md)：主题文件格式、算法和验证规则。
 - [启动与注册链路](../../architecture/foundations/startup-and-registration.md)：应用、Control 包和 ThemeManager 的构建顺序。
-- [Desktop Controls 主题注册](../../modules/desktop-controls/theme-registration.md)：内置与第三方 Control 包注册边界。

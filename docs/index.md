@@ -16,7 +16,7 @@ AtomUI 文档按知识责任组织。跨模块系统设计、单个源码模块�
 - [Gallery 文档](gallery/index.md)：Gallery 组织、ShowCase 和平台维护说明。
 - [Releases](releases/index.md)：按版本查看 API 变化与迁移示例。
 - [Strategy](strategy/index.md)：产品与产业战略分析。
-- [Generated](generated/index.md)：LLMS 配置和生成产物入口。
+- [AI 文档](AI/index.md)：AI 工具消费层、LLMS 配置和生成产物入口。
 - [Superpowers](superpowers/)：设计过程、实施计划和阶段进度，不作为正式架构的事实来源。
 
 ## 文档职责
@@ -33,7 +33,7 @@ docs/
 |-- gallery/        # AtomUIGallery 工程文档
 |-- releases/       # 版本 API 变化
 |-- strategy/       # 产品与产业战略分析
-|-- generated/      # 配置驱动的生成文档
+|-- AI/             # AI 工具消费层和配置驱动的生成文档
 `-- superpowers/    # 设计与实施过程记录
 ```
 

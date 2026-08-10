@@ -11,10 +11,6 @@
 | [Localization](localization/index.md) | `src/AtomUI.Localization` | [本地化系统](../architecture/systems/localization/index.md) |
 | [Controls.Shared](controls-shared/index.md) | `src/AtomUI.Controls.Shared` | [Control 基础设施](../architecture/systems/control-infrastructure/index.md) |
 | [Controls](controls/index.md) | `src/AtomUI.Controls` | [渲染系统](../architecture/systems/rendering/index.md) |
-| [Desktop Controls](desktop-controls/index.md) | `src/AtomUI.Desktop.Controls` | [Control 基础设施](../architecture/systems/control-infrastructure/index.md)、[Windowing](../architecture/systems/windowing/index.md) |
-| [DataGrid](desktop-controls-datagrid/index.md) | `src/AtomUI.Desktop.Controls.DataGrid` | [整体架构](../architecture/index.md) |
-| [ColorPicker](desktop-controls-colorpicker/index.md) | `src/AtomUI.Desktop.Controls.ColorPicker` | [整体架构](../architecture/index.md) |
-| [Extras](desktop-controls-extras/index.md) | `src/AtomUI.Desktop.Controls.Extras` | [整体架构](../architecture/index.md) |
 | [Generator](generator/index.md) | `src/AtomUI.Generator` | [主题系统](../architecture/systems/theming/index.md)、[本地化系统](../architecture/systems/localization/index.md) |
 | [Fonts](fonts/index.md) | `src/AtomUI.Fonts.*` | [主题系统](../architecture/systems/theming/index.md) |
 | [Icons](icons/index.md) | `src/AtomUI.Icons.*` | [整体架构](../architecture/index.md) |

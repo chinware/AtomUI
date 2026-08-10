@@ -57,8 +57,12 @@ docs/
 |-- gallery/
 |-- releases/
 |-- strategy/
-|-- generated/
-|   `-- llms/
+|-- AI/
+|   |-- index.md
+|   `-- generated/
+|       |-- index.md
+|       |-- llms.config.json
+|       `-- llms/
 `-- superpowers/
     |-- specs/
     |-- plans/
@@ -197,14 +201,15 @@ Control 开发、Token、AOT、编译器诊断属于 `development/`；Issue、Ch
 - `docs/architecture/` 现有文件按 `foundations/` 和 `systems/rendering/` 重组。
 - `docs/CrossPlatformUIFrameworkStrategicNarrative.md` 移至 `docs/strategy/`。
 - `docs/release-notes/` 改为 `docs/releases/`，并增加版本索引。
-- `docs/AI/` 改为 `docs/generated/`，保持 `generated/llms/` 为生成输出目录。
+- AI 工具消费层统一由 `docs/AI/` 承载；配置和生成产物位于 `docs/AI/generated/`，LLMS 输出目录为
+  `docs/AI/generated/llms/`。
 - `docs/superpowers/` 完全保留，不创建 `.agents/work-items` 或 `architecture/decisions`。
 
 ## 索引与命名
 
 - `docs/`、正式一级目录、Architecture 分组、Module、Control 平台和 Control 分类使用 `index.md` 作为导航入口。
 - 单 Control 目录继续使用 `overview.md`，避免破坏控件文档和 LLMS 输入契约。
-- 文件和目录使用小写 kebab-case；项目名只在标题和正文中保留正式大小写。
+- 文件和目录使用小写 kebab-case；`AI` 作为顶层领域缩写保留大写，项目名只在标题和正文中保留正式大小写。
 - 索引只维护导航、职责和推荐阅读顺序，不复制子文档内容。
 - 同一正式文档只能由一个索引标记为 canonical，其他索引只能链接。
 

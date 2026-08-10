@@ -115,7 +115,7 @@ Position -> Principles -> Model/API -> Variant strategy -> Architecture/ownershi
 - Update `changelog.md` for actual design, API, theme, Token, or implementation-structure changes.
 - Update the category index when adding a new control directory.
 - Check Gallery API/Token tables and ShowCase examples when public usage changes.
-- Do not hand-edit generated files under `docs/generated/llms`; update their source documents or generator input.
+- Do not hand-edit generated files under `docs/AI/generated/llms`; update their source documents or generator input.
 
 ### 5. Review
 

@@ -19,9 +19,7 @@ docs/controls/
 - `modules/` 面向源码维护者，解释项目/包级架构。
 - `controls/` 面向控件使用和控件级 API，解释单个控件的属性、事件、主题、示例和注意事项。
 
-例如 DataGrid：
-
-- 包架构：`docs/modules/desktop-controls-datagrid/index.md`
-- 控件文档：`docs/controls/desktop/data-display/data-grid/overview.md`
+例如 DataGrid 的公共行为、实现和维护契约统一由
+`docs/controls/desktop/data-display/data-grid/` 下的控件文档维护。
 
 桌面端控件按控件目录维护 `overview.md`、`implementation.md`、`changelog.md`，存在专属 Token 的控件同时维护 `token.md`。
