@@ -156,6 +156,7 @@ public class IconGallery : TemplatedControl
 
         if (_searchEdit != null)
         {
+            _searchEdit.TextChanged       += HandleSearchButtonClick;
             _searchEdit.SearchButtonClick += HandleSearchButtonClick;
         }
 
