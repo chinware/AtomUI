@@ -53,7 +53,7 @@ Masonry 的公共 API 采用 Avalonia 原生属性模型。需要 XAML 设置、
 | `RowGap` | `double` | `16d` | 垂直行间距。 |
 | `Gutter` | `ResponsiveGutter?` | `null` | 按媒体断点变化的水平/垂直间距。 |
 
-响应式属性遵循 [AtomUI 响应式机制设计](../../../../modules/controls-shared/responsive-system.md)。Masonry 不复制断点定义、解析顺序或 partial map 继承规则；它只在 effective state 层提供列数和间距 fallback。
+响应式属性遵循 [AtomUI 响应式机制设计](../../../../architecture/systems/control-infrastructure/responsive.md)。Masonry 不复制断点定义、解析顺序或 partial map 继承规则；它只在 effective state 层提供列数和间距 fallback。
 
 列数优先级：
 
@@ -179,7 +179,7 @@ Masonry 的布局元数据属于 item container，而不是数据对象或模板
 
 - [Masonry 桌面版实现原理](implementation.md)
 - [Masonry Changelog](changelog.md)
-- [AtomUI 响应式机制设计](../../../../modules/controls-shared/responsive-system.md)
+- [AtomUI 响应式机制设计](../../../../architecture/systems/control-infrastructure/responsive.md)
 
 LLMS 语义区域：
 

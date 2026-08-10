@@ -7,7 +7,7 @@ AtomUI 文档按知识责任组织。跨模块系统设计、单个源码模块�
 
 - [整体架构](architecture/index.md)：系统分层、源码包边界和核心运行链路。
 - [架构基础](architecture/foundations/index.md)：项目依赖、运行平台、启动注册、构建和打包。
-- [跨模块系统](architecture/systems/index.md)：主题及后续跨模块系统的统一入口。
+- [跨模块系统](architecture/systems/index.md)：主题、本地化、Control 基础设施和渲染系统的统一入口。
 - [源码模块](modules/)：按源码项目或发布包理解职责和实现边界。
 - [Control 文档](controls/overview.md)：按平台和类别查看具体 Control 的设计、实现、Token 和变更。
 - [使用指南](guides/index.md)：按任务查看主题定制与后续接入指南。
@@ -36,10 +36,10 @@ docs/
 
 ## 当前专题
 
-- [异步加载体系](AsyncLoadingArchitecture.md)
-- [过滤体系](FilteringArchitecture.md)
-- [Popup Anchor 作用域检查](PopupAnchorScopeGuide.md)
-- [响应式机制](modules/controls-shared/responsive-system.md)
+- [Control 基础设施架构](architecture/systems/control-infrastructure/index.md)
+- [Control 基础设施使用指南](guides/control-infrastructure/index.md)
+- [渲染架构](architecture/systems/rendering/index.md)
+- [Popup Anchor 作用域检查](engineering/development/popup-anchor-scope.md)
 - [Native 模块](modules/native/overview.md)
 - [AOT 编程规范](engineering/aot-programming-guidelines.md)
 - [Control 开发规范](engineering/control-development-guidelines.md)

@@ -16,14 +16,14 @@
 | `AsyncLoad/` | `AsyncSearchLoadCoordinator`、`AsyncExpandLoadCoordinator`、加载结果状态 |
 | `Data/ListCollectionViews/` | 列表集合视图、排序、分组、过滤描述 |
 | `Net/` | 文件上传调度与传输接口 |
-| `MediaQuery/` | 媒体断点和响应式布局支持，规则见 [responsive-system.md](responsive-system.md) |
+| `MediaQuery/` | 媒体断点和响应式布局支持，规则见 [响应式架构](../../architecture/systems/control-infrastructure/responsive.md) |
 | `WaveSpirit/` | 点击波纹/动效扩展 |
 | `Converters/`、`Utils/` | 控件共享工具 |
 
 ## 相关专题
 
-- [../../AsyncLoadingArchitecture.md](../../AsyncLoadingArchitecture.md)
-- [../../FilteringArchitecture.md](../../FilteringArchitecture.md)
-- [responsive-system.md](responsive-system.md)
+- [Control 基础设施架构](../../architecture/systems/control-infrastructure/index.md)
+- [异步加载使用指南](../../guides/control-infrastructure/async-loading.md)
+- [过滤使用指南](../../guides/control-infrastructure/filtering.md)
 
 过滤专题中的部分实现位于 `AtomUI.Desktop.Controls`，但统一契约和共享数据结构属于本模块的重要背景。

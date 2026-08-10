@@ -1,6 +1,6 @@
 # AtomUI 响应式机制设计
 
-本文档定义 AtomUI 控件体系的响应式基础机制。该机制对齐 Ant Design 6 的响应式设计，用于 Grid、Descriptions、Masonry 以及其他需要按媒体断点解析公共属性的控件。
+本文档定义 AtomUI 控件体系的响应式基础机制，用于 Grid、Descriptions、Masonry 以及其他需要按媒体断点解析公共属性的控件。
 
 响应式机制属于 `AtomUI.Controls.Shared` 的跨控件基础能力。具体控件文档只描述该控件如何消费响应式值，不重复断点定义、解析顺序和 fallback 规则。
 
@@ -16,9 +16,9 @@
 
 它不负责具体控件布局算法。Grid、Descriptions、Masonry 只消费解析后的有效值，并保留各自的布局、夹取、默认值和视觉契约。
 
-## 2. Ant Design 对齐规则
+## 2. 核心规则
 
-AtomUI 响应式规则与 Ant Design 的以下设计保持一致：
+AtomUI 响应式机制遵守以下稳定规则：
 
 - `xs / sm / md / lg / xl / xxl / xxxl` 是统一断点集合。
 - active screen 采用累计语义。当前为 `lg` 时，`xs`、`sm`、`md`、`lg` 均视为 active。
@@ -26,28 +26,28 @@ AtomUI 响应式规则与 Ant Design 的以下设计保持一致：
 - 求值时按 `xxxl -> xxl -> xl -> lg -> md -> sm -> xs` 从大到小查找，第一个“当前 active 且显式配置过”的值生效。
 - 响应式解析器不拥有控件默认值。默认值由具体控件在 resolver 未命中时提供。
 
-这些规则是 AtomUI 的长期响应式契约。外部设计系统只能用于交互和视觉对照，不能用某个版本的源码路径、
-实现函数或文件结构替代上述契约；后续升级时应通过 AtomUI 的公共模型和跨控件测试验证兼容性。
+这些规则是 AtomUI 的长期响应式契约。实现调整必须通过公共模型和跨控件测试验证兼容性，不能以某个控件的
+局部实现替代共享规则。
 
 ## 3. 断点模型
 
 AtomUI 的媒体断点必须以 Alias Token 为唯一数值来源。
 
-| 短名 | `MediaBreakPoint` | 起始 Token | 结束 Token | Ant Design 名称 |
-|---|---|---|---|---|
-| `xs` | `ExtraSmall` | 无 | `ScreenSMMin - 1` | `xs` |
-| `sm` | `Small` | `ScreenSMMin` | `ScreenSMMax` | `sm` |
-| `md` | `Medium` | `ScreenMDMin` | `ScreenMDMax` | `md` |
-| `lg` | `Large` | `ScreenLGMin` | `ScreenLGMax` | `lg` |
-| `xl` | `ExtraLarge` | `ScreenXLMin` | `ScreenXLMax` | `xl` |
-| `xxl` | `ExtraExtraLarge` | `ScreenXXLMin` | `ScreenXXLMax` | `xxl` |
-| `xxxl` | `ExtraExtraExtraLarge` | `ScreenXXXLMin` | 无 | `xxxl` |
+| 短名 | `MediaBreakPoint` | 起始 Token | 结束 Token |
+|---|---|---|---|
+| `xs` | `ExtraSmall` | 无 | `ScreenSMMin - 1` |
+| `sm` | `Small` | `ScreenSMMin` | `ScreenSMMax` |
+| `md` | `Medium` | `ScreenMDMin` | `ScreenMDMax` |
+| `lg` | `Large` | `ScreenLGMin` | `ScreenLGMax` |
+| `xl` | `ExtraLarge` | `ScreenXLMin` | `ScreenXLMax` |
+| `xxl` | `ExtraExtraLarge` | `ScreenXXLMin` | `ScreenXXLMax` |
+| `xxxl` | `ExtraExtraExtraLarge` | `ScreenXXXLMin` | 无 |
 
 Token 要求：
 
-- `ScreenXXXL` 与 `ScreenXXXLMin` 是 Ant Design 6 对齐所需 Token。
+- `ScreenXXXL` 与 `ScreenXXXLMin` 定义最大媒体断点。
 - `ScreenXXLMax` 必须等于 `ScreenXXXLMin - 1`。
-- `ScreenXS`、`ScreenXSMin`、`ScreenXSMax` 保留 Ant Design Token 兼容语义；运行时 `xs` 当前断点范围以 `ScreenSMMin - 1` 为上界。
+- `ScreenXS`、`ScreenXSMin`、`ScreenXSMax` 保留完整 Token 语义；运行时 `xs` 当前断点范围以 `ScreenSMMin - 1` 为上界。
 - `MediaBreakPoint` 枚举值必须按从小到大排列，保证 `current >= configured` 可表达 mobile-first cascade。
 
 ## 4. Active Screen 与求值
@@ -153,7 +153,7 @@ Gutter="xs: 8, md: 16"
 - 未知 breakpoint、空 key、空 value、非法数值必须抛出明确异常。
 - 重复 breakpoint key 必须抛出明确异常，避免字符串配置产生顺序依赖。
 - 计数类值必须大于 `0`；间距类值必须大于等于 `0`；具体值域的合法范围由标准类型负责校验。
-- Gutter 类值按 Ant Design Row 语义支持水平、垂直两个维度；两个维度分别使用同一套 responsive resolver。
+- Gutter 类值支持水平、垂直两个维度；两个维度分别使用同一套 responsive resolver。
 
 ## 6. 控件集成规则
 
@@ -163,17 +163,17 @@ Grid 是响应式机制的基准控件。
 
 `Col` 的 `Xs / Sm / Md / Lg / Xl / Xxl / Xxxl` 断点属性属于显式 breakpoint 配置。解析时先建立基础布局，再按从小到大顺序应用当前断点以内的显式配置，等价于“取当前 active 范围内最大的已配置断点”。
 
-`Col.Flex` 对齐 Ant Design `flex` 语义，用于填充行内剩余空间。数值表示 flex grow/shrink，`auto` 表示自动基准的 flex 项，`none` 表示不伸缩，`100px` 这类固定像素基准表示固定 basis。断点级 `GridColSize.Flex` 会覆盖基础 span 宽度并参与同一行的剩余空间分配。
+`Col.Flex` 用于填充行内剩余空间。数值表示 flex grow/shrink，`auto` 表示自动基准的 flex 项，`none` 表示不伸缩，`100px` 这类固定像素基准表示固定 basis。断点级 `GridColSize.Flex` 会覆盖基础 span 宽度并参与同一行的剩余空间分配。
 
-`Col.Span=0` 和断点级 `GridColSize.Span=0` 表示隐藏该列，布局时不占用行宽，并在 arrange 阶段收敛到零尺寸，等价于 Ant Design 的 `display: none` 语义。未显式设置 `Span` 的 `Col` 仍保持自然宽度行为，不能因为默认 `GridColSpanInfo` 为 `0` 而被误判为隐藏。
+`Col.Span=0` 和断点级 `GridColSize.Span=0` 表示隐藏该列，布局时不占用行宽，并在 arrange 阶段收敛到零尺寸。未显式设置 `Span` 的 `Col` 仍保持自然宽度行为，不能因为默认 `GridColSpanInfo` 为 `0` 而被误判为隐藏。
 
-`Row.Gutter` 的水平和垂直间距分别使用响应式 resolver。水平 gutter 必须对齐 Ant Design 的 Row 负 margin + Col padding 模型：间距只出现在列之间，不出现在 Row 两端；实现上通过扩展 Row 的内部布局面并从 `-gutter / 2` 开始排布来抵消首尾半个 gutter。
+`Row.Gutter` 的水平和垂直间距分别使用响应式 resolver。水平 gutter 的间距只出现在列之间，不出现在 Row 两端；实现上通过扩展 Row 的内部布局面并从 `-gutter / 2` 开始排布来抵消首尾半个 gutter。
 
 `Row.JustifyInfo` 与 `Row.AlignInfo` 为响应式覆盖入口，未设置时完全沿用 `Row.Justify` 与 `Row.Align`。响应式行对齐必须使用同一套 resolver，不能引入单独解析规则。
 
 ### 6.2 Descriptions
 
-`Descriptions.ColumnInfo` 表示每行 DescriptionItem 数量。它必须按 Ant Design `column` 语义解析 partial breakpoint map。
+`Descriptions.ColumnInfo` 表示每行 DescriptionItem 数量，使用共享规则解析 partial breakpoint map。
 
 默认 fallback map：
 
@@ -191,7 +191,7 @@ Grid 是响应式机制的基准控件。
 
 ### 6.3 Masonry
 
-`Masonry.ColumnInfo` 表示 Ant Design `columns` 对齐 API，接受 scalar 或 partial breakpoint map。
+`Masonry.ColumnInfo` 表示列数配置，接受 scalar 或 partial breakpoint map。
 
 列数优先级：
 
@@ -199,7 +199,7 @@ Grid 是响应式机制的基准控件。
 2. `ColumnCount > 0` 时，使用固定列数。
 3. 使用 `MinColumnWidth + MaxColumnCount + AvailableWidth` 的容器自适应列数。
 
-`Masonry.Gutter` 表示 Ant Design `gutter` 对齐 API，支持 scalar、水平/垂直 pair、responsive map 和水平/垂直 responsive pair。
+`Masonry.Gutter` 表示间距配置，支持 scalar、水平/垂直 pair、responsive map 和水平/垂直 responsive pair。
 
 间距优先级：
 

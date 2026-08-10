@@ -7,8 +7,8 @@ AtomUI 是基于 Avalonia/.NET 的桌面与跨平台控件系统。整体架构�
 
 - [架构基础](foundations/index.md)：依赖关系、运行平台、启动注册、构建和打包。
 - [跨模块系统](systems/index.md)：主题、本地化、Control 基础设施、渲染和窗口系统的架构入口。
-- [边框渲染](border-rendering.md)：当前跨 Control 边框渲染模型。
-- [视觉层](visual-layer-guidelines.md)：当前跨 VisualRoot 和覆盖层的宿主选择规则。
+- [Control 基础设施](systems/control-infrastructure/index.md)：异步加载、过滤与响应式共享契约。
+- [渲染系统](systems/rendering/index.md)：边框渲染与跨 VisualRoot 的视觉层规则。
 
 ## 架构分层
 
@@ -85,6 +85,6 @@ descriptor 和 ControlTheme asset manifest；本地化链路收集 Catalog、编
 
 - 主题、Token、Semantic Part 和本地化属于跨模块系统，由 `architecture/systems/` 统一导航。
 - 平台差异遵守 [运行平台策略](foundations/runtime-platforms.md)。
-- Control 边框遵守 [边框渲染架构](border-rendering.md)。
-- 跨普通视觉树绘制遵守 [视觉层规范](visual-layer-guidelines.md)。
+- Control 边框遵守 [边框渲染架构](systems/rendering/border-rendering.md)。
+- 跨普通视觉树绘制遵守 [视觉层规范](systems/rendering/visual-layers.md)。
 - AOT、反射、动态数据和生成器规则遵守 [AOT 编程规范](../engineering/aot-programming-guidelines.md)。

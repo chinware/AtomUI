@@ -1,12 +1,12 @@
 # AtomUI 边框渲染架构
 
-本文档定义 AtomUI 在不同 DPI、不同 render scale 和不同显示器下绘制边框的架构原则。目标是在普通屏、3.5K、4K 和跨屏窗口移动场景中，让控件边框保持稳定、自然、符合 Ant Design 视觉语义，同时不向使用者暴露额外配置。
+本文档定义 AtomUI 在不同 DPI、不同 render scale 和不同显示器下绘制边框的架构原则。目标是在普通屏、3.5K、4K 和跨屏窗口移动场景中，让控件边框保持稳定、自然并符合 AtomUI 视觉语义，同时不向使用者暴露额外配置。
 
 ## 1. 设计目标
 
 - 用户无感知：业务代码、AXAML 使用方式、控件 API 和 Design Token 语义不改变。
 - 保留设计语义：`LineWidth = 1` 仍表示设计系统中的 1 DIP 基础线宽，不被改写成屏幕相关值。
-- 对齐 Ant Design 网页观感：普通边框在整数 scale 下保持设计 DIP，在非整数 scale 下避免被取整放大成更粗的物理像素线。
+- 稳定物理观感：普通边框在整数 scale 下保持设计 DIP，在非整数 scale 下避免被取整放大成更粗的物理像素线。
 - 复用成熟圆角算法：圆角绘制必须继续使用 AtomUI 已引入的 Avalonia / WinUI 派生算法，不手写新的圆角合成逻辑。
 - 架构集中：屏幕 scale、layout rounding、hairline 等规则必须集中在共享 helper 或明确语义中，不能散落在各控件渲染代码里。
 
@@ -15,10 +15,8 @@
 AtomUI 把基础线宽定义为普通设计 Token：Seed 层声明 `LineWidth = 1`，Alias 和 Control Token
 在需要时继续消费该语义值。Token 层不按分辨率、显示器或 render scale 动态改写线宽。
 
-网页设计系统通常把基础线宽交给浏览器布局和渲染管线映射到物理像素；这只是视觉对照，不是 AtomUI
-架构的事实来源。
-
-AtomUI 是 Avalonia/.NET 桌面控件库，不能直接复用浏览器 CSS 管线。AtomUI 应把同样的职责放在绘制层：设计层仍表达 1 DIP，渲染层负责把它变成当前显示器 scale 下稳定且接近浏览器观感的实际绘制厚度。
+AtomUI 在设计层保持稳定的 1 DIP 语义，并在绘制层完成物理像素适配。设计层不承担显示器差异，渲染层负责把
+设计厚度转换为当前显示器 scale 下稳定的实际绘制厚度。
 
 ## 3. 分层模型
 
@@ -38,7 +36,7 @@ ControlToken / SharedTokenResource
 
 ### 3.2 渲染线宽层
 
-渲染线宽层负责把设计厚度转换为当前 render scale 下适合绘制的厚度。它不能简单调用 `LayoutHelper.RoundLayoutThickness()`，因为在 Windows 1.5、1.75 等非整数 scale 下，1 DIP 会被取整成 2 个物理像素，视觉上明显比 Ant Design 网页的 1px 边框更粗。
+渲染线宽层负责把设计厚度转换为当前 render scale 下适合绘制的厚度。它不能简单调用 `LayoutHelper.RoundLayoutThickness()`，因为在 Windows 1.5、1.75 等非整数 scale 下，1 DIP 会被取整成 2 个物理像素，使基础边框明显变粗。
 
 AtomUI 普通控件边框采用以下规则：
 
@@ -95,7 +93,7 @@ Button 是边框策略的基准控件。它必须保持用户无感知。
 
 ### 4.1 普通 Button
 
-普通 Button 模板使用 AtomUI 自绘边框 primitive。该 primitive 在未设置 `StrokeDashArray` 时绘制实线边框，内部通过 render-scale-aware thickness 对齐 Ant Design 网页在不同 DPI 下的视觉线宽：
+普通 Button 模板使用 AtomUI 自绘边框 primitive。该 primitive 在未设置 `StrokeDashArray` 时绘制实线边框，内部通过 render-scale-aware thickness 保持不同 DPI 下的稳定视觉线宽：
 
 ```text
 SharedToken.BorderThickness
@@ -199,7 +197,7 @@ Separator、MenuSeparator、DataGrid grid line、TreeView node line、Card actio
 
 | 语义 | 使用场景 | 厚度规则 |
 |---|---|---|
-| `RenderScaleAware` | 控件轮廓、需要接近 Ant Design 网页 1px 边框观感的线 | 非整数 scale 下除以 render scale；整数 scale 下保持设计 DIP |
+| `RenderScaleAware` | 控件轮廓、需要保持基础物理像素观感的线 | 非整数 scale 下除以 render scale；整数 scale 下保持设计 DIP |
 | `Hairline` | 视觉分割线，希望无论设计 token 如何都保持 1 个物理像素 | 内部 helper 明确计算，不伪装成 token `BorderThickness` |
 
 普通控件边框必须通过 `BorderUtils.BuildRenderScaleAwareThickness()` 进入共享策略，不能在各控件中重复手写 render scale 除法或 `RoundLayoutThickness` 取整逻辑。
@@ -229,43 +227,7 @@ _cachedBackgroundSizing
 
 控件在 `Render()` 中读取 layout scale 时，必须检测 scale 是否变化。窗口跨显示器移动后，即使 `BorderThickness` 未改变，缓存也应失效。
 
-## 8. 实施分期
-
-### 8.1 第一阶段：补齐核心路径
-
-- 新增内部 render-scale-aware thickness helper。
-- 让 `DashedBorder` 使用 `RenderThickness` 渲染。
-- 让普通 Button、DropdownButton 和 Browser Button 普通 Frame 使用 AtomUI 自绘边框 primitive。
-- 增加 Dashed Button 与普通 Button 在不同 scale 下的视觉或单元验证。
-
-### 8.2 第二阶段：统一 BorderRenderHelper 调用者
-
-审计直接使用 `BorderRenderHelper` 的控件，包括但不限于：
-
-- `DashedBorder`
-- `AbstractOptionButton`
-- `AbstractRibbonBadgeAdorner`
-- `TreeViewItem`
-- `NodeSwitcherButton`
-- `ButtonSpinnerHandle`
-
-如果绘制的是普通边框或背景圆角，改为传入 render-scale-aware thickness。如果绘制厚度恒为 0，则只需确认不受影响。
-
-### 8.3 第三阶段：统一自建圆角几何调用者
-
-审计直接使用 `RoundRectGeometryBuilder.CalculateRoundedCornersRectangleWinUI` 的控件，包括但不限于：
-
-- `GroupBox`
-- `BorderBeamPresenter`
-- 其他构建圆角路径或 border geometry 的控件
-
-如果 geometry 代表普通边框，必须使用 render-scale-aware thickness 作为几何输入。如果 geometry 代表动画路径或纯装饰路径，需要在代码旁明确其非边框语义。
-
-### 8.4 第四阶段：分类分割线和 hairline
-
-审计所有 `DrawLine`、`Pen` 和 `LineWidth` 使用点，按 `RenderScaleAware` 与 `Hairline` 分类。发丝线 helper 必须是显式语义，不能混入普通 `BorderThickness`。
-
-## 9. 测试与验证
+## 8. 测试与验证
 
 验证 scale 至少覆盖：
 
@@ -293,10 +255,10 @@ _cachedBackgroundSizing
 - 控件视觉回归：Button、Dashed Button、GroupBox、OptionButton。
 - `git diff --check` 作为文档和代码改动的收尾检查。
 
-## 10. 维护不变量
+## 9. 维护不变量
 
 - Design Token 不读取 DPI / scale。
-- `LineWidth = 1` 在 token 层表示 1 DIP 设计线宽；在非整数 scale 的渲染层会转换为 1 个物理像素来贴近网页观感。
+- `LineWidth = 1` 在 token 层表示 1 DIP 设计线宽；在非整数 scale 的渲染层会转换为 1 个物理像素。
 - 普通 Button 使用 AtomUI 自绘边框 primitive，不做额外 DPI 特判。
 - 自绘普通边框必须使用 `BorderUtils.BuildRenderScaleAwareThickness()`。
 - 圆角绘制继续使用 `RoundRectGeometryBuilder`，不新增平行算法。

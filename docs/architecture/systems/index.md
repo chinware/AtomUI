@@ -7,5 +7,7 @@
 
 - [主题系统](theming/index.md)：主题运行时、Token、Semantic Part、定制 Guide 和 XML Reference。
 - [本地化系统](localization/index.md)：运行时、Generator、Build Tasks、语言包和 XLIFF Reference。
+- [Control 基础设施](control-infrastructure/index.md)：异步加载、过滤和响应式共享契约。
+- [渲染系统](rendering/index.md)：边框渲染、视觉层职责和跨树宿主选择。
 
-Control 基础设施、渲染和窗口系统在对应文档完成迁移后继续从本入口统一导航。
+窗口系统在对应文档完成迁移后继续从本入口统一导航。
