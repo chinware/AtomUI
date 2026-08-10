@@ -142,6 +142,11 @@ public class IconGallery : TemplatedControl
         ReLoadIcons();
     }
 
+    private void HandleSearchTextChanged(object? sender, RoutedEventArgs e)
+    {
+        ReLoadIcons();
+    }
+
     private void AttachTemplateEvents()
     {
         if (_templateEventsAttached)
@@ -156,6 +161,7 @@ public class IconGallery : TemplatedControl
 
         if (_searchEdit != null)
         {
+            _searchEdit.TextChanged     += HandleSearchTextChanged;
             _searchEdit.SearchRequested += HandleSearchRequested;
         }
 
