@@ -25,7 +25,7 @@
 
 ## Semantic Part 集成
 
-采用 Semantic Part 的桌面控件必须实现 [Semantic Part 系统设计](../core/semantic-part-system.md) 定义的公共契约，
+采用 Semantic Part 的桌面控件必须实现 [Semantic Part 系统设计](../../architecture/systems/theming/semantic-parts.md) 定义的公共契约，
 不为桌面平台建立第二套 Part 命名或样式机制。
 
 - ControlTemplate 中的稳定视觉区域使用 `.semantic-*` class；`PART_*` 继续只服务于控件实现查找。

@@ -22,7 +22,7 @@
 - [architecture.md](architecture.md)
 - [theme-registration.md](theme-registration.md)
 - [browser-compatibility.md](browser-compatibility.md)
-- [../core/semantic-part-system.md](../core/semantic-part-system.md)
+- [Semantic Part 系统设计](../../architecture/systems/theming/semantic-parts.md)
 - [../../controls/desktop/overview.md](../../controls/desktop/overview.md)
 
 DataGrid、ColorPicker 和 Extras 虽然属于桌面控件体系，但它们是独立包，内部架构分别放在：

@@ -58,7 +58,7 @@ API 和主题契约包括但不限于：
 ## Semantic Part
 
 Control 对稳定视觉区域提供公共定制入口时，必须遵循
-[AtomUI Semantic Part 系统设计](../modules/core/semantic-part-system.md)。Semantic Part 是主题兼容性契约，不是
+[AtomUI Semantic Part 系统设计](../architecture/systems/theming/semantic-parts.md)。Semantic Part 是主题兼容性契约，不是
 模板节点清单。
 
 - 除隐式 `root` 外，公开 Part 使用唯一 `.semantic-*` class，名称由语义职责产生，不包含 `PART_*`、序号或当前

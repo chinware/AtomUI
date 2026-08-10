@@ -5,8 +5,8 @@ Semantic Part 是 AtomUI Control 对稳定视觉区域提供的公共定制契�
 internal 类型或偶然的视觉树结构。
 
 本文档定义 Semantic Part 的统一模型、Selector 契约、主题边界、构建期描述、兼容性和验证要求。ControlTheme
-资产、Token schema 和主题运行时的完整架构分别见 [主题系统架构](theme-system.md)；生成器实现见
-[Semantic Part Generator](../generator/semantic-part-generator.md)。
+资产、Token schema 和主题运行时的完整架构见 [主题系统架构](runtime.md)；生成器实现见
+[Semantic Part Generator](../../../modules/generator/semantic-part-generator.md)。
 
 ## 1. 设计定位
 
@@ -368,7 +368,7 @@ public partial class Button;
 ```
 
 生成器负责产生静态 descriptor、Part 名称与 class 常量、包级注册以及诊断。详细输入输出见
-[Semantic Part Generator](../generator/semantic-part-generator.md)。
+[Semantic Part Generator](../../../modules/generator/semantic-part-generator.md)。
 
 ## 12. 性能与 AOT
 
@@ -440,12 +440,12 @@ Button 的 `root`、`icon`、`content` 可以作为基础契约测试样本；�
 
 ## 16. 相关文档
 
-- [Semantic Part Generator 设计](../generator/semantic-part-generator.md)：构建期输入、模板分析、descriptor、诊断和
+- [Semantic Part Generator 设计](../../../modules/generator/semantic-part-generator.md)：构建期输入、模板分析、descriptor、诊断和
   AOT 输出。
-- [AtomUI 控件研发标准规范](../../engineering/control-development-guidelines.md)：Control 作者必须遵守的 Part
+- [AtomUI 控件研发标准规范](../../../engineering/control-development-guidelines.md)：Control 作者必须遵守的 Part
   声明、模板和兼容性规则。
-- [AtomUI 控件 Token 设计规范](../../engineering/control-token-guidelines.md)：Semantic Part、Part Theme 和 Token
+- [AtomUI 控件 Token 设计规范](../../../engineering/control-token-guidelines.md)：Semantic Part、Part Theme 和 Token
   identity 的职责边界。
-- [AtomUI 控件文档规范](../../engineering/control-documentation-guidelines.md)：单控件 Semantic Parts 表与 LLMS
+- [AtomUI 控件文档规范](../../../engineering/control-documentation-guidelines.md)：单控件 Semantic Parts 表与 LLMS
   文档同步规则。
-- [AOT 编程规范](../../engineering/aot-programming-guidelines.md)：静态注册、反射和运行时发现边界。
+- [AOT 编程规范](../../../engineering/aot-programming-guidelines.md)：静态注册、反射和运行时发现边界。

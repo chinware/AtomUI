@@ -1,12 +1,10 @@
 # AtomUI 主题系统架构
 
-本文是 AtomUI 主题系统唯一的长期架构设计文档。它定义最终运行时模型、公开配置语义、主题来源解析、主题文件
-处理、Catalog 刷新、Token 编译、动态作用域、资源发布、事件契约、AOT 边界和验收标准。阶段性分析、迁移过程和
-任务进度不写入本文。
+本文是 AtomUI 主题系统唯一的长期架构设计文档。它定义当前运行时模型、公开配置语义、主题来源解析、主题文件
+处理、Catalog 刷新、Token 编译、动态作用域、资源发布、事件契约、AOT 边界和验收标准。
 
-本文描述目标架构。实现过程中不得为了保留旧主题系统 API 而偏离这些约束。
-面向主题作者和 Control 开发者的分层讲解与定制示例见
-[AtomUI 主题系统架构与主题定制指南](theme-architecture-and-customization.md)。
+本文定义当前架构。既有兼容对象不得成为绕过这些约束的旁路。面向主题作者和 Control 开发者的分层讲解与定制
+示例见 [AtomUI 主题定制指南](../../../guides/theming/customization.md)。
 
 ## 1. 设计目标
 
@@ -400,8 +398,8 @@ Token 和主题资产。Own Token 使用无参数 `[ControlDesignToken]` 供生�
 - Token 是空元素，必须通过 `Value` 属性提供非空值，不允许正文值或类型分类属性。
 
 完整格式、词法、安全限制、diagnostic 和版本演进规则见
-[主题定义 XML v1 规范](theme-definition-xml.md)，机器可读标准见
-[AtomUI Theme Definition XML Schema v1](schemas/atomui-theme-v1.xsd)。
+[主题定义 XML v1 规范](../../../reference/theming/theme-definition-xml-v1.md)，机器可读标准见
+[AtomUI Theme Definition XML Schema v1](../../../reference/theming/schemas/atomui-theme-v1.xsd)。
 
 ### 6.2 两阶段处理
 
@@ -1047,7 +1045,7 @@ deferred AXAML 和 manifest 必须由同一资产输入确定性产生；运行�
 
 Control 的稳定视觉区域通过 `.semantic-*` Selector 和生成式 `ControlSemanticDescriptor` 公开。Descriptor 记录
 Part name、path、ContractType、cardinality、customization 和跨视觉根信息；运行时样式匹配仍完全由 Avalonia
-Selector 完成。完整模型见 [Semantic Part 系统设计](semantic-part-system.md)。
+Selector 完成。完整模型见 [Semantic Part 系统设计](semantic-parts.md)。
 
 稳定且允许用户完整替换的 public 子 Control 可以额外通过强类型 `ControlTheme?` 属性公开，例如
 `SearchEdit.SearchButtonTheme`。这类 Semantic Part Theme 不创建 Token identity，也不使用字符串 Part 字典。
@@ -1468,9 +1466,9 @@ ThemeManager 提交 snapshot，Resources 只读取已提交 snapshot。Compilati
 替换为下划线，禁止多个程序集生成相同全限定类型名，也禁止把生成 namespace 嵌套在可能同名的 Control
 类型下面。
 
-## 21. 明确删除的旧设计
+## 21. 禁止的架构旁路
 
-新架构实现时删除：
+以下旁路不属于当前架构，禁止重新引入：
 
 - `Theme`、`ITheme` 以及预创建 Theme variant pool。
 - `ThemeCoordinator` 以及一对一 `ThemeManager`/`ThemeEngine` facade 分层；事务队列和当前状态只有 Manager 一个
@@ -1495,7 +1493,7 @@ ThemeManager 提交 snapshot，Resources 只读取已提交 snapshot。Compilati
 - cache pin、父 snapshot Version cache key 和字符串拼接 cache key。
 - 旧主题 XML 的 `ControlTokens/ControlToken` 结构。
 
-这些内容不建立 adapter，不标记 obsolete 后继续保留，也不作为迁移阶段的内部真源。
+这些内容不建立 adapter，也不能以 obsolete、兼容层或内部入口的形式继续存在。
 
 ## 22. 验收标准
 

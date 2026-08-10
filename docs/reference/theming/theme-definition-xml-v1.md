@@ -128,7 +128,7 @@ AtomUI 的 `Default`、`Dark`、`Compact` descriptor effect 分别为 `Light`、
 `ThemeConfig` 可以整体替换有效全局算法链，但不会修改 definition 元数据；编译器始终从 Light baseline 折叠
 当前有效算法链，最终 `ThemeSnapshot.Appearance` 才是发布 Avalonia Light/Dark variant 的唯一依据。父 Dark +
 子显式 Compact 的结果因此是 Light Compact；Dark Compact 必须显式声明完整算法链。具体根作用域、局部
-`Inherit` 和 FollowSystem 规则见 [主题系统架构](theme-system.md)。
+`Inherit` 和 FollowSystem 规则见 [主题系统架构](../../architecture/systems/theming/runtime.md)。
 
 ## 5. Algorithms 与 Algorithm
 

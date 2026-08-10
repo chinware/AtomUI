@@ -15,7 +15,7 @@
 
 ## 关键目录
 
-主题系统按照 [主题系统架构](theme-system.md) 的职责边界组织：
+主题实现按照 [主题系统架构](../../architecture/systems/theming/runtime.md) 的职责边界组织：
 
 | 目录 | 说明 |
 |---|---|
@@ -43,12 +43,11 @@ registry 后不扫描上层程序集或 AXAML。它对多个上层项目开放 `
 
 ## 相关文档
 
-- [主题系统架构](theme-system.md)
-- [Semantic Part 系统设计](semantic-part-system.md)
+- [主题系统架构](../../architecture/systems/theming/runtime.md)
+- [Semantic Part 系统设计](../../architecture/systems/theming/semantic-parts.md)
 - [AtomUI 多语言模块架构](../localization/overview.md)
-- [主题系统架构与主题定制指南](theme-architecture-and-customization.md)
-- [主题算法枚举化设计](theme-algorithm-enum-design.md)
-- [主题定义 XML v1 规范](theme-definition-xml.md)
-- [AtomUI Theme Definition XML Schema v1](schemas/atomui-theme-v1.xsd)
-- [../../architecture/startup-and-registration.md](../../architecture/startup-and-registration.md)
-- [../../architecture/runtime-platforms.md](../../architecture/runtime-platforms.md)
+- [主题定制指南](../../guides/theming/customization.md)
+- [主题定义 XML v1 规范](../../reference/theming/theme-definition-xml-v1.md)
+- [AtomUI Theme Definition XML Schema v1](../../reference/theming/schemas/atomui-theme-v1.xsd)
+- [启动与注册链路](../../architecture/foundations/startup-and-registration.md)
+- [运行平台策略](../../architecture/foundations/runtime-platforms.md)

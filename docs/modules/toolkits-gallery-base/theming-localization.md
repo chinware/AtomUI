@@ -84,7 +84,7 @@ AtomUIGallery 当前产品主题目录由 XML definition 唯一描述，显示�
 `UseUserThemeDirectory()` 追加用户目录；Browser Gallery 只使用随应用发布的显式 Resolver。Gallery 不提供独立的
 reload command 或菜单，宿主需要刷新用户主题时直接调用 `IThemeManager.ReloadThemesAsync()`。Catalog 的冲突、
 首次用户来源降级、整批原子刷新和删除当前用户主题后的默认回退语义以
-[Core 主题系统设计](../core/theme-system.md)为准。
+[主题系统架构](../../architecture/systems/theming/runtime.md)为准。
 
 ## Shell 主题选择状态
 

@@ -2,9 +2,9 @@
 
 本文档定义 `AtomUI.Controls`、`AtomUI.Desktop.Controls`、DataGrid、ColorPicker 和第三方 AtomUI Control 包的
 Control Token、ControlTheme Asset 与组合主题规则。完整编译、snapshot 和资源发布模型见
-[AtomUI 主题系统架构](../modules/core/theme-system.md)。单个 Control 的 `token.md` 只记录 Own Token 语义和必要的
+[AtomUI 主题系统架构](../architecture/systems/theming/runtime.md)。单个 Control 的 `token.md` 只记录 Own Token 语义和必要的
 Global Token 使用示例；全部 Global Token 都可覆盖，不在单 Control 文档中复制支持清单。面向主题作者的完整定制流程见
-[主题系统架构与主题定制指南](../modules/core/theme-architecture-and-customization.md)。
+[主题定制指南](../guides/theming/customization.md)。
 
 ## Token 分层
 
@@ -195,7 +195,7 @@ AXAML。只有一个 ControlTheme 时就只有一个主题文件。
 ## Semantic Part 与 Semantic Part Theme
 
 Semantic Part 的基础契约是 `.semantic-*` Selector、稳定 ContractType 和生成式 descriptor，完整设计见
-[AtomUI Semantic Part 系统设计](../modules/core/semantic-part-system.md)。Token 只表达 Control 的稳定设计值，不为
+[AtomUI Semantic Part 系统设计](../architecture/systems/theming/semantic-parts.md)。Token 只表达 Control 的稳定设计值，不为
 每个 Part 创建独立 Token identity，也不使用模板节点名称扩展 Token schema。
 
 当某个 Part 是真实 public Control，并且允许用户完整替换其 ControlTheme 时，可以额外通过强类型

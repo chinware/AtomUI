@@ -64,4 +64,4 @@
 - [theming-localization.md](theming-localization.md)
 - [migration-and-testing.md](migration-and-testing.md)
 - [../../gallery/gallery-showcase-design-pattern.md](../../gallery/gallery-showcase-design-pattern.md)
-- [../../architecture/startup-and-registration.md](../../architecture/startup-and-registration.md)
+- [启动与注册链路](../../architecture/foundations/startup-and-registration.md)

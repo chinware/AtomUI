@@ -1,9 +1,9 @@
-# AtomUI 主题系统架构与主题定制指南
+# AtomUI 主题定制指南
 
 AtomUI 的主题系统不是一组可以随意覆盖的 Brush，也不是在每个 ControlTheme 外面再包一层 ResourceDictionary。
 它解决的是一个更完整的问题：如何用稳定的设计语言描述全局视觉，允许单个 Control 精确偏离全局规则，又能在
 运行时安全切换主题、建立局部主题、支持第三方 Control，并保持 NativeAOT、性能和资源生命周期可控。
-本文定义这些能力在 Avalonia、C# 和 AtomUI ControlTheme 中的稳定语义与使用边界。
+本文说明这些能力在 Avalonia、C# 和 AtomUI ControlTheme 中的使用方式与定制边界。
 
 本文面向两类读者：
 
@@ -11,8 +11,7 @@ AtomUI 的主题系统不是一组可以随意覆盖的 Brush，也不是在每�
 - 希望开发 AtomUI Control、主题包或维护主题运行时的工程师。
 
 本文先建立容易理解的心智模型，再逐步进入 Token 计算、Control identity、主题资产、作用域、事务和 AOT 等
-实现边界。本文与主题系统架构文档共同描述目标契约；示例表达最终稳定用法，不承担旧主题 API 的兼容说明。
-严格的协议与验收条件仍以 [AtomUI 主题系统架构](theme-system.md) 为准。
+使用边界。稳定运行时契约与验收条件以 [AtomUI 主题系统架构](../../architecture/systems/theming/runtime.md) 为准。
 
 ## 1. 先把主题理解成一次编译
 
@@ -329,7 +328,7 @@ Theme Definition XML 适合声明可命名、可切换、可放入应用资源�
 Binder 会根据当前 registry revision 验证 Button identity、Token 名和值类型。Button Own Token 与任意已注册
 Global Token 都可以配置；只有名称在这两个 schema 中都不存在时才失败。
 
-完整 XML 协议、算法形态和安全限制见 [主题定义 XML v1 规范](theme-definition-xml.md)。
+完整 XML 协议、算法形态和安全限制见 [主题定义 XML v1 规范](../../reference/theming/theme-definition-xml-v1.md)。
 
 ### 8.1 让主题进入 ThemeCatalog
 
@@ -471,7 +470,7 @@ ControlTheme 不声明 Token scope。`RatingTokenResource` 已经明确了 ident
 
 Control 通过稳定 `.semantic-*` Selector 开放少量公共视觉区域。用户可以在 Application、局部 StyleHost 或单个
 Control 的 `Styles` 中定制这些区域，而不依赖 `PART_*`、Name 或 internal 类型。完整契约见
-[Semantic Part 系统设计](semantic-part-system.md)。
+[Semantic Part 系统设计](../../architecture/systems/theming/semantic-parts.md)。
 
 当 Part 是真实 public 子 Control，并且需要允许完整替换其 ControlTheme 时，owner 可以额外使用强类型
 `ControlTheme?` 属性开放 Semantic Part Theme。
@@ -532,7 +531,7 @@ this.UseAtomUI(builder =>
 });
 ```
 
-详细注册顺序见 [Desktop Controls 主题注册](../desktop-controls/theme-registration.md)。
+详细注册顺序见 [Desktop Controls 主题注册](../../modules/desktop-controls/theme-registration.md)。
 
 ## 15. 一次主题切换为什么不会暴露半成品
 
@@ -618,9 +617,9 @@ Control 使用同一条确定性路径。
 
 ## 相关文档
 
-- [AtomUI 主题系统架构](theme-system.md)：完整运行时模型、事务、缓存、生命周期和验收标准。
-- [Semantic Part 系统设计](semantic-part-system.md)：稳定视觉区域、Selector、ContractType、Popup 和兼容性契约。
+- [AtomUI 主题系统架构](../../architecture/systems/theming/runtime.md)：完整运行时模型、事务、缓存、生命周期和验收标准。
+- [Semantic Part 系统设计](../../architecture/systems/theming/semantic-parts.md)：稳定视觉区域、Selector、ContractType、Popup 和兼容性契约。
 - [Control Token 设计规范](../../engineering/control-token-guidelines.md)：Control 和第三方 Control 的研发约束。
-- [主题定义 XML v1 规范](theme-definition-xml.md)：主题文件格式、算法和验证规则。
-- [启动与注册链路](../../architecture/startup-and-registration.md)：应用、Control 包和 ThemeManager 的构建顺序。
-- [Desktop Controls 主题注册](../desktop-controls/theme-registration.md)：内置与第三方 Control 包注册边界。
+- [主题定义 XML v1 规范](../../reference/theming/theme-definition-xml-v1.md)：主题文件格式、算法和验证规则。
+- [启动与注册链路](../../architecture/foundations/startup-and-registration.md)：应用、Control 包和 ThemeManager 的构建顺序。
+- [Desktop Controls 主题注册](../../modules/desktop-controls/theme-registration.md)：内置与第三方 Control 包注册边界。

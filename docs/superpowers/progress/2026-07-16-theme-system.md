@@ -2,14 +2,14 @@
 
 This file tracks implementation progress for
 [the theme system implementation plan](../plans/2026-07-16-theme-system-implementation.md).
-The normative design remains in `docs/modules/core/theme-system.md` and
-`docs/modules/core/theme-definition-xml.md`.
+The normative design remains in `docs/architecture/systems/theming/runtime.md` and
+`docs/reference/theming/theme-definition-xml-v1.md`.
 
 ## Current State
 
 | Item | Status | Evidence |
 |---|---|---|
-| Formal architecture | Complete | `docs/modules/core/theme-system.md` |
+| Formal architecture | Complete | `docs/architecture/systems/theming/runtime.md` |
 | XML v1 specification and XSD | Complete | XSD validated by `xmllint` and .NET `XmlSchemaSet` |
 | Baseline Core tests | Complete | 141 passed, 0 failed on 2026-07-16 |
 | Task 1: XML syntax and algorithm state | Complete | 15 focused tests; secure XSD reader implemented |

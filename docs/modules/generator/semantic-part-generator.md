@@ -2,7 +2,7 @@
 
 Semantic Part Generator 为 AtomUI Control 的公开视觉区域生成静态 descriptor、名称常量、包级注册和构建期诊断。
 公共语义、Selector、Popup、Theme 和兼容性契约由
-[AtomUI Semantic Part 系统设计](../core/semantic-part-system.md) 定义；本文档只定义生成器职责。
+[AtomUI Semantic Part 系统设计](../../architecture/systems/theming/semantic-parts.md) 定义；本文档只定义生成器职责。
 
 ## 1. 设计定位
 
