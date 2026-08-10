@@ -76,7 +76,7 @@ public class GalleryBasePackagingTests
     [Fact]
     public void Packaging_Docs_List_GalleryBase_As_Main_Package()
     {
-        var packagingDoc = ReadRepoFile("docs/architecture/build-and-packaging.md");
+        var packagingDoc = ReadRepoFile("docs/architecture/foundations/build-and-packaging.md");
 
         packagingDoc.ShouldContain("- `AtomUI.Toolkits.GalleryBase`");
     }

@@ -1,7 +1,7 @@
 # 本地化 Generator 优先构建设计
 
 > 本文是本次 Generator 优先重构的补充决策记录，不是多语言模块的正式架构权威。长期设计、职责边界和不变量以
-> [`docs/modules/localization/`](../../modules/localization/overview.md) 为准；实现过程中形成的新结论必须先同步到正式
+> [`docs/modules/localization/`](../../modules/localization/index.md) 为准；实现过程中形成的新结论必须先同步到正式
 > 模块文档，不能只修改本文。
 
 ## 目标

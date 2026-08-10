@@ -21,7 +21,7 @@
 
     <ItemGroup>
         <AvaloniaResource Include="Assets/**/*.*"/>
-        <EmbeddedResource Include="../../docs/modules/core/schemas/atomui-theme-v1.xsd"
+        <EmbeddedResource Include="../../docs/reference/theming/schemas/atomui-theme-v1.xsd"
                           LogicalName="AtomUI.Theme.Definitions.Schemas.atomui-theme-v1.xsd" />
     </ItemGroup>
 

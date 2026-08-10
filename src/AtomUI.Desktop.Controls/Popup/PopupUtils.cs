@@ -885,7 +885,7 @@ internal static class PopupUtils
     /// （判断指针是否仍在作用域内）。Avalonia 的 popup 连接走 visual/logical/InteractiveParent
     /// 三条线叠加，单棵树检查会漏嵌套 popup 场景（popup 里开 ComboBox/Select 等）。
     /// 本方法沿 <c>popup host → Popup → PlacementTarget</c> 跳跃模拟事件路由。
-    /// 详见 <c>docs/PopupAnchorScopeGuide.md</c>。
+    /// 详见 <c>docs/engineering/development/popup-anchor-scope.md</c>。
     /// </remarks>
     internal static bool IsVisualInPopupScope(Visual? visual, Visual anchor, Visual? popupChild)
     {
