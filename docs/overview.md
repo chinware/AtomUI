@@ -44,6 +44,7 @@ docs/
 
 - [Control 基础设施架构](architecture/systems/control-infrastructure/overview.md)
 - [Control 基础设施使用指南](guides/control-infrastructure/overview.md)
+- [字体子系统架构](architecture/systems/typography/overview.md)
 - [渲染架构](architecture/systems/rendering/overview.md)
 - [Popup Anchor 作用域检查](engineering/development/popup-anchor-scope.md)
 - [Native 模块](modules/native/overview.md)

@@ -6,6 +6,7 @@
 `docs/modules/`；使用步骤和示例进入 `docs/guides/`；精确格式和协议进入 `docs/reference/`。
 
 - [主题系统](theming/overview.md)：主题运行时、Token、Semantic Part、定制 Guide 和 XML Reference。
+- [字体子系统](typography/overview.md)：字体资源注册、字体族回退、字号阶梯派生和文本度量边界。
 - [本地化系统](localization/overview.md)：运行时、Generator、Build Tasks、语言包和 XLIFF Reference。
 - [Control 基础设施](control-infrastructure/overview.md)：异步加载、过滤和响应式共享契约。
 - [渲染系统](rendering/overview.md)：边框渲染、视觉层职责和跨树宿主选择。

@@ -7,6 +7,7 @@ AtomUI 是基于 Avalonia/.NET 的桌面与跨平台控件系统。整体架构�
 
 - [架构基础](foundations/overview.md)：依赖关系、运行平台、启动注册、构建和打包。
 - [跨模块系统](systems/overview.md)：主题、本地化、Control 基础设施、渲染和窗口系统的架构入口。
+- [字体子系统](systems/typography/overview.md)：字体包注册、字体族回退、字号与行高 Token 派生。
 - [Control 基础设施](systems/control-infrastructure/overview.md)：异步加载、过滤与响应式共享契约。
 - [渲染系统](systems/rendering/overview.md)：边框渲染与跨 VisualRoot 的视觉层规则。
 
