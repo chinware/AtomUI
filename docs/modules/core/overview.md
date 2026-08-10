@@ -44,6 +44,7 @@ registry 后不扫描上层程序集或 AXAML。它对多个上层项目开放 `
 ## 相关文档
 
 - [主题系统架构](theme-system.md)
+- [Semantic Part 系统设计](semantic-part-system.md)
 - [AtomUI 多语言模块架构](../localization/overview.md)
 - [主题系统架构与主题定制指南](theme-architecture-and-customization.md)
 - [主题算法枚举化设计](theme-algorithm-enum-design.md)

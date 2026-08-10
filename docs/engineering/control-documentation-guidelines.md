@@ -470,18 +470,23 @@ AtomUI 的 semantic 文档描述 AXAML、ControlTemplate、运行时组合结构
 `Semantic Parts` 表格必须按控件语义区域组织：
 
 ```md
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| root | <root control> | 控件根语义区域 | ... | ... | stable |
-| content | PART_ContentPresenter | 内容展示区域 | Content | ... | stable |
+| Part | Selector | ContractType | Cardinality | AtomUI 节点 | 职责 | 相关 API | 相关 Token | Customization | 稳定性 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| root | <root control> | Button | Single | <root control> | 控件根语义区域 | ... | ... | Root | stable |
+| content | .semantic-content | ContentPresenter | Optional | PART_ContentPresenter | 内容展示区域 | Content | ... | Selector | stable |
 ```
 
 要求：
 
 - `Part` 是语义名，不一定等于 Template Part 名。
+- `Selector` 必须与生成式 Semantic Part descriptor 一致；`root` 不添加 `.semantic-root`。
+- `ContractType` 是用户可在 Selector 中依赖的最低稳定 public 类型。
+- `Cardinality` 只能是 `Single`、`Optional` 或 `Multiple`。
 - `AtomUI 节点` 可以是 Template Part、主题节点、控件类或抽象区域。
-- 只记录稳定语义区域，不暴露用户不应依赖的内部临时节点。
-- 如果某个节点是内部实现细节，必须在“稳定性”或“Customization Boundaries”中说明不可依赖。
+- `Customization` 使用 `Root`、`Selector` 或 `SelectorAndTheme`。
+- 只记录进入生成式 descriptor 的稳定语义区域；用户不应依赖的内部节点只进入 Composition Model 或
+  Customization Boundaries，不能标记为公开 Semantic Part。
+- 表格、Control 声明、AXAML marker 和生成 descriptor 不一致时必须验证失败，不能只修改文档消除差异。
 
 `Abstract AXAML Structure` 必须遵守：
 

@@ -218,6 +218,11 @@ descriptor 必须直接提供以下静态已知信息：
 - `OwnTokens` schema；Control 的可配置 Global Token 集合始终是完整 Global Token schema，不生成消费白名单。
 - ControlTheme asset owner、引用的 Control identities、Semantic Part 契约和包级注册信息。
 
+Semantic Part descriptor 必须由 Control 声明和构建输入静态生成。运行时不得扫描 AXAML、ControlTheme、
+`Classes` 或 VisualTree 来发现公共 Part，也不得使用 `Dictionary<string, Style>`、反射 Property 查找或动态 Theme
+factory 合并 Part 样式。`.semantic-*` marker 只参与 Avalonia 原生 Selector；Gallery 的 VisualTree 高亮属于开发
+工具路径，不能进入 Control 运行时。
+
 这里有三个关键点：
 
 - Builder 必须原样传递 descriptor，不能丢弃 identity 后退化为 `Type` 注册。

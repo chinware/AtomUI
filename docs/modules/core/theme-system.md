@@ -43,11 +43,9 @@
 
 ### 2.1 主题语义与 Avalonia 映射
 
-AtomUI 是 Ant Design 主题系统在 Avalonia 领域的实现。主题配置合并、Token 派生、全局算法替换、
-组件级算法策略和嵌套作用域语义以 Ant Design 的 `ConfigProvider`、`useTheme` 和 `useToken` 行为为功能真源。
-Avalonia 侧允许使用静态 `ControlTheme`、typed resource key、snapshot-backed `ResourceProvider` 和显式生命周期
-宿主来实现等价语义；React hook、CSS-in-JS、hash、CSS 变量和 SSR 等 Web 实现细节不作为 AtomUI 的实现约束。
-当本文或代码与 Ant Design 主题语义冲突时，以 Ant Design 语义为准并修正文档或实现。需要保持的 AtomUI 契约是：
+AtomUI 主题系统使用静态 `ControlTheme`、typed resource key、snapshot-backed `ResourceProvider` 和显式生命周期
+宿主实现主题配置合并、Token 派生、算法替换、Control 级算法策略和嵌套作用域。本文定义这些能力的长期功能契约；
+代码、配置模型、主题资产和其他文档必须与本文保持一致：
 
 - `ThemeConfig` 对 Token 按 key 合并，对 Control 配置先按 identity、再按字段合并；`Algorithms` 整体替换。
 - `Inherit=false` 切断父配置继承；root 运行时请求保留当前所选 `ThemeDefinition` 基线，局部 Provider 回到
@@ -58,13 +56,12 @@ Avalonia 侧允许使用静态 `ControlTheme`、typed resource key、snapshot-ba
 - 嵌套主题依赖上下文隔离；脱离上下文的新渲染根不能自动获得调用点主题。
 - 样式结构保持稳定，主题切换只替换作用域内 Token 值。
 
-Web 专属实现不进入 AtomUI：CSS selector hash、CSS Variable 命名、style tag 注入、CSS 序列化、SSR 提取、CSP
-nonce 和 React hook 生命周期均不属于 Avalonia 主题系统。它们在 AtomUI 中分别由静态 ControlTheme、稳定资源
-key、snapshot-backed ResourceProvider、Avalonia 逻辑树和显式资源宿主生命周期替代：
+AtomUI 主题系统不引入 CSS selector hash、CSS Variable 命名、style tag 注入、CSS 序列化、SSR 提取或 Web
+生命周期。主题结构和局部作用域统一由静态 ControlTheme、稳定资源 key、snapshot-backed ResourceProvider、
+Avalonia 逻辑树和显式资源宿主生命周期表达：
 
 ```text
-Ant Design: static control CSS + scoped CSS variables
-AtomUI:     static ControlTheme + scoped snapshot resources
+Static ControlTheme + scoped snapshot resources
 ```
 
 因此 AtomUI 不需要 `zeroRuntime` 或 hashed style 开关。ControlTheme 本来就在构建期编译，运行时只计算和发布
@@ -205,8 +202,8 @@ Provider 不订阅 Config 内部对象图。Capture 在 UI 线程读取一个深
 复制，也不会观察到中途变化。旧 Config 在属性替换后不再被 Provider、Manager、Compiler、snapshot 或缓存
 保留；缓存只保存规范化后的结构化 key。
 
-`Algorithms=null` 表示“未指定”；非空集合表示显式算法链；空集合表示显式替换为 AtomUI 默认算法链，
-等价于 Ant Design 全局 `algorithm: []` 回到 `defaultTheme`。Control 自定义算法链仍必须声明至少一个算法。
+`Algorithms=null` 表示“未指定”；非空集合表示显式算法链；空集合表示显式替换为 AtomUI 默认算法链。
+Control 自定义算法链仍必须声明至少一个算法。
 
 公开配置只接受 `ThemeAlgorithm`：
 
@@ -258,7 +255,7 @@ ThemeDefinition”为根基线。选择某个主题后，runtime config 不能�
 
 局部 `ThemeConfigProvider` 的父输入是父 `ThemeContext` 的完整有效配置。局部 `Inherit=false` 的基线是
 AtomUI library defaults，不继承父作用域、当前所选主题定义、应用初始配置或 runtime override；随后只应用
-当前 Provider 的本地配置。这与 Ant Design ConfigProvider 的局部 `inherit=false` 语义一致。
+当前 Provider 的本地配置。
 
 - `Inherit=true` 时以父作用域的有效配置为基础。
 - `Inherit=false` 时使用上述入口对应的基线，不隐式复制父有效配置。
@@ -343,7 +340,8 @@ descriptor 和资源扩展，只省略 Own Token builder/schema：
 - Control CLR type 和 Own Token schema；descriptor 不包含 Global Token 消费白名单。
 - 生成式 `XxxTokens.Identity`、`XxxTokenKey` 和 `XxxTokenResourceExtension`；Token key 必须强类型化，不能在
   ProvideValue 热路径解析字符串。
-- 每个主题资产的 URI、owner Control identity、引用的 Control identities 和 Semantic Part Theme 契约。
+- 每个主题资产的 URI、owner Control identity、引用的 Control identities 和 Semantic Part Theme 资产关系。
+- 每个 Control 的生成式 Semantic Part descriptor、Selector class、ContractType 和 cardinality。
 - 每个包的生成式注册入口；一次注册完整 descriptor 和资产 manifest，不要求逐 Control 手工注册。
 
 `XxxTokenResource` 是 Control identity 的显式 AXAML 边界。它使用同一种语法读取 Effective Global Token 和
@@ -978,12 +976,14 @@ Global Token schema 中的全部候选。Global Token 与 Own Token 禁止同名
 资源查询热路径都不解析字符串、不遍历 Visual、不查找 templated parent，也不推断 TargetType。
 
 ControlTheme 不声明 `ControlTokenScope.Identity`。强类型 Token key 在 AXAML 编译期验证 Global/Own Token 名称；
-资产生成器只分析 owner、引用的 Control identity、URI、资源结构和 Semantic Part Theme 契约，不收集 Global
-Token 消费关系。`EffectiveGlobalToken.X`、`XxxTokenResource X` 和 C# Binding 都不会扩展 schema。
+资产生成器只分析 owner、引用的 Control identity、URI、资源结构和 Semantic Part Theme 资产关系，不收集 Global
+Token 消费关系。Semantic Part Generator 独立分析 Control 声明和 `.semantic-*` marker；
+`EffectiveGlobalToken.X`、`XxxTokenResource X` 和 C# Binding 都不会扩展 schema。
 
 - 引用 Own Token 时必须属于显式 Xxx Control。
 - 引用任意已注册 Global Token 都合法，不产生 dependency manifest。
 - Semantic Part Theme 可以显式引用 owner Control 和真实 Part Control 的 TokenResource。
+- Selector-only Semantic Part 不创建 Theme asset、Token identity 或运行时样式字典。
 - 不存在的 Token、重复资产 URI、未注册 identity 或不兼容的 Part `TargetType` 在构建期失败。
 
 运行时只加载生成结果并再次对照当前 RegistryRevision，不重新扫描程序集或 AXAML 文本。ThemeManager 必须在
@@ -1017,7 +1017,7 @@ Own Token 始终显式属于某一 Control，不随 CLR 继承动态替换。未
 `-1 - OwnTokenSlot`；`XxxTokenResourceExtension` 通过一次整数分支映射到 Effective Global resource key 或 Own
 resource key。数值 slot 只在当前生成 schema 内有效，不能持久化或作为跨版本协议。
 
-### 13.4 ControlTheme Asset 与 Semantic Part Theme
+### 13.4 ControlTheme Asset、Semantic Part 与 Part Theme
 
 一个标准 Control 使用约定式文件结构：
 
@@ -1045,10 +1045,17 @@ typed theme 的两层生成包装是 Avalonia 资源加载边界，不是 Contro
 deferred AXAML 和 manifest 必须由同一资产输入确定性产生；运行时只构造生成资源，不解析 AXAML 目录或反射 theme
 类型。
 
-稳定且允许用户替换的内部位置通过强类型 `ControlTheme?` 属性公开，例如
+Control 的稳定视觉区域通过 `.semantic-*` Selector 和生成式 `ControlSemanticDescriptor` 公开。Descriptor 记录
+Part name、path、ContractType、cardinality、customization 和跨视觉根信息；运行时样式匹配仍完全由 Avalonia
+Selector 完成。完整模型见 [Semantic Part 系统设计](semantic-part-system.md)。
+
+稳定且允许用户完整替换的 public 子 Control 可以额外通过强类型 `ControlTheme?` 属性公开，例如
 `SearchEdit.SearchButtonTheme`。这类 Semantic Part Theme 不创建 Token identity，也不使用字符串 Part 字典。
-Part 是真实 public Control 时保留自己的 identity；Part Theme 可以显式消费 owner 和 Part 两个
-`XxxTokenResource`，分别表达组合语义与基础视觉。
+Part 保留自己的 identity；Part Theme 可以显式消费 owner 和 Part 两个 `XxxTokenResource`，分别表达组合语义与
+基础视觉。
+
+Popup、Overlay、普通 presenter 和 item container 不因跨 VisualRoot 或重复出现而自动获得 Theme 属性。它们首先
+使用 Selector；只有存在完整 ControlTheme 替换契约时才进入 `SelectorAndTheme`。
 
 SearchEdit 必须直接组合 public Button，不能创建一个继承 Button 却借用 LineEdit Token 的 internal
 SearchButton。Button 基础视觉只消费 `ButtonTokenResource`；布局、边框拼接、圆角、状态投射和搜索行为由
@@ -1418,10 +1425,11 @@ Theme/
 |   \-- Token value converters
 ```
 
-`AtomUI.Generator` 根据 Control、Token 定义和 AXAML 资产生成 `ControlThemeAssetDescriptor`、引用 identity
-manifest、`XxxTokens.Identity`、`XxxTokenKey` 与 `XxxTokenResourceExtension`，并通过构建 analyzer 校验
-ResourceInclude、ThemeDictionary、ControlTheme 和 Semantic Part Theme。运行时 `Theme/Schema` 只消费生成结果，
-不解析 AXAML 文本，也不通过反射补全缺失 identity。
+`AtomUI.Generator` 根据 Control、Token 定义、Semantic Part 声明和 AXAML 资产生成
+`ControlThemeAssetDescriptor`、`ControlSemanticDescriptor`、引用 identity manifest、`XxxTokens.Identity`、
+`XxxTokenKey` 与 `XxxTokenResourceExtension`，并通过构建 analyzer 校验 ResourceInclude、ThemeDictionary、
+ControlTheme、Semantic Part marker 和可选 Part Theme。运行时 `Theme/Schema` 只消费生成结果，不解析 AXAML 文本，
+也不通过反射补全缺失 identity。
 
 `Definitions` 同时拥有主题来源和主题定义，不再用单独的 `Catalog` 目录把一次加载流程拆开。
 `ThemeManager`、事务、上下文和作用域图都属于主题子系统的核心运行时入口，直接位于 `Theme` 根目录；
@@ -1553,8 +1561,10 @@ ThemeManager 提交 snapshot，Resources 只读取已提交 snapshot。Compilati
 - 每个 Control 都能覆盖 registry 中任意 Global Token；未知名称失败，合法但未消费的 Global Token 允许存在且
   不得泄漏到其他 Control 或真正的 Global snapshot。
 - Token key 具有 AXAML 智能提示和编译期校验；不存在 `Global=`、`Own=` 或字符串 Token 名参数。
-- AtomUI ControlTheme 资产都具有可静态验证的 owner、引用 Control identities 和 Semantic Part Theme 契约；
-  identity、引用或 TargetType 不一致时在主题注册前失败。
+- AtomUI Control 都具有可静态验证的 Semantic Part descriptor；名称、class、ContractType、cardinality 或模板变体
+  marker 不一致时构建失败。
+- AtomUI ControlTheme 资产都具有可静态验证的 owner、引用 Control identities 和可选 Semantic Part Theme 资产
+  关系；identity、引用或 TargetType 不一致时在主题注册前失败。
 - Popup、Flyout、Dialog 和窗口覆盖层继承 owner ThemeContext。
 - 独立 `TopLevel` 在平台 `Show` 前已获得目标 ThemeContext、显式 Light/Dark variant 和作用域窗口背景，暗色初始
   主题不会暴露 Avalonia 的白色默认客户区；临时首帧值不覆盖用户 local value、不建立资源订阅，并在样式接管后释放。

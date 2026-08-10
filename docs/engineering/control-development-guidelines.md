@@ -55,6 +55,26 @@ API 和主题契约包括但不限于：
 
 控件 Token 的分层、命名、计算、Theme Variables 边界、预设色和兼容性规则见 [AtomUI 控件 Token 设计规范](control-token-guidelines.md)。单个控件的 `token.md` 只记录该控件专属的 Token 语义、分类、使用范围和兼容边界，不重复全局 Token 系统规则。
 
+## Semantic Part
+
+Control 对稳定视觉区域提供公共定制入口时，必须遵循
+[AtomUI Semantic Part 系统设计](../modules/core/semantic-part-system.md)。Semantic Part 是主题兼容性契约，不是
+模板节点清单。
+
+- 除隐式 `root` 外，公开 Part 使用唯一 `.semantic-*` class，名称由语义职责产生，不包含 `PART_*`、序号或当前
+  布局容器名称。
+- 每个 Part 必须声明稳定 `ContractType` 和 `Single`、`Optional` 或 `Multiple` cardinality。
+- 只有能够跨版本承诺的区域进入公开 descriptor；临时 frame、shadow、motion actor 和布局 wrapper 保留为内部
+  Composition 节点。
+- 所有内置 ControlTemplate、Desktop/Browser 主题和适用派生主题必须实现相同 Part 契约。
+- 动态创建节点使用生成的 semantic class 常量，并维护 logical parent、templated parent、回收和 re-template 生命周期。
+- 父主题最多进入自身模板一个 `/template/` 边界，不通过 Semantic Part 穿透子 Control 的 internal 模板。
+- Popup 和 Overlay 默认使用 Selector；跨 VisualRoot 本身不构成新增 Theme 属性的理由。
+- ItemContainer Theme 和 Semantic Part Theme 只在真实 public 子 Control 允许完整 ControlTheme 替换时提供。
+- 删除、重命名 Part、修改 selector class、收窄 ContractType 或改变 cardinality 必须按公共 API 破坏性变更处理。
+- 控件实现完成后必须同步 `overview.md` Semantic Parts 表、`implementation.md` 模板映射、主题契约测试和
+  NativeAOT 风险验证。
+
 ## 可自定义尺寸模式
 
 只支持 `Large`、`Middle`、`Small` 三档预设尺寸的控件实现 `ISizeTypeAware`，其 `SizeType` 使用

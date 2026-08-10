@@ -192,16 +192,22 @@ identities、Semantic Part 契约和注册代码。
 开发者不编写 `ControlThemeAssets` Attribute、Theme Module、手工 manifest、逐主题 identity 或只用于聚合的额外
 AXAML。只有一个 ControlTheme 时就只有一个主题文件。
 
-## Semantic Part Theme
+## Semantic Part 与 Semantic Part Theme
 
-稳定且允许用户替换的内部位置通过强类型 `ControlTheme?` 属性开放：
+Semantic Part 的基础契约是 `.semantic-*` Selector、稳定 ContractType 和生成式 descriptor，完整设计见
+[AtomUI Semantic Part 系统设计](../modules/core/semantic-part-system.md)。Token 只表达 Control 的稳定设计值，不为
+每个 Part 创建独立 Token identity，也不使用模板节点名称扩展 Token schema。
+
+当某个 Part 是真实 public Control，并且允许用户完整替换其 ControlTheme 时，可以额外通过强类型
+`ControlTheme?` 属性开放 Semantic Part Theme：
 
 ```csharp
 public ControlTheme? SearchButtonTheme { get; set; }
 ```
 
-Semantic Part Theme 不创建 Token identity，不使用字符串 Part 名称或 `Dictionary<string, ControlTheme>`。Part 是
-真实 public Control 时继续使用自己的 identity；Part Theme 可以显式读取 owner 和 Part 的 TokenResource。
+Semantic Part Theme 是 `SelectorAndTheme` Part 的可选扩展，不是所有 Semantic Part 的默认机制。它不创建 Token
+identity，不使用字符串 Part 名称或 `Dictionary<string, ControlTheme>`。Part 继续使用自己的 identity；Part Theme
+可以显式读取 owner 和 Part 的 TokenResource。
 
 SearchEdit 模板直接组合 public Button：
 
@@ -244,6 +250,7 @@ builder.UseAcmeControls();
 - Control、Token、主题资产和 identity 约定存在歧义。
 - 重复 identity、重复资产 URI 或未注册 manifest。
 - Semantic Part Theme 的 TargetType 与属性契约不兼容。
+- Semantic Part 的 ContractType 与模板 marker 类型不兼容，或 Part 名称、class、cardinality 与 descriptor 不一致。
 - internal 实现类型被错误声明为独立 Token owner。
 - Control Effective Global Binding 使用未注册的 exact CLR type，或尝试回退到基类 identity。
 
@@ -254,6 +261,7 @@ builder.UseAcmeControls();
 | 新增 Control | 验证 identity、可选 Own Token、主题 manifest、包级注册和无反射路径。 |
 | 修改 Own Token | 验证强类型 key、默认计算、override 和 AXAML 消费。 |
 | 修改 Control 对 Global Token 的使用 | 验证 Effective Global 覆盖、Global fallback、算法间接派生和跨 Control 隔离。 |
-| 修改 Semantic Part Theme | 验证 owner/Part Token 分工、TargetType 和默认/实例替换。 |
+| 修改 Semantic Part | 验证 selector marker、ContractType、cardinality、模板变体和文档 descriptor 一致性。 |
+| 修改 Semantic Part Theme | 额外验证 owner/Part Token 分工、TargetType 和默认/实例替换。 |
 | 修改生成器 | 验证确定性输出、增量构建、NativeAOT 注册和错误诊断。 |
 | 修改主题视觉 | 验证 Light/Dark、Control 算法和相关 Control 家族。 |

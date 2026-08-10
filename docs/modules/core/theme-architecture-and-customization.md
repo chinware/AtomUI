@@ -3,7 +3,7 @@
 AtomUI 的主题系统不是一组可以随意覆盖的 Brush，也不是在每个 ControlTheme 外面再包一层 ResourceDictionary。
 它解决的是一个更完整的问题：如何用稳定的设计语言描述全局视觉，允许单个 Control 精确偏离全局规则，又能在
 运行时安全切换主题、建立局部主题、支持第三方 Control，并保持 NativeAOT、性能和资源生命周期可控。
-功能语义以 Ant Design 主题系统为真源；本文只说明这些语义在 Avalonia、C# 和 AtomUI 控件主题中的等价落地方式。
+本文定义这些能力在 Avalonia、C# 和 AtomUI ControlTheme 中的稳定语义与使用边界。
 
 本文面向两类读者：
 
@@ -60,7 +60,8 @@ Effective Global Token
     -> Control Own Token Override
 Effective Control Token
     -> ControlTheme
-    -> Semantic Part Theme
+    -> Semantic Part Selector
+    -> optional Semantic Part Theme
     -> Template / Runtime visual state
 ```
 
@@ -266,7 +267,8 @@ ControlTokenIdentity = Snapshot 内查询哪个 Control 的 Effective Token
 | 修改 Button 独有的内容内边距 | Button Own Token |
 | 为页面建立局部暗色或紧凑主题 | ThemeConfigProvider |
 | 修改 Control 的模板结构或状态映射 | 自定义 ControlTheme |
-| 只替换 SearchEdit 的搜索按钮视觉 | `SearchButtonTheme` Semantic Part Theme |
+| 修改稳定内部区域的局部视觉 | Semantic Part Selector |
+| 完整替换 SearchEdit 的搜索按钮 ControlTheme | `SearchButtonTheme` Semantic Part Theme |
 | 开发一个全新的 Rating Control | 独立 Control identity、可选 Own Token、主题资产和包级注册 |
 
 一个简单判断原则是：
@@ -279,9 +281,10 @@ flowchart TD
     SameControl -->|是| Existing{"Global Token 已表达该语义？"}
     Existing -->|是| ScopedGlobal["Control-specific Global Override"]
     Existing -->|否| Own["Control Own Token"]
-    SameControl -->|否| Structure{"涉及模板结构或稳定内部位置？"}
+    SameControl -->|否| Structure{"涉及模板结构或稳定内部区域？"}
     Structure -->|模板结构| Theme["ControlTheme"]
-    Structure -->|稳定内部位置| Part["Semantic Part Theme"]
+    Structure -->|局部视觉| Part["Semantic Part Selector"]
+    Structure -->|完整替换 public 子 Control| PartTheme["Semantic Part Theme"]
     Structure -->|运行时状态| Variable["Theme Variable / Control state"]
 ```
 
@@ -464,9 +467,13 @@ Token 负责设计值，ControlTheme 负责把设计值映射到 Avalonia 属性
 
 ControlTheme 不声明 Token scope。`RatingTokenResource` 已经明确了 identity。
 
-## 13. 用 Semantic Part Theme 定制组合 Control
+## 13. 定制 Semantic Part
 
-组合 Control 常常需要开放少量稳定内部位置，但把整个模板复制给用户代价过高。AtomUI 使用强类型
+Control 通过稳定 `.semantic-*` Selector 开放少量公共视觉区域。用户可以在 Application、局部 StyleHost 或单个
+Control 的 `Styles` 中定制这些区域，而不依赖 `PART_*`、Name 或 internal 类型。完整契约见
+[Semantic Part 系统设计](semantic-part-system.md)。
+
+当 Part 是真实 public 子 Control，并且需要允许完整替换其 ControlTheme 时，owner 可以额外使用强类型
 `ControlTheme?` 属性开放 Semantic Part Theme。
 
 SearchEdit 的设计是：
@@ -489,8 +496,8 @@ SearchEdit
 前者负责 Button 基础视觉，后者负责 SearchEdit 集成语义。无需创建 SearchButtonToken，也不能让 SearchButton
 借用 LineEdit identity。
 
-Semantic Part Theme 只用于稳定、可承诺的内部位置。临时模板节点不能进入公开 Part 字典，否则一次内部重构就会
-破坏用户主题。
+Semantic Part Theme 是 Selector 的可选扩展，不是 Popup、Overlay 或普通模板节点的默认入口。临时模板节点不进入
+公开 descriptor；普通局部视觉差异优先使用 Semantic Selector。
 
 ## 14. 开发第三方 AtomUI Control
 
@@ -588,12 +595,13 @@ Control 使用同一条确定性路径。
 
 ## 18. 推荐的主题定制工作流
 
-1. 先确定修改属于全局设计语言、Control 有效 Global Token、Own Token、ControlTheme 还是 Semantic Part Theme。
+1. 先确定修改属于全局设计语言、Control 有效 Global Token、Own Token、Semantic Selector、ControlTheme 还是
+   Semantic Part Theme。
 2. 从 Global Token 开始定制，让算法生成完整派生值。
 3. 只有单个 Control 需要偏离时，优先选择已有 Global Token；只有 Control 独有语义才使用 Own Token。
 4. Token 能表达的视觉差异不要复制模板。
 5. 只有结构、selector 或状态映射需要改变时才创建自定义 ControlTheme。
-6. 组合 Control 优先使用稳定 Semantic Part Theme，不依赖 internal 模板节点。
+6. 稳定内部区域优先使用 Semantic Selector；只有完整替换真实 public 子 Control 时才使用 Semantic Part Theme。
 7. 新主题资产通过生成 manifest 注册，在 ThemeManager 构建前冻结 owner、引用 identity 和结构契约。
 8. 验证 Light/Dark、Control 算法、局部 ThemeContext、Popup/TopLevel 和 NativeAOT 路径。
 
@@ -604,12 +612,14 @@ Control 使用同一条确定性路径。
 1. Global Token 定义设计语言，Own Token 只表达某个 Control 独有的稳定语义。
 2. Control 可以覆盖完整 Global Token schema，但不能修改全局结果或影响其他 Control。
 3. `SharedTokenResource` 永远读全局，`XxxTokenResource` 永远读 Xxx 的 Effective Control Token。
-4. ControlTheme 负责样式和模板，Semantic Part Theme 负责稳定内部定制，Token identity 不由 TargetType 推断。
+4. ControlTheme 负责整体样式和模板，Semantic Selector 负责稳定区域覆盖，Semantic Part Theme 只负责可选的
+   public 子 Control 完整替换。
 5. 所有输入先编译成不可变 ThemeSnapshot，再由稳定 ThemeContext 原子发布。
 
 ## 相关文档
 
 - [AtomUI 主题系统架构](theme-system.md)：完整运行时模型、事务、缓存、生命周期和验收标准。
+- [Semantic Part 系统设计](semantic-part-system.md)：稳定视觉区域、Selector、ContractType、Popup 和兼容性契约。
 - [Control Token 设计规范](../../engineering/control-token-guidelines.md)：Control 和第三方 Control 的研发约束。
 - [主题定义 XML v1 规范](theme-definition-xml.md)：主题文件格式、算法和验证规则。
 - [启动与注册链路](../../architecture/startup-and-registration.md)：应用、Control 包和 ThemeManager 的构建顺序。

@@ -36,6 +36,8 @@
 ## 统一开发范式
 
 - [Scoped Resource Host Source Generator 范式](scoped-resource-host-generator.md)：非 Visual `AvaloniaObject` 需要承载 Avalonia 属性绑定和动态资源时，默认通过 Source Generator 生成 scoped `IResourceHost` / `IThemeVariantHost` 生命周期样板代码。
+- [Semantic Part Generator 设计](semantic-part-generator.md)：Control 语义区域的声明、AXAML 校验、descriptor、
+  diagnostics、增量生成和 AOT 边界。
 
 ## 维护注意
 
