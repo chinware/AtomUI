@@ -46,8 +46,8 @@ tests/AtomUI.Docs.LLMsGenerator.Tests/
 基础命令：
 
 ```bash
-dotnet run --project tools/AtomUI.Docs.LLMsGenerator/AtomUI.Docs.LLMsGenerator.csproj -- generate --config docs/AI/llms.config.json
-dotnet run --project tools/AtomUI.Docs.LLMsGenerator/AtomUI.Docs.LLMsGenerator.csproj -- verify --config docs/AI/llms.config.json
+dotnet run --project tools/AtomUI.Docs.LLMsGenerator/AtomUI.Docs.LLMsGenerator.csproj -- generate --config docs/generated/llms.config.json
+dotnet run --project tools/AtomUI.Docs.LLMsGenerator/AtomUI.Docs.LLMsGenerator.csproj -- verify --config docs/generated/llms.config.json
 ```
 
 `generate` 写入生成产物。`verify` 在内存或临时目录中重新生成产物，并与工作区文件和源文档契约比对；发现差异时以非零退出码失败。
@@ -57,7 +57,7 @@ dotnet run --project tools/AtomUI.Docs.LLMsGenerator/AtomUI.Docs.LLMsGenerator.c
 每个控件项目必须提供一个 LLMS 配置文件。AtomUI Desktop 的默认位置为：
 
 ```text
-docs/AI/llms.config.json
+docs/generated/llms.config.json
 ```
 
 配置示例：
@@ -69,7 +69,7 @@ docs/AI/llms.config.json
   "displayName": "AtomUI Desktop Controls",
   "defaultLanguage": "cn",
   "languages": ["cn"],
-  "outputRoot": "docs/AI/llms",
+  "outputRoot": "docs/generated/llms",
   "visibility": {
     "default": "public",
     "included": ["public"],
@@ -122,7 +122,7 @@ docs/AI/llms.config.json
 商业控件项目使用同一配置结构。商业项目可以把配置放在自己的项目目录中，例如：
 
 ```text
-commercial/AtomUI.Charts/docs/AI/llms.config.json
+commercial/AtomUI.Charts/docs/generated/llms.config.json
 ```
 
 工具通过 `--config` 显式选择目标项目，不隐式扫描所有商业项目。
@@ -335,7 +335,7 @@ Drawer
 每个项目的输出根目录由 `outputRoot` 决定。中文第一阶段输出结构为：
 
 ```text
-docs/AI/llms/
+docs/generated/llms/
 ├── llms.txt
 ├── llms-full-cn.txt
 ├── llms-semantic-cn.md
@@ -537,14 +537,14 @@ LLMS 生成器是离线工具，不进入 AtomUI 运行时包，也不作为控�
 商业控件项目接入时只提供配置和符合规范的源文档：
 
 ```text
-commercial/<project>/docs/AI/llms.config.json
+commercial/<project>/docs/generated/llms.config.json
 commercial/<project>/docs/controls/<platform>/<category>/<control>/
 ```
 
 商业项目可以选择独立输出根目录：
 
 ```text
-commercial/<project>/docs/AI/llms/
+commercial/<project>/docs/generated/llms/
 ```
 
 也可以在主仓库统一输出，但必须使用不同 `projectId` 和明确的可见性策略。
@@ -600,7 +600,7 @@ tests/AtomUI.Docs.LLMsGenerator.Tests/
 
 ```bash
 dotnet test tests/AtomUI.Docs.LLMsGenerator.Tests/AtomUI.Docs.LLMsGenerator.Tests.csproj --framework net10.0 --no-restore
-dotnet run --project tools/AtomUI.Docs.LLMsGenerator/AtomUI.Docs.LLMsGenerator.csproj -- verify --config docs/AI/llms.config.json
+dotnet run --project tools/AtomUI.Docs.LLMsGenerator/AtomUI.Docs.LLMsGenerator.csproj -- verify --config docs/generated/llms.config.json
 git diff --check
 ```
 

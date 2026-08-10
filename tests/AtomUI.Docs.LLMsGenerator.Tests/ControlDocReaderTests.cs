@@ -32,9 +32,9 @@ public class ControlDocReaderTests
         File.ReadAllText(Path.Combine(TestRepository.RootPath, model.OutputSemanticPath))
             .ShouldBe(semantic);
 
-        File.ReadAllText(Path.Combine(TestRepository.RootPath, "docs/AI/llms/llms-full-cn.txt"))
+        File.ReadAllText(Path.Combine(TestRepository.RootPath, "docs/generated/llms/llms-full-cn.txt"))
             .ShouldContain($"Source: ./controls/steps/index-cn.md\n\n{index.TrimEnd()}");
-        File.ReadAllText(Path.Combine(TestRepository.RootPath, "docs/AI/llms/llms-semantic-cn.md"))
+        File.ReadAllText(Path.Combine(TestRepository.RootPath, "docs/generated/llms/llms-semantic-cn.md"))
             .ShouldContain($"Source: ./controls/steps/semantic-cn.md\n\n{semantic.TrimEnd()}");
     }
 
@@ -52,7 +52,7 @@ public class ControlDocReaderTests
     private static ControlDocModel ReadModel(string controlName)
     {
         var config = LLMsGeneratorConfigReader.Read(
-            Path.Combine(TestRepository.RootPath, "docs/AI/llms.config.json"));
+            Path.Combine(TestRepository.RootPath, "docs/generated/llms.config.json"));
         var control = config.ControlSets
                             .SelectMany(controlSet => ControlInventory.Discover(
                                 TestRepository.RootPath,

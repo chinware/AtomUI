@@ -2,7 +2,7 @@
 
 本目录按源码项目或发布包描述实现边界、注册入口、关键目录和内部依赖。跨多个项目的稳定模型由
 [Architecture](../architecture/index.md) 维护；具体 Control 的公共行为和模板契约由
-[Control 文档](../controls/overview.md) 维护。
+[Control 文档](../controls/index.md) 维护。
 
 | 模块文档 | 对应源码项目或包 | 推荐架构阅读 |
 |---|---|---|

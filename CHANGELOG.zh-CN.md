@@ -16,7 +16,7 @@ AtomUI 的重要变更记录在此文件中。
   - Upload：移除 `Upload.IsOpenFileDialogOnClick`，改用 `UploadDropZone.IsOpenFileDialogOnClick` 和 `SourceKind`；以 `AllowedFileTypes` 替代 `Upload.Accepts`；移除旧 drop 事件和仅 URI 文件契约；自定义集成需迁移到强类型 source、input batch、admission 和 completion 契约，并以 `Files` 作为唯一状态所有者。
   - Timeline：新增水平 `Orientation`，以逻辑方向 `Start` / `End` 替代 `TimelineMode.Left` / `Right`，并将 `IndicatorLeftModeMargin` / `IndicatorRightModeMargin` 重命名为 `IndicatorStartModeMargin` / `IndicatorEndModeMargin`。
   - Tag：以 `TagVariant`（`Filled`、`Solid` 或 `Outlined`）替代 `IsBordered`；可选择标签场景请使用新的 `CheckableTag` / `CheckableTagGroup` 选择 API。
-  - Separator：`SizeType` 从 `SizeType` 改为 `CustomizableSizeType`，并实现 `ICustomizableSizeTypeAware`；`Custom` 间距由控件实例或其所在样式负责。迁移写法见 [6.1.3 API 变更示例](docs/release-notes/6.1.3-api-changes.zh-CN.md)。
+  - Separator：`SizeType` 从 `SizeType` 改为 `CustomizableSizeType`，并实现 `ICustomizableSizeTypeAware`；`Custom` 间距由控件实例或其所在样式负责。迁移写法见 [6.1.3 API 变更示例](docs/releases/6.1.3-api-changes.zh-CN.md)。
 - Calendar 和 DatePicker
   - 新增 Calendar 控件，支持日期、月份和年份视图、Mini/Fullscreen 密度、自定义 Header 和 Cell、周数显示、日程通知、范围条、禁用日期组合、键盘导航及自动化访问。
   - DatePicker 新增可切换 picker 模式以及 `MinDate` / `MaxDate` 范围约束。
@@ -65,7 +65,7 @@ AtomUI 的重要变更记录在此文件中。
 `2026-07-25`
 
 - 破坏性变更
-  - ListView：将选择状态从可替换的 Avalonia `ISelectionModel` 调整为只读 `IListViewSelection` 门面。直接设置 `Selection`、`SelectedItem`、`SelectedItems` 或 `SelectedValue` 的代码，需要迁移到 `SelectedIndex` 或 `Selection.Select` / `Selection.Deselect` / `Selection.Clear` / `Selection.SelectAll`；`SelectionChanged` 事件参数改为 `ListViewSelectionChangedEventArgs`，并移除旧的 `ListCollectionViewChangedEventArgs` 类型。`ListItemData.IsSelected` 已移除，`ListItemData`、`GroupListItemData` 和 `SelectOption` 从 record 调整为 class。迁移示例见 [6.1.1 API 变更示例](docs/release-notes/6.1.1-api-changes.zh-CN.md)。
+  - ListView：将选择状态从可替换的 Avalonia `ISelectionModel` 调整为只读 `IListViewSelection` 门面。直接设置 `Selection`、`SelectedItem`、`SelectedItems` 或 `SelectedValue` 的代码，需要迁移到 `SelectedIndex` 或 `Selection.Select` / `Selection.Deselect` / `Selection.Clear` / `Selection.SelectAll`；`SelectionChanged` 事件参数改为 `ListViewSelectionChangedEventArgs`，并移除旧的 `ListCollectionViewChangedEventArgs` 类型。`ListItemData.IsSelected` 已移除，`ListItemData`、`GroupListItemData` 和 `SelectOption` 从 record 调整为 class。迁移示例见 [6.1.1 API 变更示例](docs/releases/6.1.1-api-changes.zh-CN.md)。
 - Window 和 Dialog
   - 修复 macOS modal dialog window 的标题栏和 resize 区域行为，避免窗口内外出现重复 resizer，并稳定点击 owner 外区域时的 modal 闪动。
   - 修复 Wayland dialog/window resize 过程中尺寸约束丢失、窗口突然变大、fractional scale 边框和 mask 错位的问题。
@@ -94,8 +94,8 @@ AtomUI 的重要变更记录在此文件中。
 `2026-07-20`
 
 - 破坏性变更
-  - Dialog 和 MessageBox：围绕异步 Session 重建静态展示和宿主生命周期。直接引用 `IDialogHost`、`IDialogHostProvider`、`IDialogActionResult` 或 `IMessageBoxActionResult`，或依赖 callback 式宿主关闭 API 的自定义代码，应迁移到 `ShowDialogAsync`、`ShowDialogModalAsync`、`ShowMessageBoxAsync`、`ShowMessageBoxModalAsync`、`Dialog.OpenAsync`、`Dialog.BeforeCloseAsync` 和返回的 `Task<object?>`。迁移示例见 [6.1.0 API 变更示例](docs/release-notes/6.1.0-api-changes.zh-CN.md)。
-  - Steps：将基于 Selection 的契约替换为受控步骤状态。请将 `CurrentStep` 迁移到 `Current`，`InitialStep` 迁移到 `Initial`，`CurrentStepStatus` / `StepsItemStatus` 迁移到 `Status` / `StepsStatus`，`Style` / `ItemIndicatorType` 迁移到 `Type`，`LabelPlacement` 迁移到 `TitlePlacement`，`ProgressValue` / `IsShowItemProgress` 迁移到可空 `Percent`；步骤项描述从 `Description` / `DescriptionTemplate` 迁移到 `Content` / `ContentTemplate`，可点击步骤变更改为处理 `CurrentChangeRequested`，不再依赖 Selection 直接变更。迁移示例见 [6.1.0 API 变更示例](docs/release-notes/6.1.0-api-changes.zh-CN.md)。
+  - Dialog 和 MessageBox：围绕异步 Session 重建静态展示和宿主生命周期。直接引用 `IDialogHost`、`IDialogHostProvider`、`IDialogActionResult` 或 `IMessageBoxActionResult`，或依赖 callback 式宿主关闭 API 的自定义代码，应迁移到 `ShowDialogAsync`、`ShowDialogModalAsync`、`ShowMessageBoxAsync`、`ShowMessageBoxModalAsync`、`Dialog.OpenAsync`、`Dialog.BeforeCloseAsync` 和返回的 `Task<object?>`。迁移示例见 [6.1.0 API 变更示例](docs/releases/6.1.0-api-changes.zh-CN.md)。
+  - Steps：将基于 Selection 的契约替换为受控步骤状态。请将 `CurrentStep` 迁移到 `Current`，`InitialStep` 迁移到 `Initial`，`CurrentStepStatus` / `StepsItemStatus` 迁移到 `Status` / `StepsStatus`，`Style` / `ItemIndicatorType` 迁移到 `Type`，`LabelPlacement` 迁移到 `TitlePlacement`，`ProgressValue` / `IsShowItemProgress` 迁移到可空 `Percent`；步骤项描述从 `Description` / `DescriptionTemplate` 迁移到 `Content` / `ContentTemplate`，可点击步骤变更改为处理 `CurrentChangeRequested`，不再依赖 Selection 直接变更。迁移示例见 [6.1.0 API 变更示例](docs/releases/6.1.0-api-changes.zh-CN.md)。
 - Theme
   - 新增基于 resolver 的主题定义加载能力，支持内置资源、应用资源和显式启用的用户主题目录，并统一使用 XML 主题定义格式。
   - 新增 `IThemeDefinitionResolver`、`IThemeManager.AvailableThemes`、`IThemeManager.CurrentTheme`、`ThemeCatalogDiagnostics`、`ThemeCatalogChanged` 和 `ReloadThemesAsync`，应用可以发现、切换并原子刷新主题 Catalog。
@@ -138,8 +138,8 @@ AtomUI 的重要变更记录在此文件中。
 `2026-07-10`
 
 - 破坏性变更
-  - ImagePreviewer：将 `SourceUri`、`SourceUris`、`FallbackSourceUri` 统一替换为基于 `IImagePreviewSource` 的 `Source`、`Sources`、`FallbackSource`；URI、本地文件和 Avalonia 资源请使用 `UriImagePreviewSource`，按需数据流请使用 `StreamImagePreviewSource`。迁移示例见 [6.0.8 API 变更示例](docs/release-notes/6.0.8-api-changes.zh-CN.md)。
-  - Upload：移除旧的 `IsUploadDirectoryEnabled`、`IsShowUploadTrigger` 和 `DefaultTaskList` 组合方式，改为由 `UploadTrigger`、`UploadDropZone` 和 `Files` 组成可组合上传入口。迁移示例见 [6.0.8 API 变更示例](docs/release-notes/6.0.8-api-changes.zh-CN.md)。
+  - ImagePreviewer：将 `SourceUri`、`SourceUris`、`FallbackSourceUri` 统一替换为基于 `IImagePreviewSource` 的 `Source`、`Sources`、`FallbackSource`；URI、本地文件和 Avalonia 资源请使用 `UriImagePreviewSource`，按需数据流请使用 `StreamImagePreviewSource`。迁移示例见 [6.0.8 API 变更示例](docs/releases/6.0.8-api-changes.zh-CN.md)。
+  - Upload：移除旧的 `IsUploadDirectoryEnabled`、`IsShowUploadTrigger` 和 `DefaultTaskList` 组合方式，改为由 `UploadTrigger`、`UploadDropZone` 和 `Files` 组成可组合上传入口。迁移示例见 [6.0.8 API 变更示例](docs/releases/6.0.8-api-changes.zh-CN.md)。
 - 数据录入和选择控件
   - 新增 OtpLineEdit 一次性验证码输入控件，支持 `Text` 双向绑定、`Length`、`InputMode`、`Formatter`、遮罩、分隔符、`Completed` 事件、四种 `StyleVariant`、Form 和 `DataValidationErrors` 集成。
   - 将 Form 验证统一接入 Avalonia `DataValidationErrors`，并新增 `ValidateTrigger`；默认改为值变更时验证，也可配置为失焦触发。

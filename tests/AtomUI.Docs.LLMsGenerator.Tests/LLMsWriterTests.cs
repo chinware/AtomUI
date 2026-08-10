@@ -44,8 +44,8 @@ public class LLMsWriterTests
         var index = LLMsControlWriter.Write(model);
         var semantic = LLMsSemanticWriter.Write(model);
 
-        model.OutputIndexPath.ShouldBe("docs/AI/llms/controls/button/index-cn.md");
-        model.OutputSemanticPath.ShouldBe("docs/AI/llms/controls/button/semantic-cn.md");
+        model.OutputIndexPath.ShouldBe("docs/generated/llms/controls/button/index-cn.md");
+        model.OutputSemanticPath.ShouldBe("docs/generated/llms/controls/button/semantic-cn.md");
         ExtractSecondLevelHeadings(index).ShouldBe(IndexHeadings);
         ExtractSecondLevelHeadings(semantic).ShouldBe(SemanticHeadings);
         index.ShouldContain(LLMsWriterConstants.GeneratedMarker);
@@ -159,19 +159,19 @@ public class LLMsWriterTests
 
         files.Count(file => file.Path.EndsWith("/index-cn.md", StringComparison.Ordinal)).ShouldBe(models.Count);
         files.Count(file => file.Path.EndsWith("/semantic-cn.md", StringComparison.Ordinal)).ShouldBe(models.Count);
-        files.ShouldContain(file => file.Path == "docs/AI/llms/llms.txt");
-        files.ShouldContain(file => file.Path == "docs/AI/llms/llms-full-cn.txt");
-        files.ShouldContain(file => file.Path == "docs/AI/llms/llms-semantic-cn.md");
+        files.ShouldContain(file => file.Path == "docs/generated/llms/llms.txt");
+        files.ShouldContain(file => file.Path == "docs/generated/llms/llms-full-cn.txt");
+        files.ShouldContain(file => file.Path == "docs/generated/llms/llms-semantic-cn.md");
 
-        var index = files.Single(file => file.Path == "docs/AI/llms/llms.txt").Content;
+        var index = files.Single(file => file.Path == "docs/generated/llms/llms.txt").Content;
         index.ShouldContain("./controls/button/index-cn.md");
         index.ShouldContain("./controls/button/semantic-cn.md");
         index.ShouldNotContain("components/");
 
-        var full = files.Single(file => file.Path == "docs/AI/llms/llms-full-cn.txt").Content;
+        var full = files.Single(file => file.Path == "docs/generated/llms/llms-full-cn.txt").Content;
         CountSourceMarkers(full, "index-cn.md").ShouldBe(models.Count);
 
-        var semantic = files.Single(file => file.Path == "docs/AI/llms/llms-semantic-cn.md").Content;
+        var semantic = files.Single(file => file.Path == "docs/generated/llms/llms-semantic-cn.md").Content;
         CountSourceMarkers(semantic, "semantic-cn.md").ShouldBe(models.Count);
     }
 
@@ -182,7 +182,7 @@ public class LLMsWriterTests
 
     private static IReadOnlyList<ControlDocModel> ReadAllModels()
     {
-        var config = LLMsGeneratorConfigReader.Read(Path.Combine(TestRepository.RootPath, "docs/AI/llms.config.json"));
+        var config = LLMsGeneratorConfigReader.Read(Path.Combine(TestRepository.RootPath, "docs/generated/llms.config.json"));
         var controls = config.ControlSets
                              .SelectMany(controlSet => ControlInventory.Discover(
                                  TestRepository.RootPath,

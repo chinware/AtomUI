@@ -320,7 +320,7 @@ controls/<control>/semantic-cn.md
 LLMS 单控件目录规则：
 
 ```text
-docs/AI/llms/
+docs/generated/llms/
 ├── llms.txt
 ├── llms-full-cn.txt
 ├── llms-semantic-cn.md

@@ -9,11 +9,14 @@ AtomUI 文档按知识责任组织。跨模块系统设计、单个源码模块�
 - [架构基础](architecture/foundations/index.md)：项目依赖、运行平台、启动注册、构建和打包。
 - [跨模块系统](architecture/systems/index.md)：主题、本地化、Control 基础设施和渲染系统的统一入口。
 - [源码模块](modules/index.md)：按源码项目或发布包理解职责和实现边界。
-- [Control 文档](controls/overview.md)：按平台和类别查看具体 Control 的设计、实现、Token 和变更。
+- [Control 文档](controls/index.md)：按平台和类别查看具体 Control 的设计、实现、Token 和变更。
 - [使用指南](guides/index.md)：按任务查看主题定制与后续接入指南。
 - [Reference](reference/index.md)：版本化格式、协议和稳定公共契约。
 - [工程规范](engineering/index.md)：开发、AOT、诊断、文档、测试和发布规则。
 - [Gallery 文档](gallery/index.md)：Gallery 组织、ShowCase 和平台维护说明。
+- [Releases](releases/index.md)：按版本查看 API 变化与迁移示例。
+- [Strategy](strategy/index.md)：产品与产业战略分析。
+- [Generated](generated/index.md)：LLMS 配置和生成产物入口。
 - [Superpowers](superpowers/)：设计过程、实施计划和阶段进度，不作为正式架构的事实来源。
 
 ## 文档职责
@@ -24,10 +27,13 @@ docs/
 |-- architecture/   # 跨模块、当前有效的系统架构
 |-- modules/        # 单个源码项目或发布包
 |-- controls/       # 单个 Control 或紧密 Control 家族
+|-- guides/         # 面向任务的使用和接入指南
+|-- reference/      # 版本化格式、协议和公共契约
 |-- engineering/    # 开发规范、工作流和检查清单
 |-- gallery/        # AtomUIGallery 工程文档
-|-- release-notes/  # 版本 API 变化
-|-- AI/             # 当前 LLMS 生成输出
+|-- releases/       # 版本 API 变化
+|-- strategy/       # 产品与产业战略分析
+|-- generated/      # 配置驱动的生成文档
 `-- superpowers/    # 设计与实施过程记录
 ```
 
