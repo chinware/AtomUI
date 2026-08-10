@@ -1,7 +1,7 @@
 # 本地化生成与构建架构
 
 本文定义 `AtomUI.Generator`、`AtomUI.Build.Tasks` 和 MSBuild targets 如何把 Catalog/XLIFF 转换为 AOT 友好的
-运行时代码。运行时设计见 [runtime-architecture.md](runtime-architecture.md)，语言包协议见
+运行时代码。运行时设计见 [runtime.md](runtime.md)，语言包协议见
 [language-packs.md](language-packs.md)。
 
 ## 构建链总览
@@ -23,23 +23,6 @@ MSBuild 负责发现文件、项目引用桥接、AdditionalFiles metadata 投�
 编译项目中的输入规范化、Catalog/module 绑定、active/dormant 分类、Catalog/Bundle 语义校验和强类型代码生成。
 静态语言包项目不生成运行时代码，因此仍由 `PrepareLanguagePackageTask` 在 pack 前完整校验。两条路径共享中立的
 XLIFF 解析与文件级校验模型，但普通应用和模块编译不再运行重复的 MSBuild XLIFF 语义校验 Task。
-
-## 与重构前方案的比较
-
-| 维度 | 重构前方案 | Generator 优先方案 | 结论 |
-|---|---|---|---|
-| 编译语义权威 | MSBuild Task 与 Generator 都校验一部分 XLIFF/Catalog 规则，边界重叠 | Generator 独占编译项目中的 Catalog/Bundle 语义；Build Tasks 独占静态包产物和副作用 | 消除重复规则和诊断漂移，采用新方案 |
-| props/targets | 同时承载默认值、校验策略、Task 调度、输入投影、项目桥接和 pack 行为 | props 只保留稳定默认值/item 定义；targets 只负责发现、最小 metadata 投影、项目桥接和 pack/export | MSBuild 文件更短，职责可审计，采用新方案 |
-| Generator 内部复杂度 | 表面上类型较少，但解析、引用解析、冲突处理和输出容易集中到 `LanguageCatalogCompiler` | 使用 parser、metadata validator、symbol index、planner、semantic validator、Bundle compiler、plan 和 emitter 明确分责 | 增加的是可测试的结构化复杂度，不是缺点；禁止重新形成巨型 Compiler |
-| 第三方语言包 | 作者期组件契约与消费期组件可见性容易混成一个状态，缺少组件时的行为不够清楚 | `Verified`/`Deferred` 与 `Active`/`Dormant` 正交；允许社区包独立发布，并在实际激活时恢复严格校验 | 新方案覆盖真实第三方制作和可选组件场景 |
-| 诊断体验 | 同一根因可能先由 MSBuild、后由 Generator 以不同位置或消息重复报告 | 编译输入由 Generator 提供带 AdditionalText 位置的统一诊断；静态包 build/pack 由 Prepare task 报告 | 诊断来源与修复入口更明确 |
-| 增量与性能 | 普通编译可能先由 Task 扫描/解析，再由 Generator 再次解析和绑定 | Generator 增量输入只解析一次，并为当前及引用 Catalog 建立一次 `CatalogSymbolIndex` | 减少重复工作，但必须用增量失效和确定性测试保护 |
-| 静态语言包安全 | 通用编译校验 Task 与 pack 规则交织 | `PrepareLanguagePackageTask` 继续完整执行 final 门禁、manifest/props、路径和包内容安全 | 新方案没有削弱 pack 安全边界 |
-| 兼容性 | 现有属性、metadata 和 target 顺序继续累积历史负担 | 允许删除或重命名旧内部构建契约，只保留新的最小协议 | 本次重构明确不承担旧构建契约兼容成本 |
-
-新方案的核心不是把 XML 中的分支逐行翻译到一个 C# 类，而是把语义建立为不可变输入、一次性索引、显式规划、
-独立校验、编译计划和纯输出的流水线。文件和类型数量会适度增加，但规则所有权、测试边界和增量依赖同时变得清晰；
-这属于必要的架构组织。真正需要防止的是职责重新集中、阶段互相回查原始输入，或 Writer 再次实现语义规则。
 
 ## MSBuild items
 

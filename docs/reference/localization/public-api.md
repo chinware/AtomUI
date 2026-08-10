@@ -2,7 +2,7 @@
 
 本文定义应用、类库、ViewModel、服务和 XAML 使用 AtomUI 本地化基础设施时可依赖的公共契约。
 Catalog 和 XLIFF 的源文件规则见 [catalog-and-xliff.md](catalog-and-xliff.md)，运行时语义见
-[runtime-architecture.md](runtime-architecture.md)。
+[本地化运行时架构](../../architecture/systems/localization/runtime.md)。
 
 ## 根 Builder
 

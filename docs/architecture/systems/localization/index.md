@@ -1,11 +1,8 @@
-# AtomUI 多语言模块架构概览
+# AtomUI 本地化系统架构
 
-本文档集是 AtomUI 多语言模块的正式架构与长期维护规范。实现、重构计划和带日期的设计记录都必须以本目录为准。
-该模块是面向整个应用的本地化基础设施，不只服务控件；语言状态、Catalog、编译期翻译表和 Avalonia 资源桥由
-`AtomUI.Localization` 拥有，主题系统不再承担语言职责。
-
-`docs/superpowers/specs/` 和 `docs/superpowers/plans/` 下的带日期文档只记录一次重构的决策过程与执行步骤，用于补充说明
-本目录中的正式架构，不能替代、覆盖或成为多语言设计的事实来源。若两者出现差异，必须先更新本目录并以本目录为准。
+本地化系统是面向整个应用的跨模块基础设施，不只服务 Control。它由 `AtomUI.Localization` 运行时、
+`AtomUI.Generator`、`AtomUI.Build.Tasks`、静态语言包和应用构建入口共同组成；语言状态、Catalog、编译后翻译表和
+Avalonia 资源桥与主题系统保持独立。
 
 ## 设计目标
 
@@ -22,17 +19,17 @@
 
 | 文档 | 所有权 |
 |---|---|
-| [public-api.md](public-api.md) | 启动配置、`LanguageTag`、`ILanguageManager`、`ILocalizer`、XAML 与 C# 使用面 |
-| [catalog-and-xliff.md](catalog-and-xliff.md) | Language Catalog 契约、目录约定、XLIFF 2.1、稳定 Key、格式化与覆盖规则 |
-| [runtime-architecture.md](runtime-architecture.md) | Registry、Snapshot、Manager、ResourceProvider、切换、回退、Culture 和 RTL |
+| [公共 API](../../../reference/localization/public-api.md) | 启动配置、`LanguageTag`、`ILanguageManager`、`ILocalizer`、XAML 与 C# 使用面 |
+| [Catalog 与 XLIFF](../../../reference/localization/catalog-and-xliff.md) | Language Catalog 契约、目录约定、XLIFF 2.1、稳定 Key、格式化与覆盖规则 |
+| [runtime.md](runtime.md) | Registry、Snapshot、Manager、ResourceProvider、切换、回退、Culture 和 RTL |
 | [generation-and-build.md](generation-and-build.md) | Source Generator、应用 bootstrap、AdditionalFiles、`AtomUI.Build.Tasks` 与 NuGet 布局 |
 | [language-packs.md](language-packs.md) | 内置语言、官方聚合包、模块包、第三方语言包、模板和消费协议 |
-| [diagnostics-and-testing.md](diagnostics-and-testing.md) | 构建诊断、运行时不变量、Generator/Task/集成/AOT 验证要求 |
-| [migration.md](migration.md) | 已完成重构的历史映射、兼容结果和旧 API 删除清单 |
+| [verification.md](verification.md) | 构建诊断、运行时不变量、Generator/Task/集成/AOT 验证要求 |
+| [AtomUI.Localization 模块](../../../modules/localization/index.md) | 运行时项目的源码职责、入口和依赖关系 |
 
 ## 项目边界
 
-目标源码和发布边界如下：
+源码和发布边界如下：
 
 | 项目或包 | 职责 | 运行时依赖 |
 |---|---|---|

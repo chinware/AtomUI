@@ -77,7 +77,7 @@ Read the relevant document before touching the corresponding area:
 
 - Overall architecture: [docs/architecture/overview.md](docs/architecture/overview.md)
 - Module boundaries: [docs/architecture/dependency-graph.md](docs/architecture/dependency-graph.md)
-- Localization target architecture: [docs/modules/localization/overview.md](docs/modules/localization/overview.md)
+- Localization target architecture: [docs/architecture/systems/localization/index.md](docs/architecture/systems/localization/index.md)
 - AI collaboration and bug-fix discipline: [docs/engineering/agent-guidelines.md](docs/engineering/agent-guidelines.md)
 - AOT, trimming, dynamic data, source generators: [docs/engineering/aot-programming-guidelines.md](docs/engineering/aot-programming-guidelines.md)
 - Compiler diagnostics: [docs/engineering/compiler-diagnostics-guidelines.md](docs/engineering/compiler-diagnostics-guidelines.md)

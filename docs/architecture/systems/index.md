@@ -6,5 +6,6 @@
 `docs/modules/`；使用步骤和示例进入 `docs/guides/`；精确格式和协议进入 `docs/reference/`。
 
 - [主题系统](theming/index.md)：主题运行时、Token、Semantic Part、定制 Guide 和 XML Reference。
+- [本地化系统](localization/index.md)：运行时、Generator、Build Tasks、语言包和 XLIFF Reference。
 
-本地化、Control 基础设施、渲染和窗口系统在对应文档完成迁移后继续从本入口统一导航。
+Control 基础设施、渲染和窗口系统在对应文档完成迁移后继续从本入口统一导航。
