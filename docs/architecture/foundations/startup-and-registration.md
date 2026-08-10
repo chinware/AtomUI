@@ -27,7 +27,7 @@ AppBuilder.Configure<App>()
 - 字体 fallback：`Microsoft YaHei`。
 
 Windows 选项通过公开 `Win32PlatformOptions` 强类型配置，不使用运行时反射。详细边界见
-[Windows live resize 与窗口装饰架构](../modules/native/windows-live-resize-scheme.md)。
+[Windows live resize 与窗口装饰架构](../../modules/native/windows-live-resize-scheme.md)。
 
 这一步只配置 Avalonia 平台选项，不注册 AtomUI 控件主题。
 
@@ -58,7 +58,7 @@ public override void Initialize()
 本地化 bootstrap 先注册应用 Catalog 和外部语言包 Bundle，随后执行用户注册动作；最后分别构建全部支持语言
 Snapshot 与主题 schema、ControlTheme asset manifest、首个 ThemeSnapshot、Root ThemeContext 和唯一 ThemeManager。
 
-构建后的主题运行流见 [AtomUI.Core 主题系统](../modules/core/theme-system.md)。简化顺序是：
+构建后的主题运行流见 [AtomUI.Core 主题系统](../../modules/core/theme-system.md)。简化顺序是：
 
 1. 本地化 Builder 冻结 Catalog/Bundle Registry，为全部支持语言生成完整 Snapshot，并以默认语言初始化稳定
    `LanguageResourceProvider`、`ILanguageManager` 与 `ILocalizer`。

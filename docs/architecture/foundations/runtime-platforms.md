@@ -32,4 +32,4 @@ Browser Gallery 使用 `net10.0-browser` 和 `Avalonia.Browser`。浏览器环�
 
 ## 移动端
 
-`AtomUI.Native` 已对 `AtomUI.Mobile.Controls` 开放 `InternalsVisibleTo`，说明未来有移动端扩展空间。当前文档只预留 [controls/mobile/overview.md](../controls/mobile/overview.md)，不把移动端作为已实现模块描述。
+`AtomUI.Native` 已对 `AtomUI.Mobile.Controls` 开放 `InternalsVisibleTo`，说明未来有移动端扩展空间。当前文档只预留 [移动端 Control 文档](../../controls/mobile/overview.md)，不把移动端作为已实现模块描述。
