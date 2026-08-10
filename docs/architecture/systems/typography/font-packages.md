@@ -119,4 +119,5 @@ builder.WithDefaultFontFamily(FontFamily.Parse(
     $"fonts:AlibabaSans#Alibaba Sans, {AlibabaPuHuiTiFontConstants.FontFamily}, $Default"));
 ```
 
-覆盖路径之间的优先级见 [font-family-resolution.md](font-family-resolution.md)。
+覆盖路径之间的优先级见 [font-family-resolution.md](font-family-resolution.md)。按本文描述的结构新建一个字体包，
+操作步骤见 [制作 AtomUI 字体包](../../../guides/typography/creating-a-font-package.md)。
