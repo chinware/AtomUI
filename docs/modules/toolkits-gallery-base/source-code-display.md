@@ -550,7 +550,7 @@ Clipboard 操作通过当前 `TopLevel` 获取剪贴板服务。没有可用 cli
 
 相关文档：
 
-- [AtomUI.Toolkits.GalleryBase 模块概览](index.md)
+- [AtomUI.Toolkits.GalleryBase 模块概览](overview.md)
 - [AtomUI.Toolkits.GalleryBase 设计文档](architecture.md)
 - [GalleryBase ShowCase 控件设计](showcase-controls.md)
 - [Gallery ShowCase Design Pattern](../../gallery/authoring/gallery-showcase-design-pattern.md)

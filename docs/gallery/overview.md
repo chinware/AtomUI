@@ -1,7 +1,7 @@
 # Gallery 文档
 
 本目录维护 AtomUIGallery 的页面编写、工程组织、平台宿主和本地化约束。产品中立的运行时基础设施由
-[AtomUI.Toolkits.GalleryBase 模块](../modules/toolkits-gallery-base/index.md) 维护。
+[AtomUI.Toolkits.GalleryBase 模块](../modules/toolkits-gallery-base/overview.md) 维护。
 
 ## Authoring
 

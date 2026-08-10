@@ -24,14 +24,14 @@ docs/controls/desktop/
 
 ## 分类入口
 
-- [General](general/index.md)
-- [Layout](layout/index.md)
-- [Navigation](navigation/index.md)
-- [Data Entry](data-entry/index.md)
-- [Data Display](data-display/index.md)
-- [Feedback](feedback/index.md)
-- [Window](window/index.md)
-- [Other](other/index.md)
+- [General](general/overview.md)
+- [Layout](layout/overview.md)
+- [Navigation](navigation/overview.md)
+- [Data Entry](data-entry/overview.md)
+- [Data Display](data-display/overview.md)
+- [Feedback](feedback/overview.md)
+- [Window](window/overview.md)
+- [Other](other/overview.md)
 
 ## 单控件文档建议结构
 

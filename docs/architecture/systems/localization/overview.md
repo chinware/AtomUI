@@ -25,7 +25,7 @@ Avalonia 资源桥与主题系统保持独立。
 | [generation-and-build.md](generation-and-build.md) | Source Generator、应用 bootstrap、AdditionalFiles、`AtomUI.Build.Tasks` 与 NuGet 布局 |
 | [language-packs.md](language-packs.md) | 内置语言、官方聚合包、模块包、第三方语言包、模板和消费协议 |
 | [verification.md](verification.md) | 构建诊断、运行时不变量、Generator/Task/集成/AOT 验证要求 |
-| [AtomUI.Localization 模块](../../../modules/localization/index.md) | 运行时项目的源码职责、入口和依赖关系 |
+| [AtomUI.Localization 模块](../../../modules/localization/overview.md) | 运行时项目的源码职责、入口和依赖关系 |
 
 ## 项目边界
 

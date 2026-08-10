@@ -4,15 +4,15 @@
 
 ```text
 docs/controls/
-├── index.md
+├── overview.md
 ├── desktop/
 └── mobile/
 ```
 
 ## 平台分层
 
-- [桌面 Control](desktop/index.md)：覆盖 `AtomUI.Desktop.Controls`、DataGrid、ColorPicker 中的具体 Control。
-- [移动端 Control](mobile/index.md)：当前项目未包含移动端 Control 实现，只保留导航边界。
+- [桌面 Control](desktop/overview.md)：覆盖 `AtomUI.Desktop.Controls`、DataGrid、ColorPicker 中的具体 Control。
+- [移动端 Control](mobile/overview.md)：当前项目未包含移动端 Control 实现，只保留导航边界。
 
 ## 与 modules 的关系
 

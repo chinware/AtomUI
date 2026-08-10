@@ -36,4 +36,4 @@ builder.UseCommonControls();
 | `Grid/`、`FlexPanel/` | 布局基础 |
 | `Badge/`、`Buttons/`、`Select/` | 多个桌面控件复用的抽象层 |
 
-具体桌面控件文档应放在 [../../controls/desktop/index.md](../../controls/desktop/index.md)，本模块文档只解释公共基础层。
+具体桌面控件文档应放在 [../../controls/desktop/overview.md](../../controls/desktop/overview.md)，本模块文档只解释公共基础层。

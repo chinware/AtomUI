@@ -5,4 +5,4 @@
 
 - [边框渲染](border-rendering.md)：设计厚度、render scale 换算、圆角绘制、缓存和验证规则。
 - [视觉层](visual-layers.md)：Popup、Overlay、Adorner、反馈层和作用域层的职责与选择规则。
-- [整体架构](../../index.md)
+- [整体架构](../../overview.md)

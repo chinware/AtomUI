@@ -45,7 +45,7 @@ registry 后不扫描上层程序集或 AXAML。它对多个上层项目开放 `
 
 - [主题系统架构](../../architecture/systems/theming/runtime.md)
 - [Semantic Part 系统设计](../../architecture/systems/theming/semantic-parts.md)
-- [AtomUI 本地化系统架构](../../architecture/systems/localization/index.md)
+- [AtomUI 本地化系统架构](../../architecture/systems/localization/overview.md)
 - [主题定制指南](../../guides/theming/customization.md)
 - [主题定义 XML v1 规范](../../reference/theming/theme-definition-xml-v1.md)
 - [AtomUI Theme Definition XML Schema v1](../../reference/theming/schemas/atomui-theme-v1.xsd)

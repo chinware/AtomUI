@@ -22,7 +22,7 @@
 
 ## 相关专题
 
-- [Control 基础设施架构](../../architecture/systems/control-infrastructure/index.md)
+- [Control 基础设施架构](../../architecture/systems/control-infrastructure/overview.md)
 - [异步加载使用指南](../../guides/control-infrastructure/async-loading.md)
 - [过滤使用指南](../../guides/control-infrastructure/filtering.md)
 

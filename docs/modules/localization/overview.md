@@ -30,7 +30,7 @@ LanguageManager、Localizer 和 Avalonia 动态资源桥，不拥有 XLIFF 构�
 
 ## 相关文档
 
-- [本地化系统架构](../../architecture/systems/localization/index.md)
+- [本地化系统架构](../../architecture/systems/localization/overview.md)
 - [本地化运行时架构](../../architecture/systems/localization/runtime.md)
 - [本地化生成与构建](../../architecture/systems/localization/generation-and-build.md)
 - [公共 API](../../reference/localization/public-api.md)

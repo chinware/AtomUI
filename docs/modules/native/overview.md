@@ -36,6 +36,6 @@ src/AtomUI.Native/
 - [windows.md](windows.md)
 - [macos.md](macos.md)
 - [linux.md](linux.md)
-- [Windowing 系统](../../architecture/systems/windowing/index.md)
+- [Windowing 系统](../../architecture/systems/windowing/overview.md)
 - [跨平台 Window 定制指南](../../guides/windowing/cross-platform-window.md)
 - [WindowDrawnDecorations 指南](../../guides/windowing/window-drawn-decorations.md)

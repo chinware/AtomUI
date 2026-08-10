@@ -75,12 +75,13 @@ Do not let `AGENTS.md` become a rule dump. When adding durable guidance:
 
 Read the relevant document before touching the corresponding area:
 
-- Overall architecture: [docs/architecture/index.md](docs/architecture/index.md)
+- Overall architecture: [docs/architecture/overview.md](docs/architecture/overview.md)
 - Module boundaries: [docs/architecture/foundations/dependency-graph.md](docs/architecture/foundations/dependency-graph.md)
-- Localization target architecture: [docs/architecture/systems/localization/index.md](docs/architecture/systems/localization/index.md)
+- Localization target architecture: [docs/architecture/systems/localization/overview.md](docs/architecture/systems/localization/overview.md)
 - AI collaboration and bug-fix discipline: [docs/engineering/contributing/agent-guidelines.md](docs/engineering/contributing/agent-guidelines.md)
 - AOT, trimming, dynamic data, source generators: [docs/engineering/development/aot-programming-guidelines.md](docs/engineering/development/aot-programming-guidelines.md)
 - Compiler diagnostics: [docs/engineering/development/compiler-diagnostics-guidelines.md](docs/engineering/development/compiler-diagnostics-guidelines.md)
+- Documentation structure and file naming: [docs/engineering/contributing/documentation-structure-guidelines.md](docs/engineering/contributing/documentation-structure-guidelines.md)
 - Changelog and release notes: [docs/engineering/contributing/changelog-guidelines.md](docs/engineering/contributing/changelog-guidelines.md)
 - Apple iOS development environment: [docs/engineering/platforms/apple-ios-development-environment.md](docs/engineering/platforms/apple-ios-development-environment.md)
 - Gallery NativeAOT release flow: [docs/engineering/workflows/gallery-aot-release-workflow.md](docs/engineering/workflows/gallery-aot-release-workflow.md)

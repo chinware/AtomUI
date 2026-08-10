@@ -105,7 +105,7 @@ Gallery 改动时注意：
 - Gallery 页面结构：`gallery-showcase-design-pattern.md`。
 - Gallery AOT 发布：`gallery-aot-release-workflow.md`。
 - 控件研发标准：`control-development-guidelines.md`。
-- 模块架构：`docs/modules/**/index.md`。
+- 模块架构：`docs/modules/**/overview.md`。
 - 控件用户文档：`docs/controls/**`。
 
 文档应记录“以后怎么做”和“为什么”，不要写成一次性修复记录。
