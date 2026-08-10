@@ -1,6 +1,6 @@
 # ToggleSwitch Token 设计
 
-本文档定义 `AtomUI.Desktop.Controls.ToggleSwitchToken` 的专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。ToggleSwitch 整体架构见 [ToggleSwitch 桌面版架构设计](overview.md)，内部实现原理见 [ToggleSwitch 桌面版实现原理](implementation.md)，设计和契约变化记录见 [ToggleSwitch Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.ToggleSwitchToken` 的专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/development/control-token-guidelines.md)。ToggleSwitch 整体架构见 [ToggleSwitch 桌面版架构设计](overview.md)，内部实现原理见 [ToggleSwitch 桌面版实现原理](implementation.md)，设计和契约变化记录见 [ToggleSwitch Changelog](changelog.md)。
 
 ## 1. 定位
 

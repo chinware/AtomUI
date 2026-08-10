@@ -1,6 +1,6 @@
 # Calendar Token 设计
 
-本文档定义 Calendar 家族 Token 的专属语义、分类与兼容边界。控件 Token 的通用规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。Calendar 整体架构见 [Calendar 桌面版架构设计](overview.md)，实现原理见 [Calendar 桌面版实现原理](implementation.md)，行为规则见 [Calendar 行为设计](behavior-design.md)，农历能力见 [LunarCalendar 农历能力设计](lunar-calendar-design.md)，范围条见 [Calendar 范围条设计](range-bar-design.md)，变更记录见 [Calendar Changelog](changelog.md)。
+本文档定义 Calendar 家族 Token 的专属语义、分类与兼容边界。控件 Token 的通用规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/development/control-token-guidelines.md)。Calendar 整体架构见 [Calendar 桌面版架构设计](overview.md)，实现原理见 [Calendar 桌面版实现原理](implementation.md)，行为规则见 [Calendar 行为设计](behavior-design.md)，农历能力见 [LunarCalendar 农历能力设计](lunar-calendar-design.md)，范围条见 [Calendar 范围条设计](range-bar-design.md)，变更记录见 [Calendar Changelog](changelog.md)。
 
 ## 1. 定位
 

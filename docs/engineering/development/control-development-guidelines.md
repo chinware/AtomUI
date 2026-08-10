@@ -35,11 +35,11 @@ API 和主题契约包括但不限于：
 
 ## 控件级设计文档与 Changelog
 
-控件级研发文档必须遵循 [AtomUI 控件文档规范](control-documentation-guidelines.md)。控件设计文档只描述最新设计状态；设计、API、主题契约、Token 和实现结构的历史变化记录在对应控件目录下的 `changelog.md`。
+控件级研发文档必须遵循 [AtomUI 控件文档规范](../contributing/control-documentation-guidelines.md)。控件设计文档只描述最新设计状态；设计、API、主题契约、Token 和实现结构的历史变化记录在对应控件目录下的 `changelog.md`。
 
 ## 非 Visual AvaloniaObject 资源宿主范式
 
-当控件需要引入或改造 owner-managed 的非 Visual `AvaloniaObject`，并且该对象暴露 Avalonia 属性用于 XAML binding、`DynamicResource` 或 token-resource binding 时，默认必须按 [Scoped Resource Host Source Generator 范式](../modules/generator/scoped-resource-host-generator.md) 处理。
+当控件需要引入或改造 owner-managed 的非 Visual `AvaloniaObject`，并且该对象暴露 Avalonia 属性用于 XAML binding、`DynamicResource` 或 token-resource binding 时，默认必须按 [Scoped Resource Host 开发规范](scoped-resource-host.md) 处理。
 
 要求：
 
@@ -58,7 +58,7 @@ API 和主题契约包括但不限于：
 ## Semantic Part
 
 Control 对稳定视觉区域提供公共定制入口时，必须遵循
-[AtomUI Semantic Part 系统设计](../architecture/systems/theming/semantic-parts.md)。Semantic Part 是主题兼容性契约，不是
+[AtomUI Semantic Part 系统设计](../../architecture/systems/theming/semantic-parts.md)。Semantic Part 是主题兼容性契约，不是
 模板节点清单。
 
 - 除隐式 `root` 外，公开 Part 使用唯一 `.semantic-*` class，名称由语义职责产生，不包含 `PART_*`、序号或当前

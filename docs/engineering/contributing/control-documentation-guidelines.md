@@ -292,7 +292,7 @@ git diff --check
 
 AtomUI 控件文档必须支持生成中文 LLMS 产物。LLMS 产物是面向 AI 编程工具的消费层，用于稳定提供控件用途、公共 API、AXAML 结构、Template Part、伪类、状态模型、Token 边界、Gallery 示例和 AOT 约束。
 
-LLMS 生成器的多控件项目、商业控件项目、配置、可见性和验证设计见 [AtomUI LLMS 文档生成器设计](llms-generator-design.md)。
+LLMS 生成器的多控件项目、商业控件项目、配置、可见性和验证设计见 [AtomUI LLMS 文档生成器设计](../tooling/llms-generator-design.md)。
 
 中文 LLMS 第一阶段必须生成：
 
@@ -620,7 +620,7 @@ LLMS 生成 `llms-full-cn.txt` 时，只从 `implementation.md` 抽取以下内�
 
 ## `token.md` 结构
 
-`token.md` 只记录控件专属 Token 内容，不重复全局 Token 系统规则。通用 Token 分层、命名、计算、Theme Variables、预设色规则统一链接 [AtomUI 控件 Token 设计规范](control-token-guidelines.md)。
+`token.md` 只记录控件专属 Token 内容，不重复全局 Token 系统规则。通用 Token 分层、命名、计算、Theme Variables、预设色规则统一链接 [AtomUI 控件 Token 设计规范](../development/control-token-guidelines.md)。
 
 `token.md` 必须按以下结构书写：
 
@@ -702,7 +702,7 @@ LLMS 生成时不得把缺失 `token.md` 解释为文档缺失，除非 `overvie
 - `implementation.md` 链接 `overview.md`、`changelog.md`，并在涉及控件专属 Token 时链接 `token.md`。
 - 存在 `<topic>-design.md` 时，`overview.md` 和 `implementation.md` 必须链接该专项设计文档；专项设计文档
   必须在首段链接回 `overview.md` 和 `implementation.md`。
-- `token.md` 链接 `overview.md`、`implementation.md`、`changelog.md` 和 [AtomUI 控件 Token 设计规范](control-token-guidelines.md)。
+- `token.md` 链接 `overview.md`、`implementation.md`、`changelog.md` 和 [AtomUI 控件 Token 设计规范](../development/control-token-guidelines.md)。
 - `changelog.md` 不解释当前设计，只记录变化。
 
 分类入口文档必须链接控件目录：

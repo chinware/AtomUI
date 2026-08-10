@@ -1,6 +1,6 @@
 # GroupBox Token 设计
 
-关联文档：[架构设计](overview.md)、[实现原理](implementation.md)、[Changelog](changelog.md)、[AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。
+关联文档：[架构设计](overview.md)、[实现原理](implementation.md)、[Changelog](changelog.md)、[AtomUI 控件 Token 设计规范](../../../../engineering/development/control-token-guidelines.md)。
 
 ## 1. 定位
 

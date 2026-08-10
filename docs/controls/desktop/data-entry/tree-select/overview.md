@@ -1,6 +1,6 @@
 # TreeSelect 桌面版架构设计
 
-本文档定义 `AtomUI.Desktop.Controls.TreeSelect` 的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [TreeSelect 桌面版实现原理](implementation.md)，TreeSelect Token 的专项设计见 [TreeSelect Token 设计](token.md)，设计和契约变化记录见 [TreeSelect Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.TreeSelect` 的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [TreeSelect 桌面版实现原理](implementation.md)，TreeSelect Token 的专项设计见 [TreeSelect Token 设计](token.md)，设计和契约变化记录见 [TreeSelect Changelog](changelog.md)。
 
 ## 1. 控件定位
 

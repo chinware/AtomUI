@@ -7,14 +7,14 @@ description: Use when creating, completing, splitting, reviewing, or synchronizi
 
 ## Core Rule
 
-Treat [`docs/engineering/control-documentation-guidelines.md`](../../../docs/engineering/control-documentation-guidelines.md)
+Treat [`docs/engineering/contributing/control-documentation-guidelines.md`](../../../docs/engineering/contributing/control-documentation-guidelines.md)
 as the canonical documentation contract. Read it before editing. Do not copy its full rules into control documents or this skill.
 
 Also read:
 
-- `docs/engineering/control-development-guidelines.md` for API, theme, template, file-layout, and compatibility boundaries.
+- `docs/engineering/development/control-development-guidelines.md` for API, theme, template, file-layout, and compatibility boundaries.
 - The target control's existing `overview.md`, `implementation.md`, `token.md`, `changelog.md`, source, Themes, tests, and Gallery surface.
-- `docs/engineering/aot-programming-guidelines.md` when the design involves reflection, dynamic discovery, binding paths, generators, or NativeAOT.
+- `docs/engineering/development/aot-programming-guidelines.md` when the design involves reflection, dynamic discovery, binding paths, generators, or NativeAOT.
 
 ## Classify the Document
 

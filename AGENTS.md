@@ -75,23 +75,23 @@ Do not let `AGENTS.md` become a rule dump. When adding durable guidance:
 
 Read the relevant document before touching the corresponding area:
 
-- Overall architecture: [docs/architecture/overview.md](docs/architecture/overview.md)
-- Module boundaries: [docs/architecture/dependency-graph.md](docs/architecture/dependency-graph.md)
+- Overall architecture: [docs/architecture/index.md](docs/architecture/index.md)
+- Module boundaries: [docs/architecture/foundations/dependency-graph.md](docs/architecture/foundations/dependency-graph.md)
 - Localization target architecture: [docs/architecture/systems/localization/index.md](docs/architecture/systems/localization/index.md)
-- AI collaboration and bug-fix discipline: [docs/engineering/agent-guidelines.md](docs/engineering/agent-guidelines.md)
-- AOT, trimming, dynamic data, source generators: [docs/engineering/aot-programming-guidelines.md](docs/engineering/aot-programming-guidelines.md)
-- Compiler diagnostics: [docs/engineering/compiler-diagnostics-guidelines.md](docs/engineering/compiler-diagnostics-guidelines.md)
-- Changelog and release notes: [docs/engineering/changelog-guidelines.md](docs/engineering/changelog-guidelines.md)
-- Apple iOS development environment: [docs/engineering/apple-ios-development-environment.md](docs/engineering/apple-ios-development-environment.md)
-- Gallery NativeAOT release flow: [docs/engineering/gallery-aot-release-workflow.md](docs/engineering/gallery-aot-release-workflow.md)
-- Gallery page structure: [docs/gallery/gallery-showcase-design-pattern.md](docs/gallery/gallery-showcase-design-pattern.md)
-- Gallery organization: [docs/gallery/organization.md](docs/gallery/organization.md)
-- Resource lifecycle case study: [docs/engineering/avalonia-dynamic-resource-memory-leak-case-study.md](docs/engineering/avalonia-dynamic-resource-memory-leak-case-study.md)
+- AI collaboration and bug-fix discipline: [docs/engineering/contributing/agent-guidelines.md](docs/engineering/contributing/agent-guidelines.md)
+- AOT, trimming, dynamic data, source generators: [docs/engineering/development/aot-programming-guidelines.md](docs/engineering/development/aot-programming-guidelines.md)
+- Compiler diagnostics: [docs/engineering/development/compiler-diagnostics-guidelines.md](docs/engineering/development/compiler-diagnostics-guidelines.md)
+- Changelog and release notes: [docs/engineering/contributing/changelog-guidelines.md](docs/engineering/contributing/changelog-guidelines.md)
+- Apple iOS development environment: [docs/engineering/platforms/apple-ios-development-environment.md](docs/engineering/platforms/apple-ios-development-environment.md)
+- Gallery NativeAOT release flow: [docs/engineering/workflows/gallery-aot-release-workflow.md](docs/engineering/workflows/gallery-aot-release-workflow.md)
+- Gallery page structure: [docs/gallery/authoring/gallery-showcase-design-pattern.md](docs/gallery/authoring/gallery-showcase-design-pattern.md)
+- Gallery organization: [docs/gallery/authoring/organization.md](docs/gallery/authoring/organization.md)
+- Resource lifecycle case study: [docs/engineering/case-studies/avalonia-dynamic-resource-memory-leak-case-study.md](docs/engineering/case-studies/avalonia-dynamic-resource-memory-leak-case-study.md)
 - Non-Visual AvaloniaObject scoped resource host generator: [docs/modules/generator/scoped-resource-host-generator.md](docs/modules/generator/scoped-resource-host-generator.md)
 
 ## Agent Behavior
 
-Detailed AI collaboration rules live in [docs/engineering/agent-guidelines.md](docs/engineering/agent-guidelines.md). In this file, keep only the short behavioral contract:
+Detailed AI collaboration rules live in [docs/engineering/contributing/agent-guidelines.md](docs/engineering/contributing/agent-guidelines.md). In this file, keep only the short behavioral contract:
 
 - Understand the affected module before changing code.
 - Keep changes scoped to the user request and the ownership boundary.

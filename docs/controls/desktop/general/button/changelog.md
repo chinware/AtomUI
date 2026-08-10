@@ -78,5 +78,5 @@
   - Define `Color + Variant` as the current Button design model while preserving `ButtonType` and `IsDanger` as compatibility entries.
   - Define the `CustomBackground` visual overlay model for gradient-style Button surfaces.
   - Document Button template contract, behavior priorities, Button family coordination, and Token boundaries.
-  - Move global Token design rules out of Button Token documentation into `docs/engineering/control-token-guidelines.md`.
-  - Promote the Button documentation structure into the global control documentation guideline at `docs/engineering/control-documentation-guidelines.md`.
+  - Move global Token design rules out of Button Token documentation into `docs/engineering/development/control-token-guidelines.md`.
+  - Promote the Button documentation structure into the global control documentation guideline at `docs/engineering/contributing/control-documentation-guidelines.md`.

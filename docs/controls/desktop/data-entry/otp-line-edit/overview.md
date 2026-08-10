@@ -1,6 +1,6 @@
 # OtpLineEdit 桌面版架构设计
 
-本文档定义 `AtomUI.Desktop.Controls.OtpLineEdit` 一次性验证码输入控件的设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [OtpLineEdit 桌面版实现原理](implementation.md)，Token 专项设计见 [OtpLineEdit Token 设计](token.md)，设计和契约变化记录见 [OtpLineEdit Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.OtpLineEdit` 一次性验证码输入控件的设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [OtpLineEdit 桌面版实现原理](implementation.md)，Token 专项设计见 [OtpLineEdit Token 设计](token.md)，设计和契约变化记录见 [OtpLineEdit Changelog](changelog.md)。
 
 ## 1. 控件定位
 

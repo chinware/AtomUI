@@ -1,6 +1,6 @@
 # SearchEdit 桌面版架构设计
 
-本文档定义 `AtomUI.Desktop.Controls.SearchEdit` 的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，Control Token 分层见 [AtomUI Control Token 设计规范](../../../../engineering/control-token-guidelines.md)，内部实现原理见 [SearchEdit 桌面版实现原理](implementation.md)，设计和契约变化记录见 [SearchEdit Changelog](changelog.md)。SearchEdit 拥有独立 Control identity，但当前没有 Own Token，因此不创建 `SearchEditToken` 或独立 `token.md`。
+本文档定义 `AtomUI.Desktop.Controls.SearchEdit` 的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，Control Token 分层见 [AtomUI Control Token 设计规范](../../../../engineering/development/control-token-guidelines.md)，内部实现原理见 [SearchEdit 桌面版实现原理](implementation.md)，设计和契约变化记录见 [SearchEdit Changelog](changelog.md)。SearchEdit 拥有独立 Control identity，但当前没有 Own Token，因此不创建 `SearchEditToken` 或独立 `token.md`。
 
 ## 1. 控件定位
 
@@ -182,7 +182,7 @@ SearchEdit 的 `SizeType=Custom` 走 LineEdit 家族的 Custom size 规则。未
 - [SearchEdit 桌面版实现原理](implementation.md)
 - [SearchEdit Changelog](changelog.md)
 - [LineEdit 桌面版架构设计](../line-edit/overview.md)
-- [AtomUI Control Token 设计规范](../../../../engineering/control-token-guidelines.md)
+- [AtomUI Control Token 设计规范](../../../../engineering/development/control-token-guidelines.md)
 
 LLMS 语义区域：
 

@@ -27,7 +27,7 @@ AppBuilder.Configure<App>()
 - 字体 fallback：`Microsoft YaHei`。
 
 Windows 选项通过公开 `Win32PlatformOptions` 强类型配置，不使用运行时反射。详细边界见
-[Windows live resize 与窗口装饰架构](../../modules/native/windows-live-resize-scheme.md)。
+[Windows live resize 与窗口装饰架构](../systems/windowing/windows-live-resize.md)。
 
 这一步只配置 Avalonia 平台选项，不注册 AtomUI 控件主题。
 

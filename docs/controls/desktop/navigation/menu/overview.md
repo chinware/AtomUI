@@ -1,6 +1,6 @@
 # Menu 桌面版架构设计
 
-本文档定义 `Menu` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [Menu 桌面版实现原理](implementation.md)，弹层滚动专项设计见 [Menu 弹层滚动模式设计](popup-scroll-design.md)，Menu Token 的专项设计见 [Menu Token 设计](token.md)，设计和契约变化记录见 [Menu Changelog](changelog.md)。
+本文档定义 `Menu` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Menu 桌面版实现原理](implementation.md)，弹层滚动专项设计见 [Menu 弹层滚动模式设计](popup-scroll-design.md)，Menu Token 的专项设计见 [Menu Token 设计](token.md)，设计和契约变化记录见 [Menu Changelog](changelog.md)。
 
 ## 1. 控件定位
 

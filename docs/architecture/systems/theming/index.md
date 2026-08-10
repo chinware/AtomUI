@@ -7,4 +7,4 @@ AtomUI 主题系统跨越 Core 运行时、Control 包、主题资产、Source G
 - [主题定制指南](../../../guides/theming/customization.md)：应用和第三方 Control 的使用路径。
 - [主题定义 XML v1](../../../reference/theming/theme-definition-xml-v1.md)：版本化主题文件协议。
 - [AtomUI.Core 模块](../../../modules/core/index.md)：主题运行时在 Core 项目中的源码所有权。
-- [AtomUI.Generator 模块](../../../modules/generator/overview.md)：主题和 Semantic Part 的构建期生成实现。
+- [AtomUI.Generator 模块](../../../modules/generator/index.md)：主题和 Semantic Part 的构建期生成实现。

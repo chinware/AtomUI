@@ -442,10 +442,10 @@ Button 的 `root`、`icon`、`content` 可以作为基础契约测试样本；�
 
 - [Semantic Part Generator 设计](../../../modules/generator/semantic-part-generator.md)：构建期输入、模板分析、descriptor、诊断和
   AOT 输出。
-- [AtomUI 控件研发标准规范](../../../engineering/control-development-guidelines.md)：Control 作者必须遵守的 Part
+- [AtomUI 控件研发标准规范](../../../engineering/development/control-development-guidelines.md)：Control 作者必须遵守的 Part
   声明、模板和兼容性规则。
-- [AtomUI 控件 Token 设计规范](../../../engineering/control-token-guidelines.md)：Semantic Part、Part Theme 和 Token
+- [AtomUI 控件 Token 设计规范](../../../engineering/development/control-token-guidelines.md)：Semantic Part、Part Theme 和 Token
   identity 的职责边界。
-- [AtomUI 控件文档规范](../../../engineering/control-documentation-guidelines.md)：单控件 Semantic Parts 表与 LLMS
+- [AtomUI 控件文档规范](../../../engineering/contributing/control-documentation-guidelines.md)：单控件 Semantic Parts 表与 LLMS
   文档同步规则。
-- [AOT 编程规范](../../../engineering/aot-programming-guidelines.md)：静态注册、反射和运行时发现边界。
+- [AOT 编程规范](../../../engineering/development/aot-programming-guidelines.md)：静态注册、反射和运行时发现边界。

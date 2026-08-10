@@ -1,6 +1,6 @@
 # Gallery NativeAOT Release Workflow
 
-这份文档记录 Gallery 发布 workflow 的 NativeAOT 开关、发布脚本职责和验证规则。平台 NativeAOT 工具链细节仍以 [windows-native-aot-publish.md](windows-native-aot-publish.md)、[linux-native-aot-publish.md](linux-native-aot-publish.md) 和 [aot-programming-guidelines.md](aot-programming-guidelines.md) 为准。
+这份文档记录 Gallery 发布 workflow 的 NativeAOT 开关、发布脚本职责和验证规则。平台 NativeAOT 工具链细节仍以 [Windows NativeAOT 发布](../platforms/windows-native-aot-publish.md)、[Linux NativeAOT 发布](../platforms/linux-native-aot-publish.md) 和 [AOT 编程规范](../development/aot-programming-guidelines.md) 为准。
 
 ## 目标
 

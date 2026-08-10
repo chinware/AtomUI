@@ -21,15 +21,14 @@
 13. [阴影设计建议](#13-阴影设计建议)
 14. [Window ControlTheme 跨平台设计模式](#14-window-controltheme-跨平台设计模式)
 15. [常见坑](#15-常见坑)
-16. [核心源码索引](#16-核心源码索引)
+16. [架构验证清单](#16-架构验证清单)
 
 ---
 
 ## 1. 背景：为什么是 WindowDrawnDecorations
 
-Avalonia 11 时代自定义标题栏依靠：`Window.TitleBar` + `CaptionButtons` + `ChromeOverlayLayer`，三块分散逻辑、各自加事件、平台一致性差。
-
-Avalonia 12 把它们合并为一个统一控件：**`WindowDrawnDecorations`**（命名空间 `Avalonia.Controls.Chrome`）。
+Avalonia 12 使用统一的 **`WindowDrawnDecorations`** 机制承载自定义窗体装饰，命名空间为
+`Avalonia.Controls.Chrome`。
 
 它的本质是：**一个 `StyledElement`**（注意：**不是 `Control`、也不是可视树上的节点**），由框架在窗体激活 CSD 时延迟创建一次、把模板里的 PART 拆成三个 LayerWrapper（Underlay / Overlay / FullscreenPopover），分别插到 `TopLevel.VisualChildren` 的不同层级。
 
@@ -112,7 +111,7 @@ Underlay 在用户内容**底下**（画背景圆角/标题栏底色），Overla
 **关键事实**：
 
 1. `ExtendClientAreaToDecorationsHint=true` 是激活开关。
-2. **X11 还要额外打开 `X11PlatformOptions.EnableDrawnDecorations=true`**，否则 `X11Window.SetExtendClientAreaToDecorationsHint` 会在 `X11Window.cs:1569-1572` 直接 `return`，原生标题栏不消失，自定义装饰也不生成。
+2. **X11 还要额外打开 `X11PlatformOptions.EnableDrawnDecorations=true`**，否则框架不会启用 managed decorations，原生标题栏不消失，自定义装饰也不生成。
 3. Wayland 的 CSD/SSD 协商可在运行期变化，必须响应 `DrawnDecorationsRequestChanged`，不能只在 Window 构造时读取一次。
 4. macOS 永远走原生 NSWindow titlebar，自定义模板会被忽略。
 
@@ -394,7 +393,7 @@ ResizeGrips                  —                ✅                 ❌ (DWM 提
 ### 在 `Window` 上
 
 ```csharp
-// Window.cs:129-133, 801-840
+// AtomUI Window theme contract
 public static readonly DirectProperty<Window, Thickness> WindowDecorationMarginProperty;
 
 public Thickness WindowDecorationMargin { get; private set; }
@@ -445,7 +444,7 @@ public Thickness WindowDecorationMargin { get; private set; }
 
 ## 10. Resize 抓手机制与"幽灵 resize 区"问题
 
-源码 `TopLevelHost.Decorations.cs:188-200`：
+Avalonia 12 按以下规则维护 resize grip：
 
 ```csharp
 // Grips strictly cover frame + shadow area, never client area
@@ -561,7 +560,7 @@ Wayland 核心协议提供 `wl_surface.set_input_region`，但当前 Avalonia �
 当前 AtomUI 的 `WaylandWindowReflectionExtensions` 会从 proxy 取出真实 target，再由
 `WaylandWindowUtils` 直接调用 NWayland。该路径能表达协议请求，但不符合上述线程和重连契约，属于待修复的
 私有 API 技术债，不能在本文中描述为 Avalonia 支持的安全扩展点。正确方案必须把 input-region 状态放进
-Avalonia 的 persistent surface 模型，并通过 `PostWithCommit`/生成 proxy 下发；在上游提供公开 API 前，
+Avalonia 的 persistent surface 模型，并通过 `PostWithCommit`/生成 proxy 下发；在框架提供公开 API 前，
 AtomUI 不能把当前反射路径视为稳定架构。
 
 另外，Wayland 的 CSD 选择具有 sticky 语义。`WindowImpl.SetWindowDecorations(None/TitleBar)` 会设置
@@ -576,7 +575,7 @@ Wayland 还不支持应用控制绝对窗口位置、激活、置顶、窗口图
 
 ## 13. 阴影设计建议
 
-### 配方一：Ant Design 风（轻盈、悬浮感）
+### 配方一：轻量悬浮风格
 
 `ShadowThickness=32`，需要 input region 裁剪：
 

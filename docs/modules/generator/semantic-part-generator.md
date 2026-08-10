@@ -203,7 +203,7 @@ recycle 和 owner 切换后的实际 marker。
 - descriptor 与控件 `overview.md` 的 Semantic Parts 表不一致。
 
 Diagnostic ID、默认严重级别、消息格式和帮助链接统一遵循
-[编译器诊断规范](../../engineering/compiler-diagnostics-guidelines.md)。Runtime-created Part 和
+[编译器诊断规范](../../engineering/development/compiler-diagnostics-guidelines.md)。Runtime-created Part 和
 `CrossVisualRoot=true` 的行为覆盖属于测试验证要求，不伪装成 Generator 可以静态证明的诊断。
 
 ## 6. 增量生成

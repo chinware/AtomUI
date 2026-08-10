@@ -1,6 +1,6 @@
 # Timeline Token 设计
 
-本文档定义 Timeline 相关控件 Token 的专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。Timeline 整体架构见 [Timeline 桌面版架构设计](overview.md)，方向布局策略见 [Timeline 方向与布局设计](orientation-layout-design.md)，内部实现原理见 [Timeline 桌面版实现原理](implementation.md)，设计和契约变化记录见 [Timeline Changelog](changelog.md)。
+本文档定义 Timeline 相关控件 Token 的专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/development/control-token-guidelines.md)。Timeline 整体架构见 [Timeline 桌面版架构设计](overview.md)，方向布局策略见 [Timeline 方向与布局设计](orientation-layout-design.md)，内部实现原理见 [Timeline 桌面版实现原理](implementation.md)，设计和契约变化记录见 [Timeline Changelog](changelog.md)。
 
 ## 1. 定位
 

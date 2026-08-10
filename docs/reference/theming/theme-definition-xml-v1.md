@@ -209,7 +209,7 @@ Binder 先使用 Control descriptor 匹配 Own Token，未命中时使用完整 
 Global Token 禁止同名；名称在两处都不存在时，整个 definition 绑定失败。合法但未被该 Control 消费的 Global
 Token 允许配置并可能没有实际效果。Control Token 不形成 Content 子树资源作用域，局部 Global 覆盖也不会改变
 其他 Control 或真正的 Global Token snapshot。具体规则见
-[Control Token 设计规范](../../engineering/control-token-guidelines.md)。
+[Control Token 设计规范](../../engineering/development/control-token-guidelines.md)。
 
 Control 配置必须至少声明 `Algorithm`、自定义 `Algorithms` 或 `Tokens` 中的一项。空 Control 是语义错误。
 

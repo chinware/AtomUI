@@ -1,6 +1,6 @@
 # Linux Gallery Native AOT 发布维护手册
 
-这份文档记录 AtomUI Gallery Desktop 在 Linux 上发布 `linux-x64` Native AOT 时的工具链要求、推荐命令、验证方法和实际遇到的问题。它是给维护者排障用的，不替代 [AtomUI AOT 编程规范](aot-programming-guidelines.md)。Windows 平台的对应手册见 [windows-native-aot-publish.md](windows-native-aot-publish.md)。
+这份文档记录 AtomUI Gallery Desktop 在 Linux 上发布 `linux-x64` Native AOT 时的工具链要求、推荐命令、验证方法和实际遇到的问题。它是给维护者排障用的，不替代 [AtomUI AOT 编程规范](../development/aot-programming-guidelines.md)。Windows 平台的对应手册见 [Windows NativeAOT 发布](windows-native-aot-publish.md)。
 
 最后验证日期：2026-06-11。本次验证环境：Ubuntu 24.04.4 LTS，x86_64。
 
@@ -515,4 +515,4 @@ Linux Native AOT 会额外生成 `AtomUIGallery.Desktop.dbg`（本次约 110 MB�
 - [.NET Native AOT deployment overview](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/)
 - [Native AOT prerequisites](https://aka.ms/nativeaot-prerequisites)
 - [Windows Gallery Native AOT 发布维护手册](windows-native-aot-publish.md)
-- [AtomUI AOT 编程规范](aot-programming-guidelines.md)
+- [AtomUI AOT 编程规范](../development/aot-programming-guidelines.md)

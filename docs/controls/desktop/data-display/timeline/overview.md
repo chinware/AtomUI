@@ -1,6 +1,6 @@
 # Timeline 桌面版架构设计
 
-本文档定义 `Timeline` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，方向与布局的完整策略见 [Timeline 方向与布局设计](orientation-layout-design.md)，内部实现原理见 [Timeline 桌面版实现原理](implementation.md)，Timeline Token 的专项设计见 [Timeline Token 设计](token.md)，设计和契约变化记录见 [Timeline Changelog](changelog.md)。
+本文档定义 `Timeline` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，方向与布局的完整策略见 [Timeline 方向与布局设计](orientation-layout-design.md)，内部实现原理见 [Timeline 桌面版实现原理](implementation.md)，Timeline Token 的专项设计见 [Timeline Token 设计](token.md)，设计和契约变化记录见 [Timeline Changelog](changelog.md)。
 
 ## 1. 控件定位
 

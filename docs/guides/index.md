@@ -5,3 +5,4 @@
 
 - [主题指南](theming/index.md)
 - [Control 基础设施指南](control-infrastructure/index.md)
+- [Windowing 指南](windowing/index.md)

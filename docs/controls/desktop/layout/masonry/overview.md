@@ -1,6 +1,6 @@
 # Masonry 桌面版架构设计
 
-本文档定义 `AtomUI.Desktop.Controls.Masonry` 桌面版的最新设计定位、公共契约、布局状态模型、主题边界和兼容要求。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [Masonry 桌面版实现原理](implementation.md)，设计和契约变化记录见 [Masonry Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.Masonry` 桌面版的最新设计定位、公共契约、布局状态模型、主题边界和兼容要求。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Masonry 桌面版实现原理](implementation.md)，设计和契约变化记录见 [Masonry Changelog](changelog.md)。
 
 ## 1. 控件定位
 

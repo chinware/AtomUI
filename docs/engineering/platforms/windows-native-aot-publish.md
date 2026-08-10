@@ -1,6 +1,6 @@
 # Windows 11 Gallery Native AOT 发布维护手册
 
-这份文档记录 AtomUI Gallery Desktop 在 Windows 11 上发布 `win-x64` Native AOT 时的工具链要求、推荐命令、验证方法和本次实际遇到的问题。它是给维护者排障用的，不替代 [AtomUI AOT 编程规范](aot-programming-guidelines.md)。
+这份文档记录 AtomUI Gallery Desktop 在 Windows 11 上发布 `win-x64` Native AOT 时的工具链要求、推荐命令、验证方法和本次实际遇到的问题。它是给维护者排障用的，不替代 [AtomUI AOT 编程规范](../development/aot-programming-guidelines.md)。
 
 最后验证日期：2026-06-11。
 
@@ -561,4 +561,4 @@ git update-index --refresh
 
 - [.NET Native AOT deployment overview](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/)
 - [Visual Studio Build Tools workload and component IDs](https://learn.microsoft.com/en-us/visualstudio/install/workload-component-id-vs-build-tools?view=visualstudio)
-- [AtomUI AOT 编程规范](aot-programming-guidelines.md)
+- [AtomUI AOT 编程规范](../development/aot-programming-guidelines.md)

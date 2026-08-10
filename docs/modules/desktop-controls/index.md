@@ -27,6 +27,6 @@
 
 DataGrid、ColorPicker 和 Extras 虽然属于桌面控件体系，但它们是独立包，内部架构分别放在：
 
-- [../desktop-controls-datagrid/overview.md](../desktop-controls-datagrid/overview.md)
-- [../desktop-controls-colorpicker/overview.md](../desktop-controls-colorpicker/overview.md)
-- [../desktop-controls-extras/overview.md](../desktop-controls-extras/overview.md)
+- [../desktop-controls-datagrid/index.md](../desktop-controls-datagrid/index.md)
+- [../desktop-controls-colorpicker/index.md](../desktop-controls-colorpicker/index.md)
+- [../desktop-controls-extras/index.md](../desktop-controls-extras/index.md)

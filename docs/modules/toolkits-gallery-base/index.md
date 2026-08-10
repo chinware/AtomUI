@@ -62,6 +62,5 @@
 - [showcase-controls.md](showcase-controls.md)
 - [source-code-display.md](source-code-display.md)
 - [theming-localization.md](theming-localization.md)
-- [migration-and-testing.md](migration-and-testing.md)
-- [../../gallery/gallery-showcase-design-pattern.md](../../gallery/gallery-showcase-design-pattern.md)
+- [Gallery ShowCase 页面设计](../../gallery/authoring/gallery-showcase-design-pattern.md)
 - [启动与注册链路](../../architecture/foundations/startup-and-registration.md)

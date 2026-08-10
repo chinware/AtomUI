@@ -158,7 +158,7 @@ _relayBindingDisposables.Add(BindUtils.BindVisualAncestor(
 
 SG 的价值不是“把反射挪个地方”，而是让运行时代码变成普通的强类型 C#。这样 trimmer 能看见类型、构造函数和成员，NativeAOT 也不需要动态代码生成。
 
-非 Visual `AvaloniaObject` 资源宿主类需求统一遵循 [Scoped Resource Host Source Generator 范式](../modules/generator/scoped-resource-host-generator.md)。不要在每个描述对象中复制手写资源宿主代码；业务属性保留在主文件，资源宿主生命周期由 generator 生成，owner 控件只负责 attach/release。
+非 Visual `AvaloniaObject` 资源宿主类需求统一遵循 [Scoped Resource Host 开发规范](scoped-resource-host.md)。不要在每个描述对象中复制手写资源宿主代码；业务属性保留在主文件，资源宿主生命周期由 generator 生成，owner 控件只负责 attach/release。
 
 ### Generator 项目边界
 
@@ -469,7 +469,7 @@ observable.ToProperty(...);
 
 AOT analyzer 通过，只说明静态分析没有发现项目自身 warning。它不等于 NativeAOT 链接一定成功。涉及发布配置或 native 依赖时，要做真实 publish。
 
-Windows 11 上 Gallery Desktop 的 NativeAOT 工具链、发布命令、产物验证和排障记录见 [windows-native-aot-publish.md](windows-native-aot-publish.md)。Linux 平台的对应手册见 [linux-native-aot-publish.md](linux-native-aot-publish.md)。
+Windows 11 上 Gallery Desktop 的 NativeAOT 工具链、发布命令、产物验证和排障记录见 [Windows NativeAOT 发布](../platforms/windows-native-aot-publish.md)。Linux 平台的对应手册见 [Linux NativeAOT 发布](../platforms/linux-native-aot-publish.md)。
 
 库项目 analyzer：
 

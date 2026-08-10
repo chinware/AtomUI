@@ -1,6 +1,6 @@
 # SearchEdit 桌面版实现原理
 
-本文档描述 SearchEdit 桌面版的内部模板组合、搜索按钮事件流、按钮与输入框布局、状态传递和维护不变量。公共设计与 API 契约见 [SearchEdit 桌面版架构设计](overview.md)，Control Token 分层见 [AtomUI Control Token 设计规范](../../../../engineering/control-token-guidelines.md)，变化记录见 [SearchEdit Changelog](changelog.md)。
+本文档描述 SearchEdit 桌面版的内部模板组合、搜索按钮事件流、按钮与输入框布局、状态传递和维护不变量。公共设计与 API 契约见 [SearchEdit 桌面版架构设计](overview.md)，Control Token 分层见 [AtomUI Control Token 设计规范](../../../../engineering/development/control-token-guidelines.md)，变化记录见 [SearchEdit Changelog](changelog.md)。
 
 ## 1. 实现定位
 

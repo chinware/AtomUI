@@ -14,7 +14,7 @@
 5. [Windows](#5-windows)
 7. [AtomUI Window 架构：IsCsdEnabled 双模板机制](#7-atomui-window-架构iscsdenabled-双模板机制)
 8. [跨平台陷阱速查表](#8-跨平台陷阱速查表)
-9. [关键源码索引](#9-关键源码索引)
+9. [实现与升级检查入口](#9-实现与升级检查入口)
 
 ---
 
@@ -205,7 +205,7 @@ Wayland 后端的集成约束：
 - `WindowDecorations=None/TitleBar` 会锁定 sticky CSD，不能用它表示合成器协商出的 SSD。
 
 因此，X11 SHAPE、`_GTK_FRAME_EXTENTS`、绝对窗口位置和 XID 初始化几何都只能留在 X11 manager。
-Wayland input region 当前没有公开框架 API；AtomUI 当前越过 proxy 的反射实现不符合上游线程契约，
+Wayland input region 当前没有公开框架 API；AtomUI 当前越过 proxy 的反射实现不符合 Avalonia 12 的线程契约，
 只能视为待替换的内部适配，不能作为通用 Native API 示例。
 
 ---
@@ -267,11 +267,11 @@ Windows 标题栏按钮在 AXAML 中声明 `WindowDecorationProperties.ElementRo
 - 不要手动返回 `HTLEFT/HTTOP/...`。
 - 不要用 `DwmExtendFrameIntoClientArea` 或 `SWP_FRAMECHANGED` 修补 CSD。
 - 不要把 Native sizing helper 扩展成第二套 Window chrome 或 caption hit-test。
-- 上游修复 WinUIComposition / DirectComposition 的 live resize 同步后，必须重新做
+- Avalonia 12 的 WinUIComposition / DirectComposition live resize 同步发生变化后，必须重新做
   Windows 10 和 Windows 11 快速拖动左/上边缘的实机验证，才能恢复。
 
 完整根因和验证矩阵见
-[Windows live resize 与窗口装饰方案](windows-live-resize-scheme.md).
+[Windows live resize 与窗口装饰架构](../../architecture/systems/windowing/windows-live-resize.md)。
 
 ---
 
@@ -390,5 +390,5 @@ Windows 标题栏按钮在 AXAML 中声明 `WindowDecorationProperties.ElementRo
 
 | 文档 | 内容 |
 |------|------|
-| `docs/modules/native/windows-live-resize-scheme.md` | Windows live resize、合成后端与 CSD 单一所有权方案 |
-| `docs/modules/native/window-drawn-decorations.md` | WindowDrawnDecorations 完整使用指南 |
+| `docs/architecture/systems/windowing/windows-live-resize.md` | Windows live resize、合成后端与 CSD 单一所有权 |
+| `docs/guides/windowing/window-drawn-decorations.md` | WindowDrawnDecorations 完整使用指南 |

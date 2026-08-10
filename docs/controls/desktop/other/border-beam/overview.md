@@ -1,6 +1,6 @@
 # BorderBeam 桌面版架构设计
 
-本文档定义 `AtomUI.Desktop.Controls.BorderBeam` 桌面版的最新设计定位、公共契约、装饰状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [BorderBeam 桌面版实现原理](implementation.md)，BorderBeam Token 的专项设计见 [BorderBeam Token 设计](token.md)，设计和契约变化记录见 [BorderBeam Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.BorderBeam` 桌面版的最新设计定位、公共契约、装饰状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [BorderBeam 桌面版实现原理](implementation.md)，BorderBeam Token 的专项设计见 [BorderBeam Token 设计](token.md)，设计和契约变化记录见 [BorderBeam Changelog](changelog.md)。
 
 参考 `BorderBeam` 的核心语义是为容器边框提供持续流动的装饰性高亮效果。AtomUI 的 BorderBeam 以该设计语义为基准，按 Avalonia 控件模型实现为独立包装控件，并通过显式边界感知接口获取被装饰控件的有效边框和圆角。
 

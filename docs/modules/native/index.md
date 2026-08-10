@@ -30,14 +30,12 @@ src/AtomUI.Native/
 - `WindowUtils.Interop.cs`：P/Invoke 声明、结构体、枚举。
 - `WindowUtils.<Platform>.cs`：平台业务逻辑。
 
-## 模块文档
-
-Native 模块专题文档已合并到本目录：
+## 模块文档与系统入口
 
 - [architecture.md](architecture.md)
 - [windows.md](windows.md)
 - [macos.md](macos.md)
 - [linux.md](linux.md)
-- [atomui-window-cross-platform-guide.md](atomui-window-cross-platform-guide.md)
-- [window-drawn-decorations.md](window-drawn-decorations.md)
-- [windows-live-resize-scheme.md](windows-live-resize-scheme.md)
+- [Windowing 系统](../../architecture/systems/windowing/index.md)
+- [跨平台 Window 定制指南](../../guides/windowing/cross-platform-window.md)
+- [WindowDrawnDecorations 指南](../../guides/windowing/window-drawn-decorations.md)

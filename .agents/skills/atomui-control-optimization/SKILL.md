@@ -13,8 +13,8 @@ This is the entry skill for AtomUI control work. Its job is to classify the chan
 
 Before touching control code, read:
 
-- `docs/engineering/control-development-guidelines.md`
-- `docs/engineering/agent-guidelines.md`
+- `docs/engineering/development/control-development-guidelines.md`
+- `docs/engineering/contributing/agent-guidelines.md`
 
 For API contract optimization, member layout, method reordering, or file splitting, also read:
 
@@ -39,7 +39,7 @@ For broad optimization requests, routing is a blocking gate. Requests phrased as
 | `BindUtils.RelayBind`, C#-created bindings, or template-owned binding relationships | Prove AXAML cannot express the binding before keeping C# binding; define disposal owner |
 | Bug fix or behavior change | Reproduce/trace root cause and add or update regression tests |
 | Gallery-visible examples or docs | Check Gallery/docs impact and update only when required |
-| AOT-sensitive binding, reflection, dynamic registration | Check `docs/engineering/aot-programming-guidelines.md` |
+| AOT-sensitive binding, reflection, dynamic registration | Check `docs/engineering/development/aot-programming-guidelines.md` |
 
 ## Mandatory Audit Gate
 

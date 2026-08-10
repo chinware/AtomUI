@@ -1,6 +1,6 @@
 # WindowTitleBar Token 设计
 
-本文档定义 `WindowTitleBarToken` 的组件视觉语义、Theme 消费范围和兼容边界。控件设计见 [WindowTitleBar 控件设计](overview.md)，实现数据流与标题几何见 [WindowTitleBar 实现原理](implementation.md)，契约变化见 [WindowTitleBar Changelog](changelog.md)，通用规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。
+本文档定义 `WindowTitleBarToken` 的组件视觉语义、Theme 消费范围和兼容边界。控件设计见 [WindowTitleBar 控件设计](overview.md)，实现数据流与标题几何见 [WindowTitleBar 实现原理](implementation.md)，契约变化见 [WindowTitleBar Changelog](changelog.md)，通用规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/development/control-token-guidelines.md)。
 
 ## 1. 定位
 

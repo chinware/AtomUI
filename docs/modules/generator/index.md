@@ -33,9 +33,10 @@
 | `ResourceHost/` | 非 Visual `AvaloniaObject` scoped resource host Generator、TypeInfo 和 SourceWriter |
 | `TargetMarkConstants.cs` | 生成器识别的 Attribute 元数据名 |
 
-## 统一开发范式
+## 专题文档
 
-- [Scoped Resource Host Source Generator 范式](scoped-resource-host-generator.md)：非 Visual `AvaloniaObject` 需要承载 Avalonia 属性绑定和动态资源时，默认通过 Source Generator 生成 scoped `IResourceHost` / `IThemeVariantHost` 生命周期样板代码。
+- [Scoped Resource Host Generator](scoped-resource-host-generator.md)：目标识别、生成输出、生命周期状态机、diagnostic 和测试契约。
+- [Scoped Resource Host 开发规范](../../engineering/development/scoped-resource-host.md)：Control 作者的适用场景、owner 生命周期、验证和 review 规则。
 - [Semantic Part Generator 设计](semantic-part-generator.md)：Control 语义区域的声明、AXAML 校验、descriptor、
   diagnostics、增量生成和 AOT 边界。
 
@@ -47,4 +48,4 @@
 目录被 `<Compile Remove=...>` 排除且默认被 `.gitignore` 忽略，不应把生成文件当成普通源码维护；只有被结构测试
 明确读取的 GalleryBase 快照才需要同步提交。
 
-新增或修改 Generator 时，应同时检查 writer 代码、诊断规则和生成物稳定性。对于非 Visual `AvaloniaObject` 资源宿主类需求，不要在控件对象中复制手写资源宿主代码，应优先按 [Scoped Resource Host Source Generator 范式](scoped-resource-host-generator.md) 落地。
+新增或修改 Generator 时，应同时检查 writer 代码、诊断规则和生成物稳定性。对于非 Visual `AvaloniaObject` 资源宿主类需求，按 [Scoped Resource Host 开发规范](../../engineering/development/scoped-resource-host.md) 管理 owner 生命周期，并由本模块的 Generator 生成样板代码。

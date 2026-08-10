@@ -1,7 +1,7 @@
 # 本地化诊断与验证规范
 
 本文定义多语言模块如何把错误放在正确阶段暴露，以及实现和发布必须具备的测试证据。诊断 ID 的具体注册仍
-遵守 [AtomUI 编译期诊断规范](../../../engineering/compiler-diagnostics-guidelines.md)。
+遵守 [AtomUI 编译期诊断规范](../../../engineering/development/compiler-diagnostics-guidelines.md)。
 
 ## 诊断所有权
 

@@ -2,7 +2,7 @@
 
 `AtomUI.Desktop.Controls` 的包级注册入口是 `UseDesktopControls()`。Control、Token 和主题资产通过约定与生成代码
 进入该入口，不逐 Control 手工注册。主题系统完整契约见 [AtomUI 主题系统架构](../../architecture/systems/theming/runtime.md)，Control
-开发规则见 [Control Token 设计规范](../../engineering/control-token-guidelines.md)。
+开发规则见 [Control Token 设计规范](../../engineering/development/control-token-guidelines.md)。
 
 ## 注册流程
 

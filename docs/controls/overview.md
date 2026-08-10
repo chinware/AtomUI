@@ -21,7 +21,7 @@ docs/controls/
 
 例如 DataGrid：
 
-- 包架构：`docs/modules/desktop-controls-datagrid/overview.md`
+- 包架构：`docs/modules/desktop-controls-datagrid/index.md`
 - 控件文档：`docs/controls/desktop/data-display/data-grid/overview.md`
 
 桌面端控件按控件目录维护 `overview.md`、`implementation.md`、`changelog.md`，存在专属 Token 的控件同时维护 `token.md`。

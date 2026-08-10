@@ -1,6 +1,6 @@
 # Upload 桌面版架构设计
 
-本文档定义 `Upload` 桌面版的设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [Upload 桌面版实现原理](implementation.md)，拖动输入专项契约见 [Upload 拖动上传设计](drag-drop-design.md)，Upload Token 的专项设计见 [Upload Token 设计](token.md)，设计和契约变化记录见 [Upload Changelog](changelog.md)。
+本文档定义 `Upload` 桌面版的设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Upload 桌面版实现原理](implementation.md)，拖动输入专项契约见 [Upload 拖动上传设计](drag-drop-design.md)，Upload Token 的专项设计见 [Upload Token 设计](token.md)，设计和契约变化记录见 [Upload Changelog](changelog.md)。
 
 ## 1. 控件定位
 

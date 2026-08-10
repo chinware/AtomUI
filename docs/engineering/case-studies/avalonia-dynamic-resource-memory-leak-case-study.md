@@ -27,7 +27,7 @@
 写代码时必须遵守下面的硬规则：
 
 - 非 Visual `AvaloniaObject` 只要承载 `DynamicResource` / token-resource binding，就必须实现 scoped `IResourceHost` / `IThemeVariantHost`，或者提供显式 attach/release token。
-- 新增或改造 owner-managed 非 Visual `AvaloniaObject` 时，默认按 [Scoped Resource Host Source Generator 范式](../modules/generator/scoped-resource-host-generator.md) 生成资源宿主生命周期样板代码，不在每个对象中复制手写实现。
+- 新增或改造 owner-managed 非 Visual `AvaloniaObject` 时，默认按 [Scoped Resource Host 开发规范](../development/scoped-resource-host.md) 管理生命周期，并由 [Scoped Resource Host Generator](../../modules/generator/scoped-resource-host-generator.md) 生成样板代码。
 - scoped resource host 必须先查 owner control，再 fallback 到 `Application.Current`。
 - owner change、container clear、detach、unregister 必须能释放 owner 订阅。
 - 构造函数里默认禁止创建 global token binding；需要首次使用时创建，并在 close/detach/unregister/dispose 时释放。
@@ -184,7 +184,7 @@ GalleryApplication
 
 ### 原则 1：非 Visual AvaloniaObject 使用 Source Generator 生成资源宿主
 
-当 owner-managed 非 Visual 对象会承载动态资源时，默认使用 [Scoped Resource Host Source Generator 范式](../modules/generator/scoped-resource-host-generator.md)：
+当 owner-managed 非 Visual 对象会承载动态资源时，默认遵循 [Scoped Resource Host 开发规范](../development/scoped-resource-host.md)，并使用 [Scoped Resource Host Generator](../../modules/generator/scoped-resource-host-generator.md)：
 
 ```csharp
 [GenerateScopedResourceHost]

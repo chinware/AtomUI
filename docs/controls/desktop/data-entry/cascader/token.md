@@ -1,6 +1,6 @@
 # Cascader Token 设计
 
-本文档记录 Cascader 专属 Token 的语义、分类和兼容边界。公共设计见 [Cascader 桌面版架构设计](overview.md)，实现原理见 [Cascader 桌面版实现原理](implementation.md)，变化记录见 [Cascader Changelog](changelog.md)。通用 Token 规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。
+本文档记录 Cascader 专属 Token 的语义、分类和兼容边界。公共设计见 [Cascader 桌面版架构设计](overview.md)，实现原理见 [Cascader 桌面版实现原理](implementation.md)，变化记录见 [Cascader Changelog](changelog.md)。通用 Token 规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/development/control-token-guidelines.md)。
 
 ## 1. 定位
 

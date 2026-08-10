@@ -50,7 +50,7 @@ Public API 包括但不限于 `public` / `protected` 类型、成员、构造函
 
 ## AOT 与动态行为
 
-新增功能和修复 bug 默认都要做一次 AOT 兼容判断。具体规则以 [aot-programming-guidelines.md](aot-programming-guidelines.md) 为准，不在本文档重复展开。
+新增功能和修复 bug 默认都要做一次 AOT 兼容判断。具体规则以 [AOT 编程规范](../development/aot-programming-guidelines.md) 为准，不在本文档重复展开。
 
 重点约束：
 
@@ -60,14 +60,14 @@ Public API 包括但不限于 `public` / `protected` 类型、成员、构造函
 
 ## Gallery
 
-Gallery 页面结构、懒加载、示例组织和旧 API/Token sidecar 禁用规则以 [gallery-showcase-design-pattern.md](../gallery/gallery-showcase-design-pattern.md) 为准。
+Gallery 页面结构、懒加载、示例组织和旧 API/Token sidecar 禁用规则以 [Gallery ShowCase Design Pattern](../../gallery/authoring/gallery-showcase-design-pattern.md) 为准。
 
 Gallery 改动时注意：
 
 - 不把已移除的 API/Token sidecar 重新手写成普通布局。
 - 不在页面结构调整中顺手改 Demo 行为。
 - 延迟创建只能改变创建时机，不能改变示例控件树语义。
-- 涉及 NativeAOT 发布或发布脚本时，阅读 [gallery-aot-release-workflow.md](gallery-aot-release-workflow.md)。
+- 涉及 NativeAOT 发布或发布脚本时，阅读 [Gallery NativeAOT Release Workflow](../workflows/gallery-aot-release-workflow.md)。
 
 ## 资源与生命周期
 
@@ -78,10 +78,10 @@ Gallery 改动时注意：
 - `OnApplyTemplate` 重新应用时释放旧 part 绑定。
 - detach、owner 变更、container recycle 时解绑事件和资源宿主。
 - 非 Visual 对象使用动态资源时，需要明确资源宿主生命周期。
-- owner-managed 非 Visual `AvaloniaObject` 需要 scoped resource host 时，默认遵循 [Scoped Resource Host Source Generator 范式](../modules/generator/scoped-resource-host-generator.md)，不要复制手写 `IResourceHost` / `IThemeVariantHost` 样板代码。
+- owner-managed 非 Visual `AvaloniaObject` 需要 scoped resource host 时，默认遵循 [Scoped Resource Host 开发规范](../development/scoped-resource-host.md)，不要复制手写 `IResourceHost` / `IThemeVariantHost` 样板代码。
 - 修复内存保留问题时，按同类对象成组审计，不只修 dump 中看到的第一个类型。
 
-参考：[avalonia-dynamic-resource-memory-leak-case-study.md](avalonia-dynamic-resource-memory-leak-case-study.md)。
+参考：[Avalonia DynamicResource 内存泄露案例](../case-studies/avalonia-dynamic-resource-memory-leak-case-study.md)。
 
 ## 测试与验证
 
@@ -105,7 +105,7 @@ Gallery 改动时注意：
 - Gallery 页面结构：`gallery-showcase-design-pattern.md`。
 - Gallery AOT 发布：`gallery-aot-release-workflow.md`。
 - 控件研发标准：`control-development-guidelines.md`。
-- 模块架构：`docs/modules/**/overview.md`。
+- 模块架构：`docs/modules/**/index.md`。
 - 控件用户文档：`docs/controls/**`。
 
 文档应记录“以后怎么做”和“为什么”，不要写成一次性修复记录。
@@ -124,7 +124,7 @@ Gallery 改动时注意：
 
 ## 控件研发标准
 
-控件 C# 实现、AXAML 主题、API 和主题契约变更必须遵循 [AtomUI 控件研发标准规范](control-development-guidelines.md)。优化代码和修复 bug 时，如果涉及控件既有 API、主题契约或可观察行为变化，必须先获得用户明确授权。
+控件 C# 实现、AXAML 主题、API 和主题契约变更必须遵循 [AtomUI 控件研发标准规范](../development/control-development-guidelines.md)。优化代码和修复 bug 时，如果涉及控件既有 API、主题契约或可观察行为变化，必须先获得用户明确授权。
 
 ## Changelog 与发布
 

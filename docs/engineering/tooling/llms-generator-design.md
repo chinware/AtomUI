@@ -1,6 +1,6 @@
 # AtomUI LLMS 文档生成器设计
 
-本文档定义 AtomUI LLMS 文档生成器的设计定位、配置模型、输入契约、输出契约、生成流程、验证规则和扩展边界。控件文档规范见 [AtomUI 控件文档规范](control-documentation-guidelines.md)，AI 协作和生成文件维护规则见 [AtomUI AI 协作规范](agent-guidelines.md)。
+本文档定义 AtomUI LLMS 文档生成器的设计定位、配置模型、输入契约、输出契约、生成流程、验证规则和扩展边界。控件文档规范见 [AtomUI 控件文档规范](../contributing/control-documentation-guidelines.md)，AI 协作和生成文件维护规则见 [AtomUI AI 协作规范](../contributing/agent-guidelines.md)。
 
 ## 1. 工具定位
 

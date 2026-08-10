@@ -14,7 +14,6 @@ GalleryBase 可以依赖 AtomUI 作为 UI 具体实现。这里的中立不是 U
 | [showcase-controls.md](showcase-controls.md) | ShowCase 控件、延迟创建、sticky host、场景 lazy controller |
 | [source-code-display.md](source-code-display.md) | ShowCase 源码展示、Drawer 查看器、源码片段 Provider、生成器边界 |
 | [theming-localization.md](theming-localization.md) | XAML namespace、Control Token、主题注册、Shell 本地化边界 |
-| [migration-and-testing.md](migration-and-testing.md) | 迁移阶段、测试拆分、验证命令、回滚策略 |
 
 ## 设计目标
 
