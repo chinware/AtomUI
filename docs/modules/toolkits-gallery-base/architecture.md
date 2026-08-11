@@ -22,7 +22,7 @@ Mobile 先依赖 Desktop 再通过构建过滤补偿。目标边界见 [Mobile G
 | [configuration.md](configuration.md) | 配置入口、产品模块注册、选项生命周期、配置校验 |
 | [navigation-routing.md](navigation-routing.md) | 导航树、路由注册、ViewLocator 适配、导航生命周期 |
 | [shell-and-platform.md](shell-and-platform.md) | Desktop Window、Browser View、共享 Shell、标题栏菜单、平台差异 |
-| [showcase-controls.md](showcase-controls.md) | ShowCase 控件、延迟创建、sticky host、场景 lazy controller |
+| [showcase-controls.md](showcase-controls.md) | ShowCase 控件、延迟创建、sticky host、场景 lazy controller 与 Semantic Part Preview 宿主 |
 | [source-code-display.md](source-code-display.md) | ShowCase 源码展示、Drawer 查看器、源码片段 Provider、生成器边界 |
 | [theming-localization.md](theming-localization.md) | XAML namespace、Control Token、主题注册、Shell 本地化边界 |
 

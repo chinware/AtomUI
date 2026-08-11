@@ -52,6 +52,23 @@ public class GalleryCodeViewerRuntimeTests
     }
 
     [Fact]
+    public void GalleryCodeViewer_Disables_Editor_Scroll_Chaining()
+    {
+        var viewer = new GalleryCodeViewer
+        {
+            CodeText = string.Join("\n", Enumerable.Range(1, 100).Select(index => $"Line {index}")),
+            Language = "csharp"
+        };
+
+        ShowInWindow(viewer, editor =>
+        {
+            var scrollViewer = GetEditorScrollViewer(editor);
+
+            Avalonia.Controls.ScrollViewer.GetIsScrollChainingEnabled(scrollViewer).ShouldBeFalse();
+        });
+    }
+
+    [Fact]
     public void GalleryCodeViewer_Opens_Find_SearchPanel_Without_Avalonia_Default_ToggleButton_Theme()
     {
         var viewer = new GalleryCodeViewer

@@ -1,0 +1,73 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:gallery="https://atomui.net/toolkits/gallery-base">
+    <ControlTheme x:Key="{x:Type gallery:SemanticPartPreview}"
+                  TargetType="{x:Type gallery:SemanticPartPreview}">
+        <Setter Property="Template">
+            <ControlTemplate TargetType="{x:Type gallery:SemanticPartPreview}">
+                <Grid>
+                    <Border Name="PART_InspectionPanel"
+                            MinHeight="360"
+                            Margin="24,20,24,32"
+                            VerticalAlignment="Top"
+                            Background="{atom:SharedTokenResource ColorBgContainer}"
+                            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                            BorderThickness="1">
+                        <Grid RowDefinitions="Auto,Auto">
+                            <gallery:SemanticPartPreviewLayoutPanel Name="PART_Layout"
+                                                                    Grid.Row="0"
+                                                                    CompactBreakpoint="820"
+                                                                    Spacing="0">
+                                <Border Name="PART_PreviewStage"
+                                        MinHeight="360"
+                                        Padding="32">
+                                    <ContentPresenter Content="{TemplateBinding PreviewContent}"
+                                                      HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center" />
+                                </Border>
+
+                                <Border Name="PART_PartsPane"
+                                        BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                                        BorderThickness="1,0,0,0">
+                                    <StackPanel>
+                                        <ItemsControl ItemsSource="{TemplateBinding Items}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Spacing="0" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="gallery:SemanticPartPreviewItem">
+                                                    <gallery:SemanticPartPreviewItemControl Item="{Binding}" />
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                        <ContentPresenter Name="PART_InfoContent"
+                                                          Content="{TemplateBinding InfoContent}" />
+                                    </StackPanel>
+                                </Border>
+                            </gallery:SemanticPartPreviewLayoutPanel>
+
+                            <ContentPresenter Name="PART_CodeContent"
+                                              Grid.Row="1"
+                                              Content="{TemplateBinding CodeContent}" />
+                        </Grid>
+                    </Border>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:compact /template/ Border#PART_InspectionPanel">
+            <Setter Property="Margin" Value="16,16,16,24" />
+        </Style>
+        <Style Selector="^:compact /template/ Border#PART_PreviewStage">
+            <Setter Property="MinHeight" Value="280" />
+            <Setter Property="Padding" Value="20" />
+        </Style>
+        <Style Selector="^:compact /template/ Border#PART_PartsPane">
+            <Setter Property="BorderThickness" Value="0,1,0,0" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

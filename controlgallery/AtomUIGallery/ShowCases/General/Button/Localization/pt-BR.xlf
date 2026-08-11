@@ -511,5 +511,29 @@
         <target state="translated">Tipo</target>
       </segment>
     </unit>
+    <unit id="SemanticPartContentDescription">
+      <segment>
+        <source>The content region presents the Button label.</source>
+        <target state="translated">A região de conteúdo apresenta o rótulo do Button.</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartDemoContent">
+      <segment>
+        <source>Search</source>
+        <target state="translated">Pesquisar</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartIconDescription">
+      <segment>
+        <source>The icon region presents the leading or trailing icon and its loading replacement.</source>
+        <target state="translated">A região do ícone apresenta o ícone inicial ou final e seu substituto durante o carregamento.</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartRootDescription">
+      <segment>
+        <source>The Button root owns interaction states, background, border, and overall layout.</source>
+        <target state="translated">A raiz do Button contém os estados de interação, o fundo, a borda e o layout geral.</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

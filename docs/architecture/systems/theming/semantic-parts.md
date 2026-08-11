@@ -6,7 +6,7 @@ internal 类型或偶然的视觉树结构。
 
 本文档定义 Semantic Part 的统一模型、Selector 契约、主题边界、构建期描述、兼容性和验证要求。ControlTheme
 资产、Token schema 和主题运行时的完整架构见 [主题系统架构](runtime.md)；Core 注册和冻结实现见
-[Semantic Part Runtime](../../../modules/core/semantic-part-runtime.md)；生成器实现见
+[AtomUI.Core 模块](../../../modules/core/overview.md)；生成器实现见
 [Semantic Part Generator](../../../modules/generator/semantic-part-generator.md)。
 
 ## 1. 设计定位
@@ -160,7 +160,7 @@ Descriptor 服务于：
 
 - 构建期模板契约校验。
 - 文档与 LLMS Semantic Parts 输出校验。
-- Gallery Semantic Preview。
+- Gallery Semantic Preview；Preview 只读取 descriptor，不把实例、调试状态或高亮信息写回 registry。
 - 控件包静态注册和第三方工具。
 - 兼容性测试。
 
@@ -446,7 +446,8 @@ Semantic Part 不引入：
 - Control 实例级 descriptor 对象。
 
 Descriptor、ContractType identity、Part 常量和注册入口全部由生成器静态产生。Gallery 可以使用 public
-VisualTree API 查找已实例化 marker 进行预览，但该路径不能进入控件运行时样式逻辑。
+VisualTree API 查找已实例化 marker 进行预览，但该路径不能进入控件运行时样式逻辑。Gallery Preview 必须位于
+`AtomUI.Toolkits.GalleryBase` 或具体产品 Gallery，Control 包不得反向引用、注册或感知 Preview。
 
 Avalonia 升级后必须重新验证裸类型与 `:is(...)` 的匹配语义、class activator 订阅模型、`/template/` 的
 `TemplatedParent` 边界以及 `x:SetterTargetType` 的编译行为，不能把当前实现细节无条件外推到新版本。
@@ -489,6 +490,18 @@ Stability
 文档描述当前公共契约，不从 Part 表反推出不存在的 AXAML。Gallery Semantic Preview 读取生成 descriptor，并通过
 semantic class 高亮已实例化节点；Popup Part 只有在对应 Popup 打开后才参与可视高亮。
 
+Gallery Preview 是独立工具层，不属于 Control Semantic Part Runtime。它必须遵守以下边界：
+
+- Semantic Parts 使用独立 ShowCase Tab，并在用户第一次进入该 Tab 时才创建 Preview 和演示 Control。
+- Preview 已创建但没有 Hover/Pin 时，不扫描 owner VisualTree、不创建 Adorner、不监听 Popup 或布局。
+- Hover/Pin 时只进行 owner-scoped 查找，并把临时高亮 Adorner 放入目标对应的 Avalonia `AdornerLayer`。
+- 取消选择、切换 Tab、Popup 关闭或页面 detach 时先清空高亮 Adorner 的 `AdornedElement` 关联，再移除 Adorner 并释放临时订阅。
+- Preview 不向 Control、ControlTheme 或模板节点注入 class、Style、Binding、属性、事件或调试状态。
+- 独立宿主由具体 Gallery Demo 显式提供附加 root，不允许通过全局 TopLevel 搜索补偿。
+
+完整页面模型、目标解析、Popup、性能预算和验证契约见
+[Semantic Part Gallery Preview](../../../gallery/authoring/semantic-part-preview.md)。
+
 ## 15. 验证要求
 
 Semantic Part 实现至少验证：
@@ -512,7 +525,7 @@ Button 的 `root`、`icon`、`content` 可以作为基础契约测试样本；�
 
 - [Semantic Part Generator 设计](../../../modules/generator/semantic-part-generator.md)：构建期输入、模板分析、descriptor、诊断和
   AOT 输出。
-- [Semantic Part Runtime](../../../modules/core/semantic-part-runtime.md)：Core descriptor 校验、包级注册、冻结 registry 与运行时查询。
+- [AtomUI.Core 模块](../../../modules/core/overview.md)：Core descriptor 校验、包级注册、冻结 registry 与运行时查询。
 - [AtomUI 控件研发标准规范](../../../engineering/development/control-development-guidelines.md)：Control 作者必须遵守的 Part
   声明、模板和兼容性规则。
 - [AtomUI 控件 Token 设计规范](../../../engineering/development/control-token-guidelines.md)：Semantic Part、Part Theme 和 Token

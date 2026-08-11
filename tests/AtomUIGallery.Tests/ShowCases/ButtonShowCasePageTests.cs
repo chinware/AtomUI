@@ -52,7 +52,7 @@ public class ButtonShowCasePageTests
         source.ShouldNotContain("Tag=\"Examples\"");
         source.ShouldNotContain("Tag=\"Api\"");
         source.ShouldNotContain("Tag=\"DesignToken\"");
-        source.ShouldContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldContain("<gallery:GalleryShowCaseHost");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
         source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
@@ -87,6 +87,50 @@ public class ButtonShowCasePageTests
         source.ShouldNotContain("OverviewTitle");
         source.ShouldNotContain(">Gallery<");
         source.ShouldNotContain("ButtonShowCaseLangResource ScenarioGallery");
+    }
+
+    [Fact]
+    public void Button_ShowCase_Declares_A_Deferred_Semantic_Part_Preview()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml");
+
+        source.ShouldContain("<gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>");
+        source.ShouldContain("<gallery:SemanticPartPreview");
+        source.ShouldContain("SemanticOwnerType=\"{x:Type atom:Button}\"");
+        source.ShouldContain("Name=\"SemanticPartDemoButton\"");
+        CountOccurrences(source, "<gallery:SemanticPartDescription").ShouldBe(3);
+        source.ShouldContain("Path=\"root\"");
+        source.ShouldContain("Path=\"icon\"");
+        source.ShouldContain("Path=\"content\"");
+    }
+
+    [Fact]
+    public void Button_Semantic_Preview_Is_Materialized_Only_After_The_Tab_Is_Selected()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+
+        var page = new ButtonShowCase
+        {
+            DataContext = new ButtonViewModel(new TestScreen())
+        };
+
+        ShowInWindow(page, 1280, 800, () =>
+        {
+            page.GetVisualDescendants().OfType<SemanticPartPreview>().ShouldBeEmpty();
+            page.GetVisualDescendants()
+                .OfType<AtomUI.Desktop.Controls.Button>()
+                .ShouldNotContain(static button => button.Name == "SemanticPartDemoButton");
+
+            var host = page.GetVisualDescendants().OfType<GalleryShowCaseHost>().Single();
+            host.SelectedTab = GalleryShowCaseTab.SemanticParts;
+            Dispatcher.UIThread.RunJobs();
+
+            page.GetVisualDescendants().OfType<SemanticPartPreview>().Count().ShouldBe(1);
+            page.GetVisualDescendants()
+                .OfType<AtomUI.Desktop.Controls.Button>()
+                .Count(static button => button.Name == "SemanticPartDemoButton")
+                .ShouldBe(1);
+        });
     }
 
     [Fact]

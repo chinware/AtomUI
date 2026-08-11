@@ -51,7 +51,8 @@ public class GalleryCatalogCoverageTests
         foreach (var catalogType in catalogTypes)
         {
             catalogType.GetCustomAttribute<LanguageCatalogAttribute>()
-                       .ShouldNotBeNull();
+                       .ShouldNotBeNull()
+                       .ContractVersion.ShouldBe(2);
             Enum.GetNames(catalogType).ShouldBe(memberOrderBaseline[catalogType.FullName!]);
 
             var extensionName = catalogType.Name[..^"Kind".Length] + "Extension";
@@ -119,8 +120,8 @@ public class GalleryCatalogCoverageTests
                               .OrderBy(static path => path, StringComparer.Ordinal)
                               .ToArray();
 
-        sourceFiles.Length.ShouldBe(80);
-        sourceFiles.Sum(CountUnits).ShouldBe(3997);
+        sourceFiles.Length.ShouldBe(81);
+        sourceFiles.Sum(CountUnits).ShouldBe(4014);
         foreach (var sourcePath in sourceFiles)
         {
             var targetPath = Path.Combine(

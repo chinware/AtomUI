@@ -426,5 +426,25 @@
         <source>Type</source>
       </segment>
     </unit>
+    <unit id="SemanticPartContentDescription">
+      <segment>
+        <source>The content region presents the Button label.</source>
+      </segment>
+    </unit>
+    <unit id="SemanticPartDemoContent">
+      <segment>
+        <source>Search</source>
+      </segment>
+    </unit>
+    <unit id="SemanticPartIconDescription">
+      <segment>
+        <source>The icon region presents the leading or trailing icon and its loading replacement.</source>
+      </segment>
+    </unit>
+    <unit id="SemanticPartRootDescription">
+      <segment>
+        <source>The Button root owns interaction states, background, border, and overall layout.</source>
+      </segment>
+    </unit>
   </file>
 </xliff>

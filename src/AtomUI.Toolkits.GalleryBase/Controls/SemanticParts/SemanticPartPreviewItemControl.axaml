@@ -1,0 +1,76 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:antdicons="using:AtomUI.Icons.AntDesign"
+    xmlns:gallery="https://atomui.net/toolkits/gallery-base"
+    x:Class="AtomUI.Toolkits.GalleryBase.Controls.SemanticPartPreviewItemControl"
+    x:DataType="gallery:SemanticPartPreviewItem">
+    <UserControl.Styles>
+        <Style Selector="Border.part-row">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="Border.part-row:pointerover">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorFillTertiary}" />
+        </Style>
+        <Style Selector="Border.part-row.pinned">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimaryBg}" />
+        </Style>
+    </UserControl.Styles>
+
+    <Border Name="PART_Row"
+            Classes="part-row"
+            Classes.pinned="{Binding IsPinned}"
+            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+            BorderThickness="0,0,0,1"
+            MinHeight="100"
+            Padding="16">
+        <Grid ColumnDefinitions="*,Auto"
+              ColumnSpacing="16">
+            <StackPanel Grid.Column="0"
+                        Spacing="10">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="8">
+                    <atom:TextBlock Text="{Binding Name}"
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    VerticalAlignment="Center" />
+                    <atom:Tag Text="{Binding Since}"
+                              TagColor="blue"
+                              Variant="Filled"
+                              IsVisible="{Binding HasSince}" />
+                </StackPanel>
+
+                <atom:TextBlock Text="{Binding Description}"
+                                TextWrapping="Wrap"
+                                Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="1"
+                        Orientation="Horizontal"
+                        Spacing="4"
+                        VerticalAlignment="Top">
+                <atom:IconButton Name="PART_PinButton"
+                                 Width="30"
+                                 Height="30"
+                                 IconWidth="16"
+                                 IconHeight="16"
+                                 atom:ToolTip.Tip="{gallery:SemanticPartPreviewLangResource PinAction}">
+                    <atom:IconButton.Icon>
+                        <antdicons:PushpinOutlined />
+                    </atom:IconButton.Icon>
+                </atom:IconButton>
+                <atom:IconButton Name="PART_InfoButton"
+                                 Width="30"
+                                 Height="30"
+                                 IconWidth="16"
+                                 IconHeight="16"
+                                 atom:ToolTip.Tip="{gallery:SemanticPartPreviewLangResource InfoAction}">
+                    <atom:IconButton.Icon>
+                        <antdicons:InfoCircleOutlined />
+                    </atom:IconButton.Icon>
+                </atom:IconButton>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

@@ -9,6 +9,7 @@
 - 把控件与 AtomUI 产品内容分离，使其他产品可以使用同一套展示控件。
 - 保持 Browser 端渐进挂载和 ShowCaseItem 延迟创建能力。
 - 为复杂 Demo 页面提供统一场景切换和 lazy tab 缓存。
+- 为 Semantic Part Preview 提供独立 Tab、真延迟创建和临时 Adorner 高亮职责，且不修改产品 Control。
 
 ## 控件清单
 
@@ -22,9 +23,20 @@ GalleryBase 展示控件清单：
 | `GalleryShowCaseHeader` | 标准 ShowCase 文档页头，统一标题、标签、简介和 metadata 信息区 |
 | `GalleryStickyTabsHost` | 文档式页面宿主，Header、StickyContent、Content 同一滚动上下文 |
 | `GalleryStickyTabsPanel` | StickyContent 吸顶布局实现 |
-| `GalleryShowCaseScenarioController` | Examples/API/Design Token 等场景 lazy 创建和缓存 |
+| `GalleryShowCaseScenarioController` | Icon、Palette 等特殊示例分组的 lazy 创建和缓存 |
 | `GalleryReactiveUserControl<TViewModel>` | ReactiveUI View 激活辅助基类 |
 | `GalleryShowCaseRuntimeOptions` | 诊断开关和延迟创建运行时控制 |
+
+Semantic Part Preview 基础设施：
+
+| 类型 | 职责 |
+|---|---|
+| `GalleryShowCaseHost` | 组合 Header、标准 Examples/Semantic Parts Tab、内容 lazy factory 和 sticky host |
+| `SemanticPartPreview` | 展示真实 Control、descriptor 列表、Pin/Hover/Info 交互 |
+| `SemanticPartHighlightSession` | owner-scoped 解析、Adorner 创建、Popup 临时订阅和确定性释放；internal |
+| `SemanticPartAdorner` | 在目标所在 VisualRoot 中绘制无命中的高亮边框；internal |
+
+完整架构见 [Semantic Part Gallery Preview](../../gallery/authoring/semantic-part-preview.md)。
 
 ## 命名策略
 
@@ -265,15 +277,15 @@ GalleryStickyTabsHost
 
 典型场景：
 
-- Examples
-- API
-- Design Token
+- Icon 的 Outlined、Filled、TwoTone 分组。
+- Palette 的 Light、Dark 分组。
+- 其他确实属于示例内容的互斥视图。
 
 职责：
 
 - 监听 `TabStrip.SelectionChanged`。
-- Examples 内容可预先存在。
-- API/Design Token 等内容首次切换时创建。
+- 默认示例内容可以预先存在。
+- 非默认示例分组首次切换时创建。
 - 创建后缓存，避免重复构建 DataGrid。
 - DataContext 变化时同步到已创建内容。
 - detach 时清理 lazy content cache。
@@ -288,7 +300,22 @@ _scenarioController = new GalleryShowCaseScenarioController(
     ExamplesContent);
 ```
 
-`CreateScenarioContent` 仍由产品 ShowCase 页面提供，因为 API 和 Design Token 控件属于产品内容。
+`CreateScenarioContent` 仍由特殊产品 ShowCase 页面提供。标准控件页面、Semantic Parts、API 和 Design Token 不使用该
+controller。
+
+## Semantic Part Preview
+
+GalleryBase 拥有以下实现边界：
+
+- `GalleryShowCaseHost` 组合现有 Header、sticky host、Examples 和真延迟的 Semantic Parts 内容。
+- `SemanticPartPreview` 读取冻结 descriptor，呈现真实 Control、Part 列表和用户侧代码片段。
+- internal `SemanticPartHighlightSession` 负责一次有效 Hover/Pin 选择期间的 owner-scoped 解析与资源释放。
+- internal `SemanticPartAdorner` 只负责无命中的高亮绘制，不进入产品 Control 的模板或状态模型。
+- 具体产品 Gallery 只提供演示 Control、本地化职责描述和页面接入；Button 是首个完整样例，不是架构 owner。
+
+页面模型、目标解析算法、Popup/独立宿主规则、Adorner 生命周期、性能预算和验证矩阵统一见
+[Semantic Part Gallery Preview](../../gallery/authoring/semantic-part-preview.md)。本模块文档不复制这些跨 GalleryBase 与
+产品 Gallery 的稳定规则。
 
 ## GalleryReactiveUserControl
 
@@ -325,6 +352,8 @@ ShowCase 控件主题迁入 GalleryBase：
 - `ShowCasePanelTheme.axaml`
 - `GalleryShowCaseHeaderTheme.axaml`
 - `GalleryStickyTabsHostTheme.axaml`
+- `GalleryShowCaseHostTheme.axaml`
+- `SemanticPartPreviewTheme.axaml`
 
 主题必须使用 GalleryBase 的 XAML namespace：
 
@@ -346,3 +375,6 @@ xmlns:gallery="https://atomui.net/toolkits/gallery-base"
 - `GalleryShowCaseHeader` metadata label 使用 GalleryBase 通用语言资源。
 - Sticky host detach 后释放 sticky mirror。
 - Scenario controller 首次切换创建 lazy content，后续切换复用缓存。
+- Semantic Part Preview 按正式设计验证真延迟 factory、owner-scoped 解析和确定性释放。
+- Semantic Part Preview 使用单外框双栏和平铺分隔行；技术元数据在右栏延迟显示，代码示例在双栏下方全宽延迟显示。
+- GalleryBase 测试负责宿主与 Preview 基础设施；具体产品 Gallery 测试负责 Button 等页面接入和描述数据一致性。

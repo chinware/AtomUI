@@ -17,9 +17,26 @@ public class ShowCaseScenarioControllerConventionsTests
             var relativePagePath = Path.GetRelativePath(GetRepoRoot(), pagePath);
             var source           = File.ReadAllText(pagePath);
 
-            if (!source.Contains("<gallery:GalleryStickyTabsHost", StringComparison.Ordinal))
+            var usesExamplesOnlyHost = source.Contains(
+                "<gallery:GalleryStickyTabsHost",
+                StringComparison.Ordinal);
+            var usesSemanticPartsHost = source.Contains(
+                "<gallery:GalleryShowCaseHost",
+                StringComparison.Ordinal);
+            var declaresSemanticParts = source.Contains(
+                "<gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>",
+                StringComparison.Ordinal);
+
+            if (!usesExamplesOnlyHost && !usesSemanticPartsHost)
             {
-                failures.Add($"{relativePagePath}: must keep the document-style GalleryStickyTabsHost shell.");
+                failures.Add(
+                    $"{relativePagePath}: must use GalleryStickyTabsHost or the Semantic-aware GalleryShowCaseHost shell.");
+            }
+
+            if (usesSemanticPartsHost != declaresSemanticParts)
+            {
+                failures.Add(
+                    $"{relativePagePath}: GalleryShowCaseHost and SemanticPartsContentTemplate must be declared together.");
             }
 
             if (!source.Contains("<gallery:ShowCasePanel Name=\"ExamplesContent\"", StringComparison.Ordinal))

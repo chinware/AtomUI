@@ -1,0 +1,17 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:gallery="https://atomui.net/toolkits/gallery-base">
+    <ControlTheme x:Key="{x:Type gallery:GalleryShowCaseHost}"
+                  TargetType="{x:Type gallery:GalleryShowCaseHost}">
+        <Setter Property="Template">
+            <ControlTemplate TargetType="{x:Type gallery:GalleryShowCaseHost}">
+                <gallery:GalleryStickyTabsHost
+                    Header="{TemplateBinding Header}"
+                    StickyContent="{TemplateBinding NavigationContent}"
+                    StickyContentPadding="{TemplateBinding StickyContentPadding}"
+                    Content="{TemplateBinding ActiveContent}" />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

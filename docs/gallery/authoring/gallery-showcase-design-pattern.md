@@ -2,6 +2,10 @@
 
 本文档约定 AtomUI Gallery 控件 ShowCase 页面的稳定结构。标准控件页面面向示例浏览，直接展示 `ExamplesContent`；API 和 Design Token 表不再由 Gallery 收集或保留，相关契约回到控件文档、源码 public surface、Token 类型和生成数据维护。
 
+采用 Semantic Part 的页面通过独立 `Semantic Parts` Tab 展示公共视觉契约。该 Tab 是公共视觉契约的交互式检查工具，
+不属于 API/Design Token sidecar，也不能恢复页面私有场景 controller。完整设计见
+[Semantic Part Gallery Preview](semantic-part-preview.md)。
+
 ## 页面模型
 
 标准控件 ShowCase 页面采用下面的结构：
@@ -64,11 +68,46 @@ ShowCase Page
 - `new XxxApiDataGrid()` 或 `new XxxDesignTokenDataGrid()`
 - API / Design Token DataGrid sidecar 引用或 `ApiRows` / `DesignTokenRows` metadata 绑定
 
+上述限制适用于当前只展示 Examples 的标准页面。采用 Semantic Part Preview 后，页面必须使用 GalleryBase 统一提供的
+`GalleryShowCaseHost`，由宿主创建标准 `Examples/Semantic Parts` Tab；页面仍然不得手写 `ScenarioTabs`、
+`ScenarioContentHost`、`GalleryShowCaseScenarioController` 或切换 code-behind。
+
 `IconShowCase`、`PaletteShowCase` 这类示例本身需要分组的特殊页面可以继续使用 `TabStrip + ContentControl`。这些 Tab 表示示例分组，例如 `Outlined/Filled/TwoTone` 或 `Light/Dark`，不是标准页面的 API/Design Token 导航。
+
+## Semantic Parts Tab 范式
+
+Semantic Part 接入页面迁移到 GalleryBase 统一提供的 `GalleryShowCaseHost`，由页面提供原 Examples 内容和
+`SemanticPartsContentTemplate`：
+
+```text
+GalleryShowCaseHost
+  GalleryStickyTabsHost
+    Header
+      GalleryShowCaseHeader
+    StickyContent
+      TabStrip
+        Examples
+        Semantic Parts
+    Content
+      当前 Tab 内容
+```
+
+页面编写只承担以下契约：
+
+- Examples 保持默认 Tab，原有 `ShowCasePanel` 和 deferred item 不变。
+- 只有页面提供 `SemanticPartsContentTemplate` 时才显示 Semantic Parts Tab。
+- 没有 Semantic 内容的页面不创建空 TabStrip 或 sticky 行。
+- 页面不得直接创建 Preview、高亮会话或 Adorner，也不得手写 Tab 切换 code-behind。
+
+Button 是首个完整接入样例，但不拥有 Tab、Preview、descriptor 读取或 Adorner 架构。
+
+真延迟创建、owner-scoped 目标解析、Popup、Adorner 释放、性能预算和完整验证矩阵统一由
+[Semantic Part Gallery Preview](semantic-part-preview.md) 定义。
 
 ## Header 范式
 
-标准页面必须在 `GalleryStickyTabsHost.Header` 中使用 `GalleryShowCaseHeader`，不再为每个页面手写 `StackPanel + Tag + metadata` 页头结构。
+Examples-only 页面在 `GalleryStickyTabsHost.Header` 中使用 `GalleryShowCaseHeader`；启用 Semantic Parts 的页面在
+`GalleryShowCaseHost.Header` 中使用同一个 Header 控件。页面不再手写 `StackPanel + Tag + metadata` 页头结构。
 
 推荐内容：
 
@@ -163,9 +202,12 @@ API 和 Token 契约的维护入口是控件文档、源码 public surface、Tok
 
 每个标准 ShowCase 至少覆盖两类测试。
 
+以下结构测试适用于当前 Examples-only 页面。采用 `GalleryShowCaseHost` 的页面除保护原 Examples 内容外，还必须执行
+[Semantic Part Gallery Preview](semantic-part-preview.md#15-验证要求) 的延迟创建与生命周期验证。
+
 结构测试：
 
-- 页面使用 `GalleryStickyTabsHost`。
+- Examples-only 页面使用 `GalleryStickyTabsHost`；Semantic Part 页面使用 `GalleryShowCaseHost`。
 - Header 使用 `GalleryShowCaseHeader`。
 - 主页面不存在 `ScenarioTabs`、`ScenarioContentHost`、`Tag="Api"`、`Tag="DesignToken"`。
 - 存在直接声明的 `ExamplesContent`。
@@ -186,7 +228,7 @@ API 和 Token 契约的维护入口是控件文档、源码 public surface、Tok
 
 1. 保留原 `ShowCaseItem` 内容，先建立或确认 snapshot。
 2. 使用 `GalleryShowCaseHeader`。
-3. 用 `GalleryStickyTabsHost` 包裹页面主体。
+3. Examples-only 页面用 `GalleryStickyTabsHost` 包裹页面主体；需要 Semantic Parts 时改用 `GalleryShowCaseHost`。
 4. 删除标准 `Examples/API/Design Token` Tab。
 5. 删除 `ScenarioContentHost`，让 `ExamplesContent` 成为直接主体。
 6. 保持 `ShowCasePanel IsScrollEnabled=False`。

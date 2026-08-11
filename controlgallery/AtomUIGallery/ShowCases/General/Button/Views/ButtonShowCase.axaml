@@ -7,8 +7,8 @@
              xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Button"
              x:DataType="viewModels:ButtonViewModel">
     <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
-        <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
-            <gallery:GalleryStickyTabsHost.Header>
+        <gallery:GalleryShowCaseHost StickyContentPadding="28,0,28,0">
+            <gallery:GalleryShowCaseHost.Header>
                 <gallery:GalleryShowCaseHeader
                     Title="Button"
                     Category="{gallery:ButtonShowCaseLangResource ComponentCategory}"
@@ -18,8 +18,31 @@
                     Namespace="AtomUI.Controls"
                     Package="AtomUI.Desktop.Controls"
                     BaseClass="AtomUIButton" />
-            </gallery:GalleryStickyTabsHost.Header>
+            </gallery:GalleryShowCaseHost.Header>
 
+            <gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>
+                <DataTemplate x:DataType="viewModels:ButtonViewModel">
+                    <gallery:SemanticPartPreview SemanticOwnerType="{x:Type atom:Button}">
+                        <gallery:SemanticPartPreview.PreviewContent>
+                            <atom:Button Name="SemanticPartDemoButton"
+                                         ButtonType="Primary"
+                                         Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}"
+                                         Content="{gallery:ButtonShowCaseLangResource SemanticPartDemoContent}" />
+                        </gallery:SemanticPartPreview.PreviewContent>
+                        <gallery:SemanticPartPreview.PartDescriptions>
+                            <gallery:SemanticPartDescription
+                                Path="root"
+                                Description="{gallery:ButtonShowCaseLangResource SemanticPartRootDescription}" />
+                            <gallery:SemanticPartDescription
+                                Path="icon"
+                                Description="{gallery:ButtonShowCaseLangResource SemanticPartIconDescription}" />
+                            <gallery:SemanticPartDescription
+                                Path="content"
+                                Description="{gallery:ButtonShowCaseLangResource SemanticPartContentDescription}" />
+                        </gallery:SemanticPartPreview.PartDescriptions>
+                    </gallery:SemanticPartPreview>
+                </DataTemplate>
+            </gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>
 
             <gallery:ShowCasePanel Name="ExamplesContent"
                                    IsScrollEnabled="False"
@@ -559,6 +582,6 @@
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
             </gallery:ShowCasePanel>
-        </gallery:GalleryStickyTabsHost>
+        </gallery:GalleryShowCaseHost>
     </Grid>
 </UserControl>

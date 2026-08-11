@@ -67,6 +67,38 @@ public class GalleryBaseCatalogTests
         }
     }
 
+    [Fact]
+    public void Semantic_Preview_Catalog_Localizes_Metadata_Tag_Labels()
+    {
+        var application = Application.Current.ShouldNotBeNull();
+        var languageManager = application.GetLanguageManager().ShouldNotBeNull();
+        var localizer = application.GetLocalizer().ShouldNotBeNull();
+        try
+        {
+            languageManager.ChangeLanguage(LanguageTags.EnUS);
+            localizer.Get(SemanticPartPreviewLangResourceKind.SelectorLabel).ShouldBe("Selector");
+            localizer.Get(SemanticPartPreviewLangResourceKind.ContractTypeLabel).ShouldBe("Contract type");
+            localizer.Get(SemanticPartPreviewLangResourceKind.CrossRootTag).ShouldBe("Cross visual root");
+            localizer.Get(SemanticPartPreviewLangResourceKind.RuntimeCreatedTag).ShouldBe("Runtime-created");
+
+            languageManager.ChangeLanguage(LanguageTags.ZhCN);
+            localizer.Get(SemanticPartPreviewLangResourceKind.SelectorLabel).ShouldBe("选择器");
+            localizer.Get(SemanticPartPreviewLangResourceKind.ContractTypeLabel).ShouldBe("契约类型");
+            localizer.Get(SemanticPartPreviewLangResourceKind.CrossRootTag).ShouldBe("跨视觉根");
+            localizer.Get(SemanticPartPreviewLangResourceKind.RuntimeCreatedTag).ShouldBe("运行时创建");
+
+            languageManager.ChangeLanguage(LanguageTags.ZhTW);
+            localizer.Get(SemanticPartPreviewLangResourceKind.SelectorLabel).ShouldBe("選擇器");
+            localizer.Get(SemanticPartPreviewLangResourceKind.ContractTypeLabel).ShouldBe("契約類型");
+            localizer.Get(SemanticPartPreviewLangResourceKind.CrossRootTag).ShouldBe("跨視覺根");
+            localizer.Get(SemanticPartPreviewLangResourceKind.RuntimeCreatedTag).ShouldBe("執行階段建立");
+        }
+        finally
+        {
+            languageManager.ChangeLanguage(LanguageTags.EnUS);
+        }
+    }
+
     private static void AssertLanguage(
         LanguageTag language,
         IEnumerable<(GalleryShowCaseHeaderLangResourceKind Kind, string Text)> expected,

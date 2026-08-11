@@ -511,5 +511,29 @@
         <target state="translated">按钮类型</target>
       </segment>
     </unit>
+    <unit id="SemanticPartContentDescription">
+      <segment>
+        <source>The content region presents the Button label.</source>
+        <target state="translated">内容区域展示 Button 标签。</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartDemoContent">
+      <segment>
+        <source>Search</source>
+        <target state="translated">搜索</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartIconDescription">
+      <segment>
+        <source>The icon region presents the leading or trailing icon and its loading replacement.</source>
+        <target state="translated">图标区域展示起始或末尾图标，以及加载状态下的替代图标。</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartRootDescription">
+      <segment>
+        <source>The Button root owns interaction states, background, border, and overall layout.</source>
+        <target state="translated">Button 根区域承载交互状态、背景、边框和整体布局。</target>
+      </segment>
+    </unit>
   </file>
 </xliff>
