@@ -127,6 +127,38 @@ commercial/AtomUI.Charts/docs/AI/generated/llms.config.json
 
 工具通过 `--config` 显式选择目标项目，不隐式扫描所有商业项目。
 
+### 5.1 Mobile LLMS 隔离目标
+
+当前生成配置和产物只属于 AtomUI Desktop：
+
+```text
+Current Desktop config: docs/AI/generated/llms.config.json
+Current Desktop output: docs/AI/generated/llms/
+Future Mobile config:   docs/AI/generated/mobile-llms.config.json
+Future Mobile output:   docs/AI/generated/mobile-llms/
+```
+
+Mobile 配置和 Generator 支持属于 Mobile Foundation 的实现交付，不由文档架构变更提前创建。当前仓库不得创建空的
+`mobile-llms.config.json`、手工生成 `mobile-llms/`，或把 Mobile 分类清单加入 Desktop 输出。
+
+Desktop 与 Mobile 的配置 ownership 必须独立：
+
+| 字段/输出 | Desktop 当前 owner | Mobile 目标 owner |
+| --- | --- | --- |
+| `projectId` | `AtomUI.Desktop` | Foundation 固定的独立稳定 ID，不能复用 Desktop ID |
+| `docsRoot` | `docs/controls/desktop` | `docs/controls/mobile` |
+| `galleryRoot` | 当前 AtomUI Desktop Gallery ShowCases | 真实 Mobile Gallery content 根，Host/项目存在后写入 |
+| `sourceRoots` | Desktop Controls、DataGrid、ColorPicker、Extras | 真实 `AtomUI.Mobile.Controls` 及批准 companion packages，源码存在后写入 |
+| `outputRoot` | `docs/AI/generated/llms` | `docs/AI/generated/mobile-llms` |
+| 生成与 verify owner | Desktop Control 文档、源码、Theme 和 Gallery | Mobile Control 文档、源码、Theme、Mobile Gallery 和双平台状态 |
+
+同名 Desktop/Mobile Control 不能写入同一个 `controls/<control>/` 目录，也不能通过一个配置合并后依靠覆盖顺序解决碰撞。
+生成器通过显式 `--config` 选择一个 project/output owner；跨项目聚合若未来需要，必须读取两个已经隔离的输出并保留来源身份，
+不能改变单项目目录 ownership。
+
+Mobile 当前只有七分类 82 项预实现兼容清单，没有满足单 Control 文档门禁的输入目录。Foundation 需要先实现 Mobile 包、Gallery、
+配置适配和 Generator 验证，再生成首批 Mobile LLMS；设计状态、iOS/Android/Release/Publication 也不能由 Desktop 证据填充。
+
 ## 6. 可见性模型
 
 可见性是商业控件接入的强制边界。生成器只生成配置允许的控件和内容。
