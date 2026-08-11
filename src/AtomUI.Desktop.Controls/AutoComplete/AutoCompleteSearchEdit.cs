@@ -14,8 +14,8 @@ public class AutoCompleteSearchEdit : CompactSpaceAwareAutoComplete
     public static readonly StyledProperty<string> SearchButtonTextProperty =
         SearchEdit.SearchButtonTextProperty.AddOwner<AutoCompleteSearchEdit>();
 
-    public static readonly StyledProperty<bool> IsSearchingProperty =
-        SearchEdit.IsSearchingProperty.AddOwner<AutoCompleteSearchEdit>();
+    public static readonly StyledProperty<bool> IsOperatingProperty =
+        SearchEdit.IsOperatingProperty.AddOwner<AutoCompleteSearchEdit>();
 
     public static readonly StyledProperty<bool> IsSearchOnEnterEnabledProperty =
         SearchEdit.IsSearchOnEnterEnabledProperty.AddOwner<AutoCompleteSearchEdit>();
@@ -32,10 +32,10 @@ public class AutoCompleteSearchEdit : CompactSpaceAwareAutoComplete
         set => SetValue(SearchButtonTextProperty, value);
     }
 
-    public bool IsSearching
+    public bool IsOperating
     {
-        get => GetValue(IsSearchingProperty);
-        set => SetValue(IsSearchingProperty, value);
+        get => GetValue(IsOperatingProperty);
+        set => SetValue(IsOperatingProperty, value);
     }
 
     public bool IsSearchOnEnterEnabled

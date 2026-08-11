@@ -12,12 +12,11 @@
 
 - API
   - Replace `HandleEnterAsSearch` with `IsSearchOnEnterEnabled` and enable Enter-triggered search by default.
-  - Replace `IsOperating` with the search-specific `IsSearching` state.
   - Replace `SearchButtonClick` with `SearchRequested` and add `SearchRequestedEventArgs` plus `SearchTriggerSource`.
 - Behavior
   - Route search-button clicks and unhandled Enter `KeyUp` events through `RaiseSearchRequested()`.
   - Include the query snapshot and `Button` / `EnterKey` trigger source in every search request.
-  - Suppress repeated requests while `IsSearching=true` and leave Enter unconsumed when Enter search is disabled.
+  - Suppress repeated requests while `IsOperating=true` and leave Enter unconsumed when Enter search is disabled.
 - Tests
   - Add SearchEdit behavior coverage for defaults, query snapshots, trigger sources and repeated-request suppression.
 - Docs

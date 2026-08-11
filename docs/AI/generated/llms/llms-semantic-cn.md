@@ -3572,7 +3572,7 @@ AutoComplete
 | --- | --- | --- |
 | 内容与数据 | `ClearIcon`、`ContentLeftAddOn`、`ContentLeftAddOnTemplate`、`ContentRightAddOn`、`ContentRightAddOnTemplate`、`DefaultValue`、`FilterValue`、`FilterValueSelector`、`OptionTemplate`、`OptionsAsyncLoader` 等 14 项 | 定义控件展示内容、输入数据、模板或业务对象入口。 |
 | 选择与集合 | `CaretIndex`、`ClearSelectionOnLostFocus`、`DisplayCandidateCount`、`Filter`、`IsShowCount` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsAllowClear`、`IsAutoFocus`、`IsAutoSize`、`IsCompletionEnabled`、`IsDropDownOpen`、`IsLoading`、`IsMotionEnabled`、`IsSearching`、`IsSearchOnEnterEnabled`、`IsPopupMatchSelectWidth`、`IsReadOnly` 等 14 项 | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
+| 交互与状态 | `IsAllowClear`、`IsAutoFocus`、`IsAutoSize`、`IsCompletionEnabled`、`IsDropDownOpen`、`IsLoading`、`IsMotionEnabled`、`IsOperating`、`IsSearchOnEnterEnabled`、`IsPopupMatchSelectWidth`、`IsReadOnly` 等 14 项 | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 视觉与布局 | `MaxDropDownHeight`、`PlaceholderForeground`、`Placement`、`SearchButtonStyle`、`SizeType`、`StyleVariant` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 动效与异步 | `AsyncLoadDebounce`、`AsyncLoadTimeout` | 约束动效开关、异步加载、播放速度、超时和任务边界。 |
 | 其他稳定入口 | `Lines`、`MaxLength`、`MinimumPrefixLength` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
@@ -4884,7 +4884,7 @@ TextBox / LineEdit / TextArea Token 不承载文本值、placeholder、清除状
 - `IsCustomFontSize=true` 时不得由 SizeType 样式覆盖用户设置的 `FontSize`。
 - 清除按钮只在有效状态为 true 时显示，且清除动作进入统一 `Clear()` 语义。
 - `LineEdit` 的外部 AddOn 必须由 `AddOnDecoratedBox` 承载，不在控件 C# 中动态创建视觉结构。
-- `SearchEdit.IsSearching=true` 时按钮和 Enter 键不重复触发 `SearchRequested`。
+- `SearchEdit.IsOperating=true` 时按钮和 Enter 键不重复触发 `SearchRequested`。
 - `TextArea.Lines` 必须遵守 `MinLines` / `MaxLines`，resize 不得突破行数边界。
 - Form feedback 订阅必须在 detach 时释放。
 - TextPresenter 的 margin、placeholder、selection、caret 和 disabled 文本色属于输入模板契约，不应在业务控件中用 magic width 补偿。
@@ -4897,7 +4897,7 @@ TextBox / LineEdit / TextArea Token 不承载文本值、placeholder、清除状
 - 清除按钮可见性不在 AXAML 与 C# 中形成相互冲突的状态源。
 - `IsCustomFontSize=true` 不能被 SizeType 字体样式覆盖。
 - `LineEdit` 的 error 视觉必须优先响应 `DataValidationErrors`；`Status` 只作为无 native error 时的手动视觉请求，并继续支持 warning 扩展视觉。
-- `SearchEdit.IsSearching=true` 必须阻止按钮和 Enter 键产生重复搜索请求。
+- `SearchEdit.IsOperating=true` 必须阻止按钮和 Enter 键产生重复搜索请求。
 - `TextArea` 的 fixed lines、auto-size 和 resize 不互相覆盖高度状态。
 - 重新套用模板不能泄漏旧按钮 click、旧 binding 或旧 Form feedback 订阅。
 - TextPresenter margin 是输入模板视觉契约；文本有效宽度由输入控件在模板所有权边界内统一计算并发布，不在业务控件或消费 behavior 中加入隐藏补偿。
@@ -6012,7 +6012,7 @@ SearchEditDecoratedBox.HandleSearchButtonClick
   ↓
 SearchEdit.RaiseSearchRequested(Button)
   ↓
-if !IsSearching raise SearchRequested
+if !IsOperating raise SearchRequested
 
 Enter KeyUp when IsSearchOnEnterEnabled && !Handled
   ↓
@@ -6020,10 +6020,10 @@ mark KeyUp handled
   ↓
 SearchEdit.RaiseSearchRequested(EnterKey)
   ↓
-if !IsSearching raise SearchRequested
+if !IsOperating raise SearchRequested
 ```
 
-`SearchRequestedEventArgs.Query` 保存触发时的 `Text` 快照，`Trigger` 使用 `Button` 或 `EnterKey` 区分来源。`IsSearching=true` 只表示搜索正在进行。它不改变 `Text`、不自动禁用文本编辑、不管理异步任务，也不清空搜索结果；业务层负责在搜索开始和结束时设置该属性。
+`SearchRequestedEventArgs.Query` 保存触发时的 `Text` 快照，`Trigger` 使用 `Button` 或 `EnterKey` 区分来源。`IsOperating=true` 只表示搜索正在进行。它不改变 `Text`、不自动禁用文本编辑、不管理异步任务，也不清空搜索结果；业务层负责在搜索开始和结束时设置该属性。
 
 状态优先级：
 
@@ -6076,8 +6076,8 @@ Token 边界：
 维护 SearchEdit 时必须保持以下不变量：
 
 - 不改变继承自 LineEdit 的 `Text`、选择、光标、清除、reveal、Form 和 CompactSpace 语义。
-- 不删除或重命名 `SearchButtonStyle`、`SearchButtonText`、`IsSearching`、`IsSearchOnEnterEnabled`、`SearchRequested`、`SearchTriggerSource` 或 `SearchRequestedEventArgs`。
-- `IsSearching=true` 必须阻止按钮和 Enter 键产生重复搜索请求，但不得自动管理异步任务或修改 `Text`。
+- 不删除或重命名 `SearchButtonStyle`、`SearchButtonText`、`IsOperating`、`IsSearchOnEnterEnabled`、`SearchRequested`、`SearchTriggerSource` 或 `SearchRequestedEventArgs`。
+- `IsOperating=true` 必须阻止按钮和 Enter 键产生重复搜索请求，但不得自动管理异步任务或修改 `Text`。
 - `IsSearchOnEnterEnabled=false` 时不得消费 Enter 键；已经标记为 handled 的 Enter 键不得触发搜索。
 - `SearchRequestedEventArgs.Query` 必须是触发时的查询文本快照，`Trigger` 必须准确表示 `Button` 或 `EnterKey`。
 - 搜索按钮的 `IsEnabled`、`SizeType` 和 loading 必须跟随 SearchEdit；按钮组合视觉必须响应输入壳体的 `Status` 和 `StyleVariant`。
@@ -6093,7 +6093,7 @@ Token 边界：
 内部重构必须保持以下不变量：
 
 - 搜索按钮和 Enter 键只能通过 `SearchEdit.RaiseSearchRequested()` 抛出 `SearchRequested`。
-- `IsSearching=true` 必须阻止重复搜索请求，并继续驱动按钮 loading。
+- `IsOperating=true` 必须阻止重复搜索请求，并继续驱动按钮 loading。
 - `IsSearchOnEnterEnabled=false` 时不得消费 Enter；handled Enter 不得产生搜索请求。
 - `SearchRequestedEventArgs.Query` 和 `Trigger` 必须准确反映触发时的文本与输入来源。
 - 搜索按钮和内容框的边框必须在同一布局高度下绘制。

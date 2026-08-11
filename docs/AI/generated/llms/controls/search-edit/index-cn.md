@@ -28,7 +28,7 @@ SearchEdit 的设计语言来自输入框与搜索 action 的一体化组合。
 | 输入密度 | 控件在表单、工具栏和筛选区中的尺寸等级。 | `SizeType=Large/Middle/Small/Custom`。 |
 | 输入表面 | 输入框边框和背景强度。 | `Outlined`、`Filled`、`Borderless`、`Underlined`。 |
 | 搜索按钮强调度 | 搜索 action 是普通附加按钮还是主操作按钮。 | `SearchButtonStyle=Default/Primary`。 |
-| 运行状态 | 搜索操作进行中，按钮显示 loading 并阻止重复请求。 | `IsSearching=true`。 |
+| 运行状态 | 搜索操作进行中，按钮显示 loading 并阻止重复请求。 | `IsOperating=true`。 |
 | 输入反馈 | 搜索条件的校验或业务状态。 | `Status=Default/Error/Warning`。 |
 
 `Custom` 尺寸不是 SearchEdit 的第四套专属 Token。它以 `Middle` 作为未显式设置时的视觉基线，并允许用户通过 `Height`、`FontSize`、`Padding` 等常规属性覆盖实际尺寸。
@@ -43,7 +43,7 @@ SearchEdit 专项 API：
 | --- | --- | --- |
 | `SearchButtonStyle` | `SearchEditButtonStyle` | 搜索按钮样式，支持 `Default` 和 `Primary`。 |
 | `SearchButtonText` | `string` | 搜索按钮显示文本；未设置时按钮以搜索图标为主要视觉。 |
-| `IsSearching` | `bool` | 搜索进行中状态；为 `true` 时显示按钮 loading 并阻止重复触发搜索请求。 |
+| `IsOperating` | `bool` | 搜索进行中状态；为 `true` 时显示按钮 loading 并阻止重复触发搜索请求。 |
 | `IsSearchOnEnterEnabled` | `bool` | 是否允许未处理的 Enter `KeyUp` 触发搜索请求，默认值为 `true`。 |
 | `SearchButtonTheme` | `ControlTheme?` | 搜索按钮 Semantic Part Theme；`TargetType` 必须兼容 public `Button`。 |
 | `SearchRequested` | `RoutedEvent<SearchRequestedEventArgs>` | 搜索请求事件；按钮和 Enter 键共用该事件，并提供查询文本快照与触发来源。 |
@@ -103,7 +103,7 @@ SearchEditDecoratedBox.HandleSearchButtonClick
   ↓
 SearchEdit.RaiseSearchRequested(Button)
   ↓
-if !IsSearching raise SearchRequested
+if !IsOperating raise SearchRequested
 
 Enter KeyUp when IsSearchOnEnterEnabled && !Handled
   ↓
@@ -111,10 +111,10 @@ mark KeyUp handled
   ↓
 SearchEdit.RaiseSearchRequested(EnterKey)
   ↓
-if !IsSearching raise SearchRequested
+if !IsOperating raise SearchRequested
 ```
 
-`SearchRequestedEventArgs.Query` 保存触发时的 `Text` 快照，`Trigger` 使用 `Button` 或 `EnterKey` 区分来源。`IsSearching=true` 只表示搜索正在进行。它不改变 `Text`、不自动禁用文本编辑、不管理异步任务，也不清空搜索结果；业务层负责在搜索开始和结束时设置该属性。
+`SearchRequestedEventArgs.Query` 保存触发时的 `Text` 快照，`Trigger` 使用 `Button` 或 `EnterKey` 区分来源。`IsOperating=true` 只表示搜索正在进行。它不改变 `Text`、不自动禁用文本编辑、不管理异步任务，也不清空搜索结果；业务层负责在搜索开始和结束时设置该属性。
 
 状态优先级：
 
@@ -171,7 +171,7 @@ SearchEdit 不依赖运行时反射发现模板结构。跨模板协作使用固
 - 搜索按钮 click 订阅必须在重新套用模板时解绑旧实例。
 - `OwningSearchEdit` 只保存当前模板 owner，不创建全局订阅。
 - 搜索按钮高度同步使用 XAML binding，不在布局过程中写本地 `Height` 值。
-- 搜索按钮状态不创建异步任务；业务异步状态由外部设置 `IsSearching`。
+- 搜索按钮状态不创建异步任务；业务异步状态由外部设置 `IsOperating`。
 - SearchEdit 有独立 Control identity、没有 Own Token；运行时状态不得进入 Token schema。
 - `SearchEditTokenResource` 读取 SearchEdit Effective Global Token；Button 基础视觉继续显式读取 `ButtonTokenResource`。
 

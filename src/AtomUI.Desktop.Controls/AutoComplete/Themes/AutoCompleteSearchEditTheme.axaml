@@ -28,7 +28,7 @@
                                                     Focusable="{TemplateBinding IsReadOnly, Converter={x:Static BoolConverters.Not}}"
                                                     SearchButtonStyle="{TemplateBinding SearchButtonStyle}"
                                                     SearchButtonText="{TemplateBinding SearchButtonText}"
-                                                    IsSearching="{TemplateBinding IsSearching}"
+                                                    IsOperating="{TemplateBinding IsOperating}"
                                                     IsSearchOnEnterEnabled="{TemplateBinding IsSearchOnEnterEnabled}"
                                                     ClearIcon="{TemplateBinding ClearIcon}"
                                                     CompactSpaceItemPosition="{TemplateBinding CompactSpaceItemPosition}"

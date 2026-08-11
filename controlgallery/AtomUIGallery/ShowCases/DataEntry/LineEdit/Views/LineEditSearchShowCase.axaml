@@ -106,16 +106,16 @@
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
                 <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchLoadingDefault}"
                                  Width="400"
-                                 IsSearching="True"
+                                 IsOperating="True"
                                  HorizontalAlignment="Left" />
                 <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchLoadingWithEnterbutton}" Width="400"
                                  HorizontalAlignment="Left"
-                                 IsSearching="True"
+                                 IsOperating="True"
                                  SearchButtonStyle="Primary" />
 
                 <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}"
                                  Width="400"
-                                 IsSearching="True"
+                                 IsOperating="True"
                                  HorizontalAlignment="Left"
                                  SearchButtonStyle="Primary"
                                  SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextSearch}"

@@ -196,7 +196,7 @@ TextBox / LineEdit / TextArea Token 不承载文本值、placeholder、清除状
 - `IsCustomFontSize=true` 时不得由 SizeType 样式覆盖用户设置的 `FontSize`。
 - 清除按钮只在有效状态为 true 时显示，且清除动作进入统一 `Clear()` 语义。
 - `LineEdit` 的外部 AddOn 必须由 `AddOnDecoratedBox` 承载，不在控件 C# 中动态创建视觉结构。
-- `SearchEdit.IsSearching=true` 时按钮和 Enter 键不重复触发 `SearchRequested`。
+- `SearchEdit.IsOperating=true` 时按钮和 Enter 键不重复触发 `SearchRequested`。
 - `TextArea.Lines` 必须遵守 `MinLines` / `MaxLines`，resize 不得突破行数边界。
 - Form feedback 订阅必须在 detach 时释放。
 - TextPresenter 的 margin、placeholder、selection、caret 和 disabled 文本色属于输入模板契约，不应在业务控件中用 magic width 补偿。
@@ -209,7 +209,7 @@ TextBox / LineEdit / TextArea Token 不承载文本值、placeholder、清除状
 - 清除按钮可见性不在 AXAML 与 C# 中形成相互冲突的状态源。
 - `IsCustomFontSize=true` 不能被 SizeType 字体样式覆盖。
 - `LineEdit` 的 error 视觉必须优先响应 `DataValidationErrors`；`Status` 只作为无 native error 时的手动视觉请求，并继续支持 warning 扩展视觉。
-- `SearchEdit.IsSearching=true` 必须阻止按钮和 Enter 键产生重复搜索请求。
+- `SearchEdit.IsOperating=true` 必须阻止按钮和 Enter 键产生重复搜索请求。
 - `TextArea` 的 fixed lines、auto-size 和 resize 不互相覆盖高度状态。
 - 重新套用模板不能泄漏旧按钮 click、旧 binding 或旧 Form feedback 订阅。
 - TextPresenter margin 是输入模板视觉契约；文本有效宽度由输入控件在模板所有权边界内统一计算并发布，不在业务控件或消费 behavior 中加入隐藏补偿。

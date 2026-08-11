@@ -22,7 +22,7 @@
                     SearchButtonStyle="{TemplateBinding SearchButtonStyle}"
                     SearchButtonText="{TemplateBinding SearchButtonText}"
                     SearchButtonTheme="{TemplateBinding SearchButtonTheme}"
-                    IsSearchButtonLoading="{TemplateBinding IsSearching}"
+                    IsSearchButtonLoading="{TemplateBinding IsOperating}"
                     IsEnabled="{TemplateBinding IsEnabled}"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"

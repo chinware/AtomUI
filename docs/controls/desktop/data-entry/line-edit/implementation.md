@@ -124,12 +124,12 @@ SearchEdit 搜索请求流程：
 Search button click
   → SearchEditDecoratedBox
   → SearchEdit.RaiseSearchRequested(Button)
-  → if !IsSearching raise SearchRequested
+  → if !IsOperating raise SearchRequested
 
 Enter KeyUp when enabled and unhandled
   → mark handled
   → SearchEdit.RaiseSearchRequested(EnterKey)
-  → if !IsSearching raise SearchRequested
+  → if !IsOperating raise SearchRequested
 ```
 
 TextArea resize 流程：
@@ -205,7 +205,7 @@ AOT 边界：
 - 清除按钮可见性不在 AXAML 与 C# 中形成相互冲突的状态源。
 - `IsCustomFontSize=true` 不能被 SizeType 字体样式覆盖。
 - `LineEdit` 的 error 视觉必须优先响应 `DataValidationErrors`；`Status` 只作为无 native error 时的手动视觉请求，并继续支持 warning 扩展视觉。
-- `SearchEdit.IsSearching=true` 必须阻止按钮和 Enter 键产生重复搜索请求。
+- `SearchEdit.IsOperating=true` 必须阻止按钮和 Enter 键产生重复搜索请求。
 - `TextArea` 的 fixed lines、auto-size 和 resize 不互相覆盖高度状态。
 - 重新套用模板不能泄漏旧按钮 click、旧 binding 或旧 Form feedback 订阅。
 - TextPresenter margin 是输入模板视觉契约；文本有效宽度由输入控件在模板所有权边界内统一计算并发布，不在业务控件或消费 behavior 中加入隐藏补偿。

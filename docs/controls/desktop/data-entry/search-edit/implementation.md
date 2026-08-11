@@ -22,7 +22,7 @@ SearchEdit 的实现以 `LineEdit` 为文本输入内核，AtomUI 在主题和�
 
 ## 3. 核心类职责
 
-`SearchEdit` 只增加搜索相关契约。它不重写 LineEdit 文本输入算法，也不管理搜索任务。`RaiseSearchRequested()` 是统一内部事件出口，负责在 `IsSearching=false` 时抛出包含查询文本快照和触发来源的 `SearchRequested`。
+`SearchEdit` 只增加搜索相关契约。它不重写 LineEdit 文本输入算法，也不管理搜索任务。`RaiseSearchRequested()` 是统一内部事件出口，负责在 `IsOperating=false` 时抛出包含查询文本快照和触发来源的 `SearchRequested`。
 
 `SearchEditDecoratedBox` 是 SearchEdit 根模板中的输入壳体。它继承 `AddOnDecoratedBox`，复用输入边框、圆角、状态和 CompactSpace 计算，并把 `SearchButtonStyle`、`SearchButtonText`、`IsSearchButtonLoading` 传给内部搜索按钮。
 
@@ -37,7 +37,7 @@ loading、icon 和 wave 能力；`SearchEditDecoratedBoxTheme` 根据 owner 的 
 搜索按钮属性流：
 
 ```text
-SearchEdit.SearchButtonStyle / SearchButtonText / SearchButtonTheme / IsSearching
+SearchEdit.SearchButtonStyle / SearchButtonText / SearchButtonTheme / IsOperating
       ↓ TemplateBinding
 SearchEditDecoratedBox.SearchButtonStyle / SearchButtonText / SearchButtonTheme / IsSearchButtonLoading
       ↓ TemplateBinding
@@ -63,7 +63,7 @@ SearchEditDecoratedBox.HandleSearchButtonClick
       ↓
 OwningSearchEdit.RaiseSearchRequested(Button)
       ↓
-if !IsSearching raise SearchRequested
+if !IsOperating raise SearchRequested
 
 SearchEdit.OnKeyUp(Enter) when IsSearchOnEnterEnabled && !Handled
       ↓
@@ -71,10 +71,10 @@ mark KeyUp handled
       ↓
 SearchEdit.RaiseSearchRequested(EnterKey)
       ↓
-if !IsSearching raise SearchRequested
+if !IsOperating raise SearchRequested
 ```
 
-`IsSearching` 同时进入 `Button#PART_RightAddOn.IsLoading` 和 `RaiseSearchRequested()` 的重复请求保护。该状态不参与文本值同步，也不改变 Form value。`SearchRequestedEventArgs.Query` 在抛出事件前读取当前 `Text`，避免事件处理期间文本变化影响本次请求语义。
+`IsOperating` 同时进入 `Button#PART_RightAddOn.IsLoading` 和 `RaiseSearchRequested()` 的重复请求保护。该状态不参与文本值同步，也不改变 Form value。`SearchRequestedEventArgs.Query` 在抛出事件前读取当前 `Text`，避免事件处理期间文本变化影响本次请求语义。
 
 ## 5. 生命周期与模板接入
 
@@ -90,7 +90,7 @@ if !IsSearching raise SearchRequested
 
 搜索按钮点击和 Enter `KeyUp` 是 SearchEdit 的两个搜索入口。`IsSearchOnEnterEnabled=true` 且 Enter 事件尚未 handled 时，SearchEdit 先将事件标记为 handled，再进入统一搜索请求管线，避免上层默认按钮重复响应。关闭该属性时 SearchEdit 不消费 Enter 键。
 
-SearchEdit 不会自动提交 Form，也不会在 `TextChanged` 时触发搜索。`IsSearching=true` 时按钮和 Enter 仍保持既有视觉与键盘所有权，但不会再次抛出 `SearchRequested`。
+SearchEdit 不会自动提交 Form，也不会在 `TextChanged` 时触发搜索。`IsOperating=true` 时按钮和 Enter 仍保持既有视觉与键盘所有权，但不会再次抛出 `SearchRequested`。
 
 清除按钮、密码 reveal、文本选择、光标移动、复制粘贴和滚动仍由 LineEdit / Avalonia TextBox 路径处理。SearchEdit 不应在搜索按钮事件中直接修改这些状态。
 
@@ -137,7 +137,7 @@ SearchEdit 不依赖运行时反射发现模板结构。跨模板协作使用固
 - 搜索按钮 click 订阅必须在重新套用模板时解绑旧实例。
 - `OwningSearchEdit` 只保存当前模板 owner，不创建全局订阅。
 - 搜索按钮高度同步使用 XAML binding，不在布局过程中写本地 `Height` 值。
-- 搜索按钮状态不创建异步任务；业务异步状态由外部设置 `IsSearching`。
+- 搜索按钮状态不创建异步任务；业务异步状态由外部设置 `IsOperating`。
 - SearchEdit 有独立 Control identity、没有 Own Token；运行时状态不得进入 Token schema。
 - `SearchEditTokenResource` 读取 SearchEdit Effective Global Token；Button 基础视觉继续显式读取 `ButtonTokenResource`。
 
@@ -152,7 +152,7 @@ AOT 边界：
 内部重构必须保持以下不变量：
 
 - 搜索按钮和 Enter 键只能通过 `SearchEdit.RaiseSearchRequested()` 抛出 `SearchRequested`。
-- `IsSearching=true` 必须阻止重复搜索请求，并继续驱动按钮 loading。
+- `IsOperating=true` 必须阻止重复搜索请求，并继续驱动按钮 loading。
 - `IsSearchOnEnterEnabled=false` 时不得消费 Enter；handled Enter 不得产生搜索请求。
 - `SearchRequestedEventArgs.Query` 和 `Trigger` 必须准确反映触发时的文本与输入来源。
 - 搜索按钮和内容框的边框必须在同一布局高度下绘制。

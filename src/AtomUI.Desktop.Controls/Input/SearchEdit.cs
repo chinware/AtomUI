@@ -48,8 +48,8 @@ public class SearchEdit : LineEdit
     public static readonly StyledProperty<string> SearchButtonTextProperty =
         AvaloniaProperty.Register<SearchEdit, string>(nameof(SearchButtonText));
 
-    public static readonly StyledProperty<bool> IsSearchingProperty =
-        AvaloniaProperty.Register<SearchEdit, bool>(nameof(IsSearching));
+    public static readonly StyledProperty<bool> IsOperatingProperty =
+        AvaloniaProperty.Register<SearchEdit, bool>(nameof(IsOperating));
 
     public static readonly StyledProperty<ControlTheme?> SearchButtonThemeProperty =
         AvaloniaProperty.Register<SearchEdit, ControlTheme?>(nameof(SearchButtonTheme));
@@ -69,10 +69,10 @@ public class SearchEdit : LineEdit
         set => SetValue(SearchButtonTextProperty, value);
     }
 
-    public bool IsSearching
+    public bool IsOperating
     {
-        get => GetValue(IsSearchingProperty);
-        set => SetValue(IsSearchingProperty, value);
+        get => GetValue(IsOperatingProperty);
+        set => SetValue(IsOperatingProperty, value);
     }
 
     public ControlTheme? SearchButtonTheme
@@ -125,7 +125,7 @@ public class SearchEdit : LineEdit
 
     internal void RaiseSearchRequested(SearchTriggerSource trigger)
     {
-        if (IsSearching)
+        if (IsOperating)
         {
             return;
         }

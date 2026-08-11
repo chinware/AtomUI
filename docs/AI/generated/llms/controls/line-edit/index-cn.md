@@ -80,7 +80,7 @@ SearchEdit 专项 API：
 | --- | --- |
 | `SearchButtonStyle` | 搜索按钮样式，支持 `Default` 和 `Primary`。 |
 | `SearchButtonText` | 搜索按钮文字。 |
-| `IsSearching` | 搜索进行中状态；显示按钮 loading 并阻止重复搜索请求。 |
+| `IsOperating` | 搜索进行中状态；显示按钮 loading 并阻止重复搜索请求。 |
 | `IsSearchOnEnterEnabled` | 是否允许 Enter 键触发搜索请求，默认启用。 |
 | `SearchRequested` | 按钮或 Enter 键触发的搜索请求路由事件。 |
 

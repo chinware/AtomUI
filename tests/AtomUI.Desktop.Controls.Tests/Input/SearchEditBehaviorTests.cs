@@ -101,11 +101,11 @@ public class SearchEditBehaviorTests
     }
 
     [Fact]
-    public void Searching_State_Suppresses_Search_Requests()
+    public void Operating_State_Suppresses_Search_Requests()
     {
         var searchEdit = new SearchEdit
         {
-            IsSearching = true,
+            IsOperating = true,
             Text        = "Ignored query"
         };
         var requestCount = 0;
@@ -133,7 +133,7 @@ public class SearchEditBehaviorTests
         {
             Width                  = 240,
             Value                  = "AutoComplete query",
-            IsSearching            = true,
+            IsOperating            = true,
             IsSearchOnEnterEnabled = false
         };
         SearchRequestedEventArgs? receivedArgs = null;
@@ -145,14 +145,14 @@ public class SearchEditBehaviorTests
                                              .OfType<SearchEdit>()
                                              .Single();
 
-            searchEdit.IsSearching.ShouldBeTrue();
+            searchEdit.IsOperating.ShouldBeTrue();
             searchEdit.IsSearchOnEnterEnabled.ShouldBeFalse();
 
-            autoComplete.IsSearching = false;
+            autoComplete.IsOperating = false;
             autoComplete.IsSearchOnEnterEnabled = true;
             Dispatcher.UIThread.RunJobs();
 
-            searchEdit.IsSearching.ShouldBeFalse();
+            searchEdit.IsOperating.ShouldBeFalse();
             searchEdit.IsSearchOnEnterEnabled.ShouldBeTrue();
 
             RaiseKeyUp(searchEdit, Key.Enter);
@@ -165,19 +165,23 @@ public class SearchEditBehaviorTests
     }
 
     [Fact]
-    public void Legacy_Search_Api_Is_Removed()
+    public void Search_Status_Api_Preserves_IsOperating()
     {
         const BindingFlags publicStatic = BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy;
 
         typeof(SearchEdit).GetProperty("HandleEnterAsSearch").ShouldBeNull();
         typeof(SearchEdit).GetField("HandleEnterAsSearchProperty", publicStatic).ShouldBeNull();
-        typeof(SearchEdit).GetProperty("IsOperating").ShouldBeNull();
-        typeof(SearchEdit).GetField("IsOperatingProperty", publicStatic).ShouldBeNull();
+        typeof(SearchEdit).GetProperty("IsOperating").ShouldNotBeNull();
+        typeof(SearchEdit).GetField("IsOperatingProperty", publicStatic).ShouldNotBeNull();
+        typeof(SearchEdit).GetProperty("IsSearching").ShouldBeNull();
+        typeof(SearchEdit).GetField("IsSearchingProperty", publicStatic).ShouldBeNull();
         typeof(SearchEdit).GetEvent("SearchButtonClick").ShouldBeNull();
         typeof(SearchEdit).GetField("SearchButtonClickEvent", publicStatic).ShouldBeNull();
 
-        typeof(AutoCompleteSearchEdit).GetProperty("IsOperating").ShouldBeNull();
-        typeof(AutoCompleteSearchEdit).GetField("IsOperatingProperty", publicStatic).ShouldBeNull();
+        typeof(AutoCompleteSearchEdit).GetProperty("IsOperating").ShouldNotBeNull();
+        typeof(AutoCompleteSearchEdit).GetField("IsOperatingProperty", publicStatic).ShouldNotBeNull();
+        typeof(AutoCompleteSearchEdit).GetProperty("IsSearching").ShouldBeNull();
+        typeof(AutoCompleteSearchEdit).GetField("IsSearchingProperty", publicStatic).ShouldBeNull();
         typeof(AutoCompleteSearchEdit).GetEvent("SearchButtonClick").ShouldBeNull();
     }
 
