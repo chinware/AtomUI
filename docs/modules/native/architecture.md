@@ -31,8 +31,9 @@ AtomUI.Native
   - 管理原生资源、hook 和错误边界
 ```
 
-所有成员目前都是 `internal`，通过 `InternalsVisibleTo` 向 `AtomUI.Desktop.Controls` 和预留的
-`AtomUI.Mobile.Controls` 开放。它是实现包，不是公共 Native SDK。
+所有成员目前都是 `internal`，通过 `InternalsVisibleTo` 向 `AtomUI.Desktop.Controls` 和目标程序集名称
+`AtomUI.Mobile.Controls` 开放。当前仓库没有 Mobile 实现消费者；这项预留只定义未来可见性边界，不是 Mobile 源码、
+平台验证或发布证据。它是实现包，不是公共 Native SDK。
 
 ### 能力与策略分界
 
@@ -41,6 +42,7 @@ AtomUI.Native
 | `AtomUI.Native` | 封装 OS/backend 原生调用、窗口系统底层能力、消息结构体、hook/façade、句柄校验、原生资源释放 | 决定窗口主题、Dialog 行为、控件状态机、Token、默认平台策略 |
 | `AtomUI.Core` | AtomUI 基础设施、主题/Token/语言、资源、动画、应用启动默认选项；必要时调用 `AtomUI.Native` 获取底层 OS 能力 | 直接散落 P/Invoke、原生结构体、平台协议细节，或依赖具体控件生命周期 |
 | `AtomUI.Desktop.Controls` | Window/Dialog/Popup 等桌面控件语义、生命周期、何时调用 Native 能力 | 直接维护 P/Invoke、原生结构体或重复实现 OS 协议 |
+| `AtomUI.Mobile.Controls`（目标） | Viewport、Gesture、Overlay、Theme、owner 生命周期、平台默认策略，以及何时调用 Native 能力 | 直接维护 P/Invoke、原生 handle/结构体、不可释放 hook，或把 OS 类型暴露到 Public Control API |
 
 `AtomUI.Core` 可以依赖 `AtomUI.Native`。`Core` 是 AtomUI 的基础设施层，不等于必须排除所有 Window
 或 OS 概念；判断标准是能力本身是否属于底层 OS/native 操作。例如安全打开文件、解析真实路径、读取系统
@@ -60,6 +62,10 @@ AtomUI.Native
 上层项目是否引用 `AtomUI.Native` 取决于是否存在真实底层 OS/native 调用点。不能为了让 `Core` 看起来
 “纯净”而把 P/Invoke、native struct 或平台错误处理留在 `Core`；也不能因为某个 native 能力最终服务于
 Window/Dialog，就把底层 OS 细节放回 `AtomUI.Desktop.Controls`。
+
+未来 Mobile adapter 同样遵循这条边界：优先使用 Avalonia 公共 API；只有 Safe Area、system bar、input pane、返回手势、
+haptic 或生命周期能力确实需要原生调用时才进入 Native。Native 负责底层资源和确定释放，Mobile Runtime 负责
+`TopLevel` owner、订阅、snapshot 合并、取消和产品行为。
 
 ## 目录和职责
 

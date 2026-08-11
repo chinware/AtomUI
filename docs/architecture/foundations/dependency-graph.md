@@ -2,7 +2,7 @@
 
 本文档记录 `AtomUI.slnx` 中项目的主要引用关系。它描述源码维护视角下的依赖方向，不等同于 NuGet 包的最终依赖闭包。
 
-## 解决方案项目
+## 当前解决方案项目
 
 `AtomUI.slnx` 当前包含核心库、控件库、图标字体、Gallery 宿主：
 
@@ -65,3 +65,24 @@
 `AtomUI.Native` 是能力层，不是策略层。上层库可以通过 internal API 启用原生能力，但不应把控件行为、
 主题策略或平台默认配置下沉到 Native。反过来，P/Invoke、原生结构体、协议对象和可释放 native hook
 也不应散落在控件实现里。
+
+## 已批准目标依赖
+
+以下关系属于 Mobile Foundation 的目标架构，不是当前 `AtomUI.slnx` 项目或当前直接引用：
+
+```mermaid
+flowchart LR
+    Controls["AtomUI.Controls"] --> Mobile["AtomUI.Mobile.Controls\n目标项目，当前未实现"]
+    Native["AtomUI.Native"] -. capability .-> Mobile
+    Generator["AtomUI.Generator"] -. analyzer .-> Mobile
+    Mobile -. target .-> IOS["iOS Host"]
+    Mobile -. target .-> Android["Android Host"]
+```
+
+- `AtomUI.Mobile.Controls` 直接建立在 `AtomUI.Controls` 上，与 `AtomUI.Desktop.Controls` 平行且不依赖 Desktop。
+- `AtomUI.Native` 作为正交能力层，仅在 Avalonia 公共 API 无法表达能力时供 Mobile adapter 使用。
+- `AtomUI.Generator` 提供构建期静态 descriptor、Theme 和 Localization 注册，不成为运行时发现机制。
+- iOS/Android Host 提供生命周期和 adapter；平台宿主不拥有 Control API、Theme 或跨平台状态机。
+
+目标项目加入解决方案后，必须把真实项目引用补入“解决方案项目”和“主要项目引用”；在此之前不得把本节视为当前构建图。
+详细包边界见 [Mobile Controls 模块](../../modules/mobile-controls/overview.md)。
