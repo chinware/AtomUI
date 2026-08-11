@@ -30,6 +30,15 @@ docs/controls/<platform>/<category>/<control>/
   `<topic>-design.md` 控件专项设计文档，不把 Issue 分析、方案比较或实施计划塞入控件主文档。
 - 分类入口文档必须链接控件目录中的主要文档。
 
+### Mobile Control 文档
+
+`docs/controls/mobile/` 及 `AtomUI.Mobile.Controls` 相关文档同时遵循
+[AtomUI Mobile 文档规范](mobile-documentation-guidelines.md)。同名 Desktop/Mobile Control 分别拥有独立的文档根、
+Gallery 证据和 LLMS 输出 ownership；iOS、Android、Release 与发布状态必须分开表达。
+
+在 Mobile Control 的 Public API、Theme、Contract/Headless 测试和 Gallery API/Token/ShowCase 证据同时存在前，不创建
+空的单 Control 文档目录。具体状态词、分类清单和同步门禁由 Mobile 专项规范维护，本文不重复。
+
 ## 写作原则
 
 控件文档必须采用严谨、稳定、工程化的语言。

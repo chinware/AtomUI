@@ -13,6 +13,7 @@ as the canonical documentation contract. Read it before editing. Do not copy its
 Also read:
 
 - `docs/engineering/development/control-development-guidelines.md` for API, theme, template, file-layout, and compatibility boundaries.
+- `docs/engineering/contributing/mobile-documentation-guidelines.md` when the target is under `docs/controls/mobile` or the task concerns `AtomUI.Mobile.Controls`.
 - The target control's existing `overview.md`, `implementation.md`, `token.md`, `changelog.md`, source, Themes, tests, and Gallery surface.
 - `docs/engineering/development/aot-programming-guidelines.md` when the design involves reflection, dynamic discovery, binding paths, generators, or NativeAOT.
 
@@ -47,6 +48,7 @@ State, data, lifecycle, and owner model:
 Token scope and consumers:
 Gallery API / Token / ShowCase coverage:
 Tests and platform/AOT validation:
+Platform evidence status (iOS / Android / Release / publication):
 Selected document type(s):
 Contradictions or missing evidence:
 ```
@@ -143,6 +145,7 @@ Stop and reshape the document when any of these appear:
 - Generated LLMS output is edited directly.
 - A control-level document repeats global AOT, Token, Gallery, or documentation rules.
 - A new helper document has no independent audience, lifecycle, or ownership boundary.
+- A Mobile Control directory is created before Public API source, Theme, Contract/Headless tests, and Gallery API/Token/ShowCase evidence exist.
 
 ## Verification
 

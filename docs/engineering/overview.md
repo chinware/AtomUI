@@ -9,6 +9,7 @@
 - [BUG Issue 规范](contributing/bug-issue-guidelines.md)
 - [新特性请求 Issue 规范](contributing/feature-request-issue-guidelines.md)
 - [Control 文档规范](contributing/control-documentation-guidelines.md)
+- [Mobile 文档规范](contributing/mobile-documentation-guidelines.md)
 - [文档结构与命名规范](contributing/documentation-structure-guidelines.md)
 - [Changelog 规范](contributing/changelog-guidelines.md)
 
