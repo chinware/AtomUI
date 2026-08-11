@@ -10,6 +10,7 @@ using AtomUI.Theme.Resources;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
@@ -75,6 +76,17 @@ public enum ButtonVariant
     Link
 }
 
+[SemanticPart(
+    "icon",
+    SelectorClass = "semantic-icon",
+    ContractType = typeof(Control),
+    Cardinality = SemanticPartCardinality.Multiple,
+    Since = "6.0")]
+[SemanticPart(
+    "content",
+    SelectorClass = "semantic-content",
+    ContractType = typeof(ContentPresenter),
+    Since = "6.0")]
 [PseudoClasses(ButtonPseudoClass.IconOnly,
     ButtonPseudoClass.Loading,
     ButtonPseudoClass.IsDanger,

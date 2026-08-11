@@ -13,7 +13,8 @@ public class ThemeSourceLayoutTests
         "Definitions",
         "DesignTokens",
         "Resources",
-        "Schema"
+        "Schema",
+        "SemanticParts"
     ];
 
     [Fact]
@@ -56,6 +57,30 @@ public class ThemeSourceLayoutTests
             areaRoot,
             $"namespace AtomUI.Theme.{area};",
             SearchOption.AllDirectories);
+
+        invalidFiles.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Semantic_Part_Source_Files_Use_The_Public_Theme_Or_Schema_Namespace()
+    {
+        var areaRoot = Path.Combine(FindThemeRoot(), "SemanticParts");
+        var allowedNamespaces = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "namespace AtomUI.Theme;",
+            "namespace AtomUI.Theme.Schema;"
+        };
+        var invalidFiles = Directory
+                           .EnumerateFiles(areaRoot, "*.cs", SearchOption.AllDirectories)
+                           .Select(static path => new
+                           {
+                               FileName = Path.GetFileName(path),
+                               Namespace = File.ReadLines(path).FirstOrDefault(static line =>
+                                   line.StartsWith("namespace ", StringComparison.Ordinal))
+                           })
+                           .Where(source => source.Namespace is null || !allowedNamespaces.Contains(source.Namespace))
+                           .Select(static source => $"{source.FileName}: {source.Namespace ?? "<missing>"}")
+                           .ToArray();
 
         invalidFiles.ShouldBeEmpty();
     }

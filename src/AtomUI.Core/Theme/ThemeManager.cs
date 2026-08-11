@@ -23,6 +23,7 @@ internal class ThemeManager : Styles, IThemeManager, IDisposable
         Volatile.Read(ref _compiledThemeCatalog)?.AvailableThemes ?? Array.Empty<ThemeInfo>();
     public IReadOnlyList<ThemeDiagnostic> ThemeCatalogDiagnostics =>
         Volatile.Read(ref _themeCatalogDiagnostics);
+    public SemanticPartRegistry SemanticParts { get; internal set; } = SemanticPartRegistry.Empty;
     internal CompiledThemeCatalog CompiledThemeCatalog =>
         Volatile.Read(ref _compiledThemeCatalog) ??
         throw new InvalidOperationException("The compiled theme catalog has not been initialized.");

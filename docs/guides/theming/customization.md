@@ -472,8 +472,60 @@ Control 通过稳定 `.semantic-*` Selector 开放少量公共视觉区域。用
 Control 的 `Styles` 中定制这些区域，而不依赖 `PART_*`、Name 或 internal 类型。完整契约见
 [Semantic Part 系统设计](../../architecture/systems/theming/semantic-parts.md)。
 
+Button 当前开放 `root`、`icon` 和 `content`。`root` 是 Button 本身，不使用 `.semantic-root`；`icon` 与 `content`
+分别使用 `.semantic-icon`、`.semantic-content`。
+
+应用级样式：
+
+```xml
+<Application.Styles>
+    <Style Selector="atom|Button /template/ .semantic-icon"
+           x:SetterTargetType="Control">
+        <Setter Property="Opacity" Value="0.8" />
+    </Style>
+</Application.Styles>
+```
+
+局部和状态样式：
+
+```xml
+<UserControl.Styles>
+    <Style Selector="atom|Button:pointerover /template/ .semantic-icon"
+           x:SetterTargetType="Control">
+        <Setter Property="Opacity" Value="1" />
+    </Style>
+    <Style Selector="atom|Button /template/ .semantic-content"
+           x:SetterTargetType="ContentPresenter">
+        <Setter Property="TextBlock.FontWeight" Value="SemiBold" />
+    </Style>
+</UserControl.Styles>
+```
+
+单实例样式放在 owner 的 `Styles` 中，不需要依赖内部 `PART_*`：
+
+```xml
+<atom:Button Content="Save">
+    <atom:Button.Styles>
+        <Style Selector=".semantic-icon"
+               x:SetterTargetType="Control">
+            <Setter Property="Margin" Value="0,0,8,0" />
+        </Style>
+    </atom:Button.Styles>
+</atom:Button>
+```
+
+`.semantic-*` 是 Part 的运行时匹配身份；`x:SetterTargetType` 使用该 Part descriptor 的 `ContractType`，只帮助
+AXAML 编译器解析 Setter property。不要把两者合并成 `Control.semantic-icon` 或
+`:is(Control).semantic-icon`：前者是精确类型匹配，后者把实现类型条件混入公共 Part selector。
+
+Semantic class selector 会使用 Avalonia 的动态 class 激活机制。应用级规则应始终包含 owner scope，并把同一 Part 的
+Setter 合并在一个 Style 中；高密度或虚拟化场景的默认视觉优先通过 Token、控件属性或 container theme 表达。
+
+`IThemeManager.SemanticParts` 可供 Gallery、文档工具和诊断界面读取 descriptor，但正常样式不需要先查询 registry。
+Avalonia 12 直接根据 selector 和模板节点 class 完成匹配。
+
 当 Part 是真实 public 子 Control，并且需要允许完整替换其 ControlTheme 时，owner 可以额外使用强类型
-`ControlTheme?` 属性开放 Semantic Part Theme。
+public get/set `ControlTheme?` 属性开放 Semantic Part Theme。
 
 SearchEdit 的设计是：
 

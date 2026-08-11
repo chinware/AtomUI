@@ -13,6 +13,8 @@ Button.cs 保留公共属性、事件和接口实现入口；内部 helper 可�
 主要源码：
 
 - `src/AtomUI.Desktop.Controls/Buttons/Button.cs`：Button public API、Avalonia 属性注册、effective state、伪类同步、CompactSpace / Form / Wave 接口实现。
+- `src/AtomUI.Desktop.Controls/GeneratedFiles/.../ButtonSemanticParts.g.cs`：生成的 Part 名称与 selector class 常量，仅用于构建检查、测试和 runtime-created 节点场景。
+- `src/AtomUI.Desktop.Controls/GeneratedFiles/.../GeneratedSemanticPartManifest.g.cs`：Button `root/icon/content` 静态 descriptor。
 - `src/AtomUI.Desktop.Controls/Buttons/ButtonToken.cs`：Button 控件 Token 定义与派生。
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.axaml`：Button 跨平台模板、状态 selector 和主题变量映射。
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonBaseTheme.axaml`、`DropdownButtonTheme.axaml`：DropdownButton 对 Button 图标尺寸和状态语义的跨平台投影。
@@ -31,6 +33,9 @@ selector 和动态资源可以消费状态结果。`Button.cs` 是颜色状态�
 不得按平台、`ButtonType`、Danger 或 Ghost 复制一套颜色计算。
 
 Button 家族控件复用 Button 的动作语义。派生控件可以替换模板或增加行为入口，但不得重新解释 `ButtonType`、`Color`、`Variant`、`IsDanger`、`IsGhost`、loading 和 disabled 语义。
+
+Button 通过 `[SemanticPart]` 声明 `icon` 和 `content`；生成器加入隐式 `root`。该声明是公开主题契约，不参与
+Button 状态计算，也不要求运行时查询 descriptor。
 
 ## 4. 状态与数据流
 
@@ -65,7 +70,14 @@ ControlTheme 只绑定这些变量。
 
 Button 在静态构造中注册属性、伪类和主题关联，在实例构造中完成需要的状态订阅。模板应用时读取稳定 template part，并把状态同步到视觉节点。
 
-Button 与 DropdownButton 模板都必须让 `PART_ButtonIcon` 与 `PART_LoadingIcon` 通过 `TemplateBinding` 绑定 `IconWidth`、`IconHeight`。图标尺寸不需要在 `OnApplyTemplate` 中查找 part 后手工同步，也不允许由 Gallery 或应用样式通过深层模板 selector 写入；Button 自身属性是尺寸数据流的唯一入口。
+共享 Button ControlTheme 的三个 Button ControlTemplate 都为 `PART_ButtonIcon` 与 `PART_LoadingIcon` 添加
+`Classes="semantic-icon"`，并为 `PART_ContentPresenter` 添加 `Classes="semantic-content"`。这些 marker 是静态 AXAML，
+不在 `OnApplyTemplate` 中查找、补写或同步。
+
+Button 与 DropdownButton 模板都必须让 `PART_ButtonIcon` 与 `PART_LoadingIcon` 通过 `TemplateBinding` 绑定
+`IconWidth`、`IconHeight`。统一尺寸数据流使用 Button 自身属性；局部
+视觉覆盖使用 `.semantic-icon`，包含 Setter 时由 `x:SetterTargetType="Control"` 提供编译类型。应用不得依赖
+`Control.semantic-icon`、`:is(Control).semantic-icon`、两个 `PART_*` 名称或 internal 实现类型。
 
 维护顺序应遵守控件代码规范：
 
@@ -106,11 +118,16 @@ Loading 状态影响 loading icon、原 icon 可见性和交互反馈，但不�
 
 这些流程必须保持 C# 层归一、AXAML 层消费的分工。不得把 API 优先级判断下沉到大量 AXAML selector 组合中。
 
-维护 Custom 尺寸时应优先让主题默认值落在 Button 可覆盖的属性上，让模板内部尺寸节点通过 `TemplateBinding` 跟随 Button 属性。不得用模板内部固定高度阻断用户在 Button 上设置的本地 `Height`，也不得通过 `/template/` selector 修改 `PART_ButtonIcon` 或 `PART_LoadingIcon` 的宽高。
+维护 Custom 尺寸时应优先让主题默认值落在 Button 可覆盖的属性上，让模板内部尺寸节点通过 `TemplateBinding` 跟随 Button 属性。不得用模板内部固定高度阻断用户在 Button 上设置的本地 `Height`。公开的局部模板 selector 只能依赖 `.semantic-icon`，不得依赖 `PART_ButtonIcon` 或 `PART_LoadingIcon`。
 
 ## 8. 资源、性能与 AOT 边界
 
 Button 主题变量使用 Avalonia 属性和动态资源，不使用反射读取模板状态。Token 资源由 ButtonToken scope 提供，并跟随主题切换。
+
+三个 semantic marker 是 Button 默认实例固定承担的 class 存储成本；Button 内置主题不使用 `.semantic-*` 编写默认
+样式，因此默认路径不创建 Semantic Style class activator。应用声明 Semantic Style 后，Avalonia 会在 Button 模板的
+候选节点上保留 class listener；同一 Part 的 Setter 应合并在一个 Style 中，并在批量 Button 场景验证 listener 数量和
+detach 释放。
 
 `IconWidth`、`IconHeight` 使用 Avalonia 属性优先级完成 Theme 默认值与 LocalValue 的覆盖，不增加订阅、运行时 part 遍历或状态变化时的视觉对象创建。两个模板 part 共享同一对属性，因此 loading 切换只改变可见性和默认状态映射，不引入尺寸同步副本。
 
@@ -131,7 +148,11 @@ Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好�
 - `SizeType=Custom` 不引入 Button 专属 `Custom*` 尺寸属性；未设置本地尺寸属性时表现等同 `Middle`，设置本地属性时由 Avalonia 属性优先级自然覆盖。
 - 主题不得以高于本地值的优先级写入 Custom 默认尺寸。
 - `IconWidthProperty`、`IconHeightProperty` 及其 CLR wrapper 是 Button 公共契约，属性变化必须参与 measure invalidation。
-- `PART_ButtonIcon`、`PART_LoadingIcon` 的 Width 和 Height 只能通过 `TemplateBinding IconWidth/IconHeight` 投影；外部样式不得深入模板覆盖尺寸。
+- `PART_ButtonIcon`、`PART_LoadingIcon` 的默认 Width 和 Height 通过 `TemplateBinding IconWidth/IconHeight` 投影；
+  外部局部覆盖只依赖 `.semantic-icon`，Setter 类型通过 `x:SetterTargetType="Control"` 提供，不得依赖类型前缀或
+  `PART_*` 名称。
+- 共享 Button ControlTheme 的每个 Button ControlTemplate 都必须具有两个 `.semantic-icon` marker 和一个
+  `.semantic-content` marker；Button root 不添加 `.semantic-root`。
 - 普通用户 icon 和非 loading 的 icon-only 用户 icon 保持 `IconSize*` 默认值；只有 icon-only loading 默认使用 `OnlyIconSize*`。
 - DropdownButton 继承同一图标尺寸属性与投影规则，`OpenIndicator` 继续由独立的 DropdownButton 主题尺寸控制；SplitButton 不纳入这一属性继承范围。
 - `CustomBackgroundLayer` 不成为用户可依赖 template part。
@@ -152,4 +173,7 @@ Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好�
 - Theme：检查 default、primary、dashed、text、link、solid、outlined、filled、danger 和 custom background 视觉；Text
   必须覆盖 Default、Primary、Danger 的 normal、hover、pressed 以及主题 Token 动态刷新。
 - 家族控件：检查 DropdownButton 继承图标尺寸 API 且不影响 `OpenIndicator`，SplitButton 保持复合控件边界，IconButton、HyperLinkButton 保持既有同名 API 语义。
+- Semantic Part：验证 registry 中只有 `root/icon/content`，共享 Button 模板实现相同 marker 数量与 ContractType，并用
+  Avalonia 12 原生 class-only template selector 与 `x:SetterTargetType` 证明 icon/content marker 可编译并命中；批量
+  Button 验证 class listener 结构预算和 detach 释放。
 - 文档改动：运行 `git diff --check`。

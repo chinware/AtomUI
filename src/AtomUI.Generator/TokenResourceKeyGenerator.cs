@@ -76,6 +76,34 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
             })
             .Collect();
 
+        var semanticControlsProvider = initContext.SyntaxProvider.ForAttributeWithMetadataName(
+            TargetMarkConstants.SemanticPartAttribute,
+            static (node, token) => true,
+            static (context, token) => SemanticControlDeclaration.Create(context, token))
+            .Collect();
+
+        var semanticAssetsProvider = initContext.AdditionalTextsProvider
+            .Where(static text => ThemeAssetInfo.IsThemeAssetPath(text.Path))
+            .Combine(initContext.AnalyzerConfigOptionsProvider)
+            .Select(static (input, token) =>
+            {
+                input.Right.GlobalOptions.TryGetValue(
+                    "build_property.AtomUIThemeAssetProjectDirectory",
+                    out var projectDirectory);
+                input.Right.GetOptions(input.Left).TryGetValue(
+                    "build_metadata.AdditionalFiles.Link",
+                    out var link);
+                input.Right.GetOptions(input.Left).TryGetValue(
+                    "build_metadata.AdditionalFiles.AtomUIRegistrationUnit",
+                    out var explicitUnit);
+                return ThemeAssetInfo.Create(
+                    input.Left,
+                    projectDirectory,
+                    link,
+                    explicitUnit,
+                    token);
+            })
+            .Collect();
         var tokensProvider = globalTokensProvider.Combine(controlTokensProvider)
                                                .Combine(algorithmsProvider)
                                                .Combine(themeAssetsProvider);
@@ -85,26 +113,30 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
                                                  CreateCompilationInfo(
                                                      input.Left,
                                                      input.Right));
-        var generationProvider = tokensProvider.Combine(compilationProvider);
-
+        var generationProvider = tokensProvider.Combine(compilationProvider)
+                                               .Combine(semanticControlsProvider)
+                                               .Combine(semanticAssetsProvider);
         initContext.RegisterImplementationSourceOutput(generationProvider, (context, generationInfo) =>
         {
-            if (generationInfo.Right.InvalidRegistrationGranularity is not null)
+            var semanticGenerationInfo = generationInfo.Left;
+            var themeGenerationInfo = semanticGenerationInfo.Left;
+            var semanticDeclarations = semanticGenerationInfo.Right;
+            var semanticAssets = generationInfo.Right;
+            if (themeGenerationInfo.Right.InvalidRegistrationGranularity is not null)
             {
                 context.ReportDiagnostic(Diagnostic.Create(
                     Diagnostics.AtomUIDiagnosticDescriptors.LinkedPackageDefinitionInvalid,
                     Location.None,
-                    generationInfo.Right.PackageId,
-                    $"AtomUIRegistrationGranularity '{generationInfo.Right.InvalidRegistrationGranularity}' is invalid; use 'Package' or 'Directory'"));
+                    themeGenerationInfo.Right.PackageId,
+                    $"AtomUIRegistrationGranularity '{themeGenerationInfo.Right.InvalidRegistrationGranularity}' is invalid; use 'Package' or 'Directory'"));
             }
-            if (generationInfo.Right.Compilation.GetTypeByMetadataName(
+            if (themeGenerationInfo.Right.Compilation.GetTypeByMetadataName(
                     "AtomUI.Theme.Resources.TokenResourceExtension`1") is null)
             {
                 return;
             }
-
-            var combinedInfos = generationInfo.Left;
-            foreach (var issue in generationInfo.Right.EntryMethods.Issues)
+            var combinedInfos = themeGenerationInfo.Left;
+            foreach (var issue in themeGenerationInfo.Right.EntryMethods.Issues)
             {
                 context.ReportDiagnostic(Diagnostic.Create(
                     Diagnostics.AtomUIDiagnosticDescriptors.LinkedPackageEntryInvalid,
@@ -112,24 +144,26 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
                     issue.MethodDisplayName,
                     issue.Reason));
             }
+            var semanticRuntimeAvailable = themeGenerationInfo.Right.Compilation.GetTypeByMetadataName(
+                "AtomUI.Theme.Schema.ControlSemanticDescriptor") is not null;
             ThemeControlCatalogMetadataWriter.Write(
                 context,
-                generationInfo.Right.ControlCatalog);
+                themeGenerationInfo.Right.ControlCatalog);
             var tokenInfo = new TokenInfo();
             tokenInfo.Tokens.UnionWith(combinedInfos.Left.Left.Left.Tokens);
             tokenInfo.AvailableGlobalTokenNames.UnionWith(
                 combinedInfos.Left.Left.Left.Tokens.Select(static token => token.Name));
-            tokenInfo.AvailableGlobalTokenNames.UnionWith(generationInfo.Right.GlobalTokenNames);
+            tokenInfo.AvailableGlobalTokenNames.UnionWith(themeGenerationInfo.Right.GlobalTokenNames);
             tokenInfo.SchemaTokens.UnionWith(combinedInfos.Left.Left.Left.SchemaTokens);
             var controlThemeInfos = ControlThemeModelBuilder.Build(
-                generationInfo.Right.Compilation,
+                themeGenerationInfo.Right.Compilation,
                 combinedInfos.Left.Left.Right,
                 combinedInfos.Right,
                 tokenInfo.AvailableGlobalTokenNames,
-                generationInfo.Right.PackageId,
-                generationInfo.Right.RegistrationGranularity,
-                generationInfo.Right.ProjectDirectory,
-                generationInfo.Right.OptionsProvider,
+                themeGenerationInfo.Right.PackageId,
+                themeGenerationInfo.Right.RegistrationGranularity,
+                themeGenerationInfo.Right.ProjectDirectory,
+                themeGenerationInfo.Right.OptionsProvider,
                 context.ReportDiagnostic);
             tokenInfo.ControlThemeInfos.AddRange(controlThemeInfos);
             if (tokenInfo.SchemaTokens.Count != 0 ||
@@ -138,34 +172,47 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
             {
                 var schemaWriter = new GeneratedThemeSchemaWriter(
                     context,
-                    generationInfo.Right.AssemblyName,
-                    generationInfo.Right.PackageId,
-                    generationInfo.Right.EntryMethods.HasEntries,
-                    generationInfo.Right.ControlCatalog,
+                    themeGenerationInfo.Right.AssemblyName,
+                    themeGenerationInfo.Right.PackageId,
+                    themeGenerationInfo.Right.EntryMethods.HasEntries,
+                    themeGenerationInfo.Right.ControlCatalog,
                     tokenInfo.SchemaTokens,
                     tokenInfo.ControlThemeInfos,
                     combinedInfos.Left.Right);
                 schemaWriter.Write();
             }
-
             if (tokenInfo.ControlThemeInfos.Count != 0 && combinedInfos.Right.Length != 0)
             {
                 new ControlPackageRegistrationWriter(
                     context,
-                    generationInfo.Right.AssemblyName,
-                    generationInfo.Right.PackageId,
-                    generationInfo.Right.RegistrationGranularity,
-                    generationInfo.Right.EntryMethods.ManifestMethodMetadataNames).Write();
+                    themeGenerationInfo.Right.AssemblyName,
+                    themeGenerationInfo.Right.PackageId,
+                    themeGenerationInfo.Right.RegistrationGranularity,
+                    themeGenerationInfo.Right.EntryMethods.ManifestMethodMetadataNames,
+ semanticRuntimeAvailable).Write();
+            }
+
+            if (semanticRuntimeAvailable)
+            {
+                var semanticControls = SemanticPartModelBuilder.Build(
+                    themeGenerationInfo.Right.Compilation,
+                    semanticDeclarations,
+                    semanticAssets,
+                    context.ReportDiagnostic);
+                new SemanticPartManifestWriter(
+                    context,
+                    themeGenerationInfo.Right.AssemblyName,
+                    themeGenerationInfo.Right.ControlCatalog,
+                    semanticControls).Write();
             }
 
             {
                 var classWriter = new ResourceKeyClassWriter(
                     context,
                     tokenInfo,
-                    generationInfo.Right.ControlCatalog);
+                    themeGenerationInfo.Right.ControlCatalog);
                 classWriter.Write();
             }
-
         });
     }
 

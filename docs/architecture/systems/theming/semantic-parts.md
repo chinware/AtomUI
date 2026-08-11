@@ -5,7 +5,8 @@ Semantic Part 是 AtomUI Control 对稳定视觉区域提供的公共定制契�
 internal 类型或偶然的视觉树结构。
 
 本文档定义 Semantic Part 的统一模型、Selector 契约、主题边界、构建期描述、兼容性和验证要求。ControlTheme
-资产、Token schema 和主题运行时的完整架构见 [主题系统架构](runtime.md)；生成器实现见
+资产、Token schema 和主题运行时的完整架构见 [主题系统架构](runtime.md)；Core 注册和冻结实现见
+[Semantic Part Runtime](../../../modules/core/semantic-part-runtime.md)；生成器实现见
 [Semantic Part Generator](../../../modules/generator/semantic-part-generator.md)。
 
 ## 1. 设计定位
@@ -32,10 +33,12 @@ Semantic Part 不负责：
 2. **语义稳定**：Part 描述职责，不描述当前模板节点名称或布局容器层级。
 3. **最小公开面**：只有可以跨版本承诺的区域进入公开 descriptor；临时节点只属于 Composition Model。
 4. **Avalonia 原生**：样式作用域、优先级、状态选择和模板边界完全使用 Avalonia 12 的原生机制。
-5. **类型可验证**：每个 Selector Part 声明稳定 `ContractType`，所有实现节点必须与其兼容。
+5. **匹配与类型分离**：`.semantic-*` 是 Part 的运行时匹配身份；`ContractType` 只提供 Setter 类型上下文和模板校验。
 6. **Theme 按需**：强类型 `ControlTheme?` 只用于允许完整替换的真实 public 子 Control。
 7. **构建期发现**：Part、模板 marker 和 typed theme 关系由生成器静态验证；运行时不扫描程序集或 AXAML。
 8. **跨宿主一致**：默认模板、浏览器模板、Popup、Overlay 和虚拟化容器必须维持同一个公共语义契约。
+9. **事实约束设计**：依赖 Avalonia Selector、编译器或样式激活器行为的规则，必须由当前解析版本源码或可复现
+   编译与运行时测试确认，并在 Avalonia 升级后重新验证。
 
 ## 3. 术语与模型
 
@@ -85,13 +88,27 @@ Avalonia Setter 依赖目标 AvaloniaProperty 的 owner 类型。每个 Part 因
 - 允许完整替换的 public 子 Control 使用自身 public 类型。
 - Popup frame 如果公开 Border 能力，可以承诺 `Border`。
 
-用户文档中的推荐 Selector 使用 `ContractType`，不使用 internal 实现类型：
+`ContractType` 具有三个职责：
+
+1. 作为用户 Semantic Style 的 `x:SetterTargetType`，供 AXAML 编译器解析 Setter property。
+2. 作为生成器验证 marker 节点类型兼容性的下界。
+3. 作为文档、Gallery 和工具描述 Part 可稳定设置属性范围的类型元数据。
+
+`ContractType` **不参与 Part selector 匹配**，不得作为 `.semantic-*` 前缀。完整用法为：
 
 ```xml
-<Style Selector="atom|Button /template/ Control.semantic-icon">
+<Style Selector="atom|Button /template/ .semantic-icon"
+       x:SetterTargetType="Control">
     <Setter Property="Opacity" Value="0.8" />
 </Style>
 ```
+
+Avalonia 的裸类型 selector 是精确 `StyleKey` 匹配，因此 `Control.semantic-icon` 不表示“任意 Control 派生类型”，
+无法稳定命中 `Icon`、`IconPresenter` 等不同实现。`:is(Control).semantic-icon` 可以匹配派生类型，但会把 Setter
+类型上下文编码进 Part 身份，也不能消除 class selector 的动态激活成本，因此不作为 AtomUI 公共 Semantic Part 写法。
+
+class-only selector 在 `/template/` 之后没有可供 Setter 推断的目标类型；包含 Setter 的 AXAML Style 必须显式声明
+`x:SetterTargetType`。该指令只参与 AXAML 编译，不改变运行时 Selector。
 
 把 `ContractType` 收窄到更具体类型，或让实现节点不再兼容原类型，属于破坏性变更。
 
@@ -134,6 +151,7 @@ Customization
 Optional Theme property
 CrossVisualRoot
 Since
+RuntimeCreated
 ```
 
 `root` 由生成器隐式加入 descriptor，不要求模板增加 `.semantic-root`。
@@ -148,15 +166,20 @@ Descriptor 服务于：
 
 Descriptor 不参与 Avalonia Selector 的运行时匹配，也不保存 `Style`、Setter、Control 实例或 VisualTree 节点。
 
+应用和开发工具通过 `IThemeManager.SemanticParts` 获取冻结的 `SemanticPartRegistry`。Registry 支持按 owner CLR type
+或 `ControlTokenIdentity` 查询，且不提供运行时追加、删除或覆盖 descriptor 的 API。
+
 ## 5. Selector 契约
 
 ### 5.1 推荐结构
 
-同一模板内的 Part 使用 owner、一个 `/template/` 边界和稳定 ContractType：
+同一模板内的 Part 使用 owner、一个 `/template/` 边界和稳定 selector class；Setter 类型由 `ContractType` 单独提供：
 
 ```xml
-<Style Selector="atom|Button /template/ Control.semantic-icon" />
-<Style Selector="atom|Button /template/ ContentPresenter.semantic-content" />
+<Style Selector="atom|Button /template/ .semantic-icon"
+       x:SetterTargetType="Control" />
+<Style Selector="atom|Button /template/ .semantic-content"
+       x:SetterTargetType="ContentPresenter" />
 ```
 
 Selector 不连续穿透多个子 ControlTemplate。父 Control 只能承诺自己的 Semantic Part，不能借此公开子 Control 的
@@ -165,7 +188,8 @@ internal `PART_*`。
 层级 Part 使用稳定 semantic ancestor 收窄范围：
 
 ```xml
-<Style Selector="atom|Select /template/ Border.semantic-popup Control.semantic-option" />
+<Style Selector="atom|Select /template/ .semantic-popup .semantic-option"
+       x:SetterTargetType="Control" />
 ```
 
 ### 5.2 全局、局部与实例作用域
@@ -174,7 +198,8 @@ internal `PART_*`。
 
 ```xml
 <Application.Styles>
-    <Style Selector="atom|Button /template/ Control.semantic-icon">
+    <Style Selector="atom|Button /template/ .semantic-icon"
+           x:SetterTargetType="Control">
         <Setter Property="Margin" Value="0,0,6,0" />
     </Style>
 </Application.Styles>
@@ -184,7 +209,8 @@ internal `PART_*`。
 
 ```xml
 <UserControl.Styles>
-    <Style Selector="atom|Button /template/ ContentPresenter.semantic-content">
+    <Style Selector="atom|Button /template/ .semantic-content"
+           x:SetterTargetType="ContentPresenter">
         <Setter Property="Opacity" Value="0.9" />
     </Style>
 </UserControl.Styles>
@@ -195,7 +221,8 @@ internal `PART_*`。
 ```xml
 <atom:Button>
     <atom:Button.Styles>
-        <Style Selector="Control.semantic-icon">
+        <Style Selector=".semantic-icon"
+               x:SetterTargetType="Control">
             <Setter Property="Width" Value="18" />
             <Setter Property="Height" Value="18" />
         </Style>
@@ -206,8 +233,12 @@ internal `PART_*`。
 多个实例共享规则时，在 root 增加业务 class，并通过 owner class 收窄语义 Selector：
 
 ```xml
-<Style Selector="atom|Button.compact /template/ Control.semantic-icon" />
+<Style Selector="atom|Button.compact /template/ .semantic-icon"
+       x:SetterTargetType="Control" />
 ```
+
+Application 或较大 StyleHost 中的规则必须包含 owner scope。裸全局 `.semantic-icon` 会扩大样式候选范围，不属于推荐
+用法；只有放在单个 owner 的 `Styles` 中时才省略 owner 与 `/template/`。
 
 ### 5.3 状态映射
 
@@ -215,7 +246,8 @@ Control 的运行时状态继续由 StyledProperty、伪类和有效状态属性
 这些状态：
 
 ```xml
-<Style Selector="atom|Button:pointerover /template/ Control.semantic-icon">
+<Style Selector="atom|Button:pointerover /template/ .semantic-icon"
+       x:SetterTargetType="Control">
     <Setter Property="Opacity" Value="1" />
 </Style>
 ```
@@ -300,7 +332,8 @@ Avalonia 12 的 Popup 在打开时保留 Popup、PopupRoot 或 OverlayPopupHost 
 `TemplatedParent`。因此 Select、ComboBox、AutoComplete 等模板内 Popup 使用 Selector 作为默认契约：
 
 ```xml
-<Style Selector="atom|Select /template/ Border.semantic-popup" />
+<Style Selector="atom|Select /template/ .semantic-popup"
+       x:SetterTargetType="Border" />
 ```
 
 `CrossVisualRoot=true` 用于描述和测试，不自动要求 `PopupPresenterTheme`、`PopupHostTheme` 或其他新属性。
@@ -340,6 +373,7 @@ public ControlTheme? SearchButtonTheme { get; set; }
 约束如下：
 
 - Selector 仍然是该 Part 的基础契约。
+- Theme 属性必须 public 可读写，不接受 private setter 或 init-only 属性。
 - Theme 属性只用于完整替换，不承担普通局部 Setter 的职责。
 - Theme target 必须与 Part `ContractType` 兼容并且是 public Control。
 - Part 保留自己的 Control identity；owner 与 Part 可以分别消费自己的 TokenResource。
@@ -370,9 +404,31 @@ public partial class Button;
 生成器负责产生静态 descriptor、Part 名称与 class 常量、包级注册以及诊断。详细输入输出见
 [Semantic Part Generator](../../../modules/generator/semantic-part-generator.md)。
 
+同一 Control 的 partial 声明按 CLR symbol 合并。公开 Semantic Control 必须是 non-generic public Control。模板复用只在
+typed `BasedOn="{StaticResource {x:Type ...}}"` 可静态解析时沿继承链验证；同一模板节点不得同时承担多个公开 Part。
+
 ## 12. 性能与 AOT
 
-Semantic Part 运行时只增加模板节点已有 `Classes` 集合中的稳定字符串，不引入：
+Semantic Part 的默认固定成本是确保公开节点具有 `Classes` 集合并保存稳定 marker；节点已有 class 时只增加对应
+marker entry。未声明用户 Semantic Style 时，descriptor 和 marker 不创建 selector activator、VisualTree 查询或实例级
+Part 对象。
+
+用户声明 `.semantic-*` Style 后，Avalonia 把 class selector 作为动态条件处理。对于进入匹配 owner/template scope 的
+候选节点，Style 会保留 class activator 并监听 `Classes` 变化，即使节点当前没有目标 class。`ContractType` 写成
+`:is(...)` 不能消除该成本；`x:SetterTargetType` 是编译期元数据，不增加运行时 selector 或 subscription。
+
+因此必须遵守：
+
+- AtomUI 内置 ControlTheme 不使用 `.semantic-*` 实现默认视觉，继续使用内部精确 selector、属性和 Token。
+- semantic marker 在模板创建时静态设置，运行期间不根据状态动态增删。
+- 一个 Part 的多个 Setter 合并在同一个 Style 中，避免重复 class activator。
+- Application 与大范围 StyleHost 的 Semantic Style 必须使用 owner scope；高密度场景优先缩小 StyleHost 范围。
+- 虚拟化 ItemContainer、DataGrid cell 等高频实例在开放或使用 Semantic Style 前必须验证 marker 数量、候选节点数、
+  class listener 数量和回收释放。
+- 默认设计值、常用尺寸和热路径状态优先使用 Token、StyledProperty、伪类或 ItemContainer Theme，不把 Semantic
+  Style 当作内部主题基础设施。
+
+Semantic Part 不引入：
 
 - VisualTree 搜索。
 - 运行时 AXAML 解析。
@@ -383,6 +439,9 @@ Semantic Part 运行时只增加模板节点已有 `Classes` 集合中的稳定�
 
 Descriptor、ContractType identity、Part 常量和注册入口全部由生成器静态产生。Gallery 可以使用 public
 VisualTree API 查找已实例化 marker 进行预览，但该路径不能进入控件运行时样式逻辑。
+
+Avalonia 升级后必须重新验证裸类型与 `:is(...)` 的匹配语义、class activator 订阅模型、`/template/` 的
+`TemplatedParent` 边界以及 `x:SetterTargetType` 的编译行为，不能把当前实现细节无条件外推到新版本。
 
 ## 13. 兼容性
 
@@ -429,12 +488,15 @@ Semantic Part 实现至少验证：
 1. 声明名称、class、ContractType 和 cardinality。
 2. 所有内置 ControlTemplate 与平台主题变体的 marker 完整性。
 3. Application、局部 StyleHost 和 owner 实例 Styles 的 Selector 命中。
-4. TemplateBinding、Semantic Style 和 LocalValue 的优先级边界。
-5. 替代实现、状态切换和 Optional Part 的一致性。
-6. PopupRoot 与 OverlayPopupHost 两种路径。
-7. ItemContainer 创建、回收、re-template 和 owner 切换。
-8. descriptor、Control 文档与 Gallery 元数据一致性。
-9. 生成结果确定性、裁剪和 NativeAOT publish。
+4. class-only selector 配合 `x:SetterTargetType=ContractType` 的 AXAML 编译，并确认文档不生成
+   `ContractType.semantic-*` 或 `:is(ContractType).semantic-*` 公共示例。
+5. TemplateBinding、Semantic Style 和 LocalValue 的优先级边界。
+6. 替代实现、状态切换和 Optional Part 的一致性。
+7. PopupRoot 与 OverlayPopupHost 两种路径。
+8. ItemContainer 创建、回收、re-template 和 owner 切换，并确认 detach 后不保留 class listener。
+9. 高密度控件在真实模板下的 marker、候选节点与 class listener 结构预算。
+10. descriptor、Control 文档与 Gallery 元数据一致性。
+11. 生成结果确定性、裁剪和 NativeAOT publish。
 
 Button 的 `root`、`icon`、`content` 可以作为基础契约测试样本；它不拥有 Semantic Part 系统架构。
 
@@ -442,6 +504,7 @@ Button 的 `root`、`icon`、`content` 可以作为基础契约测试样本；�
 
 - [Semantic Part Generator 设计](../../../modules/generator/semantic-part-generator.md)：构建期输入、模板分析、descriptor、诊断和
   AOT 输出。
+- [Semantic Part Runtime](../../../modules/core/semantic-part-runtime.md)：Core descriptor 校验、包级注册、冻结 registry 与运行时查询。
 - [AtomUI 控件研发标准规范](../../../engineering/development/control-development-guidelines.md)：Control 作者必须遵守的 Part
   声明、模板和兼容性规则。
 - [AtomUI 控件 Token 设计规范](../../../engineering/development/control-token-guidelines.md)：Semantic Part、Part Theme 和 Token

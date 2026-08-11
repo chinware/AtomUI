@@ -16,6 +16,7 @@ internal sealed class ThemeAssetInfo
         IReadOnlyList<string> directoryCandidates,
         IReadOnlyList<ThemeAssetTargetTypeReference> targetTypes,
         IReadOnlyList<ThemeAssetElementTypeReference> elementTypes,
+        IReadOnlyList<ThemeAssetSemanticThemeInfo> semanticThemes,
         IReadOnlyList<string> controlTokenFamilies,
         bool isResourceDictionary,
         string? controlThemeClassName,
@@ -30,6 +31,7 @@ internal sealed class ThemeAssetInfo
         DirectoryCandidates = directoryCandidates;
         TargetTypes = targetTypes;
         ElementTypes = elementTypes;
+        SemanticThemes = semanticThemes;
         ControlTokenFamilies = controlTokenFamilies;
         IsResourceDictionary = isResourceDictionary;
         ControlThemeClassName = controlThemeClassName;
@@ -45,6 +47,7 @@ internal sealed class ThemeAssetInfo
     internal IReadOnlyList<string> DirectoryCandidates { get; }
     internal IReadOnlyList<ThemeAssetTargetTypeReference> TargetTypes { get; }
     internal IReadOnlyList<ThemeAssetElementTypeReference> ElementTypes { get; }
+    internal IReadOnlyList<ThemeAssetSemanticThemeInfo> SemanticThemes { get; }
     internal IReadOnlyList<string> ControlTokenFamilies { get; }
     internal bool IsResourceDictionary { get; }
     internal string? ControlThemeClassName { get; }
@@ -69,6 +72,8 @@ internal sealed class ThemeAssetInfo
         var fileName = System.IO.Path.GetFileNameWithoutExtension(assetPath);
         var targetTypes = new List<ThemeAssetTargetTypeReference>();
         var elementTypes = new HashSet<ThemeAssetElementTypeReference>();
+        var semanticThemes = new List<ThemeAssetSemanticThemeInfo>();
+        var nextSemanticTemplateIndex = 0;
         var controlTokenFamilies = new HashSet<string>(StringComparer.Ordinal);
         var isResourceDictionary = false;
         string? controlThemeClassName = null;
@@ -92,6 +97,96 @@ internal sealed class ThemeAssetInfo
                         .FirstOrDefault(static attribute =>
                             string.Equals(attribute.Name.LocalName, "TargetType", StringComparison.Ordinal))
                         ?.Value);
+            }
+            if (root is not null)
+            {
+                foreach (var controlTheme in root.DescendantsAndSelf().Where(static element =>
+                             string.Equals(element.Name.LocalName, "ControlTheme", StringComparison.Ordinal)))
+                {
+                    var targetTypeAttribute = controlTheme.Attributes().FirstOrDefault(static attribute =>
+                        string.Equals(attribute.Name.LocalName, "TargetType", StringComparison.Ordinal));
+                    if (targetTypeAttribute is null)
+                    {
+                        continue;
+                    }
+
+                    var targetType = ThemeAssetTargetTypeReference.Create(
+                        controlTheme,
+                        targetTypeAttribute.Value);
+                    var themeTemplates = new List<ThemeAssetSemanticTemplateInfo>();
+                    var templateSetters = controlTheme.Descendants()
+                                                      .Where(IsTemplateSetter)
+                                                      .Where(setter => ReferenceEquals(
+                                                          setter.Ancestors().FirstOrDefault(static ancestor =>
+                                                              string.Equals(
+                                                                  ancestor.Name.LocalName,
+                                                                  "ControlTheme",
+                                                                  StringComparison.Ordinal)),
+                                                          controlTheme))
+                                                      .ToArray();
+                    var overridesBaseTemplate = false;
+                    foreach (var templateSetter in templateSetters)
+                    {
+                        var isConditional = templateSetter.Ancestors()
+                                                          .TakeWhile(ancestor => !ReferenceEquals(
+                                                              ancestor,
+                                                              controlTheme))
+                                                          .Any(static ancestor => string.Equals(
+                                                              ancestor.Name.LocalName,
+                                                              "Style",
+                                                              StringComparison.Ordinal));
+                        overridesBaseTemplate |= !isConditional;
+                        foreach (var template in templateSetter.Descendants().Where(static element =>
+                                     string.Equals(
+                                         element.Name.LocalName,
+                                         "ControlTemplate",
+                                         StringComparison.Ordinal)))
+                        {
+                            var nearestSetter = template.Ancestors().FirstOrDefault(IsTemplateSetter);
+                            if (!ReferenceEquals(nearestSetter, templateSetter))
+                            {
+                                continue;
+                            }
+
+                            var markers = new List<ThemeAssetSemanticMarkerInfo>();
+                            var nodeId = 0;
+                            foreach (var element in template.Descendants())
+                            {
+                                var currentNodeId = nodeId++;
+                                var classes = element.Attributes().FirstOrDefault(static attribute =>
+                                    string.Equals(attribute.Name.LocalName, "Classes", StringComparison.Ordinal));
+                                if (classes is null)
+                                {
+                                    continue;
+                                }
+
+                                foreach (var selectorClass in classes.Value.Split(
+                                             (char[]?)null,
+                                             StringSplitOptions.RemoveEmptyEntries)
+                                         .Distinct(StringComparer.Ordinal))
+                                {
+                                    if (selectorClass.StartsWith("semantic-", StringComparison.Ordinal))
+                                    {
+                                        markers.Add(new ThemeAssetSemanticMarkerInfo(
+                                            selectorClass,
+                                            element.Name.NamespaceName,
+                                            element.Name.LocalName,
+                                            currentNodeId));
+                                    }
+                                }
+                            }
+                            var templateInfo = new ThemeAssetSemanticTemplateInfo(
+                                ++nextSemanticTemplateIndex,
+                                markers);
+                            themeTemplates.Add(templateInfo);
+                        }
+                    }
+                    semanticThemes.Add(new ThemeAssetSemanticThemeInfo(
+                        targetType,
+                        CreateBasedOnReference(controlTheme),
+                        themeTemplates,
+                        overridesBaseTemplate));
+                }
             }
             foreach (var element in document.Descendants())
             {
@@ -135,10 +230,50 @@ internal sealed class ThemeAssetInfo
             elementTypes.OrderBy(static reference => reference.NamespaceUri, StringComparer.Ordinal)
                         .ThenBy(static reference => reference.LocalName, StringComparer.Ordinal)
                         .ToArray(),
+            semanticThemes,
             controlTokenFamilies.OrderBy(static family => family, StringComparer.Ordinal).ToArray(),
             isResourceDictionary,
             controlThemeClassName,
             controlThemeTargetTypeName);
+    }
+
+
+    private static ThemeAssetTargetTypeReference? CreateBasedOnReference(XElement controlTheme)
+    {
+        var basedOn = controlTheme.Attributes().FirstOrDefault(static attribute =>
+            string.Equals(attribute.Name.LocalName, "BasedOn", StringComparison.Ordinal));
+        if (basedOn is null)
+        {
+            return null;
+        }
+
+        const string prefix = "{StaticResource ";
+        var value = basedOn.Value.Trim();
+        if (!value.StartsWith(prefix, StringComparison.Ordinal) ||
+            !value.EndsWith("}", StringComparison.Ordinal))
+        {
+            return null;
+        }
+
+        var resourceKey = value.Substring(prefix.Length, value.Length - prefix.Length - 1).Trim();
+        if (!resourceKey.StartsWith("{x:Type", StringComparison.Ordinal) ||
+            !resourceKey.EndsWith("}", StringComparison.Ordinal))
+        {
+            return null;
+        }
+        return ThemeAssetTargetTypeReference.Create(controlTheme, resourceKey);
+    }
+
+    private static bool IsTemplateSetter(XElement element)
+    {
+        if (!string.Equals(element.Name.LocalName, "Setter", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        var property = element.Attributes().FirstOrDefault(static attribute =>
+            string.Equals(attribute.Name.LocalName, "Property", StringComparison.Ordinal));
+        return string.Equals(property?.Value, "Template", StringComparison.Ordinal);
     }
 
     internal static bool IsAggregatePath(string path)
@@ -325,6 +460,61 @@ internal sealed class ThemeAssetInfo
         return System.IO.Path.GetFileName(path);
     }
 }
+
+internal sealed class ThemeAssetSemanticTemplateInfo
+{
+    internal ThemeAssetSemanticTemplateInfo(
+        int index,
+        IReadOnlyList<ThemeAssetSemanticMarkerInfo> markers)
+    {
+        Index = index;
+        Markers = markers;
+    }
+
+    internal int Index { get; }
+    internal IReadOnlyList<ThemeAssetSemanticMarkerInfo> Markers { get; }
+}
+
+internal sealed class ThemeAssetSemanticThemeInfo
+{
+    internal ThemeAssetSemanticThemeInfo(
+        ThemeAssetTargetTypeReference targetType,
+        ThemeAssetTargetTypeReference? basedOn,
+        IReadOnlyList<ThemeAssetSemanticTemplateInfo> templates,
+        bool overridesBaseTemplate)
+    {
+        TargetType = targetType;
+        BasedOn = basedOn;
+        Templates = templates;
+        OverridesBaseTemplate = overridesBaseTemplate;
+    }
+
+    internal ThemeAssetTargetTypeReference TargetType { get; }
+    internal ThemeAssetTargetTypeReference? BasedOn { get; }
+    internal IReadOnlyList<ThemeAssetSemanticTemplateInfo> Templates { get; }
+    internal bool OverridesBaseTemplate { get; }
+}
+
+internal sealed class ThemeAssetSemanticMarkerInfo
+{
+    internal ThemeAssetSemanticMarkerInfo(
+        string selectorClass,
+        string xmlNamespace,
+        string typeName,
+        int nodeId)
+    {
+        SelectorClass = selectorClass;
+        XmlNamespace = xmlNamespace;
+        TypeName = typeName;
+        NodeId = nodeId;
+    }
+
+    internal string SelectorClass { get; }
+    internal string XmlNamespace { get; }
+    internal string TypeName { get; }
+    internal int NodeId { get; }
+}
+
 
 internal sealed class ThemeAssetElementTypeReference : IEquatable<ThemeAssetElementTypeReference>
 {

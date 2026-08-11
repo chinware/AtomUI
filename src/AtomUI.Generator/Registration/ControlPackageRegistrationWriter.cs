@@ -12,13 +12,15 @@ internal sealed class ControlPackageRegistrationWriter
     private readonly string _packageId;
     private readonly LinkedRegistration.Model.RegistrationUnitGranularity _granularity;
     private readonly string _entryMethodMetadataNames;
+    private readonly bool _includeSemanticParts;
 
     internal ControlPackageRegistrationWriter(
         SourceProductionContext context,
         string? assemblyName,
         string packageId,
         LinkedRegistration.Model.RegistrationUnitGranularity granularity,
-        string entryMethodMetadataNames)
+        string entryMethodMetadataNames,
+        bool includeSemanticParts)
     {
         _context = context;
         _assemblyName = assemblyName ?? "AtomUI";
@@ -26,6 +28,7 @@ internal sealed class ControlPackageRegistrationWriter
         _packageId = packageId;
         _granularity = granularity;
         _entryMethodMetadataNames = entryMethodMetadataNames;
+        _includeSemanticParts = includeSemanticParts;
     }
 
     internal void Write()
@@ -81,10 +84,27 @@ internal sealed class ControlPackageRegistrationWriter
         source.AppendLine("        global::System.ArgumentNullException.ThrowIfNull(packageAssets);");
         source.AppendLine("        GeneratedControlThemeAssetResources.AddResources(controlThemesProvider, packageAssets);");
         source.AppendLine();
+        if (_includeSemanticParts)
+        {
+            source.AppendLine("        var semanticControls = GeneratedSemanticPartManifest.GetDescriptors();");
+            source.AppendLine("        var selectedSemanticControls = new global::System.Collections.Generic.List<global::AtomUI.Theme.Schema.ControlSemanticDescriptor>(semanticControls.Count);");
+            source.AppendLine("        foreach (var semanticControl in semanticControls)");
+            source.AppendLine("        {");
+            source.AppendLine("            if (includeIdentity is null || includeIdentity(semanticControl.Identity))");
+            source.AppendLine("            {");
+            source.AppendLine("                selectedSemanticControls.Add(semanticControl);");
+            source.AppendLine("            }");
+            source.AppendLine("        }");
+            source.AppendLine();
+        }
         source.AppendLine("        var package = new global::AtomUI.Theme.ControlPackageRegistration(");
         source.AppendLine("            controlThemesProvider.Id,");
         source.AppendLine("            selectedControls,");
         source.AppendLine("            packageAssets,");
+        if (_includeSemanticParts)
+        {
+            source.AppendLine("            selectedSemanticControls,");
+        }
         source.AppendLine("            controlThemesProvider);");
         source.AppendLine("        themeManagerBuilder.AddControlPackage(package);");
         source.AppendLine("    }");

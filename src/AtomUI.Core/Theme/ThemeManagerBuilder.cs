@@ -11,10 +11,13 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
 {
     private readonly List<ControlTokenDescriptor> _controlTokenDescriptors = new();
     private readonly List<ControlThemeAssetDescriptor> _controlThemeAssetDescriptors = new();
+    private readonly List<ControlSemanticDescriptor> _controlSemanticDescriptors = new();
     private readonly List<IControlThemesProvider> _controlThemesProviders = new();
     private readonly List<IThemeDefinitionResolver> _themeDefinitionResolvers = new();
     private readonly List<Action<IThemeManager>> _initializers = new();
     private readonly HashSet<ControlTokenIdentity> _registeredControlTokenIdentities = new();
+    private readonly HashSet<ControlTokenIdentity> _registeredSemanticControlIdentities = new();
+    private readonly HashSet<Type> _registeredSemanticControlTypes = new();
     private readonly HashSet<string> _registeredControlPackageIds = new(StringComparer.Ordinal);
     private readonly HashSet<string> _registeredControlThemeProviders = new(StringComparer.Ordinal);
     private readonly HashSet<string> _registeredThemeDefinitionResolvers = new(StringComparer.Ordinal);
@@ -78,6 +81,19 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
                     $"Control Token descriptor '{descriptor.Identity}' is already registered.");
             }
         }
+        foreach (var descriptor in package.SemanticControls)
+        {
+            if (_registeredSemanticControlIdentities.Contains(descriptor.Identity))
+            {
+                throw new ThemeResourceRegisterException(
+                    $"Semantic Control descriptor '{descriptor.Identity}' is already registered.");
+            }
+            if (_registeredSemanticControlTypes.Contains(descriptor.ControlType))
+            {
+                throw new ThemeResourceRegisterException(
+                    $"Semantic Control type '{descriptor.ControlType.FullName}' is already registered.");
+            }
+        }
         if (_registeredControlThemeProviders.Contains(package.ControlThemesProvider.Id))
         {
             throw new ThemeResourceRegisterException(
@@ -89,6 +105,12 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
         {
             _registeredControlTokenIdentities.Add(descriptor.Identity);
             _controlTokenDescriptors.Add(descriptor);
+        }
+        foreach (var descriptor in package.SemanticControls)
+        {
+            _registeredSemanticControlIdentities.Add(descriptor.Identity);
+            _registeredSemanticControlTypes.Add(descriptor.ControlType);
+            _controlSemanticDescriptors.Add(descriptor);
         }
         _controlThemeAssetDescriptors.AddRange(package.ThemeAssets);
         _registeredControlThemeProviders.Add(package.ControlThemesProvider.Id);
@@ -166,7 +188,10 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
 
         var themeManager = new ThemeManager
         {
-            FontFamily = FontFamily
+            FontFamily = FontFamily,
+            SemanticParts = _controlSemanticDescriptors.Count == 0
+                ? SemanticPartRegistry.Empty
+                : new SemanticPartRegistry(_controlSemanticDescriptors)
         };
         themeManager.ConfigureStartup(
             InitialRequest,

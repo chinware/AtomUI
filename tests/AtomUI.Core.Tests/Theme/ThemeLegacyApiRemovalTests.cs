@@ -33,6 +33,7 @@ public class ThemeLegacyApiRemovalTests
         properties.ShouldBe([
             nameof(IThemeManager.AvailableThemes),
             nameof(IThemeManager.CurrentTheme),
+            nameof(IThemeManager.SemanticParts),
             nameof(IThemeManager.ThemeCatalogDiagnostics)
         ]);
         events.ShouldBe([

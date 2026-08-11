@@ -337,6 +337,86 @@ internal static class AtomUIDiagnosticDescriptors
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         customTags: [WellKnownDiagnosticTags.Telemetry]);
+    public static readonly DiagnosticDescriptor SemanticPartInvalidDeclaration = new(
+        AtomUIDiagnosticIds.SemanticPartInvalidDeclaration,
+        "Semantic Part declaration is invalid",
+        "Semantic Part '{0}' on Control '{1}' is invalid: {2}",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor SemanticPartDuplicateDeclaration = new(
+        AtomUIDiagnosticIds.SemanticPartDuplicateDeclaration,
+        "Semantic Part declaration is duplicated",
+        "Semantic Part '{0}' on Control '{1}' duplicates {2} '{3}'",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor SemanticPartInvalidContractType = new(
+        AtomUIDiagnosticIds.SemanticPartInvalidContractType,
+        "Semantic Part ContractType is invalid",
+        "Semantic Part '{0}' on Control '{1}' requires a public Avalonia StyledElement ContractType",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor SemanticPartInvalidThemeContract = new(
+        AtomUIDiagnosticIds.SemanticPartInvalidThemeContract,
+        "Semantic Part Theme contract is invalid",
+        "Semantic Part '{0}' on Control '{1}' has an invalid strongly typed ControlTheme contract: {2}",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor SemanticPartMissingSince = new(
+        AtomUIDiagnosticIds.SemanticPartMissingSince,
+        "Semantic Part should declare its introduction version",
+        "Semantic Part '{0}' on Control '{1}' does not declare Since",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor SemanticPartTemplateCardinalityMismatch = new(
+        AtomUIDiagnosticIds.SemanticPartTemplateCardinalityMismatch,
+        "Semantic Part marker cardinality does not match the declaration",
+        "Control '{0}' template '{1}' contains {2} marker(s) for Semantic Part '{3}', expected {4}",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor SemanticPartTemplateContractTypeMismatch = new(
+        AtomUIDiagnosticIds.SemanticPartTemplateContractTypeMismatch,
+        "Semantic Part marker type does not satisfy ContractType",
+        "Control '{0}' template '{1}' maps Semantic Part '{2}' to '{3}', which is not assignable to '{4}'",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor SemanticPartMissingControlTemplate = new(
+        AtomUIDiagnosticIds.SemanticPartMissingControlTemplate,
+        "Semantic Part Control has no analyzable ControlTemplate",
+        "Control '{0}' declares static Semantic Parts but no applicable leaf ControlTemplate was found",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor SemanticPartTemplateNodeConflict = new(
+        AtomUIDiagnosticIds.SemanticPartTemplateNodeConflict,
+        "Semantic Part template node has conflicting roles",
+        "Control '{0}' template '{1}' assigns one '{2}' node to multiple Semantic Parts: {3}",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
 
     public static readonly DiagnosticDescriptor LocalizationInvalidLanguageData = new(
         AtomUIDiagnosticIds.LocalizationInvalidLanguageData,

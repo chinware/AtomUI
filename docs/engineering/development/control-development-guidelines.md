@@ -63,7 +63,13 @@ Control 对稳定视觉区域提供公共定制入口时，必须遵循
 
 - 除隐式 `root` 外，公开 Part 使用唯一 `.semantic-*` class，名称由语义职责产生，不包含 `PART_*`、序号或当前
   布局容器名称。
+- Control 使用可重复 `[SemanticPart]` 显式声明非 root Part；`SelectorClass`、`ContractType`、cardinality 和 `Since`
+  必须完整，不能依赖生成器从节点名称推断。
 - 每个 Part 必须声明稳定 `ContractType` 和 `Single`、`Optional` 或 `Multiple` cardinality。
+- 公共 Part selector 只使用 owner、一个 `/template/` 边界和 `.semantic-*`；`ContractType` 不得写成
+  `Control.semantic-*`、`:is(Control).semantic-*` 或其他类型前缀。
+- 包含 Setter 的 class-only Semantic Style 使用 `x:SetterTargetType="<ContractType>"` 提供 AXAML 编译期类型上下文；
+  该指令不属于运行时 Part selector。
 - 只有能够跨版本承诺的区域进入公开 descriptor；临时 frame、shadow、motion actor 和布局 wrapper 保留为内部
   Composition 节点。
 - 所有内置 ControlTemplate、Desktop/Browser 主题和适用派生主题必须实现相同 Part 契约。
@@ -71,7 +77,11 @@ Control 对稳定视觉区域提供公共定制入口时，必须遵循
 - 父主题最多进入自身模板一个 `/template/` 边界，不通过 Semantic Part 穿透子 Control 的 internal 模板。
 - Popup 和 Overlay 默认使用 Selector；跨 VisualRoot 本身不构成新增 Theme 属性的理由。
 - ItemContainer Theme 和 Semantic Part Theme 只在真实 public 子 Control 允许完整 ControlTheme 替换时提供。
+- AtomUI 内置主题不得使用 `.semantic-*` 实现默认视觉；marker 必须静态，用户 Semantic Style 的 class activator
+  成本必须按真实候选节点和 listener 数量验证。
 - 删除、重命名 Part、修改 selector class、收窄 ContractType 或改变 cardinality 必须按公共 API 破坏性变更处理。
+- `ATOMUIGEN020-028` 必须在提交前清零；不得通过关闭诊断、把静态节点伪装为 `RuntimeCreated` 或放宽
+  `ContractType` 掩盖模板缺失。
 - 控件实现完成后必须同步 `overview.md` Semantic Parts 表、`implementation.md` 模板映射、主题契约测试和
   NativeAOT 风险验证。
 

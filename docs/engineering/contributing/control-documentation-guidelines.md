@@ -489,13 +489,20 @@ AtomUI 的 semantic 文档描述 AXAML、ControlTemplate、运行时组合结构
 
 - `Part` 是语义名，不一定等于 Template Part 名。
 - `Selector` 必须与生成式 Semantic Part descriptor 一致；`root` 不添加 `.semantic-root`。
-- `ContractType` 是用户可在 Selector 中依赖的最低稳定 public 类型。
+- `ContractType` 是 marker 节点必须兼容的最低稳定 public 类型，也是 Semantic Style 的
+  `x:SetterTargetType`；它不作为 `.semantic-*` selector 的类型前缀。
+- 用户示例必须把 Part 身份写成 `.semantic-*`。包含 Setter 时显式写
+  `x:SetterTargetType="<ContractType>"`，不得生成 `Control.semantic-*` 或 `:is(Control).semantic-*` 形式。
 - `Cardinality` 只能是 `Single`、`Optional` 或 `Multiple`。
+- `Single` 表示每个适用模板恰好一个，`Optional` 表示零或一个，`Multiple` 表示一个或多个；表格必须与生成
+  descriptor 和所有内置模板一致。
 - `AtomUI 节点` 可以是 Template Part、主题节点、控件类或抽象区域。
 - `Customization` 使用 `Root`、`Selector` 或 `SelectorAndTheme`。
 - 只记录进入生成式 descriptor 的稳定语义区域；用户不应依赖的内部节点只进入 Composition Model 或
   Customization Boundaries，不能标记为公开 Semantic Part。
 - 表格、Control 声明、AXAML marker 和生成 descriptor 不一致时必须验证失败，不能只修改文档消除差异。
+- `Since`、`CrossVisualRoot` 或 `RuntimeCreated` 影响使用和验证边界时，必须在稳定性或实现说明中明确记录；
+  `CrossVisualRoot` 不自动推导 Theme 属性，`RuntimeCreated` 不免除运行时 selector 测试。
 
 `Abstract AXAML Structure` 必须遵守：
 

@@ -117,21 +117,16 @@ Template part 与主题入口：
 | `PART_ButtonIcon` | 展示用户设置的 icon，位置由 `IconPlacement` 控制，宽高通过 `TemplateBinding` 跟随 `IconWidth`、`IconHeight`。 |
 | `PART_ContentPresenter` | 展示用户内容。 |
 
-LLMS 语义区域：
+Semantic Parts：
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Button` | 控件根语义区域，承载 public API、命令、点击、状态归一和伪类。 | `ButtonType`、`Color`、`Variant`、`IsDanger`、`IsGhost`、`IsLoading`、`SizeType`、`Shape`、`Icon`、`IconPlacement`、`IconWidth`、`IconHeight` | ButtonToken、SharedToken | stable |
-| `wave` | `PART_WaveSpirit` | 点击 wave 反馈区域，跟随有效圆角和 wave 类型。 | `IsWaveSpiritEnabled`、`IsMotionEnabled` | SharedToken motion / wave 资源 | stable |
-| `shadow` | `ShadowsFrame` | 阴影绘制层，独立于主体背景和边框。 | effective state | `DefaultShadow`、`PrimaryShadow`、`DangerShadow` | stable |
-| `surface` | `Frame` | 主体背景、边框、圆角、尺寸和虚线边框绘制层。 | `ButtonType`、`Color`、`Variant`、`Shape`、`SizeType`、`CornerRadius`、`Padding` | default、primary、danger、text、link、padding、corner radius 相关 Token | stable |
-| `customBackground` | `CustomBackgroundLayer` | normal 状态自定义背景覆层，只服务 `CustomBackground` 视觉模型。 | `CustomBackground` | 不新增专属 Token | internal-stable |
-| `contentLayout` | `PART_RootLayout` | loading icon、用户 icon 和内容的排列区域。 | `IconPlacement`、`HorizontalContentAlignment`、`VerticalContentAlignment` | `IconMargin`、尺寸 Token | stable |
-| `loadingIcon` | `PART_LoadingIcon` | loading 状态图标区域。 | `IsLoading`、`IconWidth`、`IconHeight` | `IconSize`、`OnlyIconSize` 相关 Token | stable |
-| `icon` | `PART_ButtonIcon` | 用户 icon 区域，支持内容前后位置和 icon-only 场景。 | `Icon`、`IconPlacement`、`IconWidth`、`IconHeight` | `IconSize`、`IconMargin` | stable |
-| `content` | `PART_ContentPresenter` | 用户内容展示区域。 | `Content`、`ContentTemplate` | `ContentFontSize`、`ContentLineHeight`、`FontWeight` | stable |
+| Part | Selector | ContractType | Cardinality | AtomUI 节点 | 职责 | 相关 API | 相关 Token | Customization | 稳定性 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `root` | Button 本身 | `Button` | `Single` | `Button` | 控件根语义区域，承载命令、点击、状态归一和伪类。 | 全部 Button public API | ButtonToken、SharedToken | `Root` | stable since 6.0 |
+| `icon` | `.semantic-icon` | `Control` | `Multiple` | `PART_LoadingIcon`、`PART_ButtonIcon` | loading 与用户图标的统一视觉职责；两个替代实现都接受同一语义样式。 | `Icon`、`IsLoading`、`IconPlacement`、`IconWidth`、`IconHeight` | `IconSize*`、`OnlyIconSize*`、`IconMargin` | `Selector` | stable since 6.0 |
+| `content` | `.semantic-content` | `ContentPresenter` | `Single` | `PART_ContentPresenter` | 用户内容展示区域。 | `Content`、`ContentTemplate` | `ContentFontSize`、`ContentLineHeight`、`FontWeight` | `Selector` | stable since 6.0 |
 
-`CustomBackgroundLayer` 是主题内部实现细节，不作为用户可直接依赖的 template part。LLMS semantic 文档可以记录它的存在和边界，但应明确它只服务 `CustomBackground` 受控视觉模型。
+`PART_WaveSpirit`、`ShadowsFrame`、`Frame`、`CustomBackgroundLayer` 和 `PART_RootLayout` 属于 Button Composition Model，
+不是公开 Semantic Part。它们可以继续服务内部主题和实现，但应用不得把其名称或节点层级视为兼容契约。
 
 ## 4. 行为与状态模型
 
@@ -264,7 +259,7 @@ Button 的 `Icon` 是单一用户图标入口，`IconPlacement` 只描述这个�
 
 ### 8.5 Icon 尺寸投影模型
 
-Button 以控件自身的 `IconWidth`、`IconHeight` 作为图标尺寸的唯一公共 owner。Button 与 DropdownButton 模板中的 `PART_ButtonIcon`、`PART_LoadingIcon` 只通过 `TemplateBinding` 读取这两个属性，不在模板内部重新定义一套可供外部定位的尺寸入口。
+Button 以控件自身的 `IconWidth`、`IconHeight` 作为同时控制用户图标和 loading 图标的统一 API owner。Button 与 DropdownButton 模板中的 `PART_ButtonIcon`、`PART_LoadingIcon` 通过 `TemplateBinding` 读取这两个属性，不在模板内部重新定义一套可供外部定位的尺寸入口。Button 本体另外以 `.semantic-icon` 提供受支持的局部视觉覆盖入口，应用不需要也不应依赖两个 `PART_*` 名称。
 
 Theme 默认值矩阵：
 
@@ -273,9 +268,9 @@ Theme 默认值矩阵：
 | 普通用户 icon、普通 loading icon、非 loading 的 icon-only 用户 icon | `IconSizeLG` | `IconSize` | `IconSizeSM` | `IconSize` |
 | `:icononly:loading` 的 loading icon | `OnlyIconSizeLG` | `OnlyIconSize` | `OnlyIconSizeSM` | `OnlyIconSize` |
 
-Theme selector 只能设置 Button 自身的 `IconWidth`、`IconHeight` 默认值。应用和 Gallery 可以在 Button 实例或 Button selector 上设置这两个属性，但不得通过 `/template/`、`PART_ButtonIcon` 或 `PART_LoadingIcon` selector 修改内部节点尺寸。本地值覆盖所有尺寸档与状态默认值，因此同一实例进入 loading 状态时不会丢失用户指定的宽高。
+需要让两个图标实现共享同一尺寸和 loading 切换语义时，应用应设置 Button 的 `IconWidth`、`IconHeight`。仅需要局部视觉覆盖时，使用 `atom|Button /template/ .semantic-icon`，并以 `x:SetterTargetType="Control"` 提供 Setter 编译类型；不得使用 `Control.semantic-icon`、`:is(Control).semantic-icon`、`PART_ButtonIcon`、`PART_LoadingIcon` 或 internal 类型作为公共 selector。Button 本地尺寸值覆盖所有尺寸档与状态默认值，因此同一实例进入 loading 状态时不会丢失用户指定的宽高。
 
-Gallery 的 Custom 尺寸示例也遵守相同边界：Custom 基线在 Button selector 上设置 `IconWidth=18`、`IconHeight=18`，`:icononly` 只设置 `Padding=12`，`:icononly:loading` 再在 Button selector 上设置 `IconWidth=20`、`IconHeight=20`。示例样式不得定位两个内部 template part。
+Gallery 的 Custom 尺寸示例继续优先在 Button selector 上设置 `IconWidth`、`IconHeight`，以证明统一 API owner 的数据流。展示 Semantic Part 定制时则使用 `.semantic-icon`，不定位两个内部 template part。
 
 ## 9. 文档导航、LLMS 导出与验证策略
 

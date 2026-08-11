@@ -17,6 +17,20 @@
   - Add regression coverage that rejects Button-family Browser theme override assets in source and generated theme manifests.
   - Add Desktop.Controls coverage that rejects Browser-specific theme asset folders while keeping exact Browser unsupported-control identity filtering.
 
+## 2026-08-11
+
+- Theme Contract
+  - Separate the `.semantic-*` selector identity from `ContractType`; use `x:SetterTargetType` as the AXAML Setter type context.
+  - Define class activator cost as opt-in application styling cost and keep Button built-in themes free of Semantic Style rules.
+
+## 2026-08-10
+
+- Theme Contract
+  - Add the Button Semantic Part contract with implicit `root`, `.semantic-icon`, and `.semantic-content`.
+  - Define `icon` as `Control` / `Multiple`, covering both user and loading icon implementations.
+  - Define `content` as `ContentPresenter` / `Single` and keep `root` free of a `.semantic-root` marker.
+  - Apply the same marker contract to all shared Button template variants and register the generated descriptor statically.
+
 ## 2026-08-03
 
 - Design

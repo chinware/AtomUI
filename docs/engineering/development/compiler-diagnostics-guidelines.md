@@ -85,6 +85,15 @@ dotnet_diagnostic.ATOMUIAOT001.severity = error
 | `ATOMUIGEN024` | Generator | Error | 后续层 `CalculateTokenValues` 没有把唯一的直接 base 调用放在 block body 第一条并原样转发参数 | 以 `base.CalculateTokenValues(isDarkMode);` 开始方法，再计算本层值 | ControlDesignToken |
 | `ATOMUIGEN025` | Generator | Error | 抽象 Control Design Token 定义层名称不以非空 `Token` 后缀结束 | 使用表达家族语义的 `*Token` 名称 | ControlDesignToken |
 | `ATOMUIGEN026` | Generator | Error | Control Design Token 声明为嵌套类型 | 把 Token 移到 namespace 下作为顶级类；泛型容器中的嵌套 Token 仍使用 `ATOMUIGEN021` | ControlDesignToken |
+| `ATOMUIGEN027` | Generator | Error | Semantic Part 的 Control/Part 声明、名称、path、class、cardinality 或 customization 非法 | 按 Semantic Part 声明契约修正 `[SemanticPart]` | SemanticParts |
+| `ATOMUIGEN028` | Generator | Error | 同一 Control 的 Part name、path 或 selector class 重复 | 为每个 Part 使用唯一名称、path 和 `.semantic-*` class | SemanticParts |
+| `ATOMUIGEN029` | Generator | Error | Semantic Part `ContractType` 不是 public `StyledElement` | 使用稳定且公开可引用的 Avalonia 类型 | SemanticParts |
+| `ATOMUIGEN030` | Generator | Error | `SelectorAndTheme` 缺少合法的 public get/set `ControlTheme` 属性契约 | 修正 `ThemePropertyName`、属性类型、public setter 或 `ContractType` | SemanticParts |
+| `ATOMUIGEN031` | Generator | Warning | Semantic Part 未声明引入版本 | 设置非空 `Since` | SemanticParts |
+| `ATOMUIGEN032` | Generator | Error | 某个 ControlTemplate 的 marker 数量不满足 cardinality | 为每个适用模板补齐或移除 marker，或修正 cardinality | SemanticParts |
+| `ATOMUIGEN033` | Generator | Error | marker 节点类型不能赋值给 `ContractType` | 把 class 放到兼容节点，或重新设计稳定 ContractType | SemanticParts |
+| `ATOMUIGEN034` | Generator | Error | Control 声明静态 Part，但不存在适用的可分析 ControlTemplate | 提供叶子 ControlTheme/ControlTemplate，或仅在真实动态创建场景使用 `RuntimeCreated` | SemanticParts |
+| `ATOMUIGEN035` | Generator | Error | 同一 ControlTemplate 节点同时承担多个 Semantic Part | 将不同公开职责拆分到独立节点，每个节点只保留一个 Semantic Part marker | SemanticParts |
 | `ATOMUIGEN101` | Generator | Warning | Gallery source code display generator 发现参与默认源码匹配的 `ShowCasePanel` 缺少 `Name` | 给 `ShowCasePanel` 设置稳定 `Name`，或使用显式源码 key 规则 | GallerySourceCodeDisplay |
 | `ATOMUILOC001` | Localization | Error | AtomUI 固定语言数据记录的 schema、标识符、BCP 47 标签或元数据无效 | 按数据 schema 修正发生错误的具体记录 | LanguageTags |
 | `ATOMUILOC002` | Localization | Error | AtomUI 固定语言数据包含重复的属性标识符或规范 BCP 47 标签 | 删除重复记录并为每个属性和标签保留唯一映射 | LanguageTags |

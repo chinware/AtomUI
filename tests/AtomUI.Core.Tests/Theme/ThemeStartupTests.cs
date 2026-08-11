@@ -37,10 +37,27 @@ public class ThemeStartupTests
                     provisional,
                     registry.GlobalTokens));
             var provider = new TestControlThemesProvider("Tests.Controls");
+            var semanticDescriptor = new ControlSemanticDescriptor(
+                descriptor.ControlType,
+                descriptor.Identity,
+                [
+                    new SemanticPartDescriptor(
+                        "root",
+                        "root",
+                        null,
+                        descriptor.ControlType,
+                        SemanticPartCardinality.Single,
+                        SemanticPartCustomization.Root,
+                        null,
+                        false,
+                        "6.0",
+                        false)
+                ]);
             var package = new ControlPackageRegistration(
                 provider.Id,
                 [descriptor],
                 [asset],
+                [semanticDescriptor],
                 provider);
             var builder = new ThemeManagerBuilder();
 
@@ -50,9 +67,45 @@ public class ThemeStartupTests
 
             manager.CurrentSnapshot!.Registry.Controls
                    .ShouldContain(control => control.Identity == descriptor.Identity);
+            manager.SemanticParts.TryGetControl(descriptor.ControlType, out var registeredSemanticDescriptor)
+                   .ShouldBeTrue();
+            registeredSemanticDescriptor.ShouldBeSameAs(semanticDescriptor);
             manager.Resources.MergedDictionaries.ShouldContain(provider.ControlThemes.Single());
             Should.Throw<ThemeResourceRegisterException>(() => builder.AddControlPackage(package));
         });
+    }
+
+    [Fact]
+    public void Legacy_Control_Package_Constructor_Registers_An_Empty_Semantic_Contract()
+    {
+        var descriptor = ThemeCompilerTests.CreateCompilerButtonDescriptor();
+        var provider = new TestControlThemesProvider("Tests.LegacyControls");
+        var package = new ControlPackageRegistration(
+            provider.Id,
+            [descriptor],
+            Array.Empty<ControlThemeAssetDescriptor>(),
+            provider);
+        var builder = new ThemeManagerBuilder();
+
+        builder.AddControlPackage(package);
+        var manager = builder.Build();
+
+        package.SemanticControls.ShouldBeEmpty();
+        manager.SemanticParts.Controls.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Control_Package_Rejects_Null_Semantic_Descriptors_With_A_Contract_Exception()
+    {
+        var descriptor = ThemeCompilerTests.CreateCompilerButtonDescriptor();
+        var provider = new TestControlThemesProvider("Tests.InvalidSemanticControls");
+
+        Should.Throw<ArgumentException>(() => new ControlPackageRegistration(
+            provider.Id,
+            [descriptor],
+            Array.Empty<ControlThemeAssetDescriptor>(),
+            [null!],
+            provider));
     }
 
     [Fact]
