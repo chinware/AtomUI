@@ -8,32 +8,78 @@
     <ControlTheme x:Key="{x:Type gallery:IconInfoItem}" TargetType="gallery:IconInfoItem">
         <Setter Property="Template">
             <ControlTemplate TargetType="gallery:IconInfoItem">
-                <Border
+                <Panel
                     Width="{TemplateBinding Width}"
-                    Height="{TemplateBinding Height}"
-                    Background="{TemplateBinding Background}">
-                    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                        <atom:IconPresenter
-                            HorizontalAlignment="Center"
-                            Icon="{TemplateBinding Icon}"/>
-                        <atom:TextBlock
-                            Margin="0,20, 0, 0"
-                            Padding="8"
-                            FontSize="13"
-                            HorizontalAlignment="Center"
-                            Foreground="{TemplateBinding Foreground}"
-                            Text="{TemplateBinding IconName}" />
-                    </StackPanel>
-                </Border>
+                    Height="{TemplateBinding Height}">
+                    <Border Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}">
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                            <atom:IconPresenter
+                                HorizontalAlignment="Center"
+                                Icon="{TemplateBinding Icon}"/>
+                            <atom:TextBlock
+                                Margin="0,20, 0, 0"
+                                Padding="8"
+                                FontSize="13"
+                                HorizontalAlignment="Center"
+                                Foreground="{TemplateBinding Foreground}"
+                                Text="{TemplateBinding IconName}" />
+                        </StackPanel>
+                    </Border>
+                    <Border Name="FocusVisual"
+                            BorderBrush="{atom:SharedTokenResource ColorPrimaryBorder}"
+                            BorderThickness="{atom:SharedTokenResource BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            IsHitTestVisible="False"
+                            IsVisible="False" />
+                </Panel>
             </ControlTemplate>
         </Setter>
         <Setter Property="Height" Value="150" />
         <Setter Property="Width" Value="150" />
         <Setter Property="Margin" Value="10" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="AutomationProperties.Name"
+                Value="{Binding IconName, RelativeSource={RelativeSource Self}}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
 
         <Style Selector="^ /template/ atom|IconPresenter">
             <Setter Property="Height" Value="48" />
             <Setter Property="Width" Value="48" />
+        </Style>
+
+        <Style Selector="^:pointerover:not(:disabled)">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgTextHover}" />
+        </Style>
+
+        <Style Selector="^:pressed:not(:disabled)">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgTextActive}" />
+        </Style>
+
+        <Style Selector="^:focus-visible /template/ Border#FocusVisual">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Cursor" Value="Arrow" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+        </Style>
+
+        <Style Selector="^:disabled /template/ atom|IconPresenter">
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+        </Style>
+
+        <Style Selector="^[IsMotionEnabled=True]">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <atom:SolidColorBrushTransition Property="Background"
+                                                    Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                </Transitions>
+            </Setter>
         </Style>
     </ControlTheme>
 </ResourceDictionary>

@@ -9,6 +9,8 @@ public enum IconShowCaseLangResourceKind
     ComponentStatusStable,
     PageSubtitle,
     PageDescription,
+    IconCopySucceededFormat,
+    IconCopyFailed,
     P2HeaderOutlined,
     P2HeaderFilled,
     P2HeaderTwoTone

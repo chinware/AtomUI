@@ -1,7 +1,20 @@
 using System.Security.Cryptography;
 using System.Text;
+using AtomUI.Desktop.Controls;
+using AtomUI.Toolkits.GalleryBase.Controls;
+using AtomUIGallery.ShowCases.Icon;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Input;
+using Avalonia.Input.Platform;
+using Avalonia.Interactivity;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
+using AvaloniaButton = Avalonia.Controls.Button;
+using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace AtomUIGallery.Tests.ShowCases;
 
@@ -64,6 +77,53 @@ public class IconShowCasePageTests
     }
 
     [Fact]
+    public void Icon_ShowCase_Uses_Standard_Click_And_Managed_Feedback_Lifecycle()
+    {
+        var source = ReadRepoFile(
+            "controlgallery/AtomUIGallery/ShowCases/General/Icon/Views/IconShowCase.axaml.cs");
+
+        source.ShouldContain("AddHandler(AvaloniaButton.ClickEvent, HandleIconItemClick)");
+        source.ShouldContain("await clipboard.SetTextAsync(iconName)");
+        source.ShouldContain("new WindowMessageManager(topLevel)");
+        source.ShouldContain("MaxItems = 1");
+        source.ShouldContain("_messageManager?.Dispose()");
+        source.ShouldContain("var copyRequest = ++_copyRequestSequence");
+        source.ShouldContain("_copyWaitCancellation?.Cancel()");
+        source.ShouldContain("var copySemaphore");
+        source.ShouldContain("= _copySemaphore;");
+        source.ShouldContain("await copySemaphore.WaitAsync(copyWaitCancellation.Token)");
+        source.ShouldContain("copySemaphore.Release()");
+        source.ShouldContain("copyRequest == _copyRequestSequence");
+        source.ShouldContain("ReferenceEquals(TopLevel.GetTopLevel(this), topLevel)");
+        source.ShouldContain("catch (Exception ex)");
+    }
+
+    [Fact]
+    public void Icon_ShowCase_Click_Copies_Icon_Name_And_Shows_Success_Feedback()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+        var page = new IconShowCase();
+
+        ShowInWindow(page, window =>
+        {
+            var item = WaitForVisual<IconInfoItem>(page);
+
+            item.RaiseEvent(new RoutedEventArgs(AvaloniaButton.ClickEvent, item));
+
+            WaitForClipboardText(item, item.IconName);
+            var messageManager = WaitForVisual<WindowMessageManager>(window);
+            messageManager.MaxItems.ShouldBe(1);
+            var messageCard = WaitForVisual<MessageCard>(messageManager);
+            messageCard.MessageType.ShouldBe(MessageType.Success);
+            messageCard.Message.ShouldContain(item.IconName);
+
+            window.Content = null;
+            Dispatcher.UIThread.RunJobs();
+            messageManager.GetVisualParent().ShouldBeNull();
+        });
+    }
+
+    [Fact]
     public void Icon_ShowCase_Localization_Includes_Page_Copy()
     {
         var en = XliffTestDocument.Read(
@@ -72,8 +132,10 @@ public class IconShowCasePageTests
             "controlgallery/AtomUIGallery/ShowCases/General/Icon/Localization/zh-CN.xlf");
         var zhTw = XliffTestDocument.Read(
             "controlgallery/AtomUIGallery/ShowCases/General/Icon/Localization/zh-TW.xlf");
+        var ptBr = XliffTestDocument.Read(
+            "controlgallery/AtomUIGallery/ShowCases/General/Icon/Localization/pt-BR.xlf");
 
-        foreach (var localization in new[] { en, zhCn, zhTw })
+        foreach (var localization in new[] { en, zhCn, zhTw, ptBr })
         {
             localization.ContainsKey("ComponentCategory").ShouldBeTrue();
             localization.ContainsKey("ComponentStatusStable").ShouldBeTrue();
@@ -85,6 +147,8 @@ public class IconShowCasePageTests
             localization.ContainsKey("P2HeaderOutlined").ShouldBeTrue();
             localization.ContainsKey("P2HeaderFilled").ShouldBeTrue();
             localization.ContainsKey("P2HeaderTwoTone").ShouldBeTrue();
+            localization.ContainsKey("IconCopySucceededFormat").ShouldBeTrue();
+            localization.ContainsKey("IconCopyFailed").ShouldBeTrue();
         }
     }
 
@@ -175,6 +239,76 @@ public class IconShowCasePageTests
             count++;
             startIndex = matchIndex + value.Length;
         }
+    }
+
+    private static void ShowInWindow(Control content, Action<AvaloniaWindow> assertion)
+    {
+        var visualLayerManager = new VisualLayerManager
+        {
+            EnableAdornerLayer = true,
+            Child              = content
+        };
+        var window = new AvaloniaWindow
+        {
+            Width   = 1000,
+            Height  = 700,
+            Content = visualLayerManager
+        };
+
+        window.Show();
+        Dispatcher.UIThread.RunJobs();
+
+        try
+        {
+            assertion(window);
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    private static T WaitForVisual<T>(Visual root)
+        where T : Visual
+    {
+        for (var i = 0; i < 40; i++)
+        {
+            Dispatcher.UIThread.RunJobs();
+            var visual = root.GetVisualDescendants().OfType<T>().FirstOrDefault();
+            if (visual is not null)
+            {
+                return visual;
+            }
+
+            Thread.Sleep(10);
+        }
+
+        return root.GetVisualDescendants().OfType<T>().First();
+    }
+
+    private static void WaitForClipboardText(Control control, string expectedText)
+    {
+        var clipboard = TopLevel.GetTopLevel(control)?.Clipboard;
+        clipboard.ShouldNotBeNull();
+
+        string? actualText = null;
+        for (var i = 0; i < 40; i++)
+        {
+            Dispatcher.UIThread.RunJobs();
+            using var dataTransfer = clipboard!.TryGetInProcessDataAsync().GetAwaiter().GetResult();
+            actualText = dataTransfer is null
+                ? null
+                : dataTransfer.TryGetValueAsync(DataFormat.Text).GetAwaiter().GetResult();
+            if (actualText == expectedText)
+            {
+                return;
+            }
+
+            Thread.Sleep(10);
+        }
+
+        actualText.ShouldBe(expectedText);
     }
 
     private static string ReadRepoFile(string relativePath)

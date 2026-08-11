@@ -7,6 +7,7 @@ using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using ScrollViewer = AtomUI.Desktop.Controls.ScrollViewer;
 
 namespace AtomUI.Toolkits.GalleryBase.Controls;
@@ -18,6 +19,7 @@ public class IconGallery : TemplatedControl
     private const double LoadMoreScrollThreshold = 240;
     private const string ScrollViewerPart = "PART_ScrollViewer";
     private const string SearchInputPart = "PART_SearchInput";
+    private static readonly TimeSpan SearchDebounceDelay = TimeSpan.FromMilliseconds(120);
 
     public static readonly StyledProperty<IconThemeType?> IconThemeTypeProperty =
         AvaloniaProperty.Register<IconGallery, IconThemeType?>(nameof(IconThemeType));
@@ -45,6 +47,7 @@ public class IconGallery : TemplatedControl
     private AvaloniaList<PackageIconItem> _activatedIconInfos = new();
     private ScrollViewer? _scrollViewer;
     private SearchEdit? _searchEdit;
+    private DispatcherTimer? _searchDebounceTimer;
     private int _loadedIconCount;
     private bool _templateEventsAttached;
 
@@ -89,7 +92,7 @@ public class IconGallery : TemplatedControl
         {
             if (VisualRoot is not null)
             {
-                ReLoadIcons();
+                ReloadIconsImmediately();
             }
         }
     }
@@ -139,11 +142,35 @@ public class IconGallery : TemplatedControl
 
     private void HandleSearchRequested(object? sender, SearchRequestedEventArgs e)
     {
+        ReloadIconsImmediately();
+    }
+
+    private void ReloadIconsImmediately()
+    {
+        _searchDebounceTimer?.Stop();
         ReLoadIcons();
     }
 
     private void HandleSearchTextChanged(object? sender, RoutedEventArgs e)
     {
+        _searchDebounceTimer ??= CreateSearchDebounceTimer();
+        _searchDebounceTimer.Stop();
+        _searchDebounceTimer.Start();
+    }
+
+    private DispatcherTimer CreateSearchDebounceTimer()
+    {
+        var timer = new DispatcherTimer
+        {
+            Interval = SearchDebounceDelay
+        };
+        timer.Tick += HandleSearchDebounceTick;
+        return timer;
+    }
+
+    private void HandleSearchDebounceTick(object? sender, EventArgs e)
+    {
+        _searchDebounceTimer?.Stop();
         ReLoadIcons();
     }
 
@@ -175,6 +202,8 @@ public class IconGallery : TemplatedControl
             return;
         }
 
+        _searchDebounceTimer?.Stop();
+
         if (_scrollViewer != null)
         {
             _scrollViewer.ScrollChanged -= HandleScrollChanged;
@@ -182,6 +211,7 @@ public class IconGallery : TemplatedControl
 
         if (_searchEdit != null)
         {
+            _searchEdit.TextChanged     -= HandleSearchTextChanged;
             _searchEdit.SearchRequested -= HandleSearchRequested;
         }
 

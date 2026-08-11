@@ -11,6 +11,16 @@
         <source>.NET 10</source>
       </segment>
     </unit>
+    <unit id="IconCopyFailed">
+      <segment>
+        <source>Could not copy the icon name. Please try again.</source>
+      </segment>
+    </unit>
+    <unit id="IconCopySucceededFormat">
+      <segment>
+        <source>Icon name copied: {0}</source>
+      </segment>
+    </unit>
     <unit id="P2HeaderFilled">
       <segment>
         <source>Filled</source>

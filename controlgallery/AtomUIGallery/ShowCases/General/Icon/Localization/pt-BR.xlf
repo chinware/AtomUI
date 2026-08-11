@@ -13,6 +13,18 @@
         <target state="translated">.NET 10</target>
       </segment>
     </unit>
+    <unit id="IconCopyFailed">
+      <segment>
+        <source>Could not copy the icon name. Please try again.</source>
+        <target state="translated">Não foi possível copiar o nome do ícone. Tente novamente.</target>
+      </segment>
+    </unit>
+    <unit id="IconCopySucceededFormat">
+      <segment>
+        <source>Icon name copied: {0}</source>
+        <target state="translated">Nome do ícone copiado: {0}</target>
+      </segment>
+    </unit>
     <unit id="P2HeaderFilled">
       <segment>
         <source>Filled</source>
