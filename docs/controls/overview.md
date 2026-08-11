@@ -12,7 +12,7 @@ docs/controls/
 ## 平台分层
 
 - [桌面 Control](desktop/overview.md)：覆盖 `AtomUI.Desktop.Controls`、DataGrid、ColorPicker 中的具体 Control。
-- [移动端 Control](mobile/overview.md)：当前项目未包含移动端 Control 实现；正式入口维护预实现架构、七分类导航和 82 项能力兼容清单。
+- [移动端 Control](mobile/overview.md)：预实现架构；Source 未实现，入口维护七分类导航和 82 项能力兼容清单。
 
 ## 与 modules 的关系
 
@@ -23,3 +23,6 @@ docs/controls/
 `docs/controls/desktop/data-display/data-grid/` 下的控件文档维护。
 
 桌面端控件按控件目录维护 `overview.md`、`implementation.md`、`changelog.md`，存在专属 Token 的控件同时维护 `token.md`。
+
+Mobile 不预建 82 个空目录。只有 Public API、Theme、Contract/Headless tests、Gallery API/Token/ShowCase 位置和双平台状态均可
+审查时，才创建单 Control 文档目录。

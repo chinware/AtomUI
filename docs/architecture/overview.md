@@ -10,8 +10,11 @@ AtomUI 是基于 Avalonia/.NET 的桌面与跨平台控件系统。整体架构�
 - [字体子系统](systems/typography/overview.md)：字体包注册、字体族回退、字号与行高 Token 派生。
 - [Control 基础设施](systems/control-infrastructure/overview.md)：异步加载、过滤与响应式共享契约。
 - [渲染系统](systems/rendering/overview.md)：边框渲染与跨 VisualRoot 的视觉层规则。
+- [Mobile 系统](systems/mobile/overview.md)：预实现的移动 Runtime、平台能力、Navigation/Overlay、Gesture 和双平台验证契约。
 
-## 架构分层
+## 当前源码架构
+
+下图只描述当前仓库项目和直接产品关系，不包含尚未创建的 Mobile Controls 或 Mobile Gallery Host。
 
 ```mermaid
 flowchart TD
@@ -57,6 +60,27 @@ flowchart TD
     ColorPicker --> Gallery
 ```
 
+## 已批准的 Mobile 目标层
+
+> 状态：预实现架构。本文定义已批准的目标契约，不表示当前仓库已经包含或发布 `AtomUI.Mobile.Controls`。
+
+Mobile 与 Desktop 平行，复用稳定基础设施但不依赖 Desktop。iOS 是首个实现平台；Android capability、公共 API 和验证责任
+从 Foundation 开始同时存在。
+
+```mermaid
+flowchart LR
+    Controls["AtomUI.Controls\n公共抽象与 primitives"] --> Desktop["AtomUI.Desktop.Controls\n当前桌面产品包"]
+    Controls -. approved target .-> Mobile["AtomUI.Mobile.Controls\n预实现目标包"]
+    Native["AtomUI.Native\n底层 OS 能力"] -. capability .-> Desktop
+    Native -. target capability .-> Mobile
+    Generator["AtomUI.Generator\n静态 descriptor"] -. analyzer .-> Mobile
+    Mobile -. target .-> IOS["iOS Host\n首个实现平台"]
+    Mobile -. target .-> Android["Android Host\nFoundation 契约"]
+```
+
+目标依赖、包 ownership 和 Runtime 不变量分别见 [项目依赖关系](foundations/dependency-graph.md)、
+[Mobile Controls 模块](../modules/mobile-controls/overview.md)和 [Mobile 系统架构](systems/mobile/overview.md)。
+
 ## 核心运行链路
 
 AtomUI 应用通常分两步接入：
@@ -79,6 +103,9 @@ descriptor 和 ControlTheme asset manifest；本地化链路收集 Catalog、编
 - DataGrid、ColorPicker 和 Extras 是按需引用的独立桌面包。
 - `AtomUI.Generator` 以 Analyzer 方式提供静态 descriptor、资源键、注册和本地化输出。
 - `AtomUI.Toolkits.GalleryBase` 为 Gallery 应用提供产品中立的工具层。
+
+上述列表是当前源码包。目标 `AtomUI.Mobile.Controls` 在项目实际加入解决方案前只出现在预实现目标层，不作为当前源码包或
+发布包列出。
 
 具体项目引用与内部可见性见 [项目依赖关系](foundations/dependency-graph.md)。
 

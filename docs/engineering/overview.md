@@ -26,7 +26,7 @@
 
 - [平台工程总览](platforms/overview.md)
 - [Apple iOS 工程环境](platforms/apple-ios/overview.md)
-- [Android 工程环境](platforms/android/overview.md)：Host、命令和平台证据尚未验证。
+- [Android 工程环境](platforms/android/overview.md)：预实现架构；Host、命令和平台证据尚未验证。
 - [Linux Gallery NativeAOT 发布](platforms/linux-native-aot-publish.md)
 - [Windows Gallery NativeAOT 发布](platforms/windows-native-aot-publish.md)
 

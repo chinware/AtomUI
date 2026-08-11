@@ -11,7 +11,7 @@
 | [Localization](localization/overview.md) | `src/AtomUI.Localization` | [本地化系统](../architecture/systems/localization/overview.md) |
 | [Controls.Shared](controls-shared/overview.md) | `src/AtomUI.Controls.Shared` | [Control 基础设施](../architecture/systems/control-infrastructure/overview.md) |
 | [Controls](controls/overview.md) | `src/AtomUI.Controls` | [渲染系统](../architecture/systems/rendering/overview.md) |
-| [Mobile Controls](mobile-controls/overview.md) | 目标 `AtomUI.Mobile.Controls` 项目与包，当前未实现 | [Mobile 系统](../architecture/systems/mobile/overview.md) |
+| [Mobile Controls](mobile-controls/overview.md) | `AtomUI.Mobile.Controls` 预实现目标项目与包；Source 未实现 | [Mobile 系统](../architecture/systems/mobile/overview.md) |
 | [Generator](generator/overview.md) | `src/AtomUI.Generator` | [主题系统](../architecture/systems/theming/overview.md)、[本地化系统](../architecture/systems/localization/overview.md) |
 | [Fonts](fonts/overview.md) | `src/AtomUI.Fonts.*` | [主题系统](../architecture/systems/theming/overview.md) |
 | [Icons](icons/overview.md) | `src/AtomUI.Icons.*` | [整体架构](../architecture/overview.md) |
@@ -19,3 +19,6 @@
 
 `src/AtomUI.Build.Tasks`、语言包项目和 GalleryBase Generator 作为跨项目系统的一部分，分别由本地化架构和
 对应宿主模块说明；当其形成独立发布边界和维护入口时，再新增模块目录。
+
+表中只有 Mobile Controls 使用预实现状态；它不是当前解决方案项目。真实项目落地后，模块文档必须按源码、注册、测试和
+发布证据更新，不能只移除状态说明。
