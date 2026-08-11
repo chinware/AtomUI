@@ -63,8 +63,8 @@ public class CascaderShowCasePageTests
         source.ShouldContain("CascaderShowCaseLangResource EmptyIndicatorTitle");
         CountOccurrences(source, "<atom:CascaderView.EmptyIndicator>").ShouldBe(1);
         source.ShouldContain("OptionCheckedChanged=\"HandlePlacementOptionCheckedChanged\"");
-        source.ShouldContain("SearchButtonClick=\"HandleFilterCascaderViewClicked\"");
-        source.ShouldContain("SearchButtonClick=\"HandleFilterCascaderViewItemsSourceClicked\"");
+        source.ShouldContain("SearchRequested=\"HandleFilterCascaderViewSearchRequested\"");
+        source.ShouldContain("SearchRequested=\"HandleFilterCascaderViewItemsSourceSearchRequested\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain(">Gallery<");

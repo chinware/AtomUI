@@ -31,7 +31,7 @@ internal static partial class Program
             new PerfScenario("SearchEdit.Default", _ => CreateSearchEdit()),
             new PerfScenario("SearchEdit.TextButton", _ => CreateSearchEdit(searchButtonText: "Search")),
             new PerfScenario("SearchEdit.Primary", _ => CreateSearchEdit(searchButtonText: "Search", searchButtonStyle: SearchEditButtonStyle.Primary)),
-            new PerfScenario("SearchEdit.Loading", _ => CreateSearchEdit(searchButtonStyle: SearchEditButtonStyle.Primary, isOperating: true)),
+            new PerfScenario("SearchEdit.Loading", _ => CreateSearchEdit(searchButtonStyle: SearchEditButtonStyle.Primary, isSearching: true)),
             new PerfScenario("SearchEdit.AllowClear", _ => CreateSearchEdit(text: "search", isAllowClear: true)),
             new PerfScenario("SearchEdit.InnerRight", _ => CreateSearchEdit(innerRightContent: new AudioOutlined { Width = 16, Height = 16 })),
             new PerfScenario("SearchEdit.LeftAddOn", _ => CreateSearchEdit(leftAddOn: new Avalonia.Controls.TextBlock { Text = "https://" })),
@@ -113,7 +113,7 @@ internal static partial class Program
         bool isAllowClear = false,
         SearchEditButtonStyle searchButtonStyle = SearchEditButtonStyle.Default,
         string? searchButtonText = null,
-        bool isOperating = false,
+        bool isSearching = false,
         object? innerRightContent = null,
         object? leftAddOn = null)
     {
@@ -124,7 +124,7 @@ internal static partial class Program
             IsAllowClear      = isAllowClear,
             SearchButtonStyle = searchButtonStyle,
             SearchButtonText  = searchButtonText,
-            IsOperating       = isOperating,
+            IsSearching       = isSearching,
             InnerRightContent = innerRightContent,
             LeftAddOn         = leftAddOn
         };
@@ -194,7 +194,7 @@ internal static partial class Program
                 isAllowClear: i % 9 == 0,
                 searchButtonStyle: i % 3 == 0 ? SearchEditButtonStyle.Primary : SearchEditButtonStyle.Default,
                 searchButtonText: i % 2 == 0 ? "Search" : null,
-                isOperating: i % 11 == 0,
+                isSearching: i % 11 == 0,
                 innerRightContent: i % 10 == 0 ? new AudioOutlined { Width = 16, Height = 16 } : null,
                 leftAddOn: i % 4 == 0 ? new Avalonia.Controls.TextBlock { Text = "https://" } : null));
         }

@@ -12,11 +12,8 @@ public partial class ListAdvancedShowCase : GalleryReactiveUserControl<ListViewM
         OrderedList.SortDescriptions = [ListSortDescription.FromPath(nameof(IListItemData.Content))];
     }
 
-    private void HandleFilterListBoxClicked(object? sender, RoutedEventArgs e)
+    private void HandleFilterListBoxSearchRequested(object? sender, SearchRequestedEventArgs e)
     {
-        if (sender is SearchEdit searchEdit)
-        {
-            SearchListBox.FilterValue = searchEdit.Text?.Trim();
-        }
+        SearchListBox.FilterValue = e.Query.Trim();
     }
 }

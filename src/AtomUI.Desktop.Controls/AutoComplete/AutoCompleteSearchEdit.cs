@@ -14,8 +14,11 @@ public class AutoCompleteSearchEdit : CompactSpaceAwareAutoComplete
     public static readonly StyledProperty<string> SearchButtonTextProperty =
         SearchEdit.SearchButtonTextProperty.AddOwner<AutoCompleteSearchEdit>();
 
-    public static readonly StyledProperty<bool> IsOperatingProperty =
-        SearchEdit.IsOperatingProperty.AddOwner<AutoCompleteSearchEdit>();
+    public static readonly StyledProperty<bool> IsSearchingProperty =
+        SearchEdit.IsSearchingProperty.AddOwner<AutoCompleteSearchEdit>();
+
+    public static readonly StyledProperty<bool> IsSearchOnEnterEnabledProperty =
+        SearchEdit.IsSearchOnEnterEnabledProperty.AddOwner<AutoCompleteSearchEdit>();
     
     public SearchEditButtonStyle SearchButtonStyle
     {
@@ -29,10 +32,26 @@ public class AutoCompleteSearchEdit : CompactSpaceAwareAutoComplete
         set => SetValue(SearchButtonTextProperty, value);
     }
 
-    public bool IsOperating
+    public bool IsSearching
     {
-        get => GetValue(IsOperatingProperty);
-        set => SetValue(IsOperatingProperty, value);
+        get => GetValue(IsSearchingProperty);
+        set => SetValue(IsSearchingProperty, value);
+    }
+
+    public bool IsSearchOnEnterEnabled
+    {
+        get => GetValue(IsSearchOnEnterEnabledProperty);
+        set => SetValue(IsSearchOnEnterEnabledProperty, value);
+    }
+
+    #endregion
+
+    #region 公共事件定义
+
+    public event EventHandler<SearchRequestedEventArgs>? SearchRequested
+    {
+        add => AddHandler(SearchEdit.SearchRequestedEvent, value);
+        remove => RemoveHandler(SearchEdit.SearchRequestedEvent, value);
     }
 
     #endregion

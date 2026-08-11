@@ -132,21 +132,21 @@ public partial class TreeViewShowCase : GalleryReactiveUserControl<TreeViewViewM
         }
     }
 
-    private void HandleFilterItemsSourceTreeClicked(object? sender, RoutedEventArgs e)
+    private void HandleFilterItemsSourceTreeSearchRequested(object? sender, SearchRequestedEventArgs e)
     {
         if (sender is SearchEdit searchEdit &&
             TryFindTemplateTreeView(searchEdit, "SearchTreeViewByItemsSource", out var treeView))
         {
-            treeView.FilterValue = searchEdit.Text?.Trim();
+            treeView.FilterValue = e.Query.Trim();
         }
     }
 
-    private void HandleFilterTreeClicked(object? sender, RoutedEventArgs e)
+    private void HandleFilterTreeSearchRequested(object? sender, SearchRequestedEventArgs e)
     {
         if (sender is SearchEdit searchEdit &&
             TryFindTemplateTreeView(searchEdit, "SearchTreeView", out var treeView))
         {
-            treeView.FilterValue = searchEdit.Text?.Trim();
+            treeView.FilterValue = e.Query.Trim();
         }
     }
 

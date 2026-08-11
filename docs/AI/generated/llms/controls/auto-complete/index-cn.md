@@ -43,12 +43,12 @@ AutoComplete 的公共契约由 public/protected 类型成员、Avalonia 属性�
 | --- | --- | --- |
 | 内容与数据 | `ClearIcon`、`ContentLeftAddOn`、`ContentLeftAddOnTemplate`、`ContentRightAddOn`、`ContentRightAddOnTemplate`、`DefaultValue`、`FilterValue`、`FilterValueSelector`、`OptionTemplate`、`OptionsAsyncLoader` 等 14 项 | 定义控件展示内容、输入数据、模板或业务对象入口。 |
 | 选择与集合 | `CaretIndex`、`ClearSelectionOnLostFocus`、`DisplayCandidateCount`、`Filter`、`IsShowCount` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsAllowClear`、`IsAutoFocus`、`IsAutoSize`、`IsCompletionEnabled`、`IsDropDownOpen`、`IsLoading`、`IsMotionEnabled`、`IsOperating`、`IsPopupMatchSelectWidth`、`IsReadOnly` 等 13 项 | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
+| 交互与状态 | `IsAllowClear`、`IsAutoFocus`、`IsAutoSize`、`IsCompletionEnabled`、`IsDropDownOpen`、`IsLoading`、`IsMotionEnabled`、`IsSearching`、`IsSearchOnEnterEnabled`、`IsPopupMatchSelectWidth`、`IsReadOnly` 等 14 项 | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 视觉与布局 | `MaxDropDownHeight`、`PlaceholderForeground`、`Placement`、`SearchButtonStyle`、`SizeType`、`StyleVariant` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 动效与异步 | `AsyncLoadDebounce`、`AsyncLoadTimeout` | 约束动效开关、异步加载、播放速度、超时和任务边界。 |
 | 其他稳定入口 | `Lines`、`MaxLength`、`MinimumPrefixLength` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
-稳定事件包括 `SelectionChanged`、`ValueChanged`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
+稳定事件包括 `SelectionChanged`、`ValueChanged`；`AutoCompleteSearchEdit` 还通过内部 SearchEdit box 转发 `SearchRequested`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
 
 主要公开类型与枚举：
 
@@ -66,7 +66,7 @@ AutoComplete 的公共契约由 public/protected 类型成员、Avalonia 属性�
 ## 事件与命令
 
 AutoComplete 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
-稳定事件包括 `SelectionChanged`、`ValueChanged`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
+稳定事件包括 `SelectionChanged`、`ValueChanged`；`AutoCompleteSearchEdit` 还通过内部 SearchEdit box 转发 `SearchRequested`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
 - 类型：`AbstractAutoComplete`、`AutoComplete`、`AutoCompleteLineEditBox`、`AutoCompleteSearchEdit`、`AutoCompleteSearchEditBox`、`AutoCompleteTextArea`、`AutoCompleteTextAreaBox`、`CompactSpaceAwareAutoComplete`、`CompleteOptionsLoadResult`、`CompleteOptionsLoadedEventArgs`、`CompletePopulatedEventArgs`、`CompletePopulatingEventArgs`、`CompleteValueChangedEventArgs`。
 
 ## 使用示例

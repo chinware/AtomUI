@@ -78,8 +78,9 @@ SearchEdit 专项 API：
 | --- | --- |
 | `SearchButtonStyle` | 搜索按钮样式，支持 `Default` 和 `Primary`。 |
 | `SearchButtonText` | 搜索按钮文字。 |
-| `IsOperating` | 搜索按钮加载态；加载期间搜索按钮点击不重复触发事件。 |
-| `SearchButtonClick` | 搜索按钮点击路由事件。 |
+| `IsSearching` | 搜索进行中状态；显示按钮 loading 并阻止重复搜索请求。 |
+| `IsSearchOnEnterEnabled` | 是否允许 Enter 键触发搜索请求，默认启用。 |
+| `SearchRequested` | 按钮或 Enter 键触发的搜索请求路由事件。 |
 
 TextArea 专项 API：
 
@@ -180,7 +181,7 @@ LineEdit 是 Data Entry 文本输入家族的根入口，与 NumericUpDown、Dat
 - `IsCustomFontSize=true` 时不得由 SizeType 样式覆盖用户设置的 `FontSize`。
 - 清除按钮只在有效状态为 true 时显示，且清除动作进入统一 `Clear()` 语义。
 - `LineEdit` 的外部 AddOn 必须由 `AddOnDecoratedBox` 承载，不在控件 C# 中动态创建视觉结构。
-- `SearchEdit.IsOperating=true` 时搜索按钮点击不重复触发 `SearchButtonClick`。
+- `SearchEdit.IsSearching=true` 时按钮和 Enter 键不重复触发 `SearchRequested`。
 - `TextArea.Lines` 必须遵守 `MinLines` / `MaxLines`，resize 不得突破行数边界。
 - Form feedback 订阅必须在 detach 时释放。
 - TextPresenter 的 margin、placeholder、selection、caret 和 disabled 文本色属于输入模板契约，不应在业务控件中用 magic width 补偿。

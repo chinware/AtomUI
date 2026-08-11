@@ -100,12 +100,11 @@ public partial class ListShowCase : GalleryReactiveUserControl<ListViewModel>
         viewModel.EmptyDemoItems = items;
     }
 
-    private void HandleFilterListBoxClicked(object? sender, RoutedEventArgs e)
+    private void HandleFilterListBoxSearchRequested(object? sender, SearchRequestedEventArgs e)
     {
-        if (sender is SearchEdit searchEdit &&
-            DataContext is ListViewModel viewModel)
+        if (DataContext is ListViewModel viewModel)
         {
-            viewModel.SearchFilterValue = searchEdit.Text?.Trim();
+            viewModel.SearchFilterValue = e.Query.Trim();
         }
     }
 

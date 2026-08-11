@@ -48,7 +48,7 @@
             Description="{gallery:ListShowCaseLangResource SearchableDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:SearchEdit PlaceholderText="{gallery:ListShowCaseLangResource P2PlaceholderTextSearch}"
-                                 SearchButtonClick="HandleFilterListBoxClicked"/>
+                                 SearchRequested="HandleFilterListBoxSearchRequested"/>
                 <atom:ListBox Name="SearchListBox">
                     <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentRacingCarSpraysBurningFuelIntoCrowd}" />
                     <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentJapanesePrincessToWedCommoner}" />

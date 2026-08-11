@@ -70,8 +70,8 @@ public class TreeViewShowCasePageTests
         source.ShouldContain("TreeViewShowCaseLangResource EmptyIndicatorTitle");
         CountOccurrences(source, "<atom:TreeView.EmptyIndicator>").ShouldBe(1);
         source.ShouldContain("IsCheckedChanged=\"HandleHoverModeChanged\"");
-        source.ShouldContain("SearchButtonClick=\"HandleFilterItemsSourceTreeClicked\"");
-        source.ShouldContain("SearchButtonClick=\"HandleFilterTreeClicked\"");
+        source.ShouldContain("SearchRequested=\"HandleFilterItemsSourceTreeSearchRequested\"");
+        source.ShouldContain("SearchRequested=\"HandleFilterTreeSearchRequested\"");
         source.ShouldContain("ItemContextMenuRequest=\"HandleContextMenuTreeItemContextMenuRequest\"");
         source.ShouldNotContain("{Binding #");
         source.ShouldNotContain("<atom:TabControl");

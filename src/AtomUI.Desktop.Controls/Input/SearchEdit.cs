@@ -14,6 +14,30 @@ public enum SearchEditButtonStyle
     Primary
 }
 
+public enum SearchTriggerSource
+{
+    Button,
+    EnterKey
+}
+
+public sealed class SearchRequestedEventArgs : RoutedEventArgs
+{
+    public SearchRequestedEventArgs(
+        RoutedEvent routedEvent,
+        object? source,
+        string query,
+        SearchTriggerSource trigger)
+        : base(routedEvent, source)
+    {
+        Query   = query;
+        Trigger = trigger;
+    }
+
+    public string Query { get; }
+
+    public SearchTriggerSource Trigger { get; }
+}
+
 public class SearchEdit : LineEdit
 {
     #region 公共属性定义
@@ -24,20 +48,14 @@ public class SearchEdit : LineEdit
     public static readonly StyledProperty<string> SearchButtonTextProperty =
         AvaloniaProperty.Register<SearchEdit, string>(nameof(SearchButtonText));
 
-    public static readonly StyledProperty<bool> IsOperatingProperty =
-        AvaloniaProperty.Register<SearchEdit, bool>(nameof(IsOperating));
+    public static readonly StyledProperty<bool> IsSearchingProperty =
+        AvaloniaProperty.Register<SearchEdit, bool>(nameof(IsSearching));
 
     public static readonly StyledProperty<ControlTheme?> SearchButtonThemeProperty =
         AvaloniaProperty.Register<SearchEdit, ControlTheme?>(nameof(SearchButtonTheme));
     
-    public static readonly StyledProperty<bool> HandleEnterAsSearchProperty = AvaloniaProperty.Register<SearchEdit, bool>(
-        nameof(HandleEnterAsSearch), defaultValue: false); //为了不破坏老代码行为，默认值为false，即默认不处理Enter
-
-    public bool HandleEnterAsSearch
-    {
-        get => GetValue(HandleEnterAsSearchProperty);
-        set => SetValue(HandleEnterAsSearchProperty, value);
-    }
+    public static readonly StyledProperty<bool> IsSearchOnEnterEnabledProperty =
+        AvaloniaProperty.Register<SearchEdit, bool>(nameof(IsSearchOnEnterEnabled), true);
 
     public SearchEditButtonStyle SearchButtonStyle
     {
@@ -51,10 +69,10 @@ public class SearchEdit : LineEdit
         set => SetValue(SearchButtonTextProperty, value);
     }
 
-    public bool IsOperating
+    public bool IsSearching
     {
-        get => GetValue(IsOperatingProperty);
-        set => SetValue(IsOperatingProperty, value);
+        get => GetValue(IsSearchingProperty);
+        set => SetValue(IsSearchingProperty, value);
     }
 
     public ControlTheme? SearchButtonTheme
@@ -63,17 +81,25 @@ public class SearchEdit : LineEdit
         set => SetValue(SearchButtonThemeProperty, value);
     }
 
+    public bool IsSearchOnEnterEnabled
+    {
+        get => GetValue(IsSearchOnEnterEnabledProperty);
+        set => SetValue(IsSearchOnEnterEnabledProperty, value);
+    }
+
     #endregion
 
     #region 公共事件定义
 
-    public static readonly RoutedEvent<RoutedEventArgs> SearchButtonClickEvent =
-        RoutedEvent.Register<SearchEdit, RoutedEventArgs>(nameof(SearchButtonClick), RoutingStrategies.Bubble);
+    public static readonly RoutedEvent<SearchRequestedEventArgs> SearchRequestedEvent =
+        RoutedEvent.Register<SearchEdit, SearchRequestedEventArgs>(
+            nameof(SearchRequested),
+            RoutingStrategies.Bubble);
 
-    public event EventHandler<RoutedEventArgs>? SearchButtonClick
+    public event EventHandler<SearchRequestedEventArgs>? SearchRequested
     {
-        add => AddHandler(SearchButtonClickEvent, value);
-        remove => RemoveHandler(SearchButtonClickEvent, value);
+        add => AddHandler(SearchRequestedEvent, value);
+        remove => RemoveHandler(SearchRequestedEvent, value);
     }
 
     #endregion
@@ -97,24 +123,25 @@ public class SearchEdit : LineEdit
         }
     }
 
-    internal void NotifySearchButtonClicked()
+    internal void RaiseSearchRequested(SearchTriggerSource trigger)
     {
-        if (IsOperating)
+        if (IsSearching)
         {
             return;
         }
-        var eventArgs = new RoutedEventArgs(SearchButtonClickEvent, this);
-        RaiseEvent(eventArgs);
+
+        RaiseEvent(new SearchRequestedEventArgs(
+            SearchRequestedEvent,
+            this,
+            Text ?? string.Empty,
+            trigger));
     }
-    
-    
-    //Enter handler
-    //使用OnKeyUp而不是OnKeyDown，避免用户一直按着Enter一直触发Search
+
     protected override void OnKeyUp(KeyEventArgs e)
     {
         base.OnKeyUp(e);
 
-        if (!HandleEnterAsSearch)
+        if (!IsSearchOnEnterEnabled)
         {
             return;
         }
@@ -124,7 +151,7 @@ public class SearchEdit : LineEdit
             return;
         }
 
-        NotifySearchButtonClicked();
         e.Handled = true;
+        RaiseSearchRequested(SearchTriggerSource.EnterKey);
     }
 }

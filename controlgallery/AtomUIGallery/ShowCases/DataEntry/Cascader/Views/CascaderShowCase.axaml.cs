@@ -133,21 +133,21 @@ public partial class CascaderShowCase : GalleryReactiveUserControl<CascaderViewM
         }
     }
 
-    private void HandleFilterCascaderViewClicked(object? sender, RoutedEventArgs args)
+    private void HandleFilterCascaderViewSearchRequested(object? sender, SearchRequestedEventArgs args)
     {
         if (sender is SearchEdit searchEdit &&
             TryFindTemplateCascaderView(searchEdit, "SearchCascaderView", out var cascaderView))
         {
-            cascaderView.FilterValue = searchEdit.Text?.Trim();
+            cascaderView.FilterValue = args.Query.Trim();
         }
     }
 
-    private void HandleFilterCascaderViewItemsSourceClicked(object? sender, RoutedEventArgs args)
+    private void HandleFilterCascaderViewItemsSourceSearchRequested(object? sender, SearchRequestedEventArgs args)
     {
         if (sender is SearchEdit searchEdit &&
             TryFindTemplateCascaderView(searchEdit, "SearchCascaderViewItemsSource", out var cascaderView))
         {
-            cascaderView.FilterValue = searchEdit.Text?.Trim();
+            cascaderView.FilterValue = args.Query.Trim();
         }
     }
 

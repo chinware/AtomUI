@@ -22,11 +22,11 @@ SearchEdit 的设计语言来自输入框与搜索 action 的一体化组合。
 
 | 维度 | 含义 | 典型表达 |
 | --- | --- | --- |
-| 搜索语义 | 用户输入查询文本，并通过按钮触发搜索。 | `Text`、`PlaceholderText`、`SearchButtonClick`。 |
+| 搜索语义 | 用户输入查询文本，并通过按钮或 Enter 键请求搜索。 | `Text`、`PlaceholderText`、`SearchRequested`。 |
 | 输入密度 | 控件在表单、工具栏和筛选区中的尺寸等级。 | `SizeType=Large/Middle/Small/Custom`。 |
 | 输入表面 | 输入框边框和背景强度。 | `Outlined`、`Filled`、`Borderless`、`Underlined`。 |
 | 搜索按钮强调度 | 搜索 action 是普通附加按钮还是主操作按钮。 | `SearchButtonStyle=Default/Primary`。 |
-| 运行状态 | 搜索操作进行中，按钮显示 loading 并阻止重复点击。 | `IsOperating=true`。 |
+| 运行状态 | 搜索操作进行中，按钮显示 loading 并阻止重复请求。 | `IsSearching=true`。 |
 | 输入反馈 | 搜索条件的校验或业务状态。 | `Status=Default/Error/Warning`。 |
 
 `Custom` 尺寸不是 SearchEdit 的第四套专属 Token。它以 `Middle` 作为未显式设置时的视觉基线，并允许用户通过 `Height`、`FontSize`、`Padding` 等常规属性覆盖实际尺寸。
@@ -41,9 +41,10 @@ SearchEdit 专项 API：
 | --- | --- | --- |
 | `SearchButtonStyle` | `SearchEditButtonStyle` | 搜索按钮样式，支持 `Default` 和 `Primary`。 |
 | `SearchButtonText` | `string` | 搜索按钮显示文本；未设置时按钮以搜索图标为主要视觉。 |
-| `IsOperating` | `bool` | 搜索按钮 loading 状态；为 `true` 时阻止重复触发 `SearchButtonClick`。 |
+| `IsSearching` | `bool` | 搜索进行中状态；为 `true` 时显示按钮 loading 并阻止重复触发搜索请求。 |
+| `IsSearchOnEnterEnabled` | `bool` | 是否允许未处理的 Enter `KeyUp` 触发搜索请求，默认值为 `true`。 |
 | `SearchButtonTheme` | `ControlTheme?` | 搜索按钮 Semantic Part Theme；`TargetType` 必须兼容 public `Button`。 |
-| `SearchButtonClick` | `RoutedEvent<RoutedEventArgs>` | 搜索按钮点击事件，由 `Button#PART_RightAddOn` 点击冒泡为 SearchEdit 事件。 |
+| `SearchRequested` | `RoutedEvent<SearchRequestedEventArgs>` | 搜索请求事件；按钮和 Enter 键共用该事件，并提供查询文本快照与触发来源。 |
 
 继承输入 API 的 SearchEdit 约束：
 
@@ -76,25 +77,33 @@ SearchEdit 的右侧外部 add-on 位置由搜索按钮占用。维护时不应�
 
 ## 4. 行为与状态模型
 
-SearchEdit 的文本输入行为继承 LineEdit，搜索按钮行为独立建模：
+SearchEdit 的文本输入行为继承 LineEdit，搜索请求由按钮或 Enter 键进入统一管线：
 
 ```text
 Button#PART_RightAddOn.Click
   ↓
 SearchEditDecoratedBox.HandleSearchButtonClick
   ↓
-SearchEdit.NotifySearchButtonClicked()
+SearchEdit.RaiseSearchRequested(Button)
   ↓
-if !IsOperating raise SearchButtonClick
+if !IsSearching raise SearchRequested
+
+Enter KeyUp when IsSearchOnEnterEnabled && !Handled
+  ↓
+mark KeyUp handled
+  ↓
+SearchEdit.RaiseSearchRequested(EnterKey)
+  ↓
+if !IsSearching raise SearchRequested
 ```
 
-`IsOperating=true` 只表示搜索按钮处于操作中状态。它不改变 `Text`、不自动禁用文本编辑、不管理异步任务，也不清空搜索结果。业务层负责在搜索开始和结束时设置该属性。
+`SearchRequestedEventArgs.Query` 保存触发时的 `Text` 快照，`Trigger` 使用 `Button` 或 `EnterKey` 区分来源。`IsSearching=true` 只表示搜索正在进行。它不改变 `Text`、不自动禁用文本编辑、不管理异步任务，也不清空搜索结果；业务层负责在搜索开始和结束时设置该属性。
 
 状态优先级：
 
 ```text
 Disabled
-> Operating button loading
+> Searching button loading
 > Error / Warning
 > Focus
 > PointerOver / Pressed
@@ -147,8 +156,10 @@ SearchEdit 是 LineEdit 家族的搜索专用入口：
 维护 SearchEdit 时必须保持以下不变量：
 
 - 不改变继承自 LineEdit 的 `Text`、选择、光标、清除、reveal、Form 和 CompactSpace 语义。
-- 不删除或重命名 `SearchButtonStyle`、`SearchButtonText`、`IsOperating`、`SearchButtonClick`。
-- `IsOperating=true` 必须阻止重复搜索点击，但不得自动管理异步任务或修改 `Text`。
+- 不删除或重命名 `SearchButtonStyle`、`SearchButtonText`、`IsSearching`、`IsSearchOnEnterEnabled`、`SearchRequested`、`SearchTriggerSource` 或 `SearchRequestedEventArgs`。
+- `IsSearching=true` 必须阻止按钮和 Enter 键产生重复搜索请求，但不得自动管理异步任务或修改 `Text`。
+- `IsSearchOnEnterEnabled=false` 时不得消费 Enter 键；已经标记为 handled 的 Enter 键不得触发搜索。
+- `SearchRequestedEventArgs.Query` 必须是触发时的查询文本快照，`Trigger` 必须准确表示 `Button` 或 `EnterKey`。
 - 搜索按钮的 `IsEnabled`、`SizeType` 和 loading 必须跟随 SearchEdit；按钮组合视觉必须响应输入壳体的 `Status` 和 `StyleVariant`。
 - 右侧外部 add-on 位置属于搜索按钮；内部右侧内容必须继续由 `InnerRightContent` 承载。
 - SearchEdit 的按钮边框和输入框边框必须在 Large、Middle、Small 和 Custom 高度下严格对齐。
@@ -173,7 +184,7 @@ SearchEdit 的 `SizeType=Custom` 走 LineEdit 家族的 Custom size 规则。未
 
 ### 8.3 AutoComplete 集成模型
 
-`AutoCompleteSearchEdit` 暴露 SearchEdit 的搜索按钮属性，并在模板内部使用 `AutoCompleteSearchEditBox`。`AutoCompleteSearchEditBox` 继承 SearchEdit 并把 `StyleKeyOverride` 指向 SearchEdit，使搜索输入视觉保持一致。AutoComplete 的候选项、popup、异步加载和选择状态不属于 SearchEdit 控件职责。
+`AutoCompleteSearchEdit` 暴露 SearchEdit 的搜索按钮属性、`IsSearching`、`IsSearchOnEnterEnabled` 和 `SearchRequested`，并在模板内部使用 `AutoCompleteSearchEditBox`。`AutoCompleteSearchEditBox` 继承 SearchEdit 并把 `StyleKeyOverride` 指向 SearchEdit，使搜索输入视觉与搜索请求语义保持一致。AutoComplete 的候选项、popup、异步加载和选择状态不属于 SearchEdit 控件职责。
 
 ## 9. 文档导航、LLMS 导出与验证策略
 
@@ -214,9 +225,9 @@ LLMS 导出来源：
 
 | 层次 | 验证内容 |
 | --- | --- |
-| Public API | 搜索按钮属性、`SearchButtonClick`、继承文本输入 API 和 Form API。 |
-| 状态 | `IsOperating`、disabled、focus、hover、pressed、error、warning、clear/reveal。 |
+| Public API | 搜索按钮属性、`IsSearching`、`IsSearchOnEnterEnabled`、`SearchRequested`、继承文本输入 API 和 Form API。 |
+| 状态 | `IsSearching`、Enter 搜索开关、disabled、focus、hover、pressed、error、warning、clear/reveal。 |
 | AXAML/Theme | template part、搜索按钮 style、z-index、SizeType、Custom 高度、Borderless/Filled/Outlined/Underlined。 |
 | Token | 验证 SearchEdit exact identity、无 Own Token、任意 Global Token 配置、`SearchEditTokenResource` fallback，以及与 `ButtonTokenResource` / `AddOnDecoratedBoxTokenResource` / `SharedTokenResource` 的显式边界。 |
 | Gallery | 走查 SearchEdit 基础、状态、尺寸、Custom、loading、disabled、内部右侧内容和 AutoComplete 搜索示例。 |
-| 回归测试 | 运行 SearchEdit 布局测试、LineEdit Gallery 示例测试和 `git diff --check`。 |
+| 回归测试 | 运行 SearchEdit 行为与布局测试、LineEdit Gallery 示例测试和 `git diff --check`。 |

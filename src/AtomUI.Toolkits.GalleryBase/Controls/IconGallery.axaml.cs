@@ -137,7 +137,7 @@ public class IconGallery : TemplatedControl
         }
     }
 
-    private void HandleSearchButtonClick(object? sender, RoutedEventArgs e)
+    private void HandleSearchRequested(object? sender, SearchRequestedEventArgs e)
     {
         ReLoadIcons();
     }
@@ -156,7 +156,7 @@ public class IconGallery : TemplatedControl
 
         if (_searchEdit != null)
         {
-            _searchEdit.SearchButtonClick += HandleSearchButtonClick;
+            _searchEdit.SearchRequested += HandleSearchRequested;
         }
 
         _templateEventsAttached = _scrollViewer != null || _searchEdit != null;
@@ -176,7 +176,7 @@ public class IconGallery : TemplatedControl
 
         if (_searchEdit != null)
         {
-            _searchEdit.SearchButtonClick -= HandleSearchButtonClick;
+            _searchEdit.SearchRequested -= HandleSearchRequested;
         }
 
         _templateEventsAttached = false;

@@ -30,7 +30,7 @@ LineEdit 家族的实现以 Avalonia `TextBox` 为文本编辑内核，AtomUI �
 
 `LineEdit` 在 `TextBox` 基础上加入输入表面和验证视觉。错误状态以 `DataValidationErrors` 为真源，`Status` 仅表达手动 error/warning 视觉请求或 Form warning 等扩展状态；它把外部 AddOn、内部右侧内容、clear/reveal/form/count presenter 的运行时绑定装配到模板。
 
-`SearchEdit` 在 `LineEdit` 基础上把搜索按钮加入输入壳体。搜索按钮点击由 `SearchEditDecoratedBox` 通知 `SearchEdit`，再由控件抛出 `SearchButtonClick` 路由事件。
+`SearchEdit` 在 `LineEdit` 基础上把搜索按钮加入输入壳体。搜索按钮和 Enter 键统一调用 `RaiseSearchRequested()`，再由控件抛出包含查询文本快照和触发来源的 `SearchRequested` 路由事件。
 
 `TextArea` 独立继承 Avalonia `TextBox`，因为多行输入需要不同模板、scroll viewer 接入、固定行数测量和 resize 流程。它复用 LineEdit 家族的状态、尺寸、清除、字数统计和 Form 模型。
 
@@ -118,13 +118,18 @@ OverflowTip and other internal consumers
 
 密码 reveal 通过 `RevealButton.IsChecked` 与 `RevealPassword` 双向绑定完成。`IsEnableRevealButton` 只控制按钮可见性，不改变 `PasswordChar` 自身语义。
 
-SearchEdit 搜索点击流程：
+SearchEdit 搜索请求流程：
 
 ```text
 Search button click
   → SearchEditDecoratedBox
-  → SearchEdit.NotifySearchButtonClicked()
-  → if !IsOperating raise SearchButtonClick
+  → SearchEdit.RaiseSearchRequested(Button)
+  → if !IsSearching raise SearchRequested
+
+Enter KeyUp when enabled and unhandled
+  → mark handled
+  → SearchEdit.RaiseSearchRequested(EnterKey)
+  → if !IsSearching raise SearchRequested
 ```
 
 TextArea resize 流程：
@@ -200,7 +205,7 @@ AOT 边界：
 - 清除按钮可见性不在 AXAML 与 C# 中形成相互冲突的状态源。
 - `IsCustomFontSize=true` 不能被 SizeType 字体样式覆盖。
 - `LineEdit` 的 error 视觉必须优先响应 `DataValidationErrors`；`Status` 只作为无 native error 时的手动视觉请求，并继续支持 warning 扩展视觉。
-- `SearchEdit.IsOperating=true` 必须阻止重复搜索事件。
+- `SearchEdit.IsSearching=true` 必须阻止按钮和 Enter 键产生重复搜索请求。
 - `TextArea` 的 fixed lines、auto-size 和 resize 不互相覆盖高度状态。
 - 重新套用模板不能泄漏旧按钮 click、旧 binding 或旧 Form feedback 订阅。
 - TextPresenter margin 是输入模板视觉契约；文本有效宽度由输入控件在模板所有权边界内统一计算并发布，不在业务控件或消费 behavior 中加入隐藏补偿。

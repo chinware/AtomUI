@@ -8,6 +8,21 @@
 - 不记录临时讨论、纯格式化或没有长期价值的实现细节。
 - 架构文档始终描述最新设计状态；历史变化记录在本文档。
 
+## 2026-08-11
+
+- API
+  - Replace `HandleEnterAsSearch` with `IsSearchOnEnterEnabled` and enable Enter-triggered search by default.
+  - Replace `IsOperating` with the search-specific `IsSearching` state.
+  - Replace `SearchButtonClick` with `SearchRequested` and add `SearchRequestedEventArgs` plus `SearchTriggerSource`.
+- Behavior
+  - Route search-button clicks and unhandled Enter `KeyUp` events through `RaiseSearchRequested()`.
+  - Include the query snapshot and `Button` / `EnterKey` trigger source in every search request.
+  - Suppress repeated requests while `IsSearching=true` and leave Enter unconsumed when Enter search is disabled.
+- Tests
+  - Add SearchEdit behavior coverage for defaults, query snapshots, trigger sources and repeated-request suppression.
+- Docs
+  - Synchronize SearchEdit, LineEdit and AutoComplete contracts with the unified search-request model.
+
 ## 2026-08-01
 
 - Theme
