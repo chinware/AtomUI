@@ -5,7 +5,7 @@
 | 平台 | 入口 | 状态 |
 | --- | --- | --- |
 | Apple iOS | [Apple iOS 工程环境](apple-ios/overview.md) | 已有工程规则；具体版本和设备结论按日期化证据记录 |
-| Android | [Mobile 运行平台策略](../../architecture/foundations/runtime-platforms.md) | 工程专题尚未建立；Host、命令和版本未验证 |
+| Android | [Android 工程环境](android/overview.md) | 预实现文档边界；Host、命令、版本和平台证据未验证 |
 | Linux | [Linux Gallery NativeAOT 发布](linux-native-aot-publish.md) | 现有 Desktop Gallery 发布流程 |
 | Windows | [Windows Gallery NativeAOT 发布](windows-native-aot-publish.md) | 现有 Desktop Gallery 发布流程 |
 
