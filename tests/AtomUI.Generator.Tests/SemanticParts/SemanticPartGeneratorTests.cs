@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Shouldly;
@@ -61,6 +62,71 @@ public class SemanticPartGeneratorTests
             "GeneratedSemanticPartManifest.g.cs");
 
         reordered.ShouldBe(first);
+    }
+
+    [Fact]
+    public void Supports_Static_Classes_Property_Semantic_Markers()
+    {
+        var theme = new InMemoryAdditionalText(
+            "Button/Themes/ButtonTheme.axaml",
+            """
+            <ControlTheme xmlns="https://github.com/avaloniaui"
+                          xmlns:atom="using:Demo"
+                          TargetType="atom:Button">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <Panel>
+                            <Control Classes.semantic-icon="True" />
+                            <Control Classes.semantic-icon="true" />
+                            <ContentPresenter Classes.semantic-content="True" />
+                        </Panel>
+                    </ControlTemplate>
+                </Setter>
+            </ControlTheme>
+            """);
+
+        _ = RunGenerator(ButtonSource, out var diagnostics, theme);
+
+        diagnostics.ShouldBeEmpty();
+    }
+
+    [Theory]
+    [InlineData("False")]
+    [InlineData("{Binding IsVisible}")]
+    public void Reports_Non_Static_Classes_Property_Semantic_Markers(string markerValue)
+    {
+        const string source = """
+            using AtomUI.Theme;
+            using Avalonia.Controls;
+
+            namespace Demo;
+
+            [SemanticPart(
+                "description",
+                SelectorClass = "semantic-description",
+                ContractType = typeof(Control),
+                Cardinality = SemanticPartCardinality.Optional,
+                Since = "6.0")]
+            public partial class Button : Control
+            {
+            }
+            """;
+        var themeText = """
+            <ControlTheme xmlns="https://github.com/avaloniaui"
+                          xmlns:atom="using:Demo"
+                          TargetType="atom:Button">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <Control Classes.semantic-description="$VALUE$" />
+                    </ControlTemplate>
+                </Setter>
+            </ControlTheme>
+            """.Replace("$VALUE$", markerValue, StringComparison.Ordinal);
+        var theme = new InMemoryAdditionalText("Button/Themes/ButtonTheme.axaml", themeText);
+
+        _ = RunGenerator(source, out var diagnostics, theme);
+
+        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN029");
     }
 
     [Fact]
@@ -868,6 +934,43 @@ public class SemanticPartGeneratorTests
         _ = RunGenerator(source, out var diagnostics, theme);
 
         diagnostics.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Type_Resolver_Resolves_Clr_Namespace_Types_From_An_Explicit_Referenced_Assembly()
+    {
+        var references = ((string?)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES"))!
+                         .Split(Path.PathSeparator)
+                         .Select(static path => MetadataReference.CreateFromFile(path))
+                         .Cast<MetadataReference>()
+                         .ToImmutableArray();
+        var externalReference = CSharpCompilation.Create(
+                "Semantic.Marker.Contracts",
+                [CSharpSyntaxTree.ParseText(
+                    "namespace External; public sealed class SemanticContent { }",
+                    cancellationToken: TestContext.Current.CancellationToken)],
+                references,
+                new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+            .ToMetadataReference();
+        var compilation = CSharpCompilation.Create(
+            "SemanticPartTypeResolverTests",
+            references: references.Add(externalReference),
+            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+        var element = XElement.Parse(
+            """
+            <ControlTheme xmlns:external="clr-namespace:External;assembly=Semantic.Marker.Contracts"
+                          TargetType="external:SemanticContent" />
+            """);
+        var reference = ThemeAssetTargetTypeReference.Create(
+            element,
+            element.Attribute("TargetType")!.Value);
+        var resolver = new SemanticPartTypeResolver(compilation, Array.Empty<INamedTypeSymbol>());
+
+        var resolved = resolver.ResolveTargetType(reference);
+
+        resolved.ShouldNotBeNull();
+        resolved.ToDisplayString().ShouldBe("External.SemanticContent");
+        resolved.ContainingAssembly.Name.ShouldBe("Semantic.Marker.Contracts");
     }
 
     [Fact]

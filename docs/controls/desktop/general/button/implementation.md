@@ -71,8 +71,9 @@ ControlTheme 只绑定这些变量。
 Button 在静态构造中注册属性、伪类和主题关联，在实例构造中完成需要的状态订阅。模板应用时读取稳定 template part，并把状态同步到视觉节点。
 
 共享 Button ControlTheme 的三个 Button ControlTemplate 都为 `PART_ButtonIcon` 与 `PART_LoadingIcon` 添加
-`Classes="semantic-icon"`，并为 `PART_ContentPresenter` 添加 `Classes="semantic-content"`。这些 marker 是静态 AXAML，
-不在 `OnApplyTemplate` 中查找、补写或同步。
+`Classes.semantic-icon="True"`，并为 `PART_ContentPresenter` 添加 `Classes.semantic-content="True"`。这些 marker 是
+静态 AXAML，不在 `OnApplyTemplate` 中查找、补写或同步。该写法属于 AtomUI 模板作者约定；应用仍通过
+`.semantic-icon` 和 `.semantic-content` Selector 消费 Part。
 
 Button 与 DropdownButton 模板都必须让 `PART_ButtonIcon` 与 `PART_LoadingIcon` 通过 `TemplateBinding` 绑定
 `IconWidth`、`IconHeight`。统一尺寸数据流使用 Button 自身属性；局部
@@ -124,10 +125,10 @@ Loading 状态影响 loading icon、原 icon 可见性和交互反馈，但不�
 
 Button 主题变量使用 Avalonia 属性和动态资源，不使用反射读取模板状态。Token 资源由 ButtonToken scope 提供，并跟随主题切换。
 
-三个 semantic marker 是 Button 默认实例固定承担的 class 存储成本；Button 内置主题不使用 `.semantic-*` 编写默认
-样式，因此默认路径不创建 Semantic Style class activator。应用声明 Semantic Style 后，Avalonia 会在 Button 模板的
-候选节点上保留 class listener；同一 Part 的 Setter 应合并在一个 Style 中，并在批量 Button 场景验证 listener 数量和
-detach 释放。
+三个 semantic marker 是 Button 默认实例固定承担的 class 存储成本。静态 class property 在模板初始化阶段执行一次
+`Classes.Set`，不创建 Binding 或持久 listener；Button 内置主题也不使用 `.semantic-*` 编写默认样式，因此默认路径
+不创建 Semantic Style class activator。应用声明 Semantic Style 后，Avalonia 会在 Button 模板的候选节点上保留 class
+listener；同一 Part 的 Setter 应合并在一个 Style 中，并在批量 Button 场景验证 listener 数量和 detach 释放。
 
 `IconWidth`、`IconHeight` 使用 Avalonia 属性优先级完成 Theme 默认值与 LocalValue 的覆盖，不增加订阅、运行时 part 遍历或状态变化时的视觉对象创建。两个模板 part 共享同一对属性，因此 loading 切换只改变可见性和默认状态映射，不引入尺寸同步副本。
 
@@ -152,7 +153,8 @@ Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好�
   外部局部覆盖只依赖 `.semantic-icon`，Setter 类型通过 `x:SetterTargetType="Control"` 提供，不得依赖类型前缀或
   `PART_*` 名称。
 - 共享 Button ControlTheme 的每个 Button ControlTemplate 都必须具有两个 `.semantic-icon` marker 和一个
-  `.semantic-content` marker；Button root 不添加 `.semantic-root`。
+  `.semantic-content` marker；AtomUI 模板使用静态 `Classes.semantic-*="True"`，Button root 不添加
+  `.semantic-root`。
 - 普通用户 icon 和非 loading 的 icon-only 用户 icon 保持 `IconSize*` 默认值；只有 icon-only loading 默认使用 `OnlyIconSize*`。
 - DropdownButton 继承同一图标尺寸属性与投影规则，`OpenIndicator` 继续由独立的 DropdownButton 主题尺寸控制；SplitButton 不纳入这一属性继承范围。
 - `CustomBackgroundLayer` 不成为用户可依赖 template part。

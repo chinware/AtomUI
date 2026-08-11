@@ -38,6 +38,7 @@ internal static class AtomUIDiagnosticIds
     public const string SemanticPartTemplateContractTypeMismatch = "ATOMUIGEN033";
     public const string SemanticPartMissingControlTemplate = "ATOMUIGEN034";
     public const string SemanticPartTemplateNodeConflict = "ATOMUIGEN035";
+    public const string SemanticPartTemplateMarkerNotStatic = "ATOMUIGEN036";
     public const string LocalizationInvalidLanguageData = "ATOMUILOC001";
     public const string LocalizationDuplicateLanguageData = "ATOMUILOC002";
     public const string LocalizationInvalidCatalog = "ATOMUILOC003";

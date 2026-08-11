@@ -418,6 +418,15 @@ internal static class AtomUIDiagnosticDescriptors
         isEnabledByDefault: true,
         customTags: [WellKnownDiagnosticTags.Telemetry]);
 
+    public static readonly DiagnosticDescriptor SemanticPartTemplateMarkerNotStatic = new(
+        AtomUIDiagnosticIds.SemanticPartTemplateMarkerNotStatic,
+        "Semantic Part marker must be statically enabled",
+        "Control '{0}' template '{1}' marker '{2}' on '{3}' must use a static true Classes.<name> value",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
     public static readonly DiagnosticDescriptor LocalizationInvalidLanguageData = new(
         AtomUIDiagnosticIds.LocalizationInvalidLanguageData,
         "Pinned language data record is invalid",

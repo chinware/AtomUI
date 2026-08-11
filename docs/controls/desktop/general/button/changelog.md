@@ -22,6 +22,7 @@
 - Theme Contract
   - Separate the `.semantic-*` selector identity from `ContractType`; use `x:SetterTargetType` as the AXAML Setter type context.
   - Define class activator cost as opt-in application styling cost and keep Button built-in themes free of Semantic Style rules.
+  - Use static `Classes.semantic-*="True"` markers in Desktop and Browser Button templates while keeping application selectors unchanged.
 
 ## 2026-08-10
 

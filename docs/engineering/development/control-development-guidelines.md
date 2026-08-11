@@ -73,6 +73,10 @@ Control 对稳定视觉区域提供公共定制入口时，必须遵循
 - 只有能够跨版本承诺的区域进入公开 descriptor；临时 frame、shadow、motion actor 和布局 wrapper 保留为内部
   Composition 节点。
 - 所有内置 ControlTemplate、Desktop/Browser 主题和适用派生主题必须实现相同 Part 契约。
+- AtomUI 自有 AXAML 模板使用静态 `Classes.semantic-*="True"` 声明 marker；字面量 `Classes="semantic-*"` 只作为
+  Generator 兼容输入，不作为新模板规范。Application 用户继续消费 `.semantic-*` Selector，不接触 marker 声明语法。
+- `Classes.semantic-*` 只能使用静态 `true`。不得使用 `False`、Binding 或其他动态值模拟 Optional Part 或状态切换；
+  状态由 StyledProperty、伪类或有效状态属性表达。
 - 动态创建节点使用生成的 semantic class 常量，并维护 logical parent、templated parent、回收和 re-template 生命周期。
 - 父主题最多进入自身模板一个 `/template/` 边界，不通过 Semantic Part 穿透子 Control 的 internal 模板。
 - Popup 和 Overlay 默认使用 Selector；跨 VisualRoot 本身不构成新增 Theme 属性的理由。
@@ -80,7 +84,7 @@ Control 对稳定视觉区域提供公共定制入口时，必须遵循
 - AtomUI 内置主题不得使用 `.semantic-*` 实现默认视觉；marker 必须静态，用户 Semantic Style 的 class activator
   成本必须按真实候选节点和 listener 数量验证。
 - 删除、重命名 Part、修改 selector class、收窄 ContractType 或改变 cardinality 必须按公共 API 破坏性变更处理。
-- `ATOMUIGEN020-028` 必须在提交前清零；不得通过关闭诊断、把静态节点伪装为 `RuntimeCreated` 或放宽
+- `ATOMUIGEN020-029` 必须在提交前清零；不得通过关闭诊断、把静态节点伪装为 `RuntimeCreated` 或放宽
   `ContractType` 掩盖模板缺失。
 - 控件实现完成后必须同步 `overview.md` Semantic Parts 表、`implementation.md` 模板映射、主题契约测试和
   NativeAOT 风险验证。

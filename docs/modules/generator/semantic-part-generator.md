@@ -34,11 +34,20 @@ Semantic Part Generator 为 AtomUI Control 的公开视觉区域生成静态 des
 | 文件 | 职责 |
 | --- | --- |
 | `SemanticParts/SemanticPartDeclaration.cs` | 从 Roslyn `AttributeData` 构造声明模型，按 Control symbol 合并 partial 声明并按 path 排序。 |
-| `SemanticParts/SemanticPartModelBuilder.cs` | 校验声明、强类型 Theme 契约和每个 ControlTemplate 的 marker。 |
+| `SemanticParts/SemanticPartModelBuilder.cs` | 按 Control identity 确定性合并声明，并编排契约验证、模板验证和最终输出模型。 |
+| `SemanticParts/SemanticPartContractValidator.cs` | 校验 Control/Part 声明、唯一性、`ContractType` 和可选强类型 Theme 属性及资产契约。 |
+| `SemanticParts/SemanticPartTemplateValidator.cs` | 解析适用模板继承链，并校验静态 marker、节点职责冲突、cardinality 和 marker 类型兼容性。 |
+| `SemanticParts/SemanticPartTypeResolver.cs` | 在单次生成构建内预计算 XML namespace 映射，并缓存 TargetType、marker type 和 assignability 所需类型解析。 |
 | `SemanticParts/SemanticPartManifestWriter.cs` | 生成 package manifest 与 per-Control 名称/class 常量。 |
-| `ThemeAssets/ThemeAssetInfo.cs` | 使用 `XDocument` 提取 ControlTheme、ControlTemplate、XML namespace 和 `Classes` marker。 |
+| `ThemeAssets/ThemeAssetInfo.cs` | 解析 Theme AdditionalFile 的通用资产信息，并把 Semantic AXAML 结构交给专用解析器。 |
+| `ThemeAssets/ThemeAssetSemanticInfo.cs` | 保存 ControlTheme、模板 variant 和 marker 的有序构建期语义模型。 |
+| `ThemeAssets/SemanticThemeAssetParser.cs` | 从 `XElement` 结构提取 TargetType、typed BasedOn、模板 variant、节点 identity 与两种 marker 输入。 |
 | `Registration/ControlPackageRegistrationWriter.cs` | 把生成的 Semantic descriptor 传入包级注册。 |
 | `TokenResourceKeyGenerator.cs` | 组合 Attribute、Compilation、Theme AdditionalFiles 和 catalog 输入。 |
+
+验证职责保持单向：`SemanticPartModelBuilder` 先调用 `SemanticPartContractValidator` 产生完整合法的 Part 集合，再调用
+`SemanticPartTemplateValidator` 验证静态模板契约；两个 validator 共享同一个 `SemanticPartTypeResolver`，不得分别扫描
+程序集 metadata 或维护相互独立的类型解释规则。
 
 ## 2. 输入模型
 
@@ -72,12 +81,17 @@ RuntimeCreated
 - ControlTheme `TargetType`。
 - typed `BasedOn="{StaticResource {x:Type ...}}"` 继承关系。
 - ControlTemplate variant。
-- `Classes` 中的 `.semantic-*` marker。
+- AtomUI 自有模板中的静态 `Classes.semantic-*="True"` marker。
+- 兼容输入中的字面量 `Classes="semantic-*"` marker。
 - marker 所在节点的公开类型 identity。
 - Browser 或其他平台主题资产。
 - 叶子 Theme 资产与 owner Control 的既有映射。
 
 生成器不得使用正则表达式替代 AXAML 结构分析，也不得依赖只用于聚合的 `*Themes.axaml` 推断模板完整性。
+
+`Classes.semantic-*` 只有静态 `true` 才构成有效 marker。`False`、Binding 或其他动态值不能表示稳定模板契约；生成器
+对已声明 Part 报告 `ATOMUIGEN029`，并把该节点排除在 cardinality、类型兼容和节点冲突校验之外。字面量 `Classes`
+形式继续用于兼容既有或第三方模板，但 AtomUI 自有模板统一使用 class property 形式。
 
 ### 2.3 Semantic Part Theme 资产
 
@@ -140,7 +154,8 @@ Part name constants
 Selector class constants
 ```
 
-AXAML 仍直接使用 `.semantic-*` class。生成常量不是第二套命名来源，其值必须与 descriptor 完全一致。
+AXAML 仍直接承载 `.semantic-*` class；AtomUI 自有模板使用 `Classes.semantic-*="True"` 静态声明。生成常量不是第二套
+命名来源，其值必须与 descriptor 完全一致。
 
 消费 descriptor 的文档或示例工具在输出包含 Setter 的示例时，必须使用 `SelectorClass` 生成 class-only selector，
 并把 `ContractType` 输出为 `x:SetterTargetType`；不得输出 `ContractType.semantic-*` 或
@@ -194,8 +209,9 @@ variant；派生 Theme 通过直接 `Setter Property="Template"` 替换默认模
 
 ### 4.3 结构化解析边界
 
-当前静态校验只读取模板节点的 `Classes` marker，不分析或重写 `Style.Selector` 文本。Selector 的 owner scope、
-`/template/` 边界和状态组合由架构规范、控件主题 review 与运行时 selector 测试保证。
+当前静态校验读取模板节点的字面量 `Classes` 和 `Classes.semantic-*` class property marker，不分析或重写
+`Style.Selector` 文本。解析使用 XML attribute 结构，不从 AXAML 文本正则匹配。Selector 的 owner scope、`/template/`
+边界和状态组合由架构规范、控件主题 review 与运行时 selector 测试保证。
 
 `BasedOn` 只解析显式 `{StaticResource {x:Type ...}}`。字符串 key、运行时资源选择或自定义 markup extension 无法静态解析，
 声明方必须提供可分析的叶子模板或 typed `BasedOn`。
@@ -203,9 +219,14 @@ variant；派生 Theme 通过直接 `Setter Property="Template"` 替换默认模
 类型解析支持：
 
 - `using:` XML namespace；
-- `clr-namespace:` XML namespace；
+- 当前 compilation 的 `clr-namespace:` XML namespace；
+- 通过 `assembly=...` 显式指定引用程序集的 `clr-namespace:` XML namespace；
 - compilation 与引用程序集上的 `XmlnsDefinitionAttribute`；
 - 当前 compilation 内唯一同名 public Control fallback。
+
+XML namespace metadata 在一次生成构建开始时预计算；TargetType 与 marker type 按结构化引用缓存。模板数量或 marker
+数量增加时不得为每次类型检查重复遍历所有引用程序集 attribute。缓存只存在于本次 Generator 构建对象中，不进入运行时
+产物，也不形成跨 Compilation 的全局状态。
 
 只用于聚合资源的 `*Themes.axaml` 不产生可分析模板；验证以包含真实 `ControlTemplate` 的叶子 Theme 资产为准。
 
@@ -240,6 +261,7 @@ recycle 和 owner 切换后的实际 marker。
 | `ATOMUIGEN026` | Error | marker 节点类型不能赋值给 `ContractType`。 |
 | `ATOMUIGEN027` | Error | Control 声明了静态 Part，但没有适用的可分析 ControlTemplate。 |
 | `ATOMUIGEN028` | Error | 同一模板节点同时声明了多个 Semantic Part marker。 |
+| `ATOMUIGEN029` | Error | 已声明 Part 的 `Classes.semantic-*` marker 不是静态 `true`。 |
 
 同一 Control identity 的包级冲突由 Core `ControlPackageRegistration` 和 `ThemeManagerBuilder` 在启动注册边界拒绝。
 控件文档与 descriptor 的一致性由文档 review 和文档验证流程负责，当前 Generator 不解析 Markdown。
@@ -262,6 +284,9 @@ Compilation public Control declarations
 
 Semantic 声明和 Theme AdditionalFiles 在增量管线中分别收集，再按 compilation 生成确定性 package 输出。实现不承诺
 单个 Control 修改时只执行该 Control 的 writer；正确性契约是输入相同则生成文本和诊断顺序相同。
+
+没有 Semantic Part 声明时，model builder 必须在收集 public Control、构造类型解析器和预计算 XML namespace metadata
+之前直接返回空模型。零采用路径不得因 Core 提供 Semantic runtime 而承担引用程序集 attribute 扫描成本。
 
 排序规则必须稳定：
 
@@ -307,3 +332,4 @@ public VisualTree API 查找已实例化 `.semantic-*` marker；该查找只属�
 7. Popup、runtime-created Part 和 item container 元数据。
 8. 旧 Core 引用下保持四参数 package registration 的兼容路径。
 9. 包级注册、生成顺序与 NativeAOT 友好输出。
+10. 静态 class property marker、字面量兼容 marker，以及 false/dynamic marker 的 `ATOMUIGEN029` 诊断。

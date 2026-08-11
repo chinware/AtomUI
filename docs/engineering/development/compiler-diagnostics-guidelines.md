@@ -94,6 +94,7 @@ dotnet_diagnostic.ATOMUIAOT001.severity = error
 | `ATOMUIGEN033` | Generator | Error | marker 节点类型不能赋值给 `ContractType` | 把 class 放到兼容节点，或重新设计稳定 ContractType | SemanticParts |
 | `ATOMUIGEN034` | Generator | Error | Control 声明静态 Part，但不存在适用的可分析 ControlTemplate | 提供叶子 ControlTheme/ControlTemplate，或仅在真实动态创建场景使用 `RuntimeCreated` | SemanticParts |
 | `ATOMUIGEN035` | Generator | Error | 同一 ControlTemplate 节点同时承担多个 Semantic Part | 将不同公开职责拆分到独立节点，每个节点只保留一个 Semantic Part marker | SemanticParts |
+| `ATOMUIGEN036` | Generator | Error | 已声明 Part 的 `Classes.semantic-*` marker 使用了 false 或动态值 | 使用静态 `Classes.semantic-*="True"`；状态变化通过属性或伪类表达 | SemanticParts |
 | `ATOMUIGEN101` | Generator | Warning | Gallery source code display generator 发现参与默认源码匹配的 `ShowCasePanel` 缺少 `Name` | 给 `ShowCasePanel` 设置稳定 `Name`，或使用显式源码 key 规则 | GallerySourceCodeDisplay |
 | `ATOMUILOC001` | Localization | Error | AtomUI 固定语言数据记录的 schema、标识符、BCP 47 标签或元数据无效 | 按数据 schema 修正发生错误的具体记录 | LanguageTags |
 | `ATOMUILOC002` | Localization | Error | AtomUI 固定语言数据包含重复的属性标识符或规范 BCP 47 标签 | 删除重复记录并为每个属性和标签保留唯一映射 | LanguageTags |

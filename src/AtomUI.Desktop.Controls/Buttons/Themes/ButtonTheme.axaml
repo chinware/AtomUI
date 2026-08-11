@@ -35,7 +35,7 @@
                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                                 <antdicons:LoadingOutlined
                                     Name="PART_LoadingIcon"
-                                    Classes="semantic-icon"
+                                    Classes.semantic-icon="True"
                                     Width="{TemplateBinding IconWidth}"
                                     Height="{TemplateBinding IconHeight}"
                                     LoadingAnimation="Spin"
@@ -45,7 +45,7 @@
 
                                 <atom:IconPresenter
                                     Name="PART_ButtonIcon"
-                                    Classes="semantic-icon"
+                                    Classes.semantic-icon="True"
                                     Width="{TemplateBinding IconWidth}"
                                     Height="{TemplateBinding IconHeight}"
                                     Icon="{TemplateBinding Icon}"
@@ -62,7 +62,7 @@
                                 </atom:IconPresenter>
                                 <ContentPresenter
                                     Name="PART_ContentPresenter"
-                                    Classes="semantic-content"
+                                    Classes.semantic-content="True"
                                     Content="{TemplateBinding Content}"
                                     ContentTemplate="{TemplateBinding ContentTemplate}"
                                     IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}" />
@@ -104,7 +104,7 @@
                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                                 <antdicons:LoadingOutlined
                                     Name="PART_LoadingIcon"
-                                    Classes="semantic-icon"
+                                    Classes.semantic-icon="True"
                                     Width="{TemplateBinding IconWidth}"
                                     Height="{TemplateBinding IconHeight}"
                                     LoadingAnimation="Spin"
@@ -114,7 +114,7 @@
 
                                 <atom:IconPresenter
                                     Name="PART_ButtonIcon"
-                                    Classes="semantic-icon"
+                                    Classes.semantic-icon="True"
                                     Width="{TemplateBinding IconWidth}"
                                     Height="{TemplateBinding IconHeight}"
                                     Icon="{TemplateBinding Icon}"
@@ -131,7 +131,7 @@
                                 </atom:IconPresenter>
                                 <ContentPresenter
                                     Name="PART_ContentPresenter"
-                                    Classes="semantic-content"
+                                    Classes.semantic-content="True"
                                     Content="{TemplateBinding Content}"
                                     ContentTemplate="{TemplateBinding ContentTemplate}" />
                             </DockPanel>
@@ -172,7 +172,7 @@
                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                                 <antdicons:LoadingOutlined
                                     Name="PART_LoadingIcon"
-                                    Classes="semantic-icon"
+                                    Classes.semantic-icon="True"
                                     Width="{TemplateBinding IconWidth}"
                                     Height="{TemplateBinding IconHeight}"
                                     LoadingAnimation="Spin"
@@ -182,7 +182,7 @@
 
                                 <atom:IconPresenter
                                     Name="PART_ButtonIcon"
-                                    Classes="semantic-icon"
+                                    Classes.semantic-icon="True"
                                     Width="{TemplateBinding IconWidth}"
                                     Height="{TemplateBinding IconHeight}"
                                     Icon="{TemplateBinding Icon}"
@@ -199,7 +199,7 @@
                                 </atom:IconPresenter>
                                 <ContentPresenter
                                     Name="PART_ContentPresenter"
-                                    Classes="semantic-content"
+                                    Classes.semantic-content="True"
                                     Content="{TemplateBinding Content}"
                                     ContentTemplate="{TemplateBinding ContentTemplate}" />
                             </DockPanel>

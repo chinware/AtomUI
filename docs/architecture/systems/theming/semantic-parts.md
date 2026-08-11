@@ -289,11 +289,19 @@ AtomUI 不创建 Semantic Style merge engine。所有 Setter 使用 Avalonia 12 
 
 ### 8.1 静态模板节点
 
-内置模板直接设置 semantic class：
+AtomUI 内置模板使用 Avalonia class property 语法静态设置 semantic class：
 
 ```xml
-<ContentPresenter Classes="semantic-content" />
+<ContentPresenter Classes.semantic-content="True" />
 ```
+
+该语法是 ControlTheme 作者的 marker 声明形式，不是 Application 用户的定制 API。Application 用户继续使用
+`.semantic-content` Selector，不需要也不应在 Control 实例上复制模板 marker。
+
+Avalonia 12 将静态布尔值编译为模板初始化阶段的一次 `Classes.Set("semantic-content", true)` 调用。它不创建
+Binding、selector activator 或持久订阅。`Classes="semantic-content"` 仍是 Generator 支持的兼容输入，但不作为
+AtomUI 自有模板的编写规范。`Classes.semantic-*` 的值必须是静态 `true`；`False`、Binding 或其他动态值不能承担公共
+Part 契约，并由 `ATOMUIGEN029` 拒绝。
 
 已有 `PART_*` 名称可以继续服务于 Control 代码查找；Semantic class 与 Template Part 名称承担不同职责。
 
@@ -410,8 +418,8 @@ typed `BasedOn="{StaticResource {x:Type ...}}"` 可静态解析时沿继承链�
 ## 12. 性能与 AOT
 
 Semantic Part 的默认固定成本是确保公开节点具有 `Classes` 集合并保存稳定 marker；节点已有 class 时只增加对应
-marker entry。未声明用户 Semantic Style 时，descriptor 和 marker 不创建 selector activator、VisualTree 查询或实例级
-Part 对象。
+marker entry。静态 `Classes.semantic-*="True"` 在模板初始化时执行一次 `Classes.Set`，不建立 Binding 或持久 listener。
+未声明用户 Semantic Style 时，descriptor 和 marker 不创建 selector activator、VisualTree 查询或实例级 Part 对象。
 
 用户声明 `.semantic-*` Style 后，Avalonia 把 class selector 作为动态条件处理。对于进入匹配 owner/template scope 的
 候选节点，Style 会保留 class activator 并监听 `Classes` 变化，即使节点当前没有目标 class。`ContractType` 写成
@@ -420,7 +428,7 @@ Part 对象。
 因此必须遵守：
 
 - AtomUI 内置 ControlTheme 不使用 `.semantic-*` 实现默认视觉，继续使用内部精确 selector、属性和 Token。
-- semantic marker 在模板创建时静态设置，运行期间不根据状态动态增删。
+- semantic marker 使用静态 `Classes.semantic-*="True"` 在模板创建时设置，运行期间不根据状态动态增删。
 - 一个 Part 的多个 Setter 合并在同一个 Style 中，避免重复 class activator。
 - Application 与大范围 StyleHost 的 Semantic Style 必须使用 owner scope；高密度场景优先缩小 StyleHost 范围。
 - 虚拟化 ItemContainer、DataGrid cell 等高频实例在开放或使用 Semantic Style 前必须验证 marker 数量、候选节点数、

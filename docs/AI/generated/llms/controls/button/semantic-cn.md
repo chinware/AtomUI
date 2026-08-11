@@ -4,17 +4,11 @@
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Button` | 控件根语义区域，承载 public API、命令、点击、状态归一和伪类。 | `ButtonType`、`Color`、`Variant`、`IsDanger`、`IsGhost`、`IsLoading`、`SizeType`、`Shape`、`Icon`、`IconPlacement`、`IconWidth`、`IconHeight` | ButtonToken、SharedToken | stable |
-| `wave` | `PART_WaveSpirit` | 点击 wave 反馈区域，跟随有效圆角和 wave 类型。 | `IsWaveSpiritEnabled`、`IsMotionEnabled` | SharedToken motion / wave 资源 | stable |
-| `shadow` | `ShadowsFrame` | 阴影绘制层，独立于主体背景和边框。 | effective state | `DefaultShadow`、`PrimaryShadow`、`DangerShadow` | stable |
-| `surface` | `Frame` | 主体背景、边框、圆角、尺寸和虚线边框绘制层。 | `ButtonType`、`Color`、`Variant`、`Shape`、`SizeType`、`CornerRadius`、`Padding` | default、primary、danger、text、link、padding、corner radius 相关 Token | stable |
-| `customBackground` | `CustomBackgroundLayer` | normal 状态自定义背景覆层，只服务 `CustomBackground` 视觉模型。 | `CustomBackground` | 不新增专属 Token | internal-stable |
-| `contentLayout` | `PART_RootLayout` | loading icon、用户 icon 和内容的排列区域。 | `IconPlacement`、`HorizontalContentAlignment`、`VerticalContentAlignment` | `IconMargin`、尺寸 Token | stable |
-| `loadingIcon` | `PART_LoadingIcon` | loading 状态图标区域。 | `IsLoading`、`IconWidth`、`IconHeight` | `IconSize`、`OnlyIconSize` 相关 Token | stable |
-| `icon` | `PART_ButtonIcon` | 用户 icon 区域，支持内容前后位置和 icon-only 场景。 | `Icon`、`IconPlacement`、`IconWidth`、`IconHeight` | `IconSize`、`IconMargin` | stable |
-| `content` | `PART_ContentPresenter` | 用户内容展示区域。 | `Content`、`ContentTemplate` | `ContentFontSize`、`ContentLineHeight`、`FontWeight` | stable |
+| Part | Selector | ContractType | Cardinality | AtomUI 节点 | 职责 | 相关 API | 相关 Token | Customization | 稳定性 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `root` | Button 本身 | `Button` | `Single` | `Button` | 控件根语义区域，承载命令、点击、状态归一和伪类。 | 全部 Button public API | ButtonToken、SharedToken | `Root` | stable since 6.0 |
+| `icon` | `.semantic-icon` | `Control` | `Multiple` | `PART_LoadingIcon`、`PART_ButtonIcon` | loading 与用户图标的统一视觉职责；两个替代实现都接受同一语义样式。 | `Icon`、`IsLoading`、`IconPlacement`、`IconWidth`、`IconHeight` | `IconSize*`、`OnlyIconSize*`、`IconMargin` | `Selector` | stable since 6.0 |
+| `content` | `.semantic-content` | `ContentPresenter` | `Single` | `PART_ContentPresenter` | 用户内容展示区域。 | `Content`、`ContentTemplate` | `ContentFontSize`、`ContentLineHeight`、`FontWeight` | `Selector` | stable since 6.0 |
 
 ## Abstract AXAML Structure
 
@@ -73,6 +67,35 @@ Button
               -> LoadingOutlined#PART_LoadingIcon (template-stable)
               -> IconPresenter#PART_ButtonIcon (template-stable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
+  -> Button (control theme, ButtonTheme.axaml)
+     -> Panel (template-stable)
+        -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
+        -> Border#ShadowsFrame (template-stable)
+        -> DashedBorder#Frame (template-stable)
+        -> Border#CustomBackgroundLayer (template-stable)
+        -> Border (template-stable)
+           -> DockPanel#PART_RootLayout (template-stable)
+              -> LoadingOutlined#PART_LoadingIcon (template-stable)
+              -> IconPresenter#PART_ButtonIcon (template-stable)
+              -> ContentPresenter#PART_ContentPresenter (template-stable)
+     -> Panel (template-stable)
+        -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
+        -> Border#ShadowsFrame (template-stable)
+        -> Border#CustomBackgroundLayer (template-stable)
+        -> DashedBorder#Frame (template-stable)
+           -> DockPanel#PART_RootLayout (template-stable)
+              -> LoadingOutlined#PART_LoadingIcon (template-stable)
+              -> IconPresenter#PART_ButtonIcon (template-stable)
+              -> ContentPresenter#PART_ContentPresenter (template-stable)
+     -> Panel (template-stable)
+        -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
+        -> Border#ShadowsFrame (template-stable)
+        -> Border#CustomBackgroundLayer (template-stable)
+        -> DashedBorder#Frame (template-stable)
+           -> DockPanel#PART_RootLayout (template-stable)
+              -> LoadingOutlined#PART_LoadingIcon (template-stable)
+              -> IconPresenter#PART_ButtonIcon (template-stable)
+              -> ContentPresenter#PART_ContentPresenter (template-stable)
 ```
 
 ### 协作节点
@@ -87,7 +110,7 @@ Button
 | `Frame` | template node (DashedBorder) | `ButtonTheme.axaml` | Button | `Background`, `BackgroundSizing`, `BorderBrush`, `EffectiveBorderThickness`, `EffectiveCornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CustomBackgroundLayer` | template node (Border) | `ButtonTheme.axaml` | Button | `CustomBackground`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_RootLayout` | template node (DockPanel) | `ButtonTheme.axaml` | Button | `Content`, `ContentTemplate`, `Foreground`, `HorizontalContentAlignment`, `Icon`, `IconHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_LoadingIcon` | template node (LoadingOutlined) | `ButtonTheme.axaml` | Button | `Foreground`, `IconHeight`, `IconWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_LoadingIcon` | template node (LoadingOutlined) | `ButtonTheme.axaml` | Button | `IconHeight`, `IconWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ButtonIcon` | template node (IconPresenter) | `ButtonTheme.axaml` | Button | `Foreground`, `Icon`, `IconHeight`, `IconWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `ButtonTheme.axaml` | Button | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
@@ -106,17 +129,12 @@ Button
 
 ## Pseudo Classes
 
-| `root` | `Button` | 控件根语义区域，承载 public API、命令、点击、状态归一和伪类。 | `ButtonType`、`Color`、`Variant`、`IsDanger`、`IsGhost`、`IsLoading`、`SizeType`、`Shape`、`Icon`、`IconPlacement`、`IconWidth`、`IconHeight` | ButtonToken、SharedToken | stable |
-| `wave` | `PART_WaveSpirit` | 点击 wave 反馈区域，跟随有效圆角和 wave 类型。 | `IsWaveSpiritEnabled`、`IsMotionEnabled` | SharedToken motion / wave 资源 | stable |
-| `shadow` | `ShadowsFrame` | 阴影绘制层，独立于主体背景和边框。 | effective state | `DefaultShadow`、`PrimaryShadow`、`DangerShadow` | stable |
-| `surface` | `Frame` | 主体背景、边框、圆角、尺寸和虚线边框绘制层。 | `ButtonType`、`Color`、`Variant`、`Shape`、`SizeType`、`CornerRadius`、`Padding` | default、primary、danger、text、link、padding、corner radius 相关 Token | stable |
-| `customBackground` | `CustomBackgroundLayer` | normal 状态自定义背景覆层，只服务 `CustomBackground` 视觉模型。 | `CustomBackground` | 不新增专属 Token | internal-stable |
-| `contentLayout` | `PART_RootLayout` | loading icon、用户 icon 和内容的排列区域。 | `IconPlacement`、`HorizontalContentAlignment`、`VerticalContentAlignment` | `IconMargin`、尺寸 Token | stable |
-| `loadingIcon` | `PART_LoadingIcon` | loading 状态图标区域。 | `IsLoading`、`IconWidth`、`IconHeight` | `IconSize`、`OnlyIconSize` 相关 Token | stable |
-| `icon` | `PART_ButtonIcon` | 用户 icon 区域，支持内容前后位置和 icon-only 场景。 | `Icon`、`IconPlacement`、`IconWidth`、`IconHeight` | `IconSize`、`IconMargin` | stable |
-| `content` | `PART_ContentPresenter` | 用户内容展示区域。 | `Content`、`ContentTemplate` | `ContentFontSize`、`ContentLineHeight`、`FontWeight` | stable |
+| `root` | Button 本身 | `Button` | `Single` | `Button` | 控件根语义区域，承载命令、点击、状态归一和伪类。 | 全部 Button public API | ButtonToken、SharedToken | `Root` | stable since 6.0 |
+| `icon` | `.semantic-icon` | `Control` | `Multiple` | `PART_LoadingIcon`、`PART_ButtonIcon` | loading 与用户图标的统一视觉职责；两个替代实现都接受同一语义样式。 | `Icon`、`IsLoading`、`IconPlacement`、`IconWidth`、`IconHeight` | `IconSize*`、`OnlyIconSize*`、`IconMargin` | `Selector` | stable since 6.0 |
+| `content` | `.semantic-content` | `ContentPresenter` | `Single` | `PART_ContentPresenter` | 用户内容展示区域。 | `Content`、`ContentTemplate` | `ContentFontSize`、`ContentLineHeight`、`FontWeight` | `Selector` | stable since 6.0 |
 
-`CustomBackgroundLayer` 是主题内部实现细节，不作为用户可直接依赖的 template part。LLMS semantic 文档可以记录它的存在和边界，但应明确它只服务 `CustomBackground` 受控视觉模型。
+`PART_WaveSpirit`、`ShadowsFrame`、`Frame`、`CustomBackgroundLayer` 和 `PART_RootLayout` 属于 Button Composition Model，
+不是公开 Semantic Part。它们可以继续服务内部主题和实现，但应用不得把其名称或节点层级视为兼容契约。
 
 ## State Flow
 
@@ -199,7 +217,8 @@ ButtonToken 不承载 `IsPressed`、`IsPointerOver`、`IsLoading`、`EffectiveCo
 - CompactSpace 下的有效圆角、有效边框和 z-index 行为不变。
 - wave 播放条件和危险态 wave brush 不变。
 - `CustomBackground` 不改变 `WaveSpiritDecorator` 的 wave brush，wave 颜色仍由 `EffectiveColor + EffectiveVariant` 推导。
-- 同一 Button 家族主题资产在 Native 与 Browser 支持宿主下保持同一 API 语义，不通过平台专用主题资产复制视觉。
+- 同一 Button 家族主题资产必须在 Native 与 Browser 支持宿主下保持同一 API 语义；不得维护
+  `Buttons/Themes/Browser/` 或 `BrowserButtonThemes.axaml` 形式的平台主题分叉。
 
 如果实现某项能力时无法保持这些不变量，应先停止实现，说明原因、影响范围、替代方案和迁移方式，并获得授权。
 
@@ -216,7 +235,12 @@ ButtonToken 不承载 `IsPressed`、`IsPointerOver`、`IsLoading`、`EffectiveCo
 - `SizeType=Custom` 不引入 Button 专属 `Custom*` 尺寸属性；未设置本地尺寸属性时表现等同 `Middle`，设置本地属性时由 Avalonia 属性优先级自然覆盖。
 - 主题不得以高于本地值的优先级写入 Custom 默认尺寸。
 - `IconWidthProperty`、`IconHeightProperty` 及其 CLR wrapper 是 Button 公共契约，属性变化必须参与 measure invalidation。
-- `PART_ButtonIcon`、`PART_LoadingIcon` 的 Width 和 Height 只能通过 `TemplateBinding IconWidth/IconHeight` 投影；外部样式不得深入模板覆盖尺寸。
+- `PART_ButtonIcon`、`PART_LoadingIcon` 的默认 Width 和 Height 通过 `TemplateBinding IconWidth/IconHeight` 投影；
+  外部局部覆盖只依赖 `.semantic-icon`，Setter 类型通过 `x:SetterTargetType="Control"` 提供，不得依赖类型前缀或
+  `PART_*` 名称。
+- 共享 Button ControlTheme 的每个 Button ControlTemplate 都必须具有两个 `.semantic-icon` marker 和一个
+  `.semantic-content` marker；AtomUI 模板使用静态 `Classes.semantic-*="True"`，Button root 不添加
+  `.semantic-root`。
 - 普通用户 icon 和非 loading 的 icon-only 用户 icon 保持 `IconSize*` 默认值；只有 icon-only loading 默认使用 `OnlyIconSize*`。
 - DropdownButton 继承同一图标尺寸属性与投影规则，`OpenIndicator` 继续由独立的 DropdownButton 主题尺寸控制；SplitButton 不纳入这一属性继承范围。
 - `CustomBackgroundLayer` 不成为用户可依赖 template part。

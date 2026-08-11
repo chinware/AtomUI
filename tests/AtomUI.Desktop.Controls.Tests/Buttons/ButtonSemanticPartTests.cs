@@ -66,8 +66,29 @@ public class ButtonSemanticPartTests
         var templates = document.Descendants()
                                 .Where(static element => element.Name.LocalName == "ControlTemplate")
                                 .ToArray();
+        var literalSemanticMarkers = document.Descendants()
+                                             .Attributes()
+                                             .Where(static attribute =>
+                                                 attribute.Name.LocalName == "Classes" &&
+                                                 attribute.Value.Split(
+                                                             (char[]?)null,
+                                                             StringSplitOptions.RemoveEmptyEntries)
+                                                         .Any(static value => value.StartsWith(
+                                                             "semantic-",
+                                                             StringComparison.Ordinal)))
+                                             .ToArray();
+        var classPropertyMarkers = document.Descendants()
+                                           .Attributes()
+                                           .Where(static attribute => attribute.Name.LocalName.StartsWith(
+                                               "Classes.semantic-",
+                                               StringComparison.Ordinal))
+                                           .ToArray();
 
         templates.Length.ShouldBe(3);
+        literalSemanticMarkers.ShouldBeEmpty();
+        classPropertyMarkers.Length.ShouldBe(9);
+        classPropertyMarkers.ShouldAllBe(static attribute =>
+            string.Equals(attribute.Value, "true", StringComparison.OrdinalIgnoreCase));
         foreach (var template in templates)
         {
             FindMarkedElements(template, IconClass).Count.ShouldBe(2);
@@ -211,10 +232,23 @@ public class ButtonSemanticPartTests
     private static List<XElement> FindMarkedElements(XElement template, string marker)
     {
         return template.Descendants()
-                       .Where(element => ((string?)element.Attribute("Classes"))
-                                         ?.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries)
-                                         .Contains(marker, StringComparer.Ordinal) == true)
+                       .Where(element => HasMarker(element, marker))
                        .ToList();
+    }
+
+    private static bool HasMarker(XElement element, string marker)
+    {
+        if (((string?)element.Attribute("Classes"))
+            ?.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries)
+            .Contains(marker, StringComparer.Ordinal) == true)
+        {
+            return true;
+        }
+
+        var classProperty = element.Attribute($"Classes.{marker}");
+        return classProperty is not null &&
+               bool.TryParse(classProperty.Value, out var isEnabled) &&
+               isEnabled;
     }
 
     private static string GetRepoFile(string relativePath)
