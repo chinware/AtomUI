@@ -12,7 +12,7 @@ docs/controls/
 ## 平台分层
 
 - [桌面 Control](desktop/overview.md)：覆盖 `AtomUI.Desktop.Controls`、DataGrid、ColorPicker 中的具体 Control。
-- [移动端 Control](mobile/overview.md)：当前项目未包含移动端 Control 实现，只保留导航边界。
+- [移动端 Control](mobile/overview.md)：当前项目未包含移动端 Control 实现；正式入口维护预实现架构、七分类导航和 82 项能力兼容清单。
 
 ## 与 modules 的关系
 
