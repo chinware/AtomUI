@@ -24,7 +24,8 @@
 
 ## Platforms
 
-- [Apple iOS 开发环境](platforms/apple-ios-development-environment.md)
+- [平台工程总览](platforms/overview.md)
+- [Apple iOS 工程环境](platforms/apple-ios/overview.md)
 - [Linux Gallery NativeAOT 发布](platforms/linux-native-aot-publish.md)
 - [Windows Gallery NativeAOT 发布](platforms/windows-native-aot-publish.md)
 

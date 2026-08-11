@@ -46,7 +46,7 @@ Mobile 采用与 Desktop 平行的产品包和 iOS/Android Host：
 
 跨模块契约见 [Mobile 系统架构](../systems/mobile/overview.md)，目标包边界见
 [Mobile Controls 模块](../../modules/mobile-controls/overview.md)。当前 iOS 工程环境记录见
-[Apple iOS 开发环境](../../engineering/platforms/apple-ios-development-environment.md)；Android 工程文档在获得真实工具链证据前
+[Apple iOS 工程环境](../../engineering/platforms/apple-ios/overview.md)；Android 工程文档在获得真实工具链证据前
 只定义验证边界，不声明未经验证的命令或版本。
 
 `AtomUI.Native` 已对目标程序集名称开放 `InternalsVisibleTo`，但当前没有 Mobile 实现消费者；该声明不能作为源码、平台验证

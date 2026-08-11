@@ -58,7 +58,7 @@ Android 状态，Headless 不能替代平台验证，普通 build 不能替代 R
 - [Mobile 系统架构](../../architecture/systems/mobile/overview.md)：Viewport、Navigation、Overlay、Gesture、Theme 与验证。
 - [Mobile Controls 模块](../../modules/mobile-controls/overview.md)：目标包、源码 ownership、注册、打包和 adapter。
 - [运行平台策略](../../architecture/foundations/runtime-platforms.md)：当前 Desktop/Browser 状态与批准的 iOS/Android 架构。
-- [Apple iOS 开发环境](../../engineering/platforms/apple-ios-development-environment.md)：当前 iOS 工程环境记录。
+- [Apple iOS 工程环境](../../engineering/platforms/apple-ios/overview.md)：稳定工具链、签名、资源、设备和验证规则。
 - [Gallery 文档](../../gallery/overview.md)：当前 Gallery 边界；Mobile Gallery 尚未实现。
 
 Android 平台操作文档和 Mobile Gallery 专题只有在其正式文档边界建立后进入本页导航；当前 Android、Gallery 和所有发布
