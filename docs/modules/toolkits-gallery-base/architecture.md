@@ -1,8 +1,19 @@
 # AtomUI.Toolkits.GalleryBase 设计文档
 
-`AtomUI.Toolkits.GalleryBase` 的目标是把当前 `AtomUIGallery` 中可复用的 Gallery 应用底层抽象成产品中立的工具库。未来任何基于 AtomUI/Avalonia 的产品需要构建 Demo、文档、示例展示或控件预览应用时，都应复用 GalleryBase，而不是复制 `AtomUIGallery` 的 Workspace、导航、Browser Shell 和 ShowCase 控件。
+`AtomUI.Toolkits.GalleryBase` 的目标是把当前 `AtomUIGallery` 中可复用的 Desktop/Browser Gallery 应用底层抽象成
+产品中立的工具库。接受当前 Desktop/Browser 依赖边界的 AtomUI/Avalonia 产品应优先复用 GalleryBase，而不是复制
+`AtomUIGallery` 的 Workspace、导航、Browser Shell 和 ShowCase 控件。
 
 GalleryBase 可以依赖 AtomUI 作为 UI 具体实现。这里的中立不是 UI 技术中立，而是产品中立：库内不出现具体产品页面、品牌资产、示例注册和业务文案。
+
+## 当前平台边界
+
+`AtomUI.Toolkits.GalleryBase.csproj` 当前直接引用 `AtomUI.Desktop.Controls`。因此它的产品内容和品牌契约可以保持中立，
+但源码依赖、Shell 控件和主题资产仍是 Desktop/Browser-bound；不能把当前包描述为 Mobile 可直接复用的跨平台 Foundation。
+
+Mobile Gallery Foundation 不依赖 GalleryBase，而是建立独立最小 Mobile Shell。后续只有在 Mobile 与 Desktop/Browser Gallery
+出现真实、稳定、无 Desktop Control 语义的重复后，才通过单独批准设计提取共享 contracts；提取前不移动现有 API，也不让
+Mobile 先依赖 Desktop 再通过构建过滤补偿。目标边界见 [Mobile Gallery](../../gallery/platforms/mobile-gallery.md)。
 
 本文档只描述总架构和边界。各部分的详细设计分布在以下专题文档：
 
@@ -17,9 +28,9 @@ GalleryBase 可以依赖 AtomUI 作为 UI 具体实现。这里的中立不是 U
 
 ## 设计目标
 
-- 多产品复用：同一套 Gallery Shell 能承载 AtomUI、AtomIdea 和后续产品的 Gallery。
+- 多产品复用：同一套 Desktop/Browser Gallery Shell 能承载 AtomUI、AtomIdea 和接受当前依赖边界的后续产品。
 - 显式注册：产品侧通过配置注册品牌、导航、路由和页面工厂，避免反射扫描带来的 AOT、裁剪和 Browser 体积风险。
-- 平台共用：Desktop 与 Browser 宿主共享同一套 Gallery 配置和导航路由模型。
+- 平台共用：Desktop 与 Browser 宿主共享同一套 Gallery 配置和导航路由模型；Mobile 不在当前复用范围内。
 - 保留 AtomUI 体验：默认 UI 使用 AtomUI 控件、Token、主题、图标和语言系统。
 - 渐进迁移：先抽离可复用底层，再让现有 `AtomUIGallery` 作为第一个消费方迁入，避免一次性重写所有 ShowCase 页面。
 

@@ -10,7 +10,9 @@
 
 ## Platforms
 
+- [Gallery 平台宿主](platforms/overview.md)
 - [Browser Gallery 主题与宿主](platforms/browser-gallery-porting-notes.md)
+- [Mobile Gallery](platforms/mobile-gallery.md)：预实现的 Mobile content、iOS Host、Android Host 和平台验证边界。
 
 ## Localization
 
