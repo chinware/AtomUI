@@ -2,7 +2,7 @@
 
 > **供智能体执行者使用：** 使用 `superpowers:executing-plans` 在当前会话中执行，不得使用 subagent。每项任务在文档审核后停止一次，并在未提交实现审核前再次停止。
 
-**目标：** 完成首批 20 个控件家族的 Semantic Part 改造，以代码事实建立契约，并形成后续批次沿用的审核节奏。
+**目标：** 完成首批 16 个控件家族的 Semantic Part 改造，以代码事实建立契约，并形成后续批次沿用的审核节奏。
 
 **架构：** 每套正式控件文档拥有该控件的最终契约。静态区域使用生成的 Descriptor 和静态 AXAML marker；运行时及 Overlay 区域只复用现有 owner 生命周期。Button 仅作为基础设施参考，不作为命名模板。
 
@@ -18,21 +18,7 @@
 
 ---
 
-### 任务 1：Avatar
-
-**控件文档：** `docs/controls/desktop/data-display/avatar/overview.md`, `docs/controls/desktop/data-display/avatar/implementation.md`
-
-**证据范围：** `src/AtomUI.Desktop.Controls/Avatar/*.cs`, `src/AtomUI.Desktop.Controls/Avatar/Themes/*Theme.axaml`；测试 `tests/AtomUI.Desktop.Controls.Tests/Avatar`；Gallery `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Avatar`.
-
-**风险类型：** 布局、派生 owner、item/group 运行时状态。
-
-- [ ] **Gate A 设计审核：** 审计 `Avatar` 与 `AvatarGroup` 的 owner 边界，逐模板确认 image、fallback text/icon、group overflow 是否是长期视觉职责；明确图片加载失败、shape、SizeType、group 折叠时的 cardinality 与布局扩展边界。
-- [ ] 更新两份控件文档，写明准确的 Part/selector/ContractType/cardinality/customization/cross-root/runtime 契约、真实节点映射、排除的组合节点和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Avatar/AvatarSemanticPartTests.cs`，覆盖单 Avatar、图片/文字/图标替代状态、AvatarGroup overflow 和尺寸档；新增或扩展 `tests/AtomUIGallery.Tests/ShowCases/AvatarShowCasePageTests.cs` 验证延迟 Preview。
-- [ ] 运行 Generator Semantic Part 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 页面测试、LLMS verify 和 `git diff --check`；存在 Popup/Overlay/运行时宿主风险时增加 NativeAOT publish。
-- [ ] **强制停止：** 保持 Avatar 的所有实现改动未提交，直到用户完成验证并明确要求为该控件家族创建提交。
-
-### 任务 2：Badge
+### 任务 1：Badge
 
 **控件文档：** `docs/controls/desktop/data-display/badge/overview.md`, `docs/controls/desktop/data-display/badge/implementation.md`
 
@@ -46,7 +32,7 @@
 - [ ] 运行 Generator Semantic Part 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 页面测试、LLMS verify 和 `git diff --check`；存在 Popup/Overlay/运行时宿主风险时增加 NativeAOT publish。
 - [ ] **强制停止：** 保持 Badge 的所有实现改动未提交，直到用户完成验证并明确要求为该控件家族创建提交。
 
-### 任务 3：Card
+### 任务 2：Card
 
 **控件文档：** `docs/controls/desktop/data-display/card/overview.md`, `docs/controls/desktop/data-display/card/implementation.md`
 
@@ -60,7 +46,7 @@
 - [ ] 运行 Generator Semantic Part 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 页面测试、LLMS verify 和 `git diff --check`；存在 Popup/Overlay/运行时宿主风险时增加 NativeAOT publish。
 - [ ] **强制停止：** 保持 Card 的所有实现改动未提交，直到用户完成验证并明确要求为该控件家族创建提交。
 
-### 任务 4：Descriptions
+### 任务 3：Descriptions
 
 **控件文档：** `docs/controls/desktop/data-display/descriptions/overview.md`, `docs/controls/desktop/data-display/descriptions/implementation.md`
 
@@ -74,7 +60,7 @@
 - [ ] 运行 Generator Semantic Part 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 页面测试、LLMS verify 和 `git diff --check`；存在 Popup/Overlay/运行时宿主风险时增加 NativeAOT publish。
 - [ ] **强制停止：** 保持 Descriptions 的所有实现改动未提交，直到用户完成验证并明确要求为该控件家族创建提交。
 
-### 任务 5：Empty
+### 任务 4：Empty
 
 **控件文档：** `docs/controls/desktop/data-display/empty/overview.md`, `docs/controls/desktop/data-display/empty/implementation.md`
 
@@ -88,7 +74,7 @@
 - [ ] 运行 Generator Semantic Part 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 页面测试、LLMS verify 和 `git diff --check`；存在 Popup/Overlay/运行时宿主风险时增加 NativeAOT publish。
 - [ ] **强制停止：** 保持 Empty 的所有实现改动未提交，直到用户完成验证并明确要求为该控件家族创建提交。
 
-### 任务 6：QRCode
+### 任务 5：QRCode
 
 **控件文档：** `docs/controls/desktop/data-display/qr-code/overview.md`, `docs/controls/desktop/data-display/qr-code/implementation.md`
 
@@ -102,7 +88,7 @@
 - [ ] 运行 Generator Semantic Part 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 页面测试、LLMS verify 和 `git diff --check`；存在 Popup/Overlay/运行时宿主风险时增加 NativeAOT publish。
 - [ ] **强制停止：** 保持 QRCode 的所有实现改动未提交，直到用户完成验证并明确要求为该控件家族创建提交。
 
-### 任务 7：Statistic
+### 任务 6：Statistic
 
 **控件文档：** `docs/controls/desktop/data-display/statistic/overview.md`, `docs/controls/desktop/data-display/statistic/implementation.md`
 
@@ -116,7 +102,7 @@
 - [ ] 运行 Generator Semantic Part 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 页面测试、LLMS verify 和 `git diff --check`；存在 Popup/Overlay/运行时宿主风险时增加 NativeAOT publish。
 - [ ] **强制停止：** 保持 Statistic 的所有实现改动未提交，直到用户完成验证并明确要求为该控件家族创建提交。
 
-### 任务 8：Alert
+### 任务 7：Alert
 
 **控件文档：** `docs/controls/desktop/feedback/alert/overview.md`, `docs/controls/desktop/feedback/alert/implementation.md`
 
@@ -130,7 +116,7 @@
 - [ ] 运行 Generator Semantic Part 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 页面测试、LLMS verify 和 `git diff --check`；存在 Popup/Overlay/运行时宿主风险时增加 NativeAOT publish。
 - [ ] **强制停止：** 保持 Alert 的所有实现改动未提交，直到用户完成验证并明确要求为该控件家族创建提交。
 
-### 任务 9：ProgressBar
+### 任务 8：ProgressBar
 
 **控件文档：** `docs/controls/desktop/feedback/progress-bar/overview.md`, `docs/controls/desktop/feedback/progress-bar/implementation.md`
 
@@ -144,7 +130,7 @@
 - [ ] 运行 Generator Semantic Part 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 页面测试、LLMS verify 和 `git diff --check`；存在 Popup/Overlay/运行时宿主风险时增加 NativeAOT publish。
 - [ ] **强制停止：** 保持 ProgressBar 的所有实现改动未提交，直到用户完成验证并明确要求为该控件家族创建提交。
 
-### 任务 10：Result
+### 任务 9：Result
 
 **控件文档：** `docs/controls/desktop/feedback/result/overview.md`, `docs/controls/desktop/feedback/result/implementation.md`
 
@@ -158,7 +144,7 @@
 - [ ] 运行 Generator Semantic Part 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 页面测试、LLMS verify 和 `git diff --check`；存在 Popup/Overlay/运行时宿主风险时增加 NativeAOT publish。
 - [ ] **强制停止：** 保持 Result 的所有实现改动未提交，直到用户完成验证并明确要求为该控件家族创建提交。
 
-### 任务 11：Skeleton
+### 任务 10：Skeleton
 
 **控件文档：** `docs/controls/desktop/feedback/skeleton/overview.md`, `docs/controls/desktop/feedback/skeleton/implementation.md`
 
@@ -166,13 +152,15 @@
 
 **风险类型：** 大型 public 控件家族、重复运行时节点、animation。
 
-- [ ] **Gate A 设计审核：** 逐一审计 `Skeleton`、Avatar/Button/Input/Image/Node/Paragraph/Title/Line 等 public owner，区分容器 region 与各 skeleton element 自己的 root/region；明确 active animation、paragraph row 数和运行时 child 创建。
+- [ ] **Gate A 设计审核：** 逐一审计 `Skeleton`、`SkeletonAvatar`、`SkeletonButton`、`SkeletonInput`、`SkeletonImage`、
+  `SkeletonNode`、`SkeletonParagraph`、`SkeletonTitle`、`SkeletonLine` 等 public owner，区分容器 region 与各 skeleton element
+  自己的 root/region；明确 active animation、paragraph row 数和运行时 child 创建。
 - [ ] 更新两份控件文档，写明准确的 Part/selector/ContractType/cardinality/customization/cross-root/runtime 契约、真实节点映射、排除的组合节点和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
 - [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Skeleton/SkeletonSemanticPartTests.cs`，覆盖全部 public variants、paragraph 多行 cardinality、active/inactive、loading 内容切换和动态 row 数量；验证 marker 静态或一次性创建且 animation 热路径无新增工作。
 - [ ] 运行 Generator Semantic Part 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 页面测试、LLMS verify 和 `git diff --check`；存在 Popup/Overlay/运行时宿主风险时增加 NativeAOT publish。
 - [ ] **强制停止：** 保持 Skeleton 的所有实现改动未提交，直到用户完成验证并明确要求为该控件家族创建提交。
 
-### 任务 12：Spin
+### 任务 11：Spin
 
 **控件文档：** `docs/controls/desktop/feedback/spin/overview.md`, `docs/controls/desktop/feedback/spin/implementation.md`
 
@@ -186,7 +174,7 @@
 - [ ] 运行 Generator Semantic Part 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 页面测试、LLMS verify 和 `git diff --check`；存在 Popup/Overlay/运行时宿主风险时增加 NativeAOT publish。
 - [ ] **强制停止：** 保持 Spin 的所有实现改动未提交，直到用户完成验证并明确要求为该控件家族创建提交。
 
-### 任务 13：FloatButton
+### 任务 12：FloatButton
 
 **控件文档：** `docs/controls/desktop/general/float-button/overview.md`, `docs/controls/desktop/general/float-button/implementation.md`
 
@@ -200,7 +188,7 @@
 - [ ] 运行 Generator Semantic Part 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 页面测试、LLMS verify 和 `git diff --check`；存在 Popup/Overlay/运行时宿主风险时增加 NativeAOT publish。
 - [ ] **强制停止：** 保持 FloatButton 的所有实现改动未提交，直到用户完成验证并明确要求为该控件家族创建提交。
 
-### 任务 14：Separator
+### 任务 13：Separator
 
 **控件文档：** `docs/controls/desktop/general/separator/overview.md`, `docs/controls/desktop/general/separator/implementation.md`
 
@@ -214,49 +202,7 @@
 - [ ] 运行 Generator Semantic Part 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 页面测试、LLMS verify 和 `git diff --check`；存在 Popup/Overlay/运行时宿主风险时增加 NativeAOT publish。
 - [ ] **强制停止：** 保持 Separator 的所有实现改动未提交，直到用户完成验证并明确要求为该控件家族创建提交。
 
-### 任务 15：SplitButton
-
-**控件文档：** `docs/controls/desktop/general/split-button/overview.md`, `docs/controls/desktop/general/split-button/implementation.md`
-
-**证据范围：** `src/AtomUI.Desktop.Controls/Buttons/SplitButton.cs`、`src/AtomUI.Desktop.Controls/Buttons/Themes/SplitButtonTheme.axaml` 及其引用的 Button/DropdownButton 主题；测试 `tests/AtomUI.Desktop.Controls.Tests/Buttons`；Gallery `controlgallery/AtomUIGallery/ShowCases/General/SplitButton`。
-
-**风险类型：** 复合 Button owner、共享主题、SizeType、Popup trigger。
-
-- [ ] **Gate A 设计审核：** 审计主动作与下拉动作的 public owner/child 关系、两个按钮 surface/icon/content/indicator 职责以及 shared Button themes；明确哪些契约属于 SplitButton，哪些继续由嵌套 Button/DropdownButton descriptor 拥有，禁止跨两层 template 穿透。
-- [ ] 更新两份控件文档，写明准确的 Part/selector/ContractType/cardinality/customization/cross-root/runtime 契约、真实节点映射、排除的组合节点和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Buttons/SplitButtonSemanticPartTests.cs`，覆盖 primary/secondary action、disabled/loading/size、下拉打开和 owner selector 隔离；只有 SplitButton 与 DropdownButton 相关 Gate A 均批准后才能改共享 DropdownButton 主题。
-- [ ] 运行 Generator Semantic Part 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 页面测试、LLMS verify 和 `git diff --check`；存在 Popup/Overlay/运行时宿主风险时增加 NativeAOT publish。
-- [ ] **强制停止：** 保持 SplitButton 的所有实现改动未提交，直到用户完成验证并明确要求为该控件家族创建提交。
-
-### 任务 16：BorderBeam
-
-**控件文档：** `docs/controls/desktop/other/border-beam/overview.md`, `docs/controls/desktop/other/border-beam/implementation.md`
-
-**证据范围：** `src/AtomUI.Desktop.Controls/BorderBeam/*.cs`, `src/AtomUI.Desktop.Controls/BorderBeam/Themes/BorderBeamTheme.axaml`；测试 `tests/AtomUI.Desktop.Controls.Tests/BorderBeam`；Gallery `controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam`.
-
-**风险类型：** 自定义 rendering、presenter、animation、可能重分类为不适用。
-
-- [ ] **Gate A 设计审核：** 审计 `BorderBeam` 与 `BorderBeamPresenter` 的 owner/renderer 边界，判断 beam、content、border surface 是否是真实独立 Visual 或绘制职责；明确 geometry/animation 热路径和 `IBorderBeamAwareControl` 集成。
-- [ ] 更新两份控件文档，写明准确的 Part/selector/ContractType/cardinality/customization/cross-root/runtime 契约、真实节点映射、排除的组合节点和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 若 Gate A 批准至少一个非 root Part，新增 `tests/AtomUI.Desktop.Controls.Tests/BorderBeam/BorderBeamSemanticPartTests.cs`，覆盖 content、geometry、animation enabled/disabled 和 descriptor；若绘制区域不能形成独立稳定 Visual，则将 BorderBeam 重分类为不适用并跳过实现。
-- [ ] 运行 Generator Semantic Part 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 页面测试、LLMS verify 和 `git diff --check`；存在 Popup/Overlay/运行时宿主风险时增加 NativeAOT publish。
-- [ ] **强制停止：** 保持 BorderBeam 的所有实现改动未提交，直到用户完成验证并明确要求为该控件家族创建提交。
-
-### 任务 17：GroupBox
-
-**控件文档：** `docs/controls/desktop/data-display/group-box/overview.md`, `docs/controls/desktop/data-display/group-box/implementation.md`
-
-**证据范围：** `src/AtomUI.Desktop.Controls/GroupBox/GroupBox.cs`, `src/AtomUI.Desktop.Controls/GroupBox/Themes/GroupBoxTheme.axaml`；测试 `tests/AtomUI.Desktop.Controls.Tests/GroupBox`；Gallery `controlgallery/AtomUIGallery/ShowCases/DataDisplay/GroupBox`.
-
-**风险类型：** header/content 布局和 border geometry。
-
-- [ ] **Gate A 设计审核：** 审计 header、content 与 frame/border 的职责，确认 header 缺失、header placement 和复杂 content 下的 cardinality；区分可定制语义区域与为边框缺口服务的内部 wrapper。
-- [ ] 更新两份控件文档，写明准确的 Part/selector/ContractType/cardinality/customization/cross-root/runtime 契约、真实节点映射、排除的组合节点和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/GroupBox/GroupBoxSemanticPartTests.cs`，覆盖 header 有无、复杂 content、disabled 和布局 Setter，验证 header/content marker 与 render/border 测试保持一致。
-- [ ] 运行 Generator Semantic Part 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 页面测试、LLMS verify 和 `git diff --check`；存在 Popup/Overlay/运行时宿主风险时增加 NativeAOT publish。
-- [ ] **强制停止：** 保持 GroupBox 的所有实现改动未提交，直到用户完成验证并明确要求为该控件家族创建提交。
-
-### 任务 18：CheckBox
+### 任务 14：CheckBox
 
 **控件文档：** `docs/controls/desktop/data-entry/check-box/overview.md`, `docs/controls/desktop/data-entry/check-box/implementation.md`
 
@@ -270,7 +216,7 @@
 - [ ] 运行 Generator Semantic Part 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 页面测试、LLMS verify 和 `git diff --check`；存在 Popup/Overlay/运行时宿主风险时增加 NativeAOT publish。
 - [ ] **强制停止：** 保持 CheckBox 的所有实现改动未提交，直到用户完成验证并明确要求为该控件家族创建提交。
 
-### 任务 19：RadioButton
+### 任务 15：RadioButton
 
 **控件文档：** `docs/controls/desktop/data-entry/radio-button/overview.md`, `docs/controls/desktop/data-entry/radio-button/implementation.md`
 
@@ -284,7 +230,7 @@
 - [ ] 运行 Generator Semantic Part 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 页面测试、LLMS verify 和 `git diff --check`；存在 Popup/Overlay/运行时宿主风险时增加 NativeAOT publish。
 - [ ] **强制停止：** 保持 RadioButton 的所有实现改动未提交，直到用户完成验证并明确要求为该控件家族创建提交。
 
-### 任务 20：ToggleSwitch
+### 任务 16：ToggleSwitch
 
 **控件文档：** `docs/controls/desktop/data-entry/toggle-switch/overview.md`, `docs/controls/desktop/data-entry/toggle-switch/implementation.md`
 
@@ -300,7 +246,7 @@
 
 ## 批次收尾
 
-- [ ] 确认 20 个控件家族分别拥有用户授权的独立提交。
+- [ ] 确认 16 个控件家族分别拥有用户授权的独立提交。
 - [ ] 运行完整的 `AtomUI.Desktop.Controls.Tests`、`AtomUI.Generator.Tests`、`AtomUI.Toolkits.GalleryBase.Tests` 和 `AtomUIGallery.Tests` 工程。
 - [ ] 运行 LLMS verify、Gallery NativeAOT publish 和 `git diff --check`。
 - [ ] 在总计划中将第一批标记为完成，不额外创建批次提交。

@@ -2,7 +2,7 @@
 
 > **供智能体执行者使用：** 使用 `superpowers:executing-plans` 在当前会话中执行，不得使用 subagent。即使多个控件共享源码目录或 Gallery 页面，每套正式控件文档仍分别执行独立的 Gate A。
 
-**目标：** 为 18 个输入与选择控件家族建立 Semantic Part 契约，同时保持 SizeType、原生文本编辑、Popup、候选项容器和可选包行为。
+**目标：** 为 15 个具有 Ant Design 6.6.0 稳定发布源码公开 Semantic DOM 对应 API 的输入与选择控件家族建立 Semantic Part 契约，同时保持 SizeType、原生文本编辑、Popup、候选项容器和可选包行为。
 
 **架构：** 输入控件 owner 只公开自身稳定区域，不侵占嵌套 public 控件的模板职责。Popup Part 继续使用 selector，并受 owner 作用域约束。只有完整记录 owner、每层 wrapper 以及 `ISizeTypeAware` / `ICustomizableSizeTypeAware` 的测量路径后，才能批准可修改布局的 Part。
 
@@ -41,7 +41,7 @@
 
 **风险类型：** Popup、分层运行时容器、异步加载、filter 模式。
 
-- [ ] **Gate A 设计审核：** 审计 Cascader input/decorated box、popup CascaderView、level/filter lists 和 items；确认 selector/clear/expand/check/item regions与 multiple/single、filter/hierarchy variants，记录 async child load、level rebuild、Popup 和 容器生命周期。
+- [ ] **Gate A 设计审核：** 审计 Cascader input/decorated box、popup CascaderView、level/filter lists 和 items；确认 selector/clear/expand/check/item regions 与 multiple/single、filter/hierarchy variants，记录 async child load、level rebuild、Popup 和容器生命周期。
 - [ ] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
 - [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Cascader/CascaderSemanticPartTests.cs`，覆盖 single/multiple、filter/hierarchy、async loading、level navigation、check/select、Popup reopen、collection reset 和 marker budget。
 - [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
@@ -229,51 +229,9 @@
 - [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
 - [ ] **强制停止：** 保持 Upload 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
 
-### 任务 16：ButtonSpinner
-
-**控件文档：** `docs/controls/desktop/navigation/button-spinner/overview.md`, `docs/controls/desktop/navigation/button-spinner/implementation.md`
-
-**证据范围：** `src/AtomUI.Desktop.Controls/ButtonSpinner/*.cs`, `src/AtomUI.Desktop.Controls/ButtonSpinner/Themes/*Theme.axaml`；测试 `tests/AtomUI.Desktop.Controls.Tests/ButtonSpinner`；Gallery `controlgallery/AtomUIGallery/ShowCases/Navigation/ButtonSpinner`.
-
-**风险类型：** ICustomizableSizeTypeAware、两个 handle、content panel、pointer/keyboard。
-
-- [ ] **Gate A 设计审核：** 审计 ButtonSpinner root/decorated box/content/increase/decrease handles 的 owner，确认 handles 是否 public child descriptors，记录 orientation、allow spin、keyboard/wheel 和 SizeType/Custom layout。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/ButtonSpinner/ButtonSpinnerSemanticPartTests.cs`，覆盖 orientation、increase/decrease、disabled/read-only、content、所有尺寸和 Custom padding/height；验证重复操作不会改变 class。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
-- [ ] **强制停止：** 保持 ButtonSpinner 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
-
-### 任务 17：ComboBox
-
-**控件文档：** `docs/controls/desktop/navigation/combo-box/overview.md`, `docs/controls/desktop/navigation/combo-box/implementation.md`
-
-**证据范围：** `src/AtomUI.Desktop.Controls/ComboBox/*.cs`, `src/AtomUI.Desktop.Controls/ComboBox/Themes/*Theme.axaml`；测试 `tests/AtomUI.Desktop.Controls.Tests/ComboBox`；Gallery `controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox`.
-
-**风险类型：** ICustomizableSizeTypeAware、Popup、可编辑 text box、item 容器。
-
-- [ ] **Gate A 设计审核：** 审计 ComboBox/ComboBoxItem/handle/text box owner，确认 selection box/input/clear/handle/popup/item regions 覆盖 editable/noneditable；记录 Popup, generated containers, selection, filtering 和 SizeType。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/ComboBox/ComboBoxSemanticPartTests.cs`，覆盖 editable/noneditable、generated/explicit items、selection/input、Popup reopen、collection reset、所有尺寸 和 nested owner 隔离。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
-- [ ] **强制停止：** 保持 ComboBox 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
-
-### 任务 18：DropdownButton
-
-**控件文档：** `docs/controls/desktop/navigation/dropdown-button/overview.md`, `docs/controls/desktop/navigation/dropdown-button/implementation.md`
-
-**证据范围：** `src/AtomUI.Desktop.Controls/Buttons/DropdownButton.cs`、`src/AtomUI.Desktop.Controls/Buttons/Themes/{DropdownButtonBase,DropdownButton}*`、Browser `DropdownButtonTheme.axaml` 和已批准的 Button 共享主题；测试位于 `tests/AtomUI.Desktop.Controls.Tests/Buttons`；Gallery `controlgallery/AtomUIGallery/ShowCases/Navigation/DropdownButton`。
-
-**风险类型：** 派生自 Button 的 Descriptor、Desktop/Browser 主题、Popup/Flyout、SizeType。
-
-- [ ] **Gate A 设计审核：** 审计 DropdownButton 自有 open indicator、content/icon/loading 与 inherited Button contract，确认 dropdown/flyout content 是否属于 owner可达 Popup还是独立 nested control；记录 Desktop/Browser parity、open state 和 SizeType。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 创建 `tests/AtomUI.Desktop.Controls.Tests/Buttons/DropdownButtonSemanticPartTests.cs`，覆盖 inherited/owned descriptors、Desktop/Browser marker parity、icon/content/loading/open indicator、flyout reopen、所有尺寸 和 selector owner 隔离。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
-- [ ] **强制停止：** 保持 DropdownButton 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
-
 ## 批次收尾
 
-- [ ] 确认 18 个控件家族分别拥有用户授权的独立提交。
+- [ ] 确认 15 个控件家族分别拥有用户授权的独立提交。
 - [ ] 运行完整 Desktop Controls、Generator、GalleryBase 和 Gallery 测试，并执行输入、选择和本地化筛选。
 - [ ] 运行 LLMS verify、Gallery NativeAOT publish 和 `git diff --check`。
 - [ ] 更新总计划清单，不额外创建批次提交。

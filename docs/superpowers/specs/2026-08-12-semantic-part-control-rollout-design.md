@@ -23,29 +23,155 @@ Semantic Part 的公共模型、Selector 契约和生成器规则分别由
 
 ## 2. 范围基线
 
-截至 2026-08-12，`docs/controls/desktop` 下共有 78 个正式控件文档叶子。
+截至 2026-08-12，npm `latest` 指向 Ant Design 6.6.0；本轮范围以该稳定发布源码为审计基线。`docs/controls/desktop`
+下共有 78 个正式控件文档叶子。
 
 | 状态 | 数量 | 范围 |
 | --- | ---: | --- |
 | 已完成基线 | 1 | `Button` |
-| 本轮待改造 | 73 | 五个批次中的控件家族 |
-| 不适用 | 4 | `Icon`、`FlexPanel`、`Grid / Row / Col`、`Watermark` |
+| 本轮待改造 | 57 | 五个批次中与稳定版公开 Semantic DOM API 对应的控件家族 |
+| 不适用 | 20 | 没有对应公开 API、只有内部/间接能力或产品职责不对应的控件家族 |
 
 `Button` 是首个完整样例，用于校验 descriptor、静态 marker、Selector、尺寸协调和 Gallery Preview 的全链路；它不作为
 其他控件 Part 命名的机械模板。
 
-### 2.1 不适用判定
+### 2.1 唯一准入 Gate
+
+一个 AtomUI 控件家族只有同时满足以下条件，才能进入 Semantic Part 改造：
+
+1. Ant Design 当前最新稳定发布源码中存在可从组件包公开入口访问的对应组件 owner。
+2. 该 owner 的公开 Props 明确声明分区式 `classNames` / `styles` Semantic DOM API，而不是只有普通 `className` / `style`。
+3. 组件实现实际读取、合并并应用调用方传入的 Semantic DOM 值；仅类型继承但实现丢弃参数不算支持。
+4. AtomUI 控件与该公开 owner 的产品职责直接对应；内部 mode、嵌套子组件、Popup 内容或名称相似不能建立映射。
+
+下列证据不能单独构成准入资格：
+
+- 官网示例、Semantic DOM 图示或文案。
+- `ConfigProvider` 中按组件名配置的 `classNames` / `styles`。
+- internal context、helper、schema、测试夹具或私有组件使用的 Semantic 类型。
+- 普通 root `className` / `style`、deprecated overlay class/style 或底层 DOM 属性。
+- 从另一个组件继承到 Props、但当前组件实现没有消费的 `classNames` / `styles`。
+- 通过组合的 `Button`、`Menu`、`Select`、`Popover` 等子组件间接获得的能力。
+
+新的 Ant Design 稳定版本发布后，不自动扩大 AtomUI 范围。必须重新审计其公开 Props、包导出和实现消费点，并先更新本
+spec 与任务清单。预发布分支、未发布主干和内部实验 API 不参与判定。
+
+### 2.2 稳定版公开 API 盘点
+
+Ant Design 6.6.0 稳定发布源码中，以下 61 个组件目录具有可验证的公开 Semantic DOM owner：
+
+```text
+alert anchor auto-complete badge breadcrumb button calendar card cascader checkbox collapse
+color-picker date-picker descriptions divider drawer dropdown empty float-button form image input
+input-number layout list listy masonry mentions menu message modal notification pagination popconfirm
+popover progress qr-code radio result segmented select skeleton slider space spin splitter statistic
+steps switch table tabs tag time-picker timeline tooltip tour transfer tree tree-select typography upload
+```
+
+目录名不等于目录内所有公开组件都获得 API：
+
+- `layout` 中只有公开 `Layout.Sider` owner 具有 Semantic DOM API。
+- `list` 中公开分区 API 位于 `List.Item`，并且只覆盖 `actions`、`extra`；不能把它扩大为 `List` root 的完整 API。
+- `collapse` 的 schema 属于 `Collapse`；`Collapse.Panel` 没有独立公开 Semantic DOM Props。
+- `dropdown` 的 schema 属于 `Dropdown`；deprecated `Dropdown.Button` 虽在类型上继承 `DropdownProps`，实现没有消费调用方传入
+  的 `classNames` / `styles`，不能作为独立 Semantic DOM owner。
+- `tabs` 的 schema 属于 `Tabs`；不存在独立公开 `TabStrip` Semantic DOM owner。
+
+### 2.3 AtomUI 纳入映射
+
+下表覆盖 58 个准入家族，其中 `Button` 已完成，其余 57 个进入五个实施批次。映射只证明“允许进入 Gate A”，不预先
+承诺具体 Part 名称或数量；每个 Part 仍必须从 AtomUI 自身源码、主题和生命周期事实中设计。
+
+| AtomUI 控件家族 | Ant Design 6.6.0 公开 owner | 结论 |
+| --- | --- | --- |
+| `Button` | `Button` | 已完成基线 |
+| `Badge` | `Badge`、`Badge.Ribbon` | Batch 1 |
+| `Card` | `Card`、`Card.Meta` | Batch 1 |
+| `Descriptions` | `Descriptions`、`Descriptions.Item` | Batch 1 |
+| `Empty` | `Empty` | Batch 1 |
+| `QRCode` | `QRCode` | Batch 1 |
+| `Statistic` | `Statistic` | Batch 1 |
+| `Alert` | `Alert` | Batch 1 |
+| `ProgressBar` | `Progress` | Batch 1 |
+| `Result` | `Result` | Batch 1 |
+| `Skeleton` | `Skeleton` | Batch 1 |
+| `Spin` | `Spin` | Batch 1 |
+| `FloatButton` | `FloatButton`、`FloatButton.Group` | Batch 1 |
+| `Separator` | `Divider` | Batch 1 |
+| `CheckBox` | `Checkbox` | Batch 1 |
+| `RadioButton` | `Radio` | Batch 1 |
+| `ToggleSwitch` | `Switch` | Batch 1 |
+| `Calendar` | `Calendar` | Batch 2 |
+| `Collapse` | `Collapse` | Batch 2 |
+| `ListView` | `List.Item` | Batch 2；Gate A 只能按公开 item 分区边界设计 |
+| `Segmented` | `Segmented` | Batch 2 |
+| `Tag` | `Tag` | Batch 2 |
+| `Timeline` | `Timeline` | Batch 2 |
+| `TreeView` | `Tree` | Batch 2 |
+| `Slider` | `Slider` | Batch 2 |
+| `Masonry` | `Masonry` | Batch 2 |
+| `Space` | `Space` | Batch 2 |
+| `Splitter` | `Splitter` | Batch 2 |
+| `Breadcrumb` | `Breadcrumb` | Batch 2 |
+| `Pagination` | `Pagination` | Batch 2 |
+| `Steps` | `Steps` | Batch 2 |
+| `TabControl` | `Tabs` | Batch 2 |
+| `AutoComplete` | `AutoComplete` | Batch 3 |
+| `Cascader` | `Cascader` | Batch 3 |
+| `ColorPicker` | `ColorPicker` | Batch 3 |
+| `DatePicker` | `DatePicker`、`RangePicker` | Batch 3 |
+| `Form` | `Form` | Batch 3 |
+| `LineEdit` | `Input`、`Input.Password`、`Input.TextArea` | Batch 3 |
+| `Mentions` | `Mentions` | Batch 3 |
+| `NumericUpDown` | `InputNumber` | Batch 3 |
+| `OtpLineEdit` | `Input.OTP` | Batch 3 |
+| `SearchEdit` | `Input.Search` | Batch 3 |
+| `Select` | `Select` | Batch 3 |
+| `TimePicker` | `TimePicker` | Batch 3 |
+| `Transfer` | `Transfer` | Batch 3 |
+| `TreeSelect` | `TreeSelect` | Batch 3 |
+| `Upload` | `Upload` | Batch 3 |
+| `ImagePreviewer` | `Image`、`Image.PreviewGroup` | Batch 4 |
+| `InfoFlyout` | `Popover` | Batch 4 |
+| `ToolTip` | `Tooltip` | Batch 4 |
+| `Tour` | `Tour` | Batch 4 |
+| `Drawer` | `Drawer` | Batch 4 |
+| `Message` | `message` | Batch 4 |
+| `Modal / Dialog` | `Modal` | Batch 4 |
+| `Notification` | `notification` | Batch 4 |
+| `PopupConfirm` | `Popconfirm` | Batch 4 |
+| `NavMenu` | `Menu` | Batch 5；两者均是层级页面/模块导航 owner |
+| `DataGrid` | `Table` | Batch 5 |
+
+### 2.4 排除映射
 
 以下控件当前不新增 Semantic Part：
 
 | 控件 | 判定依据 | 重新评估触发条件 |
 | --- | --- | --- |
-| `Icon` | 视觉职责就是控件 root，没有独立且可长期承诺的内部区域。 | 出现独立 public 子 Control 或稳定的多区域视觉契约。 |
-| `FlexPanel` | 布局 Panel 只管理 children 排列，没有 owner 自有的非 root 视觉职责。 | 新增稳定装饰、控制柄或 public presenter。 |
-| `Grid / Row / Col` | 栅格职责由 owner 与 children 布局共同完成，虚构 `content/item` 不形成有价值契约。 | 新增 owner 自有、跨模板稳定的视觉区域。 |
-| `Watermark` | 当前可定制职责由 root API 和渲染参数表达，不存在适合 Selector 定制的独立视觉节点。 | 水印内容成为稳定独立 Visual 或 public 子 Control。 |
+| `Avatar` | Ant Design `AvatarProps` 与 `AvatarGroupProps` 没有公开分区式 `classNames` / `styles`；ConfigProvider 测试不构成组件 API。 | 新稳定版公开并实际消费对应 API。 |
+| `Carousel` | Ant Design 稳定版 `Carousel` 没有公开 Semantic DOM Props。 | 新稳定版公开并实际消费对应 API。 |
+| `Expander` | Ant Design 只有 `Collapse` owner；`Collapse.Panel` 也没有独立 API，不能为独立 Expander 建立映射。 | 新稳定版出现职责直接对应的公开 owner。 |
+| `GroupBox` | Ant Design 没有职责直接对应的公开 Semantic DOM owner。 | 新稳定版出现职责直接对应的公开 owner。 |
+| `ListBox` | Ant Design `List.Item` API不能替代独立选择型 `ListBox`，`Select` 的 popup list 也只是嵌套实现。 | 新稳定版出现独立选择列表 owner。 |
+| `Rate` | Ant Design 稳定版 `Rate` 没有公开 Semantic DOM Props。 | 新稳定版公开并实际消费对应 API。 |
+| `Watermark` | Ant Design 稳定版 `Watermark` 没有公开 Semantic DOM Props。 | 新稳定版公开并实际消费对应 API。 |
+| `Icon` | Ant Design Icons 不提供与 AtomUI `Icon` 对应的公开 Semantic DOM owner。 | 稳定发布出现对应公开组件 API。 |
+| `SplitButton` | 最接近的 deprecated `Dropdown.Button` 没有实际消费公开 `classNames` / `styles`；组合内 Button 能力不能上浮。 | 稳定版为 split-button owner 提供独立并实际消费的 API。 |
+| `FlexPanel` | Ant Design 稳定版没有与该布局 Panel 对应的公开 Semantic DOM owner。 | 新稳定版出现职责直接对应的公开 owner。 |
+| `Grid / Row / Col` | Ant Design Grid 没有公开 Semantic DOM Props；`Layout.Sider` 不能映射到通用 Grid。 | 新稳定版公开 Grid/Row/Col 对应 API。 |
+| `TabStrip` | Ant Design 只在 `Tabs` owner 上公开 API，没有独立 `TabStrip` owner。 | 新稳定版出现独立公开 owner。 |
+| `ButtonSpinner` | Ant Design 没有职责直接对应的公开 Semantic DOM owner；`InputNumber` 的 handle 是其内部区域。 | 新稳定版出现独立 spinner owner。 |
+| `ComboBox` | Ant Design 没有公开 `ComboBox` 组件；`Select` 的 internal combobox mode 不能作为公开 owner。 | 新稳定版出现公开 ComboBox owner。 |
+| `DropdownButton` | deprecated `Dropdown.Button` 虽继承 `DropdownProps`，实现没有消费调用方传入的 Semantic DOM 值。 | 稳定版为该 owner 提供独立并实际消费的 API。 |
+| `BorderBeam` | Ant Design 稳定版没有该公开组件或对应 Semantic DOM API。 | 稳定版出现职责直接对应的公开 owner。 |
+| `Splash` | Ant Design 稳定版没有职责直接对应的公开 Semantic DOM owner。 | 新稳定版出现对应公开 owner。 |
+| `Menu` | AtomUI `Menu` 是桌面命令、ContextMenu 与 MenuFlyout 家族；Ant Design `Menu` 是页面/模块导航，直接对应 AtomUI `NavMenu`。 | Ant Design 出现职责对应桌面命令菜单的独立公开 owner。 |
+| `WindowTitleBar` | Ant Design Web 组件体系没有对应的公开 Semantic DOM owner。 | 稳定版出现职责直接对应的公开 owner。 |
+| `Window` | Ant Design Web 组件体系没有对应的公开 Semantic DOM owner；Modal 不能替代 TopLevel Window。 | 稳定版出现职责直接对应的公开 owner。 |
 
-不适用不是永久豁免。触发条件出现时，必须重新执行本设计的文档审核关卡，不能直接补 marker。
+排除不是根据 AtomUI 模板复杂度做出的判断，也不能因为某控件内部有可定制节点而改变。只有新的稳定发布公开 API 通过
+2.1 的完整 Gate 后，才能重新进入任务规划。
 
 ## 3. 最小交付单位
 
@@ -59,7 +185,8 @@ owner、public child control、internal presenter、item container、runtime-cre
   但作为独立文档叶子另行审核其搜索按钮和 decorated box 契约。
 - `Modal / Dialog` 包含 `Dialog`、`DialogSurface`、Overlay host、Window host、header、resizer 和 button box。
 - `DataGrid` 包含 grid、row、cell、header、presenter、filter flyout 和虚拟化/回收路径。
-- `SplitButton` 与 `DropdownButton` 分别作为独立用户控件家族审核，但必须核对其复用的 Button 主题与语义边界。
+- `SplitButton`、`DropdownButton` 等组合控件即使复用已支持的 Button，也不能继承准入资格；公开 owner 必须独立通过
+  2.1 的 Gate。
 
 同一家族的 descriptor 与模板 marker 必须一起审核和实现，不能让父控件与其容器、Popup 或派生模板在不同 commit 中短暂
 形成不完整公共契约。
@@ -269,11 +396,11 @@ git diff --check
 
 | 批次 | 数量 | 目标 | 主要风险 |
 | --- | ---: | --- | --- |
-| Batch 1 | 20 | 基础视觉与状态控件，建立可复用审核节奏。 | 派生主题、尺寸、adorner、复合 Button。 |
-| Batch 2 | 20 | 集合、容器与导航结构。 | container、runtime-created、虚拟化、多重 cardinality。 |
-| Batch 3 | 18 | 输入、选择与日期/时间类控件。 | SizeType、Popup、内部 editor、候选项容器。 |
-| Batch 4 | 12 | 独立宿主、Overlay 与 Window。 | 跨视觉根、session 生命周期、多 TopLevel。 |
-| Batch 5 | 3 | 高密度复合控件。 | 大量 container、Popup、虚拟化和性能。 |
+| Batch 1 | 16 | 基础视觉与状态控件，建立可复用审核节奏。 | 派生主题、尺寸、adorner、状态替代节点。 |
+| Batch 2 | 15 | 集合、容器与导航结构。 | container、runtime-created、虚拟化、多重 cardinality。 |
+| Batch 3 | 15 | 输入、选择与日期/时间类控件。 | SizeType、Popup、内部 editor、候选项容器。 |
+| Batch 4 | 9 | Popup、Overlay 与服务宿主。 | 跨视觉根、session 生命周期、多宿主隔离。 |
+| Batch 5 | 2 | 高密度复合控件。 | 大量 container、Popup、虚拟化和性能。 |
 
 批次表达审核顺序，不构成批量提交边界。始终一次只推进一个控件家族，并在 Gate A 与 Gate B 后等待用户确认。
 

@@ -12,6 +12,8 @@
 
 - 只允许在 `/Users/chinboy/Projects/dotnet/AtomUIV6/.worktrees/semantic` 的 `feature/semantic` 分支中工作。
 - 遵循[全量改造设计](../specs/2026-08-12-semantic-part-control-rollout-design.md)和正式的 [Semantic Part 系统架构](../../architecture/systems/theming/semantic-parts.md)。
+- 准入只以 Ant Design 最新稳定发布源码中公开且实际消费的 Semantic DOM API 为准；当前基线为 2026-08-12 的 6.6.0。
+- 官网展示、普通 `className` / `style`、ConfigProvider、internal schema、Props 间接继承或嵌套子组件透传不得作为准入证据。
 - 每次只处理一个控件家族。当前控件等待文档或实现审核时，不得开始下一个控件，除非用户明确调整顺序。
 - 修改源码、主题、测试、Gallery 或 changelog 前，必须先更新该控件的 `overview.md` 和 `implementation.md` 并获得批准。
 - 只有主题符合仓库独立维护标准时，才能创建控件专项设计文档。
@@ -28,11 +30,11 @@
 | --- | --- |
 | `docs/superpowers/specs/2026-08-12-semantic-part-control-rollout-design.md` | 稳定的改造范围、门禁、风险模型、性能和兼容性规则。 |
 | `docs/superpowers/plans/2026-08-12-semantic-part-control-rollout.md` | 总体顺序、状态、通用执行循环和跨批次收尾。 |
-| `docs/superpowers/plans/2026-08-12-semantic-part-batch-1-basic-controls.md` | 20 个基础视觉与状态控件家族。 |
-| `docs/superpowers/plans/2026-08-12-semantic-part-batch-2-collections-containers.md` | 20 个集合、容器和导航控件家族。 |
-| `docs/superpowers/plans/2026-08-12-semantic-part-batch-3-input-selection.md` | 18 个输入和选择控件家族。 |
-| `docs/superpowers/plans/2026-08-12-semantic-part-batch-4-hosts-windows.md` | 12 个 Popup、Overlay、服务宿主和 Window 控件家族。 |
-| `docs/superpowers/plans/2026-08-12-semantic-part-batch-5-high-density.md` | Menu、NavMenu 和 DataGrid 三个性能敏感控件家族。 |
+| `docs/superpowers/plans/2026-08-12-semantic-part-batch-1-basic-controls.md` | 16 个基础视觉与状态控件家族。 |
+| `docs/superpowers/plans/2026-08-12-semantic-part-batch-2-collections-containers.md` | 15 个集合、容器和导航控件家族。 |
+| `docs/superpowers/plans/2026-08-12-semantic-part-batch-3-input-selection.md` | 15 个输入和选择控件家族。 |
+| `docs/superpowers/plans/2026-08-12-semantic-part-batch-4-hosts-windows.md` | 9 个 Popup、Overlay 和服务宿主控件家族。 |
+| `docs/superpowers/plans/2026-08-12-semantic-part-batch-5-high-density.md` | `NavMenu` 和 `DataGrid` 两个性能敏感控件家族。 |
 
 正式控件文档不得将这些计划作为唯一设计来源。它们应链接系统架构，并描述控件自身的当前契约。
 
@@ -44,20 +46,23 @@
 
 ### 不适用
 
-- [x] `Icon`：只有 root 视觉职责，不存在非 root Part。
-- [x] `FlexPanel`：仅负责布局的 Panel，不拥有视觉区域。
-- [x] `Grid / Row / Col`：只负责布局组合，不拥有稳定的 owner 视觉区域。
-- [x] `Watermark`：只有 root 渲染/API 契约，不存在独立且稳定的 Visual。
+- [x] `Avatar`、`Carousel`、`Expander`、`GroupBox`、`ListBox`、`Rate`、`Watermark`。
+- [x] `Icon`、`SplitButton`、`FlexPanel`、`Grid / Row / Col`、`TabStrip`。
+- [x] `ButtonSpinner`、`ComboBox`、`DropdownButton`、`BorderBeam`、`Splash`。
+- [x] `Menu`、`WindowTitleBar`、`Window`。
+
+逐项公开 API 证据、产品职责映射和重新评估条件以全量改造设计的“排除映射”为准。不得因 AtomUI 模板内部存在
+可定制节点而绕过准入 Gate。
 
 ### 待执行批次
 
-- [ ] 第一批：基础控件，共 20 个家族。
-- [ ] 第二批：集合与容器，共 20 个家族。
-- [ ] 第三批：输入与选择，共 18 个家族。
-- [ ] 第四批：独立宿主与窗口，共 12 个家族。
-- [ ] 第五批：高密度控件，共 3 个家族。
+- [ ] 第一批：基础控件，共 16 个家族。
+- [ ] 第二批：集合与容器，共 15 个家族。
+- [ ] 第三批：输入与选择，共 15 个家族。
+- [ ] 第四批：Popup 与独立宿主，共 9 个家族。
+- [ ] 第五批：高密度控件，共 2 个家族。
 
-合计待改造：73 个控件家族。
+合计待改造：57 个控件家族。
 
 ## 3. 单控件强制执行循环
 
@@ -123,9 +128,9 @@
 
 **计划：** [第一批任务清单](2026-08-12-semantic-part-batch-1-basic-controls.md)
 
-- [ ] 完成 `Avatar` 的 Gate A 至 Gate C 全流程。
+- [ ] 完成 `Badge` 的 Gate A 至 Gate C 全流程。
 - [ ] 严格按照第一批计划中的顺序逐个处理控件家族。
-- [ ] 20 个家族全部提交后，运行完整 Desktop Controls、Gallery、Generator 和 LLMS 检查，再将该批次标记为完成。
+- [ ] 16 个家族全部提交后，运行完整 Desktop Controls、Gallery、Generator 和 LLMS 检查，再将该批次标记为完成。
 
 ### 任务 2：第二批 - 集合与容器
 
@@ -133,7 +138,7 @@
 
 - [ ] 只有第一批形成稳定审核节奏后才能开始，除非用户明确调整优先级。
 - [ ] 每个适用家族都必须提供容器和运行时创建 marker 的生命周期证据。
-- [ ] 20 个家族全部提交后，运行集合/虚拟化回归测试和完整通用检查。
+- [ ] 15 个家族全部提交后，运行集合/虚拟化回归测试和完整通用检查。
 
 ### 任务 3：第三批 - 输入与选择
 
@@ -141,15 +146,15 @@
 
 - [ ] 开放 input frame/content/icon 区域前，必须分析 SizeType 和布局 Setter。
 - [ ] candidate、option、calendar 和 time panel 必须提供 Popup 打开-关闭-重新打开的证据。
-- [ ] 18 个家族全部提交后，运行输入、选择、本地化和 Gallery NativeAOT 验证。
+- [ ] 15 个家族全部提交后，运行输入、选择、本地化和 Gallery NativeAOT 验证。
 
-### 任务 4：第四批 - 独立宿主与窗口
+### 任务 4：第四批 - Popup 与独立宿主
 
 **计划：** [第四批任务清单](2026-08-12-semantic-part-batch-4-hosts-windows.md)
 
 - [ ] 每项设计获批前，必须明确 Visual root ownership 和释放路径。
 - [ ] 测试多宿主隔离、关闭/detach 清理和 Gallery `AdditionalRoots`，不得引入生产 Preview API。
-- [ ] 12 个家族全部提交后，运行 Window/Overlay 检查和 Gallery NativeAOT publish。
+- [ ] 9 个家族全部提交后，运行 Popup/Overlay 检查和 Gallery NativeAOT publish。
 
 ### 任务 5：第五批 - 高密度控件
 
@@ -157,7 +162,7 @@
 
 - [ ] 每个控件进入 Gate B 前，记录改造前 marker、容器和性能基线。
 - [ ] 必须证明可见实例数量受限、回收正确，并且没有永久监听器或索引。
-- [ ] 3 个家族全部提交后，运行各自完整测试工程、性能检查、Gallery 和 NativeAOT 验证。
+- [ ] 2 个家族全部提交后，运行各自完整测试工程、性能检查、Gallery 和 NativeAOT 验证。
 
 ## 5. 通用验证命令
 
@@ -191,9 +196,9 @@ pwsh -NoLogo -NoProfile -File controlgallery/AtomUIGallery.Desktop/scripts/Publi
 
 ## 6. 全量改造收尾
 
-- [ ] 确认 73 个家族都通过各自经用户授权的提交达到 `Committed` 状态。
+- [ ] 确认 57 个家族都通过各自经用户授权的提交达到 `Committed` 状态。
 - [ ] 重新扫描 public 控件和全部叶子主题，检查未声明的 `.semantic-*`、缺少的已批准 marker，以及 Descriptor 与文档不一致。
-- [ ] 确认四个排除控件仍然符合其不适用理由。
+- [ ] 确认 20 个排除控件仍然没有通过最新稳定发布源码公开 API 准入 Gate。
 - [ ] 运行全部通用测试、DataGrid 测试、LLMS verify、NativeAOT publish 和 `git diff --check`。
 - [ ] 审核每个 Gallery 页面，确认保持 Examples-first 行为，并且选择 Tab 前不会实例化 Semantic Preview。
 - [ ] 输出最终兼容性与性能摘要；除非用户明确要求，否则不得额外创建 squash 或批次提交。

@@ -2,7 +2,7 @@
 
 > **供智能体执行者使用：** 使用 `superpowers:executing-plans` 在当前会话中执行，不得使用 subagent。每个控件在 Gate A 后停止等待用户批准，Gate B 改动保持未提交。
 
-**目标：** 为 20 个集合、容器、布局和导航控件家族建立 Semantic Part 契约，同时保持容器、虚拟化和运行时节点性能。
+**目标：** 为 15 个具有 Ant Design 6.6.0 公开 Semantic DOM 对应 API 的集合、容器、布局和导航控件家族建立 Semantic Part 契约，同时保持容器、虚拟化和运行时节点性能。
 
 **架构：** 父级 owner 只公开自身稳定区域；public item/container 控件在适用时拥有自己的 Descriptor。运行时生成节点只在现有创建路径中使用生成常量添加 marker，并提供 prepare/clear/recycle 证据。
 
@@ -15,7 +15,8 @@
 - 不得将任意用户子元素标记为 `.semantic-item`；只有 owner 创建的稳定容器才能形成 item Part 契约。
 - 容器 marker 必须为静态声明，或在构造时通过生成常量一次性添加；不得在 prepare、选择或状态变化期间切换。
 - 适用时，测试必须证明集合 replace/reset、prepare/clear/recycle、嵌套 semantic owner 隔离，并且旧容器不会被保留。
-- 只有所有受影响设计都获得批准后，才能修改共享的 TabControl/TabStrip、ListBox/ListView 文件或页面。
+- 共享源码或 Gallery 页面中如果同时承载被排除控件，只允许修改准入 owner 的路径；不得给 `TabStrip`、`ListBox` 或其他
+  被排除 owner 添加 Descriptor、marker 或 Semantic Preview。
 
 ---
 
@@ -33,21 +34,7 @@
 - [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
 - [ ] **强制停止：** 保持 Calendar 的所有实现改动未提交，直到用户明确完成验证并授权提交。
 
-### 任务 2：Carousel
-
-**控件文档：** `docs/controls/desktop/data-display/carousel/overview.md`, `docs/controls/desktop/data-display/carousel/implementation.md`
-
-**证据范围：** `src/AtomUI.Desktop.Controls/Carousel/*.cs`, `src/AtomUI.Desktop.Controls/Carousel/Themes/*Theme.axaml`；测试 `tests/AtomUI.Desktop.Controls.Tests/Carousel`；Gallery `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Carousel`.
-
-**风险类型：** 虚拟化 panel、运行时 page、导航和 autoplay 生命周期。
-
-- [ ] **Gate A 设计审核：** 审计 Carousel viewport/page、previous/next navigation、pagination/indicator 的 owner；区分 parent regions 与 public `CarouselPage`、`CarouselNavButton`、`CarouselPagination`、`CarouselPageIndicator` descriptor，记录 virtualizing panel、loop 和 autoplay 生命周期。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、真实模板/运行时节点、owner 边界、排除的 internal wrapper、生命周期/性能不变量和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Carousel/CarouselSemanticPartTests.cs`，覆盖 page collection add/remove/reset、loop、orientation、nav/pagination visibility、virtualized page recycle 和 autoplay detach；验证 marker 不随 current page 反复添加。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
-- [ ] **强制停止：** 保持 Carousel 的所有实现改动未提交，直到用户明确完成验证并授权提交。
-
-### 任务 3：Collapse
+### 任务 2：Collapse
 
 **控件文档：** `docs/controls/desktop/data-display/collapse/overview.md`, `docs/controls/desktop/data-display/collapse/implementation.md`
 
@@ -61,49 +48,23 @@
 - [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
 - [ ] **强制停止：** 保持 Collapse 的所有实现改动未提交，直到用户明确完成验证并授权提交。
 
-### 任务 4：Expander
-
-**控件文档：** `docs/controls/desktop/data-display/expander/overview.md`, `docs/controls/desktop/data-display/expander/implementation.md`
-
-**证据范围：** `src/AtomUI.Desktop.Controls/Expander/*.cs`, `src/AtomUI.Desktop.Controls/Expander/Themes/ExpanderTheme.axaml`；测试 `tests/AtomUI.Desktop.Controls.Tests/Expander`；Gallery `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Expander`.
-
-**风险类型：** header/content 可选区域、placement 和 motion。
-
-- [ ] **Gate A 设计审核：** 审计 header、expand indicator 和 content 的真实节点，确认 four-direction placement 下是否保持同一职责；记录 collapsed 时节点存在/可见性、motion 与 template reapply。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、真实模板/运行时节点、owner 边界、排除的 internal wrapper、生命周期/性能不变量和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Expander/ExpanderSemanticPartTests.cs`，覆盖四个 expand direction、header/content 有无、expanded/collapsed/reapply、disabled 和布局 Setter。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
-- [ ] **强制停止：** 保持 Expander 的所有实现改动未提交，直到用户明确完成验证并授权提交。
-
-### 任务 5：ListBox
-
-**控件文档：** `docs/controls/desktop/data-display/list-box/overview.md`, `docs/controls/desktop/data-display/list-box/implementation.md`
-
-**证据范围：** `src/AtomUI.Desktop.Controls/ListBox/*.cs`, `src/AtomUI.Desktop.Controls/ListBox/Themes/*Theme.axaml`；测试 `tests/AtomUI.Desktop.Controls.Tests/ListBox`；共享 Gallery `controlgallery/AtomUIGallery/ShowCases/DataDisplay/List`.
-
-**风险类型：** item 容器、selection、虚拟化、共享 Gallery。
-
-- [ ] **Gate A 设计审核：** 审计 `ListBox` 与 `ListBoxItem` owner，确认 list viewport、item content/indicator 等稳定职责；记录 item template、selection、ItemsSource replace/reset、container prepare/clear 和 virtualization。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、真实模板/运行时节点、owner 边界、排除的 internal wrapper、生命周期/性能不变量和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/ListBox/ListBoxSemanticPartTests.cs`，覆盖 generated/explicit containers、single/multiple selection、replace/reset、virtualization recycle 和 nested semantic controls；只有 ListBox 与 ListView Gallery 设计都批准后才改共享 List ShowCase shell。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
-- [ ] **强制停止：** 保持 ListBox 的所有实现改动未提交，直到用户明确完成验证并授权提交。
-
-### 任务 6：ListView
+### 任务 3：ListView
 
 **控件文档：** `docs/controls/desktop/data-display/list-view/overview.md`, `docs/controls/desktop/data-display/list-view/implementation.md`
 
 **证据范围：** `src/AtomUI.Desktop.Controls/ListView/*.cs`, `src/AtomUI.Desktop.Controls/ListView/Themes/*Theme.axaml`；测试 `tests/AtomUI.Desktop.Controls.Tests/ListView`；共享 Gallery `controlgallery/AtomUIGallery/ShowCases/DataDisplay/List`.
 
-**风险类型：** 虚拟化、pagination、selection model、共享 Gallery。
+**风险类型：** 虚拟化、pagination、selection model、共享 Gallery、公开 `List.Item` 边界有限。
 
-- [ ] **Gate A 设计审核：** 审计 `ListView`、`ListViewItem`、pagination host 和 empty/loading regions，确认 owner 与 repeated item responsibilities；记录 virtualized 容器生命周期、selection model、filter/pagination changes 和 nested content isolation。
+- [ ] **Gate A 设计审核：** 以 Ant Design 公开 `List.Item` 的 `actions` / `extra` API 为上限，审计 `ListViewItem` 中职责直接
+  对应的稳定区域；不得据此把 `ListView` root、selection、pagination、empty/loading 或普通 item content 扩大为公共 Part。
+  同时记录 virtualized 容器生命周期、selection model、filter/pagination changes 和 nested content isolation。
 - [ ] 更新两份控件文档，写明准确的 Descriptor、真实模板/运行时节点、owner 边界、排除的 internal wrapper、生命周期/性能不变量和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
 - [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/ListView/ListViewSemanticPartTests.cs`，覆盖 virtualized/nonvirtualized、pagination、empty/loading、selection、filter、replace/reset 和 recycle；记录 marker/container 数量与滚动前后 retained instance。
 - [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
 - [ ] **强制停止：** 保持 ListView 的所有实现改动未提交，直到用户明确完成验证并授权提交。
 
-### 任务 7：Segmented
+### 任务 4：Segmented
 
 **控件文档：** `docs/controls/desktop/data-display/segmented/overview.md`, `docs/controls/desktop/data-display/segmented/implementation.md`
 
@@ -117,7 +78,7 @@
 - [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
 - [ ] **强制停止：** 保持 Segmented 的所有实现改动未提交，直到用户明确完成验证并授权提交。
 
-### 任务 8：Tag
+### 任务 5：Tag
 
 **控件文档：** `docs/controls/desktop/data-display/tag/overview.md`, `docs/controls/desktop/data-display/tag/implementation.md`
 
@@ -131,7 +92,7 @@
 - [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
 - [ ] **强制停止：** 保持 Tag 的所有实现改动未提交，直到用户明确完成验证并授权提交。
 
-### 任务 9：Timeline
+### 任务 6：Timeline
 
 **控件文档：** `docs/controls/desktop/data-display/timeline/overview.md`, `docs/controls/desktop/data-display/timeline/implementation.md`
 
@@ -145,7 +106,7 @@
 - [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
 - [ ] **强制停止：** 保持 Timeline 的所有实现改动未提交，直到用户明确完成验证并授权提交。
 
-### 任务 10：TreeView
+### 任务 7：TreeView
 
 **控件文档：** `docs/controls/desktop/data-display/tree-view/overview.md`, `docs/controls/desktop/data-display/tree-view/implementation.md`
 
@@ -159,21 +120,7 @@
 - [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
 - [ ] **强制停止：** 保持 TreeView 的所有实现改动未提交，直到用户明确完成验证并授权提交。
 
-### 任务 11：Rate
-
-**控件文档：** `docs/controls/desktop/data-entry/rate/overview.md`, `docs/controls/desktop/data-entry/rate/implementation.md`
-
-**证据范围：** `src/AtomUI.Desktop.Controls/Rate/*.cs`, `src/AtomUI.Desktop.Controls/Rate/Themes/*Theme.axaml`；测试 `tests/AtomUI.Desktop.Controls.Tests/Rate`；Gallery `controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate`.
-
-**风险类型：** 重复 item Visual、半值 overlay、pointer 热路径。
-
-- [ ] **Gate A 设计审核：** 审计 Rate host、item、empty/full/half visual 的 owner 和 cardinality；确认 half star 是否同一 item 内替代/叠加实现，记录 count/value 改变、hover preview 和 runtime items control。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、真实模板/运行时节点、owner 边界、排除的 internal wrapper、生命周期/性能不变量和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Rate/RateSemanticPartTests.cs`，覆盖 full/half/allowClear/disabled、count change、hover/value update 和 item 重建；验证 pointer move 不进行 Semantic 查询或 class mutation。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
-- [ ] **强制停止：** 保持 Rate 的所有实现改动未提交，直到用户明确完成验证并授权提交。
-
-### 任务 12：Slider
+### 任务 8：Slider
 
 **控件文档：** `docs/controls/desktop/data-entry/slider/overview.md`, `docs/controls/desktop/data-entry/slider/implementation.md`
 
@@ -187,7 +134,7 @@
 - [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
 - [ ] **强制停止：** 保持 Slider 的所有实现改动未提交，直到用户明确完成验证并授权提交。
 
-### 任务 13：Masonry
+### 任务 9：Masonry
 
 **控件文档：** `docs/controls/desktop/layout/masonry/overview.md`, `docs/controls/desktop/layout/masonry/implementation.md`
 
@@ -201,7 +148,7 @@
 - [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
 - [ ] **强制停止：** 保持 Masonry 的所有实现改动未提交，直到用户明确完成验证并授权提交。
 
-### 任务 14：Space
+### 任务 10：Space
 
 **控件文档：** `docs/controls/desktop/layout/space/overview.md`, `docs/controls/desktop/layout/space/implementation.md`
 
@@ -215,7 +162,7 @@
 - [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
 - [ ] **强制停止：** 保持 Space 的所有实现改动未提交，直到用户明确完成验证并授权提交。
 
-### 任务 15：Splitter
+### 任务 11：Splitter
 
 **控件文档：** `docs/controls/desktop/layout/splitter/overview.md`, `docs/controls/desktop/layout/splitter/implementation.md`
 
@@ -229,7 +176,7 @@
 - [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
 - [ ] **强制停止：** 保持 Splitter 的所有实现改动未提交，直到用户明确完成验证并授权提交。
 
-### 任务 16：Breadcrumb
+### 任务 12：Breadcrumb
 
 **控件文档：** `docs/controls/desktop/navigation/breadcrumb/overview.md`, `docs/controls/desktop/navigation/breadcrumb/implementation.md`
 
@@ -243,21 +190,23 @@
 - [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
 - [ ] **强制停止：** 保持 Breadcrumb 的所有实现改动未提交，直到用户明确完成验证并授权提交。
 
-### 任务 17：Pagination
+### 任务 13：Pagination
 
 **控件文档：** `docs/controls/desktop/navigation/pagination/overview.md`, `docs/controls/desktop/navigation/pagination/implementation.md`
 
 **证据范围：** `src/AtomUI.Desktop.Controls/Pagination/*.cs`, `src/AtomUI.Desktop.Controls/Pagination/Themes/*Theme.axaml`；测试 `tests/AtomUI.Desktop.Controls.Tests/Pagination`；Gallery `controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination`.
 
-**风险类型：** 生成的 nav item、多个 public 变体、ComboBox Popup、SizeType。
+**风险类型：** 生成的 nav item、多个 public 变体、内部 ComboBox Popup、SizeType。
 
-- [ ] **Gate A 设计审核：** 审计 `Pagination`、`SimplePagination`、nav/nav item、quick jumper 和 page-size ComboBox item 的 owner，确认 previous/next/page/ellipsis/size changer/quick jump regions；记录 page 数量 rebuild、simple/default templates、Popup 和 SizeType。
+- [ ] **Gate A 设计审核：** 审计 `Pagination`、`SimplePagination`、nav/nav item、quick jumper 和 page-size ComboBox item 的 owner，
+  确认 previous/next/page/ellipsis/size changer/quick jump regions；记录 page 数量 rebuild、simple/default templates、Popup 和
+  SizeType。ComboBox 作为被排除的嵌套控件保持独立，不得获得 Descriptor 或内部 marker。
 - [ ] 更新两份控件文档，写明准确的 Descriptor、真实模板/运行时节点、owner 边界、排除的 internal wrapper、生命周期/性能不变量和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
 - [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Pagination/PaginationSemanticPartTests.cs`，覆盖 default/simple、page 数量与 value 变化、生成的 nav item 生命周期、size changer Popup、quick jumper、所有尺寸和 marker 数量。
 - [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
 - [ ] **强制停止：** 保持 Pagination 的所有实现改动未提交，直到用户明确完成验证并授权提交。
 
-### 任务 18：Steps
+### 任务 14：Steps
 
 **控件文档：** `docs/controls/desktop/navigation/steps/overview.md`, `docs/controls/desktop/navigation/steps/implementation.md`
 
@@ -271,37 +220,24 @@
 - [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
 - [ ] **强制停止：** 保持 Steps 的所有实现改动未提交，直到用户明确完成验证并授权提交。
 
-### 任务 19：TabControl
+### 任务 15：TabControl
 
 **控件文档：** `docs/controls/desktop/navigation/tab-control/overview.md`, `docs/controls/desktop/navigation/tab-control/implementation.md`
 
 **证据范围：** `src/AtomUI.Desktop.Controls/TabControl/*.cs`, `src/AtomUI.Desktop.Controls/TabControl/Themes/BaseTabControlTheme.axaml`, `CardTabControlTheme.axaml`, `TabControlTheme.axaml`, `BaseTabItemTheme.axaml`, `CardTabItemTheme.axaml`, `TabItemTheme.axaml` 和共享 scroll/overflow themes；测试 `tests/AtomUI.Desktop.Controls.Tests/TabControl`；Gallery `controlgallery/AtomUIGallery/ShowCases/Navigation/TabControl`.
 
-**风险类型：** 生成的容器、content presenter、overflow Popup、reorder、共享 TabStrip 源码。
+**风险类型：** 生成的容器、content presenter、overflow Popup、reorder、与被排除 TabStrip 共享源码。
 
-- [ ] **Gate A 设计审核：** 审计 `TabControl`/`CardTabControl`、`TabItem`、scroll viewer/overflow item owners，确认 tab header/icon/close/content/ink/overflow regions；记录 selection、overflow Popup、reorder 和 容器生命周期。共享 BaseTab 主题只有 TabControl 与 TabStrip 两份 Gate A 均批准后修改。
+- [ ] **Gate A 设计审核：** 审计 `TabControl`/`CardTabControl`、`TabItem`、scroll viewer/overflow item owners，确认 tab header/icon/close/content/ink/overflow regions；记录 selection、overflow Popup、reorder 和容器生命周期。共享 BaseTab 主题中的改动必须只命中
+  `TabControl` / `TabItem` owner，不得给 `TabStrip` 添加 Descriptor、marker 或通过共享模板间接形成 Semantic Part。
 - [ ] 更新两份控件文档，写明准确的 Descriptor、真实模板/运行时节点、owner 边界、排除的 internal wrapper、生命周期/性能不变量和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
 - [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/TabControl/TabControlSemanticPartTests.cs`，覆盖 line/card、generated/explicit items、content 切换、overflow popup、close/reorder、collection reset 和 nested owner 隔离。
 - [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
 - [ ] **强制停止：** 保持 TabControl 的所有实现改动未提交，直到用户明确完成验证并授权提交。
 
-### 任务 20：TabStrip
-
-**控件文档：** `docs/controls/desktop/navigation/tab-strip/overview.md`, `docs/controls/desktop/navigation/tab-strip/implementation.md`
-
-**证据范围：** `src/AtomUI.Desktop.Controls/TabControl/TabStrip/*.cs` 以及共享 `src/AtomUI.Desktop.Controls/TabControl/Themes/*Tab*Theme.axaml`；测试 `tests/AtomUI.Desktop.Controls.Tests/TabControl`；Gallery `controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip`.
-
-**风险类型：** 共享实现/主题、生成容器、overflow Popup。
-
-- [ ] **Gate A 设计审核：** 审计 `TabStrip`/`CardTabStrip`、`TabStripItem`、scroll viewer 和 overflow item owners；明确无 content host 的 TabStrip 与 TabControl 契约差异，记录 selection、overflow 和 item 容器生命周期。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、真实模板/运行时节点、owner 边界、排除的 internal wrapper、生命周期/性能不变量和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/TabControl/TabStripSemanticPartTests.cs`，覆盖 line/card、generated/explicit items、overflow open-close、selection, collection reset 和 Descriptor 与以下控件的隔离： TabControl。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
-- [ ] **强制停止：** 保持 TabStrip 的所有实现改动未提交，直到用户明确完成验证并授权提交。
-
 ## 批次收尾
 
-- [ ] 确认 20 个控件家族分别拥有用户授权的独立提交。
+- [ ] 确认 15 个控件家族分别拥有用户授权的独立提交。
 - [ ] 运行完整 Desktop Controls、Generator、GalleryBase 和 Gallery 测试工程，并执行集合/虚拟化回归筛选。
 - [ ] 运行 LLMS verify、NativeAOT publish 和 `git diff --check`。
 - [ ] 更新总计划清单，不创建批次提交。

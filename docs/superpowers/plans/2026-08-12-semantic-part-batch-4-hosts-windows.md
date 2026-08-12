@@ -1,21 +1,21 @@
-# Semantic Part 第四批独立宿主与窗口实施计划
+# Semantic Part 第四批 Popup 与独立宿主实施计划
 
 > **供智能体执行者使用：** 使用 `superpowers:executing-plans` 在当前会话中执行，不得使用 subagent。每个控件修改源码前都必须明确 Visual root ownership 并获得批准。
 
-**目标：** 为 12 个 Popup、Overlay、服务宿主和 Window 控件家族建立 Semantic Part 契约，并覆盖完整生命周期与多 root 隔离。
+**目标：** 为 9 个具有 Ant Design 6.6.0 稳定发布源码公开 Semantic DOM 对应 API 的 Popup、Overlay 和服务宿主控件家族建立 Semantic Part 契约，并覆盖完整生命周期与多 root 隔离。
 
-**架构：** 每个生产 owner 通过现有 host/session 生命周期公开 selector Part。Gallery 可以提供由示例显式拥有的 additional root，但生产控件不得引入 Preview API、全局 root registry 或运行时搜索。Window 和服务型控件使用真实 owner 边界。
+**架构：** 每个生产 owner 通过现有 host/session 生命周期公开 selector Part。Gallery 可以提供由示例显式拥有的 additional root，但生产控件不得引入 Preview API、全局 root registry 或运行时搜索。服务型控件使用真实 owner 边界。
 
-**技术栈：** .NET 10、Avalonia 12、AtomUI Desktop Controls/Extras、AXAML、xUnit v3、Avalonia Headless、平台宿主、AtomUI Gallery、NativeAOT。
+**技术栈：** .NET 10、Avalonia 12、AtomUI Desktop Controls、AXAML、xUnit v3、Avalonia Headless、平台宿主、AtomUI Gallery、NativeAOT。
 
 ## 全局约束
 
 - 遵循[全量改造总计划](2026-08-12-semantic-part-control-rollout.md)和[全量改造设计](../specs/2026-08-12-semantic-part-control-rollout-design.md)。
 - Gate A 必须列明每个 Visual root、owner、创建点、attach/open 状态转换和 close/detach 释放路径。
 - 不得向生产控件添加全局 TopLevel registry、服务查找或 Preview 专用属性、事件、接口。
-- Popup/Overlay/Window 测试覆盖打开、关闭、重新打开、owner detach 和多宿主隔离。
+- Popup/Overlay 以及服务所使用的 Window host 测试覆盖打开、关闭、重新打开、owner detach 和多宿主隔离；不得因此给
+  被排除的 `Window` / `WindowTitleBar` owner 增加 Semantic Part。
 - Gallery additional root 必须是示例显式提供的输入，并且只能在打开 Semantic Parts Tab 后创建。
-- Window 和 WindowTitleBar 当前没有独立 ShowCase；实现前必须由 Gate A 批准其 Gallery ownership。
 - Gate B 改动保持未提交，直到用户明确完成验证并授权提交。
 
 ---
@@ -146,51 +146,9 @@
 - [ ] 运行 Generator Semantic 测试、目标宿主/控件测试、GalleryBase 和 Gallery 测试、LLMS verify、NativeAOT publish 以及 `git diff --check`；当契约依赖原生/窗口行为时执行平台冒烟检查。
 - [ ] **强制停止：** 保持 PopupConfirm 的所有实现改动未提交，直到用户验证真实宿主行为并明确授权提交。
 
-### 任务 10：Splash
-
-**控件文档：** `docs/controls/desktop/feedback/splash/overview.md`, `docs/controls/desktop/feedback/splash/implementation.md`
-
-**证据范围：** 可选 Extras 包 `src/AtomUI.Desktop.Controls.Extras/Splash/**/*.cs`、`Themes/*Theme.axaml`；测试 `tests/AtomUI.Desktop.Controls.Tests/Splash`；Gallery `controlgallery/AtomUIGallery/ShowCases/Other/Splash`。
-
-**风险类型：** 可选包、SplashWindow、service/session、progress/status 生命周期。
-
-- [ ] **Gate A 设计审核：** 审计 Splash control/service/window、status/progress/content owner；确认 logo/content/title/status/progress/action/window surface regions，记录 service open/update/close, custom SplashControl, owner Window 和 package registration。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、cross-root/runtime 标志、owner/session 生命周期、真实节点、兼容性和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Splash/SplashSemanticPartTests.cs`，覆盖 built-in/custom splash、status/progress 更新、Window open-close/reopen、cancellation，并证明不会保留旧 service/session；验证 Extras 注册、Gallery 和 NativeAOT。
-- [ ] 运行 Generator Semantic 测试、目标宿主/控件测试、GalleryBase 和 Gallery 测试、LLMS verify、NativeAOT publish 以及 `git diff --check`；当契约依赖原生/窗口行为时执行平台冒烟检查。
-- [ ] **强制停止：** 保持 Splash 的所有实现改动未提交，直到用户验证真实宿主行为并明确授权提交。
-
-### 任务 11：WindowTitleBar
-
-**控件文档：** `docs/controls/desktop/window/window-title-bar/overview.md`、`docs/controls/desktop/window/window-title-bar/implementation.md`；只有已批准契约要求同步时，才更新现有 title-alignment 设计文档。
-
-**证据范围：** `src/AtomUI.Desktop.Controls/WindowTitleBar/**/*.cs`、全部 `Themes/*Theme.axaml`；测试 `tests/AtomUI.Desktop.Controls.Tests/Window/WindowTitleBar*`；必须结合 `controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow*` 和 `GalleryWindowTitleBar` 设计 Gallery ownership。
-
-**风险类型：** 平台策略、native/drawn caption button、运行时 title bar 创建、没有独立 ShowCase。
-
-- [ ] **Gate A 设计审核：** 审计 WindowTitleBar、caption button group/buttons、logo/title/content/add-ons 和 layout panel owner 覆盖 macOS/Windows/Linux strategies；确认 native vs drawn variants 和 platform-specific node availability/cardinality。先定义不污染真实 WorkspaceWindow 的延迟 Gallery inspection ownership。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、cross-root/runtime 标志、owner/session 生命周期、真实节点、兼容性和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Window/WindowTitleBarSemanticPartTests.cs`，覆盖平台策略变体、logo/title/add-on、caption group/button、Window state 和 layout alignment；新增经批准的 GalleryBase/host 测试，避免启动时创建 inspector，并执行可行的平台验证和 NativeAOT。
-- [ ] 运行 Generator Semantic 测试、目标宿主/控件测试、GalleryBase 和 Gallery 测试、LLMS verify、NativeAOT publish 以及 `git diff --check`；当契约依赖原生/窗口行为时执行平台冒烟检查。
-- [ ] **强制停止：** 保持 WindowTitleBar 的所有实现改动未提交，直到用户验证真实宿主行为并明确授权提交。
-
-### 任务 12：Window
-
-**控件文档：** `docs/controls/desktop/window/window/overview.md`, `docs/controls/desktop/window/window/implementation.md`
-
-**证据范围：** `src/AtomUI.Desktop.Controls/Window/**/*.cs`、全部 `Themes/*Theme.axaml`；测试 `tests/AtomUI.Desktop.Controls.Tests/Window`；Gallery 证据包括真实的 `controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow*`，当前没有独立 ShowCase。
-
-**风险类型：** TopLevel root、平台 chrome、overlay layer、原生资源、无独立 ShowCase。
-
-- [ ] **Gate A 设计审核：** 审计 Window root、drawn decorations、titlebar/content、resizer 和 overlay/dialog/fullscreen popover layers，明确 public owner与 internal chrome manager boundaries 覆盖 macOS/Windows/Linux/Wayland/X11；先设计对真实 Window 的惰性 inspection 入口，不克隆或预创建第二个 Window。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、cross-root/runtime 标志、owner/session 生命周期、真实节点、兼容性和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Window/WindowSemanticPartTests.cs`，覆盖 drawn/native decoration、content/titlebar/resizer/overlay layer、状态变化、theme lease 和 close cleanup；条件允许时执行平台 host 冒烟检查，并验证 Gallery NativeAOT。
-- [ ] 运行 Generator Semantic 测试、目标宿主/控件测试、GalleryBase 和 Gallery 测试、LLMS verify、NativeAOT publish 以及 `git diff --check`；当契约依赖原生/窗口行为时执行平台冒烟检查。
-- [ ] **强制停止：** 保持 Window 的所有实现改动未提交，直到用户验证真实宿主行为并明确授权提交。
-
 ## 批次收尾
 
-- [ ] 确认 12 个控件家族分别拥有用户授权的独立提交。
-- [ ] 运行完整 Desktop/Extras、Generator、GalleryBase 和 Gallery 测试，并执行 Window/Overlay 生命周期筛选。
+- [ ] 确认 9 个控件家族分别拥有用户授权的独立提交。
+- [ ] 运行完整 Desktop Controls、Generator、GalleryBase 和 Gallery 测试，并执行 Popup/Overlay 生命周期筛选。
 - [ ] 运行 LLMS verify、Gallery NativeAOT publish、适用的平台冒烟检查和 `git diff --check`。
 - [ ] 更新总计划清单，不创建批次提交。
