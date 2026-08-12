@@ -6,6 +6,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Metadata;
+using Avalonia.VisualTree;
 using AtomUITabStrip = AtomUI.Desktop.Controls.TabStrip;
 using AtomUITabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 
@@ -57,7 +58,8 @@ public class GalleryShowCaseHost : TemplatedControl
             host => host.IsSemanticPartsContentMaterialized);
 
     private AtomUITabStrip? _tabStrip;
-    private SemanticPartPreview? _semanticPartsContent;
+    private Control? _semanticPartsContent;
+    private IReadOnlyList<SemanticPartPreview> _semanticPartPreviews = Array.Empty<SemanticPartPreview>();
     private object? _navigationContent;
     private object? _activeContent;
     private bool _hasSemanticParts;
@@ -249,16 +251,22 @@ public class GalleryShowCaseHost : TemplatedControl
         if (SelectedTab == GalleryShowCaseTab.SemanticParts && HasSemanticParts)
         {
             ActiveContent = EnsureSemanticPartsContent();
-            _semanticPartsContent?.ActivatePreview();
+            foreach (var preview in _semanticPartPreviews)
+            {
+                preview.ActivatePreview();
+            }
         }
         else
         {
-            _semanticPartsContent?.DeactivatePreview();
+            foreach (var preview in _semanticPartPreviews)
+            {
+                preview.DeactivatePreview();
+            }
             ActiveContent = ExamplesContent;
         }
     }
 
-    private SemanticPartPreview? EnsureSemanticPartsContent()
+    private Control? EnsureSemanticPartsContent()
     {
         if (_semanticPartsContent is not null)
         {
@@ -273,9 +281,25 @@ public class GalleryShowCaseHost : TemplatedControl
         }
 
         var content = template.Build(DataContext);
-        _semanticPartsContent = content as SemanticPartPreview ??
-                                throw new InvalidOperationException(
-                                    $"{nameof(SemanticPartsContentTemplate)} must build a {nameof(SemanticPartPreview)}.");
+        if (content is null)
+        {
+            throw new InvalidOperationException(
+                $"{nameof(SemanticPartsContentTemplate)} must build a Control containing at least one " +
+                $"{nameof(SemanticPartPreview)}.");
+        }
+
+        var previews = content is SemanticPartPreview preview
+            ? [preview]
+            : content.GetVisualDescendants().OfType<SemanticPartPreview>().ToArray();
+        if (previews.Length == 0)
+        {
+            throw new InvalidOperationException(
+                $"{nameof(SemanticPartsContentTemplate)} must build a Control containing at least one " +
+                $"{nameof(SemanticPartPreview)}.");
+        }
+
+        _semanticPartsContent = content;
+        _semanticPartPreviews = previews;
         _semanticPartsContent.DataContext = DataContext;
         IsSemanticPartsContentMaterialized = true;
         return _semanticPartsContent;
@@ -301,14 +325,21 @@ public class GalleryShowCaseHost : TemplatedControl
             return;
         }
 
-        _semanticPartsContent.DeactivatePreview();
+        foreach (var preview in _semanticPartPreviews)
+        {
+            preview.DeactivatePreview();
+        }
         if (ReferenceEquals(ActiveContent, _semanticPartsContent))
         {
             ActiveContent = ExamplesContent;
         }
 
-        _semanticPartsContent.Dispose();
+        foreach (var preview in _semanticPartPreviews)
+        {
+            preview.Dispose();
+        }
         _semanticPartsContent = null;
+        _semanticPartPreviews = Array.Empty<SemanticPartPreview>();
         IsSemanticPartsContentMaterialized = false;
     }
 }

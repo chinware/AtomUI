@@ -13,6 +13,7 @@
                     ClipToBounds="False">
                     <atom:MotionActor
                         Name="PART_MotionActor"
+                        Classes.semantic-indicator="True"
                         ClipToBounds="False"
                         DockPanel.Dock="Left">
                         <atomcommons:DotBadgeIndicator
@@ -39,6 +40,7 @@
                         ClipToBounds="False">
                         <atom:MotionActor
                             Name="PART_MotionActor"
+                            Classes.semantic-indicator="True"
                             ClipToBounds="False"
                             DockPanel.Dock="Left">
                             <atomcommons:DotBadgeIndicator

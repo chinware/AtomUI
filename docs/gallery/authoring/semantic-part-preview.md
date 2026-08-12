@@ -69,9 +69,9 @@ GalleryShowCaseHost
 
 - 默认选择 Examples。
 - 只有提供 `SemanticPartsContentTemplate` 时才显示 Semantic Parts Tab。
-- 延迟创建 Semantic Parts 内容。
+- 延迟创建 Semantic Parts 内容根；内容根可以是单个 `SemanticPartPreview`，也可以是包含多个 Preview 的普通 Control。
 - 缓存当前页面生命周期内已经创建的 Tab 内容。
-- 在 Tab 切换和页面 detach 时停用 Semantic Preview。
+- 枚举该内容根中已经构造的全部 `SemanticPartPreview`，在 Tab 切换和页面 detach 时统一激活、停用和释放。
 - detach 时释放 Preview 缓存和宿主持有的 Tab 导航 Visual；reattach 时按当前选择状态重建，禁止已脱离页面通过
   缓存控件继续保留旧合成资源。
 - 复用 `GalleryStickyTabsHost` 的滚动上下文和只读 sticky mirror。
@@ -109,6 +109,11 @@ VisualTree 移除；当前页面仍附加时保留已创建对象，避免重复
 Semantic Parts 仍选中时重新 attach，宿主重新构建 Preview 和轻量 Tab 导航，不复用已经释放的 Visual 引用。首次 attach
 应复用属性初始化阶段已经创建的轻量导航，不能无条件重复构建。
 
+一个页面包含多个公开 Semantic owner 时，`SemanticPartsContentTemplate` 使用一个普通布局 Control 作为延迟内容根，并为
+每个 owner 创建独立 `SemanticPartPreview`。宿主只负责统一生命周期，不合并 descriptor、Part 列表、owner type 或目标作用域。
+内容根必须在 factory 返回时已经通过普通 visual children 包含至少一个 Preview；不得把 Preview 隐藏在尚未应用的 ControlTemplate
+中，再依赖宿主主动应用模板或扫描任意逻辑树。
+
 ## 6. Preview 模型
 
 `SemanticPartPreview` 是 GalleryBase 控件。它承载一个真实 Preview 内容，并解析一个明确的 owner Control：
@@ -117,6 +122,8 @@ Semantic Parts 仍选中时重新 attach，宿主重新构建 Preview 和轻量 
 - 预览需要额外布局或操作区时，由 Gallery 显式提供 owner target。
 - owner type 先按精确 CLR type 查询 `IThemeManager.SemanticParts`；派生示例需要复用基类契约时必须显式指定 owner type，
   不进行程序集或类型层次反射发现。
+- 一个 Preview 永远只对应一个 owner descriptor。控件家族拥有多个 public owner 时必须使用多个 Preview，不能把不同 owner 的
+  Part 拼接成一个虚拟 descriptor。
 
 Preview presentation item 的结构字段全部来自 `SemanticPartDescriptor`：
 
@@ -135,6 +142,11 @@ RuntimeCreated
 具体产品 Gallery 只能按 Part path 提供本地化职责描述和必要的代码片段覆盖，不能覆盖 selector、ContractType、cardinality
 或其他结构字段。Preview 必须验证描述 key 不包含 descriptor 中不存在的 Part；缺少描述时使用结构化 fallback 文案，不能
 阻止 Preview 工作。
+
+具体产品 Gallery 的标题、描述、演示正文和代码片段必须使用 AtomUI 自身的公共契约与术语。参考场景可以用于校准布局、
+状态组合和定制意图，但不得把其他平台的 API 名称或机制描述直接带入 AtomUI，例如 `Semantic DOM`、`classNames`、`styles`
+或对象函数式样式入口。Semantic Part 示例统一使用 `Semantic Part`、owner-scoped selector、descriptor 中发布的 Part path，
+以及控件实际支持的 AXAML Style/Theme API；本地化资源中的 source 与各语言 target 必须同步表达同一机制。
 
 ### 6.1 展示结构
 
@@ -327,7 +339,8 @@ Button、ButtonTheme 和 Button Browser Theme 不因 Gallery Preview 新增任�
 11. Info 打开前不创建技术元数据视图和代码查看器；打开后显示 descriptor 技术字段与样式示例。
 12. Button Control 和 Theme 的 public surface、模板 marker 与运行时路径没有因 Preview 变化。
 13. Preview、演示 Control 和 Popup 在页面释放后可以被 GC。
-14. Desktop、Browser、裁剪和 NativeAOT 路径不需要反射保留配置。
+14. 单 owner 页面和多 owner 家族页面都保持真延迟创建；多 Preview 内容根切换 Tab 时统一激活、停用和释放。
+15. Desktop、Browser、裁剪和 NativeAOT 路径不需要反射保留配置。
 
 ## 16. 相关文档
 

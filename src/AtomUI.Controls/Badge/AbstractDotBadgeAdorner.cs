@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Threading;
 
@@ -275,7 +276,7 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
             return;
         }
 
-        adornerLayer?.Children.Remove(this);
+        DetachFromAdornerLayer(adornerLayer);
         onDetachCompleted?.Invoke();
     }
 
@@ -299,10 +300,11 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
     {
         if (adornerLayer is not null)
         {
-            adornerLayer.Children.Remove(this);
+            DetachFromAdornerLayer(adornerLayer);
 
             AdornerLayer.SetAdornedElement(this, adorned);
             AdornerLayer.SetIsClipEnabled(this, true);
+            ((ISetLogicalParent)this).SetParent(adorned);
             adornerLayer.Children.Add(this);
         }
         
@@ -336,8 +338,18 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
         else
         {
             CancelCurrentMotion();
-            adornerLayer?.Children.Remove(this);
+            DetachFromAdornerLayer(adornerLayer);
             onDetachCompleted?.Invoke();
         }
+    }
+
+    private void DetachFromAdornerLayer(AdornerLayer? adornerLayer)
+    {
+        adornerLayer?.Children.Remove(this);
+        if (((ILogical)this).LogicalParent is not null)
+        {
+            ((ISetLogicalParent)this).SetParent(null);
+        }
+        AdornerLayer.SetAdornedElement(this, null);
     }
 }

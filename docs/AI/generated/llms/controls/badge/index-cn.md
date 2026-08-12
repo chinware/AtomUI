@@ -4,14 +4,15 @@
 
 ## 概述
 
-Badge 是 AtomUI 桌面控件体系中的徽标控件，用于在目标元素上展示数量、状态点和角标提示。
+Badge 用于在目标内容附近显示数量、状态点或角标信息。桌面家族包含三个可实例化的 public owner：
 
-Badge 不负责通知系统、Tooltip 或复杂业务状态机。这些职责应由业务层、组合控件或更专用的 AtomUI 控件承担。
+| Owner | 职责 |
+| --- | --- |
+| `CountBadge` | 显示非负数量、溢出文本以及零值可见性。 |
+| `DotBadge` | 显示状态点，可在独立模式下附带状态文本。 |
+| `RibbonBadge` | 在目标内容边缘显示带文本的 Ribbon。 |
 
-主要源码入口：
-
-- `src/AtomUI.Controls/Badge`
-- `src/AtomUI.Desktop.Controls/Badge`
+Badge 不负责通知中心、Tooltip、业务状态存储或目标内容本身的主题定义。`DecoratedTarget` 始终由应用拥有，Badge 只负责组合和定位。
 
 ## 包与命名空间
 
@@ -25,50 +26,74 @@ Badge 不负责通知系统、Tooltip 或复杂业务状态机。这些职责应
 
 ## 何时使用
 
-Badge 的设计语言围绕控件职责、可观察状态和主题契约组织，而不是围绕模板节点组织。
+Badge 以“附加信息不改变主体内容语义”为核心。数量、状态点和 Ribbon 都是目标内容的补充视觉；没有目标时也可以作为独立信息单元使用。
 
-| 维度 | 含义 | Badge 中的表达 |
-| --- | --- | --- |
-| 产品语义 | 控件在界面中承担的稳定职责。 | Badge 是 AtomUI 桌面控件体系中的徽标控件，用于在目标元素上展示数量、状态点和角标提示。 |
-| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Text`。 |
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Badge Token + ControlTheme。 |
+| 维度 | CountBadge | DotBadge | RibbonBadge |
+| --- | --- | --- | --- |
+| 信息密度 | 紧凑数值或溢出文本。 | 最小状态信号，可选说明文本。 | 突出的短文本标签。 |
+| 视觉锚点 | 目标边角或独立徽标。 | 目标边角或独立状态行。 | 目标的 Start/End 上边缘。 |
+| 状态表达 | 数量、零值、溢出和尺寸。 | 语义状态色或自定义颜色。 | 文本、颜色、位置和显示状态。 |
+| 定制原则 | 公开完整 indicator，不公开背景与文本拆分。 | 公开状态点 indicator，不把 standalone Label 纳入契约。 | 公开完整 indicator 与文本 content，不公开折角几何。 |
+
+Semantic Part 表达跨版本稳定的产品职责，不等同于内部 Adorner、MotionActor、Border、Label 或绘制节点清单。
 
 ## 公共 API
 
-Badge 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
+### 3.1 Public owner
 
-核心 public surface 按语义分组维护：
+`AbstractCountBadge`、`AbstractDotBadge`、`AbstractRibbonBadge` 是共享 API 与状态基类；桌面用户实例化 `CountBadge`、`DotBadge`、`RibbonBadge`。内部 Adorner、指示器和动效类型不是用户可实例化的公共控件，也不是 Semantic Part descriptor owner。
 
-| 契约组 | 代表成员 | 维护含义 |
+#### CountBadge
+
+| 契约组 | 成员 | 语义与默认值 |
 | --- | --- | --- |
-| 内容与数据 | `Text` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `Count`、`IsAdornerMode`、`OverflowCount` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `BadgeIsVisible`、`IsMotionEnabled`、`IsZeroVisible`、`Status` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 视觉与布局 | `BadgeColor`、`BadgeDotColor`、`DotColor`、`Offset`、`Placement`、`RibbonColor`、`Size` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
-| 动效与异步 | `MotionDuration` | 约束动效开关、异步加载、播放速度、超时和任务边界。 |
-| 其他稳定入口 | `DecoratedTarget` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+| 内容 | `DecoratedTarget` | 可选的被装饰 `Control`，同时是 XAML content property；默认 `null`。 |
+| 数值 | `Count`、`OverflowCount`、`IsZeroVisible` | `Count` 默认 `0` 且被约束为非负值；`OverflowCount` 默认 `99` 且被约束为非负值；零值默认不显示。 |
+| 外观 | `BadgeColor`、`Size` | `BadgeColor` 接受预设色名或可解析颜色字符串；`Size` 默认为 `Default`，另支持 `Small`。 |
+| 定位 | `Offset` | 调整指示器相对目标或独立布局位置；默认 `(0,0)`。 |
+| 状态 | `BadgeIsVisible`、`IsMotionEnabled` | 控制徽标可见性与动效；`BadgeIsVisible` 默认 `true`。 |
 
-当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
+#### DotBadge
 
-主要公开类型与枚举：
-
-- 类型：`AbstractCountBadge`、`AbstractCountBadgeAdorner`、`AbstractDotBadge`、`AbstractDotBadgeAdorner`、`AbstractRibbonBadge`、`AbstractRibbonBadgeAdorner`、`BadgeZoomBadgeInMotion`、`BadgeZoomBadgeOutMotion`、`CountBadge`、`CountBadgeAdorner`、`DotBadge`、`DotBadgeAdorner`、`DotBadgeIndicator`、`RibbonBadge` 等 15 项。
-- 枚举：`CountBadgeSize`、`DotBadgeStatus`、`RibbonBadgePlacement`。
-
-稳定 template part：
-
-| Template Part | 类型 | 职责 |
+| 契约组 | 成员 | 语义与默认值 |
 | --- | --- | --- |
-| `PART_LabelPart` | `TextBlock` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
-| `PART_MotionActor` | `BaseMotionActor` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
+| 内容 | `DecoratedTarget`、`Text` | `DecoratedTarget` 是可选 XAML content property；`Text` 只在独立模式显示；二者默认 `null`。 |
+| 状态 | `Status`、`BadgeIsVisible`、`IsMotionEnabled` | `Status` 可选，支持 `Default`、`Success`、`Processing`、`Error`、`Warning`；`BadgeIsVisible` 默认 `true`。 |
+| 外观 | `DotColor` | 接受预设色名或可解析颜色字符串；显式颜色作为状态色之外的实例颜色入口。 |
+| 定位 | `Offset` | 调整状态点相对目标的位置；默认 `(0,0)`。 |
 
-当前未抽取到控件专属伪类；主题主要依赖 Avalonia 标准伪类、模板绑定和内部 StyledProperty。
+#### RibbonBadge
+
+| 契约组 | 成员 | 语义与默认值 |
+| --- | --- | --- |
+| 内容 | `DecoratedTarget`、`Text` | `DecoratedTarget` 是可选 XAML content property；`Text` 为 Ribbon 文本；二者默认 `null`。 |
+| 外观 | `RibbonColor` | 接受预设色名或可解析颜色字符串。 |
+| 定位 | `Placement`、`Offset` | `Placement` 默认为 `End`，另支持 `Start`；`Offset` 默认 `(0,0)`。 |
+| 状态 | `BadgeIsVisible` | 控制 Ribbon 是否存在；默认 `true`。 |
+
+Badge 家族没有控件专属 public 事件；状态变化通过 Avalonia 属性、继承事件和绑定系统表达。
+
+### 3.2 Semantic Parts
+
+Badge Semantic Part 遵循 [AtomUI Semantic Part 系统设计](../../../../architecture/systems/theming/semantic-parts.md)。每个可实例化 owner 都拥有独立 descriptor；同名 `indicator` 表示同一类产品职责，不表示三个 owner 共享运行时节点或 Theme。
+
+| Owner | Part | Selector | ContractType | Cardinality | Customization | CrossVisualRoot | RuntimeCreated | 职责 | 稳定性 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `CountBadge` | `root` | owner 本身 | `CountBadge` | `Single` | `Root` | `false` | `false` | 数量、可见性、颜色、尺寸、定位和目标组合的状态 owner。 | stable since 6.0 |
+| `CountBadge` | `indicator` | `.semantic-indicator` | `Control` | `Optional` | `Selector` | `true` | `true` | 完整数量徽标视觉，包括背景、数量文本和统一动效边界。 | stable since 6.0 |
+| `DotBadge` | `root` | owner 本身 | `DotBadge` | `Single` | `Root` | `false` | `false` | 状态、文本、颜色、可见性、定位和目标组合的状态 owner。 | stable since 6.0 |
+| `DotBadge` | `indicator` | `.semantic-indicator` | `Control` | `Optional` | `Selector` | `true` | `true` | 状态点视觉和统一动效边界，不包含独立模式的说明文本。 | stable since 6.0 |
+| `RibbonBadge` | `root` | owner 本身 | `RibbonBadge` | `Single` | `Root` | `false` | `false` | 文本、颜色、位置、可见性和目标组合的状态 owner。 | stable since 6.0 |
+| `RibbonBadge` | `indicator` | `.semantic-indicator` | `Control` | `Optional` | `Selector` | `false` | `true` | 完整 Ribbon 视觉、定位和绘制边界。 | stable since 6.0 |
+| `RibbonBadge` | `content` | `.semantic-content` | `Avalonia.Controls.TextBlock` | `Optional` | `Selector` | `false` | `true` | Ribbon 文本展示区域。 | stable since 6.0 |
+
+`CountBadge` 公开完整数量徽标作为 `indicator`；`DotBadge` 只公开状态点，不包含独立模式的说明文本；`RibbonBadge` 同时公开完整 Ribbon `indicator` 与其中的文本 `content`。
+
+所有非 root Part 都是 `Selector`，不提供完整 ControlTheme 替换属性。它们在 owner 未附加、显式隐藏、退出动效完成、模式切换或运行时宿主尚未建立时可以不存在，因此使用 `Optional`。
 
 ## 事件与命令
 
-Badge 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
-当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
+Badge 家族没有控件专属 public 事件；状态变化通过 Avalonia 属性、继承事件和绑定系统表达。
 
 ## 使用示例
 
@@ -78,7 +103,7 @@ Badge 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge/Views/BadgeShowCase.axaml:35`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge/Views/BadgeShowCase.axaml:131`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -101,7 +126,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 封顶数字
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge/Views/BadgeShowCase.axaml:58`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge/Views/BadgeShowCase.axaml:154`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -136,7 +161,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 偏移量
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge/Views/BadgeShowCase.axaml:93`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge/Views/BadgeShowCase.axaml:189`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -153,7 +178,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 尺寸
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge/Views/BadgeShowCase.axaml:109`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge/Views/BadgeShowCase.axaml:205`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -176,42 +201,58 @@ Gallery key：`ExamplesContent` / item `3`
 
 ## 状态模型
 
-Badge 的状态流按以下路径收敛：
+Badge 状态从 public owner 单向投影到运行时视觉：
 
 ```text
-Public API / inherited command / item source / user input
-  -> 控件实例状态
-  -> effective state / pseudo-class / template property
-  -> ControlTheme selector / presenter / renderer
-  -> Gallery 可观察行为
+Public API
+  -> owner visibility / mode / effective text and color
+  -> runtime Adorner properties
+  -> ControlTheme / Measure / Arrange / Render
 ```
 
-状态维护规则：
+主要状态规则：
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+- `Count=0 && IsZeroVisible=false` 时，CountBadge 将徽标归一为隐藏；`Count > OverflowCount` 时显示 `<OverflowCount>+`。
+- DotBadge 有 `DecoratedTarget` 时只显示状态点；独立模式可以同时显示状态点和 `Text`。
+- RibbonBadge 隐藏时只移除 Ribbon 视觉，不隐藏 `DecoratedTarget`。
+- Count/Dot 启用退出动效时，indicator 可以在隐藏请求后短暂保留；动效完成后才从宿主移除。
+- Dot 在 standalone 与 target mode 间切换时会重建内部 Adorner，但公开 `indicator` 身份不变。
+- Semantic marker 不表达 visible、status、placement 或 motion phase；节点存在时 marker 保持不变。
+
+| 场景 | root | indicator | content | 说明 |
+| --- | --- | --- | --- | --- |
+| owner 未附加 | 存在 | 不保证存在 | 不保证存在 | descriptor 可查询，但运行时视觉可以尚未创建。 |
+| standalone 且可见 | 存在 | 存在 | Ribbon 存在；Count/Dot 不公开 content | 运行时宿主属于 owner 普通子树。 |
+| target mode 且可见 | 存在 | 存在 | Ribbon 存在；Count/Dot 不公开 content | Count/Dot indicator 跨 VisualRoot；Ribbon 保持 inline。 |
+| `BadgeIsVisible=false` | 存在 | 最终不存在 | 最终不存在 | 启用动效时 indicator 可以在退出阶段短暂保留。 |
+| Count 零值且不显示零 | 存在 | 最终不存在 | 不适用 | `Count` 与 `IsZeroVisible` 共同归一可见性。 |
+| Dot standalone/target 切换 | 存在 | 重新建立 | 不适用 | 两种模式使用不同内部模板。 |
 
 ## 主题与 Design Token
 
-Badge 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
+Badge owner 本身没有 ControlTemplate。三个 owner 在运行时创建内部视觉宿主，并把 public 属性单向投影给该宿主。
 
-| 主题文件 | 职责 |
+| Owner | 无 `DecoratedTarget` | 有 `DecoratedTarget` |
+| --- | --- | --- |
+| `CountBadge` | 数量视觉作为 owner 的普通视觉和逻辑子树。 | 目标作为 owner 子节点；数量视觉显示在 Avalonia `AdornerLayer`。 |
+| `DotBadge` | 状态点与可选文本作为 owner 的普通视觉和逻辑子树。 | 目标作为 owner 子节点；状态点显示在 Avalonia `AdornerLayer`。 |
+| `RibbonBadge` | Ribbon 视觉作为 owner 的普通视觉和逻辑子树。 | 目标与 Ribbon 都由 owner 在同一 inline visual tree 中排列，不进入原生 `AdornerLayer`。 |
+
+CountBadge 和 DotBadge 的跨 VisualRoot 模式只改变 indicator 的 visual parent。其 logical/style owner 仍必须是对应 Badge owner，使资源、实例 `Styles` 和 owner-scoped selector 保持可达。
+
+Badge 的默认视觉由三个内部 Token scope 与四个 ControlTheme 共同提供：
+
+| 资源 | 职责 |
 | --- | --- |
-| `CountBadgeAdornerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `DotBadgeAdornerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `DotBadgeIndicatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `RibbonBadgeAdornerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
+| `CountBadgeToken` | 数量徽标高度、字体、颜色、Padding、圆角和阴影。 |
+| `DotBadgeToken` | 状态点尺寸、颜色、阴影和独立文本间距。 |
+| `RibbonBadgeToken` | Ribbon 偏移、折角、文本 Padding 和行高。 |
+| `CountBadgeAdornerTheme.axaml` | 数量 indicator 的模板、尺寸变体和默认视觉。 |
+| `DotBadgeAdornerTheme.axaml` | 状态点、独立文本和 target mode 模板。 |
+| `DotBadgeIndicatorTheme.axaml` | 状态点绘制所需的默认属性。 |
+| `RibbonBadgeAdornerTheme.axaml` | Ribbon content 模板及绘制参数。 |
 
-Badge 使用 `BadgeToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 input/value、motion、visual option 运行时状态。
-
-主题维护规则：
-
-- 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
-- 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
-- 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
-- Browser 或平台特化主题必须保持同一 API 的语义一致。
+Token 只表达组件视觉语义，不保存数量、状态、可见性、目标引用或 motion phase。AtomUI 内置主题不得使用 `.semantic-*` 实现默认视觉。
 
 Token 来源：
 
@@ -223,51 +264,44 @@ Badge Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 ## AOT 与裁剪注意事项
 
-资源和 AOT 约束：
+Badge Semantic Part 的默认运行时成本仅包括 descriptor 静态数据和既有视觉节点上的静态 class：
 
-- 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
-- 不把可静态声明的模板结构迁移到 C# 动态创建。
-- 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
-- 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
-- Source generator 生成文件不手工编辑；需要修改时改输入源或 generator。
+- descriptor、Part 名称、selector class 和类型 identity 由 Generator 静态产生，不使用反射发现。
+- AXAML marker 在模板初始化时执行一次 `Classes.Set`，不创建 Binding 或持久状态同步。
+- Ribbon indicator 在 Adorner factory 中使用生成常量执行一次 class 添加。
+- logical parent 调整复用既有 attach/detach 路径，不增加 VisualTree 扫描、布局监听或全局事件。
+- Control 包不查询 Semantic Part registry，也不创建 Gallery Preview、highlight Adorner 或 descriptor ViewModel。
+- AtomUI 默认 ControlTheme 不使用 `.semantic-*` selector，因此未声明用户 Semantic Style 时不创建对应 class activator。
+- 应用声明 Semantic Style 后，Avalonia 只为实际候选节点维护 selector 激活；同一 Part 的 Setter 应合并到一个 Style，并在批量 Badge 场景验证 listener 释放。
 
-性能边界：
-
-- 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
-- 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
-- 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
+运行时逻辑不得使用 `Type.GetType`、`Assembly.GetTypes`、动态代码生成、字符串属性路径或反射扫描寻找 Part。Gallery 对已实例化 marker 的查找属于延迟创建的工具层，不得进入 Badge 包。
 
 ## 源码索引
 
-主要源码文件：
+### 2.1 Public owner 与共享状态
 
-- `src/AtomUI.Controls/Badge/AbstractCountBadge.cs`
-- `src/AtomUI.Controls/Badge/AbstractCountBadgeAdorner.cs`
-- `src/AtomUI.Controls/Badge/AbstractDotBadge.cs`
-- `src/AtomUI.Controls/Badge/AbstractDotBadgeAdorner.cs`
-- `src/AtomUI.Controls/Badge/AbstractRibbonBadge.cs`
-- `src/AtomUI.Controls/Badge/AbstractRibbonBadgeAdorner.cs`
-- `src/AtomUI.Controls/Badge/BadgeColorUtils.cs`
-- `src/AtomUI.Controls/Badge/BadgeMotion.cs`
-- `src/AtomUI.Controls/Badge/DotBadgeIndicator.cs`
-- `src/AtomUI.Desktop.Controls/Badge/BadgeToken.cs`
-- `src/AtomUI.Desktop.Controls/Badge/CountBadge.cs`
-- `src/AtomUI.Desktop.Controls/Badge/CountBadgeAdorner.cs`
-- `src/AtomUI.Desktop.Controls/Badge/DotBadge.cs`
-- `src/AtomUI.Desktop.Controls/Badge/DotBadgeAdorner.cs`
-- `src/AtomUI.Desktop.Controls/Badge/RibbonBadge.cs`
-- `src/AtomUI.Desktop.Controls/Badge/RibbonBadgeAdorner.cs`
-- `src/AtomUI.Desktop.Controls/Badge/Themes/CountBadgeAdornerTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Badge/Themes/DotBadgeAdornerTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Badge/Themes/DotBadgeIndicatorTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Badge/Themes/RibbonBadgeAdornerTheme.axaml`
+| 源码 | 职责 |
+| --- | --- |
+| `src/AtomUI.Controls/Badge/AbstractCountBadge.cs` | CountBadge public 属性、零值归一、运行时宿主、AdornerLayer retry 和 attach/detach。 |
+| `src/AtomUI.Controls/Badge/AbstractDotBadge.cs` | DotBadge public 属性、standalone/target 模式切换、运行时宿主和 AdornerLayer 生命周期。 |
+| `src/AtomUI.Controls/Badge/AbstractRibbonBadge.cs` | RibbonBadge public 属性、inline child 管理、测量和排列。 |
+| `src/AtomUI.Desktop.Controls/Badge/CountBadge.cs` | 桌面 public owner、Count Adorner factory 和 Token 投影入口。 |
+| `src/AtomUI.Desktop.Controls/Badge/DotBadge.cs` | 桌面 public owner、Dot Adorner factory 和 Token 投影入口。 |
+| `src/AtomUI.Desktop.Controls/Badge/RibbonBadge.cs` | 桌面 public owner、Ribbon Adorner factory 和颜色投影入口。 |
 
-职责边界：
+### 2.2 Internal runtime visual 与 Theme
 
-- 控件主文件保留 public/protected API、Avalonia 属性注册、事件和主要生命周期入口。
-- Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
-- Token 文件只提供组件视觉变量，不保存实例状态。
-- Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
+| 源码 | 职责 |
+| --- | --- |
+| `AbstractCountBadgeAdorner.cs` / `CountBadgeAdorner.cs` | 数量文本计算、显示隐藏动效、定位、阴影和主题宿主。 |
+| `AbstractDotBadgeAdorner.cs` / `DotBadgeAdorner.cs` | 状态点动效、模式布局、定位和主题宿主。 |
+| `DotBadgeIndicator.cs` | 使用 `DrawingContext` 绘制状态点与阴影。 |
+| `AbstractRibbonBadgeAdorner.cs` / `RibbonBadgeAdorner.cs` | Ribbon 测量、排列、背景与折角绘制。 |
+| `CountBadgeToken.cs` / `DotBadgeToken.cs` / `RibbonBadgeToken.cs` | 三种视觉的内部 Token scope。 |
+| `CountBadgeAdornerTheme.axaml` | 数量 indicator 模板与尺寸变体。 |
+| `DotBadgeAdornerTheme.axaml` | standalone 和 target mode 两套状态点模板。 |
+| `DotBadgeIndicatorTheme.axaml` | 状态点绘制属性的默认值。 |
+| `RibbonBadgeAdornerTheme.axaml` | Ribbon 文本模板与绘制参数。 |
 
 ## 相关文档
 

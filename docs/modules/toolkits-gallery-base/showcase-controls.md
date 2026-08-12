@@ -307,7 +307,8 @@ controller。
 
 GalleryBase 拥有以下实现边界：
 
-- `GalleryShowCaseHost` 组合现有 Header、sticky host、Examples 和真延迟的 Semantic Parts 内容。
+- `GalleryShowCaseHost` 组合现有 Header、sticky host、Examples 和真延迟的 Semantic Parts 内容根；内容根可以承载一个或多个
+  独立 `SemanticPartPreview`，宿主统一管理其激活、停用、DataContext 和释放。
 - `SemanticPartPreview` 读取冻结 descriptor，呈现真实 Control、Part 列表和用户侧代码片段。
 - internal `SemanticPartHighlightSession` 负责一次有效 Hover/Pin 选择期间的 owner-scoped 解析与资源释放。
 - internal `SemanticPartAdorner` 只负责无命中的高亮绘制，不进入产品 Control 的模板或状态模型。
@@ -376,5 +377,7 @@ xmlns:gallery="https://atomui.net/toolkits/gallery-base"
 - Sticky host detach 后释放 sticky mirror。
 - Scenario controller 首次切换创建 lazy content，后续切换复用缓存。
 - Semantic Part Preview 按正式设计验证真延迟 factory、owner-scoped 解析和确定性释放。
+- Semantic Part 内容根包含多个 Preview 时，factory 仍只构建一次，全部 Preview 在 Tab 切换时同步激活或停用，并在宿主 detach
+  时逐一释放。
 - Semantic Part Preview 使用单外框双栏和平铺分隔行；技术元数据在右栏延迟显示，代码示例在双栏下方全宽延迟显示。
 - GalleryBase 测试负责宿主与 Preview 基础设施；具体产品 Gallery 测试负责 Button 等页面接入和描述数据一致性。

@@ -1,8 +1,18 @@
 using AtomUI.Controls.Commons;
+using AtomUI.Theme;
+using Avalonia.Controls;
 
 namespace AtomUI.Desktop.Controls;
 
-public class CountBadge : AbstractCountBadge
+[SemanticPart(
+    "indicator",
+    SelectorClass = "semantic-indicator",
+    ContractType = typeof(Control),
+    Cardinality = SemanticPartCardinality.Optional,
+    CrossVisualRoot = true,
+    Since = "6.0",
+    RuntimeCreated = true)]
+public partial class CountBadge : AbstractCountBadge
 {
     public CountBadge()
     {

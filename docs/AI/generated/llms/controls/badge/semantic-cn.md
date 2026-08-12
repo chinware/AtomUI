@@ -4,13 +4,15 @@
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Badge` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| Owner | Part | Selector | ContractType | Cardinality | Customization | CrossVisualRoot | RuntimeCreated | 职责 | 稳定性 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `CountBadge` | `root` | owner 本身 | `CountBadge` | `Single` | `Root` | `false` | `false` | 数量、可见性、颜色、尺寸、定位和目标组合的状态 owner。 | stable since 6.0 |
+| `CountBadge` | `indicator` | `.semantic-indicator` | `Control` | `Optional` | `Selector` | `true` | `true` | 完整数量徽标视觉，包括背景、数量文本和统一动效边界。 | stable since 6.0 |
+| `DotBadge` | `root` | owner 本身 | `DotBadge` | `Single` | `Root` | `false` | `false` | 状态、文本、颜色、可见性、定位和目标组合的状态 owner。 | stable since 6.0 |
+| `DotBadge` | `indicator` | `.semantic-indicator` | `Control` | `Optional` | `Selector` | `true` | `true` | 状态点视觉和统一动效边界，不包含独立模式的说明文本。 | stable since 6.0 |
+| `RibbonBadge` | `root` | owner 本身 | `RibbonBadge` | `Single` | `Root` | `false` | `false` | 文本、颜色、位置、可见性和目标组合的状态 owner。 | stable since 6.0 |
+| `RibbonBadge` | `indicator` | `.semantic-indicator` | `Control` | `Optional` | `Selector` | `false` | `true` | 完整 Ribbon 视觉、定位和绘制边界。 | stable since 6.0 |
+| `RibbonBadge` | `content` | `.semantic-content` | `Avalonia.Controls.TextBlock` | `Optional` | `Selector` | `false` | `true` | Ribbon 文本展示区域。 | stable since 6.0 |
 
 ## Abstract AXAML Structure
 
@@ -65,58 +67,66 @@ Badge
 
 ## Template Parts
 
-| 契约组 | 代表成员 | 维护含义 |
-| --- | --- | --- |
-| 内容与数据 | `Text` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `Count`、`IsAdornerMode`、`OverflowCount` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `BadgeIsVisible`、`IsMotionEnabled`、`IsZeroVisible`、`Status` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 视觉与布局 | `BadgeColor`、`BadgeDotColor`、`DotColor`、`Offset`、`Placement`、`RibbonColor`、`Size` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
-| 动效与异步 | `MotionDuration` | 约束动效开关、异步加载、播放速度、超时和任务边界。 |
-| 其他稳定入口 | `DecoratedTarget` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+源文档未声明稳定 Template Part。维护模板时应以源码和主题文件中的实际声明为准。
 
 ## Pseudo Classes
 
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Badge Token + ControlTheme。 |
+源文档未声明控件专属伪类。控件仍可能消费 Avalonia 标准状态，例如 `:pointerover`、`:pressed`、`:disabled` 和 focus 相关状态。
 
 ## State Flow
 
-Badge 的状态流按以下路径收敛：
+Badge 状态从 public owner 单向投影到运行时视觉：
 
 ```text
-Public API / inherited command / item source / user input
-  -> 控件实例状态
-  -> effective state / pseudo-class / template property
-  -> ControlTheme selector / presenter / renderer
-  -> Gallery 可观察行为
+Public API
+  -> owner visibility / mode / effective text and color
+  -> runtime Adorner properties
+  -> ControlTheme / Measure / Arrange / Render
 ```
 
-状态维护规则：
+主要状态规则：
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+- `Count=0 && IsZeroVisible=false` 时，CountBadge 将徽标归一为隐藏；`Count > OverflowCount` 时显示 `<OverflowCount>+`。
+- DotBadge 有 `DecoratedTarget` 时只显示状态点；独立模式可以同时显示状态点和 `Text`。
+- RibbonBadge 隐藏时只移除 Ribbon 视觉，不隐藏 `DecoratedTarget`。
+- Count/Dot 启用退出动效时，indicator 可以在隐藏请求后短暂保留；动效完成后才从宿主移除。
+- Dot 在 standalone 与 target mode 间切换时会重建内部 Adorner，但公开 `indicator` 身份不变。
+- Semantic marker 不表达 visible、status、placement 或 motion phase；节点存在时 marker 保持不变。
+
+| 场景 | root | indicator | content | 说明 |
+| --- | --- | --- | --- | --- |
+| owner 未附加 | 存在 | 不保证存在 | 不保证存在 | descriptor 可查询，但运行时视觉可以尚未创建。 |
+| standalone 且可见 | 存在 | 存在 | Ribbon 存在；Count/Dot 不公开 content | 运行时宿主属于 owner 普通子树。 |
+| target mode 且可见 | 存在 | 存在 | Ribbon 存在；Count/Dot 不公开 content | Count/Dot indicator 跨 VisualRoot；Ribbon 保持 inline。 |
+| `BadgeIsVisible=false` | 存在 | 最终不存在 | 最终不存在 | 启用动效时 indicator 可以在退出阶段短暂保留。 |
+| Count 零值且不显示零 | 存在 | 最终不存在 | 不适用 | `Count` 与 `IsZeroVisible` 共同归一可见性。 |
+| Dot standalone/target 切换 | 存在 | 重新建立 | 不适用 | 两种模式使用不同内部模板。 |
 
 ## Theme and Token Boundaries
 
-Badge 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
+Badge owner 本身没有 ControlTemplate。三个 owner 在运行时创建内部视觉宿主，并把 public 属性单向投影给该宿主。
 
-| 主题文件 | 职责 |
+| Owner | 无 `DecoratedTarget` | 有 `DecoratedTarget` |
+| --- | --- | --- |
+| `CountBadge` | 数量视觉作为 owner 的普通视觉和逻辑子树。 | 目标作为 owner 子节点；数量视觉显示在 Avalonia `AdornerLayer`。 |
+| `DotBadge` | 状态点与可选文本作为 owner 的普通视觉和逻辑子树。 | 目标作为 owner 子节点；状态点显示在 Avalonia `AdornerLayer`。 |
+| `RibbonBadge` | Ribbon 视觉作为 owner 的普通视觉和逻辑子树。 | 目标与 Ribbon 都由 owner 在同一 inline visual tree 中排列，不进入原生 `AdornerLayer`。 |
+
+CountBadge 和 DotBadge 的跨 VisualRoot 模式只改变 indicator 的 visual parent。其 logical/style owner 仍必须是对应 Badge owner，使资源、实例 `Styles` 和 owner-scoped selector 保持可达。
+
+Badge 的默认视觉由三个内部 Token scope 与四个 ControlTheme 共同提供：
+
+| 资源 | 职责 |
 | --- | --- |
-| `CountBadgeAdornerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `DotBadgeAdornerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `DotBadgeIndicatorTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `RibbonBadgeAdornerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
+| `CountBadgeToken` | 数量徽标高度、字体、颜色、Padding、圆角和阴影。 |
+| `DotBadgeToken` | 状态点尺寸、颜色、阴影和独立文本间距。 |
+| `RibbonBadgeToken` | Ribbon 偏移、折角、文本 Padding 和行高。 |
+| `CountBadgeAdornerTheme.axaml` | 数量 indicator 的模板、尺寸变体和默认视觉。 |
+| `DotBadgeAdornerTheme.axaml` | 状态点、独立文本和 target mode 模板。 |
+| `DotBadgeIndicatorTheme.axaml` | 状态点绘制所需的默认属性。 |
+| `RibbonBadgeAdornerTheme.axaml` | Ribbon content 模板及绘制参数。 |
 
-Badge 使用 `BadgeToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 input/value、motion、visual option 运行时状态。
-
-主题维护规则：
-
-- 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
-- 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
-- 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
-- Browser 或平台特化主题必须保持同一 API 的语义一致。
+Token 只表达组件视觉语义，不保存数量、状态、可见性、目标引用或 motion phase。AtomUI 内置主题不得使用 `.semantic-*` 实现默认视觉。
 
 Token 边界：
 
@@ -128,22 +138,25 @@ Badge Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 ## Customization Boundaries
 
-维护 Badge 时必须保持以下不变量：
-
-- 不擅自新增、删除、重命名或改变 public/protected API、Avalonia 属性、事件和默认值。
-- 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
-- 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
-- Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
-- 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
-- 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
-- 文档只描述当前稳定设计；历史变化记录在 `changelog.md`。
+- `CountBadge`、`DotBadge`、`RibbonBadge` 的 public API、默认值和 XAML content property 语义不变。
+- 三个 owner 分别拥有自己的 descriptor；内部 Adorner 不成为 descriptor owner。
+- `root` 不添加 `.semantic-root`；非 root Part 使用唯一 `.semantic-indicator` 或 `.semantic-content`。
+- Count/Dot 跨根 indicator 的 visual parent 可以是 `AdornerLayer`，logical/style owner 必须保持对应 Badge owner。
+- Ribbon target mode 保持 inline visual tree；隐藏 Ribbon 时必须保留目标内容。
+- `DecoratedTarget`、内部文本拆分、动效节点名称和绘制几何不得升级为隐式公共契约。
+- 删除、重命名 Part、修改 selector class、收窄 ContractType 或改变 cardinality 按公共主题破坏性变更处理。
+- Semantic Part 不引入运行时反射、VisualTree 全局扫描、额外常驻监听或默认路径视觉对象。
 
 维护不变量：
 
-维护 Badge 时不得破坏：
-
-- Public API、默认值、事件顺序和 Gallery 可观察行为。
-- Template part 名称、ControlTheme key、伪类和资源 key。
-- 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
-- Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
+- descriptor owner 只能是 `CountBadge`、`DotBadge`、`RibbonBadge`，不能是 shared abstract base 或 internal Adorner。
+- Count/Dot 只有 `root/indicator`；Ribbon 只有 `root/indicator/content`。
+- Count/Dot `indicator` marker 位于所有适用 Adorner 模板的 `PART_MotionActor`；Ribbon indicator 位于 runtime Adorner，content 位于 `PART_LabelPart`。
+- 所有非 root Part 保持 `Optional + Selector + RuntimeCreated`；Count/Dot indicator 保持 `CrossVisualRoot=true`。
+- Badge public owner selector 使用 logical descendant，不使用 `/template/`、类型前缀 class 或 internal 类型。
+- Count/Dot target mode 的 visual parent 与 logical/style owner 必须分离，detach 时对称清理。
+- Dot standalone 与 target 两套模板必须实现同一个 indicator marker 契约。
+- Ribbon 背景与折角继续由 Render 绘制，不为了 Semantic Part 新增视觉节点。
+- marker 在节点生命周期内静态存在，不表达 visible、status、placement 或 motion phase。
+- `DecoratedTarget`、内部 Label、Count 文本拆分、折角和 motion actor identity 保持非公开。
+- 默认 Theme 不消费 semantic class；实现不引入反射、扫描、额外常驻监听或新的默认视觉对象。

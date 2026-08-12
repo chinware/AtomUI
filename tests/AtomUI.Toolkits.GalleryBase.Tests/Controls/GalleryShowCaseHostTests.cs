@@ -73,6 +73,66 @@ public class GalleryShowCaseHostTests
     }
 
     [Fact]
+    public void Semantic_Content_Can_Contain_Multiple_Independent_Previews()
+    {
+        var buildCount = 0;
+        var firstPreview = new SemanticPartPreview
+        {
+            PreviewContent    = new AtomUI.Desktop.Controls.Button { Content = "First" },
+            SemanticOwnerType = typeof(AtomUI.Desktop.Controls.Button)
+        };
+        var secondPreview = new SemanticPartPreview
+        {
+            PreviewContent    = new AtomUI.Desktop.Controls.Button { Content = "Second" },
+            SemanticOwnerType = typeof(AtomUI.Desktop.Controls.Button)
+        };
+        var host = new GalleryShowCaseHost
+        {
+            Header          = new Border(),
+            ExamplesContent = new Border(),
+            SemanticPartsContentTemplate = new FuncDataTemplate<object?>(
+                (_, _) =>
+                {
+                    buildCount++;
+                    return new StackPanel
+                    {
+                        Children =
+                        {
+                            firstPreview,
+                            secondPreview
+                        }
+                    };
+                })
+        };
+
+        ShowInWindow(host, () =>
+        {
+            buildCount.ShouldBe(0);
+            firstPreview.IsPreviewActive.ShouldBeFalse();
+            secondPreview.IsPreviewActive.ShouldBeFalse();
+
+            host.SelectedTab = GalleryShowCaseTab.SemanticParts;
+            Dispatcher.UIThread.RunJobs();
+
+            buildCount.ShouldBe(1);
+            host.GetVisualDescendants().OfType<SemanticPartPreview>().Count().ShouldBe(2);
+            firstPreview.IsPreviewActive.ShouldBeTrue();
+            secondPreview.IsPreviewActive.ShouldBeTrue();
+
+            host.SelectedTab = GalleryShowCaseTab.Examples;
+            Dispatcher.UIThread.RunJobs();
+
+            buildCount.ShouldBe(1);
+            host.GetVisualDescendants().OfType<SemanticPartPreview>().ShouldBeEmpty();
+            firstPreview.IsPreviewActive.ShouldBeFalse();
+            secondPreview.IsPreviewActive.ShouldBeFalse();
+        });
+
+        Should.Throw<ObjectDisposedException>(() => firstPreview.ActivatePreview());
+        Should.Throw<ObjectDisposedException>(() => secondPreview.ActivatePreview());
+    }
+
+    [Fact]
     public void Host_Without_Semantic_Template_Does_Not_Create_Tab_Strip()
     {
         var host = new GalleryShowCaseHost
