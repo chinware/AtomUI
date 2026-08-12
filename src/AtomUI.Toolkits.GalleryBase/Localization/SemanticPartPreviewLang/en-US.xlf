@@ -8,6 +8,7 @@
     <unit id="ExamplesTabLabel"><segment><source>Examples</source></segment></unit>
     <unit id="InfoAction"><segment><source>View technical details and styling example</source></segment></unit>
     <unit id="PartFallbackDescription"><segment><source>The {0} semantic region.</source></segment></unit>
+    <unit id="PartDetailsTitle"><segment><source>Part details</source></segment></unit>
     <unit id="PinAction"><segment><source>Pin or unpin highlight</source></segment></unit>
     <unit id="RootFallbackDescription"><segment><source>The control root.</source></segment></unit>
     <unit id="RuntimeCreatedTag"><segment><source>Runtime-created</source></segment></unit>

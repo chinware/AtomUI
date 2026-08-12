@@ -1,6 +1,9 @@
 # Button 桌面版实现原理
 
-本文档描述 Button 桌面版的内部实现组织、状态归一、模板接入和维护边界。公共设计与 API 契约见 [Button 桌面版架构设计](overview.md)，Token 语义见 [Button Token 设计](token.md)，变化记录见 [Button Changelog](changelog.md)。
+本文档描述 Button 桌面版的内部实现组织、状态归一、模板接入和维护边界。公共设计与 API 契约见
+[Button 桌面版架构设计](overview.md)，Semantic Part 的系统级契约见
+[Semantic Part 系统设计](../../../../architecture/systems/theming/semantic-parts.md)，Token 语义见
+[Button Token 设计](token.md)，变化记录见 [Button Changelog](changelog.md)。
 
 ## 1. 实现定位
 
@@ -64,7 +67,12 @@ Shared ControlTheme visual projection
 Text 时使用 `Primary + Text`。两者都由 `ConfigureVariantThemeVariables()` 生成最终 normal、hover、pressed 主题变量，
 ControlTheme 只绑定这些变量。
 
-尺寸状态由 `SizeType` 与 Button 现有布局属性共同决定。`Large`、`Middle`、`Small` 走预设 Token；`Custom` 走 `Middle` 默认值，并允许用户通过本地 `Height`、`Padding`、`FontSize`、`CornerRadius`、`IconWidth`、`IconHeight` 等属性覆盖。`IconWidth` 与 `IconHeight` 是独立的 Avalonia StyledProperty，允许非正方形尺寸；二者变化必须触发 Button 重新测量。实现不得为 Custom 增加 Button 专属 `Custom*` 尺寸属性或尺寸聚合对象。
+尺寸状态由 `SizeType` 与 Button 现有布局属性共同决定。`Large`、`Middle`、`Small` 使用预设 ControlHeight Token 设置
+`MinHeight`，同时设置对应字体、Padding、圆角和 icon 默认值；内容和合法的 Semantic Part 布局 Setter 可以使最终
+高度超过该基线。`Custom` 复用 `Middle` 的字体、Padding、圆角和 icon 默认值，但不设置预设 `MinHeight`，并允许用户
+通过本地 `Height`、`MinHeight`、`Padding`、`FontSize`、`CornerRadius`、`IconWidth`、`IconHeight` 等属性定制。
+`IconWidth` 与 `IconHeight` 是独立的 Avalonia StyledProperty，允许非正方形尺寸；二者变化必须触发 Button 重新测量。
+实现不得为 Custom 增加 Button 专属 `Custom*` 尺寸属性或尺寸聚合对象。
 
 ## 5. 生命周期与模板接入
 
@@ -109,17 +117,39 @@ Loading 状态影响 loading icon、原 icon 可见性和交互反馈，但不�
   Solid、Outlined、Dashed、Filled、Text 或 Link 的最终主题变量。
 - 视觉投影：Button 家族 ControlTheme 只消费 `VariantText*`、`VariantBackground*`、`VariantBorder*` 和
   `VariantShadow`，不重复解释 `ButtonType` 或语义色阶。
-- 尺寸归一：`Large`、`Middle`、`Small` 映射到对应 Token；`Custom` 以 `Middle` Token 作为 Style 默认值，Button 本地尺寸属性保持更高优先级。
+- 尺寸归一：`Large`、`Middle`、`Small` 把 ControlHeight Token 映射为 `MinHeight` 基线；`Custom` 不设置预设
+  `MinHeight`，其余尺寸指标以 `Middle` Token 作为 Style 默认值，Button 本地尺寸属性保持更高优先级。
 - 图标尺寸：SizeType selector 把 `IconWidth`、`IconHeight` 默认映射到 `IconSizeLG`、`IconSize`、`IconSizeSM`；Custom 使用 `IconSize`。只有 `:icononly:loading` selector 把这两个默认值切换到对应 `OnlyIconSize*`，非 loading 的 icon-only 用户图标仍使用普通 `IconSize*`。
 - 伪类同步：当 public API、content、icon、loading、shape、enabled 或 compact 状态变化时同步模板可见状态。
 - 有效边框：由 Button 类型、variant、enabled、bordered 状态和 compact 状态共同决定。
 - 有效圆角：由 `CornerRadius`、`Shape`、`SizeType` 和 CompactSpace 位置共同决定。
+- Shape 测量：`MeasureOverride` 先取得内容期望尺寸，再通过 `LayoutHelper.ApplyLayoutConstraints` 合并 owner 的
+  `Width`、`Height`、Min/Max 约束，最后根据受约束高度计算 Circle 正方形边界或 Round 胶囊最小宽度。不得用未应用
+  `MinHeight` 的内容高度派生 Shape 几何，否则预设高度基线会在 MeasureCore 末尾单独抬高高度，造成 Circle 椭圆或
+  icon-only Button 宽高不一致。
 - 自定义背景：由 `CustomBackground`、`EffectiveVariant`、危险态和 enabled 状态决定覆层是否参与显示。
 - Wave 几何：Button 暴露 wave 所需边框和圆角，使 wave 与最终按钮边界一致。
 
 这些流程必须保持 C# 层归一、AXAML 层消费的分工。不得把 API 优先级判断下沉到大量 AXAML selector 组合中。
 
-维护 Custom 尺寸时应优先让主题默认值落在 Button 可覆盖的属性上，让模板内部尺寸节点通过 `TemplateBinding` 跟随 Button 属性。不得用模板内部固定高度阻断用户在 Button 上设置的本地 `Height`。公开的局部模板 selector 只能依赖 `.semantic-icon`，不得依赖 `PART_ButtonIcon` 或 `PART_LoadingIcon`。
+维护尺寸时应优先让预设档通过 `MinHeight` 建立基线，让模板内部尺寸节点通过 `TemplateBinding` 跟随 Button 属性。
+不得用模板内部固定高度阻断用户在 Button 上设置的本地 `Height`，也不得用 root 固定 `Height` 掩盖 content/icon Padding
+导致的实际测量差异。公开的局部模板 selector 只能依赖 `.semantic-icon` 或 `.semantic-content`，不得依赖
+`PART_ButtonIcon`、`PART_LoadingIcon` 或 `PART_ContentPresenter`。
+
+### 7.1 Semantic Part 布局排查
+
+Button 的 Semantic Part 布局问题按以下顺序判断：
+
+1. 检查 `.semantic-content` 或 `.semantic-icon` 目标节点的有效属性值，先确认 Setter 已经命中。
+2. 如果目标值正确但视觉被裁剪或没有推动 root 增长，检查 Button 与中间模板节点的 `Height`、`MinHeight`、
+   `MaxHeight`、Padding、Margin 和裁剪；这属于跨节点布局约束，不是 Semantic Style 优先级失败。
+3. 改变预设高度模型后，检查 `MeasureOverride` 是否仍使用未应用 owner Min/Max 的内容尺寸派生 Circle/Round 几何。
+4. `icon` 是 `Multiple` Part，必须同时检查用户 icon 与 loading icon，并覆盖 icon-only、loading 和图标位置切换。
+5. 共享 Button ControlTheme 的全部 ControlTemplate 必须得到相同结论，不能以单一默认模板作为完成依据。
+
+用于定位问题的高对比颜色、额外 Padding 或强制 icon 尺寸只属于显式诊断输入。确认根因后，默认 Gallery 样例和
+ControlTheme 不保留这些诊断 Setter；长期示例只展示公共定制契约，不承担回归补丁职责。
 
 ## 8. 资源、性能与 AOT 边界
 
@@ -146,8 +176,11 @@ Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好�
 - `Color + Variant` 优先级和旧 API 映射结果不变。
 - `ButtonType=Text` 保持 `Default + Text` 中性语义；`Primary + Text` 跟随当前主题 `ColorPrimary` 色阶。
 - Button 家族主题必须共享 C# 计算出的最终颜色变量，不得按平台或兼容 API 复制颜色矩阵。
-- `SizeType=Custom` 不引入 Button 专属 `Custom*` 尺寸属性；未设置本地尺寸属性时表现等同 `Middle`，设置本地属性时由 Avalonia 属性优先级自然覆盖。
+- `SizeType=Large/Middle/Small` 只通过 `MinHeight` 建立预设高度基线，不以主题 `Height` 封死自然测量。
+- `SizeType=Custom` 不引入 Button 专属 `Custom*` 尺寸属性，不设置预设 `MinHeight`；未设置本地尺寸属性时复用
+  `Middle` 的非高度指标，设置本地属性时由 Avalonia 属性优先级自然覆盖。
 - 主题不得以高于本地值的优先级写入 Custom 默认尺寸。
+- Circle/Round 的几何计算必须基于已经应用 Button Width/Height/Min/Max 约束的测量结果。
 - `IconWidthProperty`、`IconHeightProperty` 及其 CLR wrapper 是 Button 公共契约，属性变化必须参与 measure invalidation。
 - `PART_ButtonIcon`、`PART_LoadingIcon` 的默认 Width 和 Height 通过 `TemplateBinding IconWidth/IconHeight` 投影；
   外部局部覆盖只依赖 `.semantic-icon`，Setter 类型通过 `x:SetterTargetType="Control"` 提供，不得依赖类型前缀或
@@ -168,8 +201,12 @@ Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好�
 验证范围：
 
 - API 归一：覆盖 `ButtonType`、`IsDanger`、`Color`、`Variant`、`IsGhost` 的组合。
-- 尺寸契约：覆盖 `SizeType=Large/Middle/Small/Custom`；验证 Custom 默认等同 Middle，并验证本地 `Height`、`Padding`、`FontSize`、`IconWidth`、`IconHeight` 覆盖 Theme 默认值。
-- 状态同步：覆盖 disabled、loading、hover、pressed、icon-only、circle、round。
+- 尺寸契约：覆盖 `SizeType=Large/Middle/Small/Custom`；验证预设档使用 `MinHeight` 基线、Custom 不继承预设
+  `MinHeight`，并验证本地 `Height`、`MinHeight`、`Padding`、`FontSize`、`IconWidth`、`IconHeight` 的有效值。
+- 布局型 Semantic Setter：分别覆盖 `.semantic-content` Padding 和 `.semantic-icon` Width/Height，确认 Setter 命中、
+  owner 自然测量增长、内容不裁剪，并确认移除临时示例样式后默认 Button 视觉保持不变。
+- 状态同步：覆盖 disabled、loading、hover、pressed、icon-only、circle、round；预设 `MinHeight` 与 icon-only、Circle、
+  Round 组合必须验证最终 Bounds、宽高关系、垂直居中和 loading 替代节点。
 - 图标投影：覆盖 Button、DropdownButton 模板的两个 part，并验证 Browser 注册使用同一套共享主题资产；验证普通 icon-only 仍使用 `IconSize*`、只有 icon-only loading 使用 `OnlyIconSize*`，并验证非正方形本地尺寸同时作用于用户 icon 和 loading icon。
 - Wave：覆盖危险态、预设色、custom background 与 disabled / loading 播放条件。
 - Theme：检查 default、primary、dashed、text、link、solid、outlined、filled、danger 和 custom background 视觉；Text

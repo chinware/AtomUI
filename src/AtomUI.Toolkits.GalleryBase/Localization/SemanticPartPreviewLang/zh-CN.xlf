@@ -8,6 +8,7 @@
     <unit id="ExamplesTabLabel"><segment><source>Examples</source><target state="translated">示例</target></segment></unit>
     <unit id="InfoAction"><segment><source>View technical details and styling example</source><target state="translated">查看技术详情和样式示例</target></segment></unit>
     <unit id="PartFallbackDescription"><segment><source>The {0} semantic region.</source><target state="translated">控件的 {0} 语义区域。</target></segment></unit>
+    <unit id="PartDetailsTitle"><segment><source>Part details</source><target state="translated">部件详情</target></segment></unit>
     <unit id="PinAction"><segment><source>Pin or unpin highlight</source><target state="translated">固定或取消固定高亮</target></segment></unit>
     <unit id="RootFallbackDescription"><segment><source>The control root.</source><target state="translated">控件根区域。</target></segment></unit>
     <unit id="RuntimeCreatedTag"><segment><source>Runtime-created</source><target state="translated">运行时创建</target></segment></unit>

@@ -17,5 +17,6 @@ public enum SemanticPartPreviewLangResourceKind
     CrossRootTag,
     RuntimeCreatedTag,
     RootFallbackDescription,
-    PartFallbackDescription
+    PartFallbackDescription,
+    PartDetailsTitle
 }

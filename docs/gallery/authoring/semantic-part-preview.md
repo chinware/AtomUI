@@ -146,8 +146,9 @@ Preview 使用一个完整边框包围预览区和 Part 列表，不能把两栏
 - Part 行使用平铺列表和行分隔线，不使用独立边框、圆角卡片、嵌套卡片或额外的 Semantic Parts 标题。
 - 主行只常驻显示 Part 名称、引入版本、本地化职责描述、Pin 和 Info；selector、ContractType、cardinality、
   customization、跨视觉根和运行时创建等技术字段只在用户打开 Info 后显示。
-- Info 打开后，selector、ContractType、cardinality、customization 等技术元数据继续位于右侧 Part 列表下方；Styling
-  example 代码区位于预览区与 Part 列表这一整行的下方，并横跨检查面板完整宽度。
+- Info 打开后，下方详情区横跨检查面板完整宽度：selector、ContractType、cardinality、customization 等技术元数据
+  位于左侧固定宽度栏，Styling example 代码区位于右侧并占据主要宽度。
+- 紧凑布局中，下方详情区按技术元数据、Styling example 的顺序上下堆叠，两者均占满宽度。
 - 代码示例不得挤在固定宽度的 Part 右栏、拆成独立卡片或使用会遮挡目标预览的浮层。
 - Pointer 经过的行使用克制的填充色；目标 Adorner 使用在浅色背景和 Primary Control 上都可辨认的高对比描边，
   但不得改变目标 Control 的属性、Style、class 或模板。

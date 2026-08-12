@@ -610,7 +610,7 @@ public partial class Button : AvaloniaButton,
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        var size         = base.MeasureOverride(availableSize);
+        var size         = LayoutHelper.ApplyLayoutConstraints(this, base.MeasureOverride(availableSize));
         var targetWidth  = size.Width;
         var targetHeight = size.Height;
 

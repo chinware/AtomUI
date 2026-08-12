@@ -4,10 +4,7 @@
     xmlns:atom="https://atomui.net"
     xmlns:gallery="https://atomui.net/toolkits/gallery-base"
     x:Class="AtomUI.Toolkits.GalleryBase.Controls.SemanticPartPreviewCodeExampleControl">
-    <Border Background="{atom:SharedTokenResource ColorFillAlter}"
-            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
-            BorderThickness="0,1,0,0"
-            Padding="16">
+    <Border Padding="16">
         <StackPanel Spacing="14">
             <atom:TextBlock Text="{gallery:SemanticPartPreviewLangResource StylingExampleTitle}"
                             FontWeight="SemiBold" />

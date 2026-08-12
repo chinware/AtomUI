@@ -87,7 +87,10 @@ public ButtonVariant? Variant { get; set; }
 
 `CustomBackground` 表示 Button normal 状态的受控自定义背景覆层，主要用于渐变、图片或其他非纯色表面。它不是颜色语义，不参与 `Color + Variant` 的状态归一、文字色、边框色、阴影或 wave 颜色计算。`CustomBackground == null` 表示不启用自定义背景覆层。
 
-`SizeType` 使用可自定义尺寸模型，支持 `Large`、`Middle`、`Small` 和 `Custom`。`Large`、`Middle`、`Small` 是 Button 预设尺寸档，完全由 Token 和主题决定。`Custom` 表示用户希望基于 Button 现有属性进行实例级尺寸定制，而不是引入 Button 专属的 `CustomHeight`、`CustomPadding` 或尺寸对象。
+`SizeType` 使用可自定义尺寸模型，支持 `Large`、`Middle`、`Small` 和 `Custom`。`Large`、`Middle`、`Small` 是 Button
+预设尺寸档，主题通过对应 ControlHeight Token 设置 `MinHeight` 基线，并由内容、Padding 和其他布局属性决定是否向上
+扩展。`Custom` 不设置预设高度基线，表示用户希望基于 Button 现有属性进行实例级尺寸定制，而不是引入 Button 专属的
+`CustomHeight`、`CustomPadding` 或尺寸对象。
 
 `IconWidth` 与 `IconHeight` 是 Button 用户图标和 loading 图标共享的公共 Avalonia 尺寸入口。两个属性相互独立，支持非正方形图标；对应的公共属性字段为 `IconWidthProperty` 与 `IconHeightProperty`。Theme 根据 `SizeType` 提供默认值，用户设置在 Button 上的本地值具有更高优先级，并同时投影到 `PART_ButtonIcon` 与 `PART_LoadingIcon`。
 

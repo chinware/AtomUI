@@ -29,17 +29,9 @@
               ColumnSpacing="16">
             <StackPanel Grid.Column="0"
                         Spacing="10">
-                <StackPanel Orientation="Horizontal"
-                            Spacing="8">
-                    <atom:TextBlock Text="{Binding Name}"
-                                    FontSize="16"
-                                    FontWeight="SemiBold"
-                                    VerticalAlignment="Center" />
-                    <atom:Tag Text="{Binding Since}"
-                              TagColor="blue"
-                              Variant="Filled"
-                              IsVisible="{Binding HasSince}" />
-                </StackPanel>
+                <atom:TextBlock Text="{Binding Name}"
+                                FontSize="16"
+                                FontWeight="SemiBold" />
 
                 <atom:TextBlock Text="{Binding Description}"
                                 TextWrapping="Wrap"

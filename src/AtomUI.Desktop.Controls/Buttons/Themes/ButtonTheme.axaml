@@ -237,7 +237,7 @@
         <Setter Property="FocusAdorner" Value="{x:Null}" />
 
         <Style Selector="^[SizeType=Large]">
-            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
+            <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightLG}" />
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSizeLG}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
             <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeLG}" />
@@ -251,7 +251,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Middle]">
-            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
+            <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeight}" />
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSize}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
             <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSize}" />
@@ -265,7 +265,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
+            <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightSM}" />
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSizeSM}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
             <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeSM}" />
@@ -279,7 +279,6 @@
         </Style>
 
         <Style Selector="^[SizeType=Custom]">
-            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSize}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
             <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSize}" />

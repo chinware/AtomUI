@@ -285,6 +285,34 @@ AtomUI 不创建 Semantic Style merge engine。所有 Setter 使用 Avalonia 12 
 - Token 和默认 ControlTheme 提供基线，不压制用户的合法 Semantic Style。
 - AtomUI 文档不建立一套与 Avalonia 不一致的“全局、实例、Token”伪优先级表。
 
+### 7.1 布局型 Setter 的协调边界
+
+Semantic Style 的目标属性已经赢得优先级，不表示最终布局一定采用该值所暗示的尺寸。Avalonia 分别解析每个节点、每个
+属性的有效值，然后由父子节点共同完成 Measure/Arrange。典型情况是 Semantic Style 修改子 Part 的 `Padding`、`Width`
+或 `Height`，而 owner 根节点仍持有独立的 `Height`、`MinHeight`、`MaxHeight` 或自定义 `MeasureOverride`；两者不是同一
+属性上的优先级冲突，子 Part 的 Setter 可以已经生效，同时仍被 owner 的最终布局边界裁剪或压缩。
+
+因此开放布局型 Semantic Part 时，Control 作者必须同时审计：
+
+- owner 的 `Height`、`MinHeight`、`MaxHeight`、`Padding` 和尺寸档主题映射。
+- Part 自身以及从 Part 到 owner 根之间所有布局节点的 `Width`、`Height`、Min/Max、Margin、Padding 和裁剪。
+- owner 是否在 `MeasureOverride` / `ArrangeOverride` 中根据内容尺寸计算 Circle、Round、正方形、纵横比或其他几何。
+- Semantic Part 的 `Cardinality`；同一个 Setter 是否需要同时作用于 loading、普通、空态等替代实现。
+- Desktop、Browser、状态模板和派生主题是否具有相同的尺寸协调方式。
+
+对于允许内容驱动扩展的预设尺寸，优先使用 `MinHeight` 建立尺寸基线，并让自然测量决定是否增长。固定 `Height` 只用于
+高度本身就是不可扩展公共契约的 Control；不能只为掩盖内部 Padding 或模板测量不一致而封死高度。移除固定高度后，
+如果 owner 的几何依赖最终高度，几何计算必须使用已经合并 owner 布局约束的测量结果，不能直接使用未应用 Min/Max 的
+内容期望尺寸。
+
+布局异常的排查顺序固定为：
+
+1. 读取目标 Part 的有效属性值，先证明 Semantic Setter 是否命中。
+2. 区分同一属性的样式优先级冲突，与父子不同属性之间的布局约束冲突。
+3. 沿 Part 到 owner 根检查固定尺寸、Min/Max、Padding、Margin、裁剪和模板绑定。
+4. 检查 owner 的 Measure/Arrange 是否在应用布局约束前派生几何。
+5. 覆盖所有尺寸档、shape、icon-only、loading、Desktop 和 Browser 变体，不能只验证默认矩形样例。
+
 ## 8. Template 集成
 
 ### 8.1 静态模板节点
@@ -512,12 +540,13 @@ Semantic Part 实现至少验证：
 4. class-only selector 配合 `x:SetterTargetType=ContractType` 的 AXAML 编译，并确认文档不生成
    `ContractType.semantic-*` 或 `:is(ContractType).semantic-*` 公共示例。
 5. TemplateBinding、Semantic Style 和 LocalValue 的优先级边界。
-6. 替代实现、状态切换和 Optional Part 的一致性。
-7. PopupRoot 与 OverlayPopupHost 两种路径。
-8. ItemContainer 创建、回收、re-template 和 owner 切换，并确认 detach 后不保留 class listener。
-9. 高密度控件在真实模板下的 marker、候选节点与 class listener 结构预算。
-10. descriptor、Control 文档与 Gallery 元数据一致性。
-11. 生成结果确定性、裁剪和 NativeAOT publish。
+6. 布局型 Setter 与 owner Height/MinHeight/MaxHeight、Padding、裁剪和自定义 Measure/Arrange 的协调结果。
+7. 替代实现、状态切换和 Optional Part 的一致性。
+8. PopupRoot 与 OverlayPopupHost 两种路径。
+9. ItemContainer 创建、回收、re-template 和 owner 切换，并确认 detach 后不保留 class listener。
+10. 高密度控件在真实模板下的 marker、候选节点与 class listener 结构预算。
+11. descriptor、Control 文档与 Gallery 元数据一致性。
+12. 生成结果确定性、裁剪和 NativeAOT publish。
 
 Button 的 `root`、`icon`、`content` 可以作为基础契约测试样本；它不拥有 Semantic Part 系统架构。
 

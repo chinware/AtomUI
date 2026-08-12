@@ -17,12 +17,26 @@
   - Add regression coverage that rejects Button-family Browser theme override assets in source and generated theme manifests.
   - Add Desktop.Controls coverage that rejects Browser-specific theme asset folders while keeping exact Browser unsupported-control identity filtering.
 
+## 2026-08-12
+
+- Theme Contract
+  - Use `MinHeight` rather than fixed `Height` for the Large, Middle and Small Button size baselines, allowing content and
+    Semantic Part layout setters to expand the natural measured height.
+  - Keep `SizeType=Custom` free of a preset height baseline while retaining Middle defaults for typography, padding, corner
+    radius and icon metrics.
+- Layout
+  - Apply the Button owner layout constraints before deriving Circle and Round geometry so preset `MinHeight` cannot produce
+    an ellipse or a vertically stretched icon-only Button.
+- Docs
+  - Define the diagnostic boundary between Semantic Style priority and cross-node layout constraints, and record the required
+    verification matrix for content/icon layout setters across size, shape, loading and shared Button theme variants.
+
 ## 2026-08-11
 
 - Theme Contract
   - Separate the `.semantic-*` selector identity from `ContractType`; use `x:SetterTargetType` as the AXAML Setter type context.
   - Define class activator cost as opt-in application styling cost and keep Button built-in themes free of Semantic Style rules.
-  - Use static `Classes.semantic-*="True"` markers in Desktop and Browser Button templates while keeping application selectors unchanged.
+  - Use static `Classes.semantic-*="True"` markers in shared Button templates while keeping application selectors unchanged.
 
 ## 2026-08-10
 

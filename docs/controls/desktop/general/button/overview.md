@@ -88,7 +88,10 @@ public ButtonVariant? Variant { get; set; }
 
 `CustomBackground` 表示 Button normal 状态的受控自定义背景覆层，主要用于渐变、图片或其他非纯色表面。它不是颜色语义，不参与 `Color + Variant` 的状态归一、文字色、边框色、阴影或 wave 颜色计算。`CustomBackground == null` 表示不启用自定义背景覆层。
 
-`SizeType` 使用可自定义尺寸模型，支持 `Large`、`Middle`、`Small` 和 `Custom`。`Large`、`Middle`、`Small` 是 Button 预设尺寸档，完全由 Token 和主题决定。`Custom` 表示用户希望基于 Button 现有属性进行实例级尺寸定制，而不是引入 Button 专属的 `CustomHeight`、`CustomPadding` 或尺寸对象。
+`SizeType` 使用可自定义尺寸模型，支持 `Large`、`Middle`、`Small` 和 `Custom`。`Large`、`Middle`、`Small` 是 Button
+预设尺寸档，主题通过对应 ControlHeight Token 设置 `MinHeight` 基线，并由内容、Padding 和其他布局属性决定是否向上
+扩展。`Custom` 不设置预设高度基线，表示用户希望基于 Button 现有属性进行实例级尺寸定制，而不是引入 Button 专属的
+`CustomHeight`、`CustomPadding` 或尺寸对象。
 
 `IconWidth` 与 `IconHeight` 是 Button 用户图标和 loading 图标共享的公共 Avalonia 尺寸入口。两个属性相互独立，支持非正方形图标；对应的公共属性字段为 `IconWidthProperty` 与 `IconHeightProperty`。Theme 根据 `SizeType` 提供默认值，用户设置在 Button 上的本地值具有更高优先级，并同时投影到 `PART_ButtonIcon` 与 `PART_LoadingIcon`。
 
@@ -203,8 +206,11 @@ Button 与 CompactSpace、FormItem、Wave 和宿主注册协同。`Color + Varia
 - 用户在 Button 上设置的本地 `IconWidth`、`IconHeight` 必须覆盖 Theme 默认值，并同时作用于用户 icon 与 loading icon。
 - `IconPlacement` 默认值必须保持 `Start`；`IconPlacement=End` 只允许改变用户 icon 的内容侧位置和间距方向。
 - `Shape=Circle`、`Shape=Round` 的尺寸和圆角计算不变。
-- `SizeType=Large/Middle/Small` 的预设尺寸、字体、内边距、圆角和 icon 尺寸不变。
-- `SizeType=Custom` 未显式设置尺寸相关属性时必须按 `Middle` 默认值渲染；用户在 Button 上设置的本地 `Height`、`Padding`、`FontSize`、`CornerRadius`、`IconWidth`、`IconHeight` 等现有属性必须覆盖 Custom 默认值。
+- `SizeType=Large/Middle/Small` 使用对应 Token 提供 `MinHeight`、字体、内边距、圆角和 icon 尺寸基线；内容或合法
+  Semantic Part 布局 Setter 可以使最终高度超过该基线。
+- `SizeType=Custom` 未显式设置尺寸相关属性时复用 `Middle` 的字体、内边距、圆角和 icon 默认值，但不继承 Middle
+  的 `MinHeight`；用户设置的 `Height`、`MinHeight`、`Padding`、`FontSize`、`CornerRadius`、`IconWidth`、
+  `IconHeight` 等现有属性必须按 Avalonia 原生优先级生效。
 - CompactSpace 下的有效圆角、有效边框和 z-index 行为不变。
 - wave 播放条件和危险态 wave brush 不变。
 - `CustomBackground` 不改变 `WaveSpiritDecorator` 的 wave brush，wave 颜色仍由 `EffectiveColor + EffectiveVariant` 推导。
@@ -239,7 +245,8 @@ Button 的尺寸模型由预设档和实例定制组成。预设档 `Large`、`M
 
 `SizeType=Custom` 的设计契约：
 
-- 未设置本地尺寸属性时，`Custom` 使用 `Middle` 的默认视觉指标，包括高度、字体、内边距、圆角、普通 icon 尺寸和 loading icon-only 尺寸。
+- 未设置本地尺寸属性时，`Custom` 使用 `Middle` 的字体、内边距、圆角、普通 icon 尺寸和 loading icon-only 默认值；
+  高度由自然测量决定，不继承 Middle 的预设 `MinHeight`。
 - 用户通过 Button 公共属性定制尺寸，例如 `Height`、`MinHeight`、`Width`、`MinWidth`、`Padding`、`FontSize`、`CornerRadius`、`IconWidth` 和 `IconHeight`。
 - 主题只能以 Style 默认值或可被 Button 本地属性覆盖的模板绑定提供 Custom 默认值，不得用更高优先级写入覆盖用户本地值。
 - Button 不提供 `CustomHeight`、`CustomPadding`、`CustomFontSize`、`CustomIconSize`、`CustomOnlyIconSize` 或 `ButtonSizeMetrics`。
@@ -276,6 +283,7 @@ Gallery 的 Custom 尺寸示例继续优先在 Button selector 上设置 `IconWi
 
 关联文档：
 
+- [Semantic Part 系统设计](../../../../architecture/systems/theming/semantic-parts.md)
 - [Button 桌面版实现原理](implementation.md)
 - [Button Token 设计](token.md)
 - [Button Changelog](changelog.md)

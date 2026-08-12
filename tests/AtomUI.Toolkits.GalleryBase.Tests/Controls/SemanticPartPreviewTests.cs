@@ -10,7 +10,6 @@ using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 using AtomUIButton = AtomUI.Desktop.Controls.Button;
-using AtomUITag = AtomUI.Desktop.Controls.Tag;
 using AtomUIToolTip = AtomUI.Desktop.Controls.ToolTip;
 using AtomUIWindow = AtomUI.Desktop.Controls.Window;
 
@@ -169,11 +168,11 @@ public class SemanticPartPreviewTests
             AtomUIToolTip.GetTip(rowBorder).ShouldBeNull();
         }
 
-        preview.GetVisualDescendants().OfType<AtomUITag>().Count().ShouldBe(3);
         var persistentTexts = rows.SelectMany(static row => row.GetVisualDescendants().OfType<TextBlock>())
                                   .Select(static textBlock => textBlock.Text)
                                   .Where(static text => text is not null)
                                   .ToArray();
+        persistentTexts.ShouldNotContain("6.0");
         persistentTexts.ShouldNotContain(".semantic-content");
         persistentTexts.ShouldNotContain(nameof(ContentPresenter));
     }
@@ -219,7 +218,7 @@ public class SemanticPartPreviewTests
     }
 
     [Fact]
-    public void Code_Example_Is_Hosted_Below_The_Two_Column_Layout_At_Full_Width()
+    public void Part_Details_And_Code_Are_Hosted_Side_By_Side_Below_The_Preview()
     {
         var preview = CreatePreview(new AtomUIButton
         {
@@ -241,21 +240,32 @@ public class SemanticPartPreviewTests
         var layout = rootLayout.Children
                                .OfType<SemanticPartPreviewLayoutPanel>()
                                .Single(static panel => panel.Name == "PART_Layout");
-        var partsPane = layout.Children[1].ShouldBeOfType<Border>();
-        var infoPresenter = partsPane.GetVisualDescendants()
-                                     .OfType<ContentPresenter>()
-                                     .Single(static presenter => presenter.Name == "PART_InfoContent");
-        var codePresenter = rootLayout.Children
-                                      .OfType<ContentPresenter>()
-                                      .Single(static presenter => presenter.Name == "PART_CodeContent");
+        var detailsPane = rootLayout.Children
+                                    .OfType<Border>()
+                                    .Single(static border => border.Name == "PART_DetailsPane");
+        var infoPane = detailsPane.GetVisualDescendants()
+                                  .OfType<Border>()
+                                  .Single(static border => border.Name == "PART_InfoPane");
+        var infoPresenter = infoPane.GetVisualDescendants()
+                                    .OfType<ContentPresenter>()
+                                    .Single(static presenter => presenter.Name == "PART_InfoContent");
+        var codePresenter = detailsPane.GetVisualDescendants()
+                                       .OfType<ContentPresenter>()
+                                       .Single(static presenter => presenter.Name == "PART_CodeContent");
 
         Grid.GetRow(layout).ShouldBe(0);
-        Grid.GetRow(codePresenter).ShouldBe(1);
+        Grid.GetRow(detailsPane).ShouldBe(1);
+        detailsPane.Bounds.Width.ShouldBe(layout.Bounds.Width, 0.01);
+        infoPane.Width.ShouldBe(340);
+        DockPanel.GetDock(infoPane).ShouldBe(Dock.Left);
+        infoPane.BorderThickness.ShouldBe(new Thickness(0, 0, 1, 0));
         infoPresenter.Bounds.Width.ShouldBe(
-            partsPane.Bounds.Width - partsPane.BorderThickness.Left - partsPane.BorderThickness.Right,
+            infoPane.Bounds.Width - infoPane.BorderThickness.Left - infoPane.BorderThickness.Right,
             0.01);
-        codePresenter.Bounds.Width.ShouldBe(layout.Bounds.Width, 0.01);
-        codePresenter.Bounds.Width.ShouldBeGreaterThan(partsPane.Bounds.Width);
+        codePresenter.Bounds.Width.ShouldBe(
+            detailsPane.Bounds.Width - infoPane.Bounds.Width,
+            0.01);
+        codePresenter.Bounds.Width.ShouldBeGreaterThan(infoPresenter.Bounds.Width);
         infoPresenter.GetVisualDescendants()
                      .OfType<GalleryCodeViewer>()
                      .ShouldBeEmpty();

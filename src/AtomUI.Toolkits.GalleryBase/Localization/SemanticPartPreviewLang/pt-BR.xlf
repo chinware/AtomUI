@@ -8,6 +8,7 @@
     <unit id="ExamplesTabLabel"><segment><source>Examples</source><target state="translated">Exemplos</target></segment></unit>
     <unit id="InfoAction"><segment><source>View technical details and styling example</source><target state="translated">Ver detalhes técnicos e exemplo de estilo</target></segment></unit>
     <unit id="PartFallbackDescription"><segment><source>The {0} semantic region.</source><target state="translated">A região semântica {0}.</target></segment></unit>
+    <unit id="PartDetailsTitle"><segment><source>Part details</source><target state="translated">Detalhes da parte</target></segment></unit>
     <unit id="PinAction"><segment><source>Pin or unpin highlight</source><target state="translated">Fixar ou desafixar destaque</target></segment></unit>
     <unit id="RootFallbackDescription"><segment><source>The control root.</source><target state="translated">A raiz do controle.</target></segment></unit>
     <unit id="RuntimeCreatedTag"><segment><source>Runtime-created</source><target state="translated">Criado em tempo de execução</target></segment></unit>
