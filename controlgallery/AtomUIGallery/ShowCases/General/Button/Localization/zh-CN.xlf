@@ -535,5 +535,29 @@
         <target state="translated">Button 根区域承载交互状态、背景、边框和整体布局。</target>
       </segment>
     </unit>
+    <unit id="SemanticPartStyleTitle">
+      <segment>
+        <source>Custom Semantic Part styling</source>
+        <target state="translated">自定义 Semantic Part 样式</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartStyleDescription">
+      <segment>
+        <source>Use owner-scoped selectors and Button state selectors to customize published Semantic Parts.</source>
+        <target state="translated">使用所有者作用域选择器和 Button 状态选择器，自定义已发布的 Semantic Part。</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSemanticObject">
+      <segment>
+        <source>Object</source>
+        <target state="translated">对象</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSemanticFunction">
+      <segment>
+        <source>Function</source>
+        <target state="translated">函数</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

@@ -535,5 +535,29 @@
         <target state="translated">A raiz do Button contém os estados de interação, o fundo, a borda e o layout geral.</target>
       </segment>
     </unit>
+    <unit id="SemanticPartStyleTitle">
+      <segment>
+        <source>Custom Semantic Part styling</source>
+        <target state="translated">Estilo personalizado de Semantic Part</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartStyleDescription">
+      <segment>
+        <source>Use owner-scoped selectors and Button state selectors to customize published Semantic Parts.</source>
+        <target state="translated">Use seletores com escopo do proprietário e seletores de estado do Button para personalizar as Semantic Parts publicadas.</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSemanticObject">
+      <segment>
+        <source>Object</source>
+        <target state="translated">Objeto</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSemanticFunction">
+      <segment>
+        <source>Function</source>
+        <target state="translated">Função</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

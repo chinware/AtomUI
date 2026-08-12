@@ -86,7 +86,7 @@ public ButtonVariant? Variant { get; set; }
 
 `ButtonColor` 不暴露 `Link`。`ButtonType.Link` 是兼容入口，内部映射到链接视觉。
 
-`CustomBackground` 表示 Button normal 状态的受控自定义背景覆层，主要用于渐变、图片或其他非纯色表面。它不是颜色语义，不参与 `Color + Variant` 的状态归一、文字色、边框色、阴影或 wave 颜色计算。`CustomBackground == null` 表示不启用自定义背景覆层。
+`CustomBackground` 表示 Button normal 状态的受控自定义背景覆层，主要用于渐变、图片或其他非纯色表面。它不是颜色语义，不参与 `Color + Variant` 的状态归一、文字色、边框色或阴影计算，也不作为 wave 的直接取色源。`CustomBackground == null` 表示不启用自定义背景覆层。
 
 `SizeType` 使用可自定义尺寸模型，支持 `Large`、`Middle`、`Small` 和 `Custom`。`Large`、`Middle`、`Small` 是 Button
 预设尺寸档，主题通过对应 ControlHeight Token 设置 `MinHeight` 基线，并由内容、Padding 和其他布局属性决定是否向上
@@ -212,8 +212,10 @@ Button 与 CompactSpace、FormItem、Wave 和宿主注册协同。`Color + Varia
   的 `MinHeight`；用户设置的 `Height`、`MinHeight`、`Padding`、`FontSize`、`CornerRadius`、`IconWidth`、
   `IconHeight` 等现有属性必须按 Avalonia 原生优先级生效。
 - CompactSpace 下的有效圆角、有效边框和 z-index 行为不变。
-- wave 播放条件和危险态 wave brush 不变。
-- `CustomBackground` 不改变 `WaveSpiritDecorator` 的 wave brush，wave 颜色仍由 `EffectiveColor + EffectiveVariant` 推导。
+- wave 播放条件不变；播放前必须从 Button 当前最终视觉属性解析 wave brush，依次检查有效实色
+  `BorderBrush` 和 `Background`，使 Theme 状态、Semantic root Style 与普通用户 Style 使用同一视觉事实源。
+- 透明、纯白或非实色的最终 Brush 不作为 wave 颜色；无有效颜色时清除 Button 写入的 wave brush，使
+  `WaveSpiritDecorator` 回到主题默认值。`CustomBackground` 是独立覆层，不参与该取色顺序。
 - 同一 Button 家族主题资产在 Native 与 Browser 支持宿主下保持同一 API 语义，不通过平台专用主题资产复制视觉。
 
 如果实现某项能力时无法保持这些不变量，应先停止实现，说明原因、影响范围、替代方案和迁移方式，并获得授权。
@@ -296,7 +298,7 @@ LLMS 导出来源：
 | 单控件语义文档 | `overview.md` + `implementation.md` + `ButtonTheme.axaml` | 生成 `controls/button/semantic-cn.md` |
 | API 表 | overview.md 语义摘要 + `Button.cs` public surface | 不在 `overview.md` 中复制完整 API 表 |
 | Design Token 表 | `token.md` + `ButtonToken.cs` | `token.md` 解释 Token 语义边界 |
-| 示例 | `ButtonShowCase.axaml` + source snippet catalog | 覆盖类型、形状、尺寸、图标、加载、危险、幽灵、禁用、渐变、颜色与变体 |
+| 示例 | `ButtonShowCase.axaml` + source snippet catalog | 覆盖类型、形状、尺寸、图标、加载、危险、幽灵、禁用、渐变、颜色与变体，以及使用 owner-scoped 与 Button 状态选择器定制 Semantic Part |
 | 源码索引 | `implementation.md` | 用于定位 Button 源码、主题、伪类和测试 |
 
 验证策略：

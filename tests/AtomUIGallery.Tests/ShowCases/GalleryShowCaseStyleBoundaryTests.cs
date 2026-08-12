@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using Shouldly;
 using Xunit;
@@ -6,6 +7,36 @@ namespace AtomUIGallery.Tests.ShowCases;
 
 public class GalleryShowCaseStyleBoundaryTests
 {
+    [Theory]
+    [InlineData("atom|Button /template/ .semantic-content", true)]
+    [InlineData("atom|Button.semantic-demo[ButtonType=Primary] /template/ .semantic-content", true)]
+    [InlineData("atom|Select /template/ .semantic-popup .semantic-option", true)]
+    [InlineData("atom|Button /template/ atom|ContentPresenter#PART_ContentPresenter", false)]
+    [InlineData("atom|Button /template/ .content", false)]
+    [InlineData("atom|Button /template/ .semantic-content /template/ .semantic-text", false)]
+    [InlineData(".semantic-demo /template/ .semantic-content", false)]
+    public void Semantic_Part_Selector_Shape_Is_The_Only_Public_Template_Boundary(
+        string selector,
+        bool expected)
+    {
+        XNamespace xaml = "http://schemas.microsoft.com/winfx/2006/xaml";
+        var style = new XElement(
+            "Style",
+            new XAttribute("Selector", selector),
+            new XAttribute(xaml + "SetterTargetType", "ContentPresenter"));
+
+        TargetsSemanticPartSelectors(style, selector).ShouldBe(expected);
+    }
+
+    [Fact]
+    public void Semantic_Part_Template_Selector_Requires_A_Setter_Target_Type()
+    {
+        const string selector = "atom|Button /template/ .semantic-content";
+        var style = new XElement("Style", new XAttribute("Selector", selector));
+
+        TargetsSemanticPartSelectors(style, selector).ShouldBeFalse();
+    }
+
     [Fact]
     public void Gallery_ShowCases_Only_Enter_Templates_From_Owned_Style_Scopes()
     {
@@ -28,7 +59,8 @@ public class GalleryShowCaseStyleBoundaryTests
                 var ownerTheme = style.Ancestors()
                                       .FirstOrDefault(element => element.Name.LocalName == "ControlTheme");
                 if ((ownerTheme is null || !TargetsGalleryOwnedControl(ownerTheme)) &&
-                    !TargetsGalleryOwnedControlStyles(style, selector))
+                    !TargetsGalleryOwnedControlStyles(style, selector) &&
+                    !TargetsSemanticPartSelectors(style, selector))
                 {
                     violations.Add(
                         $"{Path.GetRelativePath(repositoryRoot, path)}: template selector is not owned by a Gallery control theme or its own Styles: {selector}");
@@ -91,6 +123,35 @@ public class GalleryShowCaseStyleBoundaryTests
         }
 
         return selector.Split(',').All(branch => TargetsStyleHostType(branch, styleHost));
+    }
+
+    private static bool TargetsSemanticPartSelectors(XElement style, string selector)
+    {
+        XNamespace xaml = "http://schemas.microsoft.com/winfx/2006/xaml";
+        if (string.IsNullOrWhiteSpace((string?)style.Attribute(xaml + "SetterTargetType")))
+        {
+            return false;
+        }
+
+        return selector.Split(',').All(static branch =>
+        {
+            var templateIndex = branch.IndexOf("/template/", StringComparison.Ordinal);
+            if (templateIndex <= 0 || CountTemplateBoundaries(branch) != 1)
+            {
+                return false;
+            }
+
+            var ownerSelector = branch[..templateIndex].Trim();
+            var partSelector = branch[(templateIndex + "/template/".Length)..].Trim();
+            return Regex.IsMatch(
+                       ownerSelector,
+                       @"^[A-Za-z_][A-Za-z0-9_-]*\|[A-Za-z_][A-Za-z0-9_]*(?:[.#:][A-Za-z_][A-Za-z0-9_-]*|\[[^\]\r\n]+\])*$",
+                       RegexOptions.CultureInvariant) &&
+                   Regex.IsMatch(
+                       partSelector,
+                       @"^\.semantic-[A-Za-z0-9_-]+(?:[.#:][A-Za-z_][A-Za-z0-9_-]*|\[[^\]\r\n]+\])*(?:\s+\.semantic-[A-Za-z0-9_-]+(?:[.#:][A-Za-z_][A-Za-z0-9_-]*|\[[^\]\r\n]+\])*)*$",
+                       RegexOptions.CultureInvariant);
+        });
     }
 
     private static bool TargetsStyleHostType(string selectorBranch, XElement styleHost)

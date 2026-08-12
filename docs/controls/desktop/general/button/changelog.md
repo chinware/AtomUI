@@ -19,6 +19,11 @@
 
 ## 2026-08-12
 
+- Fix
+  - Resolve Button wave color from the final root `BorderBrush` and `Background` immediately before playback, so Theme state,
+    Semantic root Style and ordinary user Style share one visual color source.
+  - Reject transparent, white and non-solid final brushes as wave colors, clear stale local wave values when no valid color
+    exists, and keep `CustomBackground` outside the wave color pipeline.
 - Theme Contract
   - Use `MinHeight` rather than fixed `Height` for the Large, Middle and Small Button size baselines, allowing content and
     Semantic Part layout setters to expand the natural measured height.
@@ -30,6 +35,9 @@
 - Docs
   - Define the diagnostic boundary between Semantic Style priority and cross-node layout constraints, and record the required
     verification matrix for content/icon layout setters across size, shape, loading and shared Button theme variants.
+- Gallery
+  - Add a deferred, full-width Button example that demonstrates object/function Semantic Part styling through owner-scoped
+    selectors, including stable content colors across Button interaction states.
 
 ## 2026-08-11
 

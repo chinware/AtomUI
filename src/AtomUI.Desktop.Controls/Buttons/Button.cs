@@ -678,9 +678,9 @@ public partial class Button : AvaloniaButton,
         }
 
         Debug.Assert(_waveSpiritDecorator != null);
-        ConfigureWaveSpiritBrush();
         Dispatcher.Post(() =>
         {
+            ConfigureWaveSpiritBrush();
             _waveSpiritDecorator?.Play();
         });
     }
@@ -713,25 +713,46 @@ public partial class Button : AvaloniaButton,
         {
             _waveSpiritDecorator.WaveBrush = waveBrush;
         }
+        else
+        {
+            _waveSpiritDecorator.ClearValue(WaveSpiritDecorator.WaveBrushProperty);
+        }
     }
 
     private IBrush? ResolveWaveSpiritBrush()
     {
-        if (EffectiveColor == ButtonColor.Default &&
-            Color is null &&
-            Variant is null &&
-            !IsDanger)
+        if (IsValidWaveSpiritBrush(BorderBrush))
         {
-            return null;
+            return BorderBrush;
         }
 
-        return EffectiveVariant switch
+        if (IsValidWaveSpiritBrush(Background))
         {
-            ButtonVariant.Solid    => VariantBackgroundBrush,
-            ButtonVariant.Outlined => VariantBorderBrush,
-            ButtonVariant.Dashed   => VariantBorderBrush,
-            _                      => null
-        };
+            return Background;
+        }
+
+        return null;
+    }
+
+    private static bool IsValidWaveSpiritBrush(IBrush? brush)
+    {
+        if (brush is null || !(brush.Opacity > 0))
+        {
+            return false;
+        }
+
+        if (brush is not ISolidColorBrush solidBrush)
+        {
+            return false;
+        }
+
+        var color = solidBrush.Color;
+        var effectiveAlpha = color.A / 255d * brush.Opacity;
+        return effectiveAlpha > 0 &&
+               (color.R != byte.MaxValue ||
+                color.G != byte.MaxValue ||
+                color.B != byte.MaxValue ||
+                effectiveAlpha < 1);
     }
 
     private void ConfigureWaveSpiritType()
@@ -1161,7 +1182,6 @@ public partial class Button : AvaloniaButton,
         VariantBorderHoverBrush       = ToBrush(borderHover);
         VariantBorderPressedBrush     = ToBrush(borderPressed);
         VariantShadow                 = shadow;
-        ConfigureWaveSpiritBrush();
     }
 
     private static IBrush ToBrush(Color color)
