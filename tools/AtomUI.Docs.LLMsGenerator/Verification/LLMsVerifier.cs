@@ -26,7 +26,7 @@ public static partial class LLMsVerifier
 
         if (!model.HasExplicitSemanticParts)
         {
-            diagnostics.Add($"{model.ControlName}: overview.md lacks LLMS semantic parts.");
+            diagnostics.Add($"{model.ControlName}: control docs lack explicit LLMS semantic parts.");
         }
 
         if (!model.HasTokenDoc && !model.HasExplicitTokenSourceDescription)

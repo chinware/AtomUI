@@ -100,6 +100,11 @@ public static class LLMsControlWriter
             lines.Insert(2, $"- Token 文档：`{model.SourceTokenRelativePath}`");
         }
 
+        if (model.SourceSemanticPartRelativePath is not null)
+        {
+            lines.Insert(2, $"- Semantic Part 文档：`{model.SourceSemanticPartRelativePath}`");
+        }
+
         lines.Add($"- 语义结构：`./semantic-cn.md`");
         return string.Join('\n', lines);
     }

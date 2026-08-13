@@ -20,7 +20,7 @@ Card 的职责是提供稳定的信息容器视觉和组合入口。它不负责
 
 ## 何时使用
 
-Card 的设计语言来自 参考设计体系的卡片容器：一个有明确边界的内容表面承载同一主题的信息，Header 表示信息组名称，Extra 表示辅助操作，Cover 表示主要媒体，Actions 表示底部轻量操作。
+Card 的设计语言围绕具有明确边界的信息表面展开：Header 表示信息组名称，Extra 表示辅助操作，Cover 表示主要媒体，Actions 表示底部轻量操作。
 
 | 维度 | 含义 | 典型表达 |
 | --- | --- | --- |
@@ -265,6 +265,19 @@ CardTheme / CardActionPanelTheme / CardGridItemTheme / CardTabsContentTheme / Ca
 
 根容器边框、圆角、背景和部分文字色来自 SharedToken。Header 高度、字体、padding、body padding、操作区背景、tabs margin、extra 色、卡片阴影、操作图标尺寸和 grid item 阴影来自 CardToken。
 
+### 5.1 Semantic Part 支持摘要
+
+Card 家族由两个独立 public owner 公开 Semantic Part：
+
+| Owner | Parts | 职责摘要 |
+| --- | --- | --- |
+| `Card` | `root`、`header`、`title`、`extra`、`cover`、`body`、`actions` | 覆盖 Card 根表面、头部、标题、辅助内容、封面、主体和底部操作组。 |
+| `CardMetaContent` | `root`、`section`、`avatar`、`title`、`description` | 覆盖 Meta 根区域、详情区、头像、标题和描述。 |
+
+`CardGridContent`、`CardGridItem`、`CardTabsContent` 和 `CardActionButton` 是公开组合类型，但不由 Card 家族推导独立
+Semantic Part descriptor。完整 Selector、ContractType、cardinality、状态矩阵和排除边界以
+[Card Semantic Part 契约](semantic-part.md)为准。
+
 Token 来源：
 
 CardToken 是 Card 的控件级 Token scope，描述卡片 Header、Body、Actions、Tabs、Extra、阴影、Grid item 和 action icon 的组件语义值。
@@ -288,6 +301,10 @@ Card 不依赖运行时反射发现模板结构。模板协作通过固定 part 
 - `Card` 到动态 `Content` 的 Size/Motion 同步使用 `BindUtils.RelayBind`，因为目标不是稳定 template part；绑定 owner 是 `_contentStateBindings`。
 - `CardGridContent.PrepareCardGridItem` 的扩展 disposable 由 `_cardGridItemDisposables` 管理，并在 container clear/recycle 时释放。
 - 不在 layout hot path 中读取全局资源或创建反射路径。
+- Semantic descriptor 由 Generator 静态生成，marker 随模板节点一次性初始化；Control 包运行时不查询 registry，也不扫描
+  VisualTree。
+- Card 和 CardMetaContent 的 marker 都位于既有静态节点，不创建额外 Visual、Binding、订阅或跨 VisualRoot host。
+- Frame 作为既有边框节点直接承载内容，不新增视觉节点；该结构同时避免内部 Header/Actions 分隔线覆盖外框。
 
 AOT 边界：
 
@@ -314,6 +331,7 @@ AOT 边界：
 
 - 源设计文档：`docs/controls/desktop/data-display/card/overview.md`
 - 实现文档：`docs/controls/desktop/data-display/card/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-display/card/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-display/card/token.md`
 - 变更记录：`docs/controls/desktop/data-display/card/changelog.md`
 - 语义结构：`./semantic-cn.md`

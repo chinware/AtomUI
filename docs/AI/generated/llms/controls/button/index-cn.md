@@ -79,7 +79,7 @@ public ButtonVariant? Variant { get; set; }
 
 `ButtonColor` 不暴露 `Link`。`ButtonType.Link` 是兼容入口，内部映射到链接视觉。
 
-`CustomBackground` 表示 Button normal 状态的受控自定义背景覆层，主要用于渐变、图片或其他非纯色表面。它不是颜色语义，不参与 `Color + Variant` 的状态归一、文字色、边框色、阴影或 wave 颜色计算。`CustomBackground == null` 表示不启用自定义背景覆层。
+`CustomBackground` 表示 Button normal 状态的受控自定义背景覆层，主要用于渐变、图片或其他非纯色表面。它不是颜色语义，不参与 `Color + Variant` 的状态归一、文字色、边框色或阴影计算，也不作为 wave 的直接取色源。`CustomBackground == null` 表示不启用自定义背景覆层。
 
 `SizeType` 使用可自定义尺寸模型，支持 `Large`、`Middle`、`Small` 和 `Custom`。`Large`、`Middle`、`Small` 是 Button
 预设尺寸档，主题通过对应 ControlHeight Token 设置 `MinHeight` 基线，并由内容、Padding 和其他布局属性决定是否向上
@@ -113,21 +113,21 @@ Template part 与主题入口：
 | `PART_ButtonIcon` | 展示用户设置的 icon，位置由 `IconPlacement` 控制，宽高通过 `TemplateBinding` 跟随 `IconWidth`、`IconHeight`。 |
 | `PART_ContentPresenter` | 展示用户内容。 |
 
-Semantic Parts：
+Button 支持以下 Semantic Part：
 
-| Part | Selector | ContractType | Cardinality | AtomUI 节点 | 职责 | 相关 API | 相关 Token | Customization | 稳定性 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `root` | Button 本身 | `Button` | `Single` | `Button` | 控件根语义区域，承载命令、点击、状态归一和伪类。 | 全部 Button public API | ButtonToken、SharedToken | `Root` | stable since 6.0 |
-| `icon` | `.semantic-icon` | `Control` | `Multiple` | `PART_LoadingIcon`、`PART_ButtonIcon` | loading 与用户图标的统一视觉职责；两个替代实现都接受同一语义样式。 | `Icon`、`IsLoading`、`IconPlacement`、`IconWidth`、`IconHeight` | `IconSize*`、`OnlyIconSize*`、`IconMargin` | `Selector` | stable since 6.0 |
-| `content` | `.semantic-content` | `ContentPresenter` | `Single` | `PART_ContentPresenter` | 用户内容展示区域。 | `Content`、`ContentTemplate` | `ContentFontSize`、`ContentLineHeight`、`FontWeight` | `Selector` | stable since 6.0 |
+| Part | 公共入口 | 数量语义 | 职责摘要 |
+| --- | --- | --- | --- |
+| `root` | Button 本身 | `Single` | Button 动作、状态与根视觉样式的统一 owner。 |
+| `icon` | `.semantic-icon` | `Multiple` | 用户图标与 loading 图标的统一视觉职责。 |
+| `content` | `.semantic-content` | `Single` | 用户内容展示与排版区域。 |
 
-`PART_WaveSpirit`、`ShadowsFrame`、`Frame`、`CustomBackgroundLayer` 和 `PART_RootLayout` 属于 Button Composition Model，
-不是公开 Semantic Part。它们可以继续服务内部主题和实现，但应用不得把其名称或节点层级视为兼容契约。
+完整的 Selector、`ContractType`、存在条件、逐 Part 定制说明、状态矩阵和排除边界见
+[Button Semantic Part 契约](semantic-part.md)。`PART_WaveSpirit`、`ShadowsFrame`、`Frame`、`CustomBackgroundLayer` 和
+`PART_RootLayout` 属于 Button Composition Model，不是公开 Semantic Part。
 
 ## 事件与命令
 
 Button 的公共 API 是控件最重要的稳定契约。公共属性、事件和方法集中在 `Button.cs`，内部主题变量和实现细节不得替代公共 API。
-| `root` | Button 本身 | `Button` | `Single` | `Button` | 控件根语义区域，承载命令、点击、状态归一和伪类。 | 全部 Button public API | ButtonToken、SharedToken | `Root` | stable since 6.0 |
 
 ## 使用示例
 
@@ -137,7 +137,7 @@ Button 的公共 API 是控件最重要的稳定契约。公共属性、事件�
 
 ### 按钮类型
 
-来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:43`
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:66`
 
 SourceKey：`button-type`
 
@@ -153,7 +153,7 @@ SourceKey：`button-type`
 
 ### 按钮形状
 
-来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:61`
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:84`
 
 SourceKey：`button-shape`
 
@@ -183,7 +183,7 @@ SourceKey：`button-shape`
 
 ### 通栏按钮
 
-来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:316`
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:339`
 
 SourceKey：`button-block`
 
@@ -199,7 +199,7 @@ SourceKey：`button-block`
 
 ### 危险按钮
 
-来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:334`
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:357`
 
 SourceKey：`button-danger`
 
@@ -310,6 +310,7 @@ Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好�
 
 - 源设计文档：`docs/controls/desktop/general/button/overview.md`
 - 实现文档：`docs/controls/desktop/general/button/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/general/button/semantic-part.md`
 - Token 文档：`docs/controls/desktop/general/button/token.md`
 - 变更记录：`docs/controls/desktop/general/button/changelog.md`
 - 语义结构：`./semantic-cn.md`

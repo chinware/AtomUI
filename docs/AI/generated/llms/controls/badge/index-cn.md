@@ -75,21 +75,16 @@ Badge 家族没有控件专属 public 事件；状态变化通过 Avalonia 属�
 
 ### 3.2 Semantic Parts
 
-Badge Semantic Part 遵循 [AtomUI Semantic Part 系统设计](../../../../architecture/systems/theming/semantic-parts.md)。每个可实例化 owner 都拥有独立 descriptor；同名 `indicator` 表示同一类产品职责，不表示三个 owner 共享运行时节点或 Theme。
+Badge 的三个可实例化 owner 各自拥有独立 descriptor，支持范围如下：
 
-| Owner | Part | Selector | ContractType | Cardinality | Customization | CrossVisualRoot | RuntimeCreated | 职责 | 稳定性 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `CountBadge` | `root` | owner 本身 | `CountBadge` | `Single` | `Root` | `false` | `false` | 数量、可见性、颜色、尺寸、定位和目标组合的状态 owner。 | stable since 6.0 |
-| `CountBadge` | `indicator` | `.semantic-indicator` | `Control` | `Optional` | `Selector` | `true` | `true` | 完整数量徽标视觉，包括背景、数量文本和统一动效边界。 | stable since 6.0 |
-| `DotBadge` | `root` | owner 本身 | `DotBadge` | `Single` | `Root` | `false` | `false` | 状态、文本、颜色、可见性、定位和目标组合的状态 owner。 | stable since 6.0 |
-| `DotBadge` | `indicator` | `.semantic-indicator` | `Control` | `Optional` | `Selector` | `true` | `true` | 状态点视觉和统一动效边界，不包含独立模式的说明文本。 | stable since 6.0 |
-| `RibbonBadge` | `root` | owner 本身 | `RibbonBadge` | `Single` | `Root` | `false` | `false` | 文本、颜色、位置、可见性和目标组合的状态 owner。 | stable since 6.0 |
-| `RibbonBadge` | `indicator` | `.semantic-indicator` | `Control` | `Optional` | `Selector` | `false` | `true` | 完整 Ribbon 视觉、定位和绘制边界。 | stable since 6.0 |
-| `RibbonBadge` | `content` | `.semantic-content` | `Avalonia.Controls.TextBlock` | `Optional` | `Selector` | `false` | `true` | Ribbon 文本展示区域。 | stable since 6.0 |
+| Owner | Parts | 职责摘要 |
+| --- | --- | --- |
+| `CountBadge` | `root`、`indicator` | 数量状态 owner 与完整数量徽标视觉。 |
+| `DotBadge` | `root`、`indicator` | 状态点 owner 与状态点视觉；不公开 standalone 说明文本。 |
+| `RibbonBadge` | `root`、`indicator`、`content` | Ribbon owner、完整 Ribbon 表面与文本区域。 |
 
-`CountBadge` 公开完整数量徽标作为 `indicator`；`DotBadge` 只公开状态点，不包含独立模式的说明文本；`RibbonBadge` 同时公开完整 Ribbon `indicator` 与其中的文本 `content`。
-
-所有非 root Part 都是 `Selector`，不提供完整 ControlTheme 替换属性。它们在 owner 未附加、显式隐藏、退出动效完成、模式切换或运行时宿主尚未建立时可以不存在，因此使用 `Optional`。
+完整的 Selector、`ContractType`、cardinality、跨根与运行时元数据、逐 Part 定制说明和排除边界见
+[Badge Semantic Part 契约](semantic-part.md)。同名 `indicator` 不表示三个 owner 共享运行时节点、状态或 Theme。
 
 ## 事件与命令
 
@@ -217,16 +212,8 @@ Public API
 - RibbonBadge 隐藏时只移除 Ribbon 视觉，不隐藏 `DecoratedTarget`。
 - Count/Dot 启用退出动效时，indicator 可以在隐藏请求后短暂保留；动效完成后才从宿主移除。
 - Dot 在 standalone 与 target mode 间切换时会重建内部 Adorner，但公开 `indicator` 身份不变。
-- Semantic marker 不表达 visible、status、placement 或 motion phase；节点存在时 marker 保持不变。
-
-| 场景 | root | indicator | content | 说明 |
-| --- | --- | --- | --- | --- |
-| owner 未附加 | 存在 | 不保证存在 | 不保证存在 | descriptor 可查询，但运行时视觉可以尚未创建。 |
-| standalone 且可见 | 存在 | 存在 | Ribbon 存在；Count/Dot 不公开 content | 运行时宿主属于 owner 普通子树。 |
-| target mode 且可见 | 存在 | 存在 | Ribbon 存在；Count/Dot 不公开 content | Count/Dot indicator 跨 VisualRoot；Ribbon 保持 inline。 |
-| `BadgeIsVisible=false` | 存在 | 最终不存在 | 最终不存在 | 启用动效时 indicator 可以在退出阶段短暂保留。 |
-| Count 零值且不显示零 | 存在 | 最终不存在 | 不适用 | `Count` 与 `IsZeroVisible` 共同归一可见性。 |
-| Dot standalone/target 切换 | 存在 | 重新建立 | 不适用 | 两种模式使用不同内部模板。 |
+- Semantic marker 不表达 visible、status、placement 或 motion phase；节点存在时 marker 保持不变。完整状态与 Part 数量矩阵见
+  [Badge Semantic Part 契约](semantic-part.md)。
 
 ## 主题与 Design Token
 
@@ -307,6 +294,7 @@ Badge Semantic Part 的默认运行时成本仅包括 descriptor 静态数据和
 
 - 源设计文档：`docs/controls/desktop/data-display/badge/overview.md`
 - 实现文档：`docs/controls/desktop/data-display/badge/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-display/badge/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-display/badge/token.md`
 - 变更记录：`docs/controls/desktop/data-display/badge/changelog.md`
 - 语义结构：`./semantic-cn.md`

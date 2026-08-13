@@ -1,6 +1,6 @@
 # Badge 桌面版架构设计
 
-本文档定义 Badge 桌面控件家族的设计定位、公共契约、状态模型、视觉主题关系和 Semantic Part 定制边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Badge 桌面版实现原理](implementation.md)，Token 语义见 [Badge Token 设计](token.md)，设计和契约变化记录见 [Badge Changelog](changelog.md)。
+本文档定义 Badge 桌面控件家族的设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，三个 public owner 的完整 Semantic Part 契约见 [Badge Semantic Part 契约](semantic-part.md)，内部实现原理见 [Badge 桌面版实现原理](implementation.md)，Token 语义见 [Badge Token 设计](token.md)，设计和契约变化记录见 [Badge Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -73,21 +73,16 @@ Badge 家族没有控件专属 public 事件；状态变化通过 Avalonia 属�
 
 ### 3.2 Semantic Parts
 
-Badge Semantic Part 遵循 [AtomUI Semantic Part 系统设计](../../../../architecture/systems/theming/semantic-parts.md)。每个可实例化 owner 都拥有独立 descriptor；同名 `indicator` 表示同一类产品职责，不表示三个 owner 共享运行时节点或 Theme。
+Badge 的三个可实例化 owner 各自拥有独立 descriptor，支持范围如下：
 
-| Owner | Part | Selector | ContractType | Cardinality | Customization | CrossVisualRoot | RuntimeCreated | 职责 | 稳定性 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `CountBadge` | `root` | owner 本身 | `CountBadge` | `Single` | `Root` | `false` | `false` | 数量、可见性、颜色、尺寸、定位和目标组合的状态 owner。 | stable since 6.0 |
-| `CountBadge` | `indicator` | `.semantic-indicator` | `Control` | `Optional` | `Selector` | `true` | `true` | 完整数量徽标视觉，包括背景、数量文本和统一动效边界。 | stable since 6.0 |
-| `DotBadge` | `root` | owner 本身 | `DotBadge` | `Single` | `Root` | `false` | `false` | 状态、文本、颜色、可见性、定位和目标组合的状态 owner。 | stable since 6.0 |
-| `DotBadge` | `indicator` | `.semantic-indicator` | `Control` | `Optional` | `Selector` | `true` | `true` | 状态点视觉和统一动效边界，不包含独立模式的说明文本。 | stable since 6.0 |
-| `RibbonBadge` | `root` | owner 本身 | `RibbonBadge` | `Single` | `Root` | `false` | `false` | 文本、颜色、位置、可见性和目标组合的状态 owner。 | stable since 6.0 |
-| `RibbonBadge` | `indicator` | `.semantic-indicator` | `Control` | `Optional` | `Selector` | `false` | `true` | 完整 Ribbon 视觉、定位和绘制边界。 | stable since 6.0 |
-| `RibbonBadge` | `content` | `.semantic-content` | `Avalonia.Controls.TextBlock` | `Optional` | `Selector` | `false` | `true` | Ribbon 文本展示区域。 | stable since 6.0 |
+| Owner | Parts | 职责摘要 |
+| --- | --- | --- |
+| `CountBadge` | `root`、`indicator` | 数量状态 owner 与完整数量徽标视觉。 |
+| `DotBadge` | `root`、`indicator` | 状态点 owner 与状态点视觉；不公开 standalone 说明文本。 |
+| `RibbonBadge` | `root`、`indicator`、`content` | Ribbon owner、完整 Ribbon 表面与文本区域。 |
 
-`CountBadge` 公开完整数量徽标作为 `indicator`；`DotBadge` 只公开状态点，不包含独立模式的说明文本；`RibbonBadge` 同时公开完整 Ribbon `indicator` 与其中的文本 `content`。
-
-所有非 root Part 都是 `Selector`，不提供完整 ControlTheme 替换属性。它们在 owner 未附加、显式隐藏、退出动效完成、模式切换或运行时宿主尚未建立时可以不存在，因此使用 `Optional`。
+完整的 Selector、`ContractType`、cardinality、跨根与运行时元数据、逐 Part 定制说明和排除边界见
+[Badge Semantic Part 契约](semantic-part.md)。同名 `indicator` 不表示三个 owner 共享运行时节点、状态或 Theme。
 
 ## 4. 行为与状态模型
 
@@ -107,16 +102,8 @@ Public API
 - RibbonBadge 隐藏时只移除 Ribbon 视觉，不隐藏 `DecoratedTarget`。
 - Count/Dot 启用退出动效时，indicator 可以在隐藏请求后短暂保留；动效完成后才从宿主移除。
 - Dot 在 standalone 与 target mode 间切换时会重建内部 Adorner，但公开 `indicator` 身份不变。
-- Semantic marker 不表达 visible、status、placement 或 motion phase；节点存在时 marker 保持不变。
-
-| 场景 | root | indicator | content | 说明 |
-| --- | --- | --- | --- | --- |
-| owner 未附加 | 存在 | 不保证存在 | 不保证存在 | descriptor 可查询，但运行时视觉可以尚未创建。 |
-| standalone 且可见 | 存在 | 存在 | Ribbon 存在；Count/Dot 不公开 content | 运行时宿主属于 owner 普通子树。 |
-| target mode 且可见 | 存在 | 存在 | Ribbon 存在；Count/Dot 不公开 content | Count/Dot indicator 跨 VisualRoot；Ribbon 保持 inline。 |
-| `BadgeIsVisible=false` | 存在 | 最终不存在 | 最终不存在 | 启用动效时 indicator 可以在退出阶段短暂保留。 |
-| Count 零值且不显示零 | 存在 | 最终不存在 | 不适用 | `Count` 与 `IsZeroVisible` 共同归一可见性。 |
-| Dot standalone/target 切换 | 存在 | 重新建立 | 不适用 | 两种模式使用不同内部模板。 |
+- Semantic marker 不表达 visible、status、placement 或 motion phase；节点存在时 marker 保持不变。完整状态与 Part 数量矩阵见
+  [Badge Semantic Part 契约](semantic-part.md)。
 
 ## 5. 视觉与主题模型
 
@@ -165,61 +152,13 @@ Token 只表达组件视觉语义，不保存数量、状态、可见性、目�
 
 ## 8. 专项模型
 
-### 8.1 Selector 契约
+### 8.1 Semantic Part 集成
 
-Badge 的非 root Part 不是 public owner 的 template child。完整作用域 selector 使用逻辑后代组合符，不使用 `/template/`：
+Badge 非 root Part 由既有运行时宿主创建，不是 owner 的 template child。完整 Selector 语法、`x:SetterTargetType`、
+布局定制和内部节点排除边界统一见 [Badge Semantic Part 契约](semantic-part.md)。颜色、状态、数量、位置、显示规则和动效开关
+仍由对应 public API 表达；Semantic marker 不改变 focus、hit testing、automation owner 或可访问名称。
 
-```xml
-<Application.Styles>
-    <Style Selector="atom|CountBadge .semantic-indicator"
-           x:SetterTargetType="Control">
-        <Setter Property="Opacity" Value="0.85" />
-    </Style>
-
-    <Style Selector="atom|RibbonBadge .semantic-content"
-           x:SetterTargetType="TextBlock">
-        <Setter Property="FontWeight" Value="SemiBold" />
-    </Style>
-</Application.Styles>
-```
-
-单实例规则可以放在 owner 的 `Styles` 中并省略 owner scope：
-
-```xml
-<atom:DotBadge Status="Success">
-    <atom:DotBadge.Styles>
-        <Style Selector=".semantic-indicator"
-               x:SetterTargetType="Control">
-            <Setter Property="Opacity" Value="0.9" />
-        </Style>
-    </atom:DotBadge.Styles>
-</atom:DotBadge>
-```
-
-包含 Setter 的 Style 必须用 `x:SetterTargetType` 提供编译期类型上下文。不得使用以下 selector 作为 Badge 公共契约：
-
-- `atom|CountBadge /template/ .semantic-indicator`：`CountBadge` 没有 ControlTemplate，运行时宿主也不是其 template child。
-- `Control.semantic-indicator` 或 `:is(Control).semantic-indicator`：ContractType 不参与 Part 身份匹配。
-- `PART_MotionActor`、`PART_LabelPart`、内部类型名或当前布局容器名：这些名称属于实现细节。
-
-应用 Semantic Style 覆盖 AtomUI 默认 ControlTheme 对同一视觉属性提供的默认值；本地值、绑定和动画仍遵循 Avalonia 原生属性优先级。
-
-### 8.2 定制边界
-
-以下区域明确不属于 Badge Semantic Part：
-
-- `DecoratedTarget` 及其内部视觉。
-- CountBadge 的背景 Border、数量 TextBlock 和溢出文本拆分。
-- DotBadge 独立模式的说明 Label。
-- `RootLayout`、`PART_MotionActor` 名称和 motion phase。
-- Ribbon 折角 Geometry、阴影、颜色计算、定位 wrapper 和 render helper。
-- 所有 internal Adorner、indicator 和 motion 类型的 CLR identity。
-
-`indicator` 提供完整徽标视觉的局部样式入口，不替代 owner API。颜色、状态、数量、位置、显示规则和动效开关仍通过对应 public API 表达。
-
-布局型 Semantic Setter 可以改变 indicator 或 content 的期望尺寸，并参与 owner 的正常测量和排列。Badge 不保证任意 Width、Height、Margin、Padding 或 Transform 组合仍保持默认定位；应用应同时验证 standalone、target mode、Start/End 和显示隐藏状态。Semantic marker 不改变 focus、hit testing、automation owner 或可访问名称。
-
-### 8.3 Gallery Preview 映射
+### 8.2 Gallery Preview 映射
 
 Badge Gallery 的 Semantic Parts 内容根包含三个独立 `SemanticPartPreview`，分别对应 `CountBadge`、`DotBadge` 和
 `RibbonBadge`。三个 owner 不共享 descriptor、Part 列表或目标解析作用域；页面只复用同一个延迟创建 Tab 生命周期。
@@ -240,6 +179,7 @@ Gallery 预览基础设施和多 owner 内容根的通用生命周期见
 关联文档：
 
 - [Badge 桌面版实现原理](implementation.md)
+- [Badge Semantic Part 契约](semantic-part.md)
 - [Badge Token 设计](token.md)
 - [Badge Changelog](changelog.md)
 - [Semantic Part 系统设计](../../../../architecture/systems/theming/semantic-parts.md)
@@ -249,10 +189,10 @@ LLMS 导出来源：
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
 | 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/badge/index-cn.md`。 |
-| 单控件语义文档 | `overview.md` + `implementation.md` + Badge Themes | 生成 `controls/badge/semantic-cn.md`。 |
+| 单控件语义文档 | `semantic-part.md` + `overview.md` + `implementation.md` + Badge Themes | 生成 `controls/badge/semantic-cn.md`。 |
 | API 表 | 本文公共 API 摘要 + 三个 public owner 源码 | 不把 internal Adorner 成员输出为用户 API。 |
 | Design Token 表 | `token.md` + 三个内部 Token 类型 | 不在本文复制生成 Token 表。 |
-| Semantic Parts | 本文 Part 表 + 实现文档节点映射 | 分 owner 输出 root、selector、类型、数量与跨根信息。 |
+| Semantic Parts | `semantic-part.md` Part 表 + 实现文档节点映射 | 分 owner 输出 root、selector、类型、数量与跨根信息。 |
 | 示例 | Gallery Badge ShowCase + Semantic Part Preview | 只引用稳定 public owner 用法。 |
 | 源码索引 | `implementation.md` | 用于定位 owner、Adorner、Theme 和测试。 |
 

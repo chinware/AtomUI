@@ -10,7 +10,7 @@ Steps 负责：
 
 - 展示有序步骤及其标题、副标题和详情内容。
 - 根据唯一的 `Current` 输入计算每个 item 的有效状态。
-- 展示 Indicator、Connector、Dot、Navigation、Inline、Panel 和 Progress 视觉。
+- 展示 Indicator、Connector、Dot、Navigation、Inline 和 Progress 视觉。
 - 在启用交互时发出当前步骤变更请求。
 
 Steps 不负责：
@@ -61,8 +61,7 @@ Steps 表达“有序流程 + 当前进度 + 可选导航请求”。
 | `Initial` | `int` | 第一个 item 的编号偏移，默认 `0`；不用于初始化或重置 `Current`。 |
 | `Status` | `StepsStatus` | 当前步骤的默认状态，默认 `Process`。 |
 | `Percent` | `double?` | 当前 Process item 的局部进度；`null` 表示不显示。 |
-| `Type` | `StepsType` | `Default`、`Dot`、`OutlineDot`、`Navigation`、`Inline` 或 `Panel`。Panel 强制采用水平等宽布局。 |
-| `PanelVariant` | `StepsPanelVariant` | Panel 的视觉变体：`Filled`（默认）或 `Outlined`。其他类型忽略。 |
+| `Type` | `StepsType` | `Default`、`Dot`、`OutlineDot`、`Navigation` 或 `Inline`。 |
 | `Orientation` | `Orientation` | 步骤排列方向，默认 `Horizontal`。 |
 | `TitlePlacement` | `Orientation` | 标题相对 Indicator 的请求布局，默认 `Horizontal`。 |
 | `SizeType` | `SizeType` | Indicator、文字和间距尺寸，默认 `Middle`。 |
@@ -108,8 +107,7 @@ public event EventHandler<StepsCurrentChangeRequestedEventArgs>?
 | 枚举 | 成员 | 语义 |
 | --- | --- | --- |
 | `StepsStatus` | `Wait`、`Process`、`Finish`、`Error` | 根当前状态、item 显式状态和有效状态。 |
-| `StepsType` | `Default`、`Dot`、`OutlineDot`、`Navigation`、`Inline`、`Panel` | Steps 的完整视觉类型。Panel 隐藏 Indicator/Connector，使用面板背景、边框和外溢箭头。 |
-| `StepsPanelVariant` | `Filled`、`Outlined` | Panel 的填充或描边变体。 |
+| `StepsType` | `Default`、`Dot`、`OutlineDot`、`Navigation`、`Inline` | Steps 的完整视觉类型。 |
 
 `StepsType` 同时表达原 Style 和 Indicator 类型，禁止形成 `Navigation + Dot` 等没有明确 Steps 语义的组合。
 `OutlineDot` 与 `Dot` 共享布局语义和 Dot 尺寸 Token，但 Indicator 使用透明背景和状态色边框，并且不播放 Indicator Wave。
@@ -276,7 +274,7 @@ Steps 使用统一语义模板，而不是按 Type、Orientation 和 TitlePlacem
 | 主题文件 | 职责 |
 | --- | --- |
 | `StepsTheme.axaml` | 根模板、ItemsPresenter、StepsPanel 和根展示输入映射。 |
-| `StepsItemTheme.axaml` | 统一 item 语义模板、Panel item frame、状态颜色、Connector、内容和交互视觉。 |
+| `StepsItemTheme.axaml` | 统一 item 语义模板、状态颜色、Connector、内容和交互视觉。 |
 | `StepsItemIndicatorTheme.axaml` | 统一 Indicator 模板、Dot、Icon、状态图标、Progress 和 Wave。 |
 
 运行时组合：
@@ -293,20 +291,11 @@ Steps
                 ├── ContentPresenter#SubHeaderPresenter
                 ├── PixelAlignedBorder#Connector
                 ├── ContentPresenter#ContentPresenter
-                ├── StepsPanelItemFrame#ItemWrapper
                 ├── PathIcon#NavigationArrow
-                ├── StepsPanelArrow#PanelArrow
                 └── PixelAlignedBorder#NavigationActiveIndicator
 ```
 
-`StepsPanel` 负责 item 间的 flex/stack 布局；Panel 类型强制水平排列并将每个 item 等宽。`StepsItemLayoutPanel` 负责 item 内固定语义区域、Connector 线宽、Panel 外溢箭头和 Navigation active 线的排列。二者不创建状态。
-
-Panel 类型的几何规则：
-
-- Indicator 和普通 Connector 不参与可见布局。
-- ItemWrapper 覆盖完整 item 单元，PanelArrow 在非末项的外侧拉伸为楔形箭头。
-- LTR 箭头向右外溢，RTL 箭头向左外溢；末项不创建可见箭头。
-- `Filled` 使用状态背景作为面板表面，并在非首项裁出左侧 notch；`Outlined` 保留共享接缝的箭头边框，非当前 Error 项保持容器背景并使用红色文字和边框，当前 Error 项才使用浅红 active 背景。
+`StepsPanel` 负责 item 间的 flex/stack 布局；`StepsItemLayoutPanel` 负责 item 内固定语义区域、Connector 线宽和 Navigation active 线的排列。二者不创建视觉、不计算状态。
 `OutlineDot` 复用 `Dot` 的布局路径，只改变 Indicator 的填充、边框和 Wave 语义。
 
 ### 5.1 Item 语义样式覆盖
@@ -339,7 +328,7 @@ Type == Navigation      -> Horizontal
 
 Token 来源：
 
-StepsToken 描述步骤标题、详情内容、Indicator、Dot、OutlineDot、Connector、Navigation、Inline、Panel 和 Progress ring 的组件级视觉语义。
+StepsToken 描述步骤标题、详情内容、Indicator、Dot、OutlineDot、Connector、Navigation、Inline 和 Progress ring 的组件级视觉语义。
 
 StepsToken 不承载：
 
@@ -380,10 +369,8 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Steps/Steps.cs`：public API、事件、容器生成、根输入分发和 item 状态协调。
 - `src/AtomUI.Desktop.Controls/Steps/StepsItem.cs`：public item 契约、internal 派生状态、owner 生命周期和激活入口。
 - `src/AtomUI.Desktop.Controls/Steps/StepsItemIndicator.cs`：Indicator 状态、Wave part、Progress 绘制和渲染失效。
-- `src/AtomUI.Desktop.Controls/Steps/StepsPanel.cs`：item 间水平 flex、Navigation/Panel 等宽、Inline 和垂直 stack 布局。
-- `src/AtomUI.Desktop.Controls/Steps/StepsItemLayoutPanel.cs`：Indicator、Header、SubHeader、Connector、Content、NavigationArrow、PanelArrow 和 NavigationActiveIndicator 的 item 内布局。
-- `src/AtomUI.Desktop.Controls/Steps/StepsPanelArrow.cs`：internal 可拉伸 Panel 楔形箭头绘制控件，负责 LTR/RTL 三角形和边框。
-- `src/AtomUI.Desktop.Controls/Steps/StepsPanelItemFrame.cs`：Panel item 的视觉外框；Filled 非首项使用左侧 notch 几何裁剪，Outlined 保持完整边框。
+- `src/AtomUI.Desktop.Controls/Steps/StepsPanel.cs`：item 间水平 flex、Navigation 等宽、Inline 和垂直 stack 布局。
+- `src/AtomUI.Desktop.Controls/Steps/StepsItemLayoutPanel.cs`：Indicator、Header、SubHeader、Connector、Content、NavigationArrow 和 NavigationActiveIndicator 的 item 内布局。
 - `src/AtomUI.Desktop.Controls/Steps/StepsToken.cs`：Steps 控件 Token。
 - `src/AtomUI.Desktop.Controls/Steps/Themes/StepsTheme.axaml`：根模板和 StepsPanel。
 - `src/AtomUI.Desktop.Controls/Steps/Themes/StepsItemTheme.axaml`：统一 item 语义模板和状态样式。

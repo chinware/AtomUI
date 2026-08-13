@@ -1,7 +1,8 @@
 # Button 桌面版实现原理
 
 本文档描述 Button 桌面版的内部实现组织、状态归一、模板接入和维护边界。公共设计与 API 契约见
-[Button 桌面版架构设计](overview.md)，Semantic Part 的系统级契约见
+[Button 桌面版架构设计](overview.md)，Button 支持的 Part、Selector 与逐 Part 定制边界见
+[Button Semantic Part 契约](semantic-part.md)，Semantic Part 的系统级契约见
 [Semantic Part 系统设计](../../../../architecture/systems/theming/semantic-parts.md)，Token 语义见
 [Button Token 设计](token.md)，变化记录见 [Button Changelog](changelog.md)。
 
@@ -38,7 +39,12 @@ selector 和动态资源可以消费状态结果。`Button.cs` 是颜色状态�
 Button 家族控件复用 Button 的动作语义。派生控件可以替换模板或增加行为入口，但不得重新解释 `ButtonType`、`Color`、`Variant`、`IsDanger`、`IsGhost`、loading 和 disabled 语义。
 
 Button 通过 `[SemanticPart]` 声明 `icon` 和 `content`；生成器加入隐式 `root`。该声明是公开主题契约，不参与
-Button 状态计算，也不要求运行时查询 descriptor。
+Button 状态计算，也不要求运行时查询 descriptor。公共 Part 含义和支持用法由 `semantic-part.md` 维护；本文只维护声明与
+真实模板节点、状态流和生命周期之间的实现映射。
+
+Button 的尺寸基线必须先于 Semantic 布局覆盖确定：`Large`、`Middle`、`Small` 和 `Custom` 的完整映射、图标尺寸、内容
+Padding、MinHeight、状态替代节点和 Shape 几何共同构成 Button 的尺寸/状态基线。`.semantic-content` 或 `.semantic-icon`
+只能作为该基线之上的增量覆盖，不能把一个档位的局部属性叠加到另一个档位的 MinHeight 或几何约束上。
 
 ## 4. 状态与数据流
 

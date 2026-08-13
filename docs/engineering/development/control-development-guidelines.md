@@ -86,8 +86,13 @@ Control 对稳定视觉区域提供公共定制入口时，必须遵循
 - 删除、重命名 Part、修改 selector class、收窄 ContractType 或改变 cardinality 必须按公共 API 破坏性变更处理。
 - `ATOMUIGEN020-029` 必须在提交前清零；不得通过关闭诊断、把静态节点伪装为 `RuntimeCreated` 或放宽
   `ContractType` 掩盖模板缺失。
-- 控件实现完成后必须同步 `overview.md` Semantic Parts 表、`implementation.md` 模板映射、主题契约测试和
-  NativeAOT 风险验证。
+- 在新增或修改布局型 Semantic Part 前，必须完成并记录尺寸/状态基线矩阵：尺寸档及其默认含义、owner/Part 的尺寸属性
+  owner、Token 映射、状态替代节点、模板路径和 Measure/Arrange 约束。必须先用失败回归证明基线缺失或尺寸混用问题，
+  再实施根因修复；禁止先添加固定 Height、MinHeight、Padding 或像素偏移让示例通过。
+- Semantic 示例必须先选择一套完整的 `Large`、`Middle`、`Small` 或 `Custom` 尺寸基线，再添加局部 Part Setter；未被
+  Setter 覆盖的属性不得来自另一套尺寸分支。外部组件的 `default` 名称不能未经事实映射直接等同于 AtomUI 默认档位。
+- 控件实现完成后必须同步 `semantic-part.md` 公共契约、`overview.md` 支持摘要、`implementation.md` 模板映射、
+  主题契约测试和 NativeAOT 风险验证。
 
 ## 可自定义尺寸模式
 

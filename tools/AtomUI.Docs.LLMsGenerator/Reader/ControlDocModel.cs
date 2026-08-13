@@ -12,6 +12,8 @@ public sealed class ControlDocModel
 
     public string SourceImplementationPath { get; init; } = string.Empty;
 
+    public string? SourceSemanticPartPath { get; init; }
+
     public string? SourceTokenPath { get; init; }
 
     public string SourceChangelogPath { get; init; } = string.Empty;
@@ -75,6 +77,8 @@ public sealed class ControlDocModel
     public string SourceOverviewRelativePath { get; init; } = string.Empty;
 
     public string SourceImplementationRelativePath { get; init; } = string.Empty;
+
+    public string? SourceSemanticPartRelativePath { get; init; }
 
     public string? SourceTokenRelativePath { get; init; }
 

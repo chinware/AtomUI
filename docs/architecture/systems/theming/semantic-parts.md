@@ -313,6 +313,35 @@ Semantic Style 的目标属性已经赢得优先级，不表示最终布局一�
 4. 检查 owner 的 Measure/Arrange 是否在应用布局约束前派生几何。
 5. 覆盖所有尺寸档、shape、icon-only、loading、Desktop 和 Browser 变体，不能只验证默认矩形样例。
 
+### 7.2 Semantic 实现前置基线审计
+
+任何控件在新增或修改布局型 Semantic Part 前，必须先完成尺寸与状态基线审计。该审计是实现准入条件，不是实现完成后的
+补充说明。控件作者必须从当前 AtomUI 源码、ControlTheme、Token、已有测试和 Gallery 示例中建立一份基线矩阵，至少记录：
+
+| 维度 | 必须确认的事实 |
+| --- | --- |
+| 尺寸档 | `Large`、`Middle`、`Small`、`Custom` 是否存在，各档默认值和默认尺寸含义是什么。 |
+| 尺寸属性 | owner 与目标 Part 的 `Height`、`MinHeight`、`MaxHeight`、`Width`、`MinWidth`、`MaxWidth`、`Padding`、`Margin`、字体和图标尺寸由谁拥有。 |
+| Token 映射 | 每个预设尺寸实际映射到哪些 Token；映射的是完整布局规格还是单个属性。 |
+| 状态变体 | loading、disabled、icon-only、shape、variant、空内容、替代节点和派生主题是否改变布局节点或尺寸基线。 |
+| 模板路径 | Desktop、Browser、状态模板、Popup/Overlay 和运行时创建节点是否使用同一套尺寸协调方式。 |
+| 自然测量 | owner 的 `MeasureOverride` / `ArrangeOverride` 是否依赖未经 Min/Max 约束的内容尺寸，是否可能裁剪或封死 Part 的自然增长。 |
+
+基线矩阵必须先回答两个问题：
+
+1. 当前控件的“默认”到底对应哪一套 AtomUI 尺寸分支，不能直接把外部组件的 `default` 名称映射为 AtomUI 默认值。
+2. Semantic Demo 或用户样式只覆盖哪些增量属性，哪些属性必须继续由同一套完整 `SizeType` 基线提供。
+
+实现前必须添加一个最小失败回归，证明缺少完整尺寸映射或混用尺寸属性时会暴露预期问题；确认红灯原因是基线缺失后，才能
+实施单一根因修复。禁止先通过额外 `Height`、`MinHeight`、字体、Padding 或像素偏移让截图“看起来正确”，再补审计。
+
+完成条件：
+
+- 布局型 Semantic Style 先选择一套完整尺寸基线，再覆盖 Semantic Part 增量属性。
+- 未被 Semantic Setter 覆盖的属性仍来自同一 `SizeType` 分支，不能跨档位拼接。
+- 没有尺寸档或尺寸不参与布局的控件，也必须明确记录“不适用”及其源码依据。
+- 基线矩阵、失败回归和最终布局验证必须进入控件 `implementation.md` 的验证范围。
+
 ## 8. Template 集成
 
 ### 8.1 静态模板节点
@@ -499,8 +528,9 @@ Avalonia 升级后必须重新验证裸类型与 `:is(...)` 的匹配语义、cl
 
 ## 14. 文档与工具
 
-每个采用 Semantic Part 的 Control 必须在 `overview.md` 中维护自身 Part 表，并在 `implementation.md` 中解释 marker
-对应的真实模板或运行时节点。表格至少包含：
+每个采用 Semantic Part 的 Control 必须在控件目录下维护独立 `semantic-part.md`。该文件是控件公共 Semantic Part
+契约的唯一完整来源；`overview.md` 只保留支持摘要和入口链接，`implementation.md` 只解释 marker 对应的真实模板或
+运行时节点。`semantic-part.md` 的 Part 表至少包含：
 
 ```text
 Part
@@ -515,7 +545,8 @@ Customization
 Stability
 ```
 
-文档描述当前公共契约，不从 Part 表反推出不存在的 AXAML。Gallery Semantic Preview 读取生成 descriptor，并通过
+`semantic-part.md` 还必须逐 Part 说明存在条件、适合定制的属性、状态与 cardinality 关系、明确排除的内部节点、兼容性和
+验证边界。文档描述当前公共契约，不从 Part 表反推出不存在的 AXAML。Gallery Semantic Preview 读取生成 descriptor，并通过
 semantic class 高亮已实例化节点；Popup Part 只有在对应 Popup 打开后才参与可视高亮。
 
 Gallery Preview 是独立工具层，不属于 Control Semantic Part Runtime。它必须遵守以下边界：
@@ -559,6 +590,6 @@ Button 的 `root`、`icon`、`content` 可以作为基础契约测试样本；�
   声明、模板和兼容性规则。
 - [AtomUI 控件 Token 设计规范](../../../engineering/development/control-token-guidelines.md)：Semantic Part、Part Theme 和 Token
   identity 的职责边界。
-- [AtomUI 控件文档规范](../../../engineering/contributing/control-documentation-guidelines.md)：单控件 Semantic Parts 表与 LLMS
-  文档同步规则。
+- [AtomUI 控件文档规范](../../../engineering/contributing/control-documentation-guidelines.md)：单控件 `semantic-part.md` 契约与
+  LLMS 文档同步规则。
 - [AOT 编程规范](../../../engineering/development/aot-programming-guidelines.md)：静态注册、反射和运行时发现边界。

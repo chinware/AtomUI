@@ -70,6 +70,7 @@ public static class ControlInventory
                                              .ToArray(),
                     OverviewPath = Path.Combine(controlDirectory, "overview.md"),
                     ImplementationPath = Path.Combine(controlDirectory, "implementation.md"),
+                    SemanticPartPath = GetOptionalFilePath(controlDirectory, "semantic-part.md"),
                     TokenPath = GetOptionalFilePath(controlDirectory, "token.md"),
                     ChangelogPath = Path.Combine(controlDirectory, "changelog.md"),
                     OutputIndexPath = BuildOutputPath(outputRoot, controlName, $"index-{language}.md"),
@@ -147,6 +148,8 @@ public sealed class ControlDocumentInfo
     public string OverviewPath { get; init; } = string.Empty;
 
     public string ImplementationPath { get; init; } = string.Empty;
+
+    public string? SemanticPartPath { get; init; }
 
     public string? TokenPath { get; init; }
 

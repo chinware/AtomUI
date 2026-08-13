@@ -4,15 +4,143 @@
 
 ## Semantic Parts
 
-| Owner | Part | Selector | ContractType | Cardinality | Customization | CrossVisualRoot | RuntimeCreated | 职责 | 稳定性 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `CountBadge` | `root` | owner 本身 | `CountBadge` | `Single` | `Root` | `false` | `false` | 数量、可见性、颜色、尺寸、定位和目标组合的状态 owner。 | stable since 6.0 |
-| `CountBadge` | `indicator` | `.semantic-indicator` | `Control` | `Optional` | `Selector` | `true` | `true` | 完整数量徽标视觉，包括背景、数量文本和统一动效边界。 | stable since 6.0 |
-| `DotBadge` | `root` | owner 本身 | `DotBadge` | `Single` | `Root` | `false` | `false` | 状态、文本、颜色、可见性、定位和目标组合的状态 owner。 | stable since 6.0 |
-| `DotBadge` | `indicator` | `.semantic-indicator` | `Control` | `Optional` | `Selector` | `true` | `true` | 状态点视觉和统一动效边界，不包含独立模式的说明文本。 | stable since 6.0 |
-| `RibbonBadge` | `root` | owner 本身 | `RibbonBadge` | `Single` | `Root` | `false` | `false` | 文本、颜色、位置、可见性和目标组合的状态 owner。 | stable since 6.0 |
-| `RibbonBadge` | `indicator` | `.semantic-indicator` | `Control` | `Optional` | `Selector` | `false` | `true` | 完整 Ribbon 视觉、定位和绘制边界。 | stable since 6.0 |
-| `RibbonBadge` | `content` | `.semantic-content` | `Avalonia.Controls.TextBlock` | `Optional` | `Selector` | `false` | `true` | Ribbon 文本展示区域。 | stable since 6.0 |
+三个可实例化 owner 各自拥有独立 descriptor。同名 `indicator` 表达相近的产品职责，不表示 owner 共享运行时节点、状态或 Theme。
+
+### 1.1 `CountBadge`
+
+#### `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `CountBadge` |
+| Part | `root` |
+| Selector | CountBadge 本身 |
+| ContractType | `CountBadge` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | CountBadge owner |
+| 职责 | CountBadge root 是数量、可见性、颜色、尺寸、定位和目标组合的状态 owner。 |
+| 相关 API | 全部 CountBadge public API |
+| 相关 Token | CountBadgeToken、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `indicator`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `CountBadge` |
+| Part | `indicator` |
+| Selector | `.semantic-indicator` |
+| ContractType | `Control` |
+| Cardinality | `Optional` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | 完整数量徽标区域 |
+| 职责 | CountBadge indicator 表示完整数量徽标视觉。 |
+| 相关 API | `Count`、`OverflowCount`、`IsZeroVisible`、`BadgeColor`、`Size`、`Offset` |
+| 相关 Token | CountBadgeToken |
+| 稳定性 | stable since 6.0 |
+
+### 1.2 `DotBadge`
+
+#### `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `DotBadge` |
+| Part | `root` |
+| Selector | DotBadge 本身 |
+| ContractType | `DotBadge` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | DotBadge owner |
+| 职责 | DotBadge root 是状态、文本、颜色、可见性、定位和目标组合的状态 owner。 |
+| 相关 API | 全部 DotBadge public API |
+| 相关 Token | DotBadgeToken、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `indicator`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `DotBadge` |
+| Part | `indicator` |
+| Selector | `.semantic-indicator` |
+| ContractType | `Control` |
+| Cardinality | `Optional` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | 状态点区域 |
+| 职责 | DotBadge indicator 表示状态点视觉和统一动效边界，不包含独立模式的说明文本。 |
+| 相关 API | `Status`、`DotColor`、`Offset`、`BadgeIsVisible` |
+| 相关 Token | DotBadgeToken |
+| 稳定性 | stable since 6.0 |
+
+### 1.3 `RibbonBadge`
+
+#### `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `RibbonBadge` |
+| Part | `root` |
+| Selector | RibbonBadge 本身 |
+| ContractType | `RibbonBadge` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | RibbonBadge owner |
+| 职责 | RibbonBadge root 是文本、颜色、位置、可见性和目标组合的状态 owner。 |
+| 相关 API | 全部 RibbonBadge public API |
+| 相关 Token | RibbonBadgeToken、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `indicator`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `RibbonBadge` |
+| Part | `indicator` |
+| Selector | `.semantic-indicator` |
+| ContractType | `Control` |
+| Cardinality | `Optional` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | 完整 Ribbon 区域 |
+| 职责 | RibbonBadge indicator 表示完整 Ribbon 视觉、定位和绘制边界。 |
+| 相关 API | `RibbonColor`、`Placement`、`Offset`、`BadgeIsVisible` |
+| 相关 Token | RibbonBadgeToken |
+| 稳定性 | stable since 6.0 |
+
+#### `content`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `RibbonBadge` |
+| Part | `content` |
+| Selector | `.semantic-content` |
+| ContractType | `Avalonia.Controls.TextBlock` |
+| Cardinality | `Optional` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | Ribbon 文本区域 |
+| 职责 | RibbonBadge content 表示 Ribbon 的文本展示与排版区域。 |
+| 相关 API | `Text` |
+| 相关 Token | RibbonBadgeToken、SharedToken typography |
+| 稳定性 | stable since 6.0 |
+
+所有 root 都是隐式 Part，不添加 `.semantic-root`。所有非 root Part 都由既有 runtime Adorner 生命周期创建，因此为
+`Optional + RuntimeCreated`。CountBadge 与 DotBadge 在 target mode 下把 indicator 显示在 Avalonia `AdornerLayer`，所以
+`CrossVisualRoot=true`；RibbonBadge 始终保持 owner inline visual tree。
 
 ## Abstract AXAML Structure
 
@@ -91,16 +219,8 @@ Public API
 - RibbonBadge 隐藏时只移除 Ribbon 视觉，不隐藏 `DecoratedTarget`。
 - Count/Dot 启用退出动效时，indicator 可以在隐藏请求后短暂保留；动效完成后才从宿主移除。
 - Dot 在 standalone 与 target mode 间切换时会重建内部 Adorner，但公开 `indicator` 身份不变。
-- Semantic marker 不表达 visible、status、placement 或 motion phase；节点存在时 marker 保持不变。
-
-| 场景 | root | indicator | content | 说明 |
-| --- | --- | --- | --- | --- |
-| owner 未附加 | 存在 | 不保证存在 | 不保证存在 | descriptor 可查询，但运行时视觉可以尚未创建。 |
-| standalone 且可见 | 存在 | 存在 | Ribbon 存在；Count/Dot 不公开 content | 运行时宿主属于 owner 普通子树。 |
-| target mode 且可见 | 存在 | 存在 | Ribbon 存在；Count/Dot 不公开 content | Count/Dot indicator 跨 VisualRoot；Ribbon 保持 inline。 |
-| `BadgeIsVisible=false` | 存在 | 最终不存在 | 最终不存在 | 启用动效时 indicator 可以在退出阶段短暂保留。 |
-| Count 零值且不显示零 | 存在 | 最终不存在 | 不适用 | `Count` 与 `IsZeroVisible` 共同归一可见性。 |
-| Dot standalone/target 切换 | 存在 | 重新建立 | 不适用 | 两种模式使用不同内部模板。 |
+- Semantic marker 不表达 visible、status、placement 或 motion phase；节点存在时 marker 保持不变。完整状态与 Part 数量矩阵见
+  [Badge Semantic Part 契约](semantic-part.md)。
 
 ## Theme and Token Boundaries
 

@@ -4,21 +4,238 @@
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Card` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+`Card` 与 `CardMetaContent` 是两个独立 public owner。同名 `title` 表示相近的产品职责，不表示两个 owner 共享模板节点、
+状态或样式作用域。
+
+### 1.1 `Card`
+
+#### `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Card` |
+| Part | `root` |
+| Selector | Card 本身 |
+| ContractType | `Card` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | Card owner |
+| 职责 | Card root 是外观、尺寸、加载、悬停和内容组合的统一 owner。 |
+| 相关 API | 全部 Card public API |
+| 相关 Token | CardToken、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `header`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Card` |
+| Part | `header` |
+| Selector | `.semantic-header` |
+| ContractType | `DashedBorder` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | Header frame |
+| 职责 | 表示完整头部表面和标题、额外内容的共同布局边界。 |
+| 相关 API | `Header`、`HeaderTemplate`、`Extra`、`ExtraTemplate`、`SizeType`、`IsInnerMode` |
+| 相关 Token | Header、Extra、Border、Radius Token |
+| 稳定性 | stable since 6.0 |
+
+#### `title`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Card` |
+| Part | `title` |
+| Selector | `.semantic-title` |
+| ContractType | `ContentPresenter` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | Header title presenter |
+| 职责 | 表示 Card 标题的展示与排版区域。 |
+| 相关 API | `Header`、`HeaderTemplate` |
+| 相关 Token | Header typography Token |
+| 稳定性 | stable since 6.0 |
+
+#### `extra`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Card` |
+| Part | `extra` |
+| Selector | `.semantic-extra` |
+| ContractType | `ContentPresenter` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | Header extra presenter |
+| 职责 | 表示头部尾侧的辅助内容区域。 |
+| 相关 API | `Extra`、`ExtraTemplate` |
+| 相关 Token | `ExtraColor`、Header padding Token |
+| 稳定性 | stable since 6.0 |
+
+#### `cover`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Card` |
+| Part | `cover` |
+| Selector | `.semantic-cover` |
+| ContractType | `Border` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | Cover frame |
+| 职责 | 表示封面内容的裁剪、圆角和布局边界。 |
+| 相关 API | `Cover`、`CoverTemplate` |
+| 相关 Token | Shared radius Token |
+| 稳定性 | stable since 6.0 |
+
+#### `body`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Card` |
+| Part | `body` |
+| Selector | `.semantic-body` |
+| ContractType | `Border` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | Body frame |
+| 职责 | 表示普通、Meta、Grid、Tabs 和 Loading 内容共享的主体表面。 |
+| 相关 API | `Content`、`ContentTemplate`、`IsLoading`、`SizeType` |
+| 相关 Token | Body padding Token |
+| 稳定性 | stable since 6.0 |
+
+#### `actions`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Card` |
+| Part | `actions` |
+| Selector | `.semantic-actions` |
+| ContractType | `TemplatedControl` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | Action panel owner |
+| 职责 | 表示底部操作组的完整表面、均分布局和分隔线边界。 |
+| 相关 API | `Actions`、`IsMotionEnabled` |
+| 相关 Token | Actions、Border、Radius Token |
+| 稳定性 | stable since 6.0 |
+
+### 1.2 `CardMetaContent`
+
+#### `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `CardMetaContent` |
+| Part | `root` |
+| Selector | CardMetaContent 本身 |
+| ContractType | `CardMetaContent` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | CardMetaContent owner |
+| 职责 | Meta root 是头像、标题和描述组合的统一 owner。 |
+| 相关 API | `Avatar`、`Header`、`HeaderTemplate`、`Content`、`ContentTemplate` |
+| 相关 Token | Shared typography、spacing Token |
+| 稳定性 | stable since 6.0 |
+
+#### `section`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `CardMetaContent` |
+| Part | `section` |
+| Selector | `.semantic-section` |
+| ContractType | `Control` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | Meta detail section |
+| 职责 | 表示标题与描述共同占用的详情布局区域。 |
+| 相关 API | `Header`、`HeaderTemplate`、`Content`、`ContentTemplate` |
+| 相关 Token | Shared spacing Token |
+| 稳定性 | stable since 6.0 |
+
+#### `avatar`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `CardMetaContent` |
+| Part | `avatar` |
+| Selector | `.semantic-avatar` |
+| ContractType | `ContentPresenter` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | Avatar presenter |
+| 职责 | 表示 Meta 头像内容的展示与布局区域。 |
+| 相关 API | `Avatar` |
+| 相关 Token | Shared spacing Token |
+| 稳定性 | stable since 6.0 |
+
+#### `title`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `CardMetaContent` |
+| Part | `title` |
+| Selector | `.semantic-title` |
+| ContractType | `ContentPresenter` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | Meta title presenter |
+| 职责 | 表示 Meta 标题的展示与排版区域。 |
+| 相关 API | `Header`、`HeaderTemplate` |
+| 相关 Token | Shared heading typography Token |
+| 稳定性 | stable since 6.0 |
+
+#### `description`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `CardMetaContent` |
+| Part | `description` |
+| Selector | `.semantic-description` |
+| ContractType | `ContentPresenter` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | Meta description presenter |
+| 职责 | 表示 Meta 描述内容的展示与排版区域。 |
+| 相关 API | `Content`、`ContentTemplate` |
+| 相关 Token | Shared description typography Token |
+| 稳定性 | stable since 6.0 |
+
+所有 root 都是隐式 Part，不添加 `.semantic-root`。`ContractType` 是 Setter 可以稳定依赖的最低 public 类型，并通过
+`x:SetterTargetType` 提供 AXAML 编译期类型上下文；它不参与 `.semantic-*` 的身份匹配。
 
 ## Abstract AXAML Structure
 
 来源：`src/AtomUI.Desktop.Controls/Card/Themes/CardTheme.axaml`
 
 ```xml
-<Panel>
-    <PixelAlignedBorder Name="Frame" />
+<PixelAlignedBorder Name="Frame">
     <DockPanel>
         <PixelAlignedBorder Name="HeaderFrame">
             <DockPanel>
@@ -34,7 +251,7 @@
             <Skeleton />
         </Border>
     </DockPanel>
-</Panel>
+</PixelAlignedBorder>
 ```
 
 ## Composition Model
@@ -64,8 +281,7 @@ Card
   -> CardTabsContent (control theme, CardTabsContentTheme.axaml)
      -> TabControl#PART_TabControl (template-stable)
   -> Card (control theme, CardTheme.axaml)
-     -> Panel (template-stable)
-        -> PixelAlignedBorder#Frame (template-stable)
+     -> PixelAlignedBorder#Frame (template-stable)
         -> DockPanel (template-stable)
            -> PixelAlignedBorder#HeaderFrame (template-stable)
               -> DockPanel (template-stable)
@@ -101,8 +317,7 @@ Card
 | `CardTabsContent` | control theme | `CardTabsContentTheme.axaml` | 用户代码 / 控件宿主 | `IsMotionEnabled`, `SizeType`, `TabBarExtraContent`, `TabBarExtraContentTemplate`, `TabItemTemplate`, `TabItemsSource` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `PART_TabControl` | template node (TabControl) | `CardTabsContentTheme.axaml` | CardTabsContent | `IsMotionEnabled`, `SizeType`, `TabBarExtraContent`, `TabBarExtraContentTemplate`, `TabItemTemplate`, `TabItemsSource` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Card` | control theme | `CardTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentTemplate`, `CornerRadius` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Panel` | template node (Panel) | `CardTheme.axaml` | Card | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentTemplate`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Frame` | template node (PixelAlignedBorder) | `CardTheme.axaml` | Card | `Background`, `BorderBrush`, `BoxShadow`, `EffectiveBorderThickness`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (PixelAlignedBorder) | `CardTheme.axaml` | Card | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentTemplate`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `DockPanel` | template node (DockPanel) | `CardTheme.axaml` | Card | `Content`, `ContentTemplate`, `CornerRadius`, `Cover`, `CoverTemplate`, `Extra` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `HeaderFrame` | template node (PixelAlignedBorder) | `CardTheme.axaml` | Card | `Extra`, `ExtraTemplate`, `Header`, `HeaderBorderThickness`, `HeaderTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `HeaderExtra` | template node (ContentPresenter) | `CardTheme.axaml` | Card | `Extra`, `ExtraTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
@@ -190,6 +405,19 @@ CardTheme / CardActionPanelTheme / CardGridItemTheme / CardTabsContentTheme / Ca
 
 根容器边框、圆角、背景和部分文字色来自 SharedToken。Header 高度、字体、padding、body padding、操作区背景、tabs margin、extra 色、卡片阴影、操作图标尺寸和 grid item 阴影来自 CardToken。
 
+### 5.1 Semantic Part 支持摘要
+
+Card 家族由两个独立 public owner 公开 Semantic Part：
+
+| Owner | Parts | 职责摘要 |
+| --- | --- | --- |
+| `Card` | `root`、`header`、`title`、`extra`、`cover`、`body`、`actions` | 覆盖 Card 根表面、头部、标题、辅助内容、封面、主体和底部操作组。 |
+| `CardMetaContent` | `root`、`section`、`avatar`、`title`、`description` | 覆盖 Meta 根区域、详情区、头像、标题和描述。 |
+
+`CardGridContent`、`CardGridItem`、`CardTabsContent` 和 `CardActionButton` 是公开组合类型，但不由 Card 家族推导独立
+Semantic Part descriptor。完整 Selector、ContractType、cardinality、状态矩阵和排除边界以
+[Card Semantic Part 契约](semantic-part.md)为准。
+
 Token 边界：
 
 CardToken 是 Card 的控件级 Token scope，描述卡片 Header、Body、Actions、Tabs、Extra、阴影、Grid item 和 action icon 的组件语义值。
@@ -233,3 +461,13 @@ CardToken 不承载以下状态：
 - `Actions`、`CardTabsContent.Items` 的 Reset 行为当前为 `NotSupportedException`，不能在结构整理中静默改变。
 - 初始 transition 禁用/加载后启用的顺序不能在未验证视觉影响时移除。
 - 空实现或薄实现的主题语义类型不能随意删除。
+- `Card` descriptor 必须只包含 `root/header/title/extra/cover/body/actions`，`CardMetaContent` descriptor 必须只包含
+  `root/section/avatar/title/description`。
+- Card 与 CardMetaContent 的同名 title marker 必须由 owner Selector 隔离，不能使用类型前缀编码 Part identity。
+- headerless、空 Cover、空 Actions、Loading 和 ContentType 切换只能改变内容或可见性，不能改变静态 Part cardinality。
+- 根 Frame 必须承载 Card 内部 DockPanel，使 Header 与 Actions 分隔线从外框内缘开始；不得恢复为同级覆盖绘制。
+- Borderless 的零边框必须保留为 Theme 默认值，不能在 C# 派生状态中阻止 owner-scoped root style 覆盖 `BorderThickness`。
+- Card actions marker 不能进入 internal CardActionPanel 的第二个模板边界；Grid、Tabs 和 action child 不得被 Card owner 穿透。
+- 默认 Card Themes 不得消费 `.semantic-*`，避免为未使用该能力的 Card 增加动态 selector 成本。
+- 布局型 Semantic Style 必须建立在一套完整的 `SizeType` 分支上；未覆盖属性继续使用该分支的 Token 基线，不得在示例中
+  局部拼接不同尺寸档位的 Header `MinHeight`、字体与 Padding。

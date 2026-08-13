@@ -17,6 +17,12 @@
   - Add regression coverage that rejects Button-family Browser theme override assets in source and generated theme manifests.
   - Add Desktop.Controls coverage that rejects Browser-specific theme asset folders while keeping exact Browser unsupported-control identity filtering.
 
+## 2026-08-13
+
+- Docs
+  - Split the complete public Semantic Part contract into `semantic-part.md`; keep `overview.md` focused on the supported Part
+    summary and `implementation.md` focused on marker-to-node mapping.
+
 ## 2026-08-12
 
 - Fix

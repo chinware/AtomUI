@@ -33,6 +33,7 @@
 ```text
 overview.md          必需
 implementation.md    必需
+semantic-part.md     条件必需，控件公开 Semantic Part 时提供
 token.md             可选，控件拥有专属 Token 时提供
 changelog.md         必需
 <topic>-design.md    可选，单个专题设计

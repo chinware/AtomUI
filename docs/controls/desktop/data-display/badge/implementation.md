@@ -1,6 +1,6 @@
 # Badge 桌面版实现原理
 
-本文档描述 Badge 桌面控件家族的源码职责、运行时组合、状态流、Adorner 生命周期、Semantic Part 节点映射和维护不变量。公共设计与 API 契约见 [Badge 桌面版架构设计](overview.md)，Semantic Part 系统级规则见 [AtomUI Semantic Part 系统设计](../../../../architecture/systems/theming/semantic-parts.md)，Token 语义见 [Badge Token 设计](token.md)，变化记录见 [Badge Changelog](changelog.md)。
+本文档描述 Badge 桌面控件家族的源码职责、运行时组合、状态流、Adorner 生命周期、Semantic Part 节点映射和维护不变量。公共设计与 API 契约见 [Badge 桌面版架构设计](overview.md)，三个 owner 支持的 Part、Selector 与逐 Part 定制边界见 [Badge Semantic Part 契约](semantic-part.md)，Semantic Part 系统级规则见 [AtomUI Semantic Part 系统设计](../../../../architecture/systems/theming/semantic-parts.md)，Token 语义见 [Badge Token 设计](token.md)，变化记录见 [Badge Changelog](changelog.md)。
 
 ## 1. 实现定位
 
@@ -116,6 +116,8 @@ RibbonBadge
 RibbonBadge 不进入 Avalonia `AdornerLayer`。有目标时，owner 在同一最终区域排列目标和 RibbonBadgeAdorner；无目标时，owner 的期望尺寸来自 RibbonBadgeAdorner。Ribbon 背景和折角由 `AbstractRibbonBadgeAdorner.Render()` 绘制，只有文本是独立 Visual。
 
 ### 5.4 Semantic Part 节点映射
+
+公共 Part 含义、存在条件与支持用法由 [Badge Semantic Part 契约](semantic-part.md) 维护；下表只定义 descriptor 与真实运行时节点之间的实现映射。
 
 | Owner | Part | Marker 节点 | ContractType | Cardinality | CrossVisualRoot | RuntimeCreated | Marker 形式 |
 | --- | --- | --- | --- | --- | --- | --- | --- |

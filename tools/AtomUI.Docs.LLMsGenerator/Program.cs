@@ -109,6 +109,10 @@ internal static class Program
     {
         yield return control.OverviewPath;
         yield return control.ImplementationPath;
+        if (control.SemanticPartPath is not null)
+        {
+            yield return control.SemanticPartPath;
+        }
         yield return control.ChangelogPath;
     }
 

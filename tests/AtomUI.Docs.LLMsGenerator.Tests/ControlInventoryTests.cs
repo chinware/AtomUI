@@ -34,8 +34,14 @@ public class ControlInventoryTests
         controls.Count.ShouldBe(79);
         controls.ShouldContain(control => control.Category == "general" &&
                                           control.Name == "button" &&
+                                          control.SemanticPartPath != null &&
+                                          control.SemanticPartPath.EndsWith("semantic-part.md", StringComparison.Ordinal) &&
                                           control.OutputIndexPath == "docs/AI/generated/llms/controls/button/index-cn.md" &&
                                           control.OutputSemanticPath == "docs/AI/generated/llms/controls/button/semantic-cn.md");
+        controls.ShouldContain(control => control.Category == "data-display" &&
+                                          control.Name == "badge" &&
+                                          control.SemanticPartPath != null &&
+                                          control.SemanticPartPath.EndsWith("semantic-part.md", StringComparison.Ordinal));
         controls.ShouldContain(control => control.Category == "data-entry" &&
                                           control.Name == "otp-line-edit" &&
                                           control.OutputIndexPath == "docs/AI/generated/llms/controls/otp-line-edit/index-cn.md" &&

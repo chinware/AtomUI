@@ -2,6 +2,12 @@
 
 本文档记录 Badge 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-13
+
+- Docs
+  - Split the complete `CountBadge`, `DotBadge`, and `RibbonBadge` Semantic Part contracts into `semantic-part.md`; keep the
+    overview as a support summary and the implementation document as the runtime node mapping source.
+
 ## 2026-08-12
 
 - Semantic Part

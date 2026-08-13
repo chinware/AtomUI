@@ -197,11 +197,12 @@ overview.md 元数据中的 LLMS 可见性
 docs/controls/<platform>/<category>/<control>/
 ├── overview.md
 ├── implementation.md
+├── semantic-part.md
 ├── token.md
 └── changelog.md
 ```
 
-`token.md` 只在控件存在专属 Token 或复杂主题变量关系时存在。没有 `token.md` 的控件必须在 `overview.md` 说明它没有专属 Token、复用家族 Token，或直接使用 SharedToken / 主题资源。
+`semantic-part.md` 只在控件公开 Semantic Part 时存在；`token.md` 只在控件存在专属 Token 或复杂主题变量关系时存在。没有 `token.md` 的控件必须在 `overview.md` 说明它没有专属 Token、复用家族 Token，或直接使用 SharedToken / 主题资源。
 
 ### 7.1 overview.md
 
@@ -212,11 +213,12 @@ docs/controls/<platform>/<category>/<control>/
 - API 与契约模型。
 - 行为与状态模型。
 - 视觉与主题模型。
-- LLMS semantic parts 表格。
+- Semantic Part 支持摘要；尚未迁移独立文档的旧控件继续从这里读取完整表格。
 - LLMS 导出来源表。
 - 验证策略。
 
-`overview.md` 必须显式维护 semantic parts 表格。生成器不从 AXAML 自动发明 semantic parts。
+支持 Semantic Part 的控件必须在 `overview.md` 保留 Part 名称和职责摘要，并链接 `semantic-part.md`。生成器不从 AXAML
+自动发明 semantic parts。
 
 `Abstract AXAML Structure` 不由 `overview.md` 手写维护，也不从 semantic parts 反推。生成器只能从 `implementation.md` 源码索引定位到的 `*Theme.axaml` 中读取真实 `ControlTheme` / `ControlTemplate`，并把模板中的稳定视觉节点摘要为抽象结构。无法定位 ControlTheme 或无法解析 ControlTemplate 的控件，不输出伪 XML，只输出“未定位到可生成抽象 AXAML 结构的 ControlTheme 模板”的说明。
 
@@ -224,7 +226,23 @@ docs/controls/<platform>/<category>/<control>/
 
 `Composition Model` 的第一信息源是控件源码目录下的 `Themes/` 文件夹。生成器应扫描同一控件家族的独立 `*Theme.axaml` 叶子，并结合生成的 ControlTheme asset manifest 中的 owner、引用 Control identity 和 Semantic Part Theme 元数据识别 public control、internal control、item container、adorner、presenter、popup host、motion actor、template part 和跨主题组合关系；不得依赖只用于聚合的 `*Themes.axaml`。`implementation.md`、源码索引、`new Xxx()`、`CreateContainerForItemOverride()`、`OnApplyTemplate`、`PART_` 和 item container 类型用于解释与静态校验；不得仅凭控件分类或名称发明内部协作结构。若控件没有额外内部组合结构，该章节应明确说明“该控件主要由 public 控件和 ControlTheme 模板直接表达，没有额外运行时组合层”。
 
-### 7.2 implementation.md
+### 7.2 semantic-part.md
+
+当 `semantic-part.md` 存在时，生成器优先从该文件读取完整 Semantic Parts 表格。该文件负责：
+
+- public owner 与 Part 的完整对应关系。
+- Selector、`ContractType`、cardinality、customization、`CrossVisualRoot`、`RuntimeCreated` 和稳定性。
+- 每个 Part 的职责、存在条件、状态关系、适合定制的属性和明确排除边界。
+- Selector 用法、兼容性与验证要求。
+
+Semantic Part 源文档统一使用按 owner / Part 分组的“字段 / 值”两列表格。生成器会读取每个 Part 的完整字段，并将其保留到
+`semantic-cn.md`；对尚未迁移的旧控件，生成器仍兼容 `overview.md` 中的既有宽表回退格式。生成器不得把字段表头或普通状态矩阵
+误识别为 Semantic Part descriptor。
+
+`overview.md` 不重复完整表格，`implementation.md` 不重复公共 Part 说明。为支持渐进迁移，缺少 `semantic-part.md` 的旧控件
+继续从 `overview.md` 的 `Semantic Parts` 或 `LLMS 语义区域` 读取；新增或实施 Semantic Part 改造时不得继续使用回退路径。
+
+### 7.3 implementation.md
 
 生成器从 `implementation.md` 读取：
 
@@ -239,7 +257,7 @@ docs/controls/<platform>/<category>/<control>/
 
 生成器只抽取维护者和 AI 编程工具需要理解的稳定结构，不把私有方法说明或局部实现流水账完整写入 LLMS。
 
-### 7.3 token.md
+### 7.4 token.md
 
 当 `token.md` 存在时，生成器读取：
 
@@ -251,7 +269,7 @@ docs/controls/<platform>/<category>/<control>/
 
 Token 表格优先来自 `token.md`、Token 类型或生成数据；`token.md` 解释语义边界。
 
-### 7.4 Gallery 示例元数据
+### 7.5 Gallery 示例元数据
 
 Gallery 元数据只用于生成稳定示例和源码片段。默认 AtomUI Desktop 适配器读取以下来源：
 
@@ -262,7 +280,7 @@ Gallery 元数据只用于生成稳定示例和源码片段。默认 AtomUI Desk
 
 如果 Gallery 示例元数据、源码 public surface、Token 数据和控件文档冲突，生成器不得静默选择一方，必须报告差异。
 
-### 7.5 Gallery 源码示例
+### 7.6 Gallery 源码示例
 
 LLMS 使用示例复用 Gallery 源码查看功能的数据契约。Gallery 源码查看以 `ShowCasePanel` + `ShowCaseItem` 为示例边界，为每个示例生成 `ShowCaseCodeSnippetGroup`，其中可以包含 AXAML、code-behind 和 ViewModel 片段。LLMS 生成器必须使用同一组源文件和同一组示例边界，不维护第二套示例源码。
 
@@ -294,7 +312,7 @@ LLMS 示例模型至少包含：
 
 AtomUI Desktop 第一阶段可从现有 `ShowCaseItem` 自动抽取候选示例，并按 `SourceKey`、`Title`、源码路径和片段数量生成输出。后续控件补齐文档级示例时，应为稳定示例补充 `SourceKey` 和文档示例元数据，而不是修改 LLMS 生成产物。
 
-### 7.6 组合结构模型
+### 7.7 组合结构模型
 
 `Composition Model` 面向结构复杂但 `ControlTheme` 节点不一定丰富的控件，例如 Drawer、Badge、Breadcrumb、Modal、Message、Notification、Watermark、Menu、Steps、ListView、Select、Cascader、DatePicker、TimePicker、ComboBox、AutoComplete、TabControl、ProgressBar、Skeleton 等。
 
@@ -520,7 +538,7 @@ tools/AtomUI.Docs.LLMsGenerator/
 | `LLMS001` | 配置文件无效。 |
 | `LLMS010` | 控件目录缺少必需源文档。 |
 | `LLMS020` | `overview.md` 缺少 LLMS 元数据。 |
-| `LLMS021` | `overview.md` 缺少 semantic parts。 |
+| `LLMS021` | 控件源文档缺少显式 semantic parts；优先检查 `semantic-part.md`，旧控件再检查 `overview.md` 回退表。 |
 | `LLMS022` | `overview.md` 缺少 LLMS 导出来源表。 |
 | `LLMS030` | 源码 public surface、Token 数据、Gallery 示例元数据与控件文档冲突。 |
 | `LLMS031` | 文档级 Gallery 示例缺少稳定 `SourceKey`。 |
@@ -541,7 +559,7 @@ tools/AtomUI.Docs.LLMsGenerator/
 - 每个可见控件有 `overview.md`、`implementation.md`、`changelog.md`。
 - 没有 `token.md` 的控件在 `overview.md` 说明 Token 来源。
 - `overview.md` 包含包名、命名空间、AXAML 命名空间、Gallery 页面、控件状态和 LLMS 可见性。
-- `overview.md` 包含 LLMS semantic parts。
+- `semantic-part.md`（存在时）或旧控件的 `overview.md` 回退表包含 LLMS semantic parts。
 - `overview.md` 包含 LLMS 导出来源表。
 - 文档级 Gallery 示例来自真实 `ShowCaseItem`，并优先使用稳定 `SourceKey`。
 - 生成的“使用示例”包含真实代码片段，不只输出 Gallery 文件路径。

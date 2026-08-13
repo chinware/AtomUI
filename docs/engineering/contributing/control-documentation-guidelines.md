@@ -14,6 +14,7 @@
 docs/controls/<platform>/<category>/<control>/
 ├── overview.md
 ├── implementation.md
+├── semantic-part.md         # 条件必需，控件公开 Semantic Part 时提供
 ├── <topic>-design.md        # 可选，复杂专项设计
 ├── token.md
 └── changelog.md
@@ -23,6 +24,7 @@ docs/controls/<platform>/<category>/<control>/
 
 - `overview.md` 必须存在，用于描述控件设计定位、公共契约、状态模型、视觉主题关系和维护入口。
 - `implementation.md` 必须存在，用于描述特定控件的内部实现原理、源码职责边界、关键状态流和维护规则，以提升控件可维护性。
+- `semantic-part.md` 在控件公开 Semantic Part 时必须存在，是完整 Part 表、逐 Part 说明、Selector 用法、定制边界、兼容性和验证要求的唯一正式来源。
 - `changelog.md` 必须存在，用于记录控件级设计、API、主题契约、Token 和实现结构变化。
 - `token.md` 仅当控件存在专属 Token 或复杂主题变量关系时存在。
 - 内容过多时可以继续拆分专题文档，但 `overview.md` 只保留设计与契约主线，`implementation.md` 只保留实现原理主线，并链接专题文档。
@@ -53,6 +55,7 @@ Gallery 证据和 LLMS 输出 ownership；iOS、Android、Release 与发布状�
 - API、主题契约、Token、template part、伪类等必须表述为稳定契约。
 - `overview.md` 不展开具体代码实现，具体实现原理进入 `implementation.md`。
 - `implementation.md` 不重复公共 API 清单、Token 全局规则或用户文档内容，只解释当前控件内部实现为什么这样组织、状态如何流动、维护时必须守住哪些边界。
+- `semantic-part.md` 只描述对应用公开的主题契约，不把 `PART_*`、内部节点、视觉层级或实现类型提升为公共 Part。
 
 历史变化统一进入控件级 `changelog.md`。
 
@@ -351,6 +354,7 @@ docs/AI/generated/llms/
 
 - `docs/controls/<platform>/<category>/<control>/overview.md`
 - `docs/controls/<platform>/<category>/<control>/implementation.md`
+- `docs/controls/<platform>/<category>/<control>/semantic-part.md`（控件公开 Semantic Part 时）
 - `docs/controls/<platform>/<category>/<control>/token.md`
 - 控件源码 public surface
 - 控件 Token 类型或生成数据
@@ -413,7 +417,7 @@ LLMS 生成必须遵守：
 - 控件家族或集成关系：说明与派生控件、组合控件、Form、Compact、Browser theme 等关系。
 - 兼容性不变量：列出优化和扩展时必须保持不变的 API、行为和渲染。
 - 专项模型：记录控件特有模型，例如 Button 的 `Color / Variant`。
-- 文档导航、LLMS 导出与验证策略：链接 `implementation.md`、`token.md`、`changelog.md`，说明 LLMS 生成来源，并按 Public API、状态、AXAML、Token、文档分层列出验证要求。
+- 文档导航、LLMS 导出与验证策略：链接 `implementation.md`、`semantic-part.md`（存在时）、`token.md`、`changelog.md`，说明 LLMS 生成来源，并按 Public API、状态、AXAML、Token、文档分层列出验证要求。
 
 无对应内容的章节不能删除，应写明“不适用”及原因。
 
@@ -423,7 +427,7 @@ LLMS 生成必须遵守：
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
 | 单控件完整文档 | overview.md + implementation.md + token.md + Gallery ShowCase | 生成 `controls/<control>/index-cn.md` |
-| 单控件语义文档 | overview.md + implementation.md + Themes 文件夹 + theme/template 信息 | 生成 `controls/<control>/semantic-cn.md` |
+| 单控件语义文档 | semantic-part.md（存在时）+ overview.md + implementation.md + Themes 文件夹 + theme/template 信息 | 生成 `controls/<control>/semantic-cn.md` |
 | API 表 | overview.md 语义摘要 + 源码 public surface | 不在 overview.md 中机械复制完整 API 表 |
 | Design Token 表 | token.md + Token 类型或生成数据 | 不在 token.md 中手工复制生成表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
@@ -464,7 +468,28 @@ LLMS 生成必须遵守：
 ```md
 # <Control> 语义结构
 
-## Semantic Parts
+## `semantic-part.md` 结构
+
+控件公开 Semantic Part 时必须创建 `semantic-part.md`。该文件是公共 Part 契约的唯一完整来源；`overview.md` 只保留
+owner、Part 名称和职责摘要，`implementation.md` 只保留 descriptor、marker 与真实模板或运行时节点的映射。
+
+标准结构如下。多 owner 控件可以按 owner 分组逐 Part 说明，但不能省略任何职责：
+
+```text
+# <Control> Semantic Part 契约
+
+1. Semantic Parts
+2. Part 说明，或按 public owner 分组的 Parts 说明
+3. Selector 用法
+4. 状态与数量语义
+5. 定制边界
+6. 兼容性与验证
+```
+
+首段必须链接回 `overview.md` 和 `implementation.md`，并链接
+[AtomUI Semantic Part 系统设计](../../architecture/systems/theming/semantic-parts.md)。
+
+`Semantic Parts` 表格必须按 public owner 和控件语义区域组织：
 ## Abstract AXAML Structure
 ## Composition Model
 ## Template Parts
@@ -476,18 +501,37 @@ LLMS 生成必须遵守：
 
 AtomUI 的 semantic 文档描述 AXAML、ControlTemplate、运行时组合结构、Template Part、伪类、状态流和 Token 语义，不描述 Web DOM。
 
-`Semantic Parts` 表格必须按控件语义区域组织：
+`Semantic Parts` 正式文档统一采用按 public owner 和 Part 分组的“字段 / 值”两列表格，不再新增横向宽表。
+每个 Part 必须单独成组，表格必须完整保留 `Owner`、`Part`、`Selector`、`ContractType`、`Cardinality`、
+`Customization`、`CrossVisualRoot`、`RuntimeCreated`、`AtomUI 节点`、`职责`、`相关 API`、`相关 Token` 和 `稳定性`；
+不能为了缩短表格而省略类型、数量或运行时边界。
 
 ```md
-| Part | Selector | ContractType | Cardinality | AtomUI 节点 | 职责 | 相关 API | 相关 Token | Customization | 稳定性 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| root | <root control> | Button | Single | <root control> | 控件根语义区域 | ... | ... | Root | stable |
-| content | .semantic-content | ContentPresenter | Optional | PART_ContentPresenter | 内容展示区域 | Content | ... | Selector | stable |
+### 1.1 `Button`
+
+#### `content`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Button` |
+| Part | `content` |
+| Selector | `.semantic-content` |
+| ContractType | `ContentPresenter` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | 内容展示区域 |
+| 职责 | 用户内容区域 |
+| 相关 API | `Content` |
+| 相关 Token | 组件 Token / SharedToken |
+| 稳定性 | stable since 6.0 |
 ```
 
 要求：
 
 - `Part` 是语义名，不一定等于 Template Part 名。
+- `Owner` 必须是实际声明 descriptor 的 public 控件；同一控件目录存在多个 public owner 时逐项区分。
 - `Selector` 必须与生成式 Semantic Part descriptor 一致；`root` 不添加 `.semantic-root`。
 - `ContractType` 是 marker 节点必须兼容的最低稳定 public 类型，也是 Semantic Style 的
   `x:SetterTargetType`；它不作为 `.semantic-*` selector 的类型前缀。
@@ -503,6 +547,18 @@ AtomUI 的 semantic 文档描述 AXAML、ControlTemplate、运行时组合结构
 - 表格、Control 声明、AXAML marker 和生成 descriptor 不一致时必须验证失败，不能只修改文档消除差异。
 - `Since`、`CrossVisualRoot` 或 `RuntimeCreated` 影响使用和验证边界时，必须在稳定性或实现说明中明确记录；
   `CrossVisualRoot` 不自动推导 Theme 属性，`RuntimeCreated` 不免除运行时 selector 测试。
+
+Part 表之后必须逐 Part 说明：
+
+- Part 在哪些模板、状态或 owner 生命周期中存在。
+- 适合定制的属性，以及布局型 Setter 需要验证的 owner 尺寸、shape、裁剪和 Measure/Arrange 边界。
+- 伪类、属性状态、替代实现与 cardinality 的关系。
+- 哪些内部节点、Name、`PART_*`、用户内容子树或子 ControlTemplate 明确不属于该 Part。
+- Selector 示例使用 owner、一个 `/template/` 和 `.semantic-*`，并以 `x:SetterTargetType` 提供类型上下文。
+- 删除、改名、类型收窄、cardinality 变化和模板替换时的兼容性与验证要求。
+
+LLMS 生成器优先从 `semantic-part.md` 读取 `Semantic Parts` 表。为支持现有控件渐进迁移，缺少该文件时可以回退读取
+`overview.md` 中的旧表；新增 Semantic Part 或实施既定改造时不得继续使用回退路径。
 
 `Abstract AXAML Structure` 必须遵守：
 
@@ -716,6 +772,8 @@ LLMS 生成时不得把缺失 `token.md` 解释为文档缺失，除非 `overvie
 
 - `overview.md` 链接 `implementation.md`、`token.md` 和 `changelog.md`。没有 `token.md` 时只链接 `implementation.md` 和 `changelog.md`。
 - `implementation.md` 链接 `overview.md`、`changelog.md`，并在涉及控件专属 Token 时链接 `token.md`。
+- 存在 `semantic-part.md` 时，`overview.md` 和 `implementation.md` 必须链接它；`semantic-part.md` 必须在首段链接回
+  `overview.md` 和 `implementation.md`。
 - 存在 `<topic>-design.md` 时，`overview.md` 和 `implementation.md` 必须链接该专项设计文档；专项设计文档
   必须在首段链接回 `overview.md` 和 `implementation.md`。
 - `token.md` 链接 `overview.md`、`implementation.md`、`changelog.md` 和 [AtomUI 控件 Token 设计规范](../development/control-token-guidelines.md)。
@@ -748,6 +806,8 @@ LLMS 生成时不得把缺失 `token.md` 解释为文档缺失，除非 `overvie
 - 是否存在“未来”“后续”“演进方向”等不适合架构文档的表述。
 - `overview.md` 是否能支撑单控件完整文档生成。
 - `overview.md` 是否包含 LLMS 导出来源表。
+- 控件公开 Semantic Part 时，是否存在 `semantic-part.md`，并且 `overview.md` 只保留支持摘要、`implementation.md` 只保留节点映射。
+- `semantic-part.md` 是否完整列出每个 public owner 的 Part，并逐 Part 说明职责、存在条件、状态/cardinality、定制和排除边界。
 - `implementation.md` 是否提供稳定源码索引、状态流、生命周期和 AOT 边界。
 - 存在专项设计文档时，是否遵循本文“控件专项设计文档”章节，并且只描述最终设计，没有混入 Issue 调查、
   候选方案或实现状态。

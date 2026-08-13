@@ -49,6 +49,42 @@ public class ControlDocReaderTests
             .ShouldBe(LLMsSemanticWriter.Write(model));
     }
 
+    [Theory]
+    [InlineData("button", "Button root 是动作、状态与根视觉样式的统一 owner。")]
+    [InlineData("badge", "CountBadge indicator 表示完整数量徽标视觉。")]
+    public void ReaderPrefersDedicatedSemanticPartDocument(string controlName, string expectedPartDescription)
+    {
+        var model = ReadModel(controlName);
+
+        model.SourceSemanticPartPath.ShouldNotBeNull();
+        model.SourceSemanticPartRelativePath.ShouldNotBeNull();
+        model.SourceSemanticPartRelativePath.ShouldEndWith("/semantic-part.md");
+        model.SemanticPartsMarkdown.ShouldContain(expectedPartDescription);
+    }
+
+    [Fact]
+    public void ReaderFallsBackToOverviewWhenDedicatedSemanticPartDocumentIsAbsent()
+    {
+        var model = ReadModel("upload");
+
+        model.SourceSemanticPartPath.ShouldBeNull();
+        model.SourceSemanticPartRelativePath.ShouldBeNull();
+        model.HasExplicitSemanticParts.ShouldBeTrue();
+    }
+
+    [Theory]
+    [InlineData("button", 3)]
+    [InlineData("badge", 7)]
+    [InlineData("card", 12)]
+    public void ReaderParsesEveryPartFromGroupedSemanticTables(string controlName, int expectedPartCount)
+    {
+        var model = ReadModel(controlName);
+
+        model.SemanticParts.Count.ShouldBe(expectedPartCount);
+        model.SemanticParts.ShouldAllBe(row => row.Cells.Count == 13);
+        model.SemanticParts.ShouldNotContain(row => row.Cells[0] == "Owner" || row.Cells[0] == "字段");
+    }
+
     private static ControlDocModel ReadModel(string controlName)
     {
         var config = LLMsGeneratorConfigReader.Read(

@@ -13,7 +13,8 @@ Semantic Part 的公共模型、Selector 契约和生成器规则分别由
 
 一个控件家族只有同时满足以下条件，才算完成：
 
-1. `overview.md` 与 `implementation.md` 已根据真实源码、叶子主题、测试和 Gallery 定义 Semantic Part 契约。
+1. `overview.md`、`semantic-part.md` 与 `implementation.md` 已根据真实源码、叶子主题、测试和 Gallery 分别定义
+   支持摘要、公共 Part 契约和真实节点映射。
 2. 控件设计文档已经由用户审核通过，之后才开始实现。
 3. 所有声明均由 `[SemanticPart]` 和生成式 descriptor 表达，所有静态节点均使用 `Classes.semantic-*="True"`。
 4. Desktop、Browser、派生主题、运行时节点、Popup、Overlay、独立 TopLevel 和 ItemContainer 路径按实际适用范围完成。
@@ -224,12 +225,13 @@ Part。旧分类模型推导出的 `item/header/content/motion` 等通用区域�
 
 先更新：
 
-先更新对应批次任务中列出的该控件 `overview.md` 与 `implementation.md` 精确路径。
+先更新对应批次任务中列出的该控件 `overview.md`、`semantic-part.md` 与 `implementation.md` 精确路径。
 
-只有 Semantic Part 模型同时跨越公共区域模型、多个 owner、多个视觉根、复杂生命周期和独立验证矩阵时，才创建
-`semantic-part-design.md`。正式控件文档只描述最终设计，不写任务状态、候选方案、排期或 checklist。
+`semantic-part.md` 是完整公共契约的唯一来源；`overview.md` 只保留 public owner、Part 名称、职责摘要和入口链接，
+`implementation.md` 只保留 descriptor、marker、模板或运行时节点映射及生命周期约束。正式控件文档只描述最终设计，
+不写任务状态、候选方案、排期或 checklist。
 
-`overview.md` 的 Semantic Parts 表必须逐项定义：
+`semantic-part.md` 的 Semantic Parts 表必须逐项定义：
 
 | 字段 | 要求 |
 | --- | --- |
@@ -241,11 +243,16 @@ Part。旧分类模型推导出的 `item/header/content/motion` 等通用区域�
 | `CrossVisualRoot` | 是否需要穿过 owner 可达的 Popup/Overlay/TopLevel。 |
 | `RuntimeCreated` | 是否由 C# 或容器生命周期创建。 |
 | `ThemePropertyName` | 仅真实 public 子 Control 支持完整替换时存在。 |
-| 实现节点 | 每个叶子模板或运行时路径中的真实节点及 owner。 |
+| `AtomUI Node` | 对用户解释 Part 对应的抽象视觉职责；真实节点映射由 `implementation.md` 维护。 |
 | 兼容边界 | 哪些内部节点明确不属于公共 Part。 |
 
+`semantic-part.md` 必须逐 Part 说明存在条件、适合定制的属性、状态与 cardinality 关系、Selector 用法和排除边界。
 `implementation.md` 必须定义 marker 所有权、模板映射、运行时创建点、生命周期、Popup 路径、尺寸协调、性能/AOT 和验证
 不变量。文档完成后立即停止，等待用户审核；未获批准不得修改源码、主题、测试或 Gallery。
+
+Gate A 还必须完成尺寸/状态基线审计。审计至少包含尺寸档默认含义、尺寸属性 owner、Token 映射、状态替代节点、模板路径、
+Measure/Arrange 约束，以及外部组件 `default` 到 AtomUI 完整尺寸分支的事实映射。必须准备一个最小失败回归，证明缺少
+完整尺寸基线或混用不同尺寸档位会产生布局问题；未完成该审计不得进入 Gate B。
 
 ### 4.2 Gate B：实现与验收
 
@@ -257,8 +264,10 @@ Part。旧分类模型推导出的 `item/header/content/motion` 等通用区域�
 4. 运行时节点只使用生成的 selector class 常量，不写重复字符串，不扫描 VisualTree 维护 Part。
 5. 覆盖 Desktop、Browser、派生模板、状态替代节点、Popup 和 container 生命周期。
 6. 为布局型 Setter 验证 owner 与 Part 的 Measure/Arrange、Min/Max、Padding、shape 和 SizeType 协调。
-7. 为 Gallery 增加真正延迟创建的 Semantic Parts Tab 内容，未打开 Tab 时不创建 demo、descriptor item 或 Preview。
-8. 更新该控件 `changelog.md`，运行 LLMS verify，但不手改生成文档。
+7. 先运行尺寸基线失败回归确认红灯，再以单一根因修复恢复通过；不得用示例固定 Height、MinHeight、Padding 或像素偏移
+   替代完整尺寸映射。
+8. 为 Gallery 增加真正延迟创建的 Semantic Parts Tab 内容，未打开 Tab 时不创建 demo、descriptor item 或 Preview。
+9. 更新该控件 `changelog.md`，运行 LLMS verify，但不手改生成文档。
 
 实现完成后必须保持未提交，向用户报告文件、测试和已知风险，等待实际运行与视觉验收。
 
@@ -330,6 +339,19 @@ owner 根、尺寸档和中间节点作为一个完整测量系统审计。
 
 默认方向是使用 Min/Max 建立设计基线，让合法 Semantic Setter 参与自然测量。若控件的公共几何必须固定，文档必须明确
 其不可扩展理由和允许定制的属性边界，不能让用户误以为布局型 Setter 能改变最终外形。
+
+每个控件在进入实现前必须提交尺寸/状态基线矩阵：
+
+| 项目 | 内容 |
+| --- | --- |
+| 完整尺寸分支 | `Large`、`Middle`、`Small`、`Custom` 的存在性、默认含义和 Token 映射。 |
+| 布局 owner | owner、Part、中间节点的 Height/MinHeight/MaxHeight、Width/MinWidth/MaxWidth、Padding、Margin、字体和图标尺寸。 |
+| 状态矩阵 | loading、disabled、shape、variant、icon-only、空态、替代节点和派生主题。 |
+| 外部映射 | Ant Design `default`/`small` 等名称对应 AtomUI 哪个完整分支，以及依据。 |
+| 失败回归 | 缺少尺寸映射或混用基线时的最小可复现失败。 |
+
+实现只允许采用“完整尺寸基线 + Semantic 增量覆盖”的组合。控件若不存在尺寸档，必须明确记录不适用；不能以默认值
+不明为理由直接复制外部示例的局部 Padding、字体或高度。
 
 ## 7. 性能与 NativeAOT 边界
 

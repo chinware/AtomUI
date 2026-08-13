@@ -4,11 +4,66 @@
 
 ## Semantic Parts
 
-| Part | Selector | ContractType | Cardinality | AtomUI 节点 | 职责 | 相关 API | 相关 Token | Customization | 稳定性 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `root` | Button 本身 | `Button` | `Single` | `Button` | 控件根语义区域，承载命令、点击、状态归一和伪类。 | 全部 Button public API | ButtonToken、SharedToken | `Root` | stable since 6.0 |
-| `icon` | `.semantic-icon` | `Control` | `Multiple` | `PART_LoadingIcon`、`PART_ButtonIcon` | loading 与用户图标的统一视觉职责；两个替代实现都接受同一语义样式。 | `Icon`、`IsLoading`、`IconPlacement`、`IconWidth`、`IconHeight` | `IconSize*`、`OnlyIconSize*`、`IconMargin` | `Selector` | stable since 6.0 |
-| `content` | `.semantic-content` | `ContentPresenter` | `Single` | `PART_ContentPresenter` | 用户内容展示区域。 | `Content`、`ContentTemplate` | `ContentFontSize`、`ContentLineHeight`、`FontWeight` | `Selector` | stable since 6.0 |
+Button 公开 `root`、`icon` 和 `content` 三个 Semantic Part。Part 名称表达长期稳定的产品职责，不等同于当前模板节点名称。
+
+### 1.1 `Button`
+
+#### `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Button` |
+| Part | `root` |
+| Selector | Button 本身 |
+| ContractType | `Button` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | Button owner |
+| 职责 | Button root 是动作、状态与根视觉样式的统一 owner。 |
+| 相关 API | 全部 Button public API |
+| 相关 Token | ButtonToken、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `icon`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Button` |
+| Part | `icon` |
+| Selector | `.semantic-icon` |
+| ContractType | `Control` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | 用户图标与 loading 图标区域 |
+| 职责 | 统一表示 Button 的用户图标和 loading 图标视觉职责。 |
+| 相关 API | `Icon`、`IsLoading`、`IconPlacement`、`IconWidth`、`IconHeight` |
+| 相关 Token | `IconSize*`、`OnlyIconSize*`、`IconMargin` |
+| 稳定性 | stable since 6.0 |
+
+#### `content`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Button` |
+| Part | `content` |
+| Selector | `.semantic-content` |
+| ContractType | `ContentPresenter` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | 内容展示区域 |
+| 职责 | 表示 Button 的用户内容展示与排版区域。 |
+| 相关 API | `Content`、`ContentTemplate` |
+| 相关 Token | `ContentFontSize`、`ContentLineHeight`、`FontWeight` |
+| 稳定性 | stable since 6.0 |
+
+`root` 是隐式 Part，不添加 `.semantic-root`。`ContractType` 只定义 Setter 可以稳定依赖的最低 public 类型，并通过
+`x:SetterTargetType` 提供 AXAML 编译期类型上下文；它不参与 `.semantic-*` 的身份匹配。
 
 ## Abstract AXAML Structure
 
@@ -129,12 +184,7 @@ Button
 
 ## Pseudo Classes
 
-| `root` | Button 本身 | `Button` | `Single` | `Button` | 控件根语义区域，承载命令、点击、状态归一和伪类。 | 全部 Button public API | ButtonToken、SharedToken | `Root` | stable since 6.0 |
-| `icon` | `.semantic-icon` | `Control` | `Multiple` | `PART_LoadingIcon`、`PART_ButtonIcon` | loading 与用户图标的统一视觉职责；两个替代实现都接受同一语义样式。 | `Icon`、`IsLoading`、`IconPlacement`、`IconWidth`、`IconHeight` | `IconSize*`、`OnlyIconSize*`、`IconMargin` | `Selector` | stable since 6.0 |
-| `content` | `.semantic-content` | `ContentPresenter` | `Single` | `PART_ContentPresenter` | 用户内容展示区域。 | `Content`、`ContentTemplate` | `ContentFontSize`、`ContentLineHeight`、`FontWeight` | `Selector` | stable since 6.0 |
-
-`PART_WaveSpirit`、`ShadowsFrame`、`Frame`、`CustomBackgroundLayer` 和 `PART_RootLayout` 属于 Button Composition Model，
-不是公开 Semantic Part。它们可以继续服务内部主题和实现，但应用不得把其名称或节点层级视为兼容契约。
+- icon-only、loading、custom background 可见性相关伪类。
 
 ## State Flow
 
@@ -218,8 +268,10 @@ ButtonToken 不承载 `IsPressed`、`IsPointerOver`、`IsLoading`、`EffectiveCo
   的 `MinHeight`；用户设置的 `Height`、`MinHeight`、`Padding`、`FontSize`、`CornerRadius`、`IconWidth`、
   `IconHeight` 等现有属性必须按 Avalonia 原生优先级生效。
 - CompactSpace 下的有效圆角、有效边框和 z-index 行为不变。
-- wave 播放条件和危险态 wave brush 不变。
-- `CustomBackground` 不改变 `WaveSpiritDecorator` 的 wave brush，wave 颜色仍由 `EffectiveColor + EffectiveVariant` 推导。
+- wave 播放条件不变；播放前必须从 Button 当前最终视觉属性解析 wave brush，依次检查有效实色
+  `BorderBrush` 和 `Background`，使 Theme 状态、Semantic root Style 与普通用户 Style 使用同一视觉事实源。
+- 透明、纯白或非实色的最终 Brush 不作为 wave 颜色；无有效颜色时清除 Button 写入的 wave brush，使
+  `WaveSpiritDecorator` 回到主题默认值。`CustomBackground` 是独立覆层，不参与该取色顺序。
 - 同一 Button 家族主题资产必须在 Native 与 Browser 支持宿主下保持同一 API 语义；不得维护
   `Buttons/Themes/Browser/` 或 `BrowserButtonThemes.axaml` 形式的平台主题分叉。
 
@@ -250,7 +302,8 @@ ButtonToken 不承载 `IsPressed`、`IsPointerOver`、`IsLoading`、`EffectiveCo
 - 普通用户 icon 和非 loading 的 icon-only 用户 icon 保持 `IconSize*` 默认值；只有 icon-only loading 默认使用 `OnlyIconSize*`。
 - DropdownButton 继承同一图标尺寸属性与投影规则，`OpenIndicator` 继续由独立的 DropdownButton 主题尺寸控制；SplitButton 不纳入这一属性继承范围。
 - `CustomBackgroundLayer` 不成为用户可依赖 template part。
-- wave brush 不从 `CustomBackground`、模板背景或 hover 背景反推。
+- wave brush 不从 `CustomBackground` 覆层或内部模板节点反推；Button root 的最终 hover、pressed 或外部样式结果是
+  合法取色输入。
 - CompactSpace 圆角和边框折叠行为不变。
 - 同一 Button 家族主题资产必须在 Native 与 Browser 支持宿主下保持同一 API 语义；不得维护
   `Buttons/Themes/Browser/` 或 `BrowserButtonThemes.axaml` 形式的平台主题分叉。

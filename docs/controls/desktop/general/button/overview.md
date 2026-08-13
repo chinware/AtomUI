@@ -1,6 +1,6 @@
 # Button 桌面版架构设计
 
-本文档定义 `AtomUI.Desktop.Controls.Button` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Button 桌面版实现原理](implementation.md)，Button Token 的专项设计见 [Button Token 设计](token.md)，设计和契约变化记录见 [Button Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.Button` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，Semantic Part 公共主题契约见 [Button Semantic Part 契约](semantic-part.md)，内部实现原理见 [Button 桌面版实现原理](implementation.md)，Button Token 的专项设计见 [Button Token 设计](token.md)，设计和契约变化记录见 [Button Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -120,16 +120,17 @@ Template part 与主题入口：
 | `PART_ButtonIcon` | 展示用户设置的 icon，位置由 `IconPlacement` 控制，宽高通过 `TemplateBinding` 跟随 `IconWidth`、`IconHeight`。 |
 | `PART_ContentPresenter` | 展示用户内容。 |
 
-Semantic Parts：
+Button 支持以下 Semantic Part：
 
-| Part | Selector | ContractType | Cardinality | AtomUI 节点 | 职责 | 相关 API | 相关 Token | Customization | 稳定性 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `root` | Button 本身 | `Button` | `Single` | `Button` | 控件根语义区域，承载命令、点击、状态归一和伪类。 | 全部 Button public API | ButtonToken、SharedToken | `Root` | stable since 6.0 |
-| `icon` | `.semantic-icon` | `Control` | `Multiple` | `PART_LoadingIcon`、`PART_ButtonIcon` | loading 与用户图标的统一视觉职责；两个替代实现都接受同一语义样式。 | `Icon`、`IsLoading`、`IconPlacement`、`IconWidth`、`IconHeight` | `IconSize*`、`OnlyIconSize*`、`IconMargin` | `Selector` | stable since 6.0 |
-| `content` | `.semantic-content` | `ContentPresenter` | `Single` | `PART_ContentPresenter` | 用户内容展示区域。 | `Content`、`ContentTemplate` | `ContentFontSize`、`ContentLineHeight`、`FontWeight` | `Selector` | stable since 6.0 |
+| Part | 公共入口 | 数量语义 | 职责摘要 |
+| --- | --- | --- | --- |
+| `root` | Button 本身 | `Single` | Button 动作、状态与根视觉样式的统一 owner。 |
+| `icon` | `.semantic-icon` | `Multiple` | 用户图标与 loading 图标的统一视觉职责。 |
+| `content` | `.semantic-content` | `Single` | 用户内容展示与排版区域。 |
 
-`PART_WaveSpirit`、`ShadowsFrame`、`Frame`、`CustomBackgroundLayer` 和 `PART_RootLayout` 属于 Button Composition Model，
-不是公开 Semantic Part。它们可以继续服务内部主题和实现，但应用不得把其名称或节点层级视为兼容契约。
+完整的 Selector、`ContractType`、存在条件、逐 Part 定制说明、状态矩阵和排除边界见
+[Button Semantic Part 契约](semantic-part.md)。`PART_WaveSpirit`、`ShadowsFrame`、`Frame`、`CustomBackgroundLayer` 和
+`PART_RootLayout` 属于 Button Composition Model，不是公开 Semantic Part。
 
 ## 4. 行为与状态模型
 
@@ -286,6 +287,7 @@ Gallery 的 Custom 尺寸示例继续优先在 Button selector 上设置 `IconWi
 关联文档：
 
 - [Semantic Part 系统设计](../../../../architecture/systems/theming/semantic-parts.md)
+- [Button Semantic Part 契约](semantic-part.md)
 - [Button 桌面版实现原理](implementation.md)
 - [Button Token 设计](token.md)
 - [Button Changelog](changelog.md)
@@ -295,7 +297,7 @@ LLMS 导出来源：
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
 | 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/button/index-cn.md` |
-| 单控件语义文档 | `overview.md` + `implementation.md` + `ButtonTheme.axaml` | 生成 `controls/button/semantic-cn.md` |
+| 单控件语义文档 | `semantic-part.md` + `overview.md` + `implementation.md` + `ButtonTheme.axaml` | 生成 `controls/button/semantic-cn.md` |
 | API 表 | overview.md 语义摘要 + `Button.cs` public surface | 不在 `overview.md` 中复制完整 API 表 |
 | Design Token 表 | `token.md` + `ButtonToken.cs` | `token.md` 解释 Token 语义边界 |
 | 示例 | `ButtonShowCase.axaml` + source snippet catalog | 覆盖类型、形状、尺寸、图标、加载、危险、幽灵、禁用、渐变、颜色与变体，以及使用 owner-scoped 与 Button 状态选择器定制 Semantic Part |

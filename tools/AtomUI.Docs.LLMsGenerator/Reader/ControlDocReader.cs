@@ -24,6 +24,9 @@ public static partial class ControlDocReader
     {
         var overviewText = File.ReadAllText(control.OverviewPath);
         var implementationText = File.ReadAllText(control.ImplementationPath);
+        var semanticPartText = control.SemanticPartPath is null
+            ? overviewText
+            : File.ReadAllText(control.SemanticPartPath);
         var overview = MarkdownSectionParser.Parse(overviewText, control.OverviewPath);
         var implementation = MarkdownSectionParser.Parse(implementationText, control.ImplementationPath);
 
@@ -35,8 +38,8 @@ public static partial class ControlDocReader
             galleryPath = FindGalleryPath(repositoryRoot, control, displayName);
         }
 
-        var semanticPartsMarkdown = ExtractSemanticPartsMarkdown(overviewText);
-        var semanticParts = ParseMarkdownTable(semanticPartsMarkdown);
+        var semanticPartsMarkdown = ExtractSemanticPartsMarkdown(semanticPartText);
+        var semanticParts = ParseSemanticParts(semanticPartsMarkdown);
         var templatePartsMarkdown = ExtractTableByLeadText(overviewText, "template part");
         var pseudoClassesMarkdown = ExtractPseudoClassesMarkdown(overviewText);
         var sourceIndex = implementation.GetRequiredSection("2. 源码文件结构").Content.Trim();
@@ -50,6 +53,7 @@ public static partial class ControlDocReader
             Category = control.Category,
             SourceOverviewPath = control.OverviewPath,
             SourceImplementationPath = control.ImplementationPath,
+            SourceSemanticPartPath = control.SemanticPartPath,
             SourceTokenPath = control.TokenPath,
             SourceChangelogPath = control.ChangelogPath,
             OutputIndexPath = control.OutputIndexPath,
@@ -111,6 +115,9 @@ public static partial class ControlDocReader
             GalleryExamplesMarkdown = GalleryExampleReader.ReadMarkdown(repositoryRoot, galleryPath, displayName),
             SourceOverviewRelativePath = ToRelativePath(repositoryRoot, control.OverviewPath),
             SourceImplementationRelativePath = ToRelativePath(repositoryRoot, control.ImplementationPath),
+            SourceSemanticPartRelativePath = control.SemanticPartPath is null
+                ? null
+                : ToRelativePath(repositoryRoot, control.SemanticPartPath),
             SourceTokenRelativePath = control.TokenPath is null ? null : ToRelativePath(repositoryRoot, control.TokenPath),
             SourceChangelogRelativePath = ToRelativePath(repositoryRoot, control.ChangelogPath),
             HasExplicitMetadata = metadata.ContainsKey("NuGet 包") &&
@@ -256,18 +263,40 @@ public static partial class ControlDocReader
 
     private static string ExtractSemanticPartsMarkdown(string markdown)
     {
-        var markerIndex = markdown.IndexOf("LLMS 语义区域", StringComparison.Ordinal);
-        if (markerIndex < 0)
+        var lines = markdown.ReplaceLineEndings("\n").Split('\n');
+        for (var index = 0; index < lines.Length; index++)
         {
-            markerIndex = markdown.IndexOf("Semantic Parts", StringComparison.Ordinal);
+            var trimmed = lines[index].TrimStart();
+            if (trimmed.StartsWith("## ", StringComparison.Ordinal) &&
+                trimmed.Contains("Semantic Parts", StringComparison.OrdinalIgnoreCase))
+            {
+                return ExtractSectionContent(lines, index);
+            }
         }
 
+        var markerIndex = markdown.IndexOf("LLMS 语义区域", StringComparison.Ordinal);
         if (markerIndex < 0)
         {
             return string.Empty;
         }
 
         return ExtractNextTable(markdown[markerIndex..]);
+    }
+
+    private static string ExtractSectionContent(IReadOnlyList<string> lines, int headingIndex)
+    {
+        var content = new List<string>();
+        for (var index = headingIndex + 1; index < lines.Count; index++)
+        {
+            if (lines[index].TrimStart().StartsWith("## ", StringComparison.Ordinal))
+            {
+                break;
+            }
+
+            content.Add(lines[index]);
+        }
+
+        return string.Join('\n', content).Trim();
     }
 
     private static string ExtractTableByLeadText(string markdown, string leadText)
@@ -365,6 +394,92 @@ public static partial class ControlDocReader
         }
 
         return rows;
+    }
+
+    private static IReadOnlyList<MarkdownTableRow> ParseSemanticParts(string markdown)
+    {
+        var descriptorRows = new List<MarkdownTableRow>();
+        foreach (var table in ExtractTables(markdown))
+        {
+            var rows = ParseMarkdownTable(table);
+            if (rows.Count == 0)
+            {
+                continue;
+            }
+
+            var header = rows[0].Cells;
+            if (header.Contains("Owner", StringComparer.Ordinal) &&
+                header.Contains("Part", StringComparer.Ordinal))
+            {
+                descriptorRows.AddRange(rows.Skip(1));
+                continue;
+            }
+
+            var fields = rows.Where(row => row.Cells.Count >= 2)
+                             .ToDictionary(
+                                 row => row.Cells[0],
+                                 row => row.Cells[1],
+                                 StringComparer.Ordinal);
+            if (!fields.ContainsKey("Owner") || !fields.ContainsKey("Part"))
+            {
+                continue;
+            }
+
+            descriptorRows.Add(new MarkdownTableRow(
+            [
+                fields.GetValueOrDefault("Owner", string.Empty),
+                fields.GetValueOrDefault("Part", string.Empty),
+                fields.GetValueOrDefault("Selector", string.Empty),
+                fields.GetValueOrDefault("ContractType", string.Empty),
+                fields.GetValueOrDefault("Cardinality", string.Empty),
+                fields.GetValueOrDefault("Customization", string.Empty),
+                fields.GetValueOrDefault("CrossVisualRoot", string.Empty),
+                fields.GetValueOrDefault("RuntimeCreated", string.Empty),
+                fields.GetValueOrDefault("AtomUI 节点", string.Empty),
+                fields.GetValueOrDefault("职责", string.Empty),
+                fields.GetValueOrDefault("相关 API", string.Empty),
+                fields.GetValueOrDefault("相关 Token", string.Empty),
+                fields.GetValueOrDefault("稳定性", string.Empty)
+            ]));
+        }
+
+        if (descriptorRows.Count > 0)
+        {
+            return descriptorRows;
+        }
+
+        return ParseMarkdownTable(markdown);
+    }
+
+    private static IReadOnlyList<string> ExtractTables(string markdown)
+    {
+        var tables = new List<string>();
+        var tableLines = new List<string>();
+        var inTable = false;
+
+        foreach (var line in markdown.ReplaceLineEndings("\n").Split('\n'))
+        {
+            if (line.TrimStart().StartsWith('|'))
+            {
+                inTable = true;
+                tableLines.Add(line);
+                continue;
+            }
+
+            if (inTable)
+            {
+                tables.Add(string.Join('\n', tableLines).Trim());
+                tableLines.Clear();
+                inTable = false;
+            }
+        }
+
+        if (inTable)
+        {
+            tables.Add(string.Join('\n', tableLines).Trim());
+        }
+
+        return tables;
     }
 
     private static IReadOnlyList<MarkdownTableRow> BuildFallbackSemanticParts(
