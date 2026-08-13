@@ -1,0 +1,190 @@
+using System.Xml.Linq;
+using Shouldly;
+using Xunit;
+
+namespace AtomUI.Generator.Tests.LinkedRegistration;
+
+public sealed class LinkedRegistrationPublishFixturesTests
+{
+    private static readonly string[] FixtureNames =
+    [
+        "Minimal",
+        "TwoUnits",
+        "DynamicFallback",
+        "Full"
+    ];
+
+    [Fact]
+    public void Publish_fixtures_share_one_recorder_and_reference_the_real_packages()
+    {
+        foreach (var fixtureName in FixtureNames)
+        {
+            var project = XDocument.Load(GetRepoFile(
+                $"tests/AtomUI.LinkedRegistration.Fixtures/{fixtureName}/{fixtureName}.csproj"));
+
+            project.Descendants().ShouldContain(element =>
+                element.Name.LocalName == "OutputType" && element.Value.Trim() == "Exe");
+            project.Descendants().ShouldContain(element =>
+                element.Name.LocalName == "ProjectReference" &&
+                ((string?)element.Attribute("Include") ?? string.Empty)
+                .EndsWith("src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj", StringComparison.Ordinal));
+            project.Descendants().ShouldContain(element =>
+                element.Name.LocalName == "ProjectReference" &&
+                (string?)element.Attribute("OutputItemType") == "Analyzer" &&
+                (string?)element.Attribute("ReferenceOutputAssembly") == "false");
+            project.Descendants().ShouldContain(element =>
+                element.Name.LocalName == "Compile" &&
+                ((string?)element.Attribute("Include") ?? string.Empty)
+                .EndsWith("Shared/FixtureHost.cs", StringComparison.Ordinal));
+        }
+
+        var minimalProject = XDocument.Load(GetRepoFile(
+            "tests/AtomUI.LinkedRegistration.Fixtures/Minimal/Minimal.csproj"));
+        minimalProject.Descendants().ShouldContain(element =>
+            element.Name.LocalName == "ProjectReference" &&
+            ((string?)element.Attribute("Include") ?? string.Empty)
+            .EndsWith("UnusedUnit/UnusedUnit.csproj", StringComparison.Ordinal) &&
+            ((string?)element.Attribute("Condition") ?? string.Empty)
+            .Contains("AtomUIIncludeUnusedFixtureUnit", StringComparison.Ordinal));
+
+        var unusedUnitProject = XDocument.Load(GetRepoFile(
+            "tests/AtomUI.LinkedRegistration.Fixtures/UnusedUnit/UnusedUnit.csproj"));
+        unusedUnitProject.Descendants().ShouldContain(element =>
+            element.Name.LocalName == "ProjectReference" &&
+            ((string?)element.Attribute("Include") ?? string.Empty)
+            .EndsWith("src/AtomUI.Core/AtomUI.Core.csproj", StringComparison.Ordinal));
+
+        var unusedUnitSource = ReadRepoFile(
+            "tests/AtomUI.LinkedRegistration.Fixtures/UnusedUnit/UnusedUnitFragment.cs");
+        unusedUnitSource.ShouldContain("AtomUI.Linked.Unit.v1");
+        unusedUnitSource.ShouldContain("AtomUI.Desktop.Controls%2FFixtureUnused");
+        unusedUnitSource.ShouldContain("public static class UnusedUnitFragment");
+        unusedUnitSource.ShouldContain("AotTrimControlPackageRegistrationBuilder builder");
+    }
+
+    [Fact]
+    public void Fixture_programs_define_the_four_registration_modes()
+    {
+        var minimal = ReadRepoFile(
+            "tests/AtomUI.LinkedRegistration.Fixtures/Minimal/Program.cs");
+        minimal.ShouldContain("typeof(AtomUI.Desktop.Controls.Button)");
+        minimal.ShouldContain("builder.UseDesktopControls()");
+        minimal.ShouldNotContain("DatePicker");
+        minimal.ShouldNotContain("UseAllDesktopControls");
+
+        var twoUnits = ReadRepoFile(
+            "tests/AtomUI.LinkedRegistration.Fixtures/TwoUnits/Program.cs");
+        twoUnits.ShouldContain("typeof(AtomUI.Desktop.Controls.Button)");
+        twoUnits.ShouldContain("typeof(AtomUI.Desktop.Controls.DatePicker)");
+        twoUnits.ShouldContain("builder.UseDesktopControls()");
+
+        var dynamicFallback = ReadRepoFile(
+            "tests/AtomUI.LinkedRegistration.Fixtures/DynamicFallback/Program.cs");
+        dynamicFallback.ShouldContain("builder.UseDesktopControls()");
+        dynamicFallback.ShouldNotContain("UseAllDesktopControls");
+        var dynamicProject = XDocument.Load(GetRepoFile(
+            "tests/AtomUI.LinkedRegistration.Fixtures/DynamicFallback/DynamicFallback.csproj"));
+        dynamicProject.Descendants().ShouldContain(element =>
+            element.Name.LocalName == "AtomUIPackageRoot" &&
+            (string?)element.Attribute("Include") == "AtomUI.Desktop.Controls");
+
+        var full = ReadRepoFile(
+            "tests/AtomUI.LinkedRegistration.Fixtures/Full/Program.cs");
+        full.ShouldContain("builder.UseAllDesktopControls()");
+        full.ShouldNotContain("builder.UseDesktopControls()");
+    }
+
+    [Fact]
+    public void Fixture_host_emits_stable_package_core_and_registration_observations()
+    {
+        var source = ReadRepoFile(
+            "tests/AtomUI.LinkedRegistration.Fixtures/Shared/FixtureHost.cs");
+
+        source.ShouldContain("ControlIdentities");
+        source.ShouldContain("ThemeAssetUris");
+        source.ShouldContain("ProviderId");
+        source.ShouldContain("ProviderResourceCount");
+        source.ShouldContain("CatalogIds");
+        source.ShouldContain("TranslationBundleIds");
+        source.ShouldContain("InitializerCount");
+        source.ShouldContain("Utf8JsonWriter");
+        source.ShouldNotContain("JsonSerializer.Serialize");
+        source.ShouldNotContain("Assembly.GetTypes");
+    }
+
+    [Fact]
+    public void Verification_script_enforces_publish_modes_and_size_gates()
+    {
+        var source = ReadRepoFile("build/scripts/verify-aot-trim-registration.sh");
+
+        source.ShouldContain("local build_args=(");
+        source.ShouldContain("build \"$project\"");
+        source.ShouldContain("restore_fixture()");
+        source.ShouldContain("dotnet restore \"$(fixture_project \"$fixture\")\"");
+        source.ShouldContain("--no-restore");
+        source.ShouldContain("local fixture_assembly=");
+        source.ShouldContain("dotnet \"$fixture_assembly\"");
+        source.ShouldNotContain("local run_args=(run");
+        source.ShouldNotContain("dotnet run");
+        source.ShouldNotContain("properties[@]");
+        source.ShouldNotContain("-flp:logfile=");
+        source.ShouldContain("--disable-build-servers");
+        source.ShouldContain("PublishTrimmed=true");
+        source.ShouldContain("PublishAot=true");
+        source.ShouldContain("AtomUI.NativeAot.MacOS.targets");
+        source.ShouldContain("CustomAfterMicrosoftCommonTargets");
+        source.ShouldContain("RunAOTCompilation=true");
+        source.ShouldContain("AtomUIUseGeneratedRegistration=true");
+        source.ShouldContain("MINIMUM_DESKTOP_REDUCTION_PERCENT=40");
+        source.ShouldContain("MAX_SECOND_UNIT_GROWTH_BYTES=262144");
+        source.ShouldContain("MinimalWithUnusedUnit");
+        source.ShouldContain("AtomUIIncludeUnusedFixtureUnit=true");
+        source.ShouldNotContain("two_units_size=");
+        source.ShouldNotContain("two_units_size - minimal_size");
+        source.ShouldContain("AtomUI.AotTrimRegistration.Enabled");
+        source.ShouldContain("AtomUI.Linked.Plan.v1");
+        source.ShouldContain("size-report.tsv");
+        source.ShouldContain("package_core_fingerprint");
+        source.ShouldContain("cmp -s \"$output_root/trimmed.Minimal.json\" \"$output_root/Minimal.generated.json\"");
+        source.ShouldContain("DynamicFallback|Full)");
+        source.ShouldContain("cmp -s \"$output_root/aot.$fixture.json\" \"$output_root/$fixture.ordinary.json\"");
+    }
+
+    [Fact]
+    public void Macos_native_aot_verification_supplies_homebrew_native_library_paths()
+    {
+        var project = XDocument.Load(GetRepoFile("build/AtomUI.NativeAot.MacOS.targets"));
+        var linkerArgs = project.Descendants()
+            .Where(element => element.Name.LocalName == "LinkerArg")
+            .Select(element => (string?)element.Attribute("Include"))
+            .Where(value => value is not null)
+            .ToArray();
+
+        linkerArgs.ShouldContain("-L/opt/homebrew/lib");
+        linkerArgs.ShouldContain("-L/opt/homebrew/opt/openssl@3/lib");
+        linkerArgs.ShouldContain("-L/usr/local/lib");
+        linkerArgs.ShouldContain("-L/usr/local/opt/openssl@3/lib");
+    }
+
+    private static string ReadRepoFile(string relativePath)
+    {
+        return File.ReadAllText(GetRepoFile(relativePath));
+    }
+
+    private static string GetRepoFile(string relativePath)
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            var candidate = Path.Combine(directory.FullName, relativePath);
+            if (File.Exists(candidate))
+            {
+                return candidate;
+            }
+
+            directory = directory.Parent;
+        }
+
+        throw new FileNotFoundException(relativePath);
+    }
+}

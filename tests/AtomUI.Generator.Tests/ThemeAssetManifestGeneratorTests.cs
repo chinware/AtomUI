@@ -35,6 +35,8 @@ public class ThemeAssetManifestGeneratorTests
 
         diagnostics.ShouldBeEmpty();
         var source = GetGeneratedSource(result, "GeneratedControlThemeAssetManifest.g.cs");
+        source.ShouldContain("namespace AtomUI.Generated.AcmeControls;");
+        source.ShouldNotContain("namespace AtomUI.Generated.Acme_Controls;");
         source.ShouldContain("new global::AtomUI.Theme.Schema.ControlTokenIdentity(\"Acme.Controls\", \"Button\")");
         source.ShouldNotContain("new global::AtomUI.Theme.Schema.ControlTokenIdentity(\"AtomUI\", \"Button\")");
     }
@@ -125,6 +127,203 @@ public class ThemeAssetManifestGeneratorTests
     }
 
     [Fact]
+    public void Generates_Unit_Theme_Parts_Without_Per_Asset_Manifests()
+    {
+        var result = RunGenerator(
+            [
+                Asset("Button/Themes/ButtonTheme.axaml", ResourceDictionary("ButtonTokenResource Height")),
+                Asset("Alert/Themes/AlertTheme.axaml", ResourceDictionary("AlertTokenResource Height"))
+            ],
+            out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+        var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
+
+        source.ShouldContain("namespace AtomUI.Generated.ThemeAssetManifestTests.LinkedRegistrationV1;");
+        source.ShouldContain("public static partial class GeneratedRegistrationUnit_Button_");
+        source.ShouldContain("public static partial class GeneratedRegistrationUnit_Alert_");
+        source.ShouldContain("static partial void AddThemes(");
+        source.ShouldContain("builder.AddThemeAsset(");
+        source.ShouldNotContain("AssemblyMetadata(\"AtomUI.Linked.Asset.v1\"");
+        source.ShouldNotContain("AssemblyMetadata(\"AtomUI.Linked.AuxiliaryAsset.v1\"");
+        source.ShouldContain(GetThemeAssetResourceClassName("Button/Themes/ButtonTheme.axaml"));
+        source.ShouldContain(GetThemeAssetResourceClassName("Alert/Themes/AlertTheme.axaml"));
+        source.ShouldNotContain("switch (asset.AssetUri.AbsoluteUri)");
+        source.ShouldNotContain("GeneratedControlThemeAssetManifest.GetDescriptors()");
+    }
+
+    [Fact]
+    public void Unit_Theme_Part_Calls_Same_Package_Unit_Dependencies_Directly()
+    {
+        var compilation = CreateCompilation("""
+            namespace Demo;
+            public sealed class Button : Avalonia.Controls.Control { }
+            """).AddSyntaxTrees(
+                CSharpSyntaxTree.ParseText(
+                    """
+                    namespace Demo;
+                    public sealed class Alert : Avalonia.Controls.Control { }
+                    """,
+                    path: "Alert/Alert.cs",
+                    cancellationToken: TestContext.Current.CancellationToken));
+        var result = RunGenerator(
+            compilation,
+            [Asset(
+                "Button/Themes/ButtonTheme.axaml",
+                ResourceDictionary("ButtonTokenResource Height", "AlertTokenResource Height"))],
+            out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+        var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
+        var dependencyFragment = global::AtomUI.Generator.LinkedRegistration.LinkedRegistrationFragmentName.ForUnit(
+            "ThemeAssetManifestTests/Alert");
+        source.ShouldContain($"{dependencyFragment}.Add(builder);");
+    }
+
+    [Fact]
+    public void Unit_Theme_Part_Calls_Template_Control_Unit_Dependencies_Directly()
+    {
+        var compilation = CreateCompilation(
+            """
+            [assembly: Avalonia.Metadata.XmlnsDefinition("https://atomui.net", "Demo")]
+
+            namespace Avalonia.Metadata
+            {
+                [System.AttributeUsage(System.AttributeTargets.Assembly, AllowMultiple = true)]
+                public sealed class XmlnsDefinitionAttribute(string xmlNamespace, string clrNamespace) : System.Attribute
+                {
+                }
+            }
+
+            namespace Demo
+            {
+                public sealed class Alert : Avalonia.Controls.Control { }
+            }
+            """,
+            sourcePath: "Alert/Alert.cs").AddSyntaxTrees(
+                CSharpSyntaxTree.ParseText(
+                    """
+                    namespace Demo;
+                    public sealed class MarqueeLabel : Avalonia.Controls.Control { }
+                    """,
+                    path: "MarqueeLabel/MarqueeLabel.cs",
+                    cancellationToken: TestContext.Current.CancellationToken));
+        var result = RunGenerator(
+            compilation,
+            [Asset(
+                "Alert/Themes/AlertTheme.axaml",
+                """
+                <ControlTheme xmlns="https://github.com/avaloniaui"
+                              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                              xmlns:atom="https://atomui.net"
+                              xmlns:demo="using:Demo"
+                              TargetType="{x:Type demo:Alert}">
+                    <Setter Property="Template">
+                        <ControlTemplate>
+                            <atom:MarqueeLabel />
+                        </ControlTemplate>
+                    </Setter>
+                </ControlTheme>
+                """)],
+            out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+        var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
+        var dependencyFragment = global::AtomUI.Generator.LinkedRegistration.LinkedRegistrationFragmentName.ForUnit(
+            "ThemeAssetManifestTests/MarqueeLabel");
+        source.ShouldContain($"{dependencyFragment}.Add(builder);");
+        var manifest = GetGeneratedSource(result, "GeneratedControlThemeAssetManifest.g.cs");
+        manifest.ShouldNotContain("ControlTokenIdentity(\"AtomUI\", \"MarqueeLabel\")");
+    }
+
+    [Fact]
+    public void Unit_Theme_Part_Does_Not_Treat_Default_Avalonia_Elements_As_Package_Controls()
+    {
+        var compilation = CreateCompilation(
+            """
+            namespace Demo;
+            public sealed class Alert : Avalonia.Controls.Control { }
+            """,
+            sourcePath: "Alert/Alert.cs").AddSyntaxTrees(
+                CSharpSyntaxTree.ParseText(
+                    """
+                    namespace Demo;
+                    public sealed class Button : Avalonia.Controls.Control { }
+                    """,
+                    path: "Button/Button.cs",
+                    cancellationToken: TestContext.Current.CancellationToken));
+        var result = RunGenerator(
+            compilation,
+            [Asset(
+                "Alert/Themes/AlertTheme.axaml",
+                """
+                <ControlTheme xmlns="https://github.com/avaloniaui"
+                              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                              xmlns:demo="using:Demo"
+                              TargetType="{x:Type demo:Alert}">
+                    <Setter Property="Template">
+                        <ControlTemplate>
+                            <Button />
+                        </ControlTemplate>
+                    </Setter>
+                </ControlTheme>
+                """)],
+            out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+        var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
+        var unrelatedFragment = global::AtomUI.Generator.LinkedRegistration.LinkedRegistrationFragmentName.ForUnit(
+            "ThemeAssetManifestTests/Button");
+        source.ShouldNotContain($"{unrelatedFragment}.Add(builder);");
+    }
+
+    [Fact]
+    public void Generates_Explicit_PackageShared_Asset_As_Package_Core_Fragment()
+    {
+        var result = RunGenerator(
+            CreateCompilation(TokenSource),
+            [Asset("Themes/SharedResources.axaml", ResourceDictionary())],
+            out var diagnostics,
+            packageSharedThemes: ["Themes/SharedResources.axaml"]);
+
+        diagnostics.ShouldBeEmpty();
+        var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
+
+        source.ShouldContain("public static class GeneratedPackageSharedThemeFragment_");
+        source.ShouldContain("builder.AddPackageSharedThemeAsset(");
+        source.ShouldNotContain("AssemblyMetadata(\"AtomUI.Linked.AuxiliaryAsset.v1\"");
+        source.ShouldContain(GetThemeAssetResourceClassName("Themes/SharedResources.axaml"));
+    }
+
+    [Fact]
+    public void Ownerless_Asset_Is_Unknown_And_Forces_Package_Fallback()
+    {
+        var result = RunGenerator(
+            [Asset("Themes/UnownedResources.axaml", ResourceDictionary())],
+            out var diagnostics,
+            linkedPublish: true);
+
+        diagnostics.ShouldHaveSingleItem().Id.ShouldBe("ATOMUILINK002");
+        var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
+        source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.Usage.v1\"");
+        source.ShouldContain("PackageRoot");
+        source.ShouldNotContain("builder.AddPackageSharedThemeAsset(");
+    }
+
+    [Fact]
+    public void Ordinary_Build_Records_Unknown_Asset_Fallback_Without_Linked_Warning()
+    {
+        var result = RunGenerator(
+            [Asset("Themes/UnownedResources.axaml", ResourceDictionary())],
+            out var diagnostics);
+
+        diagnostics.ShouldNotContain(diagnostic => diagnostic.Id == "ATOMUILINK002");
+        var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
+        source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.Usage.v1\"");
+        source.ShouldContain("PackageRoot");
+    }
+
+    [Fact]
     public void Resource_Key_Schema_Fingerprint_Uses_Shared_Token_Kind_Value_Order()
     {
         var compilation = CreateCompilation(TokenSource + """
@@ -177,11 +376,15 @@ public class ThemeAssetManifestGeneratorTests
     }
 
     [Fact]
-    public void Generates_Aot_Safe_Resource_Loader_For_Unowned_Internal_Typed_Control_Themes()
+    public void Assigns_Internal_Typed_Control_Theme_As_A_Resource_Only_Unit_Asset()
     {
         var compilation = CreateCompilation("""
             namespace Demo
             {
+                public sealed class LineEdit : Avalonia.Controls.Control
+                {
+                }
+
                 internal sealed class InputClearIconButton : Avalonia.Controls.Control
                 {
                 }
@@ -190,7 +393,8 @@ public class ThemeAssetManifestGeneratorTests
                 {
                 }
             }
-            """);
+            """,
+            sourcePath: "Input/LineEdit.cs");
         var result = RunGenerator(
             compilation,
             [Asset(
@@ -203,6 +407,9 @@ public class ThemeAssetManifestGeneratorTests
         source.ShouldContain("global::System.Array.Empty<global::AtomUI.Theme.Schema.ControlThemeAssetDescriptor>()");
         source.ShouldContain("controlThemes.Add(new GeneratedThemeAssetResource_");
         source.ShouldNotContain("new global::Demo.InputClearIconButtonTheme()");
+        var fragmentSource = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
+        fragmentSource.ShouldContain("builder.AddUnitThemeResource(");
+        fragmentSource.ShouldNotContain("AssemblyMetadata(\"AtomUI.Linked.Usage.v1\"");
     }
 
     [Fact]
@@ -270,13 +477,105 @@ public class ThemeAssetManifestGeneratorTests
     public void Generates_Empty_Manifest_For_Global_Only_Dictionary_Without_A_Control_Owner()
     {
         var result = RunGenerator(
+            CreateCompilation(TokenSource),
             [Asset("Themes/Global.axaml", ResourceDictionary("SharedTokenResource ColorPrimary"))],
-            out var diagnostics);
+            out var diagnostics,
+            packageSharedThemes: ["Themes/Global.axaml"]);
 
         diagnostics.ShouldBeEmpty();
         var source = GetGeneratedSource(result, "GeneratedControlThemeAssetManifest.g.cs");
         source.ShouldContain("global::System.Array.Empty<global::AtomUI.Theme.Schema.ControlThemeAssetDescriptor>()");
         source.ShouldContain("controlThemes.Add(new GeneratedThemeAssetResource_");
+    }
+
+    [Fact]
+    public void Assigns_Top_Level_Internal_Target_Theme_To_An_Explicit_Existing_Unit()
+    {
+        var compilation = CreateCompilation(
+            """
+            namespace Demo
+            {
+                public sealed class DataGrid : Avalonia.Controls.Control
+                {
+                }
+
+                internal sealed class DataGridOperationButtons : Avalonia.Controls.Control
+                {
+                }
+            }
+            """,
+            sourcePath: "DataGrid.cs");
+        var asset = Asset(
+            "Themes/DataGridOperationButtons.axaml",
+            """
+            <ResourceDictionary xmlns="https://github.com/avaloniaui"
+                                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                xmlns:demo="using:Demo">
+                <ControlTheme x:Key="{x:Type demo:DataGridOperationButtons}"
+                              TargetType="demo:DataGridOperationButtons" />
+            </ResourceDictionary>
+            """);
+
+        var result = RunGenerator(
+            compilation,
+            [asset],
+            out var diagnostics,
+            linkedPublish: true,
+            registrationUnits: new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                [asset.Path] = "DataGrid"
+            });
+
+        diagnostics.ShouldBeEmpty();
+        var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
+        source.ShouldContain("public static partial class GeneratedRegistrationUnit_DataGrid_");
+        source.ShouldContain("builder.AddUnitThemeResource(");
+        source.ShouldNotContain("PackageRoot");
+    }
+
+    [Fact]
+    public void Does_Not_Load_Explicit_Abstract_Typed_Theme_Through_A_Missing_Wrapper()
+    {
+        var compilation = CreateCompilation(
+            """
+            namespace Demo
+            {
+                public sealed class ColorPicker : Avalonia.Controls.Control
+                {
+                }
+
+                internal sealed class AbstractColorPickerSliderTrack : Avalonia.Controls.Control
+                {
+                }
+
+                internal sealed class AbstractColorPickerSliderTrackTheme : Avalonia.Styling.ControlTheme
+                {
+                }
+            }
+            """,
+            sourcePath: "ColorPicker.cs");
+        var asset = Asset(
+            "Themes/ColorSlider/AbstractColorPickerSliderTrackTheme.axaml",
+            TypedControlTheme(
+                "AbstractColorPickerSliderTrack",
+                "Demo.AbstractColorPickerSliderTrackTheme"));
+
+        var result = RunGenerator(
+            compilation,
+            [asset],
+            out var diagnostics,
+            linkedPublish: true,
+            registrationUnits: new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                [asset.Path] = "ColorPicker"
+            });
+
+        diagnostics.ShouldBeEmpty();
+        var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
+        source.ShouldContain("public static partial class GeneratedRegistrationUnit_ColorPicker_");
+        source.ShouldNotContain("builder.AddUnitThemeResource(");
+        source.ShouldNotContain(GetThemeAssetResourceClassName(asset.Path));
+        source.ShouldNotContain("PackageRoot");
     }
 
     [Fact]
@@ -447,9 +746,14 @@ public class ThemeAssetManifestGeneratorTests
 
     private static CSharpCompilation RunGenerator(
         IEnumerable<AdditionalText> assets,
-        out ImmutableArray<Diagnostic> diagnostics)
+        out ImmutableArray<Diagnostic> diagnostics,
+        bool linkedPublish = false)
     {
-        return RunGenerator(CreateCompilation(TokenSource), assets, out diagnostics);
+        return RunGenerator(
+            CreateCompilation(TokenSource),
+            assets,
+            out diagnostics,
+            linkedPublish: linkedPublish);
     }
 
     private static CSharpCompilation RunGenerator(
@@ -457,9 +761,16 @@ public class ThemeAssetManifestGeneratorTests
         IEnumerable<AdditionalText> assets,
         out ImmutableArray<Diagnostic> diagnostics,
         string? projectDirectory = null,
-        string? controlCatalog = null)
+        string? controlCatalog = null,
+        IReadOnlyList<string>? packageSharedThemes = null,
+        bool linkedPublish = false,
+        IReadOnlyDictionary<string, string>? registrationUnits = null)
     {
         var options = new Dictionary<string, string>(StringComparer.Ordinal);
+        if (linkedPublish)
+        {
+            options["build_property.AtomUILinkedPublish"] = "true";
+        }
         if (projectDirectory is not null)
         {
             options["build_property.AtomUIThemeAssetProjectDirectory"] = projectDirectory;
@@ -468,9 +779,14 @@ public class ThemeAssetManifestGeneratorTests
         {
             options["build_property.AtomUIThemeControlCatalog"] = controlCatalog;
         }
-        AnalyzerConfigOptionsProvider? optionsProvider = options.Count == 0
+        if (packageSharedThemes is not null)
+        {
+            options["build_property.AtomUIPackageSharedThemePaths"] =
+                string.Join(";", packageSharedThemes);
+        }
+        AnalyzerConfigOptionsProvider? optionsProvider = options.Count == 0 && registrationUnits is null
             ? null
-            : new TestAnalyzerConfigOptionsProvider(options);
+            : new TestAnalyzerConfigOptionsProvider(options, registrationUnits);
         var driver = CSharpGeneratorDriver.Create(
             [new ThemeAssetManifestGenerator().AsSourceGenerator()],
             assets.ToImmutableArray(),
@@ -486,7 +802,8 @@ public class ThemeAssetManifestGeneratorTests
 
     private static CSharpCompilation CreateCompilation(
         string source,
-        string assemblyName = "ThemeAssetManifestTests")
+        string assemblyName = "ThemeAssetManifestTests",
+        string sourcePath = "TokenSource.cs")
     {
         var references = ((string?)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES"))!
                          .Split(Path.PathSeparator)
@@ -496,7 +813,7 @@ public class ThemeAssetManifestGeneratorTests
         return CSharpCompilation.Create(
             assemblyName,
             [
-                CSharpSyntaxTree.ParseText(source),
+                CSharpSyntaxTree.ParseText(source, path: sourcePath),
                 CSharpSyntaxTree.ParseText(AtomUIStubs)
             ],
             references,
@@ -662,17 +979,29 @@ public class ThemeAssetManifestGeneratorTests
         private static readonly AnalyzerConfigOptions s_empty =
             new TestAnalyzerConfigOptions(new Dictionary<string, string>());
         private readonly AnalyzerConfigOptions _globalOptions;
+        private readonly IReadOnlyDictionary<string, string> _registrationUnits;
 
-        internal TestAnalyzerConfigOptionsProvider(IReadOnlyDictionary<string, string> globalOptions)
+        internal TestAnalyzerConfigOptionsProvider(
+            IReadOnlyDictionary<string, string> globalOptions,
+            IReadOnlyDictionary<string, string>? registrationUnits = null)
         {
             _globalOptions = new TestAnalyzerConfigOptions(globalOptions);
+            _registrationUnits = registrationUnits ?? new Dictionary<string, string>(StringComparer.Ordinal);
         }
 
         public override AnalyzerConfigOptions GlobalOptions => _globalOptions;
 
         public override AnalyzerConfigOptions GetOptions(SyntaxTree tree) => s_empty;
 
-        public override AnalyzerConfigOptions GetOptions(AdditionalText textFile) => s_empty;
+        public override AnalyzerConfigOptions GetOptions(AdditionalText textFile)
+        {
+            return _registrationUnits.TryGetValue(textFile.Path, out var unit)
+                ? new TestAnalyzerConfigOptions(new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    ["build_metadata.AdditionalFiles.AtomUIRegistrationUnit"] = unit
+                })
+                : s_empty;
+        }
     }
 
     private sealed class TestAnalyzerConfigOptions : AnalyzerConfigOptions

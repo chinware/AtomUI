@@ -4,7 +4,7 @@ using Avalonia.LogicalTree;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using AtomUI.Icons.AntDesign;
-using AtomUI.Generated.AtomUI_Desktop_Controls;
+using AtomUI.Generated.AtomUIDesktopControls;
 using AtomUI.Native;
 using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Theme.Resources;

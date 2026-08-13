@@ -49,6 +49,7 @@ docs/
 - [Popup Anchor 作用域检查](engineering/development/popup-anchor-scope.md)
 - [Native 模块](modules/native/overview.md)
 - [Windowing 系统](architecture/systems/windowing/overview.md)
+- [AOT 与裁剪架构](architecture/foundations/aot-and-trimming.md)
 - [AOT 编程规范](engineering/development/aot-programming-guidelines.md)
 - [Control 开发规范](engineering/development/control-development-guidelines.md)
 - [Control 文档规范](engineering/contributing/control-documentation-guidelines.md)

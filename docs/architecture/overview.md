@@ -115,4 +115,5 @@ descriptor 和 ControlTheme asset manifest；本地化链路收集 Catalog、编
 - 平台差异遵守 [运行平台策略](foundations/runtime-platforms.md)。
 - Control 边框遵守 [边框渲染架构](systems/rendering/border-rendering.md)。
 - 跨普通视觉树绘制遵守 [视觉层规范](systems/rendering/visual-layers.md)。
-- AOT、反射、动态数据和生成器规则遵守 [AOT 编程规范](../engineering/development/aot-programming-guidelines.md)。
+- linked publish、Registration Unit、Package fallback 和动态 root 遵守 [AOT 与裁剪架构](foundations/aot-and-trimming.md)；日常 AOT、反射、
+  动态数据和生成器规则遵守 [AOT 编程规范](../engineering/development/aot-programming-guidelines.md)。

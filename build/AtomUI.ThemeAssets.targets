@@ -5,6 +5,8 @@
         <AtomUIThemeAssetProjectDirectory>$(MSBuildProjectDirectory)</AtomUIThemeAssetProjectDirectory>
         <AtomUIThemeControlCatalog
             Condition="'$(AtomUIThemeControlCatalog)' == ''">$(AssemblyName)</AtomUIThemeControlCatalog>
+        <AtomUIPackageSharedThemePaths
+            Condition="'$(AtomUIPackageSharedThemePaths)' == ''">@(AtomUIPackageSharedTheme->'%(Identity)', ';')</AtomUIPackageSharedThemePaths>
         <AtomUIBuildTasksAssembly Condition="'$(AtomUIBuildTasksAssembly)' == '' and '$(AtomUILocalizationBuildTasksAssembly)' != ''">$(AtomUILocalizationBuildTasksAssembly)</AtomUIBuildTasksAssembly>
         <AtomUIBuildTasksAssembly Condition="'$(AtomUIBuildTasksAssembly)' == '' and Exists('$(MSBuildThisFileDirectory)../src/AtomUI.Build.Tasks/AtomUI.Build.Tasks.csproj')">$(MSBuildThisFileDirectory)../output/bin/$(Configuration)/netstandard2.0/AtomUI.Build.Tasks.dll</AtomUIBuildTasksAssembly>
         <AtomUIBuildTasksAssembly Condition="'$(AtomUIBuildTasksAssembly)' == ''">$(MSBuildThisFileDirectory)../tools/netstandard2.0/AtomUI.Build.Tasks.dll</AtomUIBuildTasksAssembly>
@@ -13,7 +15,10 @@
     <ItemGroup>
         <CompilerVisibleProperty Include="AtomUIThemeAssetProjectDirectory" />
         <CompilerVisibleProperty Include="AtomUIThemeControlCatalog" />
+        <CompilerVisibleProperty Include="AtomUIPackageSharedThemePaths" />
         <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Link" />
+        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="AtomUIRegistrationUnit" />
+        <CompilerVisibleItemMetadata Include="Compile" MetadataName="AtomUIRegistrationUnit" />
     </ItemGroup>
 
     <UsingTask TaskName="AtomUI.Build.Tasks.GenerateThemeAssetWrappersTask"

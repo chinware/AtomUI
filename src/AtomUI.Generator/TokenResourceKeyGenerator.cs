@@ -55,7 +55,25 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
 
         var themeAssetsProvider = initContext.AdditionalTextsProvider
             .Where(static text => ThemeAssetInfo.IsThemeAssetPath(text.Path))
-            .Select(static (text, token) => ControlThemeSourceInfo.Create(text, token))
+            .Combine(initContext.AnalyzerConfigOptionsProvider)
+            .Select(static (input, token) =>
+            {
+                input.Right.GlobalOptions.TryGetValue(
+                    "build_property.AtomUIThemeAssetProjectDirectory",
+                    out var projectDirectory);
+                input.Right.GetOptions(input.Left).TryGetValue(
+                    "build_metadata.AdditionalFiles.Link",
+                    out var link);
+                input.Right.GetOptions(input.Left).TryGetValue(
+                    "build_metadata.AdditionalFiles.AtomUIRegistrationUnit",
+                    out var explicitUnit);
+                return ControlThemeSourceInfo.Create(
+                    input.Left,
+                    projectDirectory,
+                    link,
+                    explicitUnit,
+                    token);
+            })
             .Collect();
 
         var tokensProvider = globalTokensProvider.Combine(controlTokensProvider)
@@ -66,7 +84,7 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
                                              .Select(static (input, token) =>
                                                  CreateCompilationInfo(
                                                      input.Left,
-                                                     ThemeGeneratorOptions.GetControlCatalog(input.Right)));
+                                                     input.Right));
         var generationProvider = tokensProvider.Combine(compilationProvider);
 
         initContext.RegisterImplementationSourceOutput(generationProvider, (context, generationInfo) =>
@@ -92,6 +110,9 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
                 combinedInfos.Left.Left.Right,
                 combinedInfos.Right,
                 tokenInfo.AvailableGlobalTokenNames,
+                generationInfo.Right.PackageId,
+                generationInfo.Right.ProjectDirectory,
+                generationInfo.Right.OptionsProvider,
                 context.ReportDiagnostic));
 
             if (tokenInfo.SchemaTokens.Count != 0 ||
@@ -101,6 +122,8 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
                 var schemaWriter = new GeneratedThemeSchemaWriter(
                     context,
                     generationInfo.Right.AssemblyName,
+                    generationInfo.Right.PackageId,
+                    generationInfo.Right.RegistrationEntries.Length != 0,
                     generationInfo.Right.ControlCatalog,
                     tokenInfo.SchemaTokens,
                     tokenInfo.ControlThemeInfos,
@@ -112,7 +135,9 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
             {
                 new ControlPackageRegistrationWriter(
                     context,
-                    generationInfo.Right.AssemblyName).Write();
+                    generationInfo.Right.AssemblyName,
+                    generationInfo.Right.PackageId,
+                    generationInfo.Right.RegistrationEntries).Write();
             }
 
             {
@@ -128,7 +153,7 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
 
     private static ThemeCompilationInfo CreateCompilationInfo(
         Compilation compilation,
-        string controlCatalog)
+        Microsoft.CodeAnalysis.Diagnostics.AnalyzerConfigOptionsProvider optionsProvider)
     {
         var names = compilation.GetTypeByMetadataName("AtomUI.Theme.Resources.SharedTokenKind")?
                                .GetMembers()
@@ -137,10 +162,18 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
                                .Select(static field => field.Name)
                                .OrderBy(static name => name, StringComparer.Ordinal)
                                .ToArray() ?? Array.Empty<string>();
+        var assemblyName = compilation.AssemblyName ?? "AtomUI";
+        optionsProvider.GlobalOptions.TryGetValue(
+            "build_property.AtomUIThemeAssetProjectDirectory",
+            out var projectDirectory);
         return new ThemeCompilationInfo(
             compilation,
-            compilation.AssemblyName ?? "AtomUI",
-            controlCatalog,
-            names);
+            assemblyName,
+            LinkedRegistration.LinkedRegistrationOptions.GetPackageId(optionsProvider, assemblyName),
+            projectDirectory,
+            ThemeGeneratorOptions.GetControlCatalog(optionsProvider),
+            names,
+            optionsProvider,
+            LinkedRegistration.LinkedRegistrationOptions.GetRegistrationEntries(optionsProvider));
     }
 }

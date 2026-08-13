@@ -34,6 +34,7 @@ internal sealed class ResourceKeyClassWriter
         }
 
         foreach (var group in _tokenInfo.ControlThemeInfos
+                                        .Where(static info => info.HasDescriptor)
                                         .GroupBy(static info => $"{info.ControlNamespace}.DesignTokens", StringComparer.Ordinal)
                                         .OrderBy(static group => group.Key, StringComparer.Ordinal))
         {

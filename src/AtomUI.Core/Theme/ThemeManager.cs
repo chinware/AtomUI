@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using AtomUI.Generated.AtomUI_Core;
+using AtomUI.Generated.AtomUICore;
 using AtomUI.Theme.Compilation;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Definitions;

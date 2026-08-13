@@ -1,0 +1,82 @@
+<Project>
+    <PropertyGroup>
+        <AtomUILinkedPublish Condition="'$(AtomUILinkedPublish)' == '' and '$(PublishTrimmed)' == 'true'">true</AtomUILinkedPublish>
+        <AtomUILinkedPublish Condition="'$(AtomUILinkedPublish)' == '' and '$(PublishAot)' == 'true'">true</AtomUILinkedPublish>
+        <AtomUILinkedPublish Condition="'$(AtomUILinkedPublish)' == '' and '$(RunAOTCompilation)' == 'true'">true</AtomUILinkedPublish>
+        <AtomUILinkedPublish Condition="'$(AtomUILinkedPublish)' == '' and '$(AtomUIUseGeneratedRegistration)' == 'true'">true</AtomUILinkedPublish>
+        <AtomUILinkedPublish Condition="'$(AtomUILinkedPublish)' == ''">false</AtomUILinkedPublish>
+        <AtomUIRegistrationPlanOwner
+            Condition="'$(AtomUIRegistrationPlanOwner)' == '' and ('$(OutputType)' == 'Exe' or '$(OutputType)' == 'WinExe')">true</AtomUIRegistrationPlanOwner>
+        <AtomUIRegistrationPlanOwner Condition="'$(AtomUIRegistrationPlanOwner)' == ''">false</AtomUIRegistrationPlanOwner>
+        <_AtomUICollectAxamlUsage
+            Condition="'$(MSBuildProjectName)' != 'AtomUI.Build.Tasks'">true</_AtomUICollectAxamlUsage>
+        <AtomUIAxamlUsageOutputPath
+            Condition="'$(AtomUIAxamlUsageOutputPath)' == ''">$(IntermediateOutputPath)AtomUIAxamlUsage.xml</AtomUIAxamlUsageOutputPath>
+        <AtomUILinkedRegistrationBuildTasksAssembly
+            Condition="'$(AtomUILinkedRegistrationBuildTasksAssembly)' == '' and '$(AtomUIBuildTasksAssembly)' != ''">$(AtomUIBuildTasksAssembly)</AtomUILinkedRegistrationBuildTasksAssembly>
+        <AtomUILinkedRegistrationBuildTasksAssembly
+            Condition="'$(AtomUILinkedRegistrationBuildTasksAssembly)' == '' and '$(AtomUILocalizationBuildTasksAssembly)' != ''">$(AtomUILocalizationBuildTasksAssembly)</AtomUILinkedRegistrationBuildTasksAssembly>
+        <AtomUILinkedRegistrationBuildTasksAssembly
+            Condition="'$(AtomUILinkedRegistrationBuildTasksAssembly)' == '' and Exists('$(MSBuildThisFileDirectory)../src/AtomUI.Build.Tasks/AtomUI.Build.Tasks.csproj')">$(MSBuildThisFileDirectory)../output/bin/$(Configuration)/netstandard2.0/AtomUI.Build.Tasks.dll</AtomUILinkedRegistrationBuildTasksAssembly>
+        <AtomUILinkedRegistrationBuildTasksAssembly
+            Condition="'$(AtomUILinkedRegistrationBuildTasksAssembly)' == ''">$(MSBuildThisFileDirectory)../tools/netstandard2.0/AtomUI.Build.Tasks.dll</AtomUILinkedRegistrationBuildTasksAssembly>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="AtomUIAxamlUsage" />
+    </ItemGroup>
+
+    <UsingTask TaskName="AtomUI.Build.Tasks.CollectAxamlUsageTask"
+               AssemblyFile="$(AtomUILinkedRegistrationBuildTasksAssembly)" />
+    <UsingTask TaskName="AtomUI.Build.Tasks.ValidateAssemblyMetadataMarkerTask"
+               AssemblyFile="$(AtomUILinkedRegistrationBuildTasksAssembly)" />
+
+    <Target Name="CollectAtomUIAxamlUsage"
+            BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;CoreCompile">
+        <PropertyGroup>
+            <_AtomUIHasAxamlUsageInput
+                Condition="'@(AvaloniaXaml)' != '' or '@(AtomUIRegistrationUnitRoot)' != '' or '@(AtomUIPackageRoot)' != ''">true</_AtomUIHasAxamlUsageInput>
+        </PropertyGroup>
+        <Error Condition="'$(_AtomUICollectAxamlUsage)' == 'true' and '$(_AtomUIHasAxamlUsageInput)' == 'true' and !Exists('$(AtomUILinkedRegistrationBuildTasksAssembly)')"
+               Text="AtomUI.Build.Tasks could not be found at '$(AtomUILinkedRegistrationBuildTasksAssembly)'." />
+        <AtomUI.Build.Tasks.CollectAxamlUsageTask AxamlFiles="@(AvaloniaXaml)"
+                                                        ProjectDirectory="$(MSBuildProjectDirectory)"
+                                                        OutputPath="$(AtomUIAxamlUsageOutputPath)"
+                                                        UnitRoots="@(AtomUIRegistrationUnitRoot)"
+                                                        PackageRoots="@(AtomUIPackageRoot)"
+                                                        ProjectPackageId="$(AtomUIRegistrationPackageId)"
+                                                        Condition="'$(_AtomUICollectAxamlUsage)' == 'true' and '$(_AtomUIHasAxamlUsageInput)' == 'true'">
+            <Output TaskParameter="UsageCandidates" ItemName="_AtomUIAxamlUsageCandidate" />
+            <Output TaskParameter="Uncertainties" ItemName="_AtomUIAxamlUsageUncertainty" />
+        </AtomUI.Build.Tasks.CollectAxamlUsageTask>
+        <ItemGroup Condition="'$(_AtomUICollectAxamlUsage)' == 'true' and '$(_AtomUIHasAxamlUsageInput)' == 'true'">
+            <AdditionalFiles Remove="$(AtomUIAxamlUsageOutputPath)" />
+            <AdditionalFiles Include="$(AtomUIAxamlUsageOutputPath)"
+                             AtomUIAxamlUsage="true"
+                             Visible="false" />
+            <FileWrites Include="$(AtomUIAxamlUsageOutputPath)" />
+        </ItemGroup>
+    </Target>
+
+    <ItemGroup Condition="'$(AtomUILinkedPublish)' == 'true' and '$(AtomUIRegistrationPlanOwner)' == 'true'">
+        <RuntimeHostConfigurationOption Include="AtomUI.AotTrimRegistration.Enabled"
+                                        Value="true"
+                                        Trim="true"
+                                        Condition="'$(AtomUILinkedPublish)' == 'true' and '$(AtomUIRegistrationPlanOwner)' == 'true'" />
+    </ItemGroup>
+
+    <Target Name="ValidateAtomUIApplicationRegistrationPlan"
+            BeforeTargets="PrepareForILLink;PrepareForAotCompilation"
+            Condition="'$(AtomUILinkedPublish)' == 'true' and '$(AtomUIRegistrationPlanOwner)' == 'true'">
+        <Error Condition="!Exists('$(AtomUILinkedRegistrationBuildTasksAssembly)')"
+               Text="AtomUI.Build.Tasks could not be found at '$(AtomUILinkedRegistrationBuildTasksAssembly)'." />
+        <AtomUI.Build.Tasks.ValidateAssemblyMetadataMarkerTask
+            AssemblyPath="$(TargetPath)"
+            MarkerKey="AtomUI.Linked.Plan.v1">
+            <Output TaskParameter="MarkerCount"
+                    PropertyName="_AtomUIApplicationPlanMarkerCount" />
+        </AtomUI.Build.Tasks.ValidateAssemblyMetadataMarkerTask>
+        <Error Condition="'$(_AtomUIApplicationPlanMarkerCount)' != '1'"
+               Text="ATOMUILINK001: Linked registration requires exactly one generated Application Plan owner marker." />
+    </Target>
+</Project>

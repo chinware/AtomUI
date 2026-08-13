@@ -6,6 +6,6 @@ internal class AtomUIColorPickerThemesProvider : ControlThemesProvider
 {
     public AtomUIColorPickerThemesProvider()
     {
-        Id = "AtomUI.Desktop.Controls.ColorPicker";
+        Id = ColorPickerThemeManagerBuilderExtensions.PackageId;
     }
 }

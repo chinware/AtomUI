@@ -1,0 +1,21 @@
+<Project>
+    <Import Project="$(MSBuildThisFileDirectory)AtomUI.Generator.props"
+            Condition="'$(AtomUIGeneratorPropsImported)' != 'true'" />
+
+    <Import Project="$(MSBuildThisFileDirectory)AtomUI.Generator.targets"
+            Condition="'$(AtomUIGeneratorTargetsImported)' != 'true'" />
+
+    <Target Name="AtomUIAddEmbeddedGeneratorAnalyzer"
+            BeforeTargets="CoreCompile"
+            DependsOnTargets="ResolveReferences">
+        <ItemGroup>
+            <_AtomUIExistingGeneratorAnalyzer Include="@(Analyzer)"
+                                              Condition="'%(Filename)' == 'AtomUI.Generator'" />
+            <Analyzer Include="$(MSBuildThisFileDirectory)../tools/netstandard2.0/AtomUI.Generator.dll"
+                      Condition="'@(_AtomUIExistingGeneratorAnalyzer)' == ''" />
+        </ItemGroup>
+        <PropertyGroup>
+            <AtomUIGeneratorAnalyzerImported>true</AtomUIGeneratorAnalyzerImported>
+        </PropertyGroup>
+    </Target>
+</Project>

@@ -7,6 +7,8 @@
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
         <AtomUIGenerateControlThemeAssetResources>true</AtomUIGenerateControlThemeAssetResources>
+        <AtomUIRegistrationPackageId>$(AssemblyName)</AtomUIRegistrationPackageId>
+        <AtomUIRegistrationEntries>AtomUI.Desktop.Controls.ColorPickerThemeManagerBuilderExtensions.UseDesktopColorPicker</AtomUIRegistrationEntries>
         <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
         <RootNamespace>AtomUI.Desktop.Controls</RootNamespace>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -14,6 +16,11 @@
 
     <ItemGroup>
         <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AvaloniaXaml Update="Themes/ColorSlider/AbstractColorPickerSliderTrackTheme.axaml;Themes/ColorSlider/ColorPickerSliderTrackTheme.axaml;Themes/ColorSlider/ColorSliderTrackButtonTheme.axaml;Themes/ColorSlider/GradientColorPickerTrackTheme.axaml;Themes/ColorView/ColorPickerInput.axaml"
+                       AtomUIRegistrationUnit="ColorPicker" />
     </ItemGroup>
 
     <ItemGroup>

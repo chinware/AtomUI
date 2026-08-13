@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Shouldly;
 using Xunit;
 
@@ -74,15 +75,21 @@ public class ThemeSchemaGeneratorTests
         source.ShouldNotContain("999");
     }
 
-    [Fact]
-    public void Generated_Namespace_Uses_One_Owner_Identifier_Instead_Of_Assembly_Name_Segments()
+    [Theory]
+    [InlineData("AtomUI.Desktop.Controls.DataGrid", "AtomUIDesktopControlsDataGrid")]
+    [InlineData("acme-controls_package", "AcmeControlsPackage")]
+    [InlineData("123.Controls", "Assembly123Controls")]
+    public void Generated_Namespace_Uses_One_Pascal_Owner_Identifier_Without_Separators(
+        string assemblyName,
+        string expectedOwnerIdentifier)
     {
-        var compilation = CreateCompilation(TokenSource, "AtomUI.Desktop.Controls.DataGrid");
+        var compilation = CreateCompilation(TokenSource, assemblyName);
         var outputCompilation = RunGenerator(compilation, out var diagnostics);
 
         diagnostics.ShouldBeEmpty();
         var source = GetGeneratedSource(outputCompilation, "GeneratedThemeSchema.g.cs");
-        source.ShouldContain("namespace AtomUI.Generated.AtomUI_Desktop_Controls_DataGrid;");
+        source.ShouldContain($"namespace AtomUI.Generated.{expectedOwnerIdentifier};");
+        source.ShouldNotContain("namespace AtomUI.Generated._");
     }
 
     [Fact]
@@ -148,17 +155,221 @@ public class ThemeSchemaGeneratorTests
         source.ShouldNotContain("AddLanguageProviders");
     }
 
+    [Fact]
+    public void Generates_A_Linkable_Registration_Unit_Without_Referencing_The_Full_Schema()
+    {
+        var outputCompilation = RunGenerator(CreateCompilation(TokenSource), out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+        var source = GetGeneratedSource(
+            outputCompilation,
+            "GeneratedRegistrationUnits.g.cs");
+
+        source.ShouldContain("namespace AtomUI.Generated.ThemeSchemaGeneratorTests.LinkedRegistrationV1;");
+        source.ShouldContain("EditorBrowsableState.Never");
+        source.ShouldContain("public static partial class GeneratedRegistrationUnit_Button_");
+        source.ShouldContain("public static void Add(");
+        source.ShouldContain("global::AtomUI.Registration.AotTrimControlPackageRegistrationBuilder builder");
+        source.ShouldContain("builder.TryEnterUnit(\"ThemeSchemaGeneratorTests/Button\")");
+        source.ShouldContain("builder.AddControl(");
+        source.ShouldContain("typeof(global::Demo.Button)");
+        source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.Unit.v1\"");
+        source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.ControlMap.v1\"");
+        source.ShouldNotContain("AssemblyMetadata(\"AtomUI.Linked.Control.v1\"");
+        source.ShouldNotContain("GeneratedThemeSchema.GetControls()");
+        source.ShouldNotContain("s_controls");
+    }
+
+    [Fact]
+    public void Groups_Controls_From_The_Same_Source_Directory_Into_One_Unit()
+    {
+        var compilation = CreateCompilation(
+            """
+            namespace Demo;
+            public sealed class DatePicker : Avalonia.Controls.Control { }
+            """,
+            "ThemeSchemaGeneratorTests",
+            "DatePicker/DatePicker.cs").AddSyntaxTrees(
+                CSharpSyntaxTree.ParseText(
+                    """
+                    namespace Demo;
+                    public sealed class RangeDatePicker : Avalonia.Controls.Control { }
+                    """,
+                    path: "DatePicker/RangeDatePicker.cs",
+                    cancellationToken: TestContext.Current.CancellationToken));
+        var outputCompilation = RunGenerator(
+            compilation,
+            out var diagnostics,
+            new InMemoryAdditionalText(
+                "DatePicker/Themes/DatePickerTheme.axaml",
+                "<ControlTheme xmlns=\"https://github.com/avaloniaui\" TargetType=\"Demo.DatePicker\" />"),
+            new InMemoryAdditionalText(
+                "DatePicker/Themes/RangeDatePickerTheme.axaml",
+                "<ControlTheme xmlns=\"https://github.com/avaloniaui\" TargetType=\"Demo.RangeDatePicker\" />"));
+
+        diagnostics.ShouldBeEmpty();
+        var source = GetGeneratedSource(outputCompilation, "GeneratedRegistrationUnits.g.cs");
+        source.Split("public static partial class GeneratedRegistrationUnit_DatePicker_", StringSplitOptions.None)
+              .Length.ShouldBe(2);
+        source.ShouldContain("Demo.DatePicker");
+        source.ShouldContain("Demo.RangeDatePicker");
+        source.ShouldContain("typeof(global::Demo.DatePicker)");
+        source.ShouldContain("typeof(global::Demo.RangeDatePicker)");
+    }
+
+    [Fact]
+    public void Maps_Every_Public_Control_Without_Adding_A_Descriptor_For_Descriptorless_Controls()
+    {
+        var compilation = CreateCompilation(
+            TokenSource,
+            sourcePath: "Button/ButtonToken.cs").AddSyntaxTrees(
+                CSharpSyntaxTree.ParseText(
+                    """
+                    namespace Demo;
+                    public sealed class LayoutProbe : Avalonia.Controls.Control { }
+                    """,
+                    path: "Layout/LayoutProbe.cs",
+                    cancellationToken: TestContext.Current.CancellationToken));
+
+        var outputCompilation = RunGenerator(compilation, out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+        var unitsSource = GetGeneratedSource(outputCompilation, "GeneratedRegistrationUnits.g.cs");
+        unitsSource.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.ControlMap.v1\"");
+        unitsSource.ShouldContain("Demo.LayoutProbe");
+        unitsSource.ShouldContain("ThemeSchemaGeneratorTests%2FLayout");
+        unitsSource.ShouldContain("public static partial class GeneratedRegistrationUnit_Layout_");
+        unitsSource.ShouldNotContain("typeof(global::Demo.LayoutProbe)");
+
+        var schemaSource = GetGeneratedSource(outputCompilation, "GeneratedThemeSchema.g.cs");
+        schemaSource.ShouldNotContain("typeof(global::Demo.LayoutProbe)");
+    }
+
+    [Fact]
+    public void Does_Not_Emit_Linked_Registration_Metadata_Without_A_Package_Entry()
+    {
+        var outputCompilation = RunGenerator(
+            CreateCompilation(TokenSource),
+            out var diagnostics,
+            includeRegistrationEntry: false);
+
+        diagnostics.ShouldBeEmpty();
+        GetGeneratedSource(outputCompilation, "GeneratedThemeSchema.g.cs")
+            .ShouldContain("typeof(global::Demo.Button)");
+        outputCompilation.SyntaxTrees.ShouldNotContain(tree =>
+            tree.FilePath.EndsWith("GeneratedRegistrationUnits.g.cs", StringComparison.Ordinal));
+        outputCompilation.SyntaxTrees.ShouldNotContain(tree =>
+            tree.FilePath.EndsWith(
+                "GeneratedFullControlPackageRegistrationFragment.g.cs",
+                StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Does_Not_Claim_ControlMap_Ownership_For_A_Referenced_Control()
+    {
+        var references = ((string?)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES"))!
+                         .Split(Path.PathSeparator)
+                         .Select(path => MetadataReference.CreateFromFile(path))
+                         .Cast<MetadataReference>()
+                         .ToImmutableArray();
+        var avaloniaControls = CSharpCompilation.Create(
+            "Avalonia.Controls",
+            [CSharpSyntaxTree.ParseText(
+                """
+                namespace Avalonia.Controls;
+                public class Control { }
+                """,
+                cancellationToken: TestContext.Current.CancellationToken)],
+            references,
+            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+            .ToMetadataReference();
+        var commonControls = CSharpCompilation.Create(
+            "AtomUI.Controls",
+            [CSharpSyntaxTree.ParseText(
+                """
+                [assembly: System.Reflection.AssemblyMetadata("AtomUIThemeControlCatalog", "AtomUI")]
+                namespace AtomUI.Controls;
+                public class SharedControl : Avalonia.Controls.Control { }
+                """,
+                cancellationToken: TestContext.Current.CancellationToken)],
+            references.Add(avaloniaControls),
+            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+            .ToMetadataReference();
+        var compilation = CreateCompilation(
+            """
+            namespace Demo;
+            public sealed class LocalControl : Avalonia.Controls.Control { }
+            """,
+            sourcePath: "Local/LocalControl.cs")
+            .RemoveAllReferences()
+            .AddReferences(references)
+            .AddReferences(avaloniaControls, commonControls);
+
+        var outputCompilation = RunGenerator(
+            compilation,
+            out var diagnostics,
+            new InMemoryAdditionalText(
+                "Local/Themes/SharedControlTheme.axaml",
+                "<ControlTheme xmlns=\"https://github.com/avaloniaui\" TargetType=\"AtomUI.Controls.SharedControl\" />"));
+
+        diagnostics.ShouldBeEmpty();
+        var source = GetGeneratedSource(outputCompilation, "GeneratedRegistrationUnits.g.cs");
+        source.ShouldContain("typeof(global::AtomUI.Controls.SharedControl)");
+        source.ShouldNotContain("AtomUI.Controls.SharedControl|ThemeSchemaGeneratorTests%2FLocal");
+        source.ShouldContain("Demo.LocalControl");
+    }
+
+    [Fact]
+    public void Generates_A_Public_Hidden_Full_Registration_Fragment()
+    {
+        var outputCompilation = RunGenerator(
+            CreateCompilation(TokenSource),
+            out var diagnostics,
+            new InMemoryAdditionalText(
+                "Button/Themes/ButtonTheme.axaml",
+                "<ControlTheme xmlns=\"https://github.com/avaloniaui\" TargetType=\"Demo.Button\" />"));
+
+        diagnostics.ShouldBeEmpty();
+        var source = GetGeneratedSource(
+            outputCompilation,
+            "GeneratedFullControlPackageRegistrationFragment.g.cs");
+
+        source.ShouldContain("public static class GeneratedFullControlPackageRegistrationFragment");
+        source.ShouldContain("EditorBrowsableState.Never");
+        source.ShouldContain("GeneratedControlPackageRegistration.Register(");
+        source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.Package.v1\"");
+    }
+
     private static CSharpCompilation RunGenerator(
         CSharpCompilation compilation,
         out ImmutableArray<Diagnostic> diagnostics,
         params AdditionalText[] additionalTexts)
     {
+        return RunGenerator(
+            compilation,
+            out diagnostics,
+            includeRegistrationEntry: true,
+            additionalTexts);
+    }
+
+    private static CSharpCompilation RunGenerator(
+        CSharpCompilation compilation,
+        out ImmutableArray<Diagnostic> diagnostics,
+        bool includeRegistrationEntry,
+        params AdditionalText[] additionalTexts)
+    {
         var cancellationToken = TestContext.Current.CancellationToken;
+        AnalyzerConfigOptionsProvider? optionsProvider = includeRegistrationEntry
+            ? new TestAnalyzerConfigOptionsProvider(new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["build_property.AtomUIRegistrationEntries"] = "Demo.ThemeManagerBuilderExtensions.UseControls"
+            })
+            : null;
         var driver = CSharpGeneratorDriver.Create(
             [new TokenResourceKeyGenerator().AsSourceGenerator()],
             additionalTexts.ToImmutableArray(),
             (CSharpParseOptions)compilation.SyntaxTrees[0].Options,
-            null);
+            optionsProvider);
 
         driver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out diagnostics, cancellationToken);
         return (CSharpCompilation)outputCompilation;
@@ -174,7 +385,8 @@ public class ThemeSchemaGeneratorTests
 
     private static CSharpCompilation CreateCompilation(
         string source,
-        string assemblyName = "ThemeSchemaGeneratorTests")
+        string assemblyName = "ThemeSchemaGeneratorTests",
+        string sourcePath = "TokenSource.cs")
     {
         var references = ((string?)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES"))!
                          .Split(Path.PathSeparator)
@@ -184,7 +396,7 @@ public class ThemeSchemaGeneratorTests
 
         return CSharpCompilation.Create(
             assemblyName,
-            [CSharpSyntaxTree.ParseText(source), CSharpSyntaxTree.ParseText(AtomUIStubs)],
+            [CSharpSyntaxTree.ParseText(source, path: sourcePath), CSharpSyntaxTree.ParseText(AtomUIStubs)],
             references,
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
     }
@@ -307,6 +519,18 @@ public class ThemeSchemaGeneratorTests
                 }
             }
 
+        }
+
+        namespace AtomUI.Registration
+        {
+            public sealed class AotTrimControlPackageRegistrationBuilder
+            {
+                public bool TryEnterUnit(string unitId) => true;
+
+                public void AddControl(AtomUI.Theme.Schema.ControlTokenDescriptor descriptor)
+                {
+                }
+            }
         }
 
         namespace AtomUI.Theme.Resources
@@ -523,6 +747,39 @@ public class ThemeSchemaGeneratorTests
             CancellationToken cancellationToken = default)
         {
             return _text;
+        }
+    }
+
+    private sealed class TestAnalyzerConfigOptionsProvider : AnalyzerConfigOptionsProvider
+    {
+        private static readonly AnalyzerConfigOptions s_empty =
+            new TestAnalyzerConfigOptions(new Dictionary<string, string>());
+        private readonly AnalyzerConfigOptions _globalOptions;
+
+        internal TestAnalyzerConfigOptionsProvider(IReadOnlyDictionary<string, string> globalOptions)
+        {
+            _globalOptions = new TestAnalyzerConfigOptions(globalOptions);
+        }
+
+        public override AnalyzerConfigOptions GlobalOptions => _globalOptions;
+
+        public override AnalyzerConfigOptions GetOptions(SyntaxTree tree) => s_empty;
+
+        public override AnalyzerConfigOptions GetOptions(AdditionalText textFile) => s_empty;
+    }
+
+    private sealed class TestAnalyzerConfigOptions : AnalyzerConfigOptions
+    {
+        private readonly IReadOnlyDictionary<string, string> _values;
+
+        internal TestAnalyzerConfigOptions(IReadOnlyDictionary<string, string> values)
+        {
+            _values = values;
+        }
+
+        public override bool TryGetValue(string key, out string value)
+        {
+            return _values.TryGetValue(key, out value!);
         }
     }
 }

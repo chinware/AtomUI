@@ -1,6 +1,7 @@
 # AtomUI AOT 编程规范
 
-这份文档给日常写 AtomUI 代码的人用。它不是 AOT 改造记录，而是以后新增控件、主题、图标、语言资源、Gallery 示例和发布配置时要遵守的规则。
+这份文档给日常写 AtomUI 代码的人用。它不是 AOT 改造记录，而是以后新增控件、主题、图标、语言资源、Gallery 示例和发布配置时要遵守的规则。linked publish 的系统架构、模式矩阵、Registration Unit 和安全 fallback 由
+[AOT 与裁剪架构](../../architecture/foundations/aot-and-trimming.md)统一定义，本文不复制其长期契约。
 
 目标很简单：
 
@@ -182,10 +183,23 @@ SG 的价值不是“把反射挪个地方”，而是让运行时代码变成�
 `PublishAot=true` 是 MSBuild global property，会沿着 `ProjectReference` 传播。generator 是 `netstandard2.0` analyzer 项目，不应该参与 NativeAOT 发布，所以 generator 项目要把这些属性隔离在本项目内：
 
 ```xml
-TreatAsLocalProperty="IsAotCompatible;EnableAotAnalyzer;EnableTrimAnalyzer;EnableSingleFileAnalyzer;PublishAot;PublishTrimmed;PublishSingleFile;SelfContained;RuntimeIdentifier"
+TreatAsLocalProperty="IsAotCompatible;EnableAotAnalyzer;EnableTrimAnalyzer;EnableSingleFileAnalyzer;PublishAot;PublishTrimmed;PublishSingleFile;RunAOTCompilation;SelfContained;RuntimeIdentifier"
 ```
 
 并且在 generator 项目里显式关闭运行时发布属性。
+
+第一方用户不需要为了 AOT 或 trimming 额外引用 `AtomUI.Generator`。声明 `AtomUIRegistrationPackageId` 的产品包会在
+NuGet 中内嵌同版本 Generator、Build Tasks 和 buildTransitive assets。现有应用保留显式 Generator PackageReference
+仍然受支持，但最终 `@(Analyzer)` 中只能有一份 `AtomUI.Generator.dll`。
+
+维护这条打包链时遵守以下约束：
+
+- Generator 和 Build Tasks 只能进入 NuGet 的编译期目录，不能进入 `lib/`、普通输出或 publish 目录。
+- 多个产品包的入口必须幂等；Analyzer 去重依据 `ResolveReferences` 后的最终编译器输入。
+- MSBuild 项目求值阶段的 `Import`、`ItemGroup` 或 item Condition 不得引用 item list；需要检查 `@(Analyzer)` 时放入
+  `BeforeTargets="CoreCompile"` 的 Target。
+- Release 打包必须先用相同 `AtomUIVersion` 构建 Generator/Build Tasks；修改版本后不能用 `--no-build` 复用旧输出。
+- 验证至少覆盖只引用一个产品包、多个产品包并存、保留显式 Generator 引用、普通非裁剪构建和真实 NativeAOT publish。
 
 ### 生成物必须稳定
 
@@ -195,6 +209,73 @@ TreatAsLocalProperty="IsAotCompatible;EnableAotAnalyzer;EnableTrimAnalyzer;Enabl
 - `GeneratedFiles/AtomUI.Generator/**` 里的生成物是不是能由当前 writer 稳定复现。
 
 不能只手改生成物，也不能只改 generator 却不检查生成物 diff。之前 review 里已经出现过 generator writer 和提交的生成物不一致，这类问题会让后续维护很难判断真实来源。
+
+包级生成代码统一位于 `AtomUI.Generated.<AssemblyOwner>`。`AssemblyOwner` 必须是由程序集名生成的单一 PascalCase
+标识符，点号、连字符、下划线和其他非字母数字字符只作为单词边界，不进入最终标识符。例如：
+
+```text
+AtomUI.Controls                  -> AtomUI.Generated.AtomUIControls
+AtomUI.Desktop.Controls         -> AtomUI.Generated.AtomUIDesktopControls
+AtomUI.Desktop.Controls.DataGrid -> AtomUI.Generated.AtomUIDesktopControlsDataGrid
+```
+
+Source Generator、Localization writer、Linked Registration metadata 和 AXAML Theme wrapper Build Task 必须复用同一
+命名 helper，不得各自维护 sanitizer。手写代码引用生成入口时必须引用当前项目自己的 owner namespace；禁止依赖
+`InternalsVisibleTo` 从其他 AtomUI 包调用同名 `Generated*` 类型，因为这种错误可能正常编译却注册错误 Package。
+
+### Linked registration
+
+`PublishTrimmed=true`、`PublishAot=true` 和 WebAssembly `RunAOTCompilation=true` 使用同一套生成式 Registration Unit
+计划。Control descriptor、Own Token schema、内部控件和控件族专属 Theme Asset factory 必须能聚合为 linker
+可独立删除的 Unit；不得新增全包静态数组、全资产 `switch` 或“构造全集后过滤”的 linked 路径。
+
+Language Catalog、内置 Translation Bundle、Dialog/Tooltip/Motion/Responsive 初始化、Global Token、Theme Algorithm、
+Provider 和平台 selector 属于 Package Core，不为它们创建细粒度 fragment。跨多个 Unit 的共享主题资源必须通过
+`AtomUIPackageSharedTheme` 显式声明；owner 解析失败不得自动归类为共享资源。
+
+普通 AXAML/C# 使用由 Generator 自动发现。`AtomUIRegistrationUnitRoot` 和 `AtomUIPackageRoot` 只用于类型字符串、Loose
+AXAML、动态插件等编译期无法确定的场景，不能成为普通 Control 接入步骤。无法可靠确定 Unit 时应在编译期只把对应
+Package 扩大为 full fallback 并给出诊断，不能依赖运行时反射或 late registration 修补。
+
+Package Theme 的模板中如果直接实例化另一个 AtomUI Control，该元素必须能通过 `using:`、`clr-namespace:` 或当前
+程序集 `XmlnsDefinition` 精确解析，Generator 会生成同 Package Unit 的直接依赖。不要依赖短类型名猜测，也不要把模板
+元素依赖写进 Theme Asset descriptor 的 referenced identities；后者会改变普通非裁剪 schema 和 fingerprint。
+
+ControlMap 是 CLR Control ownership，不是 descriptor 清单。定义程序集里的 public、非泛型 Control 即使没有 Theme
+descriptor，也要归入 Registration Unit 并拥有 ControlMap；只有原本可主题化的 Control 才能进入 `builder.AddControl`。
+引用程序集不得重复输出 ControlMap。纯基础设施程序集没有 package registration entry 时，不应生成 Unit/ControlMap。
+
+类库在普通构建中仍必须生成 PackageRoot fallback metadata，供最终 linked 应用聚合；不要用当前项目未开启 trim/AOT
+作为跳过 metadata 的条件。`ATOMUILINK002` 和 `ATOMUILINK007` 只在 linked publish 或
+`AtomUIRegistrationStrict=true` 时显示，普通非裁剪构建不得因这些发布期 fallback 产生 warning。strict 模式仍用于在
+CI 中把自动 full fallback 提升为 error。
+
+修改 Generator ABI、Manifest schema、feature switch 或 Public fragment entry point 时，按 Public API 和版本化协议
+review，并运行 trimmed JIT、NativeAOT 和非裁剪兼容验证。
+
+内部 resource-only Theme 无法按目录推导到正确 Unit 时，使用 `AtomUIRegistrationUnit` metadata 明确归属，不要把它
+升级为 `AtomUIPackageSharedTheme`。抽象 typed theme 没有 generated resource wrapper 时，不得生成虚假的 wrapper 调用；
+应由同 Unit 的具体资源静态保留。
+
+### AOT/Trim 注册命名
+
+AOT/Trim 注册是发布基础设施，不是通用运行时 feature。`AtomUI.Core` 中跨程序集使用的隐藏 ABI 统一位于
+`AtomUI.Registration` 命名空间，并采用以下命名：
+
+```text
+AotTrimRegistration
+AotTrimControlPackageRegistrationBuilder
+AotTrimRegistrationPlan
+AotTrimRegistrationPlanRegistry
+```
+
+`AotTrimRegistration.IsEnabled` 只读取发布期标记；它不负责执行裁剪、发现控件或安装注册计划。对应的全局
+AppContext key 为 `AtomUI.AotTrimRegistration.Enabled`。类型名不重复 `AtomUI`，因为命名空间已经提供产品边界；
+AppContext key 则必须保留 `AtomUI` 前缀，因为它是进程级字符串协议。
+
+`GeneratedApplicationRegistrationPlan`、`Generated*UnitFragment` 等 `Generated*` 名称仅限 Generator 生成的内部输出，
+不要把它们作为运行时 ABI 的通用命名。Generator 内部协议类型可以使用 `LinkedRegistration*`，Build Task 使用
+`CollectAxamlUsageTask`、`ValidateAssemblyMetadataMarkerTask` 这类动作导向名称。
 
 ## Theme / Token
 
@@ -463,11 +544,11 @@ observable.ToProperty(...);
 
 `GalleryBindingUtils.BindCommand` dispose 时要恢复绑定前 command，避免 activation scope 结束后留下旧 command。
 
-## Publish / NativeAOT
+## Publish / trimming / NativeAOT
 
 ### Analyzer 和真实 publish 都要跑
 
-AOT analyzer 通过，只说明静态分析没有发现项目自身 warning。它不等于 NativeAOT 链接一定成功。涉及发布配置或 native 依赖时，要做真实 publish。
+AOT/trim analyzer 通过，只说明静态分析没有发现项目自身 warning。它不等于 trimmed JIT 或 NativeAOT 链接和运行一定成功。涉及 Registration Unit、Package fallback、发布配置或 native 依赖时，要做对应模式的真实 publish。
 
 Windows 11 上 Gallery Desktop 的 NativeAOT 工具链、发布命令、产物验证和排障记录见 [Windows NativeAOT 发布](../platforms/windows-native-aot-publish.md)。Linux 平台的对应手册见 [Linux NativeAOT 发布](../platforms/linux-native-aot-publish.md)。
 
@@ -501,20 +582,40 @@ dotnet publish controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj
   --nologo -v:minimal
 ```
 
+Linked registration 完整回归与体积门槛：
+
+```bash
+build/scripts/verify-aot-trim-registration.sh --full
+```
+
+脚本成功仍不能代替 Gallery Desktop 启动 smoke。Theme template 可以静态保留 CLR 类型而漏注册它的 descriptor；这类错误
+只有窗口模板应用和首帧布局实际运行时才会暴露。发布后至少确认进程稳定进入主窗口，无 active theme schema、资源加载或
+initializer 异常，再主动终止 smoke 进程。
+
 ### macOS NativeAOT
 
 当前 macOS 本机发布使用：
 
 ```xml
 <ItemGroup Condition="'$(PublishAot)' == 'true' and $([MSBuild]::IsOSPlatform('OSX'))">
-    <LinkerArg Include="-L/opt/homebrew/lib" Condition="Exists('/opt/homebrew/lib/libssl.dylib')"/>
+    <LinkerArg Include="-L/opt/homebrew/lib"
+               Condition="Exists('/opt/homebrew/lib/libbrotlienc.dylib')"/>
+    <LinkerArg Include="-L/opt/homebrew/opt/openssl@3/lib"
+               Condition="Exists('/opt/homebrew/opt/openssl@3/lib/libssl.dylib')"/>
+    <LinkerArg Include="-L/usr/local/lib"
+               Condition="Exists('/usr/local/lib/libbrotlienc.dylib')"/>
+    <LinkerArg Include="-L/usr/local/opt/openssl@3/lib"
+               Condition="Exists('/usr/local/opt/openssl@3/lib/libssl.dylib')"/>
 </ItemGroup>
 ```
 
 原因：
 
 - NativeAOT 链接 `System.Net.Security.Native` 时需要 `libssl` / `libcrypto`。
-- Homebrew OpenSSL 默认在 `/opt/homebrew/lib`，默认 linker 搜索路径可能找不到。
+- NativeAOT 链接 `System.IO.Compression.Native` 时还需要 Brotli 原生库。
+- Apple Silicon Homebrew 的通用库目录通常是 `/opt/homebrew/lib`，`openssl@3` keg-only 库位于
+  `/opt/homebrew/opt/openssl@3/lib`；Intel Homebrew 对应 `/usr/local` 路径。默认 linker 搜索路径可能找不到这些库。
+- 仓库内验证统一复用 `build/AtomUI.NativeAot.MacOS.targets`，不要在各 fixture 中重复硬编码路径。
 
 注意：
 
@@ -538,6 +639,10 @@ dotnet publish controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj
 - 为什么不能通过静态引用或 generator 保留。
 - preserve 范围为什么不能更小。
 - 是否会明显扩大 NativeAOT 体积。
+
+AtomUI linked registration 的 `AtomUIRegistrationUnitRoot` 和 `AtomUIPackageRoot` 是生成器语义 root，不是 linker XML
+的替代写法。它们只用于应用动态输入，并由 Application Registration Plan 展开为强类型 Unit 调用或 Package full
+fallback；不要把包级 `preserve="All"` 搬进 `Roots.xml` 来绕过 Manifest、Unit 归属或 fallback 缺陷。
 
 ### Browser WebAssembly 发布
 

@@ -46,6 +46,8 @@ public class LanguageCatalogSourceGeneratorTests
         var execution = RunGenerator();
 
         execution.Result.GeneratedSources.Length.ShouldBe(3);
+        execution.Result.GeneratedSources.ShouldNotContain(source =>
+            source.HintName.Contains("LinkedLanguageCatalogRegistration", StringComparison.Ordinal));
         execution.DriverDiagnostics.ShouldBeEmpty();
         execution.OutputCompilation.GetDiagnostics(TestContext.Current.CancellationToken)
                  .Where(static diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)

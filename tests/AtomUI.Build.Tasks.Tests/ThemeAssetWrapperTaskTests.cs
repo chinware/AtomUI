@@ -58,6 +58,11 @@ public sealed class ThemeAssetWrapperTaskTests : IDisposable
             item.GetMetadata("Link") == $"AtomUI.Generated/{className}_Deferred.axaml");
 
         var wrapper = XDocument.Load(Path.Combine(outputDirectory, $"{className}.axaml"));
+        wrapper.Root.ShouldNotBeNull()
+               .Attribute(XName.Get("Class", "http://schemas.microsoft.com/winfx/2006/xaml"))
+               .ShouldNotBeNull()
+               .Value
+               .ShouldBe($"AtomUI.Generated.AcmeControls.{className}");
         wrapper.Descendants()
                .Single(element => element.Name.LocalName == "ResourceInclude")
                .Attribute("Source")
@@ -75,8 +80,10 @@ public sealed class ThemeAssetWrapperTaskTests : IDisposable
              .ShouldBe("{x:Type controls:Button}");
         theme.Attribute("TargetType").ShouldNotBeNull().Value.ShouldBe("controls:Button");
 
-        File.ReadAllText(generatedCodePath)
-            .ShouldContain($"internal sealed class {className} : global::Avalonia.Controls.ResourceDictionary");
+        var generatedCode = File.ReadAllText(generatedCodePath);
+        generatedCode.ShouldContain("namespace AtomUI.Generated.AcmeControls;");
+        generatedCode.ShouldContain(
+            $"internal sealed class {className} : global::Avalonia.Controls.ResourceDictionary");
     }
 
     public void Dispose()

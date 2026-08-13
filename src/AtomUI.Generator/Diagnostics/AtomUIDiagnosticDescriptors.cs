@@ -5,6 +5,78 @@ namespace AtomUI.Generator.Diagnostics;
 #pragma warning disable RS2008
 internal static class AtomUIDiagnosticDescriptors
 {
+    public static readonly DiagnosticDescriptor LinkedPlanOwner = new(
+        AtomUIDiagnosticIds.LinkedPlanOwner,
+        "Linked registration requires one application plan owner",
+        "Linked registration requires exactly one Application Plan owner; detected '{0}'",
+        AtomUIDiagnosticCategories.LinkedRegistration,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LinkedDynamicUsageWidened = new(
+        AtomUIDiagnosticIds.LinkedDynamicUsageWidened,
+        "Dynamic AtomUI usage requires package fallback",
+        "AtomUI dynamic usage '{0}' cannot be resolved to a Registration Unit; Package '{1}' uses full fallback. Add an AtomUIRegistrationUnitRoot when the Unit is known, or an AtomUIPackageRoot for fully dynamic usage.",
+        AtomUIDiagnosticCategories.LinkedRegistration,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LinkedLegacyPackageFallback = new(
+        AtomUIDiagnosticIds.LinkedLegacyPackageFallback,
+        "Legacy package requires full linked-registration fallback",
+        "Package '{0}' has no compatible linked manifest and requires full fallback. Add <AtomUIPackageRoot Include=\"{0}\" /> or upgrade the package.",
+        AtomUIDiagnosticCategories.LinkedRegistration,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LinkedExplicitRootInvalid = new(
+        AtomUIDiagnosticIds.LinkedExplicitRootInvalid,
+        "Explicit AtomUI linked-registration root is invalid",
+        "Explicit {0} root '{1}' cannot be resolved. Use AtomUIRegistrationUnitRoot for a known Unit or AtomUIPackageRoot for a full Package.",
+        AtomUIDiagnosticCategories.LinkedRegistration,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LinkedPackageDefinitionInvalid = new(
+        AtomUIDiagnosticIds.LinkedPackageDefinitionInvalid,
+        "AtomUI Registration Unit or PackageShared definition is invalid",
+        "Package '{0}' contains an invalid Registration Unit or PackageShared definition: {1}",
+        AtomUIDiagnosticCategories.LinkedRegistration,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LinkedManifestVersionMismatch = new(
+        AtomUIDiagnosticIds.LinkedManifestVersionMismatch,
+        "AtomUI linked-registration input is incompatible",
+        "Linked-registration input '{0}' is incompatible or malformed: {1}",
+        AtomUIDiagnosticCategories.LinkedRegistration,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LinkedLooseAxamlWidened = new(
+        AtomUIDiagnosticIds.LinkedLooseAxamlWidened,
+        "Loose AXAML or dynamic theme requires package fallback",
+        "Dynamic resource source '{0}' can load Package '{1}'; that Package uses full fallback. Add <AtomUIPackageRoot Include=\"{1}\" /> to declare the boundary explicitly.",
+        AtomUIDiagnosticCategories.LinkedRegistration,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor LinkedPackageEntryMissing = new(
+        AtomUIDiagnosticIds.LinkedPackageEntryMissing,
+        "AtomUI package usage has no registration entry",
+        "Package '{0}' is used by '{1}', but its UseXxxControls() registration entry is not invoked",
+        AtomUIDiagnosticCategories.LinkedRegistration,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
     public static readonly DiagnosticDescriptor AotMissingGeneratedAccessor = new(
         AtomUIDiagnosticIds.AotMissingGeneratedAccessor,
         "AOT-sensitive data member path requires generated accessor",

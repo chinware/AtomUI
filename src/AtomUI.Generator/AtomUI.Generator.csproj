@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk"
-         TreatAsLocalProperty="IsAotCompatible;EnableAotAnalyzer;EnableTrimAnalyzer;EnableSingleFileAnalyzer;PublishAot;PublishTrimmed;PublishSingleFile;SelfContained;RuntimeIdentifier">
+         TreatAsLocalProperty="IsAotCompatible;EnableAotAnalyzer;EnableTrimAnalyzer;EnableSingleFileAnalyzer;PublishAot;PublishTrimmed;PublishSingleFile;RunAOTCompilation;SelfContained;RuntimeIdentifier">
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
@@ -15,6 +15,7 @@
         <PublishAot>false</PublishAot>
         <PublishTrimmed>false</PublishTrimmed>
         <PublishSingleFile>false</PublishSingleFile>
+        <RunAOTCompilation>false</RunAOTCompilation>
         <SelfContained>false</SelfContained>
     </PropertyGroup>
 
@@ -29,6 +30,8 @@
     <ItemGroup>
         <Compile Include="../AtomUI.Build.Tasks/LocalizationBuild/**/*.cs"
                  Link="LocalizationBuild/%(RecursiveDir)%(Filename)%(Extension)" />
+        <Compile Include="../AtomUI.Build.Tasks/SourceGeneration/GeneratedCodeNamespace.cs"
+                 Link="SourceGeneration/GeneratedCodeNamespace.cs" />
         <InternalsVisibleTo Include="AtomUI.Generator.Tests" />
     </ItemGroup>
 
@@ -39,9 +42,41 @@
               Pack="true"
               PackagePath="tools/netstandard2.0/AtomUI.Build.Tasks.dll"
               Visible="false" />
+        <None Include="$(OutputPath)/System.Reflection.Metadata.dll"
+              Pack="true"
+              PackagePath="tools/netstandard2.0/System.Reflection.Metadata.dll"
+              Visible="false" />
+        <None Include="$(OutputPath)/System.Collections.Immutable.dll"
+              Pack="true"
+              PackagePath="tools/netstandard2.0/System.Collections.Immutable.dll"
+              Visible="false" />
+        <None Include="$(OutputPath)/System.Memory.dll"
+              Pack="true"
+              PackagePath="tools/netstandard2.0/System.Memory.dll"
+              Visible="false" />
+        <None Include="$(OutputPath)/System.Buffers.dll"
+              Pack="true"
+              PackagePath="tools/netstandard2.0/System.Buffers.dll"
+              Visible="false" />
+        <None Include="$(OutputPath)/System.Numerics.Vectors.dll"
+              Pack="true"
+              PackagePath="tools/netstandard2.0/System.Numerics.Vectors.dll"
+              Visible="false" />
+        <None Include="$(OutputPath)/System.Runtime.CompilerServices.Unsafe.dll"
+              Pack="true"
+              PackagePath="tools/netstandard2.0/System.Runtime.CompilerServices.Unsafe.dll"
+              Visible="false" />
         <None Include="../../build/AtomUI.Generator.props"
               Pack="true"
               PackagePath="buildTransitive/AtomUI.Generator.props"
+              Visible="false" />
+        <None Include="../../build/AtomUI.LinkedRegistration.props"
+              Pack="true"
+              PackagePath="buildTransitive/AtomUI.LinkedRegistration.props"
+              Visible="false" />
+        <None Include="../../build/AtomUI.LinkedRegistration.targets"
+              Pack="true"
+              PackagePath="buildTransitive/AtomUI.LinkedRegistration.targets"
               Visible="false" />
         <None Include="../../build/AtomUI.Generator.targets"
               Pack="true"

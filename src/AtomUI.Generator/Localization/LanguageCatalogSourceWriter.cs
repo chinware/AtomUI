@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text;
 using AtomUI.Generator.Localization.Catalog;
+using AtomUI.SourceGeneration;
 using Microsoft.CodeAnalysis;
 
 namespace AtomUI.Generator.Localization;
@@ -133,7 +134,7 @@ internal static class LanguageCatalogSourceWriter
         source.AppendLine("#nullable enable");
         source.AppendLine();
         source.Append("namespace ")
-              .Append(GeneratedThemeSchemaWriter.GetGeneratedNamespace(assemblyName))
+              .Append(GeneratedCodeNamespace.ForAssembly(assemblyName))
               .AppendLine();
         source.AppendLine("{");
         source.Append("    internal static class ")

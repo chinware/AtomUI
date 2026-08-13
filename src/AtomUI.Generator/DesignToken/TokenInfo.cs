@@ -1,4 +1,5 @@
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace AtomUI.Generator;
 
@@ -75,19 +76,31 @@ internal sealed class ThemeCompilationInfo
     internal ThemeCompilationInfo(
         Compilation compilation,
         string assemblyName,
+        string packageId,
+        string? projectDirectory,
         string controlCatalog,
-        IReadOnlyList<string> globalTokenNames)
+        IReadOnlyList<string> globalTokenNames,
+        AnalyzerConfigOptionsProvider optionsProvider,
+        string registrationEntries)
     {
         Compilation = compilation;
         AssemblyName = assemblyName;
+        PackageId = packageId;
+        ProjectDirectory = projectDirectory;
         ControlCatalog = controlCatalog;
         GlobalTokenNames = globalTokenNames;
+        OptionsProvider = optionsProvider;
+        RegistrationEntries = registrationEntries;
     }
 
     internal Compilation Compilation { get; }
     internal string AssemblyName { get; }
+    internal string PackageId { get; }
+    internal string? ProjectDirectory { get; }
     internal string ControlCatalog { get; }
     internal IReadOnlyList<string> GlobalTokenNames { get; }
+    internal AnalyzerConfigOptionsProvider OptionsProvider { get; }
+    internal string RegistrationEntries { get; }
 }
 
 internal enum SchemaTokenStage

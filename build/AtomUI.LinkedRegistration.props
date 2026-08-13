@@ -1,0 +1,13 @@
+<Project>
+    <PropertyGroup>
+        <AtomUIRegistrationStrict Condition="'$(AtomUIRegistrationStrict)' == ''">false</AtomUIRegistrationStrict>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <CompilerVisibleProperty Include="AtomUILinkedPublish" />
+        <CompilerVisibleProperty Include="AtomUIRegistrationStrict" />
+        <CompilerVisibleProperty Include="AtomUIRegistrationPlanOwner" />
+        <CompilerVisibleProperty Include="AtomUIRegistrationPackageId" />
+        <CompilerVisibleProperty Include="AtomUIRegistrationEntries" />
+    </ItemGroup>
+</Project>

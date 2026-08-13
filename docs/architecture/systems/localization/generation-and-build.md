@@ -288,6 +288,12 @@ MSBuild error/warning。该目录不增加公开运行时包，也不让 MSBuild
 AtomUI.Generator.nupkg
 ├── analyzers/dotnet/cs/AtomUI.Generator.dll
 ├── tools/netstandard2.0/AtomUI.Build.Tasks.dll
+├── tools/netstandard2.0/System.Reflection.Metadata.dll
+├── tools/netstandard2.0/System.Collections.Immutable.dll
+├── tools/netstandard2.0/System.Memory.dll
+├── tools/netstandard2.0/System.Buffers.dll
+├── tools/netstandard2.0/System.Numerics.Vectors.dll
+├── tools/netstandard2.0/System.Runtime.CompilerServices.Unsafe.dll
 └── buildTransitive/
     ├── AtomUI.Generator.props
     ├── AtomUI.Generator.targets

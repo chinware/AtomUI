@@ -136,7 +136,7 @@ Popup/Flyout 通过逻辑树自然继承，独立 Window/Dialog/Notification Top
 
 ## 控件包注册顺序
 
-`UseDesktopControls()` 的注册顺序很关键：
+当前实现中，`UseDesktopControls()` 使用全量兼容注册，顺序很关键：
 
 1. 先调用 `UseCommonControls()`，分别向 Theme Builder 注册公共 Token/主题，向 Localization Builder 注册公共 Catalog 和内置 Bundle。
 2. 再注册 `AtomUI.Desktop.Controls` 的 Token。
@@ -146,9 +146,16 @@ Popup/Flyout 通过逻辑树自然继承，独立 Window/Dialog/Notification Top
 
 DataGrid 和 ColorPicker 独立包通过 `UseDesktopDataGrid()`、`UseDesktopColorPicker()` 追加自己的 Token、主题 Provider 和语言资源。
 
+linked publish 中，应用仍调用 `UseDesktopControls()`，但 `PublishTrimmed=true`、`PublishAot=true` 或 WebAssembly
+`RunAOTCompilation=true` 会在编译期切换到生成式 Registration Unit 计划。Desktop 仍完整注册 Common，并保持
+Dialog input capture、Provider、完整 Language Module 和 Theme initializer 的既有顺序；只有 Desktop 的 Control
+descriptor、Own Token schema 和控件族专属 AXAML Theme 按 Unit 保留。无法可靠确定 Unit 时，仅把对应 Package
+扩大为 full fallback。普通非裁剪构建继续执行上述全量顺序。完整契约见
+[AOT 与裁剪架构](aot-and-trimming.md)。
+
 ## 源生成池
 
-Control 包不手工维护完整 Token、主题资产或 Language 列表，而是依赖 `AtomUI.Generator` 生成：
+当前 Control 包不手工维护完整 Token、主题资产或 Language 列表，而是依赖 `AtomUI.Generator` 生成：
 
 - `ControlTokenDescriptorPool.GetDescriptors()`：返回当前项目内全部对外可主题化 Control 的 descriptor，包括零
   Own Token 的 Control。
@@ -163,3 +170,8 @@ Builder 必须原样注册包含 exact CLR type 与 identity 的 descriptor 和 
 泛型 Token Attribute、Theme Asset glob、
 手工 manifest 或逐 Theme 注册代码。生成器负责检查 descriptor、Own/Global 名称冲突、强类型资源键、owner
 identity 和注册池是否一致；Global Token 消费关系不进入注册数据。
+
+linked registration 会把同一控件族的 Control descriptor、Own Token schema、内部控件和专属 Theme Asset factory
+聚合成 linker 可独立删除的 Registration Unit；Language Catalog、内置 Bundle、Package 初始化逻辑和显式共享资源
+不拆分。全量池只由普通兼容路径或该 Package 的 full fallback 调用。Theme Builder 最终仍按包接收一个完整且自洽的
+`ControlPackageRegistration`，不会改成控件实例化时追加注册。

@@ -503,6 +503,26 @@ public class LocalizationBuildAssetsTests
             .ShouldBe("buildTransitive/AtomUI.Generator.targets");
         packedFiles["$(OutputPath)/AtomUI.Build.Tasks.dll"]
             .ShouldBe("tools/netstandard2.0/AtomUI.Build.Tasks.dll");
+        foreach (var dependency in new[]
+                 {
+                     "System.Reflection.Metadata.dll",
+                     "System.Collections.Immutable.dll",
+                     "System.Memory.dll",
+                     "System.Buffers.dll",
+                     "System.Numerics.Vectors.dll",
+                     "System.Runtime.CompilerServices.Unsafe.dll"
+                 })
+        {
+            packedFiles[$"$(OutputPath)/{dependency}"]
+                .ShouldBe($"tools/netstandard2.0/{dependency}");
+        }
+
+        var buildTasksProject = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Build.Tasks/AtomUI.Build.Tasks.csproj"));
+        buildTasksProject.Descendants("CopyLocalLockFileAssemblies")
+                         .Single()
+                         .Value.Trim()
+                         .ShouldBe("true");
 
         project.Descendants("ProjectReference")
                .Single(element =>
@@ -649,9 +669,14 @@ public class LocalizationBuildAssetsTests
                               Version = (string?)"[$version$]"
                           }),
                           ignoreOrder: true);
-        aggregateNuspec.Descendants()
-                       .Where(element => element.Name.LocalName == "files")
-                       .ShouldBeEmpty();
+        var aggregateFiles = aggregateNuspec.Descendants()
+                                            .Where(element => element.Name.LocalName == "files")
+                                            .ShouldHaveSingleItem();
+        var aggregateReadme = aggregateFiles.Elements()
+                                                .Where(element => element.Name.LocalName == "file")
+                                                .ShouldHaveSingleItem();
+        ((string?)aggregateReadme.Attribute("src")).ShouldBe("README.nuget.md");
+        ((string?)aggregateReadme.Attribute("target")).ShouldBeEmpty();
 
         var solution = XDocument.Load(GetRepoFile("AtomUI.slnx"));
         var solutionProjectPaths = solution.Descendants("Project")

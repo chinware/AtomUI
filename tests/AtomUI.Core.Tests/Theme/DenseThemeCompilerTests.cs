@@ -1,4 +1,4 @@
-using AtomUI.Generated.AtomUI_Core;
+using AtomUI.Generated.AtomUICore;
 using AtomUI.Theme;
 using AtomUI.Theme.Algorithms;
 using AtomUI.Theme.Compilation;

@@ -1,5 +1,7 @@
 using AtomUI.Generator.Diagnostics;
+using AtomUI.Generator.LinkedRegistration.Model;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 
 namespace AtomUI.Generator;
@@ -9,18 +11,30 @@ internal sealed class ControlThemeInfo
     internal ControlThemeInfo(
         string controlNamespace,
         string controlName,
+        string controlMetadataName,
         string controlTypeName,
+        string unitId,
+        bool hasDescriptor,
+        bool ownsControlMap,
         ControlTokenInfo? ownToken)
     {
         ControlNamespace = controlNamespace;
         ControlName = controlName;
+        ControlMetadataName = controlMetadataName;
         ControlTypeName = controlTypeName;
+        UnitId = unitId;
+        HasDescriptor = hasDescriptor;
+        OwnsControlMap = ownsControlMap;
         OwnToken = ownToken;
     }
 
     internal string ControlNamespace { get; }
     internal string ControlName { get; }
+    internal string ControlMetadataName { get; }
     internal string ControlTypeName { get; }
+    internal string UnitId { get; }
+    internal bool HasDescriptor { get; }
+    internal bool OwnsControlMap { get; }
     internal ControlTokenInfo? OwnToken { get; }
     internal bool HasOwnToken => OwnToken is not null;
     internal string TokenKindType => $"{ControlName}TokenKind";
@@ -40,29 +54,41 @@ internal sealed class ControlThemeSourceInfo
 {
     private ControlThemeSourceInfo(
         string path,
+        string assetPath,
         string? controlCandidate,
+        string? explicitUnit,
         Location location)
     {
         Path = path;
+        AssetPath = assetPath;
         ControlCandidate = controlCandidate;
+        ExplicitUnit = explicitUnit;
         Location = location;
     }
 
     internal string Path { get; }
+    internal string AssetPath { get; }
     internal string? ControlCandidate { get; }
+    internal string? ExplicitUnit { get; }
     internal Location Location { get; }
 
     internal static ControlThemeSourceInfo Create(
         AdditionalText text,
+        string? projectDirectory,
+        string? link,
+        string? explicitUnit,
         CancellationToken cancellationToken)
     {
         var source = text.GetText(cancellationToken) ?? SourceText.From(string.Empty);
 
         var span = new TextSpan(0, source.Length);
         var location = Location.Create(text.Path, span, source.Lines.GetLinePositionSpan(span));
+        var assetPath = ThemeAssetInfo.NormalizeAssetPath(text.Path, projectDirectory, link);
         return new ControlThemeSourceInfo(
             text.Path,
-            GetControlCandidate(text.Path),
+            assetPath,
+            GetControlCandidate(assetPath),
+            explicitUnit,
             location);
     }
 
@@ -91,6 +117,9 @@ internal static class ControlThemeModelBuilder
         IEnumerable<ControlTokenInfo> ownTokens,
         IEnumerable<ControlThemeSourceInfo> assets,
         ISet<string> globalTokenNames,
+        string packageId,
+        string? projectDirectory,
+        AnalyzerConfigOptionsProvider optionsProvider,
         Action<Diagnostic> reportDiagnostic)
     {
         var controls = GetPublicControls(compilation.Assembly.GlobalNamespace).ToArray();
@@ -146,7 +175,16 @@ internal static class ControlThemeModelBuilder
             }
 
             var control = matches[0];
-            var info = CreateInfo(control, ownToken);
+            var info = CreateInfo(
+                control,
+                ownToken,
+                hasDescriptor: true,
+                ownsControlMap: SymbolEqualityComparer.Default.Equals(
+                    control.ContainingAssembly,
+                    compilation.Assembly),
+                packageId,
+                projectDirectory,
+                optionsProvider);
             result[GetControlKey(control)] = info;
         }
 
@@ -164,7 +202,18 @@ internal static class ControlThemeModelBuilder
                     var key = GetControlKey(control);
                     if (!result.ContainsKey(key))
                     {
-                        result.Add(key, CreateInfo(control, null));
+                        result.Add(key, CreateInfo(
+                            control,
+                            null,
+                            hasDescriptor: true,
+                            ownsControlMap: SymbolEqualityComparer.Default.Equals(
+                                control.ContainingAssembly,
+                                compilation.Assembly),
+                            packageId,
+                            projectDirectory,
+                            optionsProvider,
+                            asset.AssetPath,
+                            asset.ExplicitUnit));
                     }
                 }
                 else if (matches.Length > 1)
@@ -177,6 +226,25 @@ internal static class ControlThemeModelBuilder
                 }
             }
 
+        }
+
+        foreach (var control in controls)
+        {
+            var key = GetControlKey(control);
+            if (result.ContainsKey(key))
+            {
+                continue;
+            }
+
+            var info = CreateInfo(
+                control,
+                null,
+                hasDescriptor: false,
+                ownsControlMap: true,
+                packageId,
+                projectDirectory,
+                optionsProvider);
+            result.Add(key, info);
         }
 
         return result.Values.OrderBy(static info => info.ControlName, StringComparer.Ordinal).ToArray();
@@ -261,16 +329,63 @@ internal static class ControlThemeModelBuilder
         }
     }
 
-    private static ControlThemeInfo CreateInfo(INamedTypeSymbol control, ControlTokenInfo? ownToken)
+    private static ControlThemeInfo CreateInfo(
+        INamedTypeSymbol control,
+        ControlTokenInfo? ownToken,
+        bool hasDescriptor,
+        bool ownsControlMap,
+        string packageId,
+        string? projectDirectory,
+        AnalyzerConfigOptionsProvider optionsProvider,
+        string? fallbackSourcePath = null,
+        string? fallbackExplicitUnit = null)
     {
+        var sourceTree = control.DeclaringSyntaxReferences.FirstOrDefault()?.SyntaxTree;
+        string? explicitUnit = null;
+        if (sourceTree is not null)
+        {
+            optionsProvider.GetOptions(sourceTree).TryGetValue(
+                "build_metadata.Compile.AtomUIRegistrationUnit",
+                out explicitUnit);
+        }
+        explicitUnit ??= fallbackExplicitUnit;
+        var sourcePath = sourceTree?.FilePath;
+        if (string.IsNullOrWhiteSpace(sourcePath))
+        {
+            sourcePath = fallbackSourcePath;
+        }
+
         return new ControlThemeInfo(
             ownToken?.TokenNamespace ??
             (control.ContainingNamespace.IsGlobalNamespace
                 ? string.Empty
                 : control.ContainingNamespace.ToDisplayString()),
             control.Name,
+            GetMetadataName(control),
             control.ToDisplayString(GeneratorSymbolDisplay.FullyQualifiedType),
+            RegistrationUnitId.Create(
+                packageId,
+                sourcePath,
+                projectDirectory,
+                control.Name,
+                explicitUnit),
+            hasDescriptor,
+            ownsControlMap,
             ownToken);
+    }
+
+    private static string GetMetadataName(INamedTypeSymbol symbol)
+    {
+        var typeNames = new Stack<string>();
+        for (var current = symbol; current is not null; current = current.ContainingType)
+        {
+            typeNames.Push(current.MetadataName);
+        }
+
+        var typeName = string.Join("+", typeNames);
+        return symbol.ContainingNamespace.IsGlobalNamespace
+            ? typeName
+            : symbol.ContainingNamespace.ToDisplayString() + "." + typeName;
     }
 
     internal static IEnumerable<INamedTypeSymbol> GetPublicControls(INamespaceSymbol ns)

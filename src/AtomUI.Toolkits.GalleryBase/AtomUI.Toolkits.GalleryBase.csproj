@@ -7,6 +7,8 @@
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
         <AtomUIGenerateControlThemeAssetResources>true</AtomUIGenerateControlThemeAssetResources>
+        <AtomUIRegistrationPackageId>$(AssemblyName)</AtomUIRegistrationPackageId>
+        <AtomUIRegistrationEntries>AtomUI.Toolkits.GalleryBase.ThemeManagerBuilderExtensions.UseGalleryBase</AtomUIRegistrationEntries>
         <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
     </PropertyGroup>
 

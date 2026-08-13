@@ -51,12 +51,19 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
                                        .Combine(catalogs.Collect())
                                        .Combine(languageFiles.Collect())
                                        .Combine(applicationHosts.Collect())
-                                       .Select(static (input, _) => LocalizationPipeline.Compile(
-                                           input.Left.Left.Left.AssemblyName,
-                                           input.Left.Left.Right,
-                                           input.Left.Right,
-                                           input.Left.Left.Left,
-                                           input.Right))
+                                       .Combine(context.AnalyzerConfigOptionsProvider)
+                                       .Select(static (input, _) =>
+                                       {
+                                           var generationInputs = input.Left;
+                                           var compilation = generationInputs.Left.Left.Left;
+                                           var assemblyName = compilation.AssemblyName;
+                                           return LocalizationPipeline.Compile(
+                                               assemblyName,
+                                               generationInputs.Left.Left.Right,
+                                               generationInputs.Left.Right,
+                                               compilation,
+                                               generationInputs.Right);
+                                       })
                                        .WithTrackingName("LocalizationCompilation");
 
         context.RegisterSourceOutput(compiledCatalogs, static (sourceContext, result) =>

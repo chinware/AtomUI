@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using System.Text;
 using AtomUI.Generator.Localization.Catalog;
 using AtomUI.Generator.Localization.Xliff;
+using AtomUI.SourceGeneration;
 using Microsoft.CodeAnalysis;
 
 namespace AtomUI.Generator.Localization;
@@ -61,7 +62,7 @@ internal static class ApplicationLanguageBootstrapWriter
         if (compiledCatalogs.Any(static catalog => catalog.OwnsCatalog))
         {
             source.Append(bodyIndent).Append("global::")
-                  .Append(GeneratedThemeSchemaWriter.GetGeneratedNamespace(assemblyName))
+                  .Append(GeneratedCodeNamespace.ForAssembly(assemblyName))
                   .AppendLine(".GeneratedLanguageModuleRegistration.Register(builder);");
         }
 

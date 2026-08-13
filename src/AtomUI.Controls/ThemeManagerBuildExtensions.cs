@@ -1,9 +1,11 @@
-using AtomUI.Generated.AtomUI_Controls;
+using AtomUI.Generated.AtomUIControls;
 
 namespace AtomUI.Controls;
 
 internal static class ThemeManagerBuilderExtensions
 {
+    internal const string PackageId = "AtomUI.Controls.Common";
+
     public static IAtomUIBuilder UseCommonControls(this IAtomUIBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);

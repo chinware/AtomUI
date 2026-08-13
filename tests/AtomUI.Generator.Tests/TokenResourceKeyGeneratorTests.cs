@@ -544,6 +544,18 @@ public class TokenResourceKeyGeneratorTests
             }
         }
 
+        namespace AtomUI.Registration
+        {
+            public sealed class AotTrimControlPackageRegistrationBuilder
+            {
+                public bool TryEnterUnit(string unitId) => true;
+
+                public void AddControl(AtomUI.Theme.Schema.ControlTokenDescriptor descriptor)
+                {
+                }
+            }
+        }
+
         namespace AtomUI.Theme
         {
             public enum ThemeAppearance : byte

@@ -31,4 +31,12 @@ internal static class AtomUIDiagnosticIds
     public const string LocalizationInvalidTranslation = "ATOMUILOC007";
     public const string LocalizationInvalidApplicationHost = "ATOMUILOC008";
     public const string LocalizationInvalidLanguagePackage = "ATOMUILOC009";
+    public const string LinkedPlanOwner = "ATOMUILINK001";
+    public const string LinkedDynamicUsageWidened = "ATOMUILINK002";
+    public const string LinkedLegacyPackageFallback = "ATOMUILINK003";
+    public const string LinkedExplicitRootInvalid = "ATOMUILINK004";
+    public const string LinkedPackageDefinitionInvalid = "ATOMUILINK005";
+    public const string LinkedManifestVersionMismatch = "ATOMUILINK006";
+    public const string LinkedLooseAxamlWidened = "ATOMUILINK007";
+    public const string LinkedPackageEntryMissing = "ATOMUILINK008";
 }

@@ -1,0 +1,328 @@
+using System.Collections.Immutable;
+using AtomUI.Generator.Diagnostics;
+using AtomUI.Generator.LinkedRegistration.Manifest;
+using AtomUI.Generator.LinkedRegistration.Model;
+using AtomUI.Generator.LinkedRegistration.Writers;
+using Microsoft.CodeAnalysis;
+
+namespace AtomUI.Generator.LinkedRegistration;
+
+[Generator]
+public sealed class ApplicationRegistrationPlanGenerator : IIncrementalGenerator
+{
+    public void Initialize(IncrementalGeneratorInitializationContext context)
+    {
+        var input = context.CompilationProvider
+                           .Combine(context.AdditionalTextsProvider.Collect())
+                           .Combine(context.AnalyzerConfigOptionsProvider);
+        context.RegisterSourceOutput(input, static (productionContext, value) =>
+        {
+            Generate(
+                productionContext,
+                value.Left.Left,
+                value.Left.Right,
+                value.Right);
+        });
+    }
+
+    private static void Generate(
+        SourceProductionContext context,
+        Compilation compilation,
+        ImmutableArray<AdditionalText> additionalTexts,
+        Microsoft.CodeAnalysis.Diagnostics.AnalyzerConfigOptionsProvider optionsProvider)
+    {
+        if (!LinkedRegistrationOptions.IsLinkedPublish(optionsProvider) ||
+            !LinkedRegistrationOptions.IsRegistrationPlanOwner(optionsProvider) ||
+            LinkedRegistrationOptions.GetDeclaredPackageId(optionsProvider).Length != 0)
+        {
+            return;
+        }
+
+        var catalog = LinkedRegistrationManifestCatalog.Create(compilation, static _ => { });
+        if (catalog.PlanOwners.Count != 0)
+        {
+            context.ReportDiagnostic(Diagnostic.Create(
+                AtomUIDiagnosticDescriptors.LinkedPlanOwner,
+                Location.None,
+                string.Join(", ", catalog.PlanOwners.OrderBy(static owner => owner, StringComparer.Ordinal))));
+            return;
+        }
+        if (catalog.HasErrors)
+        {
+            return;
+        }
+
+        var hasUsageErrors = false;
+        var currentUsages = LinkedRegistrationUsageGenerator.CollectApplicationUsages(
+            compilation,
+            catalog,
+            additionalTexts,
+            optionsProvider,
+            context.CancellationToken,
+            diagnostic => hasUsageErrors |= diagnostic.Severity == DiagnosticSeverity.Error);
+        if (hasUsageErrors)
+        {
+            return;
+        }
+        var usages = catalog.ReferencedUsages.Concat(currentUsages).ToArray();
+        var invokedPackageSet = new HashSet<string>(
+            usages.Where(static usage => usage.Kind == LinkedUsageKind.Entry)
+                  .Select(static usage => usage.Identity),
+            StringComparer.Ordinal);
+        if (HasMissingPackageEntry(catalog, usages, invokedPackageSet))
+        {
+            return;
+        }
+        var invokedPackages = invokedPackageSet.OrderBy(
+            static packageId => packageId,
+            StringComparer.Ordinal).ToArray();
+        var plans = ImmutableArray.CreateBuilder<ApplicationPackagePlan>(invokedPackages.Length);
+        var hasInvalidCallTarget = false;
+        foreach (var packageId in invokedPackages)
+        {
+            if (!catalog.Packages.TryGetValue(packageId, out var package))
+            {
+                continue;
+            }
+
+            var packageUnits = catalog.Units.Values.Where(unit =>
+                    string.Equals(unit.PackageId, packageId, StringComparison.Ordinal))
+                .OrderBy(static unit => unit.UnitId, StringComparer.Ordinal)
+                .ToArray();
+            var isLegacy = packageUnits.Length == 0;
+            var useFullFallback = isLegacy || usages.Any(usage =>
+                usage.Kind == LinkedUsageKind.PackageRoot &&
+                string.Equals(usage.Identity, packageId, StringComparison.Ordinal));
+            if (isLegacy)
+            {
+                if (ValidateFragmentMethod(
+                        compilation,
+                        context,
+                        packageId,
+                        package.FullFragmentType,
+                        package.FullFragmentMethod,
+                        FragmentMethodKind.FullRegistrar,
+                        "full registrar"))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(
+                        GetLegacyDescriptor(LinkedRegistrationOptions.IsRegistrationStrict(optionsProvider)),
+                        Location.None,
+                        packageId));
+                }
+                else
+                {
+                    hasInvalidCallTarget = true;
+                }
+            }
+
+            var selectedUnitIds = new HashSet<string>(StringComparer.Ordinal);
+            if (!useFullFallback)
+            {
+                foreach (var usage in usages)
+                {
+                    if (usage.Kind == LinkedUsageKind.Control &&
+                        catalog.ControlMaps.TryGetValue(usage.Identity, out var control) &&
+                        string.Equals(control.PackageId, packageId, StringComparison.Ordinal))
+                    {
+                        selectedUnitIds.Add(control.UnitId);
+                    }
+                    else if (usage.Kind == LinkedUsageKind.UnitRoot &&
+                             catalog.Units.TryGetValue(usage.Identity, out var unit) &&
+                             string.Equals(unit.PackageId, packageId, StringComparison.Ordinal))
+                    {
+                        selectedUnitIds.Add(unit.UnitId);
+                    }
+                }
+            }
+
+            var selectedUnits = packageUnits.Where(unit => selectedUnitIds.Contains(unit.UnitId))
+                                            .ToImmutableArray();
+            if (useFullFallback && !isLegacy &&
+                !ValidateFragmentMethod(
+                    compilation,
+                    context,
+                    packageId,
+                    package.FullFragmentType,
+                    package.FullFragmentMethod,
+                    FragmentMethodKind.FullRegistrar,
+                    "full registrar"))
+            {
+                hasInvalidCallTarget = true;
+            }
+            if (!useFullFallback && package.PackageSharedFragmentType is not null &&
+                !ValidateFragmentMethod(
+                    compilation,
+                    context,
+                    packageId,
+                    package.PackageSharedFragmentType,
+                    package.PackageSharedFragmentMethod!,
+                    FragmentMethodKind.PackageBuilder,
+                    "PackageShared fragment"))
+            {
+                hasInvalidCallTarget = true;
+            }
+            foreach (var unit in selectedUnits)
+            {
+                if (!ValidateFragmentMethod(
+                        compilation,
+                        context,
+                        packageId,
+                        unit.FragmentType,
+                        unit.FragmentMethod,
+                        FragmentMethodKind.PackageBuilder,
+                        $"Registration Unit '{unit.UnitId}' fragment"))
+                {
+                    hasInvalidCallTarget = true;
+                }
+            }
+
+            plans.Add(new ApplicationPackagePlan(
+                packageId,
+                useFullFallback,
+                selectedUnits,
+                package));
+        }
+
+        if (hasInvalidCallTarget)
+        {
+            return;
+        }
+
+        context.AddSource(
+            "GeneratedApplicationRegistrationPlan.g.cs",
+            GeneratedSourceText.From(ApplicationRegistrationPlanWriter.Write(
+                compilation.AssemblyName ?? "AtomUI.Application",
+                plans.ToImmutable())));
+    }
+
+    private static bool HasMissingPackageEntry(
+        LinkedRegistrationManifestCatalog catalog,
+        IEnumerable<LinkedUsageInfo> usages,
+        HashSet<string> invokedPackages)
+    {
+        foreach (var usage in usages)
+        {
+            var packageId = usage.Kind switch
+            {
+                LinkedUsageKind.Control when catalog.ControlMaps.TryGetValue(
+                    usage.Identity,
+                    out var control) => control.PackageId,
+                LinkedUsageKind.UnitRoot when catalog.PackageByUnit.TryGetValue(
+                    usage.Identity,
+                    out var unitPackageId) => unitPackageId,
+                LinkedUsageKind.PackageRoot => usage.Identity,
+                _ => string.Empty
+            };
+            if (packageId.Length != 0 && !invokedPackages.Contains(packageId))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool ValidateFragmentMethod(
+        Compilation compilation,
+        SourceProductionContext context,
+        string packageId,
+        string typeMetadataName,
+        string methodName,
+        FragmentMethodKind methodKind,
+        string fragmentKind)
+    {
+        var type = compilation.GetTypeByMetadataName(typeMetadataName);
+        var valid = type is not null &&
+                    compilation.IsSymbolAccessibleWithin(type, compilation.Assembly) &&
+                    type.GetMembers(methodName).OfType<IMethodSymbol>().Any(method =>
+                        compilation.IsSymbolAccessibleWithin(method, compilation.Assembly) &&
+                        method.IsStatic &&
+                        method.Arity == 0 &&
+                        method.ReturnsVoid &&
+                        HasExpectedParameters(compilation, method, methodKind));
+        if (valid)
+        {
+            return true;
+        }
+
+        context.ReportDiagnostic(Diagnostic.Create(
+            AtomUIDiagnosticDescriptors.LinkedPackageDefinitionInvalid,
+            Location.None,
+            packageId,
+            $"{fragmentKind} '{typeMetadataName}.{methodName}' is not a resolvable public static method"));
+        return false;
+    }
+
+    private static bool HasExpectedParameters(
+        Compilation compilation,
+        IMethodSymbol method,
+        FragmentMethodKind methodKind)
+    {
+        var builderType = compilation.GetTypeByMetadataName(
+            "AtomUI.Registration.AotTrimControlPackageRegistrationBuilder");
+        if (methodKind == FragmentMethodKind.PackageBuilder)
+        {
+            return builderType is not null &&
+                   method.Parameters.Length == 1 &&
+                   IsParameter(method.Parameters[0], builderType);
+        }
+
+        var themeBuilderType = compilation.GetTypeByMetadataName("AtomUI.Theme.IThemeManagerBuilder");
+        var providerType = compilation.GetTypeByMetadataName(
+            "AtomUI.Theme.Resources.IControlThemesProvider");
+        var identityType = compilation.GetTypeByMetadataName(
+            "AtomUI.Theme.Schema.ControlTokenIdentity");
+        var assetType = compilation.GetTypeByMetadataName(
+            "AtomUI.Theme.Schema.ControlThemeAssetDescriptor");
+        var funcType = compilation.GetTypeByMetadataName("System.Func`2");
+        var readOnlyListType = compilation.GetTypeByMetadataName(
+            "System.Collections.Generic.IReadOnlyList`1");
+        if (themeBuilderType is null || providerType is null || identityType is null ||
+            assetType is null || funcType is null || readOnlyListType is null)
+        {
+            return false;
+        }
+
+        var includeIdentityType = funcType.Construct(
+            identityType,
+            compilation.GetSpecialType(SpecialType.System_Boolean));
+        var assetListType = readOnlyListType.Construct(assetType);
+        var selectAssetsType = funcType.Construct(assetListType, assetListType);
+        return method.Parameters.Length == 4 &&
+               IsParameter(method.Parameters[0], themeBuilderType) &&
+               IsParameter(method.Parameters[1], providerType) &&
+               IsParameter(method.Parameters[2], includeIdentityType) &&
+               IsParameter(method.Parameters[3], selectAssetsType);
+    }
+
+    private static bool IsParameter(IParameterSymbol parameter, ITypeSymbol expectedType)
+    {
+        return parameter.RefKind == RefKind.None &&
+               SymbolEqualityComparer.Default.Equals(parameter.Type, expectedType);
+    }
+
+    private static DiagnosticDescriptor GetLegacyDescriptor(bool strict)
+    {
+        if (!strict)
+        {
+            return AtomUIDiagnosticDescriptors.LinkedLegacyPackageFallback;
+        }
+        var descriptor = AtomUIDiagnosticDescriptors.LinkedLegacyPackageFallback;
+        return new DiagnosticDescriptor(
+            descriptor.Id,
+            descriptor.Title,
+            descriptor.MessageFormat,
+            descriptor.Category,
+            DiagnosticSeverity.Error,
+            descriptor.IsEnabledByDefault,
+            descriptor.Description,
+            descriptor.HelpLinkUri,
+            descriptor.CustomTags.ToArray());
+    }
+
+    private enum FragmentMethodKind
+    {
+        PackageBuilder,
+        FullRegistrar
+    }
+}

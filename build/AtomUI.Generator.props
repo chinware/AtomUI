@@ -1,3 +1,9 @@
 <Project>
-    <Import Project="$(MSBuildThisFileDirectory)AtomUI.Localization.props" />
+    <Import Project="$(MSBuildThisFileDirectory)AtomUI.LinkedRegistration.props"
+            Condition="'$(AtomUIGeneratorPropsImported)' != 'true'" />
+    <Import Project="$(MSBuildThisFileDirectory)AtomUI.Localization.props"
+            Condition="'$(AtomUIGeneratorPropsImported)' != 'true'" />
+    <PropertyGroup Condition="'$(AtomUIGeneratorPropsImported)' != 'true'">
+        <AtomUIGeneratorPropsImported>true</AtomUIGeneratorPropsImported>
+    </PropertyGroup>
 </Project>

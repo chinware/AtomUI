@@ -6,12 +6,19 @@
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
         <AtomUIGenerateControlThemeAssetResources>true</AtomUIGenerateControlThemeAssetResources>
+        <AtomUIRegistrationPackageId>$(AssemblyName)</AtomUIRegistrationPackageId>
+        <AtomUIRegistrationEntries>AtomUI.Desktop.Controls.DataGridThemeManagerBuilderExtensions.UseDesktopDataGrid</AtomUIRegistrationEntries>
         <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
         <RootNamespace>AtomUI.Desktop.Controls</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
         <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AvaloniaXaml Update="Themes/DataGridOperationButtons.axaml;Themes/DataGridRowExpanderTheme.axaml;Themes/Filters/DataGridFilterMenuItemTheme.axaml;Themes/Filters/DataGridFilterTreeItemTheme.axaml"
+                       AtomUIRegistrationUnit="DataGrid" />
     </ItemGroup>
 
     <ItemGroup>

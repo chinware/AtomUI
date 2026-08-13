@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using System.Text;
 using AtomUI.Generator.Localization.Catalog;
+using AtomUI.SourceGeneration;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -42,7 +43,7 @@ internal static class LanguageModuleSourceWriter
               .AppendLine(")]");
         source.AppendLine();
         source.Append("namespace ")
-              .Append(GeneratedThemeSchemaWriter.GetGeneratedNamespace(assemblyName))
+              .Append(GeneratedCodeNamespace.ForAssembly(assemblyName))
               .AppendLine();
         source.AppendLine("{");
         source.AppendLine("    internal static class GeneratedLanguageModuleRegistration");
@@ -54,7 +55,7 @@ internal static class LanguageModuleSourceWriter
         foreach (var catalog in catalogs)
         {
             source.Append("            global::")
-                  .Append(GeneratedThemeSchemaWriter.GetGeneratedNamespace(assemblyName))
+                  .Append(GeneratedCodeNamespace.ForAssembly(assemblyName))
                   .Append('.')
                   .Append(LanguageCatalogSourceWriter.GetRegistrationTypeName(catalog.Catalog.CatalogId))
                   .AppendLine(".Register(builder);");

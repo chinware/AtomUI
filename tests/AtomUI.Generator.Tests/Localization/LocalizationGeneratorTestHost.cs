@@ -42,6 +42,29 @@ internal static class LocalizationGeneratorTestHost
 
     internal static TestGeneratorExecution RunWithOutputCompilation(
         string source,
+        IReadOnlyDictionary<string, string> globalOptions,
+        params TestAdditionalText[] additionalTexts)
+    {
+        var compilation = CreateCompilation(source, []);
+        var optionsProvider = new TestOptionsProvider(additionalTexts, globalOptions);
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(
+            [new LocalizationGenerator().AsSourceGenerator()],
+            additionalTexts.Cast<AdditionalText>().ToImmutableArray(),
+            (CSharpParseOptions)compilation.SyntaxTrees[0].Options,
+            optionsProvider);
+        driver = driver.RunGeneratorsAndUpdateCompilation(
+            compilation,
+            out var outputCompilation,
+            out var driverDiagnostics,
+            TestContext.Current.CancellationToken);
+        return new TestGeneratorExecution(
+            driver.GetRunResult().Results.ShouldHaveSingleItem(),
+            outputCompilation,
+            driverDiagnostics);
+    }
+
+    internal static TestGeneratorExecution RunWithOutputCompilation(
+        string source,
         IReadOnlyList<MetadataReference> additionalReferences,
         params TestAdditionalText[] additionalTexts)
     {
@@ -153,24 +176,36 @@ internal static class LocalizationGeneratorTestHost
     {
         private static readonly AnalyzerConfigOptions s_empty = new TestOptions(
             new Dictionary<string, string>());
-        private static readonly AnalyzerConfigOptions s_global = new TestOptions(
+        private static readonly IReadOnlyDictionary<string, string> s_globalValues =
             new Dictionary<string, string>(StringComparer.Ordinal)
             {
                 ["build_property.PackageId"] = "Test.Package",
                 ["build_property.AssemblyName"] = "TestApp",
                 ["build_property.AtomUILanguageModuleId"] = "Test.Package"
-            });
+            };
         private readonly IReadOnlyDictionary<string, AnalyzerConfigOptions> _fileOptions;
+        private readonly AnalyzerConfigOptions _globalOptions;
 
-        internal TestOptionsProvider(IEnumerable<TestAdditionalText> files)
+        internal TestOptionsProvider(
+            IEnumerable<TestAdditionalText> files,
+            IReadOnlyDictionary<string, string>? globalOptions = null)
         {
             _fileOptions = files.ToDictionary(
                 static file => file.Path,
                 static file => (AnalyzerConfigOptions)new TestOptions(file.Metadata),
                 StringComparer.Ordinal);
+            var values = new Dictionary<string, string>(s_globalValues, StringComparer.Ordinal);
+            if (globalOptions is not null)
+            {
+                foreach (var option in globalOptions)
+                {
+                    values[option.Key] = option.Value;
+                }
+            }
+            _globalOptions = new TestOptions(values);
         }
 
-        public override AnalyzerConfigOptions GlobalOptions => s_global;
+        public override AnalyzerConfigOptions GlobalOptions => _globalOptions;
 
         public override AnalyzerConfigOptions GetOptions(SyntaxTree tree) => s_empty;
 
