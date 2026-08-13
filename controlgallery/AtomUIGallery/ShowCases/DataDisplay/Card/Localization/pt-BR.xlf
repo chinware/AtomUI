@@ -229,6 +229,18 @@
         <target state="translated">project</target>
       </segment>
     </unit>
+    <unit id="P2HeaderObjectCard">
+      <segment>
+        <source>Object Card</source>
+        <target state="translated">Cartão com estilo fixo</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderObjectCardMeta">
+      <segment>
+        <source>Object Card Meta title</source>
+        <target state="translated">Título dos metadados do cartão fixo</target>
+      </segment>
+    </unit>
     <unit id="P2HeaderSmallSizeCard">
       <segment>
         <source>Small size card</source>

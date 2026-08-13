@@ -191,6 +191,16 @@
         <source>project</source>
       </segment>
     </unit>
+    <unit id="P2HeaderObjectCard">
+      <segment>
+        <source>Object Card</source>
+      </segment>
+    </unit>
+    <unit id="P2HeaderObjectCardMeta">
+      <segment>
+        <source>Object Card Meta title</source>
+      </segment>
+    </unit>
     <unit id="P2HeaderSmallSizeCard">
       <segment>
         <source>Small size card</source>
