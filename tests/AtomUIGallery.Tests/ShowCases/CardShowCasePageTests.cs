@@ -59,6 +59,8 @@ public class CardShowCasePageTests
         source.ShouldContain("Name=\"CardSemanticOwner\"");
         source.ShouldContain("Name=\"CardMetaSemanticPreview\"");
         source.ShouldContain("SemanticOwnerType=\"{x:Type atom:CardMetaContent}\"");
+        source.ShouldContain("SemanticOwner=\"{Binding #CardMetaSemanticOwner}\"");
+        source.ShouldContain("<atom:Card Width=\"300\">");
         source.ShouldContain("Name=\"CardMetaSemanticOwner\"");
         CountOccurrences(source, "<gallery:SemanticPartDescription").ShouldBe(12);
 

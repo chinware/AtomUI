@@ -80,16 +80,18 @@
                                         FontWeight="SemiBold"
                                         Text="CardMetaContent" />
                         <gallery:SemanticPartPreview Name="CardMetaSemanticPreview"
-                                                     SemanticOwnerType="{x:Type atom:CardMetaContent}">
+                                                     SemanticOwnerType="{x:Type atom:CardMetaContent}"
+                                                     SemanticOwner="{Binding #CardMetaSemanticOwner}">
                             <gallery:SemanticPartPreview.PreviewContent>
-                                <atom:CardMetaContent Name="CardMetaSemanticOwner"
-                                                      Width="300"
-                                                      Header="{gallery:CardShowCaseLangResource P2HeaderCardTitle}"
-                                                      Content="{gallery:CardShowCaseLangResource P2ContentThisIsTheDescription}">
-                                    <atom:CardMetaContent.Avatar>
-                                        <atom:Avatar Src="avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar1.svg" />
-                                    </atom:CardMetaContent.Avatar>
-                                </atom:CardMetaContent>
+                                <atom:Card Width="300">
+                                    <atom:CardMetaContent Name="CardMetaSemanticOwner"
+                                                          Header="{gallery:CardShowCaseLangResource P2HeaderCardTitle}"
+                                                          Content="{gallery:CardShowCaseLangResource P2ContentThisIsTheDescription}">
+                                        <atom:CardMetaContent.Avatar>
+                                            <atom:Avatar Src="avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar1.svg" />
+                                        </atom:CardMetaContent.Avatar>
+                                    </atom:CardMetaContent>
+                                </atom:Card>
                             </gallery:SemanticPartPreview.PreviewContent>
                             <gallery:SemanticPartPreview.PartDescriptions>
                                 <gallery:SemanticPartDescription
