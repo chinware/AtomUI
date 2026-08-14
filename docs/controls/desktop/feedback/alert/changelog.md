@@ -8,6 +8,8 @@
   - Publish `root`, `icon`, `section`, `title`, `description`, `actions`, and `close` Semantic Parts for Alert.
   - Generate owner-scoped `Alert*Style` types and add static template markers without changing Alert behavior or layout ownership.
   - Add `StrokeDashArray` root surface projection so Semantic Styles can express the Ant Design dashed-border example.
+- Fix
+  - Recompute `:has-extra-action` when `ExtraAction` changes after template application so pseudo-class and presenter state stay synchronized.
 - Gallery
   - Add a deferred Semantic Part preview and reproduce the Ant Design `Object styles` / `Function styles` example with owner-scoped styles.
 - Docs

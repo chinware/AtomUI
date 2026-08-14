@@ -149,7 +149,8 @@ public partial class Alert : TemplatedControl
             }
         }
         
-        if (change.Property == DescriptionProperty)
+        if (change.Property == DescriptionProperty ||
+            change.Property == ExtraActionProperty)
         {
             UpdatePseudoClasses();
         }

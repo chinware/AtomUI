@@ -234,6 +234,38 @@ public class AlertSemanticPartTests
     }
 
     [Fact]
+    public void ExtraAction_Changes_After_Template_Application_Update_The_PseudoClass_And_Presenter()
+    {
+        var alert = new AtomUIAlert
+        {
+            Message = "Deployment status"
+        };
+        var window = Show(alert);
+        try
+        {
+            var actions = FindSemanticControl<ContentPresenter>(alert, ActionsClass);
+            alert.Classes.Contains(AlertPseudoClass.HasExtraAction).ShouldBeFalse();
+            actions.IsVisible.ShouldBeFalse();
+
+            alert.ExtraAction = new Avalonia.Controls.Button { Content = "Details" };
+            Dispatcher.UIThread.RunJobs();
+
+            alert.Classes.Contains(AlertPseudoClass.HasExtraAction).ShouldBeTrue();
+            actions.IsVisible.ShouldBeTrue();
+
+            alert.ExtraAction = null;
+            Dispatcher.UIThread.RunJobs();
+
+            alert.Classes.Contains(AlertPseudoClass.HasExtraAction).ShouldBeFalse();
+            actions.IsVisible.ShouldBeFalse();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
     public void Retemplate_Releases_The_Old_Close_Button_And_Preserves_Markers()
     {
         var alert = CreateRichAlert();

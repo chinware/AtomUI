@@ -151,6 +151,7 @@ Gallery 的 `Object styles` 与 `Function styles` 两条示例按 Ant Design Ale
 - 六个生成 Style Type 可以在 AXAML 中编译并命中全部真实 target。
 - 内置模板存在十个静态 marker target，不出现 `.semantic-root`。
 - 四种 `Type`、icon/description/actions/close 显隐和跑马灯切换不改变 target 身份。
+- 模板应用后增删 `ExtraAction` 会同步更新 actions 可见性和 `:has-extra-action`。
 - 模板重套用释放旧 close button 订阅，并恢复全部 marker。
 - 默认主题不消费 `.semantic-*`，未声明用户 Style 时不增加反射、VisualTree 搜索或运行时 selector 组装。
 - Gallery Semantic Preview 只在首次选择 Semantic Parts Tab 后创建，并展示七项 Part 描述。

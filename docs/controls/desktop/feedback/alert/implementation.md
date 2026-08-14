@@ -107,7 +107,7 @@ motion。业务层负责事件后的生命周期决策。
 
 1. `Type` 由主题 selector 映射到 root 背景、边框和四个 icon 的可见性。
 2. `Description` 与 `ExtraAction` 通过 TemplateBinding 投影到静态 presenter；`UpdatePseudoClasses` 在模板应用时初始化两个伪类，
-   `Description` 变化时重新计算它们，presenter 可见性不依赖伪类。
+   任一属性变化时重新计算它们，使 `:has-description`、`:has-extra-action` 与 presenter 状态保持同源同步。
 3. `IsMessageMarqueeEnabled` 在两个静态 title target 之间切换；两个节点共享 `Message` 数据源。
 4. `IsClosable` 只控制静态 close button 可见性，`CloseIcon` 为 null 时在 Template priority 提供默认 `CloseOutlined`。
 5. re-template 先释放旧 close button 的事件订阅，再为新 target 建立订阅并回放伪类与默认图标。
