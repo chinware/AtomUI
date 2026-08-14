@@ -735,7 +735,9 @@ public sealed partial class LanguagePackEndToEndTests
 
     private static string ReadAtomUiVersion(string repositoryRoot)
     {
-        var versionDocument = XDocument.Load(Path.Combine(repositoryRoot, "build/Version.props"));
+        var versionDocument = XDocument.Load(Path.Combine(
+            repositoryRoot,
+            "build/repository/Versions.props"));
         return versionDocument.Descendants("AtomUIVersion").ShouldHaveSingleItem().Value;
     }
 

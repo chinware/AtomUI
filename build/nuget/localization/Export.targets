@@ -1,0 +1,30 @@
+<Project>
+    <Import Project="$(MSBuildThisFileDirectory)../infrastructure/BuildTasks.props"
+            Condition="'$(AtomUIBuildTasksAssembly)' == ''" />
+
+    <PropertyGroup>
+        <AtomUILanguageTemplateOutputRootDirectory Condition="'$(AtomUILanguageTemplateOutputRootDirectory)' == ''">$(MSBuildProjectDirectory)/Localization</AtomUILanguageTemplateOutputRootDirectory>
+    </PropertyGroup>
+
+    <UsingTask TaskName="AtomUI.Build.Tasks.ExportLanguageTemplatesTask"
+               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
+
+    <Target Name="AtomUIExportLanguageTemplates"
+            DependsOnTargets="AtomUIResolveLanguageContractProjectReferences">
+        <Error Condition="'$(AtomUITargetLanguage)' == ''"
+               Text="AtomUITargetLanguage is required, for example -p:AtomUITargetLanguage=ja-JP." />
+        <Error Condition="!Exists('$(AtomUIBuildTasksAssembly)')"
+               Text="AtomUI.Build.Tasks could not be found at '$(AtomUIBuildTasksAssembly)'." />
+        <ItemGroup>
+            <_AtomUILanguageTemplateSource Include="@(AtomUILanguage)"
+                                           Condition="'%(AtomUILanguage.Filename)%(AtomUILanguage.Extension)' == 'en-US.xlf'" />
+        </ItemGroup>
+        <Error Condition="'@(_AtomUILanguageTemplateSource)' == ''"
+               Text="No authoritative en-US language contract was found. Add an authoring-only component PackageReference with PrivateAssets=all before exporting templates." />
+        <AtomUI.Build.Tasks.ExportLanguageTemplatesTask SourceFiles="@(_AtomUILanguageTemplateSource)"
+                                                        OutputRootDirectory="$(AtomUILanguageTemplateOutputRootDirectory)"
+                                                        TargetLanguage="$(AtomUITargetLanguage)">
+            <Output TaskParameter="ExportedFiles" ItemName="AtomUIExportedLanguageTemplate" />
+        </AtomUI.Build.Tasks.ExportLanguageTemplatesTask>
+    </Target>
+</Project>

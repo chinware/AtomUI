@@ -126,6 +126,39 @@ public sealed class BuildLayoutTests
     }
 
     [Fact]
+    public void Localization_Targets_Imports_Focused_Owners_In_Deterministic_Order()
+    {
+        GetImports("build/nuget/localization/Localization.targets").ShouldBe([
+            "$(MSBuildThisFileDirectory)Inputs.targets",
+            "$(MSBuildThisFileDirectory)ProjectReferences.targets",
+            "$(MSBuildThisFileDirectory)Export.targets",
+            "$(MSBuildThisFileDirectory)Packaging.targets"
+        ]);
+
+        var inputs = XDocument.Load(GetRepoFile("build/nuget/localization/Inputs.targets"));
+        inputs.Descendants("AdditionalFiles").ShouldNotBeEmpty();
+        inputs.Descendants("CompilerVisibleItemMetadata").ShouldNotBeEmpty();
+        GetTargetNames(inputs).ShouldBeEmpty();
+
+        GetTargetNames(XDocument.Load(GetRepoFile(
+            "build/nuget/localization/ProjectReferences.targets"))).ShouldBe([
+            "AtomUIGetLanguageModuleSourceAssets",
+            "AtomUIResolveLanguageContractProjectReferences",
+            "AtomUIGetLanguagePackProjectAssets",
+            "AtomUIResolveLanguagePackProjectReferences"
+        ]);
+        GetTargetNames(XDocument.Load(GetRepoFile(
+            "build/nuget/localization/Export.targets"))).ShouldBe([
+            "AtomUIExportLanguageTemplates"
+        ]);
+        GetTargetNames(XDocument.Load(GetRepoFile(
+            "build/nuget/localization/Packaging.targets"))).ShouldBe([
+            "AtomUIPrepareLanguagePackage",
+            "AtomUIPrepareLanguageModuleAssets"
+        ]);
+    }
+
+    [Fact]
     public void Legacy_NuGet_Assets_Do_Not_Remain_At_The_Build_Root()
     {
         var repositoryRoot = GetRepositoryRoot();
@@ -154,6 +187,16 @@ public sealed class BuildLayoutTests
                         .Where(static path => path is not null)
                         .Cast<string>()
                         .ToArray();
+    }
+
+    private static string[] GetTargetNames(XDocument document)
+    {
+        return document.Descendants()
+                       .Where(element => element.Name.LocalName == "Target")
+                       .Select(element => (string?)element.Attribute("Name"))
+                       .Where(static name => name is not null)
+                       .Cast<string>()
+                       .ToArray();
     }
 
     private static string GetRepoFile(string relativePath)

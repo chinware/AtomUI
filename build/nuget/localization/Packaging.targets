@@ -1,0 +1,79 @@
+<Project>
+    <Import Project="$(MSBuildThisFileDirectory)../infrastructure/BuildTasks.props"
+            Condition="'$(AtomUIBuildTasksAssembly)' == ''" />
+
+    <PropertyGroup>
+        <AtomUILanguagePackageManifestPath Condition="'$(AtomUILanguagePackageManifestPath)' == ''">$(IntermediateOutputPath)AtomUI.LanguagePack.xml</AtomUILanguagePackageManifestPath>
+        <AtomUILanguagePackagePropsPath Condition="'$(AtomUILanguagePackagePropsPath)' == ''">$(IntermediateOutputPath)$(PackageId).props</AtomUILanguagePackagePropsPath>
+        <AtomUILanguageModulePropsPath Condition="'$(AtomUILanguageModulePropsPath)' == ''">$(IntermediateOutputPath)$(PackageId).props</AtomUILanguageModulePropsPath>
+    </PropertyGroup>
+
+    <UsingTask TaskName="AtomUI.Build.Tasks.PrepareLanguagePackageTask"
+               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
+    <UsingTask TaskName="AtomUI.Build.Tasks.GenerateLanguagePackagePropsTask"
+               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
+
+    <Target Name="AtomUIPrepareLanguagePackage"
+            DependsOnTargets="AtomUIResolveLanguageContractProjectReferences"
+            BeforeTargets="_GetPackageFiles"
+            Condition="'$(AtomUIBuildLanguagePackage)' == 'true'">
+        <Error Condition="!Exists('$(AtomUIBuildTasksAssembly)')"
+               Text="AtomUI.Build.Tasks could not be found at '$(AtomUIBuildTasksAssembly)'." />
+        <ItemGroup>
+            <_AtomUILanguagePackageSourceFile Include="@(AtomUILanguage)"
+                                               Condition="'%(AtomUILanguageSourceKind)' == 'ModuleBuiltIn' and '%(Filename)%(Extension)' == 'en-US.xlf'" />
+            <_AtomUILanguagePackageFile Include="@(AtomUILanguage)"
+                                         Condition="'%(AtomUILanguageSourceKind)' == 'StaticLanguagePack'" />
+            <_AtomUILanguagePackageValidationFile Include="@(Compile);@(Content);@(None)"
+                                                  Exclude="$(IntermediateOutputPath)**/*;$(BaseIntermediateOutputPath)**/*;$(BaseOutputPath)**/*" />
+        </ItemGroup>
+        <Error Condition="'@(_AtomUILanguagePackageFile)' == ''"
+               Text="No static language XLIFF files were found. Add target-language files under Localization/." />
+        <AtomUI.Build.Tasks.PrepareLanguagePackageTask PackageId="$(PackageId)"
+                                                       ExpectedLanguage="$(AtomUILanguageTag)"
+                                                       MinimumTargetState="final"
+                                                       SourceLanguageFiles="@(_AtomUILanguagePackageSourceFile)"
+                                                       RequireVerifiedContract="$(_AtomUIRequireAuthoritativeLanguageContract)"
+                                                       LanguageFiles="@(_AtomUILanguagePackageFile)"
+                                                       PackageFiles="@(_AtomUILanguagePackageValidationFile)"
+                                                       OutputManifestPath="$(AtomUILanguagePackageManifestPath)">
+            <Output TaskParameter="PreparedLanguageFiles" ItemName="_AtomUIPreparedLanguageFile" />
+        </AtomUI.Build.Tasks.PrepareLanguagePackageTask>
+        <AtomUI.Build.Tasks.GenerateLanguagePackagePropsTask PackageId="$(PackageId)"
+                                                            LanguageFiles="@(_AtomUIPreparedLanguageFile)"
+                                                            OutputPath="$(AtomUILanguagePackagePropsPath)" />
+        <ItemGroup>
+            <None Include="@(_AtomUIPreparedLanguageFile)"
+                  Pack="true"
+                  PackagePath="contentFiles/any/any/%(_AtomUIPreparedLanguageFile.AtomUILanguagePackagePath)" />
+            <None Include="$(AtomUILanguagePackageManifestPath)"
+                  Pack="true"
+                  PackagePath="contentFiles/any/any/AtomUI.LanguagePack.xml" />
+            <None Include="$(AtomUILanguagePackagePropsPath)"
+                  Pack="true"
+                  PackagePath="buildTransitive/$(PackageId).props" />
+        </ItemGroup>
+    </Target>
+
+    <Target Name="AtomUIPrepareLanguageModuleAssets"
+            BeforeTargets="_GetPackageFiles"
+            Condition="'$(IsPackable)' == 'true' and '$(AtomUIBuildLanguagePackage)' != 'true' and '@(AtomUILanguage)' != ''">
+        <ItemGroup>
+            <_AtomUIModuleLanguageFile Include="@(AtomUILanguage)"
+                                       Condition="'%(AtomUILanguageSourceKind)' == 'ModuleBuiltIn' and '%(Filename)%(Extension)' == 'en-US.xlf'" />
+        </ItemGroup>
+        <AtomUI.Build.Tasks.GenerateLanguagePackagePropsTask PackageId="$(PackageId)"
+                                                            SourceKind="ModuleBuiltIn"
+                                                            RequireTargetLanguage="false"
+                                                            LanguageFiles="@(_AtomUIModuleLanguageFile)"
+                                                            OutputPath="$(AtomUILanguageModulePropsPath)" />
+        <ItemGroup>
+            <None Include="@(_AtomUIModuleLanguageFile)"
+                  Pack="true"
+                  PackagePath="contentFiles/any/any/%(_AtomUIModuleLanguageFile.AtomUILanguagePackagePath)" />
+            <None Include="$(AtomUILanguageModulePropsPath)"
+                  Pack="true"
+                  PackagePath="buildTransitive/$(PackageId).props" />
+        </ItemGroup>
+    </Target>
+</Project>

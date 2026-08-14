@@ -76,15 +76,21 @@ public class LocalizationBuildAssetsTests
     [Fact]
     public void Localization_Targets_Discovers_Xliff_And_Exposes_Generator_Metadata()
     {
-        var targets = XDocument.Load(GetRepoFile("build/nuget/localization/Localization.targets"));
-        var templateOutputRoot = targets.Descendants()
+        var inputs = XDocument.Load(GetRepoFile("build/nuget/localization/Inputs.targets"));
+        var projectReferences = XDocument.Load(GetRepoFile(
+            "build/nuget/localization/ProjectReferences.targets"));
+        var export = XDocument.Load(GetRepoFile("build/nuget/localization/Export.targets"));
+        var packaging = XDocument.Load(GetRepoFile("build/nuget/localization/Packaging.targets"));
+        var ownerDocuments = new[] { inputs, projectReferences, export, packaging };
+
+        var templateOutputRoot = export.Descendants()
                                         .Single(element =>
                                             element.Name.LocalName ==
                                             "AtomUILanguageTemplateOutputRootDirectory");
         templateOutputRoot.Value.ShouldBe("$(MSBuildProjectDirectory)/Localization");
         ((string?)templateOutputRoot.Attribute("Condition"))
             .ShouldBe("'$(AtomUILanguageTemplateOutputRootDirectory)' == ''");
-        var discoveredLanguages = targets.Descendants()
+        var discoveredLanguages = inputs.Descendants()
                                          .Where(element =>
                                              element.Name.LocalName == "AtomUILanguage" &&
                                              element.Attribute("Include") is not null)
@@ -97,7 +103,7 @@ public class LocalizationBuildAssetsTests
         var exclude = (string?)discoveredModuleLanguage.Attribute("Exclude");
         var fileExcludes = string.Join(
             ";",
-            targets.Descendants()
+            inputs.Descendants()
                    .Where(element => element.Name.LocalName == "_AtomUILanguageFileExcludes")
                    .Select(static element => element.Value));
 
@@ -135,13 +141,13 @@ public class LocalizationBuildAssetsTests
                               .ShouldNotContain(element =>
                                   element.Name.LocalName == "AtomUILanguageContractVersion");
 
-        var additionalLanguageFiles = targets.Descendants()
+        var additionalLanguageFiles = inputs.Descendants()
                                              .Single(element =>
                                                  element.Name.LocalName == "_AtomUIAdditionalLanguageFile");
         ((string?)additionalLanguageFiles.Attribute("Include"))
             .ShouldBe("@(AtomUILanguage);@(AtomUILanguageOverride)");
 
-        var additionalFiles = targets.Descendants()
+        var additionalFiles = inputs.Descendants()
                                      .Single(element =>
                                          element.Name.LocalName == "AdditionalFiles" &&
                                          (string?)element.Attribute("Include") ==
@@ -150,7 +156,7 @@ public class LocalizationBuildAssetsTests
         ((string?)additionalFiles.Attribute("Visible")).ShouldBe("false");
         AssertKeepsGeneratorMetadata(additionalFiles);
 
-        var visibleMetadata = targets.Descendants()
+        var visibleMetadata = inputs.Descendants()
                                      .Where(element =>
                                          element.Name.LocalName == "CompilerVisibleItemMetadata" &&
                                          (string?)element.Attribute("Include") == "AdditionalFiles")
@@ -168,7 +174,7 @@ public class LocalizationBuildAssetsTests
         ],
             ignoreOrder: true);
 
-        var visibleProperties = targets.Descendants()
+        var visibleProperties = inputs.Descendants()
                                        .Where(element => element.Name.LocalName == "CompilerVisibleProperty")
                                        .Select(element => (string?)element.Attribute("Include"))
                                        .ToArray();
@@ -176,7 +182,7 @@ public class LocalizationBuildAssetsTests
             ["PackageId", "AssemblyName", "AtomUILanguageModuleId", "AtomUIBuildLanguagePackage"],
             ignoreOrder: true);
 
-        var usingTasks = targets.Descendants("UsingTask")
+        var usingTasks = ownerDocuments.SelectMany(document => document.Descendants("UsingTask"))
                                 .Select(element => (string?)element.Attribute("TaskName"))
                                 .ToArray();
         usingTasks.ShouldBe(
@@ -187,14 +193,15 @@ public class LocalizationBuildAssetsTests
             "AtomUI.Build.Tasks.GenerateLanguagePackagePropsTask"
         ],
             ignoreOrder: true);
-        targets.Descendants("Target")
-               .ShouldNotContain(element =>
+        ownerDocuments.SelectMany(document => document.Descendants("Target"))
+                      .ShouldNotContain(element =>
                    (string?)element.Attribute("Name") == "AtomUIValidateLanguageFiles");
-        targets.Descendants("Target")
-               .ShouldNotContain(element =>
+        ownerDocuments.SelectMany(document => document.Descendants("Target"))
+                      .ShouldNotContain(element =>
                    (string?)element.Attribute("Name") == "AtomUICollectLanguageCatalogs");
-        targets.Descendants("_AtomUILanguageValidationMinimumState").ShouldBeEmpty();
-        var prepareTask = targets.Descendants("Target")
+        ownerDocuments.SelectMany(document => document.Descendants("_AtomUILanguageValidationMinimumState"))
+                      .ShouldBeEmpty();
+        var prepareTask = packaging.Descendants("Target")
                                  .Single(element =>
                                      (string?)element.Attribute("Name") == "AtomUIPrepareLanguagePackage")
                                  .Descendants()
@@ -206,7 +213,7 @@ public class LocalizationBuildAssetsTests
             .ShouldBe("@(_AtomUILanguagePackageSourceFile)");
         ((string?)prepareTask.Attribute("RequireVerifiedContract"))
             .ShouldBe("$(_AtomUIRequireAuthoritativeLanguageContract)");
-        var exportTarget = targets.Descendants("Target")
+        var exportTarget = export.Descendants("Target")
                                   .Single(element =>
                                       (string?)element.Attribute("Name") ==
                                   "AtomUIExportLanguageTemplates");
@@ -223,7 +230,8 @@ public class LocalizationBuildAssetsTests
     [Fact]
     public void Localization_Targets_Resolve_Authoring_Project_References_As_Source_Contracts()
     {
-        var targets = XDocument.Load(GetRepoFile("build/nuget/localization/Localization.targets"));
+        var targets = XDocument.Load(GetRepoFile(
+            "build/nuget/localization/ProjectReferences.targets"));
 
         var configuredReference = targets.Root!
                                          .Elements("ItemGroup")
@@ -280,7 +288,8 @@ public class LocalizationBuildAssetsTests
     [Fact]
     public void Localization_Targets_Infer_Strict_Contract_Validation_From_Normal_Project_References()
     {
-        var targets = XDocument.Load(GetRepoFile("build/AtomUI.Localization.targets"));
+        var targets = XDocument.Load(GetRepoFile(
+            "build/nuget/localization/ProjectReferences.targets"));
 
         var policyTarget = targets.Descendants("Target")
                                   .Single(element =>
@@ -298,7 +307,8 @@ public class LocalizationBuildAssetsTests
     [Fact]
     public void Localization_Targets_Define_The_Language_Pack_Project_Reference_Protocol()
     {
-        var targets = XDocument.Load(GetRepoFile("build/nuget/localization/Localization.targets"));
+        var targets = XDocument.Load(GetRepoFile(
+            "build/nuget/localization/ProjectReferences.targets"));
 
         var provider = targets.Descendants("Target")
                               .Single(element =>
@@ -462,8 +472,13 @@ public class LocalizationBuildAssetsTests
     [Fact]
     public void Localization_Targets_Registers_Build_Tasks_Before_Source_Outputs_Exist()
     {
-        var targets = XDocument.Load(GetRepoFile("build/nuget/localization/Localization.targets"));
-        var usingTasks = targets.Descendants("UsingTask")
+        var ownerDocuments = new[]
+        {
+            XDocument.Load(GetRepoFile("build/nuget/localization/ProjectReferences.targets")),
+            XDocument.Load(GetRepoFile("build/nuget/localization/Export.targets")),
+            XDocument.Load(GetRepoFile("build/nuget/localization/Packaging.targets"))
+        };
+        var usingTasks = ownerDocuments.SelectMany(document => document.Descendants("UsingTask"))
                                 .Where(element =>
                                     ((string?)element.Attribute("TaskName"))?.StartsWith(
                                         "AtomUI.Build.Tasks.",
@@ -482,7 +497,7 @@ public class LocalizationBuildAssetsTests
     [Fact]
     public void Module_Package_Exports_Only_The_Authoritative_EnUs_Catalog_Sources()
     {
-        var targets = XDocument.Load(GetRepoFile("build/nuget/localization/Localization.targets"));
+        var targets = XDocument.Load(GetRepoFile("build/nuget/localization/Packaging.targets"));
         var moduleLanguageFiles = targets.Descendants()
                                          .Single(element =>
                                              element.Name.LocalName == "_AtomUIModuleLanguageFile");
