@@ -1,0 +1,13 @@
+<Project>
+    <PropertyGroup>
+        <AtomUIBuildTasksAssembly Condition="'$(AtomUIBuildTasksAssembly)' == ''">$(MSBuildThisFileDirectory)../tools/netstandard2.0/AtomUI.Build.Tasks.dll</AtomUIBuildTasksAssembly>
+    </PropertyGroup>
+
+    <Import Project="$(MSBuildThisFileDirectory)AtomUI.LinkedRegistration.props"
+            Condition="'$(AtomUIGeneratorPropsImported)' != 'true'" />
+    <Import Project="$(MSBuildThisFileDirectory)AtomUI.Localization.props"
+            Condition="'$(AtomUIGeneratorPropsImported)' != 'true'" />
+    <PropertyGroup Condition="'$(AtomUIGeneratorPropsImported)' != 'true'">
+        <AtomUIGeneratorPropsImported>true</AtomUIGeneratorPropsImported>
+    </PropertyGroup>
+</Project>

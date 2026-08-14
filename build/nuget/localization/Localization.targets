@@ -1,6 +1,0 @@
-<Project>
-    <Import Project="$(MSBuildThisFileDirectory)Inputs.targets" />
-    <Import Project="$(MSBuildThisFileDirectory)ProjectReferences.targets" />
-    <Import Project="$(MSBuildThisFileDirectory)Export.targets" />
-    <Import Project="$(MSBuildThisFileDirectory)Packaging.targets" />
-</Project>

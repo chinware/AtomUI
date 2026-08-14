@@ -1,3 +1,3 @@
 <Project>
-    <Import Project="$(MSBuildThisFileDirectory)build/repository/AtomUI.Repository.props" />
+    <Import Project="$(MSBuildThisFileDirectory)build/AtomUI.Repository.props" />
 </Project>

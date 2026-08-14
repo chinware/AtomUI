@@ -615,7 +615,9 @@ initializer 异常，再主动终止 smoke 进程。
 - NativeAOT 链接 `System.IO.Compression.Native` 时还需要 Brotli 原生库。
 - Apple Silicon Homebrew 的通用库目录通常是 `/opt/homebrew/lib`，`openssl@3` keg-only 库位于
   `/opt/homebrew/opt/openssl@3/lib`；Intel Homebrew 对应 `/usr/local` 路径。默认 linker 搜索路径可能找不到这些库。
-- 仓库内验证统一复用 `build/platforms/macos/NativeAot.targets`，不要在各 fixture 中重复硬编码路径。
+- 仓库内 macOS 验证统一复用 `build/MacOSHomebrewNativeAot.targets`，不要在 Gallery 或 fixture 中重复硬编码路径。
+- 该文件只补充 Homebrew OpenSSL/Brotli linker 搜索路径，不进入 NuGet，也不是 AtomUI 的通用 NativeAOT 配置。
+  Windows 和 Linux 使用共享 AOT 配置及各自平台工具链，不需要空的对称 targets 文件。
 
 注意：
 

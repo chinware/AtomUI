@@ -14,9 +14,8 @@
         <AtomUITargetFrameworks Condition=" '$(Configuration)' == 'Debug' ">$(AtomUIDevelopTargetFramework)</AtomUITargetFrameworks>
         <AtomUITargetFrameworks Condition=" '$(Configuration)' == 'Release' ">$(AtomUIDevelopTargetFramework);$(AtomUIProductionTargetFramework)</AtomUITargetFrameworks>
         
-        <IsTestProject Condition="$(MSBuildProjectFullPath.Contains('test')) and ($(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.TestBase')))">
-            true
-        </IsTestProject>
+        <IsTestProject Condition="$(MSBuildProjectFullPath.Contains('test')) and ($(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.TestBase')))">true</IsTestProject>
+        <DefaultItemExcludes>$(DefaultItemExcludes);$(MSBuildProjectDirectory)/obj/**</DefaultItemExcludes>
         <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
         <NoWarn>$(NoWarn);CS1591;CS0436;CS7035;AVA3001;AVALONIA_X11_CSD</NoWarn>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>

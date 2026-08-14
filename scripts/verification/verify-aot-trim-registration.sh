@@ -10,7 +10,7 @@ rid="${ATOMUI_AOT_TRIM_RID:-osx-arm64}"
 configuration="Release"
 fixture_root="$repo_root/tests/AtomUI.LinkedRegistration.Fixtures"
 report_path="$output_root/size-report.tsv"
-native_aot_macos_targets="$repo_root/build/platforms/macos/NativeAot.targets"
+native_aot_macos_targets="$repo_root/build/MacOSHomebrewNativeAot.targets"
 
 fixtures=(Minimal TwoUnits DynamicFallback Full)
 

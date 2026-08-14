@@ -1,8 +1,0 @@
-<Project>
-    <Import Project="$(MSBuildThisFileDirectory)ProjectDefaults.targets" />
-    <Import Project="$(MSBuildThisFileDirectory)../nuget/linked-registration/LinkedRegistration.targets" />
-    <Import Project="$(MSBuildThisFileDirectory)PackageGeneratorAssets.targets" />
-    <Import Project="$(MSBuildThisFileDirectory)../nuget/localization/Localization.targets" />
-    <Import Project="$(MSBuildThisFileDirectory)../nuget/theme/ThemeAssets.targets"
-            Condition="'$(AtomUIGenerateControlThemeAssetResources)' == 'true'" />
-</Project>

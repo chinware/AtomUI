@@ -6,45 +6,86 @@ namespace AtomUI.Generator.Tests.BuildInfrastructure;
 
 public sealed class BuildLayoutTests
 {
+    private static readonly string[] s_expectedBuildFiles =
+    [
+        "AtomUI.Generator.props",
+        "AtomUI.Generator.targets",
+        "AtomUI.GeneratorConsumer.targets",
+        "AtomUI.LinkedRegistration.props",
+        "AtomUI.LinkedRegistration.targets",
+        "AtomUI.Localization.props",
+        "AtomUI.Localization.targets",
+        "AtomUI.Repository.props",
+        "AtomUI.Repository.targets",
+        "AtomUI.ThemeAssets.targets",
+        "MacOSHomebrewNativeAot.targets",
+        "OutputPaths.props",
+        "PackageMetadata.props",
+        "ProjectDefaults.props",
+        "Versions.props"
+    ];
+
+    private static readonly string[] s_expectedNuGetBuildAssets =
+    [
+        "AtomUI.Generator.props",
+        "AtomUI.Generator.targets",
+        "AtomUI.LinkedRegistration.props",
+        "AtomUI.LinkedRegistration.targets",
+        "AtomUI.Localization.props",
+        "AtomUI.Localization.targets",
+        "AtomUI.ThemeAssets.targets"
+    ];
+
     [Fact]
     public void Directory_Build_Files_Import_Only_Repository_Entry_Points()
     {
         GetImports("Directory.Build.props")
-            .ShouldBe(["$(MSBuildThisFileDirectory)build/repository/AtomUI.Repository.props"]);
+            .ShouldBe(["$(MSBuildThisFileDirectory)build/AtomUI.Repository.props"]);
         GetImports("Directory.Build.targets")
-            .ShouldBe(["$(MSBuildThisFileDirectory)build/repository/AtomUI.Repository.targets"]);
+            .ShouldBe(["$(MSBuildThisFileDirectory)build/AtomUI.Repository.targets"]);
     }
 
     [Fact]
-    public void Repository_Props_Import_Configuration_In_Deterministic_Order()
+    public void Repository_Props_Import_Configuration_And_Generator_Entry_Point()
     {
-        GetImports("build/repository/AtomUI.Repository.props").ShouldBe([
+        GetImports("build/AtomUI.Repository.props").ShouldBe([
             "$(MSBuildThisFileDirectory)Versions.props",
             "$(MSBuildThisFileDirectory)ProjectDefaults.props",
             "$(MSBuildThisFileDirectory)PackageMetadata.props",
             "$(MSBuildThisFileDirectory)OutputPaths.props",
-            "$(MSBuildThisFileDirectory)GeneratorBuildAssets.props",
-            "$(MSBuildThisFileDirectory)../nuget/linked-registration/LinkedRegistration.props",
-            "$(MSBuildThisFileDirectory)../nuget/localization/Localization.props"
+            "$(MSBuildThisFileDirectory)AtomUI.Generator.props"
         ]);
     }
 
     [Fact]
-    public void Generator_Build_Assets_Have_One_Canonical_Manifest()
+    public void Repository_Targets_Reuse_The_Generator_Entry_Point()
     {
-        var manifest = XDocument.Load(GetRepoFile("build/repository/GeneratorBuildAssets.props"));
-        var buildAssets = manifest.Descendants("AtomUINuGetBuildAsset").ShouldHaveSingleItem();
-        var buildAssetIncludes = ((string?)buildAssets.Attribute("Include")).ShouldNotBeNull();
-        buildAssetIncludes.ShouldContain("../nuget/**/*.props");
-        buildAssetIncludes.ShouldContain("../nuget/**/*.targets");
-        ((string?)buildAssets.Attribute("Exclude"))
+        var repositoryTargets = XDocument.Load(GetRepoFile("build/AtomUI.Repository.targets"));
+
+        GetImports("build/AtomUI.Repository.targets")
+            .ShouldBe(["$(MSBuildThisFileDirectory)AtomUI.Generator.targets"]);
+        GetTargetNames(repositoryTargets)
+            .ShouldContain("AtomUIPrepareGeneratorConsumerPackageAssets");
+    }
+
+    [Fact]
+    public void Generator_Build_Assets_Have_One_Explicit_Manifest()
+    {
+        var repositoryProps = XDocument.Load(GetRepoFile("build/AtomUI.Repository.props"));
+        var buildAssets = repositoryProps.Descendants("AtomUINuGetBuildAsset").ShouldHaveSingleItem();
+        var includes = ((string?)buildAssets.Attribute("Include"))
             .ShouldNotBeNull()
-            .ShouldContain("../nuget/consumer/**");
+            .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(include => include.Replace("$(MSBuildThisFileDirectory)", string.Empty,
+                                               StringComparison.Ordinal))
+            .ToArray();
+        includes.ShouldBe(s_expectedNuGetBuildAssets);
+        buildAssets.Attribute("Exclude").ShouldBeNull();
         buildAssets.Elements("PackagePath")
                    .ShouldHaveSingleItem()
-                   .Value.ShouldBe("buildTransitive/%(RecursiveDir)%(Filename)%(Extension)");
+                   .Value.ShouldBe("buildTransitive/%(Filename)%(Extension)");
 
-        var toolAssets = manifest.Descendants("AtomUIGeneratorToolAsset").ShouldHaveSingleItem();
+        var toolAssets = repositoryProps.Descendants("AtomUIGeneratorToolAsset").ShouldHaveSingleItem();
         var toolIncludes = ((string?)toolAssets.Attribute("Include")).ShouldNotBeNull();
         toolIncludes.ShouldContain("AtomUI.Generator.dll");
         toolIncludes.ShouldContain("AtomUI.Build.Tasks.dll");
@@ -60,134 +101,108 @@ public sealed class BuildLayoutTests
                         .ShouldContain(element =>
                             (string?)element.Attribute("Include") == "@(AtomUIGeneratorToolAsset)");
 
-        var packageTargets = XDocument.Load(GetRepoFile(
-            "build/repository/PackageGeneratorAssets.targets"));
-        packageTargets.Descendants("None")
-                      .ShouldContain(element =>
-                          (string?)element.Attribute("Include") == "@(AtomUINuGetBuildAsset)");
-        packageTargets.Descendants("None")
-                      .ShouldContain(element =>
-                          (string?)element.Attribute("Include") == "@(AtomUIGeneratorToolAsset)");
+        var repositoryTargets = XDocument.Load(GetRepoFile("build/AtomUI.Repository.targets"));
+        repositoryTargets.Descendants("None")
+                         .ShouldContain(element =>
+                             (string?)element.Attribute("Include") == "@(AtomUINuGetBuildAsset)");
+        repositoryTargets.Descendants("None")
+                         .ShouldContain(element =>
+                             (string?)element.Attribute("Include") == "@(AtomUIGeneratorToolAsset)");
     }
 
     [Fact]
     public void NuGet_Features_Use_The_Shared_Build_Tasks_Assembly()
     {
-        var infrastructure = XDocument.Load(GetRepoFile("build/nuget/infrastructure/BuildTasks.props"));
-        var fallback = infrastructure.Descendants("AtomUIBuildTasksAssembly").ShouldHaveSingleItem();
+        var repositoryProps = XDocument.Load(GetRepoFile("build/AtomUI.Repository.props"));
+        repositoryProps.Descendants("AtomUIBuildTasksAssembly")
+                       .ShouldHaveSingleItem()
+                       .Value.ShouldContain("AtomUI.Build.Tasks.dll");
+
+        var generatorProps = XDocument.Load(GetRepoFile("build/AtomUI.Generator.props"));
+        var fallback = generatorProps.Descendants("AtomUIBuildTasksAssembly").ShouldHaveSingleItem();
         ((string?)fallback.Attribute("Condition"))
             .ShouldBe("'$(AtomUIBuildTasksAssembly)' == ''");
         fallback.Value.Trim().ShouldBe(
-            "$(MSBuildThisFileDirectory)../../tools/netstandard2.0/AtomUI.Build.Tasks.dll");
+            "$(MSBuildThisFileDirectory)../tools/netstandard2.0/AtomUI.Build.Tasks.dll");
 
         var buildRoot = Path.Combine(GetRepositoryRoot(), "build");
-        var featureFiles = Directory.EnumerateFiles(
-            Path.Combine(buildRoot, "nuget"),
-            "*.targets",
-            SearchOption.AllDirectories);
+        var featureFiles = s_expectedNuGetBuildAssets
+            .Where(file => Path.GetExtension(file) == ".targets")
+            .Select(file => Path.Combine(buildRoot, file));
         var usingTasks = featureFiles.SelectMany(file => XDocument.Load(file).Descendants("UsingTask"))
                                      .ToArray();
         usingTasks.ShouldNotBeEmpty();
         usingTasks.ShouldAllBe(element =>
             (string?)element.Attribute("AssemblyFile") == "$(AtomUIBuildTasksAssembly)");
 
-        var buildFiles = Directory.EnumerateFiles(buildRoot, "*.*", SearchOption.AllDirectories)
-                                  .Where(file =>
-                                      Path.GetExtension(file) is ".props" or ".targets");
-        var buildText = string.Join('\n', buildFiles.Select(File.ReadAllText));
+        File.Exists(Path.Combine(buildRoot, "BuildTasks.props")).ShouldBeFalse();
+        var buildText = string.Join('\n', Directory.EnumerateFiles(buildRoot).Select(File.ReadAllText));
         buildText.ShouldNotContain("AtomUILocalizationBuildTasksAssembly");
         buildText.ShouldNotContain("AtomUILinkedRegistrationBuildTasksAssembly");
     }
 
     [Fact]
-    public void Repository_Targets_Import_Defaults_And_Features_In_Deterministic_Order()
+    public void Repository_Test_Project_Flag_Has_A_Canonical_Boolean_Value()
     {
-        GetImports("build/repository/AtomUI.Repository.targets").ShouldBe([
-            "$(MSBuildThisFileDirectory)ProjectDefaults.targets",
-            "$(MSBuildThisFileDirectory)../nuget/linked-registration/LinkedRegistration.targets",
-            "$(MSBuildThisFileDirectory)PackageGeneratorAssets.targets",
-            "$(MSBuildThisFileDirectory)../nuget/localization/Localization.targets",
-            "$(MSBuildThisFileDirectory)../nuget/theme/ThemeAssets.targets"
+        var defaults = XDocument.Load(GetRepoFile("build/ProjectDefaults.props"));
+        var isTestProject = defaults.Descendants("IsTestProject").ShouldHaveSingleItem();
+
+        isTestProject.Value.ShouldBe("true");
+    }
+
+    [Fact]
+    public void Repository_Defaults_Exclude_Stale_Project_Local_Obj_Files()
+    {
+        var defaults = XDocument.Load(GetRepoFile("build/ProjectDefaults.props"));
+        var excludes = defaults.Descendants("DefaultItemExcludes").ShouldHaveSingleItem();
+
+        excludes.Value.ShouldContain("$(MSBuildProjectDirectory)/obj/**");
+    }
+
+    [Fact]
+    public void NuGet_Generator_Entry_Points_Import_Flat_Feature_Files()
+    {
+        GetImports("build/AtomUI.Generator.props").ShouldBe([
+            "$(MSBuildThisFileDirectory)AtomUI.LinkedRegistration.props",
+            "$(MSBuildThisFileDirectory)AtomUI.Localization.props"
+        ]);
+        GetImports("build/AtomUI.Generator.targets").ShouldBe([
+            "$(MSBuildThisFileDirectory)AtomUI.LinkedRegistration.targets",
+            "$(MSBuildThisFileDirectory)AtomUI.Localization.targets",
+            "$(MSBuildThisFileDirectory)AtomUI.ThemeAssets.targets"
         ]);
     }
 
     [Fact]
-    public void NuGet_Generator_Entry_Points_Import_Features_In_Deterministic_Order()
+    public void Localization_Targets_Own_The_Complete_Build_Integration()
     {
-        GetImports("build/nuget/AtomUI.Generator.props").ShouldBe([
-            "$(MSBuildThisFileDirectory)linked-registration/LinkedRegistration.props",
-            "$(MSBuildThisFileDirectory)localization/Localization.props"
-        ]);
-        GetImports("build/nuget/AtomUI.Generator.targets").ShouldBe([
-            "$(MSBuildThisFileDirectory)linked-registration/LinkedRegistration.targets",
-            "$(MSBuildThisFileDirectory)localization/Localization.targets",
-            "$(MSBuildThisFileDirectory)theme/ThemeAssets.targets"
-        ]);
-    }
+        var targets = XDocument.Load(GetRepoFile("build/AtomUI.Localization.targets"));
 
-    [Fact]
-    public void Localization_Targets_Imports_Focused_Owners_In_Deterministic_Order()
-    {
-        GetImports("build/nuget/localization/Localization.targets").ShouldBe([
-            "$(MSBuildThisFileDirectory)Inputs.targets",
-            "$(MSBuildThisFileDirectory)ProjectReferences.targets",
-            "$(MSBuildThisFileDirectory)Export.targets",
-            "$(MSBuildThisFileDirectory)Packaging.targets"
-        ]);
-
-        var inputs = XDocument.Load(GetRepoFile("build/nuget/localization/Inputs.targets"));
-        inputs.Descendants("AdditionalFiles").ShouldNotBeEmpty();
-        inputs.Descendants("CompilerVisibleItemMetadata").ShouldNotBeEmpty();
-        GetTargetNames(inputs).ShouldBeEmpty();
-
-        GetTargetNames(XDocument.Load(GetRepoFile(
-            "build/nuget/localization/ProjectReferences.targets"))).ShouldBe([
+        GetImports("build/AtomUI.Localization.targets").ShouldBeEmpty();
+        targets.Descendants("AdditionalFiles").ShouldNotBeEmpty();
+        targets.Descendants("CompilerVisibleItemMetadata").ShouldNotBeEmpty();
+        GetTargetNames(targets).ShouldBe([
             "AtomUIGetLanguageModuleSourceAssets",
             "AtomUIResolveLanguageContractProjectReferences",
             "AtomUIGetLanguagePackProjectAssets",
-            "AtomUIResolveLanguagePackProjectReferences"
-        ]);
-        GetTargetNames(XDocument.Load(GetRepoFile(
-            "build/nuget/localization/Export.targets"))).ShouldBe([
-            "AtomUIExportLanguageTemplates"
-        ]);
-        GetTargetNames(XDocument.Load(GetRepoFile(
-            "build/nuget/localization/Packaging.targets"))).ShouldBe([
+            "AtomUIResolveLanguagePackProjectReferences",
+            "AtomUIExportLanguageTemplates",
             "AtomUIPrepareLanguagePackage",
             "AtomUIPrepareLanguageModuleAssets"
         ]);
     }
 
     [Fact]
-    public void Legacy_NuGet_Assets_Do_Not_Remain_At_The_Build_Root()
-    {
-        var repositoryRoot = GetRepositoryRoot();
-        foreach (var fileName in new[]
-                 {
-                     "AtomUI.Generator.props",
-                     "AtomUI.Generator.targets",
-                     "AtomUI.GeneratorConsumer.targets",
-                     "AtomUI.LinkedRegistration.props",
-                     "AtomUI.LinkedRegistration.targets",
-                     "AtomUI.Localization.props",
-                     "AtomUI.Localization.targets",
-                     "AtomUI.ThemeAssets.targets"
-                 })
-        {
-            var relativePath = Path.Combine("build", fileName);
-            File.Exists(Path.Combine(repositoryRoot, relativePath)).ShouldBeFalse(relativePath);
-        }
-    }
-
-    [Fact]
-    public void Build_Root_Contains_Only_Delivery_Boundary_Directories()
+    public void Build_Root_Is_A_Flat_Explicit_MSBuild_Surface()
     {
         var buildRoot = Path.Combine(GetRepositoryRoot(), "build");
-        Directory.EnumerateFiles(buildRoot).ShouldBeEmpty();
-        Directory.EnumerateDirectories(buildRoot)
+        Directory.EnumerateDirectories(buildRoot).ShouldBeEmpty();
+        Directory.EnumerateFiles(buildRoot)
                  .Select(Path.GetFileName)
-                 .ShouldBe(["nuget", "platforms", "repository"], ignoreOrder: true);
-        File.Exists(Path.Combine(buildRoot, "Output.App.props")).ShouldBeFalse();
+                 .ShouldBe(s_expectedBuildFiles, ignoreOrder: true);
+        Directory.EnumerateFiles(buildRoot)
+                 .All(file => Path.GetExtension(file) is ".props" or ".targets")
+                 .ShouldBeTrue();
     }
 
     private static string[] GetImports(string relativePath)

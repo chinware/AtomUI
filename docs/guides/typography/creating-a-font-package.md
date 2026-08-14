@@ -61,7 +61,7 @@ FontFamily = FontFamily.Parse(
 
 三处值得解释。
 
-`$(AtomUITargetFrameworks)` 来自 `build/repository/ProjectDefaults.props`，Debug 下是 `net10.0`，Release 下是
+`$(AtomUITargetFrameworks)` 来自 `build/ProjectDefaults.props`，Debug 下是 `net10.0`，Release 下是
 `net10.0;net8.0`。直接用这个变量，不要写死 TFM，否则 Release 打包时会缺少 net8.0 目标。
 
 `AvaloniaResource` 而不是 `EmbeddedResource`。这是 `avares://` 协议能找到文件的前提，用错了编译能过，运行时

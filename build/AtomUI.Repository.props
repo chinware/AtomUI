@@ -1,0 +1,35 @@
+<Project>
+    <Import Project="$(MSBuildThisFileDirectory)Versions.props" />
+    <Import Project="$(MSBuildThisFileDirectory)ProjectDefaults.props" />
+    <Import Project="$(MSBuildThisFileDirectory)PackageMetadata.props" />
+    <Import Project="$(MSBuildThisFileDirectory)OutputPaths.props" />
+
+    <PropertyGroup>
+        <AtomUIBuildTasksAssembly Condition="'$(AtomUIBuildTasksAssembly)' == ''">$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.Build.Tasks.dll</AtomUIBuildTasksAssembly>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <AtomUINuGetBuildAsset Include="$(MSBuildThisFileDirectory)AtomUI.Generator.props;
+                                         $(MSBuildThisFileDirectory)AtomUI.Generator.targets;
+                                         $(MSBuildThisFileDirectory)AtomUI.LinkedRegistration.props;
+                                         $(MSBuildThisFileDirectory)AtomUI.LinkedRegistration.targets;
+                                         $(MSBuildThisFileDirectory)AtomUI.Localization.props;
+                                         $(MSBuildThisFileDirectory)AtomUI.Localization.targets;
+                                         $(MSBuildThisFileDirectory)AtomUI.ThemeAssets.targets">
+            <PackagePath>buildTransitive/%(Filename)%(Extension)</PackagePath>
+        </AtomUINuGetBuildAsset>
+
+        <AtomUIGeneratorToolAsset Include="$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.Generator.dll;
+                                           $(OutputPathWithoutFramework)/netstandard2.0/AtomUI.Build.Tasks.dll;
+                                           $(OutputPathWithoutFramework)/netstandard2.0/System.Reflection.Metadata.dll;
+                                           $(OutputPathWithoutFramework)/netstandard2.0/System.Collections.Immutable.dll;
+                                           $(OutputPathWithoutFramework)/netstandard2.0/System.Memory.dll;
+                                           $(OutputPathWithoutFramework)/netstandard2.0/System.Buffers.dll;
+                                           $(OutputPathWithoutFramework)/netstandard2.0/System.Numerics.Vectors.dll;
+                                           $(OutputPathWithoutFramework)/netstandard2.0/System.Runtime.CompilerServices.Unsafe.dll">
+            <PackagePath>tools/netstandard2.0/%(Filename)%(Extension)</PackagePath>
+        </AtomUIGeneratorToolAsset>
+    </ItemGroup>
+
+    <Import Project="$(MSBuildThisFileDirectory)AtomUI.Generator.props" />
+</Project>

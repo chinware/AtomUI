@@ -68,12 +68,8 @@
                                         Value="True"/>
     </ItemGroup>
 
-    <ItemGroup Condition="'$(PublishAot)' == 'true' and $([MSBuild]::IsOSPlatform('OSX'))">
-        <LinkerArg Include="-L/opt/homebrew/lib" Condition="Exists('/opt/homebrew/lib/libssl.dylib')"/>
-        <LinkerArg Include="-L/opt/homebrew/opt/openssl@3/lib" Condition="Exists('/opt/homebrew/opt/openssl@3/lib/libssl.dylib')"/>
-        <LinkerArg Include="-L/usr/local/lib" Condition="Exists('/usr/local/lib/libssl.dylib')"/>
-        <LinkerArg Include="-L/usr/local/opt/openssl@3/lib" Condition="Exists('/usr/local/opt/openssl@3/lib/libssl.dylib')"/>
-    </ItemGroup>
+    <Import Project="../../build/MacOSHomebrewNativeAot.targets"
+            Condition="'$(PublishAot)' == 'true'" />
 
     <ItemGroup>
         <ProjectReference Include="../AtomUIGallery/AtomUIGallery.csproj"/>

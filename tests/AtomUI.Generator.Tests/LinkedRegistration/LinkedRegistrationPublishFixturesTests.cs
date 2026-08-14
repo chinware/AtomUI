@@ -131,7 +131,7 @@ public sealed class LinkedRegistrationPublishFixturesTests
         source.ShouldContain("--disable-build-servers");
         source.ShouldContain("PublishTrimmed=true");
         source.ShouldContain("PublishAot=true");
-        source.ShouldContain("build/platforms/macos/NativeAot.targets");
+        source.ShouldContain("build/MacOSHomebrewNativeAot.targets");
         source.ShouldContain("CustomAfterMicrosoftCommonTargets");
         source.ShouldContain("RunAOTCompilation=true");
         source.ShouldContain("AtomUIUseGeneratedRegistration=true");
@@ -151,9 +151,9 @@ public sealed class LinkedRegistrationPublishFixturesTests
     }
 
     [Fact]
-    public void Macos_native_aot_verification_supplies_homebrew_native_library_paths()
+    public void Shared_macos_native_aot_settings_supply_homebrew_library_paths()
     {
-        var project = XDocument.Load(GetRepoFile("build/platforms/macos/NativeAot.targets"));
+        var project = XDocument.Load(GetRepoFile("build/MacOSHomebrewNativeAot.targets"));
         var linkerArgs = project.Descendants()
             .Where(element => element.Name.LocalName == "LinkerArg")
             .Select(element => (string?)element.Attribute("Include"))
@@ -164,6 +164,22 @@ public sealed class LinkedRegistrationPublishFixturesTests
         linkerArgs.ShouldContain("-L/opt/homebrew/opt/openssl@3/lib");
         linkerArgs.ShouldContain("-L/usr/local/lib");
         linkerArgs.ShouldContain("-L/usr/local/opt/openssl@3/lib");
+
+        var galleryProject = XDocument.Load(GetRepoFile(
+            "controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj"));
+        galleryProject.Descendants("Import")
+                      .Single(element =>
+                          (string?)element.Attribute("Project") ==
+                          "../../build/MacOSHomebrewNativeAot.targets")
+                      .ShouldNotBeNull();
+
+        var languagePackConsumer = XDocument.Load(GetRepoFile(
+            "tests/fixtures/LanguagePackEndToEnd/Consumer/Consumer.csproj"));
+        languagePackConsumer.Descendants("Import")
+                            .Single(element =>
+                                (string?)element.Attribute("Project") ==
+                                "../../../../build/MacOSHomebrewNativeAot.targets")
+                            .ShouldNotBeNull();
     }
 
     private static string ReadRepoFile(string relativePath)

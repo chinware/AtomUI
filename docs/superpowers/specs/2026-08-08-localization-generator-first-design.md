@@ -6,8 +6,8 @@
 
 ## 目标
 
-将尽可能多的本地化语义从 `build/nuget/localization/Localization.props` 和
-`build/nuget/localization/` 下的职责 targets 下沉到 `AtomUI.Generator`，同时保持 MSBuild 文件简洁，
+将尽可能多的本地化语义从 `build/AtomUI.Localization.props` 和
+`build/AtomUI.Localization.targets` 下沉到 `AtomUI.Generator`，同时保持 MSBuild 文件简洁，
 并保留现有工作流的核心语义：本地 XLIFF 编译为静态运行时数据，语言包项目生成声明式包资产，
 项目引用可以提供源契约，模板导出仍然通过 MSBuild 命令完成。
 
@@ -317,8 +317,8 @@ git diff --check
 
 ## 验收标准
 
-- `build/nuget/localization/Localization.props` 只包含默认值和 item 定义。
-- `build/nuget/localization/Localization.targets` 只编排职责文件；`Inputs.targets` 不包含普通编译校验 target，且只有一条合并的本地化输入投影路径。
+- `build/AtomUI.Localization.props` 只包含默认值和 item 定义。
+- `build/AtomUI.Localization.targets` 集中拥有输入、项目引用、导出和打包流程，且只有一条合并的本地化输入投影路径。
 - 对编译项目而言，Generator 是唯一的 Catalog/Bundle 语义校验器；静态语言包 pack 的文件和包契约仍由 Build Tasks 负责。
 - 静态语言包的 pack/export 行为仍有明确的 Build Task 覆盖。
 - 第三方 Verified 和 Deferred 包流程都有端到端测试。

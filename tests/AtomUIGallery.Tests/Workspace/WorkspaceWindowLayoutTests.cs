@@ -292,7 +292,13 @@ public class WorkspaceWindowLayoutTests
     {
         var commandType = typeof(WorkspaceWindow).GetNestedType("StableCommand", BindingFlags.NonPublic);
         commandType.ShouldNotBeNull();
-        return (ICommand)Activator.CreateInstance(commandType!, innerCommand)!;
+        var constructor = commandType!.GetConstructor(
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+            binder: null,
+            types: [typeof(ICommand)],
+            modifiers: null);
+        constructor.ShouldNotBeNull();
+        return (ICommand)constructor.Invoke([innerCommand]);
     }
 
     private sealed class RecordingCommand : ICommand

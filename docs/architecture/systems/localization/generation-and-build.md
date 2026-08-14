@@ -26,9 +26,8 @@ XLIFF 解析与文件级校验模型，但普通应用和模块编译不再运�
 
 ## MSBuild items
 
-`build/nuget/localization/Localization.targets` 按顺序导入 `Inputs.targets`、`ProjectReferences.targets`、
-`Export.targets` 和 `Packaging.targets`。其中 `Inputs.targets` 自动收集标准目录中的 XLIFF，并排除 `bin/`、`obj/`
-和生成目录：
+`build/AtomUI.Localization.targets` 集中拥有输入发现、项目引用桥接、模板导出和打包流程。它自动收集标准目录中的
+XLIFF，并排除 `bin/`、`obj/` 和生成目录：
 
 ```xml
 <AtomUILanguage Include="**/Localization/**/*.xlf" />

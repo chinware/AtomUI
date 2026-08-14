@@ -1,7 +1,4 @@
 <Project>
-    <Import Project="$(MSBuildThisFileDirectory)../infrastructure/BuildTasks.props"
-            Condition="'$(AtomUIBuildTasksAssembly)' == ''" />
-
     <PropertyGroup>
         <AtomUILinkedPublish Condition="'$(AtomUILinkedPublish)' == '' and '$(PublishTrimmed)' == 'true'">true</AtomUILinkedPublish>
         <AtomUILinkedPublish Condition="'$(AtomUILinkedPublish)' == '' and '$(PublishAot)' == 'true'">true</AtomUILinkedPublish>
