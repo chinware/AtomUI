@@ -212,7 +212,7 @@ $publishAotEnabled = ConvertTo-Bool -Value $publishAot
 $projectPath = Join-Path -Path $PSScriptRoot -ChildPath "../AtomUIGallery.Desktop.csproj"
 $assetsPath = Join-Path -Path $PSScriptRoot -ChildPath "../../../output/AtomUIGallery.Desktop/obj/project.assets.json"
 $configsPath = Join-Path -Path $PSScriptRoot -ChildPath "../configs"
-$versionPropsPath = Join-Path -Path $PSScriptRoot -ChildPath "../../../build/Version.props"
+$versionPropsPath = Join-Path -Path $PSScriptRoot -ChildPath "../../../build/repository/Versions.props"
 
 if ($publishAotEnabled) {
     if ($buildType -ne "Release") {

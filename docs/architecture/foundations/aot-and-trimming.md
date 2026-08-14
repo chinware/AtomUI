@@ -373,7 +373,7 @@ strict 模式可见，strict 模式继续把自动 full fallback 提升为 Error
 仓库提供统一验证入口：
 
 ```bash
-build/scripts/verify-aot-trim-registration.sh --full
+scripts/verification/verify-aot-trim-registration.sh --full
 ```
 
 该脚本验证 ordinary/generated 行为快照、trimmed JIT、Minimal/TwoUnits/DynamicFallback/Full NativeAOT、未使用 Unit

@@ -36,7 +36,7 @@ public class GalleryVersionInfoTests
 
     private static string ReadAtomUIVersionFromProps()
     {
-        var path     = GetRepoFile("build/Version.props");
+        var path     = GetRepoFile("build/repository/Versions.props");
         var document = XDocument.Load(path);
         var version  = document.Descendants("AtomUIVersion").SingleOrDefault()?.Value;
 

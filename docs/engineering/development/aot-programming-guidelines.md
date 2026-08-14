@@ -585,7 +585,7 @@ dotnet publish controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj
 Linked registration 完整回归与体积门槛：
 
 ```bash
-build/scripts/verify-aot-trim-registration.sh --full
+scripts/verification/verify-aot-trim-registration.sh --full
 ```
 
 脚本成功仍不能代替 Gallery Desktop 启动 smoke。Theme template 可以静态保留 CLR 类型而漏注册它的 descriptor；这类错误
@@ -615,7 +615,7 @@ initializer 异常，再主动终止 smoke 进程。
 - NativeAOT 链接 `System.IO.Compression.Native` 时还需要 Brotli 原生库。
 - Apple Silicon Homebrew 的通用库目录通常是 `/opt/homebrew/lib`，`openssl@3` keg-only 库位于
   `/opt/homebrew/opt/openssl@3/lib`；Intel Homebrew 对应 `/usr/local` 路径。默认 linker 搜索路径可能找不到这些库。
-- 仓库内验证统一复用 `build/AtomUI.NativeAot.MacOS.targets`，不要在各 fixture 中重复硬编码路径。
+- 仓库内验证统一复用 `build/platforms/macos/NativeAot.targets`，不要在各 fixture 中重复硬编码路径。
 
 注意：
 

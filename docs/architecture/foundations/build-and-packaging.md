@@ -1,10 +1,62 @@
 # 构建与打包
 
-AtomUI 使用集中化 MSBuild 配置。顶层 `Directory.Build.props` 引入版本、通用配置、包元信息和输出路径配置。
+AtomUI 使用集中化 MSBuild 配置。顶层 `Directory.Build.props` 和 `Directory.Build.targets` 只导入
+`build/repository/AtomUI.Repository.props` 与 `build/repository/AtomUI.Repository.targets`；具体配置和功能入口由
+Repository 聚合文件按确定顺序管理。
+
+## 基础设施目录边界
+
+`build/` 根目录不放文件，只保留三个按交付边界划分的目录：
+
+```text
+build/
+├── repository/    # 只服务源码仓库构建、打包和输出布局
+├── nuget/         # 随 NuGet 包交付的 props/targets 源资产
+└── platforms/     # 可复用的平台发布目标
+```
+
+- `build/repository/` 拥有版本、项目默认值、包元信息、输出路径、Repository 聚合入口和 Generator 资产清单。
+- `build/nuget/` 拥有 `AtomUI.Generator.props`、`AtomUI.Generator.targets` 以及
+  `linked-registration/`、`localization/`、`theme/`、`infrastructure/` 等包内功能目录。
+- `build/platforms/macos/NativeAot.targets` 是 macOS NativeAOT 验证共享目标，不进入 NuGet 包。
+- 可执行验证脚本位于 `scripts/verification/`，不属于 MSBuild 交付资产。
+
+新增基础设施文件时必须先判断它服务 Repository、NuGet consumer、平台发布还是可执行验证；不得重新把文件放回
+`build/` 根目录。
+
+## Repository 入口
+
+`AtomUI.Repository.props` 依次导入版本、项目默认值、包元信息、输出路径和
+`GeneratorBuildAssets.props`，然后设置源码构建使用的 `$(AtomUIBuildTasksAssembly)` 并导入 NuGet feature props。
+`AtomUI.Repository.targets` 统一导入项目默认 target、linked registration、产品包 Generator 资产注入、本地化和
+Theme Asset targets。
+
+`build/repository/GeneratorBuildAssets.props` 是 Generator build assets 的唯一清单：
+
+- `@(AtomUINuGetBuildAsset)` 通过 `build/nuget/**/*.props` 与 `build/nuget/**/*.targets` 收集资产，排除
+  `consumer/**`，并使用 `%(RecursiveDir)` 保留 `buildTransitive/` 内部目录。
+- `@(AtomUIGeneratorToolAsset)` 一次定义 Generator、Build Tasks 和任务运行所需依赖，统一进入
+  `tools/netstandard2.0/`。
+- `AtomUI.Generator.csproj` 与注册型产品包只能消费这两个 item，不得各自维护第二份文件清单。
+
+## NuGet 入口
+
+`build/nuget/AtomUI.Generator.props` 和 `build/nuget/AtomUI.Generator.targets` 是包根自动导入入口。它们只编排功能目录，
+具体实现由各 owner 文件维护。本地化入口进一步按 `Inputs.targets`、`ProjectReferences.targets`、`Export.targets` 和
+`Packaging.targets` 拆分职责。
+
+`build/nuget/consumer/ProductPackage.targets` 是产品包模板，打包时单独重命名为
+`buildTransitive/<PackageId>.targets`。它继续从包根导入 Generator 入口，并只在最终 `@(Analyzer)` 中没有
+`AtomUI.Generator` 时注入同包工具程序集。
+
+所有需要 `AtomUI.Build.Tasks` 的 feature target 都使用唯一属性 `$(AtomUIBuildTasksAssembly)`。Repository 构建将它
+指向 `output/bin/<Configuration>/netstandard2.0/AtomUI.Build.Tasks.dll`；NuGet consumer 通过
+`buildTransitive/infrastructure/BuildTasks.props` 解析包内 `tools/netstandard2.0/AtomUI.Build.Tasks.dll`。不得新增功能专用
+的 Build Tasks 路径属性。
 
 ## Target Framework
 
-`build/Common.props` 定义：
+`build/repository/ProjectDefaults.props` 定义：
 
 - 开发目标框架：`net10.0`
 - 生产目标框架：`net8.0`
@@ -22,6 +74,23 @@ AtomUI 使用集中化 MSBuild 配置。顶层 `Directory.Build.props` 引入版
 ```
 
 Avalonia、ReactiveUI、Roslyn、测试依赖等版本在此统一管理。Release 条件下还会配置 AtomUI 各 NuGet 包版本。
+
+AtomUI 自身版本由 `build/repository/Versions.props` 中的 `AtomUIVersion` 管理。
+
+## 正确性验证
+
+构建基础设施变更至少执行与影响面匹配的验证：
+
+```bash
+dotnet test tests/AtomUI.Build.Tasks.Tests/AtomUI.Build.Tasks.Tests.csproj --framework net10.0 --no-restore
+dotnet test tests/AtomUI.Generator.Tests/AtomUI.Generator.Tests.csproj --framework net10.0 --no-restore
+dotnet pack src/AtomUI.Generator/AtomUI.Generator.csproj -c Release --no-restore
+scripts/verification/verify-aot-trim-registration.sh --quick
+```
+
+涉及 linked publish、平台 target 或发布脚本时，还必须运行 `--full` 和真实 Gallery NativeAOT publish。打包验证不能只看
+命令退出码：必须检查 `.nupkg` ZIP 条目，确认根自动导入入口、内部 feature 目录、Analyzer/Tools 位置正确，且不包含
+`repository/`、`platforms/` 或 `scripts/` 资产。
 
 ## 源生成输出
 

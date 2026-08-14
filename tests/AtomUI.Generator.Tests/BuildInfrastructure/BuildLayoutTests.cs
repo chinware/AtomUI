@@ -162,20 +162,32 @@ public sealed class BuildLayoutTests
     public void Legacy_NuGet_Assets_Do_Not_Remain_At_The_Build_Root()
     {
         var repositoryRoot = GetRepositoryRoot();
-        foreach (var relativePath in new[]
+        foreach (var fileName in new[]
                  {
-                     "build/AtomUI.Generator.props",
-                     "build/AtomUI.Generator.targets",
-                     "build/AtomUI.GeneratorConsumer.targets",
-                     "build/AtomUI.LinkedRegistration.props",
-                     "build/AtomUI.LinkedRegistration.targets",
-                     "build/AtomUI.Localization.props",
-                     "build/AtomUI.Localization.targets",
-                     "build/AtomUI.ThemeAssets.targets"
+                     "AtomUI.Generator.props",
+                     "AtomUI.Generator.targets",
+                     "AtomUI.GeneratorConsumer.targets",
+                     "AtomUI.LinkedRegistration.props",
+                     "AtomUI.LinkedRegistration.targets",
+                     "AtomUI.Localization.props",
+                     "AtomUI.Localization.targets",
+                     "AtomUI.ThemeAssets.targets"
                  })
         {
+            var relativePath = Path.Combine("build", fileName);
             File.Exists(Path.Combine(repositoryRoot, relativePath)).ShouldBeFalse(relativePath);
         }
+    }
+
+    [Fact]
+    public void Build_Root_Contains_Only_Delivery_Boundary_Directories()
+    {
+        var buildRoot = Path.Combine(GetRepositoryRoot(), "build");
+        Directory.EnumerateFiles(buildRoot).ShouldBeEmpty();
+        Directory.EnumerateDirectories(buildRoot)
+                 .Select(Path.GetFileName)
+                 .ShouldBe(["nuget", "platforms", "repository"], ignoreOrder: true);
+        File.Exists(Path.Combine(buildRoot, "Output.App.props")).ShouldBeFalse();
     }
 
     private static string[] GetImports(string relativePath)

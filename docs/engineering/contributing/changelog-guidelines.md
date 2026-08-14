@@ -34,7 +34,7 @@ AtomUI 遵循 Semantic Versioning 2.0.0。
 - `minor`：新增控件、API、属性、主题能力、Gallery 示例或非破坏性能力增强。
 - `major`：破坏性 API、包结构、默认行为、主题 Token、平台支持或迁移方式变化。
 
-版本号以 `build/Version.props` 中的 `AtomUIVersion` 为准。正式版本日期使用 `YYYY-MM-DD`。
+版本号以 `build/repository/Versions.props` 中的 `AtomUIVersion` 为准。正式版本日期使用 `YYYY-MM-DD`。
 
 ## Changelog 文件结构
 
@@ -162,7 +162,7 @@ NativeAOT、trimming、source generator、动态访问替代等变化必须在 C
 
 发布前维护 `CHANGELOG.md` 和 `CHANGELOG.zh-CN.md` 时必须检查：
 
-- 版本号是否与 `build/Version.props` 一致。
+- 版本号是否与 `build/repository/Versions.props` 一致。
 - 是否覆盖 release 范围内用户可见的 `feat`、`fix`、`perf`、`gallery`、`build`、`release` 变化。
 - 是否遗漏 AOT、trimming、source generator、包结构、目标框架相关兼容性变化。
 - Breaking changes 是否包含迁移说明。

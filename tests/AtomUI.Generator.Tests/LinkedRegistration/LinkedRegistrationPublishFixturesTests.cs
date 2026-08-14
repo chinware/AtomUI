@@ -115,7 +115,7 @@ public sealed class LinkedRegistrationPublishFixturesTests
     [Fact]
     public void Verification_script_enforces_publish_modes_and_size_gates()
     {
-        var source = ReadRepoFile("build/scripts/verify-aot-trim-registration.sh");
+        var source = ReadRepoFile("scripts/verification/verify-aot-trim-registration.sh");
 
         source.ShouldContain("local build_args=(");
         source.ShouldContain("build \"$project\"");
@@ -131,7 +131,7 @@ public sealed class LinkedRegistrationPublishFixturesTests
         source.ShouldContain("--disable-build-servers");
         source.ShouldContain("PublishTrimmed=true");
         source.ShouldContain("PublishAot=true");
-        source.ShouldContain("AtomUI.NativeAot.MacOS.targets");
+        source.ShouldContain("build/platforms/macos/NativeAot.targets");
         source.ShouldContain("CustomAfterMicrosoftCommonTargets");
         source.ShouldContain("RunAOTCompilation=true");
         source.ShouldContain("AtomUIUseGeneratedRegistration=true");
@@ -153,7 +153,7 @@ public sealed class LinkedRegistrationPublishFixturesTests
     [Fact]
     public void Macos_native_aot_verification_supplies_homebrew_native_library_paths()
     {
-        var project = XDocument.Load(GetRepoFile("build/AtomUI.NativeAot.MacOS.targets"));
+        var project = XDocument.Load(GetRepoFile("build/platforms/macos/NativeAot.targets"));
         var linkerArgs = project.Descendants()
             .Where(element => element.Name.LocalName == "LinkerArg")
             .Select(element => (string?)element.Attribute("Include"))
