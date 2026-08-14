@@ -4,14 +4,6 @@ using Avalonia.Controls;
 
 namespace AtomUI.Desktop.Controls;
 
-[SemanticPart(
-    "indicator",
-    SelectorClass = "semantic-indicator",
-    ContractType = typeof(Control),
-    Cardinality = SemanticPartCardinality.Optional,
-    CrossVisualRoot = true,
-    Since = "6.0",
-    RuntimeCreated = true)]
 public partial class CountBadge : AbstractCountBadge
 {
     public CountBadge()
@@ -23,6 +15,7 @@ public partial class CountBadge : AbstractCountBadge
         if (_badgeAdorner is null)
         {
             _badgeAdorner = new CountBadgeAdorner();
+            _badgeAdorner.Classes.Add("semantic-scope-indicator");
             SetupTokenBindings();
             NotifyDecoratedTargetChanged();
             if (BadgeColor is not null)

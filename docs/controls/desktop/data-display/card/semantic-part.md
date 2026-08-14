@@ -19,6 +19,8 @@
 | Owner | `Card` |
 | Part | `root` |
 | Selector | Card 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
 | ContractType | `Card` |
 | Cardinality | `Single` |
 | Customization | `Root` |
@@ -37,6 +39,8 @@
 | Owner | `Card` |
 | Part | `header` |
 | Selector | `.semantic-header` |
+| SelectorRoute | `/template/ .semantic-header` |
+| Style Type | `CardHeaderStyle` |
 | ContractType | `DashedBorder` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
@@ -55,6 +59,8 @@
 | Owner | `Card` |
 | Part | `title` |
 | Selector | `.semantic-title` |
+| SelectorRoute | `/template/ .semantic-title` |
+| Style Type | `CardTitleStyle` |
 | ContractType | `ContentPresenter` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
@@ -73,6 +79,8 @@
 | Owner | `Card` |
 | Part | `extra` |
 | Selector | `.semantic-extra` |
+| SelectorRoute | `/template/ .semantic-extra` |
+| Style Type | `CardExtraStyle` |
 | ContractType | `ContentPresenter` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
@@ -91,6 +99,8 @@
 | Owner | `Card` |
 | Part | `cover` |
 | Selector | `.semantic-cover` |
+| SelectorRoute | `/template/ .semantic-cover` |
+| Style Type | `CardCoverStyle` |
 | ContractType | `Border` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
@@ -109,6 +119,8 @@
 | Owner | `Card` |
 | Part | `body` |
 | Selector | `.semantic-body` |
+| SelectorRoute | `/template/ .semantic-body` |
+| Style Type | `CardBodyStyle` |
 | ContractType | `Border` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
@@ -127,6 +139,8 @@
 | Owner | `Card` |
 | Part | `actions` |
 | Selector | `.semantic-actions` |
+| SelectorRoute | `/template/ .semantic-actions` |
+| Style Type | `CardActionsStyle` |
 | ContractType | `TemplatedControl` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
@@ -147,6 +161,8 @@
 | Owner | `CardMetaContent` |
 | Part | `root` |
 | Selector | CardMetaContent 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
 | ContractType | `CardMetaContent` |
 | Cardinality | `Single` |
 | Customization | `Root` |
@@ -165,6 +181,8 @@
 | Owner | `CardMetaContent` |
 | Part | `section` |
 | Selector | `.semantic-section` |
+| SelectorRoute | `/template/ .semantic-section` |
+| Style Type | `CardMetaContentSectionStyle` |
 | ContractType | `Control` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
@@ -183,6 +201,8 @@
 | Owner | `CardMetaContent` |
 | Part | `avatar` |
 | Selector | `.semantic-avatar` |
+| SelectorRoute | `/template/ .semantic-avatar` |
+| Style Type | `CardMetaContentAvatarStyle` |
 | ContractType | `ContentPresenter` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
@@ -201,6 +221,8 @@
 | Owner | `CardMetaContent` |
 | Part | `title` |
 | Selector | `.semantic-title` |
+| SelectorRoute | `/template/ .semantic-title` |
+| Style Type | `CardMetaContentTitleStyle` |
 | ContractType | `ContentPresenter` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
@@ -219,6 +241,8 @@
 | Owner | `CardMetaContent` |
 | Part | `description` |
 | Selector | `.semantic-description` |
+| SelectorRoute | `/template/ .semantic-description` |
+| Style Type | `CardMetaContentDescriptionStyle` |
 | ContractType | `ContentPresenter` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
@@ -343,24 +367,26 @@ description 不进入 `ContentTemplate` 创建的用户子树，也不表示 Car
 
 ## 4. Selector 用法
 
-应用级样式必须先限定实际 owner，再进入该 owner 的一个 `/template/` 边界：
+应用级样式先限定实际 owner，再通过生成的 Semantic Style 进入 Part。生成类型已经封装 owner 类型保护和
+`SelectorRoute`，用户不需要复制模板路径：
 
 ```xml
 <Application.Styles>
-    <Style Selector="atom|Card /template/ .semantic-header"
-           x:SetterTargetType="atom:DashedBorder">
-        <Setter Property="Padding" Value="20" />
+    <Style Selector="atom|Card">
+        <atom:CardHeaderStyle x:SetterTargetType="atom:DashedBorder">
+            <Setter Property="Padding" Value="20" />
+        </atom:CardHeaderStyle>
+
+        <atom:CardActionsStyle x:SetterTargetType="TemplatedControl">
+            <Setter Property="Background" Value="#F5F5F5" />
+        </atom:CardActionsStyle>
     </Style>
 
-    <Style Selector="atom|Card /template/ .semantic-actions"
-           x:SetterTargetType="TemplatedControl">
-        <Setter Property="Background" Value="#F5F5F5" />
-    </Style>
-
-    <Style Selector="atom|CardMetaContent /template/ .semantic-avatar"
-           x:SetterTargetType="ContentPresenter">
-        <Setter Property="Width" Value="48" />
-        <Setter Property="Height" Value="48" />
+    <Style Selector="atom|CardMetaContent">
+        <atom:CardMetaContentAvatarStyle x:SetterTargetType="ContentPresenter">
+            <Setter Property="Width" Value="48" />
+            <Setter Property="Height" Value="48" />
+        </atom:CardMetaContentAvatarStyle>
     </Style>
 </Application.Styles>
 ```
@@ -368,20 +394,23 @@ description 不进入 `ContentTemplate` 创建的用户子树，也不表示 Car
 Card 与 CardMetaContent 都公开 `.semantic-title`，必须通过 owner 区分：
 
 ```xml
-<Style Selector="atom|Card /template/ .semantic-title"
-       x:SetterTargetType="ContentPresenter">
-    <Setter Property="FontWeight" Value="Bold" />
+<Style Selector="atom|Card">
+    <atom:CardTitleStyle x:SetterTargetType="ContentPresenter">
+        <Setter Property="FontWeight" Value="Bold" />
+    </atom:CardTitleStyle>
 </Style>
 
-<Style Selector="atom|CardMetaContent /template/ .semantic-title"
-       x:SetterTargetType="ContentPresenter">
-    <Setter Property="FontWeight" Value="SemiBold" />
+<Style Selector="atom|CardMetaContent">
+    <atom:CardMetaContentTitleStyle x:SetterTargetType="ContentPresenter">
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </atom:CardMetaContentTitleStyle>
 </Style>
 ```
 
 不得使用以下 Selector：
 
 - `atom|DashedBorder.semantic-header`、`:is(atom|DashedBorder).semantic-header` 或 `ContentPresenter.semantic-title`。
+- 直接复制 `/template/ .semantic-*` route 作为用户主路径；route 只属于 descriptor 与生成 Style 的实现元数据。
 - 从 Card 连续穿过 body 内容和 CardMetaContent 模板的多个 `/template/`。
 - internal `CardActionPanel` 类型、`PART_ActionPanel`、`PART_GridPanel`、`PART_ItemsPresenter` 或 `PART_TabControl`。
 - `HeaderFrame`、`CardContent` 等当前节点 Name，或视觉子节点顺序。

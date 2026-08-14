@@ -82,10 +82,10 @@ public class BadgeShowCasePageTests
         source.ShouldContain("Loaded=\"HandleCrossRootSemanticPreviewLoaded\"");
         source.ShouldContain("Unloaded=\"HandleCrossRootSemanticPreviewUnloaded\"");
 
-        codeBehind.ShouldContain("CountBadge .semantic-indicator");
-        codeBehind.ShouldContain("DotBadge .semantic-indicator");
-        codeBehind.ShouldContain("RibbonBadge .semantic-indicator");
-        codeBehind.ShouldContain("RibbonBadge .semantic-content");
+        codeBehind.ShouldContain("CountBadgeIndicatorStyle");
+        codeBehind.ShouldContain("DotBadgeIndicatorStyle");
+        codeBehind.ShouldContain("RibbonBadgeIndicatorStyle");
+        codeBehind.ShouldContain("RibbonBadgeContentStyle");
         codeBehind.ShouldNotContain("/template/");
     }
 
@@ -182,12 +182,12 @@ public class BadgeShowCasePageTests
         source.ShouldContain("BadgeShowCaseLangResource SemanticPartStyleDescription");
         source.ShouldContain("<StackPanel.Styles>");
         source.ShouldContain("<StackPanel Spacing=\"24\"\n                            HorizontalAlignment=\"Left\"");
-        source.ShouldContain("Selector=\"atom|CountBadge.semantic-demo .semantic-indicator\"");
+        source.ShouldContain("<atom:CountBadgeIndicatorStyle x:SetterTargetType=\"Control\">");
         source.ShouldContain("Selector=\"atom|CountBadge.semantic-custom[Size=Default]\"");
-        source.ShouldContain("Selector=\"atom|CountBadge.semantic-custom[Size=Default] .semantic-indicator\"");
+        source.ShouldContain("<atom:CountBadgeIndicatorStyle x:SetterTargetType=\"Control\">");
         source.ShouldContain("Selector=\"atom|RibbonBadge.semantic-demo\"");
-        source.ShouldContain("Selector=\"atom|RibbonBadge.semantic-demo .semantic-indicator\"");
-        source.ShouldContain("Selector=\"atom|RibbonBadge.semantic-custom .semantic-content\"");
+        source.ShouldContain("<atom:RibbonBadgeIndicatorStyle x:SetterTargetType=\"Control\">");
+        source.ShouldContain("<atom:RibbonBadgeContentStyle x:SetterTargetType=\"TextBlock\">");
         source.ShouldContain("<StackPanel Orientation=\"Horizontal\" Spacing=\"16\"");
         source.ShouldContain("<StackPanel Spacing=\"16\"");
         CountOccurrences(source, "Width=\"40\"").ShouldBeGreaterThanOrEqualTo(2);
@@ -198,6 +198,7 @@ public class BadgeShowCasePageTests
         source.ShouldNotContain("<Setter Property=\"Height\" Value=\"28\"");
         source.ShouldNotContain("Selector=\".semantic-indicator\"");
         source.ShouldNotContain("Selector=\".semantic-content\"");
+        source.ShouldNotContain("/template/ .semantic-");
         localization.ShouldContain("<source>Custom Semantic Part styling</source>");
         localization.ShouldContain("<source>Use owner-scoped style selectors to customize Badge's published Semantic Parts.</source>");
         localization.ShouldContain("<source>This card customizes its ribbon with Semantic Part style selectors.</source>");

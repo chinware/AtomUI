@@ -129,7 +129,8 @@ public class SemanticPartHighlightSessionTests
                     null,
                     false,
                     null,
-                    true)
+                    true,
+                    "> .semantic-item")
             ]);
     }
 

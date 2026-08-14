@@ -36,7 +36,55 @@ public class SemanticPartDescriptorTests
         descriptor.Parts.Select(static part => part.Name)
                   .ShouldBe(["root", "content", "icon"]);
         descriptor.Parts.Single(static part => part.Name == "root").SelectorClass.ShouldBeNull();
+        descriptor.Parts.Single(static part => part.Name == "root").SelectorRoute.ShouldBeNull();
+        descriptor.Parts.Single(static part => part.Name == "root").StyleType.ShouldBeNull();
         descriptor.Parts.Single(static part => part.Name == "icon").SelectorClass.ShouldBe("semantic-icon");
+        descriptor.Parts.Single(static part => part.Name == "icon")
+                  .SelectorRoute.ShouldBe("/template/ .semantic-icon");
+    }
+
+    [Fact]
+    public void Descriptor_Preserves_An_Owner_Relative_Runtime_Selector_Route()
+    {
+        var part = new SemanticPartDescriptor(
+            "content",
+            "content",
+            "semantic-content",
+            typeof(ContentPresenter),
+            SemanticPartCardinality.Multiple,
+            SemanticPartCustomization.Selector,
+            null,
+            false,
+            "6.0",
+            true,
+            "/template/ .semantic-scope-items > .semantic-scope-item /template/ .semantic-content",
+            typeof(Control));
+
+        part.SelectorRoute.ShouldBe(
+            "/template/ .semantic-scope-items > .semantic-scope-item /template/ .semantic-content");
+        part.StyleType.ShouldBe(typeof(Control));
+    }
+
+    [Theory]
+    [InlineData(".semantic-content")]
+    [InlineData("/template/ .semantic-scope-items .semantic-content")]
+    [InlineData("/template/ #PART_Items /template/ .semantic-content")]
+    [InlineData("/template/ Control /template/ .semantic-content")]
+    [InlineData("/template/ .semantic-scope-items > .semantic-other")]
+    public void Selector_Route_Must_Use_Owner_Relative_Template_Or_Child_Class_Steps(string selectorRoute)
+    {
+        Should.Throw<ArgumentException>(() => new SemanticPartDescriptor(
+            "content",
+            "content",
+            "semantic-content",
+            typeof(ContentPresenter),
+            SemanticPartCardinality.Multiple,
+            SemanticPartCustomization.Selector,
+            null,
+            false,
+            "6.0",
+            true,
+            selectorRoute));
     }
 
     [Theory]

@@ -66,7 +66,7 @@ Control 对稳定视觉区域提供公共定制入口时，必须遵循
 - Control 使用可重复 `[SemanticPart]` 显式声明非 root Part；`SelectorClass`、`ContractType`、cardinality 和 `Since`
   必须完整，不能依赖生成器从节点名称推断。
 - 每个 Part 必须声明稳定 `ContractType` 和 `Single`、`Optional` 或 `Multiple` cardinality。
-- 公共 Part selector 只使用 owner、一个 `/template/` 边界和 `.semantic-*`；`ContractType` 不得写成
+- 公共 Part selector 使用 owner 与生成 descriptor 的完整 `SelectorRoute`；`ContractType` 不得写成
   `Control.semantic-*`、`:is(Control).semantic-*` 或其他类型前缀。
 - 包含 Setter 的 class-only Semantic Style 使用 `x:SetterTargetType="<ContractType>"` 提供 AXAML 编译期类型上下文；
   该指令不属于运行时 Part selector。
@@ -78,7 +78,8 @@ Control 对稳定视觉区域提供公共定制入口时，必须遵循
 - `Classes.semantic-*` 只能使用静态 `true`。不得使用 `False`、Binding 或其他动态值模拟 Optional Part 或状态切换；
   状态由 StyledProperty、伪类或有效状态属性表达。
 - 动态创建节点使用生成的 semantic class 常量，并维护 logical parent、templated parent、回收和 re-template 生命周期。
-- 父主题最多进入自身模板一个 `/template/` 边界，不通过 Semantic Part 穿透子 Control 的 internal 模板。
+- 父控件只建模自己拥有的稳定 route。复杂 Part 可以跨越多个由 owner 创建并用 `.semantic-scope-*` 明确标记的模板边界，
+  不通过 Semantic Part 穿透未建模子 Control 的 internal 模板。
 - Popup 和 Overlay 默认使用 Selector；跨 VisualRoot 本身不构成新增 Theme 属性的理由。
 - ItemContainer Theme 和 Semantic Part Theme 只在真实 public 子 Control 允许完整 ControlTheme 替换时提供。
 - AtomUI 内置主题不得使用 `.semantic-*` 实现默认视觉；marker 必须静态，用户 Semantic Style 的 class activator
@@ -183,7 +184,8 @@ Theme 中增加 `Custom` selector。
 - 父控件的 `ControlTheme` selector 最多只进入自己的模板一层；禁止连续使用 `/template/` 穿过子控件模板继续选择其内部节点。
 - 子控件需要专用模板、内部节点样式或交互视觉时，应新增 `internal` 专用子控件及其 `ControlTheme`，由子控件自己维护内部模板。
 - 父主题可以根据自身状态设置直接模板子控件的属性，例如 `Foreground` 或 `IsVisible`，但不能依赖子控件的内部 `PART`、`TextPresenter` 或其他模板节点。
-- 生产 AXAML 应由主题边界回归测试扫描，确保每个 selector 分支最多包含一个 `/template/` 边界。
+- 生产 AXAML 应由主题边界回归测试扫描：默认 ControlTheme 的嵌套 Style 遵守 Avalonia 12 单 template selector 限制；应用侧
+  Semantic Style 的多段 `/template/` 仅在与 descriptor `SelectorRoute` 完全一致时允许。
 
 ## 持续视觉工作生命周期
 

@@ -427,6 +427,15 @@ internal static class AtomUIDiagnosticDescriptors
         isEnabledByDefault: true,
         customTags: [WellKnownDiagnosticTags.Telemetry]);
 
+    public static readonly DiagnosticDescriptor SemanticPartStyleTypeConflict = new(
+        AtomUIDiagnosticIds.SemanticPartStyleTypeConflict,
+        "Semantic Part Style type identity conflicts",
+        "Semantic Part '{0}' on Control '{1}' generates Style type '{2}', which conflicts with {3}",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
     public static readonly DiagnosticDescriptor LocalizationInvalidLanguageData = new(
         AtomUIDiagnosticIds.LocalizationInvalidLanguageData,
         "Pinned language data record is invalid",

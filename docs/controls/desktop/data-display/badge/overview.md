@@ -167,8 +167,8 @@ Badge Gallery 的 Semantic Parts 内容根包含三个独立 `SemanticPartPrevie
   `AdditionalRoots` 项。
 - DotBadge Preview 使用同样的 target mode 规则，并且不得把共享 `AdornerLayer` 或其他 Badge 的 Adorner 加入解析范围。
 - RibbonBadge Preview 使用 owner inline visual tree，不需要 `AdditionalRoots`。
-- 非 root 样式示例使用逻辑后代 selector，例如 `atom|CountBadge .semantic-indicator`；Preview 的默认 `/template/` 代码生成
-  不适用于 Badge，因此由页面提供显式代码片段。
+- 非 root 样式示例使用 descriptor 的完整 route。Count/Dot 通过 direct runtime adorner scope 再进入其模板，Ribbon 通过
+  direct indicator child 再进入 content 模板；Preview 直接消费 route，不由页面维护平行 selector 规则。
 - Semantic Parts Tab 未首次选择前，三个 Preview、三个演示 owner、descriptor item 和跨根查找均不得创建或执行。
 
 Gallery 预览基础设施和多 owner 内容根的通用生命周期见
@@ -204,7 +204,7 @@ LLMS 导出来源：
 | Public API | 覆盖默认值、非负值归一、零值显示、状态色、位置和 target 组合。 |
 | Semantic descriptor | 分别验证三个 owner 的 Part 集合、ContractType、cardinality、cross-root 和 runtime metadata。 |
 | Runtime marker | 覆盖 standalone、target mode、显示隐藏、零值和 Dot 模式切换后的 marker 数量与 owner 隔离。 |
-| Selector | 使用 Avalonia 12 logical descendant selector 验证实例 Style 和 owner-scoped Style 命中，不使用 `/template/`。 |
+| Selector | 使用 descriptor `SelectorRoute` 验证实例 Style 和 owner-scoped Style 命中，并验证 `DecoratedTarget` 中嵌套 Badge 不被外层命中。 |
 | 生命周期 | 覆盖 AdornerLayer 延迟可用、attach/detach、退出动效取消、目标替换和重复附加。 |
 | Gallery | Semantic Parts Tab 保持延迟创建；三个 owner 使用独立 Preview；Count/Dot 只注册各自具体 runtime Adorner，Ribbon 不使用 additional root。 |
 | 性能与 AOT | 验证默认主题不消费 semantic class、无反射/动态代码，并按 overlay 风险执行 NativeAOT 发布检查。 |

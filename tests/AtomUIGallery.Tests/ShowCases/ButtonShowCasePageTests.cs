@@ -161,12 +161,10 @@ public class ButtonShowCasePageTests
         item.ShouldContain("ButtonShowCaseLangResource P2ContentSemanticObject");
         item.ShouldContain("ButtonShowCaseLangResource P2ContentSemanticFunction");
         item.ShouldContain("Selector=\"atom|Button.semantic-part-demo\"");
-        item.ShouldContain(
-            "Selector=\"atom|Button.semantic-part-demo /template/ .semantic-content\"");
+        item.ShouldContain("<atom:ButtonContentStyle x:SetterTargetType=\"ContentPresenter\">");
         item.ShouldContain("Selector=\"atom|Button.semantic-part-demo.semantic-object\"");
         item.ShouldContain("Selector=\"atom|Button.semantic-part-demo[ButtonType=Primary]\"");
-        item.ShouldContain(
-            "Selector=\"atom|Button.semantic-part-demo[ButtonType=Primary] /template/ .semantic-content\"");
+        item.ShouldContain("<atom:ButtonContentStyle x:SetterTargetType=\"ContentPresenter\">");
         item.ShouldContain("x:SetterTargetType=\"ContentPresenter\"");
         item.ShouldContain("<Setter Property=\"Background\" Value=\"#171717\" />");
         item.ShouldContain("Property=\"Foreground\"");
@@ -174,6 +172,7 @@ public class ButtonShowCasePageTests
         item.ShouldContain("<Setter Property=\"Foreground\" Value=\"#FFFFFF\" />");
         CountOccurrences(item, "Classes=\"semantic-part-demo").ShouldBe(2);
         item.ShouldNotContain("Selector=\".semantic-content\"");
+        item.ShouldNotContain("/template/ .semantic-content");
         localization.ShouldContain("<source>Custom Semantic Part styling</source>");
         localization.ShouldContain(
             "<source>Use owner-scoped selectors and Button state selectors to customize published Semantic Parts.</source>");

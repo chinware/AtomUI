@@ -14,10 +14,11 @@ public partial class BadgeShowCase : GalleryReactiveUserControl<BadgeViewModel>
         """
         <Styles xmlns="https://github.com/avaloniaui"
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                xmlns:atom="using:AtomUI.Desktop.Controls">
-          <Style Selector="atom|CountBadge .semantic-indicator"
-                 x:SetterTargetType="Control">
-            <Setter Property="Opacity" Value="0.85" />
+                xmlns:atom="https://atomui.net">
+          <Style Selector="atom|CountBadge">
+            <atom:CountBadgeIndicatorStyle x:SetterTargetType="Control">
+              <Setter Property="Opacity" Value="0.85" />
+            </atom:CountBadgeIndicatorStyle>
           </Style>
         </Styles>
         """;
@@ -26,10 +27,11 @@ public partial class BadgeShowCase : GalleryReactiveUserControl<BadgeViewModel>
         """
         <Styles xmlns="https://github.com/avaloniaui"
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                xmlns:atom="using:AtomUI.Desktop.Controls">
-          <Style Selector="atom|DotBadge .semantic-indicator"
-                 x:SetterTargetType="Control">
-            <Setter Property="Opacity" Value="0.85" />
+                xmlns:atom="https://atomui.net">
+          <Style Selector="atom|DotBadge">
+            <atom:DotBadgeIndicatorStyle x:SetterTargetType="Control">
+              <Setter Property="Opacity" Value="0.85" />
+            </atom:DotBadgeIndicatorStyle>
           </Style>
         </Styles>
         """;
@@ -38,10 +40,11 @@ public partial class BadgeShowCase : GalleryReactiveUserControl<BadgeViewModel>
         """
         <Styles xmlns="https://github.com/avaloniaui"
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                xmlns:atom="using:AtomUI.Desktop.Controls">
-          <Style Selector="atom|RibbonBadge .semantic-indicator"
-                 x:SetterTargetType="Control">
-            <Setter Property="Opacity" Value="0.85" />
+                xmlns:atom="https://atomui.net">
+          <Style Selector="atom|RibbonBadge">
+            <atom:RibbonBadgeIndicatorStyle x:SetterTargetType="Control">
+              <Setter Property="Opacity" Value="0.85" />
+            </atom:RibbonBadgeIndicatorStyle>
           </Style>
         </Styles>
         """;
@@ -50,10 +53,11 @@ public partial class BadgeShowCase : GalleryReactiveUserControl<BadgeViewModel>
         """
         <Styles xmlns="https://github.com/avaloniaui"
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                xmlns:atom="using:AtomUI.Desktop.Controls">
-          <Style Selector="atom|RibbonBadge .semantic-content"
-                 x:SetterTargetType="TextBlock">
-            <Setter Property="FontWeight" Value="SemiBold" />
+                xmlns:atom="https://atomui.net">
+          <Style Selector="atom|RibbonBadge">
+            <atom:RibbonBadgeContentStyle x:SetterTargetType="TextBlock">
+              <Setter Property="FontWeight" Value="SemiBold" />
+            </atom:RibbonBadgeContentStyle>
           </Style>
         </Styles>
         """;

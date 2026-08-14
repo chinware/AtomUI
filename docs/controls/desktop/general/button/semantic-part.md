@@ -17,6 +17,8 @@ Button 公开 `root`、`icon` 和 `content` 三个 Semantic Part。Part 名称�
 | Owner | `Button` |
 | Part | `root` |
 | Selector | Button 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
 | ContractType | `Button` |
 | Cardinality | `Single` |
 | Customization | `Root` |
@@ -35,6 +37,8 @@ Button 公开 `root`、`icon` 和 `content` 三个 Semantic Part。Part 名称�
 | Owner | `Button` |
 | Part | `icon` |
 | Selector | `.semantic-icon` |
+| SelectorRoute | `/template/ .semantic-icon` |
+| Style Type | `ButtonIconStyle` |
 | ContractType | `Control` |
 | Cardinality | `Multiple` |
 | Customization | `Selector` |
@@ -53,6 +57,8 @@ Button 公开 `root`、`icon` 和 `content` 三个 Semantic Part。Part 名称�
 | Owner | `Button` |
 | Part | `content` |
 | Selector | `.semantic-content` |
+| SelectorRoute | `/template/ .semantic-content` |
+| Style Type | `ButtonContentStyle` |
 | ContractType | `ContentPresenter` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
@@ -122,18 +128,19 @@ content 不公开内容模板生成的用户子树、文本内部 presenter、�
 
 ## 3. Selector 用法
 
-应用级样式必须先限定 Button owner，再进入一个 `/template/` 边界：
+应用级样式先限定 Button owner，再通过生成的 Semantic Style 进入 Part。生成类型已经封装 owner 类型保护和
+`SelectorRoute`，用户不需要复制模板路径：
 
 ```xml
 <Application.Styles>
-    <Style Selector="atom|Button /template/ .semantic-icon"
-           x:SetterTargetType="Control">
-        <Setter Property="Opacity" Value="0.85" />
-    </Style>
+    <Style Selector="atom|Button">
+        <atom:ButtonIconStyle x:SetterTargetType="Control">
+            <Setter Property="Opacity" Value="0.85" />
+        </atom:ButtonIconStyle>
 
-    <Style Selector="atom|Button /template/ .semantic-content"
-           x:SetterTargetType="ContentPresenter">
-        <Setter Property="FontWeight" Value="SemiBold" />
+        <atom:ButtonContentStyle x:SetterTargetType="ContentPresenter">
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </atom:ButtonContentStyle>
     </Style>
 </Application.Styles>
 ```
@@ -141,9 +148,10 @@ content 不公开内容模板生成的用户子树、文本内部 presenter、�
 对特定 Button class 或状态定制时，把 class、属性或伪类放在 owner 一侧：
 
 ```xml
-<Style Selector="atom|Button.semantic-custom[ButtonType=Primary] /template/ .semantic-content"
-       x:SetterTargetType="ContentPresenter">
-    <Setter Property="Foreground" Value="White" />
+<Style Selector="atom|Button.semantic-custom[ButtonType=Primary]">
+    <atom:ButtonContentStyle x:SetterTargetType="ContentPresenter">
+        <Setter Property="Foreground" Value="White" />
+    </atom:ButtonContentStyle>
 </Style>
 ```
 
@@ -151,6 +159,7 @@ content 不公开内容模板生成的用户子树、文本内部 presenter、�
 
 - `Control.semantic-icon` 或 `:is(Control).semantic-icon`。
 - `ContentPresenter.semantic-content` 或 `:is(ContentPresenter).semantic-content`。
+- 直接复制 `/template/ .semantic-*` route 作为用户主路径；route 只属于 descriptor 与生成 Style 的实现元数据。
 - 连续穿过子控件模板的多个 `/template/`。
 - 依赖 `PART_*`、内部类型、Name 或视觉祖先顺序。
 

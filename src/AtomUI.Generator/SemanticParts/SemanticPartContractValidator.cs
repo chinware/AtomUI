@@ -79,6 +79,18 @@ internal sealed class SemanticPartContractValidator
                 "SelectorClass must use the semantic-* kebab-case namespace");
             valid = false;
         }
+        else if (!TryNormalizeSelectorRoute(part, out var selectorRoute))
+        {
+            ReportInvalidDeclaration(
+                control,
+                part,
+                "SelectorRoute must use owner-relative '/template/ .semantic-*' or '> .semantic-*' steps and end with SelectorClass");
+            valid = false;
+        }
+        else
+        {
+            validatedPart = part.WithSelectorRoute(selectorRoute);
+        }
         if (part.Cardinality is < 0 or > 2)
         {
             ReportInvalidDeclaration(control, part, "Cardinality is outside the supported range");
@@ -121,7 +133,7 @@ internal sealed class SemanticPartContractValidator
             valid = false;
         }
 
-        validatedPart = part.WithThemeTargetType(themeTargetType);
+        validatedPart = validatedPart.WithThemeTargetType(themeTargetType);
         return valid;
     }
 
@@ -359,6 +371,60 @@ internal sealed class SemanticPartContractValidator
             previousWasHyphen = false;
         }
         return true;
+    }
+
+    private static bool TryNormalizeSelectorRoute(
+        SemanticPartDeclaration part,
+        out string selectorRoute)
+    {
+        selectorRoute = string.Empty;
+        if (part.SelectorClass is null)
+        {
+            return false;
+        }
+
+        if (part.SelectorRoute is null)
+        {
+            if (part.RuntimeCreated)
+            {
+                return false;
+            }
+
+            selectorRoute = $"/template/ .{part.SelectorClass}";
+            return true;
+        }
+
+        selectorRoute = part.SelectorRoute;
+        if (string.IsNullOrWhiteSpace(selectorRoute) ||
+            !string.Equals(selectorRoute, selectorRoute.Trim(), StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        var tokens = selectorRoute.Split(' ');
+        if (tokens.Length < 2 || tokens.Length % 2 != 0)
+        {
+            return false;
+        }
+
+        for (var index = 0; index < tokens.Length; index += 2)
+        {
+            if (tokens[index] is not ("/template/" or ">"))
+            {
+                return false;
+            }
+
+            var classToken = tokens[index + 1];
+            if (classToken.Length < 2 ||
+                classToken[0] != '.' ||
+                !IsSemanticSelectorClass(classToken.Substring(1)))
+            {
+                return false;
+            }
+
+        }
+
+        return string.Equals(tokens[tokens.Length - 1], $".{part.SelectorClass}", StringComparison.Ordinal);
     }
 
     private void ReportInvalidDeclaration(

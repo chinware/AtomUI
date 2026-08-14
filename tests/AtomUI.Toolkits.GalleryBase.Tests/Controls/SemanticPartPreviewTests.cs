@@ -10,6 +10,7 @@ using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 using AtomUIButton = AtomUI.Desktop.Controls.Button;
+using AtomUIDescriptions = AtomUI.Desktop.Controls.Descriptions;
 using AtomUIToolTip = AtomUI.Desktop.Controls.ToolTip;
 using AtomUIWindow = AtomUI.Desktop.Controls.Window;
 
@@ -63,6 +64,10 @@ public class SemanticPartPreviewTests
         var content = preview.Items.Single(static item => item.Path == "content");
         var icon = preview.Items.Single(static item => item.Path == "icon");
 
+        root.StyleType.ShouldBe("-");
+        content.StyleType.ShouldBe("AtomUI.Theme.Styling.ButtonContentStyle");
+        icon.StyleType.ShouldBe("AtomUI.Theme.Styling.ButtonIconStyle");
+
         preview.SetHoveredPart(icon, true);
         Dispatcher.UIThread.RunJobs();
         preview.EffectivePart.ShouldBe(icon);
@@ -102,11 +107,12 @@ public class SemanticPartPreviewTests
 
         preview.CodeViewer.ShouldNotBeNull();
         var code = preview.CodeViewer.CodeText.ShouldNotBeNull();
-        code.ShouldContain("xmlns:atom=\"using:AtomUI.Desktop.Controls\"");
-        code.ShouldContain("Selector=\"atom|Button /template/ .semantic-content\"");
-        code.ShouldContain(".semantic-content");
-        code.ShouldContain("/template/");
-        code.ShouldContain("x:SetterTargetType=\"contract:ContentPresenter\"");
+        code.ShouldContain("xmlns:atom=\"https://atomui.net\"");
+        code.ShouldContain("<Style Selector=\"atom|Button\">");
+        code.ShouldContain("<atom:ButtonContentStyle x:SetterTargetType=\"ContentPresenter\">");
+        code.ShouldContain("<Setter Property=\"Opacity\" Value=\"1\" />");
+        code.ShouldNotContain("Selector=\"atom|Button /template/ .semantic-content\"");
+        code.ShouldNotContain("x:SetterTargetType=\"contract:ContentPresenter\"");
         code.ShouldNotContain("xmlns:owner=");
         code.ShouldNotContain(":is(");
 
@@ -115,6 +121,33 @@ public class SemanticPartPreviewTests
         rootCode.ShouldContain("Selector=\"atom|Button\"");
         rootCode.ShouldContain("x:SetterTargetType=\"atom:Button\"");
         preview.ActiveHighlightSession.ShouldBeNull();
+    }
+
+    [Fact]
+    public void Runtime_Created_Part_Code_Uses_The_Descriptor_Owner_Relative_Selector_Route()
+    {
+        var descriptions = new AtomUIDescriptions();
+        descriptions.Items.Add(new AtomUI.Desktop.Controls.DescriptionItem
+        {
+            Label = "Product",
+            Content = "Cloud Database"
+        });
+        var preview = new SemanticPartPreview
+        {
+            PreviewContent = descriptions,
+            SemanticOwnerType = typeof(AtomUIDescriptions)
+        };
+
+        using var context = ShowInWindow(preview);
+        preview.ActivatePreview();
+        preview.ShowPartInfo(preview.Items.Single(static item => item.Path == "label"));
+
+        var code = preview.CodeViewer.ShouldNotBeNull().CodeText.ShouldNotBeNull();
+        code.ShouldContain("<Style Selector=\"atom|Descriptions\">");
+        code.ShouldContain("<atom:DescriptionsLabelStyle x:SetterTargetType=\"ContentPresenter\">");
+        code.ShouldNotContain("Selector=\"atom|Descriptions /template/ .semantic-scope-items > .semantic-scope-item /template/ .semantic-label\"");
+        code.ShouldNotContain("x:SetterTargetType=\"contract:ContentPresenter\"");
+        code.ShouldNotContain(":is(");
     }
 
     [Fact]
@@ -200,7 +233,9 @@ public class SemanticPartPreviewTests
                                         .Where(static text => text is not null)
                                         .ToArray();
         metadataValues.ShouldContain(content.Selector);
+        metadataValues.ShouldContain(content.SelectorRoute);
         metadataValues.ShouldContain(content.ContractType);
+        metadataValues.ShouldContain(content.StyleType);
         metadataValues.ShouldContain(content.Cardinality);
         metadataValues.ShouldContain(content.Customization);
         var metadataGrid = infoContent.GetVisualDescendants()

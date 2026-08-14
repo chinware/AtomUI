@@ -28,20 +28,30 @@ public class SemanticPartGeneratorTests
         manifest.ShouldContain("SemanticPartCustomization.Root");
         manifest.ShouldContain("\"icon\"");
         manifest.ShouldContain("\"semantic-icon\"");
+        manifest.ShouldContain("\"/template/ .semantic-icon\"");
         manifest.ShouldContain("typeof(global::Avalonia.Controls.Control)");
         manifest.ShouldContain("SemanticPartCardinality.Multiple");
         manifest.ShouldContain("\"content\"");
         manifest.ShouldContain("\"semantic-content\"");
         manifest.ShouldContain("typeof(global::Avalonia.Controls.Presenters.ContentPresenter)");
+        manifest.ShouldContain("typeof(global::AtomUI.Theme.Styling.ButtonIconStyle)");
+        manifest.ShouldContain("typeof(global::AtomUI.Theme.Styling.ButtonContentStyle)");
         manifest.ShouldNotContain("Activator.CreateInstance");
         manifest.ShouldNotContain("Assembly.GetTypes");
+
+        var xmlns = GetGeneratedSource(outputCompilation, "SemanticPartXmlnsDefinition.g.cs");
+        xmlns.ShouldContain("Avalonia.Metadata.XmlnsDefinition");
+        xmlns.ShouldContain("https://atomui.net");
+        xmlns.ShouldContain("AtomUI.Theme.Styling");
 
         var constants = GetGeneratedSource(outputCompilation, "ButtonSemanticParts.g.cs");
         constants.ShouldContain("internal static class ButtonSemanticParts");
         constants.ShouldContain("internal const string Icon = \"icon\"");
         constants.ShouldContain("internal const string IconClass = \"semantic-icon\"");
+        constants.ShouldContain("internal const string IconSelectorRoute = \"/template/ .semantic-icon\"");
         constants.ShouldContain("internal const string Content = \"content\"");
         constants.ShouldContain("internal const string ContentClass = \"semantic-content\"");
+        constants.ShouldContain("internal const string ContentSelectorRoute = \"/template/ .semantic-content\"");
         constants.ShouldNotContain("RootClass");
 
         var registration = GetGeneratedSource(outputCompilation, "GeneratedControlPackageRegistration.g.cs");
@@ -49,6 +59,364 @@ public class SemanticPartGeneratorTests
         registration.ShouldContain("selectedSemanticControls");
         registration.ShouldContain("includeIdentity(semanticControl.Identity)");
         registration.ShouldContain("            selectedSemanticControls,");
+    }
+
+    [Fact]
+    public void Generates_Public_Semantic_Style_Types_With_Owner_And_Fluent_Route()
+    {
+        var outputCompilation = RunGenerator(ButtonSource, out var diagnostics, ButtonTheme);
+
+        diagnostics.ShouldBeEmpty();
+        var iconStyle = GetGeneratedSource(outputCompilation, "ButtonIconStyle.g.cs");
+
+        iconStyle.ShouldContain("namespace AtomUI.Theme.Styling;");
+        iconStyle.ShouldContain("public sealed class ButtonIconStyle : global::Avalonia.Styling.Style");
+        iconStyle.ShouldContain(".Nesting()");
+        iconStyle.ShouldNotContain(".Is<global::Demo.Button>()");
+        iconStyle.ShouldContain(".Template()");
+        iconStyle.ShouldContain(".Class(\"semantic-icon\")");
+        iconStyle.ShouldNotContain("x:SetterTargetType");
+
+        var manifest = GetGeneratedSource(outputCompilation, "GeneratedSemanticPartManifest.g.cs");
+        manifest.ShouldContain("typeof(global::AtomUI.Theme.Styling.ButtonIconStyle)");
+        manifest.ShouldContain("typeof(global::AtomUI.Theme.Styling.ButtonContentStyle)");
+    }
+
+    [Fact]
+    public void Reports_Style_Type_Name_Collisions_Within_One_Control()
+    {
+        const string source = """
+            using AtomUI.Theme;
+            using Avalonia.Controls;
+
+            namespace Demo;
+
+            [SemanticPart(
+                "fooBar",
+                Path = "fooBar",
+                SelectorClass = "semantic-foo-bar",
+                ContractType = typeof(Control),
+                RuntimeCreated = true,
+                SelectorRoute = "> .semantic-foo-bar",
+                Since = "6.0")]
+            [SemanticPart(
+                "nestedFooBar",
+                Path = "foo.bar",
+                SelectorClass = "semantic-nested-foo-bar",
+                ContractType = typeof(Control),
+                RuntimeCreated = true,
+                SelectorRoute = "> .semantic-nested-foo-bar",
+                Since = "6.0")]
+            public partial class CollisionOwner : Control
+            {
+            }
+            """;
+
+        var output = RunGenerator(source, out var diagnostics);
+
+        diagnostics.Count(static diagnostic => diagnostic.Id == "ATOMUIGEN030").ShouldBe(2);
+        diagnostics.ShouldAllBe(diagnostic =>
+            diagnostic.Id != "ATOMUIGEN030" ||
+            diagnostic.GetMessage().Contains(
+                "AtomUI.Theme.Styling.CollisionOwnerFooBarStyle",
+                StringComparison.Ordinal));
+        HasGeneratedSource(output, "CollisionOwnerFooBarStyle.g.cs").ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Reports_Style_Type_Name_Collisions_Between_Controls_With_The_Same_Simple_Name()
+    {
+        const string source = """
+            using AtomUI.Theme;
+            using Avalonia.Controls;
+
+            namespace First
+            {
+                [SemanticPart(
+                    "content",
+                    SelectorClass = "semantic-content",
+                    ContractType = typeof(Control),
+                    RuntimeCreated = true,
+                    SelectorRoute = "> .semantic-content",
+                    Since = "6.0")]
+                public partial class Repeated : Control
+                {
+                }
+            }
+
+            namespace Second
+            {
+                [SemanticPart(
+                    "content",
+                    SelectorClass = "semantic-content",
+                    ContractType = typeof(Control),
+                    RuntimeCreated = true,
+                    SelectorRoute = "> .semantic-content",
+                    Since = "6.0")]
+                public partial class Repeated : Control
+                {
+                }
+            }
+            """;
+
+        var output = RunGenerator(source, out var diagnostics);
+
+        diagnostics.Count(static diagnostic => diagnostic.Id == "ATOMUIGEN030").ShouldBe(2);
+        HasGeneratedSource(output, "RepeatedContentStyle.g.cs").ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Reports_When_A_Source_Type_Already_Occupies_The_Generated_Style_Identity()
+    {
+        const string source = """
+            using AtomUI.Theme;
+            using Avalonia.Controls;
+
+            namespace Demo
+            {
+                [SemanticPart(
+                    "content",
+                    SelectorClass = "semantic-content",
+                    ContractType = typeof(Control),
+                    RuntimeCreated = true,
+                    SelectorRoute = "> .semantic-content",
+                    Since = "6.0")]
+                public partial class Occupied : Control
+                {
+                }
+            }
+
+            namespace AtomUI.Theme.Styling
+            {
+                internal sealed class OccupiedContentStyle
+                {
+                }
+            }
+            """;
+
+        var output = RunGenerator(source, out var diagnostics);
+
+        diagnostics.ShouldContain(diagnostic =>
+            diagnostic.Id == "ATOMUIGEN030" &&
+            diagnostic.GetMessage().Contains("existing source type", StringComparison.Ordinal));
+        HasGeneratedSource(output, "OccupiedContentStyle.g.cs").ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Reports_When_A_Referenced_Canonical_Xmlns_Exports_The_Same_Public_Style_Name()
+    {
+        var reference = CreateSemanticStyleReference(
+            "Referenced.Semantic.Styles",
+            "https://atomui.net",
+            "AtomUI.Theme.Styling",
+            "ButtonIconStyle",
+            Accessibility.Public);
+
+        var output = RunGenerator(
+            ButtonSource,
+            [reference],
+            out var diagnostics,
+            ButtonTheme);
+
+        diagnostics.ShouldContain(diagnostic =>
+            diagnostic.Id == "ATOMUIGEN030" &&
+            diagnostic.GetMessage().Contains("Referenced.Semantic.Styles", StringComparison.Ordinal));
+        HasGeneratedSource(output, "ButtonIconStyle.g.cs").ShouldBeFalse();
+        HasGeneratedSource(output, "ButtonContentStyle.g.cs").ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Ignores_Referenced_Style_Names_That_Are_Not_Exported_Through_The_Canonical_Xmlns()
+    {
+        var reference = CreateSemanticStyleReference(
+            "Referenced.Private.Semantic.Styles",
+            "https://atomui.net",
+            "AtomUI.Theme.Styling",
+            "ButtonIconStyle",
+            Accessibility.Internal);
+
+        var output = RunGenerator(
+            ButtonSource,
+            [reference],
+            out var diagnostics,
+            ButtonTheme);
+
+        diagnostics.ShouldBeEmpty();
+        HasGeneratedSource(output, "ButtonIconStyle.g.cs").ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Does_Not_Emit_A_Duplicate_Canonical_Xmlns_Definition_In_The_Source_Assembly()
+    {
+        const string source = """
+            using AtomUI.Theme;
+            using Avalonia.Controls;
+
+            [assembly: Avalonia.Metadata.XmlnsDefinition("https://atomui.net", "AtomUI.Theme.Styling")]
+
+            namespace Demo;
+
+            [SemanticPart(
+                "content",
+                SelectorClass = "semantic-content",
+                ContractType = typeof(Control),
+                RuntimeCreated = true,
+                SelectorRoute = "> .semantic-content",
+                Since = "6.0")]
+            public partial class ExistingXmlns : Control
+            {
+            }
+            """;
+
+        var output = RunGenerator(source, out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+        HasGeneratedSource(output, "SemanticPartXmlnsDefinition.g.cs").ShouldBeFalse();
+        HasGeneratedSource(output, "ExistingXmlnsContentStyle.g.cs").ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Emits_The_Canonical_Xmlns_When_The_Source_Assembly_Only_Declares_An_Alias()
+    {
+        const string source = """
+            using AtomUI.Theme;
+            using Avalonia.Controls;
+
+            [assembly: Avalonia.Metadata.XmlnsDefinition("https://example.com/semantic", "AtomUI.Theme.Styling")]
+
+            namespace Demo;
+
+            [SemanticPart(
+                "content",
+                SelectorClass = "semantic-content",
+                ContractType = typeof(Control),
+                RuntimeCreated = true,
+                SelectorRoute = "> .semantic-content",
+                Since = "6.0")]
+            public partial class AliasedXmlns : Control
+            {
+            }
+            """;
+
+        var output = RunGenerator(source, out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+        HasGeneratedSource(output, "SemanticPartXmlnsDefinition.g.cs").ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Emits_The_Canonical_Xmlns_For_Each_Assembly_Even_When_A_Reference_Already_Declares_It()
+    {
+        var reference = CreateSemanticStyleReference(
+            "Referenced.Semantic.Namespace",
+            "https://atomui.net",
+            "AtomUI.Theme.Styling",
+            "UnrelatedStyle",
+            Accessibility.Public);
+
+        var output = RunGenerator(
+            ButtonSource,
+            [reference],
+            out var diagnostics,
+            ButtonTheme);
+
+        diagnostics.ShouldBeEmpty();
+        HasGeneratedSource(output, "SemanticPartXmlnsDefinition.g.cs").ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Runtime_Created_Part_Requires_An_Explicit_Owner_Relative_Selector_Route()
+    {
+        const string source = """
+            using AtomUI.Theme;
+            using Avalonia.Controls;
+
+            namespace Demo;
+
+            [SemanticPart(
+                "item",
+                SelectorClass = "semantic-item",
+                ContractType = typeof(Control),
+                RuntimeCreated = true,
+                Since = "6.0")]
+            public partial class RuntimeOwner : Control
+            {
+            }
+            """;
+
+        _ = RunGenerator(source, out var diagnostics);
+
+        diagnostics.ShouldContain(diagnostic =>
+            diagnostic.Id == "ATOMUIGEN020" &&
+            diagnostic.GetMessage().Contains("SelectorRoute", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Runtime_Created_Part_Emits_The_Declared_Selector_Route()
+    {
+        const string source = """
+            using AtomUI.Theme;
+            using Avalonia.Controls;
+
+            namespace Demo;
+
+            [SemanticPart(
+                "item",
+                SelectorClass = "semantic-item",
+                SelectorRoute = "/template/ .semantic-scope-items > .semantic-scope-item /template/ .semantic-item",
+                ContractType = typeof(Control),
+                RuntimeCreated = true,
+                Since = "6.0")]
+            public partial class RuntimeOwner : Control
+            {
+            }
+            """;
+
+        var output = RunGenerator(source, out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+        var manifest = GetGeneratedSource(output, "GeneratedSemanticPartManifest.g.cs");
+        manifest.ShouldContain(
+            "\"/template/ .semantic-scope-items > .semantic-scope-item /template/ .semantic-item\"");
+        var constants = GetGeneratedSource(output, "RuntimeOwnerSemanticParts.g.cs");
+        constants.ShouldContain(
+            "internal const string ItemSelectorRoute = \"/template/ .semantic-scope-items > .semantic-scope-item /template/ .semantic-item\"");
+    }
+
+    [Theory]
+    [InlineData(".semantic-item")]
+    [InlineData("/template/ .semantic-scope-items .semantic-item")]
+    [InlineData("/template/ #PART_Items /template/ .semantic-item")]
+    [InlineData("/template/ Control /template/ .semantic-item")]
+    [InlineData("/template/ :is(Control) /template/ .semantic-item")]
+    [InlineData("/template/ [Tag=items] /template/ .semantic-item")]
+    [InlineData("/template/ .items /template/ .semantic-item")]
+    [InlineData("/template/ .semantic-scope-items > .semantic-other")]
+    public void Reports_Invalid_Selector_Route_Tokens(string selectorRoute)
+    {
+        var source = $$"""
+            using AtomUI.Theme;
+            using Avalonia.Controls;
+
+            namespace Demo;
+
+            [SemanticPart(
+                "item",
+                SelectorClass = "semantic-item",
+                SelectorRoute = "{{selectorRoute}}",
+                ContractType = typeof(Control),
+                RuntimeCreated = true,
+                Since = "6.0")]
+            public partial class RuntimeOwner : Control
+            {
+            }
+            """;
+
+        _ = RunGenerator(source, out var diagnostics);
+
+        diagnostics.ShouldContain(diagnostic =>
+            diagnostic.Id == "ATOMUIGEN020" &&
+            diagnostic.GetMessage().Contains("SelectorRoute", StringComparison.Ordinal));
     }
 
     [Fact]
@@ -1052,6 +1420,7 @@ public class SemanticPartGeneratorTests
             [SemanticPart(
                 "popup",
                 SelectorClass = "semantic-popup",
+                SelectorRoute = "> .semantic-popup",
                 ContractType = typeof(Control),
                 CrossVisualRoot = true,
                 RuntimeCreated = true,
@@ -1091,7 +1460,16 @@ public class SemanticPartGeneratorTests
         out ImmutableArray<Diagnostic> diagnostics,
         params AdditionalText[] additionalTexts)
     {
-        var compilation = CreateCompilation(source);
+        return RunGenerator(source, [], out diagnostics, additionalTexts);
+    }
+
+    private static CSharpCompilation RunGenerator(
+        string source,
+        ImmutableArray<MetadataReference> additionalReferences,
+        out ImmutableArray<Diagnostic> diagnostics,
+        params AdditionalText[] additionalTexts)
+    {
+        var compilation = CreateCompilation(source, additionalReferences);
         var driver = CSharpGeneratorDriver.Create(
             [new TokenResourceKeyGenerator().AsSourceGenerator()],
             additionalTexts.ToImmutableArray(),
@@ -1104,6 +1482,44 @@ public class SemanticPartGeneratorTests
             out diagnostics,
             TestContext.Current.CancellationToken);
         return (CSharpCompilation)outputCompilation;
+    }
+
+    private static MetadataReference CreateSemanticStyleReference(
+        string assemblyName,
+        string xmlNamespace,
+        string clrNamespace,
+        string typeName,
+        Accessibility accessibility)
+    {
+        var accessibilityKeyword = accessibility == Accessibility.Public ? "public" : "internal";
+        var source = $$"""
+            [assembly: Avalonia.Metadata.XmlnsDefinition("{{xmlNamespace}}", "{{clrNamespace}}")]
+
+            namespace Avalonia.Metadata
+            {
+                [System.AttributeUsage(System.AttributeTargets.Assembly, AllowMultiple = true)]
+                public sealed class XmlnsDefinitionAttribute : System.Attribute
+                {
+                    public XmlnsDefinitionAttribute(string xmlNamespace, string clrNamespace)
+                    {
+                    }
+                }
+            }
+
+            namespace {{clrNamespace}}
+            {
+                {{accessibilityKeyword}} sealed class {{typeName}}
+                {
+                }
+            }
+            """;
+
+        return CSharpCompilation.Create(
+                assemblyName,
+                [CSharpSyntaxTree.ParseText(source, cancellationToken: TestContext.Current.CancellationToken)],
+                GetPlatformReferences(),
+                new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+            .ToMetadataReference();
     }
 
     private static AdditionalText CreateThemeWithoutContentMarker(string path)
@@ -1123,19 +1539,35 @@ public class SemanticPartGeneratorTests
             """);
     }
 
-    private static CSharpCompilation CreateCompilation(string source)
+    private static CSharpCompilation CreateCompilation(
+        string source,
+        ImmutableArray<MetadataReference> additionalReferences = default)
     {
-        var references = ((string?)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES"))!
-                         .Split(Path.PathSeparator)
-                         .Select(static path => MetadataReference.CreateFromFile(path))
-                         .Cast<MetadataReference>()
-                         .ToImmutableArray();
+        var references = GetPlatformReferences();
+        if (!additionalReferences.IsDefaultOrEmpty)
+        {
+            references = references.AddRange(additionalReferences);
+        }
 
         return CSharpCompilation.Create(
             "SemanticPartGeneratorTests",
             [CSharpSyntaxTree.ParseText(source), CSharpSyntaxTree.ParseText(AtomUIStubs)],
             references,
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+    }
+
+    private static ImmutableArray<MetadataReference> GetPlatformReferences()
+    {
+        return ((string?)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES"))!
+               .Split(Path.PathSeparator)
+               .Select(static path => MetadataReference.CreateFromFile(path))
+               .Cast<MetadataReference>()
+               .ToImmutableArray();
+    }
+
+    private static bool HasGeneratedSource(CSharpCompilation compilation, string fileName)
+    {
+        return compilation.SyntaxTrees.Any(tree => tree.FilePath.EndsWith(fileName, StringComparison.Ordinal));
     }
 
     private static string GetGeneratedSource(CSharpCompilation compilation, string fileName)
@@ -1234,8 +1666,39 @@ public class SemanticPartGeneratorTests
 
         namespace Avalonia.Styling
         {
+            public class Selector
+            {
+            }
+
+            public class Style
+            {
+                public Style(System.Func<Selector?, Selector> selector)
+                {
+                }
+            }
+
+            public static class Selectors
+            {
+                public static Selector Nesting(this Selector? previous) => new();
+                public static Selector Is<T>(this Selector? previous) where T : Avalonia.StyledElement => new();
+                public static Selector Template(this Selector? previous) => new();
+                public static Selector Child(this Selector? previous) => new();
+                public static Selector Class(this Selector? previous, string name) => new();
+            }
+
             public sealed class ControlTheme
             {
+            }
+        }
+
+        namespace Avalonia.Metadata
+        {
+            [System.AttributeUsage(System.AttributeTargets.Assembly, AllowMultiple = true)]
+            public sealed class XmlnsDefinitionAttribute : System.Attribute
+            {
+                public XmlnsDefinitionAttribute(string xmlNamespace, string clrNamespace)
+                {
+                }
             }
         }
 
@@ -1264,6 +1727,7 @@ public class SemanticPartGeneratorTests
 
                 public string? Path { get; set; }
                 public string? SelectorClass { get; set; }
+                public string? SelectorRoute { get; set; }
                 public System.Type? ContractType { get; set; }
                 public SemanticPartCardinality Cardinality { get; set; }
                 public SemanticPartCustomization Customization { get; set; }
@@ -1391,7 +1855,9 @@ public class SemanticPartGeneratorTests
                     ControlThemeSemanticPartDescriptor? theme,
                     bool crossVisualRoot,
                     string since,
-                    bool runtimeCreated)
+                    bool runtimeCreated,
+                    string? selectorRoute = null,
+                    System.Type? styleType = null)
                 {
                 }
             }

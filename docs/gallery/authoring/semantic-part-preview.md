@@ -12,7 +12,7 @@ descriptor 或普通应用运行时注入演示状态。
 
 ## 1. 设计目标
 
-- 让 Gallery 用户在真实控件上理解 `root`、`.semantic-*`、`ContractType`、cardinality 和引入版本。
+- 让 Gallery 用户在真实控件上理解 `root`、`.semantic-*`、`StyleType`、`ContractType`、cardinality 和引入版本。
 - 使用现有 `SemanticPartRegistry` 和模板 marker，不重复维护结构元数据。
 - 把 Semantic Part 与普通 Examples 分成独立一级 Tab，避免把公共定制契约伪装成普通使用案例。
 - 只有用户第一次进入 Semantic Parts Tab 时才创建 Preview 和演示控件。
@@ -131,6 +131,8 @@ Preview presentation item 的结构字段全部来自 `SemanticPartDescriptor`�
 Name
 Path
 SelectorClass
+SelectorRoute
+StyleType
 ContractType
 Cardinality
 Customization
@@ -156,9 +158,9 @@ Preview 使用一个完整边框包围预览区和 Part 列表，不能把两栏
 - 窄屏按预览区、Part 列表顺序上下堆叠，分隔线切换到列表顶部。
 - 面板按内容决定高度并在内容区顶部对齐，不能被页面剩余高度强制拉伸成大面积空白舞台。
 - Part 行使用平铺列表和行分隔线，不使用独立边框、圆角卡片、嵌套卡片或额外的 Semantic Parts 标题。
-- 主行只常驻显示 Part 名称、引入版本、本地化职责描述、Pin 和 Info；selector、ContractType、cardinality、
+- 主行只常驻显示 Part 名称、引入版本、本地化职责描述、Pin 和 Info；selector、SelectorRoute、ContractType、cardinality、
   customization、跨视觉根和运行时创建等技术字段只在用户打开 Info 后显示。
-- Info 打开后，下方详情区横跨检查面板完整宽度：selector、ContractType、cardinality、customization 等技术元数据
+- Info 打开后，下方详情区横跨检查面板完整宽度：selector、SelectorRoute、ContractType、StyleType、cardinality、customization 等技术元数据
   位于左侧固定宽度栏，Styling example 代码区位于右侧并占据主要宽度。
 - 紧凑布局中，下方详情区按技术元数据、Styling example 的顺序上下堆叠，两者均占满宽度。
 - 代码示例不得挤在固定宽度的 Part 右栏、拆成独立卡片或使用会遮挡目标预览的浮层。
@@ -219,7 +221,9 @@ class 搜索。
 
 ### 8.3 Runtime-created Part
 
-`RuntimeCreated=true` 时允许在 owner 的局部 Visual 作用域中查找已实例化节点。遍历遇到另一个已注册 Semantic Control
+`RuntimeCreated=true` 时允许在 owner 的局部 Visual 作用域中查找已实例化节点。`SelectorRoute` 是 descriptor 与生成 Style 的静态
+契约，不作为 Preview 的 runtime traversal 程序，也不直接生成用户主 selector；Preview 继续通过 registry owner 边界、AdditionalRoots 和 class marker
+解析目标。遍历遇到另一个已注册 Semantic Control
 时停止进入其内部模板，防止同名 marker 跨 Control owner 泄漏。运行时节点必须遵守 Semantic Part 总架构定义的 parent
 和 owner 契约；尚未附加到 VisualTree 的节点不属于可高亮目标。
 
@@ -281,8 +285,9 @@ Modal、Message、Notification 等由服务创建且不再能从 owner Popup 到
 代码片段由 descriptor 按需生成：
 
 - `root` 生成 owner type selector 或实例级 Styles 示例。
-- Selector Part 生成 owner scope、一个 `/template/`、`.semantic-*` 和
-  `x:SetterTargetType="ContractType"`。
+- Selector Part 生成 owner scope、`StyleType` 和 `x:SetterTargetType="ContractType"`；生成 Style 内部封装 descriptor
+  `SelectorRoute`。
+- 不把复杂 route 拼接成用户主 selector，也不根据 `RuntimeCreated` 推断 descendant selector。
 - `SelectorAndTheme` 可以补充强类型 Theme 属性入口，但 Selector 仍是基础契约。
 - 不生成 `ContractType.semantic-*` 或 `:is(ContractType).semantic-*`。
 
@@ -334,13 +339,14 @@ Button、ButtonTheme 和 Button Browser Theme 不因 Gallery Preview 新增任�
 6. OverlayPopupHost 与 PopupRoot 使用目标所在 root 的 AdornerLayer。
 7. 切回 Examples、Popup 关闭、目标 detach 和页面 detach 后释放全部高亮 Adorner 与订阅。
 8. 超过 32 个可见目标时严格执行高亮预算，且不创建额外状态提示。
-9. Info 生成的 AXAML 使用 `.semantic-* + x:SetterTargetType` 正式写法。
+9. Info 生成的 AXAML 使用 owner selector、生成 `StyleType` 和 `x:SetterTargetType` 正式写法。
 10. Preview 使用单外框、相邻双栏、平铺分隔行；主行不显示 selector、ContractType、cardinality 或 customization。
-11. Info 打开前不创建技术元数据视图和代码查看器；打开后显示 descriptor 技术字段与样式示例。
-12. Button Control 和 Theme 的 public surface、模板 marker 与运行时路径没有因 Preview 变化。
-13. Preview、演示 Control 和 Popup 在页面释放后可以被 GC。
-14. 单 owner 页面和多 owner 家族页面都保持真延迟创建；多 Preview 内容根切换 Tab 时统一激活、停用和释放。
-15. Desktop、Browser、裁剪和 NativeAOT 路径不需要反射保留配置。
+11. Info 打开前不创建技术元数据视图和代码查看器；打开后显示 selector、StyleType、SelectorRoute 等 descriptor 技术字段与样式示例。
+12. 复杂 runtime Part 的代码示例使用生成 Style，并验证不会命中嵌套 Semantic owner 的同名 Part。
+13. Button Control 和 Theme 的 public surface、模板 marker 与运行时路径没有因 Preview 变化。
+14. Preview、演示 Control 和 Popup 在页面释放后可以被 GC。
+15. 单 owner 页面和多 owner 家族页面都保持真延迟创建；多 Preview 内容根切换 Tab 时统一激活、停用和释放。
+16. Desktop、Browser、裁剪和 NativeAOT 路径不需要反射保留配置。
 
 ## 16. 相关文档
 

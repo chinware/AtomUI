@@ -446,6 +446,10 @@ Spacing="8">
 Value="{atom:SharedTokenResource ColorBorder}" />
 <Setter Property="CornerRadius"
 Value="{atom:SharedTokenResource BorderRadius}" />
+<atom:ButtonContentStyle x:SetterTargetType="ContentPresenter">
+<Setter Property="Foreground"
+Value="{atom:SharedTokenResource ColorText}" />
+</atom:ButtonContentStyle>
 </Style>
 <Style Selector="atom|Button.semantic-part-demo.semantic-object">
 <Setter Property="Effect">
@@ -455,17 +459,11 @@ BlurRadius="2"
 Color="#0D000000" />
 </Setter>
 </Style>
-<Style Selector="atom|Button.semantic-part-demo /template/ .semantic-content"
-x:SetterTargetType="ContentPresenter">
-<Setter Property="Foreground"
-Value="{atom:SharedTokenResource ColorText}" />
-</Style>
 <Style Selector="atom|Button.semantic-part-demo[ButtonType=Primary]">
 <Setter Property="Background" Value="#171717" />
-</Style>
-<Style Selector="atom|Button.semantic-part-demo[ButtonType=Primary] /template/ .semantic-content"
-x:SetterTargetType="ContentPresenter">
+<atom:ButtonContentStyle x:SetterTargetType="ContentPresenter">
 <Setter Property="Foreground" Value="#FFFFFF" />
+</atom:ButtonContentStyle>
 </Style>
 </StackPanel.Styles>
 <atom:Button Classes="semantic-part-demo semantic-object"

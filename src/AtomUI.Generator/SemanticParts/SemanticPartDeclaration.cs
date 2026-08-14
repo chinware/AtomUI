@@ -8,6 +8,7 @@ internal sealed class SemanticPartDeclaration
         string name,
         string path,
         string? selectorClass,
+        string? selectorRoute,
         ITypeSymbol? contractType,
         int cardinality,
         int customization,
@@ -21,6 +22,7 @@ internal sealed class SemanticPartDeclaration
         Name = name;
         Path = path;
         SelectorClass = selectorClass;
+        SelectorRoute = selectorRoute;
         ContractType = contractType;
         Cardinality = cardinality;
         Customization = customization;
@@ -35,6 +37,7 @@ internal sealed class SemanticPartDeclaration
     internal string Name { get; }
     internal string Path { get; }
     internal string? SelectorClass { get; }
+    internal string? SelectorRoute { get; }
     internal ITypeSymbol? ContractType { get; }
     internal int Cardinality { get; }
     internal int Customization { get; }
@@ -51,6 +54,7 @@ internal sealed class SemanticPartDeclaration
             Name,
             Path,
             SelectorClass,
+            SelectorRoute,
             ContractType,
             Cardinality,
             Customization,
@@ -60,6 +64,24 @@ internal sealed class SemanticPartDeclaration
             RuntimeCreated,
             Location,
             targetType);
+    }
+
+    internal SemanticPartDeclaration WithSelectorRoute(string selectorRoute)
+    {
+        return new SemanticPartDeclaration(
+            Name,
+            Path,
+            SelectorClass,
+            selectorRoute,
+            ContractType,
+            Cardinality,
+            Customization,
+            ThemePropertyName,
+            CrossVisualRoot,
+            Since,
+            RuntimeCreated,
+            Location,
+            ThemeTargetType);
     }
 }
 
@@ -128,6 +150,7 @@ internal sealed class SemanticControlDeclaration
             : string.Empty;
         var path = name;
         string? selectorClass = null;
+        string? selectorRoute = null;
         ITypeSymbol? contractType = null;
         var cardinality = 0;
         var customization = SelectorCustomization;
@@ -145,6 +168,9 @@ internal sealed class SemanticControlDeclaration
                     break;
                 case "SelectorClass":
                     selectorClass = argument.Value.Value as string;
+                    break;
+                case "SelectorRoute":
+                    selectorRoute = argument.Value.Value as string;
                     break;
                 case "ContractType":
                     contractType = argument.Value.Value as ITypeSymbol;
@@ -175,6 +201,7 @@ internal sealed class SemanticControlDeclaration
             name,
             path,
             selectorClass,
+            selectorRoute,
             contractType,
             cardinality,
             customization,

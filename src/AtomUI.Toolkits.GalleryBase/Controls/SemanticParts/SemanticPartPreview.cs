@@ -391,32 +391,47 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
         var ownerType = _controlDescriptor?.ControlType ?? SemanticOwnerType ?? _effectiveOwner?.GetType() ??
                         throw new InvalidOperationException("Semantic owner metadata is unavailable.");
         const string atomPrefix = "atom";
-        var ownerNamespace = ownerType.Namespace ?? string.Empty;
-        var contractNamespace = part.ContractType.Namespace ?? string.Empty;
-        var targetType = contractNamespace == "Avalonia.Controls"
-            ? part.ContractType.Name
-            : contractNamespace == ownerNamespace
-                ? $"{atomPrefix}:{part.ContractType.Name}"
-                : $"contract:{part.ContractType.Name}";
-        var selector = string.Equals(part.Path, "root", StringComparison.Ordinal)
-            ? $"{atomPrefix}|{ownerType.Name}"
-            : $"{atomPrefix}|{ownerType.Name} /template/ .{part.SelectorClass}";
+        var targetType = GetSetterTargetType(part.ContractType, atomPrefix);
+        var ownerSelector = $"{atomPrefix}|{ownerType.Name}";
 
         var builder = new StringBuilder();
         builder.AppendLine("<Styles xmlns=\"https://github.com/avaloniaui\"");
         builder.AppendLine("        xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"");
-        builder.Append($"        xmlns:{atomPrefix}=\"using:{ownerNamespace}\"");
-        if (contractNamespace is not ("Avalonia.Controls" or "") && contractNamespace != ownerNamespace)
-        {
-            builder.AppendLine();
-            builder.Append($"        xmlns:contract=\"using:{contractNamespace}\"");
-        }
+        builder.Append($"        xmlns:{atomPrefix}=\"https://atomui.net\"");
         builder.AppendLine(">");
-        builder.AppendLine($"  <Style Selector=\"{selector}\"");
-        builder.AppendLine($"         x:SetterTargetType=\"{targetType}\">");
-        builder.AppendLine("    <Setter Property=\"Opacity\" Value=\"1\" />");
-        builder.AppendLine("  </Style>");
+        if (string.Equals(part.Path, "root", StringComparison.Ordinal))
+        {
+            builder.AppendLine($"  <Style Selector=\"{ownerSelector}\"");
+            builder.AppendLine($"         x:SetterTargetType=\"{targetType}\">");
+            builder.AppendLine("    <Setter Property=\"Opacity\" Value=\"1\" />");
+            builder.AppendLine("  </Style>");
+        }
+        else
+        {
+            var styleTypeName = part.StyleType?.Name ??
+                                $"{ownerType.Name}{ToPartTypeName(part.Path)}Style";
+            builder.AppendLine($"  <Style Selector=\"{ownerSelector}\">");
+            builder.AppendLine($"    <{atomPrefix}:{styleTypeName} x:SetterTargetType=\"{targetType}\">");
+            builder.AppendLine("      <Setter Property=\"Opacity\" Value=\"1\" />");
+            builder.AppendLine($"    </{atomPrefix}:{styleTypeName}>");
+            builder.AppendLine("  </Style>");
+        }
         builder.Append("</Styles>");
         return builder.ToString();
+    }
+
+    private static string GetSetterTargetType(Type contractType, string atomPrefix)
+    {
+        return contractType.Namespace?.StartsWith("Avalonia.", StringComparison.Ordinal) == true
+            ? contractType.Name
+            : $"{atomPrefix}:{contractType.Name}";
+    }
+
+    private static string ToPartTypeName(string path)
+    {
+        return string.Concat(path.Split('.').Select(static segment =>
+            segment.Length == 0
+                ? string.Empty
+                : char.ToUpperInvariant(segment[0]) + segment.Substring(1)));
     }
 }

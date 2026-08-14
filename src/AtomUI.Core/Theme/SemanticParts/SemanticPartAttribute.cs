@@ -12,6 +12,7 @@ public sealed class SemanticPartAttribute : Attribute
     public string Name { get; }
     public string? Path { get; set; }
     public string? SelectorClass { get; set; }
+    public string? SelectorRoute { get; set; }
     public Type? ContractType { get; set; }
     public SemanticPartCardinality Cardinality { get; set; } = SemanticPartCardinality.Single;
     public SemanticPartCustomization Customization { get; set; } = SemanticPartCustomization.Selector;

@@ -203,7 +203,9 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
                     context,
                     themeGenerationInfo.Right.AssemblyName,
                     themeGenerationInfo.Right.ControlCatalog,
-                    semanticControls).Write();
+                    semanticControls,
+                    !SemanticPartStyleContract.HasCanonicalXmlnsDefinition(
+                        themeGenerationInfo.Right.Compilation.Assembly)).Write();
             }
 
             {

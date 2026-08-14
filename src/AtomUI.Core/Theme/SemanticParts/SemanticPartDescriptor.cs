@@ -15,7 +15,9 @@ public sealed class SemanticPartDescriptor
         ControlThemeSemanticPartDescriptor? theme,
         bool crossVisualRoot,
         string? since,
-        bool runtimeCreated)
+        bool runtimeCreated,
+        string? selectorRoute = null,
+        Type? styleType = null)
     {
         ValidatePartName(name, nameof(name));
         ValidatePartPath(path, nameof(path));
@@ -54,7 +56,9 @@ public sealed class SemanticPartDescriptor
                 customization != SemanticPartCustomization.Root ||
                 theme is not null ||
                 crossVisualRoot ||
-                runtimeCreated)
+                runtimeCreated ||
+                selectorRoute is not null ||
+                styleType is not null)
             {
                 throw new ArgumentException(
                     "The root Semantic Part must use path 'root', Single cardinality, Root customization, and no selector, theme, cross-root, or runtime-created metadata.",
@@ -70,6 +74,11 @@ public sealed class SemanticPartDescriptor
                     nameof(path));
             }
             ValidateSelectorClass(selectorClass, nameof(selectorClass));
+            selectorRoute = NormalizeSelectorRoute(
+                selectorRoute,
+                selectorClass!,
+                runtimeCreated,
+                nameof(selectorRoute));
             if (customization == SemanticPartCustomization.Root)
             {
                 throw new ArgumentException(
@@ -103,6 +112,7 @@ public sealed class SemanticPartDescriptor
         Name = name;
         Path = path;
         SelectorClass = selectorClass;
+        SelectorRoute = selectorRoute;
         ContractType = contractType;
         Cardinality = cardinality;
         Customization = customization;
@@ -110,11 +120,13 @@ public sealed class SemanticPartDescriptor
         CrossVisualRoot = crossVisualRoot;
         Since = string.IsNullOrWhiteSpace(since) ? null : since;
         RuntimeCreated = runtimeCreated;
+        StyleType = styleType;
     }
 
     public string Name { get; }
     public string Path { get; }
     public string? SelectorClass { get; }
+    public string? SelectorRoute { get; }
     public Type ContractType { get; }
     public SemanticPartCardinality Cardinality { get; }
     public SemanticPartCustomization Customization { get; }
@@ -122,6 +134,7 @@ public sealed class SemanticPartDescriptor
     public bool CrossVisualRoot { get; }
     public string? Since { get; }
     public bool RuntimeCreated { get; }
+    public Type? StyleType { get; }
 
     private static void ValidatePartName(string value, string parameterName)
     {
@@ -197,5 +210,74 @@ public sealed class SemanticPartDescriptor
             }
             previousWasHyphen = false;
         }
+    }
+
+    private static string NormalizeSelectorRoute(
+        string? value,
+        string selectorClass,
+        bool runtimeCreated,
+        string parameterName)
+    {
+        if (value is null)
+        {
+            if (runtimeCreated)
+            {
+                throw new ArgumentException(
+                    "Runtime-created Semantic Parts must declare an explicit SelectorRoute.",
+                    parameterName);
+            }
+
+            return $"/template/ .{selectorClass}";
+        }
+
+        if (!IsValidSelectorRoute(value, selectorClass))
+        {
+            throw new ArgumentException(
+                $"'{value}' is not a valid owner-relative Semantic Part selector route for '{selectorClass}'.",
+                parameterName);
+        }
+
+        return value;
+    }
+
+    private static bool IsValidSelectorRoute(string value, string selectorClass)
+    {
+        if (string.IsNullOrWhiteSpace(value) ||
+            !string.Equals(value, value.Trim(), StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        var tokens = value.Split(' ');
+        if (tokens.Length < 2 || tokens.Length % 2 != 0)
+        {
+            return false;
+        }
+
+        for (var index = 0; index < tokens.Length; index += 2)
+        {
+            if (tokens[index] is not ("/template/" or ">"))
+            {
+                return false;
+            }
+
+            var classToken = tokens[index + 1];
+            if (classToken.Length < 2 || classToken[0] != '.')
+            {
+                return false;
+            }
+
+            try
+            {
+                ValidateSelectorClass(classToken.Substring(1), nameof(value));
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+
+        }
+
+        return string.Equals(tokens[^1], $".{selectorClass}", StringComparison.Ordinal);
     }
 }

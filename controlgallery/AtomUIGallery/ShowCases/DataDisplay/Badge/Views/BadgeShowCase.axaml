@@ -497,36 +497,34 @@
                 <StackPanel Spacing="24"
                             HorizontalAlignment="Left">
                     <StackPanel.Styles>
-                        <Style Selector="atom|CountBadge.semantic-demo .semantic-indicator"
-                               x:SetterTargetType="Control">
-                            <Setter Property="TextElement.FontSize" Value="10" />
+                        <Style Selector="atom|CountBadge.semantic-demo">
+                            <atom:CountBadgeIndicatorStyle x:SetterTargetType="Control">
+                                <Setter Property="TextElement.FontSize" Value="10" />
+                            </atom:CountBadgeIndicatorStyle>
                         </Style>
                         <Style Selector="atom|CountBadge.semantic-custom[Size=Default]">
                             <Setter Property="BadgeColor" Value="#696FC7" />
-                        </Style>
-                        <Style Selector="atom|CountBadge.semantic-custom[Size=Default] .semantic-indicator"
-                               x:SetterTargetType="Control">
-                            <Setter Property="TextElement.FontSize" Value="14" />
+                            <atom:CountBadgeIndicatorStyle x:SetterTargetType="Control">
+                                <Setter Property="TextElement.FontSize" Value="14" />
+                            </atom:CountBadgeIndicatorStyle>
                         </Style>
                         <Style Selector="atom|RibbonBadge.semantic-demo">
                             <Setter Property="Width" Value="400" />
                             <Setter Property="HorizontalAlignment" Value="Left" />
-                        </Style>
-                        <Style Selector="atom|RibbonBadge.semantic-demo .semantic-indicator"
-                               x:SetterTargetType="Control">
-                            <Setter Property="Effect">
-                                <DropShadowEffect OffsetX="0"
-                                                  OffsetY="2"
-                                                  BlurRadius="4"
-                                                  Color="#1A000000" />
-                            </Setter>
+                            <atom:RibbonBadgeIndicatorStyle x:SetterTargetType="Control">
+                                <Setter Property="Effect">
+                                    <DropShadowEffect OffsetX="0"
+                                                      OffsetY="2"
+                                                      BlurRadius="4"
+                                                      Color="#1A000000" />
+                                </Setter>
+                            </atom:RibbonBadgeIndicatorStyle>
                         </Style>
                         <Style Selector="atom|RibbonBadge.semantic-custom">
                             <Setter Property="RibbonColor" Value="#696FC7" />
-                        </Style>
-                        <Style Selector="atom|RibbonBadge.semantic-custom .semantic-content"
-                               x:SetterTargetType="TextBlock">
-                            <Setter Property="FontWeight" Value="Bold" />
+                            <atom:RibbonBadgeContentStyle x:SetterTargetType="TextBlock">
+                                <Setter Property="FontWeight" Value="Bold" />
+                            </atom:RibbonBadgeContentStyle>
                         </Style>
                     </StackPanel.Styles>
 

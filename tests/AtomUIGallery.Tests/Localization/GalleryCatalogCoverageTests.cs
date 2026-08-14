@@ -50,9 +50,10 @@ public class GalleryCatalogCoverageTests
             ignoreOrder: true);
         foreach (var catalogType in catalogTypes)
         {
+            var expectedContractVersion = catalogType == typeof(SemanticPartPreviewLangResourceKind) ? 3 : 2;
             catalogType.GetCustomAttribute<LanguageCatalogAttribute>()
                        .ShouldNotBeNull()
-                       .ContractVersion.ShouldBe(2);
+                       .ContractVersion.ShouldBe(expectedContractVersion);
             Enum.GetNames(catalogType).ShouldBe(memberOrderBaseline[catalogType.FullName!]);
 
             var extensionName = catalogType.Name[..^"Kind".Length] + "Extension";
@@ -121,7 +122,7 @@ public class GalleryCatalogCoverageTests
                               .ToArray();
 
         sourceFiles.Length.ShouldBe(81);
-        sourceFiles.Sum(CountUnits).ShouldBe(4031);
+        sourceFiles.Sum(CountUnits).ShouldBe(4059);
         foreach (var sourcePath in sourceFiles)
         {
             var targetPath = Path.Combine(

@@ -1,6 +1,7 @@
 # Semantic Part Generator 实现
 
-Semantic Part Generator 为 AtomUI Control 的公开视觉区域生成静态 descriptor、名称常量、包级注册和构建期诊断。
+Semantic Part Generator 为 AtomUI Control 的公开视觉区域生成静态 descriptor、名称常量、public Semantic Style 类型、
+XML namespace 映射、包级注册和构建期诊断。
 公共语义、Selector、Popup、Theme 和兼容性契约由
 [AtomUI Semantic Part 系统设计](../../architecture/systems/theming/semantic-parts.md) 定义；本文档只定义生成器职责。
 
@@ -12,14 +13,15 @@ Semantic Part Generator 为 AtomUI Control 的公开视觉区域生成静态 des
 生成器负责：
 
 - 读取 public Control 上的 Semantic Part 声明。
-- 验证 Part 名称、selector class、ContractType、cardinality 和 customization。
+- 验证 Part 名称、selector class、selector route、ContractType、cardinality 和 customization。
 - 分析内置 AXAML 模板中的 `.semantic-*` marker。
 - 关联已有 Semantic Part Theme 资产元数据。
-- 生成 `ControlSemanticDescriptor`、Part 常量和包级注册。
+- 生成 `ControlSemanticDescriptor`、Part 常量、public Semantic Style 类型、canonical XML namespace 映射和包级注册。
 - 向文档和 Gallery 工具提供稳定静态输入。
 
-生成器保持 `SelectorClass` 与 `ContractType` 正交：前者生成 `.semantic-*` Part 身份，后者验证 marker 节点类型并供文档
-工具读取为 `x:SetterTargetType`。生成器不得把二者拼接成类型限定 Semantic selector。
+生成器保持 `SelectorClass`、`SelectorRoute` 与 `ContractType` 正交：class 表达 `.semantic-*` Part 身份，route 表达从 public
+owner 到目标的完整静态路径，type 验证 marker 节点类型并供文档工具读取为 `x:SetterTargetType`。生成器不得把
+`ContractType` 拼接成类型限定 Semantic selector。
 
 生成器不负责：
 
@@ -38,7 +40,7 @@ Semantic Part Generator 为 AtomUI Control 的公开视觉区域生成静态 des
 | `SemanticParts/SemanticPartContractValidator.cs` | 校验 Control/Part 声明、唯一性、`ContractType` 和可选强类型 Theme 属性及资产契约。 |
 | `SemanticParts/SemanticPartTemplateValidator.cs` | 解析适用模板继承链，并校验静态 marker、节点职责冲突、cardinality 和 marker 类型兼容性。 |
 | `SemanticParts/SemanticPartTypeResolver.cs` | 在单次生成构建内预计算 XML namespace 映射，并缓存 TargetType、marker type 和 assignability 所需类型解析。 |
-| `SemanticParts/SemanticPartManifestWriter.cs` | 生成 package manifest 与 per-Control 名称/class 常量。 |
+| `SemanticParts/SemanticPartManifestWriter.cs` | 生成 package manifest、per-Control 名称/class/route 常量、public Semantic Style 类型和 canonical XML namespace 映射。 |
 | `ThemeAssets/ThemeAssetInfo.cs` | 解析 Theme AdditionalFile 的通用资产信息，并把 Semantic AXAML 结构交给专用解析器。 |
 | `ThemeAssets/ThemeAssetSemanticInfo.cs` | 保存 ControlTheme、模板 variant 和 marker 的有序构建期语义模型。 |
 | `ThemeAssets/SemanticThemeAssetParser.cs` | 从 `XElement` 结构提取 TargetType、typed BasedOn、模板 variant、节点 identity 与两种 marker 输入。 |
@@ -54,8 +56,19 @@ Semantic Part Generator 为 AtomUI Control 的公开视觉区域生成静态 des
 ### 2.1 Control 声明
 
 Control 使用可重复 `SemanticPartAttribute` 声明除 `root` 外的公开 Part。生成器通过固定 metadata name 识别
-Attribute，不依赖 Attribute 实例反射。同一 non-generic public Control 的多个 partial 声明按 CLR symbol 合并，只生成
-一个 descriptor 和一份常量文件；泛型 Control 在声明校验阶段拒绝。
+Attribute，不依赖 Attribute 实例反射。声明必须位于与 owner 同目录的 `<Control>.SemanticParts.cs` partial 文件中；多个
+partial 声明按 CLR symbol 合并，只生成一个 descriptor、一份常量文件和一组 Style 类型。泛型 Control 在声明校验阶段拒绝。
+
+推荐组织方式：
+
+```text
+Descriptions/
+├── Descriptions.cs
+└── Descriptions.SemanticParts.cs
+```
+
+`<Control>.SemanticParts.cs` 只承载 Attribute 声明和空的 partial class 块，不承载模板节点、Setter、Style 实例或运行时
+VisualTree 查找逻辑。
 
 声明字段包括：
 
@@ -63,6 +76,7 @@ Attribute，不依赖 Attribute 实例反射。同一 non-generic public Control
 Name
 Path
 SelectorClass
+SelectorRoute
 ContractType
 Cardinality
 Customization
@@ -72,7 +86,20 @@ Since
 RuntimeCreated
 ```
 
+静态根模板 Part 未声明 `SelectorRoute` 时生成器规范化为 `/template/ .<SelectorClass>`。`RuntimeCreated=true` 必须显式提供
+route，防止生成器、Gallery 或文档回退成无 owner 边界的 logical descendant。
+
 `root` 由生成器为每个具有 Semantic Part 声明的 Control 隐式生成。
+
+`StyleType` 由生成器根据 owner 和 Part path 确定：
+
+```text
+CLR namespace: AtomUI.Theme.Styling
+Type name:     <ControlName><PartPathPascalCase>Style
+```
+
+`root` 不生成 Style type；例如 `Descriptions.label` 生成 `DescriptionsLabelStyle`，`Select.popup.option` 生成
+`SelectPopupOptionStyle`。生成类型放在 owner Control 所在程序集，不集中进 `AtomUI.Core`。
 
 ### 2.2 AXAML 资产
 
@@ -111,8 +138,8 @@ Semantic Part Generator 将该信息关联到 `Customization=SelectorAndTheme` �
 
 ### 2.4 Runtime-created Part
 
-`RuntimeCreated=true` 表示 marker 由 C# 创建路径添加。生成器产生稳定 class 常量供 Control 使用，但不通过源码文本
-搜索证明调用已经发生。该契约由控件行为测试验证。
+`RuntimeCreated=true` 表示 marker 由 C# 创建路径添加。生成器产生稳定 class 与 route 常量供 Control 使用，但不通过源码
+文本搜索证明调用已经发生。声明必须提供合法 `SelectorRoute`；该契约由控件行为测试验证。
 
 Runtime-created Part 仍需在 descriptor 中声明 `ContractType`、cardinality、owner 和跨视觉根信息。
 
@@ -134,7 +161,9 @@ SemanticPartDescriptor[]
 Name
 Path
 SelectorClass
+SelectorRoute
 ContractType CLR identity
+StyleType CLR identity; root 为 null
 Cardinality
 Customization
 Theme property metadata optional
@@ -143,7 +172,8 @@ Since
 RuntimeCreated
 ```
 
-Descriptor 不保存 `Type` 的动态发现逻辑、Style、Setter、ControlTheme 实例或 VisualTree 引用。
+Descriptor 不保存运行时 Type 发现逻辑、Style 实例、Setter、ControlTheme 实例或 VisualTree 引用；`StyleType` 以静态
+`typeof(<Control><PartPathPascalCase>Style)` 引用写入 descriptor，root 写入 `null`。
 
 ### 3.2 Part 常量
 
@@ -152,22 +182,81 @@ Descriptor 不保存 `Type` 的动态发现逻辑、Style、Setter、ControlThem
 ```text
 Part name constants
 Selector class constants
+Selector route constants
 ```
 
 AXAML 仍直接承载 `.semantic-*` class；AtomUI 自有模板使用 `Classes.semantic-*="True"` 静态声明。生成常量不是第二套
 命名来源，其值必须与 descriptor 完全一致。
 
-消费 descriptor 的文档或示例工具在输出包含 Setter 的示例时，必须使用 `SelectorClass` 生成 class-only selector，
-并把 `ContractType` 输出为 `x:SetterTargetType`；不得输出 `ContractType.semantic-*` 或
-`:is(ContractType).semantic-*`。
+### 3.3 生成 Semantic Style
 
-### 3.3 包级注册
+每个非 root Part 生成一个 public sealed `Style` 子类。生成器必须保证以下固定契约：
+
+```csharp
+namespace AtomUI.Theme.Styling;
+
+public sealed class DescriptionsLabelStyle : Style
+{
+    public DescriptionsLabelStyle()
+        : base(static selector => selector
+            .Nesting()
+            .Template()
+            .Class("semantic-scope-items")
+            .Child()
+            .Class("semantic-scope-item")
+            .Template()
+            .Class("semantic-label"))
+    {
+    }
+}
+```
+
+生成规则：
+
+1. `Nesting()` 把生成 Style 绑定到外层普通 Style 的匹配对象。
+2. 外层普通 Style 的 selector 负责 Semantic owner、业务 class 和状态作用域；生成 Style 不重复匹配 owner 类型。
+3. `SelectorRoute` 的 `/template/`、`>` 和 class token 按受限语法静态转换为 Avalonia Fluent Selector 调用。
+4. 最后一个 class 必须是 Part 自身的 `SelectorClass`；生成器不把 route 降级为普通 descendant。
+5. `root` 不生成 Style type；root Setter 由外层普通 Style 或 owner API 承担。
+6. 生成 Style 不包含 Setter，不缓存 Style 实例，不解析 AXAML，不持有 Control 或 VisualTree 引用。
+
+`ContractType` 不进入生成 Selector。用户在使用生成 Style 时必须显式声明 `x:SetterTargetType`，例如：
+
+```xml
+<Style Selector="atom|Descriptions.semantic-demo">
+    <atom:DescriptionsLabelStyle x:SetterTargetType="ContentPresenter">
+        <Setter Property="Foreground" Value="#A294F9" />
+    </atom:DescriptionsLabelStyle>
+</Style>
+```
+
+`x:SetterTargetType` 是用户 AXAML 的显式编译期契约，不参与 Selector 匹配、Part identity 或优先级。生成器不得自动
+注入、隐藏、lowering 或替换该指令，也不修改 Avalonia 12 源码。
+
+生成类型位于 owner Control 所在程序集。只要该程序集产生至少一个 Semantic Style，生成器必须确保存在以下等价的
+canonical XML namespace 映射；已有等价映射时不得重复输出：
+
+```csharp
+[assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Theme.Styling")]
+```
+
+去重只检查当前输出程序集上的完全等价映射。当前程序集为同一 CLR namespace 声明的其他 XML namespace 属于合法别名，
+不能抑制 canonical 映射；引用程序集上的等价映射只服务于该引用程序集，也不能替代当前程序集输出。
+
+用户因此继续使用 `xmlns:atom="https://atomui.net"`，不需要第二套 xmlns。
+
+消费 descriptor 的文档或示例工具必须优先输出 `StyleType` 用法；不得把 `SelectorRoute` 拼成用户主路径，不得输出宽泛
+logical descendant、`ContractType.semantic-*` 或 `:is(ContractType).semantic-*`。
+
+### 3.4 包级注册
 
 包级输出包括：
 
 ```text
 GeneratedSemanticPartManifest.g.cs
 <Control>SemanticParts.g.cs
+<Control><PartPath>Style.g.cs
+Semantic Part XML namespace mapping output
 GeneratedControlPackageRegistration.g.cs
 ```
 
@@ -213,6 +302,10 @@ variant；派生 Theme 通过直接 `Setter Property="Template"` 替换默认模
 `Style.Selector` 文本。解析使用 XML attribute 结构，不从 AXAML 文本正则匹配。Selector 的 owner scope、`/template/`
 边界和状态组合由架构规范、控件主题 review 与运行时 selector 测试保证。
 
+`SelectorRoute` 自身使用受限语法验证，不调用 Avalonia runtime parser：route 必须从 `/template/` 或 `>` 开始，并由
+“combinator + `.semantic-*` class”成对组成；禁止空格 descendant、类型、Name、`PART_*`、属性 selector 和其他 token；
+最后一个 class 必须等于该 Part 的 `SelectorClass`。这项验证只处理公开 route 元数据，不解析任意 AXAML Selector。
+
 `BasedOn` 只解析显式 `{StaticResource {x:Type ...}}`。字符串 key、运行时资源选择或自定义 markup extension 无法静态解析，
 声明方必须提供可分析的叶子模板或 typed `BasedOn`。
 
@@ -238,7 +331,7 @@ OverlayPopupHost。
 模板内 Popup 的 marker 按正常模板节点分析。Popup 内容由运行时创建时使用 `RuntimeCreated=true`，并由测试证明：
 
 - `TemplatedParent` 或 StyleHost 链连接到正确 owner。
-- owner-scoped Selector 可以命中。
+- 生成 Semantic Style 的 owner-scoped Selector 可以命中。
 - Popup 关闭和重新打开后 marker 保持一致。
 
 ### 4.5 ItemContainer
@@ -252,7 +345,7 @@ recycle 和 owner 切换后的实际 marker。
 
 | ID | Severity | 触发条件 |
 | --- | --- | --- |
-| `ATOMUIGEN020` | Error | Control/Part 声明形态、名称、path、class、cardinality 或 customization 非法。 |
+| `ATOMUIGEN020` | Error | Control/Part 声明形态、名称、path、class、route、cardinality 或 customization 非法。 |
 | `ATOMUIGEN021` | Error | 同一 Control 中 Part name、path 或 selector class 重复。 |
 | `ATOMUIGEN022` | Error | `ContractType` 不是 public `StyledElement`。 |
 | `ATOMUIGEN023` | Error | `SelectorAndTheme` 的 public get/set `ControlTheme` 属性契约非法。 |
@@ -262,6 +355,13 @@ recycle 和 owner 切换后的实际 marker。
 | `ATOMUIGEN027` | Error | Control 声明了静态 Part，但没有适用的可分析 ControlTemplate。 |
 | `ATOMUIGEN028` | Error | 同一模板节点同时声明了多个 Semantic Part marker。 |
 | `ATOMUIGEN029` | Error | 已声明 Part 的 `Classes.semantic-*` marker 不是静态 `true`。 |
+| `ATOMUIGEN030` | Error | 生成 Style 的完整 CLR identity 与另一生成候选、当前程序集已有类型或 canonical XML namespace 下可见的引用程序集 public 类型冲突。 |
+
+生成 Style 的完整 CLR identity（程序集、namespace、type name）必须在当前 compilation 和可见 AtomUI Control 包中唯一。
+同一 XML namespace 下出现不可区分的 public Style type、同一 owner 内生成名称冲突，或已有用户类型占用生成 identity 时，
+生成器必须报告 `ATOMUIGEN030` 并阻断受影响 Control 的 Semantic manifest、常量和 Style 输出；不能静默改名、覆盖或生成
+第二个 alias。引用程序集只有同时通过 canonical XML namespace 导出同名 public 类型时才构成 AXAML identity 冲突；
+未公开类型或未映射到 canonical XML namespace 的同名 CLR 类型不误报。
 
 同一 Control identity 的包级冲突由 Core `ControlPackageRegistration` 和 `ThemeManagerBuilder` 在启动注册边界拒绝。
 控件文档与 descriptor 的一致性由文档 review 和文档验证流程负责，当前 Generator 不解析 Markdown。
@@ -304,8 +404,9 @@ Semantic 声明和 Theme AdditionalFiles 在增量管线中分别收集，再按
 - 不使用 `Assembly.GetTypes()`。
 - 不使用 `Activator.CreateInstance()` 创建 descriptor 或 Theme。
 - 不通过 `PropertyInfo` 查找 Theme property。
-- 不在运行时解析 selector class 或 Part path。
+- 不在运行时解析 selector class、Part path 或 `SelectorRoute` 字符串。
 - ContractType identity 由编译期 symbol 产生。
+- 生成 Style 直接使用 `typeof(OwnerControl)`、静态构造函数和 Fluent Selector 调用，不依赖反射激活。
 - 包级入口直接注册静态 descriptor。
 - 第三方 Control 包使用同一 Generator，不提供反射 fallback。
 
@@ -316,20 +417,24 @@ Generator 项目仍以 Analyzer 方式引用，不参与应用 NativeAOT publish
 Control 文档以生成 descriptor 和真实 ControlTemplate 为事实源维护 Semantic Parts 表，不得根据 descriptor 发明
 Abstract AXAML Structure。当前 Semantic Part Generator 不读取 Markdown 或生成 LLMS 文档。
 
-Gallery Semantic Preview 使用 descriptor 展示 Part 名称、selector、ContractType 和 cardinality。预览工具可以使用
+Gallery Semantic Preview 使用 descriptor 展示 Part 名称、StyleType、selector route、ContractType 和 cardinality。代码示例
+优先生成 owner 外层 Style 与 `StyleType` 的嵌套用法，不根据 `RuntimeCreated` 猜测 Selector。预览工具可以使用
 public VisualTree API 查找已实例化 `.semantic-*` marker；该查找只属于开发工具，不进入 Control 运行时。
 
 ## 9. 验证要求
 
 生成器测试至少覆盖：
 
-1. 合法声明和确定性输出。
+1. 合法声明、StyleType 命名和确定性输出。
 2. 重复名称、非法 class 和 ContractType 错误。
 3. Single、Optional、Multiple marker 数量。
 4. 多 ControlTemplate 和 Desktop/Browser variant。
 5. Selector-only 与 SelectorAndTheme 的差异。
 6. 现有 `ControlThemeSemanticPartDescriptor` 关联。
-7. Popup、runtime-created Part 和 item container 元数据。
+7. Popup、runtime-created Part、显式 route 和 item container 元数据。
 8. 旧 Core 引用下保持四参数 package registration 的兼容路径。
-9. 包级注册、生成顺序与 NativeAOT 友好输出。
+9. 包级注册、生成 Style、XML namespace 映射、生成顺序与 NativeAOT 友好输出。
 10. 静态 class property marker、字面量兼容 marker，以及 false/dynamic marker 的 `ATOMUIGEN029` 诊断。
+11. 静态 Part 默认 route、RuntimeCreated 缺失 route、非法 route token 和 route 末尾 class 不一致的 `ATOMUIGEN020` 诊断。
+12. `Nesting()`、多段 `/template/`、`Child()` 的 Fluent Selector 生成结果，以及 owner selector 由外层 Style 提供的约束。
+13. `x:SetterTargetType` 显式保留、StyleType identity 冲突和 canonical XML namespace 去重。

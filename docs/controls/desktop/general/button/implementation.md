@@ -88,11 +88,11 @@ Button 在静态构造中注册属性、伪类和主题关联，在实例构造�
 共享 Button ControlTheme 的三个 Button ControlTemplate 都为 `PART_ButtonIcon` 与 `PART_LoadingIcon` 添加
 `Classes.semantic-icon="True"`，并为 `PART_ContentPresenter` 添加 `Classes.semantic-content="True"`。这些 marker 是
 静态 AXAML，不在 `OnApplyTemplate` 中查找、补写或同步。该写法属于 AtomUI 模板作者约定；应用仍通过
-`.semantic-icon` 和 `.semantic-content` Selector 消费 Part。
+Button owner Style 中的 `ButtonIconStyle` 和 `ButtonContentStyle` 消费 Part。
 
-Button 与 DropdownButton 模板都必须让 `PART_ButtonIcon` 与 `PART_LoadingIcon` 通过 `TemplateBinding` 绑定
-`IconWidth`、`IconHeight`。统一尺寸数据流使用 Button 自身属性；局部
-视觉覆盖使用 `.semantic-icon`，包含 Setter 时由 `x:SetterTargetType="Control"` 提供编译类型。应用不得依赖
+两个图标节点继续通过 `TemplateBinding` 绑定 `IconWidth`、`IconHeight`。统一尺寸数据流使用 Button 自身属性；局部
+视觉覆盖使用 `ButtonIconStyle`，包含 Setter 时由 `x:SetterTargetType="Control"` 提供编译类型。应用不得复制
+`/template/ .semantic-icon` route，也不得依赖
 `Control.semantic-icon`、`:is(Control).semantic-icon`、两个 `PART_*` 名称或 internal 实现类型。
 
 维护顺序应遵守控件代码规范：

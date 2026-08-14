@@ -502,7 +502,7 @@ owner、Part 名称和职责摘要，`implementation.md` 只保留 descriptor、
 AtomUI 的 semantic 文档描述 AXAML、ControlTemplate、运行时组合结构、Template Part、伪类、状态流和 Token 语义，不描述 Web DOM。
 
 `Semantic Parts` 正式文档统一采用按 public owner 和 Part 分组的“字段 / 值”两列表格，不再新增横向宽表。
-每个 Part 必须单独成组，表格必须完整保留 `Owner`、`Part`、`Selector`、`ContractType`、`Cardinality`、
+每个 Part 必须单独成组，表格必须完整保留 `Owner`、`Part`、`Selector`、`SelectorRoute`、`ContractType`、`Cardinality`、
 `Customization`、`CrossVisualRoot`、`RuntimeCreated`、`AtomUI 节点`、`职责`、`相关 API`、`相关 Token` 和 `稳定性`；
 不能为了缩短表格而省略类型、数量或运行时边界。
 
@@ -516,6 +516,7 @@ AtomUI 的 semantic 文档描述 AXAML、ControlTemplate、运行时组合结构
 | Owner | `Button` |
 | Part | `content` |
 | Selector | `.semantic-content` |
+| SelectorRoute | `/template/ .semantic-content` |
 | ContractType | `ContentPresenter` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
@@ -533,6 +534,8 @@ AtomUI 的 semantic 文档描述 AXAML、ControlTemplate、运行时组合结构
 - `Part` 是语义名，不一定等于 Template Part 名。
 - `Owner` 必须是实际声明 descriptor 的 public 控件；同一控件目录存在多个 public owner 时逐项区分。
 - `Selector` 必须与生成式 Semantic Part descriptor 一致；`root` 不添加 `.semantic-root`。
+- `SelectorRoute` 必须与 descriptor 一致；root 写“不适用”。静态根模板 Part 通常为
+  `/template/ .semantic-*`，`RuntimeCreated=true` 必须记录完整 owner-relative route。
 - `ContractType` 是 marker 节点必须兼容的最低稳定 public 类型，也是 Semantic Style 的
   `x:SetterTargetType`；它不作为 `.semantic-*` selector 的类型前缀。
 - 用户示例必须把 Part 身份写成 `.semantic-*`。包含 Setter 时显式写
@@ -554,7 +557,8 @@ Part 表之后必须逐 Part 说明：
 - 适合定制的属性，以及布局型 Setter 需要验证的 owner 尺寸、shape、裁剪和 Measure/Arrange 边界。
 - 伪类、属性状态、替代实现与 cardinality 的关系。
 - 哪些内部节点、Name、`PART_*`、用户内容子树或子 ControlTemplate 明确不属于该 Part。
-- Selector 示例使用 owner、一个 `/template/` 和 `.semantic-*`，并以 `x:SetterTargetType` 提供类型上下文。
+- Selector 示例使用 owner 与 descriptor 的完整 `SelectorRoute`，并以 `x:SetterTargetType` 提供类型上下文。复杂 Part 可以
+  包含多个 `/template/` 和 `>`；不得用普通 logical descendant 缩写 route。
 - 删除、改名、类型收窄、cardinality 变化和模板替换时的兼容性与验证要求。
 
 LLMS 生成器优先从 `semantic-part.md` 读取 `Semantic Parts` 表。为支持现有控件渐进迁移，缺少该文件时可以回退读取

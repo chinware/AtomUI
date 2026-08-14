@@ -69,6 +69,6 @@ internal static class SemanticPartModelBuilder
             result.Add(declaration.WithParts(validParts));
         }
 
-        return result;
+        return new SemanticPartStyleTypeValidator(compilation, reportDiagnostic).Validate(result);
     }
 }

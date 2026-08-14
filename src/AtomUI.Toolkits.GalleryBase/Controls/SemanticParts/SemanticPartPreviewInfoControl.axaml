@@ -10,7 +10,7 @@
             <atom:TextBlock Text="{gallery:SemanticPartPreviewLangResource PartDetailsTitle}"
                             FontWeight="SemiBold" />
             <Grid ColumnDefinitions="Auto,*"
-                  RowDefinitions="Auto,Auto,Auto,Auto"
+                  RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
                   ColumnSpacing="16"
                   RowSpacing="8">
                 <atom:TextBlock Grid.Row="0"
@@ -27,32 +27,56 @@
 
                 <atom:TextBlock Grid.Row="1"
                                 Grid.Column="0"
-                                Text="{gallery:SemanticPartPreviewLangResource ContractTypeLabel}"
+                                Text="{gallery:SemanticPartPreviewLangResource SelectorRouteLabel}"
                                 VerticalAlignment="Center"
                                 Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
                 <atom:TextBlock Grid.Row="1"
                                 Grid.Column="1"
-                                Text="{Binding ContractType}"
+                                Text="{Binding SelectorRoute}"
                                 FontFamily="monospace"
                                 VerticalAlignment="Center"
                                 TextWrapping="Wrap" />
 
                 <atom:TextBlock Grid.Row="2"
                                 Grid.Column="0"
-                                Text="{gallery:SemanticPartPreviewLangResource CardinalityLabel}"
+                                Text="{gallery:SemanticPartPreviewLangResource ContractTypeLabel}"
                                 VerticalAlignment="Center"
                                 Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
                 <atom:TextBlock Grid.Row="2"
                                 Grid.Column="1"
+                                Text="{Binding ContractType}"
+                                FontFamily="monospace"
+                                VerticalAlignment="Center"
+                                TextWrapping="Wrap" />
+
+                <atom:TextBlock Grid.Row="3"
+                                Grid.Column="0"
+                                Text="{gallery:SemanticPartPreviewLangResource StyleTypeLabel}"
+                                VerticalAlignment="Center"
+                                Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                <atom:TextBlock Grid.Row="3"
+                                Grid.Column="1"
+                                Text="{Binding StyleType}"
+                                FontFamily="monospace"
+                                VerticalAlignment="Center"
+                                TextWrapping="Wrap" />
+
+                <atom:TextBlock Grid.Row="4"
+                                Grid.Column="0"
+                                Text="{gallery:SemanticPartPreviewLangResource CardinalityLabel}"
+                                VerticalAlignment="Center"
+                                Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                <atom:TextBlock Grid.Row="4"
+                                Grid.Column="1"
                                 Text="{Binding Cardinality}"
                                 VerticalAlignment="Center" />
 
-                <atom:TextBlock Grid.Row="3"
+                <atom:TextBlock Grid.Row="5"
                                 Grid.Column="0"
                                 Text="{gallery:SemanticPartPreviewLangResource CustomizationLabel}"
                                 VerticalAlignment="Center"
                                 Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
-                <atom:TextBlock Grid.Row="3"
+                <atom:TextBlock Grid.Row="5"
                                 Grid.Column="1"
                                 Text="{Binding Customization}"
                                 VerticalAlignment="Center" />

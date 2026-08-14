@@ -173,7 +173,8 @@ public class SemanticPartTargetResolverTests
                     null,
                     false,
                     null,
-                    true)
+                    true,
+                    "> .semantic-item")
             ]);
     }
 

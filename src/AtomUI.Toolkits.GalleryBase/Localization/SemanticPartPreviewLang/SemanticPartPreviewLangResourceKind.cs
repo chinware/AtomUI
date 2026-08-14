@@ -2,7 +2,7 @@ using AtomUI.Localization;
 
 namespace AtomUI.Toolkits.GalleryBase.Localization;
 
-[LanguageCatalog(ContractVersion = 2)]
+[LanguageCatalog(ContractVersion = 3)]
 public enum SemanticPartPreviewLangResourceKind
 {
     ExamplesTabLabel,
@@ -18,5 +18,7 @@ public enum SemanticPartPreviewLangResourceKind
     RuntimeCreatedTag,
     RootFallbackDescription,
     PartFallbackDescription,
-    PartDetailsTitle
+    PartDetailsTitle,
+    SelectorRouteLabel,
+    StyleTypeLabel
 }

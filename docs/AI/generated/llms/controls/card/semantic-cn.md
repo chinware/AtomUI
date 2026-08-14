@@ -16,6 +16,8 @@
 | Owner | `Card` |
 | Part | `root` |
 | Selector | Card 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
 | ContractType | `Card` |
 | Cardinality | `Single` |
 | Customization | `Root` |
@@ -34,6 +36,8 @@
 | Owner | `Card` |
 | Part | `header` |
 | Selector | `.semantic-header` |
+| SelectorRoute | `/template/ .semantic-header` |
+| Style Type | `CardHeaderStyle` |
 | ContractType | `DashedBorder` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
@@ -52,6 +56,8 @@
 | Owner | `Card` |
 | Part | `title` |
 | Selector | `.semantic-title` |
+| SelectorRoute | `/template/ .semantic-title` |
+| Style Type | `CardTitleStyle` |
 | ContractType | `ContentPresenter` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
@@ -70,6 +76,8 @@
 | Owner | `Card` |
 | Part | `extra` |
 | Selector | `.semantic-extra` |
+| SelectorRoute | `/template/ .semantic-extra` |
+| Style Type | `CardExtraStyle` |
 | ContractType | `ContentPresenter` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
@@ -88,6 +96,8 @@
 | Owner | `Card` |
 | Part | `cover` |
 | Selector | `.semantic-cover` |
+| SelectorRoute | `/template/ .semantic-cover` |
+| Style Type | `CardCoverStyle` |
 | ContractType | `Border` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
@@ -106,6 +116,8 @@
 | Owner | `Card` |
 | Part | `body` |
 | Selector | `.semantic-body` |
+| SelectorRoute | `/template/ .semantic-body` |
+| Style Type | `CardBodyStyle` |
 | ContractType | `Border` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
@@ -124,6 +136,8 @@
 | Owner | `Card` |
 | Part | `actions` |
 | Selector | `.semantic-actions` |
+| SelectorRoute | `/template/ .semantic-actions` |
+| Style Type | `CardActionsStyle` |
 | ContractType | `TemplatedControl` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
@@ -144,6 +158,8 @@
 | Owner | `CardMetaContent` |
 | Part | `root` |
 | Selector | CardMetaContent 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
 | ContractType | `CardMetaContent` |
 | Cardinality | `Single` |
 | Customization | `Root` |
@@ -162,6 +178,8 @@
 | Owner | `CardMetaContent` |
 | Part | `section` |
 | Selector | `.semantic-section` |
+| SelectorRoute | `/template/ .semantic-section` |
+| Style Type | `CardMetaContentSectionStyle` |
 | ContractType | `Control` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
@@ -180,6 +198,8 @@
 | Owner | `CardMetaContent` |
 | Part | `avatar` |
 | Selector | `.semantic-avatar` |
+| SelectorRoute | `/template/ .semantic-avatar` |
+| Style Type | `CardMetaContentAvatarStyle` |
 | ContractType | `ContentPresenter` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
@@ -198,6 +218,8 @@
 | Owner | `CardMetaContent` |
 | Part | `title` |
 | Selector | `.semantic-title` |
+| SelectorRoute | `/template/ .semantic-title` |
+| Style Type | `CardMetaContentTitleStyle` |
 | ContractType | `ContentPresenter` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
@@ -216,6 +238,8 @@
 | Owner | `CardMetaContent` |
 | Part | `description` |
 | Selector | `.semantic-description` |
+| SelectorRoute | `/template/ .semantic-description` |
+| Style Type | `CardMetaContentDescriptionStyle` |
 | ContractType | `ContentPresenter` |
 | Cardinality | `Single` |
 | Customization | `Selector` |

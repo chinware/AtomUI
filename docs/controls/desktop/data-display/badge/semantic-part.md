@@ -18,6 +18,8 @@ Badge 的整体设计见 [Badge 桌面版架构设计](overview.md)，真实 Ado
 | Owner | `CountBadge` |
 | Part | `root` |
 | Selector | CountBadge 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
 | ContractType | `CountBadge` |
 | Cardinality | `Single` |
 | Customization | `Root` |
@@ -36,6 +38,8 @@ Badge 的整体设计见 [Badge 桌面版架构设计](overview.md)，真实 Ado
 | Owner | `CountBadge` |
 | Part | `indicator` |
 | Selector | `.semantic-indicator` |
+| SelectorRoute | `> .semantic-scope-indicator /template/ .semantic-indicator` |
+| Style Type | `CountBadgeIndicatorStyle` |
 | ContractType | `Control` |
 | Cardinality | `Optional` |
 | Customization | `Selector` |
@@ -56,6 +60,8 @@ Badge 的整体设计见 [Badge 桌面版架构设计](overview.md)，真实 Ado
 | Owner | `DotBadge` |
 | Part | `root` |
 | Selector | DotBadge 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
 | ContractType | `DotBadge` |
 | Cardinality | `Single` |
 | Customization | `Root` |
@@ -74,6 +80,8 @@ Badge 的整体设计见 [Badge 桌面版架构设计](overview.md)，真实 Ado
 | Owner | `DotBadge` |
 | Part | `indicator` |
 | Selector | `.semantic-indicator` |
+| SelectorRoute | `> .semantic-scope-indicator /template/ .semantic-indicator` |
+| Style Type | `DotBadgeIndicatorStyle` |
 | ContractType | `Control` |
 | Cardinality | `Optional` |
 | Customization | `Selector` |
@@ -94,6 +102,8 @@ Badge 的整体设计见 [Badge 桌面版架构设计](overview.md)，真实 Ado
 | Owner | `RibbonBadge` |
 | Part | `root` |
 | Selector | RibbonBadge 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
 | ContractType | `RibbonBadge` |
 | Cardinality | `Single` |
 | Customization | `Root` |
@@ -112,6 +122,8 @@ Badge 的整体设计见 [Badge 桌面版架构设计](overview.md)，真实 Ado
 | Owner | `RibbonBadge` |
 | Part | `indicator` |
 | Selector | `.semantic-indicator` |
+| SelectorRoute | `> .semantic-indicator` |
+| Style Type | `RibbonBadgeIndicatorStyle` |
 | ContractType | `Control` |
 | Cardinality | `Optional` |
 | Customization | `Selector` |
@@ -130,6 +142,8 @@ Badge 的整体设计见 [Badge 桌面版架构设计](overview.md)，真实 Ado
 | Owner | `RibbonBadge` |
 | Part | `content` |
 | Selector | `.semantic-content` |
+| SelectorRoute | `> .semantic-indicator /template/ .semantic-content` |
+| Style Type | `RibbonBadgeContentStyle` |
 | ContractType | `Avalonia.Controls.TextBlock` |
 | Cardinality | `Optional` |
 | Customization | `Selector` |
@@ -216,39 +230,41 @@ content 表示 Ribbon 内唯一文本展示区域，ContractType 为 `TextBlock`
 
 ## 5. Selector 用法
 
-Badge 的非 root Part 不是 public owner 的 template child。应用级完整 Selector 使用 logical descendant，不使用 `/template/`：
+Badge 的 runtime adorner 是 public owner 的直接 logical child。用户通过生成的 Semantic Style 访问 Part；生成类型内部保留
+Count/Dot 的 `.semantic-scope-indicator` 与 Ribbon 的完整 route，用户不需要复制这些边界：
 
 ```xml
 <Application.Styles>
-    <Style Selector="atom|CountBadge .semantic-indicator"
-           x:SetterTargetType="Control">
-        <Setter Property="Opacity" Value="0.85" />
+    <Style Selector="atom|CountBadge">
+        <atom:CountBadgeIndicatorStyle x:SetterTargetType="Control">
+            <Setter Property="Opacity" Value="0.85" />
+        </atom:CountBadgeIndicatorStyle>
     </Style>
 
-    <Style Selector="atom|RibbonBadge .semantic-content"
-           x:SetterTargetType="TextBlock">
-        <Setter Property="FontWeight" Value="SemiBold" />
+    <Style Selector="atom|RibbonBadge">
+        <atom:RibbonBadgeContentStyle x:SetterTargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </atom:RibbonBadgeContentStyle>
     </Style>
 </Application.Styles>
 ```
 
-单实例 Style 可以放在 owner 的 `Styles` 中，并直接使用 class-only Selector：
+按实例或业务状态限定时，把 class 放在 owner selector 上；生成 Style 仍然由 owner 类型和 descriptor route 保证作用域：
 
 ```xml
-<atom:DotBadge Status="Success">
-    <atom:DotBadge.Styles>
-        <Style Selector=".semantic-indicator"
-               x:SetterTargetType="Control">
-            <Setter Property="Opacity" Value="0.9" />
-        </Style>
-    </atom:DotBadge.Styles>
-</atom:DotBadge>
+<Style Selector="atom|DotBadge.semantic-custom[Status=Success]">
+    <atom:DotBadgeIndicatorStyle x:SetterTargetType="Control">
+        <Setter Property="Opacity" Value="0.9" />
+    </atom:DotBadgeIndicatorStyle>
+</Style>
 ```
 
 不得使用以下 Selector：
 
 - `atom|CountBadge /template/ .semantic-indicator`：runtime Adorner 不是 CountBadge template child。
+- `atom|CountBadge .semantic-indicator`：logical descendant 会穿透 `DecoratedTarget` 中嵌套的其他 Badge owner。
 - `Control.semantic-indicator`、`:is(Control).semantic-indicator` 或 `TextBlock.semantic-content`。
+- 直接复制 runtime adorner 的完整 route 作为用户主路径；route 只属于 descriptor 与生成 Style 的实现元数据。
 - internal Adorner 类型、`PART_*`、当前布局容器或 `AdornerLayer` 子节点顺序。
 
 ## 6. 状态与数量语义
@@ -279,8 +295,8 @@ Semantic marker 不改变 focus、hit testing、automation owner、可访问名�
 
 ## 8. 兼容性与验证
 
-删除或重命名 Part、修改 selector class、收窄 `ContractType`、改变 cardinality/cross-root/runtime 语义，或者破坏 runtime
-logical/style owner，均属于公共主题契约变更。
+删除或重命名 Part、修改 selector class 或 selector route、收窄 `ContractType`、改变 cardinality/cross-root/runtime 语义，
+或者破坏 runtime logical/style owner，均属于公共主题契约变更。
 
 验证至少覆盖：
 
@@ -288,7 +304,7 @@ logical/style owner，均属于公共主题契约变更。
 - Count/Dot standalone、target mode、显示隐藏、退出动效和 detach 后 marker 数量。
 - Count/Dot target mode 的 visual parent 为 `AdornerLayer`，logical/style owner 仍为对应 Badge owner。
 - Dot 两套模板实现同一 indicator；Ribbon indicator/content 同步创建和释放。
-- owner-scoped logical descendant Selector 与 class-only 实例 Style 均可命中。
+- owner-scoped 生成 Style 在 Count/Dot target mode 与 Ribbon inline visual 中均可命中；descriptor route 只作为生成与诊断依据。
 - 默认主题不消费 `.semantic-*`，Control 包不扫描 VisualTree 或查询 runtime registry。
 - Gallery 只把当前 owner 对应的具体 runtime Adorner作为 additional root，不把共享 `AdornerLayer` 整体加入 Preview。
 - Generator 静态输出和 NativeAOT 路径不依赖反射或动态代码。

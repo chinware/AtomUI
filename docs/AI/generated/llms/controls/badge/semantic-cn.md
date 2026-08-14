@@ -15,6 +15,8 @@
 | Owner | `CountBadge` |
 | Part | `root` |
 | Selector | CountBadge 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
 | ContractType | `CountBadge` |
 | Cardinality | `Single` |
 | Customization | `Root` |
@@ -33,6 +35,8 @@
 | Owner | `CountBadge` |
 | Part | `indicator` |
 | Selector | `.semantic-indicator` |
+| SelectorRoute | `> .semantic-scope-indicator /template/ .semantic-indicator` |
+| Style Type | `CountBadgeIndicatorStyle` |
 | ContractType | `Control` |
 | Cardinality | `Optional` |
 | Customization | `Selector` |
@@ -53,6 +57,8 @@
 | Owner | `DotBadge` |
 | Part | `root` |
 | Selector | DotBadge 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
 | ContractType | `DotBadge` |
 | Cardinality | `Single` |
 | Customization | `Root` |
@@ -71,6 +77,8 @@
 | Owner | `DotBadge` |
 | Part | `indicator` |
 | Selector | `.semantic-indicator` |
+| SelectorRoute | `> .semantic-scope-indicator /template/ .semantic-indicator` |
+| Style Type | `DotBadgeIndicatorStyle` |
 | ContractType | `Control` |
 | Cardinality | `Optional` |
 | Customization | `Selector` |
@@ -91,6 +99,8 @@
 | Owner | `RibbonBadge` |
 | Part | `root` |
 | Selector | RibbonBadge 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
 | ContractType | `RibbonBadge` |
 | Cardinality | `Single` |
 | Customization | `Root` |
@@ -109,6 +119,8 @@
 | Owner | `RibbonBadge` |
 | Part | `indicator` |
 | Selector | `.semantic-indicator` |
+| SelectorRoute | `> .semantic-indicator` |
+| Style Type | `RibbonBadgeIndicatorStyle` |
 | ContractType | `Control` |
 | Cardinality | `Optional` |
 | Customization | `Selector` |
@@ -127,6 +139,8 @@
 | Owner | `RibbonBadge` |
 | Part | `content` |
 | Selector | `.semantic-content` |
+| SelectorRoute | `> .semantic-indicator /template/ .semantic-content` |
+| Style Type | `RibbonBadgeContentStyle` |
 | ContractType | `Avalonia.Controls.TextBlock` |
 | Cardinality | `Optional` |
 | Customization | `Selector` |
@@ -273,7 +287,9 @@ Badge Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - Count/Dot 只有 `root/indicator`；Ribbon 只有 `root/indicator/content`。
 - Count/Dot `indicator` marker 位于所有适用 Adorner 模板的 `PART_MotionActor`；Ribbon indicator 位于 runtime Adorner，content 位于 `PART_LabelPart`。
 - 所有非 root Part 保持 `Optional + Selector + RuntimeCreated`；Count/Dot indicator 保持 `CrossVisualRoot=true`。
-- Badge public owner selector 使用 logical descendant，不使用 `/template/`、类型前缀 class 或 internal 类型。
+- Badge public owner selector 使用 descriptor 的 direct-child/template route，不使用 logical descendant、类型前缀 class 或
+  internal 类型。Count/Dot runtime adorner 必须携带 `.semantic-scope-indicator`；Ribbon adorner 自身携带
+  `.semantic-indicator`。
 - Count/Dot target mode 的 visual parent 与 logical/style owner 必须分离，detach 时对称清理。
 - Dot standalone 与 target 两套模板必须实现同一个 indicator marker 契约。
 - Ribbon 背景与折角继续由 Render 绘制，不为了 Semantic Part 新增视觉节点。

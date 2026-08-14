@@ -13,7 +13,9 @@
     <unit id="RootFallbackDescription"><segment><source>The control root.</source><target state="translated">控件根区域。</target></segment></unit>
     <unit id="RuntimeCreatedTag"><segment><source>Runtime-created</source><target state="translated">运行时创建</target></segment></unit>
     <unit id="SelectorLabel"><segment><source>Selector</source><target state="translated">选择器</target></segment></unit>
+    <unit id="SelectorRouteLabel"><segment><source>Selector route</source><target state="translated">选择器路径</target></segment></unit>
     <unit id="SemanticPartsTabLabel"><segment><source>Semantic Parts</source><target state="translated">语义部件</target></segment></unit>
     <unit id="StylingExampleTitle"><segment><source>Styling example</source><target state="translated">样式示例</target></segment></unit>
+    <unit id="StyleTypeLabel"><segment><source>Style type</source><target state="translated">样式类型</target></segment></unit>
   </file>
 </xliff>

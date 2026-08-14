@@ -4,14 +4,6 @@ using Avalonia.Controls;
 
 namespace AtomUI.Desktop.Controls;
 
-[SemanticPart(
-    "indicator",
-    SelectorClass = "semantic-indicator",
-    ContractType = typeof(Control),
-    Cardinality = SemanticPartCardinality.Optional,
-    CrossVisualRoot = true,
-    Since = "6.0",
-    RuntimeCreated = true)]
 public partial class DotBadge : AbstractDotBadge
 {
     public DotBadge()
@@ -23,6 +15,7 @@ public partial class DotBadge : AbstractDotBadge
         if (_dotBadgeAdorner is null)
         {
             _dotBadgeAdorner = new DotBadgeAdorner();
+            _dotBadgeAdorner.Classes.Add("semantic-scope-indicator");
             SetupTokenBindings();
             NotifyDecoratedTargetChanged();
             if (DotColor is not null)

@@ -19,7 +19,9 @@ internal sealed class SemanticPartPreviewItem : INotifyPropertyChanged
         Name            = descriptor.Name;
         Path            = descriptor.Path;
         Selector        = descriptor.SelectorClass is null ? "root" : $".{descriptor.SelectorClass}";
+        SelectorRoute   = descriptor.SelectorRoute ?? "root";
         ContractType    = descriptor.ContractType.Name;
+        StyleType       = descriptor.StyleType?.FullName ?? "-";
         Cardinality     = descriptor.Cardinality.ToString();
         Customization   = descriptor.Customization.ToString();
         Since           = descriptor.Since;
@@ -39,7 +41,11 @@ internal sealed class SemanticPartPreviewItem : INotifyPropertyChanged
 
     public string Selector { get; }
 
+    public string SelectorRoute { get; }
+
     public string ContractType { get; }
+
+    public string StyleType { get; }
 
     public string Cardinality { get; }
 

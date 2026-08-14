@@ -76,17 +76,6 @@ public enum ButtonVariant
     Link
 }
 
-[SemanticPart(
-    "icon",
-    SelectorClass = "semantic-icon",
-    ContractType = typeof(Control),
-    Cardinality = SemanticPartCardinality.Multiple,
-    Since = "6.0")]
-[SemanticPart(
-    "content",
-    SelectorClass = "semantic-content",
-    ContractType = typeof(ContentPresenter),
-    Since = "6.0")]
 [PseudoClasses(ButtonPseudoClass.IconOnly,
     ButtonPseudoClass.Loading,
     ButtonPseudoClass.IsDanger,

@@ -278,9 +278,9 @@ Theme 默认值矩阵：
 | 普通用户 icon、普通 loading icon、非 loading 的 icon-only 用户 icon | `IconSizeLG` | `IconSize` | `IconSizeSM` | `IconSize` |
 | `:icononly:loading` 的 loading icon | `OnlyIconSizeLG` | `OnlyIconSize` | `OnlyIconSizeSM` | `OnlyIconSize` |
 
-需要让两个图标实现共享同一尺寸和 loading 切换语义时，应用应设置 Button 的 `IconWidth`、`IconHeight`。仅需要局部视觉覆盖时，使用 `atom|Button /template/ .semantic-icon`，并以 `x:SetterTargetType="Control"` 提供 Setter 编译类型；不得使用 `Control.semantic-icon`、`:is(Control).semantic-icon`、`PART_ButtonIcon`、`PART_LoadingIcon` 或 internal 类型作为公共 selector。Button 本地尺寸值覆盖所有尺寸档与状态默认值，因此同一实例进入 loading 状态时不会丢失用户指定的宽高。
+需要让两个图标实现共享同一尺寸和 loading 切换语义时，应用应设置 Button 的 `IconWidth`、`IconHeight`。仅需要局部视觉覆盖时，在 Button owner Style 中嵌套 `ButtonIconStyle`，并以 `x:SetterTargetType="Control"` 提供 Setter 编译类型；不得复制 `/template/ .semantic-icon` route，也不得使用 `Control.semantic-icon`、`:is(Control).semantic-icon`、`PART_ButtonIcon`、`PART_LoadingIcon` 或 internal 类型作为公共 selector。Button 本地尺寸值覆盖所有尺寸档与状态默认值，因此同一实例进入 loading 状态时不会丢失用户指定的宽高。
 
-Gallery 的 Custom 尺寸示例继续优先在 Button selector 上设置 `IconWidth`、`IconHeight`，以证明统一 API owner 的数据流。展示 Semantic Part 定制时则使用 `.semantic-icon`，不定位两个内部 template part。
+Gallery 的 Custom 尺寸示例继续优先在 Button selector 上设置 `IconWidth`、`IconHeight`，以证明统一 API owner 的数据流。展示 Semantic Part 定制时则使用 `ButtonIconStyle`，不定位两个内部 template part。
 
 ## 9. 文档导航、LLMS 导出与验证策略
 

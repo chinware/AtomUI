@@ -77,19 +77,25 @@ public class GalleryBaseCatalogTests
         {
             languageManager.ChangeLanguage(LanguageTags.EnUS);
             localizer.Get(SemanticPartPreviewLangResourceKind.SelectorLabel).ShouldBe("Selector");
+            localizer.Get(SemanticPartPreviewLangResourceKind.SelectorRouteLabel).ShouldBe("Selector route");
             localizer.Get(SemanticPartPreviewLangResourceKind.ContractTypeLabel).ShouldBe("Contract type");
+            localizer.Get(SemanticPartPreviewLangResourceKind.StyleTypeLabel).ShouldBe("Style type");
             localizer.Get(SemanticPartPreviewLangResourceKind.CrossRootTag).ShouldBe("Cross visual root");
             localizer.Get(SemanticPartPreviewLangResourceKind.RuntimeCreatedTag).ShouldBe("Runtime-created");
 
             languageManager.ChangeLanguage(LanguageTags.ZhCN);
             localizer.Get(SemanticPartPreviewLangResourceKind.SelectorLabel).ShouldBe("选择器");
+            localizer.Get(SemanticPartPreviewLangResourceKind.SelectorRouteLabel).ShouldBe("选择器路径");
             localizer.Get(SemanticPartPreviewLangResourceKind.ContractTypeLabel).ShouldBe("契约类型");
+            localizer.Get(SemanticPartPreviewLangResourceKind.StyleTypeLabel).ShouldBe("样式类型");
             localizer.Get(SemanticPartPreviewLangResourceKind.CrossRootTag).ShouldBe("跨视觉根");
             localizer.Get(SemanticPartPreviewLangResourceKind.RuntimeCreatedTag).ShouldBe("运行时创建");
 
             languageManager.ChangeLanguage(LanguageTags.ZhTW);
             localizer.Get(SemanticPartPreviewLangResourceKind.SelectorLabel).ShouldBe("選擇器");
+            localizer.Get(SemanticPartPreviewLangResourceKind.SelectorRouteLabel).ShouldBe("選擇器路徑");
             localizer.Get(SemanticPartPreviewLangResourceKind.ContractTypeLabel).ShouldBe("契約類型");
+            localizer.Get(SemanticPartPreviewLangResourceKind.StyleTypeLabel).ShouldBe("樣式類型");
             localizer.Get(SemanticPartPreviewLangResourceKind.CrossRootTag).ShouldBe("跨視覺根");
             localizer.Get(SemanticPartPreviewLangResourceKind.RuntimeCreatedTag).ShouldBe("執行階段建立");
         }

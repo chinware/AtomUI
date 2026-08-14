@@ -20,7 +20,7 @@
   - Extend `GalleryShowCaseHost` to manage multiple independent previews in one deferred content root.
   - Add a full-width, deferred `v6.1.3` example that demonstrates owner-scoped Semantic Part styling for Count and Ribbon badges.
 - Tests
-  - Cover descriptor metadata, marker placement, logical descendant selectors, Adorner detach cleanup, deferred Gallery creation, and precise cross-root preview registration.
+  - Cover descriptor metadata, marker placement, complete owner-scoped selector routes, nested owner isolation, Adorner detach cleanup, deferred Gallery creation, and precise cross-root preview registration.
 
 ## 2026-06-26
 

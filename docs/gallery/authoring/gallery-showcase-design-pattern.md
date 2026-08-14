@@ -147,9 +147,9 @@ Examples 使用 `ShowCasePanel + ShowCaseItem`。标准页面中 `ShowCasePanel`
 - 不允许把演示控件直接写成 `ShowCaseItem.Content`。
 - 改造页面结构时不顺手调整示例控件数量、层级、默认值、文案或视觉布局。
 - 对已整理过的页面保留 snapshot 测试，确保示例内容不会被布局改造误改。
-- 普通示例不得依赖控件内部 `PART_*`、具体模板节点或连续跨越多个 `/template/` 边界。演示已发布
-  Semantic Part 时，允许使用“owner-scoped Control Selector + 单个 `/template/` + `.semantic-*`”结构，并必须通过
-  `x:SetterTargetType` 声明 Setter 类型上下文；具体 Part 的发布状态由控件 descriptor 与模板契约测试负责。
+- 普通示例不得依赖控件内部 `PART_*`、具体模板节点或自行推测模板边界。演示已发布 Semantic Part 时，必须使用
+  “owner-scoped Control Selector + 生成 Semantic Style”结构，并通过 `x:SetterTargetType` 声明 Setter 类型上下文；
+  复杂 `SelectorRoute` 由生成 Style 封装，只保留在 descriptor 技术元数据中，不能复制成用户主路径。
 
 ## API 与 Design Token
 

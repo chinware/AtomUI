@@ -140,9 +140,12 @@ Count 和 Dot 把 `indicator` 放在 MotionActor 上，使背景、文本或状�
 Avalonia 12 的 descendant selector 沿 `ILogical.LogicalParent` 向上匹配；`/template/` 精确读取目标节点的 `TemplatedParent`。Badge 的 runtime Adorner 不是 public owner 的 template child，其内部模板节点的 `TemplatedParent` 是 internal Adorner。因此完整 selector 使用：
 
 ```xml
-<Style Selector="atom|CountBadge .semantic-indicator"
-       x:SetterTargetType="Control" />
+<Style Selector="atom|CountBadge">
+    <atom:CountBadgeIndicatorStyle x:SetterTargetType="Control" />
+</Style>
 ```
+
+`CountBadgeIndicatorStyle` 封装 descriptor 的完整 owner-relative route；用户不得复制 logical descendant 或 Adorner 内部模板路径。
 
 CountBadge 和 DotBadge 的 target mode 必须同时维持：
 
@@ -248,7 +251,9 @@ Badge Semantic Part 的默认运行时成本仅包括 descriptor 静态数据和
 - Count/Dot 只有 `root/indicator`；Ribbon 只有 `root/indicator/content`。
 - Count/Dot `indicator` marker 位于所有适用 Adorner 模板的 `PART_MotionActor`；Ribbon indicator 位于 runtime Adorner，content 位于 `PART_LabelPart`。
 - 所有非 root Part 保持 `Optional + Selector + RuntimeCreated`；Count/Dot indicator 保持 `CrossVisualRoot=true`。
-- Badge public owner selector 使用 logical descendant，不使用 `/template/`、类型前缀 class 或 internal 类型。
+- Badge public owner selector 使用 descriptor 的 direct-child/template route，不使用 logical descendant、类型前缀 class 或
+  internal 类型。Count/Dot runtime adorner 必须携带 `.semantic-scope-indicator`；Ribbon adorner 自身携带
+  `.semantic-indicator`。
 - Count/Dot target mode 的 visual parent 与 logical/style owner 必须分离，detach 时对称清理。
 - Dot standalone 与 target 两套模板必须实现同一个 indicator marker 契约。
 - Ribbon 背景与折角继续由 Render 绘制，不为了 Semantic Part 新增视觉节点。

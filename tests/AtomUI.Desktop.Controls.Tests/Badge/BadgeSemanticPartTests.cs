@@ -18,6 +18,11 @@ public class BadgeSemanticPartTests
 {
     private const string IndicatorClass = "semantic-indicator";
     private const string ContentClass = "semantic-content";
+    private const string TargetIndicatorSelectorRoute =
+        "> .semantic-scope-indicator /template/ .semantic-indicator";
+    private const string RibbonIndicatorSelectorRoute = "> .semantic-indicator";
+    private const string RibbonContentSelectorRoute =
+        "> .semantic-indicator /template/ .semantic-content";
 
     static BadgeSemanticPartTests()
     {
@@ -54,6 +59,10 @@ public class BadgeSemanticPartTests
         indicator.CrossVisualRoot.ShouldBe(ownerType != typeof(Desktop.Controls.RibbonBadge));
         indicator.RuntimeCreated.ShouldBeTrue();
         indicator.Since.ShouldBe("6.0");
+        indicator.SelectorRoute.ShouldBe(
+            ownerType == typeof(Desktop.Controls.RibbonBadge)
+                ? RibbonIndicatorSelectorRoute
+                : TargetIndicatorSelectorRoute);
 
         var content = descriptor.Parts.SingleOrDefault(static part => part.Name == "content");
         if (ownerType == typeof(Desktop.Controls.RibbonBadge))
@@ -67,6 +76,7 @@ public class BadgeSemanticPartTests
             content.CrossVisualRoot.ShouldBeFalse();
             content.RuntimeCreated.ShouldBeTrue();
             content.Since.ShouldBe("6.0");
+            content.SelectorRoute.ShouldBe(RibbonContentSelectorRoute);
         }
         else
         {
@@ -122,7 +132,12 @@ public class BadgeSemanticPartTests
         var badge = CreateTargetBadge(badgeKind);
         badge.Classes.Add("semantic-owner");
         badge.Styles.Add(new Style(selector =>
-            selector.OfType(badge.GetType()).Class("semantic-owner").Descendant().Class(IndicatorClass))
+            selector.OfType(badge.GetType())
+                    .Class("semantic-owner")
+                    .Child()
+                    .Class("semantic-scope-indicator")
+                    .Template()
+                    .Class(IndicatorClass))
         {
             Setters =
             {
@@ -137,7 +152,118 @@ public class BadgeSemanticPartTests
                                .Single(control => control.Classes.Contains(IndicatorClass));
 
         ((ILogical)adorner).LogicalParent.ShouldBeSameAs(badge);
+        adorner.Classes.ShouldContain("semantic-scope-indicator");
         indicator.Tag.ShouldBe("owner-style");
+    }
+
+    [Theory]
+    [InlineData("count")]
+    [InlineData("dot")]
+    public void Target_Mode_Route_Does_Not_Style_A_Nested_Badge_Indicator(string badgeKind)
+    {
+        var nestedBadge = CreateTargetBadge(badgeKind);
+        Control outerBadge = badgeKind switch
+        {
+            "count" => new Desktop.Controls.CountBadge
+            {
+                Count = 8,
+                IsMotionEnabled = false,
+                DecoratedTarget = nestedBadge
+            },
+            "dot" => new Desktop.Controls.DotBadge
+            {
+                Status = AtomUI.Controls.Commons.DotBadgeStatus.Success,
+                IsMotionEnabled = false,
+                DecoratedTarget = nestedBadge
+            },
+            _ => throw new ArgumentOutOfRangeException(nameof(badgeKind), badgeKind, null)
+        };
+        outerBadge.Classes.Add("semantic-owner");
+        outerBadge.Styles.Add(new Style(selector =>
+            selector.OfType(outerBadge.GetType())
+                    .Class("semantic-owner")
+                    .Child()
+                    .Class("semantic-scope-indicator")
+                    .Template()
+                    .Class(IndicatorClass))
+        {
+            Setters =
+            {
+                new Setter(Control.TagProperty, "outer-indicator")
+            }
+        });
+
+        using var context = ShowInAdornerHost(outerBadge, width: 180, height: 140);
+        var outerIndicator = FindNativeAdorner(outerBadge)
+            .GetVisualDescendants()
+            .OfType<Control>()
+            .Single(control => control.Classes.Contains(IndicatorClass));
+        var nestedIndicator = FindNativeAdorner(nestedBadge)
+            .GetVisualDescendants()
+            .OfType<Control>()
+            .Single(control => control.Classes.Contains(IndicatorClass));
+
+        outerIndicator.Tag.ShouldBe("outer-indicator");
+        nestedIndicator.Tag.ShouldBeNull();
+    }
+
+    [Fact]
+    public void Ribbon_Routes_Match_Only_The_Owner_Indicator_And_Content()
+    {
+        var nested = new Desktop.Controls.RibbonBadge
+        {
+            Text = "Nested",
+            DecoratedTarget = new Border { Width = 80, Height = 40 }
+        };
+        var badge = new Desktop.Controls.RibbonBadge
+        {
+            Text = "Outer",
+            DecoratedTarget = nested
+        };
+        badge.Classes.Add("semantic-owner");
+        badge.Styles.Add(new Style(selector =>
+            selector.OfType<Desktop.Controls.RibbonBadge>()
+                    .Class("semantic-owner")
+                    .Child()
+                    .Class(IndicatorClass))
+        {
+            Setters =
+            {
+                new Setter(Control.TagProperty, "outer-indicator")
+            }
+        });
+        badge.Styles.Add(new Style(selector =>
+            selector.OfType<Desktop.Controls.RibbonBadge>()
+                    .Class("semantic-owner")
+                    .Child()
+                    .Class(IndicatorClass)
+                    .Template()
+                    .Class(ContentClass))
+        {
+            Setters =
+            {
+                new Setter(Control.TagProperty, "outer-content")
+            }
+        });
+
+        using var context = ShowInAdornerHost(badge, width: 240, height: 160);
+        var outerIndicator = badge.GetVisualChildren()
+                                  .OfType<Control>()
+                                  .Single(control => control.Classes.Contains(IndicatorClass));
+        var outerContent = outerIndicator.GetVisualDescendants()
+                                         .OfType<TextBlock>()
+                                         .Single(control => control.Classes.Contains(ContentClass));
+        var nestedIndicator = nested.GetVisualChildren()
+                                    .OfType<Control>()
+                                    .Single(control => control.Classes.Contains(IndicatorClass));
+        var nestedContent = nestedIndicator.GetVisualDescendants()
+                                           .OfType<TextBlock>()
+                                           .Single(control => control.Classes.Contains(ContentClass));
+
+        outerIndicator.Tag.ShouldBe("outer-indicator");
+        outerContent.Tag.ShouldBe("outer-content");
+        nestedIndicator.Tag.ShouldBeNull();
+        nestedContent.Tag.ShouldBeNull();
     }
 
     [Theory]

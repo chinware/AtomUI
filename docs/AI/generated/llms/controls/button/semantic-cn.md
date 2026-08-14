@@ -15,6 +15,8 @@ Button 公开 `root`、`icon` 和 `content` 三个 Semantic Part。Part 名称�
 | Owner | `Button` |
 | Part | `root` |
 | Selector | Button 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
 | ContractType | `Button` |
 | Cardinality | `Single` |
 | Customization | `Root` |
@@ -33,6 +35,8 @@ Button 公开 `root`、`icon` 和 `content` 三个 Semantic Part。Part 名称�
 | Owner | `Button` |
 | Part | `icon` |
 | Selector | `.semantic-icon` |
+| SelectorRoute | `/template/ .semantic-icon` |
+| Style Type | `ButtonIconStyle` |
 | ContractType | `Control` |
 | Cardinality | `Multiple` |
 | Customization | `Selector` |
@@ -51,6 +55,8 @@ Button 公开 `root`、`icon` 和 `content` 三个 Semantic Part。Part 名称�
 | Owner | `Button` |
 | Part | `content` |
 | Selector | `.semantic-content` |
+| SelectorRoute | `/template/ .semantic-content` |
+| Style Type | `ButtonContentStyle` |
 | ContractType | `ContentPresenter` |
 | Cardinality | `Single` |
 | Customization | `Selector` |

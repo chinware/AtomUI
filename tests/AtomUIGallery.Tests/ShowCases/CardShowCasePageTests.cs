@@ -75,9 +75,9 @@ public class CardShowCasePageTests
 
         source.ShouldContain("SourceKey=\"card-semantic-part\"");
         source.ShouldContain("BadgeText=\"v6.1.3\"");
-        source.ShouldContain("atom|Card.semantic-card /template/ .semantic-header");
-        source.ShouldContain("atom|Card.semantic-function[StyleVariant=Outlined] /template/ .semantic-title");
-        source.ShouldContain("atom|CardMetaContent.semantic-meta /template/ .semantic-description");
+        source.ShouldContain("<atom:CardHeaderStyle x:SetterTargetType=\"atom:DashedBorder\">");
+        source.ShouldContain("<atom:CardTitleStyle x:SetterTargetType=\"ContentPresenter\">");
+        source.ShouldContain("<atom:CardMetaContentDescriptionStyle x:SetterTargetType=\"ContentPresenter\">");
     }
 
     [Fact]
@@ -85,8 +85,9 @@ public class CardShowCasePageTests
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Card/Views/CardShowCase.axaml");
 
-        source.ShouldContain("atom|Card.semantic-card /template/ .semantic-header");
-        source.ShouldContain("atom|Card.semantic-card /template/ .semantic-body");
+        source.ShouldContain("<atom:CardHeaderStyle x:SetterTargetType=\"atom:DashedBorder\">");
+        source.ShouldContain("<atom:CardBodyStyle x:SetterTargetType=\"Border\">");
+        source.ShouldNotContain("/template/ .semantic-");
         CountOccurrences(source, "Classes=\"semantic-card ").ShouldBe(2);
 
         source.ShouldContain("Classes=\"semantic-card semantic-object\"");
