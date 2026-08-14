@@ -4,13 +4,49 @@
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `QRCode` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+QRCode 公开 `root` 和 `cover` 两个 Semantic Part。二维码 bitmap、中心图标、刷新按钮和状态内容内部节点不属于公共 Part。
+
+### 1.1 `QRCode`
+
+#### `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `QRCode` |
+| Part | `root` |
+| Selector | QRCode 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
+| ContractType | `QRCode` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | QRCode owner |
+| 职责 | 二维码方形根区域，承载背景、边框、圆角、Padding 和整体布局。 |
+| 相关 API | `Size`、`IsBordered` 及继承的 root 表面属性 |
+| 相关 Token | SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `cover`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `QRCode` |
+| Part | `cover` |
+| Selector | `.semantic-cover` |
+| SelectorRoute | `/template/ .semantic-cover` |
+| Style Type | `QRCodeCoverStyle` |
+| ContractType | `Border` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | 状态 overlay `Border` |
+| 职责 | 覆盖完整 root，承载 Loading、Expired、Scanned 状态背景与内容。 |
+| 相关 API | `Status`、三组状态内容 API、`RefreshRequested` |
+| 相关 Token | `QRCodeMaskBackgroundColor`、SharedToken |
+| 稳定性 | stable since 6.0 |
 
 ## Abstract AXAML Structure
 
@@ -18,30 +54,37 @@
 
 ```xml
 <PixelAlignedBorder Name="Frame">
-    <Panel>
-        <Panel>
-            <Image />
-            <Border Name="ImageFrame">
-                <Image />
-            </Border>
-        </Panel>
-        <Border Name="Mask" />
-        <Panel Name="LoadingLayout">
-            <Spin />
-            <ContentPresenter />
-        </Panel>
-        <Panel Name="ExpiredLayout">
-            <StackPanel>
-                <TextBlock />
-                <Button Name="PART_RefreshButton" />
-            </StackPanel>
-            <ContentPresenter />
-        </Panel>
-        <Panel Name="ScannedLayout">
-            <TextBlock />
-            <ContentPresenter />
-        </Panel>
-    </Panel>
+    <Grid>
+        <Border Name="ContentFrame">
+            <Viewbox Name="QRCodeSurfaceScaler">
+                <Grid>
+                    <Image />
+                    <Border Name="ImageFrame">
+                        <Image />
+                    </Border>
+                </Grid>
+            </Viewbox>
+        </Border>
+        <Border Name="Cover">
+            <Panel>
+                <Panel Name="LoadingLayout">
+                    <Spin />
+                    <ContentPresenter />
+                </Panel>
+                <Panel Name="ExpiredLayout">
+                    <StackPanel>
+                        <TextBlock />
+                        <Button Name="PART_RefreshButton" />
+                    </StackPanel>
+                    <ContentPresenter />
+                </Panel>
+                <Panel Name="ScannedLayout">
+                    <TextBlock />
+                    <ContentPresenter />
+                </Panel>
+            </Panel>
+        </Border>
+    </Grid>
 </PixelAlignedBorder>
 ```
 
@@ -55,23 +98,26 @@
 QRCode
   -> QRCode (control theme, QRCodeTheme.axaml)
      -> PixelAlignedBorder#Frame (template-stable)
-        -> Panel (template-stable)
-           -> Panel (template-stable)
-              -> Image (template-stable)
-              -> Border#ImageFrame (template-stable)
-                 -> Image (template-stable)
-           -> Border#Mask (template-stable)
-           -> Panel#LoadingLayout (template-stable)
-              -> Spin (template-stable)
-              -> ContentPresenter (internal-observable)
-           -> Panel#ExpiredLayout (template-stable)
-              -> StackPanel (template-stable)
-                 -> TextBlock (template-stable)
-                 -> Button#PART_RefreshButton (template-stable)
-              -> ContentPresenter (internal-observable)
-           -> Panel#ScannedLayout (template-stable)
-              -> TextBlock (template-stable)
-              -> ContentPresenter (internal-observable)
+        -> Grid (template-stable)
+           -> Border#ContentFrame (template-stable)
+              -> Viewbox#QRCodeSurfaceScaler (template-stable)
+                 -> Grid (template-stable)
+                    -> Image (template-stable)
+                    -> Border#ImageFrame (template-stable)
+                       -> Image (template-stable)
+           -> Border#Cover (template-stable)
+              -> Panel (template-stable)
+                 -> Panel#LoadingLayout (template-stable)
+                    -> Spin (template-stable)
+                    -> ContentPresenter (internal-observable)
+                 -> Panel#ExpiredLayout (template-stable)
+                    -> StackPanel (template-stable)
+                       -> TextBlock (template-stable)
+                       -> Button#PART_RefreshButton (template-stable)
+                    -> ContentPresenter (internal-observable)
+                 -> Panel#ScannedLayout (template-stable)
+                    -> TextBlock (template-stable)
+                    -> ContentPresenter (internal-observable)
 ```
 
 ### 协作节点
@@ -81,9 +127,11 @@ QRCode
 | `QRCode` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `QRCode` | control theme | `QRCodeTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `Bitmap`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `ExpiredContent` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Frame` | template node (PixelAlignedBorder) | `QRCodeTheme.axaml` | QRCode | `Background`, `Bitmap`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `ExpiredContent` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Panel` | template node (Panel) | `QRCodeTheme.axaml` | QRCode | `Bitmap`, `ExpiredContent`, `ExpiredContentTemplate`, `Icon`, `IconBgColor`, `IconSize` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ContentFrame` | template node (Border) | `QRCodeTheme.axaml` | QRCode | `Bitmap`, `Icon`, `IconBgColor`, `IconSize`, `Padding`, `Size` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `QRCodeSurfaceScaler` | template node (Viewbox) | `QRCodeTheme.axaml` | QRCode | `Bitmap`, `Icon`, `IconBgColor`, `IconSize`, `Size` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ImageFrame` | template node (Border) | `QRCodeTheme.axaml` | QRCode | `Icon`, `IconBgColor`, `IconSize` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Mask` | template node (Border) | `QRCodeTheme.axaml` | QRCode | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Cover` | template node (Border) | `QRCodeTheme.axaml` | QRCode | `ExpiredContent`, `ExpiredContentTemplate`, `LoadingContent`, `LoadingContentTemplate`, `ScannedContent`, `ScannedContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Panel` | template node (Panel) | `QRCodeTheme.axaml` | QRCode | `ExpiredContent`, `ExpiredContentTemplate`, `LoadingContent`, `LoadingContentTemplate`, `ScannedContent`, `ScannedContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `LoadingLayout` | template node (Panel) | `QRCodeTheme.axaml` | QRCode | `LoadingContent`, `LoadingContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentPresenter` | template node (ContentPresenter) | `QRCodeTheme.axaml` | QRCode | `LoadingContent`, `LoadingContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ExpiredLayout` | template node (Panel) | `QRCodeTheme.axaml` | QRCode | `ExpiredContent`, `ExpiredContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -96,14 +144,24 @@ QRCode
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
 | 内容与数据 | `ExpiredContent`、`ExpiredContentTemplate`、`Icon`、`IconBgColor`、`IconSize`、`LoadingContent`、`LoadingContentTemplate`、`ScannedContent`、`ScannedContentTemplate`、`Value` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 交互与状态 | `IsBordered`、`Status` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 视觉与布局 | `Color`、`Size` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
+| 交互与状态 | `IsBordered`、`Status`、`RefreshRequested` | 表达边框模式、状态遮罩和过期状态下的刷新请求。 |
+| 视觉与布局 | `Color`、`Size` 及继承的 root 表面属性 | `Size` 统一拥有二维码方形边长；颜色、背景、边框、圆角和 Padding 形成 root 视觉。 |
 | 其他稳定入口 | `EccLevel` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
 ## Pseudo Classes
 
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | loading/async、input/value、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | QRCode Token + ControlTheme。 |
+QRCode 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
+
+核心 public surface 按语义分组维护：
+
+| 契约组 | 代表成员 | 维护含义 |
+| --- | --- | --- |
+| 内容与数据 | `ExpiredContent`、`ExpiredContentTemplate`、`Icon`、`IconBgColor`、`IconSize`、`LoadingContent`、`LoadingContentTemplate`、`ScannedContent`、`ScannedContentTemplate`、`Value` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
+| 交互与状态 | `IsBordered`、`Status`、`RefreshRequested` | 表达边框模式、状态遮罩和过期状态下的刷新请求。 |
+| 视觉与布局 | `Color`、`Size` 及继承的 root 表面属性 | `Size` 统一拥有二维码方形边长；颜色、背景、边框、圆角和 Padding 形成 root 视觉。 |
+| 其他稳定入口 | `EccLevel` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+
+`RefreshRequested` 是 QRCode 的控件专属 public 事件，由默认过期状态中的 `PART_RefreshButton` 触发。自定义
 
 ## State Flow
 
@@ -119,10 +177,11 @@ Public API / inherited command / item source / user input
 
 状态维护规则：
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- loading/async、input/value、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+- `Active` 隐藏 cover；`Loading`、`Expired`、`Scanned` 显示同一个 cover 节点，并在节点内部切换对应状态内容。
+- `Value`、`Color`、`EccLevel` 或 `Size` 变化时重新生成透明背景 bitmap，不替换 Semantic target；`Background` 只更新 root 表面。
+- `Icon` 只控制二维码中心图标内容，不增加 Semantic Part，也不改变 root/cover 数量。
+- 模板重套用时重新接入 `PART_RefreshButton`，先移除旧按钮订阅，再回放当前 public API 状态。
+- `Size` 是二维码外框与绘制源的统一边长；Semantic Style 不建立第二套 Width/Height 尺寸 owner。
 
 ## Theme and Token Boundaries
 
@@ -132,7 +191,8 @@ QRCode 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的�
 | --- | --- |
 | `QRCodeTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-QRCode 使用 `QRCodeToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 loading/async、input/value、visual option 运行时状态。
+QRCode 使用 `QRCodeToken` 作为控件 Token scope。Token 只表达文字色和 cover 背景色等视觉语义，不承载 `Status`、`Value` 或 bitmap
+运行时状态。
 
 主题维护规则：
 
@@ -155,7 +215,7 @@ QRCode Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 - 不擅自新增、删除、重命名或改变 public/protected API、Avalonia 属性、事件和默认值。
 - 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
-- 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
+- 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级；Semantic 示例必须保持与对应公开上游示例一致。
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
 - 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
@@ -166,6 +226,8 @@ QRCode Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 维护 QRCode 时不得破坏：
 
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
+- `root`、`cover` 的名称、selector、ContractType、cardinality 和静态 marker 身份。
+- `Size` 对外框与 bitmap 的统一方形尺寸 ownership。
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。

@@ -31,7 +31,7 @@ QRCode 的设计语言围绕控件职责、可观察状态和主题契约组织�
 | --- | --- | --- |
 | 产品语义 | 控件在界面中承担的稳定职责。 | QRCode 是 AtomUI 桌面控件体系中的二维码控件，用于把文本或业务字符串渲染为可扫描二维码。 |
 | 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `ExpiredContent`、`ExpiredContentTemplate`、`Icon`、`IconBgColor`、`IconSize`、`LoadingContent`、`LoadingContentTemplate`、`ScannedContent` 等 10 项。 |
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | loading/async、input/value、visual option。 |
+| 状态反馈 | public API、内部状态和模板节点如何形成用户可感知反馈。 | `Active`、`Loading`、`Expired`、`Scanned` 与刷新请求。 |
 | 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | QRCode Token + ControlTheme。 |
 
 ## 公共 API
@@ -43,11 +43,12 @@ QRCode 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
 | 内容与数据 | `ExpiredContent`、`ExpiredContentTemplate`、`Icon`、`IconBgColor`、`IconSize`、`LoadingContent`、`LoadingContentTemplate`、`ScannedContent`、`ScannedContentTemplate`、`Value` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 交互与状态 | `IsBordered`、`Status` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 视觉与布局 | `Color`、`Size` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
+| 交互与状态 | `IsBordered`、`Status`、`RefreshRequested` | 表达边框模式、状态遮罩和过期状态下的刷新请求。 |
+| 视觉与布局 | `Color`、`Size` 及继承的 root 表面属性 | `Size` 统一拥有二维码方形边长；颜色、背景、边框、圆角和 Padding 形成 root 视觉。 |
 | 其他稳定入口 | `EccLevel` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
-当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
+`RefreshRequested` 是 QRCode 的控件专属 public 事件，由默认过期状态中的 `PART_RefreshButton` 触发。自定义
+`ExpiredContent` 不会自动转发该事件，调用方需要在自定义内容中显式处理自己的命令或事件。
 
 主要公开类型与枚举：
 
@@ -63,10 +64,15 @@ QRCode 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 当前未抽取到控件专属伪类；主题主要依赖 Avalonia 标准伪类、模板绑定和内部 StyledProperty。
 
+QRCode 公开 `root` 和 `cover` 两个 Semantic Part。`root` 是 QRCode owner；`cover` 是状态遮罩与状态内容共同占用的静态 overlay
+区域。完整 Selector、ContractType、cardinality 和定制边界见 [QRCode Semantic Part 契约](semantic-part.md)。二维码 bitmap、中心图标、
+刷新按钮和各状态内部内容不单独公开为 Semantic Part。
+
 ## 事件与命令
 
 QRCode 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
-当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
+`RefreshRequested` 是 QRCode 的控件专属 public 事件，由默认过期状态中的 `PART_RefreshButton` 触发。自定义
+`ExpiredContent` 不会自动转发该事件，调用方需要在自定义内容中显式处理自己的命令或事件。
 
 ## 使用示例
 
@@ -76,7 +82,7 @@ QRCode 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml:35`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml:55`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -92,7 +98,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 带 Icon 的例子
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml:50`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml:70`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -104,7 +110,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 不同的状态
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml:62`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml:82`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -118,7 +124,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 自定义颜色
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml:137`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml:157`
 
 Gallery key：`ExamplesContent` / item `5`
 
@@ -146,10 +152,11 @@ Public API / inherited command / item source / user input
 
 状态维护规则：
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- loading/async、input/value、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+- `Active` 隐藏 cover；`Loading`、`Expired`、`Scanned` 显示同一个 cover 节点，并在节点内部切换对应状态内容。
+- `Value`、`Color`、`EccLevel` 或 `Size` 变化时重新生成透明背景 bitmap，不替换 Semantic target；`Background` 只更新 root 表面。
+- `Icon` 只控制二维码中心图标内容，不增加 Semantic Part，也不改变 root/cover 数量。
+- 模板重套用时重新接入 `PART_RefreshButton`，先移除旧按钮订阅，再回放当前 public API 状态。
+- `Size` 是二维码外框与绘制源的统一边长；Semantic Style 不建立第二套 Width/Height 尺寸 owner。
 
 ## 主题与 Design Token
 
@@ -159,7 +166,8 @@ QRCode 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的�
 | --- | --- |
 | `QRCodeTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-QRCode 使用 `QRCodeToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 loading/async、input/value、visual option 运行时状态。
+QRCode 使用 `QRCodeToken` 作为控件 Token scope。Token 只表达文字色和 cover 背景色等视觉语义，不承载 `Status`、`Value` 或 bitmap
+运行时状态。
 
 主题维护规则：
 
@@ -190,7 +198,7 @@ QRCode Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
-- 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
+- 状态切换不得重新生成 Semantic marker、cover 或状态内容容器；只有二维码绘制输入变化时才重新生成 bitmap。
 
 ## 源码索引
 
@@ -201,6 +209,7 @@ QRCode Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - `src/AtomUI.Desktop.Controls/QRCode/Localization/zh-CN.xlf`
 - `src/AtomUI.Desktop.Controls/QRCode/Localization/zh-TW.xlf`
 - `src/AtomUI.Desktop.Controls/QRCode/QRCode.cs`
+- `src/AtomUI.Desktop.Controls/QRCode/QRCode.SemanticParts.cs`
 - `src/AtomUI.Desktop.Controls/QRCode/QRCodeToken.cs`
 - `src/AtomUI.Desktop.Controls/QRCode/Themes/QRCodeTheme.axaml`
 - `src/AtomUI.Controls/QRCode/AbstractQRCode.cs`
@@ -217,6 +226,7 @@ QRCode Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 - 源设计文档：`docs/controls/desktop/data-display/qr-code/overview.md`
 - 实现文档：`docs/controls/desktop/data-display/qr-code/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-display/qr-code/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-display/qr-code/token.md`
 - 变更记录：`docs/controls/desktop/data-display/qr-code/changelog.md`
 - 语义结构：`./semantic-cn.md`

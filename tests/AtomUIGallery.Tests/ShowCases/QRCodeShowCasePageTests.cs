@@ -1,5 +1,13 @@
+using AtomUI.Toolkits.GalleryBase.Controls;
+using AtomUIGallery.ShowCases.QRCode;
+using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
+using ReactiveUI;
 using Shouldly;
 using Xunit;
+using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace AtomUIGallery.Tests.ShowCases;
 
@@ -23,7 +31,8 @@ public class QRCodeShowCasePageTests
         source.ShouldNotContain("Tag=\"Examples\"");
         source.ShouldNotContain("Tag=\"Api\"");
         source.ShouldNotContain("Tag=\"DesignToken\"");
-        source.ShouldContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldContain("<gallery:GalleryShowCaseHost");
+        source.ShouldNotContain("<gallery:GalleryStickyTabsHost");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
         source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
@@ -47,6 +56,126 @@ public class QRCodeShowCasePageTests
     }
 
     [Fact]
+    public void QRCode_ShowCase_Declares_The_Official_Deferred_Semantic_Preview_And_Style_Example()
+    {
+        var source = ReadRepoFile(
+            "controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml");
+        var semanticSource = ExtractShowCaseItem(source, "qr-code-semantic-part");
+
+        source.ShouldContain("<gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>");
+        source.ShouldContain("Name=\"QRCodeSemanticPreview\"");
+        source.ShouldContain("SemanticOwnerType=\"{x:Type atom:QRCode}\"");
+        source.ShouldContain("Name=\"QRCodeSemanticOwner\"");
+        source.ShouldContain("Value=\"https://ant.design\"");
+        source.ShouldContain("Status=\"Loading\"");
+        CountOccurrences(source, "<gallery:SemanticPartDescription").ShouldBe(2);
+        source.ShouldContain("Path=\"root\"");
+        source.ShouldContain("Path=\"cover\"");
+
+        semanticSource.ShouldContain("SourceKey=\"qr-code-semantic-part\"");
+        semanticSource.ShouldContain("BadgeText=\"6.0.0\"");
+        semanticSource.ShouldContain("QRCodeShowCaseLangResource SemanticPartStyleTitle");
+        semanticSource.ShouldContain("QRCodeShowCaseLangResource SemanticPartStyleDescription");
+        semanticSource.ShouldContain("Orientation=\"Horizontal\"");
+        semanticSource.ShouldContain("Spacing=\"16\"");
+        CountOccurrences(semanticSource, "Value=\"https://ant.design/\"").ShouldBe(2);
+        CountOccurrences(semanticSource, "Size=\"160\"").ShouldBe(2);
+        semanticSource.ShouldContain("Classes=\"semantic-style-class semantic-object-styles\"");
+        semanticSource.ShouldContain("Classes=\"semantic-style-class semantic-function-styles\"");
+        semanticSource.ShouldContain(
+            "Icon=\"{SvgImage avares://AtomUIGallery/Assets/AvatarShowCase/AntDesign.svg}\"");
+        semanticSource.ShouldContain("<Setter Property=\"BorderBrush\" Value=\"#1890FF\" />");
+        semanticSource.ShouldContain("<Setter Property=\"BorderBrush\" Value=\"#FF4D4F\" />");
+        semanticSource.ShouldContain("<Setter Property=\"BorderThickness\" Value=\"2\" />");
+        semanticSource.ShouldContain("<Setter Property=\"CornerRadius\" Value=\"8\" />");
+        semanticSource.ShouldContain("<Setter Property=\"Padding\" Value=\"16\" />");
+        semanticSource.ShouldContain("<Setter Property=\"Background\" Value=\"#1A1890FF\" />");
+        semanticSource.ShouldContain("<Setter Property=\"Background\" Value=\"#1AFF4D4F\" />");
+        semanticSource.ShouldNotContain("ATOMUI-LOGO");
+        semanticSource.ShouldNotContain("/template/ .semantic-");
+        semanticSource.ShouldNotContain("QRCodeCoverStyle");
+    }
+
+    [Fact]
+    public void QRCode_Semantic_Style_Copy_Uses_AtomUI_Semantic_Part_Terminology()
+    {
+        var localizationRoot = Path.GetDirectoryName(GetRepoFile(
+            "controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Localization/en-US.xlf"))
+            .ShouldNotBeNull();
+        var localizationFiles = Directory.GetFiles(localizationRoot, "*.xlf");
+
+        localizationFiles.Length.ShouldBe(4);
+        foreach (var localizationFile in localizationFiles)
+        {
+            var source = File.ReadAllText(localizationFile);
+            source.ShouldContain("<source>Custom Semantic Part styling</source>");
+            source.ShouldContain(
+                "<source>Use owner-scoped style selectors to customize QRCode's published Semantic Parts.</source>");
+            source.ShouldNotContain("semantic dom", Case.Insensitive);
+            source.ShouldNotContain("classNames");
+            source.ShouldNotContain("objects/functions");
+        }
+    }
+
+    [Fact]
+    public void QRCode_Semantic_Preview_Is_Materialized_Only_After_The_Tab_Is_Selected()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+
+        var page = new QRCodeShowCase
+        {
+            DataContext = new QRCodeViewModel(new TestScreen())
+        };
+
+        ShowInWindow(page, 1280, 900, () =>
+        {
+            page.GetVisualDescendants().OfType<SemanticPartPreview>().ShouldBeEmpty();
+            page.GetVisualDescendants()
+                .OfType<AtomUI.Desktop.Controls.QRCode>()
+                .ShouldNotContain(static qrCode => qrCode.Name == "QRCodeSemanticOwner");
+
+            var host = page.GetVisualDescendants().OfType<GalleryShowCaseHost>().Single();
+            host.SelectedTab = GalleryShowCaseTab.SemanticParts;
+            Dispatcher.UIThread.RunJobs();
+
+            page.GetVisualDescendants().OfType<SemanticPartPreview>().ShouldHaveSingleItem();
+            page.GetVisualDescendants()
+                .OfType<AtomUI.Desktop.Controls.QRCode>()
+                .Count(static qrCode => qrCode.Name == "QRCodeSemanticOwner")
+                .ShouldBe(1);
+
+            host.SelectedTab = GalleryShowCaseTab.Examples;
+            Dispatcher.UIThread.RunJobs();
+            page.GetVisualDescendants().OfType<SemanticPartPreview>().ShouldBeEmpty();
+        });
+    }
+
+    [Fact]
+    public void QRCode_Semantic_Style_Example_Materializes_The_Official_Svg_Icon()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+
+        var page = new QRCodeShowCase
+        {
+            DataContext = new QRCodeViewModel(new TestScreen())
+        };
+
+        ShowInWindow(page, 1280, 900, () =>
+        {
+            var item = page.GetVisualDescendants()
+                           .OfType<ShowCaseItem>()
+                           .Single(static item => item.SourceKey == "qr-code-semantic-part");
+
+            Should.NotThrow(item.MaterializeDeferredContent);
+            var qrCodes = item.GetVisualDescendants()
+                              .OfType<AtomUI.Desktop.Controls.QRCode>()
+                              .ToArray();
+            qrCodes.Length.ShouldBe(2);
+            qrCodes[1].Icon.ShouldNotBeNull();
+        });
+    }
+
+    [Fact]
     public void QRCode_ShowCase_Examples_Match_Approved_Control_Demo_Content()
     {
         var source   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml");
@@ -59,15 +188,31 @@ public class QRCodeShowCasePageTests
     private static string ExtractQRCodeExampleItems(string source)
     {
         const string firstItemMarker  = "<gallery:ShowCaseItem";
-        const string panelCloseMarker = "</gallery:ShowCasePanel>";
-
         var firstItemStart = source.IndexOf(firstItemMarker, StringComparison.Ordinal);
         firstItemStart.ShouldBeGreaterThanOrEqualTo(0);
 
-        var panelCloseStart = source.IndexOf(panelCloseMarker, firstItemStart, StringComparison.Ordinal);
+        const string semanticItemMarker = "SourceKey=\"qr-code-semantic-part\"";
+        var semanticItemStart = source.IndexOf(semanticItemMarker, firstItemStart, StringComparison.Ordinal);
+        semanticItemStart.ShouldBeGreaterThan(firstItemStart);
+        var panelCloseStart = source.LastIndexOf(firstItemMarker, semanticItemStart, StringComparison.Ordinal);
         panelCloseStart.ShouldBeGreaterThan(firstItemStart);
 
         return source[firstItemStart..panelCloseStart];
+    }
+
+    private static string ExtractShowCaseItem(string source, string sourceKey)
+    {
+        var sourceKeyIndex = source.IndexOf($"SourceKey=\"{sourceKey}\"", StringComparison.Ordinal);
+        sourceKeyIndex.ShouldBeGreaterThanOrEqualTo(0);
+
+        var itemStart = source.LastIndexOf("<gallery:ShowCaseItem", sourceKeyIndex, StringComparison.Ordinal);
+        itemStart.ShouldBeGreaterThanOrEqualTo(0);
+
+        const string itemEndMarker = "</gallery:ShowCaseItem>";
+        var itemEnd = source.IndexOf(itemEndMarker, sourceKeyIndex, StringComparison.Ordinal);
+        itemEnd.ShouldBeGreaterThan(sourceKeyIndex);
+
+        return source[itemStart..(itemEnd + itemEndMarker.Length)];
     }
 
     private static string NormalizeMarkup(string source)
@@ -114,5 +259,36 @@ public class QRCodeShowCasePageTests
         }
 
         return Path.Combine(AppContext.BaseDirectory, relativePath);
+    }
+
+    private static void ShowInWindow(Control content, double width, double height, Action assertion)
+    {
+        var visualLayerManager = new VisualLayerManager
+        {
+            EnableAdornerLayer = true,
+            Child = content
+        };
+        var window = new AvaloniaWindow
+        {
+            Content = visualLayerManager,
+            Width = width,
+            Height = height
+        };
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            assertion();
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    private sealed class TestScreen : IScreen
+    {
+        public RoutingState Router { get; } = new();
     }
 }
