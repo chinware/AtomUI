@@ -55,7 +55,7 @@ internal class GalleryShowCaseHeaderToken : AbstractControlDesignToken
         MetadataLabelWidth        = EffectiveGlobalToken.SizeUnit * 21;
         MetadataValueWidth        = EffectiveGlobalToken.SizeUnit * 50;
         MetadataLineHeight        = EffectiveGlobalToken.SizeUnit * 5 + 2;
-        MetadataValueFontFamily   = FontFamily.Parse("Consolas");
+        MetadataValueFontFamily   = EffectiveGlobalToken.FontFamily ?? FontFamily.Default;
     }
 
 }

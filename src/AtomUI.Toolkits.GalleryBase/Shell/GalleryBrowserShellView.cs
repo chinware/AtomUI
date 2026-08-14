@@ -11,6 +11,9 @@ namespace AtomUI.Toolkits.GalleryBase.Shell;
 
 public class GalleryBrowserShellView : UserControl, IScreen, IMediaBreakAwareControl, IDisposable
 {
+    internal static readonly StyledProperty<MediaBreakPoint> MediaBreakPointProperty =
+        MediaBreakAwareControlProperty.MediaBreakPointProperty.AddOwner<GalleryBrowserShellView>();
+
     private readonly GalleryWorkspaceViewModel _workspaceViewModel;
     private readonly GalleryShellView          _shellView;
     private readonly bool                      _isBrowserMediaBreakpointsEnabled;
@@ -18,7 +21,7 @@ public class GalleryBrowserShellView : UserControl, IScreen, IMediaBreakAwareCon
 
     public RoutingState Router => _workspaceViewModel.Router;
 
-    public MediaBreakPoint MediaBreakPoint { get; private set; } = MediaBreakPoint.Large;
+    public MediaBreakPoint MediaBreakPoint => GetValue(MediaBreakPointProperty);
 
     public event EventHandler<MediaBreakPointChangedEventArgs>? MediaBreakPointChanged;
 
@@ -28,11 +31,18 @@ public class GalleryBrowserShellView : UserControl, IScreen, IMediaBreakAwareCon
     {
         _workspaceViewModel = workspaceFactory(configuration);
         var navigationView = navigationViewFactory(_workspaceViewModel);
-        _shellView = new GalleryShellView(configuration, navigationView, Router);
         _isBrowserMediaBreakpointsEnabled = configuration.Platform.EnableBrowserMediaBreakpoints;
+        if (!_isBrowserMediaBreakpointsEnabled)
+        {
+            SetCurrentValue(MediaBreakPointProperty, MediaBreakPoint.ExtraLarge);
+        }
+        _shellView = new GalleryShellView(configuration,
+                                          navigationView,
+                                          Router,
+                                          _isBrowserMediaBreakpointsEnabled);
         if (_isBrowserMediaBreakpointsEnabled)
         {
-            _shellView.ContentHost.SizeChanged += HandleContentHostSizeChanged;
+            SizeChanged += HandleShellSizeChanged;
         }
 
         var visualLayerManager = new VisualLayerManager
@@ -57,10 +67,19 @@ public class GalleryBrowserShellView : UserControl, IScreen, IMediaBreakAwareCon
         _isDisposed = true;
         if (_isBrowserMediaBreakpointsEnabled)
         {
-            _shellView.ContentHost.SizeChanged -= HandleContentHostSizeChanged;
+            SizeChanged -= HandleShellSizeChanged;
         }
         _shellView.Dispose();
         _workspaceViewModel.Dispose();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        if (_isBrowserMediaBreakpointsEnabled && Bounds.Width > 0)
+        {
+            NotifyMediaBreakPointChanged(GalleryMediaBreakPointResolver.Resolve(Bounds.Width, this));
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -69,9 +88,9 @@ public class GalleryBrowserShellView : UserControl, IScreen, IMediaBreakAwareCon
         base.OnDetachedFromVisualTree(e);
     }
 
-    private void HandleContentHostSizeChanged(object? sender, SizeChangedEventArgs e)
+    private void HandleShellSizeChanged(object? sender, SizeChangedEventArgs e)
     {
-        NotifyMediaBreakPointChanged(ResolveMediaBreakPoint(e.NewSize.Width));
+        NotifyMediaBreakPointChanged(GalleryMediaBreakPointResolver.Resolve(e.NewSize.Width, this));
     }
 
     private void NotifyMediaBreakPointChanged(MediaBreakPoint breakPoint)
@@ -81,38 +100,8 @@ public class GalleryBrowserShellView : UserControl, IScreen, IMediaBreakAwareCon
             return;
         }
 
-        MediaBreakPoint = breakPoint;
+        SetCurrentValue(MediaBreakPointProperty, breakPoint);
         MediaBreakPointChanged?.Invoke(this, new MediaBreakPointChangedEventArgs(breakPoint));
-    }
-
-    private static MediaBreakPoint ResolveMediaBreakPoint(double width)
-    {
-        if (width >= (double)MediaBreakPoint.ExtraExtraLarge)
-        {
-            return MediaBreakPoint.ExtraExtraLarge;
-        }
-
-        if (width >= (double)MediaBreakPoint.ExtraLarge)
-        {
-            return MediaBreakPoint.ExtraLarge;
-        }
-
-        if (width >= (double)MediaBreakPoint.Large)
-        {
-            return MediaBreakPoint.Large;
-        }
-
-        if (width >= (double)MediaBreakPoint.Medium)
-        {
-            return MediaBreakPoint.Medium;
-        }
-
-        if (width >= (double)MediaBreakPoint.Small)
-        {
-            return MediaBreakPoint.Small;
-        }
-
-        return MediaBreakPoint.ExtraSmall;
     }
 
     [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(VisualLayerManager))]

@@ -68,74 +68,81 @@
                                              MinHeight="{gallery:GalleryShowCaseHeaderTokenResource MetadataMinHeight}"
                                              Padding="{gallery:GalleryShowCaseHeaderTokenResource MetadataPadding}"
                                              IsVisible="{TemplateBinding IsMetadataVisible}">
-                        <WrapPanel Name="PART_MetadataItems"
-                                   Orientation="Horizontal"
-                                   ItemSpacing="{gallery:GalleryShowCaseHeaderTokenResource MetadataItemSpacing}"
-                                   LineSpacing="{gallery:GalleryShowCaseHeaderTokenResource MetadataLineSpacing}"
-                                   VerticalAlignment="Center">
-                            <StackPanel Name="PART_NamespaceMetadataItem"
-                                        Orientation="Horizontal"
-                                        Spacing="{gallery:GalleryShowCaseHeaderTokenResource MetadataPairSpacing}"
-                                        VerticalAlignment="Center"
-                                        IsVisible="{TemplateBinding IsNamespaceVisible}">
-                                <atom:TextBlock Width="{TemplateBinding MetadataLabelWidth}"
-                                                Text="{gallery:GalleryShowCaseHeaderLangResource NamespaceLabel}"
+                        <StackPanel Name="PART_MetadataItems"
+                                    Spacing="{gallery:GalleryShowCaseHeaderTokenResource MetadataLineSpacing}"
+                                    VerticalAlignment="Center">
+                            <gallery:GalleryShowCaseMetadataRowPanel Name="PART_NamespaceMetadataItem"
+                                                                     LabelWidth="{TemplateBinding MetadataLabelWidth}"
+                                                                     ValueWidth="{TemplateBinding MetadataValueWidth}"
+                                                                     PairSpacing="{gallery:GalleryShowCaseHeaderTokenResource MetadataPairSpacing}"
+                                                                     HorizontalAlignment="Stretch"
+                                                                     VerticalAlignment="Center"
+                                                                     IsVisible="{TemplateBinding IsNamespaceVisible}">
+                                <atom:TextBlock Text="{gallery:GalleryShowCaseHeaderLangResource NamespaceLabel}"
+                                                FontFamily="{gallery:GalleryShowCaseHeaderTokenResource MetadataValueFontFamily}"
                                                 FontWeight="Bold"
                                                 LineHeight="{gallery:GalleryShowCaseHeaderTokenResource MetadataLineHeight}"
+                                                TextTrimming="CharacterEllipsis"
                                                 Foreground="{atom:SharedTokenResource ColorTextSecondary}"
                                                 VerticalAlignment="Center" />
-                                <atom:TextBlock Width="{TemplateBinding MetadataValueWidth}"
-                                                Text="{TemplateBinding Namespace}"
+                                <atom:TextBlock Text="{TemplateBinding Namespace}"
                                                 FontFamily="{gallery:GalleryShowCaseHeaderTokenResource MetadataValueFontFamily}"
+                                                HorizontalAlignment="Stretch"
                                                 LineHeight="{gallery:GalleryShowCaseHeaderTokenResource MetadataLineHeight}"
                                                 TextWrapping="NoWrap"
                                                 TextTrimming="CharacterEllipsis"
                                                 Foreground="{atom:SharedTokenResource ColorTextSecondary}"
                                                 VerticalAlignment="Center" />
-                            </StackPanel>
+                            </gallery:GalleryShowCaseMetadataRowPanel>
 
-                            <StackPanel Name="PART_PackageMetadataItem"
-                                        Orientation="Horizontal"
-                                        Spacing="{gallery:GalleryShowCaseHeaderTokenResource MetadataPairSpacing}"
-                                        VerticalAlignment="Center"
-                                        IsVisible="{TemplateBinding IsPackageVisible}">
-                                <atom:TextBlock Width="{TemplateBinding MetadataLabelWidth}"
-                                                Text="{gallery:GalleryShowCaseHeaderLangResource PackageLabel}"
+                            <gallery:GalleryShowCaseMetadataRowPanel Name="PART_PackageMetadataItem"
+                                                                     LabelWidth="{TemplateBinding MetadataLabelWidth}"
+                                                                     ValueWidth="{TemplateBinding MetadataValueWidth}"
+                                                                     PairSpacing="{gallery:GalleryShowCaseHeaderTokenResource MetadataPairSpacing}"
+                                                                     HorizontalAlignment="Stretch"
+                                                                     VerticalAlignment="Center"
+                                                                     IsVisible="{TemplateBinding IsPackageVisible}">
+                                <atom:TextBlock Text="{gallery:GalleryShowCaseHeaderLangResource PackageLabel}"
+                                                FontFamily="{gallery:GalleryShowCaseHeaderTokenResource MetadataValueFontFamily}"
                                                 FontWeight="Bold"
                                                 LineHeight="{gallery:GalleryShowCaseHeaderTokenResource MetadataLineHeight}"
+                                                TextTrimming="CharacterEllipsis"
                                                 Foreground="{atom:SharedTokenResource ColorTextSecondary}"
                                                 VerticalAlignment="Center" />
-                                <atom:TextBlock Width="{TemplateBinding MetadataValueWidth}"
-                                                Text="{TemplateBinding Package}"
+                                <atom:TextBlock Text="{TemplateBinding Package}"
                                                 FontFamily="{gallery:GalleryShowCaseHeaderTokenResource MetadataValueFontFamily}"
+                                                HorizontalAlignment="Stretch"
                                                 LineHeight="{gallery:GalleryShowCaseHeaderTokenResource MetadataLineHeight}"
                                                 TextWrapping="NoWrap"
                                                 TextTrimming="CharacterEllipsis"
                                                 Foreground="{atom:SharedTokenResource ColorTextSecondary}"
                                                 VerticalAlignment="Center" />
-                            </StackPanel>
+                            </gallery:GalleryShowCaseMetadataRowPanel>
 
-                            <StackPanel Name="PART_BaseClassMetadataItem"
-                                        Orientation="Horizontal"
-                                        Spacing="{gallery:GalleryShowCaseHeaderTokenResource MetadataPairSpacing}"
-                                        VerticalAlignment="Center"
-                                        IsVisible="{TemplateBinding IsBaseClassVisible}">
-                                <atom:TextBlock Width="{TemplateBinding MetadataLabelWidth}"
-                                                Text="{gallery:GalleryShowCaseHeaderLangResource BaseClassLabel}"
+                            <gallery:GalleryShowCaseMetadataRowPanel Name="PART_BaseClassMetadataItem"
+                                                                     LabelWidth="{TemplateBinding MetadataLabelWidth}"
+                                                                     ValueWidth="{TemplateBinding MetadataValueWidth}"
+                                                                     PairSpacing="{gallery:GalleryShowCaseHeaderTokenResource MetadataPairSpacing}"
+                                                                     HorizontalAlignment="Stretch"
+                                                                     VerticalAlignment="Center"
+                                                                     IsVisible="{TemplateBinding IsBaseClassVisible}">
+                                <atom:TextBlock Text="{gallery:GalleryShowCaseHeaderLangResource BaseClassLabel}"
+                                                FontFamily="{gallery:GalleryShowCaseHeaderTokenResource MetadataValueFontFamily}"
                                                 FontWeight="Bold"
                                                 LineHeight="{gallery:GalleryShowCaseHeaderTokenResource MetadataLineHeight}"
+                                                TextTrimming="CharacterEllipsis"
                                                 Foreground="{atom:SharedTokenResource ColorTextSecondary}"
                                                 VerticalAlignment="Center" />
-                                <atom:TextBlock Width="{TemplateBinding MetadataValueWidth}"
-                                                Text="{TemplateBinding BaseClass}"
+                                <atom:TextBlock Text="{TemplateBinding BaseClass}"
                                                 FontFamily="{gallery:GalleryShowCaseHeaderTokenResource MetadataValueFontFamily}"
+                                                HorizontalAlignment="Stretch"
                                                 LineHeight="{gallery:GalleryShowCaseHeaderTokenResource MetadataLineHeight}"
                                                 TextWrapping="NoWrap"
                                                 TextTrimming="CharacterEllipsis"
                                                 Foreground="{atom:SharedTokenResource ColorTextSecondary}"
                                                 VerticalAlignment="Center" />
-                            </StackPanel>
-                        </WrapPanel>
+                            </gallery:GalleryShowCaseMetadataRowPanel>
+                        </StackPanel>
                     </atom:PixelAlignedBorder>
                 </StackPanel>
             </ControlTemplate>

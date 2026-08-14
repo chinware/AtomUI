@@ -124,6 +124,9 @@ var shellView = new GalleryShellView(configuration, navigationView, viewModel.Ro
 - `GalleryShellView` 应用 Sidebar、品牌、footer 和 routing content host。
 - 产品导航视图需要 Sidebar 折叠时，实现 `IGallerySidebarNavMenuHost`，显式暴露根 `NavMenu` 和可选的
   `SidebarHeaderAction`；不能通过 Shell 穿透产品视图查找或修改内部模板。
+- Shell 通过最近的 `IMediaBreakAwareControl` 感知外层媒体断点，并在 `md` 及以下自动设置
+  `NavMenu.IsInlineCollapsed=True`，在 `lg` 及以上恢复展开。手动折叠/展开在当前 compact/regular 断点区间内保留；
+  当断点跨区间变化时重新应用响应式默认状态。
 - 产品窗口处理 caption button 可见性、移动、缩放、置顶等窗口行为。
 
 Desktop 不负责：
@@ -145,7 +148,7 @@ public class GalleryBrowserShellView : UserControl, IScreen, IMediaBreakAwareCon
 - 创建并绑定产品提供的 `GalleryWorkspaceViewModel`。
 - 使用 `GalleryShellView` 渲染侧边栏和内容路由区。
 - 配置 Browser 需要的 overlay layers。
-- 根据内容区域宽度维护 media breakpoint。
+- 根据自身 Shell 宽度维护外层 media breakpoint，并为 routed content 提供内容区 media owner。
 - 在 detach 时释放 Shell 和 Workspace ViewModel。
 
 AtomUI Gallery 的 `BrowserGalleryView` 继承 `GalleryBrowserShellView`，只提供字体、`WorkspaceWindowViewModel` 工厂和 `CaseNavigation` 视图工厂。
@@ -226,17 +229,23 @@ RoutedViewHost = new RoutedViewHost
 
 ## 媒体断点
 
-Browser 宿主实现 `IMediaBreakAwareControl`，用于让 AtomUI 控件获得内容区域断点。
+Browser 宿主实现 `IMediaBreakAwareControl`，用于发布外层 Shell 断点；routed content 内部由独立内容区 media owner
+发布内容区域断点。
 
 断点来源：
 
 - Desktop 第一阶段不由 GalleryBase 强制提供，继续依赖 Window/AtomUI 现有机制。
-- Browser 由 `GalleryBrowserShellView` 根据 `GalleryShellView.ContentHost` 宽度计算。
+- Browser 外层由 `GalleryBrowserShellView` 根据自身 Shell 宽度计算，供 Sidebar、品牌区和其他 Shell chrome
+  消费。
+- Browser routed content 内部由 GalleryBase 的内容区 media owner 根据 `GalleryShellView.ContentHost` 宽度计算，使页面控件继续按
+  实际内容区域响应式布局。
 
 规则：
 
-- 断点变化只由 Shell 内容区尺寸驱动，不由整个浏览器窗口直接驱动。
-- 侧边栏宽度变化会自然影响内容断点。
+- Shell chrome 不得用 `ContentHost` 宽度反推外层断点，避免 Sidebar 自动收起/展开改变内容宽度后形成反馈震荡。
+- 侧边栏宽度变化会自然影响内容区断点，但不会反向改变外层 Shell 断点。
+- 响应式消费仍通过 `IMediaBreakAwareControl` / `MediaBreakPointChanged` 和最近 owner 规则完成；不要在产品
+  `CaseNavigation` 或单个 Showcase 中监听尺寸并补丁处理。
 
 ## OverlayLayer
 

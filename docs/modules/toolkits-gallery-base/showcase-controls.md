@@ -177,8 +177,8 @@ public class GalleryShowCaseHeader : TemplatedControl
 | `CategoryTagColor` | `blue` | 分类 Tag 默认使用蓝色 |
 | `StatusTagColor` | `success` | 稳定状态默认使用成功色；Preview 页面显式覆盖为 `processing` |
 | `IntroducedVersionTagColor` | `blue` | 引入版本 Tag 使用蓝色，与分类区分靠位置和文本 |
-| `MetadataLabelWidth` | token 默认值 | label 宽度由主题控制，页面只在确有长文案时覆盖 |
-| `MetadataValueWidth` | token 默认值 | value 宽度由主题控制，页面只在包名较长时覆盖 |
+| `MetadataLabelWidth` | token 默认值 | label 的最小宽度由主题控制，长翻译可在行内自然扩展 |
+| `MetadataValueWidth` | token 默认值 | value 的历史宽度提示；当前行布局中 value 优先使用剩余空间，窄宽度下不得用它撑开列 |
 
 渲染规则：
 
@@ -189,6 +189,8 @@ public class GalleryShowCaseHeader : TemplatedControl
 - `Namespace`、`Package`、`BaseClass` 为空或空白时，对应 metadata 项不渲染。
 - 三个 metadata 值全部为空时，metadata 卡片不渲染。
 - metadata 顺序固定为 namespace、package、base class。
+- metadata 每一项占一行，label/value 使用行内两列布局；长 label 不得覆盖 value，长 value 只有在占满当前行剩余空间后才允许省略。
+- metadata label/value 使用同一套 metadata 字体度量，默认跟随全局 UI 字体，避免 label 和内容因默认字体不同产生视觉垂直错位；等宽字体只用于代码展示类控件。
 
 标准用法：
 

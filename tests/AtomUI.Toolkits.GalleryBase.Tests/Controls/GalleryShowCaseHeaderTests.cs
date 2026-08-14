@@ -1,6 +1,7 @@
 using AtomUI.Desktop.Controls;
 using AtomUI.Controls;
 using AtomUI.Toolkits.GalleryBase.Controls;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -43,6 +44,8 @@ public class GalleryShowCaseHeaderTests
         theme.ShouldContain("{atom:SharedTokenResource ");
         theme.ShouldNotContain("ControlTokenScope.Identity");
         theme.ShouldNotContain("TokenSharedTokenResource");
+        theme.ShouldContain("MetadataValueFontFamily");
+        token.ShouldNotContain("FontFamily.Parse(\"Consolas\")");
     }
 
     [Fact]
@@ -97,9 +100,9 @@ public class GalleryShowCaseHeaderTests
             Find<Tag>(header, "PART_IntroducedVersionTag").Text.ShouldBe("v6.0.7");
             Find<Tag>(header, "PART_IntroducedVersionTag").Variant.ShouldBe(TagVariant.Filled);
 
-            var metadataItems = Find<WrapPanel>(header, "PART_MetadataItems")
+            var metadataItems = Find<StackPanel>(header, "PART_MetadataItems")
                 .Children
-                .OfType<StackPanel>()
+                .OfType<GalleryShowCaseMetadataRowPanel>()
                 .ToList();
 
             metadataItems.Count.ShouldBe(3);
@@ -109,12 +112,226 @@ public class GalleryShowCaseHeaderTests
         });
     }
 
-    private static string? ReadMetadataValue(StackPanel item)
+    [Fact]
+    public void Metadata_Layout_Uses_Row_Space_For_Long_Localized_Labels_And_Values()
+    {
+        var header = new GalleryShowCaseHeader
+        {
+            Title              = "DataGrid",
+            Namespace          = "AtomUI.Desktop.Controls",
+            Package            = "AtomUI.Desktop.Controls.DataGrid.Controls.Internal.LongPackageName",
+            BaseClass          = "TemplatedControl",
+            MetadataValueWidth = 260
+        };
+
+        ShowInWindow(header, () =>
+        {
+            var namespaceLabel = FindMetadataTextBlock(header, "Namespace");
+            var namespaceValue = FindMetadataTextBlock(header, header.Namespace!);
+            var packageValue   = FindMetadataTextBlock(header, header.Package!);
+
+            namespaceLabel.Text = "Espacio de nombres";
+            header.InvalidateMeasure();
+            Dispatcher.UIThread.RunJobs();
+
+            namespaceLabel.Bounds.Width.ShouldBeGreaterThan(header.MetadataLabelWidth);
+            namespaceLabel.Bounds.Right.ShouldBeLessThanOrEqualTo(namespaceValue.Bounds.Left);
+            packageValue.Bounds.Width.ShouldBeGreaterThan(header.MetadataValueWidth);
+        });
+    }
+
+    [Fact]
+    public void Metadata_Layout_Treats_Nan_Width_Overrides_As_Auto_Hints()
+    {
+        var header = new GalleryShowCaseHeader
+        {
+            Title              = "DataGrid",
+            Namespace          = "AtomUI.Desktop.Controls",
+            Package            = "AtomUI.Desktop.Controls.DataGrid",
+            BaseClass          = "TemplatedControl",
+            MetadataLabelWidth = double.NaN,
+            MetadataValueWidth = double.NaN
+        };
+
+        ShowInWindow(header, () =>
+        {
+            var namespaceRow = Find<GalleryShowCaseMetadataRowPanel>(header, "PART_NamespaceMetadataItem");
+            var packageValue = FindMetadataTextBlock(header, header.Package!);
+
+            double.IsNaN(namespaceRow.LabelWidth).ShouldBeTrue();
+            double.IsNaN(namespaceRow.ValueWidth).ShouldBeTrue();
+            packageValue.Bounds.Width.ShouldBeGreaterThan(0d);
+        });
+    }
+
+    [Fact]
+    public void Metadata_Layout_Does_Not_Overlap_When_Header_Is_Narrow()
+    {
+        var header = new GalleryShowCaseHeader
+        {
+            Title     = "ComboBox",
+            Namespace = "AtomUI.Desktop.Controls",
+            Package   = "AtomUI.Desktop.Controls",
+            BaseClass = "ComboBox"
+        };
+
+        ShowInWindow(header, 360, 260, () =>
+        {
+            AssertTextBlocksDoNotOverlap(
+                FindMetadataLabel(header, "PART_NamespaceMetadataItem"),
+                FindMetadataValue(header, "PART_NamespaceMetadataItem"));
+            AssertTextBlocksDoNotOverlap(
+                FindMetadataLabel(header, "PART_PackageMetadataItem"),
+                FindMetadataValue(header, "PART_PackageMetadataItem"));
+            AssertTextBlocksDoNotOverlap(
+                FindMetadataLabel(header, "PART_BaseClassMetadataItem"),
+                FindMetadataValue(header, "PART_BaseClassMetadataItem"));
+        });
+    }
+
+    [Fact]
+    public void Metadata_Layout_Handles_Long_Localized_Label_And_Value_When_Header_Is_Narrow()
+    {
+        var header = new GalleryShowCaseHeader
+        {
+            Title     = "DataGrid",
+            Namespace = "AtomUI.Desktop.Controls.DataGrid.Controls.Internal.LongNamespace",
+            Package   = "AtomUI.Desktop.Controls.DataGrid",
+            BaseClass = "TemplatedControl"
+        };
+
+        ShowInWindow(header, 380, 260, () =>
+        {
+            var row   = Find<GalleryShowCaseMetadataRowPanel>(header, "PART_NamespaceMetadataItem");
+            var label = FindMetadataLabel(header, "PART_NamespaceMetadataItem");
+            var value = FindMetadataValue(header, "PART_NamespaceMetadataItem");
+
+            label.Text = "Espacio de nombres muy largo";
+            row.InvalidateMeasure();
+            Dispatcher.UIThread.RunJobs();
+
+            AssertTextBlocksDoNotOverlap(label, value);
+            value.Bounds.Right.ShouldBeLessThanOrEqualTo(row.Bounds.Width + 0.5);
+            label.Bounds.Width.ShouldBeGreaterThan(0d);
+            value.Bounds.Width.ShouldBeGreaterThan(0d);
+        });
+    }
+
+    [Fact]
+    public void Metadata_Layout_Uses_Consistent_Font_Family_For_Label_And_Value()
+    {
+        var header = new GalleryShowCaseHeader
+        {
+            Title     = "Breadcrumb",
+            Namespace = "AtomUI.Desktop.Controls",
+            Package   = "AtomUI.Desktop.Controls",
+            BaseClass = "ItemsControl"
+        };
+
+        ShowInWindow(header, () =>
+        {
+            AssertMetadataTextBlocksUseConsistentFontFamily(header, "PART_NamespaceMetadataItem");
+            AssertMetadataTextBlocksUseConsistentFontFamily(header, "PART_PackageMetadataItem");
+            AssertMetadataTextBlocksUseConsistentFontFamily(header, "PART_BaseClassMetadataItem");
+        });
+    }
+
+    [Fact]
+    public void Metadata_Row_Panel_Treats_Value_Width_As_Shrinkable_Preference()
+    {
+        var label = new FixedMeasureControl(new Size(180, 20));
+        var value = new FixedMeasureControl(new Size(120, 20));
+        var row = new GalleryShowCaseMetadataRowPanel
+        {
+            LabelWidth  = 84,
+            ValueWidth  = 220,
+            PairSpacing = 10
+        };
+        row.Children.Add(label);
+        row.Children.Add(value);
+
+        row.Measure(new Size(260, 100));
+        row.Arrange(new Rect(0, 0, 260, row.DesiredSize.Height));
+
+        label.Bounds.Width.ShouldBe(84d);
+        value.Bounds.Left.ShouldBe(94d);
+        value.Bounds.Width.ShouldBe(166d);
+        value.Bounds.Right.ShouldBe(row.Bounds.Right);
+
+        row.Measure(new Size(500, 100));
+        row.Arrange(new Rect(0, 0, 500, row.DesiredSize.Height));
+
+        label.Bounds.Width.ShouldBe(180d);
+        value.Bounds.Left.ShouldBe(190d);
+        value.Bounds.Width.ShouldBe(310d);
+        value.Bounds.Right.ShouldBe(row.Bounds.Right);
+    }
+
+    private static string? ReadMetadataValue(GalleryShowCaseMetadataRowPanel item)
     {
         return item.Children
                    .OfType<AtomUITextBlock>()
                    .Last()
                    .Text;
+    }
+
+    private static AtomUITextBlock FindMetadataTextBlock(Control root, string text)
+    {
+        var control = root.GetVisualDescendants()
+                          .OfType<AtomUITextBlock>()
+                          .FirstOrDefault(descendant => descendant.Text == text);
+        control.ShouldNotBeNull($"Expected metadata text '{text}' to exist.");
+        return control;
+    }
+
+    private static AtomUITextBlock FindMetadataLabel(Control root, string itemName)
+    {
+        return Find<GalleryShowCaseMetadataRowPanel>(root, itemName)
+               .Children
+               .OfType<AtomUITextBlock>()
+               .First();
+    }
+
+    private static AtomUITextBlock FindMetadataValue(Control root, string itemName)
+    {
+        return Find<GalleryShowCaseMetadataRowPanel>(root, itemName)
+               .Children
+               .OfType<AtomUITextBlock>()
+               .Last();
+    }
+
+    private static void AssertTextBlocksDoNotOverlap(AtomUITextBlock label, AtomUITextBlock value)
+    {
+        label.Bounds.Right.ShouldBeLessThanOrEqualTo(
+            value.Bounds.Left,
+            $"Expected metadata label '{label.Text}' to stay before value '{value.Text}'.");
+        GetVerticalCenter(label).ShouldBe(
+            GetVerticalCenter(value),
+            tolerance: 0.5,
+            $"Expected metadata label '{label.Text}' to be vertically centered with value '{value.Text}'.");
+        label.Bounds.Y.ShouldBe(
+            value.Bounds.Y,
+            tolerance: 0.5,
+            $"Expected metadata label '{label.Text}' to share the value row top with '{value.Text}'.");
+        label.Bounds.Height.ShouldBe(
+            value.Bounds.Height,
+            tolerance: 0.5,
+            $"Expected metadata label '{label.Text}' to share the value row height with '{value.Text}'.");
+    }
+
+    private static void AssertMetadataTextBlocksUseConsistentFontFamily(Control root, string itemName)
+    {
+        var label = FindMetadataLabel(root, itemName);
+        var value = FindMetadataValue(root, itemName);
+
+        label.FontFamily.ShouldBe(
+            value.FontFamily,
+            $"Expected metadata label '{label.Text}' and value '{value.Text}' to share font metrics.");
+    }
+
+    private static double GetVerticalCenter(Control control)
+    {
+        return control.Bounds.Y + control.Bounds.Height / 2;
     }
 
     private static T Find<T>(Control root, string name)
@@ -129,10 +346,15 @@ public class GalleryShowCaseHeaderTests
 
     private static void ShowInWindow(Control content, Action assertion)
     {
+        ShowInWindow(content, 760, 240, assertion);
+    }
+
+    private static void ShowInWindow(Control content, double width, double height, Action assertion)
+    {
         var window = new AvaloniaWindow
         {
-            Width   = 760,
-            Height  = 240,
+            Width   = width,
+            Height  = height,
             Content = content
         };
 
@@ -172,5 +394,20 @@ public class GalleryShowCaseHeaderTests
         }
 
         throw new FileNotFoundException(relativePath);
+    }
+
+    private sealed class FixedMeasureControl : Control
+    {
+        private readonly Size _desiredSize;
+
+        public FixedMeasureControl(Size desiredSize)
+        {
+            _desiredSize = desiredSize;
+        }
+
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            return _desiredSize;
+        }
     }
 }

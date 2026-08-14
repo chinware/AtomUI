@@ -174,7 +174,7 @@ identity、零 Own Token descriptor 和 `XxxTokenResource`。
 Padding="{gallery:ShowCaseItemTokenResource CardPadding}"
 ```
 
-`GalleryShowCaseHeaderToken` 只承载 Gallery 文档页头的结构性视觉值，例如 margin、间距、字号、metadata 卡片边框和默认宽度。分类、状态、引入版本 Tag 的颜色仍通过 `GalleryShowCaseHeader` 属性传给 AtomUI `Tag`，不在 token 中写死具体业务状态。
+`GalleryShowCaseHeaderToken` 只承载 Gallery 文档页头的结构性视觉值，例如 margin、间距、字号、metadata 卡片边框和默认宽度。metadata label/value 属于页头信息文本，默认通过同一字体 token 跟随全局 UI 字体；等宽字体只用于 `GalleryCodeViewer` 等代码展示控件。分类、状态、引入版本 Tag 的颜色仍通过 `GalleryShowCaseHeader` 属性传给 AtomUI `Tag`，不在 token 中写死具体业务状态。
 
 ## Global Token 使用规则
 
