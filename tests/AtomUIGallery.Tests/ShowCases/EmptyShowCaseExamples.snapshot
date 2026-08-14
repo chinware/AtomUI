@@ -19,12 +19,14 @@
 <gallery:ShowCaseItem
     Title="{gallery:EmptyShowCaseLangResource CustomizeTitle}"
     Description="{gallery:EmptyShowCaseLangResource CustomizeDescription}">
-    <StackPanel Orientation="Vertical" Spacing="10">
-        <atom:Empty ImagePath="avares://AtomUIGallery/Assets/EmptyShowCase/empty.svg"
-                             SizeType="Large"
-                             Description="{gallery:EmptyShowCaseLangResource P2DescriptionCustomizeDescription}" />
-        <atom:Button HorizontalAlignment="Center" ButtonType="Primary" Content="{gallery:EmptyShowCaseLangResource P2ContentCreateNow}" />
-    </StackPanel>
+    <atom:Empty ImagePath="avares://AtomUIGallery/Assets/EmptyShowCase/empty.svg"
+                SizeType="Large"
+                Description="{gallery:EmptyShowCaseLangResource P2DescriptionCustomizeDescription}">
+        <atom:Empty.Footer>
+            <atom:Button ButtonType="Primary"
+                         Content="{gallery:EmptyShowCaseLangResource P2ContentCreateNow}" />
+        </atom:Empty.Footer>
+    </atom:Empty>
 </gallery:ShowCaseItem>
 
 <gallery:ShowCaseItem

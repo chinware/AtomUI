@@ -30,8 +30,8 @@ Empty 的设计语言围绕控件职责、可观察状态和主题契约组织�
 | 维度 | 含义 | Empty 中的表达 |
 | --- | --- | --- |
 | 产品语义 | 控件在界面中承担的稳定职责。 | Empty 是 AtomUI 桌面控件体系中的空状态控件，用于表达无数据、无结果或占位状态。 |
-| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `Description`、`ImagePath`、`ImageSource`、`IsDescriptionVisible`、`PresetImage`。 |
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | collection/filter、visual option。 |
+| 内容承载 | 用户数据、展示内容或操作入口如何进入控件。 | `Description`、`Footer`、`FooterTemplate`、`ImagePath`、`ImageSource`、`PresetImage`。 |
+| 状态反馈 | public API 和模板绑定如何形成用户可感知反馈。 | 描述与 Footer 可见性、图片来源、三档 SizeType。 |
 | 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Empty Token + ControlTheme。 |
 
 ## 公共 API
@@ -42,8 +42,8 @@ Empty 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
-| 内容与数据 | `Description`、`ImagePath`、`ImageSource`、`IsDescriptionVisible`、`PresetImage` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 视觉与布局 | `SizeType` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
+| 内容与数据 | `Description`、`Footer`、`FooterTemplate`、`ImagePath`、`ImageSource`、`IsDescriptionVisible`、`PresetImage` | 定义空状态图片、描述和后续操作内容。 |
+| 视觉与布局 | `SizeType`、`StrokeDashArray` | `SizeType` 选择预设尺寸基线；`StrokeDashArray` 配置 root 边框的虚线节奏。 |
 
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
 
@@ -60,6 +60,11 @@ Empty 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 当前未抽取到控件专属伪类；主题主要依赖 Avalonia 标准伪类、模板绑定和内部 StyledProperty。
 
+Empty 公开 `root`、`image`、`description`、`footer` 四个 Semantic Part。完整 Selector、ContractType、cardinality 和定制边界见
+[Empty Semantic Part 契约](semantic-part.md)。`Footer` 与 `FooterTemplate` 是 6.0 新增的公共内容入口，用于承载创建、刷新、
+返回等空状态后续操作；`StrokeDashArray` 为 root 表面提供可绑定的虚线边框入口。Empty 保持
+`TemplatedControl` 基类不变。
+
 ## 事件与命令
 
 Empty 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
@@ -73,7 +78,7 @@ Empty 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Empty/Views/EmptyShowCase.axaml:35`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Empty/Views/EmptyShowCase.axaml:75`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -83,7 +88,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 尺寸
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Empty/Views/EmptyShowCase.axaml:46`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Empty/Views/EmptyShowCase.axaml:86`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -99,12 +104,74 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 无描述
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Empty/Views/EmptyShowCase.axaml:79`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Empty/Views/EmptyShowCase.axaml:121`
 
 Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
 <atom:Empty PresetImage="Default" IsDescriptionVisible="False" />
+```
+
+### 自定义语义结构的样式和类
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Empty/Views/EmptyShowCase.axaml:134`
+
+SourceKey：`empty-semantic-part`
+
+```axaml
+<StackPanel Orientation="Vertical"
+            HorizontalAlignment="Stretch"
+            Spacing="16">
+    <StackPanel.Styles>
+        <Style Selector="atom|Empty.semantic-style-demo">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="BorderBrush" Value="#CCCCCC" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="StrokeDashArray" Value="4,2" />
+        </Style>
+        <Style Selector="atom|Empty.semantic-object-styles">
+            <Setter Property="Background" Value="#F5F5F5" />
+            <Setter Property="CornerRadius" Value="8" />
+            <atom:EmptyDescriptionStyle x:SetterTargetType="atom:TextBlock">
+                <Setter Property="Foreground" Value="#1890FF" />
+                <Setter Property="FontWeight" Value="Bold" />
+            </atom:EmptyDescriptionStyle>
+            <atom:EmptyFooterStyle x:SetterTargetType="ContentPresenter">
+                <Setter Property="Margin" Value="0,16,0,0" />
+            </atom:EmptyFooterStyle>
+        </Style>
+        <Style Selector="atom|Empty.semantic-function-styles">
+            <Setter Property="Background" Value="#E6F7FF" />
+            <Setter Property="BorderBrush" Value="#91D5FF" />
+            <Setter Property="StrokeDashArray" Value="{x:Null}" />
+            <atom:EmptyDescriptionStyle x:SetterTargetType="atom:TextBlock">
+                <Setter Property="Foreground" Value="#1890FF" />
+                <Setter Property="FontWeight" Value="Bold" />
+            </atom:EmptyDescriptionStyle>
+        </Style>
+    </StackPanel.Styles>
+
+    <atom:Empty Classes="semantic-style-demo semantic-object-styles"
+                PresetImage="Simple"
+                SizeType="Small"
+                Description="Object styles">
+        <atom:Empty.Footer>
+            <atom:Button ButtonType="Primary"
+                         Content="Create Now" />
+        </atom:Empty.Footer>
+    </atom:Empty>
+
+    <atom:Empty Classes="semantic-style-demo semantic-function-styles"
+                PresetImage="Simple"
+                SizeType="Small"
+                Description="Function styles">
+        <atom:Empty.Footer>
+            <atom:Button ButtonType="Primary"
+                         Content="Create Now" />
+        </atom:Empty.Footer>
+    </atom:Empty>
+</StackPanel>
 ```
 
 ## 状态模型
@@ -121,10 +188,11 @@ Public API / inherited command / item source / user input
 
 状态维护规则：
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- collection/filter、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+- `PresetImage`、`ImagePath`、`ImageSource` 三者互斥，并始终更新同一个 image 模板节点。
+- `IsDescriptionVisible` 直接控制 description 模板节点的可见性，不通过 C# 动态创建或删除 Visual。
+- `Footer=null` 时 footer Presenter 隐藏；非空时由 `FooterTemplate` 或 Avalonia DataTemplate 机制生成内容。
+- Large、Middle、Small 只改变 image 高度和描述间距，不改变 Semantic marker 数量。
+- 模板重套用时必须把 public API 对应状态回放到新的 part 和主题变量。
 
 ## 主题与 Design Token
 
@@ -134,7 +202,8 @@ Empty 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的�
 | --- | --- |
 | `EmptyTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
-Empty 使用 `EmptyToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 collection/filter、visual option 运行时状态。
+Empty 使用 `EmptyToken` 作为控件 Token scope。Token 只表达图片高度、描述间距、Footer 间距和图形颜色等视觉语义，不承载
+实例内容或可见性状态。
 
 主题维护规则：
 
@@ -165,7 +234,7 @@ Empty Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
-- 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
+- Footer 内容替换依赖 Avalonia ContentPresenter 的标准 logical/visual ownership，不额外缓存内容 Control。
 
 ## 源码索引
 
@@ -175,6 +244,7 @@ Empty Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - `src/AtomUI.Controls/Empty/BuiltInImageBuilder.cs`
 - `src/AtomUI.Controls/Empty/PresetEmptyImage.cs`
 - `src/AtomUI.Desktop.Controls/Empty/Empty.cs`
+- `src/AtomUI.Desktop.Controls/Empty/Empty.SemanticParts.cs`
 - `src/AtomUI.Desktop.Controls/Empty/EmptyToken.cs`
 - `src/AtomUI.Desktop.Controls/Empty/Themes/EmptyTheme.axaml`
 
@@ -189,6 +259,7 @@ Empty Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 - 源设计文档：`docs/controls/desktop/data-display/empty/overview.md`
 - 实现文档：`docs/controls/desktop/data-display/empty/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-display/empty/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-display/empty/token.md`
 - 变更记录：`docs/controls/desktop/data-display/empty/changelog.md`
 - 语义结构：`./semantic-cn.md`
