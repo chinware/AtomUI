@@ -474,7 +474,7 @@ public class LocalizationBuildAssetsTests
         foreach (var usingTask in usingTasks)
         {
             ((string?)usingTask.Attribute("AssemblyFile"))
-                .ShouldBe("$(AtomUILocalizationBuildTasksAssembly)");
+                .ShouldBe("$(AtomUIBuildTasksAssembly)");
             usingTask.Attribute("Condition").ShouldBeNull();
         }
     }
@@ -498,27 +498,28 @@ public class LocalizationBuildAssetsTests
     public void Generator_Package_Contains_Localization_BuildTransitive_Assets()
     {
         var project = XDocument.Load(GetRepoFile("src/AtomUI.Generator/AtomUI.Generator.csproj"));
-        var packedFiles = project.Descendants("None")
-                                 .Where(element =>
-                                     string.Equals(
-                                         (string?)element.Attribute("Pack"),
-                                         "true",
-                                         StringComparison.OrdinalIgnoreCase))
-                                 .ToDictionary(
-                                     element => element.Attribute("Include")!.Value,
-                                     element => (string?)element.Attribute("PackagePath"),
-                                     StringComparer.Ordinal);
+        project.Descendants("None")
+               .ShouldContain(element =>
+                   (string?)element.Attribute("Include") == "@(AtomUINuGetBuildAsset)" &&
+                   (string?)element.Attribute("Pack") == "true");
+        project.Descendants("None")
+               .ShouldContain(element =>
+                   (string?)element.Attribute("Include") == "@(AtomUIGeneratorToolAsset)" &&
+                   (string?)element.Attribute("Pack") == "true");
 
-        packedFiles["../../build/nuget/localization/Localization.props"]
-            .ShouldBe("buildTransitive/localization/Localization.props");
-        packedFiles["../../build/nuget/localization/Localization.targets"]
-            .ShouldBe("buildTransitive/localization/Localization.targets");
-        packedFiles["../../build/nuget/AtomUI.Generator.props"]
-            .ShouldBe("buildTransitive/AtomUI.Generator.props");
-        packedFiles["../../build/nuget/AtomUI.Generator.targets"]
-            .ShouldBe("buildTransitive/AtomUI.Generator.targets");
-        packedFiles["$(OutputPath)/AtomUI.Build.Tasks.dll"]
-            .ShouldBe("tools/netstandard2.0/AtomUI.Build.Tasks.dll");
+        var manifest = XDocument.Load(GetRepoFile("build/repository/GeneratorBuildAssets.props"));
+        var buildAssets = manifest.Descendants("AtomUINuGetBuildAsset").ShouldHaveSingleItem();
+        ((string?)buildAssets.Attribute("Include"))
+            .ShouldNotBeNull()
+            .ShouldContain("../nuget/**/*.props");
+        buildAssets.Elements("PackagePath")
+                   .ShouldHaveSingleItem()
+                   .Value.ShouldBe("buildTransitive/%(RecursiveDir)%(Filename)%(Extension)");
+
+        var toolAssets = manifest.Descendants("AtomUIGeneratorToolAsset").ShouldHaveSingleItem();
+        var toolIncludes = ((string?)toolAssets.Attribute("Include")).ShouldNotBeNull();
+        toolIncludes.ShouldContain("AtomUI.Generator.dll");
+        toolIncludes.ShouldContain("AtomUI.Build.Tasks.dll");
         foreach (var dependency in new[]
                  {
                      "System.Reflection.Metadata.dll",
@@ -529,9 +530,11 @@ public class LocalizationBuildAssetsTests
                      "System.Runtime.CompilerServices.Unsafe.dll"
                  })
         {
-            packedFiles[$"$(OutputPath)/{dependency}"]
-                .ShouldBe($"tools/netstandard2.0/{dependency}");
+            toolIncludes.ShouldContain(dependency);
         }
+        toolAssets.Elements("PackagePath")
+                  .ShouldHaveSingleItem()
+                  .Value.ShouldBe("tools/netstandard2.0/%(Filename)%(Extension)");
 
         var buildTasksProject = XDocument.Load(GetRepoFile(
             "src/AtomUI.Build.Tasks/AtomUI.Build.Tasks.csproj"));
@@ -882,7 +885,7 @@ public class LocalizationBuildAssetsTests
                     new XElement("AtomUIBuildLanguagePackage", "true"),
                     new XElement("AtomUILanguageTag", "pt-BR"),
                     new XElement("AtomUILanguageModuleId", "Fixture.Module"),
-                    new XElement("AtomUILocalizationBuildTasksAssembly", buildTasksAssembly)),
+                    new XElement("AtomUIBuildTasksAssembly", buildTasksAssembly)),
                 new XElement(
                     "Import",
                     new XAttribute(

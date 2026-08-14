@@ -1,4 +1,7 @@
 <Project>
+    <Import Project="$(MSBuildThisFileDirectory)../infrastructure/BuildTasks.props"
+            Condition="'$(AtomUIBuildTasksAssembly)' == ''" />
+
     <PropertyGroup>
         <_AtomUILanguageFileExcludes>
             $(MSBuildProjectDirectory)/bin/**/*.xlf;
@@ -52,21 +55,19 @@
     </ItemGroup>
 
     <PropertyGroup>
-        <AtomUILocalizationBuildTasksAssembly Condition="'$(AtomUILocalizationBuildTasksAssembly)' == '' and Exists('$(MSBuildThisFileDirectory)../../../src/AtomUI.Build.Tasks/AtomUI.Build.Tasks.csproj')">$(MSBuildThisFileDirectory)../../../output/bin/$(Configuration)/netstandard2.0/AtomUI.Build.Tasks.dll</AtomUILocalizationBuildTasksAssembly>
-        <AtomUILocalizationBuildTasksAssembly Condition="'$(AtomUILocalizationBuildTasksAssembly)' == ''">$(MSBuildThisFileDirectory)../../tools/netstandard2.0/AtomUI.Build.Tasks.dll</AtomUILocalizationBuildTasksAssembly>
         <AtomUILanguagePackageManifestPath Condition="'$(AtomUILanguagePackageManifestPath)' == ''">$(IntermediateOutputPath)AtomUI.LanguagePack.xml</AtomUILanguagePackageManifestPath>
         <AtomUILanguagePackagePropsPath Condition="'$(AtomUILanguagePackagePropsPath)' == ''">$(IntermediateOutputPath)$(PackageId).props</AtomUILanguagePackagePropsPath>
         <AtomUILanguageTemplateOutputRootDirectory Condition="'$(AtomUILanguageTemplateOutputRootDirectory)' == ''">$(MSBuildProjectDirectory)/Localization</AtomUILanguageTemplateOutputRootDirectory>
     </PropertyGroup>
 
     <UsingTask TaskName="AtomUI.Build.Tasks.ExportLanguageTemplatesTask"
-               AssemblyFile="$(AtomUILocalizationBuildTasksAssembly)" />
+               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
     <UsingTask TaskName="AtomUI.Build.Tasks.PrepareLanguagePackageAssetsTask"
-               AssemblyFile="$(AtomUILocalizationBuildTasksAssembly)" />
+               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
     <UsingTask TaskName="AtomUI.Build.Tasks.PrepareLanguagePackageTask"
-               AssemblyFile="$(AtomUILocalizationBuildTasksAssembly)" />
+               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
     <UsingTask TaskName="AtomUI.Build.Tasks.GenerateLanguagePackagePropsTask"
-               AssemblyFile="$(AtomUILocalizationBuildTasksAssembly)" />
+               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
 
     <ItemGroup Condition="'$(AtomUIBuildLanguagePackage)' == 'true' and '@(ProjectReference)' != ''">
         <ProjectReference Update="@(ProjectReference->WithMetadataValue('OutputItemType', ''))">
@@ -116,8 +117,8 @@
             DependsOnTargets="AtomUIResolveLanguageContractProjectReferences"
             Returns="@(_AtomUILanguagePackProjectAsset)"
             Condition="'$(AtomUIBuildLanguagePackage)' == 'true'">
-        <Error Condition="!Exists('$(AtomUILocalizationBuildTasksAssembly)')"
-               Text="AtomUI.Build.Tasks could not be found at '$(AtomUILocalizationBuildTasksAssembly)'." />
+        <Error Condition="!Exists('$(AtomUIBuildTasksAssembly)')"
+               Text="AtomUI.Build.Tasks could not be found at '$(AtomUIBuildTasksAssembly)'." />
         <ItemGroup>
             <_AtomUILanguagePackProjectSourceFile Include="@(AtomUILanguage)"
                                                   Condition="'%(AtomUILanguageSourceKind)' == 'ModuleBuiltIn' and '%(Filename)%(Extension)' == 'en-US.xlf'" />
@@ -163,8 +164,8 @@
             DependsOnTargets="AtomUIResolveLanguageContractProjectReferences">
         <Error Condition="'$(AtomUITargetLanguage)' == ''"
                Text="AtomUITargetLanguage is required, for example -p:AtomUITargetLanguage=ja-JP." />
-        <Error Condition="!Exists('$(AtomUILocalizationBuildTasksAssembly)')"
-               Text="AtomUI.Build.Tasks could not be found at '$(AtomUILocalizationBuildTasksAssembly)'." />
+        <Error Condition="!Exists('$(AtomUIBuildTasksAssembly)')"
+               Text="AtomUI.Build.Tasks could not be found at '$(AtomUIBuildTasksAssembly)'." />
         <ItemGroup>
             <_AtomUILanguageTemplateSource Include="@(AtomUILanguage)"
                                            Condition="'%(AtomUILanguage.Filename)%(AtomUILanguage.Extension)' == 'en-US.xlf'" />
@@ -182,8 +183,8 @@
             DependsOnTargets="AtomUIResolveLanguageContractProjectReferences"
             BeforeTargets="_GetPackageFiles"
             Condition="'$(AtomUIBuildLanguagePackage)' == 'true'">
-        <Error Condition="!Exists('$(AtomUILocalizationBuildTasksAssembly)')"
-               Text="AtomUI.Build.Tasks could not be found at '$(AtomUILocalizationBuildTasksAssembly)'." />
+        <Error Condition="!Exists('$(AtomUIBuildTasksAssembly)')"
+               Text="AtomUI.Build.Tasks could not be found at '$(AtomUIBuildTasksAssembly)'." />
         <ItemGroup>
             <_AtomUILanguagePackageSourceFile Include="@(AtomUILanguage)"
                                                Condition="'%(AtomUILanguageSourceKind)' == 'ModuleBuiltIn' and '%(Filename)%(Extension)' == 'en-US.xlf'" />

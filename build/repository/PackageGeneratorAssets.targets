@@ -3,46 +3,18 @@
             BeforeTargets="_GetPackageFiles"
             Condition="'$(IsPackable)' == 'true' and '$(AtomUIRegistrationPackageId)' != ''">
         <ItemGroup>
-            <_AtomUIGeneratorConsumerBuildAsset Include="$(MSBuildThisFileDirectory)../nuget/AtomUI.Generator.props"
-                                                PackagePath="buildTransitive/AtomUI.Generator.props" />
-            <_AtomUIGeneratorConsumerBuildAsset Include="$(MSBuildThisFileDirectory)../nuget/AtomUI.Generator.targets"
-                                                PackagePath="buildTransitive/AtomUI.Generator.targets" />
-            <_AtomUIGeneratorConsumerBuildAsset Include="$(MSBuildThisFileDirectory)../nuget/linked-registration/LinkedRegistration.props"
-                                                PackagePath="buildTransitive/linked-registration/LinkedRegistration.props" />
-            <_AtomUIGeneratorConsumerBuildAsset Include="$(MSBuildThisFileDirectory)../nuget/linked-registration/LinkedRegistration.targets"
-                                                PackagePath="buildTransitive/linked-registration/LinkedRegistration.targets" />
-            <_AtomUIGeneratorConsumerBuildAsset Include="$(MSBuildThisFileDirectory)../nuget/localization/Localization.props"
-                                                PackagePath="buildTransitive/localization/Localization.props" />
-            <_AtomUIGeneratorConsumerBuildAsset Include="$(MSBuildThisFileDirectory)../nuget/localization/Localization.targets"
-                                                PackagePath="buildTransitive/localization/Localization.targets" />
-            <_AtomUIGeneratorConsumerBuildAsset Include="$(MSBuildThisFileDirectory)../nuget/theme/ThemeAssets.targets"
-                                                PackagePath="buildTransitive/theme/ThemeAssets.targets" />
-
-            <_AtomUIGeneratorConsumerToolAsset Include="$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.Generator.dll" />
-            <_AtomUIGeneratorConsumerToolAsset Include="$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.Build.Tasks.dll" />
-            <_AtomUIGeneratorConsumerToolAsset Include="$(OutputPathWithoutFramework)/netstandard2.0/System.Reflection.Metadata.dll" />
-            <_AtomUIGeneratorConsumerToolAsset Include="$(OutputPathWithoutFramework)/netstandard2.0/System.Collections.Immutable.dll" />
-            <_AtomUIGeneratorConsumerToolAsset Include="$(OutputPathWithoutFramework)/netstandard2.0/System.Memory.dll" />
-            <_AtomUIGeneratorConsumerToolAsset Include="$(OutputPathWithoutFramework)/netstandard2.0/System.Buffers.dll" />
-            <_AtomUIGeneratorConsumerToolAsset Include="$(OutputPathWithoutFramework)/netstandard2.0/System.Numerics.Vectors.dll" />
-            <_AtomUIGeneratorConsumerToolAsset Include="$(OutputPathWithoutFramework)/netstandard2.0/System.Runtime.CompilerServices.Unsafe.dll" />
-        </ItemGroup>
-
-        <Error Condition="!Exists('%(_AtomUIGeneratorConsumerBuildAsset.Identity)')"
-               Text="AtomUI Generator build asset could not be found at '%(_AtomUIGeneratorConsumerBuildAsset.Identity)'." />
-        <Error Condition="!Exists('%(_AtomUIGeneratorConsumerToolAsset.Identity)')"
-               Text="AtomUI Generator tool asset could not be found at '%(_AtomUIGeneratorConsumerToolAsset.Identity)'. Build AtomUI.Generator before packing registration product packages." />
-
-        <ItemGroup>
             <None Include="$(MSBuildThisFileDirectory)../nuget/consumer/ProductPackage.targets"
                   Pack="true"
                   PackagePath="buildTransitive/$(PackageId).targets" />
-            <None Include="@(_AtomUIGeneratorConsumerBuildAsset)"
-                  Pack="true"
-                  PackagePath="%(_AtomUIGeneratorConsumerBuildAsset.PackagePath)" />
-            <None Include="@(_AtomUIGeneratorConsumerToolAsset)"
-                  Pack="true"
-                  PackagePath="tools/netstandard2.0/%(Filename)%(Extension)" />
+            <None Include="@(AtomUINuGetBuildAsset)"
+                  Pack="true" />
+            <None Include="@(AtomUIGeneratorToolAsset)"
+                  Pack="true" />
         </ItemGroup>
+
+        <Error Condition="!Exists('%(AtomUINuGetBuildAsset.Identity)')"
+               Text="AtomUI Generator build asset could not be found at '%(AtomUINuGetBuildAsset.Identity)'." />
+        <Error Condition="!Exists('%(AtomUIGeneratorToolAsset.Identity)')"
+               Text="AtomUI Generator tool asset could not be found at '%(AtomUIGeneratorToolAsset.Identity)'. Build AtomUI.Generator before packing registration product packages." />
     </Target>
 </Project>

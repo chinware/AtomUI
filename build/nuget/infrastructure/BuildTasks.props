@@ -1,0 +1,5 @@
+<Project>
+    <PropertyGroup>
+        <AtomUIBuildTasksAssembly Condition="'$(AtomUIBuildTasksAssembly)' == ''">$(MSBuildThisFileDirectory)../../tools/netstandard2.0/AtomUI.Build.Tasks.dll</AtomUIBuildTasksAssembly>
+    </PropertyGroup>
+</Project>

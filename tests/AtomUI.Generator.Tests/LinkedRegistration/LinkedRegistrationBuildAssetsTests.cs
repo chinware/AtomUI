@@ -134,40 +134,31 @@ public sealed class LinkedRegistrationBuildAssetsTests
         condition.ShouldContain("'$(IsPackable)' == 'true'");
         condition.ShouldContain("'$(AtomUIRegistrationPackageId)' != ''");
 
-        var packagePaths = target.Descendants("None")
-                                 .Where(element =>
-                                     string.Equals(
-                                         (string?)element.Attribute("Pack"),
-                                         "true",
-                                         StringComparison.OrdinalIgnoreCase))
-                                 .Select(element => (string?)element.Attribute("PackagePath"))
-                                 .Where(static path => path is not null)
-                                 .ToArray();
+        var packedItems = target.Descendants("None").ToArray();
+        packedItems.ShouldContain(element =>
+            (string?)element.Attribute("Include") ==
+            "$(MSBuildThisFileDirectory)../nuget/consumer/ProductPackage.targets" &&
+            (string?)element.Attribute("PackagePath") == "buildTransitive/$(PackageId).targets");
+        packedItems.ShouldContain(element =>
+            (string?)element.Attribute("Include") == "@(AtomUINuGetBuildAsset)" &&
+            (string?)element.Attribute("Pack") == "true");
+        packedItems.ShouldContain(element =>
+            (string?)element.Attribute("Include") == "@(AtomUIGeneratorToolAsset)" &&
+            (string?)element.Attribute("Pack") == "true");
+        packedItems.ShouldNotContain(element =>
+            (string?)element.Attribute("PackagePath") == "buildTransitive/$(PackageId).props");
 
-        packagePaths.ShouldContain("buildTransitive/$(PackageId).targets");
-        packagePaths.ShouldContain("tools/netstandard2.0/%(Filename)%(Extension)");
-        packagePaths.ShouldContain("%(_AtomUIGeneratorConsumerBuildAsset.PackagePath)");
-        packagePaths.ShouldNotContain("buildTransitive/$(PackageId).props");
-
-        var buildAssetPaths = target.Descendants("_AtomUIGeneratorConsumerBuildAsset")
-                                    .ToDictionary(
-                                        element => Path.GetFileName(element.Attribute("Include")!.Value)!,
-                                        element => (string?)element.Attribute("PackagePath"),
-                                        StringComparer.Ordinal);
-        buildAssetPaths["AtomUI.Generator.props"]
-            .ShouldBe("buildTransitive/AtomUI.Generator.props");
-        buildAssetPaths["AtomUI.Generator.targets"]
-            .ShouldBe("buildTransitive/AtomUI.Generator.targets");
-        buildAssetPaths["LinkedRegistration.props"]
-            .ShouldBe("buildTransitive/linked-registration/LinkedRegistration.props");
-        buildAssetPaths["LinkedRegistration.targets"]
-            .ShouldBe("buildTransitive/linked-registration/LinkedRegistration.targets");
-        buildAssetPaths["Localization.props"]
-            .ShouldBe("buildTransitive/localization/Localization.props");
-        buildAssetPaths["Localization.targets"]
-            .ShouldBe("buildTransitive/localization/Localization.targets");
-        buildAssetPaths["ThemeAssets.targets"]
-            .ShouldBe("buildTransitive/theme/ThemeAssets.targets");
+        var manifest = XDocument.Load(GetRepoFile("build/repository/GeneratorBuildAssets.props"));
+        manifest.Descendants("AtomUINuGetBuildAsset")
+                .ShouldHaveSingleItem()
+                .Elements("PackagePath")
+                .ShouldHaveSingleItem()
+                .Value.ShouldBe("buildTransitive/%(RecursiveDir)%(Filename)%(Extension)");
+        manifest.Descendants("AtomUIGeneratorToolAsset")
+                .ShouldHaveSingleItem()
+                .Elements("PackagePath")
+                .ShouldHaveSingleItem()
+                .Value.ShouldBe("tools/netstandard2.0/%(Filename)%(Extension)");
     }
 
     [Fact]
@@ -332,6 +323,22 @@ public sealed class LinkedRegistrationBuildAssetsTests
         visibleProperties.ShouldContain("AtomUIRegistrationPackageId");
         visibleProperties.ShouldContain("AtomUIRegistrationEntries");
         visibleProperties.ShouldNotContain("AtomUIRegistrationCoreFeature");
+    }
+
+    [Fact]
+    public void Linked_Registration_Uses_The_Shared_Build_Tasks_Assembly()
+    {
+        var targets = XDocument.Load(GetRepoFile("build/nuget/linked-registration/LinkedRegistration.targets"));
+
+        targets.Descendants("UsingTask")
+               .ShouldAllBe(element =>
+                   (string?)element.Attribute("AssemblyFile") == "$(AtomUIBuildTasksAssembly)");
+        targets.Descendants("Import")
+               .ShouldContain(element =>
+                   (string?)element.Attribute("Project") ==
+                   "$(MSBuildThisFileDirectory)../infrastructure/BuildTasks.props" &&
+                   (string?)element.Attribute("Condition") ==
+                   "'$(AtomUIBuildTasksAssembly)' == ''");
     }
 
     [Theory]

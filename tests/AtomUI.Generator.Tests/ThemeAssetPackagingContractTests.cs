@@ -10,16 +10,19 @@ public class ThemeAssetPackagingContractTests
     public void Generator_Package_Provides_Theme_Asset_Build_Integration()
     {
         var project = XDocument.Load(GetRepoFile("src/AtomUI.Generator/AtomUI.Generator.csproj"));
-        var packedTarget = project.Descendants("None")
-                                  .SingleOrDefault(element =>
-                                      string.Equals(
-                                          (string?)element.Attribute("PackagePath"),
-                                          "buildTransitive/AtomUI.Generator.targets",
-                                          StringComparison.Ordinal));
+        project.Descendants("None")
+               .ShouldContain(element =>
+                   (string?)element.Attribute("Include") == "@(AtomUINuGetBuildAsset)" &&
+                   (string?)element.Attribute("Pack") == "true");
 
-        packedTarget.ShouldNotBeNull();
-        ((string?)packedTarget.Attribute("Pack")).ShouldBe("true");
-        ((string?)packedTarget.Attribute("Include")).ShouldBe("../../build/nuget/AtomUI.Generator.targets");
+        var manifest = XDocument.Load(GetRepoFile("build/repository/GeneratorBuildAssets.props"));
+        var buildAssets = manifest.Descendants("AtomUINuGetBuildAsset").ShouldHaveSingleItem();
+        ((string?)buildAssets.Attribute("Include"))
+            .ShouldNotBeNull()
+            .ShouldContain("../nuget/**/*.targets");
+        buildAssets.Elements("PackagePath")
+                   .ShouldHaveSingleItem()
+                   .Value.ShouldBe("buildTransitive/%(RecursiveDir)%(Filename)%(Extension)");
 
         var generatorTargets = XDocument.Load(GetRepoFile("build/nuget/AtomUI.Generator.targets"));
         generatorTargets.Descendants("Import")
@@ -28,13 +31,7 @@ public class ThemeAssetPackagingContractTests
                                 "theme/ThemeAssets.targets",
                                 StringComparison.Ordinal) == true)
                         .ShouldNotBeNull();
-
-        project.Descendants("None")
-               .Single(element =>
-                   (string?)element.Attribute("Include") == "../../build/nuget/theme/ThemeAssets.targets" &&
-                   (string?)element.Attribute("PackagePath") ==
-                   "buildTransitive/theme/ThemeAssets.targets")
-               .ShouldNotBeNull();
+        File.Exists(GetRepoFile("build/nuget/theme/ThemeAssets.targets")).ShouldBeTrue();
     }
 
     [Fact]
@@ -92,6 +89,16 @@ public class ThemeAssetPackagingContractTests
               .Where(element => element.Name.LocalName == "UsingTask")
               .ShouldAllBe(element =>
                   (string?)element.Attribute("TaskFactory") != "RoslynCodeTaskFactory");
+        target.Descendants("UsingTask")
+              .ShouldAllBe(element =>
+                  (string?)element.Attribute("AssemblyFile") == "$(AtomUIBuildTasksAssembly)");
+        target.Descendants()
+              .Where(element => element.Name.LocalName == "Import")
+              .ShouldContain(element =>
+                  (string?)element.Attribute("Project") ==
+                  "$(MSBuildThisFileDirectory)../infrastructure/BuildTasks.props" &&
+                  (string?)element.Attribute("Condition") ==
+                  "'$(AtomUIBuildTasksAssembly)' == ''");
         target.Descendants()
               .ShouldNotContain(element => element.Name.LocalName == "Code");
     }

@@ -23,9 +23,80 @@ public sealed class BuildLayoutTests
             "$(MSBuildThisFileDirectory)ProjectDefaults.props",
             "$(MSBuildThisFileDirectory)PackageMetadata.props",
             "$(MSBuildThisFileDirectory)OutputPaths.props",
+            "$(MSBuildThisFileDirectory)GeneratorBuildAssets.props",
             "$(MSBuildThisFileDirectory)../nuget/linked-registration/LinkedRegistration.props",
             "$(MSBuildThisFileDirectory)../nuget/localization/Localization.props"
         ]);
+    }
+
+    [Fact]
+    public void Generator_Build_Assets_Have_One_Canonical_Manifest()
+    {
+        var manifest = XDocument.Load(GetRepoFile("build/repository/GeneratorBuildAssets.props"));
+        var buildAssets = manifest.Descendants("AtomUINuGetBuildAsset").ShouldHaveSingleItem();
+        var buildAssetIncludes = ((string?)buildAssets.Attribute("Include")).ShouldNotBeNull();
+        buildAssetIncludes.ShouldContain("../nuget/**/*.props");
+        buildAssetIncludes.ShouldContain("../nuget/**/*.targets");
+        ((string?)buildAssets.Attribute("Exclude"))
+            .ShouldNotBeNull()
+            .ShouldContain("../nuget/consumer/**");
+        buildAssets.Elements("PackagePath")
+                   .ShouldHaveSingleItem()
+                   .Value.ShouldBe("buildTransitive/%(RecursiveDir)%(Filename)%(Extension)");
+
+        var toolAssets = manifest.Descendants("AtomUIGeneratorToolAsset").ShouldHaveSingleItem();
+        var toolIncludes = ((string?)toolAssets.Attribute("Include")).ShouldNotBeNull();
+        toolIncludes.ShouldContain("AtomUI.Generator.dll");
+        toolIncludes.ShouldContain("AtomUI.Build.Tasks.dll");
+        toolAssets.Elements("PackagePath")
+                  .ShouldHaveSingleItem()
+                  .Value.ShouldBe("tools/netstandard2.0/%(Filename)%(Extension)");
+
+        var generatorProject = XDocument.Load(GetRepoFile("src/AtomUI.Generator/AtomUI.Generator.csproj"));
+        generatorProject.Descendants("None")
+                        .ShouldContain(element =>
+                            (string?)element.Attribute("Include") == "@(AtomUINuGetBuildAsset)");
+        generatorProject.Descendants("None")
+                        .ShouldContain(element =>
+                            (string?)element.Attribute("Include") == "@(AtomUIGeneratorToolAsset)");
+
+        var packageTargets = XDocument.Load(GetRepoFile(
+            "build/repository/PackageGeneratorAssets.targets"));
+        packageTargets.Descendants("None")
+                      .ShouldContain(element =>
+                          (string?)element.Attribute("Include") == "@(AtomUINuGetBuildAsset)");
+        packageTargets.Descendants("None")
+                      .ShouldContain(element =>
+                          (string?)element.Attribute("Include") == "@(AtomUIGeneratorToolAsset)");
+    }
+
+    [Fact]
+    public void NuGet_Features_Use_The_Shared_Build_Tasks_Assembly()
+    {
+        var infrastructure = XDocument.Load(GetRepoFile("build/nuget/infrastructure/BuildTasks.props"));
+        var fallback = infrastructure.Descendants("AtomUIBuildTasksAssembly").ShouldHaveSingleItem();
+        ((string?)fallback.Attribute("Condition"))
+            .ShouldBe("'$(AtomUIBuildTasksAssembly)' == ''");
+        fallback.Value.Trim().ShouldBe(
+            "$(MSBuildThisFileDirectory)../../tools/netstandard2.0/AtomUI.Build.Tasks.dll");
+
+        var buildRoot = Path.Combine(GetRepositoryRoot(), "build");
+        var featureFiles = Directory.EnumerateFiles(
+            Path.Combine(buildRoot, "nuget"),
+            "*.targets",
+            SearchOption.AllDirectories);
+        var usingTasks = featureFiles.SelectMany(file => XDocument.Load(file).Descendants("UsingTask"))
+                                     .ToArray();
+        usingTasks.ShouldNotBeEmpty();
+        usingTasks.ShouldAllBe(element =>
+            (string?)element.Attribute("AssemblyFile") == "$(AtomUIBuildTasksAssembly)");
+
+        var buildFiles = Directory.EnumerateFiles(buildRoot, "*.*", SearchOption.AllDirectories)
+                                  .Where(file =>
+                                      Path.GetExtension(file) is ".props" or ".targets");
+        var buildText = string.Join('\n', buildFiles.Select(File.ReadAllText));
+        buildText.ShouldNotContain("AtomUILocalizationBuildTasksAssembly");
+        buildText.ShouldNotContain("AtomUILinkedRegistrationBuildTasksAssembly");
     }
 
     [Fact]

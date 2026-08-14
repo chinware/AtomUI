@@ -38,61 +38,11 @@
     <!-- This ensures the library will be packaged as a source generator when we use `dotnet pack` -->
     <ItemGroup>
         <None Include="$(OutputPath)/$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
-        <None Include="$(OutputPath)/AtomUI.Build.Tasks.dll"
+        <None Include="@(AtomUINuGetBuildAsset)"
               Pack="true"
-              PackagePath="tools/netstandard2.0/AtomUI.Build.Tasks.dll"
               Visible="false" />
-        <None Include="$(OutputPath)/System.Reflection.Metadata.dll"
+        <None Include="@(AtomUIGeneratorToolAsset)"
               Pack="true"
-              PackagePath="tools/netstandard2.0/System.Reflection.Metadata.dll"
-              Visible="false" />
-        <None Include="$(OutputPath)/System.Collections.Immutable.dll"
-              Pack="true"
-              PackagePath="tools/netstandard2.0/System.Collections.Immutable.dll"
-              Visible="false" />
-        <None Include="$(OutputPath)/System.Memory.dll"
-              Pack="true"
-              PackagePath="tools/netstandard2.0/System.Memory.dll"
-              Visible="false" />
-        <None Include="$(OutputPath)/System.Buffers.dll"
-              Pack="true"
-              PackagePath="tools/netstandard2.0/System.Buffers.dll"
-              Visible="false" />
-        <None Include="$(OutputPath)/System.Numerics.Vectors.dll"
-              Pack="true"
-              PackagePath="tools/netstandard2.0/System.Numerics.Vectors.dll"
-              Visible="false" />
-        <None Include="$(OutputPath)/System.Runtime.CompilerServices.Unsafe.dll"
-              Pack="true"
-              PackagePath="tools/netstandard2.0/System.Runtime.CompilerServices.Unsafe.dll"
-              Visible="false" />
-        <None Include="../../build/nuget/AtomUI.Generator.props"
-              Pack="true"
-              PackagePath="buildTransitive/AtomUI.Generator.props"
-              Visible="false" />
-        <None Include="../../build/nuget/linked-registration/LinkedRegistration.props"
-              Pack="true"
-              PackagePath="buildTransitive/linked-registration/LinkedRegistration.props"
-              Visible="false" />
-        <None Include="../../build/nuget/linked-registration/LinkedRegistration.targets"
-              Pack="true"
-              PackagePath="buildTransitive/linked-registration/LinkedRegistration.targets"
-              Visible="false" />
-        <None Include="../../build/nuget/AtomUI.Generator.targets"
-              Pack="true"
-              PackagePath="buildTransitive/AtomUI.Generator.targets"
-              Visible="false" />
-        <None Include="../../build/nuget/theme/ThemeAssets.targets"
-              Pack="true"
-              PackagePath="buildTransitive/theme/ThemeAssets.targets"
-              Visible="false" />
-        <None Include="../../build/nuget/localization/Localization.props"
-              Pack="true"
-              PackagePath="buildTransitive/localization/Localization.props"
-              Visible="false" />
-        <None Include="../../build/nuget/localization/Localization.targets"
-              Pack="true"
-              PackagePath="buildTransitive/localization/Localization.targets"
               Visible="false" />
     </ItemGroup>
 </Project>
