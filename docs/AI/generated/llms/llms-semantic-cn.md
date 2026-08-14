@@ -12304,13 +12304,20 @@ Source: ./controls/alert/semantic-cn.md
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Alert` | 反馈控件根语义区域，承载 public API、反馈状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `host` | `宿主或弹层区域` | 承载 overlay、popup、portal、message host、drawer 或 modal 容器。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `surface` | `反馈表面` | 承载背景、边框、阴影、尺寸、placement 和视觉状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载标题、正文、图标、进度、结果、操作或关闭入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效区域` | 表达进入退出、loading、progress、skeleton 或水印刷新反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+Alert 只有一个 public descriptor owner：`Alert`。
+
+| Part | Selector | Style Type | ContractType | Cardinality | AtomUI 节点 | 稳定性 |
+| --- | --- | --- | --- | --- | --- | --- |
+| `root` | Alert 本身 | 不适用 | `Alert` | `Single` | owner | stable since 6.0 |
+| `icon` | `.semantic-icon` | `AlertIconStyle` | `Icon` | `Multiple` | 四个 `AlertType` 图标 | stable since 6.0 |
+| `section` | `.semantic-section` | `AlertSectionStyle` | `StackPanel` | `Single` | 消息与描述布局 | stable since 6.0 |
+| `title` | `.semantic-title` | `AlertTitleStyle` | `Control` | `Multiple` | `MessageLabel` 与 `MarqueeLabel` | stable since 6.0 |
+| `description` | `.semantic-description` | `AlertDescriptionStyle` | `Label` | `Single` | `DescriptionLabel` | stable since 6.0 |
+| `actions` | `.semantic-actions` | `AlertActionsStyle` | `ContentPresenter` | `Single` | `ExtraActionPresenter` | stable since 6.0 |
+| `close` | `.semantic-close` | `AlertCloseStyle` | `IconButton` | `Single` | `PART_CloseBtn` | stable since 6.0 |
+
+六个 selector Part 的 `SelectorRoute` 均为 `/template/ .semantic-<name>`，`Customization` 为 `Selector`，
+`CrossVisualRoot=false`，`RuntimeCreated=false`。root 的 `Customization` 为 `Root`，不生成 `.semantic-root` 或 Style Type。
 
 ## Abstract AXAML Structure
 
@@ -12383,9 +12390,9 @@ Alert
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
-| 内容与数据 | `CloseIcon`、`Description`、`IsShowIcon` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 交互与状态 | `IsClosable`、`IsMessageMarqueeEnabled` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 其他稳定入口 | `ExtraAction`、`Message`、`Type` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+| 内容与数据 | `Message`、`Description`、`ExtraAction`、`CloseIcon` | 定义标题、详情、辅助操作和关闭图标内容。 |
+| 交互与状态 | `Type`、`IsShowIcon`、`IsClosable`、`IsMessageMarqueeEnabled` | 表达反馈类型、图标、关闭入口和标题呈现状态。 |
+| 视觉表面 | `StrokeDashArray` 与继承的 TemplatedControl 表面属性 | 支持 root Semantic Style 定制实线或虚线边框、背景、圆角与 padding。 |
 
 ## Pseudo Classes
 
@@ -12406,10 +12413,10 @@ Public API / inherited command / item source / user input
 
 状态维护规则：
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- 基础交互和主题状态 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+- `Type` 决定背景、边框和当前可见的状态图标。
+- `Description`、`ExtraAction`、`IsShowIcon`、`IsClosable` 与 `IsMessageMarqueeEnabled` 只切换静态模板节点状态，不改变 Semantic Part 数量。
+- `CloseRequest` 由当前模板的 close button 触发，业务层决定是否隐藏、移除或替换 Alert。
+- 模板重套用时必须解除旧 close button 订阅，并把 public API 对应状态投影到新模板。
 
 ## Theme and Token Boundaries
 
@@ -12417,13 +12424,14 @@ Alert 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的�
 
 | 主题文件 | 职责 |
 | --- | --- |
-| `AlertTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
+| `AlertTheme.axaml` | 提供单一静态模板、状态 selector、Token 绑定和 Semantic marker。 |
 
 Alert 使用 `AlertToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 基础交互和主题状态 运行时状态。
 
 主题维护规则：
 
 - 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
+- 不删除或重命名 `root`、`icon`、`section`、`title`、`description`、`actions`、`close`，不改变 selector class、ContractType 或 cardinality。
 - 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
 - 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
 - Browser 或平台特化主题必须保持同一 API 的语义一致。
@@ -12442,6 +12450,7 @@ Alert Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 - 不擅自新增、删除、重命名或改变 public/protected API、Avalonia 属性、事件和默认值。
 - 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
+- 不破坏七个 Semantic Part 的名称、selector、ContractType、cardinality 和 marker 身份。
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
@@ -12453,8 +12462,9 @@ Alert Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 维护 Alert 时不得破坏：
 
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
+- `root`、`icon`、`section`、`title`、`description`、`actions`、`close` 的名称、selector、ContractType、cardinality 和 marker 身份。
 - Template part 名称、ControlTheme key、伪类和资源 key。
-- 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
+- 旧 `PART_CloseBtn` 的 Click 订阅释放路径与新 part 的重新订阅顺序。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 

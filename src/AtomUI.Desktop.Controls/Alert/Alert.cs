@@ -25,7 +25,7 @@ public static class AlertPseudoClass
 }
 
 [PseudoClasses(AlertPseudoClass.HasDescription, AlertPseudoClass.HasExtraAction)]
-public class Alert : TemplatedControl
+public partial class Alert : TemplatedControl
 {
     #region 公共属性定义
 
@@ -52,6 +52,9 @@ public class Alert : TemplatedControl
 
     public static readonly StyledProperty<Control?> ExtraActionProperty =
         AvaloniaProperty.Register<Alert, Control?>(nameof(ExtraAction));
+
+    public static readonly StyledProperty<IReadOnlyList<double>?> StrokeDashArrayProperty =
+        AvaloniaProperty.Register<Alert, IReadOnlyList<double>?>(nameof(StrokeDashArray));
 
     public AlertType Type
     {
@@ -100,6 +103,12 @@ public class Alert : TemplatedControl
     {
         get => GetValue(ExtraActionProperty);
         set => SetValue(ExtraActionProperty, value);
+    }
+
+    public IReadOnlyList<double>? StrokeDashArray
+    {
+        get => GetValue(StrokeDashArrayProperty);
+        set => SetValue(StrokeDashArrayProperty, value);
     }
 
     #endregion
