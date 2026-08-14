@@ -19,28 +19,28 @@ public class ThemeAssetPackagingContractTests
 
         packedTarget.ShouldNotBeNull();
         ((string?)packedTarget.Attribute("Pack")).ShouldBe("true");
-        ((string?)packedTarget.Attribute("Include")).ShouldBe("../../build/AtomUI.Generator.targets");
+        ((string?)packedTarget.Attribute("Include")).ShouldBe("../../build/nuget/AtomUI.Generator.targets");
 
-        var generatorTargets = XDocument.Load(GetRepoFile("build/AtomUI.Generator.targets"));
+        var generatorTargets = XDocument.Load(GetRepoFile("build/nuget/AtomUI.Generator.targets"));
         generatorTargets.Descendants("Import")
                         .Single(element =>
                             ((string?)element.Attribute("Project"))?.EndsWith(
-                                "AtomUI.ThemeAssets.targets",
+                                "theme/ThemeAssets.targets",
                                 StringComparison.Ordinal) == true)
                         .ShouldNotBeNull();
 
         project.Descendants("None")
                .Single(element =>
-                   (string?)element.Attribute("Include") == "../../build/AtomUI.ThemeAssets.targets" &&
+                   (string?)element.Attribute("Include") == "../../build/nuget/theme/ThemeAssets.targets" &&
                    (string?)element.Attribute("PackagePath") ==
-                   "buildTransitive/AtomUI.ThemeAssets.targets")
+                   "buildTransitive/theme/ThemeAssets.targets")
                .ShouldNotBeNull();
     }
 
     [Fact]
     public void Theme_Asset_Target_Defaults_On_For_Package_Consumers_Only()
     {
-        var target = XDocument.Load(GetRepoFile("build/AtomUI.ThemeAssets.targets"));
+        var target = XDocument.Load(GetRepoFile("build/nuget/theme/ThemeAssets.targets"));
         var property = target.Descendants()
                              .SingleOrDefault(element =>
                                  element.Name.LocalName == "AtomUIGenerateControlThemeAssetResources");
@@ -54,7 +54,7 @@ public class ThemeAssetPackagingContractTests
         var import = repositoryTargets.Descendants("Import")
                                       .Single(element =>
                                           (string?)element.Attribute("Project") ==
-                                          "$(MSBuildThisFileDirectory)../AtomUI.ThemeAssets.targets");
+                                          "$(MSBuildThisFileDirectory)../nuget/theme/ThemeAssets.targets");
         ((string?)import.Attribute("Condition"))
             .ShouldBe("'$(AtomUIGenerateControlThemeAssetResources)' == 'true'");
 
@@ -82,7 +82,7 @@ public class ThemeAssetPackagingContractTests
     [Fact]
     public void Theme_Asset_Target_Uses_Build_Task_Instead_Of_Inline_Code()
     {
-        var target = XDocument.Load(GetRepoFile("build/AtomUI.ThemeAssets.targets"));
+        var target = XDocument.Load(GetRepoFile("build/nuget/theme/ThemeAssets.targets"));
         target.Descendants()
               .Where(element => element.Name.LocalName == "UsingTask")
               .ShouldContain(element =>

@@ -13,7 +13,7 @@ public sealed class LinkedRegistrationBuildAssetsTests
     [InlineData("AtomUIUseGeneratedRegistration")]
     public void Linked_Mode_Inputs_Are_Normalized(string propertyName)
     {
-        var targets = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.targets"));
+        var targets = XDocument.Load(GetRepoFile("build/nuget/linked-registration/LinkedRegistration.targets"));
         var linkedProperties = targets.Descendants()
                                       .Where(element =>
                                           element.Name.LocalName == "AtomUILinkedPublish")
@@ -31,7 +31,7 @@ public sealed class LinkedRegistrationBuildAssetsTests
     [Fact]
     public void Ordinary_Build_Defaults_To_Full_Registration()
     {
-        var targets = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.targets"));
+        var targets = XDocument.Load(GetRepoFile("build/nuget/linked-registration/LinkedRegistration.targets"));
 
         targets.Descendants()
                .Single(element =>
@@ -44,8 +44,8 @@ public sealed class LinkedRegistrationBuildAssetsTests
     [Fact]
     public void Application_Plan_Owner_Is_Derived_After_Project_OutputType()
     {
-        var props = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.props"));
-        var targets = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.targets"));
+        var props = XDocument.Load(GetRepoFile("build/nuget/linked-registration/LinkedRegistration.props"));
+        var targets = XDocument.Load(GetRepoFile("build/nuget/linked-registration/LinkedRegistration.targets"));
 
         props.Descendants().ShouldNotContain(element =>
             element.Name.LocalName == "AtomUIRegistrationPlanOwner");
@@ -74,7 +74,7 @@ public sealed class LinkedRegistrationBuildAssetsTests
     [Fact]
     public void Linked_Application_Owner_Installs_A_Trimmable_Feature_Switch()
     {
-        var targets = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.targets"));
+        var targets = XDocument.Load(GetRepoFile("build/nuget/linked-registration/LinkedRegistration.targets"));
         var option = targets.Descendants()
                             .Single(element =>
                                 element.Name.LocalName == "RuntimeHostConfigurationOption" &&
@@ -146,14 +146,34 @@ public sealed class LinkedRegistrationBuildAssetsTests
 
         packagePaths.ShouldContain("buildTransitive/$(PackageId).targets");
         packagePaths.ShouldContain("tools/netstandard2.0/%(Filename)%(Extension)");
-        packagePaths.ShouldContain("buildTransitive/%(Filename)%(Extension)");
+        packagePaths.ShouldContain("%(_AtomUIGeneratorConsumerBuildAsset.PackagePath)");
         packagePaths.ShouldNotContain("buildTransitive/$(PackageId).props");
+
+        var buildAssetPaths = target.Descendants("_AtomUIGeneratorConsumerBuildAsset")
+                                    .ToDictionary(
+                                        element => Path.GetFileName(element.Attribute("Include")!.Value)!,
+                                        element => (string?)element.Attribute("PackagePath"),
+                                        StringComparer.Ordinal);
+        buildAssetPaths["AtomUI.Generator.props"]
+            .ShouldBe("buildTransitive/AtomUI.Generator.props");
+        buildAssetPaths["AtomUI.Generator.targets"]
+            .ShouldBe("buildTransitive/AtomUI.Generator.targets");
+        buildAssetPaths["LinkedRegistration.props"]
+            .ShouldBe("buildTransitive/linked-registration/LinkedRegistration.props");
+        buildAssetPaths["LinkedRegistration.targets"]
+            .ShouldBe("buildTransitive/linked-registration/LinkedRegistration.targets");
+        buildAssetPaths["Localization.props"]
+            .ShouldBe("buildTransitive/localization/Localization.props");
+        buildAssetPaths["Localization.targets"]
+            .ShouldBe("buildTransitive/localization/Localization.targets");
+        buildAssetPaths["ThemeAssets.targets"]
+            .ShouldBe("buildTransitive/theme/ThemeAssets.targets");
     }
 
     [Fact]
     public void Embedded_Generator_Consumer_Assets_Are_Compile_Time_Only_And_Idempotent()
     {
-        var consumerTargets = XDocument.Load(GetRepoFile("build/AtomUI.GeneratorConsumer.targets"));
+        var consumerTargets = XDocument.Load(GetRepoFile("build/nuget/consumer/ProductPackage.targets"));
         consumerTargets.Descendants("Import")
                        .Single(element =>
                            (string?)element.Attribute("Project") ==
@@ -191,7 +211,7 @@ public sealed class LinkedRegistrationBuildAssetsTests
                            "$(MSBuildThisFileDirectory)AtomUI.Generator.targets")
                        .ShouldNotBeNull();
 
-        var generatorProps = XDocument.Load(GetRepoFile("build/AtomUI.Generator.props"));
+        var generatorProps = XDocument.Load(GetRepoFile("build/nuget/AtomUI.Generator.props"));
         generatorProps.Descendants("AtomUIGeneratorPropsImported")
                       .Single()
                       .Value.Trim()
@@ -202,7 +222,7 @@ public sealed class LinkedRegistrationBuildAssetsTests
                         .Value.Trim()
                         .ShouldBe("true");
 
-        var generatorTargets = XDocument.Load(GetRepoFile("build/AtomUI.Generator.targets"));
+        var generatorTargets = XDocument.Load(GetRepoFile("build/nuget/AtomUI.Generator.targets"));
         generatorTargets.Descendants("AtomUIGeneratorTargetsImported")
                         .Single()
                         .Value.Trim()
@@ -212,7 +232,7 @@ public sealed class LinkedRegistrationBuildAssetsTests
     [Fact]
     public void Linked_Owner_Validates_The_Generated_Plan_Marker_Before_Linking()
     {
-        var targets = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.targets"));
+        var targets = XDocument.Load(GetRepoFile("build/nuget/linked-registration/LinkedRegistration.targets"));
         var target = targets.Descendants()
                             .Single(element =>
                                 element.Name.LocalName == "Target" &&
@@ -249,7 +269,7 @@ public sealed class LinkedRegistrationBuildAssetsTests
     [Fact]
     public void Axaml_Usage_Is_Collected_Before_Compilation_Only_When_Input_Exists()
     {
-        var targets = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.targets"));
+        var targets = XDocument.Load(GetRepoFile("build/nuget/linked-registration/LinkedRegistration.targets"));
         var target = targets.Descendants()
                             .Single(element =>
                                 element.Name.LocalName == "Target" &&
@@ -288,7 +308,7 @@ public sealed class LinkedRegistrationBuildAssetsTests
     [Fact]
     public void Axaml_Usage_Additional_File_Metadata_Is_Visible_To_Source_Generators()
     {
-        var targets = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.targets"));
+        var targets = XDocument.Load(GetRepoFile("build/nuget/linked-registration/LinkedRegistration.targets"));
 
         targets.Descendants().ShouldContain(element =>
             element.Name.LocalName == "CompilerVisibleItemMetadata" &&
@@ -299,7 +319,7 @@ public sealed class LinkedRegistrationBuildAssetsTests
     [Fact]
     public void Linked_Properties_Are_Visible_To_Source_Generators()
     {
-        var props = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.props"));
+        var props = XDocument.Load(GetRepoFile("build/nuget/linked-registration/LinkedRegistration.props"));
         var visibleProperties = props.Descendants()
                                      .Where(element => element.Name.LocalName == "CompilerVisibleProperty")
                                      .Select(element => (string?)element.Attribute("Include"))
@@ -320,7 +340,7 @@ public sealed class LinkedRegistrationBuildAssetsTests
     [InlineData("PublishSingleFile")]
     public void Non_Linking_Publish_Inputs_Do_Not_Enable_Linked_Mode(string propertyName)
     {
-        var targets = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.targets"));
+        var targets = XDocument.Load(GetRepoFile("build/nuget/linked-registration/LinkedRegistration.targets"));
         var enablingConditions = targets.Descendants()
                                          .Where(element =>
                                              element.Name.LocalName == "AtomUILinkedPublish" &&
@@ -336,7 +356,7 @@ public sealed class LinkedRegistrationBuildAssetsTests
     [Fact]
     public void Theme_Assets_Expose_Only_Explicit_Unit_And_PackageShared_Metadata()
     {
-        var targets = XDocument.Load(GetRepoFile("build/AtomUI.ThemeAssets.targets"));
+        var targets = XDocument.Load(GetRepoFile("build/nuget/theme/ThemeAssets.targets"));
         var visibleProperties = targets.Descendants()
                                        .Where(element => element.Name.LocalName == "CompilerVisibleProperty")
                                        .Select(element => (string?)element.Attribute("Include"))

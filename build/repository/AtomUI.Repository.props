@@ -3,6 +3,6 @@
     <Import Project="$(MSBuildThisFileDirectory)ProjectDefaults.props" />
     <Import Project="$(MSBuildThisFileDirectory)PackageMetadata.props" />
     <Import Project="$(MSBuildThisFileDirectory)OutputPaths.props" />
-    <Import Project="$(MSBuildThisFileDirectory)../AtomUI.LinkedRegistration.props" />
-    <Import Project="$(MSBuildThisFileDirectory)../AtomUI.Localization.props" />
+    <Import Project="$(MSBuildThisFileDirectory)../nuget/linked-registration/LinkedRegistration.props" />
+    <Import Project="$(MSBuildThisFileDirectory)../nuget/localization/Localization.props" />
 </Project>

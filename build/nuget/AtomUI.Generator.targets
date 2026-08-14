@@ -1,9 +1,9 @@
 <Project>
-    <Import Project="$(MSBuildThisFileDirectory)AtomUI.LinkedRegistration.targets"
+    <Import Project="$(MSBuildThisFileDirectory)linked-registration/LinkedRegistration.targets"
             Condition="'$(AtomUIGeneratorTargetsImported)' != 'true'" />
-    <Import Project="$(MSBuildThisFileDirectory)AtomUI.Localization.targets"
+    <Import Project="$(MSBuildThisFileDirectory)localization/Localization.targets"
             Condition="'$(AtomUIGeneratorTargetsImported)' != 'true'" />
-    <Import Project="$(MSBuildThisFileDirectory)AtomUI.ThemeAssets.targets"
+    <Import Project="$(MSBuildThisFileDirectory)theme/ThemeAssets.targets"
             Condition="'$(AtomUIGeneratorTargetsImported)' != 'true'" />
     <PropertyGroup Condition="'$(AtomUIGeneratorTargetsImported)' != 'true'">
         <AtomUIGeneratorTargetsImported>true</AtomUIGeneratorTargetsImported>

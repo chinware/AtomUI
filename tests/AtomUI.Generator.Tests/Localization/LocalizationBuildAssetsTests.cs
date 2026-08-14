@@ -10,7 +10,7 @@ public class LocalizationBuildAssetsTests
     [Fact]
     public void Localization_Props_Defines_Module_Identity_And_Item_Defaults()
     {
-        var props = XDocument.Load(GetRepoFile("build/AtomUI.Localization.props"));
+        var props = XDocument.Load(GetRepoFile("build/nuget/localization/Localization.props"));
         var propertyGroups = props.Root!.Elements()
                                   .Where(element => element.Name.LocalName == "PropertyGroup")
                                   .ToArray();
@@ -64,19 +64,19 @@ public class LocalizationBuildAssetsTests
         props.Descendants("Import")
              .Single(element =>
                  (string?)element.Attribute("Project") ==
-                 "$(MSBuildThisFileDirectory)../AtomUI.Localization.props")
+                 "$(MSBuildThisFileDirectory)../nuget/localization/Localization.props")
              .ShouldNotBeNull();
         targets.Descendants("Import")
                .Single(element =>
                    (string?)element.Attribute("Project") ==
-                   "$(MSBuildThisFileDirectory)../AtomUI.Localization.targets")
+                   "$(MSBuildThisFileDirectory)../nuget/localization/Localization.targets")
                .ShouldNotBeNull();
     }
 
     [Fact]
     public void Localization_Targets_Discovers_Xliff_And_Exposes_Generator_Metadata()
     {
-        var targets = XDocument.Load(GetRepoFile("build/AtomUI.Localization.targets"));
+        var targets = XDocument.Load(GetRepoFile("build/nuget/localization/Localization.targets"));
         var templateOutputRoot = targets.Descendants()
                                         .Single(element =>
                                             element.Name.LocalName ==
@@ -223,7 +223,7 @@ public class LocalizationBuildAssetsTests
     [Fact]
     public void Localization_Targets_Resolve_Authoring_Project_References_As_Source_Contracts()
     {
-        var targets = XDocument.Load(GetRepoFile("build/AtomUI.Localization.targets"));
+        var targets = XDocument.Load(GetRepoFile("build/nuget/localization/Localization.targets"));
 
         var configuredReference = targets.Root!
                                          .Elements("ItemGroup")
@@ -298,7 +298,7 @@ public class LocalizationBuildAssetsTests
     [Fact]
     public void Localization_Targets_Define_The_Language_Pack_Project_Reference_Protocol()
     {
-        var targets = XDocument.Load(GetRepoFile("build/AtomUI.Localization.targets"));
+        var targets = XDocument.Load(GetRepoFile("build/nuget/localization/Localization.targets"));
 
         var provider = targets.Descendants("Target")
                               .Single(element =>
@@ -462,7 +462,7 @@ public class LocalizationBuildAssetsTests
     [Fact]
     public void Localization_Targets_Registers_Build_Tasks_Before_Source_Outputs_Exist()
     {
-        var targets = XDocument.Load(GetRepoFile("build/AtomUI.Localization.targets"));
+        var targets = XDocument.Load(GetRepoFile("build/nuget/localization/Localization.targets"));
         var usingTasks = targets.Descendants("UsingTask")
                                 .Where(element =>
                                     ((string?)element.Attribute("TaskName"))?.StartsWith(
@@ -482,7 +482,7 @@ public class LocalizationBuildAssetsTests
     [Fact]
     public void Module_Package_Exports_Only_The_Authoritative_EnUs_Catalog_Sources()
     {
-        var targets = XDocument.Load(GetRepoFile("build/AtomUI.Localization.targets"));
+        var targets = XDocument.Load(GetRepoFile("build/nuget/localization/Localization.targets"));
         var moduleLanguageFiles = targets.Descendants()
                                          .Single(element =>
                                              element.Name.LocalName == "_AtomUIModuleLanguageFile");
@@ -509,13 +509,13 @@ public class LocalizationBuildAssetsTests
                                      element => (string?)element.Attribute("PackagePath"),
                                      StringComparer.Ordinal);
 
-        packedFiles["../../build/AtomUI.Localization.props"]
-            .ShouldBe("buildTransitive/AtomUI.Localization.props");
-        packedFiles["../../build/AtomUI.Localization.targets"]
-            .ShouldBe("buildTransitive/AtomUI.Localization.targets");
-        packedFiles["../../build/AtomUI.Generator.props"]
+        packedFiles["../../build/nuget/localization/Localization.props"]
+            .ShouldBe("buildTransitive/localization/Localization.props");
+        packedFiles["../../build/nuget/localization/Localization.targets"]
+            .ShouldBe("buildTransitive/localization/Localization.targets");
+        packedFiles["../../build/nuget/AtomUI.Generator.props"]
             .ShouldBe("buildTransitive/AtomUI.Generator.props");
-        packedFiles["../../build/AtomUI.Generator.targets"]
+        packedFiles["../../build/nuget/AtomUI.Generator.targets"]
             .ShouldBe("buildTransitive/AtomUI.Generator.targets");
         packedFiles["$(OutputPath)/AtomUI.Build.Tasks.dll"]
             .ShouldBe("tools/netstandard2.0/AtomUI.Build.Tasks.dll");
@@ -548,19 +548,19 @@ public class LocalizationBuildAssetsTests
                    (string?)element.Attribute("ReferenceOutputAssembly") == "false")
                .ShouldNotBeNull();
 
-        var generatorProps = XDocument.Load(GetRepoFile("build/AtomUI.Generator.props"));
+        var generatorProps = XDocument.Load(GetRepoFile("build/nuget/AtomUI.Generator.props"));
         generatorProps.Descendants("Import")
                       .Single(element =>
                           ((string?)element.Attribute("Project"))?.EndsWith(
-                              "AtomUI.Localization.props",
+                              "localization/Localization.props",
                               StringComparison.Ordinal) == true)
                       .ShouldNotBeNull();
 
-        var generatorTargets = XDocument.Load(GetRepoFile("build/AtomUI.Generator.targets"));
+        var generatorTargets = XDocument.Load(GetRepoFile("build/nuget/AtomUI.Generator.targets"));
         generatorTargets.Descendants("Import")
                         .Single(element =>
                             ((string?)element.Attribute("Project"))?.EndsWith(
-                                "AtomUI.Localization.targets",
+                                "localization/Localization.targets",
                                 StringComparison.Ordinal) == true)
                         .ShouldNotBeNull();
     }
@@ -853,10 +853,14 @@ public class LocalizationBuildAssetsTests
                     new XElement("AtomUILanguageContractVersion", "2")),
                 new XElement(
                     "Import",
-                    new XAttribute("Project", Path.Combine(repoRoot, "build", "AtomUI.Localization.props"))),
+                    new XAttribute(
+                        "Project",
+                        Path.Combine(repoRoot, "build", "nuget", "localization", "Localization.props"))),
                 new XElement(
                     "Import",
-                    new XAttribute("Project", Path.Combine(repoRoot, "build", "AtomUI.Localization.targets")))))
+                    new XAttribute(
+                        "Project",
+                        Path.Combine(repoRoot, "build", "nuget", "localization", "Localization.targets")))))
             .Save(path);
     }
 
@@ -881,7 +885,9 @@ public class LocalizationBuildAssetsTests
                     new XElement("AtomUILocalizationBuildTasksAssembly", buildTasksAssembly)),
                 new XElement(
                     "Import",
-                    new XAttribute("Project", Path.Combine(repoRoot, "build", "AtomUI.Localization.props"))),
+                    new XAttribute(
+                        "Project",
+                        Path.Combine(repoRoot, "build", "nuget", "localization", "Localization.props"))),
                 new XElement(
                     "ItemGroup",
                     new XElement(
@@ -889,7 +895,9 @@ public class LocalizationBuildAssetsTests
                         new XAttribute("Include", moduleProject))),
                 new XElement(
                     "Import",
-                    new XAttribute("Project", Path.Combine(repoRoot, "build", "AtomUI.Localization.targets")))))
+                    new XAttribute(
+                        "Project",
+                        Path.Combine(repoRoot, "build", "nuget", "localization", "Localization.targets")))))
             .Save(path);
     }
 
@@ -912,7 +920,9 @@ public class LocalizationBuildAssetsTests
                     new XElement("CompilerGeneratedFilesOutputPath", "$(BaseIntermediateOutputPath)Generated")),
                 new XElement(
                     "Import",
-                    new XAttribute("Project", Path.Combine(repoRoot, "build", "AtomUI.Localization.props"))),
+                    new XAttribute(
+                        "Project",
+                        Path.Combine(repoRoot, "build", "nuget", "localization", "Localization.props"))),
                 new XElement(
                     "ItemGroup",
                     new XElement("ProjectReference", new XAttribute("Include", moduleProject)),
@@ -922,7 +932,9 @@ public class LocalizationBuildAssetsTests
                         new XAttribute("Include", languagePackProject))),
                 new XElement(
                     "Import",
-                    new XAttribute("Project", Path.Combine(repoRoot, "build", "AtomUI.Localization.targets")))))
+                    new XAttribute(
+                        "Project",
+                        Path.Combine(repoRoot, "build", "nuget", "localization", "Localization.targets")))))
             .Save(path);
     }
 

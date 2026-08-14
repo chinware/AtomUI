@@ -52,8 +52,8 @@
     </ItemGroup>
 
     <PropertyGroup>
-        <AtomUILocalizationBuildTasksAssembly Condition="'$(AtomUILocalizationBuildTasksAssembly)' == '' and Exists('$(MSBuildThisFileDirectory)../src/AtomUI.Build.Tasks/AtomUI.Build.Tasks.csproj')">$(MSBuildThisFileDirectory)../output/bin/$(Configuration)/netstandard2.0/AtomUI.Build.Tasks.dll</AtomUILocalizationBuildTasksAssembly>
-        <AtomUILocalizationBuildTasksAssembly Condition="'$(AtomUILocalizationBuildTasksAssembly)' == ''">$(MSBuildThisFileDirectory)../tools/netstandard2.0/AtomUI.Build.Tasks.dll</AtomUILocalizationBuildTasksAssembly>
+        <AtomUILocalizationBuildTasksAssembly Condition="'$(AtomUILocalizationBuildTasksAssembly)' == '' and Exists('$(MSBuildThisFileDirectory)../../../src/AtomUI.Build.Tasks/AtomUI.Build.Tasks.csproj')">$(MSBuildThisFileDirectory)../../../output/bin/$(Configuration)/netstandard2.0/AtomUI.Build.Tasks.dll</AtomUILocalizationBuildTasksAssembly>
+        <AtomUILocalizationBuildTasksAssembly Condition="'$(AtomUILocalizationBuildTasksAssembly)' == ''">$(MSBuildThisFileDirectory)../../tools/netstandard2.0/AtomUI.Build.Tasks.dll</AtomUILocalizationBuildTasksAssembly>
         <AtomUILanguagePackageManifestPath Condition="'$(AtomUILanguagePackageManifestPath)' == ''">$(IntermediateOutputPath)AtomUI.LanguagePack.xml</AtomUILanguagePackageManifestPath>
         <AtomUILanguagePackagePropsPath Condition="'$(AtomUILanguagePackagePropsPath)' == ''">$(IntermediateOutputPath)$(PackageId).props</AtomUILanguagePackagePropsPath>
         <AtomUILanguageTemplateOutputRootDirectory Condition="'$(AtomUILanguageTemplateOutputRootDirectory)' == ''">$(MSBuildProjectDirectory)/Localization</AtomUILanguageTemplateOutputRootDirectory>
