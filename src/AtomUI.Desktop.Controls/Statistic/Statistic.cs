@@ -2,7 +2,7 @@ using Avalonia;
 
 namespace AtomUI.Desktop.Controls;
 
-public class Statistic : AbstractStatistic
+public partial class Statistic : AbstractStatistic
 {
     #region 公共属性定义
 
