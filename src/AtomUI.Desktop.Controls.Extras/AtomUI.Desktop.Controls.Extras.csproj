@@ -12,10 +12,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj"
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false"

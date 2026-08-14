@@ -13,12 +13,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
-        <Compile Remove="Window\Reflection\**" />
-        <Compile Remove="Window\Visuals\**" />
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="ReactiveUI.Avalonia"/>
         <PackageReference Include="Avalonia.Desktop"/>
         <PackageReference Include="Avalonia.Wayland"/>
@@ -38,30 +32,4 @@
         <ProjectReference Include="../AtomUI.Controls/AtomUI.Controls.csproj" />
         <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
     </ItemGroup>
-
-    <ItemGroup>
-      <AvaloniaXaml Remove="Window\Reflection\**" />
-      <AvaloniaXaml Remove="Window\Visuals\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Remove="Window\Reflection\**" />
-      <EmbeddedResource Remove="Window\Visuals\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <AdditionalFiles Remove="Window\Reflection\**" />
-      <AdditionalFiles Remove="Window\Visuals\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <AvaloniaResource Remove="Window\Reflection\**" />
-      <AvaloniaResource Remove="Window\Visuals\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="Window\Reflection\**" />
-      <None Remove="Window\Visuals\**" />
-    </ItemGroup>
-
 </Project>

@@ -13,6 +13,10 @@
         <None Remove="*.csproj.DotSettings" />
     </ItemGroup>
 
+    <ItemGroup Condition="'$(CompilerGeneratedFilesOutputPath)' != ''">
+        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs" />
+    </ItemGroup>
+
     <Import Project="$(MSBuildThisFileDirectory)AtomUI.Generator.targets" />
 
     <Target Name="AtomUIPrepareGeneratorConsumerPackageAssets"

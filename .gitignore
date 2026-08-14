@@ -163,6 +163,8 @@ tools/*
 !tools/AtomUI.Docs.LLMsGenerator/**
 !tools/performances/
 !tools/performances/**
+tools/**/[Bb]in/
+tools/**/[Oo]bj/
 .nuget
 artifacts/
 nuget

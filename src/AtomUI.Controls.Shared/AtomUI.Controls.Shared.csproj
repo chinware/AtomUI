@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="Avalonia" />
     </ItemGroup>
 

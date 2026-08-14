@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="../AtomUI.Localization/AtomUI.Localization.csproj" />
         <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj"
                           OutputItemType="Analyzer"

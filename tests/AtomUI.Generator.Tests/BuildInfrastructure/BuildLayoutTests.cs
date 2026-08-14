@@ -160,6 +160,86 @@ public sealed class BuildLayoutTests
     }
 
     [Fact]
+    public void Repository_Output_Paths_Centralize_Binaries_And_Intermediate_Files()
+    {
+        var outputPaths = XDocument.Load(GetRepoFile("build/OutputPaths.props"));
+
+        outputPaths.Descendants("PackageOutputPath")
+                   .ShouldHaveSingleItem()
+                   .Value.ShouldBe("$(MSBuildThisFileDirectory)../output/Nuget/$(Configuration)");
+        outputPaths.Descendants("OutputPathWithoutFramework")
+                   .ShouldHaveSingleItem()
+                   .Value.ShouldBe("$(MSBuildThisFileDirectory)../output/bin/$(Configuration)");
+        outputPaths.Descendants("OutputPath")
+                   .ShouldHaveSingleItem()
+                   .Value.ShouldBe("$(OutputPathWithoutFramework)");
+        outputPaths.Descendants("BaseIntermediateOutputPath")
+                   .ShouldHaveSingleItem()
+                   .Value.ShouldBe(
+                       "$(MSBuildThisFileDirectory)../output/$(MSBuildProjectName)/obj");
+    }
+
+    [Fact]
+    public void Tool_Source_Exceptions_Do_Not_Expose_Build_Output_Directories()
+    {
+        var ignoreLines = File.ReadAllLines(GetRepoFile(".gitignore"));
+        var lastToolSourceException = Array.FindLastIndex(ignoreLines, line =>
+            line is "!tools/AtomUI.Docs.LLMsGenerator/**" or "!tools/performances/**");
+        var binIgnore = Array.IndexOf(ignoreLines, "tools/**/[Bb]in/");
+        var objIgnore = Array.IndexOf(ignoreLines, "tools/**/[Oo]bj/");
+
+        lastToolSourceException.ShouldBeGreaterThanOrEqualTo(0);
+        binIgnore.ShouldBeGreaterThan(lastToolSourceException);
+        objIgnore.ShouldBeGreaterThan(lastToolSourceException);
+    }
+
+    [Fact]
+    public void Repository_Targets_Exclude_Compiler_Generated_Files_Once()
+    {
+        const string generatedFilesPattern = "$(CompilerGeneratedFilesOutputPath)/**/*.cs";
+        var repositoryTargets = XDocument.Load(GetRepoFile("build/AtomUI.Repository.targets"));
+        var removal = repositoryTargets.Descendants("Compile")
+                                       .Where(element =>
+                                           (string?)element.Attribute("Remove") == generatedFilesPattern)
+                                       .ShouldHaveSingleItem();
+
+        ((string?)removal.Parent?.Attribute("Condition"))
+            .ShouldBe("'$(CompilerGeneratedFilesOutputPath)' != ''");
+
+        var repositoryRoot = GetRepositoryRoot();
+        var projectFiles = new[] { "src", "controlgallery", "tests", "tools" }
+            .Select(directory => Path.Combine(repositoryRoot, directory))
+            .Where(Directory.Exists)
+            .SelectMany(directory => Directory.EnumerateFiles(
+                directory,
+                "*.csproj",
+                SearchOption.AllDirectories));
+        foreach (var projectFile in projectFiles)
+        {
+            var project = XDocument.Load(projectFile);
+            if (!project.Descendants("CompilerGeneratedFilesOutputPath").Any())
+            {
+                continue;
+            }
+
+            project.Descendants("Compile")
+                   .ShouldNotContain(element =>
+                       (string?)element.Attribute("Remove") == generatedFilesPattern,
+                       projectFile);
+        }
+    }
+
+    [Fact]
+    public void Desktop_Project_Does_Not_Keep_Stale_Window_Directory_Exclusions()
+    {
+        var project = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj"));
+
+        project.ShouldNotContain("Window\\Reflection");
+        project.ShouldNotContain("Window\\Visuals");
+    }
+
+    [Fact]
     public void NuGet_Generator_Entry_Points_Import_Flat_Feature_Files()
     {
         GetImports("build/AtomUI.Generator.props").ShouldBe([

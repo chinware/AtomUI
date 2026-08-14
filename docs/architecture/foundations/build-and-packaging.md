@@ -41,9 +41,9 @@ NativeAOT 应用和测试，补充 Homebrew OpenSSL/Brotli linker 搜索路径�
 `$(AtomUIBuildTasksAssembly)`、显式 NuGet build asset 清单和 Generator tool asset 清单，然后导入
 `AtomUI.Generator.props`。
 
-`AtomUI.Repository.targets` 定义第一方库的 AOT/Trim 默认值、排除 `.DotSettings`，导入
-`AtomUI.Generator.targets`，并为声明 `AtomUIRegistrationPackageId` 的产品包注入 consumer target、共享构建资产和
-工具程序集。
+`AtomUI.Repository.targets` 定义第一方库的 AOT/Trim 默认值，集中排除 `.DotSettings` 和项目目录中的 compiler-generated
+源码快照，导入 `AtomUI.Generator.targets`，并为声明 `AtomUIRegistrationPackageId` 的产品包注入 consumer target、
+共享构建资产和工具程序集。
 
 `AtomUI.Repository.props` 是 Generator build assets 的唯一清单：
 
@@ -52,6 +52,10 @@ NativeAOT 应用和测试，补充 Homebrew OpenSSL/Brotli linker 搜索路径�
 - `@(AtomUIGeneratorToolAsset)` 一次定义 Generator、Build Tasks 和任务运行所需依赖，统一进入
   `tools/netstandard2.0/`。
 - `AtomUI.Generator.csproj` 与注册型产品包只能消费这两个 item，不得各自维护第二份文件清单。
+
+`OutputPaths.props` 对仓库内所有项目统一设置 `PackageOutputPath`、`OutputPath` 和 `BaseIntermediateOutputPath`。这同样
+适用于 `tools/` 下的项目；工具源码的 `.gitignore` 反向规则之后必须重新排除 `tools/**/bin/` 和 `tools/**/obj/`，
+避免配置迁移或 IDE 中间态产生的本地二进制进入待提交列表。
 
 ## NuGet 入口
 
@@ -108,17 +112,17 @@ Repository 配置、`MacOSHomebrewNativeAot.targets` 或 `scripts/` 资产。
 
 ## 源生成输出
 
-多个项目启用：
+需要把源生成结果写到仓库目录的项目只声明标准 SDK 属性：
 
 ```xml
 <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
 <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
-<Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
 ```
 
 `GeneratedFiles/` 是本地编译产物，默认由 `.gitignore` 忽略；只有 GalleryBase 中被结构测试直接读取的少量快照保留跟踪。
 
-生成文件输出到项目内 `GeneratedFiles/`，但从编译输入中移除该目录，避免重复编译。源生成器通过 Analyzer 方式参与当前编译。
+`AtomUI.Repository.targets` 根据 `CompilerGeneratedFilesOutputPath` 统一从 `Compile` 移除这些快照，避免第二次构建把上次
+生成结果作为普通源码再次编译。项目文件不得重复声明同一条 `Compile Remove`。源生成器通过 Analyzer 方式参与当前编译。
 
 ## Analyzer 引用方式
 

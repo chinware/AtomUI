@@ -91,8 +91,8 @@ Directory.Build.targets
 ```
 
 `AtomUI.Repository.props` 在导入 Generator props 前设置源码构建使用的 `$(AtomUIBuildTasksAssembly)`。Repository
-targets 同时拥有第一方库 AOT/Trim 默认值、`.DotSettings` 排除和产品包 build asset 注入，不再为这些短逻辑保留
-独立聚合文件。
+targets 同时拥有第一方库 AOT/Trim 默认值、`.DotSettings` 与 compiler-generated 源码快照排除，以及产品包 build
+asset 注入，不再为这些短逻辑保留独立聚合文件。
 
 ## 文件职责
 
@@ -103,7 +103,7 @@ targets 同时拥有第一方库 AOT/Trim 默认值、`.DotSettings` 排除和�
 | `PackageMetadata.props` | NuGet 公共元数据及仓库资产路径 |
 | `OutputPaths.props` | NuGet、编译输出和集中式中间产物路径 |
 | `AtomUI.Repository.props` | Repository props 聚合、Build Tasks 源码路径、NuGet/tool 显式资产清单 |
-| `AtomUI.Repository.targets` | AOT/Trim 默认值、产品包资产注入、Generator targets 聚合 |
+| `AtomUI.Repository.targets` | AOT/Trim 默认值、生成源码快照排除、产品包资产注入、Generator targets 聚合 |
 | `AtomUI.Generator.props/targets` | NuGet 自动导入入口和 feature 编排 |
 | `AtomUI.GeneratorConsumer.targets` | 注册型产品包 consumer target 模板 |
 | `AtomUI.LinkedRegistration.*` | linked publish 注册构建管线 |
@@ -198,6 +198,8 @@ Repository 构建在 `AtomUI.Repository.props` 中把它指向集中输出目录
 - Generator 和 Build Tasks 不进入应用运行时依赖、输出或 publish 目录。
 - Localization target 名称、时序和行为保持等价。
 - 集中输出布局不会把项目目录中的旧 `obj/**/*.cs` 重新纳入 Compile。
+- 设置 `CompilerGeneratedFilesOutputPath` 的项目由 Repository targets 统一排除生成源码，不在各 `.csproj` 重复规则。
+- `tools/` 源码反向 ignore 规则之后重新排除 `bin/` 和 `obj/`，中间态构建产物不能进入版本控制候选。
 
 ## 验证
 
