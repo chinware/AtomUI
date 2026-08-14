@@ -49,11 +49,12 @@ public class ThemeAssetPackagingContractTests
         ((string?)property.Attribute("Condition"))
             .ShouldBe("'$(AtomUIGenerateControlThemeAssetResources)' == ''");
 
-        var directoryTargets = XDocument.Load(GetRepoFile("Directory.Build.targets"));
-        var import = directoryTargets.Descendants("Import")
-                                     .Single(element =>
-                                         ((string?)element.Attribute("Project"))?
-                                         .EndsWith("build/AtomUI.ThemeAssets.targets", StringComparison.Ordinal) == true);
+        var repositoryTargets = XDocument.Load(GetRepoFile(
+            "build/repository/AtomUI.Repository.targets"));
+        var import = repositoryTargets.Descendants("Import")
+                                      .Single(element =>
+                                          (string?)element.Attribute("Project") ==
+                                          "$(MSBuildThisFileDirectory)../AtomUI.ThemeAssets.targets");
         ((string?)import.Attribute("Condition"))
             .ShouldBe("'$(AtomUIGenerateControlThemeAssetResources)' == 'true'");
 
@@ -71,10 +72,11 @@ public class ThemeAssetPackagingContractTests
                   (string?)element.Attribute("Include") == "AtomUIThemeControlCatalog")
               .ShouldNotBeNull();
 
-        var directoryProps = XDocument.Load(GetRepoFile("Directory.Build.props"));
-        directoryProps.Descendants()
-                      .Single(element => element.Name.LocalName == "AtomUIThemeControlCatalog")
-                      .Value.ShouldBe("AtomUI");
+        var projectDefaults = XDocument.Load(GetRepoFile(
+            "build/repository/ProjectDefaults.props"));
+        projectDefaults.Descendants()
+                       .Single(element => element.Name.LocalName == "AtomUIThemeControlCatalog")
+                       .Value.ShouldBe("AtomUI");
     }
 
     [Fact]

@@ -1,25 +1,3 @@
 <Project>
-
-    <PropertyGroup Condition="$(MSBuildProjectName.StartsWith('AtomUI.')) and
-                              '$(OutputType)' == 'Library' and
-                              '$(IsTestProject)' != 'true' and
-                              '$(IsRoslynComponent)' != 'true' and
-                              $([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
-        <IsTrimmable Condition="'$(IsTrimmable)' == ''">true</IsTrimmable>
-        <IsAotCompatible Condition="'$(IsAotCompatible)' == ''">true</IsAotCompatible>
-    </PropertyGroup>
-
-    <Import Project="$(MSBuildThisFileDirectory)build/AtomUI.LinkedRegistration.targets" />
-
-    <Import Project="$(MSBuildThisFileDirectory)build/AtomUI.GeneratorPackaging.targets" />
-
-    <Import Project="$(MSBuildThisFileDirectory)build/AtomUI.Localization.targets" />
-
-    <Import Project="$(MSBuildThisFileDirectory)build/AtomUI.ThemeAssets.targets"
-            Condition="'$(AtomUIGenerateControlThemeAssetResources)' == 'true'" />
-
-    <!-- https://github.com/dotnet/sdk/issues/22515-->
-    <ItemGroup>
-        <None Remove="*.csproj.DotSettings"/>
-    </ItemGroup>
+    <Import Project="$(MSBuildThisFileDirectory)build/repository/AtomUI.Repository.targets" />
 </Project>

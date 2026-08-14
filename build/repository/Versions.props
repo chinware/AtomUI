@@ -1,6 +1,5 @@
 <Project>
     <PropertyGroup>
-        <NoWarn>$(NoWarn);CS7035</NoWarn>
         <AvaloniaVersion>12.1.1</AvaloniaVersion>
         <AtomUIVersion>6.1.3</AtomUIVersion>
     </PropertyGroup>

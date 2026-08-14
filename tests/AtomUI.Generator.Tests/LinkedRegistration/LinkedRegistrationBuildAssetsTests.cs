@@ -94,7 +94,7 @@ public sealed class LinkedRegistrationBuildAssetsTests
     [InlineData("IsAotCompatible")]
     public void First_Party_Runtime_Libraries_Declare_Linker_Compatibility(string propertyName)
     {
-        var targets = XDocument.Load(GetRepoFile("Directory.Build.targets"));
+        var targets = XDocument.Load(GetRepoFile("build/repository/ProjectDefaults.targets"));
         var property = targets.Descendants()
                               .Single(element =>
                                   element.Name.LocalName == propertyName &&
@@ -113,15 +113,16 @@ public sealed class LinkedRegistrationBuildAssetsTests
     [Fact]
     public void Registration_Product_Packages_Embed_Generator_Consumer_Assets()
     {
-        var directoryTargets = XDocument.Load(GetRepoFile("Directory.Build.targets"));
-        directoryTargets.Descendants("Import")
-                        .Single(element =>
-                            ((string?)element.Attribute("Project"))?.EndsWith(
-                                "build/AtomUI.GeneratorPackaging.targets",
-                                StringComparison.Ordinal) == true)
-                        .ShouldNotBeNull();
+        var repositoryTargets = XDocument.Load(GetRepoFile(
+            "build/repository/AtomUI.Repository.targets"));
+        repositoryTargets.Descendants("Import")
+                         .Single(element =>
+                             (string?)element.Attribute("Project") ==
+                             "$(MSBuildThisFileDirectory)PackageGeneratorAssets.targets")
+                         .ShouldNotBeNull();
 
-        var targets = XDocument.Load(GetRepoFile("build/AtomUI.GeneratorPackaging.targets"));
+        var targets = XDocument.Load(GetRepoFile(
+            "build/repository/PackageGeneratorAssets.targets"));
         var target = targets.Descendants("Target")
                             .Single(element =>
                                 (string?)element.Attribute("Name") ==

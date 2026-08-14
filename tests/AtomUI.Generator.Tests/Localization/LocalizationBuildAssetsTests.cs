@@ -58,20 +58,18 @@ public class LocalizationBuildAssetsTests
     [Fact]
     public void Repository_Imports_Localization_Build_Assets_For_Project_References()
     {
-        var props = XDocument.Load(GetRepoFile("Directory.Build.props"));
-        var targets = XDocument.Load(GetRepoFile("Directory.Build.targets"));
+        var props = XDocument.Load(GetRepoFile("build/repository/AtomUI.Repository.props"));
+        var targets = XDocument.Load(GetRepoFile("build/repository/AtomUI.Repository.targets"));
 
         props.Descendants("Import")
              .Single(element =>
-                 ((string?)element.Attribute("Project"))?.EndsWith(
-                     "build/AtomUI.Localization.props",
-                     StringComparison.Ordinal) == true)
+                 (string?)element.Attribute("Project") ==
+                 "$(MSBuildThisFileDirectory)../AtomUI.Localization.props")
              .ShouldNotBeNull();
         targets.Descendants("Import")
                .Single(element =>
-                   ((string?)element.Attribute("Project"))?.EndsWith(
-                       "build/AtomUI.Localization.targets",
-                       StringComparison.Ordinal) == true)
+                   (string?)element.Attribute("Project") ==
+                   "$(MSBuildThisFileDirectory)../AtomUI.Localization.targets")
                .ShouldNotBeNull();
     }
 
