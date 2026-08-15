@@ -169,18 +169,6 @@
         <target state="translated">佈局</target>
       </segment>
     </unit>
-    <unit id="SmallerCircularProgressBarDescription">
-      <segment>
-        <source>A smaller circular progress bar.</source>
-        <target state="translated">更小的環形進度條。</target>
-      </segment>
-    </unit>
-    <unit id="SmallerCircularProgressBarTitle">
-      <segment>
-        <source>A smaller circular progress bar.</source>
-        <target state="translated">更小的環形進度條</target>
-      </segment>
-    </unit>
     <unit id="SemanticBodyDescription">
       <segment>
         <source>Body element, set progress bar layout and size styles</source>
@@ -221,6 +209,18 @@
       <segment>
         <source>Track element, set progress fill color and transition animation styles</source>
         <target state="translated">軌跡元素，設定進度填充部分的顏色和過渡動畫樣式</target>
+      </segment>
+    </unit>
+    <unit id="SmallerCircularProgressBarDescription">
+      <segment>
+        <source>A smaller circular progress bar.</source>
+        <target state="translated">更小的環形進度條。</target>
+      </segment>
+    </unit>
+    <unit id="SmallerCircularProgressBarTitle">
+      <segment>
+        <source>A smaller circular progress bar.</source>
+        <target state="translated">更小的環形進度條</target>
       </segment>
     </unit>
     <unit id="StepsDescription">

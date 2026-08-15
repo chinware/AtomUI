@@ -415,6 +415,18 @@
         <target state="translated">Pesquisar</target>
       </segment>
     </unit>
+    <unit id="P2ContentSemanticFunction">
+      <segment>
+        <source>Function</source>
+        <target state="translated">Função</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSemanticObject">
+      <segment>
+        <source>Object</source>
+        <target state="translated">Objeto</target>
+      </segment>
+    </unit>
     <unit id="P2ContentSmall">
       <segment>
         <source>Small</source>
@@ -487,30 +499,6 @@
         <target state="translated">Exemplos</target>
       </segment>
     </unit>
-    <unit id="SizeDescription">
-      <segment>
-        <source>AtomUI supports three sizes of buttons: small, default and large. If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.</source>
-        <target state="translated">AtomUI oferece suporte três tamanhos de botões: pequeno, padrão e grande. Se a grande ou pequeno botão é desired, definir o tamanho propriedade para either grande ou pequeno respectively. Omit o tamanho propriedade para a botão com o padrão tamanho.</target>
-      </segment>
-    </unit>
-    <unit id="SizeTitle">
-      <segment>
-        <source>Size</source>
-        <target state="translated">Tamanho</target>
-      </segment>
-    </unit>
-    <unit id="TypeDescription">
-      <segment>
-        <source>There are primary button, default button, dashed button, text button and link button in antd.</source>
-        <target state="translated">Há são primário botão, padrão botão, dashed botão, texto botão e link botão em antd.</target>
-      </segment>
-    </unit>
-    <unit id="TypeTitle">
-      <segment>
-        <source>Type</source>
-        <target state="translated">Tipo</target>
-      </segment>
-    </unit>
     <unit id="SemanticPartContentDescription">
       <segment>
         <source>The content region presents the Button label.</source>
@@ -535,28 +523,40 @@
         <target state="translated">A raiz do Button contém os estados de interação, o fundo, a borda e o layout geral.</target>
       </segment>
     </unit>
-    <unit id="SemanticPartStyleTitle">
-      <segment>
-        <source>Custom Semantic Part styling</source>
-        <target state="translated">Estilo personalizado de Semantic Part</target>
-      </segment>
-    </unit>
     <unit id="SemanticPartStyleDescription">
       <segment>
         <source>Use owner-scoped selectors and Button state selectors to customize published Semantic Parts.</source>
         <target state="translated">Use seletores com escopo do proprietário e seletores de estado do Button para personalizar as Semantic Parts publicadas.</target>
       </segment>
     </unit>
-    <unit id="P2ContentSemanticObject">
+    <unit id="SemanticPartStyleTitle">
       <segment>
-        <source>Object</source>
-        <target state="translated">Objeto</target>
+        <source>Custom Semantic Part styling</source>
+        <target state="translated">Estilo personalizado de Semantic Part</target>
       </segment>
     </unit>
-    <unit id="P2ContentSemanticFunction">
+    <unit id="SizeDescription">
       <segment>
-        <source>Function</source>
-        <target state="translated">Função</target>
+        <source>AtomUI supports three sizes of buttons: small, default and large. If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.</source>
+        <target state="translated">AtomUI oferece suporte três tamanhos de botões: pequeno, padrão e grande. Se a grande ou pequeno botão é desired, definir o tamanho propriedade para either grande ou pequeno respectively. Omit o tamanho propriedade para a botão com o padrão tamanho.</target>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
+        <target state="translated">Tamanho</target>
+      </segment>
+    </unit>
+    <unit id="TypeDescription">
+      <segment>
+        <source>There are primary button, default button, dashed button, text button and link button in antd.</source>
+        <target state="translated">Há são primário botão, padrão botão, dashed botão, texto botão e link botão em antd.</target>
+      </segment>
+    </unit>
+    <unit id="TypeTitle">
+      <segment>
+        <source>Type</source>
+        <target state="translated">Tipo</target>
       </segment>
     </unit>
   </file>

@@ -211,12 +211,6 @@
         <target state="translated">大尺寸卡片</target>
       </segment>
     </unit>
-    <unit id="P2HeaderProject">
-      <segment>
-        <source>project</source>
-        <target state="translated">項目</target>
-      </segment>
-    </unit>
     <unit id="P2HeaderObjectCard">
       <segment>
         <source>Object Card</source>
@@ -227,6 +221,12 @@
       <segment>
         <source>Object Card Meta title</source>
         <target state="translated">固定樣式卡片元信息標題</target>
+      </segment>
+    </unit>
+    <unit id="P2HeaderProject">
+      <segment>
+        <source>project</source>
+        <target state="translated">項目</target>
       </segment>
     </unit>
     <unit id="P2HeaderSmallSizeCard">

@@ -281,6 +281,11 @@
         <source>Row</source>
       </segment>
     </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
     <unit id="SemanticContentDescription">
       <segment>
         <source>Each materialized description value presenter.</source>
@@ -319,11 +324,6 @@
     <unit id="SemanticTitleDescription">
       <segment>
         <source>The presenter for the header title.</source>
-      </segment>
-    </unit>
-    <unit id="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
       </segment>
     </unit>
     <unit id="VerticalBorderDescription">

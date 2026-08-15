@@ -346,6 +346,16 @@
         <source>Search</source>
       </segment>
     </unit>
+    <unit id="P2ContentSemanticFunction">
+      <segment>
+        <source>Function</source>
+      </segment>
+    </unit>
+    <unit id="P2ContentSemanticObject">
+      <segment>
+        <source>Object</source>
+      </segment>
+    </unit>
     <unit id="P2ContentSmall">
       <segment>
         <source>Small</source>
@@ -406,26 +416,6 @@
         <source>Examples</source>
       </segment>
     </unit>
-    <unit id="SizeDescription">
-      <segment>
-        <source>AtomUI supports three sizes of buttons: small, default and large. If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.</source>
-      </segment>
-    </unit>
-    <unit id="SizeTitle">
-      <segment>
-        <source>Size</source>
-      </segment>
-    </unit>
-    <unit id="TypeDescription">
-      <segment>
-        <source>There are primary button, default button, dashed button, text button and link button in antd.</source>
-      </segment>
-    </unit>
-    <unit id="TypeTitle">
-      <segment>
-        <source>Type</source>
-      </segment>
-    </unit>
     <unit id="SemanticPartContentDescription">
       <segment>
         <source>The content region presents the Button label.</source>
@@ -446,24 +436,34 @@
         <source>The Button root owns interaction states, background, border, and overall layout.</source>
       </segment>
     </unit>
-    <unit id="SemanticPartStyleTitle">
-      <segment>
-        <source>Custom Semantic Part styling</source>
-      </segment>
-    </unit>
     <unit id="SemanticPartStyleDescription">
       <segment>
         <source>Use owner-scoped selectors and Button state selectors to customize published Semantic Parts.</source>
       </segment>
     </unit>
-    <unit id="P2ContentSemanticObject">
+    <unit id="SemanticPartStyleTitle">
       <segment>
-        <source>Object</source>
+        <source>Custom Semantic Part styling</source>
       </segment>
     </unit>
-    <unit id="P2ContentSemanticFunction">
+    <unit id="SizeDescription">
       <segment>
-        <source>Function</source>
+        <source>AtomUI supports three sizes of buttons: small, default and large. If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.</source>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
+      </segment>
+    </unit>
+    <unit id="TypeDescription">
+      <segment>
+        <source>There are primary button, default button, dashed button, text button and link button in antd.</source>
+      </segment>
+    </unit>
+    <unit id="TypeTitle">
+      <segment>
+        <source>Type</source>
       </segment>
     </unit>
   </file>

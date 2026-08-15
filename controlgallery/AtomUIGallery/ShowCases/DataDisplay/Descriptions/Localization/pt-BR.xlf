@@ -337,6 +337,12 @@
         <target state="translated">Linha</target>
       </segment>
     </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
     <unit id="SemanticContentDescription">
       <segment>
         <source>Each materialized description value presenter.</source>
@@ -383,12 +389,6 @@
       <segment>
         <source>The presenter for the header title.</source>
         <target state="translated">A área de apresentação do título do cabeçalho.</target>
-      </segment>
-    </unit>
-    <unit id="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">Exemplos</target>
       </segment>
     </unit>
     <unit id="VerticalBorderDescription">

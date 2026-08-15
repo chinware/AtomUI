@@ -145,6 +145,12 @@
         <target state="translated">Exibir numeric facts, metrics e countdown values com limpar visual emphasis.</target>
       </segment>
     </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
     <unit id="SemanticContentDescription">
       <segment>
         <source>Content region arranging the prefix, value, and suffix.</source>
@@ -197,12 +203,6 @@
       <segment>
         <source>Numeric value surface including typography and number presentation.</source>
         <target state="translated">Superfície do valor numérico, incluindo tipografia e apresentação do número.</target>
-      </segment>
-    </unit>
-    <unit id="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">Exemplos</target>
       </segment>
     </unit>
     <unit id="TimerDescription">

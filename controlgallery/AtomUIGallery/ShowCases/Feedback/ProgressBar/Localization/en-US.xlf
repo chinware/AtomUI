@@ -141,16 +141,6 @@
         <source>Layout</source>
       </segment>
     </unit>
-    <unit id="SmallerCircularProgressBarDescription">
-      <segment>
-        <source>A smaller circular progress bar.</source>
-      </segment>
-    </unit>
-    <unit id="SmallerCircularProgressBarTitle">
-      <segment>
-        <source>A smaller circular progress bar.</source>
-      </segment>
-    </unit>
     <unit id="SemanticBodyDescription">
       <segment>
         <source>Body element, set progress bar layout and size styles</source>
@@ -184,6 +174,16 @@
     <unit id="SemanticTrackDescription">
       <segment>
         <source>Track element, set progress fill color and transition animation styles</source>
+      </segment>
+    </unit>
+    <unit id="SmallerCircularProgressBarDescription">
+      <segment>
+        <source>A smaller circular progress bar.</source>
+      </segment>
+    </unit>
+    <unit id="SmallerCircularProgressBarTitle">
+      <segment>
+        <source>A smaller circular progress bar.</source>
       </segment>
     </unit>
     <unit id="StepsDescription">

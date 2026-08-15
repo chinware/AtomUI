@@ -121,6 +121,11 @@
         <source>Display numeric facts, metrics and countdown values with clear visual emphasis.</source>
       </segment>
     </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+      </segment>
+    </unit>
     <unit id="SemanticContentDescription">
       <segment>
         <source>Content region arranging the prefix, value, and suffix.</source>
@@ -164,11 +169,6 @@
     <unit id="SemanticValueDescription">
       <segment>
         <source>Numeric value surface including typography and number presentation.</source>
-      </segment>
-    </unit>
-    <unit id="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
       </segment>
     </unit>
     <unit id="TimerDescription">

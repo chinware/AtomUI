@@ -145,6 +145,12 @@
         <target state="translated">用清晰的视觉层级展示数字事实、指标和倒计时。</target>
       </segment>
     </unit>
+    <unit id="ScenarioExamples">
+      <segment>
+        <source>Examples</source>
+        <target state="translated">示例</target>
+      </segment>
+    </unit>
     <unit id="SemanticContentDescription">
       <segment>
         <source>Content region arranging the prefix, value, and suffix.</source>
@@ -197,12 +203,6 @@
       <segment>
         <source>Numeric value surface including typography and number presentation.</source>
         <target state="translated">数值内容表面，包含文字排版和数字呈现。</target>
-      </segment>
-    </unit>
-    <unit id="ScenarioExamples">
-      <segment>
-        <source>Examples</source>
-        <target state="translated">示例</target>
       </segment>
     </unit>
     <unit id="TimerDescription">

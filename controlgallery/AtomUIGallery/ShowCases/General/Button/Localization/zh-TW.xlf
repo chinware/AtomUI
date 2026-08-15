@@ -415,6 +415,18 @@
         <target state="translated">搜索</target>
       </segment>
     </unit>
+    <unit id="P2ContentSemanticFunction">
+      <segment>
+        <source>Function</source>
+        <target state="translated">函式</target>
+      </segment>
+    </unit>
+    <unit id="P2ContentSemanticObject">
+      <segment>
+        <source>Object</source>
+        <target state="translated">物件</target>
+      </segment>
+    </unit>
     <unit id="P2ContentSmall">
       <segment>
         <source>Small</source>
@@ -487,30 +499,6 @@
         <target state="translated">示例</target>
       </segment>
     </unit>
-    <unit id="SizeDescription">
-      <segment>
-        <source>AtomUI supports three sizes of buttons: small, default and large. If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.</source>
-        <target state="translated">AtomUI 支持小號、默認和大號三種按鈕尺寸。需要大號或小號按鈕時可設置 size 屬性；省略 size 屬性時使用默認尺寸。</target>
-      </segment>
-    </unit>
-    <unit id="SizeTitle">
-      <segment>
-        <source>Size</source>
-        <target state="translated">按鈕尺寸</target>
-      </segment>
-    </unit>
-    <unit id="TypeDescription">
-      <segment>
-        <source>There are primary button, default button, dashed button, text button and link button in antd.</source>
-        <target state="translated">Ant Design 中包含主按鈕、默認按鈕、虛線按鈕、文本按鈕和鏈接按鈕。</target>
-      </segment>
-    </unit>
-    <unit id="TypeTitle">
-      <segment>
-        <source>Type</source>
-        <target state="translated">按鈕類型</target>
-      </segment>
-    </unit>
     <unit id="SemanticPartContentDescription">
       <segment>
         <source>The content region presents the Button label.</source>
@@ -535,28 +523,40 @@
         <target state="translated">Button 根區域承載互動狀態、背景、邊框與整體配置。</target>
       </segment>
     </unit>
-    <unit id="SemanticPartStyleTitle">
-      <segment>
-        <source>Custom Semantic Part styling</source>
-        <target state="translated">自訂 Semantic Part 樣式</target>
-      </segment>
-    </unit>
     <unit id="SemanticPartStyleDescription">
       <segment>
         <source>Use owner-scoped selectors and Button state selectors to customize published Semantic Parts.</source>
         <target state="translated">使用擁有者作用域選擇器和 Button 狀態選擇器，自訂已發布的 Semantic Part。</target>
       </segment>
     </unit>
-    <unit id="P2ContentSemanticObject">
+    <unit id="SemanticPartStyleTitle">
       <segment>
-        <source>Object</source>
-        <target state="translated">物件</target>
+        <source>Custom Semantic Part styling</source>
+        <target state="translated">自訂 Semantic Part 樣式</target>
       </segment>
     </unit>
-    <unit id="P2ContentSemanticFunction">
+    <unit id="SizeDescription">
       <segment>
-        <source>Function</source>
-        <target state="translated">函式</target>
+        <source>AtomUI supports three sizes of buttons: small, default and large. If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.</source>
+        <target state="translated">AtomUI 支持小號、默認和大號三種按鈕尺寸。需要大號或小號按鈕時可設置 size 屬性；省略 size 屬性時使用默認尺寸。</target>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
+        <target state="translated">按鈕尺寸</target>
+      </segment>
+    </unit>
+    <unit id="TypeDescription">
+      <segment>
+        <source>There are primary button, default button, dashed button, text button and link button in antd.</source>
+        <target state="translated">Ant Design 中包含主按鈕、默認按鈕、虛線按鈕、文本按鈕和鏈接按鈕。</target>
+      </segment>
+    </unit>
+    <unit id="TypeTitle">
+      <segment>
+        <source>Type</source>
+        <target state="translated">按鈕類型</target>
       </segment>
     </unit>
   </file>
