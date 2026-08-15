@@ -42,23 +42,24 @@ Result 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
-| 内容与数据 | `ExtraTemplate`、`Header`、`HeaderFontSize`、`HeaderTemplate`、`Icon`、`SubHeader`、`SubHeaderFontSize`、`SubHeaderTemplate` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 交互与状态 | `Status` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 其他稳定入口 | `Extra` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+| 内容与数据 | `Header`、`HeaderTemplate`、`SubHeader`、`SubHeaderTemplate`、`Extra`、`ExtraTemplate`、`Content`、`ContentTemplate` | 定义标题、副标题、操作区域和正文内容入口。 |
+| 状态与图标 | `Status`、`Icon` | 选择普通反馈图标或 403/404/500 异常图，并允许普通状态使用自定义 `PathIcon`。 |
+| 排版 | `HeaderFontSize`、`SubHeaderFontSize` | 覆盖标题与副标题字号；行高仍由控件根据相对行高计算。 |
+| 根表面 | 继承的 `Background`、`BorderBrush`、`BorderThickness`、`CornerRadius`、`Padding` 与 `StrokeDashArray` | 由根 owner Style 控制 Result 的背景、边框、圆角、内边距和虚线节奏。 |
 
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
 
 主要公开类型与枚举：
 
-- 类型：`AbstractResult`、`Result`、`ResultIndicator`。
+- 类型：`AbstractResult`、`Result`。
 - 枚举：`ResultStatus`。
 
 稳定 template part：
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_ErrorCodeImage` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
-| `PART_StatusIconPresenter` | `?` | 展示用户内容、文本、图标或模板化数据。 |
+| `PART_ErrorCodeImage` | `Svg` | 承载 403、404、500 的异常状态图像。 |
+| `PART_StatusIconPresenter` | `ContentPresenter` | 承载 Info、Success、Warning、Error 的默认或自定义状态图标。 |
 
 当前未抽取到控件专属伪类；主题主要依赖 Avalonia 标准伪类、模板绑定和内部 StyledProperty。
 
@@ -75,7 +76,7 @@ Result 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 ### 成功
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Result/Views/ResultShowCase.axaml:37`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Result/Views/ResultShowCase.axaml:76`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -94,7 +95,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 信息
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Result/Views/ResultShowCase.axaml:58`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Result/Views/ResultShowCase.axaml:97`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -109,7 +110,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 警告
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Result/Views/ResultShowCase.axaml:75`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Result/Views/ResultShowCase.axaml:114`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -124,7 +125,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 403
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Result/Views/ResultShowCase.axaml:92`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Result/Views/ResultShowCase.axaml:131`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -152,10 +153,10 @@ Public API / inherited command / item source / user input
 
 状态维护规则：
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+- `Status` 是状态视觉的唯一 owner。Info、Success、Warning、Error 显示普通图标 presenter，403、404、500 显示异常 SVG。
+- `Icon` 只替换四种普通反馈状态的图标内容，不改变 `icon` Semantic Part 的 target 身份或数量。
+- `Header`、`SubHeader` 和 `Content` 的空值只改变对应 presenter 的可见性；`Extra` 为空时保留空 presenter。
+- 模板重套用时重新获取两个图标 template part，并把当前状态、图标尺寸、画刷和文本行高回放到新模板。
 
 ## 主题与 Design Token
 
@@ -170,6 +171,8 @@ Result 使用 `ResultToken` 作为控件 Token scope。Token 只表达组件视�
 主题维护规则：
 
 - 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
+- 不删除或重命名 `root`、`icon`、`title`、`subTitle`、`extra`、`body`，不改变 selector class、ContractType 或 cardinality。
+- `DashedBorder#Frame` 必须继续投影 Result 的标准根表面属性；该内部 frame 不成为独立 Part。
 - 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
 - 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
 - Browser 或平台特化主题必须保持同一 API 的语义一致。
@@ -191,6 +194,7 @@ Result Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
 - 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
 - Source generator 生成文件不手工编辑；需要修改时改输入源或 generator。
+- Semantic Part 使用生成期 descriptor 和六个静态 marker target，不增加运行时 VisualTree 搜索、反射或 selector 字符串组装。
 
 性能边界：
 
@@ -222,6 +226,7 @@ Result Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 - 源设计文档：`docs/controls/desktop/feedback/result/overview.md`
 - 实现文档：`docs/controls/desktop/feedback/result/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/feedback/result/semantic-part.md`
 - Token 文档：`docs/controls/desktop/feedback/result/token.md`
 - 变更记录：`docs/controls/desktop/feedback/result/changelog.md`
 - 语义结构：`./semantic-cn.md`
