@@ -59,8 +59,6 @@ internal sealed class SemanticPartPreviewItem : INotifyPropertyChanged
 
     public bool IsRuntimeCreated { get; }
 
-    public bool HasSince => !string.IsNullOrWhiteSpace(Since);
-
     public bool IsPinned
     {
         get => _isPinned;
@@ -83,4 +81,5 @@ internal sealed class SemanticPartPreviewItem : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+
 }

@@ -9,6 +9,15 @@
 - Docs
   - Document the effective-visibility lifecycle and hidden-page performance invariant.
 
+## 2026-08-15
+
+- Semantic Parts
+  - Add Ant Design-aligned Semantic Part descriptors for `Skeleton` and its public element owners.
+  - Add static template markers and generated owner-scoped style contracts without runtime discovery.
+  - Document the dual static content layers used by normal and active Skeleton states.
+- Gallery
+  - Add the Semantic Parts Preview and Ant Design-aligned custom styling example using AtomUI `v6.1.3` version metadata.
+
 ## 2026-06-26
 
 - Docs

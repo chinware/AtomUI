@@ -212,6 +212,10 @@ public class SemanticPartPreviewTests
         previewStage.Background.ShouldBeNull();
         previewStage.BorderThickness.ShouldBe(default);
         previewStage.CornerRadius.ShouldBe(default);
+        var previewPresenter = previewStage.Child.ShouldBeOfType<ContentPresenter>();
+        previewPresenter.HorizontalAlignment.ShouldBe(HorizontalAlignment.Stretch);
+        previewPresenter.HorizontalContentAlignment.ShouldBe(HorizontalAlignment.Stretch);
+        previewPresenter.VerticalContentAlignment.ShouldBe(VerticalAlignment.Center);
 
         var partsPane = layout.Children[1].ShouldBeOfType<Border>();
         partsPane.Name.ShouldBe("PART_PartsPane");
@@ -222,6 +226,11 @@ public class SemanticPartPreviewTests
                           .OfType<SemanticPartPreviewItemControl>()
                           .ToArray();
         rows.Length.ShouldBe(3);
+        preview.GetVisualDescendants()
+               .OfType<AtomUI.Desktop.Controls.Tag>()
+               .ShouldBeEmpty();
+        preview.Items.Select(static item => item.Since)
+               .ShouldAllBe(static since => since == "6.0");
         foreach (var row in rows)
         {
             var rowBorder = row.GetVisualDescendants()
@@ -236,7 +245,6 @@ public class SemanticPartPreviewTests
                                   .Select(static textBlock => textBlock.Text)
                                   .Where(static text => text is not null)
                                   .ToArray();
-        persistentTexts.ShouldNotContain("6.0");
         persistentTexts.ShouldNotContain(".semantic-content");
         persistentTexts.ShouldNotContain(nameof(ContentPresenter));
     }

@@ -172,17 +172,22 @@ Skeleton 的视觉选项通过 public API 归一为 theme variables、伪类或�
 
 - [Skeleton 桌面版实现原理](implementation.md)
 - [Skeleton Token 设计](token.md)
+- [Skeleton Semantic Part 契约](semantic-part.md)
 - [Skeleton Changelog](changelog.md)
 
 LLMS 语义区域：
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `Skeleton` | 反馈控件根语义区域，承载 public API、反馈状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `host` | `宿主或弹层区域` | 承载 overlay、popup、portal、message host、drawer 或 modal 容器。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `surface` | `反馈表面` | 承载背景、边框、阴影、尺寸、placement 和视觉状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载标题、正文、图标、进度、结果、操作或关闭入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效区域` | 表达进入退出、loading、progress、skeleton 或水印刷新反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `root` | `Skeleton` | 主控件根区域，承载整体占位布局和主题入口。 | 见 API 与契约模型 | `SkeletonToken` | stable |
+| `header` | `DockPanel` | 左侧头像占位 cell，只承载 `avatar`。 | `IsShowAvatar`、Avatar API | `AvatarMarginRight` | stable |
+| `section` | `StackPanel` | 右侧内容 cell，填充剩余宽度并承载标题和段落。 | `IsShowTitle`、`IsShowParagraph` | `ParagraphMarginTop` | stable |
+| `avatar` | `SkeletonAvatar` | 主控件模板拥有的头像占位子控件。 | `AvatarShape`、`AvatarSize` | Avatar 尺寸 Token | stable |
+| `title` | `SkeletonTitle` | 主控件模板拥有的标题占位子控件。 | `TitleWidth`、`IsRound` | `TitleHeight`、`BlockRadius` | stable |
+| `paragraph` | `SkeletonParagraph` | 主控件模板拥有的段落占位子控件。 | `ParagraphRows`、宽度属性 | `ParagraphLineHeight` | stable |
+
+`SkeletonAvatar`、`SkeletonButton`、`SkeletonInput`、`SkeletonImage` 和 `SkeletonNode` 的 `root/content` descriptor 与
+主控件分开维护，完整契约见 [Skeleton Semantic Part 契约](semantic-part.md)。
 
 LLMS 导出来源：
 

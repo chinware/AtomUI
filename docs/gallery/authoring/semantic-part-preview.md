@@ -158,7 +158,7 @@ Preview 使用一个完整边框包围预览区和 Part 列表，不能把两栏
 - 窄屏按预览区、Part 列表顺序上下堆叠，分隔线切换到列表顶部。
 - 面板按内容决定高度并在内容区顶部对齐，不能被页面剩余高度强制拉伸成大面积空白舞台。
 - Part 行使用平铺列表和行分隔线，不使用独立边框、圆角卡片、嵌套卡片或额外的 Semantic Parts 标题。
-- 主行只常驻显示 Part 名称、引入版本、本地化职责描述、Pin 和 Info；selector、SelectorRoute、ContractType、cardinality、
+- 主行只常驻显示 Part 名称、本地化职责描述、Pin 和 Info；selector、SelectorRoute、ContractType、cardinality、
   customization、跨视觉根和运行时创建等技术字段只在用户打开 Info 后显示。
 - Info 打开后，下方详情区横跨检查面板完整宽度：selector、SelectorRoute、ContractType、StyleType、cardinality、customization 等技术元数据
   位于左侧固定宽度栏，Styling example 代码区位于右侧并占据主要宽度。
@@ -188,7 +188,7 @@ effectivePart = pinnedPart ?? hoveredPart
 - 从 Semantic Parts 切回 Examples 时清除 Hover 并停用当前 `SemanticPartHighlightSession`。
 - 返回 Semantic Parts 时，如果仍保留 Pin，可以重新解析一次目标，但不能保留旧 Visual 引用。
 
-列表主行显示名称、引入版本和本地化职责描述，不附加高亮结果 Tooltip。未实例化、当前不可见或超过高亮预算只影响
+列表主行显示名称和本地化职责描述，不附加高亮结果 Tooltip。引入版本保留在技术详情中；未实例化、当前不可见或超过高亮预算只影响
 Adorner 结果集，不新增常驻文本、弹层或状态提示。
 
 ## 8. 目标解析

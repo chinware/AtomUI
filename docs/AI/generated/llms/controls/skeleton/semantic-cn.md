@@ -4,29 +4,62 @@
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Skeleton` | 反馈控件根语义区域，承载 public API、反馈状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `host` | `宿主或弹层区域` | 承载 overlay、popup、portal、message host、drawer 或 modal 容器。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `surface` | `反馈表面` | 承载背景、边框、阴影、尺寸、placement 和视觉状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载标题、正文、图标、进度、结果、操作或关闭入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效区域` | 表达进入退出、loading、progress、skeleton 或水印刷新反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+Skeleton 主控件公开 `root`、`header`、`section`、`avatar`、`title`、`paragraph` 六个职责区域；AtomUI Skeleton
+保持相同的语义名称。`SkeletonAvatar`、`SkeletonButton`、`SkeletonInput`、`SkeletonImage` 和 `SkeletonNode`
+是独立的公开子控件，各自公开 `root` 与 `content`。
+
+### 1.1 `Skeleton`
+
+| Part | Selector | ContractType | Cardinality | Customization | CrossVisualRoot | RuntimeCreated |
+| --- | --- | --- | --- | --- | --- | --- |
+| `root` | owner | `Skeleton` | `Single` | `Root` | `false` | `false` |
+| `header` | `.semantic-header` | `DockPanel` | `Single` | `Selector` | `false` | `false` |
+| `section` | `.semantic-section` | `StackPanel` | `Single` | `Selector` | `false` | `false` |
+| `avatar` | `.semantic-avatar` | `SkeletonAvatar` | `Single` | `Selector` | `false` | `false` |
+| `title` | `.semantic-title` | `SkeletonTitle` | `Single` | `Selector` | `false` | `false` |
+| `paragraph` | `.semantic-paragraph` | `SkeletonParagraph` | `Single` | `Selector` | `false` | `false` |
+
+`header` 只承载头像占位区域，作为根布局的左侧 cell；`section` 承载标题和段落，作为右侧、填充剩余宽度的 cell。
+`avatar`、`title` 和 `paragraph` 是主控件模板直接拥有的公开 Skeleton 子控件。`root` 不声明 `.semantic-root` marker。
+
+### 1.2 Skeleton 元素 owner
+
+| Owner | Part | Selector | ContractType | Cardinality | Customization | CrossVisualRoot | RuntimeCreated |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `SkeletonAvatar` | `root` | owner | `SkeletonAvatar` | `Single` | `Root` | `false` | `false` |
+| `SkeletonAvatar` | `content` | `.semantic-content` | `Border` | `Multiple` | `Selector` | `false` | `false` |
+| `SkeletonButton` | `root` | owner | `SkeletonButton` | `Single` | `Root` | `false` | `false` |
+| `SkeletonButton` | `content` | `.semantic-content` | `Border` | `Multiple` | `Selector` | `false` | `false` |
+| `SkeletonInput` | `root` | owner | `SkeletonInput` | `Single` | `Root` | `false` | `false` |
+| `SkeletonInput` | `content` | `.semantic-content` | `Border` | `Multiple` | `Selector` | `false` | `false` |
+| `SkeletonImage` | `root` | owner | `SkeletonImage` | `Single` | `Root` | `false` | `false` |
+| `SkeletonImage` | `content` | `.semantic-content` | `Border` | `Multiple` | `Selector` | `false` | `false` |
+| `SkeletonNode` | `root` | owner | `SkeletonNode` | `Single` | `Root` | `false` | `false` |
+| `SkeletonNode` | `content` | `.semantic-content` | `Border` | `Multiple` | `Selector` | `false` | `false` |
+
+`content` 使用 `Multiple` 是 AtomUI 模板实现的状态替代语义：普通状态的 `PART_ContentLayer` 与 active 状态的
+`PART_ActiveAnimationLayer` 是两个静态 marker target，同一时刻只有一个可见。Preview 只高亮当前可见 target；Semantic Style
+同时作用于两个替代层，保证状态切换后定制仍然存在。
 
 ## Abstract AXAML Structure
 
 来源：`src/AtomUI.Desktop.Controls/Skeleton/Themes/SkeletonTheme.axaml`
 
 ```xml
-<Panel>
-    <DockPanel>
-        <SkeletonAvatar Name="PART_Avatar" />
-        <StackPanel Name="PART_Content">
-            <SkeletonTitle Name="PART_Title" />
-            <SkeletonParagraph Name="PART_Paragraph" />
-        </StackPanel>
-    </DockPanel>
-    <ContentPresenter />
-</Panel>
+<Border Name="PART_RootLayout">
+    <Panel>
+        <Grid>
+            <DockPanel>
+                <SkeletonAvatar Name="PART_Avatar" />
+            </DockPanel>
+            <StackPanel Name="PART_Content">
+                <SkeletonTitle Name="PART_Title" />
+                <SkeletonParagraph Name="PART_Paragraph" />
+            </StackPanel>
+        </Grid>
+        <ContentPresenter />
+    </Panel>
+</Border>
 ```
 
 ## Composition Model
@@ -38,30 +71,43 @@
 ```text
 Skeleton
   -> SkeletonAvatar (control theme, SkeletonAvatarTheme.axaml)
+     -> Panel#PART_RootLayout (template-stable)
+        -> Border#PART_ActiveAnimationLayer (template-stable)
+        -> Border#PART_ContentLayer (template-stable)
   -> SkeletonButton (control theme, SkeletonButtonTheme.axaml)
+     -> Panel#PART_RootLayout (template-stable)
+        -> Border#PART_ActiveAnimationLayer (template-stable)
+        -> Border#PART_ContentLayer (template-stable)
   -> SkeletonElement (control theme, SkeletonElementTheme.axaml)
   -> SkeletonImage (control theme, SkeletonImageTheme.axaml)
      -> Panel#PART_RootLayout (template-stable)
-        -> Border#PART_ContentLayer (template-stable)
-        -> Border#PART_ActiveAnimationLayer (template-stable)
-        -> ImageFilled#Image (template-stable)
+        -> Panel#PART_ContentLayout (template-stable)
+           -> Border#PART_ContentLayer (template-stable)
+           -> Border#PART_ActiveAnimationLayer (template-stable)
+           -> ImageFilled#Image (template-stable)
   -> SkeletonInput (control theme, SkeletonInputTheme.axaml)
+     -> Panel#PART_RootLayout (template-stable)
+        -> Border#PART_ActiveAnimationLayer (template-stable)
+        -> Border#PART_ContentLayer (template-stable)
   -> SkeletonLine (control theme, SkeletonLineTheme.axaml)
   -> SkeletonNode (control theme, SkeletonNodeTheme.axaml)
      -> Panel#PART_RootLayout (template-stable)
-        -> Border#PART_ContentLayer (template-stable)
-        -> Border#PART_ActiveAnimationLayer (template-stable)
-        -> ContentPresenter#ContentPresenter (internal-observable)
+        -> Panel#PART_ContentLayout (template-stable)
+           -> Border#PART_ContentLayer (template-stable)
+           -> Border#PART_ActiveAnimationLayer (template-stable)
+           -> ContentPresenter#ContentPresenter (internal-observable)
   -> SkeletonParagraph (control theme, SkeletonParagraphTheme.axaml)
      -> StackPanel#PART_LineLayout (template-stable)
   -> Skeleton (control theme, SkeletonTheme.axaml)
-     -> Panel (template-stable)
-        -> DockPanel (template-stable)
-           -> SkeletonAvatar#PART_Avatar (template-stable)
-           -> StackPanel#PART_Content (template-stable)
-              -> SkeletonTitle#PART_Title (template-stable)
-              -> SkeletonParagraph#PART_Paragraph (template-stable)
-        -> ContentPresenter (internal-observable)
+     -> Border#PART_RootLayout (template-stable)
+        -> Panel (template-stable)
+           -> Grid (template-stable)
+              -> DockPanel (template-stable)
+                 -> SkeletonAvatar#PART_Avatar (template-stable)
+              -> StackPanel#PART_Content (template-stable)
+                 -> SkeletonTitle#PART_Title (template-stable)
+                 -> SkeletonParagraph#PART_Paragraph (template-stable)
+           -> ContentPresenter (internal-observable)
 ```
 
 ### 协作节点
@@ -69,31 +115,41 @@ Skeleton
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `Skeleton` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `SkeletonAvatar` | control theme | `SkeletonAvatarTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `SkeletonButton` | control theme | `SkeletonButtonTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `SkeletonAvatar` | control theme | `SkeletonAvatarTheme.axaml` | 用户代码 / 控件宿主 | `AnimationLayerFill`, `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Height` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `PART_RootLayout` | template node (Panel) | `SkeletonAvatarTheme.axaml` | SkeletonAvatar | `AnimationLayerFill`, `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ActiveAnimationLayer` | template node (Border) | `SkeletonAvatarTheme.axaml` | SkeletonAvatar | `AnimationLayerFill`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Height`, `IsActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ContentLayer` | template node (Border) | `SkeletonAvatarTheme.axaml` | SkeletonAvatar | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Height`, `IsActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `SkeletonButton` | control theme | `SkeletonButtonTheme.axaml` | 用户代码 / 控件宿主 | `AnimationLayerFill`, `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Height` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `PART_RootLayout` | template node (Panel) | `SkeletonButtonTheme.axaml` | SkeletonButton | `AnimationLayerFill`, `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ActiveAnimationLayer` | template node (Border) | `SkeletonButtonTheme.axaml` | SkeletonButton | `AnimationLayerFill`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Height`, `IsActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ContentLayer` | template node (Border) | `SkeletonButtonTheme.axaml` | SkeletonButton | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Height`, `IsActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `SkeletonElement` | control theme | `SkeletonElementTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `SkeletonImage` | control theme | `SkeletonImageTheme.axaml` | 用户代码 / 控件宿主 | `AnimationLayerFill`, `Background`, `CornerRadius`, `IsActive` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `PART_RootLayout` | template node (Panel) | `SkeletonImageTheme.axaml` | SkeletonImage | `AnimationLayerFill`, `Background`, `CornerRadius`, `IsActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ContentLayer` | template node (Border) | `SkeletonImageTheme.axaml` | SkeletonImage | `Background`, `CornerRadius`, `IsActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ActiveAnimationLayer` | template node (Border) | `SkeletonImageTheme.axaml` | SkeletonImage | `AnimationLayerFill`, `CornerRadius`, `IsActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `SkeletonImage` | control theme | `SkeletonImageTheme.axaml` | 用户代码 / 控件宿主 | `AnimationLayerFill`, `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Height` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `PART_RootLayout` | template node (Panel) | `SkeletonImageTheme.axaml` | SkeletonImage | `AnimationLayerFill`, `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ContentLayout` | template node (Panel) | `SkeletonImageTheme.axaml` | SkeletonImage | `AnimationLayerFill`, `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ContentLayer` | template node (Border) | `SkeletonImageTheme.axaml` | SkeletonImage | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `IsActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ActiveAnimationLayer` | template node (Border) | `SkeletonImageTheme.axaml` | SkeletonImage | `AnimationLayerFill`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `IsActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Image` | template node (ImageFilled) | `SkeletonImageTheme.axaml` | SkeletonImage | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `SkeletonInput` | control theme | `SkeletonInputTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `SkeletonInput` | control theme | `SkeletonInputTheme.axaml` | 用户代码 / 控件宿主 | `AnimationLayerFill`, `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Height` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `PART_RootLayout` | template node (Panel) | `SkeletonInputTheme.axaml` | SkeletonInput | `AnimationLayerFill`, `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ActiveAnimationLayer` | template node (Border) | `SkeletonInputTheme.axaml` | SkeletonInput | `AnimationLayerFill`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Height`, `IsActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ContentLayer` | template node (Border) | `SkeletonInputTheme.axaml` | SkeletonInput | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Height`, `IsActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `SkeletonLine` | control theme | `SkeletonLineTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `SkeletonNode` | control theme | `SkeletonNodeTheme.axaml` | 用户代码 / 控件宿主 | `AnimationLayerFill`, `Background`, `Content`, `ContentTemplate`, `CornerRadius`, `IsActive` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `PART_RootLayout` | template node (Panel) | `SkeletonNodeTheme.axaml` | SkeletonNode | `AnimationLayerFill`, `Background`, `Content`, `ContentTemplate`, `CornerRadius`, `IsActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ContentLayer` | template node (Border) | `SkeletonNodeTheme.axaml` | SkeletonNode | `Background`, `CornerRadius`, `IsActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ActiveAnimationLayer` | template node (Border) | `SkeletonNodeTheme.axaml` | SkeletonNode | `AnimationLayerFill`, `CornerRadius`, `IsActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `SkeletonNode` | control theme | `SkeletonNodeTheme.axaml` | 用户代码 / 控件宿主 | `AnimationLayerFill`, `Background`, `BorderBrush`, `BorderThickness`, `Content`, `ContentTemplate` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `PART_RootLayout` | template node (Panel) | `SkeletonNodeTheme.axaml` | SkeletonNode | `AnimationLayerFill`, `Background`, `BorderBrush`, `BorderThickness`, `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ContentLayout` | template node (Panel) | `SkeletonNodeTheme.axaml` | SkeletonNode | `AnimationLayerFill`, `Background`, `BorderBrush`, `BorderThickness`, `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ContentLayer` | template node (Border) | `SkeletonNodeTheme.axaml` | SkeletonNode | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `IsActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ActiveAnimationLayer` | template node (Border) | `SkeletonNodeTheme.axaml` | SkeletonNode | `AnimationLayerFill`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `IsActive` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentPresenter` | template node (ContentPresenter) | `SkeletonNodeTheme.axaml` | SkeletonNode | `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `SkeletonParagraph` | control theme | `SkeletonParagraphTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `PART_LineLayout` | template node (StackPanel) | `SkeletonParagraphTheme.axaml` | SkeletonParagraph | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Skeleton` | control theme | `SkeletonTheme.axaml` | 用户代码 / 控件宿主 | `AvatarShape`, `AvatarSize`, `AvatarSizeType`, `Content`, `ContentTemplate`, `HorizontalContentAlignment` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Skeleton` | control theme | `SkeletonTheme.axaml` | 用户代码 / 控件宿主 | `AvatarShape`, `AvatarSize`, `AvatarSizeType`, `Background`, `BorderBrush`, `BorderThickness` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `PART_RootLayout` | template node (Border) | `SkeletonTheme.axaml` | Skeleton | `AvatarShape`, `AvatarSize`, `AvatarSizeType`, `Background`, `BorderBrush`, `BorderThickness` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Panel` | template node (Panel) | `SkeletonTheme.axaml` | Skeleton | `AvatarShape`, `AvatarSize`, `AvatarSizeType`, `Content`, `ContentTemplate`, `HorizontalContentAlignment` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `DockPanel` | template node (DockPanel) | `SkeletonTheme.axaml` | Skeleton | `AvatarShape`, `AvatarSize`, `AvatarSizeType`, `IsActive`, `IsContentVisible`, `IsRound` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `DockPanel` | template node (DockPanel) | `SkeletonTheme.axaml` | Skeleton | `AvatarShape`, `AvatarSize`, `AvatarSizeType`, `IsActive`, `IsShowAvatar` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Avatar` | template node (SkeletonAvatar) | `SkeletonTheme.axaml` | Skeleton | `AvatarShape`, `AvatarSize`, `AvatarSizeType`, `IsActive`, `IsShowAvatar` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Content` | template node (StackPanel) | `SkeletonTheme.axaml` | Skeleton | `IsActive`, `IsRound`, `IsShowParagraph`, `IsShowTitle`, `ParagraphLastLineWidth`, `ParagraphLineWidths` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Title` | template node (SkeletonTitle) | `SkeletonTheme.axaml` | Skeleton | `IsActive`, `IsRound`, `IsShowTitle`, `TitleWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_Paragraph` | template node (SkeletonParagraph) | `SkeletonTheme.axaml` | Skeleton | `IsActive`, `IsRound`, `IsShowParagraph`, `ParagraphLastLineWidth`, `ParagraphLineWidths`, `ParagraphRows` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `ContentPresenter` | template node (ContentPresenter) | `SkeletonTheme.axaml` | Skeleton | `Content`, `ContentTemplate`, `HorizontalContentAlignment`, `IsContentVisible`, `VerticalContentAlignment` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 
 ## Template Parts
 

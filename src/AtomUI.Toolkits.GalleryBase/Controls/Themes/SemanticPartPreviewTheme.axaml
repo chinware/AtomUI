@@ -24,8 +24,10 @@
                                         MinHeight="360"
                                         Padding="32">
                                     <ContentPresenter Content="{TemplateBinding PreviewContent}"
-                                                      HorizontalAlignment="Center"
-                                                      VerticalAlignment="Center" />
+                                                      HorizontalAlignment="Stretch"
+                                                      VerticalAlignment="Center"
+                                                      HorizontalContentAlignment="Stretch"
+                                                      VerticalContentAlignment="Center" />
                                 </Border>
 
                                 <Border Name="PART_PartsPane"

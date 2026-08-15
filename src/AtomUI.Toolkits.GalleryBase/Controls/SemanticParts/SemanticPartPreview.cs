@@ -163,7 +163,7 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
         var code = item.CodeSnippet ?? BuildCodeSnippet(item.Descriptor);
         _codeViewer ??= new GalleryCodeViewer
         {
-            Language        = "xml",
+            Language = "xml",
             ShowLineNumbers = false
         };
         _codeViewer.CodeText = code;
@@ -185,8 +185,9 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
     {
         base.OnPropertyChanged(change);
         if (change.Property == PreviewContentProperty ||
-            change.Property == SemanticOwnerProperty ||
-            change.Property == SemanticOwnerTypeProperty)
+            ((change.Property == SemanticOwnerProperty ||
+              change.Property == SemanticOwnerTypeProperty) &&
+             IsSemanticOwnerStateResolvable()))
         {
             ResetPresentation();
         }
@@ -309,6 +310,13 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
         {
             EnsurePresentation();
         }
+    }
+
+    private bool IsSemanticOwnerStateResolvable()
+    {
+        return SemanticOwner is not { } owner ||
+               SemanticOwnerType is not { } ownerType ||
+               ownerType.IsAssignableFrom(owner.GetType());
     }
 
     private void QueueHighlightUpdate()
