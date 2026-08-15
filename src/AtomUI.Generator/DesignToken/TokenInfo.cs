@@ -77,6 +77,8 @@ internal sealed class ThemeCompilationInfo
         Compilation compilation,
         string assemblyName,
         string packageId,
+        LinkedRegistration.Model.RegistrationUnitGranularity registrationGranularity,
+        string? invalidRegistrationGranularity,
         string? projectDirectory,
         string controlCatalog,
         IReadOnlyList<string> globalTokenNames,
@@ -86,6 +88,8 @@ internal sealed class ThemeCompilationInfo
         Compilation = compilation;
         AssemblyName = assemblyName;
         PackageId = packageId;
+        RegistrationGranularity = registrationGranularity;
+        InvalidRegistrationGranularity = invalidRegistrationGranularity;
         ProjectDirectory = projectDirectory;
         ControlCatalog = controlCatalog;
         GlobalTokenNames = globalTokenNames;
@@ -96,6 +100,8 @@ internal sealed class ThemeCompilationInfo
     internal Compilation Compilation { get; }
     internal string AssemblyName { get; }
     internal string PackageId { get; }
+    internal LinkedRegistration.Model.RegistrationUnitGranularity RegistrationGranularity { get; }
+    internal string? InvalidRegistrationGranularity { get; }
     internal string? ProjectDirectory { get; }
     internal string ControlCatalog { get; }
     internal IReadOnlyList<string> GlobalTokenNames { get; }

@@ -1,10 +1,13 @@
 using Microsoft.CodeAnalysis.Diagnostics;
+using AtomUI.Generator.LinkedRegistration.Model;
 
 namespace AtomUI.Generator.LinkedRegistration;
 
 internal static class LinkedRegistrationOptions
 {
     private const string PackageIdProperty = "build_property.AtomUIRegistrationPackageId";
+    private const string RegistrationGranularityProperty =
+        "build_property.AtomUIRegistrationGranularity";
     private const string LinkedPublishProperty = "build_property.AtomUILinkedPublish";
     private const string RegistrationStrictProperty = "build_property.AtomUIRegistrationStrict";
     private const string RegistrationPlanOwnerProperty =
@@ -31,6 +34,29 @@ internal static class LinkedRegistrationOptions
         return TryGetNonEmptyValue(optionsProvider, PackageIdProperty, out var packageId)
             ? packageId
             : string.Empty;
+    }
+
+    internal static RegistrationUnitGranularity GetRegistrationGranularity(
+        AnalyzerConfigOptionsProvider optionsProvider,
+        out string? invalidValue)
+    {
+        invalidValue = null;
+        if (!TryGetNonEmptyValue(
+                optionsProvider,
+                RegistrationGranularityProperty,
+                out var value) ||
+            string.Equals(value, "Package", StringComparison.OrdinalIgnoreCase))
+        {
+            return RegistrationUnitGranularity.Package;
+        }
+
+        if (string.Equals(value, "Directory", StringComparison.OrdinalIgnoreCase))
+        {
+            return RegistrationUnitGranularity.Directory;
+        }
+
+        invalidValue = value;
+        return RegistrationUnitGranularity.Package;
     }
 
     internal static ISet<string> GetPackageSharedThemePaths(

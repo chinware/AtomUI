@@ -118,6 +118,7 @@ internal static class ControlThemeModelBuilder
         IEnumerable<ControlThemeSourceInfo> assets,
         ISet<string> globalTokenNames,
         string packageId,
+        RegistrationUnitGranularity registrationGranularity,
         string? projectDirectory,
         AnalyzerConfigOptionsProvider optionsProvider,
         Action<Diagnostic> reportDiagnostic)
@@ -183,6 +184,7 @@ internal static class ControlThemeModelBuilder
                     control.ContainingAssembly,
                     compilation.Assembly),
                 packageId,
+                registrationGranularity,
                 projectDirectory,
                 optionsProvider);
             result[GetControlKey(control)] = info;
@@ -210,6 +212,7 @@ internal static class ControlThemeModelBuilder
                                 control.ContainingAssembly,
                                 compilation.Assembly),
                             packageId,
+                            registrationGranularity,
                             projectDirectory,
                             optionsProvider,
                             asset.AssetPath,
@@ -242,6 +245,7 @@ internal static class ControlThemeModelBuilder
                 hasDescriptor: false,
                 ownsControlMap: true,
                 packageId,
+                registrationGranularity,
                 projectDirectory,
                 optionsProvider);
             result.Add(key, info);
@@ -335,6 +339,7 @@ internal static class ControlThemeModelBuilder
         bool hasDescriptor,
         bool ownsControlMap,
         string packageId,
+        RegistrationUnitGranularity registrationGranularity,
         string? projectDirectory,
         AnalyzerConfigOptionsProvider optionsProvider,
         string? fallbackSourcePath = null,
@@ -365,6 +370,7 @@ internal static class ControlThemeModelBuilder
             control.ToDisplayString(GeneratorSymbolDisplay.FullyQualifiedType),
             RegistrationUnitId.Create(
                 packageId,
+                registrationGranularity,
                 sourcePath,
                 projectDirectory,
                 control.Name,

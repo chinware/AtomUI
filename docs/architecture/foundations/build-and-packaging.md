@@ -142,9 +142,10 @@ Repository 配置、`MacOSHomebrewNativeAot.targets` 或 `scripts/` 资产。
 
 AtomUI 把 `PublishTrimmed=true`、`PublishAot=true` 和 WebAssembly `RunAOTCompilation=true` 统一视为 linked publish。
 普通非裁剪构建继续使用包级全量注册；linked publish 由 Generator 聚合应用、类库和第三方包的 Usage Manifest，
-按 Package 生成 Registration Unit 调用计划。Control descriptor、Own Token schema 和控件族专属 AXAML Theme 跟随
-Unit 裁剪；Language、包级初始化逻辑、Global Token、Theme Algorithm、Provider、平台 selector 和显式
-`PackageShared` 资源作为 Package Core 整体保留。
+按 Package 生成 Registration Unit 调用计划。默认一个 Package 生成一个完整 Unit；只有显式设置
+`AtomUIRegistrationGranularity=Directory` 的大型多控件包才按稳定控件族拆分。Control descriptor、Own Token schema 和
+Control-owned AXAML Theme 跟随对应 Unit；Language、包级初始化逻辑、Global Token、Theme Algorithm、Provider、平台
+selector 和显式 `PackageShared` 资源作为 Package Core 整体保留。
 完整模式矩阵和注册协议见 [AOT 与裁剪架构](aot-and-trimming.md)。
 
 每个可直接安装、且声明 `AtomUIRegistrationPackageId` 的第一方产品 NuGet 都内嵌同版本的 Generator、Build Tasks 和
@@ -164,8 +165,9 @@ ILLink/ILCompiler 前验证计划标记。该标记只属于 AOT/Trim 注册基�
 类库在普通构建中也要生成只含稳定字符串 identity 的 Usage Manifest，因为最终入口应用可能以 linked 模式引用它；
 普通构建不得安装 Application Plan、改变 `UseDesktopControls()` 的全量行为或要求动态 root。
 
-Application Plan 不计算 Theme Asset、Catalog、Feature 或 Initializer 图，也不执行应用级依赖闭包。Unit 内依赖由强类型
-Unit fragment 直接表达；无法可靠确定 Unit 时，只对对应 Package 使用 full fallback。
+Application Plan 不计算 Theme Asset、Catalog、Feature 或 Initializer 图，也不执行应用级依赖闭包。Package 模式天然包含
+包内 Control 依赖；Directory 模式的 Unit 依赖由强类型 fragment 直接表达。无法可靠确定 Unit 时，只对对应 Package 使用
+full fallback。
 
 ## 打包边界
 

@@ -239,6 +239,13 @@ builder.UseAcmeControls();
 该入口直接注册 descriptor、Token schema 和主题资产，不运行时扫描程序集或 AXAML。第三方包不
 需要每 Theme 注册代码、泛型 Token Attribute、glob Attribute 或反射 fallback。
 
+第三方包默认以整个 Package 作为一个安全 Registration Unit。Own Token、内部 View/Presenter 和主题资源跟随 Package
+整体保留，普通作者不声明 `AtomUIRegistrationUnit`、Unit dependency 或 AXAML ownership metadata。只有经过体积测量和
+NativeAOT 验证的大型多控件包才启用 `AtomUIRegistrationGranularity=Directory`。
+
+完整项目与入口示例见
+[第三方 AtomUI Control Package 指南](../../guides/theming/third-party-control-packages.md)。
+
 ## 构建期诊断
 
 以下情况必须构建失败：

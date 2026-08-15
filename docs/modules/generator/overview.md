@@ -9,7 +9,10 @@
   Control identity 与 descriptor；Attribute 只负责 Token 发现，不携带 Control 类型、identity 或 ID。
 - 分析构建系统提供的 `Themes/**/*.axaml`，生成 ControlTheme asset owner、引用 identity、Semantic Part 契约和
   包级 manifest；不收集 Global Token 消费白名单。
-- 为每个 Control 包生成一次包级注册入口；不要求逐 Control 或逐 Theme 手工注册。
+- 为每个 Control 包生成包级注册 helper 和 manifest，由真实 `UseXxxControls()` 入口调用；不要求逐 Control 或逐 Theme
+  手工注册。
+- 根据统一 `AtomUIRegistrationGranularity` 策略生成 linked Package、Unit、ControlMap 和 fragment metadata；普通包默认
+  单一 Package Unit，大型包才显式按目录拆分。
 - 根据 `[LanguageCatalog]` enum 与 XLIFF 2.1 生成强类型资源扩展、Catalog/Bundle 注册和应用 bootstrap。
 - 消除 Control 包对 Token、主题资产和语言手工清单及运行时程序集扫描的依赖。
 
@@ -31,6 +34,7 @@
 | `Localization/` | Catalog symbol、XLIFF、Bundle 编译、模块注册、应用 bootstrap 与 BCP 47 数据生成 |
 | `DataMemberAccessors/` | 数据成员访问器 Generator、Analyzer 和 SourceWriter |
 | `ResourceHost/` | 非 Visual `AvaloniaObject` scoped resource host Generator、TypeInfo 和 SourceWriter |
+| `LinkedRegistration/` | Package 粒度、入口 manifest、Usage 收集、应用计划、Unit fragment 和安全 fallback |
 | `TargetMarkConstants.cs` | 生成器识别的 Attribute 元数据名 |
 
 ## 专题文档
@@ -39,6 +43,11 @@
 - [Scoped Resource Host 开发规范](../../engineering/development/scoped-resource-host.md)：Control 作者的适用场景、owner 生命周期、验证和 review 规则。
 - [Semantic Part Generator 设计](semantic-part-generator.md)：Control 语义区域的声明、AXAML 校验、descriptor、
   diagnostics、增量生成和 AOT 边界。
+- [AOT 与裁剪架构](../../architecture/foundations/aot-and-trimming.md)：linked publish、Registration Unit、Application Plan
+  和安全 fallback。
+- [AOT Registration Unit 粒度](../../architecture/foundations/aot-registration-unit-granularity.md)：粒度策略、资源归属、
+  第一方 Package 映射和第三方包契约。
+- [第三方 AtomUI Control Package 指南](../../guides/theming/third-party-control-packages.md)：包作者的最小项目、入口和验证步骤。
 
 ## 维护注意
 

@@ -13,11 +13,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <AvaloniaXaml Update="Themes/ColorSlider/AbstractColorPickerSliderTrackTheme.axaml;Themes/ColorSlider/ColorPickerSliderTrackTheme.axaml;Themes/ColorSlider/ColorSliderTrackButtonTheme.axaml;Themes/ColorSlider/GradientColorPickerTrackTheme.axaml;Themes/ColorView/ColorPickerInput.axaml"
-                       AtomUIRegistrationUnit="ColorPicker" />
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="Avalonia.Controls.ColorPicker" />
     </ItemGroup>
 

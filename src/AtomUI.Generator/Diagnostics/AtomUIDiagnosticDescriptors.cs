@@ -43,8 +43,8 @@ internal static class AtomUIDiagnosticDescriptors
 
     public static readonly DiagnosticDescriptor LinkedPackageDefinitionInvalid = new(
         AtomUIDiagnosticIds.LinkedPackageDefinitionInvalid,
-        "AtomUI Registration Unit or PackageShared definition is invalid",
-        "Package '{0}' contains an invalid Registration Unit or PackageShared definition: {1}",
+        "AtomUI linked-registration package definition is invalid",
+        "Package '{0}' contains an invalid registration granularity, Registration Unit, or PackageShared definition: {1}",
         AtomUIDiagnosticCategories.LinkedRegistration,
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,

@@ -15,6 +15,8 @@ internal sealed class GeneratedThemeSchemaWriter
     private readonly IReadOnlyList<SchemaTokenInfo> _globalTokens;
     private readonly IReadOnlyList<ControlThemeInfo> _controls;
     private readonly IReadOnlyList<ThemeAlgorithmInfo> _algorithms;
+    private readonly LinkedRegistration.Model.RegistrationUnitDependencyAnalysis
+        _dependencyAnalysis;
 
     internal GeneratedThemeSchemaWriter(
         SourceProductionContext context,
@@ -24,7 +26,8 @@ internal sealed class GeneratedThemeSchemaWriter
         string controlCatalog,
         IEnumerable<SchemaTokenInfo> globalTokens,
         IEnumerable<ControlThemeInfo> controls,
-        IEnumerable<ThemeAlgorithmInfo> algorithms)
+        IEnumerable<ThemeAlgorithmInfo> algorithms,
+        LinkedRegistration.Model.RegistrationUnitDependencyAnalysis dependencyAnalysis)
     {
         _context = context;
         _generatedNamespace = GeneratedCodeNamespace.ForAssembly(assemblyName);
@@ -37,6 +40,7 @@ internal sealed class GeneratedThemeSchemaWriter
         _algorithms = algorithms.OrderBy(static algorithm => algorithm.AlgorithmValue)
                                 .ThenBy(static algorithm => algorithm.TypeName, StringComparer.Ordinal)
                                 .ToArray();
+        _dependencyAnalysis = dependencyAnalysis;
     }
 
     internal void Write()
@@ -134,6 +138,17 @@ internal sealed class GeneratedThemeSchemaWriter
                         unit.Key));
             }
         }
+        foreach (var issue in _dependencyAnalysis.Issues)
+        {
+            LinkedRegistration.Manifest.LinkedRegistrationMetadataWriter.Write(
+                source,
+                new LinkedRegistration.Manifest.LinkedUsageManifestRecord(
+                    LinkedRegistration.Manifest.LinkedUsageKind.PackageRoot,
+                    _packageId,
+                    issue.Source,
+                    issue.Line,
+                    issue.Column));
+        }
         source.AppendLine();
         source.Append("namespace ").Append(_generatedNamespace).AppendLine(".LinkedRegistrationV1;");
         source.AppendLine();
@@ -154,6 +169,13 @@ internal sealed class GeneratedThemeSchemaWriter
             source.AppendLine("            return;");
             source.AppendLine("        }");
             source.AppendLine();
+            foreach (var dependencyUnitId in _dependencyAnalysis.GetDependencies(unit.Key))
+            {
+                source.Append("        ")
+                      .Append(LinkedRegistration.LinkedRegistrationFragmentName.ForUnit(
+                          dependencyUnitId))
+                      .AppendLine(".Add(builder);");
+            }
             source.AppendLine("        AddDependencies(builder);");
             foreach (var control in unit.Where(static control => control.HasDescriptor)
                                         .OrderBy(static control =>

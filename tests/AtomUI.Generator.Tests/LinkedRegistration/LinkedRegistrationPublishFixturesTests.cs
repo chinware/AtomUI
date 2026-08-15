@@ -129,6 +129,7 @@ public sealed class LinkedRegistrationPublishFixturesTests
         source.ShouldNotContain("properties[@]");
         source.ShouldNotContain("-flp:logfile=");
         source.ShouldContain("--disable-build-servers");
+        source.ShouldContain("-m:1");
         source.ShouldContain("PublishTrimmed=true");
         source.ShouldContain("PublishAot=true");
         source.ShouldContain("build/MacOSHomebrewNativeAot.targets");
@@ -137,6 +138,12 @@ public sealed class LinkedRegistrationPublishFixturesTests
         source.ShouldContain("AtomUIUseGeneratedRegistration=true");
         source.ShouldContain("MINIMUM_DESKTOP_REDUCTION_PERCENT=40");
         source.ShouldContain("MAX_SECOND_UNIT_GROWTH_BYTES=262144");
+        source.ShouldContain("if (( reduction_percent < MINIMUM_DESKTOP_REDUCTION_PERCENT )); then");
+        source.ShouldContain("if (( second_unit_growth > MAX_SECOND_UNIT_GROWTH_BYTES )); then");
+        source.ShouldContain("NativeAOT Minimal reduction");
+        source.ShouldContain("Unused Unit NativeAOT growth");
+        source.ShouldNotContain("(( reduction_percent >= MINIMUM_DESKTOP_REDUCTION_PERCENT ))");
+        source.ShouldNotContain("(( second_unit_growth <= MAX_SECOND_UNIT_GROWTH_BYTES ))");
         source.ShouldContain("MinimalWithUnusedUnit");
         source.ShouldContain("AtomUIIncludeUnusedFixtureUnit=true");
         source.ShouldNotContain("two_units_size=");

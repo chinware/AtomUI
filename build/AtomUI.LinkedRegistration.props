@@ -1,6 +1,8 @@
 <Project>
     <PropertyGroup>
         <AtomUIRegistrationStrict Condition="'$(AtomUIRegistrationStrict)' == ''">false</AtomUIRegistrationStrict>
+        <AtomUIRegistrationGranularity
+            Condition="'$(AtomUIRegistrationGranularity)' == ''">Package</AtomUIRegistrationGranularity>
     </PropertyGroup>
 
     <ItemGroup>
@@ -8,5 +10,6 @@
         <CompilerVisibleProperty Include="AtomUIRegistrationStrict" />
         <CompilerVisibleProperty Include="AtomUIRegistrationPlanOwner" />
         <CompilerVisibleProperty Include="AtomUIRegistrationPackageId" />
+        <CompilerVisibleProperty Include="AtomUIRegistrationGranularity" />
     </ItemGroup>
 </Project>

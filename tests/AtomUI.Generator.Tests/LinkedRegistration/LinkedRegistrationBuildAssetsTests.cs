@@ -42,6 +42,19 @@ public sealed class LinkedRegistrationBuildAssetsTests
     }
 
     [Fact]
+    public void Registration_Granularity_Defaults_To_Package()
+    {
+        var props = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.props"));
+        var property = props.Descendants()
+                            .Single(element =>
+                                element.Name.LocalName == "AtomUIRegistrationGranularity");
+
+        property.Value.Trim().ShouldBe("Package");
+        ((string?)property.Attribute("Condition"))
+            .ShouldBe("'$(AtomUIRegistrationGranularity)' == ''");
+    }
+
+    [Fact]
     public void Application_Plan_Owner_Is_Derived_After_Project_OutputType()
     {
         var props = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.props"));
@@ -312,6 +325,7 @@ public sealed class LinkedRegistrationBuildAssetsTests
         visibleProperties.ShouldContain("AtomUIRegistrationStrict");
         visibleProperties.ShouldContain("AtomUIRegistrationPlanOwner");
         visibleProperties.ShouldContain("AtomUIRegistrationPackageId");
+        visibleProperties.ShouldContain("AtomUIRegistrationGranularity");
         visibleProperties.ShouldNotContain("AtomUIRegistration" + "Entries");
         visibleProperties.ShouldNotContain("AtomUIRegistrationCoreFeature");
     }

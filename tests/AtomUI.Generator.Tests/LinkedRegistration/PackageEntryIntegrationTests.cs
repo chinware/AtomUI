@@ -71,6 +71,38 @@ public sealed class PackageEntryIntegrationTests
         HasRegistrationEntryAttribute(method).ShouldBeFalse();
     }
 
+    [Fact]
+    public void Only_Desktop_Controls_Opts_Into_Directory_Registration_Granularity()
+    {
+        var desktopProject = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj"));
+        desktopProject.ShouldContain(
+            "<AtomUIRegistrationGranularity>Directory</AtomUIRegistrationGranularity>");
+
+        foreach (var projectPath in new[]
+                 {
+                     "src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj",
+                     "src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj",
+                     "src/AtomUI.Desktop.Controls.Extras/AtomUI.Desktop.Controls.Extras.csproj",
+                     "src/AtomUI.Toolkits.GalleryBase/AtomUI.Toolkits.GalleryBase.csproj"
+                 })
+        {
+            File.ReadAllText(GetRepoFile(projectPath))
+                .ShouldNotContain("AtomUIRegistrationGranularity");
+        }
+    }
+
+    [Theory]
+    [InlineData("src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj")]
+    [InlineData("src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj")]
+    public void Package_Granularity_Projects_Do_Not_Declare_Unit_Ownership_Patches(
+        string projectPath)
+    {
+        var projectSource = File.ReadAllText(GetRepoFile(projectPath));
+
+        projectSource.ShouldNotContain("AtomUIRegistrationUnit");
+    }
+
     [Theory]
     [InlineData(
         "src/AtomUI.Controls/ThemeManagerBuildExtensions.cs",

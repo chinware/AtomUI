@@ -89,6 +89,14 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
 
         initContext.RegisterImplementationSourceOutput(generationProvider, (context, generationInfo) =>
         {
+            if (generationInfo.Right.InvalidRegistrationGranularity is not null)
+            {
+                context.ReportDiagnostic(Diagnostic.Create(
+                    Diagnostics.AtomUIDiagnosticDescriptors.LinkedPackageDefinitionInvalid,
+                    Location.None,
+                    generationInfo.Right.PackageId,
+                    $"AtomUIRegistrationGranularity '{generationInfo.Right.InvalidRegistrationGranularity}' is invalid; use 'Package' or 'Directory'"));
+            }
             if (generationInfo.Right.Compilation.GetTypeByMetadataName(
                     "AtomUI.Theme.Resources.TokenResourceExtension`1") is null)
             {
@@ -113,15 +121,45 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
                 combinedInfos.Left.Left.Left.Tokens.Select(static token => token.Name));
             tokenInfo.AvailableGlobalTokenNames.UnionWith(generationInfo.Right.GlobalTokenNames);
             tokenInfo.SchemaTokens.UnionWith(combinedInfos.Left.Left.Left.SchemaTokens);
-            tokenInfo.ControlThemeInfos.AddRange(ControlThemeModelBuilder.Build(
+            var controlThemeInfos = ControlThemeModelBuilder.Build(
                 generationInfo.Right.Compilation,
                 combinedInfos.Left.Left.Right,
                 combinedInfos.Right,
                 tokenInfo.AvailableGlobalTokenNames,
                 generationInfo.Right.PackageId,
+                generationInfo.Right.RegistrationGranularity,
                 generationInfo.Right.ProjectDirectory,
                 generationInfo.Right.OptionsProvider,
-                context.ReportDiagnostic));
+                context.ReportDiagnostic);
+            tokenInfo.ControlThemeInfos.AddRange(controlThemeInfos);
+            var dependencyAnalysis = generationInfo.Right.EntryMethods.HasEntries
+                ? LinkedRegistration.Model.RegistrationUnitDependencyAnalyzer.Analyze(
+                    generationInfo.Right.Compilation,
+                    controlThemeInfos,
+                    generationInfo.Right.PackageId,
+                    generationInfo.Right.RegistrationGranularity,
+                    generationInfo.Right.ProjectDirectory,
+                    generationInfo.Right.OptionsProvider,
+                    context.CancellationToken)
+                : LinkedRegistration.Model.RegistrationUnitDependencyAnalysis.Empty;
+            if (LinkedRegistration.LinkedRegistrationOptions.IsLinkedPublish(
+                    generationInfo.Right.OptionsProvider) ||
+                LinkedRegistration.LinkedRegistrationOptions.IsRegistrationStrict(
+                    generationInfo.Right.OptionsProvider))
+            {
+                var descriptor = LinkedRegistration.LinkedRegistrationOptions.IsRegistrationStrict(
+                    generationInfo.Right.OptionsProvider)
+                    ? AsError(Diagnostics.AtomUIDiagnosticDescriptors.LinkedDynamicUsageWidened)
+                    : Diagnostics.AtomUIDiagnosticDescriptors.LinkedDynamicUsageWidened;
+                foreach (var issue in dependencyAnalysis.Issues)
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(
+                        descriptor,
+                        issue.Location ?? Location.None,
+                        issue.Identity,
+                        generationInfo.Right.PackageId));
+                }
+            }
 
             if (tokenInfo.SchemaTokens.Count != 0 ||
                 tokenInfo.ControlThemeInfos.Count != 0 ||
@@ -135,7 +173,8 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
                     generationInfo.Right.ControlCatalog,
                     tokenInfo.SchemaTokens,
                     tokenInfo.ControlThemeInfos,
-                    combinedInfos.Left.Right);
+                    combinedInfos.Left.Right,
+                    dependencyAnalysis);
                 schemaWriter.Write();
             }
 
@@ -159,6 +198,20 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
         });
     }
 
+    private static DiagnosticDescriptor AsError(DiagnosticDescriptor descriptor)
+    {
+        return new DiagnosticDescriptor(
+            descriptor.Id,
+            descriptor.Title,
+            descriptor.MessageFormat,
+            descriptor.Category,
+            DiagnosticSeverity.Error,
+            descriptor.IsEnabledByDefault,
+            descriptor.Description,
+            descriptor.HelpLinkUri,
+            descriptor.CustomTags.ToArray());
+    }
+
     private static ThemeCompilationInfo CreateCompilationInfo(
         Compilation compilation,
         Microsoft.CodeAnalysis.Diagnostics.AnalyzerConfigOptionsProvider optionsProvider)
@@ -174,10 +227,14 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
         optionsProvider.GlobalOptions.TryGetValue(
             "build_property.AtomUIThemeAssetProjectDirectory",
             out var projectDirectory);
+        var registrationGranularity = LinkedRegistration.LinkedRegistrationOptions
+            .GetRegistrationGranularity(optionsProvider, out var invalidRegistrationGranularity);
         return new ThemeCompilationInfo(
             compilation,
             assemblyName,
             LinkedRegistration.LinkedRegistrationOptions.GetPackageId(optionsProvider, assemblyName),
+            registrationGranularity,
+            invalidRegistrationGranularity,
             projectDirectory,
             ThemeGeneratorOptions.GetControlCatalog(optionsProvider),
             names,

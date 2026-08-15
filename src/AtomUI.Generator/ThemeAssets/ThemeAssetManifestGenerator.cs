@@ -49,6 +49,8 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
             var packageId = LinkedRegistration.LinkedRegistrationOptions.GetPackageId(
                 value.Right,
                 assemblyName);
+            var registrationGranularity = LinkedRegistration.LinkedRegistrationOptions
+                .GetRegistrationGranularity(value.Right, out _);
             var emitLinkedRegistration = LinkedRegistration
                 .ControlPackageRegistrationEntryDiscovery
                 .Discover(compilation)
@@ -79,6 +81,7 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
                 sourceControls.Select(control => GetControlUnitId(
                     control,
                     packageId,
+                    registrationGranularity,
                     projectDirectory,
                     value.Right)),
                 StringComparer.Ordinal);
@@ -126,6 +129,7 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
                     asset,
                     controlCatalog,
                     packageId,
+                    registrationGranularity,
                     projectDirectory,
                     value.Right,
                     productionContext.ReportDiagnostic,
@@ -138,6 +142,7 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
                 {
                     var unitId = RegistrationUnitId.Create(
                         packageId,
+                        registrationGranularity,
                         asset.AssetPath,
                         projectDirectory,
                         asset.ControlCandidate ?? asset.FileName,
@@ -191,6 +196,7 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
         ThemeAssetInfo asset,
         string controlCatalog,
         string packageId,
+        RegistrationUnitGranularity registrationGranularity,
         string? projectDirectory,
         Microsoft.CodeAnalysis.Diagnostics.AnalyzerConfigOptionsProvider optionsProvider,
         Action<Diagnostic> reportDiagnostic,
@@ -266,6 +272,7 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
             owner,
             asset,
             packageId,
+            registrationGranularity,
             projectDirectory,
             optionsProvider,
             useAssetOverride: true);
@@ -277,6 +284,7 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
                 control,
                 asset,
                 packageId,
+                registrationGranularity,
                 projectDirectory,
                 optionsProvider,
                 useAssetOverride: SymbolEqualityComparer.Default.Equals(control, owner)))
@@ -305,6 +313,7 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
         INamedTypeSymbol control,
         ThemeAssetInfo asset,
         string packageId,
+        RegistrationUnitGranularity registrationGranularity,
         string? projectDirectory,
         Microsoft.CodeAnalysis.Diagnostics.AnalyzerConfigOptionsProvider optionsProvider,
         bool useAssetOverride)
@@ -318,6 +327,7 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
 
         return RegistrationUnitId.Create(
             packageId,
+            registrationGranularity,
             sourceTree?.FilePath ?? asset.AssetPath,
             projectDirectory,
             control.Name,
@@ -327,12 +337,14 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
     private static string GetControlUnitId(
         INamedTypeSymbol control,
         string packageId,
+        RegistrationUnitGranularity registrationGranularity,
         string? projectDirectory,
         Microsoft.CodeAnalysis.Diagnostics.AnalyzerConfigOptionsProvider optionsProvider)
     {
         var sourceTree = control.DeclaringSyntaxReferences.FirstOrDefault()?.SyntaxTree;
         return RegistrationUnitId.Create(
             packageId,
+            registrationGranularity,
             sourceTree?.FilePath,
             projectDirectory,
             control.Name,

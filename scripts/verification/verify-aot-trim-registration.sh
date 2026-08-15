@@ -155,7 +155,15 @@ publish_fixture() {
     local output_name="${3:-$fixture}"
     local extra_property="${4:-}"
     local publish_dir="$output_root/$publish_kind/$output_name"
-    local args=(publish "$(fixture_project "$fixture")" -c "$configuration" -r "$rid" --self-contained true -o "$publish_dir")
+    local args=(
+        publish "$(fixture_project "$fixture")"
+        -c "$configuration"
+        -r "$rid"
+        --self-contained true
+        --disable-build-servers
+        -m:1
+        -o "$publish_dir"
+    )
     case "$publish_kind" in
         trimmed)
             args+=(-p:PublishTrimmed=true -p:PublishAot=false)
@@ -226,10 +234,23 @@ verify_size_gates() {
     unused_unit_size="$(awk -F '\t' '$5 == "aot" && $6 == "MinimalWithUnusedUnit" { print $7 }' "$report_path")"
     full_size="$(awk -F '\t' '$5 == "aot" && $6 == "Full" { print $7 }' "$report_path")"
 
+    if [[ -z "$minimal_size" || -z "$unused_unit_size" || -z "$full_size" || "$full_size" -le 0 ]]; then
+        printf 'NativeAOT size report is incomplete: %s\n' "$report_path" >&2
+        return 1
+    fi
+
     local reduction_percent=$(( (full_size - minimal_size) * 100 / full_size ))
     local second_unit_growth=$(( unused_unit_size - minimal_size ))
-    (( reduction_percent >= MINIMUM_DESKTOP_REDUCTION_PERCENT ))
-    (( second_unit_growth <= MAX_SECOND_UNIT_GROWTH_BYTES ))
+    if (( reduction_percent < MINIMUM_DESKTOP_REDUCTION_PERCENT )); then
+        printf 'NativeAOT Minimal reduction is %d%%; required minimum is %d%% (Minimal=%d, Full=%d).\n' \
+            "$reduction_percent" "$MINIMUM_DESKTOP_REDUCTION_PERCENT" "$minimal_size" "$full_size" >&2
+        return 1
+    fi
+    if (( second_unit_growth > MAX_SECOND_UNIT_GROWTH_BYTES )); then
+        printf 'Unused Unit NativeAOT growth is %d bytes; allowed maximum is %d bytes.\n' \
+            "$second_unit_growth" "$MAX_SECOND_UNIT_GROWTH_BYTES" >&2
+        return 1
+    fi
 }
 
 verify_full_publish_matrix() {
@@ -271,7 +292,7 @@ verify_full_publish_matrix() {
         "$output_root/aot.MinimalWithUnusedUnit.json"
 
     dotnet publish "$repo_root/controlgallery/AtomUIGallery.Browser/AtomUIGallery.Browser.csproj" \
-        -c Release -p:RunAOTCompilation=true
+        -c Release --disable-build-servers -m:1 -p:RunAOTCompilation=true
     verify_size_gates
 }
 

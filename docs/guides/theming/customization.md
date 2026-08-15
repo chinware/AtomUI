@@ -500,29 +500,17 @@ Semantic Part Theme 是 Selector 的可选扩展，不是 Popup、Overlay 或普
 
 ## 14. 开发第三方 AtomUI Control
 
-第三方 Control 使用与 AtomUI 内置 Control 相同的约定：
+第三方 Control 使用与 AtomUI 内置 Control 相同的 Control、Own Token 和 Theme 约定。AOT 接入的默认心智模型只有
+Package，不要求普通作者理解 Registration Unit：
 
 ```text
-Rating/
-+-- Rating.cs
-+-- RatingToken.cs            optional
-\-- Themes/
-    \-- RatingTheme.axaml
+Acme.Controls Package
++-- Control、可选 Own Token 和 Themes/
++-- AcmeControlThemesProvider
+\-- [ControlPackageRegistrationEntry] UseAcmeControls()
 ```
 
-开发步骤：
-
-1. 创建 public Rating Control。
-2. 只有存在 Rating 独有设计值时才创建带 `[ControlDesignToken]` 的 `RatingToken.cs`。
-3. 在 `Themes/RatingTheme.axaml` 中使用 `RatingTokenResource` 消费 Effective Control Token。
-4. 由生成器产生 exact CLR type/identity、Token key、descriptor 和 asset manifest。
-5. 包作者实现一个带 `[ControlPackageRegistrationEntry]` 的 `UseAcmeControls()` 注册入口；Generator 从真实方法符号生成
-   linked manifest，不在项目文件中重复维护入口类型名或方法名。
-
-不需要泛型 Token Attribute、Theme Asset glob、每 Theme Module、手工 manifest、聚合 AXAML 或运行时程序集扫描。
-只有一个 ControlTheme 时，目录中就只有一个主题文件。
-
-Control Package 的项目文件只声明稳定 Package identity：
+包项目声明稳定 identity：
 
 ```xml
 <PropertyGroup>
@@ -530,43 +518,7 @@ Control Package 的项目文件只声明稳定 Package identity：
 </PropertyGroup>
 ```
 
-注册入口由包作者保留 Provider、Localization 和 initializer 顺序，Attribute 只声明编译期入口身份：
-
-```csharp
-using AtomUI;
-using AtomUI.Generated.AcmeControls;
-using AtomUI.Registration;
-
-namespace Acme.Controls;
-
-public static class ThemeManagerBuilderExtensions
-{
-    private const string PackageId = "Acme.Controls";
-
-    [ControlPackageRegistrationEntry]
-    public static IAtomUIBuilder UseAcmeControls(this IAtomUIBuilder builder)
-    {
-        ArgumentNullException.ThrowIfNull(builder);
-        var provider = new AcmeControlThemesProvider();
-        if (AotTrimRegistration.IsEnabled)
-        {
-            AotTrimRegistrationPlanRegistry.ApplyPackage(builder, PackageId, provider);
-        }
-        else
-        {
-            GeneratedControlPackageRegistration.Register(builder.Theme, provider);
-        }
-
-        return builder;
-    }
-}
-```
-
-方法必须是 public、static、非泛型的 `IAtomUIBuilder` 扩展方法，返回类型必须可赋给 `IAtomUIBuilder`，并且同一包含类型中
-不能存在同名重载。无效声明由 `ATOMUILINK009` 在包自身编译阶段报告。应用运行时不读取 Attribute，也不会扫描程序集；
-注册仍由应用显式调用 `UseAcmeControls()` 触发。
-
-第三方注册必须在 ThemeManager 构建前完成：
+应用在 ThemeManager 构建前显式启用：
 
 ```csharp
 this.UseAtomUI(builder =>
@@ -576,7 +528,16 @@ this.UseAtomUI(builder =>
 });
 ```
 
-详细注册顺序见 [启动与注册链路](../../architecture/foundations/startup-and-registration.md)。
+默认整个 `Acme.Controls` 是一个安全 Unit。包内任一公开 Control 被使用时，Generator 会一起保留内部 View/Presenter、
+descriptor、Own Token 和主题资源。普通作者不写 `AtomUIRegistrationUnit`、Unit dependency、AXAML ownership metadata、
+linker XML 或手工 manifest。
+
+只有包含大量独立控件族、并且有真实体积基线和 NativeAOT 测试的大型包，才显式设置
+`AtomUIRegistrationGranularity=Directory`。该模式是高级裁剪优化，不是普通 AOT 接入步骤。
+
+完整项目文件、Provider、入口代码和发布检查见
+[第三方 AtomUI Control Package 指南](third-party-control-packages.md)。详细注册顺序见
+[启动与注册链路](../../architecture/foundations/startup-and-registration.md)。
 
 ## 15. 一次主题切换为什么不会暴露半成品
 

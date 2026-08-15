@@ -4,11 +4,17 @@ internal static class RegistrationUnitId
 {
     internal static string Create(
         string packageId,
+        RegistrationUnitGranularity granularity,
         string? sourcePath,
         string? projectDirectory,
         string fallbackName,
         string? explicitUnit = null)
     {
+        if (granularity == RegistrationUnitGranularity.Package)
+        {
+            return CreatePackageUnitId(packageId);
+        }
+
         if (!string.IsNullOrWhiteSpace(explicitUnit))
         {
             return Qualify(packageId, explicitUnit!);
@@ -27,6 +33,19 @@ internal static class RegistrationUnitId
         }
 
         return Qualify(packageId, fallbackName);
+    }
+
+    internal static string CreatePackageUnitId(string packageId)
+    {
+        var separator = packageId.LastIndexOf('.');
+        var unitName = separator >= 0 && separator + 1 < packageId.Length
+            ? packageId.Substring(separator + 1)
+            : packageId;
+        if (string.IsNullOrWhiteSpace(unitName))
+        {
+            unitName = "Package";
+        }
+        return Qualify(packageId, unitName);
     }
 
     internal static string NormalizeProjectPath(string? path, string? projectDirectory)

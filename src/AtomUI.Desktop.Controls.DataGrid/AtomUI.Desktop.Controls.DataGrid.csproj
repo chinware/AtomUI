@@ -11,11 +11,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <AvaloniaXaml Update="Themes/DataGridOperationButtons.axaml;Themes/DataGridRowExpanderTheme.axaml;Themes/Filters/DataGridFilterMenuItemTheme.axaml;Themes/Filters/DataGridFilterTreeItemTheme.axaml"
-                       AtomUIRegistrationUnit="DataGrid" />
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj"
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false"

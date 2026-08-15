@@ -340,7 +340,8 @@ descriptor 和资源扩展，只省略 Own Token builder/schema：
   ProvideValue 热路径解析字符串。
 - 每个主题资产的 URI、owner Control identity、引用的 Control identities 和 Semantic Part Theme 资产关系。
 - 每个 Control 的生成式 Semantic Part descriptor、Selector class、ContractType 和 cardinality。
-- 每个包的生成式注册入口；一次注册完整 descriptor 和资产 manifest，不要求逐 Control 手工注册。
+- 每个包的生成式注册 helper 和 manifest；由包作者的公开 `UseXxxControls()` 入口一次注册完整 descriptor 和资产，
+  不要求逐 Control 手工注册。
 
 `XxxTokenResource` 是 Control identity 的显式 AXAML 边界。它使用同一种语法读取 Effective Global Token 和
 Own Token；两者的分类只存在于 schema、配置和编译层，不泄漏到 Setter 调用语法。
@@ -350,9 +351,11 @@ Own Token；两者的分类只存在于 schema、配置和编译层，不泄漏�
 内置路径删除
 `Activator.CreateInstance`、`Type.GetProperties`、`PropertyInfo.GetValue/SetValue` 和枚举反射。
 
-第三方 Control 包必须使用 AtomUI 源生成器，并且只通过一次生成的包级入口注册 Control descriptor、可选 Own
-Token 和主题资产。Own Token 使用无参数 `[ControlDesignToken]` 供生成器发现，但不声明 Control
-类型、identity 或 ID。不存在手写 descriptor/manifest、运行时程序集扫描或 AXAML 文本扫描 fallback。
+第三方 Control 包必须使用 AtomUI 源生成器，并且只通过一个带 `[ControlPackageRegistrationEntry]` 的公开包级入口注册
+Control descriptor、可选 Own Token 和主题资产。普通第三方包默认以整个 Package 作为一个安全 Registration Unit，不维护
+Unit ownership 或依赖图。Own Token 使用无参数 `[ControlDesignToken]` 供生成器发现，但不声明 Control 类型、identity 或
+ID。不存在手写 descriptor/manifest、运行时程序集扫描或 AXAML 文本扫描 fallback。完整接入步骤见
+[第三方 AtomUI Control Package 指南](../../../guides/theming/third-party-control-packages.md)。
 
 ## 6. 主题文件
 
@@ -1340,8 +1343,9 @@ ThemeScopeGraph 在注册有效期间强持有 ScopeNode 和对应 ThemeConfigPr
 - 内置和应用资源 Resolver 只使用显式 `avares://` URI；用户 Resolver 只枚举显式配置目录的顶层
   `*.theme.xml`，不反射发现 Resolver、Theme 或 Token。
 - 手动刷新不使用 `FileSystemWatcher`、动态代码生成或运行时类型构造。
-- 第三方 Control 的 identity、Token descriptor 和资源投影必须由 AtomUI generator 生成并通过包级入口注册；算法
-  descriptor 只使用 `ThemeAlgorithm` 的封闭成员，并提供显式 revision/version。
+- 第三方 Control 的 identity、Token descriptor 和资源投影必须由 AtomUI generator 生成并通过真实包级入口注册；默认
+  Package 粒度必须完整保留内部 Control 和主题资源。算法 descriptor 只使用 `ThemeAlgorithm` 的封闭成员，并提供显式
+  revision/version。
 - 生成器测试必须验证 exact CLR type/identity、Own Token、统一强类型 key、常量时间 key 映射、资源投影、资产
   manifest 和输出稳定性，并限制生成源码体积回归。
 - 主题系统完成后必须执行真实 Gallery NativeAOT publish，不能只依赖 analyzer。

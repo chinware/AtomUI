@@ -144,7 +144,7 @@ public class ThemeAssetManifestGeneratorTests
     }
 
     [Fact]
-    public void Generates_Unit_Theme_Parts_Without_Per_Asset_Manifests()
+    public void Package_Granularity_Generates_One_Unit_Theme_Part_Without_Per_Asset_Manifests()
     {
         var result = RunGenerator(
             [
@@ -157,8 +157,9 @@ public class ThemeAssetManifestGeneratorTests
         var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
 
         source.ShouldContain("namespace AtomUI.Generated.ThemeAssetManifestTests.LinkedRegistrationV1;");
-        source.ShouldContain("public static partial class GeneratedRegistrationUnit_Button_");
-        source.ShouldContain("public static partial class GeneratedRegistrationUnit_Alert_");
+        source.ShouldContain("public static partial class GeneratedRegistrationUnit_ThemeAssetManifestTests_");
+        source.ShouldNotContain("public static partial class GeneratedRegistrationUnit_Button_");
+        source.ShouldNotContain("public static partial class GeneratedRegistrationUnit_Alert_");
         source.ShouldContain("static partial void AddThemes(");
         source.ShouldContain("builder.AddThemeAsset(");
         source.ShouldNotContain("AssemblyMetadata(\"AtomUI.Linked.Asset.v1\"");
@@ -188,7 +189,8 @@ public class ThemeAssetManifestGeneratorTests
             [Asset(
                 "Button/Themes/ButtonTheme.axaml",
                 ResourceDictionary("ButtonTokenResource Height", "AlertTokenResource Height"))],
-            out var diagnostics);
+            out var diagnostics,
+            registrationGranularity: "Directory");
 
         diagnostics.ShouldBeEmpty();
         var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
@@ -242,7 +244,8 @@ public class ThemeAssetManifestGeneratorTests
                     </Setter>
                 </ControlTheme>
                 """)],
-            out var diagnostics);
+            out var diagnostics,
+            registrationGranularity: "Directory");
 
         diagnostics.ShouldBeEmpty();
         var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
@@ -285,7 +288,8 @@ public class ThemeAssetManifestGeneratorTests
                     </Setter>
                 </ControlTheme>
                 """)],
-            out var diagnostics);
+            out var diagnostics,
+            registrationGranularity: "Directory");
 
         diagnostics.ShouldBeEmpty();
         var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
@@ -318,7 +322,8 @@ public class ThemeAssetManifestGeneratorTests
         var result = RunGenerator(
             [Asset("Themes/UnownedResources.axaml", ResourceDictionary())],
             out var diagnostics,
-            linkedPublish: true);
+            linkedPublish: true,
+            registrationGranularity: "Directory");
 
         diagnostics.ShouldHaveSingleItem().Id.ShouldBe("ATOMUILINK002");
         var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
@@ -332,12 +337,29 @@ public class ThemeAssetManifestGeneratorTests
     {
         var result = RunGenerator(
             [Asset("Themes/UnownedResources.axaml", ResourceDictionary())],
-            out var diagnostics);
+            out var diagnostics,
+            registrationGranularity: "Directory");
 
         diagnostics.ShouldNotContain(diagnostic => diagnostic.Id == "ATOMUILINK002");
         var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
         source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.Usage.v1\"");
         source.ShouldContain("PackageRoot");
+    }
+
+    [Fact]
+    public void Package_Granularity_Assigns_Ownerless_Control_Asset_To_The_Package_Unit()
+    {
+        var result = RunGenerator(
+            [Asset("Themes/UnownedResources.axaml", ResourceDictionary())],
+            out var diagnostics,
+            linkedPublish: true);
+
+        diagnostics.ShouldBeEmpty();
+        var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
+        source.ShouldContain("public static partial class GeneratedRegistrationUnit_ThemeAssetManifestTests_");
+        source.ShouldContain("builder.AddUnitThemeResource(");
+        source.ShouldNotContain("AssemblyMetadata(\"AtomUI.Linked.Usage.v1\"");
+        source.ShouldNotContain("PackageRoot");
     }
 
     [Fact]
@@ -541,7 +563,8 @@ public class ThemeAssetManifestGeneratorTests
             registrationUnits: new Dictionary<string, string>(StringComparer.Ordinal)
             {
                 [asset.Path] = "DataGrid"
-            });
+            },
+            registrationGranularity: "Directory");
 
         diagnostics.ShouldBeEmpty();
         var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
@@ -585,7 +608,8 @@ public class ThemeAssetManifestGeneratorTests
             registrationUnits: new Dictionary<string, string>(StringComparer.Ordinal)
             {
                 [asset.Path] = "ColorPicker"
-            });
+            },
+            registrationGranularity: "Directory");
 
         diagnostics.ShouldBeEmpty();
         var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
@@ -593,6 +617,27 @@ public class ThemeAssetManifestGeneratorTests
         source.ShouldNotContain("builder.AddUnitThemeResource(");
         source.ShouldNotContain(GetThemeAssetResourceClassName(asset.Path));
         source.ShouldNotContain("PackageRoot");
+    }
+
+    [Fact]
+    public void Package_Granularity_Ignores_Explicit_Registration_Unit_Metadata()
+    {
+        var asset = Asset(
+            "Themes/ButtonTheme.axaml",
+            ControlTheme("Button", "ButtonTokenResource Height"));
+        var result = RunGenerator(
+            CreateCompilation(TokenSource),
+            [asset],
+            out var diagnostics,
+            registrationUnits: new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                [asset.Path] = "CustomButton"
+            });
+
+        diagnostics.ShouldBeEmpty();
+        var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
+        source.ShouldContain("public static partial class GeneratedRegistrationUnit_ThemeAssetManifestTests_");
+        source.ShouldNotContain("public static partial class GeneratedRegistrationUnit_CustomButton_");
     }
 
     [Fact]
@@ -764,13 +809,15 @@ public class ThemeAssetManifestGeneratorTests
     private static CSharpCompilation RunGenerator(
         IEnumerable<AdditionalText> assets,
         out ImmutableArray<Diagnostic> diagnostics,
-        bool linkedPublish = false)
+        bool linkedPublish = false,
+        string? registrationGranularity = null)
     {
         return RunGenerator(
             CreateCompilation(TokenSource),
             assets,
             out diagnostics,
-            linkedPublish: linkedPublish);
+            linkedPublish: linkedPublish,
+            registrationGranularity: registrationGranularity);
     }
 
     private static CSharpCompilation RunGenerator(
@@ -781,12 +828,17 @@ public class ThemeAssetManifestGeneratorTests
         string? controlCatalog = null,
         IReadOnlyList<string>? packageSharedThemes = null,
         bool linkedPublish = false,
-        IReadOnlyDictionary<string, string>? registrationUnits = null)
+        IReadOnlyDictionary<string, string>? registrationUnits = null,
+        string? registrationGranularity = null)
     {
         var options = new Dictionary<string, string>(StringComparer.Ordinal);
         if (linkedPublish)
         {
             options["build_property.AtomUILinkedPublish"] = "true";
+        }
+        if (registrationGranularity is not null)
+        {
+            options["build_property.AtomUIRegistrationGranularity"] = registrationGranularity;
         }
         if (projectDirectory is not null)
         {

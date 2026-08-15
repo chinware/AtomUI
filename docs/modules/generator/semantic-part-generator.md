@@ -126,7 +126,8 @@ AXAML 仍直接使用 `.semantic-*` class。生成常量不是第二套命名来
 
 ### 3.3 包级注册
 
-Control 包现有生成式注册入口同时注册 `ControlSemanticDescriptor`。运行时 registry 冻结后不扫描程序集或 AXAML。
+Control 包现有生成式 registration helper 同时注册 `ControlSemanticDescriptor`，并由真实 `UseXxxControls()` 入口调用。
+运行时 registry 冻结后不扫描程序集或 AXAML。
 
 Semantic descriptor 注册失败必须和 Control identity、Token descriptor、Theme asset manifest 冲突一样在启动构建边界
 明确失败，不能静默覆盖。

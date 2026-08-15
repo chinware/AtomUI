@@ -226,8 +226,26 @@ Source Generator、Localization writer、Linked Registration metadata 和 AXAML 
 ### Linked registration
 
 `PublishTrimmed=true`、`PublishAot=true` 和 WebAssembly `RunAOTCompilation=true` 使用同一套生成式 Registration Unit
-计划。Control descriptor、Own Token schema、内部控件和控件族专属 Theme Asset factory 必须能聚合为 linker
-可独立删除的 Unit；不得新增全包静态数组、全资产 `switch` 或“构造全集后过滤”的 linked 路径。
+计划。Control descriptor、Own Token schema、内部控件和控件族专属 Theme Asset factory 必须能聚合为完整 Unit；不得新增
+全包静态数组、全资产 `switch` 或“构造全集后过滤”的 linked 路径。
+
+Control Package 默认使用 Package 粒度：
+
+```xml
+<AtomUIRegistrationGranularity>Package</AtomUIRegistrationGranularity>
+```
+
+该属性可以省略，省略即为 `Package`。整个包生成一个安全 Unit，普通第三方包、DataGrid、ColorPicker、Extras 和
+GalleryBase 都使用该模式。包作者不声明 `AtomUIRegistrationUnit`，也不维护 Unit dependency。
+
+只有包含大量独立控件族、并且已经建立真实 linked publish 和体积回归验证的包才允许显式设置：
+
+```xml
+<AtomUIRegistrationGranularity>Directory</AtomUIRegistrationGranularity>
+```
+
+当前第一方只有 `AtomUI.Desktop.Controls` 使用 Directory 模式。启用 Directory 后，控件族目录才成为 Unit 边界；
+Presenter、Cell、View、Semantic Part 和基础主题仍跟随所属控件族，不能继续按内部目录细分。
 
 Package 注册入口的正式契约见
 [AOT 与裁剪架构](../../architecture/foundations/aot-and-trimming.md#81-package-注册入口声明)。新增或迁移 Control Package 的
@@ -241,16 +259,18 @@ Package 注册入口的正式契约见
 或 full fragment metadata，但仍可以生成普通非裁剪路径使用的 full registration helper。
 
 Language Catalog、内置 Translation Bundle、Dialog/Tooltip/Motion/Responsive 初始化、Global Token、Theme Algorithm、
-Provider 和平台 selector 属于 Package Core，不为它们创建细粒度 fragment。跨多个 Unit 的共享主题资源必须通过
-`AtomUIPackageSharedTheme` 显式声明；owner 解析失败不得自动归类为共享资源。
+Provider 和平台 selector 属于 Package Core，不为它们创建细粒度 fragment。只有必须在未选择 Control Unit 时仍随入口
+加载，或在 Directory 模式下确实跨多个 Unit 的共享主题资源，才通过 `AtomUIPackageSharedTheme` 显式声明；owner 解析
+失败不得自动归类为共享资源。Package 模式下的普通 Control Theme 不需要该 metadata。
 
 普通 AXAML/C# 使用由 Generator 自动发现。`AtomUIRegistrationUnitRoot` 和 `AtomUIPackageRoot` 只用于类型字符串、Loose
 AXAML、动态插件等编译期无法确定的场景，不能成为普通 Control 接入步骤。无法可靠确定 Unit 时应在编译期只把对应
 Package 扩大为 full fallback 并给出诊断，不能依赖运行时反射或 late registration 修补。
 
-Package Theme 的模板中如果直接实例化另一个 AtomUI Control，该元素必须能通过 `using:`、`clr-namespace:` 或当前
-程序集 `XmlnsDefinition` 精确解析，Generator 会生成同 Package Unit 的直接依赖。不要依赖短类型名猜测，也不要把模板
-元素依赖写进 Theme Asset descriptor 的 referenced identities；后者会改变普通非裁剪 schema 和 fingerprint。
+Directory 模式的 Package Theme 如果直接实例化另一个 AtomUI Control，该元素必须能通过 `using:`、
+`clr-namespace:` 或当前程序集 `XmlnsDefinition` 精确解析，Generator 会生成同 Package Unit 的直接依赖。C# 中可证明的
+跨 Unit Control 使用也必须形成直接依赖。不要依赖短类型名猜测，也不要把模板元素依赖写进 Theme Asset descriptor 的
+referenced identities；后者会改变普通非裁剪 schema 和 fingerprint。无法证明 owner 或依赖时必须 full fallback。
 
 ControlMap 是 CLR Control ownership，不是 descriptor 清单。定义程序集里的 public、非泛型 Control 即使没有 Theme
 descriptor，也要归入 Registration Unit 并拥有 ControlMap；只有原本可主题化的 Control 才能进入 `builder.AddControl`。
@@ -268,9 +288,25 @@ CI 中把自动 full fallback 提升为 error。
 修改 Generator ABI、Manifest schema、feature switch 或 Public fragment entry point 时，按 Public API 和版本化协议
 review，并运行 trimmed JIT、NativeAOT 和非裁剪兼容验证。
 
-内部 resource-only Theme 无法按目录推导到正确 Unit 时，使用 `AtomUIRegistrationUnit` metadata 明确归属，不要把它
-升级为 `AtomUIPackageSharedTheme`。抽象 typed theme 没有 generated resource wrapper 时，不得生成虚假的 wrapper 调用；
-应由同 Unit 的具体资源静态保留。
+只有 Directory 模式的内部 resource-only Theme 无法按目录推导到正确 Unit 时，才使用 `AtomUIRegistrationUnit`
+metadata 明确归属，不要把它升级为 `AtomUIPackageSharedTheme`。Package 模式不得添加这类 ownership 修补。抽象 typed
+theme 没有 generated resource wrapper 时，不得生成虚假的 wrapper 调用；应由同 Unit 的具体资源静态保留。
+
+### 第三方 Control Package 检查
+
+普通第三方 Control Package 的 AOT 接入必须保持简单：
+
+1. 声明稳定的 `AtomUIRegistrationPackageId`。
+2. 引用兼容版本的 AtomUI 产品包，复用其内嵌的同版本 Generator 和构建资产；普通包不重复添加 Generator 引用。
+3. 在真实 public `UseXxxControls()` 扩展方法上添加 `[ControlPackageRegistrationEntry]`。
+4. 保持 full/generated 注册分支，以及 Provider、Localization 和 initializer 的顺序。
+5. 使用默认 Package 粒度，不写 Unit ownership、Unit dependency 或 linker XML。
+6. 至少验证 ordinary 与 generated registration 行为快照；发布 AOT 兼容声明前跑真实 trimmed JIT 和 NativeAOT。
+
+操作示例见
+[第三方 AtomUI Control Package 指南](../../guides/theming/third-party-control-packages.md)。
+粒度和资源归属的正式规则见
+[AOT Registration Unit 粒度](../../architecture/foundations/aot-registration-unit-granularity.md)。
 
 ### AOT/Trim 注册命名
 
@@ -323,8 +359,8 @@ factory 合并 Part 样式。`.semantic-*` marker 只参与 Avalonia 原生 Sele
 
 - Builder 必须原样传递 descriptor，不能丢弃 identity 后退化为 `Type` 注册。
 - 内置正常路径不调用 `Activator.CreateInstance`、`Type.GetProperties` 或 `PropertyInfo.GetValue/SetValue`。
-- 第三方 Control 包必须使用 AtomUI generator，并只通过一次生成的包级入口注册 Control、可选 Own Token 和主题
-  资产；不提供手写 descriptor、手工 manifest 或反射 fallback 旁路。
+- 第三方 Control 包必须使用 AtomUI generator，并只通过一个真实的包级入口调用生成 registration helper，注册 Control、
+  可选 Own Token 和主题资产；不提供手写 descriptor、手工 manifest 或反射 fallback 旁路。
 - Own Token 可以放在包内正常源码位置并使用 `[ControlDesignToken]` 标记；禁止泛型 Control 参数和手写 ID。
 
 ### Token value converter 注册
