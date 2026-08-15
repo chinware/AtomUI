@@ -20,7 +20,9 @@ Semantic Part 的公共模型、Selector 契约和生成器规则分别由
 4. Desktop、Browser、派生主题、运行时节点、Popup、Overlay、独立 TopLevel 和 ItemContainer 路径按实际适用范围完成。
 5. descriptor、marker、selector、布局、容器回收、Popup、性能和 Gallery 延迟创建验证覆盖实际风险。
 6. `changelog.md` 与 LLMS 人工源文档同步，`docs/AI/generated` 未被手工修改。
-7. 实现保持未提交状态，用户验收通过并明确要求后，才为该控件家族创建一个独立 commit。
+7. Gallery Semantic 示例的标题、说明和版本 Tag 已按 8.1 的文案与版本门禁逐项验收，不包含 React/DOM 专属术语或上游
+   组件版本号。
+8. 实现保持未提交状态，用户验收通过并明确要求后，才为该控件家族创建一个独立 commit。
 
 ## 2. 范围基线
 
@@ -267,7 +269,9 @@ Measure/Arrange 约束，以及外部组件 `default` 到 AtomUI 完整尺寸分
 7. 先运行尺寸基线失败回归确认红灯，再以单一根因修复恢复通过；不得用示例固定 Height、MinHeight、Padding 或像素偏移
    替代完整尺寸映射。
 8. 为 Gallery 增加真正延迟创建的 Semantic Parts Tab 内容，未打开 Tab 时不创建 demo、descriptor item 或 Preview。
-9. 更新该控件 `changelog.md`，运行 LLMS verify，但不手改生成文档。
+9. 按 8.1 校验 Semantic 示例文案、全部本地化资源和当前 AtomUI 版本 Tag，并增加阻止 React/DOM 术语和陈旧版本号回归的
+   测试。
+10. 更新该控件 `changelog.md`，运行 LLMS verify，但不手改生成文档。
 
 实现完成后必须保持未提交，向用户报告文件、测试和已知风险，等待实际运行与视觉验收。
 
@@ -388,6 +392,24 @@ owner 根、尺寸档和中间节点作为一个完整测量系统审计。
 Gallery 接入是控件交付的一部分，因为它同时验证用户可理解性、真实 marker、跨视觉根和延迟创建；Gallery 不参与生产
 控件的运行时依赖闭包。
 
+### 8.1 Semantic 示例文案与版本 Tag 门禁
+
+Ant Design 示例只作为控件状态、数值、视觉排列和样式效果的上游基线，不能把 Web/React 文档外壳原样复制进 AtomUI
+Gallery。每个控件在视觉验收前必须逐项满足：
+
+1. Semantic 示例标题使用仓库统一文案 `Custom Semantic Part styling`；说明使用 AtomUI 的 owner-scoped Style、公开
+   Semantic Part 和该控件真实 selector 能力表述。
+2. 文案中不得出现只属于 Ant Design Web API 的 `semantic dom`、`classNames`、`styles`、`objects/functions`、React Props
+   或 DOM 节点措辞；上游原文只能作为理解示例意图的证据。
+3. `en-US.xlf` 的 `<source>` 与 `zh-CN`、`zh-TW`、`pt-BR` 的 source/target 必须同步，不能只修改当前界面语言。
+4. Semantic 示例的 `BadgeText` 必须读取 `GalleryVersionInfo.DisplayVersion`，其值来自 `build/Version.props` 的
+   `AtomUIVersion` 并带 `v` 前缀；禁止硬编码上游 Ant Design 的 introduced version 或复制旧 AtomUI 版本。当前版本为
+   `v6.1.3`。
+5. Gallery 定向测试必须断言版本来源、标准标题和 AtomUI 说明文案，并显式拒绝 React/DOM 专属术语。版本、文案、示例
+   主体和最终可见 Semantic Style 效果是四个独立验收项，任一项不符合都不能报告实现完成。
+6. 最终截图必须同时核对 Tag 显示值、标题、说明、本地化语言和示例主体；不能因为进度条、颜色或布局正确而跳过卡片
+   文案与 Tag。
+
 ## 9. 验证矩阵
 
 每个控件至少执行：
@@ -411,6 +433,7 @@ git diff --check
 | Overlay/Window | host attach/detach、session close、additional roots 和多窗口隔离。 |
 | High density | 大数据滚动、marker/class 数量、容器回收和性能基线。 |
 | Optional package | 对应项目测试、主题注册、Gallery 引用和 NativeAOT publish。 |
+| Gallery copy/version | 标准 Semantic Part 标题与平台文案、全部本地化资源、`GalleryVersionInfo.DisplayVersion` 和当前 `AtomUIVersion`。 |
 
 涉及新的 AXAML 控件、运行时注册、Popup/Window 或 optional package 时，实施阶段还必须执行 Gallery NativeAOT publish。
 

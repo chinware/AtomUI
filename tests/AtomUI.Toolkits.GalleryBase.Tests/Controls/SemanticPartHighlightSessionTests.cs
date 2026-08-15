@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Shouldly;
 using Xunit;
@@ -18,6 +19,18 @@ public class SemanticPartHighlightSessionTests
     public SemanticPartHighlightSessionTests()
     {
         AvaloniaTestApp.EnsureInitialized();
+    }
+
+    [Fact]
+    public void Adorner_Draws_An_Outline_Without_Covering_The_Target()
+    {
+        var primary = RenderAdorner(true);
+        primary.Brush.ShouldBeNull();
+        AssertPen(primary, Color.FromArgb(0xFF, 0xFA, 0xAD, 0x14), 2);
+
+        var secondary = RenderAdorner(false);
+        secondary.Brush.ShouldBeNull();
+        AssertPen(secondary, Color.FromArgb(0xD9, 0xFA, 0xAD, 0x14), 1);
     }
 
     [Fact]
@@ -168,6 +181,29 @@ public class SemanticPartHighlightSessionTests
             false,
             null,
             false);
+    }
+
+    private static GeometryDrawing RenderAdorner(bool isPrimary)
+    {
+        var adorner = new SemanticPartAdorner(isPrimary);
+        adorner.Measure(new Size(20, 20));
+        adorner.Arrange(new Rect(0, 0, 20, 20));
+
+        var drawingGroup = new DrawingGroup();
+        using (var context = drawingGroup.Open())
+        {
+            adorner.Render(context);
+        }
+
+        return drawingGroup.Children.ShouldHaveSingleItem().ShouldBeOfType<GeometryDrawing>();
+    }
+
+    private static void AssertPen(GeometryDrawing drawing, Color expectedColor, double expectedThickness)
+    {
+        var pen = drawing.Pen.ShouldNotBeNull();
+        pen.Thickness.ShouldBe(expectedThickness);
+        var brush = pen.Brush.ShouldNotBeNull().ShouldBeAssignableTo<ISolidColorBrush>();
+        brush.Color.ShouldBe(expectedColor);
     }
 
     private static AdornerHostContext ShowInAdornerHost(Control control)

@@ -237,7 +237,9 @@ VisualRoot 手动换算屏幕坐标。
 
 `SemanticPartAdorner` 必须：
 
-- 直接绘制边框，不依赖目标 ControlTemplate。
+- 只绘制高亮边框，不设置背景或半透明填充，不覆盖或改变目标原有颜色、文字和图形。
+- 主目标使用 `#FAAD14`、`2px`、全不透明描边；其余目标使用同色 `1px`、85% 不透明描边。
+- 不依赖目标 ControlTemplate。
 - `IsHitTestVisible=false`、`Focusable=false`。
 - 在目标 bounds 内绘制，遵守原生 clip。
 - 第一个目标使用主高亮样式，其余目标使用次级样式。

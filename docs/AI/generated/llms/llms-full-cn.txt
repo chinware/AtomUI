@@ -20591,7 +20591,7 @@ ProgressBar 的事件与命令以控件文档、源码 public surface 和 Avalon
 
 ### 进度条
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/Views/ProgressBarShowCase.axaml:46`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/Views/ProgressBarShowCase.axaml:210`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -20607,7 +20607,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 环形进度条
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/Views/ProgressBarShowCase.axaml:64`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/Views/ProgressBarShowCase.axaml:228`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -20621,7 +20621,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 迷你尺寸进度条
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/Views/ProgressBarShowCase.axaml:80`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/Views/ProgressBarShowCase.axaml:244`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -20637,7 +20637,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 更小的环形进度条
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/Views/ProgressBarShowCase.axaml:98`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/Views/ProgressBarShowCase.axaml:262`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -20699,17 +20699,18 @@ ProgressBar 的默认视觉由抽象主题和具体控件主题组合：
 | `AbstractLineProgressTheme.axaml` | 线形模板、百分比 label、状态图标、线形尺寸和图标尺寸。 |
 | `ProgressBarTheme.axaml` | 普通线形控件主题、内嵌百分比伪类、垂直文本旋转、内嵌图标隐藏规则。 |
 | `StepsProgressBarTheme.axaml` | 步骤线形控件主题、方向对齐和百分比位置对应图标对齐。 |
-| `AbstractCircleProgressTheme.axaml` | 圆形模板、居中文本和居中状态图标。 |
-| `CircleProgressTheme.axaml` | 圆形进度具体主题入口。 |
-| `DashboardProgressTheme.axaml` | 仪表盘进度具体主题入口。 |
+| `AbstractCircleProgressTheme.axaml` | 圆形家族共享 Token、Shape stroke 和居中状态图标 selector，不拥有 concrete Template。 |
+| `CircleProgressTheme.axaml` | 圆形进度 leaf Theme 和 concrete Template，拥有静态 Semantic marker。 |
+| `DashboardProgressTheme.axaml` | 仪表盘进度 leaf Theme 和 concrete Template，拥有静态 Semantic marker。 |
 
-视觉绘制由控件直接渲染完成：
+进度视觉由模板中的真实 Semantic target 承载，owner 继续负责全部值、尺寸和角度计算：
 
-- 线形进度绘制 groove、已完成段和可选成功段。
-- 步骤进度绘制固定数量 chunk，再按 `Percentage` 绘制已完成 chunk。
-- 圆形进度绘制完整圆或分段圆弧。
-- 仪表盘进度绘制带缺口的圆弧或分段圆弧。
-- 状态图标和百分比文本通过模板 part 布局，不参与进度几何绘制。
+- 普通线形 rail/track 由静态 `Border` target 表达，可选成功段保持内部 `Border` 附加层；`LineProgressPanel`
+  是这些盒视觉和 indicator 的唯一布局所有者。
+- 步骤进度按 `Steps` 创建 track `Rectangle` target，并根据 `Percentage` 切换每个 target 的 active/remaining Brush；steps 不公开 rail。
+- 圆形进度用静态 Shape 承载完整圆或组合分段圆弧。
+- 仪表盘进度用静态 Shape 承载带缺口的连续或组合分段圆弧。
+- 状态图标和百分比文本统一位于 indicator Panel 内，不参与进度几何计算。
 
 ProgressBarToken 提供默认进度色、剩余轨道色、圆形文字和图标最小尺寸、线形文本间距、线形内部 padding 和线形图标尺寸。状态色主要来自 SharedToken。
 
@@ -20725,11 +20726,12 @@ ProgressBarToken 不承载以下状态：
 - `StrokeBrush`、`SuccessStrokeBrush`、`TrailColor` 等实例画刷覆盖。
 - `IndicatorThickness`、`ChunkWidth`、`ChunkHeight`、显式 `Width` / `Height` 等实例尺寸覆盖。
 
-这些状态分别由 public API、internal effective state、主题 selector 和直接绘制逻辑处理。
+这些状态分别由 public API、internal effective state、主题 selector 和模板几何布局逻辑处理。
 
 ## AOT 与裁剪注意事项
 
-ProgressBar 不依赖运行时反射、字符串 binding、动态类型扫描或 C# relay binding。模板状态主要通过 template part、`TemplateBinding`、style selector 和 direct render 完成。
+ProgressBar 不依赖运行时反射、字符串 binding、动态类型扫描或 C# relay binding。模板状态主要通过 template part、
+`TemplateBinding`、style selector、线形盒布局、Shape Geometry 和有界的步骤视觉同步完成。
 
 资源边界：
 
@@ -20739,8 +20741,9 @@ ProgressBar 不依赖运行时反射、字符串 binding、动态类型扫描或
 
 性能边界：
 
-- 线形、步骤、圆形和仪表盘均使用直接绘制，避免创建大量视觉子节点。
-- 圆形和仪表盘使用 cached pen helper 更新 pen。
+- 普通线形、圆形和仪表盘始终复用固定数量模板 target，不按 Value 或 StepCount 创建节点。
+- 圆形和仪表盘复用 Geometry/Path target，只在尺寸、角度、分段或颜色相关状态变化时更新。
+- 只有 `StepsProgressBar` 按 `Steps` 建立有界 runtime Rectangle；Value 变化复用节点，不重建整个列表。
 - 文本尺寸通过 `_extraInfoSize` 缓存，尺寸、状态或文本相关属性变化时刷新。
 - 动效只绑定 `Value`、`StrokeBrush` 和 `Foreground` transition。
 
@@ -20756,13 +20759,16 @@ AOT 边界：
 
 - `ProgressBarEnums.cs`：`ProgressStatus`、`DashboardGapPosition`、`PercentPosition`、`LinePercentAlignment`。
 - `ProgressBarPseudoClass.cs`：ProgressBar 家族使用的伪类常量。
-- `AbstractProgressBar.cs`：RangeBase 集成、共享 public API、百分比计算、状态伪类、模板 part、动效入口和直接渲染调度。
+- `AbstractProgressBar.cs`：RangeBase 集成、共享 public API、百分比计算、状态伪类、模板 part、动效入口和 visual invalidation 调度。
 - `AbstractLineProgress.cs`：线形方向、线形 extra info 测量、方向伪类、线形默认状态图标。
-- `AbstractGeneralProgressBar.cs`：普通线形进度的测量、布局、成功段、内外百分比位置和百分比文字颜色。
-- `AbstractGeneralStepsProgressBar.cs`：线形步骤进度的 chunk 尺寸、步骤布局、步骤绘制和百分比文本布局。
+- `AbstractGeneralProgressBar.cs`：普通线形进度的测量、布局、rail/track/success rect、内外百分比位置和百分比文字颜色。
+- `LineProgressPanel.cs`：普通线形 rail/track/success `Border` 与 indicator 的唯一布局所有者。
+- `AbstractGeneralStepsProgressBar.cs`：线形步骤进度的 chunk 尺寸、步骤视觉同步和百分比文本布局。
+- `StepsProgressPanel.cs`：步骤 runtime Rectangle 的数量同步、Brush 投影、track/indicator 布局和 owner 订阅生命周期。
 - `AbstractCircleProgress.cs`：圆形尺寸、圆形文本和状态图标布局、圆形 thickness 计算。
-- `AbstractGeneralCircleProgress.cs`：圆形 groove、连续圆弧、分段圆弧和成功弧段绘制。
-- `AbstractGeneralDashboardProgress.cs`：仪表盘缺口角度、连续仪表盘弧、分段仪表盘弧和成功弧段绘制。
+- `CircleProgressPanel.cs`：圆形与仪表盘 Path viewport 的统一 Measure/Arrange owner。
+- `AbstractGeneralCircleProgress.cs`：圆形 rail/track/success 的连续或分段 Geometry。
+- `AbstractGeneralDashboardProgress.cs`：仪表盘缺口角度和 rail/track/success Geometry。
 
 桌面具体控件位于 `src/AtomUI.Desktop.Controls/ProgressBar/`：
 
@@ -20770,8 +20776,9 @@ AOT 边界：
 - `StepsProgressBar.cs`：注册 token scope 的步骤线形控件入口。
 - `CircleProgress.cs`：注册 token scope 的圆形控件入口。
 - `DashboardProgress.cs`：注册 token scope 的仪表盘控件入口。
+- `*.SemanticParts.cs`：四个 public owner 的静态 Semantic Part 声明。
 - `ProgressBarToken.cs`：控件级 Token 默认值计算。
-- `Themes/*.axaml`：共享主题、线形主题、圆形主题和具体控件主题。
+- `Themes/*.axaml`：共享主题、线形主题、圆形共享 style、具体 leaf Template 和静态 Semantic marker。
 
 Gallery 示例位于 `controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/`。
 
@@ -20779,6 +20786,7 @@ Gallery 示例位于 `controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBa
 
 - 源设计文档：`docs/controls/desktop/feedback/progress-bar/overview.md`
 - 实现文档：`docs/controls/desktop/feedback/progress-bar/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/feedback/progress-bar/semantic-part.md`
 - Token 文档：`docs/controls/desktop/feedback/progress-bar/token.md`
 - 变更记录：`docs/controls/desktop/feedback/progress-bar/changelog.md`
 - 语义结构：`./semantic-cn.md`

@@ -41,11 +41,42 @@ public class SemanticPartPreviewTests
         preview.ActivatePreview();
 
         preview.Items.Select(static item => item.Path)
-               .ShouldBe(["root", "content", "icon"]);
+               .ShouldBe(["root", "icon", "content"]);
         preview.ActiveHighlightSession.ShouldBeNull();
         preview.CodeViewer.ShouldBeNull();
         AdornerLayer.GetAdornerLayer(button).ShouldNotBeNull()
                     .Children.OfType<SemanticPartAdorner>().ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Activate_Uses_Explicit_Description_Order_Then_Appends_Undescribed_Parts()
+    {
+        var button = new AtomUIButton
+        {
+            Content   = "Semantic Button",
+            IsLoading = true
+        };
+        var preview = new SemanticPartPreview
+        {
+            PreviewContent    = button,
+            SemanticOwnerType = typeof(AtomUIButton)
+        };
+        preview.PartDescriptions.Add(new SemanticPartDescription
+        {
+            Path        = "root",
+            Description = "The Button root."
+        });
+        preview.PartDescriptions.Add(new SemanticPartDescription
+        {
+            Path        = "icon",
+            Description = "The icon region."
+        });
+
+        using var context = ShowInWindow(preview);
+        preview.ActivatePreview();
+
+        preview.Items.Select(static item => item.Path)
+               .ShouldBe(["root", "icon", "content"]);
     }
 
     [Fact]

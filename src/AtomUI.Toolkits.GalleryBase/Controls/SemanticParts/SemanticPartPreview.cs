@@ -247,19 +247,22 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
         }
 
         var descriptions = BuildDescriptions(descriptor);
+        var partsByPath = descriptor.Parts.ToDictionary(static part => part.Path, StringComparer.Ordinal);
+        var orderedParts = PartDescriptions
+                           .Select(description => partsByPath[description.Path])
+                           .Concat(descriptor.Parts.Where(part => !descriptions.ContainsKey(part.Path)));
         _effectiveOwner = owner;
         _registry = registry;
         _controlDescriptor = descriptor;
-        Items = descriptor.Parts
-                          .Select(part =>
-                          {
-                              descriptions.TryGetValue(part.Path, out var description);
-                              return new SemanticPartPreviewItem(
-                                  part,
-                                  description?.Description ?? GetFallbackDescription(part),
-                                  description?.CodeSnippet);
-                          })
-                          .ToArray();
+        Items = orderedParts.Select(part =>
+                            {
+                                descriptions.TryGetValue(part.Path, out var description);
+                                return new SemanticPartPreviewItem(
+                                    part,
+                                    description?.Description ?? GetFallbackDescription(part),
+                                    description?.CodeSnippet);
+                            })
+                            .ToArray();
     }
 
     private Dictionary<string, SemanticPartDescription> BuildDescriptions(ControlSemanticDescriptor descriptor)
