@@ -17,6 +17,8 @@ AppBuilder.Configure<App>()
 `UseAtomUIPlatformDetect()` 位于 `AtomUI.Desktop.Controls`。Linux 下选择顺序为：显式
 `AtomUIWindowingPlatform`、`ATOMUI_WINDOWING_PLATFORM`、非空 `WAYLAND_DISPLAY`、X11/XWayland。
 不要只根据 `XDG_SESSION_TYPE` 选择 Wayland；headless/framebuffer 应用应直接配置自己的后端。
+选择 Wayland 时，该入口会在创建首个 toplevel 前设置 `ForceDrawnDecorations = true` 并禁用服务端装饰协商，确保
+AtomUI Window 从首帧开始使用 CSD，不能先显示 compositor 标题栏再切换为 AtomUI 标题栏。
 
 `WithAtomUIDefaultOptions()` 当前设置：
 

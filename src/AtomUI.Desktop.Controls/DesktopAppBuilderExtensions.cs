@@ -111,6 +111,13 @@ public static class DesktopAppBuilderExtensions
     [MethodImpl(MethodImplOptions.NoInlining)]
     private static AppBuilder UseWaylandBackend(AppBuilder builder)
     {
+#pragma warning disable AVALONIA_WAYLAND_FORCE_CSD
+        builder.With(new WaylandPlatformOptions
+        {
+            ForceDrawnDecorations = true
+        });
+#pragma warning restore AVALONIA_WAYLAND_FORCE_CSD
+
         return builder.UseWayland()
                       .UseSkia()
                       .UseHarfBuzz();

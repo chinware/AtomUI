@@ -218,6 +218,16 @@ public class WindowingPlatformDetectionTests
         source.ShouldNotContain("Activator.CreateInstance");
     }
 
+    [Fact]
+    public void Wayland_Backend_Disables_Server_Decoration_Negotiation_Before_Creating_Windows()
+    {
+        var source = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/DesktopAppBuilderExtensions.cs"));
+
+        source.ShouldContain("builder.With(new WaylandPlatformOptions");
+        source.ShouldContain("ForceDrawnDecorations = true");
+    }
+
     private static string GetRepoFile(string relativePath)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
