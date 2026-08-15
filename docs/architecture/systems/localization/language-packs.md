@@ -18,7 +18,7 @@ zh-TW
 发布集合，不预先创建空包。
 
 拥有 Catalog 的组件 NuGet 自动包含完整 `en-US.xlf` 和 `buildTransitive/<PackageId>.props`。这些构建资产既是
-语言包模板来源，也是最终应用校验源文本和 ContractVersion 的权威输入；它们不会在应用运行时解析。
+语言包模板来源，也是最终应用校验 Catalog identity、Key、源文本和 fingerprint 的权威输入；它们不会在应用运行时解析。
 
 ## 包命名规则
 
@@ -110,9 +110,8 @@ warning。两种模式生成的 I18n NuGet 都不得依赖目标组件运行时�
 `SkipGetTargetFrameworkProperties` 或 AtomUI 专用识别 metadata。
 
 语言包项目仍必须在项目级声明唯一 `AtomUILanguageModuleId`。它用于没有安装目标组件时可靠地把静态输入分类为
-dormant，不是对每个 XLIFF 重复维护的 Catalog metadata。`AtomUILanguageContractVersion`、Catalog ID 和源
-fingerprint 不要求第三方作者手写；有权威源契约时由构建系统绑定，没有时由目标 XLIFF 和消费应用中的真实 Catalog
-完成延迟绑定。
+dormant，不是对每个 XLIFF 重复维护的 Catalog metadata。package path 和源 fingerprint 不要求第三方作者手写；
+有权威源契约时由构建系统绑定，没有时由目标 XLIFF 和消费应用中的真实 Catalog 完成延迟校验。
 
 ### 契约校验级别
 
@@ -121,7 +120,7 @@ fingerprint 不要求第三方作者手写；有权威源契约时由构建系�
 
 | Level | 打包时输入 | 打包时保证 | 消费时行为 |
 |---|---|---|---|
-| `Verified` | 存在目标组件发布的权威 `en-US` 契约 | 校验 Catalog 集合、Key 完整性、source、占位符、ContractVersion 和 fingerprint | 再次与消费应用实际引用的 Catalog 校验，防止错误版本组合 |
+| `Verified` | 存在目标组件发布的权威 `en-US` 契约 | 校验 Catalog 集合、Key 完整性、source、占位符和 fingerprint | 再次与消费应用实际引用的 Catalog 校验，防止错误内容组合 |
 | `Deferred` | 没有权威组件契约 | 校验 XLIFF 2.1、语言标签、目标状态、重复 Key、source/target 占位符、module ID 和包结构 | 目标模块 active 后根据真实 Catalog 完成全部契约校验；未安装模块保持 dormant |
 
 `Verified`/`Deferred` 只描述**打包时是否绑定权威源契约**，不描述消费应用是否安装目标组件。
@@ -150,7 +149,8 @@ fingerprint 不要求第三方作者手写；有权威源契约时由构建系�
     AtomUILanguageSourceFingerprint="..." />
 ```
 
-`Verified` item 在此基础上增加 `AtomUILanguageContractVersion`；这些编译期 metadata 不重复写入审计 manifest。
+`AtomUILanguageContractVersion` 不再编码到语言包 item 或审计 manifest；契约校验级别仍通过
+`AtomUILanguageContractValidation` 编译期 metadata 表达。
 
 ## 未引用模块与 dormant 输入
 
@@ -161,11 +161,11 @@ fingerprint 不要求第三方作者手写；有权威源契约时由构建系�
    64 位小写 SHA-256 格式，并与当前目标 XLIFF 保存的 source 内容一致。格式损坏或 metadata 不可信的文件不能进入
    dormant。
 2. 当前 Compilation 或引用程序集存在相同 `AtomUILanguageModuleId` 时，目标 module 为 active。XLIFF `file id`
-   必须绑定该 module 中唯一 Catalog，然后完成全部 Catalog、ContractVersion、unit、源文本和权威 fingerprint 校验。
+   必须绑定该 module 中唯一 Catalog，然后完成全部 Catalog、unit、源文本、占位符和权威 fingerprint 校验。
 3. 基础校验通过后，目标 module ID 不存在时输入为 dormant：不生成 Bundle、不参与冲突和覆盖计算，也不报告
    “referenced Catalog could not be found”。此时只延迟与不可见权威 `en-US` 源契约的比较，不延迟输入自身校验。
-4. 模块存在时，`Verified` 输入校验声明的 ContractVersion，`Deferred` 输入从实际 Catalog 绑定 ContractVersion；
-   两者都必须完成 Catalog、unit、source、占位符和 fingerprint 校验。Catalog 缺失、identity 错误或版本不兼容时
+4. 模块存在时，`Verified` 和 `Deferred` 输入都必须完成 Catalog、unit、source、占位符和 fingerprint 校验。
+   Catalog 缺失、identity 错误或内容契约不兼容时
    仍然构建失败，不能用 dormant 或 `Deferred` 隐藏损坏的语言包。
 5. dormant 只适用于 NuGet 提供的 `StaticLanguagePack`。ModuleBuiltIn、项目 XLIFF 和应用 Override 指向不存在的
    Catalog 时仍然报错。
@@ -183,7 +183,7 @@ fingerprint 不要求第三方作者手写；有权威源契约时由构建系�
 - 无法取得目标组件包时，仍可 build/pack 为 `Deferred`；Build Tasks 完成可独立证明的 XLIFF、final 状态、
   fingerprint、路径和包安全校验，并只报告一次 `ATOMUILOC010`。
 - 消费应用没有安装目标 module 时，两种资产都保持 dormant；安装后，两种资产都由 Generator 执行相同强度的
-  Catalog、unit、source、placeholder、ContractVersion 和 fingerprint 校验。
+  Catalog、unit、source、placeholder 和 fingerprint 校验。
 - 一个实际语言包只对应一个 module。跨模块发行必须拆成模块包，再用不携带 XLIFF、props、analyzer 或 DLL 的纯依赖
   Meta Package 聚合。
 
@@ -246,9 +246,8 @@ Catalog 所有权。
 - 每个目标 Catalog 的规范源文本指纹。
 
 `buildTransitive/<PackageId>.props` 是语言包的声明式编译入口。它把每个 XLIFF 作为带 source kind、source identity、
-module ID、契约校验级别、包内路径和源 fingerprint 的 `AtomUILanguage` item 注入；`Verified` 资产另外携带绑定后的
-ContractVersion，`Deferred` 资产不得伪造 ContractVersion。标准 targets 只把 Generator 实际需要的 source kind、
-source identity、module ID、契约模式、ContractVersion 和 fingerprint 投影到 `AdditionalFiles`；包内路径继续属于
+module ID、契约校验级别、包内路径和源 fingerprint 的 `AtomUILanguage` item 注入。标准 targets 只把 Generator
+实际需要的 source kind、source identity、module ID、契约模式和 fingerprint 投影到 `AdditionalFiles`；包内路径继续属于
 pack/审计契约，不参与 Catalog identity。manifest 不进入 `AdditionalFiles`，Generator 也不会独立发现或读取它。
 最终应用 Generator 校验 metadata、实际 XLIFF 和引用 Catalog 后把翻译编译进应用程序集；运行时不需要知道翻译来自
 哪个 NuGet 文件。
@@ -289,7 +288,7 @@ dotnet new atomui-language-pack \
 - 不产出 DLL 的 SDK-style pack 项目。
 - `AtomUILanguageTag`、唯一项目级 `AtomUILanguageModuleId`、PackageId 和 package metadata。
 - `AtomUI.Generator` 构建期 PackageReference。
-- 自动扫描 `Localization/**/*.xlf`，不要求作者逐文件维护 ContractVersion、package path 或 fingerprint。
+- 自动扫描 `Localization/**/*.xlf`，不要求作者逐文件维护 package path 或 fingerprint。
 - build/pack 校验 target 和最小翻译说明。
 
 模板不复制 AtomUI 当前 Catalog。作者可以直接维护已有 XLIFF，并以 `Deferred` 模式独立打包。推荐添加作者期组件
@@ -303,7 +302,7 @@ NuGet 引用，以便导出准确模板并在打包时获得 `Verified`：
 
 `PrivateAssets="all"` 只阻止该作者期依赖传递到语言包消费者，不阻止当前项目读取组件包发布的
 `buildTransitive` 契约资产。语言包模板命令应根据 `--module` 和 `--atomui-version` 自动生成该引用，作者不需要手写
-路径、Catalog 或 ContractVersion。
+包内路径或 fingerprint。
 
 存在组件契约时，作者可运行：
 
@@ -326,7 +325,7 @@ dotnet pack
 1. 使用 `[LanguageCatalog]`，并以 enum 成员名作为稳定 unit Key，不声明显式数字值。
 2. 提供完整 `en-US`，并声明自身内置语言。
 3. 引用 `AtomUI.Generator`；模块主包由标准 targets 自动发布 `en-US` 与声明式 props 构建资产。
-4. 保持 Catalog ID、ContractVersion 和源文本指纹可追踪。
+4. 保持 Catalog ID、稳定 Key 和源文本指纹可追踪；已发布 Key 永不复用。
 5. 不提供运行时反射 Provider、手写 LanguagePack Descriptor 或自定义 DLL 加载入口。
 
 第三方类库也可以在自身主包内置多种语言；只有需要让翻译独立发布、独立维护或由社区提供时才创建 I18n 包。
@@ -379,8 +378,7 @@ Localization Snapshot 的测试宿主直接声明。宿主项目还必须以 Ana
 ## 冲突与兼容
 
 - `Verified` props metadata、XLIFF `file id` 或引用 Catalog identity 不一致时构建失败。
-- `Verified` Catalog ContractVersion 不兼容时构建失败；`Deferred` 在目标模块 active 后绑定并校验消费应用实际
-  ContractVersion。
+- `Verified` 与 active 的 `Deferred` 输入在 Catalog identity、Key、source、placeholder 或 fingerprint 不兼容时构建失败。
 - props 中的源 fingerprint 必须是当前 XLIFF 源契约的 64 位小写 SHA-256；目标源文本还必须与权威 `en-US` 一致。
 - 两个来源提供相同 Catalog/语言且优先级相同时构建失败。
 - 语言包缺少目标 Catalog 的新增 unit 时视为覆盖不完整。

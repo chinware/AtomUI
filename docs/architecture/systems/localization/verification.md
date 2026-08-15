@@ -55,10 +55,9 @@
 
 ### Language Pack
 
-- XLIFF item 缺少 module ID、契约校验级别或 64 位小写源 fingerprint；`Verified` item 另外要求正数
-  ContractVersion，`Deferred` item 不得伪造未绑定的 ContractVersion。规范包内路径由 pack/manifest 阶段校验，
+- XLIFF item 缺少 module ID、契约校验级别或 64 位小写源 fingerprint。规范包内路径由 pack/manifest 阶段校验，
   不作为 Generator 的 Catalog identity。
-- props metadata 与实际 XLIFF、引用程序集中的 Catalog identity/ContractVersion/unit/source text 不一致。
+- props metadata 与实际 XLIFF、引用程序集中的 Catalog identity、unit、source text 或 fingerprint 不一致。
 - 同一个 Catalog 和语言在同一优先级由多个包或文件提供。
 - 包含运行时 DLL、`.atomlang`、初始化代码或非声明式加载 target。
 - 静态语言包存在低于固定 `final` 发布门禁的有效 unit，或任何需要重新审核的 target。
@@ -69,8 +68,8 @@
 
 未安装 Language Module 的 `StaticLanguagePack` 输入保持 dormant，不属于错误。目标 module ID 在当前 Compilation
 和引用程序集都不存在时才允许 dormant；module 一旦存在，XLIFF `file id` 必须绑定该 module 中唯一 Catalog，identity、
-`Verified` 声明的 ContractVersion 或 `Deferred` 绑定的实际 ContractVersion、权威 `en-US`、unit 和 fingerprint 的
-任何不匹配仍按 Error 处理。项目 XLIFF 和应用 Override 不使用该豁免。XLIFF 结构、BCP 47 标签和必需
+权威 `en-US`、unit、source、placeholder 和 fingerprint 的任何不匹配仍按 Error 处理。项目 XLIFF 和应用 Override
+不使用该豁免。XLIFF 结构、BCP 47 标签和必需
 AdditionalFiles metadata 在 dormant 分类前校验；fingerprint 还必须具有正确格式并与当前目标 XLIFF 的 source 内容
 一致。只有它与不可见权威 `en-US` fingerprint 的比较延迟到 active，不能因目标模块未安装而忽略损坏或不可信的
 包输入。
@@ -143,18 +142,17 @@ Generator 测试按生产职责拆分，避免继续扩张单个 `LanguageCatalo
 2. unit slot、fingerprint、manifest 和生成源码按 ordinal Key 确定，不受 XLIFF 文件顺序影响。
 3. 公共 Catalog 的成员序列由契约基线保护，只允许末尾追加；重排或删除已有成员必须失败。
 4. 新增 Key 会使旧语言包产生缺失诊断，已有译文和 notes 不丢失。
-5. 重命名 Key 时旧 unit 标为 obsolete、新 unit 标为待翻译，并要求递增 ContractVersion。
-6. 删除或复用 Key、改变格式化参数契约、使用旧 identity 模型或错误 ContractVersion 必须失败。
+5. 重命名 Key 时旧 unit 标为 obsolete、新 unit 标为待翻译；已发布 Key 永不复用。
+6. 删除或复用 Key、改变格式化参数契约、使用旧 identity 模型或错误 source fingerprint 必须失败。
 7. 静态语言包的 manifest 与 props 必须由同一组 XLIFF 确定性生成，并记录一致的 Catalog identity 和源指纹。
 8. 模块主包必须包含权威 `en-US` 与 `<PackageId>.props`，静态语言包不得包含 DLL，Consumer 必须只靠 PackageReference 生效。
 9. 纯聚合包不得包含 XLIFF、manifest、props、analyzer 或 DLL，只能精确依赖同语言、同版本的模块语言包。
 10. Consumer 引用聚合包但未引用 DataGrid 等组件时构建成功，dormant 模块不产生 Bundle 或 Catalog 诊断。
 11. Consumer 后续引用该组件时，同一静态输入自动激活；正确包生成 Bundle，错误 Catalog/module/contract 必须失败。
 12. 同时显式引用聚合包和其中一个模块包时，NuGet 只解析一个 package identity，不产生重复翻译来源。
-13. 不引用组件契约的第三方语言包可以 build/pack，产生一次 `ATOMUILOC010`，manifest/props 标记为 `Deferred`，且
-    不包含伪 ContractVersion。
+13. 不引用组件契约的第三方语言包可以 build/pack，产生一次 `ATOMUILOC010`，manifest/props 标记为 `Deferred`。
 14. 为同一项目添加 `PrivateAssets=all` 组件 PackageReference 后，模板可导出，打包不再报告 `ATOMUILOC010`，全部
-    Catalog 标记为 `Verified` 并携带权威 ContractVersion。
+    Catalog 标记为 `Verified` 并携带权威 source fingerprint。
 15. `Deferred` 包在未安装目标模块时保持 dormant；安装正确模块后通过完整校验并生成 Bundle，安装不兼容模块或
     使用错误 `file id`/Key/source 时应用构建失败。
 16. 语言包项目声明普通（非 Analyzer）组件 `ProjectReference` 后，缺少组件契约必须使 pack 失败；无需额外声明

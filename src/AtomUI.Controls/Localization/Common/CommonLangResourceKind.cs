@@ -2,7 +2,7 @@ using AtomUI.Localization;
 
 namespace AtomUI.Controls.Localization;
 
-[LanguageCatalog(ContractVersion = 2)]
+[LanguageCatalog]
 public enum CommonLangResourceKind
 {
     Ok,

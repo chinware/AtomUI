@@ -43,47 +43,16 @@ public class LocalizationAdditionalFileGeneratorTests
     }
 
     [Fact]
-    public void Requires_A_Positive_Contract_Version_For_A_Verified_Static_Language_Pack()
-    {
-        var result = Run(
-            CatalogSource,
-            LanguageFile(SourceXliff),
-            ExternalLanguageFile(contractVersion: null, SourceFingerprint));
-
-        var diagnostic = result.Diagnostics.ShouldHaveSingleItem();
-        diagnostic.Id.ShouldBe("ATOMUILOC005");
-        diagnostic.GetMessage().ShouldContain("AtomUILanguageContractVersion");
-    }
-
-    [Fact]
-    public void Accepts_A_Deferred_Static_Language_Pack_Without_A_Contract_Version()
+    public void Accepts_A_Deferred_Static_Language_Pack()
     {
         var result = Run(
             CatalogSource,
             LanguageFile(SourceXliff),
             ExternalLanguageFile(
-                contractVersion: null,
                 SourceFingerprint,
                 contractValidation: "Deferred"));
 
         result.Diagnostics.ShouldBeEmpty();
-    }
-
-    [Fact]
-    public void Rejects_A_Deferred_Static_Language_Pack_With_A_Contract_Version()
-    {
-        var result = Run(
-            CatalogSource,
-            LanguageFile(SourceXliff),
-            ExternalLanguageFile(
-                contractVersion: "1",
-                SourceFingerprint,
-                contractValidation: "Deferred"));
-
-        var diagnostic = result.Diagnostics.ShouldHaveSingleItem();
-        diagnostic.Id.ShouldBe("ATOMUILOC005");
-        diagnostic.GetMessage().ShouldContain("Deferred");
-        diagnostic.GetMessage().ShouldContain("AtomUILanguageContractVersion");
     }
 
     [Theory]
@@ -97,7 +66,6 @@ public class LocalizationAdditionalFileGeneratorTests
             CatalogSource,
             LanguageFile(SourceXliff),
             ExternalLanguageFile(
-                contractVersion: "1",
                 SourceFingerprint,
                 contractValidation: contractValidation));
 
@@ -113,7 +81,6 @@ public class LocalizationAdditionalFileGeneratorTests
             CatalogSource,
             LanguageFile(SourceXliff),
             ExternalLanguageFile(
-                contractVersion: "1",
                 "0000000000000000000000000000000000000000000000000000000000000000"));
 
         var diagnostic = result.Diagnostics.ShouldHaveSingleItem();
@@ -127,7 +94,7 @@ public class LocalizationAdditionalFileGeneratorTests
         var result = Run(
             CatalogSource,
             LanguageFile(SourceXliff),
-            ExternalLanguageFile(contractVersion: "1", sourceFingerprint: null));
+            ExternalLanguageFile(sourceFingerprint: null));
 
         var diagnostic = result.Diagnostics.ShouldHaveSingleItem();
         diagnostic.Id.ShouldBe("ATOMUILOC005");
@@ -142,7 +109,7 @@ public class LocalizationAdditionalFileGeneratorTests
         var result = Run(
             CatalogSource,
             LanguageFile(SourceXliff),
-            ExternalLanguageFile(contractVersion: "1", fingerprint));
+            ExternalLanguageFile(fingerprint));
 
         var diagnostic = result.Diagnostics.ShouldHaveSingleItem();
         diagnostic.Id.ShouldBe("ATOMUILOC005");
@@ -155,7 +122,7 @@ public class LocalizationAdditionalFileGeneratorTests
         var result = Run(
             CatalogSource,
             LanguageFile(SourceXliff),
-            ExternalLanguageFile(contractVersion: "1", SourceFingerprint));
+            ExternalLanguageFile(SourceFingerprint));
 
         result.Diagnostics.ShouldBeEmpty();
     }
@@ -167,29 +134,11 @@ public class LocalizationAdditionalFileGeneratorTests
             CatalogSource,
             LanguageFile(SourceXliff),
             ExternalLanguageFile(
-                contractVersion: "1",
                 sourceFingerprint: null,
                 sourceKind: "ApplicationOverride",
                 contractValidation: null));
 
         result.Diagnostics.ShouldBeEmpty();
-    }
-
-    [Fact]
-    public void Still_Requires_A_Contract_Version_For_An_Application_Override()
-    {
-        var result = Run(
-            CatalogSource,
-            LanguageFile(SourceXliff),
-            ExternalLanguageFile(
-                contractVersion: null,
-                sourceFingerprint: null,
-                sourceKind: "ApplicationOverride",
-                contractValidation: null));
-
-        var diagnostic = result.Diagnostics.ShouldHaveSingleItem();
-        diagnostic.Id.ShouldBe("ATOMUILOC005");
-        diagnostic.GetMessage().ShouldContain("AtomUILanguageContractVersion");
     }
 
     private static TestAdditionalText LanguageFile(string content)
@@ -206,7 +155,6 @@ public class LocalizationAdditionalFileGeneratorTests
     }
 
     private static TestAdditionalText ExternalLanguageFile(
-        string? contractVersion,
         string? sourceFingerprint,
         string sourceKind = "StaticLanguagePack",
         string? contractValidation = "Verified")
@@ -224,10 +172,6 @@ public class LocalizationAdditionalFileGeneratorTests
             metadata["build_metadata.AdditionalFiles.AtomUILanguageContractValidation"] =
                 contractValidation;
         }
-        if (contractVersion is not null)
-        {
-            metadata["build_metadata.AdditionalFiles.AtomUILanguageContractVersion"] = contractVersion;
-        }
         if (sourceFingerprint is not null)
         {
             metadata["build_metadata.AdditionalFiles.AtomUILanguageSourceFingerprint"] =
@@ -244,10 +188,7 @@ public class LocalizationAdditionalFileGeneratorTests
         namespace AtomUI.Localization
         {
             [System.AttributeUsage(System.AttributeTargets.Enum)]
-            public sealed class LanguageCatalogAttribute : System.Attribute
-            {
-                public int ContractVersion { get; set; } = 1;
-            }
+            public sealed class LanguageCatalogAttribute : System.Attribute;
         }
         namespace TestApp.Localization
         {

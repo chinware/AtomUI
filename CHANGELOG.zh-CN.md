@@ -12,7 +12,7 @@ AtomUI 的重要变更记录在此文件中。
 
 - 破坏性变更
   - Theme：自定义主题和控件包需要从手工维护 Token/Theme 注册迁移到生成式控件包 descriptor 和 `Themes/**/*.axaml` 资源清单，并在主题 schema 冻结前通过 `Application.UseAtomUI(...)` 完成注册。主题 builder、attribute、descriptor 和状态中的字符串算法 ID 需要改为 `ThemeAlgorithm` 枚举值。
-  - Localization：已移除 `LanguageCode`、`LanguageVariant`、语言 Provider/Pool 和 ThemeManager 语言注册 API，请迁移到 `LanguageTag`、Catalog enum、XLIFF 2.1 资源、`UseLanguages()` 和生成式模块注册。Catalog enum 成员名和 XLIFF unit ID 现在是契约 identity（`ContractVersion = 2`）；应用与静态语言包必须一起重新构建，不能混用原数字 ID Catalog 与新 Key Catalog。
+  - Localization：已移除 `LanguageCode`、`LanguageVariant`、语言 Provider/Pool 和 ThemeManager 语言注册 API，请迁移到 `LanguageTag`、Catalog enum、XLIFF 2.1 资源、`UseLanguages()` 和生成式模块注册。Catalog enum 成员名和 XLIFF unit ID 现在是稳定契约 identity；应用与静态语言包必须一起重新构建，不能混用原数字 ID Catalog 与新 Key Catalog。
   - Upload：移除 `Upload.IsOpenFileDialogOnClick`，改用 `UploadDropZone.IsOpenFileDialogOnClick` 和 `SourceKind`；以 `AllowedFileTypes` 替代 `Upload.Accepts`；移除旧 drop 事件和仅 URI 文件契约；自定义集成需迁移到强类型 source、input batch、admission 和 completion 契约，并以 `Files` 作为唯一状态所有者。
   - Timeline：新增水平 `Orientation`，以逻辑方向 `Start` / `End` 替代 `TimelineMode.Left` / `Right`，并将 `IndicatorLeftModeMargin` / `IndicatorRightModeMargin` 重命名为 `IndicatorStartModeMargin` / `IndicatorEndModeMargin`。
   - Tag：以 `TagVariant`（`Filled`、`Solid` 或 `Outlined`）替代 `IsBordered`；可选择标签场景请使用新的 `CheckableTag` / `CheckableTagGroup` 选择 API。

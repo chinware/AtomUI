@@ -2,7 +2,7 @@ using AtomUI.Localization;
 
 namespace AtomUIGallery.Localization;
 
-[LanguageCatalog(ContractVersion = 2)]
+[LanguageCatalog]
 public enum ListShowCaseLangResourceKind
 {
     ScenarioExamples,

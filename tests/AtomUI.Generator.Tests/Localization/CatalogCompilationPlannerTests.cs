@@ -23,8 +23,7 @@ public class CatalogCompilationPlannerTests
             "Optional.Module",
             "Optional.Strings",
             LanguageFileSourceKind.StaticLanguagePack,
-            contractValidation,
-            contractValidation == LanguageFileContractValidation.Verified ? 3 : null);
+            contractValidation);
         var index = CreateIndex([], [input], []);
 
         var result = CatalogCompilationPlanner.Plan(index, [input]);
@@ -35,7 +34,6 @@ public class CatalogCompilationPlannerTests
         resolution.ActivationState.ShouldBe(LanguageInputActivationState.Dormant);
         resolution.Input.ContractValidation.ShouldBe(contractValidation);
         resolution.Catalog.ShouldBeNull();
-        resolution.EffectiveContractVersion.ShouldBeNull();
     }
 
     [Fact]
@@ -45,8 +43,7 @@ public class CatalogCompilationPlannerTests
             "Installed.Module",
             "Installed.Strings",
             LanguageFileSourceKind.StaticLanguagePack,
-            LanguageFileContractValidation.Deferred,
-            contractVersion: null);
+            LanguageFileContractValidation.Deferred);
         var moduleReference = CreateModuleReference("Installed.Module");
         var index = CreateIndex([], [input], [moduleReference]);
 
@@ -60,15 +57,14 @@ public class CatalogCompilationPlannerTests
     }
 
     [Fact]
-    public void Plan_Binds_Deferred_Active_Input_To_Actual_Catalog_Contract_Version()
+    public void Plan_Binds_Deferred_Active_Input_To_The_Actual_Catalog()
     {
         var input = Input(
             "Installed.Module",
             "Installed.Strings",
             LanguageFileSourceKind.StaticLanguagePack,
-            LanguageFileContractValidation.Deferred,
-            contractVersion: null);
-        var catalog = Catalog("Installed.Module", "Installed.Strings", contractVersion: 5);
+            LanguageFileContractValidation.Deferred);
+        var catalog = Catalog("Installed.Module", "Installed.Strings");
         var index = CreateIndex([catalog], [input], []);
 
         var result = CatalogCompilationPlanner.Plan(index, [input]);
@@ -80,27 +76,6 @@ public class CatalogCompilationPlannerTests
                                .ShouldHaveSingleItem();
         resolution.ActivationState.ShouldBe(LanguageInputActivationState.Active);
         resolution.Catalog.ShouldBe(catalog);
-        resolution.EffectiveContractVersion.ShouldBe(5);
-    }
-
-    [Fact]
-    public void Plan_Reports_Verified_Contract_Version_Mismatch_In_Active_Module()
-    {
-        var input = Input(
-            "Installed.Module",
-            "Installed.Strings",
-            LanguageFileSourceKind.StaticLanguagePack,
-            LanguageFileContractValidation.Verified,
-            contractVersion: 4);
-        var catalog = Catalog("Installed.Module", "Installed.Strings", contractVersion: 5);
-        var index = CreateIndex([catalog], [input], []);
-
-        var result = CatalogCompilationPlanner.Plan(index, [input]);
-
-        result.WorkItems.SelectMany(static item => item.Inputs).ShouldBeEmpty();
-        result.Diagnostics.ShouldHaveSingleItem()
-              .GetMessage()
-              .ShouldContain("ContractVersion");
     }
 
     private static CatalogSymbolIndex CreateIndex(
@@ -132,15 +107,13 @@ public class CatalogCompilationPlannerTests
 
     private static LanguageCatalogInfo Catalog(
         string moduleId,
-        string metadataName,
-        int contractVersion)
+        string metadataName)
     {
         return new LanguageCatalogInfo(
             moduleId,
             metadataName,
             "Installed",
             $"global::{metadataName}",
-            contractVersion,
             [new LanguageCatalogUnitInfo("Title", Location.None)],
             Location.None);
     }
@@ -149,8 +122,7 @@ public class CatalogCompilationPlannerTests
         string moduleId,
         string fileId,
         LanguageFileSourceKind sourceKind,
-        LanguageFileContractValidation contractValidation,
-        int? contractVersion)
+        LanguageFileContractValidation contractValidation)
     {
         var content = TargetXliff(fileId);
         return new LanguageFileInput(
@@ -162,7 +134,6 @@ public class CatalogCompilationPlannerTests
             sourceKind,
             $"{moduleId}.I18n.ZhCN",
             contractValidation,
-            contractVersion,
             LanguageSourceFingerprint.Compute(Xliff21Parser.Parse(content).Document!));
     }
 

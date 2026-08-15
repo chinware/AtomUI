@@ -8,7 +8,6 @@
         <AtomUIGenerateControlThemeAssetResources>true</AtomUIGenerateControlThemeAssetResources>
         <AtomUIRegistrationPackageId>$(AssemblyName)</AtomUIRegistrationPackageId>
         <AtomUIRegistrationEntries>AtomUI.Desktop.Controls.ThemeManagerBuilderExtensions.UseAllDesktopControls,AtomUI.Desktop.Controls.ThemeManagerBuilderExtensions.UseDesktopControls</AtomUIRegistrationEntries>
-        <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
     </PropertyGroup>
 
     <ItemGroup>

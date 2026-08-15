@@ -74,7 +74,6 @@ internal sealed class LanguageFileInput
         LanguageFileSourceKind sourceKind,
         string sourceIdentity,
         LanguageFileContractValidation contractValidation,
-        int? contractVersion,
         string? sourceFingerprint)
     {
         File = file;
@@ -82,7 +81,6 @@ internal sealed class LanguageFileInput
         SourceKind = sourceKind;
         SourceIdentity = sourceIdentity;
         ContractValidation = contractValidation;
-        ContractVersion = contractVersion;
         SourceFingerprint = sourceFingerprint;
     }
 
@@ -101,8 +99,6 @@ internal sealed class LanguageFileInput
     internal string SourceIdentity { get; }
 
     internal LanguageFileContractValidation ContractValidation { get; }
-
-    internal int? ContractVersion { get; }
 
     internal string? SourceFingerprint { get; }
 }
@@ -127,13 +123,11 @@ internal sealed class LanguageInputResolution
     internal LanguageInputResolution(
         LanguageFileInput input,
         LanguageInputActivationState activationState,
-        LanguageCatalogInfo? catalog,
-        int? effectiveContractVersion)
+        LanguageCatalogInfo? catalog)
     {
         Input = input;
         ActivationState = activationState;
         Catalog = catalog;
-        EffectiveContractVersion = effectiveContractVersion;
     }
 
     internal LanguageFileInput Input { get; }
@@ -141,6 +135,4 @@ internal sealed class LanguageInputResolution
     internal LanguageInputActivationState ActivationState { get; }
 
     internal LanguageCatalogInfo? Catalog { get; }
-
-    internal int? EffectiveContractVersion { get; }
 }

@@ -34,7 +34,6 @@ public class CollectLanguageCatalogsTaskTests : IDisposable
         catalog.GetMetadata("AtomUILanguageModuleId").ShouldBe("AtomUI.Desktop.Controls");
         catalog.GetMetadata("AtomUILanguageCatalogId")
                .ShouldBe("AtomUI.Desktop.Controls.DatePickerLang.DatePickerLangResourceKind");
-        catalog.GetMetadata("AtomUILanguageContractVersion").ShouldBe("1");
         catalog.GetMetadata("AtomUILanguageSourceFingerprint")
                .ShouldMatch("^[0-9a-f]{64}$");
     }
@@ -66,8 +65,7 @@ public class CollectLanguageCatalogsTaskTests : IDisposable
     {
         return new TestTaskItem(
             path,
-            ("AtomUILanguageModuleId", "AtomUI.Desktop.Controls"),
-            ("AtomUILanguageContractVersion", "1"));
+            ("AtomUILanguageModuleId", "AtomUI.Desktop.Controls"));
     }
 
     private string Write(string fileName, string content)

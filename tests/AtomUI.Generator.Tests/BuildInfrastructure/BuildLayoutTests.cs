@@ -48,7 +48,8 @@ public sealed class BuildLayoutTests
     [Fact]
     public void Repository_Props_Import_Configuration_And_Generator_Entry_Point()
     {
-        GetImports("build/AtomUI.Repository.props").ShouldBe([
+        const string repositoryPropsPath = "build/AtomUI.Repository.props";
+        GetImports(repositoryPropsPath).ShouldBe([
             "$(MSBuildThisFileDirectory)Versions.props",
             "$(MSBuildThisFileDirectory)ProjectDefaults.props",
             "$(MSBuildThisFileDirectory)PackageMetadata.props",

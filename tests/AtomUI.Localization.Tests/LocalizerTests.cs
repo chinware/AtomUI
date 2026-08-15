@@ -148,7 +148,6 @@ public class LocalizerTests
         builder.AddCatalog(catalog);
         builder.AddTranslationBundle(new TranslationBundleDescriptor(
             catalog.CatalogId,
-            catalog.ContractVersion,
             LanguageTags.EnUS,
             TranslationSourceKind.ModuleBuiltIn,
             "Acme",
@@ -157,7 +156,6 @@ public class LocalizerTests
         {
             builder.AddTranslationBundle(new TranslationBundleDescriptor(
                 catalog.CatalogId,
-                catalog.ContractVersion,
                 language,
                 TranslationSourceKind.ModuleBuiltIn,
                 "Acme",
@@ -183,7 +181,6 @@ public class LocalizerTests
         builder.AddCatalog(catalog);
         builder.AddTranslationBundle(new TranslationBundleDescriptor(
             catalog.CatalogId,
-            catalog.ContractVersion,
             LanguageTags.EnUS,
             TranslationSourceKind.ModuleBuiltIn,
             "Acme",
@@ -192,7 +189,6 @@ public class LocalizerTests
         {
             builder.AddTranslationBundle(new TranslationBundleDescriptor(
                 catalog.CatalogId,
-                catalog.ContractVersion,
                 language,
                 TranslationSourceKind.ModuleBuiltIn,
                 "Acme",
@@ -205,7 +201,6 @@ public class LocalizerTests
     {
         return new LanguageCatalogDescriptor<ResourceKind>(
             "Acme:Acme.ResourceKind",
-            1,
             [new LanguageCatalogUnitDescriptor("Value", isFormatted)],
             static key => key == ResourceKind.Value ? 0 : -1);
     }

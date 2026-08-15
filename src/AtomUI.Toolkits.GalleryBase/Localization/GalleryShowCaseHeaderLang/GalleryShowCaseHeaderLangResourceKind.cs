@@ -2,7 +2,7 @@ using AtomUI.Localization;
 
 namespace AtomUI.Toolkits.GalleryBase.Localization;
 
-[LanguageCatalog(ContractVersion = 2)]
+[LanguageCatalog]
 public enum GalleryShowCaseHeaderLangResourceKind
 {
     NamespaceLabel,

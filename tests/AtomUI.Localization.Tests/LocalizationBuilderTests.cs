@@ -200,7 +200,6 @@ public class LocalizationBuilderTests
         var builder = new LocalizationBuilder();
         builder.AddCatalog(new LanguageCatalogDescriptor<BuilderResourceKind>(
             "Acme:Acme.BuilderResourceKind",
-            1,
             [new LanguageCatalogUnitDescriptor("Value")],
             static key => key == BuilderResourceKind.Value ? 0 : -1));
         builder.AddTranslationBundle(CreateBundle(LanguageTags.EnUS, "English"));
@@ -213,7 +212,6 @@ public class LocalizationBuilderTests
     {
         return new TranslationBundleDescriptor(
             "Acme:Acme.BuilderResourceKind",
-            1,
             language,
             TranslationSourceKind.ModuleBuiltIn,
             "Acme",

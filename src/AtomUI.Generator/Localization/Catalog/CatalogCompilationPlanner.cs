@@ -29,8 +29,7 @@ internal static class CatalogCompilationPlanner
                     dormantInputs.Add(new LanguageInputResolution(
                         input,
                         LanguageInputActivationState.Dormant,
-                        catalog: null,
-                        effectiveContractVersion: null));
+                        catalog: null));
                     continue;
                 }
 
@@ -43,23 +42,10 @@ internal static class CatalogCompilationPlanner
                 continue;
             }
 
-            var catalog = catalogEntry.Catalog;
-            if (input.ContractVersion is { } contractVersion &&
-                contractVersion != catalog.ContractVersion)
-            {
-                diagnostics.Add(Mismatch(
-                    input,
-                    catalogKey,
-                    $"language input ContractVersion '{contractVersion}' does not match " +
-                    $"target Catalog ContractVersion '{catalog.ContractVersion}'"));
-                continue;
-            }
-
             inputsByCatalog[catalogKey].Add(new LanguageInputResolution(
                 input,
                 LanguageInputActivationState.Active,
-                catalog,
-                catalog.ContractVersion));
+                catalogEntry.Catalog));
         }
 
         var workItems = index.Entries

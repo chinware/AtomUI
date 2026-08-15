@@ -34,22 +34,15 @@ XLIFF，并排除 `bin/`、`obj/` 和生成目录：
 <AtomUILanguageOverride Include="Localization/Overrides/**/*.xlf" />
 ```
 
-targets 将这些 item 作为带元数据的 `AdditionalFiles` 传给 Generator。来源类型、source identity、module ID 和
-契约校验级别必须保存在 item metadata 中；`Verified` 输入另外携带 ContractVersion，`Deferred` 输入在 active 后从
-实际 Catalog 绑定 ContractVersion。Generator 不从磁盘路径或 NuGet 包名猜测优先级或身份。
+targets 将这些 item 作为带元数据的 `AdditionalFiles` 传给 Generator。来源类型、source identity、module ID、
+契约校验级别和源 fingerprint 必须保存在 item metadata 中。Generator 不从磁盘路径或 NuGet 包名猜测优先级或身份。
 
-普通模块项目使用项目属性 `AtomUILanguageContractVersion` 作为自动发现内置 XLIFF 的默认 metadata，属性默认值为
-`1`。一个项目内 Catalog 版本一致时，应把该属性设置为 enum 上的 `ContractVersion`；存在不同版本的 Catalog
-时，必须通过 `AtomUILanguage Update="..."` 为对应文件显式覆盖 metadata。该值只是 MSBuild 和 NuGet 的契约
-传输副本，Generator 仍会与 Roslyn Catalog symbol 校验，不构成独立身份来源。
-
-静态语言包项目不使用默认值伪造目标 Catalog 的 ContractVersion。targets 自动扫描目标 XLIFF，并以项目级
-`AtomUILanguageModuleId` 作为唯一必需归属声明：
+静态语言包项目由 targets 自动扫描目标 XLIFF，并以项目级 `AtomUILanguageModuleId` 作为唯一必需归属声明：
 
 - 如果作者期组件引用提供了该 module 的权威 `ModuleBuiltIn` `en-US` assets，Build Tasks 按 XLIFF `file id` 绑定
-  Catalog，补全 ContractVersion、package path 和 source fingerprint，并把资产标记为 `Verified`。
+  Catalog，补全 package path 和 source fingerprint，并把资产标记为 `Verified`。
 - 如果该 module 完全没有权威源 assets，Build Tasks 只从目标 XLIFF 计算 package path 和 source fingerprint，把
-  资产标记为 `Deferred`，不填充或猜测 ContractVersion，并输出一次 `ATOMUILOC010` warning。
+  资产标记为 `Deferred`，并输出一次 `ATOMUILOC010` warning。
 - 如果已经存在部分权威源 assets，则所有目标 Catalog 必须完整匹配；缺失或未知 Catalog 是 Error，不能逐文件退回
   `Deferred`。
 
@@ -73,8 +66,8 @@ targets 将这些 item 作为带元数据的 `AdditionalFiles` 传给 Generator�
 不写 manifest，也不生成 props；它只为源码项目引用准备 Generator 所需的编译期资产。消费项目的
 `AtomUIResolveLanguagePackProjectReferences` target 在 `GenerateMSBuildEditorConfigFileShouldRun` 和 `CoreCompile` 之前调用
 这些项目 target，并把 Generator 所需的 `StaticLanguagePack` source kind、source identity、module ID、
-`AtomUILanguageContractValidation` 和 source fingerprint 投影到 `AdditionalFiles`；`Verified` 返回项另外投影
-ContractVersion。规范化 package path 只属于语言包 pack 和审计模型，不是 Generator 输入或 Catalog identity。
+`AtomUILanguageContractValidation` 和 source fingerprint 投影到 `AdditionalFiles`。规范化 package path 只属于语言包
+pack、manifest 和审计模型，不是 Generator 输入或 Catalog identity。
 该协议只提供编译期输入，不复制 XLIFF、不产生运行时 DLL，也不改变聚合包的 NuGet 依赖图。
 
 `AtomUILanguagePackProjectReference` 不跨普通 `ProjectReference` 传递。源码仓库中的最终应用宿主必须直接声明语言包
@@ -124,11 +117,11 @@ Localization/
 Generator 流水线固定为：
 
 1. 解析 AdditionalText XLIFF，保留源文件位置。
-2. 校验所有输入都必须满足的语言标签、metadata、ContractVersion/fingerprint 形态和当前文件 fingerprint。
+2. 校验所有输入都必须满足的语言标签、metadata、fingerprint 形态和当前文件 fingerprint。
 3. 统一解析当前和引用 Catalog symbol，建立 `CatalogSymbolIndex`。
 4. 保留 `Verified`/`Deferred` 契约模式，并独立分类 `Active`/`Dormant` 激活状态。
 5. 按 `CatalogKey` 建立工作集并选择唯一权威 `en-US` 源契约。
-6. 校验来源冲突、unit、source、placeholder、状态、ContractVersion 和权威 fingerprint。
+6. 校验来源冲突、unit、source、placeholder、状态和权威 fingerprint。
 7. 将已验证 unit 编译为 ordinal slot 数组和不可变 `LocalizationCompilationPlan`。
 8. `LocalizationSourceEmitter` 调用 Catalog、module 和 application Writer 生成确定性源码。
 
@@ -142,20 +135,19 @@ Generator 在解析 `StaticLanguagePack` 的 Catalog 前建立当前项目和引
 目标 module 存在且 XLIFF `file id` 能绑定该 module 中唯一 Catalog 时，静态输入为 active，并执行全部严格校验。
 module 存在但 Catalog 缺失、Catalog 属于其他 module 或 module identity 冲突都属于 Error，不得退回 dormant。
 
-Generator 必须先解析并校验 XLIFF 2.1 结构、语言标签、校验级别、module ID 和 source fingerprint。
-`Verified` 还必须携带正数 ContractVersion；`Deferred` 不允许携带构建系统没有绑定过的伪 ContractVersion。基础输入
-有效后，如果 module ID 不存在，该静态输入为 dormant。dormant 输入不进入 Catalog 深层校验、冲突检测、覆盖计算
+Generator 必须先解析并校验 XLIFF 2.1 结构、语言标签、校验级别、module ID 和 source fingerprint。基础输入有效后，
+如果 module ID 不存在，该静态输入为 dormant。dormant 输入不进入 Catalog 深层校验、冲突检测、覆盖计算
 或生成源码，因此聚合语言包不会要求应用安装所有组件。fingerprint metadata 的存在、64 位小写 SHA-256 格式及其与
 当前目标 XLIFF source 内容的一致性仍必须通过；只有它与尚不可见权威 `en-US` fingerprint 的比较延迟到 active。
 激活判断必须只依赖 Roslyn symbol 和显式 assembly metadata，不扫描程序集、不读取 NuGet 目录，也不从包名或文件
 路径猜测模块。
 
-当 module active 时，`Deferred` 输入按 `file id` 解析唯一 Catalog symbol，并从该 symbol 和模块权威 `en-US` 输入
-绑定实际 ContractVersion，再执行与 `Verified` 相同的 Catalog、unit、source、占位符、fingerprint 和完整覆盖校验。
+当 module active 时，`Deferred` 输入按 `file id` 解析唯一 Catalog symbol，并使用模块权威 `en-US` 输入执行与
+`Verified` 相同的 Catalog、unit、source、占位符、fingerprint 和完整覆盖校验。
 无法唯一解析、模块存在但 Catalog 缺失或源契约不一致时必须报错。延迟的是校验阶段，不是最终应用的校验强度。
 
-ModuleBuiltIn、项目本地 XLIFF 和 ApplicationOverride 不允许 dormant。模块存在但文件 ID、module ID、
-ContractVersion 或权威 `en-US` 不匹配时仍产生原有诊断。这样可以跳过真正未安装的模块，同时保留对已安装模块和
+ModuleBuiltIn、项目本地 XLIFF 和 ApplicationOverride 不允许 dormant。模块存在但文件 ID、module ID、unit、source
+或权威 `en-US` fingerprint 不匹配时仍产生原有诊断。这样可以跳过真正未安装的模块，同时保留对已安装模块和
 损坏包的强校验。
 
 ## Generator 输出

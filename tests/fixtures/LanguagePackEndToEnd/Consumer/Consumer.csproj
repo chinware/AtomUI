@@ -6,7 +6,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <FixturePackageVersion Condition="'$(FixturePackageVersion)' == ''">1.0.0</FixturePackageVersion>
-        <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(ConsumerPublishAot)' == 'true'">

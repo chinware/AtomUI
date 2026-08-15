@@ -225,8 +225,7 @@ public class ApplicationLanguageBootstrapGeneratorTests
             SourceXliff,
             "ModuleBuiltIn",
             "Test.Package",
-            "Test.Package",
-            contractVersion: null);
+            "Test.Package");
     }
 
     private static TestAdditionalText OverrideFile()
@@ -240,8 +239,7 @@ public class ApplicationLanguageBootstrapGeneratorTests
                 "应用标题"),
             "ApplicationOverride",
             "TestApp",
-            "Test.Package",
-            contractVersion: "1");
+            "Test.Package");
     }
 
     private static TestAdditionalText StaticPackFile()
@@ -255,8 +253,7 @@ public class ApplicationLanguageBootstrapGeneratorTests
                 "外部标题"),
             "StaticLanguagePack",
             "External.Package.I18n.ZhCN",
-            "External.Package",
-            contractVersion: "2");
+            "External.Package");
     }
 
     private static TestAdditionalText ReferencedSourceFile()
@@ -272,8 +269,7 @@ public class ApplicationLanguageBootstrapGeneratorTests
             """,
             "ModuleBuiltIn",
             "External.Package",
-            "External.Package",
-            contractVersion: "2");
+            "External.Package");
     }
 
     private static TestAdditionalText LanguageFile(
@@ -281,8 +277,7 @@ public class ApplicationLanguageBootstrapGeneratorTests
         string content,
         string sourceKind,
         string sourceIdentity,
-        string moduleId,
-        string? contractVersion)
+        string moduleId)
     {
         var metadata = new Dictionary<string, string>(StringComparer.Ordinal)
         {
@@ -291,10 +286,6 @@ public class ApplicationLanguageBootstrapGeneratorTests
             ["build_metadata.AdditionalFiles.AtomUILanguageSourceIdentity"] = sourceIdentity,
             ["build_metadata.AdditionalFiles.AtomUILanguageModuleId"] = moduleId
         };
-        if (contractVersion is not null)
-        {
-            metadata["build_metadata.AdditionalFiles.AtomUILanguageContractVersion"] = contractVersion;
-        }
         if (sourceKind == "StaticLanguagePack")
         {
             metadata["build_metadata.AdditionalFiles.AtomUILanguageContractValidation"] =
@@ -313,15 +304,12 @@ public class ApplicationLanguageBootstrapGeneratorTests
             namespace AtomUI.Localization
             {
                 [System.AttributeUsage(System.AttributeTargets.Enum, AllowMultiple = false)]
-                public sealed class LanguageCatalogAttribute : System.Attribute
-                {
-                    public int ContractVersion { get; set; } = 1;
-                }
+                public sealed class LanguageCatalogAttribute : System.Attribute;
             }
 
             namespace External.Localization
             {
-                [AtomUI.Localization.LanguageCatalog(ContractVersion = 2)]
+                [AtomUI.Localization.LanguageCatalog]
                 public enum ExternalLangResourceKind
                 {
                     Title
@@ -355,10 +343,7 @@ public class ApplicationLanguageBootstrapGeneratorTests
         namespace AtomUI.Localization
         {
             [System.AttributeUsage(System.AttributeTargets.Enum, AllowMultiple = false)]
-            public sealed class LanguageCatalogAttribute : System.Attribute
-            {
-                public int ContractVersion { get; set; } = 1;
-            }
+            public sealed class LanguageCatalogAttribute : System.Attribute;
 
             public interface IGeneratedApplicationLanguageBootstrap
             {
@@ -385,7 +370,6 @@ public class ApplicationLanguageBootstrapGeneratorTests
             {
                 public LanguageCatalogDescriptor(
                     string catalogId,
-                    int contractVersion,
                     System.Collections.Generic.IReadOnlyList<LanguageCatalogUnitDescriptor> units,
                     System.Func<TResourceKind, int> unitSlotResolver) { }
             }
@@ -411,7 +395,6 @@ public class ApplicationLanguageBootstrapGeneratorTests
             {
                 public TranslationBundleDescriptor(
                     string catalogId,
-                    int contractVersion,
                     LanguageTag language,
                     TranslationSourceKind sourceKind,
                     string sourceIdentity,
@@ -424,7 +407,7 @@ public class ApplicationLanguageBootstrapGeneratorTests
 
         namespace TestApp.Localization
         {
-            [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
+            [AtomUI.Localization.LanguageCatalog]
             public enum AppLangResourceKind
             {
                 Title,

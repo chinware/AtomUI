@@ -54,7 +54,7 @@ Builder 只收集输入，`Build()` 后全部注册表冻结。运行时不允�
 
 Registry 为每个 Catalog 分配进程内稳定 slot，并记录：
 
-- 生成式 Catalog ID、ContractVersion 和 enum CLR 类型。
+- 生成式 Catalog ID、enum CLR 类型和稳定 Key 到 slot 的映射。
 - 稳定 unit Key、enum member 到 Catalog 内部 slot 的生成式映射。
 - 每个语言的 Translation Bundle、来源优先级和源文本指纹。
 - `en-US` 完整源文本。

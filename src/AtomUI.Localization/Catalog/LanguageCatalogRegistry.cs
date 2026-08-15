@@ -66,13 +66,6 @@ internal sealed class LanguageCatalogRegistry
             }
 
             var catalog = catalogs[catalogSlot];
-            if (bundle.ContractVersion != catalog.ContractVersion)
-            {
-                throw new LanguageCatalogException(
-                    $"Translation bundle from '{bundle.SourceIdentity}' uses ContractVersion " +
-                    $"{bundle.ContractVersion} for Catalog '{catalog.CatalogId}', but the registered version is " +
-                    $"{catalog.ContractVersion}.");
-            }
             if (bundle.Values.Count != catalog.Units.Count)
             {
                 throw new LanguageCatalogException(

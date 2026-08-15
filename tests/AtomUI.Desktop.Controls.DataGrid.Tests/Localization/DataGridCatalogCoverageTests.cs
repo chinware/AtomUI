@@ -30,8 +30,7 @@ public class DataGridCatalogCoverageTests
         var resourceKindType = typeof(DataGridLangResourceKind);
 
         resourceKindType.GetCustomAttribute<LanguageCatalogAttribute>()
-                        .ShouldNotBeNull()
-                        .ContractVersion.ShouldBe(2);
+                        .ShouldNotBeNull();
         Enum.GetValues<DataGridLangResourceKind>()
             .Select(static entry => entry.ToString())
             .ShouldBe(expected.Select(static entry => entry.Kind.ToString()));

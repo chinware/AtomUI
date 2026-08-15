@@ -143,7 +143,6 @@ public class LanguageSnapshotTests
     {
         return new LanguageCatalogDescriptor<ResourceKind>(
             "Acme:Acme.ResourceKind",
-            1,
             [
                 new LanguageCatalogUnitDescriptor("First"),
                 new LanguageCatalogUnitDescriptor("Second", isSecondFormatted)
@@ -178,7 +177,6 @@ public class LanguageSnapshotTests
     {
         return new TranslationBundleDescriptor(
             catalog.CatalogId,
-            catalog.ContractVersion,
             language,
             sourceKind,
             sourceIdentity,

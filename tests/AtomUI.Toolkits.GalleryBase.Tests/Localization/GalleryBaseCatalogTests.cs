@@ -26,8 +26,7 @@ public class GalleryBaseCatalogTests
         var resourceKindType = typeof(GalleryShowCaseHeaderLangResourceKind);
 
         resourceKindType.GetCustomAttribute<LanguageCatalogAttribute>()
-                        .ShouldNotBeNull()
-                        .ContractVersion.ShouldBe(2);
+                        .ShouldNotBeNull();
         Enum.GetValues<GalleryShowCaseHeaderLangResourceKind>()
             .Select(static entry => entry.ToString())
             .ShouldBe(expected.Select(static entry => entry.Kind.ToString()));

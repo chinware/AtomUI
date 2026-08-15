@@ -50,7 +50,6 @@ public class LanguageCatalogRegistryTests
         var builder = new LocalizationBuilder();
         builder.AddTranslationBundle(new TranslationBundleDescriptor(
             "Acme:Missing",
-            1,
             LanguageTags.EnUS,
             TranslationSourceKind.ModuleBuiltIn,
             "Acme",
@@ -63,22 +62,9 @@ public class LanguageCatalogRegistryTests
     }
 
     [Fact]
-    public void Freeze_Rejects_Bundle_Contract_Or_Slot_Count_Mismatch()
+    public void Freeze_Rejects_Bundle_Slot_Count_Mismatch()
     {
         var catalog = CreateCatalog<AlphaResourceKind>("Acme:Alpha", "First", "Second");
-        var wrongVersion = new LocalizationBuilder();
-        wrongVersion.AddCatalog(catalog);
-        wrongVersion.AddTranslationBundle(new TranslationBundleDescriptor(
-            catalog.CatalogId,
-            2,
-            LanguageTags.EnUS,
-            TranslationSourceKind.ModuleBuiltIn,
-            "Acme",
-            ["First", "Second"]));
-
-        Should.Throw<LanguageCatalogException>(() => wrongVersion.FreezeRegistry())
-              .Message.ShouldContain("ContractVersion");
-
         var wrongSlots = new LocalizationBuilder();
         wrongSlots.AddCatalog(catalog);
         wrongSlots.AddTranslationBundle(CreateBundle(catalog, LanguageTags.EnUS, ["First"]));
@@ -218,7 +204,6 @@ public class LanguageCatalogRegistryTests
     {
         return new LanguageCatalogDescriptor<TResourceKind>(
             id,
-            1,
             unitNames.Select(name => new LanguageCatalogUnitDescriptor(name)).ToArray(),
             static key => Convert.ToInt32(key) - 1);
     }
@@ -232,7 +217,6 @@ public class LanguageCatalogRegistryTests
     {
         return new TranslationBundleDescriptor(
             catalog.CatalogId,
-            catalog.ContractVersion,
             language,
             sourceKind,
             sourceIdentity,

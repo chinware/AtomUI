@@ -41,15 +41,6 @@ internal static class LanguageCatalogSymbolParser
                 "Flags Catalog enums are not supported"));
         }
 
-        var contractVersion = GetContractVersion(target.Attribute);
-        if (contractVersion <= 0)
-        {
-            diagnostics.Add(InvalidCatalog(
-                symbol,
-                typeLocation,
-                "ContractVersion must be positive"));
-        }
-
         var fields = symbol.GetMembers()
                            .OfType<IFieldSymbol>()
                            .Where(static field => !field.IsImplicitlyDeclared && field.HasConstantValue)
@@ -98,23 +89,9 @@ internal static class LanguageCatalogSymbolParser
             metadataName,
             namespaceName,
             typeName,
-            contractVersion,
             units.OrderBy(static unit => unit.Key, StringComparer.Ordinal).ToImmutableArray(),
             typeLocation);
         return new LanguageCatalogParseResult(catalog, ImmutableArray<Diagnostic>.Empty);
-    }
-
-    private static int GetContractVersion(AttributeData attribute)
-    {
-        foreach (var argument in attribute.NamedArguments)
-        {
-            if (argument.Key == "ContractVersion" && argument.Value.Value is int value)
-            {
-                return value;
-            }
-        }
-
-        return 1;
     }
 
     private static bool IsEffectivelyPublic(INamedTypeSymbol symbol)

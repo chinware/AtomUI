@@ -13,7 +13,7 @@ public class LanguageCatalogGeneratorTests
     public void Accepts_A_Key_Based_Catalog_Contract()
     {
         var result = RunGenerator("""
-            [LanguageCatalog(ContractVersion = 2)]
+            [LanguageCatalog]
             public enum LoginLangResourceKind
             {
                 Title,
@@ -37,11 +37,6 @@ public class LanguageCatalogGeneratorTests
         "ATOMUILOC003",
         "LoginLangResourceKind",
         "Flags")]
-    [InlineData(
-        "[LanguageCatalog(ContractVersion = 0)] public enum LoginLangResourceKind { Title }",
-        "ATOMUILOC003",
-        "LoginLangResourceKind",
-        "ContractVersion")]
     [InlineData(
         "[LanguageCatalog] public enum LoginLangResourceKind { }",
         "ATOMUILOC003",
@@ -139,10 +134,7 @@ public class LanguageCatalogGeneratorTests
             namespace AtomUI.Localization
             {
                 [System.AttributeUsage(System.AttributeTargets.All, AllowMultiple = false)]
-                public sealed class LanguageCatalogAttribute : System.Attribute
-                {
-                    public int ContractVersion { get; set; } = 1;
-                }
+                public sealed class LanguageCatalogAttribute : System.Attribute;
             }
 
             namespace TestApp.Localization

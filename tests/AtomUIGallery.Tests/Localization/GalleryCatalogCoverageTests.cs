@@ -51,8 +51,7 @@ public class GalleryCatalogCoverageTests
         foreach (var catalogType in catalogTypes)
         {
             catalogType.GetCustomAttribute<LanguageCatalogAttribute>()
-                       .ShouldNotBeNull()
-                       .ContractVersion.ShouldBe(2);
+                       .ShouldNotBeNull();
             Enum.GetNames(catalogType).ShouldBe(memberOrderBaseline[catalogType.FullName!]);
 
             var extensionName = catalogType.Name[..^"Kind".Length] + "Extension";

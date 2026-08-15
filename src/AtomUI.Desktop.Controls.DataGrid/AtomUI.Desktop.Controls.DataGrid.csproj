@@ -8,7 +8,6 @@
         <AtomUIGenerateControlThemeAssetResources>true</AtomUIGenerateControlThemeAssetResources>
         <AtomUIRegistrationPackageId>$(AssemblyName)</AtomUIRegistrationPackageId>
         <AtomUIRegistrationEntries>AtomUI.Desktop.Controls.DataGridThemeManagerBuilderExtensions.UseDesktopDataGrid</AtomUIRegistrationEntries>
-        <AtomUILanguageContractVersion>2</AtomUILanguageContractVersion>
         <RootNamespace>AtomUI.Desktop.Controls</RootNamespace>
     </PropertyGroup>
 

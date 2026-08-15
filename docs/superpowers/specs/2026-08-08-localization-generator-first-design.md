@@ -31,7 +31,7 @@ Generator 成为**编译项目中的 Catalog/Bundle 语义权威**，负责：
 - 语言标签、翻译状态、占位符、源文本和完整 Bundle 校验。
 - 根据当前和引用程序集中的 Roslyn symbol 解析 Catalog/module。
 - `Verified` 与 `Deferred` 契约处理，包括引用模块出现后的 Deferred 激活。
-- source fingerprint 和 ContractVersion 校验。
+- source fingerprint、稳定 Key 和源文本校验。
 - 重复翻译来源和 override unit 冲突检测。
 - 文件、Catalog、Bundle 和生成源码的确定性排序。
 - 生成 Catalog descriptor、Translation Bundle、模块注册和 Application bootstrap。
@@ -68,17 +68,17 @@ XLIFF parser、规范化文档模型、fingerprint 计算、文件级校验规�
 支持两种作者模式：
 
 - **Verified 模式**：项目以仅用于创作的 `PackageReference` 引用目标组件包，并设置 `PrivateAssets=all`。
-  Build Tasks 从该包读取权威 `en-US` XLIFF 和 Catalog metadata，将每个目标文件绑定到唯一 Catalog，复制真实
-  ContractVersion，并输出 `Verified` 包 metadata。
+  Build Tasks 从该包读取权威 `en-US` XLIFF 和 Catalog metadata，将每个目标文件绑定到唯一 Catalog，计算权威
+  source fingerprint，并输出 `Verified` 包 metadata。
 - **Deferred 模式**：作者无法取得权威源契约。Build Tasks 仍校验 XLIFF 结构、目标语言、翻译状态、包内容和
-  规范化路径，但不伪造 ContractVersion，输出 `Deferred` metadata 并给出 warning。该包可以发布，契约校验延迟
+  规范化路径，输出 `Deferred` metadata 并给出 warning。该包可以发布，契约校验延迟
   到消费应用完成。
 
 消费应用中的 Generator 对两种模式拥有最终权威：
 
 1. 读取语言包生成的声明式 `buildTransitive` 输入。
 2. 根据当前或引用组件程序集中的 module identity 和 Catalog enum，将目标文件的 `file id` 解析到 Catalog。
-3. 如果模块存在，激活 Bundle，并完整校验源文本、unit、占位符、状态、ContractVersion 和 fingerprint。Deferred
+3. 如果模块存在，激活 Bundle，并完整校验源文本、unit、占位符、状态和 fingerprint。Deferred
    输入一旦激活，不得降低校验强度。
 4. 如果模块不存在，静态输入保持 dormant，不生成 Bundle，也不报告依赖目标 Catalog 的深层语义错误；
    XLIFF 结构、语言标签、metadata 和 fingerprint 等基础输入规则仍必须通过。
@@ -92,8 +92,9 @@ XLIFF parser、规范化文档模型、fingerprint 计算、文件级校验规�
 props 文件只包含稳定默认值和 item 定义：
 
 - module identity 回退值（优先 `PackageId`，其次 `AssemblyName`）；
-- 默认 ContractVersion；
 - module-built-in 与 application-override item 的默认 metadata。
+
+props 不维护并行版本字段；Generator 始终以真实 Catalog symbol、权威 `en-US` 和 source fingerprint 为语义权威。
 
 不在 props 中定义校验策略、target 顺序、Task 路径或打包行为。
 
@@ -183,10 +184,10 @@ src/AtomUI.Generator/Localization/
 语义层不使用 `$"{moduleId}:{fileId}"` 形式的隐式字符串键，使用不可变的 `CatalogKey(ModuleId, FileId)`。
 主要输入模型包括：
 
-- `CatalogDefinition`：规范化后的 Catalog/module、类型名、ContractVersion、unit 和所有权信息。
+- `CatalogDefinition`：规范化后的 Catalog/module、类型名、unit 和所有权信息。
 - `LanguageFileInput`：规范化后的 XLIFF 文档、来源类型、source identity、声明的契约信息和 fingerprint。
 - `CatalogSymbolIndex`：按 `CatalogKey` 索引当前及引用程序集中的 Catalog，并记录可用 module。
-- `LanguageInputResolution`：记录输入是 `Active` 还是 `Dormant`，以及绑定后的 effective ContractVersion；它保留
+- `LanguageInputResolution`：记录输入是 `Active` 还是 `Dormant`，以及绑定后的 Catalog；它保留
   `LanguageFileInput` 中独立的 `Verified`/`Deferred` 契约模式，不把两类状态折叠成一个枚举。
 - `CatalogCompilationPlan`：只包含已经完成来源选择、冲突检查和翻译 slot 编译的 Catalog 结果。
 - `LocalizationCompilationPlan`：源码 Writer 的唯一输入。
@@ -221,7 +222,7 @@ src/AtomUI.Generator/Localization/
 当前按文件调用 `ReferencedLanguageCatalogResolver` 的方式改为一次建立 `CatalogSymbolIndex`。索引负责：
 
 - 当前程序集和引用程序集中的 `[LanguageCatalog]` enum 识别；
-- module identity 和 ContractVersion 读取；
+- module identity 和稳定 Catalog Key 读取；
 - `CatalogKey` 到 CatalogDefinition 的唯一映射；
 - module ID 或 Catalog ID 冲突诊断；
 - 判断静态语言包是否真正拥有可激活的目标 module。
@@ -263,7 +264,7 @@ src/AtomUI.Generator/Localization/
 - 原 `ValidateLanguageFilesTask` 覆盖的全部 XLIFF 结构和翻译诊断；
 - module/source identity 默认值和显式 metadata 覆盖；
 - 重复 Bundle 和重复 override unit；
-- Verified/Deferred ContractVersion 与 fingerprint 路径；
+- Verified/Deferred 与 fingerprint 路径；
 - dormant 静态输入及通过引用 symbol 激活 Deferred 输入；
 - 确定性输出和增量缓存行为。
 
@@ -302,7 +303,7 @@ Pipeline 和 Source Emitter 测试验证端到端诊断与生成结果。所有�
 - 静态语言包项目中的无效内容仍在 pack 前失败；
 - 消费应用编译 active Bundle，并忽略 dormant 可选包；
 - 第三方 Verified 包能绑定引用模块契约；
-- 第三方 Deferred 包发布时不伪造 ContractVersion，只在 pack 时 warning 一次；模块安装后激活并校验，模块缺失时保持 dormant；
+- 第三方 Deferred 包发布时只在 pack 报告一次 warning；模块安装后激活并校验，模块缺失时保持 dormant；
 - 聚合 Meta Package 不泄漏本地化输入或运行时资产；
 - 生成包资产保持确定性。
 

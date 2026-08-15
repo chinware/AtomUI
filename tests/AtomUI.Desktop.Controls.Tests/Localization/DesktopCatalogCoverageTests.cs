@@ -148,8 +148,7 @@ public class DesktopCatalogCoverageTests
         where TResourceKind : struct, Enum
     {
         var resourceKindType = typeof(TResourceKind);
-        var catalog = resourceKindType.GetCustomAttribute<LanguageCatalogAttribute>().ShouldNotBeNull();
-        catalog.ContractVersion.ShouldBe(2);
+        resourceKindType.GetCustomAttribute<LanguageCatalogAttribute>().ShouldNotBeNull();
         Enum.GetNames<TResourceKind>().ShouldBe(
             expected.Select(static entry => entry.Kind.ToString()));
 

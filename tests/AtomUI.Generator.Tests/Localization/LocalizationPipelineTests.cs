@@ -60,7 +60,6 @@ public class LocalizationPipelineTests
             "TestApp.Localization.AppLangResourceKind",
             "TestApp.Localization",
             "global::TestApp.Localization.AppLangResourceKind",
-            1,
             [new LanguageCatalogUnitInfo("Title", Location.None)],
             Location.None);
     }
@@ -83,7 +82,6 @@ public class LocalizationPipelineTests
             LanguageFileSourceKind.ModuleBuiltIn,
             "Test.Package",
             LanguageFileContractValidation.Verified,
-            contractVersion: null,
             sourceFingerprint: null);
     }
 }

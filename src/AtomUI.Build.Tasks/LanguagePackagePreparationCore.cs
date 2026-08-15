@@ -1,4 +1,3 @@
-using System.Globalization;
 using AtomUI.Build.Tasks.LocalizationBuild;
 using Microsoft.Build.Framework;
 
@@ -210,19 +209,6 @@ internal static class LanguagePackagePreparationCore
         var succeeded = true;
         foreach (var target in targets)
         {
-            if (!string.IsNullOrWhiteSpace(target.Item.GetMetadata("AtomUILanguageContractVersion")))
-            {
-                logError(
-                    InvalidPackageCode,
-                    target.Item.ItemSpec,
-                    1,
-                    1,
-                    "A deferred language package must not declare AtomUILanguageContractVersion without " +
-                    "an authoritative source contract.");
-                succeeded = false;
-                continue;
-            }
-
             succeeded &= ValidateTarget(
                 target,
                 source: null,
@@ -233,14 +219,12 @@ internal static class LanguagePackagePreparationCore
                 target.Item,
                 packageId,
                 LanguagePackageContractValidation.Deferred,
-                contractVersion: null,
                 target.PackagePath,
                 sourceFingerprint);
             entries.Add(new LanguagePackageCatalogEntry(
                 moduleId,
                 target.Document.File.Id,
                 LanguagePackageContractValidation.Deferred,
-                contractVersion: null,
                 target.PackagePath,
                 sourceFingerprint));
         }
@@ -288,21 +272,6 @@ internal static class LanguagePackagePreparationCore
                     "An authoritative language contract must be an en-US source XLIFF.");
                 return null;
             }
-            if (!int.TryParse(
-                    item.GetMetadata("AtomUILanguageContractVersion"),
-                    NumberStyles.None,
-                    CultureInfo.InvariantCulture,
-                    out var contractVersion) ||
-                contractVersion <= 0)
-            {
-                logError(
-                    InvalidPackageCode,
-                    item.ItemSpec,
-                    1,
-                    1,
-                    "An authoritative language contract requires a positive ContractVersion.");
-                return null;
-            }
             if (sources.ContainsKey(document.File.Id))
             {
                 logError(
@@ -315,7 +284,7 @@ internal static class LanguagePackagePreparationCore
             }
             sources.Add(
                 document.File.Id,
-                new ParsedSourceLanguageFile(item, document, contractVersion));
+                new ParsedSourceLanguageFile(item, document));
         }
 
         var targetsByCatalog = new Dictionary<string, ParsedTargetLanguageFile>(StringComparer.Ordinal);
@@ -371,25 +340,6 @@ internal static class LanguagePackagePreparationCore
             var source = sources[target.Document.File.Id];
             succeeded &= ValidateTarget(target, source, minimumTargetState, logError);
 
-            var declaredContractVersion = target.Item.GetMetadata("AtomUILanguageContractVersion").Trim();
-            if (declaredContractVersion.Length > 0 &&
-                (!int.TryParse(
-                     declaredContractVersion,
-                     NumberStyles.None,
-                     CultureInfo.InvariantCulture,
-                     out var parsedContractVersion) ||
-                 parsedContractVersion != source.ContractVersion))
-            {
-                logError(
-                    CatalogMismatchCode,
-                    target.Item.ItemSpec,
-                    1,
-                    1,
-                    $"Target Catalog '{target.Document.File.Id}' ContractVersion '{declaredContractVersion}' " +
-                    $"does not match authoritative ContractVersion '{source.ContractVersion}'.");
-                succeeded = false;
-            }
-
             var sourceFingerprint = LanguageSourceFingerprint.Compute(source.Document);
             var targetFingerprint = LanguageSourceFingerprint.Compute(target.Document);
             if (!string.Equals(sourceFingerprint, targetFingerprint, StringComparison.Ordinal))
@@ -408,14 +358,12 @@ internal static class LanguagePackagePreparationCore
                 target.Item,
                 packageId,
                 LanguagePackageContractValidation.Verified,
-                source.ContractVersion,
                 target.PackagePath,
                 sourceFingerprint);
             entries.Add(new LanguagePackageCatalogEntry(
                 moduleId,
                 target.Document.File.Id,
                 LanguagePackageContractValidation.Verified,
-                source.ContractVersion,
                 target.PackagePath,
                 sourceFingerprint));
         }
@@ -502,23 +450,12 @@ internal static class LanguagePackagePreparationCore
         ITaskItem item,
         string packageId,
         LanguagePackageContractValidation contractValidation,
-        int? contractVersion,
         string packagePath,
         string sourceFingerprint)
     {
         item.SetMetadata("AtomUILanguageSourceKind", "StaticLanguagePack");
         item.SetMetadata("AtomUILanguageSourceIdentity", packageId);
         item.SetMetadata("AtomUILanguageContractValidation", contractValidation.ToString());
-        if (contractVersion is { } version)
-        {
-            item.SetMetadata(
-                "AtomUILanguageContractVersion",
-                version.ToString(CultureInfo.InvariantCulture));
-        }
-        else
-        {
-            item.RemoveMetadata("AtomUILanguageContractVersion");
-        }
         item.SetMetadata("AtomUILanguagePackagePath", packagePath);
         item.SetMetadata("AtomUILanguageSourceFingerprint", sourceFingerprint);
     }
@@ -546,19 +483,16 @@ internal static class LanguagePackagePreparationCore
     {
         internal ParsedSourceLanguageFile(
             ITaskItem item,
-            XliffDocumentModel document,
-            int contractVersion)
+            XliffDocumentModel document)
         {
             Item = item;
             Document = document;
-            ContractVersion = contractVersion;
         }
 
         internal ITaskItem Item { get; }
 
         internal XliffDocumentModel Document { get; }
 
-        internal int ContractVersion { get; }
     }
 }
 

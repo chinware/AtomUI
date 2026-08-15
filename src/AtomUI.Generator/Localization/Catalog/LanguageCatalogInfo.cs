@@ -48,7 +48,6 @@ internal sealed class LanguageCatalogInfo
         string metadataName,
         string @namespace,
         string typeName,
-        int contractVersion,
         ImmutableArray<LanguageCatalogUnitInfo> units,
         Location location)
     {
@@ -56,7 +55,6 @@ internal sealed class LanguageCatalogInfo
         MetadataName = metadataName;
         Namespace = @namespace;
         TypeName = typeName;
-        ContractVersion = contractVersion;
         Units = units;
         Location = location;
         Key = new CatalogKey(moduleId, metadataName);
@@ -69,8 +67,6 @@ internal sealed class LanguageCatalogInfo
     internal string Namespace { get; }
 
     internal string TypeName { get; }
-
-    internal int ContractVersion { get; }
 
     internal ImmutableArray<LanguageCatalogUnitInfo> Units { get; }
 

@@ -20,7 +20,6 @@ public class LanguageCatalogCompilerGeneratorTests
             CatalogMetadataName,
             "TestApp.Localization",
             "global::TestApp.Localization.LoginLangResourceKind",
-            1,
             [
                 new LanguageCatalogUnitInfo("Title", Location.None),
                 new LanguageCatalogUnitInfo("ItemCount", Location.None)
@@ -35,7 +34,6 @@ public class LanguageCatalogCompilerGeneratorTests
             LanguageFileSourceKind.ModuleBuiltIn,
             "Test.Package",
             LanguageFileContractValidation.Verified,
-            null,
             null);
 
         var result = LanguageCatalogCompiler.Compile(
@@ -211,7 +209,7 @@ public class LanguageCatalogCompilerGeneratorTests
             "namespace TestApp { public sealed class Marker { } }",
             [reference],
             ReferencedSourceFile(),
-            StaticPackFile(contractVersion: "2"));
+            StaticPackFile());
 
         result.Diagnostics.ShouldBeEmpty();
     }
@@ -227,7 +225,7 @@ public class LanguageCatalogCompilerGeneratorTests
             """,
             [reference],
             ReferencedSourceFile(),
-            StaticPackFile(contractVersion: null, contractValidation: "Deferred"));
+            StaticPackFile(contractValidation: "Deferred"));
 
         result.Diagnostics.ShouldBeEmpty();
         var bootstrap = result.GeneratedSources
@@ -236,7 +234,6 @@ public class LanguageCatalogCompilerGeneratorTests
                               .SourceText
                               .ToString();
         bootstrap.ShouldContain("TranslationSourceKind.StaticLanguagePack");
-        bootstrap.ShouldContain("        2,");
     }
 
     [Fact]
@@ -248,7 +245,6 @@ public class LanguageCatalogCompilerGeneratorTests
             [reference],
             ReferencedSourceFile(),
             StaticPackFile(
-                contractVersion: null,
                 unitKey: "Heading",
                 contractValidation: "Deferred"));
 
@@ -264,7 +260,6 @@ public class LanguageCatalogCompilerGeneratorTests
             [reference],
             ReferencedSourceFile(),
             StaticPackFile(
-                contractVersion: null,
                 contractValidation: "Deferred",
                 titleSource: "Changed title"));
 
@@ -279,7 +274,7 @@ public class LanguageCatalogCompilerGeneratorTests
         var result = Run(
             "namespace TestApp { public sealed class Marker { } }",
             [reference],
-            StaticPackFile(contractVersion: "2"));
+            StaticPackFile());
 
         AssertHasDiagnostic(result, "ATOMUILOC006", "complete en-US");
     }
@@ -290,7 +285,7 @@ public class LanguageCatalogCompilerGeneratorTests
         var result = Run(
             "namespace TestApp { public sealed class Marker { } }",
             [],
-            StaticPackFile(contractVersion: "2"));
+            StaticPackFile());
 
         result.Diagnostics.ShouldBeEmpty();
         result.GeneratedSources.ShouldBeEmpty();
@@ -302,7 +297,7 @@ public class LanguageCatalogCompilerGeneratorTests
         var result = Run(
             "namespace TestApp { public sealed class Marker { } }",
             [],
-            StaticPackFile(contractVersion: null, contractValidation: "Deferred"));
+            StaticPackFile(contractValidation: "Deferred"));
 
         result.Diagnostics.ShouldBeEmpty();
         result.GeneratedSources.ShouldBeEmpty();
@@ -315,7 +310,7 @@ public class LanguageCatalogCompilerGeneratorTests
         var result = Run(
             "namespace TestApp { public sealed class Marker { } }",
             [reference],
-            StaticPackFile(contractVersion: "2"));
+            StaticPackFile());
 
         AssertHasDiagnostic(result, "ATOMUILOC006", "referenced Catalog");
     }
@@ -327,43 +322,9 @@ public class LanguageCatalogCompilerGeneratorTests
         var result = Run(
             "namespace TestApp { public sealed class Marker { } }",
             [reference],
-            StaticPackFile(contractVersion: null, contractValidation: "Deferred"));
+            StaticPackFile(contractValidation: "Deferred"));
 
         AssertHasDiagnostic(result, "ATOMUILOC006", "referenced Catalog");
-    }
-
-    [Fact]
-    public void Reports_A_Static_Pack_Contract_Version_Mismatch()
-    {
-        var reference = CreateExternalCatalogReference();
-        var result = Run(
-            "namespace TestApp { public sealed class Marker { } }",
-            [reference],
-            ReferencedSourceFile(),
-            StaticPackFile(contractVersion: "1"));
-
-        AssertHasDiagnostic(result, "ATOMUILOC006", "ContractVersion");
-    }
-
-    [Fact]
-    public void Reports_A_Local_Application_Override_Contract_Version_Mismatch()
-    {
-        var result = Run(
-            CatalogSource,
-            SourceFile(),
-            ApplicationOverrideFile(contractVersion: "1"));
-
-        AssertHasDiagnostic(result, "ATOMUILOC006", "ContractVersion");
-    }
-
-    [Fact]
-    public void Reports_A_Local_ModuleBuiltIn_Contract_Version_Mismatch()
-    {
-        var result = Run(
-            CatalogSource,
-            SourceFile(contractVersion: "1"));
-
-        AssertHasDiagnostic(result, "ATOMUILOC006", "ContractVersion");
     }
 
     [Fact]
@@ -372,7 +333,7 @@ public class LanguageCatalogCompilerGeneratorTests
         var result = Run(
             CatalogSource,
             SourceFile(),
-            ApplicationOverrideFile(contractVersion: "2", includeItemCount: false));
+            ApplicationOverrideFile(includeItemCount: false));
 
         result.Diagnostics.ShouldBeEmpty();
     }
@@ -384,12 +345,10 @@ public class LanguageCatalogCompilerGeneratorTests
             CatalogSource,
             SourceFile(),
             ApplicationOverrideFile(
-                contractVersion: "2",
                 includeItemCount: false,
                 path: "Localization/Overrides/title.zh-CN.xlf",
                 sourceIdentity: "TestApp.Title"),
             ApplicationOverrideFile(
-                contractVersion: "2",
                 includeTitle: false,
                 path: "Localization/Overrides/item-count.zh-CN.xlf",
                 sourceIdentity: "TestApp.ItemCount"));
@@ -404,12 +363,10 @@ public class LanguageCatalogCompilerGeneratorTests
             CatalogSource,
             SourceFile(),
             ApplicationOverrideFile(
-                contractVersion: "2",
                 includeItemCount: false,
                 path: "Localization/Overrides/first.zh-CN.xlf",
                 sourceIdentity: "TestApp.One"),
             ApplicationOverrideFile(
-                contractVersion: "2",
                 includeItemCount: false,
                 path: "Localization/Overrides/second.zh-CN.xlf",
                 sourceIdentity: "TestApp.Two"));
@@ -425,7 +382,7 @@ public class LanguageCatalogCompilerGeneratorTests
             "namespace TestApp { public sealed class Marker { } }",
             [reference],
             ReferencedSourceFile(),
-            StaticPackFile(contractVersion: "2", moduleId: "Other.Package"));
+            StaticPackFile(moduleId: "Other.Package"));
 
         AssertHasDiagnostic(result, "ATOMUILOC006", "language module");
     }
@@ -440,7 +397,7 @@ public class LanguageCatalogCompilerGeneratorTests
             "namespace TestApp { public sealed class Marker { } }",
             [reference],
             ReferencedSourceFile(moduleId: "External.Package"),
-            StaticPackFile(contractVersion: "2"));
+            StaticPackFile());
 
         result.Diagnostics.ShouldBeEmpty();
     }
@@ -453,7 +410,7 @@ public class LanguageCatalogCompilerGeneratorTests
             "namespace TestApp { public sealed class Marker { } }",
             [reference],
             ReferencedSourceFile(unitKey: "Heading"),
-            StaticPackFile(contractVersion: "2"));
+            StaticPackFile());
 
         AssertHasDiagnostic(result, "ATOMUILOC006", "unit Key");
     }
@@ -470,9 +427,9 @@ public class LanguageCatalogCompilerGeneratorTests
         diagnostic.Severity.ShouldBe(DiagnosticSeverity.Error);
     }
 
-    private static TestAdditionalText SourceFile(string? contractVersion = null)
+    private static TestAdditionalText SourceFile()
     {
-        return LanguageFile("Localization/en-US.xlf", SourceXliff, contractVersion);
+        return LanguageFile("Localization/en-US.xlf", SourceXliff);
     }
 
     private static TestAdditionalText ReferencedSourceFile(
@@ -488,8 +445,7 @@ public class LanguageCatalogCompilerGeneratorTests
                 ["build_metadata.AdditionalFiles.AtomUILanguage"] = "true",
                 ["build_metadata.AdditionalFiles.AtomUILanguageModuleId"] = moduleId,
                 ["build_metadata.AdditionalFiles.AtomUILanguageSourceKind"] = "ModuleBuiltIn",
-                ["build_metadata.AdditionalFiles.AtomUILanguageSourceIdentity"] = moduleId,
-                ["build_metadata.AdditionalFiles.AtomUILanguageContractVersion"] = "2"
+                ["build_metadata.AdditionalFiles.AtomUILanguageSourceIdentity"] = moduleId
             });
     }
 
@@ -506,8 +462,7 @@ public class LanguageCatalogCompilerGeneratorTests
 
     private static TestAdditionalText LanguageFile(
         string path,
-        string text,
-        string? contractVersion = null)
+        string text)
     {
         var metadata = new Dictionary<string, string>(StringComparer.Ordinal)
         {
@@ -515,11 +470,6 @@ public class LanguageCatalogCompilerGeneratorTests
             ["build_metadata.AdditionalFiles.AtomUILanguageSourceKind"] = "ModuleBuiltIn",
             ["build_metadata.AdditionalFiles.AtomUILanguageSourceIdentity"] = "Test.Package"
         };
-        if (contractVersion is not null)
-        {
-            metadata["build_metadata.AdditionalFiles.AtomUILanguageContractVersion"] = contractVersion;
-        }
-
         return new TestAdditionalText(
             path,
             text,
@@ -527,7 +477,6 @@ public class LanguageCatalogCompilerGeneratorTests
     }
 
     private static TestAdditionalText StaticPackFile(
-        string? contractVersion,
         string moduleId = "External.Package",
         string unitKey = "Title",
         string contractValidation = "Verified",
@@ -547,10 +496,6 @@ public class LanguageCatalogCompilerGeneratorTests
             ["build_metadata.AdditionalFiles.AtomUILanguageContractValidation"] = contractValidation,
             ["build_metadata.AdditionalFiles.AtomUILanguageSourceFingerprint"] = sourceFingerprint
         };
-        if (contractVersion is not null)
-        {
-            metadata["build_metadata.AdditionalFiles.AtomUILanguageContractVersion"] = contractVersion;
-        }
 
         return new TestAdditionalText(
             "packages/External.Package.I18n.ZhCN/zh-CN.xlf",
@@ -559,7 +504,6 @@ public class LanguageCatalogCompilerGeneratorTests
     }
 
     private static TestAdditionalText ApplicationOverrideFile(
-        string contractVersion,
         bool includeItemCount = true,
         bool includeTitle = true,
         string path = "Localization/Overrides/zh-CN.xlf",
@@ -589,8 +533,7 @@ public class LanguageCatalogCompilerGeneratorTests
                 ["build_metadata.AdditionalFiles.AtomUILanguage"] = "true",
                 ["build_metadata.AdditionalFiles.AtomUILanguageSourceKind"] = "ApplicationOverride",
                 ["build_metadata.AdditionalFiles.AtomUILanguageSourceIdentity"] = sourceIdentity,
-                ["build_metadata.AdditionalFiles.AtomUILanguageModuleId"] = "Test.Package",
-                ["build_metadata.AdditionalFiles.AtomUILanguageContractVersion"] = contractVersion
+                ["build_metadata.AdditionalFiles.AtomUILanguageModuleId"] = "Test.Package"
             });
     }
 
@@ -610,15 +553,12 @@ public class LanguageCatalogCompilerGeneratorTests
             namespace AtomUI.Localization
             {
                 [System.AttributeUsage(System.AttributeTargets.Enum, AllowMultiple = false)]
-                public sealed class LanguageCatalogAttribute : System.Attribute
-                {
-                    public int ContractVersion { get; set; } = 1;
-                }
+                public sealed class LanguageCatalogAttribute : System.Attribute;
             }
 
             namespace TestApp.Localization
             {
-                [AtomUI.Localization.LanguageCatalog(ContractVersion = 2)]
+                [AtomUI.Localization.LanguageCatalog]
                 public enum LoginLangResourceKind
                 {
                     ItemCount,
@@ -660,17 +600,14 @@ public class LanguageCatalogCompilerGeneratorTests
         namespace AtomUI.Localization
         {
             [System.AttributeUsage(System.AttributeTargets.Enum, AllowMultiple = false)]
-            public sealed class LanguageCatalogAttribute : System.Attribute
-            {
-                public int ContractVersion { get; set; } = 1;
-            }
+            public sealed class LanguageCatalogAttribute : System.Attribute;
         }
 
         namespace TestApp.Localization
         {
             using AtomUI.Localization;
 
-            [LanguageCatalog(ContractVersion = 2)]
+            [LanguageCatalog]
             public enum LoginLangResourceKind
             {
                 ItemCount,

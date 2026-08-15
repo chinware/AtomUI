@@ -1,4 +1,3 @@
-using System.Globalization;
 using AtomUI.Build.Tasks.LocalizationBuild;
 using Microsoft.Build.Framework;
 
@@ -44,20 +43,14 @@ public sealed class CollectLanguageCatalogsTask : AtomUILocalizationTask
             }
 
             var moduleId = input.GetMetadata("AtomUILanguageModuleId").Trim();
-            if (moduleId.Length == 0 ||
-                !int.TryParse(
-                    input.GetMetadata("AtomUILanguageContractVersion"),
-                    NumberStyles.None,
-                    CultureInfo.InvariantCulture,
-                    out var contractVersion) ||
-                contractVersion <= 0)
+            if (moduleId.Length == 0)
             {
                 LogError(
                     "ATOMUILOC006",
                     path,
                     1,
                     1,
-                    "A Catalog template requires AtomUILanguageModuleId and a positive ContractVersion.");
+                    "A Catalog template requires AtomUILanguageModuleId.");
                 succeeded = false;
                 continue;
             }
@@ -80,9 +73,6 @@ public sealed class CollectLanguageCatalogsTask : AtomUILocalizationTask
             var output = new GeneratedTaskItem(path);
             output.SetMetadata("AtomUILanguageModuleId", moduleId);
             output.SetMetadata("AtomUILanguageCatalogId", parsed.File.Id);
-            output.SetMetadata(
-                "AtomUILanguageContractVersion",
-                contractVersion.ToString(CultureInfo.InvariantCulture));
             output.SetMetadata(
                 "AtomUILanguageSourceFingerprint",
                 LanguageSourceFingerprint.Compute(parsed));

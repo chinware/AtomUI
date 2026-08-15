@@ -8,20 +8,12 @@ public sealed class TranslationBundleDescriptor
 
     public TranslationBundleDescriptor(
         string catalogId,
-        int contractVersion,
         LanguageTag language,
         TranslationSourceKind sourceKind,
         string sourceIdentity,
         IReadOnlyList<string?> values)
     {
         LanguageCatalogIdentity.Validate(catalogId);
-        if (contractVersion <= 0)
-        {
-            throw new ArgumentOutOfRangeException(
-                nameof(contractVersion),
-                contractVersion,
-                "A bundle contract version must be positive.");
-        }
         if (language == default)
         {
             throw new ArgumentException("A translation bundle requires a valid language tag.", nameof(language));
@@ -54,7 +46,6 @@ public sealed class TranslationBundleDescriptor
         }
 
         CatalogId = catalogId;
-        ContractVersion = contractVersion;
         Language = language;
         SourceKind = sourceKind;
         SourceIdentity = sourceIdentity;
@@ -62,8 +53,6 @@ public sealed class TranslationBundleDescriptor
     }
 
     public string CatalogId { get; }
-
-    public int ContractVersion { get; }
 
     public LanguageTag Language { get; }
 

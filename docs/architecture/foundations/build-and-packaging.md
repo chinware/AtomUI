@@ -38,8 +38,9 @@ NativeAOT 应用和测试，补充 Homebrew OpenSSL/Brotli linker 搜索路径�
 ## Repository 入口
 
 `AtomUI.Repository.props` 依次导入版本、项目默认值、包元信息和输出路径，定义源码构建使用的
-`$(AtomUIBuildTasksAssembly)`、显式 NuGet build asset 清单和 Generator tool asset 清单，然后导入
-`AtomUI.Generator.props`。
+`$(AtomUIBuildTasksAssembly)`、第一方语言 Catalog 的仓库级默认契约版本、显式 NuGet build asset 清单和 Generator
+tool asset 清单，然后导入 `AtomUI.Generator.props`。项目文件不重复声明当前仓库统一使用的语言契约版本；NuGet
+consumer 的 Localization props 不再伪造默认契约版本。
 
 `AtomUI.Repository.targets` 定义第一方库的 AOT/Trim 默认值，集中排除 `.DotSettings` 和项目目录中的 compiler-generated
 源码快照，导入 `AtomUI.Generator.targets`，并为声明 `AtomUIRegistrationPackageId` 的产品包注入 consumer target、

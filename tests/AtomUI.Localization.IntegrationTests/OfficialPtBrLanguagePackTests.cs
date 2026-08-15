@@ -62,7 +62,6 @@ public sealed partial class LanguagePackEndToEndTests
             var projectPath = Path.Combine(repositoryRoot, package.ProjectPath);
             var project = XDocument.Load(projectPath);
             project.Descendants("AtomUILanguage").ShouldBeEmpty();
-            project.Descendants("AtomUILanguageContractVersion").ShouldBeEmpty();
             project.Descendants("AtomUILanguageMinimumState").ShouldBeEmpty();
 
             var expectedReference = Path.GetFullPath(
@@ -394,10 +393,6 @@ public sealed partial class LanguagePackEndToEndTests
             string.Equals(
                 (string?)item.Attribute("AtomUILanguageContractValidation"),
                 "Verified",
-                StringComparison.Ordinal) &&
-            string.Equals(
-                (string?)item.Attribute("AtomUILanguageContractVersion"),
-                "2",
                 StringComparison.Ordinal));
         return items.ToDictionary(
             static item => ((string?)item.Attribute("AtomUILanguagePackagePath"))
@@ -453,8 +448,7 @@ public sealed partial class LanguagePackEndToEndTests
                     "PropertyGroup",
                     new XElement("TargetFramework", "net10.0"),
                     new XElement("Nullable", "enable"),
-                    new XElement("ImplicitUsings", "enable"),
-                    new XElement("AtomUILanguageContractVersion", "2")),
+                    new XElement("ImplicitUsings", "enable")),
                 new XElement(
                     "ItemGroup",
                     new XElement(
@@ -527,7 +521,6 @@ public sealed partial class LanguagePackEndToEndTests
                     new XElement("AtomUILanguageSourceIdentity", package.ModuleId),
                     new XElement("AtomUILanguageModuleId", package.ModuleId),
                     new XElement("AtomUILanguageContractValidation", "Verified"),
-                    new XElement("AtomUILanguageContractVersion", "2"),
                     new XElement(
                         "AtomUILanguagePackagePath",
                         "Localization/" + sourcePackagePath));

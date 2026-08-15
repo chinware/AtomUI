@@ -111,8 +111,7 @@ Catalog identity 收敛为 enum 成员名：
 - `LanguageCatalogUnitDescriptor.Id` 和 `Name` 收敛为单一 `Key` 属性，不保留数字兼容入口。
 - 运行时继续使用生成式 enum member switch 和 dense slot 数组，不增加反射、enum 名称查询或字符串热路径。
 
-该收敛改变了已发布 Catalog 和 descriptor 的身份契约，因此当前仓库所有生产 Catalog 在迁移时从
-`ContractVersion = 1` 统一递增为 `ContractVersion = 2`，已有语言包必须从新的权威 `en-US.xlf` 重新导出和打包。
+该收敛改变了已发布 Catalog 和 descriptor 的身份契约，因此已有语言包必须从新的权威 `en-US.xlf` 重新导出和打包。
 迁移后的所有 AtomUI 包、Gallery 和应用必须整体重新编译，不得混用数字 ID 版本与 Key 版本的程序集或静态语言包。
 
 移除显式值后，enum 底层值从声明顺序自动产生。它不是本地化 identity，但仍会以内联常量形式进入消费程序集，

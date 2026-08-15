@@ -77,7 +77,6 @@ internal static class LanguageModuleSourceWriter
         source.Append(indent).Append("    new global::AtomUI.Localization.LanguageCatalogDescriptor<")
               .Append(catalog.TypeName).AppendLine(">(");
         source.Append(indent).Append("        ").Append(ToStringLiteral(catalog.CatalogId)).AppendLine(",");
-        source.Append(indent).Append("        ").Append(catalog.ContractVersion).AppendLine(",");
         source.Append(indent).AppendLine("        new global::AtomUI.Localization.LanguageCatalogUnitDescriptor[]");
         source.Append(indent).AppendLine("        {");
         for (var slot = 0; slot < catalog.Units.Length; slot++)
@@ -110,7 +109,6 @@ internal static class LanguageModuleSourceWriter
         source.Append(indent).AppendLine("builder.AddTranslationBundle(");
         source.Append(indent).AppendLine("    new global::AtomUI.Localization.TranslationBundleDescriptor(");
         source.Append(indent).Append("        ").Append(ToStringLiteral(catalog.CatalogId)).AppendLine(",");
-        source.Append(indent).Append("        ").Append(catalog.ContractVersion).AppendLine(",");
         source.Append(indent).Append("        global::AtomUI.Localization.LanguageTag.Parse(")
               .Append(ToStringLiteral(bundle.Language)).AppendLine("),");
         source.Append(indent).Append("        global::AtomUI.Localization.TranslationSourceKind.")

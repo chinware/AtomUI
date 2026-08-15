@@ -385,8 +385,7 @@ public sealed partial class LanguagePackEndToEndTests
             "buildTransitive/Acme.LocalizationComponent.props",
             "ModuleBuiltIn",
             "Localization/Welcome/en-US.xlf",
-            "Verified",
-            "2");
+            "Verified");
 
         var languageEntries = PackageEntries(languagePackage);
         languageEntries.ShouldContain("buildTransitive/Acme.LocalizationComponent.I18n.JaJP.props");
@@ -401,8 +400,7 @@ public sealed partial class LanguagePackEndToEndTests
             "buildTransitive/Acme.LocalizationComponent.I18n.JaJP.props",
             "StaticLanguagePack",
             "Welcome/ja-JP.xlf",
-            "Verified",
-            "2");
+            "Verified");
         languageFingerprint.ShouldBe(moduleFingerprint);
 
         var manifest = XDocument.Parse(PackageEntryText(
@@ -445,8 +443,7 @@ public sealed partial class LanguagePackEndToEndTests
             "buildTransitive/Acme.OptionalComponent.I18n.JaJP.props",
             "StaticLanguagePack",
             "Optional/ja-JP.xlf",
-            "Deferred",
-            expectedContractVersion: null);
+            "Deferred");
         var manifest = XDocument.Parse(PackageEntryText(
             optionalLanguagePackage,
             "contentFiles/any/any/AtomUI.LanguagePack.xml"));
@@ -490,15 +487,13 @@ public sealed partial class LanguagePackEndToEndTests
         string entryPath,
         string sourceKind,
         string packageLanguagePath,
-        string contractValidation,
-        string? expectedContractVersion)
+        string contractValidation)
     {
         var props = XDocument.Parse(PackageEntryText(packagePath, entryPath));
         var item = props.Descendants("AtomUILanguage").ShouldHaveSingleItem();
         ((string?)item.Attribute("AtomUILanguageSourceKind")).ShouldBe(sourceKind);
         ((string?)item.Attribute("AtomUILanguagePackagePath")).ShouldBe(packageLanguagePath);
         ((string?)item.Attribute("AtomUILanguageContractValidation")).ShouldBe(contractValidation);
-        ((string?)item.Attribute("AtomUILanguageContractVersion")).ShouldBe(expectedContractVersion);
         var fingerprint = ((string?)item.Attribute("AtomUILanguageSourceFingerprint"))
             .ShouldNotBeNull();
         fingerprint.ShouldMatch("^[0-9a-f]{64}$");

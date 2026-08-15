@@ -15,8 +15,6 @@ internal static class LanguageGeneratorOptions
         "build_metadata.AdditionalFiles.AtomUILanguageModuleId";
     internal const string ContractValidationMetadata =
         "build_metadata.AdditionalFiles.AtomUILanguageContractValidation";
-    internal const string ContractVersionMetadata =
-        "build_metadata.AdditionalFiles.AtomUILanguageContractVersion";
     internal const string SourceFingerprintMetadata =
         "build_metadata.AdditionalFiles.AtomUILanguageSourceFingerprint";
 

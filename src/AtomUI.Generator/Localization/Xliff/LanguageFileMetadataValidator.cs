@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using System.Globalization;
 using AtomUI.Generator.Localization;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -54,39 +53,6 @@ internal static class LanguageFileMetadataValidator
             }
         }
 
-        int? contractVersion = null;
-        var contractVersionText = LanguageGeneratorOptions.GetFileValue(
-            fileOptions,
-            LanguageGeneratorOptions.ContractVersionMetadata,
-            string.Empty);
-        if (contractValidation == LanguageFileContractValidation.Deferred &&
-            contractVersionText.Length > 0)
-        {
-            return Invalid(
-                file,
-                "Deferred static language packages must not declare AtomUILanguageContractVersion");
-        }
-
-        var contractVersionRequired = sourceKind == LanguageFileSourceKind.ApplicationOverride ||
-                                      sourceKind == LanguageFileSourceKind.StaticLanguagePack &&
-                                      contractValidation == LanguageFileContractValidation.Verified;
-        if (contractVersionRequired || contractVersionText.Length > 0)
-        {
-            if (!int.TryParse(
-                    contractVersionText,
-                    NumberStyles.None,
-                    CultureInfo.InvariantCulture,
-                    out var parsedContractVersion) ||
-                parsedContractVersion <= 0)
-            {
-                return Invalid(
-                    file,
-                    "AtomUILanguageContractVersion must be a positive integer when specified and is " +
-                    "required for external language inputs");
-            }
-            contractVersion = parsedContractVersion;
-        }
-
         var sourceFingerprint = LanguageGeneratorOptions.GetFileValue(
             fileOptions,
             LanguageGeneratorOptions.SourceFingerprintMetadata,
@@ -124,7 +90,6 @@ internal static class LanguageFileMetadataValidator
                 sourceKind,
                 sourceIdentity,
                 contractValidation,
-                contractVersion,
                 sourceFingerprint.Length == 0 ? null : sourceFingerprint),
             ImmutableArray<Diagnostic>.Empty);
     }

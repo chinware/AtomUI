@@ -67,8 +67,7 @@ public class CatalogSemanticValidatorTests
             inputs.Select(input => new LanguageInputResolution(
                       input,
                       LanguageInputActivationState.Active,
-                      catalog,
-                      catalog.ContractVersion))
+                      catalog))
                   .ToImmutableArray());
     }
 
@@ -82,7 +81,6 @@ public class CatalogSemanticValidatorTests
             metadataName,
             "Installed",
             $"global::{metadataName}",
-            5,
             keys.Select(static key => new LanguageCatalogUnitInfo(key, Location.None)).ToImmutableArray(),
             Location.None);
     }
@@ -105,7 +103,6 @@ public class CatalogSemanticValidatorTests
             sourceKind,
             $"{moduleId}.{sourceKind}.{document.TargetLanguage ?? "en-US"}",
             contractValidation,
-            contractVersion: null,
             sourceFingerprint ? LanguageSourceFingerprint.Compute(document) : null);
     }
 

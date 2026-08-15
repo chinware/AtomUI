@@ -107,7 +107,7 @@ public class LanguageCatalogSourceGeneratorTests
             {
                 public static class OuterA
                 {
-                    [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
+                    [AtomUI.Localization.LanguageCatalog]
                     public enum CommonLangResourceKind
                     {
                         Title
@@ -116,7 +116,7 @@ public class LanguageCatalogSourceGeneratorTests
 
                 public static class OuterB
                 {
-                    [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
+                    [AtomUI.Localization.LanguageCatalog]
                     public enum CommonLangResourceKind
                     {
                         Title
@@ -161,7 +161,7 @@ public class LanguageCatalogSourceGeneratorTests
                 {
                     public static class B
                     {
-                        [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
+                        [AtomUI.Localization.LanguageCatalog]
                         public enum CommonLangResourceKind
                         {
                             Title
@@ -171,7 +171,7 @@ public class LanguageCatalogSourceGeneratorTests
 
                 public static class A_B
                 {
-                    [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
+                    [AtomUI.Localization.LanguageCatalog]
                     public enum CommonLangResourceKind
                     {
                             Title
@@ -204,7 +204,7 @@ public class LanguageCatalogSourceGeneratorTests
             """
             namespace TestApp.Localization
             {
-                [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
+                [AtomUI.Localization.LanguageCatalog]
                 public enum Outer_CommonLangResourceKind
                 {
                     Title
@@ -212,7 +212,7 @@ public class LanguageCatalogSourceGeneratorTests
 
                 public static class Outer
                 {
-                    [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
+                    [AtomUI.Localization.LanguageCatalog]
                     public enum CommonLangResourceKind
                     {
                     Title
@@ -307,10 +307,7 @@ public class LanguageCatalogSourceGeneratorTests
         namespace AtomUI.Localization
         {
             [System.AttributeUsage(System.AttributeTargets.Enum, AllowMultiple = false)]
-            public sealed class LanguageCatalogAttribute : System.Attribute
-            {
-                public int ContractVersion { get; set; } = 1;
-            }
+            public sealed class LanguageCatalogAttribute : System.Attribute;
 
             public abstract class LanguageResourceExtension<TResourceKind>
                 where TResourceKind : struct, System.Enum
@@ -332,7 +329,6 @@ public class LanguageCatalogSourceGeneratorTests
             {
                 public LanguageCatalogDescriptor(
                     string catalogId,
-                    int contractVersion,
                     System.Collections.Generic.IReadOnlyList<LanguageCatalogUnitDescriptor> units,
                     System.Func<TResourceKind, int> unitSlotResolver) { }
             }
@@ -358,7 +354,6 @@ public class LanguageCatalogSourceGeneratorTests
             {
                 public TranslationBundleDescriptor(
                     string catalogId,
-                    int contractVersion,
                     LanguageTag language,
                     TranslationSourceKind sourceKind,
                     string sourceIdentity,
@@ -368,7 +363,7 @@ public class LanguageCatalogSourceGeneratorTests
 
         namespace TestApp.Localization
         {
-            [AtomUI.Localization.LanguageCatalog(ContractVersion = 1)]
+            [AtomUI.Localization.LanguageCatalog]
             public enum LoginLangResourceKind
             {
                 ItemCount,
@@ -422,7 +417,6 @@ public class LanguageCatalogSourceGeneratorTests
                     builder.AddCatalog(
                         new global::AtomUI.Localization.LanguageCatalogDescriptor<global::TestApp.Localization.LoginLangResourceKind>(
                             "Test.Package:TestApp.Localization.LoginLangResourceKind",
-                            1,
                             new global::AtomUI.Localization.LanguageCatalogUnitDescriptor[]
                             {
                                 new global::AtomUI.Localization.LanguageCatalogUnitDescriptor("ItemCount", true),
@@ -437,7 +431,6 @@ public class LanguageCatalogSourceGeneratorTests
                     builder.AddTranslationBundle(
                         new global::AtomUI.Localization.TranslationBundleDescriptor(
                             "Test.Package:TestApp.Localization.LoginLangResourceKind",
-                            1,
                             global::AtomUI.Localization.LanguageTag.Parse("en-US"),
                             global::AtomUI.Localization.TranslationSourceKind.ModuleBuiltIn,
                             "Test.Package",
@@ -449,7 +442,6 @@ public class LanguageCatalogSourceGeneratorTests
                     builder.AddTranslationBundle(
                         new global::AtomUI.Localization.TranslationBundleDescriptor(
                             "Test.Package:TestApp.Localization.LoginLangResourceKind",
-                            1,
                             global::AtomUI.Localization.LanguageTag.Parse("zh-CN"),
                             global::AtomUI.Localization.TranslationSourceKind.ModuleBuiltIn,
                             "Test.Package",
@@ -461,7 +453,6 @@ public class LanguageCatalogSourceGeneratorTests
                     builder.AddTranslationBundle(
                         new global::AtomUI.Localization.TranslationBundleDescriptor(
                             "Test.Package:TestApp.Localization.LoginLangResourceKind",
-                            1,
                             global::AtomUI.Localization.LanguageTag.Parse("zh-TW"),
                             global::AtomUI.Localization.TranslationSourceKind.ModuleBuiltIn,
                             "Test.Package",

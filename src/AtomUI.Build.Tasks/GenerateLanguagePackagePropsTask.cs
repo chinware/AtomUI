@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Text;
 using AtomUI.Build.Tasks.LocalizationBuild;
 using Microsoft.Build.Framework;
@@ -58,38 +57,6 @@ public sealed class GenerateLanguagePackagePropsTask : AtomUILocalizationTask
                 return false;
             }
 
-            int? contractVersion = null;
-            var contractVersionText = item.GetMetadata("AtomUILanguageContractVersion").Trim();
-            if (contractValidation == LanguagePackageContractValidation.Verified)
-            {
-                if (!int.TryParse(
-                        contractVersionText,
-                        NumberStyles.None,
-                        CultureInfo.InvariantCulture,
-                        out var parsedContractVersion) ||
-                    parsedContractVersion <= 0)
-                {
-                    LogError(
-                        "ATOMUILOC009",
-                        item.ItemSpec,
-                        1,
-                        1,
-                        "Verified language package items require a positive ContractVersion.");
-                    return false;
-                }
-                contractVersion = parsedContractVersion;
-            }
-            else if (contractVersionText.Length > 0)
-            {
-                LogError(
-                    "ATOMUILOC009",
-                    item.ItemSpec,
-                    1,
-                    1,
-                    "Deferred language package items must not declare ContractVersion.");
-                return false;
-            }
-
             var parsed = Xliff21Parser.Parse(File.ReadAllText(item.ItemSpec));
             if (parsed.Document is null)
             {
@@ -120,7 +87,6 @@ public sealed class GenerateLanguagePackagePropsTask : AtomUILocalizationTask
                 moduleId,
                 parsed.Document.File.Id,
                 contractValidation,
-                contractVersion,
                 packagePath,
                 LanguageSourceFingerprint.Compute(parsed.Document)));
         }

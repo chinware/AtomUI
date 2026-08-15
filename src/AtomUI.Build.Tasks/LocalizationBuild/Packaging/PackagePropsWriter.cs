@@ -25,10 +25,6 @@ internal static class PackagePropsWriter
                 new XAttribute("AtomUILanguageContractValidation", catalog.ContractValidation),
                 new XAttribute("AtomUILanguagePackagePath", catalog.Path),
                 new XAttribute("AtomUILanguageSourceFingerprint", catalog.SourceFingerprint));
-            if (catalog.ContractVersion is { } contractVersion)
-            {
-                element.Add(new XAttribute("AtomUILanguageContractVersion", contractVersion));
-            }
             itemGroup.Add(element);
         }
 

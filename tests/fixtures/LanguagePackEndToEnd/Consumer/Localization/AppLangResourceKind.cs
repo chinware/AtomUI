@@ -2,7 +2,7 @@ using AtomUI.Localization;
 
 namespace Acme.LocalizationConsumer.Localization;
 
-[LanguageCatalog(ContractVersion = 2)]
+[LanguageCatalog]
 public enum AppLangResourceKind
 {
     Title

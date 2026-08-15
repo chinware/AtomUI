@@ -82,7 +82,7 @@ ShowCases/
 与 ShowCase 一起维护；生成器会生成 Catalog descriptor、语言模块注册入口和 XAML Markup Extension：
 
 ```csharp
-[LanguageCatalog(ContractVersion = 1)]
+[LanguageCatalog]
 public enum AutoCompleteShowCaseLangResourceKind
 {
     BasicUsageTitle = 1,

@@ -49,7 +49,7 @@ NuGet 包；构建任务物理归属 `AtomUI.Build.Tasks`，Generator 只通过�
 多语言构建链有两个互补的权威边界：
 
 - `AtomUI.Generator` 是**编译项目中的 Catalog/Bundle 语义权威**。它负责解析 XLIFF、绑定当前及引用程序集的
-  Catalog/module、分类 active/dormant 输入、校验 ContractVersion、source fingerprint、unit、源文本、占位符、
+  Catalog/module、分类 active/dormant 输入、校验 source fingerprint、unit、源文本、占位符、
   翻译状态和来源冲突，并生成静态 Catalog、Bundle、模块注册和应用 bootstrap。
 - `AtomUI.Build.Tasks` 是**静态语言包产物与文件系统副作用权威**。它负责语言包 pack 前校验、包内容安全、
   Verified/Deferred manifest、声明式 `buildTransitive` props 和模板导出；普通应用或模块编译不再重复执行

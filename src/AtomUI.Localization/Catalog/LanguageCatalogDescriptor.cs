@@ -8,19 +8,10 @@ public abstract class LanguageCatalogDescriptor
 
     private protected LanguageCatalogDescriptor(
         string catalogId,
-        int contractVersion,
         Type resourceKindType,
         IReadOnlyList<LanguageCatalogUnitDescriptor> units)
     {
         LanguageCatalogIdentity.Validate(catalogId);
-        if (contractVersion <= 0)
-        {
-            throw new ArgumentOutOfRangeException(
-                nameof(contractVersion),
-                contractVersion,
-                "A Catalog contract version must be positive.");
-        }
-
         ArgumentNullException.ThrowIfNull(resourceKindType);
         ArgumentNullException.ThrowIfNull(units);
         if (units.Count == 0)
@@ -46,14 +37,11 @@ public abstract class LanguageCatalogDescriptor
         }
 
         CatalogId = catalogId;
-        ContractVersion = contractVersion;
         ResourceKindType = resourceKindType;
         _units = Array.AsReadOnly(unitArray);
     }
 
     public string CatalogId { get; }
-
-    public int ContractVersion { get; }
 
     public Type ResourceKindType { get; }
 
@@ -69,10 +57,9 @@ public sealed class LanguageCatalogDescriptor<TResourceKind> : LanguageCatalogDe
 
     public LanguageCatalogDescriptor(
         string catalogId,
-        int contractVersion,
         IReadOnlyList<LanguageCatalogUnitDescriptor> units,
         Func<TResourceKind, int> unitSlotResolver)
-        : base(catalogId, contractVersion, typeof(TResourceKind), units)
+        : base(catalogId, typeof(TResourceKind), units)
     {
         _unitSlotResolver = unitSlotResolver ?? throw new ArgumentNullException(nameof(unitSlotResolver));
     }

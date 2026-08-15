@@ -2,7 +2,7 @@ using AtomUI.Localization;
 
 namespace AtomUI.Core.Tests.Localization;
 
-[LanguageCatalog(ContractVersion = 2)]
+[LanguageCatalog]
 public enum GeneratedStartupLangResourceKind
 {
     Value,

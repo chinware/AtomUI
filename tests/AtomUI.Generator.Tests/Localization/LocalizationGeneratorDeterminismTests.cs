@@ -112,10 +112,7 @@ public class LocalizationGeneratorDeterminismTests
         namespace AtomUI.Localization
         {
             [System.AttributeUsage(System.AttributeTargets.Enum, AllowMultiple = false)]
-            public sealed class LanguageCatalogAttribute : System.Attribute
-            {
-                public int ContractVersion { get; set; } = 1;
-            }
+            public sealed class LanguageCatalogAttribute : System.Attribute;
         }
         """;
 

@@ -26,12 +26,6 @@ public class LocalizationBuildAssetsTests
                  element.Value == "$(AssemblyName)" &&
                  (string?)element.Attribute("Condition") == "'$(AtomUILanguageModuleId)' == ''")
              .ShouldBeTrue();
-        var contractVersion = propertyGroups.SelectMany(static group => group.Elements())
-                                            .Single(element =>
-                                                element.Name.LocalName == "AtomUILanguageContractVersion");
-        contractVersion.Value.ShouldBe("1");
-        ((string?)contractVersion.Attribute("Condition"))
-            .ShouldBe("'$(AtomUILanguageContractVersion)' == ''");
         propertyGroups.SelectMany(static group => group.Elements())
                       .ShouldNotContain(element =>
                           element.Name.LocalName == "AtomUILanguageMinimumState");
@@ -108,15 +102,6 @@ public class LocalizationBuildAssetsTests
         fileExcludes.ShouldContain("$(BaseOutputPath)");
         fileExcludes.ShouldContain("$(BaseIntermediateOutputPath)");
         fileExcludes.ShouldContain("GeneratedFiles");
-        var moduleContractVersion = discoveredModuleLanguage.Elements()
-                                                            .Single(element =>
-                                                                element.Name.LocalName ==
-                                                                "AtomUILanguageContractVersion");
-        moduleContractVersion.Value.ShouldBe("$(AtomUILanguageContractVersion)");
-        ((string?)moduleContractVersion.Attribute("Condition"))
-            .ShouldNotBeNull()
-            .ShouldContain("'%(AtomUILanguageContractVersion)' == ''");
-
         ((string?)discoveredPackLanguage.Attribute("Include"))
             .ShouldBe("$(MSBuildProjectDirectory)/Localization/**/*.xlf");
         discoveredPackLanguage.Elements()
@@ -131,10 +116,6 @@ public class LocalizationBuildAssetsTests
                               .Single(element =>
                                   element.Name.LocalName == "AtomUILanguageModuleId")
                               .Value.ShouldBe("$(AtomUILanguageModuleId)");
-        discoveredPackLanguage.Elements()
-                              .ShouldNotContain(element =>
-                                  element.Name.LocalName == "AtomUILanguageContractVersion");
-
         var additionalLanguageFiles = targets.Descendants()
                                              .Single(element =>
                                                  element.Name.LocalName == "_AtomUIAdditionalLanguageFile");
@@ -163,7 +144,6 @@ public class LocalizationBuildAssetsTests
             "AtomUILanguageSourceIdentity",
             "AtomUILanguageModuleId",
             "AtomUILanguageContractValidation",
-            "AtomUILanguageContractVersion",
             "AtomUILanguageSourceFingerprint"
         ],
             ignoreOrder: true);
@@ -794,23 +774,6 @@ public class LocalizationBuildAssetsTests
                           StringComparer.Ordinal);
     }
 
-    private static void AssertLanguageItemMetadata(
-        XElement item,
-        string sourceKind,
-        string sourceIdentity,
-        string moduleId,
-        string contractVersion)
-    {
-        item.Elements().Single(element => element.Name.LocalName == "AtomUILanguageSourceKind").Value
-            .ShouldBe(sourceKind);
-        item.Elements().Single(element => element.Name.LocalName == "AtomUILanguageSourceIdentity").Value
-            .ShouldBe(sourceIdentity);
-        item.Elements().Single(element => element.Name.LocalName == "AtomUILanguageModuleId").Value
-            .ShouldBe(moduleId);
-        item.Elements().Single(element => element.Name.LocalName == "AtomUILanguageContractVersion").Value
-            .ShouldBe(contractVersion);
-    }
-
     private static void AssertKeepsGeneratorMetadata(
         XElement item,
         bool includePackagePath = false)
@@ -821,7 +784,6 @@ public class LocalizationBuildAssetsTests
             "AtomUILanguageSourceIdentity",
             "AtomUILanguageModuleId",
             "AtomUILanguageContractValidation",
-            "AtomUILanguageContractVersion",
             "AtomUILanguageSourceFingerprint"
         };
         if (includePackagePath)
@@ -831,7 +793,7 @@ public class LocalizationBuildAssetsTests
 
         var keepMetadata = ((string?)item.Attribute("KeepMetadata")).ShouldNotBeNull();
         var values = keepMetadata
-            .Replace("$(_AtomUILanguageGeneratorMetadata)", string.Join(";", expectedMetadata[..6]))
+            .Replace("$(_AtomUILanguageGeneratorMetadata)", string.Join(";", expectedMetadata[..5]))
             .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         values.ShouldBe(expectedMetadata, ignoreOrder: true);
     }
@@ -853,8 +815,7 @@ public class LocalizationBuildAssetsTests
                     new XElement("TargetFramework", "net10.0"),
                     new XElement("Nullable", "enable"),
                     new XElement("PackageId", "Fixture.Module"),
-                    new XElement("AtomUILanguageModuleId", "Fixture.Module"),
-                    new XElement("AtomUILanguageContractVersion", "2")),
+                    new XElement("AtomUILanguageModuleId", "Fixture.Module")),
                 new XElement(
                     "Import",
                     new XAttribute("Project", Path.Combine(repoRoot, "build", "AtomUI.Generator.props"))),
@@ -995,10 +956,7 @@ public class LocalizationBuildAssetsTests
         namespace AtomUI.Localization
         {
             [System.AttributeUsage(System.AttributeTargets.Enum, AllowMultiple = false)]
-            public sealed class LanguageCatalogAttribute : System.Attribute
-            {
-                public int ContractVersion { get; set; } = 1;
-            }
+            public sealed class LanguageCatalogAttribute : System.Attribute;
 
             public interface IGeneratedApplicationLanguageBootstrap
             {
@@ -1018,7 +976,6 @@ public class LocalizationBuildAssetsTests
             {
                 public LanguageCatalogDescriptor(
                     string catalogId,
-                    int contractVersion,
                     System.Collections.Generic.IReadOnlyList<LanguageCatalogUnitDescriptor> units,
                     System.Func<TResourceKind, int> unitSlotResolver) { }
             }
@@ -1044,7 +1001,6 @@ public class LocalizationBuildAssetsTests
             {
                 public TranslationBundleDescriptor(
                     string catalogId,
-                    int contractVersion,
                     LanguageTag language,
                     TranslationSourceKind sourceKind,
                     string sourceIdentity,
@@ -1054,7 +1010,7 @@ public class LocalizationBuildAssetsTests
 
         namespace Fixture.Localization
         {
-            [AtomUI.Localization.LanguageCatalog(ContractVersion = 2)]
+            [AtomUI.Localization.LanguageCatalog]
             public enum Messages
             {
                 Cancel

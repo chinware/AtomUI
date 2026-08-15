@@ -7,20 +7,18 @@
         </_AtomUILanguageFileExcludes>
         <_AtomUILanguageFileExcludes Condition="'$(BaseOutputPath)' != ''">$(_AtomUILanguageFileExcludes);$(BaseOutputPath)**/*.xlf</_AtomUILanguageFileExcludes>
         <_AtomUILanguageFileExcludes Condition="'$(BaseIntermediateOutputPath)' != ''">$(_AtomUILanguageFileExcludes);$(BaseIntermediateOutputPath)**/*.xlf</_AtomUILanguageFileExcludes>
-        <_AtomUILanguageGeneratorMetadata>AtomUILanguageSourceKind;AtomUILanguageSourceIdentity;AtomUILanguageModuleId;AtomUILanguageContractValidation;AtomUILanguageContractVersion;AtomUILanguageSourceFingerprint</_AtomUILanguageGeneratorMetadata>
+        <_AtomUILanguageGeneratorMetadata>AtomUILanguageSourceKind;AtomUILanguageSourceIdentity;AtomUILanguageModuleId;AtomUILanguageContractValidation;AtomUILanguageSourceFingerprint</_AtomUILanguageGeneratorMetadata>
     </PropertyGroup>
 
     <ItemGroup Condition="'$(AtomUIDisableLocalizationBuildIntegration)' != 'true'">
         <AtomUILanguageOverride Include="$(MSBuildProjectDirectory)/Localization/Overrides/**/*.xlf"
                                 Exclude="$(_AtomUILanguageFileExcludes);@(AtomUILanguageOverride)">
             <AtomUILanguagePackagePath>%(RecursiveDir)%(Filename)%(Extension)</AtomUILanguagePackagePath>
-            <AtomUILanguageContractVersion Condition="'%(AtomUILanguageContractVersion)' == ''">$(AtomUILanguageContractVersion)</AtomUILanguageContractVersion>
         </AtomUILanguageOverride>
         <AtomUILanguage Include="$(MSBuildProjectDirectory)/**/Localization/**/*.xlf"
                         Exclude="$(_AtomUILanguageFileExcludes);@(AtomUILanguage);@(AtomUILanguageOverride)"
                         Condition="'$(AtomUIBuildLanguagePackage)' != 'true'">
             <AtomUILanguagePackagePath>%(RecursiveDir)%(Filename)%(Extension)</AtomUILanguagePackagePath>
-            <AtomUILanguageContractVersion Condition="'%(AtomUILanguageContractVersion)' == ''">$(AtomUILanguageContractVersion)</AtomUILanguageContractVersion>
         </AtomUILanguage>
         <AtomUILanguage Include="$(MSBuildProjectDirectory)/Localization/**/*.xlf"
                         Exclude="$(_AtomUILanguageFileExcludes);@(AtomUILanguage);@(AtomUILanguageOverride)"
@@ -43,7 +41,6 @@
         <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="AtomUILanguageSourceIdentity" />
         <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="AtomUILanguageModuleId" />
         <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="AtomUILanguageContractValidation" />
-        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="AtomUILanguageContractVersion" />
         <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="AtomUILanguageSourceFingerprint" />
         <CompilerVisibleProperty Include="PackageId" />
         <CompilerVisibleProperty Include="AssemblyName" />

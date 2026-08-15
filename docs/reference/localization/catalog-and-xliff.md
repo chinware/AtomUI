@@ -11,7 +11,7 @@ Language Catalog 是由稳定 enum 定义的本地化单元。它可以属于应
 ```csharp
 namespace MyApplication.Features.Login.Localization;
 
-[LanguageCatalog(ContractVersion = 1)]
+[LanguageCatalog]
 public enum LoginLangResourceKind
 {
     Title,
@@ -48,8 +48,9 @@ Catalog ID 由构建系统生成，不作为 Attribute 字符串参数交给开�
 Generator。完整类型名使用 CLR metadata name，而不是文件路径或 XAML namespace。库作者移动 Catalog 类型、
 更改包身份或拆分程序集时，必须把它作为公开翻译契约变更处理。
 
-`ContractVersion` 是 Catalog 结构兼容代数。删除或重命名 Key、复用 Key 表达新语义、改变 Key identity 模型或改变
-格式化参数契约时必须递增；只修改源文案措辞时由源文本指纹识别，不要求用结构版本掩盖内容变化。
+Catalog 内容契约由稳定 Key 和权威 `en-US` source 共同表达，并规范化为源文本指纹。已发布 Key 永不复用；删除或
+重命名 Key 必须保留旧 unit 的 obsolete 迁移记录并新增 Key。改变语义、源文案或格式化参数时必须修改 Key 或
+`en-US` source，使旧语言包通过 unit、source、placeholder 或 fingerprint 校验明确失败，不能依赖人工维护的并行版本号。
 
 ## 源语言
 
@@ -200,7 +201,7 @@ en-US source
 ## Catalog 模板
 
 可被外部翻译的类库 NuGet 必须发布完整 `en-US.xlf` 与自动生成的 `buildTransitive/<PackageId>.props`。XLIFF 包含
-稳定 Key、源文本和 translator notes；props 传递 module ID、ContractVersion、来源 identity、包内路径和
+稳定 Key、源文本和 translator notes；props 传递 module ID、来源 identity、契约校验级别、包内路径和
 源文本指纹。语言包作者可以通过作者期 `PrivateAssets=all` PackageReference 消费这些资产，获得模板导出和打包时
 完整契约校验；该引用不是社区语言包能够构建或发布的硬依赖。没有源契约时，语言包以 `Deferred` 级别打包，并在
 最终消费应用引用真实 Catalog 后完成相同强度的校验。语言包 Build Tasks 另外生成包含审计字段和校验级别的

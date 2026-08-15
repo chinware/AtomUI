@@ -19,7 +19,6 @@ public class TranslationBundleCompilerTests
             "Installed.Strings",
             "Installed",
             "global::Installed.Strings",
-            2,
             [
                 new LanguageCatalogUnitInfo("Body", Location.None),
                 new LanguageCatalogUnitInfo("Title", Location.None)
@@ -52,8 +51,7 @@ public class TranslationBundleCompilerTests
         return new LanguageInputResolution(
             input,
             LanguageInputActivationState.Active,
-            catalog,
-            catalog.ContractVersion);
+            catalog);
     }
 
     private static LanguageFileInput Input(
@@ -73,7 +71,6 @@ public class TranslationBundleCompilerTests
             sourceKind == LanguageFileSourceKind.StaticLanguagePack
                 ? LanguageFileContractValidation.Deferred
                 : LanguageFileContractValidation.Verified,
-            contractVersion: null,
             sourceKind == LanguageFileSourceKind.StaticLanguagePack
                 ? LanguageSourceFingerprint.Compute(document)
                 : null);

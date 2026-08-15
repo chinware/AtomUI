@@ -64,7 +64,6 @@ internal static class ReferencedLanguageCatalogResolver
             return false;
         }
 
-        var contractVersion = GetContractVersion(catalogAttribute);
         var units = ImmutableArray.CreateBuilder<LanguageCatalogUnitInfo>();
         foreach (var field in symbol.GetMembers().OfType<IFieldSymbol>()
                                     .Where(static field =>
@@ -89,7 +88,6 @@ internal static class ReferencedLanguageCatalogResolver
             file.Document.File.Id,
             namespaceName,
             symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-            contractVersion,
             units.OrderBy(static unit => unit.Key, StringComparer.Ordinal).ToImmutableArray(),
             Location.None);
         error = string.Empty;
@@ -127,18 +125,4 @@ internal static class ReferencedLanguageCatalogResolver
 
         return assembly.Name;
     }
-
-    private static int GetContractVersion(AttributeData attribute)
-    {
-        foreach (var argument in attribute.NamedArguments)
-        {
-            if (argument.Key == "ContractVersion" && argument.Value.Value is int value)
-            {
-                return value;
-            }
-        }
-
-        return 1;
-    }
-
 }

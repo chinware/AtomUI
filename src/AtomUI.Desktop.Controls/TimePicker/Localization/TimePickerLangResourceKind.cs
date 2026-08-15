@@ -2,7 +2,7 @@ using AtomUI.Localization;
 
 namespace AtomUI.Desktop.Controls.Localization;
 
-[LanguageCatalog(ContractVersion = 2)]
+[LanguageCatalog]
 public enum TimePickerLangResourceKind
 {
     AMText,

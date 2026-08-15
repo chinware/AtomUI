@@ -170,7 +170,6 @@ internal sealed record LanguageManagerTestRuntime(
     {
         var catalog = new LanguageCatalogDescriptor<RuntimeResourceKind>(
             "Acme:Acme.RuntimeResourceKind",
-            1,
             [new LanguageCatalogUnitDescriptor("Value")],
             static key => key == RuntimeResourceKind.Value ? 0 : -1);
         var builder = new LocalizationBuilder();
@@ -227,7 +226,6 @@ internal sealed record LanguageManagerTestRuntime(
     {
         return new TranslationBundleDescriptor(
             catalog.CatalogId,
-            catalog.ContractVersion,
             language,
             TranslationSourceKind.ModuleBuiltIn,
             "Acme",

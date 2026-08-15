@@ -42,21 +42,18 @@ public class CatalogSymbolIndexTests
             namespace AtomUI.Localization
             {
                 [System.AttributeUsage(System.AttributeTargets.Enum)]
-                public sealed class LanguageCatalogAttribute : System.Attribute
-                {
-                    public int ContractVersion { get; set; } = 1;
-                }
+                public sealed class LanguageCatalogAttribute : System.Attribute;
             }
             namespace Referenced
             {
-                [AtomUI.Localization.LanguageCatalog(ContractVersion = 2)]
+                [AtomUI.Localization.LanguageCatalog]
                 public enum Strings { Title }
             }
             """);
         var compilation = CreateCompilation(
             "namespace TestApp { public sealed class Marker { } }",
             [reference]);
-        var input = Input("Referenced.Module", "Referenced.Strings", contractVersion: 2);
+        var input = Input("Referenced.Module", "Referenced.Strings");
 
         var result = CatalogSymbolIndex.Create(
             ImmutableArray<LanguageCatalogInfo>.Empty,
@@ -67,7 +64,6 @@ public class CatalogSymbolIndexTests
         result.Index.ShouldNotBeNull().TryGet(new CatalogKey("Referenced.Module", "Referenced.Strings"), out var entry)
               .ShouldBeTrue();
         entry.OwnsCatalog.ShouldBeFalse();
-        entry.Catalog.ContractVersion.ShouldBe(2);
         entry.Catalog.Units.ShouldHaveSingleItem().Key.ShouldBe("Title");
     }
 
@@ -78,15 +74,13 @@ public class CatalogSymbolIndexTests
             metadataName,
             "TestApp.Localization",
             $"global::{metadataName}",
-            1,
             [new LanguageCatalogUnitInfo("Title", Location.None)],
             Location.None);
     }
 
     private static LanguageFileInput Input(
         string moduleId,
-        string fileId,
-        int contractVersion)
+        string fileId)
     {
         const string target = """
             <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.1" srcLang="en-US" trgLang="ja-JP">
@@ -105,7 +99,6 @@ public class CatalogSymbolIndexTests
             LanguageFileSourceKind.StaticLanguagePack,
             $"{moduleId}.I18n.JaJP",
             LanguageFileContractValidation.Verified,
-            contractVersion,
             null);
     }
 }
