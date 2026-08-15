@@ -102,6 +102,16 @@
         </ItemGroup>
     </Target>
 
+    <Target Name="AtomUIInferLanguagePackageContractPolicy"
+            BeforeTargets="AtomUIResolveLanguageContractProjectReferences;AtomUIGetLanguagePackProjectAssets;AtomUIPrepareLanguagePackage"
+            Condition="'$(AtomUIBuildLanguagePackage)' == 'true'">
+        <PropertyGroup>
+            <!-- A normal project reference is the authoring declaration for a verifiable module contract. -->
+            <_AtomUIRequireAuthoritativeLanguageContract Condition="'@(ProjectReference->WithMetadataValue('OutputItemType', ''))' != ''">true</_AtomUIRequireAuthoritativeLanguageContract>
+            <_AtomUIRequireAuthoritativeLanguageContract Condition="'$(_AtomUIRequireAuthoritativeLanguageContract)' == ''">false</_AtomUIRequireAuthoritativeLanguageContract>
+        </PropertyGroup>
+    </Target>
+
     <Target Name="AtomUIGetLanguagePackProjectAssets"
             DependsOnTargets="AtomUIResolveLanguageContractProjectReferences"
             Returns="@(_AtomUILanguagePackProjectAsset)"
@@ -120,7 +130,7 @@
                                                              ExpectedLanguage="$(AtomUILanguageTag)"
                                                              MinimumTargetState="final"
                                                              SourceLanguageFiles="@(_AtomUILanguagePackProjectSourceFile)"
-                                                             RequireVerifiedContract="$(AtomUIRequireVerifiedLanguageContract)"
+                                                             RequireVerifiedContract="$(_AtomUIRequireAuthoritativeLanguageContract)"
                                                              LanguageFiles="@(_AtomUILanguagePackProjectTargetFile)">
             <Output TaskParameter="PreparedLanguageFiles"
                     ItemName="_AtomUIPreparedLanguagePackProjectTargetFile" />
@@ -188,7 +198,7 @@
                                                        ExpectedLanguage="$(AtomUILanguageTag)"
                                                        MinimumTargetState="final"
                                                        SourceLanguageFiles="@(_AtomUILanguagePackageSourceFile)"
-                                                       RequireVerifiedContract="$(AtomUIRequireVerifiedLanguageContract)"
+                                                       RequireVerifiedContract="$(_AtomUIRequireAuthoritativeLanguageContract)"
                                                        LanguageFiles="@(_AtomUILanguagePackageFile)"
                                                        PackageFiles="@(_AtomUILanguagePackageValidationFile)"
                                                        OutputManifestPath="$(AtomUILanguagePackageManifestPath)">

@@ -116,8 +116,8 @@ fingerprint 不要求第三方作者手写；有权威源契约时由构建系�
 
 ### 契约校验级别
 
-每个语言包 Catalog 资产具有以下校验级别，并通过 `AtomUILanguageContractValidation` 写入审计 manifest 和
-`buildTransitive` item metadata：
+每个语言包 Catalog 资产具有以下校验级别，并通过 `AtomUILanguageContractValidation` 写入
+`buildTransitive` item metadata。审计 manifest 只保留包身份、Catalog 身份、包内路径和 source fingerprint：
 
 | Level | 打包时输入 | 打包时保证 | 消费时行为 |
 |---|---|---|---|
@@ -134,8 +134,8 @@ fingerprint 不要求第三方作者手写；有权威源契约时由构建系�
 发现该模块的权威源资产时，才允许整个模块包进入 `Deferred`。
 
 默认允许 `Deferred`，并由 MSBuild 输出一次 `ATOMUILOC010` warning，明确说明当前没有执行完整契约校验，并建议
-添加作者期 `PrivateAssets="all"` 组件包引用。warning 不阻止社区作者独立发布。AtomUI 官方语言包设置
-`AtomUIRequireVerifiedLanguageContract=true`；此时任何 `Deferred` 资产都使打包失败。
+添加作者期 `PrivateAssets="all"` 组件包引用。warning 不阻止社区作者独立发布。语言包项目只要存在普通
+`ProjectReference`，构建系统就自动要求 `Verified`，不需要语言包作者额外声明严格校验属性。
 
 生成的 props 形态为：
 
@@ -150,9 +150,7 @@ fingerprint 不要求第三方作者手写；有权威源契约时由构建系�
     AtomUILanguageSourceFingerprint="..." />
 ```
 
-`Verified` item 在此基础上增加 `AtomUILanguageContractVersion`。manifest 的对应 `catalog` 节点使用
-`contractValidation="Verified|Deferred"`；`Deferred` 节点省略 `contractVersion`，不能写入 `0`、默认值 `1` 或作者
-猜测的版本。
+`Verified` item 在此基础上增加 `AtomUILanguageContractVersion`；这些编译期 metadata 不重复写入审计 manifest。
 
 ## 未引用模块与 dormant 输入
 
@@ -244,8 +242,7 @@ Catalog 所有权。
 `AtomUI.LanguagePack.xml` 是由打包任务根据 XLIFF 确定性生成的审计和工具产物，至少记录：
 
 - package identity 和规范目标 `LanguageTag`。
-- 每个目标 Catalog 的 module ID、Catalog metadata ID、契约校验级别和包内路径。
-- `Verified` Catalog 的 ContractVersion；`Deferred` Catalog 省略该字段。
+- 每个目标 Catalog 的 module ID、Catalog metadata ID 和包内路径。
 - 每个目标 Catalog 的规范源文本指纹。
 
 `buildTransitive/<PackageId>.props` 是语言包的声明式编译入口。它把每个 XLIFF 作为带 source kind、source identity、

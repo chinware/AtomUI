@@ -207,7 +207,7 @@ public class LocalizationBuildAssetsTests
         ((string?)prepareTask.Attribute("SourceLanguageFiles"))
             .ShouldBe("@(_AtomUILanguagePackageSourceFile)");
         ((string?)prepareTask.Attribute("RequireVerifiedContract"))
-            .ShouldBe("$(AtomUIRequireVerifiedLanguageContract)");
+            .ShouldBe("$(_AtomUIRequireAuthoritativeLanguageContract)");
         var exportTarget = targets.Descendants("Target")
                                   .Single(element =>
                                       (string?)element.Attribute("Name") ==
@@ -280,6 +280,24 @@ public class LocalizationBuildAssetsTests
     }
 
     [Fact]
+    public void Localization_Targets_Infer_Strict_Contract_Validation_From_Normal_Project_References()
+    {
+        var targets = XDocument.Load(GetRepoFile("build/AtomUI.Localization.targets"));
+
+        var policyTarget = targets.Descendants("Target")
+                                  .Single(element =>
+                                      (string?)element.Attribute("Name") ==
+                                      "AtomUIInferLanguagePackageContractPolicy");
+        ((string?)policyTarget.Attribute("BeforeTargets"))
+            .ShouldNotBeNull()
+            .ShouldContain("AtomUIPrepareLanguagePackage");
+        var policy = policyTarget.Elements("PropertyGroup").ShouldHaveSingleItem();
+        policy.Elements("_AtomUIRequireAuthoritativeLanguageContract")
+              .Select(element => (string?)element.Attribute("Condition"))
+              .ShouldContain("'@(ProjectReference->WithMetadataValue('OutputItemType', ''))' != ''");
+    }
+
+    [Fact]
     public void Localization_Targets_Define_The_Language_Pack_Project_Reference_Protocol()
     {
         var targets = XDocument.Load(GetRepoFile("build/AtomUI.Localization.targets"));
@@ -304,7 +322,7 @@ public class LocalizationBuildAssetsTests
         ((string?)prepare.Attribute("SourceLanguageFiles"))
             .ShouldBe("@(_AtomUILanguagePackProjectSourceFile)");
         ((string?)prepare.Attribute("RequireVerifiedContract"))
-            .ShouldBe("$(AtomUIRequireVerifiedLanguageContract)");
+            .ShouldBe("$(_AtomUIRequireAuthoritativeLanguageContract)");
         ((string?)prepare.Attribute("LanguageFiles"))
             .ShouldBe("@(_AtomUILanguagePackProjectTargetFile)");
         prepare.Attribute("PackageFiles").ShouldBeNull();
@@ -742,7 +760,6 @@ public class LocalizationBuildAssetsTests
         properties["AtomUIBuildLanguagePackage"].ShouldBe("true");
         properties["AtomUILanguageTag"].ShouldBe("pt-BR");
         properties["AtomUILanguageModuleId"].ShouldBe(contract.ModuleId);
-        properties["AtomUIRequireVerifiedLanguageContract"].ShouldBe("true");
         properties.ShouldNotContainKey("AtomUILanguageContractVersion");
         properties.ShouldNotContainKey("AtomUILanguageMinimumState");
 
@@ -863,7 +880,6 @@ public class LocalizationBuildAssetsTests
                     new XElement("AtomUIBuildLanguagePackage", "true"),
                     new XElement("AtomUILanguageTag", "pt-BR"),
                     new XElement("AtomUILanguageModuleId", "Fixture.Module"),
-                    new XElement("AtomUIRequireVerifiedLanguageContract", "true"),
                     new XElement("AtomUILocalizationBuildTasksAssembly", buildTasksAssembly)),
                 new XElement(
                     "Import",

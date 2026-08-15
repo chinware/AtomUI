@@ -52,8 +52,8 @@ targets 将这些 item 作为带元数据的 `AdditionalFiles` 传给 Generator�
 - 如果已经存在部分权威源 assets，则所有目标 Catalog 必须完整匹配；缺失或未知 Catalog 是 Error，不能逐文件退回
   `Deferred`。
 
-`AtomUIRequireVerifiedLanguageContract=true` 要求所有静态语言包资产为 `Verified`。AtomUI 官方模块语言包必须设置
-该属性；第三方社区包默认允许 `Deferred`。
+语言包项目的契约严格程度由构建系统自动推断：存在普通（非 Analyzer）`ProjectReference` 时，表示作者声明了
+一个作者期模块契约，缺少权威 `en-US` 资产会使 pack 失败；没有该引用的社区包默认允许 `Deferred`。
 
 第三方语言包的 `buildTransitive/*.props` 只能追加声明式 item，不能运行初始化代码、修改应用源码或注册运行时
 程序集。MSBuild item 层只排除相同文件的重复 Include；不同路径或不同包提供相同 Catalog/语言时，由 Generator
@@ -73,7 +73,7 @@ targets 将这些 item 作为带元数据的 `AdditionalFiles` 传给 Generator�
 `AtomUIResolveLanguagePackProjectReferences` target 在 `GenerateMSBuildEditorConfigFileShouldRun` 和 `CoreCompile` 之前调用
 这些项目 target，并把 Generator 所需的 `StaticLanguagePack` source kind、source identity、module ID、
 `AtomUILanguageContractValidation` 和 source fingerprint 投影到 `AdditionalFiles`；`Verified` 返回项另外投影
-ContractVersion。规范化 package path 只属于语言包 pack、manifest 和审计模型，不是 Generator 输入或 Catalog identity。
+ContractVersion。规范化 package path 只属于语言包 pack 和审计模型，不是 Generator 输入或 Catalog identity。
 该协议只提供编译期输入，不复制 XLIFF、不产生运行时 DLL，也不改变聚合包的 NuGet 依赖图。
 
 `AtomUILanguagePackProjectReference` 不跨普通 `ProjectReference` 传递。源码仓库中的最终应用宿主必须直接声明语言包
@@ -279,8 +279,8 @@ MSBuild error/warning。该目录不增加公开运行时包，也不让 MSBuild
 项目引用消费路径由 `PrepareLanguagePackageAssetsTask` 固定要求 `final`，pack 路径由
 `PrepareLanguagePackageTask` 固定要求 `final`，都不暴露可降低要求的 MSBuild 属性。状态顺序为
 `initial < translated < reviewed < final`，任何 `needs-review` subState 均不能满足语言包发布门禁。
-两个 Prepare task 在完全缺少作者期源契约时报告一次 `ATOMUILOC010` 并生成 `Deferred` 资产；如果
-`AtomUIRequireVerifiedLanguageContract=true`，相同情况升级为 Error。
+两个 Prepare task 在完全缺少作者期源契约时报告一次 `ATOMUILOC010` 并生成 `Deferred` 资产；语言包项目存在普通
+`ProjectReference` 时相同情况自动升级为 Error。
 
 ## Generator NuGet 布局
 

@@ -62,7 +62,7 @@
 - 同一个 Catalog 和语言在同一优先级由多个包或文件提供。
 - 包含运行时 DLL、`.atomlang`、初始化代码或非声明式加载 target。
 - 静态语言包存在低于固定 `final` 发布门禁的有效 unit，或任何需要重新审核的 target。
-- 设置 `AtomUIRequireVerifiedLanguageContract=true` 的语言包包含任何 `Deferred` Catalog。
+- 语言包项目存在普通（非 Analyzer）`ProjectReference` 却包含 `Deferred` Catalog。
 
 `AtomUI.LanguagePack.xml` 由打包任务根据同一组 XLIFF 确定性生成，用于审计和工具读取。它不作为 Generator 的
 `AdditionalFile`，也不存在独立于 XLIFF/props 的“manifest 未声明 Catalog”编译契约。
@@ -157,7 +157,8 @@ Generator 测试按生产职责拆分，避免继续扩张单个 `LanguageCatalo
     Catalog 标记为 `Verified` 并携带权威 ContractVersion。
 15. `Deferred` 包在未安装目标模块时保持 dormant；安装正确模块后通过完整校验并生成 Bundle，安装不兼容模块或
     使用错误 `file id`/Key/source 时应用构建失败。
-16. 官方语言包设置 `AtomUIRequireVerifiedLanguageContract=true` 后，缺少组件契约必须使 pack 失败。
+16. 语言包项目声明普通（非 Analyzer）组件 `ProjectReference` 后，缺少组件契约必须使 pack 失败；无需额外声明
+    严格校验属性。
 
 ## Avalonia 集成测试
 

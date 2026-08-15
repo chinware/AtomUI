@@ -64,9 +64,6 @@ public sealed partial class LanguagePackEndToEndTests
             project.Descendants("AtomUILanguage").ShouldBeEmpty();
             project.Descendants("AtomUILanguageContractVersion").ShouldBeEmpty();
             project.Descendants("AtomUILanguageMinimumState").ShouldBeEmpty();
-            project.Descendants("AtomUIRequireVerifiedLanguageContract")
-                   .ShouldHaveSingleItem()
-                   .Value.ShouldBe("true");
 
             var expectedReference = Path.GetFullPath(
                 Path.Combine(repositoryRoot, package.SourceProjectPath));
@@ -330,8 +327,8 @@ public sealed partial class LanguagePackEndToEndTests
             {
                 var catalog = manifestCatalogs[languagePath];
                 ((string?)catalog.Attribute("moduleId")).ShouldBe(package.ModuleId);
-                ((string?)catalog.Attribute("contractValidation")).ShouldBe("Verified");
-                ((string?)catalog.Attribute("contractVersion")).ShouldBe("2");
+                catalog.Attribute("contractValidation").ShouldBeNull();
+                catalog.Attribute("contractVersion").ShouldBeNull();
                 ((string?)catalog.Attribute("sourceFingerprint"))
                     .ShouldBe(propsFingerprints[languagePath]);
 

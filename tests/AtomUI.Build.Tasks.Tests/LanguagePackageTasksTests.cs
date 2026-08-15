@@ -47,7 +47,7 @@ public class LanguagePackageTasksTests : IDisposable
         ((string?)catalog.Attribute("moduleId")).ShouldBe("AtomUI.Desktop.Controls");
         ((string?)catalog.Attribute("catalogId"))
             .ShouldBe("AtomUI.Desktop.Controls.DatePickerLang.DatePickerLangResourceKind");
-        ((string?)catalog.Attribute("contractValidation")).ShouldBe("Deferred");
+        catalog.Attribute("contractValidation").ShouldBeNull();
         catalog.Attribute("contractVersion").ShouldBeNull();
         ((string?)catalog.Attribute("path")).ShouldBe("Localization/DatePicker/ja-JP.xlf");
         ((string?)catalog.Attribute("sourceFingerprint"))
@@ -140,8 +140,8 @@ public class LanguagePackageTasksTests : IDisposable
         prepared.GetMetadata("AtomUILanguageContractVersion").ShouldBe("2");
 
         var catalog = XDocument.Load(manifestPath).Descendants("catalog").ShouldHaveSingleItem();
-        ((string?)catalog.Attribute("contractValidation")).ShouldBe("Verified");
-        ((string?)catalog.Attribute("contractVersion")).ShouldBe("2");
+        catalog.Attribute("contractValidation").ShouldBeNull();
+        catalog.Attribute("contractVersion").ShouldBeNull();
     }
 
     [Fact]

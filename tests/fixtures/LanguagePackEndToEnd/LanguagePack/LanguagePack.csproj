@@ -9,7 +9,6 @@
         <AtomUIBuildLanguagePackage>true</AtomUIBuildLanguagePackage>
         <AtomUILanguageTag>ja-JP</AtomUILanguageTag>
         <AtomUILanguageModuleId>Acme.LocalizationComponent</AtomUILanguageModuleId>
-        <AtomUIRequireVerifiedLanguageContract>true</AtomUIRequireVerifiedLanguageContract>
     </PropertyGroup>
 
     <ItemGroup>

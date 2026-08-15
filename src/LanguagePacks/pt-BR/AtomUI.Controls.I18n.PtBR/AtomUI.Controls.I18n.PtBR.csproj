@@ -9,7 +9,6 @@
         <AtomUIBuildLanguagePackage>true</AtomUIBuildLanguagePackage>
         <AtomUILanguageTag>pt-BR</AtomUILanguageTag>
         <AtomUILanguageModuleId>AtomUI.Controls</AtomUILanguageModuleId>
-        <AtomUIRequireVerifiedLanguageContract>true</AtomUIRequireVerifiedLanguageContract>
     </PropertyGroup>
 
     <ItemGroup>

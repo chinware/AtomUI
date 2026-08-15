@@ -19,9 +19,6 @@ public sealed partial class LanguagePackEndToEndTests
             Path.Combine(fixtureRoot, "LanguagePack", "LanguagePack.csproj"));
         verifiedProject.Descendants("AtomUILanguage").ShouldBeEmpty();
         verifiedProject.Descendants("AtomUILanguageMinimumState").ShouldBeEmpty();
-        verifiedProject.Descendants("AtomUIRequireVerifiedLanguageContract")
-                       .ShouldHaveSingleItem()
-                       .Value.ShouldBe("true");
         verifiedProject.Descendants("ProjectReference")
                        .Any(reference =>
                            ((string?)reference.Attribute("Include"))?.EndsWith(
@@ -33,7 +30,6 @@ public sealed partial class LanguagePackEndToEndTests
             Path.Combine(fixtureRoot, "OptionalLanguagePack", "OptionalLanguagePack.csproj"));
         deferredProject.Descendants("AtomUILanguage").ShouldBeEmpty();
         deferredProject.Descendants("AtomUILanguageMinimumState").ShouldBeEmpty();
-        deferredProject.Descendants("AtomUIRequireVerifiedLanguageContract").ShouldBeEmpty();
         deferredProject.Descendants("ProjectReference")
                        .Any(reference =>
                            ((string?)reference.Attribute("Include"))?.EndsWith(
@@ -413,8 +409,8 @@ public sealed partial class LanguagePackEndToEndTests
             languagePackage,
             "contentFiles/any/any/AtomUI.LanguagePack.xml"));
         var manifestCatalog = manifest.Descendants("catalog").ShouldHaveSingleItem();
-        ((string?)manifestCatalog.Attribute("contractValidation")).ShouldBe("Verified");
-        ((string?)manifestCatalog.Attribute("contractVersion")).ShouldBe("2");
+        manifestCatalog.Attribute("contractValidation").ShouldBeNull();
+        manifestCatalog.Attribute("contractVersion").ShouldBeNull();
         ((string?)manifestCatalog.Attribute("sourceFingerprint")).ShouldBe(languageFingerprint);
 
         var optionalModuleEntries = PackageEntries(optionalModulePackage);
@@ -455,7 +451,7 @@ public sealed partial class LanguagePackEndToEndTests
             optionalLanguagePackage,
             "contentFiles/any/any/AtomUI.LanguagePack.xml"));
         var catalog = manifest.Descendants("catalog").ShouldHaveSingleItem();
-        ((string?)catalog.Attribute("contractValidation")).ShouldBe("Deferred");
+        catalog.Attribute("contractValidation").ShouldBeNull();
         catalog.Attribute("contractVersion").ShouldBeNull();
         ((string?)catalog.Attribute("sourceFingerprint")).ShouldBe(fingerprint);
     }
