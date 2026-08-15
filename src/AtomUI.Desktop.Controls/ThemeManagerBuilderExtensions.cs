@@ -14,6 +14,7 @@ public static class ThemeManagerBuilderExtensions
 {
     internal const string PackageId = "AtomUI.Desktop.Controls";
 
+    [ControlPackageRegistrationEntry]
     public static IAtomUIBuilder UseDesktopControls(this IAtomUIBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
@@ -30,6 +31,7 @@ public static class ThemeManagerBuilderExtensions
         return builder;
     }
 
+    [ControlPackageRegistrationEntry]
     public static IAtomUIBuilder UseAllDesktopControls(this IAtomUIBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);

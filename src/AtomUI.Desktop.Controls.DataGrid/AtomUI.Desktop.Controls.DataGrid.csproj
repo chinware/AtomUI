@@ -7,7 +7,6 @@
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
         <AtomUIGenerateControlThemeAssetResources>true</AtomUIGenerateControlThemeAssetResources>
         <AtomUIRegistrationPackageId>$(AssemblyName)</AtomUIRegistrationPackageId>
-        <AtomUIRegistrationEntries>AtomUI.Desktop.Controls.DataGridThemeManagerBuilderExtensions.UseDesktopDataGrid</AtomUIRegistrationEntries>
         <RootNamespace>AtomUI.Desktop.Controls</RootNamespace>
     </PropertyGroup>
 

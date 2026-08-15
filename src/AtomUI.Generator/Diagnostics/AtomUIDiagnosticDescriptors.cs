@@ -77,6 +77,15 @@ internal static class AtomUIDiagnosticDescriptors
         isEnabledByDefault: true,
         customTags: [WellKnownDiagnosticTags.Telemetry]);
 
+    public static readonly DiagnosticDescriptor LinkedPackageEntryInvalid = new(
+        AtomUIDiagnosticIds.LinkedPackageEntryInvalid,
+        "AtomUI control package registration entry is invalid",
+        "Control package registration entry '{0}' is invalid: {1}",
+        AtomUIDiagnosticCategories.LinkedRegistration,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
     public static readonly DiagnosticDescriptor AotMissingGeneratedAccessor = new(
         AtomUIDiagnosticIds.AotMissingGeneratedAccessor,
         "AOT-sensitive data member path requires generated accessor",

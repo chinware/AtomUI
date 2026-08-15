@@ -49,6 +49,10 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
             var packageId = LinkedRegistration.LinkedRegistrationOptions.GetPackageId(
                 value.Right,
                 assemblyName);
+            var emitLinkedRegistration = LinkedRegistration
+                .ControlPackageRegistrationEntryDiscovery
+                .Discover(compilation)
+                .HasEntries;
             value.Right.GlobalOptions.TryGetValue(
                 "build_property.AtomUIThemeAssetProjectDirectory",
                 out var projectDirectory);
@@ -176,7 +180,8 @@ public sealed class ThemeAssetManifestGenerator : IIncrementalGenerator
                 unitOwned,
                 packageShared,
                 unknown,
-                globalTokenNames).Write();
+                globalTokenNames,
+                emitLinkedRegistration).Write();
         });
     }
 

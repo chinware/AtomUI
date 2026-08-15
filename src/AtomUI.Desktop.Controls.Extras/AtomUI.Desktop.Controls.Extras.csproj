@@ -7,7 +7,6 @@
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
         <AtomUIGenerateControlThemeAssetResources>true</AtomUIGenerateControlThemeAssetResources>
         <AtomUIRegistrationPackageId>$(AssemblyName)</AtomUIRegistrationPackageId>
-        <AtomUIRegistrationEntries>AtomUI.Desktop.Controls.ExtrasThemeManagerBuilderExtensions.UseDesktopExtras</AtomUIRegistrationEntries>
         <RootNamespace>AtomUI.Desktop.Controls</RootNamespace>
     </PropertyGroup>
 

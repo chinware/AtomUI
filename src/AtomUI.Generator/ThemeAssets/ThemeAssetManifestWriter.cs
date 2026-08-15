@@ -14,6 +14,7 @@ internal sealed class ThemeAssetManifestWriter
     private readonly IReadOnlyList<ThemeAssetInfo> _packageSharedAssets;
     private readonly IReadOnlyList<ThemeAssetInfo> _unknownAssets;
     private readonly IReadOnlyList<string> _globalTokenNames;
+    private readonly bool _emitLinkedRegistration;
 
     internal ThemeAssetManifestWriter(
         SourceProductionContext context,
@@ -23,7 +24,8 @@ internal sealed class ThemeAssetManifestWriter
         IReadOnlyList<UnitOwnedThemeAssetInfo> unitOwnedAssets,
         IReadOnlyList<ThemeAssetInfo> packageSharedAssets,
         IReadOnlyList<ThemeAssetInfo> unknownAssets,
-        IReadOnlyList<string> globalTokenNames)
+        IReadOnlyList<string> globalTokenNames,
+        bool emitLinkedRegistration)
     {
         _context = context;
         _assemblyName = assemblyName;
@@ -33,6 +35,7 @@ internal sealed class ThemeAssetManifestWriter
         _packageSharedAssets = packageSharedAssets;
         _unknownAssets = unknownAssets;
         _globalTokenNames = globalTokenNames;
+        _emitLinkedRegistration = emitLinkedRegistration;
     }
 
     internal void Write()
@@ -66,7 +69,10 @@ internal sealed class ThemeAssetManifestWriter
         _context.AddSource(
             "GeneratedControlThemeAssetManifest.g.cs",
             GeneratedSourceText.From(builder.ToString()));
-        WriteFragments();
+        if (_emitLinkedRegistration)
+        {
+            WriteFragments();
+        }
     }
 
     private void WriteFragments()

@@ -312,7 +312,7 @@ public sealed class LinkedRegistrationBuildAssetsTests
         visibleProperties.ShouldContain("AtomUIRegistrationStrict");
         visibleProperties.ShouldContain("AtomUIRegistrationPlanOwner");
         visibleProperties.ShouldContain("AtomUIRegistrationPackageId");
-        visibleProperties.ShouldContain("AtomUIRegistrationEntries");
+        visibleProperties.ShouldNotContain("AtomUIRegistration" + "Entries");
         visibleProperties.ShouldNotContain("AtomUIRegistrationCoreFeature");
     }
 

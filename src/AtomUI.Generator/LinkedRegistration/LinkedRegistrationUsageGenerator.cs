@@ -278,6 +278,10 @@ public sealed class LinkedRegistrationUsageGenerator : IIncrementalGenerator
             var metadataName = LinkedAxamlUsageInput.GetAttribute(element, "TypeName");
             var namespaceUri = LinkedAxamlUsageInput.GetAttribute(element, "NamespaceUri");
             var localName = LinkedAxamlUsageInput.GetAttribute(element, "LocalName");
+            if (LinkedAxamlUsageInput.IsXamlLanguageNamespace(namespaceUri))
+            {
+                return;
+            }
             if (metadataName.Length == 0)
             {
                 metadataName = LinkedAxamlUsageInput.ResolveMetadataName(
@@ -468,7 +472,7 @@ public sealed class LinkedRegistrationUsageGenerator : IIncrementalGenerator
         private void CollectInvocation(IInvocationOperation invocation)
         {
             var target = invocation.TargetMethod.OriginalDefinition;
-            var methodName = GetMethodMetadataName(target);
+            var methodName = LinkedRegistrationSymbolName.GetMethodMetadataName(target);
             if (_catalog.PackageIdsByEntry.TryGetValue(methodName, out var entryPackageIds))
             {
                 var location = GetLocationInfo(invocation.Syntax.GetLocation());
@@ -622,6 +626,10 @@ public sealed class LinkedRegistrationUsageGenerator : IIncrementalGenerator
             var metadataName = LinkedAxamlUsageInput.GetAttribute(element, "TypeName");
             var namespaceUri = LinkedAxamlUsageInput.GetAttribute(element, "NamespaceUri");
             var localName = LinkedAxamlUsageInput.GetAttribute(element, "LocalName");
+            if (LinkedAxamlUsageInput.IsXamlLanguageNamespace(namespaceUri))
+            {
+                return;
+            }
             if (metadataName.Length == 0)
             {
                 metadataName = LinkedAxamlUsageInput.ResolveMetadataName(
@@ -949,22 +957,9 @@ public sealed class LinkedRegistrationUsageGenerator : IIncrementalGenerator
         return false;
     }
 
-    private static string GetMethodMetadataName(IMethodSymbol method)
-    {
-        return GetTypeMetadataName(method.ContainingType.OriginalDefinition) + "." + method.Name;
-    }
-
     private static string GetTypeMetadataName(INamedTypeSymbol type)
     {
-        var names = new Stack<string>();
-        for (var current = type; current is not null; current = current.ContainingType)
-        {
-            names.Push(current.MetadataName);
-        }
-        var typeName = string.Join("+", names);
-        return type.ContainingNamespace is { IsGlobalNamespace: false } namespaceSymbol
-            ? namespaceSymbol.ToDisplayString() + "." + typeName
-            : typeName;
+        return LinkedRegistrationSymbolName.GetTypeMetadataName(type);
     }
 
     private static string NormalizeSourcePath(string path, string projectDirectory)

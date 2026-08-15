@@ -5,7 +5,6 @@ namespace AtomUI.Generator.LinkedRegistration;
 internal static class LinkedRegistrationOptions
 {
     private const string PackageIdProperty = "build_property.AtomUIRegistrationPackageId";
-    private const string RegistrationEntriesProperty = "build_property.AtomUIRegistrationEntries";
     private const string LinkedPublishProperty = "build_property.AtomUILinkedPublish";
     private const string RegistrationStrictProperty = "build_property.AtomUIRegistrationStrict";
     private const string RegistrationPlanOwnerProperty =
@@ -32,24 +31,6 @@ internal static class LinkedRegistrationOptions
         return TryGetNonEmptyValue(optionsProvider, PackageIdProperty, out var packageId)
             ? packageId
             : string.Empty;
-    }
-
-    internal static string GetRegistrationEntries(
-        AnalyzerConfigOptionsProvider optionsProvider)
-    {
-        if (!optionsProvider.GlobalOptions.TryGetValue(RegistrationEntriesProperty, out var value) ||
-            string.IsNullOrWhiteSpace(value))
-        {
-            return string.Empty;
-        }
-
-        return string.Join(
-            ";",
-            value.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
-                 .Select(static entry => entry.Trim())
-                 .Where(static entry => entry.Length != 0)
-                 .Distinct(StringComparer.Ordinal)
-                 .OrderBy(static entry => entry, StringComparer.Ordinal));
     }
 
     internal static ISet<string> GetPackageSharedThemePaths(

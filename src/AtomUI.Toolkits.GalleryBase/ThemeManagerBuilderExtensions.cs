@@ -9,6 +9,7 @@ public static class ThemeManagerBuilderExtensions
 {
     internal const string PackageId = "AtomUI.Toolkits.GalleryBase";
 
+    [ControlPackageRegistrationEntry]
     public static IAtomUIBuilder UseGalleryBase(this IAtomUIBuilder builder,
                                                 Action<GalleryBaseOptions>? configure = null)
     {

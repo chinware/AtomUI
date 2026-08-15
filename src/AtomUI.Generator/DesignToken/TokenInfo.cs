@@ -81,7 +81,7 @@ internal sealed class ThemeCompilationInfo
         string controlCatalog,
         IReadOnlyList<string> globalTokenNames,
         AnalyzerConfigOptionsProvider optionsProvider,
-        string registrationEntries)
+        LinkedRegistration.ControlPackageRegistrationEntrySet entryMethods)
     {
         Compilation = compilation;
         AssemblyName = assemblyName;
@@ -90,7 +90,7 @@ internal sealed class ThemeCompilationInfo
         ControlCatalog = controlCatalog;
         GlobalTokenNames = globalTokenNames;
         OptionsProvider = optionsProvider;
-        RegistrationEntries = registrationEntries;
+        EntryMethods = entryMethods;
     }
 
     internal Compilation Compilation { get; }
@@ -100,7 +100,7 @@ internal sealed class ThemeCompilationInfo
     internal string ControlCatalog { get; }
     internal IReadOnlyList<string> GlobalTokenNames { get; }
     internal AnalyzerConfigOptionsProvider OptionsProvider { get; }
-    internal string RegistrationEntries { get; }
+    internal LinkedRegistration.ControlPackageRegistrationEntrySet EntryMethods { get; }
 }
 
 internal enum SchemaTokenStage

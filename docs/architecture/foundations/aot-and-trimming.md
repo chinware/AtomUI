@@ -1,7 +1,7 @@
 # AOT 与裁剪架构
 
-> 状态：已实现。non-trimmed、trimmed JIT 和 NativeAOT 已完成行为与运行验证；WebAssembly AOT 已完成
-> 生成、编译、Emscripten 链接和优化验证。本文定义 AtomUI 在 linked publish 下的注册、生成、兼容和验证契约。
+> 状态：已实现并验证。Registration Unit、应用计划、linked publish 和源码注册入口声明均已完成
+> non-trimmed、trimmed JIT、NativeAOT、WebAssembly AOT 与 Gallery NativeAOT 启动验证。
 
 本文是 AtomUI AOT 与 trimming 架构的唯一正式所有者。它覆盖 `AtomUI.Core`、`AtomUI.Controls`、
 `AtomUI.Desktop.Controls`、可选桌面包、`AtomUI.Generator`、`AtomUI.Build.Tasks`、应用项目和第三方 Control 包。
@@ -33,6 +33,7 @@ Registration Unit 作为更细的 linker 可达单元，不追求每个内部 CL
 8. 语言、全局主题基础设施和包级初始化行为保持当前语义与顺序。
 9. 第三方 Control 包可以使用同一版本化 Unit 协议，不依赖 AtomUI 内部程序集扫描。
 10. 发布验证同时覆盖运行行为、fallback 和可重复的体积差值。
+11. Package 注册入口以真实 C# 方法作为唯一事实来源，不要求包作者在 MSBuild 中重复维护 CLR metadata name。
 
 ## 3. 复杂度边界
 
@@ -45,6 +46,8 @@ Registration Unit 作为更细的 linker 可达单元，不追求每个内部 CL
 - 应用级 BFS、循环闭包或通用依赖图规划器。
 - 运行时反射发现、AXAML 扫描或动态代码生成。
 - 将无法解析 owner 的资源自动归类为共享资源。
+- 根据方法名约定或方法体调用图猜测 Package 注册入口。
+- 使用 MSBuild 字符串重复声明注册方法的 CLR metadata name。
 
 Registration Unit 是唯一细粒度裁剪单位。语言、初始化器和共享基础资源按 Package 保留，以少量固定体积换取稳定行为和
 低维护成本。
@@ -136,7 +139,8 @@ ControlMap 表示 CLR Control 的定义程序集 ownership，不表示该 Contro
 public、非泛型 Control 都必须归入一个 Unit 并输出 ControlMap；只有原本参与完整 Theme Schema 的 Control 才生成
 descriptor 并调用 `builder.AddControl(...)`。因此基础布局控件等 descriptorless Control 仍能把静态使用映射到正确 Unit，
 但普通非裁剪 descriptor 集合不会被扩大。引用程序集中的 Control 可以继续贡献既有 descriptor 信息，但不能抢占
-ControlMap ownership。没有 Package registration entry 的基础设施程序集不输出 linked Package、Unit 或 ControlMap metadata。
+ControlMap ownership。没有使用 `ControlPackageRegistrationEntryAttribute` 声明本程序集入口的基础设施程序集不输出 linked
+Package、Unit 或 ControlMap metadata。
 
 主题资源只能属于以下三类之一：
 
@@ -182,8 +186,12 @@ Package Core 保持当前入口中的执行位置。以 Desktop 为例，生成�
 4. 注册完整 Language Module。
 5. 按当前顺序添加 Theme initializer。
 
-Desktop 对 Common 的依赖使用完整 Common 注册。当前架构不包含跨 Package Unit 闭包；任何改变都必须基于可复现的
-体积数据重新评估协议复杂度和维护成本，并作为独立架构变更评审。
+Desktop 对 Common 的依赖使用完整 Common 注册。`AtomUI.Controls` 的 Common 层不是可独立启用的 linked Package，
+不声明 `ControlPackageRegistrationEntryAttribute`，也不输出 Package、Unit、ControlMap 或 full fragment metadata；
+其 descriptor、Theme asset、Language Module 和 Provider 由 `UseDesktopControls()` 内部的完整 Common 注册保持可达。
+
+当前架构不包含跨 Package Unit 闭包；任何改变都必须基于可复现的体积数据重新评估协议复杂度和维护成本，并作为独立
+架构变更评审。
 
 ## 8. 最小 Manifest 协议
 
@@ -191,7 +199,7 @@ Desktop 对 Common 的依赖使用完整 Common 注册。当前架构不包含�
 
 | 记录 | 职责 |
 | --- | --- |
-| Package | Package ID、entry method、full registrar、PackageShared fragment 和协议版本 |
+| Package | Package ID、Generator 从标记方法派生的 entry method、full registrar、PackageShared fragment 和协议版本 |
 | Unit | Unit ID 与 fragment type/method |
 | ControlMap | CLR metadata name 到 Package/Unit 的映射 |
 | Usage | 当前程序集静态使用的 Package/Unit/entry 和来源位置 |
@@ -205,8 +213,39 @@ Manifest 使用版本化 `AssemblyMetadata` 编码稳定字符串，不把 `type
 诊断污染。
 
 只有定义 Control 的 Package 可以输出它的 ControlMap。ControlMap 指向的 Unit 必须存在且属于同一 Package；重复 ownership、
-缺失 Unit 或跨 Package 关系均按无效 Package 定义处理。没有任何 registration entry 的程序集不生成空的 linked Package
-metadata，避免把纯基础设施程序集误识别为可注册控件包。
+缺失 Unit 或跨 Package 关系均按无效 Package 定义处理。没有任何源码 registration entry 的程序集不生成空的 linked
+Package metadata，避免把纯基础设施程序集误识别为可注册控件包。
+
+### 8.1 Package 注册入口声明
+
+Package 的公开注册方法是入口身份的唯一事实来源。参与 linked registration 的方法使用
+`AtomUI.Registration.ControlPackageRegistrationEntryAttribute` 标记：
+
+```csharp
+[ControlPackageRegistrationEntry]
+public static IAtomUIBuilder UseAcmeControls(this IAtomUIBuilder builder)
+{
+    // 保持普通 full 注册和生成式 Package plan 分支。
+}
+```
+
+Attribute 不接收 Package ID、类型名或方法名。Generator 从 `IMethodSymbol` 派生稳定 CLR metadata name，规范化排序后写入
+Package manifest。方法、包含类型或命名空间重命名时，manifest 必须随真实符号自动更新，不存在第二份字符串配置。
+
+Generator 必须在 Package 自身编译阶段验证标记方法：
+
+- 位于当前程序集，并且是静态、非泛型扩展方法。
+- 第一个参数是 `this IAtomUIBuilder`，返回值可赋给 `IAtomUIBuilder`。
+- 包含类型和方法必须是 public。
+- 标记方法不得形成无法用现有 manifest method identity 唯一表达的重载集合。
+- 同一 Package 可以标记多个明确别名，例如生成式入口和显式 full 入口；Generator 稳定排序并去重。
+
+旧的入口方法 metadata 字符串属性已经删除，不再是允许的项目属性、NuGet build metadata 或第三方扩展点。不得用新的
+MSBuild item、命名约定、源码文本匹配或方法体调用图扫描重新制造第二份入口身份。
+
+Attribute 只参与编译期 manifest 生成。应用运行时不读取 Attribute、不扫描程序集，也不根据 Attribute 执行注册；真正注册
+仍由用户显式调用入口方法触发。没有标记入口的程序集仍可生成普通 full registration helper，但不能输出 linked Package、
+Unit、ControlMap 或 full fragment metadata。
 
 ## 9. 静态使用发现
 
@@ -292,12 +331,26 @@ full fallback case 直接调用该 Package 的版本化 full registrar。fallbac
 用户入口保持：
 
 ```csharp
+[ControlPackageRegistrationEntry]
+public static IAtomUIBuilder UseDesktopControls(this IAtomUIBuilder builder)
+{
+    // existing registration order
+    return builder;
+}
+
 builder.UseDesktopControls();
 ```
 
 显式全量入口为：
 
 ```csharp
+[ControlPackageRegistrationEntry]
+public static IAtomUIBuilder UseAllDesktopControls(this IAtomUIBuilder builder)
+{
+    // explicit full registration
+    return builder;
+}
+
 builder.UseAllDesktopControls();
 ```
 
@@ -307,6 +360,10 @@ builder.UseAllDesktopControls();
 DataGrid、ColorPicker、Extras 和第三方包仍由各自 `UseXxxControls()` 入口触发。静态发现不能绕过用户入口自动注册可选包。
 同一应用进程中的多个 Builder 可以复用同一不可变计划，但每次应用都创建独立 package registration 实例。
 
+入口声明与入口执行是两个不同阶段：Package Generator 根据 Attribute 生成 entry manifest；应用 Generator 根据真实调用符号
+匹配该 manifest 并生成 Usage。入口方法体仍负责保持 Package Core 顺序以及 full/generated 分支，Generator 不解析方法体
+来猜测入口身份。
+
 `AotTrimRegistrationPlanRegistry`、Unit fragment 和 manifest ABI 虽然对用户隐藏，仍是跨程序集 Public API，必须有生成源码
 ABI 快照和协议测试。运行时 ABI 的命名必须保持 AOT/Trim 语义，不能退化为 `RuntimeFeatures`、`GeneratedFeatures` 等通用名称。
 
@@ -315,6 +372,7 @@ ABI 快照和协议测试。运行时 ABI 的命名必须保持 AOT/Trim 语义�
 第三方包参与 Unit 裁剪时必须：
 
 - 引用兼容版本的 AtomUI Generator 和 buildTransitive targets。
+- 在真实 `UseXxxControls()` 方法上声明 `[ControlPackageRegistrationEntry]`，不维护方法 metadata 字符串。
 - 输出 Package、Unit 和 ControlMap records。
 - 为每个 Unit 输出公共隐藏 fragment。
 - 显式声明 PackageShared 资源。
@@ -334,6 +392,9 @@ ABI 快照和协议测试。运行时 ABI 的命名必须保持 AOT/Trim 语义�
 声明 `AtomUIRegistrationPackageId` 的第一方产品 NuGet 必须自动携带同版本 Generator、Build Tasks 和 buildTransitive
 资产。用户只引用产品包即可获得应用级计划；显式 Generator PackageReference 仍兼容。多个产品包或显式 Generator
 并存时，构建入口必须根据 `ResolveReferences` 后的最终 `@(Analyzer)` 幂等注入，编译器只能接收一份 Generator。
+
+`AtomUIRegistrationPackageId` 只表达 Package identity 和产品包 build asset 注入边界，不包含注册方法信息。入口方法只能来自
+`ControlPackageRegistrationEntryAttribute`；不得重新引入任何入口方法 metadata 字符串属性。
 
 buildTransitive targets 负责暴露模式属性、生成结构化 AXAML 输入、配置 feature switch，并在 ILLink/ILCompiler 前验证
 应用计划标记。它们的项目求值阶段 Condition 不得读取 item list；需要检查 `@(Analyzer)` 的逻辑必须放入构建 Target
@@ -355,8 +416,10 @@ buildTransitive targets 负责暴露模式属性、生成结构化 AXAML 输入�
 | `ATOMUILINK006` | Manifest 或 Generator ABI major version不兼容 | Error |
 | `ATOMUILINK007` | Loose AXAML 或动态主题导致 Package full fallback | Warning |
 | `ATOMUILINK008` | 检测到 Package 使用但缺少对应注册入口 | Error |
+| `ATOMUILINK009` | Package 注册入口 Attribute 用法、签名、可见性或重载集合无效 | Error |
 
-可修复诊断必须包含来源位置、Package/Unit identity 和可直接采用的 MSBuild root 示例。不能只输出“可能不兼容 AOT”。
+可修复诊断必须包含来源位置、Package/Unit identity，以及可直接采用的源码修复或 MSBuild root 示例。不能只输出
+“可能不兼容 AOT”。
 `ATOMUILINK002` 和 `ATOMUILINK007` 的 metadata 传播不依赖当前项目是否 linked；其 Warning 仅在 linked publish 或
 strict 模式可见，strict 模式继续把自动 full fallback 提升为 Error。其他协议错误不因普通构建而静默。
 
@@ -364,11 +427,14 @@ strict 模式可见，strict 模式继续把自动 full fallback 提升为 Error
 
 验证分为：
 
-1. Package Generator 测试：Unit 归属、同包依赖、PackageShared、unknown 和 full fallback。
+1. Package Generator 测试：入口 Attribute 符号派生与诊断、Unit 归属、同包依赖、PackageShared、unknown 和 full fallback。
 2. Usage 测试：AXAML/C#、类库传播、显式 roots、稳定排序和 diagnostics。
 3. 运行集成测试：full/generated 的 descriptor、asset、语言、initializer、Provider 和冻结时序。
 4. 真实发布测试：trimmed JIT 和 NativeAOT 的构建与运行 smoke；WebAssembly AOT 的生成、编译、链接和优化，
    并在平台基线允许时执行浏览器 runtime smoke。
+
+入口声明必须验证：方法重命名自动更新 manifest、多个入口稳定排序、无标记程序集不输出 linked metadata、Common 只走
+完整注册，以及仓库中不存在入口方法 metadata 字符串配置残留。
 
 仓库提供统一验证入口：
 

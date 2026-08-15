@@ -96,6 +96,14 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
             }
 
             var combinedInfos = generationInfo.Left;
+            foreach (var issue in generationInfo.Right.EntryMethods.Issues)
+            {
+                context.ReportDiagnostic(Diagnostic.Create(
+                    Diagnostics.AtomUIDiagnosticDescriptors.LinkedPackageEntryInvalid,
+                    issue.Location,
+                    issue.MethodDisplayName,
+                    issue.Reason));
+            }
             ThemeControlCatalogMetadataWriter.Write(
                 context,
                 generationInfo.Right.ControlCatalog);
@@ -123,7 +131,7 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
                     context,
                     generationInfo.Right.AssemblyName,
                     generationInfo.Right.PackageId,
-                    generationInfo.Right.RegistrationEntries.Length != 0,
+                    generationInfo.Right.EntryMethods.HasEntries,
                     generationInfo.Right.ControlCatalog,
                     tokenInfo.SchemaTokens,
                     tokenInfo.ControlThemeInfos,
@@ -137,7 +145,7 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
                     context,
                     generationInfo.Right.AssemblyName,
                     generationInfo.Right.PackageId,
-                    generationInfo.Right.RegistrationEntries).Write();
+                    generationInfo.Right.EntryMethods.ManifestMethodMetadataNames).Write();
             }
 
             {
@@ -174,6 +182,6 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
             ThemeGeneratorOptions.GetControlCatalog(optionsProvider),
             names,
             optionsProvider,
-            LinkedRegistration.LinkedRegistrationOptions.GetRegistrationEntries(optionsProvider));
+            LinkedRegistration.ControlPackageRegistrationEntryDiscovery.Discover(compilation));
     }
 }

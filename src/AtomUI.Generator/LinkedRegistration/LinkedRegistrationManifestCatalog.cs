@@ -175,7 +175,7 @@ internal sealed class LinkedRegistrationManifestCatalog
                 {
                     break;
                 }
-                foreach (var entry in SplitRegistrationEntries(package.EntryMethodMetadataNames))
+                foreach (var entry in SplitEntryMethodMetadataNames(package.EntryMethodMetadataNames))
                 {
                     if (!PackageIdsByEntry.TryGetValue(entry, out var packageIds))
                     {
@@ -278,7 +278,7 @@ internal sealed class LinkedRegistrationManifestCatalog
             existing.Column == candidate.Column);
     }
 
-    private static IEnumerable<string> SplitRegistrationEntries(string entries)
+    private static IEnumerable<string> SplitEntryMethodMetadataNames(string entries)
     {
         return entries.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
                       .Select(static entry => entry.Trim())

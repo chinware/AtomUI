@@ -8,7 +8,6 @@
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
         <AtomUIGenerateControlThemeAssetResources>true</AtomUIGenerateControlThemeAssetResources>
         <AtomUIRegistrationPackageId>$(AssemblyName)</AtomUIRegistrationPackageId>
-        <AtomUIRegistrationEntries>AtomUI.Desktop.Controls.ColorPickerThemeManagerBuilderExtensions.UseDesktopColorPicker</AtomUIRegistrationEntries>
         <RootNamespace>AtomUI.Desktop.Controls</RootNamespace>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>

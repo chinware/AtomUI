@@ -8,7 +8,6 @@
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
         <AtomUIGenerateControlThemeAssetResources>true</AtomUIGenerateControlThemeAssetResources>
         <AtomUIRegistrationPackageId>$(AssemblyName)</AtomUIRegistrationPackageId>
-        <AtomUIRegistrationEntries>AtomUI.Toolkits.GalleryBase.ThemeManagerBuilderExtensions.UseGalleryBase</AtomUIRegistrationEntries>
     </PropertyGroup>
 
     <ItemGroup>

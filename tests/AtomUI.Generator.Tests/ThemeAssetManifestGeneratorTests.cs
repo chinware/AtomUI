@@ -25,6 +25,23 @@ public class ThemeAssetManifestGeneratorTests
     }
 
     [Fact]
+    public void Does_Not_Emit_Linked_Theme_Fragments_Without_A_Source_Registration_Entry()
+    {
+        var result = RunGenerator(
+            CreateCompilation(TokenSource, includeRegistrationEntry: false),
+            [Asset("Button/Themes/ButtonTheme.axaml", ControlTheme("Button"))],
+            out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+        GetGeneratedSource(result, "GeneratedControlThemeAssetManifest.g.cs")
+            .ShouldContain("GeneratedControlThemeAssetManifest");
+        result.SyntaxTrees.ShouldNotContain(tree =>
+            tree.FilePath.EndsWith(
+                "GeneratedControlThemeAssetFragments.g.cs",
+                StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void Uses_Configured_Control_Catalog_For_Third_Party_Assets()
     {
         var result = RunGenerator(
@@ -803,19 +820,28 @@ public class ThemeAssetManifestGeneratorTests
     private static CSharpCompilation CreateCompilation(
         string source,
         string assemblyName = "ThemeAssetManifestTests",
-        string sourcePath = "TokenSource.cs")
+        string sourcePath = "TokenSource.cs",
+        bool includeRegistrationEntry = true)
     {
         var references = ((string?)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES"))!
                          .Split(Path.PathSeparator)
                          .Select(static path => MetadataReference.CreateFromFile(path))
                          .Cast<MetadataReference>()
                          .ToImmutableArray();
+        var syntaxTrees = new List<SyntaxTree>
+        {
+            CSharpSyntaxTree.ParseText(source, path: sourcePath),
+            CSharpSyntaxTree.ParseText(AtomUIStubs)
+        };
+        if (includeRegistrationEntry)
+        {
+            syntaxTrees.Add(CSharpSyntaxTree.ParseText(
+                RegistrationEntrySource,
+                path: "ThemeManagerBuilderExtensions.cs"));
+        }
         return CSharpCompilation.Create(
             assemblyName,
-            [
-                CSharpSyntaxTree.ParseText(source, path: sourcePath),
-                CSharpSyntaxTree.ParseText(AtomUIStubs)
-            ],
+            syntaxTrees,
             references,
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
     }
@@ -928,7 +954,35 @@ public class ThemeAssetManifestGeneratorTests
         }
         """;
 
+    private const string RegistrationEntrySource = """
+        using AtomUI.Registration;
+
+        namespace Demo;
+
+        public static class ThemeManagerBuilderExtensions
+        {
+            [ControlPackageRegistrationEntry]
+            public static AtomUI.IAtomUIBuilder UseControls(
+                this AtomUI.IAtomUIBuilder builder) => builder;
+        }
+        """;
+
     private const string AtomUIStubs = """
+        namespace AtomUI
+        {
+            public interface IAtomUIBuilder
+            {
+            }
+        }
+
+        namespace AtomUI.Registration
+        {
+            [System.AttributeUsage(System.AttributeTargets.Method, Inherited = false)]
+            public sealed class ControlPackageRegistrationEntryAttribute : System.Attribute
+            {
+            }
+        }
+
         namespace AtomUI.Theme.DesignTokens
         {
             [System.AttributeUsage(System.AttributeTargets.Class)]

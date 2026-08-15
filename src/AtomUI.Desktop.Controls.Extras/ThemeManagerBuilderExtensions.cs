@@ -6,6 +6,7 @@ public static class ExtrasThemeManagerBuilderExtensions
 {
     internal const string PackageId = "AtomUI.Desktop.Controls.Extras";
 
+    [ControlPackageRegistrationEntry]
     public static IAtomUIBuilder UseDesktopExtras(this IAtomUIBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);

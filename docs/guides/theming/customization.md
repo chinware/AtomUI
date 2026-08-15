@@ -516,10 +516,55 @@ Rating/
 2. 只有存在 Rating 独有设计值时才创建带 `[ControlDesignToken]` 的 `RatingToken.cs`。
 3. 在 `Themes/RatingTheme.axaml` 中使用 `RatingTokenResource` 消费 Effective Control Token。
 4. 由生成器产生 exact CLR type/identity、Token key、descriptor 和 asset manifest。
-5. 包只公开一次生成的 `UseAcmeControls()` 注册入口。
+5. 包作者实现一个带 `[ControlPackageRegistrationEntry]` 的 `UseAcmeControls()` 注册入口；Generator 从真实方法符号生成
+   linked manifest，不在项目文件中重复维护入口类型名或方法名。
 
 不需要泛型 Token Attribute、Theme Asset glob、每 Theme Module、手工 manifest、聚合 AXAML 或运行时程序集扫描。
 只有一个 ControlTheme 时，目录中就只有一个主题文件。
+
+Control Package 的项目文件只声明稳定 Package identity：
+
+```xml
+<PropertyGroup>
+  <AtomUIRegistrationPackageId>Acme.Controls</AtomUIRegistrationPackageId>
+</PropertyGroup>
+```
+
+注册入口由包作者保留 Provider、Localization 和 initializer 顺序，Attribute 只声明编译期入口身份：
+
+```csharp
+using AtomUI;
+using AtomUI.Generated.AcmeControls;
+using AtomUI.Registration;
+
+namespace Acme.Controls;
+
+public static class ThemeManagerBuilderExtensions
+{
+    private const string PackageId = "Acme.Controls";
+
+    [ControlPackageRegistrationEntry]
+    public static IAtomUIBuilder UseAcmeControls(this IAtomUIBuilder builder)
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        var provider = new AcmeControlThemesProvider();
+        if (AotTrimRegistration.IsEnabled)
+        {
+            AotTrimRegistrationPlanRegistry.ApplyPackage(builder, PackageId, provider);
+        }
+        else
+        {
+            GeneratedControlPackageRegistration.Register(builder.Theme, provider);
+        }
+
+        return builder;
+    }
+}
+```
+
+方法必须是 public、static、非泛型的 `IAtomUIBuilder` 扩展方法，返回类型必须可赋给 `IAtomUIBuilder`，并且同一包含类型中
+不能存在同名重载。无效声明由 `ATOMUILINK009` 在包自身编译阶段报告。应用运行时不读取 Attribute，也不会扫描程序集；
+注册仍由应用显式调用 `UseAcmeControls()` 触发。
 
 第三方注册必须在 ThemeManager 构建前完成：
 

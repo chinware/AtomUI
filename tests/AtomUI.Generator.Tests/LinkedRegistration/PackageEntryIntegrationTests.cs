@@ -1,4 +1,3 @@
-using System.Xml.Linq;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Shouldly;
@@ -10,35 +9,66 @@ public sealed class PackageEntryIntegrationTests
 {
     [Theory]
     [InlineData(
-        "src/AtomUI.Controls/AtomUI.Controls.csproj",
-        "AtomUI.Desktop.Controls.ThemeManagerBuilderExtensions.UseAllDesktopControls," +
-        "AtomUI.Desktop.Controls.ThemeManagerBuilderExtensions.UseDesktopControls")]
+        "src/AtomUI.Desktop.Controls/ThemeManagerBuilderExtensions.cs",
+        "ThemeManagerBuilderExtensions",
+        "UseAllDesktopControls|UseDesktopControls")]
     [InlineData(
-        "src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj",
-        "AtomUI.Desktop.Controls.ThemeManagerBuilderExtensions.UseAllDesktopControls," +
-        "AtomUI.Desktop.Controls.ThemeManagerBuilderExtensions.UseDesktopControls")]
+        "src/AtomUI.Desktop.Controls.DataGrid/ThemeManagerBuilderExtensions.cs",
+        "DataGridThemeManagerBuilderExtensions",
+        "UseDesktopDataGrid")]
     [InlineData(
-        "src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj",
-        "AtomUI.Desktop.Controls.DataGridThemeManagerBuilderExtensions.UseDesktopDataGrid")]
+        "src/AtomUI.Desktop.Controls.ColorPicker/ThemeManagerBuilderExtensions.cs",
+        "ColorPickerThemeManagerBuilderExtensions",
+        "UseDesktopColorPicker")]
     [InlineData(
-        "src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj",
-        "AtomUI.Desktop.Controls.ColorPickerThemeManagerBuilderExtensions.UseDesktopColorPicker")]
+        "src/AtomUI.Desktop.Controls.Extras/ThemeManagerBuilderExtensions.cs",
+        "ExtrasThemeManagerBuilderExtensions",
+        "UseDesktopExtras")]
     [InlineData(
-        "src/AtomUI.Desktop.Controls.Extras/AtomUI.Desktop.Controls.Extras.csproj",
-        "AtomUI.Desktop.Controls.ExtrasThemeManagerBuilderExtensions.UseDesktopExtras")]
-    [InlineData(
-        "src/AtomUI.Toolkits.GalleryBase/AtomUI.Toolkits.GalleryBase.csproj",
-        "AtomUI.Toolkits.GalleryBase.ThemeManagerBuilderExtensions.UseGalleryBase")]
-    public void Registration_packages_publish_stable_entry_metadata(
-        string projectPath,
-        string expectedEntries)
+        "src/AtomUI.Toolkits.GalleryBase/ThemeManagerBuilderExtensions.cs",
+        "ThemeManagerBuilderExtensions",
+        "UseGalleryBase")]
+    public void Registration_packages_declare_entries_on_the_real_methods(
+        string sourcePath,
+        string typeName,
+        string expectedMethodNames)
     {
-        var project = XDocument.Load(GetRepoFile(projectPath));
+        var root = CSharpSyntaxTree.ParseText(
+            File.ReadAllText(GetRepoFile(sourcePath)),
+            cancellationToken: TestContext.Current.CancellationToken).GetRoot(
+            TestContext.Current.CancellationToken);
+        var type = root.DescendantNodes()
+                       .OfType<ClassDeclarationSyntax>()
+                       .Single(declaration => declaration.Identifier.ValueText == typeName);
+        var actualMethodNames = type.Members
+                                    .OfType<MethodDeclarationSyntax>()
+                                    .Where(HasRegistrationEntryAttribute)
+                                    .Select(static method => method.Identifier.ValueText)
+                                    .OrderBy(static name => name, StringComparer.Ordinal)
+                                    .ToArray();
 
-        project.Descendants()
-               .Single(element => element.Name.LocalName == "AtomUIRegistrationEntries")
-               .Value.Trim()
-               .ShouldBe(expectedEntries);
+        actualMethodNames.ShouldBe(
+            expectedMethodNames.Split('|').OrderBy(static name => name, StringComparer.Ordinal));
+    }
+
+    [Fact]
+    public void Common_is_not_declared_as_a_linked_registration_package()
+    {
+        var projectSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Controls/AtomUI.Controls.csproj"));
+        var legacyEntryProperty = "AtomUIRegistration" + "Entries";
+        projectSource.ShouldNotContain("AtomUIRegistrationPackageId");
+        projectSource.ShouldNotContain(legacyEntryProperty);
+
+        var root = CSharpSyntaxTree.ParseText(
+            File.ReadAllText(GetRepoFile(
+                "src/AtomUI.Controls/ThemeManagerBuildExtensions.cs")),
+            cancellationToken: TestContext.Current.CancellationToken).GetRoot(
+            TestContext.Current.CancellationToken);
+        var method = root.DescendantNodes()
+                         .OfType<MethodDeclarationSyntax>()
+                         .Single(declaration => declaration.Identifier.ValueText == "UseCommonControls");
+        HasRegistrationEntryAttribute(method).ShouldBeFalse();
     }
 
     [Theory]
@@ -225,6 +255,22 @@ public sealed class PackageEntryIntegrationTests
                          .OfType<MethodDeclarationSyntax>()
                          .Single(declaration => declaration.Identifier.ValueText == methodName);
         return method.Body.ShouldNotBeNull().ToFullString();
+    }
+
+    private static bool HasRegistrationEntryAttribute(MethodDeclarationSyntax method)
+    {
+        return method.AttributeLists
+                     .SelectMany(static list => list.Attributes)
+                     .Any(static attribute =>
+                     {
+                         var name = attribute.Name.ToString();
+                         return name.EndsWith(
+                                    "ControlPackageRegistrationEntry",
+                                    StringComparison.Ordinal) ||
+                                name.EndsWith(
+                                    "ControlPackageRegistrationEntryAttribute",
+                                    StringComparison.Ordinal);
+                     });
     }
 
     private static void AssertOrder(string source, params string[] values)

@@ -6,6 +6,7 @@ public static class DataGridThemeManagerBuilderExtensions
 {
     internal const string PackageId = "AtomUI.Desktop.Controls.DataGrid";
 
+    [ControlPackageRegistrationEntry]
     public static IAtomUIBuilder UseDesktopDataGrid(this IAtomUIBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);

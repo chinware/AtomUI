@@ -6,6 +6,8 @@ namespace AtomUI.Generator.LinkedRegistration;
 
 internal static class LinkedAxamlUsageInput
 {
+    private const string Xaml2006Namespace =
+        "http://schemas.microsoft.com/winfx/2006/xaml";
     private static readonly HashSet<string> s_usageKinds = new(
         ["Element", "TargetType", "DataType", "Selector", "XType", "UnitRoot", "PackageRoot"],
         StringComparer.Ordinal);
@@ -39,6 +41,11 @@ internal static class LinkedAxamlUsageInput
             out var value) && value >= 0
             ? value
             : 0;
+    }
+
+    internal static bool IsXamlLanguageNamespace(string namespaceUri)
+    {
+        return string.Equals(namespaceUri, Xaml2006Namespace, StringComparison.Ordinal);
     }
 
     internal static string ResolveMetadataName(

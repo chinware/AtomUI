@@ -6,6 +6,7 @@ public static class ColorPickerThemeManagerBuilderExtensions
 {
     internal const string PackageId = "AtomUI.Desktop.Controls.ColorPicker";
 
+    [ControlPackageRegistrationEntry]
     public static IAtomUIBuilder UseDesktopColorPicker(this IAtomUIBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);

@@ -229,6 +229,17 @@ Source Generator、Localization writer、Linked Registration metadata 和 AXAML 
 计划。Control descriptor、Own Token schema、内部控件和控件族专属 Theme Asset factory 必须能聚合为 linker
 可独立删除的 Unit；不得新增全包静态数组、全资产 `switch` 或“构造全集后过滤”的 linked 路径。
 
+Package 注册入口的正式契约见
+[AOT 与裁剪架构](../../architecture/foundations/aot-and-trimming.md#81-package-注册入口声明)。新增或迁移 Control Package 的
+真实 `UseXxxControls()` 方法必须使用
+`[ControlPackageRegistrationEntry]` 声明入口。Generator 从 `IMethodSymbol` 派生 manifest method identity，并在 Package
+自身编译阶段验证扩展方法签名、可见性和重载集合。禁止在 `.csproj`、props、targets 或 NuGet metadata 中手写入口类型名
+和方法名，也禁止使用方法命名约定或方法体扫描猜测入口。
+
+`AtomUIRegistrationPackageId` 只表示 Package identity 和产品包 build asset 注入边界。它不能携带注册方法信息，也不能作为
+是否存在源码入口的替代判断。没有 `[ControlPackageRegistrationEntry]` 的程序集不得输出 linked Package、Unit、ControlMap
+或 full fragment metadata，但仍可以生成普通非裁剪路径使用的 full registration helper。
+
 Language Catalog、内置 Translation Bundle、Dialog/Tooltip/Motion/Responsive 初始化、Global Token、Theme Algorithm、
 Provider 和平台 selector 属于 Package Core，不为它们创建细粒度 fragment。跨多个 Unit 的共享主题资源必须通过
 `AtomUIPackageSharedTheme` 显式声明；owner 解析失败不得自动归类为共享资源。
@@ -243,7 +254,11 @@ Package Theme 的模板中如果直接实例化另一个 AtomUI Control，该元
 
 ControlMap 是 CLR Control ownership，不是 descriptor 清单。定义程序集里的 public、非泛型 Control 即使没有 Theme
 descriptor，也要归入 Registration Unit 并拥有 ControlMap；只有原本可主题化的 Control 才能进入 `builder.AddControl`。
-引用程序集不得重复输出 ControlMap。纯基础设施程序集没有 package registration entry 时，不应生成 Unit/ControlMap。
+引用程序集不得重复输出 ControlMap。纯基础设施程序集没有 `[ControlPackageRegistrationEntry]` 时，不应生成
+Package、Unit、ControlMap 或 full fragment metadata。
+
+`AtomUI.Controls` Common 层始终由 Desktop 完整注册，不是独立 linked Package。不要为 `UseCommonControls()` 添加入口
+Attribute，不要为了让 Common 参与应用计划而复制 `UseDesktopControls()` 的方法 identity，也不要引入跨 Package Unit 闭包。
 
 类库在普通构建中仍必须生成 PackageRoot fallback metadata，供最终 linked 应用聚合；不要用当前项目未开启 trim/AOT
 作为跳过 metadata 的条件。`ATOMUILINK002` 和 `ATOMUILINK007` 只在 linked publish 或

@@ -217,6 +217,22 @@ public sealed class LinkedRegistrationUsageGeneratorTests
     }
 
     [Fact]
+    public void Xaml_Language_Primitives_Are_Not_Treated_As_Control_Package_Usage()
+    {
+        var axaml = UsageGeneratorTestHost.Axaml(
+            "Themes/Resources.axaml",
+            "<AtomUIAxamlUsage Version=\"1\"><Usage Source=\"Themes/Resources.axaml\" Line=\"5\" Column=\"6\" Kind=\"Element\" NamespaceUri=\"http://schemas.microsoft.com/winfx/2006/xaml\" LocalName=\"Double\" TypeName=\"\" Identity=\"\" /></AtomUIAxamlUsage>");
+
+        var result = UsageGeneratorTestHost.Run(
+            ["public sealed class ThemeResources { }"] ,
+            [UsageGeneratorTestHost.AcmePackage],
+            additionalTexts: [axaml]);
+
+        result.Usages.ShouldBeEmpty();
+        result.Diagnostics.ShouldNotContain(diagnostic => diagnostic.Id == "ATOMUILINK004");
+    }
+
+    [Fact]
     public void Ordinary_Class_Library_Emits_Usage_When_Linked_Mode_Is_Disabled()
     {
         var library = UsageGeneratorTestHost.CompileGeneratedReference(

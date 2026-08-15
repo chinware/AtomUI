@@ -39,4 +39,5 @@ internal static class AtomUIDiagnosticIds
     public const string LinkedManifestVersionMismatch = "ATOMUILINK006";
     public const string LinkedLooseAxamlWidened = "ATOMUILINK007";
     public const string LinkedPackageEntryMissing = "ATOMUILINK008";
+    public const string LinkedPackageEntryInvalid = "ATOMUILINK009";
 }

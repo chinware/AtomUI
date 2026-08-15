@@ -8,6 +8,5 @@
         <CompilerVisibleProperty Include="AtomUIRegistrationStrict" />
         <CompilerVisibleProperty Include="AtomUIRegistrationPlanOwner" />
         <CompilerVisibleProperty Include="AtomUIRegistrationPackageId" />
-        <CompilerVisibleProperty Include="AtomUIRegistrationEntries" />
     </ItemGroup>
 </Project>

@@ -340,6 +340,159 @@ public class ThemeSchemaGeneratorTests
         source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.Package.v1\"");
     }
 
+    [Fact]
+    public void Derives_Stable_Package_Entries_From_Annotated_Method_Symbols()
+    {
+        var compilation = CreateCompilation(TokenSource).AddSyntaxTrees(
+            CSharpSyntaxTree.ParseText(
+                """
+                using AtomUI.Registration;
+
+                namespace Demo;
+
+                public static class AlternateThemeManagerBuilderExtensions
+                {
+                    [ControlPackageRegistrationEntry]
+                    public static AtomUI.IAtomUIBuilder UseAllControls(
+                        this AtomUI.IAtomUIBuilder builder) => builder;
+                }
+                """,
+                path: "AlternateThemeManagerBuilderExtensions.cs",
+                cancellationToken: TestContext.Current.CancellationToken));
+
+        var outputCompilation = RunGenerator(
+            compilation,
+            out var diagnostics,
+            includeRegistrationEntry: true,
+            new InMemoryAdditionalText(
+                "Button/Themes/ButtonTheme.axaml",
+                "<ControlTheme xmlns=\"https://github.com/avaloniaui\" TargetType=\"Demo.Button\" />"));
+
+        diagnostics.ShouldBeEmpty();
+        var source = GetGeneratedSource(
+            outputCompilation,
+            "GeneratedFullControlPackageRegistrationFragment.g.cs");
+        source.ShouldContain(
+            "Demo.AlternateThemeManagerBuilderExtensions.UseAllControls%3BDemo.ThemeManagerBuilderExtensions.UseControls");
+    }
+
+    [Fact]
+    public void Accepts_An_Entry_Return_Type_Assignable_To_IAtomUIBuilder()
+    {
+        var compilation = CreateCompilation(TokenSource).AddSyntaxTrees(
+            CSharpSyntaxTree.ParseText(
+                """
+                using AtomUI.Registration;
+
+                namespace Demo;
+
+                public interface ICustomAtomUIBuilder : AtomUI.IAtomUIBuilder
+                {
+                }
+
+                public static class CustomThemeManagerBuilderExtensions
+                {
+                    [ControlPackageRegistrationEntry]
+                    public static ICustomAtomUIBuilder UseCustomControls(
+                        this AtomUI.IAtomUIBuilder builder) => (ICustomAtomUIBuilder)builder;
+                }
+                """,
+                path: "CustomThemeManagerBuilderExtensions.cs",
+                cancellationToken: TestContext.Current.CancellationToken));
+
+        var outputCompilation = RunGenerator(
+            compilation,
+            out var diagnostics,
+            includeRegistrationEntry: false,
+            new InMemoryAdditionalText(
+                "Button/Themes/ButtonTheme.axaml",
+                "<ControlTheme xmlns=\"https://github.com/avaloniaui\" TargetType=\"Demo.Button\" />"));
+
+        diagnostics.ShouldBeEmpty();
+        GetGeneratedSource(
+                outputCompilation,
+                "GeneratedFullControlPackageRegistrationFragment.g.cs")
+            .ShouldContain("Demo.CustomThemeManagerBuilderExtensions.UseCustomControls");
+    }
+
+    [Theory]
+    [InlineData(
+        "public static AtomUI.IAtomUIBuilder UseControls(AtomUI.IAtomUIBuilder builder) => builder;",
+        "extension method")]
+    [InlineData(
+        "public static T UseControls<T>(this T builder) where T : AtomUI.IAtomUIBuilder => builder;",
+        "non-generic")]
+    [InlineData(
+        "internal static AtomUI.IAtomUIBuilder UseControls(this AtomUI.IAtomUIBuilder builder) => builder;",
+        "public")]
+    [InlineData(
+        "public static object UseControls(this AtomUI.IAtomUIBuilder builder) => builder;",
+        "assignable to IAtomUIBuilder")]
+    public void Reports_Invalid_Package_Entry_Declarations_In_The_Producer(
+        string methodDeclaration,
+        string expectedReason)
+    {
+        var compilation = CreateCompilation(TokenSource).AddSyntaxTrees(
+            CSharpSyntaxTree.ParseText(
+                $$"""
+                using AtomUI.Registration;
+
+                namespace Demo;
+
+                public static class InvalidThemeManagerBuilderExtensions
+                {
+                    [ControlPackageRegistrationEntry]
+                    {{methodDeclaration}}
+                }
+                """,
+                path: "InvalidThemeManagerBuilderExtensions.cs",
+                cancellationToken: TestContext.Current.CancellationToken));
+
+        RunGenerator(
+            compilation,
+            out var diagnostics,
+            includeRegistrationEntry: false);
+
+        var diagnostic = diagnostics.ShouldHaveSingleItem();
+        diagnostic.Id.ShouldBe("ATOMUILINK009");
+        diagnostic.GetMessage().ShouldContain(expectedReason);
+        diagnostic.Location.GetLineSpan().Path.ShouldBe("InvalidThemeManagerBuilderExtensions.cs");
+    }
+
+    [Fact]
+    public void Rejects_Overloaded_Annotated_Entry_Names()
+    {
+        var compilation = CreateCompilation(TokenSource).AddSyntaxTrees(
+            CSharpSyntaxTree.ParseText(
+                """
+                using AtomUI.Registration;
+
+                namespace Demo;
+
+                public static class OverloadedThemeManagerBuilderExtensions
+                {
+                    [ControlPackageRegistrationEntry]
+                    public static AtomUI.IAtomUIBuilder UseControls(
+                        this AtomUI.IAtomUIBuilder builder) => builder;
+
+                    public static AtomUI.IAtomUIBuilder UseControls(
+                        this AtomUI.IAtomUIBuilder builder,
+                        bool full) => builder;
+                }
+                """,
+                path: "OverloadedThemeManagerBuilderExtensions.cs",
+                cancellationToken: TestContext.Current.CancellationToken));
+
+        RunGenerator(
+            compilation,
+            out var diagnostics,
+            includeRegistrationEntry: false);
+
+        var diagnostic = diagnostics.ShouldHaveSingleItem();
+        diagnostic.Id.ShouldBe("ATOMUILINK009");
+        diagnostic.GetMessage().ShouldContain("overloaded");
+    }
+
     private static CSharpCompilation RunGenerator(
         CSharpCompilation compilation,
         out ImmutableArray<Diagnostic> diagnostics,
@@ -359,17 +512,18 @@ public class ThemeSchemaGeneratorTests
         params AdditionalText[] additionalTexts)
     {
         var cancellationToken = TestContext.Current.CancellationToken;
-        AnalyzerConfigOptionsProvider? optionsProvider = includeRegistrationEntry
-            ? new TestAnalyzerConfigOptionsProvider(new Dictionary<string, string>(StringComparer.Ordinal)
-            {
-                ["build_property.AtomUIRegistrationEntries"] = "Demo.ThemeManagerBuilderExtensions.UseControls"
-            })
-            : null;
+        if (includeRegistrationEntry)
+        {
+            compilation = compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(
+                RegistrationEntrySource,
+                path: "ThemeManagerBuilderExtensions.cs",
+                cancellationToken: cancellationToken));
+        }
         var driver = CSharpGeneratorDriver.Create(
             [new TokenResourceKeyGenerator().AsSourceGenerator()],
             additionalTexts.ToImmutableArray(),
             (CSharpParseOptions)compilation.SyntaxTrees[0].Options,
-            optionsProvider);
+            optionsProvider: null);
 
         driver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out diagnostics, cancellationToken);
         return (CSharpCompilation)outputCompilation;
@@ -495,6 +649,19 @@ public class ThemeSchemaGeneratorTests
         }
         """;
 
+    private const string RegistrationEntrySource = """
+        using AtomUI.Registration;
+
+        namespace Demo;
+
+        public static class ThemeManagerBuilderExtensions
+        {
+            [ControlPackageRegistrationEntry]
+            public static AtomUI.IAtomUIBuilder UseControls(
+                this AtomUI.IAtomUIBuilder builder) => builder;
+        }
+        """;
+
     private const string AtomUIStubs = """
         namespace Avalonia.Controls
         {
@@ -523,6 +690,11 @@ public class ThemeSchemaGeneratorTests
 
         namespace AtomUI.Registration
         {
+            [System.AttributeUsage(System.AttributeTargets.Method, Inherited = false)]
+            public sealed class ControlPackageRegistrationEntryAttribute : System.Attribute
+            {
+            }
+
             public sealed class AotTrimControlPackageRegistrationBuilder
             {
                 public bool TryEnterUnit(string unitId) => true;
@@ -530,6 +702,13 @@ public class ThemeSchemaGeneratorTests
                 public void AddControl(AtomUI.Theme.Schema.ControlTokenDescriptor descriptor)
                 {
                 }
+            }
+        }
+
+        namespace AtomUI
+        {
+            public interface IAtomUIBuilder
+            {
             }
         }
 
