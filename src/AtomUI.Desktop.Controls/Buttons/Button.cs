@@ -710,38 +710,7 @@ public partial class Button : AvaloniaButton,
 
     private IBrush? ResolveWaveSpiritBrush()
     {
-        if (IsValidWaveSpiritBrush(BorderBrush))
-        {
-            return BorderBrush;
-        }
-
-        if (IsValidWaveSpiritBrush(Background))
-        {
-            return Background;
-        }
-
-        return null;
-    }
-
-    private static bool IsValidWaveSpiritBrush(IBrush? brush)
-    {
-        if (brush is null || !(brush.Opacity > 0))
-        {
-            return false;
-        }
-
-        if (brush is not ISolidColorBrush solidBrush)
-        {
-            return false;
-        }
-
-        var color = solidBrush.Color;
-        var effectiveAlpha = color.A / 255d * brush.Opacity;
-        return effectiveAlpha > 0 &&
-               (color.R != byte.MaxValue ||
-                color.G != byte.MaxValue ||
-                color.B != byte.MaxValue ||
-                effectiveAlpha < 1);
+        return WaveSpiritDecorator.ResolveWaveSpiritBrush(BorderBrush, Background);
     }
 
     private void ConfigureWaveSpiritType()

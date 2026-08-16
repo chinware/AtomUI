@@ -142,7 +142,7 @@ internal class RadioIndicator : TemplatedControl
                 !PseudoClasses.Contains(StdPseudoClass.Disabled) &&
                 PseudoClasses.Contains(StdPseudoClass.Checked))
             {
-                _waveSpiritDecorator?.Play();
+                Dispatcher.Post(PlayWaveSpirit);
             }
         }
 
@@ -161,6 +161,26 @@ internal class RadioIndicator : TemplatedControl
     {
         PseudoClasses.Set(StdPseudoClass.Checked, IsChecked.HasValue && IsChecked.Value);
         PseudoClasses.Set(StdPseudoClass.UnChecked, (IsChecked.HasValue && !IsChecked.Value) || !IsChecked.HasValue);
+    }
+
+    private void PlayWaveSpirit()
+    {
+        if (_waveSpiritDecorator is null)
+        {
+            return;
+        }
+
+        var waveBrush = WaveSpiritDecorator.ResolveWaveSpiritBrush(BorderBrush, Background);
+        if (waveBrush is not null)
+        {
+            _waveSpiritDecorator.WaveBrush = waveBrush;
+        }
+        else
+        {
+            _waveSpiritDecorator.ClearValue(WaveSpiritDecorator.WaveBrushProperty);
+        }
+
+        _waveSpiritDecorator.Play();
     }
 
     private double CalculateDotSize(bool isEnabled, bool isChecked)
