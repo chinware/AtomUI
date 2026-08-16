@@ -4,13 +4,29 @@
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `CheckBox` | 数据录入控件根语义区域，承载 public API、值状态、验证状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `input` | `输入或编辑区域` | 承载用户输入、当前值、占位、格式化或只读状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `trigger` | `触发区域` | 承载清除、展开、提交、步进、上传或辅助操作。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `popup` | `弹层或候选区域` | 承载下拉、候选项、日历、颜色面板或异步内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `validation` | `校验反馈区域` | 承载 Form、status、错误、警告、help 或 loading 状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+CheckBox 主控件公开 `root`、`icon` 与 `label` 三个职责区域，与上游稳定 Semantic DOM
+（`root` / `icon` / `label`，均 since 6.0.0）对齐。`icon` 对应复选框指示框区域，由模板中的 `CheckBoxIndicator`
+节点承载；`label` 对应文本区域，由模板中的 `ContentPresenter` 节点承载。
+
+`CheckBoxGroup`、`CheckBoxItemsControl` 与 `CheckBoxIndicator` 均不持有独立 Semantic descriptor：上游 Checkbox.Group
+不提供 `classNames` / `styles` / Semantic API（只有单个 Checkbox 提供），且 `CheckBoxItemsControl` 与
+`CheckBoxIndicator` 是 internal 类型。因此本控件的 Semantic Part 只由 `CheckBox` owner 公开。
+
+| Part | Selector | ContractType | Cardinality | Customization | CrossVisualRoot | RuntimeCreated |
+| --- | --- | --- | --- | --- | --- | --- |
+| `root` | owner | `CheckBox` | `Single` | `Root` | `false` | `false` |
+| `icon` | `.semantic-icon` | `TemplatedControl` | `Single` | `Selector` | `false` | `false` |
+| `label` | `.semantic-label` | `ContentPresenter` | `Single` | `Selector` | `false` | `false` |
+
+`root` 是控件自身，承载 `IsChecked`、`IsThreeState`、`Content`、`IsEnabled`、动效与水波开关等 public API、主题入口和
+状态归一，不声明 `.semantic-root` marker。`icon` 是模板中的复选框指示框节点 `Indicator`，对应上游 `icon` 语义；其
+`ContractType` 为 `TemplatedControl` 而非 `CheckBoxIndicator`，因为 `CheckBoxIndicator` 是 internal 类型，不能作为
+公共 Setter 依赖的最低类型，而 `TemplatedControl` 完整覆盖上游 icon 语义所需的 `Background`、`BorderBrush`、
+`BorderThickness`、`CornerRadius`、`Width` / `Height` 等公共视觉属性。`label` 是模板文本节点
+`ContentPresenter`，承载 `Content` 文本内容。
+
+`ContractType` 只定义 Setter 可以稳定依赖的最低 public 类型，并通过 `x:SetterTargetType` 提供 AXAML 编译期类型
+上下文；它不参与 `.semantic-*` 的身份匹配。
 
 ## Abstract AXAML Structure
 

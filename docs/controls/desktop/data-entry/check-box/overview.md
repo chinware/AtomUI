@@ -164,6 +164,7 @@ CheckBox 的视觉选项通过 public API 归一为 theme variables、伪类或�
 关联文档：
 
 - [CheckBox 桌面版实现原理](implementation.md)
+- [CheckBox Semantic Part 契约](semantic-part.md)
 - [CheckBox Token 设计](token.md)
 - [CheckBox Changelog](changelog.md)
 
@@ -171,11 +172,13 @@ LLMS 语义区域：
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `CheckBox` | 数据录入控件根语义区域，承载 public API、值状态、验证状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `input` | `输入或编辑区域` | 承载用户输入、当前值、占位、格式化或只读状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `trigger` | `触发区域` | 承载清除、展开、提交、步进、上传或辅助操作。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `popup` | `弹层或候选区域` | 承载下拉、候选项、日历、颜色面板或异步内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `validation` | `校验反馈区域` | 承载 Form、status、错误、警告、help 或 loading 状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `root` | `CheckBox` | 控件根语义区域，承载勾选值、三态、内容、可用性和动效/水波开关等 public API、状态归一和主题入口。 | `IsChecked`、`IsThreeState`、`Content`、`IsEnabled` | `CheckBoxToken` | stable |
+| `icon` | `CheckBoxIndicator` | 复选框指示框语义区域，承载指示框背景、边框、圆角和尺寸。 | `IsChecked`、`IsThreeState`、`IsEnabled` | `CheckIndicatorSize`、`CheckedMarkSize`、`IndicatorTristateMarkSize` | stable |
+| `label` | `ContentPresenter` | 文本语义区域，承载 `Content` 内容与文本视觉状态。 | `Content`、`ContentTemplate` | `TextMargin` | stable |
+
+`icon` 指示框语义与上游 Checkbox `icon` 语义对齐，由模板中的 `CheckBoxIndicator` 节点承载并以 `Single` 基数公开；
+`label` 对应上游 `label` 语义，由 `ContentPresenter` 节点承载。完整契约见
+[CheckBox Semantic Part 契约](semantic-part.md)。
 
 LLMS 导出来源：
 
