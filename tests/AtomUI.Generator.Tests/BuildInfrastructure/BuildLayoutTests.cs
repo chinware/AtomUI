@@ -265,6 +265,7 @@ public sealed class BuildLayoutTests
         GetTargetNames(targets).ShouldBe([
             "AtomUIGetLanguageModuleSourceAssets",
             "AtomUIResolveLanguageContractProjectReferences",
+            "AtomUIInferLanguagePackageContractPolicy",
             "AtomUIGetLanguagePackProjectAssets",
             "AtomUIResolveLanguagePackProjectReferences",
             "AtomUIExportLanguageTemplates",
