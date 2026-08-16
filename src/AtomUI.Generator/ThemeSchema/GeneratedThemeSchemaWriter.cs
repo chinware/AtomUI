@@ -76,6 +76,8 @@ internal sealed class GeneratedThemeSchemaWriter
         source.AppendLine("    internal static global::System.Collections.Generic.IReadOnlyList<ControlTokenDescriptor> GetControls() => s_controls;");
         source.AppendLine("    internal static global::System.Collections.Generic.IReadOnlyList<ThemeAlgorithmDescriptor> GetAlgorithms() => s_algorithms;");
         source.AppendLine("}");
+        source.AppendLine();
+        WriteDescriptorFactory(source);
         return source.ToString();
     }
 
@@ -83,13 +85,11 @@ internal sealed class GeneratedThemeSchemaWriter
     {
         source.AppendLine("    private static readonly TokenDescriptor[] s_globalTokens = new TokenDescriptor[]");
         source.AppendLine("    {");
-        for (var slot = 0; slot < _globalTokens.Count; slot++)
+        foreach (var token in _globalTokens)
         {
-            WriteToken(
-                source,
-                _globalTokens[slot],
-                slot,
-                $"global::AtomUI.Theme.Resources.SharedTokenKind.{_globalTokens[slot].Name}");
+            source.Append("        GeneratedThemeSchemaDescriptorFactory.")
+                  .Append(GetGlobalTokenDescriptorFactoryMethodName(token))
+                  .AppendLine("(),");
         }
         source.AppendLine("    };");
     }
@@ -100,7 +100,9 @@ internal sealed class GeneratedThemeSchemaWriter
         source.AppendLine("    {");
         foreach (var control in _controls.Where(static control => control.HasDescriptor))
         {
-            WriteControlDescriptor(source, control, "        ", ",");
+            source.Append("        GeneratedThemeSchemaDescriptorFactory.")
+                  .Append(GetControlDescriptorFactoryMethodName(control))
+                  .AppendLine("(),");
         }
         source.AppendLine("    };");
     }
@@ -183,7 +185,10 @@ internal sealed class GeneratedThemeSchemaWriter
                                             StringComparer.Ordinal))
             {
                 source.AppendLine("        builder.AddControl(");
-                WriteControlDescriptor(source, control, "            ", ");");
+                source.Append("            global::").Append(_generatedNamespace)
+                      .Append(".GeneratedThemeSchemaDescriptorFactory.")
+                      .Append(GetControlDescriptorFactoryMethodName(control))
+                      .AppendLine("());");
             }
             source.AppendLine("        AddThemes(builder);");
             source.AppendLine("    }");
@@ -197,6 +202,43 @@ internal sealed class GeneratedThemeSchemaWriter
             source.AppendLine();
         }
         return source.ToString();
+    }
+
+    private void WriteDescriptorFactory(StringBuilder source)
+    {
+        source.AppendLine("internal static class GeneratedThemeSchemaDescriptorFactory");
+        source.AppendLine("{");
+        for (var slot = 0; slot < _globalTokens.Count; slot++)
+        {
+            var token = _globalTokens[slot];
+            source.Append("    internal static TokenDescriptor ")
+                  .Append(GetGlobalTokenDescriptorFactoryMethodName(token))
+                  .AppendLine("()");
+            source.AppendLine("    {");
+            source.AppendLine("        return");
+            WriteToken(
+                source,
+                token,
+                slot,
+                $"global::AtomUI.Theme.Resources.SharedTokenKind.{token.Name}",
+                "            ",
+                ";");
+            source.AppendLine("    }");
+            source.AppendLine();
+        }
+
+        foreach (var control in _controls.Where(static control => control.HasDescriptor))
+        {
+            source.Append("    internal static ControlTokenDescriptor ")
+                  .Append(GetControlDescriptorFactoryMethodName(control))
+                  .AppendLine("()");
+            source.AppendLine("    {");
+            source.AppendLine("        return");
+            WriteControlDescriptor(source, control, "            ", ";");
+            source.AppendLine("    }");
+            source.AppendLine();
+        }
+        source.AppendLine("}");
     }
 
     private void WriteControlDescriptor(
@@ -256,7 +298,8 @@ internal sealed class GeneratedThemeSchemaWriter
         SchemaTokenInfo token,
         int slot,
         string resourceKey,
-        string indentation = "        ")
+        string indentation = "        ",
+        string suffix = ",")
     {
         var name = SymbolDisplay.FormatLiteral(token.Name, quote: true);
         source.Append(indentation).Append("new TokenDescriptor(").Append(name).Append(", ").Append(slot)
@@ -272,7 +315,42 @@ internal sealed class GeneratedThemeSchemaWriter
               .Append(token.Name).Append(" = (").Append(token.ValueType).AppendLine(")value!,");
         source.Append(indentation).Append("    static token => ThemeResourceValue.Project(((")
               .Append(token.DeclaringType).Append(")token).")
-              .Append(token.Name).AppendLine(")),");
+              .Append(token.Name).Append("))").AppendLine(suffix);
+    }
+
+    private static string GetGlobalTokenDescriptorFactoryMethodName(SchemaTokenInfo token)
+    {
+        return $"CreateGlobalTokenDescriptor_{token.Name}";
+    }
+
+    private static string GetControlDescriptorFactoryMethodName(ControlThemeInfo control)
+    {
+        return $"CreateControlDescriptor_{ToIdentifier(control.ControlName)}_{ComputeHash(control.ControlMetadataName):X16}";
+    }
+
+    private static string ToIdentifier(string value)
+    {
+        var builder = new StringBuilder(value.Length + 1);
+        foreach (var character in value)
+        {
+            builder.Append(char.IsLetterOrDigit(character) || character == '_' ? character : '_');
+        }
+        if (builder.Length == 0 || char.IsDigit(builder[0]))
+        {
+            builder.Insert(0, '_');
+        }
+        return builder.ToString();
+    }
+
+    private static ulong ComputeHash(string value)
+    {
+        var hash = 14695981039346656037UL;
+        foreach (var character in value)
+        {
+            hash ^= character;
+            hash *= 1099511628211UL;
+        }
+        return hash;
     }
 
     private static string FullyQualify(string typeName)

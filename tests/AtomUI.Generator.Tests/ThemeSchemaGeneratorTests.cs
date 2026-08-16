@@ -172,12 +172,21 @@ public class ThemeSchemaGeneratorTests
         source.ShouldContain("global::AtomUI.Registration.AotTrimControlPackageRegistrationBuilder builder");
         source.ShouldContain("builder.TryEnterUnit(\"ThemeSchemaGeneratorTests/ThemeSchemaGeneratorTests\")");
         source.ShouldContain("builder.AddControl(");
-        source.ShouldContain("typeof(global::Demo.Button)");
+        source.ShouldContain(
+            "global::AtomUI.Generated.ThemeSchemaGeneratorTests.GeneratedThemeSchemaDescriptorFactory.CreateControlDescriptor_Button_");
         source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.Unit.v1\"");
         source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.ControlMap.v1\"");
         source.ShouldNotContain("AssemblyMetadata(\"AtomUI.Linked.Control.v1\"");
         source.ShouldNotContain("GeneratedThemeSchema.GetControls()");
         source.ShouldNotContain("s_controls");
+        source.ShouldNotContain("new ControlTokenDescriptor(");
+        source.ShouldNotContain("static () => new global::Demo.ButtonToken()");
+
+        var schemaSource = GetGeneratedSource(outputCompilation, "GeneratedThemeSchema.g.cs");
+        schemaSource.ShouldContain("internal static class GeneratedThemeSchemaDescriptorFactory");
+        schemaSource.ShouldContain("GeneratedThemeSchemaDescriptorFactory.CreateControlDescriptor_Button_");
+        schemaSource.ShouldContain("new ControlTokenDescriptor(");
+        schemaSource.ShouldContain("static () => new global::Demo.ButtonToken()");
     }
 
     [Fact]
@@ -213,8 +222,10 @@ public class ThemeSchemaGeneratorTests
               .Length.ShouldBe(2);
         source.ShouldContain("Demo.DatePicker");
         source.ShouldContain("Demo.RangeDatePicker");
-        source.ShouldContain("typeof(global::Demo.DatePicker)");
-        source.ShouldContain("typeof(global::Demo.RangeDatePicker)");
+        source.ShouldContain("CreateControlDescriptor_DatePicker_");
+        source.ShouldContain("CreateControlDescriptor_RangeDatePicker_");
+        source.ShouldNotContain("typeof(global::Demo.DatePicker)");
+        source.ShouldNotContain("typeof(global::Demo.RangeDatePicker)");
         source.ShouldNotContain("GeneratedRegistrationUnit_DatePicker_");
         source.ShouldNotContain("GeneratedRegistrationUnit_RangeDatePicker_");
     }
@@ -618,7 +629,8 @@ public class ThemeSchemaGeneratorTests
 
         diagnostics.ShouldBeEmpty();
         var source = GetGeneratedSource(outputCompilation, "GeneratedRegistrationUnits.g.cs");
-        source.ShouldContain("typeof(global::AtomUI.Controls.SharedControl)");
+        source.ShouldContain("CreateControlDescriptor_SharedControl_");
+        source.ShouldNotContain("typeof(global::AtomUI.Controls.SharedControl)");
         source.ShouldNotContain("AtomUI.Controls.SharedControl|ThemeSchemaGeneratorTests%2FLocal");
         source.ShouldContain("Demo.LocalControl");
     }
