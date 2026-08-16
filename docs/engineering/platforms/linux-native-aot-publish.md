@@ -62,25 +62,17 @@ libSkiaSharp.so
 
 ## 项目配置
 
-`controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj` 的 Release 配置应保持：
+`controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj` 的 Release 配置应保持 AOT 兼容性声明；发布属性由发布命令显式传入：
 
 ```xml
 <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <IsAotCompatible>true</IsAotCompatible>
     <IsTrimmable>true</IsTrimmable>
-    <PublishTrimmed>true</PublishTrimmed>
-    <PublishAot>true</PublishAot>
-    <SelfContained>true</SelfContained>
-    <UseAppHost>true</UseAppHost>
 </PropertyGroup>
 ```
 
-`PublishAot` 放进项目文件里有两个好处：
-
-- `dotnet publish -c Release -r linux-x64` 默认就是 Native AOT 发布。
-- 构建和编辑阶段也会启用相关 AOT/动态代码分析行为，避免只在发布时才发现问题。
-
-不要只依赖命令行传 `-p:PublishAot=true`。命令行可以用于临时覆盖，但长期维护应以项目文件为准。
+NativeAOT 发布时使用 `-p:GalleryPublishTrimmed=true -p:GalleryPublishAot=true`。这样普通 Release build 不会因为项目默认属性而启动发布 analyzer 或自包含 runtime 输出。
+发布命令必须显式传入这两个 Gallery 属性；不要把全局 `PublishAot=true` 传给整个解决方案。
 
 这份配置是跨平台共享的，和 Windows 手册一致。Linux 和 Windows 的差异只在工具链和产物形态，不在项目配置。
 
@@ -92,6 +84,8 @@ libSkiaSharp.so
 dotnet publish controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj \
   -c Release \
   -r linux-x64 \
+  -p:GalleryPublishTrimmed=true \
+  -p:GalleryPublishAot=true \
   -v:minimal
 ```
 
@@ -101,6 +95,8 @@ dotnet publish controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj
 dotnet publish controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj \
   -c Release \
   -r linux-x64 \
+  -p:GalleryPublishTrimmed=true \
+  -p:GalleryPublishAot=true \
   -o artifacts/publish/AtomUIGallery.Desktop-linux-x64-nativeaot \
   -v:minimal
 ```
@@ -113,13 +109,16 @@ dotnet publish controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj
 dotnet restore controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj \
   -r linux-x64 \
   -p:Configuration=Release \
-  -p:PublishAot=true \
+  -p:GalleryPublishTrimmed=true \
+  -p:GalleryPublishAot=true \
   -v:minimal
 
 dotnet publish controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj \
   -c Release \
   -r linux-x64 \
   --no-restore \
+  -p:GalleryPublishTrimmed=true \
+  -p:GalleryPublishAot=true \
   -o artifacts/publish/AtomUIGallery.Desktop-linux-x64-nativeaot \
   -v:minimal
 ```

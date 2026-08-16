@@ -12,11 +12,10 @@
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
         <IsAotCompatible>true</IsAotCompatible>
         <IsTrimmable>true</IsTrimmable>
-        <PublishTrimmed>true</PublishTrimmed>
-        <PublishAot Condition="'$(GalleryPublishAot)' == ''">true</PublishAot>
+        <PublishTrimmed Condition="'$(GalleryPublishTrimmed)' != ''">$(GalleryPublishTrimmed)</PublishTrimmed>
         <PublishAot Condition="'$(GalleryPublishAot)' != ''">$(GalleryPublishAot)</PublishAot>
-        <SelfContained>true</SelfContained>
-        <UseAppHost>true</UseAppHost>
+        <SelfContained Condition="'$(GalleryPublishTrimmed)' == 'true' or '$(GalleryPublishAot)' == 'true'">true</SelfContained>
+        <UseAppHost Condition="'$(GalleryPublishTrimmed)' == 'true' or '$(GalleryPublishAot)' == 'true'">true</UseAppHost>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Debug'">

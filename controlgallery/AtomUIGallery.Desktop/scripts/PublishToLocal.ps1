@@ -229,6 +229,7 @@ if ($publishAotEnabled) {
         "--disable-parallel",
         "-m:1",
         "/nr:false",
+        "-p:GalleryPublishTrimmed=true",
         "--nologo",
         "-v:minimal"
     )
@@ -249,6 +250,7 @@ if ($publishAotEnabled) {
         "--configuration",
         $buildType,
         "--no-restore",
+        "-p:GalleryPublishTrimmed=true",
         "-p:GalleryPublishAot=true",
         "--disable-build-servers",
         "-m:1",
@@ -271,6 +273,7 @@ if ($publishAotEnabled) {
         $runtime,
         "--configuration",
         $buildType,
+        "-p:GalleryPublishTrimmed=true",
         "-p:GalleryPublishAot=false",
         "-p:PublishSingleFile=true"
     )

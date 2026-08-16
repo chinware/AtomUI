@@ -94,6 +94,49 @@ public class GalleryDeveloperToolsConventionsTests
         }
     }
 
+    [Fact]
+    public void Desktop_Release_Build_Does_Not_Implicitly_Enable_Publish_Analyzers()
+    {
+        var project = XDocument.Load(GetRepoFile(
+            "controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj"));
+        var releaseGroup = project.Descendants("PropertyGroup")
+                                  .Single(element =>
+                                      (string?)element.Attribute("Condition") ==
+                                      "'$(Configuration)' == 'Release'");
+
+        releaseGroup.Elements().ShouldNotContain(element =>
+            (element.Name.LocalName == "PublishTrimmed" ||
+             element.Name.LocalName == "PublishAot") &&
+            string.IsNullOrWhiteSpace((string?)element.Attribute("Condition")));
+        releaseGroup.Elements("PublishTrimmed")
+                    .ShouldContain(element =>
+                        ((string?)element.Attribute("Condition") ?? string.Empty)
+                        .Contains("GalleryPublishTrimmed", StringComparison.Ordinal));
+        releaseGroup.Elements("PublishAot")
+                    .ShouldContain(element =>
+                        ((string?)element.Attribute("Condition") ?? string.Empty)
+                        .Contains("GalleryPublishAot", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Browser_Normal_Build_Skips_Native_Wasm_Link()
+    {
+        var project = XDocument.Load(GetRepoFile(
+            "controlgallery/AtomUIGallery.Browser/AtomUIGallery.Browser.csproj"));
+        var target = project.Descendants("Target")
+                            .Single(element =>
+                                (string?)element.Attribute("Name") ==
+                                "AtomUIUseManagedBrowserBuild");
+
+        ((string?)target.Attribute("BeforeTargets")).ShouldBe("_SetWasmBuildNativeDefaults");
+        var condition = (string?)target.Attribute("Condition");
+        condition.ShouldNotBeNull();
+        condition.ShouldContain("WasmBuildingForNestedPublish");
+        condition.ShouldContain("AtomUIBrowserNativeBuild");
+        target.Descendants("WasmBuildNative").ShouldHaveSingleItem().Value.ShouldBe("false");
+        target.Descendants("WasmEnableWebcil").ShouldHaveSingleItem().Value.ShouldBe("true");
+    }
+
     private static string ReadRepoFile(string relativePath)
     {
         return File.ReadAllText(GetRepoFile(relativePath));

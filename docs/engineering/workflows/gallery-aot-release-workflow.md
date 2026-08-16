@@ -38,10 +38,10 @@ PublishAot:
 当 `publishAot` 为 `true`：
 
 - 要求 `buildType` 为 `Release`。
-- 先执行显式 restore，并传入 `-p:Configuration=Release -p:GalleryPublishAot=true`。
-- `AtomUIGallery.Desktop.csproj` 将 `GalleryPublishAot` 映射到本项目的 `PublishAot`。不要在命令行直接传全局 `PublishAot=true`，否则 source generator 等非最终可执行项目也会收到该属性，并可能触发 `NETSDK1207`。
+- 先执行显式 restore，并传入 `-p:Configuration=Release -p:GalleryPublishTrimmed=true -p:GalleryPublishAot=true`。
+- `AtomUIGallery.Desktop.csproj` 将 `GalleryPublishTrimmed` 和 `GalleryPublishAot` 映射到本项目的发布属性。不要在命令行直接传全局 `PublishAot=true`，否则 source generator 等非最终可执行项目也会收到该属性，并可能触发 `NETSDK1207`。
 - 检查 `project.assets.json` 包含 `Microsoft.DotNet.ILCompiler`，并存在目标 RID 对应的 restore target。
-- 再执行 `dotnet publish --no-restore`，并显式传入 `-p:GalleryPublishAot=true`。
+- 再执行 `dotnet publish --no-restore`，并显式传入 `-p:GalleryPublishTrimmed=true -p:GalleryPublishAot=true`。
 - 检查输出目录里不存在普通 self-contained runtime 标志文件。
 
 当 `publishAot` 为 `false`：

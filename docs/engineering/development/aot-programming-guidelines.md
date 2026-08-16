@@ -599,7 +599,7 @@ observable.ToProperty(...);
 
 ### 日常构建不运行发布分析器
 
-普通 `Debug` 和非 AOT、非裁剪的 `Release` 构建必须关闭 SDK 的 trim、AOT 和 single-file analyzer，避免把发布期静态分析成本带入日常开发。第一方运行时库仍保留 `IsTrimmable=true` 和 `IsAotCompatible=true` 包元数据；这些兼容性声明不能隐式改变普通构建的 analyzer 开关。
+普通 `Debug` 和非 AOT、非裁剪的 `Release` 构建必须关闭 SDK 的 trim、AOT 和 single-file analyzer，避免把发布期静态分析成本带入日常开发。Gallery Desktop 的 Release 项目只保留 `IsTrimmable=true` 和 `IsAotCompatible=true` 兼容性声明；`PublishTrimmed`、`PublishAot` 和自包含发布属性由发布脚本显式传入，不能隐式改变普通构建的 analyzer 开关。
 
 仓库构建按以下输入自动启用对应 analyzer：
 
@@ -642,7 +642,8 @@ Gallery NativeAOT publish：
 
 ```bash
 dotnet publish controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj \
-  -c Release -r osx-arm64 -p:PublishAot=true --self-contained true \
+  -c Release -r osx-arm64 -p:GalleryPublishTrimmed=true \
+  -p:GalleryPublishAot=true --self-contained true \
   --nologo -v:minimal
 ```
 
@@ -853,7 +854,8 @@ Gallery NativeAOT publish：
 
 ```bash
 dotnet publish controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj \
-  -c Release -r osx-arm64 -p:PublishAot=true --self-contained true \
+  -c Release -r osx-arm64 -p:GalleryPublishTrimmed=true \
+  -p:GalleryPublishAot=true --self-contained true \
   --nologo -v:minimal
 ```
 

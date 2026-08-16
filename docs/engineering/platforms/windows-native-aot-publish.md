@@ -49,25 +49,17 @@ PDB 文件建议单独归档用于崩溃分析，不作为默认分发内容。
 
 ## 项目配置
 
-`controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj` 的 Release 配置应保持：
+`controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj` 的 Release 配置应保持 AOT 兼容性声明；发布属性由发布命令显式传入：
 
 ```xml
 <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <IsAotCompatible>true</IsAotCompatible>
     <IsTrimmable>true</IsTrimmable>
-    <PublishTrimmed>true</PublishTrimmed>
-    <PublishAot>true</PublishAot>
-    <SelfContained>true</SelfContained>
-    <UseAppHost>true</UseAppHost>
 </PropertyGroup>
 ```
 
-`PublishAot` 放进项目文件里有两个好处：
-
-- `dotnet publish -c Release -r win-x64` 默认就是 Native AOT 发布。
-- 构建和编辑阶段也会启用相关 AOT/动态代码分析行为，避免只在发布时才发现问题。
-
-不要只依赖命令行传 `-p:PublishAot=true`。命令行可以用于临时覆盖，但长期维护应以项目文件为准。
+NativeAOT 发布时使用 `-p:GalleryPublishTrimmed=true -p:GalleryPublishAot=true`。这样普通 Release build 不会因为项目默认属性而启动发布 analyzer 或自包含 runtime 输出。
+发布命令必须显式传入这两个 Gallery 属性；不要把全局 `PublishAot=true` 传给整个解决方案。
 
 ## 推荐发布命令
 
@@ -77,6 +69,8 @@ PDB 文件建议单独归档用于崩溃分析，不作为默认分发内容。
 dotnet publish .\controlgallery\AtomUIGallery.Desktop\AtomUIGallery.Desktop.csproj `
   -c Release `
   -r win-x64 `
+  -p:GalleryPublishTrimmed=true `
+  -p:GalleryPublishAot=true `
   -v:minimal
 ```
 
@@ -86,6 +80,8 @@ dotnet publish .\controlgallery\AtomUIGallery.Desktop\AtomUIGallery.Desktop.cspr
 dotnet publish .\controlgallery\AtomUIGallery.Desktop\AtomUIGallery.Desktop.csproj `
   -c Release `
   -r win-x64 `
+  -p:GalleryPublishTrimmed=true `
+  -p:GalleryPublishAot=true `
   -o .\artifacts\publish\AtomUIGallery.Desktop-win-x64-nativeaot `
   -v:minimal
 ```
@@ -96,7 +92,8 @@ dotnet publish .\controlgallery\AtomUIGallery.Desktop\AtomUIGallery.Desktop.cspr
 dotnet restore .\controlgallery\AtomUIGallery.Desktop\AtomUIGallery.Desktop.csproj `
   -r win-x64 `
   -p:Configuration=Release `
-  -p:PublishAot=true `
+  -p:GalleryPublishTrimmed=true `
+  -p:GalleryPublishAot=true `
   --disable-parallel `
   -m:1 `
   /nr:false `
@@ -106,6 +103,8 @@ dotnet publish .\controlgallery\AtomUIGallery.Desktop\AtomUIGallery.Desktop.cspr
   -c Release `
   -r win-x64 `
   --no-restore `
+  -p:GalleryPublishTrimmed=true `
+  -p:GalleryPublishAot=true `
   -o .\artifacts\publish\AtomUIGallery.Desktop-win-x64-nativeaot `
   -m:1 `
   /nr:false `
