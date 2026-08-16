@@ -79,7 +79,7 @@ RadioButton 的公共契约由 public/protected 类型成员、Avalonia 属性�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml:36`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml:59`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -91,7 +91,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 禁用
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml:49`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml:72`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -116,7 +116,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 垂直单选框组
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml:111`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml:134`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -131,7 +131,7 @@ Gallery key：`ExamplesContent` / item `3`
 
 ### 通过 ItemsSource 生成单选框组
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml:127`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml:150`
 
 Gallery key：`ExamplesContent` / item `4`
 
@@ -248,6 +248,7 @@ RadioButton 和 OptionButton Token 只表达组件级视觉变量，例如指示
 
 - 源设计文档：`docs/controls/desktop/data-entry/radio-button/overview.md`
 - 实现文档：`docs/controls/desktop/data-entry/radio-button/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-entry/radio-button/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-entry/radio-button/token.md`
 - 变更记录：`docs/controls/desktop/data-entry/radio-button/changelog.md`
 - 语义结构：`./semantic-cn.md`

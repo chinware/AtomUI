@@ -5747,13 +5747,34 @@ Source: ./controls/radio-button/semantic-cn.md
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `radio-root` | `RadioButton` | 承载普通单选内容、checked、disabled 和 Wave 状态。 | `Content`、`IsChecked` | RadioButtonToken | stable |
-| `radio-group` | `RadioButtonGroup` | 承载普通单选集合、CheckedItem 和排列方向。 | `CheckedItem`、`Orientation`、`ItemsSource` | SharedToken | stable |
-| `indicator` | `RadioIndicator` | 绘制普通单选圆环、圆点和状态动效。 | `IsChecked`、`IsEnabled` | RadioButtonToken | internal-observable |
-| `option-group` | `OptionButtonGroup` | 承载按钮式单选集合、Orientation、共享边框和选中边框。 | `Orientation`、`ButtonStyle`、`SelectedItem`、`SizeType` | OptionButtonToken + SharedToken | stable |
-| `option-item` | `OptionButton` | 承载按钮式选项内容、图标、checked 状态和有效圆角。 | `Content`、`Icon`、`IsChecked` | OptionButtonToken | stable |
+RadioButton 主控件公开 `root`、`icon` 与 `label` 三个职责区域，与上游稳定 Semantic DOM
+（`root` / `icon` / `label`，均 since 6.0.0）对齐。`icon` 对应单选指示圆环区域，由模板中的 `RadioIndicator`
+节点承载；`label` 对应文本区域，由模板中的 `ContentPresenter` 节点承载。
+
+`RadioButtonGroup`、`RadioIndicator` 与 `OptionButton` / `OptionButtonGroup` 均不持有独立 Semantic descriptor：
+
+- 上游 Radio.Group 不提供 `classNames` / `styles` / Semantic API（只有单个 Radio 提供），因此 `RadioButtonGroup` 的
+  集合容器 `ItemsPresenter` 不是 Semantic Part；Group 只负责创建并管理 `RadioButton` 容器，语义由每个 RadioButton
+  owner 各自公开。
+- `RadioIndicator` 是 internal 类型，不能作为公共 descriptor owner。
+- 上游 Radio.Button 的 props 只继承 `AbstractCheckboxProps`，没有自身的 `classNames` / `styles`；对应 AtomUI 的
+  `OptionButton` / `OptionButtonGroup` 因此不公开 Semantic Part。ConfigProvider 上下文透传不得作为准入证据。
+
+因此本控件的 Semantic Part 只由 `RadioButton` owner 公开。
+
+| Part | Selector | ContractType | Cardinality | Customization | CrossVisualRoot | RuntimeCreated |
+| --- | --- | --- | --- | --- | --- | --- |
+| `root` | owner | `RadioButton` | `Single` | `Root` | `false` | `false` |
+| `icon` | `.semantic-icon` | `TemplatedControl` | `Single` | `Selector` | `false` | `false` |
+| `label` | `.semantic-label` | `ContentPresenter` | `Single` | `Selector` | `false` | `false` |
+
+`root` 是控件自身，承载 `IsChecked`、`Content`、`IsEnabled`、动效与水波开关等 public API、主题入口和状态归一，
+不声明 `.semantic-root` marker。`icon` 是模板中的单选指示圆环节点 `Indicator`，对应上游 `icon` 语义；其
+`ContractType` 为 `TemplatedControl` 而非 `RadioIndicator`，因为 `RadioIndicator` 是 internal 类型，不能作为公共
+Setter 依赖的最低类型。`label` 是模板文本节点 `ContentPresenter`，承载 `Content` 文本内容。
+
+`ContractType` 只定义 Setter 可以稳定依赖的最低 public 类型，并通过 `x:SetterTargetType` 提供 AXAML 编译期类型
+上下文；它不参与 `.semantic-*` 的身份匹配。
 
 ## Abstract AXAML Structure
 

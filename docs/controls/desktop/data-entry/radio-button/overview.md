@@ -172,6 +172,7 @@ RadioButton 的视觉选项通过 public API 归一为 theme variables、伪类�
 关联文档：
 
 - [RadioButton 桌面版实现原理](implementation.md)
+- [RadioButton Semantic Part 契约](semantic-part.md)
 - [OptionButtonGroup 方向布局设计](option-button-group-orientation-design.md)
 - [RadioButton Token 设计](token.md)
 - [RadioButton Changelog](changelog.md)
@@ -180,11 +181,14 @@ LLMS 语义区域：
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `radio-root` | `RadioButton` | 承载普通单选内容、checked、disabled 和 Wave 状态。 | `Content`、`IsChecked` | RadioButtonToken | stable |
-| `radio-group` | `RadioButtonGroup` | 承载普通单选集合、CheckedItem 和排列方向。 | `CheckedItem`、`Orientation`、`ItemsSource` | SharedToken | stable |
-| `indicator` | `RadioIndicator` | 绘制普通单选圆环、圆点和状态动效。 | `IsChecked`、`IsEnabled` | RadioButtonToken | internal-observable |
-| `option-group` | `OptionButtonGroup` | 承载按钮式单选集合、Orientation、共享边框和选中边框。 | `Orientation`、`ButtonStyle`、`SelectedItem`、`SizeType` | OptionButtonToken + SharedToken | stable |
-| `option-item` | `OptionButton` | 承载按钮式选项内容、图标、checked 状态和有效圆角。 | `Content`、`Icon`、`IsChecked` | OptionButtonToken | stable |
+| `root` | `RadioButton` | 控件根语义区域，承载选中值、内容、可用性和动效/水波开关等 public API、状态归一和主题入口。 | `IsChecked`、`Content`、`IsEnabled` | `RadioButtonToken` | stable |
+| `icon` | `RadioIndicator` | 单选指示圆环语义区域，承载指示圆环尺寸与局部布局。 | `IsChecked`、`IsEnabled` | `RadioSize`、`DotSize` | stable |
+| `label` | `ContentPresenter` | 文本语义区域，承载 `Content` 内容与文本视觉状态。 | `Content`、`ContentTemplate` | `TextMargin` | stable |
+
+`icon` 指示圆环语义与上游 Radio `icon` 语义对齐，由模板中的 `RadioIndicator` 节点承载并以 `Single` 基数公开；
+`label` 对应上游 `label` 语义，由 `ContentPresenter` 节点承载。`RadioButtonGroup`、`RadioIndicator`、
+`OptionButton` 与 `OptionButtonGroup` 不持有独立 Semantic descriptor。完整契约见
+[RadioButton Semantic Part 契约](semantic-part.md)。
 
 LLMS 导出来源：
 
