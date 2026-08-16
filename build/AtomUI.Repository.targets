@@ -1,4 +1,24 @@
 <Project>
+    <PropertyGroup>
+        <EnableTrimAnalyzer
+            Condition="'$(EnableTrimAnalyzer)' == '' and
+                       ('$(PublishTrimmed)' == 'true' or
+                        '$(PublishAot)' == 'true' or
+                        '$(RunAOTCompilation)' == 'true')">true</EnableTrimAnalyzer>
+        <EnableTrimAnalyzer Condition="'$(EnableTrimAnalyzer)' == ''">false</EnableTrimAnalyzer>
+
+        <EnableAotAnalyzer
+            Condition="'$(EnableAotAnalyzer)' == '' and
+                       ('$(PublishAot)' == 'true' or
+                        '$(RunAOTCompilation)' == 'true')">true</EnableAotAnalyzer>
+        <EnableAotAnalyzer Condition="'$(EnableAotAnalyzer)' == ''">false</EnableAotAnalyzer>
+
+        <EnableSingleFileAnalyzer
+            Condition="'$(EnableSingleFileAnalyzer)' == '' and
+                       '$(PublishSingleFile)' == 'true'">true</EnableSingleFileAnalyzer>
+        <EnableSingleFileAnalyzer Condition="'$(EnableSingleFileAnalyzer)' == ''">false</EnableSingleFileAnalyzer>
+    </PropertyGroup>
+
     <PropertyGroup Condition="$(MSBuildProjectName.StartsWith('AtomUI.')) and
                               '$(OutputType)' == 'Library' and
                               '$(IsTestProject)' != 'true' and

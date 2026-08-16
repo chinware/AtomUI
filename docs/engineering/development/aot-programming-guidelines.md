@@ -597,6 +597,19 @@ observable.ToProperty(...);
 
 ## Publish / trimming / NativeAOT
 
+### 日常构建不运行发布分析器
+
+普通 `Debug` 和非 AOT、非裁剪的 `Release` 构建必须关闭 SDK 的 trim、AOT 和 single-file analyzer，避免把发布期静态分析成本带入日常开发。第一方运行时库仍保留 `IsTrimmable=true` 和 `IsAotCompatible=true` 包元数据；这些兼容性声明不能隐式改变普通构建的 analyzer 开关。
+
+仓库构建按以下输入自动启用对应 analyzer：
+
+- `PublishTrimmed=true`：启用 trim analyzer。
+- `PublishAot=true` 或 `RunAOTCompilation=true`：启用 trim 和 AOT analyzer。
+- `PublishSingleFile=true`：启用 single-file analyzer。
+- 显式传入 `EnableTrimAnalyzer`、`EnableAotAnalyzer` 或 `EnableSingleFileAnalyzer` 时，保留调用方选择，用于专项验证。
+
+普通 Control Package 构建仍需生成 Registration Unit、ControlMap 和 Usage metadata，供以后消费该包的 AOT/trim 应用使用；这是包的编译期静态契约，不等于运行 SDK linker analyzer。应用级 Registration Plan 只能在 `AtomUILinkedPublish=true` 时生成。
+
 ### Analyzer 和真实 publish 都要跑
 
 AOT/trim analyzer 通过，只说明静态分析没有发现项目自身 warning。它不等于 trimmed JIT 或 NativeAOT 链接和运行一定成功。涉及 Registration Unit、Package fallback、发布配置或 native 依赖时，要做对应模式的真实 publish。

@@ -123,6 +123,54 @@ public sealed class LinkedRegistrationBuildAssetsTests
         ((string?)property.Attribute("Condition")).ShouldBe($"'$({propertyName})' == ''");
     }
 
+    [Theory]
+    [InlineData("EnableTrimAnalyzer", "PublishTrimmed", "PublishAot", "RunAOTCompilation")]
+    [InlineData("EnableAotAnalyzer", "PublishAot", "RunAOTCompilation")]
+    [InlineData("EnableSingleFileAnalyzer", "PublishSingleFile")]
+    public void Publish_Analyzers_Run_Only_For_Matching_Publish_Modes(
+        string analyzerProperty,
+        params string[] enablingProperties)
+    {
+        var targets = XDocument.Load(GetRepoFile("build/AtomUI.Repository.targets"));
+        var properties = targets.Descendants()
+                                .Where(element => element.Name.LocalName == analyzerProperty)
+                                .ToArray();
+
+        properties.Length.ShouldBe(2);
+        var enabled = properties.Single(element => element.Value.Trim() == "true");
+        var enabledCondition = (string?)enabled.Attribute("Condition");
+        enabledCondition.ShouldNotBeNull();
+        enabledCondition.ShouldContain($"'$({analyzerProperty})' == ''");
+        foreach (var enablingProperty in enablingProperties)
+        {
+            enabledCondition.ShouldContain($"'$({enablingProperty})' == 'true'");
+        }
+        foreach (var unrelatedProperty in new[]
+                 {
+                     "PublishTrimmed",
+                     "PublishAot",
+                     "RunAOTCompilation",
+                     "PublishSingleFile"
+                 }.Except(enablingProperties, StringComparer.Ordinal))
+        {
+            enabledCondition.ShouldNotContain($"'$({unrelatedProperty})' == 'true'");
+        }
+
+        var disabled = properties.Single(element => element.Value.Trim() == "false");
+        ((string?)disabled.Attribute("Condition"))
+            .ShouldBe($"'$({analyzerProperty})' == ''");
+
+        var repositoryProperties = targets.Descendants()
+                                          .Where(element =>
+                                              element.Parent?.Name.LocalName == "PropertyGroup")
+                                          .ToArray();
+        var analyzerIndex = Array.IndexOf(repositoryProperties, enabled);
+        var linkerCompatibilityIndex = Array.FindIndex(
+            repositoryProperties,
+            element => element.Name.LocalName == "IsTrimmable");
+        analyzerIndex.ShouldBeLessThan(linkerCompatibilityIndex);
+    }
+
     [Fact]
     public void Registration_Product_Packages_Embed_Generator_Consumer_Assets()
     {
