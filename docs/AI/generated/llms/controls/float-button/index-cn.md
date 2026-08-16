@@ -87,7 +87,7 @@ FloatButton 的公共契约由 public/protected 类型成员、Avalonia 属性�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/General/FloatButton/Views/FloatButtonShowCase.axaml:36`
+来源：`controlgallery/AtomUIGallery/ShowCases/General/FloatButton/Views/FloatButtonShowCase.axaml:114`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -103,7 +103,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 带提示的 FloatButton
 
-来源：`controlgallery/AtomUIGallery/ShowCases/General/FloatButton/Views/FloatButtonShowCase.axaml:164`
+来源：`controlgallery/AtomUIGallery/ShowCases/General/FloatButton/Views/FloatButtonShowCase.axaml:201`
 
 Gallery key：`ExamplesContent` / item `4`
 
@@ -121,9 +121,9 @@ Gallery key：`ExamplesContent` / item `4`
 
 ### 回到顶部
 
-来源：`controlgallery/AtomUIGallery/ShowCases/General/FloatButton/Views/FloatButtonShowCase.axaml:408`
+来源：`controlgallery/AtomUIGallery/ShowCases/General/FloatButton/Views/FloatButtonShowCase.axaml:372`
 
-Gallery key：`ExamplesContent` / item `11`
+Gallery key：`ExamplesContent` / item `9`
 
 ```axaml
 <atom:ScrollViewer Height="300">
@@ -205,6 +205,7 @@ FloatButton Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 资源和 AOT 约束：
 
 - 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
+- 不通过 VisualTree 扫描维护 Semantic Part；Gallery Preview 使用生成 descriptor 和 owner-scoped marker 解析。
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
 - 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
@@ -230,6 +231,9 @@ FloatButton Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - `src/AtomUI.Desktop.Controls/FloatButton/FloatButtonHost.cs`
 - `src/AtomUI.Desktop.Controls/FloatButton/FloatButtonItemsControl.cs`
 - `src/AtomUI.Desktop.Controls/FloatButton/FloatButtonToken.cs`
+- `src/AtomUI.Desktop.Controls/FloatButton/FloatButton.SemanticParts.cs`
+- `src/AtomUI.Desktop.Controls/FloatButton/BackTopFloatButton.SemanticParts.cs`
+- `src/AtomUI.Desktop.Controls/FloatButton/FloatButtonGroup.SemanticParts.cs`
 - `src/AtomUI.Desktop.Controls/FloatButton/Themes/AbstractFloatButtonTheme.axaml`
 - `src/AtomUI.Desktop.Controls/FloatButton/Themes/AbstractFloatButtonTheme.cs`
 - `src/AtomUI.Desktop.Controls/FloatButton/Themes/BackTopFloatButtonHostTheme.axaml`
@@ -252,11 +256,15 @@ FloatButton Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
 - Token 文件只提供组件视觉变量，不保存实例状态。
 - Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
+- Semantic descriptor 由各 public owner 的 `[SemanticPart]` 声明生成；模板只使用静态 `Classes.semantic-*="True"` marker。
+  `FloatButtonHost`、`FloatButtonGroupHost` 与 `BackTopFloatButtonHost` 不是 Semantic owner；它们在 Overlay Layer 中
+  创建的真实控件才是 marker 与 descriptor 的归属。
 
 ## 相关文档
 
 - 源设计文档：`docs/controls/desktop/general/float-button/overview.md`
 - 实现文档：`docs/controls/desktop/general/float-button/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/general/float-button/semantic-part.md`
 - Token 文档：`docs/controls/desktop/general/float-button/token.md`
 - 变更记录：`docs/controls/desktop/general/float-button/changelog.md`
 - 语义结构：`./semantic-cn.md`

@@ -135,9 +135,9 @@ public class ControlledStateBindingTests
     {
         var source = ReadRepoFile("src/AtomUI.Desktop.Controls/FloatButton/FloatButtonGroup.cs");
 
-        source.ShouldContain("var nextIsOpen = !IsOpen;");
-        source.ShouldContain("SetCurrentValue(IsOpenProperty, nextIsOpen);");
-        source.ShouldContain("if (nextIsOpen)");
+        source.ShouldContain("RequestOpenStateChange(!IsOpen);");
+        source.ShouldContain("private void RequestOpenStateChange(bool isOpen)");
+        source.ShouldContain("if (isOpen)");
     }
 
     private static void AssertBooleanPropertyUpdatesViewModel(

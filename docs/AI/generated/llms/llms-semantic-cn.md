@@ -245,17 +245,60 @@ Source: ./controls/float-button/semantic-cn.md
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `FloatButton` | 控件根语义区域，承载 public API、状态归一、主题入口和 Gallery 可观察行为。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载用户内容、图标、文本或装饰性展示。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `command` | `真实 FloatButton` | 承载 `Command`、`CommandParameter`、`CanExecute`、点击和禁用语义；host 只做投影。 | `Command`、`CommandParameter`、`Href` | 见视觉与主题模型 | stable |
-| `state` | `状态区域` | 表达 hover、pressed、disabled、loading、selected 或控件专属状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `theme` | `主题区域` | 连接 ControlTheme、SharedToken、控件 Token 和资源键。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+`FloatButton` 与 `BackTopFloatButton` 公开 `root`、`icon`、`content` 三个职责区域，与上游稳定语义保持同名；
+`FloatButtonGroup` 公开 `root`、`trigger`、`list` 三个职责区域。三个 Host 类型不是 Semantic owner：它们在
+Overlay Layer 中创建的真实控件才是 owner，Host 自身不声明任何 Part。
+
+### 1.1 `FloatButton`
+
+| Part | Selector | ContractType | Cardinality | Customization | CrossVisualRoot | RuntimeCreated |
+| --- | --- | --- | --- | --- | --- | --- |
+| `root` | owner | `FloatButton` | `Single` | `Root` | `false` | `false` |
+| `icon` | `.semantic-icon` | `IconPresenter` | `Single` | `Selector` | `false` | `false` |
+| `content` | `.semantic-content` | `ContentPresenter` | `Optional` | `Selector` | `false` | `false` |
+
+`icon` 在 Circle 与 Square 两套模板中都存在；`content` 只在 Square 模板中存在（Circle 模板只有图标），因此使用
+`Optional`。`root` 不声明 `.semantic-root` marker。
+
+### 1.2 `BackTopFloatButton`
+
+| Part | Selector | ContractType | Cardinality | Customization | CrossVisualRoot | RuntimeCreated |
+| --- | --- | --- | --- | --- | --- | --- |
+| `root` | owner | `BackTopFloatButton` | `Single` | `Root` | `false` | `false` |
+| `icon` | `.semantic-icon` | `IconPresenter` | `Single` | `Selector` | `false` | `false` |
+| `content` | `.semantic-content` | `ContentPresenter` | `Optional` | `Selector` | `false` | `false` |
+
+`BackTopFloatButton` 的模板结构与 `FloatButton` 一致（仅外层包一层 MotionActor），共享相同的 Part 名称与数量语义。
+上游体系的 BackTop 没有公开语义 API；AtomUI 按自身模板事实提供同等契约。
+
+### 1.3 `FloatButtonGroup`
+
+| Part | Selector | ContractType | Cardinality | Customization | CrossVisualRoot | RuntimeCreated |
+| --- | --- | --- | --- | --- | --- | --- |
+| `root` | owner | `FloatButtonGroup` | `Single` | `Selector` | `false` | `false` |
+| `trigger` | `.semantic-trigger` | `FloatButton` | `Optional` | `Selector` | `false` | `false` |
+| `list` | `.semantic-list` | `TemplatedControl` | `Single` | `Selector` | `false` | `false` |
+
+`trigger` 是 Click/Hover 触发模式模板中的主按钮；Default 模式模板没有 trigger，因此使用 `Optional`。`list` 是菜单项
+容器 `FloatButtonItemsControl`（internal 类型），在 Default 与触发模式模板中都存在；`ContractType` 取公开基类
+`TemplatedControl`，覆盖 Background、CornerRadius、Padding 等常用 Setter。
 
 ## Abstract AXAML Structure
 
-未定位到可生成抽象 AXAML 结构的 ControlTheme 模板。生成器不会根据 semantic parts 发明 AXAML 节点；请以 Template Parts、主题文件和源码索引为准。
+来源：`src/AtomUI.Desktop.Controls/FloatButton/Themes/FloatButtonTheme.axaml`
+
+```xml
+<Panel>
+    <Border Name="BackgroundFrame" />
+    <Border Name="Frame">
+        <StackPanel Name="RootLayout">
+            <IconPresenter Name="IconPresenter" />
+            <ContentPresenter />
+        </StackPanel>
+    </Border>
+    <Canvas Name="PART_BadgeLayout" />
+</Panel>
+```
 
 ## Composition Model
 
@@ -288,6 +331,18 @@ FloatButton
            -> FloatButtonSeparatorLayer (template-stable)
            -> StackPanel#PART_ItemsLayout (template-stable)
   -> FloatButton (control theme, FloatButtonTheme.axaml)
+     -> Panel (template-stable)
+        -> Border#BackgroundFrame (template-stable)
+        -> Border#Frame (template-stable)
+           -> StackPanel#RootLayout (template-stable)
+              -> IconPresenter#IconPresenter (internal-observable)
+              -> ContentPresenter (internal-observable)
+        -> Canvas#PART_BadgeLayout (template-stable)
+     -> Panel (template-stable)
+        -> Border#BackgroundFrame (template-stable)
+        -> Border#Frame (template-stable)
+           -> IconPresenter#IconPresenter (internal-observable)
+        -> Canvas#PART_BadgeLayout (template-stable)
 ```
 
 ### 协作节点
@@ -309,7 +364,14 @@ FloatButton
 | `ContentFrame` | template node (Border) | `FloatButtonItemsControlTheme.axaml` | FloatButtonItemsControl | `Background`, `BoxShadow`, `CornerRadius`, `Lines`, `Orientation` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Panel` | template node (Panel) | `FloatButtonItemsControlTheme.axaml` | FloatButtonItemsControl | `Lines`, `Orientation` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ItemsLayout` | template node (StackPanel) | `FloatButtonItemsControlTheme.axaml` | FloatButtonItemsControl | `Orientation` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `FloatButton` | control theme | `FloatButtonTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `FloatButton` | control theme | `FloatButtonTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BoxShadow`, `Content`, `ContentTemplate`, `CornerRadius`, `Cursor` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Panel` | template node (Panel) | `FloatButtonTheme.axaml` | FloatButton | `Background`, `BoxShadow`, `Content`, `ContentTemplate`, `CornerRadius`, `Cursor` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `BackgroundFrame` | template node (Border) | `FloatButtonTheme.axaml` | FloatButton | `BoxShadow`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (Border) | `FloatButtonTheme.axaml` | FloatButton | `Background`, `Content`, `ContentTemplate`, `CornerRadius`, `Cursor`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `RootLayout` | template node (StackPanel) | `FloatButtonTheme.axaml` | FloatButton | `Content`, `ContentTemplate`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `IconPresenter` | template node (IconPresenter) | `FloatButtonTheme.axaml` | FloatButton | `Icon` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `ContentPresenter` | template node (ContentPresenter) | `FloatButtonTheme.axaml` | FloatButton | `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_BadgeLayout` | template node (Canvas) | `FloatButtonTheme.axaml` | FloatButton | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 

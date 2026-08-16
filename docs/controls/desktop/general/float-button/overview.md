@@ -189,17 +189,19 @@ FloatButton 家族的业务命令只属于真实交互按钮。普通 `FloatButt
 
 - [FloatButton 桌面版实现原理](implementation.md)
 - [FloatButton Token 设计](token.md)
+- [FloatButton Semantic Part 契约](semantic-part.md)
 - [FloatButton Changelog](changelog.md)
 
 LLMS 语义区域：
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `FloatButton` | 控件根语义区域，承载 public API、状态归一、主题入口和 Gallery 可观察行为。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载用户内容、图标、文本或装饰性展示。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `command` | `真实 FloatButton` | 承载 `Command`、`CommandParameter`、`CanExecute`、点击和禁用语义；host 只做投影。 | `Command`、`CommandParameter`、`Href` | 见视觉与主题模型 | stable |
-| `state` | `状态区域` | 表达 hover、pressed、disabled、loading、selected 或控件专属状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `theme` | `主题区域` | 连接 ControlTheme、SharedToken、控件 Token 和资源键。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `root` | `FloatButton` | 按钮根区域，承载形状、类型、徽标选项和主题入口。 | 见 API 与契约模型 | `FloatButtonToken` | stable |
+| `icon` | `IconPresenter` | 图标区域，Circle 与 Square 模板均存在。 | `Icon`、`ButtonType` | `FloatButtonIconSize` | stable |
+| `content` | `ContentPresenter` | 描述内容区域，只在 Square 模板存在。 | `Description`（Host 投影为 `Content`） | `DescriptionLineHeight` | stable |
+
+`BackTopFloatButton` 的 `root/icon/content` 与 `FloatButtonGroup` 的 `root/trigger/list` descriptor 与主控件分开维护，
+完整契约见 [FloatButton Semantic Part 契约](semantic-part.md)。
 
 LLMS 导出来源：
 

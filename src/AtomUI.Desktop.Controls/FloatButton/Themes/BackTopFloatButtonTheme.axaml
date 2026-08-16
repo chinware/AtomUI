@@ -24,8 +24,10 @@
                                     Cursor="{TemplateBinding Cursor}">
                                 <StackPanel Name="RootLayout">
                                     <atom:IconPresenter Name="IconPresenter" Icon="{TemplateBinding Icon}"
+                                                        Classes.semantic-icon="True"
                                                         IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
                                     <ContentPresenter Content="{TemplateBinding Content}"
+                                                      Classes.semantic-content="True"
                                                       TextWrapping="Wrap"
                                                       HorizontalContentAlignment="Center"
                                                       ContentTemplate="{TemplateBinding ContentTemplate}"
@@ -54,6 +56,7 @@
                                     CornerRadius="{TemplateBinding CornerRadius}"
                                     Cursor="{TemplateBinding Cursor}">
                                 <atom:IconPresenter Name="IconPresenter"
+                                                    Classes.semantic-icon="True"
                                                     Icon="{TemplateBinding Icon}"
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center" />

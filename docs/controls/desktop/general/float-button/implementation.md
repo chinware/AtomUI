@@ -18,6 +18,9 @@
 - `src/AtomUI.Desktop.Controls/FloatButton/FloatButtonHost.cs`
 - `src/AtomUI.Desktop.Controls/FloatButton/FloatButtonItemsControl.cs`
 - `src/AtomUI.Desktop.Controls/FloatButton/FloatButtonToken.cs`
+- `src/AtomUI.Desktop.Controls/FloatButton/FloatButton.SemanticParts.cs`
+- `src/AtomUI.Desktop.Controls/FloatButton/BackTopFloatButton.SemanticParts.cs`
+- `src/AtomUI.Desktop.Controls/FloatButton/FloatButtonGroup.SemanticParts.cs`
 - `src/AtomUI.Desktop.Controls/FloatButton/Themes/AbstractFloatButtonTheme.axaml`
 - `src/AtomUI.Desktop.Controls/FloatButton/Themes/AbstractFloatButtonTheme.cs`
 - `src/AtomUI.Desktop.Controls/FloatButton/Themes/BackTopFloatButtonHostTheme.axaml`
@@ -40,6 +43,9 @@
 - Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
 - Token 文件只提供组件视觉变量，不保存实例状态。
 - Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
+- Semantic descriptor 由各 public owner 的 `[SemanticPart]` 声明生成；模板只使用静态 `Classes.semantic-*="True"` marker。
+  `FloatButtonHost`、`FloatButtonGroupHost` 与 `BackTopFloatButtonHost` 不是 Semantic owner；它们在 Overlay Layer 中
+  创建的真实控件才是 marker 与 descriptor 的归属。
 
 ## 3. 核心类职责
 
@@ -137,6 +143,19 @@ FloatButtonGroupHost.DataContext
 - `PART_BadgeLayout`：稳定模板协作入口，重命名前必须同步主题和实现。
 - `PART_ItemsLayout`：承载集合项、布局面板或虚拟化内容。
 
+Semantic marker 与模板结构的真实映射：
+
+- `AbstractFloatButtonTheme` 的 Circle/Square 双模板中，`IconPresenter.semantic-icon` 静态存在；
+  `ContentPresenter.semantic-content` 只在 Square 模板存在。`BackTopFloatButtonTheme` 的两套模板包在 MotionActor 内，
+  提供同一组 marker。
+- `FloatButtonGroupTheme` 的 Default 模板只有 `FloatButtonItemsControl.semantic-list`；Click/Hover 模板中
+  `FloatButton.semantic-trigger` 与 MotionActor 内的 `semantic-list` 是 Canvas 下的 sibling。
+- Badge adorner 由 `ConfigureBadge` 在运行时创建并加入 `PART_BadgeLayout`，属于 Badge 家族 descriptor 的范围；
+  FloatButton 不为其声明 marker。
+- 已知不一致：`BackTopFloatButtonTheme` 的模板把徽标画布命名为 `BadgeLayout`（缺少 `PART_` 前缀），而
+  `AbstractFloatButton.OnApplyTemplate` 查找 `PART_BadgeLayout`，因此 BackTop 的徽标属性当前不会投影到模板；
+  该问题属于既有缺陷，修复需单独评审，不随 Semantic Part 改造变更。
+
 ## 6. 交互与事件处理
 
 FloatButton 的交互事件应从输入源收敛到控件级语义事件：
@@ -161,6 +180,8 @@ FloatButton 的交互事件应从输入源收敛到控件级语义事件：
 - Host 公共属性到 overlay 真实按钮的投影，以及 detach 时的投影释放。
 - Group host `DataContext` 到 overlay group 和子按钮命令绑定的继承链。
 - 动效启停、初始加载阶段 transition 抑制和卸载取消。
+- Semantic Part marker 不参与状态切换；`IsOpen`、`IsActive`、`Shape` 与 `Trigger` 只改变模板选择或目标节点的
+  `IsVisible`，模板重套用后由新模板重新提供同一 marker 契约。
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 
@@ -169,6 +190,7 @@ FloatButton 的交互事件应从输入源收敛到控件级语义事件：
 资源和 AOT 约束：
 
 - 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
+- 不通过 VisualTree 扫描维护 Semantic Part；Gallery Preview 使用生成 descriptor 和 owner-scoped marker 解析。
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
 - 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。

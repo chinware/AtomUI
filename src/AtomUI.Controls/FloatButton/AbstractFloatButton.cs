@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 
@@ -209,10 +210,10 @@ public abstract class AbstractFloatButton : AvaloniaButton, IMotionAwareControl
         base.OnSizeChanged(e);
         if (Shape == FloatButtonShape.Circle)
         {
-            SetCurrentValue(CornerRadiusProperty, new CornerRadius(e.NewSize.Height / 2));
+            SetValue(CornerRadiusProperty, new CornerRadius(e.NewSize.Height / 2), BindingPriority.Template);
         }
 
-        if (IsEmbedMode && _overlayLayer != null)
+        if (_overlayLayer != null)
         {
             CalculatePosition(this, _overlayLayer.Bounds.Size, Placement, FloatOffsetX, FloatOffsetY);
         }

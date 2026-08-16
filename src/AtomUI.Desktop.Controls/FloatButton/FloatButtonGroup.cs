@@ -36,7 +36,7 @@ public enum FloatButtonGroupTrigger
     Hover
 }
 
-public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
+public partial class FloatButtonGroup : TemplatedControl, IMotionAwareControl
 {
     private static readonly CubicEaseOut DefaultShowMotionEasing = new();
     private static readonly CubicEaseIn DefaultHideMotionEasing = new();
@@ -206,6 +206,7 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
     private FloatButtonItemsControl? _itemsControl;
     private bool _initPressed;
     private bool _wasOpenOnPointerPressed;
+    private bool _selfManagesOpen;
     private IDisposable? _clickTriggerDisposable;
     private FloatButton? _triggerButton;
     ScopeAwareOverlayLayer? _overlayLayer;
@@ -376,11 +377,7 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
     {
         if (Trigger == FloatButtonGroupTrigger.Hover)
         {
-            SetCurrentValue(IsOpenProperty, true);
-            if (_overlayLayer != null)
-            {
-                OpenRequest?.Invoke(this, EventArgs.Empty);
-            }
+            RequestOpenStateChange(true);
         }
     }
     
@@ -389,8 +386,32 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
         base.OnPointerExited(e);
         if (Trigger == FloatButtonGroupTrigger.Hover)
         {
-            SetCurrentValue(IsOpenProperty, false);
-            if (_overlayLayer != null)
+            RequestOpenStateChange(false);
+        }
+    }
+
+    private void RequestOpenStateChange(bool isOpen)
+    {
+        // A consumer that sets or binds IsOpen drives the state; the group only
+        // reports intent via OpenRequest/CloseRequest. Without an external value
+        // the group manages the state itself and keeps doing so across toggles.
+        if (!_selfManagesOpen && !IsSet(IsOpenProperty))
+        {
+            _selfManagesOpen = true;
+        }
+
+        if (_selfManagesOpen)
+        {
+            SetCurrentValue(IsOpenProperty, isOpen);
+        }
+
+        if (_overlayLayer != null)
+        {
+            if (isOpen)
+            {
+                OpenRequest?.Invoke(this, EventArgs.Empty);
+            }
+            else
             {
                 CloseRequest?.Invoke(this, EventArgs.Empty);
             }
@@ -457,30 +478,14 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
                 {
                     if (_initPressed && pointerEventArgs.IsPointLogicalIn(_triggerButton))
                     {
-                        var nextIsOpen = !IsOpen;
-                        SetCurrentValue(IsOpenProperty, nextIsOpen);
-                        if (_overlayLayer != null)
-                        {
-                            if (nextIsOpen)
-                            {
-                                OpenRequest?.Invoke(this, EventArgs.Empty);
-                            }
-                            else
-                            {
-                                CloseRequest?.Invoke(this, EventArgs.Empty);
-                            }
-                        }
+                        RequestOpenStateChange(!IsOpen);
                     }
                 }
                 else
                 {
                     if (_wasOpenOnPointerPressed)
                     {
-                        SetCurrentValue(IsOpenProperty, false);
-                        if (_overlayLayer != null)
-                        {
-                            CloseRequest?.Invoke(this, EventArgs.Empty);
-                        }
+                        RequestOpenStateChange(false);
                     }
                 }
                 _initPressed = false;
@@ -494,7 +499,7 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
         base.OnSizeChanged(e);
         if (Shape == FloatButtonShape.Circle)
         {
-            SetCurrentValue(CornerRadiusProperty, new CornerRadius(e.NewSize.Height / 2));
+            SetValue(CornerRadiusProperty, new CornerRadius(e.NewSize.Height / 2), BindingPriority.Template);
         }
 
         if (_overlayLayer != null)
