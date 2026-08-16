@@ -23,7 +23,8 @@
 
     <Target Name="GenerateAtomUIThemeAssetWrappers"
             BeforeTargets="GenerateAvaloniaResources"
-            Condition="'$(AtomUIGenerateControlThemeAssetResources)' == 'true'">
+            Condition="'$(AtomUIGenerateControlThemeAssetResources)' == 'true' and
+                       '@(AvaloniaXaml)' != ''">
         <PropertyGroup>
             <_AtomUIThemeAssetOutputDirectory>$(IntermediateOutputPath)AtomUIThemeAssets</_AtomUIThemeAssetOutputDirectory>
             <_AtomUIThemeAssetGeneratedCode>$(_AtomUIThemeAssetOutputDirectory)/GeneratedThemeAssetResources.g.cs</_AtomUIThemeAssetGeneratedCode>

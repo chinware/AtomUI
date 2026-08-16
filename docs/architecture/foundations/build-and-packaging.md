@@ -71,7 +71,9 @@ Registration、Localization 和 Theme Asset 的扁平 feature 文件。`AtomUI.L
 所有需要 `AtomUI.Build.Tasks` 的 feature target 都使用唯一属性 `$(AtomUIBuildTasksAssembly)`。Repository 构建将它
 指向 `output/bin/<Configuration>/netstandard2.0/AtomUI.Build.Tasks.dll`；NuGet consumer 由
 `AtomUI.Generator.props` 回退解析相邻 `tools/netstandard2.0/AtomUI.Build.Tasks.dll`。不得新增功能专用的 Build Tasks
-路径属性或只为该属性增加单独文件。
+路径属性或只为该属性增加单独文件。调用 Build Tasks 的 target 必须同时按真实输入 item 门控；没有 AXAML、语言文件或
+linked registration 输入的项目不得仅因导入共享 targets 就要求任务程序集已经存在。这样可以保证直接、干净的项目构建
+不依赖解决方案项目顺序，也不会给无输入的 Debug 编译增加任务成本。
 
 ## Target Framework
 

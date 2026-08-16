@@ -76,6 +76,15 @@ public class ThemeAssetPackagingContractTests
     public void Theme_Asset_Target_Uses_Build_Task_Instead_Of_Inline_Code()
     {
         var target = XDocument.Load(GetRepoFile("build/AtomUI.ThemeAssets.targets"));
+        var wrapperTarget = target.Descendants()
+                                  .Single(element =>
+                                      element.Name.LocalName == "Target" &&
+                                      (string?)element.Attribute("Name") ==
+                                      "GenerateAtomUIThemeAssetWrappers");
+        var wrapperCondition = (string?)wrapperTarget.Attribute("Condition");
+        wrapperCondition.ShouldNotBeNull();
+        wrapperCondition.ShouldContain("'@(AvaloniaXaml)' != ''");
+
         target.Descendants()
               .Where(element => element.Name.LocalName == "UsingTask")
               .ShouldContain(element =>
