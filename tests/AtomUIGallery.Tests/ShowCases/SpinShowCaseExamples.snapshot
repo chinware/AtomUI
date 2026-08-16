@@ -16,6 +16,36 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
+            Title="{gallery:SpinShowCaseLangResource EmbeddedModeTitle}"
+            Description="{gallery:SpinShowCaseLangResource EmbeddedModeDescription}"
+            IsOccupyEntireRow="True">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Spin IsSpinning="{Binding IsLoadingSwitchChecked}"
+                           IsTipVisible="True"
+                           HorizontalAlignment="Stretch"
+                           Tip="{gallery:SpinShowCaseLangResource P2TipLoading}">
+                    <atom:Alert Message="{gallery:SpinShowCaseLangResource P2MessageAlertMessageTitle}"
+                                Description="{gallery:SpinShowCaseLangResource P2DescriptionFurtherDetailsAboutTheContextOfThisAlert}"
+                                Type="Info" />
+                </atom:Spin>
+
+                <atom:Spin IsSpinning="{Binding IsLoadingSwitchChecked}"
+                           IsTipVisible="True"
+                           Tip="{gallery:SpinShowCaseLangResource P2TipLoading}"
+                           HorizontalAlignment="Stretch"
+                           IsMaskBlurEnabled="True">
+                    <atom:Alert Message="{gallery:SpinShowCaseLangResource P2MessageAlertMessageTitle}"
+                                Description="{gallery:SpinShowCaseLangResource P2DescriptionFurtherDetailsAboutTheContextOfThisAlert}"
+                                Type="Info" />
+                </atom:Spin>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:TextBlock Text="{gallery:SpinShowCaseLangResource P2TextLoadingState}" />
+                    <atom:ToggleSwitch IsChecked="{Binding IsLoadingSwitchChecked}" />
+                </StackPanel>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
             Title="{gallery:SpinShowCaseLangResource CustomizedDescriptionTitle}"
             Description="{gallery:SpinShowCaseLangResource CustomizedDescriptionDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -59,35 +89,5 @@
                 <atom:SpinIndicator SizeType="Large"
                                     VerticalAlignment="Center"
                                     CustomIndicator="{antdicons:AntDesignIconProvider Kind=LoadingOutlined, StrokeBrush=#1677ff}" />
-            </StackPanel>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:SpinShowCaseLangResource EmbeddedModeTitle}"
-            Description="{gallery:SpinShowCaseLangResource EmbeddedModeDescription}"
-            IsOccupyEntireRow="True">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Spin IsSpinning="{Binding IsLoadingSwitchChecked}"
-                           IsTipVisible="True"
-                           HorizontalAlignment="Stretch"
-                           Tip="{gallery:SpinShowCaseLangResource P2TipLoading}">
-                    <atom:Alert Message="{gallery:SpinShowCaseLangResource P2MessageAlertMessageTitle}"
-                                Description="{gallery:SpinShowCaseLangResource P2DescriptionFurtherDetailsAboutTheContextOfThisAlert}"
-                                Type="Info" />
-                </atom:Spin>
-
-                <atom:Spin IsSpinning="{Binding IsLoadingSwitchChecked}"
-                           IsTipVisible="True"
-                           Tip="{gallery:SpinShowCaseLangResource P2TipLoading}"
-                           HorizontalAlignment="Stretch"
-                           IsMaskBlurEnabled="True">
-                    <atom:Alert Message="{gallery:SpinShowCaseLangResource P2MessageAlertMessageTitle}"
-                                Description="{gallery:SpinShowCaseLangResource P2DescriptionFurtherDetailsAboutTheContextOfThisAlert}"
-                                Type="Info" />
-                </atom:Spin>
-                <StackPanel Orientation="Horizontal" Spacing="10">
-                    <atom:TextBlock Text="{gallery:SpinShowCaseLangResource P2TextLoadingState}" />
-                    <atom:ToggleSwitch IsChecked="{Binding IsLoadingSwitchChecked}" />
-                </StackPanel>
             </StackPanel>
         </gallery:ShowCaseItem>

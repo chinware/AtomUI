@@ -44,7 +44,7 @@ Spin 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 | --- | --- | --- |
 | 内容与数据 | `CustomIndicatorTemplate` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
 | 交互与状态 | `IsMaskBackgroundEnabled`、`IsMaskBlurEnabled`、`IsMotionEnabled`、`IsSpinning`、`IsTipVisible` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 视觉与布局 | `DotSize`、`IndicatorSize`、`SizeType` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
+| 视觉与布局 | `DotBgBrush`、`DotSize`、`IndicatorSize`、`SizeType` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 动效与异步 | `MotionDuration`、`MotionEasingCurve` | 约束动效开关、异步加载、播放速度、超时和任务边界。 |
 | 其他稳定入口 | `CustomIndicator`、`Tip` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
@@ -76,7 +76,7 @@ Spin 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml:36`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml:97`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -86,7 +86,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 尺寸
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml:47`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml:108`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -99,11 +99,44 @@ Gallery key：`ExamplesContent` / item `1`
 </StackPanel>
 ```
 
-### 自定义描述
+### 嵌入模式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml:63`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml:125`
 
 Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10">
+    <atom:Spin IsSpinning="{Binding IsLoadingSwitchChecked}"
+               IsTipVisible="True"
+               HorizontalAlignment="Stretch"
+               Tip="加载中...">
+        <atom:Alert Message="提示消息标题"
+                    Description="关于这条提示上下文的更多详细信息。"
+                    Type="Info" />
+    </atom:Spin>
+
+    <atom:Spin IsSpinning="{Binding IsLoadingSwitchChecked}"
+               IsTipVisible="True"
+               Tip="加载中..."
+               HorizontalAlignment="Stretch"
+               IsMaskBlurEnabled="True">
+        <atom:Alert Message="提示消息标题"
+                    Description="关于这条提示上下文的更多详细信息。"
+                    Type="Info" />
+    </atom:Spin>
+    <StackPanel Orientation="Horizontal" Spacing="10">
+        <atom:TextBlock Text="加载状态：" />
+        <atom:ToggleSwitch IsChecked="{Binding IsLoadingSwitchChecked}" />
+    </StackPanel>
+</StackPanel>
+```
+
+### 自定义描述
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml:159`
+
+Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
 <StackPanel Orientation="Vertical" Spacing="10">
@@ -131,39 +164,6 @@ Gallery key：`ExamplesContent` / item `2`
                     Description="关于这条提示上下文的更多详细信息。"
                     Type="Info" />
     </atom:Spin>
-</StackPanel>
-```
-
-### 嵌入模式
-
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml:121`
-
-Gallery key：`ExamplesContent` / item `4`
-
-```axaml
-<StackPanel Orientation="Vertical" Spacing="10">
-    <atom:Spin IsSpinning="{Binding IsLoadingSwitchChecked}"
-               IsTipVisible="True"
-               HorizontalAlignment="Stretch"
-               Tip="加载中...">
-        <atom:Alert Message="提示消息标题"
-                    Description="关于这条提示上下文的更多详细信息。"
-                    Type="Info" />
-    </atom:Spin>
-
-    <atom:Spin IsSpinning="{Binding IsLoadingSwitchChecked}"
-               IsTipVisible="True"
-               Tip="加载中..."
-               HorizontalAlignment="Stretch"
-               IsMaskBlurEnabled="True">
-        <atom:Alert Message="提示消息标题"
-                    Description="关于这条提示上下文的更多详细信息。"
-                    Type="Info" />
-    </atom:Spin>
-    <StackPanel Orientation="Horizontal" Spacing="10">
-        <atom:TextBlock Text="加载状态：" />
-        <atom:ToggleSwitch IsChecked="{Binding IsLoadingSwitchChecked}" />
-    </StackPanel>
 </StackPanel>
 ```
 
@@ -217,6 +217,7 @@ Spin Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 资源和 AOT 约束：
 
 - 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
+- 不通过 VisualTree 扫描维护 Semantic Part；Gallery Preview 使用生成 descriptor 和 owner-scoped marker 解析。
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
 - 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
@@ -239,6 +240,8 @@ Spin Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - `src/AtomUI.Desktop.Controls/Spin/Spin.cs`
 - `src/AtomUI.Desktop.Controls/Spin/SpinIndicator.cs`
 - `src/AtomUI.Desktop.Controls/Spin/SpinToken.cs`
+- `src/AtomUI.Desktop.Controls/Spin/Spin.SemanticParts.cs`
+- `src/AtomUI.Desktop.Controls/Spin/SpinIndicator.SemanticParts.cs`
 - `src/AtomUI.Desktop.Controls/Spin/Themes/SpinIndicatorTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Spin/Themes/SpinTheme.axaml`
 
@@ -248,11 +251,13 @@ Spin Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
 - Token 文件只提供组件视觉变量，不保存实例状态。
 - Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
+- Semantic descriptor 由各 public owner 的 `[SemanticPart]` 声明生成；模板只使用静态 `Classes.semantic-*="True"` marker。
 
 ## 相关文档
 
 - 源设计文档：`docs/controls/desktop/feedback/spin/overview.md`
 - 实现文档：`docs/controls/desktop/feedback/spin/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/feedback/spin/semantic-part.md`
 - Token 文档：`docs/controls/desktop/feedback/spin/token.md`
 - 变更记录：`docs/controls/desktop/feedback/spin/changelog.md`
 - 语义结构：`./semantic-cn.md`

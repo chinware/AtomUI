@@ -14294,13 +14294,38 @@ Source: ./controls/spin/semantic-cn.md
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Spin` | 反馈控件根语义区域，承载 public API、反馈状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `host` | `宿主或弹层区域` | 承载 overlay、popup、portal、message host、drawer 或 modal 容器。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `surface` | `反馈表面` | 承载背景、边框、阴影、尺寸、placement 和视觉状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载标题、正文、图标、进度、结果、操作或关闭入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效区域` | 表达进入退出、loading、progress、skeleton 或水印刷新反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+Spin 主控件公开 `root`、`container`、`mask`、`section`、`indicator`、`description` 六个职责区域，与上游稳定语义
+保持同名。`mask` 是 AtomUI 扩展区域，承载嵌套模式的遮罩背景层职责：上游体系的遮罩语义已折叠进全屏模式的根区域，
+AtomUI 没有全屏模式，遮罩层是嵌套模式下独立的真实节点。`SpinIndicator` 是独立的公开子控件，
+公开 `root` 与 `content`。
+
+### 1.1 `Spin`
+
+| Part | Selector | ContractType | Cardinality | Customization | CrossVisualRoot | RuntimeCreated |
+| --- | --- | --- | --- | --- | --- | --- |
+| `root` | owner | `Spin` | `Single` | `Root` | `false` | `false` |
+| `container` | `.semantic-container` | `ContentPresenter` | `Single` | `Selector` | `false` | `false` |
+| `mask` | `.semantic-mask` | `Border` | `Single` | `Selector` | `false` | `false` |
+| `section` | `.semantic-section` | `StackPanel` | `Single` | `Selector` | `false` | `false` |
+| `indicator` | `.semantic-indicator` | `SpinIndicator` | `Single` | `Selector` | `false` | `false` |
+| `description` | `.semantic-description` | `TextBlock` | `Single` | `Selector` | `false` | `false` |
+
+`container` 承载用户内容的 `ContentPresenter`，spinning 时承担透明度或高斯模糊反馈；`mask` 是遮罩背景层，只在
+`IsMaskBackgroundEnabled` 时呈现 `ColorBgMask`；`section` 是加载区域，承载 `indicator` 与 `description` 并居中；
+`indicator` 是主控件模板直接拥有的公开 `SpinIndicator` 子控件，其尺寸分支、动效时长和圆点填充
+（`DotBgBrush`）均可经 Semantic Style 定制；`description` 是提示文本节点，对应公共 API
+`Tip` / `IsTipVisible`。`root` 不声明 `.semantic-root` marker。
+
+### 1.2 `SpinIndicator`
+
+| Part | Selector | ContractType | Cardinality | Customization | CrossVisualRoot | RuntimeCreated |
+| --- | --- | --- | --- | --- | --- | --- |
+| `root` | owner | `SpinIndicator` | `Single` | `Root` | `false` | `false` |
+| `content` | `.semantic-content` | `Control` | `Multiple` | `Selector` | `false` | `false` |
+
+`content` 使用 `Multiple` 是 AtomUI 模板实现的状态替代语义：内置四点指示器 `SpinIndicatorDotPanel` 与自定义指示器
+`PART_CustomIndicatorPresenter` 是两个静态 marker target，由 `IsCustomIndicator` 决定同一时刻只有一个可见。
+Preview 只高亮当前可见 target；Semantic Style 同时作用于两个替代实现，保证切换自定义指示器后定制仍然存在。
 
 ## Abstract AXAML Structure
 
@@ -14369,7 +14394,7 @@ Spin
 | --- | --- | --- |
 | 内容与数据 | `CustomIndicatorTemplate` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
 | 交互与状态 | `IsMaskBackgroundEnabled`、`IsMaskBlurEnabled`、`IsMotionEnabled`、`IsSpinning`、`IsTipVisible` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 视觉与布局 | `DotSize`、`IndicatorSize`、`SizeType` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
+| 视觉与布局 | `DotBgBrush`、`DotSize`、`IndicatorSize`、`SizeType` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 动效与异步 | `MotionDuration`、`MotionEasingCurve` | 约束动效开关、异步加载、播放速度、超时和任务边界。 |
 | 其他稳定入口 | `CustomIndicator`、`Tip` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 

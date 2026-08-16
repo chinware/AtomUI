@@ -42,7 +42,7 @@ Spin 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 | --- | --- | --- |
 | 内容与数据 | `CustomIndicatorTemplate` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
 | 交互与状态 | `IsMaskBackgroundEnabled`、`IsMaskBlurEnabled`、`IsMotionEnabled`、`IsSpinning`、`IsTipVisible` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 视觉与布局 | `DotSize`、`IndicatorSize`、`SizeType` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
+| 视觉与布局 | `DotBgBrush`、`DotSize`、`IndicatorSize`、`SizeType` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 动效与异步 | `MotionDuration`、`MotionEasingCurve` | 约束动效开关、异步加载、播放速度、超时和任务边界。 |
 | 其他稳定入口 | `CustomIndicator`、`Tip` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
@@ -144,17 +144,22 @@ Spin 的视觉选项通过 public API 归一为 theme variables、伪类或模�
 
 - [Spin 桌面版实现原理](implementation.md)
 - [Spin Token 设计](token.md)
+- [Spin Semantic Part 契约](semantic-part.md)
 - [Spin Changelog](changelog.md)
 
 LLMS 语义区域：
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `Spin` | 反馈控件根语义区域，承载 public API、反馈状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `host` | `宿主或弹层区域` | 承载 overlay、popup、portal、message host、drawer 或 modal 容器。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `surface` | `反馈表面` | 承载背景、边框、阴影、尺寸、placement 和视觉状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载标题、正文、图标、进度、结果、操作或关闭入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效区域` | 表达进入退出、loading、progress、skeleton 或水印刷新反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `root` | `Spin` | 主控件根区域，承载加载状态、遮罩选项和主题入口。 | 见 API 与契约模型 | `SpinToken` | stable |
+| `container` | `ContentPresenter` | 嵌套模式的用户内容容器，spinning 时承担透明度或模糊反馈。 | `IsSpinning`、`IsMaskBlurEnabled` | 无 | stable |
+| `mask` | `Border` | 遮罩背景层，spinning 时覆盖内容区域。 | `IsMaskBackgroundEnabled` | `ColorBgMask` | stable |
+| `section` | `StackPanel` | 加载区域，承载指示器和提示文本并居中。 | `SizeType` | `SpacingXXS` | stable |
+| `indicator` | `SpinIndicator` | 主控件模板拥有的加载指示子控件。 | `CustomIndicator`、`DotBgBrush` | `IndicatorSize*`、`DotSize*` | stable |
+| `description` | `TextBlock` | 提示文本区域。 | `Tip`、`IsTipVisible` | `ColorPrimary` | stable |
+
+`SpinIndicator` 的 `root/content` descriptor 与主控件分开维护，完整契约见
+[Spin Semantic Part 契约](semantic-part.md)。
 
 LLMS 导出来源：
 
