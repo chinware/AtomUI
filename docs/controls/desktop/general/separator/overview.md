@@ -56,7 +56,9 @@ Separator 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_Title` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
+| `PART_Title` | `TextBlock` | 稳定模板协作入口，承载标题文本，重命名前必须同步主题和实现。 |
+| `PART_RailStart` | `SeparatorRail` | 连接线起始段节点，承载标题左侧（或无标题/垂直时的整段）连接线，重命名前必须同步主题和实现。 |
+| `PART_RailEnd` | `SeparatorRail` | 连接线结束段节点，承载标题右侧连接线，无标题或垂直时归零，重命名前必须同步主题和实现。 |
 
 控件专属或内部伪类包括 `HasTitleText=:has-title`、`SeparatorPseudoClass.HasTitleText`。这些伪类属于主题 selector 可观察契约，不能在未同步主题和 Gallery 的情况下重命名或删除。
 
@@ -147,16 +149,19 @@ Separator 的视觉选项通过 public API 归一为 theme variables、伪类或
 
 - [Separator 桌面版实现原理](implementation.md)
 - [Separator Token 设计](token.md)
+- [Separator Semantic Part 契约](semantic-part.md)
 - [Separator Changelog](changelog.md)
 
 LLMS 语义区域：
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `Separator` | 控件根语义区域，承载 public API、状态归一、主题入口和 Gallery 可观察行为。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载用户内容、图标、文本或装饰性展示。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `state` | `状态区域` | 表达 hover、pressed、disabled、loading、selected 或控件专属状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `theme` | `主题区域` | 连接 ControlTheme、SharedToken、控件 Token 和资源键。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `root` | `Separator` | 控件根语义区域，承载方向、尺寸、线型、标题位置等 public API、状态归一和主题入口。 | `Orientation`、`Variant`、`SizeType`、`LineColor`、`LineWidth` | `SeparatorToken` | stable |
+| `rail` | `SeparatorRail` | 连接线语义区域，承载标题两侧（或无标题/垂直时的整段）连接线。 | `LineColor`、`LineWidth`、`Variant` | `LineWidth`、`ColorSplit` | stable |
+| `content` | `TextBlock` | 标题文本区域，承载 `Title` 内容与 `TitleColor` / `TitlePosition` / `IsPlain` 文本状态。 | `Title`、`TitleColor`、`TitlePosition`、`IsPlain` | `FontSizeLG`、`ColorTextHeading` | stable |
+
+`rail` 连接线语义与上游 `rail` 语义对齐，由模板中的 `SeparatorRail` 节点承载并以
+`Multiple` 基数公开；完整契约见 [Separator Semantic Part 契约](semantic-part.md)。
 
 LLMS 导出来源：
 

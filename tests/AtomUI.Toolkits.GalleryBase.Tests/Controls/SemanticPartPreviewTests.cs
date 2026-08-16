@@ -401,6 +401,58 @@ public class SemanticPartPreviewTests
         }
     }
 
+    [Fact]
+    public void Multiple_Owner_Instances_Highlight_All_Instances_Of_The_Selected_Part()
+    {
+        var buttonA = new AtomUIButton
+        {
+            Content = "Semantic A"
+        };
+        var buttonB = new AtomUIButton
+        {
+            Content = "Semantic B"
+        };
+        var panel = new StackPanel
+        {
+            Children =
+            {
+                buttonA,
+                buttonB
+            }
+        };
+        var preview = new SemanticPartPreview
+        {
+            PreviewContent    = panel,
+            SemanticOwner     = buttonA,
+            SemanticOwnerType = typeof(AtomUIButton)
+        };
+        preview.PartDescriptions.Add(new SemanticPartDescription
+        {
+            Path        = "root",
+            Description = "The Button root."
+        });
+        preview.PartDescriptions.Add(new SemanticPartDescription
+        {
+            Path        = "icon",
+            Description = "The icon region."
+        });
+        preview.PartDescriptions.Add(new SemanticPartDescription
+        {
+            Path        = "content",
+            Description = "The content region."
+        });
+
+        using var context = ShowInWindow(preview);
+        preview.ActivatePreview();
+        var content = preview.Items.Single(static item => item.Path == "content");
+        preview.SetHoveredPart(content, true);
+        Dispatcher.UIThread.RunJobs();
+
+        var session = preview.ActiveHighlightSession.ShouldNotBeNull();
+        session.TotalMatchCount.ShouldBe(2);
+        session.HighlightedTargetCount.ShouldBe(2);
+    }
+
     private static SemanticPartPreview CreatePreview(AtomUIButton button)
     {
         var preview = new SemanticPartPreview

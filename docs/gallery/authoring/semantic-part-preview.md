@@ -109,21 +109,29 @@ VisualTree 移除；当前页面仍附加时保留已创建对象，避免重复
 Semantic Parts 仍选中时重新 attach，宿主重新构建 Preview 和轻量 Tab 导航，不复用已经释放的 Visual 引用。首次 attach
 应复用属性初始化阶段已经创建的轻量导航，不能无条件重复构建。
 
-一个页面包含多个公开 Semantic owner 时，`SemanticPartsContentTemplate` 使用一个普通布局 Control 作为延迟内容根，并为
-每个 owner 创建独立 `SemanticPartPreview`。宿主只负责统一生命周期，不合并 descriptor、Part 列表、owner type 或目标作用域。
-内容根必须在 factory 返回时已经通过普通 visual children 包含至少一个 Preview；不得把 Preview 隐藏在尚未应用的 ControlTemplate
-中，再依赖宿主主动应用模板或扫描任意逻辑树。
+一个页面包含多个公开 Semantic owner 类型时，`SemanticPartsContentTemplate` 使用一个普通布局 Control 作为延迟内容根，并为
+每个 owner 类型创建独立 `SemanticPartPreview`。宿主只负责统一生命周期，不合并 descriptor、Part 列表、owner type 或目标作用域。
+同一 owner 类型在单个 Preview 内容中出现的多个实例不拆分为多个 Preview，而由该 Preview 的多实例 owner 作用域统一高亮（见
+§8.4）。内容根必须在 factory 返回时已经通过普通 visual children 包含至少一个 Preview；不得把 Preview 隐藏在尚未应用的
+ControlTemplate 中，再依赖宿主主动应用模板或扫描任意逻辑树。
 
 ## 6. Preview 模型
 
-`SemanticPartPreview` 是 GalleryBase 控件。它承载一个真实 Preview 内容，并解析一个明确的 owner Control：
+`SemanticPartPreview` 是 GalleryBase 控件。它承载一个真实 Preview 内容，并解析一个明确的 owner descriptor 与一组 owner 实例：
 
-- `PreviewContent` 本身是 Control 时，默认把它作为 owner。
-- 预览需要额外布局或操作区时，由 Gallery 显式提供 owner target。
-- owner type 先按精确 CLR type 查询 `IThemeManager.SemanticParts`；派生示例需要复用基类契约时必须显式指定 owner type，
-  不进行程序集或类型层次反射发现。
-- 一个 Preview 永远只对应一个 owner descriptor。控件家族拥有多个 public owner 时必须使用多个 Preview，不能把不同 owner 的
-  Part 拼接成一个虚拟 descriptor。
+- 一个 Preview 永远只对应一个 owner descriptor（一个 owner type）。控件家族拥有多个 public owner 时必须使用多个
+  Preview，不能把不同 owner 的 Part 拼接成一个虚拟 descriptor。
+- `SemanticOwnerType` 是 descriptor 的 owner type 契约；未显式指定时按 `SemanticOwner` 或 `PreviewContent` 的精确 CLR
+  type 推导。owner type 按精确 CLR type 查询 `IThemeManager.SemanticParts`；派生示例需要复用基类契约时必须显式指定
+  owner type，不进行程序集或类型层次反射发现。
+- `SemanticOwner` 是 Gallery 显式提供的 owner 实例锚点，用于在 `PreviewContent` 本身不是 owner（外层是布局或操作区）时
+  确定 owner type 与 Preview 的归属关系。它是 descriptor 解析与类型校验的入口，不把高亮收敛到单一实例。
+- 高亮作用域是 Preview 内容范围内的全部 owner 实例，而不是单个 `SemanticOwner`。`PreviewContent` 子树中存在多个满足
+  owner type 的实例时，选中某个 Part 后所有实例对应的 Part 同时高亮；单实例内容自然退化为当前行为。
+
+Preview 的 `owner descriptor` 与 `owner 实例作用域` 是两个独立概念：descriptor 决定 Part 元数据与 StyleType，实例作用域
+决定一次选择要解析和高亮多少个真实 Control。前者永远单一，后者可以是集合。这套多实例能力是 Preview 的通用机制，不要求
+具体 Control 增加任何属性、marker 或模板改动，也不要求 Gallery 为每个实例复制 Preview。
 
 Preview presentation item 的结构字段全部来自 `SemanticPartDescriptor`：
 
@@ -196,9 +204,13 @@ Adorner 结果集，不新增常驻文本、弹层或状态提示。
 目标解析只在 `effectivePart` 变化时执行，并按 `DispatcherPriority.Render` 合并同一帧内连续 Hover 变化。稳定选择期间不重复
 扫描 VisualTree。
 
+解析单元不是单一 owner Control，而是 Preview 内容范围内满足 owner type 的全部实例（§8.4）。`SemanticPartHighlightSession`
+接收 owner 实例集合，对每个实例执行一次 owner-scoped 查找并合并去重结果；`TotalMatchCount` 为所有实例的匹配总数，
+`HighlightedTargetCount` 为合并后实际创建的 Adorner 数。单实例内容集合只有一个元素，行为与单 owner 完全一致。
+
 ### 8.1 Root
 
-`root` 直接对应 owner Control，不依赖 `.semantic-root`。
+`root` 直接对应 owner Control，不依赖 `.semantic-root`。多实例作用域下，每个 owner 实例本身各算一个 `root` 目标。
 
 ### 8.2 静态模板 Part
 
@@ -229,6 +241,30 @@ class 搜索。
 
 解析结果不建立长期索引。每次有效选择只保存当前 `SemanticPartHighlightSession` 需要的可见目标，选择结束后释放全部引用。
 
+### 8.4 多实例 owner 作用域
+
+Preview 需要在一个预览内容中展示同一 owner type 的多个实例，并在选中某个 Part 时让所有实例同时高亮各自对应 Part。
+这是 Preview 的通用高亮机制，与 `SemanticPart` 的 `Multiple` cardinality 无关：`Multiple` 描述单个 owner 内部同一 Part 的
+多个替代节点，多实例作用域描述多个 owner 实例各自贡献的目标集合。两者可以叠加，例如两个实例各有两个 rail，选中 `rail`
+时最多高亮四个目标。
+
+多实例作用域的定义与约束：
+
+- 作用域根是 `PreviewContent` 子树；`PreviewContent` 自身满足 owner type 时也纳入作用域。
+- 实例集合只按 owner type 可赋值关系从作用域根的 visual descendants 收集，并保持稳定的深度优先顺序去重。
+- 收集使用公开 VisualTree API（`GetVisualDescendants` / `IsAssignableFrom`），不进行程序集扫描、反射实例化或全局 TopLevel
+  搜索。派生实例（例如 `VerticalSeparator : Separator`）复用基类契约时，通过 owner type 可赋值关系纳入同一作用域。
+- 每个实例仍执行 §8.2 / §8.3 的 owner-scoped 查找：静态 Part 只命中 `TemplatedParent == 该实例` 的模板后代，
+  `RuntimeCreated` / `CrossVisualRoot` 只在该实例的局部作用域与附加 root 中查找。多实例不会退化为跨实例的无边界 class
+  搜索，也不会让一个实例命中另一个实例模板内的同名 Part。
+- 不可见、零尺寸或未附加的实例与节点继续被 `IsEligible` 过滤；隐藏实例不产生目标，也不影响其他实例的匹配。
+- 合并后的目标顺序稳定：先按实例收集顺序，再按每个实例内部的解析顺序；同一实例内部的顺序不变。
+- 集合为空（例如 PreviewContent 尚未实例化任何 owner）时，回落为把 `SemanticOwner` 当作唯一实例，保证至少能解析
+  `root`；这不改变 descriptor 解析和类型校验入口。
+
+该机制不要求具体 Control 或 Theme 新增属性、marker 或生命周期代码；Gallery 只需在一个 Preview 的 `PreviewContent` 中
+放入多个 owner 实例即可获得多实例高亮。需要分别描述不同 owner type 时仍使用多个 Preview。
+
 ## 9. Adorner 高亮
 
 每个可见目标通过 Avalonia 12 公开的 `AdornerLayer.GetAdornerLayer(target)` 获取对应 layer，并在该 layer 中创建一个临时
@@ -242,7 +278,7 @@ VisualRoot 手动换算屏幕坐标。
 - 不依赖目标 ControlTemplate。
 - `IsHitTestVisible=false`、`Focusable=false`。
 - 在目标 bounds 内绘制，遵守原生 clip。
-- 第一个目标使用主高亮样式，其余目标使用次级样式。
+- 第一个目标使用主高亮样式，其余目标使用次级样式；多实例作用域下按 §8.4 的合并顺序决定主/次样式，顺序稳定且可复现。
 - 不使用 `AdornerLayer.AdornerProperty`，避免覆盖焦点、验证或其他现有 Adorner。
 
 `SemanticPartHighlightSession` 按以下顺序释放每个高亮 Adorner：
@@ -266,6 +302,9 @@ Children 删除 Visual 不能作为完整生命周期契约。
 5. 只在该 Part 有效选择期间订阅对应 Popup 的 `Opened`、`Closed`。
 6. Popup 打开后在 Render 优先级执行一次重新解析；关闭后立即清除对应高亮。
 
+多实例作用域下，每个 owner 实例的模板 Popup 都按同一路径订阅与解析；`Dispose` 时统一退订全部实例的 Popup 事件并清空
+所有目标。
+
 这一模型同时覆盖 OverlayPopupHost 和 PopupRoot，不依赖普通视觉树跨根继承，也不扫描所有 TopLevel。
 
 Modal、Message、Notification 等由服务创建且不再能从 owner Popup 到达的独立宿主，不使用隐藏全局搜索。具体 Gallery Demo
@@ -279,6 +318,9 @@ Modal、Message、Notification 等由服务创建且不再能从 owner Popup 到
 - 超出预算时只高亮按稳定遍历顺序得到的前 32 个目标。
 - 列表显示总匹配数和当前高亮数量。
 - 不为不可见、零尺寸、完全透明或未附加节点创建 Adorner。
+
+多实例作用域合并后的目标集合共享同一 32 个 Adorner 预算；预算跨实例统一执行，不按实例分别重置。高密度场景应避免在
+单个 Preview 中放置大量同类型实例。
 
 该预算保护 DataGrid cell、虚拟化 item 和其他高密度场景，不能通过缓存所有 Visual 引用规避预算。
 
@@ -304,7 +346,7 @@ Modal、Message、Notification 等由服务创建且不再能从 owner Popup 到
 | 普通应用未引用 GalleryBase | 无 Preview 增量成本 |
 | Gallery 未创建 Semantic Tab 内容 | 只有 Tab header；无 Preview 对象和 registry 查询 |
 | Preview 已创建但无有效选择 | descriptor 查询和列表 Visual；无目标扫描、Adorner 或目标事件订阅 |
-| Hover/Pin 有效 Part | 一次 owner-scoped 查找、有限 Adorner 和原生布局跟踪 |
+| Hover/Pin 有效 Part | 一次 owner 实例作用域内查找（见 §8.4）、有限 Adorner 和原生布局跟踪 |
 | 离开、取消 Pin、切换 Tab 或 detach | `SemanticPartHighlightSession` 全量释放 |
 
 实现不得使用：
@@ -315,6 +357,10 @@ Modal、Message、Notification 等由服务创建且不再能从 owner Popup 到
 - 常驻 `LayoutUpdated`、ScrollChanged、pointer move 或定时器。
 - 每帧坐标重算和矩形分配。
 - 静态 Visual、Control、Popup、Adorner 或 descriptor-to-instance cache。
+
+多实例 owner 作用域的收集只遍历 `PreviewContent` 子树并只按 owner type 可赋值关系筛选，不使用全局 VisualTree、程序集扫描
+或反射实例化。收集结果只在本次有效选择内保留，选择结束后与 `SemanticPartHighlightSession` 一起释放，不建立跨选择的实例
+缓存。
 
 Type identity、Part 元数据和 registry 均来自生成式静态 descriptor，满足 NativeAOT 与裁剪边界。
 
@@ -348,7 +394,10 @@ Button、ButtonTheme 和 Button Browser Theme 不因 Gallery Preview 新增任�
 13. Button Control 和 Theme 的 public surface、模板 marker 与运行时路径没有因 Preview 变化。
 14. Preview、演示 Control 和 Popup 在页面释放后可以被 GC。
 15. 单 owner 页面和多 owner 家族页面都保持真延迟创建；多 Preview 内容根切换 Tab 时统一激活、停用和释放。
-16. Desktop、Browser、裁剪和 NativeAOT 路径不需要反射保留配置。
+16. 多实例 owner 作用域：`PreviewContent` 含多个同 type 实例时，选中一个 Part 所有可见实例的对应 Part 同时高亮；派生实例
+    按基类 owner type 纳入同一作用域；隐藏/未附加实例被过滤；跨实例不泄漏同名 Part；主/次样式顺序稳定；集合为空时回落
+    `SemanticOwner` 单实例。
+17. Desktop、Browser、裁剪和 NativeAOT 路径不需要反射保留配置。
 
 ## 16. 相关文档
 

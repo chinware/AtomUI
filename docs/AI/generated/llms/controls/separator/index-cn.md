@@ -58,7 +58,9 @@ Separator 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_Title` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
+| `PART_Title` | `TextBlock` | 稳定模板协作入口，承载标题文本，重命名前必须同步主题和实现。 |
+| `PART_RailStart` | `SeparatorRail` | 连接线起始段节点，承载标题左侧（或无标题/垂直时的整段）连接线，重命名前必须同步主题和实现。 |
+| `PART_RailEnd` | `SeparatorRail` | 连接线结束段节点，承载标题右侧连接线，无标题或垂直时归零，重命名前必须同步主题和实现。 |
 
 控件专属或内部伪类包括 `HasTitleText=:has-title`、`SeparatorPseudoClass.HasTitleText`。这些伪类属于主题 selector 可观察契约，不能在未同步主题和 Gallery 的情况下重命名或删除。
 
@@ -75,7 +77,7 @@ Separator 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 ### 水平分割线
 
-来源：`controlgallery/AtomUIGallery/ShowCases/General/Separator/Views/SeparatorShowCase.axaml:35`
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Separator/Views/SeparatorShowCase.axaml:84`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -91,7 +93,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 带标题的分割线
 
-来源：`controlgallery/AtomUIGallery/ShowCases/General/Separator/Views/SeparatorShowCase.axaml:52`
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Separator/Views/SeparatorShowCase.axaml:101`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -117,7 +119,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 无标题样式文本
 
-来源：`controlgallery/AtomUIGallery/ShowCases/General/Separator/Views/SeparatorShowCase.axaml:79`
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Separator/Views/SeparatorShowCase.axaml:128`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -135,7 +137,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 设置分割线间距
 
-来源：`controlgallery/AtomUIGallery/ShowCases/General/Separator/Views/SeparatorShowCase.axaml:98`
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Separator/Views/SeparatorShowCase.axaml:147`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -228,7 +230,9 @@ Separator Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - `src/AtomUI.Controls/Separator/AbstractSeparator.cs`
 - `src/AtomUI.Controls/Separator/SeparatorEnums.cs`
 - `src/AtomUI.Controls/Separator/SeparatorPseudoClass.cs`
+- `src/AtomUI.Controls/Separator/SeparatorRail.cs`
 - `src/AtomUI.Desktop.Controls/Separator/Separator.cs`
+- `src/AtomUI.Desktop.Controls/Separator/Separator.SemanticParts.cs`
 - `src/AtomUI.Desktop.Controls/Separator/SeparatorToken.cs`
 - `src/AtomUI.Desktop.Controls/Separator/Themes/SeparatorTheme.axaml`
 
@@ -238,11 +242,13 @@ Separator Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
 - Token 文件只提供组件视觉变量，不保存实例状态。
 - Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
+- Semantic descriptor 由 `Separator` 的 `[SemanticPart]` 声明生成；模板只使用静态 `Classes.semantic-*="True"` marker。
 
 ## 相关文档
 
 - 源设计文档：`docs/controls/desktop/general/separator/overview.md`
 - 实现文档：`docs/controls/desktop/general/separator/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/general/separator/semantic-part.md`
 - Token 文档：`docs/controls/desktop/general/separator/token.md`
 - 变更记录：`docs/controls/desktop/general/separator/changelog.md`
 - 语义结构：`./semantic-cn.md`

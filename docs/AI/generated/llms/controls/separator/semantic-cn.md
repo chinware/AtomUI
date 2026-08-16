@@ -4,19 +4,34 @@
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Separator` | 控件根语义区域，承载 public API、状态归一、主题入口和 Gallery 可观察行为。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载用户内容、图标、文本或装饰性展示。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `state` | `状态区域` | 表达 hover、pressed、disabled、loading、selected 或控件专属状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `theme` | `主题区域` | 连接 ControlTheme、SharedToken、控件 Token 和资源键。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+Separator 主控件公开 `root`、`rail` 与 `content` 三个职责区域，与上游稳定 Semantic DOM（`root` / `rail` /
+`content`）对齐。`rail` 对应连接线（背景条）区域，由模板中的 `SeparatorRail` 节点承载；`content` 对应带标题分隔线中的文本区域。
+
+`VerticalSeparator` 是 `Separator` 的便捷子类，仅覆盖 `Orientation` 默认值并通过 `StyleKeyOverride` 复用
+`SeparatorTheme`，不持有独立 descriptor，其 Semantic Part 契约与 `Separator` 完全一致。
+
+| Part | Selector | ContractType | Cardinality | Customization | CrossVisualRoot | RuntimeCreated |
+| --- | --- | --- | --- | --- | --- | --- |
+| `root` | owner | `Separator` | `Single` | `Root` | `false` | `false` |
+| `rail` | `.semantic-rail` | `SeparatorRail` | `Multiple` | `Selector` | `false` | `false` |
+| `content` | `.semantic-content` | `TextBlock` | `Single` | `Selector` | `false` | `false` |
+
+`root` 是控件自身，承载方向、尺寸、线型、标题位置等 public API、主题入口和状态归一，不声明 `.semantic-root`
+marker。`rail` 是模板中的连接线节点 `PART_RailStart` / `PART_RailEnd`，以 `Multiple` 基数表示带标题水平分隔线的
+左右两段；无标题水平分隔线只保留一段可见 rail，垂直分隔线只保留一段可见 rail，另一段被归零宽/高而不参与
+Semantic Part 命中。`content` 是模板文本节点 `PART_Title`，承载 `Title` 文本内容，对应公共 API
+`Title` / `TitleColor` / `TitlePosition` / `IsPlain`。
 
 ## Abstract AXAML Structure
 
 来源：`src/AtomUI.Desktop.Controls/Separator/Themes/SeparatorTheme.axaml`
 
 ```xml
-<TextBlock Name="PART_Title" />
+<Panel>
+    <SeparatorRail Name="PART_RailStart" />
+    <TextBlock Name="PART_Title" />
+    <SeparatorRail Name="PART_RailEnd" />
+</Panel>
 ```
 
 ## Composition Model
@@ -28,7 +43,10 @@
 ```text
 Separator
   -> Separator (control theme, SeparatorTheme.axaml)
-     -> TextBlock#PART_Title (template-stable)
+     -> Panel (template-stable)
+        -> SeparatorRail#PART_RailStart (template-stable)
+        -> TextBlock#PART_Title (template-stable)
+        -> SeparatorRail#PART_RailEnd (template-stable)
 ```
 
 ### 协作节点
@@ -36,8 +54,11 @@ Separator
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `Separator` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Separator` | control theme | `SeparatorTheme.axaml` | 用户代码 / 控件宿主 | `FontSize`, `Title`, `TitleColor` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Separator` | control theme | `SeparatorTheme.axaml` | 用户代码 / 控件宿主 | `FontSize`, `LineColor`, `LineWidth`, `Orientation`, `Title`, `TitleColor` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Panel` | template node (Panel) | `SeparatorTheme.axaml` | Separator | `FontSize`, `LineColor`, `LineWidth`, `Orientation`, `Title`, `TitleColor` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_RailStart` | template node (SeparatorRail) | `SeparatorTheme.axaml` | Separator | `LineColor`, `LineWidth`, `Orientation`, `Variant` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Title` | template node (TextBlock) | `SeparatorTheme.axaml` | Separator | `FontSize`, `Title`, `TitleColor` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_RailEnd` | template node (SeparatorRail) | `SeparatorTheme.axaml` | Separator | `LineColor`, `LineWidth`, `Orientation`, `Variant` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 

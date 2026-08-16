@@ -94,6 +94,94 @@ public class SemanticPartHighlightSessionTests
     }
 
     [Fact]
+    public void Start_Resolves_Targets_Across_Multiple_Owners()
+    {
+        var ownerA = new Grid
+        {
+            Width  = 200,
+            Height = 200
+        };
+        var targetA = new Border
+        {
+            Width  = 20,
+            Height = 20
+        };
+        targetA.Classes.Add("semantic-item");
+        ownerA.Children.Add(targetA);
+
+        var ownerB = new Grid
+        {
+            Width  = 200,
+            Height = 200
+        };
+        var targetB = new Border
+        {
+            Width  = 20,
+            Height = 20
+        };
+        targetB.Classes.Add("semantic-item");
+        ownerB.Children.Add(targetB);
+
+        var host = new StackPanel
+        {
+            Children =
+            {
+                ownerA,
+                ownerB
+            }
+        };
+        var descriptor = RuntimeDescriptor(typeof(Grid), "BudgetGrid");
+        var registry = new SemanticPartRegistry([descriptor]);
+        var part = descriptor.Parts.Single(static candidate => candidate.Path == "item");
+
+        using var context = ShowInAdornerHost(host);
+        using var session = SemanticPartHighlightSession.Start([ownerA, ownerB], part, registry);
+
+        session.TotalMatchCount.ShouldBe(2);
+        session.HighlightedTargetCount.ShouldBe(2);
+        context.Layer.Children.OfType<SemanticPartAdorner>().Count().ShouldBe(2);
+    }
+
+    [Fact]
+    public void Start_Enforces_A_Single_Shared_Budget_Across_Owners()
+    {
+        var owners = new List<Control>();
+        var host = new StackPanel();
+        for (var ownerIndex = 0; ownerIndex < 2; ownerIndex++)
+        {
+            var owner = new Grid
+            {
+                Width  = 400,
+                Height = 400
+            };
+            for (var index = 0; index < 20; index++)
+            {
+                var target = new Border
+                {
+                    Width  = 20,
+                    Height = 20
+                };
+                target.Classes.Add("semantic-item");
+                owner.Children.Add(target);
+            }
+
+            owners.Add(owner);
+            host.Children.Add(owner);
+        }
+
+        var descriptor = RuntimeDescriptor(typeof(Grid), "BudgetGrid");
+        var registry = new SemanticPartRegistry([descriptor]);
+        var part = descriptor.Parts.Single(static candidate => candidate.Path == "item");
+
+        using var context = ShowInAdornerHost(host);
+        using var session = SemanticPartHighlightSession.Start(owners, part, registry);
+
+        session.TotalMatchCount.ShouldBe(40);
+        session.HighlightedTargetCount.ShouldBe(32);
+        context.Layer.Children.OfType<SemanticPartAdorner>().Count().ShouldBe(32);
+    }
+
+    [Fact]
     public void Cross_Root_Session_ReResolves_An_Owner_Template_Popup()
     {
         var popupTarget = new Border

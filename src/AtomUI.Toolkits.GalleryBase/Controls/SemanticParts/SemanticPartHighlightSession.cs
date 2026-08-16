@@ -11,7 +11,7 @@ internal sealed class SemanticPartHighlightSession : IDisposable
 {
     private readonly List<AdornerEntry> _adorners = [];
     private readonly List<Popup> _popups = [];
-    private Control? _owner;
+    private Control[] _owners;
     private SemanticPartDescriptor? _part;
     private SemanticPartRegistry? _registry;
     private Visual[] _additionalRoots;
@@ -19,12 +19,12 @@ internal sealed class SemanticPartHighlightSession : IDisposable
     private bool _isDisposed;
 
     private SemanticPartHighlightSession(
-        Control owner,
+        IReadOnlyList<Control> owners,
         SemanticPartDescriptor part,
         SemanticPartRegistry registry,
         IEnumerable<Visual>? additionalRoots)
     {
-        _owner           = owner;
+        _owners          = owners.ToArray();
         _part            = part;
         _registry        = registry;
         _additionalRoots = additionalRoots?.ToArray() ?? [];
@@ -37,19 +37,33 @@ internal sealed class SemanticPartHighlightSession : IDisposable
     public bool IsTruncated => HighlightedTargetCount < TotalMatchCount;
 
     public static SemanticPartHighlightSession Start(
+        IReadOnlyList<Control> owners,
+        SemanticPartDescriptor part,
+        SemanticPartRegistry registry,
+        IEnumerable<Visual>? additionalRoots = null)
+    {
+        ArgumentNullException.ThrowIfNull(owners);
+        ArgumentNullException.ThrowIfNull(part);
+        ArgumentNullException.ThrowIfNull(registry);
+        if (owners.Count == 0)
+        {
+            throw new ArgumentException("At least one Semantic owner is required.", nameof(owners));
+        }
+
+        var session = new SemanticPartHighlightSession(owners, part, registry, additionalRoots);
+        session.SubscribeToOwnerPopups();
+        session.Refresh();
+        return session;
+    }
+
+    public static SemanticPartHighlightSession Start(
         Control owner,
         SemanticPartDescriptor part,
         SemanticPartRegistry registry,
         IEnumerable<Visual>? additionalRoots = null)
     {
         ArgumentNullException.ThrowIfNull(owner);
-        ArgumentNullException.ThrowIfNull(part);
-        ArgumentNullException.ThrowIfNull(registry);
-
-        var session = new SemanticPartHighlightSession(owner, part, registry, additionalRoots);
-        session.SubscribeToOwnerPopups();
-        session.Refresh();
-        return session;
+        return Start([owner], part, registry, additionalRoots);
     }
 
     public void Dispose()
@@ -64,7 +78,7 @@ internal sealed class SemanticPartHighlightSession : IDisposable
         ClearAdorners();
         UnsubscribeFromOwnerPopups();
         _additionalRoots = [];
-        _owner = null;
+        _owners = [];
         _part = null;
         _registry = null;
         TotalMatchCount = 0;
@@ -72,21 +86,29 @@ internal sealed class SemanticPartHighlightSession : IDisposable
 
     private void SubscribeToOwnerPopups()
     {
-        if (_part?.CrossVisualRoot != true || _owner is not TemplatedControl templatedOwner)
+        if (_part?.CrossVisualRoot != true)
         {
             return;
         }
 
-        foreach (var popup in templatedOwner.GetTemplateDescendants().OfType<Popup>())
+        foreach (var owner in _owners)
         {
-            if (_popups.Contains(popup))
+            if (owner is not TemplatedControl templatedOwner)
             {
                 continue;
             }
 
-            popup.Opened += HandlePopupOpened;
-            popup.Closed += HandlePopupClosed;
-            _popups.Add(popup);
+            foreach (var popup in templatedOwner.GetTemplateDescendants().OfType<Popup>())
+            {
+                if (_popups.Contains(popup))
+                {
+                    continue;
+                }
+
+                popup.Opened += HandlePopupOpened;
+                popup.Closed += HandlePopupClosed;
+                _popups.Add(popup);
+            }
         }
     }
 
@@ -142,7 +164,7 @@ internal sealed class SemanticPartHighlightSession : IDisposable
         _refreshQueued = false;
         ClearAdorners();
         if (_isDisposed ||
-            _owner is not { } owner ||
+            _owners.Length == 0 ||
             _part is not { } part ||
             _registry is not { } registry)
         {
@@ -150,16 +172,33 @@ internal sealed class SemanticPartHighlightSession : IDisposable
         }
 
         var additionalRoots = CollectAdditionalRoots();
-        var resolution = SemanticPartTargetResolver.Resolve(
-            owner,
-            part,
-            registry,
-            additionalRoots);
-        TotalMatchCount = resolution.TotalMatchCount;
-
-        for (var index = 0; index < resolution.Targets.Count; index++)
+        var targets = new List<Visual>();
+        var matches = new HashSet<Visual>();
+        var totalMatchCount = 0;
+        var budget = SemanticPartTargetResolver.DefaultTargetBudget;
+        foreach (var owner in _owners)
         {
-            var target = resolution.Targets[index];
+            var resolution = SemanticPartTargetResolver.Resolve(owner, part, registry, additionalRoots);
+            totalMatchCount += resolution.TotalMatchCount;
+            foreach (var target in resolution.Targets)
+            {
+                if (targets.Count >= budget)
+                {
+                    break;
+                }
+
+                if (matches.Add(target))
+                {
+                    targets.Add(target);
+                }
+            }
+        }
+
+        TotalMatchCount = totalMatchCount;
+
+        for (var index = 0; index < targets.Count; index++)
+        {
+            var target = targets[index];
             var layer = AdornerLayer.GetAdornerLayer(target);
             if (layer is null)
             {

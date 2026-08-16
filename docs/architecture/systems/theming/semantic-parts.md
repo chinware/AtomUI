@@ -724,6 +724,9 @@ Gallery Preview 是独立工具层，不属于 Control Semantic Part Runtime。�
 - 取消选择、切换 Tab、Popup 关闭或页面 detach 时先清空高亮 Adorner 的 `AdornedElement` 关联，再移除 Adorner 并释放临时订阅。
 - Preview 不向 Control、ControlTheme 或模板节点注入 class、Style、Binding、属性、事件或调试状态。
 - 独立宿主由具体 Gallery Demo 显式提供附加 root，不允许通过全局 TopLevel 搜索补偿。
+- 同一个 owner type 在一个 Preview 内容中允许出现多个实例；选中某个 Part 时所有实例的对应 Part 同时高亮。这是 Gallery
+  Preview 层的多实例解析机制，不改变 descriptor 的 `Single` / `Optional` / `Multiple` 定义，也不要求 Control 或 Theme 提供任何
+  附加 marker 或生命周期接口。完整作用域定义与预算见 [Semantic Part Gallery Preview](../../../gallery/authoring/semantic-part-preview.md)。
 
 完整页面模型、目标解析、Popup、性能预算和验证契约见
 [Semantic Part Gallery Preview](../../../gallery/authoring/semantic-part-preview.md)。

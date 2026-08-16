@@ -348,10 +348,36 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
         }
 
         _activeHighlightSession = SemanticPartHighlightSession.Start(
-            owner,
+            CollectOwnerInstances(owner),
             item.Descriptor,
             registry,
             AdditionalRoots);
+    }
+
+    private IReadOnlyList<Control> CollectOwnerInstances(Control anchor)
+    {
+        var ownerType = _controlDescriptor?.ControlType ?? SemanticOwnerType ?? anchor.GetType();
+        var scope = PreviewContent ?? anchor;
+        var instances = new List<Control>();
+        if (ownerType.IsAssignableFrom(scope.GetType()))
+        {
+            instances.Add(scope);
+        }
+
+        foreach (var descendant in scope.GetVisualDescendants().OfType<Control>())
+        {
+            if (ownerType.IsAssignableFrom(descendant.GetType()) && !instances.Contains(descendant))
+            {
+                instances.Add(descendant);
+            }
+        }
+
+        if (instances.Count == 0)
+        {
+            instances.Add(anchor);
+        }
+
+        return instances;
     }
 
     private void ReleaseHighlightSession()

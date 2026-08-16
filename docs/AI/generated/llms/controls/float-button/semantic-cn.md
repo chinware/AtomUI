@@ -123,10 +123,10 @@ FloatButton
 | `ContentFrame` | template node (Border) | `FloatButtonItemsControlTheme.axaml` | FloatButtonItemsControl | `Background`, `BoxShadow`, `CornerRadius`, `Lines`, `Orientation` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Panel` | template node (Panel) | `FloatButtonItemsControlTheme.axaml` | FloatButtonItemsControl | `Lines`, `Orientation` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ItemsLayout` | template node (StackPanel) | `FloatButtonItemsControlTheme.axaml` | FloatButtonItemsControl | `Orientation` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `FloatButton` | control theme | `FloatButtonTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BoxShadow`, `Content`, `ContentTemplate`, `CornerRadius`, `Cursor` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Panel` | template node (Panel) | `FloatButtonTheme.axaml` | FloatButton | `Background`, `BoxShadow`, `Content`, `ContentTemplate`, `CornerRadius`, `Cursor` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `FloatButton` | control theme | `FloatButtonTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `BorderThickness`, `BoxShadow`, `Content`, `ContentTemplate` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Panel` | template node (Panel) | `FloatButtonTheme.axaml` | FloatButton | `Background`, `BorderBrush`, `BorderThickness`, `BoxShadow`, `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `BackgroundFrame` | template node (Border) | `FloatButtonTheme.axaml` | FloatButton | `BoxShadow`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Frame` | template node (Border) | `FloatButtonTheme.axaml` | FloatButton | `Background`, `Content`, `ContentTemplate`, `CornerRadius`, `Cursor`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (Border) | `FloatButtonTheme.axaml` | FloatButton | `Background`, `BorderBrush`, `BorderThickness`, `Content`, `ContentTemplate`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `RootLayout` | template node (StackPanel) | `FloatButtonTheme.axaml` | FloatButton | `Content`, `ContentTemplate`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `IconPresenter` | template node (IconPresenter) | `FloatButtonTheme.axaml` | FloatButton | `Icon` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ContentPresenter` | template node (ContentPresenter) | `FloatButtonTheme.axaml` | FloatButton | `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
