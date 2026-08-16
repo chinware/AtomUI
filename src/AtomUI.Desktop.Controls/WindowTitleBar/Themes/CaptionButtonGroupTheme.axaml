@@ -13,40 +13,61 @@
                             Name="PART_FullScreenButton"
                             IsEnabled="{TemplateBinding IsFullScreenCaptionButtonVisible}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
-                            NormalIcon="{antdicons:AntDesignIconProvider Kind=FullscreenOutlined}"
-                            CheckedIcon="{antdicons:AntDesignIconProvider Kind=FullscreenExitOutlined}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsChecked="{TemplateBinding IsWindowFullScreen}"
-                            IsVisible="{TemplateBinding IsFullScreenButtonEffectivelyVisible}" />
+                            IsVisible="{TemplateBinding IsFullScreenButtonEffectivelyVisible}">
+                            <atom:CaptionButton.NormalIcon>
+                                <antdicons:FullscreenOutlined />
+                            </atom:CaptionButton.NormalIcon>
+                            <atom:CaptionButton.CheckedIcon>
+                                <antdicons:FullscreenExitOutlined />
+                            </atom:CaptionButton.CheckedIcon>
+                        </atom:CaptionButton>
                         <atom:CaptionButton
                             Name="PART_PinButton"
                             IsVisible="{TemplateBinding IsPinButtonEffectivelyVisible}"
                             IsEnabled="{TemplateBinding IsPinButtonEffectivelyVisible}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
-                            NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowPinOutlined}"
-                            CheckedIcon="{antdicons:AntDesignIconProvider Kind=WindowUnpinOutlined}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                            IsChecked="{TemplateBinding IsWindowPinned}" />
+                            IsChecked="{TemplateBinding IsWindowPinned}">
+                            <atom:CaptionButton.NormalIcon>
+                                <antdicons:WindowPinOutlined />
+                            </atom:CaptionButton.NormalIcon>
+                            <atom:CaptionButton.CheckedIcon>
+                                <antdicons:WindowUnpinOutlined />
+                            </atom:CaptionButton.CheckedIcon>
+                        </atom:CaptionButton>
                         <atom:CaptionButton
                             Name="PART_MinimizeButton"
-                            NormalIcon="{antdicons:AntDesignIconProvider Kind=MinusOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                            IsVisible="{TemplateBinding IsMinimizeButtonEffectivelyVisible}" />
+                            IsVisible="{TemplateBinding IsMinimizeButtonEffectivelyVisible}">
+                            <atom:CaptionButton.NormalIcon>
+                                <antdicons:MinusOutlined />
+                            </atom:CaptionButton.NormalIcon>
+                        </atom:CaptionButton>
                         <atom:CaptionButton
                             Name="PART_MaximizeButton"
-                            NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowMaximizedOutlined}"
-                            CheckedIcon="{antdicons:AntDesignIconProvider Kind=WindowRestoreOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsChecked="{TemplateBinding IsWindowMaximized}"
-                            IsVisible="{TemplateBinding IsMaximizeButtonEffectivelyVisible}" />
+                            IsVisible="{TemplateBinding IsMaximizeButtonEffectivelyVisible}">
+                            <atom:CaptionButton.NormalIcon>
+                                <antdicons:WindowMaximizedOutlined />
+                            </atom:CaptionButton.NormalIcon>
+                            <atom:CaptionButton.CheckedIcon>
+                                <antdicons:WindowRestoreOutlined />
+                            </atom:CaptionButton.CheckedIcon>
+                        </atom:CaptionButton>
                         <atom:CaptionButton
                             Name="PART_CloseButton"
-                            NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowCloseOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                            IsVisible="{TemplateBinding IsCloseCaptionButtonVisible}" />
+                            IsVisible="{TemplateBinding IsCloseCaptionButtonVisible}">
+                            <atom:CaptionButton.NormalIcon>
+                                <antdicons:WindowCloseOutlined />
+                            </atom:CaptionButton.NormalIcon>
+                        </atom:CaptionButton>
                     </StackPanel>
                 </ControlTemplate>
             </Setter>
@@ -64,10 +85,15 @@
                             IsVisible="{TemplateBinding IsPinButtonEffectivelyVisible}"
                             IsEnabled="{TemplateBinding IsPinButtonEffectivelyVisible}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
-                            NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowPinOutlined}"
-                            CheckedIcon="{antdicons:AntDesignIconProvider Kind=WindowUnpinOutlined}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                            IsChecked="{TemplateBinding IsWindowPinned}" />
+                            IsChecked="{TemplateBinding IsWindowPinned}">
+                            <atom:CaptionButton.NormalIcon>
+                                <antdicons:WindowPinOutlined />
+                            </atom:CaptionButton.NormalIcon>
+                            <atom:CaptionButton.CheckedIcon>
+                                <antdicons:WindowUnpinOutlined />
+                            </atom:CaptionButton.CheckedIcon>
+                        </atom:CaptionButton>
                     </StackPanel>
                 </ControlTemplate>
             </Setter>
@@ -83,11 +109,16 @@
                             WindowDecorationProperties.ElementRole="FullScreenButton"
                             IsEnabled="{TemplateBinding IsFullScreenCaptionButtonVisible}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
-                            NormalIcon="{antdicons:AntDesignIconProvider Kind=FullscreenOutlined}"
-                            CheckedIcon="{antdicons:AntDesignIconProvider Kind=FullscreenExitOutlined}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsChecked="{TemplateBinding IsWindowFullScreen}"
-                            IsVisible="{TemplateBinding IsFullScreenButtonEffectivelyVisible}" />
+                            IsVisible="{TemplateBinding IsFullScreenButtonEffectivelyVisible}">
+                            <atom:WindowsCaptionButton.NormalIcon>
+                                <antdicons:FullscreenOutlined />
+                            </atom:WindowsCaptionButton.NormalIcon>
+                            <atom:WindowsCaptionButton.CheckedIcon>
+                                <antdicons:FullscreenExitOutlined />
+                            </atom:WindowsCaptionButton.CheckedIcon>
+                        </atom:WindowsCaptionButton>
                         <atom:WindowsCaptionButton
                             Name="PART_PinButton"
                             Classes="extended-action"
@@ -95,10 +126,15 @@
                             IsVisible="{TemplateBinding IsPinButtonEffectivelyVisible}"
                             IsEnabled="{TemplateBinding IsPinButtonEffectivelyVisible}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
-                            NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowPinOutlined}"
-                            CheckedIcon="{antdicons:AntDesignIconProvider Kind=WindowUnpinOutlined}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                            IsChecked="{TemplateBinding IsWindowPinned}" />
+                            IsChecked="{TemplateBinding IsWindowPinned}">
+                            <atom:WindowsCaptionButton.NormalIcon>
+                                <antdicons:WindowPinOutlined />
+                            </atom:WindowsCaptionButton.NormalIcon>
+                            <atom:WindowsCaptionButton.CheckedIcon>
+                                <antdicons:WindowUnpinOutlined />
+                            </atom:WindowsCaptionButton.CheckedIcon>
+                        </atom:WindowsCaptionButton>
                         <atom:WindowsCaptionButton
                             Name="PART_MinimizeButton"
                             WindowDecorationProperties.ElementRole="MinimizeButton"

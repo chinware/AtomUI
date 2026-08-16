@@ -54,12 +54,20 @@
                                         Orientation="Horizontal">
                                 <atom:CaptionButton
                                     Name="PART_PopoverFullScreenButton"
-                                    NormalIcon="{antdicons:AntDesignIconProvider Kind=FullscreenOutlined}"
-                                    CheckedIcon="{antdicons:AntDesignIconProvider Kind=FullscreenExitOutlined}"
-                                    IsChecked="True" />
+                                    IsChecked="True">
+                                    <atom:CaptionButton.NormalIcon>
+                                        <antdicons:FullscreenOutlined />
+                                    </atom:CaptionButton.NormalIcon>
+                                    <atom:CaptionButton.CheckedIcon>
+                                        <antdicons:FullscreenExitOutlined />
+                                    </atom:CaptionButton.CheckedIcon>
+                                </atom:CaptionButton>
                                 <atom:CaptionButton
-                                    Name="PART_PopoverCloseButton"
-                                    NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowCloseOutlined}" />
+                                    Name="PART_PopoverCloseButton">
+                                    <atom:CaptionButton.NormalIcon>
+                                        <antdicons:WindowCloseOutlined />
+                                    </atom:CaptionButton.NormalIcon>
+                                </atom:CaptionButton>
                             </StackPanel>
                         </atom:WindowTitleBarLayoutPanel>
                     </Border>

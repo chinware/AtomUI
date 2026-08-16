@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
+using AtomUI.Icons.AntDesign;
 using Shouldly;
 using Xunit;
 
@@ -251,6 +252,83 @@ public class WindowTitleBarTokenTests
 
         assetManifest.ShouldContain("WindowTitleBar/Themes/WindowsCaptionIconGeometries.axaml");
         assetManifest.ShouldContain("WindowTitleBar/Themes/CaptionButtonGroupTheme.axaml");
+    }
+
+    [Fact]
+    public void Built_In_Window_Themes_Use_Concrete_Icons_For_NativeAot_Trimming()
+    {
+        var themePaths = new[]
+        {
+            "src/AtomUI.Desktop.Controls/Window/Themes/WindowDrawnDecorationsTheme.axaml",
+            "src/AtomUI.Desktop.Controls/Window/Themes/FullscreenPopoverLayerTheme.axaml",
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/CaptionButtonGroupTheme.axaml"
+        };
+        var themes = themePaths.Select(path => XDocument.Load(GetRepoFile(path))).ToList();
+        var iconTypes = themes.SelectMany(theme => theme.Descendants())
+                              .Select(element => element.Name.LocalName)
+                              .ToHashSet(StringComparer.Ordinal);
+
+        foreach (var theme in themes)
+        {
+            theme.ToString().ShouldNotContain("AntDesignIconProvider");
+        }
+
+        var expectedIconTypes = new[]
+        {
+            "FullscreenOutlined",
+            "FullscreenExitOutlined",
+            "MinusOutlined",
+            "WindowCloseOutlined",
+            "WindowMaximizedOutlined",
+            "WindowPinOutlined",
+            "WindowRestoreOutlined",
+            "WindowUnpinOutlined"
+        };
+
+        foreach (var iconType in expectedIconTypes)
+        {
+            iconTypes.ShouldContain(iconType);
+        }
+    }
+
+    [Fact]
+    public void Linux_Caption_Buttons_Instantiate_Concrete_AntDesign_Icons()
+    {
+        var group = new CaptionButtonGroup();
+        group.SetValue(CaptionButtonGroup.OsTypeProperty, OsType.Linux);
+        Application.Current!.TryFindResource(typeof(CaptionButtonGroup), out var resource).ShouldBeTrue();
+        group.Theme = resource.ShouldBeAssignableTo<ControlTheme>();
+
+        var host = new Avalonia.Controls.Window
+        {
+            Width   = 400,
+            Height  = 100,
+            Content = group
+        };
+
+        try
+        {
+            host.Show();
+            group.ApplyTemplate();
+            host.UpdateLayout();
+
+            var buttons = group.GetVisualDescendants()
+                               .OfType<CaptionButton>()
+                               .ToDictionary(button => button.Name!, StringComparer.Ordinal);
+
+            buttons["PART_FullScreenButton"].NormalIcon.ShouldBeOfType<FullscreenOutlined>();
+            buttons["PART_FullScreenButton"].CheckedIcon.ShouldBeOfType<FullscreenExitOutlined>();
+            buttons["PART_PinButton"].NormalIcon.ShouldBeOfType<WindowPinOutlined>();
+            buttons["PART_PinButton"].CheckedIcon.ShouldBeOfType<WindowUnpinOutlined>();
+            buttons["PART_MinimizeButton"].NormalIcon.ShouldBeOfType<MinusOutlined>();
+            buttons["PART_MaximizeButton"].NormalIcon.ShouldBeOfType<WindowMaximizedOutlined>();
+            buttons["PART_MaximizeButton"].CheckedIcon.ShouldBeOfType<WindowRestoreOutlined>();
+            buttons["PART_CloseButton"].NormalIcon.ShouldBeOfType<WindowCloseOutlined>();
+        }
+        finally
+        {
+            host.Close();
+        }
     }
 
     [Fact]
