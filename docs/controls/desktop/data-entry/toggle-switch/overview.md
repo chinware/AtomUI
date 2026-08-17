@@ -1,6 +1,6 @@
 # ToggleSwitch 桌面版架构设计
 
-本文档定义 `AtomUI.Desktop.Controls.ToggleSwitch` 桌面版开关控件的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [ToggleSwitch 桌面版实现原理](implementation.md)，Token 专项设计见 [ToggleSwitch Token 设计](token.md)，设计和契约变化记录见 [ToggleSwitch Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.ToggleSwitch` 桌面版开关控件的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [ToggleSwitch 桌面版实现原理](implementation.md)，Semantic Part 契约见 [ToggleSwitch Semantic Part 契约](semantic-part.md)，Token 专项设计见 [ToggleSwitch Token 设计](token.md)，设计和契约变化记录见 [ToggleSwitch Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -171,6 +171,7 @@ ToggleSwitch 当前主题提供普通和小号两组尺寸。`Middle`、`Large` 
 关联文档：
 
 - [ToggleSwitch 桌面版实现原理](implementation.md)
+- [ToggleSwitch Semantic Part 契约](semantic-part.md)
 - [ToggleSwitch Token 设计](token.md)
 - [ToggleSwitch Changelog](changelog.md)
 
@@ -178,18 +179,20 @@ LLMS 语义区域：
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `ToggleSwitch` | 数据录入控件根语义区域，承载 public API、值状态、验证状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `input` | `输入或编辑区域` | 承载用户输入、当前值、占位、格式化或只读状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `trigger` | `触发区域` | 承载清除、展开、提交、步进、上传或辅助操作。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `popup` | `弹层或候选区域` | 承载下拉、候选项、日历、颜色面板或异步内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `validation` | `校验反馈区域` | 承载 Form、status、错误、警告、help 或 loading 状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `root` | `ToggleSwitch` | 开关值、状态、内容与根视觉样式的统一 owner，承载 `IsChecked`、`SizeType`、`IsLoading`、动效开关和轨道背景。 | `IsChecked`、`GrooveBackground`、`SizeType`、`IsLoading` | `ToggleSwitchToken`、SharedToken | stable |
+| `content` | On/Off `ContentPresenter` | 开关内部 checked / unchecked 内容语义区域，承载 `OnContent` / `OffContent` 文本与图标内容。 | `OnContent`、`OffContent`、`OnContentTemplate`、`OffContentTemplate` | `ContentIconSize`、`ExtraInfoFontSize`、`InnerMinMargin`、`InnerMaxMargin` | stable |
+| `indicator` | `SwitchKnob` | 滑动把手语义区域，承载把手填充、阴影、两端位置和 loading 指示。 | `IsChecked`、`IsLoading` | `HandleBg`、`HandleShadow`、`HandleSize`、`HandleSizeSM` | stable |
+
+`content` 与上游 Switch `content` 语义对齐，由模板中的两个 `ContentPresenter` 节点承载并以 `Multiple` 基数公开；
+`indicator` 对应上游 `indicator` 语义，由 `SwitchKnob` 节点承载并以 `Single` 基数公开。完整契约见
+[ToggleSwitch Semantic Part 契约](semantic-part.md)。
 
 LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
 | 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/toggle-switch/index-cn.md` |
-| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/toggle-switch/semantic-cn.md` |
+| 单控件语义文档 | `semantic-part.md` + `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/toggle-switch/semantic-cn.md` |
 | API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
 | Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |

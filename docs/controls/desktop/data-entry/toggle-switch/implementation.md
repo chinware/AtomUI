@@ -1,6 +1,6 @@
 # ToggleSwitch 桌面版实现原理
 
-本文档描述 ToggleSwitch 桌面版的内部布局、状态流转、模板接入、加载动画、内容绑定、Form 和 Token 使用。公共设计与 API 契约见 [ToggleSwitch 桌面版架构设计](overview.md)，Token 语义见 [ToggleSwitch Token 设计](token.md)，变化记录见 [ToggleSwitch Changelog](changelog.md)。
+本文档描述 ToggleSwitch 桌面版的内部布局、状态流转、模板接入、加载动画、内容绑定、Form 和 Token 使用。公共设计与 API 契约见 [ToggleSwitch 桌面版架构设计](overview.md)，Semantic Part 契约见 [ToggleSwitch Semantic Part 契约](semantic-part.md)，Token 语义见 [ToggleSwitch Token 设计](token.md)，变化记录见 [ToggleSwitch Changelog](changelog.md)。
 
 ## 1. 实现定位
 
@@ -77,6 +77,17 @@ Form.ClearValue()    → IsChecked = null
 
 模板接入后，控件把当前 `KnobSize` 写入 `SwitchKnob`，再根据当前 `IsLoading` 同步把手 loading 状态。模板 part 没有全局事件订阅，主要生命周期风险来自内容图标 relay binding 和 loading animation。
 
+模板层级与 antd Switch 对齐：`PART_SwitchKnob` 位于外层 `Panel`（root 的直接子层），不在 `PART_MainContainer`（内容
+`Canvas`，`ClipToBounds=True`）之内。内容 on/off presenter 的离屏裁剪依赖 `PART_MainContainer`，把手越出轨道边界的
+自定义几何（负 `TrackPadding`、`KnobSize` 大于 `TrackHeight`）则不受该 Canvas 裁剪，例如 MUI 形态的 20px 把手
+悬挂在 14px 轨道之外。此结构是内置模板的稳定保证，用户样式不得依赖 `PART_*` 或 `/template/` 重建。
+
+Semantic Part marker 映射：`PART_SwitchKnob` 声明 `Classes.semantic-indicator="True"`，`PART_OnContentPresenter` 与
+`PART_OffContentPresenter` 声明 `Classes.semantic-content="True"`，`root` 不声明 marker。三个 Part 与模板节点的映射是
+静态 AXAML marker，不随 `IsChecked`、`IsLoading`、`SizeType` 或内容变化增删；轨道胶囊由 owner `Render` 直接绘制，没有
+独立 track 节点，因此不对应任何 `.semantic-*` marker。完整契约见
+[ToggleSwitch Semantic Part 契约](semantic-part.md)。
+
 内容变化时，`SetupContent` 会释放旧 on/off 内容对应的 `CompositeDisposable`，再为新的 `PathIcon` / `Icon` 建立尺寸和前景色绑定。维护时必须保持内容替换和 disposable 释放成对出现。
 
 `SwitchKnob` 在 `OnAttachedToVisualTree` 中根据 `_isLoading` 启动加载动画，在 `OnDetachedFromVisualTree` 中取消并释放 `CancellationTokenSource`。加载旋转使用共享无限动画 helper，并显式采用 `PlaybackBehavior.OnlyIfVisible`；ToggleSwitch 自身或 Visual 祖先不可见时 animation clock 暂停，重新可见后继续。
@@ -110,7 +121,14 @@ loading 状态下 pointer press/release 不进入基类逻辑，因此不会切�
 
 ### 7.1 测量与宽度计算
 
-测量阶段分别测量 on/off content presenter，取二者最大宽度作为内容宽度，再叠加 `InnerMinMargin` 和 `InnerMaxMargin`。最终宽度取该值与 `TrackMinWidth` 的较大值，高度使用 `TrackHeight`。
+测量阶段分别测量 on/off content presenter，取二者最大宽度作为内容宽度；有内容时再叠加 `InnerMinMargin` 和
+`InnerMaxMargin`，无内容时宽度收敛到 `TrackMinWidth`（与 antd 的 min-width 语义一致）。显式 `Width` 优先于内容
+测量宽度（且不小于 `TrackMinWidth`），内部把手与内容几何随之按显式宽度计算。高度使用 `TrackHeight`。
+
+`TrackHeight`、`TrackMinWidth`、`TrackPadding`、`KnobSize` 是 owner 级公开 StyledProperty（对应 antd Switch
+`ComponentToken` 的 `trackHeight` / `trackMinWidth` / `trackPadding` / `handleSize`），默认值由 SizeType 主题分支从
+`ToggleSwitchToken` 写入，Semantic Style 可以直接覆盖。`KnobSize` 变化时同步写入 `SwitchKnob.KnobSize`，四者均
+`AffectsMeasure`。
 
 ### 7.2 把手位置
 
@@ -126,7 +144,12 @@ loading 状态下 pointer press/release 不进入基类逻辑，因此不会切�
 
 ### 7.5 把手与 loading 绘制
 
-`SwitchKnob.Render` 根据 `KnobRenderWidth` 和高度判断绘制圆形或胶囊把手。loading 状态下，按当前 `Rotation` 绘制 90 度 arc。`GetLoadIndicatorPen` 缓存 pen，并在 brush 引用变化时重建。
+`SwitchKnob.Render` 根据 `KnobRenderWidth` 和高度判断绘制圆形或胶囊把手，填充色来自标准的 `Background` 属性（主题通过 `HandleBg` Token 设置，`.semantic-indicator` 可直接覆盖）。loading 状态下，按当前 `Rotation` 绘制 90 度 arc。`GetLoadIndicatorPen` 缓存 pen，并在 brush 引用变化时重建。
+
+把手阴影由 `KnobBoxShadow`（主题从 `HandleShadow` Token 设置）派生：`SwitchKnob.OnPropertyChanged` 把
+`BoxShadow` 转换为 `DropShadowEffect`，以 `BindingPriority.Style` 写入 `EffectProperty` 即时帧。同优先级下用户
+样式帧后求值、后写入，因此 `.semantic-indicator` 的 `Effect` Setter 可以覆盖主题派生阴影；若 `KnobBoxShadow` 为
+null 则清空派生效值。
 
 ## 8. 资源、性能与 AOT 边界
 

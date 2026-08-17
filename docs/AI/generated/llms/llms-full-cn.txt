@@ -10947,7 +10947,7 @@ ToggleSwitch 的事件与命令以控件文档、源码 public surface 和 Avalo
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml:37`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml:62`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -10959,7 +10959,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 禁用
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml:50`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml:75`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -10975,7 +10975,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 尺寸
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml:101`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml:126`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -10993,7 +10993,7 @@ Gallery key：`ExamplesContent` / item `3`
 
 ### 加载中
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml:120`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml:145`
 
 Gallery key：`ExamplesContent` / item `4`
 
@@ -11103,6 +11103,7 @@ AOT 边界：
 
 - 源设计文档：`docs/controls/desktop/data-entry/toggle-switch/overview.md`
 - 实现文档：`docs/controls/desktop/data-entry/toggle-switch/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-entry/toggle-switch/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-entry/toggle-switch/token.md`
 - 变更记录：`docs/controls/desktop/data-entry/toggle-switch/changelog.md`
 - 语义结构：`./semantic-cn.md`

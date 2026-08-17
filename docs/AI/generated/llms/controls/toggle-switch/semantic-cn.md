@@ -4,13 +4,88 @@
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `ToggleSwitch` | 数据录入控件根语义区域，承载 public API、值状态、验证状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `input` | `输入或编辑区域` | 承载用户输入、当前值、占位、格式化或只读状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `trigger` | `触发区域` | 承载清除、展开、提交、步进、上传或辅助操作。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `popup` | `弹层或候选区域` | 承载下拉、候选项、日历、颜色面板或异步内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `validation` | `校验反馈区域` | 承载 Form、status、错误、警告、help 或 loading 状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+ToggleSwitch 主控件公开 `root`、`content` 与 `indicator` 三个职责区域，与上游稳定 Semantic DOM
+（`root` / `content` / `indicator`）对齐。`indicator` 对应滑动把手区域，由模板中的 `SwitchKnob` 节点承载；`content`
+对应开关内部 on/off 内容区域，由模板中的两个 `ContentPresenter`（`PART_OnContentPresenter` 与
+`PART_OffContentPresenter`）承载。
+
+`AbstractToggleSwitch`、`SwitchKnob` 与 `WaveSpiritDecorator` 均不持有独立 Semantic descriptor：
+
+- 上游 Switch 只提供一个 owner 的 Semantic DOM（`root` / `content` / `indicator`），`AbstractToggleSwitch` 是跨平台共享
+  基类，不是对应用公开的独立 owner，因此不为它声明 descriptor。
+- `SwitchKnob` 是 internal 类型，不能作为公共 descriptor owner；其把手职责通过 `ToggleSwitch` 的 `indicator` Part 对外
+  公开，并以 `TemplatedControl` 作为最低 ContractType。
+- `WaveSpiritDecorator` 是 checked 变化时的视觉反馈 actor，不是用户可定制的公共区域，不公开 Part。
+
+因此本控件的 Semantic Part 只由 `ToggleSwitch` owner 公开。
+
+### 1.1 `ToggleSwitch`
+
+#### `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ToggleSwitch` |
+| Part | `root` |
+| Selector | ToggleSwitch 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
+| ContractType | `ToggleSwitch` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | ToggleSwitch owner |
+| 职责 | ToggleSwitch root 是开关值、状态、内容与根视觉样式的统一 owner。 |
+| 相关 API | `IsChecked`、`GrooveBackground`、`OnContent`、`OffContent`、`OnContentTemplate`、`OffContentTemplate`、`SizeType`、`IsLoading`、`IsMotionEnabled`、`IsWaveSpiritEnabled`、`TrackHeight`、`TrackMinWidth`、`TrackPadding`、`KnobSize` |
+| 相关 Token | ToggleSwitchToken、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `content`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ToggleSwitch` |
+| Part | `content` |
+| Selector | `.semantic-content` |
+| SelectorRoute | `/template/ .semantic-content` |
+| Style Type | `ToggleSwitchContentStyle` |
+| ContractType | `ContentPresenter` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | On/Off 内容 `ContentPresenter` |
+| 职责 | 统一表示开关内部 checked / unchecked 内容区域的文本与视觉职责。 |
+| 相关 API | `OnContent`、`OffContent`、`OnContentTemplate`、`OffContentTemplate` |
+| 相关 Token | `ContentIconSize`、`ContentIconSizeSM`、`ExtraInfoFontSize`、`ExtraInfoFontSizeSM`、`InnerMinMargin`、`InnerMaxMargin` |
+| 稳定性 | stable since 6.0 |
+
+#### `indicator`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ToggleSwitch` |
+| Part | `indicator` |
+| Selector | `.semantic-indicator` |
+| SelectorRoute | `/template/ .semantic-indicator` |
+| Style Type | `ToggleSwitchIndicatorStyle` |
+| ContractType | `TemplatedControl` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | 滑动把手 `SwitchKnob` |
+| 职责 | 统一表示开关的滑动把手视觉职责，含把手填充、阴影与 loading 指示。 |
+| 相关 API | `IsChecked`、`IsLoading` |
+| 相关 Token | `HandleBg`、`HandleShadow`、`HandleSize`、`HandleSizeSM`、`SwitchColor`、`OffStateLoadIndicatorColor` |
+| 稳定性 | stable since 6.0 |
+
+`root` 是隐式 Part，不添加 `.semantic-root`。`ContractType` 只定义 Setter 可以稳定依赖的最低 public 类型，并通过
+`x:SetterTargetType` 提供 AXAML 编译期类型上下文；它不参与 `.semantic-*` 的身份匹配。`indicator` 的 `ContractType` 为
+`TemplatedControl` 而非 `SwitchKnob`，因为 `SwitchKnob` 是 internal 类型，不能作为公共 Setter 依赖的最低类型。
+`content` 的 `Cardinality` 为 `Multiple`：模板中始终存在 on 与 off 两个内容 `ContentPresenter`，二者是同一 content
+职责的两个替代节点，不随 `IsChecked` 增删。
 
 ## Abstract AXAML Structure
 
@@ -22,8 +97,8 @@
     <Canvas Name="PART_MainContainer">
         <ContentPresenter Name="PART_OnContentPresenter" />
         <ContentPresenter Name="PART_OffContentPresenter" />
-        <SwitchKnob Name="PART_SwitchKnob" />
     </Canvas>
+    <SwitchKnob Name="PART_SwitchKnob" />
 </Panel>
 ```
 
@@ -41,7 +116,7 @@ ToggleSwitch
         -> Canvas#PART_MainContainer (template-stable)
            -> ContentPresenter#PART_OnContentPresenter (template-stable)
            -> ContentPresenter#PART_OffContentPresenter (template-stable)
-           -> SwitchKnob#PART_SwitchKnob (template-stable)
+        -> SwitchKnob#PART_SwitchKnob (template-stable)
 ```
 
 ### 协作节点
@@ -52,7 +127,7 @@ ToggleSwitch
 | `ToggleSwitch` | control theme | `ToggleSwitchTheme.axaml` | 用户代码 / 控件宿主 | `IsChecked`, `IsMotionEnabled`, `IsWaveSpiritEnabled`, `OffContent`, `OffContentTemplate`, `OnContent` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Panel` | template node (Panel) | `ToggleSwitchTheme.axaml` | ToggleSwitch | `IsChecked`, `IsMotionEnabled`, `IsWaveSpiritEnabled`, `OffContent`, `OffContentTemplate`, `OnContent` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_WaveSpirit` | template node (WaveSpiritDecorator) | `ToggleSwitchTheme.axaml` | ToggleSwitch | `IsMotionEnabled`, `IsWaveSpiritEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_MainContainer` | template node (Canvas) | `ToggleSwitchTheme.axaml` | ToggleSwitch | `IsChecked`, `IsMotionEnabled`, `OffContent`, `OffContentTemplate`, `OnContent`, `OnContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_MainContainer` | template node (Canvas) | `ToggleSwitchTheme.axaml` | ToggleSwitch | `OffContent`, `OffContentTemplate`, `OnContent`, `OnContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_OnContentPresenter` | template node (ContentPresenter) | `ToggleSwitchTheme.axaml` | ToggleSwitch | `OnContent`, `OnContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_OffContentPresenter` | template node (ContentPresenter) | `ToggleSwitchTheme.axaml` | ToggleSwitch | `OffContent`, `OffContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_SwitchKnob` | template node (SwitchKnob) | `ToggleSwitchTheme.axaml` | ToggleSwitch | `IsChecked`, `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |

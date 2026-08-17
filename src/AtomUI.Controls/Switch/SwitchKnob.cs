@@ -4,6 +4,7 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Styling;
@@ -19,18 +20,9 @@ internal class SwitchKnob : TemplatedControl
     public static readonly StyledProperty<bool> IsCheckedStateProperty = 
         AvaloniaProperty.Register<SwitchKnob, bool>(nameof(IsCheckedState));
     
-    public static readonly StyledProperty<IBrush?> KnobBackgroundColorProperty =
-        AvaloniaProperty.Register<SwitchKnob, IBrush?>(nameof(KnobBackgroundColor));
-        
     public static readonly StyledProperty<BoxShadow?> KnobBoxShadowProperty = 
         AvaloniaProperty.Register<SwitchKnob, BoxShadow?>(nameof(KnobBoxShadow));
     
-    public IBrush? KnobBackgroundColor
-    {
-        get => GetValue(KnobBackgroundColorProperty);
-        set => SetValue(KnobBackgroundColorProperty, value);
-    }
-
     public bool IsCheckedState
     {
         get => GetValue(IsCheckedStateProperty);
@@ -123,7 +115,7 @@ internal class SwitchKnob : TemplatedControl
     static SwitchKnob()
     {
         AffectsRender<SwitchKnob>(
-            RotationProperty, KnobRenderWidthProperty, LoadIndicatorBrushProperty);
+            BackgroundProperty, RotationProperty, KnobRenderWidthProperty, LoadIndicatorBrushProperty);
         AffectsMeasure<SwitchKnob>(KnobSizeProperty);
     }
     
@@ -204,17 +196,19 @@ internal class SwitchKnob : TemplatedControl
         {
             if (KnobBoxShadow != null)
             {
-                Effect = new DropShadowEffect
+                // 派生效值以 Style 优先级写入即时帧；同优先级下用户样式帧后添加、后求值，
+                // 因此语义样式可以覆盖主题派生的把手阴影
+                SetValue(EffectProperty, (IEffect?)new DropShadowEffect
                 {
                     OffsetX    = KnobBoxShadow.Value.OffsetX,
                     OffsetY    = KnobBoxShadow.Value.OffsetY,
                     Color      = KnobBoxShadow.Value.Color,
                     BlurRadius = KnobBoxShadow.Value.Blur
-                };
+                }, BindingPriority.Style);
             }
             else
             {
-                Effect = null;
+                SetValue(EffectProperty, (IEffect?)null, BindingPriority.Style);
             }
         }
     }
@@ -236,11 +230,11 @@ internal class SwitchKnob : TemplatedControl
         var targetRect = new Rect(offsetX, offsetY, KnobRenderWidth, Bounds.Height);
         if (MathUtils.AreClose(KnobRenderWidth, DesiredSize.Height))
         {
-            context.DrawEllipse(KnobBackgroundColor, null, targetRect);
+            context.DrawEllipse(Background, null, targetRect);
         }
         else
         {
-            context.DrawPilledRect(KnobBackgroundColor, null, targetRect);
+            context.DrawPilledRect(Background, null, targetRect);
         }
 
         if (_isLoading)
