@@ -113,6 +113,7 @@ Detailed AI collaboration rules live in [docs/engineering/contributing/agent-gui
 - Prefer root-cause fixes over trigger-point patches.
 - Treat AOT compatibility as a first-class design constraint for new features and bug fixes.
 - Verify with tests or publish checks that match the risk of the change.
+- Follow the mandatory Superpowers workflow before any creation, change, implementation, or bug fix: invoke `superpowers:using-superpowers`, then route through `superpowers:brainstorming` (new features/components), `superpowers:systematic-debugging` (bugs), `superpowers:test-driven-development` (implementation), `superpowers:writing-plans`/`superpowers:executing-plans` (multi-step work), and `superpowers:verification-before-completion` (before claiming done). Never skip a skill that could apply; only an explicit user instruction may narrow it.
 
 ## Common Commands
 
