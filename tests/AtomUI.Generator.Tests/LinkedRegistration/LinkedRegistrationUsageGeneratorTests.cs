@@ -524,7 +524,7 @@ public sealed class LinkedRegistrationUsageGeneratorTests
     }
 
     [Fact]
-    public void Unsupported_Dynamic_Use_Widens_Only_The_Affected_Package()
+    public void Unsupported_Dynamic_Use_Warns_Without_Widening()
     {
         var roots = UsageGeneratorTestHost.Axaml(
             "obj/AtomUIAxamlUsage.xml",
@@ -535,10 +535,26 @@ public sealed class LinkedRegistrationUsageGeneratorTests
             UsageGeneratorTestHost.LinkedEntryOptions,
             additionalTexts: [roots]);
 
+        // The only PackageRoot comes from the explicit AtomUIPackageRoot declaration;
+        // the unresolvable dynamic creation site itself no longer widens the package.
         result.Usages.Count(usage =>
             usage.Kind == LinkedUsageKind.PackageRoot && usage.Identity == "Acme.Controls").ShouldBe(1);
         result.Diagnostics.ShouldContain(diagnostic =>
-            diagnostic.Id == "ATOMUILINK002" && diagnostic.Severity == DiagnosticSeverity.Warning);
+            diagnostic.Id == "ATOMUILINK010" && diagnostic.Severity == DiagnosticSeverity.Warning);
+        result.Diagnostics.ShouldNotContain(diagnostic => diagnostic.Id == "ATOMUILINK002");
+    }
+
+    [Fact]
+    public void Unsupported_Dynamic_Use_With_Invoked_Entry_Warns_Without_A_Package_Root()
+    {
+        var result = UsageGeneratorTestHost.Run(
+            ["using System; public sealed class Consumer { public static void Run() { Other.Controls.Entry.UseOtherControls(); } public object? Create(Type type) => Activator.CreateInstance(type); }"],
+            [UsageGeneratorTestHost.AcmePackage, UsageGeneratorTestHost.OtherPackage],
+            UsageGeneratorTestHost.LinkedEntryOptions);
+
+        result.Usages.ShouldNotContain(usage => usage.Kind == LinkedUsageKind.PackageRoot);
+        result.Diagnostics.ShouldContain(diagnostic =>
+            diagnostic.Id == "ATOMUILINK010" && diagnostic.Severity == DiagnosticSeverity.Warning);
     }
 
     [Fact]
@@ -662,7 +678,7 @@ public sealed class LinkedRegistrationUsageGeneratorTests
 
         warning.Usages.ShouldBe(strict.Usages);
         strict.Diagnostics.ShouldContain(diagnostic =>
-            diagnostic.Id == "ATOMUILINK002" && diagnostic.Severity == DiagnosticSeverity.Error);
+            diagnostic.Id == "ATOMUILINK010" && diagnostic.Severity == DiagnosticSeverity.Error);
     }
 
     [Fact]

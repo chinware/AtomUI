@@ -21,6 +21,14 @@ public sealed class GenerateLinkedRegistrationSidecarTask : ITask
 
     public string TargetFramework { get; set; } = string.Empty;
 
+    /// <summary>
+    /// When true, the Sidecar is extracted by a consumer from a normally-built referenced
+    /// assembly. C# unit edges are only emitted by linked library builds, so each declared
+    /// package gets an ExtractedManifest fallback marker: the plan widens to full fallback
+    /// instead of trimming with incomplete evidence.
+    /// </summary>
+    public bool ExtractedFallback { get; set; }
+
     [Output]
     public string SidecarPath { get; private set; } = string.Empty;
 
@@ -67,6 +75,19 @@ public sealed class GenerateLinkedRegistrationSidecarTask : ITask
                 return LogError(error);
             }
             sidecar.Assembly.TargetFramework = TargetFramework.Trim();
+            if (ExtractedFallback && sidecar.Packages.Length != 0)
+            {
+                sidecar.Fallbacks = sidecar.Fallbacks
+                    .Concat(sidecar.Packages.Select(static package => new LinkedSidecarFallback
+                    {
+                        PackageId = package.Id,
+                        Reason = LinkedRegistrationProtocol.FallbackReasonExtractedManifest,
+                        Source = "<extraction>",
+                        Line = 0,
+                        Column = 0
+                    }))
+                    .ToArray();
+            }
             var bytes = LinkedRegistrationSidecarCodec.Write(sidecar);
             if (analysisBudgetExceeded ||
                 bytes.Length > LinkedRegistrationAnalysisBudget.MaxSidecarBytes)

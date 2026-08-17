@@ -48,8 +48,11 @@ public static class AppBuilderExtensions
     /// </example>
     public static AppBuilder WithAtomUIDefaultOptions(this AppBuilder appBuilder)
     {
-        return appBuilder
-            .With(new AvaloniaNativePlatformOptions
+        // 按目标平台分支设置平台选项。NativeAOT 在 RID 发布时会把 OperatingSystem.IsXxx()
+        // 折叠为常量，非目标平台的分支及其引用的平台选项类型会被整体裁剪。
+        if (OperatingSystem.IsMacOS())
+        {
+            appBuilder = appBuilder.With(new AvaloniaNativePlatformOptions
             {
                 RenderingMode =
                 [
@@ -57,8 +60,11 @@ public static class AppBuilderExtensions
                     AvaloniaNativeRenderingMode.Metal,
                     AvaloniaNativeRenderingMode.Software
                 ]
-            })
-            .With(new Win32PlatformOptions
+            });
+        }
+        if (OperatingSystem.IsWindows())
+        {
+            appBuilder = appBuilder.With(new Win32PlatformOptions
             {
                 RenderingMode =
                 [
@@ -66,11 +72,16 @@ public static class AppBuilderExtensions
                     Win32RenderingMode.Software
                 ],
                 CompositionMode = [Win32CompositionMode.RedirectionSurface]
-            })
-            .With(new X11PlatformOptions
+            });
+        }
+        if (OperatingSystem.IsLinux())
+        {
+            appBuilder = appBuilder.With(new X11PlatformOptions
             {
                 EnableDrawnDecorations = true
-            })
+            });
+        }
+        return appBuilder
             .With(new FontManagerOptions
             {
                 FontFallbacks = [new FontFallback

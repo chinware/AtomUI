@@ -156,8 +156,10 @@ dynamic、reflection、Loose AXAML 和插件输入触发 Package fallback。
 | 静态 Control/AXAML 可确定 | 选择对应 Unit closure |
 | 默认 Package 粒度 | 选择完整 Package Unit |
 | Unit cycle | SCC 全选，每个 leaf fragment 调用一次 |
-| dynamic/reflection/Loose AXAML | 对应 Package full registrar |
+| Loose AXAML / 动态主题 | 对应 Package full registrar |
+| 无法静态解析的 C# 动态创建（`Activator.CreateInstance(Type)` 等） | 不扩大保留范围，报告 `ATOMUILINK010` 警告，由显式 root 覆盖 |
 | Sidecar 缺失、陈旧或无法验证 | 对应 Package full registrar |
+| ProjectReference Sidecar 由 consumer 从普通构建的 assembly metadata 提取（`ExtractedManifest`） | 对应 Package full registrar，不产生诊断 |
 | 分析预算超限 | 对应 Package full registrar |
 | 未知 protocol major | 构建 Error |
 | Fragment symbol 不存在 | 构建 Error |
@@ -236,6 +238,7 @@ ordinary Generator、linked-publish Generator、Build Tasks、Sidecar、PDB 和�
 | `ATOMUILINK007` | Loose AXAML 或动态主题导致 Package fallback | Warning |
 | `ATOMUILINK008` | 检测到 Package 使用但缺少 registration entry | Error |
 | `ATOMUILINK009` | Registration entry Attribute 或签名无效 | Error |
+| `ATOMUILINK010` | C# 动态创建无法静态解析，不扩大保留范围，需显式 root 覆盖 | Warning |
 
 诊断必须包含 Package/Unit identity、稳定 reason 和可定位输入，不能只写“可能不兼容 AOT”。Fallback Warning 只在 linked publish
 或显式 strict 验证中产生；strict 模式可以提升为 Error，但不改变保留范围。

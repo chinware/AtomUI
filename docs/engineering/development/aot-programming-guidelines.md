@@ -292,9 +292,14 @@ Package、Unit、ControlMap 或 full fragment metadata。
 Attribute，不要为了让 Common 参与应用计划而复制 `UseDesktopControls()` 的方法 identity，也不要引入跨 Package Unit 闭包。
 
 类库只在被 linked 应用作为 ProjectReference 构建或执行 NuGet Pack 时生成 Usage Sidecar。普通 Debug/Release 必须跳过 usage
-分析和 Sidecar 生成。缺失或无法验证的 Sidecar 不能解释为没有 usage，只能让相关 Package full fallback。
-`ATOMUILINK002` 和 `ATOMUILINK007` 只在 linked publish 或显式 `AtomUIRegistrationStrict=true` 验证中显示；strict 模式用于
-CI 把自动 full fallback 提升为 error。
+分析和 Sidecar 生成。应用侧编译时如果 ProjectReference 旁路没有 Sidecar，consumer 直接从引用 assembly 的 metadata 记录提取
+（普通库构建始终包含 Package/Unit/ControlMap/Axaml UnitEdge 记录），用于诊断与入口校验；提取的 Sidecar 带
+`ExtractedManifest` fallback 标记，相关 Package 在 Application Plan 中保持 full fallback，不产生诊断。要获得 Unit 级裁剪，
+publish 时以全局属性传入 `-p:PublishAot=true` / `-p:PublishTrimmed=true`（命令行全局属性沿 ProjectReference 流动，引用库
+自行启用 linked 构建并产出含 C# UnitEdge 的完整 Sidecar）；如果应用在项目文件里局部设置这些属性，则 publish 时补传
+`-p:AtomUILinkedPublish=true`。缺失或无法验证的 Sidecar 不能解释为没有 usage，只能让相关 Package full fallback。
+`ATOMUILINK002`、`ATOMUILINK007` 和 `ATOMUILINK010` 只在 linked publish 或显式 `AtomUIRegistrationStrict=true` 验证中显示；strict 模式用于
+CI 把自动 full fallback 或未覆盖的动态创建提升为 error。`ATOMUILINK010` 不触发 full fallback，只提示用显式 root 覆盖。
 
 修改 Generator ABI、Sidecar schema、feature switch 或 Public fragment entry point 时，按 Public API 和协议 review，并运行
 普通构建零 linked-analysis、trimmed JIT、NativeAOT 和非裁剪兼容验证。系统契约见

@@ -86,6 +86,15 @@ internal static class AtomUIDiagnosticDescriptors
         isEnabledByDefault: true,
         customTags: [WellKnownDiagnosticTags.Telemetry]);
 
+    public static readonly DiagnosticDescriptor LinkedDynamicUsageUncovered = new(
+        AtomUIDiagnosticIds.LinkedDynamicUsageUncovered,
+        "Dynamic AtomUI usage is not covered by the static registration plan",
+        "AtomUI dynamic usage '{0}' cannot be resolved statically; controls of Package '{1}' created only through this site are not registered. Add an AtomUIRegistrationUnitRoot when the Unit is known, or an AtomUIPackageRoot for fully dynamic usage; no action is required when this site never creates AtomUI controls.",
+        AtomUIDiagnosticCategories.LinkedRegistration,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
     public static readonly DiagnosticDescriptor AotMissingGeneratedAccessor = new(
         AtomUIDiagnosticIds.AotMissingGeneratedAccessor,
         "AOT-sensitive data member path requires generated accessor",

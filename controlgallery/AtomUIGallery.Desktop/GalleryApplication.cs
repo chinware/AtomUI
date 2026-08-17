@@ -1,8 +1,9 @@
-﻿using System.Globalization;
+using System.Globalization;
 using AtomUI;
 using AtomUI.Desktop.Controls;
 using AtomUI.Localization;
 using AtomUI.Theme;
+using AtomUI.Toolkits.GalleryBase;
 using AtomUIGallery.Localization;
 using Avalonia.Controls.ApplicationLifetimes;
 
@@ -31,6 +32,7 @@ public partial class GalleryApplication : BaseGalleryApplication
             builder.UseDesktopExtras();
             builder.UseDesktopColorPicker();
             builder.UseDesktopDataGrid();
+            builder.UseGalleryBase(AtomUIGalleryModule.Configure);
             builder.UseGalleryControls();
         });
     }

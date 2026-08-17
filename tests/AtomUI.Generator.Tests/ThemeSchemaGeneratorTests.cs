@@ -459,7 +459,7 @@ public class ThemeSchemaGeneratorTests
     }
 
     [Fact]
-    public void Directory_Granularity_Unresolved_Dynamic_Control_Creation_Forces_Package_Fallback()
+    public void Directory_Granularity_Unresolved_Dynamic_Control_Creation_Warns_Without_Widening()
     {
         var compilation = CreateCompilation(
             """
@@ -486,7 +486,7 @@ public class ThemeSchemaGeneratorTests
             "Directory");
 
         var diagnostic = diagnostics.ShouldHaveSingleItem();
-        diagnostic.Id.ShouldBe("ATOMUILINK002");
+        diagnostic.Id.ShouldBe("ATOMUILINK010");
         diagnostic.Location.GetLineSpan().Path.ShouldBe("Button/Button.cs");
         var source = GetGeneratedSource(outputCompilation, "LinkedRegistrationPackageAnalysis.g.cs");
         source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.Fallback.v1\"");
@@ -494,7 +494,7 @@ public class ThemeSchemaGeneratorTests
     }
 
     [Fact]
-    public void Directory_Granularity_Dynamic_Invocation_Forces_Package_Fallback()
+    public void Directory_Granularity_Dynamic_Invocation_Warns_Without_Widening()
     {
         var compilation = CreateCompilation(
             """
@@ -513,7 +513,7 @@ public class ThemeSchemaGeneratorTests
             "Directory");
 
         var diagnostic = diagnostics.ShouldHaveSingleItem();
-        diagnostic.Id.ShouldBe("ATOMUILINK002");
+        diagnostic.Id.ShouldBe("ATOMUILINK010");
         diagnostic.Location.GetLineSpan().Path.ShouldBe("Button/Button.cs");
         var source = GetGeneratedSource(outputCompilation, "LinkedRegistrationPackageAnalysis.g.cs");
         source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.Fallback.v1\"");

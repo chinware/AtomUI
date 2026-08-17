@@ -4,6 +4,7 @@ using AtomUI.Desktop.Controls;
 using AtomUI.Fonts.AlibabaPuHuiTi;
 using AtomUI.Localization;
 using AtomUI.Theme;
+using AtomUI.Toolkits.GalleryBase;
 using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -29,6 +30,7 @@ public partial class BrowserGalleryApplication : Application
             builder.UseDesktopExtras();
             builder.UseDesktopColorPicker();
             builder.UseDesktopDataGrid();
+            builder.UseGalleryBase(AtomUIGalleryModule.Configure);
             builder.UseGalleryControls();
         });
     }

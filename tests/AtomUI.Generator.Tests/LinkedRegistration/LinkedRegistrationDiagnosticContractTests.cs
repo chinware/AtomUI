@@ -22,9 +22,10 @@ public sealed class LinkedRegistrationDiagnosticContractTests
             "ATOMUILINK006",
             "ATOMUILINK007",
             "ATOMUILINK008",
-            "ATOMUILINK009"
+            "ATOMUILINK009",
+            "ATOMUILINK010"
         ]);
-        descriptors.Select(static descriptor => descriptor.Id).Distinct().Count().ShouldBe(9);
+        descriptors.Select(static descriptor => descriptor.Id).Distinct().Count().ShouldBe(10);
     }
 
     [Fact]
@@ -41,6 +42,7 @@ public sealed class LinkedRegistrationDiagnosticContractTests
         descriptors[6].DefaultSeverity.ShouldBe(DiagnosticSeverity.Warning);
         descriptors[7].DefaultSeverity.ShouldBe(DiagnosticSeverity.Error);
         descriptors[8].DefaultSeverity.ShouldBe(DiagnosticSeverity.Error);
+        descriptors[9].DefaultSeverity.ShouldBe(DiagnosticSeverity.Warning);
         descriptors.ShouldAllBe(descriptor =>
             descriptor.Category == AtomUIDiagnosticCategories.LinkedRegistration);
     }
@@ -60,6 +62,8 @@ public sealed class LinkedRegistrationDiagnosticContractTests
         messages[6].ShouldContain("AtomUIPackageRoot");
         messages[7].ShouldContain("UseXxxControls");
         messages[8].ShouldContain("registration entry");
+        messages[9].ShouldContain("AtomUIRegistrationUnitRoot");
+        messages[9].ShouldContain("AtomUIPackageRoot");
     }
 
     private static DiagnosticDescriptor[] GetDescriptors()
@@ -74,7 +78,8 @@ public sealed class LinkedRegistrationDiagnosticContractTests
             AtomUIDiagnosticDescriptors.LinkedManifestVersionMismatch,
             AtomUIDiagnosticDescriptors.LinkedLooseAxamlWidened,
             AtomUIDiagnosticDescriptors.LinkedPackageEntryMissing,
-            AtomUIDiagnosticDescriptors.LinkedPackageEntryInvalid
+            AtomUIDiagnosticDescriptors.LinkedPackageEntryInvalid,
+            AtomUIDiagnosticDescriptors.LinkedDynamicUsageUncovered
         ];
     }
 }

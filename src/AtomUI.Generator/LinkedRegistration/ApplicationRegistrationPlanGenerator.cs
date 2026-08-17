@@ -117,8 +117,16 @@ public sealed class ApplicationRegistrationPlanGenerator : IIncrementalGenerator
                 usage.Kind == LinkedUsageKind.PackageRoot &&
                 string.Equals(usage.Identity, packageId, StringComparison.Ordinal)) ||
                 catalog.Fallbacks.Any(fallback =>
-                    fallback.PackageId.Length == 0 ||
-                    string.Equals(fallback.PackageId, packageId, StringComparison.Ordinal));
+                    // Unresolvable C# dynamic creation (DynamicInvocation) is reported as
+                    // guidance (ATOMUILINK010) but never widens the plan: application-declared
+                    // controls are already covered by base-type evidence, and purely
+                    // string-driven creation is covered by explicit Unit/Package roots.
+                    !string.Equals(
+                        fallback.Reason,
+                        LinkedRegistrationProtocol.FallbackReasonDynamicInvocation,
+                        StringComparison.Ordinal) &&
+                    (fallback.PackageId.Length == 0 ||
+                     string.Equals(fallback.PackageId, packageId, StringComparison.Ordinal)));
             if (isLegacy)
             {
                 if (ValidateFragmentMethod(
@@ -231,12 +239,29 @@ public sealed class ApplicationRegistrationPlanGenerator : IIncrementalGenerator
                                               .ThenBy(static item => item.Column)
                                               .ThenBy(static item => item.Reason, StringComparer.Ordinal))
         {
+            // ExtractedManifest marks a consumer-extracted ProjectReference Sidecar: the plan
+            // already widened to full fallback, and the delivery mode is not a code problem.
+            if (string.Equals(
+                    fallback.Reason,
+                    LinkedRegistrationProtocol.FallbackReasonExtractedManifest,
+                    StringComparison.Ordinal))
+            {
+                continue;
+            }
             if (fallback.PackageId.Length != 0 && !invokedPackageSet.Contains(fallback.PackageId))
             {
                 continue;
             }
+            var baseDescriptor = string.Equals(
+                fallback.Reason,
+                LinkedRegistrationProtocol.FallbackReasonDynamicInvocation,
+                StringComparison.Ordinal)
+                ? AtomUIDiagnosticDescriptors.LinkedDynamicUsageUncovered
+                : AtomUIDiagnosticDescriptors.LinkedDynamicUsageWidened;
             context.ReportDiagnostic(Diagnostic.Create(
-                GetFallbackDescriptor(LinkedRegistrationOptions.IsRegistrationStrict(optionsProvider)),
+                GetFallbackDescriptor(
+                    LinkedRegistrationOptions.IsRegistrationStrict(optionsProvider),
+                    baseDescriptor),
                 Location.None,
                 fallback.Reason,
                 fallback.PackageId.Length == 0 ? "<all invoked packages>" : fallback.PackageId));
@@ -379,13 +404,12 @@ public sealed class ApplicationRegistrationPlanGenerator : IIncrementalGenerator
             descriptor.CustomTags.ToArray());
     }
 
-    private static DiagnosticDescriptor GetFallbackDescriptor(bool strict)
+    private static DiagnosticDescriptor GetFallbackDescriptor(bool strict, DiagnosticDescriptor descriptor)
     {
         if (!strict)
         {
-            return AtomUIDiagnosticDescriptors.LinkedDynamicUsageWidened;
+            return descriptor;
         }
-        var descriptor = AtomUIDiagnosticDescriptors.LinkedDynamicUsageWidened;
         return new DiagnosticDescriptor(
             descriptor.Id,
             descriptor.Title,

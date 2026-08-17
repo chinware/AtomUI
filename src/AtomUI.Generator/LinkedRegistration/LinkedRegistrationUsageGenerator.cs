@@ -387,14 +387,15 @@ public sealed class LinkedRegistrationUsageGenerator : IIncrementalGenerator
                              static packageId => packageId,
                              StringComparer.Ordinal))
                 {
-                    AddPackageFallback(
-                        packageId,
-                        dynamicUse.Source,
-                        dynamicUse.Line,
-                        dynamicUse.Column,
+                    // C# dynamic creation sites no longer widen the package: controls declared
+                    // in the application are already covered by base-type evidence, and purely
+                    // string-driven creation is covered by explicit Unit/Package roots. Report
+                    // guidance only.
+                    ReportFallback(
+                        AtomUIDiagnosticDescriptors.LinkedDynamicUsageUncovered,
                         dynamicUse.Location,
-                        AtomUIDiagnosticDescriptors.LinkedDynamicUsageWidened,
-                        dynamicUse.Identity);
+                        dynamicUse.Identity,
+                        packageId);
                 }
             }
 

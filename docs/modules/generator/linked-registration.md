@@ -161,7 +161,7 @@ writer 不生成 `AddDependencies`，不调用其他 Unit，也不调用 `TryEnt
 诊断必须使用稳定 reason code，并包含 Package 和可用 source identity。至少区分：
 
 - unresolved owner。
-- dynamic/reflection usage。
+- dynamic/reflection usage（不扩大保留范围，报告 `ATOMUILINK010`，由显式 root 覆盖）。
 - loose or unresolved AXAML。
 - missing/stale sidecar。
 - unknown protocol major。
@@ -214,7 +214,7 @@ Package 与 entry 信息。SCC 发现和组件依赖排序必须使用显式栈�
 
 - Debug/普通 Release 的 `Csc` Analyzer item 不含 linked analyzer。
 - linked AXAML target 在普通构建 skipped。
-- ProjectReference sidecar 只在 linked build 传递。
+- ProjectReference sidecar 只在 linked build 传递；companion 缺失时 consumer 从引用 assembly metadata 提取，提取结果带 `ExtractedManifest` fallback（full fallback、无诊断）。
 - NuGet sidecar/consumer target 自动打包且不进入 runtime assets。
 - sidecar 缺失、损坏或无法验证时只触发 Package fallback。
 

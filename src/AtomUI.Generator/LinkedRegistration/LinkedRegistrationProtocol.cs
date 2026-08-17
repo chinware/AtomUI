@@ -12,4 +12,13 @@ internal static class LinkedRegistrationProtocol
     internal const string UsageManifestKey = MetadataPrefix + "Usage.v1";
     internal const string FallbackManifestKey = MetadataPrefix + "Fallback.v1";
     internal const string PlanMarkerKey = MetadataPrefix + "Plan.v1";
+
+    internal const string FallbackReasonAnalysisBudgetExceeded = "AnalysisBudgetExceeded";
+    internal const string FallbackReasonDynamicInvocation = "DynamicInvocation";
+    internal const string FallbackReasonUnresolvedOwner = "UnresolvedOwner";
+    // Sidecar extracted by the consumer from assembly metadata of a normally-built
+    // ProjectReference: package/unit manifests are complete, but C# unit edges are only
+    // computed by linked library builds. The plan must widen to full fallback for these
+    // packages, and the reason is never surfaced as a diagnostic.
+    internal const string FallbackReasonExtractedManifest = "ExtractedManifest";
 }

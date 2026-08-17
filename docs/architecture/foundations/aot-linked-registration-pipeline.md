@@ -110,6 +110,12 @@ Sidecar 是纯编译资产：
 - Package 自己的 `<PackageId>.targets` 只在 linked build 中把它加入 `AdditionalFiles`。
 - linked ProjectReference 在程序集复制到 `TargetPath` 后生成 `<TargetPath>.atomui-link.json`；消费项目从已解析
   `ReferencePath` 的 companion 路径收集它，不递归调用 ProjectReference target。
+- companion Sidecar 缺失时（引用库是普通构建，例如 `PublishAot`/`PublishTrimmed` 只在应用项目局部设置），消费项目直接从
+  引用 assembly 的 metadata 记录提取 Sidecar 到自身 `obj`。普通库构建始终包含 Package/Unit/ControlMap/Axaml UnitEdge
+  记录，但 C# UnitEdge 只由 linked 库构建计算，所以提取的 Sidecar 对每个 Package 附加 `ExtractedManifest` fallback：
+  Application Plan 对该 Package 保持 full fallback，且不产生诊断。publish 时以全局属性传入
+  `-p:PublishAot=true` / `-p:PublishTrimmed=true` / `-p:AtomUILinkedPublish=true`，引用库即自行产出完整 Sidecar，
+  提取路径自动旁路。
 - `CopyToOutputDirectory`、`CopyToPublishDirectory` 均为 `Never`。
 - 不作为 EmbeddedResource，不进入运行时程序集、应用输出或 publish 目录。
 
@@ -259,7 +265,8 @@ Sidecar 不进入运行时。`UseXxxControls()` 仍拥有 Package Core、Provide
 | --- | --- |
 | 精确静态 usage | 选择 Unit closure |
 | 默认 Package 粒度 | 选择单一完整 Package Unit |
-| dynamic/reflection/loose AXAML | 当前 Package full registrar |
+| loose AXAML / 动态主题 | 当前 Package full registrar |
+| 无法静态解析的 C# 动态创建 | 不扩大保留范围，报告 `ATOMUILINK010` 警告，由显式 root 覆盖 |
 | sidecar 缺失、陈旧或无法绑定 | 当前相关 Package full registrar |
 | 未知 protocol major | 构建 Error |
 | fragment symbol 不存在 | 构建 Error |

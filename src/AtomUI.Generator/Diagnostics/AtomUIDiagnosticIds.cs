@@ -40,4 +40,5 @@ internal static class AtomUIDiagnosticIds
     public const string LinkedLooseAxamlWidened = "ATOMUILINK007";
     public const string LinkedPackageEntryMissing = "ATOMUILINK008";
     public const string LinkedPackageEntryInvalid = "ATOMUILINK009";
+    public const string LinkedDynamicUsageUncovered = "ATOMUILINK010";
 }

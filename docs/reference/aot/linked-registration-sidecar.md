@@ -9,6 +9,7 @@
 - 内容：单个 JSON object。
 - NuGet 位置：`buildTransitive/AtomUI.LinkedRegistration/`。
 - ProjectReference 位置：项目 `obj` 输出，由 MSBuild target item 传递。
+- ProjectReference 旁路缺失时，consumer 直接从引用 assembly 的 metadata 记录提取 Sidecar 到自身 `obj`（见 `ExtractedManifest`）。
 - 不作为 `EmbeddedResource`、`Content`、runtime asset 或 publish asset。
 
 Producer 必须使用结构化 JSON writer。Consumer 必须使用结构化 parser；不得用正则或字符串切割解析。
@@ -124,8 +125,16 @@ Fallback record 包含：
 - `MissingSidecar`
 - `StaleSidecar`
 - `AnalysisBudgetExceeded`
+- `ExtractedManifest`
 
-Fallback 只能扩大保留范围。Consumer 不得忽略未知必需 reason，也不得把 fallback 降级为 Exact。
+Fallback 只能扩大保留范围。Consumer 不得忽略未知必需 reason，也不得把 fallback 降级为 Exact。例外有两个：
+
+- `DynamicInvocation`：提示性记录，Consumer 不扩大保留范围，只报告 `ATOMUILINK010` 警告，由显式
+  `AtomUIRegistrationUnitRoot` / `AtomUIPackageRoot` 覆盖。
+- `ExtractedManifest`：consumer 从普通构建的 ProjectReference assembly metadata 提取的 Sidecar 标记。
+  Package/Unit 清单完整，但 C# UnitEdge 只由 linked 库构建计算，所以 Consumer 必须对相关 Package 扩大为
+  full fallback，且不产生任何诊断。要获得完整裁剪，发布时以全局属性传入 `-p:PublishAot=true` /
+  `-p:PublishTrimmed=true` / `-p:AtomUILinkedPublish=true`，让引用库自行产出完整 Sidecar。
 
 ## 确定性
 

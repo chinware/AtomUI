@@ -253,6 +253,30 @@ public sealed class LinkedRegistrationBuildAssetsTests
     }
 
     [Fact]
+    public void Pack_Sidecar_Inner_Build_Does_Not_Inherit_Publish_Or_NoBuild_Globals()
+    {
+        // dotnet pack --no-build exports NoBuild=true as a global property; if the inner
+        // MSBuild call that emits the linked sidecar inherits it, the SDK fails the pack
+        // with NETSDK1085 and registration packages silently lose their sidecar assets.
+        var targets = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.targets"));
+        var target = targets.Descendants("Target")
+                            .Single(element =>
+                                (string?)element.Attribute("Name") ==
+                                "AtomUIPrepareLinkedRegistrationSidecarForPack");
+
+        var removeProperties = (string?)target.Descendants("MSBuild")
+                                              .Single()
+                                              .Attribute("RemoveProperties");
+        removeProperties.ShouldNotBeNull();
+        var removed = removeProperties.Split(';', StringSplitOptions.RemoveEmptyEntries |
+                                                StringSplitOptions.TrimEntries);
+        removed.ShouldContain("NoBuild");
+        removed.ShouldContain("PublishAot");
+        removed.ShouldContain("PublishTrimmed");
+        removed.ShouldContain("RunAOTCompilation");
+    }
+
+    [Fact]
     public void ProjectReference_Sidecars_Are_Collected_From_Resolved_Assembly_Paths()
     {
         var targets = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.targets"));
@@ -287,6 +311,30 @@ public sealed class LinkedRegistrationBuildAssetsTests
                                     "AtomUIPrepareLinkedRegistrationSidecarForPack");
         ((string?)packTarget.Descendants("MSBuild").Single().Attribute("Targets"))
             .ShouldBe("Build;GetAtomUILinkedRegistrationSidecar");
+    }
+
+    [Fact]
+    public void Missing_ProjectReference_Sidecars_Are_Extracted_With_A_Fallback_Marker()
+    {
+        var targets = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.targets"));
+        var collectTarget = targets.Descendants("Target")
+                                   .Single(element =>
+                                       (string?)element.Attribute("Name") ==
+                                       "CollectAtomUIProjectReferenceSidecars");
+
+        var extractable = collectTarget.Descendants("_AtomUILinkedExtractableReference")
+                                       .ShouldHaveSingleItem();
+        ((string?)extractable.Attribute("Include")).ShouldBe("@(ReferencePath)");
+        ((string?)extractable.Attribute("Condition")).ShouldNotBeNull()
+                                                     .ShouldContain("StartsWith('AtomUI.'");
+
+        var extraction = collectTarget.Descendants("AtomUI.Build.Tasks.GenerateLinkedRegistrationSidecarTask")
+                                      .ShouldHaveSingleItem();
+        ((string?)extraction.Attribute("ExtractedFallback")).ShouldBe("true");
+        ((string?)extraction.Attribute("ContinueOnError")).ShouldBe("WarnAndContinue");
+        var outputPath = (string?)extraction.Attribute("OutputPath");
+        outputPath.ShouldNotBeNull();
+        outputPath.ShouldContain("AtomUIExtractedSidecars");
     }
 
     [Fact]

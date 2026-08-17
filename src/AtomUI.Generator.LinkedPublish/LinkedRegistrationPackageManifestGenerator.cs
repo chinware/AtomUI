@@ -86,7 +86,7 @@ public sealed class LinkedRegistrationPackageManifestGenerator : IIncrementalGen
                 {
                     fallbacks.Add(new Fallback(
                         packageId,
-                        "DynamicInvocation",
+                        LinkedRegistrationProtocol.FallbackReasonDynamicInvocation,
                         NormalizeSourcePath(candidate.Source, projectDirectory),
                         candidate.Line,
                         candidate.Column,
@@ -376,7 +376,12 @@ public sealed class LinkedRegistrationPackageManifestGenerator : IIncrementalGen
         AnalyzerConfigOptionsProvider optionsProvider,
         Fallback fallback)
     {
-        var descriptor = AtomUIDiagnosticDescriptors.LinkedDynamicUsageWidened;
+        var descriptor = string.Equals(
+            fallback.Reason,
+            LinkedRegistrationProtocol.FallbackReasonDynamicInvocation,
+            StringComparison.Ordinal)
+            ? AtomUIDiagnosticDescriptors.LinkedDynamicUsageUncovered
+            : AtomUIDiagnosticDescriptors.LinkedDynamicUsageWidened;
         if (LinkedRegistrationOptions.IsRegistrationStrict(optionsProvider))
         {
             descriptor = new DiagnosticDescriptor(

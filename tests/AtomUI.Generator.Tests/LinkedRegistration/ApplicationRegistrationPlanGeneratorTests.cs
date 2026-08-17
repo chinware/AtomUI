@@ -171,6 +171,62 @@ public sealed class ApplicationRegistrationPlanGeneratorTests
     }
 
     [Fact]
+    public void Dynamic_Invocation_Fallback_Warns_Without_Widening_The_Package()
+    {
+        var desktop = PlanGeneratorTestHost.StandardDesktopPackage();
+        var usage = PlanGeneratorTestHost.Usage(
+            new LinkedUsageManifestRecord(LinkedUsageKind.Control, "AtomUI.Desktop.Controls.Button", "View.axaml", 3, 4));
+        var dynamicFallback = UsageGeneratorTestHost.CreateManifestReference(
+            "Consumer.Usage.DynamicFallback",
+            new LinkedFallbackManifestRecord(
+                "AtomUI.Desktop.Controls",
+                LinkedRegistrationProtocol.FallbackReasonDynamicInvocation,
+                "ViewLocator.cs",
+                27,
+                29));
+
+        var result = PlanGeneratorTestHost.Run(
+            "AtomUI.Desktop.Entry.UseDesktopControls();",
+            [desktop, usage, dynamicFallback]);
+        var planSource = result.PlanSource;
+        planSource.ShouldNotBeNull();
+
+        planSource!.ShouldContain("global::GeneratedButtonUnitFragment.Add(packageBuilder);");
+        planSource.ShouldNotContain("global::GeneratedDatePickerUnitFragment.Add(packageBuilder);");
+        planSource.ShouldNotContain("global::GeneratedDesktopFullFragment.Register(");
+        result.Diagnostics.ShouldContain(static diagnostic =>
+            diagnostic.Id == "ATOMUILINK010" && diagnostic.Severity == DiagnosticSeverity.Warning);
+    }
+
+    [Fact]
+    public void Extracted_Manifest_Fallback_Widens_Without_A_Diagnostic()
+    {
+        var desktop = PlanGeneratorTestHost.StandardDesktopPackage();
+        var usage = PlanGeneratorTestHost.Usage(
+            new LinkedUsageManifestRecord(LinkedUsageKind.Control, "AtomUI.Desktop.Controls.Button", "View.axaml", 3, 4));
+        var extractedFallback = UsageGeneratorTestHost.CreateManifestReference(
+            "Consumer.ExtractedSidecar",
+            new LinkedFallbackManifestRecord(
+                "AtomUI.Desktop.Controls",
+                LinkedRegistrationProtocol.FallbackReasonExtractedManifest,
+                "<extraction>",
+                0,
+                0));
+
+        var result = PlanGeneratorTestHost.Run(
+            "AtomUI.Desktop.Entry.UseDesktopControls();",
+            [desktop, usage, extractedFallback]);
+        var planSource = result.PlanSource.ShouldNotBeNull();
+
+        planSource.ShouldContain("global::GeneratedDesktopFullFragment.Register(");
+        planSource.ShouldNotContain("global::GeneratedButtonUnitFragment.Add(packageBuilder);");
+        result.Diagnostics.ShouldNotContain(static diagnostic =>
+            diagnostic.Id == "ATOMUILINK002" ||
+            diagnostic.Id == "ATOMUILINK007" ||
+            diagnostic.Id == "ATOMUILINK010");
+    }
+
+    [Fact]
     public void Explicit_Unit_And_Package_Roots_Select_Precise_And_Full_Plans()
     {
         var desktop = PlanGeneratorTestHost.StandardDesktopPackage();

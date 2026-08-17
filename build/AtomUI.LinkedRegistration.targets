@@ -49,6 +49,36 @@
                              AtomUILinkedSidecar="true"
                              Visible="false" />
         </ItemGroup>
+        <!--
+            ProjectReference builds do not emit the Sidecar next to the referenced assembly
+            (linked analysis stays off for library builds), but the registration manifest is
+            always compiled into AtomUI assemblies as assembly metadata. Extract it here so
+            ProjectReference consumption resolves the same Registration Units as the
+            NuGet-delivered Sidecar without any library-side opt-in.
+        -->
+        <ItemGroup>
+            <_AtomUILinkedExtractableReference
+                Include="@(ReferencePath)"
+                Condition="'%(ReferencePath.FileName)' != '' and
+                           $([System.String]::Copy('%(ReferencePath.FileName)').StartsWith('AtomUI.', System.StringComparison.Ordinal)) and
+                           !Exists('%(ReferencePath.FullPath).atomui-link.json')" />
+        </ItemGroup>
+        <AtomUI.Build.Tasks.GenerateLinkedRegistrationSidecarTask
+            AssemblyPath="%(_AtomUILinkedExtractableReference.FullPath)"
+            OutputPath="$(IntermediateOutputPath)AtomUIExtractedSidecars/%(_AtomUILinkedExtractableReference.FileName).atomui-link.json"
+            TargetFramework="$(TargetFramework)"
+            ExtractedFallback="true"
+            Condition="'@(_AtomUILinkedExtractableReference)' != '' and Exists('$(AtomUIBuildTasksAssembly)')"
+            ContinueOnError="WarnAndContinue">
+            <Output TaskParameter="SidecarPath"
+                    ItemName="_AtomUIExtractedLinkedSidecar" />
+        </AtomUI.Build.Tasks.GenerateLinkedRegistrationSidecarTask>
+        <ItemGroup>
+            <AdditionalFiles Include="@(_AtomUIExtractedLinkedSidecar)"
+                             AtomUILinkedSidecar="true"
+                             Visible="false" />
+            <FileWrites Include="@(_AtomUIExtractedLinkedSidecar)" />
+        </ItemGroup>
     </Target>
 
     <Target Name="CollectAtomUIAxamlUsage"
@@ -121,7 +151,7 @@
                  Targets="Build;GetAtomUILinkedRegistrationSidecar"
                  BuildInParallel="false"
                  Properties="Configuration=$(Configuration); TargetFramework=$(_AtomUIPackSidecarTargetFramework); AtomUIEmitLinkedManifest=true; AtomUILinkedPublish=true; AtomUIRegistrationPlanOwner=false; AtomUIPackSidecarInnerBuild=true"
-                 RemoveProperties="PublishAot;PublishTrimmed;RunAOTCompilation">
+                 RemoveProperties="PublishAot;PublishTrimmed;RunAOTCompilation;NoBuild">
             <Output TaskParameter="TargetOutputs"
                     ItemName="_AtomUIPackLinkedSidecar" />
         </MSBuild>
