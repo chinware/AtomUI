@@ -85,6 +85,31 @@ Calendar 的公共契约由 Avalonia 属性、事件、模板、上下文类型�
 
 农历算法保证范围为 `1900-01-01` 至 `2100-12-31`。`Value` 在 LunarCalendar 上收敛到该范围；内部有效选择范围为支持范围与 `ValidRange` 的交集。法定节假日和调休不内置，由 `ILunarCalendarHolidayProvider` 以同步面板数据提供。完整模型、默认值、枚举、Provider 规则和显示优先级见 [LunarCalendar 农历能力设计](lunar-calendar-design.md)。
 
+### 3.5 Semantic Part 契约
+
+`Calendar` 与 `LunarCalendar` 公开与上游 Calendar 稳定 Semantic DOM 对齐的六个 Semantic Part，完整契约见 [Calendar Semantic Part 契约](semantic-part.md)：
+
+| Part | Selector | AtomUI 节点 | Cardinality | 定制方式 |
+| --- | --- | --- | --- | --- |
+| `root` | 控件本身 | `Calendar` / `LunarCalendar` owner | `Single` | owner 选择器 + 公开属性/伪类 |
+| `header` | `.semantic-header` | 默认 Header `CalendarHeader`（`PART_DefaultHeader`） | `Single` | `CalendarHeaderStyle` |
+| `body` | `.semantic-body` | `DockPanel#PART_BodyPresenter` | `Single` | `CalendarBodyStyle` |
+| `content` | `.semantic-content` | 日历表格 `CalendarView`（`PART_CalendarView`） | `Single` | `CalendarContentStyle` |
+| `item` | `.semantic-item` | 运行时 `CalendarViewCell` 网格单元（42/48/12，含周序号 Cell） | `Multiple` | `CalendarItemStyle` |
+| `itemContent` | `.semantic-item-content` | Cell 模板的 `ContentControl#PART_ItemContent` | `Multiple` | `CalendarItemContentStyle` |
+
+`item` 与 `itemContent` 是运行时生成 Part：`item` 的 marker 在 Cell 构造路径一次性添加，`itemContent` 的 marker 静态
+声明于 Cell 模板；marker 不随选择、禁用、模板切换、容器回收增删。定制摘要：
+
+- 状态型定制（选中、悬停、禁用、Fullscreen/Mini）通过 owner 伪类 + 公开属性完成；根伪类 `:fullscreen`、`:mini`、
+  `:month`、`:year`、`:show-week` 是稳定的组合入口。
+- 局部视觉定制通过生成的 Semantic Style 完成，`ContractType` 收缩到公开类型（`DockPanel` / `TemplatedControl` /
+  `ContentControl`），internal 的 `CalendarHeader` / `CalendarView` / `CalendarViewCell` 不作为公共依赖类型。
+- 布局型 Setter（固定 `Height` / `MaxHeight` 等）不作为公共定制路径：Mini 内容高度与 Fullscreen Cell 高度由
+  `MiniContentHeight` / `FullCellMinHeight` 的 metrics 链驱动，见 [semantic-part.md §5](semantic-part.md#5-尺寸基线)。
+- 默认 Header 内部的 ComboBox 下拉与 `OptionButtonGroup`、周标题行、范围条 overlay、农历次级内容不属于 Semantic
+  Part，见 [semantic-part.md §6](semantic-part.md#6-定制边界)。
+
 ## 事件与命令
 
 Calendar 的公共契约由 Avalonia 属性、事件、模板、上下文类型、枚举、伪类和 ControlTheme 共同组成。
@@ -102,7 +127,7 @@ Calendar 的公共契约由 Avalonia 属性、事件、模板、上下文类型�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:44`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:76`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -112,7 +137,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 跨日期事件
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:170`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:202`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -143,7 +168,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 卡片模式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:201`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:233`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -159,7 +184,7 @@ Gallery key：`ExamplesContent` / item `3`
 
 ### 农历日历
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:217`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:249`
 
 Gallery key：`ExamplesContent` / item `4`
 
@@ -227,6 +252,7 @@ LunarCalendar 使用独立 exact Control identity 和 `LunarCalendarToken`。它
 - `CalendarRangeBarPanel` 不遍历 Cell visual tree，不在 pointer move 热路径中计算，也不拥有业务数据生命周期。
 - Token 通过 `CalendarTokenResource`、`LunarCalendarTokenResource` 和 SharedToken 进入 AXAML；运行时状态由伪类 selector 表达。
 - 不使用运行时反射扫描 API、Token、日期类型或 Gallery 数据；属性静态注册、强类型上下文和生成资源保持 NativeAOT 兼容。
+- Semantic marker 通过 AXAML 静态 class 与生成常量建立（`CalendarSemanticParts.ItemClass`），不引入 VisualTree 搜索、动态 marker 绑定或运行时 AXAML 解析；默认主题不消费 `.semantic-*` selector。
 - LanguageManager、VisualTree、Template part 等外部订阅必须有成对释放路径，避免 detach 后保留 Calendar。
 - 农历年表、二十四节气表和传统节日 resolver 是静态只读数据与纯函数；不依赖第三方农历运行库、系统时区、网络、反射或字符串 binding。面板数据有界且不在 Measure/Arrange/Render 热路径构建。
 
@@ -273,6 +299,7 @@ src/AtomUI.Desktop.Controls/Calendar/
 
 - 源设计文档：`docs/controls/desktop/data-display/calendar/overview.md`
 - 实现文档：`docs/controls/desktop/data-display/calendar/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-display/calendar/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-display/calendar/token.md`
 - 变更记录：`docs/controls/desktop/data-display/calendar/changelog.md`
 - 语义结构：`./semantic-cn.md`

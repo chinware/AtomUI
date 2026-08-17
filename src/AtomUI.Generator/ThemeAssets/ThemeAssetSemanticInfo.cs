@@ -20,18 +20,21 @@ internal sealed class ThemeAssetSemanticThemeInfo
         ThemeAssetTargetTypeReference targetType,
         ThemeAssetTargetTypeReference? basedOn,
         IReadOnlyList<ThemeAssetSemanticTemplateInfo> templates,
-        bool overridesBaseTemplate)
+        bool overridesBaseTemplate,
+        string? xmlClass)
     {
         TargetType = targetType;
         BasedOn = basedOn;
         Templates = templates;
         OverridesBaseTemplate = overridesBaseTemplate;
+        XmlClass = xmlClass;
     }
 
     internal ThemeAssetTargetTypeReference TargetType { get; }
     internal ThemeAssetTargetTypeReference? BasedOn { get; }
     internal IReadOnlyList<ThemeAssetSemanticTemplateInfo> Templates { get; }
     internal bool OverridesBaseTemplate { get; }
+    internal string? XmlClass { get; }
 }
 
 internal sealed class ThemeAssetSemanticMarkerInfo

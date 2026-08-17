@@ -1,8 +1,13 @@
+using System.Collections;
 using System.Globalization;
+using System.Reflection;
 using AtomUIGallery.ShowCases.Calendar;
 using AtomUI.Desktop.Controls;
 using AtomUI.Toolkits.GalleryBase.Controls;
 using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -32,7 +37,8 @@ public class CalendarShowCasePageTests
         source.ShouldNotContain("Tag=\"Examples\"");
         source.ShouldNotContain("Tag=\"Api\"");
         source.ShouldNotContain("Tag=\"DesignToken\"");
-        source.ShouldContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldContain("<gallery:GalleryShowCaseHost");
+        source.ShouldNotContain("<gallery:GalleryStickyTabsHost");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
         source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
@@ -48,6 +54,7 @@ public class CalendarShowCasePageTests
         source.ShouldContain("Description=\"{gallery:CalendarShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("CalendarShowCaseLangResource BasicTitle");
+        source.ShouldContain("CalendarShowCaseLangResource SemanticPartStyleTitle");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
@@ -61,6 +68,166 @@ public class CalendarShowCasePageTests
 
         NormalizeMarkup(ExtractCalendarExampleItems(source))
             .ShouldBe(NormalizeMarkup(approved));
+    }
+
+    [Fact]
+    public void Calendar_ShowCase_Declares_The_Semantic_Previews_And_Style_Example()
+    {
+        var source = ReadRepoFile(
+            "controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml");
+        var english = ReadRepoFile(
+            "controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Localization/en-US.xlf");
+        var semanticSource = ExtractShowCaseItem(source, "calendar-semantic-part");
+
+        source.ShouldContain("<gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>");
+        source.ShouldContain("Name=\"CalendarSemanticPreview\"");
+        source.ShouldContain("SemanticOwner=\"{Binding #CalendarSemanticOwner}\"");
+        source.ShouldContain("SemanticOwnerType=\"{x:Type atom:Calendar}\"");
+        source.ShouldContain("<atom:Calendar Name=\"CalendarSemanticOwner\" />");
+        CountOccurrences(source, "<gallery:SemanticPartDescription").ShouldBe(6);
+        foreach (var path in new[] { "root", "header", "body", "content", "item", "itemContent" })
+        {
+            source.ShouldContain($"Path=\"{path}\"");
+        }
+
+        semanticSource.ShouldContain("SourceKey=\"calendar-semantic-part\"");
+        semanticSource.ShouldContain("BadgeText=\"v6.1.3\"");
+        semanticSource.ShouldContain("CalendarShowCaseLangResource SemanticPartStyleTitle");
+        semanticSource.ShouldContain("CalendarShowCaseLangResource SemanticPartStyleDescription");
+        semanticSource.ShouldContain("Selector=\"atom|Calendar.semantic-object\"");
+        semanticSource.ShouldContain("Selector=\"atom|Calendar.semantic-function\"");
+        semanticSource.ShouldContain("<Setter Property=\"Fullscreen\" Value=\"False\" />");
+        semanticSource.ShouldContain("<Setter Property=\"Width\" Value=\"600\" />");
+        semanticSource.ShouldContain("<Setter Property=\"CornerRadius\" Value=\"8\" />");
+        CountOccurrences(semanticSource, "<Setter Property=\"Padding\" Value=\"10\" />").ShouldBe(2);
+        semanticSource.ShouldContain("<Setter Property=\"Background\" Value=\"{atom:SharedTokenResource ColorPrimaryBg}\" />");
+        semanticSource.ShouldContain("<Setter Property=\"BorderThickness\" Value=\"2\" />");
+        semanticSource.ShouldContain("<Setter Property=\"BorderBrush\" Value=\"#BDE3C3\" />");
+        semanticSource.ShouldContain("<Setter Property=\"CornerRadius\" Value=\"10\" />");
+        semanticSource.ShouldContain("<Setter Property=\"Background\" Value=\"#4DBDE3C3\" />");
+        CountOccurrences(semanticSource, "<atom:Calendar ").ShouldBe(2);
+        semanticSource.ShouldNotContain("/template/");
+        semanticSource.ShouldNotContain("classNames", Case.Insensitive);
+        semanticSource.ShouldNotContain("semantic dom", Case.Insensitive);
+
+        english.ShouldContain("Custom Semantic Part styling");
+        english.ShouldContain(
+            "Root element containing background, border, border-radius and overall layout structure of the calendar component");
+        english.ShouldContain(
+            "Header element with layout and style control for year selector, month selector and mode switcher");
+        english.ShouldContain(
+            "Body element with padding and layout control for the calendar table that contains the calendar grid");
+        english.ShouldContain(
+            "Content element with width, height and table styling control for the calendar table");
+        english.ShouldContain(
+            "Item element with background, border, hover state, selected state and other interactive styles for calendar cells");
+        english.ShouldContain(
+            "Item content element with height, overflow and other style control for custom content area inside calendar cells");
+        english.ShouldNotContain("classNames", Case.Insensitive);
+        english.ShouldNotContain("semantic dom", Case.Insensitive);
+    }
+
+    [Fact]
+    public void Calendar_Semantic_Preview_Is_Materialized_Only_After_The_Tab_Is_Selected()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+
+        var page = new CalendarShowCase
+        {
+            ViewModel = new CalendarViewModel(null!)
+        };
+
+        ShowInWindow(page, 1200, 900, () =>
+        {
+            page.GetVisualDescendants().OfType<SemanticPartPreview>().ShouldBeEmpty();
+            page.GetVisualDescendants()
+                .OfType<AtomUICalendar>()
+                .ShouldNotContain(static calendar => calendar.Name == "CalendarSemanticOwner");
+
+            var host = page.GetVisualDescendants().OfType<GalleryShowCaseHost>().Single();
+            host.SelectedTab = GalleryShowCaseTab.SemanticParts;
+            Dispatcher.UIThread.RunJobs();
+
+            page.GetVisualDescendants().OfType<SemanticPartPreview>().ShouldHaveSingleItem();
+            var preview = page.GetVisualDescendants()
+                              .OfType<SemanticPartPreview>()
+                              .Single(static candidate => candidate.Name == "CalendarSemanticPreview");
+            var calendar = preview.SemanticOwner.ShouldBeOfType<AtomUICalendar>();
+            calendar.Name.ShouldBe("CalendarSemanticOwner");
+            calendar.GetVisualDescendants()
+                    .OfType<TemplatedControl>()
+                    .Count(static cell => cell.Classes.Contains("semantic-item"))
+                    .ShouldBe(42);
+            calendar.GetVisualDescendants()
+                    .OfType<ContentControl>()
+                    .Count(static content => content.Classes.Contains("semantic-item-content"))
+                    .ShouldBe(42);
+
+            var previewItemsValue = typeof(SemanticPartPreview)
+                                    .GetProperty("Items", BindingFlags.Instance | BindingFlags.NonPublic)
+                                    ?.GetValue(preview);
+            previewItemsValue.ShouldNotBeNull();
+            var previewItems = previewItemsValue.ShouldBeAssignableTo<IEnumerable>()
+                                                .Cast<object>()
+                                                .ToArray();
+            previewItems.Length.ShouldBe(6);
+
+            host.SelectedTab = GalleryShowCaseTab.Examples;
+            Dispatcher.UIThread.RunJobs();
+            page.GetVisualDescendants().OfType<SemanticPartPreview>().ShouldBeEmpty();
+        });
+    }
+
+    [Fact]
+    public void Calendar_Semantic_Style_Example_Applies_The_Official_Style_Values()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+
+        var page = new CalendarShowCase
+        {
+            ViewModel = new CalendarViewModel(null!)
+        };
+
+        ShowInWindow(page, 1280, 1200, () =>
+        {
+            var panel = page.GetVisualDescendants().OfType<ShowCasePanel>().Single();
+            var item = panel.Children
+                            .OfType<ShowCaseItem>()
+                            .Single(static candidate => candidate.SourceKey == "calendar-semantic-part");
+            item.BadgeText.ShouldBe("v6.1.3");
+            item.MaterializeDeferredContent();
+            Dispatcher.UIThread.RunJobs();
+
+            var demos = page.GetVisualDescendants()
+                            .OfType<AtomUICalendar>()
+                            .Where(static calendar => calendar.Classes.Contains("semantic-object") ||
+                                                      calendar.Classes.Contains("semantic-function"))
+                            .ToArray();
+            demos.Length.ShouldBe(2);
+
+            var objectDemo = demos.Single(static calendar => calendar.Classes.Contains("semantic-object"));
+            objectDemo.Fullscreen.ShouldBeFalse();
+            objectDemo.Bounds.Width.ShouldBe(600);
+            objectDemo.CornerRadius.ShouldBe(new CornerRadius(8));
+            objectDemo.Padding.ShouldBe(new Thickness(10));
+            AssertSolidColor(objectDemo.Background, "#E6F4FF");
+            var objectContent = objectDemo.GetVisualDescendants()
+                                           .OfType<TemplatedControl>()
+                                           .Single(static control => control.Classes.Contains("semantic-content"));
+            AssertSolidColor(objectContent.Background, "#FFFFFF");
+
+            var functionDemo = demos.Single(static calendar => calendar.Classes.Contains("semantic-function"));
+            functionDemo.Fullscreen.ShouldBeTrue();
+            functionDemo.BorderThickness.ShouldBe(new Thickness(2));
+            AssertSolidColor(functionDemo.BorderBrush, "#BDE3C3");
+            functionDemo.CornerRadius.ShouldBe(new CornerRadius(10));
+            functionDemo.Padding.ShouldBe(new Thickness(10));
+            AssertSolidColor(functionDemo.Background, "#4DBDE3C3");
+            var functionContent = functionDemo.GetVisualDescendants()
+                                              .OfType<TemplatedControl>()
+                                              .Single(static control => control.Classes.Contains("semantic-content"));
+            AssertSolidColor(functionContent.Background, "#FFFFFF");
+        });
     }
 
     [Fact]
@@ -101,14 +268,18 @@ public class CalendarShowCasePageTests
             StringComparison.Ordinal);
         var showWeekIndex = source.IndexOf("CalendarShowCaseLangResource ShowWeekTitle", StringComparison.Ordinal);
         var nextShowCaseItemIndex = source.IndexOf(
-            "<gallery:ShowCaseItem Title=",
+            "<gallery:ShowCaseItem",
             customHeaderIndex + 1,
+            StringComparison.Ordinal);
+        var semanticPartIndex = source.IndexOf(
+            "CalendarShowCaseLangResource SemanticPartStyleTitle",
             StringComparison.Ordinal);
 
         cardIndex.ShouldBeGreaterThanOrEqualTo(0);
         showWeekIndex.ShouldBeGreaterThan(cardIndex);
         customHeaderIndex.ShouldBeGreaterThan(showWeekIndex);
-        nextShowCaseItemIndex.ShouldBe(-1);
+        nextShowCaseItemIndex.ShouldBeGreaterThan(customHeaderIndex);
+        semanticPartIndex.ShouldBeGreaterThan(nextShowCaseItemIndex);
 
         var customHeaderSource = source[customHeaderIndex..];
         customHeaderSource.ShouldContain("<atom:Calendar Value=\"{Binding SampleDate}\"");
@@ -157,7 +328,8 @@ public class CalendarShowCasePageTests
 
             var items = page.GetVisualDescendants().OfType<ShowCaseItem>().ToArray();
             items.Length.ShouldBeGreaterThan(4);
-            var customHeaderItem = items[^1];
+            items[^1].SourceKey.ShouldBe("calendar-semantic-part");
+            var customHeaderItem = items[^2];
 
             customHeaderItem.MaterializeDeferredContent();
             customHeaderItem.Measure(new Size(1200, 900));
@@ -222,7 +394,7 @@ public class CalendarShowCasePageTests
         viewModel.LunarCalendarSampleDate.ShouldBe(new DateTime(2024, 2, 10));
         viewModel.LunarCalendarHolidayProvider.ShouldNotBeNull();
         viewModel.LunarCalendarHolidayProvider.TryGetHolidays(
-            new CalendarDateRange(new DateTime(2024, 2, 1), new DateTime(2024, 2, 29)),
+            new AtomUI.Desktop.Controls.CalendarDateRange(new DateTime(2024, 2, 1), new DateTime(2024, 2, 29)),
             CultureInfo.GetCultureInfo("en-US"),
             out var holidays).ShouldBeTrue();
         holidays.ShouldContain(item =>
@@ -324,15 +496,32 @@ public class CalendarShowCasePageTests
     private static string ExtractCalendarExampleItems(string source)
     {
         const string firstItemMarker = "<gallery:ShowCaseItem";
-        const string panelCloseMarker = "</gallery:ShowCasePanel>";
 
         var firstItemStart = source.IndexOf(firstItemMarker, StringComparison.Ordinal);
         firstItemStart.ShouldBeGreaterThanOrEqualTo(0);
 
-        var panelCloseStart = source.IndexOf(panelCloseMarker, firstItemStart, StringComparison.Ordinal);
-        panelCloseStart.ShouldBeGreaterThan(firstItemStart);
+        const string semanticItemMarker = "SourceKey=\"calendar-semantic-part\"";
+        var semanticItemStart = source.IndexOf(semanticItemMarker, firstItemStart, StringComparison.Ordinal);
+        semanticItemStart.ShouldBeGreaterThan(firstItemStart);
+        var semanticItemStartTag = source.LastIndexOf(firstItemMarker, semanticItemStart, StringComparison.Ordinal);
+        semanticItemStartTag.ShouldBeGreaterThan(firstItemStart);
 
-        return source[firstItemStart..panelCloseStart];
+        return source[firstItemStart..semanticItemStartTag];
+    }
+
+    private static string ExtractShowCaseItem(string source, string sourceKey)
+    {
+        var sourceKeyIndex = source.IndexOf($"SourceKey=\"{sourceKey}\"", StringComparison.Ordinal);
+        sourceKeyIndex.ShouldBeGreaterThanOrEqualTo(0);
+
+        var itemStart = source.LastIndexOf("<gallery:ShowCaseItem", sourceKeyIndex, StringComparison.Ordinal);
+        itemStart.ShouldBeGreaterThanOrEqualTo(0);
+
+        const string itemEndMarker = "</gallery:ShowCaseItem>";
+        var itemEnd = source.IndexOf(itemEndMarker, sourceKeyIndex, StringComparison.Ordinal);
+        itemEnd.ShouldBeGreaterThan(sourceKeyIndex);
+
+        return source[itemStart..(itemEnd + itemEndMarker.Length)];
     }
 
     private static string NormalizeMarkup(string source)
@@ -385,5 +574,38 @@ public class CalendarShowCasePageTests
         }
 
         return Path.Combine(AppContext.BaseDirectory, relativePath);
+    }
+
+    private static void ShowInWindow(Control content, double width, double height, Action assertion)
+    {
+        var visualLayerManager = new VisualLayerManager
+        {
+            EnableAdornerLayer = true,
+            Child = content
+        };
+        var window = new AvaloniaWindow
+        {
+            Content = visualLayerManager,
+            Width = width,
+            Height = height
+        };
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            assertion();
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    private static void AssertSolidColor(IBrush? actual, string expected)
+    {
+        actual.ShouldNotBeNull()
+              .ShouldBeAssignableTo<ISolidColorBrush>()
+              .Color.ShouldBe(Color.Parse(expected));
     }
 }

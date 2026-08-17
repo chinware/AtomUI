@@ -143,6 +143,9 @@ internal sealed class SemanticPartTemplateValidator
         var resolvedTargets = themes.ToDictionary(
             static entry => entry.Theme,
             entry => _typeResolver.ResolveTargetType(entry.Theme.TargetType));
+        var resolvedClasses = themes.ToDictionary(
+            static entry => entry.Theme,
+            entry => _typeResolver.ResolveMetadataName(entry.Theme.XmlClass));
         var templates = new List<(
             ThemeAssetInfo Asset,
             ThemeAssetSemanticTemplateInfo Template)>();
@@ -167,7 +170,8 @@ internal sealed class SemanticPartTemplateValidator
                 templates.Add((entry.Asset, template));
             }
 
-            if (entry.Theme.OverridesBaseTemplate ||
+            if (entry.Theme.Templates.Count > 0 ||
+                entry.Theme.OverridesBaseTemplate ||
                 entry.Theme.BasedOn is null ||
                 _typeResolver.ResolveTargetType(entry.Theme.BasedOn) is not { } baseType)
             {
@@ -175,7 +179,9 @@ internal sealed class SemanticPartTemplateValidator
             }
 
             foreach (var baseTheme in themes.Where(candidate =>
-                         SymbolEqualityComparer.Default.Equals(resolvedTargets[candidate.Theme], baseType)))
+                         SymbolEqualityComparer.Default.Equals(resolvedTargets[candidate.Theme], baseType) ||
+                         (resolvedClasses[candidate.Theme] is { } candidateClass &&
+                          SymbolEqualityComparer.Default.Equals(candidateClass, baseType))))
             {
                 CollectTemplates(baseTheme);
             }

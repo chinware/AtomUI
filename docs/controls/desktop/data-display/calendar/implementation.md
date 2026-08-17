@@ -1,6 +1,6 @@
 # Calendar 桌面版实现原理
 
-本文档记录 Calendar 家族的源码 ownership、主题组合、状态流、生命周期、内部算法、资源边界和维护不变量。公共契约见 [Calendar 桌面版架构设计](overview.md)，行为规则见 [Calendar 行为设计](behavior-design.md)，农历扩展见 [LunarCalendar 农历能力设计](lunar-calendar-design.md)，范围条见 [Calendar 范围条设计](range-bar-design.md)，Token 见 [Calendar Token 设计](token.md)，变化记录见 [Calendar Changelog](changelog.md)。
+本文档记录 Calendar 家族的源码 ownership、主题组合、状态流、生命周期、内部算法、资源边界和维护不变量。公共契约见 [Calendar 桌面版架构设计](overview.md)，行为规则见 [Calendar 行为设计](behavior-design.md)，农历扩展见 [LunarCalendar 农历能力设计](lunar-calendar-design.md)，范围条见 [Calendar 范围条设计](range-bar-design.md)，Semantic Part 契约见 [Calendar Semantic Part 契约](semantic-part.md)，Token 见 [Calendar Token 设计](token.md)，变化记录见 [Calendar Changelog](changelog.md)。
 
 ## 1. 实现定位
 
@@ -91,19 +91,19 @@ LunarCalendar 仍以公历 `Value` 为唯一状态 owner。农历 DateInfo、月
 ```text
 Calendar (CalendarTheme)
 ├── PART_HeaderPresenter
-│   ├── PART_DefaultHeader (CalendarHeaderTheme)
+│   ├── PART_DefaultHeader (CalendarHeaderTheme)          ← .semantic-header
 │   │   ├── PART_YearSelect
 │   │   ├── PART_MonthSelect
 │   │   └── PART_ModeSwitch
 │   └── PART_CustomHeader (ContentControl + HeaderTemplate)
-└── PART_BodyPresenter
-    ├── PART_CalendarView (CalendarViewTheme)
+└── PART_BodyPresenter (DockPanel)                        ← .semantic-body
+    ├── PART_CalendarView (CalendarViewTheme)             ← .semantic-content
     │   ├── PART_WeekHeader
     │   └── PART_CellHost
-    │       └── CalendarViewCell × 42/48/12
+    │       └── CalendarViewCell × 42/48/12               ← .semantic-item（运行时）
     │           ├── PART_Item
     │           └── PART_CellInner
-    │               ├── PART_ItemContent
+    │               ├── PART_ItemContent                  ← .semantic-item-content
     │               └── PART_Value
     └── PART_RangeBarPanel (CalendarRangeBarPanel)
 ```
@@ -112,9 +112,31 @@ Date 模式默认生成 42 个日期 Cell；启用 `ShowWeek` 时另加 6 个周
 
 LunarCalendar 使用同一个 `CalendarView` 和同样的 42/48/12 拓扑。View 的 internal presentation adapter 创建 `LunarCalendarViewCell`，专用 Cell 通过自身 theme 呈现农历次级行；普通 Calendar 继续创建当前 `CalendarViewCell`。adapter 同时选择该家族的有效布局资源，Calendar 根把解析后的 Mini 内容高度和 Fullscreen Cell 高度作为强属性传给 `CalendarView`。根 LunarCalendar theme 不使用 selector 深入 CalendarHeader、CalendarView、ComboBox、OptionButtonGroup 或普通 CalendarViewCell 的模板。
 
+### 5.1 Semantic Part marker 放置
+
+marker 与 descriptor 声明、生成常量的对应关系：
+
+| marker | 放置方式 | 位置 |
+| --- | --- | --- |
+| `.semantic-header` | 静态 `Classes.semantic-header="True"` | `CalendarTheme.axaml` 的 `calendar:CalendarHeader#PART_DefaultHeader`，LunarCalendar 经 BasedOn 继承 |
+| `.semantic-body` | 静态 `Classes.semantic-body="True"` | `CalendarTheme.axaml` 的 `DockPanel#PART_BodyPresenter` |
+| `.semantic-content` | 静态 `Classes.semantic-content="True"` | `CalendarTheme.axaml` 的 `calendar:CalendarView#PART_CalendarView` |
+| `.semantic-item` | 运行时 `Classes.Add(CalendarSemanticParts.ItemClass)` | `CalendarViewCell` 构造函数，一次性添加；`LunarCalendarViewCell` 继承基类构造 |
+| `.semantic-item-content` | 静态 `Classes.semantic-item-content="True"` | `CalendarViewCellTheme.axaml` 与 `LunarCalendarViewCellTheme.axaml` 两个 Cell 模板的 `ContentControl#PART_ItemContent`（Lunar 模板重写，必须各自声明） |
+| `.semantic-scope-body` | 静态 `Classes.semantic-scope-body="True"` | `CalendarViewTheme.axaml` 的模板根 `DockPanel#PART_Body`；只用于 `item` / `itemContent` 路由，不发布为 Part |
+| `.semantic-scope-cells` | 静态 `Classes.semantic-scope-cells="True"` | `CalendarViewTheme.axaml` 的 `Grid#PART_CellHost`；只用于 `item` / `itemContent` 路由，不发布为 Part |
+
+`item` 的 marker 使用生成常量 `CalendarSemanticParts.ItemClass`（生成器从 `[SemanticPart]` 声明产出），不写字符串
+字面量。Cell 由 `ICalendarPresentationAdapter.CreateCell()` 经 `CalendarView.GetPooledCell` 进入容器池；marker 在
+构造时建立，`Bind` / `Unbind` / 回收 / 模式切换 / 模板重应用都不增删 marker，因此容器池复用不会改变 Part 身份。
+`itemContent` 节点在 Fullscreen 单元格中即使没有 `CellTemplate` / `FullCellTemplate` 也保持可见，为语义 Part 提供
+可标注的几何区域（对应 antd full 单元格始终渲染的 `date-content` 区域）；Mini 单元格与 Week 单元格在没有模板时保持
+隐藏。marker 始终静态存在。运行时 Cell 的 `TemplatedParent` 为 null，不能作为 `/template/` 路由的终点；`item` 路由
+因此经两个 scope marker 的 `>` 步骤从 `.semantic-content` 到达 Cell，`itemContent` 再以 `/template/` 进入 Cell 模板。
+
 ## 6. 生命周期与模板接入
 
-- 构造阶段只设置默认 Value，不读取模板 part。
+- 构造阶段只设置默认 Value，不读取模板 part。`CalendarViewCell` 构造函数只建立 `.semantic-item` marker，不读取模板 part、不订阅事件。
 - `Calendar.OnApplyTemplate` 先解除旧 View/Header 的事件订阅，再查找新 part、建立订阅、同步 ViewMode、Header 内容、语言 Culture 和根伪类。
 - `CalendarView.OnApplyTemplate` 先解绑旧 WeekHeader/CellHost 和容器关系，再接入新模板并重建/实现 Cell。
 - `CalendarViewCell.Bind` 每次复用都覆盖 owner、model、DisplayText、Context、Focusable 和伪类；Unbind 或回收时必须清空 owner/model、模板上下文和状态，避免旧 Cell 继续命中或保留旧订阅。
@@ -180,6 +202,7 @@ RangeBars 投影以 `PART_RangeBarPanel` 的本地坐标为坐标系。Panel 先
 - `CalendarRangeBarPanel` 不遍历 Cell visual tree，不在 pointer move 热路径中计算，也不拥有业务数据生命周期。
 - Token 通过 `CalendarTokenResource`、`LunarCalendarTokenResource` 和 SharedToken 进入 AXAML；运行时状态由伪类 selector 表达。
 - 不使用运行时反射扫描 API、Token、日期类型或 Gallery 数据；属性静态注册、强类型上下文和生成资源保持 NativeAOT 兼容。
+- Semantic marker 通过 AXAML 静态 class 与生成常量建立（`CalendarSemanticParts.ItemClass`），不引入 VisualTree 搜索、动态 marker 绑定或运行时 AXAML 解析；默认主题不消费 `.semantic-*` selector。
 - LanguageManager、VisualTree、Template part 等外部订阅必须有成对释放路径，避免 detach 后保留 Calendar。
 - 农历年表、二十四节气表和传统节日 resolver 是静态只读数据与纯函数；不依赖第三方农历运行库、系统时区、网络、反射或字符串 binding。面板数据有界且不在 Measure/Arrange/Render 热路径构建。
 
@@ -195,6 +218,7 @@ RangeBars 投影以 `PART_RangeBarPanel` 的本地坐标为坐标系。Panel 先
 - LunarCalendar 只扩展 Calendar 的呈现与公历日期投影，不引入第二份可写 Value、独立导航状态或另一套容器池。
 - 普通 Calendar 的默认 presentation adapter 必须保持现有容器类型、Header 文案、Automation、视觉和性能；农历专用状态只能进入 LunarCalendar adapter/Cell/theme。
 - 改动 ControlTheme、伪类、Token、Template part 或 Automation 时，必须同步 Gallery、测试和本目录文档。
+- Semantic Part 的 marker 放置（`CalendarTheme.axaml` 三个静态节点、Cell 构造路径的 `semantic-item`、两个 Cell 模板的 `semantic-item-content`）属于维护不变量：状态切换、Bind/Unbind、容器回收、模板重应用与 detach 不得增删 marker，普通 Calendar 与 LunarCalendar 的 marker 数量必须一致。
 
 ## 11. 测试与验证
 
@@ -210,5 +234,6 @@ RangeBars 投影以 `PART_RangeBarPanel` 的本地坐标为坐标系。Panel 先
 - 模板重应用、Mode/ShowWeek 切换、语言切换、容器回收和 detach 释放。
 - Light/Dark、Fullscreen/Mini、Gallery API/Token/ShowCase 和 NativeAOT 生成边界。
 - LunarCalendar 全支持范围往返、节气/节日、Provider 面板数据、Fullscreen/Card × Month/Year、模板、RangeBars 避让、容器回收和 NativeAOT 发布边界。
+- Semantic Part：`Calendar` / `LunarCalendar` descriptor 的六个 Part 数量、顺序与字段；三个静态 marker 与 Cell 构造 marker 的放置；Month 42/48、Year 12 的 `semantic-item` 数量；`Value` 同月变化与 Mode/ShowWeek 切换后的容器复用与 marker 身份；`HeaderTemplate` / 无 `CellTemplate` 时 marker 节点隐藏但存在；生成 Style 对 `body` / `content` / `item` 的局部 Setter 生效；Gallery Semantic Preview 惰性创建。
 
 纯文档改动运行 `git diff --check` 和相对链接检查；行为或主题改动运行对应 `tests/AtomUI.Desktop.Controls.Tests` 与 Gallery 验证。LLMS 生成文件只由仓库生成/verify 流程更新。

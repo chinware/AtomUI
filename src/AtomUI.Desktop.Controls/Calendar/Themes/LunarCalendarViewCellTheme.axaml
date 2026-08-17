@@ -14,7 +14,7 @@
     <Setter Property="Template">
         <ControlTemplate TargetType="calendar:LunarCalendarViewCell">
             <Border Name="PART_Item"
-                    Background="Transparent"
+                    Background="{TemplateBinding Background}"
                     Cursor="Hand"
                     Focusable="True"
                     Padding="0"
@@ -33,6 +33,7 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <ContentControl Name="PART_ItemContent"
+                                        Classes.semantic-item-content="True"
                                         Cursor="Hand"
                                         Grid.Row="1"
                                         HorizontalContentAlignment="Stretch"

@@ -7,13 +7,14 @@
     TargetType="calendar:CalendarViewCell"
     x:ClassModifier="internal">
     <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Background" Value="Transparent" />
     <Setter Property="ClipToBounds" Value="False" />
     <Setter Property="HorizontalAlignment" Value="Stretch" />
     <Setter Property="VerticalAlignment" Value="Stretch" />
     <Setter Property="Template">
         <ControlTemplate TargetType="calendar:CalendarViewCell">
             <Border Name="PART_Item"
-                    Background="Transparent"
+                    Background="{TemplateBinding Background}"
                     Cursor="Hand"
                     Focusable="True"
                     Padding="0"
@@ -32,6 +33,7 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <ContentControl Name="PART_ItemContent"
+                                        Classes.semantic-item-content="True"
                                         Cursor="Hand"
                                         Grid.Row="1"
                                         HorizontalContentAlignment="Stretch"
@@ -157,7 +159,7 @@
     <Style Selector="^:disabled /template/ Border#PART_Item">
         <Setter Property="IsHitTestVisible" Value="False" />
     </Style>
-    <Style Selector="^:mini:disabled /template/ Border#PART_Item">
+    <Style Selector="^:mini:disabled">
         <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
     </Style>
     <Style Selector="^:mini:date:disabled:today /template/ Border#PART_CellInner">

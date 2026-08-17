@@ -106,7 +106,7 @@ Type name:     <ControlName><PartPathPascalCase>Style
 构建集成继续把 `Themes/**/*.axaml` 作为 `AdditionalFiles` 提供给 Generator。生成器使用结构化 AXAML 分析读取：
 
 - ControlTheme `TargetType`。
-- typed `BasedOn="{StaticResource {x:Type ...}}"` 继承关系。
+- typed `BasedOn` 继承关系（属性语法 `{StaticResource {x:Type ...}}` 与元素语法 `<ControlTheme.BasedOn>` 均支持）。
 - ControlTemplate variant。
 - AtomUI 自有模板中的静态 `Classes.semantic-*="True"` marker。
 - 兼容输入中的字面量 `Classes="semantic-*"` marker。
@@ -289,9 +289,10 @@ Semantic descriptor 注册失败必须和 Control identity、Token descriptor、
 - Desktop 与 Browser 主题。
 - 派生 Control 自有模板，或通过 typed `BasedOn` 明确复用的基类模板。
 
-typed `BasedOn` 按 Avalonia 12 的应用顺序展开：派生 Theme 只有 selector 条件模板时，基类默认模板仍属于适用
-variant；派生 Theme 通过直接 `Setter Property="Template"` 替换默认模板时，不再校验被覆盖的基类模板。循环引用使用
-访问集合终止，并最终报告没有适用模板。
+typed `BasedOn` 按 Avalonia 12 的应用顺序展开：派生 Theme 携带任何自有 ControlTemplate（含 selector 条件模板）时只
+校验自有模板；Theme 自身没有可分析模板（纯继承）时，沿 typed `BasedOn` 递归到基类 Theme。通过资源引用形式
+`Template="{StaticResource ...}"` 替换默认模板视为覆盖基类模板，不再校验被覆盖的基类。循环引用使用访问集合
+终止，并最终报告没有适用模板。
 
 生成器必须区分“该 variant 不适用”和“适用但漏标”。无法静态确定适用关系时，要求声明方提供明确资产归属，不能
 默认为通过。
@@ -306,8 +307,10 @@ variant；派生 Theme 通过直接 `Setter Property="Template"` 替换默认模
 “combinator + `.semantic-*` class”成对组成；禁止空格 descendant、类型、Name、`PART_*`、属性 selector 和其他 token；
 最后一个 class 必须等于该 Part 的 `SelectorClass`。这项验证只处理公开 route 元数据，不解析任意 AXAML Selector。
 
-`BasedOn` 只解析显式 `{StaticResource {x:Type ...}}`。字符串 key、运行时资源选择或自定义 markup extension 无法静态解析，
-声明方必须提供可分析的叶子模板或 typed `BasedOn`。
+`BasedOn` 支持属性语法的 `{StaticResource {x:Type ...}}` 与元素语法的
+`<ControlTheme.BasedOn><themes:X TargetType="..."/></ControlTheme.BasedOn>` 两种 typed 形式；元素语法按子元素的
+Namespace 解析 `XTargetType` 引用。字符串 key、运行时资源选择或自定义 markup extension 无法静态解析，声明方必须
+提供可分析的叶子模板或 typed `BasedOn`。
 
 类型解析支持：
 

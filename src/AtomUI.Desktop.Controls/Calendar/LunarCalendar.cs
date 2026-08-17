@@ -5,7 +5,7 @@ using Avalonia.Data;
 
 namespace AtomUI.Desktop.Controls;
 
-public class LunarCalendar : Calendar
+public partial class LunarCalendar : Calendar
 {
     public static CalendarDateRange SupportedRange { get; } =
         new(new DateTime(1900, 1, 1), new DateTime(2100, 12, 31));

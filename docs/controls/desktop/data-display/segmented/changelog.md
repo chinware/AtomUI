@@ -3,6 +3,11 @@
 本文档记录 Segmented 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-08-17
+
+- Layout and Theme
+  - `OptionButtonGroup` 根渲染补画自身 `Background`（此前该属性被忽略），背景绘制在外框、分隔线与选中描边之下；Calendar Header 的 Month/Year 切换组由此获得白色容器背景且不遮挡边框。
+
 ## 2026-07-29
 
 - Design

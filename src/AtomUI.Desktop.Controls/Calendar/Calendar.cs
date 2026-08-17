@@ -29,7 +29,7 @@ namespace AtomUI.Desktop.Controls;
     CalendarRootPseudoClass.ShowWeek)]
 [TemplatePart(CalendarViewPart, typeof(CalendarViewControl))]
 [TemplatePart(RangeBarPanelPart, typeof(CalendarRangeBarPanelControl))]
-public class Calendar : TemplatedControl
+public partial class Calendar : TemplatedControl
 {
     #region Avalonia Properties
 

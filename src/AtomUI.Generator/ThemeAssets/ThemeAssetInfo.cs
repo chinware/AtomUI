@@ -383,17 +383,36 @@ internal sealed class ThemeAssetTargetTypeReference
 
     internal static ThemeAssetTargetTypeReference Create(XElement element, string value)
     {
-        var namespaces = element.AncestorsAndSelf()
-                                .Reverse()
-                                .SelectMany(static current => current.Attributes().Where(static attribute =>
-                                    attribute.IsNamespaceDeclaration))
-                                .ToDictionary(
-                                    static attribute => attribute.Name.LocalName == "xmlns"
-                                        ? string.Empty
-                                        : attribute.Name.LocalName,
-                                    static attribute => attribute.Value,
-                                    StringComparer.Ordinal);
+        return new ThemeAssetTargetTypeReference(value, CollectNamespaces(element));
+    }
+
+    internal static ThemeAssetTargetTypeReference CreateFromElement(XElement element, XElement namespaceContext)
+    {
+        var namespaces = CollectNamespaces(namespaceContext);
+        var elementNamespace = element.Name.NamespaceName;
+        var prefix = namespaces.FirstOrDefault(pair =>
+            pair.Value == elementNamespace && pair.Key.Length > 0).Key;
+        var value = prefix is null
+            ? element.Name.LocalName
+            : $"{prefix}:{element.Name.LocalName}";
         return new ThemeAssetTargetTypeReference(value, namespaces);
+    }
+
+    private static Dictionary<string, string> CollectNamespaces(XElement element)
+    {
+        var namespaces = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (var current in element.AncestorsAndSelf().Reverse())
+        {
+            foreach (var attribute in current.Attributes().Where(static attribute =>
+                         attribute.IsNamespaceDeclaration))
+            {
+                var prefix = attribute.Name.LocalName == "xmlns"
+                    ? string.Empty
+                    : attribute.Name.LocalName;
+                namespaces[prefix] = attribute.Value;
+            }
+        }
+        return namespaces;
     }
 }
 

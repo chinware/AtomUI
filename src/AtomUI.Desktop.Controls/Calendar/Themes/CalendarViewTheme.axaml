@@ -7,12 +7,17 @@
     TargetType="calendar:CalendarView"
     x:ClassModifier="internal">
     <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
+    <Setter Property="Background" Value="{atom:CalendarTokenResource FullPanelBg}" />
     <Setter Property="Template">
         <ControlTemplate TargetType="calendar:CalendarView">
-            <DockPanel Name="PART_Body" LastChildFill="True">
+            <DockPanel Name="PART_Body"
+                       Classes.semantic-scope-body="True"
+                       LastChildFill="True"
+                       Background="{TemplateBinding Background}">
                 <Grid Name="PART_WeekHeader"
                       DockPanel.Dock="Top" />
-                <Grid Name="PART_CellHost" />
+                <Grid Name="PART_CellHost"
+                      Classes.semantic-scope-cells="True" />
             </DockPanel>
         </ControlTemplate>
     </Setter>
@@ -36,8 +41,10 @@
     </Style>
 
     <!-- Fullscreen：完整数据布局，Panel 背景与较高内容区 -->
+    <Style Selector="^:fullscreen">
+        <Setter Property="Background" Value="{atom:CalendarTokenResource FullBg}" />
+    </Style>
     <Style Selector="^:fullscreen /template/ Grid#PART_CellHost">
-        <Setter Property="Background" Value="{atom:CalendarTokenResource FullPanelBg}" />
         <Setter Property="MinHeight" Value="0" />
     </Style>
 

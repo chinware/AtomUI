@@ -1051,7 +1051,7 @@ public class SemanticPartGeneratorTests
     }
 
     [Fact]
-    public void Validates_The_Inherited_Default_Template_When_A_Derived_Theme_Adds_Only_A_Conditional_Template()
+    public void Does_Not_Validate_The_Base_Template_When_A_Derived_Theme_Adds_Only_A_Conditional_Template()
     {
         const string source = """
             using AtomUI.Theme;
@@ -1105,9 +1105,183 @@ public class SemanticPartGeneratorTests
 
         _ = RunGenerator(source, out var diagnostics, derivedTheme, baseTheme);
 
+        diagnostics.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Validates_The_Derived_Conditional_Template_But_Not_The_Base_Template()
+    {
+        const string source = """
+            using AtomUI.Theme;
+            using Avalonia.Controls;
+            using Avalonia.Controls.Presenters;
+
+            namespace Demo;
+
+            public class BaseButton : Control
+            {
+            }
+
+            [SemanticPart(
+                "content",
+                SelectorClass = "semantic-content",
+                ContractType = typeof(ContentPresenter),
+                Since = "6.0")]
+            public partial class DerivedButton : BaseButton
+            {
+            }
+            """;
+        var baseTheme = new InMemoryAdditionalText(
+            "BaseButton/Themes/BaseButtonTheme.axaml",
+            """
+            <ControlTheme xmlns="https://github.com/avaloniaui"
+                          xmlns:atom="using:Demo"
+                          TargetType="atom:BaseButton">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <ContentPresenter Classes="semantic-content" />
+                    </ControlTemplate>
+                </Setter>
+            </ControlTheme>
+            """);
+        var derivedTheme = new InMemoryAdditionalText(
+            "DerivedButton/Themes/DerivedButtonTheme.axaml",
+            """
+            <ControlTheme xmlns="https://github.com/avaloniaui"
+                          xmlns:atom="using:Demo"
+                          TargetType="atom:DerivedButton"
+                          BasedOn="{StaticResource {x:Type atom:BaseButton}}">
+                <Style Selector="^:pointerover">
+                    <Setter Property="Template">
+                        <ControlTemplate>
+                            <Control />
+                        </ControlTemplate>
+                    </Setter>
+                </Style>
+            </ControlTheme>
+            """);
+
+        _ = RunGenerator(source, out var diagnostics, derivedTheme, baseTheme);
+
+        diagnostics.ShouldContain(diagnostic =>
+            diagnostic.Id == "ATOMUIGEN025" &&
+            diagnostic.GetMessage().Contains("DerivedButtonTheme.axaml", StringComparison.Ordinal));
+        diagnostics.ShouldNotContain(diagnostic =>
+            diagnostic.GetMessage().Contains("BaseButtonTheme.axaml", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Validates_The_Base_Template_For_A_Pure_Inheritance_Theme()
+    {
+        const string source = """
+            using AtomUI.Theme;
+            using Avalonia.Controls;
+            using Avalonia.Controls.Presenters;
+
+            namespace Demo;
+
+            public class BaseButton : Control
+            {
+            }
+
+            [SemanticPart(
+                "content",
+                SelectorClass = "semantic-content",
+                ContractType = typeof(ContentPresenter),
+                Since = "6.0")]
+            public partial class DerivedButton : BaseButton
+            {
+            }
+            """;
+        var baseTheme = new InMemoryAdditionalText(
+            "BaseButton/Themes/BaseButtonTheme.axaml",
+            """
+            <ControlTheme xmlns="https://github.com/avaloniaui"
+                          xmlns:atom="using:Demo"
+                          TargetType="atom:BaseButton">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <Control />
+                    </ControlTemplate>
+                </Setter>
+            </ControlTheme>
+            """);
+        var derivedTheme = new InMemoryAdditionalText(
+            "DerivedButton/Themes/DerivedButtonTheme.axaml",
+            """
+            <ControlTheme xmlns="https://github.com/avaloniaui"
+                          xmlns:atom="using:Demo"
+                          TargetType="atom:DerivedButton"
+                          BasedOn="{StaticResource {x:Type atom:BaseButton}}" />
+            """);
+
+        _ = RunGenerator(source, out var diagnostics, derivedTheme, baseTheme);
+
         diagnostics.ShouldContain(diagnostic =>
             diagnostic.Id == "ATOMUIGEN025" &&
             diagnostic.GetMessage().Contains("BaseButtonTheme.axaml#1", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Validates_A_Pure_Inheritance_Theme_Against_An_Element_Syntax_BasedOn()
+    {
+        const string source = """
+            using AtomUI.Theme;
+            using Avalonia.Controls;
+            using Avalonia.Controls.Presenters;
+            using Avalonia.Styling;
+
+            namespace Demo;
+
+            public class BaseButton : Control
+            {
+            }
+
+            public class BaseButtonTheme : ControlTheme
+            {
+            }
+
+            [SemanticPart(
+                "content",
+                SelectorClass = "semantic-content",
+                ContractType = typeof(ContentPresenter),
+                Since = "6.0")]
+            public partial class DerivedButton : BaseButton
+            {
+            }
+            """;
+        var baseTheme = new InMemoryAdditionalText(
+            "BaseButton/Themes/BaseButtonTheme.axaml",
+            """
+            <ControlTheme xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:atom="using:Demo"
+                          x:Class="Demo.BaseButtonTheme"
+                          TargetType="atom:BaseButton">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <ContentPresenter Classes="semantic-content" />
+                    </ControlTemplate>
+                </Setter>
+            </ControlTheme>
+            """);
+        var derivedTheme = new InMemoryAdditionalText(
+            "DerivedButton/Themes/DerivedButtonTheme.axaml",
+            """
+            <ControlTheme xmlns="https://github.com/avaloniaui"
+                          xmlns:atom="using:Demo"
+                          TargetType="atom:DerivedButton">
+                <ControlTheme.BasedOn>
+                    <atom:BaseButtonTheme TargetType="atom:DerivedButton" />
+                </ControlTheme.BasedOn>
+            </ControlTheme>
+            """);
+
+        var output = RunGenerator(source, out var diagnostics, derivedTheme, baseTheme);
+
+        diagnostics.ShouldBeEmpty();
+        GetGeneratedSource(output, "GeneratedSemanticPartManifest.g.cs")
+            .ShouldContain("typeof(global::Demo.DerivedButton)");
     }
 
     [Fact]

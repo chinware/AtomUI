@@ -47,6 +47,11 @@ internal sealed class SemanticPartTypeResolver
         return ResolveXmlType(marker.XmlNamespace, marker.TypeName);
     }
 
+    internal INamedTypeSymbol? ResolveMetadataName(string? fullName)
+    {
+        return fullName is null ? null : _compilation.GetTypeByMetadataName(fullName);
+    }
+
     internal static bool IsAssignableTo(ITypeSymbol type, ITypeSymbol contractType)
     {
         for (var current = type as INamedTypeSymbol; current is not null; current = current.BaseType)

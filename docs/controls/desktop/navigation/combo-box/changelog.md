@@ -34,6 +34,11 @@
 - Behavior
   - Keep keyboard input on a non-editable ComboBox when reopening its popup so consecutive `Down` and `Enter` selections continue to update the selected item.
 
+## 2026-08-17
+
+- Theme
+  - `AddOnDecoratedBox` 的 outline 变体默认背景改为 `ColorBgContainer`，与 Ant Design Select/Input outlined 变体的默认容器背景一致（此前为透明，落在彩色背景上会透出底色）；filled、borderless、disabled 等其余变体背景不变。Calendar Header 的年/月选择器由此获得白色容器背景，直接使用标准 `ComboBox`，无需派生控件或使用点样式。
+
 ## 2026-07-05
 
 - Behavior

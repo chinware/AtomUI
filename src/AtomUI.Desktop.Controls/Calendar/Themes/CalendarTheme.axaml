@@ -10,11 +10,15 @@
     <Setter Property="Template">
         <ControlTemplate TargetType="controls:Calendar">
             <Border Name="PART_Root"
-                    Background="{atom:CalendarTokenResource FullBg}"
-                    BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}">
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    Padding="{TemplateBinding Padding}">
                 <DockPanel LastChildFill="True">
                     <Panel Name="PART_HeaderPresenter" DockPanel.Dock="Top">
                         <calendar:CalendarHeader Name="PART_DefaultHeader"
+                                                 Classes.semantic-header="True"
                                                  Value="{TemplateBinding Value}"
                                                  Mode="{TemplateBinding Mode}"
                                                  ValidRange="{TemplateBinding ValidRange}"
@@ -24,6 +28,7 @@
                                         IsVisible="{Binding HeaderTemplate, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static ObjectConverters.IsNotNull}}" />
                     </Panel>
                     <DockPanel Name="PART_BodyPresenter"
+                               Classes.semantic-body="True"
                                LastChildFill="True"
                                ClipToBounds="True">
                         <Border DockPanel.Dock="Top"
@@ -35,6 +40,7 @@
                                 Height="{atom:SharedTokenResource UniformlyPaddingXS}" />
                         <Grid>
                             <calendar:CalendarView Name="PART_CalendarView"
+                                                   Classes.semantic-content="True"
                                                    Value="{TemplateBinding Value}"
                                                    Fullscreen="{TemplateBinding Fullscreen}"
                                                    ShowWeek="{TemplateBinding ShowWeek}"
@@ -69,23 +75,20 @@
         </ControlTemplate>
     </Setter>
 
+    <Setter Property="Background" Value="{atom:CalendarTokenResource FullBg}" />
+    <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorderSecondary}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="0" />
+
     <Style Selector="^:fullscreen">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
-    </Style>
-    <Style Selector="^:fullscreen /template/ Border#PART_Root">
-        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="CornerRadius" Value="0" />
-        <Setter Property="Padding" Value="0" />
     </Style>
 
     <Style Selector="^:mini">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Top" />
-    </Style>
-    <Style Selector="^:mini /template/ Border#PART_Root">
-        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
-        <Setter Property="Padding" Value="0" />
     </Style>
 </ControlTheme>

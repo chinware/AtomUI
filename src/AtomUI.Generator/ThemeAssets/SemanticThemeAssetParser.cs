@@ -4,6 +4,8 @@ namespace AtomUI.Generator;
 
 internal static class SemanticThemeAssetParser
 {
+    private static readonly XNamespace XamlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
+
     internal static IReadOnlyList<ThemeAssetSemanticThemeInfo> Parse(XElement root)
     {
         var themes = new List<ThemeAssetSemanticThemeInfo>();
@@ -53,7 +55,8 @@ internal static class SemanticThemeAssetParser
                 ThemeAssetTargetTypeReference.Create(controlTheme, targetTypeAttribute.Value),
                 CreateBasedOnReference(controlTheme),
                 templates,
-                overridesBaseTemplate));
+                overridesBaseTemplate,
+                controlTheme.Attribute(XamlNamespace + "Class")?.Value));
         }
         return themes;
     }
@@ -151,26 +154,30 @@ internal static class SemanticThemeAssetParser
     {
         var basedOn = controlTheme.Attributes().FirstOrDefault(static attribute =>
             string.Equals(attribute.Name.LocalName, "BasedOn", StringComparison.Ordinal));
-        if (basedOn is null)
+        if (basedOn is not null)
         {
+            const string prefix = "{StaticResource ";
+            var value = basedOn.Value.Trim();
+            if (value.StartsWith(prefix, StringComparison.Ordinal) &&
+                value.EndsWith("}", StringComparison.Ordinal))
+            {
+                var resourceKey = value.Substring(prefix.Length, value.Length - prefix.Length - 1).Trim();
+                if (resourceKey.StartsWith("{x:Type", StringComparison.Ordinal) &&
+                    resourceKey.EndsWith("}", StringComparison.Ordinal))
+                {
+                    return ThemeAssetTargetTypeReference.Create(controlTheme, resourceKey);
+                }
+            }
+
             return null;
         }
 
-        const string prefix = "{StaticResource ";
-        var value = basedOn.Value.Trim();
-        if (!value.StartsWith(prefix, StringComparison.Ordinal) ||
-            !value.EndsWith("}", StringComparison.Ordinal))
-        {
-            return null;
-        }
-
-        var resourceKey = value.Substring(prefix.Length, value.Length - prefix.Length - 1).Trim();
-        if (!resourceKey.StartsWith("{x:Type", StringComparison.Ordinal) ||
-            !resourceKey.EndsWith("}", StringComparison.Ordinal))
-        {
-            return null;
-        }
-        return ThemeAssetTargetTypeReference.Create(controlTheme, resourceKey);
+        var basedOnElement = controlTheme.Elements().FirstOrDefault(static element =>
+            string.Equals(element.Name.LocalName, "ControlTheme.BasedOn", StringComparison.Ordinal));
+        var referencedTheme = basedOnElement?.Elements().FirstOrDefault();
+        return referencedTheme is null
+            ? null
+            : ThemeAssetTargetTypeReference.CreateFromElement(referencedTheme, controlTheme);
     }
 
     private static bool IsTemplateSetter(XElement element)

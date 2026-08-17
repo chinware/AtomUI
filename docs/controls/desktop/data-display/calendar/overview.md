@@ -1,6 +1,6 @@
 # Calendar 桌面版架构设计
 
-本文档定义 `Calendar` 家族桌面版的稳定定位、公共契约、状态模型、视觉主题关系和兼容边界。内部实现见 [Calendar 桌面版实现原理](implementation.md)，行为规则见 [Calendar 行为设计](behavior-design.md)，农历能力见 [LunarCalendar 农历能力设计](lunar-calendar-design.md)，范围条见 [Calendar 范围条设计](range-bar-design.md)，Token 见 [Calendar Token 设计](token.md)，变化记录见 [Calendar Changelog](changelog.md)。
+本文档定义 `Calendar` 家族桌面版的稳定定位、公共契约、状态模型、视觉主题关系和兼容边界。内部实现见 [Calendar 桌面版实现原理](implementation.md)，行为规则见 [Calendar 行为设计](behavior-design.md)，农历能力见 [LunarCalendar 农历能力设计](lunar-calendar-design.md)，范围条见 [Calendar 范围条设计](range-bar-design.md)，Semantic Part 契约见 [Calendar Semantic Part 契约](semantic-part.md)，Token 见 [Calendar Token 设计](token.md)，变化记录见 [Calendar Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -83,6 +83,31 @@ Calendar 的公共契约由 Avalonia 属性、事件、模板、上下文类型�
 
 农历算法保证范围为 `1900-01-01` 至 `2100-12-31`。`Value` 在 LunarCalendar 上收敛到该范围；内部有效选择范围为支持范围与 `ValidRange` 的交集。法定节假日和调休不内置，由 `ILunarCalendarHolidayProvider` 以同步面板数据提供。完整模型、默认值、枚举、Provider 规则和显示优先级见 [LunarCalendar 农历能力设计](lunar-calendar-design.md)。
 
+### 3.5 Semantic Part 契约
+
+`Calendar` 与 `LunarCalendar` 公开与上游 Calendar 稳定 Semantic DOM 对齐的六个 Semantic Part，完整契约见 [Calendar Semantic Part 契约](semantic-part.md)：
+
+| Part | Selector | AtomUI 节点 | Cardinality | 定制方式 |
+| --- | --- | --- | --- | --- |
+| `root` | 控件本身 | `Calendar` / `LunarCalendar` owner | `Single` | owner 选择器 + 公开属性/伪类 |
+| `header` | `.semantic-header` | 默认 Header `CalendarHeader`（`PART_DefaultHeader`） | `Single` | `CalendarHeaderStyle` |
+| `body` | `.semantic-body` | `DockPanel#PART_BodyPresenter` | `Single` | `CalendarBodyStyle` |
+| `content` | `.semantic-content` | 日历表格 `CalendarView`（`PART_CalendarView`） | `Single` | `CalendarContentStyle` |
+| `item` | `.semantic-item` | 运行时 `CalendarViewCell` 网格单元（42/48/12，含周序号 Cell） | `Multiple` | `CalendarItemStyle` |
+| `itemContent` | `.semantic-item-content` | Cell 模板的 `ContentControl#PART_ItemContent` | `Multiple` | `CalendarItemContentStyle` |
+
+`item` 与 `itemContent` 是运行时生成 Part：`item` 的 marker 在 Cell 构造路径一次性添加，`itemContent` 的 marker 静态
+声明于 Cell 模板；marker 不随选择、禁用、模板切换、容器回收增删。定制摘要：
+
+- 状态型定制（选中、悬停、禁用、Fullscreen/Mini）通过 owner 伪类 + 公开属性完成；根伪类 `:fullscreen`、`:mini`、
+  `:month`、`:year`、`:show-week` 是稳定的组合入口。
+- 局部视觉定制通过生成的 Semantic Style 完成，`ContractType` 收缩到公开类型（`DockPanel` / `TemplatedControl` /
+  `ContentControl`），internal 的 `CalendarHeader` / `CalendarView` / `CalendarViewCell` 不作为公共依赖类型。
+- 布局型 Setter（固定 `Height` / `MaxHeight` 等）不作为公共定制路径：Mini 内容高度与 Fullscreen Cell 高度由
+  `MiniContentHeight` / `FullCellMinHeight` 的 metrics 链驱动，见 [semantic-part.md §5](semantic-part.md#5-尺寸基线)。
+- 默认 Header 内部的 ComboBox 下拉与 `OptionButtonGroup`、周标题行、范围条 overlay、农历次级内容不属于 Semantic
+  Part，见 [semantic-part.md §6](semantic-part.md#6-定制边界)。
+
 ## 4. 行为与状态模型
 
 状态流按单一 owner 收敛：
@@ -140,8 +165,13 @@ Gallery 示例覆盖基础 Fullscreen、Notice Calendar、跨日期 `RangeBars`�
 - Automation 的跨平台契约以 `CalendarView` 的 `Table` + `ISelectionProvider` 和 Cell 的 `ListItem` + `ISelectionItemProvider` 为准；Cell 的 `SelectionContainer` 返回 View provider，不宣称 Avalonia 当前未公开的跨平台 GridItem provider。
 - LunarCalendar 不改变 Calendar 的事件顺序、模板优先级、键盘拓扑、RangeBars 选择隔离或 Automation owner；普通 Calendar 的默认呈现 adapter 必须保持现有视觉和行为。
 - LunarCalendar 的算法支持范围只有在农历年数据、二十四节气数据和全范围验证同时扩展后才能调整；法定节假日政策数据始终由应用 Provider 负责。
+- Semantic Part 的六个区域（`root`、`header`、`body`、`content`、`item`、`itemContent`）、selector class、ContractType、cardinality 与 marker 放置属于主题兼容契约；删除、重命名、收窄类型或让内置模板缺少 marker 都是破坏性变更。
+- `item` 与 `itemContent` 的 marker 在 Cell 构造路径 / Cell 模板中一次性建立，任何状态切换、Bind/Unbind、容器回收、模板重应用与 detach 都不得增删 marker；默认主题不得消费 `.semantic-*` selector。
+- 运行时 marker 通过生成常量添加，不引入 VisualTree 搜索、反射或运行时 AXAML 解析，保持 NativeAOT 友好。
 
 ## 8. LLMS 语义区域
+
+下表是 LLMS 语义导出使用的区域映射，独立于 [§3.5 Semantic Part 契约](#35-semantic-part-契约)：`rangeBar` 与 `lunarContent` 只作为 LLMS 语义区域存在，不属于对外 Semantic Part；Semantic Part 的节点映射以 [Calendar Semantic Part 契约](semantic-part.md) 为准。
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
@@ -164,6 +194,7 @@ Gallery 示例覆盖基础 Fullscreen、Notice Calendar、跨日期 `RangeBars`�
 - [Calendar 行为设计](behavior-design.md)
 - [LunarCalendar 农历能力设计](lunar-calendar-design.md)
 - [Calendar 范围条设计](range-bar-design.md)
+- [Calendar Semantic Part 契约](semantic-part.md)
 - [Calendar Token 设计](token.md)
 - [Calendar Changelog](changelog.md)
 
@@ -172,7 +203,7 @@ LLMS 导出来源：
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
 | 单控件完整文档 | `overview.md` + `implementation.md` + `behavior-design.md` + `lunar-calendar-design.md` + `range-bar-design.md` + `token.md` + Gallery ShowCase | 生成 `controls/calendar/index-cn.md`。 |
-| 单控件语义文档 | `overview.md` + `implementation.md` + `lunar-calendar-design.md` + `range-bar-design.md` + `Themes/` | 生成 `controls/calendar/semantic-cn.md`。 |
+| 单控件语义文档 | `overview.md` + `implementation.md` + `semantic-part.md` + `lunar-calendar-design.md` + `range-bar-design.md` + `Themes/` | 生成 `controls/calendar/semantic-cn.md`。 |
 | API 表 | overview 的 API 摘要 + 源码 public surface | 不在 `docs/AI/generated/llms` 中手工维护第二份契约。 |
 | Token 表 | `token.md` + `CalendarToken` + `LunarCalendarToken` + AXAML 引用 | 以 Token 源码和主题消费点为准。 |
 | 示例 | Gallery API/Token/ShowCase | 只引用稳定的 Gallery 用法。 |
@@ -182,4 +213,5 @@ LLMS 导出来源：
 - 文档改动运行 `git diff --check`，并检查本目录及新增专题文档的相对链接。
 - API/行为改动覆盖默认值、事件顺序、范围和禁用、模板优先级、周序号选择、键盘导航与语言切换。
 - Theme 改动检查四个 ControlTheme、伪类、Token 资源以及 Light/Dark 和 Fullscreen/Mini。
+- Semantic Part 改动检查 descriptor 数量/顺序/字段、marker 数量与类型、容器回收后的 marker 身份，以及 Gallery Semantic Preview 的惰性创建，见 [semantic-part.md §7](semantic-part.md#7-兼容性与验证)。
 - 不手工编辑 `docs/AI/generated/llms` 生成产物；LLMS 源文件变化后运行仓库提供的生成/verify 命令。

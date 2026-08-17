@@ -1,5 +1,4 @@
-using AtomUI.Data;
-using AtomUI.Desktop.Controls.Localization;
+using AtomUI.Generated.AtomUI_Desktop_Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -83,6 +82,7 @@ internal class CalendarViewCell : TemplatedControl
     public CalendarViewCell()
     {
         Focusable = true;
+        Classes.Add(CalendarSemanticParts.ItemClass);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -204,9 +204,12 @@ internal class CalendarViewCell : TemplatedControl
                 _itemContent.ContentTemplate = contentTemplate;
             }
 
-            if (_itemContent.IsVisible != hasTemplate)
+            // Fullscreen 单元格即使没有自定义模板也保留可见的内容区域（与 antd full 单元格
+            // 始终渲染 date-content 的契约一致），itemContent 语义 Part 才能有可标注的几何区域。
+            var itemContentVisible = hasTemplate || (_fullscreen && !isWeek);
+            if (_itemContent.IsVisible != itemContentVisible)
             {
-                _itemContent.IsVisible = hasTemplate;
+                _itemContent.IsVisible = itemContentVisible;
             }
 
             var itemContentRow = useFullTemplate ? 0 : 1;
