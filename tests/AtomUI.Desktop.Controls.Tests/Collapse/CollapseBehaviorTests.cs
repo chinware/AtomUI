@@ -267,6 +267,208 @@ public class CollapseBehaviorTests
     }
 
     [Fact]
+    public void Item_Corner_Radius_Follows_Owner_Container_Corners()
+    {
+        var firstItem = new AtomUICollapseItem
+        {
+            Header     = "First",
+            Content    = "Content",
+            IsSelected = true
+        };
+        var middleItem = new AtomUICollapseItem
+        {
+            Header     = "Middle",
+            Content    = "Content",
+            IsSelected = true
+        };
+        var lastItem = new AtomUICollapseItem
+        {
+            Header     = "Last",
+            Content    = "Content",
+            IsSelected = true
+        };
+        var collapse = new AtomUICollapse
+        {
+            CornerRadius   = new CornerRadius(8),
+            IsMotionEnabled = false,
+            Items =
+            {
+                firstItem,
+                middleItem,
+                lastItem
+            }
+        };
+        var window = new AvaloniaWindow
+        {
+            Width   = 360,
+            Height  = 260,
+            Content = collapse
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            GetHeaderDecorator(firstItem).CornerRadius.ShouldBe(new CornerRadius(8, 8, 0, 0));
+            GetHeaderDecorator(middleItem).CornerRadius.ShouldBe(default(CornerRadius));
+            GetHeaderDecorator(lastItem).CornerRadius.ShouldBe(new CornerRadius(0, 0, 8, 8));
+
+            GetContentFrame(firstItem).CornerRadius.ShouldBe(default(CornerRadius));
+            GetContentFrame(middleItem).CornerRadius.ShouldBe(default(CornerRadius));
+            GetContentFrame(lastItem).CornerRadius.ShouldBe(new CornerRadius(0, 0, 8, 8));
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Single_Item_Header_Receives_All_Owner_Corner_Radii()
+    {
+        var item = new AtomUICollapseItem
+        {
+            Header     = "Only",
+            Content    = "Content",
+            IsSelected = true
+        };
+        var collapse = new AtomUICollapse
+        {
+            CornerRadius    = new CornerRadius(8),
+            IsMotionEnabled = false,
+            Items =
+            {
+                item
+            }
+        };
+        var window = new AvaloniaWindow
+        {
+            Width   = 360,
+            Height  = 260,
+            Content = collapse
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            GetHeaderDecorator(item).CornerRadius.ShouldBe(new CornerRadius(8, 8, 8, 8));
+            GetContentFrame(item).CornerRadius.ShouldBe(new CornerRadius(0, 0, 8, 8));
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Item_Corner_Radius_Updates_When_Owner_CornerRadius_Changes()
+    {
+        var firstItem = new AtomUICollapseItem
+        {
+            Header  = "First",
+            Content = "Content"
+        };
+        var lastItem = new AtomUICollapseItem
+        {
+            Header     = "Last",
+            Content    = "Content",
+            IsSelected = true
+        };
+        var collapse = new AtomUICollapse
+        {
+            CornerRadius    = new CornerRadius(8),
+            IsMotionEnabled = false,
+            Items =
+            {
+                firstItem,
+                lastItem
+            }
+        };
+        var window = new AvaloniaWindow
+        {
+            Width   = 360,
+            Height  = 260,
+            Content = collapse
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            collapse.CornerRadius = new CornerRadius(12);
+            Dispatcher.UIThread.RunJobs();
+
+            GetHeaderDecorator(firstItem).CornerRadius.ShouldBe(new CornerRadius(12, 12, 0, 0));
+            GetHeaderDecorator(lastItem).CornerRadius.ShouldBe(new CornerRadius(0, 0, 12, 12));
+            GetContentFrame(lastItem).CornerRadius.ShouldBe(new CornerRadius(0, 0, 12, 12));
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Item_Corner_Radius_Redistributes_When_Item_Order_Changes()
+    {
+        var firstItem = new AtomUICollapseItem
+        {
+            Header  = "First",
+            Content = "Content"
+        };
+        var secondItem = new AtomUICollapseItem
+        {
+            Header  = "Second",
+            Content = "Content"
+        };
+        var thirdItem = new AtomUICollapseItem
+        {
+            Header     = "Third",
+            Content    = "Content",
+            IsSelected = true
+        };
+        var collapse = new AtomUICollapse
+        {
+            CornerRadius    = new CornerRadius(8),
+            IsMotionEnabled = false,
+            Items =
+            {
+                firstItem,
+                secondItem,
+                thirdItem
+            }
+        };
+        var window = new AvaloniaWindow
+        {
+            Width   = 360,
+            Height  = 260,
+            Content = collapse
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            collapse.Items.Insert(0, new AtomUICollapseItem { Header = "New", Content = "Content" });
+            Dispatcher.UIThread.RunJobs();
+
+            GetHeaderDecorator(firstItem).CornerRadius.ShouldBe(default(CornerRadius));
+            GetHeaderDecorator(secondItem).CornerRadius.ShouldBe(default(CornerRadius));
+            GetHeaderDecorator(thirdItem).CornerRadius.ShouldBe(new CornerRadius(0, 0, 8, 8));
+            GetContentFrame(thirdItem).CornerRadius.ShouldBe(new CornerRadius(0, 0, 8, 8));
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
     public void Borderless_And_Ghost_Styles_Update_Structural_Separators_At_Runtime()
     {
         var firstItem = new AtomUICollapseItem

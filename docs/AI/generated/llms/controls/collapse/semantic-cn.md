@@ -4,13 +4,136 @@
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Collapse` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+`Collapse` 主控件公开 `root`、`header`、`icon`、`title` 与 `body` 五个职责区域，与上游稳定 Semantic DOM 对齐。上游基线为
+6.6.0 稳定发布的 `CollapseSemanticType` 与 Semantic DOM 演示：
+
+- `header`、`body` 自上游 5.21.0 公开；
+- `root`、`icon`、`title` 自上游 6.0.0 公开。
+
+上游 Semantic DOM 以 `itemsAPI="items"` 组织：`header`、`icon`、`title`、`body` 按 item 出现（每个面板各一个），面板容器
+本身（`.ant-collapse-item`）不是 Semantic key。AtomUI 五个 Part 随本次 Semantic Part 改造同时公开，descriptor 的 `Since`
+统一为 `6.0`。
+
+`CollapseItem` 不持有独立 Semantic descriptor：
+
+- 上游 `Collapse` 只提供一个 owner 的 Semantic DOM；`Collapse.Panel` 没有独立公开 Semantic DOM Props。
+- `CollapseItem` 是 Collapse 的公开子控件与运行时容器，其职责通过 `Collapse` 的 `header`、`icon`、`title`、`body` Part
+  对外公开；容器本身与 item shell 边框不属于任何 Part。
+
+### 1.1 `Collapse`
+
+#### `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Collapse` |
+| Part | `root` |
+| Selector | Collapse 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
+| ContractType | `Collapse` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | Collapse owner（表面投影到 `PART_Frame`） |
+| 职责 | Collapse root 是面板集合状态、视觉模式与根表面样式（背景、边框、圆角、内边距）的统一 owner。 |
+| 相关 API | `IsAccordion`、`IsBorderless`、`IsGhostStyle`、`TriggerType`、`ExpandIconPosition`、`SizeType`、`IsMotionEnabled`、`ItemHeaderPadding`、`ItemContentPadding`、`Items`、`SelectedItems` |
+| 相关 Token | CollapseToken、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `header`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Collapse` |
+| Part | `header` |
+| Selector | `.semantic-header` |
+| SelectorRoute | `> .semantic-scope-item /template/ .semantic-header` |
+| Style Type | `CollapseHeaderStyle` |
+| ContractType | `PixelAlignedBorder` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | 每个 `CollapseItem` 模板中的 `PixelAlignedBorder#PART_HeaderDecorator` |
+| 职责 | 统一表示每个面板头部的背景、内边距、字体/行高、光标与交互视觉；对应上游 `.ant-collapse-header` 的 flex 布局、内边距、颜色、行高、光标与过渡动画职责。 |
+| 相关 API | `SizeType`、`ItemHeaderPadding`、`TriggerType`、`IsGhostStyle`、`IsEnabled` |
+| 相关 Token | `HeaderBg`、`HeaderPadding`、`CollapseHeaderPaddingSM`、`CollapseHeaderPaddingLG`、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `icon`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Collapse` |
+| Part | `icon` |
+| Selector | `.semantic-icon` |
+| SelectorRoute | `> .semantic-scope-item /template/ .semantic-icon` |
+| Style Type | `CollapseIconStyle` |
+| ContractType | `IconButton` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | 每个 `CollapseItem` 模板中的 `IconButton#PART_ExpandButton` |
+| 职责 | 统一表示展开/收起箭头的大小、对齐、边距与动效视觉；对应上游 `.ant-collapse-expand-icon` 的字体大小、过渡动画与旋转变换职责。 |
+| 相关 API | `ExpandIcon`、`ExpandIconPosition`、`IsShowExpandIcon`、`IsSelected` |
+| 相关 Token | `IconSizeSM`、`LeftExpandButtonMargin*`、`RightExpandButtonMargin*`、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `title`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Collapse` |
+| Part | `title` |
+| Selector | `.semantic-title` |
+| SelectorRoute | `> .semantic-scope-item /template/ .semantic-title` |
+| Style Type | `CollapseTitleStyle` |
+| ContractType | `ContentPresenter` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | 每个 `CollapseItem` 模板中的 `ContentPresenter#PART_HeaderPresenter` |
+| 职责 | 统一表示每个面板标题文字的布局、颜色、字体与对齐；对应上游 `.ant-collapse-title` 的 flex 自适应布局与边距职责。 |
+| 相关 API | `Header`、`HeaderTemplate` |
+| 相关 Token | `ColorTextHeading`、`ColorTextDisabled`、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `body`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Collapse` |
+| Part | `body` |
+| Selector | `.semantic-body` |
+| SelectorRoute | `> .semantic-scope-item /template/ .semantic-body` |
+| Style Type | `CollapseBodyStyle` |
+| ContractType | `PixelAlignedBorder` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | 每个 `CollapseItem` 模板中的 `PixelAlignedBorder#PART_ContentFrame` |
+| 职责 | 统一表示每个面板内容区域的内边距、颜色、背景与内容顶部分隔线；对应上游 `.ant-collapse-body` 的内边距、颜色与背景职责。 |
+| 相关 API | `Content`、`ContentTemplate`、`ItemContentPadding`、`IsBorderless`、`IsGhostStyle` |
+| 相关 Token | `ContentPadding`、`ContentBg`、`HeaderBg`、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+`root` 是隐式 Part，不添加 `.semantic-root`。`ContractType` 只定义 Setter 可以稳定依赖的最低 public 类型，并通过
+`x:SetterTargetType` 提供 AXAML 编译期类型上下文；它不参与 `.semantic-*` 的身份匹配。`header` 与 `body` 的承载节点是
+公开的 `PixelAlignedBorder`，`icon` 是公开的 `IconButton`，`title` 是公开的 `ContentPresenter`，均取节点真实 public 类型
+作为最低依赖类型。
+
+`header`、`icon`、`title`、`body` 的节点位于 `CollapseItem` 自己的模板内，而 `CollapseItem` 容器由 `Collapse` 的
+ItemsControl 生命周期运行时创建（`TemplatedParent` 为 null），因此这四个 Part 声明 `RuntimeCreated=true` 并显式携带
+SelectorRoute。Avalonia 的 `>` 步骤沿逻辑树（`LogicalParent`）行走，而 ItemsControl 生成的容器逻辑父级是 Collapse
+owner 本身（并非运行时 ItemsPanel），所以路由从 owner 出发经一步 `>` 直达 `.semantic-scope-item` 容器，再以
+`/template/` 进入容器模板到达 Part 节点。三个 scope marker（`.semantic-scope-items` / `.semantic-scope-panel` /
+`.semantic-scope-item`）中只有 `.semantic-scope-item` 参与路由，前两者标识 items host 链、不单独发布为 Part，详见
+[§3 Selector 用法](#3-selector-用法)。
 
 ## Abstract AXAML Structure
 
@@ -51,17 +174,17 @@ Collapse
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `Collapse` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `CollapseItem` | item container control theme | `CollapseItemTheme.axaml` | 用户代码 / 控件宿主 | `AddOnContent`, `AddOnContentTemplate`, `Content`, `ContentBorderThickness`, `ContentTemplate`, `EffectiveContentPadding` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `PART_MainLayout` | template node (DockPanel) | `CollapseItemTheme.axaml` | CollapseItem | `AddOnContent`, `AddOnContentTemplate`, `Content`, `ContentBorderThickness`, `ContentTemplate`, `EffectiveContentPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_HeaderDecorator` | template node (PixelAlignedBorder) | `CollapseItemTheme.axaml` | CollapseItem | `AddOnContent`, `AddOnContentTemplate`, `EffectiveHeaderPadding`, `ExpandIcon`, `Header`, `HeaderTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `CollapseItem` | item container control theme | `CollapseItemTheme.axaml` | 用户代码 / 控件宿主 | `AddOnContent`, `AddOnContentTemplate`, `Content`, `ContentBorderThickness`, `ContentCornerRadius`, `ContentTemplate` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `PART_MainLayout` | template node (DockPanel) | `CollapseItemTheme.axaml` | CollapseItem | `AddOnContent`, `AddOnContentTemplate`, `Content`, `ContentBorderThickness`, `ContentCornerRadius`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_HeaderDecorator` | template node (PixelAlignedBorder) | `CollapseItemTheme.axaml` | CollapseItem | `AddOnContent`, `AddOnContentTemplate`, `EffectiveHeaderPadding`, `ExpandIcon`, `Header`, `HeaderCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ExpandButton` | template node (IconButton) | `CollapseItemTheme.axaml` | CollapseItem | `ExpandIcon`, `IsEnabled`, `IsMotionEnabled`, `IsShowExpandIcon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_HeaderPresenter` | template node (ContentPresenter) | `CollapseItemTheme.axaml` | CollapseItem | `Header`, `HeaderTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_AddOnContentPresenter` | template node (ContentPresenter) | `CollapseItemTheme.axaml` | CollapseItem | `AddOnContent`, `AddOnContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ContentMotionActor` | template node (LayoutAwareMotionActor) | `CollapseItemTheme.axaml` | CollapseItem | `Content`, `ContentBorderThickness`, `ContentTemplate`, `EffectiveContentPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ContentFrame` | template node (PixelAlignedBorder) | `CollapseItemTheme.axaml` | CollapseItem | `Content`, `ContentBorderThickness`, `ContentTemplate`, `EffectiveContentPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ContentMotionActor` | template node (LayoutAwareMotionActor) | `CollapseItemTheme.axaml` | CollapseItem | `Content`, `ContentBorderThickness`, `ContentCornerRadius`, `ContentTemplate`, `EffectiveContentPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ContentFrame` | template node (PixelAlignedBorder) | `CollapseItemTheme.axaml` | CollapseItem | `Content`, `ContentBorderThickness`, `ContentCornerRadius`, `ContentTemplate`, `EffectiveContentPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `CollapseItemTheme.axaml` | CollapseItem | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Collapse` | control theme | `CollapseTheme.axaml` | 用户代码 / 控件宿主 | `BorderBrush`, `CornerRadius`, `EffectiveBorderThickness`, `ItemsPanel` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `PART_Frame` | template node (PixelAlignedBorder) | `CollapseTheme.axaml` | Collapse | `BorderBrush`, `CornerRadius`, `EffectiveBorderThickness`, `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Collapse` | control theme | `CollapseTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `CornerRadius`, `EffectiveBorderThickness`, `ItemsPanel`, `Padding` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `PART_Frame` | template node (PixelAlignedBorder) | `CollapseTheme.axaml` | Collapse | `Background`, `BorderBrush`, `CornerRadius`, `EffectiveBorderThickness`, `ItemsPanel`, `Padding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ItemsPresenter` | template node (ItemsPresenter) | `CollapseTheme.axaml` | Collapse | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
@@ -155,6 +278,14 @@ Collapse Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
 - 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
 - 文档只描述当前稳定设计；历史变化记录在 `changelog.md`。
+- Semantic Part 的五个区域（`root`、`header`、`icon`、`title`、`body`）、selector class、ContractType、cardinality 与
+  marker 放置属于主题兼容契约；删除、重命名、收窄类型或让内置模板缺少 marker 都是破坏性变更。
+- `header`/`icon`/`title`/`body` 的 marker 静态声明于 `CollapseItemTheme.axaml`，scope marker 在默认 ItemsPanel 与容器
+  创建路径一次性建立；任何状态切换、容器回收、items 集合变化与模板重应用都不得增删 marker；默认主题不得消费
+  `.semantic-*` selector。
+- root 表面投影（`Background`/`BorderBrush`/`BorderThickness`/`CornerRadius`/`Padding` → `PART_Frame`）属于公共契约；
+  运行时 marker 通过静态 AXAML class 与既有创建路径添加，不引入 VisualTree 搜索、反射或运行时 AXAML 解析，保持
+  NativeAOT 友好。
 
 维护不变量：
 
@@ -167,4 +298,8 @@ Collapse Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - 分隔线只由 item 位置、视觉模式和固定模板结构决定，不能依赖 selection 或 motion 时序。
 - 旧 template part、事件订阅和 content motion cancellation 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
+- Semantic Part 的 marker 放置（`CollapseTheme.axaml` 的 `semantic-scope-items` 静态节点、默认 ItemsPanel 的
+  `.semantic-scope-panel`、容器创建/prepare 路径的 `.semantic-scope-item`、`CollapseItemTheme.axaml` 的四个静态 Part
+  marker）属于维护不变量：状态切换、容器复用/回收、items
+  集合变化与模板重应用不得增删 marker，默认主题不得消费 `.semantic-*` selector，root 表面投影不得丢失。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。

@@ -14,6 +14,24 @@
 - Docs
   - 同步共享执行链、ColorPicker 直接消费者边界与帧级验证入口。
 
+## 2026-08-17
+
+- Design
+  - Publish Semantic Parts `root`、`header`、`icon`、`title`、`body`（对齐 antd Collapse Semantic DOM 契约），通过
+    `[SemanticPart]` descriptor、静态模板 marker 与 owner-scoped 生成 Style（`CollapseHeaderStyle` 等）支持语义定制。
+  - 建立 items host scope marker 链：`semantic-scope-items`（`PART_ItemsPresenter`）、`semantic-scope-panel`（默认
+    ItemsPanel）、`semantic-scope-item`（每个 `CollapseItem` 容器，创建与 prepare 路径幂等添加）；Part 路由从 owner
+    出发经一步逻辑树 `>` 直达容器，再以 `/template/` 进入容器模板。
+  - 定义 root 表面投影：`Background`、`BorderBrush`、`BorderThickness`、`CornerRadius`、`Padding` 经主题模板绑定到
+    `PART_Frame`；默认主题保持根背景透明，不改变既有外观。
+- Behavior
+  - 按 antd collapse 样式规则分发容器圆角：首项 header 承接上圆角、末项 header 与 content 承接下圆角，header/body
+    背景沿容器圆角绘制而不是盖住圆角边框。
+  - 展开/收起动效由 Core 共享的 `ContentExpansionAnimator` 拥有；收起稳定态按统一动效设计隐藏内容 actor，
+    `body` Part 的身份、数量与样式契约不受影响。
+- Docs
+  - 新增 `semantic-part.md`，更新 `overview.md` 与 `implementation.md` 的 Semantic Part 契约、marker 放置与维护不变量。
+
 ## 2026-07-13
 
 - Design

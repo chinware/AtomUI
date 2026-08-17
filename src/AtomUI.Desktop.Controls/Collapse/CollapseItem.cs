@@ -143,6 +143,12 @@ public class CollapseItem : HeaderedContentControl, ISelectable
     internal static readonly StyledProperty<Thickness> ContentBorderThicknessProperty =
         AvaloniaProperty.Register<CollapseItem, Thickness>(nameof(ContentBorderThickness));
 
+    internal static readonly StyledProperty<CornerRadius> HeaderCornerRadiusProperty =
+        AvaloniaProperty.Register<CollapseItem, CornerRadius>(nameof(HeaderCornerRadius));
+
+    internal static readonly StyledProperty<CornerRadius> ContentCornerRadiusProperty =
+        AvaloniaProperty.Register<CollapseItem, CornerRadius>(nameof(ContentCornerRadius));
+
     internal static readonly StyledProperty<TimeSpan> MotionDurationProperty =
         MotionAwareControlProperty.MotionDurationProperty.AddOwner<CollapseItem>();
 
@@ -241,6 +247,18 @@ public class CollapseItem : HeaderedContentControl, ISelectable
     {
         get => GetValue(ContentBorderThicknessProperty);
         set => SetValue(ContentBorderThicknessProperty, value);
+    }
+
+    internal CornerRadius HeaderCornerRadius
+    {
+        get => GetValue(HeaderCornerRadiusProperty);
+        set => SetValue(HeaderCornerRadiusProperty, value);
+    }
+
+    internal CornerRadius ContentCornerRadius
+    {
+        get => GetValue(ContentCornerRadiusProperty);
+        set => SetValue(ContentCornerRadiusProperty, value);
     }
 
     internal TimeSpan MotionDuration
