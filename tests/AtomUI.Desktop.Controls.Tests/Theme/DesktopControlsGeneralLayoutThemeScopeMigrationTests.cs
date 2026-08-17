@@ -9,11 +9,11 @@ public class DesktopControlsGeneralLayoutThemeScopeMigrationTests
     public void General_And_Layout_Controls_Remove_Legacy_Token_Scope_Registration()
     {
         AssertNoLegacyScope(
-            "src/AtomUI.Desktop.Controls/Buttons/ButtonToken.cs",
-            "src/AtomUI.Desktop.Controls/Buttons/IconButton.cs",
-            "src/AtomUI.Desktop.Controls/Buttons/HyperLinkButton.cs",
-            "src/AtomUI.Desktop.Controls/Buttons/SplitButton.cs",
-            "src/AtomUI.Desktop.Controls/Buttons/ToggleIconButton.cs");
+            "src/AtomUI.Desktop.Controls/Button/ButtonToken.cs",
+            "src/AtomUI.Desktop.Controls/Button/IconButton.cs",
+            "src/AtomUI.Desktop.Controls/Button/HyperLinkButton.cs",
+            "src/AtomUI.Desktop.Controls/SplitButton/SplitButton.cs",
+            "src/AtomUI.Desktop.Controls/Button/ToggleIconButton.cs");
 
         AssertNoLegacyScope(
             "src/AtomUI.Desktop.Controls/FloatButton/FloatButtonToken.cs",

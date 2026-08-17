@@ -19,6 +19,7 @@ internal static class LinkedRegistrationManifestCodec
                 LinkedRegistrationProtocol.PackageManifestKey,
                 package.PackageId,
                 package.AssemblyName,
+                package.Granularity,
                 package.EntryMethodMetadataNames,
                 package.FullFragmentType,
                 package.FullFragmentMethod,
@@ -29,12 +30,23 @@ internal static class LinkedRegistrationManifestCodec
                 unit.PackageId,
                 unit.UnitId,
                 unit.FragmentType,
-                unit.FragmentMethod),
+                unit.FragmentMethod,
+                unit.OrderKey.ToString(CultureInfo.InvariantCulture)),
             LinkedControlMapManifestRecord controlMap => Create(
                 LinkedRegistrationProtocol.ControlMapManifestKey,
                 controlMap.PackageId,
                 controlMap.MetadataName,
                 controlMap.UnitId),
+            LinkedUnitEdgeManifestRecord edge => Create(
+                LinkedRegistrationProtocol.UnitEdgeManifestKey,
+                edge.PackageId,
+                edge.SourceUnitId,
+                edge.TargetUnitId,
+                edge.EvidenceKind.ToString()),
+            LinkedRootUnitManifestRecord rootUnit => Create(
+                LinkedRegistrationProtocol.RootUnitManifestKey,
+                rootUnit.PackageId,
+                rootUnit.UnitId),
             LinkedUsageManifestRecord usage => Create(
                 LinkedRegistrationProtocol.UsageManifestKey,
                 usage.Kind.ToString(),
@@ -42,6 +54,13 @@ internal static class LinkedRegistrationManifestCodec
                 usage.Source,
                 usage.Line.ToString(CultureInfo.InvariantCulture),
                 usage.Column.ToString(CultureInfo.InvariantCulture)),
+            LinkedFallbackManifestRecord fallback => Create(
+                LinkedRegistrationProtocol.FallbackManifestKey,
+                fallback.PackageId,
+                fallback.Reason,
+                fallback.Source,
+                fallback.Line.ToString(CultureInfo.InvariantCulture),
+                fallback.Column.ToString(CultureInfo.InvariantCulture)),
             _ => throw new ArgumentOutOfRangeException(nameof(record), record.GetType().FullName)
         };
     }
@@ -95,7 +114,10 @@ internal static class LinkedRegistrationManifestCodec
                 LinkedRegistrationProtocol.PackageManifestKey => DecodePackage(key, decoded),
                 LinkedRegistrationProtocol.UnitManifestKey => DecodeUnit(key, decoded),
                 LinkedRegistrationProtocol.ControlMapManifestKey => DecodeControlMap(key, decoded),
+                LinkedRegistrationProtocol.UnitEdgeManifestKey => DecodeUnitEdge(key, decoded),
+                LinkedRegistrationProtocol.RootUnitManifestKey => DecodeRootUnit(key, decoded),
                 LinkedRegistrationProtocol.UsageManifestKey => DecodeUsage(key, decoded),
+                LinkedRegistrationProtocol.FallbackManifestKey => DecodeFallback(key, decoded),
                 _ => throw new FormatException(
                     $"Manifest key '{key}' is not supported by protocol version {LinkedRegistrationProtocol.ProtocolMajorVersion}.")
             };
@@ -124,10 +146,36 @@ internal static class LinkedRegistrationManifestCodec
 
     private static LinkedPackageManifestRecord DecodePackage(string key, string[] fields)
     {
-        RequireFieldCount(key, fields, 7);
-        RequireNonEmptyFields(key, fields, 0, 1, 3, 4);
-        var packageSharedType = EmptyToNull(fields[5]);
-        var packageSharedMethod = EmptyToNull(fields[6]);
+        if (fields.Length == 7)
+        {
+            RequireNonEmptyFields(key, fields, 0, 1, 3, 4);
+            var legacySharedType = EmptyToNull(fields[5]);
+            var legacySharedMethod = EmptyToNull(fields[6]);
+            if ((legacySharedType is null) != (legacySharedMethod is null))
+            {
+                throw new FormatException(
+                    $"Manifest '{key}' must provide both PackageShared fragment type and method, or neither.");
+            }
+            return new LinkedPackageManifestRecord(
+                fields[0],
+                fields[1],
+                string.Empty,
+                fields[2],
+                fields[3],
+                fields[4],
+                legacySharedType,
+                legacySharedMethod);
+        }
+        RequireFieldCount(key, fields, 8);
+        RequireNonEmptyFields(key, fields, 0, 1, 2, 4, 5);
+        if (!string.Equals(fields[2], "Package", StringComparison.Ordinal) &&
+            !string.Equals(fields[2], "Directory", StringComparison.Ordinal))
+        {
+            throw new FormatException(
+                $"Manifest '{key}' contains invalid registration granularity '{fields[2]}'.");
+        }
+        var packageSharedType = EmptyToNull(fields[6]);
+        var packageSharedMethod = EmptyToNull(fields[7]);
         if ((packageSharedType is null) != (packageSharedMethod is null))
         {
             throw new FormatException(
@@ -140,15 +188,26 @@ internal static class LinkedRegistrationManifestCodec
             fields[2],
             fields[3],
             fields[4],
+            fields[5],
             packageSharedType,
             packageSharedMethod);
     }
 
     private static LinkedUnitManifestRecord DecodeUnit(string key, string[] fields)
     {
-        RequireFieldCount(key, fields, 4);
+        if (fields.Length == 4)
+        {
+            RequireNonEmptyFields(key, fields, 0, 1, 2, 3);
+            return new LinkedUnitManifestRecord(fields[0], fields[1], fields[2], fields[3], 0);
+        }
+        RequireFieldCount(key, fields, 5);
         RequireNonEmptyFields(key, fields, 0, 1, 2, 3);
-        return new LinkedUnitManifestRecord(fields[0], fields[1], fields[2], fields[3]);
+        if (!int.TryParse(fields[4], NumberStyles.None, CultureInfo.InvariantCulture, out var orderKey) ||
+            orderKey < 0)
+        {
+            throw new FormatException($"Manifest '{key}' contains an invalid Unit order key.");
+        }
+        return new LinkedUnitManifestRecord(fields[0], fields[1], fields[2], fields[3], orderKey);
     }
 
     private static LinkedControlMapManifestRecord DecodeControlMap(string key, string[] fields)
@@ -156,6 +215,25 @@ internal static class LinkedRegistrationManifestCodec
         RequireFieldCount(key, fields, 3);
         RequireNonEmptyFields(key, fields, 0, 1, 2);
         return new LinkedControlMapManifestRecord(fields[0], fields[1], fields[2]);
+    }
+
+    private static LinkedUnitEdgeManifestRecord DecodeUnitEdge(string key, string[] fields)
+    {
+        RequireFieldCount(key, fields, 4);
+        RequireNonEmptyFields(key, fields, 0, 1, 2, 3);
+        if (!Enum.TryParse(fields[3], ignoreCase: false, out LinkedUnitEdgeEvidenceKind evidenceKind))
+        {
+            throw new FormatException(
+                $"Manifest '{key}' contains unknown UnitEdge evidence kind '{fields[3]}'.");
+        }
+        return new LinkedUnitEdgeManifestRecord(fields[0], fields[1], fields[2], evidenceKind);
+    }
+
+    private static LinkedRootUnitManifestRecord DecodeRootUnit(string key, string[] fields)
+    {
+        RequireFieldCount(key, fields, 2);
+        RequireNonEmptyFields(key, fields, 0, 1);
+        return new LinkedRootUnitManifestRecord(fields[0], fields[1]);
     }
 
     private static LinkedUsageManifestRecord DecodeUsage(string key, string[] fields)
@@ -172,6 +250,18 @@ internal static class LinkedRegistrationManifestCodec
             throw new FormatException($"Manifest '{key}' contains an invalid source location.");
         }
         return new LinkedUsageManifestRecord(kind, fields[1], fields[2], line, column);
+    }
+
+    private static LinkedFallbackManifestRecord DecodeFallback(string key, string[] fields)
+    {
+        RequireFieldCount(key, fields, 5);
+        RequireNonEmptyFields(key, fields, 1, 2);
+        if (!int.TryParse(fields[3], NumberStyles.None, CultureInfo.InvariantCulture, out var line) || line < 0 ||
+            !int.TryParse(fields[4], NumberStyles.None, CultureInfo.InvariantCulture, out var column) || column < 0)
+        {
+            throw new FormatException($"Manifest '{key}' contains an invalid source location.");
+        }
+        return new LinkedFallbackManifestRecord(fields[0], fields[1], fields[2], line, column);
     }
 
     private static void RequireFieldCount(string key, string[] fields, int expected)

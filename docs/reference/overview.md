@@ -5,3 +5,4 @@ Reference 保存可被工具、第三方包和应用严格依赖的格式、协�
 
 - [主题 Reference](theming/overview.md)
 - [本地化 Reference](localization/overview.md)
+- [AOT Reference](aot/overview.md)

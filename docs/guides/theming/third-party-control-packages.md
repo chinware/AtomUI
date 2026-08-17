@@ -1,7 +1,7 @@
 # 第三方 AtomUI Control Package 指南
 
-> 状态：截至 2026-08-15，本文步骤对应已实现并验证的接入方式。普通第三方包默认使用 `Package` 粒度；只有明确承担发布
-> 体积与回归验证的大型包才需要显式启用 `Directory`。
+> 状态：截至 2026-08-16，本文定义第三方 Control Package 的正式接入方式。普通第三方包默认使用 `Package` 粒度；只有
+> 明确承担发布体积与回归验证的大型包才需要显式启用 `Directory`。
 
 本文面向准备发布 AtomUI Control NuGet 的作者。目标是让你的控件同时支持普通应用、trimming、NativeAOT 和 WebAssembly
 AOT，而不需要维护 linker XML、运行时反射或内部 Registration Unit 图。
@@ -22,6 +22,9 @@ Control descriptor、Own Token、内部 View/Presenter 和主题资源。
 
 应用仍显式调用 `UseAcmeControls()`。Generator 只决定 linked publish 需要保留哪些静态内容，不会运行时扫描程序集，也不会
 擅自启用一个可选包。
+
+普通 Debug 和未启用 AOT/Trim 的 Release 不运行应用 usage 分析。包在 NuGet Pack 时自动生成纯编译期 Sidecar；应用只在
+Trimmed、NativeAOT 或 WebAssembly AOT 发布时读取它。作者不创建、不编辑也不发布运行时 Manifest。
 
 ## 最小目录结构
 
@@ -127,7 +130,7 @@ internal sealed class RatingToken : AbstractControlDesignToken
 ```
 
 Generator 会从真实 CLR 类型、Token 和 AXAML 生成 identity、descriptor、资源键、Theme Asset manifest、full registrar 和
-linked registration metadata。不要为每个 Theme 再写一份 C# 注册代码。
+leaf Registration Unit fragment。NuGet Pack 自动生成对应 Sidecar，不要为每个 Theme 再写一份 C# 注册代码。
 
 ## 第三步：提供 Theme Provider
 
@@ -223,8 +226,8 @@ this.UseAtomUI(builder =>
 <acme:Rating />
 ```
 
-普通构建会执行完整包级注册。Trimmed、NativeAOT 或 WebAssembly AOT 构建会由应用 Generator 生成静态调用计划，但应用代码
-和入口调用不需要切换。
+普通构建会执行完整包级注册，并且不加载 linked-publish Analyzer。Trimmed、NativeAOT 或 WebAssembly AOT 构建会由应用
+Generator 根据 Sidecar 生成静态调用计划，但应用代码和入口调用不需要切换。
 
 ## 普通作者不需要做什么
 
@@ -240,6 +243,7 @@ Unit dependency 列表
 linker XML
 运行时 Assembly.GetTypes() 扫描
 手工 Control descriptor 或 Theme manifest
+手工 Sidecar
 ```
 
 其中 `AtomUIRegistrationUnitRoot` 和 `AtomUIPackageRoot` 是消费应用处理真正动态输入的高级开关，不是 Control Package 的正常
@@ -259,7 +263,7 @@ linker XML
 
 - 每个目录代表真正可以独立运行的公开控件族，而不只是 `Cell`、`Utils`、`View` 等内部代码分类。
 - 内部 Presenter、Cell、View、Track 和主题跟随其公开控件族。
-- AXAML 和 C# 中的跨 Unit 使用能够被 Generator 证明；不确定性必须允许 Package full fallback。
+- AXAML 和 C# 中的跨 Unit 直接证据能够生成 Sidecar UnitEdge；不确定性必须允许 Package full fallback。
 - 只有无法从 public owner 推导的 resource-only Theme 才使用 `AtomUIRegistrationUnit`。
 - 只有真正跨多个 Unit 且必须随 Package Core 加载的资源才使用 `AtomUIPackageSharedTheme`。
 - CI 覆盖 generated registration、trimmed JIT、NativeAOT 和体积对比。
@@ -273,6 +277,7 @@ Directory 模式是高级体积优化，不是 AOT 正确性的前置条件。�
 - 普通构建调用 `UseAcmeControls()` 后，所有 Control、Token 和主题正常。
 - generated registration 模式的 descriptor、Theme Asset、Provider、Localization 和 initializer 与普通模式一致。
 - 包内 Control 在 C# 中创建的内部 View/Presenter 仍有完整主题。
+- NuGet 包自动包含编译期 Sidecar 和 consumer target，应用 publish 目录不包含 Sidecar。
 - Generator 和 Build Tasks 没有进入应用 runtime dependency、普通输出或 publish 目录。
 - 声明 AOT 兼容前，真实 trimmed JIT 和 NativeAOT 应用可以启动并显示控件。
 - `git diff --check` 和包自身测试通过。
@@ -280,4 +285,5 @@ Directory 模式是高级体积优化，不是 AOT 正确性的前置条件。�
 系统级模式、fallback 和诊断契约见
 [AOT 与裁剪架构](../../architecture/foundations/aot-and-trimming.md)。Token 与主题作者规则见
 [Control Token 设计规范](../../engineering/development/control-token-guidelines.md)。Package/Directory 粒度和资源归属的正式契约见
-[AOT Registration Unit 粒度](../../architecture/foundations/aot-registration-unit-granularity.md)。
+[AOT Registration Unit 粒度](../../architecture/foundations/aot-registration-unit-granularity.md)。Sidecar 和静态计划见
+[AOT Linked Registration Pipeline](../../architecture/foundations/aot-linked-registration-pipeline.md)。

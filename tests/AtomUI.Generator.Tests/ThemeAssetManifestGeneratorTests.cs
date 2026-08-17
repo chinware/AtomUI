@@ -171,7 +171,7 @@ public class ThemeAssetManifestGeneratorTests
     }
 
     [Fact]
-    public void Unit_Theme_Part_Calls_Same_Package_Unit_Dependencies_Directly()
+    public void Unit_Theme_Part_Emits_Same_Package_UnitEdge()
     {
         var compilation = CreateCompilation("""
             namespace Demo;
@@ -194,13 +194,15 @@ public class ThemeAssetManifestGeneratorTests
 
         diagnostics.ShouldBeEmpty();
         var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
-        var dependencyFragment = global::AtomUI.Generator.LinkedRegistration.LinkedRegistrationFragmentName.ForUnit(
-            "ThemeAssetManifestTests/Alert");
-        source.ShouldContain($"{dependencyFragment}.Add(builder);");
+        source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.UnitEdge.v1\"");
+        source.ShouldContain("ThemeAssetManifestTests%2FButton");
+        source.ShouldContain("ThemeAssetManifestTests%2FAlert");
+        source.ShouldContain("AxamlType");
+        source.ShouldNotContain(".Add(builder);");
     }
 
     [Fact]
-    public void Unit_Theme_Part_Calls_Template_Control_Unit_Dependencies_Directly()
+    public void Unit_Theme_Part_Emits_Template_Control_UnitEdge()
     {
         var compilation = CreateCompilation(
             """
@@ -249,9 +251,11 @@ public class ThemeAssetManifestGeneratorTests
 
         diagnostics.ShouldBeEmpty();
         var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
-        var dependencyFragment = global::AtomUI.Generator.LinkedRegistration.LinkedRegistrationFragmentName.ForUnit(
-            "ThemeAssetManifestTests/MarqueeLabel");
-        source.ShouldContain($"{dependencyFragment}.Add(builder);");
+        source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.UnitEdge.v1\"");
+        source.ShouldContain("ThemeAssetManifestTests%2FAlert");
+        source.ShouldContain("ThemeAssetManifestTests%2FMarqueeLabel");
+        source.ShouldContain("AxamlType");
+        source.ShouldNotContain(".Add(builder);");
         var manifest = GetGeneratedSource(result, "GeneratedControlThemeAssetManifest.g.cs");
         manifest.ShouldNotContain("ControlTokenIdentity(\"AtomUI\", \"MarqueeLabel\")");
     }
@@ -327,8 +331,8 @@ public class ThemeAssetManifestGeneratorTests
 
         diagnostics.ShouldHaveSingleItem().Id.ShouldBe("ATOMUILINK002");
         var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
-        source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.Usage.v1\"");
-        source.ShouldContain("PackageRoot");
+        source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.Fallback.v1\"");
+        source.ShouldContain("UnresolvedAxaml");
         source.ShouldNotContain("builder.AddPackageSharedThemeAsset(");
     }
 
@@ -342,8 +346,8 @@ public class ThemeAssetManifestGeneratorTests
 
         diagnostics.ShouldNotContain(diagnostic => diagnostic.Id == "ATOMUILINK002");
         var source = GetGeneratedSource(result, "GeneratedControlThemeAssetFragments.g.cs");
-        source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.Usage.v1\"");
-        source.ShouldContain("PackageRoot");
+        source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.Fallback.v1\"");
+        source.ShouldContain("UnresolvedAxaml");
     }
 
     [Fact]

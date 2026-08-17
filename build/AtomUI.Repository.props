@@ -5,7 +5,9 @@
     <Import Project="$(MSBuildThisFileDirectory)OutputPaths.props" />
 
     <PropertyGroup>
+        <AtomUIRepositoryBuild>true</AtomUIRepositoryBuild>
         <AtomUIBuildTasksAssembly Condition="'$(AtomUIBuildTasksAssembly)' == ''">$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.Build.Tasks.dll</AtomUIBuildTasksAssembly>
+        <AtomUILinkedPublishGeneratorAssembly Condition="'$(AtomUILinkedPublishGeneratorAssembly)' == ''">$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.Generator.LinkedPublish.dll</AtomUILinkedPublishGeneratorAssembly>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,6 +15,7 @@
                                          $(MSBuildThisFileDirectory)AtomUI.Generator.targets;
                                          $(MSBuildThisFileDirectory)AtomUI.LinkedRegistration.props;
                                          $(MSBuildThisFileDirectory)AtomUI.LinkedRegistration.targets;
+                                         $(MSBuildThisFileDirectory)AtomUI.LinkedRegistration.SidecarConsumer.targets;
                                          $(MSBuildThisFileDirectory)AtomUI.Localization.props;
                                          $(MSBuildThisFileDirectory)AtomUI.Localization.targets;
                                          $(MSBuildThisFileDirectory)AtomUI.ThemeAssets.targets">
@@ -20,6 +23,7 @@
         </AtomUINuGetBuildAsset>
 
         <AtomUIGeneratorToolAsset Include="$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.Generator.dll;
+                                           $(OutputPathWithoutFramework)/netstandard2.0/AtomUI.Generator.LinkedPublish.dll;
                                            $(OutputPathWithoutFramework)/netstandard2.0/AtomUI.Build.Tasks.dll;
                                            $(OutputPathWithoutFramework)/netstandard2.0/System.Reflection.Metadata.dll;
                                            $(OutputPathWithoutFramework)/netstandard2.0/System.Collections.Immutable.dll;
@@ -29,6 +33,13 @@
                                            $(OutputPathWithoutFramework)/netstandard2.0/System.Runtime.CompilerServices.Unsafe.dll">
             <PackagePath>tools/netstandard2.0/%(Filename)%(Extension)</PackagePath>
         </AtomUIGeneratorToolAsset>
+    </ItemGroup>
+
+    <ItemGroup Condition="('$(AtomUILinkedPublish)' == 'true' or '$(PublishTrimmed)' == 'true' or '$(PublishAot)' == 'true' or '$(RunAOTCompilation)' == 'true' or '$(AtomUIEmitLinkedManifest)' == 'true' or '$(AtomUIRegistrationStrict)' == 'true') and '$(MSBuildProjectName)' != 'AtomUI.Generator' and '$(MSBuildProjectName)' != 'AtomUI.Generator.LinkedPublish' and '$(MSBuildProjectName)' != 'AtomUI.Build.Tasks'">
+        <ProjectReference Include="$(MSBuildThisFileDirectory)../src/AtomUI.Generator.LinkedPublish/AtomUI.Generator.LinkedPublish.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"
+                          PrivateAssets="all" />
     </ItemGroup>
 
     <Import Project="$(MSBuildThisFileDirectory)AtomUI.Generator.props" />

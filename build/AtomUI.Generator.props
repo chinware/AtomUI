@@ -1,6 +1,7 @@
 <Project>
     <PropertyGroup>
         <AtomUIBuildTasksAssembly Condition="'$(AtomUIBuildTasksAssembly)' == ''">$(MSBuildThisFileDirectory)../tools/netstandard2.0/AtomUI.Build.Tasks.dll</AtomUIBuildTasksAssembly>
+        <AtomUILinkedPublishGeneratorAssembly Condition="'$(AtomUILinkedPublishGeneratorAssembly)' == ''">$(MSBuildThisFileDirectory)../tools/netstandard2.0/AtomUI.Generator.LinkedPublish.dll</AtomUILinkedPublishGeneratorAssembly>
     </PropertyGroup>
 
     <Import Project="$(MSBuildThisFileDirectory)AtomUI.LinkedRegistration.props"

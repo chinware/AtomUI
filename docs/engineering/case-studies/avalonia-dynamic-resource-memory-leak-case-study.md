@@ -304,8 +304,8 @@ Flyout 的修复方式：
 
 - `src/AtomUI.Desktop.Controls/Flyouts/Flyout.cs`
 - `src/AtomUI.Desktop.Controls/Flyouts/FlyoutHost.cs`
-- `src/AtomUI.Desktop.Controls/Buttons/DropdownButton.cs`
-- `src/AtomUI.Desktop.Controls/Buttons/SplitButton.cs`
+- `src/AtomUI.Desktop.Controls/DropdownButton/DropdownButton.cs`
+- `src/AtomUI.Desktop.Controls/SplitButton/SplitButton.cs`
 
 ## 测试范式
 

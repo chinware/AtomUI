@@ -1,7 +1,19 @@
+extern alias LinkedPublish;
+
 using System.Collections.Immutable;
 using System.Text;
 using AtomUI.Generator.LinkedRegistration;
 using AtomUI.Generator.LinkedRegistration.Manifest;
+using LinkedRegistrationSidecar = LinkedPublish::AtomUI.LinkedRegistration.Protocol.LinkedRegistrationSidecar;
+using LinkedRegistrationSidecarCodec = LinkedPublish::AtomUI.LinkedRegistration.Protocol.LinkedRegistrationSidecarCodec;
+using LinkedRegistrationUsageGenerator = LinkedPublish::AtomUI.Generator.LinkedRegistration.LinkedRegistrationUsageGenerator;
+using LinkedSidecarAssembly = LinkedPublish::AtomUI.LinkedRegistration.Protocol.LinkedSidecarAssembly;
+using LinkedSidecarFallback = LinkedPublish::AtomUI.LinkedRegistration.Protocol.LinkedSidecarFallback;
+using LinkedSidecarFragment = LinkedPublish::AtomUI.LinkedRegistration.Protocol.LinkedSidecarFragment;
+using LinkedSidecarPackage = LinkedPublish::AtomUI.LinkedRegistration.Protocol.LinkedSidecarPackage;
+using LinkedSidecarUnit = LinkedPublish::AtomUI.LinkedRegistration.Protocol.LinkedSidecarUnit;
+using LinkedSidecarUnitEdge = LinkedPublish::AtomUI.LinkedRegistration.Protocol.LinkedSidecarUnitEdge;
+using LinkedSidecarUsage = LinkedPublish::AtomUI.LinkedRegistration.Protocol.LinkedSidecarUsage;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -13,6 +25,21 @@ namespace AtomUI.Generator.Tests.LinkedRegistration;
 
 public sealed class LinkedRegistrationUsageGeneratorTests
 {
+    [Fact]
+    public void Source_candidate_budget_emits_a_conservative_package_fallback()
+    {
+        var source = "namespace Consumer { public static class Usage { public static void Run() { " +
+                     string.Concat(Enumerable.Repeat(
+                         "typeof(Acme.Controls.DatePicker);",
+                         50_001)) +
+                     " } }";
+
+        var result = UsageGeneratorTestHost.Run([source], [UsageGeneratorTestHost.AcmePackage]);
+
+        result.GeneratedSource.ShouldContain("AtomUI.Linked.Fallback.v1");
+        result.GeneratedSource.ShouldContain("AnalysisBudgetExceeded");
+    }
+
     [Theory]
     [InlineData("public sealed class Consumer<T> { public T? Create() => System.Activator.CreateInstance<T>(); }")]
     [InlineData("public sealed class Consumer<T> { public object? Create() => System.Activator.CreateInstance(typeof(T)); }")]
@@ -27,10 +54,10 @@ public sealed class LinkedRegistrationUsageGeneratorTests
     }
 
     [Fact]
-    public void Static_Open_Generic_Type_Position_Retains_The_Generic_Control_Unit()
+    public void Static_Open_Generic_Typeof_Retains_The_Generic_Control_Unit()
     {
         var result = UsageGeneratorTestHost.Run(
-            ["public sealed class Consumer<T> { public Acme.Controls.GenericControl<T>? Value { get; set; } }"] ,
+            ["public sealed class Consumer { public System.Type Value => typeof(Acme.Controls.GenericControl<>); }"] ,
             [UsageGeneratorTestHost.AcmePackage]);
 
         result.Usages.ShouldContain(usage =>
@@ -76,6 +103,18 @@ public sealed class LinkedRegistrationUsageGeneratorTests
         controls.ShouldContain(usage => usage.Identity == "Acme.Controls.GenericControl`1");
         result.GeneratedSource.ShouldNotContain("typeof(");
         result.GeneratedSource.ShouldNotContain("AotTrimRegistrationPlan");
+    }
+
+    [Fact]
+    public void Static_Control_Member_Call_Emits_Control_Usage()
+    {
+        var result = UsageGeneratorTestHost.Run(
+            ["public sealed class Consumer { public void Open(Avalonia.Controls.Control control) => Acme.Controls.DatePicker.SetIsOpen(control, true); }"] ,
+            [UsageGeneratorTestHost.AcmePackage]);
+
+        result.Usages.ShouldContain(usage =>
+            usage.Kind == LinkedUsageKind.Control &&
+            usage.Identity == "Acme.Controls.DatePicker");
     }
 
     [Fact]
@@ -237,7 +276,7 @@ public sealed class LinkedRegistrationUsageGeneratorTests
     {
         var library = UsageGeneratorTestHost.CompileGeneratedReference(
             "Consumer.Library",
-            ["public sealed class Consumer { private Acme.Controls.DatePicker? _picker; }"] ,
+            ["public sealed class Consumer { public Acme.Controls.DatePicker Create() => new(); }"] ,
             [UsageGeneratorTestHost.AcmePackage],
             new Dictionary<string, string>
             {
@@ -377,7 +416,7 @@ public sealed class LinkedRegistrationUsageGeneratorTests
     {
         var library = UsageGeneratorTestHost.CompileGeneratedReference(
             "Consumer.Library",
-            ["public sealed class Consumer { public Acme.Controls.DatePicker? Picker { get; set; } }"] ,
+            ["public sealed class Consumer { public Acme.Controls.DatePicker Create() => new(); }"] ,
             [UsageGeneratorTestHost.AcmePackage]);
 
         var result = UsageGeneratorTestHost.Run(
@@ -685,7 +724,7 @@ public sealed class LinkedRegistrationUsageGeneratorTests
             [
                 new TestSource(
                     "c:\\work\\consumer\\Controls\\PickerConsumer.cs",
-                    "public sealed class PickerConsumer { public Acme.Controls.DatePicker? Picker { get; set; } }")
+                    "public sealed class PickerConsumer { public Acme.Controls.DatePicker Create() => new(); }")
             ],
             [UsageGeneratorTestHost.AcmePackage],
             new Dictionary<string, string>
@@ -693,7 +732,9 @@ public sealed class LinkedRegistrationUsageGeneratorTests
                 ["build_property.ProjectDir"] = "C:\\WORK\\CONSUMER\\"
             });
 
-        result.Usages.ShouldContain(usage => usage.Source == "Controls/PickerConsumer.cs");
+        result.Usages.ShouldContain(
+            usage => usage.Source == "Controls/PickerConsumer.cs",
+            string.Join(", ", result.Usages.Select(static usage => usage.Source)));
     }
 
     [Theory]
@@ -709,7 +750,7 @@ public sealed class LinkedRegistrationUsageGeneratorTests
             [
                 new TestSource(
                     sourcePath,
-                    "public sealed class PickerConsumer { public Acme.Controls.DatePicker? Picker { get; set; } }")
+                    "public sealed class PickerConsumer { public Acme.Controls.DatePicker Create() => new(); }")
             ],
             [UsageGeneratorTestHost.AcmePackage],
             new Dictionary<string, string>
@@ -717,7 +758,9 @@ public sealed class LinkedRegistrationUsageGeneratorTests
                 ["build_property.ProjectDir"] = projectDirectory
             });
 
-        result.Usages.ShouldContain(usage => usage.Source == expectedSource);
+        result.Usages.ShouldContain(
+            usage => usage.Source == expectedSource,
+            string.Join(", ", result.Usages.Select(static usage => usage.Source)));
     }
 
     [Fact]
@@ -741,12 +784,9 @@ public sealed class LinkedRegistrationUsageGeneratorTests
         var malformed = UsageGeneratorTestHost.CreateRawManifestReference(
             "Malformed.Manifest",
             (LinkedRegistrationProtocol.ControlMapManifestKey, "1|Acme.Controls"));
-        var incomplete = UsageGeneratorTestHost.CreateManifestReference(
+        var incomplete = UsageGeneratorTestHost.CreateRawManifestReference(
             "Incomplete.Manifest",
-            new LinkedControlMapManifestRecord(
-                "Missing.Package",
-                "Missing.Controls.Picker",
-                "Missing.Package/Picker"));
+            (LinkedRegistrationProtocol.UnitManifestKey, "1|Missing.Package"));
 
         var result = UsageGeneratorTestHost.Run(
             ["public sealed class Consumer { }"] ,
@@ -903,22 +943,29 @@ public sealed class LinkedRegistrationUsageGeneratorTests
     }
 
     [Fact]
-    public void ControlMap_Must_Reference_An_Existing_Unit_Record()
+    public void UnitEdge_Must_Reference_Existing_Unit_Records()
     {
         var reference = UsageGeneratorTestHost.CreateManifestReference(
             "Missing.Unit",
             new LinkedPackageManifestRecord(
                 "MissingUnit.Controls",
                 "Missing.Unit",
+                "Directory",
                 "MissingUnit.Controls.Entry.UseControls",
                 "MissingUnit.Controls.Full",
                 "Register",
                 null,
                 null),
-            new LinkedControlMapManifestRecord(
+            new LinkedUnitManifestRecord(
                 "MissingUnit.Controls",
-                "MissingUnit.Controls.Picker",
-                "MissingUnit.Controls/Picker"));
+                "MissingUnit.Controls/Picker",
+                "MissingUnit.Controls.PickerFragment",
+                "Add"),
+            new LinkedUnitEdgeManifestRecord(
+                "MissingUnit.Controls",
+                "MissingUnit.Controls/Picker",
+                "MissingUnit.Controls/Missing",
+                LinkedUnitEdgeEvidenceKind.CSharpCall));
 
         var result = UsageGeneratorTestHost.Run(
             ["public sealed class Consumer { }"] ,
@@ -953,11 +1000,13 @@ public sealed class LinkedRegistrationUsageGeneratorTests
 
 internal static class UsageGeneratorTestHost
 {
-    private static readonly ImmutableArray<MetadataReference> s_platformReferences =
+    internal static readonly ImmutableArray<MetadataReference> PlatformReferences =
         ((string?)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES"))!
         .Split(Path.PathSeparator)
         .Select(static path => (MetadataReference)MetadataReference.CreateFromFile(path))
         .ToImmutableArray();
+    private static readonly Dictionary<MetadataReference, TestAdditionalText> s_sidecars =
+        new(ReferenceEqualityComparer.Instance);
 
     internal static readonly IReadOnlyDictionary<string, string> LinkedEntryOptions =
         new Dictionary<string, string>
@@ -979,7 +1028,10 @@ internal static class UsageGeneratorTestHost
         namespace Avalonia.Controls { public class Control { } }
         namespace Acme.Controls
         {
-            public class DatePicker : Avalonia.Controls.Control { }
+            public class DatePicker : Avalonia.Controls.Control
+            {
+                public static void SetIsOpen(Avalonia.Controls.Control control, bool value) { }
+            }
             public class GenericControl<T> : Avalonia.Controls.Control { }
             public class UnmappedPicker : Avalonia.Controls.Control { }
             public class Helper { }
@@ -1038,18 +1090,16 @@ internal static class UsageGeneratorTestHost
         var compilation = CSharpCompilation.Create(
             assemblyName,
             syntaxTrees,
-            s_platformReferences.Concat(references),
+            PlatformReferences.Concat(references),
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-        var files = additionalTexts?.ToImmutableArray() ?? ImmutableArray<TestAdditionalText>.Empty;
+        var files = GetSidecars(references)
+            .Concat(additionalTexts ?? [])
+            .GroupBy(static file => file.Path, StringComparer.Ordinal)
+            .Select(static group => group.First())
+            .ToImmutableArray();
         var options = new TestOptionsProvider(files, globalOptions);
-        var generatorType = typeof(ThemeAssetManifestGenerator).Assembly.GetType(
-            "AtomUI.Generator.LinkedRegistration.LinkedRegistrationUsageGenerator");
-        generatorType.ShouldNotBeNull("Task 7 usage generator has not been implemented");
-        var instance = Activator.CreateInstance(generatorType!);
-        instance.ShouldBeAssignableTo<IIncrementalGenerator>();
-        var generator = (IIncrementalGenerator)instance!;
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
-            [generator.AsSourceGenerator()],
+            [new LinkedRegistrationUsageGenerator().AsSourceGenerator()],
             files.Cast<AdditionalText>().ToImmutableArray(),
             parseOptions,
             options);
@@ -1080,7 +1130,9 @@ internal static class UsageGeneratorTestHost
         emit.Diagnostics.Where(static diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
             .ShouldBeEmpty();
         emit.Success.ShouldBeTrue();
-        return MetadataReference.CreateFromImage(stream.ToArray());
+        var reference = MetadataReference.CreateFromImage(stream.ToArray());
+        RegisterSidecar(reference, assemblyName, execution.Usages);
+        return reference;
     }
 
     internal static TestAdditionalText Axaml(string path, string content)
@@ -1119,7 +1171,17 @@ internal static class UsageGeneratorTestHost
         {
             LinkedRegistrationMetadataWriter.Write(source, record);
         }
-        return CreateSourceReference(assemblyName, source.ToString(), []);
+        var reference = CreateSourceReference(assemblyName, source.ToString(), []);
+        RegisterSidecar(reference, assemblyName, records);
+        return reference;
+    }
+
+    internal static ImmutableArray<TestAdditionalText> GetSidecars(
+        IEnumerable<MetadataReference> references)
+    {
+        return references.Where(s_sidecars.ContainsKey)
+            .Select(reference => s_sidecars[reference])
+            .ToImmutableArray();
     }
 
     internal static IReadOnlyList<LinkedUsageManifestRecord> GetAssemblyMetadata(
@@ -1127,7 +1189,7 @@ internal static class UsageGeneratorTestHost
     {
         var compilation = CSharpCompilation.Create(
             "MetadataReader",
-            references: s_platformReferences.Add(reference),
+            references: PlatformReferences.Add(reference),
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
         var assembly = compilation.GetAssemblyOrModuleSymbol(reference).ShouldBeAssignableTo<IAssemblySymbol>();
         return GetUsageMetadata(assembly!);
@@ -1177,16 +1239,20 @@ internal static class UsageGeneratorTestHost
         IReadOnlyList<LinkedUsageManifestRecord> usages)
     {
         var metadata = new StringBuilder();
+        var records = new List<LinkedRegistrationManifestRecord>();
+        var package = new LinkedPackageManifestRecord(
+            packageId,
+            packageId,
+            controlMaps.Count == 0 ? "Package" : "Directory",
+            entry,
+            packageId + ".Generated.Full",
+            "Register",
+            null,
+            null);
+        records.Add(package);
         LinkedRegistrationMetadataWriter.Write(
             metadata,
-            new LinkedPackageManifestRecord(
-                packageId,
-                packageId,
-                entry,
-                packageId + ".Generated.Full",
-                "Register",
-                null,
-                null));
+            package);
         foreach (var unit in controlMaps.Select(static controlMap =>
                      new LinkedUnitManifestRecord(
                          controlMap.PackageId,
@@ -1195,18 +1261,121 @@ internal static class UsageGeneratorTestHost
                          "Register")).Distinct())
         {
             LinkedRegistrationMetadataWriter.Write(metadata, unit);
+            records.Add(unit);
         }
         foreach (var controlMap in controlMaps)
         {
             LinkedRegistrationMetadataWriter.Write(metadata, controlMap);
+            records.Add(controlMap);
         }
         foreach (var usage in usages)
         {
             LinkedRegistrationMetadataWriter.Write(metadata, usage);
+            records.Add(usage);
         }
         metadata.AppendLine(source);
 
-        return CreateSourceReference(packageId, metadata.ToString(), references);
+        var reference = CreateSourceReference(packageId, metadata.ToString(), references);
+        RegisterSidecar(reference, packageId, records);
+        return reference;
+    }
+
+    private static void RegisterSidecar(
+        MetadataReference reference,
+        string assemblyName,
+        IEnumerable<LinkedRegistrationManifestRecord> records)
+    {
+        var materialized = records.ToArray();
+        var packageRecords = materialized.OfType<LinkedPackageManifestRecord>().ToArray();
+        var unitRecords = materialized.OfType<LinkedUnitManifestRecord>().ToArray();
+        var controlMaps = materialized.OfType<LinkedControlMapManifestRecord>().ToArray();
+        var edges = materialized.OfType<LinkedUnitEdgeManifestRecord>().ToArray();
+        var roots = materialized.OfType<LinkedRootUnitManifestRecord>().ToArray();
+        var sidecar = new LinkedRegistrationSidecar
+        {
+            Producer = "AtomUI.Generator.Tests",
+            Assembly = new LinkedSidecarAssembly
+            {
+                Name = assemblyName,
+                TargetFramework = "net10.0"
+            },
+            Packages = packageRecords.Select(package => new LinkedSidecarPackage
+            {
+                Id = package.PackageId,
+                AssemblyName = package.AssemblyName,
+                Granularity = package.Granularity,
+                EntryMethods = package.EntryMethodMetadataNames.Split(
+                        new[] { ';' },
+                        StringSplitOptions.RemoveEmptyEntries)
+                    .Select(static entry => entry.Trim())
+                    .Where(static entry => entry.Length != 0)
+                    .ToArray(),
+                FullFragment = new LinkedSidecarFragment
+                {
+                    Type = package.FullFragmentType,
+                    Method = package.FullFragmentMethod
+                },
+                SharedFragment = package.PackageSharedFragmentType is null
+                    ? null
+                    : new LinkedSidecarFragment
+                    {
+                        Type = package.PackageSharedFragmentType,
+                        Method = package.PackageSharedFragmentMethod!
+                    },
+                Units = unitRecords.Where(unit => unit.PackageId == package.PackageId)
+                    .Select(unit => new LinkedSidecarUnit
+                    {
+                        Id = unit.UnitId,
+                        FragmentType = unit.FragmentType,
+                        FragmentMethod = unit.FragmentMethod,
+                        OrderKey = unit.OrderKey,
+                        Controls = controlMaps.Where(control =>
+                                control.PackageId == package.PackageId &&
+                                control.UnitId == unit.UnitId)
+                            .Select(static control => control.MetadataName)
+                            .ToArray()
+                    })
+                    .ToArray(),
+                UnitEdges = edges.Where(edge => edge.PackageId == package.PackageId)
+                    .Select(static edge => new LinkedSidecarUnitEdge
+                    {
+                        SourceUnitId = edge.SourceUnitId,
+                        TargetUnitId = edge.TargetUnitId,
+                        EvidenceKind = edge.EvidenceKind.ToString()
+                    })
+                    .ToArray(),
+                RootUnits = roots.Where(root => root.PackageId == package.PackageId)
+                    .Select(static root => root.UnitId)
+                    .ToArray()
+            }).ToArray(),
+            Usages = materialized.OfType<LinkedUsageManifestRecord>()
+                .Select(static usage => new LinkedSidecarUsage
+                {
+                    Kind = usage.Kind.ToString(),
+                    Identity = usage.Identity,
+                    Source = usage.Source,
+                    Line = usage.Line,
+                    Column = usage.Column
+                })
+                .ToArray(),
+            Fallbacks = materialized.OfType<LinkedFallbackManifestRecord>()
+                .Select(static fallback => new LinkedSidecarFallback
+                {
+                    PackageId = fallback.PackageId,
+                    Reason = fallback.Reason,
+                    Source = fallback.Source,
+                    Line = fallback.Line,
+                    Column = fallback.Column
+                })
+                .ToArray()
+        };
+        s_sidecars[reference] = new TestAdditionalText(
+            assemblyName + ".atomui-link.json",
+            Encoding.UTF8.GetString(LinkedRegistrationSidecarCodec.Write(sidecar)),
+            new Dictionary<string, string>
+            {
+                ["build_metadata.AdditionalFiles.AtomUILinkedSidecar"] = "true"
+            });
     }
 
     private static MetadataReference CreateSourceReference(
@@ -1217,7 +1386,7 @@ internal static class UsageGeneratorTestHost
         var compilation = CSharpCompilation.Create(
             assemblyName,
             [CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Preview))],
-            s_platformReferences.Concat(references),
+            PlatformReferences.Concat(references),
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
         using var stream = new MemoryStream();
         var emit = compilation.Emit(stream);

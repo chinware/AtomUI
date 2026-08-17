@@ -28,6 +28,14 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Compile Remove="LinkedRegistration/ApplicationRegistrationPlanGenerator.cs" />
+        <Compile Remove="LinkedRegistration/LinkedAxamlUsageInput.cs" />
+        <Compile Remove="LinkedRegistration/LinkedRegistrationManifestCatalog.cs" />
+        <Compile Remove="LinkedRegistration/LinkedRegistrationUsageGenerator.cs" />
+        <Compile Remove="LinkedRegistration/Model/ApplicationPackagePlan.cs" />
+        <Compile Remove="LinkedRegistration/Model/LinkedUsageInfo.cs" />
+        <Compile Remove="LinkedRegistration/Model/RegistrationUnitDependencyAnalyzer.cs" />
+        <Compile Remove="LinkedRegistration/Writers/ApplicationRegistrationPlanWriter.cs" />
         <Compile Include="../AtomUI.Build.Tasks/LocalizationBuild/**/*.cs"
                  Link="LocalizationBuild/%(RecursiveDir)%(Filename)%(Extension)" />
         <Compile Include="../AtomUI.Build.Tasks/SourceGeneration/GeneratedCodeNamespace.cs"
@@ -45,4 +53,16 @@
               Pack="true"
               Visible="false" />
     </ItemGroup>
+
+    <Target Name="AtomUIPrepareLinkedPublishGeneratorForPack"
+            BeforeTargets="_GetPackageFiles"
+            Condition="'$(IsPackable)' == 'true'">
+        <MSBuild Projects="$(MSBuildProjectDirectory)/../AtomUI.Generator.LinkedPublish/AtomUI.Generator.LinkedPublish.csproj"
+                 Targets="Build"
+                 BuildInParallel="false"
+                 Properties="Configuration=$(Configuration)"
+                 Condition="'$(NoBuild)' != 'true'" />
+        <Error Condition="!Exists('$(AtomUILinkedPublishGeneratorAssembly)')"
+               Text="AtomUI linked-publish Generator could not be found at '$(AtomUILinkedPublishGeneratorAssembly)'. Build AtomUI.Generator.LinkedPublish before packing with NoBuild=true." />
+    </Target>
 </Project>

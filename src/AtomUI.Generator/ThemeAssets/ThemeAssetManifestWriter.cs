@@ -84,12 +84,34 @@ internal sealed class ThemeAssetManifestWriter
         {
             LinkedRegistration.Manifest.LinkedRegistrationMetadataWriter.Write(
                 builder,
-                new LinkedRegistration.Manifest.LinkedUsageManifestRecord(
-                    LinkedRegistration.Manifest.LinkedUsageKind.PackageRoot,
+                new LinkedRegistration.Manifest.LinkedFallbackManifestRecord(
                     _packageId,
+                    "UnresolvedAxaml",
                     asset.AssetPath,
                     0,
                     0));
+        }
+        foreach (var edge in _assets.SelectMany(static asset => asset.ReferencedUnitIds.Select(
+                     dependencyUnitId => new
+                     {
+                         SourceUnitId = asset.OwnerUnitId,
+                         TargetUnitId = dependencyUnitId
+                     }))
+                     .Where(static edge => !string.Equals(
+                         edge.SourceUnitId,
+                         edge.TargetUnitId,
+                         StringComparison.Ordinal))
+                     .Distinct()
+                     .OrderBy(static edge => edge.SourceUnitId, StringComparer.Ordinal)
+                     .ThenBy(static edge => edge.TargetUnitId, StringComparer.Ordinal))
+        {
+            LinkedRegistration.Manifest.LinkedRegistrationMetadataWriter.Write(
+                builder,
+                new LinkedRegistration.Manifest.LinkedUnitEdgeManifestRecord(
+                    _packageId,
+                    edge.SourceUnitId,
+                    edge.TargetUnitId,
+                    LinkedRegistration.Manifest.LinkedUnitEdgeEvidenceKind.AxamlType));
         }
         builder.AppendLine();
         builder.Append("namespace ").Append(GeneratedCodeNamespace.ForAssembly(_assemblyName))
@@ -134,19 +156,6 @@ internal sealed class ThemeAssetManifestWriter
             var fragmentName = LinkedRegistration.LinkedRegistrationFragmentName.ForUnit(unitId);
             builder.Append("public static partial class ").Append(fragmentName).AppendLine();
             builder.AppendLine("{");
-            builder.AppendLine("    static partial void AddDependencies(");
-            builder.AppendLine("        global::AtomUI.Registration.AotTrimControlPackageRegistrationBuilder builder)");
-            builder.AppendLine("    {");
-            foreach (var dependencyUnitId in unitAssets.SelectMany(static asset => asset.ReferencedUnitIds)
-                                                       .Distinct(StringComparer.Ordinal)
-                                                       .OrderBy(static dependency => dependency, StringComparer.Ordinal))
-            {
-                builder.Append("        ")
-                       .Append(LinkedRegistration.LinkedRegistrationFragmentName.ForUnit(dependencyUnitId))
-                       .AppendLine(".Add(builder);");
-            }
-            builder.AppendLine("    }");
-            builder.AppendLine();
             builder.AppendLine("    static partial void AddThemes(");
             builder.AppendLine("        global::AtomUI.Registration.AotTrimControlPackageRegistrationBuilder builder)");
             builder.AppendLine("    {");

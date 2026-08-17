@@ -8,7 +8,12 @@
         <WasmEnableThreads>false</WasmEnableThreads>
         <!-- .NET 10 browser-wasm Webcil output currently fails during mono_wasm_load_runtime in Chromium. -->
         <WasmEnableWebcil>false</WasmEnableWebcil>
-        <RunAOTCompilation>false</RunAOTCompilation>
+        <!--
+            The .NET 10.0.10 wasm runtime pack treats an explicit false value as a
+            relinking request. Keep it for the nested publish path, where native linking
+            is expected, and use the SDK's equivalent default during ordinary builds.
+        -->
+        <RunAOTCompilation Condition="'$(WasmBuildingForNestedPublish)' == 'true'">false</RunAOTCompilation>
         <DebuggerSupport Condition="'$(Configuration)' == 'Debug'">true</DebuggerSupport>
     </PropertyGroup>
 
@@ -20,6 +25,7 @@
     <Target Name="AtomUIUseManagedBrowserBuild"
             BeforeTargets="_SetWasmBuildNativeDefaults"
             Condition="'$(WasmBuildingForNestedPublish)' != 'true' and
+                       '$(RunAOTCompilation)' != 'false' and
                        '$(AtomUIBrowserNativeBuild)' != 'true'">
         <PropertyGroup>
             <WasmBuildNative>false</WasmBuildNative>

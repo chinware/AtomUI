@@ -1,9 +1,12 @@
+extern alias LinkedPublish;
+
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Shouldly;
 using Xunit;
+using LinkedRegistrationPackageManifestGenerator = LinkedPublish::AtomUI.Generator.LinkedRegistration.LinkedRegistrationPackageManifestGenerator;
 
 namespace AtomUI.Generator.Tests;
 
@@ -170,7 +173,8 @@ public class ThemeSchemaGeneratorTests
         source.ShouldContain("public static partial class GeneratedRegistrationUnit_ThemeSchemaGeneratorTests_");
         source.ShouldContain("public static void Add(");
         source.ShouldContain("global::AtomUI.Registration.AotTrimControlPackageRegistrationBuilder builder");
-        source.ShouldContain("builder.TryEnterUnit(\"ThemeSchemaGeneratorTests/ThemeSchemaGeneratorTests\")");
+        source.ShouldNotContain("TryEnterUnit");
+        source.ShouldNotContain("AddDependencies");
         source.ShouldContain("builder.AddControl(");
         source.ShouldContain(
             "global::AtomUI.Generated.ThemeSchemaGeneratorTests.GeneratedThemeSchemaDescriptorFactory.CreateControlDescriptor_Button_");
@@ -282,16 +286,17 @@ public class ThemeSchemaGeneratorTests
                     path: "Alert/Alert.cs",
                     cancellationToken: TestContext.Current.CancellationToken));
 
-        var outputCompilation = RunGeneratorWithGranularity(
+        var outputCompilation = RunLinkedGeneratorWithGranularity(
             compilation,
             out var diagnostics,
             "Directory");
 
         diagnostics.ShouldBeEmpty();
-        var source = GetGeneratedSource(outputCompilation, "GeneratedRegistrationUnits.g.cs");
-        var dependencyFragment = global::AtomUI.Generator.LinkedRegistration
-            .LinkedRegistrationFragmentName.ForUnit("ThemeSchemaGeneratorTests/Alert");
-        source.ShouldContain($"{dependencyFragment}.Add(builder);");
+        var source = GetGeneratedSource(outputCompilation, "LinkedRegistrationPackageAnalysis.g.cs");
+        source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.UnitEdge.v1\"");
+        source.ShouldContain("ThemeSchemaGeneratorTests%2FButton");
+        source.ShouldContain("ThemeSchemaGeneratorTests%2FAlert");
+        source.ShouldContain("CSharpType");
     }
 
     [Fact]
@@ -325,17 +330,16 @@ public class ThemeSchemaGeneratorTests
                     path: "Alert/Alert.cs",
                     cancellationToken: TestContext.Current.CancellationToken));
 
-        var outputCompilation = RunGeneratorWithGranularity(
+        var outputCompilation = RunLinkedGeneratorWithGranularity(
             compilation,
             out var diagnostics,
             "Directory");
 
         diagnostics.ShouldBeEmpty();
-        var source = GetGeneratedSource(outputCompilation, "GeneratedRegistrationUnits.g.cs");
-        var dependencyFragment = global::AtomUI.Generator.LinkedRegistration
-            .LinkedRegistrationFragmentName.ForUnit("ThemeSchemaGeneratorTests/Alert");
-        source.ShouldContain($"{dependencyFragment}.Add(builder);");
-        source.ShouldNotContain("PackageRoot");
+        var source = GetGeneratedSource(outputCompilation, "LinkedRegistrationPackageAnalysis.g.cs");
+        source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.RootUnit.v1\"");
+        source.ShouldContain("ThemeSchemaGeneratorTests%2FAlert");
+        source.ShouldNotContain("AtomUI.Linked.Fallback.v1");
     }
 
     [Fact]
@@ -371,17 +375,16 @@ public class ThemeSchemaGeneratorTests
                     path: "Alert/Alert.cs",
                     cancellationToken: TestContext.Current.CancellationToken));
 
-        var outputCompilation = RunGeneratorWithGranularity(
+        var outputCompilation = RunLinkedGeneratorWithGranularity(
             compilation,
             out var diagnostics,
             "Directory");
 
         diagnostics.ShouldBeEmpty();
-        var source = GetGeneratedSource(outputCompilation, "GeneratedRegistrationUnits.g.cs");
-        var dependencyFragment = global::AtomUI.Generator.LinkedRegistration
-            .LinkedRegistrationFragmentName.ForUnit("ThemeSchemaGeneratorTests/Alert");
-        source.ShouldContain($"{dependencyFragment}.Add(builder);");
-        source.ShouldNotContain("PackageRoot");
+        var source = GetGeneratedSource(outputCompilation, "LinkedRegistrationPackageAnalysis.g.cs");
+        source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.RootUnit.v1\"");
+        source.ShouldContain("ThemeSchemaGeneratorTests%2FAlert");
+        source.ShouldNotContain("AtomUI.Linked.Fallback.v1");
     }
 
     [Fact]
@@ -485,9 +488,9 @@ public class ThemeSchemaGeneratorTests
         var diagnostic = diagnostics.ShouldHaveSingleItem();
         diagnostic.Id.ShouldBe("ATOMUILINK002");
         diagnostic.Location.GetLineSpan().Path.ShouldBe("Button/Button.cs");
-        var source = GetGeneratedSource(outputCompilation, "GeneratedRegistrationUnits.g.cs");
-        source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.Usage.v1\"");
-        source.ShouldContain("PackageRoot");
+        var source = GetGeneratedSource(outputCompilation, "LinkedRegistrationPackageAnalysis.g.cs");
+        source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.Fallback.v1\"");
+        source.ShouldContain("DynamicInvocation");
     }
 
     [Fact]
@@ -512,8 +515,9 @@ public class ThemeSchemaGeneratorTests
         var diagnostic = diagnostics.ShouldHaveSingleItem();
         diagnostic.Id.ShouldBe("ATOMUILINK002");
         diagnostic.Location.GetLineSpan().Path.ShouldBe("Button/Button.cs");
-        var source = GetGeneratedSource(outputCompilation, "GeneratedRegistrationUnits.g.cs");
-        source.ShouldContain("PackageRoot");
+        var source = GetGeneratedSource(outputCompilation, "LinkedRegistrationPackageAnalysis.g.cs");
+        source.ShouldContain("AssemblyMetadata(\"AtomUI.Linked.Fallback.v1\"");
+        source.ShouldContain("DynamicInvocation");
     }
 
     [Fact]
@@ -885,12 +889,21 @@ public class ThemeSchemaGeneratorTests
         if (linkedPublish)
         {
             options["build_property.AtomUILinkedPublish"] = "true";
+            options["build_property.AtomUIRegistrationPackageId"] =
+                compilation.AssemblyName ?? "ThemeSchemaGeneratorTests";
         }
         AnalyzerConfigOptionsProvider? optionsProvider = options.Count == 0
             ? null
             : new TestAnalyzerConfigOptionsProvider(options);
+        var generators = linkedPublish
+            ? new ISourceGenerator[]
+            {
+                new TokenResourceKeyGenerator().AsSourceGenerator(),
+                new LinkedRegistrationPackageManifestGenerator().AsSourceGenerator()
+            }
+            : [new TokenResourceKeyGenerator().AsSourceGenerator()];
         var driver = CSharpGeneratorDriver.Create(
-            [new TokenResourceKeyGenerator().AsSourceGenerator()],
+            generators,
             additionalTexts.ToImmutableArray(),
             (CSharpParseOptions)compilation.SyntaxTrees[0].Options,
             optionsProvider);

@@ -118,4 +118,5 @@ descriptor 和 ControlTheme asset manifest；本地化链路收集 Catalog、编
 - linked publish、Registration Unit、Package fallback 和动态 root 遵守 [AOT 与裁剪架构](foundations/aot-and-trimming.md)；日常 AOT、反射、
   动态数据和生成器规则遵守 [AOT 编程规范](../engineering/development/aot-programming-guidelines.md)。Control Package 的
   Package/Directory 粒度和资源归属遵守
-  [AOT Registration Unit 粒度](foundations/aot-registration-unit-granularity.md)。
+  [AOT Registration Unit 粒度](foundations/aot-registration-unit-granularity.md)；Sidecar、Analyzer 激活和静态计划遵守
+  [AOT Linked Registration Pipeline](foundations/aot-linked-registration-pipeline.md)。

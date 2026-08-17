@@ -1,6 +1,7 @@
 <Project>
     <PropertyGroup>
         <AtomUIRegistrationStrict Condition="'$(AtomUIRegistrationStrict)' == ''">false</AtomUIRegistrationStrict>
+        <AtomUIEmitLinkedManifest Condition="'$(AtomUIEmitLinkedManifest)' == ''">false</AtomUIEmitLinkedManifest>
         <AtomUIRegistrationGranularity
             Condition="'$(AtomUIRegistrationGranularity)' == ''">Package</AtomUIRegistrationGranularity>
     </PropertyGroup>
@@ -11,5 +12,6 @@
         <CompilerVisibleProperty Include="AtomUIRegistrationPlanOwner" />
         <CompilerVisibleProperty Include="AtomUIRegistrationPackageId" />
         <CompilerVisibleProperty Include="AtomUIRegistrationGranularity" />
+        <CompilerVisibleProperty Include="AtomUIEmitLinkedManifest" />
     </ItemGroup>
 </Project>

@@ -1,7 +1,11 @@
+using System.Collections.Immutable;
+using System.Text;
 using AtomUI.Generator.Diagnostics;
 using AtomUI.Generator.LinkedRegistration.Manifest;
 using AtomUI.Generator.LinkedRegistration.Model;
+using AtomUI.LinkedRegistration.Protocol;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace AtomUI.Generator.LinkedRegistration;
 
@@ -9,10 +13,19 @@ internal sealed class LinkedRegistrationManifestCatalog
 {
     private const string AssemblyMetadataAttribute =
         "System.Reflection.AssemblyMetadataAttribute";
+    private const string SidecarMetadata =
+        "build_metadata.AdditionalFiles.AtomUILinkedSidecar";
     private readonly Action<Diagnostic> _reportDiagnostic;
     private readonly Dictionary<IAssemblySymbol, string> _packageByAssembly =
         new(SymbolEqualityComparer.Default);
     private readonly List<LinkedUsageInfo> _referencedUsagesToValidate = [];
+    private readonly HashSet<string> _referencedUsageValidationKeys = new(StringComparer.Ordinal);
+    private readonly HashSet<string> _referencedUsageKeys = new(StringComparer.Ordinal);
+    private readonly HashSet<LinkedUnitEdgeManifestRecord> _unitEdgeSet = [];
+    private readonly HashSet<LinkedFallbackManifestRecord> _fallbackSet = [];
+    private readonly HashSet<string> _sidecarAssemblies = new(StringComparer.Ordinal);
+    private long _totalSidecarBytes;
+    private bool _fineAnalysisDisabled;
 
     private LinkedRegistrationManifestCatalog(Action<Diagnostic> reportDiagnostic)
     {
@@ -29,6 +42,10 @@ internal sealed class LinkedRegistrationManifestCatalog
         new(StringComparer.Ordinal);
     internal Dictionary<string, string> PackageByUnit { get; } =
         new(StringComparer.Ordinal);
+    internal List<LinkedUnitEdgeManifestRecord> UnitEdges { get; } = [];
+    internal Dictionary<string, HashSet<string>> RootUnitsByPackage { get; } =
+        new(StringComparer.Ordinal);
+    internal List<LinkedFallbackManifestRecord> Fallbacks { get; } = [];
     internal List<LinkedUsageInfo> ReferencedUsages { get; } = [];
     internal Dictionary<string, HashSet<string>> XmlNamespaces { get; } =
         new(StringComparer.Ordinal);
@@ -41,7 +58,33 @@ internal sealed class LinkedRegistrationManifestCatalog
         Compilation compilation,
         Action<Diagnostic> reportDiagnostic)
     {
+        return Create(
+            compilation,
+            ImmutableArray<AdditionalText>.Empty,
+            optionsProvider: null,
+            reportDiagnostic);
+    }
+
+    internal static LinkedRegistrationManifestCatalog Create(
+        Compilation compilation,
+        ImmutableArray<AdditionalText> additionalTexts,
+        AnalyzerConfigOptionsProvider? optionsProvider,
+        Action<Diagnostic> reportDiagnostic)
+    {
         var catalog = new LinkedRegistrationManifestCatalog(reportDiagnostic);
+        if (optionsProvider is not null)
+        {
+            foreach (var text in additionalTexts.OrderBy(
+                         static item => item.Path,
+                         StringComparer.Ordinal))
+            {
+                if (optionsProvider.GetOptions(text).TryGetValue(SidecarMetadata, out var enabled) &&
+                    string.Equals(enabled, "true", StringComparison.OrdinalIgnoreCase))
+                {
+                    catalog.ReadSidecar(text);
+                }
+            }
+        }
         foreach (var assembly in compilation.SourceModule.ReferencedAssemblySymbols.OrderBy(
                      static item => item.Identity.Name,
                      StringComparer.Ordinal))
@@ -51,6 +94,219 @@ internal sealed class LinkedRegistrationManifestCatalog
         catalog.ReadAssembly(compilation.Assembly, includeUsages: false);
         catalog.ValidateRelationships();
         return catalog;
+    }
+
+    private void ReadSidecar(AdditionalText text)
+    {
+        var sourceText = text.GetText();
+        if (sourceText is null || sourceText.Length == 0)
+        {
+            ReportIncompatibleInput(text.Path, "sidecar is empty");
+            return;
+        }
+        if (sourceText.Length > LinkedRegistrationAnalysisBudget.MaxSidecarBytes)
+        {
+            DisableFineAnalysis(text.Path);
+            return;
+        }
+
+        var content = sourceText.ToString();
+        var bytes = Encoding.UTF8.GetBytes(content);
+        if (bytes.Length > LinkedRegistrationAnalysisBudget.MaxSidecarBytes ||
+            _totalSidecarBytes + bytes.Length > LinkedRegistrationAnalysisBudget.MaxTotalSidecarBytes)
+        {
+            DisableFineAnalysis(text.Path);
+            return;
+        }
+        _totalSidecarBytes += bytes.Length;
+        var error = string.Empty;
+        if (string.IsNullOrWhiteSpace(content) ||
+            !LinkedRegistrationSidecarCodec.TryRead(
+                bytes,
+                out var sidecar,
+                out error))
+        {
+            ReportIncompatibleInput(text.Path, error.Length == 0 ? "sidecar is empty" : error);
+            return;
+        }
+        if (!_sidecarAssemblies.Add(sidecar!.Assembly.Name))
+        {
+            ReportInvalidManifest(
+                sidecar.Assembly.Name,
+                "more than one linked-registration Sidecar declares the same assembly");
+            return;
+        }
+
+        if (_fineAnalysisDisabled || ExceedsStructuralBudget(sidecar!))
+        {
+            ReadBudgetFallbackSidecar(sidecar!, text.Path);
+            return;
+        }
+
+        var isControlPackage = sidecar.Packages.Length != 0;
+        var ownPackageIds = new HashSet<string>(
+            sidecar.Packages.Select(static package => package.Id),
+            StringComparer.Ordinal);
+        foreach (var package in sidecar.Packages)
+        {
+            AddRecord(
+                new LinkedPackageManifestRecord(
+                    package.Id,
+                    package.AssemblyName,
+                    package.Granularity,
+                    string.Join(";", package.EntryMethods),
+                    package.FullFragment.Type,
+                    package.FullFragment.Method,
+                    package.SharedFragment?.Type,
+                    package.SharedFragment?.Method),
+                includeUsages: false,
+                validateUsage: false);
+            foreach (var unit in package.Units)
+            {
+                AddRecord(
+                    new LinkedUnitManifestRecord(
+                        package.Id,
+                        unit.Id,
+                        unit.FragmentType,
+                        unit.FragmentMethod,
+                        unit.OrderKey),
+                    includeUsages: false,
+                    validateUsage: false);
+                foreach (var control in unit.Controls)
+                {
+                    AddRecord(
+                        new LinkedControlMapManifestRecord(package.Id, control, unit.Id),
+                        includeUsages: false,
+                        validateUsage: false);
+                }
+            }
+            foreach (var edge in package.UnitEdges)
+            {
+                if (!Enum.TryParse(
+                        edge.EvidenceKind,
+                        ignoreCase: false,
+                        out LinkedUnitEdgeEvidenceKind evidenceKind))
+                {
+                    ReportIncompatibleInput(
+                        text.Path,
+                        $"unknown UnitEdge evidence kind '{edge.EvidenceKind}'");
+                    continue;
+                }
+                AddRecord(
+                    new LinkedUnitEdgeManifestRecord(
+                        package.Id,
+                        edge.SourceUnitId,
+                        edge.TargetUnitId,
+                        evidenceKind),
+                    includeUsages: false,
+                    validateUsage: false);
+            }
+            foreach (var rootUnit in package.RootUnits)
+            {
+                AddRecord(
+                    new LinkedRootUnitManifestRecord(package.Id, rootUnit),
+                    includeUsages: false,
+                    validateUsage: false);
+            }
+        }
+        foreach (var usage in sidecar.Usages)
+        {
+            if (!Enum.TryParse(usage.Kind, ignoreCase: false, out LinkedUsageKind kind))
+            {
+                ReportIncompatibleInput(text.Path, $"unknown Usage kind '{usage.Kind}'");
+                continue;
+            }
+            var includeUsage = !isControlPackage ||
+                               (kind == LinkedUsageKind.PackageRoot &&
+                                ownPackageIds.Contains(usage.Identity));
+            AddRecord(
+                new LinkedUsageManifestRecord(
+                    kind,
+                    usage.Identity,
+                    usage.Source,
+                    usage.Line,
+                    usage.Column),
+                includeUsage,
+                validateUsage: true);
+        }
+        foreach (var fallback in sidecar.Fallbacks)
+        {
+            AddRecord(
+                new LinkedFallbackManifestRecord(
+                    fallback.PackageId,
+                    fallback.Reason,
+                    fallback.Source,
+                    fallback.Line,
+                    fallback.Column),
+                includeUsages: false,
+                validateUsage: false);
+        }
+    }
+
+    private bool ExceedsStructuralBudget(LinkedRegistrationSidecar sidecar)
+    {
+        long unitCount = 0;
+        long edgeCount = 0;
+        long rootCount = 0;
+        long controlCount = 0;
+        foreach (var package in sidecar.Packages)
+        {
+            unitCount += package.Units.Length;
+            edgeCount += package.UnitEdges.Length;
+            rootCount += package.RootUnits.Length;
+            foreach (var unit in package.Units)
+            {
+                controlCount += unit.Controls.Length;
+            }
+        }
+
+        return Packages.Count + (long)sidecar.Packages.Length > LinkedRegistrationAnalysisBudget.MaxPackages ||
+               Units.Count + unitCount > LinkedRegistrationAnalysisBudget.MaxRegistrationUnits ||
+               UnitEdges.Count + edgeCount > LinkedRegistrationAnalysisBudget.MaxUnitEdges ||
+               RootUnitsByPackage.Sum(static item => item.Value.Count) + rootCount >
+               LinkedRegistrationAnalysisBudget.MaxRootUnits ||
+               ControlMaps.Count + controlCount > LinkedRegistrationAnalysisBudget.MaxControlMappings ||
+               ReferencedUsages.Count + (long)sidecar.Usages.Length >
+               LinkedRegistrationAnalysisBudget.MaxUsages ||
+               Fallbacks.Count + (long)sidecar.Fallbacks.Length >
+               LinkedRegistrationAnalysisBudget.MaxFallbacks;
+    }
+
+    private void ReadBudgetFallbackSidecar(LinkedRegistrationSidecar sidecar, string source)
+    {
+        foreach (var package in sidecar.Packages)
+        {
+            AddRecord(
+                new LinkedPackageManifestRecord(
+                    package.Id,
+                    package.AssemblyName,
+                    package.Granularity,
+                    string.Join(";", package.EntryMethods),
+                    package.FullFragment.Type,
+                    package.FullFragment.Method,
+                    package.SharedFragment?.Type,
+                    package.SharedFragment?.Method),
+                includeUsages: false,
+                validateUsage: false);
+        }
+        foreach (var usage in sidecar.Usages)
+        {
+            if (!Enum.TryParse(usage.Kind, ignoreCase: false, out LinkedUsageKind kind) ||
+                kind is not (LinkedUsageKind.Entry or LinkedUsageKind.PackageRoot))
+            {
+                continue;
+            }
+            AddRecord(
+                new LinkedUsageManifestRecord(
+                    kind,
+                    usage.Identity,
+                    usage.Source,
+                    usage.Line,
+                    usage.Column),
+                includeUsages: true,
+                validateUsage: true);
+        }
+        DisableFineAnalysis(source);
     }
 
     internal bool TryGetPackageId(IAssemblySymbol assembly, out string packageId)
@@ -82,6 +338,10 @@ internal sealed class LinkedRegistrationManifestCatalog
                     {
                         PlanOwners.Add(value.Trim());
                     }
+                    continue;
+                }
+                if (_sidecarAssemblies.Contains(assembly.Identity.Name))
+                {
                     continue;
                 }
                 if (!IsSupportedManifestKey(key))
@@ -124,6 +384,10 @@ internal sealed class LinkedRegistrationManifestCatalog
             : null;
         foreach (var record in records)
         {
+            if (packageRecords.Length != 0 && record is not LinkedPackageManifestRecord)
+            {
+                continue;
+            }
             var includeReferencedUsage = includeUsages &&
                                          (!isControlPackage ||
                                           record is LinkedUsageManifestRecord
@@ -139,7 +403,26 @@ internal sealed class LinkedRegistrationManifestCatalog
                 includeReferencedUsage,
                 validateUsage: includeUsages);
         }
-        var assemblyPackages = packageRecords.Select(static package => package.PackageId)
+        if (includeUsages && packageRecords.Length != 0)
+        {
+            foreach (var package in packageRecords)
+            {
+                AddRecord(
+                    new LinkedFallbackManifestRecord(
+                        package.PackageId,
+                        "MissingSidecar",
+                        assembly.Identity.Name,
+                        0,
+                        0),
+                    includeUsages: false,
+                    validateUsage: false);
+            }
+        }
+        var assemblyPackages = Packages.Values.Where(package => string.Equals(
+                                                 package.AssemblyName,
+                                                 assembly.Identity.Name,
+                                                 StringComparison.Ordinal))
+                                             .Select(static package => package.PackageId)
                                              .Distinct(StringComparer.Ordinal)
                                              .ToArray();
         if (assemblyPackages.Length == 1 && Packages.ContainsKey(assemblyPackages[0]))
@@ -168,6 +451,15 @@ internal sealed class LinkedRegistrationManifestCatalog
         bool includeUsages,
         bool validateUsage)
     {
+        if (_fineAnalysisDisabled && record is not LinkedPackageManifestRecord &&
+            record is not LinkedUsageManifestRecord
+            {
+                Kind: LinkedUsageKind.Entry or LinkedUsageKind.PackageRoot
+            })
+        {
+            return;
+        }
+
         switch (record)
         {
             case LinkedPackageManifestRecord package:
@@ -186,13 +478,48 @@ internal sealed class LinkedRegistrationManifestCatalog
                 }
                 break;
             case LinkedUnitManifestRecord unit:
+                if (Units.Count >= LinkedRegistrationAnalysisBudget.MaxRegistrationUnits)
+                {
+                    DisableFineAnalysis(unit.PackageId);
+                    break;
+                }
                 if (TryAddRecord(Units, unit.UnitId, unit, "Registration Unit"))
                 {
                     PackageByUnit[unit.UnitId] = unit.PackageId;
                 }
                 break;
             case LinkedControlMapManifestRecord controlMap:
+                if (ControlMaps.Count >= LinkedRegistrationAnalysisBudget.MaxControlMappings)
+                {
+                    DisableFineAnalysis(controlMap.PackageId);
+                    break;
+                }
                 TryAddRecord(ControlMaps, controlMap.MetadataName, controlMap, "ControlMap");
+                break;
+            case LinkedUnitEdgeManifestRecord edge:
+                if (UnitEdges.Count >= LinkedRegistrationAnalysisBudget.MaxUnitEdges)
+                {
+                    DisableFineAnalysis(edge.PackageId);
+                    break;
+                }
+                if (_unitEdgeSet.Add(edge))
+                {
+                    UnitEdges.Add(edge);
+                }
+                break;
+            case LinkedRootUnitManifestRecord rootUnit:
+                if (RootUnitsByPackage.Sum(static item => item.Value.Count) >=
+                    LinkedRegistrationAnalysisBudget.MaxRootUnits)
+                {
+                    DisableFineAnalysis(rootUnit.PackageId);
+                    break;
+                }
+                if (!RootUnitsByPackage.TryGetValue(rootUnit.PackageId, out var rootUnits))
+                {
+                    rootUnits = new HashSet<string>(StringComparer.Ordinal);
+                    RootUnitsByPackage.Add(rootUnit.PackageId, rootUnits);
+                }
+                rootUnits.Add(rootUnit.UnitId);
                 break;
             case LinkedUsageManifestRecord usage:
                 var usageInfo = new LinkedUsageInfo(
@@ -203,13 +530,30 @@ internal sealed class LinkedRegistrationManifestCatalog
                     usage.Column,
                     string.Empty,
                     null);
-                if (validateUsage && !ContainsUsage(_referencedUsagesToValidate, usageInfo))
+                var usageKey = GetUsageKey(usageInfo);
+                if (validateUsage && _referencedUsageValidationKeys.Add(usageKey))
                 {
                     _referencedUsagesToValidate.Add(usageInfo);
                 }
-                if (includeUsages && !ContainsUsage(ReferencedUsages, usageInfo))
+                if (includeUsages && _referencedUsageKeys.Add(usageKey))
                 {
+                    if (ReferencedUsages.Count >= LinkedRegistrationAnalysisBudget.MaxUsages)
+                    {
+                        DisableFineAnalysis(usage.Identity);
+                        break;
+                    }
                     ReferencedUsages.Add(usageInfo);
+                }
+                break;
+            case LinkedFallbackManifestRecord fallback:
+                if (_fallbackSet.Add(fallback))
+                {
+                    if (Fallbacks.Count >= LinkedRegistrationAnalysisBudget.MaxFallbacks)
+                    {
+                        DisableFineAnalysis(fallback.PackageId);
+                        break;
+                    }
+                    Fallbacks.Add(fallback);
                 }
                 break;
         }
@@ -264,18 +608,51 @@ internal sealed class LinkedRegistrationManifestCatalog
                     $"Usage '{usage.Kind}' references an unknown identity '{usage.Identity}'");
             }
         }
+        foreach (var edge in UnitEdges)
+        {
+            if (!Units.TryGetValue(edge.SourceUnitId, out var sourceUnit) ||
+                !Units.TryGetValue(edge.TargetUnitId, out var targetUnit) ||
+                !string.Equals(sourceUnit.PackageId, edge.PackageId, StringComparison.Ordinal) ||
+                !string.Equals(targetUnit.PackageId, edge.PackageId, StringComparison.Ordinal))
+            {
+                ReportInvalidManifest(
+                    edge.PackageId,
+                    $"UnitEdge '{edge.SourceUnitId}' -> '{edge.TargetUnitId}' does not resolve within its Package");
+            }
+        }
+        foreach (var packageRoots in RootUnitsByPackage)
+        {
+            foreach (var unitId in packageRoots.Value)
+            {
+                if (!Units.TryGetValue(unitId, out var unit) ||
+                    !string.Equals(unit.PackageId, packageRoots.Key, StringComparison.Ordinal))
+                {
+                    ReportInvalidManifest(
+                        packageRoots.Key,
+                        $"Package root references unknown Registration Unit '{unitId}'");
+                }
+            }
+        }
+        foreach (var fallback in Fallbacks)
+        {
+            if (fallback.PackageId.Length != 0 && !Packages.ContainsKey(fallback.PackageId))
+            {
+                ReportInvalidManifest(
+                    fallback.PackageId,
+                    $"Fallback '{fallback.Reason}' references an unknown Package");
+            }
+        }
     }
 
-    private static bool ContainsUsage(
-        IEnumerable<LinkedUsageInfo> usages,
-        LinkedUsageInfo candidate)
+    private static string GetUsageKey(LinkedUsageInfo usage)
     {
-        return usages.Any(existing =>
-            existing.Kind == candidate.Kind &&
-            existing.Identity == candidate.Identity &&
-            existing.Source == candidate.Source &&
-            existing.Line == candidate.Line &&
-            existing.Column == candidate.Column);
+        return string.Join(
+            "\u001f",
+            usage.Kind,
+            usage.Identity,
+            usage.Source,
+            usage.Line.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            usage.Column.ToString(System.Globalization.CultureInfo.InvariantCulture));
     }
 
     private static IEnumerable<string> SplitEntryMethodMetadataNames(string entries)
@@ -317,6 +694,26 @@ internal sealed class LinkedRegistrationManifestCatalog
             detail));
     }
 
+    internal void AddAnalysisBudgetFallback(string source)
+    {
+        DisableFineAnalysis(source);
+    }
+
+    private void DisableFineAnalysis(string source)
+    {
+        _fineAnalysisDisabled = true;
+        var fallback = new LinkedFallbackManifestRecord(
+            string.Empty,
+            "AnalysisBudgetExceeded",
+            source,
+            0,
+            0);
+        if (_fallbackSet.Add(fallback))
+        {
+            Fallbacks.Add(fallback);
+        }
+    }
+
     private void ReportIncompatibleInput(string input, string detail)
     {
         HasErrors = true;
@@ -332,6 +729,9 @@ internal sealed class LinkedRegistrationManifestCatalog
         return key == LinkedRegistrationProtocol.PackageManifestKey ||
                key == LinkedRegistrationProtocol.UnitManifestKey ||
                key == LinkedRegistrationProtocol.ControlMapManifestKey ||
-               key == LinkedRegistrationProtocol.UsageManifestKey;
+               key == LinkedRegistrationProtocol.UnitEdgeManifestKey ||
+               key == LinkedRegistrationProtocol.RootUnitManifestKey ||
+               key == LinkedRegistrationProtocol.UsageManifestKey ||
+               key == LinkedRegistrationProtocol.FallbackManifestKey;
     }
 }

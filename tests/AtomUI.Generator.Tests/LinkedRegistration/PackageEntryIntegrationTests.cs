@@ -92,6 +92,27 @@ public sealed class PackageEntryIntegrationTests
         }
     }
 
+    [Fact]
+    public void Desktop_Directory_Registration_Uses_Stable_Button_Family_Source_Boundaries()
+    {
+        var desktopProject = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj"));
+
+        desktopProject.ShouldNotContain("AtomUIRegistrationUnit");
+        File.Exists(GetRepoFile("src/AtomUI.Desktop.Controls/Button/Button.cs")).ShouldBeTrue();
+        File.Exists(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/DropdownButton/DropdownButton.cs")).ShouldBeTrue();
+        File.Exists(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/SplitButton/SplitButton.cs")).ShouldBeTrue();
+
+        File.Exists(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.axaml")).ShouldBeTrue();
+        File.Exists(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonTheme.axaml")).ShouldBeTrue();
+        File.Exists(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Buttons/Themes/SplitButtonTheme.axaml")).ShouldBeTrue();
+    }
+
     [Theory]
     [InlineData("src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj")]
     [InlineData("src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj")]

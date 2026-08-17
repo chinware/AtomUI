@@ -1,7 +1,11 @@
+extern alias LinkedPublish;
+
 using System.Collections.Immutable;
 using System.Text;
 using AtomUI.Generator.LinkedRegistration;
 using AtomUI.Generator.LinkedRegistration.Manifest;
+using ApplicationRegistrationPlanGenerator = LinkedPublish::AtomUI.Generator.LinkedRegistration.ApplicationRegistrationPlanGenerator;
+using LinkedRegistrationUsageGenerator = LinkedPublish::AtomUI.Generator.LinkedRegistration.LinkedRegistrationUsageGenerator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -439,6 +443,7 @@ internal static class PlanGeneratorTestHost
             new LinkedPackageManifestRecord(
                 packageId,
                 packageId,
+                units.Count == 0 ? "Package" : "Directory",
                 entry,
                 fullFragmentType,
                 "Register",
@@ -561,19 +566,15 @@ internal static class PlanGeneratorTestHost
             ["build_property.AtomUILinkedPublish"] = "true",
             ["build_property.AtomUIRegistrationPlanOwner"] = "true"
         };
-        var generatorType = typeof(ThemeAssetManifestGenerator).Assembly.GetType(
-            "AtomUI.Generator.LinkedRegistration.ApplicationRegistrationPlanGenerator");
-        generatorType.ShouldNotBeNull("Task 8 application plan generator has not been implemented");
-        var generator = Activator.CreateInstance(generatorType!).ShouldBeAssignableTo<IIncrementalGenerator>();
-        var usageGeneratorType = typeof(ThemeAssetManifestGenerator).Assembly.GetType(
-            "AtomUI.Generator.LinkedRegistration.LinkedRegistrationUsageGenerator");
-        usageGeneratorType.ShouldNotBeNull();
-        var usageGenerator = Activator.CreateInstance(usageGeneratorType!)
-                                      .ShouldBeAssignableTo<IIncrementalGenerator>();
+        var sidecars = UsageGeneratorTestHost.GetSidecars(references);
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
-            [usageGenerator!.AsSourceGenerator(), generator!.AsSourceGenerator()],
+            [
+                new LinkedRegistrationUsageGenerator().AsSourceGenerator(),
+                new ApplicationRegistrationPlanGenerator().AsSourceGenerator()
+            ],
+            sidecars.Cast<AdditionalText>().ToImmutableArray(),
             parseOptions: parseOptions,
-            optionsProvider: new PlanOptionsProvider(effectiveOptions));
+            optionsProvider: new PlanOptionsProvider(effectiveOptions, sidecars));
         driver = driver.RunGeneratorsAndUpdateCompilation(
             compilation,
             out var outputCompilation,
@@ -592,13 +593,26 @@ internal static class PlanGeneratorTestHost
                              .ToArray());
     }
 
-    private sealed class PlanOptionsProvider(IReadOnlyDictionary<string, string> values)
-        : AnalyzerConfigOptionsProvider
+    private sealed class PlanOptionsProvider : AnalyzerConfigOptionsProvider
     {
-        private readonly AnalyzerConfigOptions _options = new PlanOptions(values);
+        private readonly AnalyzerConfigOptions _options;
+        private readonly IReadOnlyDictionary<string, AnalyzerConfigOptions> _fileOptions;
+
+        internal PlanOptionsProvider(
+            IReadOnlyDictionary<string, string> values,
+            IReadOnlyList<TestAdditionalText> files)
+        {
+            _options = new PlanOptions(values);
+            _fileOptions = files.ToDictionary(
+                static file => file.Path,
+                static file => (AnalyzerConfigOptions)new PlanOptions(file.Metadata),
+                StringComparer.Ordinal);
+        }
+
         public override AnalyzerConfigOptions GlobalOptions => _options;
         public override AnalyzerConfigOptions GetOptions(SyntaxTree tree) => _options;
-        public override AnalyzerConfigOptions GetOptions(AdditionalText textFile) => _options;
+        public override AnalyzerConfigOptions GetOptions(AdditionalText textFile) =>
+            _fileOptions.TryGetValue(textFile.Path, out var options) ? options : _options;
     }
 
     private sealed class PlanOptions(IReadOnlyDictionary<string, string> values) : AnalyzerConfigOptions

@@ -1,7 +1,8 @@
 # AtomUI AOT 编程规范
 
 这份文档给日常写 AtomUI 代码的人用。它不是 AOT 改造记录，而是以后新增控件、主题、图标、语言资源、Gallery 示例和发布配置时要遵守的规则。linked publish 的系统架构、模式矩阵、Registration Unit 和安全 fallback 由
-[AOT 与裁剪架构](../../architecture/foundations/aot-and-trimming.md)统一定义，本文不复制其长期契约。
+[AOT 与裁剪架构](../../architecture/foundations/aot-and-trimming.md)统一定义，Sidecar 和静态计划由
+[AOT Linked Registration Pipeline](../../architecture/foundations/aot-linked-registration-pipeline.md)定义，本文不复制其长期契约。
 
 目标很简单：
 
@@ -229,6 +230,9 @@ Source Generator、Localization writer、Linked Registration metadata 和 AXAML 
 计划。Control descriptor、Own Token schema、内部控件和控件族专属 Theme Asset factory 必须能聚合为完整 Unit；不得新增
 全包静态数组、全资产 `switch` 或“构造全集后过滤”的 linked 路径。
 
+linked analysis 必须位于独立 Analyzer assembly。普通 Debug 和未启用 AOT/Trim 的 Release 不得把该 Analyzer 传给 `csc`，
+也不得运行 AXAML usage、Sidecar 或 Application Plan target。仅在 Generator callback 中快速 return 不算满足零成本要求。
+
 Control Package 默认使用 Package 粒度：
 
 ```xml
@@ -268,9 +272,16 @@ AXAML、动态插件等编译期无法确定的场景，不能成为普通 Contr
 Package 扩大为 full fallback 并给出诊断，不能依赖运行时反射或 late registration 修补。
 
 Directory 模式的 Package Theme 如果直接实例化另一个 AtomUI Control，该元素必须能通过 `using:`、
-`clr-namespace:` 或当前程序集 `XmlnsDefinition` 精确解析，Generator 会生成同 Package Unit 的直接依赖。C# 中可证明的
-跨 Unit Control 使用也必须形成直接依赖。不要依赖短类型名猜测，也不要把模板元素依赖写进 Theme Asset descriptor 的
+`clr-namespace:` 或当前程序集 `XmlnsDefinition` 精确解析，Generator 会把同 Package Unit 的直接依赖写入 Sidecar UnitEdge。
+C# 中可证明的跨 Unit Control 使用也必须形成直接 UnitEdge。不要依赖短类型名猜测，也不要把模板元素依赖写进 Theme Asset descriptor 的
 referenced identities；后者会改变普通非裁剪 schema 和 fingerprint。无法证明 owner 或依赖时必须 full fallback。
+
+Unit fragment 必须是叶子，只注册本 Unit 的 descriptor、Theme asset 和 resource factory。禁止生成 `AddDependencies`、调用
+其他 Unit 或调用 `TryEnterUnit`。应用 Generator 在编译期对 UnitEdge 计算 closure/SCC，并让每个 fragment 最多出现一次。
+
+依赖分析使用候选驱动 Incremental API。禁止对所有 SyntaxTree 执行 `DescendantNodes()`，禁止从 invocation 递归进入 callee
+body，也禁止为不同 owner Unit 重复扫描相同方法、属性或字段。分析必须有确定性结构预算；超限时当前 Package full fallback，
+不能使用墙钟超时产生非确定输出。
 
 ControlMap 是 CLR Control ownership，不是 descriptor 清单。定义程序集里的 public、非泛型 Control 即使没有 Theme
 descriptor，也要归入 Registration Unit 并拥有 ControlMap；只有原本可主题化的 Control 才能进入 `builder.AddControl`。
@@ -280,13 +291,14 @@ Package、Unit、ControlMap 或 full fragment metadata。
 `AtomUI.Controls` Common 层始终由 Desktop 完整注册，不是独立 linked Package。不要为 `UseCommonControls()` 添加入口
 Attribute，不要为了让 Common 参与应用计划而复制 `UseDesktopControls()` 的方法 identity，也不要引入跨 Package Unit 闭包。
 
-类库在普通构建中仍必须生成 PackageRoot fallback metadata，供最终 linked 应用聚合；不要用当前项目未开启 trim/AOT
-作为跳过 metadata 的条件。`ATOMUILINK002` 和 `ATOMUILINK007` 只在 linked publish 或
-`AtomUIRegistrationStrict=true` 时显示，普通非裁剪构建不得因这些发布期 fallback 产生 warning。strict 模式仍用于在
-CI 中把自动 full fallback 提升为 error。
+类库只在被 linked 应用作为 ProjectReference 构建或执行 NuGet Pack 时生成 Usage Sidecar。普通 Debug/Release 必须跳过 usage
+分析和 Sidecar 生成。缺失或无法验证的 Sidecar 不能解释为没有 usage，只能让相关 Package full fallback。
+`ATOMUILINK002` 和 `ATOMUILINK007` 只在 linked publish 或显式 `AtomUIRegistrationStrict=true` 验证中显示；strict 模式用于
+CI 把自动 full fallback 提升为 error。
 
-修改 Generator ABI、Manifest schema、feature switch 或 Public fragment entry point 时，按 Public API 和版本化协议
-review，并运行 trimmed JIT、NativeAOT 和非裁剪兼容验证。
+修改 Generator ABI、Sidecar schema、feature switch 或 Public fragment entry point 时，按 Public API 和协议 review，并运行
+普通构建零 linked-analysis、trimmed JIT、NativeAOT 和非裁剪兼容验证。系统契约见
+[AOT Linked Registration Pipeline](../../architecture/foundations/aot-linked-registration-pipeline.md)。
 
 只有 Directory 模式的内部 resource-only Theme 无法按目录推导到正确 Unit 时，才使用 `AtomUIRegistrationUnit`
 metadata 明确归属，不要把它升级为 `AtomUIPackageSharedTheme`。Package 模式不得添加这类 ownership 修补。抽象 typed
@@ -326,7 +338,7 @@ AppContext key 则必须保留 `AtomUI` 前缀，因为它是进程级字符串�
 
 `GeneratedApplicationRegistrationPlan`、`Generated*UnitFragment` 等 `Generated*` 名称仅限 Generator 生成的内部输出，
 不要把它们作为运行时 ABI 的通用命名。Generator 内部协议类型可以使用 `LinkedRegistration*`，Build Task 使用
-`CollectAxamlUsageTask`、`ValidateAssemblyMetadataMarkerTask` 这类动作导向名称。
+`CollectAxamlUsageTask`、`WriteLinkedRegistrationSidecarTask`、`ValidateApplicationRegistrationPlanTask` 这类动作导向名称。
 
 ## Theme / Token
 
@@ -608,7 +620,9 @@ observable.ToProperty(...);
 - `PublishSingleFile=true`：启用 single-file analyzer。
 - 显式传入 `EnableTrimAnalyzer`、`EnableAotAnalyzer` 或 `EnableSingleFileAnalyzer` 时，保留调用方选择，用于专项验证。
 
-普通 Control Package 构建仍需生成 Registration Unit、ControlMap 和 Usage metadata，供以后消费该包的 AOT/trim 应用使用；这是包的编译期静态契约，不等于运行 SDK linker analyzer。应用级 Registration Plan 只能在 `AtomUILinkedPublish=true` 时生成。
+ordinary Generator 可以继续生成普通构建所需的 Theme/Token、full registrar 和 leaf Unit fragment，但不能运行应用 usage 分析。
+Package/Usage Sidecar 只在 NuGet Pack 或 linked ProjectReference 构建时生成；Application Plan 只能在真实 AOT/Trim linked build
+中生成。普通构建必须从 `Csc` Analyzer item、AXAML target 和 `obj` 中同时看不到 linked analysis。
 
 ### Analyzer 和真实 publish 都要跑
 

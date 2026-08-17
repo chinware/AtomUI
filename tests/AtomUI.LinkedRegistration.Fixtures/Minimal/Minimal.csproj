@@ -7,6 +7,11 @@
         <IsTrimmable>true</IsTrimmable>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(AtomUIEmitVerificationPlan)' == 'true'">
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
+    </PropertyGroup>
+
     <ItemGroup>
         <Compile Include="../Shared/FixtureHost.cs" Link="FixtureHost.cs" />
         <ProjectReference Include="../UnusedUnit/UnusedUnit.csproj"

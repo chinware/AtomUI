@@ -3,6 +3,7 @@ using AtomUI.Generator.Diagnostics;
 using AtomUI.Generator.LinkedRegistration.Manifest;
 using AtomUI.Generator.LinkedRegistration.Model;
 using AtomUI.Generator.LinkedRegistration.Writers;
+using AtomUI.LinkedRegistration.Protocol;
 using Microsoft.CodeAnalysis;
 
 namespace AtomUI.Generator.LinkedRegistration;
@@ -12,14 +13,17 @@ public sealed class ApplicationRegistrationPlanGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        var csharpCandidates = LinkedCSharpUsageCandidateProvider.Create(context).Collect();
         var input = context.CompilationProvider
+                           .Combine(csharpCandidates)
                            .Combine(context.AdditionalTextsProvider.Collect())
                            .Combine(context.AnalyzerConfigOptionsProvider);
         context.RegisterSourceOutput(input, static (productionContext, value) =>
         {
             Generate(
                 productionContext,
-                value.Left.Left,
+                value.Left.Left.Left,
+                value.Left.Left.Right,
                 value.Left.Right,
                 value.Right);
         });
@@ -28,6 +32,7 @@ public sealed class ApplicationRegistrationPlanGenerator : IIncrementalGenerator
     private static void Generate(
         SourceProductionContext context,
         Compilation compilation,
+        ImmutableArray<LinkedCSharpUsageCandidate> csharpCandidates,
         ImmutableArray<AdditionalText> additionalTexts,
         Microsoft.CodeAnalysis.Diagnostics.AnalyzerConfigOptionsProvider optionsProvider)
     {
@@ -38,7 +43,11 @@ public sealed class ApplicationRegistrationPlanGenerator : IIncrementalGenerator
             return;
         }
 
-        var catalog = LinkedRegistrationManifestCatalog.Create(compilation, static _ => { });
+        var catalog = LinkedRegistrationManifestCatalog.Create(
+            compilation,
+            additionalTexts,
+            optionsProvider,
+            context.ReportDiagnostic);
         if (catalog.PlanOwners.Count != 0)
         {
             context.ReportDiagnostic(Diagnostic.Create(
@@ -56,10 +65,17 @@ public sealed class ApplicationRegistrationPlanGenerator : IIncrementalGenerator
         var currentUsages = LinkedRegistrationUsageGenerator.CollectApplicationUsages(
             compilation,
             catalog,
+            csharpCandidates,
             additionalTexts,
             optionsProvider,
             context.CancellationToken,
-            diagnostic => hasUsageErrors |= diagnostic.Severity == DiagnosticSeverity.Error);
+            diagnostic => hasUsageErrors |= diagnostic.Severity == DiagnosticSeverity.Error,
+            out var applicationBudgetExceeded);
+        if (csharpCandidates.Length > LinkedRegistrationAnalysisBudget.MaxSourceCandidates ||
+            applicationBudgetExceeded)
+        {
+            catalog.AddAnalysisBudgetFallback(compilation.AssemblyName ?? "<application>");
+        }
         if (hasUsageErrors)
         {
             return;
@@ -87,12 +103,22 @@ public sealed class ApplicationRegistrationPlanGenerator : IIncrementalGenerator
 
             var packageUnits = catalog.Units.Values.Where(unit =>
                     string.Equals(unit.PackageId, packageId, StringComparison.Ordinal))
-                .OrderBy(static unit => unit.UnitId, StringComparer.Ordinal)
+                .OrderBy(static unit => unit.OrderKey)
+                .ThenBy(static unit => unit.UnitId, StringComparer.Ordinal)
                 .ToArray();
-            var isLegacy = packageUnits.Length == 0;
+            var hasPackageFallback = usages.Any(usage =>
+                                      usage.Kind == LinkedUsageKind.PackageRoot &&
+                                      string.Equals(usage.Identity, packageId, StringComparison.Ordinal)) ||
+                                     catalog.Fallbacks.Any(fallback =>
+                                         fallback.PackageId.Length == 0 ||
+                                         string.Equals(fallback.PackageId, packageId, StringComparison.Ordinal));
+            var isLegacy = packageUnits.Length == 0 && !hasPackageFallback;
             var useFullFallback = isLegacy || usages.Any(usage =>
                 usage.Kind == LinkedUsageKind.PackageRoot &&
-                string.Equals(usage.Identity, packageId, StringComparison.Ordinal));
+                string.Equals(usage.Identity, packageId, StringComparison.Ordinal)) ||
+                catalog.Fallbacks.Any(fallback =>
+                    fallback.PackageId.Length == 0 ||
+                    string.Equals(fallback.PackageId, packageId, StringComparison.Ordinal));
             if (isLegacy)
             {
                 if (ValidateFragmentMethod(
@@ -118,6 +144,14 @@ public sealed class ApplicationRegistrationPlanGenerator : IIncrementalGenerator
             var selectedUnitIds = new HashSet<string>(StringComparer.Ordinal);
             if (!useFullFallback)
             {
+                if (string.Equals(package.Granularity, "Package", StringComparison.Ordinal))
+                {
+                    selectedUnitIds.UnionWith(packageUnits.Select(static unit => unit.UnitId));
+                }
+                if (catalog.RootUnitsByPackage.TryGetValue(packageId, out var rootUnits))
+                {
+                    selectedUnitIds.UnionWith(rootUnits);
+                }
                 foreach (var usage in usages)
                 {
                     if (usage.Kind == LinkedUsageKind.Control &&
@@ -135,8 +169,15 @@ public sealed class ApplicationRegistrationPlanGenerator : IIncrementalGenerator
                 }
             }
 
-            var selectedUnits = packageUnits.Where(unit => selectedUnitIds.Contains(unit.UnitId))
-                                            .ToImmutableArray();
+            var selectedUnits = useFullFallback
+                ? ImmutableArray<LinkedUnitManifestRecord>.Empty
+                : RegistrationUnitGraphPlanner.Plan(
+                    packageUnits,
+                    catalog.UnitEdges.Where(edge => string.Equals(
+                        edge.PackageId,
+                        packageId,
+                        StringComparison.Ordinal)).ToArray(),
+                    selectedUnitIds);
             if (useFullFallback && !isLegacy &&
                 !ValidateFragmentMethod(
                     compilation,
@@ -181,6 +222,24 @@ public sealed class ApplicationRegistrationPlanGenerator : IIncrementalGenerator
                 useFullFallback,
                 selectedUnits,
                 package));
+        }
+
+        foreach (var fallback in catalog.Fallbacks.OrderBy(
+                     static item => item.PackageId,
+                     StringComparer.Ordinal).ThenBy(static item => item.Source, StringComparer.Ordinal)
+                                              .ThenBy(static item => item.Line)
+                                              .ThenBy(static item => item.Column)
+                                              .ThenBy(static item => item.Reason, StringComparer.Ordinal))
+        {
+            if (fallback.PackageId.Length != 0 && !invokedPackageSet.Contains(fallback.PackageId))
+            {
+                continue;
+            }
+            context.ReportDiagnostic(Diagnostic.Create(
+                GetFallbackDescriptor(LinkedRegistrationOptions.IsRegistrationStrict(optionsProvider)),
+                Location.None,
+                fallback.Reason,
+                fallback.PackageId.Length == 0 ? "<all invoked packages>" : fallback.PackageId));
         }
 
         if (hasInvalidCallTarget)
@@ -308,6 +367,25 @@ public sealed class ApplicationRegistrationPlanGenerator : IIncrementalGenerator
             return AtomUIDiagnosticDescriptors.LinkedLegacyPackageFallback;
         }
         var descriptor = AtomUIDiagnosticDescriptors.LinkedLegacyPackageFallback;
+        return new DiagnosticDescriptor(
+            descriptor.Id,
+            descriptor.Title,
+            descriptor.MessageFormat,
+            descriptor.Category,
+            DiagnosticSeverity.Error,
+            descriptor.IsEnabledByDefault,
+            descriptor.Description,
+            descriptor.HelpLinkUri,
+            descriptor.CustomTags.ToArray());
+    }
+
+    private static DiagnosticDescriptor GetFallbackDescriptor(bool strict)
+    {
+        if (!strict)
+        {
+            return AtomUIDiagnosticDescriptors.LinkedDynamicUsageWidened;
+        }
+        var descriptor = AtomUIDiagnosticDescriptors.LinkedDynamicUsageWidened;
         return new DiagnosticDescriptor(
             descriptor.Id,
             descriptor.Title,

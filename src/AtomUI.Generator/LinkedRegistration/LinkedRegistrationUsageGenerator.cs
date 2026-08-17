@@ -5,6 +5,7 @@ using System.Xml.Linq;
 using AtomUI.Generator.Diagnostics;
 using AtomUI.Generator.LinkedRegistration.Manifest;
 using AtomUI.Generator.LinkedRegistration.Model;
+using AtomUI.LinkedRegistration.Protocol;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -20,14 +21,17 @@ public sealed class LinkedRegistrationUsageGenerator : IIncrementalGenerator
         "build_metadata.AdditionalFiles.AtomUIAxamlUsage";
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        var csharpCandidates = LinkedCSharpUsageCandidateProvider.Create(context).Collect();
         var input = context.CompilationProvider
+                           .Combine(csharpCandidates)
                            .Combine(context.AdditionalTextsProvider.Collect())
                            .Combine(context.AnalyzerConfigOptionsProvider);
         context.RegisterSourceOutput(input, static (productionContext, value) =>
         {
             Generate(
                 productionContext,
-                value.Left.Left,
+                value.Left.Left.Left,
+                value.Left.Left.Right,
                 value.Left.Right,
                 value.Right);
         });
@@ -36,10 +40,15 @@ public sealed class LinkedRegistrationUsageGenerator : IIncrementalGenerator
     private static void Generate(
         SourceProductionContext context,
         Compilation compilation,
+        ImmutableArray<LinkedCSharpUsageCandidate> csharpCandidates,
         ImmutableArray<AdditionalText> additionalTexts,
         AnalyzerConfigOptionsProvider optionsProvider)
     {
-        var catalog = LinkedRegistrationManifestCatalog.Create(compilation, context.ReportDiagnostic);
+        var catalog = LinkedRegistrationManifestCatalog.Create(
+            compilation,
+            additionalTexts,
+            optionsProvider,
+            context.ReportDiagnostic);
         if (LinkedRegistrationOptions.GetDeclaredPackageId(optionsProvider).Length != 0)
         {
             ValidateMarkedAxamlInputs(
@@ -61,7 +70,7 @@ public sealed class LinkedRegistrationUsageGenerator : IIncrementalGenerator
             LinkedRegistrationOptions.GetProjectDirectory(optionsProvider),
             context.ReportDiagnostic);
 
-        collector.CollectCSharp(context.CancellationToken);
+        collector.CollectCSharp(csharpCandidates, context.CancellationToken);
         foreach (var text in additionalTexts.OrderBy(static item => item.Path, StringComparer.Ordinal))
         {
             if (optionsProvider.GetOptions(text).TryGetValue(AxamlUsageMetadata, out var enabled) &&
@@ -85,16 +94,29 @@ public sealed class LinkedRegistrationUsageGenerator : IIncrementalGenerator
         {
             LinkedRegistrationMetadataWriter.Write(source, usage.ToManifestRecord());
         }
+        if (collector.AnalysisBudgetExceeded)
+        {
+            LinkedRegistrationMetadataWriter.Write(
+                source,
+                new LinkedFallbackManifestRecord(
+                    string.Empty,
+                    "AnalysisBudgetExceeded",
+                    compilation.AssemblyName ?? "<application>",
+                    0,
+                    0));
+        }
         context.AddSource("LinkedRegistrationUsage.g.cs", GeneratedSourceText.From(source.ToString()));
     }
 
     internal static IReadOnlyList<LinkedUsageInfo> CollectApplicationUsages(
         Compilation compilation,
         LinkedRegistrationManifestCatalog catalog,
+        ImmutableArray<LinkedCSharpUsageCandidate> csharpCandidates,
         ImmutableArray<AdditionalText> additionalTexts,
         AnalyzerConfigOptionsProvider optionsProvider,
         CancellationToken cancellationToken,
-        Action<Diagnostic> reportDiagnostic)
+        Action<Diagnostic> reportDiagnostic,
+        out bool analysisBudgetExceeded)
     {
         var collector = new UsageCollector(
             compilation,
@@ -104,7 +126,7 @@ public sealed class LinkedRegistrationUsageGenerator : IIncrementalGenerator
             LinkedRegistrationOptions.IsRegistrationStrict(optionsProvider),
             LinkedRegistrationOptions.GetProjectDirectory(optionsProvider),
             reportDiagnostic);
-        collector.CollectCSharp(cancellationToken);
+        collector.CollectCSharp(csharpCandidates, cancellationToken);
         foreach (var text in additionalTexts.OrderBy(static item => item.Path, StringComparer.Ordinal))
         {
             if (optionsProvider.GetOptions(text).TryGetValue(AxamlUsageMetadata, out var enabled) &&
@@ -114,6 +136,7 @@ public sealed class LinkedRegistrationUsageGenerator : IIncrementalGenerator
             }
         }
         collector.CompleteFallbacks();
+        analysisBudgetExceeded = collector.AnalysisBudgetExceeded;
         return collector.GetOrderedUsages();
     }
 
@@ -161,6 +184,9 @@ public sealed class LinkedRegistrationUsageGenerator : IIncrementalGenerator
         private readonly HashSet<string> _explicitPackageRoots = new(StringComparer.Ordinal);
         private readonly Dictionary<string, HashSet<string>> _axamlPackagesBySource =
             new(StringComparer.Ordinal);
+        private int _axamlCandidateCount;
+
+        internal bool AnalysisBudgetExceeded { get; private set; }
 
         internal UsageCollector(
             Compilation compilation,
@@ -178,47 +204,63 @@ public sealed class LinkedRegistrationUsageGenerator : IIncrementalGenerator
             _reportDiagnostic = reportDiagnostic;
         }
 
-        internal void CollectCSharp(CancellationToken cancellationToken)
+        internal void CollectCSharp(
+            IReadOnlyList<LinkedCSharpUsageCandidate> candidates,
+            CancellationToken cancellationToken)
         {
-            CollectNamespace(_compilation.Assembly.GlobalNamespace);
-            foreach (var tree in _compilation.SyntaxTrees.OrderBy(
-                         static item => item.FilePath,
-                         StringComparer.Ordinal))
+            if (candidates.Count > LinkedRegistrationAnalysisBudget.MaxSourceCandidates)
+            {
+                AnalysisBudgetExceeded = true;
+                foreach (var candidate in candidates)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    CollectBudgetCandidate(candidate);
+                }
+                return;
+            }
+
+            foreach (var candidate in candidates.OrderBy(
+                         static item => item.Source,
+                         StringComparer.Ordinal).ThenBy(static item => item.SpanStart)
+                                              .ThenBy(static item => item.Kind)
+                                              .ThenBy(static item => item.Identity, StringComparer.Ordinal))
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var model = _compilation.GetSemanticModel(tree);
-                foreach (var node in tree.GetRoot(cancellationToken).DescendantNodes())
+                var location = candidate.CreateLocation();
+                switch (candidate.Kind)
                 {
-                    switch (node)
-                    {
-                        case ObjectCreationExpressionSyntax objectCreation
-                            when model.GetOperation(objectCreation, cancellationToken) is
-                                IObjectCreationOperation operation:
-                            AddType(operation.Type, operation.Syntax.GetLocation());
-                            break;
-                        case ImplicitObjectCreationExpressionSyntax implicitCreation
-                            when model.GetOperation(implicitCreation, cancellationToken) is
-                                IObjectCreationOperation operation:
-                            AddType(operation.Type, operation.Syntax.GetLocation());
-                            break;
-                        case TypeOfExpressionSyntax typeOfExpression
-                            when model.GetOperation(typeOfExpression, cancellationToken) is
-                                ITypeOfOperation operation:
-                            AddType(operation.TypeOperand, operation.Syntax.GetLocation());
-                            break;
-                        case InvocationExpressionSyntax invocationExpression
-                            when model.GetOperation(invocationExpression, cancellationToken) is
-                                IInvocationOperation operation:
-                            CollectInvocation(operation);
-                            break;
-                    }
+                    case LinkedCSharpUsageCandidateKind.Type:
+                        AddType(candidate.Identity, location);
+                        break;
+                    case LinkedCSharpUsageCandidateKind.Call:
+                        CollectInvocation(candidate, location);
+                        break;
+                    case LinkedCSharpUsageCandidateKind.Dynamic:
+                        AddDynamicUse(candidate.Identity, location);
+                        break;
                 }
             }
         }
 
         internal void CollectAxaml(AdditionalText text, CancellationToken cancellationToken)
         {
-            var content = text.GetText(cancellationToken)?.ToString();
+            var sourceText = text.GetText(cancellationToken);
+            if (sourceText is null || sourceText.Length == 0)
+            {
+                ReportProtocolError(text.Path, "marked AXAML usage input is empty");
+                return;
+            }
+            if (sourceText.Length > LinkedRegistrationAnalysisBudget.MaxAxamlUsageBytes)
+            {
+                AnalysisBudgetExceeded = true;
+                return;
+            }
+            var content = sourceText.ToString();
+            if (Encoding.UTF8.GetByteCount(content) > LinkedRegistrationAnalysisBudget.MaxAxamlUsageBytes)
+            {
+                AnalysisBudgetExceeded = true;
+                return;
+            }
             if (string.IsNullOrWhiteSpace(content))
             {
                 ReportProtocolError(text.Path, "marked AXAML usage input is empty");
@@ -231,7 +273,16 @@ public sealed class LinkedRegistrationUsageGenerator : IIncrementalGenerator
                 return;
             }
 
-            var elements = root!.Elements().ToArray();
+            var elements = root!.Elements()
+                .Take(LinkedRegistrationAnalysisBudget.MaxAxamlCandidates + 1)
+                .ToArray();
+            _axamlCandidateCount += elements.Length;
+            if (elements.Length > LinkedRegistrationAnalysisBudget.MaxAxamlCandidates ||
+                _axamlCandidateCount > LinkedRegistrationAnalysisBudget.MaxAxamlCandidates)
+            {
+                AnalysisBudgetExceeded = true;
+                return;
+            }
             foreach (var element in elements.Where(IsExplicitRootUsage))
             {
                 CollectAxamlUsage(element);
@@ -311,26 +362,40 @@ public sealed class LinkedRegistrationUsageGenerator : IIncrementalGenerator
 
         internal void CompleteFallbacks()
         {
+            if (AnalysisBudgetExceeded)
+            {
+                return;
+            }
+
             foreach (var dynamicUse in _dynamicUses.OrderBy(
                          static item => item.Source,
                          StringComparer.Ordinal).ThenBy(static item => item.Line)
                                               .ThenBy(static item => item.Column))
             {
-                if (_explicitPackageRoots.Count != 1)
+                var packages = _explicitPackageRoots.Count != 0
+                    ? _explicitPackageRoots
+                    : _invokedPackages;
+                if (packages.Count == 0)
                 {
-                    ReportInvalidScope("Package", dynamicUse.Identity, dynamicUse.Location);
+                    ReportInvalidScope(
+                        "Package",
+                        dynamicUse.Identity,
+                        dynamicUse.Location);
                     continue;
                 }
-
-                var packageId = _explicitPackageRoots.Single();
-                AddPackageFallback(
-                    packageId,
-                    dynamicUse.Source,
-                    dynamicUse.Line,
-                    dynamicUse.Column,
-                    dynamicUse.Location,
-                    AtomUIDiagnosticDescriptors.LinkedDynamicUsageWidened,
-                    dynamicUse.Identity);
+                foreach (var packageId in packages.OrderBy(
+                             static packageId => packageId,
+                             StringComparer.Ordinal))
+                {
+                    AddPackageFallback(
+                        packageId,
+                        dynamicUse.Source,
+                        dynamicUse.Line,
+                        dynamicUse.Column,
+                        dynamicUse.Location,
+                        AtomUIDiagnosticDescriptors.LinkedDynamicUsageWidened,
+                        dynamicUse.Identity);
+                }
             }
 
             foreach (var uncertainty in _axamlUncertainties.OrderBy(
@@ -414,68 +479,28 @@ public sealed class LinkedRegistrationUsageGenerator : IIncrementalGenerator
                           .ToArray();
         }
 
-        private void CollectNamespace(INamespaceSymbol namespaceSymbol)
+        private void CollectInvocation(
+            LinkedCSharpUsageCandidate invocation,
+            Location location)
         {
-            foreach (var type in namespaceSymbol.GetTypeMembers().OrderBy(
-                         static item => item.MetadataName,
-                         StringComparer.Ordinal))
+            if (_catalog.ControlMaps.TryGetValue(
+                    invocation.ContainingTypeIdentity,
+                    out var controlMap))
             {
-                CollectNamedType(type);
+                var sourceLocation = GetLocationInfo(location);
+                AddControlUsage(
+                    controlMap,
+                    sourceLocation.Source,
+                    sourceLocation.Line,
+                    sourceLocation.Column,
+                    location);
             }
-            foreach (var child in namespaceSymbol.GetNamespaceMembers().OrderBy(
-                         static item => item.Name,
-                         StringComparer.Ordinal))
-            {
-                CollectNamespace(child);
-            }
-        }
 
-        private void CollectNamedType(INamedTypeSymbol type)
-        {
-            var location = GetSourceLocation(type);
-            AddType(type.BaseType, location);
-            foreach (var interfaceType in type.Interfaces)
+            if (_catalog.PackageIdsByEntry.TryGetValue(
+                    invocation.Identity,
+                    out var entryPackageIds))
             {
-                AddType(interfaceType, location);
-            }
-            foreach (var member in type.GetMembers())
-            {
-                switch (member)
-                {
-                    case IFieldSymbol field:
-                        AddType(field.Type, GetSourceLocation(field));
-                        break;
-                    case IPropertySymbol property:
-                        AddType(property.Type, GetSourceLocation(property));
-                        foreach (var parameter in property.Parameters)
-                        {
-                            AddType(parameter.Type, GetSourceLocation(parameter));
-                        }
-                        break;
-                    case IEventSymbol eventSymbol:
-                        AddType(eventSymbol.Type, GetSourceLocation(eventSymbol));
-                        break;
-                    case IMethodSymbol method:
-                        AddType(method.ReturnType, GetSourceLocation(method));
-                        foreach (var parameter in method.Parameters)
-                        {
-                            AddType(parameter.Type, GetSourceLocation(parameter));
-                        }
-                        break;
-                    case INamedTypeSymbol nested:
-                        CollectNamedType(nested);
-                        break;
-                }
-            }
-        }
-
-        private void CollectInvocation(IInvocationOperation invocation)
-        {
-            var target = invocation.TargetMethod.OriginalDefinition;
-            var methodName = LinkedRegistrationSymbolName.GetMethodMetadataName(target);
-            if (_catalog.PackageIdsByEntry.TryGetValue(methodName, out var entryPackageIds))
-            {
-                var location = GetLocationInfo(invocation.Syntax.GetLocation());
+                var sourceLocation = GetLocationInfo(location);
                 foreach (var packageId in entryPackageIds.OrderBy(
                              static packageId => packageId,
                              StringComparer.Ordinal))
@@ -484,97 +509,76 @@ public sealed class LinkedRegistrationUsageGenerator : IIncrementalGenerator
                     AddUsage(new LinkedUsageInfo(
                         LinkedUsageKind.Entry,
                         packageId,
-                        location.Source,
-                        location.Line,
-                        location.Column,
+                        sourceLocation.Source,
+                        sourceLocation.Line,
+                        sourceLocation.Column,
                         packageId,
-                        invocation.Syntax.GetLocation()));
+                        location));
                 }
             }
-
-            if (!IsDynamicCreationMethod(target))
-            {
-                return;
-            }
-
-            if (invocation.TargetMethod.IsGenericMethod && invocation.TargetMethod.TypeArguments.Length != 0)
-            {
-                if (invocation.TargetMethod.TypeArguments.Any(ContainsTypeParameter))
-                {
-                    AddDynamicUse(invocation, methodName);
-                    return;
-                }
-                foreach (var typeArgument in invocation.TargetMethod.TypeArguments)
-                {
-                    AddType(typeArgument, invocation.Syntax.GetLocation());
-                }
-                return;
-            }
-
-            var typeArgumentOperation = invocation.Arguments.FirstOrDefault()?.Value;
-            var resolvedType = ResolveRuntimeTypeValue(
-                typeArgumentOperation,
-                new HashSet<ISymbol>(SymbolEqualityComparer.Default));
-            if (resolvedType is not null)
-            {
-                if (ContainsTypeParameter(resolvedType))
-                {
-                    AddDynamicUse(invocation, methodName);
-                    return;
-                }
-                AddType(resolvedType, invocation.Syntax.GetLocation());
-                return;
-            }
-
-            AddDynamicUse(invocation, methodName);
         }
 
-        private void AddDynamicUse(IInvocationOperation invocation, string methodName)
+        private void CollectBudgetCandidate(LinkedCSharpUsageCandidate candidate)
         {
-            var location = GetLocationInfo(invocation.Syntax.GetLocation());
+            var location = candidate.CreateLocation();
+            if (candidate.Kind == LinkedCSharpUsageCandidateKind.Dynamic)
+            {
+                return;
+            }
+
+            if (candidate.Kind == LinkedCSharpUsageCandidateKind.Type &&
+                _catalog.ControlMaps.TryGetValue(candidate.Identity, out var typeControl))
+            {
+                AddPackageRootUsage(typeControl.PackageId, location);
+            }
+            else if (candidate.Kind == LinkedCSharpUsageCandidateKind.Call &&
+                     _catalog.ControlMaps.TryGetValue(
+                         candidate.ContainingTypeIdentity,
+                         out var containingControl))
+            {
+                AddPackageRootUsage(containingControl.PackageId, location);
+            }
+
+            if (candidate.Kind == LinkedCSharpUsageCandidateKind.Call &&
+                _catalog.PackageIdsByEntry.TryGetValue(candidate.Identity, out var packageIds))
+            {
+                var sourceLocation = GetLocationInfo(location);
+                foreach (var packageId in packageIds)
+                {
+                    _invokedPackages.Add(packageId);
+                    AddUsage(new LinkedUsageInfo(
+                        LinkedUsageKind.Entry,
+                        packageId,
+                        sourceLocation.Source,
+                        sourceLocation.Line,
+                        sourceLocation.Column,
+                        packageId,
+                        location));
+                }
+            }
+        }
+
+        private void AddPackageRootUsage(string packageId, Location location)
+        {
+            AddUsage(new LinkedUsageInfo(
+                LinkedUsageKind.PackageRoot,
+                packageId,
+                GetLocationInfo(location).Source,
+                GetLocationInfo(location).Line,
+                GetLocationInfo(location).Column,
+                packageId,
+                location));
+        }
+
+        private void AddDynamicUse(string identity, Location location)
+        {
+            var sourceLocation = GetLocationInfo(location);
             _dynamicUses.Add(new DynamicUse(
-                methodName,
-                location.Source,
-                location.Line,
-                location.Column,
-                invocation.Syntax.GetLocation()));
-        }
-
-        private ITypeSymbol? ResolveRuntimeTypeValue(
-            IOperation? operation,
-            ISet<ISymbol> visitedSymbols)
-        {
-            while (operation is IConversionOperation conversion)
-            {
-                operation = conversion.Operand;
-            }
-            if (operation is ITypeOfOperation typeOfOperation)
-            {
-                return typeOfOperation.TypeOperand;
-            }
-            if (operation is not ILocalReferenceOperation localReference ||
-                !visitedSymbols.Add(localReference.Local))
-            {
-                return null;
-            }
-
-            foreach (var syntaxReference in localReference.Local.DeclaringSyntaxReferences)
-            {
-                var syntax = syntaxReference.GetSyntax();
-                var semanticModel = _compilation.GetSemanticModel(syntax.SyntaxTree);
-                if (semanticModel.GetOperation(syntax) is IVariableDeclaratorOperation declarator &&
-                    declarator.Initializer is not null)
-                {
-                    var resolved = ResolveRuntimeTypeValue(
-                        declarator.Initializer.Value,
-                        visitedSymbols);
-                    if (resolved is not null)
-                    {
-                        return resolved;
-                    }
-                }
-            }
-            return null;
+                identity,
+                sourceLocation.Source,
+                sourceLocation.Line,
+                sourceLocation.Column,
+                location));
         }
 
         private void CollectAxamlUsage(XElement element)
@@ -736,36 +740,17 @@ public sealed class LinkedRegistrationUsageGenerator : IIncrementalGenerator
             return packages;
         }
 
-        private void AddType(ITypeSymbol? type, Location? location)
+        private void AddType(string metadataName, Location location)
         {
-            switch (type)
+            if (_catalog.ControlMaps.TryGetValue(metadataName, out var controlMap))
             {
-                case null:
-                    return;
-                case IArrayTypeSymbol array:
-                    AddType(array.ElementType, location);
-                    return;
-                case IPointerTypeSymbol pointer:
-                    AddType(pointer.PointedAtType, location);
-                    return;
-                case INamedTypeSymbol named:
-                    var definition = named.OriginalDefinition;
-                    var metadataName = GetTypeMetadataName(definition);
-                    if (_catalog.ControlMaps.TryGetValue(metadataName, out var controlMap))
-                    {
-                        var sourceLocation = GetLocationInfo(location);
-                        AddControlUsage(
-                            controlMap,
-                            sourceLocation.Source,
-                            sourceLocation.Line,
-                            sourceLocation.Column,
-                            location);
-                    }
-                    foreach (var typeArgument in named.TypeArguments)
-                    {
-                        AddType(typeArgument, location);
-                    }
-                    return;
+                var sourceLocation = GetLocationInfo(location);
+                AddControlUsage(
+                    controlMap,
+                    sourceLocation.Source,
+                    sourceLocation.Line,
+                    sourceLocation.Column,
+                    location);
             }
         }
 
@@ -814,6 +799,17 @@ public sealed class LinkedRegistrationUsageGenerator : IIncrementalGenerator
 
         private void AddUsage(LinkedUsageInfo usage)
         {
+            if (AnalysisBudgetExceeded && usage.Kind is not (
+                    LinkedUsageKind.PackageRoot or LinkedUsageKind.Entry))
+            {
+                var packageId = GetUsagePackage(usage);
+                if (packageId.Length != 0)
+                {
+                    AddPackageRootUsage(packageId, usage.Location ?? Location.None);
+                }
+                return;
+            }
+
             var key = usage.Kind is LinkedUsageKind.PackageRoot or
                 LinkedUsageKind.UnitRoot or LinkedUsageKind.Entry
                 ? string.Join("\u001f", usage.Kind.ToString(), usage.Identity)
@@ -824,9 +820,37 @@ public sealed class LinkedRegistrationUsageGenerator : IIncrementalGenerator
                     usage.Source,
                     usage.Line.ToString(CultureInfo.InvariantCulture),
                     usage.Column.ToString(CultureInfo.InvariantCulture));
+            if (!_usages.ContainsKey(key) && _usages.Count >= LinkedRegistrationAnalysisBudget.MaxUsages)
+            {
+                AnalysisBudgetExceeded = true;
+                CompactUsagesToPackageRoots();
+                if (usage.Kind is not (LinkedUsageKind.PackageRoot or LinkedUsageKind.Entry))
+                {
+                    var packageId = GetUsagePackage(usage);
+                    if (packageId.Length != 0)
+                    {
+                        AddPackageRootUsage(packageId, usage.Location ?? Location.None);
+                    }
+                    return;
+                }
+            }
             if (!_usages.ContainsKey(key))
             {
                 _usages.Add(key, usage);
+            }
+        }
+
+        private void CompactUsagesToPackageRoots()
+        {
+            var compacted = _usages.Values
+                .Where(usage => usage.Kind is LinkedUsageKind.PackageRoot or LinkedUsageKind.Entry)
+                .ToArray();
+            _usages.Clear();
+            foreach (var usage in compacted)
+            {
+                _usages.Add(
+                    usage.Kind + "\u001f" + usage.Identity,
+                    usage);
             }
         }
 
@@ -896,53 +920,22 @@ public sealed class LinkedRegistrationUsageGenerator : IIncrementalGenerator
                 detail));
         }
 
-        private Location? GetSourceLocation(ISymbol symbol)
-        {
-            return symbol.Locations.Where(static location => location.IsInSource)
-                         .OrderBy(location => NormalizeSourcePath(
-                             location.GetLineSpan().Path,
-                             _projectDirectory), StringComparer.Ordinal)
-                         .ThenBy(static location => location.SourceSpan.Start)
-                         .ThenBy(static location => location.SourceSpan.Length)
-                         .FirstOrDefault();
-        }
-
         private SourceLocation GetLocationInfo(Location? location)
         {
-            if (location is null || !location.IsInSource)
+            if (location is null)
             {
                 return new SourceLocation("<Unknown>", 0, 0);
             }
             var span = location.GetLineSpan();
+            if (span.Path.Length == 0)
+            {
+                return new SourceLocation("<Unknown>", 0, 0);
+            }
             return new SourceLocation(
                 NormalizeSourcePath(span.Path, _projectDirectory),
                 span.StartLinePosition.Line + 1,
                 span.StartLinePosition.Character + 1);
         }
-    }
-
-    private static bool IsDynamicCreationMethod(IMethodSymbol method)
-    {
-        var containingType = GetTypeMetadataName(method.ContainingType.OriginalDefinition);
-        return (containingType == "System.Activator" && method.Name == "CreateInstance") ||
-               (containingType == "System.Runtime.CompilerServices.RuntimeHelpers" &&
-                method.Name == "GetUninitializedObject") ||
-               (containingType == "System.Runtime.Serialization.FormatterServices" &&
-                method.Name == "GetUninitializedObject");
-    }
-
-    private static bool ContainsTypeParameter(ITypeSymbol type)
-    {
-        return type switch
-        {
-            ITypeParameterSymbol => true,
-            IArrayTypeSymbol array => ContainsTypeParameter(array.ElementType),
-            IPointerTypeSymbol pointer => ContainsTypeParameter(pointer.PointedAtType),
-            INamedTypeSymbol named => named.TypeArguments.Any(ContainsTypeParameter) ||
-                                     (named.ContainingType is not null &&
-                                      ContainsTypeParameter(named.ContainingType)),
-            _ => false
-        };
     }
 
     private static bool IsControlType(INamedTypeSymbol type)

@@ -132,35 +132,6 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
                 generationInfo.Right.OptionsProvider,
                 context.ReportDiagnostic);
             tokenInfo.ControlThemeInfos.AddRange(controlThemeInfos);
-            var dependencyAnalysis = generationInfo.Right.EntryMethods.HasEntries
-                ? LinkedRegistration.Model.RegistrationUnitDependencyAnalyzer.Analyze(
-                    generationInfo.Right.Compilation,
-                    controlThemeInfos,
-                    generationInfo.Right.PackageId,
-                    generationInfo.Right.RegistrationGranularity,
-                    generationInfo.Right.ProjectDirectory,
-                    generationInfo.Right.OptionsProvider,
-                    context.CancellationToken)
-                : LinkedRegistration.Model.RegistrationUnitDependencyAnalysis.Empty;
-            if (LinkedRegistration.LinkedRegistrationOptions.IsLinkedPublish(
-                    generationInfo.Right.OptionsProvider) ||
-                LinkedRegistration.LinkedRegistrationOptions.IsRegistrationStrict(
-                    generationInfo.Right.OptionsProvider))
-            {
-                var descriptor = LinkedRegistration.LinkedRegistrationOptions.IsRegistrationStrict(
-                    generationInfo.Right.OptionsProvider)
-                    ? AsError(Diagnostics.AtomUIDiagnosticDescriptors.LinkedDynamicUsageWidened)
-                    : Diagnostics.AtomUIDiagnosticDescriptors.LinkedDynamicUsageWidened;
-                foreach (var issue in dependencyAnalysis.Issues)
-                {
-                    context.ReportDiagnostic(Diagnostic.Create(
-                        descriptor,
-                        issue.Location ?? Location.None,
-                        issue.Identity,
-                        generationInfo.Right.PackageId));
-                }
-            }
-
             if (tokenInfo.SchemaTokens.Count != 0 ||
                 tokenInfo.ControlThemeInfos.Count != 0 ||
                 combinedInfos.Left.Right.Length != 0)
@@ -173,8 +144,7 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
                     generationInfo.Right.ControlCatalog,
                     tokenInfo.SchemaTokens,
                     tokenInfo.ControlThemeInfos,
-                    combinedInfos.Left.Right,
-                    dependencyAnalysis);
+                    combinedInfos.Left.Right);
                 schemaWriter.Write();
             }
 
@@ -184,6 +154,7 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
                     context,
                     generationInfo.Right.AssemblyName,
                     generationInfo.Right.PackageId,
+                    generationInfo.Right.RegistrationGranularity,
                     generationInfo.Right.EntryMethods.ManifestMethodMetadataNames).Write();
             }
 
@@ -196,20 +167,6 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
             }
 
         });
-    }
-
-    private static DiagnosticDescriptor AsError(DiagnosticDescriptor descriptor)
-    {
-        return new DiagnosticDescriptor(
-            descriptor.Id,
-            descriptor.Title,
-            descriptor.MessageFormat,
-            descriptor.Category,
-            DiagnosticSeverity.Error,
-            descriptor.IsEnabledByDefault,
-            descriptor.Description,
-            descriptor.HelpLinkUri,
-            descriptor.CustomTags.ToArray());
     }
 
     private static ThemeCompilationInfo CreateCompilationInfo(

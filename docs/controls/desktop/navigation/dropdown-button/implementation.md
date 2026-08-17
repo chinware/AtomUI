@@ -10,7 +10,7 @@
 
 主要源码文件：
 
-- `src/AtomUI.Desktop.Controls/Buttons/DropdownButton.cs`
+- `src/AtomUI.Desktop.Controls/DropdownButton/DropdownButton.cs`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonBaseTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/DropdownButtonTheme.axaml`

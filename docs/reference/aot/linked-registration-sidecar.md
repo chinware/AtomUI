@@ -1,0 +1,171 @@
+# Linked Registration Sidecar
+
+本文定义 AtomUI linked registration Sidecar 的机器可读契约。Sidecar 是构建期资产，不是运行时配置文件。
+
+## 文件和编码
+
+- 扩展名：`.atomui-link.json`。
+- 编码：UTF-8，无 BOM。
+- 内容：单个 JSON object。
+- NuGet 位置：`buildTransitive/AtomUI.LinkedRegistration/`。
+- ProjectReference 位置：项目 `obj` 输出，由 MSBuild target item 传递。
+- 不作为 `EmbeddedResource`、`Content`、runtime asset 或 publish asset。
+
+Producer 必须使用结构化 JSON writer。Consumer 必须使用结构化 parser；不得用正则或字符串切割解析。
+
+## 顶层字段
+
+| 字段 | 必需 | 含义 |
+| --- | --- | --- |
+| `protocolMajor` | 是 | 协议 major；未知值构建失败 |
+| `protocolMinor` | 是 | 协议 minor；未知 optional 字段可以忽略 |
+| `producer` | 是 | 生成工具身份，只用于诊断 |
+| `assembly` | 是 | 当前 assembly identity 和 contract hash |
+| `packages` | 是 | 当前 assembly 定义的 Package records；可以为空 |
+| `usages` | 是 | 当前 assembly 对 AtomUI Package/Unit/entry 的 usage records；可以为空 |
+| `fallbacks` | 是 | 当前 assembly 已知的不确定性；可以为空 |
+
+数组即使为空也必须存在，避免“字段缺失”和“没有记录”产生歧义。
+
+## Assembly
+
+`assembly` 包含：
+
+| 字段 | 含义 |
+| --- | --- |
+| `name` | Assembly simple name |
+| `contractHash` | 覆盖本文件全部协议事实的 canonical content hash |
+| `targetFramework` | 产生 Sidecar 的目标框架 identity |
+
+Sidecar 与实际引用 assembly identity、target framework 或 hash 不一致时不得消费。ProjectReference 应重新生成；无法重新生成的
+NuGet/二进制输入对相关 Package 使用 full fallback。
+
+## Package
+
+一个 Package record 包含：
+
+| 字段 | 含义 |
+| --- | --- |
+| `id` | 稳定 `AtomUIRegistrationPackageId` |
+| `assemblyName` | 定义 Package 的 assembly |
+| `granularity` | `Package` 或 `Directory` |
+| `entryMethods` | 从 `[ControlPackageRegistrationEntry]` 方法符号派生的 metadata names |
+| `fullFragment` | full registrar 的 type/method identity |
+| `sharedFragment` | 可选 PackageShared fragment identity |
+| `units` | 当前 Package 的 Unit records |
+| `unitEdges` | 当前 Package 的 direct UnitEdge records |
+| `rootUnits` | Package Core 始终需要的 Unit IDs |
+
+同一 Package ID 只能由一个 assembly 定义。重复 Package、重复 Unit、跨 Package UnitEdge 或无对应 Unit 的 ControlMap 均为协议错误。
+
+## Unit
+
+一个 Unit record 包含：
+
+| 字段 | 含义 |
+| --- | --- |
+| `id` | Package 内稳定 Unit ID |
+| `fragmentType` | leaf fragment CLR metadata name |
+| `fragmentMethod` | leaf fragment static method name |
+| `orderKey` | Package generator 产生的稳定注册顺序 |
+| `controls` | 当前 Unit 拥有的 public Control metadata names |
+
+Fragment method 必须可由入口应用 Compilation 解析，并具有生成 ABI 要求的静态签名。Fragment 不得调用其他 Unit、
+`AddDependencies` 或 `TryEnterUnit`。
+
+## UnitEdge
+
+一个 UnitEdge record 包含：
+
+| 字段 | 含义 |
+| --- | --- |
+| `sourceUnitId` | 依赖方 Unit |
+| `targetUnitId` | 被依赖 Unit |
+| `evidenceKind` | `CSharpType`、`CSharpCall`、`AxamlType` 或 `PackageCore` |
+
+UnitEdge 只表示同 Package 直接依赖。Sidecar 不存储传递闭包；Application Plan Generator 在编译期计算 closure 和 SCC。
+重复 edge 必须去重，自环可以保留或规范化删除，但 producer/consumer 必须使用一致规则。
+
+## Usage
+
+Usage record 的 kind 只允许：
+
+| Kind | Identity |
+| --- | --- |
+| `Entry` | Package registration entry method identity |
+| `Control` | CLR Control metadata name |
+| `UnitRoot` | 完整 Unit ID |
+| `PackageRoot` | Package ID |
+
+Usage 可以带相对 source identity、line 和 column，用于 linked build 诊断。发布 Sidecar 不得包含开发机绝对路径。
+
+缺失 Sidecar 不能解释为没有 Usage。无法恢复精确 Usage 时，对可确定的相关 Package执行 full fallback；无法确定 Package 时，
+对应用已显式调用的 AtomUI Packages 执行 fallback。
+
+## Fallback
+
+Fallback record 包含：
+
+| 字段 | 含义 |
+| --- | --- |
+| `packageId` | 需要 full registrar 的 Package；无法唯一确定时为空 |
+| `reason` | 稳定 reason code |
+| `source` | 可选相对 source/assembly identity |
+| `line` / `column` | 可选位置 |
+
+至少支持以下 reason：
+
+- `UnresolvedOwner`
+- `DynamicInvocation`
+- `ReflectionType`
+- `UnresolvedAxaml`
+- `LooseAxaml`
+- `GeneratedOutputUnverified`
+- `MissingSidecar`
+- `StaleSidecar`
+- `AnalysisBudgetExceeded`
+
+Fallback 只能扩大保留范围。Consumer 不得忽略未知必需 reason，也不得把 fallback 降级为 Exact。
+
+## 确定性
+
+Canonical writer 必须：
+
+1. 使用固定字段顺序。
+2. 按 ordinal Package ID、Unit ID、edge tuple、usage tuple 和 fallback tuple 排序。
+3. 使用统一路径分隔符和相对路径。
+4. 对重复 records 去重。
+5. 在 canonical 内容上计算 `contractHash`。
+6. 内容未变化时不重写文件或更新时间戳。
+
+同一输入、SDK、Generator 和目标框架连续生成的 Sidecar 必须 byte-for-byte 相同。
+
+## 验证和错误
+
+以下情况是构建 Error：
+
+- 未知 `protocolMajor`。
+- 缺少必需字段或字段类型错误。
+- Package/Unit/Control ownership 冲突。
+- UnitEdge 跨 Package 或引用不存在 Unit。
+- Fragment symbol 不存在或签名不兼容。
+- Sidecar 与 ProjectReference assembly identity/hash 不一致且无法重建。
+
+以下情况产生 Package fallback Warning；strict 验证可以提升为 Error：
+
+- 动态、反射或 Loose AXAML 无法解析。
+- 编译输出 direct-evidence 无法由 Sidecar 解释。
+- NuGet/未知二进制缺少 Sidecar。
+- 确定性分析预算超限。
+
+运行时不得读取、验证或恢复 Sidecar 错误。
+
+## 资产验证
+
+NuGet 和真实 publish 测试必须确认：
+
+- Package 中 Sidecar 与 consumer target 存在且路径正确。
+- linked build 可以通过 AdditionalFiles 读取 Sidecar。
+- 普通 Debug/Release 不把 Sidecar加入 compiler input。
+- Sidecar 不出现在 `lib/`、runtime assets、应用输出、`.app` bundle 或 publish 目录。
+- Generator、Build Tasks、PDB 和分析缓存同样不进入运行时产物。

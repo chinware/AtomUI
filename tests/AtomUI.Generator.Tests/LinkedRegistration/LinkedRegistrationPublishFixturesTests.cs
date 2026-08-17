@@ -56,10 +56,16 @@ public sealed class LinkedRegistrationPublishFixturesTests
 
         var unusedUnitSource = ReadRepoFile(
             "tests/AtomUI.LinkedRegistration.Fixtures/UnusedUnit/UnusedUnitFragment.cs");
+        unusedUnitSource.ShouldContain("AtomUI.Linked.Package.v1");
         unusedUnitSource.ShouldContain("AtomUI.Linked.Unit.v1");
-        unusedUnitSource.ShouldContain("AtomUI.Desktop.Controls%2FFixtureUnused");
+        unusedUnitSource.ShouldContain(
+            "AtomUI.LinkedRegistration.Fixtures.UnusedUnit%2FFixtureUnused");
+        unusedUnitSource.ShouldNotContain("AtomUI.Desktop.Controls%2FFixtureUnused");
+        unusedUnitSource.ShouldContain("public static class UnusedUnitRegistration");
+        unusedUnitSource.ShouldContain("[ControlPackageRegistrationEntry]");
         unusedUnitSource.ShouldContain("public static class UnusedUnitFragment");
         unusedUnitSource.ShouldContain("AotTrimControlPackageRegistrationBuilder builder");
+        unusedUnitSource.ShouldNotContain("TryEnterUnit");
     }
 
     [Fact]
@@ -120,7 +126,11 @@ public sealed class LinkedRegistrationPublishFixturesTests
         source.ShouldContain("local build_args=(");
         source.ShouldContain("build \"$project\"");
         source.ShouldContain("restore_fixture()");
-        source.ShouldContain("dotnet restore \"$(fixture_project \"$fixture\")\"");
+        source.ShouldContain("local restore_args=(");
+        source.ShouldContain("restore \"$(fixture_project \"$fixture\")\"");
+        source.ShouldContain("restore_args+=(-p:AtomUILinkedPublish=true)");
+        source.ShouldContain("restore_fixture \"$fixture\" false");
+        source.ShouldContain("restore_fixture \"$fixture\" true");
         source.ShouldContain("--no-restore");
         source.ShouldContain("local fixture_assembly=");
         source.ShouldContain("dotnet \"$fixture_assembly\"");
@@ -135,13 +145,27 @@ public sealed class LinkedRegistrationPublishFixturesTests
         source.ShouldContain("build/MacOSHomebrewNativeAot.targets");
         source.ShouldContain("CustomAfterMicrosoftCommonTargets");
         source.ShouldContain("RunAOTCompilation=true");
-        source.ShouldContain("AtomUIUseGeneratedRegistration=true");
+        source.ShouldContain("AtomUILinkedPublish=true");
+        source.ShouldContain("AtomUIEmitVerificationPlan=true");
+        source.ShouldContain("verify_minimal_plan");
+        source.ShouldContain("GeneratedRegistrationUnit_Button_");
+        source.ShouldContain("GeneratedRegistrationUnit_Space_");
+        source.ShouldContain("for forbidden_unit in DropdownButton SplitButton Flyouts Menu TreeView Dialog Tooltip DatePicker");
+        source.ShouldContain("GeneratedRegistrationUnit_${forbidden_unit}_");
+        source.ShouldContain("AtomUIUseGeneratedRegistration must remain inert");
         source.ShouldContain("MINIMUM_DESKTOP_REDUCTION_PERCENT=40");
         source.ShouldContain("MAX_SECOND_UNIT_GROWTH_BYTES=262144");
+        source.ShouldContain("MAX_MINIMAL_MAIN_BYTES_OSX_ARM64=18874368");
+        source.ShouldContain("! -path '*/.dSYM/*'");
+        source.ShouldContain("! -name '*.pdb'");
+        source.ShouldContain("! -name '*.dbg'");
+        source.ShouldContain("{ print $8 }");
         source.ShouldContain("if (( reduction_percent < MINIMUM_DESKTOP_REDUCTION_PERCENT )); then");
         source.ShouldContain("if (( second_unit_growth > MAX_SECOND_UNIT_GROWTH_BYTES )); then");
-        source.ShouldContain("NativeAOT Minimal reduction");
-        source.ShouldContain("Unused Unit NativeAOT growth");
+        source.ShouldContain("minimal_main_size > MAX_MINIMAL_MAIN_BYTES_OSX_ARM64");
+        source.ShouldContain("NativeAOT Minimal main executable reduction");
+        source.ShouldContain("Unused Unit NativeAOT main executable growth");
+        source.ShouldContain("NativeAOT Minimal main executable is");
         source.ShouldNotContain("(( reduction_percent >= MINIMUM_DESKTOP_REDUCTION_PERCENT ))");
         source.ShouldNotContain("(( second_unit_growth <= MAX_SECOND_UNIT_GROWTH_BYTES ))");
         source.ShouldContain("MinimalWithUnusedUnit");

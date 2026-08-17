@@ -24,5 +24,11 @@
 
     <ItemGroup>
         <InternalsVisibleTo Include="AtomUI.Build.Tasks.Tests" />
+        <Compile Include="../AtomUI.Generator/LinkedRegistration/LinkedRegistrationProtocol.cs"
+                 Link="LinkedRegistrationProtocol/LinkedRegistrationProtocol.cs" />
+        <Compile Include="../AtomUI.Generator/LinkedRegistration/Manifest/LinkedRegistrationManifestModels.cs"
+                 Link="LinkedRegistrationProtocol/LinkedRegistrationManifestModels.cs" />
+        <Compile Include="../AtomUI.Generator/LinkedRegistration/Manifest/LinkedRegistrationManifestCodec.cs"
+                 Link="LinkedRegistrationProtocol/LinkedRegistrationManifestCodec.cs" />
     </ItemGroup>
 </Project>

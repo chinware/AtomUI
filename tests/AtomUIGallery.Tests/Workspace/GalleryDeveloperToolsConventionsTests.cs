@@ -123,6 +123,10 @@ public class GalleryDeveloperToolsConventionsTests
     {
         var project = XDocument.Load(GetRepoFile(
             "controlgallery/AtomUIGallery.Browser/AtomUIGallery.Browser.csproj"));
+        var runAot = project.Descendants("RunAOTCompilation").ShouldHaveSingleItem();
+        ((string?)runAot.Attribute("Condition")).ShouldBe("'$(WasmBuildingForNestedPublish)' == 'true'");
+        runAot.Value.ShouldBe("false");
+
         var target = project.Descendants("Target")
                             .Single(element =>
                                 (string?)element.Attribute("Name") ==
@@ -132,6 +136,7 @@ public class GalleryDeveloperToolsConventionsTests
         var condition = (string?)target.Attribute("Condition");
         condition.ShouldNotBeNull();
         condition.ShouldContain("WasmBuildingForNestedPublish");
+        condition.ShouldContain("RunAOTCompilation");
         condition.ShouldContain("AtomUIBrowserNativeBuild");
         target.Descendants("WasmBuildNative").ShouldHaveSingleItem().Value.ShouldBe("false");
         target.Descendants("WasmEnableWebcil").ShouldHaveSingleItem().Value.ShouldBe("true");

@@ -5,7 +5,8 @@
 本文是 AtomUI Control Package 的 Registration Unit 粒度、资源归属和第三方包接入边界的正式所有者。
 
 整体 linked publish 模式、Application Plan、Package Core、动态 fallback 和 ABI 由
-[AOT 与裁剪架构](aot-and-trimming.md)定义。日常编码规则见
+[AOT 与裁剪架构](aot-and-trimming.md)定义；Sidecar、UnitEdge 和叶子 fragment 管线由
+[AOT Linked Registration Pipeline](aot-linked-registration-pipeline.md)定义。日常编码规则见
 [AOT 编程规范](../../engineering/development/aot-programming-guidelines.md)，第三方作者的操作步骤见
 [第三方 AtomUI Control Package 指南](../../guides/theming/third-party-control-packages.md)。
 
@@ -85,13 +86,17 @@ Package 模式的目标是让小型包和单一控件族包把正确性建立在
 Directory 模式使用稳定控件族目录作为默认 Unit 边界。这里的目录必须代表可独立运行的公开产品能力，例如 Button、
 DatePicker 或 Tree，而不能只是 `Cell`、`Utils`、`View`、`Internal` 等代码分类。
 
+同一历史目录中包含多个独立公开能力时，应把 C# owner 移入各自稳定目录。例如 `Button`、`DropdownButton` 和
+`SplitButton` 分别拥有源码目录；为保持兼容而保留的 `Buttons/Themes/**` 资源 URI 仍由 AXAML `TargetType`/owner 映射回对应
+Unit，不要求作者维护依赖列表或修改公开资源地址。
+
 启用 Directory 模式后仍必须满足：
 
 - Presenter、Cell、View、Semantic Part 和基础主题跟随其所属公开控件族。
 - internal 子目录不能继续自动拆成更小 Unit。
-- Generator 从可以证明的 C# 和 AXAML 使用生成同 Package Unit 依赖。
+- Generator 从可以证明的 C# 和 AXAML 直接证据生成同 Package UnitEdge。
 - 作者不手写 Unit dependency 列表。
-- 已知循环依赖由 fragment 的 `TryEnterUnit` 去重，循环不能导致漏注册。
+- 已知循环依赖在应用编译期折叠为 SCC，每个 leaf fragment 只调用一次。
 - owner 或依赖无法证明时，当前 Package 必须 full fallback。
 
 Directory 模式是体积优化承诺，不是 AOT 正确性的前置条件。没有真实体积收益、行为测试和发布验证的包不得为了目录整齐
@@ -153,6 +158,10 @@ Package 模式忽略目录拆分，因而不得为内部 Theme 添加这类 meta
 - Dialog、Tooltip、Motion、Responsive 等 initializer。
 - 显式 PackageShared 资源。
 
+入口直接调用的 initializer、input service 等非 Control helper 必须位于 Package Core 源码边界，不能因为文件恰好放在
+`Dialog`、`Tooltip` 等控件族目录，就把该控件族无条件写成 Root Unit。真正由 Package Core 直接构造或静态使用的 Control
+仍按静态证据进入 Unit closure。
+
 `UseXxxControls()` 仍由包作者维护，因为该方法拥有 Provider、Localization 和 initializer 的执行顺序。Generator 只从
 `[ControlPackageRegistrationEntry]` 获取入口身份，并生成 full/generated registration helper；它不解析方法体猜测顺序。
 
@@ -166,8 +175,8 @@ Package 模式忽略目录拆分，因而不得为内部 Theme 添加这类 meta
 | --- | --- |
 | Package 模式中的静态 Control 使用 | 保留完整 Package Unit |
 | Directory 模式中的静态 Control 使用 | 保留对应控件族 Unit |
-| 可证明的同 Package 依赖 | 生成强类型 Unit 直接调用 |
-| 已知 Unit 循环 | `TryEnterUnit` 去重并完整保留循环 |
+| 可证明的同 Package 依赖 | 写入 Sidecar UnitEdge，由应用编译期计算闭包 |
+| 已知 Unit 循环 | SCC 全选，每个 leaf Unit 直接调用一次 |
 | owner、C#/AXAML 依赖或动态输入无法证明 | 当前 Package full fallback |
 | manifest major version 不兼容 | 构建错误 |
 | 检测到 Control 使用但没有调用 Package 入口 | 构建错误 |

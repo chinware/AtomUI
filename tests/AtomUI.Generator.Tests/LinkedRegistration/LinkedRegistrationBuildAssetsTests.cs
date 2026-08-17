@@ -10,7 +10,6 @@ public sealed class LinkedRegistrationBuildAssetsTests
     [InlineData("PublishTrimmed")]
     [InlineData("PublishAot")]
     [InlineData("RunAOTCompilation")]
-    [InlineData("AtomUIUseGeneratedRegistration")]
     public void Linked_Mode_Inputs_Are_Normalized(string propertyName)
     {
         var targets = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.targets"));
@@ -26,6 +25,17 @@ public sealed class LinkedRegistrationBuildAssetsTests
                    condition.Contains($"$({propertyName})", StringComparison.Ordinal) &&
                    string.Equals(element.Value.Trim(), "true", StringComparison.Ordinal);
         }).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Generated_Registration_Does_Not_Enable_Linked_Analysis()
+    {
+        var targets = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.targets"));
+        targets.Descendants()
+               .Where(element => element.Name.LocalName == "AtomUILinkedPublish")
+               .Select(element => (string?)element.Attribute("Condition") ?? string.Empty)
+               .ShouldAllBe(condition =>
+                   !condition.Contains("$(AtomUIUseGeneratedRegistration)", StringComparison.Ordinal));
     }
 
     [Fact]
@@ -52,6 +62,20 @@ public sealed class LinkedRegistrationBuildAssetsTests
         property.Value.Trim().ShouldBe("Package");
         ((string?)property.Attribute("Condition"))
             .ShouldBe("'$(AtomUIRegistrationGranularity)' == ''");
+    }
+
+    [Fact]
+    public void Sidecar_Output_Is_Derived_After_Target_Framework_Output_Path()
+    {
+        var props = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.props"));
+        var targets = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.targets"));
+
+        props.Descendants("AtomUILinkedSidecarOutputPath").ShouldBeEmpty();
+        var outputPath = targets.Descendants("AtomUILinkedSidecarOutputPath").ShouldHaveSingleItem();
+        ((string?)outputPath.Attribute("Condition"))
+            .ShouldBe("'$(AtomUILinkedSidecarOutputPath)' == ''");
+        outputPath.Value.Trim().ShouldBe(
+            "$(TargetPath).atomui-link.json");
     }
 
     [Fact]
@@ -214,6 +238,80 @@ public sealed class LinkedRegistrationBuildAssetsTests
     }
 
     [Fact]
+    public void Only_Registration_Product_Packages_Emit_Sidecars_When_Packing()
+    {
+        var targets = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.targets"));
+        var target = targets.Descendants("Target")
+                            .Single(element =>
+                                (string?)element.Attribute("Name") ==
+                                "AtomUIPrepareLinkedRegistrationSidecarForPack");
+
+        var condition = (string?)target.Attribute("Condition");
+        condition.ShouldNotBeNull();
+        condition.ShouldContain("'$(IsPackable)' == 'true'");
+        condition.ShouldContain("'$(AtomUIRegistrationPackageId)' != ''");
+    }
+
+    [Fact]
+    public void ProjectReference_Sidecars_Are_Collected_From_Resolved_Assembly_Paths()
+    {
+        var targets = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.targets"));
+        var collectTarget = targets.Descendants("Target")
+                                   .Single(element =>
+                                       (string?)element.Attribute("Name") ==
+                                       "CollectAtomUIProjectReferenceSidecars");
+        var getTarget = targets.Descendants("Target")
+                               .Single(element =>
+                                   (string?)element.Attribute("Name") ==
+                                   "GetAtomUILinkedRegistrationSidecar");
+
+        ((string?)collectTarget.Attribute("DependsOnTargets"))
+            .ShouldBe("ResolveReferences");
+        collectTarget.Descendants("MSBuild").ShouldBeEmpty();
+        collectTarget.Descendants("_AtomUILinkedReferenceSidecarCandidate")
+                     .ShouldHaveSingleItem()
+                     .Attribute("Include")
+                     ?.Value.ShouldBe("@(ReferencePath->'%(FullPath).atomui-link.json')");
+
+        getTarget.Attribute("DependsOnTargets").ShouldBeNull();
+        getTarget.Descendants("_AtomUILinkedRegistrationSidecarTargetOutput")
+                 .ShouldAllBe(element =>
+                     (string?)element.Attribute("Include") !=
+                     "@(_AtomUIProjectReferenceSidecar)");
+
+        collectTarget.Descendants("RemoveDuplicates").ShouldHaveSingleItem();
+
+        var packTarget = targets.Descendants("Target")
+                                .Single(element =>
+                                    (string?)element.Attribute("Name") ==
+                                    "AtomUIPrepareLinkedRegistrationSidecarForPack");
+        ((string?)packTarget.Descendants("MSBuild").Single().Attribute("Targets"))
+            .ShouldBe("Build;GetAtomUILinkedRegistrationSidecar");
+    }
+
+    [Fact]
+    public void Sidecars_Are_Emitted_After_The_Target_Assembly_Reaches_TargetPath()
+    {
+        var targets = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.targets"));
+        var emitTarget = targets.Descendants("Target")
+                                .Single(element =>
+                                    (string?)element.Attribute("Name") ==
+                                    "EmitAtomUILinkedRegistrationSidecar");
+
+        var afterTargets = (string?)emitTarget.Attribute("AfterTargets");
+        afterTargets.ShouldNotBeNull();
+        afterTargets.ShouldBe("CopyFilesToOutputDirectory");
+        afterTargets.ShouldNotContain("CoreCompile");
+        var condition = (string?)emitTarget.Attribute("Condition");
+        condition.ShouldNotBeNull();
+        condition.ShouldContain("Exists('$(TargetPath)')");
+        ((string?)emitTarget.Descendants("AtomUI.Build.Tasks.GenerateLinkedRegistrationSidecarTask")
+                           .Single()
+                           .Attribute("AssemblyPath"))
+            .ShouldBe("$(TargetPath)");
+    }
+
+    [Fact]
     public void Embedded_Generator_Consumer_Assets_Are_Compile_Time_Only_And_Idempotent()
     {
         var consumerTargets = XDocument.Load(GetRepoFile("build/AtomUI.GeneratorConsumer.targets"));
@@ -325,7 +423,8 @@ public sealed class LinkedRegistrationBuildAssetsTests
         beforeTargets.ShouldNotBeNull();
         beforeTargets.ShouldContain("GenerateMSBuildEditorConfigFileShouldRun");
         beforeTargets.ShouldContain("CoreCompile");
-        ((string?)target.Attribute("Condition")).ShouldBeNull();
+        ((string?)target.Attribute("Condition"))
+            .ShouldBe("'$(_AtomUICollectAxamlUsage)' == 'true'");
         var inputProperty = target.Descendants()
                                   .Single(element =>
                                       element.Name.LocalName == "_AtomUIHasAxamlUsageInput");

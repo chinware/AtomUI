@@ -13,7 +13,7 @@ public sealed class AotTrimControlPackageRegistrationBuilder
     private readonly Func<ControlTokenIdentity, bool>? _includeIdentity;
     private readonly Func<IReadOnlyList<ControlThemeAssetDescriptor>,
         IReadOnlyList<ControlThemeAssetDescriptor>>? _selectAssets;
-    private readonly HashSet<string> _enteredUnits = new(StringComparer.Ordinal);
+    private HashSet<string>? _enteredUnits;
     private readonly List<ControlTokenDescriptor> _controls = new();
     private readonly List<ThemeAssetFragment> _themeAssets = new();
     private readonly List<Action<IControlThemesProvider>> _packageSharedThemeAssets = new();
@@ -40,7 +40,7 @@ public sealed class AotTrimControlPackageRegistrationBuilder
     {
         ThrowIfRegistered();
         ArgumentException.ThrowIfNullOrWhiteSpace(unitId);
-        return _enteredUnits.Add(unitId);
+        return (_enteredUnits ??= new HashSet<string>(StringComparer.Ordinal)).Add(unitId);
     }
 
     public void AddControl(ControlTokenDescriptor descriptor)

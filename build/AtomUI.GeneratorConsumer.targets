@@ -5,6 +5,8 @@
     <Import Project="$(MSBuildThisFileDirectory)AtomUI.Generator.targets"
             Condition="'$(AtomUIGeneratorTargetsImported)' != 'true'" />
 
+    <Import Project="$(MSBuildThisFileDirectory)AtomUI.LinkedRegistration.SidecarConsumer.targets" />
+
     <Target Name="AtomUIAddEmbeddedGeneratorAnalyzer"
             BeforeTargets="CoreCompile"
             DependsOnTargets="ResolveReferences">

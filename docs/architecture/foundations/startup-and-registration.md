@@ -149,12 +149,13 @@ Popup/Flyout 通过逻辑树自然继承，独立 Window/Dialog/Notification Top
 DataGrid 和 ColorPicker 独立包通过 `UseDesktopDataGrid()`、`UseDesktopColorPicker()` 追加自己的 Token、主题 Provider 和语言资源。
 
 linked publish 中，应用仍调用 `UseDesktopControls()`，但 `PublishTrimmed=true`、`PublishAot=true` 或 WebAssembly
-`RunAOTCompilation=true` 会在编译期切换到生成式 Registration Unit 计划。Desktop 仍完整注册 Common，并保持
+`RunAOTCompilation=true` 会读取纯编译期 Sidecar，在编译期计算 Registration Unit closure 并切换到静态计划。Desktop 仍完整注册 Common，并保持
 Dialog input capture、Provider、完整 Language Module 和 Theme initializer 的既有顺序。主 Desktop 包显式使用
 `Directory` 粒度，Control descriptor、Own Token schema 和控件族专属 AXAML Theme 按控件族 Unit 保留；DataGrid、
 ColorPicker、Extras、GalleryBase 和普通第三方包默认使用单一 Package Unit。无法可靠确定 Unit 时，仅把对应 Package
 扩大为 full fallback。普通非裁剪构建继续执行上述全量顺序。完整契约见
-[AOT 与裁剪架构](aot-and-trimming.md)。
+[AOT 与裁剪架构](aot-and-trimming.md)和
+[AOT Linked Registration Pipeline](aot-linked-registration-pipeline.md)。
 
 当前可独立启用的 Package 在真实 `UseXxxControls()` 方法上使用
 `[ControlPackageRegistrationEntry]`。Generator 从方法符号生成 entry manifest，不再要求项目文件维护完整类型名和方法名。
@@ -169,8 +170,8 @@ Common 不是独立 linked Package，不声明该 Attribute，也不进入应用
 - `ControlThemeAssetManifest.GetDescriptors()`：返回通过构建校验的 ControlTheme asset、owner 和引用 identity descriptor。
 - `GeneratedLanguageModuleRegistration.Register()`：显式注册当前项目的 Catalog descriptor 和内置 Translation Bundle。
 - `XxxTokens.Identity`、强类型 `XxxTokenKey` 和 `XxxTokenResourceExtension`：供 AXAML 和 C# 使用。
-- linked Package metadata：从带 `[ControlPackageRegistrationEntry]` 的真实 `UseXxxControls()` 方法、Control/Theme 约定和
- 统一 Package 粒度策略生成 Package、Unit、ControlMap 与 fragment 记录；PackageShared 只表达真正的包级共享资源。
+- linked Package Sidecar：从带 `[ControlPackageRegistrationEntry]` 的真实 `UseXxxControls()` 方法、Control/Theme 约定和
+  统一 Package 粒度策略生成 Package、Unit、ControlMap、UnitEdge 与 fragment 记录；PackageShared 只表达真正的包级共享资源。
 
 Builder 必须原样注册包含 exact CLR type 与 identity 的 descriptor 和 manifest，不能退化成只传递其中一项或
 运行时扫描 AXAML。因此新增控件
@@ -183,6 +184,9 @@ linked registration 默认把整个 Control Package 的 Control descriptor、Own
 factory 聚合成一个安全 Registration Unit。只有显式 `Directory` 的大型包才按控件族拆分；Language Catalog、内置
 Bundle、Package 初始化逻辑和显式共享资源不拆分。全量池只由普通兼容路径或该 Package 的 full fallback 调用。Theme
 Builder 最终仍按包接收一个完整且自洽的 `ControlPackageRegistration`，不会改成控件实例化时追加注册。
+
+每个 Unit fragment 是叶子，不调用其他 Unit。应用静态计划根据 Sidecar UnitEdge 在编译期完成 closure、SCC 和去重；
+运行时不读取 Sidecar、不遍历图，也不通过 `TryEnterUnit` 去重。普通 Debug/Release 不加载 linked-publish Analyzer。
 
 包作者手写并维护 `UseXxxControls()` 方法体，因为它拥有 Provider、Localization 和 initializer 的执行顺序；Generator 只从
 Attribute 读取入口身份，不生成或解析该方法体。项目文件不得维护入口类型名或方法名字符串。

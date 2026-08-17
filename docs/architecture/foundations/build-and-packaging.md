@@ -129,7 +129,7 @@ Repository 配置、`MacOSHomebrewNativeAot.targets` 或 `scripts/` 资产。
 
 ## Analyzer 引用方式
 
-`AtomUI.Generator` 在多个项目中以 Analyzer 形式引用：
+ordinary `AtomUI.Generator` 在多个项目中以 Analyzer 形式引用：
 
 ```xml
 <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj"
@@ -138,38 +138,42 @@ Repository 配置、`MacOSHomebrewNativeAot.targets` 或 `scripts/` 资产。
                   PrivateAssets="all" />
 ```
 
-这意味着生成器不是运行时依赖。它在编译期生成 Token 和语言相关代码，运行时依赖的是生成后的类型和资源键。
+这意味着生成器不是运行时依赖。它在编译期生成 Token、Theme、语言和 leaf Registration Unit 代码，运行时依赖的是生成后的
+类型和资源键。
+
+linked registration 的应用 usage、Sidecar 和 Application Plan 位于独立的 `AtomUI.Generator.LinkedPublish` Analyzer 中。
+它只在 `PublishTrimmed=true`、`PublishAot=true`、`RunAOTCompilation=true`、Package Manifest Pack 或显式 strict 验证时注入。
+普通 Debug 和未启用 AOT/Trim 的 Release compiler command line 中不得出现该 Analyzer。
 
 ## Linked publish 注册
 
 AtomUI 把 `PublishTrimmed=true`、`PublishAot=true` 和 WebAssembly `RunAOTCompilation=true` 统一视为 linked publish。
-普通非裁剪构建继续使用包级全量注册；linked publish 由 Generator 聚合应用、类库和第三方包的 Usage Manifest，
-按 Package 生成 Registration Unit 调用计划。默认一个 Package 生成一个完整 Unit；只有显式设置
+普通非裁剪构建继续使用包级全量注册；linked publish 由 Generator 聚合应用、类库和第三方包的 Sidecar Manifest，计算
+UnitEdge closure 后按 Package 生成静态 Registration Unit 调用计划。默认一个 Package 生成一个完整 Unit；只有显式设置
 `AtomUIRegistrationGranularity=Directory` 的大型多控件包才按稳定控件族拆分。Control descriptor、Own Token schema 和
 Control-owned AXAML Theme 跟随对应 Unit；Language、包级初始化逻辑、Global Token、Theme Algorithm、Provider、平台
 selector 和显式 `PackageShared` 资源作为 Package Core 整体保留。
-完整模式矩阵和注册协议见 [AOT 与裁剪架构](aot-and-trimming.md)。
+完整模式矩阵和注册协议见 [AOT Linked Registration Pipeline](aot-linked-registration-pipeline.md)。
 
-每个可直接安装、且声明 `AtomUIRegistrationPackageId` 的第一方产品 NuGet 都内嵌同版本的 Generator、Build Tasks 和
-`buildTransitive` assets。应用只引用 `AtomUI.Controls`、`AtomUI.Desktop.Controls`、DataGrid、ColorPicker、Extras 或
+每个可直接安装、且声明 `AtomUIRegistrationPackageId` 的第一方产品 NuGet 都内嵌 ordinary/linked Generator、Build Tasks、
+Sidecar 和 `buildTransitive` assets。应用只引用 `AtomUI.Controls`、`AtomUI.Desktop.Controls`、DataGrid、ColorPicker、Extras 或
 GalleryBase 中的实际产品包，即可获得编译期使用分析和 linked registration；不要求额外添加
 `AtomUI.Generator` PackageReference。显式 Generator 引用继续作为兼容路径支持。
 
-产品包入口在 `ResolveReferences` 后检查最终 `@(Analyzer)`，只在尚未存在 `AtomUI.Generator` 时注入同包工具程序集。
-多个产品包同时引用或应用保留显式 Generator 引用时，编译器仍只能收到一份 Generator。共享 props/targets 使用幂等
-property 防止重复导入。Generator 和 Build Tasks 只允许位于包的 `tools/` 与 `buildTransitive/` 目录，不得进入 `lib/`
+产品包入口在 `ResolveReferences` 后检查最终 `@(Analyzer)`，只在尚未存在对应 Analyzer 时注入同包工具程序集。
+多个产品包同时引用时，编译器仍只能收到一份 ordinary Generator 和至多一份 linked Generator。共享 props/targets 使用幂等
+property 防止重复导入。Generator、Sidecar 和 Build Tasks 只允许位于包的 `tools/` 与 `buildTransitive/` 目录，不得进入 `lib/`
 或应用输出、发布目录。
 
-这些 `buildTransitive` assets 负责向编译器暴露 `PublishTrimmed`、`PublishAot`、AtomUI 验证开关和
-`@(AvaloniaXaml)` 使用信息，配置 linker 可替换的 `AtomUI.AotTrimRegistration.Enabled` 注册标记，并在
-ILLink/ILCompiler 前验证计划标记。该标记只属于 AOT/Trim 注册基础设施，不得作为通用运行时 feature 使用。
+这些 `buildTransitive` assets 负责在 linked build 中导入 Sidecar、生成结构化 `@(AvaloniaXaml)` usage、配置 linker 可替换的
+`AtomUI.AotTrimRegistration.Enabled` 注册标记，并在 ILLink/ILCompiler 前验证计划标记。普通构建中这些 linked targets 必须
+skip，连空 usage 文件都不能创建。该标记只属于 AOT/Trim 注册基础设施，不得作为通用运行时 feature 使用。
 
-类库在普通构建中也要生成只含稳定字符串 identity 的 Usage Manifest，因为最终入口应用可能以 linked 模式引用它；
-普通构建不得安装 Application Plan、改变 `UseDesktopControls()` 的全量行为或要求动态 root。
+类库只在被 linked 应用作为 ProjectReference 构建或执行 NuGet Pack 时生成 Usage Sidecar。Pack 自动把 Sidecar 和唯一的
+`<PackageId>.targets` 放入 `buildTransitive`；普通 Debug/Release 不扫描 usage，不生成 Sidecar，也不安装 Application Plan。
 
-Application Plan 不计算 Theme Asset、Catalog、Feature 或 Initializer 图，也不执行应用级依赖闭包。Package 模式天然包含
-包内 Control 依赖；Directory 模式的 Unit 依赖由强类型 fragment 直接表达。无法可靠确定 Unit 时，只对对应 Package 使用
-full fallback。
+Application Plan 只对 Sidecar 中紧凑的 UnitEdge 图计算 closure/SCC，不计算 Theme Asset、Catalog、Feature 或 Initializer 图。
+Unit fragment 是叶子，不调用其他 Unit。无法可靠确定 Unit 时，只对对应 Package 使用 full fallback。
 
 ## 打包边界
 

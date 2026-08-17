@@ -10,7 +10,7 @@
 
 主要源码文件：
 
-- `src/AtomUI.Desktop.Controls/Buttons/SplitButton.cs`
+- `src/AtomUI.Desktop.Controls/SplitButton/SplitButton.cs`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/SplitButtonTheme.axaml`
 
 职责边界：

@@ -13,6 +13,7 @@ public sealed class BuildLayoutTests
         "AtomUI.GeneratorConsumer.targets",
         "AtomUI.LinkedRegistration.props",
         "AtomUI.LinkedRegistration.targets",
+        "AtomUI.LinkedRegistration.SidecarConsumer.targets",
         "AtomUI.Localization.props",
         "AtomUI.Localization.targets",
         "AtomUI.Repository.props",
@@ -31,6 +32,7 @@ public sealed class BuildLayoutTests
         "AtomUI.Generator.targets",
         "AtomUI.LinkedRegistration.props",
         "AtomUI.LinkedRegistration.targets",
+        "AtomUI.LinkedRegistration.SidecarConsumer.targets",
         "AtomUI.Localization.props",
         "AtomUI.Localization.targets",
         "AtomUI.ThemeAssets.targets"
@@ -95,6 +97,10 @@ public sealed class BuildLayoutTests
                   .Value.ShouldBe("tools/netstandard2.0/%(Filename)%(Extension)");
 
         var generatorProject = XDocument.Load(GetRepoFile("src/AtomUI.Generator/AtomUI.Generator.csproj"));
+        generatorProject.Descendants("ProjectReference")
+                        .ShouldNotContain(element =>
+                            ((string?)element.Attribute("Include") ?? string.Empty)
+                            .Contains("AtomUI.Generator.LinkedPublish", StringComparison.Ordinal));
         generatorProject.Descendants("None")
                         .ShouldContain(element =>
                             (string?)element.Attribute("Include") == "@(AtomUINuGetBuildAsset)");
@@ -109,6 +115,22 @@ public sealed class BuildLayoutTests
         repositoryTargets.Descendants("None")
                          .ShouldContain(element =>
                              (string?)element.Attribute("Include") == "@(AtomUIGeneratorToolAsset)");
+
+        var linkedPackTarget = generatorProject.Descendants("Target")
+                                               .Single(element =>
+                                                   (string?)element.Attribute("Name") ==
+                                                   "AtomUIPrepareLinkedPublishGeneratorForPack");
+        ((string?)linkedPackTarget.Attribute("BeforeTargets")).ShouldBe("_GetPackageFiles");
+        linkedPackTarget.Descendants("MSBuild")
+                        .Single()
+                        .Attribute("Projects")!
+                        .Value.ShouldContain("AtomUI.Generator.LinkedPublish.csproj");
+        ((string?)linkedPackTarget.Descendants("MSBuild").Single().Attribute("Condition"))
+            .ShouldBe("'$(NoBuild)' != 'true'");
+        linkedPackTarget.Descendants("Error")
+                        .Single()
+                        .Attribute("Condition")!
+                        .Value.ShouldContain("AtomUILinkedPublishGeneratorAssembly");
     }
 
     [Fact]
@@ -228,6 +250,18 @@ public sealed class BuildLayoutTests
                        (string?)element.Attribute("Remove") == generatedFilesPattern,
                        projectFile);
         }
+    }
+
+    [Fact]
+    public void Repository_Default_Items_Always_Exclude_Stale_Generated_Files()
+    {
+        var projectDefaults = XDocument.Load(GetRepoFile("build/ProjectDefaults.props"));
+        var excludes = projectDefaults.Descendants("DefaultItemExcludes")
+                                      .ShouldHaveSingleItem()
+                                      .Value;
+
+        excludes.ShouldContain("$(MSBuildProjectDirectory)/obj/**");
+        excludes.ShouldContain("$(MSBuildProjectDirectory)/GeneratedFiles/**");
     }
 
     [Fact]

@@ -15,8 +15,6 @@ internal sealed class GeneratedThemeSchemaWriter
     private readonly IReadOnlyList<SchemaTokenInfo> _globalTokens;
     private readonly IReadOnlyList<ControlThemeInfo> _controls;
     private readonly IReadOnlyList<ThemeAlgorithmInfo> _algorithms;
-    private readonly LinkedRegistration.Model.RegistrationUnitDependencyAnalysis
-        _dependencyAnalysis;
 
     internal GeneratedThemeSchemaWriter(
         SourceProductionContext context,
@@ -26,8 +24,7 @@ internal sealed class GeneratedThemeSchemaWriter
         string controlCatalog,
         IEnumerable<SchemaTokenInfo> globalTokens,
         IEnumerable<ControlThemeInfo> controls,
-        IEnumerable<ThemeAlgorithmInfo> algorithms,
-        LinkedRegistration.Model.RegistrationUnitDependencyAnalysis dependencyAnalysis)
+        IEnumerable<ThemeAlgorithmInfo> algorithms)
     {
         _context = context;
         _generatedNamespace = GeneratedCodeNamespace.ForAssembly(assemblyName);
@@ -40,7 +37,6 @@ internal sealed class GeneratedThemeSchemaWriter
         _algorithms = algorithms.OrderBy(static algorithm => algorithm.AlgorithmValue)
                                 .ThenBy(static algorithm => algorithm.TypeName, StringComparer.Ordinal)
                                 .ToArray();
-        _dependencyAnalysis = dependencyAnalysis;
     }
 
     internal void Write()
@@ -117,8 +113,9 @@ internal sealed class GeneratedThemeSchemaWriter
         var units = _controls.GroupBy(static control => control.UnitId, StringComparer.Ordinal)
                              .OrderBy(static group => group.Key, StringComparer.Ordinal)
                              .ToArray();
-        foreach (var unit in units)
+        for (var unitIndex = 0; unitIndex < units.Length; unitIndex++)
         {
+            var unit = units[unitIndex];
             var fragmentName = LinkedRegistration.LinkedRegistrationFragmentName.ForUnit(unit.Key);
             LinkedRegistration.Manifest.LinkedRegistrationMetadataWriter.Write(
                 source,
@@ -126,7 +123,8 @@ internal sealed class GeneratedThemeSchemaWriter
                     _packageId,
                     unit.Key,
                     _generatedNamespace + ".LinkedRegistrationV1." + fragmentName,
-                    "Add"));
+                    "Add",
+                    unitIndex));
             foreach (var control in unit.Where(static control => control.OwnsControlMap)
                                         .OrderBy(static control =>
                                             control.ControlMetadataName,
@@ -139,17 +137,6 @@ internal sealed class GeneratedThemeSchemaWriter
                         control.ControlMetadataName,
                         unit.Key));
             }
-        }
-        foreach (var issue in _dependencyAnalysis.Issues)
-        {
-            LinkedRegistration.Manifest.LinkedRegistrationMetadataWriter.Write(
-                source,
-                new LinkedRegistration.Manifest.LinkedUsageManifestRecord(
-                    LinkedRegistration.Manifest.LinkedUsageKind.PackageRoot,
-                    _packageId,
-                    issue.Source,
-                    issue.Line,
-                    issue.Column));
         }
         source.AppendLine();
         source.Append("namespace ").Append(_generatedNamespace).AppendLine(".LinkedRegistrationV1;");
@@ -164,21 +151,6 @@ internal sealed class GeneratedThemeSchemaWriter
             source.AppendLine("        global::AtomUI.Registration.AotTrimControlPackageRegistrationBuilder builder)");
             source.AppendLine("    {");
             source.AppendLine("        global::System.ArgumentNullException.ThrowIfNull(builder);");
-            source.Append("        if (!builder.TryEnterUnit(")
-                  .Append(SymbolDisplay.FormatLiteral(unit.Key, quote: true))
-                  .AppendLine("))");
-            source.AppendLine("        {");
-            source.AppendLine("            return;");
-            source.AppendLine("        }");
-            source.AppendLine();
-            foreach (var dependencyUnitId in _dependencyAnalysis.GetDependencies(unit.Key))
-            {
-                source.Append("        ")
-                      .Append(LinkedRegistration.LinkedRegistrationFragmentName.ForUnit(
-                          dependencyUnitId))
-                      .AppendLine(".Add(builder);");
-            }
-            source.AppendLine("        AddDependencies(builder);");
             foreach (var control in unit.Where(static control => control.HasDescriptor)
                                         .OrderBy(static control =>
                                             control.ControlMetadataName,
@@ -192,9 +164,6 @@ internal sealed class GeneratedThemeSchemaWriter
             }
             source.AppendLine("        AddThemes(builder);");
             source.AppendLine("    }");
-            source.AppendLine();
-            source.AppendLine("    static partial void AddDependencies(");
-            source.AppendLine("        global::AtomUI.Registration.AotTrimControlPackageRegistrationBuilder builder);");
             source.AppendLine();
             source.AppendLine("    static partial void AddThemes(");
             source.AppendLine("        global::AtomUI.Registration.AotTrimControlPackageRegistrationBuilder builder);");

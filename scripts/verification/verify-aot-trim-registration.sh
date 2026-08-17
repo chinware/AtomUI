@@ -3,6 +3,7 @@ set -euo pipefail
 
 MINIMUM_DESKTOP_REDUCTION_PERCENT=40
 MAX_SECOND_UNIT_GROWTH_BYTES=262144
+MAX_MINIMAL_MAIN_BYTES_OSX_ARM64=18874368
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 output_root="${ATOMUI_AOT_TRIM_OUTPUT_ROOT:-/tmp/atomui-aot-trim-registration}"
@@ -61,7 +62,15 @@ fixture_project() {
 
 restore_fixture() {
     local fixture="$1"
-    dotnet restore "$(fixture_project "$fixture")" --disable-build-servers
+    local linked="${2:-false}"
+    local restore_args=(
+        restore "$(fixture_project "$fixture")"
+        --disable-build-servers
+    )
+    if [[ "$linked" == "true" ]]; then
+        restore_args+=(-p:AtomUILinkedPublish=true)
+    fi
+    dotnet "${restore_args[@]}"
 }
 
 run_fixture() {
@@ -80,7 +89,12 @@ run_fixture() {
         --disable-build-servers
     )
     if [[ "$generated" == "true" ]]; then
-        build_args+=(-p:AtomUIUseGeneratedRegistration=true)
+        # The generated-path snapshot is an explicit linked-publish verification.
+        # AtomUIUseGeneratedRegistration must remain inert for ordinary builds.
+        build_args+=(-p:AtomUILinkedPublish=true)
+        if [[ "$fixture" == "Minimal" ]]; then
+            build_args+=(-p:AtomUIEmitVerificationPlan=true)
+        fi
     fi
 
     dotnet "${build_args[@]}"
@@ -109,8 +123,9 @@ json_number() {
 
 verify_non_trimmed_modes() {
     for fixture in "${fixtures[@]}"; do
-        restore_fixture "$fixture"
+        restore_fixture "$fixture" false
         run_fixture "$fixture" false "$output_root/$fixture.ordinary.json"
+        restore_fixture "$fixture" true
         run_fixture "$fixture" true "$output_root/$fixture.generated.json"
     done
 
@@ -138,6 +153,7 @@ verify_non_trimmed_modes() {
     fi
     grep -q '"AtomUI:Button"' "$output_root/TwoUnits.generated.json"
     grep -q '"AtomUI:DatePicker"' "$output_root/TwoUnits.generated.json"
+    verify_minimal_plan
     cmp -s "$output_root/DynamicFallback.generated.json" "$output_root/DynamicFallback.ordinary.json"
     cmp -s "$output_root/Full.generated.json" "$output_root/Full.ordinary.json"
 
@@ -146,6 +162,26 @@ verify_non_trimmed_modes() {
     for fixture in "${fixtures[@]}"; do
         [[ "$(json_string PackageCoreFingerprint "$output_root/$fixture.ordinary.json")" == "$expected_core" ]]
         [[ "$(json_string PackageCoreFingerprint "$output_root/$fixture.generated.json")" == "$expected_core" ]]
+    done
+}
+
+verify_minimal_plan() {
+    local plan="$fixture_root/Minimal/GeneratedFiles/AtomUI.Generator.LinkedPublish/AtomUI.Generator.LinkedRegistration.ApplicationRegistrationPlanGenerator/GeneratedApplicationRegistrationPlan.g.cs"
+    if [[ ! -f "$plan" ]]; then
+        printf 'Minimal generated application plan was not emitted: %s\n' "$plan" >&2
+        return 1
+    fi
+
+    grep -q 'GeneratedRegistrationUnit_Button_' "$plan"
+    grep -q 'GeneratedRegistrationUnit_Space_' "$plan"
+
+    local forbidden_unit
+    for forbidden_unit in DropdownButton SplitButton Flyouts Menu TreeView Dialog Tooltip DatePicker; do
+        if grep -q "GeneratedRegistrationUnit_${forbidden_unit}_" "$plan"; then
+            printf 'Minimal application plan unexpectedly retained the %s Unit.\n' \
+                "$forbidden_unit" >&2
+            return 1
+        fi
     done
 }
 
@@ -186,7 +222,11 @@ publish_fixture() {
 }
 
 directory_size() {
-    find "$1" -type f -print0 | xargs -0 stat -f '%z' | awk '{ total += $1 } END { print total + 0 }'
+    find "$1" -type f \
+        ! -path '*/.dSYM/*' \
+        ! -name '*.pdb' \
+        ! -name '*.dbg' \
+        -print0 | xargs -0 stat -f '%z' | awk '{ total += $1 } END { print total + 0 }'
 }
 
 main_binary_size() {
@@ -227,28 +267,36 @@ record_size() {
 }
 
 verify_size_gates() {
-    local minimal_size
-    local unused_unit_size
-    local full_size
-    minimal_size="$(awk -F '\t' '$5 == "aot" && $6 == "Minimal" { print $7 }' "$report_path")"
-    unused_unit_size="$(awk -F '\t' '$5 == "aot" && $6 == "MinimalWithUnusedUnit" { print $7 }' "$report_path")"
-    full_size="$(awk -F '\t' '$5 == "aot" && $6 == "Full" { print $7 }' "$report_path")"
+    local minimal_main_size
+    local unused_unit_main_size
+    local full_main_size
+    minimal_main_size="$(awk -F '\t' '$5 == "aot" && $6 == "Minimal" { print $8 }' "$report_path")"
+    unused_unit_main_size="$(awk -F '\t' '$5 == "aot" && $6 == "MinimalWithUnusedUnit" { print $8 }' "$report_path")"
+    full_main_size="$(awk -F '\t' '$5 == "aot" && $6 == "Full" { print $8 }' "$report_path")"
 
-    if [[ -z "$minimal_size" || -z "$unused_unit_size" || -z "$full_size" || "$full_size" -le 0 ]]; then
+    if [[ -z "$minimal_main_size" || -z "$unused_unit_main_size" || -z "$full_main_size" ||
+          "$full_main_size" -le 0 ]]; then
         printf 'NativeAOT size report is incomplete: %s\n' "$report_path" >&2
         return 1
     fi
 
-    local reduction_percent=$(( (full_size - minimal_size) * 100 / full_size ))
-    local second_unit_growth=$(( unused_unit_size - minimal_size ))
+    local reduction_percent=$(( (full_main_size - minimal_main_size) * 100 / full_main_size ))
+    local second_unit_growth=$(( unused_unit_main_size - minimal_main_size ))
     if (( reduction_percent < MINIMUM_DESKTOP_REDUCTION_PERCENT )); then
-        printf 'NativeAOT Minimal reduction is %d%%; required minimum is %d%% (Minimal=%d, Full=%d).\n' \
-            "$reduction_percent" "$MINIMUM_DESKTOP_REDUCTION_PERCENT" "$minimal_size" "$full_size" >&2
+        printf 'NativeAOT Minimal main executable reduction is %d%%; required minimum is %d%% (Minimal=%d, Full=%d).\n' \
+            "$reduction_percent" "$MINIMUM_DESKTOP_REDUCTION_PERCENT" \
+            "$minimal_main_size" "$full_main_size" >&2
         return 1
     fi
     if (( second_unit_growth > MAX_SECOND_UNIT_GROWTH_BYTES )); then
-        printf 'Unused Unit NativeAOT growth is %d bytes; allowed maximum is %d bytes.\n' \
+        printf 'Unused Unit NativeAOT main executable growth is %d bytes; allowed maximum is %d bytes.\n' \
             "$second_unit_growth" "$MAX_SECOND_UNIT_GROWTH_BYTES" >&2
+        return 1
+    fi
+    if [[ "$rid" == "osx-arm64" ]] &&
+       (( minimal_main_size > MAX_MINIMAL_MAIN_BYTES_OSX_ARM64 )); then
+        printf 'NativeAOT Minimal main executable is %d bytes; allowed osx-arm64 maximum is %d bytes.\n' \
+            "$minimal_main_size" "$MAX_MINIMAL_MAIN_BYTES_OSX_ARM64" >&2
         return 1
     fi
 }
@@ -299,6 +347,7 @@ verify_full_publish_matrix() {
 verify_non_trimmed_modes
 if [[ "$mode" == "full" ]]; then
     verify_full_publish_matrix
+    printf 'Linked registration verification completed. Report: %s\n' "$report_path"
+else
+    printf 'Linked registration quick verification completed. Snapshots: %s\n' "$output_root"
 fi
-
-printf 'Linked registration verification completed. Report: %s\n' "$report_path"

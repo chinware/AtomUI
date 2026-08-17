@@ -12,9 +12,31 @@ internal sealed record LinkedPackageManifestRecord : LinkedRegistrationManifestR
         string fullFragmentMethod,
         string? packageSharedFragmentType,
         string? packageSharedFragmentMethod)
+        : this(
+            packageId,
+            assemblyName,
+            "Package",
+            entryMethodMetadataNames,
+            fullFragmentType,
+            fullFragmentMethod,
+            packageSharedFragmentType,
+            packageSharedFragmentMethod)
+    {
+    }
+
+    internal LinkedPackageManifestRecord(
+        string packageId,
+        string assemblyName,
+        string granularity,
+        string entryMethodMetadataNames,
+        string fullFragmentType,
+        string fullFragmentMethod,
+        string? packageSharedFragmentType,
+        string? packageSharedFragmentMethod)
     {
         PackageId = packageId;
         AssemblyName = assemblyName;
+        Granularity = granularity;
         EntryMethodMetadataNames = entryMethodMetadataNames;
         FullFragmentType = fullFragmentType;
         FullFragmentMethod = fullFragmentMethod;
@@ -24,6 +46,7 @@ internal sealed record LinkedPackageManifestRecord : LinkedRegistrationManifestR
 
     internal string PackageId { get; }
     internal string AssemblyName { get; }
+    internal string Granularity { get; }
     internal string EntryMethodMetadataNames { get; }
     internal string FullFragmentType { get; }
     internal string FullFragmentMethod { get; }
@@ -38,17 +61,29 @@ internal sealed record LinkedUnitManifestRecord : LinkedRegistrationManifestReco
         string unitId,
         string fragmentType,
         string fragmentMethod)
+        : this(packageId, unitId, fragmentType, fragmentMethod, 0)
+    {
+    }
+
+    internal LinkedUnitManifestRecord(
+        string packageId,
+        string unitId,
+        string fragmentType,
+        string fragmentMethod,
+        int orderKey)
     {
         PackageId = packageId;
         UnitId = unitId;
         FragmentType = fragmentType;
         FragmentMethod = fragmentMethod;
+        OrderKey = orderKey;
     }
 
     internal string PackageId { get; }
     internal string UnitId { get; }
     internal string FragmentType { get; }
     internal string FragmentMethod { get; }
+    internal int OrderKey { get; }
 }
 
 internal sealed record LinkedControlMapManifestRecord : LinkedRegistrationManifestRecord
@@ -65,6 +100,46 @@ internal sealed record LinkedControlMapManifestRecord : LinkedRegistrationManife
 
     internal string PackageId { get; }
     internal string MetadataName { get; }
+    internal string UnitId { get; }
+}
+
+internal enum LinkedUnitEdgeEvidenceKind
+{
+    CSharpType,
+    CSharpCall,
+    AxamlType,
+    PackageCore
+}
+
+internal sealed record LinkedUnitEdgeManifestRecord : LinkedRegistrationManifestRecord
+{
+    internal LinkedUnitEdgeManifestRecord(
+        string packageId,
+        string sourceUnitId,
+        string targetUnitId,
+        LinkedUnitEdgeEvidenceKind evidenceKind)
+    {
+        PackageId = packageId;
+        SourceUnitId = sourceUnitId;
+        TargetUnitId = targetUnitId;
+        EvidenceKind = evidenceKind;
+    }
+
+    internal string PackageId { get; }
+    internal string SourceUnitId { get; }
+    internal string TargetUnitId { get; }
+    internal LinkedUnitEdgeEvidenceKind EvidenceKind { get; }
+}
+
+internal sealed record LinkedRootUnitManifestRecord : LinkedRegistrationManifestRecord
+{
+    internal LinkedRootUnitManifestRecord(string packageId, string unitId)
+    {
+        PackageId = packageId;
+        UnitId = unitId;
+    }
+
+    internal string PackageId { get; }
     internal string UnitId { get; }
 }
 
@@ -94,6 +169,29 @@ internal sealed record LinkedUsageManifestRecord : LinkedRegistrationManifestRec
 
     internal LinkedUsageKind Kind { get; }
     internal string Identity { get; }
+    internal string Source { get; }
+    internal int Line { get; }
+    internal int Column { get; }
+}
+
+internal sealed record LinkedFallbackManifestRecord : LinkedRegistrationManifestRecord
+{
+    internal LinkedFallbackManifestRecord(
+        string packageId,
+        string reason,
+        string source,
+        int line,
+        int column)
+    {
+        PackageId = packageId;
+        Reason = reason;
+        Source = source;
+        Line = line;
+        Column = column;
+    }
+
+    internal string PackageId { get; }
+    internal string Reason { get; }
     internal string Source { get; }
     internal int Line { get; }
     internal int Column { get; }

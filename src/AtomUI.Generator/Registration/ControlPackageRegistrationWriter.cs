@@ -10,18 +10,21 @@ internal sealed class ControlPackageRegistrationWriter
     private readonly string _generatedNamespace;
     private readonly string _assemblyName;
     private readonly string _packageId;
+    private readonly LinkedRegistration.Model.RegistrationUnitGranularity _granularity;
     private readonly string _entryMethodMetadataNames;
 
     internal ControlPackageRegistrationWriter(
         SourceProductionContext context,
         string? assemblyName,
         string packageId,
+        LinkedRegistration.Model.RegistrationUnitGranularity granularity,
         string entryMethodMetadataNames)
     {
         _context = context;
         _assemblyName = assemblyName ?? "AtomUI";
         _generatedNamespace = GeneratedCodeNamespace.ForAssembly(assemblyName);
         _packageId = packageId;
+        _granularity = granularity;
         _entryMethodMetadataNames = entryMethodMetadataNames;
     }
 
@@ -106,6 +109,7 @@ internal sealed class ControlPackageRegistrationWriter
             new LinkedRegistration.Manifest.LinkedPackageManifestRecord(
                 _packageId,
                 _assemblyName,
+                _granularity.ToString(),
                 _entryMethodMetadataNames,
                 _generatedNamespace + ".LinkedRegistrationV1.GeneratedFullControlPackageRegistrationFragment",
                 "Register",
