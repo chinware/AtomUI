@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Controls;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -15,6 +16,21 @@ internal class SelectCandidateListItem : ListViewItem
         set => SetValue(IsCandidateSelectedProperty, value);
     }
     #endregion
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IsEnabledProperty ||
+            change.Property == IsVisibleProperty ||
+            change.Property == IsGroupItemProperty ||
+            change.Property == IsSelectedProperty)
+        {
+            if (ItemsControl.ItemsControlFromItemContainer(this) is SelectCandidateList owner)
+            {
+                owner.NotifyCandidateContainerAvailabilityChanged(this);
+            }
+        }
+    }
 
     #region 内部属性定义
 

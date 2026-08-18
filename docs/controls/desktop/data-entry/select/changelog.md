@@ -3,6 +3,15 @@
 本文档记录 Select 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-08-18
+
+- Design
+  - Define a single active candidate shared by pointer movement and keyboard navigation across `Single`, `Multiple` and `Tags` modes.
+  - Separate active candidate, committed selection and Avalonia pointer hit state so the visual target and `Enter` commit target remain identical.
+  - Define pointer hot-path, keyboard scrolling, virtualization projection, lifecycle invalidation and selected-visual precedence invariants.
+- Docs
+  - Add `candidate-interaction-design.md` and synchronize the Select overview and implementation maintenance boundaries.
+
 ## 2026-07-05
 
 - API

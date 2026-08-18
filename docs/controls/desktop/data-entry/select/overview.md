@@ -1,6 +1,6 @@
 # Select 桌面版架构设计
 
-本文档定义 `AtomUI.Desktop.Controls.Select` 的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Select 桌面版实现原理](implementation.md)，Select Token 的专项设计见 [Select Token 设计](token.md)，设计和契约变化记录见 [Select Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.Select` 的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Select 桌面版实现原理](implementation.md)，鼠标与键盘的统一候选状态见 [Select 候选交互设计](candidate-interaction-design.md)，Select Token 的专项设计见 [Select Token 设计](token.md)，设计和契约变化记录见 [Select Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -186,6 +186,17 @@ Disabled / invisible / window deactivated
 - 弹层关闭时，`Up/Down`、`Enter`、`Space` 可打开弹层。
 - 多选和 Tags 模式下，过滤输入为空时 `Backspace/Delete` 删除最后一个已选项。
 
+候选交互：
+
+- `SelectCandidateList` 维护唯一 active candidate，鼠标移动和键盘导航必须更新同一个候选状态。
+- 鼠标在可用候选项上实际移动时，该项成为 active candidate；鼠标路径不滚动候选列表，也不提交公共选择。
+- `Up/Down` 在当前有效候选视图中移动 active candidate，并可以把键盘候选滚动到可见区域。
+- `Enter` 只提交或切换当前 active candidate，候选视觉目标和提交目标必须一致。
+- active candidate 与已确认选择相互独立；已选项继续保持 selected 视觉和公共选择语义。
+- `:pointerover` 只表达指针命中事实，不能与 `IsCandidateSelected` 分别绘制两个候选高亮。
+
+完整状态、Theme、虚拟化、性能和验证边界见 [Select 候选交互设计](candidate-interaction-design.md)。
+
 清除行为通过 `SelectHandle.ClearRequestedEvent` 冒泡到 Select，并调用 `ClearValue()` 清空 `SelectedOption` 和 `SelectedOptions`。
 
 ## 5. 视觉与主题模型
@@ -198,7 +209,7 @@ Select 的默认视觉由 Select 专属主题、AddOnDecoratedBox、ListView 和
 | `SelectAddOnDecoratedBoxTheme.axaml` | 输入框 variant、status、dropdown open、hover、pressed 和多选 padding。 |
 | `SelectResultOptionsBoxTheme.axaml` | 多选标签布局、响应式标签布局和搜索输入承载。 |
 | `SelectCandidateListTheme.axaml` | 候选列表基础 ListView 主题和默认候选模板。 |
-| `SelectCandidateListItemTheme.axaml` | 候选项 active、selected、disabled 和隐藏已选项视觉。 |
+| `SelectCandidateListItemTheme.axaml` | 候选项 active、selected、disabled 和隐藏已选项视觉；active 只由统一候选状态驱动。 |
 | `SelectTagTheme.axaml` | 多选标签高度、背景、关闭按钮和禁用态。 |
 | `SelectHandleTheme.axaml` | 展开、loading、清除、过滤指示和 Form feedback 图标。 |
 | `PopupHostToken` | popup 阴影、圆角和 anchor margin。 |
@@ -236,6 +247,9 @@ Select 属于 Data Entry 选择控件家族，与 LineEdit、NumericUpDown、Dat
 - `Tags` 模式必须保持有效过滤能力，并只在该模式下创建动态选项。
 - `MaxCount` 达到上限时，未选候选项不可继续选择，已选候选项仍可取消。
 - `IsHideSelectedOptions` 不能隐藏分组标题导致空状态判断错误。
+- 鼠标和键盘必须共享唯一 active candidate，任意时刻最多显示一个未确认候选高亮。
+- `:pointerover` 不能独立成为 Select 候选视觉或提交状态 owner。
+- active candidate 变化不能提前修改 `SelectedOption` 或 `SelectedOptions`，`Enter` 必须提交当前视觉候选。
 - 弹层打开、关闭事件的取消语义不能被绕过。
 - 窗口失活、控件不可见或祖先不可见时必须关闭弹层。
 - 重新套用模板或 detach 时必须释放旧 popup 内容、候选列表事件订阅、opened 期间订阅和 TopLevel deactivation 订阅。
@@ -281,6 +295,7 @@ Select 必须保持三层选项模型：
 关联文档：
 
 - [Select 桌面版实现原理](implementation.md)
+- [Select 候选交互设计](candidate-interaction-design.md)
 - [Select Token 设计](token.md)
 - [Select Changelog](changelog.md)
 
@@ -298,8 +313,8 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/select/index-cn.md` |
-| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/select/semantic-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 专题设计通过 overview / implementation 摘要进入 `controls/select/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 专题设计通过 overview / implementation 摘要进入 `controls/select/semantic-cn.md` |
 | API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
 | Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
@@ -310,7 +325,7 @@ LLMS 导出来源：
 | 层次 | 验证内容 |
 | --- | --- |
 | Public API | `Mode`、选项源、选择值、过滤、异步加载、弹层事件、Form 和 CompactSpace 语义。 |
-| 状态行为 | 单选、多选、Tags、清除、最大选择数、隐藏已选项、默认值映射和动态选项清理。 |
+| 状态行为 | 单选、多选、Tags、清除、统一 active candidate、鼠标/键盘切换、最大选择数、隐藏已选项、默认值映射和动态选项清理。 |
 | AXAML / Template | 稳定 template part、`:dropdownopen`、AddOnDecoratedBox selector、PopupFrame 和懒创建候选列表。 |
 | Token | 多选标签、候选项、popup padding、输入 padding 和 `Custom` 尺寸默认分支。 |
 | Gallery / Docs | Select API 摘要、Token 语义、ShowCase 示例和本目录文档链接。 |

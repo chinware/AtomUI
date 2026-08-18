@@ -1,6 +1,6 @@
 # Select 桌面版实现原理
 
-本文档描述 Select 桌面版的输入壳体、选项集合、选择同步、过滤、Tags 动态选项、候选弹层、异步加载、Form 和 Token 资源边界。公共设计与 API 契约见 [Select 桌面版架构设计](overview.md)，Token 语义见 [Select Token 设计](token.md)，变化记录见 [Select Changelog](changelog.md)。
+本文档描述 Select 桌面版的输入壳体、选项集合、选择同步、过滤、Tags 动态选项、候选弹层、异步加载、Form 和 Token 资源边界。公共设计与 API 契约见 [Select 桌面版架构设计](overview.md)，鼠标与键盘的统一候选状态见 [Select 候选交互设计](candidate-interaction-design.md)，Token 语义见 [Select Token 设计](token.md)，变化记录见 [Select Changelog](changelog.md)。
 
 ## 1. 实现定位
 
@@ -16,8 +16,8 @@ Tags 模式的动态选项必须作为 Select 自身运行时状态维护。用�
 - `src/AtomUI.Desktop.Controls/Select/Select.cs`：public Select API、protected 扩展 hook、用户选项源同步、有效候选选项同步、选择同步、过滤输入、Tags 动态选项、键盘和指针处理。
 - `src/AtomUI.Desktop.Controls/Select/Select.AsyncOptionsLoad.cs`：异步候选加载和私有加载完成流程。
 - `src/AtomUI.Desktop.Controls/Select/SelectOption.cs`：`ISelectOption` 和默认 `SelectOption`。
-- `src/AtomUI.Desktop.Controls/Select/SelectCandidateList.cs`：候选列表、候选导航、提交取消、最大选择数和隐藏已选项。
-- `src/AtomUI.Desktop.Controls/Select/SelectCandidateListItem.cs`：候选项容器状态。
+- `src/AtomUI.Desktop.Controls/Select/SelectCandidateList.cs`：统一 active candidate、鼠标与键盘候选导航、提交取消、最大选择数和隐藏已选项。
+- `src/AtomUI.Desktop.Controls/Select/SelectCandidateListItem.cs`：active candidate 和 committed selection 的容器状态投影。
 - `src/AtomUI.Desktop.Controls/Select/SelectResultOptionsBox.cs`：多选结果标签和过滤输入承载。
 - `src/AtomUI.Desktop.Controls/Select/SelectHandle.cs`：右侧展开、loading、清除和 Form feedback 图标。
 - `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`：共享溢出 tooltip attached behavior，供单选结果和多选 tag 复用。
@@ -31,7 +31,7 @@ Tags 模式的动态选项必须作为 Select 自身运行时状态维护。用�
 
 `Select` 是选项选择协调器。它维护用户选项源、运行时动态选项、有效候选选项、`SelectedOption`、`SelectedOptions`、`Mode`、过滤值、默认值映射和候选列表同步。它不直接绘制候选项或标签，而是把状态传给内部控件。
 
-`SelectCandidateList` 是候选选择边界。它继承 `ListView`，负责过滤、分组、虚拟化容器、候选项键盘导航、最大选择数禁用和 `Commit/Cancel` 事件。
+`SelectCandidateList` 是候选选择边界。它继承 `ListView`，拥有唯一 active candidate，负责把鼠标移动和键盘导航映射到同一候选状态，并处理过滤、分组、虚拟化容器、最大选择数禁用和 `Commit/Cancel` 事件。完整交互不变量见 [Select 候选交互设计](candidate-interaction-design.md)。
 
 `SelectResultOptionsBox` 是多选结果边界。它根据 `SelectedOptions` 创建 `SelectTag`，并在过滤启用时插入 `SelectFilterTextBox`。
 
@@ -73,6 +73,21 @@ CandidateList.Commit / SelectionChanged
   → sync CandidateList.SelectedItem / SelectedItems
   → update SelectedCount / placeholder / result visible state
 ```
+
+候选交互流：
+
+```text
+PointerMoved / Up / Down
+  → resolve enabled non-group candidate
+  → update CandidateSelectedIndex + CandidateSelectedItem
+  → project IsCandidateSelected to realized container
+  → SelectCandidateListItemTheme active visual
+Enter / pointer click
+  → commit or toggle the same interaction target
+  → SelectedOption / SelectedOptions
+```
+
+active candidate 是提交前交互状态，不写入 `ISelectOption`，也不提前改变 public selection。鼠标路径只迁移候选，不滚动列表；键盘路径在共享状态写入完成后把候选滚动到可见区域。
 
 过滤流：
 
@@ -135,9 +150,13 @@ Popup 打开期间，`AbstractSelect.PopupOpened()` 创建 `SubscriptionsOnOpen`
 
 ## 6. 交互与事件处理
 
+候选交互由 [Select 候选交互设计](candidate-interaction-design.md) 定义。`SelectCandidateList` 维护唯一 active candidate；`IsCandidateSelected` 是容器投影，`:pointerover` 只作为鼠标命中输入。
+
 键盘路径：
 
 - `Select.OnKeyDown()` 先让已打开的 `_candidateList.HandleKeyDown()` 处理候选导航、提交和取消。
+- `Up/Down` 在当前有效候选视图中迁移 active candidate，并在候选变化后滚动到可见区域。
+- `Enter` 提交或切换当前 active candidate，不能从鼠标或键盘之外的视觉状态推导提交目标。
 - `F4`、`Alt+Up/Down` 切换弹层。
 - 弹层关闭时 `Up/Down`、`Enter`、`Space` 打开弹层。
 - 弹层打开时 `Escape` 关闭弹层。
@@ -145,6 +164,9 @@ Popup 打开期间，`AbstractSelect.PopupOpened()` 创建 `SubscriptionsOnOpen`
 
 指针路径：
 
+- 候选项 PointerMoved 只在鼠标进入另一个可用候选项时迁移 active candidate；同项移动必须快速返回。
+- 鼠标候选迁移不调用 `ScrollCandidateItemIntoView()`，不提交选择，也不扫描全部候选容器。
+- 指针移动到 group 或不可用候选项时保留原 active candidate；`:pointerover` 不独立绘制候选背景。
 - popup 内部点击不关闭弹层。
 - 多选 tag 的关闭按钮点击不触发外层打开/关闭切换。
 - 控件按下时设置标准 `:pressed`，释放时根据状态打开或关闭弹层。
@@ -259,6 +281,7 @@ Select 不依赖运行时反射发现模板结构。模板协作通过固定 tem
 - `_deactivationSubscription` 在 attach 时创建，detach 时释放。
 - `_selectHandleInputStateBindings` 每次模板接入前释放旧绑定，仅持有 AddOnDecoratedBox → SelectHandle 的 hover / pressed sibling part 状态转发。
 - `_candidateList` 的事件订阅和 `ItemsSource` 必须在 `ClearPopupContent()` 中释放。
+- active candidate 在 popup 关闭、popup 内容释放、detach、过滤上下文变化和候选失效时清除；容器回收只清理本地投影。
 - `SelectHandle` 订阅 `FormFeedback.ValidateStatus` 时必须在 feedback 变化和 logical detach 时释放。
 - 异步加载通过 `AsyncSearchLoadCoordinator` 处理超时、取消和跳过旧结果。
 
@@ -267,6 +290,13 @@ AOT 边界：
 - `SelectToken` 通过 token generator 显式注册，生成 `SelectTokenKind` 和 `SelectTokenResourceExtension`。
 - API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护。
 - `OptionTemplate`、AddOn 模板和 EmptyIndicator 模板是 XAML 模板入口，不依赖运行时成员扫描。
+
+候选交互热路径边界：
+
+- 同一候选项内的 PointerMoved 使用 source index 比较后 O(1) 返回。
+- 候选迁移只更新旧、新两个已准备容器；不得逐项写入全部 `ItemCount`。
+- 鼠标路径不滚动，键盘路径每次候选变化最多执行一次滚动。
+- 事件源解析和状态投影不创建长期订阅、每项 handler、timer 或运行时动态发现。
 
 ## 9. 维护不变量
 
@@ -277,6 +307,10 @@ AOT 边界：
 - `OptionsSource` 写入不能破坏 `Options` 的内容集合语义。
 - Tags 运行时动态选项不能写入用户 `OptionsSource`，也不能写入 XAML 内容子项 `Options`。
 - 候选列表必须绑定到有效候选选项源，不能直接绑定到只读用户选项源。
+- `SelectCandidateList` 必须是 active candidate 的唯一 owner；鼠标和键盘不能分别维护候选状态。
+- `CandidateSelectedIndex`、`CandidateSelectedItem` 和已准备容器的 `IsCandidateSelected` 必须指向同一候选。
+- `:pointerover` 只能产生鼠标候选迁移请求，不能独立决定 Select 候选背景或 `Enter` 提交目标。
+- active candidate 迁移不能提前修改 public selection，selected 视觉必须继续覆盖候选 active 视觉。
 - 选择同步中的 `_ignoreSyncSelection` 只用于防止候选列表和 public selection 相互递归，必须通过成对 helper 恢复，不能吞掉外部选择变化。
 - `IgnorePropertyChange` 只用于内部恢复下拉开关状态，必须通过成对 helper 恢复，不能影响下一次外部 `IsDropDownOpen` 变化。
 - `Tags` 动态选项只在 `Tags` 模式创建和清理，生命周期由 Select 内部运行时动态选项集合拥有。
@@ -292,6 +326,9 @@ AOT 边界：
 
 - `SelectShowCasePageTests` 和 snapshot，覆盖 Gallery 示例和源码片段。
 - 单选、多选、Tags 三种模式的选择、清除、默认值和过滤行为。
+- 键盘候选后移动鼠标、鼠标候选后按方向键以及鼠标候选后按 `Enter` 的统一 active candidate 行为。
+- 鼠标停留在旧项时，键盘候选必须成为唯一候选视觉；selected 项继续保持已确认选择视觉。
+- group、disabled、hidden、`MaxCount` 不可新增选择项和虚拟化回收不能产生无效或残留 active candidate。
 - `OptionsSource` 替换后的选择保留。
 - `Mode=Tags`、`OptionsSource` 和无匹配过滤输入组合下，运行时动态 tag 创建、提交和删除不能修改用户选项源，也不能触发 ItemsSource 只读异常。
 - `OptionsLoader` 成功、超时、取消和错误通知。

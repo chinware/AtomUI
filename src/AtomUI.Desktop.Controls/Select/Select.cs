@@ -607,6 +607,7 @@ public partial class Select : AbstractSelect
             ConfigureSingleFilterTextBox();
         }
 
+        _candidateList?.ClearActiveCandidate();
         _candidateListActivated = false;
         base.PopupClosed(sender, e);
     }
@@ -844,6 +845,7 @@ public partial class Select : AbstractSelect
     {
         if (_candidateList != null)
         {
+            _candidateList.ClearActiveCandidate();
             ((ICandidateList)_candidateList).SelectionChanged -= HandleCandidateListSelectionChanged;
             _candidateList.Commit           -= HandleCandidateListComplete;
             _candidateList.Cancel           -= HandleCandidateListCanceled;
@@ -1546,7 +1548,8 @@ public partial class Select : AbstractSelect
         var candidateList = _candidateList;
         if (candidateList != null)
         {
-                ((ICandidateList)candidateList).SelectionChanged -= HandleCandidateListSelectionChanged;
+            candidateList.ClearActiveCandidate();
+            ((ICandidateList)candidateList).SelectionChanged -= HandleCandidateListSelectionChanged;
         }
 
         try
