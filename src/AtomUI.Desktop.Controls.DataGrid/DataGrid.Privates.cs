@@ -179,8 +179,8 @@ public partial class DataGrid
     /// 10,000 pixels in order to show the developer that star columns shouldn't be used.
     /// </summary>
     internal bool UsesStarSizing => ColumnsInternal.VisibleStarColumnCount > 0 &&
-                                    (!RowsPresenterAvailableSize.HasValue ||
-                                     !double.IsPositiveInfinity(RowsPresenterAvailableSize.Value.Width));
+                                    (!_columnViewportWidth.HasValue ||
+                                     !double.IsPositiveInfinity(_columnViewportWidth.Value));
 
     /// <summary>
     /// Indicates whether or not at least one auto-sizing column is waiting for all the rows
@@ -189,32 +189,7 @@ public partial class DataGrid
     internal bool AutoSizingColumns
     {
         get => _autoSizingColumns;
-        set
-        {
-            if (_autoSizingColumns && !value)
-            {
-                double adjustment = CellsWidth - ColumnsInternal.VisibleEdgedColumnsWidth;
-                AdjustColumnWidths(0, adjustment, false);
-                int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
-                for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
-                {
-                    DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
-                    if (!column.IsVisible)
-                    {
-                        continue;
-                    }
-
-                    column.IsInitialDesiredWidthDetermined = true;
-                }
-
-                ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
-                ComputeScrollBarsLayout();
-                InvalidateColumnHeadersMeasure();
-                InvalidateRowsMeasure(true);
-            }
-
-            _autoSizingColumns = value;
-        }
+        private set => _autoSizingColumns = value;
     }
 
     internal int? MouseOverRowIndex

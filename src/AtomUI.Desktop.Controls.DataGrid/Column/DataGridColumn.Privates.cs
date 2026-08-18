@@ -345,8 +345,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
             starColumnsCount  += (column != this && column.Width.IsStar) ? 1 : 0;
         }
 
-        bool hasInfiniteAvailableWidth = !OwningGrid.RowsPresenterAvailableSize.HasValue ||
-                                         double.IsPositiveInfinity(OwningGrid.RowsPresenterAvailableSize.Value.Width);
+        bool hasInfiniteAvailableWidth = !OwningGrid.HasFiniteColumnViewport;
 
         // If we're using star sizing, we can only resize the column as much as the columns to the
         // right will allow (i.e. until they hit their max or min widths).

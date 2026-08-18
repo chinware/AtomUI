@@ -2,6 +2,15 @@
 
 本文档记录 DataGrid 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-18
+
+- Implementation
+  - Make finite star-column resolution independent of `DataGridRowsPresenter` visibility by storing the active column viewport on `DataGrid` and accepting empty-state widths from the normal or group header presenter.
+  - Separate initial Auto measurement completion from star-width distribution, while preserving existing min/max, resize, frozen-column, scrollbar and filler handling through `AdjustColumnWidths`.
+- Docs
+  - Add the dedicated DataGrid column sizing design covering width-mode semantics, DataGrid-owned star resolution, presenter viewport ownership, empty-state template integration, filler boundaries, compatibility, and verification.
+  - Synchronize the architecture and implementation documents with the shared finite-viewport column sizing model.
+
 ## 2026-07-23
 
 - Implementation

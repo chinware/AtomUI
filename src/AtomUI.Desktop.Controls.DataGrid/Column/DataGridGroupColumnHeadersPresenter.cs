@@ -159,6 +159,11 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
             return default;
         }
 
+        if (OwningGrid.IsEmptyDataSource)
+        {
+            OwningGrid.ResolveStarColumnWidths(availableSize.Width);
+        }
+
         _columnHeight = OwningGrid.ColumnHeaderHeight;
         bool          autoSizeHeight;
         if (double.IsNaN(_columnHeight))
@@ -467,7 +472,8 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
             // When we initially load an auto-column, we have to wait for all the rows to be measured
             // before we know its final desired size.  We need to trigger a new round of measures now
             // that the final sizes have been calculated.
-            OwningGrid.AutoSizingColumns = false;
+            double availableCellsWidth = OwningGrid.IsEmptyDataSource ? finalSize.Width : OwningGrid.CellsWidth;
+            OwningGrid.CompleteAutoSizing(availableCellsWidth);
             return base.ArrangeOverride(finalSize);
         }
         

@@ -1,6 +1,6 @@
 # DataGrid 桌面版架构设计
 
-本文档定义 `DataGrid` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [DataGrid 桌面版实现原理](implementation.md)，DataGrid Token 的专项设计见 [DataGrid Token 设计](token.md)，设计和契约变化记录见 [DataGrid Changelog](changelog.md)。
+本文档定义 `DataGrid` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [DataGrid 桌面版实现原理](implementation.md)，列宽测量与分配见 [DataGrid 列宽分配设计](column-sizing-design.md)，DataGrid Token 的专项设计见 [DataGrid Token 设计](token.md)，设计和契约变化记录见 [DataGrid Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -74,6 +74,13 @@ public interface IDataGridCollectionViewMoveSupport
 `Pagination` 只投影该状态并把用户翻页请求交回 CollectionView。`ItemsSource`、分页属性与模板应用的先后顺序
 不得改变分页结果；模板重新套用时必须从当前 CollectionView 回放状态，而不能把模板部件的默认值当成真源。
 
+列宽公共契约由 `DataGrid.ColumnWidth`、`DataGridColumn.Width`、控件级与列级最小/最大宽度，以及
+`DataGridLengthUnitType` 共同表达。`ColumnWidth` 默认为 `Auto`；单列可以使用 `Pixel`、`Auto`、
+`SizeToHeader`、`SizeToCells` 或 `Star`。内容驱动模式先形成期望宽度，star 模式再按权重分配有限列视口中的
+剩余空间。列宽状态与统一分配算法由 `DataGrid` 持有，普通表头、分组表头和 rows/cells presenter 只提供当前
+布局可证明的有限宽度或内容测量结果。空数据时列宽求解不能依赖已隐藏的 rows presenter，完整契约见
+[DataGrid 列宽分配设计](column-sizing-design.md)。
+
 列过滤契约采用数据源与选中值分离的模型。`Filters` 是列过滤项数据源入口，应作为可绑定 Avalonia 属性维护，允许直接绑定 ViewModel 或数据库查询结果。`SelectedFilterValues` 是当前列过滤选中值的唯一 public 状态 owner，默认按双向绑定语义工作。`DataGridColumn` 实现 `IDataContextProvider`，列加入或离开 `DataGrid` 时由 `DataGrid` 同步/释放列级 `DataContext`，保证 `Filters="{Binding ...}"` 和 `SelectedFilterValues="{Binding ...}"` 能绑定到 Gallery 或业务 ViewModel。若同一个 `DataGrid` 通过 `x:DataType` 声明行模型类型，列级 ViewModel 绑定必须避免被行模型上下文捕获：可在 XAML 绑定上显式指定 VM 类型；若具体工具链无法稳定解析这种嵌套上下文，可在页面加载或 View 初始化时直接把 VM 集合赋给列属性，但仍必须复用 `SelectedFilterValues` 作为唯一状态 owner，不能另建并行选中状态。`DataGrid` 内部的 `FilterDescriptions` 只承载 collection view 过滤投影，不应成为列过滤菜单、VM 状态或 checked state 的并行 owner。
 
 列过滤项不应强制用户构造 UI 专属对象。`Filters` 中的元素可以是 `DataGridFilterItem`，也可以是业务 DTO；当使用业务 DTO 时，通过 `FilterTextMemberPath`、`FilterValueMemberPath` 和 `FilterChildrenMemberPath` 声明展示文本、过滤值和树形子项路径。DTO 成员路径只走生成的 data member accessor，DTO 类型需要使用 `[GenerateDataMemberAccessors]` 或等价生成描述；内置过滤项解析不做运行时反射兜底。过滤值以 `object?` 作为语义类型，字符串只是默认文本匹配路径的一种输入，不应成为过滤值契约的硬限制。
@@ -92,17 +99,20 @@ public interface IDataGridCollectionViewMoveSupport
 | `PART_Ascending` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 | `PART_BottomGridLine` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 | `PART_BottomPagination` | `Pagination` | 投影 CollectionView 分页状态并转发底部翻页请求。 |
+| `PART_ColumnHeadersPresenter` | `DataGridColumnHeadersPresenter` | 测量普通列头，并在空数据布局中提供有限列视口宽度。 |
 | `PART_ContentFrame` | `?` | 承载根视觉、边框、背景或尺寸基线。 |
 | `PART_ContentPresenter` | `?` | 展示用户内容、文本、图标或模板化数据。 |
 | `PART_Descending` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 | `PART_FocusVisual` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 | `PART_Frame` | `?` | 承载根视觉、边框、背景或尺寸基线。 |
+| `PART_GroupColumnHeadersPresenter` | `DataGridGroupColumnHeadersPresenter` | 测量分组列头，并与普通列头共享列宽输入契约。 |
 | `PART_HeaderPresenter` | `?` | 展示用户内容、文本、图标或模板化数据。 |
 | `PART_HorizontalIndicator` | `?` | 展示指示器、进度、分页或状态反馈。 |
 | `PART_IndicatorIconButton` | `?` | 承载用户触发入口、导航或关闭动作。 |
 | `PART_ItemsPresenter` | `?` | 展示用户内容、文本、图标或模板化数据。 |
 | `PART_RightGridLine` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 | `PART_RootLayout` | `?` | 承载根视觉、边框、背景或尺寸基线。 |
+| `PART_RowPresenter` | `DataGridRowsPresenter` | 承载已物化行；空数据时保持隐藏，不作为 star 求解的必要前置。 |
 | `PART_SortIndicator` | `?` | 展示指示器、进度、分页或状态反馈。 |
 | `PART_TopPagination` | `Pagination` | 投影 CollectionView 分页状态并转发顶部翻页请求。 |
 | `PART_VerticalIndicator` | `?` | 展示指示器、进度、分页或状态反馈。 |
@@ -278,11 +288,28 @@ Column.Filters / Filter*MemberPath
 
 `FilterEvaluator` 用于表达列过滤谓词。默认谓词应按选中值集合判断当前单元格值是否匹配；复杂场景通过显式 evaluator 扩展，不应把字符串 `Contains` 作为所有过滤值类型的唯一默认语义。
 
-### 8.5 动效模型
+### 8.5 列宽分配模型
+
+列宽采用“presenter 提供几何输入，DataGrid 统一求解，所有视觉消费同一结果”的单向模型：
+
+```text
+header / rows / cells available width and content measure
+  -> DataGrid column sizing state
+  -> constrained Auto completion and star distribution
+  -> DataGridColumn display widths
+  -> header / row / cell / filler / scrollbar projection
+```
+
+有已物化行时，rows/cells 路径提供包含行头和滚动布局修正后的 `CellsWidth`；空数据时，当前可见的普通或分组
+列头 presenter 使用自己的有限测量宽度驱动同一个求解器。`AutoSizingColumns` 只表示初始内容测量阶段，完成
+Auto 测量和分配 star 剩余空间是两个独立职责。filler 只承载所有可调整列达到 min/max 约束后仍无法分配的正
+剩余空间，不能替代 star 列分配。
+
+### 8.6 动效模型
 
 DataGrid 的动效只表达状态变化反馈，不应改变 public API 语义。初始加载、禁用态和卸载路径应能抑制或取消动效，避免保留旧控件实例。
 
-### 8.6 视觉选项模型
+### 8.7 视觉选项模型
 
 DataGrid 的视觉选项通过 public API 归一为 theme variables、伪类或模板绑定。Token 保存组件语义值，不能保存实例运行时状态或业务色值。
 
@@ -291,6 +318,7 @@ DataGrid 的视觉选项通过 public API 归一为 theme variables、伪类或�
 关联文档：
 
 - [DataGrid 桌面版实现原理](implementation.md)
+- [DataGrid 列宽分配设计](column-sizing-design.md)
 - [DataGrid Token 设计](token.md)
 - [DataGrid Changelog](changelog.md)
 
@@ -308,8 +336,8 @@ LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/data-grid/index-cn.md` |
-| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/data-grid/semantic-cn.md` |
+| 单控件完整文档 | `overview.md` + `implementation.md` + `column-sizing-design.md` + `token.md` + Gallery ShowCase | 生成 `controls/data-grid/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + `column-sizing-design.md` + theme/template 信息 | 生成 `controls/data-grid/semantic-cn.md` |
 | API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
 | Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |

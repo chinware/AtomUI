@@ -111,11 +111,15 @@ public partial class DataGrid
 
     internal int EditingColumnIndex { get; private set; }
 
+    internal bool HasFiniteColumnViewport => _columnViewportWidth.HasValue &&
+                                             !double.IsPositiveInfinity(_columnViewportWidth.Value);
+
     #endregion
 
     private DataGridColumnHeadersPresenter? _columnHeadersPresenter;
     private DataGridGroupColumnHeadersPresenter? _groupColumnHeadersPresenter;
     private DataGridColumnDraggingOverIndicator? _dataGridDraggingOverIndicator;
+    private double? _columnViewportWidth;
 
     protected virtual void NotifyColumnDisplayIndexChanged(DataGridColumnEventArgs e)
     {
@@ -346,6 +350,58 @@ public partial class DataGrid
         }
 
         return amount;
+    }
+
+    internal void ResolveStarColumnWidths(double availableCellsWidth)
+    {
+        if (double.IsNaN(availableCellsWidth) || double.IsNegativeInfinity(availableCellsWidth))
+        {
+            return;
+        }
+
+        _columnViewportWidth = Math.Max(0, availableCellsWidth);
+        ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
+        if (double.IsPositiveInfinity(availableCellsWidth) ||
+            ColumnsInternal.VisibleStarColumnCount == 0 ||
+            AutoSizingColumns)
+        {
+            return;
+        }
+
+        double adjustment = availableCellsWidth - ColumnsInternal.VisibleEdgedColumnsWidth;
+        if (MathUtils.IsZero(adjustment))
+        {
+            return;
+        }
+
+        AdjustColumnWidths(0, adjustment, false);
+        ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
+    }
+
+    internal void CompleteAutoSizing(double availableCellsWidth)
+    {
+        if (!AutoSizingColumns)
+        {
+            return;
+        }
+
+        AutoSizingColumns = false;
+
+        int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
+        {
+            DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
+            if (column.IsVisible)
+            {
+                column.IsInitialDesiredWidthDetermined = true;
+            }
+        }
+
+        ResolveStarColumnWidths(availableCellsWidth);
+        ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
+        ComputeScrollBarsLayout();
+        InvalidateColumnHeadersMeasure();
+        InvalidateRowsMeasure(true);
     }
 
     /// <summary>

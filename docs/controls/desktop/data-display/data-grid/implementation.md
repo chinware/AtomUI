@@ -1,6 +1,6 @@
 # DataGrid 桌面版实现原理
 
-本文档描述 DataGrid 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [DataGrid 桌面版架构设计](overview.md)，变化记录见 [DataGrid Changelog](changelog.md)。涉及 Control Own Token 的实现应同时阅读 [DataGrid Token 设计](token.md)。
+本文档描述 DataGrid 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [DataGrid 桌面版架构设计](overview.md)，列宽算法和 presenter 协作见 [DataGrid 列宽分配设计](column-sizing-design.md)，变化记录见 [DataGrid Changelog](changelog.md)。涉及 Control Own Token 的实现应同时阅读 [DataGrid Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -71,6 +71,9 @@
   ghost row，二者都不保存跨控件共享的拖拽状态。
 - `IDataGridCollectionViewMoveSupport` 是 CollectionView 的可选移动能力边界；`DataGridCollectionView` 负责
   内置源集合的能力判断、索引解释、提交、通知和失败回滚。
+- `DataGrid` 是列宽状态和统一 star solver 的 owner；普通/分组列头、rows 和 cells presenter 只报告有限视口
+  或内容测量结果，不能各自维护列显示宽度。
+- `DataGridFillerColumn` 只投影统一调整后仍无法由真实列吸收的正剩余空间，不参与决定 star 分配是否执行。
 
 ## 4. 状态与数据流
 
@@ -117,6 +120,25 @@ Pagination.CurrentPageChanged
 再把 CollectionView 最终的 `ItemCount`、`PageSize` 和 `PageIndex` 同步到当前分页部件。模板首次应用或重新套用时，
 CollectionView 已经是有效状态真源，只回放分页投影，不应重新配置数据视图。顶部和底部分页部件不持久保存分页状态；
 任一部件缺失时只跳过该视觉投影，不改变 CollectionView 或另一个部件。
+
+列宽状态流以 `DataGrid` 和 `DataGridColumn` 为 owner：
+
+```text
+DataGridColumnHeadersPresenter / DataGridGroupColumnHeadersPresenter
+  -> header desired widths + finite header viewport when rows are absent
+DataGridRowsPresenter / DataGridCellsPresenter
+  -> CellsWidth + realized cell desired widths when rows are present
+DataGrid
+  -> complete initial Auto measurement
+  -> resolve star widths through AdjustColumnWidths
+DataGridColumn display widths
+  -> headers / rows / cells / filler / scrollbars
+```
+
+普通和分组列头 presenter 共享同一输入契约：完成 header 内容测量，并在 rows presenter 因空数据不参与布局时
+把有限 `availableSize.Width` 交给 DataGrid。正常数据路径继续以 `CellsWidth` 表达扣除行头等占用后的列区域。
+presenter 不直接修改一组 star 列，也不把 filler 当作宽度分配结果。完整模式矩阵、算法和兼容边界见
+[DataGrid 列宽分配设计](column-sizing-design.md)。
 
 列过滤状态流以列对象为状态 owner：
 
@@ -174,6 +196,10 @@ PointerReleased
 - 控件卸载、弹层关闭、窗口关闭、集合替换或 container recycle 时释放事件订阅和资源宿主。
 - DynamicResource、TokenResourceBinder 或 C# binding 必须有明确 owner 和释放点。
 - Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
+- `PART_ColumnHeadersPresenter` 与 `PART_GroupColumnHeadersPresenter` 在模板应用后必须接入同一列宽输入路径；
+  `PART_RowPresenter` 在空数据时保持隐藏，不能作为完成 star 求解的必要生命周期节点。
+- 空数据与有数据切换、表头模式切换或模板重套用时，新的 presenter 只接管几何输入，现有列宽 state owner
+  仍是 DataGrid 和 DataGridColumn。
 - 行拖动开始时由 handle 捕获并记录具体 Pointer；正常释放和 `PointerCaptureLost` 都进入同一个会话终止入口。
 - `IsEnabled=false`、`CanUserReorderRows=false`、ItemsSource 或 CollectionView 变化、源行回收、重排列移除、
   模板重套用以及 DataGrid detach 必须主动取消当前行拖动，而不是等待 PointerReleased 补偿清理。
@@ -187,17 +213,20 @@ PointerReleased
 - `PART_Ascending`：稳定模板协作入口，重命名前必须同步主题和实现。
 - `PART_BottomGridLine`：稳定模板协作入口，重命名前必须同步主题和实现。
 - `PART_BottomPagination`：底部分页状态投影；由 DataGrid 管理状态回放和翻页事件订阅。
+- `PART_ColumnHeadersPresenter`：普通表头内容测量与空数据有限列视口输入。
 - `PART_ContentFrame`：承载根视觉、边框、背景或尺寸基线。
 - `PART_ContentPresenter`：展示用户内容、文本、图标或模板化数据。
 - `PART_Descending`：稳定模板协作入口，重命名前必须同步主题和实现。
 - `PART_FocusVisual`：稳定模板协作入口，重命名前必须同步主题和实现。
 - `PART_Frame`：承载根视觉、边框、背景或尺寸基线。
+- `PART_GroupColumnHeadersPresenter`：分组表头组合测量，与普通表头共享列宽输入契约。
 - `PART_HeaderPresenter`：展示用户内容、文本、图标或模板化数据。
 - `PART_HorizontalIndicator`：展示指示器、进度、分页或状态反馈。
 - `PART_IndicatorIconButton`：承载用户触发入口、导航或关闭动作。
 - `PART_ItemsPresenter`：展示用户内容、文本、图标或模板化数据。
 - `PART_RightGridLine`：稳定模板协作入口，重命名前必须同步主题和实现。
 - `PART_RootLayout`：承载根视觉、边框、背景或尺寸基线。
+- `PART_RowPresenter`：已物化行布局入口；空数据时隐藏，不作为 star 求解的必要生命周期节点。
 - `PART_SortIndicator`：展示指示器、进度、分页或状态反馈。
 - `PART_TopPagination`：顶部分页状态投影；由 DataGrid 管理状态回放和翻页事件订阅。
 - `PART_VerticalIndicator`：展示指示器、进度、分页或状态反馈。
@@ -255,6 +284,19 @@ Frame 与 Header 圆角不变量：
 - `PART_BottomGridLine` 和行头横向分割线只表达行间分隔，不表达整表外轮廓。`IsFrameBorderVisible=true` 且 rows 区域直接贴住 Frame 底边时，最后一个 displayed row 必须隐藏底部分割线，由 Frame 底边承担唯一底线；存在 `Footer`、底部分页或水平滚动条时，rows 区域下方还有内容，最后一行分割线必须恢复显示。
 - `HeaderCornerRadius` 只表达表头容器圆角。它根据 `Title`、`HeadersVisibility` 和 `CornerRadius` 派生，不应被根外框复用。
 
+列宽分配不变量：
+
+- 有限列视口宽度必须通过 DataGrid 的共享入口参与求解；普通列头、分组列头和 rows/cells 路径不得复制
+  `adjustment = availableCellsWidth - VisibleEdgedColumnsWidth` 之后的调整逻辑。
+- `AutoSizingColumns` 只覆盖初始内容测量期。完成初始测量时先固定当前已知的 desired widths，再使用同一次布局
+  提供的有限宽度执行 star 分配，最后重新 measure header/cell。
+- 空数据时，当前可见列头 presenter 是有限列视口的权威输入；`SizeToCells` 保持约束基线，`Auto` 使用 header
+  结果，star 列仍必须吸收可分配的剩余空间。
+- 有已物化行时继续使用 `CellsWidth`，保证行头、滚动条和横向滚动语义与现有布局一致。
+- `AdjustColumnWidths` 继续统一处理增长、收缩、star 权重、min/max 和用户调整约束。所有 star 列达到
+  `MaxWidth` 后仍存在的正剩余空间才允许进入 filler。
+- 无限宽度不执行有限剩余空间分配，保持既有 star 退化规则。
+
 列过滤算法不变量：
 
 - `Filters` 替换或集合变更时，Header 过滤入口可见性、FilterIndicator 激活态和 flyout 内容必须来自同一份有效过滤项视图，并同步剪枝 `SelectedFilterValues`。
@@ -300,6 +342,8 @@ Frame 与 Header 圆角不变量：
   集合、刷新 View、重建模板或分配新的 ghost row。
 - 每次有效 PointerPressed 最多创建一个轻量行拖动会话，每次进入 Dragging 最多创建一个 ghost row；两者在
   完成或取消时释放。移动能力通过直接接口能力判断，不使用反射、动态调用或运行时类型扫描。
+- 列宽求解复用列集合可见宽度缓存和 `AdjustColumnWidths`；无 star 列、输入无限、adjustment 为零或初始 Auto
+  测量未完成时应直接退出，不在 presenter 中分配辅助集合或建立额外订阅。
 
 ## 9. 维护不变量
 
@@ -314,6 +358,8 @@ Frame 与 Header 圆角不变量：
 - Handle、RowsPresenter 和 CollectionView 的职责不能重新混合：handle 不修改数据，presenter 不决定移动语义，
   CollectionView 不持有视觉对象。
 - 所有行拖动终止路径都必须移除 ghost、释放 capture 并清空会话；`RowReordered` 不能用于通知未提交的拖动。
+- 列宽求解不能依赖 `DataGridRowsPresenter` 可见性；空数据、普通表头和分组表头必须共享 DataGrid-owned solver。
+- filler 不能掩盖未执行的 star 分配；star 可吸收剩余空间时 filler 宽度必须为零。
 - 过滤项解析必须支持业务 DTO 和 `DataGridFilterItem` 两类输入，不得要求 VM 反向依赖内部 flyout、menu item 或 tree item 类型；业务 DTO 必须有生成的 data member accessor，不在 AOT 敏感路径中使用运行时反射兜底。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
@@ -332,3 +378,7 @@ Frame 与 Header 圆角不变量：
 - CollectionView 移动测试覆盖普通可变列表、数组、只读或固定长度集合、普通 IEnumerable、编辑和新增状态、
   排序/过滤/分组/分页拒绝、同位置释放、null 项目、重复 Equals 项目、自定义移动 View、异常回滚和额外集合重入。
 - 事件测试确认 `RowReordering` 每个 Pointer 会话最多一次，`RowReordered` 只在成功提交和完整清理之后一次触发。
+- 列宽测试覆盖空数据下 `Auto + * + *`、全 star、`Pixel` / `SizeToHeader` / `SizeToCells` 与 star 组合、
+  `1* + 2*`、空视口 resize、空数据新增后再次清空，以及普通/分组表头一致性。
+- 列宽约束测试覆盖 min/max、冻结列、行头、滚动条和 filler：star 可吸收空间时 filler 为零，只有约束阻止
+  继续分配时才允许 filler 为正。

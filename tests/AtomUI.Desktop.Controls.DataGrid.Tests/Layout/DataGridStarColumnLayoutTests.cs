@@ -1,6 +1,9 @@
+using System.Collections.ObjectModel;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 
@@ -77,6 +80,357 @@ public class DataGridStarColumnLayoutTests
         {
             window.Close();
         }
+    }
+
+    [Theory]
+    [InlineData(DataGridLengthUnitType.Auto)]
+    [InlineData(DataGridLengthUnitType.Pixel)]
+    [InlineData(DataGridLengthUnitType.SizeToHeader)]
+    [InlineData(DataGridLengthUnitType.SizeToCells)]
+    public void Empty_Grid_Resolves_Star_Columns_After_NonStar_Width_Mode(DataGridLengthUnitType unitType)
+    {
+        var firstColumn = new DataGridTextColumn
+        {
+            Header = "Identifier",
+            Width = unitType switch
+            {
+                DataGridLengthUnitType.Auto         => DataGridLength.Auto,
+                DataGridLengthUnitType.Pixel        => new DataGridLength(160),
+                DataGridLengthUnitType.SizeToHeader => DataGridLength.SizeToHeader,
+                DataGridLengthUnitType.SizeToCells  => DataGridLength.SizeToCells,
+                _                                   => throw new ArgumentOutOfRangeException(nameof(unitType))
+            }
+        };
+        var grid = CreateEmptyGrid(firstColumn,
+            CreateStarColumn("Primary"),
+            CreateStarColumn("Secondary"));
+        var window = ShowGrid(grid);
+
+        try
+        {
+            AssertEmptyGridUsesAvailableWidth(grid);
+            grid.Columns[1].ActualWidth.ShouldBeGreaterThan(grid.Columns[1].ActualMinWidth);
+            grid.Columns[2].ActualWidth.ShouldBeGreaterThan(grid.Columns[2].ActualMinWidth);
+
+            if (unitType is DataGridLengthUnitType.Auto or DataGridLengthUnitType.SizeToHeader)
+            {
+                firstColumn.Header = "Identifier header content that grows after the initial empty layout";
+                Dispatcher.UIThread.RunJobs();
+                AssertEmptyGridUsesAvailableWidth(grid);
+            }
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Empty_AllStar_Columns_Respect_Weights_When_Viewport_Resizes()
+    {
+        var firstStarColumn  = CreateStarColumn("Primary", 1);
+        var secondStarColumn = CreateStarColumn("Secondary", 2);
+        var grid = CreateEmptyGrid(firstStarColumn, secondStarColumn);
+        var window = ShowGrid(grid);
+
+        try
+        {
+            AssertEmptyGridUsesAvailableWidth(grid);
+            secondStarColumn.ActualWidth.ShouldBe(firstStarColumn.ActualWidth * 2, 1);
+
+            grid.Width = 620;
+            Dispatcher.UIThread.RunJobs();
+
+            AssertEmptyGridUsesAvailableWidth(grid);
+            secondStarColumn.ActualWidth.ShouldBe(firstStarColumn.ActualWidth * 2, 1);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Star_Columns_Keep_Using_Available_Width_Across_Empty_Add_Clear_Transitions()
+    {
+        var items = new ObservableCollection<GridRow>();
+        var grid = CreateEmptyGrid(
+            new DataGridTextColumn
+            {
+                Header  = "Property",
+                Binding = new Binding(nameof(GridRow.Property)),
+                Width   = DataGridLength.Auto
+            },
+            new DataGridTextColumn
+            {
+                Header  = "Description",
+                Binding = new Binding(nameof(GridRow.Description)),
+                Width   = new DataGridLength(1, DataGridLengthUnitType.Star)
+            });
+        grid.ItemsSource = items;
+        var window = ShowGrid(grid);
+
+        try
+        {
+            AssertEmptyGridUsesAvailableWidth(grid);
+
+            items.Add(new GridRow("Size", "Used to control the component dimensions.", "double", "32"));
+            grid.Width = 700;
+            Dispatcher.UIThread.RunJobs();
+            AssertColumnsUseAvailableWidth(grid);
+
+            items.Clear();
+            grid.Width = 760;
+            Dispatcher.UIThread.RunJobs();
+            AssertEmptyGridUsesAvailableWidth(grid);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Populated_Star_Columns_Keep_Using_CellsWidth_With_Row_Header_And_Scrollbar()
+    {
+        var grid = new global::AtomUI.Desktop.Controls.DataGrid
+        {
+            AutoGenerateColumns           = false,
+            HeadersVisibility             = DataGridHeadersVisibility.All,
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+            RowHeaderWidth                = 56,
+            ItemsSource = Enumerable.Range(0, 40)
+                                    .Select(index => new GridRow(
+                                        $"Property {index}",
+                                        "Description",
+                                        "string",
+                                        "Default"))
+                                    .ToArray(),
+            Width  = 880,
+            Height = 260
+        };
+        grid.Columns.Add(new DataGridTextColumn
+        {
+            Header  = "Property",
+            Binding = new Binding(nameof(GridRow.Property)),
+            Width   = new DataGridLength(160)
+        });
+        grid.Columns.Add(new DataGridTextColumn
+        {
+            Header  = "Description",
+            Binding = new Binding(nameof(GridRow.Description)),
+            Width   = new DataGridLength(1, DataGridLengthUnitType.Star)
+        });
+        var window = ShowGrid(grid);
+
+        try
+        {
+            var rowsPresenter = grid.GetVisualDescendants()
+                                    .OfType<DataGridRowsPresenter>()
+                                    .Single();
+
+            rowsPresenter.IsVisible.ShouldBeTrue();
+            grid.VerticalScrollBar.ShouldNotBeNull();
+            grid.VerticalScrollBar.IsVisible.ShouldBeTrue();
+            grid.ColumnsInternal.VisibleEdgedColumnsWidth.ShouldBe(grid.CellsWidth, 1);
+            grid.ColumnsInternal.FillerColumn.ShouldNotBeNull();
+            grid.ColumnsInternal.FillerColumn.FillerWidth.ShouldBe(0, 1);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Empty_Group_Header_Uses_The_Shared_Star_Column_Solver()
+    {
+        var grid = new global::AtomUI.Desktop.Controls.DataGrid
+        {
+            AutoGenerateColumns = false,
+            HeadersVisibility   = DataGridHeadersVisibility.Column,
+            ItemsSource         = Array.Empty<GridRow>(),
+            Width               = 880,
+            Height              = 260
+        };
+        grid.ColumnGroups.Add(new DataGridTextColumn
+        {
+            Header = "Identifier",
+            Width  = DataGridLength.Auto
+        });
+        grid.ColumnGroups.Add(CreateStarColumn("Primary"));
+        grid.ColumnGroups.Add(CreateStarColumn("Secondary"));
+        var window = ShowGrid(grid);
+
+        try
+        {
+            var presenter = grid.GetVisualDescendants()
+                                .OfType<DataGridGroupColumnHeadersPresenter>()
+                                .Single();
+
+            AssertEmptyGridUsesAvailableWidth(grid, presenter.Bounds.Width);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Empty_Star_Columns_Use_Filler_Only_After_Reaching_MaxWidth()
+    {
+        var firstStarColumn = CreateStarColumn("Primary");
+        firstStarColumn.MaxWidth = 180;
+        var secondStarColumn = CreateStarColumn("Secondary");
+        secondStarColumn.MaxWidth = 180;
+        var grid = CreateEmptyGrid(firstStarColumn, secondStarColumn);
+        var window = ShowGrid(grid);
+
+        try
+        {
+            var presenter = grid.GetVisualDescendants()
+                                .OfType<DataGridColumnHeadersPresenter>()
+                                .Single();
+            var rowsPresenter = grid.GetVisualDescendants()
+                                    .OfType<DataGridRowsPresenter>()
+                                    .Single();
+
+            rowsPresenter.IsVisible.ShouldBeFalse();
+            firstStarColumn.ActualWidth.ShouldBe(180, 1);
+            secondStarColumn.ActualWidth.ShouldBe(180, 1);
+            grid.ColumnsInternal.FillerColumn.ShouldNotBeNull();
+            grid.ColumnsInternal.FillerColumn.FillerWidth.ShouldBe(
+                presenter.Bounds.Width - grid.ColumnsInternal.VisibleEdgedColumnsWidth,
+                1);
+            grid.ColumnsInternal.FillerColumn.FillerWidth.ShouldBeGreaterThan(0);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Empty_Grid_Preserves_Infinite_Viewport_Star_Fallback()
+    {
+        var firstStarColumn = CreateStarColumn("Primary");
+        firstStarColumn.MaxWidth = 240;
+        var secondStarColumn = CreateStarColumn("Secondary");
+        secondStarColumn.MaxWidth = 240;
+        var grid = new global::AtomUI.Desktop.Controls.DataGrid
+        {
+            AutoGenerateColumns = false,
+            HeadersVisibility   = DataGridHeadersVisibility.Column,
+            ItemsSource         = Array.Empty<GridRow>(),
+            Height              = 260
+        };
+        grid.Columns.Add(firstStarColumn);
+        grid.Columns.Add(secondStarColumn);
+        var window = new Window
+        {
+            Width  = 940,
+            Height = 340,
+            Content = new StackPanel
+            {
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Children =
+                {
+                    grid
+                }
+            }
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            firstStarColumn.ActualWidth.ShouldBe(240, 1);
+            secondStarColumn.ActualWidth.ShouldBe(240, 1);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    private static global::AtomUI.Desktop.Controls.DataGrid CreateEmptyGrid(params DataGridColumn[] columns)
+    {
+        var grid = new global::AtomUI.Desktop.Controls.DataGrid
+        {
+            AutoGenerateColumns = false,
+            HeadersVisibility   = DataGridHeadersVisibility.Column,
+            ItemsSource         = Array.Empty<GridRow>(),
+            Width               = 880,
+            Height              = 260
+        };
+
+        foreach (var column in columns)
+        {
+            grid.Columns.Add(column);
+        }
+
+        return grid;
+    }
+
+    private static DataGridTextColumn CreateStarColumn(string header, double weight = 1)
+    {
+        return new DataGridTextColumn
+        {
+            Header = header,
+            Width  = new DataGridLength(weight, DataGridLengthUnitType.Star)
+        };
+    }
+
+    private static Window ShowGrid(global::AtomUI.Desktop.Controls.DataGrid grid)
+    {
+        var window = new Window
+        {
+            Width   = 940,
+            Height  = 340,
+            Content = grid
+        };
+
+        window.Show();
+        Dispatcher.UIThread.RunJobs();
+        return window;
+    }
+
+    private static void AssertEmptyGridUsesAvailableWidth(global::AtomUI.Desktop.Controls.DataGrid grid)
+    {
+        var presenter = grid.GetVisualDescendants()
+                            .OfType<DataGridColumnHeadersPresenter>()
+                            .Single();
+
+        AssertEmptyGridUsesAvailableWidth(grid, presenter.Bounds.Width);
+    }
+
+    private static void AssertEmptyGridUsesAvailableWidth(global::AtomUI.Desktop.Controls.DataGrid grid,
+                                                          double availableWidth)
+    {
+        var rowsPresenter = grid.GetVisualDescendants()
+                                .OfType<DataGridRowsPresenter>()
+                                .Single();
+
+        rowsPresenter.IsVisible.ShouldBeFalse();
+        AssertColumnsUseAvailableWidth(grid, availableWidth);
+    }
+
+    private static void AssertColumnsUseAvailableWidth(global::AtomUI.Desktop.Controls.DataGrid grid)
+    {
+        var presenter = grid.IsGroupHeaderMode
+            ? (Control)grid.GetVisualDescendants().OfType<DataGridGroupColumnHeadersPresenter>().Single()
+            : grid.GetVisualDescendants().OfType<DataGridColumnHeadersPresenter>().Single();
+
+        AssertColumnsUseAvailableWidth(grid, presenter.Bounds.Width);
+    }
+
+    private static void AssertColumnsUseAvailableWidth(global::AtomUI.Desktop.Controls.DataGrid grid,
+                                                       double availableWidth)
+    {
+        grid.ColumnsInternal.VisibleEdgedColumnsWidth.ShouldBe(availableWidth, 1);
+        grid.ColumnsInternal.FillerColumn.ShouldNotBeNull();
+        grid.ColumnsInternal.FillerColumn.FillerWidth.ShouldBe(0, 1);
     }
 
     private sealed record GridRow(string Property, string Description, string Type, string Default);
