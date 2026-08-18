@@ -3,7 +3,7 @@
 <div align="center">
 
 [![AntDesign](https://img.shields.io/badge/AntDesign%20-6.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview-cn)
-[![AtomUI](https://img.shields.io/badge/AtomUI-6.1.3-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
+[![AtomUI](https://img.shields.io/badge/AtomUI-6.1.4-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![NuGet Download](https://img.shields.io/nuget/dt/AtomUI.Desktop.Controls?style=flat-square&logo=nuget&label=downloads)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![][github-license-shield]][github-license-link]
 
@@ -69,8 +69,8 @@ Avalonia 12.1.1<br>
 
 #### 最新版本说明
 
-AtomUI 6.1.3 新增 Calendar、生成式本地化 Catalog 和官方葡萄牙语（巴西）支持，扩展导航与数据录入控件，
-并将兼容版本更新到 Avalonia 12.1.1。升级前请查看
+AtomUI 6.1.4 新增面向 trimming 和 NativeAOT 应用的编译期注册、可配置 Window caption button、
+NavMenu 折叠提示，并修复选择交互、Tab overflow、DataGrid 列宽和包交付问题。升级前请查看
 [更新日志](./CHANGELOG.zh-CN.md) 了解发布详情。
 
 #### 感谢通明湖中心孵化 AtomUI OSS
@@ -106,7 +106,7 @@ AtomUI 6.1.3 新增 Calendar、生成式本地化 Catalog 和官方葡萄牙语�
 
 #### 开始使用
 
-AtomUI 推荐通过 NuGet 安装。先安装主桌面控件包，再根据应用需要按需添加 DataGrid、ColorPicker 等可选包。
+AtomUI 推荐通过 NuGet 安装。先安装主桌面控件包，再根据应用需要按需添加 DataGrid、ColorPicker、Extras 等可选包。
 下面示例使用当前项目最新版本。
 
 目前我们已经发布的包如下：
@@ -124,12 +124,14 @@ AtomUI 推荐通过 NuGet 安装。先安装主桌面控件包，再根据应用
 | AtomUI.Desktop.Controls             | 桌面控件库 — 主要安装包                  |
 | AtomUI.Desktop.Controls.DataGrid    | DataGrid 数据表格控件（按需引入）          |
 | AtomUI.Desktop.Controls.ColorPicker | ColorPicker 颜色选择器控件（按需引入）      |
+| AtomUI.Desktop.Controls.Extras      | 补充桌面控件（按需引入）                    |
 | AtomUI.Generator                    | 面向自定义控件、Token 与本地化开发的源代码生成器   |
 
 ```bash
-dotnet add package AtomUI.Desktop.Controls --version 6.1.3
-dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.1.3
-dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.1.3
+dotnet add package AtomUI.Desktop.Controls --version 6.1.4
+dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.1.4
+dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.1.4
+dotnet add package AtomUI.Desktop.Controls.Extras --version 6.1.4
 ```
 
 您也可以在 IDE 的 NuGet 包管理器中安装。以 Rider 为例，可以依次点击：
@@ -156,9 +158,10 @@ NuGet -> 软件包
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.1.3"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.1.3"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.1.3"/>
+        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.1.4"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.1.4"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.1.4"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.Extras" Version="6.1.4"/>
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1"/>
     </ItemGroup>
 </Project>
@@ -218,6 +221,7 @@ public partial class App : Application
             builder.UseDesktopControls();
             builder.UseDesktopColorPicker();   // 可选
             builder.UseDesktopDataGrid();      // 可选
+            builder.UseDesktopExtras();        // 可选
         });
     }
 }

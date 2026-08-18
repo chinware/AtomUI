@@ -4,6 +4,31 @@ All notable changes to AtomUI are documented in this file.
 
 `AtomUI` follows Semantic Versioning 2.0.0.
 
+## 6.1.4
+
+`2026-08-18`
+
+- Breaking Changes
+  - SearchEdit: replace `SearchButtonClick` with `SearchRequested`. Migrate handlers to `SearchRequestedEventArgs`, which exposes the query snapshot and `Button` / `EnterKey` trigger; Enter now requests a search by default and can be disabled with `IsSearchOnEnterEnabled=false`.
+  - Localization: remove `ContractVersion` from `LanguageCatalogAttribute`, `LanguageCatalogDescriptor` and `TranslationBundleDescriptor`, including the descriptor constructor arguments; remove `AtomUILanguageContractVersion` and `AtomUIRequireVerifiedLanguageContract`; and replace the custom build-task path override `AtomUILocalizationBuildTasksAssembly` with `AtomUIBuildTasksAssembly`. Custom catalogs and language packages must use stable catalog keys and source fingerprints, then rebuild against 6.1.4. See [6.1.4 API change examples](docs/releases/6.1.4-api-changes.md).
+- AOT, Generator and Build
+  - Add compile-time linked registration for trimmed, NativeAOT and WebAssembly AOT applications. AtomUI now generates a static registration plan from C# and AXAML usage, preserves required control-package resources and uses bounded package-level fallbacks without runtime assembly scanning.
+  - Add build-generated linked-registration sidecars and package manifests, keep publish analyzers out of ordinary builds, avoid implicit publish work in Gallery builds and reduce duplicate generated descriptor factories.
+  - Add `ControlPackageRegistrationEntryAttribute` and package-granularity registration for third-party control packages, with opt-in directory granularity for independently trimmable control families.
+  - Centralize the NuGet release manifest, include `AtomUI.Desktop.Controls.Extras` in extension package build, pack and artifact verification, and skip theme-asset generation when a project has no AXAML inputs.
+- Window and Navigation
+  - Add `Window.IsMinimizeCaptionButtonVisible` and `IsMaximizeCaptionButtonVisible`, completing independent visibility controls for minimize, maximize, close, fullscreen and pin caption buttons while keeping platform capabilities and window state authoritative.
+  - Fix the Wayland startup title-bar flash, avoid retaining the complete Ant Design icon catalog in trimmed Window applications, and add tokenized spacing between the title-bar logo and left add-on.
+  - Add configurable collapsed NavMenu tooltips with node-level content, header fallback, placement and delay controls.
+  - Preserve `TabControl.HeaderTemplate` and `CardTabStrip.ItemTemplate` rendering when tab headers move into overflow menus. #430
+- Data Entry and DataGrid
+  - Unify pointer hover and keyboard navigation around one active Select candidate so the highlighted item and Enter commit target remain consistent across Single, Multiple and Tags modes.
+  - Fix non-editable ComboBox keyboard focus after reopening so consecutive Down and Enter selections continue to update the selected item. #428
+  - Fix DataGrid star columns when `ItemsSource` is empty by resolving widths from the active finite header viewport.
+- Gallery
+  - Add responsive content breakpoints, metadata layout and sidebar collapse behavior to the desktop and browser Gallery shells.
+  - Add real-time Icon Gallery filtering and one-click icon-name copy with localized success or failure feedback.
+
 ## 6.1.3
 
 `2026-08-08`

@@ -3,7 +3,7 @@
 <div align="center">
 
 [![AntDesign](https://img.shields.io/badge/AntDesign%20-6.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview)
-[![AtomUI](https://img.shields.io/badge/AtomUI-6.1.3-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
+[![AtomUI](https://img.shields.io/badge/AtomUI-6.1.4-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![][github-contributors-shield]][github-contributors-link]
 [![][github-stars-shield]][github-stars-link]
 [![NuGet Download](https://img.shields.io/nuget/dt/AtomUI.Desktop.Controls?style=flat-square&logo=nuget&label=downloads)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
@@ -75,8 +75,8 @@ Windows, macOS and Linux<br>
 
 #### Latest Release Notes
 
-AtomUI 6.1.3 adds the new Calendar, generated localization catalogs with official Portuguese (Brazil) support,
-expanded navigation and data-entry controls, and compatibility with Avalonia 12.1.1. Review the
+AtomUI 6.1.4 adds compile-time registration for trimmed and NativeAOT apps, configurable Window caption buttons,
+collapsed NavMenu tooltips, and fixes for selection, tab overflow, DataGrid sizing and package delivery. Review the
 [Changelog](./CHANGELOG.md) for release details.
 
 #### Incubator
@@ -111,7 +111,7 @@ Thanks to Tongming Lake Center for their incubation support of AtomUI OSS
 ##### Add NuGet packages
 
 AtomUI is distributed through NuGet. Install the main desktop controls package first, then add optional packages such as
-DataGrid and ColorPicker only when your application needs them. The examples below use the latest project version.
+DataGrid, ColorPicker and Extras only when your application needs them. The examples below use the latest project version.
 
 The packages we have released are as follows:
 
@@ -128,12 +128,14 @@ The packages we have released are as follows:
 | AtomUI.Desktop.Controls             | Desktop control library — the main package                                 |
 | AtomUI.Desktop.Controls.DataGrid    | DataGrid control (opt-in)                                                  |
 | AtomUI.Desktop.Controls.ColorPicker | ColorPicker control (opt-in)                                               |
+| AtomUI.Desktop.Controls.Extras      | Supplemental desktop controls (opt-in)                                     |
 | AtomUI.Generator                    | Source generators for custom controls, tokens and localization             |
 
 ```bash
-dotnet add package AtomUI.Desktop.Controls --version 6.1.3
-dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.1.3
-dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.1.3
+dotnet add package AtomUI.Desktop.Controls --version 6.1.4
+dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.1.4
+dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.1.4
+dotnet add package AtomUI.Desktop.Controls.Extras --version 6.1.4
 ```
 
 You can also install the packages from your IDE's NuGet package manager. In Rider, open:
@@ -161,9 +163,10 @@ Search for "AtomUI" and install the packages your project needs.
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.1.3"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.1.3"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.1.3"/>
+        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.1.4"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.1.4"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.1.4"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.Extras" Version="6.1.4"/>
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1"/>
     </ItemGroup>
 </Project>
@@ -223,6 +226,7 @@ public partial class App : Application
             builder.UseDesktopControls();
             builder.UseDesktopColorPicker();   // optional
             builder.UseDesktopDataGrid();      // optional
+            builder.UseDesktopExtras();        // optional
         });
     }
 }

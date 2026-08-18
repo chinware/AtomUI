@@ -6,6 +6,31 @@ AtomUI 的重要变更记录在此文件中。
 
 英文版本见 [CHANGELOG.md](CHANGELOG.md)。
 
+## 6.1.4
+
+`2026-08-18`
+
+- 破坏性变更
+  - SearchEdit：以 `SearchRequested` 替代 `SearchButtonClick`。事件处理器需迁移到 `SearchRequestedEventArgs`，从中读取查询文本快照以及 `Button` / `EnterKey` 触发来源；Enter 现在默认发起搜索，可通过 `IsSearchOnEnterEnabled=false` 禁用。
+  - Localization：移除 `LanguageCatalogAttribute`、`LanguageCatalogDescriptor` 和 `TranslationBundleDescriptor` 的 `ContractVersion`，包括 Descriptor 构造参数；移除 `AtomUILanguageContractVersion` 和 `AtomUIRequireVerifiedLanguageContract`；并以 `AtomUIBuildTasksAssembly` 替代自定义构建任务路径覆盖属性 `AtomUILocalizationBuildTasksAssembly`。自定义 Catalog 和语言包需改用稳定 Catalog Key 与源文本 fingerprint，并基于 6.1.4 重新构建。迁移写法见 [6.1.4 API 变更示例](docs/releases/6.1.4-api-changes.zh-CN.md)。
+- AOT、Generator 和 Build
+  - 为 trimming、NativeAOT 和 WebAssembly AOT 应用新增编译期 linked registration。AtomUI 现在根据 C# 和 AXAML 使用情况生成静态注册计划，保留所需控件包资源，并通过有界的包级 fallback 处理动态场景，不进行运行时程序集扫描。
+  - 新增构建期 linked-registration sidecar 和包 manifest；普通构建不加载 publish analyzer，Gallery 普通构建不再隐式执行 publish 工作，并减少重复生成的 Descriptor Factory。
+  - 为第三方控件包新增 `ControlPackageRegistrationEntryAttribute` 和默认包粒度注册；真正可独立裁剪的控件族可以显式启用目录粒度。
+  - 集中维护 NuGet 发布清单，将 `AtomUI.Desktop.Controls.Extras` 纳入扩展包 build、pack 和产物校验，并在项目没有 AXAML 输入时跳过主题资产生成。
+- Window 和导航
+  - 为 `Window` 新增 `IsMinimizeCaptionButtonVisible` 和 `IsMaximizeCaptionButtonVisible`，补齐最小化、最大化、关闭、全屏和置顶 caption button 的独立可见性控制，同时继续由平台能力和窗口状态决定操作是否有效。
+  - 修复 Wayland 启动时原生标题栏闪现；避免 trimmed Window 应用保留完整 Ant Design 图标目录；为标题栏 Logo 与 LeftAddOn 新增 Token 化间距。
+  - NavMenu 新增可配置的折叠 Tooltip，支持节点级内容、Header fallback、Placement 和延迟设置。
+  - 修复 Tab Header 进入 overflow menu 后丢失模板的问题，保持 `TabControl.HeaderTemplate` 和 `CardTabStrip.ItemTemplate` 渲染一致。#430
+- 数据录入和 DataGrid
+  - Select 将 pointer hover 和键盘导航统一到同一个 active candidate，使 Single、Multiple 和 Tags 模式下的高亮项与 Enter 提交目标保持一致。
+  - 修复非编辑 ComboBox 重新打开后键盘焦点丢失的问题，使连续使用 Down 和 Enter 仍能更新选中项。#428
+  - 修复 `ItemsSource` 为空时 DataGrid Star 列宽未按有限 Header viewport 正确分配的问题。
+- Gallery
+  - 为桌面和浏览器 Gallery Shell 新增响应式内容断点、Metadata 布局和侧边栏折叠行为。
+  - Icon Gallery 新增实时筛选和一键复制图标名称，并提供本地化成功或失败反馈。
+
 ## 6.1.3
 
 `2026-08-08`
