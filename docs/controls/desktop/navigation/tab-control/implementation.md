@@ -88,6 +88,7 @@ Public API / ItemsSource / Command / Event
 - 拖动排序状态流必须按 `IsTabReorderEnabled` -> pointer threshold -> Chrome-like live reorder preview -> `TabReordering` -> 逻辑集合 move -> selection/content/overflow recompute -> `TabReordered` 收敛。
 - 拖动过程中只能更新被拖 Tab 和兄弟 Tab 的临时 `RenderTransform`、候选目标 index 与自动滚动请求；被拖 Tab 必须被限制在当前 Tab 轨道主轴内移动，释放前不得实时移动 `ItemsSource`、`Items` 或 visual children，避免集合通知、选择状态和 container recycle 多次抖动。
 - 排序提交后选中状态按逻辑 item 重新计算，`SelectedContent`、content presenter、选中指示条、close button 可见性和 overflow 菜单都从同一个集合顺序派生。
+- overflow 菜单项必须从对应 `TabItem` 成对复制 `Header` 与 `HeaderTemplate`，使自定义标题模板在主标签和溢出菜单中保持同一呈现语义；不能只复制数据对象后依赖 `ToString()` 回退。
 - 垂直图标槽状态必须从 `TabStripPlacement`、同组 item 的 `HasIcon` 和容器生成状态单向推导：`Top` / `Bottom` 保持紧凑布局，不默认保留图标槽；`Left` / `Right` 中只要同一 owner 下任一 Tab 有图标，全部 Tab item 都保留同宽图标槽，未配置图标的 item 渲染空槽而不是伪造图标。
 - 图标槽保留状态是内部模板状态，不属于 public API、业务数据或 Token。它应随 item icon 变化、placement 变化、ItemsSource reset/replace/clear、container prepare/clear 和 template reapply 重新计算。
 - `TabStripPlacement` 变化是纯布局变化，必须保留当前 `SelectedItem` / `SelectedIndex` 语义，不得为了更新方向重建 item containers；否则直接作为 `TabItem` 的容器会把旧 `IsSelected` 容器状态反向写回 owner selection。
@@ -206,6 +207,7 @@ TabControl 的交互事件应从输入源收敛到控件级语义事件：
 - 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
 - Tab 激活触发变更需覆盖默认 `PointerReleased`、`PointerPressed`、press/release 同 Tab 激活、press 后移出不激活、press A release B 不激活、键盘选择不受影响，以及拖动排序释放不触发额外激活。
 - Tab 拖动排序变更需覆盖 Top/Bottom 横向排序、Left/Right 纵向排序、选中 item 跟随、可写 `ItemsSource`、未设置 `ItemsSource`、只读 source 不提交、`TabReordering` 取消、overflow 边缘自动滚动、关闭/添加/extra 区域排除、template reapply 与 detach 释放。
+- overflow 菜单呈现需覆盖自定义 `HeaderTemplate` 场景，验证生成菜单项的 `Header` / `HeaderTemplate` 与源 `TabItem` 一致。
 - 垂直图标槽对齐变更需覆盖 `Left` / `Right` 下同组混合图标与无图标 Tab 的文本起点一致、全部无图标时不额外占位、`Top` / `Bottom` 保持紧凑、Line/Card 两类主题一致，以及 icon/placement/items 变化和 container recycle 后状态不串组。
 - 默认 Line 垂直 spacing / padding 变更需覆盖 `TabControl` / `TabStrip` 在 `Left` / `Right` 下的相邻 container 主轴间距和 item 高度，并明确 Card theme 不被本规则修改。
 - `TabStripPlacement` 行为变更需覆盖直接 `TabItem` 与数据 item 场景，确保切换 `Top` / `Right` / `Bottom` / `Left` 后 `SelectedItem` 不变。

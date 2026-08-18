@@ -108,9 +108,10 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
                     {
                         var menuItem = new TabStripOverflowMenuItem
                         {
-                            Header       = tabStripItem.Content,
-                            TabStripItem = tabStripItem,
-                            IsClosable   = tabStripItem.IsClosable
+                            Header         = tabStripItem.Content,
+                            HeaderTemplate = tabStripItem.ContentTemplate,
+                            TabStripItem   = tabStripItem,
+                            IsClosable     = tabStripItem.IsClosable
                         };
                         menuItem.Click    += HandleMenuItemClicked;
                         menuItem.CloseTab += HandleCloseTabRequest;
