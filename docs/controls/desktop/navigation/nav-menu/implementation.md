@@ -43,6 +43,8 @@ NavMenu 的实现目标是在 `ItemsControl` 容器体系内维护包含节点�
 
 `NavMenuNode` 是 owner-managed 非 Visual `AvaloniaObject`。它保存节点数据、`Command` 和 `CommandParameter`，但不持有 generated container，不执行命令，也不直接订阅 `ICommand.CanExecuteChanged`。scoped resource-host 样板由 generator 生成，owner 侧 attach token 与节点属性 relay binding 使用同一个容器 disposable 生命周期。
 
+折叠 Tooltip 内容由 `NavMenuNode.Tooltip` 独立保存；`null` 表示回退到节点 `Header`，`IsTooltipEnabled` 表示节点级开关。节点不承载 `ToolTip.Tip` 附加属性，因为它不是视觉宿主；实际附加属性只存在于生成的 `VerticalNavMenuItemHeader`。
+
 inline collapsed coordinator 由 `NavMenu` 拥有，负责根据 `Mode` 和 `IsInlineCollapsed` 计算 effective mode，缓存 inline 打开路径，关闭折叠期间的临时 popup，并把折叠视觉状态下发到 `NavMenuItem` 和 header。它不拥有选择状态，也不直接修改 `Mode`。
 
 `NavMenuSelectionCoordinator` 统一处理旧选中节点清理、新选中节点设置、祖先路径标记和事件派发，避免选择逻辑散落在 click handler、默认路径 replay 和 property changed 分支中。它保存最后一次已应用选择的节点身份，并把当前 realized `NavMenuItem` 仅作为可失效缓存；容器回收后通过节点语义路径重新解析当前容器，不扫描或扁平化整棵 entry 树。每个 node container 完成 owner、node 和 semantic parent 准备后，都必须由 coordinator 投影当前 `IsSelected` / `IsInSelectedPath`，因此延迟打开的任意深度 popup 不依赖先前的 dispatcher 刷新时机。
@@ -65,6 +67,7 @@ NavMenu public API / NavMenuNode
   IsDarkStyle / IsItemBackgroundEnabled
   SelectedItem / DefaultSelectedPath / DefaultOpenPaths
   Header / Icon / ItemKey / Entries / Children view / IsEnabled
+  Tooltip / IsTooltipEnabled
   NavMenuGroup / NavMenuDivider
   Command / CommandParameter
       ↓
@@ -78,6 +81,7 @@ NavMenuEntryContainerCoordinator
       ↓
 NavMenuItem
   Level / IsTopLevel / HasSubMenu / IsSubMenuOpen
+  NodeHeader / Tooltip / EffectiveCollapsedTooltip
   ICommandSource / effective command enabled state
       ↓
 Interaction handler + KeyboardNavigationCoordinator + SelectionCoordinator
@@ -88,6 +92,8 @@ Header theme / Popup frame / Inline child frame
 `SelectedItem` 是持续选择状态。selection coordinator 中的已应用节点身份用于描述当前视觉投影，不替代 `SelectedItem` 公共状态；realized container 引用只在对应容器仍服务同一节点时有效。容器回收只失效临时引用，视觉树 detach 也不能清空已应用节点身份，因为同一控件及其选择视觉可以随后重新挂载。只有显式清空选择时，公共选择和已应用投影才共同复位。`DefaultSelectedPath` 和 `DefaultOpenPaths` 只在初始路径应用中参与 replay。程序连续设置多个选择时，过期 replay 必须被忽略，只应用最新 revision。
 
 `IsInlineCollapsed` 是 `Inline` 模式附加状态。进入折叠时，当前 inline 打开路径写入 cache，主视觉树中的 inline 子菜单关闭，effective mode 切为 `Vertical`；退出折叠时，折叠期间打开的 popup 关闭，再从 cache 恢复 inline 打开路径。这个流程不能调用 `NavMenu.Close()`，不能改写 `SelectedItem`。
+
+`NavMenuItem` 是折叠 Tooltip 有效状态的唯一 owner。节点 `Header` 单独投影为 `NodeHeader`，避免 generated container 的 `Header` 节点对象被当作文本内容。只有菜单和节点开关同时启用、`IsInlineCollapsed=true`、`IsTopLevel=true` 且 `HasSubMenu=false` 时，`EffectiveCollapsedTooltip` 才取 `Tooltip ?? NodeHeader`；其他状态统一为 `null`。模板通过 `TemplateBinding` 把有效内容、placement 和 delay 写到实际 `VerticalNavMenuItemHeader` 的 `ToolTip` 附加属性，继续复用共享 `ToolTipService`。
 
 `InlineCollapsedWidth` 是布局输入。默认值由 `NavMenuTheme.axaml` 通过 `NavMenuToken.InlineCollapsedWidth` 提供；本地属性值覆盖 token 默认值。该属性只影响 `Mode=Inline && IsInlineCollapsed=true` 的根宽度和测量，不影响 `Vertical` / `Horizontal`。宽度约束由 `NavMenu` 内部通过 `Width` / `MinWidth` metadata coercion 表达：折叠时 effective `Width` 收敛到 `InlineCollapsedWidth`，较大的 effective `MinWidth` 向下收敛，展开后恢复原始 base value 或绑定。过渡动画不能挂在 root `Width` 的 `DoubleTransition` 上，因为 `IsInlineCollapsed` 切换时宽度来自 coercion，不是普通 styled value 变化；动画应由内部 `InlineCollapsedLayoutWidth` motion 按帧驱动 coercion。不要使用 `BindingPriority.Animation` relay binding 控制根宽度，也不要设置 `MaxWidth`，否则会破坏用户 base `Width` 或把收缩动画立即夹到目标宽度。
 
@@ -131,7 +137,8 @@ Root template 把 Header、菜单 entry 区和 Footer 组织为三个稳定区�
 PrepareContainerForItemOverride
   -> reset current container CompositeDisposable
   -> NavMenuNode.AttachResourceHost(owner)
-  -> bind node visual properties
+  -> bind Header / Tooltip / IsTooltipEnabled and other node visual properties
+  -> bind owner menu collapsed Tooltip policy
   -> bind Command / CommandParameter to NavMenuItem
 
 ClearContainerForItemOverride / rebind / recycle
@@ -140,6 +147,7 @@ ClearContainerForItemOverride / rebind / recycle
   -> dispose the same CompositeDisposable
   -> release node-to-container bindings
   -> release resource-host attachment token
+  -> clear NodeHeader / Tooltip / effective collapsed Tooltip inputs
   -> clear command value from the old NavMenuItem
   -> NavMenuItem unsubscribes old Command.CanExecuteChanged
 ```
@@ -335,13 +343,13 @@ open path cache 应记录路径语义而不是持有容器引用。容器可能�
 
 初始加载时如果 `IsInlineCollapsed=true` 且存在 `DefaultOpenPaths`，默认展开路径进入 inline open path cache，不立即展开 inline 子树；首次展开时再 replay cache。`DefaultSelectedPath` / `SelectedItem` 仍可应用 selected leaf 和 selected path，不能因为子树未展开而丢失选中语义。
 
-折叠视觉由 theme 层表达：顶层 header 隐藏标题和箭头，icon 使用 `CollapsedIconSize` 居中；没有 icon 的顶层项显示 header 首字符。根分组标题隐藏，分组容器把 owner 已解析的 effective inline-collapsed 状态继续投影给子 entry，使任意层透明根分组都保持顶层折叠视觉；节点或 popup 内的非根分组从其 owner 接收 `false`，继续显示普通 vertical 标题和 item。root 宽度约束属于控件布局状态，由 C# metadata coercion 表达，以保留用户的 base `Width` / binding。inline collapsed 宽度过渡由内部 `InlineCollapsedLayoutWidth` motion 临时接管 coercion 输入，完成后必须清理回 `double.NaN`，让稳态宽度重新由 `InlineCollapsedWidth` 或用户原始 `Width` / binding 决定。C# 层不应为了折叠视觉改写 `Header` 或临时替换 `HeaderTemplate`。
+折叠视觉由 theme 层表达：顶层 header 隐藏标题和箭头，icon 使用 `CollapsedIconSize` 居中；没有 icon 的顶层项从 `NodeHeader` 显示首字符。顶层叶子项的 `EffectiveCollapsedTooltip` 附加到真实 header control，显式节点 `Tooltip` 优先，未设置时回退到 `NodeHeader`；带子菜单节点使用 popup，不同时显示折叠 Tooltip。根分组标题隐藏，分组容器把 owner 已解析的 effective inline-collapsed 状态继续投影给子 entry，使任意层透明根分组都保持顶层折叠视觉；节点或 popup 内的非根分组从其 owner 接收 `false`，继续显示普通 vertical 标题和 item。root 宽度约束属于控件布局状态，由 C# metadata coercion 表达，以保留用户的 base `Width` / binding。inline collapsed 宽度过渡由内部 `InlineCollapsedLayoutWidth` motion 临时接管 coercion 输入，完成后必须清理回 `double.NaN`，让稳态宽度重新由 `InlineCollapsedWidth` 或用户原始 `Width` / binding 决定。C# 层不应为了折叠视觉改写 `Header` 或临时替换 `HeaderTemplate`。
 
 ## 8. 资源、性能与 AOT 边界
 
 NavMenu 不应通过反射访问 template part 或内部状态。Header、popup、inline child frame 和 active indicator 均通过稳定 template part 和 Avalonia 属性接入。
 
-`NavMenuNode` 必须通过 `[GenerateScopedResourceHost]` 生成 `IResourceHost` / `IThemeVariantHost`、attachment count、host generation 和 `IDisposable` attach token。generation 用于使跨 host 切换后遗留的 stale token 失效，尤其不能让 `A -> B -> A` 中第一轮 A token 释放当前 A attachment。scoped resource host 只解决动态资源宿主及其事件订阅，不替代节点到容器 binding 的释放，也不替代 `ICommand.CanExecuteChanged` 的解绑。
+`NavMenuNode` 必须通过 `[GenerateScopedResourceHost]` 生成 `IResourceHost` / `IThemeVariantHost`、attachment count、host generation 和 `IDisposable` attach token。generation 用于使跨 host 切换后遗留的 stale token 失效，尤其不能让 `A -> B -> A` 中第一轮 A token 释放当前 A attachment。`Header`、`Tooltip` 等节点属性的 `DynamicResource` 都使用该 scoped owner；scoped resource host 只解决动态资源宿主及其事件订阅，不替代节点到容器 binding 的释放，也不替代 `ICommand.CanExecuteChanged` 的解绑。
 
 `NavMenuGroup` 遵守相同的 generated scoped resource-host 生命周期；结构容器不能永久持有 group 或 owner menu。`NavMenuDivider` 不需要资源宿主和订阅。
 
@@ -378,6 +386,9 @@ inline collapsed cache 不得持有 `NavMenuItem`、header、popup 或 template 
 - inline collapsed 进入时缓存 inline open path，退出时恢复 cache；折叠期间 popup 打开状态不得污染 cache。
 - `InlineCollapsedWidth` 默认来自 `NavMenuToken.InlineCollapsedWidth`，本地属性值必须按 Avalonia 优先级覆盖 token 默认值。
 - 折叠视觉不能通过改写 `Header`、删除 `HeaderTemplate` 或动态创建替代 header 实现。
+- 节点 `Tooltip` 与 `Header` 保持独立；未设置 `Tooltip` 时才回退到 `Header`，不能引入第二个标题属性代替 Tooltip 语义。
+- `ToolTip.Tip` 只能附加到实际 header control，不能扩大到非 Visual `NavMenuNode`；有效内容只由 `NavMenuItem` 计算。
+- container rebind、clear 和 recycle 必须同时释放节点 Tooltip binding 与菜单 Tooltip policy binding，并使旧 header 的有效 `ToolTip.Tip` 归零。
 - 点击 item 不得临时关闭 motion。
 - 默认路径应用不使用固定 50ms sleep 作为稳定策略。
 - selection coordinator 是选择状态的统一入口。

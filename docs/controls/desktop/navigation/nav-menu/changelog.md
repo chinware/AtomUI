@@ -2,6 +2,21 @@
 
 本文档记录 NavMenu 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-08-18
+
+- API
+  - 新增 `NavMenuNode.Tooltip` / `INavMenuNode.Tooltip` 独立节点提示内容，未设置时回退到节点 `Header`。
+  - 新增节点级 `IsTooltipEnabled`，以及菜单级 `IsCollapsedTooltipEnabled`、`CollapsedTooltipPlacement`、`CollapsedTooltipShowDelay`、`CollapsedTooltipBetweenShowDelay` 折叠提示策略。
+- Architecture
+  - 由 `NavMenuItem` 统一计算 `EffectiveCollapsedTooltip`，只允许有效 inline collapsed 状态下的顶层叶子节点生成提示内容。
+  - 将节点真实 `Header` 单独投影为 `NodeHeader`，避免 generated container 的节点对象进入首字符转换或 Tooltip fallback。
+  - 节点 Tooltip、节点开关和菜单策略 binding 归入现有 container `CompositeDisposable`，在 rebind、clear 和 recycle 时统一释放并清空。
+- Theme
+  - 将 `ToolTip.Tip`、placement 和 delay 附加到实际 `VerticalNavMenuItemHeader`，保持 `ToolTip` 服务的视觉宿主边界。
+  - 无图标折叠项的首字符改为从节点 `Header` 投影取得，不再对整个节点调用 `ToString()`。
+- Verification
+  - 覆盖显式 Tooltip、Header fallback、节点/菜单禁用、submenu 抑制、模式切换、运行期更新、自定义节点通知、动态资源和容器回收。
+
 ## 2026-08-05
 
 - API

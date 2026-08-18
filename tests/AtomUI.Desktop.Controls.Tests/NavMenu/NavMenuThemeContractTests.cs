@@ -209,6 +209,30 @@ public class NavMenuThemeContractTests
         verticalHeaderTheme.ShouldContain("FirstCharacterConverter");
     }
 
+    [Fact]
+    public void Inline_Collapsed_Tooltip_Is_Projected_To_The_Visual_Header()
+    {
+        var navMenuSource       = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/NavMenu.cs");
+        var nodeSource          = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/NavMenuNode.cs");
+        var itemSource          = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/NavMenuItem.cs");
+        var binderSource        = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/NavMenuItemContainerBinder.cs");
+        var coordinatorSource   = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/NavMenuEntryContainerCoordinator.cs");
+        var itemTheme           = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/Themes/NavMenuItemTheme.axaml");
+        var verticalHeaderTheme = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/Themes/VerticalNavMenuItemHeaderTheme.axaml");
+
+        nodeSource.ShouldContain("public static readonly DirectProperty<NavMenuNode, object?> TooltipProperty");
+        nodeSource.ShouldContain("public static readonly DirectProperty<NavMenuNode, bool> IsTooltipEnabledProperty");
+        navMenuSource.ShouldContain("public static readonly StyledProperty<bool> IsCollapsedTooltipEnabledProperty");
+        itemSource.ShouldContain("internal static readonly DirectProperty<NavMenuItem, object?> EffectiveCollapsedTooltipProperty");
+        binderSource.ShouldContain("NavMenuNode.TooltipProperty");
+        binderSource.ShouldContain("NavMenuItem.NodeHeaderProperty");
+        coordinatorSource.ShouldContain("NavMenu.IsCollapsedTooltipEnabledProperty");
+        coordinatorSource.ShouldContain("menuItem.ClearValue(NavMenuItem.TooltipProperty)");
+        itemTheme.ShouldContain("atom:ToolTip.Tip=\"{TemplateBinding EffectiveCollapsedTooltip}\"");
+        itemTheme.ShouldContain("NodeHeader=\"{TemplateBinding NodeHeader}\"");
+        verticalHeaderTheme.ShouldContain("Content=\"{TemplateBinding NodeHeader, Converter={x:Static atom:BaseNavMenuItemHeaderTheme.FirstCharacterConverter}}\"");
+    }
+
     private static string ReadRepoFile(string relativePath)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

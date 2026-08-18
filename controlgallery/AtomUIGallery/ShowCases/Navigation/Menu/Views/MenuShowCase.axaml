@@ -448,6 +448,7 @@
                           DefaultOpenPaths="{Binding InlineCollapsedOpenPaths}"
                           DefaultSelectedPath="{Binding InlineCollapsedSelectedPath}">
                 <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN1}"
+                                  Tooltip="{gallery:MenuShowCaseLangResource P2HeaderOptionN1}"
                                   Icon="{antdicons:AntDesignIconProvider Kind=PieChartOutlined}"
                                   ItemKey="Option1" />
                 <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN2}"

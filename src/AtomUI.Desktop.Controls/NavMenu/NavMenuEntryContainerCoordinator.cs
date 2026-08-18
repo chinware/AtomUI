@@ -122,6 +122,30 @@ internal static class NavMenuEntryContainerCoordinator
 
         BindNodeOwnerState(owner, menuItem, nodeBindingDisposables);
 
+        if (context.OwnerMenu is { } ownerMenu)
+        {
+            nodeBindingDisposables.Add(BindUtils.RelayBind(
+                ownerMenu,
+                NavMenu.IsCollapsedTooltipEnabledProperty,
+                menuItem,
+                NavMenuItem.IsCollapsedTooltipEnabledProperty));
+            nodeBindingDisposables.Add(BindUtils.RelayBind(
+                ownerMenu,
+                NavMenu.CollapsedTooltipPlacementProperty,
+                menuItem,
+                NavMenuItem.CollapsedTooltipPlacementProperty));
+            nodeBindingDisposables.Add(BindUtils.RelayBind(
+                ownerMenu,
+                NavMenu.CollapsedTooltipShowDelayProperty,
+                menuItem,
+                NavMenuItem.CollapsedTooltipShowDelayProperty));
+            nodeBindingDisposables.Add(BindUtils.RelayBind(
+                ownerMenu,
+                NavMenu.CollapsedTooltipBetweenShowDelayProperty,
+                menuItem,
+                NavMenuItem.CollapsedTooltipBetweenShowDelayProperty));
+        }
+
         switch (owner)
         {
             case NavMenu menu:
@@ -315,6 +339,9 @@ internal static class NavMenuEntryContainerCoordinator
     {
         menuItem.ClearValue(NavMenuItem.HeaderProperty);
         menuItem.ClearValue(NavMenuItem.HeaderTemplateProperty);
+        menuItem.ClearValue(NavMenuItem.NodeHeaderProperty);
+        menuItem.ClearValue(NavMenuItem.TooltipProperty);
+        menuItem.ClearValue(NavMenuItem.IsTooltipEnabledProperty);
         menuItem.ClearValue(NavMenuItem.IconProperty);
         menuItem.ClearValue(NavMenuItem.ItemKeyProperty);
         menuItem.ClearValue(NavMenuItem.CommandProperty);
@@ -324,6 +351,10 @@ internal static class NavMenuEntryContainerCoordinator
 
         menuItem.ClearValue(NavMenuItem.ModeProperty);
         menuItem.ClearValue(NavMenuItem.IsInlineCollapsedProperty);
+        menuItem.ClearValue(NavMenuItem.IsCollapsedTooltipEnabledProperty);
+        menuItem.ClearValue(NavMenuItem.CollapsedTooltipPlacementProperty);
+        menuItem.ClearValue(NavMenuItem.CollapsedTooltipShowDelayProperty);
+        menuItem.ClearValue(NavMenuItem.CollapsedTooltipBetweenShowDelayProperty);
         menuItem.ClearValue(NavMenuItem.IsDarkStyleProperty);
         menuItem.ClearValue(NavMenuItem.IsItemBackgroundEnabledProperty);
         menuItem.ClearValue(NavMenuItem.IsMotionEnabledProperty);

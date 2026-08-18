@@ -10,6 +10,8 @@ namespace AtomUI.Desktop.Controls;
 public interface INavMenuNode : ITreeNode<INavMenuNode>, INavMenuEntry
 {
     IDataTemplate? HeaderTemplate { get; }
+    object? Tooltip => null;
+    bool IsTooltipEnabled => true;
     ICommand? Command => null;
     object? CommandParameter => null;
     IEnumerable<INavMenuEntry> Entries => Children;
@@ -30,6 +32,19 @@ public partial class NavMenuNode : AvaloniaObject, INavMenuNode
             nameof(HeaderTemplate),
             o => o.HeaderTemplate,
             (o, v) => o.HeaderTemplate = v);
+
+    public static readonly DirectProperty<NavMenuNode, object?> TooltipProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuNode, object?>(
+            nameof(Tooltip),
+            o => o.Tooltip,
+            (o, v) => o.Tooltip = v);
+
+    public static readonly DirectProperty<NavMenuNode, bool> IsTooltipEnabledProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuNode, bool>(
+            nameof(IsTooltipEnabled),
+            o => o.IsTooltipEnabled,
+            (o, v) => o.IsTooltipEnabled = v,
+            unsetValue: true);
 
     public static readonly DirectProperty<NavMenuNode, ICommand?> CommandProperty =
         AvaloniaProperty.RegisterDirect<NavMenuNode, ICommand?>(
@@ -75,6 +90,22 @@ public partial class NavMenuNode : AvaloniaObject, INavMenuNode
     {
         get => _headerTemplate;
         set => SetAndRaise(HeaderTemplateProperty, ref _headerTemplate, value);
+    }
+
+    private object? _tooltip;
+
+    public object? Tooltip
+    {
+        get => _tooltip;
+        set => SetAndRaise(TooltipProperty, ref _tooltip, value);
+    }
+
+    private bool _isTooltipEnabled = true;
+
+    public bool IsTooltipEnabled
+    {
+        get => _isTooltipEnabled;
+        set => SetAndRaise(IsTooltipEnabledProperty, ref _isTooltipEnabled, value);
     }
 
     private ICommand? _command;

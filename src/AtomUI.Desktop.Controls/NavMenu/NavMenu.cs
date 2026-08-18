@@ -11,6 +11,7 @@ using Avalonia.Automation.Peers;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
@@ -61,6 +62,20 @@ public class NavMenu : ItemsControl,
 
     public static readonly StyledProperty<double> InlineCollapsedWidthProperty =
         AvaloniaProperty.Register<NavMenu, double>(nameof(InlineCollapsedWidth));
+
+    public static readonly StyledProperty<bool> IsCollapsedTooltipEnabledProperty =
+        AvaloniaProperty.Register<NavMenu, bool>(nameof(IsCollapsedTooltipEnabled), true);
+
+    public static readonly StyledProperty<PlacementMode> CollapsedTooltipPlacementProperty =
+        AvaloniaProperty.Register<NavMenu, PlacementMode>(
+            nameof(CollapsedTooltipPlacement),
+            PlacementMode.Right);
+
+    public static readonly StyledProperty<int> CollapsedTooltipShowDelayProperty =
+        AvaloniaProperty.Register<NavMenu, int>(nameof(CollapsedTooltipShowDelay), 400);
+
+    public static readonly StyledProperty<int> CollapsedTooltipBetweenShowDelayProperty =
+        AvaloniaProperty.Register<NavMenu, int>(nameof(CollapsedTooltipBetweenShowDelay), 100);
     
     public static readonly StyledProperty<bool> IsDarkStyleProperty =
         AvaloniaProperty.Register<NavMenu, bool>(nameof(IsDarkStyle), false);
@@ -145,6 +160,30 @@ public class NavMenu : ItemsControl,
     {
         get => GetValue(InlineCollapsedWidthProperty);
         set => SetValue(InlineCollapsedWidthProperty, value);
+    }
+
+    public bool IsCollapsedTooltipEnabled
+    {
+        get => GetValue(IsCollapsedTooltipEnabledProperty);
+        set => SetValue(IsCollapsedTooltipEnabledProperty, value);
+    }
+
+    public PlacementMode CollapsedTooltipPlacement
+    {
+        get => GetValue(CollapsedTooltipPlacementProperty);
+        set => SetValue(CollapsedTooltipPlacementProperty, value);
+    }
+
+    public int CollapsedTooltipShowDelay
+    {
+        get => GetValue(CollapsedTooltipShowDelayProperty);
+        set => SetValue(CollapsedTooltipShowDelayProperty, value);
+    }
+
+    public int CollapsedTooltipBetweenShowDelay
+    {
+        get => GetValue(CollapsedTooltipBetweenShowDelayProperty);
+        set => SetValue(CollapsedTooltipBetweenShowDelayProperty, value);
     }
     
     public bool IsDarkStyle

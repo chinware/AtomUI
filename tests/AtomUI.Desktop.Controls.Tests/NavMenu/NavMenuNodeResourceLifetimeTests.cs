@@ -68,6 +68,47 @@ public class NavMenuNodeResourceLifetimeTests
     }
 
     [Fact]
+    public void Dynamic_Resource_Tooltip_Uses_Owner_Menu_Resources_And_Tracks_Updates()
+    {
+        var resourceKey = CreateResourceKey();
+        Application.Current!.Resources[resourceKey] = "Application tooltip";
+
+        var node = new NavMenuNode();
+        BindDynamicResource(node, NavMenuNode.TooltipProperty, resourceKey, Application.Current);
+
+        var menu = new global::AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false
+        };
+        menu.Resources[resourceKey] = "Menu tooltip";
+        menu.Items.Add(node);
+
+        var window = new global::Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            node.Tooltip.ShouldBe("Menu tooltip");
+            menu.Resources[resourceKey] = "Updated menu tooltip";
+            Dispatcher.UIThread.RunJobs();
+
+            node.Tooltip.ShouldBe("Updated menu tooltip");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
     public void Dynamic_Resource_Header_Tracks_Owner_Menu_Resource_Updates()
     {
         var resourceKey = CreateResourceKey();

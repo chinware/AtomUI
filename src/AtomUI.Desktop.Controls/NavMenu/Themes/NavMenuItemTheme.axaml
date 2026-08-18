@@ -69,6 +69,7 @@
                         <atom:VerticalNavMenuItemHeader Name="PART_Header"
                                                          Icon="{TemplateBinding Icon}"
                                                          Header="{TemplateBinding Header}"
+                                                         NodeHeader="{TemplateBinding NodeHeader}"
                                                          HeaderTemplate="{TemplateBinding HeaderTemplate}"
                                                          HasSubMenu="{TemplateBinding HasSubMenu}"
                                                          IsSubMenuOpen="{TemplateBinding IsSubMenuOpen}"
@@ -79,7 +80,11 @@
                                                          IsSelected="{TemplateBinding SelectingItemsControl.IsSelected}"
                                                          IsInSelectedPath="{TemplateBinding IsInSelectedPath}"
                                                          IsKeyboardActive="{TemplateBinding IsKeyboardActive}"
-                                                         IsInlineCollapsed="{TemplateBinding IsInlineCollapsed}" />
+                                                         IsInlineCollapsed="{TemplateBinding IsInlineCollapsed}"
+                                                         atom:ToolTip.Tip="{TemplateBinding EffectiveCollapsedTooltip}"
+                                                         atom:ToolTip.Placement="{TemplateBinding CollapsedTooltipPlacement}"
+                                                         atom:ToolTip.ShowDelay="{TemplateBinding CollapsedTooltipShowDelay}"
+                                                         atom:ToolTip.BetweenShowDelay="{TemplateBinding CollapsedTooltipBetweenShowDelay}" />
                         <atom:Popup Name="PART_Popup"
                                     WindowManagerAddShadowHint="False"
                                     IsLightDismissEnabled="False"

@@ -30,6 +30,21 @@ internal static class NavMenuItemContainerBinder
                 NavMenuNode.CommandParameterProperty,
                 menuItem,
                 NavMenuItem.CommandParameterProperty));
+            disposables.Add(BindUtils.RelayBind(
+                navMenuNode,
+                NavMenuNode.HeaderProperty,
+                menuItem,
+                NavMenuItem.NodeHeaderProperty));
+            disposables.Add(BindUtils.RelayBind(
+                navMenuNode,
+                NavMenuNode.TooltipProperty,
+                menuItem,
+                NavMenuItem.TooltipProperty));
+            disposables.Add(BindUtils.RelayBind(
+                navMenuNode,
+                NavMenuNode.IsTooltipEnabledProperty,
+                menuItem,
+                NavMenuItem.IsTooltipEnabledProperty));
         }
         else
         {
@@ -45,6 +60,24 @@ internal static class NavMenuItemContainerBinder
                 node => node.CommandParameter,
                 menuItem,
                 NavMenuItem.CommandParameterProperty));
+            disposables.Add(BindUtils.RelayBind(
+                menuNode,
+                nameof(INavMenuNode.Header),
+                node => node.Header,
+                menuItem,
+                NavMenuItem.NodeHeaderProperty));
+            disposables.Add(BindUtils.RelayBind(
+                menuNode,
+                nameof(INavMenuNode.Tooltip),
+                node => node.Tooltip,
+                menuItem,
+                NavMenuItem.TooltipProperty));
+            disposables.Add(BindUtils.RelayBind(
+                menuNode,
+                nameof(INavMenuNode.IsTooltipEnabled),
+                node => node.IsTooltipEnabled,
+                menuItem,
+                NavMenuItem.IsTooltipEnabledProperty));
         }
 
         menuItem.SetCurrentValue(NavMenuItem.HeaderProperty, menuNode);

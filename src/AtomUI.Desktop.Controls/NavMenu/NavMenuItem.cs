@@ -11,6 +11,7 @@ using Avalonia.Controls.Converters;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
@@ -298,6 +299,42 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
             o => o.IsInlineCollapsed,
             (o, v) => o.IsInlineCollapsed = v);
 
+    internal static readonly DirectProperty<NavMenuItem, object?> NodeHeaderProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuItem, object?>(
+            nameof(NodeHeader),
+            o => o.NodeHeader,
+            (o, v) => o.NodeHeader = v);
+
+    internal static readonly DirectProperty<NavMenuItem, object?> TooltipProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuItem, object?>(
+            nameof(Tooltip),
+            o => o.Tooltip,
+            (o, v) => o.Tooltip = v);
+
+    internal static readonly DirectProperty<NavMenuItem, bool> IsTooltipEnabledProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuItem, bool>(
+            nameof(IsTooltipEnabled),
+            o => o.IsTooltipEnabled,
+            (o, v) => o.IsTooltipEnabled = v,
+            unsetValue: true);
+
+    internal static readonly StyledProperty<bool> IsCollapsedTooltipEnabledProperty =
+        NavMenu.IsCollapsedTooltipEnabledProperty.AddOwner<NavMenuItem>();
+
+    internal static readonly StyledProperty<PlacementMode> CollapsedTooltipPlacementProperty =
+        NavMenu.CollapsedTooltipPlacementProperty.AddOwner<NavMenuItem>();
+
+    internal static readonly StyledProperty<int> CollapsedTooltipShowDelayProperty =
+        NavMenu.CollapsedTooltipShowDelayProperty.AddOwner<NavMenuItem>();
+
+    internal static readonly StyledProperty<int> CollapsedTooltipBetweenShowDelayProperty =
+        NavMenu.CollapsedTooltipBetweenShowDelayProperty.AddOwner<NavMenuItem>();
+
+    internal static readonly DirectProperty<NavMenuItem, object?> EffectiveCollapsedTooltipProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuItem, object?>(
+            nameof(EffectiveCollapsedTooltip),
+            o => o.EffectiveCollapsedTooltip);
+
     private double _effectivePopupMinWidth;
 
     internal double EffectivePopupMinWidth
@@ -379,6 +416,65 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     {
         get => _isInlineCollapsed;
         set => SetAndRaise(IsInlineCollapsedProperty, ref _isInlineCollapsed, value);
+    }
+
+    private object? _nodeHeader;
+
+    internal object? NodeHeader
+    {
+        get => _nodeHeader;
+        set => SetAndRaise(NodeHeaderProperty, ref _nodeHeader, value);
+    }
+
+    private object? _tooltip;
+
+    internal object? Tooltip
+    {
+        get => _tooltip;
+        set => SetAndRaise(TooltipProperty, ref _tooltip, value);
+    }
+
+    private bool _isTooltipEnabled = true;
+
+    internal bool IsTooltipEnabled
+    {
+        get => _isTooltipEnabled;
+        set => SetAndRaise(IsTooltipEnabledProperty, ref _isTooltipEnabled, value);
+    }
+
+    internal bool IsCollapsedTooltipEnabled
+    {
+        get => GetValue(IsCollapsedTooltipEnabledProperty);
+        set => SetValue(IsCollapsedTooltipEnabledProperty, value);
+    }
+
+    internal PlacementMode CollapsedTooltipPlacement
+    {
+        get => GetValue(CollapsedTooltipPlacementProperty);
+        set => SetValue(CollapsedTooltipPlacementProperty, value);
+    }
+
+    internal int CollapsedTooltipShowDelay
+    {
+        get => GetValue(CollapsedTooltipShowDelayProperty);
+        set => SetValue(CollapsedTooltipShowDelayProperty, value);
+    }
+
+    internal int CollapsedTooltipBetweenShowDelay
+    {
+        get => GetValue(CollapsedTooltipBetweenShowDelayProperty);
+        set => SetValue(CollapsedTooltipBetweenShowDelayProperty, value);
+    }
+
+    private object? _effectiveCollapsedTooltip;
+
+    internal object? EffectiveCollapsedTooltip
+    {
+        get => _effectiveCollapsedTooltip;
+        private set => SetAndRaise(
+            EffectiveCollapsedTooltipProperty,
+            ref _effectiveCollapsedTooltip,
+            value);
     }
     
     internal Control? ItemHeader => _itemHeader;
@@ -608,6 +704,17 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     {
         base.OnPropertyChanged(change);
 
+        if (change.Property == NodeHeaderProperty ||
+            change.Property == TooltipProperty ||
+            change.Property == IsTooltipEnabledProperty ||
+            change.Property == IsCollapsedTooltipEnabledProperty ||
+            change.Property == IsInlineCollapsedProperty ||
+            change.Property == IsTopLevelProperty ||
+            change.Property == HasSubMenuProperty)
+        {
+            UpdateEffectiveCollapsedTooltip();
+        }
+
         if (change.Property == IsSelectedProperty)
         {
             IsSelectedChanged(change);
@@ -649,6 +756,17 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         {
             ValidateSelectionMode();
         }
+    }
+
+    private void UpdateEffectiveCollapsedTooltip()
+    {
+        EffectiveCollapsedTooltip = IsCollapsedTooltipEnabled &&
+                                    IsTooltipEnabled &&
+                                    IsInlineCollapsed &&
+                                    IsTopLevel &&
+                                    !HasSubMenu
+            ? Tooltip ?? NodeHeader
+            : null;
     }
     
     private static void HandleCommandChanged(AvaloniaPropertyChangedEventArgs change)
