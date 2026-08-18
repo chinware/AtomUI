@@ -2,6 +2,11 @@
 
 本文档记录 ComboBox 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-18
+
+- Behavior
+  - Keep keyboard input on a non-editable ComboBox when reopening its popup so consecutive `Down` and `Enter` selections continue to update the selected item.
+
 ## 2026-07-05
 
 - Behavior

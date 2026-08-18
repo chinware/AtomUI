@@ -910,7 +910,16 @@ public class ComboBox : AvaloniaComboBox,
     private void HandlePopupOpened(object? sender, EventArgs e)
     {
         RefreshFilteredItemVisibility();
-        FocusEditableTextBox(NavigationMethod.Unspecified);
+
+        if (IsEditable)
+        {
+            FocusEditableTextBox(NavigationMethod.Unspecified);
+        }
+        else if (TopLevel.GetTopLevel(this)?.FocusManager.GetFocusedElement() is Visual focusedVisual &&
+                 _popup?.IsInsidePopup(focusedVisual) == true)
+        {
+            Focus(NavigationMethod.Unspecified);
+        }
     }
 
     private void HandleEditableTextBoxTextInput(TextInputEventArgs e)
