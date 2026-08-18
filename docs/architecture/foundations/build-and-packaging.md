@@ -196,5 +196,9 @@ Unit fragment 是叶子，不调用其他 Unit。无法可靠确定 Unit 时，�
 DataGrid、ColorPicker 和 Extras 是独立按需包，但源码上依赖 `AtomUI.Desktop.Controls` 并访问其内部成员。
 GalleryBase 是产品中立的 Gallery 应用底座包，跟随主库版本发布，供 AtomUI 生态内的产品 Gallery、Demo 和文档应用复用。
 
+正式 NuGet 项目、Package ID 和发布分组统一声明在 `scripts/NuGetPackageProjects.ps1`。GitHub Actions 发布 workflow、
+本地 NuGet 发布脚本和产物完整性校验必须共同消费该清单，不得分别维护项目列表。新增、拆分或移除正式包时，先更新该清单，
+并让缺包或多包校验在上传与推送前失败。
+
 注册型产品包必须从同一次、同版本 Release 构建中封装 Generator 和 Build Tasks。不得在修改 `AtomUIVersion` 后使用
 `dotnet pack --no-build` 复用另一个版本留下的工具输出；多个同版本产品包中的编译资产必须具有一致内容。

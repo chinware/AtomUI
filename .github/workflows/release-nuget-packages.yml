@@ -53,35 +53,15 @@ jobs:
          -  name: Build AtomUI projects
             shell: pwsh
             run: |
-               # Build AtomUI project
-               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Native/AtomUI.Native.csproj
-               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Localization/AtomUI.Localization.csproj
-               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Core/AtomUI.Core.csproj
-               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Fonts.AlibabaSans/AtomUI.Fonts.AlibabaSans.csproj
-               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj
-               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Controls/AtomUI.Controls.csproj
-               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj
-               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Toolkits.GalleryBase/AtomUI.Toolkits.GalleryBase.csproj
-               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Generator/AtomUI.Generator.csproj
-               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Icons.Shared/AtomUI.Icons.Shared.csproj
-               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj
+               . ./scripts/NuGetPackageProjects.ps1
+               foreach ($project in $AtomUIBasePackageProjects) {
+                  dotnet build --configuration ${{ inputs.BuildType }} $project
+               }
          -  name: Create AtomUI NuGet packages
             shell: pwsh
             run: |
-               $projects = @(
-                  "./src/AtomUI.Native/AtomUI.Native.csproj",
-                  "./src/AtomUI.Localization/AtomUI.Localization.csproj",
-                  "./src/AtomUI.Core/AtomUI.Core.csproj",
-                  "./src/AtomUI.Fonts.AlibabaSans/AtomUI.Fonts.AlibabaSans.csproj",
-                  "./src/AtomUI.Controls/AtomUI.Controls.csproj",
-                  "./src/AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj",
-                  "./src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj",
-                  "./src/AtomUI.Toolkits.GalleryBase/AtomUI.Toolkits.GalleryBase.csproj",
-                  "./src/AtomUI.Generator/AtomUI.Generator.csproj",
-                  "./src/AtomUI.Icons.Shared/AtomUI.Icons.Shared.csproj",
-                  "./src/AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj"
-               )
-               foreach ($project in $projects) {
+               . ./scripts/NuGetPackageProjects.ps1
+               foreach ($project in $AtomUIBasePackageProjects) {
                   dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildType }} $project
                }
                $packages = Get-ChildItem -Path $env:BASE_OUTPUT_DIR -Filter *.nupkg -Recurse -File
@@ -99,67 +79,42 @@ jobs:
          -  name: Build AtomUI Extensions projects
             shell: pwsh
             run: |
-               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj
-               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj
+               . ./scripts/NuGetPackageProjects.ps1
+               foreach ($project in $AtomUIExtensionPackageProjects) {
+                  dotnet build --configuration ${{ inputs.BuildType }} $project
+               }
          -  name: Create AtomUI Extensions NuGet packages
             shell: pwsh
             run: |
-               dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildType }} ./src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj
-               dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildType }} ./src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj
+               . ./scripts/NuGetPackageProjects.ps1
+               foreach ($project in $AtomUIExtensionPackageProjects) {
+                  dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildType }} $project
+               }
          -  name: Build AtomUI language packages
             shell: pwsh
             run: |
-               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.LanguagePack.Template/AtomUI.LanguagePack.Template.csproj
-               dotnet build --configuration ${{ inputs.BuildType }} ./src/LanguagePacks/pt-BR/AtomUI.Controls.I18n.PtBR/AtomUI.Controls.I18n.PtBR.csproj
-               dotnet build --configuration ${{ inputs.BuildType }} ./src/LanguagePacks/pt-BR/AtomUI.Desktop.Controls.I18n.PtBR/AtomUI.Desktop.Controls.I18n.PtBR.csproj
-               dotnet build --configuration ${{ inputs.BuildType }} ./src/LanguagePacks/pt-BR/AtomUI.Desktop.Controls.DataGrid.I18n.PtBR/AtomUI.Desktop.Controls.DataGrid.I18n.PtBR.csproj
-               dotnet build --configuration ${{ inputs.BuildType }} ./src/LanguagePacks/pt-BR/AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR/AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR.csproj
-               dotnet build --configuration ${{ inputs.BuildType }} ./src/LanguagePacks/pt-BR/AtomUI.I18n.PtBR/AtomUI.I18n.PtBR.csproj
+               . ./scripts/NuGetPackageProjects.ps1
+               foreach ($project in $AtomUILanguagePackageProjects) {
+                  dotnet build --configuration ${{ inputs.BuildType }} $project
+               }
          -  name: Create AtomUI language NuGet packages
             shell: pwsh
             run: |
-               $projects = @(
-                  "./src/AtomUI.LanguagePack.Template/AtomUI.LanguagePack.Template.csproj",
-                  "./src/LanguagePacks/pt-BR/AtomUI.Controls.I18n.PtBR/AtomUI.Controls.I18n.PtBR.csproj",
-                  "./src/LanguagePacks/pt-BR/AtomUI.Desktop.Controls.I18n.PtBR/AtomUI.Desktop.Controls.I18n.PtBR.csproj",
-                  "./src/LanguagePacks/pt-BR/AtomUI.Desktop.Controls.DataGrid.I18n.PtBR/AtomUI.Desktop.Controls.DataGrid.I18n.PtBR.csproj",
-                  "./src/LanguagePacks/pt-BR/AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR/AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR.csproj",
-                  "./src/LanguagePacks/pt-BR/AtomUI.I18n.PtBR/AtomUI.I18n.PtBR.csproj"
-               )
-               foreach ($project in $projects) {
+               . ./scripts/NuGetPackageProjects.ps1
+               foreach ($project in $AtomUILanguagePackageProjects) {
                   dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildType }} $project
                }
          -  name: Verify AtomUI NuGet package artifacts
             shell: pwsh
             run: |
-               [xml]$versionProps = Get-Content -Path "./build/Version.props"
+               . ./scripts/NuGetPackageProjects.ps1
+               [xml]$versionProps = Get-Content -Path "./build/Versions.props"
                $version = [string]$versionProps.Project.PropertyGroup.AtomUIVersion
                if ([string]::IsNullOrWhiteSpace($version)) {
-                  throw "Unable to read AtomUIVersion from build/Version.props"
+                  throw "Unable to read AtomUIVersion from build/Versions.props"
                }
 
-               $expectedPackageIds = @(
-                  "AtomUI.Native",
-                  "AtomUI.Localization",
-                  "AtomUI.Core",
-                  "AtomUI.Fonts.AlibabaSans",
-                  "AtomUI.Controls.Shared",
-                  "AtomUI.Controls",
-                  "AtomUI.Desktop.Controls",
-                  "AtomUI.Toolkits.GalleryBase",
-                  "AtomUI.Generator",
-                  "AtomUI.Icons.Shared",
-                  "AtomUI.Icons.AntDesign",
-                  "AtomUI.Desktop.Controls.DataGrid",
-                  "AtomUI.Desktop.Controls.ColorPicker",
-                  "AtomUI.LanguagePack.Template",
-                  "AtomUI.Controls.I18n.PtBR",
-                  "AtomUI.Desktop.Controls.I18n.PtBR",
-                  "AtomUI.Desktop.Controls.DataGrid.I18n.PtBR",
-                  "AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR",
-                  "AtomUI.I18n.PtBR"
-               )
-               $expectedPackageNames = @($expectedPackageIds | ForEach-Object { "$($_).$version.nupkg" })
+               $expectedPackageNames = @($AtomUIExpectedPackageIds | ForEach-Object { "$($_).$version.nupkg" })
                $actualPackageNames = @(
                   Get-ChildItem -Path $env:BASE_OUTPUT_DIR -Filter *.nupkg -File |
                      Select-Object -ExpandProperty Name

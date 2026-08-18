@@ -5,16 +5,32 @@ namespace AtomUIGallery.Tests.Toolkits;
 
 public class GalleryBasePackagingTests
 {
+    private const string PackageManifest = "scripts/NuGetPackageProjects.ps1";
     private const string GalleryBaseProject = "src/AtomUI.Toolkits.GalleryBase/AtomUI.Toolkits.GalleryBase.csproj";
+    private const string ExtrasProject = "src/AtomUI.Desktop.Controls.Extras/AtomUI.Desktop.Controls.Extras.csproj";
+
+    [Theory]
+    [InlineData("AtomUI.Toolkits.GalleryBase", GalleryBaseProject)]
+    [InlineData("AtomUI.Desktop.Controls.Extras", ExtrasProject)]
+    public void Release_Package_Manifest_Includes_Product_Package(string packageId, string projectPath)
+    {
+        var manifest = ReadRepoFile(PackageManifest);
+
+        manifest.ShouldContain($"PackageId = \"{packageId}\"");
+        manifest.ShouldContain($"ProjectPath = \"{projectPath}\"");
+    }
 
     [Fact]
-    public void Main_Release_Workflow_Builds_And_Packs_GalleryBase()
+    public void Main_Release_Workflow_Builds_And_Packs_All_Manifest_Groups()
     {
         var workflow = ReadRepoFile(".github/workflows/release-nuget-packages.yml");
-        var workflowProject = $"./{GalleryBaseProject}";
 
-        workflow.ShouldContain($"dotnet build --configuration ${{{{ inputs.BuildType }}}} {workflowProject}");
-        workflow.ShouldContain($"\"{workflowProject}\"");
+        workflow.ShouldContain(". ./scripts/NuGetPackageProjects.ps1");
+        workflow.ShouldContain("foreach ($project in $AtomUIBasePackageProjects)");
+        workflow.ShouldContain("foreach ($project in $AtomUIExtensionPackageProjects)");
+        workflow.ShouldContain("foreach ($project in $AtomUILanguagePackageProjects)");
+        workflow.ShouldContain("dotnet build --configuration ${{ inputs.BuildType }} $project");
+        workflow.ShouldContain("dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildType }} $project");
     }
 
     [Fact]
@@ -31,44 +47,22 @@ public class GalleryBasePackagingTests
         uploadStepStart.ShouldBeGreaterThan(verificationStepStart);
         var verificationStep = workflow[verificationStepStart..uploadStepStart];
 
-        string[] expectedPackageIds =
-        [
-            "AtomUI.Native",
-            "AtomUI.Localization",
-            "AtomUI.Core",
-            "AtomUI.Fonts.AlibabaSans",
-            "AtomUI.Controls.Shared",
-            "AtomUI.Controls",
-            "AtomUI.Desktop.Controls",
-            "AtomUI.Toolkits.GalleryBase",
-            "AtomUI.Generator",
-            "AtomUI.Icons.Shared",
-            "AtomUI.Icons.AntDesign",
-            "AtomUI.Desktop.Controls.DataGrid",
-            "AtomUI.Desktop.Controls.ColorPicker",
-            "AtomUI.LanguagePack.Template",
-            "AtomUI.Controls.I18n.PtBR",
-            "AtomUI.Desktop.Controls.I18n.PtBR",
-            "AtomUI.Desktop.Controls.DataGrid.I18n.PtBR",
-            "AtomUI.Desktop.Controls.ColorPicker.I18n.PtBR",
-            "AtomUI.I18n.PtBR"
-        ];
-        foreach (var packageId in expectedPackageIds)
-        {
-            verificationStep.ShouldContain($"\"{packageId}\"");
-        }
-
+        verificationStep.ShouldContain(". ./scripts/NuGetPackageProjects.ps1");
+        verificationStep.ShouldContain("./build/Versions.props");
+        verificationStep.ShouldContain("$AtomUIExpectedPackageIds");
         verificationStep.ShouldContain("Missing NuGet packages");
         verificationStep.ShouldContain("Unexpected NuGet packages");
     }
 
     [Fact]
-    public void Local_NuGet_Publish_Script_Builds_And_Packs_GalleryBase()
+    public void Local_NuGet_Publish_Script_Builds_And_Packs_Manifest_Groups()
     {
         var script = ReadRepoFile("scripts/PublishToLocalSources.ps1");
-        var scriptProject = $"../{GalleryBaseProject}";
 
-        script.ShouldContain($"\"{scriptProject}\"");
+        script.ShouldContain(". \"$PSScriptRoot/NuGetPackageProjects.ps1\"");
+        script.ShouldContain("foreach ($project in $AtomUIBasePackageProjects)");
+        script.ShouldContain("foreach ($project in $AtomUIExtensionPackageProjects)");
+        script.ShouldContain("foreach ($project in $AtomUILanguagePackageProjects)");
         script.ShouldContain("dotnet build -v minimal --configuration $buildType $project");
         script.ShouldContain("dotnet pack --no-build --configuration $buildType $project");
     }
@@ -79,6 +73,7 @@ public class GalleryBasePackagingTests
         var packagingDoc = ReadRepoFile("docs/architecture/foundations/build-and-packaging.md");
 
         packagingDoc.ShouldContain("- `AtomUI.Toolkits.GalleryBase`");
+        packagingDoc.ShouldContain("- `AtomUI.Desktop.Controls.Extras`");
     }
 
     private static string ReadRepoFile(string relativePath)
