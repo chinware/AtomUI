@@ -4,9 +4,7 @@ param (
 )
 
 $ErrorActionPreference = "Stop"
-$PSNativeCommandUseErrorActionPreference = $true
 $packageOutputDir = Join-Path $PSScriptRoot "../output/Nuget/$buildType"
-. "$PSScriptRoot/NuGetPackageProjects.ps1"
 
 function Push-NuGetPackages {
     [CmdletBinding(SupportsShouldProcess = $true)]
@@ -17,53 +15,32 @@ function Push-NuGetPackages {
     )
 
     # 获取所有NuGet包
-    $packages = Get-ChildItem -Path $PackagePath -Filter *.nupkg -Recurse -File
+    $packages = Get-ChildItem -LiteralPath $PackagePath -Filter "*.nupkg" -File |
+        Sort-Object Name
 
     if (-not $packages) {
         Write-Warning "未找到任何.nupkg文件"
         return
     }
 
-    # 处理每个包
+    $pushedPackages = @()
     foreach ($pkg in $packages) {
-        if ($PSCmdlet.ShouldProcess($pkg.Name, "推送并删除")) {
-            try {
-                # 推送包
-                dotnet nuget push $pkg.FullName --source $Source
+        if ($PSCmdlet.ShouldProcess($pkg.Name, "推送")) {
+            dotnet nuget push $pkg.FullName --source $Source --skip-duplicate
+            if ($LASTEXITCODE -ne 0) {
+                throw "推送失败: $($pkg.Name) (退出码: $LASTEXITCODE)"
+            }
 
-                if ($LASTEXITCODE -eq 0) {
-                    # 删除成功推送的包
-                    Remove-Item $pkg.FullName -Force
-                    Write-Host "✓ 成功: $($pkg.Name)" -ForegroundColor Green
-                } else {
-                    Write-Warning "推送失败: $($pkg.Name) (退出码: $LASTEXITCODE)"
-                }
-            }
-            catch {
-                Write-Error "处理 $($pkg.Name) 时出错: $_"
-            }
+            $pushedPackages += $pkg
+            Write-Host "成功: $($pkg.Name)" -ForegroundColor Green
         }
+    }
+
+    foreach ($pkg in $pushedPackages) {
+        Remove-Item $pkg.FullName -Force
     }
 }
 
-foreach ($project in $AtomUIBasePackageProjects) {
-    dotnet build -v minimal --configuration $buildType $project
-}
-
-foreach ($project in $AtomUIBasePackageProjects) {
-    dotnet pack --no-build --configuration $buildType $project
-}
-
-Push-NuGetPackages -PackagePath $packageOutputDir -Source $localSourcesDir
-
-foreach ($project in $AtomUIExtensionPackageProjects) {
-    dotnet build -v minimal --configuration $buildType $project
-    dotnet pack --no-build --configuration $buildType $project
-}
-
-foreach ($project in $AtomUILanguagePackageProjects) {
-    dotnet build -v minimal --configuration $buildType $project
-    dotnet pack --no-build --configuration $buildType $project
-}
+& "$PSScriptRoot/BuildNuGetPackages.ps1" -BuildType $buildType -PackageOutputDir $packageOutputDir
 
 Push-NuGetPackages -PackagePath $packageOutputDir -Source $localSourcesDir

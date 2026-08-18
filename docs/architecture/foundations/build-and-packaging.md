@@ -200,5 +200,10 @@ GalleryBase 是产品中立的 Gallery 应用底座包，跟随主库版本发�
 本地 NuGet 发布脚本和产物完整性校验必须共同消费该清单，不得分别维护项目列表。新增、拆分或移除正式包时，先更新该清单，
 并让缺包或多包校验在上传与推送前失败。
 
+`scripts/BuildNuGetPackages.ps1` 是正式包的唯一构建编排入口。它先构建清单中的 Build Tasks 和 linked-publish Generator
+等非包前置项目，再完成全部包项目的 build，之后才允许执行任何 pack。发布构建必须关闭 MSBuild 节点复用、串行访问共享
+工具输出，并在完整包集合校验通过后才进入本地 feed、artifact upload 或 nuget.org push；任一 `dotnet` 命令失败都必须立即
+终止流程。pack 为生成 linked-registration Sidecar 发起的内部 build 只构建当前包，复用外层阶段已经生成的项目引用产物。
+
 注册型产品包必须从同一次、同版本 Release 构建中封装 Generator 和 Build Tasks。不得在修改 `AtomUIVersion` 后使用
 `dotnet pack --no-build` 复用另一个版本留下的工具输出；多个同版本产品包中的编译资产必须具有一致内容。

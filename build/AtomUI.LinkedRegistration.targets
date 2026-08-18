@@ -150,7 +150,7 @@
         <MSBuild Projects="$(MSBuildProjectFullPath)"
                  Targets="Build;GetAtomUILinkedRegistrationSidecar"
                  BuildInParallel="false"
-                 Properties="Configuration=$(Configuration); TargetFramework=$(_AtomUIPackSidecarTargetFramework); AtomUIEmitLinkedManifest=true; AtomUILinkedPublish=true; AtomUIRegistrationPlanOwner=false; AtomUIPackSidecarInnerBuild=true"
+                 Properties="Configuration=$(Configuration); TargetFramework=$(_AtomUIPackSidecarTargetFramework); AtomUIEmitLinkedManifest=true; AtomUILinkedPublish=true; AtomUIRegistrationPlanOwner=false; AtomUIPackSidecarInnerBuild=true; BuildProjectReferences=false"
                  RemoveProperties="PublishAot;PublishTrimmed;RunAOTCompilation;NoBuild">
             <Output TaskParameter="TargetOutputs"
                     ItemName="_AtomUIPackLinkedSidecar" />

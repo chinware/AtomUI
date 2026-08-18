@@ -50,86 +50,27 @@ jobs:
                   Write-Error "Failed to add local feed"
                   exit 1
                }
-         -  name: Build AtomUI projects
+         -  name: Build and pack AtomUI NuGet packages
             shell: pwsh
             run: |
-               . ./scripts/NuGetPackageProjects.ps1
-               foreach ($project in $AtomUIBasePackageProjects) {
-                  dotnet build --configuration ${{ inputs.BuildType }} $project
-               }
-         -  name: Create AtomUI NuGet packages
+               ./scripts/BuildNuGetPackages.ps1 `
+                  -BuildType "${{ inputs.BuildType }}" `
+                  -PackageOutputDir $env:BASE_OUTPUT_DIR
+         -  name: Validate packages with local NuGet feed
             shell: pwsh
             run: |
-               . ./scripts/NuGetPackageProjects.ps1
-               foreach ($project in $AtomUIBasePackageProjects) {
-                  dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildType }} $project
+               $ErrorActionPreference = "Stop"
+               $packages = Get-ChildItem -LiteralPath $env:BASE_OUTPUT_DIR -Filter "*.nupkg" -File |
+                  Sort-Object Name
+               if (-not $packages) {
+                  throw "No NuGet packages were produced"
                }
-               $packages = Get-ChildItem -Path $env:BASE_OUTPUT_DIR -Filter *.nupkg -Recurse -File
                foreach ($pkg in $packages) {
-                  try {
-                     dotnet nuget push $pkg.FullName --source $env:LOCAL_NUGET_DIR
-                     if ($LASTEXITCODE -ne 0) {
-                        Write-Warning "pushed nuget package: $($pkg.Name)"
-                     }
-                  }
-                  catch {
-                      Write-Error "push $($pkg.Name) error: $_"
+                  dotnet nuget push $pkg.FullName --source $env:LOCAL_NUGET_DIR
+                  if ($LASTEXITCODE -ne 0) {
+                     throw "Failed to push $($pkg.Name) to the local NuGet feed"
                   }
                }
-         -  name: Build AtomUI Extensions projects
-            shell: pwsh
-            run: |
-               . ./scripts/NuGetPackageProjects.ps1
-               foreach ($project in $AtomUIExtensionPackageProjects) {
-                  dotnet build --configuration ${{ inputs.BuildType }} $project
-               }
-         -  name: Create AtomUI Extensions NuGet packages
-            shell: pwsh
-            run: |
-               . ./scripts/NuGetPackageProjects.ps1
-               foreach ($project in $AtomUIExtensionPackageProjects) {
-                  dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildType }} $project
-               }
-         -  name: Build AtomUI language packages
-            shell: pwsh
-            run: |
-               . ./scripts/NuGetPackageProjects.ps1
-               foreach ($project in $AtomUILanguagePackageProjects) {
-                  dotnet build --configuration ${{ inputs.BuildType }} $project
-               }
-         -  name: Create AtomUI language NuGet packages
-            shell: pwsh
-            run: |
-               . ./scripts/NuGetPackageProjects.ps1
-               foreach ($project in $AtomUILanguagePackageProjects) {
-                  dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildType }} $project
-               }
-         -  name: Verify AtomUI NuGet package artifacts
-            shell: pwsh
-            run: |
-               . ./scripts/NuGetPackageProjects.ps1
-               [xml]$versionProps = Get-Content -Path "./build/Versions.props"
-               $version = [string]$versionProps.Project.PropertyGroup.AtomUIVersion
-               if ([string]::IsNullOrWhiteSpace($version)) {
-                  throw "Unable to read AtomUIVersion from build/Versions.props"
-               }
-
-               $expectedPackageNames = @($AtomUIExpectedPackageIds | ForEach-Object { "$($_).$version.nupkg" })
-               $actualPackageNames = @(
-                  Get-ChildItem -Path $env:BASE_OUTPUT_DIR -Filter *.nupkg -File |
-                     Select-Object -ExpandProperty Name
-               )
-               $missingPackages = @($expectedPackageNames | Where-Object { $_ -notin $actualPackageNames })
-               $unexpectedPackages = @($actualPackageNames | Where-Object { $_ -notin $expectedPackageNames })
-
-               if ($missingPackages.Count -gt 0) {
-                  throw "Missing NuGet packages: $($missingPackages -join ', ')"
-               }
-               if ($unexpectedPackages.Count -gt 0) {
-                  throw "Unexpected NuGet packages: $($unexpectedPackages -join ', ')"
-               }
-
-               Write-Output "Verified $($actualPackageNames.Count) AtomUI NuGet packages for version $version"
          -  name: Upload NuGet artifacts
             uses: actions/upload-artifact@v7
             with:
@@ -139,15 +80,12 @@ jobs:
             if: ${{ inputs.PublishToNuget == true }}
             shell: pwsh
             run: |
-               $packages = Get-ChildItem -Path $env:BASE_OUTPUT_DIR -Filter *.nupkg -Recurse -File
+               $ErrorActionPreference = "Stop"
+               $packages = Get-ChildItem -LiteralPath $env:BASE_OUTPUT_DIR -Filter "*.nupkg" -File |
+                  Sort-Object Name
                foreach ($pkg in $packages) {
-                  try {
-                     dotnet nuget push $pkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
-                     if ($LASTEXITCODE -ne 0) {
-                        Write-Warning "pushed nuget package: $($pkg.Name)"
-                     }
-                  }
-                  catch {
-                      Write-Error "push $($pkg.Name) error: $_"
+                  dotnet nuget push $pkg.FullName --api-key "${{ secrets.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+                  if ($LASTEXITCODE -ne 0) {
+                     throw "Failed to publish $($pkg.Name) to nuget.org"
                   }
                }

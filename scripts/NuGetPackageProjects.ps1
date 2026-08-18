@@ -1,5 +1,10 @@
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 
+$AtomUIReleaseBuildPrerequisiteProjects = @(
+    "src/AtomUI.Build.Tasks/AtomUI.Build.Tasks.csproj",
+    "src/AtomUI.Generator.LinkedPublish/AtomUI.Generator.LinkedPublish.csproj"
+)
+
 $AtomUIReleasePackages = @(
     [PSCustomObject]@{ Group = "Base"; PackageId = "AtomUI.Native"; ProjectPath = "src/AtomUI.Native/AtomUI.Native.csproj" },
     [PSCustomObject]@{ Group = "Base"; PackageId = "AtomUI.Localization"; ProjectPath = "src/AtomUI.Localization/AtomUI.Localization.csproj" },
@@ -40,6 +45,18 @@ foreach ($package in $AtomUIReleasePackages) {
     }
 }
 
+$AtomUIReleaseBuildPrerequisiteProjects = @(
+    foreach ($project in $AtomUIReleaseBuildPrerequisiteProjects) {
+        $projectPath = Join-Path $repositoryRoot $project
+        if (-not (Test-Path -LiteralPath $projectPath -PathType Leaf)) {
+            throw "NuGet build prerequisite project does not exist: $projectPath"
+        }
+
+        $projectPath
+    }
+)
+
+$AtomUIReleasePackageProjects = @($AtomUIReleasePackages | Select-Object -ExpandProperty ProjectPath)
 $AtomUIBasePackageProjects = @(
     $AtomUIReleasePackages |
         Where-Object Group -eq "Base" |

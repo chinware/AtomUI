@@ -277,6 +277,24 @@ public sealed class LinkedRegistrationBuildAssetsTests
     }
 
     [Fact]
+    public void Pack_Sidecar_Inner_Build_Reuses_Existing_Project_Reference_Outputs()
+    {
+        var targets = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.targets"));
+        var target = targets.Descendants("Target")
+                            .Single(element =>
+                                (string?)element.Attribute("Name") ==
+                                "AtomUIPrepareLinkedRegistrationSidecarForPack");
+
+        var properties = ((string?)target.Descendants("MSBuild")
+                                                .Single()
+                                                .Attribute("Properties"))
+            .ShouldNotBeNull()
+            .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        properties.ShouldContain("BuildProjectReferences=false");
+    }
+
+    [Fact]
     public void ProjectReference_Sidecars_Are_Collected_From_Resolved_Assembly_Paths()
     {
         var targets = XDocument.Load(GetRepoFile("build/AtomUI.LinkedRegistration.targets"));
