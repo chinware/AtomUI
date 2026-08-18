@@ -24,6 +24,7 @@
                         HorizontalSpacing="{atom:WindowTitleBarTokenResource HeaderHorizontalSpacing}"
                         ClipToBounds="True">
                         <DockPanel atom:WindowTitleBarLayoutPanel.Role="Leading"
+                                   HorizontalSpacing="{atom:WindowTitleBarTokenResource LogoAndLeftAddOnSpacing}"
                                    LastChildFill="False">
                             <ContentPresenter Name="PART_Logo"
                                               DockPanel.Dock="Left"
@@ -104,6 +105,7 @@
                         HorizontalSpacing="{atom:WindowTitleBarTokenResource HeaderHorizontalSpacing}"
                         ClipToBounds="True">
                         <DockPanel atom:WindowTitleBarLayoutPanel.Role="Leading"
+                                   HorizontalSpacing="{atom:WindowTitleBarTokenResource LogoAndLeftAddOnSpacing}"
                                    LastChildFill="False">
                             <ContentPresenter Name="PART_Logo"
                                               DockPanel.Dock="Left"

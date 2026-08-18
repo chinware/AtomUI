@@ -22,14 +22,15 @@ Token 负责尺寸、间距、字体和状态颜色，不负责以下运行时�
 | `Height` | 常规标题栏高度。 | `WindowTitleBarTheme` |
 | `TitleBarPadding` | 标题栏 managed 内容的左右内边距。 | `WindowTitleBarTheme`、标题布局 Panel |
 | `HeaderHorizontalSpacing` | 非零 Leading/Trailing 操作区与 Title 之间的条件水平间距。 | WindowTitleBar、ImagePreviewer、全屏标题宿主 |
+| `LogoAndLeftAddOnSpacing` | Windows/Linux Leading role 内同时有效的 Logo 与 LeftAddOn 之间的条件间距。 | WindowTitleBar Windows/Linux 模板 |
 | `LogoAndTitleSpacing` | Title role 内同时可见的 Logo/Icon 与 Title 之间的条件间距。 | WindowTitleBar macOS 模板、ImagePreviewer、全屏标题宿主 |
 | `LogoSize` | 默认 Logo presenter 尺寸。 | WindowTitleBar 和全屏标题宿主 |
 | `TitleFontSize` | 标题字体尺寸。 | WindowTitleBar 和全屏标题宿主 |
 | `TitleFontWeight` | 标题字体粗细。 | WindowTitleBar 和全屏标题宿主 |
 
-`TitleBarPadding` 是原生安全边界后的 managed 内容间距；没有 native chrome inset 时从 frame 边缘起效。标题布局先应用 native chrome extent，再应用 `TitleBarPadding`，两段占位各自只计算一次。`Height`、`FullscreenCaptionButtonSize` 和 `HeaderHorizontalSpacing` 使用跨平台稳定值，不随紧凑密度算法缩小。
+`TitleBarPadding` 是原生安全边界后的 managed 内容间距；没有 native chrome inset 时从 frame 边缘起效。标题布局先应用 native chrome extent，再应用 `TitleBarPadding`，两段占位各自只计算一次。`Height`、`FullscreenCaptionButtonSize` 和 `HeaderHorizontalSpacing` 使用跨平台稳定值，不随紧凑密度算法缩小。`LogoAndLeftAddOnSpacing` 默认取当前 WindowTitleBar scope 的 `SpacingXXS`，默认主题下为 4 个逻辑像素。
 
-`HeaderHorizontalSpacing` 不属于 add-on 固定 margin。对应操作区实测宽度为零时不应用该值；add-on 自身 margin 已由 DesiredSize 计入，不与该 Token 重复计算。`LogoAndTitleSpacing` 只作用于图标和标题同在 Title role 的宿主，不为隐藏或空 Logo/Icon、空 Title 保留占位。
+`HeaderHorizontalSpacing` 不属于 add-on 固定 margin。对应操作区实测宽度为零时不应用该值；add-on 自身 margin 已由 DesiredSize 计入，不与该 Token 重复计算。`LogoAndLeftAddOnSpacing` 由 Windows/Linux Leading 容器消费，只在 `PART_Logo` 与 `PART_LeftAddOn` 两个 presenter 同时可见时出现；它不通过 `PART_LeftAddOn.Margin` 实现，也不作用于 macOS。`LogoAndTitleSpacing` 只作用于图标和标题同在 Title role 的宿主，不为隐藏或空 Logo/Icon、空 Title 保留占位。
 
 ### 2.2 Caption button 尺寸
 
@@ -92,7 +93,7 @@ SharedToken
 
 | Theme | 消费职责 |
 | --- | --- |
-| `WindowTitleBarTheme.axaml` | 标题栏高度、Padding、标题字体、Logo、active/inactive 前景和标题内容间距。 |
+| `WindowTitleBarTheme.axaml` | 标题栏高度、Padding、标题字体、Logo、active/inactive 前景、Windows/Linux Logo/LeftAddOn 间距和标题内容间距。 |
 | `CaptionButtonGroupTheme.axaml` | 平台按钮 icon size 与 group spacing。 |
 | `CaptionButtonTheme.axaml` | 通用按钮 padding、背景、active/inactive、hover、pressed 和 motion。 |
 | `WindowsCaptionButtonTheme.axaml` | Windows glyph、hover/pressed 以及 close danger state。 |
@@ -118,12 +119,14 @@ SharedToken
 
 - 不删除或重命名既有 TokenKind、TokenResource key 和 AXAML 消费名。
 - 不把运行时状态、effective visibility 或 platform metrics 写入 Token。
+- `LogoAndLeftAddOnSpacing`、`LogoAndTitleSpacing` 和 `HeaderHorizontalSpacing` 保持独立语义，不因当前默认值相近而复用同一个 Own Token。
 - Token 默认值变化不得改变 caption button 命中区域与布局占用之间的约定。
 - Token 源码变化必须同步生成资源、Theme 引用、结构测试和本文档。
 
 ## 6. 验证策略
 
 - `TitleBarPadding` 变化验证四种显式标题对齐、native inset 和窄窗口退化。
+- `LogoAndLeftAddOnSpacing` 变化验证 Windows/Linux 中两个 presenter 同时可见、任一 presenter 缺失或隐藏、动态替换以及 Leading 安全宽度更新。
 - caption 尺寸或间距变化验证 Window、ImagePreviewer 和全屏标题宿主。
 - 颜色变化验证 Light/Dark、active/inactive、hover、pressed 和 Windows close danger state。
 - Token 名称或默认值变化核对 generated `WindowTitleBarTokenKind`、`WindowTitleBarTokenResource` 和全部 AXAML 引用。

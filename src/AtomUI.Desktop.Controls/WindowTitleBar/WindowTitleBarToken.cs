@@ -38,6 +38,11 @@ internal class WindowTitleBarToken : AbstractControlDesignToken
     /// 应用程序 Logo 和 标题之间的间距
     /// </summary>
     public double LogoAndTitleSpacing { get; set; }
+
+    /// <summary>
+    /// Windows/Linux 应用程序 Logo 和左侧附加内容之间的间距
+    /// </summary>
+    public double LogoAndLeftAddOnSpacing { get; set; }
     
     /// <summary>
     /// 应用程序标题栏
@@ -158,6 +163,7 @@ internal class WindowTitleBarToken : AbstractControlDesignToken
         HoverBackgroundColor        = EffectiveGlobalToken.ColorBgTextHover;
         PressedBackgroundColor      = EffectiveGlobalToken.ColorBgTextActive;
         LogoAndTitleSpacing         = EffectiveGlobalToken.SizeUnit * 2;
+        LogoAndLeftAddOnSpacing     = EffectiveGlobalToken.SpacingXXS;
         TitleBarPadding             = new Thickness(LogoAndTitleSpacing * 1.8, 0);
         CaptionButtonIconSize       = EffectiveGlobalToken.IconSize;
         WindowsCaptionIconSize      = 11;

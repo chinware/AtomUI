@@ -4,11 +4,16 @@
 
 ## 2026-08-18
 
+- Design
+  - Define a conditional gap between effective Windows/Linux Logo and LeftAddOn content while keeping macOS Leading and Logo/Title grouping unchanged.
+- Token
+  - Add the dedicated `LogoAndLeftAddOnSpacing` semantic with a default `SpacingXXS` value of 4 logical pixels.
 - Architecture
   - Separate managed caption button requested visibility from Window capability and platform support.
   - Keep Window as the operation and state owner while CaptionButtonGroup derives presentation state and forwards declarative actions.
 - Docs
   - Add the caption button configuration design covering Public API defaults, platform/state matrices, template flow, lifecycle and verification boundaries.
+  - Synchronize the Leading composition, title safe-region formula, Token contract and conditional-spacing verification requirements.
 
 ## 2026-07-28
 

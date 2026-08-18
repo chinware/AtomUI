@@ -138,7 +138,7 @@ Window
     └── WindowTitleBar
         └── WindowTitleBarLayoutPanel
             ├── Leading (Windows/Linux)
-            │   └── DockPanel
+            │   └── DockPanel (HorizontalSpacing=LogoAndLeftAddOnSpacing)
             │       ├── ContentPresenter#PART_Logo
             │       └── ContentPresenter#PART_LeftAddOn
             ├── Leading (macOS)
@@ -169,6 +169,8 @@ Window
 
 `ImagePreviewerTitleBar` 将预览 toolbar 放入 Leading，并使用预览图标与标题构成 Title。全屏标题宿主使用同一布局角色和算法，不维护第二套标题居中逻辑。
 
+Windows/Linux 默认模板的 Leading `DockPanel` 使用 `LogoAndLeftAddOnSpacing` 分隔 `PART_Logo` 与 `PART_LeftAddOn`。该间距属于 sibling layout，不属于 add-on 固定 margin；只有两个 presenter 的 `IsVisible` 都为 `true` 时才产生。macOS 的 Leading 不包含 Logo，Title `DockPanel` 继续使用 `LogoAndTitleSpacing` 分隔 Logo 与标题。
+
 ## 6. 生命周期与模板接入
 
 ### 6.1 创建与配置
@@ -191,7 +193,7 @@ Window
 
 `WindowTitleBar.OnApplyTemplate` 只接入标题栏自身必须持有的 template part。标题、Logo、add-on 和 caption 配置通过 `TemplateBinding` 获取，不从宿主引用旁路读取，也不重复建立 relay binding。
 
-LeftAddOn 或 RightAddOn 的内容、可见性、子节点、模板和 margin 变化沿 Avalonia visual tree 使布局重新测量。Panel 始终读取当前 `DesiredSize`，不保存 add-on 宽度缓存，也不需要由标题栏代码手工调用 `InvalidateMeasure`。
+LeftAddOn 或 RightAddOn 的内容、可见性、子节点、模板和 margin 变化沿 Avalonia visual tree 使布局重新测量。Windows/Linux 中 Logo 或 LeftAddOn 的有效可见性变化同时重新计算 Leading `DockPanel` 的条件 sibling spacing。Panel 始终读取当前 `DesiredSize`，不保存 add-on 宽度或内部间距缓存，也不需要由标题栏代码手工调用 `InvalidateMeasure`。
 
 `CaptionButtonGroupTheme` 为 `PART_CloseButton`、`PART_MinimizeButton`、`PART_MaximizeButton`、`PART_FullScreenButton` 和 `PART_PinButton` 声明固定 command parameter。Template reapply 不注册逐按钮 Click handler；Windows pointer-over 状态由按钮自身消费窗口状态输入并失效。
 
@@ -220,13 +222,17 @@ Caption button 通过宿主命令提交固定窗口操作；`Window` 统一执�
 操作区占位使用当前实测宽度与条件间距：
 
 ```text
+Windows/Linux:
+LeadingWidth = LogoWidth + LeftAddOnWidth
+             + (IsLogoVisible && IsLeftAddOnVisible ? LogoAndLeftAddOnSpacing : 0)
+
 ML = LeadingWidth > 0 ? LeadingWidth + HeaderHorizontalSpacing : 0
 MR = TrailingWidth > 0 ? TrailingWidth + HeaderHorizontalSpacing : 0
 ```
 
-`LeadingWidth` 与 `TrailingWidth` 来自 direct role child 的 `DesiredSize.Width`，已经包含该 child 自身 margin，因此 margin 不再额外累加。区域缺失、不可见、内容为空或孩子实测为零时，对应占位和间距同时为零。Title 组内的 `LogoAndTitleSpacing` 也只在 Logo/Icon 与 Title 两个有效孩子都参与布局时出现。
+`LeadingWidth` 与 `TrailingWidth` 来自 direct role child 的 `DesiredSize.Width`，已经包含内部容器 spacing 和该 child 自身 margin，因此 Panel 不再额外累加。区域缺失、不可见、内容为空或孩子实测为零时，对应占位和外部间距同时为零。Windows/Linux Leading 内的 `LogoAndLeftAddOnSpacing` 按两个 presenter 的可见性产生，不由 Panel 根据内容宽度二次推导；Title 组内的 `LogoAndTitleSpacing` 遵循同类 sibling layout 语义。
 
-Windows/Linux 默认模板把有效 Logo 放入 Leading direct role child，并排在 `PART_LeftAddOn` 之前；因此 Logo 宽度作为 `LeadingWidth` 的一部分参与安全空间计算。macOS 默认模板、ImagePreviewer 标题宿主和全屏标题宿主仍可把图标放在 Title role 内，并继续由同一标题对齐公式处理。
+Windows/Linux 默认模板把有效 Logo 放入 Leading direct role child，并排在 `PART_LeftAddOn` 之前；因此 Logo 宽度及其与 LeftAddOn 的条件间距都作为 `LeadingWidth` 的一部分参与安全空间计算。macOS 默认模板、ImagePreviewer 标题宿主和全屏标题宿主仍可把图标放在 Title role 内，并继续由同一标题对齐公式处理。
 
 ## 9. 资源、性能与 AOT 边界
 
@@ -243,7 +249,7 @@ Windows/Linux 默认模板把有效 Logo 放入 Leading direct role child，并�
 - `WindowTitleBar` 与 `Window.NotifyConfigureTitleBar` 的属性投影保持单向且完整；默认标题栏的 `LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn` 和 `RightAddOnTemplate` 由 `Window` 的同名 public API 以 `Template` 优先级提供，派生标题栏 local add-on 不被覆盖。
 - `WindowTitleBar` 的宿主投影保持单向且完整；CaptionButtonGroup 不通过 logical attach/detach 建立 Window 状态副本。
 - 三个平台 ControlTemplate 保持相同语义角色、稳定 part 名称和平台 caption button 顺序。
-- Windows/Linux 的 Logo 始终位于 Leading 最左侧；macOS、ImagePreviewer 与全屏标题宿主可将图标与 Title 保持为连续 Title 组。无论图标位于哪个 role，标题对齐公式只读取 Leading、Title、Trailing 三个 direct role child 的实测宽度。
+- Windows/Linux 的 Logo 始终位于 Leading 最左侧；有效 Logo 与有效 LeftAddOn 之间只由 Leading `DockPanel.HorizontalSpacing` 消费 `LogoAndLeftAddOnSpacing`。macOS、ImagePreviewer 与全屏标题宿主可将图标与 Title 保持为连续 Title 组。无论图标位于哪个 role，标题对齐公式只读取 Leading、Title、Trailing 三个 direct role child 的实测宽度。
 - Leading/Trailing 为零宽时不产生操作区间距；add-on margin 只通过 `DesiredSize` 计入一次。
 - ImagePreviewer 与两个全屏标题宿主复用同一标题布局模型。
 - Title 不参与命中测试；add-on 与 caption buttons 保持可交互。
@@ -256,6 +262,6 @@ Windows/Linux 默认模板把有效 Logo 放入 Leading direct role child，并�
 - `WindowCaptionButtonConfigurationTests` 覆盖五个 visibility 属性默认值、capability 隔离、effective truth table、动态状态投影和 template reapply。
 - `WindowTitleBarTokenTests` 覆盖 Token 默认值、三平台 caption 视觉和 Windows edge layout。
 - `ImagePreviewerTitleBarThemeTests` 覆盖派生标题栏的标题组、操作区和平台模板契约。
-- 标题几何测试覆盖所有 alignment、对称与非对称操作区、Padding/native inset、窄窗口和非法 metrics。
+- 标题几何测试覆盖所有 alignment、对称与非对称操作区、Windows/Linux Logo/LeftAddOn 同时可见及任一 presenter 隐藏时的条件间距、Padding/native inset、窄窗口和非法 metrics。
 - Windows、macOS、Linux 实机验证覆盖 CSD/非 CSD、缩放、最大化和全屏状态。
 - 文档改动运行 LLMS `verify`、相对链接检查和 `git diff --check`；行为、Theme 或 Public API 变更运行对应 Desktop Controls 测试。

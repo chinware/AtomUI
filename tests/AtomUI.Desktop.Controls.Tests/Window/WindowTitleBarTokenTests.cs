@@ -42,6 +42,52 @@ public class WindowTitleBarTokenTests
     }
 
     [Fact]
+    public void Windows_And_Linux_Leading_Use_The_Dedicated_Logo_Left_AddOn_Spacing()
+    {
+        var tokenSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBarToken.cs"));
+        var document = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowTitleBarTheme.axaml"));
+
+        tokenSource.ShouldContain("public double LogoAndLeftAddOnSpacing { get; set; }");
+        tokenSource.ShouldContain(
+            "LogoAndLeftAddOnSpacing     = EffectiveGlobalToken.SpacingXXS;");
+
+        foreach (var selector in new[] { "^[OsType=Windows]", "^[OsType=Linux]" })
+        {
+            var platformStyle = document.Descendants()
+                                        .Single(element =>
+                                            element.Name.LocalName == "Style" &&
+                                            (string?)element.Attribute("Selector") == selector);
+            var layoutPanel = platformStyle.Descendants()
+                                           .Single(element =>
+                                               element.Name.LocalName == "WindowTitleBarLayoutPanel");
+            var leading = layoutPanel.Elements()
+                                     .Single(element =>
+                                         element.Attributes().Any(attribute =>
+                                             attribute.Name.LocalName == "WindowTitleBarLayoutPanel.Role" &&
+                                             attribute.Value == "Leading"));
+
+            leading.Name.LocalName.ShouldBe("DockPanel");
+            leading.Attribute("HorizontalSpacing")?.Value.ShouldBe(
+                "{atom:WindowTitleBarTokenResource LogoAndLeftAddOnSpacing}");
+        }
+
+        var macOsStyle = document.Descendants()
+                                 .Single(element =>
+                                     element.Name.LocalName == "Style" &&
+                                     (string?)element.Attribute("Selector") == "^[OsType=macOS]");
+        var macOsLeading = macOsStyle.Descendants()
+                                       .Single(element =>
+                                           element.Attributes().Any(attribute =>
+                                               attribute.Name.LocalName == "WindowTitleBarLayoutPanel.Role" &&
+                                               attribute.Value == "Leading"));
+
+        macOsLeading.Name.LocalName.ShouldBe("ContentPresenter");
+        macOsLeading.Attribute("HorizontalSpacing").ShouldBeNull();
+    }
+
+    [Fact]
     public void Windows_Title_Bar_Theme_Leaves_Close_Button_Flush_To_The_Right_Edge()
     {
         var document = XDocument.Load(GetRepoFile(
