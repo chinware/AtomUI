@@ -117,6 +117,7 @@
                                     <atom:CaptionButton
                                         Name="PART_FullScreenButton"
                                         IsChecked="True"
+                                        IsVisible="{Binding $parent[atom:Window].IsFullScreenCaptionButtonVisible}"
                                         WindowDecorationProperties.ElementRole="FullScreenButton">
                                         <atom:CaptionButton.NormalIcon>
                                             <antdicons:FullscreenOutlined />
@@ -128,6 +129,7 @@
                                     
                                     <atom:CaptionButton
                                         Name="PART_CloseButton"
+                                        IsVisible="{Binding $parent[atom:Window].IsCloseCaptionButtonVisible}"
                                         WindowDecorationProperties.ElementRole="CloseButton">
                                         <atom:CaptionButton.NormalIcon>
                                             <antdicons:WindowCloseOutlined />

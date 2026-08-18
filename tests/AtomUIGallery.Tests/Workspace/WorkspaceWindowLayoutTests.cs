@@ -142,6 +142,17 @@ public class WorkspaceWindowLayoutTests
     }
 
     [Fact]
+    public void Workspace_Window_Caption_Menu_Controls_Button_Visibility_Without_Changing_Capability()
+    {
+        var source = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml.cs"));
+
+        source.ShouldContain("IsMinimizeCaptionButtonVisible = menuItem.IsChecked");
+        source.ShouldContain("IsMaximizeCaptionButtonVisible = menuItem.IsChecked");
+        source.ShouldNotContain("CanMinimize = menuItem.IsChecked");
+        source.ShouldNotContain("CanMaximize = menuItem.IsChecked");
+    }
+
+    [Fact]
     public void Workspace_Window_Builds_Theme_Color_Radio_Items_From_The_ViewModel()
     {
         var viewSource = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml"));

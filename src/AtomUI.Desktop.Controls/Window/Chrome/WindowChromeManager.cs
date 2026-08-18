@@ -7,6 +7,8 @@ internal interface IWindowChromeManager
 {
     bool UsesCustomResizer { get; }
 
+    bool SupportsPinCaptionButton { get; }
+
     Action? PrepareInitialShowState();
 
     void HandleFrameShadowChanged(BoxShadows frameShadow);

@@ -54,6 +54,9 @@
                                         Orientation="Horizontal">
                                 <atom:CaptionButton
                                     Name="PART_PopoverFullScreenButton"
+                                    Command="{Binding $parent[atom:Window].CaptionButtonCommand}"
+                                    CommandParameter="{x:Static atom:CaptionButtonAction.ToggleFullScreen}"
+                                    IsVisible="{Binding $parent[atom:Window].IsFullScreenCaptionButtonVisible}"
                                     IsChecked="True">
                                     <atom:CaptionButton.NormalIcon>
                                         <antdicons:FullscreenOutlined />
@@ -63,7 +66,10 @@
                                     </atom:CaptionButton.CheckedIcon>
                                 </atom:CaptionButton>
                                 <atom:CaptionButton
-                                    Name="PART_PopoverCloseButton">
+                                    Name="PART_PopoverCloseButton"
+                                    Command="{Binding $parent[atom:Window].CaptionButtonCommand}"
+                                    CommandParameter="{x:Static atom:CaptionButtonAction.Close}"
+                                    IsVisible="{Binding $parent[atom:Window].IsCloseCaptionButtonVisible}">
                                     <atom:CaptionButton.NormalIcon>
                                         <antdicons:WindowCloseOutlined />
                                     </atom:CaptionButton.NormalIcon>

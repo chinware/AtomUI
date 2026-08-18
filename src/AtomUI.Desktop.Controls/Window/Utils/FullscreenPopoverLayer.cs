@@ -3,7 +3,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
-using Avalonia.Interactivity;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -13,12 +12,8 @@ internal class FullscreenPopoverLayer : TemplatedControl
 
     private Window? _hostWindow;
     private Border? _popoverBorder;
-    private CaptionButton? _fullScreenButton;
-    private CaptionButton? _closeButton;
     private CompositeDisposable? _disposables;
-    private readonly List<Action> _disposeActions = new();
     private bool _popoverEnabled;
-    private WindowState _previousWindowState = WindowState.Normal;
 
     public FullscreenPopoverLayer()
     {
@@ -33,7 +28,6 @@ internal class FullscreenPopoverLayer : TemplatedControl
         }
 
         _hostWindow = hostWindow;
-        _previousWindowState = hostWindow.WindowState;
         _disposables = new CompositeDisposable(2);
 
         _disposables.Add(hostWindow.GetObservable(Window.WindowStateProperty)
@@ -54,7 +48,6 @@ internal class FullscreenPopoverLayer : TemplatedControl
         _disposables.Dispose();
         _disposables = null;
         _popoverEnabled = false;
-        _previousWindowState = WindowState.Normal;
         _hostWindow = null;
     }
 
@@ -62,27 +55,7 @@ internal class FullscreenPopoverLayer : TemplatedControl
     {
         base.OnApplyTemplate(e);
 
-        foreach (var action in _disposeActions)
-        {
-            action.Invoke();
-        }
-        _disposeActions.Clear();
-
         _popoverBorder = e.NameScope.Find<Border>("PART_PopoverBorder");
-        _fullScreenButton = e.NameScope.Find<CaptionButton>("PART_PopoverFullScreenButton");
-        _closeButton = e.NameScope.Find<CaptionButton>("PART_PopoverCloseButton");
-
-        if (_fullScreenButton != null)
-        {
-            _fullScreenButton.Click += HandleFullScreenButtonClicked;
-            _disposeActions.Add(() => _fullScreenButton.Click -= HandleFullScreenButtonClicked);
-        }
-
-        if (_closeButton != null)
-        {
-            _closeButton.Click += HandleCloseButtonClicked;
-            _disposeActions.Add(() => _closeButton.Click -= HandleCloseButtonClicked);
-        }
     }
 
     private void OnWindowStateChanged(WindowState state)
@@ -98,7 +71,6 @@ internal class FullscreenPopoverLayer : TemplatedControl
             IsVisible = false;
             SetPopoverVisible(false);
             _popoverEnabled = false;
-            _previousWindowState = state;
         }
     }
 
@@ -130,24 +102,4 @@ internal class FullscreenPopoverLayer : TemplatedControl
         }
     }
 
-    private void HandleFullScreenButtonClicked(object? sender, RoutedEventArgs args)
-    {
-        if (_hostWindow == null)
-        {
-            return;
-        }
-
-        _hostWindow.WindowState = _previousWindowState;
-    }
-
-    private void HandleCloseButtonClicked(object? sender, RoutedEventArgs args)
-    {
-        if (_hostWindow == null)
-        {
-            return;
-        }
-
-        _hostWindow.NotifyCloseRequestByUser();
-        _hostWindow.Close();
-    }
 }

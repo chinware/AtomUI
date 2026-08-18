@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Avalonia.Controls;
 using Shouldly;
 using Xunit;
 
@@ -68,7 +69,7 @@ public class WindowTitleBarLogoVisibilityTests
         property.PropertyType.ShouldBe(typeof(AtomUI.Desktop.Controls.WindowTitleBarTitleAlignment));
         source.ShouldContain("WindowTitleBar.TitleAlignmentProperty.AddOwner<Window>()");
         source.ShouldContain(
-            "titleBar[!WindowTitleBar.TitleAlignmentProperty] = this[!TitleAlignmentProperty]");
+            "titleBar.Bind(WindowTitleBar.TitleAlignmentProperty, this.GetObservable(TitleAlignmentProperty))");
     }
 
     [Fact]
@@ -87,11 +88,11 @@ public class WindowTitleBarLogoVisibilityTests
         windowInsetsProperty.ShouldNotBeNull();
         titleBarInsetsProperty.ShouldNotBeNull();
         source.ShouldContain(
-            "titleBar[!WindowTitleBar.NativeChromeInsetsProperty] = this[!NativeChromeInsetsProperty]");
+            "titleBar.Bind(WindowTitleBar.NativeChromeInsetsProperty, this.GetObservable(NativeChromeInsetsProperty))");
         source.ShouldContain(
-            "titleBar[!WindowTitleBar.IsCsdEnabledProperty] = this[!IsCsdEnabledProperty]");
+            "titleBar.Bind(WindowTitleBar.IsCsdEnabledProperty, this.GetObservable(IsCsdEnabledProperty))");
         source.ShouldContain(
-            "titleBar[!WindowTitleBar.HostWindowStateProperty] = this[!WindowStateProperty]");
+            "titleBar.Bind(WindowTitleBar.HostWindowStateProperty, this.GetObservable(WindowStateProperty))");
     }
 
     [Fact]
@@ -115,15 +116,25 @@ public class WindowTitleBarLogoVisibilityTests
     public void Title_Bar_Logo_Auto_Mode_Uses_Title_Content_Platform_And_Fullscreen_State()
     {
         var source = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBar.cs"));
+        var titleBar = new AtomUI.Desktop.Controls.WindowTitleBar
+        {
+            Logo = new object()
+        };
+        titleBar.SetValue(AtomUI.Desktop.Controls.WindowTitleBar.OsTypeProperty, OsType.Windows);
 
         source.ShouldContain("UpdateEffectiveLogoVisible()");
         source.ShouldContain("WindowTitleBarLogoVisibility.Always => hasLogo");
         source.ShouldContain("WindowTitleBarLogoVisibility.Never => false");
         source.ShouldContain("_ => hasLogo && ShouldShowLogoInAutoMode()");
-        source.ShouldContain("_isWindowFullScreen = x == WindowState.FullScreen");
+        source.ShouldContain("HostWindowState != WindowState.FullScreen");
         source.ShouldContain("OsType == OsType.macOS");
-        source.ShouldContain("return !_isWindowFullScreen;");
         source.ShouldContain("string text => !string.IsNullOrWhiteSpace(text)");
+
+        GetIsEffectiveLogoVisible(titleBar).ShouldBeTrue();
+        titleBar.HostWindowState = WindowState.FullScreen;
+        GetIsEffectiveLogoVisible(titleBar).ShouldBeFalse();
+        titleBar.HostWindowState = WindowState.Normal;
+        GetIsEffectiveLogoVisible(titleBar).ShouldBeTrue();
     }
 
     [Fact]
@@ -182,7 +193,8 @@ public class WindowTitleBarLogoVisibilityTests
 
         source.ShouldContain("WindowTitleBar.LogoVisibilityProperty.AddOwner<Window>()");
         source.ShouldContain("public WindowTitleBarLogoVisibility LogoVisibility");
-        source.ShouldContain("titleBar[!WindowTitleBar.LogoVisibilityProperty] = this[!LogoVisibilityProperty]");
+        source.ShouldContain(
+            "titleBar.Bind(WindowTitleBar.LogoVisibilityProperty, this.GetObservable(LogoVisibilityProperty))");
         source.ShouldContain("IsEffectiveFullscreenLogoVisibleProperty");
         source.ShouldContain("UpdateEffectiveFullscreenLogoVisible()");
         source.ShouldContain("_ => hasLogo && HasTitleContent(Title)");

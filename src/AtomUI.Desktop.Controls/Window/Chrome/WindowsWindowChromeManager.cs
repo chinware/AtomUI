@@ -33,6 +33,8 @@ internal sealed class WindowsWindowChromeManager : IWindowChromeManager
 
     public bool UsesCustomResizer => false;
 
+    public bool SupportsPinCaptionButton => true;
+
     public Action? PrepareInitialShowState()
     {
         if (_initialShowStatePrepared || _window.IsVisible)

@@ -1091,16 +1091,16 @@ public class WindowResizeArtifactTests
     [Fact]
     public void Windows_Caption_Buttons_Suppress_Stale_Hover_After_Window_State_Transitions()
     {
-        var captionSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/WindowTitleBar/CaptionButtonGroup.cs"));
+        var buttonSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/WindowsCaptionButton.cs"));
+        var captionThemeSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/CaptionButtonGroupTheme.axaml"));
         var themeSource = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowsCaptionButtonTheme.axaml"));
 
-        captionSource.ShouldContain("if (stateChanged)");
-        captionSource.ShouldContain("InvalidateWindowsCaptionButtonPointerOverVisualStates();");
-        captionSource.ShouldContain("InvalidateWindowsCaptionButtonPointerOverVisualState(_fullScreenButton);");
-        captionSource.ShouldContain("InvalidateWindowsCaptionButtonPointerOverVisualState(_maximizeButton);");
-        captionSource.ShouldContain("button is WindowsCaptionButton windowsCaptionButton");
+        buttonSource.ShouldContain("HostWindowStateProperty.Changed.AddClassHandler<WindowsCaptionButton>");
+        buttonSource.ShouldContain("button.InvalidatePointerOverVisualState()");
+        captionThemeSource.ShouldContain("HostWindowState=\"{TemplateBinding HostWindowState}\"");
         themeSource.ShouldContain("^[IsPointerOverSuppressed=False]:pointerover");
     }
 

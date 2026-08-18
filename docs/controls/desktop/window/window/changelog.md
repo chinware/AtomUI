@@ -2,6 +2,14 @@
 
 本文档记录 Window 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-18
+
+- Architecture
+  - Define independent requested visibility for Minimize, Maximize, Close, FullScreen and Pin managed caption buttons without changing Window operation capability.
+  - Keep caption capability, WindowState, Topmost, fullscreen restoration and action execution owned by Window and projected one-way to WindowTitleBar.
+- Docs
+  - Link the Window public contract and implementation boundaries to the shared caption button configuration design.
+
 ## 2026-07-28
 
 - API

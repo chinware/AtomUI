@@ -219,10 +219,10 @@ public partial class WorkspaceWindow : ReactiveWindow<WorkspaceWindowViewModel>
                     IsPinCaptionButtonVisible = menuItem.IsChecked;
                     break;
                 case WindowMenuItemKind.Minimize:
-                    CanMinimize = menuItem.IsChecked;
+                    IsMinimizeCaptionButtonVisible = menuItem.IsChecked;
                     break;
                 case WindowMenuItemKind.Maximize:
-                    CanMaximize = menuItem.IsChecked;
+                    IsMaximizeCaptionButtonVisible = menuItem.IsChecked;
                     break;
                 case WindowMenuItemKind.Move:
                     IsMoveEnabled = menuItem.IsChecked;

@@ -1,6 +1,6 @@
 # WindowTitleBar 桌面版架构设计
 
-`WindowTitleBar` 是 `AtomUI.Desktop.Controls` 中用于构成桌面窗口标题栏的模板化控件。本文档定义控件的设计定位、公共契约、状态模型、模板语义和集成边界。内部实现与跨平台标题布局见 [WindowTitleBar 实现原理](implementation.md)，视觉变量见 [WindowTitleBar Token 设计](token.md)，契约变化见 [WindowTitleBar Changelog](changelog.md)。
+`WindowTitleBar` 是 `AtomUI.Desktop.Controls` 中用于构成桌面窗口标题栏的模板化控件。本文档定义控件的设计定位、公共契约、状态模型、模板语义和集成边界。Caption button 的能力与呈现模型见 [WindowTitleBar Caption Button 配置设计](caption-button-configuration-design.md)，内部实现与跨平台标题布局见 [WindowTitleBar 实现原理](implementation.md)，视觉变量见 [WindowTitleBar Token 设计](token.md)，契约变化见 [WindowTitleBar Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -42,7 +42,7 @@
 | `WindowTitleBar` | public | 公共内容契约、宿主状态投影、交互入口和主题入口。 |
 | `WindowTitleBarLogoVisibility` | public | 定义 Logo 的显示策略。 |
 | `WindowTitleBarTitleAlignment` | public | 定义标题组的跨平台对齐语义。 |
-| `CaptionButtonGroup` | internal | 把窗口能力和状态映射为关闭、最小化、最大化、全屏和置顶按钮。 |
+| `CaptionButtonGroup` | internal | 根据宿主投影的能力、requested visibility 和窗口状态推导 effective visibility，并把固定窗口操作转发给宿主命令。 |
 | `CaptionButton` | internal | 承载 caption icon、checked icon 和按钮视觉状态。 |
 | `WindowsCaptionButton` | internal | 提供 Windows 方形 caption button 尺寸和 hover 状态修正。 |
 
@@ -117,7 +117,7 @@ Add-on 可以包含可交互控件，也可以是 `null`、隐藏节点或当前
 
 ### 4.2 窗口状态
 
-`WindowTitleBar` 从逻辑祖先 `Window` 接收状态并维护以下伪类：
+`WindowTitleBar` 从宿主 `Window` 的单向属性投影接收状态并维护以下伪类：
 
 | 伪类 | 条件 |
 | --- | --- |
@@ -133,11 +133,11 @@ Add-on 可以包含可交互控件，也可以是 `null`、隐藏节点或当前
 
 caption button 的公共配置属于宿主 `Window`：
 
-- `CanMinimize` 和 `CanMaximize` 决定最小化、最大化按钮能力。
-- `IsFullScreenCaptionButtonVisible`、`IsPinCaptionButtonVisible` 和 `IsCloseCaptionButtonVisible` 决定扩展按钮可见性。
-- `Topmost`、`WindowState` 和平台 backend 决定 checked state 与有效可见性。
+- `CanMinimize`、`CanMaximize` 和平台能力决定操作是否允许，不承担 managed button 的呈现配置。
+- `IsMinimizeCaptionButtonVisible`、`IsMaximizeCaptionButtonVisible`、`IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible` 和 `IsPinCaptionButtonVisible` 分别表达 managed button 的 requested visibility。
+- `Topmost`、`WindowState`、平台 backend、requested visibility 和 operation capability 共同决定 checked state 与 effective visibility。
 
-全屏时隐藏最小化和最大化按钮；最大化时隐藏进入全屏按钮。Wayland backend 不提供置顶按钮。按钮点击最终写入宿主窗口状态或调用关闭流程，状态不保存在按钮视觉中。
+Minimize、Maximize 和 Close 默认显示，FullScreen 和 Pin 默认隐藏。全屏时隐藏最小化和最大化按钮；最大化时隐藏进入全屏按钮；capability 为 `false` 时不显示不可执行的 managed button。Wayland backend 不提供置顶按钮。隐藏按钮不修改 `CanMinimize`、`CanMaximize`、`Topmost` 或其他窗口操作入口。完整状态矩阵、平台边界和单向命令流见 [WindowTitleBar Caption Button 配置设计](caption-button-configuration-design.md)。
 
 ### 4.4 拖动和双击
 
@@ -154,9 +154,9 @@ caption button 的公共配置属于宿主 `Window`：
 | `PART_ContentPresenter` | `ContentPresenter` | 展示标题；字符串标题在安全宽度不足时使用字符省略号，且不参与命中测试。 |
 | `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容。 |
 | `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on。 |
-| `PART_CaptionButtonGroup` | `CaptionButtonGroup` | 运行时连接宿主窗口操作。 |
+| `PART_CaptionButtonGroup` | `CaptionButtonGroup` | 消费宿主投影，推导 managed button 状态并转发固定窗口操作。 |
 
-`PART_CaptionButtonGroup` 是 `WindowTitleBar` 代码查找并 attach/detach 的协作 part。其内部 `PART_CloseButton`、`PART_MinimizeButton`、`PART_MaximizeButton`、`PART_FullScreenButton` 和 `PART_PinButton` 属于 `CaptionButtonGroup` 模板，不是 `WindowTitleBar` 的 public template part。
+`PART_CaptionButtonGroup` 是 `WindowTitleBar` 模板中的稳定协作 part，通过 `TemplateBinding` 接收能力、requested visibility、窗口状态和宿主命令。其内部 `PART_CloseButton`、`PART_MinimizeButton`、`PART_MaximizeButton`、`PART_FullScreenButton` 和 `PART_PinButton` 属于 `CaptionButtonGroup` 模板，不是 `WindowTitleBar` 的 public template part。
 
 平台主题可以改变 caption button 外观和 native chrome 来源，但不得改变 Public API 语义、Title/Leading/Trailing 角色或窗口操作行为。应用替换完整 ControlTheme 时负责提供等价区域、裁剪和命中测试；internal caption 类型不作为定制 API。
 
@@ -166,7 +166,7 @@ caption button 的公共配置属于宿主 `Window`：
 
 ### 6.1 Window
 
-`Window` 创建默认 `WindowTitleBar`，并把 `Title`、`Logo`、`LogoTemplate`、`LogoVisibility`、`TitleAlignment`、`LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn` 和 `RightAddOnTemplate` 单向投影给标题栏。应用通过 `Window` 的 add-on 属性配置默认标题栏；`NotifyCreateTitleBar` 和 `NotifyConfigureTitleBar` 是派生窗口替换标题栏类型与补充配置的 protected 扩展点。
+`Window` 创建默认 `WindowTitleBar`，并把标题内容、add-on、caption requested visibility、窗口能力、窗口状态和平台输入单向投影给标题栏。应用通过 `Window` 的 add-on 和 caption visibility 属性配置默认标题栏；`NotifyCreateTitleBar` 和 `NotifyConfigureTitleBar` 是派生窗口替换标题栏类型与补充配置的 protected 扩展点。
 
 `Window` 负责窗口移动、最大化/还原、原生 chrome metrics、CSD 状态和标题栏高度提示。`WindowTitleBar` 负责内容布局，不直接调用平台窗口 API。标题栏必须横跨完整可见窗口 frame；原生窗口按钮安全区作为布局输入传递，不能通过给整个标题栏添加单侧 Padding 或 Margin 来改变窗口中心。
 
@@ -186,7 +186,7 @@ caption button 的公共配置属于宿主 `Window`：
 - Title 内容不参与命中测试；add-on 和 caption buttons 保持可交互。
 - Windows/Linux 中 Logo 始终位于 Leading 最左侧并参与左侧安全空间；macOS 中 Logo 和 Title 作为连续 Title 组；add-on 不进入标题中心计算。
 - CSD 开关只改变 chrome metrics 来源和可见操作区，不改变显式标题对齐含义。
-- template reapply、逻辑树 detach 和窗口替换时释放旧订阅与 part handler。
+- 标题栏替换时释放旧的 Window 投影；template reapply 不建立逐按钮 Click handler 或 CaptionButtonGroup 到 Window 的宿主引用。
 - 平台选择和 Token 发现不依赖运行时反射或程序集扫描。
 
 ## 8. 专项模型
@@ -198,6 +198,7 @@ caption button 的公共配置属于宿主 `Window`：
 关联文档：
 
 - [WindowTitleBar 实现原理](implementation.md)
+- [WindowTitleBar Caption Button 配置设计](caption-button-configuration-design.md)
 - [WindowTitleBar Token 设计](token.md)
 - [WindowTitleBar Changelog](changelog.md)
 - [Window 控件设计](../window/overview.md)
@@ -208,6 +209,7 @@ caption button 的公共配置属于宿主 `Window`：
 - `WindowTitleBarLayoutPanelTests`：共享几何、条件间距、margin 单次计入、左右 add-on 动态内容、窄窗口和非法 metrics。
 - `WindowTitleBarLayoutStrategyTests`：平台 `Auto`、CSD、WindowState 与 native inset 归一。
 - `WindowTitleBarTokenTests`：Token 默认值、三平台 caption 视觉和 Windows edge layout。
+- `WindowCaptionButtonConfigurationTests`：caption visibility 默认值、能力隔离、状态矩阵、动态投影和模板生命周期。
 - `ImagePreviewerTitleBarThemeTests`：派生标题栏的标题组、操作区和平台模板契约。
 
 LLMS 语义区域：
@@ -218,7 +220,7 @@ LLMS 语义区域：
 | `frame` | `Border#Frame` | 绘制标题栏背景并定义完整可见 frame。 | `Background`、`Padding` | `Height`、`TitleBarPadding` | template-stable |
 | `leading` | Windows/Linux: `PART_Logo` + `PART_LeftAddOn`；macOS: `PART_LeftAddOn` | 承载起始侧应用操作并占用标题安全空间。Windows/Linux 中 Logo 是物理最左内容。 | `Logo`、`LogoTemplate`、`LogoVisibility`、`LeftAddOn`、`LeftAddOnTemplate` | `LogoSize`、`HeaderHorizontalSpacing` | template-stable |
 | `title` | Windows/Linux: `PART_ContentPresenter`；macOS: `PART_Logo` + `PART_ContentPresenter` | 展示、测量、对齐和裁剪标题内容；macOS 同时保留 Logo/Title 连续标题组。 | `Logo`、`LogoTemplate`、`LogoVisibility`、`Title`、`TitleTemplate` | `LogoAndTitleSpacing`、标题字体与颜色 | template-stable |
-| `trailing` | `PART_RightAddOn` + `PART_CaptionButtonGroup` | 承载结束侧应用操作和 managed window operations。 | `RightAddOn`、`RightAddOnTemplate`；Window caption 配置 | `HeaderHorizontalSpacing`、caption button 尺寸、间距与状态颜色 | template-stable |
+| `trailing` | `PART_RightAddOn` + `PART_CaptionButtonGroup` | 承载结束侧应用操作和 managed window operations。 | `RightAddOn`、`RightAddOnTemplate`；五个 Window caption visibility 属性 | `HeaderHorizontalSpacing`、caption button 尺寸、间距与状态颜色 | template-stable |
 | `native-chrome` | 平台原生窗口按钮安全区 | 以逻辑像素 inset 约束标题安全空间，不进入 visual tree。 | 平台、CSD、WindowState | 不适用 | internal-observable |
 
 LLMS 生成使用以下来源，不手工修改 `docs/AI/generated/llms` 产物。

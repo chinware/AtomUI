@@ -1,4 +1,4 @@
-using System.Reactive.Disposables;
+using System.Windows.Input;
 using AtomUI.Animations;
 using AtomUI.Controls;
 using Avalonia;
@@ -8,7 +8,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
@@ -164,6 +163,36 @@ public class WindowTitleBar : TemplatedControl,
     internal static readonly StyledProperty<WindowState> HostWindowStateProperty =
         AvaloniaProperty.Register<WindowTitleBar, WindowState>(nameof(HostWindowState));
 
+    internal static readonly StyledProperty<bool> IsWindowTopmostProperty =
+        AvaloniaProperty.Register<WindowTitleBar, bool>(nameof(IsWindowTopmost));
+
+    internal static readonly StyledProperty<bool> IsMinimizeCaptionButtonVisibleProperty =
+        AvaloniaProperty.Register<WindowTitleBar, bool>(nameof(IsMinimizeCaptionButtonVisible), true);
+
+    internal static readonly StyledProperty<bool> IsMaximizeCaptionButtonVisibleProperty =
+        AvaloniaProperty.Register<WindowTitleBar, bool>(nameof(IsMaximizeCaptionButtonVisible), true);
+
+    internal static readonly StyledProperty<bool> IsCloseCaptionButtonVisibleProperty =
+        AvaloniaProperty.Register<WindowTitleBar, bool>(nameof(IsCloseCaptionButtonVisible), true);
+
+    internal static readonly StyledProperty<bool> IsFullScreenCaptionButtonVisibleProperty =
+        AvaloniaProperty.Register<WindowTitleBar, bool>(nameof(IsFullScreenCaptionButtonVisible));
+
+    internal static readonly StyledProperty<bool> IsPinCaptionButtonVisibleProperty =
+        AvaloniaProperty.Register<WindowTitleBar, bool>(nameof(IsPinCaptionButtonVisible));
+
+    internal static readonly StyledProperty<bool> CanMinimizeProperty =
+        AvaloniaProperty.Register<WindowTitleBar, bool>(nameof(CanMinimize), true);
+
+    internal static readonly StyledProperty<bool> CanMaximizeProperty =
+        AvaloniaProperty.Register<WindowTitleBar, bool>(nameof(CanMaximize), true);
+
+    internal static readonly StyledProperty<bool> IsPinCaptionButtonSupportedProperty =
+        AvaloniaProperty.Register<WindowTitleBar, bool>(nameof(IsPinCaptionButtonSupported));
+
+    internal static readonly StyledProperty<ICommand?> CaptionButtonCommandProperty =
+        AvaloniaProperty.Register<WindowTitleBar, ICommand?>(nameof(CaptionButtonCommand));
+
     private bool _isEffectiveLogoVisible;
 
     internal bool IsEffectiveLogoVisible
@@ -190,18 +219,75 @@ public class WindowTitleBar : TemplatedControl,
         set => SetValue(HostWindowStateProperty, value);
     }
 
+    internal bool IsWindowTopmost
+    {
+        get => GetValue(IsWindowTopmostProperty);
+        set => SetValue(IsWindowTopmostProperty, value);
+    }
+
+    internal bool IsMinimizeCaptionButtonVisible
+    {
+        get => GetValue(IsMinimizeCaptionButtonVisibleProperty);
+        set => SetValue(IsMinimizeCaptionButtonVisibleProperty, value);
+    }
+
+    internal bool IsMaximizeCaptionButtonVisible
+    {
+        get => GetValue(IsMaximizeCaptionButtonVisibleProperty);
+        set => SetValue(IsMaximizeCaptionButtonVisibleProperty, value);
+    }
+
+    internal bool IsCloseCaptionButtonVisible
+    {
+        get => GetValue(IsCloseCaptionButtonVisibleProperty);
+        set => SetValue(IsCloseCaptionButtonVisibleProperty, value);
+    }
+
+    internal bool IsFullScreenCaptionButtonVisible
+    {
+        get => GetValue(IsFullScreenCaptionButtonVisibleProperty);
+        set => SetValue(IsFullScreenCaptionButtonVisibleProperty, value);
+    }
+
+    internal bool IsPinCaptionButtonVisible
+    {
+        get => GetValue(IsPinCaptionButtonVisibleProperty);
+        set => SetValue(IsPinCaptionButtonVisibleProperty, value);
+    }
+
+    internal bool CanMinimize
+    {
+        get => GetValue(CanMinimizeProperty);
+        set => SetValue(CanMinimizeProperty, value);
+    }
+
+    internal bool CanMaximize
+    {
+        get => GetValue(CanMaximizeProperty);
+        set => SetValue(CanMaximizeProperty, value);
+    }
+
+    internal bool IsPinCaptionButtonSupported
+    {
+        get => GetValue(IsPinCaptionButtonSupportedProperty);
+        set => SetValue(IsPinCaptionButtonSupportedProperty, value);
+    }
+
+    internal ICommand? CaptionButtonCommand
+    {
+        get => GetValue(CaptionButtonCommandProperty);
+        set => SetValue(CaptionButtonCommandProperty, value);
+    }
+
     #endregion
 
-    #region 公共属性定义
+    #region 公共事件定义
 
     public event EventHandler? MaximizeWindowRequested;
 
     #endregion
 
-    private CaptionButtonGroup? _captionButtonGroup;
-    private CompositeDisposable? _disposables;
     private Window? _window;
-    private bool _isWindowFullScreen;
 
     internal Window? HostWindow => _window;
 
@@ -214,61 +300,26 @@ public class WindowTitleBar : TemplatedControl,
     public WindowTitleBar()
     {
         this.ConfigureOsType();
+        UpdateWindowStatePseudoClasses(HostWindowState);
         UpdateEffectiveLogoVisible();
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    internal void AttachHost(Window window)
     {
-        base.OnApplyTemplate(e);
-        _captionButtonGroup?.Detach();
-        _captionButtonGroup = e.NameScope.Find<CaptionButtonGroup>("PART_CaptionButtonGroup");
-        if (_window != null)
+        if (_window is not null && !ReferenceEquals(_window, window))
         {
-            _captionButtonGroup?.Attach(_window);
+            throw new InvalidOperationException("WindowTitleBar is already attached to another Window.");
         }
+
+        _window = window;
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    internal void DetachHost(Window window)
     {
-        base.OnAttachedToLogicalTree(e);
-        _disposables?.Dispose();
-        _disposables = null;
-        _window      = this.FindLogicalAncestorOfType<Window>();
-        if (_window != null)
+        if (ReferenceEquals(_window, window))
         {
-            // OnApplyTemplate 可能在 OnAttachedToVisualTree 之前调用，
-            // 此时 TopLevel 尚不可用导致 Attach 未执行，需要在这里补上
-            _captionButtonGroup?.Attach(_window);
-
-            _disposables = new CompositeDisposable(6)
-            {
-                _window.GetObservable(Window.WindowStateProperty).Subscribe(x =>
-                {
-                    PseudoClasses.Set(StdPseudoClass.Minimized, x == WindowState.Minimized);
-                    PseudoClasses.Set(StdPseudoClass.Normal, x == WindowState.Normal);
-                    PseudoClasses.Set(StdPseudoClass.Maximized, x == WindowState.Maximized);
-                    PseudoClasses.Set(StdPseudoClass.Fullscreen, x == WindowState.FullScreen);
-                    _isWindowFullScreen = x == WindowState.FullScreen;
-                    UpdateEffectiveLogoVisible();
-                }),
-                _window.GetObservable(WindowBase.IsActiveProperty).Subscribe(isActive =>
-                {
-                    PseudoClasses.Set(StdPseudoClass.Active, isActive);
-                    IsWindowActive = isActive;
-                })
-            };
+            _window = null;
         }
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        _disposables?.Dispose();
-        _disposables = null;
-        _captionButtonGroup?.Detach();
-        _captionButtonGroup = null;
-        _isWindowFullScreen = false;
-        _window             = null;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -278,10 +329,27 @@ public class WindowTitleBar : TemplatedControl,
             change.Property == LogoTemplateProperty ||
             change.Property == LogoVisibilityProperty ||
             change.Property == TitleProperty ||
-            change.Property == OsTypeProperty)
+            change.Property == OsTypeProperty ||
+            change.Property == HostWindowStateProperty)
         {
             UpdateEffectiveLogoVisible();
         }
+        if (change.Property == HostWindowStateProperty)
+        {
+            UpdateWindowStatePseudoClasses(change.GetNewValue<WindowState>());
+        }
+        else if (change.Property == IsWindowActiveProperty)
+        {
+            PseudoClasses.Set(StdPseudoClass.Active, change.GetNewValue<bool>());
+        }
+    }
+
+    private void UpdateWindowStatePseudoClasses(WindowState state)
+    {
+        PseudoClasses.Set(StdPseudoClass.Minimized, state == WindowState.Minimized);
+        PseudoClasses.Set(StdPseudoClass.Normal, state == WindowState.Normal);
+        PseudoClasses.Set(StdPseudoClass.Maximized, state == WindowState.Maximized);
+        PseudoClasses.Set(StdPseudoClass.Fullscreen, state == WindowState.FullScreen);
     }
 
     private void UpdateEffectiveLogoVisible()
@@ -307,7 +375,7 @@ public class WindowTitleBar : TemplatedControl,
             return false;
         }
 
-        return !_isWindowFullScreen;
+        return HostWindowState != WindowState.FullScreen;
     }
 
     private static bool HasTitleContent(object? title)

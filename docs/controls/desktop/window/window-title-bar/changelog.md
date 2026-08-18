@@ -2,6 +2,14 @@
 
 本文档记录 WindowTitleBar 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-18
+
+- Architecture
+  - Separate managed caption button requested visibility from Window capability and platform support.
+  - Keep Window as the operation and state owner while CaptionButtonGroup derives presentation state and forwards declarative actions.
+- Docs
+  - Add the caption button configuration design covering Public API defaults, platform/state matrices, template flow, lifecycle and verification boundaries.
+
 ## 2026-07-28
 
 - Integration

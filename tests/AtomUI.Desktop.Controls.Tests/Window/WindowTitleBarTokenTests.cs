@@ -334,18 +334,18 @@ public class WindowTitleBarTokenTests
     [Fact]
     public void Window_State_Changes_Invalidate_Stale_Maximize_Hover()
     {
-        var groupSource = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/WindowTitleBar/CaptionButtonGroup.cs"));
         var buttonSource = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/WindowTitleBar/WindowsCaptionButton.cs"));
+        var groupThemeSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/CaptionButtonGroupTheme.axaml"));
         var themeSource = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/WindowsCaptionButtonTheme.axaml"));
 
-        groupSource.ShouldContain("InvalidateWindowsCaptionButtonPointerOverVisualStates();");
-        groupSource.ShouldContain("InvalidateWindowsCaptionButtonPointerOverVisualState(_maximizeButton);");
-        groupSource.ShouldContain("windowsCaptionButton.InvalidatePointerOverVisualState();");
+        buttonSource.ShouldContain("HostWindowStateProperty.Changed.AddClassHandler<WindowsCaptionButton>");
+        buttonSource.ShouldContain("button.InvalidatePointerOverVisualState()");
         buttonSource.ShouldContain("IsPointerOverSuppressed = IsPointerOver;");
         buttonSource.ShouldContain("protected override void OnPointerMoved(PointerEventArgs e)");
+        groupThemeSource.ShouldContain("HostWindowState=\"{TemplateBinding HostWindowState}\"");
         themeSource.ShouldContain("^[IsPointerOverSuppressed=False]:pointerover");
     }
 

@@ -1,6 +1,6 @@
 # Window 桌面版实现原理
 
-本文档描述 Window 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Window 桌面版架构设计](overview.md)，Window 与标题栏的对齐协作见 [WindowTitleBar 实现原理](../window-title-bar/implementation.md)，变化记录见 [Window Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Window Token 设计](token.md)。
+本文档描述 Window 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Window 桌面版架构设计](overview.md)，Window 与标题栏的对齐协作见 [WindowTitleBar 实现原理](../window-title-bar/implementation.md)，caption button 的能力与呈现模型见 [WindowTitleBar Caption Button 配置设计](../window-title-bar/caption-button-configuration-design.md)，变化记录见 [Window Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Window Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -88,7 +88,7 @@ Public API / ItemsSource / Command / Event
 
 - 内容与数据：`ContentFrameBackground`、`ContentFrameLayer`、`ContentFrameLayerOpacity`、`ContentFrameLayerTemplate`、`IsTitleBarVisible`、`LogoTemplate`、`LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn`、`RightAddOnTemplate`、`TitleBarFrameBackground`、`TitleBarFrameLayer`、`TitleBarFrameLayerOpacity`、`TitleBarFrameLayerTemplate` 等。
 - 选择与集合：`ViewModel`。
-- 交互与状态：`IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsMoveEnabled`、`IsPinCaptionButtonVisible`。
+- 交互与状态：`IsMinimizeCaptionButtonVisible`、`IsMaximizeCaptionButtonVisible`、`IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsPinCaptionButtonVisible`、`IsMoveEnabled`。
 - 弹层与窗口：`WindowFrameLayer`、`WindowFrameLayerOpacity`。
 - 其他稳定入口：`Logo`、`LogoVisibility`、`MediaBreakPoint`、`OsType`、`OsVersion`。
 
@@ -99,6 +99,7 @@ Public API / ItemsSource / Command / Event
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
 - overview.md 的 API 契约说明应与源码实际状态流一致。
 - `TitleBarFrameLayer` 的数据流终点是标题栏背景/装饰层；它不作为普通 Avalonia 交互控件入口。默认标题栏按钮、菜单、搜索框等由 `LeftAddOn` 或 `RightAddOn` 通过 `WindowTitleBar` 承载。
+- Window 是 caption capability、WindowState、Topmost、全屏恢复状态和窗口操作的 owner。五个 caption visibility 属性只作为 requested presentation 单向投影给 `WindowTitleBar`，不写回能力属性；`CaptionButtonGroup` 不持有 Window 引用或第二套窗口状态。
 
 ## 5. 生命周期与模板接入
 
@@ -172,6 +173,7 @@ Window 的标题栏存在两套输入模型，维护时必须同时成立：
 - Template part 重新应用时的状态回放。
 - 主题资源、Token 和 SharedToken 计算后的视觉更新。
 - 内容、命令和视觉状态在模板节点之间的同步。
+- Caption requested visibility、capability、WindowState 和平台支持到 effective button visibility 的单向投影，以及 caption command 到 Window 操作入口的返回路径。
 - 标题栏背景/装饰层、自定义 `TitleBar` 与 Avalonia CSD chrome hit test 的职责划分。
 - 完整 layer、visible frame 和 content bounds 的职责划分；`WindowVisualLayerClip.CalculateClipBounds` 是排除 client-drawn frame shadow 的共享计算入口。
 - 状态变化时避免创建不必要的视觉对象、订阅或动画对象。
@@ -227,6 +229,7 @@ Resolve owner ThemeContext
 维护 Window 时不得破坏：
 
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
+- Caption visibility 与 capability 分离；隐藏 managed button 不修改 `CanMinimize`、`CanMaximize` 或其他窗口操作入口。
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - `TitleBarFrameLayer` 的背景/装饰层语义，以及标题栏交互内容必须通过 `TitleBar` 承载的职责边界。
 - 上层 Dialog/Drawer 不按 OS 或 CSD 状态复制 Window frame 几何，而是消费 Window 发布的 `FrameShadowThickness` 和实际 drawn host 能力。

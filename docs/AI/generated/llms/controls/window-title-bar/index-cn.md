@@ -44,7 +44,7 @@
 | `WindowTitleBar` | public | 公共内容契约、宿主状态投影、交互入口和主题入口。 |
 | `WindowTitleBarLogoVisibility` | public | 定义 Logo 的显示策略。 |
 | `WindowTitleBarTitleAlignment` | public | 定义标题组的跨平台对齐语义。 |
-| `CaptionButtonGroup` | internal | 把窗口能力和状态映射为关闭、最小化、最大化、全屏和置顶按钮。 |
+| `CaptionButtonGroup` | internal | 根据宿主投影的能力、requested visibility 和窗口状态推导 effective visibility，并把固定窗口操作转发给宿主命令。 |
 | `CaptionButton` | internal | 承载 caption icon、checked icon 和按钮视觉状态。 |
 | `WindowsCaptionButton` | internal | 提供 Windows 方形 caption button 尺寸和 hover 状态修正。 |
 
@@ -130,7 +130,7 @@ Gallery 目录 `未提供独立页面；以本目录源文档、控件源码和�
 
 ### 4.2 窗口状态
 
-`WindowTitleBar` 从逻辑祖先 `Window` 接收状态并维护以下伪类：
+`WindowTitleBar` 从宿主 `Window` 的单向属性投影接收状态并维护以下伪类：
 
 | 伪类 | 条件 |
 | --- | --- |
@@ -146,11 +146,11 @@ Gallery 目录 `未提供独立页面；以本目录源文档、控件源码和�
 
 caption button 的公共配置属于宿主 `Window`：
 
-- `CanMinimize` 和 `CanMaximize` 决定最小化、最大化按钮能力。
-- `IsFullScreenCaptionButtonVisible`、`IsPinCaptionButtonVisible` 和 `IsCloseCaptionButtonVisible` 决定扩展按钮可见性。
-- `Topmost`、`WindowState` 和平台 backend 决定 checked state 与有效可见性。
+- `CanMinimize`、`CanMaximize` 和平台能力决定操作是否允许，不承担 managed button 的呈现配置。
+- `IsMinimizeCaptionButtonVisible`、`IsMaximizeCaptionButtonVisible`、`IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible` 和 `IsPinCaptionButtonVisible` 分别表达 managed button 的 requested visibility。
+- `Topmost`、`WindowState`、平台 backend、requested visibility 和 operation capability 共同决定 checked state 与 effective visibility。
 
-全屏时隐藏最小化和最大化按钮；最大化时隐藏进入全屏按钮。Wayland backend 不提供置顶按钮。按钮点击最终写入宿主窗口状态或调用关闭流程，状态不保存在按钮视觉中。
+Minimize、Maximize 和 Close 默认显示，FullScreen 和 Pin 默认隐藏。全屏时隐藏最小化和最大化按钮；最大化时隐藏进入全屏按钮；capability 为 `false` 时不显示不可执行的 managed button。Wayland backend 不提供置顶按钮。隐藏按钮不修改 `CanMinimize`、`CanMaximize`、`Topmost` 或其他窗口操作入口。完整状态矩阵、平台边界和单向命令流见 [WindowTitleBar Caption Button 配置设计](caption-button-configuration-design.md)。
 
 ### 4.4 拖动和双击
 
@@ -167,9 +167,9 @@ caption button 的公共配置属于宿主 `Window`：
 | `PART_ContentPresenter` | `ContentPresenter` | 展示标题；字符串标题在安全宽度不足时使用字符省略号，且不参与命中测试。 |
 | `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容。 |
 | `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on。 |
-| `PART_CaptionButtonGroup` | `CaptionButtonGroup` | 运行时连接宿主窗口操作。 |
+| `PART_CaptionButtonGroup` | `CaptionButtonGroup` | 消费宿主投影，推导 managed button 状态并转发固定窗口操作。 |
 
-`PART_CaptionButtonGroup` 是 `WindowTitleBar` 代码查找并 attach/detach 的协作 part。其内部 `PART_CloseButton`、`PART_MinimizeButton`、`PART_MaximizeButton`、`PART_FullScreenButton` 和 `PART_PinButton` 属于 `CaptionButtonGroup` 模板，不是 `WindowTitleBar` 的 public template part。
+`PART_CaptionButtonGroup` 是 `WindowTitleBar` 模板中的稳定协作 part，通过 `TemplateBinding` 接收能力、requested visibility、窗口状态和宿主命令。其内部 `PART_CloseButton`、`PART_MinimizeButton`、`PART_MaximizeButton`、`PART_FullScreenButton` 和 `PART_PinButton` 属于 `CaptionButtonGroup` 模板，不是 `WindowTitleBar` 的 public template part。
 
 平台主题可以改变 caption button 外观和 native chrome 来源，但不得改变 Public API 语义、Title/Leading/Trailing 角色或窗口操作行为。应用替换完整 ControlTheme 时负责提供等价区域、裁剪和命中测试；internal caption 类型不作为定制 API。
 
@@ -188,7 +188,7 @@ Token 负责尺寸、间距、字体和状态颜色，不负责以下运行时�
 
 ## AOT 与裁剪注意事项
 
-- 窗口订阅和 relay binding 都有明确的 attach/detach 或 apply/reapply 配对。
+- Window 到标题栏的宿主关联和投影 binding 由标题栏创建和替换生命周期统一所有；宿主关联不承载 caption 状态同步，CaptionButtonGroup 不持有 Window relay binding 或宿主引用。
 - 标题布局 Strategy 使用静态无状态实例；measure/arrange 不创建 Context、Plan、binding 或临时 Visual。
 - TemplateBinding 和 selector 承担静态视觉投影，不在状态变化时重建模板节点。
 - Logo 计算只在相关属性或 WindowState 变化时执行。

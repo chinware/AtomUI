@@ -120,6 +120,7 @@ public class WindowingPlatformDetectionTests
     }
 
     [Theory]
+    [SupportedOSPlatform("linux")]
     [InlineData(0, true)]
     [InlineData(1, true)]
     [InlineData(2, false)]
@@ -127,8 +128,8 @@ public class WindowingPlatformDetectionTests
         int backend,
         bool expected)
     {
-        CaptionButtonGroup.IsPinSupportedForBackend((LinuxWindowingBackend)backend)
-                          .ShouldBe(expected);
+        AbstractLinuxWindowChromeManager.IsPinCaptionButtonSupported((LinuxWindowingBackend)backend)
+                                        .ShouldBe(expected);
     }
 
     [Theory]
@@ -156,6 +157,8 @@ public class WindowingPlatformDetectionTests
     {
         var captionSource = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/WindowTitleBar/CaptionButtonGroup.cs"));
+        var linuxChromeSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/Chrome/AbstractLinuxWindowChromeManager.cs"));
         var captionDocument = XDocument.Load(GetRepoFile(
             "src/AtomUI.Desktop.Controls/WindowTitleBar/Themes/CaptionButtonGroupTheme.axaml"));
 
@@ -166,12 +169,10 @@ public class WindowingPlatformDetectionTests
                                         .ToList();
 
         captionSource.ShouldContain("IsPinButtonEffectivelyVisibleProperty");
-        captionSource.ShouldContain("IsPinSupportedForBackend");
-        captionSource.ShouldContain("LinuxWindowingBackend.Wayland");
-        captionSource.ShouldContain("UpdatePinButtonVisibility();");
-        captionSource.ShouldContain("hostWindow.Opened += HandleHostWindowOpened");
-        captionSource.ShouldContain("hostWindow.Opened -= HandleHostWindowOpened");
-        captionSource.ShouldContain("!IsPinButtonEffectivelyVisible");
+        captionSource.ShouldContain("IsPinCaptionButtonSupportedProperty");
+        captionSource.ShouldContain("IsPinCaptionButtonVisible && IsPinCaptionButtonSupported");
+        linuxChromeSource.ShouldContain("IsPinCaptionButtonSupported");
+        linuxChromeSource.ShouldContain("LinuxWindowingBackend.Wayland");
 
         pinButtons.Count.ShouldBe(3);
         pinButtons.ShouldAllBe(button =>

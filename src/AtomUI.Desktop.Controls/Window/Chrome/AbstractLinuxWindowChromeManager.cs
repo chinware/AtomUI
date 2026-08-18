@@ -36,6 +36,11 @@ internal abstract class AbstractLinuxWindowChromeManager : IWindowChromeManager
 
     public virtual bool UsesCustomResizer => !Window.IsCsdEnabled;
 
+    public bool SupportsPinCaptionButton => IsPinCaptionButtonSupported(ResolveBackend(
+        AvaloniaLocator.Current.GetService<AtomUIWindowingPlatformOptions>()?.Platform,
+        Window.PlatformImpl?.Handle?.HandleDescriptor,
+        Window.PlatformImpl?.GetType().Assembly.GetName().Name));
+
     public static AbstractLinuxWindowChromeManager Attach(Window window)
     {
         var configuredPlatform = AvaloniaLocator.Current.GetService<AtomUIWindowingPlatformOptions>()?.Platform;
@@ -91,6 +96,11 @@ internal abstract class AbstractLinuxWindowChromeManager : IWindowChromeManager
                    AvaloniaLocator.Current.GetService<AtomUIWindowingPlatformOptions>()?.Platform,
                    platformImpl?.Handle?.HandleDescriptor,
                    platformImpl?.GetType().Assembly.GetName().Name) == LinuxWindowingBackend.Wayland;
+    }
+
+    internal static bool IsPinCaptionButtonSupported(LinuxWindowingBackend backend)
+    {
+        return backend != LinuxWindowingBackend.Wayland;
     }
 
     private void Attach()

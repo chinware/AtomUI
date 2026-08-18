@@ -11,7 +11,8 @@
                     <StackPanel Orientation="Horizontal" Name="RootLayout">
                         <atom:CaptionButton
                             Name="PART_FullScreenButton"
-                            IsEnabled="{TemplateBinding IsFullScreenCaptionButtonVisible}"
+                            Command="{TemplateBinding CaptionButtonCommand}"
+                            CommandParameter="{x:Static atom:CaptionButtonAction.ToggleFullScreen}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsChecked="{TemplateBinding IsWindowFullScreen}"
@@ -25,6 +26,8 @@
                         </atom:CaptionButton>
                         <atom:CaptionButton
                             Name="PART_PinButton"
+                            Command="{TemplateBinding CaptionButtonCommand}"
+                            CommandParameter="{x:Static atom:CaptionButtonAction.TogglePin}"
                             IsVisible="{TemplateBinding IsPinButtonEffectivelyVisible}"
                             IsEnabled="{TemplateBinding IsPinButtonEffectivelyVisible}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
@@ -39,6 +42,8 @@
                         </atom:CaptionButton>
                         <atom:CaptionButton
                             Name="PART_MinimizeButton"
+                            Command="{TemplateBinding CaptionButtonCommand}"
+                            CommandParameter="{x:Static atom:CaptionButtonAction.Minimize}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsVisible="{TemplateBinding IsMinimizeButtonEffectivelyVisible}">
@@ -48,6 +53,8 @@
                         </atom:CaptionButton>
                         <atom:CaptionButton
                             Name="PART_MaximizeButton"
+                            Command="{TemplateBinding CaptionButtonCommand}"
+                            CommandParameter="{x:Static atom:CaptionButtonAction.ToggleMaximize}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsChecked="{TemplateBinding IsWindowMaximized}"
@@ -61,9 +68,11 @@
                         </atom:CaptionButton>
                         <atom:CaptionButton
                             Name="PART_CloseButton"
+                            Command="{TemplateBinding CaptionButtonCommand}"
+                            CommandParameter="{x:Static atom:CaptionButtonAction.Close}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                            IsVisible="{TemplateBinding IsCloseCaptionButtonVisible}">
+                            IsVisible="{TemplateBinding IsCloseButtonEffectivelyVisible}">
                             <atom:CaptionButton.NormalIcon>
                                 <antdicons:WindowCloseOutlined />
                             </atom:CaptionButton.NormalIcon>
@@ -82,6 +91,8 @@
                     <StackPanel Orientation="Horizontal" Name="RootLayout">
                         <atom:CaptionButton
                             Name="PART_PinButton"
+                            Command="{TemplateBinding CaptionButtonCommand}"
+                            CommandParameter="{x:Static atom:CaptionButtonAction.TogglePin}"
                             IsVisible="{TemplateBinding IsPinButtonEffectivelyVisible}"
                             IsEnabled="{TemplateBinding IsPinButtonEffectivelyVisible}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
@@ -105,9 +116,11 @@
                     <StackPanel Orientation="Horizontal" Name="RootLayout">
                         <atom:WindowsCaptionButton
                             Name="PART_FullScreenButton"
+                            Command="{TemplateBinding CaptionButtonCommand}"
+                            CommandParameter="{x:Static atom:CaptionButtonAction.ToggleFullScreen}"
                             Classes="extended-action"
                             WindowDecorationProperties.ElementRole="FullScreenButton"
-                            IsEnabled="{TemplateBinding IsFullScreenCaptionButtonVisible}"
+                            HostWindowState="{TemplateBinding HostWindowState}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsChecked="{TemplateBinding IsWindowFullScreen}"
@@ -121,8 +134,11 @@
                         </atom:WindowsCaptionButton>
                         <atom:WindowsCaptionButton
                             Name="PART_PinButton"
+                            Command="{TemplateBinding CaptionButtonCommand}"
+                            CommandParameter="{x:Static atom:CaptionButtonAction.TogglePin}"
                             Classes="extended-action"
                             WindowDecorationProperties.ElementRole="DecorationsElement"
+                            HostWindowState="{TemplateBinding HostWindowState}"
                             IsVisible="{TemplateBinding IsPinButtonEffectivelyVisible}"
                             IsEnabled="{TemplateBinding IsPinButtonEffectivelyVisible}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
@@ -137,7 +153,10 @@
                         </atom:WindowsCaptionButton>
                         <atom:WindowsCaptionButton
                             Name="PART_MinimizeButton"
+                            Command="{TemplateBinding CaptionButtonCommand}"
+                            CommandParameter="{x:Static atom:CaptionButtonAction.Minimize}"
                             WindowDecorationProperties.ElementRole="MinimizeButton"
+                            HostWindowState="{TemplateBinding HostWindowState}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsVisible="{TemplateBinding IsMinimizeButtonEffectivelyVisible}">
@@ -147,7 +166,10 @@
                         </atom:WindowsCaptionButton>
                         <atom:WindowsCaptionButton
                             Name="PART_MaximizeButton"
+                            Command="{TemplateBinding CaptionButtonCommand}"
+                            CommandParameter="{x:Static atom:CaptionButtonAction.ToggleMaximize}"
                             WindowDecorationProperties.ElementRole="MaximizeButton"
+                            HostWindowState="{TemplateBinding HostWindowState}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsChecked="{TemplateBinding IsWindowMaximized}"
@@ -167,11 +189,14 @@
                         </atom:WindowsCaptionButton>
                         <atom:WindowsCaptionButton
                             Name="PART_CloseButton"
+                            Command="{TemplateBinding CaptionButtonCommand}"
+                            CommandParameter="{x:Static atom:CaptionButtonAction.Close}"
                             WindowDecorationProperties.ElementRole="CloseButton"
                             IsCloseButton="True"
+                            HostWindowState="{TemplateBinding HostWindowState}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                            IsVisible="{TemplateBinding IsCloseCaptionButtonVisible}">
+                            IsVisible="{TemplateBinding IsCloseButtonEffectivelyVisible}">
                             <atom:WindowsCaptionButton.NormalIcon>
                                 <PathIcon Data="{StaticResource WindowCaptionCloseIconGeometry}" />
                             </atom:WindowsCaptionButton.NormalIcon>

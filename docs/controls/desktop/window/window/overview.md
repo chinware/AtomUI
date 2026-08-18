@@ -1,6 +1,6 @@
 # Window 桌面版架构设计
 
-本文档定义 `Window` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Window 桌面版实现原理](implementation.md)，Window 与标题栏的对齐协作见 [WindowTitleBar 实现原理](../window-title-bar/implementation.md)，Window Token 的专项设计见 [Window Token 设计](token.md)，设计和契约变化记录见 [Window Changelog](changelog.md)。
+本文档定义 `Window` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Window 桌面版实现原理](implementation.md)，Window 与标题栏的对齐协作见 [WindowTitleBar 实现原理](../window-title-bar/implementation.md)，caption button 的能力与呈现模型见 [WindowTitleBar Caption Button 配置设计](../window-title-bar/caption-button-configuration-design.md)，Window Token 的专项设计见 [Window Token 设计](token.md)，设计和契约变化记录见 [Window Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -41,7 +41,7 @@ Window 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 | --- | --- | --- |
 | 内容与数据 | `ContentFrameBackground`、`ContentFrameLayer`、`ContentFrameLayerOpacity`、`ContentFrameLayerTemplate`、`IsTitleBarVisible`、`LogoTemplate`、`LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn`、`RightAddOnTemplate`、`TitleBarFrameBackground`、`TitleBarFrameLayer`、`TitleBarFrameLayerOpacity`、`TitleBarFrameLayerTemplate` 等 | 定义控件展示内容、输入数据、模板或业务对象入口；`LeftAddOn` 和 `RightAddOn` 用于默认标题栏中的交互内容，`TitleBarFrameLayer` 仍只表示标题栏背景或装饰层。 |
 | 选择与集合 | `ViewModel` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsMoveEnabled`、`IsPinCaptionButtonVisible` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
+| 交互与状态 | `IsMinimizeCaptionButtonVisible`、`IsMaximizeCaptionButtonVisible`、`IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsPinCaptionButtonVisible`、`IsMoveEnabled` | 表达 managed caption button 呈现、窗口移动和用户可观察状态；visibility 不替代窗口 capability。 |
 | 弹层与窗口 | `WindowFrameLayer`、`WindowFrameLayerOpacity` | 控制 popup、flyout、dialog、window 或 overlay 宿主协作。 |
 | 其他稳定入口 | `Logo`、`LogoVisibility`、`MediaBreakPoint`、`OsType`、`OsVersion`、`TitleAlignment` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
@@ -97,6 +97,8 @@ Public API / inherited command / item source / user input
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 - 默认标题栏的交互内容通过 `LeftAddOn`、`RightAddOn` 及其模板属性承载；`TitleBarFrameLayer` 只表达标题栏背景、遮罩或装饰视觉，不保证内部控件获得 pointer、focus、keyboard 或 command 事件。
+
+Caption button 的 requested visibility 与窗口 capability 分离：Minimize、Maximize 和 Close 默认请求显示，FullScreen 和 Pin 默认隐藏。设置 visibility 为 `false` 只隐藏 AtomUI managed button，不修改 `CanMinimize`、`CanMaximize`、`WindowState`、`Topmost` 或其他窗口操作入口；capability 为 `false` 时对应 managed button 保持隐藏。完整模型见 [WindowTitleBar Caption Button 配置设计](../window-title-bar/caption-button-configuration-design.md)。
 
 ## 5. 视觉与主题模型
 
@@ -225,6 +227,7 @@ Window 对上层 overlay 发布三种不可混用的几何语义：
 关联文档：
 
 - [Window 桌面版实现原理](implementation.md)
+- [WindowTitleBar Caption Button 配置设计](../window-title-bar/caption-button-configuration-design.md)
 - [Window Token 设计](token.md)
 - [Window Changelog](changelog.md)
 
