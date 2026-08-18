@@ -43,6 +43,11 @@
             BeforeTargets="_GetPackageFiles"
             Condition="'$(IsPackable)' == 'true' and '$(AtomUIRegistrationPackageId)' != ''">
         <ItemGroup>
+            <None Include="$(MSBuildThisFileDirectory)AtomUI.Generator.props"
+                  Pack="true"
+                  PackagePath="buildTransitive/$(PackageId).props"
+                  Visible="false"
+                  Condition="'@(AtomUILanguage)' == ''" />
             <None Include="$(MSBuildThisFileDirectory)AtomUI.GeneratorConsumer.targets"
                   Pack="true"
                   PackagePath="buildTransitive/$(PackageId).targets" />

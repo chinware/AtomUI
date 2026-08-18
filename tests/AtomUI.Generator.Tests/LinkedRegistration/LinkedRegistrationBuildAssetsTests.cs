@@ -221,8 +221,11 @@ public sealed class LinkedRegistrationBuildAssetsTests
         packedItems.ShouldContain(element =>
             (string?)element.Attribute("Include") == "@(AtomUIGeneratorToolAsset)" &&
             (string?)element.Attribute("Pack") == "true");
-        packedItems.ShouldNotContain(element =>
-            (string?)element.Attribute("PackagePath") == "buildTransitive/$(PackageId).props");
+        packedItems.ShouldContain(element =>
+            (string?)element.Attribute("Include") ==
+            "$(MSBuildThisFileDirectory)AtomUI.Generator.props" &&
+            (string?)element.Attribute("PackagePath") == "buildTransitive/$(PackageId).props" &&
+            (string?)element.Attribute("Condition") == "'@(AtomUILanguage)' == ''");
 
         var repositoryProps = XDocument.Load(GetRepoFile("build/AtomUI.Repository.props"));
         repositoryProps.Descendants("AtomUINuGetBuildAsset")

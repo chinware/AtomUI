@@ -44,7 +44,9 @@ consumer 的 Localization props 不再伪造默认契约版本。
 
 `AtomUI.Repository.targets` 定义第一方库的 AOT/Trim 默认值，集中排除 `.DotSettings` 和项目目录中的 compiler-generated
 源码快照，导入 `AtomUI.Generator.targets`，并为声明 `AtomUIRegistrationPackageId` 的产品包注入 consumer target、
-共享构建资产和工具程序集。
+共享构建资产和工具程序集。注册型产品包必须包含 NuGet 自动导入约定对应的
+`buildTransitive/<PackageId>.props`：有内置语言资源时由 Localization target 生成语言条目，没有语言资源时复用
+`AtomUI.Generator.props` 作为 package-specific props；不得用空 props 文件规避 NuGet 包分析。
 
 `AtomUI.Repository.props` 是 Generator build assets 的唯一清单：
 
