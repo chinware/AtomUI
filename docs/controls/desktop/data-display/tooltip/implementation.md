@@ -13,9 +13,9 @@
 - `src/AtomUI.Desktop.Controls/Tooltip/Themes/ToolTipTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Tooltip/ToolTip.cs`
 - `src/AtomUI.Desktop.Controls/Tooltip/ToolTipPseudoClass.cs`
-- `src/AtomUI.Desktop.Controls/Tooltip/ToolTipService.cs`
 - `src/AtomUI.Desktop.Controls/Tooltip/ToolTipToken.cs`
 - `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`
+- `src/AtomUI.Desktop.Controls/PackageCore/ToolTipService.cs`
 
 职责边界：
 
@@ -26,9 +26,10 @@
 
 ## 3. 核心类职责
 
-- `ToolTip`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `ToolTipPseudoClass`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `ToolTip`：tooltip 内容与视觉宿主，持有游离 `Popup` 作为物理弹层，是打开状态调和流程的唯一执行者。
+- `ToolTipPseudoClass`：伪类常量定义，维护 `:open` 主题可观察契约。
 - `ToolTipToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
+- `ToolTipService`：全局悬停服务，订阅 `InputManager` 原始指针事件识别 tooltip 宿主与出现时机，只写 `ToolTip.IsOpen` 附加属性，不直接持有或开关 popup。
 - `OverflowTip`：附加到文本展示节点的共享溢出提示 behavior，只管理自己写入的 tooltip，并在文本实际超出可见宽度时启用提示。
 
 核心协作规则：
@@ -62,6 +63,23 @@ Public API / ItemsSource / Command / Event
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
 - overview.md 的 API 契约说明应与源码实际状态流一致。
 
+打开状态按声明式调和模型流动：
+
+```text
+IsOpen / Tip / 宿主 attach-detach 变化
+  -> ReconcileOpenState（唯一物理开关入口，幂等）
+  -> ToolTipOpening（可取消，否决时回写 IsOpen=false）
+  -> freestanding Popup.IsOpen
+  -> :open 伪类 / Opened / Closed
+  -> 弹层外部关闭时回写 IsOpen=false
+```
+
+调和维护要求：
+
+- popup 的物理开关只能由调和入口改变；`ToolTipService`、`OverflowTip` 和其他调用方只写 `IsOpen`，由调和兑现物理状态。
+- 调和是幂等的：同一输入重复触发不得产生重复打开、重复事件或残留订阅。
+- `Tip` 未就绪时不重置 `IsOpen`；内容就绪后由 `TipProperty` 变化再次触发调和。
+
 `OverflowTip` 的状态流：
 
 ```text
@@ -84,6 +102,8 @@ attached properties + target text/font
 - Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
 - `OverflowTipState` 对 owner bounds、文本、字体、tooltip 和内部 text viewport metric 的订阅必须由同一个 disposable owner 管理；禁用 behavior 时统一释放。
 - TextBox/TextArea 的 template part 由输入控件自己获取和管理。`OverflowTip` 不得调用 `GetVisualDescendants()`、查找 `PART_TextPresenter` 或持有输入控件的 presenter/scroller。
+- `IsOpen` 为 `true` 且宿主尚未挂入 visual tree 时，`ToolTip` 对宿主的 `AttachedToVisualTree` 建立一次性订阅；宿主挂入或 `IsOpen` 转为 `false` 时退订。该订阅生命周期自限，不随控件树重建累积。
+- 宿主从 visual tree 卸载时物理关闭弹层，但不清除 `IsOpen`；重新挂入后由调和流程重开。
 
 稳定 template part 接入点：
 
@@ -151,12 +171,15 @@ Tooltip 的交互事件应从输入源收敛到控件级语义事件：
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 - TextBox 内部按钮、feedback、padding 或模板重套用改变有效 viewport 时，OverflowTip 必须由度量通知重新判断，不能依赖 owner Bounds 恰好变化。
+- `IsOpen`、`Tip` 与宿主 attach/detach 变化只能经调和入口影响弹层物理开关；不新增第二条直接开关 popup 的路径。
+- 只有 `ToolTipOpening` 否决和弹层外部关闭可以回写 `IsOpen=false`。
 
 ## 10. 测试与验证
 
 推荐验证：
 
 - 纯文档改动运行 `git diff --check` 并检查相对链接。
+- 打开状态调和回归：XAML 声明式 `IsOpen=True` 打开、`Tip` 晚于 `IsOpen` 就绪、宿主 detach/reattach 重开、`ToolTipOpening` 否决、attach 订阅无残留。
 - 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
 - Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests`。

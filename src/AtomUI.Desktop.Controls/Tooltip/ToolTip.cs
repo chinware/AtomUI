@@ -10,6 +10,8 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -97,6 +99,9 @@ public class ToolTip : ContentControl,
 
     internal static readonly AttachedProperty<ToolTip?> ToolTipProperty =
         AvaloniaProperty.RegisterAttached<ToolTip, Control, ToolTip?>("ToolTip");
+
+    private static readonly AttachedProperty<EventHandler<VisualTreeAttachmentEventArgs>?> PendingAttachHandlerProperty =
+        AvaloniaProperty.RegisterAttached<ToolTip, Control, EventHandler<VisualTreeAttachmentEventArgs>?>("PendingAttachHandler");
     
     internal static readonly StyledProperty<TimeSpan> MotionDurationProperty =
         MotionAwareControlProperty.MotionDurationProperty.AddOwner<ToolTip>();
@@ -128,6 +133,7 @@ public class ToolTip : ContentControl,
     static ToolTip()
     {
         IsOpenProperty.Changed.Subscribe(IsOpenChanged);
+        TipProperty.Changed.Subscribe(TipChanged);
     }
 
     #region 附加属性访问器
@@ -322,10 +328,43 @@ public class ToolTip : ContentControl,
 
     private static void IsOpenChanged(AvaloniaPropertyChangedEventArgs e)
     {
-        var control = (Control)e.Sender;
-        var newValue = (bool)e.NewValue!;
+        ReconcileOpenState((Control)e.Sender);
+    }
 
-        if (newValue)
+    private static void TipChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        ReconcileOpenState((Control)e.Sender);
+    }
+
+    /// <summary>
+    /// 打开状态调和入口。IsOpen 是声明式的期望打开状态，该方法把期望状态
+    /// （IsOpen 为 true、Tip 内容就绪、宿主已挂入 visual tree）与物理弹层状态收敛一致。
+    /// 所有影响打开状态的输入（IsOpen 变化、Tip 变化、宿主 attach）都汇聚到该方法，
+    /// 不允许出现第二条直接开关 popup 的路径。该方法必须是幂等的。
+    /// </summary>
+    private static void ReconcileOpenState(Control control)
+    {
+        var toolTip          = control.GetValue(ToolTipProperty);
+        var isPhysicallyOpen = toolTip?._popup?.IsOpen == true;
+        var isAttached       = control.IsAttachedToVisualTree();
+        var wantOpen         = GetIsOpen(control) && GetTip(control) is not null && isAttached;
+
+        if (!GetIsOpen(control) || wantOpen)
+        {
+            ClearPendingAttachHandler(control);
+        }
+        else if (!isAttached)
+        {
+            // 期望打开但宿主尚未挂入 visual tree：挂一次性订阅，attach 后重新调和
+            EnsurePendingAttachHandler(control);
+        }
+
+        if (wantOpen == isPhysicallyOpen)
+        {
+            return;
+        }
+
+        if (wantOpen)
         {
             var args = new CancelRoutedEventArgs(ToolTipOpeningEvent);
             control.RaiseEvent(args);
@@ -335,28 +374,51 @@ public class ToolTip : ContentControl,
                 return;
             }
 
-            var tip = GetTip(control);
-            if (tip == null)
-            {
-                control.SetCurrentValue(IsOpenProperty, false);
-                return;
-            }
-
-            var toolTip = control.GetValue(ToolTipProperty);
+            var tip = GetTip(control)!;
             if (toolTip == null || (tip != toolTip && tip != toolTip.Content))
             {
                 toolTip?.Close();
                 toolTip = tip as ToolTip ?? new ToolTip() { Content = tip };
                 control.SetValue(ToolTipProperty, toolTip);
             }
-            
+
             toolTip.AdornedControl = control;
             toolTip.Open(control);
         }
-        else if (control.GetValue(ToolTipProperty) is { } toolTip)
+        else if (toolTip is not null)
         {
-            toolTip.AdornedControl = null;
+            // 只关闭物理弹层；IsOpen 仍为 true（Tip 未就绪或宿主已卸载）时保留期望状态，
+            // 条件满足后由调和流程重新打开。
             toolTip.Close();
+        }
+    }
+
+    private static void EnsurePendingAttachHandler(Control control)
+    {
+        if (control.GetValue(PendingAttachHandlerProperty) is not null)
+        {
+            return;
+        }
+
+        EventHandler<VisualTreeAttachmentEventArgs> handler = (s, _) =>
+        {
+            if (s is Control attachedControl)
+            {
+                ClearPendingAttachHandler(attachedControl);
+                ReconcileOpenState(attachedControl);
+            }
+        };
+        control.SetValue(PendingAttachHandlerProperty, handler);
+        control.AttachedToVisualTree += handler;
+    }
+
+    private static void ClearPendingAttachHandler(Control control)
+    {
+        var handler = control.GetValue(PendingAttachHandlerProperty);
+        if (handler is not null)
+        {
+            control.AttachedToVisualTree -= handler;
+            control.ClearValue(PendingAttachHandlerProperty);
         }
     }
 
@@ -434,7 +496,9 @@ public class ToolTip : ContentControl,
         if (AdornedControl is { } adornedControl
             && GetIsOpen(adornedControl))
         {
-            adornedControl.SetCurrentValue(IsOpenProperty, false);
+            // Closed 可能在宿主 DetachedFromVisualTree 过程中同步触发，此时 PresentationSource 尚未清空，
+            // 无法可靠区分卸载语义；推迟到当前 detach/attach 流程结束后按实际挂载状态收敛期望状态。
+            Dispatcher.UIThread.Post(() => ConvergeIsOpenAfterPopupClosed(adornedControl), DispatcherPriority.Background);
         }
 
         UpdatePseudoClasses(false);
@@ -445,6 +509,26 @@ public class ToolTip : ContentControl,
             popup.PlacementTarget = null;
             _subscriptions?.Dispose();
             _subscriptions = null;
+        }
+    }
+
+    private void ConvergeIsOpenAfterPopupClosed(Control adornedControl)
+    {
+        if (!GetIsOpen(adornedControl) || _popup?.IsOpen == true)
+        {
+            // 期望状态已被调和流程收敛，或弹层已重新打开
+            return;
+        }
+
+        if (adornedControl.IsAttachedToVisualTree())
+        {
+            // 弹层被宿主卸载以外的原因关闭：期望状态回写为关闭
+            adornedControl.SetCurrentValue(IsOpenProperty, false);
+        }
+        else
+        {
+            // 宿主卸载触发的生命周期关闭：保留 IsOpen 期望状态，重新挂入后由调和流程重开
+            EnsurePendingAttachHandler(adornedControl);
         }
     }
 

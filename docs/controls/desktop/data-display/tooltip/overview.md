@@ -41,8 +41,16 @@ Tooltip 的公共契约由 public/protected 类型成员、Avalonia 属性、事
 | --- | --- | --- |
 | 内容与数据 | `Content` | 继承 ToolTip 的轻量说明内容入口。 |
 | 交互与状态 | `IsMotionEnabled` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
+| 宿主内容与呈现 | `Tip`、`TipHostWidth`、`PresetColor`、`Color`、`IsArrowVisible` | 以附加属性配置在任意目标 `Control` 上，目标控件是这些值的 owner。 |
+| 宿主定位与时机 | `Placement`、`HorizontalOffset`、`VerticalOffset`、`MarginToAnchor`、`IsPointAtCenter`、`ShowDelay`、`BetweenShowDelay` | 附加属性；控制弹层相对宿主的定位与悬停出现时机。 |
+| 打开状态与服务开关 | `IsOpen`、`IsCustomShowAndHide`、`ServiceEnabled`、`ShowOnDisabled`、`IsUseOverlayHost` | `IsOpen` 是声明式期望打开状态（见第 4.1 节），赋值时序不影响最终物理状态。 |
 
-当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
+公开路由事件（Direct 路由，挂接在目标控件上）：
+
+| 事件 | 语义 |
+| --- | --- |
+| `ToolTipOpening` | 打开前引发，可取消；否决时把 `IsOpen` 回写为 `false`。 |
+| `ToolTipClosing` | 关闭前引发。 |
 
 主要公开类型与枚举：
 
@@ -53,8 +61,8 @@ Tooltip 的公共契约由 public/protected 类型成员、Avalonia 属性、事
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_ArrowDecorator` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
-| `PART_ContentPresenter` | `?` | 展示用户内容、文本、图标或模板化数据。 |
+| `PART_ArrowDecorator` | `ArrowDecoratedBox` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
+| `PART_ContentPresenter` | `ContentPresenter` | 展示用户内容、文本、图标或模板化数据。 |
 
 控件专属或内部伪类包括 `Open=:open`、`ToolTipPseudoClass.Open`。这些伪类属于主题 selector 可观察契约，不能在未同步主题和 Gallery 的情况下重命名或删除。
 
@@ -76,6 +84,18 @@ Public API / inherited command / item source / user input
 - motion 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+
+### 4.1 打开状态调和模型
+
+`IsOpen` 附加属性表达期望打开状态，不是赋值瞬间执行的命令。期望打开的完整条件是：`IsOpen` 为 `true`、`Tip` 内容就绪、宿主控件已挂入 visual tree。物理弹层的开关由唯一调和流程在这些输入变化时统一兑现，赋值时序不影响最终结果：
+
+- 满足期望条件且弹层未打开：先引发可取消的 `ToolTipOpening`；被取消时把 `IsOpen` 回写为 `false`，否则打开弹层。
+- `IsOpen` 转为 `false` 且弹层已打开：关闭弹层并引发 `ToolTipClosing`。
+- 宿主控件从 visual tree 卸载：物理关闭弹层但保留 `IsOpen`，重新挂入后由调和流程自动重开。
+- `Tip` 未就绪不重置 `IsOpen`；内容就绪后调和流程自动完成打开。
+- 弹层被外部原因关闭时，`IsOpen` 回写为 `false`，期望状态与实际状态保持一致。
+
+悬停打开由 `ToolTipService` 驱动同一个 `IsOpen` 属性；编程式声明与悬停交互共享同一状态 owner 和调和出口，不存在第二套开关路径。
 
 ## 5. 视觉与主题模型
 
@@ -119,6 +139,7 @@ Tooltip 与同分类控件共享尺寸、状态、Token、Gallery 展示和验�
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
+- `IsOpen` 的声明式语义保持稳定：赋值时序无关、`ToolTipOpening` 否决回写、弹层外部关闭回写、宿主 detach/reattach 自动重开。
 - 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
 - 文档只描述当前稳定设计；历史变化记录在 `changelog.md`。
 
