@@ -75,7 +75,7 @@ NavMenu 的公共 API 分为控件 API、节点 API 和事件 API。
 | --- | --- | --- |
 | `Header` | `object?` | 菜单项显示内容。 |
 | `HeaderTemplate` | `IDataTemplate?` | 菜单项 header 模板。 |
-| `Tooltip` | `object?` | 折叠叶子节点的独立 Tooltip 内容；为 `null` 时回退到节点 `Header`。 |
+| `Tooltip` | `object?` | 折叠叶子节点的独立 Tooltip 内容；为 `null` 时回退到节点 `Header`。传入 `ToolTip` 实例可获得完整定制能力：实例上显式设置的呈现类附加属性（位置、颜色、箭头、文本换行等）优先于菜单级与宿主配置，未设置的回落，详见 [Tooltip 桌面版架构设计](../../data-display/tooltip/overview.md) 的 Tip 实例定制模型。 |
 | `IsTooltipEnabled` | `bool` | 是否允许当前节点显示折叠 Tooltip，默认 `true`。 |
 | `ItemKey` | `EntityKey?` | 路径和业务标识。 |
 | `Icon` | `PathIcon?` | 菜单项图标。 |

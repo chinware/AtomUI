@@ -453,7 +453,13 @@
                                   ItemKey="Option1" />
                 <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN2}"
                                   Icon="{antdicons:AntDesignIconProvider Kind=DesktopOutlined}"
-                                  ItemKey="Option2" />
+                                  ItemKey="Option2">
+                    <atom:NavMenuNode.Tooltip>
+                        <atom:ToolTip atom:ToolTip.Placement="Bottom"
+                                      atom:ToolTip.PresetColor="GeekBlue"
+                                      Content="{gallery:MenuShowCaseLangResource P2HeaderOptionN2}" />
+                    </atom:NavMenuNode.Tooltip>
+                </atom:NavMenuNode>
                 <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN3}"
                                   Icon="{antdicons:AntDesignIconProvider Kind=ContainerOutlined}"
                                   ItemKey="Option3" />

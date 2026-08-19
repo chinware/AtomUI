@@ -104,6 +104,7 @@ attached properties + target text/font
 - TextBox/TextArea 的 template part 由输入控件自己获取和管理。`OverflowTip` 不得调用 `GetVisualDescendants()`、查找 `PART_TextPresenter` 或持有输入控件的 presenter/scroller。
 - `IsOpen` 为 `true` 且宿主尚未挂入 visual tree 时，`ToolTip` 对宿主的 `AttachedToVisualTree` 建立一次性订阅；宿主挂入或 `IsOpen` 转为 `false` 时退订。该订阅生命周期自限，不随控件树重建累积。
 - 宿主侧附加属性（定位、偏移、箭头、`TextWrapping`/`TextTrimming` 文本布局）在弹层打开时通过 `GetBindingObservable` 活绑定到 popup 与 `PART_ContentPresenter`，统一登记进弹层订阅集并在弹层关闭时释放；不使用打开时的一次性快照赋值，保证打开期间修改附加属性即时生效。
+- Tip 为 `ToolTip` 实例时，呈现类附加属性的取值来源由 `ResolveValueSource`/`GetToolTipValue` 统一解析：实例显式设置（`IsSet`）优先，否则回落宿主；参与覆盖的属性集合见 overview 的 Tip 实例定制模型。新增呈现类附加属性时必须走同一解析入口，不允许出现只读宿主的取值路径。
 - 宿主从 visual tree 卸载时物理关闭弹层，但不清除 `IsOpen`；重新挂入后由调和流程重开。
 
 稳定 template part 接入点：
@@ -187,3 +188,4 @@ Tooltip 的交互事件应从输入源收敛到控件级语义事件：
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。
 - `OverflowTip` 回归测试覆盖 TextBox 精确 viewport、内部 viewport 独立变化、模板重套用、第三方 TextBox fallback 和禁止外部 `PART_TextPresenter` 查询。
 - 文本布局回归覆盖长文本在 `ToolTipMaxWidth` 内换行且不裁剪、`TextWrapping`/`TextTrimming` 附加属性默认值、打开期间修改即时生效，以及主题 `PART_ContentPresenter` 的换行契约。
+- Tip 实例定制回归覆盖实例直接使用、实例级 placement/preset color/文本换行覆盖宿主、实例未设置时回落宿主，以及实例 `Background` 局部值保持。

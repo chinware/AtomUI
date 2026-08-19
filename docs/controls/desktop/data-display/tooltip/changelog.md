@@ -14,6 +14,7 @@
   - Defer popup-closed convergence to after the current detach/attach pass, distinguishing lifecycle closes from external closes by actual host attachment state.
 - API
   - Add `TextWrapping` (default `Wrap`) and `TextTrimming` (default `None`) attached properties controlling tip text layout within the maximum width constraint; they propagate to `PART_ContentPresenter` through live bindings while the popup is open.
+  - Define the tip-instance customization model: when `Tip` is a `ToolTip` instance, presentation attached properties explicitly set on the instance take precedence over host values, unset ones fall back to the host; lifecycle attached properties stay host-owned.
 - Theme
   - `PART_ContentPresenter` declares `TextBlock.TextWrapping="Wrap"` so long tip text wraps within `ToolTipMaxWidth` instead of being clipped.
 - Docs

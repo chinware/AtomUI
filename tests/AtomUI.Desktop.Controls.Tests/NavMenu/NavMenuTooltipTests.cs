@@ -66,6 +66,30 @@ public class NavMenuTooltipTests
     }
 
     [Fact]
+    public void Node_Tooltip_ToolTip_Instance_Passes_Through_To_Header()
+    {
+        // ToolTip 实例作为节点 Tooltip：实例自身显式设置的呈现类附加属性
+        // 在打开时优先于宿主（PART_Header）的值，NavMenu 只负责原样透传
+        var tip = new ToolTip { Content = "Open dashboard" };
+        ToolTip.SetPlacement(tip, PlacementMode.Left);
+        var node = new NavMenuNode
+        {
+            Header  = "Dashboard",
+            Tooltip = tip
+        };
+        var menu = CreateCollapsedMenu(node);
+
+        ShowInWindow(menu, () =>
+        {
+            var container = menu.ContainerFromItem(node).ShouldBeOfType<NavMenuItem>();
+            var header    = container.ItemHeader.ShouldNotBeNull();
+
+            container.EffectiveCollapsedTooltip.ShouldBeSameAs(tip);
+            ToolTip.GetTip(header).ShouldBeSameAs(tip);
+        });
+    }
+
+    [Fact]
     public void Tooltip_Is_Suppressed_For_Disabled_Expanded_And_Submenu_Items()
     {
         var disabledNode = new NavMenuNode

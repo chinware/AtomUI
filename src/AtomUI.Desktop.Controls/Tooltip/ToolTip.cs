@@ -470,16 +470,16 @@ public class ToolTip : ContentControl,
             _popup.Bind(Popup.ShouldUseOverlayLayerProperty, this.GetObservable(ShouldUseOverlayPopupProperty)),
             _popup.Bind(Popup.MotionDurationProperty, this.GetObservable(MotionDurationProperty)),
             _popup.Bind(Popup.IsMotionEnabledProperty, this.GetObservable(IsMotionEnabledProperty)),
-            _popup.Bind(Popup.HorizontalOffsetProperty, control.GetBindingObservable(HorizontalOffsetProperty)),
-            _popup.Bind(Popup.VerticalOffsetProperty, control.GetBindingObservable(VerticalOffsetProperty)),
-            _popup.Bind(Popup.RequestedPlacementProperty, control.GetBindingObservable(PlacementProperty, v => (PlacementMode?)v)),
-            _popup.Bind(Popup.MarginToAnchorProperty, control.GetBindingObservable(MarginToAnchorProperty)),
-            _popup.Bind(Popup.IsPointAtCenterProperty, control.GetBindingObservable(IsPointAtCenterProperty)),
+            _popup.Bind(Popup.HorizontalOffsetProperty, ResolveValueSource(control, HorizontalOffsetProperty).GetBindingObservable(HorizontalOffsetProperty)),
+            _popup.Bind(Popup.VerticalOffsetProperty, ResolveValueSource(control, VerticalOffsetProperty).GetBindingObservable(VerticalOffsetProperty)),
+            _popup.Bind(Popup.RequestedPlacementProperty, ResolveValueSource(control, PlacementProperty).GetBindingObservable(PlacementProperty, v => (PlacementMode?)v)),
+            _popup.Bind(Popup.MarginToAnchorProperty, ResolveValueSource(control, MarginToAnchorProperty).GetBindingObservable(MarginToAnchorProperty)),
+            _popup.Bind(Popup.IsPointAtCenterProperty, ResolveValueSource(control, IsPointAtCenterProperty).GetBindingObservable(IsPointAtCenterProperty)),
         ]);
 
         _popup.PlacementTarget = control;
         _popup.SetPopupParent(control);
-        
+
         if (_arrowDecoratedBox is not null)
         {
             SetupArrowDecoratedBox(control);
@@ -489,8 +489,23 @@ public class ToolTip : ContentControl,
             TemplateApplied += DeferSetupArrowDecoratedBox;
         }
 
-        ConfigureMotion(_popup, GetPlacement(control));
+        ConfigureMotion(_popup, GetToolTipValue(control, PlacementProperty));
         _popup.IsOpen = true;
+    }
+
+    /// <summary>
+    /// 呈现类附加属性的取值来源解析：Tip 直接传入 ToolTip 实例时，实例自身显式设置
+    /// （IsSet）的值优先于宿主控件；未设置的回落到宿主。这让 ToolTip 实例成为完整
+    /// 定制面，而不需要宿主侧新增任何配置语言。
+    /// </summary>
+    private AvaloniaObject ResolveValueSource(Control host, AvaloniaProperty property)
+    {
+        return IsSet(property) ? this : host;
+    }
+
+    private T GetToolTipValue<T>(Control host, AttachedProperty<T> property)
+    {
+        return IsSet(property) ? GetValue(property) : host.GetValue(property);
     }
 
     private void ConfigureMotion(Popup popup, PlacementMode placement)
@@ -562,7 +577,7 @@ public class ToolTip : ContentControl,
     {
         if (sender is Popup popup && popup.PlacementTarget != null)
         {
-            SetupArrowPosition(GetPlacement(popup.PlacementTarget), args.HorizontalFlipped, args.VerticalFlipped);
+            SetupArrowPosition(GetToolTipValue(popup.PlacementTarget, PlacementProperty), args.HorizontalFlipped, args.VerticalFlipped);
         }
     }
 
@@ -642,27 +657,27 @@ public class ToolTip : ContentControl,
             SetToolTipColor(control);
             if (_contentPresenter != null)
             {
-                _contentPresenter.Width = GetTipHostWidth(control);
+                _contentPresenter.Width = GetToolTipValue(control, TipHostWidthProperty);
                 _subscriptions?.Add(_contentPresenter.Bind(ContentPresenter.TextWrappingProperty,
-                    control.GetBindingObservable(TextWrappingProperty)));
+                    ResolveValueSource(control, TextWrappingProperty).GetBindingObservable(TextWrappingProperty)));
                 _subscriptions?.Add(_contentPresenter.Bind(ContentPresenter.TextTrimmingProperty,
-                    control.GetBindingObservable(TextTrimmingProperty)));
+                    ResolveValueSource(control, TextTrimmingProperty).GetBindingObservable(TextTrimmingProperty)));
             }
-            
+
             _arrowDecoratedBox.Bind(ArrowDecoratedBox.IsArrowVisibleProperty,
-                control.GetBindingObservable(IsArrowVisibleProperty, flag =>
+                ResolveValueSource(control, IsArrowVisibleProperty).GetBindingObservable(IsArrowVisibleProperty, flag =>
                 {
                     // 有些条件下是不能开启箭头指针的
                     if (flag && _popup is not null)
                     {
-                        return PopupUtils.CanEnabledArrow(GetPlacement(control));
+                        return PopupUtils.CanEnabledArrow(GetToolTipValue(control, PlacementProperty));
                     }
 
                     return flag;
                 }));
             if (_popup is not null)
             {
-                SetupArrowPosition(GetPlacement(control), false, false);
+                SetupArrowPosition(GetToolTipValue(control, PlacementProperty), false, false);
             }
         }
     }
@@ -692,8 +707,8 @@ public class ToolTip : ContentControl,
         // Preset 优先级高
         if (_arrowDecoratedBox is not null)
         {
-            var presetColorType = GetPresetColor(control);
-            var color           = GetColor(control);
+            var presetColorType = GetToolTipValue(control, PresetColorProperty);
+            var color           = GetToolTipValue(control, ColorProperty);
             if (presetColorType is not null)
             {
                 var presetColor = PresetPrimaryColor.GetColor(presetColorType.Value);

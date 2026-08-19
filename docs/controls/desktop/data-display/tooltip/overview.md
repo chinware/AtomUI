@@ -151,6 +151,17 @@ Tooltip 与同分类控件共享尺寸、状态、Token、Gallery 展示和验�
 
 Tooltip 的动效只表达状态变化反馈，不应改变 public API 语义。初始加载、禁用态和卸载路径应能抑制或取消动效，避免保留旧控件实例。
 
+### 8.2 Tip 实例定制模型
+
+`Tip` 附加属性接受任意内容；当内容本身是 `ToolTip` 实例时，调和流程直接使用该实例作为弹层内容控件，实例成为完整定制面：
+
+- 实例自身显式设置（`IsSet`）的呈现类附加属性优先于宿主的值；未设置的回落到宿主。参与实例级覆盖的属性：`Placement`、`HorizontalOffset`、`VerticalOffset`、`MarginToAnchor`、`IsPointAtCenter`、`IsArrowVisible`、`PresetColor`、`Color`、`TipHostWidth`、`TextWrapping`、`TextTrimming`。
+- 实例的实例属性（如 `Background`、`ContentTemplate`、`IsMotionEnabled`）按普通控件语义直接生效。
+- 生命周期类附加属性（`ShowDelay`、`BetweenShowDelay`、`ServiceEnabled`、`ShowOnDisabled`、`IsUseOverlayHost`）不参与覆盖，始终归宿主与悬停服务。
+- 实例级取值来源在弹层打开时确定；打开期间对实例属性的修改经活绑定生效，但"是否覆盖宿主"的归属判定不随打开状态切换。
+
+宿主够不到的场景（如 NavMenu 折叠项的内部 header）通过该模型获得完整 tooltip 定制能力，宿主侧不需要新增任何配置语言。
+
 ## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
