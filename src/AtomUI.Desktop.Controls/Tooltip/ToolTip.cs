@@ -22,6 +22,15 @@ public class ToolTip : ContentControl,
 
     public static readonly AttachedProperty<object?> TipProperty =
         AvaloniaProperty.RegisterAttached<ToolTip, Control, object?>("Tip");
+
+    public static readonly AttachedProperty<TextWrapping> TipWrappingProperty =
+        AvaloniaProperty.RegisterAttached<ToolTip, Control, TextWrapping>("TipWrapping", defaultValue: TextWrapping.Wrap);
+
+    public static readonly AttachedProperty<TextTrimming> TipTrimmingProperty =
+        AvaloniaProperty.RegisterAttached<ToolTip, Control, TextTrimming>("TipTrimming", defaultValue: TextTrimming.None);
+
+    public static readonly AttachedProperty<TextAlignment> TipAlignmentProperty =
+        AvaloniaProperty.RegisterAttached<ToolTip, Control, TextAlignment>("TipAlignment", defaultValue: TextAlignment.Center);
     
     public static readonly AttachedProperty<double> TipHostWidthProperty =
         AvaloniaProperty.RegisterAttached<ToolTip, Control, double>("TipHostWidth", double.NaN);
@@ -131,6 +140,36 @@ public class ToolTip : ContentControl,
     }
 
     #region 附加属性访问器
+    
+    public static void SetTipWrapping(Control element, TextWrapping value)
+    {
+        element.SetValue(TipWrappingProperty, value);
+    }
+
+    public static TextWrapping GetTipWrapping(Control element)
+    {
+        return element.GetValue(TipWrappingProperty);
+    }
+    
+    public static void SetTipTrimming(Control element, TextTrimming value)
+    {
+        element.SetValue(TipTrimmingProperty, value);
+    }
+
+    public static TextTrimming GetTipTrimming(Control element)
+    {
+        return element.GetValue(TipTrimmingProperty);
+    }
+
+    public static void SetTipAlignment(Control element, TextAlignment value)
+    {
+        element.SetValue(TipAlignmentProperty, value);
+    }
+
+    public static TextAlignment GetTipAlignment(Control element)
+    {
+        return element.GetValue(TipAlignmentProperty);
+    }
 
     public static object? GetTip(Control element)
     {
@@ -510,7 +549,7 @@ public class ToolTip : ContentControl,
     {
         return EnsureArrowDecoratedBox();
     }
-    
+     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -532,7 +571,10 @@ public class ToolTip : ContentControl,
             SetToolTipColor(control);
             if (_contentPresenter != null)
             {
-                _contentPresenter.Width = GetTipHostWidth(control);
+                _contentPresenter.Width         = GetTipHostWidth(control);
+                _contentPresenter.TextWrapping  = GetTipWrapping(control);
+                _contentPresenter.TextTrimming  = GetTipTrimming(control);
+                _contentPresenter.TextAlignment = GetTipAlignment(control);
             }
             
             _arrowDecoratedBox.Bind(ArrowDecoratedBox.IsArrowVisibleProperty,
