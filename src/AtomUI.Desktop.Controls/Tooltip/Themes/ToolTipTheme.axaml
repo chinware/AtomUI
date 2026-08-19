@@ -13,7 +13,8 @@
                         Content="{TemplateBinding Content}"
                         ContentTemplate="{TemplateBinding ContentTemplate}"
                         HorizontalAlignment="Center"
-                        TextBlock.TextAlignment="Center"/>
+                        TextBlock.TextAlignment="Center"
+                        TextBlock.TextWrapping="Wrap"/>
                 </atom:ArrowDecoratedBox>
             </ControlTemplate>
         </Setter>

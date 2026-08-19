@@ -78,6 +78,12 @@ public class ToolTip : ContentControl,
     public static readonly AttachedProperty<bool> IsCustomShowAndHideProperty =
         AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsCustomShowAndHide");
     
+    public static readonly AttachedProperty<TextWrapping> TextWrappingProperty =
+        AvaloniaProperty.RegisterAttached<ToolTip, Control, TextWrapping>("TextWrapping", TextWrapping.Wrap);
+
+    public static readonly AttachedProperty<TextTrimming> TextTrimmingProperty =
+        AvaloniaProperty.RegisterAttached<ToolTip, Control, TextTrimming>("TextTrimming", TextTrimming.None);
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -306,6 +312,26 @@ public class ToolTip : ContentControl,
     public static void SetIsCustomShowAndHide(Control element, bool flag)
     {
         element.SetValue(IsCustomShowAndHideProperty, flag);
+    }
+
+    public static TextWrapping GetTextWrapping(Control element)
+    {
+        return element.GetValue(TextWrappingProperty);
+    }
+
+    public static void SetTextWrapping(Control element, TextWrapping value)
+    {
+        element.SetValue(TextWrappingProperty, value);
+    }
+
+    public static TextTrimming GetTextTrimming(Control element)
+    {
+        return element.GetValue(TextTrimmingProperty);
+    }
+
+    public static void SetTextTrimming(Control element, TextTrimming value)
+    {
+        element.SetValue(TextTrimmingProperty, value);
     }
 
     #endregion
@@ -617,6 +643,10 @@ public class ToolTip : ContentControl,
             if (_contentPresenter != null)
             {
                 _contentPresenter.Width = GetTipHostWidth(control);
+                _subscriptions?.Add(_contentPresenter.Bind(ContentPresenter.TextWrappingProperty,
+                    control.GetBindingObservable(TextWrappingProperty)));
+                _subscriptions?.Add(_contentPresenter.Bind(ContentPresenter.TextTrimmingProperty,
+                    control.GetBindingObservable(TextTrimmingProperty)));
             }
             
             _arrowDecoratedBox.Bind(ArrowDecoratedBox.IsArrowVisibleProperty,
