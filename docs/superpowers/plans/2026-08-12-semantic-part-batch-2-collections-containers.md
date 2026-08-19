@@ -102,10 +102,10 @@
 
 **风险类型：** Tag 变体、close icon、checkable group/容器生命周期。
 
-- [ ] **Gate A 设计审核：** 分别审计 `Tag`、`CheckableTag`、group/items control 的 owner，确认 icon/content/close 与 checked indicator 是否共享或分离职责；记录 close lifecycle、group selection、container prepare/clear 和 SizeType/颜色 variants。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、真实模板/运行时节点、owner 边界、排除的 internal wrapper、生命周期/性能不变量和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Tag/TagSemanticPartTests.cs`，覆盖 basic/closable/checkable/group、集合变更、close/checked states、颜色和尺寸；验证 marker 不随状态切换增删。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
+- [x] **Gate A 设计审核：** 分别审计 `Tag`、`CheckableTag`、group/items control 的 owner，确认 icon/content/close 与 checked indicator 是否共享或分离职责；记录 close lifecycle、group selection、container prepare/clear 和 SizeType/颜色 variants。
+- [x] 更新两份控件文档，写明准确的 Descriptor、真实模板/运行时节点、owner 边界、排除的 internal wrapper、生命周期/性能不变量和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。（2026-08-19：新增 `semantic-part.md`，`Tag` owner 公开 `root`/`icon`/`content`/`close`，`CheckableTagGroup` owner 公开 `root`/`item`（Descriptions 同款 scope-items 跳点链），`CheckableTag` 无 descriptor；LLMS verify 与 `git diff --check` 通过，等待批准。用户补充：Gallery 语义展示要**两个** SemanticPartPreview——一个对应 `Tag` owner（root/icon/content/close），一个对应 `CheckableTagGroup` owner（root/item），对齐上游文档两个预览区块。）
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Tag/TagSemanticPartTests.cs`，覆盖 basic/closable/checkable/group、集合变更、close/checked states、颜色和尺寸；验证 marker 不随状态切换增删。（2026-08-19：`Tag.SemanticParts.cs` + `CheckableTagGroup.SemanticParts.cs` 声明、TagTheme 三个静态 marker、GroupTheme scope-items 跳点、容器创建/prepare 幂等 marker 注入；15 个语义测试全绿，Tag 全量 69/69。TDD 发现并修正 Gate A 颜色边界描述：selector Style 的 `StyleTrigger` 优先级高于颜色状态机的 `Template` 写入，root 样式 setter 统一覆盖全部颜色分支——测试、semantic-part.md、implementation.md 与 changelog 已同步修正。用户复核视觉后又修正 `TagToken.DefaultBg`：antd v6 `defaultBg = colorFillTertiary.onBackground(colorBgContainer)`，AtomUI 原用 `ColorFillQuaternary` 浅一档，已改 `ColorFillTertiary` 并加回归测试。）
+- [x] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。（2026-08-19 最终验证：Generator 472/472、GalleryBase.Generator 10/10、GalleryBase 115/115、Gallery 489/489、Desktop 2815/2817（仅有的 2 个 TabControl `TabActivationTests` 失败在隔离运行下 14/14 全绿，为预存在的加载顺序抖动，与 Tag 无关）；LLMS generate+verify 通过（78 控件 / 159 文件）；`git diff --check` 干净。Tag 无 Popup/运行时宿主路径，按计划条件不需要 NativeAOT 验证。Gallery 迁移 `GalleryShowCaseHost` + 两个 SemanticPartPreview（TagSemanticPreview / CheckableTagGroupSemanticPreview）+ `tag-semantic-part` 样式示例 + 8 个本地化 key + 快照/页面/高亮测试。）
 - [ ] **强制停止：** 保持 Tag 的所有实现改动未提交，直到用户明确完成验证并授权提交。
 
 ### 任务 6：Timeline

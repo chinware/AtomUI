@@ -87,6 +87,7 @@
 - [Statistic Token 设计](statistic/token.md)
 - [Statistic Changelog](statistic/changelog.md)
 - [Tag 桌面版架构设计](tag/overview.md)
+- [Tag Semantic Part 契约](tag/semantic-part.md)
 - [Tag 桌面版实现原理](tag/implementation.md)
 - [CheckableTag 与 CheckableTagGroup 选择模型设计](tag/checkable-tag-design.md)
 - [Tag Token 设计](tag/token.md)

@@ -87,7 +87,7 @@ Group 的 `CheckedItem` 和 `CheckedItems` 默认支持 TwoWay binding；前者�
 
 ### 可选择标签
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tag/Views/TagShowCase.axaml:59`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tag/Views/TagShowCase.axaml:113`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -114,7 +114,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 形态变体
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tag/Views/TagShowCase.axaml:303`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tag/Views/TagShowCase.axaml:357`
 
 Gallery key：`ExamplesContent` / item `5`
 
@@ -266,6 +266,7 @@ Tag Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆�
 
 - 源设计文档：`docs/controls/desktop/data-display/tag/overview.md`
 - 实现文档：`docs/controls/desktop/data-display/tag/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-display/tag/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-display/tag/token.md`
 - 变更记录：`docs/controls/desktop/data-display/tag/changelog.md`
 - 语义结构：`./semantic-cn.md`

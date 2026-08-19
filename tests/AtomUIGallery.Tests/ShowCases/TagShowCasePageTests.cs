@@ -24,7 +24,8 @@ public class TagShowCasePageTests
         source.ShouldNotContain("Tag=\"Examples\"");
         source.ShouldNotContain("Tag=\"Api\"");
         source.ShouldNotContain("Tag=\"DesignToken\"");
-        source.ShouldContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldNotContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldContain("<gallery:GalleryShowCaseHost");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
         source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
@@ -77,7 +78,7 @@ public class TagShowCasePageTests
         var viewModelSource = ReadRepoFile(
             "controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tag/ViewModels/TagViewModel.cs");
 
-        CountOccurrences(source, "<atom:CheckableTagGroup").ShouldBe(2);
+        CountOccurrences(source, "<atom:CheckableTagGroup ").ShouldBe(4);
         source.ShouldContain("<atom:CheckableTag Content=\"{gallery:TagShowCaseLangResource P2ContentYes}\"");
         source.ShouldContain("IsChecked=\"{Binding IsCheckableTagChecked, Mode=TwoWay}\"");
         source.ShouldContain("CheckedItem=\"{Binding SingleCheckedTag, Mode=TwoWay}\"");
@@ -91,6 +92,66 @@ public class TagShowCasePageTests
     }
 
     [Fact]
+    public void Tag_ShowCase_Declares_The_Two_Semantic_Previews_And_Style_Example()
+    {
+        var source = ReadRepoFile(
+            "controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tag/Views/TagShowCase.axaml");
+        var english = ReadRepoFile(
+            "controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tag/Localization/en-US.xlf");
+        var semanticSource = ExtractSemanticStyleItem(source);
+
+        source.ShouldContain("<gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>");
+        CountOccurrences(source, "<gallery:SemanticPartPreview\n").ShouldBe(2);
+
+        source.ShouldContain("Name=\"TagSemanticPreview\"");
+        source.ShouldContain("SemanticOwner=\"{Binding #TagSemanticOwner}\"");
+        source.ShouldContain("SemanticOwnerType=\"{x:Type atom:Tag}\"");
+        source.ShouldContain("Name=\"CheckableTagGroupSemanticPreview\"");
+        source.ShouldContain("SemanticOwner=\"{Binding #CheckableTagGroupSemanticOwner}\"");
+        source.ShouldContain("SemanticOwnerType=\"{x:Type atom:CheckableTagGroup}\"");
+
+        CountOccurrences(source, "<gallery:SemanticPartDescription").ShouldBe(6);
+        CountOccurrences(source, "Path=\"root\"").ShouldBe(2);
+        CountOccurrences(source, "Path=\"icon\"").ShouldBe(1);
+        CountOccurrences(source, "Path=\"content\"").ShouldBe(1);
+        CountOccurrences(source, "Path=\"close\"").ShouldBe(1);
+        CountOccurrences(source, "Path=\"item\"").ShouldBe(1);
+        source.ShouldContain("TagShowCaseLangResource SemanticTagRootDescription");
+        source.ShouldContain("TagShowCaseLangResource SemanticTagIconDescription");
+        source.ShouldContain("TagShowCaseLangResource SemanticTagContentDescription");
+        source.ShouldContain("TagShowCaseLangResource SemanticTagCloseDescription");
+        source.ShouldContain("TagShowCaseLangResource SemanticGroupRootDescription");
+        source.ShouldContain("TagShowCaseLangResource SemanticGroupItemDescription");
+
+        semanticSource.ShouldContain("SourceKey=\"tag-semantic-part\"");
+        semanticSource.ShouldContain("BadgeText=\"{x:Static gallery:GalleryVersionInfo.DisplayVersion}\"");
+        semanticSource.ShouldContain("TagShowCaseLangResource SemanticPartStyleTitle");
+        semanticSource.ShouldContain("TagShowCaseLangResource SemanticPartStyleDescription");
+        semanticSource.ShouldContain("Selector=\"atom|Tag.semantic-object\"");
+        semanticSource.ShouldContain("Selector=\"atom|CheckableTagGroup.semantic-object\"");
+        semanticSource.ShouldContain("<atom:TagIconStyle x:SetterTargetType=\"atom:IconPresenter\">");
+        semanticSource.ShouldContain("<atom:TagContentStyle x:SetterTargetType=\"atom:TextBlock\">");
+        semanticSource.ShouldContain("<atom:TagCloseStyle x:SetterTargetType=\"atom:IconButton\">");
+        semanticSource.ShouldContain("<atom:CheckableTagGroupItemStyle x:SetterTargetType=\"atom:CheckableTag\">");
+        CountOccurrences(semanticSource, "Classes=\"semantic-object\"").ShouldBe(2);
+
+        foreach (var key in new[]
+                 {
+                     "SemanticTagRootDescription",
+                     "SemanticTagIconDescription",
+                     "SemanticTagContentDescription",
+                     "SemanticTagCloseDescription",
+                     "SemanticGroupRootDescription",
+                     "SemanticGroupItemDescription",
+                     "SemanticPartStyleTitle",
+                     "SemanticPartStyleDescription"
+                 })
+        {
+            english.ShouldContain($"<unit id=\"{key}\">");
+        }
+    }
+
+    [Fact]
     public void Tag_ShowCase_Examples_Match_Approved_Control_Demo_Content()
     {
         var source   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tag/Views/TagShowCase.axaml");
@@ -98,6 +159,23 @@ public class TagShowCasePageTests
 
         NormalizeMarkup(ExtractTagExampleItems(source))
             .ShouldBe(NormalizeMarkup(approved));
+    }
+
+    private static string ExtractSemanticStyleItem(string source)
+    {
+        const string sourceKeyMarker = "tag-semantic-part";
+        const string panelCloseMarker = "</gallery:ShowCasePanel>";
+
+        var keyIndex = source.IndexOf(sourceKeyMarker, StringComparison.Ordinal);
+        keyIndex.ShouldBeGreaterThanOrEqualTo(0);
+
+        var itemStart = source.LastIndexOf("<gallery:ShowCaseItem", keyIndex, StringComparison.Ordinal);
+        itemStart.ShouldBeGreaterThanOrEqualTo(0);
+
+        var panelCloseStart = source.IndexOf(panelCloseMarker, keyIndex, StringComparison.Ordinal);
+        panelCloseStart.ShouldBeGreaterThan(keyIndex);
+
+        return source[itemStart..panelCloseStart];
     }
 
     private static string ExtractTagExampleItems(string source)

@@ -67,5 +67,13 @@ public enum TagShowCaseLangResourceKind
     PageDescription,
     ComponentCategory,
     ComponentStatusStable,
-    ApiEventClosed
+    ApiEventClosed,
+    SemanticTagRootDescription,
+    SemanticTagIconDescription,
+    SemanticTagContentDescription,
+    SemanticTagCloseDescription,
+    SemanticGroupRootDescription,
+    SemanticGroupItemDescription,
+    SemanticPartStyleTitle,
+    SemanticPartStyleDescription
 }
