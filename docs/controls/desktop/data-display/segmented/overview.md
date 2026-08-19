@@ -212,18 +212,25 @@ Segmented 的共享实现位于 `AtomUI.Controls`，桌面实现位于 `AtomUI.D
 关联文档：
 
 - [Segmented 桌面版实现原理](implementation.md)
+- [Segmented Semantic Part 契约](semantic-part.md)
 - [Segmented Token 设计](token.md)
 - [Segmented Changelog](changelog.md)
 
 LLMS 语义区域：
 
+下表是 LLMS 语义导出使用的区域映射。Semantic Part 的 owner 是 `Segmented`，对应上游 Ant Design 6.6.0 稳定发布的
+`SegmentedSemanticType`（`classNames` / `styles` 均为 `{ root?, icon?, label?, item? }`）：四个 Part 随 Batch 2
+Semantic Part 改造公开，descriptor 的 `Since` 统一为 `6.0`。上游选中滑块（MotionThumb）没有 Semantic key，AtomUI
+的选中滑块由 owner `Render` 直接绘制、没有 Visual 节点，同样不属于 Semantic Part；`SegmentedItem` 是运行时容器，
+不持有独立 descriptor。完整契约见 [Segmented Semantic Part 契约](semantic-part.md)，marker 归属与生命周期见
+[Segmented 桌面版实现原理](implementation.md) 的 Semantic Part 处置一节。
+
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `Segmented` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `root` | `Segmented` | 轨道根语义区域，承载选项数据、选择状态、方向、形状与轨道表面视觉（背景由 owner `Render` 绘制，圆角/内边距/裁剪投影到 `Frame`）；对应上游 `.ant-segmented`。 | `ItemsSource`、`ItemTemplate`、`SelectedIndex`、`SelectedItem`、`SelectionChanged`、`SizeType`、`Orientation`、`Shape`、`IsExpanding`、`IsMotionEnabled` | `TrackBg`、`TrackPadding`、SharedToken | stable since 6.0 |
+| `item` | 每个 `SegmentedItem` 容器 | 选项容器，设置背景/前景状态色、圆角、内边距、最小高度、光标与选择/悬浮/按压/禁用视觉；对应上游 `.ant-segmented-item`。 | `SegmentedItem.Icon`、`SegmentedItem.Content`、`SegmentedItem.IsSelected`、`SizeType`、`Shape` | `ItemColor`、`ItemHoverColor`、`ItemSelectedColor`、`ItemHoverBg`、`ItemActiveBg`、`ItemSelectedBg`、`ItemMinHeight*`、`SegmentedItemPadding*` | stable since 6.0 |
+| `icon` | 每个 `SegmentedItem` 模板中的 `IconPresenter#IconPresenter` | 选项图标区域：画刷状态色、图标尺寸与可见性；对应上游 `.ant-segmented-item-icon`。 | `SegmentedItem.Icon`、`SizeType` | `ItemColor`、`ItemHoverColor`、`ItemSelectedColor`、SharedToken（`IconSize*`、`ColorTextDisabled`） | stable since 6.0 |
+| `label` | 每个 `SegmentedItem` 模板中的 `ContentPresenter#Content` | 选项文本区域：文本呈现、居中对齐、省略与图文间距（`:has-icon`）；对应上游 `.ant-segmented-item-label`。 | `SegmentedItem.Content`、`SegmentedItem.ContentTemplate` | `SegmentedItemContentMargin` | stable since 6.0 |
 
 LLMS 导出来源：
 
@@ -244,6 +251,7 @@ LLMS 导出来源：
 | 状态行为 | 默认选择、显式选择保留、绑定选择保留、pointer release 选择、四方向键循环选择、Form value、disabled item、hidden item。 |
 | 布局与滑块 | 横向/纵向自然布局、水平 expanding、垂直宽度适配、动态方向切换、最终 Bounds 滑块矩形。 |
 | AXAML / Template | 根 `Frame`、`PART_ItemsPresenter`、`SegmentedStackPanel`、item `Frame`、`IconPresenter`、`Content` 和 SizeType/Shape 样式分支。 |
+| Semantic Part | descriptor 只含 `root`/`item`/`icon`/`label`；`semantic-item` marker 随容器创建/prepare 幂等就位，`semantic-icon`/`semantic-label` marker 位于 item 模板节点；集合重置、图文/纯图标/纯文本选项与选择变化不增删 marker；owner-scoped Semantic Style 命中最低 public 类型；选中滑块不属于任何 Part。 |
 | Token | 轨道 padding/background、item 文本/背景状态色、item 最小高度、图标和图文间距。 |
 | Gallery | Basic、Block、Disabled、Dynamic、Sizes、Vertical、Round Shape、Icon Only、With Icon 示例，以及 Token 语义和 ShowCase 示例。 |
 | 文档 | 运行 `git diff --check`，检查相对链接存在。 |

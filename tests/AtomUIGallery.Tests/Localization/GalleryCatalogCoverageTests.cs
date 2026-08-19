@@ -120,7 +120,7 @@ public class GalleryCatalogCoverageTests
                               .ToArray();
 
         sourceFiles.Length.ShouldBe(81);
-        sourceFiles.Sum(CountUnits).ShouldBe(4181);
+        sourceFiles.Sum(CountUnits).ShouldBe(4187);
         foreach (var sourcePath in sourceFiles)
         {
             var targetPath = Path.Combine(

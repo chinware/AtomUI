@@ -12,9 +12,11 @@
                         Padding="{TemplateBinding Padding}">
                     <DockPanel LastChildFill="True">
                         <atom:IconPresenter Name="IconPresenter"
+                                            Classes.semantic-icon="True"
                                             Icon="{TemplateBinding Icon}"
                                             IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
                         <ContentPresenter Name="Content"
+                                          Classes.semantic-label="True"
                                           HorizontalContentAlignment="Center"
                                           VerticalContentAlignment="Center"
                                           Content="{TemplateBinding Content}"

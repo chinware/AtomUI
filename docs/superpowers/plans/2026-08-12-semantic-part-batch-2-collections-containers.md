@@ -88,10 +88,10 @@
 
 **风险类型：** item 容器、selected indicator geometry、SizeType。
 
-- [ ] **Gate A 设计审核：** 审计 `Segmented` 与 `SegmentedItem` owner、item icon/label 和 selected indicator/track 职责；记录 ItemsSource/容器生命周期、selection motion、block mode 和 SizeType。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、真实模板/运行时节点、owner 边界、排除的 internal wrapper、生命周期/性能不变量和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Segmented/SegmentedSemanticPartTests.cs`，覆盖 explicit/generated items、icon/text variants、selection changes、collection reset、block mode、所有尺寸 和 layout Setter。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
+- [x] **Gate A 设计审核：** 审计 `Segmented` 与 `SegmentedItem` owner、item icon/label 和 selected indicator/track 职责；记录 ItemsSource/容器生命周期、selection motion、block mode 和 SizeType。
+- [x] 更新两份控件文档，写明准确的 Descriptor、真实模板/运行时节点、owner 边界、排除的 internal wrapper、生命周期/性能不变量和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。（2026-08-19：新增 `semantic-part.md`，Segmented 单一 owner 公开 `root`/`item`/`icon`/`label`，`SegmentedItem` 不持有 descriptor，选中滑块排除；LLMS verify 与 `git diff --check` 通过，等待批准。）
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Segmented/SegmentedSemanticPartTests.cs`，覆盖 explicit/generated items、icon/text variants、selection changes、collection reset、block mode、所有尺寸 和 layout Setter。（2026-08-19：单一 owner `Segmented` 发布 `root`/`item`/`icon`/`label`，`SegmentedItem` 无 descriptor；14 个语义测试全绿。）
+- [x] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。（2026-08-19：Generator 472/472、Segmented 24/24、GalleryBase 115/115、Gallery 486/486、LLMS verify 与 `git diff --check` 通过；全量 Desktop 2800/2802，仅有的 2 个 TabControl 失败在无改动基线上复现，为预存在问题，与 Segmented 无关。Segmented 无 Popup/运行时宿主路径，按计划条件不需要 NativeAOT 验证。）
 - [ ] **强制停止：** 保持 Segmented 的所有实现改动未提交，直到用户明确完成验证并授权提交。
 
 ### 任务 5：Tag

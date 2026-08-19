@@ -91,7 +91,7 @@ item API：
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:36`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:83`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -109,7 +109,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 块级分段控制器
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:71`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:118`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -125,7 +125,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 禁用
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:113`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:160`
 
 Gallery key：`ExamplesContent` / item `4`
 
@@ -148,7 +148,7 @@ Gallery key：`ExamplesContent` / item `4`
 
 ### 动态数据
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:138`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:185`
 
 SourceKey：`segmented-dynamic`
 
@@ -304,6 +304,7 @@ Gallery 和测试：
 
 - 源设计文档：`docs/controls/desktop/data-display/segmented/overview.md`
 - 实现文档：`docs/controls/desktop/data-display/segmented/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-display/segmented/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-display/segmented/token.md`
 - 变更记录：`docs/controls/desktop/data-display/segmented/changelog.md`
 - 语义结构：`./semantic-cn.md`

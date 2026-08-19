@@ -25,7 +25,8 @@ public class SegmentedShowCasePageTests
         source.ShouldNotContain("Tag=\"Examples\"");
         source.ShouldNotContain("Tag=\"Api\"");
         source.ShouldNotContain("Tag=\"DesignToken\"");
-        source.ShouldContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldNotContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldContain("<gallery:GalleryShowCaseHost");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
         source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
@@ -62,6 +63,75 @@ public class SegmentedShowCasePageTests
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
+    }
+
+    [Fact]
+    public void Segmented_ShowCase_Declares_The_Semantic_Previews_And_Style_Example()
+    {
+        var source = ReadRepoFile(
+            "controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml");
+        var english = ReadRepoFile(
+            "controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Localization/en-US.xlf");
+        var semanticSource = ExtractSemanticStyleItem(source);
+
+        source.ShouldContain("<gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>");
+        source.ShouldContain("Name=\"SegmentedSemanticPreview\"");
+        source.ShouldContain("SemanticOwner=\"{Binding #SegmentedSemanticOwner}\"");
+        source.ShouldContain("SemanticOwnerType=\"{x:Type atom:Segmented}\"");
+        source.ShouldNotContain("Name=\"VerticalSegmentedSemanticPreview\"");
+        source.ShouldContain("Name=\"VerticalSegmentedSemanticOwner\"");
+        source.ShouldContain("Orientation=\"Vertical\"");
+        CountOccurrences(source, "<gallery:SemanticPartDescription").ShouldBe(4);
+        CountOccurrences(source, "Path=\"root\"").ShouldBe(1);
+        CountOccurrences(source, "Path=\"item\"").ShouldBe(1);
+        CountOccurrences(source, "Path=\"icon\"").ShouldBe(1);
+        CountOccurrences(source, "Path=\"label\"").ShouldBe(1);
+        source.ShouldContain("SegmentedShowCaseLangResource SemanticRootDescription");
+        source.ShouldContain("SegmentedShowCaseLangResource SemanticItemDescription");
+        source.ShouldContain("SegmentedShowCaseLangResource SemanticIconDescription");
+        source.ShouldContain("SegmentedShowCaseLangResource SemanticLabelDescription");
+
+        semanticSource.ShouldContain("SourceKey=\"segmented-semantic-part\"");
+        semanticSource.ShouldContain("BadgeText=\"{x:Static gallery:GalleryVersionInfo.DisplayVersion}\"");
+        semanticSource.ShouldContain("SegmentedShowCaseLangResource SemanticPartStyleTitle");
+        semanticSource.ShouldContain("SegmentedShowCaseLangResource SemanticPartStyleDescription");
+        semanticSource.ShouldContain("Selector=\"atom|Segmented.semantic-object\"");
+        semanticSource.ShouldContain("<atom:SegmentedItemStyle x:SetterTargetType=\"atom:SegmentedItem\">");
+        semanticSource.ShouldContain("<atom:SegmentedIconStyle x:SetterTargetType=\"atom:IconPresenter\">");
+        semanticSource.ShouldContain("<atom:SegmentedLabelStyle x:SetterTargetType=\"ContentPresenter\">");
+        semanticSource.ShouldContain("Classes=\"semantic-object\"");
+        CountOccurrences(semanticSource, "Classes=\"semantic-object\"").ShouldBe(2);
+        semanticSource.ShouldContain("Orientation=\"Vertical\"");
+
+        foreach (var key in new[]
+                 {
+                     "SemanticRootDescription",
+                     "SemanticItemDescription",
+                     "SemanticIconDescription",
+                     "SemanticLabelDescription",
+                     "SemanticPartStyleTitle",
+                     "SemanticPartStyleDescription"
+                 })
+        {
+            english.ShouldContain($"<unit id=\"{key}\">");
+        }
+    }
+
+    private static string ExtractSemanticStyleItem(string source)
+    {
+        const string sourceKeyMarker = "segmented-semantic-part";
+        const string panelCloseMarker = "</gallery:ShowCasePanel>";
+
+        var keyIndex = source.IndexOf(sourceKeyMarker, StringComparison.Ordinal);
+        keyIndex.ShouldBeGreaterThanOrEqualTo(0);
+
+        var itemStart = source.LastIndexOf("<gallery:ShowCaseItem", keyIndex, StringComparison.Ordinal);
+        itemStart.ShouldBeGreaterThanOrEqualTo(0);
+
+        var panelCloseStart = source.IndexOf(panelCloseMarker, keyIndex, StringComparison.Ordinal);
+        panelCloseStart.ShouldBeGreaterThan(keyIndex);
+
+        return source[itemStart..panelCloseStart];
     }
 
     [Fact]

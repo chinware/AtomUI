@@ -4,13 +4,115 @@
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Segmented` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+Segmented 主控件公开 `root`、`item`、`icon` 与 `label` 四个职责区域，与上游稳定 Semantic DOM 对齐。上游基线为
+6.6.0 稳定发布的 `SegmentedSemanticType`（`classNames` / `styles` 均为 `{ root?, icon?, label?, item? }`）：
+
+- `root` 消费于 `.ant-segmented` 根节点，`icon` 消费于 `.ant-segmented-item-icon`，由上游 `Segmented` 组件下发；
+- `item` 消费于 `.ant-segmented-item` 选项容器，`label` 消费于 `.ant-segmented-item-label`，由 rc-segmented 选项
+  渲染路径消费；
+- 上游选中滑块（MotionThumb）没有 Semantic key，AtomUI 同样不公开。
+
+AtomUI 四个 Part 随本次 Semantic Part 改造同时公开，descriptor 的 `Since` 统一为 `6.0`。
+
+`SegmentedItem` 不持有独立 Semantic descriptor：
+
+- 上游 `Segmented` 只提供一个 owner 的 Semantic DOM；选项没有独立公开的 Semantic DOM Props。
+- `SegmentedItem` 是 Segmented 的运行时容器，其职责通过 `Segmented` 的 `item` Part 对外公开；item 模板内的图标与
+  文本节点通过 `icon`、`label` Part 以多跳 route 公开。
+- `AbstractSegmented` 与 `AbstractSegmentedItem` 是跨平台共享基类，不是对应用公开的独立 owner，不声明 descriptor。
+
+因此本控件的 Semantic Part 只由 `Segmented` owner 公开。
+
+### 1.1 `Segmented`
+
+#### `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Segmented` |
+| Part | `root` |
+| Selector | Segmented 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
+| ContractType | `Segmented` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | Segmented owner（表面投影到 `Frame`） |
+| 职责 | Segmented root 是选项数据、选择状态、方向、形状与轨道表面样式的统一 owner。轨道背景由 owner `Render` 直接绘制，`Frame` 承载圆角、内边距与内容裁剪。 |
+| 相关 API | `ItemsSource`、`ItemTemplate`、`SelectedIndex`、`SelectedItem`、`SelectionChanged`、`SizeType`、`Orientation`、`Shape`、`IsExpanding`、`IsMotionEnabled` |
+| 相关 Token | `TrackBg`、`TrackPadding`、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `item`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Segmented` |
+| Part | `item` |
+| Selector | `.semantic-item` |
+| SelectorRoute | `> .semantic-item` |
+| Style Type | `SegmentedItemStyle` |
+| ContractType | `SegmentedItem` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | 每个 `SegmentedItem` 容器 |
+| 职责 | 统一表示单个选项容器的背景、前景、圆角、内边距、最小高度、光标与选择 / 悬浮 / 按压 / 禁用视觉；对应上游 `.ant-segmented-item`。 |
+| 相关 API | `SegmentedItem.Icon`、`SegmentedItem.Content`、`SegmentedItem.IsSelected`、`SizeType`、`Shape`、`IsMotionEnabled` |
+| 相关 Token | `ItemColor`、`ItemHoverColor`、`ItemSelectedColor`、`ItemHoverBg`、`ItemActiveBg`、`ItemSelectedBg`、`ItemMinHeightLG`、`ItemMinHeight`、`ItemMinHeightSM`、`SegmentedItemPadding`、`SegmentedItemPaddingSM` |
+| 稳定性 | stable since 6.0 |
+
+#### `icon`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Segmented` |
+| Part | `icon` |
+| Selector | `.semantic-icon` |
+| SelectorRoute | `> .semantic-item /template/ .semantic-icon` |
+| Style Type | `SegmentedIconStyle` |
+| ContractType | `IconPresenter` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | 每个 `SegmentedItem` 模板中的 `IconPresenter#IconPresenter` |
+| 职责 | 统一表示每个选项的图标区域：图标画刷状态色、图标尺寸与可见性；对应上游 `.ant-segmented-item-icon`。 |
+| 相关 API | `SegmentedItem.Icon`、`SizeType` |
+| 相关 Token | `ItemColor`、`ItemHoverColor`、`ItemSelectedColor`、SharedToken（`IconSizeLG` / `IconSize` / `IconSizeSM`、`ColorTextDisabled`） |
+| 稳定性 | stable since 6.0 |
+
+#### `label`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Segmented` |
+| Part | `label` |
+| Selector | `.semantic-label` |
+| SelectorRoute | `> .semantic-item /template/ .semantic-label` |
+| Style Type | `SegmentedLabelStyle` |
+| ContractType | `ContentPresenter` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | 每个 `SegmentedItem` 模板中的 `ContentPresenter#Content` |
+| 职责 | 统一表示每个选项的文本区域：文本呈现、居中对齐、省略与图文间距；对应上游 `.ant-segmented-item-label`。 |
+| 相关 API | `SegmentedItem.Content`、`SegmentedItem.ContentTemplate` |
+| 相关 Token | `SegmentedItemContentMargin` |
+| 稳定性 | stable since 6.0 |
+
+`root` 是隐式 Part，不声明 `.semantic-root` marker。`item` 的 marker `.semantic-item` 在 `SegmentedItem` 创建路径
+一次性添加，`PrepareContainerForItemOverride` 幂等补齐（覆盖回收容器与用户直接提供容器的路径）。`icon`、`label`
+的 marker 声明在 `SegmentedItemTheme.axaml` 模板内的 `IconPresenter#IconPresenter` 与 `ContentPresenter#Content`
+节点上，随容器模板实例化而存在；由于它们只在运行时随 item 容器创建，descriptor 声明为 `RuntimeCreated`，route 以
+`> .semantic-item` 为作用域跳点，再经 `/template/` 进入 item 模板。
+
+`ContractType` 只定义 Setter 可以稳定依赖的最低 public 类型，并通过 `x:SetterTargetType` 提供 AXAML 编译期类型
+上下文；它不参与 `.semantic-*` 的身份匹配。
 
 ## Abstract AXAML Structure
 
@@ -203,3 +305,7 @@ SegmentedToken 不承载以下状态：
 - Round 必须覆盖所有 SizeType 圆角，但不能改变其他尺寸、颜色、状态或模板契约。
 - 根 render 绘制和 item 主题状态不能互相替代；轨道/滑块在根，item 状态在 item。
 - `Custom` 尺寸分支默认基线保持 Middle，除非获得 API/主题契约变更授权。
+- Semantic Part 边界：`Segmented` 只发布 `root` / `item` / `icon` / `label` 四个 Part；`item` 的 marker 在容器创建
+  与 prepare 路径一次性幂等建立，`icon` / `label` 的 marker 固定在 `SegmentedItemTheme.axaml` 模板节点上；
+  marker 不随选择、图文形态或集合重置增删，默认主题不消费 `.semantic-*` selector；选中滑块与
+  `SegmentedStackPanel` 不属于任何 Part。

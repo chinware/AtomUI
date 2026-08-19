@@ -41,5 +41,11 @@ public enum SegmentedShowCaseLangResourceKind
     PageDescription,
     ComponentCategory,
     ComponentStatusStable,
-    ApiEventSelectionChanged
+    ApiEventSelectionChanged,
+    SemanticRootDescription,
+    SemanticItemDescription,
+    SemanticIconDescription,
+    SemanticLabelDescription,
+    SemanticPartStyleTitle,
+    SemanticPartStyleDescription
 }

@@ -78,6 +78,7 @@
 - [QRCode Token 设计](qr-code/token.md)
 - [QRCode Changelog](qr-code/changelog.md)
 - [Segmented 桌面版架构设计](segmented/overview.md)
+- [Segmented Semantic Part 契约](segmented/semantic-part.md)
 - [Segmented 桌面版实现原理](segmented/implementation.md)
 - [Segmented Token 设计](segmented/token.md)
 - [Segmented Changelog](segmented/changelog.md)

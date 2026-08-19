@@ -3,6 +3,29 @@
 本文档记录 Segmented 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-08-19
+
+- Design
+  - 公开 Semantic Part：`Segmented` 单一 owner 发布 `root` / `item` / `icon` / `label` 四个 Part，对齐上游 6.6.0
+    `SegmentedSemanticType`（`classNames` / `styles` 均为 `{ root?, icon?, label?, item? }`）。
+  - `SegmentedItem` 不持有独立 descriptor：它是运行时容器，职责由 `item` Part 表达；item 模板内
+    `IconPresenter#IconPresenter` 与 `ContentPresenter#Content` 通过 `icon` / `label` Part 以多跳 route
+    （`> .semantic-item /template/ .semantic-*`）公开。
+  - 选中滑块不属于任何 Part：由 owner `Render` 直接绘制、没有 Visual 节点，上游也没有对应 Semantic key。
+- Implementation
+  - `Segmented.CreateContainerForItemOverride` 与 `PrepareContainerForItemOverride` 用生成常量
+    `SegmentedSemanticParts.ItemClass` 幂等建立 `semantic-item` marker，覆盖 generated 与 explicit 两条容器路径。
+  - `SegmentedItemTheme.axaml` 的 `IconPresenter` / `ContentPresenter` 模板节点声明
+    `Classes.semantic-icon` / `Classes.semantic-label` 静态 marker。
+  - 生成 `SegmentedItemStyle` / `SegmentedIconStyle` / `SegmentedLabelStyle` owner-scoped 语义样式类。
+- Gallery
+  - ShowCase 迁移到 `GalleryShowCaseHost`，新增 Semantic Parts 预览（单个 preview 同时承载横向 + 纵向两个 Segmented，
+    悬停 `root` / `item` / `icon` / `label` 卡片跨两个控件同时高亮）与自定义 Semantic Part 样式示例
+    （`segmented-semantic-part`，含横向与纵向两个实例）。
+- Docs
+  - 新增 [Segmented Semantic Part 契约](semantic-part.md)，定义四个 Part 的 Selector、类型、数量语义、尺寸基线与
+    验证契约。
+
 ## 2026-08-17
 
 - Layout and Theme

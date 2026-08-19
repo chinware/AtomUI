@@ -1,6 +1,6 @@
 # Segmented 桌面版实现原理
 
-本文档描述 Segmented 桌面版的共享基类、桌面封装、容器准备、选择流、方向与 expanding 布局、键盘导航、选中滑块渲染和 Shape 主题协作。公共设计与 API 契约见 [Segmented 桌面版架构设计](overview.md)，Token 语义见 [Segmented Token 设计](token.md)，变化记录见 [Segmented Changelog](changelog.md)。
+本文档描述 Segmented 桌面版的共享基类、桌面封装、容器准备、选择流、方向与 expanding 布局、键盘导航、选中滑块渲染和 Shape 主题协作。公共设计与 API 契约见 [Segmented 桌面版架构设计](overview.md)，Semantic Part 契约见 [Segmented Semantic Part 契约](semantic-part.md)，Token 语义见 [Segmented Token 设计](token.md)，变化记录见 [Segmented Changelog](changelog.md)。
 
 ## 1. 实现定位
 
@@ -133,6 +133,39 @@ IFormItemAware.ClearFormValue()   → SelectedItem = null
 - `OnDetachedFromVisualTree()` 解除 `SelectionChanged`。
 - `ArrangeOverride()` 在子项完成最终排列后校准选中滑块矩形。
 
+### 5.1 Semantic Part 处置
+
+Batch 2 Gate A 审计结论：Segmented 以 Ant Design 6.6.0 稳定发布的 `SegmentedSemanticType` 为上游基线，公开
+`root`、`item`、`icon`、`label` 四个 Semantic Part。上游证据：`classNames` / `styles` 均为
+`{ root?, icon?, label?, item? }`；`.ant-segmented` 根节点消费 `root`，`.ant-segmented-item-icon` 消费 `icon`
+（由 antd `Segmented` 组件下发），`.ant-segmented-item` 选项容器与 `.ant-segmented-item-label` 由 rc-segmented
+选项渲染路径消费；选中滑块（MotionThumb）没有 Semantic key。
+
+AtomUI 对应审计与映射：
+
+- `root` Part → `Segmented` owner 本身。轨道背景（`TrackBg`）由 owner `Render` 直接绘制，`Frame` 投影圆角、
+  内边距与内容裁剪；隐式 Part，不生成 Style，不添加 `.semantic-root`。
+- `item` Part → 每个 `SegmentedItem` 容器。marker `.semantic-item` 在 `CreateContainerForItemOverride` 创建
+  路径用生成常量一次性添加，`PrepareContainerForItemOverride` 幂等补齐（与 Collapse `.semantic-scope-item`
+  的建立纪律一致）。Part 声明 `RuntimeCreated=true`，SelectorRoute 为 `> .semantic-item`（容器逻辑父级是
+  Segmented owner，沿逻辑树一步直达），`ContractType` 为公开 `SegmentedItem`，`Cardinality` 为 `Multiple`。
+- `icon` Part → 每个 `SegmentedItem` 模板中的 `IconPresenter#IconPresenter`，marker `.semantic-icon` 声明在
+  `SegmentedItemTheme.axaml` 模板节点上。SelectorRoute 为 `> .semantic-item /template/ .semantic-icon`（先经
+  item 容器作用域跳点，再进入 item 模板一步命中，marker 的 TemplatedParent 是 `SegmentedItem`），
+  `ContractType` 为公开 `IconPresenter`，`RuntimeCreated=true`（模板实例随运行时容器创建，静态模板校验跳过
+  owner 自身主题资产），`Cardinality` 为 `Multiple`。
+- `label` Part → 每个 `SegmentedItem` 模板中的 `ContentPresenter#Content`，marker `.semantic-label` 声明在
+  `SegmentedItemTheme.axaml` 模板节点上。SelectorRoute 为 `> .semantic-item /template/ .semantic-label`，
+  `ContractType` 为 `ContentPresenter`，`RuntimeCreated=true`，`Cardinality` 为 `Multiple`。
+- `SegmentedItem` 不持有独立 Semantic descriptor：上游 `Segmented` 只提供一个 owner 的 Semantic DOM，选项容器
+  没有独立公开的 Semantic DOM Props，容器职责由 `item` Part 表达（与 `CollapseItem` / `ListBoxItem` 同一决策）。
+- 排除范围：选中滑块（owner `Render` 直接绘制，依赖 `SelectedThumb*` internal 状态，没有 Visual 节点，上游无
+  key）、`SegmentedStackPanel`（internal 方向感知 items panel）、`Frame` / `DockPanel` / `PART_ItemsPresenter`
+  模板结构节点、用户 `ItemTemplate` 子树、`AbstractSegmented` / `AbstractSegmentedItem` 基类，均不发布为 Part。
+
+重新评估触发条件：上游新稳定版调整语义键时重新核对契约；Segmented 新增分组、前后缀或其他区域能力时重新评估
+映射。
+
 ## 6. 交互与事件处理
 
 Segmented 的专用 pointer 交互在 item 层处理：
@@ -243,6 +276,10 @@ AOT 边界：
 - Round 必须覆盖所有 SizeType 圆角，但不能改变其他尺寸、颜色、状态或模板契约。
 - 根 render 绘制和 item 主题状态不能互相替代；轨道/滑块在根，item 状态在 item。
 - `Custom` 尺寸分支默认基线保持 Middle，除非获得 API/主题契约变更授权。
+- Semantic Part 边界：`Segmented` 只发布 `root` / `item` / `icon` / `label` 四个 Part；`item` 的 marker 在容器创建
+  与 prepare 路径一次性幂等建立，`icon` / `label` 的 marker 固定在 `SegmentedItemTheme.axaml` 模板节点上；
+  marker 不随选择、图文形态或集合重置增删，默认主题不消费 `.semantic-*` selector；选中滑块与
+  `SegmentedStackPanel` 不属于任何 Part。
 
 ## 10. 测试与验证
 
@@ -251,6 +288,7 @@ AOT 边界：
 - Segmented 选择测试：绑定选择保留、显式选择保留、默认选择、Form value、四方向键循环和 disabled/hidden 跳过。
 - Segmented 布局测试：横向/纵向自然布局、水平 expanding、无限约束退化、垂直宽度适配、动态方向切换和滑块 Bounds。
 - Segmented 主题测试：Orientation/Shape 属性默认值和传递、Round 对根/item/thumb 的最终圆角覆盖、各 SizeType 与 Custom 组合。
+- Segmented Semantic Part 测试：explicit / generated items 两条容器路径、图文 / 纯图标 / 纯文本选项、集合重置与选择变化下 marker 数量稳定、owner-scoped Semantic Style（`SegmentedItemStyle` / `SegmentedIconStyle` / `SegmentedLabelStyle`）命中对应最低 public 类型（`SegmentedSemanticPartTests`）。
 - `CustomizableSizeTypeContractTests`：`AbstractSegmented`、`Segmented`、`AbstractSegmentedItem`、`SegmentedItem` 支持 `CustomizableSizeType`。
 - `SegmentedShowCasePageTests`：Gallery 页面结构、示例快照、动态选项追加状态和源码片段。
 - 修改布局或选择行为时运行 `tests/AtomUI.Desktop.Controls.Tests` 中 Segmented 相关测试，并按影响范围扩大到完整 Desktop 控件测试。
