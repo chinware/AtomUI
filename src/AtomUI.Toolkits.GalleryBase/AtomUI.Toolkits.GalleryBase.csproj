@@ -11,10 +11,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <AtomUILanguage Include="$(MSBuildProjectDirectory)/Localization/SemanticPartPreviewLang/*.xlf">
             <AtomUILanguageContractVersion>3</AtomUILanguageContractVersion>
         </AtomUILanguage>

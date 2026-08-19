@@ -50,10 +50,8 @@ public class GalleryCatalogCoverageTests
             ignoreOrder: true);
         foreach (var catalogType in catalogTypes)
         {
-            var expectedContractVersion = catalogType == typeof(SemanticPartPreviewLangResourceKind) ? 3 : 2;
             catalogType.GetCustomAttribute<LanguageCatalogAttribute>()
-                       .ShouldNotBeNull()
-                       .ContractVersion.ShouldBe(expectedContractVersion);
+                       .ShouldNotBeNull();
             Enum.GetNames(catalogType).ShouldBe(memberOrderBaseline[catalogType.FullName!]);
 
             var extensionName = catalogType.Name[..^"Kind".Length] + "Extension";

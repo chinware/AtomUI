@@ -1,4 +1,4 @@
-using AtomUI.Generated.AtomUI_Desktop_Controls;
+using AtomUI.Generated.AtomUIDesktopControls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 

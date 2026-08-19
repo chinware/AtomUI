@@ -2,7 +2,7 @@ using System.Collections.Specialized;
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
 using AtomUI.Controls.Utils;
-using AtomUI.Generated.AtomUI_Desktop_Controls;
+using AtomUI.Generated.AtomUIDesktopControls;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
