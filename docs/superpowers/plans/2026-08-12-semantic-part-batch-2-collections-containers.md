@@ -2,7 +2,7 @@
 
 > **供智能体执行者使用：** 使用 `superpowers:executing-plans` 在当前会话中执行，不得使用 subagent。每个控件在 Gate A 后停止等待用户批准，Gate B 改动保持未提交。
 
-**目标：** 为 15 个具有 Ant Design 6.6.0 公开 Semantic DOM 对应 API 的集合、容器、布局和导航控件家族建立 Semantic Part 契约，同时保持容器、虚拟化和运行时节点性能。
+**目标：** 为 16 个具有 Ant Design 6.6.0 公开 Semantic DOM 对应 API 的集合、容器、布局和导航控件家族建立 Semantic Part 契约，同时保持容器、虚拟化和运行时节点性能。
 
 **架构：** 父级 owner 只公开自身稳定区域；public item/container 控件在适用时拥有自己的 Descriptor。运行时生成节点只在现有创建路径中使用生成常量添加 marker，并提供 prepare/clear/recycle 证据。
 
@@ -15,7 +15,7 @@
 - 不得将任意用户子元素标记为 `.semantic-item`；只有 owner 创建的稳定容器才能形成 item Part 契约。
 - 容器 marker 必须为静态声明，或在构造时通过生成常量一次性添加；不得在 prepare、选择或状态变化期间切换。
 - 适用时，测试必须证明集合 replace/reset、prepare/clear/recycle、嵌套 semantic owner 隔离，并且旧容器不会被保留。
-- 共享源码或 Gallery 页面中如果同时承载被排除控件，只允许修改准入 owner 的路径；不得给 `TabStrip`、`ListBox` 或其他
+- 共享源码或 Gallery 页面中如果同时承载被排除控件，只允许修改准入 owner 的路径；不得给 `TabStrip` 或其他
   被排除 owner 添加 Descriptor、marker 或 Semantic Preview。
 
 ---
@@ -48,21 +48,37 @@
 - [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
 - [ ] **强制停止：** 保持 Collapse 的所有实现改动未提交，直到用户明确完成验证并授权提交。
 
-### 任务 3：ListView
+### 任务 3：ListView / ListBox
 
-**控件文档：** `docs/controls/desktop/data-display/list-view/overview.md`, `docs/controls/desktop/data-display/list-view/implementation.md`
+**控件文档：** `docs/controls/desktop/data-display/list-view/overview.md`, `docs/controls/desktop/data-display/list-view/implementation.md`, `docs/controls/desktop/data-display/list-box/overview.md`, `docs/controls/desktop/data-display/list-box/implementation.md`
 
-**证据范围：** `src/AtomUI.Desktop.Controls/ListView/*.cs`, `src/AtomUI.Desktop.Controls/ListView/Themes/*Theme.axaml`；测试 `tests/AtomUI.Desktop.Controls.Tests/ListView`；共享 Gallery `controlgallery/AtomUIGallery/ShowCases/DataDisplay/List`.
+**证据范围：** `src/AtomUI.Desktop.Controls/ListView/*.cs`, `src/AtomUI.Desktop.Controls/ListView/Themes/*Theme.axaml`, `src/AtomUI.Desktop.Controls/ListBox/*.cs`, `src/AtomUI.Desktop.Controls/ListBox/Themes/*Theme.axaml`；测试 `tests/AtomUI.Desktop.Controls.Tests/ListView`、`tests/AtomUI.Desktop.Controls.Tests/ListBox`；共享 Gallery `controlgallery/AtomUIGallery/ShowCases/DataDisplay/List`.
 
-**风险类型：** 虚拟化、pagination、selection model、共享 Gallery、公开 `List.Item` 边界有限。
+**风险类型：** 虚拟化、pagination、selection model、共享 Gallery、专用 `GroupHeaderItem` 容器类型与 recycle key 的正确性。
 
-- [ ] **Gate A 设计审核：** 以 Ant Design 公开 `List.Item` 的 `actions` / `extra` API 为上限，审计 `ListViewItem` 中职责直接
-  对应的稳定区域；不得据此把 `ListView` root、selection、pagination、empty/loading 或普通 item content 扩大为公共 Part。
-  同时记录 virtualized 容器生命周期、selection model、filter/pagination changes 和 nested content isolation。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、真实模板/运行时节点、owner 边界、排除的 internal wrapper、生命周期/性能不变量和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/ListView/ListViewSemanticPartTests.cs`，覆盖 virtualized/nonvirtualized、pagination、empty/loading、selection、filter、replace/reset 和 recycle；记录 marker/container 数量与滚动前后 retained instance。
+- [ ] **Gate A 设计审核：** 以 Ant Design 6.6.0 新增 `Listy` 组件的 `root` / `item` / `groupHeader` Semantic DOM 为上限，
+  审计 `ListView` / `ListViewItem` / `ListBox` / `ListBoxItem` 中职责直接对应的稳定区域；不得据此把 selection、
+  pagination、empty/loading、filter 高亮或普通 item content 扩大为公共 Part。同时记录 virtualized 容器生命周期、
+  selection model、filter/pagination changes 和 nested content isolation。
+- [x] **Gate A 审计结论（ListView，2026-08-17）：** 上游基线为 6.6.0 新增的 `Listy`（`components/listy`，旧 `List` 已
+  deprecated）；Semantic DOM 为 `root`（根滚动容器）/ `item`（条目：内间距、分割线、悬浮背景）/ `groupHeader`（分组
+  标题：吸顶与背景色），全部 6.6.0 公开，`index.tsx` 经 `useMergeSemantic` 实际消费。AtomUI 映射：`root` →
+  `ListView` owner；`item` → 非分组 `ListViewItem` 容器；`groupHeader` → 专用 `GroupHeaderItem` 容器（internal，继承
+  `ListViewItem`，构造时 `IsGroupItem=true`）。`.semantic-item` / `.semantic-group-header` 在两类容器构造时用生成
+  常量一次性添加，不随状态切换；`CreateContainerForItemOverride` 按 `IGroupListItemData.IsGroupItem` 创建对应容器，
+  recycle key 区分两类容器。`virtual` / `height` / `items` / `rowKey` / `group` 均有对应 API；`sticky` 与 `scrollTo`
+  属行为功能差距，不在本轮范围。默认视觉对齐（条目分割线、分组标题背景/字重）随 Gate A 一并批准。证据已写入
+  ListView overview.md / implementation.md §5.1 与设计 spec 映射表。
+- [x] **Gate A 审计结论（ListBox，2026-08-17）：** 同一上游 Listy 基线；ListBox 无分组、无分页（轻量选择列表 +
+  过滤 + CandidateList 基座），映射 `root`（`ListBox` owner，`Frame` + `PART_ScrollViewer` 滚动容器）与 `item`
+  （`ListBoxItem` 容器，构造时一次性 `.semantic-item`，路由 `> .semantic-item`，`ContractType` 为公开
+  `ListBoxItem`）；`groupHeader` 不适用（无分组功能，不虚构 Part）；排除 selection（`SelectedIndicator`）、filter
+  高亮（`HighlightableTextBlock`）、empty。条目分割线默认视觉对齐与 ListView 同一决策一并批准。证据已写入
+  ListBox overview.md / implementation.md §5.1 与设计 spec 映射表。
+- [ ] 更新四份控件文档，写明准确的 Descriptor、真实模板/运行时节点、owner 边界、排除的 internal wrapper、生命周期/性能不变量和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/ListView/ListViewSemanticPartTests.cs` 与 `tests/AtomUI.Desktop.Controls.Tests/ListBox/ListBoxSemanticPartTests.cs`，覆盖 `root` / `item` / `groupHeader` 三个 Part、分组开关与两类容器创建/recycle key、virtualized/nonvirtualized、pagination、empty/loading、selection、filter、replace/reset 和 recycle；记录 marker/container 数量与滚动前后 retained instance；Gallery Semantic Preview 对齐 Listy `_semantic.tsx`（Design/Engineering 分组数据），条目分割线与分组标题背景默认视觉基线生效。
 - [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
-- [ ] **强制停止：** 保持 ListView 的所有实现改动未提交，直到用户明确完成验证并授权提交。
+- [ ] **强制停止：** 保持 ListView / ListBox 的所有实现改动未提交，直到用户明确完成验证并授权提交。
 
 ### 任务 4：Segmented
 

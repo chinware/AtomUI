@@ -36,6 +36,20 @@ public class DashedBorder : Decorator
     
     public static readonly StyledProperty<double> StrokeDaskOffsetProperty =
         AvaloniaProperty.Register<DashedBorder, double>(nameof(StrokeDaskOffset), 0.0);
+
+    public static readonly StyledProperty<bool> ClipContentToCornerRadiusProperty =
+        AvaloniaProperty.Register<DashedBorder, bool>(nameof(ClipContentToCornerRadius));
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the child content is clipped to the
+    /// inner edge of the rounded border. When enabled, this border owns the child's
+    /// <see cref="Visual.Clip" />.
+    /// </summary>
+    public bool ClipContentToCornerRadius
+    {
+        get => GetValue(ClipContentToCornerRadiusProperty);
+        set => SetValue(ClipContentToCornerRadiusProperty, value);
+    }
     
     /// <summary>
     /// Gets or sets a brush with which to paint the background.
@@ -110,6 +124,7 @@ public class DashedBorder : Decorator
     private BorderRenderHelper? _borderRenderHelper = new BorderRenderHelper();
     private Thickness? _renderThickness;
     private double _layoutScale;
+    private bool _clipManaged;
 
     internal virtual bool ClipTrailingEdgeAtFractionalScale => false;
 
@@ -165,6 +180,14 @@ public class DashedBorder : Decorator
         {
             _renderThickness = null;
         }
+
+        if (change.Property == ClipContentToCornerRadiusProperty ||
+            change.Property == BorderThicknessProperty ||
+            change.Property == CornerRadiusProperty ||
+            change.Property == BackgroundSizingProperty)
+        {
+            UpdateClip();
+        }
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -174,7 +197,100 @@ public class DashedBorder : Decorator
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        return LayoutHelper.ArrangeChild(Child, finalSize, Padding, BorderThickness);
+        var size = LayoutHelper.ArrangeChild(Child, finalSize, Padding, BorderThickness);
+        UpdateClip();
+        return size;
+    }
+
+    private void UpdateClip()
+    {
+        if (Child is null)
+        {
+            return;
+        }
+
+        if (!ClipContentToCornerRadius)
+        {
+            if (_clipManaged)
+            {
+                Child.Clip = null;
+                _clipManaged = false;
+            }
+
+            return;
+        }
+
+        var childSize = Child.Bounds.Size;
+        if (childSize.Width <= 0 || childSize.Height <= 0)
+        {
+            return;
+        }
+
+        var figure = BuildRoundedRectClipFigure(
+            new Rect(childSize),
+            Padding,
+            RenderThickness,
+            CornerRadius);
+        if (!SupportsGeometryClipHitTesting(figure))
+        {
+            // A platform whose geometry containment cannot represent the rounded
+            // figure would silently swallow every pointer over the content. The clip
+            // degrades to not-applied so input keeps working; production backends
+            // with correct rounded geometry hit-testing always take the clip path.
+            if (_clipManaged)
+            {
+                Child.Clip = null;
+                _clipManaged = false;
+            }
+
+            return;
+        }
+
+        Child.Clip = figure;
+        _clipManaged = true;
+    }
+
+    /// <summary>
+    /// Determines whether the platform's geometry containment can hit-test the given
+    /// clip figure. The clip narrows pointer input to the rounded shape, so it must
+    /// only be applied when the platform reports containment for the figure's
+    /// interior and rejects its exterior.
+    /// </summary>
+    protected virtual bool SupportsGeometryClipHitTesting(Geometry figure)
+    {
+        var bounds = figure.Bounds;
+        var interior = bounds.Center;
+        var exterior = new Point(bounds.Right + 1000, bounds.Bottom + 1000);
+
+        return figure.FillContains(interior) && !figure.FillContains(exterior);
+    }
+
+    private static Geometry BuildRoundedRectClipFigure(
+        Rect childBounds,
+        Thickness padding,
+        Thickness borderThickness,
+        CornerRadius cornerRadius)
+    {
+        // The clip lives in the child's coordinate space. The ring's inner edge is the
+        // frame bounds deflated by the border thickness; the child itself is inset by
+        // the padding plus the border thickness, so in child space the inner edge is
+        // the child bounds expanded back by the padding. The WinUI keypoints builder
+        // deflates the given bounds by the border thickness again, hence the inflate.
+        var innerEdgeBounds = childBounds.Inflate(padding + borderThickness);
+
+        var keypoints = RoundRectGeometryBuilder.CalculateRoundedCornersRectangleWinUI(
+            innerEdgeBounds,
+            borderThickness,
+            cornerRadius,
+            BackgroundSizing.InnerBorderEdge);
+
+        var geometry = new StreamGeometry();
+        using (var context = geometry.Open())
+        {
+            RoundRectGeometryBuilder.DrawRoundedCornersRectangle(context, ref keypoints);
+        }
+
+        return geometry;
     }
 
     private void VerifyLayoutScale()
@@ -187,6 +303,7 @@ public class DashedBorder : Decorator
 
         _layoutScale     = currentScale;
         _renderThickness = null;
+        UpdateClip();
     }
 
     private Size CalculateRenderSize(Size size)

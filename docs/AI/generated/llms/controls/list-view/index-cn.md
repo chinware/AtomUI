@@ -121,13 +121,14 @@ ListView public 分组模型是单层分组模型。`IsGroupEnabled=true` 时，
 
 | 名称 | 所属控件 | 职责 |
 | --- | --- | --- |
-| `Frame` | `ListView` | root 背景、边框、圆角、padding 和 margin 边界。 |
+| `Frame` | `ListView` | root 背景、边框、圆角、padding、margin 与外框闭合边界。 |
 | `TopPaginationPresenter` | `ListView` | 顶部分页器展示入口。 |
 | `BottomPaginationPresenter` | `ListView` | 底部分页器展示入口。 |
 | `PART_ScrollViewer` | `ListView` | 列表滚动容器。 |
 | `ItemsPresenter` | `ListView` | 条目容器承载入口。 |
 | `EmptyIndicator` | `ListView` | 空状态内容展示。 |
-| `Frame` | `ListViewItem` | 条目背景、圆角和 padding 边界。 |
+| `Frame` | `ListViewItem` | 条目背景与 padding 边界。 |
+| `SplitLineFrame` | `ListViewItem` | 条目底部分割线表面。 |
 | `SelectedIndicator` | `ListViewItem` | 选中标记展示入口。 |
 | `ContentPresenter` | `ListViewItem` | 普通内容或组标题内容展示入口。 |
 
@@ -267,7 +268,7 @@ ListView 主题按 root、分页、操作态、滚动内容、空状态和 item 
 
 ```text
 ListViewTheme
-  Frame
+  Frame（ClipContentToCornerRadius=True）
   TopPaginationPresenter
   BottomPaginationPresenter
   Spin
@@ -279,15 +280,19 @@ ListViewItemTheme
   Frame
     SelectedIndicator
     ContentPresenter
+  SplitLineFrame
 ```
 
 视觉规则：
 
-- root 边框由 `BorderBrush`、`BorderThickness`、`CornerRadius` 和 `IsBorderless` 共同决定。
-- `SizeType` 控制 root 圆角、空状态 padding、条目最小高度、条目 padding 和条目圆角。
-- 默认条目背景透明，hover 使用 `ItemHoverBg`，selected 使用 `ItemSelectedBg`。
-- 组标题使用 `GroupHeaderColor`，不应用普通条目的 hover / selected 状态背景。
-- selected indicator 默认使用 默认 `CheckOutlined`，颜色和尺寸来自 SharedToken。
+- root 外框由 `BorderBrush`、`BorderThickness`、`CornerRadius` 和 `IsBorderless` 共同决定。默认外框颜色是 `ColorSplit`，与条目分割线同色，表达“外框即列表闭合线”。
+- root `Frame` 开启 `ClipContentToCornerRadius`：内容被裁剪到外框圆角内边缘，条目 hover / selected 背景等溢出圆角内边缘的内容被裁剪，不在圆角口袋区溢出；外框环由 `Frame` 自身一次绘制（`ColorSplit`），无叠加节点。
+- `SizeType` 控制 root 圆角、空状态 padding、条目最小高度和条目 padding。条目表面保持直角，主题不设置条目圆角。
+- 条目直接贴合 root 外框内边缘：`ContentPadding` 与 `ItemMargin` 均为 `Thickness(0)`，条目之间不留垂直间距，列表紧凑感由条目高度与分割线表达。
+- 条目底部分割线默认是 1 DIP `ColorSplit` 底边线，由条目 `BorderThickness` / `BorderBrush` 驱动。无 `BottomPagination` 时最后一项的底部分割线被抑制，由 root 外框下边缘承担闭合线；配置 `BottomPagination` 时最后一项保留分割线（分隔条目区与分页器）；`IsBorderless` 时也保留（外框消失后由分割线承担闭合线）。
+- 默认条目背景透明，hover 使用 `ItemHoverBg`，selected 使用 `ItemSelectedBg`；hover / selected 背景延伸到外框内边缘，溢出圆角口袋区的部分由 `Frame` 的圆角内容裁剪约束。
+- 组标题使用 `GroupHeaderColor`，不应用普通条目的 hover / selected 状态背景，也不显示底部分割线。
+- selected indicator 默认使用 `CheckOutlined`，颜色和尺寸来自 SharedToken。
 - 空状态默认使用 `Empty` 的 simple preset image。
 - 分页器 margin 使用 ListViewToken 的 `PaginationMargin`。
 
@@ -328,24 +333,25 @@ ListView 不通过反射访问模板内部结构。模板接入依赖稳定 part
 
 主要源码：
 
-- `src/AtomUI.Desktop.Controls/ListView/ListView.cs`：public API、事件、ItemsSource 归一、collection view 订阅、分组、过滤、排序、容器生成、空状态、操作态和点击派发。
+- `src/AtomUI.Desktop.Controls/ListView/ListView.cs`：public API、事件、ItemsSource 归一、collection view 订阅、分组、过滤、排序、容器生成、分割线同步、空状态、操作态和点击派发。
 - `src/AtomUI.Desktop.Controls/ListView/ListView.Selecting.cs`：选择模型接入、source entry / view node 映射、SelectedIndex / SelectedIndexes / SelectedItem / SelectedItems / SelectedValue、键盘导航、文本搜索和容器 selected 状态同步。
 - `src/AtomUI.Desktop.Controls/ListView/ListView.Pagination.cs`：PageIndex / PageSize、分页器接入、分页器属性同步和 page change 请求。
 - `src/AtomUI.Desktop.Controls/ListView/ListView.Virtualizing.cs`：容器回收时的上下文保存、恢复和本地值清理。
-- `src/AtomUI.Desktop.Controls/ListView/ListViewItem.cs`：条目容器、selected attached property、点击 routed event、pointer selection、组标题状态、selected indicator 和 motion 生命周期。
+- `src/AtomUI.Desktop.Controls/ListView/ListViewItem.cs`：条目容器、selected attached property、点击 routed event、pointer selection、组标题状态、selected indicator、分割线状态和 motion 生命周期。
 - `src/AtomUI.Desktop.Controls/ListView/ListViewSelectionModel.cs`：ListView canonical selection model，持有 selected EntryIds、anchor 和 active entry，并发布 source-index 与 item 投影。
 - `src/AtomUI.Desktop.Controls/ListView/ListDefaultFilter.cs`：把 collection view `FilterDescriptions` 聚合成 `Func<object, bool>`。
 - `src/AtomUI.Desktop.Controls/ListView/ListPaginationVisibility.cs`：分页器可见性枚举。
 - `src/AtomUI.Desktop.Controls/ListView/ListPseudoClass.cs`：`:empty` 和 `:singleitem` 伪类常量。
 - `src/AtomUI.Desktop.Controls/ListView/ListViewToken.cs`：ListView 专属 Token 定义。
-- `src/AtomUI.Desktop.Controls/ListView/Themes/ListViewTheme.axaml`：root 模板、分页 presenter、Spin、ScrollViewer、ItemsPresenter、EmptyIndicator、默认 item / group template 和 root 样式。
-- `src/AtomUI.Desktop.Controls/ListView/Themes/ListViewItemTheme.axaml`：条目模板、selected indicator、普通内容、组标题状态和条目状态样式。
+- `src/AtomUI.Desktop.Controls/ListView/Themes/ListViewTheme.axaml`：root 模板、分页 presenter、Spin、ScrollViewer、ItemsPresenter、EmptyIndicator、默认 item / group template、root 圆角内容裁剪和 root 样式。
+- `src/AtomUI.Desktop.Controls/ListView/Themes/ListViewItemTheme.axaml`：条目模板、selected indicator、普通内容、组标题状态、分割线和条目状态样式。
 - `src/AtomUI.Controls.Shared/Data/ListCollectionViews/`：`IListCollectionView`、source entry、view node、entry/index 映射、排序、过滤、分组和数据项契约。
 
 ## 相关文档
 
 - 源设计文档：`docs/controls/desktop/data-display/list-view/overview.md`
 - 实现文档：`docs/controls/desktop/data-display/list-view/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-display/list-view/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-display/list-view/token.md`
 - 变更记录：`docs/controls/desktop/data-display/list-view/changelog.md`
 - 语义结构：`./semantic-cn.md`

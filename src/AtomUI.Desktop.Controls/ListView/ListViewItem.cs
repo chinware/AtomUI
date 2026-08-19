@@ -75,6 +75,21 @@ public class ListViewItem : ContentControl,
     internal static readonly StyledProperty<bool> IsGroupItemProperty =
         AvaloniaProperty.Register<ListViewItem, bool>(nameof(IsGroupItem));
 
+    internal static readonly DirectProperty<ListViewItem, Thickness> EffectiveBorderThicknessProperty =
+        AvaloniaProperty.RegisterDirect<ListViewItem, Thickness>(nameof(EffectiveBorderThickness),
+            o => o.EffectiveBorderThickness,
+            (o, v) => o.EffectiveBorderThickness = v);
+
+    internal static readonly DirectProperty<ListViewItem, bool> IsSplitLineVisibleProperty =
+        AvaloniaProperty.RegisterDirect<ListViewItem, bool>(nameof(IsSplitLineVisible),
+            o => o.IsSplitLineVisible,
+            (o, v) => o.IsSplitLineVisible = v);
+
+    internal static readonly DirectProperty<ListViewItem, bool> IsSplitLineEffectiveVisibleProperty =
+        AvaloniaProperty.RegisterDirect<ListViewItem, bool>(nameof(IsSplitLineEffectiveVisible),
+            o => o.IsSplitLineEffectiveVisible,
+            (o, v) => o.IsSplitLineEffectiveVisible = v);
+
     internal static readonly StyledProperty<ClickMode> ItemClickModeProperty =
         ListView.ItemClickModeProperty.AddOwner<ListViewItem>();
     
@@ -132,6 +147,30 @@ public class ListViewItem : ContentControl,
         set => SetValue(IsGroupItemProperty, value);
     }
     
+    private Thickness _effectiveBorderThickness;
+
+    internal Thickness EffectiveBorderThickness
+    {
+        get => _effectiveBorderThickness;
+        private set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
+    }
+
+    private bool _isSplitLineVisible;
+
+    internal bool IsSplitLineVisible
+    {
+        get => _isSplitLineVisible;
+        set => SetAndRaise(IsSplitLineVisibleProperty, ref _isSplitLineVisible, value);
+    }
+
+    private bool _isSplitLineEffectiveVisible;
+
+    internal bool IsSplitLineEffectiveVisible
+    {
+        get => _isSplitLineEffectiveVisible;
+        private set => SetAndRaise(IsSplitLineEffectiveVisibleProperty, ref _isSplitLineEffectiveVisible, value);
+    }
+
     internal ClickMode ItemClickMode
     {
         get => GetValue(ItemClickModeProperty);
@@ -167,12 +206,20 @@ public class ListViewItem : ContentControl,
         {
             ConfigureSelectedIndicator();
         }
+
+        if (change.Property == BorderThicknessProperty ||
+            change.Property == IsGroupItemProperty ||
+            change.Property == IsSplitLineVisibleProperty)
+        {
+            ConfigureEffectiveBorderThickness();
+        }
     }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
         ConfigureSelectedIndicator();
+        ConfigureEffectiveBorderThickness();
         this.DisableTransitions();
     }
 
@@ -185,6 +232,13 @@ public class ListViewItem : ContentControl,
     private void ConfigureSelectedIndicator()
     {
         SetCurrentValue(IsSelectedIndicatorVisibleProperty, IsShowSelectedIndicator && IsSelected);
+    }
+
+    private void ConfigureEffectiveBorderThickness()
+    {
+        var showSplitLine = IsSplitLineVisible && !IsGroupItem && BorderThickness.Bottom > 0;
+        IsSplitLineEffectiveVisible = showSplitLine;
+        EffectiveBorderThickness = showSplitLine ? BorderThickness : new Thickness(0);
     }
     
     protected override void OnPointerPressed(PointerPressedEventArgs e)

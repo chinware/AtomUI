@@ -87,6 +87,21 @@ public class ListBoxItem : AvaloniaListBoxItem, IListItemVirtualizingContextAwar
     internal static readonly StyledProperty<IBrush?> FilterHighlightForegroundProperty =
         ListBox.FilterHighlightForegroundProperty.AddOwner<ListBoxItem>();
     
+    internal static readonly DirectProperty<ListBoxItem, Thickness> EffectiveBorderThicknessProperty =
+        AvaloniaProperty.RegisterDirect<ListBoxItem, Thickness>(nameof(EffectiveBorderThickness),
+            o => o.EffectiveBorderThickness,
+            (o, v) => o.EffectiveBorderThickness = v);
+
+    internal static readonly DirectProperty<ListBoxItem, bool> IsSplitLineVisibleProperty =
+        AvaloniaProperty.RegisterDirect<ListBoxItem, bool>(nameof(IsSplitLineVisible),
+            o => o.IsSplitLineVisible,
+            (o, v) => o.IsSplitLineVisible = v);
+
+    internal static readonly DirectProperty<ListBoxItem, bool> IsSplitLineEffectiveVisibleProperty =
+        AvaloniaProperty.RegisterDirect<ListBoxItem, bool>(nameof(IsSplitLineEffectiveVisible),
+            o => o.IsSplitLineEffectiveVisible,
+            (o, v) => o.IsSplitLineEffectiveVisible = v);
+
     internal CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -178,6 +193,30 @@ public class ListBoxItem : AvaloniaListBoxItem, IListItemVirtualizingContextAwar
         get => GetValue(FilterHighlightForegroundProperty);
         set => SetValue(FilterHighlightForegroundProperty, value);
     }
+
+    private Thickness _effectiveBorderThickness;
+
+    internal Thickness EffectiveBorderThickness
+    {
+        get => _effectiveBorderThickness;
+        private set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
+    }
+
+    private bool _isSplitLineVisible;
+
+    internal bool IsSplitLineVisible
+    {
+        get => _isSplitLineVisible;
+        set => SetAndRaise(IsSplitLineVisibleProperty, ref _isSplitLineVisible, value);
+    }
+
+    private bool _isSplitLineEffectiveVisible;
+
+    internal bool IsSplitLineEffectiveVisible
+    {
+        get => _isSplitLineEffectiveVisible;
+        private set => SetAndRaise(IsSplitLineEffectiveVisibleProperty, ref _isSplitLineEffectiveVisible, value);
+    }
     #endregion
     
     private static readonly Point s_invalidPoint = new(double.NaN, double.NaN);
@@ -208,12 +247,18 @@ public class ListBoxItem : AvaloniaListBoxItem, IListItemVirtualizingContextAwar
         {
             FilterHighlightWords = FilterValue?.ToString();
         }
+        else if (change.Property == BorderThicknessProperty ||
+                 change.Property == IsSplitLineVisibleProperty)
+        {
+            ConfigureEffectiveBorderThickness();
+        }
     }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
         ConfigureSelectedIndicator();
+        ConfigureEffectiveBorderThickness();
         this.DisableTransitions();
     }
 
@@ -226,6 +271,13 @@ public class ListBoxItem : AvaloniaListBoxItem, IListItemVirtualizingContextAwar
     private void ConfigureSelectedIndicator()
     {
         SetCurrentValue(IsSelectedIndicatorVisibleProperty, IsShowSelectedIndicator && IsSelected);
+    }
+
+    private void ConfigureEffectiveBorderThickness()
+    {
+        var showSplitLine = IsSplitLineVisible && BorderThickness.Bottom > 0;
+        IsSplitLineEffectiveVisible = showSplitLine;
+        EffectiveBorderThickness = showSplitLine ? BorderThickness : new Thickness(0);
     }
 
     protected override void OnPointerPressed(PointerPressedEventArgs e)

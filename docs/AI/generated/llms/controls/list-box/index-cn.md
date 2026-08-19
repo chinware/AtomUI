@@ -84,11 +84,12 @@ ListBoxItem 容器 API：
 
 | Template Part | 所属控件 | 职责 |
 | --- | --- | --- |
-| `Frame` | `ListBox` | root 背景、边框、圆角和 padding 边界。 |
+| `Frame` | `ListBox` | root 背景、边框、圆角、padding 与外框闭合边界。 |
 | `PART_ScrollViewer` | `ListBox` | 列表滚动容器。 |
 | `ItemsPresenter` | `ListBox` | 条目容器承载入口。 |
 | `EmptyIndicator` | `ListBox` | 空状态内容展示。 |
-| `Frame` | `ListBoxItem` | 条目背景、圆角和 padding 边界。 |
+| `Frame` | `ListBoxItem` | 条目背景与 padding 边界。 |
+| `SplitLineFrame` | `ListBoxItem` | 条目底部分割线表面。 |
 | `SelectedIndicator` | `ListBoxItem` | 选中标记展示入口。 |
 | `ContentPresenter` | `ListBoxItem` | 普通内容展示入口。 |
 
@@ -199,7 +200,7 @@ ListBox 主题按 root 和 item 两层组织。
 
 ```text
 ListBoxTheme
-  Frame
+  Frame（ClipContentToCornerRadius=True）
   PART_ScrollViewer
   ItemsPresenter
   EmptyIndicator
@@ -209,13 +210,17 @@ ListBoxItemTheme
   SelectedIndicator
   ContentPresenter
   HighlightableTextBlock
+  SplitLineFrame
 ```
 
 视觉规则：
 
-- root 边框由 `BorderBrush`、`BorderThickness`、`CornerRadius` 和 `IsBorderless` 共同决定。
-- `SizeType` 控制 root 圆角、空状态 padding、条目最小高度和条目 padding。
-- 默认条目背景透明，hover 使用 `ItemHoverBg`，selected 使用 `ItemSelectedBg`。
+- root 外框由 `BorderBrush`、`BorderThickness`、`CornerRadius` 和 `IsBorderless` 共同决定。默认外框颜色是 `ColorSplit`，与条目分割线同色，表达“外框即列表闭合线”。
+- root `Frame` 开启 `ClipContentToCornerRadius`：内容被裁剪到外框圆角内边缘，条目 hover / selected 背景等溢出圆角内边缘的内容被裁剪，不在圆角口袋区溢出；外框环由 `Frame` 自身一次绘制（`ColorSplit`），无叠加节点。
+- `SizeType` 控制 root 圆角、空状态 padding、条目最小高度和条目 padding。条目表面保持直角，主题不设置条目圆角。
+- 条目直接贴合 root 外框内边缘：`ContentPadding` 与 `ItemMargin` 均为 `Thickness(0)`，条目之间不留垂直间距，列表紧凑感由条目高度与分割线表达。
+- 条目底部分割线默认是 1 DIP `ColorSplit` 底边线，由条目 `BorderThickness` / `BorderBrush` 驱动。最后一项的底部分割线被抑制，由 root 外框下边缘承担闭合线；`IsBorderless` 时保留（外框消失后由分割线承担闭合线）。
+- 默认条目背景透明，hover 使用 `ItemHoverBg`，selected 使用 `ItemSelectedBg`；hover / selected 背景延伸到外框内边缘，溢出圆角口袋区的部分由 `Frame` 的圆角内容裁剪约束。
 - disabled 内容使用 SharedToken disabled 文本色。
 - 选中指示器默认使用 默认 `CheckOutlined`，颜色使用 SharedToken 主色，尺寸使用 SharedToken icon size。
 - 空状态默认使用 `Empty` 的 simple preset image。
@@ -253,12 +258,12 @@ ListBox 不通过反射访问模板内部结构。模板接入依赖稳定 part 
 
 主要源码：
 
-- `src/AtomUI.Desktop.Controls/ListBox/ListBox.cs`：public API、事件、容器生成、空状态、过滤、选择拦截、键盘导航和虚拟化上下文管理。
-- `src/AtomUI.Desktop.Controls/ListBox/ListBoxItem.cs`：条目容器、点击 routed event、选中指示器状态、过滤文本展示状态、pointer selection 协同和动效启停。
+- `src/AtomUI.Desktop.Controls/ListBox/ListBox.cs`：public API、事件、容器生成、分割线同步、空状态、过滤、选择拦截、键盘导航和虚拟化上下文管理。
+- `src/AtomUI.Desktop.Controls/ListBox/ListBoxItem.cs`：条目容器、点击 routed event、选中指示器状态、过滤文本展示状态、分割线状态、pointer selection 协同和动效启停。
 - `src/AtomUI.Desktop.Controls/ListBox/ListBoxItemClickedEventArgs.cs`：`ItemClicked` 事件参数。
 - `src/AtomUI.Desktop.Controls/ListBox/ListBoxToken.cs`：ListBox 专属 Token 定义。
-- `src/AtomUI.Desktop.Controls/ListBox/Themes/ListBoxTheme.axaml`：root 模板、ScrollViewer、ItemsPresenter、EmptyIndicator、默认 ItemTemplate 和 root 样式。
-- `src/AtomUI.Desktop.Controls/ListBox/Themes/ListBoxItemTheme.axaml`：条目模板、选中指示器、普通内容、过滤高亮文本和条目状态样式。
+- `src/AtomUI.Desktop.Controls/ListBox/Themes/ListBoxTheme.axaml`：root 模板、ScrollViewer、ItemsPresenter、EmptyIndicator、默认 ItemTemplate、root 圆角内容裁剪和 root 样式。
+- `src/AtomUI.Desktop.Controls/ListBox/Themes/ListBoxItemTheme.axaml`：条目模板、选中指示器、普通内容、过滤高亮文本、分割线和条目状态样式。
 - `src/AtomUI.Desktop.Controls/Primitives/CandidateList/CandidateList.cs`：基于 ListBox 的候选项列表扩展。
 - `src/AtomUI.Controls.Shared/IListVirtualizingContextAware.cs`：虚拟化上下文保存、恢复和清理接口。
 
@@ -266,6 +271,7 @@ ListBox 不通过反射访问模板内部结构。模板接入依赖稳定 part 
 
 - 源设计文档：`docs/controls/desktop/data-display/list-box/overview.md`
 - 实现文档：`docs/controls/desktop/data-display/list-box/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-display/list-box/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-display/list-box/token.md`
 - 变更记录：`docs/controls/desktop/data-display/list-box/changelog.md`
 - 语义结构：`./semantic-cn.md`

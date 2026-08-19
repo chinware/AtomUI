@@ -46,7 +46,7 @@
 
 ### 不适用
 
-- [x] `Avatar`、`Carousel`、`Expander`、`GroupBox`、`ListBox`、`Rate`、`Watermark`。
+- [x] `Avatar`、`Carousel`、`Expander`、`GroupBox`、`Rate`、`Watermark`。
 - [x] `Icon`、`SplitButton`、`FlexPanel`、`Grid / Row / Col`、`TabStrip`。
 - [x] `ButtonSpinner`、`ComboBox`、`DropdownButton`、`BorderBeam`、`Splash`。
 - [x] `Menu`、`WindowTitleBar`、`Window`。
@@ -57,12 +57,12 @@
 ### 待执行批次
 
 - [x] 第一批：基础控件，共 16 个家族。
-- [ ] 第二批：集合与容器，共 15 个家族。
+- [ ] 第二批：集合与容器，共 16 个家族。
 - [ ] 第三批：输入与选择，共 15 个家族。
 - [ ] 第四批：Popup 与独立宿主，共 9 个家族。
 - [ ] 第五批：高密度控件，共 2 个家族。
 
-合计待改造：57 个控件家族。
+合计待改造：58 个控件家族。
 
 ## 3. 单控件强制执行循环
 

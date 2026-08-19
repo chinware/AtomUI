@@ -150,6 +150,22 @@ public class ListViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _paginationListItems, value);
     }
 
+    private List<IListItemData>? _semanticListItems;
+
+    public List<IListItemData>? SemanticListItems
+    {
+        get => _semanticListItems;
+        set => this.RaiseAndSetIfChanged(ref _semanticListItems, value);
+    }
+
+    private List<IListItemData>? _semanticListBoxItems;
+
+    public List<IListItemData>? SemanticListBoxItems
+    {
+        get => _semanticListBoxItems;
+        set => this.RaiseAndSetIfChanged(ref _semanticListBoxItems, value);
+    }
+
     public ReactiveCommand<Unit, Unit> SelectBoundSelectedItemsCommand { get; }
 
     public ReactiveCommand<Unit, Unit> ClearBoundSelectedItemsCommand { get; }

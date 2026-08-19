@@ -178,3 +178,41 @@ PageSize="100">
 </atom:ListView.BottomPagination>
 </atom:ListView>
 </gallery:ShowCaseItem>
+<gallery:ShowCaseItem
+Title="{gallery:ListShowCaseLangResource SemanticPartStyleTitle}"
+Description="{gallery:ListShowCaseLangResource SemanticPartStyleDescription}"
+SourceKey="list-semantic-part"
+BadgeText="{x:Static gallery:GalleryVersionInfo.DisplayVersion}"
+Span="Full">
+<StackPanel Orientation="Vertical"
+HorizontalAlignment="Stretch"
+Spacing="12">
+<StackPanel.Styles>
+<Style Selector="atom|ListView.semantic-object">
+<Setter Property="BorderBrush" Value="#91caff" />
+<Setter Property="BorderThickness" Value="1" />
+<Setter Property="CornerRadius" Value="8" />
+<atom:ListViewItemStyle x:SetterTargetType="atom:ListViewItem">
+<Setter Property="FontStyle" Value="Italic" />
+</atom:ListViewItemStyle>
+<atom:ListViewGroupHeaderStyle x:SetterTargetType="atom:ListViewItem">
+<Setter Property="Foreground" Value="#1677ff" />
+<Setter Property="Background" Value="#e6f4ff" />
+</atom:ListViewGroupHeaderStyle>
+</Style>
+<Style Selector="atom|ListBox.semantic-listbox">
+<Setter Property="BorderBrush" Value="#91caff" />
+<Setter Property="BorderThickness" Value="1" />
+<Setter Property="CornerRadius" Value="8" />
+<atom:ListBoxItemStyle x:SetterTargetType="atom:ListBoxItem">
+<Setter Property="FontStyle" Value="Italic" />
+</atom:ListBoxItemStyle>
+</Style>
+</StackPanel.Styles>
+<atom:ListView Classes="semantic-object"
+ItemsSource="{Binding SemanticListItems}"
+IsGroupEnabled="True" />
+<atom:ListBox Classes="semantic-listbox"
+ItemsSource="{Binding SemanticListBoxItems}" />
+</StackPanel>
+</gallery:ShowCaseItem>

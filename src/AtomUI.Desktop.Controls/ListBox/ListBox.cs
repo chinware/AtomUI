@@ -2,9 +2,11 @@ using System.Collections.Specialized;
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
 using AtomUI.Controls.Utils;
+using AtomUI.Generated.AtomUI_Desktop_Controls;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -16,7 +18,7 @@ namespace AtomUI.Desktop.Controls;
 
 using AvaloniaListBox = Avalonia.Controls.ListBox;
 
-public class ListBox : AvaloniaListBox,
+public partial class ListBox : AvaloniaListBox,
                        ICustomizableSizeTypeAware,
                        IMotionAwareControl,
                        IListVirtualizingContextAware
@@ -292,6 +294,7 @@ public class ListBox : AvaloniaListBox,
     {
         _virtualRestoreContext.Clear();
         ConfigureEmptyIndicator();
+        RefreshContainerSplitLines();
         FilterItems();
     }
 
@@ -311,6 +314,7 @@ public class ListBox : AvaloniaListBox,
                  change.Property == IsBorderlessProperty)
         {
             ConfigureEffectiveBorderThickness();
+            RefreshContainerSplitLines();
         }
         else if (change.Property == FilterValueProperty ||
                  change.Property == FilterProperty ||
@@ -340,6 +344,7 @@ public class ListBox : AvaloniaListBox,
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
         var listBoxItem = new ListBoxItem();
+        listBoxItem.Classes.Add(ListBoxSemanticParts.ItemClass);
         NotifyContainerForItemCreated(listBoxItem, item);
         return listBoxItem;
     }
@@ -365,6 +370,7 @@ public class ListBox : AvaloniaListBox,
         base.PrepareContainerForItemOverride(container, item, index);
         if (container is ListBoxItem listBoxItem)
         {
+            listBoxItem.IsSplitLineVisible = ShouldShowSplitLine(IsLastItem(item));
             if (ItemTemplate != null)
             {
                 listBoxItem[!ListBoxItem.ContentTemplateProperty] = this[!ItemTemplateProperty];
@@ -437,6 +443,39 @@ public class ListBox : AvaloniaListBox,
         else
         {
             EffectiveBorderThickness = BorderThickness;
+        }
+    }
+
+    private bool ShouldShowSplitLine(bool isLastItem)
+    {
+        return IsBorderless || !isLastItem;
+    }
+
+    private bool IsLastItem(object? item)
+    {
+        return Items.Count > 0 && ReferenceEquals(Items[Items.Count - 1], item);
+    }
+
+    private void RefreshContainerSplitLines()
+    {
+        var presenter = this.GetVisualDescendants().OfType<ItemsPresenter>().FirstOrDefault();
+        if (presenter?.Panel is null)
+        {
+            return;
+        }
+
+        // Realized containers only; unrealized ones receive the correct value when
+        // they are prepared. A container's item is its Content for generated
+        // containers and the container itself for directly supplied containers.
+        foreach (var child in presenter.Panel.Children)
+        {
+            if (child is not ListBoxItem listBoxItem)
+            {
+                continue;
+            }
+
+            var isLast = IsLastItem(listBoxItem) || IsLastItem(listBoxItem.Content);
+            listBoxItem.IsSplitLineVisible = ShouldShowSplitLine(isLast);
         }
     }
     

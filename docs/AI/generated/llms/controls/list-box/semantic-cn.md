@@ -4,13 +4,57 @@
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `ListBox` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+ListBox 公开 `root` 与 `item` 两个职责区域，与上游稳定 Semantic DOM（`Listy` 组件的
+`classNames` / `styles` 均为 `{ root?, item?, groupHeader? }`）对齐。上游 `groupHeader` 不适用于 ListBox——ListBox
+是轻量选择列表，只有选择、过滤与 CandidateList 基座职责，没有分组功能，不虚构 Part。`root` 由生成器为带非 root
+Part 的 owner 隐式加入，不生成 Style；`item` 是运行时由 ListBox 创建的容器 Part。
+
+#### `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ListBox` |
+| Part | `root` |
+| Selector | ListBox 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
+| ContractType | `ListBox` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | ListBox owner |
+| 职责 | 根语义区域，即滚动容器，承载字体、行高、相对定位、外框与外框闭合边界；对应上游 `.ant-listy`。 |
+| 相关 API | `ItemsSource`、`ItemTemplate`、`SizeType`、`IsBorderless`、`IsSelectable`、`SelectionMode` |
+| 相关 Token | `ListBoxToken`、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `item`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ListBox` |
+| Part | `item` |
+| Selector | `.semantic-item` |
+| SelectorRoute | `> .semantic-item` |
+| Style Type | `ListBoxItemStyle` |
+| ContractType | `ListBoxItem` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | 每个 `ListBoxItem` 容器 |
+| 职责 | 条目元素，设置内间距、底部分割线与悬浮背景；对应上游 `.ant-listy-item`。 |
+| 相关 API | `SizeType`、`ItemHoverBg`、`ItemSelectedBg` |
+| 相关 Token | `ItemPaddingSM`、`ItemPadding`、`ItemPaddingLG`、`ItemHoverBgColor`、`ColorSplit`、`ControlItemBgHover` |
+| 稳定性 | stable since 6.0 |
+
+`root` 是隐式 Part，不声明 `.semantic-root` marker。`item` 的 marker `.semantic-item` 在 `ListBoxItem` 创建路径
+一次性添加，`PrepareContainerForItemOverride` 幂等补齐（覆盖用户直接提供容器与 `CandidateListItem` 派生容器的
+路径）；`ListBoxItem` 只有一种身份，不存在切换。
+
+`ContractType` 只定义 Setter 可以稳定依赖的最低 public 类型，并通过 `x:SetterTargetType` 提供 AXAML 编译期类型
+上下文；它不参与 `.semantic-*` 的身份匹配。
 
 ## Abstract AXAML Structure
 
@@ -37,12 +81,14 @@
 ```text
 ListBox
   -> ListBoxItem (item container control theme, ListBoxItemTheme.axaml)
-     -> Border#Frame (template-stable)
-        -> DockPanel (template-stable)
-           -> IconTemplatePresenter#SelectedIndicator (internal-observable)
-           -> Panel (template-stable)
-              -> ContentPresenter#ContentPresenter (internal-observable)
-              -> HighlightableTextBlock (template-stable)
+     -> Panel (template-stable)
+        -> PixelAlignedBorder#Frame (template-stable)
+           -> DockPanel (template-stable)
+              -> IconTemplatePresenter#SelectedIndicator (internal-observable)
+              -> Panel (template-stable)
+                 -> ContentPresenter#ContentPresenter (internal-observable)
+                 -> HighlightableTextBlock (template-stable)
+        -> PixelAlignedBorder#SplitLineFrame (template-stable)
   -> ListBox (control theme, ListBoxTheme.axaml)
      -> PixelAlignedBorder#Frame (template-stable)
         -> Panel (template-stable)
@@ -58,12 +104,13 @@ ListBox
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `ListBox` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `ListBoxItem` | item container control theme | `ListBoxItemTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `Content`, `ContentTemplate`, `ContentText`, `CornerRadius`, `FilterHighlightForeground` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Frame` | template node (Border) | `ListBoxItemTheme.axaml` | ListBoxItem | `Background`, `Content`, `ContentTemplate`, `ContentText`, `CornerRadius`, `FilterHighlightForeground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ListBoxItem` | item container control theme | `ListBoxItemTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `Content`, `ContentTemplate`, `ContentText`, `CornerRadius` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Panel` | template node (Panel) | `ListBoxItemTheme.axaml` | ListBoxItem | `Background`, `BorderBrush`, `Content`, `ContentTemplate`, `ContentText`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Frame` | template node (PixelAlignedBorder) | `ListBoxItemTheme.axaml` | ListBoxItem | `Background`, `Content`, `ContentTemplate`, `ContentText`, `CornerRadius`, `FilterHighlightForeground` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `DockPanel` | template node (DockPanel) | `ListBoxItemTheme.axaml` | ListBoxItem | `Content`, `ContentTemplate`, `ContentText`, `FilterHighlightForeground`, `FilterHighlightStrategy`, `FilterHighlightWords` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `SelectedIndicator` | template node (IconTemplatePresenter) | `ListBoxItemTheme.axaml` | ListBoxItem | `IsSelectedIndicatorVisible`, `SelectedIndicator` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `Panel` | template node (Panel) | `ListBoxItemTheme.axaml` | ListBoxItem | `Content`, `ContentTemplate`, `ContentText`, `FilterHighlightForeground`, `FilterHighlightStrategy`, `FilterHighlightWords` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentPresenter` | template node (ContentPresenter) | `ListBoxItemTheme.axaml` | ListBoxItem | `Content`, `ContentTemplate`, `HorizontalContentAlignment`, `IsFiltering`, `VerticalContentAlignment` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `SplitLineFrame` | template node (PixelAlignedBorder) | `ListBoxItemTheme.axaml` | ListBoxItem | `BorderBrush`, `EffectiveBorderThickness`, `IsSplitLineEffectiveVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ListBox` | control theme | `ListBoxTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `CornerRadius`, `EffectiveBorderThickness`, `EmptyIndicator`, `EmptyIndicatorPadding` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Frame` | template node (PixelAlignedBorder) | `ListBoxTheme.axaml` | ListBox | `Background`, `BorderBrush`, `CornerRadius`, `EffectiveBorderThickness`, `EmptyIndicator`, `EmptyIndicatorPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Panel` | template node (Panel) | `ListBoxTheme.axaml` | ListBox | `EmptyIndicator`, `EmptyIndicatorPadding`, `EmptyIndicatorTemplate`, `IsDefaultEmptyIndicatorVisible`, `IsEffectiveEmptyVisible`, `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -140,7 +187,7 @@ ListBox 主题按 root 和 item 两层组织。
 
 ```text
 ListBoxTheme
-  Frame
+  Frame（ClipContentToCornerRadius=True）
   PART_ScrollViewer
   ItemsPresenter
   EmptyIndicator
@@ -150,13 +197,17 @@ ListBoxItemTheme
   SelectedIndicator
   ContentPresenter
   HighlightableTextBlock
+  SplitLineFrame
 ```
 
 视觉规则：
 
-- root 边框由 `BorderBrush`、`BorderThickness`、`CornerRadius` 和 `IsBorderless` 共同决定。
-- `SizeType` 控制 root 圆角、空状态 padding、条目最小高度和条目 padding。
-- 默认条目背景透明，hover 使用 `ItemHoverBg`，selected 使用 `ItemSelectedBg`。
+- root 外框由 `BorderBrush`、`BorderThickness`、`CornerRadius` 和 `IsBorderless` 共同决定。默认外框颜色是 `ColorSplit`，与条目分割线同色，表达“外框即列表闭合线”。
+- root `Frame` 开启 `ClipContentToCornerRadius`：内容被裁剪到外框圆角内边缘，条目 hover / selected 背景等溢出圆角内边缘的内容被裁剪，不在圆角口袋区溢出；外框环由 `Frame` 自身一次绘制（`ColorSplit`），无叠加节点。
+- `SizeType` 控制 root 圆角、空状态 padding、条目最小高度和条目 padding。条目表面保持直角，主题不设置条目圆角。
+- 条目直接贴合 root 外框内边缘：`ContentPadding` 与 `ItemMargin` 均为 `Thickness(0)`，条目之间不留垂直间距，列表紧凑感由条目高度与分割线表达。
+- 条目底部分割线默认是 1 DIP `ColorSplit` 底边线，由条目 `BorderThickness` / `BorderBrush` 驱动。最后一项的底部分割线被抑制，由 root 外框下边缘承担闭合线；`IsBorderless` 时保留（外框消失后由分割线承担闭合线）。
+- 默认条目背景透明，hover 使用 `ItemHoverBg`，selected 使用 `ItemSelectedBg`；hover / selected 背景延伸到外框内边缘，溢出圆角口袋区的部分由 `Frame` 的圆角内容裁剪约束。
 - disabled 内容使用 SharedToken disabled 文本色。
 - 选中指示器默认使用 默认 `CheckOutlined`，颜色使用 SharedToken 主色，尺寸使用 SharedToken icon size。
 - 空状态默认使用 `Empty` 的 simple preset image。
@@ -190,6 +241,13 @@ ListBoxToken 不承载 `SelectedItem`、`SelectedItems`、`IsSelected`、`IsFilt
 - 选中指示器、过滤高亮和空状态节点应留在 AXAML 静态模板中，通过 `IsVisible` 和状态属性控制，不作为普通性能优化迁移到 C# 动态创建。
 - 虚拟化容器回收时，容器本地值必须对称清理，避免旧 item 的 disabled、filter、indicator 或 content 状态泄漏到新 item。
 - 筛选命中数量和空状态契约不得只依赖当前已实现容器。
+- 语义区域边界：`ListBox` 只发布 `root` / `item` 两个 Part；`item` 的 marker 在容器创建与 prepare 路径一次性幂等
+  建立、不随状态切换，静态模板不增删 marker，默认主题不消费 `.semantic-*` selector；selection、filter 高亮与
+  empty 不属于 Part。
+- root 外框与条目分割线必须保持同一 `ColorSplit` 基线；root `Frame` 的 `ClipContentToCornerRadius` 圆角内容裁剪保证条目状态背景不溢出圆角内边缘。
+- 条目表面保持直角与贴边：不恢复条目圆角，不重新引入 `ContentPadding` / `ItemMargin` 垂直间距。
+- 最后一项分割线抑制规则由控件状态机决定：最后一项不显示底部分割线，由 root 外框下边缘闭合；`IsBorderless` 时
+  保留；集合追加与删除后必须重新同步所有已实现容器，Semantic Style 不能绕过该规则。
 - Token 只表达组件设计语义，不承载选择、过滤、空状态或虚拟化运行时状态。
 
 维护不变量：
@@ -204,4 +262,15 @@ ListBoxToken 不承载 `SelectedItem`、`SelectedItems`、`IsSelected`、`IsFilt
 - 选中指示器可见性只能由 `IsShowSelectedIndicator && IsSelected` 推导。
 - `ItemClicked` 派发顺序必须允许 CandidateList 在 public event 前执行 `NotifyListBoxItemClicked`。
 - `IsBorderless` 只影响边框厚度，不改变 root padding、corner radius 或 scroll behavior。
+- Semantic Part 边界：`ListBox` 只发布 `root` / `item` 两个 Part；`item` 的 marker 在容器创建与 prepare 路径一次性
+  幂等建立、不随状态切换，静态模板不增删 marker，默认主题不消费 `.semantic-*` selector；selection、filter 高亮与
+  empty 不属于 Part。
+- 分割线状态机：`IsSplitLineVisible` 只由 ListBox 按容器视图位置与 `IsBorderless` 计算，容器不得自行决定；集合变化
+  与 borderless 变化必须重新同步已实现容器；Semantic Style 不能绕过最后一项抑制。
+- 条目模板保持 `SplitLineFrame` 绑定 `EffectiveBorderThickness` / `IsSplitLineEffectiveVisible`，默认分割线为 1 DIP
+  `ColorSplit`；root 外框与分割线共享同一 `ColorSplit` 基线。
+- root 模板保持 `Frame` 开启 `ClipContentToCornerRadius`：内容被裁剪到外框圆角内边缘，条目状态背景不溢出圆角
+  口袋区；外框环由 `Frame` 自身一次绘制（`ColorSplit`，与分割线同色），不得再叠加任何覆盖节点。裁剪应用前必须通过
+  `SupportsGeometryClipHitTesting` 探测平台几何命中能力，无法正确判定圆角几何包含的平台降级为不应用裁剪。
+- 条目表面保持直角与贴边：不恢复条目圆角，`ContentPadding` / `ItemMargin` 保持 `Thickness(0)`。
 - Token 变更必须同步 `ListBoxTokenKind`、AXAML 引用和 token.md 语义说明。

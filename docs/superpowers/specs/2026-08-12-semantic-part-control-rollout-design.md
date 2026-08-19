@@ -32,8 +32,8 @@ Semantic Part 的公共模型、Selector 契约和生成器规则分别由
 | 状态 | 数量 | 范围 |
 | --- | ---: | --- |
 | 已完成基线 | 1 | `Button` |
-| 本轮待改造 | 57 | 五个批次中与稳定版公开 Semantic DOM API 对应的控件家族 |
-| 不适用 | 20 | 没有对应公开 API、只有内部/间接能力或产品职责不对应的控件家族 |
+| 本轮待改造 | 58 | 五个批次中与稳定版公开 Semantic DOM API 对应的控件家族 |
+| 不适用 | 19 | 没有对应公开 API、只有内部/间接能力或产品职责不对应的控件家族 |
 
 `Button` 是首个完整样例，用于校验 descriptor、静态 marker、Selector、尺寸协调和 Gallery Preview 的全链路；它不作为
 其他控件 Part 命名的机械模板。
@@ -106,7 +106,8 @@ steps switch table tabs tag time-picker timeline tooltip tour transfer tree tree
 | `ToggleSwitch` | `Switch` | Batch 1 |
 | `Calendar` | `Calendar` | Batch 2 |
 | `Collapse` | `Collapse` | Batch 2 |
-| `ListView` | `List.Item` | Batch 2；Gate A 只能按公开 item 分区边界设计 |
+| `ListBox` | `Listy` | Batch 2；Gate A 按 `root` / `item` 语义键设计（无分组，`groupHeader` 不适用） |
+| `ListView` | `Listy` | Batch 2；Gate A 按 `root` / `item` / `groupHeader` 语义键设计（6.6.0 新组件，旧 `List` 已 deprecated） |
 | `Segmented` | `Segmented` | Batch 2 |
 | `Tag` | `Tag` | Batch 2 |
 | `Timeline` | `Timeline` | Batch 2 |
@@ -156,7 +157,6 @@ steps switch table tabs tag time-picker timeline tooltip tour transfer tree tree
 | `Carousel` | Ant Design 稳定版 `Carousel` 没有公开 Semantic DOM Props。 | 新稳定版公开并实际消费对应 API。 |
 | `Expander` | Ant Design 只有 `Collapse` owner；`Collapse.Panel` 也没有独立 API，不能为独立 Expander 建立映射。 | 新稳定版出现职责直接对应的公开 owner。 |
 | `GroupBox` | Ant Design 没有职责直接对应的公开 Semantic DOM owner。 | 新稳定版出现职责直接对应的公开 owner。 |
-| `ListBox` | Ant Design `List.Item` API不能替代独立选择型 `ListBox`，`Select` 的 popup list 也只是嵌套实现。 | 新稳定版出现独立选择列表 owner。 |
 | `Rate` | Ant Design 稳定版 `Rate` 没有公开 Semantic DOM Props。 | 新稳定版公开并实际消费对应 API。 |
 | `Watermark` | Ant Design 稳定版 `Watermark` 没有公开 Semantic DOM Props。 | 新稳定版公开并实际消费对应 API。 |
 | `Icon` | Ant Design Icons 不提供与 AtomUI `Icon` 对应的公开 Semantic DOM owner。 | 稳定发布出现对应公开组件 API。 |

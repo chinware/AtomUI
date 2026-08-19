@@ -143,7 +143,23 @@ internal static class SemanticPartTargetResolver
     {
         return candidate is Control control &&
                !ReferenceEquals(control, owner) &&
+               !IsOwnerTemplateDescendant(control, owner) &&
                registry.TryGetControl(control.GetType(), out _);
+    }
+
+    private static bool IsOwnerTemplateDescendant(Control candidate, Control owner)
+    {
+        for (var current = candidate as TemplatedControl;
+             current is not null;
+             current = current.TemplatedParent as TemplatedControl)
+        {
+            if (ReferenceEquals(current, owner))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static bool HasMarker(Visual candidate, SemanticPartDescriptor part)
