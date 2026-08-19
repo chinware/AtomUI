@@ -1,6 +1,6 @@
 # AutoComplete 桌面版架构设计
 
-本文档定义 `AutoComplete` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [AutoComplete 桌面版实现原理](implementation.md)，AutoComplete Token 的专项设计见 [AutoComplete Token 设计](token.md)，设计和契约变化记录见 [AutoComplete Changelog](changelog.md)。
+本文档定义 `AutoComplete` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，候选列表统一交互见 [候选列表统一交互设计](../select/candidate-interaction-design.md)，内部实现原理见 [AutoComplete 桌面版实现原理](implementation.md)，AutoComplete Token 的专项设计见 [AutoComplete Token 设计](token.md)，设计和契约变化记录见 [AutoComplete Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -140,7 +140,7 @@ AutoComplete 与同分类控件共享尺寸、状态、Token、Gallery 展示和
 
 ### 8.1 选择与当前项模型
 
-AutoComplete 的当前项状态必须由单一 owner 推导。public 选择属性、集合项容器和伪类之间只能做单向同步，集合替换、清空和模板重套用时必须回放当前状态。
+AutoComplete 的候选当前项由弹层中的 `CandidateList` 作为单一 active candidate owner。鼠标移动和 `Up` / `Down` 都只迁移这个候选，不提前改变输入值；`Enter` 使用同一个 active candidate 提交，提交后才更新 `Value` / `SelectionChanged` 并按控件契约关闭弹层。候选项容器只投影 active、selected 和 disabled 状态，`:pointerover` 不再形成第二个候选高亮。过滤结果、异步加载、集合替换、清空和模板重套用时，失效的 active candidate 必须被清除或重新从当前视图解析。
 
 ### 8.2 弹层与宿主模型
 

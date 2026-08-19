@@ -1,6 +1,6 @@
 # Cascader 桌面版实现原理
 
-本文档描述 Cascader 桌面版的输入壳体、选项集合、级联展开、选择同步、勾选、过滤、异步加载、绑定型选项和资源生命周期。公共设计与 API 契约见 [Cascader 桌面版架构设计](overview.md)，Token 语义见 [Cascader Token 设计](token.md)，变化记录见 [Cascader Changelog](changelog.md)。
+本文档描述 Cascader 桌面版的输入壳体、选项集合、级联展开、选择同步、勾选、过滤、异步加载、绑定型选项和资源生命周期。公共设计与 API 契约见 [Cascader 桌面版架构设计](overview.md)，候选列表状态契约见 [候选列表统一交互设计](../select/candidate-interaction-design.md)，Token 语义见 [Cascader Token 设计](token.md)，变化记录见 [Cascader Changelog](changelog.md)。
 
 ## 1. 实现定位
 
@@ -149,7 +149,7 @@ container clear / detach -> dispose attachment and subscriptions
 
 `CascaderView.OnApplyTemplate()` 获取 `PART_ItemsPanel`、`PART_RootLevelList` 和 `PART_FilterList`。Root level list 设置 `Level=1` 和 `OwnerView=this`，filter list 必须解除旧 selection 订阅再订阅新实例。
 
-`CascaderView` 分别持有树形 `_keyboardCandidateItem` 与 `CascaderViewFilterList` 的过滤候选。过滤结果重建或清空、filter list 重套模板、以及 pointer 在过滤列表内移动时清除过滤候选；单选 popup 关闭时 `ResetInteractionState()` 清除两类候选并折叠展开路径。虚拟化树容器回收时必须清除 `IsCandidateSelectedProperty`，不能让候选视觉进入下一个 option 的复用容器。
+`CascaderView` 分别持有树列和过滤列的 active candidate owner。普通树列的 pointer move 先把 enabled item 提升为 active candidate，再按 `ExpandTrigger` 执行展开；过滤列 pointer move 同样迁移过滤候选，不再无条件清除。过滤结果重建或清空、filter list 重套模板、popup 关闭时 `ResetInteractionState()` 清除两类候选并折叠展开路径。虚拟化树容器回收时必须清除 `IsCandidateSelectedProperty`，不能让候选视觉进入下一个 option 的复用容器。
 
 `CascaderViewLevelList.ContainerForItemPreparedOverride()` 对每个 `ICascaderOption` 调用 `CascaderViewItem.PrepareCascaderOptionData()`。如果 option 是 `BindableCascaderOption`，容器创建同一生命周期的 `CompositeDisposable`，用于保存 resource host attachment、属性订阅和 children 集合订阅。
 
@@ -167,6 +167,7 @@ Pointer 路径：
 - popup 内 pointer 事件不触发外层关闭。
 - tag close button 点击不触发外层 popup toggle。
 - `CascaderViewLevelList` 点击 option 时先触发 item click，再按 `ExpandTrigger` 决定是否展开。
+- `CascaderViewLevelList` / `CascaderViewFilterList` 的 pointer move 只负责把命中的 enabled item 迁移为 active candidate；普通列的鼠标路径不滚动，过滤列不因 pointer move 无条件清除候选。
 
 键盘路径：
 

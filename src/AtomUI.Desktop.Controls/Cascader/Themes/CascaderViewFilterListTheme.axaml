@@ -15,8 +15,19 @@
         </ControlTheme.BasedOn>
 
         <Style Selector="^:is(atom|CascaderViewFilterListItem)">
-            <Style Selector="^[IsSelected=False][IsCandidateSelected=True]">
+            <Style Selector="^:pointerover:not(:disabled)">
+                <Setter Property="Foreground" Value="{atom:ListBoxTokenResource ItemColor}" />
+                <Setter Property="Background" Value="{atom:ListBoxTokenResource ItemBgColor}" />
+            </Style>
+
+            <Style Selector="^[IsSelected=False][IsCandidateSelected=True]:not(:disabled)">
+                <Setter Property="Foreground" Value="{atom:ListBoxTokenResource ItemHoverColor}" />
                 <Setter Property="Background" Value="{atom:ListViewTokenResource ItemHoverBgColor}" />
+            </Style>
+
+            <Style Selector="^[IsSelected=True]:not(:disabled)">
+                <Setter Property="Foreground" Value="{atom:ListBoxTokenResource ItemSelectedColor}" />
+                <Setter Property="Background" Value="{atom:ListBoxTokenResource ItemSelectedBgColor}" />
             </Style>
         </Style>
     </ControlTheme>

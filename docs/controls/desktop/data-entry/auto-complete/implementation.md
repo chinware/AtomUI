@@ -1,6 +1,6 @@
 # AutoComplete 桌面版实现原理
 
-本文档描述 AutoComplete 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [AutoComplete 桌面版架构设计](overview.md)，变化记录见 [AutoComplete Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [AutoComplete Token 设计](token.md)。
+本文档描述 AutoComplete 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [AutoComplete 桌面版架构设计](overview.md)，候选列表状态契约见 [候选列表统一交互设计](../select/candidate-interaction-design.md)，变化记录见 [AutoComplete Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [AutoComplete Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -125,6 +125,8 @@ AutoComplete 的交互事件应从输入源收敛到控件级语义事件：
 - 主题资源、Token 和 SharedToken 计算后的视觉更新。
 - ItemsSource、selection、checked、expanded、filter、paging 或 upload task 的集合同步。
 - 动效启停、初始加载阶段 transition 抑制和卸载取消。
+
+候选交互必须遵循统一 active candidate 流：`CandidateList` 保存唯一候选 owner，鼠标命中可用项时迁移该状态但不滚动，键盘导航复用同一写入路径并可滚动到可见位置；容器回收、过滤或 source 重建时只恢复 owner 状态，不把 `:pointerover` 当作独立候选来源。`Enter` 从 active candidate 读取提交目标，不能从旧的 `SelectedItem` 或指针命中状态重新推导。
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 

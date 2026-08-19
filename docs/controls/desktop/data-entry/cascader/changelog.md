@@ -3,6 +3,17 @@
 本文档记录 Cascader 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-08-19
+
+- Behavior
+  - Make pointer movement and keyboard navigation share one active candidate in both ordinary tree columns and filtered path results.
+  - Preserve hover-triggered expansion while excluding disabled, hidden, and loading nodes from active candidate ownership.
+  - Make `Enter` commit the filtered or tree candidate represented by the single active visual state.
+- Theme
+  - Remove independent pointer-over candidate highlighting while preserving expanded and selected visual precedence.
+- Tests
+  - Add mixed pointer/keyboard and pointer-to-`Enter` coverage for tree and filtered modes.
+
 ## 2026-07-05
 
 - API

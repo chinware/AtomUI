@@ -46,7 +46,17 @@ public class CandidateList : ListBox, ICandidateList
     public object? CandidateSelectedItem
     {
         get => _candidateSelectedItem;
-        set => SetAndRaise(CandidateSelectedItemProperty, ref _candidateSelectedItem, value);
+        set
+        {
+            if (value is null)
+            {
+                ClearActiveCandidate();
+            }
+            else if (!TrySetCandidateItemSelected(value))
+            {
+                ClearActiveCandidate();
+            }
+        }
     }
 
     private int _candidateSelectedIndex = -1;
@@ -54,7 +64,17 @@ public class CandidateList : ListBox, ICandidateList
     public int CandidateSelectedIndex
     {
         get => _candidateSelectedIndex;
-        set => SetAndRaise(CandidateSelectedIndexProperty, ref _candidateSelectedIndex, value);
+        set
+        {
+            if (value < 0)
+            {
+                ClearActiveCandidate();
+            }
+            else if (!TrySetCandidateItemSelected(value))
+            {
+                ClearActiveCandidate();
+            }
+        }
     }
     
     public int MaxCount
@@ -95,8 +115,6 @@ public class CandidateList : ListBox, ICandidateList
     static CandidateList()
     {
         SelectedItemProperty.Changed.AddClassHandler<CandidateList>((list, args) => list.HandleSelectItemChanged(args));
-        CandidateSelectedIndexProperty.Changed.AddClassHandler<CandidateList>((list, args) => list.HandleCandidateSelectedIndexChanged(args));
-        CandidateSelectedItemProperty.Changed.AddClassHandler<CandidateList>((list, args) => list.HandleCandidateSelectedItemChanged(args));
         SelectionChangedEvent.AddClassHandler<CandidateList>((list, args) => list.HandleSelectionChanged());
         
         ItemsPanelProperty.OverrideDefaultValue<CandidateList>(DefaultPanel);
@@ -150,36 +168,10 @@ public class CandidateList : ListBox, ICandidateList
         }
     }
     
-    private void HandleCandidateSelectedIndexChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        var oldIndex = e.GetOldValue<int>();
-        var newIndex = e.GetNewValue<int>();
-        if (newIndex == -1)
-        {
-            ClearCandidateItemSelection(oldIndex);
-        }
-        else
-        {
-            TrySetCandidateItemSelected(newIndex, oldIndex);
-        }
-    }
-    
-    private void HandleCandidateSelectedItemChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        if (e.NewValue == null)
-        {
-            if (e.OldValue != null && ContainerFromItem(e.OldValue) is CandidateListItem listItem)
-            {
-                SetCandidateItemSelectedIfChanged(listItem, false);
-            }
-        }
-        else
-        {
-            TrySetCandidateItemSelected(e.NewValue);
-        }
-    }
-    
     public bool TrySetCandidateItemSelected(object item)
+        => TrySetCandidateItemSelectedCore(item);
+
+    private bool TrySetCandidateItemSelectedCore(object item)
     {
         var index = Items.IndexOf(item);
         if (index == -1)
@@ -187,46 +179,38 @@ public class CandidateList : ListBox, ICandidateList
             return false;
         }
 
-        return TrySetCandidateItemSelected(index);
+        return TrySetCandidateItemSelectedCore(index);
     }
     
     public bool TrySetCandidateItemSelected(int index)
-    {
-        return TrySetCandidateItemSelected(index, CandidateSelectedIndex);
-    }
+        => TrySetCandidateItemSelectedCore(index);
 
-    private bool TrySetCandidateItemSelected(int index, int oldIndex)
+    private bool TrySetCandidateItemSelectedCore(int index)
     {
         if (index < 0 || index > ItemCount - 1)
         {
             return false;
         }
-        
-        if (oldIndex != -1 && oldIndex != index)
+
+        var candidateItem = Items[index];
+        var candidateContainer = ContainerFromIndex(index) as CandidateListItem;
+        if (!IsCandidateAvailable(candidateItem, candidateContainer))
         {
-            ClearCandidateItemSelection(oldIndex);
+            return false;
         }
 
-        Control? candidateContainer = null;
-        if (ItemsPanelRoot is CandidateVirtualizingStackPanel virtualizingStackPanel)
+        var changed = SetActiveCandidate(index, candidateItem, candidateContainer);
+        if (changed && ItemsPanelRoot is CandidateVirtualizingStackPanel virtualizingStackPanel)
         {
-            candidateContainer = virtualizingStackPanel.ScrollCandidateItemIntoView(index);
+            if (virtualizingStackPanel.ScrollCandidateItemIntoView(index) is CandidateListItem realizedContainer)
+            {
+                candidateContainer = realizedContainer;
+            }
         }
 
-        candidateContainer ??= ContainerFromIndex(index);
         if (candidateContainer is CandidateListItem childContainer)
         {
             SetCandidateItemSelectedIfChanged(childContainer, true);
-        }
-
-        var candidateSelectedItem = Items[index];
-        if (!Equals(CandidateSelectedItem, candidateSelectedItem))
-        {
-            SetCurrentValue(CandidateSelectedItemProperty, candidateSelectedItem);
-        }
-        if (CandidateSelectedIndex != index)
-        {
-            SetCurrentValue(CandidateSelectedIndexProperty, index);
         }
         return true;
     }
@@ -247,6 +231,82 @@ public class CandidateList : ListBox, ICandidateList
         {
             item.SetCurrentValue(CandidateListItem.IsCandidateSelectedProperty, isSelected);
         }
+    }
+
+    private bool TrySetCandidateFromContainer(CandidateListItem listItem)
+    {
+        var index = IndexFromContainer(listItem);
+        if (index < 0 || index >= ItemCount || !IsCandidateAvailable(Items[index], listItem))
+        {
+            return false;
+        }
+
+        return SetActiveCandidate(index, Items[index], listItem);
+    }
+
+    private bool SetActiveCandidate(int index, object? candidateItem, CandidateListItem? candidateContainer)
+    {
+        if (CandidateSelectedIndex == index && ReferenceEquals(CandidateSelectedItem, candidateItem))
+        {
+            if (candidateContainer is not null)
+            {
+                SetCandidateItemSelectedIfChanged(candidateContainer, true);
+            }
+
+            return false;
+        }
+
+        ClearCandidateItemSelection(CandidateSelectedIndex);
+        SetAndRaise(CandidateSelectedItemProperty, ref _candidateSelectedItem, candidateItem);
+        SetAndRaise(CandidateSelectedIndexProperty, ref _candidateSelectedIndex, index);
+        if (candidateContainer is not null)
+        {
+            SetCandidateItemSelectedIfChanged(candidateContainer, true);
+        }
+
+        return true;
+    }
+
+    private bool IsCandidateAvailable(object? item, CandidateListItem? container)
+    {
+        if (item is IListItemData itemData && !itemData.IsEnabled)
+        {
+            return false;
+        }
+
+        if (!IsSingleMode() && SelectedItems?.Count >= MaxCount && SelectedItems.Contains(item) == false)
+        {
+            return false;
+        }
+
+        return container is null || container.IsEnabled && container.IsVisible;
+    }
+
+    private void ClearActiveCandidateIfUnavailable()
+    {
+        if (CandidateSelectedIndex < 0 ||
+            CandidateSelectedIndex >= ItemCount ||
+            !IsCandidateAvailable(Items[CandidateSelectedIndex], ContainerFromIndex(CandidateSelectedIndex) as CandidateListItem))
+        {
+            ClearActiveCandidate();
+        }
+    }
+
+    private void ClearActiveCandidate()
+    {
+        if (CandidateSelectedIndex == -1 && CandidateSelectedItem is null)
+        {
+            return;
+        }
+
+        ClearCandidateItemSelection(CandidateSelectedIndex);
+        if (CandidateSelectedItem is not null && ContainerFromItem(CandidateSelectedItem) is CandidateListItem itemContainer)
+        {
+            SetCandidateItemSelectedIfChanged(itemContainer, false);
+        }
+
+        SetAndRaise(CandidateSelectedIndexProperty, ref _candidateSelectedIndex, -1);
+        SetAndRaise(CandidateSelectedItemProperty, ref _candidateSelectedItem, null);
     }
     
     private void ResetScrollViewer()
@@ -305,6 +365,7 @@ public class CandidateList : ListBox, ICandidateList
     {
         NotifyCommit();
         ClearState();
+        ClearActiveCandidate();
     }
     
     private void HandleMultiModeCommit()
@@ -338,7 +399,9 @@ public class CandidateList : ListBox, ICandidateList
 
         if (_candidateSelectedIndex == -1)
         {
-            CandidateSelectedIndex = SelectedIndex != -1 ? FindNextEnabledIndex(SelectedIndex, -1) : ItemCount - 1;
+            CandidateSelectedIndex = FindNextEnabledIndex(
+                SelectedIndex != -1 ? SelectedIndex : 0,
+                -1);
         }
         else
         {
@@ -355,7 +418,9 @@ public class CandidateList : ListBox, ICandidateList
 
         if (_candidateSelectedIndex == -1)
         {
-            CandidateSelectedIndex = SelectedIndex != -1 ? FindNextEnabledIndex(SelectedIndex, 1) : 0;
+            CandidateSelectedIndex = FindNextEnabledIndex(
+                SelectedIndex != -1 ? SelectedIndex : -1,
+                1);
         }
         else
         {
@@ -383,6 +448,7 @@ public class CandidateList : ListBox, ICandidateList
     {
         NotifyCancel();
         ClearState();
+        ClearActiveCandidate();
     }
     
     protected virtual void NotifyCancel()
@@ -421,7 +487,21 @@ public class CandidateList : ListBox, ICandidateList
     {
         if (IsSingleMode())
         {
+            if (item is CandidateListItem candidateListItem)
+            {
+                TrySetCandidateFromContainer(candidateListItem);
+            }
             NotifyCommit();
+        }
+    }
+
+    protected override void OnPointerMoved(PointerEventArgs e)
+    {
+        base.OnPointerMoved(e);
+        if (e.Pointer.Type == PointerType.Mouse &&
+            GetContainerFromEventSource(e.Source) is CandidateListItem candidateListItem)
+        {
+            TrySetCandidateFromContainer(candidateListItem);
         }
     }
     
@@ -457,7 +537,7 @@ public class CandidateList : ListBox, ICandidateList
                 }
             }
 
-            if (ContainerFromIndex(index) is ListBoxItem listBoxItem && listBoxItem.IsEnabled)
+            if (IsCandidateAvailable(Items[index], ContainerFromIndex(index) as CandidateListItem))
             {
                 return index;
             }
@@ -472,27 +552,22 @@ public class CandidateList : ListBox, ICandidateList
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == MaxCountProperty || 
+        if (change.Property == MaxCountProperty ||
             change.Property == SelectedItemsProperty)
         {
             ConfigureOptionsForMaxCount();
+            ClearActiveCandidateIfUnavailable();
         }
 
         if (change.Property == SelectedItemsProperty)
         {
             ConfigureEmptyIndicator();
         }
-        if (change.Property == FilterValueProperty ||
+        if (change.Property == ItemsSourceProperty || change.Property == ItemCountProperty ||
+            change.Property == FilterValueProperty ||
             change.Property == FilterProperty)
         {
-            if (CandidateSelectedIndex != -1)
-            {
-                CandidateSelectedIndex = -1;
-            }
-            if (CandidateSelectedItem is not null)
-            {
-                CandidateSelectedItem = null;
-            }
+            ClearActiveCandidate();
         }
         
     }
@@ -522,14 +597,7 @@ public class CandidateList : ListBox, ICandidateList
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        if (CandidateSelectedIndex != -1)
-        {
-            CandidateSelectedIndex = -1;
-        }
-        if (CandidateSelectedItem is not null)
-        {
-            CandidateSelectedItem = null;
-        }
+        ClearActiveCandidate();
     }
 
     #region 虚拟化上下文管理
@@ -544,6 +612,10 @@ public class CandidateList : ListBox, ICandidateList
                 SetCandidateItemSelectedIfChanged(
                     candidateListItem,
                     virtualListItem.VirtualIndex == CandidateSelectedIndex);
+            }
+            else
+            {
+                SetCandidateItemSelectedIfChanged(candidateListItem, false);
             }
         }
     }

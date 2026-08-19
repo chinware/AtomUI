@@ -89,7 +89,7 @@
         </Style>
 
         <Style Selector="^:pointerover">
-            <Setter Property="Background" Value="{atom:CascaderTokenResource OptionHoverBg}" />
+            <Setter Property="Background" Value="Transparent" />
         </Style>
 
         <Style Selector="^[IsExpanded=False][IsCandidateSelected=True]">

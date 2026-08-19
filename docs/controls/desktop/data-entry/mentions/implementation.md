@@ -1,6 +1,6 @@
 # Mentions 桌面版实现原理
 
-本文档描述 Mentions 桌面版的内部模板组合、触发符识别、候选弹层、同步/异步加载、过滤、候选插入、Form 和 Token 资源边界。公共设计与 API 契约见 [Mentions 桌面版架构设计](overview.md)，Token 语义见 [Mentions Token 设计](token.md)，变化记录见 [Mentions Changelog](changelog.md)。
+本文档描述 Mentions 桌面版的内部模板组合、触发符识别、候选弹层、同步/异步加载、过滤、候选插入、Form 和 Token 资源边界。公共设计与 API 契约见 [Mentions 桌面版架构设计](overview.md)，候选列表状态契约见 [候选列表统一交互设计](../select/candidate-interaction-design.md)，Token 语义见 [Mentions Token 设计](token.md)，变化记录见 [Mentions Changelog](changelog.md)。
 
 ## 1. 实现定位
 
@@ -27,7 +27,7 @@ Mentions 的实现以 `MentionTextArea` 为输入内核，`Popup` 和 `Candidate
 
 `MentionTextArea` 是文本输入和 trigger 检测边界。它继承 `TextArea`，复用 TextArea 的多行输入、清除、状态、Form feedback 和尺寸能力，并增加 `TriggerPrefix`、`FilterValue`、`IsDropDownOpen`、`CandidateOpenRequest` 和 `CandidateCloseRequest`。
 
-`CandidateList` 是候选选择边界。Mentions 只依赖 `ICandidateList` 的 `ItemsSource`、`SelectedItem`、`Commit`、`Cancel` 和 `HandleKeyDown()`，不直接管理候选项容器。
+`CandidateList` 是候选选择边界和 active candidate owner。Mentions 只依赖 `ICandidateList` 的 `ItemsSource`、`SelectedItem`、`Commit`、`Cancel` 和 `HandleKeyDown()`，不直接管理候选项容器；鼠标候选迁移、键盘导航和 `Enter` 提交必须最终读取同一 active candidate。
 
 `IMentionOptionsAsyncLoader` 是异步数据边界。控件只调用 `LoadAsync(context, token)`，不假设远程协议、缓存策略或错误显示方式。
 
@@ -121,6 +121,8 @@ Popup 打开时创建 `_subscriptionsOnOpen`，订阅自身 `IsVisible`、`IsEna
 - 点击 popup 内部时保持弹层。
 - 弹层打开时点击非文本区域会关闭弹层。
 - 普通按下状态通过标准 `:pressed` 伪类表达。
+
+候选项的 `:pointerover` 只表示指针命中事实，不单独绘制候选 active 背景。候选列表把鼠标移动到可用项转换为 active candidate 迁移；键盘路径复用同一 owner，且只有键盘路径负责滚动到可见区域。
 
 候选提交：
 

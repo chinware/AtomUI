@@ -2,6 +2,16 @@
 
 本文档记录 ComboBox 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-19
+
+- Behavior
+  - Make pointer movement and keyboard navigation update the same internal active candidate without committing `SelectedItem`.
+  - Keep pointer migration non-scrolling and make `Enter` commit the current visual candidate.
+- Theme
+  - Neutralize inherited pointer-over candidate styling and preserve selected-item visual precedence.
+- Tests
+  - Add mixed pointer/keyboard navigation and pointer-to-`Enter` commit regression coverage.
+
 ## 2026-08-18
 
 - Behavior

@@ -1,10 +1,10 @@
-# Select 候选交互设计
+# 候选列表统一交互设计
 
-本文档定义 Select 候选弹层中鼠标、键盘、已确认选择和虚拟化容器之间的统一候选交互模型。控件总体设计见 [Select 桌面版架构设计](overview.md)，源码职责与生命周期见 [Select 桌面版实现原理](implementation.md)。
+本文档定义 AtomUI 下拉候选列表家族中鼠标、键盘、已确认选择和虚拟化容器之间的统一候选交互模型。Select 是该契约的最早实现；AutoComplete、Mentions、ComboBox 和 Cascader 的候选列表复用同一状态语义，但由各自控件负责把 active candidate 映射到自己的提交和展开流程。Select 的总体设计见 [Select 桌面版架构设计](overview.md)，源码职责与生命周期见 [Select 桌面版实现原理](implementation.md)。
 
 ## 1. 设计定位
 
-Select 使用 active candidate 表达用户在候选弹层中的当前操作目标。active candidate 可以由鼠标移动或键盘导航产生，是 `Enter` 提交或切换选择的唯一候选目标。
+候选列表使用 active candidate 表达用户在候选弹层中的当前操作目标。active candidate 可以由鼠标移动或键盘导航产生，是 `Enter` 提交、切换选择或继续展开的唯一候选目标。
 
 该模型覆盖：
 
@@ -15,9 +15,23 @@ Select 使用 active candidate 表达用户在候选弹层中的当前操作目�
 - 候选项虚拟化、容器回收和重新准备。
 - 候选弹层关闭、过滤上下文变化和选项源重建时的状态失效。
 
+### 1.1 适用边界
+
+该契约适用于同时满足以下条件的弹层内容：方向键移动的是尚未提交的候选目标，鼠标命中项能够成为同一次 `Enter` 操作的目标，并且候选高亮与已确认选择具有独立状态。当前纳入该契约的控件如下：
+
+| 控件 | 候选 owner |
+| --- | --- |
+| Select | `SelectCandidateList` |
+| AutoComplete、Mentions | 公共 `CandidateList` |
+| ComboBox | ComboBox internal candidate index 与 item projection |
+| Cascader 普通树列 | `CascaderView` 当前树候选 |
+| Cascader 过滤结果 | `CascaderViewFilterList` 当前过滤候选 |
+
+TreeSelect、DatePicker/Calendar 和 TimePicker 不机械套用本契约：TreeSelect 的 TreeView 方向键状态属于树选择与焦点契约；日期范围 hover、日历焦点和时间列 current value 还承担范围预览、日期焦点或时间值语义，不是独立的下拉列表 active candidate。它们仍需保证各自状态模型只有一个 owner，但不能通过关闭通用 hover 视觉来替代本身的选择、焦点和预览契约。
+
 ## 2. 设计原则
 
-1. `SelectCandidateList` 是 active candidate 的唯一 owner；候选项容器只投影 owner 状态。
+1. 每个候选列表实例只有一个 active candidate owner；候选项容器只投影 owner 状态。Select 使用 `SelectCandidateList`，AutoComplete 和 Mentions 使用公共 `CandidateList`，ComboBox 与 Cascader 在各自 view 中维护等价的 internal owner。
 2. 鼠标和键盘共享同一个 active candidate，不维护相互独立的 hover candidate 和 keyboard candidate。
 3. `:pointerover` 只表达 Avalonia 指针命中事实，不独立决定 Select 候选高亮。
 4. active candidate 与已确认选择相互独立；候选迁移不能改变 `SelectedOption` 或 `SelectedOptions`。
@@ -33,14 +47,14 @@ Select 使用 active candidate 表达用户在候选弹层中的当前操作目�
 
 | 术语 | 定义 |
 | --- | --- |
-| Active candidate | 当前可以由 `Enter` 提交或切换选择的唯一候选项。 |
+| Active candidate | 当前可以由 `Enter` 提交、切换选择或继续展开的唯一候选项。 |
 | Committed selection | 已写入 `SelectedOption` 或 `SelectedOptions` 的确认选择。 |
 | Pointer hit | Avalonia 通过 `IsPointerOver` / `:pointerover` 表达的当前指针命中事实。 |
 | Source index | 候选项在有效候选源中的索引，是 `CandidateSelectedIndex` 的索引语义。 |
 | View index | 过滤和分组后候选项在当前 ListView 投影中的位置。 |
 | Candidate projection | 已准备容器上的 `IsCandidateSelected` 状态。 |
 
-active candidate 使用以下 internal 状态表达：
+active candidate 使用以下 internal 状态表达（具体控件可使用等价的私有字段或 internal 属性）：
 
 ```text
 CandidateSelectedIndex
@@ -61,8 +75,8 @@ CandidateSelectedItem
 
 | 状态 | Owner | 作用 |
 | --- | --- | --- |
-| Active candidate | `SelectCandidateList` | 导航、提交目标和候选高亮。 |
-| Committed selection | Select 公共选择属性与 ListView selection | 已确认值、selected 视觉和 Form 值。 |
+| Active candidate | 候选列表 owner | 导航、提交/展开目标和候选高亮。 |
+| Committed selection | 各控件公共选择属性与列表 selection | 已确认值、selected 视觉和 Form 值。 |
 | Pointer hit | Avalonia input system | 产生鼠标候选迁移请求，不直接绘制候选视觉。 |
 
 同一候选项可以同时是 active candidate 和 committed selection。此时 selected 视觉保持优先，active 状态仍作为 `Enter` 的交互目标存在。
@@ -88,20 +102,20 @@ CandidateSelectedItem
 
 | 组件 | 职责 | 不负责 |
 | --- | --- | --- |
-| `Select` | 公共选择属性、候选源、过滤、模式和 popup 生命周期协调 | 不直接维护容器 active 视觉 |
-| `SelectCandidateList` | active candidate owner、输入映射、索引转换、键盘滚动和提交/取消 | 不把 active 状态写入业务 option |
-| `SelectCandidateListItem` | 投影 `IsCandidateSelected`、`IsSelected`、启用和分组状态 | 不持有跨回收周期的候选状态 |
-| `CandidateVirtualizingStackPanel` | 键盘候选滚动到可见区域 | 不决定 active candidate |
-| `SelectCandidateListItemTheme` | 把 active、selected、disabled 和隐藏状态映射为视觉 | 不从 `:pointerover` 推导独立候选 |
+| 下拉控件 | 公共选择属性、候选源、过滤、模式和 popup 生命周期协调 | 不直接维护容器 active 视觉 |
+| 候选列表 owner | active candidate owner、输入映射、索引转换、键盘滚动和提交/取消 | 不把 active 状态写入业务 option |
+| 候选项容器 | 投影 `IsCandidateSelected`、`IsSelected`、启用、分组和控件特有状态 | 不持有跨回收周期的候选状态 |
+| 虚拟化列表面板 | 键盘候选滚动到可见区域 | 不决定 active candidate |
+| 候选项主题 | 把 active、selected、disabled、expanded 或 checked 状态映射为视觉 | 不从 `:pointerover` 推导独立候选 |
 
 状态流保持单向：
 
 ```text
 pointer move / Up / Down
     -> resolve valid candidate source index
-    -> SelectCandidateList active candidate
-    -> realized container IsCandidateSelected
-    -> SelectCandidateListItemTheme active visual
+    -> candidate-list owner active candidate
+    -> realized container candidate projection
+    -> item theme active visual
 
 Enter / pointer click
     -> active or clicked candidate
@@ -112,7 +126,7 @@ Enter / pointer click
 
 ## 6. Theme 与组合契约
 
-`SelectCandidateListItemTheme` 基于 `ListViewItemTheme`，但 Select 的候选视觉必须由统一 active candidate 状态控制。
+候选项主题基于 `ListViewItemTheme`，但候选视觉必须由统一 active candidate 状态控制。各控件可以有不同的 selected、expanded 或 checked 视觉，但不能恢复独立的候选 hover owner。
 
 主题遵守以下层次：
 
@@ -133,12 +147,12 @@ Enter / pointer click
 
 ```text
 PointerMoved
-    -> 从事件源解析最近的 SelectCandidateListItem
+    -> 从事件源解析最近的候选项容器
     -> 验证非 group、可见、启用且允许选择
     -> view index 映射为 source index
     -> 与 CandidateSelectedIndex 比较
     -> 相同则返回
-    -> 更新 active candidate，不调用 ScrollCandidateItemIntoView
+    -> 更新 active candidate，不调用候选滚动方法
 ```
 
 鼠标在同一候选项内部移动是稳态热路径，必须在索引比较后直接返回。目标变化时只清理旧候选容器并设置新候选容器，不扫描全部候选项。

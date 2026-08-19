@@ -5,6 +5,8 @@ using AtomUI.Desktop.Controls.Primitives;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Headless;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -133,6 +135,55 @@ public class MentionsBehaviorTests
         }
     }
 
+    [Fact]
+    public void Pointer_Move_Then_Enter_Inserts_The_Pointer_Candidate()
+    {
+        var anna = new MentionOption { Header = "anna", Value = "anna" };
+        var amy  = new MentionOption { Header = "amy", Value = "amy" };
+        var mentions = new AtomUIMentions
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            OptionsSource   = [anna, amy]
+        };
+        var window = CreateWindow(mentions);
+
+        try
+        {
+            var textArea = mentions.GetVisualDescendants()
+                                   .OfType<MentionTextArea>()
+                                   .Single();
+            textArea.Text       = "@";
+            textArea.CaretIndex = 1;
+            Dispatcher.UIThread.RunJobs();
+
+            mentions.IsDropDownOpen.ShouldBeTrue();
+            var candidateList = FindCandidateList(window);
+            var annaContainer = GetContainer(candidateList, 0);
+            var amyContainer  = GetContainer(candidateList, 1);
+
+            PressCandidateKey(candidateList, Key.Down);
+            MovePointerTo(amyContainer, window);
+            Dispatcher.UIThread.RunJobs();
+
+            annaContainer.IsCandidateSelected.ShouldBeFalse();
+            amyContainer.IsCandidateSelected.ShouldBeTrue();
+            candidateList.CandidateSelectedItem.ShouldBeSameAs(amy);
+
+            PressCandidateKey(candidateList, Key.Enter);
+            Dispatcher.UIThread.RunJobs();
+
+            mentions.Value.ShouldNotBeNull();
+            mentions.Value.ShouldContain("@amy");
+            mentions.Value.ShouldNotContain("@anna");
+            mentions.IsDropDownOpen.ShouldBeFalse();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     private static AvaloniaWindow CreateWindow(Control content)
     {
         var overlayPanel = new ScopeAwareOverlayLayerPanel
@@ -182,6 +233,41 @@ public class MentionsBehaviorTests
         }
 
         throw new InvalidOperationException("Expected Mentions popup candidate list to be realized.");
+    }
+
+    private static CandidateListItem GetContainer(CandidateList candidateList, int index)
+    {
+        var container = candidateList.ContainerFromIndex(index) as CandidateListItem;
+        container.ShouldNotBeNull();
+        return container;
+    }
+
+    private static void MovePointerTo(Control target, AvaloniaWindow window)
+    {
+        var point = target.TranslatePoint(
+            new Point(target.Bounds.Width / 2, target.Bounds.Height / 2),
+            window);
+        point.ShouldNotBeNull();
+
+        window.MouseMove(point.Value);
+        Dispatcher.UIThread.RunJobs();
+    }
+
+    private static void PressCandidateKey(CandidateList candidateList, Key key)
+    {
+        candidateList.HandleKeyDown(new KeyEventArgs
+        {
+            RoutedEvent  = InputElement.KeyDownEvent,
+            Source       = candidateList,
+            Key          = key,
+            PhysicalKey  = key switch
+            {
+                Key.Enter => PhysicalKey.Enter,
+                Key.Down  => PhysicalKey.ArrowDown,
+                _         => PhysicalKey.None
+            },
+            KeyModifiers = KeyModifiers.None
+        });
     }
 
     private static void EnablePopupOverlayLayer(VisualLayerManager visualLayerManager)

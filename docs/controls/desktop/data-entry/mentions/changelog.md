@@ -8,6 +8,16 @@
 - 不记录临时讨论、纯格式化或没有长期价值的实现细节。
 - 架构文档始终描述最新设计状态；历史变化记录在本文档。
 
+## 2026-08-19
+
+- Behavior
+  - Unify pointer and keyboard candidate navigation through the shared `CandidateList` active candidate owner.
+  - Keep the current mention trigger context intact while `Enter` inserts the single visual active candidate.
+- Theme
+  - Stop inherited `:pointerover` styling from rendering a second candidate highlight; committed selection remains visually dominant.
+- Tests
+  - Add trigger-popup integration coverage for pointer migration followed by mention insertion.
+
 ## 2026-07-06
 
 - API

@@ -1,6 +1,6 @@
 # ComboBox 桌面版实现原理
 
-本文档描述 ComboBox 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [ComboBox 桌面版架构设计](overview.md)，变化记录见 [ComboBox Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [ComboBox Token 设计](token.md)。
+本文档描述 ComboBox 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [ComboBox 桌面版架构设计](overview.md)，候选列表状态契约见 [候选列表统一交互设计](../../data-entry/select/candidate-interaction-design.md)，变化记录见 [ComboBox Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [ComboBox Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -68,6 +68,7 @@ Public API / ItemsSource / Command / Event
 - `IFormItemAware` 的值读写直接映射到 `SelectedItem`：`SetFormValue(value)` 保留对象实例并设置选择，`GetFormValue()` 返回选择对象，`ClearFormValue()` 清空选择。
 - 非编辑态选中内容溢出提示由 `OverflowTip` 托管，只在 `SelectedContentPresenter` 视觉溢出时写入 `ToolTip.Tip`，延迟和位置分别映射到 `ToolTip.ShowDelay` 与 `ToolTip.Placement`；非编辑态显示节点以外层 `AddOnDecoratedBox` 作为 `PlacementTarget`，避免 tooltip 左边按内部文本 padding 对齐；编辑态输入文本仍由 `PART_EditableTextBox` 自己承载，不自动开启该提示。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
+- popup 候选必须由单一 active candidate owner 驱动：鼠标命中可用 `ComboBoxItem` 时只迁移候选，不滚动、不提交；`Up` / `Down` 复用同一状态并允许滚动，`Enter` 从 active candidate 写入真实 `SelectedItem`。容器 recycle、ItemsSource / filter 变化和 popup close 必须清理旧投影。
 - overview.md 的 API 契约说明应与源码实际状态流一致。
 
 ## 5. 生命周期与模板接入

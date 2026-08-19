@@ -613,6 +613,16 @@ public class ComboBox : AvaloniaComboBox,
             PseudoClasses.Set(StdPseudoClass.Pressed, true);
         }
     }
+
+    protected override void OnPointerMoved(PointerEventArgs e)
+    {
+        base.OnPointerMoved(e);
+        if (IsDropDownOpen && e.Pointer.Type == PointerType.Mouse &&
+            GetContainerFromEventSource(e.Source) is ComboBoxItem comboBoxItem)
+        {
+            TrySetCandidateFromContainer(comboBoxItem);
+        }
+    }
     
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
@@ -1088,23 +1098,49 @@ public class ComboBox : AvaloniaComboBox,
 
     private void SetCandidateSelectedIndex(int index)
     {
+        if (SetCandidateSelectedIndexCore(index) && index != -1)
+        {
+            ScrollIntoView(index);
+        }
+    }
+
+    private void SetCandidateSelectedIndexWithoutScroll(int index)
+    {
+        SetCandidateSelectedIndexCore(index);
+    }
+
+    private bool SetCandidateSelectedIndexCore(int index)
+    {
         if (_candidateSelectedIndex == index)
         {
             if (index == -1)
             {
                 ClearCandidateItemVisualSelection();
             }
-            return;
+            else
+            {
+                SelectCandidateItemVisual(index);
+            }
+            return false;
         }
 
         ClearCandidateItemVisualSelection();
         _candidateSelectedIndex = index;
         SelectCandidateItemVisual(_candidateSelectedIndex);
 
-        if (_candidateSelectedIndex != -1)
+        return true;
+    }
+
+    private bool TrySetCandidateFromContainer(ComboBoxItem comboBoxItem)
+    {
+        var index = IndexFromContainer(comboBoxItem);
+        if (index < 0 || !IsCandidateItemSelectable(index))
         {
-            ScrollIntoView(_candidateSelectedIndex);
+            return false;
         }
+
+        SetCandidateSelectedIndexWithoutScroll(index);
+        return true;
     }
 
     private void ClearCandidateItemSelection()

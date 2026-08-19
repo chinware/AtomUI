@@ -1,6 +1,6 @@
 # Mentions 桌面版架构设计
 
-本文档定义 `AtomUI.Desktop.Controls.Mentions` 的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Mentions 桌面版实现原理](implementation.md)，Token 专项设计见 [Mentions Token 设计](token.md)，设计和契约变化记录见 [Mentions Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.Mentions` 的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，候选列表统一交互见 [候选列表统一交互设计](../select/candidate-interaction-design.md)，内部实现原理见 [Mentions 桌面版实现原理](implementation.md)，Token 专项设计见 [Mentions Token 设计](token.md)，设计和契约变化记录见 [Mentions Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -225,7 +225,7 @@ Mentions 属于 Data Entry 文本输入控件家族，与 LineEdit/TextArea 共�
 
 Mentions 将 `OptionsSource` 缓存为 `List<IMentionOption>`，再根据 `FilterValue` 构造当前候选视图。默认过滤器是 contains。`FilterValueSelector` 存在时使用 selector 返回值；否则按 `Header`、`Value`、`Key` 的顺序选择过滤文本。
 
-过滤过程通过 `_filterInAction` 和 `_cancelRequested` 避免重入时生成过期视图。刷新完成后，候选列表自动选中第一项。
+过滤过程通过 `_filterInAction` 和 `_cancelRequested` 避免重入时生成过期视图。刷新完成后，`CandidateList` 从当前有效视图建立 active candidate；鼠标移动和键盘导航共享同一候选状态，`Enter` 使用该状态插入 mention。过滤、异步结果替换或候选列表回收时，旧候选必须失效，不能由 pointer-over 视觉继续保留。
 
 ### 8.2 异步加载模型
 

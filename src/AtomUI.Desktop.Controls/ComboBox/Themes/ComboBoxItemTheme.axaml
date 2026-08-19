@@ -26,13 +26,13 @@
         <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
 
-        <Style Selector="^:pointerover">
-            <Setter Property="Foreground" Value="{atom:ComboBoxTokenResource ItemHoverColor}" />
+        <Style Selector="^:pointerover:not(:disabled)">
+            <Setter Property="Foreground" Value="{atom:ComboBoxTokenResource ItemColor}" />
             <Setter Property="Background"
-                    Value="{atom:ComboBoxTokenResource ItemHoverBgColor}" />
+                    Value="{atom:ComboBoxTokenResource ItemBgColor}" />
         </Style>
 
-        <Style Selector="^[IsSelected=False][IsCandidateSelected=True]">
+        <Style Selector="^[IsSelected=False][IsCandidateSelected=True]:not(:disabled)">
             <Setter Property="Foreground" Value="{atom:ComboBoxTokenResource ItemHoverColor}" />
             <Setter Property="Background"
                     Value="{atom:ComboBoxTokenResource ItemHoverBgColor}" />

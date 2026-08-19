@@ -3,6 +3,14 @@
 本文档记录 Select 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-08-19
+
+- Design
+  - Generalize `candidate-interaction-design.md` from the Select-specific implementation into the shared contract for Select, AutoComplete, Mentions, ComboBox, and Cascader candidate lists.
+  - Record the explicit boundary for TreeSelect, DatePicker/Calendar, and TimePicker state models so their tree selection, range preview, focus, and current-value semantics are not replaced by list hover suppression.
+- Tests
+  - Align family-level verification with pointer-to-keyboard, keyboard-to-pointer, `Enter`, disabled candidate, lifecycle, and projection invariants.
+
 ## 2026-08-18
 
 - Design

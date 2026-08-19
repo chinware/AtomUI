@@ -410,6 +410,54 @@ public class CascaderSearchSelectionTests
         }
     }
 
+    [Fact]
+    public void Tree_Mode_Pointer_And_Keyboard_Navigation_Share_One_Active_Candidate()
+    {
+        var (options, _, _, _) = CreateLakeOptions();
+        var cascader = new Desktop.Controls.Cascader
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            OptionsSource   = options
+        };
+        var window = CreateWindow(cascader);
+
+        try
+        {
+            cascader.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var cascaderView = GetCascaderView(cascader);
+            var zhejiangItem = WaitFor(
+                () => FindCascaderViewItem(cascaderView, "Zhejiang"),
+                "the first root candidate should be visible.");
+            var jiangsuItem = WaitFor(
+                () => FindCascaderViewItem(cascaderView, "Jiangsu"),
+                "the second root candidate should be visible.");
+
+            RaiseKeyDown(cascader, Key.Down);
+            Dispatcher.UIThread.RunJobs();
+            zhejiangItem.IsCandidateSelected.ShouldBeTrue();
+
+            MovePointerTo(jiangsuItem, window);
+
+            zhejiangItem.IsCandidateSelected.ShouldBeFalse();
+            jiangsuItem.IsCandidateSelected.ShouldBeTrue();
+
+            RaiseKeyDown(cascader, Key.Up);
+            Dispatcher.UIThread.RunJobs();
+
+            jiangsuItem.IsPointerOver.ShouldBeTrue(
+                "the pointer remains over Jiangsu while keyboard navigation moves the active candidate.");
+            zhejiangItem.IsCandidateSelected.ShouldBeTrue();
+            jiangsuItem.IsCandidateSelected.ShouldBeFalse();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
@@ -444,7 +492,7 @@ public class CascaderSearchSelectionTests
     }
 
     [Fact]
-    public void Moving_Pointer_Over_Filter_Result_Clears_Keyboard_Candidate()
+    public void Moving_Pointer_Over_Filter_Result_Migrates_Active_Candidate()
     {
         var (options, _, _, _) = CreateLakeOptions();
         var cascaderView = new CascaderView
@@ -480,9 +528,16 @@ public class CascaderSearchSelectionTests
             MovePointerTo(secondItem, window);
 
             firstItem.IsCandidateSelected.ShouldBeFalse();
-            filterList.CandidateSelectedIndex.ShouldBe(-1);
-            filterList.CandidateSelectedItem.ShouldBeNull();
+            secondItem.IsCandidateSelected.ShouldBeTrue();
+            filterList.CandidateSelectedIndex.ShouldBe(1);
+            filterList.CandidateSelectedItem.ShouldBeSameAs(filterList.Items[1]);
             secondItem.IsPointerOver.ShouldBeTrue();
+
+            cascaderView.TryMoveFilterCandidate(-1).ShouldBeTrue();
+            Dispatcher.UIThread.RunJobs();
+
+            firstItem.IsCandidateSelected.ShouldBeTrue();
+            secondItem.IsCandidateSelected.ShouldBeFalse();
         }
         finally
         {
@@ -793,6 +848,58 @@ public class CascaderSearchSelectionTests
             cascader.IsDropDownOpen.ShouldBeFalse();
             options[1].IsExpanded.ShouldBeFalse();
             options[1].Children.Single().IsExpanded.ShouldBeFalse();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Search_Result_Pointer_Move_Then_Enter_Commits_Pointer_Candidate()
+    {
+        var (options, _, _, _) = CreateLakeOptions();
+        var cascader = new Desktop.Controls.Cascader
+        {
+            Width           = 240,
+            IsFilterEnabled = true,
+            IsMotionEnabled = false,
+            OptionsSource   = options
+        };
+        var window = CreateWindow(cascader);
+
+        try
+        {
+            cascader.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var cascaderView = GetCascaderView(cascader);
+            cascader.FilterValue = "lake";
+            Dispatcher.UIThread.RunJobs();
+
+            var filterList = WaitFor(
+                () => cascaderView.GetVisualDescendants()
+                                  .OfType<CascaderViewFilterList>()
+                                  .FirstOrDefault(list => list.IsVisible),
+                "the popup filter result list should be visible after setting a filter value.");
+            var pointerTarget = WaitFor(
+                () => filterList.ContainerFromIndex(1) as CascaderViewFilterListItem,
+                "the second filter result container should be realized.");
+            var itemData       = filterList.Items[1].ShouldBeOfType<CascaderViewFilterListItemData>();
+            var expectedOption = itemData.ExpandItems!.Last();
+
+            RaiseKeyDown(cascader, Key.Down);
+            MovePointerTo(pointerTarget, window);
+            Dispatcher.UIThread.RunJobs();
+
+            filterList.CandidateSelectedIndex.ShouldBe(1);
+            pointerTarget.IsCandidateSelected.ShouldBeTrue();
+
+            RaiseKeyDown(cascader, Key.Enter);
+            Dispatcher.UIThread.RunJobs();
+
+            cascader.SelectedOption.ShouldBeSameAs(expectedOption);
+            cascader.IsDropDownOpen.ShouldBeFalse();
         }
         finally
         {

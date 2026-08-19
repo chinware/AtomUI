@@ -1121,6 +1121,78 @@ public class ComboBoxDisplayMemberBindingTests
     }
 
     [Fact]
+    public void Pointer_And_Keyboard_Navigation_Share_One_Active_Candidate()
+    {
+        var comboBox = new AtomUIComboBox
+        {
+            Width           = 200,
+            IsEditable      = true,
+            IsFilterEnabled = true,
+            IsMotionEnabled = false
+        };
+        comboBox.Items.Add(new AtomUIComboBoxItem { Content = "Alpha" });
+        comboBox.Items.Add(new AtomUIComboBoxItem { Content = "Alpine" });
+
+        ShowInWindow(comboBox, window =>
+        {
+            comboBox.Text           = "Al";
+            comboBox.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var visibleRows = GetVisibleStringComboBoxItems(window);
+            MovePointerTo(window, visibleRows[0]);
+
+            IsCandidateSelected(visibleRows[0]).ShouldBeTrue();
+            IsCandidateSelected(visibleRows[1]).ShouldBeFalse();
+
+            PressKey(window, Key.Down, PhysicalKey.ArrowDown);
+            Dispatcher.UIThread.RunJobs();
+
+            visibleRows[0].IsPointerOver.ShouldBeTrue(
+                "keyboard navigation must replace the candidate even while the pointer remains over the old row.");
+            IsCandidateSelected(visibleRows[0]).ShouldBeFalse();
+            IsCandidateSelected(visibleRows[1]).ShouldBeTrue();
+            comboBox.SelectedIndex.ShouldBe(-1);
+        });
+    }
+
+    [Fact]
+    public void Pointer_Move_Then_Enter_Commits_The_Pointer_Candidate()
+    {
+        var comboBox = new AtomUIComboBox
+        {
+            Width           = 200,
+            IsEditable      = true,
+            IsFilterEnabled = true,
+            IsMotionEnabled = false
+        };
+        comboBox.Items.Add(new AtomUIComboBoxItem { Content = "Alpha" });
+        comboBox.Items.Add(new AtomUIComboBoxItem { Content = "Alpine" });
+
+        ShowInWindow(comboBox, window =>
+        {
+            comboBox.Text           = "Al";
+            comboBox.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var visibleRows = GetVisibleStringComboBoxItems(window);
+            PressKey(window, Key.Down, PhysicalKey.ArrowDown);
+            MovePointerTo(window, visibleRows[1]);
+            Dispatcher.UIThread.RunJobs();
+
+            IsCandidateSelected(visibleRows[0]).ShouldBeFalse();
+            IsCandidateSelected(visibleRows[1]).ShouldBeTrue();
+
+            PressKey(window, Key.Enter, PhysicalKey.Enter);
+            Dispatcher.UIThread.RunJobs();
+
+            comboBox.SelectedIndex.ShouldBe(1);
+            comboBox.Text.ShouldBe("Alpine");
+            comboBox.IsDropDownOpen.ShouldBeFalse();
+        });
+    }
+
+    [Fact]
     public void Editable_Filter_Enter_Key_Commits_Active_Candidate_And_Closes_DropDown()
     {
         var comboBox = new AtomUIComboBox
@@ -1250,6 +1322,17 @@ public class ComboBoxDisplayMemberBindingTests
         window.MouseMove(clickPoint.Value);
         window.MouseDown(clickPoint.Value, MouseButton.Left);
         window.MouseUp(clickPoint.Value, MouseButton.Left);
+    }
+
+    private static void MovePointerTo(AvaloniaWindow window, Control control)
+    {
+        var point = control.TranslatePoint(
+            new Point(control.Bounds.Width / 2, control.Bounds.Height / 2),
+            window);
+        point.ShouldNotBeNull();
+
+        window.MouseMove(point.Value);
+        Dispatcher.UIThread.RunJobs();
     }
 
     private static List<AtomUIComboBoxItem> GetVisibleStringComboBoxItems(Control root)
