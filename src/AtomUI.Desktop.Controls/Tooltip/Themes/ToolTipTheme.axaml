@@ -12,8 +12,7 @@
                         Name="PART_ContentPresenter"
                         Content="{TemplateBinding Content}"
                         ContentTemplate="{TemplateBinding ContentTemplate}"
-                        HorizontalAlignment="Center"
-                        TextBlock.TextAlignment="Center"/>
+                        HorizontalAlignment="Center"/>
                 </atom:ArrowDecoratedBox>
             </ControlTemplate>
         </Setter>
