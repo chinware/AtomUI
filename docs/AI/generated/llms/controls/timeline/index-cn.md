@@ -47,7 +47,8 @@ Timeline 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 | 集合顺序 | `Items`、`ItemsSource`、`IsReverse` | 维护源顺序、最终视觉顺序和 Pending 项的相邻关系。 |
 | 方向与模式 | `Orientation`、`Mode` | 决定主轴方向以及内容位于轴线的 Start、End 或交替侧。 |
 | 内部派生状态 | `IsLabelLayout`、`IsOdd`、`IsFirst`、`IsLast`、`NextIsPending` | 由 Timeline 根据可见项视觉顺序单向投影到 Item 和模板。 |
-| 视觉与布局 | `IndicatorColor`、`IndicatorIcon` | 影响节点颜色、形状和轴线渲染。 |
+| 视觉与布局 | `IndicatorColor`、`IndicatorIcon`、`IndicatorTailColor`、`IndicatorTailWidth` | 影响节点颜色、形状和轴线渲染；连接线颜色与宽度由 Indicator 属性与 Token 定制。 |
+| Semantic Part | `root`、`item`、`itemWrapper`、`itemIcon`、`itemTitle`、`itemContent` | 单一 owner `Timeline` 公开的语义区域，见 [Timeline Semantic Part 契约](semantic-part.md)。 |
 | 其他稳定入口 | `Label`、`Pending` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
@@ -97,7 +98,7 @@ Timeline 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml:36`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml:136`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -111,7 +112,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 颜色
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml:49`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml:149`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -127,7 +128,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 最后节点和反转
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml:64`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml:164`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -152,7 +153,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 动态模式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml:104`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml:204`
 
 Gallery key：`ExamplesContent` / item `4`
 
@@ -206,8 +207,8 @@ Orientation / Mode / IsReverse / Items / item visibility
 | --- | --- | --- | --- |
 | `Vertical` | `Start` | 轴线位于逻辑起始侧，Content 位于结束侧。 | Label 位于起始侧，Content 位于结束侧。 |
 | `Vertical` | `End` | Content 位于逻辑起始侧，轴线位于结束侧。 | Content 位于起始侧，Label 位于结束侧。 |
-| `Horizontal` | `Start` | 轴线在上，Content 在下。 | Label 在上，Content 在下。 |
-| `Horizontal` | `End` | Content 在上，轴线在下。 | Content 在上，Label 在下。 |
+| `Horizontal` | `Start` | 轴线在上，Content 在下。 | 轴线在上，Label 与 Content 依次在下并对轴线居中。 |
+| `Horizontal` | `End` | Content 在上，轴线在下。 | Label 与 Content 依次在上，轴线在下。 |
 | 任意方向 | `Alternate` | 第一可见项为 Start，后续按 End、Start 交替。 | 使用同一交替规则，并保持所有节点共用同一轴线。 |
 
 `FlowDirection` 只影响垂直 Timeline 的逻辑起始侧和结束侧；水平 Timeline 的 Start/End 分别映射到下方和上方。`IsReverse` 只反转主轴视觉顺序，不交换 Start/End。隐藏项不占用布局槽位，也不参与交替奇偶、首尾和 Pending 相邻关系计算。
@@ -247,7 +248,7 @@ Timeline Token 只表达节点、连接线和 Item 的组件级尺寸、间距�
 - 不把可静态声明的 TimelineItem 模板迁移到 C# 动态创建，也不为 Horizontal 创建第二套视觉树。
 - 视觉顺序重算为 O(N)，只在结构状态变化时执行，不进入 Render 热路径。
 - 水平 Measure/Arrange 为 O(N)，只使用已有容器和局部尺寸值。
-- TimelineIndicator 的 dot Pen 和 line Pen 与 Brush/Width 缓存键保持一致，属性变化时精准失效。
+- rail、圆点与图标是静态模板元素，由 Arrange 一次性定位，不持有 Pen 缓存或自绘路径。
 - 新增属性使用静态 AvaloniaProperty 注册和 AXAML 绑定，不引入反射、动态发现或 trimming 风险。
 - Source generator 和 LLMS 生成文件不手工编辑；需要修改时更新源码、主题、Gallery 和人工维护文档源。
 
@@ -285,6 +286,7 @@ Timeline Token 只表达节点、连接线和 Item 的组件级尺寸、间距�
 
 - 源设计文档：`docs/controls/desktop/data-display/timeline/overview.md`
 - 实现文档：`docs/controls/desktop/data-display/timeline/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-display/timeline/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-display/timeline/token.md`
 - 变更记录：`docs/controls/desktop/data-display/timeline/changelog.md`
 - 语义结构：`./semantic-cn.md`

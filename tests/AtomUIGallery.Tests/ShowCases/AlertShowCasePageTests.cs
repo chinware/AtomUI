@@ -1,5 +1,6 @@
 using AtomUI.Toolkits.GalleryBase.Controls;
 using AtomUIGallery.ShowCases.Alert;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Threading;
@@ -109,9 +110,13 @@ public class AlertShowCasePageTests
         semanticSource.ShouldNotContain("Release completed");
         semanticSource.ShouldNotContain("Review required");
         semanticSource.ShouldNotContain("/template/ .semantic-");
-        english.ShouldContain("Custom semantic dom styling");
+        english.ShouldContain("Custom Semantic Part styling");
         english.ShouldContain(
-            "You can customize the semantic dom style of Alert by passing objects/functions through classNames and styles.");
+            "Use owner-scoped styles to customize Alert's published Semantic Parts.");
+        semanticSource.ShouldNotContain("semantic dom", Case.Insensitive);
+        semanticSource.ShouldNotContain("classNames", Case.Insensitive);
+        english.ShouldNotContain("semantic dom", Case.Insensitive);
+        english.ShouldNotContain("classNames", Case.Insensitive);
     }
 
     [Fact]

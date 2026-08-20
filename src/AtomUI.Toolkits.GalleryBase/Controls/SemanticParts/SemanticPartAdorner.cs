@@ -24,10 +24,18 @@ internal sealed class SemanticPartAdorner : Control
         base.Render(context);
 
         var pen = _isPrimary ? PrimaryPen : SecondaryPen;
-        var halfThickness = pen.Thickness / 2;
-        var width = Math.Max(0, Bounds.Width - pen.Thickness);
-        var height = Math.Max(0, Bounds.Height - pen.Thickness);
-        var bounds = new Rect(halfThickness, halfThickness, width, height);
-        context.DrawRectangle(null, pen, bounds);
+        context.DrawRectangle(null, pen, GetStrokeRect(Bounds.Size, pen.Thickness));
+    }
+
+    internal static Rect GetStrokeRect(Size bounds, double penThickness)
+    {
+        // 常规目标按画笔厚度内缩描边；目标比画笔还细（如 2px 宽的 rail）时，
+        // 以画笔厚度为下限居中描边，避免矩形退化为零尺寸导致描边不可见
+        //（首个目标是 2px 主标记，恰好命中该退化场景）。
+        var width  = Math.Max(bounds.Width - penThickness, penThickness);
+        var height = Math.Max(bounds.Height - penThickness, penThickness);
+        var x      = Math.Max(0, (bounds.Width - width) / 2);
+        var y      = Math.Max(0, (bounds.Height - height) / 2);
+        return new Rect(x, y, width, height);
     }
 }

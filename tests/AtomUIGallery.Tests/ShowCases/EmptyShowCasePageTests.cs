@@ -1,5 +1,6 @@
 using AtomUI.Toolkits.GalleryBase.Controls;
 using AtomUIGallery.ShowCases.Empty;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Threading;
@@ -60,6 +61,8 @@ public class EmptyShowCasePageTests
     {
         var source = ReadRepoFile(
             "controlgallery/AtomUIGallery/ShowCases/DataDisplay/Empty/Views/EmptyShowCase.axaml");
+        var english = ReadRepoFile(
+            "controlgallery/AtomUIGallery/ShowCases/DataDisplay/Empty/Localization/en-US.xlf");
         var semanticSource = ExtractShowCaseItem(source, "empty-semantic-part");
 
         source.ShouldContain("<gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>");
@@ -100,6 +103,13 @@ public class EmptyShowCasePageTests
         semanticSource.ShouldNotContain("atom|Empty.semantic-demo /template/ .semantic-description");
         semanticSource.ShouldNotContain("atom|Empty.semantic-demo /template/ .semantic-footer");
         semanticSource.ShouldNotContain("/template/ .semantic-");
+        english.ShouldContain("Custom Semantic Part styling");
+        english.ShouldContain(
+            "Use owner-scoped styles to customize Empty's published Semantic Parts.");
+        semanticSource.ShouldNotContain("semantic dom", Case.Insensitive);
+        semanticSource.ShouldNotContain("classNames", Case.Insensitive);
+        english.ShouldNotContain("semantic dom", Case.Insensitive);
+        english.ShouldNotContain("classNames", Case.Insensitive);
     }
 
     [Fact]

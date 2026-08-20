@@ -100,3 +100,45 @@ Content="{gallery:TimelineShowCaseLangResource P2ContentAlternate}" />
 </StackPanel>
 </StackPanel>
 </gallery:ShowCaseItem>
+<gallery:ShowCaseItem SourceKey="timeline-semantic-part"
+Title="{gallery:TimelineShowCaseLangResource SemanticPartStyleTitle}"
+Description="{gallery:TimelineShowCaseLangResource SemanticPartStyleDescription}"
+BadgeText="{x:Static gallery:GalleryVersionInfo.DisplayVersion}"
+Span="Full">
+<StackPanel Orientation="Vertical"
+HorizontalAlignment="Stretch"
+Spacing="24">
+<StackPanel.Styles>
+<Style Selector="atom|Timeline.semantic-object">
+<Setter Property="Padding" Value="8" />
+<Setter Property="CornerRadius" Value="4" />
+<atom:TimelineItemIconStyle x:SetterTargetType="Border">
+<Setter Property="BorderBrush" Value="#1890ff" />
+</atom:TimelineItemIconStyle>
+</Style>
+<Style Selector="atom|Timeline.semantic-function">
+<Setter Property="Padding" Value="6,10" />
+<Setter Property="CornerRadius" Value="4" />
+<Setter Property="BorderBrush" Value="#A294F9" />
+<Setter Property="BorderThickness" Value="1" />
+<atom:TimelineItemIconStyle x:SetterTargetType="Border">
+<Setter Property="BorderBrush" Value="#A294F9" />
+</atom:TimelineItemIconStyle>
+</Style>
+</StackPanel.Styles>
+<atom:Timeline Classes="semantic-object" Orientation="Horizontal">
+<atom:TimelineItem Label="2015-09-01"
+Content="{gallery:TimelineShowCaseLangResource P2ContentCreateAServicesSite}" />
+<atom:TimelineItem Label="2015-09-01 09:12:11"
+Content="{gallery:TimelineShowCaseLangResource P2ContentSolveInitialNetworkProblems}" />
+<atom:TimelineItem Content="{gallery:TimelineShowCaseLangResource P2ContentTechnicalTesting}" />
+</atom:Timeline>
+<atom:Timeline Classes="semantic-function">
+<atom:TimelineItem Label="2015-09-01"
+Content="{gallery:TimelineShowCaseLangResource P2ContentCreateAServicesSite}" />
+<atom:TimelineItem Label="2015-09-01 09:12:11"
+Content="{gallery:TimelineShowCaseLangResource P2ContentSolveInitialNetworkProblems}" />
+<atom:TimelineItem Content="{gallery:TimelineShowCaseLangResource P2ContentTechnicalTesting}" />
+</atom:Timeline>
+</StackPanel>
+</gallery:ShowCaseItem>

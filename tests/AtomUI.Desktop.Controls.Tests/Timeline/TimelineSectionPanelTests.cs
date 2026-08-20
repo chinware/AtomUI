@@ -9,15 +9,15 @@ using Xunit;
 
 namespace AtomUI.Desktop.Controls.Tests.Timeline;
 
-public class TimelineItemPanelTests
+public class TimelineSectionPanelTests
 {
-    static TimelineItemPanelTests()
+    static TimelineSectionPanelTests()
     {
         AvaloniaTestApp.EnsureInitialized();
     }
 
     [Fact]
-    public void Horizontal_Double_Sided_Start_Places_Label_Above_Axis()
+    public void Horizontal_Stacked_Start_Places_Axis_Above_Label_And_Content()
     {
         var layout = CreateLayout(
             Orientation.Horizontal,
@@ -29,10 +29,31 @@ public class TimelineItemPanelTests
         layout.Panel.Measure(new Size(100, double.PositiveInfinity));
         layout.Panel.Arrange(new Rect(0, 0, 100, layout.Panel.DesiredSize.Height));
 
-        layout.Panel.DesiredSize.ShouldBe(new Size(100, 80));
-        layout.Label.Bounds.ShouldBe(new Rect(0, 0, 100, 30));
-        layout.Indicator.Bounds.ShouldBe(new Rect(0, 35, 100, 10));
-        layout.Content.Bounds.ShouldBe(new Rect(0, 50, 100, 30));
+        layout.Panel.DesiredSize.ShouldBe(new Size(100, 70));
+        layout.Indicator.Bounds.ShouldBe(new Rect(0, 0, 100, 10));
+        layout.Header.Bounds.ShouldBe(new Rect(0, 15, 100, 20));
+        layout.Label.Bounds.ShouldBe(new Rect(0, 0, 100, 20));
+        layout.Content.Bounds.ShouldBe(new Rect(0, 40, 100, 30));
+    }
+
+    [Fact]
+    public void Horizontal_Stacked_End_Places_Axis_Below_Label_And_Content()
+    {
+        var layout = CreateLayout(
+            Orientation.Horizontal,
+            TimelineMode.End,
+            isOdd: false,
+            isLabelLayout: true,
+            indicatorSpacing: 5);
+
+        layout.Panel.Measure(new Size(100, double.PositiveInfinity));
+        layout.Panel.Arrange(new Rect(0, 0, 100, layout.Panel.DesiredSize.Height));
+
+        layout.Panel.DesiredSize.ShouldBe(new Size(100, 70));
+        layout.Header.Bounds.ShouldBe(new Rect(0, 0, 100, 20));
+        layout.Label.Bounds.ShouldBe(new Rect(0, 0, 100, 20));
+        layout.Content.Bounds.ShouldBe(new Rect(0, 25, 100, 30));
+        layout.Indicator.Bounds.ShouldBe(new Rect(0, 60, 100, 10));
     }
 
     [Theory]
@@ -50,7 +71,7 @@ public class TimelineItemPanelTests
         layout.Panel.Measure(new Size(100, double.PositiveInfinity));
         layout.Panel.Arrange(new Rect(0, 0, 100, layout.Panel.DesiredSize.Height));
 
-        layout.Label.Bounds.Y.ShouldBe(labelY);
+        layout.Header.Bounds.Y.ShouldBe(labelY);
         layout.Indicator.Bounds.ShouldBe(new Rect(0, 35, 100, 10));
         layout.Content.Bounds.Y.ShouldBe(contentY);
     }
@@ -93,9 +114,81 @@ public class TimelineItemPanelTests
         layout.Panel.Measure(new Size(110, 40));
         layout.Panel.Arrange(new Rect(0, 0, 110, 40));
 
-        layout.Label.Bounds.X.ShouldBe(labelX);
+        layout.Header.Bounds.X.ShouldBe(labelX);
         layout.Indicator.Bounds.ShouldBe(new Rect(50, 0, 10, 40));
         layout.Content.Bounds.X.ShouldBe(contentX);
+    }
+
+    [Fact]
+    public void Vertical_Label_Layout_Start_Stretches_Slots_And_Aligns_Text_To_The_Axis()
+    {
+        var layout = CreateLayout(
+            Orientation.Vertical,
+            TimelineMode.Start,
+            isOdd: false,
+            isLabelLayout: true,
+            indicatorSpacing: 5);
+
+        layout.Panel.Measure(new Size(110, 40));
+        layout.Panel.Arrange(new Rect(0, 0, 110, 40));
+
+        layout.Header.Bounds.ShouldBe(new Rect(0, 0, 50, 40));
+        layout.Label.Bounds.Width.ShouldBe(50);
+        layout.Label.TextAlignment.ShouldBe(Avalonia.Media.TextAlignment.Right);
+        layout.Content.Bounds.ShouldBe(new Rect(60, 0, 50, 40));
+    }
+
+    [Fact]
+    public void Vertical_Label_Layout_End_Stretches_Slots_And_Aligns_Text_To_The_Axis()
+    {
+        var layout = CreateLayout(
+            Orientation.Vertical,
+            TimelineMode.End,
+            isOdd: false,
+            isLabelLayout: true,
+            indicatorSpacing: 5);
+
+        layout.Panel.Measure(new Size(110, 40));
+        layout.Panel.Arrange(new Rect(0, 0, 110, 40));
+
+        layout.Header.Bounds.ShouldBe(new Rect(60, 0, 50, 40));
+        layout.Label.TextAlignment.ShouldBe(Avalonia.Media.TextAlignment.Left);
+        layout.Content.Bounds.ShouldBe(new Rect(0, 0, 50, 40));
+    }
+
+    [Fact]
+    public void Vertical_Label_Layout_Keeps_A_Header_Slot_For_An_Empty_Label()
+    {
+        var layout = CreateLayout(
+            Orientation.Vertical,
+            TimelineMode.Start,
+            isOdd: false,
+            isLabelLayout: true,
+            indicatorSpacing: 5);
+        layout.Label.Text = null;
+
+        layout.Panel.Measure(new Size(110, 40));
+        layout.Panel.Arrange(new Rect(0, 0, 110, 40));
+
+        layout.Header.Bounds.ShouldBe(new Rect(0, 0, 50, 40));
+        layout.Label.Bounds.Width.ShouldBe(50);
+    }
+
+    [Fact]
+    public void Vertical_Arrange_Extends_The_Indicator_By_The_Axis_Overflow()
+    {
+        var layout = CreateLayout(
+            Orientation.Vertical,
+            TimelineMode.Start,
+            isOdd: false,
+            isLabelLayout: false,
+            indicatorSpacing: 5);
+        SetProperty(layout.Panel, "AxisOverflow", new Avalonia.Thickness(0, 0, 0, 15));
+
+        layout.Panel.Measure(new Size(110, 40));
+        layout.Panel.Arrange(new Rect(0, 0, 110, 40));
+
+        layout.Indicator.Bounds.ShouldBe(new Rect(0, 0, 10, 55));
     }
 
     private static LayoutParts CreateLayout(
@@ -107,7 +200,7 @@ public class TimelineItemPanelTests
     {
         var controlsAssembly = typeof(AbstractTimeline).Assembly;
         var panelType = controlsAssembly.GetType(
-            "AtomUI.Controls.Commons.TimelineItemPanel",
+            "AtomUI.Controls.Commons.TimelineSectionPanel",
             throwOnError: true)!;
         var indicatorType = controlsAssembly.GetType(
             "AtomUI.Controls.Commons.TimelineIndicator",
@@ -118,6 +211,10 @@ public class TimelineItemPanelTests
         {
             Text      = "Label",
             MinHeight = 20
+        };
+        var header = new StackPanel
+        {
+            Children = { label }
         };
         var content = new ContentPresenter
         {
@@ -133,10 +230,10 @@ public class TimelineItemPanelTests
         SetProperty(panel, "IsLabelLayout", isLabelLayout);
         SetProperty(panel, "IndicatorSpacing", indicatorSpacing);
 
-        panel.Children.Add(label);
+        panel.Children.Add(header);
         panel.Children.Add(indicator);
         panel.Children.Add(content);
-        return new LayoutParts(panel, label, indicator, content);
+        return new LayoutParts(panel, header, label, indicator, content);
     }
 
     private static void SetProperty(Control control, string propertyName, object value)
@@ -147,6 +244,7 @@ public class TimelineItemPanelTests
 
     private sealed record LayoutParts(
         Panel Panel,
+        StackPanel Header,
         TextBlock Label,
         Control Indicator,
         ContentPresenter Content);

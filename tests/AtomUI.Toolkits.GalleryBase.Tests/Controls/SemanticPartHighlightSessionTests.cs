@@ -379,4 +379,21 @@ public class SemanticPartHighlightSessionTests
 
         public Popup Popup { get; }
     }
+
+    [Fact]
+    public void Adorner_Stroke_Rect_Stays_Visible_For_Thin_Targets()
+    {
+        // 常规目标：描边内缩在目标内，与既有视觉一致。
+        SemanticPartAdorner.GetStrokeRect(new Size(50, 40), 2)
+                           .ShouldBe(new Rect(1, 1, 48, 38));
+        SemanticPartAdorner.GetStrokeRect(new Size(50, 40), 1)
+                           .ShouldBe(new Rect(0.5, 0.5, 49, 39));
+
+        // 细窄目标（例如 2px 宽的 rail）：主标记 2px 画笔不能把描边矩形压成零尺寸。
+        var primary = SemanticPartAdorner.GetStrokeRect(new Size(2, 32), 2);
+        primary.ShouldBe(new Rect(0, 1, 2, 30));
+
+        var secondary = SemanticPartAdorner.GetStrokeRect(new Size(2, 32), 1);
+        secondary.ShouldBe(new Rect(0.5, 0.5, 1, 31));
+    }
 }

@@ -315,14 +315,14 @@
     </unit>
     <unit id="SemanticPartStyleDescription">
       <segment>
-        <source>You can customize the semantic dom style of Alert by passing objects/functions through classNames and styles.</source>
-        <target state="translated">Você pode personalizar o estilo do DOM semântico do Alert passando objetos/funções por classNames e styles.</target>
+        <source>Use owner-scoped styles to customize Alert's published Semantic Parts.</source>
+        <target state="translated">Use estilos com escopo de owner para personalizar as Semantic Parts publicadas do Alert.</target>
       </segment>
     </unit>
     <unit id="SemanticPartStyleTitle">
       <segment>
-        <source>Custom semantic dom styling</source>
-        <target state="translated">Personalização do estilo do DOM semântico</target>
+        <source>Custom Semantic Part styling</source>
+        <target state="translated">Estilização personalizada de Semantic Part</target>
       </segment>
     </unit>
     <unit id="SemanticRootDescription">
