@@ -6,6 +6,22 @@ AtomUI 的重要变更记录在此文件中。
 
 英文版本见 [CHANGELOG.md](CHANGELOG.md)。
 
+## 6.1.5
+
+`2026-08-20`
+
+- Dialog 和 MessageBox
+  - 新增 `Dialog.IsMaskClosable`（默认 `true`）和 `MessageBoxOptions.IsMaskClosable`，控制点击模态遮罩是否关闭弹窗；`IsClosable` 仍只控制头部关闭按钮，设为 `false` 时遮罩点击会被忽略。
+- ToolTip
+  - 新增 `TextWrapping`（默认 `Wrap`）和 `TextTrimming` 附加属性，长提示文本在 `ToolTipMaxWidth` 内换行，而不是被裁剪。
+  - 允许以 `ToolTip` 实例作为 `Tip` 时覆盖宿主的呈现属性；实例上显式设置的呈现属性优先，未设置时回落到宿主。
+  - 将 `IsOpen` 视为声明式的期望打开状态，与 `Tip` 就绪状态和宿主挂载状态协调，而不是设置即打开的边沿触发行为。
+- Window 和 WindowTitleBar
+  - 统一逻辑树中各标题栏的宿主行为与 CSD 几何；内容区标题栏获得标题按钮、拖动和双击行为，但不拥有尺寸提示。
+  - 隐藏 AtomUI 标题栏时保留 `WindowDecorations.Full`，仅隐藏绘制层，避免留下标题栏高度的空白带。
+- 候选交互
+  - 统一 Select、AutoComplete、ComboBox、Cascader 和 Mentions 的指针与键盘候选导航，使高亮项与 `Enter` 提交目标保持一致；指针移动仍不会提交选择。
+
 ## 6.1.4
 
 `2026-08-18`

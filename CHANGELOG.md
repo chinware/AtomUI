@@ -4,6 +4,22 @@ All notable changes to AtomUI are documented in this file.
 
 `AtomUI` follows Semantic Versioning 2.0.0.
 
+## 6.1.5
+
+`2026-08-20`
+
+- Dialog and MessageBox
+  - Add `Dialog.IsMaskClosable` (default `true`) and `MessageBoxOptions.IsMaskClosable` to control whether pressing the modal mask closes the dialog. `IsClosable` continues to gate only the header close button; with `IsMaskClosable=false`, mask presses are ignored.
+- ToolTip
+  - Add `TextWrapping` (default `Wrap`) and `TextTrimming` attached properties so long tip text wraps within `ToolTipMaxWidth` instead of being clipped.
+  - Allow a `ToolTip` instance used as `Tip` to override host presentation properties; presentation properties set on the instance take precedence and unset ones fall back to the host.
+  - Treat `IsOpen` as a declarative desired-open state and reconcile it with tip readiness and host attachment instead of edge-triggered open-on-set behavior.
+- Window and WindowTitleBar
+  - Unify title-bar host behavior and CSD geometry across logical-tree title bars; content-area title bars receive caption, drag and double-click behavior without owning size hints.
+  - Preserve `WindowDecorations.Full` when the AtomUI title bar is hidden, hiding only the drawn title-bar visual and avoiding a title-bar-height blank band.
+- Candidate interaction
+  - Unify pointer and keyboard candidate navigation for Select, AutoComplete, ComboBox, Cascader and Mentions so the highlighted item and `Enter` commit target stay consistent; pointer movement remains non-committing.
+
 ## 6.1.4
 
 `2026-08-18`
