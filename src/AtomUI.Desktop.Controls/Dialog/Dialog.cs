@@ -41,6 +41,13 @@ public partial class Dialog : TemplatedControl,
     public static readonly StyledProperty<bool> IsClosableProperty =
         AvaloniaProperty.Register<Dialog, bool>(nameof(IsClosable), true);
 
+    /// <summary>
+    /// 是否允许 Overlay modal mask 外点发起关闭。仅 Overlay Host 有效；Window Host 没有 mask，
+    /// 外点本来就不触发关闭。与 <see cref="IsClosable"/>（标题栏关闭入口）正交。
+    /// </summary>
+    public static readonly StyledProperty<bool> IsMaskClosableProperty =
+        AvaloniaProperty.Register<Dialog, bool>(nameof(IsMaskClosable), true);
+
     public static readonly StyledProperty<bool> IsMaximizableProperty =
         AvaloniaProperty.Register<Dialog, bool>(nameof(IsMaximizable));
 
@@ -167,6 +174,12 @@ public partial class Dialog : TemplatedControl,
     {
         get => GetValue(IsClosableProperty);
         set => SetValue(IsClosableProperty, value);
+    }
+
+    public bool IsMaskClosable
+    {
+        get => GetValue(IsMaskClosableProperty);
+        set => SetValue(IsMaskClosableProperty, value);
     }
 
     public bool IsMaximizable

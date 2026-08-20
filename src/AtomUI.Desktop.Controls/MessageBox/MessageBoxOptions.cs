@@ -9,6 +9,10 @@ public record MessageBoxOptions
     public PathIcon? Icon { get; init; }
     public MessageBoxStyle  Style { get; init; } = MessageBoxStyle.Information;
     public bool IsDragMovable { get; init; }
+    /// <summary>
+    /// 是否允许 Overlay modal mask 外点发起关闭。仅 Overlay Host 有效
+    /// </summary>
+    public bool IsMaskClosable { get; init; } = true;
     public Control? PlacementTarget { get; init; }
     public Dimension? HorizontalOffset { get; init; }
     public Dimension? VerticalOffset { get; init; }

@@ -8,6 +8,10 @@ public record DialogOptions
     public PathIcon? TitleIcon { get; init; }
     public bool IsResizable { get; init; }
     public bool IsClosable { get; init; } = true;
+    /// <summary>
+    /// 是否允许 Overlay modal mask 外点发起关闭。仅 Overlay Host 有效
+    /// </summary>
+    public bool IsMaskClosable { get; init; } = true;
     public bool IsMaximizable { get; init; }
     
     public double HostMaxHeight { get; init; } = double.PositiveInfinity;

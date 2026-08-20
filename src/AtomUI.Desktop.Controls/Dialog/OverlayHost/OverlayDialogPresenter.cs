@@ -24,6 +24,9 @@ internal sealed class OverlayDialogPresenter : ContentControl,
     internal static readonly StyledProperty<bool> IsModalProperty =
         Dialog.IsModalProperty.AddOwner<OverlayDialogPresenter>();
 
+    internal static readonly StyledProperty<bool> IsMaskClosableProperty =
+        Dialog.IsMaskClosableProperty.AddOwner<OverlayDialogPresenter>();
+
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         Dialog.IsMotionEnabledProperty.AddOwner<OverlayDialogPresenter>();
 
@@ -34,6 +37,12 @@ internal sealed class OverlayDialogPresenter : ContentControl,
     {
         get => GetValue(IsModalProperty);
         set => SetValue(IsModalProperty, value);
+    }
+
+    internal bool IsMaskClosable
+    {
+        get => GetValue(IsMaskClosableProperty);
+        set => SetValue(IsMaskClosableProperty, value);
     }
 
     internal bool IsMotionEnabled
@@ -90,6 +99,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         Content = _surface;
 
         _bindings.Add(Bind(IsModalProperty, dialog.GetObservable(Dialog.IsModalProperty)));
+        _bindings.Add(Bind(IsMaskClosableProperty, dialog.GetObservable(Dialog.IsMaskClosableProperty)));
         _bindings.Add(Bind(IsMotionEnabledProperty, dialog.GetObservable(Dialog.IsMotionEnabledProperty)));
         _bindings.Add(dialog.GetObservable(Dialog.HostWidthProperty).Skip(1).Subscribe(HandleHostWidthChanged));
         _bindings.Add(dialog.GetObservable(Dialog.HostHeightProperty).Skip(1).Subscribe(HandleHostHeightChanged));
@@ -916,6 +926,11 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         }
 
         e.Handled = true;
+        if (!IsMaskClosable)
+        {
+            return;
+        }
+
         HandleHostCloseRequested(this, EventArgs.Empty);
     }
 

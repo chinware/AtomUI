@@ -2,6 +2,16 @@
 
 本文档记录 Modal 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-20
+
+- API
+  - Add `Dialog.IsMaskClosable` (default `true`) controlling whether pressing the Overlay modal mask requests a close; `MessageBox` inherits it and `MessageBoxOptions` exposes the same passthrough.
+  - Define the two close-entry switches as orthogonal: `IsClosable` gates the header close button, `IsMaskClosable` gates the mask outside-press entry.
+- Behavior
+  - With `IsMaskClosable=false`, a mask press is swallowed by the topmost Overlay presenter without producing any close request, and never enters the `Closing`/`BeforeCloseAsync` pipeline.
+- Docs
+  - Document the mask close-entry contract in the Dialog contract groups, behavior model, compatibility invariants and maintenance invariants.
+
 ## 2026-07-22
 
 - Design

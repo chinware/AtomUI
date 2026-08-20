@@ -125,7 +125,7 @@ Overlay presenter 在退出 motion 后先断开 `DialogSurface` 子树的 compos
 
 - DialogSurface 把标准/自定义按钮点击转成 `DialogPresenterCloseRequestedEventArgs`，Session 决定是否关闭。
 - Enter/Escape 由栈顶 Overlay presenter 或当前 Window 转发给 Surface 的有效按钮序列。
-- modal mask 只在左键、真实 mask visual subtree、且 presenter 为栈顶时请求关闭。
+- modal mask 只在左键、真实 mask visual subtree、且 presenter 为栈顶时请求关闭；`IsMaskClosable=false` 时该输入被吞掉且不发起任何关闭请求。该门控只存在于 Overlay presenter 的 mask 输入路径，不复制到 mask 控件或 Session veto 层。
 - modeless presenter 在 Surface 外不阻断 pointer hit-test；点击 Surface 会把整个 presenter 激活到栈顶。
 - Overlay 标题栏拖动通过复用的 render-only translation 更新 Surface，并同步 Dialog offset 作为持久化状态；resize 修改 offset 或 Surface 正文尺寸。resize handle 按下后捕获 pointer，即使指针离开细小 handle，release/capture lost 仍会清理 origin 与 dragging state。Surface 正文受 Window visible frame 与有效 drawn frame thickness 共同约束，BoxShadow 不参与定位。
 - Window caption close 先请求 Session 关闭；Session commit 后 `DialogWindowCloseState.Closing` 放行一次真实 native close。`OwnerWindowClosing` 始终放行，随后由 owner closed 强制 teardown。
@@ -208,6 +208,7 @@ mask 始终使用完整 layer bounds，不复用 owner bounds。drawn decoration
 - Surface structural minimum、requested Host constraints 和 host capacity 必须由同一纯值规则解析；Overlay 与 Window 不能分别定义默认最小尺寸语义。
 - Window presenter 只能在 Surface constraints 解析完成后加回 Window chrome；live resize 热路径不能重新测量结构区域。
 - MessageBox 继续作为 Dialog 派生类，不增加平行 host/session/button cache 生命周期。
+- mask 外点关闭入口只由 `IsMaskClosable` 在 Overlay presenter 的 mask 输入路径统一门控；不引入第二条 mask 关闭路径，也不在 Session veto 层复制该判断。
 - 新增 binding、事件、资源 parent、motion source 或内容引用时，必须在同一个 owner 中增加释放点和回归测试。
 
 ## 11. 测试与验证
@@ -216,7 +217,7 @@ mask 始终使用完整 layer bounds，不复用 owner bounds。drawn decoration
 
 - `DialogSessionTests`: 状态转换、veto、forced close、异常和 presenter failure。
 - `DialogLifecycleTests`: 实例/声明式打开、取消、detach、重开、嵌套焦点和 WeakReference。
-- `OverlayDialogPresenterTests`: mask ownership、modal/modeless 输入、栈顶路由、跨平台 capability-driven drawn host、popup/scope fallback、完整 mask bounds、平台 body bounds、结构性最小尺寸、拖动 resize、capacity 退化、maximize/restore 和 motion。
+- `OverlayDialogPresenterTests`: mask ownership、modal/modeless 输入、栈顶路由、`IsMaskClosable` 门控、跨平台 capability-driven drawn host、popup/scope fallback、完整 mask bounds、平台 body bounds、结构性最小尺寸、拖动 resize、capacity 退化、maximize/restore 和 motion。
 - `WindowDialogPresenterTests`: Opened/Closed 原生生命周期、首帧几何、原生关闭、owner close、自然尺寸、Surface/chrome constraints 换算、native resize、placement 和资源 parent。
 - `DialogButtonBoxTests` / `DialogSurfaceTests`: 有效按钮集合、template 生命周期、内容和配置。
 - MessageBox tests: 派生结构、语义样式、motion anchor、重入和按钮引用释放。

@@ -395,6 +395,7 @@ public class MessageBox : Dialog
         {
             Title             = options?.Title,
             IsDragMovable     = options?.IsDragMovable ?? false,
+            IsMaskClosable    = options?.IsMaskClosable ?? true,
             Style             = options?.Style ?? MessageBoxStyle.Information,
             PlacementTarget   = options?.PlacementTarget ?? placementTarget,
             MotionAnchorMode  = options?.PlacementTarget is null
