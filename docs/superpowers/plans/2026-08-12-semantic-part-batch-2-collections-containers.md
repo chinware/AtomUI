@@ -130,11 +130,11 @@
 
 **风险类型：** 分层虚拟化、异步加载、item/header owner、drag adorner。
 
-- [ ] **Gate A 设计审核：** 审计 `TreeView`、`TreeViewItem`、`TreeViewItemHeader`、switcher 与 drag preview owner；确认 hierarchy item header/content/indent/check/switcher 的职责，记录 async children load、expand/collapse、filter、state replay、drag adorner 和 container recycle。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、真实模板/运行时节点、owner 边界、排除的 internal wrapper、生命周期/性能不变量和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/TreeView/TreeViewSemanticPartTests.cs`，覆盖 generated hierarchy、async load、expand/collapse、check/select/filter、drag preview、replace/reset 和嵌套 owner 隔离；记录 marker 数量、回收行为，并证明不会保留旧节点。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
-- [ ] **强制停止：** 保持 TreeView 的所有实现改动未提交，直到用户明确完成验证并授权提交。
+- [x] **Gate A 设计审核：** 审计 `TreeView`、`TreeViewItem`、`TreeViewItemHeader`、switcher 与 drag preview owner；确认 hierarchy item header/content/indent/check/switcher 的职责，记录 async children load、expand/collapse、filter、state replay、drag adorner 和 container recycle。（2026-08-19：双 owner 递归分解——`TreeView` 公开 root/item，`TreeViewItem` 公开 root/item/itemSwitcher/itemIndicator/itemIcon/itemTitle；itemIndicator 为 AtomUI 扩展，非上游 Semantic DOM 键。）
+- [x] 更新两份控件文档，写明准确的 Descriptor、真实模板/运行时节点、owner 边界、排除的 internal wrapper、生命周期/性能不变量和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。（2026-08-19：`semantic-part.md` 新增六 Part 完整契约，overview/implementation/changelog 同步，LLMS verify 与 `git diff --check` 通过。）
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/TreeView/TreeViewSemanticPartTests.cs`，覆盖 generated hierarchy、async load、expand/collapse、check/select/filter、drag preview、replace/reset 和嵌套 owner 隔离；记录 marker 数量、回收行为，并证明不会保留旧节点。（2026-08-20：TDD 完成，7 个语义测试全绿；Gallery `GalleryShowCaseHost` 迁移 + SemanticPartPreview（TreeViewItem owner，含 checkbox/radio indicator、图标与选中态）+ `tree-view-semantic-part` 样式示例 + 本地化 key；修复 Gallery 高亮解析器对 owner 自身与嵌套 owner marker 的匹配（`SemanticPartTargetResolver`）；GalleryBase 119/119、TreeView 48/48、Gallery build 0 警告 0 错误。）
+- [x] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。（2026-08-20：验证通过，见上；TreeView 无 Popup/运行时宿主路径，按计划条件不需要 NativeAOT 验证。）
+- [ ] **强制停止：** 保持 TreeView 的所有实现改动未提交，直到用户明确完成验证并授权提交。（2026-08-20：用户已验收视觉，所有改动保持未提交，等待授权提交。）
 
 ### 任务 8：Slider
 
@@ -144,8 +144,8 @@
 
 **风险类型：** Track/thumb public 子控件、range thumb、pointer 热路径、ToolTip。
 
-- [ ] **Gate A 设计审核：** 审计 `Slider`、`SliderTrack`、`SliderThumb` owner，确认 rail/filled track/handle/marks/tooltip 的职责以及 single/range 与 horizontal/vertical templates；记录 drag hot path、tooltip Popup 和 multiple thumbs cardinality。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、真实模板/运行时节点、owner 边界、排除的 internal wrapper、生命周期/性能不变量和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [x] **Gate A 设计审核：** 审计 `Slider`、`SliderTrack`、`SliderThumb` owner，确认 rail/filled track/handle/marks/tooltip 的职责以及 single/range 与 horizontal/vertical templates；记录 drag hot path、tooltip Popup 和 multiple thumbs cardinality。（2026-08-20：上游基线为 antd 6.6.x `SliderSemanticType`（`classNames`/`styles` = `{ root?, tracks?, track?, rail?, handle? }`，root 徽标 5.23.0、其余 5.10.0），经 `useMergeSemantic` 传给 `@rc-component/slider 1.1.1` 实际消费：root=`ant-slider`、rail=`ant-slider-rail`、tracks=`ant-slider-tracks`（整体跨度、仅被定制时才渲染的条件节点）、track=每 segment `ant-slider-track`、handle=每 handle `ant-slider-handle`（圆点 `::after` box-shadow）。`_semantic.tsx` demo = `range defaultValue={[20,30,50]}` 五卡预览；`style-class.tsx` demo = 横向（root 宽 300、track 渐变 `#91caff→#1677ff`、handle `#1677ff` + shadow）+ 纵向 reverse（track 渐变 `#722cc0→#722ed1`、handle `#722ed1` + shadow、root hover 环 `#722ed1`）。AtomUI 结构改造（internal、public API 不变）：rail/tracks/track 由 `SliderTrack.Render` 自绘几何元素化为代码创建 `Border` 元素，mark 移入 internal `SliderMarksElement`，绘制顺序 rail→tracks→track→mark→thumb 与历史一致、默认视觉不变；`tracks` 单值模式跨度对齐上游 `Minimum→Value`（此前单值模式不绘制）。结构差异已记录：上游 tracks 条件节点 vs AtomUI 恒渲染（默认透明）；上游 mark 位于 handle 之上 vs AtomUI mark 在 thumb 之下；box-shadow → OutlineBrush/OutlineThickness。五个 Part 全部 RuntimeCreated=true，route 均为单跳 `/template/ .semantic-*`（节点设置外层 Slider 为 TemplatedParent，与既有 thumb 一致）。)
+- [x] 更新两份控件文档，写明准确的 Descriptor、真实模板/运行时节点、owner 边界、排除的 internal wrapper、生命周期/性能不变量和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。（2026-08-20：新增 `semantic-part.md`（五 Part 完整契约，含元素化保真保证、三处 DOM 差异、状态数量矩阵、验证清单），overview.md §3/§5/§9 与 implementation.md §1/§2/§3/§4/§5/§6/§8/§10/§11 全部同步，changelog.md 更新 Design/Docs 条目。LLMS verify 与 `git diff --check` 见下；等待批准。）
 - [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Slider/SliderSemanticPartTests.cs`，覆盖 single/range、orientation、marks、tooltip open-close、min/max/value updates 和 drag；验证 marker 静态、thumb cardinality 与 selector owner。
 - [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；涉及 Popup/运行时宿主路径时增加 NativeAOT 验证。
 - [ ] **强制停止：** 保持 Slider 的所有实现改动未提交，直到用户明确完成验证并授权提交。

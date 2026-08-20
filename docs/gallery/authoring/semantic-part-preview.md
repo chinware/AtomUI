@@ -274,10 +274,12 @@ VisualRoot 手动换算屏幕坐标。
 `SemanticPartAdorner` 必须：
 
 - 只绘制高亮边框，不设置背景或半透明填充，不覆盖或改变目标原有颜色、文字和图形。
-- 主目标使用 `#FAAD14`、`2px`、全不透明描边；其余目标使用同色 `1px`、85% 不透明描边。
+- 视觉对齐 antd SemanticPreview 的 `Marker`：金框沿目标边界外侧绘制，主目标在 2px 全不透明金框外再画 1px 白色外环
+  （对应 antd `boxShadow: 0 0 0 1px #fff`）；其余目标使用同色 `1px`、85% 不透明描边。
+- 描边落在目标 bounds 外沿，细窄目标（如 4px 高的 slider tracks）也能获得清晰可见的金框；Canvas 型 AdornerLayer
+  不做裁剪，目标边缘 3px 内的外扩绘制始终可见。
 - 不依赖目标 ControlTemplate。
 - `IsHitTestVisible=false`、`Focusable=false`。
-- 在目标 bounds 内绘制，遵守原生 clip。
 - 第一个目标使用主高亮样式，其余目标使用次级样式；多实例作用域下按 §8.4 的合并顺序决定主/次样式，顺序稳定且可复现。
 - 不使用 `AdornerLayer.AdornerProperty`，避免覆盖焦点、验证或其他现有 Adorner。
 

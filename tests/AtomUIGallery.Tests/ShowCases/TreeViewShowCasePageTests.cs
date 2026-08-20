@@ -26,7 +26,8 @@ public class TreeViewShowCasePageTests
         source.ShouldNotContain("Tag=\"Examples\"");
         source.ShouldNotContain("Tag=\"Api\"");
         source.ShouldNotContain("Tag=\"DesignToken\"");
-        source.ShouldContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldNotContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldContain("<gallery:GalleryShowCaseHost");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
         source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
@@ -42,10 +43,16 @@ public class TreeViewShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:TreeViewShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(13);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(13);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(13);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:TreeViewViewModel\"").ShouldBe(13);
+        source.ShouldContain("<gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>");
+        source.ShouldContain("Name=\"TreeViewItemSemanticPreview\"");
+        source.ShouldContain("SemanticOwner=\"{Binding #TreeViewItemSemanticOwner}\"");
+        source.ShouldContain("SemanticOwnerType=\"{x:Type atom:TreeViewItem}\"");
+        CountOccurrences(source, "<gallery:SemanticPartDescription").ShouldBe(6);
+        source.ShouldContain("TreeViewShowCaseLangResource SemanticPartStyleTitle");
+        CountShowCaseItemElements(source).ShouldBe(14);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(14);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(14);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:TreeViewViewModel\"").ShouldBe(15);
         source.ShouldContain("TreeViewShowCaseLangResource BasicTitle");
         source.ShouldContain("TreeViewShowCaseLangResource GenerateByTemplateTitle");
         source.ShouldContain("TreeViewShowCaseLangResource SelectionBindingTitle");
@@ -73,7 +80,6 @@ public class TreeViewShowCasePageTests
         source.ShouldContain("SearchRequested=\"HandleFilterItemsSourceTreeSearchRequested\"");
         source.ShouldContain("SearchRequested=\"HandleFilterTreeSearchRequested\"");
         source.ShouldContain("ItemContextMenuRequest=\"HandleContextMenuTreeItemContextMenuRequest\"");
-        source.ShouldNotContain("{Binding #");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain(">Gallery<");
@@ -92,16 +98,18 @@ public class TreeViewShowCasePageTests
 
     private static string ExtractTreeViewExampleItems(string source)
     {
-        const string firstItemMarker  = "<gallery:ShowCaseItem";
-        const string panelCloseMarker = "</gallery:ShowCasePanel>";
+        const string firstItemMarker     = "<gallery:ShowCaseItem";
+        const string semanticItemMarker  = "SourceKey=\"tree-view-semantic-part\"";
 
         var firstItemStart = source.IndexOf(firstItemMarker, StringComparison.Ordinal);
         firstItemStart.ShouldBeGreaterThanOrEqualTo(0);
 
-        var panelCloseStart = source.IndexOf(panelCloseMarker, firstItemStart, StringComparison.Ordinal);
-        panelCloseStart.ShouldBeGreaterThan(firstItemStart);
+        var semanticItemStart = source.IndexOf(semanticItemMarker, firstItemStart, StringComparison.Ordinal);
+        semanticItemStart.ShouldBeGreaterThan(firstItemStart);
+        var semanticItemStartTag = source.LastIndexOf(firstItemMarker, semanticItemStart, StringComparison.Ordinal);
+        semanticItemStartTag.ShouldBeGreaterThan(firstItemStart);
 
-        return source[firstItemStart..panelCloseStart];
+        return source[firstItemStart..semanticItemStartTag];
     }
 
     private static string NormalizeMarkup(string source)

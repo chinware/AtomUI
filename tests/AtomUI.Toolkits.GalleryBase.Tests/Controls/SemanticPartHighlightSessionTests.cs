@@ -25,12 +25,15 @@ public class SemanticPartHighlightSessionTests
     public void Adorner_Draws_An_Outline_Without_Covering_The_Target()
     {
         var primary = RenderAdorner(true);
-        primary.Brush.ShouldBeNull();
-        AssertPen(primary, Color.FromArgb(0xFF, 0xFA, 0xAD, 0x14), 2);
+        primary.Length.ShouldBe(2);
+        primary.ShouldAllBe(static drawing => drawing.Brush == null);
+        AssertPen(primary[0], Colors.White, 1);
+        AssertPen(primary[1], Color.FromArgb(0xFF, 0xFA, 0xAD, 0x14), 2);
 
         var secondary = RenderAdorner(false);
-        secondary.Brush.ShouldBeNull();
-        AssertPen(secondary, Color.FromArgb(0xD9, 0xFA, 0xAD, 0x14), 1);
+        secondary.Length.ShouldBe(1);
+        secondary[0].Brush.ShouldBeNull();
+        AssertPen(secondary[0], Color.FromArgb(0xD9, 0xFA, 0xAD, 0x14), 1);
     }
 
     [Fact]
@@ -271,7 +274,7 @@ public class SemanticPartHighlightSessionTests
             false);
     }
 
-    private static GeometryDrawing RenderAdorner(bool isPrimary)
+    private static GeometryDrawing[] RenderAdorner(bool isPrimary)
     {
         var adorner = new SemanticPartAdorner(isPrimary);
         adorner.Measure(new Size(20, 20));
@@ -283,7 +286,9 @@ public class SemanticPartHighlightSessionTests
             adorner.Render(context);
         }
 
-        return drawingGroup.Children.ShouldHaveSingleItem().ShouldBeOfType<GeometryDrawing>();
+        var drawings = drawingGroup.Children.ToArray();
+        drawings.ShouldAllBe(static child => child is GeometryDrawing);
+        return drawings.Cast<GeometryDrawing>().ToArray();
     }
 
     private static void AssertPen(GeometryDrawing drawing, Color expectedColor, double expectedThickness)
@@ -381,19 +386,22 @@ public class SemanticPartHighlightSessionTests
     }
 
     [Fact]
-    public void Adorner_Stroke_Rect_Stays_Visible_For_Thin_Targets()
+    public void Adorner_Marker_Rect_Expands_Outside_The_Target_So_Thin_Targets_Stay_Visible()
     {
-        // 常规目标：描边内缩在目标内，与既有视觉一致。
-        SemanticPartAdorner.GetStrokeRect(new Size(50, 40), 2)
-                           .ShouldBe(new Rect(1, 1, 48, 38));
-        SemanticPartAdorner.GetStrokeRect(new Size(50, 40), 1)
-                           .ShouldBe(new Rect(0.5, 0.5, 49, 39));
+        // 与 antd Marker 一致：标记矩形沿目标外沿展开，
+        // 描边（画笔中心线落在矩形边上）覆盖目标边界外侧的色带。
+        // 主标记 2px 金框：矩形外扩 1px，描边覆盖 [bounds-2, bounds]。
+        SemanticPartAdorner.GetMarkerRect(new Size(50, 40), 1)
+                           .ShouldBe(new Rect(-1, -1, 52, 42));
+        // 副标记 1px 金框：矩形外扩 0.5px，描边覆盖 [bounds-1, bounds]。
+        SemanticPartAdorner.GetMarkerRect(new Size(50, 40), 0.5)
+                           .ShouldBe(new Rect(-0.5, -0.5, 51, 41));
+        // 主标记白色外环：矩形外扩 2.5px，描边覆盖 [bounds-3, bounds-2]。
+        SemanticPartAdorner.GetMarkerRect(new Size(50, 40), 2.5)
+                           .ShouldBe(new Rect(-2.5, -2.5, 55, 45));
 
-        // 细窄目标（例如 2px 宽的 rail）：主标记 2px 画笔不能把描边矩形压成零尺寸。
-        var primary = SemanticPartAdorner.GetStrokeRect(new Size(2, 32), 2);
-        primary.ShouldBe(new Rect(0, 1, 2, 30));
-
-        var secondary = SemanticPartAdorner.GetStrokeRect(new Size(2, 32), 1);
-        secondary.ShouldBe(new Rect(0.5, 0.5, 1, 31));
+        // 细窄目标（例如 4px 高的 slider tracks）：金框落在目标外侧，不会退化为不可见的细线。
+        SemanticPartAdorner.GetMarkerRect(new Size(201, 4), 1)
+                           .ShouldBe(new Rect(-1, -1, 203, 6));
     }
 }

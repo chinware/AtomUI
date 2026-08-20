@@ -128,7 +128,7 @@ TreeViewItem 节点 API：
 
 ### 3.1 Semantic Part 契约
 
-TreeView 是递归层级容器，使用两个递归 Semantic owner 表达与上游 Tree 稳定 Semantic DOM 对齐的五个 Part，完整契约见
+TreeView 是递归层级容器，使用两个递归 Semantic owner 表达与上游 Tree 稳定 Semantic DOM 对齐的六个 Part，完整契约见
 [TreeView Semantic Part 契约](semantic-part.md)：
 
 | Owner | Part | Selector | AtomUI 节点 | Cardinality | 定制方式 |
@@ -138,23 +138,26 @@ TreeView 是递归层级容器，使用两个递归 Semantic owner 表达与上�
 | `TreeViewItem` | `root` | 控件本身 | 每个 `TreeViewItem` 容器 | `Single` | owner 选择器 + 公开属性 |
 | `TreeViewItem` | `item` | `.semantic-item` | 每个子级 `TreeViewItem` 容器 | `Multiple` | `TreeViewItemItemStyle` |
 | `TreeViewItem` | `itemSwitcher` | `.semantic-item-switcher` | 每个 header 模板的 `PART_NodeSwitcherButton` | `Multiple` | `TreeViewItemItemSwitcherStyle` |
+| `TreeViewItem` | `itemIndicator` | `.semantic-item-indicator` | 每个 header 模板的 `ToggleCheckbox` / `ToggleRadio` | `Multiple` | `TreeViewItemItemIndicatorStyle` |
 | `TreeViewItem` | `itemIcon` | `.semantic-item-icon` | 每个 header 模板的 `PART_IconPresenter` | `Multiple` | `TreeViewItemItemIconStyle` |
 | `TreeViewItem` | `itemTitle` | `.semantic-item-title` | 每个 header 模板的 `HeaderPresenter` | `Multiple` | `TreeViewItemItemTitleStyle` |
 
 `TreeView` 与 `TreeViewItem` 是递归 owner：`TreeView.item` 覆盖顶层容器，`TreeViewItem.item` 递归覆盖下一层子容器，
-二者使用同一 `.semantic-item` 身份，保证任意深度的节点都可命中。`itemSwitcher` / `itemIcon` / `itemTitle` 声明在
-`TreeViewItem` 上，route 从 `TreeViewItem` owner 出发经 `.semantic-scope-header` 跳点以两次 `/template/` 进入 header
-模板，因此对每个节点（无论层级）都可达。`TreeViewItem` 因此持有独立 descriptor（与 `SegmentedItem` 不同；与单层
-容器的 `ListView` / `ListBox` 也不同，见 [semantic-part.md §1](semantic-part.md#1-owner-边界)）。
+二者使用同一 `.semantic-item` 身份，保证任意深度的节点都可命中。`itemSwitcher` / `itemIndicator` / `itemIcon` /
+`itemTitle` 声明在 `TreeViewItem` 上，route 从 `TreeViewItem` owner 出发经 `.semantic-scope-header` 跳点以两次
+`/template/` 进入 header 模板，因此对每个节点（无论层级）都可达。`TreeViewItem` 因此持有独立 descriptor（与
+`SegmentedItem` 不同；与单层容器的 `ListView` / `ListBox` 也不同，见 [semantic-part.md §1](semantic-part.md#1-owner-边界)）。
 
-`item`、`itemSwitcher`、`itemIcon`、`itemTitle` 是运行时生成 Part：`.semantic-item` 在容器创建与 prepare 路径幂等
-添加，其余三个 marker 静态声明于 `TreeViewItemHeaderTheme.axaml`。marker 不随展开/收起、勾选、禁用、拖拽、过滤与
-容器回收增删。定制摘要：
+`item`、`itemSwitcher`、`itemIndicator`、`itemIcon`、`itemTitle` 是运行时生成 Part：`.semantic-item` 在容器创建与
+prepare 路径幂等添加，其余四个 marker 静态声明于 `TreeViewItemHeaderTheme.axaml`。`itemIndicator` 是 checkbox / radio
+两个备选节点共用的单一 Part，每个容器恒有两个 marker 实例（对应两个备选节点），同一时刻最多一个可见。marker 不随
+展开/收起、勾选、禁用、拖拽、过滤、ToggleType 切换与容器回收增删。定制摘要：
 
 - 状态型定制（选择、勾选、展开、禁用、拖拽、过滤、hover mode、show-line/show-icon）通过 owner 公开属性完成，不改变
   marker 数量。
 - 局部视觉定制通过生成的 Semantic Style 完成，`ContractType` 收缩到公开类型（`TreeViewItem` / `ToggleButton` /
-  `IconPresenter` / `ContentPresenter`），internal 节点（`NodeSwitcherButton`、`TreeViewItemHeader`）不作为公共依赖类型。
+  `IconPresenter` / `ContentPresenter`），internal 节点（`NodeSwitcherButton`、`CheckBoxIndicator`、
+  `TreeViewItemHeader`）不作为公共依赖类型。
 - `TreeViewItemHeader`、`NodeSwitcherButton`、`FloatableTreeView` 不持有独立 Semantic descriptor；`FloatableTreeView`
   复用 `TreeView` owner scope。
 - checkbox / radio 勾选指示、过滤高亮节点、header 内容框与树形连线自绘逻辑不属于 Semantic Part，见
@@ -175,7 +178,7 @@ TreeView 的公共契约由 TreeView API、TreeViewItem API、节点数据 API�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView/Views/TreeViewShowCase.axaml:37`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView/Views/TreeViewShowCase.axaml:94`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -203,7 +206,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 使用模板生成
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView/Views/TreeViewShowCase.axaml:66`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView/Views/TreeViewShowCase.axaml:123`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -223,7 +226,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### SelectedItem 绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView/Views/TreeViewShowCase.axaml:89`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView/Views/TreeViewShowCase.axaml:146`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -270,7 +273,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### SelectedItems 绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView/Views/TreeViewShowCase.axaml:139`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView/Views/TreeViewShowCase.axaml:196`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -466,7 +469,7 @@ Filter highlight runs 是 header 状态，不应写入 Token 或节点数据模�
 - `src/AtomUI.Desktop.Controls/TreeView/TreeView.SemanticParts.cs`：TreeView Semantic Part descriptor 声明（`[SemanticPart]`），
   不承载模板节点、Setter、Style 实例或运行时 VisualTree 查找逻辑。
 - `src/AtomUI.Desktop.Controls/TreeView/TreeViewItem.SemanticParts.cs`：TreeViewItem 递归 owner 的 Semantic Part descriptor
-  声明（`[SemanticPart]`），覆盖子节点容器与 switcher / icon / title 内容区域。
+  声明（`[SemanticPart]`），覆盖子节点容器与 switcher / indicator / icon / title 内容区域。
 - `src/AtomUI.Desktop.Controls/TreeView/TreeView.StateReplay.cs`：loaded 回放、ItemsSource 变化后的选择 / 勾选 / 展开状态恢复。
 - `src/AtomUI.Desktop.Controls/TreeView/TreeView.PathTraversal.cs`：`TreeNodePath` 遍历、展开路径、容器确保和展开状态恢复。
 - `src/AtomUI.Desktop.Controls/TreeView/TreeView.CheckedState.cs`：checkbox 严格 / 级联状态、`CheckedItems` 同步和半选父级计算。

@@ -32,5 +32,12 @@ public enum SliderShowCaseLangResourceKind
     P2ContentClear,
     P2ContentDisabledHandle1,
     P2ContentDisabledHandle2,
-    P2ContentDisabledHandle3
+    P2ContentDisabledHandle3,
+    SemanticHandleDescription,
+    SemanticPartStyleTitle,
+    SemanticPartStyleDescription,
+    SemanticRailDescription,
+    SemanticRootDescription,
+    SemanticTrackDescription,
+    SemanticTracksDescription
 }

@@ -41,6 +41,8 @@ public class SliderViewModel : ReactiveObject, IRoutableViewModel
 
     public IReadOnlyList<double> DisabledHandleRangeValues { get; } = [20, 50, 80];
 
+    public IReadOnlyList<double> SemanticPartPreviewRangeValues { get; } = [20, 30, 50];
+
     public IReadOnlyList<bool> DisabledHandles => _disabledHandles;
 
     public bool IsHandle1Disabled

@@ -111,6 +111,26 @@
 | 相关 Token | `HeaderHeight`、`NodeHoverBg`、`TreeNodeSwitcherMargin`、SharedToken（`IconSize`、`IconSizeXS`、`ColorTextSecondary`） |
 | 稳定性 | stable since 6.0 |
 
+#### `itemIndicator`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `TreeViewItem` |
+| Part | `itemIndicator` |
+| Selector | `.semantic-item-indicator` |
+| SelectorRoute | `/template/ .semantic-scope-header /template/ .semantic-item-indicator` |
+| Style Type | `TreeViewItemItemIndicatorStyle` |
+| ContractType | `ToggleButton` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | 每个 header 模板中的 `CheckBox#ToggleCheckbox`（`ToggleType=CheckBox`）与 `RadioButton#ToggleRadio`（`ToggleType=Radio`） |
+| 职责 | 统一表示节点勾选指示区域：checkbox / radio 两个备选形态共用的单一 Part，承载勾选状态、radio 分组与禁用态；对应 AtomUI 的 `ToggleType` 勾选功能节点，非上游 Semantic DOM 键（AtomUI 扩展）。 |
+| 相关 API | `ToggleType`、`IsChecked`、`IsIndicatorEnabled`、`GroupName`、`IsEnabled` |
+| 相关 Token | SharedToken（`ColorBorder`、`ColorPrimary`、`ColorBorderSecondary`） |
+| 稳定性 | stable since 6.0 |
+
 #### `itemIcon`
 
 | 字段 | 值 |
@@ -157,23 +177,28 @@
 
 - `TreeView.item` 与 `TreeViewItem.item` 的 marker `.semantic-item` 在 `TreeView` 与 `TreeViewItem` 的容器创建与
   prepare 路径幂等添加，覆盖用户显式 `TreeViewItem`、`ItemsSource` 数据驱动容器与递归子节点容器三条来源。
-- `itemSwitcher`、`itemIcon`、`itemTitle` 的 marker 静态声明在 `TreeViewItemHeaderTheme.axaml`（header 模板）。
+- `itemSwitcher`、`itemIndicator`、`itemIcon`、`itemTitle` 的 marker 静态声明在 `TreeViewItemHeaderTheme.axaml`（header
+  模板）。`itemIndicator` 是 checkbox / radio 两个备选节点共用：两个节点都携带 `.semantic-item-indicator` marker，
+  每个容器恒有两个 marker 实例，`ToggleType` 决定同一时刻最多一个可见。
 - `.semantic-scope-header` 静态声明在 `TreeViewItemTheme.axaml` 的 `TreeViewItemHeader#Header` 上，是 `TreeViewItem`
   模板到 `TreeViewItemHeader` 模板之间的路由跳点，不发布为 Part。
 
-`TreeViewItem` owner 的四个运行时 Part（`item`、`itemSwitcher`、`itemIcon`、`itemTitle`）都位于 `TreeViewItem` 容器
-及其模板内部，descriptor 统一声明 `RuntimeCreated=true`，生成器不按 owner 主题资产做静态校验。
+`TreeViewItem` owner 的五个运行时 Part（`item`、`itemSwitcher`、`itemIndicator`、`itemIcon`、`itemTitle`）都位于
+`TreeViewItem` 容器及其模板内部，descriptor 统一声明 `RuntimeCreated=true`，生成器不按 owner 主题资产做静态校验。
 
 - `item` 的 route `> .semantic-item` 经一步 `>` 直达子容器：子 `TreeViewItem` 容器的逻辑父级是当前 `TreeViewItem`
   owner 本身。
-- `itemSwitcher` / `itemIcon` / `itemTitle` 需要两次 `/template/` 跳点：先进入 `TreeViewItem` 模板命中
-  `TreeViewItemHeader#Header` 上的 `.semantic-scope-header` 跳点，再进入 `TreeViewItemHeader` 模板命中对应 marker。
+- `itemSwitcher` / `itemIndicator` / `itemIcon` / `itemTitle` 需要两次 `/template/` 跳点：先进入 `TreeViewItem` 模板
+  命中 `TreeViewItemHeader#Header` 上的 `.semantic-scope-header` 跳点，再进入 `TreeViewItemHeader` 模板命中对应
+  marker。
 
 `ContractType` 只定义 Setter 可以稳定依赖的最低 public 类型，并通过 `x:SetterTargetType` 提供 AXAML 编译期类型
-上下文；它不参与 `.semantic-*` 的身份匹配。`itemSwitcher` 的真实节点 `NodeSwitcherButton` 是 internal 类型，因此
-ContractType 使用其公开基类 `ToggleButton`（与 Timeline 对 internal `TimelineIndicator` 节点使用公开 `Border`、
-Calendar 对 internal cell 使用 `TemplatedControl` 同一决策）。`itemIcon` 的节点 `IconPresenter` 与 `itemTitle` 的
-节点 `ContentPresenter` 均为公开类型，直接取节点真实 public 类型作为最低依赖类型。
+上下文；它不参与 `.semantic-*` 的身份匹配。`itemSwitcher` 的真实节点 `NodeSwitcherButton` 与 `itemIndicator` 的真实
+节点 `CheckBox#ToggleCheckbox` / `RadioButton#ToggleRadio` 都是 internal 或继承自公开基类的节点，因此二者 ContractType
+都使用其公开基类 `ToggleButton`（checkbox / radio 的 `AbstractCheckBox` / `AbstractRadioButton` 都继承自
+`ToggleButton`；与 Timeline 对 internal `TimelineIndicator` 节点使用公开 `Border`、Calendar 对 internal cell 使用
+`TemplatedControl` 同一决策）。`itemIcon` 的节点 `IconPresenter` 与 `itemTitle` 的节点 `ContentPresenter` 均为公开
+类型，直接取节点真实 public 类型作为最低依赖类型。
 
 ## Abstract AXAML Structure
 
@@ -463,7 +488,8 @@ TreeViewToken 不承载 `SelectedItem`、`SelectedItems`、`CheckedItems`、`IsE
 - `BindableTreeItemNode` 的 resource host attach、属性订阅和容器同步必须与容器生命周期成对释放。
 - 绑定型节点不能永久保存当前 `TreeViewItem`、header、template part 或 visual container。
 - Semantic Part 的 marker 放置（`TreeViewItemTheme.axaml` 的 `semantic-scope-header` 静态跳点、
-  `TreeViewItemHeaderTheme.axaml` 的三个静态 Part marker、容器创建/prepare 路径的 `.semantic-item`）属于维护不变量：
+  `TreeViewItemHeaderTheme.axaml` 的四个静态 Part marker、容器创建/prepare 路径的 `.semantic-item`）属于维护不变量：
   状态切换、容器复用/回收、items 集合变化与模板重应用不得增删 marker，默认主题不得消费 `.semantic-*` selector。
-- `TreeViewItemHeader` / `NodeSwitcherButton` 不得改为 public owner 或承载独立 Semantic descriptor；`itemSwitcher` 的
-  `ContractType` 保持公开基类 `ToggleButton`，不把 internal `NodeSwitcherButton` 泄漏进公共契约。
+- `TreeViewItemHeader` / `NodeSwitcherButton` 不得改为 public owner 或承载独立 Semantic descriptor；`itemSwitcher` 与
+  `itemIndicator` 的 `ContractType` 保持公开基类 `ToggleButton`，不把 internal `NodeSwitcherButton` /
+  `CheckBoxIndicator` 泄漏进公共契约。

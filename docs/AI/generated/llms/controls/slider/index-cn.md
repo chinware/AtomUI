@@ -96,6 +96,11 @@ Range 模式使用示例：
 
 SliderThumb 是 SliderTrack 管理的动态视觉节点，不作为固定数量的公共 Template Part 暴露。
 
+Semantic Part 由 `Slider` 单一 owner 公开：`root`、`rail`、`tracks`、`track`、`handle` 五个 Part 对齐上游
+`SliderSemanticType`（`classNames` / `styles` 均为 `{ root?, tracks?, track?, rail?, handle? }`）。rail / tracks /
+track 由 `SliderTrack` 代码创建的元素节点承载，handle 由动态 `SliderThumb` 承载，mark 与 Tooltip 不属于 Semantic
+Part。完整契约见 [Slider Semantic Part 契约](semantic-part.md)。
+
 ## 事件与命令
 
 Slider 的事件与命令以控件文档、源码 public surface 和 Avalonia 基类契约为准；生成器不从源码发明额外事件。
@@ -108,7 +113,7 @@ Slider 的事件与命令以控件文档、源码 public surface 和 Avalonia �
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderShowCase.axaml:34`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderShowCase.axaml:70`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -147,7 +152,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 多点组合
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderShowCase.axaml:74`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderShowCase.axaml:110`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -173,7 +178,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 禁用指定滑块
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderShowCase.axaml:101`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderShowCase.axaml:137`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -205,7 +210,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### RangeValues 绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderShowCase.axaml:135`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderShowCase.axaml:171`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -305,10 +310,12 @@ Slider 的默认视觉由三层主题组成：
 
 视觉模型：
 
-- `SliderTrack` 绘制 rail、`TracksBrush`、`TrackBarBrush`、mark 点和 mark 文本。
+- `SliderTrack` 管理 rail、整体活动范围、相邻 segment 与 mark 的**元素**节点并计算其几何：rail 元素（
+  `TrackGrooveBrush`）、tracks 元素（`TracksBrush`）、segment 元素（`TrackBarBrush`）按值比例排列，mark 点与文本
+  由 internal `SliderMarksElement` 自绘；四个区域元素化后与历史自绘几何一致，默认视觉不变。
 - `SliderThumb` 绘制圆点、边框和 focus / hover outline。
 - `TrackBarBrush` 只表达相邻 handle 之间的 segment。
-- `TracksBrush` 只表达首尾 handle 之间的整体范围。
+- `TracksBrush` 只表达整体活动范围（Range 模式首尾 handle 之间；单值模式 `Minimum → Value`）。
 - `IsIncluded=false` 时不绘制两种活动轨道和 mark 激活态。
 - disabled handle 使用对应 thumb disabled token，不改变其他 handle 的颜色。
 - 全部 handle disabled 时使用 Slider 整体 disabled 状态。
@@ -343,8 +350,10 @@ SliderToken 不承载：
 ## 源码索引
 
 - `src/AtomUI.Desktop.Controls/Slider/Slider.cs`：公共属性、Range 值归一化入口、pointer / keyboard 交互协调、Tooltip、Form、数据校验和自动化 peer 创建。
-- `src/AtomUI.Desktop.Controls/Slider/SliderTrack.cs`：`EffectiveRangeValues` 投影、动态 thumb 生命周期、handle 布局、track / tracks / mark 渲染和几何换算。
+- `src/AtomUI.Desktop.Controls/Slider/Slider.SemanticParts.cs`：`Slider` 的 Semantic Part 声明（`root` 隐式，`rail` / `tracks` / `track` / `handle` 显式）。
+- `src/AtomUI.Desktop.Controls/Slider/SliderTrack.cs`：`EffectiveRangeValues` 投影、动态 thumb 生命周期、rail / tracks / segment 元素与 mark 元素管理、handle 布局、轨道几何换算。
 - `src/AtomUI.Desktop.Controls/Slider/SliderThumb.cs`：单个 handle 的 pointer capture、drag routed event、focus / pressed / disabled 状态和绘制。
+- `src/AtomUI.Desktop.Controls/Slider/SliderMarksElement.cs`：mark 点与标签的 internal 自绘元素（非 Semantic Part）。
 - `src/AtomUI.Desktop.Controls/Slider/SliderRangeMath.cs`：Range 值归一化、handle 边界、整体 offset、值与坐标比例及 segment 几何的纯计算。
 - `src/AtomUI.Desktop.Controls/Slider/SliderToken.cs`：Slider Token scope、尺寸、颜色、padding 和 outline 默认值计算。
 - `src/AtomUI.Desktop.Controls/Slider/SliderAutomationPeer.cs`：Slider 自动化 peer。
@@ -353,12 +362,14 @@ SliderToken 不承载：
 - `src/AtomUI.Desktop.Controls/Slider/Themes/SliderTrackTheme.axaml`：track 尺寸、mark Token 和轨道 transition。
 - `src/AtomUI.Desktop.Controls/Slider/Themes/SliderThumbTheme.axaml`：thumb 尺寸、边框、outline、focus、hover、disabled 和布局取整策略。
 - `tests/AtomUI.Desktop.Controls.Tests/Slider/SliderBehaviorTests.cs`：值计算、动态 thumb、pointer、布局和生命周期回归。
+- `tests/AtomUI.Desktop.Controls.Tests/Slider/SliderSemanticPartTests.cs`：Semantic Part descriptor、marker 数量、路由命中、元素几何与生命周期回归。
 - `controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/`：Slider Gallery 示例、ViewModel 和本地化资源。
 
 ## 相关文档
 
 - 源设计文档：`docs/controls/desktop/data-entry/slider/overview.md`
 - 实现文档：`docs/controls/desktop/data-entry/slider/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-entry/slider/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-entry/slider/token.md`
 - 变更记录：`docs/controls/desktop/data-entry/slider/changelog.md`
 - 语义结构：`./semantic-cn.md`

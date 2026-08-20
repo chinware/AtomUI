@@ -9,6 +9,7 @@ internal sealed class SemanticPartAdorner : Control
 {
     private static readonly ImmutablePen PrimaryPen = new(0xFFFAAD14, 2);
     private static readonly ImmutablePen SecondaryPen = new(0xD9FAAD14, 1);
+    private static readonly ImmutablePen PrimaryHaloPen = new(0xFFFFFFFF, 1);
 
     private readonly bool _isPrimary;
 
@@ -23,19 +24,26 @@ internal sealed class SemanticPartAdorner : Control
     {
         base.Render(context);
 
-        var pen = _isPrimary ? PrimaryPen : SecondaryPen;
-        context.DrawRectangle(null, pen, GetStrokeRect(Bounds.Size, pen.Thickness));
+        // 与 antd SemanticPreview Marker 保持一致：标记沿目标外沿绘制。
+        // 主标记先画 1px 白色外环（对应 boxShadow 0 0 0 1px #fff），再以 2px 金框
+        // 紧贴目标外沿描边；副标记为 1px 金框。描边落在目标边界外侧，
+        // 细窄目标（如 4px 高的 slider tracks）也能获得清晰可见的金框。
+        if (_isPrimary)
+        {
+            context.DrawRectangle(null, PrimaryHaloPen, GetMarkerRect(Bounds.Size, 2.5));
+            context.DrawRectangle(null, PrimaryPen, GetMarkerRect(Bounds.Size, 1));
+        }
+        else
+        {
+            context.DrawRectangle(null, SecondaryPen, GetMarkerRect(Bounds.Size, 0.5));
+        }
     }
 
-    internal static Rect GetStrokeRect(Size bounds, double penThickness)
+    internal static Rect GetMarkerRect(Size bounds, double outerInset)
     {
-        // 常规目标按画笔厚度内缩描边；目标比画笔还细（如 2px 宽的 rail）时，
-        // 以画笔厚度为下限居中描边，避免矩形退化为零尺寸导致描边不可见
-        //（首个目标是 2px 主标记，恰好命中该退化场景）。
-        var width  = Math.Max(bounds.Width - penThickness, penThickness);
-        var height = Math.Max(bounds.Height - penThickness, penThickness);
-        var x      = Math.Max(0, (bounds.Width - width) / 2);
-        var y      = Math.Max(0, (bounds.Height - height) / 2);
-        return new Rect(x, y, width, height);
+        return new Rect(-outerInset,
+                        -outerInset,
+                        bounds.Width + outerInset * 2,
+                        bounds.Height + outerInset * 2);
     }
 }
