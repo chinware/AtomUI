@@ -1,6 +1,6 @@
 # Modal 桌面版实现原理
 
-本文档描述 `Dialog` 和 `MessageBox` 的当前内部实现、状态所有权、组合结构、资源边界和释放规则。公共契约见 [Modal 桌面版架构设计](overview.md)，宿主尺寸算法见 [Modal 宿主尺寸与 Resize 设计](host-sizing-design.md)，Token 语义见 [Modal Token 设计](token.md)。
+本文档描述 `Dialog` 和 `MessageBox` 的当前内部实现、状态所有权、组合结构、资源边界和释放规则。公共契约见 [Modal 桌面版架构设计](overview.md)，宿主尺寸算法见 [Modal 宿主尺寸与 Resize 设计](host-sizing-design.md)，内容区弹层叠放见 [Modal 内容弹层叠放设计](popup-layering-design.md)，Token 语义见 [Modal Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -97,6 +97,7 @@ flowchart TD
 | `PART_Header`, `PART_ButtonBox`, `PART_Resizer` | `DialogSurfaceTheme.axaml` | template-stable | 变更需同步实现、主题、测试和文档。 |
 | `PART_MaskMotionActor`, `PART_SurfaceMotionActor` | `OverlayDialogPresenterTheme.axaml` | template-stable | 变更需保持 mask/Surface 同一 presenter。 |
 | `DialogOverlayLayer` | runtime C# | internal-observable | 只管理 scope 内栈，不提供全局 service。 |
+| Dialog 弹层作用域(popup-capable `VisualLayerManager`) | runtime C# | internal-observable | 只承载内容弹层宿主，不改变 presenter 栈语义。 |
 
 Window 和 Overlay 各自拥有一个 Surface 实例，不共享同一个视觉对象；“共享 Surface”指共享类型、主题与行为实现。
 
@@ -185,6 +186,8 @@ macOS 原生 caption chrome 位于 Avalonia 客户端 visual tree 外，Overlay 
 
 mask 始终使用完整 layer bounds，不复用 owner bounds。drawn decorations overlay 中的 `WindowVisualLayerClip` 是窗口 frame shadow 和 CornerRadius 的唯一外轮廓裁剪者；Presenter 不为 mask 复制 margin、圆角或第二套 clip。Window resize、`ClientSize`、frame shadow、drawn frame thickness 和 Window state 变化后，layer 与 presenter 重新解析上述几何。
 
+Dialog 内容区内的 popup 由包裹 `DialogOverlayLayer` 的 Dialog 弹层作用域(启用 popup overlay 能力的 `VisualLayerManager`)承载：内容弹层解析到作用域自身的 popup overlay layer，渲染在该 scope 全部 presenter 之上，light-dismiss 层随之可用。作用域在三条宿主路径下使用同一结构，坐标系与宿主层原点对齐，随最后一个 presenter 移除一并释放。完整契约见 [Modal 内容弹层叠放设计](popup-layering-design.md)。
+
 ## 9. 资源、性能与 AOT 边界
 
 - Overlay presenter 在 Dialog 已附加时以 Dialog 为 inheritance parent，否则以 placement target 为 parent。
@@ -203,6 +206,7 @@ mask 始终使用完整 layer bounds，不复用 owner bounds。drawn decoration
 - Overlay 与 Window 的 `ShowAsync`/`CloseAsync` 都等待真实 presentation 边界。
 - mask 与 Surface 必须保留在同一个 Overlay presenter 中。
 - 所有平台的 Overlay presenter 必须按能力优先使用 drawn decorations Dialog overlay host，使 mask 位于自绘标题栏之上；fallback 只负责该 host 不可用的装饰模式或平台。
+- Dialog 弹层作用域必须在所有 Overlay 宿主路径下包裹 `DialogOverlayLayer`，使内容弹层恒渲染在所属 scope 的 presenter 之上；不允许退回依赖宿主层插入顺序的叠放。
 - mask bounds、Window visible frame、Dialog body owner bounds 和 Dialog BoxShadow extents 必须保持独立。mask 覆盖完整 layer；所有平台的 Surface 正文都可进入 managed/drawn 标题栏但不能覆盖有效 frame；BoxShadow 允许由 Window visual-layer clip 在外轮廓处裁剪。
 - drawn host 路由和 frame 几何应与 Drawer 保持一致，但不能共享 Drawer 的 layer、容器或生命周期状态。
 - Surface structural minimum、requested Host constraints 和 host capacity 必须由同一纯值规则解析；Overlay 与 Window 不能分别定义默认最小尺寸语义。
@@ -217,7 +221,7 @@ mask 始终使用完整 layer bounds，不复用 owner bounds。drawn decoration
 
 - `DialogSessionTests`: 状态转换、veto、forced close、异常和 presenter failure。
 - `DialogLifecycleTests`: 实例/声明式打开、取消、detach、重开、嵌套焦点和 WeakReference。
-- `OverlayDialogPresenterTests`: mask ownership、modal/modeless 输入、栈顶路由、`IsMaskClosable` 门控、跨平台 capability-driven drawn host、popup/scope fallback、完整 mask bounds、平台 body bounds、结构性最小尺寸、拖动 resize、capacity 退化、maximize/restore 和 motion。
+- `OverlayDialogPresenterTests`: mask ownership、modal/modeless 输入、栈顶路由、`IsMaskClosable` 门控、跨平台 capability-driven drawn host、popup/scope fallback、完整 mask bounds、平台 body bounds、结构性最小尺寸、拖动 resize、capacity 退化、maximize/restore 和 motion、内容弹层宿主与叠放。
 - `WindowDialogPresenterTests`: Opened/Closed 原生生命周期、首帧几何、原生关闭、owner close、自然尺寸、Surface/chrome constraints 换算、native resize、placement 和资源 parent。
 - `DialogButtonBoxTests` / `DialogSurfaceTests`: 有效按钮集合、template 生命周期、内容和配置。
 - MessageBox tests: 派生结构、语义样式、motion anchor、重入和按钮引用释放。

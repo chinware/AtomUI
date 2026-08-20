@@ -4,12 +4,15 @@
 
 ## 2026-08-20
 
+- Design
+  - Define the content popup layering contract: popups opened from Dialog content (ComboBox, Select, DatePicker, Tooltip, Flyout, ContextMenu, ...) resolve to a popup-capable Dialog popup scope wrapping `DialogOverlayLayer`, rendering above every Overlay presenter of that scope on all three host paths (drawn decorations host, TopLevel popup overlay layer, scoped overlay layer) with normal light-dismiss and input pass-through behavior.
 - API
   - Add `Dialog.IsMaskClosable` (default `true`) controlling whether pressing the Overlay modal mask requests a close; `MessageBox` inherits it and `MessageBoxOptions` exposes the same passthrough.
   - Define the two close-entry switches as orthogonal: `IsClosable` gates the header close button, `IsMaskClosable` gates the mask outside-press entry.
 - Behavior
   - With `IsMaskClosable=false`, a mask press is swallowed by the topmost Overlay presenter without producing any close request, and never enters the `Closing`/`BeforeCloseAsync` pipeline.
 - Docs
+  - Add the Modal content popup layering design document and link it from the public design, implementation and compatibility sections.
   - Document the mask close-entry contract in the Dialog contract groups, behavior model, compatibility invariants and maintenance invariants.
 
 ## 2026-07-22
