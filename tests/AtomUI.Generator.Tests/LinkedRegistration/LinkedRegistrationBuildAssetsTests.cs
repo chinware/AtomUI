@@ -313,18 +313,33 @@ public sealed class LinkedRegistrationBuildAssetsTests
         ((string?)collectTarget.Attribute("DependsOnTargets"))
             .ShouldBe("ResolveReferences");
         collectTarget.Descendants("MSBuild").ShouldBeEmpty();
+        collectTarget.Descendants("_AtomUILegacyLinkedSidecarCandidate")
+                     .ShouldHaveSingleItem()
+                     .Attribute("Include")
+                     ?.Value.ShouldBe(
+                         "@(AdditionalFiles->WithMetadataValue('AtomUILinkedSidecar', 'true'))");
+        collectTarget.Descendants("AdditionalFiles")
+                     .ShouldContain(element =>
+                         (string?)element.Attribute("Remove") ==
+                         "@(_AtomUILegacyLinkedSidecarCandidate)");
         collectTarget.Descendants("_AtomUILinkedReferenceSidecarCandidate")
                      .ShouldHaveSingleItem()
                      .Attribute("Include")
                      ?.Value.ShouldBe("@(ReferencePath->'%(FullPath).atomui-link.json')");
-
+        collectTarget.Descendants("AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask")
+                     .Count().ShouldBe(2);
+        collectTarget.Descendants("Output")
+                     .ShouldContain(element =>
+                         (string?)element.Attribute("TaskParameter") == "CanonicalSidecars" &&
+                         (string?)element.Attribute("ItemName") == "_AtomUICanonicalLinkedSidecar");
+        collectTarget.Descendants("AdditionalFiles")
+                     .ShouldContain(element =>
+                         (string?)element.Attribute("Include") == "@(_AtomUICanonicalLinkedSidecar)");
         getTarget.Attribute("DependsOnTargets").ShouldBeNull();
         getTarget.Descendants("_AtomUILinkedRegistrationSidecarTargetOutput")
                  .ShouldAllBe(element =>
                      (string?)element.Attribute("Include") !=
                      "@(_AtomUIProjectReferenceSidecar)");
-
-        collectTarget.Descendants("RemoveDuplicates").ShouldHaveSingleItem();
 
         var packTarget = targets.Descendants("Target")
                                 .Single(element =>
@@ -332,6 +347,22 @@ public sealed class LinkedRegistrationBuildAssetsTests
                                     "AtomUIPrepareLinkedRegistrationSidecarForPack");
         ((string?)packTarget.Descendants("MSBuild").Single().Attribute("Targets"))
             .ShouldBe("Build;GetAtomUILinkedRegistrationSidecar");
+    }
+
+    [Fact]
+    public void Package_Sidecars_Enter_The_Candidate_Catalog_Before_AdditionalFiles()
+    {
+        var targets = XDocument.Load(
+            GetRepoFile("build/AtomUI.LinkedRegistration.SidecarConsumer.targets"));
+
+        targets.Descendants("AtomUILinkedSidecarCandidate")
+               .ShouldHaveSingleItem()
+               .ShouldSatisfyAllConditions(
+                   element => ((string?)element.Attribute("Include")).ShouldBe(
+                       "$(MSBuildThisFileDirectory)AtomUI.LinkedRegistration/*.atomui-link.json"),
+                   element => ((string?)element.Attribute("AtomUILinkedSidecarSource"))
+                       .ShouldBe("Package"));
+        targets.Descendants("AdditionalFiles").ShouldBeEmpty();
     }
 
     [Fact]
@@ -343,11 +374,18 @@ public sealed class LinkedRegistrationBuildAssetsTests
                                        (string?)element.Attribute("Name") ==
                                        "CollectAtomUIProjectReferenceSidecars");
 
-        var extractable = collectTarget.Descendants("_AtomUILinkedExtractableReference")
-                                       .ShouldHaveSingleItem();
-        ((string?)extractable.Attribute("Include")).ShouldBe("@(ReferencePath)");
-        ((string?)extractable.Attribute("Condition")).ShouldNotBeNull()
-                                                     .ShouldContain("StartsWith('AtomUI.'");
+        collectTarget.Descendants("Output")
+                     .ShouldContain(element =>
+                         (string?)element.Attribute("TaskParameter") == "ExtractableReferences" &&
+                         (string?)element.Attribute("ItemName") == "_AtomUILinkedExtractableReference");
+        var resolver = collectTarget.Descendants("AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask")
+                                    .Single(element => element.Descendants("Output")
+                                        .Any(output =>
+                                            (string?)output.Attribute("TaskParameter") == "ExtractableReferences"));
+        resolver.Descendants("Output")
+                .ShouldContain(element =>
+                    (string?)element.Attribute("TaskParameter") == "ExtractableReferences" &&
+                    (string?)element.Attribute("ItemName") == "_AtomUILinkedExtractableReference");
 
         var extraction = collectTarget.Descendants("AtomUI.Build.Tasks.GenerateLinkedRegistrationSidecarTask")
                                       .ShouldHaveSingleItem();
@@ -356,6 +394,14 @@ public sealed class LinkedRegistrationBuildAssetsTests
         var outputPath = (string?)extraction.Attribute("OutputPath");
         outputPath.ShouldNotBeNull();
         outputPath.ShouldContain("AtomUIExtractedSidecars");
+        outputPath.ShouldContain("%(_AtomUILinkedExtractableReference.AtomUILinkedAssemblyName)");
+        collectTarget.Descendants("_AtomUILinkedSidecarCanonicalCandidate")
+                     .ShouldContain(element =>
+                         (string?)element.Attribute("Include") == "@(_AtomUIExtractedLinkedSidecar)" &&
+                         (string?)element.Attribute("AtomUILinkedSidecarSource") == "MetadataExtraction");
+        collectTarget.Descendants("AdditionalFiles")
+                     .ShouldAllBe(element =>
+                         (string?)element.Attribute("Include") != "@(_AtomUIExtractedLinkedSidecar)");
     }
 
     [Fact]

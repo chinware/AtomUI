@@ -1,6 +1,6 @@
 # Linked Registration Generator
 
-> 状态：截至 2026-08-16，本文定义 Generator 模块的正式实现边界。
+> 状态：截至 2026-08-20，本文定义 Generator 模块的正式实现边界。
 
 本文负责 `AtomUI.Generator`、目标 linked-publish Generator 和 `AtomUI.Build.Tasks` 在 AOT/Trim 注册管线中的职责划分、
 增量模型、禁止模式、输出和测试契约。系统级协议由
@@ -52,6 +52,7 @@ Ordinary Generator 不扫描应用 usage，不计算 Unit closure，不读取 tr
 - Sidecar canonical read/write 和 hash 检查。
 - ProjectReference target output 聚合。
 - Pack asset 与 consumer target 生成。
+- Sidecar candidate catalog 的来源标记、程序集身份解析和 canonical resolution。
 - 最终 PE/resource direct-evidence 验证。
 
 Build Task 不加载应用运行时，不执行程序集反射，也不构造递归方法调用图。
@@ -122,6 +123,21 @@ Sidecar writer 必须：
 - 不把 sidecar 添加为 EmbeddedResource、Content 或 publish asset。
 
 Codec 的 unknown-major、optional-minor、缺字段、重复 ownership、hash mismatch 和 invalid fragment identity 必须分别测试。
+
+### 6.1 Consumer Resolution Contract
+
+Generator 接收的 `AdditionalFiles` 必须已经是消费端 canonical resolution 的结果。Generator 不负责通过“保留第一份”来修复
+MSBuild 传入的重复 Sidecar；如果同一程序集的多个候选未经解析就到达 Generator，应按协议冲突报告 `ATOMUILINK005`。
+
+消费端解析以 Sidecar 声明的 `assembly.name` 为身份，以 `contractHash` 判断内容是否相同：
+
+- ProjectReference companion 和 NuGet package 的优先级只用于同 hash 等价候选；metadata extraction 只在正式 Sidecar 缺失时生成。
+- 同身份同 hash 的候选可以折叠，但最终只保留一个 canonical input。
+- 同身份不同 hash 不能静默选择，必须报告所有来源和冲突 hash。
+- 已有正式 Package/companion Sidecar 的程序集不允许再次生成 `ExtractedManifest`。
+
+这个契约保证 Generator 看到的是“每个程序集一个 Manifest”，同时保留普通 ProjectReference 缺少 companion 时的 full fallback
+兼容路径。路径名、包目录和 DLL 相邻文件关系只能作为候选发现线索，不能作为最终身份判断。
 
 ## 7. Application Plan 输出
 
@@ -215,6 +231,8 @@ Package 与 entry 信息。SCC 发现和组件依赖排序必须使用显式栈�
 - Debug/普通 Release 的 `Csc` Analyzer item 不含 linked analyzer。
 - linked AXAML target 在普通构建 skipped。
 - ProjectReference sidecar 只在 linked build 传递；companion 缺失时 consumer 从引用 assembly metadata 提取，提取结果带 `ExtractedManifest` fallback（full fallback、无诊断）。
+- NuGet package Sidecar 与 extracted fallback 的重复程序集回归：包内正式 Sidecar 存在时不得生成 extraction candidate，linked build 不得报 `ATOMUILINK005`。
+- Sidecar candidate resolution：同身份同 hash 折叠为一份，同身份不同 hash 以 `ATOMUILINK005` 失败并保留来源诊断。
 - NuGet sidecar/consumer target 自动打包且不进入 runtime assets。
 - sidecar 缺失、损坏或无法验证时只触发 Package fallback。
 

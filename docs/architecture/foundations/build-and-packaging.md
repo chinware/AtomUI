@@ -171,6 +171,13 @@ property 防止重复导入。Generator、Sidecar 和 Build Tasks 只允许位�
 `AtomUI.AotTrimRegistration.Enabled` 注册标记，并在 ILLink/ILCompiler 前验证计划标记。普通构建中这些 linked targets 必须
 skip，连空 usage 文件都不能创建。该标记只属于 AOT/Trim 注册基础设施，不得作为通用运行时 feature 使用。
 
+linked build 必须在 `ResolveReferences` 后以最终 `ReferencePath` 为程序集全集，建立带来源的 Sidecar candidate catalog，再按
+Sidecar 声明的 `assembly.name` 和 `contractHash`
+解析唯一 canonical 输入。ProjectReference companion、NuGet package 和 metadata extraction 的来源优先级只用于选择同 hash
+候选；不同 hash 必须构建失败，不能按路径、文件名或 item 顺序静默覆盖。NuGet package 已交付正式 Sidecar 时，不得因为
+程序集 `ReferencePath` 旁没有 companion 文件而再次执行 metadata extraction。只有解析后的 canonical Sidecar 可以进入
+`AdditionalFiles`。
+
 类库只在被 linked 应用作为 ProjectReference 构建或执行 NuGet Pack 时生成 Usage Sidecar。Pack 自动把 Sidecar 和唯一的
 `<PackageId>.targets` 放入 `buildTransitive`；普通 Debug/Release 不扫描 usage，不生成 Sidecar，也不安装 Application Plan。
 

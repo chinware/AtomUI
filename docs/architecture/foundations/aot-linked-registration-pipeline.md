@@ -1,6 +1,6 @@
 # AOT Linked Registration Pipeline
 
-> 状态：截至 2026-08-16，本文定义 AtomUI linked registration 的正式架构。
+> 状态：截至 2026-08-20，本文定义 AtomUI linked registration 的正式架构。
 
 本文是 AtomUI linked registration 构建管线、Sidecar Manifest、应用静态计划和运行时边界的正式所有者。
 Registration Unit 的产品粒度和资源归属由
@@ -19,6 +19,7 @@ Registration Unit 的产品粒度和资源归属由
 5. Unit fragment 是叶子，只注册本 Unit；应用编译期闭包负责去重和排序。
 6. 无法证明精确结果时只扩大为当前 Package full registrar，不能生成可能漏注册的计划。
 7. 分析规模必须有确定性结构上限；超限只能触发 fallback，不能形成无界运行或数 GB linker 图。
+8. 一个程序集在一次 linked build 中只能有一个生效的 Sidecar；消费端必须按声明身份解析来源优先级和内容冲突。
 
 静态输入不足时，优先保证作者零新增负担、运行时零分析成本和运行正确性，不承诺所有动态程序都达到理论最小体积。
 
@@ -119,7 +120,47 @@ Sidecar 是纯编译资产：
 - `CopyToOutputDirectory`、`CopyToPublishDirectory` 均为 `Never`。
 - 不作为 EmbeddedResource，不进入运行时程序集、应用输出或 publish 目录。
 
-### 5.2 记录模型
+Sidecar 交付存在三种来源，但不代表三种来源都可以同时生效：
+
+1. NuGet `buildTransitive` 正式 Sidecar。
+2. linked ProjectReference 输出旁的 companion Sidecar。
+3. 普通 ProjectReference 缺少 companion 时从 assembly metadata 提取的 `ExtractedManifest` fallback。
+
+消费端不能用 `ReferencePath` DLL 旁是否存在文件作为唯一判断。NuGet 正式 Sidecar 与 DLL 物理位置不同，必须先解析已经
+导入的 Package/companion Sidecar，再决定是否提取 fallback。
+
+### 5.2 Sidecar Candidate Resolution
+
+MSBuild/Build Task 的 Sidecar 收集必须产出一个带来源的 candidate catalog，再将 canonical 结果传给 Generator：
+
+```text
+Package Sidecar ───────┐
+Project companion ─────┼─> identity + contractHash resolution ─> canonical Sidecars
+Metadata extraction ───┘                                      └─> AdditionalFiles
+```
+
+解析必须在 `ResolveReferences` 之后按两阶段执行：
+
+1. 以最终 `ReferencePath` 为程序集全集，收集并解析 Package 与 ProjectReference companion 正式 Sidecar。
+2. 将正式 candidate 的 `assembly.name` 与实际解析引用绑定，并验证 Sidecar protocol 与 `contractHash` 自身完整性；未绑定到
+   最终引用的 candidate 不能进入 Generator。`targetFramework` 是 producer provenance，不要求与 NuGet 最终选择的兼容 TFM
+   字符串完全相同。
+3. 对同一实际引用的正式 candidates 先执行同身份、同 hash 折叠和异 hash 冲突检查。
+4. 只对没有正式 candidate 的实际引用执行 metadata extraction，并将提取结果标记为最低来源。
+5. 输出每个实际引用唯一的 canonical Sidecar，再一次性加入 `AdditionalFiles`。
+
+解析不变量如下：
+
+- `assembly.name` 是去重身份；路径、文件名和包目录不是去重身份。
+- ProjectReference companion、Package Sidecar 的优先级只用于选择同 hash 的等价候选；metadata extraction 仅在二者缺失时产生。
+- 同身份、同 `contractHash` 的候选可以折叠；同身份、不同 hash 必须报 `ATOMUILINK005`。
+- 已由正式 Sidecar 声明的程序集不得再次生成 `ExtractedManifest`。
+- `AdditionalFiles` 只接受 canonical 结果；不得先把所有来源注入 `AdditionalFiles`，再依赖 Generator 兜底去重。
+
+Build Task 可以读取 Sidecar 的强类型 Manifest 来建立身份表，但不得扫描应用运行时程序集或构造运行时发现路径。提取
+fallback 仍然只用于“引用输出没有正式 Sidecar”的普通类库，并继续触发对应 Package full fallback。
+
+### 5.3 记录模型
 
 一个 assembly sidecar 可以包含：
 
@@ -136,11 +177,11 @@ Sidecar 使用 UTF-8、确定性 JSON 和唯一强类型 codec。Writer 统一�
 手工拼接 JSON 字符串。字段级契约由
 [Linked Registration Sidecar](../../reference/aot/linked-registration-sidecar.md)定义。
 
-### 5.3 版本和一致性
+### 5.4 版本和一致性
 
 - 未知 major version 必须构建失败。
 - 未识别的 optional minor 字段可以忽略。
-- `contractHash` 覆盖 Package、Unit、ControlMap、fragment identity 和 dependency records。
+- `contractHash` 覆盖 Sidecar 的全部 canonical 协议事实，包括 Package、Unit、ControlMap、UnitEdge、Usage 和 Fallback。
 - ProjectReference sidecar 与实际引用输出不匹配时必须重建。
 - 首次冷构建必须在 ProjectReference 的 `Build` 返回前生成 Sidecar；不得依赖旧 `TargetPath` 让第二次构建偶然成功。
 - 缺失或陈旧 sidecar 不能被解释为“没有 usage”，只能按兼容规则 full fallback。
@@ -268,6 +309,9 @@ Sidecar 不进入运行时。`UseXxxControls()` 仍拥有 Package Core、Provide
 | loose AXAML / 动态主题 | 当前 Package full registrar |
 | 无法静态解析的 C# 动态创建 | 不扩大保留范围，报告 `ATOMUILINK010` 警告，由显式 root 覆盖 |
 | sidecar 缺失、陈旧或无法绑定 | 当前相关 Package full registrar |
+| Package 或 companion 已提供同程序集正式 Sidecar | 禁止再次生成 `ExtractedManifest` |
+| 同程序集 Sidecar 同 hash | 合并为一个 canonical Sidecar |
+| 同程序集 Sidecar hash 冲突 | 构建 Error，并报告全部来源 |
 | 未知 protocol major | 构建 Error |
 | fragment symbol 不存在 | 构建 Error |
 | 分析预算超限 | 当前 Package full registrar |
@@ -291,6 +335,20 @@ Warning 必须包含 Package、reason 和可定位的输入身份。不能只报
 - no-op rebuild 命中 hash/cache，不重写 sidecar。
 - 异常规模在确定性预算内完成或 Package fallback。
 - Application Plan 只包含选中 Unit 的直接调用。
+- Sidecar candidate 必须先按 `assembly.name` 和 `contractHash` 完成 canonical resolution，再进入 `AdditionalFiles`。
+- NuGet 正式 Sidecar 与 metadata extraction 不得同时声明同一程序集；同 hash 只保留一份，异 hash 必须报 `ATOMUILINK005`。
+
+构建级回归矩阵至少包含：
+
+| 场景 | 必须结果 |
+| --- | --- |
+| NuGet package Sidecar + `PublishAot=true` | 不生成同程序集 extraction，构建不报 `ATOMUILINK005` |
+| NuGet package Sidecar + `PublishTrimmed=true` | 与 NativeAOT 使用相同 canonical resolution |
+| ProjectReference companion 缺失 | 生成唯一 `ExtractedManifest`，相关 Package full fallback 且无诊断 |
+| companion 与 Package Sidecar 同身份同 hash | 只传递 companion canonical input |
+| 多个包传递同身份同 hash Sidecar | 最终 `AdditionalFiles` 只有一份 |
+| 同身份不同 hash | `ATOMUILINK005` 报告程序集、来源路径和 hash |
+| Debug 或普通 Release | 不建立 linked catalog、不提取 Sidecar、不加载 linked analyzer |
 
 ### 11.3 运行与体积
 

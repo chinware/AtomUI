@@ -1,7 +1,7 @@
 <Project>
     <ItemGroup Condition="'$(AtomUILinkedPublish)' == 'true'">
-        <AdditionalFiles Include="$(MSBuildThisFileDirectory)AtomUI.LinkedRegistration/*.atomui-link.json"
-                         AtomUILinkedSidecar="true"
-                         Visible="false" />
+        <AtomUILinkedSidecarCandidate Include="$(MSBuildThisFileDirectory)AtomUI.LinkedRegistration/*.atomui-link.json"
+                                      AtomUILinkedSidecarSource="Package"
+                                      Visible="false" />
     </ItemGroup>
 </Project>

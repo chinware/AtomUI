@@ -28,27 +28,36 @@
                AssemblyFile="$(AtomUIBuildTasksAssembly)" />
     <UsingTask TaskName="AtomUI.Build.Tasks.GenerateLinkedRegistrationSidecarTask"
                AssemblyFile="$(AtomUIBuildTasksAssembly)" />
+    <UsingTask TaskName="AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask"
+               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
 
     <Target Name="CollectAtomUIProjectReferenceSidecars"
             BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;CoreCompile"
             DependsOnTargets="ResolveReferences"
             Condition="'$(AtomUILinkedPublish)' == 'true' and '@(ReferencePath)' != '' and '$(IsRoslynComponent)' != 'true' and '$(MSBuildProjectName)' != 'AtomUI.Build.Tasks'">
         <ItemGroup>
+            <_AtomUILegacyLinkedSidecarCandidate
+                Include="@(AdditionalFiles->WithMetadataValue('AtomUILinkedSidecar', 'true'))" />
+            <AtomUILinkedSidecarCandidate
+                Include="@(_AtomUILegacyLinkedSidecarCandidate)"
+                AtomUILinkedSidecarSource="Package" />
+            <AdditionalFiles Remove="@(_AtomUILegacyLinkedSidecarCandidate)" />
             <_AtomUILinkedReferenceSidecarCandidate
-                Include="@(ReferencePath->'%(FullPath).atomui-link.json')" />
-            <_AtomUIProjectReferenceSidecar
+                Include="@(ReferencePath->'%(FullPath).atomui-link.json')"
+                AtomUILinkedSidecarSource="ProjectCompanion" />
+            <AtomUILinkedSidecarCandidate
                 Include="@(_AtomUILinkedReferenceSidecarCandidate)"
                 Condition="Exists('%(Identity)')" />
         </ItemGroup>
-        <RemoveDuplicates Inputs="@(_AtomUIProjectReferenceSidecar)">
-            <Output TaskParameter="Filtered"
-                    ItemName="_AtomUIDistinctProjectReferenceSidecar" />
-        </RemoveDuplicates>
-        <ItemGroup>
-            <AdditionalFiles Include="@(_AtomUIDistinctProjectReferenceSidecar)"
-                             AtomUILinkedSidecar="true"
-                             Visible="false" />
-        </ItemGroup>
+        <AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask
+            SidecarCandidates="@(AtomUILinkedSidecarCandidate)"
+            ReferencePaths="@(ReferencePath)"
+            Condition="Exists('$(AtomUIBuildTasksAssembly)')">
+            <Output TaskParameter="CanonicalSidecars"
+                    ItemName="_AtomUIFormalCanonicalLinkedSidecar" />
+            <Output TaskParameter="ExtractableReferences"
+                    ItemName="_AtomUILinkedExtractableReference" />
+        </AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask>
         <!--
             ProjectReference builds do not emit the Sidecar next to the referenced assembly
             (linked analysis stays off for library builds), but the registration manifest is
@@ -56,16 +65,9 @@
             ProjectReference consumption resolves the same Registration Units as the
             NuGet-delivered Sidecar without any library-side opt-in.
         -->
-        <ItemGroup>
-            <_AtomUILinkedExtractableReference
-                Include="@(ReferencePath)"
-                Condition="'%(ReferencePath.FileName)' != '' and
-                           $([System.String]::Copy('%(ReferencePath.FileName)').StartsWith('AtomUI.', System.StringComparison.Ordinal)) and
-                           !Exists('%(ReferencePath.FullPath).atomui-link.json')" />
-        </ItemGroup>
         <AtomUI.Build.Tasks.GenerateLinkedRegistrationSidecarTask
-            AssemblyPath="%(_AtomUILinkedExtractableReference.FullPath)"
-            OutputPath="$(IntermediateOutputPath)AtomUIExtractedSidecars/%(_AtomUILinkedExtractableReference.FileName).atomui-link.json"
+            AssemblyPath="%(_AtomUILinkedExtractableReference.Identity)"
+            OutputPath="$(IntermediateOutputPath)AtomUIExtractedSidecars/%(_AtomUILinkedExtractableReference.AtomUILinkedAssemblyName).atomui-link.json"
             TargetFramework="$(TargetFramework)"
             ExtractedFallback="true"
             Condition="'@(_AtomUILinkedExtractableReference)' != '' and Exists('$(AtomUIBuildTasksAssembly)')"
@@ -74,10 +76,24 @@
                     ItemName="_AtomUIExtractedLinkedSidecar" />
         </AtomUI.Build.Tasks.GenerateLinkedRegistrationSidecarTask>
         <ItemGroup>
-            <AdditionalFiles Include="@(_AtomUIExtractedLinkedSidecar)"
+            <_AtomUILinkedSidecarCanonicalCandidate
+                Include="@(_AtomUIFormalCanonicalLinkedSidecar)" />
+            <_AtomUILinkedSidecarCanonicalCandidate
+                Include="@(_AtomUIExtractedLinkedSidecar)"
+                AtomUILinkedSidecarSource="MetadataExtraction" />
+            <FileWrites Include="@(_AtomUIExtractedLinkedSidecar)" />
+        </ItemGroup>
+        <AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask
+            SidecarCandidates="@(_AtomUILinkedSidecarCanonicalCandidate)"
+            ReferencePaths="@(ReferencePath)"
+            Condition="Exists('$(AtomUIBuildTasksAssembly)')">
+            <Output TaskParameter="CanonicalSidecars"
+                    ItemName="_AtomUICanonicalLinkedSidecar" />
+        </AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask>
+        <ItemGroup>
+            <AdditionalFiles Include="@(_AtomUICanonicalLinkedSidecar)"
                              AtomUILinkedSidecar="true"
                              Visible="false" />
-            <FileWrites Include="@(_AtomUIExtractedLinkedSidecar)" />
         </ItemGroup>
     </Target>
 

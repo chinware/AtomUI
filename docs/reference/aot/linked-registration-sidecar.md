@@ -14,6 +14,24 @@
 
 Producer 必须使用结构化 JSON writer。Consumer 必须使用结构化 parser；不得用正则或字符串切割解析。
 
+## 候选来源和 Canonical Resolution
+
+Consumer 可以从 NuGet package、ProjectReference companion 和 assembly metadata extraction 获得 Sidecar candidate。候选的
+物理路径只用于定位文件，不是 Manifest 身份；NuGet Sidecar 与程序集不要求位于同一目录。
+
+每个 candidate 必须通过 consumer-side item metadata 携带 `Package`、`ProjectCompanion` 或 `MetadataExtraction` 来源；这是
+构建管线元数据，不新增 Sidecar JSON 字段。Consumer 按以下契约解析：
+
+1. 使用 `assembly.name` 作为程序集身份。
+2. 使用 `contractHash` 判断同一身份的 canonical 内容是否相同。
+3. 同身份同 hash 时按 ProjectReference companion、NuGet package、metadata extraction 的顺序选择 canonical candidate。
+4. 同身份不同 hash 时不得按优先级静默覆盖，必须以 `ATOMUILINK005` 构建失败并报告全部来源。
+5. 已有 Package 或 ProjectReference 正式 Sidecar 的程序集不得生成 metadata extraction candidate。
+6. 只有 canonical candidate 可以进入 Roslyn `AdditionalFiles`。
+
+Metadata extraction 是缺失正式 Sidecar 时的 fallback，不是与正式 Sidecar并行的第二份 Manifest。它继续携带
+`ExtractedManifest`，并使相关 Package 使用 full fallback。
+
 ## 顶层字段
 
 | 字段 | 必需 | 含义 |
@@ -36,10 +54,11 @@ Producer 必须使用结构化 JSON writer。Consumer 必须使用结构化 pars
 | --- | --- |
 | `name` | Assembly simple name |
 | `contractHash` | 覆盖本文件全部协议事实的 canonical content hash |
-| `targetFramework` | 产生 Sidecar 的目标框架 identity |
+| `targetFramework` | 产生 Sidecar 的目标框架 provenance；不是跨兼容 TFM 消费时的去重身份 |
 
-Sidecar 与实际引用 assembly identity、target framework 或 hash 不一致时不得消费。ProjectReference 应重新生成；无法重新生成的
-NuGet/二进制输入对相关 Package 使用 full fallback。
+Sidecar 的 `assembly.name` 未绑定到实际引用，或 protocol/`contractHash` 自身验证失败时不得消费。ProjectReference 应重新生成；
+无法重新生成的 NuGet/二进制输入对相关 Package 使用 full fallback。NuGet 已通过资产选择确定兼容 TFM 时，不要求
+`targetFramework` 字符串与最终 `ReferencePath` 的 TFM 完全相同。
 
 ## Package
 
@@ -159,6 +178,7 @@ Canonical writer 必须：
 - UnitEdge 跨 Package 或引用不存在 Unit。
 - Fragment symbol 不存在或签名不兼容。
 - Sidecar 与 ProjectReference assembly identity/hash 不一致且无法重建。
+- 同一 `assembly.name` 出现不同 `contractHash` 的 Sidecar candidates。
 
 以下情况产生 Package fallback Warning；strict 验证可以提升为 Error：
 
@@ -175,6 +195,8 @@ NuGet 和真实 publish 测试必须确认：
 
 - Package 中 Sidecar 与 consumer target 存在且路径正确。
 - linked build 可以通过 AdditionalFiles 读取 Sidecar。
+- Package Sidecar 已声明的程序集不会再生成 metadata extraction candidate。
+- 同身份同 hash 的重复传递只产生一个 canonical `AdditionalFiles` 输入；同身份不同 hash 的候选构建失败并报告来源。
 - 普通 Debug/Release 不把 Sidecar加入 compiler input。
 - Sidecar 不出现在 `lib/`、runtime assets、应用输出、`.app` bundle 或 publish 目录。
 - Generator、Build Tasks、PDB 和分析缓存同样不进入运行时产物。

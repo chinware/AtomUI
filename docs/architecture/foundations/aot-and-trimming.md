@@ -1,6 +1,6 @@
 # AOT 与裁剪架构
 
-> 状态：截至 2026-08-16，本文定义 AtomUI Registration Unit、Sidecar Manifest、应用静态计划和安全 fallback 的正式架构。
+> 状态：截至 2026-08-20，本文定义 AtomUI Registration Unit、Sidecar Manifest、应用静态计划和安全 fallback 的正式架构。
 
 本文是 AtomUI AOT 与 trimming 整体架构的正式所有者，覆盖 `AtomUI.Core`、Control Packages、Generator、Build Tasks、
 应用项目和第三方包。专项契约分别由以下文档维护：
@@ -32,6 +32,8 @@ AtomUI 因此把静态可达性拆成 Registration Unit。普通包以整个 Pac
 8. 无法证明精确 Unit 集合时，只扩大为对应 Package full registrar。
 9. Language、Provider、Global Token、Theme Algorithm 和初始化逻辑保持 Package 级语义与顺序。
 10. 分析必须增量且有确定性结构预算；超限触发 fallback，不能形成无界编译或巨大 linker 方法图。
+11. 每个程序集在一次 linked build 中只能有一个生效的 Sidecar。Package、ProjectReference companion 和 metadata 提取
+    是有优先级的候选来源；提取 fallback 只能补足缺失的正式 Sidecar，不能与已交付 Sidecar 并存。
 
 对于任意动态程序集、反射、脚本或发布后插件，不可能同时保证理论最小体积、作者零声明和运行时零发现。本架构保证后两项和
 运行正确性；静态证据不足时牺牲体积。
@@ -107,6 +109,15 @@ UnitEdge、Usage 和 Fallback；它通过 `buildTransitive` 或已解析 `Refere
 build 的 AdditionalFile，不进入运行时程序集或 publish 目录。ProjectReference 的 Sidecar 必须在目标程序集复制到
 `TargetPath` 后生成，使首次冷构建和增量构建具有相同输入。
 
+### 6.1 Sidecar 来源与唯一性
+
+Sidecar 物理路径不能代表 Manifest 身份。消费项目必须先解析 Package 和 ProjectReference 正式 Sidecar，再只对没有正式
+Manifest 的引用生成 metadata extraction fallback；最终按 `assembly.name` 和 `contractHash` 解析每个程序集唯一的 canonical
+Sidecar。不同 hash 的同身份候选必须构建失败，不能依赖文件名、路径或 MSBuild item 顺序选择。
+
+来源优先级、两阶段解析算法、冲突诊断和构建回归矩阵由
+[AOT Linked Registration Pipeline](aot-linked-registration-pipeline.md#52-sidecar-candidate-resolution)统一定义。
+
 Application Plan Generator：
 
 1. 验证 Sidecar protocol、hash、ownership 和 fragment symbol。
@@ -159,6 +170,9 @@ dynamic、reflection、Loose AXAML 和插件输入触发 Package fallback。
 | Loose AXAML / 动态主题 | 对应 Package full registrar |
 | 无法静态解析的 C# 动态创建（`Activator.CreateInstance(Type)` 等） | 不扩大保留范围，报告 `ATOMUILINK010` 警告，由显式 root 覆盖 |
 | Sidecar 缺失、陈旧或无法验证 | 对应 Package full registrar |
+| Package 或 ProjectReference 已提供同程序集正式 Sidecar | 禁止再次生成 `ExtractedManifest` |
+| 同程序集 Sidecar 身份相同且 `contractHash` 相同 | 合并为一个 canonical Sidecar |
+| 同程序集 Sidecar `contractHash` 不同 | 构建 Error，报告来源冲突 |
 | ProjectReference Sidecar 由 consumer 从普通构建的 assembly metadata 提取（`ExtractedManifest`） | 对应 Package full registrar，不产生诊断 |
 | 分析预算超限 | 对应 Package full registrar |
 | 未知 protocol major | 构建 Error |
@@ -248,7 +262,8 @@ ordinary Generator、linked-publish Generator、Build Tasks、Sidecar、PDB 和�
 统一验证必须覆盖：
 
 - Package/Directory、entry、Unit ownership、direct UnitEdge、PackageShared、budget 和 fallback。
-- Sidecar codec、hash、确定性、ProjectReference/NuGet 传播和 fragment symbol。
+- Sidecar codec、hash、确定性、ProjectReference/NuGet 传播、来源优先级、程序集身份去重和 fragment symbol。
+- NuGet 正式 Sidecar 与 metadata extraction 不得同时进入 `AdditionalFiles`；相同身份同 hash 只保留一份，异 hash 必须失败。
 - 普通 Debug/Release 不加载 linked Analyzer、不运行 linked targets、不产生 linked 中间文件。
 - ordinary/generated descriptor、Theme Asset、Language、Provider、initializer 和冻结时序一致。
 - trimmed JIT、NativeAOT、WebAssembly AOT 和真实 Gallery 启动 smoke。

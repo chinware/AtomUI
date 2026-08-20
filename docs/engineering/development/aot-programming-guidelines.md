@@ -301,6 +301,21 @@ publish 时以全局属性传入 `-p:PublishAot=true` / `-p:PublishTrimmed=true`
 `ATOMUILINK002`、`ATOMUILINK007` 和 `ATOMUILINK010` 只在 linked publish 或显式 `AtomUIRegistrationStrict=true` 验证中显示；strict 模式用于
 CI 把自动 full fallback 或未覆盖的动态创建提升为 error。`ATOMUILINK010` 不触发 full fallback，只提示用显式 root 覆盖。
 
+### Sidecar 来源和重复防护
+
+维护 linked-registration 构建资产时，必须遵守以下不变量：
+
+- 一个程序集在一次 linked build 中只能有一个生效的 Sidecar。
+- ProjectReference companion 与 NuGet package 的顺序只用于选择同 hash 等价候选；metadata extraction 只在正式 Sidecar 缺失时使用。
+- 不能用“DLL 旁边没有 Sidecar”证明“构建中没有 Sidecar”；NuGet 正式 Sidecar 通常位于 `buildTransitive`。
+- 收集阶段必须先解析 `assembly.name` 和 `contractHash`，再按程序集身份去重，最后才注入 `AdditionalFiles`。
+- 同身份同 hash 可以折叠为一份；同身份不同 hash 必须失败并报告来源，不能随机保留第一份。
+- 已有正式 Package/companion Sidecar 的程序集禁止再次生成 `ExtractedManifest`；普通 ProjectReference 缺失 companion 时仍须保留
+  extraction fallback。
+
+任何新增 Sidecar、consumer target、Pack asset 或 extraction 逻辑，都必须同时验证 NuGet、ProjectReference、混合引用和重复传递
+包场景。不要在 Generator 中吞掉重复声明，也不要通过关闭 extraction、修改文件名或 suppress `ATOMUILINK005` 掩盖来源冲突。
+
 修改 Generator ABI、Sidecar schema、feature switch 或 Public fragment entry point 时，按 Public API 和协议 review，并运行
 普通构建零 linked-analysis、trimmed JIT、NativeAOT 和非裁剪兼容验证。系统契约见
 [AOT Linked Registration Pipeline](../../architecture/foundations/aot-linked-registration-pipeline.md)。
