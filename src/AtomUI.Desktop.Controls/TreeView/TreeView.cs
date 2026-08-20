@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
+using AtomUI.Generated.AtomUIDesktopControls;
 using AtomUI.MotionScene;
 using Avalonia;
 using Avalonia.Collections;
@@ -695,7 +696,9 @@ public partial class TreeView : AvaloniaTreeView,
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
-        return new TreeViewItem();
+        var treeViewItem = new TreeViewItem();
+        treeViewItem.Classes.Add(TreeViewSemanticParts.ItemClass);
+        return treeViewItem;
     }
 
     protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
@@ -708,6 +711,7 @@ public partial class TreeView : AvaloniaTreeView,
         base.ContainerForItemPreparedOverride(container, item, index);
         if (container is TreeViewItem treeViewItem)
         {
+            treeViewItem.Classes.Add(TreeViewSemanticParts.ItemClass);
             treeViewItem.OwnerTreeView = this;
             
             if (item != null && item is not Visual && item is ITreeItemNode treeViewItemData)

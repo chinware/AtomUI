@@ -64,6 +64,11 @@ internal static class SemanticPartTargetResolver
 
         if (part.RuntimeCreated)
         {
+            if (HasMarker(owner, part))
+            {
+                AddMatch(owner);
+            }
+
             TraverseOwnerScope(owner, owner, part, registry, AddMatch);
         }
         else if (owner is TemplatedControl templatedOwner)
@@ -102,14 +107,14 @@ internal static class SemanticPartTargetResolver
     {
         foreach (var child in scope.GetVisualChildren())
         {
-            if (IsNestedSemanticOwner(child, owner, registry))
-            {
-                continue;
-            }
-
             if (HasMarker(child, part))
             {
                 addMatch(child);
+            }
+
+            if (IsNestedSemanticOwner(child, owner, registry))
+            {
+                continue;
             }
 
             TraverseOwnerScope(child, owner, part, registry, addMatch);

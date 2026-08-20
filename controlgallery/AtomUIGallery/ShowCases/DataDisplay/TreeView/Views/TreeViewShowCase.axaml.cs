@@ -271,6 +271,16 @@ public partial class TreeViewShowCase : GalleryReactiveUserControl<TreeViewViewM
         [
             new TreeNodePath("0-0/0-0-1/0-0-1-1")
         ];
+
+        viewModel.SemanticPartTreeDefaultSelectedPaths =
+        [
+            new TreeNodePath("0-0/0-0-1")
+        ];
+
+        viewModel.SemanticPartPreviewDefaultSelectedPaths =
+        [
+            new TreeNodePath("0-0/0-0-0")
+        ];
     }
 
     private void InitBasicTreeNodes(TreeViewViewModel viewModel)

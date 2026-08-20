@@ -109,6 +109,88 @@ public class SemanticPartTargetResolverTests
     }
 
     [Fact]
+    public void Runtime_Created_Resolution_Matches_A_Nested_Registered_Owner_Carrying_The_Part_Marker()
+    {
+        var nestedOwner = new StackPanel
+        {
+            Width  = 80,
+            Height = 40
+        };
+        nestedOwner.Classes.Add("semantic-item");
+        var owner = new Grid
+        {
+            Width    = 180,
+            Height   = 100,
+            Children = { nestedOwner }
+        };
+        var ownerDescriptor = RuntimeDescriptor(typeof(Grid), "RuntimeGrid");
+        var registry = new SemanticPartRegistry([
+            ownerDescriptor,
+            RootOnlyDescriptor(typeof(StackPanel), "NestedStackPanel")
+        ]);
+
+        ShowInWindow(owner, () =>
+        {
+            var result = Resolve(owner, ownerDescriptor, "item", registry);
+
+            result.TotalMatchCount.ShouldBe(1);
+            result.Targets.ShouldBe([nestedOwner]);
+        });
+    }
+
+    [Fact]
+    public void Runtime_Created_Resolution_Matches_The_Owner_When_It_Carries_The_Part_Marker()
+    {
+        var owner = new Grid
+        {
+            Width  = 180,
+            Height = 100
+        };
+        owner.Classes.Add("semantic-item");
+        var ownerDescriptor = RuntimeDescriptor(typeof(Grid), "RuntimeGrid");
+        var registry = new SemanticPartRegistry([ownerDescriptor]);
+
+        ShowInWindow(owner, () =>
+        {
+            var result = Resolve(owner, ownerDescriptor, "item", registry);
+
+            result.TotalMatchCount.ShouldBe(1);
+            result.Targets.ShouldBe([owner]);
+        });
+    }
+
+    [Fact]
+    public void Runtime_Created_Resolution_Matches_The_Owner_And_Nested_Owner_When_Both_Carry_The_Marker()
+    {
+        var nestedOwner = new StackPanel
+        {
+            Width  = 80,
+            Height = 40
+        };
+        nestedOwner.Classes.Add("semantic-item");
+        var owner = new Grid
+        {
+            Width    = 180,
+            Height   = 100,
+            Children = { nestedOwner }
+        };
+        owner.Classes.Add("semantic-item");
+        var ownerDescriptor = RuntimeDescriptor(typeof(Grid), "RuntimeGrid");
+        var registry = new SemanticPartRegistry([
+            ownerDescriptor,
+            RootOnlyDescriptor(typeof(StackPanel), "NestedStackPanel")
+        ]);
+
+        ShowInWindow(owner, () =>
+        {
+            var result = Resolve(owner, ownerDescriptor, "item", registry);
+
+            result.TotalMatchCount.ShouldBe(2);
+            result.Targets.ShouldBe([owner, nestedOwner]);
+        });
+    }
+
+    [Fact]
     public void Resolution_Reports_All_Visible_Matches_But_Returns_Only_The_Budget()
     {
         var owner = new Grid

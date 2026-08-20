@@ -13077,13 +13077,176 @@ Source: ./controls/tree-view/semantic-cn.md
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `TreeView` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+### 2.1 `TreeView`
+
+#### `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `TreeView` |
+| Part | `root` |
+| Selector | TreeView 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
+| ContractType | `TreeView` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | TreeView owner |
+| 职责 | 树根是 Items、选择、勾选、展开、过滤、拖拽、异步加载、空状态、switcher 图标与动效配置的统一 owner；作为顶层 `item` Part 的 owner-scoped Selector 作用域边界。 |
+| 相关 API | `Items`、`ItemsSource`、`SelectionMode`、`SelectedItem`、`SelectedItems`、`ToggleType`、`IsCheckStrictly`、`IsDefaultExpandAll`、`DefaultSelectedPaths`、`DefaultCheckedPaths`、`DefaultExpandedPaths`、`IsDraggable`、`IsShowIcon`、`IsShowLine`、`IsShowLeafIcon`、`NodeHoverMode`、`Switcher*Icon`、`IsSwitcherRotation`、`IsSelectable`、`IsSelectOnRightClick`、`DataLoader`、`Filter`、`FilterStrategy`、`EmptyIndicator`、`IsMotionEnabled`、`OpenMotion`、`CloseMotion` |
+| 相关 Token | `TreeViewToken`、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `item`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `TreeView` |
+| Part | `item` |
+| Selector | `.semantic-item` |
+| SelectorRoute | `> .semantic-item` |
+| Style Type | `TreeViewItemStyle` |
+| ContractType | `TreeViewItem` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | 每个**顶层** `TreeViewItem` 容器 |
+| 职责 | 统一表示树中直接挂在 `TreeView` 根下的节点容器，覆盖 `TreeViewItem` 容器为公开 item 容器的顶层形态。 |
+| 相关 API | `Header`、`HeaderTemplate`、`Icon`、`IsChecked`、`IsLeaf`、`IsLoading`、`IsSelected`、`IsExpanded`、`IsEnabled`、`IsDragging`、`IsDragOver`、`NodeHoverMode`、`IsShowLine` |
+| 相关 Token | `TreeItemMargin`、`HeaderHeight`、SharedToken（`ColorBorder`） |
+| 稳定性 | stable since 6.0 |
+
+### 2.2 `TreeViewItem`
+
+`TreeViewItem` 是递归 owner：其 `item` Part 覆盖下一层子节点容器，`itemSwitcher` / `itemIcon` / `itemTitle` 覆盖每个
+节点的内容区域。`TreeViewItem` 的 `root` 是节点容器本身（implicit Part，无 `.semantic-root` marker，不生成 Style）。
+
+#### `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `TreeViewItem` |
+| Part | `root` |
+| Selector | TreeViewItem 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用 |
+| ContractType | `TreeViewItem` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | 每个 `TreeViewItem` 容器 |
+| 职责 | 单个树节点容器：承载节点级状态（selected / checked / expanded / disabled / loading / drag / filter）与树形连线渲染表面；作为子节点容器与节点内容 Part 的 owner-scoped Selector 作用域边界。 |
+| 相关 API | `Header`、`HeaderTemplate`、`Icon`、`IsChecked`、`IsLeaf`、`IsLoading`、`IsSelected`、`IsExpanded`、`IsEnabled`、`IsDragging`、`IsDragOver`、`NodeHoverMode`、`IsShowLine` |
+| 相关 Token | `TreeItemMargin`、`HeaderHeight`、SharedToken（`ColorBorder`） |
+| 稳定性 | stable since 6.0 |
+
+#### `item`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `TreeViewItem` |
+| Part | `item` |
+| Selector | `.semantic-item` |
+| SelectorRoute | `> .semantic-item` |
+| Style Type | `TreeViewItemItemStyle` |
+| ContractType | `TreeViewItem` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | 每个**子级** `TreeViewItem` 容器 |
+| 职责 | 递归表示当前节点容器生成的下一层子节点容器。与 `TreeView.item` 使用同一 `.semantic-item` 身份，共同保证任意深度的节点都可被 `atom|TreeViewItem` / `atom|TreeView` owner scope 命中。 |
+| 相关 API | 同 `TreeViewItem` root |
+| 相关 Token | `TreeItemMargin`、`HeaderHeight` |
+| 稳定性 | stable since 6.0 |
+
+#### `itemSwitcher`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `TreeViewItem` |
+| Part | `itemSwitcher` |
+| Selector | `.semantic-item-switcher` |
+| SelectorRoute | `/template/ .semantic-scope-header /template/ .semantic-item-switcher` |
+| Style Type | `TreeViewItemItemSwitcherStyle` |
+| ContractType | `ToggleButton` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | 每个 header 模板中的 `NodeSwitcherButton#PART_NodeSwitcherButton` |
+| 职责 | 统一表示节点展开/收起 switcher 区域：展开、收起、叶子与加载图标入口；对应上游 `.ant-tree-switcher` 节点。 |
+| 相关 API | `SwitcherExpandIcon`、`SwitcherCollapseIcon`、`SwitcherRotationIcon`、`SwitcherLoadingIcon`、`SwitcherLeafIcon`、`IsSwitcherRotation`、`IsLeaf`、`IsLoading`、`IsExpanded` |
+| 相关 Token | `HeaderHeight`、`NodeHoverBg`、`TreeNodeSwitcherMargin`、SharedToken（`IconSize`、`IconSizeXS`、`ColorTextSecondary`） |
+| 稳定性 | stable since 6.0 |
+
+#### `itemIcon`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `TreeViewItem` |
+| Part | `itemIcon` |
+| Selector | `.semantic-item-icon` |
+| SelectorRoute | `/template/ .semantic-scope-header /template/ .semantic-item-icon` |
+| Style Type | `TreeViewItemItemIconStyle` |
+| ContractType | `IconPresenter` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | 每个 header 模板中的 `IconPresenter#PART_IconPresenter` |
+| 职责 | 统一表示节点图标区域：`Icon` 内容的呈现、尺寸与边距；对应上游 `.ant-tree-iconEle` 节点。 |
+| 相关 API | `Icon`、`IsShowIcon`、`IsShowLeafIcon` |
+| 相关 Token | `TreeNodeIconMargin`、SharedToken（`IconSize`） |
+| 稳定性 | stable since 6.0 |
+
+#### `itemTitle`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `TreeViewItem` |
+| Part | `itemTitle` |
+| Selector | `.semantic-item-title` |
+| SelectorRoute | `/template/ .semantic-scope-header /template/ .semantic-item-title` |
+| Style Type | `TreeViewItemItemTitleStyle` |
+| ContractType | `ContentPresenter` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | 每个 header 模板中的 `ContentPresenter#HeaderPresenter` |
+| 职责 | 统一表示节点标题文字区域：`Header` / `HeaderTemplate` 内容的呈现、颜色、字体与对齐；对应上游 `.ant-tree-title` 节点。 |
+| 相关 API | `Header`、`HeaderTemplate`、`Content`、`ContentTemplate` |
+| 相关 Token | SharedToken（`ColorText`、`ColorTextDisabled`） |
+| 稳定性 | stable since 6.0 |
+
+### 2.3 marker 放置与路由
+
+`root` 是隐式 Part，不声明 `.semantic-root` marker。非 root Part 的 marker 放置：
+
+- `TreeView.item` 与 `TreeViewItem.item` 的 marker `.semantic-item` 在 `TreeView` 与 `TreeViewItem` 的容器创建与
+  prepare 路径幂等添加，覆盖用户显式 `TreeViewItem`、`ItemsSource` 数据驱动容器与递归子节点容器三条来源。
+- `itemSwitcher`、`itemIcon`、`itemTitle` 的 marker 静态声明在 `TreeViewItemHeaderTheme.axaml`（header 模板）。
+- `.semantic-scope-header` 静态声明在 `TreeViewItemTheme.axaml` 的 `TreeViewItemHeader#Header` 上，是 `TreeViewItem`
+  模板到 `TreeViewItemHeader` 模板之间的路由跳点，不发布为 Part。
+
+`TreeViewItem` owner 的四个运行时 Part（`item`、`itemSwitcher`、`itemIcon`、`itemTitle`）都位于 `TreeViewItem` 容器
+及其模板内部，descriptor 统一声明 `RuntimeCreated=true`，生成器不按 owner 主题资产做静态校验。
+
+- `item` 的 route `> .semantic-item` 经一步 `>` 直达子容器：子 `TreeViewItem` 容器的逻辑父级是当前 `TreeViewItem`
+  owner 本身。
+- `itemSwitcher` / `itemIcon` / `itemTitle` 需要两次 `/template/` 跳点：先进入 `TreeViewItem` 模板命中
+  `TreeViewItemHeader#Header` 上的 `.semantic-scope-header` 跳点，再进入 `TreeViewItemHeader` 模板命中对应 marker。
+
+`ContractType` 只定义 Setter 可以稳定依赖的最低 public 类型，并通过 `x:SetterTargetType` 提供 AXAML 编译期类型
+上下文；它不参与 `.semantic-*` 的身份匹配。`itemSwitcher` 的真实节点 `NodeSwitcherButton` 是 internal 类型，因此
+ContractType 使用其公开基类 `ToggleButton`（与 Timeline 对 internal `TimelineIndicator` 节点使用公开 `Border`、
+Calendar 对 internal cell 使用 `TemplatedControl` 同一决策）。`itemIcon` 的节点 `IconPresenter` 与 `itemTitle` 的
+节点 `ContentPresenter` 均为公开类型，直接取节点真实 public 类型作为最低依赖类型。
 
 ## Abstract AXAML Structure
 
@@ -13372,6 +13535,11 @@ TreeViewToken 不承载 `SelectedItem`、`SelectedItems`、`CheckedItems`、`IsE
 - `TreeItemNode` 保持轻量数据节点定位，不承载 Avalonia 属性系统。
 - `BindableTreeItemNode` 的 resource host attach、属性订阅和容器同步必须与容器生命周期成对释放。
 - 绑定型节点不能永久保存当前 `TreeViewItem`、header、template part 或 visual container。
+- Semantic Part 的 marker 放置（`TreeViewItemTheme.axaml` 的 `semantic-scope-header` 静态跳点、
+  `TreeViewItemHeaderTheme.axaml` 的三个静态 Part marker、容器创建/prepare 路径的 `.semantic-item`）属于维护不变量：
+  状态切换、容器复用/回收、items 集合变化与模板重应用不得增删 marker，默认主题不得消费 `.semantic-*` selector。
+- `TreeViewItemHeader` / `NodeSwitcherButton` 不得改为 public owner 或承载独立 Semantic descriptor；`itemSwitcher` 的
+  `ContractType` 保持公开基类 `ToggleButton`，不把 internal `NodeSwitcherButton` 泄漏进公共契约。
 
 Source: ./controls/alert/semantic-cn.md
 
