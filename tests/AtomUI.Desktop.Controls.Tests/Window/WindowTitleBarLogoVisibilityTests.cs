@@ -87,12 +87,14 @@ public class WindowTitleBarLogoVisibilityTests
 
         windowInsetsProperty.ShouldNotBeNull();
         titleBarInsetsProperty.ShouldNotBeNull();
-        source.ShouldContain(
-            "titleBar.Bind(WindowTitleBar.NativeChromeInsetsProperty, this.GetObservable(NativeChromeInsetsProperty))");
-        source.ShouldContain(
-            "titleBar.Bind(WindowTitleBar.IsCsdEnabledProperty, this.GetObservable(IsCsdEnabledProperty))");
-        source.ShouldContain(
-            "titleBar.Bind(WindowTitleBar.HostWindowStateProperty, this.GetObservable(WindowStateProperty))");
+        source.ShouldContain("internal IDisposable CreateTitleBarHostProjection(WindowTitleBar titleBar)");
+        source.ShouldContain("lease.Add(titleBar.Bind(");
+        source.ShouldContain("WindowTitleBar.NativeChromeInsetsProperty");
+        source.ShouldContain("this.GetObservable(NativeChromeInsetsProperty)");
+        source.ShouldContain("WindowTitleBar.IsCsdEnabledProperty");
+        source.ShouldContain("this.GetObservable(IsCsdEnabledProperty)");
+        source.ShouldContain("WindowTitleBar.HostWindowStateProperty");
+        source.ShouldContain("this.GetObservable(WindowStateProperty)");
     }
 
     [Fact]

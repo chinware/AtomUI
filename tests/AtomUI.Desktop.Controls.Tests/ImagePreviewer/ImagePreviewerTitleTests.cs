@@ -371,6 +371,7 @@ public class ImagePreviewerTitleTests
 
         public void ConfigureTitleBar(WindowTitleBar titleBar)
         {
+            titleBar.AttachHost(this);
             NotifyConfigureTitleBar(titleBar);
         }
     }

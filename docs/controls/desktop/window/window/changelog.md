@@ -2,6 +2,18 @@
 
 本文档记录 Window 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-19
+
+- Architecture
+  - Define Window-defined title-bar host projection leases for all logical-tree `WindowTitleBar` instances, including content-area and multiple-title-bar scenarios.
+  - Move pointer drag and double-click maximize subscriptions into each title-bar host lease while keeping size hints and CSD-height integration exclusive to the default title bar.
+  - Project Avalonia's raw decoration margin into an effective content margin that removes only the hidden drawn title-bar reservation while preserving frame and shadow geometry.
+- Theme
+  - Preserve `WindowDecorations.Full` for hidden CSD title bars and hide only AtomUI drawn title-bar layers, retaining platform-owned minimize/restore and maximize/restore transitions.
+  - Bind the CSD content frame to the effective content margin so hidden title bars no longer leave a title-bar-height blank band.
+- Docs
+  - Synchronize Window and WindowTitleBar lifecycle, ownership, host-switching and release invariants.
+
 ## 2026-08-18
 
 - Architecture

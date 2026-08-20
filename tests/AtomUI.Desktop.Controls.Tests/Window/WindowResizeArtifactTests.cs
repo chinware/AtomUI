@@ -598,7 +598,7 @@ public class WindowResizeArtifactTests
         var contentPanel = visualLayerManager.Elements(av + "Panel").Single();
 
         contentPanel.Attribute("Margin").ShouldNotBeNull().Value.ShouldBe(
-            "{Binding $parent[Window].WindowDecorationMargin}");
+            "{Binding $parent[atom:Window].EffectiveContentFrameMargin}");
         contentPanel.Attribute("ClipToBounds").ShouldBeNull();
 
         var contentFrameLayer = contentPanel.Elements(av + "ContentPresenter")
@@ -621,7 +621,8 @@ public class WindowResizeArtifactTests
     [Theory]
     [InlineData(OsType.Windows)]
     [InlineData(OsType.Linux)]
-    public void Csd_Window_Removes_The_Drawn_TitleBar_When_TitleBar_Visibility_Is_Disabled(OsType osType)
+    [InlineData(OsType.macOS)]
+    public void Csd_Window_Hides_The_Managed_TitleBar_Without_Dropping_Full_Window_Decorations(OsType osType)
     {
         AvaloniaTestApp.EnsureInitialized();
         var window = new AtomUI.Desktop.Controls.Window();
@@ -630,13 +631,24 @@ public class WindowResizeArtifactTests
         window.IsTitleBarVisible = false;
         window.PreparePlatformChromeInitialShowLayout();
 
-        window.WindowDecorations.ShouldBe(WindowDecorations.BorderOnly);
+        window.WindowDecorations.ShouldBe(WindowDecorations.Full);
 
         window.IsTitleBarVisible = true;
         window.WindowDecorations.ShouldBe(WindowDecorations.Full);
 
         window.IsTitleBarVisible = false;
-        window.WindowDecorations.ShouldBe(WindowDecorations.BorderOnly);
+        window.WindowDecorations.ShouldBe(WindowDecorations.Full);
+    }
+
+    [Fact]
+    public void Drawn_Decorations_Combine_Platform_Title_Bar_Capability_With_AtomUI_Visibility()
+    {
+        var document = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/Themes/WindowDrawnDecorationsTheme.axaml"));
+
+        AssertTitleBarVisibilityContract(document, "PART_TitleBar");
+        AssertTitleBarVisibilityContract(document, "PART_TitleBarPresenter");
+        AssertTitleBarVisibilityContract(document, "WindowTitleBarShadowBackground");
     }
 
     [Fact]
@@ -1065,6 +1077,47 @@ public class WindowResizeArtifactTests
     }
 
     [Fact]
+    public void Hidden_Csd_TitleBar_Removes_Only_The_Drawn_TitleBar_From_Content_Margin()
+    {
+        var decorationMargin = new Thickness(3, 44, 5, 7);
+
+        AtomUI.Desktop.Controls.Window.CalculateEffectiveContentFrameMargin(
+                decorationMargin,
+                isCsdEnabled: true,
+                isTitleBarVisible: false,
+                drawnTitleBarHeight: 40)
+            .ShouldBe(new Thickness(3, 4, 5, 7));
+
+        AtomUI.Desktop.Controls.Window.CalculateEffectiveContentFrameMargin(
+                decorationMargin,
+                isCsdEnabled: true,
+                isTitleBarVisible: false,
+                drawnTitleBarHeight: 80)
+            .ShouldBe(new Thickness(3, 0, 5, 7));
+    }
+
+    [Theory]
+    [InlineData(false, false, 40)]
+    [InlineData(true, true, 40)]
+    [InlineData(true, false, 0)]
+    [InlineData(true, false, -1)]
+    [InlineData(true, false, double.NaN)]
+    public void Content_Margin_Remains_Unchanged_Without_A_Valid_Hidden_Csd_TitleBar(
+        bool isCsdEnabled,
+        bool isTitleBarVisible,
+        double drawnTitleBarHeight)
+    {
+        var decorationMargin = new Thickness(3, 44, 5, 7);
+
+        AtomUI.Desktop.Controls.Window.CalculateEffectiveContentFrameMargin(
+                decorationMargin,
+                isCsdEnabled,
+                isTitleBarVisible,
+                drawnTitleBarHeight)
+            .ShouldBe(decorationMargin);
+    }
+
+    [Fact]
     [SupportedOSPlatform("windows")]
     public void Windows_Csd_Window_Rejects_A_Minimum_Height_Below_Its_Safe_Content_Surface()
     {
@@ -1166,5 +1219,27 @@ public class WindowResizeArtifactTests
     {
         var physicalValue = value * renderScaling;
         return Math.Abs(physicalValue - Math.Round(physicalValue)) < 0.000001;
+    }
+
+    private static void AssertTitleBarVisibilityContract(XDocument document, string elementName)
+    {
+        var element = document.Descendants()
+                              .Single(candidate =>
+                                  (string?)candidate.Attribute("Name") == elementName ||
+                                  candidate.Name.LocalName == elementName);
+        var multiBinding = element.Elements()
+                                  .Single(property => property.Name.LocalName.EndsWith(".IsVisible"))
+                                  .Elements()
+                                  .Single(binding => binding.Name.LocalName == "MultiBinding");
+
+        multiBinding.Attribute("Converter").ShouldNotBeNull().Value.ShouldBe("{x:Static BoolConverters.And}");
+        var bindings = multiBinding.Elements()
+                                   .Where(binding => binding.Name.LocalName == "Binding")
+                                   .ToArray();
+        bindings.ShouldContain(binding =>
+            (string?)binding.Attribute("RelativeSource") == "{RelativeSource TemplatedParent}" &&
+            (string?)binding.Attribute("Path") == "HasTitleBar");
+        bindings.ShouldContain(binding =>
+            (string?)binding.Attribute("Path") == "$parent[atom:Window].IsTitleBarVisible");
     }
 }

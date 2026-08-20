@@ -169,7 +169,7 @@
                             CornerRadius="{TemplateBinding CornerRadius}">
                             <VisualLayerManager Name="PART_VisualLayerManager"
                                                 Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
-                                <Panel Margin="{Binding $parent[Window].WindowDecorationMargin}">
+                                <Panel Margin="{Binding $parent[atom:Window].EffectiveContentFrameMargin}">
                                     <ContentPresenter Name="ContentFrameLayer"
                                                       Background="{TemplateBinding ContentFrameBackground}"
                                                       CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource WindowContentBottomCornerRadiusFilter}}"
@@ -248,9 +248,6 @@
         </Style>
         <Style Selector="^[OsType=Linux][IsCsdEnabled=False]">
             <Setter Property="WindowDecorations" Value="None" />
-        </Style>
-        <Style Selector="^[IsCsdEnabled=True][IsTitleBarVisible=False]">
-            <Setter Property="WindowDecorations" Value="BorderOnly" />
         </Style>
         <Style Selector="^[OsType=macOS][IsCsdEnabled=False][IsTitleBarVisible=False]">
             <Setter Property="WindowDecorations" Value="BorderOnly" />

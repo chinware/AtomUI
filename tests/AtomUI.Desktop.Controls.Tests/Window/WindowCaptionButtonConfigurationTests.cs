@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Xml.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Shouldly;
 using Xunit;
 
@@ -59,7 +60,7 @@ public class WindowCaptionButtonConfigurationTests
     }
 
     [Fact]
-    public void Window_Projects_Caption_Inputs_Command_And_Host_Association_To_Title_Bar()
+    public void Window_Host_Projection_Projects_Caption_Inputs_Command_And_Host_Association_To_Title_Bar()
     {
         var window = new AtomUIWindow
         {
@@ -75,7 +76,7 @@ public class WindowCaptionButtonConfigurationTests
         };
         var titleBar = new WindowTitleBar();
 
-        ConfigureTitleBar(window, titleBar);
+        titleBar.AttachHost(window);
 
         titleBar.HostWindow.ShouldBeSameAs(window);
         titleBar.IsMinimizeCaptionButtonVisible.ShouldBeFalse();
@@ -101,6 +102,231 @@ public class WindowCaptionButtonConfigurationTests
 
         titleBar.DetachHost(window);
         titleBar.HostWindow.ShouldBeNull();
+        titleBar.CaptionButtonCommand.ShouldBeNull();
+    }
+
+    [Fact]
+    public void Content_Title_Bar_Discovers_Host_And_Executes_Caption_Command()
+    {
+        var titleBar = new WindowTitleBar
+        {
+            Title = "Content title"
+        };
+        var window = new AtomUIWindow
+        {
+            IsTitleBarVisible = false,
+            Title = "Host title",
+            Content = titleBar
+        };
+
+        try
+        {
+            window.Show();
+
+            titleBar.HostWindow.ShouldBeSameAs(window);
+            titleBar.Title.ShouldBe("Content title");
+            var command = titleBar.CaptionButtonCommand.ShouldNotBeNull();
+            command.ShouldBeSameAs(window.CaptionButtonCommand);
+
+            command.Execute(CaptionButtonAction.ToggleMaximize);
+
+            window.WindowState.ShouldBe(WindowState.Maximized);
+
+            command.Execute(CaptionButtonAction.ToggleMaximize);
+            window.WindowState.ShouldBe(WindowState.Normal);
+
+            command.Execute(CaptionButtonAction.Close);
+            window.IsVisible.ShouldBeFalse();
+            titleBar.HostWindow.ShouldBeNull();
+            titleBar.CaptionButtonCommand.ShouldBeNull();
+        }
+        finally
+        {
+            if (window.IsVisible)
+            {
+                window.Close();
+            }
+        }
+
+        titleBar.HostWindow.ShouldBeNull();
+        titleBar.CaptionButtonCommand.ShouldBeNull();
+    }
+
+    [Fact]
+    public void Content_Title_Bar_Double_Click_Request_Toggles_Only_The_Current_Host_Window()
+    {
+        var titleBar = new WindowTitleBar();
+        var content = new StackPanel
+        {
+            Children =
+            {
+                titleBar
+            }
+        };
+        var window = new AtomUIWindow
+        {
+            IsTitleBarVisible = false,
+            Content = content
+        };
+
+        try
+        {
+            window.Show();
+
+            RaiseTitleBarDoubleClick(titleBar);
+            window.WindowState.ShouldBe(WindowState.Maximized);
+
+            RaiseTitleBarDoubleClick(titleBar);
+            window.WindowState.ShouldBe(WindowState.Normal);
+
+            content.Children.Remove(titleBar);
+            RaiseTitleBarDoubleClick(titleBar);
+            window.WindowState.ShouldBe(WindowState.Normal);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Multiple_Content_Title_Bars_Own_Independent_Host_Projection_Leases()
+    {
+        var firstTitleBar  = new WindowTitleBar();
+        var secondTitleBar = new WindowTitleBar();
+        var content = new StackPanel
+        {
+            Children =
+            {
+                firstTitleBar,
+                secondTitleBar
+            }
+        };
+        var window = new AtomUIWindow
+        {
+            IsTitleBarVisible = false,
+            IsMinimizeCaptionButtonVisible = false,
+            Content = content
+        };
+
+        try
+        {
+            window.Show();
+
+            firstTitleBar.HostWindow.ShouldBeSameAs(window);
+            secondTitleBar.HostWindow.ShouldBeSameAs(window);
+            firstTitleBar.IsMinimizeCaptionButtonVisible.ShouldBeFalse();
+            secondTitleBar.IsMinimizeCaptionButtonVisible.ShouldBeFalse();
+
+            content.Children.Remove(firstTitleBar);
+
+            firstTitleBar.HostWindow.ShouldBeNull();
+            firstTitleBar.CaptionButtonCommand.ShouldBeNull();
+            secondTitleBar.HostWindow.ShouldBeSameAs(window);
+            secondTitleBar.CaptionButtonCommand.ShouldBeSameAs(window.CaptionButtonCommand);
+
+            window.IsMinimizeCaptionButtonVisible = true;
+
+            firstTitleBar.IsMinimizeCaptionButtonVisible.ShouldBeTrue();
+            secondTitleBar.IsMinimizeCaptionButtonVisible.ShouldBeTrue();
+        }
+        finally
+        {
+            window.Close();
+        }
+
+        secondTitleBar.HostWindow.ShouldBeNull();
+        secondTitleBar.CaptionButtonCommand.ShouldBeNull();
+    }
+
+    [Fact]
+    public void Content_Title_Bar_Releases_Old_Host_Before_Attaching_To_New_Host()
+    {
+        var titleBar = new WindowTitleBar();
+        var firstContent  = new StackPanel();
+        var secondContent = new StackPanel();
+        var firstWindow = new AtomUIWindow
+        {
+            IsTitleBarVisible = false,
+            CanMinimize = false,
+            Content = firstContent
+        };
+        var secondWindow = new AtomUIWindow
+        {
+            IsTitleBarVisible = false,
+            CanMinimize = true,
+            Content = secondContent
+        };
+
+        firstContent.Children.Add(titleBar);
+
+        try
+        {
+            firstWindow.Show();
+            secondWindow.Show();
+
+            titleBar.HostWindow.ShouldBeSameAs(firstWindow);
+            titleBar.CanMinimize.ShouldBeFalse();
+
+            firstContent.Children.Remove(titleBar);
+            secondContent.Children.Add(titleBar);
+
+            titleBar.HostWindow.ShouldBeSameAs(secondWindow);
+            titleBar.CaptionButtonCommand.ShouldBeSameAs(secondWindow.CaptionButtonCommand);
+            titleBar.CanMinimize.ShouldBeTrue();
+
+            firstWindow.CanMinimize = true;
+            firstWindow.CanMinimize = false;
+
+            titleBar.CanMinimize.ShouldBeTrue();
+
+            firstWindow.Close();
+
+            titleBar.HostWindow.ShouldBeSameAs(secondWindow);
+            titleBar.CaptionButtonCommand.ShouldBeSameAs(secondWindow.CaptionButtonCommand);
+        }
+        finally
+        {
+            if (firstWindow.IsVisible)
+            {
+                firstWindow.Close();
+            }
+            if (secondWindow.IsVisible)
+            {
+                secondWindow.Close();
+            }
+        }
+
+        titleBar.HostWindow.ShouldBeNull();
+        titleBar.CaptionButtonCommand.ShouldBeNull();
+    }
+
+    [Fact]
+    public void Default_Title_Bar_Host_Projection_Does_Not_Depend_On_Configure_Override_Calling_Base()
+    {
+        var window = new ConfigureOverrideWindow();
+
+        try
+        {
+            window.Show();
+
+            window.ConfigureTitleBarCalled.ShouldBeTrue();
+            var titleBar = window.TitleBar.ShouldNotBeNull();
+            titleBar.HostWindow.ShouldBeSameAs(window);
+            titleBar.CaptionButtonCommand.ShouldBeSameAs(window.CaptionButtonCommand);
+
+            RaiseTitleBarDoubleClick(titleBar);
+            window.WindowState.ShouldBe(WindowState.Maximized);
+
+            RaiseTitleBarDoubleClick(titleBar);
+            window.WindowState.ShouldBe(WindowState.Normal);
+        }
+        finally
+        {
+            window.Close();
+        }
+
+        window.TitleBar.ShouldNotBeNull().HostWindow.ShouldBeNull();
     }
 
     [Theory]
@@ -220,7 +446,7 @@ public class WindowCaptionButtonConfigurationTests
         groupSource.ShouldNotContain("void Detach(");
         groupSource.ShouldNotContain(".Click +=");
         groupSource.ShouldNotContain("Find<CaptionButton>");
-        titleBarSource.ShouldNotContain("FindLogicalAncestorOfType<Window>()");
+        titleBarSource.ShouldContain("FindLogicalAncestorOfType<Window>()");
 
         AssertCommand(groupTheme, atom, "PART_MinimizeButton", CaptionButtonAction.Minimize);
         AssertCommand(groupTheme, atom, "PART_MaximizeButton", CaptionButtonAction.ToggleMaximize);
@@ -318,12 +544,42 @@ public class WindowCaptionButtonConfigurationTests
                 .Value.ShouldBe($"{{Binding $parent[atom:Window].{propertyName}}}");
     }
 
-    private static void ConfigureTitleBar(AtomUIWindow window, WindowTitleBar titleBar)
+    private sealed class ConfigureOverrideWindow : AtomUIWindow
     {
-        typeof(AtomUIWindow)
-            .GetMethod("NotifyConfigureTitleBar", BindingFlags.Instance | BindingFlags.NonPublic)
-            .ShouldNotBeNull()
-            .Invoke(window, [titleBar]);
+        internal bool ConfigureTitleBarCalled { get; private set; }
+
+        protected override void NotifyConfigureTitleBar(WindowTitleBar titleBar)
+        {
+            ConfigureTitleBarCalled = true;
+        }
+    }
+
+    private static void RaiseTitleBarDoubleClick(WindowTitleBar titleBar)
+    {
+        var pointer = new Avalonia.Input.Pointer(
+            Avalonia.Input.Pointer.GetNextFreeId(),
+            PointerType.Mouse,
+            true);
+        titleBar.RaiseEvent(new PointerPressedEventArgs(
+            titleBar,
+            pointer,
+            titleBar,
+            default,
+            0,
+            new PointerPointProperties(
+                RawInputModifiers.LeftMouseButton,
+                PointerUpdateKind.LeftButtonPressed),
+            KeyModifiers.None,
+            2));
+        titleBar.RaiseEvent(new PointerReleasedEventArgs(
+            titleBar,
+            pointer,
+            titleBar,
+            default,
+            1,
+            new PointerPointProperties(RawInputModifiers.None, PointerUpdateKind.LeftButtonReleased),
+            KeyModifiers.None,
+            MouseButton.Left));
     }
 
     private static string GetRepoFile(string relativePath)

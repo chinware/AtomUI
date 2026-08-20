@@ -8,6 +8,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
@@ -288,6 +289,7 @@ public class WindowTitleBar : TemplatedControl,
     #endregion
 
     private Window? _window;
+    private IDisposable? _hostProjectionLease;
 
     internal Window? HostWindow => _window;
 
@@ -306,20 +308,67 @@ public class WindowTitleBar : TemplatedControl,
 
     internal void AttachHost(Window window)
     {
-        if (_window is not null && !ReferenceEquals(_window, window))
+        if (ReferenceEquals(_window, window))
         {
-            throw new InvalidOperationException("WindowTitleBar is already attached to another Window.");
+            return;
         }
 
+        ReleaseHost();
         _window = window;
+        window.Closed += HandleHostWindowClosed;
+        try
+        {
+            _hostProjectionLease = window.CreateTitleBarHostProjection(this);
+        }
+        catch
+        {
+            window.Closed -= HandleHostWindowClosed;
+            _window = null;
+            throw;
+        }
     }
 
     internal void DetachHost(Window window)
     {
         if (ReferenceEquals(_window, window))
         {
+            ReleaseHost();
+        }
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        if (this.FindLogicalAncestorOfType<Window>() is { } window)
+        {
+            AttachHost(window);
+        }
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        ReleaseHost();
+        base.OnDetachedFromLogicalTree(e);
+    }
+
+    private void HandleHostWindowClosed(object? sender, EventArgs e)
+    {
+        if (sender is Window window)
+        {
+            DetachHost(window);
+        }
+    }
+
+    private void ReleaseHost()
+    {
+        if (_window is { } window)
+        {
+            window.Closed -= HandleHostWindowClosed;
             _window = null;
         }
+
+        _hostProjectionLease?.Dispose();
+        _hostProjectionLease = null;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

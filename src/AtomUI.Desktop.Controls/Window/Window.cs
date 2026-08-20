@@ -316,6 +316,11 @@ public partial class Window : AvaloniaWindow,
             o => o.IsCsdEnabled,
             (o, v) => o.IsCsdEnabled = v);
 
+    internal static readonly DirectProperty<Window, Thickness> EffectiveContentFrameMarginProperty =
+        AvaloniaProperty.RegisterDirect<Window, Thickness>(
+            nameof(EffectiveContentFrameMargin),
+            o => o.EffectiveContentFrameMargin);
+
     internal static readonly DirectProperty<Window, bool> IsCustomResizerVisibleProperty =
         AvaloniaProperty.RegisterDirect<Window, bool>(
             nameof(IsCustomResizerVisible),
@@ -382,6 +387,17 @@ public partial class Window : AvaloniaWindow,
     {
         get => _isCsdEnabled;
         set => SetAndRaise(IsCsdEnabledProperty, ref _isCsdEnabled, value);
+    }
+
+    private Thickness _effectiveContentFrameMargin;
+
+    internal Thickness EffectiveContentFrameMargin
+    {
+        get => _effectiveContentFrameMargin;
+        private set => SetAndRaise(
+            EffectiveContentFrameMarginProperty,
+            ref _effectiveContentFrameMargin,
+            value);
     }
 
     internal void RaiseRoutedEventFromOverlay(Interactive source, RoutedEventArgs args)
@@ -472,6 +488,7 @@ public partial class Window : AvaloniaWindow,
     
     protected override Type StyleKeyOverride { get; } = typeof(Window);
     private protected bool CloseByClickCloseCaptionButton;
+    private WindowTitleBar? _moveDragTitleBar;
     private Point? _lastMousePressedPoint;
     private PointerPressedEventArgs? _lastMousePressedEventArgs;
     private readonly IWindowChromeManager? _platformChromeManager;
@@ -479,7 +496,7 @@ public partial class Window : AvaloniaWindow,
     private FullscreenPopoverLayer? _fullscreenPopoverLayer;
     private WindowResizer? _windowResizer;
     private MediaBreakPointIndicator? _mediaBreakPointIndicator;
-    private CompositeDisposable? _titleBarBindings;
+    private CompositeDisposable? _defaultTitleBarBindings;
     private IDisposable? _windowsCsdFrameThemeSubscription;
     private ThemeContextLease? _themeContextLease;
     private WindowState _windowStateBeforeFullScreen = WindowState.Normal;
@@ -823,12 +840,8 @@ public partial class Window : AvaloniaWindow,
         
         if (titleBar != null)
         {
-            titleBar.MaximizeWindowRequested += HandleTitleDoubleClicked;
-            titleBar.PointerPressed          += HandleTitleBarPointerPressed;
-            titleBar.PointerReleased         += HandleTitleBarPointerReleased;
-            titleBar.PointerMoved            += HandleTitleBarPointerMoved;
-            titleBar.PointerCaptureLost      += HandleTitleBarPointerCaptureLost;
-            titleBar.SizeChanged             += HandleTitleBarSizeChanged;
+            titleBar.AttachHost(this);
+            titleBar.SizeChanged += HandleTitleBarSizeChanged;
             NotifyConfigureTitleBar(titleBar);
         }
         
@@ -837,57 +850,50 @@ public partial class Window : AvaloniaWindow,
 
     private void DetachTitleBar(WindowTitleBar titleBar)
     {
-        _titleBarBindings?.Dispose();
-        _titleBarBindings = null;
-        titleBar.MaximizeWindowRequested -= HandleTitleDoubleClicked;
-        titleBar.PointerPressed          -= HandleTitleBarPointerPressed;
-        titleBar.PointerReleased         -= HandleTitleBarPointerReleased;
-        titleBar.PointerMoved            -= HandleTitleBarPointerMoved;
-        titleBar.PointerCaptureLost      -= HandleTitleBarPointerCaptureLost;
-        titleBar.SizeChanged             -= HandleTitleBarSizeChanged;
+        _defaultTitleBarBindings?.Dispose();
+        _defaultTitleBarBindings = null;
+        titleBar.SizeChanged -= HandleTitleBarSizeChanged;
         titleBar.DetachHost(this);
     }
     
     private void HandleTitleDoubleClicked(object? sender, EventArgs e)
     {
-        if (!CanResize)
+        if (sender is not WindowTitleBar titleBar ||
+            !ReferenceEquals(titleBar.HostWindow, this) ||
+            !CanResize)
         {
             return;
         }
 
-        var windowState = WindowState;
-        if (windowState == WindowState.FullScreen)
-        {
-            return;
-        }
-
-        if (windowState == WindowState.Normal && CanMaximize)
-        {
-            WindowState = WindowState.Maximized;
-        }
-        else if (windowState == WindowState.Maximized)
-        {
-            WindowState = WindowState.Normal;
-        }
+        ExecuteCaptionButtonAction(CaptionButtonAction.ToggleMaximize);
     }
 
     private void HandleTitleBarPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (!IsMoveEnabled ||
+        if (sender is not WindowTitleBar titleBar ||
+            !ReferenceEquals(titleBar.HostWindow, this) ||
+            !IsMoveEnabled ||
             WindowState == WindowState.FullScreen ||
             !e.Properties.IsLeftButtonPressed)
         {
             ResetTitleBarMoveDragState();
             return;
         }
+        _moveDragTitleBar          = titleBar;
         _lastMousePressedPoint     = e.GetPosition(this);
         _lastMousePressedEventArgs = e;
     }
 
     private void HandleTitleBarPointerMoved(object? sender, PointerEventArgs e)
     {
+        if (!ReferenceEquals(sender, _moveDragTitleBar))
+        {
+            return;
+        }
+
         if (!IsMoveEnabled || WindowState == WindowState.FullScreen || !e.Properties.IsLeftButtonPressed)
         {
+            ResetTitleBarMoveDragState();
             return;
         }
 
@@ -924,7 +930,7 @@ public partial class Window : AvaloniaWindow,
 
     private void HandleTitleBarPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
-        if (e.InitialPressMouseButton == MouseButton.Left)
+        if (ReferenceEquals(sender, _moveDragTitleBar) && e.InitialPressMouseButton == MouseButton.Left)
         {
             ResetTitleBarMoveDragState();
         }
@@ -932,11 +938,15 @@ public partial class Window : AvaloniaWindow,
 
     private void HandleTitleBarPointerCaptureLost(object? sender, PointerCaptureLostEventArgs e)
     {
-        ResetTitleBarMoveDragState();
+        if (ReferenceEquals(sender, _moveDragTitleBar))
+        {
+            ResetTitleBarMoveDragState();
+        }
     }
 
     private void ResetTitleBarMoveDragState()
     {
+        _moveDragTitleBar          = null;
         _lastMousePressedPoint     = null;
         _lastMousePressedEventArgs = null;
     }
@@ -946,6 +956,36 @@ public partial class Window : AvaloniaWindow,
         return double.IsFinite(titleBarHeight) && titleBarHeight > 0
             ? titleBarHeight * WindowsCsdMinimumHeightInTitleBars
             : 0;
+    }
+
+    internal static Thickness CalculateEffectiveContentFrameMargin(
+        Thickness windowDecorationMargin,
+        bool isCsdEnabled,
+        bool isTitleBarVisible,
+        double drawnTitleBarHeight)
+    {
+        if (!isCsdEnabled ||
+            isTitleBarVisible ||
+            !double.IsFinite(drawnTitleBarHeight) ||
+            drawnTitleBarHeight <= 0)
+        {
+            return windowDecorationMargin;
+        }
+
+        return new Thickness(
+            windowDecorationMargin.Left,
+            Math.Max(0, windowDecorationMargin.Top - drawnTitleBarHeight),
+            windowDecorationMargin.Right,
+            windowDecorationMargin.Bottom);
+    }
+
+    private void UpdateEffectiveContentFrameMargin()
+    {
+        EffectiveContentFrameMargin = CalculateEffectiveContentFrameMargin(
+            WindowDecorationMargin,
+            IsCsdEnabled,
+            IsTitleBarVisible,
+            this.GetDrawnDecorationsTitleBarHeight());
     }
 
     private void EnsureWindowsCsdMinimumHeight(double measuredTitleBarHeight = 0)
@@ -963,11 +1003,84 @@ public partial class Window : AvaloniaWindow,
         }
     }
     
+    internal IDisposable CreateTitleBarHostProjection(WindowTitleBar titleBar)
+    {
+        var lease = new CompositeDisposable();
+        titleBar.MaximizeWindowRequested += HandleTitleDoubleClicked;
+        titleBar.PointerPressed          += HandleTitleBarPointerPressed;
+        titleBar.PointerReleased         += HandleTitleBarPointerReleased;
+        titleBar.PointerMoved            += HandleTitleBarPointerMoved;
+        titleBar.PointerCaptureLost      += HandleTitleBarPointerCaptureLost;
+        lease.Add(Disposable.Create(() =>
+        {
+            titleBar.MaximizeWindowRequested -= HandleTitleDoubleClicked;
+            titleBar.PointerPressed          -= HandleTitleBarPointerPressed;
+            titleBar.PointerReleased         -= HandleTitleBarPointerReleased;
+            titleBar.PointerMoved            -= HandleTitleBarPointerMoved;
+            titleBar.PointerCaptureLost      -= HandleTitleBarPointerCaptureLost;
+            if (ReferenceEquals(_moveDragTitleBar, titleBar))
+            {
+                ResetTitleBarMoveDragState();
+            }
+        }));
+
+        try
+        {
+            lease.Add(titleBar.Bind(
+                WindowTitleBar.NativeChromeInsetsProperty,
+                this.GetObservable(NativeChromeInsetsProperty)));
+            lease.Add(titleBar.Bind(
+                WindowTitleBar.IsCsdEnabledProperty,
+                this.GetObservable(IsCsdEnabledProperty)));
+            lease.Add(titleBar.Bind(
+                WindowTitleBar.HostWindowStateProperty,
+                this.GetObservable(WindowStateProperty)));
+            lease.Add(titleBar.Bind(
+                WindowTitleBar.IsWindowActiveProperty,
+                this.GetObservable(WindowBase.IsActiveProperty)));
+            lease.Add(titleBar.Bind(
+                WindowTitleBar.IsWindowTopmostProperty,
+                this.GetObservable(TopmostProperty)));
+            lease.Add(titleBar.Bind(
+                WindowTitleBar.IsMinimizeCaptionButtonVisibleProperty,
+                this.GetObservable(IsMinimizeCaptionButtonVisibleProperty)));
+            lease.Add(titleBar.Bind(
+                WindowTitleBar.IsMaximizeCaptionButtonVisibleProperty,
+                this.GetObservable(IsMaximizeCaptionButtonVisibleProperty)));
+            lease.Add(titleBar.Bind(
+                WindowTitleBar.IsCloseCaptionButtonVisibleProperty,
+                this.GetObservable(IsCloseCaptionButtonVisibleProperty)));
+            lease.Add(titleBar.Bind(
+                WindowTitleBar.IsFullScreenCaptionButtonVisibleProperty,
+                this.GetObservable(IsFullScreenCaptionButtonVisibleProperty)));
+            lease.Add(titleBar.Bind(
+                WindowTitleBar.IsPinCaptionButtonVisibleProperty,
+                this.GetObservable(IsPinCaptionButtonVisibleProperty)));
+            lease.Add(titleBar.Bind(
+                WindowTitleBar.CanMinimizeProperty,
+                this.GetObservable(CanMinimizeProperty)));
+            lease.Add(titleBar.Bind(
+                WindowTitleBar.CanMaximizeProperty,
+                this.GetObservable(CanMaximizeProperty)));
+            lease.Add(titleBar.Bind(
+                WindowTitleBar.IsPinCaptionButtonSupportedProperty,
+                this.GetObservable(IsPinCaptionButtonSupportedProperty)));
+            lease.Add(titleBar.Bind(
+                WindowTitleBar.CaptionButtonCommandProperty,
+                this.GetObservable(CaptionButtonCommandProperty)));
+            return lease;
+        }
+        catch
+        {
+            lease.Dispose();
+            throw;
+        }
+    }
+
     protected virtual void NotifyConfigureTitleBar(WindowTitleBar titleBar)
     {
-        _titleBarBindings?.Dispose();
-        titleBar.AttachHost(this);
-        _titleBarBindings = new CompositeDisposable
+        _defaultTitleBarBindings?.Dispose();
+        _defaultTitleBarBindings = new CompositeDisposable
         {
             titleBar.Bind(WindowTitleBar.TitleProperty, this.GetObservable(TitleProperty)),
             titleBar.Bind(WindowTitleBar.LogoProperty, this.GetObservable(LogoProperty)),
@@ -989,35 +1102,7 @@ public partial class Window : AvaloniaWindow,
             titleBar.Bind(
                 WindowTitleBar.RightAddOnTemplateProperty,
                 this.GetObservable(RightAddOnTemplateProperty),
-                BindingPriority.Template),
-            titleBar.Bind(WindowTitleBar.NativeChromeInsetsProperty, this.GetObservable(NativeChromeInsetsProperty)),
-            titleBar.Bind(WindowTitleBar.IsCsdEnabledProperty, this.GetObservable(IsCsdEnabledProperty)),
-            titleBar.Bind(WindowTitleBar.HostWindowStateProperty, this.GetObservable(WindowStateProperty)),
-            titleBar.Bind(WindowTitleBar.IsWindowActiveProperty, this.GetObservable(WindowBase.IsActiveProperty)),
-            titleBar.Bind(WindowTitleBar.IsWindowTopmostProperty, this.GetObservable(TopmostProperty)),
-            titleBar.Bind(
-                WindowTitleBar.IsMinimizeCaptionButtonVisibleProperty,
-                this.GetObservable(IsMinimizeCaptionButtonVisibleProperty)),
-            titleBar.Bind(
-                WindowTitleBar.IsMaximizeCaptionButtonVisibleProperty,
-                this.GetObservable(IsMaximizeCaptionButtonVisibleProperty)),
-            titleBar.Bind(
-                WindowTitleBar.IsCloseCaptionButtonVisibleProperty,
-                this.GetObservable(IsCloseCaptionButtonVisibleProperty)),
-            titleBar.Bind(
-                WindowTitleBar.IsFullScreenCaptionButtonVisibleProperty,
-                this.GetObservable(IsFullScreenCaptionButtonVisibleProperty)),
-            titleBar.Bind(
-                WindowTitleBar.IsPinCaptionButtonVisibleProperty,
-                this.GetObservable(IsPinCaptionButtonVisibleProperty)),
-            titleBar.Bind(WindowTitleBar.CanMinimizeProperty, this.GetObservable(CanMinimizeProperty)),
-            titleBar.Bind(WindowTitleBar.CanMaximizeProperty, this.GetObservable(CanMaximizeProperty)),
-            titleBar.Bind(
-                WindowTitleBar.IsPinCaptionButtonSupportedProperty,
-                this.GetObservable(IsPinCaptionButtonSupportedProperty)),
-            titleBar.Bind(
-                WindowTitleBar.CaptionButtonCommandProperty,
-                this.GetObservable(CaptionButtonCommandProperty))
+                BindingPriority.Template)
         };
     }
 
@@ -1160,6 +1245,7 @@ public partial class Window : AvaloniaWindow,
         EnsureWindowsCsdFrameThemeSubscription();
         ApplyCurrentWindowsCsdFrameTheme();
         _platformChromeManager?.UpdateFrameGeometry();
+        UpdateEffectiveContentFrameMargin();
         ApplyDefaultLogoIfNeeded();
         if (OperatingSystem.IsMacOS())
         {
@@ -1333,6 +1419,12 @@ public partial class Window : AvaloniaWindow,
             change.Property == IsCsdEnabledProperty)
         {
             EnsureWindowsCsdMinimumHeight();
+        }
+        if (change.Property == AvaloniaWindow.WindowDecorationMarginProperty ||
+            change.Property == IsTitleBarVisibleProperty ||
+            change.Property == IsCsdEnabledProperty)
+        {
+            UpdateEffectiveContentFrameMargin();
         }
         if (change.Property == IsMoveEnabledProperty ||
             change.Property == WindowStateProperty)

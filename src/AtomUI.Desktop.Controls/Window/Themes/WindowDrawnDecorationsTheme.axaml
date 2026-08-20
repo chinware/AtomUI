@@ -21,7 +21,6 @@
 
                             <ContentPresenter Name="PART_TitleBar"
                                               VerticalAlignment="Top"
-                                              IsVisible="{TemplateBinding HasTitleBar}"
                                               WindowDecorationProperties.ElementRole="TitleBar"
                                               Background="{Binding #PART_WindowFrame.Background}"
                                               Content="{Binding $parent[atom:Window].TitleBarFrameLayer}"
@@ -29,7 +28,14 @@
                                               Opacity="{Binding $parent[atom:Window].TitleBarFrameLayerOpacity}"
                                               ClipToBounds="True"
                                               CornerRadius="{Binding #PART_WindowFrame.CornerRadius, Converter={StaticResource TitleBarCornerRadiusFilter}}"
-                                              Height="{TemplateBinding TitleBarHeight}" />
+                                              Height="{TemplateBinding TitleBarHeight}">
+                                <ContentPresenter.IsVisible>
+                                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="HasTitleBar" />
+                                        <Binding Path="$parent[atom:Window].IsTitleBarVisible" />
+                                    </MultiBinding>
+                                </ContentPresenter.IsVisible>
+                            </ContentPresenter>
                         </Panel>
                     </WindowDrawnDecorationsContent.Underlay>
 
@@ -38,21 +44,33 @@
                             <Panel IsVisible="{Binding $parent[atom:Window].IsDrawnChromeOverlayVisible}">
                                 <atom:WindowTitleBarShadowBackground
                                     IsHitTestVisible="False"
-                                    IsVisible="{TemplateBinding HasTitleBar}"
                                     Fill="{Binding $parent[atom:Window].TitleBarFrameBackground}"
                                     ShadowThickness="{TemplateBinding ShadowThickness}"
                                     TitleBarHeight="{TemplateBinding TitleBarHeight}"
                                     CornerRadius="{Binding $parent[atom:Window].CornerRadius, Converter={StaticResource TitleBarCornerRadiusFilter}}"
-                                    OsType="{Binding $parent[atom:Window].OsType}" />
+                                    OsType="{Binding $parent[atom:Window].OsType}">
+                                    <atom:WindowTitleBarShadowBackground.IsVisible>
+                                        <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="HasTitleBar" />
+                                            <Binding Path="$parent[atom:Window].IsTitleBarVisible" />
+                                        </MultiBinding>
+                                    </atom:WindowTitleBarShadowBackground.IsVisible>
+                                </atom:WindowTitleBarShadowBackground>
                                 <Panel Name="PART_OverlayWrapper">
                                     <Border ClipToBounds="True"
                                             CornerRadius="{Binding $parent[atom:Window].CornerRadius, Converter={StaticResource TitleBarCornerRadiusFilter}}">
                                         <ContentPresenter Name="PART_TitleBarPresenter"
                                                           VerticalAlignment="Top"
                                                           Height="{TemplateBinding TitleBarHeight}"
-                                                          IsVisible="{TemplateBinding HasTitleBar}"
                                                           Content="{Binding $parent[atom:Window].TitleBar}"
-                                                          WindowDecorationProperties.ElementRole="User" />
+                                                          WindowDecorationProperties.ElementRole="User">
+                                            <ContentPresenter.IsVisible>
+                                                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="HasTitleBar" />
+                                                    <Binding Path="$parent[atom:Window].IsTitleBarVisible" />
+                                                </MultiBinding>
+                                            </ContentPresenter.IsVisible>
+                                        </ContentPresenter>
                                     </Border>
                                 </Panel>
                             </Panel>

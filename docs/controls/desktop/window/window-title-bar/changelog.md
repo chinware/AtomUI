@@ -2,6 +2,18 @@
 
 本文档记录 WindowTitleBar 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-19
+
+- Architecture
+  - Define a shared Window host projection for every `WindowTitleBar` in an AtomUI Window logical tree.
+  - Make `Window` own projection definitions and lease creation while each `WindowTitleBar` owns and disposes its connection lease.
+  - Include drag and double-click interaction subscriptions in each host projection lease while keeping default-title-bar content projection separate.
+  - Keep title-bar height hints and CSD geometry owned only by the default title bar; content-area title bars receive caption, drag and double-click behavior without becoming geometry owners.
+- Platform
+  - Keep CSD windows on `WindowDecorations.Full` when the AtomUI title bar is hidden, and hide only the drawn title-bar visual so native window state transitions remain platform-owned.
+- Verification
+  - Extend the caption button lifecycle contract to cover content-area title bars, real pointer double-click toggling, multiple title bars per Window, host switching and lease release.
+
 ## 2026-08-18
 
 - Design

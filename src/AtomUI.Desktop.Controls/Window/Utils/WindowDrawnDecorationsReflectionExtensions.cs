@@ -94,6 +94,11 @@ internal static class WindowDrawnDecorationsReflectionExtensions
         return GetDrawnDecorations(topLevel)?.FrameThickness ?? default;
     }
 
+    internal static double GetDrawnDecorationsTitleBarHeight(this TopLevel topLevel)
+    {
+        return GetDrawnDecorations(topLevel)?.TitleBarHeight ?? 0;
+    }
+
     private static Visual? GetDrawnDecorationsOverlay(TopLevel topLevel)
     {
         if (GetDrawnDecorations(topLevel)?.Content?.Overlay is not Visual overlay)

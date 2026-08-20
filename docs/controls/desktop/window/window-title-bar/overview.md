@@ -16,8 +16,8 @@
 
 - 展示窗口 Logo、标题以及标题模板。
 - 承载标题栏左右两侧的应用自定义内容。
-- 为窗口拖动、双击最大化和系统 caption buttons 提供统一交互表面。
-- 接收宿主窗口的平台、激活状态和窗口状态，并投影为稳定的模板状态。
+- 为系统 caption buttons 提供统一交互表面；连接到 Window 后同时参与窗口拖动和双击最大化。
+- 自动发现最近的 AtomUI `Window`，接收平台、激活状态、窗口状态和操作命令，并投影为稳定的模板状态。
 - 在不同平台和窗口装饰模式下保持标题、原生按钮、managed buttons 与 add-on 互不覆盖。
 
 `WindowTitleBar` 不是通用工具栏或导航栏。业务操作应放入 `LeftAddOn`、`RightAddOn` 或专用控件，并保留标题栏拖动区域和系统窗口操作的优先级。
@@ -91,6 +91,8 @@ Add-on 可以包含可交互控件，也可以是 `null`、隐藏节点或当前
 
 事件在对应的 `PointerReleased` 阶段发出，避免窗口同步 resize 破坏当前 pointer capture。pointer capture 丢失或释放条件不匹配时，请求被取消。
 
+每个连接到 AtomUI `Window` 的 `WindowTitleBar` 都是窗口交互表面：空白区域可按 `Window.IsMoveEnabled` 启动窗口拖动，主按钮双击可请求 Normal/Maximized 切换。该交互连接与 caption 状态投影由同一个 host lease 管理；标题栏离开逻辑树、切换宿主或 Window 关闭后不再操作旧宿主。标题栏高度提示和 CSD 几何仍只由 Window 模板正式接入的默认标题栏提供。
+
 ## 4. 行为与状态模型
 
 ### 4.1 Logo 显示模型
@@ -129,6 +131,8 @@ Add-on 可以包含可交互控件，也可以是 `null`、隐藏节点或当前
 
 窗口激活状态同时写入 `IsWindowActive`，供模板中的内部协作控件使用。状态 owner 始终是宿主 `Window`；模板节点不反向维护第二份窗口状态。
 
+标题栏在进入逻辑树时自动选择最近的 AtomUI `Window` 作为宿主，并为自身持有一个可释放的 host projection lease。同一 Window 可以包含多个 `WindowTitleBar`，每个实例都独立接收同一宿主状态；标题栏从逻辑树移除或转移到另一 Window 时，旧投影必须释放并由新宿主重新建立。
+
 ### 4.3 Caption buttons
 
 caption button 的公共配置属于宿主 `Window`：
@@ -141,7 +145,9 @@ Minimize、Maximize 和 Close 默认显示，FullScreen 和 Pin 默认隐藏。�
 
 ### 4.4 拖动和双击
 
-`Window` 监听标题栏 pointer 事件并在移动距离超过拖动阈值后调用原生 `BeginMoveDrag`。`IsMoveEnabled=False` 或全屏状态禁止拖动。双击最大化与拖动共用标题栏输入表面，但 caption buttons 和 add-on 的已处理输入不应触发窗口拖动。
+`Window` 通过每个标题栏的 host lease 监听 pointer 事件，并在移动距离超过拖动阈值后调用原生 `BeginMoveDrag`。拖动状态记录具体来源标题栏，同一 Window 中其他标题栏的移动、释放或 capture lost 不能推进该次交互。`IsMoveEnabled=False` 或全屏状态禁止拖动。双击最大化与拖动共用标题栏输入表面，但 caption buttons 和 add-on 的已处理输入不应触发窗口拖动。
+
+应用直接放入 Window 内容区的 `WindowTitleBar` 自动获得 caption 状态、窗口操作命令、拖动和双击最大化语义。它不参与标题栏高度提示、CSD 最小高度或唯一 CSD geometry owner 计算；这些几何职责只属于 Window 模板正式接入的默认标题栏。
 
 ## 5. 视觉与主题模型
 
@@ -168,7 +174,9 @@ Windows/Linux 的 Leading 容器使用 `HorizontalSpacing` 消费 `LogoAndLeftAd
 
 ### 6.1 Window
 
-`Window` 创建默认 `WindowTitleBar`，并把标题内容、add-on、caption requested visibility、窗口能力、窗口状态和平台输入单向投影给标题栏。应用通过 `Window` 的 add-on 和 caption visibility 属性配置默认标题栏；`NotifyCreateTitleBar` 和 `NotifyConfigureTitleBar` 是派生窗口替换标题栏类型与补充配置的 protected 扩展点。
+`Window` 创建默认 `WindowTitleBar`，并为逻辑树内的所有标题栏定义同一套 host projection：caption requested visibility、窗口能力、窗口状态、active state、Topmost、平台/CSD 输入和宿主命令。每个 `WindowTitleBar` 独立持有 Window 返回的 projection lease；`Window` 不使用只能服务单个标题栏的共享 binding 容器。
+
+默认标题栏另外接收 `Window` 的标题内容、Logo、对齐和 add-on 配置。应用通过 `Window` 的 add-on 和 caption visibility 属性配置默认标题栏；`NotifyCreateTitleBar` 和 `NotifyConfigureTitleBar` 是派生窗口替换标题栏类型与补充默认内容配置的 protected 扩展点，不承担通用宿主发现。
 
 `Window` 负责窗口移动、最大化/还原、原生 chrome metrics、CSD 状态和标题栏高度提示。`WindowTitleBar` 负责内容布局，不直接调用平台窗口 API。标题栏必须横跨完整可见窗口 frame；原生窗口按钮安全区作为布局输入传递，不能通过给整个标题栏添加单侧 Padding 或 Margin 来改变窗口中心。
 
@@ -189,6 +197,8 @@ Windows/Linux 的 Leading 容器使用 `HorizontalSpacing` 消费 `LogoAndLeftAd
 - Windows/Linux 中 Logo 始终位于 Leading 最左侧并参与左侧安全空间；有效 Logo 与有效 `LeftAddOn` 之间使用独立的条件间距。macOS 中 Logo 和 Title 作为连续 Title 组；add-on 不进入标题中心计算。
 - CSD 开关只改变 chrome metrics 来源和可见操作区，不改变显式标题对齐含义。
 - 标题栏替换时释放旧的 Window 投影；template reapply 不建立逐按钮 Click handler 或 CaptionButtonGroup 到 Window 的宿主引用。
+- 每个逻辑树内的 `WindowTitleBar` 自动连接最近的 AtomUI Window；detach、宿主切换和 Window close 必须释放旧 projection lease。
+- 内容区标题栏与默认标题栏共享拖动、双击最大化和 caption 操作语义，但不获得标题栏高度提示或唯一 CSD chrome role。
 - 平台选择和 Token 发现不依赖运行时反射或程序集扫描。
 
 ## 8. 专项模型
@@ -211,7 +221,7 @@ Windows/Linux 的 Leading 容器使用 `HorizontalSpacing` 消费 `LogoAndLeftAd
 - `WindowTitleBarLayoutPanelTests`：共享几何、Logo/LeftAddOn 条件间距、margin 单次计入、左右 add-on 动态内容、窄窗口和非法 metrics。
 - `WindowTitleBarLayoutStrategyTests`：平台 `Auto`、CSD、WindowState 与 native inset 归一。
 - `WindowTitleBarTokenTests`：Token 默认值、三平台 caption 视觉和 Windows edge layout。
-- `WindowCaptionButtonConfigurationTests`：caption visibility 默认值、能力隔离、状态矩阵、动态投影和模板生命周期。
+- `WindowCaptionButtonConfigurationTests`：caption visibility 默认值、能力隔离、状态矩阵、内容区/多标题栏宿主发现、真实 pointer 双击切换、宿主切换、动态投影和模板生命周期。
 - `ImagePreviewerTitleBarThemeTests`：派生标题栏的标题组、操作区和平台模板契约。
 
 LLMS 语义区域：

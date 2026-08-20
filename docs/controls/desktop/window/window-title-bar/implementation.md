@@ -6,8 +6,8 @@
 
 `WindowTitleBar` 的实现分为四层：
 
-1. `Window` 持有真实窗口状态、平台 chrome 状态和原生窗口能力。
-2. `WindowTitleBar` 投影公共内容、窗口状态和标题栏交互。
+1. `Window` 持有真实窗口状态、平台 chrome 状态和原生窗口能力，并定义可释放的标题栏宿主投影。
+2. `WindowTitleBar` 发现最近宿主，持有自己的投影 lease，并投影公共内容、窗口状态和标题栏交互。
 3. `CaptionButtonGroup` 根据投影输入推导 effective visibility，并通过声明式命令转发固定窗口操作。
 4. ControlTheme 声明平台视觉结构、语义 part 和 Token 绑定。
 
@@ -64,8 +64,8 @@ src/AtomUI.Desktop.Controls/
 
 | 文件或类型 | Owner 职责 |
 | --- | --- |
-| `Window.cs` | 创建和配置标题栏，持有窗口状态与窗口操作，处理拖动与最大化请求，发布 caption capability、platform、CSD 和 native chrome metrics。 |
-| `WindowTitleBar.cs` | 注册公共契约，接收宿主单向投影，维护有效 Logo、窗口伪类和标题栏输入事件。 |
+| `Window.cs` | 创建和配置默认标题栏，持有窗口状态与窗口操作，处理所有已连接标题栏的拖动与最大化请求，发布 caption capability、platform、CSD 和 native chrome metrics，并创建完整的 title-bar host projection lease。 |
+| `WindowTitleBar.cs` | 注册公共契约，在逻辑树接入时发现最近的 AtomUI Window，独立持有宿主投影 lease，维护有效 Logo、窗口伪类和标题栏输入事件。 |
 | `WindowTitleBarLayoutPanel.cs` | 测量并排列 Leading、Title、Trailing，集中执行共享标题对齐公式。 |
 | `Strategies/*` | 解释平台 `Auto` 值并归一有效 native chrome insets，不操作 Visual。 |
 | `CaptionButtonGroup.cs` | 从标题栏投影输入推导按钮 effective visibility 和 checked state，并向固定按钮提供宿主命令。 |
@@ -80,7 +80,8 @@ src/AtomUI.Desktop.Controls/
 
 ```text
 Window.WindowState / Window.IsActive
-  -> Window.NotifyConfigureTitleBar projection
+  -> Window title-bar host projection lease
+  -> WindowTitleBar projected properties
   -> :normal / :minimized / :maximized / :fullscreen / :active
   -> IsWindowActive
   -> ControlTheme selectors and CaptionButtonGroup
@@ -92,6 +93,7 @@ Window.WindowState / Window.IsActive
 
 ```text
 Window caption visibility + capability + WindowState + platform support
+  -> Window creates title-bar host projection lease
   -> WindowTitleBar projected inputs
   -> CaptionButtonGroup effective visibility / checked state
   -> CaptionButton TemplateBinding
@@ -133,34 +135,38 @@ SharedToken
 ### 控件角色图
 
 ```text
-Window
-└── Window template / drawn decorations host
-    └── WindowTitleBar
-        └── WindowTitleBarLayoutPanel
-            ├── Leading (Windows/Linux)
-            │   └── DockPanel (HorizontalSpacing=LogoAndLeftAddOnSpacing)
-            │       ├── ContentPresenter#PART_Logo
-            │       └── ContentPresenter#PART_LeftAddOn
-            ├── Leading (macOS)
-            │   └── ContentPresenter#PART_LeftAddOn
-            ├── Title (Windows/Linux)
-            │   └── DockPanel
-            │       └── ContentPresenter#PART_ContentPresenter
-            ├── Title (macOS)
-            │   └── DockPanel
-            │       ├── ContentPresenter#PART_Logo
-            │       └── ContentPresenter#PART_ContentPresenter
-            └── Trailing
-                ├── ContentPresenter#PART_RightAddOn
-                └── CaptionButtonGroup#PART_CaptionButtonGroup
-                    └── platform caption button template parts
+AtomUI Window logical tree
+├── Window template / drawn decorations host
+│   └── default WindowTitleBar
+├── Window content logical tree
+│   └── additional WindowTitleBar instances
+│       └── same Window-defined host projection contract
+└── WindowTitleBar template
+    └── WindowTitleBarLayoutPanel
+        ├── Leading (Windows/Linux)
+        │   └── DockPanel (HorizontalSpacing=LogoAndLeftAddOnSpacing)
+        │       ├── ContentPresenter#PART_Logo
+        │       └── ContentPresenter#PART_LeftAddOn
+        ├── Leading (macOS)
+        │   └── ContentPresenter#PART_LeftAddOn
+        ├── Title (Windows/Linux)
+        │   └── DockPanel
+        │       └── ContentPresenter#PART_ContentPresenter
+        ├── Title (macOS)
+        │   └── DockPanel
+        │       ├── ContentPresenter#PART_Logo
+        │       └── ContentPresenter#PART_ContentPresenter
+        └── Trailing
+            ├── ContentPresenter#PART_RightAddOn
+            └── CaptionButtonGroup#PART_CaptionButtonGroup
+                └── platform caption button template parts
 ```
 
 ### 协作节点
 
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
-| `WindowTitleBar` | public control | `WindowTitleBar.cs` | `Window` 或应用宿主 | 全部标题栏 public surface | public | 可直接使用、派生和替换 ControlTheme。 |
+| `WindowTitleBar` | public control | `WindowTitleBar.cs` | 自身 logical attach/detach 与 host projection lease | 全部标题栏 public surface | public | 可直接使用、派生和替换 ControlTheme；在 AtomUI Window 内容树中自动获得 caption 宿主上下文。 |
 | `WindowTitleBarLayoutPanel` | layout panel | `WindowTitleBarTheme.axaml` | `WindowTitleBar` template | `TitleAlignment`、内容与 add-on | internal-observable | 仅用于理解布局；应用不直接依赖类型或 Role。 |
 | `PART_LeftAddOn`、`PART_Logo`、`PART_ContentPresenter`、`PART_RightAddOn` | presenters | `WindowTitleBarTheme.axaml` | `WindowTitleBar` template | 对应内容与模板属性 | template-stable | 可用于主题维护；变更需同步主题、实现和文档。 |
 | `PART_CaptionButtonGroup` | internal control part | `WindowTitleBarTheme.axaml` | `WindowTitleBar` | Window caption 配置 | template-stable | 作为稳定协作 part；应用不直接创建 internal 类型。 |
@@ -177,21 +183,30 @@ Windows/Linux 默认模板的 Leading `DockPanel` 使用 `LogoAndLeftAddOnSpacin
 
 `Window.OnApplyTemplate` 的标题栏接入顺序为：
 
-1. 从旧标题栏移除最大化、pointer 和尺寸事件。
+1. 释放旧默认标题栏的内容投影、`SizeChanged` 订阅和 host projection lease。
 2. 通过 `NotifyCreateTitleBar(oldTitleBar)` 创建或替换标题栏。
-3. 给新标题栏连接最大化请求、拖动 pointer 事件和 `SizeChanged`。
-4. 通过 `NotifyConfigureTitleBar` 投影 Window 属性与平台布局输入。
-5. 将结果写入 internal `TitleBar`，交给 Window template 展示。
+3. 无条件把新标题栏连接到当前 Window 的 host projection；该步骤不能由派生类 override 跳过。
+4. 只给默认标题栏连接 `SizeChanged`，用于标题栏高度提示和 CSD 几何。
+5. 通过 `NotifyConfigureTitleBar` 投影默认标题栏专属的 Title、Logo、对齐和 add-on 内容。
+6. 将结果写入 internal `TitleBar`，交给 Window template 展示。
 
-派生 `Window` 可以覆盖两个 protected 方法，但必须保留同等的状态投影和生命周期配对。重复 apply template 不能让旧标题栏继续持有 Window 事件。
+派生 `Window` 可以覆盖两个 protected 方法，但通用宿主投影不依赖 override 实现。重复 apply template 不能让旧标题栏继续持有 Window 事件或 projection lease。
 
 ### 6.2 宿主投影生命周期
 
-`Window.NotifyConfigureTitleBar` 显式建立标题栏宿主关联，并把 caption requested visibility、窗口能力、WindowState、Topmost、active state、平台支持和宿主命令投影给标题栏。宿主关联与投影 owner 均和标题栏创建生命周期一致；替换标题栏时释放旧关联和投影。`WindowTitleBar` 保留宿主关联供 detached popup、routed event 等标题栏级集成使用，但不通过该引用读取或订阅 caption 状态；`CaptionButtonGroup` 不持有宿主引用，也不通过逻辑祖先建立第二套 Window 订阅。
+宿主投影使用以下 acquire/release 模型：
+
+1. `WindowTitleBar.OnAttachedToLogicalTree` 查找最近的 AtomUI `Window`。
+2. `WindowTitleBar.AttachHost(window)` 对相同 Window 幂等；宿主变化时先释放旧 lease。
+3. `Window` 创建一个固定内容的 host projection lease：把 caption requested visibility、窗口能力、WindowState、Topmost、active state、平台支持、CSD/native chrome 输入和宿主命令单向绑定给该标题栏，并订阅该标题栏的双击请求与拖动 pointer 事件。
+4. `WindowTitleBar` 持有返回的 `IDisposable` lease；Window 不集中保存任意内容区标题栏的 binding 或交互订阅生命周期。
+5. `OnDetachedFromLogicalTree`、宿主切换、默认标题栏替换或 Window close 释放 lease 和宿主引用。
+
+默认标题栏在 `Window.OnApplyTemplate` 中提前执行同一 `AttachHost`，确保进入 visual/logical tree 前已经具有完整宿主输入；随后 logical attach 只能命中幂等路径。`NotifyConfigureTitleBar` 只保留默认标题栏的内容 facade 投影，不创建 caption host binding。`WindowTitleBar` 保留宿主引用供 lease identity、detached popup、routed event 等标题栏级集成使用，但不通过该引用旁路读取 caption 状态；`CaptionButtonGroup` 不持有宿主引用，也不通过逻辑祖先建立第二套 Window 订阅。
 
 ### 6.3 Template reapply
 
-`WindowTitleBar.OnApplyTemplate` 只接入标题栏自身必须持有的 template part。标题、Logo、add-on 和 caption 配置通过 `TemplateBinding` 获取，不从宿主引用旁路读取，也不重复建立 relay binding。
+`WindowTitleBar.OnApplyTemplate` 只接入标题栏自身必须持有的 template part。标题、Logo、add-on 和 caption 配置通过 `TemplateBinding` 获取，不从宿主引用旁路读取，也不重复建立 host projection。Template reapply 与 logical host lifecycle 正交，不增加 Window binding 数量。
 
 LeftAddOn 或 RightAddOn 的内容、可见性、子节点、模板和 margin 变化沿 Avalonia visual tree 使布局重新测量。Windows/Linux 中 Logo 或 LeftAddOn 的有效可见性变化同时重新计算 Leading `DockPanel` 的条件 sibling spacing。Panel 始终读取当前 `DesiredSize`，不保存 add-on 宽度或内部间距缓存，也不需要由标题栏代码手工调用 `InvalidateMeasure`。
 
@@ -201,7 +216,9 @@ LeftAddOn 或 RightAddOn 的内容、可见性、子节点、模板和 margin �
 
 `WindowTitleBar` 在主按钮双击的 `PointerPressed` 阶段只记录 pending 状态，在匹配的 `PointerReleased` 阶段发出 `MaximizeWindowRequested`。pointer capture 丢失、释放按钮不匹配或其他结束路径都会清除 pending。
 
-`Window` 负责标题栏拖动：按下时记录窗口坐标，移动超过 `Constants.DragThreshold` 后清理本地状态并调用 `BeginMoveDrag`。`IsMoveEnabled=False`、FullScreen 或非主按钮输入不进入拖动。add-on 与 caption button 的已处理输入不会进入标题栏拖动或双击最大化路径。
+`Window` 通过每个 host projection lease 为已连接标题栏注册拖动和双击最大化。按下时同时记录输入来源标题栏和窗口坐标；只有同一标题栏后续的移动、释放或 capture lost 能推进或结束该次拖动，避免同一 Window 中多个标题栏混用 pointer 状态。移动超过 `Constants.DragThreshold` 后先清理本地状态，再调用 `BeginMoveDrag`。`IsMoveEnabled=False`、FullScreen 或非主按钮输入不进入拖动。add-on 与 caption button 的已处理输入不会进入标题栏拖动或双击最大化路径。
+
+内容区 `WindowTitleBar` 通过同一 host projection 获得 caption command、拖动和双击最大化语义。只有默认标题栏额外注册 `SizeChanged`，所以内容区标题栏不会修改 `ExtendClientAreaTitleBarHeightHint`、Windows CSD 最小高度或唯一 CSD geometry owner。
 
 Caption button 通过宿主命令提交固定窗口操作；`Window` 统一执行：
 
@@ -210,6 +227,8 @@ Caption button 通过宿主命令提交固定窗口操作；`Window` 统一执�
 - Minimize 写入 `WindowState.Minimized`。
 - Pin 切换 `Window.Topmost` 并同步 checked state。
 - Close 标记用户 caption close 请求后调用 `Window.Close()`。
+
+双击与最大化按钮复用同一个 `ToggleMaximize` 执行入口；双击在进入该入口前额外遵守 `CanResize`。最小化、最大化和恢复始终写入 Avalonia `WindowState`，不直接调用 Win32、AppKit、X11 或 Wayland 状态 API。CSD 隐藏默认标题栏时，Window Theme 保持 `WindowDecorations.Full` 并仅隐藏 AtomUI drawn title-bar visual，使平台窗口管理器继续拥有原生状态转换和动画能力；具体动画是否呈现由操作系统、窗口管理器和用户动画设置决定。
 
 窗口状态变化后，Windows caption buttons 抑制旧 pointer-over 视觉，直到新的 pointer enter/move 恢复 hover。标题栏和 caption buttons 在初始化阶段禁用 transition，Loaded 后通过 Dispatcher 恢复。
 
@@ -236,7 +255,9 @@ Windows/Linux 默认模板把有效 Logo 放入 Leading direct role child，并�
 
 ## 9. 资源、性能与 AOT 边界
 
-- Window 到标题栏的宿主关联和投影 binding 由标题栏创建和替换生命周期统一所有；宿主关联不承载 caption 状态同步，CaptionButtonGroup 不持有 Window relay binding 或宿主引用。
+- Window 定义强类型 host projection 字段集合并创建 lease；每个 WindowTitleBar 按 logical attach/detach 生命周期独立持有和释放 lease。宿主引用本身不作为 caption 状态旁路，CaptionButtonGroup 不持有 Window relay binding 或宿主引用。
+- 宿主发现只遍历当前逻辑祖先，不使用全局 Window registry、反射、字符串 binding path 或程序集扫描。
+- 每个标题栏与每次宿主连接只创建一个固定大小 lease；状态更新复用现有 binding 和交互订阅，template reapply 不重建 lease。
 - 标题布局 Strategy 使用静态无状态实例；measure/arrange 不创建 Context、Plan、binding 或临时 Visual。
 - TemplateBinding 和 selector 承担静态视觉投影，不在状态变化时重建模板节点。
 - Logo 计算只在相关属性或 WindowState 变化时执行。
@@ -246,8 +267,11 @@ Windows/Linux 默认模板把有效 Logo 放入 Leading direct role child，并�
 
 ## 10. 维护不变量
 
-- `WindowTitleBar` 与 `Window.NotifyConfigureTitleBar` 的属性投影保持单向且完整；默认标题栏的 `LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn` 和 `RightAddOnTemplate` 由 `Window` 的同名 public API 以 `Template` 优先级提供，派生标题栏 local add-on 不被覆盖。
-- `WindowTitleBar` 的宿主投影保持单向且完整；CaptionButtonGroup 不通过 logical attach/detach 建立 Window 状态副本。
+- Window-defined host projection 与 `Window.NotifyConfigureTitleBar` 的默认内容投影必须分离：前者服务所有逻辑树内标题栏，后者只配置默认标题栏的 Title、Logo、对齐和 add-on。
+- 每个 `WindowTitleBar` 的宿主投影保持单向、完整且独立；AttachHost 对相同 Window 幂等，detach 或宿主切换必须释放旧 lease；CaptionButtonGroup 不通过 logical attach/detach 建立 Window 状态副本。
+- 默认标题栏的 `LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn` 和 `RightAddOnTemplate` 由 `Window` 的同名 public API 以 `Template` 优先级提供，派生标题栏 local add-on 不被覆盖。
+- 所有已连接标题栏获得 Window 的拖动、双击最大化和 caption 宿主上下文；只有默认标题栏获得尺寸提示和 CSD 高度协作。
+- CSD 下隐藏默认标题栏必须保留 `WindowDecorations.Full`，`WindowDrawnDecorationsTheme` 以 `HasTitleBar && IsTitleBarVisible` 控制 frame、shadow 和 presenter 可见性。
 - 三个平台 ControlTemplate 保持相同语义角色、稳定 part 名称和平台 caption button 顺序。
 - Windows/Linux 的 Logo 始终位于 Leading 最左侧；有效 Logo 与有效 LeftAddOn 之间只由 Leading `DockPanel.HorizontalSpacing` 消费 `LogoAndLeftAddOnSpacing`。macOS、ImagePreviewer 与全屏标题宿主可将图标与 Title 保持为连续 Title 组。无论图标位于哪个 role，标题对齐公式只读取 Leading、Title、Trailing 三个 direct role child 的实测宽度。
 - Leading/Trailing 为零宽时不产生操作区间距；add-on margin 只通过 `DesiredSize` 计入一次。
@@ -259,9 +283,9 @@ Windows/Linux 默认模板把有效 Logo 放入 Leading direct role child，并�
 
 - `WindowTitleBarLogoVisibilityTests` 覆盖 Logo 默认值、平台规则、全屏规则和 Window 投影。
 - `WindowTitleBarAddOnTests` 覆盖 Window add-on API 默认值、模板类型及到默认标题栏的单向实时投影。
-- `WindowCaptionButtonConfigurationTests` 覆盖五个 visibility 属性默认值、capability 隔离、effective truth table、动态状态投影和 template reapply。
+- `WindowCaptionButtonConfigurationTests` 覆盖五个 visibility 属性默认值、capability 隔离、effective truth table、默认/内容区/多标题栏宿主发现、真实 pointer 双击切换、宿主切换、动态状态投影、lease 释放和 template reapply。
 - `WindowTitleBarTokenTests` 覆盖 Token 默认值、三平台 caption 视觉和 Windows edge layout。
 - `ImagePreviewerTitleBarThemeTests` 覆盖派生标题栏的标题组、操作区和平台模板契约。
 - 标题几何测试覆盖所有 alignment、对称与非对称操作区、Windows/Linux Logo/LeftAddOn 同时可见及任一 presenter 隐藏时的条件间距、Padding/native inset、窄窗口和非法 metrics。
-- Windows、macOS、Linux 实机验证覆盖 CSD/非 CSD、缩放、最大化和全屏状态。
+- Windows、macOS、Linux 实机验证覆盖 CSD/非 CSD、缩放、最小化/任务栏恢复、最大化/还原和全屏状态；平台支持且系统动画开启时应保留原生窗口状态动画。
 - 文档改动运行 LLMS `verify`、相对链接检查和 `git diff --check`；行为、Theme 或 Public API 变更运行对应 Desktop Controls 测试。

@@ -100,6 +100,8 @@ Public API / inherited command / item source / user input
 
 Caption button 的 requested visibility 与窗口 capability 分离：Minimize、Maximize 和 Close 默认请求显示，FullScreen 和 Pin 默认隐藏。设置 visibility 为 `false` 只隐藏 AtomUI managed button，不修改 `CanMinimize`、`CanMaximize`、`WindowState`、`Topmost` 或其他窗口操作入口；capability 为 `false` 时对应 managed button 保持隐藏。完整模型见 [WindowTitleBar Caption Button 配置设计](../window-title-bar/caption-button-configuration-design.md)。
 
+Window 为逻辑树内每个 `WindowTitleBar` 定义相同的宿主上下文投影，包括 caption 配置、窗口能力、WindowState、active state、Topmost、平台/CSD 输入和窗口操作命令。投影由 Window 创建为可释放 lease，由各标题栏实例分别持有；Window 不以单例 binding 容器限制一个窗口只能接入一个标题栏。
+
 ## 5. 视觉与主题模型
 
 Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
@@ -129,11 +131,13 @@ Window 标题栏按职责拆分为背景/装饰层、默认标题栏层和自定
 | 标题栏背景/装饰层 | `TitleBarFrameBackground` / `TitleBarFrameLayer` / `TitleBarFrameLayerTemplate` | 提供标题栏背景、遮罩、纹理、圆角、裁剪或装饰视觉。 | 不作为用户交互入口；CSD 下可处于标题栏拖拽 role 中。 |
 | 默认标题栏层 | `WindowTitleBar` | 展示标题、Logo、`LeftAddOn`、`RightAddOn` 与 caption buttons，并在空白区域提供窗口拖拽语义。 | add-on 与 caption buttons 按普通 Avalonia client input 语义命中；空白区域保留标题栏交互。 |
 | 自定义标题栏层 | `NotifyCreateTitleBar` / `NotifyConfigureTitleBar` 扩展点 | 承载需要替换默认标题栏组成或行为的派生窗口实现。 | 派生窗口负责其自定义标题栏的 client input 与空白区域拖拽策略。 |
+| 内容区标题栏 | Window 内容逻辑树中的 public `WindowTitleBar` | 自动消费最近 Window 的 caption 状态和操作命令，并在空白区域提供窗口拖动和双击最大化/还原语义。 | 不提供标题栏高度提示，也不取得唯一 CSD chrome role。 |
 
 维护标题栏模板时，不应把 `TitleBarFrameLayer` 提升为可交互覆盖层。需要向默认标题栏加入按钮、菜单或搜索框时，使用 `LeftAddOn` 或 `RightAddOn`；只有需要替换整个标题栏组成或行为时，才在派生 `Window` 中重写标题栏创建与配置扩展点。`Window.TitleBar` 是模板生命周期拥有的 internal 状态，不作为应用 API 公开。
 
-`Window.TitleAlignment` add-owner `WindowTitleBar.TitleAlignmentProperty`，并把配置单向投影给默认或派生
-`WindowTitleBar`。`LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn` 和 `RightAddOnTemplate` 同样 add-owner 对应标题栏属性，并以 `Template` 优先级单向投影。派生标题栏以 local value 提供的内置操作区优先于 Window facade。Window 只提供内容、平台、CSD、WindowState 和原生 chrome 安全区，不实现标题排列公式。
+Window 的 title-bar host projection 服务默认、派生和内容区标题栏，并由每个标题栏的 logical attach/detach 生命周期持有。该 lease 同时包含 caption 状态/命令投影和窗口拖动、双击请求的交互订阅。默认标题栏另行消费 Window facade：`Window.TitleAlignment` add-owner `WindowTitleBar.TitleAlignmentProperty`，`LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn` 和 `RightAddOnTemplate` 同样 add-owner 对应标题栏属性，并以 `Template` 优先级单向投影。派生标题栏以 local value 提供的内置操作区优先于 Window facade。`NotifyConfigureTitleBar` 只扩展这组默认内容配置，不负责通用宿主发现或 caption command 接入。Window 提供内容、平台、CSD、WindowState 和原生 chrome 安全区，但不实现标题排列公式。
+
+CSD 模式下，`IsTitleBarVisible=false` 只隐藏 AtomUI drawn title-bar frame、shadow 和 presenter，不把 `WindowDecorations` 从 `Full` 降级为 `BorderOnly`。内容区同时移除 Avalonia drawn title-bar 对顶部 decoration margin 的占位，但继续保留 frame 和 shadow margin，因此用户内容可以到达窗口顶部且不破坏可调整大小边框。窗口最小化、最大化和恢复继续通过 Avalonia `WindowState` 表达，由 Windows DWM、macOS AppKit 或 Linux 窗口管理器/合成器在平台支持范围内执行原生状态转换和动画；AtomUI 不伪造窗口缩放动画，也不为 caption button 建立平台专用状态旁路。macOS 非 CSD 且隐藏原生标题栏时仍可使用 `BorderOnly`，该分支不改变 CSD 契约。
 
 默认标题栏的 add-on 可直接使用 AXAML 属性元素配置：
 
@@ -198,6 +202,9 @@ Window 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证
 - 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
 - `TitleBarFrameLayer` 是标题栏背景/装饰入口，不是标题栏用户交互入口；默认标题栏按钮、菜单、搜索框等交互内容必须通过 `LeftAddOn` 或 `RightAddOn` 承载。
+- 逻辑树内每个 `WindowTitleBar` 都获得独立、可释放的 Window host projection；detach、宿主切换和 Window close 后不得保留旧 Window。
+- 所有已连接标题栏共享拖动、双击最大化和 caption 操作语义；只有 Window 模板正式接入的默认标题栏提供标题栏高度提示和 CSD chrome 几何协作。
+- CSD 隐藏 AtomUI 默认标题栏时保持 `WindowDecorations.Full`，只隐藏 managed title-bar visual，并从内容区顶部边距移除实际 drawn title-bar 高度；不能以 `BorderOnly`、清零平台 title-bar hint 或硬编码 Token 高度破坏平台装饰几何与原生窗口状态转换能力。
 - Windows、macOS 和 Linux 共用同一套首次显示主题表面流程；平台可见前必须同步准备 ThemeContext、variant 和 Window Token 背景，正式显示后由 `WindowTheme` 单独持有长期主题状态。
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
