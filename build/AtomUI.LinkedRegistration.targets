@@ -23,13 +23,21 @@
     </ItemGroup>
 
     <UsingTask TaskName="AtomUI.Build.Tasks.CollectAxamlUsageTask"
-               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
+               AssemblyFile="$(AtomUIBuildTasksAssembly)"
+               Runtime="NET"
+               TaskFactory="TaskHostFactory" />
     <UsingTask TaskName="AtomUI.Build.Tasks.ValidateAssemblyMetadataMarkerTask"
-               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
+               AssemblyFile="$(AtomUIBuildTasksAssembly)"
+               Runtime="NET"
+               TaskFactory="TaskHostFactory" />
     <UsingTask TaskName="AtomUI.Build.Tasks.GenerateLinkedRegistrationSidecarTask"
-               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
+               AssemblyFile="$(AtomUIBuildTasksAssembly)"
+               Runtime="NET"
+               TaskFactory="TaskHostFactory" />
     <UsingTask TaskName="AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask"
-               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
+               AssemblyFile="$(AtomUIBuildTasksAssembly)"
+               Runtime="NET"
+               TaskFactory="TaskHostFactory" />
 
     <Target Name="CollectAtomUIProjectReferenceSidecars"
             BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;CoreCompile"

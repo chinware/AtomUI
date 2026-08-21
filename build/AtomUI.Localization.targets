@@ -55,13 +55,21 @@
     </PropertyGroup>
 
     <UsingTask TaskName="AtomUI.Build.Tasks.ExportLanguageTemplatesTask"
-               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
+               AssemblyFile="$(AtomUIBuildTasksAssembly)"
+               Runtime="NET"
+               TaskFactory="TaskHostFactory" />
     <UsingTask TaskName="AtomUI.Build.Tasks.PrepareLanguagePackageAssetsTask"
-               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
+               AssemblyFile="$(AtomUIBuildTasksAssembly)"
+               Runtime="NET"
+               TaskFactory="TaskHostFactory" />
     <UsingTask TaskName="AtomUI.Build.Tasks.PrepareLanguagePackageTask"
-               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
+               AssemblyFile="$(AtomUIBuildTasksAssembly)"
+               Runtime="NET"
+               TaskFactory="TaskHostFactory" />
     <UsingTask TaskName="AtomUI.Build.Tasks.GenerateLanguagePackagePropsTask"
-               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
+               AssemblyFile="$(AtomUIBuildTasksAssembly)"
+               Runtime="NET"
+               TaskFactory="TaskHostFactory" />
 
     <ItemGroup Condition="'$(AtomUIBuildLanguagePackage)' == 'true' and '@(ProjectReference)' != ''">
         <ProjectReference Update="@(ProjectReference->WithMetadataValue('OutputItemType', ''))">

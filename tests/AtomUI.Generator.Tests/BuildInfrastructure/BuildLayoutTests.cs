@@ -165,6 +165,27 @@ public sealed class BuildLayoutTests
     }
 
     [Fact]
+    public void NuGet_Build_Tasks_Run_Out_Of_Process_To_Keep_The_Task_Assembly_Replaceable()
+    {
+        var buildRoot = Path.Combine(GetRepositoryRoot(), "build");
+        var usingTasks = s_expectedNuGetBuildAssets
+            .Where(file => Path.GetExtension(file) == ".targets")
+            .Select(file => Path.Combine(buildRoot, file))
+            .SelectMany(file => XDocument.Load(file)
+                .Descendants()
+                .Where(element => element.Name.LocalName == "UsingTask"))
+            .Where(element =>
+                (string?)element.Attribute("AssemblyFile") == "$(AtomUIBuildTasksAssembly)")
+            .ToArray();
+
+        usingTasks.ShouldNotBeEmpty();
+        usingTasks.ShouldAllBe(element =>
+            (string?)element.Attribute("Runtime") == "NET");
+        usingTasks.ShouldAllBe(element =>
+            (string?)element.Attribute("TaskFactory") == "TaskHostFactory");
+    }
+
+    [Fact]
     public void Repository_Test_Project_Flag_Has_A_Canonical_Boolean_Value()
     {
         var defaults = XDocument.Load(GetRepoFile("build/ProjectDefaults.props"));
