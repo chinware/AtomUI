@@ -2,6 +2,16 @@
 
 本文档记录 Modal 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-21
+
+- API
+  - Change the `Dialog.HorizontalStartupLocation` and `Dialog.VerticalStartupLocation` metadata defaults from `Custom` to `Center`, matching `DialogOptions` and the static Dialog APIs.
+- Behavior
+  - Directly instantiated Dialogs now open centered by default; explicit anchors, `Custom` placement and offsets keep their existing semantics.
+  - Keep Overlay structural-minimum updates initialization-aware so template layout cannot clamp the unresolved `(0, 0)` Surface position and convert it into startup offsets before centered placement.
+- Docs
+  - Document the shared centered startup default and the explicit `Custom` offset behavior.
+
 ## 2026-08-20
 
 - Design

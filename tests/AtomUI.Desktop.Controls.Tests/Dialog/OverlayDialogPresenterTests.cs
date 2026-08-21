@@ -330,6 +330,46 @@ public class OverlayDialogPresenterTests
     }
 
     [Fact]
+    public void Linux_Normal_Window_Default_Placement_Remains_Centered_After_Initial_Layout()
+    {
+        RunOnUIThread(() =>
+        {
+            var fixture = ShowPresenter(new AtomUI.Desktop.Controls.Dialog
+            {
+                IsMotionEnabled = false,
+                HostWidth = 480,
+                HostHeight = 400
+            }, window =>
+            {
+                ConfigureLinuxWindow(window, isCsdEnabled: true, frameShadow: new Thickness(12));
+                SetPlatformDecorationMargin(window, new Thickness(14, 56, 20, 24));
+            });
+
+            try
+            {
+                var surface = fixture.Presenter.Surface;
+                var ownerBounds = GetDialogBodyOwnerBounds(
+                    fixture,
+                    fixture.Window.FrameShadowThickness);
+                var surfacePosition = GetSurfacePosition(surface, fixture.Presenter);
+
+                surfacePosition.X.ShouldBe(
+                    ownerBounds.X + (ownerBounds.Width - surface.Bounds.Width) / 2,
+                    0.001);
+                surfacePosition.Y.ShouldBe(
+                    ownerBounds.Y + (ownerBounds.Height - surface.Bounds.Height) / 2,
+                    0.001);
+                fixture.Dialog.OffsetX.ShouldBe(0);
+                fixture.Dialog.OffsetY.ShouldBe(0);
+            }
+            finally
+            {
+                fixture.Dispose();
+            }
+        });
+    }
+
+    [Fact]
     public void Natural_Size_Uses_The_Surface_Measure_Without_A_Fixed_Fallback()
     {
         RunOnUIThread(() =>

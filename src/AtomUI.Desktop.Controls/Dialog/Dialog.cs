@@ -62,11 +62,11 @@ public partial class Dialog : TemplatedControl,
 
     public static readonly StyledProperty<DialogHorizontalAnchor> HorizontalStartupLocationProperty =
         AvaloniaProperty.Register<Dialog, DialogHorizontalAnchor>(nameof(HorizontalStartupLocation),
-            DialogHorizontalAnchor.Custom);
+            DialogHorizontalAnchor.Center);
 
     public static readonly StyledProperty<DialogVerticalAnchor> VerticalStartupLocationProperty =
         AvaloniaProperty.Register<Dialog, DialogVerticalAnchor>(nameof(VerticalStartupLocation),
-            DialogVerticalAnchor.Custom);
+            DialogVerticalAnchor.Center);
 
     public static readonly StyledProperty<Dimension?> HorizontalOffsetProperty =
         AvaloniaProperty.Register<Dialog, Dimension?>(nameof(HorizontalOffset));

@@ -727,8 +727,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
             return;
         }
 
-        ResolveNormalSurfaceSizeConstraints(ownerBounds);
-        ClampActualSurfaceGeometry(ownerBounds);
+        ApplyNormalSurfaceSizeConstraints(ownerBounds);
     }
 
     private static double ResolveInitialSize(double value, double min, double max)

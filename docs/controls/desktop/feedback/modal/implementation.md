@@ -141,11 +141,13 @@ Overlay presenter 在退出 motion 后先断开 `DialogSurface` 子树的 compos
 
 标准按钮默认文案使用 `Template` priority binding；MessageBox 的显式 OK/Cancel 文案使用 local value 覆盖，清空后自动恢复最新语言资源。MessageBox 的样式、默认按钮和启动位置也只写入 `Template` priority，调用方 local 配置始终优先。MessageBox 语义配置运行时变化后重新执行现有 `ButtonsConfigure`，维持调用方配置最后生效的顺序。
 
-### 8.2 自然尺寸
+### 8.2 自然尺寸与启动定位
 
 - Overlay 将 `HostWidth/Height=NaN` 保留为 auto，先应用 min/max，再测量 Surface 的 `DesiredSize` 并计算 placement。
 - Window 在 native `Show()` 前应用 managed Window/Surface styling 和 template，并测量 Window tree，使 `ContentPresenter` 附加 `DialogSurface`。Presenter 将自然测量、结构性约束、chrome、owner screen working area 与 render scaling 一次性解析为最终 ClientSize 和初始 placement；首个原生可见帧直接使用这份几何快照，不使用 opacity staging、Dispatcher 延迟或 post-show reposition。打开后只跟踪实际 native resize/state 与相关 capacity/chrome 变化；运行时 finite 值通过 `DialogWindow.ApplyRequestedSize` 更新 ClientSize。
 - 不存在固定 `520x240` fallback 或额外像素补偿。
+
+`Dialog` 的水平和垂直 startup anchor 注册默认值均为 `Center`，与 `DialogOptions` 和静态 API 保持一致。显式选择 `Custom` 时，对应轴由 `HorizontalOffset` / `VerticalOffset` 解析；未提供 offset 时该轴从 owner bounds 的起点开始。显式 `Left` / `Right` / `Top` / `Bottom` 的 anchor 计算保持独立。
 
 自然尺寸只提供初始 preferred size，不参与结构性 minimum。用户交互 resize 形成的 actual size 由 presenter 持有，不反向写入 `HostWidth/Height`。
 
@@ -154,6 +156,8 @@ Overlay presenter 在退出 motion 后先断开 `DialogSurface` 子树的 compos
 `DialogSurface` 根据当前 Header、Footer、有效按钮和 `DialogToken.MinWidth/MinHeight` 正文 viewport 基线形成 structural minimum。presenter 将 structural minimum、requested `HostMin/Max` 与 host capacity 交给共享纯值解析职责，得到 normal 状态的 effective constraints。
 
 Overlay 直接把 effective constraints 应用于 Surface，并在 resize handler 中只读取缓存约束；handle 捕获 pointer，release 与 capture lost 复用同一个幂等结束路径。自然轴被新约束 clamp 后会提交为 presenter-owned actual geometry，后续放宽约束不回落。Window presenter 按当前 Template 模式把 Surface constraints 加回 chrome：managed/drawn title bar 使用 padding、frame shadow 与有效标题栏高度，CSD 使用 padding 与 `WindowDecorationMargin`；CSD、visible frame、screen、DPI 与相关 frame metrics 变化都会重新解析。Window 的 `CanMaximize` 由 `IsMaximizable` 与两个 `HostMax*` 组合得出，任一 finite maximum 都禁用 native maximize。Surface 的 measure invalidation 会重新比较 structural minimum，只有数值改变才通知 presenter。完整公式、maximize/restore 和 capacity 退化规则见 [Modal 宿主尺寸与 Resize 设计](host-sizing-design.md)。
+
+Overlay 首次 placement 完成前收到 `StructuralMinimumChanged` 时，只重新解析 constraints 和 requested size，不 clamp 尚未解析的 Surface position，也不向 `OffsetX` / `OffsetY` 写回位置差值。首次 placement 完成后，同一路径才允许 clamp actual geometry 并同步 offsets；这样 template 初始布局不会把临时 `(0, 0)` 坐标固化为相对居中位置的负偏移。
 
 ### 8.4 Motion
 
