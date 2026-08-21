@@ -6,6 +6,27 @@ namespace AtomUI.Desktop.Controls.Tests.Dialog;
 
 public class PopupEntryInventoryTests
 {
+    private static readonly string[] RuntimeAxamlPopupPaths =
+    [
+        "src/AtomUI.Desktop.Controls.ColorPicker/Themes/ColorPickerTheme.axaml",
+        "src/AtomUI.Desktop.Controls.ColorPicker/Themes/GradientColorPickerTheme.axaml",
+        "src/AtomUI.Desktop.Controls/AutoComplete/Themes/AutoCompleteSearchEditTheme.axaml",
+        "src/AtomUI.Desktop.Controls/AutoComplete/Themes/AutoCompleteTextAreaTheme.axaml",
+        "src/AtomUI.Desktop.Controls/AutoComplete/Themes/AutoCompleteTheme.axaml",
+        "src/AtomUI.Desktop.Controls/Cascader/Themes/CascaderTheme.axaml",
+        "src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxTheme.axaml",
+        "src/AtomUI.Desktop.Controls/DatePicker/Themes/RangeDatePickerTheme.axaml",
+        "src/AtomUI.Desktop.Controls/Mentions/Themes/MentionsTheme.axaml",
+        "src/AtomUI.Desktop.Controls/Menu/Themes/MenuItemTheme.axaml",
+        "src/AtomUI.Desktop.Controls/Menu/Themes/TopLevelMenuItemTheme.axaml",
+        "src/AtomUI.Desktop.Controls/NavMenu/Themes/NavMenuItemTheme.axaml",
+        "src/AtomUI.Desktop.Controls/Primitives/InfoPickerInput/Themes/InfoPickerInputTheme.axaml",
+        "src/AtomUI.Desktop.Controls/Primitives/InfoPickerInput/Themes/RangeInfoPickerInputTheme.axaml",
+        "src/AtomUI.Desktop.Controls/Select/Themes/SelectTheme.axaml",
+        "src/AtomUI.Desktop.Controls/Tour/Themes/TourTheme.axaml",
+        "src/AtomUI.Desktop.Controls/TreeSelect/Themes/TreeSelectTheme.axaml"
+    ];
+
     private static readonly string[] RuntimeProjectDirectories =
     [
         "src/AtomUI.Desktop.Controls",
@@ -21,25 +42,7 @@ public class PopupEntryInventoryTests
                 "AXAML AtomUI.Popup",
                 "*.axaml",
                 @"<atom:Popup(?:\s|>)",
-                [
-                    "src/AtomUI.Desktop.Controls.ColorPicker/Themes/ColorPickerTheme.axaml",
-                    "src/AtomUI.Desktop.Controls.ColorPicker/Themes/GradientColorPickerTheme.axaml",
-                    "src/AtomUI.Desktop.Controls/AutoComplete/Themes/AutoCompleteSearchEditTheme.axaml",
-                    "src/AtomUI.Desktop.Controls/AutoComplete/Themes/AutoCompleteTextAreaTheme.axaml",
-                    "src/AtomUI.Desktop.Controls/AutoComplete/Themes/AutoCompleteTheme.axaml",
-                    "src/AtomUI.Desktop.Controls/Cascader/Themes/CascaderTheme.axaml",
-                    "src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxTheme.axaml",
-                    "src/AtomUI.Desktop.Controls/DatePicker/Themes/RangeDatePickerTheme.axaml",
-                    "src/AtomUI.Desktop.Controls/Mentions/Themes/MentionsTheme.axaml",
-                    "src/AtomUI.Desktop.Controls/Menu/Themes/MenuItemTheme.axaml",
-                    "src/AtomUI.Desktop.Controls/Menu/Themes/TopLevelMenuItemTheme.axaml",
-                    "src/AtomUI.Desktop.Controls/NavMenu/Themes/NavMenuItemTheme.axaml",
-                    "src/AtomUI.Desktop.Controls/Primitives/InfoPickerInput/Themes/InfoPickerInputTheme.axaml",
-                    "src/AtomUI.Desktop.Controls/Primitives/InfoPickerInput/Themes/RangeInfoPickerInputTheme.axaml",
-                    "src/AtomUI.Desktop.Controls/Select/Themes/SelectTheme.axaml",
-                    "src/AtomUI.Desktop.Controls/Tour/Themes/TourTheme.axaml",
-                    "src/AtomUI.Desktop.Controls/TreeSelect/Themes/TreeSelectTheme.axaml"
-                ]
+                RuntimeAxamlPopupPaths
             },
             {
                 "constructed AtomUI.Popup",
@@ -116,6 +119,14 @@ public class PopupEntryInventoryTests
             { "src/AtomUI.Desktop.Controls.DataGrid/Column/Filters/DataGridFilterIndicator.cs", "new FlyoutStateHelper" }
         };
 
+    public static TheoryData<string> ConstructedPopupSurfaceOwnershipCases =>
+        new()
+        {
+            { "src/AtomUI.Desktop.Controls/Flyouts/Flyout.cs" },
+            { "src/AtomUI.Desktop.Controls/Menu/ContextMenu.cs" },
+            { "src/AtomUI.Desktop.Controls/Tooltip/ToolTip.cs" }
+        };
+
     [Theory]
     [MemberData(nameof(InventoryCases))]
     public void Popup_Entry_Inventory_Matches_The_Audited_Allowlist(
@@ -136,6 +147,38 @@ public class PopupEntryInventoryTests
             relativePath.Replace('/', Path.DirectorySeparatorChar)));
 
         source.ShouldContain(marker);
+    }
+
+    [Fact]
+    public void Runtime_Axaml_Popup_Entries_Declare_Content_Owned_Surface()
+    {
+        foreach (var relativePath in RuntimeAxamlPopupPaths)
+        {
+            var source = ReadRepositoryFile(relativePath);
+            var entries = Regex.Matches(
+                source,
+                @"<atom:Popup\b[^>]*>",
+                RegexOptions.CultureInvariant | RegexOptions.Multiline);
+
+            entries.ShouldNotBeEmpty($"{relativePath} must contain an audited AtomUI Popup entry.");
+            foreach (Match entry in entries)
+            {
+                entry.Value.ShouldContain("SurfaceBackground=\"{x:Null}\"");
+            }
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(ConstructedPopupSurfaceOwnershipCases))]
+    public void Runtime_Constructed_Popup_Entries_Declare_Content_Owned_Surface(string relativePath)
+    {
+        var source = ReadRepositoryFile(relativePath);
+
+        Regex.IsMatch(
+            source,
+            @"\bSurfaceBackground\s*=\s*null\b",
+            RegexOptions.CultureInvariant).ShouldBeTrue(
+            $"{relativePath} must explicitly preserve its content-owned popup surface.");
     }
 
     private static void AssertInventory(
@@ -165,6 +208,13 @@ public class PopupEntryInventoryTests
     private static string ToRepositoryRelativePath(string path)
     {
         return Path.GetRelativePath(GetRepositoryRoot(), path).Replace('\\', '/');
+    }
+
+    private static string ReadRepositoryFile(string relativePath)
+    {
+        return File.ReadAllText(Path.Combine(
+            GetRepositoryRoot(),
+            relativePath.Replace('/', Path.DirectorySeparatorChar)));
     }
 
     private static string GetRepositoryRoot()

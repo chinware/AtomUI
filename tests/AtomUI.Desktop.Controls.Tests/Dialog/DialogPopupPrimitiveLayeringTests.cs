@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Threading;
@@ -36,6 +37,7 @@ public class DialogPopupPrimitiveLayeringTests
             var popupHost = host.FindPopupHost(popup);
             popupHost.GetVisualParent().ShouldNotBeSameAs(host.DialogLayer.GetVisualParent());
             popupHost.GetVisualDescendants().ShouldContain(action);
+            FindOwningPopup(action).SurfaceBackground.ShouldNotBeNull();
 
             host.LightDismiss();
             popup.IsOpen.ShouldBeFalse();
@@ -50,9 +52,10 @@ public class DialogPopupPrimitiveLayeringTests
         Dispatcher.UIThread.Invoke(() =>
         {
             var anchor = new AtomUI.Desktop.Controls.Button { Content = "Flyout anchor" };
+            var flyoutContent = new TextBlock { Text = "Flyout content" };
             var flyout = new AtomUI.Desktop.Controls.Flyout
             {
-                Content = new TextBlock { Text = "Flyout content" },
+                Content = flyoutContent,
                 IsMotionEnabled = false,
                 ShouldUseOverlayPopup = true,
                 IsLightDismissEnabled = true
@@ -64,6 +67,7 @@ public class DialogPopupPrimitiveLayeringTests
 
             host.FindPopupHost().ShouldNotBeNull();
             flyout.IsOpen.ShouldBeTrue();
+            FindOwningPopup(flyoutContent).SurfaceBackground.ShouldBeNull();
 
             host.LightDismiss();
             flyout.IsOpen.ShouldBeFalse();
@@ -94,6 +98,7 @@ public class DialogPopupPrimitiveLayeringTests
             var popupItem = popupHost.GetVisualDescendants()
                                      .OfType<AtomUI.Desktop.Controls.MenuItem>()
                                      .Single(control => control.Header?.ToString() == "Menu action");
+            FindOwningPopup(popupItem).SurfaceBackground.ShouldBeNull();
 
             host.Click(popupItem);
             clicked.ShouldBeTrue();
@@ -108,17 +113,19 @@ public class DialogPopupPrimitiveLayeringTests
         Dispatcher.UIThread.Invoke(() =>
         {
             var anchor = new AtomUI.Desktop.Controls.Button { Content = "Tooltip anchor" };
-            AtomUI.Desktop.Controls.ToolTip.SetTip(anchor, new AtomUI.Desktop.Controls.ToolTip
+            var toolTip = new AtomUI.Desktop.Controls.ToolTip
             {
                 Content = "Tooltip content",
                 IsMotionEnabled = false
-            });
+            };
+            AtomUI.Desktop.Controls.ToolTip.SetTip(anchor, toolTip);
 
             using var host = DialogPopupTestHost.Open(anchor);
             AtomUI.Desktop.Controls.ToolTip.SetIsOpen(anchor, true);
 
             host.FindPopupHost().ShouldNotBeNull();
             AtomUI.Desktop.Controls.ToolTip.GetIsOpen(anchor).ShouldBeTrue();
+            FindOwningPopup(toolTip).SurfaceBackground.ShouldBeNull();
 
             AtomUI.Desktop.Controls.ToolTip.SetIsOpen(anchor, false);
             DialogPopupTestHost.Pump();
@@ -145,11 +152,18 @@ public class DialogPopupPrimitiveLayeringTests
 
             host.FindPopupHost().ShouldNotBeNull();
             contextMenu.IsOpen.ShouldBeTrue();
+            FindOwningPopup(contextMenu).SurfaceBackground.ShouldBeNull();
 
             contextMenu.Close();
             DialogPopupTestHost.Pump();
             contextMenu.IsOpen.ShouldBeFalse();
             host.AssertNoPopupHosts();
         });
+    }
+
+    private static AtomUI.Desktop.Controls.Popup FindOwningPopup(Visual visual)
+    {
+        return AtomUI.Desktop.Controls.PopupUtils.FindOwningPopup(visual)
+                     .ShouldBeOfType<AtomUI.Desktop.Controls.Popup>();
     }
 }

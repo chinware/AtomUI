@@ -81,6 +81,7 @@
                     </Grid>
                 </Border>
                 <atom:Popup Name="PART_Popup"
+                            SurfaceBackground="{x:Null}"
                             WindowManagerAddShadowHint="False"
                             IsLightDismissEnabled="False"
                             RequestedPlacement="RightEdgeAlignedTop"

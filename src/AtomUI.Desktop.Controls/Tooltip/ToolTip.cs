@@ -455,7 +455,10 @@ public class ToolTip : ContentControl,
         
         if (_popup is null)
         {
-            _popup = new Popup();
+            _popup = new Popup
+            {
+                SurfaceBackground = null
+            };
             _popup.Child = this;
             _popup.TakesFocusFromNativeControl = false;
             _popup.WindowManagerAddShadowHint = false;

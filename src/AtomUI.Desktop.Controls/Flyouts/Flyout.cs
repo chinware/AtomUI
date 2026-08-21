@@ -268,6 +268,7 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         var popup = new PopupControl
         {
             WindowManagerAddShadowHint = false,
+            SurfaceBackground          = null,
         };
 
         popup[!PopupControl.RequestedPlacementProperty]     = this[!RequestedPlacementProperty];

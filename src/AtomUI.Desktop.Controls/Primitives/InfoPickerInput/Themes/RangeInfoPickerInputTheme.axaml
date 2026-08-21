@@ -85,6 +85,7 @@
                                Opacity="{TemplateBinding RangePickerIndicatorOpacity}" />
                 </Canvas>
                 <atom:Popup Name="PART_Popup"
+                            SurfaceBackground="{x:Null}"
                             WindowManagerAddShadowHint="False"
                             IsLightDismissEnabled="True"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
