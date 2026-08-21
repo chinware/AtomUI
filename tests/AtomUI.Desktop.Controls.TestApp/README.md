@@ -14,8 +14,8 @@
 - 菜单与特殊路径：Menu/MenuItem、NavMenu、Tour。
 - 间接消费路径：AvatarGroup 折叠、Transfer 选择菜单、TabControl 溢出菜单、DataGrid 过滤菜单。
 
-应用只显示 public open/selection/action 状态与 `TopLevel.GetTopLevel` 结果；不得加入 Avalonia 私有字段反射、临时日志、
-自动打开 Dialog/Popup 或吞未处理异常的逻辑。
+应用显示 public open/selection/action 状态、`TopLevel.GetTopLevel` 结果和 pointer route / popup host 快照，并将同一份带
+时间戳的日志写入启动终端；不得加入 Avalonia 私有字段反射、自动打开 Dialog/Popup 或吞未处理异常的逻辑。
 
 原语组中的 Direct Popup 是表面所有权的长期验收项：它不设置 `SurfaceBackground`，继承 Popup 原语的 `null` 默认值；
 它的 Child 作为表面所有者，通过 `ColorBgElevated` 绘制内容背景。正确结果是 host frame 不产生额外 surface，同时
@@ -50,8 +50,19 @@ Linux 命令仅提供验证入口，在 X11 与 Wayland 实机执行并记录结
 
 当前本专项实机证据：
 
-| 平台 | 状态 |
-| --- | --- |
-| Windows | 已测试 |
-| macOS | 已测试 |
-| Linux X11 / Wayland | 未测试 |
+| 平台 | 状态 | 已验证范围 |
+| --- | --- | --- |
+| Windows | 已测试 | `PopupInDialog` 真实窗口人工回归。 |
+| macOS | 已测试 | `PopupInDialog` 真实窗口人工回归。 |
+| Linux Wayland (GNOME) | 已测试 | Ubuntu 26.04、GNOME Shell 50.1 下的 `PopupInDialog` 真实窗口人工回归。 |
+| Linux X11 | 未测试 | 尚无本专项实机证据，不能标记为通过。 |
+
+本次 Wayland 人工回归分组覆盖 ComboBox、Popup/Flyout/MenuFlyout、Select/Cascader/TreeSelect、
+AutoComplete/SearchEdit/TextArea/Mentions，以及 DatePicker/TimePicker 和两种 range picker。各组均验证打开、
+内容命中、选择或执行、light-dismiss，且 Dialog 在交互后保持打开。运行日志确认 Popup 托管于所属 Window 的
+`OverlayPopupHost`，light-dismiss 由 `LightDismissOverlayLayer` 接收；AutoComplete 关闭允许约 70–140ms 的异步延迟。
+
+Headless 环境中，`Window.InputHitTest(point)` 对顶层 Popup 合成分支的结果与真实 Wayland 不一致，可能命中 Window
+模板内的匿名透明 `Panel`。相关回归测试因此向已确认布局有效的目标控件直接注入 routed pointer 事件，向
+`LightDismissOverlayLayer` 注入外部点击；对于依赖 Headless 未维护的全局 `IsPointerOver` 状态的 Button，使用
+automation invoke。该策略用于验证控件事件、Popup 层级和关闭行为，不把 Headless 的顶层坐标命中结果当作真实平台结论。

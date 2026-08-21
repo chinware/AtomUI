@@ -132,10 +132,7 @@ public class DialogContentPopupLayeringTests
                 AvaloniaHeadlessPlatform.ForceRenderTimerTick(1);
                 Dispatcher.UIThread.RunJobs();
 
-                window.MouseMove(new Point(8, 8));
-                window.MouseDown(new Point(8, 8), MouseButton.Left);
-                window.MouseUp(new Point(8, 8), MouseButton.Left);
-                Dispatcher.UIThread.RunJobs();
+                LightDismiss(window);
 
                 comboBox.IsDropDownOpen.ShouldBeFalse();
                 presenter.Parent.ShouldBeOfType<DialogOverlayLayer>();
@@ -306,14 +303,49 @@ public class DialogContentPopupLayeringTests
 
     private static void ClickControl(Avalonia.Controls.Window window, Control control)
     {
+        control.IsAttachedToVisualTree().ShouldBeTrue();
+        control.Bounds.Width.ShouldBeGreaterThan(0);
+        control.Bounds.Height.ShouldBeGreaterThan(0);
         var clickPoint = control.TranslatePoint(
             new Point(control.Bounds.Width / 2, control.Bounds.Height / 2),
-            window);
-        clickPoint.ShouldNotBeNull();
+            window).ShouldNotBeNull();
 
-        window.MouseMove(clickPoint.Value);
-        window.MouseDown(clickPoint.Value, MouseButton.Left);
-        window.MouseUp(clickPoint.Value, MouseButton.Left);
+        RaisePointerClick(window, control, clickPoint);
+    }
+
+    private static void LightDismiss(Avalonia.Controls.Window window)
+    {
+        var dismissLayer = window.GetVisualDescendants()
+                                 .Single(visual => visual.GetType().Name == "LightDismissOverlayLayer")
+                                 .ShouldBeAssignableTo<InputElement>();
+        dismissLayer.IsHitTestVisible.ShouldBeTrue();
+        RaisePointerClick(window, dismissLayer, new Point(8, 8));
+    }
+
+    private static void RaisePointerClick(
+        Avalonia.Controls.Window window,
+        InputElement target,
+        Point position)
+    {
+        var pointer = new Pointer(Pointer.GetNextFreeId(), PointerType.Mouse, true);
+        target.RaiseEvent(new PointerPressedEventArgs(
+            target,
+            pointer,
+            window,
+            position,
+            0,
+            new PointerPointProperties(RawInputModifiers.LeftMouseButton, PointerUpdateKind.LeftButtonPressed),
+            KeyModifiers.None));
+        var releaseTarget = pointer.Captured as InputElement ?? target;
+        releaseTarget.RaiseEvent(new PointerReleasedEventArgs(
+            releaseTarget,
+            pointer,
+            window,
+            position,
+            1,
+            new PointerPointProperties(RawInputModifiers.None, PointerUpdateKind.LeftButtonReleased),
+            KeyModifiers.None,
+            MouseButton.Left));
     }
 
     private static void WaitWithDispatcherPump(Task task)

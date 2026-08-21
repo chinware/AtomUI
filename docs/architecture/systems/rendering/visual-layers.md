@@ -241,8 +241,9 @@ Avalonia 原生 `AdornerLayer` 用于紧贴控件或 TopLevel 的局部装饰。
 - Dialog 内容 popup 的永久人工回归入口是 `tests/AtomUI.Desktop.Controls.TestApp` 的 `Scenarios/PopupInDialog`；直接 Popup、Flyout/MenuFlyout、ToolTip/ContextMenu 与控件家族矩阵见 [Modal 内容弹层叠放设计](../../../controls/desktop/feedback/modal/popup-layering-design.md)。
 - Popup surface 变更必须同时证明 Direct Popup 与 content-owned 家族继承透明 host frame 默认值、显式非空 surface 仍生效，并确认 Child bounds、圆角、shadow thickness 和 placement 没有变化。
 
-当前 Dialog/Drawer 与 popup 分层实机证据为 Windows 已测试、macOS 已测试；Linux X11/Wayland 未测试。该状态必须与
-专项设计文档同步，不能把 Headless 共享路径通过解释为未执行平台的实机证据。
+当前 Dialog 内容 popup 分层实机证据为 Windows、macOS 和 Ubuntu GNOME Wayland 已测试；Wayland 证据仅覆盖
+`PopupInDialog` 的真实窗口人工回归。Linux X11 仍未测试；Drawer 在 Linux X11 和 Linux Wayland 的实机状态也仍为未测试。
+该状态必须与专项设计文档同步，不能把 Headless 共享路径通过解释为未执行平台或未执行控件的实机证据。
 
 ## 禁止做法
 

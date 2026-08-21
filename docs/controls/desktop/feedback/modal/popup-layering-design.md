@@ -217,7 +217,7 @@ Controls 的直接及委托消费家族，`DataGridFilterDialogPopupTests` 在�
   的背景、圆角、Padding、阴影和位置不变；显式非空 Brush 的 opt-in 路径单独验证。
 - TestApp 实机验收：在 `AtomUI.Desktop.Controls.TestApp` 的 `PopupInDialog` 场景中走查选择器、Flyout/Menu、
   ToolTip/ContextMenu、Picker、AvatarGroup、Transfer、TabControl 和 DataGrid，验证可见、可点、可关闭且进程不崩溃。
-- 平台回归：Windows CSD、macOS 原生 chrome、Linux X11/Wayland 分别记录实机证据；不得由共享代码路径推断未执行平台已通过。
+- 平台回归：Windows CSD、macOS 原生 chrome、Linux X11 与 Linux Wayland 分别记录实机证据；不得由共享代码路径推断未执行平台已通过。
 
 当前实机证据状态：
 
@@ -225,4 +225,5 @@ Controls 的直接及委托消费家族，`DataGridFilterDialogPopupTests` 在�
 | --- | --- | --- |
 | Windows | 已测试 | CSD Window 下最终 owning TopLevel/Overlay/Popup 分层与 Dialog 内容 Popup 基本交互。 |
 | macOS | 已测试 | 原生 chrome Window 下最终 owning TopLevel/Overlay/Popup 分层与 Dialog 内容 Popup 基本交互。 |
-| Linux X11 / Wayland | 未测试 | 尚无实机证据；不能标记为通过。 |
+| Linux Wayland (GNOME) | 已测试 | Ubuntu 26.04、GNOME Shell 50.1 下完成 `PopupInDialog` 的 Dialog 内容 Popup 真实窗口人工回归；不代表 Drawer 已在 Linux 验证。 |
+| Linux X11 | 未测试 | 尚无实机证据；不能标记为通过。 |

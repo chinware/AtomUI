@@ -274,5 +274,6 @@ Resolve owner ThemeContext
 - Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests`。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。
 
-本专项当前实机证据为 Windows 已测试、macOS 已测试；Linux X11/Wayland 未测试。Headless 结果只能证明 managed
-层级与生命周期，不能替代未执行平台的真实窗口、chrome、pointer 和 focus 验证。
+本专项当前实机证据为 Windows、macOS 和 Ubuntu GNOME Wayland 已测试；Wayland 证据仅覆盖 `PopupInDialog` 的 Dialog
+内容 Popup 真实窗口人工回归，不包含 Drawer。Linux X11 仍未测试。Headless 结果只能证明 managed 层级与生命周期，
+不能替代未执行平台或未执行控件的真实窗口、chrome、pointer 和 focus 验证。

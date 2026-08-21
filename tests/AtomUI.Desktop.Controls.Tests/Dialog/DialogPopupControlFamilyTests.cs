@@ -106,7 +106,7 @@ public class DialogPopupControlFamilyTests
             };
             using var host = DialogPopupTestHost.Open(picker);
 
-            host.PointerClick(picker);
+            host.Click(picker);
 
             host.FindPopupHost().ShouldNotBeNull();
             host.LightDismiss();
@@ -135,7 +135,7 @@ public class DialogPopupControlFamilyTests
 
             host.FindPopupHost().ShouldNotBeNull();
             parent.IsSubMenuOpen.ShouldBeTrue();
-            host.LightDismiss();
+            host.ClickOutsidePopup();
             parent.IsSubMenuOpen.ShouldBeFalse();
             host.AssertNoPopupHosts();
         });
@@ -170,7 +170,7 @@ public class DialogPopupControlFamilyTests
 
             host.FindPopupHost().ShouldNotBeNull();
             parent.IsSubMenuOpen.ShouldBeTrue();
-            host.LightDismiss();
+            host.ClickOutsidePopup();
             parent.IsSubMenuOpen.ShouldBeFalse();
             host.AssertNoPopupHosts();
         });
@@ -274,7 +274,7 @@ public class DialogPopupControlFamilyTests
                                              .OfType<AtomUI.Desktop.Controls.Button>()
                                              .Single(button => button.Name == "PART_SecondaryButton");
 
-            host.PointerClick(secondaryButton);
+            host.Click(secondaryButton);
             TopLevel.GetTopLevel(host.FindPopupHost()).ShouldBeSameAs(host.Window);
             flyout.IsOpen.ShouldBeTrue();
 
@@ -337,8 +337,9 @@ public class DialogPopupControlFamilyTests
             var foldHost = avatarGroup.GetVisualDescendants()
                                       .OfType<AtomUI.Desktop.Controls.FlyoutHost>()
                                       .Single();
+            var foldAvatar = foldHost.Content.ShouldBeOfType<AtomUI.Desktop.Controls.Avatar>();
 
-            host.Click(foldHost);
+            host.Click(foldAvatar);
             TopLevel.GetTopLevel(host.FindPopupHost()).ShouldBeSameAs(host.Window);
             foldHost.Flyout!.IsOpen.ShouldBeTrue();
 
@@ -373,12 +374,13 @@ public class DialogPopupControlFamilyTests
                                    .OfType<AtomUI.Desktop.Controls.TransferSelectDropdown>()
                                    .First();
 
-            host.Click(dropdown);
+            host.Invoke(dropdown);
+            var menuFlyout = dropdown.Flyout.ShouldBeOfType<AtomUI.Desktop.Controls.MenuFlyout>();
+            menuFlyout.IsOpen.ShouldBeTrue();
             TopLevel.GetTopLevel(host.FindPopupHost()).ShouldBeSameAs(host.Window);
-            dropdown.Flyout.ShouldBeOfType<AtomUI.Desktop.Controls.MenuFlyout>().IsOpen.ShouldBeTrue();
 
             host.LightDismiss();
-            dropdown.Flyout.ShouldBeOfType<AtomUI.Desktop.Controls.MenuFlyout>().IsOpen.ShouldBeFalse();
+            menuFlyout.IsOpen.ShouldBeFalse();
             host.AssertNoPopupHosts();
         });
     }
@@ -415,7 +417,7 @@ public class DialogPopupControlFamilyTests
                                             .OfType<AtomUI.Desktop.Controls.IconButton>()
                                             .Single(button => button.Name == "PART_ScrollMenuIndicator");
 
-            host.PointerClick(menuIndicator);
+            host.Click(menuIndicator);
             var popupHost = host.FindPopupHost();
             TopLevel.GetTopLevel(popupHost).ShouldBeSameAs(host.Window);
 
@@ -546,6 +548,7 @@ public class DialogPopupControlFamilyTests
             _ => throw new ArgumentOutOfRangeException(nameof(family), family, null)
         };
         picker.Width = 240;
+        picker.PlaceholderText = "Select a value";
         picker.IsMotionEnabled = false;
         return picker;
     }

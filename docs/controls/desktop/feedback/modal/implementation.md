@@ -227,6 +227,8 @@ Dialog 内容区内的 popup 沿 placement target 解析同一 Window `TopLevel`
 - MessageBox tests: 派生结构、语义样式、motion anchor、重入和按钮引用释放。
 - `tests/AtomUI.Desktop.Controls.TestApp/Scenarios/PopupInDialog`: 永久人工回归入口，覆盖真实窗口中的 Popup 家族、pointer/focus、CSD/native chrome 与可见性。
 
-最终 owning TopLevel/Overlay/Popup 分层已在 Windows CSD 和 macOS 原生 chrome 环境实机测试；Linux X11/Wayland 尚未测试。Headless 测试只能证明共享 managed 不变量，不能替代缺失的 Linux 平台证据。
+最终 owning TopLevel/Overlay/Popup 分层已在 Windows CSD、macOS 原生 chrome，以及 Ubuntu GNOME Wayland 环境实机测试；
+Wayland 证据仅覆盖 `PopupInDialog` 的 Dialog 内容 Popup 真实窗口人工回归。Linux X11 尚未测试。Headless 测试只能证明
+共享 managed 不变量，不能替代缺失平台的实机证据。
 
 迭代先运行 Dialog/MessageBox filter，再运行完整 `AtomUI.Desktop.Controls.Tests`、Gallery tests/build、NativeAOT publish 和 `git diff --check`。

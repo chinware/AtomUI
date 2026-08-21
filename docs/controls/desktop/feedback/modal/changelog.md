@@ -13,6 +13,8 @@
   - Document the shared centered startup default and the explicit `Custom` offset behavior.
   - Extend the Dialog popup family matrix with shared surface ownership: Direct Popup and specialized Popup-bearing controls inherit the primitive's null surface default, while explicit non-null brushes opt into a host-owned surface.
   - Keep the permanent TestApp Direct Popup free of host-surface overrides, require its Child to own a themed background, and preserve the Windows/macOS tested, Linux X11/Wayland untested evidence boundary.
+- Validation
+  - Record the `PopupInDialog` real-window manual regression as passed on Ubuntu 26.04 GNOME Wayland; Linux X11 and Drawer on Linux remain untested.
 
 ## 2026-08-20
 

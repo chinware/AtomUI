@@ -78,7 +78,7 @@ public class DataGridFilterDialogPopupTests
                                     .OfType<DataGridFilterIndicator>()
                                     .First(control => control.IsVisible && control.Flyout is not null);
 
-                PointerClick(window, indicator);
+                Click(window, indicator);
                 var popupHost = FindPopupHost(window);
                 TopLevel.GetTopLevel(popupHost).ShouldBeSameAs(window);
                 AssertPopupLayer(grid, popupHost);
@@ -87,10 +87,7 @@ public class DataGridFilterDialogPopupTests
                 Click(window, popupHost.GetVisualDescendants()
                                        .OfType<DataGridFilterMenuItem>()
                                        .First(item => item.Header?.ToString() == "Beta"));
-                window.MouseMove(new Point(8, 8));
-                window.MouseDown(new Point(8, 8), MouseButton.Left);
-                window.MouseUp(new Point(8, 8), MouseButton.Left);
-                PumpAndRender();
+                LightDismiss(window);
 
                 indicator.Flyout.ShouldNotBeNull().IsOpen.ShouldBeFalse();
                 AssertNoPopupHosts(window);
@@ -173,32 +170,43 @@ public class DataGridFilterDialogPopupTests
     private static void Click(AtomUI.Desktop.Controls.Window window, Control control)
     {
         PumpAndRender();
+        control.IsAttachedToVisualTree().ShouldBeTrue();
+        control.Bounds.Width.ShouldBeGreaterThan(0);
+        control.Bounds.Height.ShouldBeGreaterThan(0);
         var point = control.TranslatePoint(
             new Point(control.Bounds.Width / 2, control.Bounds.Height / 2),
             window).ShouldNotBeNull();
-        window.MouseMove(point);
-        window.MouseDown(point, MouseButton.Left);
-        window.MouseUp(point, MouseButton.Left);
-        PumpAndRender();
+
+        RaisePointerClick(window, control, point);
     }
 
-    private static void PointerClick(AtomUI.Desktop.Controls.Window window, Control control)
+    private static void LightDismiss(AtomUI.Desktop.Controls.Window window)
     {
         PumpAndRender();
-        var point = control.TranslatePoint(
-            new Point(control.Bounds.Width / 2, control.Bounds.Height / 2),
-            window).ShouldNotBeNull();
+        var dismissLayer = window.GetVisualDescendants()
+                                 .Single(visual => visual.GetType().Name == "LightDismissOverlayLayer")
+                                 .ShouldBeAssignableTo<InputElement>();
+        dismissLayer.IsHitTestVisible.ShouldBeTrue();
+        RaisePointerClick(window, dismissLayer, new Point(8, 8));
+    }
+
+    private static void RaisePointerClick(
+        AtomUI.Desktop.Controls.Window window,
+        InputElement target,
+        Point point)
+    {
         var pointer = new Pointer(Pointer.GetNextFreeId(), PointerType.Mouse, true);
-        control.RaiseEvent(new PointerPressedEventArgs(
-            control,
+        target.RaiseEvent(new PointerPressedEventArgs(
+            target,
             pointer,
             window,
             point,
             0,
             new PointerPointProperties(RawInputModifiers.LeftMouseButton, PointerUpdateKind.LeftButtonPressed),
             KeyModifiers.None));
-        control.RaiseEvent(new PointerReleasedEventArgs(
-            control,
+        var releaseTarget = pointer.Captured as InputElement ?? target;
+        releaseTarget.RaiseEvent(new PointerReleasedEventArgs(
+            releaseTarget,
             pointer,
             window,
             point,

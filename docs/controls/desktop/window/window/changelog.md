@@ -2,6 +2,11 @@
 
 本文档记录 Window 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-21
+
+- Validation
+  - Record the Dialog `PopupInDialog` real-window manual regression as passed on Ubuntu 26.04 GNOME Wayland; Linux X11 and Drawer on Linux remain untested.
+
 ## 2026-08-20
 
 - Architecture

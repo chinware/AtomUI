@@ -282,4 +282,5 @@ LLMS 导出来源：
 | --- | --- | --- |
 | Windows | 已测试 | CSD Window 下 drawn chrome suppression、owning TopLevel presentation 与 Dialog 内容 Popup 基本交互。 |
 | macOS | 已测试 | 原生 chrome Window 下 owning TopLevel presentation 与 Dialog 内容 Popup 基本交互。 |
-| Linux X11 / Wayland | 未测试 | 尚无本专项实机证据，不能标记为通过。 |
+| Linux Wayland (GNOME) | 已测试 | Ubuntu 26.04、GNOME Shell 50.1 下完成 `PopupInDialog` 的 Dialog 内容 Popup 真实窗口人工回归；不包含 Drawer。 |
+| Linux X11 | 未测试 | 尚无本专项实机证据，不能标记为通过。 |

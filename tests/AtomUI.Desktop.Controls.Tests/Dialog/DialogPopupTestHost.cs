@@ -1,6 +1,8 @@
 using AtomUI.Controls.Primitives;
 using AtomUI.Desktop.Controls.Tests.Window;
 using Avalonia;
+using Avalonia.Automation.Peers;
+using Avalonia.Automation.Provider;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Headless;
@@ -173,34 +175,30 @@ internal sealed class DialogPopupTestHost : IDisposable
     public void Click(Control control)
     {
         Pump();
-        var clickPoint = control.TranslatePoint(
-            new Point(control.Bounds.Width / 2, control.Bounds.Height / 2),
-            Window);
-        clickPoint.ShouldNotBeNull();
-
-        Window.MouseMove(clickPoint.Value);
-        Window.MouseDown(clickPoint.Value, MouseButton.Left);
-        Window.MouseUp(clickPoint.Value, MouseButton.Left);
-        Pump();
-    }
-
-    public void PointerClick(Control control)
-    {
-        Pump();
+        control.IsAttachedToVisualTree().ShouldBeTrue();
+        control.Bounds.Width.ShouldBeGreaterThan(0);
+        control.Bounds.Height.ShouldBeGreaterThan(0);
         var position = control.TranslatePoint(
             new Point(control.Bounds.Width / 2, control.Bounds.Height / 2),
             Window).ShouldNotBeNull();
+
+        RaisePointerClick(control, position);
+    }
+
+    private void RaisePointerClick(InputElement target, Point position)
+    {
         var pointer = new Pointer(Pointer.GetNextFreeId(), PointerType.Mouse, true);
-        control.RaiseEvent(new PointerPressedEventArgs(
-            control,
+        target.RaiseEvent(new PointerPressedEventArgs(
+            target,
             pointer,
             Window,
             position,
             0,
             new PointerPointProperties(RawInputModifiers.LeftMouseButton, PointerUpdateKind.LeftButtonPressed),
             KeyModifiers.None));
-        control.RaiseEvent(new PointerReleasedEventArgs(
-            control,
+        var releaseTarget = pointer.Captured as InputElement ?? target;
+        releaseTarget.RaiseEvent(new PointerReleasedEventArgs(
+            releaseTarget,
             pointer,
             Window,
             position,
@@ -213,9 +211,26 @@ internal sealed class DialogPopupTestHost : IDisposable
 
     public void LightDismiss()
     {
-        Window.MouseMove(new Point(8, 8));
-        Window.MouseDown(new Point(8, 8), MouseButton.Left);
-        Window.MouseUp(new Point(8, 8), MouseButton.Left);
+        Pump();
+        var dismissLayer = Window.GetVisualDescendants()
+                                 .Single(visual => visual.GetType().Name == "LightDismissOverlayLayer")
+                                 .ShouldBeAssignableTo<InputElement>();
+        dismissLayer.IsHitTestVisible.ShouldBeTrue();
+        RaisePointerClick(dismissLayer, new Point(8, 8));
+    }
+
+    public void ClickOutsidePopup()
+    {
+        Pump();
+        RaisePointerClick(Window, new Point(8, 8));
+    }
+
+    public void Invoke(Avalonia.Controls.Button button)
+    {
+        Pump();
+        ControlAutomationPeer.CreatePeerForElement(button)
+                             .ShouldBeAssignableTo<IInvokeProvider>()
+                             .Invoke();
         Pump();
     }
 

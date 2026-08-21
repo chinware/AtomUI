@@ -95,6 +95,26 @@
                                        Text="尚未执行" />
                         </Grid>
                     </Border>
+
+                    <Border Padding="16"
+                            BorderThickness="1"
+                            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                            Background="{atom:SharedTokenResource ColorBgContainer}"
+                            CornerRadius="6">
+                        <StackPanel Spacing="10">
+                            <TextBlock FontWeight="SemiBold"
+                                       Text="交互日志" />
+                            <TextBox Name="EventLogTextBox"
+                                     Height="220"
+                                     AcceptsReturn="True"
+                                     IsReadOnly="True"
+                                     FontFamily="monospace"
+                                     FontSize="12"
+                                     TextWrapping="NoWrap"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
             </Border>
         </ScrollViewer>
