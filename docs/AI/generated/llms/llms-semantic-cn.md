@@ -1266,12 +1266,18 @@ Source: ./controls/space/semantic-cn.md
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Space` | 布局控件根语义区域，承载布局 public API、尺寸和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `container` | `布局容器` | 组织子元素、间距、断点、对齐或分割状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `布局项` | 承载子内容、占位、跨度、排序或尺寸约束。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `theme` | `主题区域` | 连接 SharedToken、布局主题资源和 Gallery 可观察样式。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| Part | AtomUI 节点 | Selector | ContractType | Cardinality | Customization | CrossVisualRoot | RuntimeCreated |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `root` | `Space` owner | owner | `Space` | `Single` | `Root` | `false` | `false` |
+| `item` | 直接子项 | `> .semantic-item` | `Control` | `Multiple` | `Selector` | `false` | `true` |
+| `separator` | 直接分隔项 | `> .semantic-separator` | `Control` | `Multiple` | `Selector` | `false` | `true` |
+
+`root` 不声明 `.semantic-root` marker，也不生成独立 Style type。`item` 和 `separator` 都是运行时创建的语义标记：
+`item` 挂在 `Space.Children` 的每个直接子项上，`separator` 挂在由 `SplitTemplate` 构建并插入相邻子项之间的
+分隔控件上。`separator` 的数量始终等于 `Children.Count - 1`，当 `SplitTemplate` 为空时不创建任何分隔项。
+
+`Space` 没有独立的 `SpaceTheme.axaml`，因此内置主题不依赖静态 `.semantic-*` marker；语义契约完全由 runtime marker
+与生成的 `Style` 类型表达。
 
 ## Abstract AXAML Structure
 
@@ -1285,10 +1291,10 @@ Source: ./controls/space/semantic-cn.md
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
-| 内容与数据 | `CompactSpaceItemPosition`、`Content`、`ContentTemplate`、`ItemHeight`、`ItemSpacing`、`ItemWidth`、`ItemsAlignment` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
+| 内容与数据 | `CompactSpaceItemPosition`、`Content`、`ContentTemplate`、`ItemHeight`、`ItemSpacing`、`ItemWidth`、`ItemsAlignment`、`SplitTemplate` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
 | 选择与集合 | `PositionIndex` | 维护选择、展开、过滤、分页、分组或集合状态。 |
 | 交互与状态 | `IsUsedInCompactSpace`、`Status` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 视觉与布局 | `CompactSpaceOrientation`、`LineSpacing`、`Orientation`、`SizeType`、`StyleVariant` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
+| 视觉与布局 | `Background`、`BorderBrush`、`BorderDashArray`、`BorderDashOffset`、`BorderThickness`、`CompactSpaceOrientation`、`CornerRadius`、`LineSpacing`、`Orientation`、`Padding`、`SizeType`、`StyleVariant` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 
 ## Pseudo Classes
 
@@ -1324,6 +1330,10 @@ Space 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的�
 | `CompactSpaceTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
 Space 使用 `SpaceToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 collection/filter、visual option 运行时状态。
+
+`Space` 本体没有独立的 `SpaceTheme.axaml`：root frame 由控件自身在 `Render` 中绘制（复用 `BorderRenderHelper`），
+root 边框、背景、内边距与虚线由 `Space` 自有的 root frame 样式属性表达，定制边界见 [Space Semantic Part 契约](semantic-part.md)
+第 3 节。主题文件只覆盖 `CompactSpace` / `CompactSpaceAddOn` 的模板与状态视觉。
 
 主题维护规则：
 

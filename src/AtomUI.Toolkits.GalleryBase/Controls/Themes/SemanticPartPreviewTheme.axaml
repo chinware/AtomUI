@@ -23,7 +23,8 @@
                                 <Border Name="PART_PreviewStage"
                                         MinHeight="360"
                                         Padding="32">
-                                    <ContentPresenter Content="{TemplateBinding PreviewContent}"
+                                    <ContentPresenter Name="PART_PreviewContentHost"
+                                                      Content="{TemplateBinding PreviewContent}"
                                                       HorizontalAlignment="Stretch"
                                                       VerticalAlignment="Top"
                                                       HorizontalContentAlignment="Stretch"
@@ -72,6 +73,10 @@
 
         <Style Selector="^:compact /template/ Border#PART_InspectionPanel">
             <Setter Property="Margin" Value="16,16,16,24" />
+        </Style>
+        <Style Selector="^.preview-content-centered /template/ ContentPresenter#PART_PreviewContentHost">
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
         <Style Selector="^:compact /template/ Border#PART_PreviewStage">
             <Setter Property="MinHeight" Value="280" />

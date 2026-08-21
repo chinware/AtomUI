@@ -2181,6 +2181,8 @@ Space 是 AtomUI 桌面控件体系中的间距布局控件，用于在一组子
 
 Space 不负责复杂响应式排版、滚动容器或数据虚拟化列表。这些职责应由业务层、组合控件或更专用的 AtomUI 控件承担。
 
+Space 的公开语义区域使用 `root`、`item` 和 `separator` 三个 Semantic Part；完整契约见 [Space Semantic Part 契约](semantic-part.md)。
+
 主要源码入口：
 
 - `src/AtomUI.Desktop.Controls/Space`
@@ -2214,10 +2216,10 @@ Space 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
-| 内容与数据 | `CompactSpaceItemPosition`、`Content`、`ContentTemplate`、`ItemHeight`、`ItemSpacing`、`ItemWidth`、`ItemsAlignment` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
+| 内容与数据 | `CompactSpaceItemPosition`、`Content`、`ContentTemplate`、`ItemHeight`、`ItemSpacing`、`ItemWidth`、`ItemsAlignment`、`SplitTemplate` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
 | 选择与集合 | `PositionIndex` | 维护选择、展开、过滤、分页、分组或集合状态。 |
 | 交互与状态 | `IsUsedInCompactSpace`、`Status` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 视觉与布局 | `CompactSpaceOrientation`、`LineSpacing`、`Orientation`、`SizeType`、`StyleVariant` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
+| 视觉与布局 | `Background`、`BorderBrush`、`BorderDashArray`、`BorderDashOffset`、`BorderThickness`、`CompactSpaceOrientation`、`CornerRadius`、`LineSpacing`、`Orientation`、`Padding`、`SizeType`、`StyleVariant` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
 
@@ -2247,7 +2249,7 @@ Space 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 ### 垂直间距
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:74`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:119`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -2278,7 +2280,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 间距尺寸
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:105`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:150`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -2313,7 +2315,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 对齐
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:140`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:185`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -2353,7 +2355,7 @@ Gallery key：`ExamplesContent` / item `3`
 
 ### 自动换行
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:180`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:225`
 
 Gallery key：`ExamplesContent` / item `4`
 
@@ -2407,6 +2409,10 @@ Space 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的�
 
 Space 使用 `SpaceToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 collection/filter、visual option 运行时状态。
 
+`Space` 本体没有独立的 `SpaceTheme.axaml`：root frame 由控件自身在 `Render` 中绘制（复用 `BorderRenderHelper`），
+root 边框、背景、内边距与虚线由 `Space` 自有的 root frame 样式属性表达，定制边界见 [Space Semantic Part 契约](semantic-part.md)
+第 3 节。主题文件只覆盖 `CompactSpace` / `CompactSpaceAddOn` 的模板与状态视觉。
+
 主题维护规则：
 
 - 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
@@ -2450,6 +2456,7 @@ Space Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - `src/AtomUI.Desktop.Controls/Space/ICompactSpaceAware.cs`
 - `src/AtomUI.Desktop.Controls/Space/InvalidSpaceFillerUsageException.cs`
 - `src/AtomUI.Desktop.Controls/Space/Space.cs`
+- `src/AtomUI.Desktop.Controls/Space/Space.SemanticParts.cs`
 - `src/AtomUI.Desktop.Controls/Space/SpaceToken.cs`
 - `src/AtomUI.Desktop.Controls/Space/Themes/CompactSpaceAddOnTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Space/Themes/CompactSpaceTheme.axaml`
@@ -2457,6 +2464,7 @@ Space Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 职责边界：
 
 - 控件主文件保留 public/protected API、Avalonia 属性注册、事件和主要生命周期入口。
+- 语义声明文件只承载 `Space` 的 runtime semantic contract，不写模板节点或主题样式。
 - Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
 - Token 文件只提供组件视觉变量，不保存实例状态。
 - Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
@@ -2465,6 +2473,7 @@ Space Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 - 源设计文档：`docs/controls/desktop/layout/space/overview.md`
 - 实现文档：`docs/controls/desktop/layout/space/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/layout/space/semantic-part.md`
 - Token 文档：`docs/controls/desktop/layout/space/token.md`
 - 变更记录：`docs/controls/desktop/layout/space/changelog.md`
 - 语义结构：`./semantic-cn.md`
