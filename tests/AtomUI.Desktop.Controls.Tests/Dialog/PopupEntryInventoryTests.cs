@@ -157,7 +157,7 @@ public class PopupEntryInventoryTests
             var source = ReadRepositoryFile(relativePath);
             var entries = Regex.Matches(
                 source,
-                @"<atom:Popup\b[^>]*>",
+                @"<atom:Popup(?=[\s/>])[^>]*>",
                 RegexOptions.CultureInvariant | RegexOptions.Multiline);
 
             entries.ShouldNotBeEmpty($"{relativePath} must contain an audited AtomUI Popup entry.");
@@ -179,6 +179,32 @@ public class PopupEntryInventoryTests
             @"\bSurfaceBackground\s*=\s*null\b",
             RegexOptions.CultureInvariant).ShouldBeTrue(
             $"{relativePath} must explicitly preserve its content-owned popup surface.");
+    }
+
+    [Fact]
+    public void TestApp_Direct_Popup_Uses_The_Shared_Default_Surface()
+    {
+        var scenarioSource = ReadRepositoryFile(
+            "tests/AtomUI.Desktop.Controls.TestApp/Scenarios/PopupInDialog/PopupInDialogScenario.axaml.cs");
+        var directPopupStart = scenarioSource.IndexOf(
+            "var directPopup = new AtomUI.Desktop.Controls.Popup",
+            StringComparison.Ordinal);
+        directPopupStart.ShouldBeGreaterThanOrEqualTo(0);
+        var directPopupEnd = scenarioSource.IndexOf(
+            "directPopupButton.Click",
+            directPopupStart,
+            StringComparison.Ordinal);
+        directPopupEnd.ShouldBeGreaterThan(directPopupStart);
+        var directPopupSource = scenarioSource[directPopupStart..directPopupEnd];
+
+        directPopupSource.ShouldContain("Child = new Border");
+        directPopupSource.ShouldNotContain("SurfaceBackground");
+        directPopupSource.ShouldNotContain("Background =");
+
+        var popupThemeSource = ReadRepositoryFile(
+            "src/AtomUI.Desktop.Controls/Popup/Themes/PopupTheme.axaml");
+        popupThemeSource.ShouldContain(
+            "<Setter Property=\"SurfaceBackground\" Value=\"{atom:SharedTokenResource ColorBgElevated}\" />");
     }
 
     private static void AssertInventory(
