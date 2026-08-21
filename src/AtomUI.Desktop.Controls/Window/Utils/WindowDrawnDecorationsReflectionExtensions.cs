@@ -1,10 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using AtomUI.Controls.Primitives;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Chrome;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -73,22 +71,6 @@ internal static class WindowDrawnDecorationsReflectionExtensions
         return true;
     }
 
-    internal static Panel? GetDrawnDialogOverlayLayer(this TopLevel topLevel)
-    {
-        return GetDrawnDecorationsOverlay(topLevel)?.GetVisualDescendants()
-                                                     .OfType<Panel>()
-                                                     .FirstOrDefault(static panel =>
-                                                         panel.Name == "PART_DialogOverlayLayerHost");
-    }
-
-    internal static ScopeAwareAdornerLayer? GetDrawnDrawerOverlayLayer(this TopLevel topLevel)
-    {
-        return GetDrawnDecorationsOverlay(topLevel)?.GetVisualDescendants()
-                                                     .OfType<ScopeAwareAdornerLayer>()
-                                                     .FirstOrDefault(static layer =>
-                                                         layer.Name == "PART_DrawerOverlayLayerHost");
-    }
-
     internal static Thickness GetDrawnDecorationsFrameThickness(this TopLevel topLevel)
     {
         return GetDrawnDecorations(topLevel)?.FrameThickness ?? default;
@@ -97,16 +79,6 @@ internal static class WindowDrawnDecorationsReflectionExtensions
     internal static double GetDrawnDecorationsTitleBarHeight(this TopLevel topLevel)
     {
         return GetDrawnDecorations(topLevel)?.TitleBarHeight ?? 0;
-    }
-
-    private static Visual? GetDrawnDecorationsOverlay(TopLevel topLevel)
-    {
-        if (GetDrawnDecorations(topLevel)?.Content?.Overlay is not Visual overlay)
-        {
-            return null;
-        }
-
-        return overlay;
     }
 
     private static WindowDrawnDecorations? GetDrawnDecorations(TopLevel topLevel)

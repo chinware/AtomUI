@@ -2,8 +2,11 @@ using AtomUI.Controls.Primitives;
 using AtomUI.Desktop.Controls.Tests.Window;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Headless;
 using Avalonia.Input;
+using Avalonia.LogicalTree;
 using Avalonia.Media.Transformation;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -20,6 +23,102 @@ public class DrawerInteractionTests
     static DrawerInteractionTests()
     {
         AvaloniaTestApp.EnsureInitialized();
+    }
+
+    [Fact]
+    public void Drawer_Content_Popup_Uses_The_Window_TopLevel()
+    {
+        var comboBox = new AtomUI.Desktop.Controls.ComboBox
+        {
+            Width = 180,
+            IsMotionEnabled = false
+        };
+        comboBox.Items.Add(new AtomUI.Desktop.Controls.ComboBoxItem { Content = "Alpha" });
+        comboBox.Items.Add(new AtomUI.Desktop.Controls.ComboBoxItem { Content = "Beta" });
+        var drawer = new AtomUI.Desktop.Controls.Drawer
+        {
+            Content = comboBox,
+            IsMotionEnabled = false,
+            Width = 1,
+            Height = 1
+        };
+
+        var window = CreateAtomWindow(drawer);
+        try
+        {
+            drawer.IsOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var container = window.GetVisualDescendants().OfType<DrawerContainer>().Single();
+            TopLevel.GetTopLevel(comboBox).ShouldBeSameAs(window);
+
+            comboBox.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            AvaloniaHeadlessPlatform.ForceRenderTimerTick(1);
+            Dispatcher.UIThread.RunJobs();
+
+            var popupHost = window.GetVisualDescendants()
+                                  .OfType<OverlayPopupHost>()
+                                  .Last(host => host.GetLogicalAncestors()
+                                                    .OfType<AtomUI.Desktop.Controls.ComboBox>()
+                                                    .Contains(comboBox));
+            TopLevel.GetTopLevel(popupHost).ShouldBeSameAs(window);
+
+            var secondItem = popupHost.GetVisualDescendants()
+                                      .OfType<AtomUI.Desktop.Controls.ComboBoxItem>()
+                                      .Single(item => item.Content?.ToString() == "Beta");
+            ClickControl(window, secondItem);
+            Dispatcher.UIThread.RunJobs();
+
+            comboBox.SelectedIndex.ShouldBe(1);
+            comboBox.IsDropDownOpen.ShouldBeFalse();
+
+            drawer.IsOpen = false;
+            Dispatcher.UIThread.RunJobs();
+            container.Parent.ShouldBeNull();
+        }
+        finally
+        {
+            if (drawer.IsOpen)
+            {
+                drawer.IsOpen = false;
+                Dispatcher.UIThread.RunJobs();
+            }
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Drawer_Suppresses_Drawn_Chrome_Only_While_Open()
+    {
+        var drawer = new AtomUI.Desktop.Controls.Drawer
+        {
+            IsMotionEnabled = false,
+            Width = 1,
+            Height = 1
+        };
+        var window = CreateAtomWindow(drawer);
+        try
+        {
+            window.IsDrawnChromeOverlayVisible.ShouldBeTrue();
+
+            drawer.IsOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            window.IsDrawnChromeOverlayVisible.ShouldBeFalse();
+
+            drawer.IsOpen = false;
+            Dispatcher.UIThread.RunJobs();
+            window.IsDrawnChromeOverlayVisible.ShouldBeTrue();
+        }
+        finally
+        {
+            if (drawer.IsOpen)
+            {
+                drawer.IsOpen = false;
+                Dispatcher.UIThread.RunJobs();
+            }
+            window.Close();
+        }
     }
 
     [Fact]
@@ -371,6 +470,170 @@ public class DrawerInteractionTests
         }
     }
 
+    [Fact]
+    public void Open_Drawer_Releases_Window_Chrome_Suppression_When_OpenOn_Changes_To_Local_Control()
+    {
+        var localTarget = new Border { Width = 240, Height = 180 };
+        var drawer = new AtomUI.Desktop.Controls.Drawer
+        {
+            IsMotionEnabled = false,
+            OpenOn = null,
+            Width = 1,
+            Height = 1
+        };
+        var root = new Avalonia.Controls.Grid
+        {
+            Children = { localTarget, drawer }
+        };
+        var window = CreateAtomWindow(root);
+        try
+        {
+            drawer.OpenOn = window;
+            drawer.IsOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            window.IsDrawnChromeOverlayVisible.ShouldBeFalse();
+            var container = window.GetVisualDescendants().OfType<DrawerContainer>().Single();
+
+            drawer.OpenOn = localTarget;
+            Dispatcher.UIThread.RunJobs();
+
+            window.IsDrawnChromeOverlayVisible.ShouldBeTrue();
+            ScopeAwareAdornerLayer.GetAdornedElement(container).ShouldBeSameAs(localTarget);
+        }
+        finally
+        {
+            if (drawer.IsOpen)
+            {
+                drawer.IsOpen = false;
+                Dispatcher.UIThread.RunJobs();
+            }
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Open_Drawer_Migrates_Layer_And_Chrome_Suppression_When_OpenOn_Changes_Window()
+    {
+        var drawer = new AtomUI.Desktop.Controls.Drawer
+        {
+            IsMotionEnabled = false,
+            Width = 1,
+            Height = 1
+        };
+        var secondTarget = new Border { Width = 240, Height = 180 };
+        var firstWindow = CreateAtomWindow(drawer);
+        var secondWindow = CreateAtomWindow(secondTarget);
+        try
+        {
+            var firstShadow = new Thickness(4, 5, 6, 7);
+            var secondShadow = new Thickness(8, 9, 10, 11);
+            firstWindow.FrameShadowThickness = firstShadow;
+            secondWindow.FrameShadowThickness = secondShadow;
+            drawer.OpenOn = firstWindow;
+            drawer.IsOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            firstWindow.IsDrawnChromeOverlayVisible.ShouldBeFalse();
+            secondWindow.IsDrawnChromeOverlayVisible.ShouldBeTrue();
+            var firstLayer = ScopeAwareAdornerLayer.GetLayer(firstWindow).ShouldNotBeNull();
+            var secondLayer = ScopeAwareAdornerLayer.GetLayer(secondTarget).ShouldNotBeNull();
+            var container = firstLayer.Children.OfType<DrawerContainer>().Single();
+            container.Margin.ShouldBe(firstShadow);
+
+            drawer.OpenOn = secondWindow;
+            Dispatcher.UIThread.RunJobs();
+
+            firstWindow.IsDrawnChromeOverlayVisible.ShouldBeTrue();
+            secondWindow.IsDrawnChromeOverlayVisible.ShouldBeFalse();
+            firstLayer.Children.ShouldNotContain(container);
+            secondLayer.Children.ShouldContain(container);
+            ScopeAwareAdornerLayer.GetAdornedElement(container).ShouldBeSameAs(secondWindow);
+            container.Margin.ShouldBe(secondShadow);
+
+            firstWindow.FrameShadowThickness = new Thickness(12);
+            Dispatcher.UIThread.RunJobs();
+            container.Margin.ShouldBe(secondShadow);
+
+            var migratedShadow = new Thickness(13, 14, 15, 16);
+            secondWindow.FrameShadowThickness = migratedShadow;
+            Dispatcher.UIThread.RunJobs();
+            container.Margin.ShouldBe(migratedShadow);
+
+            drawer.IsOpen = false;
+            Dispatcher.UIThread.RunJobs();
+            secondWindow.IsDrawnChromeOverlayVisible.ShouldBeTrue();
+            secondLayer.Children.ShouldNotContain(container);
+        }
+        finally
+        {
+            if (drawer.IsOpen)
+            {
+                drawer.IsOpen = false;
+                Dispatcher.UIThread.RunJobs();
+            }
+            firstWindow.Close();
+            secondWindow.Close();
+        }
+    }
+
+    [Fact]
+    public void Nested_Open_Drawers_Release_All_Window_Chrome_Leases_When_Parent_OpenOn_Becomes_Local()
+    {
+        var localTarget = new Border { Width = 240, Height = 180 };
+        var childDrawer = new AtomUI.Desktop.Controls.Drawer
+        {
+            IsMotionEnabled = false,
+            Width = 1,
+            Height = 1
+        };
+        var parentDrawer = new AtomUI.Desktop.Controls.Drawer
+        {
+            Content = new StackPanel
+            {
+                Children = { localTarget, childDrawer }
+            },
+            IsMotionEnabled = false,
+            Width = 1,
+            Height = 1
+        };
+        var window = CreateAtomWindow(parentDrawer);
+        try
+        {
+            parentDrawer.IsOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            childDrawer.IsOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            window.IsDrawnChromeOverlayVisible.ShouldBeFalse();
+            parentDrawer.OpenOn = localTarget;
+            Dispatcher.UIThread.RunJobs();
+
+            childDrawer.OpenOn.ShouldBeSameAs(localTarget);
+            window.IsDrawnChromeOverlayVisible.ShouldBeTrue();
+            var layer = ScopeAwareAdornerLayer.GetLayer(localTarget).ShouldNotBeNull();
+            layer.Children.OfType<DrawerContainer>().Count().ShouldBe(2);
+            layer.Children.OfType<DrawerContainer>()
+                 .ShouldAllBe(container => ReferenceEquals(
+                      ScopeAwareAdornerLayer.GetAdornedElement(container),
+                      localTarget));
+        }
+        finally
+        {
+            if (childDrawer.IsOpen)
+            {
+                childDrawer.IsOpen = false;
+                Dispatcher.UIThread.RunJobs();
+            }
+            if (parentDrawer.IsOpen)
+            {
+                parentDrawer.IsOpen = false;
+                Dispatcher.UIThread.RunJobs();
+            }
+            window.Close();
+        }
+    }
+
     private static void RaisePointerReleased(Control source, MouseButton button, PointerUpdateKind updateKind)
     {
         source.RaiseEvent(new PointerReleasedEventArgs(
@@ -382,6 +645,18 @@ public class DrawerInteractionTests
             new PointerPointProperties(RawInputModifiers.None, updateKind),
             KeyModifiers.None,
             button));
+    }
+
+    private static void ClickControl(Avalonia.Controls.Window window, Control control)
+    {
+        var clickPoint = control.TranslatePoint(
+            new Point(control.Bounds.Width / 2, control.Bounds.Height / 2),
+            window);
+        clickPoint.ShouldNotBeNull();
+
+        window.MouseMove(clickPoint.Value);
+        window.MouseDown(clickPoint.Value, MouseButton.Left);
+        window.MouseUp(clickPoint.Value, MouseButton.Left);
     }
 
     private static AvaloniaWindow CreateWindow(Control content)

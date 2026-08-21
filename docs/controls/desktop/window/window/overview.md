@@ -109,7 +109,7 @@ Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的�
 | 主题文件 | 职责 |
 | --- | --- |
 | `FullscreenPopoverLayerTheme.axaml` | 定义 macOS 全屏标题栏 popover 的固定模板、caption buttons 和标题展示。 |
-| `WindowDrawnDecorationsTheme.axaml` | 定义 Avalonia drawn decorations overlay 下的标题栏、内容、Dialog/Drawer host 和 visible frame 裁剪结构。 |
+| `WindowDrawnDecorationsTheme.axaml` | 定义 Avalonia drawn decorations overlay 下的标题栏、caption buttons、shadow 和 visible frame 裁剪结构；该 overlay 不承载 Dialog、Drawer 或其他业务 presentation。 |
 | `WindowResizerTheme.axaml` | 定义 managed resize grip 的八向命中区域。 |
 | `WindowTheme.axaml` | 定义普通 Window 模板、标题栏、内容 frame、visual layer、overlay host、fullscreen popover 和 managed resizer。 |
 
@@ -227,7 +227,12 @@ Window 对上层 overlay 发布三种不可混用的几何语义：
 - visible frame bounds：完整 layer 只排除 `FrameShadowThickness`，仍包含 managed/drawn 标题栏，供 Dialog Surface、Drawer 和需要贴合可见窗口边缘的 overlay 使用。
 - content bounds：在 visible frame 基础上排除标题栏和内容装饰，供普通 Window 内容或明确要求正文安全区的反馈使用。
 
-`WindowVisualLayerClip` 是 visible frame 外轮廓计算真源。Window 的平台 manager 只负责把 X11、Wayland、Win32 和 macOS 原生能力投影为 `FrameShadowThickness`、CSD 状态和 drawn host，不允许上层控件再次按 OS 复制几何算法。
+`WindowVisualLayerClip` 是 visible frame 外轮廓计算真源。Window 的平台 manager 只负责把 X11、Wayland、Win32 和 macOS 原生能力投影为 `FrameShadowThickness`、CSD 状态和 chrome 几何，不允许上层控件再次按 OS 复制几何算法。
+
+`WindowDrawnDecorations` overlay 只拥有 drawn chrome。Modal Dialog 与 Window Drawer 的业务视觉始终留在 owning Window
+`TopLevel` 内；它们活跃时各自从 Window 获取引用计数的 chrome suppression lease，最后一个 lease 释放后才恢复 drawn
+chrome。这样 Dialog/Drawer 内容中的 Popup、Flyout、ToolTip 与 ContextMenu 仍由 owning Window 的 Avalonia popup 服务管理，
+完整不变量与家族矩阵见 [Modal 内容弹层叠放设计](../../feedback/modal/popup-layering-design.md)。
 
 ## 9. 文档导航、LLMS 导出与验证策略
 
@@ -267,5 +272,14 @@ LLMS 导出来源：
 | 状态模型 | 覆盖 open/close、disabled、hover、pressed、focus 以及控件特有状态。 |
 | AXAML/Theme | 检查 template part、伪类、资源 key、Light/Dark 主题和 Browser 主题。 |
 | 首次显示主题表面 | 覆盖根窗口和 owner 局部主题、Light/Dark、用户显式背景优先级、显示失败回滚，并在 Windows、macOS 和 Linux 实机检查首帧。 |
+| Dialog/Drawer 与 Popup 分层 | 运行 Desktop Controls Dialog/Drawer/Window 回归，并在 `tests/AtomUI.Desktop.Controls.TestApp` 的 `PopupInDialog` 场景做真实桌面交互验收。 |
 | Token | 检查 TokenKind、AXAML token resource、Token 类型、生成数据和 token.md和文档同步。 |
 | Gallery | 走查对应 ShowCase 示例和源码片段入口。 |
+
+当前 Dialog/Drawer 与 Popup 分层实机证据：
+
+| 平台 | 状态 | 已验证范围 |
+| --- | --- | --- |
+| Windows | 已测试 | CSD Window 下 drawn chrome suppression、owning TopLevel presentation 与 Dialog 内容 Popup 基本交互。 |
+| macOS | 已测试 | 原生 chrome Window 下 owning TopLevel presentation 与 Dialog 内容 Popup 基本交互。 |
+| Linux X11 / Wayland | 未测试 | 尚无本专项实机证据，不能标记为通过。 |

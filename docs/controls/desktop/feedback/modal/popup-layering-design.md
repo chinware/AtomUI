@@ -1,124 +1,214 @@
 # Modal 内容弹层叠放设计
 
-本文档定义 Overlay 宿主下 Dialog 内容区内弹层(popup)的宿主解析、叠放顺序与输入语义。公共契约见 [Modal 桌面版架构设计](overview.md)，状态机与宿主实现见 [Modal 桌面版实现原理](implementation.md)，宿主尺寸算法见 [Modal 宿主尺寸与 Resize 设计](host-sizing-design.md)。
+本文档定义 Overlay Dialog 内容区内弹层的宿主归属、叠放顺序、输入语义与生命周期。公共契约见 [Modal 桌面版架构设计](overview.md)，内部实现见 [Modal 桌面版实现原理](implementation.md)，宿主尺寸算法见 [Modal 宿主尺寸与 Resize 设计](host-sizing-design.md)。
 
 ## 1. 设计定位
 
-Dialog 内容区可以放置任意控件，其中包括 ComboBox、Select、DatePicker、TimePicker、AutoComplete、Tooltip、Flyout、ContextMenu 等通过 popup 展示浮动内容的控件。本专项定义这些**内容弹层**在 Dialog 宿主层结构中的宿主位置、叠放顺序、light-dismiss 输入语义和坐标系契约。
+Dialog 内容可以包含 ComboBox、Select、DatePicker、TimePicker、AutoComplete、Tooltip、Flyout、ContextMenu 等基于 Avalonia `Popup` 的控件。本专项保证这些内容弹层与所属 Dialog 使用同一个 Window `TopLevel`，并沿用 Avalonia 的 popup 定位、light-dismiss、焦点与输入服务。
 
-覆盖范围：
-
-- `DialogHostType.Overlay` 下所有宿主路径(drawn decorations Dialog host、TopLevel popup overlay layer、局部 `ScopeAwareOverlayLayer`)。
-- Dialog 内容子树内直接声明或经内容控件模板间接创建的 popup。
-
-不覆盖：
-
-- `DialogHostType.Window` 的原生 Window 宿主。原生 Window 拥有独立 visual tree 与 TopLevel，其内容弹层由该 Window 自身的 `VisualLayerManager` 托管，不存在与所属 Dialog 的叠放问题。
-- Dialog 自身的 mask 与 Surface 叠放，该关系由 Overlay presenter 主题固定，不属于内容弹层。
-- Drawer 内容区的弹层。Drawer 与 Overlay Dialog 共享 drawn host 路由规则，但保留独立的 layer 与生命周期；其内容弹层遵循同一叠放模型，由 Drawer 文档单独维护。
+`DialogHostType.Window` 拥有独立 Window 和 `VisualLayerManager`，其内容弹层由该 Window 自身托管。本文主要描述 `DialogHostType.Overlay`。
 
 ## 2. 设计原则
 
-- 内容弹层必须渲染在所属 Dialog 的 mask 与 Surface **之上**，并处于可命中状态；叠放顺序是契约，不允许依赖宿主层内子节点的插入顺序。
-- 同一 Dialog scope 内的内容弹层相对于该 scope 的 presenter 栈恒置顶；弹层语义与 Ant Design 一致(下拉层 z 序高于 Modal)。
-- 宿主解析按能力进行，不硬编码操作系统或 CSD 标志；drawn decorations、普通 TopLevel、局部 scope 三条宿主路径对内容弹层提供同一叠放语义。
-- 内容弹层的 light-dismiss、输入穿透(`OverlayInputPassThroughElement` / `OverlayDismissEventPassThrough`)与定位行为，在 Dialog 内与在普通页面内保持一致。
-- 不为内容弹层引入独立的弹层管理器或第二套定位算法；复用 Avalonia `PopupOverlayLayer` / `LightDismissOverlayLayer` 的祖先解析机制。
+- Dialog 内容、popup placement target 与 owning Window 必须位于同一个 `TopLevel` 视觉树中。
+- `DialogOverlayLayer` 使用 Avalonia `OverlayLayer`；内容 popup 使用同一 `VisualLayerManager` 的 `PopupOverlayLayer`，两者之间保留 `LightDismissOverlayLayer`。
+- 内容弹层必须渲染在 Dialog mask 与 Surface 之上，并保持可命中、可选择和可 light-dismiss。
+- `WindowDrawnDecorations` overlay 只绘制窗口 chrome，不承载 Dialog、Drawer 或任意可能打开 Popup 的业务内容。
+- 不创建嵌套 `VisualLayerManager`，不复制 Popup 的 host 创建、定位或输入算法，也不通过 child `ZIndex` 修正跨父层关系。
+- 平台差异只影响 drawn chrome 是否存在和几何输入，不改变 presentation 的 `TopLevel` 所有权。
 
 ## 3. 专项模型与 Public API
 
-### 3.1 术语
-
 | 术语 | 定义 |
 | --- | --- |
-| Dialog 宿主层 | `DialogOverlayLayer` 解析出的实际父层：drawn decorations 的 `PART_DialogOverlayLayerHost`、TopLevel popup overlay layer 或局部 `ScopeAwareOverlayLayer`。 |
-| Dialog 弹层作用域 | 包裹 `DialogOverlayLayer` 的 popup-capable `VisualLayerManager`，是 Dialog 内容弹层的宿主边界。 |
-| 内容弹层 | Dialog 内容子树内控件打开的 popup host(`OverlayPopupHost` 或原生 `PopupRoot`)。 |
+| Presentation layer | `DialogOverlayLayer` 的实际父层；Window 场景为 Avalonia `OverlayLayer`。 |
+| Content popup | Dialog 内容子树中的控件打开的 `OverlayPopupHost` 或原生 `PopupRoot`。 |
+| Drawn chrome overlay | `TopLevelHost` 中与 Window `TopLevel` 同级的装饰视觉，仅包含 title bar、caption buttons 与 shadow。 |
+| Chrome suppression lease | modal presentation 活跃期间隐藏 drawn chrome overlay 的 Window 内部引用计数租约。 |
 
-### 3.2 Public API
+本设计不新增 Public API。Popup 的 `ShouldUseOverlayLayer`、`IsLightDismissEnabled`、`OverlayInputPassThroughElement` 和 `OverlayDismissEventPassThrough` 保持 Avalonia 原语义。
 
-本专项不新增 Public API。内容控件无需感知自己是否位于 Dialog 内；`Popup.ShouldUseOverlayLayer`、light-dismiss 与定位属性的语义在 Dialog 内外保持一致。
+## 4. 变体与宿主策略
 
-内部契约边界：
-
-- `VisualLayerManager.EnablePopupOverlayLayer` 是 Avalonia internal 成员，Dialog 弹层作用域通过 `AtomUI.Controls` 集中的 `VisualLayerManagerReflectionExtensions` 反射边界启用，并标注 `DynamicDependency`；控件层不新增反射入口。
-
-## 4. 变体、平台或状态策略
-
-内容弹层语义不随平台变化；差异只存在于 Dialog 宿主层的位置，由宿主解析能力决定：
-
-| 宿主路径 | 触发条件 | Dialog 弹层作用域位置 | 内容弹层宿主 |
+| 场景 | Dialog presentation host | 内容弹层 host | Drawn chrome |
 | --- | --- | --- | --- |
-| drawn decorations host | AtomUI Window 暴露已附加的 `PART_DialogOverlayLayerHost`(Windows 自绘 chrome、Linux X11 自绘、Wayland 客户端装饰) | 装饰层 overlay 内，渲染在整个窗口内容之上 | 作用域自身的 popup overlay layer |
-| TopLevel popup overlay layer | 无 drawn decorations host(如 macOS 原生 chrome) | 窗口 `VisualLayerManager.PopupOverlayLayer` 内 | 同上 |
-| 局部 `ScopeAwareOverlayLayer` | 无可用 TopLevel popup layer 的 scope | scope layer 内 | 同上 |
+| AtomUI Window / 普通 TopLevel | owning `VisualLayerManager.OverlayLayer` | 同一 manager 的 `PopupOverlayLayer` 或平台 `PopupRoot` | modal 活跃时由租约隐藏 |
+| 局部 overlay scope，且仍在 TopLevel 内 | 最近可用的 `ScopeAwareOverlayLayer` fallback | owning TopLevel 的 Popup 服务 | 不改变 |
+| `DialogHostType.Window` | 独立 Dialog Window | 独立 Window 的 Popup 服务 | 由该 Window 管理 |
 
-三条路径下，内容弹层都解析到 Dialog 弹层作用域内的 popup overlay layer，渲染在该 scope 全部 presenter 之上。平台或装饰模式只改变作用域的挂载位置，不改变叠放契约。
+Windows CSD、Linux managed decorations 与 macOS 原生 chrome 共享同一 presentation 所有权规则。没有 drawn chrome overlay 时，suppression lease 不改变可见结果。
 
-`IsModal` 只控制 mask 是否绘制与阻断底层输入，不改变内容弹层的宿主与叠放。
-
-## 5. 架构、文件结构与职责
+## 5. 架构与职责
 
 ```text
-Dialog 宿主层(按能力三选一)
-  -> Dialog 弹层作用域(VisualLayerManager,EnablePopupOverlayLayer)
-     -> DialogOverlayLayer(Child)
-        -> OverlayDialogPresenter(0..n)
-     -> PopupOverlayLayer(Avalonia 惰性创建，z 高于 Child)
-     -> LightDismissOverlayLayer(按需创建，z 低于 popup、高于 Child)
+TopLevelHost
+  -> Window (TopLevel)
+     -> VisualLayerManager
+        -> Window content
+        -> OverlayLayer
+           -> DialogOverlayLayer
+              -> OverlayDialogPresenter (0..n)
+        -> LightDismissOverlayLayer
+        -> PopupOverlayLayer
+           -> OverlayPopupHost (0..n)
+  -> WindowDrawnDecorations overlay
+     -> title bar / caption buttons / shadow only
 ```
 
-| 职责 | Owner | 说明 |
+| Owner | 职责 | 不负责 |
 | --- | --- | --- |
-| 宿主路径解析与 presenter 栈管理 | `OverlayHost/DialogOverlayLayer.cs` | 维持现有三级解析；额外负责创建并挂载弹层作用域。 |
-| 内容弹层宿主 | 弹层作用域的 `PopupOverlayLayer` | 由 Avalonia `VisualLayerManager` 惰性创建与管理，AtomUI 不接管其生命周期。 |
-| light-dismiss 层 | 弹层作用域的 `LightDismissOverlayLayer` | 由 Avalonia 按 popup 的 `IsLightDismissEnabled` 惰性创建。 |
-| 内部能力启用反射 | `AtomUI.Controls/Primitives/VisualLayers/VisualLayerManagerReflectionExtensions.cs` | 集中反射边界，含 `DynamicDependency` 标注。 |
+| `DialogOverlayLayer` | 解析 presentation layer、维护 presenter 栈、同步 Window 可用尺寸、在最后一个 presenter 移除时释放宿主订阅 | 创建 Popup host、管理 light-dismiss、发现 drawn decorations 业务 host |
+| `OverlayDialogPresenter` | 组合 mask 与 Surface；modal 活跃时获取和释放 chrome suppression lease | 改写 Popup 状态或定位 |
+| `Window` | 引用计数管理 drawn chrome overlay 可见性 | 持有 Dialog 内容或 Popup host |
+| Avalonia `VisualLayerManager` | 维护 Overlay、LightDismiss、Popup 等固定相对层级 | Dialog 会话状态 |
+| Avalonia `Popup` | 解析 placement target、创建 host、定位、light-dismiss 与关闭 | Dialog presenter 栈 |
 
-`OverlayDialogPresenter`、`DialogSurface` 与全部内容控件不承担弹层叠放职责，不感知弹层作用域的存在。
+## 6. Template 与集成契约
 
-## 6. Template、组合与集成契约
+`OverlayDialogPresenterTheme.axaml` 继续在同一个 presenter 中组合 mask 与 Surface。`WindowDrawnDecorationsTheme.axaml` 的 Overlay 只包含 chrome 视觉，不定义 `PART_DialogOverlayLayerHost` 或 `PART_DrawerOverlayLayerHost`。
 
-- 弹层作用域是运行时 C# 组合节点，不出现在任何 ControlTheme 中；`OverlayDialogPresenterTheme.axaml` 的 mask/Surface 组合结构不变。
-- `PART_DialogOverlayLayerHost`(drawn decorations 路径)仍是 Dialog 在装饰层 overlay 中的唯一定位点；弹层作用域作为其子节点填满宿主层。
-- 弹层作用域的 `PopupOverlayLayer` 是该 scope 内所有内容弹层的统一父层；外部定制不得把 Dialog 内容弹层重定向到其他宿主层，也不应依赖 popup host 的具体父层类型。
+Dialog 内容的模板可以正常创建任意 Popup，只要 placement target 保持在 Dialog 内容视觉树内。应用模板不得把内容转移到 decorations overlay 或其他无法解析 owning `TopLevel` 的视觉根。
 
-## 7. 核心算法、数据流与生命周期
+## 7. 核心流程与生命周期
 
-### 7.1 弹层宿主解析
+### 7.1 打开
 
-内容控件打开 popup 时，Avalonia 沿 visual 祖先查找最近的 `VisualLayerManager` 并使用其 popup overlay layer;Dialog 弹层作用域作为 Dialog 内容子树的祖先被命中，内容弹层因此挂载在作用域内。查找不到祖先 `VisualLayerManager` 时的原有 TopLevel 回退逻辑不受影响。
+1. `OverlayDialogPresenter` 从 placement target 解析 owning Window。
+2. `DialogOverlayLayer` 从同一 TopLevel 获取 Avalonia `OverlayLayer`，并把 presenter 加入共享 Dialog 栈。
+3. modal presenter 获取 Window chrome suppression lease。
+4. 内容控件打开 Popup 时，Avalonia 从 placement target 解析同一 TopLevel，再选择该 Window 的 `PopupOverlayLayer` 或原生 popup。
 
-### 7.2 坐标系
+### 7.2 叠放与输入
 
-- popup 锚点由 Avalonia 按 placement target 到 `PresentationSource.RootVisual` 的变换计算，坐标系为窗口根坐标。
-- 弹层作用域在其宿主层内 Stretch 填满且原点对齐宿主层原点，三条宿主路径的宿主层均与窗口根坐标对齐(drawn decorations overlay 由 TopLevelHost 以全尺寸铺于原点，`WindowVisualLayerClip` 只裁剪不平移)，因此作用域内 popup 定位无需额外坐标换算。
-- 内容弹层的 flip 边界为作用域可用区域，与窗口客户区一致；Dialog 拖动、resize、maximize 改变 Surface 位置时，popup 的 transform 跟踪与位置更新沿用 popup 自身机制。
+Avalonia 的固定层序为 Overlay、LightDismiss、Popup。Dialog 位于 Overlay，透明 light-dismiss 层覆盖 Dialog 的外部点击区域，popup host 位于最上层。点击 popup item 命中 popup；点击 popup 外部先触发 light-dismiss，再按 Popup 的 pass-through 配置决定是否继续传递。Dialog mask 的 `IsMaskClosable` 不接管 Popup 的关闭逻辑。
 
-### 7.3 生命周期
+### 7.3 关闭与重叠
 
-- 弹层作用域随 `DialogOverlayLayer.GetOrCreate` 创建并挂载，随最后一个 presenter 移除后与 Dialog layer 一并从宿主层删除；宿主 size 与 TopLevel size 订阅的释放规则不变。
-- Dialog 关闭移除 presenter 时，其内容弹层随作用域子树一并脱离 visual tree;popup 的 placement target detach 订阅负责 popup 自身关闭，不需要 Dialog 额外干预。
-- 弹层作用域不持有 presenter、popup host 或内容控件的引用，不引入新的释放点。
+- presenter close 或 dispose 时先从 `DialogOverlayLayer` 移除，再释放 chrome suppression lease和逻辑/资源 parent。
+- 多个 modal Dialog 或 Window Drawer 可以同时持有租约；任一 owner 关闭不会提前恢复 drawn chrome，最后一个租约释放后恢复。
+- 最后一个 presenter 移除后，`DialogOverlayLayer` 解绑 host/TopLevel size 订阅并从 `OverlayLayer` 删除。
+- placement target detach 时，Popup 按 Avalonia 生命周期自行关闭；Dialog 不保存 Popup host 引用。
 
 ## 8. 资源、性能与 AOT 边界
 
-- 弹层作用域的 popup overlay layer 与 light-dismiss 层均由 Avalonia 惰性创建；无内容弹层打开时只存在一个空 `VisualLayerManager` 节点，不产生 measure/render 热路径分配。
-- `EnablePopupOverlayLayer` 的启用通过集中反射一次性完成，带 `DynamicDependency` 标注，保持 NativeAOT 与 trimming 安全；不在拖动、resize 等热路径反射。
-- 不引入新的 binding、timer、事件订阅或 Dispatcher 调度。
+本设计不引入新的 `VisualLayerManager`、Popup host、动态资源或运行时扫描。Dialog 打开只增加一个轻量 suppression lease；Window 使用整数引用计数，关闭路径常数时间完成。
+
+业务宿主解析使用 Avalonia 公共 `OverlayLayer.GetOverlayLayer()` 与 `TopLevel.GetTopLevel()`。`WindowDrawnDecorationsReflectionExtensions` 只保留 frame/titlebar 几何和 resize-grip 兼容边界，不再反射发现 Dialog/Drawer host，因此不新增 trimming root。
 
 ## 9. 兼容性与定制边界
 
-- 无 Public API、默认值、Template Part、ControlTheme key 或 Token 变化。
-- 行为契约：Dialog 内容区 popup 在所有 Overlay 宿主路径下可见、可命中、可 light-dismiss。
-- 用户不应依赖内容弹层 popup host 的具体父层类型或名称；唯一稳定语义是“弹层位于所属 Dialog 之上”。
-- Drawer 与 Dialog 各自维护独立的弹层作用域，不共享 layer 与生命周期。
+- Public API、默认值、Dialog template part、ControlTheme key 与 Token 不变。
+- 稳定行为是：Dialog 内 Popup 可见、可命中、可选择、可 light-dismiss，并与普通页面使用相同 Popup 属性语义。
+- 用户不应依赖 `OverlayPopupHost`、`DialogOverlayLayer` 或 Avalonia内部 layer 的具体实例和子节点顺序。
+- 自定义 Window decorations theme 可以替换 chrome 视觉，但不能把交互式业务 overlay 重新放入 `WindowDrawnDecorations` 子树。
 
-## 10. 验证要求
+## 10. 全局 Popup 风险面与覆盖模型
 
-- 结构断言：在 drawn decorations host 与 TopLevel popup layer 两条路径下，断言 Dialog 内容 ComboBox 的 popup host 位于 Dialog 弹层作用域内，且渲染顺序高于该 scope 的 presenter(headless 测试)。
-- 输入语义：内容弹层 light-dismiss 在 Dialog 内生效；`OverlayInputPassThroughElement` 穿透目标仍为弹层锚点控件；mask 的 `IsMaskClosable` 门控不受内容弹层开关影响。
-- Demo 走查：`tools/DialogComboBoxPopupDemo` 的实验 1(macOS 退化路径)保持正常；实验 2(模拟 drawn decorations 层级)中下拉应可见可点。
-- 平台实机：Windows 自绘 chrome、Linux X11、Wayland GNOME(客户端装饰)验证 Dialog 内 ComboBox 下拉；macOS 验证无回归。
-- 回归：多 Dialog 叠放、Dialog 拖动/resize/maximize 过程中弹层位置跟踪、Dialog 关闭时弹层一并释放。
-- AOT：涉及反射边界的改动执行 Gallery NativeAOT publish 验证。
+ComboBox 只是 `Popup` 宿主失效的一个触发入口。只要控件最终以 Dialog 内容子树中的 Control 作为 placement target，
+`Popup`、`PopupFlyoutBase`、ToolTip 和 ContextMenu 都依赖同一个 owning `TopLevel` 不变量。回归范围因此按 Popup
+创建路径划分，而不是按 Issue 中出现的单个控件划分。
+
+### 10.1 Popup 入口清单
+
+| 创建路径 | 直接实现或模板入口 | 主要公共控件与消费者 |
+| --- | --- | --- |
+| Template 内 `AtomUI.Popup` | `PART_Popup`、AutoComplete popup part | ComboBox、AutoComplete 三种输入形态、Select、Cascader、TreeSelect、Mentions、DatePicker、TimePicker、RangeDatePicker、RangeTimePicker、ColorPicker、GradientColorPicker、Menu/MenuItem、NavMenu、Tour |
+| C# 创建 `AtomUI.Popup` | `new Popup` | ToolTip、ContextMenu |
+| Avalonia `PopupFlyoutBase` | `Flyout.CreatePopup()` | Flyout、MenuFlyout、TreeViewFlyout、PopupConfirm |
+| Flyout 消费控件 | `ShowAt(anchor)` 或 `FlyoutHost` | DropdownButton、SplitButton、AvatarGroup fold、Transfer dropdown、TabControl overflow、DataGrid filter |
+| Attached popup 服务 | `ToolTip.Tip`、attached/context flyout | Slider、Form、Steps、Upload、DataGrid、NavMenu，以及应用代码附加到任意 Dialog 内容的 ToolTip/ContextMenu |
+
+该清单描述当前源码中不同的 Popup 构造与接入路径。新增 Popup-bearing 控件时必须归入已有路径并复用其回归，或者在
+引入新路径的同一变更中扩充清单与测试矩阵。
+
+### 10.2 分层覆盖策略
+
+回归采用四层证据，避免只证明一个控件，也避免为共享实现复制大量脆弱测试：
+
+1. **共享不变量**：在真实 `TopLevelHost` sibling decorations 拓扑中，Dialog presentation、内容 Control 与 popup
+   placement target 必须始终解析到 owning Window。
+2. **Popup 原语**：分别覆盖直接 `Popup`、Flyout/MenuFlyout、ToolTip 和 ContextMenu 的创建、交互、light-dismiss 与释放。
+3. **控件家族**：10.3 表中列出的公共控件逐项进入 Dialog 集成矩阵；共享基类不能替代不同模板或独立 Popup
+   生命周期的派生控件覆盖。
+4. **库存守卫**：自动契约测试扫描全部 Desktop runtime 项目中的 AXAML `<atom:Popup`、C# `new Popup`、
+   `PopupFlyoutBase`/`Flyout` 派生、直接 `ShowAt`、委托 Flyout 构造和 popup 类型别名，并与测试内的已审计 allowlist
+   比较；出现新入口时测试失败，维护者必须将其归入已有路径或扩充矩阵。
+
+当前库存基线为 17 个 AXAML Popup 入口、2 个 C# Popup 构造入口、6 个 Flyout 家族定义、4 个直接 `ShowAt`
+入口、9 个委托 Flyout 构造消费者和 4 个 popup 类型别名文件。数量不是 Public API，但任何变化都必须经过重新分类和
+回归覆盖，不能只更新 allowlist 让守卫恢复通过。
+
+仅复用已经覆盖的 Flyout/ToolTip 原语、没有改变 anchor 或 popup owner 的消费控件，可以通过委托关系审计和既有控件
+测试证明；自行创建 Popup、转移 placement target 或维护独立 open/close 状态的控件必须加入直接 Dialog 集成测试。
+
+### 10.3 控件家族矩阵
+
+| 家族 | 必须直接覆盖的控件或原语 | 关键行为 |
+| --- | --- | --- |
+| Popup 原语 | `Popup`、Flyout、MenuFlyout、ToolTip、ContextMenu | host 建立、命中、关闭与释放 |
+| 选择器 | ComboBox、Select、Cascader、TreeSelect | 打开、选择、值回写、light-dismiss |
+| 自动建议 | AutoComplete、AutoCompleteSearchEdit、AutoCompleteTextArea、Mentions | 文本 anchor、候选 popup、选择或关闭 |
+| 日期时间 | DatePicker、TimePicker、RangeDatePicker、RangeTimePicker | shared InfoPicker 与 range template 两条路径、确认或关闭 |
+| 颜色 | ColorPicker、GradientColorPicker | optional package template、选择或关闭 |
+| 菜单 | Menu/MenuItem、NavMenu | 顶层与级联 popup、命中和关闭 |
+| Flyout 消费 | DropdownButton、SplitButton、PopupConfirm、AvatarGroup fold、Transfer dropdown、TabControl overflow、DataGrid filter | `ShowAt` anchor 归属、操作和关闭 |
+| 特殊 popup | Tour | 独立 placement 或动态创建路径 |
+
+### 10.4 每个直接场景的断言契约
+
+- 打开前 placement target 已附着，并且 `TopLevel.GetTopLevel(target)` 是 owning Window。
+- 打开后存在实际 popup host；不能只断言 `IsOpen` 或 `IsDropDownOpen` 请求状态。
+- overlay popup host 位于 Dialog presentation 之上，Popup item 或主操作区域可命中。
+- 选择、确认或菜单命令能更新控件的公开状态；外部点击可 light-dismiss 且不关闭 Dialog。
+- Popup 关闭、内容 detach、Dialog close/dispose 后不残留 host、订阅或错误的 open 状态。
+- `ShouldUseOverlayPopup=false` 的 native popup 路径仍必须满足同一 TopLevel 所有权；Headless 无法证明的原生窗口行为在
+  对应桌面平台做实机验证，不通过强制 overlay 替代原有契约。
+
+### 10.5 失败处理边界
+
+- 如果共享不变量失败，在 Dialog/presentation owner 修复，禁止给具体控件增加 Dialog 判断。
+- 如果只有一个 Popup 原语失败，在该原语的 host、anchor 或生命周期所有者修复，并回归所有消费控件。
+- 如果只有一个控件家族失败，先证明其模板、placement target 或 open/close 状态与已通过路径的差异，再在家族共享基类
+  或模板源头修复。
+- 禁止通过延迟打开、重试、强制 `ShouldUseOverlayLayer`、替换 placement target、复制 Popup host 或新增嵌套
+  `VisualLayerManager` 规避失败。
+- 全局矩阵全部通过时，不为制造“修复量”逐个修改控件；测试证据与设计约束就是共享根因已覆盖的证明。
+
+### 10.6 永久人工回归 TestApp
+
+`tests/AtomUI.Desktop.Controls.TestApp` 是 Desktop Controls 的可运行人工回归应用，`Scenarios/PopupInDialog` 承载
+本专项的 Popup 家族矩阵。它使用普通 AtomUI Application/Window 生命周期和源码项目引用，加入解决方案构建但不参与
+NuGet 打包、Gallery 展示或 LLMS 示例生成。
+
+TestApp 按选择器、自动建议、Picker、ColorPicker、Flyout/Menu、ToolTip/ContextMenu、特殊 Popup，以及 AvatarGroup、
+Transfer、TabControl、DataGrid 等间接消费路径分组打开独立 Dialog；每个场景显示公开 open/selection/action 状态和
+placement target 的 TopLevel 归属。TestApp 不读取 Avalonia
+私有 Popup host 字段、不吞未处理异常，也不自动打开 Dialog 或 Popup，保证人工验收走真实 pointer/focus 路径。
+
+Headless 测试与 TestApp 不共享运行时状态：前者证明 host、层级、输入和释放不变量，后者证明真实桌面窗口、CSD/native
+chrome、鼠标、焦点和视觉行为。
+
+自动化入口按职责拆分：`DialogPopupPrimitiveLayeringTests` 覆盖五类原语，`DialogPopupControlFamilyTests` 覆盖 Desktop
+Controls 的直接及委托消费家族，`DataGridFilterDialogPopupTests` 在可选 DataGrid 包内覆盖真实过滤菜单，
+`PopupEntryInventoryTests` 守卫六类源码入口。测试必须通过公开 open state 或真实 pointer/keyboard 路径打开控件，
+不得用反射或 internal open property 代替用户交互；关闭后还必须确认 owning Window 不残留 `OverlayPopupHost`。
+
+## 11. 验证要求
+
+- TopLevel 所有权：使用与 Window 同级的真实 `TopLevelHost` decorations 拓扑，断言任意 Dialog 内容仍解析到 owning Window。
+- Popup 原语：直接 Popup、Flyout/MenuFlyout、ToolTip 和 ContextMenu 都能建立 host、交互、light-dismiss 并释放。
+- 控件家族：执行 10.3 的矩阵；独立模板或独立 Popup 生命周期不能只由 ComboBox 代表。
+- 输入语义：点击 Popup 外部可 light-dismiss，且 Dialog 保持打开；级联菜单按其自身关闭协议收敛。
+- 生命周期：最后一个 presenter 关闭后释放 Dialog layer；多个 modal/Drawer 重叠时最后一个 lease 才恢复 drawn chrome。
+- 库存守卫：自动 allowlist 契约测试覆盖直接入口、委托构造和类型别名；新增入口时测试失败并要求补充归类和回归。
+- TestApp 实机验收：在 `AtomUI.Desktop.Controls.TestApp` 的 `PopupInDialog` 场景中走查选择器、Flyout/Menu、
+  ToolTip/ContextMenu、Picker、AvatarGroup、Transfer、TabControl 和 DataGrid，验证可见、可点、可关闭且进程不崩溃。
+- 平台回归：Windows CSD、macOS 原生 chrome、Linux X11/Wayland 分别记录实机证据；不得由共享代码路径推断未执行平台已通过。
+
+当前实机证据状态：
+
+| 平台 | 状态 | 已验证范围 |
+| --- | --- | --- |
+| Windows | 已测试 | CSD Window 下最终 owning TopLevel/Overlay/Popup 分层与 Dialog 内容 Popup 基本交互。 |
+| macOS | 已测试 | 原生 chrome Window 下最终 owning TopLevel/Overlay/Popup 分层与 Dialog 内容 Popup 基本交互。 |
+| Linux X11 / Wayland | 未测试 | 尚无实机证据；不能标记为通过。 |

@@ -64,6 +64,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
     private readonly CompositeDisposable _bindings = new();
     private DialogOverlayLayer? _dialogLayer;
     private Window? _ownerWindow;
+    private IDisposable? _drawnChromeOverlaySuppression;
     private bool _ownerIsWayland;
     private MotionActor? _maskMotionActor;
     private MotionActor? _surfaceMotionActor;
@@ -99,6 +100,8 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         Content = _surface;
 
         _bindings.Add(Bind(IsModalProperty, dialog.GetObservable(Dialog.IsModalProperty)));
+        _bindings.Add(this.GetObservable(IsModalProperty)
+            .Subscribe(_ => UpdateDrawnChromeOverlaySuppression()));
         _bindings.Add(Bind(IsMaskClosableProperty, dialog.GetObservable(Dialog.IsMaskClosableProperty)));
         _bindings.Add(Bind(IsMotionEnabledProperty, dialog.GetObservable(Dialog.IsMotionEnabledProperty)));
         _bindings.Add(dialog.GetObservable(Dialog.HostWidthProperty).Skip(1).Subscribe(HandleHostWidthChanged));
@@ -156,6 +159,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         _ownerIsWayland = OperatingSystem.IsLinux() &&
                           _ownerWindow is { } ownerWindow &&
                           AbstractLinuxWindowChromeManager.IsWayland(ownerWindow);
+        UpdateDrawnChromeOverlaySuppression();
         _dialogLayer.Add(this);
         AttachOwnerGeometryBindings();
         UpdateLayerBounds(_dialogLayer.AvailableSize);
@@ -311,6 +315,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         }
 
         ReleaseDialogMask();
+        ReleaseDrawnChromeOverlaySuppression();
         Content = null;
         _ownerWindow = null;
         _ownerIsWayland = false;
@@ -333,6 +338,7 @@ internal sealed class OverlayDialogPresenter : ContentControl,
 
     private void RemoveFromDialogLayer()
     {
+        ReleaseDrawnChromeOverlaySuppression();
         if (_dialogLayer is not { } dialogLayer)
         {
             return;
@@ -340,6 +346,23 @@ internal sealed class OverlayDialogPresenter : ContentControl,
 
         dialogLayer.Remove(this);
         _dialogLayer = null;
+    }
+
+    private void UpdateDrawnChromeOverlaySuppression()
+    {
+        if (_dialogLayer is not null && IsModal && _ownerWindow is { } window)
+        {
+            _drawnChromeOverlaySuppression ??= window.SuppressDrawnChromeOverlay();
+            return;
+        }
+
+        ReleaseDrawnChromeOverlaySuppression();
+    }
+
+    private void ReleaseDrawnChromeOverlaySuppression()
+    {
+        _drawnChromeOverlaySuppression?.Dispose();
+        _drawnChromeOverlaySuppression = null;
     }
 
     internal void UpdateLayerBounds(Size layerSize)

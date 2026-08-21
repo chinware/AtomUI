@@ -5,15 +5,19 @@
 ## 2026-08-20
 
 - Design
-  - Define the content popup layering contract: popups opened from Dialog content (ComboBox, Select, DatePicker, Tooltip, Flyout, ContextMenu, ...) resolve to a popup-capable Dialog popup scope wrapping `DialogOverlayLayer`, rendering above every Overlay presenter of that scope on all three host paths (drawn decorations host, TopLevel popup overlay layer, scoped overlay layer) with normal light-dismiss and input pass-through behavior.
+  - Keep Overlay Dialog presentation in the owning Window `TopLevel`: `DialogOverlayLayer` uses Avalonia `OverlayLayer`, while content popups use the higher `PopupOverlayLayer` with the normal `LightDismissOverlayLayer` between them.
+  - Reserve `WindowDrawnDecorations` overlay for chrome visuals and manage modal chrome coverage through a Window-owned reference-counted suppression lease shared safely by overlapping Dialog and Drawer presentations.
 - API
   - Add `Dialog.IsMaskClosable` (default `true`) controlling whether pressing the Overlay modal mask requests a close; `MessageBox` inherits it and `MessageBoxOptions` exposes the same passthrough.
   - Define the two close-entry switches as orthogonal: `IsClosable` gates the header close button, `IsMaskClosable` gates the mask outside-press entry.
 - Behavior
   - With `IsMaskClosable=false`, a mask press is swallowed by the topmost Overlay presenter without producing any close request, and never enters the `Closing`/`BeforeCloseAsync` pipeline.
+  - Dialog content popups retain their Window `TopLevel`, open without crashes, remain clickable and preserve normal outside-click light-dismiss behavior under managed/drawn window chrome.
 - Docs
   - Add the Modal content popup layering design document and link it from the public design, implementation and compatibility sections.
   - Document the mask close-entry contract in the Dialog contract groups, behavior model, compatibility invariants and maintenance invariants.
+  - Expand popup verification from the ComboBox trigger to the complete Popup/Flyout/ToolTip/ContextMenu inventory and control-family matrix.
+  - Define `AtomUI.Desktop.Controls.TestApp/Scenarios/PopupInDialog` as the permanent manual regression surface, with Windows and macOS tested and Linux X11/Wayland explicitly untested.
 
 ## 2026-07-22
 
@@ -50,7 +54,7 @@
 - Performance
   - Move Overlay Dialog drag positioning from layout-affecting Margin writes to one reusable render-only Matrix translation while retaining `OffsetX` / `OffsetY` as persistence state.
 - Docs
-  - Document capability-driven host selection, visual-layer clipping ownership, lifecycle cleanup, AOT reflection boundary and Windows/Linux/macOS regression coverage.
+  - Document capability-driven host selection, visual-layer clipping ownership, lifecycle cleanup, AOT reflection boundary and cross-platform regression requirements.
 
 ## 2026-07-18
 

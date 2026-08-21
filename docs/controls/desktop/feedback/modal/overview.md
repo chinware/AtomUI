@@ -93,8 +93,8 @@ Dialog 公开 `Opened`、`Closing`、`Accepted`、`Rejected`、`Finished`、`Clo
 
 - `IsOpen` 表示最新声明式意图；`DialogSession` 表示一次实际展示。两者不能由 presenter 或 template part 反向拥有。
 - modal Overlay 的真实 pointer 输入命中 mask，modeless Overlay 在 Surface 外穿透到底层。只有栈顶 presenter 响应 mask 与 Escape。栈顶 modal mask 外点默认以 `HostCloseRequest` 发起普通关闭；`IsMaskClosable=false` 时该次点击被吞掉且不产生任何关闭请求，不进入 `Closing`/`BeforeCloseAsync` 管道。Window host 没有 mask，外点本来就不触发关闭。
-- 所有平台的 `AtomUI.Window` 都按宿主能力选择 Overlay layer：drawn decorations 暴露 Dialog host 时把 presenter 放在该层，否则回退 TopLevel popup overlay。modal mask 覆盖完整 Avalonia 可绘制窗口轮廓和 managed/drawn 标题栏，标题栏内容与 caption buttons 也受同一 modal 输入阻断；位于客户端 visual tree 外的原生系统 chrome 仍由平台管理。
-- Dialog 内容区内的 popup 类控件(ComboBox、Select、DatePicker、Tooltip、Flyout、ContextMenu 等)在 Dialog 弹层作用域中打开，渲染在该 scope 全部 Overlay presenter 之上并可命中；light-dismiss 与输入穿透语义与普通页面一致，叠放顺序不依赖宿主层内子节点的插入顺序。宿主解析、坐标系与平台矩阵见 [Modal 内容弹层叠放设计](popup-layering-design.md)。
+- 所有平台的 `AtomUI.Window` 都把 Overlay presenter 放在 owning `TopLevel` 的 Avalonia `OverlayLayer`。modal 活跃时通过 Window 引用计数租约隐藏 managed/drawn chrome overlay，使 mask 覆盖完整 Avalonia 可绘制窗口轮廓并阻断 caption input；位于客户端 visual tree 外的原生系统 chrome 仍由平台管理。
+- Dialog 内容区内的 popup 类控件(ComboBox、Select、DatePicker、Tooltip、Flyout、ContextMenu 等)由同一 Window 的 `PopupOverlayLayer` 或原生 Popup host 承载，位于 Dialog `OverlayLayer` 之上并保持可命中；二者之间的 `LightDismissOverlayLayer` 保证外点关闭与输入穿透语义和普通页面一致。层级与所有权契约见 [Modal 内容弹层叠放设计](popup-layering-design.md)。
 - Overlay mask bounds、Window visible frame 与 Dialog 正文 owner bounds 独立：mask 使用完整 layer bounds；所有平台的 Surface 正文定位、拖动、resize 和 maximize 使用 visible frame 按当前有效 drawn frame thickness 内缩后的范围，允许进入 managed/drawn title bar，但不能覆盖窗口 frame。Dialog BoxShadow 只参与绘制并允许在窗口边缘由统一 visual-layer clip 裁剪。
 - Enter/Escape 根据当前有效按钮序列查找 default/escape 按钮，运行时修改标准按钮或自定义按钮会立即生效。
 - `IsConfirmLoading=true` 只阻止用户发起的普通关闭，不阻止 owner close、detach、取消和失败 teardown。
@@ -120,7 +120,7 @@ Dialog 公开 `Opened`、`Closing`、`Accepted`、`Rejected`、`Finished`、`Clo
 ## 6. 控件家族或集成关系
 
 - `MessageBox` 继承 `Dialog`，只增加语义内容和按钮策略。
-- Overlay 在 `AtomUI.Window` 暴露 drawn decorations Dialog host 时使用该层；其他 TopLevel 使用 popup overlay layer，单视图或局部 scope 使用最近的 `ScopeAwareOverlayLayer`。宿主解析由实际能力决定，不按操作系统硬编码，也不使用全局静态 TopLevel 字典。
+- Overlay 优先使用 placement target 所属 `TopLevel` 的 Avalonia `OverlayLayer`；无可用 TopLevel overlay 时才使用最近的 `ScopeAwareOverlayLayer` fallback。宿主解析由实际能力决定，不按操作系统硬编码，也不使用全局静态 TopLevel 字典。
 - Drawer 与 Overlay Dialog 在 Window 中遵循相同的 visible frame、标题栏覆盖和窗口 frame clip 规则，但各自保留独立的 layer、stack 与关闭生命周期。
 - Window 使用 Avalonia 原生 `Window` modal owner 能力；不支持原生 Window 的平台会回退到 Overlay。
 - `IDialogAwareDataContext` 在 DataContext attach/detach 和 Session closed 时接收通知。
@@ -136,7 +136,7 @@ Dialog 公开 `Opened`、`Closing`、`Accepted`、`Rejected`、`Finished`、`Clo
 - 自定义按钮集合的 Add/Remove/Replace/Move/Reset/Clear 都要更新有效序列并对称管理事件订阅。
 - mask、Surface、内容、按钮、binding、逻辑/资源 parent、owner/target 订阅必须在所有关闭路径释放。
 - Window mask 必须覆盖完整 Avalonia 可绘制窗口轮廓；存在 drawn title bar 时必须位于其上方。所有平台的 Dialog Surface 正文都使用包含 managed/drawn 标题栏、排除透明 frame shadow 与有效 drawn frame 的 owner bounds；不能把 mask bounds、visible frame bounds、正文 owner bounds 与 BoxShadow 绘制范围合并为同一个矩形。
-- Dialog 内容弹层在所有 Overlay 宿主路径下都必须渲染在所属 Dialog 的 mask 与 Surface 之上并保持可命中；该叠放由 Dialog 弹层作用域保证，不退化为依赖宿主层插入顺序。
+- Dialog 内容、placement target 与 owning Window 必须保持在同一 `TopLevel`；Dialog 使用 `OverlayLayer`，内容弹层使用更高的 `PopupOverlayLayer`，并保留中间的 light-dismiss 层。
 - Window 外轮廓只能由现有 `WindowVisualLayerClip` 统一裁剪；Overlay Dialog 不单独复制 frame shadow margin 或 CornerRadius。
 - Overlay 与 Window 必须使用同一套 Surface 正文尺寸解析。Window 只允许在 presenter 边界加回 chrome；不能把 Surface `HostMin/Max` 直接解释为包含标题栏和 frame 的 Window client constraints。
 - 用户 resize、runtime `HostMin/Max`、主题或宿主容量变化不得无条件重置已调整尺寸；actual size 只有越出最新有效区间时才被 clamp。
@@ -157,8 +157,8 @@ Created -> Opening -> Open -> ClosePending -> Closing -> Closed
 
 ### 8.2 宿主选择
 
-- `DialogHostType.Overlay` 使用 owner 范围内的 Dialog overlay stack。`AtomUI.Window` 在 drawn decorations Dialog host 可用时优先使用该层，不可用的平台或装饰模式使用 popup overlay layer；无 TopLevel popup layer 的 scope 使用 `ScopeAwareOverlayLayer`。
-- drawn decorations host 不可用时回退到普通 TopLevel/scope overlay，保证自定义或不完整 Window theme 不阻断 Dialog 打开。
+- `DialogHostType.Overlay` 使用 owner 范围内的 Dialog overlay stack。Window/TopLevel 使用 Avalonia `OverlayLayer`；无 TopLevel overlay layer 的 scope 使用 `ScopeAwareOverlayLayer` fallback。
+- `WindowDrawnDecorations` 只承担 chrome 绘制，不作为 Dialog host；自定义 decorations theme 不改变 Dialog 的 `TopLevel` 所有权。
 - `DialogHostType.Window` 使用原生 Window；平台不支持时回退 Overlay。
 - `IsModal` 只控制交互模态，不改变 `OpenAsync` 的任务边界。
 
@@ -209,4 +209,6 @@ LLMS 导出来源：
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | implementation.md | 用于定位控件源码、主题和测试 |
 
-验证按改动范围运行 Dialog/MessageBox 定向测试、完整 Desktop Controls 测试、Gallery 测试与构建；涉及 AOT 发布路径时执行 Gallery NativeAOT publish，并始终运行 `git diff --check`。
+验证按改动范围运行 Dialog/MessageBox 定向测试、完整 Desktop Controls 测试、Gallery 测试与构建；涉及 AOT 发布路径时执行 Gallery NativeAOT publish，并始终运行 `git diff --check`。Dialog 内容 Popup 家族的永久人工回归入口是 `tests/AtomUI.Desktop.Controls.TestApp/Scenarios/PopupInDialog`，完整清单和断言见 [Modal 内容弹层叠放设计](popup-layering-design.md)。
+
+当前最终 Popup 分层方案已在 Windows CSD 与 macOS 原生 chrome 环境完成实机测试；Linux X11/Wayland 尚未测试，不属于当前已验证平台。

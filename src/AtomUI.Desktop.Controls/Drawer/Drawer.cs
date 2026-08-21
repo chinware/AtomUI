@@ -352,13 +352,13 @@ public class Drawer : Control,
         
         if (change.Property == OpenOnProperty)
         {
-            if (change.NewValue is Control newOpenOn)
+            var newOpenOn = change.NewValue as Control;
+            ScopeAwareAdornerLayer.SetAdornedElement(this, newOpenOn);
+            if (IsOpen && _container is not null)
             {
-                ScopeAwareAdornerLayer.SetAdornedElement(this, newOpenOn);
-            }
-            else
-            {
-                ScopeAwareAdornerLayer.SetAdornedElement(this, null);
+                _container.UpdateOpenOn(
+                    newOpenOn,
+                    ScopeAwareAdornerLayer.GetLayer(newOpenOn ?? this));
             }
         }
     }
@@ -382,7 +382,7 @@ public class Drawer : Control,
 
     private void Open()
     {
-        var layer = ScopeAwareAdornerLayer.GetLayer(this);
+        var layer = ScopeAwareAdornerLayer.GetLayer(OpenOn ?? this);
         Debug.Assert(layer != null);
         ConfigureEffectiveDialogSize();
         ConfigureOpenOnSizeChangedSubscription();
@@ -395,7 +395,8 @@ public class Drawer : Control,
     private void Close()
     {
         DetachOpenOnSizeChanged();
-        var layer = ScopeAwareAdornerLayer.GetLayer(this);
+        var layer = _container?.GetVisualParent<ScopeAwareAdornerLayer>() ??
+                    ScopeAwareAdornerLayer.GetLayer(OpenOn ?? this);
         Debug.Assert(layer != null);
         _container?.CloseActiveChildDrawer();
         NotifyBeforeClose(layer);

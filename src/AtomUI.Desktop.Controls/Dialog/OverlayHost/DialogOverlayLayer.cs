@@ -1,20 +1,14 @@
 using AtomUI.Controls.Primitives;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.VisualTree;
+using Avalonia.Controls.Primitives;
 
 namespace AtomUI.Desktop.Controls;
-
-using AvaloniaVisualLayerManager = Avalonia.Controls.Primitives.VisualLayerManager;
 
 internal sealed class DialogOverlayLayer : Canvas
 {
     private readonly Panel _hostLayer;
     private readonly TopLevel? _topLevel;
-    private readonly bool _usesArrangedHostBounds;
-    // Dialog 弹层作用域:包裹本层的 popup-capable VisualLayerManager,是 Dialog 内容弹层的宿主边界,
-    // 保证内容区 popup 渲染在本 scope 全部 presenter 之上(契约见 docs/controls/desktop/feedback/modal/popup-layering-design.md)。
-    private readonly AvaloniaVisualLayerManager _popupScope;
 
     internal Size AvailableSize { get; private set; }
 
@@ -22,12 +16,6 @@ internal sealed class DialogOverlayLayer : Canvas
     {
         _hostLayer = hostLayer;
         _topLevel = topLevel;
-        _usesArrangedHostBounds = hostLayer is not Canvas &&
-                                  hostLayer.IsAttachedToVisualTree() &&
-                                  topLevel is Window window &&
-                                  ReferenceEquals(hostLayer, window.GetDrawnDialogOverlayLayer());
-        _popupScope = VisualLayerManagerReflectionExtensions.CreatePopupCapableScope();
-        _popupScope.Child = this;
         _hostLayer.SizeChanged += HandleHostLayerSizeChanged;
         if (_topLevel is not null)
         {
@@ -39,33 +27,22 @@ internal sealed class DialogOverlayLayer : Canvas
     internal static DialogOverlayLayer GetOrCreate(Visual anchor)
     {
         var (hostLayer, topLevel) = ResolveHostLayer(anchor);
-        var dialogLayer = hostLayer.Children
-                                   .OfType<AvaloniaVisualLayerManager>()
-                                   .Select(scope => scope.Child)
-                                   .OfType<DialogOverlayLayer>()
-                                   .FirstOrDefault();
+        var dialogLayer = hostLayer.Children.OfType<DialogOverlayLayer>().FirstOrDefault();
         if (dialogLayer is not null)
         {
             return dialogLayer;
         }
 
         dialogLayer = new DialogOverlayLayer(hostLayer, topLevel);
-        hostLayer.Children.Add(dialogLayer._popupScope);
+        hostLayer.Children.Add(dialogLayer);
         return dialogLayer;
     }
 
     private static (Panel HostLayer, TopLevel? TopLevel) ResolveHostLayer(Visual anchor)
     {
         var topLevel = TopLevel.GetTopLevel(anchor);
-        if (topLevel is Window window &&
-            window.GetDrawnDialogOverlayLayer() is { } drawnDialogLayer &&
-            drawnDialogLayer.IsAttachedToVisualTree())
-        {
-            return (drawnDialogLayer, topLevel);
-        }
-
         if (topLevel is not null &&
-            topLevel.GetPopupOverlayLayer() is Panel topLevelLayer)
+            OverlayLayer.GetOverlayLayer(anchor) is Panel topLevelLayer)
         {
             return (topLevelLayer, topLevel);
         }
@@ -101,8 +78,7 @@ internal sealed class DialogOverlayLayer : Canvas
         {
             _topLevel.PropertyChanged -= HandleTopLevelPropertyChanged;
         }
-        _hostLayer.Children.Remove(_popupScope);
-        _popupScope.Child = null;
+        _hostLayer.Children.Remove(this);
     }
 
     internal void Activate(OverlayDialogPresenter presenter)
@@ -160,20 +136,10 @@ internal sealed class DialogOverlayLayer : Canvas
         }
 
         AvailableSize = size;
-        // 尺寸同步作用于弹层作用域(宿主层的直接子节点);本层在作用域内 Stretch 填满。
-        if (_usesArrangedHostBounds)
-        {
-            _popupScope.ClearValue(WidthProperty);
-            _popupScope.ClearValue(HeightProperty);
-        }
-        else
-        {
-            _popupScope.Width  = size.Width;
-            _popupScope.Height = size.Height;
-        }
-
-        Canvas.SetLeft(_popupScope, 0);
-        Canvas.SetTop(_popupScope, 0);
+        Width  = size.Width;
+        Height = size.Height;
+        Canvas.SetLeft(this, 0);
+        Canvas.SetTop(this, 0);
         foreach (var presenter in Children.OfType<OverlayDialogPresenter>())
         {
             presenter.Width  = size.Width;

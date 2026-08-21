@@ -4,13 +4,12 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Headless;
+using Avalonia.Input;
 using Avalonia.LogicalTree;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
-
-using AvaloniaVisualLayerManager = Avalonia.Controls.Primitives.VisualLayerManager;
 
 namespace AtomUI.Desktop.Controls.Tests.Dialog;
 
@@ -22,7 +21,7 @@ public class DialogContentPopupLayeringTests
     }
 
     [Fact]
-    public void Dialog_Layer_Is_Wrapped_In_A_Popup_Capable_Scope_In_Every_Host_Path()
+    public void Dialog_Overlay_Layer_Is_Released_With_The_Last_Presenter()
     {
         RunOnUIThread(() =>
         {
@@ -35,17 +34,15 @@ public class DialogContentPopupLayeringTests
                 Dispatcher.UIThread.RunJobs();
 
                 var dialogLayer = presenter.Parent.ShouldBeOfType<DialogOverlayLayer>();
-                var scope = dialogLayer.GetVisualParent().ShouldBeOfType<AvaloniaVisualLayerManager>();
-                scope.Child.ShouldBeSameAs(dialogLayer);
-                // 弹层作用域尺寸与宿主层同步(headless 走 TopLevel popup layer 宿主路径)
-                scope.Bounds.Size.ShouldBe(window.ClientSize);
+                var hostLayer = dialogLayer.GetVisualParent().ShouldBeAssignableTo<Panel>()!;
+                dialogLayer.Bounds.Size.ShouldBe(window.ClientSize);
 
                 WaitWithDispatcherPump(presenter.CloseAsync().AsTask());
                 WaitWithDispatcherPump(presenter.DisposeAsync().AsTask());
 
                 presenter.Parent.ShouldBeNull();
                 dialogLayer.Parent.ShouldBeNull();
-                scope.Parent.ShouldBeNull();
+                hostLayer.Children.ShouldNotContain(dialogLayer);
             }
             finally
             {
@@ -55,11 +52,15 @@ public class DialogContentPopupLayeringTests
     }
 
     [Fact]
-    public void ComboBox_Dropdown_In_Dialog_Content_Is_Hosted_Above_The_Dialog_Layer()
+    public void ComboBox_Dropdown_In_Dialog_Content_Is_Hosted_Above_The_Dialog_And_Can_Select()
     {
         RunOnUIThread(() =>
         {
-            var comboBox = new AtomUI.Desktop.Controls.ComboBox { Width = 160 };
+            var comboBox = new AtomUI.Desktop.Controls.ComboBox
+            {
+                Width = 160,
+                IsMotionEnabled = false
+            };
             comboBox.Items.Add(new AtomUI.Desktop.Controls.ComboBoxItem { Content = "1" });
             comboBox.Items.Add(new AtomUI.Desktop.Controls.ComboBoxItem { Content = "2" });
             var (window, _, presenter) = CreateDialogFixture(comboBox);
@@ -86,23 +87,186 @@ public class DialogContentPopupLayeringTests
                                     .ShouldNotBeNull();
 
                 var dialogLayer = presenter.Parent.ShouldBeOfType<DialogOverlayLayer>();
-                var scope = dialogLayer.GetVisualParent().ShouldBeOfType<AvaloniaVisualLayerManager>();
+                dialogLayer.GetVisualParent().ShouldBeOfType<OverlayLayer>();
+                popupHost.GetVisualParent().ShouldNotBeSameAs(dialogLayer.GetVisualParent());
 
-                // popup host 的最近 VisualLayerManager 祖先必须是 Dialog 弹层作用域,
-                // 而不是窗口内容区的 VisualLayerManager
-                popupHost.GetVisualAncestors()
-                         .OfType<AvaloniaVisualLayerManager>()
-                         .First()
-                         .ShouldBeSameAs(scope);
+                var secondItem = popupHost.GetVisualDescendants()
+                                          .OfType<AtomUI.Desktop.Controls.ComboBoxItem>()
+                                          .Single(item => item.Content?.ToString() == "2");
+                ClickControl(window, secondItem);
+                Dispatcher.UIThread.RunJobs();
 
-                // 作用域内 popup overlay layer 的 z 序高于 Child(DialogOverlayLayer),渲染在 presenter 之上
-                var popupLayer = popupHost.GetVisualParent().ShouldBeAssignableTo<Canvas>()!;
-                popupLayer.ZIndex.ShouldBeGreaterThan(dialogLayer.ZIndex);
+                comboBox.SelectedIndex.ShouldBe(1);
+                comboBox.IsDropDownOpen.ShouldBeFalse();
             }
             finally
             {
                 WaitWithDispatcherPump(presenter.CloseAsync().AsTask());
                 WaitWithDispatcherPump(presenter.DisposeAsync().AsTask());
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void ComboBox_Dropdown_In_Dialog_Light_Dismisses_Without_Closing_The_Dialog()
+    {
+        RunOnUIThread(() =>
+        {
+            var comboBox = new AtomUI.Desktop.Controls.ComboBox
+            {
+                Width = 160,
+                IsMotionEnabled = false
+            };
+            comboBox.Items.Add(new AtomUI.Desktop.Controls.ComboBoxItem { Content = "1" });
+            comboBox.Items.Add(new AtomUI.Desktop.Controls.ComboBoxItem { Content = "2" });
+            var (window, _, presenter) = CreateDialogFixture(comboBox);
+            try
+            {
+                window.Show();
+                Dispatcher.UIThread.RunJobs();
+                WaitWithDispatcherPump(presenter.ShowAsync(CancellationToken.None).AsTask());
+
+                comboBox.IsDropDownOpen = true;
+                Dispatcher.UIThread.RunJobs();
+                AvaloniaHeadlessPlatform.ForceRenderTimerTick(1);
+                Dispatcher.UIThread.RunJobs();
+
+                window.MouseMove(new Point(8, 8));
+                window.MouseDown(new Point(8, 8), MouseButton.Left);
+                window.MouseUp(new Point(8, 8), MouseButton.Left);
+                Dispatcher.UIThread.RunJobs();
+
+                comboBox.IsDropDownOpen.ShouldBeFalse();
+                presenter.Parent.ShouldBeOfType<DialogOverlayLayer>();
+            }
+            finally
+            {
+                WaitWithDispatcherPump(presenter.CloseAsync().AsTask());
+                WaitWithDispatcherPump(presenter.DisposeAsync().AsTask());
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void ComboBox_Dropdown_In_Dialog_Remains_Operational_When_Drawn_Decorations_Are_Attached()
+    {
+        RunOnUIThread(() =>
+        {
+            var comboBox = new AtomUI.Desktop.Controls.ComboBox
+            {
+                Width = 160,
+                IsMotionEnabled = false
+            };
+            comboBox.Items.Add(new AtomUI.Desktop.Controls.ComboBoxItem { Content = "1" });
+            comboBox.Items.Add(new AtomUI.Desktop.Controls.ComboBoxItem { Content = "2" });
+            var (window, _, presenter) = CreateDialogFixture(comboBox);
+            var dialogHost = new Panel { Name = "PART_DialogOverlayLayerHost" };
+            Action? restoreDecorations = null;
+            try
+            {
+                window.Show();
+                Dispatcher.UIThread.RunJobs();
+                restoreDecorations = DrawnDecorationsTestHost.InstallOnAttachedDecorations(window, dialogHost);
+
+                TopLevel.GetTopLevel(dialogHost).ShouldBeNull();
+
+                WaitWithDispatcherPump(presenter.ShowAsync(CancellationToken.None).AsTask());
+                var dialogLayer = presenter.Parent.ShouldBeOfType<DialogOverlayLayer>();
+                TopLevel.GetTopLevel(comboBox).ShouldBeSameAs(window);
+
+                comboBox.IsDropDownOpen = true;
+                Dispatcher.UIThread.RunJobs();
+                AvaloniaHeadlessPlatform.ForceRenderTimerTick(1);
+                Dispatcher.UIThread.RunJobs();
+
+                var popupHost = window.GetVisualDescendants()
+                                      .OfType<OverlayPopupHost>()
+                                      .Last(host => host.GetLogicalAncestors()
+                                                        .OfType<AtomUI.Desktop.Controls.ComboBox>()
+                                                        .Contains(comboBox));
+                popupHost.ShouldNotBeNull();
+                dialogLayer.IsAttachedToVisualTree().ShouldBeTrue();
+            }
+            finally
+            {
+                WaitWithDispatcherPump(presenter.CloseAsync().AsTask());
+                WaitWithDispatcherPump(presenter.DisposeAsync().AsTask());
+                restoreDecorations?.Invoke();
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void Dialog_Overlay_Layer_Is_Shared_Until_All_Presenters_Close()
+    {
+        RunOnUIThread(() =>
+        {
+            var (window, placementTarget, firstPresenter) = CreateDialogFixture(new TextBlock { Text = "First" });
+            var secondPresenter = CreateDialogPresenter(new TextBlock { Text = "Second" }, placementTarget);
+            try
+            {
+                window.Show();
+                Dispatcher.UIThread.RunJobs();
+                WaitWithDispatcherPump(firstPresenter.ShowAsync(CancellationToken.None).AsTask());
+                WaitWithDispatcherPump(secondPresenter.ShowAsync(CancellationToken.None).AsTask());
+
+                var dialogLayer = firstPresenter.Parent.ShouldBeOfType<DialogOverlayLayer>();
+                secondPresenter.Parent.ShouldBeSameAs(dialogLayer);
+                var hostLayer = dialogLayer.GetVisualParent().ShouldBeAssignableTo<Panel>()!;
+
+                WaitWithDispatcherPump(firstPresenter.CloseAsync().AsTask());
+                WaitWithDispatcherPump(firstPresenter.DisposeAsync().AsTask());
+
+                dialogLayer.Parent.ShouldBeSameAs(hostLayer);
+                secondPresenter.Parent.ShouldBeSameAs(dialogLayer);
+
+                WaitWithDispatcherPump(secondPresenter.CloseAsync().AsTask());
+                WaitWithDispatcherPump(secondPresenter.DisposeAsync().AsTask());
+
+                dialogLayer.Parent.ShouldBeNull();
+                hostLayer.Children.ShouldNotContain(dialogLayer);
+            }
+            finally
+            {
+                WaitWithDispatcherPump(firstPresenter.DisposeAsync().AsTask());
+                WaitWithDispatcherPump(secondPresenter.DisposeAsync().AsTask());
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void Modal_Dialogs_Keep_Drawn_Chrome_Suppressed_Until_The_Last_One_Closes()
+    {
+        RunOnUIThread(() =>
+        {
+            var (window, placementTarget, firstPresenter) = CreateDialogFixture(new TextBlock { Text = "First" });
+            var secondPresenter = CreateDialogPresenter(new TextBlock { Text = "Second" }, placementTarget);
+            try
+            {
+                window.Show();
+                Dispatcher.UIThread.RunJobs();
+                window.IsDrawnChromeOverlayVisible.ShouldBeTrue();
+
+                WaitWithDispatcherPump(firstPresenter.ShowAsync(CancellationToken.None).AsTask());
+                window.IsDrawnChromeOverlayVisible.ShouldBeFalse();
+
+                WaitWithDispatcherPump(secondPresenter.ShowAsync(CancellationToken.None).AsTask());
+                WaitWithDispatcherPump(firstPresenter.CloseAsync().AsTask());
+                WaitWithDispatcherPump(firstPresenter.DisposeAsync().AsTask());
+                window.IsDrawnChromeOverlayVisible.ShouldBeFalse();
+
+                WaitWithDispatcherPump(secondPresenter.CloseAsync().AsTask());
+                WaitWithDispatcherPump(secondPresenter.DisposeAsync().AsTask());
+                window.IsDrawnChromeOverlayVisible.ShouldBeTrue();
+            }
+            finally
+            {
+                WaitWithDispatcherPump(firstPresenter.DisposeAsync().AsTask());
+                WaitWithDispatcherPump(secondPresenter.DisposeAsync().AsTask());
                 window.Close();
             }
         });
@@ -122,16 +286,34 @@ public class DialogContentPopupLayeringTests
             Height = 480,
             Content = root
         };
+        var presenter = CreateDialogPresenter(content, placementTarget);
+        return (window, placementTarget, presenter);
+    }
+
+    private static OverlayDialogPresenter CreateDialogPresenter(Control content, Control placementTarget)
+    {
         var dialog = new AtomUI.Desktop.Controls.Dialog
         {
             Content = content,
             IsModal = true,
+            IsMaskClosable = false,
             IsMotionEnabled = false,
             HostWidth = 320,
             HostHeight = 220
         };
-        var presenter = new OverlayDialogPresenter(dialog, placementTarget);
-        return (window, placementTarget, presenter);
+        return new OverlayDialogPresenter(dialog, placementTarget);
+    }
+
+    private static void ClickControl(Avalonia.Controls.Window window, Control control)
+    {
+        var clickPoint = control.TranslatePoint(
+            new Point(control.Bounds.Width / 2, control.Bounds.Height / 2),
+            window);
+        clickPoint.ShouldNotBeNull();
+
+        window.MouseMove(clickPoint.Value);
+        window.MouseDown(clickPoint.Value, MouseButton.Left);
+        window.MouseUp(clickPoint.Value, MouseButton.Left);
     }
 
     private static void WaitWithDispatcherPump(Task task)

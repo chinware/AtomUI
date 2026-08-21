@@ -1380,15 +1380,10 @@ public class OverlayDialogPresenterTests
                 Dispatcher.UIThread.RunJobs();
 
                 var dialogLayer = presenter.Parent.ShouldBeOfType<DialogOverlayLayer>();
-                // DialogOverlayLayer 由弹层作用域包裹,尺寸同步与防拉伸约束作用于作用域(宿主层的直接子节点)
-                var popupScope = dialogLayer.GetVisualParent()
-                                            .ShouldBeOfType<Avalonia.Controls.Primitives.VisualLayerManager>();
-                popupScope.Child.ShouldBeSameAs(dialogLayer);
-                popupScope.Parent.ShouldBeSameAs(dialogHost);
+                dialogLayer.GetVisualParent().ShouldNotBeSameAs(dialogHost);
+                TopLevel.GetTopLevel(dialogLayer).ShouldBeSameAs(window);
                 dialogLayer.AvailableSize.ShouldBe(window.ClientSize);
-                popupScope.DesiredSize.ShouldBe(default);
-                double.IsNaN(popupScope.Width).ShouldBeTrue();
-                double.IsNaN(popupScope.Height).ShouldBeTrue();
+                dialogLayer.Bounds.Size.ShouldBe(window.ClientSize);
                 var maskActor = presenter.GetVisualDescendants()
                                          .OfType<MotionActor>()
                                          .Single(actor => actor.Name == "PART_MaskMotionActor");

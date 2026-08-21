@@ -2,6 +2,15 @@
 
 本文档记录 Window 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-20
+
+- Architecture
+  - Reserve the Avalonia drawn decorations overlay for title bar, caption buttons and shadow; keep Dialog and Drawer presentation in the owning Window `TopLevel`.
+  - Add a Window-owned reference-counted chrome suppression lease so overlapping modal Dialog/Window Drawer owners cannot restore drawn chrome early.
+- Validation
+  - Route permanent manual popup-in-Dialog acceptance through `tests/AtomUI.Desktop.Controls.TestApp` and the canonical popup family matrix.
+  - Record Windows and macOS as tested for the final layering scheme; Linux X11/Wayland remains untested.
+
 ## 2026-08-19
 
 - Architecture

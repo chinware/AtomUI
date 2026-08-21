@@ -497,6 +497,7 @@ public partial class Window : AvaloniaWindow,
     private WindowResizer? _windowResizer;
     private MediaBreakPointIndicator? _mediaBreakPointIndicator;
     private CompositeDisposable? _defaultTitleBarBindings;
+    private int _drawnChromeOverlaySuppressionCount;
     private IDisposable? _windowsCsdFrameThemeSubscription;
     private ThemeContextLease? _themeContextLease;
     private WindowState _windowStateBeforeFullScreen = WindowState.Normal;
@@ -523,6 +524,27 @@ public partial class Window : AvaloniaWindow,
         ConfigureCsdStatus();
         _platformChromeManager = WindowChromeManager.Attach(this);
         UpdateCaptionButtonCapabilities();
+    }
+
+    internal IDisposable SuppressDrawnChromeOverlay()
+    {
+        _drawnChromeOverlaySuppressionCount++;
+        IsDrawnChromeOverlayVisible = false;
+        return Disposable.Create(this, static window => window.ReleaseDrawnChromeOverlaySuppression());
+    }
+
+    private void ReleaseDrawnChromeOverlaySuppression()
+    {
+        if (_drawnChromeOverlaySuppressionCount == 0)
+        {
+            return;
+        }
+
+        _drawnChromeOverlaySuppressionCount--;
+        if (_drawnChromeOverlaySuppressionCount == 0)
+        {
+            IsDrawnChromeOverlayVisible = true;
+        }
     }
 
     public override void Show()

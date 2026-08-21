@@ -61,7 +61,7 @@
 - `WindowResizer`：internal 模板协作控件，使用 `GripThickness` 和 `BeginResizeDrag` 提供 managed resize grip。
 - `WindowVisualLayerClip`：internal visible frame 裁剪 helper，是完整 layer surface 排除 `FrameShadowThickness` 后的共享计算入口。
 - `WindowTitleBarShadowBackground`：internal drawn decorations 标题栏背景绘制 helper，按 visible frame 和圆角裁剪 Linux 标题栏背景。
-- `WindowDrawnDecorationsReflectionExtensions`：Desktop Window 内部反射边界，集中访问 Avalonia drawn decorations、drawn title-bar height、resize grip layer 和 drawn overlay host。
+- `WindowDrawnDecorationsReflectionExtensions`：Desktop Window 内部反射边界，集中访问 Avalonia drawn decorations、drawn title-bar height、frame geometry 和 resize grip layer；不发现或返回 Dialog/Drawer 业务 host。
 - `WindowTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
 - `WindowToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 
@@ -255,7 +255,8 @@ Resolve owner ThemeContext
 - CSD 隐藏默认标题栏时，内容区必须通过 `EffectiveContentFrameMargin` 消除实际 drawn title-bar 高度的占位，同时保留 frame/shadow margin；不得通过把 height hint 设为 `0`、硬编码 Token 高度或修改 `WindowDecorations` 来消除空白。
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - `TitleBarFrameLayer` 的背景/装饰层语义，以及标题栏交互内容必须通过 `TitleBar` 承载的职责边界。
-- 上层 Dialog/Drawer 不按 OS 或 CSD 状态复制 Window frame 几何，而是消费 Window 发布的 `FrameShadowThickness` 和实际 drawn host 能力。
+- 上层 Dialog/Drawer 不按 OS 或 CSD 状态复制 Window frame 几何，而是消费 Window 发布的 `FrameShadowThickness`、visible frame 和引用计数 chrome suppression lease。
+- `WindowDrawnDecorations` overlay 只包含 chrome；Dialog/Drawer 仍在 owning Window `TopLevel` 内，多个 owner 的 suppression lease 必须在最后一次释放后才恢复 chrome。
 - 所有桌面平台共用 Window 首次显示主题表面准备流程，`WindowTheme` 是显示完成后的唯一长期背景所有者。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
@@ -268,6 +269,10 @@ Resolve owner ThemeContext
 - 纯文档改动运行 `git diff --check` 并检查相对链接。
 - 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
 - CSD 标题栏可见性或 frame geometry 变更运行 `WindowResizeArtifactTests`，覆盖 effective content margin 计算、模板绑定和完整装饰契约。
+- Dialog/Drawer 与 popup 分层变更运行 Dialog、Drawer、Window 回归，并构建、运行 `tests/AtomUI.Desktop.Controls.TestApp` 的 `PopupInDialog` 场景。
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
 - Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests`。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。
+
+本专项当前实机证据为 Windows 已测试、macOS 已测试；Linux X11/Wayland 未测试。Headless 结果只能证明 managed
+层级与生命周期，不能替代未执行平台的真实窗口、chrome、pointer 和 focus 验证。

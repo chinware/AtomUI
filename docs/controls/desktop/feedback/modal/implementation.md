@@ -17,7 +17,7 @@
 | `IDialogPresenter.cs` | Overlay/Window 共用的最小异步协议。 |
 | `DialogSurface.cs` | 标题、内容、Footer、按钮和 Overlay resize 的共享表面。 |
 | `ButtonBox/DialogButtonBox.cs` | 标准按钮生成、唯一有效按钮序列和自定义集合同步。 |
-| `OverlayHost/DialogOverlayLayer.cs` | 按能力解析 drawn decorations、TopLevel popup 或局部 scope host，并管理 owner scope 内的 presenter stack。 |
+| `OverlayHost/DialogOverlayLayer.cs` | 解析 owning TopLevel 的 Avalonia `OverlayLayer` 或局部 scope fallback，并管理 owner scope 内的 presenter stack。 |
 | `OverlayHost/OverlayDialogPresenter.cs` | 同时拥有 mask、Surface、placement、drag/resize 和 motion。 |
 | `WindowHost/WindowDialogPresenter.cs` | 原生 Window 属性映射、modal owner、尺寸、位置和生命周期。 |
 | `WindowHost/DialogWindow.cs` | 原生 caption close 仲裁和显式尺寸应用。 |
@@ -97,7 +97,7 @@ flowchart TD
 | `PART_Header`, `PART_ButtonBox`, `PART_Resizer` | `DialogSurfaceTheme.axaml` | template-stable | 变更需同步实现、主题、测试和文档。 |
 | `PART_MaskMotionActor`, `PART_SurfaceMotionActor` | `OverlayDialogPresenterTheme.axaml` | template-stable | 变更需保持 mask/Surface 同一 presenter。 |
 | `DialogOverlayLayer` | runtime C# | internal-observable | 只管理 scope 内栈，不提供全局 service。 |
-| Dialog 弹层作用域(popup-capable `VisualLayerManager`) | runtime C# | internal-observable | 只承载内容弹层宿主，不改变 presenter 栈语义。 |
+| Avalonia `OverlayLayer` / `PopupOverlayLayer` | runtime infrastructure | internal-observable | 分别承载 Dialog presentation 与内容 popup，保留中间 light-dismiss 层。 |
 
 Window 和 Overlay 各自拥有一个 Surface 实例，不共享同一个视觉对象；“共享 Surface”指共享类型、主题与行为实现。
 
@@ -161,13 +161,9 @@ Overlay 的 mask 和 Surface motion 并行等待。Window host 不创建 Surface
 
 ### 8.5 Overlay 宿主与窗口几何
 
-`DialogOverlayLayer` 按以下顺序解析宿主：
+`DialogOverlayLayer` 优先解析 placement target 所属 `TopLevel` 的 Avalonia `OverlayLayer`；该层高于普通 Window content，低于 `LightDismissOverlayLayer` 与 `PopupOverlayLayer`。无可用 TopLevel overlay 时，使用 placement target 所在的 `ScopeAwareOverlayLayer` fallback。TopLevel host 的 `AvailableSize` 以 `TopLevel.ClientSize` 为真源；局部 scope 使用 scope layer 的可用尺寸。最后一个 presenter 移除后，Dialog layer 从实际 host 删除，并释放 host size 与 TopLevel size 订阅。
 
-1. owner 是 `AtomUI.Window`，且当前平台/装饰模式的 drawn decorations 暴露 `PART_DialogOverlayLayerHost` 时，使用该 host。它位于 drawn title bar 之上，使 modal mask 覆盖并阻断自绘标题栏。宿主选择只判断能力，不硬编码操作系统或 CSD 标志。
-2. 其他 TopLevel 使用其 popup overlay layer。
-3. 无可用 TopLevel popup layer 时，使用 placement target 所在的 `ScopeAwareOverlayLayer`。
-
-drawn decorations host 获取失败时继续执行后两级 fallback，不让自定义 Window theme 或平台装饰差异破坏 Dialog 展示。TopLevel host 的 `AvailableSize` 以 `TopLevel.ClientSize` 为真源；局部 scope 使用 scope layer 的可用尺寸。最后一个 presenter 移除后，Dialog layer 从实际 host 删除，并释放 host size 与 TopLevel size 订阅。
+`WindowDrawnDecorations` overlay 是 `TopLevelHost` 中与 Window 同级的 chrome 视觉，不参与 Dialog 宿主解析。modal presenter 活跃时获取 Window chrome suppression lease；多个 Dialog 或 Drawer 通过引用计数共享可见性 owner，最后一个 lease 释放后恢复 drawn chrome。
 
 `OverlayDialogPresenter` 分离三套几何：
 
@@ -184,9 +180,9 @@ AtomUI Window 的 visible frame 统一复用 `WindowVisualLayerClip` 计算，�
 
 macOS 原生 caption chrome 位于 Avalonia 客户端 visual tree 外，Overlay 无法对该系统区域绘制 mask；popup overlay 仍覆盖完整 Avalonia client layer，Surface 使用同一 visible-frame 规则。客户端之外的原生 chrome 边界不通过额外原生窗口或第二套 mask 模拟。
 
-mask 始终使用完整 layer bounds，不复用 owner bounds。drawn decorations overlay 中的 `WindowVisualLayerClip` 是窗口 frame shadow 和 CornerRadius 的唯一外轮廓裁剪者；Presenter 不为 mask 复制 margin、圆角或第二套 clip。Window resize、`ClientSize`、frame shadow、drawn frame thickness 和 Window state 变化后，layer 与 presenter 重新解析上述几何。
+mask 始终使用完整 layer bounds，不复用 owner bounds。Window theme 中的 `WindowVisualLayerClip` 是窗口 frame shadow 和 CornerRadius 的统一外轮廓裁剪者；Presenter 不为 mask 复制 margin、圆角或第二套 clip。Window resize、`ClientSize`、frame shadow、drawn frame thickness 和 Window state 变化后，layer 与 presenter 重新解析上述几何。
 
-Dialog 内容区内的 popup 由包裹 `DialogOverlayLayer` 的 Dialog 弹层作用域(启用 popup overlay 能力的 `VisualLayerManager`)承载：内容弹层解析到作用域自身的 popup overlay layer，渲染在该 scope 全部 presenter 之上，light-dismiss 层随之可用。作用域在三条宿主路径下使用同一结构，坐标系与宿主层原点对齐，随最后一个 presenter 移除一并释放。完整契约见 [Modal 内容弹层叠放设计](popup-layering-design.md)。
+Dialog 内容区内的 popup 沿 placement target 解析同一 Window `TopLevel`，再由 Avalonia 选择该 manager 的 `PopupOverlayLayer` 或原生 Popup host。Dialog 所在 `OverlayLayer`、`LightDismissOverlayLayer` 与 `PopupOverlayLayer` 使用 Avalonia 固定层序，因此内容弹层位于 presenter 之上且外点关闭有效；AtomUI 不创建嵌套 layer manager，也不接管 Popup host 生命周期。完整契约见 [Modal 内容弹层叠放设计](popup-layering-design.md)。
 
 ## 9. 资源、性能与 AOT 边界
 
@@ -194,7 +190,7 @@ Dialog 内容区内的 popup 由包裹 `DialogOverlayLayer` 的 Dialog 弹层作
 - Window 保留 DialogSurface 到 Window `ContentPresenter` 的正常 styling parent 链，避免在未附加树中提前实例化的嵌套控件失去 ControlTheme。Dialog/owner 资源由 presenter-owned `DialogResourceBridge` 转发到 Window resources；bridge 对称转发 `ResourcesChanged`，并在 `DisposeAsync` 中移除和退订。
 - runtime binding 只用于动态 presenter/Surface/按钮关系，并由 owning presenter、Surface 或 ButtonBox 对称释放。
 - Presenter 为 Surface 复用单一 `MatrixTransform` 作为位置 owner。拖动 `PointerMoved` 只更新 Matrix translation 并同步不触发布局的 `Dialog.OffsetX/Y`；位置先按 DPI 取整，再二次 clamp 到 body owner bounds，避免取整重新越界。
-- drawn decorations host discovery 复用 Window 模块集中的 `WindowDrawnDecorationsReflectionExtensions` 兼容边界及其 `DynamicDependency` 标注；Modal 不新增反射入口。实现不使用反射修改 TemplatedParent，不扫描程序集发现 Dialog API，不使用同步 DispatcherFrame。
+- drawn decorations 反射兼容边界只读取 frame/titlebar 几何；Modal 不反射发现业务 host，也不新增 trimming root。实现不使用反射修改 TemplatedParent，不扫描程序集发现 Dialog API，不使用同步 DispatcherFrame。
 - Session、Presenter、Surface 和 Content 的关闭回收由 Overlay/Window WeakReference 测试覆盖。
 - 状态机、按钮表和 presenter 选择都是静态类型路径，保持 NativeAOT 友好。
 
@@ -205,10 +201,10 @@ Dialog 内容区内的 popup 由包裹 `DialogOverlayLayer` 的 Dialog 弹层作
 - 普通 veto 发生在结果提交前；结果提交后只允许完成 teardown 和传播异常。
 - Overlay 与 Window 的 `ShowAsync`/`CloseAsync` 都等待真实 presentation 边界。
 - mask 与 Surface 必须保留在同一个 Overlay presenter 中。
-- 所有平台的 Overlay presenter 必须按能力优先使用 drawn decorations Dialog overlay host，使 mask 位于自绘标题栏之上；fallback 只负责该 host 不可用的装饰模式或平台。
-- Dialog 弹层作用域必须在所有 Overlay 宿主路径下包裹 `DialogOverlayLayer`，使内容弹层恒渲染在所属 scope 的 presenter 之上；不允许退回依赖宿主层插入顺序的叠放。
+- 所有平台的 Overlay presenter 必须保留在 owning `TopLevel` 的 `OverlayLayer`；drawn decorations overlay 只绘制 chrome，不能承载业务 presentation。
+- Dialog 内容、Popup placement target 与 owning Window 必须解析到同一 `TopLevel`；Popup 使用更高的 Avalonia popup layer，并保留中间 light-dismiss 层。
 - mask bounds、Window visible frame、Dialog body owner bounds 和 Dialog BoxShadow extents 必须保持独立。mask 覆盖完整 layer；所有平台的 Surface 正文都可进入 managed/drawn 标题栏但不能覆盖有效 frame；BoxShadow 允许由 Window visual-layer clip 在外轮廓处裁剪。
-- drawn host 路由和 frame 几何应与 Drawer 保持一致，但不能共享 Drawer 的 layer、容器或生命周期状态。
+- Dialog 与 Drawer 共享 Window chrome suppression 的引用计数 owner，但不共享 layer、容器或 presentation 生命周期状态。
 - Surface structural minimum、requested Host constraints 和 host capacity 必须由同一纯值规则解析；Overlay 与 Window 不能分别定义默认最小尺寸语义。
 - Window presenter 只能在 Surface constraints 解析完成后加回 Window chrome；live resize 热路径不能重新测量结构区域。
 - MessageBox 继续作为 Dialog 派生类，不增加平行 host/session/button cache 生命周期。
@@ -221,9 +217,12 @@ Dialog 内容区内的 popup 由包裹 `DialogOverlayLayer` 的 Dialog 弹层作
 
 - `DialogSessionTests`: 状态转换、veto、forced close、异常和 presenter failure。
 - `DialogLifecycleTests`: 实例/声明式打开、取消、detach、重开、嵌套焦点和 WeakReference。
-- `OverlayDialogPresenterTests`: mask ownership、modal/modeless 输入、栈顶路由、`IsMaskClosable` 门控、跨平台 capability-driven drawn host、popup/scope fallback、完整 mask bounds、平台 body bounds、结构性最小尺寸、拖动 resize、capacity 退化、maximize/restore 和 motion、内容弹层宿主与叠放。
+- `OverlayDialogPresenterTests` / `DialogContentPopupLayeringTests`: mask ownership、modal/modeless 输入、栈顶路由、`IsMaskClosable` 门控、TopLevel ownership、popup/light-dismiss、chrome suppression 引用计数、完整 mask bounds、平台 body bounds、结构性最小尺寸、拖动 resize、capacity 退化、maximize/restore 和 motion。
 - `WindowDialogPresenterTests`: Opened/Closed 原生生命周期、首帧几何、原生关闭、owner close、自然尺寸、Surface/chrome constraints 换算、native resize、placement 和资源 parent。
 - `DialogButtonBoxTests` / `DialogSurfaceTests`: 有效按钮集合、template 生命周期、内容和配置。
 - MessageBox tests: 派生结构、语义样式、motion anchor、重入和按钮引用释放。
+- `tests/AtomUI.Desktop.Controls.TestApp/Scenarios/PopupInDialog`: 永久人工回归入口，覆盖真实窗口中的 Popup 家族、pointer/focus、CSD/native chrome 与可见性。
+
+最终 owning TopLevel/Overlay/Popup 分层已在 Windows CSD 和 macOS 原生 chrome 环境实机测试；Linux X11/Wayland 尚未测试。Headless 测试只能证明共享 managed 不变量，不能替代缺失的 Linux 平台证据。
 
 迭代先运行 Dialog/MessageBox filter，再运行完整 `AtomUI.Desktop.Controls.Tests`、Gallery tests/build、NativeAOT publish 和 `git diff --check`。

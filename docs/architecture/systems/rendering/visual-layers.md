@@ -16,8 +16,9 @@
 |---|---|---|---|---|
 | `VisualLayerManager` | Avalonia，AtomUI Window 模板承载 | TopLevel / Window | Popup overlay、原生 adorner、AtomUI 自定义层 | 根宿主，不直接作为业务层使用 |
 | native `PopupRoot` / OS popup | Avalonia Popup | 独立 popup host / 原生窗口 | `Popup.ShouldUseOverlayLayer == false` 的弹出内容 | 不参与 `VisualLayerManager` 内部 ZIndex |
-| Avalonia `PopupOverlayLayer` | Avalonia `VisualLayerManager` 内部层 | TopLevel / Window | Popup、ToolTip、ComboBox、Select、DatePicker、Dialog、MessageBox、ImagePreviewer | 由 Avalonia 管理，AtomUI 通过 resolver 获取 |
-| drawn decorations overlay hosts | Avalonia `WindowDrawnDecorations` / AtomUI Window theme | Window 可绘制装饰区 | Dialog、MessageBox、Drawer | 位于 drawn title bar 之上，由 Window 模板固定承载 |
+| Avalonia `OverlayLayer` | Avalonia `VisualLayerManager` 内部层 | TopLevel / Window | Dialog 等窗口内 presentation | 高于普通内容，低于 light-dismiss 与 popup |
+| Avalonia `PopupOverlayLayer` | Avalonia `VisualLayerManager` 内部层 | TopLevel / Window | Popup、ToolTip、ComboBox、Select、DatePicker、ImagePreviewer | 由 Avalonia 管理，AtomUI 通过 resolver 获取 |
+| drawn decorations overlay | Avalonia `WindowDrawnDecorations` / AtomUI Window theme | Window 装饰视觉 | drawn title bar、caption buttons、shadow | 仅承载窗口装饰，不作为业务交互层 |
 | Avalonia `AdornerLayer` | Avalonia 原生 adorner 层 | 控件局部装饰 | CountBadge、DotBadge、TreeView drag preview | 不用于窗口级反馈 |
 | `ScopeAwareAdornerLayer` | `AtomUI.Controls.Primitives` | 控件、滚动区域或窗口中的作用域装饰 | Drawer、Watermark、Gallery sticky mirror | `int.MaxValue - 99` |
 | `ScopeAwareOverlayLayerPanel` | `AtomUI.Controls.Primitives` | 模板内 host | ScrollViewer 内容区域 | 不是 layer，负责限定作用域 |
@@ -38,36 +39,48 @@
 - 需要向 `VisualLayerManager` 注入自定义层时，必须通过明确的 layer 类型和固定职责实现，例如 `ScopeAwareAdornerLayer`、`ScopeAwareOverlayLayer`、`WindowFeedbackLayer`、`TourLayer`。
 - 对 Avalonia 内部 layer 的访问必须集中在 `VisualLayerManagerReflectionExtensions` 等已有边界内，避免分散反射。
 
+交互式 presentation 必须保留在 owning `TopLevel` 的视觉子树中。`WindowDrawnDecorations` 的 overlay 是 `TopLevelHost` 的同级装饰子树，并不是 `TopLevel` 后代；把 Dialog、Drawer 或其他可包含 Popup 的业务内容挂入该子树会使 `TopLevel.GetTopLevel()` 返回 `null`，从而破坏 Popup、焦点与输入服务。业务层不得通过嵌套 `VisualLayerManager`、局部 ZIndex、延迟打开或强制切换 native popup 绕过该所有权边界。
+
+### OverlayLayer
+
+Avalonia `OverlayLayer` 专门承载高于普通内容、低于 light-dismiss 与 popup 的窗口内 presentation。Overlay Dialog 使用该层，因此 Dialog 内 popup 仍由同一 Window 的 `PopupOverlayLayer` 托管，外部点击则由两者之间的 `LightDismissOverlayLayer` 处理。
+
+使用规则：
+
+- Dialog、modal surface 等仍可能包含 Popup 的窗口内 presentation 使用 `OverlayLayer`，不得直接放入 `PopupOverlayLayer`。
+- presentation target、Dialog 内容和 popup placement target 必须解析到同一 `TopLevel`。
+- `OverlayLayer` 不承载 anchored popup 本体；Popup 的创建、定位、light-dismiss 和释放继续由 Avalonia 管理。
+
 ### PopupOverlayLayer
 
-`PopupOverlayLayer` 是 Avalonia `VisualLayerManager` 的内部 popup overlay 层。AtomUI 通过 `GetPopupOverlayLayer()` 和 `OverlayLayerResolver` 获取它，用于需要窗口坐标系、popup 定位、modal mask 或无 drawn decorations host fallback 的浮层。
+`PopupOverlayLayer` 是 Avalonia `VisualLayerManager` 的内部 popup overlay 层。AtomUI 通过 `GetPopupOverlayLayer()` 和 `OverlayLayerResolver` 获取它，用于需要窗口坐标系和 popup 定位的浮层。
 
 典型使用者：
 
 - `Popup` 的 `ShouldUseOverlayLayer` 路径。
 - `ToolTip`、`Flyout`、菜单、选择器、日期选择器等基于 popup 的控件。
-- `Dialog`、`MessageBox` 在 drawn decorations Dialog host 不可用时的 overlay fallback。
 - `ImagePreviewer` 的 overlay host。
 
 使用规则：
 
-- 弹出层、菜单、下拉面板、modal dialog、图片预览窗口内浮层优先使用 popup overlay 路径。
+- 弹出层、菜单、下拉面板和图片预览窗口内浮层优先使用 popup overlay 路径。
 - 需要解析宿主时使用 `OverlayLayerResolver`，不要在各控件里重复查找主窗口、TopLevel 或 SingleView。
 - 不要把 Message/Notification 放入 popup overlay。它们是窗口级反馈，不是 anchored popup。
 
-### Drawn decorations overlay hosts
+### Drawn decorations overlay
 
-AtomUI 的 `WindowDrawnDecorationsTheme` 在 decorations overlay 中提供 `PART_DialogOverlayLayerHost` 和 `PART_DrawerOverlayLayerHost`。这些 host 位于 drawn title bar 之上，并由 `WindowVisualLayerClip` 统一裁剪窗口 frame shadow 与 CornerRadius。
+AtomUI 的 `WindowDrawnDecorationsTheme` 在 decorations overlay 中绘制 drawn title bar、caption buttons 与 shadow。该 overlay 由 Avalonia `TopLevelHost` 承载，与 Window `TopLevel` 是同级视觉子树。
 
 使用规则：
 
-- `DialogOverlayLayer` 只要检测到 drawn Dialog host 就优先使用，不按 Windows、Linux、macOS 或 CSD 标志硬编码；host 不存在时回退到 TopLevel popup overlay 或局部 scope overlay。
-- Drawer 只要检测到 drawn Drawer host 就优先使用，不按 Windows、Linux、macOS 或 CSD 标志硬编码；host 不存在时继续使用原 `ScopeAwareAdornerLayer`。Dialog 与 Drawer 共享层级和 frame clip 规则，但不共享 layer、容器或生命周期状态。
+- decorations overlay 不提供 Dialog、Drawer 或其他业务 presentation host。
+- modal Dialog 与 Window Drawer 仍挂在 Window `TopLevel` 内；它们活跃期间通过 Window 的引用计数租约隐藏 drawn chrome overlay，使 mask 覆盖同一可绘制窗口区域并阻断 caption input。
+- 多个 Dialog、Drawer 重叠时，每个 owner 独立持有租约；最后一个 owner 释放后才恢复 drawn chrome。
 - Overlay Dialog 的 mask 和 Surface 保持在同一个 presenter；mask actor 使用完整 layer bounds，Surface 使用 Window visible frame bounds，二者不拆成独立 popup。
 - Window overlay 几何按职责分为三套真源：完整 layer bounds 保留 TopLevel client surface 坐标系；visible frame bounds 只排除 `FrameShadowThickness`，包含 managed/drawn 标题栏；content bounds 再排除标题栏和内容装饰。Dialog Surface 和 Drawer 使用 visible frame，普通 Window 内容或明确要求正文安全区的反馈才使用 content bounds。
-- `WindowVisualLayerClip` 的 visible frame 计算是 frame shadow 排除量的共享真源。业务 overlay 不按 `OsType`、`IsCsdEnabled` 或 `WindowDecorationMargin` 复制另一套 frame 计算。
+- visible frame 计算仍是 frame shadow 排除量的共享真源。业务 overlay 不按 `OsType`、`IsCsdEnabled` 或 `WindowDecorationMargin` 复制另一套 frame 计算。
 - 原生系统 chrome 如果位于 Avalonia client visual tree 外，客户端 overlay 不负责为该区域模拟第二套 mask；原生模态行为由平台 Window owner 关系负责。
-- drawn host 的获取集中在 `WindowDrawnDecorationsReflectionExtensions` 兼容边界，不在业务控件中复制 Avalonia private-field 反射。
+- `WindowDrawnDecorationsReflectionExtensions` 只读取 frame/titlebar 几何和 resize-grip 能力，不承担业务 host 发现。
 
 ### Native PopupRoot / OS popup
 
@@ -109,7 +122,7 @@ Avalonia 原生 `AdornerLayer` 用于紧贴控件或 TopLevel 的局部装饰。
 
 - 用于“覆盖某个目标区域或作用域”的内容，而不是窗口级全局反馈。
 - 需要跟随 `ScrollContentPresenter`、被装饰元素或局部内容坐标时，应优先使用该层。
-- visual 已位于现有 `ScopeAwareAdornerLayer` 内，且没有更具体、与 adorned target 匹配的滚动宿主时，必须复用当前包含层；decorations overlay 内的嵌套 Drawer 不能依赖 `TopLevel.GetTopLevel` 重新发现窗口层。
+- visual 已位于现有 `ScopeAwareAdornerLayer` 内，且没有更具体、与 adorned target 匹配的滚动宿主时，必须复用当前包含层；嵌套 Drawer 不得重新注入平行 layer。
 - 使用 `ScopeAwareAdornerLayer.SetAdornedElement` / `SetAdorner` 时，必须有对应的 detach / cleanup 路径。
 - 它的层级高于 Avalonia 原生 adorner；因此原生 `AdornerLayer` 内的内容不能假设能盖住它。
 
@@ -170,7 +183,7 @@ Avalonia 原生 `AdornerLayer` 用于紧贴控件或 TopLevel 的局部装饰。
 |---|---|---|
 | 全局 Message / Notification | `WindowFeedbackLayer` | `AdornerLayer`、`PopupOverlayLayer`、`ScopeAwareAdornerLayer` |
 | 下拉、菜单、Tooltip、Flyout、选择器面板 | `PopupOverlayLayer` / `Popup.ShouldUseOverlayLayer` | `WindowFeedbackLayer` |
-| Dialog / MessageBox overlay host | 可用时使用 drawn decorations Dialog host，否则使用 `PopupOverlayLayer` / scope fallback | 平台硬编码、全局静态 Window 字典 |
+| Dialog / MessageBox overlay host | Window `OverlayLayer`；无 TopLevel 能力时使用局部 scope fallback | drawn decorations overlay、`PopupOverlayLayer`、平台硬编码 |
 | ImagePreviewer overlay host | `OverlayLayerResolver` 获取 `PopupOverlayLayer` | 手动遍历窗口或主视图 |
 | Count/Dot Badge | Avalonia `AdornerLayer` | `WindowFeedbackLayer`、`ScopeAwareAdornerLayer` |
 | RibbonBadge | inline visual tree | 任意窗口级 layer |
@@ -186,6 +199,7 @@ Avalonia 原生 `AdornerLayer` 用于紧贴控件或 TopLevel 的局部装饰。
 - `TourLayer` 必须高于 `ScopeAwareAdornerLayer`，以保证引导遮罩覆盖作用域装饰。
 - `ScopeAwareAdornerLayer` 可以高于 Avalonia 原生 `AdornerLayer`，这意味着原生 adorner 不应用于全局优先级覆盖。
 - `ScopeAwareOverlayLayer` 是作用域 overlay，层级不应被用来表达全局优先级。
+- Dialog 所在 `OverlayLayer` 必须低于 `LightDismissOverlayLayer` 与 `PopupOverlayLayer`，保证内容 popup 位于 Dialog 之上且外部点击可 light-dismiss。
 - 新增 `int.MaxValue - N` 层级常量时，必须在本文档更新职责和相对顺序。不要裸写 `int.MaxValue` 或随机选择接近最大值的数字。
 
 当前 AtomUI 自定义层级区间：
@@ -201,6 +215,7 @@ Avalonia 原生 `AdornerLayer` 用于紧贴控件或 TopLevel 的局部装饰。
 
 - 所有动态加入 layer 的元素必须在 detach、close、dispose、template reapply 或 owner 变更时移除。
 - `DialogOverlayLayer` 从第一个 presenter 开始持有实际 host/TopLevel size 订阅，并在最后一个 presenter 移除时解绑且从实际 host 删除。
+- modal Dialog 与 Window Drawer 获取的 drawn chrome suppression 租约必须在 close、dispose、owner 变更和失败 teardown 中对称释放。
 - 如果 layer child 设置了 adorned element、logical parent、事件订阅、timer、binding 或 resource host，释放路径必须和获取路径成对出现。
 - 对 `WindowMessageManager`、`WindowNotificationManager` 这类 manager，宿主模板重套用时必须先从旧 host layer 移除，再重新安装。
 - 对 `ScopeAwareAdornerLayer` / `ScopeAwareOverlayLayer` 注入式层，缓存 layer 时必须确认 visual parent 仍然有效。
@@ -208,9 +223,14 @@ Avalonia 原生 `AdornerLayer` 用于紧贴控件或 TopLevel 的局部装饰。
 ## 测试要求
 
 - 新增或改变 layer 归属时，应写层级回归测试，断言父层级而不是只断言 child `ZIndex`。
+- 涉及 `WindowDrawnDecorations` 时，测试必须用与 Window `TopLevel` 同级的真实 `TopLevelHost` 拓扑，不能把模拟 decorations 子树挂回 Window 内容树制造错误的 `TopLevel` 祖先。
 - 修窗口级反馈遮挡时，必须覆盖 Message 和 Notification。
 - 涉及 Badge、Watermark、Drawer、sticky mirror、TreeView drag preview 时，应分别验证其既有层归属没有被误改。
 - Gallery sticky mirror、Message / Notification 和 Badge 的组合是当前层级体系的关键回归场景。
+- Dialog 内容 popup 的永久人工回归入口是 `tests/AtomUI.Desktop.Controls.TestApp` 的 `Scenarios/PopupInDialog`；直接 Popup、Flyout/MenuFlyout、ToolTip/ContextMenu 与控件家族矩阵见 [Modal 内容弹层叠放设计](../../../controls/desktop/feedback/modal/popup-layering-design.md)。
+
+当前 Dialog/Drawer 与 popup 分层实机证据为 Windows 已测试、macOS 已测试；Linux X11/Wayland 未测试。该状态必须与
+专项设计文档同步，不能把 Headless 共享路径通过解释为未执行平台的实机证据。
 
 ## 禁止做法
 
