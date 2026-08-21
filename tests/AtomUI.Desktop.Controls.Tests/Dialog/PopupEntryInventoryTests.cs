@@ -150,7 +150,7 @@ public class PopupEntryInventoryTests
     }
 
     [Fact]
-    public void Runtime_Axaml_Popup_Entries_Declare_Content_Owned_Surface()
+    public void Runtime_Axaml_Popup_Entries_Do_Not_Repeat_The_Default_Surface()
     {
         foreach (var relativePath in RuntimeAxamlPopupPaths)
         {
@@ -163,26 +163,41 @@ public class PopupEntryInventoryTests
             entries.ShouldNotBeEmpty($"{relativePath} must contain an audited AtomUI Popup entry.");
             foreach (Match entry in entries)
             {
-                entry.Value.ShouldContain("SurfaceBackground=\"{x:Null}\"");
+                entry.Value.ShouldNotContain("SurfaceBackground=\"{x:Null}\"");
             }
         }
     }
 
+    [Fact]
+    public void Direct_Popup_Regression_Demo_Content_Owns_Its_Surface()
+    {
+        var viewSource = ReadRepositoryFile(
+            "tests/AtomUI.Desktop.Controls.TestApp/Scenarios/PopupInDialog/PopupInDialogScenario.axaml");
+        var codeSource = ReadRepositoryFile(
+            "tests/AtomUI.Desktop.Controls.TestApp/Scenarios/PopupInDialog/PopupInDialogScenario.axaml.cs");
+
+        viewSource.ShouldContain("Selector=\"Border.direct-popup-surface\"");
+        viewSource.ShouldContain("Property=\"Background\"");
+        viewSource.ShouldContain("Value=\"{atom:SharedTokenResource ColorBgElevated}\"");
+        codeSource.ShouldContain("Classes = { \"direct-popup-surface\" }");
+        codeSource.ShouldNotContain("SurfaceBackground =");
+    }
+
     [Theory]
     [MemberData(nameof(ConstructedPopupSurfaceOwnershipCases))]
-    public void Runtime_Constructed_Popup_Entries_Declare_Content_Owned_Surface(string relativePath)
+    public void Runtime_Constructed_Popup_Entries_Do_Not_Repeat_The_Default_Surface(string relativePath)
     {
         var source = ReadRepositoryFile(relativePath);
 
         Regex.IsMatch(
             source,
             @"\bSurfaceBackground\s*=\s*null\b",
-            RegexOptions.CultureInvariant).ShouldBeTrue(
-            $"{relativePath} must explicitly preserve its content-owned popup surface.");
+            RegexOptions.CultureInvariant).ShouldBeFalse(
+            $"{relativePath} must inherit the Popup primitive's null surface default.");
     }
 
     [Fact]
-    public void TestApp_Direct_Popup_Uses_The_Shared_Default_Surface()
+    public void TestApp_Direct_Popup_Uses_The_Null_Default_Surface()
     {
         var scenarioSource = ReadRepositoryFile(
             "tests/AtomUI.Desktop.Controls.TestApp/Scenarios/PopupInDialog/PopupInDialogScenario.axaml.cs");
@@ -203,8 +218,7 @@ public class PopupEntryInventoryTests
 
         var popupThemeSource = ReadRepositoryFile(
             "src/AtomUI.Desktop.Controls/Popup/Themes/PopupTheme.axaml");
-        popupThemeSource.ShouldContain(
-            "<Setter Property=\"SurfaceBackground\" Value=\"{atom:SharedTokenResource ColorBgElevated}\" />");
+        popupThemeSource.ShouldNotContain("<Setter Property=\"SurfaceBackground\"");
     }
 
     private static void AssertInventory(

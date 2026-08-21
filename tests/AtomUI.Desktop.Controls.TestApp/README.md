@@ -17,9 +17,10 @@
 应用只显示 public open/selection/action 状态与 `TopLevel.GetTopLevel` 结果；不得加入 Avalonia 私有字段反射、临时日志、
 自动打开 Dialog/Popup 或吞未处理异常的逻辑。
 
-原语组中的 Direct Popup 是默认表面根源修复的长期验收项：它的 Child 保持为没有 `Background` 的透明 `Border`，
-也不设置 `SurfaceBackground`。正确结果必须由 Popup Theme 的共享默认表面产生；Flyout、MenuFlyout、ToolTip、
-ContextMenu 及其他专用控件仍由自己的 Presenter / PopupFrame 绘制表面，视觉不得随 Direct Popup 修复改变。
+原语组中的 Direct Popup 是表面所有权的长期验收项：它不设置 `SurfaceBackground`，继承 Popup 原语的 `null` 默认值；
+它的 Child 作为表面所有者，通过 `ColorBgElevated` 绘制内容背景。正确结果是 host frame 不产生额外 surface，同时
+Child 的背景遮挡下层内容；Flyout、MenuFlyout、ToolTip、ContextMenu 及其他专用控件仍由自己的 Presenter /
+`PopupFrame` 绘制表面。
 
 运行：
 
@@ -42,8 +43,9 @@ ATOMUI_WINDOWING_PLATFORM=x11 dotnet run --project tests/AtomUI.Desktop.Controls
 验收每组时，先由用户打开 Dialog，再逐个点击 popup-bearing 控件。预期弹层可见、可命中、可选择或执行、可
 light-dismiss，Dialog 保持打开且进程不崩溃。
 
-进入“Popup / Flyout / ToolTip”组后，Direct Popup 的内容区域应为不透明 elevated 表面，不能透出后面的 “Flyout”
-标签；随后逐项打开 Flyout、MenuFlyout、ToolTip 和 ContextMenu，确认它们的背景、圆角、Padding、阴影和位置与修复前一致。
+进入“Popup / Flyout / ToolTip”组后，Direct Popup 的 Child 背景应完整遮挡下层文字，且不得再叠加第二层 host frame
+surface；随后逐项打开 Flyout、MenuFlyout、ToolTip 和 ContextMenu，确认它们仍只绘制自己的背景、圆角、Padding 和
+阴影，位置与交互保持一致。
 Linux 命令仅提供验证入口，在 X11 与 Wayland 实机执行并记录结果前，平台状态继续标为未测试。
 
 当前本专项实机证据：

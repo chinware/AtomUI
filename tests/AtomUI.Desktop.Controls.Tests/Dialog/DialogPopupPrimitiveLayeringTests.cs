@@ -37,7 +37,7 @@ public class DialogPopupPrimitiveLayeringTests
             var popupHost = host.FindPopupHost(popup);
             popupHost.GetVisualParent().ShouldNotBeSameAs(host.DialogLayer.GetVisualParent());
             popupHost.GetVisualDescendants().ShouldContain(action);
-            FindOwningPopup(action).SurfaceBackground.ShouldNotBeNull();
+            FindOwningPopup(action).SurfaceBackground.ShouldBeNull();
 
             host.LightDismiss();
             popup.IsOpen.ShouldBeFalse();

@@ -15288,7 +15288,7 @@ Modal 不承担通知队列、轻量 Tooltip、Popup 菜单或业务级导航服
 | --- | --- | --- |
 | 内容 | `Title`, `TitleIcon`, `Content`, `ContentTemplate`, `DataContext` | 定义标题和任意内容对象或模板。 |
 | 打开状态 | `IsOpen`, `OpenAsync(...)` | `IsOpen` 是默认 TwoWay 的声明式意图；`OpenAsync` 表示一次完整 Session。 |
-| 展示方式 | `DialogHostType`, `IsModal`, `PlacementTarget`, startup anchor/offset | 选择 Overlay/Window、交互模态和初始位置。 |
+| 展示方式 | `DialogHostType`, `IsModal`, `PlacementTarget`, startup anchor/offset | 选择 Overlay/Window、交互模态和初始位置。直接实例化与静态 API 的水平、垂直 startup anchor 默认均为 `Center`；显式 `Custom` 时由对应 offset 决定位置。 |
 | 尺寸与窗口能力 | `HostWidth/Height/Min/Max`, `IsResizable`, `IsClosable`, `IsMaskClosable`, `IsDragMovable`, `IsMaximizable`, `IsMinimizable`, `IsTopmost` | 同一组 Surface 正文尺寸请求映射到 Overlay 或原生 Window。`NaN` 表示初始自然尺寸；有效最小尺寸还必须满足 Dialog 的结构性下限。`IsClosable` 控制标题栏关闭入口，`IsMaskClosable` 控制 Overlay modal mask 外点关闭入口，两者正交且默认都为 `true`。 |
 | 操作 | `StandardButtons`, `CustomButtons`, `DefaultStandardButton`, `EscapeStandardButton`, `ButtonsConfigure` | 生成标准按钮、加入自定义按钮并配置当前有效按钮序列。 |
 | 状态与策略 | `IsLoading`, `IsConfirmLoading`, `IsFooterVisible`, `IsMotionEnabled`, `BeforeCloseAsync` | 控制加载、确认按钮 loading、Footer、motion 和关闭前校验。 |
@@ -17840,7 +17840,7 @@ Source: ./controls/popup/index-cn.md
 ## 概述
 
 Popup 是 AtomUI 桌面弹层体系的共享低层原语，继承 Avalonia `Popup` 的 anchor、placement、light-dismiss、native
-window 与 overlay host 能力，并增加 AtomUI 的定位、阴影、动效、翻转通知和默认表面契约。Flyout、ToolTip、
+window 与 overlay host 能力，并增加 AtomUI 的定位、阴影、动效、翻转通知和可选表面契约。Flyout、ToolTip、
 ContextMenu、菜单、选择器和 Picker 等专用控件复用该原语，但继续拥有各自的 Presenter 和内容表面。
 
 Popup 不提供默认 Padding、边框、箭头或内容布局。调用方负责 Child 内容结构；Popup 只在 Child bounds 内提供可选的
@@ -17858,9 +17858,8 @@ frame surface 与 host shadow。
 
 ## 何时使用
 
-Popup 的设计语言是“可定位的 elevated surface”。宿主保持透明并提供窗口/layer 能力，frame surface 只覆盖实际内容
-bounds；阴影可以延伸到透明区域，但不能把整个 host 变成不透明矩形。直接 Popup 获得与其他 elevated content 一致的
-主题表面，专用控件则保留自己的 Presenter 视觉语言。
+Popup 的设计语言是“可定位的透明承载原语”。宿主保持透明并提供窗口/layer 能力，内容默认拥有自己的表面；调用方
+显式提供 frame surface 时，该表面只覆盖实际内容 bounds。阴影可以延伸到透明区域，但不能把整个 host 变成不透明矩形。
 
 该模型把 host、frame 和 content 分成稳定职责：host 决定 native/overlay、定位和输入；frame 决定可选表面与阴影；
 content 决定 Padding、边框、箭头和业务视觉。
@@ -17869,7 +17868,7 @@ content 决定 Padding、边框、箭头和业务视觉。
 
 | API | 类型 | 语义 |
 | --- | --- | --- |
-| `SurfaceBackground` | `IBrush?` | Popup frame 在 Child bounds 内绘制的表面；Theme 默认映射到 `ColorBgElevated`，`null` 表示内容拥有表面。 |
+| `SurfaceBackground` | `IBrush?` | Popup frame 在 Child bounds 内绘制的可选表面；默认 `null`，表示内容拥有表面。只有显式非空 Brush 才启用 host-owned surface。 |
 | `PopupRootShadow` | `BoxShadows` | native `PopupRoot` 路径的 frame shadow。 |
 | `OverlayHostShadow` | `BoxShadows` | `OverlayPopupHost` 路径的 frame shadow。 |
 | `RequestedPlacement` | `PlacementMode?` | AtomUI 自定义定位请求；有效值会投射到 Avalonia custom placement。 |
@@ -17900,14 +17899,15 @@ Popup 使用显式 surface ownership，不根据 Child 类型、Child Background
 
 | 模式 | `SurfaceBackground` | 表面所有者 | 适用场景 |
 | --- | --- | --- | --- |
-| host-owned | 非 `null`，默认 `ColorBgElevated` | Popup frame | 直接使用 Popup，Child 只声明内容和 Padding。 |
-| content-owned | `null` | Child / Presenter / `PopupFrame` | Flyout、ToolTip、ContextMenu、菜单、选择器、Picker 等专用控件。 |
+| content-owned | `null`，默认 | Child / Presenter / `PopupFrame` | Direct Popup、Flyout、ToolTip、ContextMenu、菜单、选择器、Picker 等。 |
+| host-owned | 显式非 `null` | Popup frame | 调用方明确要求 Popup frame 提供表面，Child 只声明内容和 Padding。 |
 
 `SurfaceBackground` 只改变 frame fill，不增加 wrapper、Padding、border、arrow、DesiredSize、placement offset 或 shadow
-thickness。需要透明直接 Popup 时，调用方必须显式设置 `SurfaceBackground="{x:Null}"`。
+thickness。Direct Popup 的 host frame 默认透明；可见弹层内容必须由 Child 自己绘制背景，只有确实需要 frame 拥有表面时，
+调用方才显式提供 Brush。
 
-AtomUI 自有的 content-owned 消费者必须在 AXAML Popup 入口或共享 C# 构造路径显式设置 `null`。新增 Popup-bearing
-控件时，维护者必须先选择表面所有者，再更新库存测试和控件家族回归。
+AtomUI 自有的 content-owned 消费者继承 Popup 原语的 `null` 默认值，不在 AXAML 入口或共享 C# 构造路径重复赋值。
+新增 Popup-bearing 控件只有在明确选择 host-owned 模式时才设置非空 Brush，并更新库存测试和控件家族回归。
 
 ## 主题与 Design Token
 
@@ -17942,12 +17942,12 @@ Token 来源：
 | `MarginToAnchor` | `UniformlyMarginXXS` | Popup 内容 frame 与 anchor 的默认间距。 |
 
 `PopupCornerRadius` 不由 transparent host 绘制；它由 Child、Presenter 或 `PopupFrame` 提供给
-`ShadowsAwareContainer`，使 frame shadow/default surface 与内容圆角一致。
+`ShadowsAwareContainer`，使 frame shadow 与显式可选 surface 和内容圆角一致。
 
 ## AOT 与裁剪注意事项
 
-默认 surface 不增加 host 或 wrapper；只扩展既有 renderer。renderer 惰性创建并复用，surface 更新只 invalidates render。
-Theme resource 位于 Visual Popup 的正常 Theme 生命周期内，不创建全局非 Visual resource host。
+可选 surface 不增加 host 或 wrapper；只扩展既有 renderer。renderer 因 shadow 或显式 surface 按需创建并复用，surface
+更新只 invalidates render。默认路径没有 surface Theme resource，也不创建全局非 Visual resource host。
 
 实现不使用反射、runtime type discovery 或动态注册；StyledProperty 和 ControlTheme 均为静态/AOT 可发现契约。源码库存
 测试使用正则扫描，但只存在于测试项目，不进入 runtime 或 NativeAOT 路径。
@@ -17957,7 +17957,7 @@ Theme resource 位于 Visual Popup 的正常 Theme 生命周期内，不创建�
 - `src/AtomUI.Desktop.Controls/Popup/Popup.cs`：公共 API、自定义定位、翻转通知、frame shadow 选择、动效和 wheel guard。
 - `src/AtomUI.Desktop.Controls/Popup/PopupUtils.cs`：placement 算法、popup scope 和 owning popup 查询。
 - `src/AtomUI.Desktop.Controls/Popup/PopupToken.cs`：Popup 家族的阴影、圆角和 anchor margin Token。
-- `src/AtomUI.Desktop.Controls/Popup/Themes/PopupTheme.axaml`：Popup 默认 surface、shadow 和 motion Theme 值。
+- `src/AtomUI.Desktop.Controls/Popup/Themes/PopupTheme.axaml`：Popup shadow 和 motion Theme 值；不覆盖 surface 默认值。
 - `src/AtomUI.Desktop.Controls/Popup/Themes/PopupRootTheme.axaml`：native transparent host 组合。
 - `src/AtomUI.Desktop.Controls/Popup/Themes/OverlayPopupHostTheme.axaml`：overlay host 组合。
 - `src/AtomUI.Desktop.Controls/Primitives/ShadowsAwareContainer.cs`：两类 host 共享的 frame surface/shadow renderer 与几何适配。

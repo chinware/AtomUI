@@ -6,15 +6,16 @@
 
 ## 1. 实现定位
 
-Popup 实现把 Avalonia 的 native/overlay host 能力与 AtomUI 的定位、动效、阴影和默认 surface 合并为一个共享原语。
-实现边界是：host 继续透明，frame 只在 Child bounds 内绘制，content-owned 控件继续由自身 Presenter 绘制视觉。
+Popup 实现把 Avalonia 的 native/overlay host 能力与 AtomUI 的定位、动效、阴影和可选 surface 合并为一个共享原语。
+实现边界是：host 默认透明，frame 只在调用方显式提供 Brush 时于 Child bounds 内绘制表面，content-owned 控件继续由自身
+Presenter 绘制视觉。
 
 ## 2. 源码文件结构
 
 - `src/AtomUI.Desktop.Controls/Popup/Popup.cs`：公共 API、自定义定位、翻转通知、frame shadow 选择、动效和 wheel guard。
 - `src/AtomUI.Desktop.Controls/Popup/PopupUtils.cs`：placement 算法、popup scope 和 owning popup 查询。
 - `src/AtomUI.Desktop.Controls/Popup/PopupToken.cs`：Popup 家族的阴影、圆角和 anchor margin Token。
-- `src/AtomUI.Desktop.Controls/Popup/Themes/PopupTheme.axaml`：Popup 默认 surface、shadow 和 motion Theme 值。
+- `src/AtomUI.Desktop.Controls/Popup/Themes/PopupTheme.axaml`：Popup shadow 和 motion Theme 值；不覆盖 surface 默认值。
 - `src/AtomUI.Desktop.Controls/Popup/Themes/PopupRootTheme.axaml`：native transparent host 组合。
 - `src/AtomUI.Desktop.Controls/Popup/Themes/OverlayPopupHostTheme.axaml`：overlay host 组合。
 - `src/AtomUI.Desktop.Controls/Primitives/ShadowsAwareContainer.cs`：两类 host 共享的 frame surface/shadow renderer 与几何适配。
@@ -31,10 +32,13 @@ Child 圆角/箭头几何、在 Child 之前绘制 surface/shadow，以及为 na
 ## 4. 状态与数据流
 
 ```text
+Popup property metadata
+  SurfaceBackground <- null
 PopupTheme
-  SurfaceBackground <- Shared ColorBgElevated
   PopupRootShadow   <- PopupToken.PopupRootShadow
   OverlayHostShadow <- PopupToken.OverlayHostShadow
+Caller local/style value (optional)
+  SurfaceBackground <- explicit Brush
         ↓
 Popup.ConfigureFrameShadow(host mode)
         ↓
@@ -45,8 +49,9 @@ ShadowsAwareContainer
 PopupFrameRenderer.Render
 ```
 
-surface ownership 由 Popup local/theme value 决定：Direct Popup 没有 local value，使用 Theme 默认；专用控件在构造或
-AXAML 入口设置 local `null`，该值优先于 Theme。renderer 不检查 Child 类型、Background 或 opacity。
+surface ownership 由 Popup 的最终属性值决定：没有 local/style value 时使用属性元数据的 `null` 默认值；调用方显式提供
+非空 Brush 时切换为 host-owned。Theme 和 AtomUI 内置消费控件都不重复设置 `null`。renderer 不检查 Child 类型、
+Background 或 opacity。
 
 ## 5. 内部算法与关键流程
 
@@ -81,15 +86,15 @@ Popup 的 open/close motion cancellation token 由 Popup 实例持有；关闭�
 Child wheel guard，关闭时释放。placement transform tracking 只在打开且 placement 需要 anchor 时存在；关闭或 target
 不可见时释放或关闭 Popup。
 
-## 7. content-owned 消费路径
+## 7. 默认消费路径
 
-AtomUI 自有专用弹层通过两类入口显式设置 `SurfaceBackground=null`：
+AtomUI 自有弹层通过 Popup 原语统一继承 `SurfaceBackground=null`：
 
-- 17 个 runtime AXAML Popup 文件，覆盖选择器、自动建议、Picker、菜单、NavMenu、Tour 与 ColorPicker 家族。
-- `Flyout.CreatePopup()`、ToolTip 和 ContextMenu 三个共享 C# 构造路径。
+- 17 个 runtime AXAML Popup 文件覆盖选择器、自动建议、Picker、菜单、NavMenu、Tour 与 ColorPicker 家族。
+- `Flyout.CreatePopup()`、ToolTip 和 ContextMenu 是三个共享 C# 构造路径。
 
-Flyout 派生与委托消费控件通过共享 `Flyout.CreatePopup()` 继承同一所有权选择。新增入口由
-`PopupEntryInventoryTests` 的闭集扫描捕获，不能根据 Child 视觉自动推断或只更新 allowlist。
+这些入口不写入冗余 local value。Flyout 派生与委托消费控件通过共享 `Flyout.CreatePopup()` 继承同一默认值。新增入口由
+`PopupEntryInventoryTests` 的闭集扫描捕获；只有明确需要 host-owned surface 的入口才能显式提供非空 Brush。
 
 ## 8. 输入与宿主边界
 
@@ -102,8 +107,8 @@ light-dismiss、focus 和 host teardown 继续由 Avalonia Popup 协议负责。
 
 ## 9. 资源、性能与 AOT 边界
 
-默认 surface 不增加 host 或 wrapper；只扩展既有 renderer。renderer 惰性创建并复用，surface 更新只 invalidates render。
-Theme resource 位于 Visual Popup 的正常 Theme 生命周期内，不创建全局非 Visual resource host。
+可选 surface 不增加 host 或 wrapper；只扩展既有 renderer。renderer 因 shadow 或显式 surface 按需创建并复用，surface
+更新只 invalidates render。默认路径没有 surface Theme resource，也不创建全局非 Visual resource host。
 
 实现不使用反射、runtime type discovery 或动态注册；StyledProperty 和 ControlTheme 均为静态/AOT 可发现契约。源码库存
 测试使用正则扫描，但只存在于测试项目，不进入 runtime 或 NativeAOT 路径。
@@ -113,16 +118,18 @@ Theme resource 位于 Visual Popup 的正常 Theme 生命周期内，不创建�
 - `PopupRoot.Background` 必须保持 `null`，native window 继续透明合成。
 - native 与 overlay host 必须共享 `ShadowsAwareContainer`，不得复制 surface 实现。
 - surface 不得参与 measure、arrange、placement、Padding、border 或 arrow 计算。
-- content-owned Popup 必须显式 `null`，不得按 Child 类型或 Theme 时序猜测。
+- `SurfaceBackground` 的属性默认值必须为 `null`，Popup Theme 不得覆盖该默认值。
+- content-owned Popup 不重复设置 `null`；host-owned Popup 必须显式提供非空 Brush。
 - relay binding 的 attach/re-attach/detach 必须有单一 owner 和对称释放。
-- 永久 TestApp 的 Direct Popup Child 保持透明，不得加入本地 Background 或 surface override。
+- 永久 TestApp 的 Direct Popup 不设置 `SurfaceBackground`；其 Child 使用主题化背景履行 content-owned 契约，并验证不会与
+  下层文字发生视觉混叠。
 
 ## 11. 测试与验证
 
-- `PopupShadowTests` 验证公开 surface API、renderer fill、透明 opt-out 和 shadow clipping。
+- `PopupShadowTests` 验证公开 surface API、`null` 默认值、显式 renderer fill、透明 frame 和 shadow clipping。
 - `PopupPlacementTests` 与 `ToolTipPopupModeTests` 验证 placement、host mode 和 transparent PopupRoot。
 - `DialogPopupPrimitiveLayeringTests` 验证 Direct Popup 与四类 content-owned 原语。
-- `PopupEntryInventoryTests` 守卫所有 runtime 入口和 TestApp 源码契约。
+- `PopupEntryInventoryTests` 守卫所有 runtime 入口、无冗余默认值覆盖和 TestApp 源码契约。
 - `DialogPopupControlFamilyTests`、DataGrid popup tests 和代表性控件测试验证家族行为与视觉所有权未变。
 - `AtomUI.Desktop.Controls.TestApp/Scenarios/PopupInDialog` 走查真实桌面渲染、pointer、focus 和关闭行为。
 

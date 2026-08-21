@@ -35,7 +35,6 @@
                                                   FormFeedback="{TemplateBinding FormFeedback}" />
 
                     <atom:Popup Name="{x:Static atom:AutoCompleteThemeConstants.PopupPart}"
-                                SurfaceBackground="{x:Null}"
                                 WindowManagerAddShadowHint="False"
                                 IsLightDismissEnabled="True"
                                 OverlayDismissEventPassThrough="True"

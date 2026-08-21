@@ -16,7 +16,7 @@
 | 控件状态 | Stable |
 
 Popup 是 AtomUI 桌面弹层体系的共享低层原语，继承 Avalonia `Popup` 的 anchor、placement、light-dismiss、native
-window 与 overlay host 能力，并增加 AtomUI 的定位、阴影、动效、翻转通知和默认表面契约。Flyout、ToolTip、
+window 与 overlay host 能力，并增加 AtomUI 的定位、阴影、动效、翻转通知和可选表面契约。Flyout、ToolTip、
 ContextMenu、菜单、选择器和 Picker 等专用控件复用该原语，但继续拥有各自的 Presenter 和内容表面。
 
 Popup 不提供默认 Padding、边框、箭头或内容布局。调用方负责 Child 内容结构；Popup 只在 Child bounds 内提供可选的
@@ -24,9 +24,8 @@ frame surface 与 host shadow。
 
 ## 2. 设计语言
 
-Popup 的设计语言是“可定位的 elevated surface”。宿主保持透明并提供窗口/layer 能力，frame surface 只覆盖实际内容
-bounds；阴影可以延伸到透明区域，但不能把整个 host 变成不透明矩形。直接 Popup 获得与其他 elevated content 一致的
-主题表面，专用控件则保留自己的 Presenter 视觉语言。
+Popup 的设计语言是“可定位的透明承载原语”。宿主保持透明并提供窗口/layer 能力，内容默认拥有自己的表面；调用方
+显式提供 frame surface 时，该表面只覆盖实际内容 bounds。阴影可以延伸到透明区域，但不能把整个 host 变成不透明矩形。
 
 该模型把 host、frame 和 content 分成稳定职责：host 决定 native/overlay、定位和输入；frame 决定可选表面与阴影；
 content 决定 Padding、边框、箭头和业务视觉。
@@ -35,7 +34,7 @@ content 决定 Padding、边框、箭头和业务视觉。
 
 | API | 类型 | 语义 |
 | --- | --- | --- |
-| `SurfaceBackground` | `IBrush?` | Popup frame 在 Child bounds 内绘制的表面；Theme 默认映射到 `ColorBgElevated`，`null` 表示内容拥有表面。 |
+| `SurfaceBackground` | `IBrush?` | Popup frame 在 Child bounds 内绘制的可选表面；默认 `null`，表示内容拥有表面。只有显式非空 Brush 才启用 host-owned surface。 |
 | `PopupRootShadow` | `BoxShadows` | native `PopupRoot` 路径的 frame shadow。 |
 | `OverlayHostShadow` | `BoxShadows` | `OverlayPopupHost` 路径的 frame shadow。 |
 | `RequestedPlacement` | `PlacementMode?` | AtomUI 自定义定位请求；有效值会投射到 Avalonia custom placement。 |
@@ -56,14 +55,15 @@ Popup 使用显式 surface ownership，不根据 Child 类型、Child Background
 
 | 模式 | `SurfaceBackground` | 表面所有者 | 适用场景 |
 | --- | --- | --- | --- |
-| host-owned | 非 `null`，默认 `ColorBgElevated` | Popup frame | 直接使用 Popup，Child 只声明内容和 Padding。 |
-| content-owned | `null` | Child / Presenter / `PopupFrame` | Flyout、ToolTip、ContextMenu、菜单、选择器、Picker 等专用控件。 |
+| content-owned | `null`，默认 | Child / Presenter / `PopupFrame` | Direct Popup、Flyout、ToolTip、ContextMenu、菜单、选择器、Picker 等。 |
+| host-owned | 显式非 `null` | Popup frame | 调用方明确要求 Popup frame 提供表面，Child 只声明内容和 Padding。 |
 
 `SurfaceBackground` 只改变 frame fill，不增加 wrapper、Padding、border、arrow、DesiredSize、placement offset 或 shadow
-thickness。需要透明直接 Popup 时，调用方必须显式设置 `SurfaceBackground="{x:Null}"`。
+thickness。Direct Popup 的 host frame 默认透明；可见弹层内容必须由 Child 自己绘制背景，只有确实需要 frame 拥有表面时，
+调用方才显式提供 Brush。
 
-AtomUI 自有的 content-owned 消费者必须在 AXAML Popup 入口或共享 C# 构造路径显式设置 `null`。新增 Popup-bearing
-控件时，维护者必须先选择表面所有者，再更新库存测试和控件家族回归。
+AtomUI 自有的 content-owned 消费者继承 Popup 原语的 `null` 默认值，不在 AXAML 入口或共享 C# 构造路径重复赋值。
+新增 Popup-bearing 控件只有在明确选择 host-owned 模式时才设置非空 Brush，并更新库存测试和控件家族回归。
 
 ## 5. 视觉与主题模型
 
@@ -88,10 +88,9 @@ native popup 的透明 shadow buffer。overlay host 使用同一原则，避免 
 
 ## 6. 控件家族与集成关系
 
-Flyout、MenuFlyout、TreeViewFlyout、PopupConfirm、ToolTip 和 ContextMenu 通过共享 C# 构造路径选择 content-owned
-surface。ComboBox、Select、Cascader、TreeSelect、AutoComplete、Mentions、Picker、菜单、NavMenu、Tour 与 ColorPicker
-家族通过各自 AXAML Popup 入口作出同一选择。委托 Flyout 的 DropdownButton、SplitButton、AvatarGroup、Transfer、
-TabControl 和 DataGrid 不再创建第二套表面策略。
+Flyout、MenuFlyout、TreeViewFlyout、PopupConfirm、ToolTip、ContextMenu、ComboBox、Select、Cascader、TreeSelect、
+AutoComplete、Mentions、Picker、菜单、NavMenu、Tour 与 ColorPicker 家族全部继承 content-owned 默认值。委托 Flyout 的
+DropdownButton、SplitButton、AvatarGroup、Transfer、TabControl 和 DataGrid 不创建第二套表面策略，也不重复写入默认值。
 
 Dialog/Drawer 只影响 Popup 的 owning TopLevel 和 layer 归属，不改变 surface ownership。完整家族和宿主不变量见
 [Modal 内容弹层叠放设计](../../feedback/modal/popup-layering-design.md)。
@@ -103,7 +102,8 @@ Dialog/Drawer 只影响 Popup 的 owning TopLevel 和 layer 归属，不改变 s
 - `SurfaceBackground=null` 时 frame renderer 继续使用透明 fill，专用 Presenter 的背景、圆角、Padding、阴影和定位保持不变。
 - Popup Child 内未被内部滚动控件消费的 wheel 事件在 popup 边界终止，避免滚动外层 placement target 祖先。
 - close motion、快速重开、detach 和 host cleanup 必须保持成对生命周期。
-- `SurfaceBackground` 是新增公共 StyledProperty；直接 Popup 默认从透明表面变为 elevated 表面。需要旧透明行为的应用显式使用 `null`。
+- `SurfaceBackground` 是可选公共 StyledProperty；默认 `null` 保持 Direct Popup 与专用 Popup 家族的透明 host frame 契约；
+  需要遮挡下层内容的 Direct Popup Child 必须拥有自己的背景。
 
 ## 8. 宿主与表面专项模型
 
@@ -127,9 +127,9 @@ LLMS 语义区域：
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `Popup` | 拥有 public placement、motion、shadow 和 surface 状态。 | `SurfaceBackground`、`RequestedPlacement`、`IsOpen` | `PopupToken`、Shared Token | stable |
+| `root` | `Popup` | 拥有 public placement、motion、shadow 和 surface 状态。 | `SurfaceBackground`、`RequestedPlacement`、`IsOpen` | `PopupToken` | stable |
 | `host` | `PopupRoot` / `OverlayPopupHost` | 提供透明 native/overlay host、输入和 layer 能力。 | `ShouldUseOverlayLayer` | `PopupRootShadow`、`OverlayHostShadow` | stable |
-| `surface` | `ShadowsAwareContainer` frame | 在 Child bounds 内绘制可选 surface 与 shadow。 | `SurfaceBackground` | `ColorBgElevated` | stable |
+| `surface` | `ShadowsAwareContainer` frame | 在 Child bounds 内绘制可选 surface 与 shadow。 | `SurfaceBackground` | 无默认颜色 Token；Brush 由调用方提供 | stable |
 | `content` | `Popup.Child` | 承载调用方内容或专用 Presenter。 | `Child` | 由内容 owner 决定 | stable |
 
 LLMS 导出来源：
@@ -144,10 +144,11 @@ LLMS 导出来源：
 
 验证分层：
 
-- `PopupShadowTests`：公开 surface API、frame renderer、透明 opt-out 和 shadow clipping。
+- `PopupShadowTests`：公开 surface API、`null` 默认值、显式 surface、透明 frame 和 shadow clipping。
 - `PopupPlacementTests` / `ToolTipPopupModeTests`：定位、native/overlay host 和透明 `PopupRoot` 契约。
-- `DialogPopupPrimitiveLayeringTests`：Direct Popup 使用默认 surface，Flyout/MenuFlyout/ToolTip/ContextMenu 使用 content-owned surface。
-- `PopupEntryInventoryTests`：全部 runtime Popup 入口显式分类；TestApp 不包含局部背景补丁。
+- `DialogPopupPrimitiveLayeringTests`：Direct Popup、Flyout/MenuFlyout、ToolTip/ContextMenu 共享 content-owned 默认值。
+- `PopupEntryInventoryTests`：全部 runtime Popup 入口完成归类且不重复写入 `null` 默认值；TestApp 不设置 Popup host surface，
+  Direct Popup Child 明确使用主题背景履行 content-owned 契约。
 - Dialog 控件家族矩阵与代表性控件测试：验证共享修复不改变其他控件行为和视觉所有权。
 
 | 平台 | 实机状态 |

@@ -32,7 +32,6 @@
                                           FilterValue="{TemplateBinding FilterValue, Mode=TwoWay}"
                                           FormFeedback="{TemplateBinding FormFeedback}"/>
                     <atom:Popup Name="PART_Popup"
-                                SurfaceBackground="{x:Null}"
                                 WindowManagerAddShadowHint="False"
                                 IsLightDismissEnabled="True"
                                 OverlayDismissEventPassThrough="True"

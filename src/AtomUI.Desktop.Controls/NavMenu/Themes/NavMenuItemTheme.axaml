@@ -33,7 +33,6 @@
                                                            IsInlineCollapsed="{TemplateBinding IsInlineCollapsed}"
                                                            IsTopLevel="{TemplateBinding IsTopLevel}" />
                         <atom:Popup Name="PART_Popup"
-                                    SurfaceBackground="{x:Null}"
                                     WindowManagerAddShadowHint="False"
                                     IsLightDismissEnabled="False"
                                     ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
@@ -87,7 +86,6 @@
                                                          atom:ToolTip.ShowDelay="{TemplateBinding CollapsedTooltipShowDelay}"
                                                          atom:ToolTip.BetweenShowDelay="{TemplateBinding CollapsedTooltipBetweenShowDelay}" />
                         <atom:Popup Name="PART_Popup"
-                                    SurfaceBackground="{x:Null}"
                                     WindowManagerAddShadowHint="False"
                                     IsLightDismissEnabled="False"
                                     ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"

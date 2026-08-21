@@ -14450,9 +14450,9 @@ Source: ./controls/popup/semantic-cn.md
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `Popup` | 拥有 public placement、motion、shadow 和 surface 状态。 | `SurfaceBackground`、`RequestedPlacement`、`IsOpen` | `PopupToken`、Shared Token | stable |
+| `root` | `Popup` | 拥有 public placement、motion、shadow 和 surface 状态。 | `SurfaceBackground`、`RequestedPlacement`、`IsOpen` | `PopupToken` | stable |
 | `host` | `PopupRoot` / `OverlayPopupHost` | 提供透明 native/overlay host、输入和 layer 能力。 | `ShouldUseOverlayLayer` | `PopupRootShadow`、`OverlayHostShadow` | stable |
-| `surface` | `ShadowsAwareContainer` frame | 在 Child bounds 内绘制可选 surface 与 shadow。 | `SurfaceBackground` | `ColorBgElevated` | stable |
+| `surface` | `ShadowsAwareContainer` frame | 在 Child bounds 内绘制可选 surface 与 shadow。 | `SurfaceBackground` | 无默认颜色 Token；Brush 由调用方提供 | stable |
 | `content` | `Popup.Child` | 承载调用方内容或专用 Presenter。 | `Child` | 由内容 owner 决定 | stable |
 
 ## Abstract AXAML Structure
@@ -14513,14 +14513,15 @@ Popup 使用显式 surface ownership，不根据 Child 类型、Child Background
 
 | 模式 | `SurfaceBackground` | 表面所有者 | 适用场景 |
 | --- | --- | --- | --- |
-| host-owned | 非 `null`，默认 `ColorBgElevated` | Popup frame | 直接使用 Popup，Child 只声明内容和 Padding。 |
-| content-owned | `null` | Child / Presenter / `PopupFrame` | Flyout、ToolTip、ContextMenu、菜单、选择器、Picker 等专用控件。 |
+| content-owned | `null`，默认 | Child / Presenter / `PopupFrame` | Direct Popup、Flyout、ToolTip、ContextMenu、菜单、选择器、Picker 等。 |
+| host-owned | 显式非 `null` | Popup frame | 调用方明确要求 Popup frame 提供表面，Child 只声明内容和 Padding。 |
 
 `SurfaceBackground` 只改变 frame fill，不增加 wrapper、Padding、border、arrow、DesiredSize、placement offset 或 shadow
-thickness。需要透明直接 Popup 时，调用方必须显式设置 `SurfaceBackground="{x:Null}"`。
+thickness。Direct Popup 的 host frame 默认透明；可见弹层内容必须由 Child 自己绘制背景，只有确实需要 frame 拥有表面时，
+调用方才显式提供 Brush。
 
-AtomUI 自有的 content-owned 消费者必须在 AXAML Popup 入口或共享 C# 构造路径显式设置 `null`。新增 Popup-bearing
-控件时，维护者必须先选择表面所有者，再更新库存测试和控件家族回归。
+AtomUI 自有的 content-owned 消费者继承 Popup 原语的 `null` 默认值，不在 AXAML 入口或共享 C# 构造路径重复赋值。
+新增 Popup-bearing 控件只有在明确选择 host-owned 模式时才设置非空 Brush，并更新库存测试和控件家族回归。
 
 ## Theme and Token Boundaries
 
@@ -14555,7 +14556,7 @@ Token 边界：
 | `MarginToAnchor` | `UniformlyMarginXXS` | Popup 内容 frame 与 anchor 的默认间距。 |
 
 `PopupCornerRadius` 不由 transparent host 绘制；它由 Child、Presenter 或 `PopupFrame` 提供给
-`ShadowsAwareContainer`，使 frame shadow/default surface 与内容圆角一致。
+`ShadowsAwareContainer`，使 frame shadow 与显式可选 surface 和内容圆角一致。
 
 ## Customization Boundaries
 
@@ -14564,13 +14565,16 @@ Token 边界：
 - `SurfaceBackground=null` 时 frame renderer 继续使用透明 fill，专用 Presenter 的背景、圆角、Padding、阴影和定位保持不变。
 - Popup Child 内未被内部滚动控件消费的 wheel 事件在 popup 边界终止，避免滚动外层 placement target 祖先。
 - close motion、快速重开、detach 和 host cleanup 必须保持成对生命周期。
-- `SurfaceBackground` 是新增公共 StyledProperty；直接 Popup 默认从透明表面变为 elevated 表面。需要旧透明行为的应用显式使用 `null`。
+- `SurfaceBackground` 是可选公共 StyledProperty；默认 `null` 保持 Direct Popup 与专用 Popup 家族的透明 host frame 契约；
+  需要遮挡下层内容的 Direct Popup Child 必须拥有自己的背景。
 
 维护不变量：
 
 - `PopupRoot.Background` 必须保持 `null`，native window 继续透明合成。
 - native 与 overlay host 必须共享 `ShadowsAwareContainer`，不得复制 surface 实现。
 - surface 不得参与 measure、arrange、placement、Padding、border 或 arrow 计算。
-- content-owned Popup 必须显式 `null`，不得按 Child 类型或 Theme 时序猜测。
+- `SurfaceBackground` 的属性默认值必须为 `null`，Popup Theme 不得覆盖该默认值。
+- content-owned Popup 不重复设置 `null`；host-owned Popup 必须显式提供非空 Brush。
 - relay binding 的 attach/re-attach/detach 必须有单一 owner 和对称释放。
-- 永久 TestApp 的 Direct Popup Child 保持透明，不得加入本地 Background 或 surface override。
+- 永久 TestApp 的 Direct Popup 不设置 `SurfaceBackground`；其 Child 使用主题化背景履行 content-owned 契约，并验证不会与
+  下层文字发生视觉混叠。

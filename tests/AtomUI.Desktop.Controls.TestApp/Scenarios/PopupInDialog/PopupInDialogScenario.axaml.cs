@@ -168,6 +168,7 @@ public partial class PopupInDialogScenario : UserControl
             Child = new Border
             {
                 Padding = new Thickness(16),
+                Classes = { "direct-popup-surface" },
                 Child = new TextBlock { Text = "Direct Popup content" }
             }
         };

@@ -8,7 +8,6 @@
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:Tour">
                 <atom:Popup Name="PART_Popup"
-                            SurfaceBackground="{x:Null}"
                             WindowManagerAddShadowHint="False"
                             IsLightDismissEnabled="False"
                             IsMotionEnabled="False"

@@ -33,6 +33,7 @@ public class PopupShadowTests
     {
         Popup.SurfaceBackgroundProperty.OwnerType.ShouldBe(typeof(Popup));
         typeof(Popup).GetProperty(nameof(Popup.SurfaceBackground)).ShouldNotBeNull();
+        new Popup().SurfaceBackground.ShouldBeNull();
     }
 
     [Fact]

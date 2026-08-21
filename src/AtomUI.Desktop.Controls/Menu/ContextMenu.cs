@@ -153,7 +153,6 @@ public class ContextMenu : AvaloniaContextMenu,
             IsLightDismissEnabled          = true,
             OverlayDismissEventPassThrough = true,
             TakesFocusFromNativeControl    = Popup.GetTakesFocusFromNativeControl(this),
-            SurfaceBackground              = null,
         };
         CustomPopupPlacementCallback =  _popup.HandleCustomPlacement;
         _popup.Opened                += HandlePopupOpened;
