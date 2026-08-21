@@ -192,11 +192,13 @@ input display + Form value
 - `FilterValue` 非空且控件 loaded 时，CascaderView 收集所有叶子路径并按 `Filter` 过滤。
 - 过滤结果显示完整路径文本，选中过滤结果后回写目标 option。
 - 过滤模式下，`Up` / `Down` 在可用结果间循环移动内部候选高亮，不修改 `SelectedOption`；`Enter` 提交当前候选，尚无候选时提交第一个可用结果，没有可用结果时保持选择和 popup 状态不变。路径中任一祖先 disabled 时，该过滤结果也不可作为候选或提交。
+- 过滤列表拥有独立于树列的 active candidate owner；过滤结果重建、过滤清空、popup 关闭和容器回收时清除旧候选。树列与过滤列不会同时保留两个候选视觉。
 - 清空过滤值或关闭 popup 后，过滤列表、过滤计数和缓存路径会被清理。
 
 树形键盘导航：
 
 - popup 打开且未过滤时，`Up` / `Down` 在当前已展开列的可见 enabled item 间循环移动内部候选；候选高亮与真实选择相互独立。
+- 普通树列的 active candidate 由 `CascaderView` 单一持有；鼠标移动到 enabled item 时迁移该候选并继续执行 `ExpandTrigger=Hover` 的展开逻辑，但不提前提交选择、不滚动列表。`Enter` 使用同一 active candidate 作为选择或展开目标。
 - `Right` 从当前候选或第一个可见 enabled item 开始，展开可展开节点并把候选移到下一列的第一个 enabled child。
 - `Left` 优先把子级候选移回父级；候选已位于展开的根级非叶节点时折叠该节点。
 - `Enter` 提交 enabled、非 loading 的叶子候选；`IsAllowSelectParent=true` 时也可提交父节点，否则沿用 `Right` 的展开并进入子级行为。
@@ -231,7 +233,7 @@ Cascader 的默认视觉由 Cascader 根主题、输入壳体、PopupHost、Casc
 - `OptionTemplate` 的 DataContext 必须保持为 `ICascaderOption`，不能改为 header 文本。
 - Popup 宽度和空状态宽度匹配语义必须保持：普通级联列使用列宽，空状态需要匹配输入宽度。
 - 选项行的 checkbox、icon、header、expand / loading icon 间距由 Token 管理，不应在单个模板节点中写死。
-- disabled、expanded、pointerover、checked 和 loading 状态 selector 不能被绕过。
+- disabled、expanded、pointerover、checked、loading 和 active candidate 状态 selector 不能被绕过；`pointerover` 只触发 active candidate 迁移，不独立绘制第二个候选背景。
 
 Token 边界：
 

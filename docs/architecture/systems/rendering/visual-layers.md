@@ -67,6 +67,16 @@ Avalonia `OverlayLayer` 专门承载高于普通内容、低于 light-dismiss �
 - 需要解析宿主时使用 `OverlayLayerResolver`，不要在各控件里重复查找主窗口、TopLevel 或 SingleView。
 - 不要把 Message/Notification 放入 popup overlay。它们是窗口级反馈，不是 anchored popup。
 
+#### Popup host 与 frame surface
+
+Popup layer/host 与内容表面是两个独立职责。`PopupRoot` 和 `OverlayPopupHost` 保持透明，只负责窗口/layer、输入、定位、
+light-dismiss 和透明 shadow buffer；实际 surface 由 host 内共享的 `ShadowsAwareContainer` 在 Child bounds 内绘制。
+
+直接 `AtomUI.Desktop.Controls.Popup` 默认使用 `SurfaceBackground=ColorBgElevated`。拥有专用 Presenter 或 `PopupFrame`
+的控件显式设置 `SurfaceBackground=null`，由内容继续绘制背景、圆角、Padding、箭头和边框。不得把 host Background
+改为不透明，也不得根据 Child 类型、Background 或 Theme 时序猜测表面所有者。完整契约见
+[Popup 桌面版架构设计](../../../controls/desktop/other/popup/overview.md)。
+
 ### Drawn decorations overlay
 
 AtomUI 的 `WindowDrawnDecorationsTheme` 在 decorations overlay 中绘制 drawn title bar、caption buttons 与 shadow。该 overlay 由 Avalonia `TopLevelHost` 承载，与 Window `TopLevel` 是同级视觉子树。
@@ -92,6 +102,7 @@ AtomUI 的 `WindowDrawnDecorationsTheme` 在 decorations overlay 中绘制 drawn
 - 浏览器、无原生窗口或显式 overlay 场景必须走 overlay layer。
 - 不要用 native popup 承载 modal mask 或窗口级反馈。
 - 修 popup 阴影、定位、裁剪时要同时确认 native popup root 和 overlay popup 两条路径是否受影响。
+- 修 popup surface 时只在 Child bounds 内绘制；`PopupRoot.Background` 必须保持 `null`，不得填充 native shadow buffer。
 
 ### Avalonia AdornerLayer
 
@@ -228,6 +239,7 @@ Avalonia 原生 `AdornerLayer` 用于紧贴控件或 TopLevel 的局部装饰。
 - 涉及 Badge、Watermark、Drawer、sticky mirror、TreeView drag preview 时，应分别验证其既有层归属没有被误改。
 - Gallery sticky mirror、Message / Notification 和 Badge 的组合是当前层级体系的关键回归场景。
 - Dialog 内容 popup 的永久人工回归入口是 `tests/AtomUI.Desktop.Controls.TestApp` 的 `Scenarios/PopupInDialog`；直接 Popup、Flyout/MenuFlyout、ToolTip/ContextMenu 与控件家族矩阵见 [Modal 内容弹层叠放设计](../../../controls/desktop/feedback/modal/popup-layering-design.md)。
+- Popup surface 变更必须同时证明 Direct Popup 默认 surface 生效、content-owned 家族仍为透明 host frame，并确认 Child bounds、圆角、shadow thickness 和 placement 没有变化。
 
 当前 Dialog/Drawer 与 popup 分层实机证据为 Windows 已测试、macOS 已测试；Linux X11/Wayland 未测试。该状态必须与
 专项设计文档同步，不能把 Headless 共享路径通过解释为未执行平台的实机证据。

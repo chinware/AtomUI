@@ -8,7 +8,7 @@
 | --- | --- | --- | --- | --- | --- |
 | `root` | `WindowTitleBar` | 承载公共内容契约、平台状态和标题栏主题入口。 | `Logo`、`Title`、`TitleAlignment` | `Height`、`TitleBarPadding`、标题字体与颜色 | public |
 | `frame` | `Border#Frame` | 绘制标题栏背景并定义完整可见 frame。 | `Background`、`Padding` | `Height`、`TitleBarPadding` | template-stable |
-| `leading` | Windows/Linux: `PART_Logo` + `PART_LeftAddOn`；macOS: `PART_LeftAddOn` | 承载起始侧应用操作并占用标题安全空间。Windows/Linux 中 Logo 是物理最左内容。 | `Logo`、`LogoTemplate`、`LogoVisibility`、`LeftAddOn`、`LeftAddOnTemplate` | `LogoSize`、`HeaderHorizontalSpacing` | template-stable |
+| `leading` | Windows/Linux: `PART_Logo` + `PART_LeftAddOn`；macOS: `PART_LeftAddOn` | 承载起始侧应用操作并占用标题安全空间。Windows/Linux 中 Logo 是物理最左内容，且仅在 Logo 与 LeftAddOn 同时有效时产生内部间距。 | `Logo`、`LogoTemplate`、`LogoVisibility`、`LeftAddOn`、`LeftAddOnTemplate` | `LogoSize`、`LogoAndLeftAddOnSpacing`、`HeaderHorizontalSpacing` | template-stable |
 | `title` | Windows/Linux: `PART_ContentPresenter`；macOS: `PART_Logo` + `PART_ContentPresenter` | 展示、测量、对齐和裁剪标题内容；macOS 同时保留 Logo/Title 连续标题组。 | `Logo`、`LogoTemplate`、`LogoVisibility`、`Title`、`TitleTemplate` | `LogoAndTitleSpacing`、标题字体与颜色 | template-stable |
 | `trailing` | `PART_RightAddOn` + `PART_CaptionButtonGroup` | 承载结束侧应用操作和 managed window operations。 | `RightAddOn`、`RightAddOnTemplate`；五个 Window caption visibility 属性 | `HeaderHorizontalSpacing`、caption button 尺寸、间距与状态颜色 | template-stable |
 | `native-chrome` | 平台原生窗口按钮安全区 | 以逻辑像素 inset 约束标题安全空间，不进入 visual tree。 | 平台、CSD、WindowState | 不适用 | internal-observable |
@@ -140,7 +140,7 @@ WindowTitleBar
 | `Frame` | `Border` | 绘制标题栏背景并提供完整可见 frame 的布局边界。 |
 | `PART_Logo` | `ContentPresenter` | 展示有效 Logo；Windows/Linux 模板中位于 Leading 最左侧，macOS 模板中位于 Title 内容前。 |
 | `PART_ContentPresenter` | `ContentPresenter` | 展示标题；字符串标题在安全宽度不足时使用字符省略号，且不参与命中测试。 |
-| `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容。 |
+| `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容；Windows/Linux 中由 Leading 容器负责它与有效 Logo 之间的条件间距。 |
 | `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on。 |
 | `PART_CaptionButtonGroup` | `CaptionButtonGroup` | 消费宿主投影，推导 managed button 状态并转发固定窗口操作。 |
 
@@ -196,6 +196,8 @@ WindowTitleBar
 
 窗口激活状态同时写入 `IsWindowActive`，供模板中的内部协作控件使用。状态 owner 始终是宿主 `Window`；模板节点不反向维护第二份窗口状态。
 
+标题栏在进入逻辑树时自动选择最近的 AtomUI `Window` 作为宿主，并为自身持有一个可释放的 host projection lease。同一 Window 可以包含多个 `WindowTitleBar`，每个实例都独立接收同一宿主状态；标题栏从逻辑树移除或转移到另一 Window 时，旧投影必须释放并由新宿主重新建立。
+
 ### 4.3 Caption buttons
 
 caption button 的公共配置属于宿主 `Window`：
@@ -208,7 +210,9 @@ Minimize、Maximize 和 Close 默认显示，FullScreen 和 Pin 默认隐藏。�
 
 ### 4.4 拖动和双击
 
-`Window` 监听标题栏 pointer 事件并在移动距离超过拖动阈值后调用原生 `BeginMoveDrag`。`IsMoveEnabled=False` 或全屏状态禁止拖动。双击最大化与拖动共用标题栏输入表面，但 caption buttons 和 add-on 的已处理输入不应触发窗口拖动。
+`Window` 通过每个标题栏的 host lease 监听 pointer 事件，并在移动距离超过拖动阈值后调用原生 `BeginMoveDrag`。拖动状态记录具体来源标题栏，同一 Window 中其他标题栏的移动、释放或 capture lost 不能推进该次交互。`IsMoveEnabled=False` 或全屏状态禁止拖动。双击最大化与拖动共用标题栏输入表面，但 caption buttons 和 add-on 的已处理输入不应触发窗口拖动。
+
+应用直接放入 Window 内容区的 `WindowTitleBar` 自动获得 caption 状态、窗口操作命令、拖动和双击最大化语义。它不参与标题栏高度提示、CSD 最小高度或唯一 CSD geometry owner 计算；这些几何职责只属于 Window 模板正式接入的默认标题栏。
 
 ## Theme and Token Boundaries
 
@@ -219,11 +223,13 @@ Minimize、Maximize 和 Close 默认显示，FullScreen 和 Pin 默认隐藏。�
 | `Frame` | `Border` | 绘制标题栏背景并提供完整可见 frame 的布局边界。 |
 | `PART_Logo` | `ContentPresenter` | 展示有效 Logo；Windows/Linux 模板中位于 Leading 最左侧，macOS 模板中位于 Title 内容前。 |
 | `PART_ContentPresenter` | `ContentPresenter` | 展示标题；字符串标题在安全宽度不足时使用字符省略号，且不参与命中测试。 |
-| `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容。 |
+| `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容；Windows/Linux 中由 Leading 容器负责它与有效 Logo 之间的条件间距。 |
 | `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on。 |
 | `PART_CaptionButtonGroup` | `CaptionButtonGroup` | 消费宿主投影，推导 managed button 状态并转发固定窗口操作。 |
 
 `PART_CaptionButtonGroup` 是 `WindowTitleBar` 模板中的稳定协作 part，通过 `TemplateBinding` 接收能力、requested visibility、窗口状态和宿主命令。其内部 `PART_CloseButton`、`PART_MinimizeButton`、`PART_MaximizeButton`、`PART_FullScreenButton` 和 `PART_PinButton` 属于 `CaptionButtonGroup` 模板，不是 `WindowTitleBar` 的 public template part。
+
+Windows/Linux 的 Leading 容器使用 `HorizontalSpacing` 消费 `LogoAndLeftAddOnSpacing`，不通过菜单、按钮或 `PART_LeftAddOn.Margin` 补偿相邻 Logo。该组合规则使间距跟随两个 presenter 的可见性，并允许任意 `LeftAddOn` 内容获得一致的视觉隔离。macOS 的 Leading 只有 `PART_LeftAddOn`，Logo/Title 间距继续由 Title role 的 `LogoAndTitleSpacing` 管理。
 
 平台主题可以改变 caption button 外观和 native chrome 来源，但不得改变 Public API 语义、Title/Leading/Trailing 角色或窗口操作行为。应用替换完整 ControlTheme 时负责提供等价区域、裁剪和命中测试；internal caption 类型不作为定制 API。
 
@@ -246,17 +252,22 @@ Token 负责尺寸、间距、字体和状态颜色，不负责以下运行时�
 - `Auto` Logo 规则和标题对齐的显式枚举语义保持稳定。
 - `PART_CaptionButtonGroup`、内容 presenter 名称、ControlTheme key 和伪类保持稳定。
 - Title 内容不参与命中测试；add-on 和 caption buttons 保持可交互。
-- Windows/Linux 中 Logo 始终位于 Leading 最左侧并参与左侧安全空间；macOS 中 Logo 和 Title 作为连续 Title 组；add-on 不进入标题中心计算。
+- Windows/Linux 中 Logo 始终位于 Leading 最左侧并参与左侧安全空间；有效 Logo 与有效 `LeftAddOn` 之间使用独立的条件间距。macOS 中 Logo 和 Title 作为连续 Title 组；add-on 不进入标题中心计算。
 - CSD 开关只改变 chrome metrics 来源和可见操作区，不改变显式标题对齐含义。
 - 标题栏替换时释放旧的 Window 投影；template reapply 不建立逐按钮 Click handler 或 CaptionButtonGroup 到 Window 的宿主引用。
+- 每个逻辑树内的 `WindowTitleBar` 自动连接最近的 AtomUI Window；detach、宿主切换和 Window close 必须释放旧 projection lease。
+- 内容区标题栏与默认标题栏共享拖动、双击最大化和 caption 操作语义，但不获得标题栏高度提示或唯一 CSD chrome role。
 - 平台选择和 Token 发现不依赖运行时反射或程序集扫描。
 
 维护不变量：
 
-- `WindowTitleBar` 与 `Window.NotifyConfigureTitleBar` 的属性投影保持单向且完整；默认标题栏的 `LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn` 和 `RightAddOnTemplate` 由 `Window` 的同名 public API 以 `Template` 优先级提供，派生标题栏 local add-on 不被覆盖。
-- `WindowTitleBar` 的宿主投影保持单向且完整；CaptionButtonGroup 不通过 logical attach/detach 建立 Window 状态副本。
+- Window-defined host projection 与 `Window.NotifyConfigureTitleBar` 的默认内容投影必须分离：前者服务所有逻辑树内标题栏，后者只配置默认标题栏的 Title、Logo、对齐和 add-on。
+- 每个 `WindowTitleBar` 的宿主投影保持单向、完整且独立；AttachHost 对相同 Window 幂等，detach 或宿主切换必须释放旧 lease；CaptionButtonGroup 不通过 logical attach/detach 建立 Window 状态副本。
+- 默认标题栏的 `LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn` 和 `RightAddOnTemplate` 由 `Window` 的同名 public API 以 `Template` 优先级提供，派生标题栏 local add-on 不被覆盖。
+- 所有已连接标题栏获得 Window 的拖动、双击最大化和 caption 宿主上下文；只有默认标题栏获得尺寸提示和 CSD 高度协作。
+- CSD 下隐藏默认标题栏必须保留 `WindowDecorations.Full`，`WindowDrawnDecorationsTheme` 以 `HasTitleBar && IsTitleBarVisible` 控制 frame、shadow 和 presenter 可见性。
 - 三个平台 ControlTemplate 保持相同语义角色、稳定 part 名称和平台 caption button 顺序。
-- Windows/Linux 的 Logo 始终位于 Leading 最左侧；macOS、ImagePreviewer 与全屏标题宿主可将图标与 Title 保持为连续 Title 组。无论图标位于哪个 role，标题对齐公式只读取 Leading、Title、Trailing 三个 direct role child 的实测宽度。
+- Windows/Linux 的 Logo 始终位于 Leading 最左侧；有效 Logo 与有效 LeftAddOn 之间只由 Leading `DockPanel.HorizontalSpacing` 消费 `LogoAndLeftAddOnSpacing`。macOS、ImagePreviewer 与全屏标题宿主可将图标与 Title 保持为连续 Title 组。无论图标位于哪个 role，标题对齐公式只读取 Leading、Title、Trailing 三个 direct role child 的实测宽度。
 - Leading/Trailing 为零宽时不产生操作区间距；add-on margin 只通过 `DesiredSize` 计入一次。
 - ImagePreviewer 与两个全屏标题宿主复用同一标题布局模型。
 - Title 不参与命中测试；add-on 与 caption buttons 保持可交互。

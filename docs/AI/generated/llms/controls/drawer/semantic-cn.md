@@ -101,7 +101,7 @@ Public API / inherited command / item source / user input
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 - TopLevel Drawer 使用 Window visible frame：包含 managed/drawn 标题栏，排除透明 frame shadow；该规则不按 OS 或 CSD 模式分叉。
-- drawn decorations 暴露 Drawer host 时按能力优先使用；host 不存在时回退到原 `ScopeAwareAdornerLayer`。
+- Drawer container 始终保留在 owning `TopLevel` 的 `ScopeAwareAdornerLayer`；Window drawn decorations 只绘制 chrome，不作为 Drawer host。
 
 ## Theme and Token Boundaries
 
@@ -139,7 +139,7 @@ Drawer Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
 - 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
-- 不按 `OsType` 或 `IsCsdEnabled` 为 Drawer 建立平行窗口几何；Window 的 `FrameShadowThickness` 和实际 drawn host 是唯一能力信号。
+- 不按 `OsType` 或 `IsCsdEnabled` 为 Drawer 建立平行窗口几何；Window 发布的 frame 与 titlebar metrics 是唯一几何信号。
 - 文档只描述当前稳定设计；历史变化记录在 `changelog.md`。
 
 维护不变量：
@@ -150,5 +150,6 @@ Drawer Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- Windows、Linux、macOS 以及 CSD/non-CSD 下使用同一 visible-frame 语义；平台差异只存在于 Window 如何发布 frame shadow 和 drawn host 能力。
+- Windows、Linux、macOS 以及 CSD/non-CSD 设计上使用同一 visible-frame 语义；平台差异只存在于 Window 如何发布 frame、titlebar 与 shadow metrics，不能把共享设计规则误写成尚未执行平台的测试证据。
+- Drawer 内容、popup placement target 与 owning Window 必须保持在同一 `TopLevel`；不得通过 drawn decorations host、局部 ZIndex、延迟打开或强制 native popup 掩盖跨父层遮挡。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。

@@ -244,6 +244,17 @@ Disabled / invisible / window deactivated
 - 弹层关闭时，`Up/Down`、`Enter`、`Space` 可打开弹层。
 - 多选和 Tags 模式下，过滤输入为空时 `Backspace/Delete` 删除最后一个已选项。
 
+候选交互：
+
+- `SelectCandidateList` 维护唯一 active candidate，鼠标移动和键盘导航必须更新同一个候选状态。
+- 鼠标在可用候选项上实际移动时，该项成为 active candidate；鼠标路径不滚动候选列表，也不提交公共选择。
+- `Up/Down` 在当前有效候选视图中移动 active candidate，并可以把键盘候选滚动到可见区域。
+- `Enter` 只提交或切换当前 active candidate，候选视觉目标和提交目标必须一致。
+- active candidate 与已确认选择相互独立；已选项继续保持 selected 视觉和公共选择语义。
+- `:pointerover` 只表达指针命中事实，不能与 `IsCandidateSelected` 分别绘制两个候选高亮。
+
+完整状态、Theme、虚拟化、性能和验证边界见 [Select 候选交互设计](candidate-interaction-design.md)。
+
 清除行为通过 `SelectHandle.ClearRequestedEvent` 冒泡到 Select，并调用 `ClearValue()` 清空 `SelectedOption` 和 `SelectedOptions`。
 
 ## 主题与 Design Token
@@ -256,7 +267,7 @@ Select 的默认视觉由 Select 专属主题、AddOnDecoratedBox、ListView 和
 | `SelectAddOnDecoratedBoxTheme.axaml` | 输入框 variant、status、dropdown open、hover、pressed 和多选 padding。 |
 | `SelectResultOptionsBoxTheme.axaml` | 多选标签布局、响应式标签布局和搜索输入承载。 |
 | `SelectCandidateListTheme.axaml` | 候选列表基础 ListView 主题和默认候选模板。 |
-| `SelectCandidateListItemTheme.axaml` | 候选项 active、selected、disabled 和隐藏已选项视觉。 |
+| `SelectCandidateListItemTheme.axaml` | 候选项 active、selected、disabled 和隐藏已选项视觉；active 只由统一候选状态驱动。 |
 | `SelectTagTheme.axaml` | 多选标签高度、背景、关闭按钮和禁用态。 |
 | `SelectHandleTheme.axaml` | 展开、loading、清除、过滤指示和 Form feedback 图标。 |
 | `PopupHostToken` | popup 阴影、圆角和 anchor margin。 |
@@ -287,6 +298,7 @@ Select 不依赖运行时反射发现模板结构。模板协作通过固定 tem
 - `_deactivationSubscription` 在 attach 时创建，detach 时释放。
 - `_selectHandleInputStateBindings` 每次模板接入前释放旧绑定，仅持有 AddOnDecoratedBox → SelectHandle 的 hover / pressed sibling part 状态转发。
 - `_candidateList` 的事件订阅和 `ItemsSource` 必须在 `ClearPopupContent()` 中释放。
+- active candidate 在 popup 关闭、popup 内容释放、detach、过滤上下文变化和候选失效时清除；容器回收只清理本地投影。
 - `SelectHandle` 订阅 `FormFeedback.ValidateStatus` 时必须在 feedback 变化和 logical detach 时释放。
 - 异步加载通过 `AsyncSearchLoadCoordinator` 处理超时、取消和跳过旧结果。
 
@@ -296,6 +308,13 @@ AOT 边界：
 - API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护。
 - `OptionTemplate`、AddOn 模板和 EmptyIndicator 模板是 XAML 模板入口，不依赖运行时成员扫描。
 
+候选交互热路径边界：
+
+- 同一候选项内的 PointerMoved 使用 source index 比较后 O(1) 返回。
+- 候选迁移只更新旧、新两个已准备容器；不得逐项写入全部 `ItemCount`。
+- 鼠标路径不滚动，键盘路径每次候选变化最多执行一次滚动。
+- 事件源解析和状态投影不创建长期订阅、每项 handler、timer 或运行时动态发现。
+
 ## 源码索引
 
 主要源码：
@@ -304,8 +323,8 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Select/Select.cs`：public Select API、protected 扩展 hook、用户选项源同步、有效候选选项同步、选择同步、过滤输入、Tags 动态选项、键盘和指针处理。
 - `src/AtomUI.Desktop.Controls/Select/Select.AsyncOptionsLoad.cs`：异步候选加载和私有加载完成流程。
 - `src/AtomUI.Desktop.Controls/Select/SelectOption.cs`：`ISelectOption` 和默认 `SelectOption`。
-- `src/AtomUI.Desktop.Controls/Select/SelectCandidateList.cs`：候选列表、候选导航、提交取消、最大选择数和隐藏已选项。
-- `src/AtomUI.Desktop.Controls/Select/SelectCandidateListItem.cs`：候选项容器状态。
+- `src/AtomUI.Desktop.Controls/Select/SelectCandidateList.cs`：统一 active candidate、鼠标与键盘候选导航、提交取消、最大选择数和隐藏已选项。
+- `src/AtomUI.Desktop.Controls/Select/SelectCandidateListItem.cs`：active candidate 和 committed selection 的容器状态投影。
 - `src/AtomUI.Desktop.Controls/Select/SelectResultOptionsBox.cs`：多选结果标签和过滤输入承载。
 - `src/AtomUI.Desktop.Controls/Select/SelectHandle.cs`：右侧展开、loading、清除和 Form feedback 图标。
 - `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`：共享溢出 tooltip attached behavior，供单选结果和多选 tag 复用。

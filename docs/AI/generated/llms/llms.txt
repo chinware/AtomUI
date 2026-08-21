@@ -111,6 +111,7 @@
 ### other
 
 - [BorderBeam](./controls/border-beam/index-cn.md)
+- [Popup](./controls/popup/index-cn.md)
 
 
 ## Semantic (CN)
@@ -216,6 +217,7 @@
 ### other
 
 - [BorderBeam](./controls/border-beam/semantic-cn.md)
+- [Popup](./controls/popup/semantic-cn.md)
 
 
 ## Source Docs
@@ -298,3 +300,4 @@
 - Window: `docs/controls/desktop/window/window/overview.md`
 - WindowTitleBar: `docs/controls/desktop/window/window-title-bar/overview.md`
 - BorderBeam: `docs/controls/desktop/other/border-beam/overview.md`
+- Popup: `docs/controls/desktop/other/popup/overview.md`

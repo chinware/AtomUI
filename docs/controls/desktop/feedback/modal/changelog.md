@@ -11,6 +11,8 @@
   - Keep Overlay structural-minimum updates initialization-aware so template layout cannot clamp the unresolved `(0, 0)` Surface position and convert it into startup offsets before centered placement.
 - Docs
   - Document the shared centered startup default and the explicit `Custom` offset behavior.
+  - Extend the Dialog popup family matrix with explicit surface ownership: Direct Popup uses the shared theme surface, while specialized Popup-bearing controls retain content-owned surfaces.
+  - Keep the permanent TestApp Direct Popup free of local background overrides and preserve the Windows/macOS tested, Linux X11/Wayland untested evidence boundary.
 
 ## 2026-08-20
 

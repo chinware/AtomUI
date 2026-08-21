@@ -167,6 +167,8 @@ DataGrid Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - Handle、RowsPresenter 和 CollectionView 的职责不能重新混合：handle 不修改数据，presenter 不决定移动语义，
   CollectionView 不持有视觉对象。
 - 所有行拖动终止路径都必须移除 ghost、释放 capture 并清空会话；`RowReordered` 不能用于通知未提交的拖动。
+- 列宽求解不能依赖 `DataGridRowsPresenter` 可见性；空数据、普通表头和分组表头必须共享 DataGrid-owned solver。
+- filler 不能掩盖未执行的 star 分配；star 可吸收剩余空间时 filler 宽度必须为零。
 - 过滤项解析必须支持业务 DTO 和 `DataGridFilterItem` 两类输入，不得要求 VM 反向依赖内部 flyout、menu item 或 tree item 类型；业务 DTO 必须有生成的 data member accessor，不在 AOT 敏感路径中使用运行时反射兜底。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。

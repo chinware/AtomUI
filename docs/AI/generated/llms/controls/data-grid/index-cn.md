@@ -76,6 +76,13 @@ public interface IDataGridCollectionViewMoveSupport
 `Pagination` 只投影该状态并把用户翻页请求交回 CollectionView。`ItemsSource`、分页属性与模板应用的先后顺序
 不得改变分页结果；模板重新套用时必须从当前 CollectionView 回放状态，而不能把模板部件的默认值当成真源。
 
+列宽公共契约由 `DataGrid.ColumnWidth`、`DataGridColumn.Width`、控件级与列级最小/最大宽度，以及
+`DataGridLengthUnitType` 共同表达。`ColumnWidth` 默认为 `Auto`；单列可以使用 `Pixel`、`Auto`、
+`SizeToHeader`、`SizeToCells` 或 `Star`。内容驱动模式先形成期望宽度，star 模式再按权重分配有限列视口中的
+剩余空间。列宽状态与统一分配算法由 `DataGrid` 持有，普通表头、分组表头和 rows/cells presenter 只提供当前
+布局可证明的有限宽度或内容测量结果。空数据时列宽求解不能依赖已隐藏的 rows presenter，完整契约见
+[DataGrid 列宽分配设计](column-sizing-design.md)。
+
 列过滤契约采用数据源与选中值分离的模型。`Filters` 是列过滤项数据源入口，应作为可绑定 Avalonia 属性维护，允许直接绑定 ViewModel 或数据库查询结果。`SelectedFilterValues` 是当前列过滤选中值的唯一 public 状态 owner，默认按双向绑定语义工作。`DataGridColumn` 实现 `IDataContextProvider`，列加入或离开 `DataGrid` 时由 `DataGrid` 同步/释放列级 `DataContext`，保证 `Filters="{Binding ...}"` 和 `SelectedFilterValues="{Binding ...}"` 能绑定到 Gallery 或业务 ViewModel。若同一个 `DataGrid` 通过 `x:DataType` 声明行模型类型，列级 ViewModel 绑定必须避免被行模型上下文捕获：可在 XAML 绑定上显式指定 VM 类型；若具体工具链无法稳定解析这种嵌套上下文，可在页面加载或 View 初始化时直接把 VM 集合赋给列属性，但仍必须复用 `SelectedFilterValues` 作为唯一状态 owner，不能另建并行选中状态。`DataGrid` 内部的 `FilterDescriptions` 只承载 collection view 过滤投影，不应成为列过滤菜单、VM 状态或 checked state 的并行 owner。
 
 列过滤项不应强制用户构造 UI 专属对象。`Filters` 中的元素可以是 `DataGridFilterItem`，也可以是业务 DTO；当使用业务 DTO 时，通过 `FilterTextMemberPath`、`FilterValueMemberPath` 和 `FilterChildrenMemberPath` 声明展示文本、过滤值和树形子项路径。DTO 成员路径只走生成的 data member accessor，DTO 类型需要使用 `[GenerateDataMemberAccessors]` 或等价生成描述；内置过滤项解析不做运行时反射兜底。过滤值以 `object?` 作为语义类型，字符串只是默认文本匹配路径的一种输入，不应成为过滤值契约的硬限制。
@@ -94,17 +101,20 @@ public interface IDataGridCollectionViewMoveSupport
 | `PART_Ascending` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 | `PART_BottomGridLine` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 | `PART_BottomPagination` | `Pagination` | 投影 CollectionView 分页状态并转发底部翻页请求。 |
+| `PART_ColumnHeadersPresenter` | `DataGridColumnHeadersPresenter` | 测量普通列头，并在空数据布局中提供有限列视口宽度。 |
 | `PART_ContentFrame` | `?` | 承载根视觉、边框、背景或尺寸基线。 |
 | `PART_ContentPresenter` | `?` | 展示用户内容、文本、图标或模板化数据。 |
 | `PART_Descending` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 | `PART_FocusVisual` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 | `PART_Frame` | `?` | 承载根视觉、边框、背景或尺寸基线。 |
+| `PART_GroupColumnHeadersPresenter` | `DataGridGroupColumnHeadersPresenter` | 测量分组列头，并与普通列头共享列宽输入契约。 |
 | `PART_HeaderPresenter` | `?` | 展示用户内容、文本、图标或模板化数据。 |
 | `PART_HorizontalIndicator` | `?` | 展示指示器、进度、分页或状态反馈。 |
 | `PART_IndicatorIconButton` | `?` | 承载用户触发入口、导航或关闭动作。 |
 | `PART_ItemsPresenter` | `?` | 展示用户内容、文本、图标或模板化数据。 |
 | `PART_RightGridLine` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 | `PART_RootLayout` | `?` | 承载根视觉、边框、背景或尺寸基线。 |
+| `PART_RowPresenter` | `DataGridRowsPresenter` | 承载已物化行；空数据时保持隐藏，不作为 star 求解的必要前置。 |
 | `PART_SortIndicator` | `?` | 展示指示器、进度、分页或状态反馈。 |
 | `PART_TopPagination` | `Pagination` | 投影 CollectionView 分页状态并转发顶部翻页请求。 |
 | `PART_VerticalIndicator` | `?` | 展示指示器、进度、分页或状态反馈。 |
@@ -214,6 +224,8 @@ DataGrid Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
   集合、刷新 View、重建模板或分配新的 ghost row。
 - 每次有效 PointerPressed 最多创建一个轻量行拖动会话，每次进入 Dragging 最多创建一个 ghost row；两者在
   完成或取消时释放。移动能力通过直接接口能力判断，不使用反射、动态调用或运行时类型扫描。
+- 列宽求解复用列集合可见宽度缓存和 `AdjustColumnWidths`；无 star 列、输入无限、adjustment 为零或初始 Auto
+  测量未完成时应直接退出，不在 presenter 中分配辅助集合或建立额外订阅。
 
 ## 源码索引
 

@@ -219,8 +219,8 @@ Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好�
 
 主要源码：
 
-- `src/AtomUI.Desktop.Controls/Buttons/Button.cs`：Button public API、Avalonia 属性注册、effective state、伪类同步、CompactSpace / Form / Wave 接口实现。
-- `src/AtomUI.Desktop.Controls/Buttons/ButtonToken.cs`：Button 控件 Token 定义与派生。
+- `src/AtomUI.Desktop.Controls/Button/Button.cs`：Button public API、Avalonia 属性注册、effective state、伪类同步、CompactSpace / Form / Wave 接口实现。
+- `src/AtomUI.Desktop.Controls/Button/ButtonToken.cs`：Button 控件 Token 定义与派生。
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.axaml`：桌面 Button 模板、状态 selector 和主题变量映射。
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/ButtonTheme.axaml`：Browser Button 模板投影，与桌面主题共享同一 public 状态语义。
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonBaseTheme.axaml`、`DropdownButtonTheme.axaml`：DropdownButton 对 Button 图标尺寸和状态语义的桌面投影。
@@ -229,7 +229,7 @@ Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好�
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.cs`：主题资源注册辅助。
 - `src/AtomUI.Controls/Buttons/ButtonPseudoClass.cs`：共享 Button 伪类定义。
 - `src/AtomUI.Controls/Buttons/Converters/ButtonIconVisibleConverter.cs`：icon 可见性转换辅助。
-- `src/AtomUI.Desktop.Controls/Buttons/DropdownButton.cs`、`SplitButton.cs`、`IconButton.cs`、`HyperLinkButton.cs`：Button 家族控件。
+- `src/AtomUI.Desktop.Controls/DropdownButton/DropdownButton.cs`、`src/AtomUI.Desktop.Controls/SplitButton/SplitButton.cs`、`src/AtomUI.Desktop.Controls/Button/IconButton.cs`、`src/AtomUI.Desktop.Controls/Button/HyperLinkButton.cs`：Button 家族控件。
 
 ## 相关文档
 
@@ -935,7 +935,7 @@ Token 来源：
 
 主要源码文件：
 
-- `src/AtomUI.Desktop.Controls/Buttons/SplitButton.cs`
+- `src/AtomUI.Desktop.Controls/SplitButton/SplitButton.cs`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/SplitButtonTheme.axaml`
 
 职责边界：
@@ -2458,6 +2458,7 @@ Public API / inherited command / item source / user input
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - open/close、collection/filter、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
 - 单选结果以继承的 `SelectedItem` / `SelectedIndex` 为准；AtomUI Form 集成使用 `SelectedItem` 作为 ComboBox 的默认表单值，`SetFormValue`、`GetFormValue` 和 `ClearFormValue` 不应转换为字符串或读取展示文本。
+- 下拉项的 active candidate 与 `SelectedItem` / `SelectedIndex` 分离。鼠标移动和键盘 `Up` / `Down` 共享同一个 active candidate；迁移只改变候选视觉，`Enter` 才提交 `SelectedItem`。`:pointerover` 不得形成第二个候选高亮，selected 视觉优先于 active 视觉。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
@@ -2686,7 +2687,7 @@ Token 来源：
 
 主要源码文件：
 
-- `src/AtomUI.Desktop.Controls/Buttons/DropdownButton.cs`
+- `src/AtomUI.Desktop.Controls/DropdownButton/DropdownButton.cs`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonBaseTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/DropdownButtonTheme.axaml`
@@ -3011,6 +3012,10 @@ NavMenu 的公共 API 分为控件 API、节点 API 和事件 API。
 | `Mode` | `NavMenuMode` | 菜单呈现模式，默认 `Inline`。 |
 | `IsInlineCollapsed` | `bool` | `Mode=Inline` 时是否进入内联折叠状态，默认 `false`。折叠不改变 public `Mode`，只改变内部有效呈现和交互模式。 |
 | `InlineCollapsedWidth` | `double` | 内联折叠状态下的菜单宽度。默认值来自 `NavMenuToken.InlineCollapsedWidth`，初始设计值为 `48`；开发者可通过本地值覆盖 token 默认宽度。 |
+| `IsCollapsedTooltipEnabled` | `bool` | 是否为有效 inline collapsed 状态下的顶层叶子节点启用 Tooltip，默认 `true`。 |
+| `CollapsedTooltipPlacement` | `PlacementMode` | 折叠 Tooltip 的放置方向，默认 `Right`。 |
+| `CollapsedTooltipShowDelay` | `int` | 首个折叠 Tooltip 的显示延迟，单位毫秒，默认 `400`。 |
+| `CollapsedTooltipBetweenShowDelay` | `int` | 连续折叠 Tooltip 之间允许立即切换的时间窗口，单位毫秒，默认 `100`。 |
 | `SelectedItem` | `INavMenuNode?` | 当前选中节点，双向绑定入口。 |
 | `DefaultSelectedPath` | `TreeNodePath?` | 初始选中路径；`SelectedItem` 非空时优先级更高。 |
 | `DefaultOpenPaths` | `IList<TreeNodePath>?` | 初始展开路径集合。 |
@@ -3032,6 +3037,8 @@ NavMenu 的公共 API 分为控件 API、节点 API 和事件 API。
 | --- | --- | --- |
 | `Header` | `object?` | 菜单项显示内容。 |
 | `HeaderTemplate` | `IDataTemplate?` | 菜单项 header 模板。 |
+| `Tooltip` | `object?` | 折叠叶子节点的独立 Tooltip 内容；为 `null` 时回退到节点 `Header`。传入 `ToolTip` 实例可获得完整定制能力：实例上显式设置的呈现类附加属性（位置、颜色、箭头、文本换行等）优先于菜单级与宿主配置，未设置的回落，详见 [Tooltip 桌面版架构设计](../../data-display/tooltip/overview.md) 的 Tip 实例定制模型。 |
+| `IsTooltipEnabled` | `bool` | 是否允许当前节点显示折叠 Tooltip，默认 `true`。 |
 | `ItemKey` | `EntityKey?` | 路径和业务标识。 |
 | `Icon` | `PathIcon?` | 菜单项图标。 |
 | `IsEnabled` | `bool` | 节点可用状态，默认 `true`。 |
@@ -3122,6 +3129,7 @@ NavMenu 的交互行为由 mode 决定。
 - 点击叶子节点时选中该节点，并更新所有祖先 `IsInSelectedPath`。
 - `IsAccordionMode=true` 时，顶层子菜单互斥展开。
 - `IsInlineCollapsed=true` 时，public `Mode` 仍保持 `Inline`，但内部有效模式切换为 vertical popup 语义：顶层只显示图标或无图标首字符，inline 子树不在主视觉树中展开，带子菜单的顶层项目通过 popup 打开。
+- 有效 inline collapsed 状态下，顶层叶子节点通过实际 header control 承载 Tooltip。节点显式 `Tooltip` 优先；未设置时回退到 `Header`；菜单级或节点级 Tooltip 被禁用、节点拥有子菜单或退出有效折叠状态时，不创建有效提示内容。
 - 进入折叠时缓存当前 inline 打开路径并关闭主视觉树中的 inline 子菜单；退出折叠时恢复缓存路径。折叠和展开不得清空 `SelectedItem` 或 selected path。
 - 键盘 Up / Down 在当前可见层级内移动 active/focus 项。
 - Enter 在带子菜单项上切换展开状态，在叶子节点上提交选择。
@@ -3186,7 +3194,7 @@ Theme 映射规则：
 - Popup 背景使用 `MenuPopupBg`，Dark popup 使用 `DarkMenuPopupBg`。
 - Header 默认背景为 `Transparent`，hover / selected 背景由 header state 直接控制。
 - Keyboard active 背景使用 `ItemActiveBg`，其优先级低于 `Selected`，高于普通默认态；它可以叠加在 `IsInSelectedPath` 父节点上，使父节点保留 selected-path 文字色的同时显示临时 active 背景。dark style 下使用 dark 语义的 active 视觉，不复用 selected 背景表达临时漫游。
-- Inline collapsed 根宽度使用 `InlineCollapsedWidth`，默认来自 `NavMenuToken.InlineCollapsedWidth=48`。折叠视觉只作用于 `Mode=Inline && IsInlineCollapsed=true`：一级 icon 使用 `CollapsedIconSize` 居中，标题和箭头收起，未配置 icon 的一级项显示标题首字符，叶子项可用 tooltip 展示完整标题。
+- Inline collapsed 根宽度使用 `InlineCollapsedWidth`，默认来自 `NavMenuToken.InlineCollapsedWidth=48`。折叠视觉只作用于 `Mode=Inline && IsInlineCollapsed=true`：一级 icon 使用 `CollapsedIconSize` 居中，标题和箭头收起，未配置 icon 的一级项从节点 `Header` 显示首字符；顶层叶子项使用独立 `Tooltip`，未设置时回退到 `Header`。
 - Inline/Vertical 的 Header 和 Footer 位于菜单滚动区之外；无 Header/Footer 时对应 presenter 折叠，不占用布局空间。Horizontal 中 Header 左停靠、Footer 右停靠，菜单项占用中间区域。进入 inline collapsed 后 Header 保持可见以承载展开入口，Footer 自动隐藏；Header 内容需要根据 `IsInlineCollapsed` 自适应折叠宽度。
 - 根层 inline collapsed 分组标题隐藏，分组及其透明嵌套分组内的节点继续继承根折叠状态，按顶层节点使用 `CollapsedIconSize` 居中；popup 或非根语义层级中的分组标题和节点保持普通 vertical 视觉。Horizontal 根层把分组渲染为透明水平集合并隐藏标题，popup 中恢复垂直分组标题。
 - Horizontal 根层分隔线为竖线；Inline、Vertical、popup 和 inline collapsed 根层分隔线为横线。
@@ -3218,7 +3226,7 @@ NavMenuToken 不承载 `SelectedItem`、`IsSubMenuOpen`、`IsInSelectedPath`、`
 
 NavMenu 不应通过反射访问 template part 或内部状态。Header、popup、inline child frame 和 active indicator 均通过稳定 template part 和 Avalonia 属性接入。
 
-`NavMenuNode` 必须通过 `[GenerateScopedResourceHost]` 生成 `IResourceHost` / `IThemeVariantHost`、attachment count、host generation 和 `IDisposable` attach token。generation 用于使跨 host 切换后遗留的 stale token 失效，尤其不能让 `A -> B -> A` 中第一轮 A token 释放当前 A attachment。scoped resource host 只解决动态资源宿主及其事件订阅，不替代节点到容器 binding 的释放，也不替代 `ICommand.CanExecuteChanged` 的解绑。
+`NavMenuNode` 必须通过 `[GenerateScopedResourceHost]` 生成 `IResourceHost` / `IThemeVariantHost`、attachment count、host generation 和 `IDisposable` attach token。generation 用于使跨 host 切换后遗留的 stale token 失效，尤其不能让 `A -> B -> A` 中第一轮 A token 释放当前 A attachment。`Header`、`Tooltip` 等节点属性的 `DynamicResource` 都使用该 scoped owner；scoped resource host 只解决动态资源宿主及其事件订阅，不替代节点到容器 binding 的释放，也不替代 `ICommand.CanExecuteChanged` 的解绑。
 
 `NavMenuGroup` 遵守相同的 generated scoped resource-host 生命周期；结构容器不能永久持有 group 或 owner menu。`NavMenuDivider` 不需要资源宿主和订阅。
 
@@ -4755,11 +4763,13 @@ input display + Form value
 - `FilterValue` 非空且控件 loaded 时，CascaderView 收集所有叶子路径并按 `Filter` 过滤。
 - 过滤结果显示完整路径文本，选中过滤结果后回写目标 option。
 - 过滤模式下，`Up` / `Down` 在可用结果间循环移动内部候选高亮，不修改 `SelectedOption`；`Enter` 提交当前候选，尚无候选时提交第一个可用结果，没有可用结果时保持选择和 popup 状态不变。路径中任一祖先 disabled 时，该过滤结果也不可作为候选或提交。
+- 过滤列表拥有独立于树列的 active candidate owner；过滤结果重建、过滤清空、popup 关闭和容器回收时清除旧候选。树列与过滤列不会同时保留两个候选视觉。
 - 清空过滤值或关闭 popup 后，过滤列表、过滤计数和缓存路径会被清理。
 
 树形键盘导航：
 
 - popup 打开且未过滤时，`Up` / `Down` 在当前已展开列的可见 enabled item 间循环移动内部候选；候选高亮与真实选择相互独立。
+- 普通树列的 active candidate 由 `CascaderView` 单一持有；鼠标移动到 enabled item 时迁移该候选并继续执行 `ExpandTrigger=Hover` 的展开逻辑，但不提前提交选择、不滚动列表。`Enter` 使用同一 active candidate 作为选择或展开目标。
 - `Right` 从当前候选或第一个可见 enabled item 开始，展开可展开节点并把候选移到下一列的第一个 enabled child。
 - `Left` 优先把子级候选移回父级；候选已位于展开的根级非叶节点时折叠该节点。
 - `Enter` 提交 enabled、非 loading 的叶子候选；`IsAllowSelectParent=true` 时也可提交父节点，否则沿用 `Right` 的展开并进入子级行为。
@@ -4794,7 +4804,7 @@ Cascader 的默认视觉由 Cascader 根主题、输入壳体、PopupHost、Casc
 - `OptionTemplate` 的 DataContext 必须保持为 `ICascaderOption`，不能改为 header 文本。
 - Popup 宽度和空状态宽度匹配语义必须保持：普通级联列使用列宽，空状态需要匹配输入宽度。
 - 选项行的 checkbox、icon、header、expand / loading icon 间距由 Token 管理，不应在单个模板节点中写死。
-- disabled、expanded、pointerover、checked 和 loading 状态 selector 不能被绕过。
+- disabled、expanded、pointerover、checked、loading 和 active candidate 状态 selector 不能被绕过；`pointerover` 只触发 active candidate 迁移，不独立绘制第二个候选背景。
 
 Token 来源：
 
@@ -7804,6 +7814,17 @@ Disabled / invisible / window deactivated
 - 弹层关闭时，`Up/Down`、`Enter`、`Space` 可打开弹层。
 - 多选和 Tags 模式下，过滤输入为空时 `Backspace/Delete` 删除最后一个已选项。
 
+候选交互：
+
+- `SelectCandidateList` 维护唯一 active candidate，鼠标移动和键盘导航必须更新同一个候选状态。
+- 鼠标在可用候选项上实际移动时，该项成为 active candidate；鼠标路径不滚动候选列表，也不提交公共选择。
+- `Up/Down` 在当前有效候选视图中移动 active candidate，并可以把键盘候选滚动到可见区域。
+- `Enter` 只提交或切换当前 active candidate，候选视觉目标和提交目标必须一致。
+- active candidate 与已确认选择相互独立；已选项继续保持 selected 视觉和公共选择语义。
+- `:pointerover` 只表达指针命中事实，不能与 `IsCandidateSelected` 分别绘制两个候选高亮。
+
+完整状态、Theme、虚拟化、性能和验证边界见 [Select 候选交互设计](candidate-interaction-design.md)。
+
 清除行为通过 `SelectHandle.ClearRequestedEvent` 冒泡到 Select，并调用 `ClearValue()` 清空 `SelectedOption` 和 `SelectedOptions`。
 
 ## 主题与 Design Token
@@ -7816,7 +7837,7 @@ Select 的默认视觉由 Select 专属主题、AddOnDecoratedBox、ListView 和
 | `SelectAddOnDecoratedBoxTheme.axaml` | 输入框 variant、status、dropdown open、hover、pressed 和多选 padding。 |
 | `SelectResultOptionsBoxTheme.axaml` | 多选标签布局、响应式标签布局和搜索输入承载。 |
 | `SelectCandidateListTheme.axaml` | 候选列表基础 ListView 主题和默认候选模板。 |
-| `SelectCandidateListItemTheme.axaml` | 候选项 active、selected、disabled 和隐藏已选项视觉。 |
+| `SelectCandidateListItemTheme.axaml` | 候选项 active、selected、disabled 和隐藏已选项视觉；active 只由统一候选状态驱动。 |
 | `SelectTagTheme.axaml` | 多选标签高度、背景、关闭按钮和禁用态。 |
 | `SelectHandleTheme.axaml` | 展开、loading、清除、过滤指示和 Form feedback 图标。 |
 | `PopupHostToken` | popup 阴影、圆角和 anchor margin。 |
@@ -7847,6 +7868,7 @@ Select 不依赖运行时反射发现模板结构。模板协作通过固定 tem
 - `_deactivationSubscription` 在 attach 时创建，detach 时释放。
 - `_selectHandleInputStateBindings` 每次模板接入前释放旧绑定，仅持有 AddOnDecoratedBox → SelectHandle 的 hover / pressed sibling part 状态转发。
 - `_candidateList` 的事件订阅和 `ItemsSource` 必须在 `ClearPopupContent()` 中释放。
+- active candidate 在 popup 关闭、popup 内容释放、detach、过滤上下文变化和候选失效时清除；容器回收只清理本地投影。
 - `SelectHandle` 订阅 `FormFeedback.ValidateStatus` 时必须在 feedback 变化和 logical detach 时释放。
 - 异步加载通过 `AsyncSearchLoadCoordinator` 处理超时、取消和跳过旧结果。
 
@@ -7856,6 +7878,13 @@ AOT 边界：
 - API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护。
 - `OptionTemplate`、AddOn 模板和 EmptyIndicator 模板是 XAML 模板入口，不依赖运行时成员扫描。
 
+候选交互热路径边界：
+
+- 同一候选项内的 PointerMoved 使用 source index 比较后 O(1) 返回。
+- 候选迁移只更新旧、新两个已准备容器；不得逐项写入全部 `ItemCount`。
+- 鼠标路径不滚动，键盘路径每次候选变化最多执行一次滚动。
+- 事件源解析和状态投影不创建长期订阅、每项 handler、timer 或运行时动态发现。
+
 ## 源码索引
 
 主要源码：
@@ -7864,8 +7893,8 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Select/Select.cs`：public Select API、protected 扩展 hook、用户选项源同步、有效候选选项同步、选择同步、过滤输入、Tags 动态选项、键盘和指针处理。
 - `src/AtomUI.Desktop.Controls/Select/Select.AsyncOptionsLoad.cs`：异步候选加载和私有加载完成流程。
 - `src/AtomUI.Desktop.Controls/Select/SelectOption.cs`：`ISelectOption` 和默认 `SelectOption`。
-- `src/AtomUI.Desktop.Controls/Select/SelectCandidateList.cs`：候选列表、候选导航、提交取消、最大选择数和隐藏已选项。
-- `src/AtomUI.Desktop.Controls/Select/SelectCandidateListItem.cs`：候选项容器状态。
+- `src/AtomUI.Desktop.Controls/Select/SelectCandidateList.cs`：统一 active candidate、鼠标与键盘候选导航、提交取消、最大选择数和隐藏已选项。
+- `src/AtomUI.Desktop.Controls/Select/SelectCandidateListItem.cs`：active candidate 和 committed selection 的容器状态投影。
 - `src/AtomUI.Desktop.Controls/Select/SelectResultOptionsBox.cs`：多选结果标签和过滤输入承载。
 - `src/AtomUI.Desktop.Controls/Select/SelectHandle.cs`：右侧展开、loading、清除和 Form feedback 图标。
 - `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`：共享溢出 tooltip attached behavior，供单选结果和多选 tag 复用。
@@ -10825,6 +10854,13 @@ public interface IDataGridCollectionViewMoveSupport
 `Pagination` 只投影该状态并把用户翻页请求交回 CollectionView。`ItemsSource`、分页属性与模板应用的先后顺序
 不得改变分页结果；模板重新套用时必须从当前 CollectionView 回放状态，而不能把模板部件的默认值当成真源。
 
+列宽公共契约由 `DataGrid.ColumnWidth`、`DataGridColumn.Width`、控件级与列级最小/最大宽度，以及
+`DataGridLengthUnitType` 共同表达。`ColumnWidth` 默认为 `Auto`；单列可以使用 `Pixel`、`Auto`、
+`SizeToHeader`、`SizeToCells` 或 `Star`。内容驱动模式先形成期望宽度，star 模式再按权重分配有限列视口中的
+剩余空间。列宽状态与统一分配算法由 `DataGrid` 持有，普通表头、分组表头和 rows/cells presenter 只提供当前
+布局可证明的有限宽度或内容测量结果。空数据时列宽求解不能依赖已隐藏的 rows presenter，完整契约见
+[DataGrid 列宽分配设计](column-sizing-design.md)。
+
 列过滤契约采用数据源与选中值分离的模型。`Filters` 是列过滤项数据源入口，应作为可绑定 Avalonia 属性维护，允许直接绑定 ViewModel 或数据库查询结果。`SelectedFilterValues` 是当前列过滤选中值的唯一 public 状态 owner，默认按双向绑定语义工作。`DataGridColumn` 实现 `IDataContextProvider`，列加入或离开 `DataGrid` 时由 `DataGrid` 同步/释放列级 `DataContext`，保证 `Filters="{Binding ...}"` 和 `SelectedFilterValues="{Binding ...}"` 能绑定到 Gallery 或业务 ViewModel。若同一个 `DataGrid` 通过 `x:DataType` 声明行模型类型，列级 ViewModel 绑定必须避免被行模型上下文捕获：可在 XAML 绑定上显式指定 VM 类型；若具体工具链无法稳定解析这种嵌套上下文，可在页面加载或 View 初始化时直接把 VM 集合赋给列属性，但仍必须复用 `SelectedFilterValues` 作为唯一状态 owner，不能另建并行选中状态。`DataGrid` 内部的 `FilterDescriptions` 只承载 collection view 过滤投影，不应成为列过滤菜单、VM 状态或 checked state 的并行 owner。
 
 列过滤项不应强制用户构造 UI 专属对象。`Filters` 中的元素可以是 `DataGridFilterItem`，也可以是业务 DTO；当使用业务 DTO 时，通过 `FilterTextMemberPath`、`FilterValueMemberPath` 和 `FilterChildrenMemberPath` 声明展示文本、过滤值和树形子项路径。DTO 成员路径只走生成的 data member accessor，DTO 类型需要使用 `[GenerateDataMemberAccessors]` 或等价生成描述；内置过滤项解析不做运行时反射兜底。过滤值以 `object?` 作为语义类型，字符串只是默认文本匹配路径的一种输入，不应成为过滤值契约的硬限制。
@@ -10843,17 +10879,20 @@ public interface IDataGridCollectionViewMoveSupport
 | `PART_Ascending` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 | `PART_BottomGridLine` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 | `PART_BottomPagination` | `Pagination` | 投影 CollectionView 分页状态并转发底部翻页请求。 |
+| `PART_ColumnHeadersPresenter` | `DataGridColumnHeadersPresenter` | 测量普通列头，并在空数据布局中提供有限列视口宽度。 |
 | `PART_ContentFrame` | `?` | 承载根视觉、边框、背景或尺寸基线。 |
 | `PART_ContentPresenter` | `?` | 展示用户内容、文本、图标或模板化数据。 |
 | `PART_Descending` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 | `PART_FocusVisual` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 | `PART_Frame` | `?` | 承载根视觉、边框、背景或尺寸基线。 |
+| `PART_GroupColumnHeadersPresenter` | `DataGridGroupColumnHeadersPresenter` | 测量分组列头，并与普通列头共享列宽输入契约。 |
 | `PART_HeaderPresenter` | `?` | 展示用户内容、文本、图标或模板化数据。 |
 | `PART_HorizontalIndicator` | `?` | 展示指示器、进度、分页或状态反馈。 |
 | `PART_IndicatorIconButton` | `?` | 承载用户触发入口、导航或关闭动作。 |
 | `PART_ItemsPresenter` | `?` | 展示用户内容、文本、图标或模板化数据。 |
 | `PART_RightGridLine` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 | `PART_RootLayout` | `?` | 承载根视觉、边框、背景或尺寸基线。 |
+| `PART_RowPresenter` | `DataGridRowsPresenter` | 承载已物化行；空数据时保持隐藏，不作为 star 求解的必要前置。 |
 | `PART_SortIndicator` | `?` | 展示指示器、进度、分页或状态反馈。 |
 | `PART_TopPagination` | `Pagination` | 投影 CollectionView 分页状态并转发顶部翻页请求。 |
 | `PART_VerticalIndicator` | `?` | 展示指示器、进度、分页或状态反馈。 |
@@ -10963,6 +11002,8 @@ DataGrid Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
   集合、刷新 View、重建模板或分配新的 ghost row。
 - 每次有效 PointerPressed 最多创建一个轻量行拖动会话，每次进入 Dragging 最多创建一个 ghost row；两者在
   完成或取消时释放。移动能力通过直接接口能力判断，不使用反射、动态调用或运行时类型扫描。
+- 列宽求解复用列集合可见宽度缓存和 `AdjustColumnWidths`；无 star 列、输入无限、adjustment 为零或初始 Auto
+  测量未完成时应直接退出，不在 presenter 中分配辅助集合或建立额外订阅。
 
 ## 源码索引
 
@@ -14035,8 +14076,17 @@ Tooltip 的公共契约由 public/protected 类型成员、Avalonia 属性、事
 | --- | --- | --- |
 | 内容与数据 | `Content` | 继承 ToolTip 的轻量说明内容入口。 |
 | 交互与状态 | `IsMotionEnabled` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
+| 宿主内容与呈现 | `Tip`、`TipHostWidth`、`PresetColor`、`Color`、`IsArrowVisible` | 以附加属性配置在任意目标 `Control` 上，目标控件是这些值的 owner。 |
+| 宿主文本布局 | `TextWrapping`、`TextTrimming` | 附加属性；控制 Tip 文本在最大宽度约束内的换行与截断行为，默认 `Wrap` / `None`。 |
+| 宿主定位与时机 | `Placement`、`HorizontalOffset`、`VerticalOffset`、`MarginToAnchor`、`IsPointAtCenter`、`ShowDelay`、`BetweenShowDelay` | 附加属性；控制弹层相对宿主的定位与悬停出现时机。 |
+| 打开状态与服务开关 | `IsOpen`、`IsCustomShowAndHide`、`ServiceEnabled`、`ShowOnDisabled`、`IsUseOverlayHost` | `IsOpen` 是声明式期望打开状态（见第 4.1 节），赋值时序不影响最终物理状态。 |
 
-当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
+公开路由事件（Direct 路由，挂接在目标控件上）：
+
+| 事件 | 语义 |
+| --- | --- |
+| `ToolTipOpening` | 打开前引发，可取消；否决时把 `IsOpen` 回写为 `false`。 |
+| `ToolTipClosing` | 关闭前引发。 |
 
 主要公开类型与枚举：
 
@@ -14047,15 +14097,16 @@ Tooltip 的公共契约由 public/protected 类型成员、Avalonia 属性、事
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_ArrowDecorator` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
-| `PART_ContentPresenter` | `?` | 展示用户内容、文本、图标或模板化数据。 |
+| `PART_ArrowDecorator` | `ArrowDecoratedBox` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
+| `PART_ContentPresenter` | `ContentPresenter` | 展示用户内容、文本、图标或模板化数据。 |
 
 控件专属或内部伪类包括 `Open=:open`、`ToolTipPseudoClass.Open`。这些伪类属于主题 selector 可观察契约，不能在未同步主题和 Gallery 的情况下重命名或删除。
 
 ## 事件与命令
 
 Tooltip 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
-当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
+公开路由事件（Direct 路由，挂接在目标控件上）：
+| 事件 | 语义 |
 
 ## 使用示例
 
@@ -14081,6 +14132,18 @@ Public API / inherited command / item source / user input
 - motion 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+
+### 4.1 打开状态调和模型
+
+`IsOpen` 附加属性表达期望打开状态，不是赋值瞬间执行的命令。期望打开的完整条件是：`IsOpen` 为 `true`、`Tip` 内容就绪、宿主控件已挂入 visual tree。物理弹层的开关由唯一调和流程在这些输入变化时统一兑现，赋值时序不影响最终结果：
+
+- 满足期望条件且弹层未打开：先引发可取消的 `ToolTipOpening`；被取消时把 `IsOpen` 回写为 `false`，否则打开弹层。
+- `IsOpen` 转为 `false` 且弹层已打开：关闭弹层并引发 `ToolTipClosing`。
+- 宿主控件从 visual tree 卸载：物理关闭弹层但保留 `IsOpen`，重新挂入后由调和流程自动重开。
+- `Tip` 未就绪不重置 `IsOpen`；内容就绪后调和流程自动完成打开。
+- 弹层被外部原因关闭时，`IsOpen` 回写为 `false`，期望状态与实际状态保持一致。
+
+悬停打开由 `ToolTipService` 驱动同一个 `IsOpen` 属性；编程式声明与悬停交互共享同一状态 owner 和调和出口，不存在第二套开关路径。
 
 ## 主题与 Design Token
 
@@ -14131,9 +14194,9 @@ Tooltip Token 只表达组件级视觉变量，例如尺寸、间距、颜色、
 - `src/AtomUI.Desktop.Controls/Tooltip/Themes/ToolTipTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Tooltip/ToolTip.cs`
 - `src/AtomUI.Desktop.Controls/Tooltip/ToolTipPseudoClass.cs`
-- `src/AtomUI.Desktop.Controls/Tooltip/ToolTipService.cs`
 - `src/AtomUI.Desktop.Controls/Tooltip/ToolTipToken.cs`
 - `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`
+- `src/AtomUI.Desktop.Controls/PackageCore/ToolTipService.cs`
 
 职责边界：
 
@@ -14941,7 +15004,7 @@ Public API / inherited command / item source / user input
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 - TopLevel Drawer 使用 Window visible frame：包含 managed/drawn 标题栏，排除透明 frame shadow；该规则不按 OS 或 CSD 模式分叉。
-- drawn decorations 暴露 Drawer host 时按能力优先使用；host 不存在时回退到原 `ScopeAwareAdornerLayer`。
+- Drawer container 始终保留在 owning `TopLevel` 的 `ScopeAwareAdornerLayer`；Window drawn decorations 只绘制 chrome，不作为 Drawer host。
 
 ## 主题与 Design Token
 
@@ -15226,7 +15289,7 @@ Modal 不承担通知队列、轻量 Tooltip、Popup 菜单或业务级导航服
 | 内容 | `Title`, `TitleIcon`, `Content`, `ContentTemplate`, `DataContext` | 定义标题和任意内容对象或模板。 |
 | 打开状态 | `IsOpen`, `OpenAsync(...)` | `IsOpen` 是默认 TwoWay 的声明式意图；`OpenAsync` 表示一次完整 Session。 |
 | 展示方式 | `DialogHostType`, `IsModal`, `PlacementTarget`, startup anchor/offset | 选择 Overlay/Window、交互模态和初始位置。 |
-| 尺寸与窗口能力 | `HostWidth/Height/Min/Max`, `IsResizable`, `IsClosable`, `IsDragMovable`, `IsMaximizable`, `IsMinimizable`, `IsTopmost` | 同一组 Surface 正文尺寸请求映射到 Overlay 或原生 Window。`NaN` 表示初始自然尺寸；有效最小尺寸还必须满足 Dialog 的结构性下限。 |
+| 尺寸与窗口能力 | `HostWidth/Height/Min/Max`, `IsResizable`, `IsClosable`, `IsMaskClosable`, `IsDragMovable`, `IsMaximizable`, `IsMinimizable`, `IsTopmost` | 同一组 Surface 正文尺寸请求映射到 Overlay 或原生 Window。`NaN` 表示初始自然尺寸；有效最小尺寸还必须满足 Dialog 的结构性下限。`IsClosable` 控制标题栏关闭入口，`IsMaskClosable` 控制 Overlay modal mask 外点关闭入口，两者正交且默认都为 `true`。 |
 | 操作 | `StandardButtons`, `CustomButtons`, `DefaultStandardButton`, `EscapeStandardButton`, `ButtonsConfigure` | 生成标准按钮、加入自定义按钮并配置当前有效按钮序列。 |
 | 状态与策略 | `IsLoading`, `IsConfirmLoading`, `IsFooterVisible`, `IsMotionEnabled`, `BeforeCloseAsync` | 控制加载、确认按钮 loading、Footer、motion 和关闭前校验。 |
 | 结果 | `Result`, `Accept()`, `Reject()`, `Done(...)` | 所有关闭来源归一为结果与 `DialogCloseReason`。 |
@@ -15265,7 +15328,7 @@ Dialog 公开 `Opened`、`Closing`、`Accepted`、`Rejected`、`Finished`、`Clo
 
 `MessageBox : Dialog` 增加 `Style`、`Icon`、`OkButtonStyle`、`OkButtonText`、`CancelButtonText`、`IsCenterOnStartup`、`Confirmed`、`Cancelled`、`Confirm()` 和 `Cancel()`。
 
-`ShowMessageBoxAsync(...)` 与 `ShowMessageBoxModalAsync(...)` 复用继承的异步 Session 语义。未显式指定 `MessageBoxOptions.MinWidth` 时保留 MessageBox Token 的默认最小宽度。
+`ShowMessageBoxAsync(...)` 与 `ShowMessageBoxModalAsync(...)` 复用继承的异步 Session 语义。未显式指定 `MessageBoxOptions.MinWidth` 时保留 MessageBox Token 的默认最小宽度。`IsMaskClosable` 由 `Dialog` 继承并经 `MessageBoxOptions` 透传，语义与 Dialog 一致。
 
 ### 3.4 Template Parts
 
@@ -15295,8 +15358,9 @@ Dialog 公开 `Opened`、`Closing`、`Accepted`、`Rejected`、`Finished`、`Clo
 ## 状态模型
 
 - `IsOpen` 表示最新声明式意图；`DialogSession` 表示一次实际展示。两者不能由 presenter 或 template part 反向拥有。
-- modal Overlay 的真实 pointer 输入命中 mask，modeless Overlay 在 Surface 外穿透到底层。只有栈顶 presenter 响应 mask 与 Escape。
-- 所有平台的 `AtomUI.Window` 都按宿主能力选择 Overlay layer：drawn decorations 暴露 Dialog host 时把 presenter 放在该层，否则回退 TopLevel popup overlay。modal mask 覆盖完整 Avalonia 可绘制窗口轮廓和 managed/drawn 标题栏，标题栏内容与 caption buttons 也受同一 modal 输入阻断；位于客户端 visual tree 外的原生系统 chrome 仍由平台管理。
+- modal Overlay 的真实 pointer 输入命中 mask，modeless Overlay 在 Surface 外穿透到底层。只有栈顶 presenter 响应 mask 与 Escape。栈顶 modal mask 外点默认以 `HostCloseRequest` 发起普通关闭；`IsMaskClosable=false` 时该次点击被吞掉且不产生任何关闭请求，不进入 `Closing`/`BeforeCloseAsync` 管道。Window host 没有 mask，外点本来就不触发关闭。
+- 所有平台的 `AtomUI.Window` 都把 Overlay presenter 放在 owning `TopLevel` 的 Avalonia `OverlayLayer`。modal 活跃时通过 Window 引用计数租约隐藏 managed/drawn chrome overlay，使 mask 覆盖完整 Avalonia 可绘制窗口轮廓并阻断 caption input；位于客户端 visual tree 外的原生系统 chrome 仍由平台管理。
+- Dialog 内容区内的 popup 类控件(ComboBox、Select、DatePicker、Tooltip、Flyout、ContextMenu 等)由同一 Window 的 `PopupOverlayLayer` 或原生 Popup host 承载，位于 Dialog `OverlayLayer` 之上并保持可命中；二者之间的 `LightDismissOverlayLayer` 保证外点关闭与输入穿透语义和普通页面一致。层级与所有权契约见 [Modal 内容弹层叠放设计](popup-layering-design.md)。
 - Overlay mask bounds、Window visible frame 与 Dialog 正文 owner bounds 独立：mask 使用完整 layer bounds；所有平台的 Surface 正文定位、拖动、resize 和 maximize 使用 visible frame 按当前有效 drawn frame thickness 内缩后的范围，允许进入 managed/drawn title bar，但不能覆盖窗口 frame。Dialog BoxShadow 只参与绘制并允许在窗口边缘由统一 visual-layer clip 裁剪。
 - Enter/Escape 根据当前有效按钮序列查找 default/escape 按钮，运行时修改标准按钮或自定义按钮会立即生效。
 - `IsConfirmLoading=true` 只阻止用户发起的普通关闭，不阻止 owner close、detach、取消和失败 teardown。
@@ -15333,7 +15397,7 @@ Modal Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - Window 保留 DialogSurface 到 Window `ContentPresenter` 的正常 styling parent 链，避免在未附加树中提前实例化的嵌套控件失去 ControlTheme。Dialog/owner 资源由 presenter-owned `DialogResourceBridge` 转发到 Window resources；bridge 对称转发 `ResourcesChanged`，并在 `DisposeAsync` 中移除和退订。
 - runtime binding 只用于动态 presenter/Surface/按钮关系，并由 owning presenter、Surface 或 ButtonBox 对称释放。
 - Presenter 为 Surface 复用单一 `MatrixTransform` 作为位置 owner。拖动 `PointerMoved` 只更新 Matrix translation 并同步不触发布局的 `Dialog.OffsetX/Y`；位置先按 DPI 取整，再二次 clamp 到 body owner bounds，避免取整重新越界。
-- drawn decorations host discovery 复用 Window 模块集中的 `WindowDrawnDecorationsReflectionExtensions` 兼容边界及其 `DynamicDependency` 标注；Modal 不新增反射入口。实现不使用反射修改 TemplatedParent，不扫描程序集发现 Dialog API，不使用同步 DispatcherFrame。
+- drawn decorations 反射兼容边界只读取 frame/titlebar 几何；Modal 不反射发现业务 host，也不新增 trimming root。实现不使用反射修改 TemplatedParent，不扫描程序集发现 Dialog API，不使用同步 DispatcherFrame。
 - Session、Presenter、Surface 和 Content 的关闭回收由 Overlay/Window WeakReference 测试覆盖。
 - 状态机、按钮表和 presenter 选择都是静态类型路径，保持 NativeAOT 友好。
 
@@ -15348,7 +15412,7 @@ Modal Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 | `IDialogPresenter.cs` | Overlay/Window 共用的最小异步协议。 |
 | `DialogSurface.cs` | 标题、内容、Footer、按钮和 Overlay resize 的共享表面。 |
 | `ButtonBox/DialogButtonBox.cs` | 标准按钮生成、唯一有效按钮序列和自定义集合同步。 |
-| `OverlayHost/DialogOverlayLayer.cs` | 按能力解析 drawn decorations、TopLevel popup 或局部 scope host，并管理 owner scope 内的 presenter stack。 |
+| `OverlayHost/DialogOverlayLayer.cs` | 解析 owning TopLevel 的 Avalonia `OverlayLayer` 或局部 scope fallback，并管理 owner scope 内的 presenter stack。 |
 | `OverlayHost/OverlayDialogPresenter.cs` | 同时拥有 mask、Surface、placement、drag/resize 和 motion。 |
 | `WindowHost/WindowDialogPresenter.cs` | 原生 Window 属性映射、modal owner、尺寸、位置和生命周期。 |
 | `WindowHost/DialogWindow.cs` | 原生 caption close 仲裁和显式尺寸应用。 |
@@ -17071,7 +17135,7 @@ Window 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 | --- | --- | --- |
 | 内容与数据 | `ContentFrameBackground`、`ContentFrameLayer`、`ContentFrameLayerOpacity`、`ContentFrameLayerTemplate`、`IsTitleBarVisible`、`LogoTemplate`、`LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn`、`RightAddOnTemplate`、`TitleBarFrameBackground`、`TitleBarFrameLayer`、`TitleBarFrameLayerOpacity`、`TitleBarFrameLayerTemplate` 等 | 定义控件展示内容、输入数据、模板或业务对象入口；`LeftAddOn` 和 `RightAddOn` 用于默认标题栏中的交互内容，`TitleBarFrameLayer` 仍只表示标题栏背景或装饰层。 |
 | 选择与集合 | `ViewModel` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsMoveEnabled`、`IsPinCaptionButtonVisible` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
+| 交互与状态 | `IsMinimizeCaptionButtonVisible`、`IsMaximizeCaptionButtonVisible`、`IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsPinCaptionButtonVisible`、`IsMoveEnabled` | 表达 managed caption button 呈现、窗口移动和用户可观察状态；visibility 不替代窗口 capability。 |
 | 弹层与窗口 | `WindowFrameLayer`、`WindowFrameLayerOpacity` | 控制 popup、flyout、dialog、window 或 overlay 宿主协作。 |
 | 其他稳定入口 | `Logo`、`LogoVisibility`、`MediaBreakPoint`、`OsType`、`OsVersion`、`TitleAlignment` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
@@ -17139,6 +17203,10 @@ Public API / inherited command / item source / user input
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 - 默认标题栏的交互内容通过 `LeftAddOn`、`RightAddOn` 及其模板属性承载；`TitleBarFrameLayer` 只表达标题栏背景、遮罩或装饰视觉，不保证内部控件获得 pointer、focus、keyboard 或 command 事件。
 
+Caption button 的 requested visibility 与窗口 capability 分离：Minimize、Maximize 和 Close 默认请求显示，FullScreen 和 Pin 默认隐藏。设置 visibility 为 `false` 只隐藏 AtomUI managed button，不修改 `CanMinimize`、`CanMaximize`、`WindowState`、`Topmost` 或其他窗口操作入口；capability 为 `false` 时对应 managed button 保持隐藏。完整模型见 [WindowTitleBar Caption Button 配置设计](../window-title-bar/caption-button-configuration-design.md)。
+
+Window 为逻辑树内每个 `WindowTitleBar` 定义相同的宿主上下文投影，包括 caption 配置、窗口能力、WindowState、active state、Topmost、平台/CSD 输入和窗口操作命令。投影由 Window 创建为可释放 lease，由各标题栏实例分别持有；Window 不以单例 binding 容器限制一个窗口只能接入一个标题栏。
+
 ## 主题与 Design Token
 
 Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
@@ -17146,7 +17214,7 @@ Window 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的�
 | 主题文件 | 职责 |
 | --- | --- |
 | `FullscreenPopoverLayerTheme.axaml` | 定义 macOS 全屏标题栏 popover 的固定模板、caption buttons 和标题展示。 |
-| `WindowDrawnDecorationsTheme.axaml` | 定义 Avalonia drawn decorations overlay 下的标题栏、内容、Dialog/Drawer host 和 visible frame 裁剪结构。 |
+| `WindowDrawnDecorationsTheme.axaml` | 定义 Avalonia drawn decorations overlay 下的标题栏、caption buttons、shadow 和 visible frame 裁剪结构；该 overlay 不承载 Dialog、Drawer 或其他业务 presentation。 |
 | `WindowResizerTheme.axaml` | 定义 managed resize grip 的八向命中区域。 |
 | `WindowTheme.axaml` | 定义普通 Window 模板、标题栏、内容 frame、visual layer、overlay host、fullscreen popover 和 managed resizer。 |
 
@@ -17168,11 +17236,13 @@ Window 标题栏按职责拆分为背景/装饰层、默认标题栏层和自定
 | 标题栏背景/装饰层 | `TitleBarFrameBackground` / `TitleBarFrameLayer` / `TitleBarFrameLayerTemplate` | 提供标题栏背景、遮罩、纹理、圆角、裁剪或装饰视觉。 | 不作为用户交互入口；CSD 下可处于标题栏拖拽 role 中。 |
 | 默认标题栏层 | `WindowTitleBar` | 展示标题、Logo、`LeftAddOn`、`RightAddOn` 与 caption buttons，并在空白区域提供窗口拖拽语义。 | add-on 与 caption buttons 按普通 Avalonia client input 语义命中；空白区域保留标题栏交互。 |
 | 自定义标题栏层 | `NotifyCreateTitleBar` / `NotifyConfigureTitleBar` 扩展点 | 承载需要替换默认标题栏组成或行为的派生窗口实现。 | 派生窗口负责其自定义标题栏的 client input 与空白区域拖拽策略。 |
+| 内容区标题栏 | Window 内容逻辑树中的 public `WindowTitleBar` | 自动消费最近 Window 的 caption 状态和操作命令，并在空白区域提供窗口拖动和双击最大化/还原语义。 | 不提供标题栏高度提示，也不取得唯一 CSD chrome role。 |
 
 维护标题栏模板时，不应把 `TitleBarFrameLayer` 提升为可交互覆盖层。需要向默认标题栏加入按钮、菜单或搜索框时，使用 `LeftAddOn` 或 `RightAddOn`；只有需要替换整个标题栏组成或行为时，才在派生 `Window` 中重写标题栏创建与配置扩展点。`Window.TitleBar` 是模板生命周期拥有的 internal 状态，不作为应用 API 公开。
 
-`Window.TitleAlignment` add-owner `WindowTitleBar.TitleAlignmentProperty`，并把配置单向投影给默认或派生
-`WindowTitleBar`。`LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn` 和 `RightAddOnTemplate` 同样 add-owner 对应标题栏属性，并以 `Template` 优先级单向投影。派生标题栏以 local value 提供的内置操作区优先于 Window facade。Window 只提供内容、平台、CSD、WindowState 和原生 chrome 安全区，不实现标题排列公式。
+Window 的 title-bar host projection 服务默认、派生和内容区标题栏，并由每个标题栏的 logical attach/detach 生命周期持有。该 lease 同时包含 caption 状态/命令投影和窗口拖动、双击请求的交互订阅。默认标题栏另行消费 Window facade：`Window.TitleAlignment` add-owner `WindowTitleBar.TitleAlignmentProperty`，`LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn` 和 `RightAddOnTemplate` 同样 add-owner 对应标题栏属性，并以 `Template` 优先级单向投影。派生标题栏以 local value 提供的内置操作区优先于 Window facade。`NotifyConfigureTitleBar` 只扩展这组默认内容配置，不负责通用宿主发现或 caption command 接入。Window 提供内容、平台、CSD、WindowState 和原生 chrome 安全区，但不实现标题排列公式。
+
+CSD 模式下，`IsTitleBarVisible=false` 只隐藏 AtomUI drawn title-bar frame、shadow 和 presenter，不把 `WindowDecorations` 从 `Full` 降级为 `BorderOnly`。内容区同时移除 Avalonia drawn title-bar 对顶部 decoration margin 的占位，但继续保留 frame 和 shadow margin，因此用户内容可以到达窗口顶部且不破坏可调整大小边框。窗口最小化、最大化和恢复继续通过 Avalonia `WindowState` 表达，由 Windows DWM、macOS AppKit 或 Linux 窗口管理器/合成器在平台支持范围内执行原生状态转换和动画；AtomUI 不伪造窗口缩放动画，也不为 caption button 建立平台专用状态旁路。macOS 非 CSD 且隐藏原生标题栏时仍可使用 `BorderOnly`，该分支不改变 CSD 契约。
 
 默认标题栏的 add-on 可直接使用 AXAML 属性元素配置：
 
@@ -17227,6 +17297,7 @@ Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
+- TitleBar 宿主发现只使用逻辑祖先和强类型 AvaloniaProperty binding，不使用全局 Window registry、反射或字符串 binding path；状态变化复用现有 lease，template reapply 不重复创建 lease。
 - 首次显示主题表面使用一次性 Snapshot 读取，不为同步 `Show` 临界区创建资源 observable 或订阅。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
 
@@ -17290,8 +17361,8 @@ Source: ./controls/window-title-bar/index-cn.md
 
 - 展示窗口 Logo、标题以及标题模板。
 - 承载标题栏左右两侧的应用自定义内容。
-- 为窗口拖动、双击最大化和系统 caption buttons 提供统一交互表面。
-- 接收宿主窗口的平台、激活状态和窗口状态，并投影为稳定的模板状态。
+- 为系统 caption buttons 提供统一交互表面；连接到 Window 后同时参与窗口拖动和双击最大化。
+- 自动发现最近的 AtomUI `Window`，接收平台、激活状态、窗口状态和操作命令，并投影为稳定的模板状态。
 - 在不同平台和窗口装饰模式下保持标题、原生按钮、managed buttons 与 add-on 互不覆盖。
 
 `WindowTitleBar` 不是通用工具栏或导航栏。业务操作应放入 `LeftAddOn`、`RightAddOn` 或专用控件，并保留标题栏拖动区域和系统窗口操作的优先级。
@@ -17312,12 +17383,12 @@ Source: ./controls/window-title-bar/index-cn.md
 
 | 语义 | 内容 | 责任 |
 | --- | --- | --- |
-| Leading | Windows/Linux: `Logo + LeftAddOn`；macOS: `LeftAddOn` | 承载靠近起始侧的应用操作，并占用标题安全空间。Windows/Linux 中可见 Logo 位于物理最左侧，先于 `LeftAddOn`。 |
+| Leading | Windows/Linux: `Logo + LeftAddOn`；macOS: `LeftAddOn` | 承载靠近起始侧的应用操作，并占用标题安全空间。Windows/Linux 中可见 Logo 位于物理最左侧，先于 `LeftAddOn`；两者同时有效时使用 `LogoAndLeftAddOnSpacing` 分隔。 |
 | Title | Windows/Linux: `Title`；macOS: `Logo + Title` | 承载标题内容并执行对齐和裁剪。macOS 保留连续 Logo/Title 标题组以配合原生窗口按钮安全区。 |
 | Trailing | `RightAddOn + CaptionButtonGroup` | 承载结束侧应用操作和 managed window operations。 |
 | Native chrome | 平台原生窗口按钮或 overlay | 不进入 visual tree，通过窗口边缘安全区参与布局。 |
 
-三块 managed 区域与 native chrome 的完整几何关系由本文第 8 节和 [WindowTitleBar 实现原理](implementation.md) 定义。Windows/Linux 的 Logo 属于 Leading，占用左侧操作安全空间；macOS 的 Logo 属于 Title，以保持平台标题行为。左右 add-on 属于操作区，不参与标题中心计算。
+三块 managed 区域与 native chrome 的完整几何关系由本文第 8 节和 [WindowTitleBar 实现原理](implementation.md) 定义。Windows/Linux 的 Logo 属于 Leading，占用左侧操作安全空间；Logo 与 `LeftAddOn` 的条件间距同样属于 Leading 实测宽度。macOS 的 Logo 属于 Title，以保持平台标题行为。左右 add-on 属于操作区，不参与标题中心计算。
 
 控件家族的职责边界：
 
@@ -17326,7 +17397,7 @@ Source: ./controls/window-title-bar/index-cn.md
 | `WindowTitleBar` | public | 公共内容契约、宿主状态投影、交互入口和主题入口。 |
 | `WindowTitleBarLogoVisibility` | public | 定义 Logo 的显示策略。 |
 | `WindowTitleBarTitleAlignment` | public | 定义标题组的跨平台对齐语义。 |
-| `CaptionButtonGroup` | internal | 把窗口能力和状态映射为关闭、最小化、最大化、全屏和置顶按钮。 |
+| `CaptionButtonGroup` | internal | 根据宿主投影的能力、requested visibility 和窗口状态推导 effective visibility，并把固定窗口操作转发给宿主命令。 |
 | `CaptionButton` | internal | 承载 caption icon、checked icon 和按钮视觉状态。 |
 | `WindowsCaptionButton` | internal | 提供 Windows 方形 caption button 尺寸和 hover 状态修正。 |
 
@@ -17356,7 +17427,7 @@ internal 类型服务于 AtomUI 内置主题，不属于应用可直接创建或
 | `RightAddOn` | `null` | Trailing 区域中位于 caption buttons 之前的内容。 |
 | `RightAddOnTemplate` | `null` | Trailing 内容模板。 |
 
-Add-on 可以包含可交互控件，也可以是 `null`、隐藏节点或当前没有孩子的容器。内置模板必须保留其命中测试能力，同时避免 Title 覆盖这些区域。Leading 或 Trailing 的实测宽度为零时，该区域不占用标题安全空间，也不产生 `HeaderHorizontalSpacing`；内容出现、隐藏或动态替换后由正常 measure invalidation 重新计算。
+Add-on 可以包含可交互控件，也可以是 `null`、隐藏节点或当前没有孩子的容器。内置模板必须保留其命中测试能力，同时避免 Title 覆盖这些区域。Windows/Linux 仅在 `PART_Logo` 与 `PART_LeftAddOn` 两个 presenter 同时可见时产生 `LogoAndLeftAddOnSpacing`；Logo 隐藏、LeftAddOn 为 `null` 或 presenter 不可见时不保留该间距。该条件遵循 Avalonia sibling layout 的可见性语义，不根据子内容的实测宽度建立第二套状态。Leading 或 Trailing 的实测宽度为零时，该区域不占用标题安全空间，也不产生 `HeaderHorizontalSpacing`；内容出现、隐藏或动态替换后由正常 measure invalidation 重新计算。
 
 ### 3.3 宿主状态
 
@@ -17374,6 +17445,8 @@ Add-on 可以包含可交互控件，也可以是 `null`、隐藏节点或当前
 `MaximizeWindowRequested` 表示标题栏收到有效的主按钮双击请求。`WindowTitleBar` 不直接修改 `WindowState`；宿主 `Window` 根据 `CanResize`、`CanMaximize` 和当前状态决定最大化或还原。
 
 事件在对应的 `PointerReleased` 阶段发出，避免窗口同步 resize 破坏当前 pointer capture。pointer capture 丢失或释放条件不匹配时，请求被取消。
+
+每个连接到 AtomUI `Window` 的 `WindowTitleBar` 都是窗口交互表面：空白区域可按 `Window.IsMoveEnabled` 启动窗口拖动，主按钮双击可请求 Normal/Maximized 切换。该交互连接与 caption 状态投影由同一个 host lease 管理；标题栏离开逻辑树、切换宿主或 Window 关闭后不再操作旧宿主。标题栏高度提示和 CSD 几何仍只由 Window 模板正式接入的默认标题栏提供。
 
 ## 事件与命令
 
@@ -17412,7 +17485,7 @@ Gallery 目录 `未提供独立页面；以本目录源文档、控件源码和�
 
 ### 4.2 窗口状态
 
-`WindowTitleBar` 从逻辑祖先 `Window` 接收状态并维护以下伪类：
+`WindowTitleBar` 从宿主 `Window` 的单向属性投影接收状态并维护以下伪类：
 
 | 伪类 | 条件 |
 | --- | --- |
@@ -17424,19 +17497,23 @@ Gallery 目录 `未提供独立页面；以本目录源文档、控件源码和�
 
 窗口激活状态同时写入 `IsWindowActive`，供模板中的内部协作控件使用。状态 owner 始终是宿主 `Window`；模板节点不反向维护第二份窗口状态。
 
+标题栏在进入逻辑树时自动选择最近的 AtomUI `Window` 作为宿主，并为自身持有一个可释放的 host projection lease。同一 Window 可以包含多个 `WindowTitleBar`，每个实例都独立接收同一宿主状态；标题栏从逻辑树移除或转移到另一 Window 时，旧投影必须释放并由新宿主重新建立。
+
 ### 4.3 Caption buttons
 
 caption button 的公共配置属于宿主 `Window`：
 
-- `CanMinimize` 和 `CanMaximize` 决定最小化、最大化按钮能力。
-- `IsFullScreenCaptionButtonVisible`、`IsPinCaptionButtonVisible` 和 `IsCloseCaptionButtonVisible` 决定扩展按钮可见性。
-- `Topmost`、`WindowState` 和平台 backend 决定 checked state 与有效可见性。
+- `CanMinimize`、`CanMaximize` 和平台能力决定操作是否允许，不承担 managed button 的呈现配置。
+- `IsMinimizeCaptionButtonVisible`、`IsMaximizeCaptionButtonVisible`、`IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible` 和 `IsPinCaptionButtonVisible` 分别表达 managed button 的 requested visibility。
+- `Topmost`、`WindowState`、平台 backend、requested visibility 和 operation capability 共同决定 checked state 与 effective visibility。
 
-全屏时隐藏最小化和最大化按钮；最大化时隐藏进入全屏按钮。Wayland backend 不提供置顶按钮。按钮点击最终写入宿主窗口状态或调用关闭流程，状态不保存在按钮视觉中。
+Minimize、Maximize 和 Close 默认显示，FullScreen 和 Pin 默认隐藏。全屏时隐藏最小化和最大化按钮；最大化时隐藏进入全屏按钮；capability 为 `false` 时不显示不可执行的 managed button。Wayland backend 不提供置顶按钮。隐藏按钮不修改 `CanMinimize`、`CanMaximize`、`Topmost` 或其他窗口操作入口。完整状态矩阵、平台边界和单向命令流见 [WindowTitleBar Caption Button 配置设计](caption-button-configuration-design.md)。
 
 ### 4.4 拖动和双击
 
-`Window` 监听标题栏 pointer 事件并在移动距离超过拖动阈值后调用原生 `BeginMoveDrag`。`IsMoveEnabled=False` 或全屏状态禁止拖动。双击最大化与拖动共用标题栏输入表面，但 caption buttons 和 add-on 的已处理输入不应触发窗口拖动。
+`Window` 通过每个标题栏的 host lease 监听 pointer 事件，并在移动距离超过拖动阈值后调用原生 `BeginMoveDrag`。拖动状态记录具体来源标题栏，同一 Window 中其他标题栏的移动、释放或 capture lost 不能推进该次交互。`IsMoveEnabled=False` 或全屏状态禁止拖动。双击最大化与拖动共用标题栏输入表面，但 caption buttons 和 add-on 的已处理输入不应触发窗口拖动。
+
+应用直接放入 Window 内容区的 `WindowTitleBar` 自动获得 caption 状态、窗口操作命令、拖动和双击最大化语义。它不参与标题栏高度提示、CSD 最小高度或唯一 CSD geometry owner 计算；这些几何职责只属于 Window 模板正式接入的默认标题栏。
 
 ## 主题与 Design Token
 
@@ -17447,11 +17524,13 @@ caption button 的公共配置属于宿主 `Window`：
 | `Frame` | `Border` | 绘制标题栏背景并提供完整可见 frame 的布局边界。 |
 | `PART_Logo` | `ContentPresenter` | 展示有效 Logo；Windows/Linux 模板中位于 Leading 最左侧，macOS 模板中位于 Title 内容前。 |
 | `PART_ContentPresenter` | `ContentPresenter` | 展示标题；字符串标题在安全宽度不足时使用字符省略号，且不参与命中测试。 |
-| `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容。 |
+| `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容；Windows/Linux 中由 Leading 容器负责它与有效 Logo 之间的条件间距。 |
 | `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on。 |
-| `PART_CaptionButtonGroup` | `CaptionButtonGroup` | 运行时连接宿主窗口操作。 |
+| `PART_CaptionButtonGroup` | `CaptionButtonGroup` | 消费宿主投影，推导 managed button 状态并转发固定窗口操作。 |
 
-`PART_CaptionButtonGroup` 是 `WindowTitleBar` 代码查找并 attach/detach 的协作 part。其内部 `PART_CloseButton`、`PART_MinimizeButton`、`PART_MaximizeButton`、`PART_FullScreenButton` 和 `PART_PinButton` 属于 `CaptionButtonGroup` 模板，不是 `WindowTitleBar` 的 public template part。
+`PART_CaptionButtonGroup` 是 `WindowTitleBar` 模板中的稳定协作 part，通过 `TemplateBinding` 接收能力、requested visibility、窗口状态和宿主命令。其内部 `PART_CloseButton`、`PART_MinimizeButton`、`PART_MaximizeButton`、`PART_FullScreenButton` 和 `PART_PinButton` 属于 `CaptionButtonGroup` 模板，不是 `WindowTitleBar` 的 public template part。
+
+Windows/Linux 的 Leading 容器使用 `HorizontalSpacing` 消费 `LogoAndLeftAddOnSpacing`，不通过菜单、按钮或 `PART_LeftAddOn.Margin` 补偿相邻 Logo。该组合规则使间距跟随两个 presenter 的可见性，并允许任意 `LeftAddOn` 内容获得一致的视觉隔离。macOS 的 Leading 只有 `PART_LeftAddOn`，Logo/Title 间距继续由 Title role 的 `LogoAndTitleSpacing` 管理。
 
 平台主题可以改变 caption button 外观和 native chrome 来源，但不得改变 Public API 语义、Title/Leading/Trailing 角色或窗口操作行为。应用替换完整 ControlTheme 时负责提供等价区域、裁剪和命中测试；internal caption 类型不作为定制 API。
 
@@ -17470,7 +17549,9 @@ Token 负责尺寸、间距、字体和状态颜色，不负责以下运行时�
 
 ## AOT 与裁剪注意事项
 
-- 窗口订阅和 relay binding 都有明确的 attach/detach 或 apply/reapply 配对。
+- Window 定义强类型 host projection 字段集合并创建 lease；每个 WindowTitleBar 按 logical attach/detach 生命周期独立持有和释放 lease。宿主引用本身不作为 caption 状态旁路，CaptionButtonGroup 不持有 Window relay binding 或宿主引用。
+- 宿主发现只遍历当前逻辑祖先，不使用全局 Window registry、反射、字符串 binding path 或程序集扫描。
+- 每个标题栏与每次宿主连接只创建一个固定大小 lease；状态更新复用现有 binding 和交互订阅，template reapply 不重建 lease。
 - 标题布局 Strategy 使用静态无状态实例；measure/arrange 不创建 Context、Plan、binding 或临时 Visual。
 - TemplateBinding 和 selector 承担静态视觉投影，不在状态变化时重建模板节点。
 - Logo 计算只在相关属性或 WindowState 变化时执行。
@@ -17748,4 +17829,143 @@ ColorStops 使用实例级集合，避免共享默认集合。集合变更应触
 - 实现文档：`docs/controls/desktop/other/border-beam/implementation.md`
 - Token 文档：`docs/controls/desktop/other/border-beam/token.md`
 - 变更记录：`docs/controls/desktop/other/border-beam/changelog.md`
+- 语义结构：`./semantic-cn.md`
+
+Source: ./controls/popup/index-cn.md
+
+# Popup
+
+> 生成产物：由源文档生成，不要手工编辑。修改内容请回到控件文档、源码 public surface、Token 类型或生成数据、Gallery ShowCase 或源码结构。
+
+## 概述
+
+Popup 是 AtomUI 桌面弹层体系的共享低层原语，继承 Avalonia `Popup` 的 anchor、placement、light-dismiss、native
+window 与 overlay host 能力，并增加 AtomUI 的定位、阴影、动效、翻转通知和默认表面契约。Flyout、ToolTip、
+ContextMenu、菜单、选择器和 Picker 等专用控件复用该原语，但继续拥有各自的 Presenter 和内容表面。
+
+Popup 不提供默认 Padding、边框、箭头或内容布局。调用方负责 Child 内容结构；Popup 只在 Child bounds 内提供可选的
+frame surface 与 host shadow。
+
+## 包与命名空间
+
+| 项 | 值 |
+| --- | --- |
+| NuGet 包 | `AtomUI.Desktop.Controls` |
+| .NET 命名空间 | `AtomUI.Desktop.Controls` |
+| AXAML 命名空间 | `https://atomui.net` |
+| Gallery 页面 | `` |
+| 状态 | Stable |
+
+## 何时使用
+
+Popup 的设计语言是“可定位的 elevated surface”。宿主保持透明并提供窗口/layer 能力，frame surface 只覆盖实际内容
+bounds；阴影可以延伸到透明区域，但不能把整个 host 变成不透明矩形。直接 Popup 获得与其他 elevated content 一致的
+主题表面，专用控件则保留自己的 Presenter 视觉语言。
+
+该模型把 host、frame 和 content 分成稳定职责：host 决定 native/overlay、定位和输入；frame 决定可选表面与阴影；
+content 决定 Padding、边框、箭头和业务视觉。
+
+## 公共 API
+
+| API | 类型 | 语义 |
+| --- | --- | --- |
+| `SurfaceBackground` | `IBrush?` | Popup frame 在 Child bounds 内绘制的表面；Theme 默认映射到 `ColorBgElevated`，`null` 表示内容拥有表面。 |
+| `PopupRootShadow` | `BoxShadows` | native `PopupRoot` 路径的 frame shadow。 |
+| `OverlayHostShadow` | `BoxShadows` | `OverlayPopupHost` 路径的 frame shadow。 |
+| `RequestedPlacement` | `PlacementMode?` | AtomUI 自定义定位请求；有效值会投射到 Avalonia custom placement。 |
+| `MarginToAnchor` | `double` | 内容 frame 与 anchor 之间的逻辑像素间距。 |
+| `IsPointAtCenter` | `bool` | 箭头型内容是否按目标中心修正定位。 |
+| `CustomPlacementCallback` | `CustomPlacementCallback?` | AtomUI 完成 placement 后的扩展回调。 |
+| `IsHorizontalFlipped` / `IsVerticalFlipped` | `bool` | 当前定位相对请求方向的只读翻转结果。 |
+| `PositionFlipped` | `EventHandler<PopupFlippedEventArgs>` | 翻转结果变化通知。 |
+| `OpenMotion` / `CloseMotion` | `AbstractMotion?` | host 内容打开和关闭动效。 |
+| `MotionDuration` / `IsMotionEnabled` | `TimeSpan` / `bool` | 当前 Popup 的动效时长和开关。 |
+
+Avalonia `Popup` 继承属性继续负责 `Child`、`PlacementTarget`、`IsOpen`、`IsLightDismissEnabled`、offset、anchor、
+gravity、overlay 选择和焦点行为。AtomUI 不复制这些契约。
+
+## 事件与命令
+
+| `PositionFlipped` | `EventHandler<PopupFlippedEventArgs>` | 翻转结果变化通知。 |
+
+## 使用示例
+
+稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
+
+未找到对应 Gallery 目录；生成器只链接源文档，不发明示例。
+
+## 状态模型
+
+Popup 使用显式 surface ownership，不根据 Child 类型、Child Background、透明度、Dialog ancestry 或 Theme 应用时序推断。
+
+| 模式 | `SurfaceBackground` | 表面所有者 | 适用场景 |
+| --- | --- | --- | --- |
+| host-owned | 非 `null`，默认 `ColorBgElevated` | Popup frame | 直接使用 Popup，Child 只声明内容和 Padding。 |
+| content-owned | `null` | Child / Presenter / `PopupFrame` | Flyout、ToolTip、ContextMenu、菜单、选择器、Picker 等专用控件。 |
+
+`SurfaceBackground` 只改变 frame fill，不增加 wrapper、Padding、border、arrow、DesiredSize、placement offset 或 shadow
+thickness。需要透明直接 Popup 时，调用方必须显式设置 `SurfaceBackground="{x:Null}"`。
+
+AtomUI 自有的 content-owned 消费者必须在 AXAML Popup 入口或共享 C# 构造路径显式设置 `null`。新增 Popup-bearing
+控件时，维护者必须先选择表面所有者，再更新库存测试和控件家族回归。
+
+## 主题与 Design Token
+
+```text
+Popup
+  -> PopupRoot or OverlayPopupHost       transparent host
+     -> PopupMotionActor                 open/close motion
+        -> VisualLayerManager
+           -> ShadowsAwareContainer      frame surface + shadow
+              -> Child                   direct content or specialized presenter
+```
+
+native 与 overlay 两条路径共享相同的 frame surface 实现：
+
+| 路径 | 宿主 | frame shadow | layer 语义 |
+| --- | --- | --- | --- |
+| native | `PopupRoot` / OS popup window | `PopupRootShadow` | 独立窗口，不参与 owning Window 内部 Z-order。 |
+| overlay | `OverlayPopupHost` / `PopupOverlayLayer` | `OverlayHostShadow` | owning `TopLevel` 的 popup layer，高于 Dialog `OverlayLayer`。 |
+
+`PopupRoot.Background` 保持 `null`，`TransparencyLevelHint` 保持 `Transparent`。不透明表面只覆盖 Child bounds，不能填满
+native popup 的透明 shadow buffer。overlay host 使用同一原则，避免 host 背景改变圆角、箭头或 shadow 几何。
+
+Token 来源：
+
+`PopupToken` 是 internal control token，服务 Popup frame 和多个 Popup-bearing 控件：
+
+| Token | 派生来源 | 语义与消费者 |
+| --- | --- | --- |
+| `PopupRootShadow` | 两层固定 alpha shadow | native `PopupRoot` frame shadow；菜单、选择器和自动建议等家族复用。 |
+| `OverlayHostShadow` | `BoxShadowsSecondary` | `OverlayPopupHost` frame shadow；Flyout/Menu/ContextMenu 等 overlay 路径复用。 |
+| `PopupCornerRadius` | `BorderRadiusLG` | 专用 Presenter / `PopupFrame` 的默认圆角。 |
+| `MarginToAnchor` | `UniformlyMarginXXS` | Popup 内容 frame 与 anchor 的默认间距。 |
+
+`PopupCornerRadius` 不由 transparent host 绘制；它由 Child、Presenter 或 `PopupFrame` 提供给
+`ShadowsAwareContainer`，使 frame shadow/default surface 与内容圆角一致。
+
+## AOT 与裁剪注意事项
+
+默认 surface 不增加 host 或 wrapper；只扩展既有 renderer。renderer 惰性创建并复用，surface 更新只 invalidates render。
+Theme resource 位于 Visual Popup 的正常 Theme 生命周期内，不创建全局非 Visual resource host。
+
+实现不使用反射、runtime type discovery 或动态注册；StyledProperty 和 ControlTheme 均为静态/AOT 可发现契约。源码库存
+测试使用正则扫描，但只存在于测试项目，不进入 runtime 或 NativeAOT 路径。
+
+## 源码索引
+
+- `src/AtomUI.Desktop.Controls/Popup/Popup.cs`：公共 API、自定义定位、翻转通知、frame shadow 选择、动效和 wheel guard。
+- `src/AtomUI.Desktop.Controls/Popup/PopupUtils.cs`：placement 算法、popup scope 和 owning popup 查询。
+- `src/AtomUI.Desktop.Controls/Popup/PopupToken.cs`：Popup 家族的阴影、圆角和 anchor margin Token。
+- `src/AtomUI.Desktop.Controls/Popup/Themes/PopupTheme.axaml`：Popup 默认 surface、shadow 和 motion Theme 值。
+- `src/AtomUI.Desktop.Controls/Popup/Themes/PopupRootTheme.axaml`：native transparent host 组合。
+- `src/AtomUI.Desktop.Controls/Popup/Themes/OverlayPopupHostTheme.axaml`：overlay host 组合。
+- `src/AtomUI.Desktop.Controls/Primitives/ShadowsAwareContainer.cs`：两类 host 共享的 frame surface/shadow renderer 与几何适配。
+
+## 相关文档
+
+- 源设计文档：`docs/controls/desktop/other/popup/overview.md`
+- 实现文档：`docs/controls/desktop/other/popup/implementation.md`
+- Token 文档：`docs/controls/desktop/other/popup/token.md`
+- 变更记录：`docs/controls/desktop/other/popup/changelog.md`
 - 语义结构：`./semantic-cn.md`

@@ -52,6 +52,10 @@ NavMenu 的公共 API 分为控件 API、节点 API 和事件 API。
 | `Mode` | `NavMenuMode` | 菜单呈现模式，默认 `Inline`。 |
 | `IsInlineCollapsed` | `bool` | `Mode=Inline` 时是否进入内联折叠状态，默认 `false`。折叠不改变 public `Mode`，只改变内部有效呈现和交互模式。 |
 | `InlineCollapsedWidth` | `double` | 内联折叠状态下的菜单宽度。默认值来自 `NavMenuToken.InlineCollapsedWidth`，初始设计值为 `48`；开发者可通过本地值覆盖 token 默认宽度。 |
+| `IsCollapsedTooltipEnabled` | `bool` | 是否为有效 inline collapsed 状态下的顶层叶子节点启用 Tooltip，默认 `true`。 |
+| `CollapsedTooltipPlacement` | `PlacementMode` | 折叠 Tooltip 的放置方向，默认 `Right`。 |
+| `CollapsedTooltipShowDelay` | `int` | 首个折叠 Tooltip 的显示延迟，单位毫秒，默认 `400`。 |
+| `CollapsedTooltipBetweenShowDelay` | `int` | 连续折叠 Tooltip 之间允许立即切换的时间窗口，单位毫秒，默认 `100`。 |
 | `SelectedItem` | `INavMenuNode?` | 当前选中节点，双向绑定入口。 |
 | `DefaultSelectedPath` | `TreeNodePath?` | 初始选中路径；`SelectedItem` 非空时优先级更高。 |
 | `DefaultOpenPaths` | `IList<TreeNodePath>?` | 初始展开路径集合。 |
@@ -73,6 +77,8 @@ NavMenu 的公共 API 分为控件 API、节点 API 和事件 API。
 | --- | --- | --- |
 | `Header` | `object?` | 菜单项显示内容。 |
 | `HeaderTemplate` | `IDataTemplate?` | 菜单项 header 模板。 |
+| `Tooltip` | `object?` | 折叠叶子节点的独立 Tooltip 内容；为 `null` 时回退到节点 `Header`。传入 `ToolTip` 实例可获得完整定制能力：实例上显式设置的呈现类附加属性（位置、颜色、箭头、文本换行等）优先于菜单级与宿主配置，未设置的回落，详见 [Tooltip 桌面版架构设计](../../data-display/tooltip/overview.md) 的 Tip 实例定制模型。 |
+| `IsTooltipEnabled` | `bool` | 是否允许当前节点显示折叠 Tooltip，默认 `true`。 |
 | `ItemKey` | `EntityKey?` | 路径和业务标识。 |
 | `Icon` | `PathIcon?` | 菜单项图标。 |
 | `IsEnabled` | `bool` | 节点可用状态，默认 `true`。 |
@@ -163,6 +169,7 @@ NavMenu 的交互行为由 mode 决定。
 - 点击叶子节点时选中该节点，并更新所有祖先 `IsInSelectedPath`。
 - `IsAccordionMode=true` 时，顶层子菜单互斥展开。
 - `IsInlineCollapsed=true` 时，public `Mode` 仍保持 `Inline`，但内部有效模式切换为 vertical popup 语义：顶层只显示图标或无图标首字符，inline 子树不在主视觉树中展开，带子菜单的顶层项目通过 popup 打开。
+- 有效 inline collapsed 状态下，顶层叶子节点通过实际 header control 承载 Tooltip。节点显式 `Tooltip` 优先；未设置时回退到 `Header`；菜单级或节点级 Tooltip 被禁用、节点拥有子菜单或退出有效折叠状态时，不创建有效提示内容。
 - 进入折叠时缓存当前 inline 打开路径并关闭主视觉树中的 inline 子菜单；退出折叠时恢复缓存路径。折叠和展开不得清空 `SelectedItem` 或 selected path。
 - 键盘 Up / Down 在当前可见层级内移动 active/focus 项。
 - Enter 在带子菜单项上切换展开状态，在叶子节点上提交选择。
@@ -227,7 +234,7 @@ Theme 映射规则：
 - Popup 背景使用 `MenuPopupBg`，Dark popup 使用 `DarkMenuPopupBg`。
 - Header 默认背景为 `Transparent`，hover / selected 背景由 header state 直接控制。
 - Keyboard active 背景使用 `ItemActiveBg`，其优先级低于 `Selected`，高于普通默认态；它可以叠加在 `IsInSelectedPath` 父节点上，使父节点保留 selected-path 文字色的同时显示临时 active 背景。dark style 下使用 dark 语义的 active 视觉，不复用 selected 背景表达临时漫游。
-- Inline collapsed 根宽度使用 `InlineCollapsedWidth`，默认来自 `NavMenuToken.InlineCollapsedWidth=48`。折叠视觉只作用于 `Mode=Inline && IsInlineCollapsed=true`：一级 icon 使用 `CollapsedIconSize` 居中，标题和箭头收起，未配置 icon 的一级项显示标题首字符，叶子项可用 tooltip 展示完整标题。
+- Inline collapsed 根宽度使用 `InlineCollapsedWidth`，默认来自 `NavMenuToken.InlineCollapsedWidth=48`。折叠视觉只作用于 `Mode=Inline && IsInlineCollapsed=true`：一级 icon 使用 `CollapsedIconSize` 居中，标题和箭头收起，未配置 icon 的一级项从节点 `Header` 显示首字符；顶层叶子项使用独立 `Tooltip`，未设置时回退到 `Header`。
 - Inline/Vertical 的 Header 和 Footer 位于菜单滚动区之外；无 Header/Footer 时对应 presenter 折叠，不占用布局空间。Horizontal 中 Header 左停靠、Footer 右停靠，菜单项占用中间区域。进入 inline collapsed 后 Header 保持可见以承载展开入口，Footer 自动隐藏；Header 内容需要根据 `IsInlineCollapsed` 自适应折叠宽度。
 - 根层 inline collapsed 分组标题隐藏，分组及其透明嵌套分组内的节点继续继承根折叠状态，按顶层节点使用 `CollapsedIconSize` 居中；popup 或非根语义层级中的分组标题和节点保持普通 vertical 视觉。Horizontal 根层把分组渲染为透明水平集合并隐藏标题，popup 中恢复垂直分组标题。
 - Horizontal 根层分隔线为竖线；Inline、Vertical、popup 和 inline collapsed 根层分隔线为横线。
@@ -259,7 +266,7 @@ NavMenuToken 不承载 `SelectedItem`、`IsSubMenuOpen`、`IsInSelectedPath`、`
 
 NavMenu 不应通过反射访问 template part 或内部状态。Header、popup、inline child frame 和 active indicator 均通过稳定 template part 和 Avalonia 属性接入。
 
-`NavMenuNode` 必须通过 `[GenerateScopedResourceHost]` 生成 `IResourceHost` / `IThemeVariantHost`、attachment count、host generation 和 `IDisposable` attach token。generation 用于使跨 host 切换后遗留的 stale token 失效，尤其不能让 `A -> B -> A` 中第一轮 A token 释放当前 A attachment。scoped resource host 只解决动态资源宿主及其事件订阅，不替代节点到容器 binding 的释放，也不替代 `ICommand.CanExecuteChanged` 的解绑。
+`NavMenuNode` 必须通过 `[GenerateScopedResourceHost]` 生成 `IResourceHost` / `IThemeVariantHost`、attachment count、host generation 和 `IDisposable` attach token。generation 用于使跨 host 切换后遗留的 stale token 失效，尤其不能让 `A -> B -> A` 中第一轮 A token 释放当前 A attachment。`Header`、`Tooltip` 等节点属性的 `DynamicResource` 都使用该 scoped owner；scoped resource host 只解决动态资源宿主及其事件订阅，不替代节点到容器 binding 的释放，也不替代 `ICommand.CanExecuteChanged` 的解绑。
 
 `NavMenuGroup` 遵守相同的 generated scoped resource-host 生命周期；结构容器不能永久持有 group 或 owner menu。`NavMenuDivider` 不需要资源宿主和订阅。
 

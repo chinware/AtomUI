@@ -93,13 +93,13 @@ NavMenu
 | `StackPanel` | template node (StackPanel) | `NavMenuGroupItemTheme.axaml` | NavMenuGroupItem | `Header`, `HeaderTemplate`, `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_HeaderPresenter` | template node (ContentPresenter) | `NavMenuGroupItemTheme.axaml` | NavMenuGroupItem | `Header`, `HeaderTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ItemsPresenter` | template node (ItemsPresenter) | `NavMenuGroupItemTheme.axaml` | NavMenuGroupItem | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `NavMenuItem` | item container control theme | `NavMenuItemTheme.axaml` | NavMenu | `EffectivePopupMinWidth`, `EntryItemSpacing`, `Focusable`, `HasSubMenu`, `Header`, `HeaderTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `NavMenuItem` | item container control theme | `NavMenuItemTheme.axaml` | NavMenu | `CollapsedTooltipBetweenShowDelay`, `CollapsedTooltipPlacement`, `CollapsedTooltipShowDelay`, `EffectiveCollapsedTooltip`, `EffectivePopupMinWidth`, `EntryItemSpacing` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Panel` | template node (Panel) | `NavMenuItemTheme.axaml` | NavMenuItem | `EffectivePopupMinWidth`, `HasSubMenu`, `Header`, `HeaderTemplate`, `Icon`, `IsDarkStyle` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Header` | template node (HorizontalNavMenuItemHeader) | `NavMenuItemTheme.axaml` | NavMenuItem | `HasSubMenu`, `Header`, `HeaderTemplate`, `Icon`, `IsDarkStyle`, `IsEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Popup` | template node (Popup) | `NavMenuItemTheme.axaml` | NavMenuItem | `EffectivePopupMinWidth`, `IsMotionEnabled`, `ItemsPanel`, `ShouldUseOverlayPopup`, `atom` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_PopupFrame` | template node (NavMenuPopupFrame) | `NavMenuItemTheme.axaml` | NavMenuItem | `EffectivePopupMinWidth`, `IsMotionEnabled`, `ItemsPanel`, `atom` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ItemsPresenter` | template node (ItemsPresenter) | `NavMenuItemTheme.axaml` | NavMenuItem | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_Header` | template node (VerticalNavMenuItemHeader) | `NavMenuItemTheme.axaml` | NavMenuItem | `HasSubMenu`, `Header`, `HeaderTemplate`, `Icon`, `IsDarkStyle`, `IsEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_Header` | template node (VerticalNavMenuItemHeader) | `NavMenuItemTheme.axaml` | NavMenuItem | `CollapsedTooltipBetweenShowDelay`, `CollapsedTooltipPlacement`, `CollapsedTooltipShowDelay`, `EffectiveCollapsedTooltip`, `HasSubMenu`, `Header` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `StackPanel` | template node (StackPanel) | `NavMenuItemTheme.axaml` | NavMenuItem | `Focusable`, `HasSubMenu`, `Header`, `HeaderTemplate`, `Icon`, `IsDarkStyle` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Header` | template node (InlineNavMenuItemHeader) | `NavMenuItemTheme.axaml` | NavMenuItem | `Focusable`, `HasSubMenu`, `Header`, `HeaderTemplate`, `Icon`, `IsDarkStyle` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ChildItemsLayoutTransform` | template node (LayoutAwareMotionActor) | `NavMenuItemTheme.axaml` | NavMenuItem | `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -113,10 +113,10 @@ NavMenu
 | `PART_HorizontalLine` | template node (PixelAlignedBorder) | `NavMenuTheme.axaml` | NavMenu | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `VerticalNavMenuItemHeader` | control theme | `VerticalNavMenuItemHeaderTheme.axaml` | NavMenu | `Background`, `CornerRadius`, `Header`, `HeaderTemplate`, `Height`, `Icon` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Frame` | template node (Border) | `VerticalNavMenuItemHeaderTheme.axaml` | VerticalNavMenuItemHeader | `Background`, `CornerRadius`, `Header`, `HeaderTemplate`, `Height`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `HeaderLayout` | template node (Grid) | `VerticalNavMenuItemHeaderTheme.axaml` | VerticalNavMenuItemHeader | `Header`, `HeaderTemplate`, `Icon`, `IsEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `HeaderLayout` | template node (Grid) | `VerticalNavMenuItemHeaderTheme.axaml` | VerticalNavMenuItemHeader | `Header`, `HeaderTemplate`, `Icon`, `IsEnabled`, `NodeHeader` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ItemIconPresenter` | template node (IconPresenter) | `VerticalNavMenuItemHeaderTheme.axaml` | VerticalNavMenuItemHeader | `Icon`, `IsEnabled` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ItemTextPresenter` | template node (ContentPresenter) | `VerticalNavMenuItemHeaderTheme.axaml` | VerticalNavMenuItemHeader | `Header`, `HeaderTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `CollapsedTitlePresenter` | template node (ContentPresenter) | `VerticalNavMenuItemHeaderTheme.axaml` | VerticalNavMenuItemHeader | `Header` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `CollapsedTitlePresenter` | template node (ContentPresenter) | `VerticalNavMenuItemHeaderTheme.axaml` | VerticalNavMenuItemHeader | `NodeHeader` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `MenuIndicatorIcon` | template node (RightOutlined) | `VerticalNavMenuItemHeaderTheme.axaml` | VerticalNavMenuItemHeader | `IsEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
@@ -150,6 +150,7 @@ NavMenu 的交互行为由 mode 决定。
 - 点击叶子节点时选中该节点，并更新所有祖先 `IsInSelectedPath`。
 - `IsAccordionMode=true` 时，顶层子菜单互斥展开。
 - `IsInlineCollapsed=true` 时，public `Mode` 仍保持 `Inline`，但内部有效模式切换为 vertical popup 语义：顶层只显示图标或无图标首字符，inline 子树不在主视觉树中展开，带子菜单的顶层项目通过 popup 打开。
+- 有效 inline collapsed 状态下，顶层叶子节点通过实际 header control 承载 Tooltip。节点显式 `Tooltip` 优先；未设置时回退到 `Header`；菜单级或节点级 Tooltip 被禁用、节点拥有子菜单或退出有效折叠状态时，不创建有效提示内容。
 - 进入折叠时缓存当前 inline 打开路径并关闭主视觉树中的 inline 子菜单；退出折叠时恢复缓存路径。折叠和展开不得清空 `SelectedItem` 或 selected path。
 - 键盘 Up / Down 在当前可见层级内移动 active/focus 项。
 - Enter 在带子菜单项上切换展开状态，在叶子节点上提交选择。
@@ -214,7 +215,7 @@ Theme 映射规则：
 - Popup 背景使用 `MenuPopupBg`，Dark popup 使用 `DarkMenuPopupBg`。
 - Header 默认背景为 `Transparent`，hover / selected 背景由 header state 直接控制。
 - Keyboard active 背景使用 `ItemActiveBg`，其优先级低于 `Selected`，高于普通默认态；它可以叠加在 `IsInSelectedPath` 父节点上，使父节点保留 selected-path 文字色的同时显示临时 active 背景。dark style 下使用 dark 语义的 active 视觉，不复用 selected 背景表达临时漫游。
-- Inline collapsed 根宽度使用 `InlineCollapsedWidth`，默认来自 `NavMenuToken.InlineCollapsedWidth=48`。折叠视觉只作用于 `Mode=Inline && IsInlineCollapsed=true`：一级 icon 使用 `CollapsedIconSize` 居中，标题和箭头收起，未配置 icon 的一级项显示标题首字符，叶子项可用 tooltip 展示完整标题。
+- Inline collapsed 根宽度使用 `InlineCollapsedWidth`，默认来自 `NavMenuToken.InlineCollapsedWidth=48`。折叠视觉只作用于 `Mode=Inline && IsInlineCollapsed=true`：一级 icon 使用 `CollapsedIconSize` 居中，标题和箭头收起，未配置 icon 的一级项从节点 `Header` 显示首字符；顶层叶子项使用独立 `Tooltip`，未设置时回退到 `Header`。
 - Inline/Vertical 的 Header 和 Footer 位于菜单滚动区之外；无 Header/Footer 时对应 presenter 折叠，不占用布局空间。Horizontal 中 Header 左停靠、Footer 右停靠，菜单项占用中间区域。进入 inline collapsed 后 Header 保持可见以承载展开入口，Footer 自动隐藏；Header 内容需要根据 `IsInlineCollapsed` 自适应折叠宽度。
 - 根层 inline collapsed 分组标题隐藏，分组及其透明嵌套分组内的节点继续继承根折叠状态，按顶层节点使用 `CollapsedIconSize` 居中；popup 或非根语义层级中的分组标题和节点保持普通 vertical 视觉。Horizontal 根层把分组渲染为透明水平集合并隐藏标题，popup 中恢复垂直分组标题。
 - Horizontal 根层分隔线为竖线；Inline、Vertical、popup 和 inline collapsed 根层分隔线为横线。
@@ -255,7 +256,8 @@ NavMenuToken 不承载 `SelectedItem`、`IsSubMenuOpen`、`IsInSelectedPath`、`
 - 进入或退出 inline collapsed 不得调用 `Close()`，不得清空 `SelectedItem`，不得丢失 selected path。
 - inline collapsed 期间打开的 popup 状态不得污染展开后恢复的 inline open path cache。
 - 键盘 active/focus 状态不得进入公共 API，不得改变 `SelectedItem`、`DefaultSelectedPath` 或 `DefaultOpenPaths` 的语义。
-- `NavMenuNode` / `INavMenuNode` 的 `Header`、`HeaderTemplate`、`ItemKey`、`Icon`、`IsEnabled`、`Command`、`CommandParameter`、`Children` 名称、类型和语义不变。
+- `NavMenuNode` / `INavMenuNode` 的 `Header`、`HeaderTemplate`、`Tooltip`、`IsTooltipEnabled`、`ItemKey`、`Icon`、`IsEnabled`、`Command`、`CommandParameter`、`Children` 名称、类型和语义不变。
+- `Tooltip=null` 必须回退到节点 `Header`；折叠提示只作用于有效 inline collapsed 状态下的顶层叶子节点，不能扩展到带子菜单节点、普通 Vertical/Horizontal 或展开后的 Inline 状态。
 - `NavMenuNode.Entries` 是子 entry 唯一真源；`Children` 只能作为同一集合的实时节点兼容视图，不能引入第二份节点集合或双向同步状态。
 - direct `Items`、`ItemsSource`、节点 `Entries` 和分组 `Entries` 对非法 entry 的拒绝语义一致；不能因 source 是否只读或集合通知类型不同而绕过验证。
 - 同一内置 `NavMenuNode` / `NavMenuGroup` 实例在 entry 树中只能有一个直接结构 owner；释放 owner 后才允许重挂载。无状态 `NavMenuDivider` 可以复用。
@@ -288,6 +290,9 @@ NavMenuToken 不承载 `SelectedItem`、`IsSubMenuOpen`、`IsInSelectedPath`、`
 - inline collapsed 进入时缓存 inline open path，退出时恢复 cache；折叠期间 popup 打开状态不得污染 cache。
 - `InlineCollapsedWidth` 默认来自 `NavMenuToken.InlineCollapsedWidth`，本地属性值必须按 Avalonia 优先级覆盖 token 默认值。
 - 折叠视觉不能通过改写 `Header`、删除 `HeaderTemplate` 或动态创建替代 header 实现。
+- 节点 `Tooltip` 与 `Header` 保持独立；未设置 `Tooltip` 时才回退到 `Header`，不能引入第二个标题属性代替 Tooltip 语义。
+- `ToolTip.Tip` 只能附加到实际 header control，不能扩大到非 Visual `NavMenuNode`；有效内容只由 `NavMenuItem` 计算。
+- container rebind、clear 和 recycle 必须同时释放节点 Tooltip binding 与菜单 Tooltip policy binding，并使旧 header 的有效 `ToolTip.Tip` 归零。
 - 点击 item 不得临时关闭 motion。
 - 默认路径应用不使用固定 50ms sleep 作为稳定策略。
 - selection coordinator 是选择状态的统一入口。

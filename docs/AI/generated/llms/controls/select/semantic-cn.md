@@ -165,6 +165,17 @@ Disabled / invisible / window deactivated
 - 弹层关闭时，`Up/Down`、`Enter`、`Space` 可打开弹层。
 - 多选和 Tags 模式下，过滤输入为空时 `Backspace/Delete` 删除最后一个已选项。
 
+候选交互：
+
+- `SelectCandidateList` 维护唯一 active candidate，鼠标移动和键盘导航必须更新同一个候选状态。
+- 鼠标在可用候选项上实际移动时，该项成为 active candidate；鼠标路径不滚动候选列表，也不提交公共选择。
+- `Up/Down` 在当前有效候选视图中移动 active candidate，并可以把键盘候选滚动到可见区域。
+- `Enter` 只提交或切换当前 active candidate，候选视觉目标和提交目标必须一致。
+- active candidate 与已确认选择相互独立；已选项继续保持 selected 视觉和公共选择语义。
+- `:pointerover` 只表达指针命中事实，不能与 `IsCandidateSelected` 分别绘制两个候选高亮。
+
+完整状态、Theme、虚拟化、性能和验证边界见 [Select 候选交互设计](candidate-interaction-design.md)。
+
 清除行为通过 `SelectHandle.ClearRequestedEvent` 冒泡到 Select，并调用 `ClearValue()` 清空 `SelectedOption` 和 `SelectedOptions`。
 
 ## Theme and Token Boundaries
@@ -177,7 +188,7 @@ Select 的默认视觉由 Select 专属主题、AddOnDecoratedBox、ListView 和
 | `SelectAddOnDecoratedBoxTheme.axaml` | 输入框 variant、status、dropdown open、hover、pressed 和多选 padding。 |
 | `SelectResultOptionsBoxTheme.axaml` | 多选标签布局、响应式标签布局和搜索输入承载。 |
 | `SelectCandidateListTheme.axaml` | 候选列表基础 ListView 主题和默认候选模板。 |
-| `SelectCandidateListItemTheme.axaml` | 候选项 active、selected、disabled 和隐藏已选项视觉。 |
+| `SelectCandidateListItemTheme.axaml` | 候选项 active、selected、disabled 和隐藏已选项视觉；active 只由统一候选状态驱动。 |
 | `SelectTagTheme.axaml` | 多选标签高度、背景、关闭按钮和禁用态。 |
 | `SelectHandleTheme.axaml` | 展开、loading、清除、过滤指示和 Form feedback 图标。 |
 | `PopupHostToken` | popup 阴影、圆角和 anchor margin。 |
@@ -212,6 +223,9 @@ SelectToken 不承载以下状态：
 - `Tags` 模式必须保持有效过滤能力，并只在该模式下创建动态选项。
 - `MaxCount` 达到上限时，未选候选项不可继续选择，已选候选项仍可取消。
 - `IsHideSelectedOptions` 不能隐藏分组标题导致空状态判断错误。
+- 鼠标和键盘必须共享唯一 active candidate，任意时刻最多显示一个未确认候选高亮。
+- `:pointerover` 不能独立成为 Select 候选视觉或提交状态 owner。
+- active candidate 变化不能提前修改 `SelectedOption` 或 `SelectedOptions`，`Enter` 必须提交当前视觉候选。
 - 弹层打开、关闭事件的取消语义不能被绕过。
 - 窗口失活、控件不可见或祖先不可见时必须关闭弹层。
 - 重新套用模板或 detach 时必须释放旧 popup 内容、候选列表事件订阅、opened 期间订阅和 TopLevel deactivation 订阅。
@@ -229,6 +243,10 @@ SelectToken 不承载以下状态：
 - `OptionsSource` 写入不能破坏 `Options` 的内容集合语义。
 - Tags 运行时动态选项不能写入用户 `OptionsSource`，也不能写入 XAML 内容子项 `Options`。
 - 候选列表必须绑定到有效候选选项源，不能直接绑定到只读用户选项源。
+- `SelectCandidateList` 必须是 active candidate 的唯一 owner；鼠标和键盘不能分别维护候选状态。
+- `CandidateSelectedIndex`、`CandidateSelectedItem` 和已准备容器的 `IsCandidateSelected` 必须指向同一候选。
+- `:pointerover` 只能产生鼠标候选迁移请求，不能独立决定 Select 候选背景或 `Enter` 提交目标。
+- active candidate 迁移不能提前修改 public selection，selected 视觉必须继续覆盖候选 active 视觉。
 - 选择同步中的 `_ignoreSyncSelection` 只用于防止候选列表和 public selection 相互递归，必须通过成对 helper 恢复，不能吞掉外部选择变化。
 - `IgnorePropertyChange` 只用于内部恢复下拉开关状态，必须通过成对 helper 恢复，不能影响下一次外部 `IsDropDownOpen` 变化。
 - `Tags` 动态选项只在 `Tags` 模式创建和清理，生命周期由 Select 内部运行时动态选项集合拥有。

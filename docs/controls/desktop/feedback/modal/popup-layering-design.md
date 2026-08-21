@@ -1,6 +1,6 @@
 # Modal 内容弹层叠放设计
 
-本文档定义 Overlay Dialog 内容区内弹层的宿主归属、叠放顺序、输入语义与生命周期。公共契约见 [Modal 桌面版架构设计](overview.md)，内部实现见 [Modal 桌面版实现原理](implementation.md)，宿主尺寸算法见 [Modal 宿主尺寸与 Resize 设计](host-sizing-design.md)。
+本文档定义 Overlay Dialog 内容区内弹层的宿主归属、叠放顺序、输入语义与生命周期。公共契约见 [Modal 桌面版架构设计](overview.md)，内部实现见 [Modal 桌面版实现原理](implementation.md)，宿主尺寸算法见 [Modal 宿主尺寸与 Resize 设计](host-sizing-design.md)，Popup 的 surface ownership 见 [Popup 桌面版架构设计](../../other/popup/overview.md)。
 
 ## 1. 设计定位
 
@@ -134,6 +134,10 @@ ComboBox 只是 `Popup` 宿主失效的一个触发入口。只要控件最终�
    `PopupFlyoutBase`/`Flyout` 派生、直接 `ShowAt`、委托 Flyout 构造和 popup 类型别名，并与测试内的已审计 allowlist
    比较；出现新入口时测试失败，维护者必须将其归入已有路径或扩充矩阵。
 
+库存守卫同时约束表面所有权：Direct Popup 使用 Theme 的默认 `SurfaceBackground`；17 个 AXAML Popup 入口和
+Flyout、ToolTip、ContextMenu 三个共享 C# 构造路径显式设置 `SurfaceBackground=null`。新增入口不能只加入 allowlist，
+还必须声明由 host frame 或 content Presenter 拥有表面。
+
 当前库存基线为 17 个 AXAML Popup 入口、2 个 C# Popup 构造入口、6 个 Flyout 家族定义、4 个直接 `ShowAt`
 入口、9 个委托 Flyout 构造消费者和 4 个 popup 类型别名文件。数量不是 Public API，但任何变化都必须经过重新分类和
 回归覆盖，不能只更新 allowlist 让守卫恢复通过。
@@ -161,6 +165,9 @@ ComboBox 只是 `Popup` 宿主失效的一个触发入口。只要控件最终�
 - overlay popup host 位于 Dialog presentation 之上，Popup item 或主操作区域可命中。
 - 选择、确认或菜单命令能更新控件的公开状态；外部点击可 light-dismiss 且不关闭 Dialog。
 - Popup 关闭、内容 detach、Dialog close/dispose 后不残留 host、订阅或错误的 open 状态。
+- Direct Popup 的 owning Popup 使用非空默认 surface；Flyout/MenuFlyout、ToolTip、ContextMenu 与所有专用控件的 owning
+  Popup 使用 `SurfaceBackground=null`，并继续由既有 Presenter / `PopupFrame` 绘制表面。
+- surface ownership 不改变 host/Child bounds、corner radius、shadow thickness、Padding、placement 或 z-order。
 - `ShouldUseOverlayPopup=false` 的 native popup 路径仍必须满足同一 TopLevel 所有权；Headless 无法证明的原生窗口行为在
   对应桌面平台做实机验证，不通过强制 overlay 替代原有契约。
 
@@ -185,6 +192,10 @@ Transfer、TabControl、DataGrid 等间接消费路径分组打开独立 Dialog�
 placement target 的 TopLevel 归属。TestApp 不读取 Avalonia
 私有 Popup host 字段、不吞未处理异常，也不自动打开 Dialog 或 Popup，保证人工验收走真实 pointer/focus 路径。
 
+原语组的 Direct Popup Child 保持为没有 Background 的透明 `Border`，也不设置 `SurfaceBackground`；它用于证明默认
+surface 来自 Popup Theme 和共享 frame renderer。Flyout、MenuFlyout、ToolTip、ContextMenu 随后逐项验收，确保专用控件
+视觉未因 Direct Popup 的默认 surface 改变。
+
 Headless 测试与 TestApp 不共享运行时状态：前者证明 host、层级、输入和释放不变量，后者证明真实桌面窗口、CSD/native
 chrome、鼠标、焦点和视觉行为。
 
@@ -201,6 +212,8 @@ Controls 的直接及委托消费家族，`DataGridFilterDialogPopupTests` 在�
 - 输入语义：点击 Popup 外部可 light-dismiss，且 Dialog 保持打开；级联菜单按其自身关闭协议收敛。
 - 生命周期：最后一个 presenter 关闭后释放 Dialog layer；多个 modal/Drawer 重叠时最后一个 lease 才恢复 drawn chrome。
 - 库存守卫：自动 allowlist 契约测试覆盖直接入口、委托构造和类型别名；新增入口时测试失败并要求补充归类和回归。
+- 表面所有权：Direct Popup 默认使用 `ColorBgElevated`；专用 Popup 家族显式 opt-out，host frame 保持透明且既有 Presenter
+  的背景、圆角、Padding、阴影和位置不变。
 - TestApp 实机验收：在 `AtomUI.Desktop.Controls.TestApp` 的 `PopupInDialog` 场景中走查选择器、Flyout/Menu、
   ToolTip/ContextMenu、Picker、AvatarGroup、Transfer、TabControl 和 DataGrid，验证可见、可点、可关闭且进程不崩溃。
 - 平台回归：Windows CSD、macOS 原生 chrome、Linux X11/Wayland 分别记录实机证据；不得由共享代码路径推断未执行平台已通过。
