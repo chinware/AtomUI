@@ -91,5 +91,41 @@
         <target state="translated">Exemplos</target>
       </segment>
     </unit>
+    <unit id="SemanticRootDescription">
+      <segment>
+        <source>Root element, sets relative positioning, flex layout and masonry container styles.</source>
+        <target state="translated">Elemento raiz, define posicionamento relativo, layout flex e estilos do contêiner masonry.</target>
+      </segment>
+    </unit>
+    <unit id="SemanticItemDescription">
+      <segment>
+        <source>Item element, sets absolute positioning, width calculation, transition animation and masonry item styles.</source>
+        <target state="translated">Elemento de item, define posicionamento absoluto, cálculo de largura, animação de transição e estilos de item masonry.</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartStyleTitle">
+      <segment>
+        <source>Custom semantic dom styling</source>
+        <target state="translated">Estilo semantic dom personalizado</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartStyleDescription">
+      <segment>
+        <source>You can customize the semantic dom style of Masonry by passing objects/functions through `classNames` and `styles`.</source>
+        <target state="translated">Você pode personalizar o estilo semantic dom do Masonry passando objetos/funções por meio de `classNames` e `styles`.</target>
+      </segment>
+    </unit>
+    <unit id="SemanticObjectStylesTitle">
+      <segment>
+        <source>classNames and styles Object</source>
+        <target state="translated">classNames e styles Object</target>
+      </segment>
+    </unit>
+    <unit id="SemanticFunctionStylesTitle">
+      <segment>
+        <source>classNames and styles Function</source>
+        <target state="translated">classNames e styles Function</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

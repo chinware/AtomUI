@@ -205,8 +205,7 @@ internal sealed class SemanticPartHighlightSession : IDisposable
                 continue;
             }
 
-            var adorner = new SemanticPartAdorner(index == 0);
-            AdornerLayer.SetAdornedElement(adorner, target);
+            var adorner = SemanticPartAdorner.Create(target, index == 0);
             layer.Children.Add(adorner);
             target.DetachedFromVisualTree += HandleTargetDetached;
             _adorners.Add(new AdornerEntry(target, layer, adorner));

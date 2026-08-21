@@ -43,6 +43,8 @@ Semantic Part 不负责：
 9. **跨宿主一致**：默认模板、浏览器模板、Popup、Overlay 和虚拟化容器必须维持同一个公共语义契约。
 10. **事实约束设计**：依赖 Avalonia Selector、编译器或样式激活器行为的规则，必须由当前解析版本源码或可复现
    编译与运行时测试确认，并在 Avalonia 升级后重新验证。
+11. **Preview 渲染隔离**：Semantic Part Preview 的高亮是 GalleryBase 的临时覆盖层。它不得改变目标 Control 或其祖先的
+    `ClipToBounds`、`Clip`、布局、主题或行为；高亮自身必须在目标 Bounds 外仍可完整绘制。
 
 ## 3. 术语与模型
 
@@ -721,6 +723,9 @@ Gallery Preview 是独立工具层，不属于 Control Semantic Part Runtime。�
 - Semantic Parts 使用独立 ShowCase Tab，并在用户第一次进入该 Tab 时才创建 Preview 和演示 Control。
 - Preview 已创建但没有 Hover/Pin 时，不扫描 owner VisualTree、不创建 Adorner、不监听 Popup 或布局。
 - Hover/Pin 时只进行 owner-scoped 查找，并把临时高亮 Adorner 放入目标对应的 Avalonia `AdornerLayer`。
+- Semantic 高亮 Adorner 创建时必须将 `AdornerLayer.IsClipEnabled` 设为 `false`，并在自身布局 Bounds 内绘制外扩 marker；这是
+  所有 root、静态模板 Part、runtime-created Part、Popup Part 和多实例目标共享的基础设施不变量。目标祖先的 `ClipToBounds`
+  或 `Clip` 保持其控件语义，不能通过修改控件模板或布局来“配合” Preview。
 - 取消选择、切换 Tab、Popup 关闭或页面 detach 时先清空高亮 Adorner 的 `AdornedElement` 关联，再移除 Adorner 并释放临时订阅。
 - Preview 不向 Control、ControlTheme 或模板节点注入 class、Style、Binding、属性、事件或调试状态。
 - 独立宿主由具体 Gallery Demo 显式提供附加 root，不允许通过全局 TopLevel 搜索补偿。
@@ -748,6 +753,10 @@ Semantic Part 实现至少验证：
 10. 高密度控件在真实模板下的 marker、候选节点与 class listener 结构预算。
 11. descriptor、Control 文档与 Gallery 元数据一致性。
 12. 生成结果确定性、裁剪和 NativeAOT publish。
+13. Semantic Preview 的每个 Adorner 都关闭 ancestor clipping，`Clip` 保持为空，外扩 marker geometry 完全位于自身 Bounds
+    内；至少用一个被 `ClipToBounds=true` 祖先包裹的 root 或 item 场景验证顶部、左侧、右侧和底部描边完整可见。
+14. Preview 的裁剪回归必须覆盖静态模板节点、runtime-created 容器、跨视觉根 Popup、薄尺寸目标和多实例合并；测试不得只断言
+    marker 数值或 target 坐标，而必须断言 Adorner 的 clip 配置和最终可渲染几何边界。
 
 Button 的 `root`、`icon`、`content` 可以作为基础契约测试样本；它不拥有 Semantic Part 系统架构。
 

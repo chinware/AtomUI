@@ -17,7 +17,7 @@ descriptor 或普通应用运行时注入演示状态。
 - 把 Semantic Part 与普通 Examples 分成独立一级 Tab，避免把公共定制契约伪装成普通使用案例。
 - 只有用户第一次进入 Semantic Parts Tab 时才创建 Preview 和演示控件。
 - 只有用户 Hover 或 Pin 某个 Part 时才查找目标并创建高亮视觉。
-- 使用 Avalonia 12 原生 `AdornerLayer` 跟踪布局、Transform、滚动和裁剪。
+- 使用 Avalonia 12 原生 `AdornerLayer` 跟踪布局、Transform 和滚动；高亮覆盖层独立于目标内容的 ancestor clipping。
 - 保持 NativeAOT、Browser 和 Desktop 路径不依赖反射、程序集扫描或运行时 AXAML 解析。
 
 ## 2. 非目标
@@ -276,8 +276,14 @@ VisualRoot 手动换算屏幕坐标。
 - 只绘制高亮边框，不设置背景或半透明填充，不覆盖或改变目标原有颜色、文字和图形。
 - 视觉对齐 antd SemanticPreview 的 `Marker`：金框沿目标边界外侧绘制，主目标在 2px 全不透明金框外再画 1px 白色外环
   （对应 antd `boxShadow: 0 0 0 1px #fff`）；其余目标使用同色 `1px`、85% 不透明描边。
-- 描边落在目标 bounds 外沿，细窄目标（如 4px 高的 slider tracks）也能获得清晰可见的金框；Canvas 型 AdornerLayer
-  不做裁剪，目标边缘 3px 内的外扩绘制始终可见。
+- 描边落在目标 bounds 外沿，细窄目标（如 4px 高的 slider tracks）也能获得清晰可见的金框。
+- 构造时必须设置 `AdornerLayer.SetIsClipEnabled(adorner, false)`。Avalonia `AdornerLayer` 默认会根据 adorned target 的祖先
+  裁剪状态合成 clip；如果目标位于 `ClipToBounds=true` 的 Border、Panel、Masonry、ScrollViewer 或其他模板节点中，默认 clip
+  会把顶部、左侧或底部的外扩描边截回目标矩形。关闭该 attached property 是 Semantic Preview 的基础设施契约，不能由具体
+  Control、Gallery 页面或单个 Part 自行补偿。
+- adorner 使用负 Margin 或等价布局外扩，使 marker geometry 及其 Pen 厚度完全落在 adorner 自身 Bounds 内；只扩大 geometry 而
+  保留原始 adorner Bounds 不能保证渲染可见。
+- adorner 自身不得设置 `Clip`；目标祖先的 `ClipToBounds` 和 `Clip` 不得为了 Preview 被修改。
 - 不依赖目标 ControlTemplate。
 - `IsHitTestVisible=false`、`Focusable=false`。
 - 第一个目标使用主高亮样式，其余目标使用次级样式；多实例作用域下按 §8.4 的合并顺序决定主/次样式，顺序稳定且可复现。
@@ -292,6 +298,18 @@ VisualRoot 手动换算屏幕坐标。
 
 清空 `AdornedElement` 是强制步骤。Avalonia 12 的 Adorner 实现通过该变化释放内部 ancestor property subscription；仅从
 Children 删除 Visual 不能作为完整生命周期契约。
+
+### 9.1 高亮渲染不变量
+
+所有高亮创建路径必须经过 `SemanticPartAdorner` 的统一构造路径，由 adorner 自身建立以下不变量：
+
+1. `Focusable=false`、`IsHitTestVisible=false`。
+2. `AdornerLayer.GetIsClipEnabled(adorner)==false`，且 `adorner.Clip==null`。
+3. 主、副 marker 的几何和 Pen 外接 Bounds 完全位于 adorner 自身布局 Bounds 内。
+4. 目标 Control、目标祖先和目标模板不因高亮而改变属性、布局、裁剪、样式或事件。
+
+因此，遇到边缘缺线时，维护者必须先检查 adorner 的 clip 配置和 Bounds；不得通过修改控件 `ClipToBounds`、Preview 对齐、Masonry
+坐标或模板 Padding 来修复 Semantic Preview 的渲染问题。该规则适用于所有控件，不是 Masonry 专用约定。
 
 ## 10. Popup 与独立宿主
 
@@ -400,6 +418,9 @@ Button、ButtonTheme 和 Button Browser Theme 不因 Gallery Preview 新增任�
     按基类 owner type 纳入同一作用域；隐藏/未附加实例被过滤；跨实例不泄漏同名 Part；主/次样式顺序稳定；集合为空时回落
     `SemanticOwner` 单实例。
 17. Desktop、Browser、裁剪和 NativeAOT 路径不需要反射保留配置。
+18. 高亮渲染回归：root、静态模板 Part、runtime-created Part、跨视觉根 Popup、薄尺寸目标和多实例目标都通过统一
+    `SemanticPartAdorner` 路径创建；每个 adorner 的 ancestor clipping 已关闭、自己的 Clip 为空、外扩几何不越出 Bounds，且
+    被 `ClipToBounds=true` 祖先包裹时四边仍保持完整。
 
 ## 16. 相关文档
 

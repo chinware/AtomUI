@@ -105,6 +105,8 @@ attached property 的消费对象是 `MasonryPanel.Children` 中被测量和排�
 <atom:Masonry LayoutStrategy="Reflow" />
 ```
 
+Semantic Parts 摘要：Masonry 公开 `root` 与 `item` 两个职责区域。`root` 是 Masonry owner 本身；`item` 是每个已准备的 item container，直接子元素模式下是用户提供的直接 `Control`，`ItemsSource` 模式下是 generated `ContentPresenter`。完整 Selector、ContractType、cardinality 和定制边界由 [Masonry Semantic Part 契约](semantic-part.md) 维护。
+
 事件模型：
 
 ```csharp
@@ -127,7 +129,7 @@ public event EventHandler<MasonryLayoutChangedEventArgs>? LayoutChanged;
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml:40`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml:75`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -180,7 +182,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 响应式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml:96`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml:131`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -203,7 +205,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 图片
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml:122`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml:157`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -258,29 +260,30 @@ Masonry 本身没有 hover、pressed、disabled、loading 或 checked 等交互�
 
 ## 主题与 Design Token
 
-Masonry 的默认主题只装配 `ItemsPresenter` 与 internal `MasonryPanel`，并把 Masonry 布局属性传递给布局面板。Theme 不绘制子项外观，不通过 selector 计算列数和位置。
+Masonry 的默认主题装配 root chrome `PixelAlignedBorder`、`ItemsPresenter` 与 internal `MasonryPanel`，并把 Masonry 的布局属性与 root chrome 属性分别传递给对应层。Theme 不绘制子项外观，不通过 selector 计算列数和位置。Semantic Part marker 不写入主题静态节点；`.semantic-item` 由 Masonry 在 item container 准备阶段补齐。
 
 默认视觉树：
 
 ```text
 Masonry (ItemsControl, default ItemsPanel = MasonryPanel)
-└─ ItemsPresenter
-   └─ MasonryPanel (internal)
-      ├─ <子元素>
-      ├─ ContentPresenter → <子元素>
-      └─ ...
+└─ PixelAlignedBorder#PART_RootBorder
+   └─ ItemsPresenter
+      └─ MasonryPanel (internal)
+         ├─ <子元素>
+         ├─ ContentPresenter → <子元素>
+         └─ ...
 ```
 
 视觉树要求：
 
-- `Masonry` 和 `MasonryPanel` 节点只承担布局与容器装配职责。
+- `Masonry` 和 `MasonryPanel` 节点只承担布局与容器装配职责；root chrome 由 `PixelAlignedBorder` 承载。
 - 子项视觉结构完全由子项控件或 `ItemTemplate` 负责。
 - 不通过模板节点实现列、行、占位或测量辅助对象。
 - 不通过透明 Border 扩展命中区域。
 - 不通过不可见控件缓存测量结果。
 - 不为子项主动插入额外视觉包装层。
 
-Masonry 当前不定义专属 Token，不需要创建 `token.md`。Masonry 的间距和列宽属于实例布局状态，不应迁移为控件 Token。
+Masonry 当前不定义专属 Token，不需要创建 `token.md`。Masonry 的间距和列宽属于实例布局状态，不应迁移为控件 Token。root chrome 仅复用 `ItemsControl` 已有的 `Background`、`BorderBrush`、`BorderThickness`、`CornerRadius` 与 `Padding`，不引入独立 token 边界。
 
 Token 来源：
 
@@ -288,7 +291,7 @@ Token 来源：
 
 ## AOT 与裁剪注意事项
 
-Masonry 不使用反射读取 item template 内部元素，不创建不可见测量控件，不通过透明元素扩展命中区域。
+Masonry 不使用反射读取 item template 内部元素，不创建不可见测量控件，不通过透明元素扩展命中区域。Semantic Part 常量、descriptor 和 `MasonryItemStyle` 均由源生成器在编译期生成，不依赖运行时程序集扫描。
 
 稳定列快照只存储直接 item container 引用和列索引，由 `MasonryPanel` 单独持有。每次 Stable Arrange 后重建快照，detached 时清空；不复制业务数据，不要求稳定 key，也不改变 ItemsControl 容器生命周期。
 
@@ -300,16 +303,18 @@ Masonry 不使用反射读取 item template 内部元素，不创建不可见测
 
 主要源码：
 
-- `src/AtomUI.Desktop.Controls/Masonry/Masonry.cs`：公开控件类型、布局属性、attached property、`LayoutChanged` 事件入口。
+- `src/AtomUI.Desktop.Controls/Masonry/Masonry.cs`：公开控件类型、布局属性、attached property、`LayoutChanged` 事件入口和 item container prepare marker。
 - `src/AtomUI.Desktop.Controls/Masonry/MasonryLayoutStrategy.cs`：公开布局策略枚举，定义稳定列与经典重排语义。
+- `src/AtomUI.Desktop.Controls/Masonry/Masonry.SemanticParts.cs`：`item` Semantic Part descriptor；`root` 由生成器隐式补齐。
 - `src/AtomUI.Desktop.Controls/Masonry/MasonryPanel.cs`：internal 布局引擎，执行测量、排列、响应式断点监听和布局结果比较。
 - `src/AtomUI.Desktop.Controls/Masonry/MasonryItemSpan.cs`：子项 span 枚举。
 - `src/AtomUI.Desktop.Controls/Masonry/MasonryLayoutChangedEventArgs.cs`：布局结果事件参数。
-- `src/AtomUI.Desktop.Controls/Masonry/Themes/MasonryTheme.axaml`：默认 ControlTheme，装配 `ItemsPresenter` 和 `MasonryPanel`。
+- `src/AtomUI.Desktop.Controls/Masonry/Themes/MasonryTheme.axaml`：默认 ControlTheme，装配 root chrome `PixelAlignedBorder`、`ItemsPresenter` 和 `MasonryPanel`。
 
 ## 相关文档
 
 - 源设计文档：`docs/controls/desktop/layout/masonry/overview.md`
 - 实现文档：`docs/controls/desktop/layout/masonry/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/layout/masonry/semantic-part.md`
 - 变更记录：`docs/controls/desktop/layout/masonry/changelog.md`
 - 语义结构：`./semantic-cn.md`

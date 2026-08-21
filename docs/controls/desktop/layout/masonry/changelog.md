@@ -29,6 +29,14 @@
 - Verification
   - Add regression coverage for same-width Arrange reuse and width-change recalculation.
 
+## 2026-08-20
+
+- Semantic Part
+  - Add `root` / `item` Semantic Part contract for Masonry, aligned with Ant Design 6.6.0 Masonry Semantic DOM.
+  - Mark prepared item containers with `.semantic-item` without adding wrappers or changing the Masonry layout engine.
+  - Expose root chrome through the inherited `Background` / `BorderBrush` / `BorderThickness` / `CornerRadius` / `Padding` theme binding, and add Gallery object/function style examples for the semantic demo.
+  - Add Gallery Semantic Parts preview, custom Semantic Part styling example, descriptor tests and item marker lifecycle tests.
+
 ## 2026-06-26
 
 - Docs
@@ -70,7 +78,7 @@
   - 明确 `Masonry` 继承 `ItemsControl.ItemsPanel` 公共 API；显式替换 `ItemsPanel` 即表示替换 Masonry 默认布局引擎。
   - 布局引擎 `MasonryPanel` 派生自 `Panel`，标记 `internal`，仅作为 `Masonry` 的默认 `ItemsPanel` 装配，不暴露给开发者。
   - 删除 `IsFreshLayoutEnabled` 属性，子元素尺寸变化由 Avalonia layout lifecycle 自动处理，不需要额外监听机制。
-  - `Masonry` 不 override `ItemsControl` 的 `NeedsContainer`、`CreateContainer`、`PrepareContainer` 容器生成方法，两种内容提供方式的容器层级由基类决定。
+  - `Masonry` 不 override `ItemsControl` 的 `NeedsContainer`、`CreateContainer` 容器生成方法，而是在 `PrepareContainerForItemOverride` 中补齐 `.semantic-item` marker；两种内容提供方式的容器层级仍由基类决定。
 - Theme
   - `MasonryTheme.axaml` 装配 `ItemsPresenter` 与 internal `MasonryPanel`，通过 `RelativeSource` 或等价机制把 `Masonry` 布局属性传递给 `MasonryPanel`。
   - 明确默认 `MasonryPanel` 必须接收 `ColumnInfo` 与 `Gutter` 绑定，保持响应式属性与布局引擎同步。

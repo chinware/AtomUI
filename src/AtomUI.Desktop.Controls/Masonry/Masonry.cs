@@ -1,4 +1,5 @@
 using AtomUI.Controls;
+using AtomUI.Generated.AtomUIDesktopControls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.VisualTree;
@@ -23,7 +24,7 @@ namespace AtomUI.Desktop.Controls;
 /// the control theme; it is not exposed to developers.
 /// </para>
 /// </remarks>
-public class Masonry : ItemsControl
+public partial class Masonry : ItemsControl
 {
     #region 公共属性定义
 
@@ -228,6 +229,15 @@ public class Masonry : ItemsControl
     internal void NotifyLayoutChanged(IReadOnlyList<MasonryItemLayout> items)
     {
         Dispatcher.Post(() => LayoutChanged?.Invoke(this, new MasonryLayoutChangedEventArgs(items)));
+    }
+
+    protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
+    {
+        base.PrepareContainerForItemOverride(container, item, index);
+        if (!container.Classes.Contains(MasonrySemanticParts.ItemClass))
+        {
+            container.Classes.Add(MasonrySemanticParts.ItemClass);
+        }
     }
 
     private static void HandleItemLayoutPropertyChanged(Control control, AvaloniaPropertyChangedEventArgs args)

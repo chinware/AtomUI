@@ -7,10 +7,12 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Media;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 using AtomUIButton = AtomUI.Desktop.Controls.Button;
 using AtomUIWindow = AtomUI.Desktop.Controls.Window;
+using AtomUIMasonry = AtomUI.Desktop.Controls.Masonry;
 
 namespace AtomUI.Toolkits.GalleryBase.Tests.Controls;
 
@@ -34,6 +36,17 @@ public class SemanticPartHighlightSessionTests
         secondary.Length.ShouldBe(1);
         secondary[0].Brush.ShouldBeNull();
         AssertPen(secondary[0], Color.FromArgb(0xD9, 0xFA, 0xAD, 0x14), 1);
+    }
+
+    [Fact]
+    public void Adorner_Disables_Ancestor_Clipping_By_Default()
+    {
+        var target = new Border();
+        var adorner = SemanticPartAdorner.Create(target, isPrimary: true);
+
+        AdornerLayer.GetIsClipEnabled(adorner).ShouldBeFalse();
+        adorner.Clip.ShouldBeNull();
+        AdornerLayer.GetAdornedElement(adorner).ShouldBe(target);
     }
 
     [Fact]
@@ -63,6 +76,85 @@ public class SemanticPartHighlightSessionTests
         AdornerLayer.GetAdornedElement(adorner).ShouldBeNull();
         layer.Children.ShouldNotContain(adorner);
         session.HighlightedTargetCount.ShouldBe(0);
+    }
+
+    [Fact]
+    public void Start_Disables_Target_Ancestor_Clipping_For_Outward_Markers()
+    {
+        var registry = Application.Current.ShouldNotBeNull()
+                                  .GetThemeManager().ShouldNotBeNull()
+                                  .SemanticParts;
+        registry.TryGetControl(typeof(AtomUIMasonry), out var descriptor).ShouldBeTrue();
+        var part = descriptor.Parts.Single(static candidate => candidate.Path == "item");
+        var masonry = new AtomUIMasonry
+        {
+            Width = 200,
+            Height = 100,
+            ColumnCount = 1
+        };
+        masonry.Items.Add(new Border { Width = 100, Height = 40 });
+        using var context = ShowInAdornerHost(masonry);
+        using var session = SemanticPartHighlightSession.Start(masonry, part, registry);
+        Dispatcher.UIThread.RunJobs();
+        var target = masonry.GetVisualDescendants().First(static visual => visual.Classes.Contains("semantic-item"));
+        var adorner = context.Layer.Children.OfType<SemanticPartAdorner>().Single();
+        AdornerLayer.GetIsClipEnabled(adorner).ShouldBeFalse();
+        adorner.Clip.ShouldBeNull();
+        adorner.Bounds.ShouldBe(new Rect(-3, -3, target.Bounds.Width + 6, target.Bounds.Height + 6));
+
+        session.Dispose();
+        var rootPart = descriptor.Parts.Single(static candidate => candidate.Path == "root");
+        using var rootSession = SemanticPartHighlightSession.Start(masonry, rootPart, registry);
+        Dispatcher.UIThread.RunJobs();
+        var rootAdorner = context.Layer.Children.OfType<SemanticPartAdorner>().Single();
+        AdornerLayer.GetIsClipEnabled(rootAdorner).ShouldBeFalse();
+        rootAdorner.Clip.ShouldBeNull();
+    }
+
+    [Fact]
+    public void Start_Gives_Outward_Markers_Their_Own_Layout_Bounds()
+    {
+        var primaryTarget = new Border
+        {
+            Width  = 20,
+            Height = 4
+        };
+        primaryTarget.Classes.Add("semantic-item");
+        var secondaryTarget = new Border
+        {
+            Width  = 20,
+            Height = 20
+        };
+        secondaryTarget.Classes.Add("semantic-item");
+        Canvas.SetLeft(secondaryTarget, 40);
+        Canvas.SetTop(secondaryTarget, 20);
+
+        var owner = new Canvas
+        {
+            Width  = 100,
+            Height = 100,
+            Children =
+            {
+                primaryTarget,
+                secondaryTarget
+            }
+        };
+        var descriptor = RuntimeDescriptor(typeof(Canvas), "MarkerBoundsCanvas");
+        var registry = new SemanticPartRegistry([descriptor]);
+        var part = descriptor.Parts.Single(static candidate => candidate.Path == "item");
+
+        using var context = ShowInAdornerHost(owner);
+        using var session = SemanticPartHighlightSession.Start(owner, part, registry);
+        Dispatcher.UIThread.RunJobs();
+
+        var adorners = context.Layer.Children.OfType<SemanticPartAdorner>().ToArray();
+        var primary = adorners.Single(adorner =>
+            AdornerLayer.GetAdornedElement(adorner) == primaryTarget);
+        var secondary = adorners.Single(adorner =>
+            AdornerLayer.GetAdornedElement(adorner) == secondaryTarget);
+
+        AssertOutwardMarkerBounds(primaryTarget, primary, context.Layer, 3);
+        AssertOutwardMarkerBounds(secondaryTarget, secondary, context.Layer, 1);
     }
 
     [Fact]
@@ -276,7 +368,7 @@ public class SemanticPartHighlightSessionTests
 
     private static GeometryDrawing[] RenderAdorner(bool isPrimary)
     {
-        var adorner = new SemanticPartAdorner(isPrimary);
+        var adorner = SemanticPartAdorner.Create(new Border(), isPrimary);
         adorner.Measure(new Size(20, 20));
         adorner.Arrange(new Rect(0, 0, 20, 20));
 
@@ -297,6 +389,51 @@ public class SemanticPartHighlightSessionTests
         pen.Thickness.ShouldBe(expectedThickness);
         var brush = pen.Brush.ShouldNotBeNull().ShouldBeAssignableTo<ISolidColorBrush>();
         brush.Color.ShouldBe(expectedColor);
+    }
+
+    private static void AssertOutwardMarkerBounds(
+        Control target,
+        SemanticPartAdorner adorner,
+        AdornerLayer layer,
+        double expectedOutset)
+    {
+        adorner.Bounds.ShouldBe(new Rect(
+            -expectedOutset,
+            -expectedOutset,
+            target.Bounds.Width + expectedOutset * 2,
+            target.Bounds.Height + expectedOutset * 2));
+
+        var targetOrigin = target.TranslatePoint(default, layer).ShouldNotBeNull();
+        var adornerOrigin = adorner.TranslatePoint(default, layer).ShouldNotBeNull();
+        adornerOrigin.ShouldBe(new Point(
+            targetOrigin.X - expectedOutset,
+            targetOrigin.Y - expectedOutset));
+
+        var localBounds = new Rect(adorner.Bounds.Size);
+        foreach (var drawing in RenderAdorner(adorner))
+        {
+            var pen = drawing.Pen.ShouldNotBeNull();
+            var drawingBounds = drawing.Geometry.ShouldNotBeNull()
+                                       .Bounds
+                                       .Inflate(pen.Thickness / 2);
+            drawingBounds.Left.ShouldBeGreaterThanOrEqualTo(localBounds.Left);
+            drawingBounds.Top.ShouldBeGreaterThanOrEqualTo(localBounds.Top);
+            drawingBounds.Right.ShouldBeLessThanOrEqualTo(localBounds.Right);
+            drawingBounds.Bottom.ShouldBeLessThanOrEqualTo(localBounds.Bottom);
+        }
+    }
+
+    private static GeometryDrawing[] RenderAdorner(SemanticPartAdorner adorner)
+    {
+        var drawingGroup = new DrawingGroup();
+        using (var context = drawingGroup.Open())
+        {
+            adorner.Render(context);
+        }
+
+        var drawings = drawingGroup.Children.ToArray();
+        drawings.ShouldAllBe(static child => child is GeometryDrawing);
+        return drawings.Cast<GeometryDrawing>().ToArray();
     }
 
     private static AdornerHostContext ShowInAdornerHost(Control control)
@@ -386,22 +523,21 @@ public class SemanticPartHighlightSessionTests
     }
 
     [Fact]
-    public void Adorner_Marker_Rect_Expands_Outside_The_Target_So_Thin_Targets_Stay_Visible()
+    public void Adorner_Marker_Rect_Stays_Inside_The_Expanded_Adorner_Bounds()
     {
-        // 与 antd Marker 一致：标记矩形沿目标外沿展开，
-        // 描边（画笔中心线落在矩形边上）覆盖目标边界外侧的色带。
-        // 主标记 2px 金框：矩形外扩 1px，描边覆盖 [bounds-2, bounds]。
-        SemanticPartAdorner.GetMarkerRect(new Size(50, 40), 1)
-                           .ShouldBe(new Rect(-1, -1, 52, 42));
-        // 副标记 1px 金框：矩形外扩 0.5px，描边覆盖 [bounds-1, bounds]。
-        SemanticPartAdorner.GetMarkerRect(new Size(50, 40), 0.5)
-                           .ShouldBe(new Rect(-0.5, -0.5, 51, 41));
-        // 主标记白色外环：矩形外扩 2.5px，描边覆盖 [bounds-3, bounds-2]。
-        SemanticPartAdorner.GetMarkerRect(new Size(50, 40), 2.5)
-                           .ShouldBe(new Rect(-2.5, -2.5, 55, 45));
+        // 50x40 目标的主 adorner 四周各扩 3px，因此 Bounds 为 56x46。
+        // 白色 halo 和金框都完全位于这个 Bounds 内，视觉上仍落在目标外侧。
+        SemanticPartAdorner.GetMarkerRect(new Size(56, 46), 3, 2.5)
+                           .ShouldBe(new Rect(0.5, 0.5, 55, 45));
+        SemanticPartAdorner.GetMarkerRect(new Size(56, 46), 3, 1)
+                           .ShouldBe(new Rect(2, 2, 52, 42));
 
-        // 细窄目标（例如 4px 高的 slider tracks）：金框落在目标外侧，不会退化为不可见的细线。
-        SemanticPartAdorner.GetMarkerRect(new Size(201, 4), 1)
-                           .ShouldBe(new Rect(-1, -1, 203, 6));
+        // 副 adorner 四周各扩 1px，1px 描边也保留完整的四条边。
+        SemanticPartAdorner.GetMarkerRect(new Size(52, 42), 1, 0.5)
+                           .ShouldBe(new Rect(0.5, 0.5, 51, 41));
+
+        // 201x4 的细窄目标扩展后为 207x10，金框不会退化或越出 adorner。
+        SemanticPartAdorner.GetMarkerRect(new Size(207, 10), 3, 1)
+                           .ShouldBe(new Rect(2, 2, 203, 6));
     }
 }

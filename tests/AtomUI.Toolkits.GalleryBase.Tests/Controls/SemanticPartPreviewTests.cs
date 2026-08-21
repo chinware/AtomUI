@@ -215,7 +215,8 @@ public class SemanticPartPreviewTests
         var previewPresenter = previewStage.Child.ShouldBeOfType<ContentPresenter>();
         previewPresenter.HorizontalAlignment.ShouldBe(HorizontalAlignment.Stretch);
         previewPresenter.HorizontalContentAlignment.ShouldBe(HorizontalAlignment.Stretch);
-        previewPresenter.VerticalContentAlignment.ShouldBe(VerticalAlignment.Center);
+        previewPresenter.VerticalAlignment.ShouldBe(VerticalAlignment.Top);
+        previewPresenter.VerticalContentAlignment.ShouldBe(VerticalAlignment.Top);
 
         var partsPane = layout.Children[1].ShouldBeOfType<Border>();
         partsPane.Name.ShouldBe("PART_PartsPane");

@@ -6,8 +6,16 @@
     <ControlTheme x:Key="{x:Type atom:Masonry}" TargetType="atom:Masonry">
         <Setter Property="Template">
             <ControlTemplate>
-                <ItemsPresenter Name="PART_ItemsPresenter"
-                                ItemsPanel="{TemplateBinding ItemsPanel}" />
+                <atom:PixelAlignedBorder Name="PART_RootBorder"
+                                         Background="{TemplateBinding Background}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         CornerRadius="{TemplateBinding CornerRadius}"
+                                         Padding="{TemplateBinding Padding}"
+                                         ClipToBounds="{TemplateBinding ClipToBounds}">
+                    <ItemsPresenter Name="PART_ItemsPresenter"
+                                    ItemsPanel="{TemplateBinding ItemsPanel}" />
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
 

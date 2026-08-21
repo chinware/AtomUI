@@ -25,9 +25,9 @@
                                         Padding="32">
                                     <ContentPresenter Content="{TemplateBinding PreviewContent}"
                                                       HorizontalAlignment="Stretch"
-                                                      VerticalAlignment="Center"
+                                                      VerticalAlignment="Top"
                                                       HorizontalContentAlignment="Stretch"
-                                                      VerticalContentAlignment="Center" />
+                                                      VerticalContentAlignment="Top" />
                                 </Border>
 
                                 <Border Name="PART_PartsPane"
