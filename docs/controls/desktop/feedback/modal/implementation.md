@@ -1,6 +1,6 @@
 # Modal 桌面版实现原理
 
-本文档描述 `Dialog` 和 `MessageBox` 的当前内部实现、状态所有权、组合结构、资源边界和释放规则。公共契约见 [Modal 桌面版架构设计](overview.md)，宿主尺寸算法见 [Modal 宿主尺寸与 Resize 设计](host-sizing-design.md)，内容区弹层叠放见 [Modal 内容弹层叠放设计](popup-layering-design.md)，Token 语义见 [Modal Token 设计](token.md)。
+本文档描述 `Dialog` 和 `MessageBox` 的当前内部实现、状态所有权、组合结构、资源边界和释放规则。公共契约见 [Modal 桌面版架构设计](overview.md)，关闭动效编排见 [Modal Dialog 关闭动效设计](dialog-close-motion-design.md)，宿主尺寸算法见 [Modal 宿主尺寸与 Resize 设计](host-sizing-design.md)，内容区弹层叠放见 [Modal 内容弹层叠放设计](popup-layering-design.md)，Token 语义见 [Modal Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -15,15 +15,16 @@
 | `Dialog.StaticAPI.cs` | 静态 modeless/modal 异步创建入口。 |
 | `DialogSession.cs` | 单次展示状态机、关闭仲裁、取消、结果、焦点和 teardown。 |
 | `IDialogPresenter.cs` | Overlay/Window 共用的最小异步协议。 |
-| `DialogSurface.cs` | 标题、内容、Footer、按钮和 Overlay resize 的共享表面。 |
+| `DialogSurface.cs` | 标题、内容、Footer、按钮和 Overlay resize 的共享表面；负责 `PART_SurfaceContentLayer` 的 template part 生命周期。 |
 | `ButtonBox/DialogButtonBox.cs` | 标准按钮生成、唯一有效按钮序列和自定义集合同步。 |
 | `OverlayHost/DialogOverlayLayer.cs` | 解析 owning TopLevel 的 Avalonia `OverlayLayer` 或局部 scope fallback，并管理 owner scope 内的 presenter stack。 |
-| `OverlayHost/OverlayDialogPresenter.cs` | 同时拥有 mask、Surface、placement、drag/resize 和 motion。 |
+| `OverlayHost/OverlayDialogPresenter.cs` | 同时拥有 mask、Surface、placement、drag/resize 和 Overlay close motion choreography。 |
 | `WindowHost/WindowDialogPresenter.cs` | 原生 Window 属性映射、modal owner、尺寸、位置和生命周期。 |
 | `WindowHost/DialogWindow.cs` | 原生 caption close 仲裁和显式尺寸应用。 |
 | `MessageBox/MessageBox.cs` | Dialog 派生的消息语义、静态 API 和按钮配置。 |
 | `MessageBox/MessageBoxContent.cs` | MessageBox 的图标与内容组合。 |
 | `Dialog/Themes` / `MessageBox/Themes` | 共享 Surface、Overlay presenter 和 MessageBox AXAML 结构。 |
+| `src/AtomUI.Core/MotionScene/AbstractMotion.cs` | 共享 Motion 的 transition completion boundary；等待全部 transition 或安全超时后才报告完成。 |
 
 对应回归测试位于 `tests/AtomUI.Desktop.Controls.Tests/Dialog` 和 `tests/AtomUI.Desktop.Controls.Tests/MessageBox`。
 
@@ -82,9 +83,10 @@ flowchart TD
     WP --> W["DialogWindow"]
     SA --> DS["DialogSurface"]
     W --> DS
-    DS --> H["PART_Header"]
-    DS --> C["Content / MessageBoxContent"]
-    DS --> B["PART_ButtonBox"]
+    DS --> DSCL["PART_SurfaceContentLayer"]
+    DSCL --> H["PART_Header"]
+    DSCL --> C["Content / MessageBoxContent"]
+    DSCL --> B["PART_ButtonBox"]
     B --> EB["Effective button sequence"]
 ```
 
@@ -96,6 +98,7 @@ flowchart TD
 | `DialogSurface` | runtime + `DialogSurfaceTheme.axaml` | internal-observable | 两种宿主必须共享，不建议用户直接创建。 |
 | `PART_Header`, `PART_ButtonBox`, `PART_Resizer` | `DialogSurfaceTheme.axaml` | template-stable | 变更需同步实现、主题、测试和文档。 |
 | `PART_MaskMotionActor`, `PART_SurfaceMotionActor` | `OverlayDialogPresenterTheme.axaml` | template-stable | 变更需保持 mask/Surface 同一 presenter。 |
+| `PART_SurfaceContentLayer` | `DialogSurfaceTheme.axaml` | internal template collaboration | 关闭时承载前景 opacity；重套模板时由 `DialogSurface` 释放旧引用。 |
 | `DialogOverlayLayer` | runtime C# | internal-observable | 只管理 scope 内栈，不提供全局 service。 |
 | Avalonia `OverlayLayer` / `PopupOverlayLayer` | runtime infrastructure | internal-observable | 分别承载 Dialog presentation 与内容 popup，保留中间 light-dismiss 层。 |
 
@@ -120,7 +123,7 @@ Window 和 Overlay 各自拥有一个 Surface 实例，不共享同一个视觉�
 
 `DialogSurface.OnApplyTemplate` 先释放旧 Header/ButtonBox/Resizer 订阅，再接入新 parts。`DialogButtonBox` 在 template 为空或重套用时立即清空旧 panel 和视觉父级。
 
-Overlay presenter 在退出 motion 后先断开 `DialogSurface` 子树的 composition children，再释放 Surface 并移除 Overlay layer；空的 `DialogOverlayLayer` 随后从实际 host 删除并解绑 size 事件。Window presenter 先等待原生 Window 关闭，再在 dispose 中断开 composition children、释放 Surface、bindings、资源 bridge 和 `Window.Content`。两条路径都防止调用方保留 Content/CustomButton 等子控件时，其旧 `CompositionVisual.Parent` 链反向保留 Presenter 和 Surface；原生关闭或后续释放抛出时仍继续 teardown，最后传播首个异常。
+Overlay presenter 在外层 Surface、内容层和 modal mask 的关闭任务全部完成后，先断开 `DialogSurface` 子树的 composition children，再释放 Surface 并移除 Overlay layer；空的 `DialogOverlayLayer` 随后从实际 host 删除并解绑 size 事件。Window presenter 先等待原生 Window 关闭，再在 dispose 中断开 composition children、释放 Surface、bindings、资源 bridge 和 `Window.Content`。两条路径都防止调用方保留 Content/CustomButton 等子控件时，其旧 `CompositionVisual.Parent` 链反向保留 Presenter 和 Surface；原生关闭或后续释放抛出时仍继续 teardown，最后传播首个异常。
 
 ## 7. 交互与事件处理
 
@@ -161,7 +164,7 @@ Overlay 首次 placement 完成前收到 `StructuralMinimumChanged` 时，只重
 
 ### 8.4 Motion
 
-Overlay 的 mask 和 Surface motion 并行等待。Window host 不创建 Surface `MotionActor`：它在 native `Show()` 前完成初始尺寸和 placement，首个可见帧直接使用已解析的几何。`DialogWindow.Opened` 和 `DialogWindow.Closed` 是 Window presenter 的原生生命周期边界；关闭流程等待原生 Window 关闭和资源清理，不依赖 Surface close motion。Overlay 的 opening/closing motion 仍由其 presenter 等待，duration 来自 Dialog scope 的 `MotionDurationMid`。
+Overlay 的 mask 和 Surface motion 并行等待；关闭时 `OverlayDialogPresenter` 还为 `PART_SurfaceContentLayer` 创建同 duration 的线性 opacity animation，并使用 `Task.WhenAll` 聚合 Surface、内容层和 mask 的任务。全部任务完成后才断开 composition children、Dispose Surface 和移除 presenter。`AbstractMotion` 对一个 Motion 内部的多个 transition 使用 `Task.WhenAll` 作为正常完成条件，并保留最长 duration 加安全余量的 timeout；不能因首个 transition 完成就提前报告 Motion 完成。Window host 不创建 Surface `MotionActor`：它在 native `Show()` 前完成初始尺寸和 placement，首个可见帧直接使用已解析的几何。`DialogWindow.Opened` 和 `DialogWindow.Closed` 是 Window presenter 的原生生命周期边界；关闭流程等待原生 Window 关闭和资源清理，不依赖 Surface close motion。Overlay 的 opening/closing motion 仍由其 presenter 等待，duration 来自 Dialog scope 的 `MotionDurationMid`。详细 choreography 见 [Modal Dialog 关闭动效设计](dialog-close-motion-design.md)。
 
 ### 8.5 Overlay 宿主与窗口几何
 
@@ -205,6 +208,9 @@ Dialog 内容区内的 popup 沿 placement target 解析同一 Window `TopLevel`
 - 普通 veto 发生在结果提交前；结果提交后只允许完成 teardown 和传播异常。
 - Overlay 与 Window 的 `ShowAsync`/`CloseAsync` 都等待真实 presentation 边界。
 - mask 与 Surface 必须保留在同一个 Overlay presenter 中。
+- Overlay 关闭时 Surface 外层、`PART_SurfaceContentLayer` 和 modal mask 的任务必须由同一个 presenter 聚合；所有任务完成前不得断开 composition children、Dispose Surface 或移除 presenter。
+- `AbstractMotion` 只能在全部 transition 完成或安全 timeout 后报告 Motion 完成；不能按首个 transition 的完成通知 teardown。
+- `PART_SurfaceContentLayer` 是可选内部协作节点；缺失时仅退化为外层 motion，不能阻断基本关闭流程。动画期间不得改变 Surface Bounds、布局或 visual parent。
 - 所有平台的 Overlay presenter 必须保留在 owning `TopLevel` 的 `OverlayLayer`；drawn decorations overlay 只绘制 chrome，不能承载业务 presentation。
 - Dialog 内容、Popup placement target 与 owning Window 必须解析到同一 `TopLevel`；Popup 使用更高的 Avalonia popup layer，并保留中间 light-dismiss 层。
 - mask bounds、Window visible frame、Dialog body owner bounds 和 Dialog BoxShadow extents 必须保持独立。mask 覆盖完整 layer；所有平台的 Surface 正文都可进入 managed/drawn 标题栏但不能覆盖有效 frame；BoxShadow 允许由 Window visual-layer clip 在外轮廓处裁剪。

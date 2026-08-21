@@ -109,6 +109,8 @@ public class DialogMotionAnchorTests
                 var button = buttonBox.GetVisualDescendants()
                                       .OfType<AtomUI.Desktop.Controls.DialogButton>()
                                       .ShouldHaveSingleItem();
+                var contentLayer = presenter.Surface.SurfaceContentLayer.ShouldNotBeNull();
+                var originalSurfaceBounds = presenter.Surface.Bounds;
 
                 presenter.IsMotionEnabled = true;
                 presenter.MotionDuration  = TimeSpan.FromMilliseconds(80);
@@ -117,6 +119,8 @@ public class DialogMotionAnchorTests
                 closeTask.IsCompleted.ShouldBeFalse();
                 presenter.Parent.ShouldBeOfType<DialogOverlayLayer>();
                 button.IsAttachedToVisualTree().ShouldBeTrue();
+                contentLayer.IsAttachedToVisualTree().ShouldBeTrue();
+                presenter.Surface.Bounds.ShouldBe(originalSurfaceBounds);
                 buttonBox.GetVisualDescendants()
                          .OfType<AtomUI.Desktop.Controls.DialogButton>()
                          .Count()

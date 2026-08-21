@@ -5,6 +5,7 @@ using AtomUI.Controls.Primitives;
 using AtomUI.MotionScene;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -13,6 +14,7 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
@@ -231,6 +233,11 @@ internal sealed class OverlayDialogPresenter : ContentControl,
             {
                 CreateSurfaceMotion(isOpening: false).RunAsync(_surfaceMotionActor)
             };
+            if (_surface.SurfaceContentLayer is { } surfaceContentLayer)
+            {
+                motionTasks.Add(RunSurfaceContentCloseMotionAsync(surfaceContentLayer));
+            }
+
             if (IsModal && _maskMotionActor is not null)
             {
                 motionTasks.Add(new FadeOutMotion(MotionDuration, new CubicEaseIn())
@@ -243,6 +250,40 @@ internal sealed class OverlayDialogPresenter : ContentControl,
         _surface.DisconnectCompositionChildren();
         _surface.Dispose();
         RemoveFromDialogLayer();
+    }
+
+    private async Task RunSurfaceContentCloseMotionAsync(Control surfaceContentLayer)
+    {
+        var animation = new Animation
+        {
+            Duration = MotionDuration,
+            Easing = new LinearEasing(),
+            FillMode = FillMode.Forward,
+            Children =
+            {
+                new KeyFrame
+                {
+                    Cue = new Cue(0),
+                    Setters = { new Setter(Visual.OpacityProperty, 1d) }
+                },
+                new KeyFrame
+                {
+                    Cue = new Cue(1),
+                    Setters = { new Setter(Visual.OpacityProperty, 0d) }
+                }
+            }
+        };
+
+        try
+        {
+            await animation.RunAsync(surfaceContentLayer);
+        }
+        finally
+        {
+            // The surface is torn down immediately after all close motions;
+            // restore the live tree for re-use if teardown is interrupted.
+            surfaceContentLayer.Opacity = 1;
+        }
     }
 
     public ValueTask DisposeAsync()
