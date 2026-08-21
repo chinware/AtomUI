@@ -2,6 +2,28 @@
 
 本文档记录 Splitter 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-21
+
+- Runtime
+  - Publish `root` / `panel` / `dragger` Semantic Parts for `Splitter` (`Splitter.SemanticParts.cs`), generated Semantic Style types `SplitterPanelStyle` / `SplitterDraggerStyle`.
+  - Add runtime `semantic-panel` markers on tracked user panels in `SplitterPanel`, with ownership tracking so user-declared classes survive panel removal.
+  - Add runtime `semantic-scope-handle` markers on generated `SplitterHandle` instances.
+  - Add `BorderDashArray` / `BorderDashOffset` public root frame dash APIs on `Splitter` for dashed root borders.
+- Theme
+  - Declare static `semantic-scope-panel` on `PART_SplitterPanel` (`SplitterTheme.axaml`) and `semantic-dragger` on `PART_DragBar` (`SplitterHandleTheme.axaml`).
+  - Bind `StrokeDashArray` / `StrokeDaskOffset` on the root `Frame` to `BorderDashArray` / `BorderDashOffset` (`SplitterTheme.axaml`).
+- Gallery
+  - Switch Splitter ShowCase to `GalleryShowCaseHost` with a Semantic Parts tab previewing `root` / `panel` / `dragger`.
+  - Add Splitter semantic part descriptions to all Gallery language catalogs.
+  - Add a trailing Semantic Part styling ShowCase item (`splitter-semantic-part`) aligned with the Ant Design style-class demo: root background + dragger styling, then a dashed root border with secondary text.
+- Tests
+  - Add `SplitterSemanticPartTests` covering descriptor fields, static theme markers, runtime marker counts, children sync, user-owned class preservation and generated Semantic Style application.
+  - Add `SplitterBorderDashTests` covering root frame dash propagation through the theme template.
+  - Extend `SplitterShowCasePageTests` with Semantic Parts tab materialization, semantic demo declaration, official style value application and localization copy checks.
+- Docs
+  - Add [Splitter Semantic Part 契约](semantic-part.md).
+  - Update `overview.md` and `implementation.md` with the Semantic Part model, marker ownership, root frame dash APIs and verification boundaries.
+
 ## 2026-07-02
 
 - Runtime

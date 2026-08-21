@@ -41,5 +41,10 @@ public enum SplitterShowCaseLangResourceKind
     P2TextA,
     P2TextB,
     P2TextC,
-    P2TextD
+    P2TextD,
+    SemanticRootDescription,
+    SemanticPanelDescription,
+    SemanticDraggerDescription,
+    SemanticPartStyleTitle,
+    SemanticPartStyleDescription
 }

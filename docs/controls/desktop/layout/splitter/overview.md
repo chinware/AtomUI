@@ -1,6 +1,6 @@
 # Splitter 桌面版架构设计
 
-本文档定义 `Splitter` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Splitter 桌面版实现原理](implementation.md)，Splitter Token 的专项设计见 [Splitter Token 设计](token.md)，设计和契约变化记录见 [Splitter Changelog](changelog.md)。
+本文档定义 `Splitter` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Splitter 桌面版实现原理](implementation.md)，Splitter Token 的专项设计见 [Splitter Token 设计](token.md)，Semantic Part 契约见 [Splitter Semantic Part 契约](semantic-part.md)，设计和契约变化记录见 [Splitter Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -53,8 +53,12 @@ Splitter 的公共契约由根控件 API、面板附加属性、折叠模型、�
 
 - `HandleSize` 只表示分割把手的命中区域，不等同于可见分割线厚度。
 - 可见分割线的厚度、圆角和 hover/dragging 颜色属于 handle 视觉模型，应通过根控件实例属性和 Token 映射到 internal handle，而不是要求用户样式化 internal 类型。
-- Splitter 根框架可承接 `Background`、`BorderBrush`、`BorderThickness`、`CornerRadius` 等基础外观属性；子面板圆角仍由用户提供的面板控件自行控制。
+- Splitter 根框架可承接 `Background`、`BorderBrush`、`BorderThickness`、`CornerRadius`、`BorderDashArray`、`BorderDashOffset` 等基础外观属性；子面板圆角仍由用户提供的面板控件自行控制。
 - 不新增 `PanelCornerRadius`、`PanelBackground` 这类统一改写子面板的属性，避免 Splitter 篡改用户内容树。
+
+Semantic Part 契约：`Splitter` 公开 `root`、`panel`、`dragger` 三个 Semantic Part。`panel` 的 marker 由
+`SplitterPanel` 运行时添加到用户面板，`dragger` 命中每个 handle 模板内的 `PART_DragBar`；二者均为
+`RuntimeCreated` 的 Selector 型 Part，完整字段、路由与定制边界见 [Splitter Semantic Part 契约](semantic-part.md)。
 
 稳定 template part：
 
@@ -184,17 +188,32 @@ Splitter 的样式能力划分为三层：
 
 | 层级 | 职责 | 推荐入口 |
 | --- | --- | --- |
-| 根框架 | Splitter 整体背景、边框、圆角和裁剪。 | `Background`、`BorderBrush`、`BorderThickness`、`CornerRadius` 的模板绑定。 |
+| 根框架 | Splitter 整体背景、边框、虚线样式、圆角和裁剪。 | `Background`、`BorderBrush`、`BorderThickness`、`CornerRadius`、`BorderDashArray`、`BorderDashOffset` 的模板绑定。 |
 | 可见分割线 | 分割线厚度、圆角、普通/hover/dragging 颜色。 | `LineThickness`、`LineCornerRadius`、控件 Token。 |
 | 子面板内容 | 面板背景、面板圆角、内容 padding。 | 用户自己的子控件，例如 `Border`、`Card` 或业务布局容器。 |
 
 新增实例级分割线样式能力时，必须把 API 定义在 `Splitter` 上，并通过 `SplitterPanel` 传递到 internal handle。不要要求用户引用 `SplitterHandle` 或 `SplitterDragBar`，也不要把 `HandleSize` 复用为线条厚度。
+
+### 8.4 Semantic Part 模型
+
+Splitter 通过 owner-scoped Semantic Selector 公开三个稳定语义区域：
+
+| Part | AtomUI 节点 | 职责 |
+| --- | --- | --- |
+| `root` | `Splitter` | 分割容器根，承载面板集合、方向、附加属性 scope 与 resize 事件。 |
+| `panel` | 用户面板子控件 | 可调整尺寸的内容面板，marker 由 `SplitterPanel` 运行时添加。 |
+| `dragger` | `SplitterHandle` 模板中的 `SplitterDragBar#PART_DragBar` | 相邻面板之间的拖拽命中区。 |
+
+`panel` / `dragger` 的数量随面板数量同步（N 个面板对应 N 个 `panel` 与 N-1 个 `dragger`），折叠、禁用拖拽、
+方向与 lazy 切换只改变布局与状态，不改变 Part 数量。完整字段、SelectorRoute、数量语义与定制边界见
+[Splitter Semantic Part 契约](semantic-part.md)。
 
 ## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [Splitter 桌面版实现原理](implementation.md)
+- [Splitter Semantic Part 契约](semantic-part.md)
 - [Splitter Token 设计](token.md)
 - [Splitter Changelog](changelog.md)
 
@@ -202,19 +221,16 @@ LLMS 语义区域：
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `Splitter` | 控件根语义区域，承载 public API、Children、事件和 Token scope。 | `Orientation`、`IsLazy`、`HandleSize`、`Children` | `SplitBarHandleSize` | stable |
-| `frame` | `SplitterTheme.axaml` / `Border#Frame` | Splitter 整体背景、边框、圆角和裁剪入口。 | `Background`、`BorderBrush`、`BorderThickness`、`CornerRadius` | SharedToken / SplitterToken | stable |
-| `panel-host` | `PART_SplitterPanel` | 组织用户面板并生成 handle。 | attached panel properties | `SplitBarHandleSize` | stable |
-| `handle` | `SplitterHandle` | 相邻面板之间的交互边界。 | `HandleSize`、collapse API | `HandleLineColor`、`HandleLineHoverColor`、`HandleLineDragColor` | internal stable |
-| `drag-bar` | `SplitterDragBar` | 拖拽命中区和 grip 展示。 | `IsLazy`、`HandleSize` | `SplitTriggerSize`、`SplitBarDraggableSize`、`HandleLineThickness` | internal stable |
-| `collapse-actions` | collapse `IconButton` | 折叠和恢复相邻面板。 | `CollapsePreviousIcon`、`CollapseNextIcon`、`Splitter.Collapsible` | `HandleIconSize`、`HandleIconColor` | internal stable |
+| `root` | `Splitter` | 控件根语义区域，承载 public API、Children、事件和 Token scope。 | `Orientation`、`IsLazy`、`HandleSize`、`Children` | `SplitBarHandleSize` | stable since 6.0 |
+| `panel` | 用户面板子控件 | 可调整尺寸的内容面板。 | attached panel properties | 无专属 Token | stable since 6.0 |
+| `dragger` | `SplitterHandle` 模板中的 `PART_DragBar` | 相邻面板之间的拖拽命中区。 | `IsLazy`、`HandleSize`、`LineThickness`、`LineCornerRadius` | `SplitTriggerSize`、`SplitBarDraggableSize`、`HandleLineThickness` | stable since 6.0 |
 
 LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
 | 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/splitter/index-cn.md` |
-| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/splitter/semantic-cn.md` |
+| 单控件语义文档 | `semantic-part.md` + `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/splitter/semantic-cn.md` |
 | API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
 | Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |

@@ -211,6 +211,36 @@
         <target state="translated">示例</target>
       </segment>
     </unit>
+    <unit id="SemanticDraggerDescription">
+      <segment>
+        <source>Drag bar element carrying the semantic-dragger class that resizes adjacent panels.</source>
+        <target state="translated">携带 semantic-dragger 类的拖动条元素，用于调整相邻面板的尺寸。</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPanelDescription">
+      <segment>
+        <source>Panel container element carrying the semantic-panel class with adjustable size and clipped content.</source>
+        <target state="translated">携带 semantic-panel 类的面板容器元素，具有可调整的尺寸与裁剪的内容。</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartStyleDescription">
+      <segment>
+        <source>Mirrors the Ant Design style-class demo: customize the root background and the dragger through generated Semantic Part styles, and outline the root with a dashed border.</source>
+        <target state="translated">对齐 Ant Design style-class 示例：通过生成的 Semantic Part 样式自定义 root 背景与拖动条，并为 root 添加虚线边框。</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartStyleTitle">
+      <segment>
+        <source>Custom Semantic Part styling</source>
+        <target state="translated">自定义 Semantic Part 样式</target>
+      </segment>
+    </unit>
+    <unit id="SemanticRootDescription">
+      <segment>
+        <source>Root container element that arranges panels and drag bars along the split direction.</source>
+        <target state="translated">根容器元素，沿分割方向排列面板与拖动条。</target>
+      </segment>
+    </unit>
     <unit id="ShowCollapsibleIconDescription">
       <segment>
         <source>Three panels with hover and always-visible collapsible icons.</source>

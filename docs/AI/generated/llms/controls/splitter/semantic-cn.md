@@ -4,14 +4,86 @@
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Splitter` | 控件根语义区域，承载 public API、Children、事件和 Token scope。 | `Orientation`、`IsLazy`、`HandleSize`、`Children` | `SplitBarHandleSize` | stable |
-| `frame` | `SplitterTheme.axaml` / `Border#Frame` | Splitter 整体背景、边框、圆角和裁剪入口。 | `Background`、`BorderBrush`、`BorderThickness`、`CornerRadius` | SharedToken / SplitterToken | stable |
-| `panel-host` | `PART_SplitterPanel` | 组织用户面板并生成 handle。 | attached panel properties | `SplitBarHandleSize` | stable |
-| `handle` | `SplitterHandle` | 相邻面板之间的交互边界。 | `HandleSize`、collapse API | `HandleLineColor`、`HandleLineHoverColor`、`HandleLineDragColor` | internal stable |
-| `drag-bar` | `SplitterDragBar` | 拖拽命中区和 grip 展示。 | `IsLazy`、`HandleSize` | `SplitTriggerSize`、`SplitBarDraggableSize`、`HandleLineThickness` | internal stable |
-| `collapse-actions` | collapse `IconButton` | 折叠和恢复相邻面板。 | `CollapsePreviousIcon`、`CollapseNextIcon`、`Splitter.Collapsible` | `HandleIconSize`、`HandleIconColor` | internal stable |
+### 2.1 `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Splitter` |
+| Part | `root` |
+| Selector | Splitter 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
+| ContractType | `Splitter` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | Splitter owner |
+| 职责 | 分割容器根：承载 `Children` 面板集合、`Orientation` 方向语义、附加面板属性 scope、resize 事件与 Token scope；作为全部 Part 的 owner-scoped Selector 作用域边界。对应上游 `.ant-splitter`。 |
+| 相关 API | `Orientation`、`IsLazy`、`HandleSize`、`LineThickness`、`LineCornerRadius`、`Splitter.Size`、`Splitter.IsResizable`、`Splitter.IsCollapsed`、`Splitter.Collapsible`、`ResizeStarted` / `ResizeDelta` / `ResizeCompleted` |
+| 相关 Token | `SplitBarHandleSize`、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+### 2.2 `panel`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Splitter` |
+| Part | `panel` |
+| Selector | `.semantic-panel` |
+| SelectorRoute | `/template/ .semantic-scope-panel > .semantic-panel` |
+| Style Type | `SplitterPanelStyle` |
+| ContractType | `Control` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | 用户提供的面板子控件（`SplitterPanel` 跟踪时添加运行时 marker） |
+| 职责 | 统一表示可调整尺寸的内容面板：面板背景、边框、裁剪与排版入口；面板尺寸与约束由附加属性驱动。对应上游 `.ant-splitter-panel`。 |
+| 相关 API | `Splitter.Size`、`Splitter.DefaultSize`、`Splitter.MinSize`、`Splitter.MaxSize`、`Splitter.IsResizable`、`Splitter.IsCollapsed`、`Splitter.Collapsible` |
+| 相关 Token | 无专属 Token（面板内容与外观属于用户内容容器） |
+| 稳定性 | stable since 6.0 |
+
+### 2.3 `dragger`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Splitter` |
+| Part | `dragger` |
+| Selector | `.semantic-dragger` |
+| SelectorRoute | `/template/ .semantic-scope-panel > .semantic-scope-handle /template/ .semantic-dragger` |
+| Style Type | `SplitterDraggerStyle` |
+| ContractType | `Thumb`（`AtomUI.Controls.Primitives.Thumb`） |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | 每个 internal `SplitterHandle` 模板中的 `SplitterDragBar#PART_DragBar` |
+| 职责 | 统一表示相邻面板之间的拖拽命中区：drag 输入入口、方向 cursor 与 grip 视觉宿主；命中区域尺寸由 handle 布局写入。对应上游 `.ant-splitter-bar`。 |
+| 相关 API | `IsLazy`、`HandleSize`、`LineThickness`、`LineCornerRadius` |
+| 相关 Token | `SplitTriggerSize`、`SplitBarDraggableSize`、`HandleLineThickness`、`HandleLineColor`、`HandleLineHoverColor`、`HandleLineDragColor` |
+| 稳定性 | stable since 6.0 |
+
+### 2.4 marker 放置与路由
+
+`root` 是隐式 Part，不声明 `.semantic-root` marker。非 root Part 使用两层 marker 表达路由：
+
+- 静态 marker 在主题中声明：
+  - `SplitterTheme.axaml` 在 `SplitterPanel#PART_SplitterPanel` 上声明 `Classes.semantic-scope-panel`。
+  - `SplitterHandleTheme.axaml` 在 `SplitterDragBar#PART_DragBar` 上声明 `Classes.semantic-dragger`。
+  - `SplitterDragBarTheme.axaml` 不声明任何 `.semantic-*` marker。
+- 运行时 marker 由 `SplitterPanel` 维护：
+  - `CreateHandle` 为每个新创建的 `SplitterHandle` 添加 `semantic-scope-handle` 类。
+  - `SyncTrackedPanels` 为新跟踪的用户面板添加 `semantic-panel` 类，并用 `_semanticPanelMarkersAdded`
+    记录「由 Splitter 添加」的实例集合；面板离开时只移除 Splitter 自己添加的 marker，用户预先声明的
+    `semantic-panel` 类保留。
+
+路由语义：
+
+- `panel` 从 owner 出发单跳进入 `PART_SplitterPanel`（scope class），再取直接子面板上的 `.semantic-panel`。
+- `dragger` 跨越两层模板：先从 owner 模板进入 scope panel，经 `.semantic-scope-handle` 定位每个动态 handle，
+  再进入 handle 自身模板命中 `PART_DragBar` 上的 `.semantic-dragger`。`CrossVisualRoot=false` 表示 handle
+  模板仍在同一视觉树内，不涉及 popup、overlay 或独立 visual root。
 
 ## Abstract AXAML Structure
 
@@ -60,8 +132,8 @@ Splitter
 | `PART_CollapseIconsHost` | template node (Canvas) | `SplitterHandleTheme.axaml` | SplitterHandle | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_CollapsePrevButton` | template node (IconButton) | `SplitterHandleTheme.axaml` | SplitterHandle | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_CollapseNextButton` | template node (IconButton) | `SplitterHandleTheme.axaml` | SplitterHandle | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Splitter` | control theme | `SplitterTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `BorderThickness`, `CollapseNextIcon`, `CollapsePreviousIcon`, `CornerRadius` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Frame` | template node (PixelAlignedBorder) | `SplitterTheme.axaml` | Splitter | `Background`, `BorderBrush`, `BorderThickness`, `CollapseNextIcon`, `CollapsePreviousIcon`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Splitter` | control theme | `SplitterTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `BorderDashArray`, `BorderDashOffset`, `BorderThickness`, `CollapseNextIcon` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Frame` | template node (PixelAlignedBorder) | `SplitterTheme.axaml` | Splitter | `Background`, `BorderBrush`, `BorderDashArray`, `BorderDashOffset`, `BorderThickness`, `CollapseNextIcon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_SplitterPanel` | template node (SplitterPanel) | `SplitterTheme.axaml` | Splitter | `CollapseNextIcon`, `CollapsePreviousIcon`, `HandleSize`, `IsLazy`, `LineCornerRadius`, `LineThickness` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
@@ -161,8 +233,15 @@ Splitter Token 只表达组件级视觉变量，包括分割线尺寸、拖拽�
 - `HandleSize` 作为 hit area 的语义。
 - `SplitterPanel` 作为尺寸与折叠状态 owner 的语义。
 - internal handle template part 的绑定关系和事件释放路径。
+- Semantic Part 契约：`root` / `panel` / `dragger` 的名称、selector class、`SelectorRoute`、`ContractType` 与
+  cardinality（完整定义见 [Splitter Semantic Part 契约](semantic-part.md)）。
+- 主题静态 marker（`semantic-scope-panel` / `semantic-dragger`）与运行时 marker（`semantic-panel` /
+  `semantic-scope-handle`）的放置位置与回收路径。
 - Light/Dark、Browser/Desktop 和不同方向下的主题一致性。
 - API 契约摘要、Token 语义、ShowCase 示例和控件文档的一致性。
+- 根框架外观 API（`Background`、`BorderBrush`、`BorderThickness`、`CornerRadius`、`BorderDashArray`、
+  `BorderDashOffset`）直接 TemplateBinding 到 `SplitterTheme` 的 `Frame`，不经过 `SplitterPanel` 或
+  internal handle 转发。
 
 新增分割线样式能力时必须遵守：
 

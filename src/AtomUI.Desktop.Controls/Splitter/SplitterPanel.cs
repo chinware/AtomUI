@@ -2,6 +2,7 @@ using System.Collections.Specialized;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.DesignTokens;
+using AtomUI.Generated.AtomUIDesktopControls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -14,6 +15,8 @@ namespace AtomUI.Desktop.Controls;
 internal class SplitterPanel : Panel
 {
     private const double DragEpsilon = 0.001;
+    private const string HandleScopeClass = "semantic-scope-handle";
+
 
     #region 公共属性定义
     public static readonly StyledProperty<Orientation> OrientationProperty =
@@ -96,6 +99,7 @@ internal class SplitterPanel : Panel
     private readonly List<Control> _panels = new();
     private readonly List<SplitterHandle> _handles = new();
     private readonly HashSet<Control> _trackedPanels = new();
+    private readonly HashSet<Control> _semanticPanelMarkersAdded = new();
     private readonly Dictionary<Control, SplitterPartContext> _partContexts = new();
 
     private bool _suppressChildrenChanged;
@@ -167,6 +171,7 @@ internal class SplitterPanel : Panel
             if (!_panels.Contains(panel))
             {
                 panel.PropertyChanged -= HandlePanelPropertyChanged;
+                RemovePanelSemanticMarker(panel);
                 return true;
             }
             return false;
@@ -176,11 +181,34 @@ internal class SplitterPanel : Panel
         {
             if (_trackedPanels.Add(panel))
             {
+                AddPanelSemanticMarker(panel);
                 panel.PropertyChanged += HandlePanelPropertyChanged;
             }
         }
     }
     
+
+    private void AddPanelSemanticMarker(Control panel)
+    {
+        if (panel.Classes.Contains(SplitterSemanticParts.PanelClass))
+        {
+            return;
+        }
+
+        panel.Classes.Add(SplitterSemanticParts.PanelClass);
+        _semanticPanelMarkersAdded.Add(panel);
+    }
+
+    private void RemovePanelSemanticMarker(Control panel)
+    {
+        if (!_semanticPanelMarkersAdded.Remove(panel))
+        {
+            return;
+        }
+
+        panel.Classes.Remove(SplitterSemanticParts.PanelClass);
+    }
+
     private void HandlePanelPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
     {
        
@@ -224,6 +252,7 @@ internal class SplitterPanel : Panel
             LineThickness     = LineThickness,
             LineCornerRadius = LineCornerRadius
         };
+        handle.Classes.Add(HandleScopeClass);
 
         handle.DragStarted               += HandleDragStarted;
         handle.DragDelta                 += HandleDragDelta;

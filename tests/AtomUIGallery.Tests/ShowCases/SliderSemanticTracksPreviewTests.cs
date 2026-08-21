@@ -71,14 +71,15 @@ public class SliderSemanticTracksPreviewTests
             Dispatcher.UIThread.RunJobs();
             Dispatcher.UIThread.RunJobs();
 
-            // 高亮会话把唯一目标（tracks 容器）挂到 AdornerLayer 上，
-            // 标记尺寸与目标一致（金框沿目标外沿绘制，在标记内渲染时不被裁剪）。
+            // 高亮会话把唯一目标（tracks 容器）挂到 AdornerLayer 上。主标记使用每边
+            // 3px 的负 Margin 覆盖描边区域，adorner 自身尺寸比目标大 6px，保证描边
+            // 不被 ClipToBounds 祖先裁剪。
             var layer = AdornerLayer.GetAdornerLayer(tracks).ShouldNotBeNull();
             var adorner = layer.Children
                                .Where(static child => child.GetType().Name == "SemanticPartAdorner")
                                .ToArray();
             adorner.ShouldHaveSingleItem();
-            adorner[0].Bounds.Size.ShouldBe(tracks.Bounds.Size);
+            adorner[0].Bounds.Size.ShouldBe(new Size(tracks.Bounds.Width + 6, tracks.Bounds.Height + 6));
             AdornerLayer.GetAdornedElement(adorner[0]).ShouldBeSameAs(tracks);
         }
         finally

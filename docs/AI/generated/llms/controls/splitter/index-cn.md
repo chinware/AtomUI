@@ -55,8 +55,12 @@ Splitter 的公共契约由根控件 API、面板附加属性、折叠模型、�
 
 - `HandleSize` 只表示分割把手的命中区域，不等同于可见分割线厚度。
 - 可见分割线的厚度、圆角和 hover/dragging 颜色属于 handle 视觉模型，应通过根控件实例属性和 Token 映射到 internal handle，而不是要求用户样式化 internal 类型。
-- Splitter 根框架可承接 `Background`、`BorderBrush`、`BorderThickness`、`CornerRadius` 等基础外观属性；子面板圆角仍由用户提供的面板控件自行控制。
+- Splitter 根框架可承接 `Background`、`BorderBrush`、`BorderThickness`、`CornerRadius`、`BorderDashArray`、`BorderDashOffset` 等基础外观属性；子面板圆角仍由用户提供的面板控件自行控制。
 - 不新增 `PanelCornerRadius`、`PanelBackground` 这类统一改写子面板的属性，避免 Splitter 篡改用户内容树。
+
+Semantic Part 契约：`Splitter` 公开 `root`、`panel`、`dragger` 三个 Semantic Part。`panel` 的 marker 由
+`SplitterPanel` 运行时添加到用户面板，`dragger` 命中每个 handle 模板内的 `PART_DragBar`；二者均为
+`RuntimeCreated` 的 Selector 型 Part，完整字段、路由与定制边界见 [Splitter Semantic Part 契约](semantic-part.md)。
 
 稳定 template part：
 
@@ -92,7 +96,7 @@ Splitter 的公共契约由根控件 API、面板附加属性、折叠模型、�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Views/SplitterShowCase.axaml:59`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Views/SplitterShowCase.axaml:97`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -111,7 +115,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 水平分割
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Views/SplitterShowCase.axaml:77`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Views/SplitterShowCase.axaml:115`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -130,7 +134,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 组合布局
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Views/SplitterShowCase.axaml:95`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Views/SplitterShowCase.axaml:133`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -154,7 +158,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 禁用拖拽调整
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Views/SplitterShowCase.axaml:118`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Views/SplitterShowCase.axaml:156`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -257,6 +261,7 @@ AOT 边界：
 主要源码文件：
 
 - `src/AtomUI.Desktop.Controls/Splitter/Splitter.cs`
+- `src/AtomUI.Desktop.Controls/Splitter/Splitter.SemanticParts.cs`
 - `src/AtomUI.Desktop.Controls/Splitter/SplitterPanel.cs`
 - `src/AtomUI.Desktop.Controls/Splitter/SplitterHandle.cs`
 - `src/AtomUI.Desktop.Controls/Splitter/SplitterDragBar.cs`
@@ -270,6 +275,7 @@ AOT 边界：
 Gallery 与文档结构：
 
 - `controlgallery/AtomUIGallery/ShowCases/Layout/Splitter`
+- `tests/AtomUI.Desktop.Controls.Tests/Splitter/SplitterSemanticPartTests.cs`
 - `tests/AtomUIGallery.Tests/ShowCases/SplitterShowCasePageTests.cs`
 - `tests/AtomUIGallery.Tests/ShowCases/SplitterShowCaseExamples.snapshot`
 - `docs/controls/desktop/layout/splitter/`
@@ -277,16 +283,19 @@ Gallery 与文档结构：
 职责边界：
 
 - `Splitter.cs` 保留 public API、附加属性、Children 同步、template part 获取和 resize 事件抛出。
-- `SplitterPanel.cs` 保留布局、拖拽、折叠、尺寸约束和 handle 状态刷新。
+- `Splitter.SemanticParts.cs` 只承载 `[SemanticPart]` descriptor 声明，生成 `SplitterSemanticParts` 常量与
+  `SplitterPanelStyle` / `SplitterDraggerStyle` Semantic Style。
+- `SplitterPanel.cs` 保留布局、拖拽、折叠、尺寸约束、handle 状态刷新和 Semantic Part marker 维护。
 - `SplitterHandle.cs` 保留单个 handle 的按钮、hover、dragging、collapse request 和 drag event 转发。
 - `SplitterDragBar.cs` 保留 Thumb 输入事件和禁用拖拽拦截。
-- Theme 文件负责静态视觉结构、template binding、selector 和 TokenResource 映射。
+- Theme 文件负责静态视觉结构、template binding、selector、TokenResource 映射和静态 semantic marker 声明。
 - Token 文件只提供组件视觉变量，不保存实例状态。
 
 ## 相关文档
 
 - 源设计文档：`docs/controls/desktop/layout/splitter/overview.md`
 - 实现文档：`docs/controls/desktop/layout/splitter/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/layout/splitter/semantic-part.md`
 - Token 文档：`docs/controls/desktop/layout/splitter/token.md`
 - 变更记录：`docs/controls/desktop/layout/splitter/changelog.md`
 - 语义结构：`./semantic-cn.md`

@@ -1,6 +1,6 @@
 # Splitter 桌面版实现原理
 
-本文档描述 Splitter 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Splitter 桌面版架构设计](overview.md)，变化记录见 [Splitter Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Splitter Token 设计](token.md)。
+本文档描述 Splitter 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Splitter 桌面版架构设计](overview.md)，Semantic Part 契约见 [Splitter Semantic Part 契约](semantic-part.md)，变化记录见 [Splitter Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Splitter Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -23,6 +23,7 @@ Splitter
 主要源码文件：
 
 - `src/AtomUI.Desktop.Controls/Splitter/Splitter.cs`
+- `src/AtomUI.Desktop.Controls/Splitter/Splitter.SemanticParts.cs`
 - `src/AtomUI.Desktop.Controls/Splitter/SplitterPanel.cs`
 - `src/AtomUI.Desktop.Controls/Splitter/SplitterHandle.cs`
 - `src/AtomUI.Desktop.Controls/Splitter/SplitterDragBar.cs`
@@ -36,6 +37,7 @@ Splitter
 Gallery 与文档结构：
 
 - `controlgallery/AtomUIGallery/ShowCases/Layout/Splitter`
+- `tests/AtomUI.Desktop.Controls.Tests/Splitter/SplitterSemanticPartTests.cs`
 - `tests/AtomUIGallery.Tests/ShowCases/SplitterShowCasePageTests.cs`
 - `tests/AtomUIGallery.Tests/ShowCases/SplitterShowCaseExamples.snapshot`
 - `docs/controls/desktop/layout/splitter/`
@@ -43,10 +45,12 @@ Gallery 与文档结构：
 职责边界：
 
 - `Splitter.cs` 保留 public API、附加属性、Children 同步、template part 获取和 resize 事件抛出。
-- `SplitterPanel.cs` 保留布局、拖拽、折叠、尺寸约束和 handle 状态刷新。
+- `Splitter.SemanticParts.cs` 只承载 `[SemanticPart]` descriptor 声明，生成 `SplitterSemanticParts` 常量与
+  `SplitterPanelStyle` / `SplitterDraggerStyle` Semantic Style。
+- `SplitterPanel.cs` 保留布局、拖拽、折叠、尺寸约束、handle 状态刷新和 Semantic Part marker 维护。
 - `SplitterHandle.cs` 保留单个 handle 的按钮、hover、dragging、collapse request 和 drag event 转发。
 - `SplitterDragBar.cs` 保留 Thumb 输入事件和禁用拖拽拦截。
-- Theme 文件负责静态视觉结构、template binding、selector 和 TokenResource 映射。
+- Theme 文件负责静态视觉结构、template binding、selector、TokenResource 映射和静态 semantic marker 声明。
 - Token 文件只提供组件视觉变量，不保存实例状态。
 
 ## 3. 核心类职责
@@ -78,6 +82,8 @@ Gallery 与文档结构：
 - 根据 `Orientation`、`HandleSize`、尺寸约束和折叠状态执行 measure/arrange。
 - 处理 drag started/delta/completed，按 `IsLazy` 决定实时布局或延迟提交。
 - 处理折叠和恢复，维护可见面板边界。
+- 维护 Semantic Part marker：为新跟踪面板添加 `semantic-panel`，为新建 handle 添加 `semantic-scope-handle`，
+  面板离开时回收 Splitter 自己添加的 marker。
 
 维护规则：
 
@@ -85,6 +91,8 @@ Gallery 与文档结构：
 - handle 的创建、事件订阅和移除必须成对维护。
 - 面板属性变化必须从 `SplitterPanel` 统一归一，不允许 handle 直接修改用户面板业务状态。
 - 尺寸计算必须同时考虑固定值、百分比、默认尺寸、最小值、最大值和折叠尺寸。
+- `_semanticPanelMarkersAdded` 只记录「由 Splitter 添加」的 `semantic-panel` marker；面板离开时只回收该集合
+  中的条目，用户预先声明的 `semantic-panel` 类必须保留。
 
 ### 3.3 SplitterHandle
 
@@ -180,8 +188,17 @@ Splitter public style API / SplitterToken
 
 - 构造阶段订阅自身 `Children.CollectionChanged`。
 - `RefreshPanelsAndHandles` 移除旧 handle、解除事件订阅、重建面板列表、创建新 handle、建立 handle 事件。
-- `SyncTrackedPanels` 跟踪用户面板属性变化，并在面板离开时解绑。
+- `SyncTrackedPanels` 跟踪用户面板属性变化，为新面板添加 `semantic-panel` marker，并在面板离开时解绑、
+  回收 Splitter 自己添加的 marker。
+- `CreateHandle` 为每个新 handle 添加 `semantic-scope-handle` marker；handle 重建时 marker 随新实例。
 - 布局变化和属性变化触发 measure/arrange 或 handle state update。
+
+Semantic Part marker 的获取与释放成对存在：
+
+- 面板 marker：`SyncTrackedPanels` 添加，面板离开 `_panels` 时在 `SyncTrackedPanels` 中移除；只有
+  `_semanticPanelMarkersAdded` 记录的条目会被回收。
+- handle marker：`CreateHandle` 添加，handle 随 `RefreshPanelsAndHandles` 销毁时随实例释放，无独立回收路径。
+- 静态 marker（`semantic-scope-panel` / `semantic-dragger`）由主题声明，模板重套用时随模板节点重建。
 
 `SplitterHandle` 生命周期：
 
@@ -263,8 +280,15 @@ AOT 边界：
 - `HandleSize` 作为 hit area 的语义。
 - `SplitterPanel` 作为尺寸与折叠状态 owner 的语义。
 - internal handle template part 的绑定关系和事件释放路径。
+- Semantic Part 契约：`root` / `panel` / `dragger` 的名称、selector class、`SelectorRoute`、`ContractType` 与
+  cardinality（完整定义见 [Splitter Semantic Part 契约](semantic-part.md)）。
+- 主题静态 marker（`semantic-scope-panel` / `semantic-dragger`）与运行时 marker（`semantic-panel` /
+  `semantic-scope-handle`）的放置位置与回收路径。
 - Light/Dark、Browser/Desktop 和不同方向下的主题一致性。
 - API 契约摘要、Token 语义、ShowCase 示例和控件文档的一致性。
+- 根框架外观 API（`Background`、`BorderBrush`、`BorderThickness`、`CornerRadius`、`BorderDashArray`、
+  `BorderDashOffset`）直接 TemplateBinding 到 `SplitterTheme` 的 `Frame`，不经过 `SplitterPanel` 或
+  internal handle 转发。
 
 新增分割线样式能力时必须遵守：
 
@@ -280,6 +304,8 @@ AOT 边界：
 
 - 纯文档改动运行 `git diff --check` 并检查相对链接。
 - 控件 API 或行为变更运行 `tests/AtomUI.Desktop.Controls.Tests`。
+- Semantic Part 契约变更运行 `tests/AtomUI.Desktop.Controls.Tests` 中的 `SplitterSemanticPartTests`，
+  并走查 Gallery Semantic Parts 标签页的预览与描述。
 - Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests` 中 Splitter 相关测试。
-- 主题变更检查 `SplitterTheme.axaml`、`SplitterHandleTheme.axaml`、`SplitterDragBarTheme.axaml` 中 TemplateBinding、TokenResource 和 selector 是否一致。
+- 主题变更检查 `SplitterTheme.axaml`、`SplitterHandleTheme.axaml`、`SplitterDragBarTheme.axaml` 中 TemplateBinding、TokenResource、selector 和 semantic marker 是否一致。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。
