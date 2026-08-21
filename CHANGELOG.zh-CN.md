@@ -8,10 +8,15 @@ AtomUI 的重要变更记录在此文件中。
 
 ## 6.1.5
 
-`2026-08-20`
+`2026-08-21`
 
-- Dialog 和 MessageBox
+- Dialog、Drawer 和 MessageBox
   - 新增 `Dialog.IsMaskClosable`（默认 `true`）和 `MessageBoxOptions.IsMaskClosable`，控制点击模态遮罩是否关闭弹窗；`IsClosable` 仍只控制头部关闭按钮，设为 `false` 时遮罩点击会被忽略。
+  - 让 Dialog 或 Window Drawer 内容中的 Popup、Flyout、MenuFlyout、ToolTip、ContextMenu 和带 Popup 控件始终留在所属 Window 的 `TopLevel`，位于模态内容之上并保留正常 light-dismiss 层级，包括 DataGrid 过滤弹层。
+  - 直接实例化的 Dialog 默认居中，与 `DialogOptions` 和静态 Dialog API 保持一致，同时保留显式 `Custom` 锚点和偏移语义。
+  - Dialog 关闭动画期间保持完整 Surface 内容附着，使文本、输入控件、Footer 操作和阴影同步完成动画与释放。
+- Popup
+  - 新增可选的 `Popup.SurfaceBackground`，默认值为 `null`。设置非空 Brush 时启用 host-owned surface；内置 Flyout、ToolTip、ContextMenu、选择器、Picker、菜单、Tour 和 ColorPicker 家族继续使用既有 content-owned surface，不重复绘制 frame 表面。
 - ToolTip
   - 新增 `TextWrapping`（默认 `Wrap`）和 `TextTrimming` 附加属性，长提示文本在 `ToolTipMaxWidth` 内换行，而不是被裁剪。
   - 允许以 `ToolTip` 实例作为 `Tip` 时覆盖宿主的呈现属性；实例上显式设置的呈现属性优先，未设置时回落到宿主。
@@ -21,6 +26,9 @@ AtomUI 的重要变更记录在此文件中。
   - 隐藏 AtomUI 标题栏时保留 `WindowDecorations.Full`，仅隐藏绘制层，避免留下标题栏高度的空白带。
 - 候选交互
   - 统一 Select、AutoComplete、ComboBox、Cascader 和 Mentions 的指针与键盘候选导航，使高亮项与 `Enter` 提交目标保持一致；指针移动仍不会提交选择。
+- NativeAOT 和 Build
+  - 按程序集 identity 和契约 hash 规范化 linked-registration Sidecar 输入，优先使用正式 Project 或 Package Sidecar，再回退到 metadata extraction；发现冲突 manifest 时直接报告，而不是向 linked build 输入重复注册计划。
+  - 在隔离的 .NET task host 中运行 linked-registration、Localization 和主题资产 MSBuild Task，避免不同构建之间发生 Task 依赖与加载上下文冲突。
 
 ## 6.1.4
 

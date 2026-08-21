@@ -6,10 +6,15 @@ All notable changes to AtomUI are documented in this file.
 
 ## 6.1.5
 
-`2026-08-20`
+`2026-08-21`
 
-- Dialog and MessageBox
+- Dialog, Drawer and MessageBox
   - Add `Dialog.IsMaskClosable` (default `true`) and `MessageBoxOptions.IsMaskClosable` to control whether pressing the modal mask closes the dialog. `IsClosable` continues to gate only the header close button; with `IsMaskClosable=false`, mask presses are ignored.
+  - Keep Popup, Flyout, MenuFlyout, ToolTip, ContextMenu and popup-bearing controls inside Dialog or Window Drawer content in the owning Window `TopLevel`, above modal content and below normal light-dismiss handling, including DataGrid filter popups.
+  - Center directly instantiated Dialogs by default, matching `DialogOptions` and static Dialog APIs while preserving explicit `Custom` anchors and offsets.
+  - Keep the complete Dialog surface content attached through close motion so text, inputs, footer actions and shadows animate and tear down together.
+- Popup
+  - Add optional `Popup.SurfaceBackground` with a `null` default. A non-null brush opts into a host-owned surface, while built-in Flyout, ToolTip, ContextMenu, selector, picker, menu, Tour and ColorPicker families keep their existing content-owned surfaces without duplicate frame fills.
 - ToolTip
   - Add `TextWrapping` (default `Wrap`) and `TextTrimming` attached properties so long tip text wraps within `ToolTipMaxWidth` instead of being clipped.
   - Allow a `ToolTip` instance used as `Tip` to override host presentation properties; presentation properties set on the instance take precedence and unset ones fall back to the host.
@@ -19,6 +24,9 @@ All notable changes to AtomUI are documented in this file.
   - Preserve `WindowDecorations.Full` when the AtomUI title bar is hidden, hiding only the drawn title-bar visual and avoiding a title-bar-height blank band.
 - Candidate interaction
   - Unify pointer and keyboard candidate navigation for Select, AutoComplete, ComboBox, Cascader and Mentions so the highlighted item and `Enter` commit target stay consistent; pointer movement remains non-committing.
+- NativeAOT and Build
+  - Canonicalize linked-registration Sidecar inputs by assembly identity and contract hash, prefer formal project or package Sidecars over metadata extraction, and report conflicting manifests instead of feeding duplicate registration plans into linked builds.
+  - Run linked-registration, localization and theme-asset MSBuild tasks in isolated .NET task hosts to avoid task dependency and load-context conflicts across builds.
 
 ## 6.1.4
 
