@@ -6,6 +6,7 @@ using Avalonia.Headless;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 
@@ -86,12 +87,12 @@ public class DialogMaskClosableTests
                 Dispatcher.UIThread.RunJobs();
                 AvaloniaHeadlessPlatform.ForceRenderTimerTick(1);
 
-                var point = root.TranslatePoint(
-                    new Point(20, root.Bounds.Height - 20),
-                    window).ShouldNotBeNull();
-                window.MouseMove(point);
-                window.MouseDown(point, MouseButton.Left);
-                window.MouseUp(point, MouseButton.Left);
+                var mask = presenter.GetVisualDescendants()
+                                    .OfType<OverlayDialogMask>()
+                                    .Single();
+                // Headless Window.MouseDown does not traverse the TopLevel OverlayLayer;
+                // raise the routed event at the actual mask target instead.
+                RaisePointerPressed(mask);
                 Dispatcher.UIThread.RunJobs();
 
                 closeRequestCount.ShouldBe(0, "IsMaskClosable=false 时 mask 外点不得发起关闭请求");
@@ -153,12 +154,12 @@ public class DialogMaskClosableTests
                 Dispatcher.UIThread.RunJobs();
                 AvaloniaHeadlessPlatform.ForceRenderTimerTick(1);
 
-                var point = root.TranslatePoint(
-                    new Point(20, root.Bounds.Height - 20),
-                    window).ShouldNotBeNull();
-                window.MouseMove(point);
-                window.MouseDown(point, MouseButton.Left);
-                window.MouseUp(point, MouseButton.Left);
+                var mask = presenter.GetVisualDescendants()
+                                    .OfType<OverlayDialogMask>()
+                                    .Single();
+                // Headless Window.MouseDown does not traverse the TopLevel OverlayLayer;
+                // raise the routed event at the actual mask target instead.
+                RaisePointerPressed(mask);
                 Dispatcher.UIThread.RunJobs();
 
                 closeRequestCount.ShouldBe(1);
@@ -214,5 +215,19 @@ public class DialogMaskClosableTests
     private static void RunOnUIThread(Action action)
     {
         Dispatcher.UIThread.Invoke(action);
+    }
+
+    private static void RaisePointerPressed(InputElement source)
+    {
+        source.RaiseEvent(new PointerPressedEventArgs(
+            source,
+            new Pointer(Pointer.GetNextFreeId(), PointerType.Mouse, true),
+            source,
+            default,
+            0,
+            new PointerPointProperties(
+                RawInputModifiers.LeftMouseButton,
+                PointerUpdateKind.LeftButtonPressed),
+            KeyModifiers.None));
     }
 }
