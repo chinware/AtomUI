@@ -25,6 +25,9 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     public static readonly StyledProperty<BoxShadows> OverlayHostShadowProperty =
         AvaloniaProperty.Register<Popup, BoxShadows>(nameof(OverlayHostShadow));
 
+    public static readonly StyledProperty<IBrush?> SurfaceBackgroundProperty =
+        AvaloniaProperty.Register<Popup, IBrush?>(nameof(SurfaceBackground));
+
     public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
         MotionAwareControlProperty.MotionDurationProperty.AddOwner<Popup>();
 
@@ -72,6 +75,12 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     {
         get => GetValue(OverlayHostShadowProperty);
         set => SetValue(OverlayHostShadowProperty, value);
+    }
+
+    public IBrush? SurfaceBackground
+    {
+        get => GetValue(SurfaceBackgroundProperty);
+        set => SetValue(SurfaceBackgroundProperty, value);
     }
 
     public TimeSpan MotionDuration
