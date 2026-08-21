@@ -212,7 +212,7 @@ LLMS 导出来源：
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
 | 源码索引 | implementation.md | 用于定位控件源码、主题和测试 |
 
-验证按改动范围运行 Dialog/MessageBox 定向测试、完整 Desktop Controls 测试、Gallery 测试与构建；涉及 AOT 发布路径时执行 Gallery NativeAOT publish，并始终运行 `git diff --check`。Dialog 内容 Popup 家族的永久人工回归入口是 `tests/AtomUI.Desktop.Controls.TestApp/Scenarios/PopupInDialog`，完整清单和断言见 [Modal 内容弹层叠放设计](popup-layering-design.md)。
+验证按改动范围运行 Dialog/MessageBox 定向测试、完整 Desktop Controls 测试、Gallery 测试与构建；涉及 AOT 发布路径时执行 Gallery NativeAOT publish，并始终运行 `git diff --check`。Dialog 内容 Popup 家族由原语、控件家族、DataGrid 专项与入口库存测试覆盖，完整清单和断言见 [Modal 内容弹层叠放设计](popup-layering-design.md)。
 
 当前最终 Popup 分层方案已在 Windows CSD、macOS 原生 chrome，以及 Ubuntu GNOME Wayland 环境完成实机测试；
-Wayland 证据仅覆盖 `PopupInDialog` 的 Dialog 内容 Popup 真实窗口人工回归。Linux X11 尚未测试，不属于当前已验证平台。
+Wayland 证据仅覆盖 Dialog 内容 Popup 真实窗口人工回归。Linux X11 尚未测试，不属于当前已验证平台。

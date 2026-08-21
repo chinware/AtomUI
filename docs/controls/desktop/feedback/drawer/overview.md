@@ -193,7 +193,7 @@ LLMS 导出来源：
 | Public API | 覆盖属性默认值、事件触发、命令和继承语义。 |
 | 状态模型 | 覆盖 open/close、motion、visual option、disabled、hover、pressed、focus 以及控件特有状态。 |
 | AXAML/Theme | 检查 template part、伪类、资源 key、Light/Dark 主题和 Browser 主题。 |
-| Window/Popup 集成 | 运行 Drawer/Window 回归，并复用 `tests/AtomUI.Desktop.Controls.TestApp` 的 `PopupInDialog` 场景验证共享 owning TopLevel popup 不变量。 |
+| Window/Popup 集成 | 运行 Drawer/Window 回归，并复用 Modal Popup 原语、控件家族、DataGrid 与入口库存测试验证共享 owning TopLevel popup 不变量。 |
 | Token | 检查 TokenKind、AXAML token resource、Token 类型、生成数据和 token.md和文档同步。 |
 | Gallery | 走查对应 ShowCase 示例和源码片段入口。 |
 

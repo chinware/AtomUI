@@ -263,7 +263,7 @@ await Task.WhenAny(
 
 - 内置 Light/Dark 主题下，标题、正文、输入控件、Footer 和按钮在关闭期间以统一前景淡出，不出现外框先消失而内容滞留的视觉断层。
 - anchored zoom 与无 placement target 的 fade 两种 Surface motion 都保持同一内容层同步策略；不发生尺寸放大、位置跳变或右下角漂移。
-- `PopupInDialog` TestApp 继续验证 Dialog 内容内 Popup 在关闭和 teardown 后无残留 host；内容 popup 的层级和 light-dismiss 语义不由本专项重新实现。
+- Dialog Popup 原语与控件家族回归继续验证关闭和 teardown 后无残留 host；内容 popup 的层级和 light-dismiss 语义不由本专项重新实现。
 - Window host 走查原生 `Closed` 生命周期，确认其不误用 Overlay content choreography。
 
 ### 10.4 验证边界

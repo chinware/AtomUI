@@ -12,9 +12,11 @@
 - Docs
   - Document the shared centered startup default and the explicit `Custom` offset behavior.
   - Extend the Dialog popup family matrix with shared surface ownership: Direct Popup and specialized Popup-bearing controls inherit the primitive's null surface default, while explicit non-null brushes opt into a host-owned surface.
-  - Keep the permanent TestApp Direct Popup free of host-surface overrides, require its Child to own a themed background, and preserve the Windows/macOS tested, Linux X11/Wayland untested evidence boundary.
+  - Preserve the Windows/macOS tested and Linux X11/Wayland untested evidence boundary for Popup surface behavior.
+- Implementation
+  - Remove the obsolete standalone manual regression application and its source-contract assertions; retain the Popup Theme default assertion and automated Dialog Popup coverage.
 - Validation
-  - Record the `PopupInDialog` real-window manual regression as passed on Ubuntu 26.04 GNOME Wayland; Linux X11 and Drawer on Linux remain untested.
+  - Record the Dialog content Popup real-window manual regression as passed on Ubuntu 26.04 GNOME Wayland; Linux X11 and Drawer on Linux remain untested.
 
 ## 2026-08-20
 
@@ -31,7 +33,7 @@
   - Add the Modal content popup layering design document and link it from the public design, implementation and compatibility sections.
   - Document the mask close-entry contract in the Dialog contract groups, behavior model, compatibility invariants and maintenance invariants.
   - Expand popup verification from the ComboBox trigger to the complete Popup/Flyout/ToolTip/ContextMenu inventory and control-family matrix.
-  - Define `AtomUI.Desktop.Controls.TestApp/Scenarios/PopupInDialog` as the permanent manual regression surface, with Windows and macOS tested and Linux X11/Wayland explicitly untested.
+  - Define the canonical Popup family matrix, with Windows and macOS tested and Linux X11/Wayland explicitly untested.
 
 ## 2026-07-22
 

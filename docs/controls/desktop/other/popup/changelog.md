@@ -13,4 +13,4 @@
   - Keep Direct Popup, Flyout, ToolTip, ContextMenu, menu, selector, Picker, Tour and ColorPicker surfaces content-owned through the shared primitive default.
   - Remove redundant per-consumer `SurfaceBackground=null` declarations, keep the Direct Popup host transparent, and make its regression-demo Child own the visible surface.
 - Verification
-  - Add primitive, runtime-family, source-inventory and permanent TestApp contracts; record Windows/macOS as tested and Linux X11/Wayland as untested.
+  - Add primitive, runtime-family and source-inventory contracts; record Windows/macOS as tested and Linux X11/Wayland as untested.

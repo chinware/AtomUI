@@ -168,21 +168,6 @@ public class PopupEntryInventoryTests
         }
     }
 
-    [Fact]
-    public void Direct_Popup_Regression_Demo_Content_Owns_Its_Surface()
-    {
-        var viewSource = ReadRepositoryFile(
-            "tests/AtomUI.Desktop.Controls.TestApp/Scenarios/PopupInDialog/PopupInDialogScenario.axaml");
-        var codeSource = ReadRepositoryFile(
-            "tests/AtomUI.Desktop.Controls.TestApp/Scenarios/PopupInDialog/PopupInDialogScenario.axaml.cs");
-
-        viewSource.ShouldContain("Selector=\"Border.direct-popup-surface\"");
-        viewSource.ShouldContain("Property=\"Background\"");
-        viewSource.ShouldContain("Value=\"{atom:SharedTokenResource ColorBgElevated}\"");
-        codeSource.ShouldContain("Classes = { \"direct-popup-surface\" }");
-        codeSource.ShouldNotContain("SurfaceBackground =");
-    }
-
     [Theory]
     [MemberData(nameof(ConstructedPopupSurfaceOwnershipCases))]
     public void Runtime_Constructed_Popup_Entries_Do_Not_Repeat_The_Default_Surface(string relativePath)
@@ -197,25 +182,8 @@ public class PopupEntryInventoryTests
     }
 
     [Fact]
-    public void TestApp_Direct_Popup_Uses_The_Null_Default_Surface()
+    public void Popup_Theme_Does_Not_Provide_A_Default_Surface()
     {
-        var scenarioSource = ReadRepositoryFile(
-            "tests/AtomUI.Desktop.Controls.TestApp/Scenarios/PopupInDialog/PopupInDialogScenario.axaml.cs");
-        var directPopupStart = scenarioSource.IndexOf(
-            "var directPopup = new AtomUI.Desktop.Controls.Popup",
-            StringComparison.Ordinal);
-        directPopupStart.ShouldBeGreaterThanOrEqualTo(0);
-        var directPopupEnd = scenarioSource.IndexOf(
-            "directPopupButton.Click",
-            directPopupStart,
-            StringComparison.Ordinal);
-        directPopupEnd.ShouldBeGreaterThan(directPopupStart);
-        var directPopupSource = scenarioSource[directPopupStart..directPopupEnd];
-
-        directPopupSource.ShouldContain("Child = new Border");
-        directPopupSource.ShouldNotContain("SurfaceBackground");
-        directPopupSource.ShouldNotContain("Background =");
-
         var popupThemeSource = ReadRepositoryFile(
             "src/AtomUI.Desktop.Controls/Popup/Themes/PopupTheme.axaml");
         popupThemeSource.ShouldNotContain("<Setter Property=\"SurfaceBackground\"");

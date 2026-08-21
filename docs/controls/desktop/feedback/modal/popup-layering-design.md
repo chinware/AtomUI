@@ -182,23 +182,7 @@ surface 时才能显式提供非空 Brush，否则由 content Presenter 拥有�
   `VisualLayerManager` 规避失败。
 - 全局矩阵全部通过时，不为制造“修复量”逐个修改控件；测试证据与设计约束就是共享根因已覆盖的证明。
 
-### 10.6 永久人工回归 TestApp
-
-`tests/AtomUI.Desktop.Controls.TestApp` 是 Desktop Controls 的可运行人工回归应用，`Scenarios/PopupInDialog` 承载
-本专项的 Popup 家族矩阵。它使用普通 AtomUI Application/Window 生命周期和源码项目引用，加入解决方案构建但不参与
-NuGet 打包、Gallery 展示或 LLMS 示例生成。
-
-TestApp 按选择器、自动建议、Picker、ColorPicker、Flyout/Menu、ToolTip/ContextMenu、特殊 Popup，以及 AvatarGroup、
-Transfer、TabControl、DataGrid 等间接消费路径分组打开独立 Dialog；每个场景显示公开 open/selection/action 状态和
-placement target 的 TopLevel 归属。TestApp 不读取 Avalonia
-私有 Popup host 字段、不吞未处理异常，也不自动打开 Dialog 或 Popup，保证人工验收走真实 pointer/focus 路径。
-
-原语组的 Direct Popup 不设置 `SurfaceBackground`，用于证明 Popup 默认不绘制 frame surface；它的 Child 使用主题化背景
-履行 content-owned 契约，必须完整遮挡下层文字。Flyout、MenuFlyout、ToolTip、ContextMenu 随后逐项验收，确保专用控件
-继续只绘制自己的内容表面，没有重复的 host frame fill。
-
-Headless 测试与 TestApp 不共享运行时状态：前者证明 host、层级、输入和释放不变量，后者证明真实桌面窗口、CSD/native
-chrome、鼠标、焦点和视觉行为。
+### 10.6 自动化回归入口
 
 自动化入口按职责拆分：`DialogPopupPrimitiveLayeringTests` 覆盖五类原语，`DialogPopupControlFamilyTests` 覆盖 Desktop
 Controls 的直接及委托消费家族，`DataGridFilterDialogPopupTests` 在可选 DataGrid 包内覆盖真实过滤菜单，
@@ -215,9 +199,7 @@ Controls 的直接及委托消费家族，`DataGridFilterDialogPopupTests` 在�
 - 库存守卫：自动 allowlist 契约测试覆盖直接入口、委托构造和类型别名；新增入口时测试失败并要求补充归类和回归。
 - 表面所有权：Direct Popup 和专用 Popup 家族默认继承 `SurfaceBackground=null`，host frame 保持透明且既有 Presenter
   的背景、圆角、Padding、阴影和位置不变；显式非空 Brush 的 opt-in 路径单独验证。
-- TestApp 实机验收：在 `AtomUI.Desktop.Controls.TestApp` 的 `PopupInDialog` 场景中走查选择器、Flyout/Menu、
-  ToolTip/ContextMenu、Picker、AvatarGroup、Transfer、TabControl 和 DataGrid，验证可见、可点、可关闭且进程不崩溃。
-- 平台回归：Windows CSD、macOS 原生 chrome、Linux X11 与 Linux Wayland 分别记录实机证据；不得由共享代码路径推断未执行平台已通过。
+- 平台实机验收：分别记录 Windows CSD、macOS 原生 chrome、Linux X11 与 Linux Wayland 下代表性 Popup 家族的可见、可点、可关闭、focus 和进程稳定性证据；不得由共享代码路径推断未执行平台已通过。
 
 当前实机证据状态：
 
@@ -225,5 +207,5 @@ Controls 的直接及委托消费家族，`DataGridFilterDialogPopupTests` 在�
 | --- | --- | --- |
 | Windows | 已测试 | CSD Window 下最终 owning TopLevel/Overlay/Popup 分层与 Dialog 内容 Popup 基本交互。 |
 | macOS | 已测试 | 原生 chrome Window 下最终 owning TopLevel/Overlay/Popup 分层与 Dialog 内容 Popup 基本交互。 |
-| Linux Wayland (GNOME) | 已测试 | Ubuntu 26.04、GNOME Shell 50.1 下完成 `PopupInDialog` 的 Dialog 内容 Popup 真实窗口人工回归；不代表 Drawer 已在 Linux 验证。 |
+| Linux Wayland (GNOME) | 已测试 | Ubuntu 26.04、GNOME Shell 50.1 下完成 Dialog 内容 Popup 真实窗口人工回归；不代表 Drawer 已在 Linux 验证。 |
 | Linux X11 | 未测试 | 尚无实机证据；不能标记为通过。 |

@@ -151,7 +151,7 @@ Drawer 的交互事件应从输入源收敛到控件级语义事件：
 - 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
 - Popup-bearing 内容集成变更复用 [Modal 内容弹层叠放设计](../modal/popup-layering-design.md) 的入口库存、原语和控件家族矩阵；Drawer 只额外验证自身 scope layer 与 chrome lease 生命周期。
 - Drawer lifecycle 回归必须覆盖：Window target 到局部 target、Window 到另一 Window，以及父子 Drawer 同时打开时的 `OpenOn` 动态迁移；每条路径都断言旧 layer/lease 已释放且新 layer/lease 已建立。
-- 永久人工回归入口为 `tests/AtomUI.Desktop.Controls.TestApp` 的 `PopupInDialog` 场景，用于验证共享 owning TopLevel popup 路径；Drawer 的容器生命周期由自动化回归直接覆盖。
+- 共享 owning TopLevel popup 路径由 Modal Popup 原语、控件家族、DataGrid 与入口库存测试覆盖；Drawer 的容器生命周期由自动化回归直接覆盖，真实窗口证据按平台独立记录。
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
 - Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests`。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。

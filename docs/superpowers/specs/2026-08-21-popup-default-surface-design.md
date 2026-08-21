@@ -114,12 +114,11 @@ DropdownButton、SplitButton、AvatarGroup、Transfer、TabControl 和 DataGrid 
 2. 让库存测试证明 AXAML 和 C# 内置入口不再重复写入 `null`。
 3. 删除 Theme setter 和全部消费端冗余覆盖，使测试转绿。
 4. 验证显式非空 Brush 仍传递到共享 frame renderer。
-5. 运行 Popup、Dialog 原语、Dialog 控件家族、DataGrid popup、TestApp build 和相邻 Desktop Controls 测试。
+5. 运行 Popup、Dialog 原语、Dialog 控件家族、DataGrid popup 和相邻 Desktop Controls 测试。
 6. 验证 Child bounds、CornerRadius、shadow thickness、placement、light-dismiss 和 host cleanup 不变。
 7. 运行 LLMS 生成/验证与 `git diff --check`。
 
-永久 TestApp 的 Direct Popup 不设置 `SurfaceBackground`，用于验证默认 frame 不再产生额外表面；其 Child 使用主题化背景
-验证 content-owned 表面能够遮挡下层内容。其余家族用于验证内容表面和交互没有变化。
+Direct Popup 的自动化回归验证默认 frame 不产生额外表面；其余家族测试验证内容表面和交互没有变化。
 
 平台实机证据保持独立记录：Windows、macOS 已测试；Linux X11/Wayland 未测试。Headless 共享路径测试不能把 Linux 状态
 标记为已测试。

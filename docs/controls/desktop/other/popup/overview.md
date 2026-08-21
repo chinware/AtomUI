@@ -120,8 +120,8 @@ host-owned/content-owned 是 Popup 家族唯一的表面分类维度；native/ov
 - [Popup Changelog](changelog.md)
 - [Modal 内容弹层叠放设计](../../feedback/modal/popup-layering-design.md)
 
-LLMS 导出以本目录四件套、Popup public source 和 Themes 为源。Popup 没有独立 Gallery ShowCase；稳定人工示例来自
-`tests/AtomUI.Desktop.Controls.TestApp/Scenarios/PopupInDialog`，该 TestApp 不作为 Gallery/LLMS 示例源码。
+LLMS 导出以本目录四件套、Popup public source 和 Themes 为源。Popup 没有独立 Gallery ShowCase，也不从测试或临时
+人工验收代码导出示例。
 
 LLMS 语义区域：
 
@@ -140,15 +140,14 @@ LLMS 导出来源：
 | 单控件语义文档 | Theme、host composition、surface ownership 与源码结构 | `controls/popup/semantic-cn.md` |
 | API 表 | `Popup.cs` public surface 与 overview 语义摘要 | 不手工维护生成副本 |
 | Token 表 | `PopupToken.cs`、`PopupTheme.axaml` 与 `token.md` | 不手工维护生成副本 |
-| 示例 | 无独立 Gallery ShowCase；TestApp 只用于人工回归 | 不导出临时验收代码 |
+| 示例 | 无独立 Gallery ShowCase | 不从测试或临时验收代码导出示例 |
 
 验证分层：
 
 - `PopupShadowTests`：公开 surface API、`null` 默认值、显式 surface、透明 frame 和 shadow clipping。
 - `PopupPlacementTests` / `ToolTipPopupModeTests`：定位、native/overlay host 和透明 `PopupRoot` 契约。
 - `DialogPopupPrimitiveLayeringTests`：Direct Popup、Flyout/MenuFlyout、ToolTip/ContextMenu 共享 content-owned 默认值。
-- `PopupEntryInventoryTests`：全部 runtime Popup 入口完成归类且不重复写入 `null` 默认值；TestApp 不设置 Popup host surface，
-  Direct Popup Child 明确使用主题背景履行 content-owned 契约。
+- `PopupEntryInventoryTests`：全部 runtime Popup 入口完成归类、不重复写入 `null` 默认值，且 Popup Theme 不覆盖该默认值。
 - Dialog 控件家族矩阵与代表性控件测试：验证共享修复不改变其他控件行为和视觉所有权。
 
 | 平台 | 实机状态 |

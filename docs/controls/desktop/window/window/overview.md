@@ -272,7 +272,7 @@ LLMS 导出来源：
 | 状态模型 | 覆盖 open/close、disabled、hover、pressed、focus 以及控件特有状态。 |
 | AXAML/Theme | 检查 template part、伪类、资源 key、Light/Dark 主题和 Browser 主题。 |
 | 首次显示主题表面 | 覆盖根窗口和 owner 局部主题、Light/Dark、用户显式背景优先级、显示失败回滚，并在 Windows、macOS 和 Linux 实机检查首帧。 |
-| Dialog/Drawer 与 Popup 分层 | 运行 Desktop Controls Dialog/Drawer/Window 回归，并在 `tests/AtomUI.Desktop.Controls.TestApp` 的 `PopupInDialog` 场景做真实桌面交互验收。 |
+| Dialog/Drawer 与 Popup 分层 | 运行 Desktop Controls Dialog/Drawer/Window 回归、Popup 原语与控件家族矩阵、DataGrid Popup 专项测试，并按平台独立记录真实桌面交互证据。 |
 | Token | 检查 TokenKind、AXAML token resource、Token 类型、生成数据和 token.md和文档同步。 |
 | Gallery | 走查对应 ShowCase 示例和源码片段入口。 |
 
@@ -282,5 +282,5 @@ LLMS 导出来源：
 | --- | --- | --- |
 | Windows | 已测试 | CSD Window 下 drawn chrome suppression、owning TopLevel presentation 与 Dialog 内容 Popup 基本交互。 |
 | macOS | 已测试 | 原生 chrome Window 下 owning TopLevel presentation 与 Dialog 内容 Popup 基本交互。 |
-| Linux Wayland (GNOME) | 已测试 | Ubuntu 26.04、GNOME Shell 50.1 下完成 `PopupInDialog` 的 Dialog 内容 Popup 真实窗口人工回归；不包含 Drawer。 |
+| Linux Wayland (GNOME) | 已测试 | Ubuntu 26.04、GNOME Shell 50.1 下完成 Dialog 内容 Popup 真实窗口人工回归；不包含 Drawer。 |
 | Linux X11 | 未测试 | 尚无本专项实机证据，不能标记为通过。 |

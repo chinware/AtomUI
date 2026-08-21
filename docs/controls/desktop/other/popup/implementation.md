@@ -121,16 +121,13 @@ light-dismiss、focus 和 host teardown 继续由 Avalonia Popup 协议负责。
 - `SurfaceBackground` 的属性默认值必须为 `null`，Popup Theme 不得覆盖该默认值。
 - content-owned Popup 不重复设置 `null`；host-owned Popup 必须显式提供非空 Brush。
 - relay binding 的 attach/re-attach/detach 必须有单一 owner 和对称释放。
-- 永久 TestApp 的 Direct Popup 不设置 `SurfaceBackground`；其 Child 使用主题化背景履行 content-owned 契约，并验证不会与
-  下层文字发生视觉混叠。
 
 ## 11. 测试与验证
 
 - `PopupShadowTests` 验证公开 surface API、`null` 默认值、显式 renderer fill、透明 frame 和 shadow clipping。
 - `PopupPlacementTests` 与 `ToolTipPopupModeTests` 验证 placement、host mode 和 transparent PopupRoot。
 - `DialogPopupPrimitiveLayeringTests` 验证 Direct Popup 与四类 content-owned 原语。
-- `PopupEntryInventoryTests` 守卫所有 runtime 入口、无冗余默认值覆盖和 TestApp 源码契约。
+- `PopupEntryInventoryTests` 守卫所有 runtime 入口、无冗余默认值覆盖和 Popup Theme 的 `null` 默认契约。
 - `DialogPopupControlFamilyTests`、DataGrid popup tests 和代表性控件测试验证家族行为与视觉所有权未变。
-- `AtomUI.Desktop.Controls.TestApp/Scenarios/PopupInDialog` 走查真实桌面渲染、pointer、focus 和关闭行为。
 
 实机验证状态为 Windows、macOS 已测试；Linux X11/Wayland 未测试。

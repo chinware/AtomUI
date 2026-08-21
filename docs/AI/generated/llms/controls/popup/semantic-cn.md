@@ -132,5 +132,3 @@ Token 边界：
 - `SurfaceBackground` 的属性默认值必须为 `null`，Popup Theme 不得覆盖该默认值。
 - content-owned Popup 不重复设置 `null`；host-owned Popup 必须显式提供非空 Brush。
 - relay binding 的 attach/re-attach/detach 必须有单一 owner 和对称释放。
-- 永久 TestApp 的 Direct Popup 不设置 `SurfaceBackground`；其 Child 使用主题化背景履行 content-owned 契约，并验证不会与
-  下层文字发生视觉混叠。

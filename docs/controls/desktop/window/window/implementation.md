@@ -269,11 +269,11 @@ Resolve owner ThemeContext
 - 纯文档改动运行 `git diff --check` 并检查相对链接。
 - 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
 - CSD 标题栏可见性或 frame geometry 变更运行 `WindowResizeArtifactTests`，覆盖 effective content margin 计算、模板绑定和完整装饰契约。
-- Dialog/Drawer 与 popup 分层变更运行 Dialog、Drawer、Window 回归，并构建、运行 `tests/AtomUI.Desktop.Controls.TestApp` 的 `PopupInDialog` 场景。
+- Dialog/Drawer 与 popup 分层变更运行 Dialog、Drawer、Window 回归、Popup 原语与控件家族矩阵，以及 DataGrid Popup 专项测试；真实桌面交互证据按平台独立记录。
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
 - Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests`。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。
 
-本专项当前实机证据为 Windows、macOS 和 Ubuntu GNOME Wayland 已测试；Wayland 证据仅覆盖 `PopupInDialog` 的 Dialog
+本专项当前实机证据为 Windows、macOS 和 Ubuntu GNOME Wayland 已测试；Wayland 证据仅覆盖 Dialog
 内容 Popup 真实窗口人工回归，不包含 Drawer。Linux X11 仍未测试。Headless 结果只能证明 managed 层级与生命周期，
 不能替代未执行平台或未执行控件的真实窗口、chrome、pointer 和 focus 验证。

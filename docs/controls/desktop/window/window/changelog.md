@@ -4,8 +4,10 @@
 
 ## 2026-08-21
 
+- Implementation
+  - Remove the obsolete standalone manual regression application; keep popup-in-Dialog coverage in the automated primitive, control-family and DataGrid test suites.
 - Validation
-  - Record the Dialog `PopupInDialog` real-window manual regression as passed on Ubuntu 26.04 GNOME Wayland; Linux X11 and Drawer on Linux remain untested.
+  - Record the Dialog content Popup real-window manual regression as passed on Ubuntu 26.04 GNOME Wayland; Linux X11 and Drawer on Linux remain untested.
 
 ## 2026-08-20
 
@@ -13,7 +15,7 @@
   - Reserve the Avalonia drawn decorations overlay for title bar, caption buttons and shadow; keep Dialog and Drawer presentation in the owning Window `TopLevel`.
   - Add a Window-owned reference-counted chrome suppression lease so overlapping modal Dialog/Window Drawer owners cannot restore drawn chrome early.
 - Validation
-  - Route permanent manual popup-in-Dialog acceptance through `tests/AtomUI.Desktop.Controls.TestApp` and the canonical popup family matrix.
+  - Use the canonical popup family matrix for popup-in-Dialog acceptance, with platform evidence recorded separately.
   - Record Windows and macOS as tested for the final layering scheme; Linux X11/Wayland remains untested.
 
 ## 2026-08-19
