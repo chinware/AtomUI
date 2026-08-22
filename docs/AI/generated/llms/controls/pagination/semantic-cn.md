@@ -4,25 +4,32 @@
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Pagination` | 导航控件根语义区域，承载 public API、状态归一和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `trigger` | `触发区域` | 承载点击、键盘、打开关闭、跳转或提交入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `导航项区域` | 承载当前项、选中项、禁用项、层级项或分页项状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `popup` | `弹层或内容区域` | 承载 flyout、dropdown、tab content、submenu 或候选内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效区域` | 表达打开关闭、选中指示、切换和过渡反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| Part | Selector | ContractType | Cardinality | Customization | CrossVisualRoot | RuntimeCreated |
+| --- | --- | --- | --- | --- | --- | --- |
+| `root` | owner | `Pagination` / `SimplePagination` | `Single` | `Root` | `false` | `false` |
+| `item` | `.semantic-item` | `ContentControl` | `Multiple` | `Selector` | `false` | `Pagination`: `true`，`SimplePagination`: `false` |
+| `info`（仅 `SimplePagination`） | `.semantic-info` | `TextBlock` | `Single` | `Selector` | `false` | `false` |
+
+`root` 是控件自身，承载 `CurrentPage`、`PageSize`、`Total`、`SizeType`、`Align`、`IsShowTotalInfo`、
+`IsShowSizeChanger`、`IsShowQuickJumper` 等 public API、主题入口和状态归一，不声明 `.semantic-root` marker。
+
+`item` 的 marker 挂在 `PaginationNavItem`（internal 的 `ContentControl` 派生类型）实例上。`Pagination` 的
+`item` 是运行时创建的语义标记，由 `PaginationNavItem` 按 `PaginationItemType` 维护；`SimplePagination` 的
+`item` 是内置模板中的静态标记，声明在 `SimplePaginationTheme.axaml` 的上一页/下一页节点上。
 
 ## Abstract AXAML Structure
 
 来源：`src/AtomUI.Desktop.Controls/Pagination/Themes/PaginationTheme.axaml`
 
 ```xml
-<StackPanel Name="PART_RootLayout">
-    <ContentPresenter Name="PART_TotalInfoPresenter" />
-    <PaginationNav Name="PART_Nav" />
-    <ContentPresenter Name="PART_SizeChangerPresenter" />
-    <ContentPresenter Name="PART_QuickJumperBarPresenter" />
-</StackPanel>
+<DashedBorder>
+    <StackPanel Name="PART_RootLayout">
+        <ContentPresenter Name="PART_TotalInfoPresenter" />
+        <PaginationNav Name="PART_Nav" />
+        <ContentPresenter Name="PART_SizeChangerPresenter" />
+        <ContentPresenter Name="PART_QuickJumperBarPresenter" />
+    </StackPanel>
+</DashedBorder>
 ```
 
 ## Composition Model
@@ -42,11 +49,12 @@ Pagination
      -> Border#PART_Frame (template-stable)
         -> ItemsPresenter (internal-observable)
   -> Pagination (control theme, PaginationTheme.axaml)
-     -> StackPanel#PART_RootLayout (template-stable)
-        -> ContentPresenter#PART_TotalInfoPresenter (template-stable)
-        -> PaginationNav#PART_Nav (template-stable)
-        -> ContentPresenter#PART_SizeChangerPresenter (template-stable)
-        -> ContentPresenter#PART_QuickJumperBarPresenter (template-stable)
+     -> DashedBorder (template-stable)
+        -> StackPanel#PART_RootLayout (template-stable)
+           -> ContentPresenter#PART_TotalInfoPresenter (template-stable)
+           -> PaginationNav#PART_Nav (template-stable)
+           -> ContentPresenter#PART_SizeChangerPresenter (template-stable)
+           -> ContentPresenter#PART_QuickJumperBarPresenter (template-stable)
   -> QuickJumperBar (control theme, QuickJumperBarTheme.axaml)
      -> StackPanel#PART_RootLayout (template-stable)
         -> ContentPresenter#PART_JumpToContentPresenter (template-stable)
@@ -66,7 +74,7 @@ Pagination
 | `PaginationNav` | control theme | `PaginationNavTheme.axaml` | Pagination | `CornerRadius`, `Padding` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_Frame` | template node (Border) | `PaginationNavTheme.axaml` | PaginationNav | `CornerRadius`, `Padding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ItemsPresenter` | template node (ItemsPresenter) | `PaginationNavTheme.axaml` | PaginationNav | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `Pagination` | control theme | `PaginationTheme.axaml` | 用户代码 / 控件宿主 | `IsEffectiveVisible`, `IsMotionEnabled`, `IsShowQuickJumper`, `IsShowSizeChanger`, `IsShowTotalInfo`, `QuickJumperBar` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Pagination` | control theme | `PaginationTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BackgroundSizing`, `BorderBrush`, `BorderDashArray`, `BorderDashOffset`, `BorderThickness` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `PART_RootLayout` | template node (StackPanel) | `PaginationTheme.axaml` | Pagination | `IsEffectiveVisible`, `IsMotionEnabled`, `IsShowQuickJumper`, `IsShowSizeChanger`, `IsShowTotalInfo`, `QuickJumperBar` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_TotalInfoPresenter` | template node (ContentPresenter) | `PaginationTheme.axaml` | Pagination | `IsShowTotalInfo`, `TotalInfoText` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Nav` | template node (PaginationNav) | `PaginationTheme.axaml` | Pagination | `IsMotionEnabled`, `SizeType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -161,6 +169,9 @@ Pagination Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
 - `CurrentPage` / `PageSize` 的默认 `TwoWay` binding metadata，以及内部写入不破坏外部 binding 的 `SetCurrentValue` 路径。
 - Template part 名称、ControlTheme key、伪类和资源 key。
+- Semantic Part descriptor、`semantic-scope-nav` 作用域标记、`semantic-item` / `semantic-info` marker 同步规则与
+  生成的 `PaginationItemStyle` / `SimplePaginationItemStyle` / `SimplePaginationInfoStyle` 类型。Ellipsis 单元格
+  无 `semantic-item` marker 属于上游语义对齐的稳定契约，不能通过主题或代码改动破坏。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。

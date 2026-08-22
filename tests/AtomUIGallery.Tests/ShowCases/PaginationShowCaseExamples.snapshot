@@ -66,7 +66,8 @@ Description="{gallery:PaginationShowCaseLangResource MoreDescription}"
 IsOccupyEntireRow="True"
 MinHeight="300">
 <StackPanel Orientation="Vertical" Spacing="10">
-<atom:Pagination Total="500" CurrentPage="3" IsShowSizeChanger="True" IsShowQuickJumper="True" />
+<atom:Pagination Total="500" CurrentPage="3" IsShowSizeChanger="True"
+IsShowQuickJumper="True" />
 <atom:Pagination Total="500" CurrentPage="3" IsShowSizeChanger="True" IsEnabled="False"
 IsShowQuickJumper="True" />
 </StackPanel>
@@ -91,7 +92,8 @@ Description="{gallery:PaginationShowCaseLangResource TotalNumberDescription}"
 IsOccupyEntireRow="True"
 MinHeight="300">
 <StackPanel Orientation="Vertical" Spacing="10">
-<atom:Pagination Total="85" CurrentPage="1" PageSize="20" IsShowSizeChanger="True" IsShowTotalInfo="True" />
+<atom:Pagination Total="85" CurrentPage="1" PageSize="20" IsShowSizeChanger="True"
+IsShowTotalInfo="True" />
 <atom:Pagination Total="85"
 CurrentPage="1"
 PageSize="20"
@@ -106,12 +108,57 @@ Description="{gallery:PaginationShowCaseLangResource SimpleModeDescription}"
 IsOccupyEntireRow="False"
 MinHeight="300">
 <StackPanel Orientation="Vertical" Spacing="10">
-<atom:SimplePagination Total="50" CurrentPage="1"/>
-<atom:SimplePagination Total="50" CurrentPage="1" IsReadOnly="False"/>
-<atom:SimplePagination Total="50" CurrentPage="1" IsReadOnly="False" IsEnabled="False"/>
-<atom:SimplePagination Total="50" CurrentPage="1" SizeType="Small"/>
-<atom:SimplePagination Total="50" CurrentPage="1" SizeType="Small"/>
-<atom:SimplePagination Total="50" CurrentPage="1" IsReadOnly="False" SizeType="Small"/>
-<atom:SimplePagination Total="50" CurrentPage="1" IsReadOnly="False" IsEnabled="False" SizeType="Small"/>
+<atom:SimplePagination Total="50" CurrentPage="1" />
+<atom:SimplePagination Total="50" CurrentPage="1" IsReadOnly="False" />
+<atom:SimplePagination Total="50" CurrentPage="1" IsReadOnly="False" IsEnabled="False" />
+<atom:SimplePagination Total="50" CurrentPage="1" SizeType="Small" />
+<atom:SimplePagination Total="50" CurrentPage="1" SizeType="Small" />
+<atom:SimplePagination Total="50" CurrentPage="1" IsReadOnly="False" SizeType="Small" />
+<atom:SimplePagination Total="50" CurrentPage="1" IsReadOnly="False" IsEnabled="False"
+SizeType="Small" />
+</StackPanel>
+</gallery:ShowCaseItem>
+<gallery:ShowCaseItem
+Title="{gallery:PaginationShowCaseLangResource SemanticPartStyleTitle}"
+Description="{gallery:PaginationShowCaseLangResource SemanticPartStyleDescription}"
+SourceKey="pagination-semantic-part"
+BadgeText="{x:Static gallery:GalleryVersionInfo.DisplayVersion}"
+Span="Full"
+MinHeight="300">
+<StackPanel Spacing="16">
+<StackPanel.Styles>
+<Style Selector="atom|Pagination.semantic-style-demo-root">
+<Setter Property="BorderBrush" Value="#CCCCCC" />
+<Setter Property="BorderThickness" Value="2" />
+<Setter Property="BorderDashArray" Value="4,2" />
+<Setter Property="Padding" Value="8" />
+</Style>
+<Style Selector="atom|Pagination.semantic-style-demo-object">
+<atom:PaginationItemStyle x:SetterTargetType="ContentControl">
+<Setter Property="CornerRadius" Value="999" />
+</atom:PaginationItemStyle>
+</Style>
+<Style Selector="atom|Pagination[SizeType=Small]">
+<atom:PaginationItemStyle x:SetterTargetType="ContentControl">
+<Setter Property="Background" Value="#4DC8C8C8" />
+<Setter Property="Margin" Value="0,0,4,0" />
+<Style Selector="^:selected">
+<Setter Property="Background"
+Value="{atom:PaginationTokenResource ItemActiveBg}" />
+</Style>
+</atom:PaginationItemStyle>
+</Style>
+</StackPanel.Styles>
+<atom:Pagination Classes="semantic-style-demo-root semantic-style-demo-object"
+Total="500"
+CurrentPage="1"
+IsShowSizeChanger="True"
+HorizontalAlignment="Stretch" />
+<atom:Pagination Classes="semantic-style-demo-root"
+Total="500"
+CurrentPage="1"
+IsShowSizeChanger="True"
+SizeType="Small"
+HorizontalAlignment="Stretch" />
 </StackPanel>
 </gallery:ShowCaseItem>

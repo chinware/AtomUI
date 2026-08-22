@@ -1,5 +1,6 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
+using AtomUI.Generated.AtomUIDesktopControls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Mixins;
@@ -117,6 +118,7 @@ internal class PaginationNavItem : ContentControl, ISelectable
     {
         base.OnInitialized();
         this.DisableTransitions();
+        SyncSemanticItemMarker();
     }
 
     protected override void OnLoaded(RoutedEventArgs e)
@@ -129,6 +131,11 @@ internal class PaginationNavItem : ContentControl, ISelectable
     {
         base.OnPropertyChanged(change);
         
+        if (change.Property == PaginationItemTypeProperty)
+        {
+            SyncSemanticItemMarker();
+        }
+
         if (change.Property == IsPressedProperty)
         {
             UpdatePseudoClasses();
@@ -180,5 +187,17 @@ internal class PaginationNavItem : ContentControl, ISelectable
     private void UpdatePseudoClasses()
     {
         PseudoClasses.Set(StdPseudoClass.Pressed, IsPressed);
+    }
+
+    private void SyncSemanticItemMarker()
+    {
+        if (PaginationItemType == PaginationItemType.Ellipses)
+        {
+            Classes.Remove(PaginationSemanticParts.ItemClass);
+        }
+        else
+        {
+            Classes.Add(PaginationSemanticParts.ItemClass);
+        }
     }
 }

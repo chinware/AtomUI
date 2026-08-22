@@ -16,7 +16,7 @@ public enum PaginationAlign
     End
 }
 
-public class Pagination : AbstractPagination
+public partial class Pagination : AbstractPagination
 {
     #region 公共属性定义
     

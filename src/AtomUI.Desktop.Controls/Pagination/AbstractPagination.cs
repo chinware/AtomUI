@@ -18,6 +18,12 @@ public abstract class AbstractPagination : TemplatedControl, ICustomizableSizeTy
     public static readonly StyledProperty<PaginationAlign> AlignProperty =
         AvaloniaProperty.Register<AbstractPagination, PaginationAlign>(nameof(Align));
     
+    public static readonly StyledProperty<IReadOnlyList<double>?> BorderDashArrayProperty =
+        AvaloniaProperty.Register<AbstractPagination, IReadOnlyList<double>?>(nameof(BorderDashArray));
+
+    public static readonly StyledProperty<double> BorderDashOffsetProperty =
+        AvaloniaProperty.Register<AbstractPagination, double>(nameof(BorderDashOffset));
+
     public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
         CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractPagination>();
     
@@ -58,6 +64,18 @@ public abstract class AbstractPagination : TemplatedControl, ICustomizableSizeTy
         set => SetValue(AlignProperty, value);
     }
     
+    public IReadOnlyList<double>? BorderDashArray
+    {
+        get => GetValue(BorderDashArrayProperty);
+        set => SetValue(BorderDashArrayProperty, value);
+    }
+
+    public double BorderDashOffset
+    {
+        get => GetValue(BorderDashOffsetProperty);
+        set => SetValue(BorderDashOffsetProperty, value);
+    }
+
     public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);

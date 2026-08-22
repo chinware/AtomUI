@@ -7,7 +7,7 @@ using Avalonia.Interactivity;
 
 namespace AtomUI.Desktop.Controls;
 
-public class SimplePagination : AbstractPagination
+public partial class SimplePagination : AbstractPagination
 {
     #region 公共属性定义
 

@@ -1,6 +1,6 @@
 # Pagination 桌面版架构设计
 
-本文档定义 `Pagination` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Pagination 桌面版实现原理](implementation.md)，Pagination Token 的专项设计见 [Pagination Token 设计](token.md)，设计和契约变化记录见 [Pagination Changelog](changelog.md)。
+本文档定义 `Pagination` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，Semantic Part 契约见 [Pagination Semantic Part 契约](semantic-part.md)，内部实现原理见 [Pagination 桌面版实现原理](implementation.md)，Pagination Token 的专项设计见 [Pagination Token 设计](token.md)，设计和契约变化记录见 [Pagination Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -15,6 +15,8 @@
 Pagination 是 AtomUI 桌面控件体系中的分页控件，用于在有限页集合中切换页码、页大小和上一页下一页。
 
 Pagination 不负责数据源过滤、排序或虚拟化列表本身。这些职责应由业务层、组合控件或更专用的 AtomUI 控件承担。
+
+Pagination 与 SimplePagination 的公开语义区域使用 `root` 和 `item` 两个 Semantic Part，与上游 Pagination 语义结构对齐；`SimplePagination` 额外公开 AtomUI 扩展的 `info` Part，用于格式化分页信息文本。完整契约见 [Pagination Semantic Part 契约](semantic-part.md)。
 
 主要源码入口：
 
@@ -176,26 +178,27 @@ Pagination 的视觉选项通过 public API 归一为 theme variables、伪类�
 
 关联文档：
 
+- [Pagination Semantic Part 契约](semantic-part.md)
 - [Pagination 桌面版实现原理](implementation.md)
 - [Pagination Token 设计](token.md)
 - [Pagination Changelog](changelog.md)
 
 LLMS 语义区域：
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Pagination` | 导航控件根语义区域，承载 public API、状态归一和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `trigger` | `触发区域` | 承载点击、键盘、打开关闭、跳转或提交入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `导航项区域` | 承载当前项、选中项、禁用项、层级项或分页项状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `popup` | `弹层或内容区域` | 承载 flyout、dropdown、tab content、submenu 或候选内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效区域` | 表达打开关闭、选中指示、切换和过渡反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| Part | Owner | AtomUI 节点 | 职责 | 稳定性 |
+| --- | --- | --- | --- | --- |
+| `root` | `Pagination` / `SimplePagination` | 控件自身 | 分页控件根语义区域，承载分页状态、布局入口和主题视觉。 | stable since 6.0 |
+| `item` | `Pagination` | 上一页/下一页导航项与页码指示项 | 承载单个分页导航单元的尺寸、状态与点击语义；Ellipsis 单元格除外。 | stable since 6.0 |
+| `item` | `SimplePagination` | 上一页/下一页导航项 | 承载简洁模式导航单元的尺寸、状态与点击语义；快速跳转输入与信息文本除外。 | stable since 6.0 |
+
+Part 的 Selector、ContractType、数量语义与定制边界以 [Pagination Semantic Part 契约](semantic-part.md) 为唯一完整来源。
 
 LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
 | 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/pagination/index-cn.md` |
-| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/pagination/semantic-cn.md` |
+| 单控件语义文档 | `semantic-part.md` + `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/pagination/semantic-cn.md` |
 | API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
 | Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |

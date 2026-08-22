@@ -27,5 +27,10 @@ public enum PaginationShowCaseLangResourceKind
     P2TextCurrentPage,
     P2TextPageSize,
     P2ContentSetPage,
-    P2ContentReset
+    P2ContentReset,
+    SemanticRootDescription,
+    SemanticItemDescription,
+    SemanticInfoDescription,
+    SemanticPartStyleTitle,
+    SemanticPartStyleDescription
 }

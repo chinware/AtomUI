@@ -8,6 +8,8 @@ Pagination 是 AtomUI 桌面控件体系中的分页控件，用于在有限页�
 
 Pagination 不负责数据源过滤、排序或虚拟化列表本身。这些职责应由业务层、组合控件或更专用的 AtomUI 控件承担。
 
+Pagination 与 SimplePagination 的公开语义区域使用 `root` 和 `item` 两个 Semantic Part，与上游 Pagination 语义结构对齐；`SimplePagination` 额外公开 AtomUI 扩展的 `info` Part，用于格式化分页信息文本。完整契约见 [Pagination Semantic Part 契约](semantic-part.md)。
+
 主要源码入口：
 
 - `src/AtomUI.Desktop.Controls/Pagination`
@@ -89,7 +91,7 @@ Pagination 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 ### 基础分页
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:37`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:86`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -99,7 +101,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 受控绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:51`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:100`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -138,7 +140,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 对齐方式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:93`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:142`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -152,7 +154,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 更多页码
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:110`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:159`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -237,12 +239,14 @@ Pagination Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - `src/AtomUI.Desktop.Controls/Pagination/PageNavRequestArgs.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/PageSizeComboBoxItem.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/Pagination.cs`
+- `src/AtomUI.Desktop.Controls/Pagination/Pagination.SemanticParts.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/PaginationNav.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/PaginationNavItem.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/PaginationToken.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/QuickJumpEdit.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/QuickJumperBar.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/SimplePagination.cs`
+- `src/AtomUI.Desktop.Controls/Pagination/SimplePagination.SemanticParts.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/Themes/PaginationNavItemTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Pagination/Themes/PaginationNavTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Pagination/Themes/PaginationTheme.axaml`
@@ -260,6 +264,7 @@ Pagination Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 
 - 源设计文档：`docs/controls/desktop/navigation/pagination/overview.md`
 - 实现文档：`docs/controls/desktop/navigation/pagination/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/navigation/pagination/semantic-part.md`
 - Token 文档：`docs/controls/desktop/navigation/pagination/token.md`
 - 变更记录：`docs/controls/desktop/navigation/pagination/changelog.md`
 - 语义结构：`./semantic-cn.md`

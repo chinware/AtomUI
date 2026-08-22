@@ -1,6 +1,6 @@
 # Pagination 桌面版实现原理
 
-本文档描述 Pagination 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Pagination 桌面版架构设计](overview.md)，变化记录见 [Pagination Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Pagination Token 设计](token.md)。
+本文档描述 Pagination 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Pagination 桌面版架构设计](overview.md)，Semantic Part 契约见 [Pagination Semantic Part 契约](semantic-part.md)，变化记录见 [Pagination Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Pagination Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -18,12 +18,14 @@
 - `src/AtomUI.Desktop.Controls/Pagination/PageNavRequestArgs.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/PageSizeComboBoxItem.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/Pagination.cs`
+- `src/AtomUI.Desktop.Controls/Pagination/Pagination.SemanticParts.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/PaginationNav.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/PaginationNavItem.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/PaginationToken.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/QuickJumpEdit.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/QuickJumperBar.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/SimplePagination.cs`
+- `src/AtomUI.Desktop.Controls/Pagination/SimplePagination.SemanticParts.cs`
 - `src/AtomUI.Desktop.Controls/Pagination/Themes/PaginationNavItemTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Pagination/Themes/PaginationNavTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Pagination/Themes/PaginationTheme.axaml`
@@ -114,6 +116,22 @@ Public API / ItemsSource / Command / Event
 - `PART_SizeChangerPresenter`：展示用户内容、文本、图标或模板化数据。
 - `PART_TotalInfoPresenter`：展示用户内容、文本、图标或模板化数据。
 
+Semantic marker 接入点：
+
+- `Pagination` 的 `item` descriptor 为运行时创建（`RuntimeCreated = true`），路由
+  `/template/ .semantic-scope-nav > .semantic-item`。`PaginationTheme.axaml` 在 `PART_Nav` 上声明
+  `Classes.semantic-scope-nav="True"` 作用域标记；`PaginationNavItem` 在初始化与 `PaginationItemType`
+  变化时同步 `semantic-item` marker，`Ellipses` 类型移除 marker，其他类型加回。
+- `SimplePagination` 的 `item` descriptor 为静态标记，`SimplePaginationTheme.axaml` 在
+  `PART_PreviousNavItem` 与 `PART_NextNavItem` 上声明 `Classes.semantic-item="True"`。
+- `SimplePagination` 的 `info` descriptor 为静态标记，`SimplePaginationTheme.axaml` 在
+  `PART_InfoIndicator` 上声明 `Classes.semantic-info="True"`，覆盖 "当前页 / 总页数" 信息文本。
+- `Pagination` 与 `SimplePagination` 根模板均在根布局 `StackPanel` 外包裹 TemplateBind 根视觉属性的
+  `atom:DashedBorder`：`Background` / `BackgroundSizing` / `BorderBrush` / `BorderThickness` /
+  `CornerRadius` / `Padding` 来自 `TemplatedControl`，`StrokeDashArray` / `StrokeDaskOffset` 来自
+  `AbstractPagination` 新增的 `BorderDashArray` / `BorderDashOffset`，使 root Part 的边框（含虚线）、
+  背景与内边距定制可渲染；默认值不改变既有外观。
+
 ## 6. 交互与事件处理
 
 Pagination 的交互事件应从输入源收敛到控件级语义事件：
@@ -134,6 +152,29 @@ Pagination 的交互事件应从输入源收敛到控件级语义事件：
 - 主题资源、Token 和 SharedToken 计算后的视觉更新。
 - ItemsSource、selection、checked、expanded、filter、paging 或 upload task 的集合同步。
 - 动效启停、初始加载阶段 transition 抑制和卸载取消。
+
+### 7.1 导航项容器池与显示区间
+
+`PaginationNav` 固定预建 `Pagination.MaxNavItemCount`（11）个 `PaginationNavItem` 容器，上一页/下一页占用
+前两个位置，其余位置按显示区间复用。`Pagination` 按 `CurrentPage`、`PageCount` 与区间规则依次 push
+页码项与 Ellipsis 单元格，未进入显示区间的容器保持隐藏。容器池是固定的：`CurrentPage`、`PageSize` 或
+`Total` 变化只重排容器内容与可见性，不重建容器；`semantic-item` marker 由 `PaginationItemType` 驱动同步，
+与容器可见性解耦。
+
+### 7.2 尺寸与状态基线矩阵
+
+| SizeType | 默认值来源 | 条目尺寸（`PaginationNavItemTheme`） | 布局间距（根模板） |
+| --- | --- | --- | --- |
+| `Large` | 显式设置 | `Height` / `MinWidth` = `ItemSize` | `PaginationLayoutSpacing` |
+| `Middle` | `CustomizableSizeTypeControlProperty.SizeTypeProperty` 默认值 | `Height` / `MinWidth` = `ItemSize` | `PaginationLayoutSpacing` |
+| `Small` | 显式设置 | `Height` / `MinWidth` = `ItemSizeSM` | `PaginationLayoutMiniSpacing` |
+| `Custom` | 显式设置 | `Height` / `MinWidth` = `ItemSize` | `PaginationLayoutSpacing` |
+
+条目尺寸由 `PaginationNavItemTheme` 的 `^[SizeType=...]` selector 独占维护，控件代码不参与尺寸计算；
+`Middle` 与 `Custom` 共用 `ItemSize` 基线，`Small` 使用 `ItemSizeSM`。`SizeType` 通过
+`CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner` 注册，默认值为 `Middle`。基线矩阵是
+稳定契约：改变任一格的 Token、selector 或默认值必须同步 Pagination 与 SimplePagination 两个根模板、
+`PaginationNavItemTheme`、Token 文档与尺寸相关回归测试。
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 
@@ -160,6 +201,9 @@ Pagination 的交互事件应从输入源收敛到控件级语义事件：
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
 - `CurrentPage` / `PageSize` 的默认 `TwoWay` binding metadata，以及内部写入不破坏外部 binding 的 `SetCurrentValue` 路径。
 - Template part 名称、ControlTheme key、伪类和资源 key。
+- Semantic Part descriptor、`semantic-scope-nav` 作用域标记、`semantic-item` / `semantic-info` marker 同步规则与
+  生成的 `PaginationItemStyle` / `SimplePaginationItemStyle` / `SimplePaginationInfoStyle` 类型。Ellipsis 单元格
+  无 `semantic-item` marker 属于上游语义对齐的稳定契约，不能通过主题或代码改动破坏。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
@@ -170,6 +214,8 @@ Pagination 的交互事件应从输入源收敛到控件级语义事件：
 
 - 纯文档改动运行 `git diff --check` 并检查相对链接。
 - 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
+- Semantic Part 契约变更运行 `tests/AtomUI.Desktop.Controls.Tests/Pagination/PaginationSemanticPartTests.cs`，
+  Gallery 语义预览与样式示例变更运行 `tests/AtomUIGallery.Tests/ShowCases/PaginationShowCasePageTests.cs`。
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
 - Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests`。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。
