@@ -6,8 +6,31 @@
 
     <PropertyGroup>
         <AtomUIRepositoryBuild>true</AtomUIRepositoryBuild>
-        <AtomUIBuildTasksAssembly Condition="'$(AtomUIBuildTasksAssembly)' == ''">$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.Build.Tasks.dll</AtomUIBuildTasksAssembly>
+        <AtomUIBuildTasksSourceAssembly Condition="'$(AtomUIBuildTasksSourceAssembly)' == ''">$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.Build.Tasks.dll</AtomUIBuildTasksSourceAssembly>
         <AtomUILinkedPublishGeneratorAssembly Condition="'$(AtomUILinkedPublishGeneratorAssembly)' == ''">$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.Generator.LinkedPublish.dll</AtomUILinkedPublishGeneratorAssembly>
+    </PropertyGroup>
+
+    <!-- .NET task hosts (TaskHostFactory, Runtime="NET") keep loaded task assemblies locked
+         after the build, and an orphaned host can hold the lock indefinitely. In repository
+         builds, UsingTask registrations therefore point at a per-project shadow copy whose
+         directory changes whenever the toolset content changes, so a rebuild never has to
+         overwrite a file a lingering host still holds. The shadow key is produced by the
+         AtomUI.Build.Tasks build itself: file metadata and content are only accessible inside
+         targets, so the producer stamps AtomUI.BuildTasks.ShadowKey.props next to the DLL
+         (SHA256 of the compiled assembly; stable across no-op recompiles) and consumers
+         import it here at evaluation time. The copy itself is staged by
+         _AtomUIStageBuildTasksToolset in AtomUI.Repository.targets. -->
+    <Import Project="$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.BuildTasks.ShadowKey.props"
+            Condition="Exists('$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.BuildTasks.ShadowKey.props')" />
+
+    <PropertyGroup>
+        <AtomUIBuildTasksShadowKey Condition="'$(AtomUIBuildTasksShadowKey)' == ''">pending</AtomUIBuildTasksShadowKey>
+        <!-- Capture the shadow root here: IntermediateOutputPath is expanded eagerly, and the
+             SDK appends the TargetFramework segment to it after this props file is imported, so
+             execution-time reads of IntermediateOutputPath would produce a mismatched path. -->
+        <AtomUIBuildTasksShadowRoot>$(IntermediateOutputPath)/AtomUIBuildTasksShadow</AtomUIBuildTasksShadowRoot>
+        <AtomUIBuildTasksShadowDirectory>$(AtomUIBuildTasksShadowRoot)/$(TargetFramework)/$(AtomUIBuildTasksShadowKey)</AtomUIBuildTasksShadowDirectory>
+        <AtomUIBuildTasksAssembly Condition="'$(AtomUIBuildTasksAssembly)' == ''">$(AtomUIBuildTasksShadowDirectory)/AtomUI.Build.Tasks.dll</AtomUIBuildTasksAssembly>
     </PropertyGroup>
 
     <ItemGroup>

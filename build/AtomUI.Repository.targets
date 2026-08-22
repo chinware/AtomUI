@@ -39,6 +39,49 @@
 
     <Import Project="$(MSBuildThisFileDirectory)AtomUI.Generator.targets" />
 
+    <!-- Stage the AtomUI.Build.Tasks toolset next to the shadow assembly path used by the
+         UsingTask registrations (see AtomUIBuildTasksAssembly in AtomUI.Repository.props).
+         The destination directory embeds the source DLL's last-write time, so a rebuilt
+         toolset lands in a fresh directory and a lingering task host locking a previous
+         shadow copy can never block the build. Anchored on BeforeBuild plus every target
+         that invokes these tasks, including GetAtomUILinkedRegistrationSidecar, which other
+         projects invoke directly through ProjectReference target calls where BeforeBuild
+         never runs. Missing source assemblies are tolerated here: projects without task
+         inputs must build without the toolset, and the feature targets keep their own
+         Exists guards for projects that do consume the tasks. Stale shadow directories from
+         older keys are removed so iterating on AtomUI.Build.Tasks does not accumulate ~1.3 MB
+         per project per rebuild; a directory still locked by an orphaned task host survives
+         with a warning and is retried on the next build. Cross-targeting outer builds neither
+         stage nor clean: their UsingTask registrations never execute tasks, and their
+         TargetFramework-less shadow glob would collide with the per-TFM inner directories. -->
+    <Target Name="_AtomUIStageBuildTasksToolset"
+            BeforeTargets="BeforeBuild;GenerateAtomUIThemeAssetWrappers;AtomUIGetLanguageModuleSourceAssets;AtomUIResolveLanguageContractProjectReferences;AtomUIInferLanguagePackageContractPolicy;AtomUIGetLanguagePackProjectAssets;AtomUIResolveLanguagePackProjectReferences;AtomUIExportLanguageTemplates;AtomUIPrepareLanguagePackage;AtomUIPrepareLanguageModuleAssets;CollectAtomUIProjectReferenceSidecars;CollectAtomUIAxamlUsage;EmitAtomUILinkedRegistrationSidecar;GetAtomUILinkedRegistrationSidecar;AtomUIPrepareLinkedRegistrationSidecarForPack;ValidateAtomUIApplicationRegistrationPlan"
+            Condition="'$(MSBuildProjectName)' != 'AtomUI.Build.Tasks' and
+                       '$(IsCrossTargetingBuild)' != 'true' and
+                       '$(AtomUIBuildTasksSourceAssembly)' != '' and
+                       '$(AtomUIBuildTasksAssembly)' == '$(AtomUIBuildTasksShadowDirectory)/AtomUI.Build.Tasks.dll' and
+                       Exists('$(AtomUIBuildTasksSourceAssembly)')">
+        <ItemGroup>
+            <_AtomUIBuildTasksToolsetFile Include="$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.Build.Tasks.dll" />
+            <_AtomUIBuildTasksToolsetFile Include="$(OutputPathWithoutFramework)/netstandard2.0/System.*.dll" />
+        </ItemGroup>
+        <Copy SourceFiles="@(_AtomUIBuildTasksToolsetFile)"
+              DestinationFolder="$(AtomUIBuildTasksShadowDirectory)"
+              SkipUnchangedFiles="true" />
+        <!-- MSBuild item wildcards match files, not directories, so locate stale shadow
+             directories through the staged assembly inside them. The current key's directory
+             is kept by matching the key segment in the path (a plain string compare would
+             break on separator and '..' normalization differences). A directory still
+             locked by an orphaned task host survives with a warning and is retried on the
+             next build. -->
+        <ItemGroup>
+            <_AtomUIStaleShadowAssembly Include="$(AtomUIBuildTasksShadowRoot)/$(TargetFramework)/*/AtomUI.Build.Tasks.dll" />
+        </ItemGroup>
+        <RemoveDir Directories="@(_AtomUIStaleShadowAssembly->'%(RootDir)%(Directory)')"
+                   Condition="!$([System.String]::Copy('%(_AtomUIStaleShadowAssembly.Directory)').Replace('\', '/').EndsWith('/$(AtomUIBuildTasksShadowKey)/'))"
+                   ContinueOnError="true" />
+    </Target>
+
     <Target Name="AtomUIPrepareGeneratorConsumerPackageAssets"
             BeforeTargets="_GetPackageFiles"
             Condition="'$(IsPackable)' == 'true' and '$(AtomUIRegistrationPackageId)' != ''">

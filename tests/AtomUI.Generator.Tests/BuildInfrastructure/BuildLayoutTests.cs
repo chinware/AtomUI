@@ -56,6 +56,7 @@ public sealed class BuildLayoutTests
             "$(MSBuildThisFileDirectory)ProjectDefaults.props",
             "$(MSBuildThisFileDirectory)PackageMetadata.props",
             "$(MSBuildThisFileDirectory)OutputPaths.props",
+            "$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.BuildTasks.ShadowKey.props",
             "$(MSBuildThisFileDirectory)AtomUI.Generator.props"
         ]);
     }

@@ -31,4 +31,21 @@
         <Compile Include="../AtomUI.Generator/LinkedRegistration/Manifest/LinkedRegistrationManifestCodec.cs"
                  Link="LinkedRegistrationProtocol/LinkedRegistrationManifestCodec.cs" />
     </ItemGroup>
+
+    <!-- Stamp the shadow key next to the built toolset. The key is the content hash of the
+         compiled assembly: builds are deterministic, so no-op recompiles keep the key stable
+         and consumers only switch shadow directories when the toolset actually changes.
+         AfterTargets="CoreCompile" fires even for up-to-date (skipped) compiles, which is
+         harmless because the hash of the unchanged intermediate assembly stays the same.
+         Consumers import the stamped props file at evaluation time; see
+         AtomUIBuildTasksAssembly in build/AtomUI.Repository.props. -->
+    <Target Name="_AtomUIWriteBuildTasksShadowKey" AfterTargets="CoreCompile">
+        <GetFileHash Files="@(IntermediateAssembly)" Algorithm="SHA256">
+            <Output TaskParameter="Hash" PropertyName="_AtomUIBuildTasksShadowKey" />
+        </GetFileHash>
+        <MakeDir Directories="$(OutputPathWithoutFramework)/netstandard2.0" />
+        <WriteLinesToFile File="$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.BuildTasks.ShadowKey.props"
+                          Lines="&lt;Project&gt;&lt;PropertyGroup&gt;&lt;AtomUIBuildTasksShadowKey&gt;$(_AtomUIBuildTasksShadowKey)&lt;/AtomUIBuildTasksShadowKey&gt;&lt;/PropertyGroup&gt;&lt;/Project&gt;"
+                          Overwrite="true" />
+    </Target>
 </Project>

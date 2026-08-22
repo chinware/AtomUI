@@ -71,8 +71,12 @@ Registration、Localization 和 Theme Asset 的扁平 feature 文件。`AtomUI.L
 `AtomUI.Generator` 时注入同包工具程序集。
 
 所有需要 `AtomUI.Build.Tasks` 的 feature target 都使用唯一属性 `$(AtomUIBuildTasksAssembly)`。Repository 构建将它
-指向 `output/bin/<Configuration>/netstandard2.0/AtomUI.Build.Tasks.dll`；NuGet consumer 由
-`AtomUI.Generator.props` 回退解析相邻 `tools/netstandard2.0/AtomUI.Build.Tasks.dll`。不得新增功能专用的 Build Tasks
+指向每个项目自己的影子副本 `output/<ProjectName>/obj/<Configuration>/AtomUIBuildTasksShadow/<TargetFramework>/<ShadowKey>/AtomUI.Build.Tasks.dll`；
+影子目录的 `<ShadowKey>` 来自 `AtomUI.Build.Tasks` 构建后盖章的
+`output/bin/<Configuration>/netstandard2.0/AtomUI.BuildTasks.ShadowKey.props`（键为编译产物的 SHA256，确定性编译保证
+无变化时键稳定），`_AtomUIStageBuildTasksToolset`（`AtomUI.Repository.targets`）在任务执行前把工具集复制到该目录，
+并清理旧键的过期影子目录（仍被孤儿 TaskHost 锁定的目录跳过重试，不会在迭代开发工具集时无限累积）。
+NuGet consumer 由 `AtomUI.Generator.props` 回退解析相邻 `tools/netstandard2.0/AtomUI.Build.Tasks.dll`。不得新增功能专用的 Build Tasks
 路径属性或只为该属性增加单独文件。调用 Build Tasks 的 target 必须同时按真实输入 item 门控；没有 AXAML、语言文件或
 linked registration 输入的项目不得仅因导入共享 targets 就要求任务程序集已经存在。这样可以保证直接、干净的项目构建
 不依赖解决方案项目顺序，也不会给无输入的 Debug 编译增加任务成本。
@@ -80,7 +84,9 @@ linked registration 输入的项目不得仅因导入共享 targets 就要求任
 所有引用 `$(AtomUIBuildTasksAssembly)` 的 `UsingTask` 必须使用 `Runtime="NET"` 与
 `TaskFactory="TaskHostFactory"` 在短生命周期的 .NET TaskHost 中执行。不得让默认的进程内
 `AssemblyTaskFactory` 把任务程序集加载进 IDE 或 MSBuild 常驻节点；否则仓库内重新构建
-`AtomUI.Build.Tasks` 时，共享输出 DLL 会因仍被宿主进程占用而无法替换。该约束同时适用于仓库构建和随 NuGet
+`AtomUI.Build.Tasks` 时，共享输出 DLL 会因仍被宿主进程占用而无法替换。TaskHost 并不保证随构建结束退出，
+孤儿宿主可能无限期持有旧程序集的文件锁，因此仓库构建还必须使用上述按 ShadowKey 版本化的影子副本：
+重编译后的工具集落在全新目录，永不覆盖仍被锁定的旧副本。该约束同时适用于仓库构建和随 NuGet
 交付的 buildTransitive targets，并由 build-assets 架构测试全局守卫。
 
 ## Target Framework
