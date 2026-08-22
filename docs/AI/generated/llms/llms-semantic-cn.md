@@ -1635,13 +1635,29 @@ Source: ./controls/breadcrumb/semantic-cn.md
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Breadcrumb` | 导航控件根语义区域，承载 public API、状态归一和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `trigger` | `触发区域` | 承载点击、键盘、打开关闭、跳转或提交入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `导航项区域` | 承载当前项、选中项、禁用项、层级项或分页项状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `popup` | `弹层或内容区域` | 承载 flyout、dropdown、tab content、submenu 或候选内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效区域` | 表达打开关闭、选中指示、切换和过渡反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| Part | AtomUI 节点 | Selector | ContractType | Cardinality | Customization | CrossVisualRoot | RuntimeCreated |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `root` | `Breadcrumb` owner | owner | `Breadcrumb` | `Single` | `Root` | `false` | `false` |
+| `item` | 条目容器 | `> .semantic-item` | `BreadcrumbItem` | `Multiple` | `Selector` | `false` | `true` |
+| `separator` | 条目容器之间的兄弟分隔元素 | `> .semantic-separator` | `ContentPresenter` | `Multiple` | `Selector` | `false` | `true` |
+
+`root` 不声明 `.semantic-root` marker，也不生成独立 Style type。`item` 和 `separator` 都是运行时创建的语义标记：
+`item` 由 `Breadcrumb` 在 `CreateContainerForItemOverride` 与 `PrepareContainerForItemOverride` 中通过生成的
+`BreadcrumbSemanticParts.ItemClass` 挂到每个 `BreadcrumbItem` 容器上；`separator` 由 `Breadcrumb` 在分隔符创建路径
+中通过 `BreadcrumbSemanticParts.SeparatorClass` 挂到每个运行时创建的兄弟分隔 `ContentPresenter` 上。分隔符是
+`Breadcrumb` 的逻辑子级（供 `> .semantic-separator` 路由匹配）、items panel 的视觉子级（参与布局），不进入 panel 的
+`Children` 集合，避免污染条目生成器基于面板位置的容器索引。`separator` 的标记数量为条目数量减一，每个分隔符尾随
+其前一条目，最后一条目没有分隔符。
+
+内置主题不依赖静态 `.semantic-*` marker：`BreadcrumbTheme.axaml` 与 `BreadcrumbItemTheme.axaml` 都不包含静态
+semantic class，语义契约完全由 runtime marker 与生成的 `Style` 类型表达。分隔符是运行时创建的兄弟节点，无法被
+`^ /template/` 主题 selector 覆盖，因此默认前景色与间距由 `Breadcrumb` 通过 `TokenResourceBinder` 控件 Token 绑定
+提供（`SeparatorColor` / `SeparatorMargin`），而不是模板字面值，从而允许应用 Semantic Style 覆盖该颜色。
+
+带导航能力的条目（`IsNavigateResponsive=True`）的链接前景色由主题 selector `^ /template/ ContentPresenter#Content`
+提供（绑定 `LinkColor` Token），直接落在内容呈现器上——对齐参考实现的链接锚点着色规则（`.ant-breadcrumb-item a`）。因此
+item 级 Semantic Style（如 `Foreground`）不会改变链接条目的文字颜色：链接条目始终使用 `LinkColor`，只有普通条目的
+文字颜色可被 item 样式定制。悬浮时的 `LinkHoverColor` 同样作用在内容呈现器上。
 
 ## Abstract AXAML Structure
 
@@ -1660,12 +1676,10 @@ Source: ./controls/breadcrumb/semantic-cn.md
 ```text
 Breadcrumb
   -> BreadcrumbItem (item container control theme, BreadcrumbItemTheme.axaml)
-     -> StackPanel#RootLayout (template-stable)
-        -> Border#ContentInfoFrame (template-stable)
-           -> StackPanel (template-stable)
-              -> IconPresenter#IconPresenter (internal-observable)
-              -> ContentPresenter#Content (internal-observable)
-        -> ContentPresenter#Separator (internal-observable)
+     -> Border#ContentInfoFrame (template-stable)
+        -> StackPanel (template-stable)
+           -> IconPresenter#IconPresenter (internal-observable)
+           -> ContentPresenter#Content (internal-observable)
   -> Breadcrumb (control theme, BreadcrumbTheme.axaml)
      -> ItemsPresenter (internal-observable)
 ```
@@ -1675,13 +1689,11 @@ Breadcrumb
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `Breadcrumb` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `BreadcrumbItem` | item container control theme | `BreadcrumbItemTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `Content`, `ContentTemplate`, `CornerRadius`, `Icon`, `IsLast` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `RootLayout` | template node (StackPanel) | `BreadcrumbItemTheme.axaml` | BreadcrumbItem | `Background`, `Content`, `ContentTemplate`, `CornerRadius`, `Icon`, `IsLast` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `BreadcrumbItem` | item container control theme | `BreadcrumbItemTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `Content`, `ContentTemplate`, `CornerRadius`, `Icon`, `Padding` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `ContentInfoFrame` | template node (Border) | `BreadcrumbItemTheme.axaml` | BreadcrumbItem | `Background`, `Content`, `ContentTemplate`, `CornerRadius`, `Icon`, `Padding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `StackPanel` | template node (StackPanel) | `BreadcrumbItemTheme.axaml` | BreadcrumbItem | `Content`, `ContentTemplate`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `IconPresenter` | template node (IconPresenter) | `BreadcrumbItemTheme.axaml` | BreadcrumbItem | `Icon` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Content` | template node (ContentPresenter) | `BreadcrumbItemTheme.axaml` | BreadcrumbItem | `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `Separator` | template node (ContentPresenter) | `BreadcrumbItemTheme.axaml` | BreadcrumbItem | `IsLast`, `Separator`, `SeparatorTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Breadcrumb` | control theme | `BreadcrumbTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `ItemsPresenter` | template node (ItemsPresenter) | `BreadcrumbTheme.axaml` | Breadcrumb | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 
@@ -1691,6 +1703,7 @@ Breadcrumb
 | --- | --- | --- |
 | 内容与数据 | `Icon`、`SeparatorTemplate` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
 | 交互与状态 | `IsMotionEnabled` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
+| 视觉与布局 | `Background`、`BorderBrush`、`BorderThickness`、`CornerRadius`、`Padding` | 表达 root frame 的边框、背景、圆角与内边距（继承自 `TemplatedControl`），配合 Semantic Part 根定制边界使用。 |
 | 其他稳定入口 | `NavigateContext`、`NavigateUri`、`Separator` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
 ## Pseudo Classes
@@ -1727,6 +1740,15 @@ Breadcrumb 的视觉模型由控件模板、ControlTheme、SharedToken 和必要
 | `BreadcrumbTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
 Breadcrumb 使用 `BreadcrumbToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 motion 运行时状态。
+
+root frame 由 `Breadcrumb` 自身在 `Render` 中绘制（复用 `BorderRenderHelper`），边框、背景、圆角与内边距由继承自
+`TemplatedControl` 的 root frame 样式属性表达，定制边界见 [Breadcrumb Semantic Part 契约](semantic-part.md)第 3 节。
+分隔符是条目容器之间的兄弟元素（N-1 个、尾随其前一条目），由 `Breadcrumb` 运行时创建并交给 `BreadcrumbItemsPanel`
+交错布局；其默认前景色与间距经 `TokenResourceBinder` 绑定 `SeparatorColor` / `SeparatorMargin`，保持 Template 绑定
+优先级以便 Semantic Part 样式覆盖。带导航能力的条目（`IsNavigateResponsive=True`）的链接前景色绑定 `LinkColor`，
+作用在条目内容呈现器（`^ /template/ ContentPresenter#Content`）上，对齐参考实现的链接锚点着色规则
+（`.ant-breadcrumb-item a`），item 级 Semantic Part 样式不改变链接文字颜色。主题默认 `HorizontalAlignment=Stretch`，
+root 作为块级元素铺满可用宽度。
 
 主题维护规则：
 
