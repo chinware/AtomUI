@@ -251,9 +251,6 @@ public partial class WorkspaceWindow : ReactiveWindow<WorkspaceWindowViewModel>
                         FindSiblingMenuItem(menuItem, WindowMenuItemKind.WaveSpirit) is { } waveSpiritMenuItem)
                     {
                         waveSpiritMenuItem.IsChecked = false;
-                        TitleBarWaveSpiritToggleButton?.SetCurrentValue(
-                            WindowTitleBarToggleButton.IsCheckedProperty,
-                            false);
                     }
                     ViewModel.ToggleMotionCommand.Execute(menuItem.IsChecked)
                              .Subscribe();
@@ -264,9 +261,6 @@ public partial class WorkspaceWindow : ReactiveWindow<WorkspaceWindowViewModel>
                     {
                         motionMenuItem.IsChecked = true;
                     }
-                    TitleBarWaveSpiritToggleButton?.SetCurrentValue(
-                        WindowTitleBarToggleButton.IsCheckedProperty,
-                        menuItem.IsChecked);
                     ViewModel.ToggleWaveSpiritCommand.Execute(menuItem.IsChecked)
                              .Subscribe();
                     break;
@@ -288,49 +282,6 @@ public partial class WorkspaceWindow : ReactiveWindow<WorkspaceWindowViewModel>
                     break;
             }
         }
-    }
-
-    private void HandleTitleBarAppearanceButtonClick(object? sender, RoutedEventArgs e)
-    {
-        if (ViewModel is not null)
-        {
-            ViewModel.SetAppearanceModeCommand.Execute(
-                              ViewModel.IsDarkAppearanceMode
-                                  ? ThemePreference.Light
-                                  : ThemePreference.Dark)
-                     .Subscribe();
-        }
-    }
-
-    private void HandleTitleBarWaveSpiritToggleButtonClick(object? sender, RoutedEventArgs e)
-    {
-        if (sender is not WindowTitleBarToggleButton toggleButton || ViewModel is null)
-        {
-            return;
-        }
-
-        var menuItem = FindWindowMenuItem(WindowMenuItemKind.WaveSpirit);
-        if (menuItem is not null)
-        {
-            menuItem.SetCurrentValue(MenuItem.IsCheckedProperty, toggleButton.IsChecked == true);
-        }
-
-        ViewModel.ToggleWaveSpiritCommand.Execute(toggleButton.IsChecked == true)
-                 .Subscribe();
-    }
-
-    private MenuItem? FindWindowMenuItem(WindowMenuItemKind kind)
-    {
-        if (!Resources.TryGetValue(TitleBarMenuResourceKey, out var menuResource) ||
-            menuResource is not DesktopMenu menu)
-        {
-            return null;
-        }
-
-        return menu.Items
-                   .OfType<MenuItem>()
-                   .SelectMany(static item => item.Items.OfType<MenuItem>())
-                   .FirstOrDefault(item => item.Tag is WindowMenuItemKind itemKind && itemKind == kind);
     }
 
     private static MenuItem? FindSiblingMenuItem(MenuItem menuItem, WindowMenuItemKind kind)
