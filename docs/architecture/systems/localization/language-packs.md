@@ -249,6 +249,8 @@ Catalog 所有权。
 module ID、契约校验级别、包内路径和源 fingerprint 的 `AtomUILanguage` item 注入。标准 targets 只把 Generator
 实际需要的 source kind、source identity、module ID、契约模式和 fingerprint 投影到 `AdditionalFiles`；包内路径继续属于
 pack/审计契约，不参与 Catalog identity。manifest 不进入 `AdditionalFiles`，Generator 也不会独立发现或读取它。
+该 props 同时移除 NuGet 根据 `contentFiles` 自动投影到消费项目的 `None` 项（XLIFF 和 manifest），因此这些文件只作为
+编译输入保留在包内，不会在开发者 IDE 的项目树中生成按 Catalog 划分的链接目录。
 最终应用 Generator 校验 metadata、实际 XLIFF 和引用 Catalog 后把翻译编译进应用程序集；运行时不需要知道翻译来自
 哪个 NuGet 文件。
 

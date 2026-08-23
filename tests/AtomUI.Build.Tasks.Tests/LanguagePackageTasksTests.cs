@@ -336,6 +336,14 @@ public class LanguagePackageTasksTests : IDisposable
         engine.Errors.ShouldBeEmpty();
 
         var props = XDocument.Load(outputPath);
+        props.Descendants("None")
+             .Select(static element => element.Attribute("Remove")!.Value)
+             .ShouldBe(
+             [
+                 "$(MSBuildThisFileDirectory)../contentFiles/any/any/**/*.xlf",
+                 "$(MSBuildThisFileDirectory)../contentFiles/any/any/AtomUI.LanguagePack.xml"
+             ],
+             ignoreOrder: true);
         var item = props.Descendants("AtomUILanguage").ShouldHaveSingleItem();
         ((string?)item.Attribute("Include"))
             .ShouldBe("$(MSBuildThisFileDirectory)../contentFiles/any/any/Localization/DatePicker/ja-JP.xlf");
@@ -394,6 +402,14 @@ public class LanguagePackageTasksTests : IDisposable
         engine.Errors.ShouldBeEmpty();
 
         var props = XDocument.Load(outputPath);
+        props.Descendants("None")
+             .Select(static element => element.Attribute("Remove")!.Value)
+             .ShouldBe(
+             [
+                 "$(MSBuildThisFileDirectory)../contentFiles/any/any/**/*.xlf",
+                 "$(MSBuildThisFileDirectory)../contentFiles/any/any/AtomUI.LanguagePack.xml"
+             ],
+             ignoreOrder: true);
         var item = props.Descendants("AtomUILanguage").ShouldHaveSingleItem();
         ((string?)item.Attribute("AtomUILanguageSourceKind")).ShouldBe("ModuleBuiltIn");
     }

@@ -9,7 +9,21 @@ internal static class PackagePropsWriter
         IReadOnlyList<LanguagePackageCatalogEntry> catalogs,
         string sourceKind = "StaticLanguagePack")
     {
-        var itemGroup = new XElement("ItemGroup");
+        var itemGroup = new XElement(
+            "ItemGroup",
+            // XLIFF files live in contentFiles so the generated props can read them from the package.
+            // NuGet also adds those files as visible None items; remove the compiler-only projection
+            // while leaving the package payload available to AtomUILanguage.
+            new XElement(
+                "None",
+                new XAttribute(
+                    "Remove",
+                    "$(MSBuildThisFileDirectory)../contentFiles/any/any/**/*.xlf")),
+            new XElement(
+                "None",
+                new XAttribute(
+                    "Remove",
+                    "$(MSBuildThisFileDirectory)../contentFiles/any/any/AtomUI.LanguagePack.xml")));
         foreach (var catalog in catalogs
                                         .OrderBy(static entry => entry.ModuleId, StringComparer.Ordinal)
                                         .ThenBy(static entry => entry.CatalogId, StringComparer.Ordinal))
