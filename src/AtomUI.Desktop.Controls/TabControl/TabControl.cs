@@ -1,4 +1,5 @@
 ﻿using AtomUI.Animations;
+using AtomUI.Generated.AtomUIDesktopControls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -10,7 +11,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
-public class TabControl : BaseTabControl
+public partial class TabControl : BaseTabControl
 {
     #region 内部属性定义
 
@@ -142,6 +143,7 @@ public class TabControl : BaseTabControl
         {
             Shape = TabSharp.Line
         };
+        tabItem.Classes.Add(TabControlSemanticParts.ItemClass);
         return tabItem;
     }
 
@@ -151,6 +153,7 @@ public class TabControl : BaseTabControl
         if (container is TabItem tabItem)
         {
             tabItem.Shape = TabSharp.Line;
+            tabItem.Classes.Add(TabControlSemanticParts.ItemClass);
         }
     }
 

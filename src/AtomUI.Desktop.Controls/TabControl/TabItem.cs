@@ -19,7 +19,7 @@ using Avalonia.VisualTree;
 namespace AtomUI.Desktop.Controls;
 
 [PseudoClasses(StdPseudoClass.Pressed, StdPseudoClass.Selected)]
-public class TabItem : HeaderedContentControl, ISelectable
+public partial class TabItem : HeaderedContentControl, ISelectable
 {
     #region 公共属性定义
 

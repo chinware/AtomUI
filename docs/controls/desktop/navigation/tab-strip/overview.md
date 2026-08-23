@@ -1,6 +1,6 @@
 # TabStrip 桌面版架构设计
 
-本文档定义 `TabStrip` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [TabStrip 桌面版实现原理](implementation.md)。TabStrip 没有独立 Token 文档；主题主要复用 SharedToken 或关联控件 Token。设计和契约变化记录见 [TabStrip Changelog](changelog.md)。
+本文档定义 `TabStrip` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [TabStrip 桌面版实现原理](implementation.md)，公开 Semantic Part 契约见 [TabStrip Semantic Part 契约](semantic-part.md)。TabStrip 没有独立 Token 文档；主题主要复用 SharedToken 或关联控件 Token。设计和契约变化记录见 [TabStrip Changelog](changelog.md)。
 
 该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。本控件的语义 owner 为 `BaseTabStrip`（由 `TabStrip` 继承），其 internal `IsPopupPinnedOpen` 只供测试和内部诊断使用；设置为 true 时保持 overflow open state，并 relay 到 `TabStripScrollViewer` 的 tab overflow Popup，设置为 false 时只解除关闭拦截。控件卸载、锚点失效、TopLevel 改变和模板重建仍按共享生命周期规则清理。
 
@@ -182,18 +182,21 @@ TabStrip 的视觉选项通过 public API 归一为 theme variables、伪类或�
 关联文档：
 
 - [TabStrip 桌面版实现原理](implementation.md)
+- [TabStrip Semantic Part 契约](semantic-part.md)
 - [TabStrip Changelog](changelog.md)
 
 LLMS 语义区域：
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `TabStrip` | 导航控件根语义区域，承载 public API、状态归一和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `trigger` | `触发区域` | 承载点击、键盘、打开关闭、跳转或提交入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `导航项区域` | 承载当前项、选中项、禁用项、排序项或分页项状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `reorder` | `拖动排序区域` | 承载拖动源、实时让位预览、自动滚动和集合顺序提交。 | `IsTabReorderEnabled`、`TabReordering`、`TabReordered` | 见视觉与主题模型 | stable |
-| `popup` | `弹层或内容区域` | 承载 flyout、dropdown、tab content、submenu 或候选内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效区域` | 表达打开关闭、选中指示、切换和过渡反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| Part | Owner | AtomUI 节点 | 职责 | 稳定性 |
+| --- | --- | --- | --- | --- |
+| `root` | `TabStrip` / `CardTabStrip` / `TabStripItem` | 控件自身 | 标签条控件根语义区域，承载 public API、状态归一和主题入口。 | stable since 6.0 |
+| `item` | `TabStrip` / `CardTabStrip` | `TabStripItem` 容器（运行时标记） | 承载单个页签的尺寸、状态与点击语义。 | stable since 6.0 |
+| `add` | `CardTabStrip` | `PART_AddTabButton` | 承载新建页签入口的按钮视觉与状态。 | stable since 6.0 |
+| `icon` | `TabStripItem` | `ItemIconPresenter` | 承载页签头部图标呈现。 | stable since 6.0 |
+| `label` | `TabStripItem` | `ContentPresenter` | 承载页签头部标题文本呈现。 | stable since 6.0 |
+| `close` | `TabStripItem` | `PART_ItemCloseButton` | 承载页签关闭按钮视觉与状态。 | stable since 6.0 |
+
+Part 的 Selector、ContractType、数量语义与定制边界以 [TabStrip Semantic Part 契约](semantic-part.md) 为唯一完整来源；内容页版本的 `TabControl` 家族语义区域见 [TabControl Semantic Part 契约](../tab-control/semantic-part.md)。
 
 Token 说明：
 
@@ -205,7 +208,7 @@ LLMS 导出来源：
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
 | 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/tab-strip/index-cn.md` |
-| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/tab-strip/semantic-cn.md` |
+| 单控件语义文档 | `semantic-part.md` + `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/tab-strip/semantic-cn.md` |
 | API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
 | Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |

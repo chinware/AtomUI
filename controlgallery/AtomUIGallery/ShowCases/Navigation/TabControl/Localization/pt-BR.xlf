@@ -367,6 +367,60 @@
         <target state="translated">Exemplos</target>
       </segment>
     </unit>
+    <unit id="SemanticAddDescription">
+      <segment>
+        <source>Add element, set size, color and corner radius styles for the plus button</source>
+        <target state="translated">Elemento de adição, define tamanho, cor e estilos de raio de canto para o botão de mais</target>
+      </segment>
+    </unit>
+    <unit id="SemanticCloseDescription">
+      <segment>
+        <source>Close element, set size and color styles for the close button</source>
+        <target state="translated">Elemento de fechamento, define tamanho e estilos de cor para o botão de fechar</target>
+      </segment>
+    </unit>
+    <unit id="SemanticContentDescription">
+      <segment>
+        <source>Content element, set padding, background and alignment styles for the content panel</source>
+        <target state="translated">Elemento de conteúdo, define preenchimento, fundo e estilos de alinhamento para o painel de conteúdo</target>
+      </segment>
+    </unit>
+    <unit id="SemanticIconDescription">
+      <segment>
+        <source>Icon element, set size and margin styles for the tab icon</source>
+        <target state="translated">Elemento de ícone, define tamanho e estilos de margem para o ícone da aba</target>
+      </segment>
+    </unit>
+    <unit id="SemanticItemDescription">
+      <segment>
+        <source>Item element, set size, padding, hover state and selected state styles for each tab</source>
+        <target state="translated">Elemento de item, define tamanho, preenchimento, estado de foco e estado selecionado para cada aba</target>
+      </segment>
+    </unit>
+    <unit id="SemanticLabelDescription">
+      <segment>
+        <source>Label element, set font and color styles for the tab title</source>
+        <target state="translated">Elemento de rótulo, define estilos de fonte e cor para o título da aba</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartStyleDescription">
+      <segment>
+        <source>Style tabs and the content panel through generated Semantic Part styles: tab spacing and selected background, content padding, icon and title margins, and plus button corner radius.</source>
+        <target state="translated">Personalize abas e o painel de conteúdo por meio dos estilos de Semantic Part gerados: espaçamento de abas e fundo selecionado, preenchimento do conteúdo, margens de ícone e título e raio de canto do botão de mais.</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartStyleTitle">
+      <segment>
+        <source>Custom Semantic Part styling</source>
+        <target state="translated">Personalizar estilo de Semantic Part</target>
+      </segment>
+    </unit>
+    <unit id="SemanticRootDescription">
+      <segment>
+        <source>Root element, set overall size, padding, border and background styles</source>
+        <target state="translated">Elemento raiz, define tamanho geral, preenchimento, borda e estilos de fundo</target>
+      </segment>
+    </unit>
     <unit id="TabControlAddCloseDescription">
       <segment>
         <source>Hide default plus icon, and bind event for customized trigger.</source>

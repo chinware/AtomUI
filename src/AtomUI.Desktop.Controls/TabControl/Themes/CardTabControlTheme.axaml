@@ -42,6 +42,7 @@
                                         <atom:TabsContainerPanel.AddTabButton>
                                             <atom:IconButton
                                                 Name="PART_AddTabButton"
+                                                Classes.semantic-add="True"
                                                 Icon="{antdicons:AntDesignIconProvider PlusOutlined}"
                                                 BorderThickness="{TemplateBinding CardBorderThickness}"
                                                 CornerRadius="{TemplateBinding EffectiveCardBorderRadius}"
@@ -52,7 +53,8 @@
                             </Border>
                         </Panel>
 
-                        <ContentPresenter Padding="{TemplateBinding ContentPadding}"
+                        <ContentPresenter Classes.semantic-content="True"
+                                          Padding="{TemplateBinding ContentPadding}"
                                           Content="{TemplateBinding SelectedContent}"
                                           ContentTemplate="{TemplateBinding SelectedContentTemplate}"
                                           HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"

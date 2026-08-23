@@ -22,7 +22,7 @@ public enum TabSharp
     Card
 }
 
-public class TabStripItem : AvaloniaTabStripItem
+public partial class TabStripItem : AvaloniaTabStripItem
 {
     #region 公共属性定义
 

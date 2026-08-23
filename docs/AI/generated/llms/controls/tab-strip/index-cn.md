@@ -73,7 +73,7 @@ TabStrip 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml:37`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml:125`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -89,7 +89,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 通过 ItemSource 生成 TabStripItem
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml:54`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml:142`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -107,7 +107,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 禁用标签
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml:163`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml:251`
 
 Gallery key：`ExamplesContent` / item `4`
 
@@ -129,7 +129,7 @@ Gallery key：`ExamplesContent` / item `4`
 
 ### 居中显示
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml:186`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml:274`
 
 Gallery key：`ExamplesContent` / item `5`
 
@@ -221,8 +221,11 @@ Token 来源：
 
 - `src/AtomUI.Desktop.Controls/TabControl/TabStrip/BaseTabStrip.cs`
 - `src/AtomUI.Desktop.Controls/TabControl/TabStrip/CardTabStrip.cs`
+- `src/AtomUI.Desktop.Controls/TabControl/TabStrip/CardTabStrip.SemanticParts.cs`
 - `src/AtomUI.Desktop.Controls/TabControl/TabStrip/TabStrip.cs`
+- `src/AtomUI.Desktop.Controls/TabControl/TabStrip/TabStrip.SemanticParts.cs`
 - `src/AtomUI.Desktop.Controls/TabControl/TabStrip/TabStripItem.cs`
+- `src/AtomUI.Desktop.Controls/TabControl/TabStrip/TabStripItem.SemanticParts.cs`
 - `src/AtomUI.Desktop.Controls/TabControl/TabStrip/TabStripOverflowMenuItem.cs`
 - `src/AtomUI.Desktop.Controls/TabControl/TabStrip/TabStripScrollViewer.cs`
 
@@ -241,5 +244,6 @@ Token 来源：
 
 - 源设计文档：`docs/controls/desktop/navigation/tab-strip/overview.md`
 - 实现文档：`docs/controls/desktop/navigation/tab-strip/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/navigation/tab-strip/semantic-part.md`
 - 变更记录：`docs/controls/desktop/navigation/tab-strip/changelog.md`
 - 语义结构：`./semantic-cn.md`

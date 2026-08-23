@@ -1,4 +1,5 @@
 ﻿using AtomUI.Animations;
+using AtomUI.Generated.AtomUIDesktopControls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -10,7 +11,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
-public class TabStrip : BaseTabStrip
+public partial class TabStrip : BaseTabStrip
 {
     #region 内部属性定义
 
@@ -141,6 +142,7 @@ public class TabStrip : BaseTabStrip
         {
             Shape = TabSharp.Line
         };
+        tabStripItem.Classes.Add(TabStripSemanticParts.ItemClass);
         return tabStripItem;
     }
 
@@ -150,6 +152,7 @@ public class TabStrip : BaseTabStrip
         if (container is TabStripItem tabStripItem)
         {
             tabStripItem.Shape = TabSharp.Line;
+            tabStripItem.Classes.Add(TabStripSemanticParts.ItemClass);
         }
     }
 

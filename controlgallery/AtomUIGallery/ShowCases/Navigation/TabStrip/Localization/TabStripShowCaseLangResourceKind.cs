@@ -72,5 +72,13 @@ public enum TabStripShowCaseLangResourceKind
     P2ContentTabN22,
     P2ContentTabN23,
     P2ContentNewTabFormat,
-    P2TextTabContent
+    P2TextTabContent,
+    SemanticRootDescription,
+    SemanticItemDescription,
+    SemanticAddDescription,
+    SemanticIconDescription,
+    SemanticLabelDescription,
+    SemanticCloseDescription,
+    SemanticPartStyleTitle,
+    SemanticPartStyleDescription
 }

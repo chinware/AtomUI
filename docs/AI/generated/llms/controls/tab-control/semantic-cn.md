@@ -4,14 +4,28 @@
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `TabControl` | 导航控件根语义区域，承载 public API、状态归一和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `trigger` | `触发区域` | 承载点击、键盘、打开关闭、跳转或提交入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `导航项区域` | 承载当前项、选中项、禁用项、排序项或分页项状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `reorder` | `拖动排序区域` | 承载拖动源、实时让位预览、自动滚动和集合顺序提交。 | `IsTabReorderEnabled`、`TabReordering`、`TabReordered` | 见视觉与主题模型 | stable |
-| `popup` | `弹层或内容区域` | 承载 flyout、dropdown、tab content、submenu 或候选内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效区域` | 表达打开关闭、选中指示、切换和过渡反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| Owner | Part | Selector | ContractType | Cardinality | Customization | CrossVisualRoot | RuntimeCreated |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `TabControl` | `root` | owner | `TabControl` | `Single` | `Root` | `false` | `false` |
+| `TabControl` | `content` | `.semantic-content` | `ContentPresenter` | `Single` | `Selector` | `false` | `false` |
+| `TabControl` | `item` | `.semantic-item` | `TabItem` | `Multiple` | `Selector` | `false` | `true` |
+| `CardTabControl` | `root` | owner | `CardTabControl` | `Single` | `Root` | `false` | `false` |
+| `CardTabControl` | `add` | `.semantic-add` | `IconButton` | `Single` | `Selector` | `false` | `false` |
+| `CardTabControl` | `content` | `.semantic-content` | `ContentPresenter` | `Single` | `Selector` | `false` | `false` |
+| `CardTabControl` | `item` | `.semantic-item` | `TabItem` | `Multiple` | `Selector` | `false` | `true` |
+| `TabItem` | `root` | owner | `TabItem` | `Single` | `Root` | `false` | `false` |
+| `TabItem` | `close` | `.semantic-close` | `IconButton` | `Single` | `Selector` | `false` | `false` |
+| `TabItem` | `icon` | `.semantic-icon` | `IconPresenter` | `Single` | `Selector` | `false` | `false` |
+| `TabItem` | `label` | `.semantic-label` | `ContentPresenter` | `Single` | `Selector` | `false` | `false` |
+
+`root` 是各 owner 自身，承载选择、集合、关闭、排序等 public API、主题入口和状态归一，不声明 `.semantic-root` marker。
+
+`TabControl.item` 与 `CardTabControl.item` 的 marker 是运行时创建的语义标记，由 owner 在
+`CreateContainerForItemOverride` / `PrepareContainerForItemOverride` 中应用到生成的 `TabItem` 容器；直接以
+`TabItem` 实例加入 `Items` 的 item 同样在 prepare 阶段获得 marker。
+
+`TabItem` 的 `close` / `icon` / `label` 与两个 Control 的 `content`、`CardTabControl` 的 `add` 是内置模板中的静态
+marker，通过 `Classes.semantic-*="True"` 声明，运行期间不随可见性、选中或禁用状态增删。
 
 ## Abstract AXAML Structure
 
@@ -227,6 +241,10 @@ TabControl Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
 - Template part 名称、ControlTheme key、伪类和资源 key。
+- Semantic Part descriptor、静态 `Classes.semantic-*="True"` marker、运行时 `semantic-item` marker 同步规则与生成的
+  `TabControlItemStyle` / `TabControlContentStyle` / `CardTabControlAddStyle` / `TabItemIconStyle` /
+  `TabItemLabelStyle` / `TabItemCloseStyle` 等 Style 类型。选中指示墨条、header extra、overflow 菜单项与
+  Card `LineMask` 不携带语义 marker 属于稳定契约，不能通过主题或代码改动破坏。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - 拖动排序释放时必须修改逻辑集合顺序，拖动中允许用 `RenderTransform` 和临时 `ZIndex` 做实时视觉预览，但不能只调整 `Panel.Children`、`ZIndex` 或 transform 作为最终排序结果。
 - 选中项必须跟随同一个逻辑 item，不能跟随旧 index；重排后内容页、指示条、overflow 菜单和关闭状态必须从新顺序统一推导。

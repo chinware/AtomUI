@@ -41,7 +41,8 @@
                             </Border>
                         </Panel>
 
-                        <ContentPresenter Padding="{TemplateBinding ContentPadding}"
+                        <ContentPresenter Classes.semantic-content="True"
+                                          Padding="{TemplateBinding ContentPadding}"
                                           Content="{TemplateBinding SelectedContent}"
                                           ContentTemplate="{TemplateBinding SelectedContentTemplate}"
                                           HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"

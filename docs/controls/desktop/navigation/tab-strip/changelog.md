@@ -18,6 +18,32 @@
   - Add the shared Popup pinned-open design link and record BaseTabStrip as the semantic owner for TabStrip, with TabStripScrollViewer used only as the relay adapter.
   - Preserve ordinary close behavior after unpinning and allow lifecycle teardown to release the Popup host.
 
+## 2026-08-23
+
+- Semantic Part
+  - 为 `TabStrip` 与 `CardTabStrip` 公开 `root` + `item` Semantic Part（since 6.0），并为 `CardTabStrip` 额外
+    公开 `add` Part；新增 `TabStrip.SemanticParts.cs`、`CardTabStrip.SemanticParts.cs` descriptor，生成
+    `TabStripItemStyle`、`CardTabStripAddStyle`、`CardTabStripItemStyle`（`AtomUI.Theme.Styling`）。
+  - `item` 为运行时标记（`RuntimeCreated`），路由 `> .semantic-item`，由 owner 在
+    `CreateContainerForItemOverride` / `PrepareContainerForItemOverride` 应用到 `TabStripItem` 容器，直接提供的
+    `TabStripItem` 实例同样获得 marker；独立页签条不公开 `content` Part。
+  - `TabStripItem` 公开 `root` + `icon` + `label` + `close`，生成 `TabStripItemIconStyle`、
+    `TabStripItemLabelStyle`、`TabStripItemCloseStyle`；选中指示墨条、header extra 与 overflow 菜单项不参与
+    Semantic Part。
+  - 新增 `docs/controls/desktop/navigation/tab-strip/semantic-part.md`；overview 同步 LLMS 语义区域表与导出
+    来源，implementation 同步 Semantic marker 接入点与尺寸基线。
+- Theme
+  - `CardTabStripTheme.axaml` 在 `PART_AddTabButton` 上声明 `Classes.semantic-add="True"` 静态标记。
+  - `BaseTabStripItemTheme.axaml` 与 `CardTabStripItemTheme.axaml` 在 `ItemIconPresenter`、标题
+    `ContentPresenter` 与 `PART_ItemCloseButton` 上声明 `Classes.semantic-icon="True"` /
+    `Classes.semantic-label="True"` / `Classes.semantic-close="True"` 静态标记。
+- Test
+  - 新增 `tests/AtomUI.Desktop.Controls.Tests/TabControl/TabStripSemanticPartTests.cs`，覆盖 descriptor 注册、
+    内置主题静态 marker、运行时 item marker、生成 Style 应用、TabStripItem 子 Part 与 SizeType 尺寸基线。
+  - 重写 `tests/AtomUIGallery.Tests/ShowCases/TabStripShowCasePageTests.cs` 并更新展示用例快照，覆盖 Gallery
+    Semantic Part 预览、样式示例与新增语义本地化文案；同步更新 `CatalogMemberOrder.baseline` 与
+    `GalleryCatalogCoverageTests` 的单元计数期望，保持枚举、xlf 与编译期翻译契约一致。
+
 ## 2026-08-18
 
 - Behavior

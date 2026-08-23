@@ -85,7 +85,7 @@ TabControl 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabControl/Views/TabControlShowCase.axaml:38`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabControl/Views/TabControlShowCase.axaml:133`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -101,7 +101,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 通过 ItemSource 生成标签项
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabControl/Views/TabControlShowCase.axaml:55`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabControl/Views/TabControlShowCase.axaml:150`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -121,7 +121,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 禁用标签
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabControl/Views/TabControlShowCase.axaml:147`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabControl/Views/TabControlShowCase.axaml:242`
 
 Gallery key：`ExamplesContent` / item `4`
 
@@ -143,7 +143,7 @@ Gallery key：`ExamplesContent` / item `4`
 
 ### 居中显示
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabControl/Views/TabControlShowCase.axaml:170`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabControl/Views/TabControlShowCase.axaml:265`
 
 Gallery key：`ExamplesContent` / item `5`
 
@@ -253,9 +253,9 @@ TabControl Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 
 主要源码文件：
 
-- `src/AtomUI.Desktop.Controls/TabControl`：14 个文件，代表文件 `BaseOverflowMenuItem.cs`、`BaseTabControl.cs`、`BaseTabScrollViewer.cs`、`CardTabControl.cs`、`ScrollContentPresenterReflectionExtensions.cs` 等。
-- `src/AtomUI.Desktop.Controls/TabControl/TabStrip`：6 个文件，代表文件 `BaseTabStrip.cs`、`CardTabStrip.cs`、`TabStrip.cs`、`TabStripItem.cs`、`TabStripOverflowMenuItem.cs` 等。
-- `src/AtomUI.Desktop.Controls/TabControl/Themes`：19 个文件，代表文件 `BaseOverflowMenuItemTheme.axaml`、`BaseTabControlTheme.axaml`、`BaseTabControlTheme.cs`、`BaseTabItemTheme.axaml`、`BaseTabItemTheme.cs` 等。
+- `src/AtomUI.Desktop.Controls/TabControl`：20 个文件，代表文件 `BaseOverflowMenuItem.cs`、`BaseTabControl.cs`、`BaseTabScrollViewer.cs`、`CardTabControl.cs`、`CardTabControl.SemanticParts.cs`、`TabControl.SemanticParts.cs`、`TabItem.SemanticParts.cs`、`ScrollContentPresenterReflectionExtensions.cs` 等。
+- `src/AtomUI.Desktop.Controls/TabControl/TabStrip`：9 个文件，代表文件 `BaseTabStrip.cs`、`CardTabStrip.cs`、`CardTabStrip.SemanticParts.cs`、`TabStrip.cs`、`TabStrip.SemanticParts.cs`、`TabStripItem.cs`、`TabStripItem.SemanticParts.cs`、`TabStripOverflowMenuItem.cs` 等。
+- `src/AtomUI.Desktop.Controls/TabControl/Themes`：26 个文件（含 `TabStrip` 子目录），代表文件 `BaseOverflowMenuItemTheme.axaml`、`BaseTabControlTheme.axaml`、`BaseTabControlTheme.cs`、`BaseTabItemTheme.axaml`、`BaseTabItemTheme.cs`、`CardTabControlTheme.axaml`、`CardTabItemTheme.axaml` 等。
 
 职责边界：
 
@@ -272,6 +272,7 @@ TabControl Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 
 - 源设计文档：`docs/controls/desktop/navigation/tab-control/overview.md`
 - 实现文档：`docs/controls/desktop/navigation/tab-control/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/navigation/tab-control/semantic-part.md`
 - Token 文档：`docs/controls/desktop/navigation/tab-control/token.md`
 - 变更记录：`docs/controls/desktop/navigation/tab-control/changelog.md`
 - 语义结构：`./semantic-cn.md`

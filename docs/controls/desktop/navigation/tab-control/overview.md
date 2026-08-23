@@ -1,6 +1,6 @@
 # TabControl 桌面版架构设计
 
-本文档定义 `TabControl` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [TabControl 桌面版实现原理](implementation.md)，TabControl Token 的专项设计见 [TabControl Token 设计](token.md)，设计和契约变化记录见 [TabControl Changelog](changelog.md)。
+本文档定义 `TabControl` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [TabControl 桌面版实现原理](implementation.md)，TabControl Token 的专项设计见 [TabControl Token 设计](token.md)，公开 Semantic Part 契约见 [TabControl Semantic Part 契约](semantic-part.md)，设计和契约变化记录见 [TabControl Changelog](changelog.md)。
 
 该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。本控件的语义 owner 为 `BaseTabControl`（由 `TabControl` 继承），其 internal `IsPopupPinnedOpen` 只供测试和内部诊断使用；设置为 true 时保持 overflow open state，并 relay 到 `TabControlScrollViewer` 的 tab overflow Popup，设置为 false 时只解除关闭拦截。控件卸载、锚点失效、TopLevel 改变和模板重建仍按共享生命周期规则清理。
 
@@ -226,25 +226,29 @@ TabControl 的视觉选项通过 public API 归一为 theme variables、伪类�
 
 - [TabControl 桌面版实现原理](implementation.md)
 - [TabControl Token 设计](token.md)
+- [TabControl Semantic Part 契约](semantic-part.md)
 - [TabControl Changelog](changelog.md)
 
 LLMS 语义区域：
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `TabControl` | 导航控件根语义区域，承载 public API、状态归一和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `trigger` | `触发区域` | 承载点击、键盘、打开关闭、跳转或提交入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `导航项区域` | 承载当前项、选中项、禁用项、排序项或分页项状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `reorder` | `拖动排序区域` | 承载拖动源、实时让位预览、自动滚动和集合顺序提交。 | `IsTabReorderEnabled`、`TabReordering`、`TabReordered` | 见视觉与主题模型 | stable |
-| `popup` | `弹层或内容区域` | 承载 flyout、dropdown、tab content、submenu 或候选内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效区域` | 表达打开关闭、选中指示、切换和过渡反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| Part | Owner | AtomUI 节点 | 职责 | 稳定性 |
+| --- | --- | --- | --- | --- |
+| `root` | `TabControl` / `CardTabControl` / `TabItem` | 控件自身 | 标签页控件根语义区域，承载 public API、状态归一和主题入口。 | stable since 6.0 |
+| `content` | `TabControl` / `CardTabControl` | 模板尾随 `ContentPresenter` | 承载内容页展示区域，用于定制内容区字体、颜色与对齐。 | stable since 6.0 |
+| `item` | `TabControl` / `CardTabControl` | `TabItem` 容器（运行时标记） | 承载单个页签的尺寸、状态与点击语义。 | stable since 6.0 |
+| `add` | `CardTabControl` | `PART_AddTabButton` | 承载新建页签入口的按钮视觉与状态。 | stable since 6.0 |
+| `icon` | `TabItem` | `ItemIconPresenter` | 承载页签头部图标呈现。 | stable since 6.0 |
+| `label` | `TabItem` | `ContentPresenter` | 承载页签头部标题文本呈现。 | stable since 6.0 |
+| `close` | `TabItem` | `PART_ItemCloseButton` | 承载页签关闭按钮视觉与状态。 | stable since 6.0 |
+
+Part 的 Selector、ContractType、数量语义与定制边界以 [TabControl Semantic Part 契约](semantic-part.md) 为唯一完整来源；`TabStrip` / `CardTabStrip` / `TabStripItem` 的语义区域见 [TabStrip Semantic Part 契约](../tab-strip/semantic-part.md)。
 
 LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
 | 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/tab-control/index-cn.md` |
-| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/tab-control/semantic-cn.md` |
+| 单控件语义文档 | `semantic-part.md` + `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/tab-control/semantic-cn.md` |
 | API 表 | overview.md 语义摘要 + 源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
 | Design Token 表 | token.md、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
 | 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |

@@ -36,6 +36,7 @@
                                 </atom:TabsContainerPanel.TabScrollViewer>
                                 <atom:TabsContainerPanel.AddTabButton>
                                     <atom:IconButton Name="PART_AddTabButton"
+                                                     Classes.semantic-add="True"
                                                      Icon="{antdicons:AntDesignIconProvider PlusOutlined}"
                                                      BorderThickness="{TemplateBinding CardBorderThickness}"
                                                      CornerRadius="{TemplateBinding EffectiveCardBorderRadius}"

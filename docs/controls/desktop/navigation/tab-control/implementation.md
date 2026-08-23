@@ -1,6 +1,6 @@
 # TabControl 桌面版实现原理
 
-本文档描述 TabControl 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [TabControl 桌面版架构设计](overview.md)，变化记录见 [TabControl Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [TabControl Token 设计](token.md)。
+本文档描述 TabControl 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [TabControl 桌面版架构设计](overview.md)，公开 Semantic Part 契约见 [TabControl Semantic Part 契约](semantic-part.md)，变化记录见 [TabControl Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [TabControl Token 设计](token.md)。
 
 Popup 接入边界：`BaseTabControl` 负责 overflow 业务状态和内容准备，`TabControlScrollViewer` 仅作为 relay 适配层，tab overflow Popup 负责实际显示。模板重建或宿主切换时必须先释放旧 relay，再绑定新的 Popup；普通外点、Escape、失焦和业务关闭在 pinned 状态下被拦截，detach、窗口销毁、跨 TopLevel 和无效锚点必须走生命周期关闭并释放 Popup host。完整状态机见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。
 
@@ -12,9 +12,9 @@ Popup 接入边界：`BaseTabControl` 负责 overflow 业务状态和内容准�
 
 主要源码文件：
 
-- `src/AtomUI.Desktop.Controls/TabControl`：14 个文件，代表文件 `BaseOverflowMenuItem.cs`、`BaseTabControl.cs`、`BaseTabScrollViewer.cs`、`CardTabControl.cs`、`ScrollContentPresenterReflectionExtensions.cs` 等。
-- `src/AtomUI.Desktop.Controls/TabControl/TabStrip`：6 个文件，代表文件 `BaseTabStrip.cs`、`CardTabStrip.cs`、`TabStrip.cs`、`TabStripItem.cs`、`TabStripOverflowMenuItem.cs` 等。
-- `src/AtomUI.Desktop.Controls/TabControl/Themes`：19 个文件，代表文件 `BaseOverflowMenuItemTheme.axaml`、`BaseTabControlTheme.axaml`、`BaseTabControlTheme.cs`、`BaseTabItemTheme.axaml`、`BaseTabItemTheme.cs` 等。
+- `src/AtomUI.Desktop.Controls/TabControl`：20 个文件，代表文件 `BaseOverflowMenuItem.cs`、`BaseTabControl.cs`、`BaseTabScrollViewer.cs`、`CardTabControl.cs`、`CardTabControl.SemanticParts.cs`、`TabControl.SemanticParts.cs`、`TabItem.SemanticParts.cs`、`ScrollContentPresenterReflectionExtensions.cs` 等。
+- `src/AtomUI.Desktop.Controls/TabControl/TabStrip`：9 个文件，代表文件 `BaseTabStrip.cs`、`CardTabStrip.cs`、`CardTabStrip.SemanticParts.cs`、`TabStrip.cs`、`TabStrip.SemanticParts.cs`、`TabStripItem.cs`、`TabStripItem.SemanticParts.cs`、`TabStripOverflowMenuItem.cs` 等。
+- `src/AtomUI.Desktop.Controls/TabControl/Themes`：26 个文件（含 `TabStrip` 子目录），代表文件 `BaseOverflowMenuItemTheme.axaml`、`BaseTabControlTheme.axaml`、`BaseTabControlTheme.cs`、`BaseTabItemTheme.axaml`、`BaseTabItemTheme.cs`、`CardTabControlTheme.axaml`、`CardTabItemTheme.axaml` 等。
 
 职责边界：
 
@@ -130,6 +130,27 @@ Public API / ItemsSource / Command / Event
 - `PART_SelectedItemIndicator`：展示指示器、进度、分页或状态反馈。
 - `PART_TabsContainer`：稳定模板协作入口，重命名前必须同步主题和实现。
 
+Semantic marker 接入点：
+
+- `TabControl.content` 与 `CardTabControl.content` 为静态标记：`TabControlTheme.axaml` 与
+  `CardTabControlTheme.axaml` 在模板末尾承载 `SelectedContent` 的 `ContentPresenter` 上声明
+  `Classes.semantic-content="True"`，每个模板恰好一个 marker。
+- `TabControl.item` 与 `CardTabControl.item` 为运行时创建的语义标记（`RuntimeCreated = true`），路由
+  `> .semantic-item`，即 marker 挂在 owner 的直接逻辑子节点（`TabItem` container）上：owner 在
+  `CreateContainerForItemOverride` 中把 `semantic-item` 应用到新建容器，并在 `PrepareContainerForItemOverride`
+  中对复用容器或直接提供的 `TabItem` 实例重新确认 marker；不依赖模板作用域标记。overflow 菜单项
+  （`TabControlOverflowMenuItem`）不携带 marker。
+- `CardTabControl.add` 为静态标记：`CardTabControlTheme.axaml` 在 `PART_AddTabButton`（`IconButton`）上声明
+  `Classes.semantic-add="True"`；`IsShowAddTabButton` 只控制可见性，marker 不增删。Line 风格 `TabControl`
+  没有加号按钮，descriptor 不含 `add`。
+- `TabItem.icon` / `TabItem.label` / `TabItem.close` 为静态标记：`BaseTabItemTheme.axaml`（Line）与
+  `CardTabItemTheme.axaml`（Card）两套 item 模板分别在 `ItemIconPresenter`、标题 `ContentPresenter` 与
+  `PART_ItemCloseButton` 上声明 `Classes.semantic-icon="True"` / `Classes.semantic-label="True"` /
+  `Classes.semantic-close="True"`，每个模板各恰好一个 marker；`HasIcon` / `IsClosable` /
+  `IsAutoHideCloseButton` 只控制可见性或透明度，marker 不随状态增删。
+- 选中指示墨条 `PART_SelectedItemIndicator`、`HeaderStartExtraContent` / `HeaderEndExtraContent`、
+  `PART_TabsContainer` 滚动容器与 Card 模板的 `LineMask` 是内部协作节点，不声明语义 marker。
+
 ## 6. 交互与事件处理
 
 TabControl 的交互事件应从输入源收敛到控件级语义事件：
@@ -171,6 +192,43 @@ TabControl 的交互事件应从输入源收敛到控件级语义事件：
 - 垂直图标槽计算：owner 只扫描当前有效 Tab item 容器或对应逻辑 item 的图标状态，得到同组 `HasAnyIconInVerticalPlacement` 语义后下发内部状态；主题结构应统一为稳定的 `IconSlot` + `ContentPresenter` + `CloseButton` 顺序。图标槽宽度沿用现有 `IconSize` / `IconSizeSM` 和 `ItemIconMargin` 语义，不新增 Token；无图标 item 的 `IconSlot` 保持占位但不显示内容。
 - Placement 切换流程：owner 更新 pseudo-class、header padding、现有 container 的 `TabStripPlacement` 和内部布局状态即可；不得调用 `RefreshContainers()` 作为布局刷新手段。
 
+### 7.1 Semantic Part 运行时 marker 同步
+
+- `semantic-item` marker 由 owner 在两个入口同步：`CreateContainerForItemOverride` 把 marker 应用到新建
+  `TabItem` 容器，`PrepareContainerForItemOverride` 对复用容器或直接加入 `Items` 的 `TabItem` 实例重新确认
+  marker；两条路径共用同一个 class 常量（`TabControlSemanticParts.ItemClass` /
+  `CardTabControlSemanticParts.ItemClass`，均对应 `semantic-item`）。
+- marker 同步与容器可见性、选中、禁用、拖动和溢出状态解耦：container recycle、模板重套用、拖动排序提交和
+  `TabStripPlacement` 切换都不增删 marker。
+- overflow 菜单项（`TabControlOverflowMenuItem`）是独立呈现节点，不携带 marker；页签溢出进菜单只是切换呈现宿主，
+  不迁移 `semantic-item` marker。
+- `SizeType` 通过 `tabItem[!TabItem.SizeTypeProperty] = this[!SizeTypeProperty]` 从 owner 单向下发到容器，
+  Semantic Style 不创建新的尺寸档。
+
+### 7.2 尺寸与状态基线矩阵
+
+| SizeType | 默认值来源 | FontSize（`BaseTabItemTheme` `^[SizeType=...]`） | Line Padding（Top/Bottom） | Card Padding | 图标尺寸 |
+| --- | --- | --- | --- | --- | --- |
+| `Large` | 显式设置 | `TitleFontSizeLG` | `HorizontalItemPaddingLG` | `CardPaddingLG` | SharedToken `IconSize` |
+| `Middle` | `SizeTypeControlProperty.SizeTypeProperty` 默认值 | `TitleFontSize` | `HorizontalItemPadding` | `CardPadding` | SharedToken `IconSize` |
+| `Small` | 显式设置 | `TitleFontSizeSM` | `HorizontalItemPaddingSM` | `CardPaddingSM` | SharedToken `IconSizeSM` |
+
+- `BaseTabControl.SizeTypeProperty` 与 `TabItem.SizeTypeProperty` 都通过 `SizeTypeControlProperty.SizeTypeProperty.AddOwner`
+  注册，默认 `Middle`；owner 在 prepare 阶段用 binding 单向下发到容器。
+- 垂直 placement（`Left` / `Right`）不按上表取值：Line item 三档全部固定 `Padding = 8,4`（`TabItemTheme.axaml`
+  硬编码的紧凑垂直节奏），Card item 三档全部使用 `VerticalItemPadding`；`CardGutter` 属于 Card 视觉节奏，
+  不受 Line 紧凑规则影响。
+- item 无固定 `Height`，自然高度由 `TitleFontSize` + item padding + 图标槽测量决定；Semantic Setter 修改
+  `FontSize` / `Padding` / `Margin` 会直接改变自然高度，必须按三档 `SizeType` 与四向 `TabStripPlacement`
+  验证，不能通过固定 `Height` 或像素偏移掩盖测量不一致。
+- 内容区无固定高度：`content` 的 `Padding` 由 `ContentPadding`（默认 0）TemplateBinding 提供，Semantic Setter
+  覆盖 `Padding` 会替换该 TemplateBinding 值，需按 §7 尺寸基线验证 owner 布局。
+- `add` 按钮图标为 SharedToken `IconSize`，按钮 Margin 由 `AddTabButtonMarginHorizontal` /
+  `AddTabButtonMarginVertical` 提供。
+- 基线矩阵是稳定契约：改变任一格的 Token、selector 或默认值必须同步 `TabControlTheme.axaml`、
+  `CardTabControlTheme.axaml`、`TabItemTheme.axaml`、`CardTabItemTheme.axaml`、Token 文档与
+  `TabControlSemanticPartTests` 的尺寸基线测试。
+
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 
 ## 8. 资源、性能与 AOT 边界
@@ -199,6 +257,10 @@ TabControl 的交互事件应从输入源收敛到控件级语义事件：
 
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
 - Template part 名称、ControlTheme key、伪类和资源 key。
+- Semantic Part descriptor、静态 `Classes.semantic-*="True"` marker、运行时 `semantic-item` marker 同步规则与生成的
+  `TabControlItemStyle` / `TabControlContentStyle` / `CardTabControlAddStyle` / `TabItemIconStyle` /
+  `TabItemLabelStyle` / `TabItemCloseStyle` 等 Style 类型。选中指示墨条、header extra、overflow 菜单项与
+  Card `LineMask` 不携带语义 marker 属于稳定契约，不能通过主题或代码改动破坏。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - 拖动排序释放时必须修改逻辑集合顺序，拖动中允许用 `RenderTransform` 和临时 `ZIndex` 做实时视觉预览，但不能只调整 `Panel.Children`、`ZIndex` 或 transform 作为最终排序结果。
 - 选中项必须跟随同一个逻辑 item，不能跟随旧 index；重排后内容页、指示条、overflow 菜单和关闭状态必须从新顺序统一推导。
@@ -226,6 +288,7 @@ TabControl 的交互事件应从输入源收敛到控件级语义事件：
 - 垂直图标槽对齐变更需覆盖 `Left` / `Right` 下同组混合图标与无图标 Tab 的文本起点一致、全部无图标时不额外占位、`Top` / `Bottom` 保持紧凑、Line/Card 两类主题一致，以及 icon/placement/items 变化和 container recycle 后状态不串组。
 - 默认 Line 垂直 spacing / padding 变更需覆盖 `TabControl` / `TabStrip` 在 `Left` / `Right` 下的相邻 container 主轴间距和 item 高度，并明确 Card theme 不被本规则修改。
 - `TabStripPlacement` 行为变更需覆盖直接 `TabItem` 与数据 item 场景，确保切换 `Top` / `Right` / `Bottom` / `Left` 后 `SelectedItem` 不变。
+- Semantic Part 契约、marker 或生成 Style 类型变更运行 `tests/AtomUI.Desktop.Controls.Tests/TabControl/TabControlSemanticPartTests.cs` 与 `tests/AtomUI.Desktop.Controls.Tests/TabControl/TabStripSemanticPartTests.cs`。
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
 - Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests`。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。

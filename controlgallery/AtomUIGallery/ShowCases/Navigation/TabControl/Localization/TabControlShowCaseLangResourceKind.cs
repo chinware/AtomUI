@@ -95,5 +95,14 @@ public enum TabControlShowCaseLangResourceKind
     P2ContentLarge,
     P2ContentStartExtraAction,
     P2ContentEndExtraAction,
-    P2HeaderNewTabFormat
+    P2HeaderNewTabFormat,
+    SemanticRootDescription,
+    SemanticContentDescription,
+    SemanticItemDescription,
+    SemanticAddDescription,
+    SemanticIconDescription,
+    SemanticLabelDescription,
+    SemanticCloseDescription,
+    SemanticPartStyleTitle,
+    SemanticPartStyleDescription
 }
