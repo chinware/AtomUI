@@ -2,6 +2,20 @@
 
 本文档记录 WindowTitleBar 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-23
+
+- Design
+  - Define public `WindowTitleBarButton` and `WindowTitleBarToggleButton` controls for `LeftAddOn` and `RightAddOn` content.
+  - Share managed caption visual tokens and active/inactive state with system caption buttons while keeping Window operations, native element roles and platform chrome internal.
+- API
+  - Add `WindowTitleBarButton : IconButton` and `WindowTitleBarToggleButton : ToggleIconButton` as additive public AXAML controls.
+- Theme
+  - Register independent AddOn themes that reuse `WindowTitleBarToken` dimensions, active/inactive colors, interaction states and motion policy without entering the system caption contract.
+- Integration
+  - Add Gallery Workspace coverage for appearance and Wave Spirit actions, including checked-state synchronization with the existing menu.
+- Verification
+  - Cover host-state projection, standalone fallback, icon-pair switching, theme asset registration and pointer-input isolation in `WindowTitleBarButtonTests`.
+
 ## 2026-08-19
 
 - Architecture

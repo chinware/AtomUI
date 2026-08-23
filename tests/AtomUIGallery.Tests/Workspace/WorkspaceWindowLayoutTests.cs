@@ -131,12 +131,36 @@ public class WorkspaceWindowLayoutTests
     }
 
     [Fact]
+    public void Workspace_Window_Uses_Public_TitleBar_AddOn_Button_Family_For_Application_Actions()
+    {
+        var viewSource = File.ReadAllText(GetRepoFile(
+            "controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml"));
+        var codeSource = File.ReadAllText(GetRepoFile(
+            "controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml.cs"));
+
+        viewSource.ShouldContain("<atom:Window.RightAddOn>");
+        viewSource.ShouldContain("<atom:WindowTitleBarButton");
+        viewSource.ShouldContain("<atom:WindowTitleBarToggleButton");
+        viewSource.ShouldContain("WindowTitleBarTokenResource CaptionGroupSpacing");
+        viewSource.ShouldContain("Click=\"HandleTitleBarAppearanceButtonClick\"");
+        viewSource.ShouldContain("Click=\"HandleTitleBarWaveSpiritToggleButtonClick\"");
+        viewSource.ShouldContain("WorkspaceWindowLangResource MenuItemAppearance");
+        viewSource.ShouldContain("WorkspaceWindowLangResource MenuItemEnableWaveSpirit");
+
+        codeSource.ShouldContain("ViewModel.SetAppearanceModeCommand.Execute");
+        codeSource.ShouldContain("ViewModel.ToggleWaveSpiritCommand.Execute(toggleButton.IsChecked == true)");
+        codeSource.ShouldContain("TitleBarWaveSpiritToggleButton?.SetCurrentValue");
+        codeSource.ShouldNotContain("CaptionButtonAction");
+    }
+
+    [Fact]
     public void Workspace_Window_Menu_Keeps_Motion_And_WaveSpirit_Checks_In_Sync()
     {
         var source = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml.cs"));
 
         source.ShouldContain("FindSiblingMenuItem(menuItem, WindowMenuItemKind.WaveSpirit)");
         source.ShouldContain("waveSpiritMenuItem.IsChecked = false");
+        source.ShouldContain("TitleBarWaveSpiritToggleButton?.SetCurrentValue");
         source.ShouldContain("FindSiblingMenuItem(menuItem, WindowMenuItemKind.Motion)");
         source.ShouldContain("motionMenuItem.IsChecked = true");
     }

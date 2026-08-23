@@ -36,10 +36,10 @@ Token 负责尺寸、间距、字体和状态颜色，不负责以下运行时�
 
 | Token | 语义 | 主要消费者 |
 | --- | --- | --- |
-| `CaptionButtonIconSize` | 通用 caption action icon 尺寸。 | Linux/macOS buttons、Windows extended actions、全屏 buttons |
+| `CaptionButtonIconSize` | 通用 caption action icon 尺寸。 | Linux/macOS buttons、Windows extended actions、全屏 buttons、WindowTitleBar AddOn buttons |
 | `WindowsCaptionIconSize` | Windows minimize/maximize/close glyph 尺寸。 | `WindowsCaptionButton` |
-| `CaptionButtonPadding` | 通用圆形 caption button 内容 padding。 | `CaptionButtonTheme` |
-| `CaptionGroupSpacing` | 非 Windows caption buttons 及全屏操作之间的间距。 | CaptionButtonGroup、全屏标题宿主 |
+| `CaptionButtonPadding` | 通用圆形 caption button 内容 padding。 | `CaptionButtonTheme`、WindowTitleBar AddOn button themes |
+| `CaptionGroupSpacing` | 非 Windows caption buttons、全屏操作和 AddOn button group 之间的语义间距。 | CaptionButtonGroup、全屏标题宿主、AddOn 容器 |
 | `FullscreenCaptionButtonSize` | 全屏标题宿主中 caption button 的固定尺寸。 | Window drawn decorations、fullscreen popover |
 
 Windows 原生风格 caption buttons 连续贴合排列，group spacing 为零；Linux/macOS 与全屏操作使用 `CaptionGroupSpacing`。Linux 的按钮背景 inset 属于 Theme 状态视觉，不改变按钮布局占用尺寸。
@@ -95,7 +95,9 @@ SharedToken
 | --- | --- |
 | `WindowTitleBarTheme.axaml` | 标题栏高度、Padding、标题字体、Logo、active/inactive 前景、Windows/Linux Logo/LeftAddOn 间距和标题内容间距。 |
 | `CaptionButtonGroupTheme.axaml` | 平台按钮 icon size 与 group spacing。 |
-| `CaptionButtonTheme.axaml` | 通用按钮 padding、背景、active/inactive、hover、pressed 和 motion。 |
+| `CaptionButtonTheme.axaml` | 系统通用按钮 padding、背景、active/inactive、hover、pressed 和 motion。 |
+| `WindowTitleBarButtonTheme.axaml` | AddOn 普通图标按钮的尺寸、背景、active/inactive、hover、pressed、disabled 和 motion。 |
+| `WindowTitleBarToggleButtonTheme.axaml` | AddOn checked/unchecked 图标按钮的尺寸、背景、active/inactive、hover、pressed、disabled 和 motion。 |
 | `WindowsCaptionButtonTheme.axaml` | Windows glyph、hover/pressed 以及 close danger state。 |
 | `WindowDrawnDecorationsTheme.axaml` | 全屏标题、Logo 和 caption operations。 |
 | `FullscreenPopoverLayerTheme.axaml` | 非 CSD 全屏弹出标题栏。 |

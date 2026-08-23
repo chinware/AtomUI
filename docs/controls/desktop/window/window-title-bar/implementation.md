@@ -1,6 +1,6 @@
 # WindowTitleBar 桌面版实现原理
 
-本文档说明 `WindowTitleBar` 控件家族的源码职责、运行时 composition、状态流、模板生命周期和跨平台标题布局。公共契约见 [WindowTitleBar 桌面版架构设计](overview.md)，caption button 的能力与呈现模型见 [WindowTitleBar Caption Button 配置设计](caption-button-configuration-design.md)，视觉变量见 [WindowTitleBar Token 设计](token.md)，契约变化见 [WindowTitleBar Changelog](changelog.md)。
+本文档说明 `WindowTitleBar` 控件家族的源码职责、运行时 composition、状态流、模板生命周期和跨平台标题布局。公共契约见 [WindowTitleBar 桌面版架构设计](overview.md)，AddOn 按钮控件族的模型与宿主状态边界见 [WindowTitleBar AddOn 按钮设计](window-title-bar-addon-buttons-design.md)，caption button 的能力与呈现模型见 [WindowTitleBar Caption Button 配置设计](caption-button-configuration-design.md)，视觉变量见 [WindowTitleBar Token 设计](token.md)，契约变化见 [WindowTitleBar Changelog](changelog.md)。
 
 ## 1. 实现定位
 
@@ -36,6 +36,9 @@ src/AtomUI.Desktop.Controls/
 │       └── FullscreenPopoverLayerTheme.axaml
 ├── WindowTitleBar/
 │   ├── WindowTitleBar.cs
+│   ├── WindowTitleBarButton.cs
+│   ├── WindowTitleBarToggleButton.cs
+│   ├── WindowTitleBarHostContext.cs
 │   ├── WindowTitleBarLogoVisibility.cs
 │   ├── WindowTitleBarTitleAlignment.cs
 │   ├── WindowTitleBarLayoutPanel.cs
@@ -50,6 +53,8 @@ src/AtomUI.Desktop.Controls/
 │   │   └── LinuxWindowTitleBarLayoutStrategy.cs
 │   └── Themes/
 │       ├── WindowTitleBarTheme.axaml
+│       ├── WindowTitleBarButtonTheme.axaml
+│       ├── WindowTitleBarToggleButtonTheme.axaml
 │       ├── CaptionButtonGroupTheme.axaml
 │       ├── CaptionButtonTheme.axaml
 │       └── WindowsCaptionButtonTheme.axaml
@@ -66,13 +71,16 @@ src/AtomUI.Desktop.Controls/
 | --- | --- |
 | `Window.cs` | 创建和配置默认标题栏，持有窗口状态与窗口操作，处理所有已连接标题栏的拖动与最大化请求，发布 caption capability、platform、CSD 和 native chrome metrics，并创建完整的 title-bar host projection lease。 |
 | `WindowTitleBar.cs` | 注册公共契约，在逻辑树接入时发现最近的 AtomUI Window，独立持有宿主投影 lease，维护有效 Logo、窗口伪类和标题栏输入事件。 |
+| `WindowTitleBarButton.cs` | 基于 `IconButton` 提供应用 AddOn 图标操作，消费继承式 active/motion host state，不持有 `Window` 引用。 |
+| `WindowTitleBarToggleButton.cs` | 基于 `ToggleIconButton` 提供应用 AddOn checked/unchecked 图标操作，保留业务 `IsChecked` 和图标所有权。 |
+| `WindowTitleBarHostContext.cs` | internal inheritable attached properties；把标题栏 active/motion 状态从模板的 `ContentPresenter` 投影给 AddOn 内容。 |
 | `WindowTitleBarLayoutPanel.cs` | 测量并排列 Leading、Title、Trailing，集中执行共享标题对齐公式。 |
 | `Strategies/*` | 解释平台 `Auto` 值并归一有效 native chrome insets，不操作 Visual。 |
 | `CaptionButtonGroup.cs` | 从标题栏投影输入推导按钮 effective visibility 和 checked state，并向固定按钮提供宿主命令。 |
 | `CaptionButton.cs` | 计算 effective icon、圆形背景和 transition 初始化时序。 |
 | `WindowsCaptionButton.cs` | 提供 Windows 方形按钮尺寸与窗口状态切换后的 pointer-over 修正。 |
 | `WindowTitleBarToken.cs` | 从 SharedToken 计算标题栏视觉变量，不保存实例状态。 |
-| `Themes/*.axaml` | 声明静态 composition、平台模板、selector、命中测试角色和 Token 消费。 |
+| `Themes/*.axaml` | 声明静态 composition、平台模板、selector、命中测试角色和 Token 消费；AddOn themes 基于公共 IconButton family 只覆盖标题栏视觉。 |
 
 ## 4. 状态与数据流
 
@@ -85,6 +93,11 @@ Window.WindowState / Window.IsActive
   -> :normal / :minimized / :maximized / :fullscreen / :active
   -> IsWindowActive
   -> ControlTheme selectors and CaptionButtonGroup
+
+WindowTitleBar template PART_LeftAddOn / PART_RightAddOn
+  -> WindowTitleBarHostContext.IsWindowActive / HostMotionEnabled (inheritable attached state)
+  -> WindowTitleBarButton / WindowTitleBarToggleButton owner properties
+  -> AddOn theme active/inactive and motion selectors
 ```
 
 窗口状态伪类在每次状态通知中完整设置，不能依赖前一个状态自行清除。`IsWindowActive` 继续传给 caption buttons，使标题文本和按钮图标使用同一 active/inactive 状态。
@@ -130,6 +143,11 @@ SharedToken
 
 标题栏背景可以由宿主控件的专属 Token 覆盖，但 caption 尺寸和交互状态仍使用 WindowTitleBar 语义变量。
 
+AddOn 内容不会经过 `CaptionButtonGroup`。Windows、Linux 和 macOS 模板中的 `PART_LeftAddOn`、`PART_RightAddOn`
+均是普通 `ContentPresenter`，只在 presenter 根节点设置 `WindowTitleBarHostContext` 的两个继承属性；因此容器、
+按钮和按钮模板都沿 Avalonia 正常继承路径接收状态。AddOn themes 通过 `WindowTitleBarButton` 或
+`WindowTitleBarToggleButton` 的 owner property selector 消费这些状态，模板重新应用时无需建立 C# relay binding。
+
 ## 5. 组合结构模型
 
 ### 控件角色图
@@ -147,6 +165,7 @@ AtomUI Window logical tree
         │   └── DockPanel (HorizontalSpacing=LogoAndLeftAddOnSpacing)
         │       ├── ContentPresenter#PART_Logo
         │       └── ContentPresenter#PART_LeftAddOn
+        │           └── application AddOn content / WindowTitleBarButton family
         ├── Leading (macOS)
         │   └── ContentPresenter#PART_LeftAddOn
         ├── Title (Windows/Linux)
@@ -158,6 +177,7 @@ AtomUI Window logical tree
         │       └── ContentPresenter#PART_ContentPresenter
         └── Trailing
             ├── ContentPresenter#PART_RightAddOn
+            │   └── application AddOn content / WindowTitleBarButton family
             └── CaptionButtonGroup#PART_CaptionButtonGroup
                 └── platform caption button template parts
 ```
@@ -167,6 +187,8 @@ AtomUI Window logical tree
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `WindowTitleBar` | public control | `WindowTitleBar.cs` | 自身 logical attach/detach 与 host projection lease | 全部标题栏 public surface | public | 可直接使用、派生和替换 ControlTheme；在 AtomUI Window 内容树中自动获得 caption 宿主上下文。 |
+| `WindowTitleBarHostContext` on AddOn presenters | internal attached host state | `WindowTitleBarTheme.axaml` | `WindowTitleBar` template | AddOn active/motion visual state | internal-observable | 仅用于宿主状态继承；不授予 Window operation 或 native caption role。 |
+| `WindowTitleBarButton` / `WindowTitleBarToggleButton` | public AddOn controls | application content | control instance and normal logical/visual lifecycle | application command, icon and checked state | public | 可直接放入 `LeftAddOn`、`RightAddOn` 或其容器；不属于系统 caption slots。 |
 | `WindowTitleBarLayoutPanel` | layout panel | `WindowTitleBarTheme.axaml` | `WindowTitleBar` template | `TitleAlignment`、内容与 add-on | internal-observable | 仅用于理解布局；应用不直接依赖类型或 Role。 |
 | `PART_LeftAddOn`、`PART_Logo`、`PART_ContentPresenter`、`PART_RightAddOn` | presenters | `WindowTitleBarTheme.axaml` | `WindowTitleBar` template | 对应内容与模板属性 | template-stable | 可用于主题维护；变更需同步主题、实现和文档。 |
 | `PART_CaptionButtonGroup` | internal control part | `WindowTitleBarTheme.axaml` | `WindowTitleBar` | Window caption 配置 | template-stable | 作为稳定协作 part；应用不直接创建 internal 类型。 |
@@ -174,6 +196,10 @@ AtomUI Window logical tree
 | `ImagePreviewerTitleBar` | internal derived control | ImagePreviewer theme | `ImagePreviewer` | 继承标题栏内容语义 | internal-observable | 只用于维护派生宿主一致性。 |
 
 `ImagePreviewerTitleBar` 将预览 toolbar 放入 Leading，并使用预览图标与标题构成 Title。全屏标题宿主使用同一布局角色和算法，不维护第二套标题居中逻辑。
+
+AddOn 按钮的容器和顺序由应用内容所有。`WindowTitleBar` 只提供 presenter 和 host state projection，不把内容转换为
+button collection，也不为每个 AddOn 控件订阅 Window 事件。按钮自己的 `Command`、`IsEnabled`、`IsChecked` 和
+checked/unchecked icon 继续沿 `IconButton` / `ToggleIconButton` 公共契约工作。
 
 Windows/Linux 默认模板的 Leading `DockPanel` 使用 `LogoAndLeftAddOnSpacing` 分隔 `PART_Logo` 与 `PART_LeftAddOn`。该间距属于 sibling layout，不属于 add-on 固定 margin；只有两个 presenter 的 `IsVisible` 都为 `true` 时才产生。macOS 的 Leading 不包含 Logo，Title `DockPanel` 继续使用 `LogoAndTitleSpacing` 分隔 Logo 与标题。
 
@@ -209,6 +235,10 @@ Windows/Linux 默认模板的 Leading `DockPanel` 使用 `LogoAndLeftAddOnSpacin
 `WindowTitleBar.OnApplyTemplate` 只接入标题栏自身必须持有的 template part。标题、Logo、add-on 和 caption 配置通过 `TemplateBinding` 获取，不从宿主引用旁路读取，也不重复建立 host projection。Template reapply 与 logical host lifecycle 正交，不增加 Window binding 数量。
 
 LeftAddOn 或 RightAddOn 的内容、可见性、子节点、模板和 margin 变化沿 Avalonia visual tree 使布局重新测量。Windows/Linux 中 Logo 或 LeftAddOn 的有效可见性变化同时重新计算 Leading `DockPanel` 的条件 sibling spacing。Panel 始终读取当前 `DesiredSize`，不保存 add-on 宽度或内部间距缓存，也不需要由标题栏代码手工调用 `InvalidateMeasure`。
+
+`PART_LeftAddOn` 和 `PART_RightAddOn` 的 host context 绑定属于标题栏模板声明：re-template 时旧 presenter 随模板
+释放，新的 presenter 重新接收当前 `IsWindowActive` 和 `IsMotionEnabled`。AddOn 控件本身没有逐窗口事件订阅，
+因此内容替换、宿主切换和 Window close 不会留下旧窗口引用；脱离 presenter 后继承属性回到控件的 standalone 默认值。
 
 `CaptionButtonGroupTheme` 为 `PART_CloseButton`、`PART_MinimizeButton`、`PART_MaximizeButton`、`PART_FullScreenButton` 和 `PART_PinButton` 声明固定 command parameter。Template reapply 不注册逐按钮 Click handler；Windows pointer-over 状态由按钮自身消费窗口状态输入并失效。
 
@@ -283,6 +313,7 @@ Windows/Linux 默认模板把有效 Logo 放入 Leading direct role child，并�
 
 - `WindowTitleBarLogoVisibilityTests` 覆盖 Logo 默认值、平台规则、全屏规则和 Window 投影。
 - `WindowTitleBarAddOnTests` 覆盖 Window add-on API 默认值、模板类型及到默认标题栏的单向实时投影。
+- `WindowTitleBarButtonTests` 覆盖 AddOn 普通/Toggle 控件继承关系、checked/unchecked 图标切换、active/motion host projection、脱离宿主后的 standalone 回退和独立主题资产注册。
 - `WindowCaptionButtonConfigurationTests` 覆盖五个 visibility 属性默认值、capability 隔离、effective truth table、默认/内容区/多标题栏宿主发现、真实 pointer 双击切换、宿主切换、动态状态投影、lease 释放和 template reapply。
 - `WindowTitleBarTokenTests` 覆盖 Token 默认值、三平台 caption 视觉和 Windows edge layout。
 - `ImagePreviewerTitleBarThemeTests` 覆盖派生标题栏的标题组、操作区和平台模板契约。

@@ -110,4 +110,19 @@
                 Background="{atom:SharedTokenResource ColorBorderSecondary}"
                 IsHitTestVisible="False" />
     </Grid>
+    <atom:Window.RightAddOn>
+        <StackPanel Orientation="Horizontal"
+                    Spacing="{atom:WindowTitleBarTokenResource CaptionGroupSpacing}">
+            <atom:WindowTitleBarButton Name="TitleBarAppearanceButton"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=BulbOutlined}"
+                                       atom:ToolTip.Tip="{gallery:WorkspaceWindowLangResource MenuItemAppearance}"
+                                       Click="HandleTitleBarAppearanceButtonClick" />
+            <atom:WindowTitleBarToggleButton Name="TitleBarWaveSpiritToggleButton"
+                                              CheckedIcon="{antdicons:AntDesignIconProvider Kind=ThunderboltFilled}"
+                                              UnCheckedIcon="{antdicons:AntDesignIconProvider Kind=ThunderboltOutlined}"
+                                              IsChecked="True"
+                                              atom:ToolTip.Tip="{gallery:WorkspaceWindowLangResource MenuItemEnableWaveSpirit}"
+                                              Click="HandleTitleBarWaveSpiritToggleButtonClick" />
+        </StackPanel>
+    </atom:Window.RightAddOn>
 </atom:Window>

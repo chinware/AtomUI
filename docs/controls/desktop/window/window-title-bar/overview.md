@@ -1,6 +1,6 @@
 # WindowTitleBar 桌面版架构设计
 
-`WindowTitleBar` 是 `AtomUI.Desktop.Controls` 中用于构成桌面窗口标题栏的模板化控件。本文档定义控件的设计定位、公共契约、状态模型、模板语义和集成边界。Caption button 的能力与呈现模型见 [WindowTitleBar Caption Button 配置设计](caption-button-configuration-design.md)，内部实现与跨平台标题布局见 [WindowTitleBar 实现原理](implementation.md)，视觉变量见 [WindowTitleBar Token 设计](token.md)，契约变化见 [WindowTitleBar Changelog](changelog.md)。
+`WindowTitleBar` 是 `AtomUI.Desktop.Controls` 中用于构成桌面窗口标题栏的模板化控件。本文档定义控件的设计定位、公共契约、状态模型、模板语义和集成边界。AddOn 按钮控件族见 [WindowTitleBar AddOn 按钮设计](window-title-bar-addon-buttons-design.md)，系统 caption button 的能力与呈现模型见 [WindowTitleBar Caption Button 配置设计](caption-button-configuration-design.md)，内部实现与跨平台标题布局见 [WindowTitleBar 实现原理](implementation.md)，视觉变量见 [WindowTitleBar Token 设计](token.md)，契约变化见 [WindowTitleBar Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -20,7 +20,7 @@
 - 自动发现最近的 AtomUI `Window`，接收平台、激活状态、窗口状态和操作命令，并投影为稳定的模板状态。
 - 在不同平台和窗口装饰模式下保持标题、原生按钮、managed buttons 与 add-on 互不覆盖。
 
-`WindowTitleBar` 不是通用工具栏或导航栏。业务操作应放入 `LeftAddOn`、`RightAddOn` 或专用控件，并保留标题栏拖动区域和系统窗口操作的优先级。
+`WindowTitleBar` 不是通用工具栏或导航栏。业务操作应放入 `LeftAddOn`、`RightAddOn` 或专用控件，并保留标题栏拖动区域和系统窗口操作的优先级。需要复用 AtomUI managed caption visual 的业务按钮使用 `WindowTitleBarButton` 或 `WindowTitleBarToggleButton`；这两个控件不承载系统窗口操作。
 
 ## 2. 设计语言
 
@@ -40,10 +40,12 @@
 | 类型 | 可见性 | 职责 |
 | --- | --- | --- |
 | `WindowTitleBar` | public | 公共内容契约、宿主状态投影、交互入口和主题入口。 |
+| `WindowTitleBarButton` | public | 在 LeftAddOn/RightAddOn 中提供与 managed caption visual 一致的普通图标按钮。 |
+| `WindowTitleBarToggleButton` | public | 在 LeftAddOn/RightAddOn 中提供与 managed caption visual 一致的 checked/unchecked 图标按钮。 |
 | `WindowTitleBarLogoVisibility` | public | 定义 Logo 的显示策略。 |
 | `WindowTitleBarTitleAlignment` | public | 定义标题组的跨平台对齐语义。 |
 | `CaptionButtonGroup` | internal | 根据宿主投影的能力、requested visibility 和窗口状态推导 effective visibility，并把固定窗口操作转发给宿主命令。 |
-| `CaptionButton` | internal | 承载 caption icon、checked icon 和按钮视觉状态。 |
+| `CaptionButton` | internal | 承载系统 caption icon、checked icon 和按钮视觉状态。 |
 | `WindowsCaptionButton` | internal | 提供 Windows 方形 caption button 尺寸和 hover 状态修正。 |
 
 internal 类型服务于 AtomUI 内置主题，不属于应用可直接创建或继承的公共控件 API。
@@ -73,6 +75,11 @@ internal 类型服务于 AtomUI 内置主题，不属于应用可直接创建或
 | `RightAddOnTemplate` | `null` | Trailing 内容模板。 |
 
 Add-on 可以包含可交互控件，也可以是 `null`、隐藏节点或当前没有孩子的容器。内置模板必须保留其命中测试能力，同时避免 Title 覆盖这些区域。Windows/Linux 仅在 `PART_Logo` 与 `PART_LeftAddOn` 两个 presenter 同时可见时产生 `LogoAndLeftAddOnSpacing`；Logo 隐藏、LeftAddOn 为 `null` 或 presenter 不可见时不保留该间距。该条件遵循 Avalonia sibling layout 的可见性语义，不根据子内容的实测宽度建立第二套状态。Leading 或 Trailing 的实测宽度为零时，该区域不占用标题安全空间，也不产生 `HeaderHorizontalSpacing`；内容出现、隐藏或动态替换后由正常 measure invalidation 重新计算。
+
+需要与标题栏 managed caption visual 保持一致的应用操作，可以直接使用 `WindowTitleBarButton` 或
+`WindowTitleBarToggleButton`。前者继承 `IconButton`，使用 `Icon`、`Command` 和标准按钮输入语义；后者继承
+`ToggleIconButton`，使用 `CheckedIcon`、`UnCheckedIcon`、`IsChecked` 和标准 ToggleButton 输入语义。两个控件的
+业务命令、启用状态和 checked 状态仍由应用所有，不映射到 Window 的系统操作。
 
 ### 3.3 宿主状态
 
@@ -222,6 +229,7 @@ Windows/Linux 的 Leading 容器使用 `HorizontalSpacing` 消费 `LogoAndLeftAd
 - `WindowTitleBarLayoutStrategyTests`：平台 `Auto`、CSD、WindowState 与 native inset 归一。
 - `WindowTitleBarTokenTests`：Token 默认值、三平台 caption 视觉和 Windows edge layout。
 - `WindowCaptionButtonConfigurationTests`：caption visibility 默认值、能力隔离、状态矩阵、内容区/多标题栏宿主发现、真实 pointer 双击切换、宿主切换、动态投影和模板生命周期。
+- `WindowTitleBarButtonTests`：AddOn 按钮继承关系、active/motion 状态投影、checked/unchecked 图标切换、脱离宿主回退、独立主题资产注册和指针输入隔离。
 - `ImagePreviewerTitleBarThemeTests`：派生标题栏的标题组、操作区和平台模板契约。
 
 LLMS 语义区域：
