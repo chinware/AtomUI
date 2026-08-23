@@ -30,15 +30,22 @@
                                                      SemanticOwner="{Binding #StepsSemanticOwner}"
                                                      SemanticOwnerType="{x:Type atom:Steps}">
                             <gallery:SemanticPartPreview.PreviewContent>
-                                <atom:Steps Name="StepsSemanticOwner"
-                                            Current="1"
-                                            TitlePlacement="Vertical"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center">
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderTimeN1}" Content="{gallery:StepsShowCaseLangResource P2ContentThisIsAContent}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderTimeN2}" Content="{gallery:StepsShowCaseLangResource P2ContentThisIsAContent}" />
-                                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderTimeN3}" Content="{gallery:StepsShowCaseLangResource P2ContentThisIsAContent}" />
-                                </atom:Steps>
+                                <StackPanel Spacing="24">
+                                    <atom:Steps Name="StepsSemanticOwner"
+                                                Current="1"
+                                                TitlePlacement="Vertical"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center">
+                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderTimeN1}" Content="{gallery:StepsShowCaseLangResource P2ContentThisIsAContent}" />
+                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderTimeN2}" Content="{gallery:StepsShowCaseLangResource P2ContentThisIsAContent}" />
+                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderTimeN3}" Content="{gallery:StepsShowCaseLangResource P2ContentThisIsAContent}" />
+                                    </atom:Steps>
+                                    <atom:Steps Current="1" Type="Panel">
+                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderTimeN1}" Content="{gallery:StepsShowCaseLangResource P2ContentThisIsAContent}" />
+                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderTimeN2}" Content="{gallery:StepsShowCaseLangResource P2ContentThisIsAContent}" />
+                                        <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderTimeN3}" Content="{gallery:StepsShowCaseLangResource P2ContentThisIsAContent}" />
+                                    </atom:Steps>
+                                </StackPanel>
                             </gallery:SemanticPartPreview.PreviewContent>
                             <gallery:SemanticPartPreview.PartDescriptions>
                                 <gallery:SemanticPartDescription

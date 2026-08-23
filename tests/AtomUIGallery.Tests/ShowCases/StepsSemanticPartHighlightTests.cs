@@ -53,27 +53,32 @@ public class StepsSemanticPartHighlightTests
                                  .ToArray();
             cards.Length.ShouldBe(9);
 
+            // The preview hosts two demos: the default steps and a Panel steps
+            // below it. Highlighting covers every owner instance in the preview
+            // content, so parts present in both demos light up twice. Panel hides
+            // the indicator and the connector, so those parts resolve to the
+            // default demo only.
             HoverCard(cards, window, "root");
-            GetHighlightCount(window).ShouldBe(1);
+            GetHighlightCount(window).ShouldBe(2);
 
             HoverCard(cards, window, "item");
-            GetHighlightCount(window).ShouldBe(3);
+            GetHighlightCount(window).ShouldBe(6);
 
             HoverCard(cards, window, "itemWrapper");
-            GetHighlightCount(window).ShouldBe(3);
+            GetHighlightCount(window).ShouldBe(6);
 
             HoverCard(cards, window, "itemIcon");
             GetHighlightCount(window).ShouldBe(3);
 
             HoverCard(cards, window, "itemTitle");
-            GetHighlightCount(window).ShouldBe(3);
+            GetHighlightCount(window).ShouldBe(6);
 
             HoverCard(cards, window, "itemSubtitle");
-            GetHighlightCount(window).ShouldBe(3);
+            GetHighlightCount(window).ShouldBe(6);
 
             HoverCard(cards, window, "itemSection");
             var sectionAdorners = GetAdorners(window);
-            sectionAdorners.Length.ShouldBe(3);
+            sectionAdorners.Length.ShouldBe(6);
             foreach (var adorner in sectionAdorners)
             {
                 var target = AdornerLayer.GetAdornedElement(adorner);
@@ -83,10 +88,11 @@ public class StepsSemanticPartHighlightTests
             }
 
             HoverCard(cards, window, "itemContent");
-            GetHighlightCount(window).ShouldBe(3);
+            GetHighlightCount(window).ShouldBe(6);
 
-            // The three items share two connector rails: the first item has none
-            // before it and the last item has none after it.
+            // The three default items share two connector rails: the first item
+            // has none before it and the last item has none after it. Panel items
+            // hide their connectors, so they contribute no rails.
             HoverCard(cards, window, "itemRail");
             var railAdorners = GetAdorners(window);
             railAdorners.Length.ShouldBe(2);

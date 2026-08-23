@@ -252,6 +252,49 @@ public class StepsShowCasePageTests
     }
 
     [Fact]
+    public void Steps_Semantic_Preview_Shows_Panel_Demo_Below_The_Default_Steps()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+
+        var page = new StepsShowCase
+        {
+            DataContext = new StepsViewModel(new TestScreen())
+        };
+
+        ShowInWindow(page, 1280, 900, () =>
+        {
+            var host = page.GetVisualDescendants().OfType<GalleryShowCaseHost>().Single();
+            host.SelectedTab = GalleryShowCaseTab.SemanticParts;
+            Dispatcher.UIThread.RunJobs();
+
+            var preview = page.GetVisualDescendants()
+                              .OfType<SemanticPartPreview>()
+                              .Single(static candidate => candidate.Name == "StepsSemanticPreview");
+            var owner = preview.SemanticOwner.ShouldBeOfType<AtomUISteps>();
+            var panelSteps = preview.GetVisualDescendants()
+                                    .OfType<AtomUISteps>()
+                                    .Single(static steps => steps.Type == StepsType.Panel);
+
+            panelSteps.Current.ShouldBe(1);
+            panelSteps.Bounds.Top.ShouldBeGreaterThanOrEqualTo(owner.Bounds.Bottom);
+
+            var panelItems = panelSteps.Items.OfType<AtomUIStepsItem>().ToArray();
+            panelItems.Length.ShouldBe(3);
+            panelItems.Select(static item => item.Header)
+                      .ShouldBe(new object?[] { "Step 1", "Step 2", "Step 3" });
+            panelItems.Select(static item => item.SubHeader)
+                      .ShouldBe(new object?[] { "00:00", "00:01", "00:02" });
+            panelItems.Select(static item => item.Content)
+                      .ShouldBe(new object?[]
+                      {
+                          "This is a content.",
+                          "This is a content.",
+                          "This is a content."
+                      });
+        });
+    }
+
+    [Fact]
     public void Steps_Semantic_Parts_Pane_Fills_The_Remaining_Height_And_Scrolls_Internally()
     {
         AvaloniaTestApp.EnsureInitialized();
@@ -353,6 +396,7 @@ public class StepsShowCasePageTests
             "Header=\"{gallery:StepsShowCaseLangResource P2HeaderStepN2}\" SubHeader=\"{gallery:StepsShowCaseLangResource P2SubHeaderTimeN2}\" Content=\"{gallery:StepsShowCaseLangResource P2ContentThisIsAContent}\"");
         source.ShouldContain(
             "Header=\"{gallery:StepsShowCaseLangResource P2HeaderStepN3}\" SubHeader=\"{gallery:StepsShowCaseLangResource P2SubHeaderTimeN3}\" Content=\"{gallery:StepsShowCaseLangResource P2ContentThisIsAContent}\"");
+        source.ShouldContain("Current=\"1\" Type=\"Panel\"");
         english.ShouldContain("<unit id=\"P2SubHeaderTimeN1\">");
         english.ShouldContain("<unit id=\"P2SubHeaderTimeN2\">");
         english.ShouldContain("<unit id=\"P2SubHeaderTimeN3\">");
