@@ -11,6 +11,7 @@
 - [Control 文档规范](contributing/control-documentation-guidelines.md)
 - [Mobile 文档规范](contributing/mobile-documentation-guidelines.md)
 - [文档结构与命名规范](contributing/documentation-structure-guidelines.md)
+- [参考项目源码查找规范](contributing/reference-project-source-guidelines.md)
 - [Changelog 规范](contributing/changelog-guidelines.md)
 
 ## Development

@@ -84,6 +84,7 @@ Read the relevant document before touching the corresponding area:
 - Mobile target architecture: [docs/architecture/systems/mobile/overview.md](docs/architecture/systems/mobile/overview.md)
 - Localization target architecture: [docs/architecture/systems/localization/overview.md](docs/architecture/systems/localization/overview.md)
 - AI collaboration and bug-fix discipline: [docs/engineering/contributing/agent-guidelines.md](docs/engineering/contributing/agent-guidelines.md)
+- Reference project source lookup: [docs/engineering/contributing/reference-project-source-guidelines.md](docs/engineering/contributing/reference-project-source-guidelines.md)
 - AOT and trimming architecture: [docs/architecture/foundations/aot-and-trimming.md](docs/architecture/foundations/aot-and-trimming.md)
 - AOT linked registration pipeline: [docs/architecture/foundations/aot-linked-registration-pipeline.md](docs/architecture/foundations/aot-linked-registration-pipeline.md)
 - AOT Registration Unit granularity: [docs/architecture/foundations/aot-registration-unit-granularity.md](docs/architecture/foundations/aot-registration-unit-granularity.md)
@@ -108,6 +109,7 @@ Detailed AI collaboration rules live in [docs/engineering/contributing/agent-gui
 
 - Understand the affected module before changing code.
 - Keep changes scoped to the user request and the ownership boundary.
+- When the user asks to reference another project's source, follow the local-first lookup order in [Reference Project Source Lookup](docs/engineering/contributing/reference-project-source-guidelines.md) before using GitHub or relying on memory.
 - Prefer root-cause fixes over trigger-point patches.
 - Treat AOT compatibility as a first-class design constraint for new features and bug fixes.
 - Verify with tests or publish checks that match the risk of the change.

@@ -158,6 +158,29 @@ internal class StepsToken : AbstractControlDesignToken
     public Thickness ProgressFramePaddingSM { get; set; }
     public Color ProgressGrooveColor { get; set; }
     public Color ProgressColor { get; set; }
+    public double PanelArrowWidth { get; set; }
+    public double PanelArrowWidthSM { get; set; }
+    public Color PanelWaitBackground { get; set; }
+    public Color PanelProcessBackground { get; set; }
+    public Color PanelFinishBackground { get; set; }
+    public Color PanelErrorBackground { get; set; }
+    public Color PanelWaitActiveBackground { get; set; }
+    public Color PanelProcessActiveBackground { get; set; }
+    public Color PanelFinishActiveBackground { get; set; }
+    public Color PanelErrorActiveBackground { get; set; }
+    public Color PanelWaitTextColor { get; set; }
+    public Color PanelProcessTextColor { get; set; }
+    public Color PanelFinishTextColor { get; set; }
+    public Color PanelErrorTextColor { get; set; }
+    public Color PanelActiveTextColor { get; set; }
+    public Color PanelErrorActiveTextColor { get; set; }
+    public Thickness PanelFirstBorderThickness { get; set; }
+    public Thickness PanelMiddleBorderThickness { get; set; }
+    public Thickness PanelLastBorderThickness { get; set; }
+    public CornerRadius PanelFirstCornerRadius { get; set; }
+    public CornerRadius PanelLastCornerRadius { get; set; }
+    public CornerRadius PanelFirstCornerRadiusSM { get; set; }
+    public CornerRadius PanelLastCornerRadiusSM { get; set; }
     
     #endregion
 
@@ -236,6 +259,39 @@ internal class StepsToken : AbstractControlDesignToken
         NavItemGutter              = EffectiveGlobalToken.Spacing;
         ProgressFramePadding       = new Thickness(EffectiveGlobalToken.LineWidthBold * 2);
         ProgressFramePaddingSM     = new Thickness(EffectiveGlobalToken.LineWidthBold * 2);
+
+        var panelTitleHeight = EffectiveGlobalToken.FontSizeLG * EffectiveGlobalToken.RelativeLineHeightLG;
+        var panelItemHeight = EffectiveGlobalToken.UniformlyPaddingSM * 2 +
+                              EffectiveGlobalToken.ControlHeight +
+                              panelTitleHeight;
+        var panelItemHeightSM = EffectiveGlobalToken.UniformlyPaddingXS * 2 +
+                                EffectiveGlobalToken.ControlHeightSM +
+                                EffectiveGlobalToken.FontSize * EffectiveGlobalToken.RelativeLineHeight;
+        PanelArrowWidth   = panelItemHeight * 0.7071;
+        PanelArrowWidthSM = panelItemHeightSM * 0.7071;
+        PanelWaitBackground          = EffectiveGlobalToken.ColorFillTertiary;
+        PanelProcessBackground       = EffectiveGlobalToken.ColorPrimaryBg;
+        PanelFinishBackground        = EffectiveGlobalToken.ColorPrimaryBg;
+        PanelErrorBackground         = EffectiveGlobalToken.ColorErrorBg;
+        PanelWaitActiveBackground    = EffectiveGlobalToken.ColorPrimary;
+        PanelProcessActiveBackground = EffectiveGlobalToken.ColorPrimary;
+        PanelFinishActiveBackground  = EffectiveGlobalToken.ColorPrimary;
+        PanelErrorActiveBackground   = EffectiveGlobalToken.ColorError;
+        PanelWaitTextColor            = EffectiveGlobalToken.ColorTextLabel;
+        PanelProcessTextColor         = EffectiveGlobalToken.ColorPrimary;
+        PanelFinishTextColor          = EffectiveGlobalToken.ColorPrimary;
+        PanelErrorTextColor           = EffectiveGlobalToken.ColorError;
+        PanelActiveTextColor          = EffectiveGlobalToken.ColorTextLightSolid;
+        PanelErrorActiveTextColor     = EffectiveGlobalToken.ColorTextLightSolid;
+        PanelFirstBorderThickness  = new Thickness(EffectiveGlobalToken.LineWidthBold, EffectiveGlobalToken.LineWidthBold, 0, EffectiveGlobalToken.LineWidthBold);
+        PanelMiddleBorderThickness = new Thickness(0, EffectiveGlobalToken.LineWidthBold, 0, EffectiveGlobalToken.LineWidthBold);
+        PanelLastBorderThickness   = new Thickness(0, EffectiveGlobalToken.LineWidthBold, EffectiveGlobalToken.LineWidthBold, EffectiveGlobalToken.LineWidthBold);
+        var panelRadius = EffectiveGlobalToken.BorderRadius.TopLeft;
+        var panelRadiusSM = EffectiveGlobalToken.BorderRadiusSM.TopLeft;
+        PanelFirstCornerRadius = new CornerRadius(panelRadius, 0, 0, panelRadius);
+        PanelLastCornerRadius  = new CornerRadius(0, panelRadius, panelRadius, 0);
+        PanelFirstCornerRadiusSM = new CornerRadius(panelRadiusSM, 0, 0, panelRadiusSM);
+        PanelLastCornerRadiusSM  = new CornerRadius(0, panelRadiusSM, panelRadiusSM, 0);
     }
     
 }

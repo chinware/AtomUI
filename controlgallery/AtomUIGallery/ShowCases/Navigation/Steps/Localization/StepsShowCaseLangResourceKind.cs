@@ -40,6 +40,8 @@ public enum StepsShowCaseLangResourceKind
     ClickableDescription,
     NavigationStepsTitle,
     NavigationStepsDescription,
+    PanelStepsTitle,
+    PanelStepsDescription,
     StepsWithProgressTitle,
     StepsWithProgressDescription,
     TitlePlacementTitle,

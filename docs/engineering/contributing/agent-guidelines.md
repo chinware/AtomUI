@@ -9,6 +9,10 @@
 - 新增规则前先判断归属：跨项目协作放本文档；AOT 放 `aot-programming-guidelines.md`；Gallery 页面放 `gallery-showcase-design-pattern.md`；发布放 release workflow 文档。
 - 当一个规则只适用于某个子系统，不要为了可见性塞进 `AGENTS.md`，应在该子系统文档中写清楚并从相关入口引用。
 
+## 参考项目源码
+
+当用户说“参考某个项目源码”或表达同等意图时，必须先执行 [参考项目源码查找规范](reference-project-source-guidelines.md) 中规定的本地优先查找流程。不得跳过项目目录下的 `.referenceprojects`、逐级向上的 `ReferenceProjects`，直接去 GitHub；只有所有本地位置都未命中时，GitHub 才是允许的兜底来源。
+
 ## Bug 修复
 
 修复 bug 时必须优先寻找从根源杜绝问题的方案，而不是只在触发点打补丁。

@@ -218,4 +218,5 @@ cmake-build-*/
 .claude/settings.local.json
 .superpowers/
 .worktrees/
+.zcode/
 docs/superpowers/plans

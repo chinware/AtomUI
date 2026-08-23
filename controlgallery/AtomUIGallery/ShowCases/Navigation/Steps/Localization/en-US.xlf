@@ -106,6 +106,16 @@
         <source>Navigation Steps</source>
       </segment>
     </unit>
+    <unit id="PanelStepsDescription">
+      <segment>
+        <source>Panel steps with filled and outlined variants.</source>
+      </segment>
+    </unit>
+    <unit id="PanelStepsTitle">
+      <segment>
+        <source>Panel Steps</source>
+      </segment>
+    </unit>
     <unit id="P2ContentDone">
       <segment>
         <source>Done</source>

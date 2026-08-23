@@ -76,6 +76,29 @@ public class StepsPanelTests
              .ShouldBe([100d, 100d, 100d]);
     }
 
+    [Fact]
+    public void Panel_Is_Horizontal_And_Arranges_Items_Equally_Even_When_Orientation_Is_Vertical()
+    {
+        var panel = new Desktop.Controls.StepsPanel
+        {
+            Type        = Desktop.Controls.StepsType.Panel,
+            Orientation = Avalonia.Layout.Orientation.Vertical
+        };
+        panel.Children.Add(new FixedSizeControl(40, 24));
+        panel.Children.Add(new FixedSizeControl(80, 24));
+        panel.Children.Add(new FixedSizeControl(20, 24));
+
+        panel.Measure(new Size(300, 100));
+        panel.Arrange(new Rect(0, 0, 300, 100));
+
+        panel.Children.Select(child => child.Bounds.Width)
+             .ShouldBe([100d, 100d, 100d]);
+        panel.Children.Select(child => child.Bounds.X)
+             .ShouldBe([0d, 100d, 200d]);
+        panel.Children.Select(child => child.Bounds.Y)
+             .ShouldBe([0d, 0d, 0d]);
+    }
+
     [Theory]
     [InlineData(HorizontalAlignment.Left, 0d, 80d)]
     [InlineData(HorizontalAlignment.Center, 110d, 80d)]

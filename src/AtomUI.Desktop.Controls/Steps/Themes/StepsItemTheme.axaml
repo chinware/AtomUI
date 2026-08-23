@@ -8,6 +8,9 @@
     <ControlTheme x:Key="{x:Type atom:StepsItem}" TargetType="atom:StepsItem">
         <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
         <Setter Property="Template">
             <ControlTemplate>
                 <atom:StepsItemLayoutPanel
@@ -16,15 +19,22 @@
                     HorizontalConnectorGap="{atom:SharedTokenResource UniformlyMarginXXS}"
                     IndicatorSpacing="{atom:SharedTokenResource SpacingXS}"
                     Type="{TemplateBinding Type}"
+                    PanelVariant="{TemplateBinding PanelVariant}"
                     VerticalConnectorMargin="{atom:StepsTokenResource VerticalItemSpacing}"
                     VerticalItemPadding="{atom:SharedTokenResource UniformlyPaddingSM}"
                     Orientation="{TemplateBinding Orientation}"
                     TitlePlacement="{TemplateBinding TitlePlacement}">
-                    <Border
+                    <atom:StepsPanelItemFrame
                         Name="ItemWrapper"
                         atom:StepsItemLayoutPanel.Role="ItemWrapper"
                         Background="{TemplateBinding Background}"
-                        CornerRadius="{atom:SharedTokenResource BorderRadiusSM}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        BackgroundSizing="OuterBorderEdge"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        IsFirst="{TemplateBinding IsFirst}"
+                        PanelVariant="{TemplateBinding PanelVariant}"
+                        ArrowWidth="{atom:StepsTokenResource PanelArrowWidth}"
                         IsHitTestVisible="False" />
 
                     <atom:StepsItemIndicator
@@ -79,6 +89,16 @@
                         BorderThickness="{atom:SharedTokenResource LineWidth}"
                         RenderTransformOrigin="{x:Static RelativePoint.Center}"
                         RenderTransform="rotate(45deg)"
+                        IsHitTestVisible="False"
+                        IsVisible="False" />
+
+                    <atom:StepsPanelArrow
+                        Name="PanelArrow"
+                        atom:StepsItemLayoutPanel.Role="PanelArrow"
+                        FillBrush="{Binding Background, RelativeSource={RelativeSource AncestorType=atom:StepsItem}}"
+                        StrokeBrush="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=atom:StepsItem}}"
+                        StrokeThickness="{atom:SharedTokenResource LineWidthBold}"
+                        Width="{atom:StepsTokenResource PanelArrowWidth}"
                         IsHitTestVisible="False"
                         IsVisible="False" />
 
@@ -168,6 +188,157 @@
             <Style Selector="^ /template/ atom|PixelAlignedBorder#Connector">
                 <Setter Property="Background" Value="{atom:StepsTokenResource ErrorTailColor}" />
             </Style>
+        </Style>
+
+        <!-- Panel uses the item frame itself as the status indicator. -->
+        <Style Selector="^[Type=Panel]">
+            <Setter Property="Background" Value="{atom:StepsTokenResource PanelWaitBackground}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="{atom:StepsTokenResource PanelMiddleBorderThickness}" />
+            <Setter Property="CornerRadius" Value="0" />
+        </Style>
+        <Style Selector="^[Type=Panel][EffectiveStatus=Wait]">
+            <Setter Property="Background" Value="{atom:StepsTokenResource PanelWaitBackground}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelWaitTextColor}" />
+            <Style Selector="^ /template/ ContentPresenter#SubHeaderPresenter, ^ /template/ ContentPresenter#ContentPresenter">
+                <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelWaitTextColor}" />
+            </Style>
+        </Style>
+        <Style Selector="^[Type=Panel][EffectiveStatus=Process]">
+            <Setter Property="Background" Value="{atom:StepsTokenResource PanelProcessBackground}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelProcessTextColor}" />
+            <Style Selector="^ /template/ ContentPresenter#SubHeaderPresenter, ^ /template/ ContentPresenter#ContentPresenter">
+                <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelProcessTextColor}" />
+            </Style>
+        </Style>
+        <Style Selector="^[Type=Panel][EffectiveStatus=Finish]">
+            <Setter Property="Background" Value="{atom:StepsTokenResource PanelFinishBackground}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelFinishTextColor}" />
+            <Style Selector="^ /template/ ContentPresenter#SubHeaderPresenter, ^ /template/ ContentPresenter#ContentPresenter">
+                <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelFinishTextColor}" />
+            </Style>
+        </Style>
+        <Style Selector="^[Type=Panel][EffectiveStatus=Error]">
+            <Setter Property="Background" Value="{atom:StepsTokenResource PanelErrorBackground}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelErrorTextColor}" />
+            <Style Selector="^ /template/ ContentPresenter#SubHeaderPresenter, ^ /template/ ContentPresenter#ContentPresenter">
+                <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelErrorTextColor}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Type=Panel][PanelVariant=Filled][IsCurrent=True][EffectiveStatus=Wait]">
+            <Setter Property="Background" Value="{atom:StepsTokenResource PanelWaitActiveBackground}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelActiveTextColor}" />
+            <Style Selector="^ /template/ ContentPresenter#SubHeaderPresenter, ^ /template/ ContentPresenter#ContentPresenter">
+                <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelActiveTextColor}" />
+            </Style>
+        </Style>
+        <Style Selector="^[Type=Panel][PanelVariant=Filled][IsCurrent=True][EffectiveStatus=Process]">
+            <Setter Property="Background" Value="{atom:StepsTokenResource PanelProcessActiveBackground}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelActiveTextColor}" />
+            <Style Selector="^ /template/ ContentPresenter#SubHeaderPresenter, ^ /template/ ContentPresenter#ContentPresenter">
+                <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelActiveTextColor}" />
+            </Style>
+        </Style>
+        <Style Selector="^[Type=Panel][PanelVariant=Filled][IsCurrent=True][EffectiveStatus=Finish]">
+            <Setter Property="Background" Value="{atom:StepsTokenResource PanelFinishActiveBackground}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelActiveTextColor}" />
+            <Style Selector="^ /template/ ContentPresenter#SubHeaderPresenter, ^ /template/ ContentPresenter#ContentPresenter">
+                <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelActiveTextColor}" />
+            </Style>
+        </Style>
+        <Style Selector="^[Type=Panel][PanelVariant=Filled][IsCurrent=True][EffectiveStatus=Error]">
+            <Setter Property="Background" Value="{atom:StepsTokenResource PanelErrorActiveBackground}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelErrorActiveTextColor}" />
+            <Style Selector="^ /template/ ContentPresenter#SubHeaderPresenter, ^ /template/ ContentPresenter#ContentPresenter">
+                <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelErrorActiveTextColor}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Type=Panel][PanelVariant=Outlined][EffectiveStatus=Wait]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelWaitTextColor}" />
+        </Style>
+        <Style Selector="^[Type=Panel][PanelVariant=Outlined][EffectiveStatus=Process]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
+            <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelProcessTextColor}" />
+        </Style>
+        <Style Selector="^[Type=Panel][PanelVariant=Outlined][EffectiveStatus=Finish]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
+            <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelFinishTextColor}" />
+        </Style>
+        <Style Selector="^[Type=Panel][PanelVariant=Outlined][EffectiveStatus=Error]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorError}" />
+            <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelErrorTextColor}" />
+        </Style>
+        <Style Selector="^[Type=Panel][PanelVariant=Outlined][IsCurrent=True][EffectiveStatus=Wait]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorFillTertiary}" />
+            <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelWaitTextColor}" />
+        </Style>
+        <Style Selector="^[Type=Panel][PanelVariant=Outlined][IsCurrent=True][EffectiveStatus=Process]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimaryBg}" />
+            <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelProcessTextColor}" />
+        </Style>
+        <Style Selector="^[Type=Panel][PanelVariant=Outlined][IsCurrent=True][EffectiveStatus=Finish]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimaryBg}" />
+            <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelFinishTextColor}" />
+        </Style>
+        <Style Selector="^[Type=Panel][PanelVariant=Outlined][IsCurrent=True][EffectiveStatus=Error]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorErrorBg}" />
+            <Setter Property="Foreground" Value="{atom:StepsTokenResource PanelErrorTextColor}" />
+        </Style>
+
+        <Style Selector="^[Type=Panel][IsFirst=True]">
+            <Setter Property="BorderThickness" Value="{atom:StepsTokenResource PanelFirstBorderThickness}" />
+            <Setter Property="CornerRadius" Value="{atom:StepsTokenResource PanelFirstCornerRadius}" />
+        </Style>
+        <Style Selector="^[Type=Panel][IsLast=True]">
+            <Setter Property="BorderThickness" Value="{atom:StepsTokenResource PanelLastBorderThickness}" />
+            <Setter Property="CornerRadius" Value="{atom:StepsTokenResource PanelLastCornerRadius}" />
+        </Style>
+        <Style Selector="^[Type=Panel] /template/ atom|StepsItemIndicator#PART_Indicator">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^[Type=Panel] /template/ atom|PixelAlignedBorder#Connector">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^[Type=Panel] /template/ atom|StepsPanelArrow#PanelArrow">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^[Type=Panel][IsLast=True] /template/ atom|StepsPanelArrow#PanelArrow">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^[Type=Panel] /template/ atom|StepsItemLayoutPanel">
+            <Setter Property="Padding" Value="{atom:SharedTokenResource PaddingSM}" />
+            <Setter Property="IndicatorSpacing" Value="0" />
+        </Style>
+        <Style Selector="^[Type=Panel][SizeType=Small] /template/ atom|StepsItemLayoutPanel">
+            <Setter Property="Padding" Value="{atom:SharedTokenResource PaddingXS}" />
+        </Style>
+        <Style Selector="^[Type=Panel][SizeType=Small] /template/ atom|StepsPanelArrow#PanelArrow">
+            <Setter Property="Width" Value="{atom:StepsTokenResource PanelArrowWidthSM}" />
+            <Setter Property="StrokeThickness" Value="{atom:SharedTokenResource LineWidth}" />
+        </Style>
+        <Style Selector="^[Type=Panel][SizeType=Small] /template/ atom|StepsPanelItemFrame#ItemWrapper">
+            <Setter Property="ArrowWidth" Value="{atom:StepsTokenResource PanelArrowWidthSM}" />
+        </Style>
+        <Style Selector="^[Type=Panel][SizeType=Small][IsFirst=True]">
+            <Setter Property="CornerRadius" Value="{atom:StepsTokenResource PanelFirstCornerRadiusSM}" />
+        </Style>
+        <Style Selector="^[Type=Panel][SizeType=Small][IsLast=True]">
+            <Setter Property="CornerRadius" Value="{atom:StepsTokenResource PanelLastCornerRadiusSM}" />
         </Style>
 
         <Style Selector="^[ConnectorStatus=Wait] /template/ atom|PixelAlignedBorder#Connector">

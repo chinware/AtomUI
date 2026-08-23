@@ -14,7 +14,14 @@ public enum StepsType
     Dot,
     OutlineDot,
     Navigation,
-    Inline
+    Inline,
+    Panel
+}
+
+public enum StepsPanelVariant
+{
+    Filled,
+    Outlined
 }
 
 internal enum StepsItemLayoutRole
@@ -26,5 +33,6 @@ internal enum StepsItemLayoutRole
     Connector,
     Content,
     NavigationArrow,
+    PanelArrow,
     NavigationActiveIndicator
 }

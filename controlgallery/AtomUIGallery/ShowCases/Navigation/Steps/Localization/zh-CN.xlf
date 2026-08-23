@@ -127,6 +127,18 @@
         <target state="translated">导航步骤</target>
       </segment>
     </unit>
+    <unit id="PanelStepsDescription">
+      <segment>
+        <source>Panel steps with filled and outlined variants.</source>
+        <target state="translated">支持填充和描边变体的面板步骤。</target>
+      </segment>
+    </unit>
+    <unit id="PanelStepsTitle">
+      <segment>
+        <source>Panel Steps</source>
+        <target state="translated">面板步骤</target>
+      </segment>
+    </unit>
     <unit id="P2ContentDone">
       <segment>
         <source>Done</source>

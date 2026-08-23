@@ -4,7 +4,7 @@
 
 ## 1. 定位
 
-StepsToken 描述步骤标题、详情内容、Indicator、Dot、OutlineDot、Connector、Navigation、Inline 和 Progress ring 的组件级视觉语义。
+StepsToken 描述步骤标题、详情内容、Indicator、Dot、OutlineDot、Connector、Navigation、Inline、Panel 和 Progress ring 的组件级视觉语义。
 
 StepsToken 不承载：
 
@@ -90,6 +90,18 @@ Progress 外径由当前 `IconSize` / `IconSizeSM` 加对应 padding 推导，�
 
 Inline Token 只服务 `Type=Inline` 的紧凑视觉。
 
+### 2.8 Panel
+
+- `PanelArrowWidth`、`PanelArrowWidthSM`
+- `PanelFirstBorderThickness`、`PanelMiddleBorderThickness`、`PanelLastBorderThickness`
+- `PanelFirstCornerRadius`、`PanelLastCornerRadius` 及 Small 变体
+- `PanelWaitBackground`、`PanelProcessBackground`、`PanelFinishBackground`、`PanelErrorBackground`
+- `PanelWaitActiveBackground`、`PanelProcessActiveBackground`、`PanelFinishActiveBackground`、`PanelErrorActiveBackground`
+- `PanelWaitTextColor`、`PanelProcessTextColor`、`PanelFinishTextColor`、`PanelErrorTextColor`
+- `PanelActiveTextColor`、`PanelErrorActiveTextColor`
+
+Panel 箭头宽度按 Ant Design 的几何关系由 item 基础高度乘以 `0.7071` 推导；Small 使用较小的 padding、字体和圆角。Filled 使用状态色面板背景；Outlined 的非当前项使用 `ColorBgContainer`，以状态色表达文字和边框，只有当前项使用对应的浅色 active 背景。
+
 ## 3. 控件专项模型中的 Token 使用
 
 ```text
@@ -107,6 +119,7 @@ SharedToken
 | `Type=Dot` / `Type=OutlineDot` | DotSize、DotCurrentSize、DotLineThickness 和 Dot 状态色。 |
 | `Type=Navigation` | Navigation 间距、active 色和箭头色。 |
 | `Type=Inline` | Inline dot、padding、title 和 tail。 |
+| `Type=Panel` | Panel 箭头尺寸、边框几何、状态背景、active 背景和文字色。 |
 | `EffectiveStatus` | 对应 Wait/Process/Finish/Error 的 icon、title、content、tail 和 dot 色。 |
 | `IsProgressFrameReserved` | Progress 外圈尺寸和 padding 预留。 |
 | `IsProgressVisible` | Progress groove 和 arc 绘制色。 |
