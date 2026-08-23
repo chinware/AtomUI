@@ -242,7 +242,13 @@ internal class StepsItemLayoutPanel : Panel
         {
             if (GetRole(child) == StepsItemLayoutRole.Indicator)
             {
-                indicator = child;
+                // Panel hides the indicator, so it reserves no body width; a hidden
+                // indicator still gets measured below only to keep its DesiredSize
+                // current, but it must not shrink the body's measure width.
+                if (child.IsVisible)
+                {
+                    indicator = child;
+                }
             }
             else if (!ReferenceEquals(child, section))
             {

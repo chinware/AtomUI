@@ -359,6 +359,22 @@ public class TabActivationTests
         }
     }
 
+    private static void WaitForForegroundChanged(Func<object?> foregroundAccessor, object? normalForeground)
+    {
+        for (var i = 0; i < 32; i++)
+        {
+            Dispatcher.UIThread.RunJobs();
+            if (!Equals(foregroundAccessor(), normalForeground))
+            {
+                return;
+            }
+
+            // The pressed foreground is applied through a theme transition driven by
+            // the render clock. Force a tick so the wait does not depend on wall-clock
+            // scheduling while other test collections run in parallel.
+            AvaloniaHeadlessPlatform.ForceRenderTimerTick(1);
+        }
+    }
     private static string ReadRepoFile(string relativePath)
     {
         var repoRoot = FindRepoRoot(AppContext.BaseDirectory);

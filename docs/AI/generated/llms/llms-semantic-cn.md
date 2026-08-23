@@ -3091,25 +3091,37 @@ Source: ./controls/steps/semantic-cn.md
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 稳定性 |
-| --- | --- | --- | --- |
-| `root` | `Steps` | Items、根展示输入和导航请求入口。 | public |
-| `items` | `PART_ItemsPresenter` | 承载 StepsPanel 和 item 容器。 | template-stable |
-| `item` | `StepsItem` | 单项状态、内容和交互语义。 | public |
-| `indicator` | `PART_Indicator` | 数字、状态图标、Dot、自定义 Icon、Progress 和 Wave 目标。 | template-stable |
-| `title` | `HeaderPresenter` | 标题。 | internal-observable |
-| `subtitle` | `SubHeaderPresenter` | 副标题。 | internal-observable |
-| `content` | `ContentPresenter` | 步骤详情。 | internal-observable |
-| `rail` | `Connector` | 当前 item 与下一个 item 的连接线。 | internal-observable |
-| `navigation-arrow` | `NavigationArrow` | Navigation 类型的步骤方向提示。 | internal-observable |
-| `navigation-active-indicator` | `NavigationActiveIndicator` | Navigation 当前项的水平底线或垂直右侧线。 | internal-observable |
+| Part | Selector | ContractType | Cardinality | Customization | CrossVisualRoot | RuntimeCreated |
+| --- | --- | --- | --- | --- | --- | --- |
+| `root` | owner | `Steps` | `Single` | `Root` | `false` | `false` |
+| `item` | `.semantic-item` | `StepsItem` | `Multiple` | `Selector` | `false` | `true` |
+| `itemWrapper` | `.semantic-item-wrapper` | `Border` | `Multiple` | `Selector` | `false` | `true` |
+| `itemIcon` | `.semantic-item-icon` | `TemplatedControl` | `Multiple` | `Selector` | `false` | `true` |
+| `itemTitle` | `.semantic-item-title` | `ContentPresenter` | `Multiple` | `Selector` | `false` | `true` |
+| `itemSubtitle` | `.semantic-item-subtitle` | `ContentPresenter` | `Multiple` | `Selector` | `false` | `true` |
+| `itemSection` | `.semantic-item-section` | `Panel` | `Multiple` | `Selector` | `false` | `true` |
+| `itemContent` | `.semantic-item-content` | `ContentPresenter` | `Multiple` | `Selector` | `false` | `true` |
+| `itemRail` | `.semantic-item-rail` | `DashedBorder` | `Multiple` | `Selector` | `false` | `true` |
+
+`root` 是控件自身，承载 `Current`、`Initial`、`Status`、`Percent`、`Type`、`Orientation`、
+`TitlePlacement`、`SizeType`、`IsItemClickable` 等 public API、主题入口和状态投影，不声明 `.semantic-root`
+marker。
+
+`item` 的 marker 挂在 `StepsItem` 实例上，是运行时创建的语义标记：`Steps` 在容器准备时对每个容器写入
+`semantic-item`。直接声明的 `StepsItem`、普通数据项生成的容器以及回收复用后重新准备的容器遵循同一规则。
+
+七个子 Part 是 item 模板内的静态标记，声明在 `StepsItemTheme.axaml` 的对应节点上。它们的
+`RuntimeCreated = true` 表示这些 Part 只随 item 容器的存在而存在：item 被创建时 marker 随模板出现，
+item 被移除时随模板销毁；`Steps` 自身不包含任何子 Part marker。
 
 ## Abstract AXAML Structure
 
 来源：`src/AtomUI.Desktop.Controls/Steps/Themes/StepsTheme.axaml`
 
 ```xml
-<ItemsPresenter Name="PART_ItemsPresenter" />
+<DashedBorder>
+    <ItemsPresenter Name="PART_ItemsPresenter" />
+</DashedBorder>
 ```
 
 ## Composition Model
@@ -3133,15 +3145,17 @@ Steps
      -> StepsItemLayoutPanel (internal-observable)
         -> StepsPanelItemFrame#ItemWrapper (internal-observable)
         -> StepsItemIndicator#PART_Indicator (template-stable)
-        -> ContentPresenter#HeaderPresenter (internal-observable)
-        -> ContentPresenter#SubHeaderPresenter (internal-observable)
+        -> StepsItemSectionPanel#Section (internal-observable)
+           -> ContentPresenter#HeaderPresenter (internal-observable)
+           -> ContentPresenter#SubHeaderPresenter (internal-observable)
+           -> ContentPresenter#ContentPresenter (internal-observable)
         -> PixelAlignedBorder#Connector (template-stable)
-        -> ContentPresenter#ContentPresenter (internal-observable)
         -> StepsNavigationArrow#NavigationArrow (internal-observable)
         -> StepsPanelArrow#PanelArrow (internal-observable)
         -> PixelAlignedBorder#NavigationActiveIndicator (template-stable)
   -> Steps (control theme, StepsTheme.axaml)
-     -> ItemsPresenter#PART_ItemsPresenter (template-stable)
+     -> DashedBorder (template-stable)
+        -> ItemsPresenter#PART_ItemsPresenter (template-stable)
 ```
 
 ### 协作节点
@@ -3161,32 +3175,31 @@ Steps
 | `StepsItemLayoutPanel` | template node (StepsItemLayoutPanel) | `StepsItemTheme.axaml` | StepsItem | `Background`, `BorderBrush`, `BorderThickness`, `CanInvoke`, `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ItemWrapper` | template node (StepsPanelItemFrame) | `StepsItemTheme.axaml` | StepsItem | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `IsFirst`, `PanelVariant` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_Indicator` | template node (StepsItemIndicator) | `StepsItemTheme.axaml` | StepsItem | `CanInvoke`, `EffectiveStatus`, `Icon`, `IsCurrent`, `IsMotionEnabled`, `IsProgressFrameReserved` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Section` | template node (StepsItemSectionPanel) | `StepsItemTheme.axaml` | StepsItem | `Content`, `ContentTemplate`, `Foreground`, `Header`, `HeaderTemplate`, `Orientation` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `HeaderPresenter` | template node (ContentPresenter) | `StepsItemTheme.axaml` | StepsItem | `Foreground`, `Header`, `HeaderTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `SubHeaderPresenter` | template node (ContentPresenter) | `StepsItemTheme.axaml` | StepsItem | `SubHeader`, `SubHeaderTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `Connector` | template node (PixelAlignedBorder) | `StepsItemTheme.axaml` | StepsItem | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentPresenter` | template node (ContentPresenter) | `StepsItemTheme.axaml` | StepsItem | `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `Connector` | template node (PixelAlignedBorder) | `StepsItemTheme.axaml` | StepsItem | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `NavigationArrow` | template node (StepsNavigationArrow) | `StepsItemTheme.axaml` | StepsItem | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PanelArrow` | template node (StepsPanelArrow) | `StepsItemTheme.axaml` | StepsItem | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `NavigationActiveIndicator` | template node (PixelAlignedBorder) | `StepsItemTheme.axaml` | StepsItem | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Steps` | control theme | `StepsTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Steps` | control theme | `StepsTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BackgroundSizing`, `BorderBrush`, `BorderDashArray`, `BorderDashOffset`, `BorderThickness` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `PART_ItemsPresenter` | template node (ItemsPresenter) | `StepsTheme.axaml` | Steps | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 
-| LLMS 内容 | 来源 | 说明 |
+| 布局模式 | item 份额 | 收缩下限 |
 | --- | --- | --- |
-| 单控件完整文档 | `overview.md` + `implementation.md` + `token.md` + Gallery ShowCase | 生成 `controls/steps/index-cn.md`。 |
-| 单控件语义文档 | `overview.md` + `implementation.md` + Themes 文件夹 | 生成 `controls/steps/semantic-cn.md`。 |
-| API 表 | overview.md 语义摘要 + 源码 public surface | 不在 overview 中维护第二份机械列表。 |
-| Design Token 表 | token.md 或 Token 类型 | Token 文档只解释语义边界。 |
-| 示例 | Gallery ShowCase + source snippet catalog | 只使用稳定示例。 |
-| 源码索引 | `implementation.md` | 用于定位源码、主题和测试。 |
+| 水平 + 水平标题（`Default` 等） | 非末项 `1 1 auto`，末项 `0 1 auto` | `IconContainerSize` |
+| 水平 + 垂直标题（`Dot`、`OutlineDot`、`Inline`、`TitlePlacement=Vertical`） | 全部 item `1 1 0%` 等分 | `IconContainerSize` |
+| 水平 `Navigation` | 等分 | `IconContainerSize` |
+| 垂直 `Orientation` | 不参与横向份额 | 不适用 |
 
 ## Pseudo Classes
 
 Steps 不提供控件专属的完成态或选择态伪类。状态主题读取 `EffectiveStatus`、`IsCurrent`、`CanInvoke` 以及 Avalonia 标准 `:pointerover`、`:focus-visible`、`:disabled` 伪类。
 
-`title`、`subtitle` 和 `rail` 是 `StepsItem` 自身模板的内部语义节点。只有 `StepsItemTheme.axaml` 可以进入该模板并消费根控件投影的语义样式值；外部应用、Gallery 和 `StepsTheme.axaml` 不得依赖节点名称或通过 `/template/` selector 穿透 `StepsItem`。
+`itemWrapper`、`itemIcon`、`itemTitle`、`itemSubtitle`、`itemSection`、`itemContent` 和 `itemRail` 是 `StepsItem` 自身模板内的静态语义 marker，由 `StepsItemTheme.axaml` 声明；应用通过生成的子 Part Style 经 `> .semantic-item /template/ .semantic-item-x` 路由进入 item 模板，不得依赖节点名称以外的模板结构或手写 `/template/` selector。实例级 Header、SubHeader 和 Connector 覆盖由根控件三项 nullable 语义 API 投影，与 Semantic Part 定制互不取代。
 
 ## State Flow
 
@@ -3272,19 +3285,20 @@ Steps
     └── StepsPanel
         └── StepsItem
             └── StepsItemLayoutPanel
+                ├── StepsPanelItemFrame#ItemWrapper
                 ├── StepsItemIndicator#PART_Indicator
                 │   └── WaveSpiritDecorator#PART_WaveSpirit
-                ├── ContentPresenter#HeaderPresenter
-                ├── ContentPresenter#SubHeaderPresenter
+                ├── StepsItemSectionPanel#Section
+                │   ├── ContentPresenter#HeaderPresenter
+                │   ├── ContentPresenter#SubHeaderPresenter
+                │   └── ContentPresenter#ContentPresenter
                 ├── PixelAlignedBorder#Connector
-                ├── ContentPresenter#ContentPresenter
-                ├── StepsPanelItemFrame#ItemWrapper
                 ├── PathIcon#NavigationArrow
                 ├── StepsPanelArrow#PanelArrow
                 └── PixelAlignedBorder#NavigationActiveIndicator
 ```
 
-`StepsPanel` 负责 item 间的 flex/stack 布局；Panel 类型强制水平排列并将每个 item 等宽。`StepsItemLayoutPanel` 负责 item 内固定语义区域、Connector 线宽、Panel 外溢箭头和 Navigation active 线的排列。二者不创建状态。
+`StepsPanel` 负责 item 间的 flex/stack 布局；Panel 类型强制水平排列并将每个 item 等宽。`StepsItemLayoutPanel` 负责 item 内固定语义区域、Connector 线宽、Panel 外溢箭头和 Navigation active 线的排列，正文区域（标题、副标题、详情）的分组与对齐由 `StepsItemSectionPanel` 完成。这些面板不创建视觉、不计算状态。item 间的弹性压缩与文本换行契约见 [8.7 弹性压缩与文本换行模型](#87-弹性压缩与文本换行模型)。
 
 Panel 类型的几何规则：
 
@@ -3319,6 +3333,7 @@ Type == Dot             -> Vertical
 Type == OutlineDot      -> Vertical
 Type == Inline          -> Vertical
 Type == Navigation      -> Horizontal
+Type == Panel           -> Horizontal
 其他                    -> TitlePlacement
 ```
 
@@ -3349,9 +3364,11 @@ StepsToken 不承载：
 - Wave 只能由真实 pointer click 触发，不得监听 `Current` 或 `IsCurrent`。
 - `OutlineDot` 必须保持 Dot 布局、空心状态色边框和无 Wave 语义。
 - `PART_ItemsPresenter` 和 `PART_Indicator` 是稳定 template part。
-- 外部样式不得依赖 `HeaderPresenter`、`SubHeaderPresenter`、`Connector` 等内部节点，也不得通过 `/template/` selector 穿透 `StepsItem`；需要的实例级定制必须由 `Steps` 公开语义 API 表达。
+- 外部样式不得依赖 `HeaderPresenter`、`SubHeaderPresenter`、`Connector` 等内部节点名称，也不得手写 `/template/` selector 穿透 `StepsItem`；item 子节点的实例级定制必须通过生成的 Semantic Part Style 表达，Header、SubHeader 和 Connector 的实例级覆盖由 `Steps` 三项 nullable 语义 API 表达。
 - 三项 item 语义样式保持 nullable；`null` 必须恢复完整的状态和类型 Token 视觉。
 - 每个根、item 和 indicator 主题各保留一套语义模板。
+- 水平布局的 item 收缩与文本换行遵循 8.7 弹性模型的份额算法与 `IconContainerSize` 收缩下限。
+- 测量与排列必须共用同一份额算法，排列宽度等于测量宽度；任何布局路径不得以裁剪代替换行。
 
 维护不变量：
 
@@ -3369,7 +3386,12 @@ StepsToken 不承载：
 - 每个主题只维护一套语义模板。
 - 外部代码不得通过深层 selector 修改 StepsItem 内部节点；实例级 Header、SubHeader 和 Connector 定制由根控件三项 nullable 语义 API 进入。
 - 语义样式的 `null` 值必须完整回退 Token；容器清理和重新准备不得残留旧 owner 的显式值。
-- StepsPanel 和 StepsItemLayoutPanel 只负责布局。
+- Semantic Part descriptor、`semantic-item` 运行时 marker 与七个静态 `semantic-item-*` marker 的同步规则、`> .semantic-item /template/ .semantic-item-x` 容器边界路由形状以及生成的 Steps*Style 类型保持稳定；`itemIcon` 默认圆角只能由主题 style 优先级提供，代码不得再以 local value 写入。
+- StepsPanel、StepsItemLayoutPanel 和 StepsItemSectionPanel 只负责布局。
+- 水平布局的 item 收缩与文本换行遵循 overview.md 8.7 弹性模型的份额算法与 `IconContainerSize` 收缩下限；测量与排列必须共用同一份额算法，排列宽度等于测量宽度，任何布局路径不得以裁剪代替换行。
+- 水平标题 heading 行的同行/换行决策由测量与排列共用同一判定条件；Header 与 SubHeader 并排放不下时，SubHeader 必须换到 Header 下方独占一行并保持测量宽度，不得裁成剩余宽度。
+- 水平标题路径的 body 子项（Header / SubHeader / Content）必须按排列时的 body 可用宽度（item 宽度 − indicator − spacing）测量，不得按完整 item 宽度测量；否则份额落在文本自然宽度的邻近区间时会以裁剪代替换行。
+- 宽容器的既有伸展语义（非末 item 等额伸展、末 item 内容宽、单 item 内容宽）不得随压缩能力回归。
 - 容器清理必须释放 Owner，模板重套必须释放旧 part 引用。
 - Percent、Icon、Type 和 EffectiveStatus 运行时变化必须立即更新 Progress。
 

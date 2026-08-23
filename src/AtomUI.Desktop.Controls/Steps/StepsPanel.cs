@@ -96,9 +96,28 @@ internal class StepsPanel : Panel
         var height = 0d;
         var orientation = EffectiveOrientation;
 
+        // Panel forces a horizontal row of equal-width cells even when the requested
+        // orientation is vertical, so every visible item must be measured at its
+        // final cell width. Measuring at the full available width would let the
+        // heading fit on one line at measure time and then wrap at arrange time.
+        var panelShareWidth = double.NaN;
+        if (orientation == Orientation.Horizontal &&
+            Type == StepsType.Panel &&
+            double.IsFinite(availableSize.Width))
+        {
+            var visibleCount = Children.Count(static child => child.IsVisible);
+            if (visibleCount > 0)
+            {
+                panelShareWidth = availableSize.Width / visibleCount;
+            }
+        }
+
         foreach (var child in Children)
         {
-            child.Measure(availableSize);
+            var measureSize = !double.IsNaN(panelShareWidth) && child.IsVisible
+                ? new Size(panelShareWidth, availableSize.Height)
+                : availableSize;
+            child.Measure(measureSize);
             if (!child.IsVisible)
             {
                 continue;
@@ -179,6 +198,13 @@ internal class StepsPanel : Panel
         if (Type == StepsType.Navigation)
         {
             var share = Math.Max(availableWidth / count, minWidth);
+            Array.Fill(widths, share);
+            return widths;
+        }
+
+        if (Type == StepsType.Panel)
+        {
+            var share = availableWidth / count;
             Array.Fill(widths, share);
             return widths;
         }

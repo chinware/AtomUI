@@ -4732,6 +4732,11 @@ Steps 不负责：
 
 步骤页面由调用方根据 `Current` 在 Steps 外部切换。`StepsItem.Content` 表示步骤详情，不表示步骤页面。
 
+Steps 的公开语义区域使用 `root`、`item`、`itemWrapper`、`itemIcon`、`itemTitle`、`itemSubtitle`、
+`itemSection`、`itemContent` 和 `itemRail` 九个 Semantic Part，与上游步骤语义结构 `StepsSemanticType`
+对齐（since 6.0.0）。`root` 是隐式 owner，`item` 覆盖 `StepsItem` 容器，七个 item 子 Part 覆盖 item 模板内
+的包裹层、图标、标题、副标题、内容区、详情和连接线。完整契约见 [Steps Semantic Part 契约](semantic-part.md)。
+
 ## 包与命名空间
 
 | 项 | 值 |
@@ -4756,6 +4761,7 @@ Steps 表达“有序流程 + 当前进度 + 可选导航请求”。
 | 导航 | 激活 item 只发出变更请求。 | `CurrentChangeRequested`。 |
 | 反馈 | Wave 表达真实 pointer click，不表达状态变化。 | Indicator Wave。 |
 | 密度 | 尺寸控制 Indicator、文字和间距。 | `SizeType`。 |
+| 弹性 | 可用宽度不足时 item 连续收缩、标题/副标题/描述文本连续换行。 | flex 份额、`IconContainerSize` 收缩下限、Wrap 文本。 |
 
 `StepsType.Default` 表达标准流程，`Dot` 表达实心点状流程，`OutlineDot` 表达空心点状流程，`Navigation` 强调导航入口，`Inline` 表达紧凑内联流程，`Panel` 表达面板式分段步骤。
 
@@ -4828,22 +4834,31 @@ public event EventHandler<StepsCurrentChangeRequestedEventArgs>?
 
 LLMS 语义区域：
 
-| Part | AtomUI 节点 | 职责 | 稳定性 |
-| --- | --- | --- | --- |
-| `root` | `Steps` | Items、根展示输入和导航请求入口。 | public |
-| `items` | `PART_ItemsPresenter` | 承载 StepsPanel 和 item 容器。 | template-stable |
-| `item` | `StepsItem` | 单项状态、内容和交互语义。 | public |
-| `indicator` | `PART_Indicator` | 数字、状态图标、Dot、自定义 Icon、Progress 和 Wave 目标。 | template-stable |
-| `title` | `HeaderPresenter` | 标题。 | internal-observable |
-| `subtitle` | `SubHeaderPresenter` | 副标题。 | internal-observable |
-| `content` | `ContentPresenter` | 步骤详情。 | internal-observable |
-| `rail` | `Connector` | 当前 item 与下一个 item 的连接线。 | internal-observable |
-| `navigation-arrow` | `NavigationArrow` | Navigation 类型的步骤方向提示。 | internal-observable |
-| `navigation-active-indicator` | `NavigationActiveIndicator` | Navigation 当前项的水平底线或垂直右侧线。 | internal-observable |
+| Part | Owner | AtomUI 节点 | 职责 | 稳定性 |
+| --- | --- | --- | --- | --- |
+| `root` | `Steps` | 控件自身 | 步骤条根语义区域，承载流程状态、布局入口和主题视觉。 | stable since 6.0 |
+| `item` | `Steps` | `StepsItem` | 单项状态、内容和交互语义。 | stable since 6.0 |
+| `itemWrapper` | `Steps` | `ItemWrapper`（`StepsPanelItemFrame`） | item 包裹层，承载单项整体视觉。 | stable since 6.0 |
+| `itemIcon` | `Steps` | `PART_Indicator`（`StepsItemIndicator`） | 数字、状态图标、Dot、自定义 Icon、Progress 和 Wave 目标。 | stable since 6.0 |
+| `itemTitle` | `Steps` | `HeaderPresenter` | 标题。 | stable since 6.0 |
+| `itemSubtitle` | `Steps` | `SubHeaderPresenter` | 副标题。 | stable since 6.0 |
+| `itemSection` | `Steps` | `Section`（`StepsItemSectionPanel`） | item 内容区，承载标题行与详情内容的分组布局容器。 | stable since 6.0 |
+| `itemContent` | `Steps` | `ContentPresenter` | 步骤详情。 | stable since 6.0 |
+| `itemRail` | `Steps` | `Connector` | 当前 item 与下一个 item 的连接线。 | stable since 6.0 |
+
+Part 的 Selector、ContractType、数量语义与定制边界以 [Steps Semantic Part 契约](semantic-part.md) 为唯一完整来源。
+
+内部模板节点（不属于 Semantic Part）：
+
+| 节点 | 类型 | 职责 |
+| --- | --- | --- |
+| `items` | `PART_ItemsPresenter` | 承载 StepsPanel 和 item 容器。 |
+| `navigation-arrow` | `NavigationArrow` | Navigation 类型的步骤方向提示。 |
+| `navigation-active-indicator` | `NavigationActiveIndicator` | Navigation 当前项的水平底线或垂直右侧线。 |
 
 Steps 不提供控件专属的完成态或选择态伪类。状态主题读取 `EffectiveStatus`、`IsCurrent`、`CanInvoke` 以及 Avalonia 标准 `:pointerover`、`:focus-visible`、`:disabled` 伪类。
 
-`title`、`subtitle` 和 `rail` 是 `StepsItem` 自身模板的内部语义节点。只有 `StepsItemTheme.axaml` 可以进入该模板并消费根控件投影的语义样式值；外部应用、Gallery 和 `StepsTheme.axaml` 不得依赖节点名称或通过 `/template/` selector 穿透 `StepsItem`。
+`itemWrapper`、`itemIcon`、`itemTitle`、`itemSubtitle`、`itemSection`、`itemContent` 和 `itemRail` 是 `StepsItem` 自身模板内的静态语义 marker，由 `StepsItemTheme.axaml` 声明；应用通过生成的子 Part Style 经 `> .semantic-item /template/ .semantic-item-x` 路由进入 item 模板，不得依赖节点名称以外的模板结构或手写 `/template/` selector。实例级 Header、SubHeader 和 Connector 覆盖由根控件三项 nullable 语义 API 投影，与 Semantic Part 定制互不取代。
 
 ## 事件与命令
 
@@ -4859,7 +4874,7 @@ public event EventHandler<StepsCurrentChangeRequestedEventArgs>?
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml:41`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml:92`
 
 SourceKey：`steps-basic`
 
@@ -4873,7 +4888,7 @@ SourceKey：`steps-basic`
 
 ### 迷你版本
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml:59`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml:110`
 
 SourceKey：`steps-small`
 
@@ -4887,7 +4902,7 @@ SourceKey：`steps-small`
 
 ### 垂直方向
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml:142`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml:193`
 
 SourceKey：`steps-vertical`
 
@@ -4901,7 +4916,7 @@ SourceKey：`steps-vertical`
 
 ### 垂直迷你版本
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml:160`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml:211`
 
 SourceKey：`steps-vertical-small`
 
@@ -4997,19 +5012,20 @@ Steps
     └── StepsPanel
         └── StepsItem
             └── StepsItemLayoutPanel
+                ├── StepsPanelItemFrame#ItemWrapper
                 ├── StepsItemIndicator#PART_Indicator
                 │   └── WaveSpiritDecorator#PART_WaveSpirit
-                ├── ContentPresenter#HeaderPresenter
-                ├── ContentPresenter#SubHeaderPresenter
+                ├── StepsItemSectionPanel#Section
+                │   ├── ContentPresenter#HeaderPresenter
+                │   ├── ContentPresenter#SubHeaderPresenter
+                │   └── ContentPresenter#ContentPresenter
                 ├── PixelAlignedBorder#Connector
-                ├── ContentPresenter#ContentPresenter
-                ├── StepsPanelItemFrame#ItemWrapper
                 ├── PathIcon#NavigationArrow
                 ├── StepsPanelArrow#PanelArrow
                 └── PixelAlignedBorder#NavigationActiveIndicator
 ```
 
-`StepsPanel` 负责 item 间的 flex/stack 布局；Panel 类型强制水平排列并将每个 item 等宽。`StepsItemLayoutPanel` 负责 item 内固定语义区域、Connector 线宽、Panel 外溢箭头和 Navigation active 线的排列。二者不创建状态。
+`StepsPanel` 负责 item 间的 flex/stack 布局；Panel 类型强制水平排列并将每个 item 等宽。`StepsItemLayoutPanel` 负责 item 内固定语义区域、Connector 线宽、Panel 外溢箭头和 Navigation active 线的排列，正文区域（标题、副标题、详情）的分组与对齐由 `StepsItemSectionPanel` 完成。这些面板不创建视觉、不计算状态。item 间的弹性压缩与文本换行契约见 [8.7 弹性压缩与文本换行模型](#87-弹性压缩与文本换行模型)。
 
 Panel 类型的几何规则：
 
@@ -5044,6 +5060,7 @@ Type == Dot             -> Vertical
 Type == OutlineDot      -> Vertical
 Type == Inline          -> Vertical
 Type == Navigation      -> Horizontal
+Type == Panel           -> Horizontal
 其他                    -> TitlePlacement
 ```
 
@@ -5074,7 +5091,7 @@ StepsToken 不承载：
 - 单 item Status 变化 O(1)。
 - 根状态变化和 Reset O(n)。
 - 不维护第二份 item 列表、状态字典或延迟更新队列。
-- 两个 Panel 在 Measure/Arrange 中不创建视觉，不修改 public 状态。
+- 三个 Panel 在 Measure/Arrange 中不创建视觉，不修改 public 状态。
 
 AOT 边界：
 
@@ -5088,10 +5105,12 @@ AOT 边界：
 主要源码：
 
 - `src/AtomUI.Desktop.Controls/Steps/Steps.cs`：public API、事件、容器生成、根输入分发和 item 状态协调。
+- `src/AtomUI.Desktop.Controls/Steps/Steps.SemanticParts.cs`：`Steps` 的 Semantic Part descriptor（`root` + `item` + 七个 item 子 Part）。
 - `src/AtomUI.Desktop.Controls/Steps/StepsItem.cs`：public item 契约、internal 派生状态、owner 生命周期和激活入口。
 - `src/AtomUI.Desktop.Controls/Steps/StepsItemIndicator.cs`：Indicator 状态、Wave part、Progress 绘制和渲染失效。
 - `src/AtomUI.Desktop.Controls/Steps/StepsPanel.cs`：item 间水平 flex、Navigation/Panel 等宽、Inline 和垂直 stack 布局。
-- `src/AtomUI.Desktop.Controls/Steps/StepsItemLayoutPanel.cs`：Indicator、Header、SubHeader、Connector、Content、NavigationArrow、PanelArrow 和 NavigationActiveIndicator 的 item 内布局。
+- `src/AtomUI.Desktop.Controls/Steps/StepsItemLayoutPanel.cs`：Indicator、Section、Connector、NavigationArrow、PanelArrow 和 NavigationActiveIndicator 的 item 内布局。
+- `src/AtomUI.Desktop.Controls/Steps/StepsItemSectionPanel.cs`：Header、SubHeader 与 Content 正文节点的分组测量与排列。
 - `src/AtomUI.Desktop.Controls/Steps/StepsPanelArrow.cs`：internal 可拉伸 Panel 楔形箭头绘制控件，负责 LTR/RTL 三角形和边框。
 - `src/AtomUI.Desktop.Controls/Steps/StepsPanelItemFrame.cs`：Panel item 的视觉外框；Filled 非首项使用左侧 notch 几何裁剪，Outlined 保持完整边框。
 - `src/AtomUI.Desktop.Controls/Steps/StepsToken.cs`：Steps 控件 Token。
@@ -5101,7 +5120,7 @@ AOT 边界：
 
 测试目录：
 
-- `tests/AtomUI.Desktop.Controls.Tests/Steps`：状态、Items、交互、Wave、Progress、布局和生命周期回归测试。
+- `tests/AtomUI.Desktop.Controls.Tests/Steps`：状态、Items、交互、Wave、Progress、布局、生命周期和 Semantic Part 回归测试。
 
 Gallery 目录：
 
@@ -5111,6 +5130,7 @@ Gallery 目录：
 
 - 源设计文档：`docs/controls/desktop/navigation/steps/overview.md`
 - 实现文档：`docs/controls/desktop/navigation/steps/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/navigation/steps/semantic-part.md`
 - Token 文档：`docs/controls/desktop/navigation/steps/token.md`
 - 变更记录：`docs/controls/desktop/navigation/steps/changelog.md`
 - 语义结构：`./semantic-cn.md`

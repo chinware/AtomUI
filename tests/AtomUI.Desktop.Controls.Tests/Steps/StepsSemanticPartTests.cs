@@ -114,7 +114,7 @@ public class StepsSemanticPartTests
             "semantic-item-section:StepsItemSectionPanel",
             "semantic-item-subtitle:ContentPresenter",
             "semantic-item-title:ContentPresenter",
-            "semantic-item-wrapper:Border"
+            "semantic-item-wrapper:StepsPanelItemFrame"
         })]
     public void Built_In_Themes_Declare_Expected_Static_Semantic_Markers(string relativePath, string[] expectedMarkers)
     {

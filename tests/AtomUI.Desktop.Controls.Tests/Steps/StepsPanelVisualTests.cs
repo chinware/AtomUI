@@ -150,8 +150,11 @@ public class StepsPanelVisualTests
             firstArrow.Width.ShouldBeGreaterThan(0);
             secondWrapper.BackgroundSizing.ShouldBe(BackgroundSizing.OuterBorderEdge);
             secondWrapper.Clip.ShouldNotBeNull();
-            secondHeader.Bounds.Left.ShouldBeGreaterThanOrEqualTo(firstArrow.Width);
-            secondContent.Bounds.Left.ShouldBeGreaterThanOrEqualTo(firstArrow.Width);
+            // The body presenters live inside the item's section panel, so their
+            // Bounds are section-relative; compare the content inset in item
+            // coordinates.
+            GetBoundsInItem(secondHeader, items[1]).Left.ShouldBeGreaterThanOrEqualTo(firstArrow.Width);
+            GetBoundsInItem(secondContent, items[1]).Left.ShouldBeGreaterThanOrEqualTo(firstArrow.Width);
         });
     }
 
@@ -178,6 +181,11 @@ public class StepsPanelVisualTests
     private static Control FindControl(Desktop.Controls.StepsItem item, string name)
     {
         return item.GetVisualDescendants().OfType<Control>().Single(control => control.Name == name);
+    }
+
+    private static Rect GetBoundsInItem(Control control, Desktop.Controls.StepsItem item)
+    {
+        return new Rect(control.TranslatePoint(default, item)!.Value, control.Bounds.Size);
     }
 
     private static T GetThemeResource<T>(object key)

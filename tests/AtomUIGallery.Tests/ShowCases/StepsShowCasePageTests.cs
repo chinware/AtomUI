@@ -79,10 +79,10 @@ public class StepsShowCasePageTests
         source.ShouldContain("StepsShowCaseLangResource SemanticPartStyleTitle");
         source.ShouldContain("StepsShowCaseLangResource SemanticPartStyleDescription");
         source.ShouldContain("SourceKey=\"steps-semantic-part\"");
-        CountShowCaseItemElements(source).ShouldBe(16);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(16);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(16);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:StepsViewModel\"").ShouldBe(17);
+        CountShowCaseItemElements(source).ShouldBe(17);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(17);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(17);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:StepsViewModel\"").ShouldBe(18);
         source.ShouldContain("StepsShowCaseLangResource BasicTitle");
         source.ShouldContain("StepsShowCaseLangResource SwitchStepTitle");
         source.ShouldContain("StepsShowCaseLangResource P2TextCurrent");
@@ -124,7 +124,7 @@ public class StepsShowCasePageTests
         pageSource.ShouldContain("ItemRailBackground=\"{atom:SharedTokenResource ColorTextDisabled}\"");
         pageSource.ShouldNotContain("inline-primary");
         pageSource.ShouldNotContain("/template/");
-        CountOccurrences(pageSource, "SourceKey=\"").ShouldBe(16);
+        CountOccurrences(pageSource, "SourceKey=\"").ShouldBe(17);
 
         codeBehindSource.ShouldContain("HandleCurrentChangeRequested");
         codeBehindSource.ShouldContain("viewModel.Current = args.Current");
