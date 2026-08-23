@@ -93,6 +93,86 @@ Live resize 问题分为两类，修复路径不能混用。
 窗口外框稳定但内容帧抖动时，先记录 GPU、驱动、Windows build、render mode 和 Avalonia 日志，并使用受支持的
 驱动环境复测。该现象不能转化为 GPU 厂商判断、驱动版本分支、UI 线程渲染或软件渲染默认值。
 
+## 内容帧滞后平台缺陷记录与上游跟踪
+
+2026-08 对"拖动窗口左边缘时内容帧滞后/撕裂"做了完整的实机诊断，结论是 **Windows 平台层缺陷，微软官方已
+承认并承诺修复**，AtomUI 与 Avalonia 应用层均无合规的根治路径。本节记录诊断过程、已排除的修复方向和上游
+跟踪入口，后续遇到同类报告直接引用本节，不要重复排查。
+
+### 诊断环境与现象
+
+- 环境：Windows 11 专业版 build 26200，Intel Arc Pro Graphics 驱动 32.0.101.8517，2560x1600 @150% DPI。
+- 现象：拖动窗口左边缘实时调整大小时，窗口外框已移动但内容帧滞后一拍以上，内容左部被裁切、整体右偏；
+  Gallery 的右上角最小化/最大化/关闭按钮区域闪烁最明显。与机器负载无关。
+- 像素扫描量化：固定扫描行测量"窗口左边缘 → 标题栏图标"的距离（正常恒定约 94px），拖动期间出现
+  3 ~ 197px 的尖峰，即内容帧相对窗口框错位。
+
+### 根因机制（基于 Avalonia 12.1.1 源码）
+
+- `WindowImpl.AppWndProc.cs` 的 `WM_SIZE` 处理只触发 `Resized` 布局事件，渲染由合成器按显示节奏异步进行。
+  模态 resize 循环中 DWM 立即移动窗口外框，内容帧至少滞后一拍。
+- DXGI swapchain 路径（`DxgiRenderTarget.BeginDrawCore`）尺寸变化要到下一次 `BeginDraw` 才
+  `ResizeBuffers` + `Present`，新帧出来之前 DWM 只能把旧尺寸内容拉伸/裁剪贴到新窗口框上。
+- 拖左边缘比右边缘观感差的原因：左边缘拖动时窗口原点同步移动，旧内容按旧宽度渲染，贴到新窗口位置时
+  整体偏移。
+- 自绘标题栏（CSD）属于内容区，因此标题栏按钮随内容一起滞后；原生标题栏由 DWM 直接合成，不走应用内容
+  管线，天然与窗口外框同步，所以原生应用表现为"内容闪但标题栏不闪"。
+
+### 已排除的修复方向（实机 A/B 验证，均无效）
+
+在 `AppBuilderExtensions.WithAtomUIDefaultOptions()` 中逐一切换 `Win32PlatformOptions.CompositionMode`
+并实机拖动验证：
+
+| CompositionMode | 结果 |
+|---|---|
+| `RedirectionSurface`（当前默认） | 错帧，像素扫描出现 ±100~200px 尖峰 |
+| `LowLatencyDxgiSwapChain` + `RedirectionSurface` | 仍闪 |
+| `WinUIComposition` | 更糟 |
+| `DirectComposition` + `RedirectionSurface` | 更糟 |
+
+其他对照实验：
+
+- 纯 Avalonia 12.1.1 对照应用（无 AtomUI、系统原生标题栏）：内容闪、标题栏不闪，与文件管理器一致。
+- Windows 文件管理器（同机同操作）：内容区同样滞后。
+- Avalonia 12.1.0 → 12.1.1 Win32 平台目录零改动，排除升级回归。
+- `WindowsBackgroundHook` 在拖动期间不触发（窗口类 `hbrBackground` 为空，resize 不发 `WM_ERASEBKGND`），
+  排除 GDI 背景填充竞态。
+
+结论：内容帧滞后与 AtomUI 无关，与合成模式选择无关，是"应用内容 present 与 DWM 合成之间缺乏帧同步"的
+平台层缺陷。
+
+### 上游与官方立场
+
+- **微软官方承认并承诺平台层修复**：[microsoft-ui-xaml#10820](https://github.com/microsoft/microsoft-ui-xaml/issues/10820)
+  的症状与本案例逐字吻合（"从左或上边缘 resize 时尤其明显"）。2026-05-29 微软 Partner Director of Design
+  March Rogers 公开表示："We are working on platform improvements to solve the tearing... Will start
+  rolling out over the summer"（先在系统自带应用验证，再推到 Windows App SDK；修复在 Windows/DWM 层，
+  Avalonia 应用预计同样受益）。相关 issue：[#2506](https://github.com/microsoft/microsoft-ui-xaml/issues/2506)、
+  [#5148](https://github.com/microsoft/microsoft-ui-xaml/issues/5148)。
+- **Avalonia 官方定性为已知限制**：[官方文档](https://docs.avaloniaui.net/troubleshooting/platform-specific-issues/windows)
+  写明 "Window resize flickering is a known limitation of the Win32 windowing model"，未承诺修复。最接近的
+  issue 是 [#9103](https://github.com/AvaloniaUI/Avalonia/issues/9103)（仅覆盖 DirectComposition 模式，
+  修复方向是 `WM_NCCALCSIZE` 内以新尺寸 present）。
+- **全框架通病**：Qt [QTBUG-93084](https://bugreports.qt.io/browse/QTBUG-93084)、Flutter
+  [#44136](https://github.com/flutter/flutter/issues/44136)、Electron
+  [#40603](https://github.com/electron/electron/issues/40603)、winit
+  [#786](https://github.com/rust-windowing/winit/issues/786)。
+- **修复原理**（winit#786 中 Raph Levien 的分析）：必须在 `WM_SIZE` 返回前同步绘制并 present 一帧新尺寸
+  内容；flip-model swapchain 与窗口尺寸之间没有内建同步。辅助手段：`Present` 后 `DwmFlush()` 对齐 vblank，
+  Windows 11 21H2+ 可用 `DCompositionWaitForCompositorClock()`。
+- AtomUI 无法采用上述方案：同步渲染需要修改 Avalonia 平台层（渲染在独立 render thread 异步执行），且
+  `ShouldRenderOnUIThread` 属于本文档的禁止做法。
+
+### 可用缓解与跟进项
+
+- 微软平台修复 rollout 后（2026 夏起，跟踪 #10820 和 Windows App SDK release notes），按本文档验证矩阵
+  在 Windows 11+ 实机重测，确认受益后更新本节状态。
+- 跟踪 [Avalonia#9103](https://github.com/AvaloniaUI/Avalonia/issues/9103)；若上游实现
+  `WM_NCCALCSIZE`/`WM_SIZE` 内同步 present，评估升级收益。
+- 用户侧可交叉验证 Intel Arc 驱动版本（已知部分版本存在视觉故障）。
+- 给用户/issue 的答复口径：内容与标题栏一起滞后是 CSD 的固有代价；要"标题栏不闪"只能改用 DWM 原生
+  标题栏（放弃自绘 chrome），属产品取舍，不在本契约默认策略内。
+
 ## 禁止做法
 
 - 在 AtomUI 中处理 `WM_NCCALCSIZE`。
