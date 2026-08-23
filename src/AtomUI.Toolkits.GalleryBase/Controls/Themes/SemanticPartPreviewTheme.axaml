@@ -5,6 +5,8 @@
     xmlns:gallery="https://atomui.net/toolkits/gallery-base">
     <ControlTheme x:Key="{x:Type gallery:SemanticPartPreview}"
                   TargetType="{x:Type gallery:SemanticPartPreview}">
+        <Setter Property="MaxHeight"
+                Value="{Binding RelativeSource={RelativeSource AncestorType=ContentPresenter}, Path=MaxHeight}" />
         <Setter Property="Template">
             <ControlTemplate TargetType="{x:Type gallery:SemanticPartPreview}">
                 <Grid>
@@ -19,7 +21,8 @@
                             <gallery:SemanticPartPreviewLayoutPanel Name="PART_Layout"
                                                                     Grid.Row="0"
                                                                     CompactBreakpoint="820"
-                                                                    Spacing="0">
+                                                                    Spacing="0"
+                                                                    PaneMaxHeight="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MaxHeight, Converter={x:Static gallery:SemanticPartPreview.PaneMaxHeightConverter}}">
                                 <Border Name="PART_PreviewStage"
                                         MinHeight="360"
                                         Padding="32">
@@ -34,18 +37,22 @@
                                 <Border Name="PART_PartsPane"
                                         BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
                                         BorderThickness="1,0,0,0">
-                                    <ItemsControl ItemsSource="{TemplateBinding Items}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <StackPanel Spacing="0" />
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate x:DataType="gallery:SemanticPartPreviewItem">
-                                                <gallery:SemanticPartPreviewItemControl Item="{Binding}" />
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
+                                    <atom:ScrollViewer VerticalScrollBarVisibility="Auto"
+                                                       AllowAutoHide="False"
+                                                       BringIntoViewOnFocusChange="False">
+                                        <ItemsControl ItemsSource="{TemplateBinding Items}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Spacing="0" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="gallery:SemanticPartPreviewItem">
+                                                    <gallery:SemanticPartPreviewItemControl Item="{Binding}" />
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </atom:ScrollViewer>
                                 </Border>
                             </gallery:SemanticPartPreviewLayoutPanel>
 

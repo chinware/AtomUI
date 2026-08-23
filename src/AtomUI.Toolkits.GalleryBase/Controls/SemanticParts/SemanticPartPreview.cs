@@ -1,7 +1,5 @@
 using System.Globalization;
 using System.Text;
-using AtomUI.Localization;
-using AtomUI.Theme;
 using AtomUI.Theme.Schema;
 using AtomUI.Toolkits.GalleryBase.Localization;
 using Avalonia;
@@ -9,6 +7,7 @@ using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data.Converters;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
@@ -19,6 +18,12 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
 {
     private const string CompactPseudoClass = ":compact";
     private const double CompactWidth = 820;
+
+    /// <summary>
+    /// Derives the parts pane max height from the content height bound the
+    /// preview inherits from the showcase host; see SemanticPartPreviewTheme.
+    /// </summary>
+    public static readonly IValueConverter PaneMaxHeightConverter = new SemanticPartPaneMaxHeightConverter();
 
     public static readonly StyledProperty<Control?> PreviewContentProperty =
         AvaloniaProperty.Register<SemanticPartPreview, Control?>(nameof(PreviewContent));
@@ -240,7 +245,7 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
             throw new InvalidOperationException(
                 $"No Semantic Part descriptor is registered for '{ownerType.FullName}'.");
         }
-        if (!descriptor.ControlType.IsAssignableFrom(owner.GetType()))
+        if (!descriptor.ControlType.IsInstanceOfType(owner))
         {
             throw new InvalidOperationException(
                 $"Semantic owner '{owner.GetType().FullName}' is not compatible with descriptor owner " +
@@ -316,7 +321,7 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
     {
         return SemanticOwner is not { } owner ||
                SemanticOwnerType is not { } ownerType ||
-               ownerType.IsAssignableFrom(owner.GetType());
+               ownerType.IsInstanceOfType(owner);
     }
 
     private void QueueHighlightUpdate()
@@ -359,14 +364,14 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
         var ownerType = _controlDescriptor?.ControlType ?? SemanticOwnerType ?? anchor.GetType();
         var scope = PreviewContent ?? anchor;
         var instances = new List<Control>();
-        if (ownerType.IsAssignableFrom(scope.GetType()))
+        if (ownerType.IsInstanceOfType(scope))
         {
             instances.Add(scope);
         }
 
         foreach (var descendant in scope.GetVisualDescendants().OfType<Control>())
         {
-            if (ownerType.IsAssignableFrom(descendant.GetType()) && !instances.Contains(descendant))
+            if (ownerType.IsInstanceOfType(descendant) && !instances.Contains(descendant))
             {
                 instances.Add(descendant);
             }

@@ -38,9 +38,16 @@ public class GalleryBaseCatalogTests
         var application = Application.Current.ShouldNotBeNull();
         var languageManager = application.GetLanguageManager().ShouldNotBeNull();
         var localizer = application.GetLocalizer().ShouldNotBeNull();
-        AssertLanguage(LanguageTags.EnUS, expected.Select(static entry => (entry.Kind, entry.En)), languageManager, localizer);
-        AssertLanguage(LanguageTags.ZhCN, expected.Select(static entry => (entry.Kind, entry.ZhCn)), languageManager, localizer);
-        AssertLanguage(LanguageTags.ZhTW, expected.Select(static entry => (entry.Kind, entry.ZhTw)), languageManager, localizer);
+        try
+        {
+            AssertLanguage(LanguageTags.EnUS, expected.Select(static entry => (entry.Kind, entry.En)), languageManager, localizer);
+            AssertLanguage(LanguageTags.ZhCN, expected.Select(static entry => (entry.Kind, entry.ZhCn)), languageManager, localizer);
+            AssertLanguage(LanguageTags.ZhTW, expected.Select(static entry => (entry.Kind, entry.ZhTw)), languageManager, localizer);
+        }
+        finally
+        {
+            languageManager.ChangeLanguage(LanguageTags.EnUS);
+        }
 
         resourceKindType.Assembly.GetType("AtomUI.Toolkits.GalleryBase.Localization.en_US").ShouldBeNull();
         resourceKindType.Assembly.GetType("AtomUI.Toolkits.GalleryBase.Localization.zh_CN").ShouldBeNull();

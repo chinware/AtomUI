@@ -59,9 +59,11 @@ public class SliderSemanticTracksPreviewTests
 
             // antd `.ant-slider-tracks`：多段轨道容器横跨首值到末值。
             // range [20, 30, 50] → 从 20% 处开始、覆盖 30% 的轨道长度。
-            // 容差覆盖 Avalonia 布局对整像素的取整（±0.5px）。
-            tracks.Bounds.X.ShouldBe(rail.Bounds.X + rail.Bounds.Width * 0.2, 0.6);
-            tracks.Bounds.Width.ShouldBe(rail.Bounds.Width * 0.3, 0.6);
+            // 容差覆盖 Avalonia 布局对整像素的取整：轨道起止边缘各自独立取整，
+            // 宽度相对 rail × 0.3 的偏差可达 ±1px（页面是否出现滚动条会使内容
+            // 宽度相差一个滚动条宽，rail 宽度随之平移一个取整边界）。
+            tracks.Bounds.X.ShouldBe(rail.Bounds.X + rail.Bounds.Width * 0.2, 1.0);
+            tracks.Bounds.Width.ShouldBe(rail.Bounds.Width * 0.3, 1.0);
             tracks.Bounds.Y.ShouldBe(rail.Bounds.Y, 0.6);
             tracks.Bounds.Height.ShouldBe(rail.Bounds.Height, 0.6);
 

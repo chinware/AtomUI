@@ -264,6 +264,9 @@ GalleryStickyTabsHost
 - 让 Header、StickyContent、Content 共用一个滚动上下文。
 - StickyContent 到达顶部后保持可见。
 - 通过只读 sticky mirror 解决窗口级 Adorner 覆盖 sticky tabs 的问题。
+- `IsContentHeightBounded=true` 时宿主在 code-behind 中把 Content 宿主 MaxHeight 计算为页面视口减去 Header 与
+  StickyContent 后的剩余高度（`UpdateContentMaxHeight`，随 ScrollChanged/LayoutUpdated 与属性变化更新），
+  供 Semantic Parts 单个 Preview 的 Part 列表填满剩余高度并在列表内部滚动；其余情况恢复无限高度。
 
 规则：
 

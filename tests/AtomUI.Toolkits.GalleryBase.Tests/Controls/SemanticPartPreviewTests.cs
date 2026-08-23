@@ -11,6 +11,7 @@ using Shouldly;
 using Xunit;
 using AtomUIButton = AtomUI.Desktop.Controls.Button;
 using AtomUIDescriptions = AtomUI.Desktop.Controls.Descriptions;
+using AtomUISteps = AtomUI.Desktop.Controls.Steps;
 using AtomUIToolTip = AtomUI.Desktop.Controls.ToolTip;
 using AtomUIWindow = AtomUI.Desktop.Controls.Window;
 
@@ -452,6 +453,38 @@ public class SemanticPartPreviewTests
         var session = preview.ActiveHighlightSession.ShouldNotBeNull();
         session.TotalMatchCount.ShouldBe(2);
         session.HighlightedTargetCount.ShouldBe(2);
+    }
+
+    [Fact]
+    public void Bounded_Measure_Uses_The_Available_Height_For_The_Parts_Pane_Instead_Of_The_Fixed_Cap()
+    {
+        var preview = new SemanticPartPreview
+        {
+            PreviewContent = new AtomUISteps(),
+            SemanticOwnerType = typeof(AtomUISteps)
+        };
+
+        using var context = ShowInWindow(preview);
+        preview.ActivatePreview();
+        Dispatcher.UIThread.RunJobs();
+
+        var layout = preview.GetVisualDescendants()
+                            .OfType<SemanticPartPreviewLayoutPanel>()
+                            .Single(static panel => panel.Name == "PART_Layout");
+        var pane = layout.Children[1];
+
+        layout.Measure(new Size(900, 500));
+        pane.DesiredSize.Height.ShouldBeGreaterThan(410);
+        pane.DesiredSize.Height.ShouldBeLessThanOrEqualTo(500);
+
+        layout.Measure(new Size(900, double.PositiveInfinity));
+        pane.DesiredSize.Height.ShouldBe(layout.PaneMaxHeight, 0.01);
+
+        layout.Measure(new Size(600, 500));
+        var previewStage = layout.Children[0];
+        pane.DesiredSize.Height.ShouldBeLessThan(300);
+        pane.DesiredSize.Height.ShouldBe(
+            Math.Max(0, 500 - previewStage.DesiredSize.Height - layout.Spacing), 0.01);
     }
 
     private static SemanticPartPreview CreatePreview(AtomUIButton button)

@@ -34,8 +34,12 @@ StepsToken 不承载：
 - `IconSizeSM`
 - `CustomIconSize`
 - `CustomIconFontSize`
+- `IconContainerCornerRadius`
 
-这些 Token 控制数字、状态图标和自定义 PathIcon 的容器及内容尺寸。
+这些 Token 控制数字、状态图标和自定义 PathIcon 的容器及内容尺寸。`IconContainerCornerRadius` 是
+CornerRadius 类型 Token，由 `IconContainerSize` 派生为默认全圆；它由 `StepsItemIndicatorTheme.axaml`
+以 style 优先级消费，使 Semantic Part `itemIcon` 的圆角可被 Semantic Style setter 覆盖，控件代码不得
+以 local value 写入圆角。
 
 ### 2.3 Dot 与 Connector
 
@@ -178,6 +182,7 @@ StepsToken 只影响：
 - Inline Token 不能泄漏到 Default、Dot 或 Navigation。
 - Token 名称中的 Description 是既有主题术语，不恢复 Description public API。
 - 未被主题、Panel 或 Indicator 消费的 Token 必须接入明确语义或从 Token 契约删除，不能保留无效计算值。
+- `IconContainerCornerRadius` 必须保持 CornerRadius 类型并由主题 style 优先级消费；它是 `itemIcon` Semantic Part 的默认视觉，不能被代码层 local value 或尺寸同步逻辑取代。
 
 ## 6. 验证策略
 

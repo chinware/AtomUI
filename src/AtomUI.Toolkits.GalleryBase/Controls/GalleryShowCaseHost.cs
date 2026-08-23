@@ -57,6 +57,11 @@ public class GalleryShowCaseHost : TemplatedControl
             nameof(IsSemanticPartsContentMaterialized),
             host => host.IsSemanticPartsContentMaterialized);
 
+    internal static readonly DirectProperty<GalleryShowCaseHost, bool> IsSemanticPartsContentHeightBoundedProperty =
+        AvaloniaProperty.RegisterDirect<GalleryShowCaseHost, bool>(
+            nameof(IsSemanticPartsContentHeightBounded),
+            host => host.IsSemanticPartsContentHeightBounded);
+
     private AtomUITabStrip? _tabStrip;
     private Control? _semanticPartsContent;
     private IReadOnlyList<SemanticPartPreview> _semanticPartPreviews = Array.Empty<SemanticPartPreview>();
@@ -64,6 +69,7 @@ public class GalleryShowCaseHost : TemplatedControl
     private object? _activeContent;
     private bool _hasSemanticParts;
     private bool _isSemanticPartsContentMaterialized;
+    private bool _isSemanticPartsContentHeightBounded;
     private bool _isSynchronizingSelection;
 
     public object? Header
@@ -122,6 +128,12 @@ public class GalleryShowCaseHost : TemplatedControl
             IsSemanticPartsContentMaterializedProperty,
             ref _isSemanticPartsContentMaterialized,
             value);
+    }
+
+    internal bool IsSemanticPartsContentHeightBounded
+    {
+        get => _isSemanticPartsContentHeightBounded;
+        private set => SetAndRaise(IsSemanticPartsContentHeightBoundedProperty, ref _isSemanticPartsContentHeightBounded, value);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -264,6 +276,16 @@ public class GalleryShowCaseHost : TemplatedControl
             }
             ActiveContent = ExamplesContent;
         }
+
+        // The semantic tab content is bounded to the page viewport remainder only
+        // when it materializes a single preview: a lone parts pane then fills the
+        // remaining height and scrolls its cards internally. Templates that stack
+        // several previews keep the content-sized layout so every preview stays
+        // reachable through the page scroll.
+        IsSemanticPartsContentHeightBounded =
+            SelectedTab == GalleryShowCaseTab.SemanticParts &&
+            HasSemanticParts &&
+            _semanticPartPreviews.Count == 1;
     }
 
     private Control? EnsureSemanticPartsContent()

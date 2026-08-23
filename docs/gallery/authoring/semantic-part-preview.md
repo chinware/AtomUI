@@ -164,7 +164,17 @@ Preview 使用一个完整边框包围预览区和 Part 列表，不能把两栏
 
 - 宽屏左侧是白色真实控件预览区，右侧是固定范围宽度的 Part 列表，中间只保留一条分隔线。
 - 窄屏按预览区、Part 列表顺序上下堆叠，分隔线切换到列表顶部。
-- 面板按内容决定高度并在内容区顶部对齐，不能被页面剩余高度强制拉伸成大面积空白舞台。
+- 窄屏下 Part 列表高度以 `CompactPaneMaxHeight`（默认 400）为上限并在列表内部滚动，预览区始终钉在上方可见；列表不得随内容无限增高而把预览区挤出页面视口。
+- 宽屏下且 Semantic Parts 标签页内容被宿主限高时（`GalleryShowCaseHost` 只对单个 Preview 的模板开启
+  `IsContentHeightBounded`，把 `GalleryStickyTabsHost` 的内容宿主 MaxHeight 绑定为页面视口减去页头与吸顶区后的剩余高度），
+  Part 列表填满该剩余高度减去检查面板固定上下内边距（20 上边距 + 32 下边距 + 2 边框，共 54）后的空间，并在列表内部滚动；
+  列表内容不足该高度时面板仍按内容决定高度并在内容区顶部对齐，不会被页面剩余高度强制拉伸成大面积空白舞台。
+  绑定链是：宿主 code-behind 计算的 Content 宿主 MaxHeight → Preview 继承的 MaxHeight →
+  `SemanticPartPreview.PaneMaxHeightConverter` 换算后的布局面板 `PaneMaxHeight`。
+- 模板堆叠多个 Preview 或宿主未限高时，宽屏 Part 列表以 `PaneMaxHeight`（默认 400）为上限并在列表内部滚动。页面测量链为
+  Preview 提供无限高度，若不对列表高度设上限，列表会按全部行高撑高整个面板，把预览区挤出页面视口（短窗口下尤其明显），
+  浏览靠后的 Part 就只能滚动页面而不是滚动列表本身；多 Preview 模板保持内容尺寸布局，避免第一个 Preview 占满视口余量后
+  把后续 Preview 挤出首屏。
 - Part 行使用平铺列表和行分隔线，不使用独立边框、圆角卡片、嵌套卡片或额外的 Semantic Parts 标题。
 - 主行只常驻显示 Part 名称、本地化职责描述、Pin 和 Info；selector、SelectorRoute、ContractType、cardinality、
   customization、跨视觉根和运行时创建等技术字段只在用户打开 Info 后显示。

@@ -10,7 +10,8 @@
                     Header="{TemplateBinding Header}"
                     StickyContent="{TemplateBinding NavigationContent}"
                     StickyContentPadding="{TemplateBinding StickyContentPadding}"
-                    Content="{TemplateBinding ActiveContent}" />
+                    Content="{TemplateBinding ActiveContent}"
+                    IsContentHeightBounded="{TemplateBinding IsSemanticPartsContentHeightBounded}" />
             </ControlTemplate>
         </Setter>
     </ControlTheme>

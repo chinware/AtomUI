@@ -193,11 +193,157 @@ public class StepsPanelTests
         panel.Children.Select(child => child.Bounds.Width).ShouldBe([80d, 80d]);
     }
 
-    private sealed class FixedSizeControl(double width, double height) : Avalonia.Controls.Control
+    [Fact]
+    public void Horizontal_Default_Shrinks_Items_Proportionally_When_Width_Is_Insufficient()
     {
+        var panel = new Desktop.Controls.StepsPanel
+        {
+            Type        = Desktop.Controls.StepsType.Default,
+            Orientation = Orientation.Horizontal
+        };
+        panel.Children.Add(new FixedSizeControl(100, 24));
+        panel.Children.Add(new FixedSizeControl(200, 24));
+        panel.Children.Add(new FixedSizeControl(100, 24));
+
+        panel.Measure(new Size(250, 100));
+        panel.DesiredSize.Width.ShouldBe(250d);
+
+        panel.Arrange(new Rect(0, 0, 250, 100));
+
+        panel.Children.Select(child => child.Bounds.Width).ShouldBe([62.5d, 125d, 62.5d]);
+        panel.Children.Select(child => child.Bounds.X).ShouldBe([0d, 62.5d, 187.5d]);
+    }
+
+    [Fact]
+    public void Horizontal_Default_Single_Item_Shrinks_To_Available_Width_When_Narrow()
+    {
+        var panel = new Desktop.Controls.StepsPanel
+        {
+            Type        = Desktop.Controls.StepsType.Default,
+            Orientation = Orientation.Horizontal
+        };
+        panel.Children.Add(new FixedSizeControl(60, 24));
+
+        panel.Measure(new Size(40, 100));
+        panel.Arrange(new Rect(0, 0, 40, 100));
+
+        panel.Children.Single().Bounds.Width.ShouldBe(40d);
+        panel.Children.Single().Bounds.X.ShouldBe(0d);
+    }
+
+    [Fact]
+    public void Horizontal_Default_Single_Item_Keeps_Content_Width_When_Wide()
+    {
+        var panel = new Desktop.Controls.StepsPanel
+        {
+            Type        = Desktop.Controls.StepsType.Default,
+            Orientation = Orientation.Horizontal
+        };
+        panel.Children.Add(new FixedSizeControl(60, 24));
+
+        panel.Measure(new Size(300, 100));
+        panel.Arrange(new Rect(0, 0, 300, 100));
+
+        panel.Children.Single().Bounds.Width.ShouldBe(60d);
+        panel.Children.Single().Bounds.X.ShouldBe(0d);
+    }
+
+    [Fact]
+    public void Horizontal_Default_Respects_MinItemWidth_Floor()
+    {
+        var panel = new Desktop.Controls.StepsPanel
+        {
+            Type         = Desktop.Controls.StepsType.Default,
+            Orientation  = Orientation.Horizontal,
+            MinItemWidth = 30
+        };
+        panel.Children.Add(new FixedSizeControl(40, 24));
+        panel.Children.Add(new FixedSizeControl(200, 24));
+        panel.Children.Add(new FixedSizeControl(100, 24));
+
+        panel.Measure(new Size(100, 100));
+        panel.Arrange(new Rect(0, 0, 100, 100));
+
+        panel.Children.Select(child => child.Bounds.Width).ShouldBe([30d, 40d, 30d]);
+        panel.Children.Select(child => child.Bounds.X).ShouldBe([0d, 30d, 70d]);
+    }
+
+    [Fact]
+    public void Horizontal_Default_Overflows_When_MinItemWidth_Exceeds_Available_Share()
+    {
+        var panel = new Desktop.Controls.StepsPanel
+        {
+            Type         = Desktop.Controls.StepsType.Default,
+            Orientation  = Orientation.Horizontal,
+            MinItemWidth = 30
+        };
+        panel.Children.Add(new FixedSizeControl(100, 24));
+        panel.Children.Add(new FixedSizeControl(200, 24));
+        panel.Children.Add(new FixedSizeControl(100, 24));
+
+        panel.Measure(new Size(60, 100));
+        panel.Arrange(new Rect(0, 0, 60, 100));
+
+        panel.Children.Select(child => child.Bounds.Width).ShouldBe([30d, 30d, 30d]);
+        panel.Children.Select(child => child.Bounds.X).ShouldBe([0d, 30d, 60d]);
+    }
+
+    [Fact]
+    public void Horizontal_Navigation_Respects_MinItemWidth_Floor()
+    {
+        var panel = new Desktop.Controls.StepsPanel
+        {
+            Type         = Desktop.Controls.StepsType.Navigation,
+            Orientation  = Orientation.Horizontal,
+            MinItemWidth = 30
+        };
+        panel.Children.Add(new FixedSizeControl(40, 24));
+        panel.Children.Add(new FixedSizeControl(80, 24));
+        panel.Children.Add(new FixedSizeControl(20, 24));
+
+        panel.Measure(new Size(60, 100));
+        panel.Arrange(new Rect(0, 0, 60, 100));
+
+        panel.Children.Select(child => child.Bounds.Width).ShouldBe([30d, 30d, 30d]);
+        panel.Children.Select(child => child.Bounds.X).ShouldBe([0d, 30d, 60d]);
+    }
+
+    [Fact]
+    public void Horizontal_TitleVertical_Respects_MinItemWidth_Floor()
+    {
+        var panel = new Desktop.Controls.StepsPanel
+        {
+            Type           = Desktop.Controls.StepsType.Inline,
+            Orientation    = Orientation.Horizontal,
+            TitlePlacement = Orientation.Vertical,
+            MinItemWidth   = 30
+        };
+        panel.Children.Add(new FixedSizeControl(40, 24));
+        panel.Children.Add(new FixedSizeControl(40, 24));
+        panel.Children.Add(new FixedSizeControl(40, 24));
+
+        panel.Measure(new Size(60, 100));
+        panel.Arrange(new Rect(0, 0, 60, 100));
+
+        panel.Children.Select(child => child.Bounds.Width).ShouldBe([30d, 30d, 30d]);
+        panel.Children.Select(child => child.Bounds.X).ShouldBe([0d, 30d, 60d]);
+    }
+
+    private sealed class FixedSizeControl : Avalonia.Controls.Control
+    {
+        private readonly double _height;
+        private readonly double _width;
+
+        public FixedSizeControl(double width, double height)
+        {
+            _width             = width;
+            _height            = height;
+            UseLayoutRounding  = false;
+        }
+
         protected override Size MeasureOverride(Size availableSize)
         {
-            return new Size(width, height);
+            return new Size(_width, _height);
         }
     }
 }

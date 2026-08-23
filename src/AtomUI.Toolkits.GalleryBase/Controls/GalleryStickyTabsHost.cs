@@ -2,6 +2,7 @@ using AtomUI.Controls.Primitives;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Metadata;
 using Avalonia.Media;
@@ -12,12 +13,16 @@ namespace AtomUI.Toolkits.GalleryBase.Controls;
 
 [TemplatePart(ScrollViewerPart, typeof(ScrollViewer))]
 [TemplatePart(StickyPanelPart, typeof(GalleryStickyTabsPanel))]
+[TemplatePart(HeaderHostPart, typeof(ContentPresenter))]
 [TemplatePart(StickyContentHostPart, typeof(Control))]
+[TemplatePart(ContentHostPart, typeof(ContentPresenter))]
 public class GalleryStickyTabsHost : TemplatedControl
 {
     private const string ScrollViewerPart      = "PART_ScrollViewer";
     private const string StickyPanelPart       = "PART_StickyPanel";
+    private const string HeaderHostPart        = "PART_HeaderHost";
     private const string StickyContentHostPart = "PART_StickyContentHost";
+    private const string ContentHostPart       = "PART_ContentHost";
     private const int StickyMirrorZIndex       = -1;
 
     public static readonly StyledProperty<object?> HeaderProperty =
@@ -46,6 +51,9 @@ public class GalleryStickyTabsHost : TemplatedControl
             nameof(HasStickyContent),
             host => host.HasStickyContent,
             (host, value) => host.HasStickyContent = value);
+
+    internal static readonly StyledProperty<bool> IsContentHeightBoundedProperty =
+        AvaloniaProperty.Register<GalleryStickyTabsHost, bool>(nameof(IsContentHeightBounded));
 
     public object? Header
     {
@@ -98,13 +106,22 @@ public class GalleryStickyTabsHost : TemplatedControl
         set => SetAndRaise(HasStickyContentProperty, ref _hasStickyContent, value);
     }
 
+    internal bool IsContentHeightBounded
+    {
+        get => GetValue(IsContentHeightBoundedProperty);
+        set => SetValue(IsContentHeightBoundedProperty, value);
+    }
+
     private ScrollViewer? _scrollViewer;
     private GalleryStickyTabsPanel? _stickyPanel;
+    private ContentPresenter? _headerHost;
     private Control? _inlineStickyContentHost;
+    private ContentPresenter? _contentHost;
     private ScopeAwareAdornerLayer? _stickyMirrorLayer;
     private Border? _stickyMirror;
     private VisualBrush? _stickyMirrorBrush;
     private IDisposable? _stickyContentHostBoundsSubscription;
+    private IDisposable? _headerHostBoundsSubscription;
     private bool _stickyMirrorUpdateQueued;
 
     public GalleryStickyTabsHost()
@@ -119,13 +136,22 @@ public class GalleryStickyTabsHost : TemplatedControl
 
         _scrollViewer            = e.NameScope.Get<ScrollViewer>(ScrollViewerPart);
         _stickyPanel             = e.NameScope.Get<GalleryStickyTabsPanel>(StickyPanelPart);
+        _headerHost              = e.NameScope.Get<ContentPresenter>(HeaderHostPart);
         _inlineStickyContentHost = e.NameScope.Get<Control>(StickyContentHostPart);
+        _contentHost             = e.NameScope.Get<ContentPresenter>(ContentHostPart);
 
         _stickyPanel.PropertyChanged += HandleStickyPanelPropertyChanged;
         _scrollViewer.ScrollChanged  += HandleScrollChanged;
         _stickyContentHostBoundsSubscription = _inlineStickyContentHost.GetObservable(BoundsProperty)
-                                                   .Subscribe(_ => QueueStickyMirrorUpdate());
+                                                   .Subscribe(_ =>
+                                                   {
+                                                       QueueStickyMirrorUpdate();
+                                                       UpdateContentMaxHeight();
+                                                   });
+        _headerHostBoundsSubscription = _headerHost.GetObservable(BoundsProperty)
+                                                       .Subscribe(_ => UpdateContentMaxHeight());
 
+        UpdateContentMaxHeight();
         UpdateStickyMirror();
     }
 
@@ -154,6 +180,10 @@ public class GalleryStickyTabsHost : TemplatedControl
         {
             QueueStickyMirrorUpdate();
         }
+        else if (change.Property == IsContentHeightBoundedProperty)
+        {
+            UpdateContentMaxHeight();
+        }
     }
 
     private void ReleaseTemplateParts()
@@ -172,14 +202,15 @@ public class GalleryStickyTabsHost : TemplatedControl
             _scrollViewer = null;
         }
 
-        if (_inlineStickyContentHost is not null)
-        {
-            _inlineStickyContentHost = null;
-        }
-
         _stickyContentHostBoundsSubscription?.Dispose();
         _stickyContentHostBoundsSubscription = null;
 
+        _headerHostBoundsSubscription?.Dispose();
+        _headerHostBoundsSubscription = null;
+
+        _inlineStickyContentHost = null;
+        _headerHost              = null;
+        _contentHost             = null;
         _stickyMirrorUpdateQueued = false;
     }
 
@@ -194,6 +225,25 @@ public class GalleryStickyTabsHost : TemplatedControl
     private void HandleScrollChanged(object? sender, ScrollChangedEventArgs e)
     {
         QueueStickyMirrorUpdate();
+        UpdateContentMaxHeight();
+    }
+
+    private void UpdateContentMaxHeight()
+    {
+        if (_contentHost is null || _scrollViewer is null)
+        {
+            return;
+        }
+
+        if (!IsContentHeightBounded)
+        {
+            _contentHost.MaxHeight = double.PositiveInfinity;
+            return;
+        }
+
+        var headerHeight = _headerHost?.Bounds.Height ?? 0;
+        var stickyHeight = _inlineStickyContentHost?.Bounds.Height ?? 0;
+        _contentHost.MaxHeight = Math.Max(0, _scrollViewer.Viewport.Height - headerHeight - stickyHeight);
     }
 
     private void QueueStickyMirrorUpdate()

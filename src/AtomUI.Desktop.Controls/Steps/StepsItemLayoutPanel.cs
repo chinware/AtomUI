@@ -173,39 +173,45 @@ internal class StepsItemLayoutPanel : Panel
                 contentAvailableSize.Height);
         }
 
-        foreach (var child in Children)
+        var section = FindChild(StepsItemLayoutRole.Section) as StepsItemSectionPanel;
+        if (EffectiveTitlePlacement == Orientation.Horizontal)
         {
-            child.Measure(contentAvailableSize);
+            MeasureHorizontalTitleChildren(contentAvailableSize, section);
+        }
+        else
+        {
+            foreach (var child in Children)
+            {
+                child.Measure(contentAvailableSize);
+            }
         }
 
         var indicator = FindChild(StepsItemLayoutRole.Indicator)?.DesiredSize ?? default;
-        var header = FindChild(StepsItemLayoutRole.Header)?.DesiredSize ?? default;
-        var subHeader = FindChild(StepsItemLayoutRole.SubHeader)?.DesiredSize ?? default;
-        var content = FindChild(StepsItemLayoutRole.Content)?.DesiredSize ?? default;
+        var bodyWidth = section?.DesiredSize.Width ?? 0;
+        var bodyHeight = section?.DesiredSize.Height ?? 0;
+        var sectionHeadingHeight = section?.HeadingHeight ?? 0;
         var connector = Type == StepsType.Navigation
             ? default
             : FindChild(StepsItemLayoutRole.Connector)?.DesiredSize ?? default;
         if (EffectiveTitlePlacement == Orientation.Horizontal)
         {
-            var headingHeight = Math.Max(indicator.Height, Math.Max(header.Height, subHeader.Height));
-            var bodyWidth = Math.Max(header.Width + subHeader.Width, content.Width);
-            var bodyHeight = headingHeight + content.Height;
+            var bodyHeightWithHeading = bodyHeight + Math.Max(0, indicator.Height - sectionHeadingHeight);
             var indicatorSpacing = bodyWidth > 0 ? IndicatorSpacing : 0;
 
             if (Type == StepsType.Navigation)
             {
                 return Inflate(
-                    new Size(indicator.Width + indicatorSpacing + bodyWidth, bodyHeight),
+                    new Size(indicator.Width + indicatorSpacing + bodyWidth, bodyHeightWithHeading),
                     Padding);
             }
 
             var desiredSize = EffectiveOrientation == Orientation.Vertical
                 ? new Size(
                     indicator.Width + indicatorSpacing + bodyWidth,
-                    Math.Max(bodyHeight, indicator.Height + connector.Height) + Math.Max(0, VerticalItemPadding))
+                    Math.Max(bodyHeightWithHeading, indicator.Height + connector.Height) + Math.Max(0, VerticalItemPadding))
                 : new Size(
                     indicator.Width + indicatorSpacing + bodyWidth + connector.Width,
-                    bodyHeight);
+                    bodyHeightWithHeading);
             if (Type == StepsType.Panel)
             {
                 desiredSize = new Size(desiredSize.Width + panelLeadingInset, desiredSize.Height);
@@ -214,25 +220,48 @@ internal class StepsItemLayoutPanel : Panel
             return Inflate(desiredSize, Padding);
         }
 
-        var verticalBodyWidth = Math.Max(header.Width, Math.Max(subHeader.Width, content.Width));
-        var verticalBodyHeight = header.Height + subHeader.Height + content.Height;
         var verticalTitleWidth = EffectiveOrientation == Orientation.Horizontal
-            ? Math.Max(indicator.Width, verticalBodyWidth)
-            : Math.Max(indicator.Width + connector.Width, verticalBodyWidth);
+            ? Math.Max(indicator.Width, bodyWidth)
+            : Math.Max(indicator.Width + connector.Width, bodyWidth);
         return Inflate(
             new Size(
                 verticalTitleWidth,
-                indicator.Height + (verticalBodyHeight > 0 ? IndicatorSpacing : 0) + verticalBodyHeight),
+                indicator.Height + (bodyHeight > 0 ? IndicatorSpacing : 0) + bodyHeight),
             Padding);
+    }
+
+    private void MeasureHorizontalTitleChildren(Size availableSize, Control? section)
+    {
+        // The horizontal-title arrangement places the body beside the indicator and
+        // clamps each body part to (item width - indicator - spacing), so the body
+        // section must be measured with that same width. Measuring it at the full
+        // item width would let a share just above the text's natural width measure
+        // one line and then get clipped at arrange time instead of wrapping.
+        Control? indicator = null;
+        foreach (var child in Children)
+        {
+            if (GetRole(child) == StepsItemLayoutRole.Indicator)
+            {
+                indicator = child;
+            }
+            else if (!ReferenceEquals(child, section))
+            {
+                child.Measure(availableSize);
+            }
+        }
+
+        indicator?.Measure(availableSize);
+        var bodyAvailableSize = new Size(
+            Math.Max(0, availableSize.Width - (indicator?.DesiredSize.Width ?? 0) - IndicatorSpacing),
+            availableSize.Height);
+        section?.Measure(bodyAvailableSize);
     }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
         var indicator = FindChild(StepsItemLayoutRole.Indicator);
-        var header = FindChild(StepsItemLayoutRole.Header);
-        var subHeader = FindChild(StepsItemLayoutRole.SubHeader);
+        var section = FindChild(StepsItemLayoutRole.Section) as StepsItemSectionPanel;
         var connector = FindChild(StepsItemLayoutRole.Connector);
-        var content = FindChild(StepsItemLayoutRole.Content);
         var arrow = FindChild(StepsItemLayoutRole.NavigationArrow);
         var panelArrow = FindChild(StepsItemLayoutRole.PanelArrow, includeInvisible: true);
         var navigationActiveIndicator = FindChild(StepsItemLayoutRole.NavigationActiveIndicator);
@@ -247,9 +276,7 @@ internal class StepsItemLayoutPanel : Panel
             ArrangeHorizontalTitleLayout(
                 layoutRect,
                 indicator,
-                header,
-                subHeader,
-                content,
+                section,
                 connector,
                 arrow,
                 panelArrow,
@@ -262,9 +289,7 @@ internal class StepsItemLayoutPanel : Panel
             ArrangeVerticalTitleLayout(
                 layoutRect,
                 indicator,
-                header,
-                subHeader,
-                content,
+                section,
                 connector,
                 arrow,
                 panelArrow,
@@ -281,9 +306,7 @@ internal class StepsItemLayoutPanel : Panel
     private void ArrangeHorizontalTitleLayout(
         Rect layoutRect,
         Control? indicator,
-        Control? header,
-        Control? subHeader,
-        Control? content,
+        StepsItemSectionPanel? section,
         Control? connector,
         Control? arrow,
         Control? panelArrow,
@@ -294,24 +317,26 @@ internal class StepsItemLayoutPanel : Panel
         var layoutWidth  = layoutRect.Width;
         var layoutHeight = layoutRect.Height;
 
-        var headerSize = header?.DesiredSize ?? default;
-        var subHeaderSize = subHeader?.DesiredSize ?? default;
-        var contentSize = content?.DesiredSize ?? default;
-        var headingHeight = Math.Max(indicatorSize.Height, Math.Max(headerSize.Height, subHeaderSize.Height));
-        var desiredBodyWidth = Math.Max(headerSize.Width + subHeaderSize.Width, contentSize.Width);
-        var indicatorSpacing = desiredBodyWidth > 0 ? IndicatorSpacing : 0;
-        var groupWidth = Math.Min(layoutWidth, indicatorSize.Width + indicatorSpacing + desiredBodyWidth);
+        var sectionBodyWidth = section?.DesiredSize.Width ?? 0;
+        var sectionBodyHeight = section?.DesiredSize.Height ?? 0;
+        var sectionHeadingHeight = section?.HeadingHeight ?? 0;
+        var headingHeight = Math.Max(indicatorSize.Height, sectionHeadingHeight);
+        var indicatorSpacing = sectionBodyWidth > 0 ? IndicatorSpacing : 0;
+        var groupWidth = Math.Min(layoutWidth, indicatorSize.Width + indicatorSpacing + sectionBodyWidth);
         var groupX = Type == StepsType.Navigation && EffectiveOrientation == Orientation.Horizontal
             ? Math.Max(0, (layoutWidth - groupWidth) / 2)
             : 0;
         var bodyStart = groupX + indicatorSize.Width + indicatorSpacing;
         var panelLeadingInset = GetPanelLeadingInset(panelArrow);
         var bodyWidth = Math.Min(
-            desiredBodyWidth,
+            sectionBodyWidth,
             Math.Max(0, layoutWidth - bodyStart - panelLeadingInset));
         var bodyX = Type == StepsType.Panel && FlowDirection == AvaloniaFlowDirection.RightToLeft
             ? Math.Max(0, layoutWidth - bodyWidth - panelLeadingInset)
             : bodyStart + panelLeadingInset;
+        var bodyHeight = Math.Min(
+            sectionBodyHeight + Math.Max(0, indicatorSize.Height - sectionHeadingHeight),
+            Math.Max(0, layoutHeight));
 
         var indicatorRect = new Rect(
             layoutRect.X + groupX,
@@ -321,33 +346,16 @@ internal class StepsItemLayoutPanel : Panel
         Arrange(indicator, indicatorRect);
         var arrangedIndicatorBounds = GetArrangedBounds(indicator, indicatorRect);
 
-        var headerWidth = Math.Min(headerSize.Width, bodyWidth);
-        Arrange(header, new Rect(
-            layoutRect.X + bodyX,
-            layoutRect.Y + Math.Max(0, (headingHeight - headerSize.Height) / 2),
-            headerWidth,
-            headerSize.Height));
-
-        var subHeaderWidth = Math.Min(subHeaderSize.Width, Math.Max(0, bodyWidth - headerWidth));
-        Arrange(subHeader, new Rect(
-            layoutRect.X + bodyX + headerWidth,
-            layoutRect.Y + Math.Max(0, (headingHeight - subHeaderSize.Height) / 2),
-            subHeaderWidth,
-            subHeaderSize.Height));
-
-        var contentWidth = Math.Min(contentSize.Width, bodyWidth);
-        Arrange(content, new Rect(
-            layoutRect.X + bodyX,
-            layoutRect.Y + headingHeight,
-            contentWidth,
-            Math.Min(contentSize.Height, Math.Max(0, layoutHeight - headingHeight))));
+        if (section is not null)
+        {
+            section.ArrangedHeadingHeight = headingHeight;
+            section.Arrange(new Rect(layoutRect.X + bodyX, layoutRect.Y, bodyWidth, bodyHeight));
+        }
 
         if (connector is not null && Type != StepsType.Navigation)
         {
             var connectorThickness = Math.Max(0, ConnectorThickness);
-            var connectorX = Math.Max(
-                layoutRect.X + bodyX,
-                Math.Max(header?.Bounds.Right ?? 0, subHeader?.Bounds.Right ?? 0));
+            var connectorX = layoutRect.X + bodyX + Math.Max(0, section?.HeadingLineRight ?? 0);
             connector.Arrange(EffectiveOrientation == Orientation.Vertical
                 ? new Rect(
                     arrangedIndicatorBounds.Center.X - connectorThickness / 2,
@@ -365,16 +373,14 @@ internal class StepsItemLayoutPanel : Panel
             connector?.Arrange(default);
         }
 
-        ArrangeItemWrapper(itemWrapper, itemRect, Padding, indicator, header, subHeader, content);
+        ArrangeItemWrapper(itemWrapper, itemRect, Padding, indicator, section);
         ArrangeArrow(arrow, panelArrow, itemRect);
     }
 
     private void ArrangeVerticalTitleLayout(
         Rect layoutRect,
         Control? indicator,
-        Control? header,
-        Control? subHeader,
-        Control? content,
+        StepsItemSectionPanel? section,
         Control? connector,
         Control? arrow,
         Control? panelArrow,
@@ -382,60 +388,8 @@ internal class StepsItemLayoutPanel : Panel
         Size indicatorSize,
         Rect itemRect)
     {
-        if (EffectiveOrientation == Orientation.Horizontal)
-        {
-            ArrangeCenteredHorizontalTitleVerticalLayout(
-                layoutRect,
-                indicator,
-                header,
-                subHeader,
-                content,
-                connector,
-                arrow,
-                panelArrow,
-                itemWrapper,
-                indicatorSize,
-                itemRect);
-            return;
-        }
-
-        var indicatorX = Math.Max(0, (layoutRect.Width - indicatorSize.Width) / 2);
-        Arrange(indicator, new Rect(
-            layoutRect.X + indicatorX,
-            layoutRect.Y,
-            indicatorSize.Width,
-            indicatorSize.Height));
-
-        var bodyY = layoutRect.Y + indicatorSize.Height;
-        if (header is not null || subHeader is not null || content is not null)
-        {
-            bodyY += IndicatorSpacing;
-        }
-
-        ArrangeVerticalBody(header, subHeader, content, layoutRect.X, layoutRect.Width, ref bodyY);
-        var connectorThickness = Math.Max(0, ConnectorThickness);
-        Arrange(connector, new Rect(
-            layoutRect.X + indicatorX + indicatorSize.Width,
-            layoutRect.Y + Math.Max(0, (indicatorSize.Height - connectorThickness) / 2),
-            Math.Max(0, layoutRect.Width - indicatorX - indicatorSize.Width),
-            connectorThickness));
-        ArrangeItemWrapper(itemWrapper, itemRect, Padding, indicator, header, subHeader, content);
-        ArrangeArrow(arrow, panelArrow, itemRect);
-    }
-
-    private void ArrangeCenteredHorizontalTitleVerticalLayout(
-        Rect layoutRect,
-        Control? indicator,
-        Control? header,
-        Control? subHeader,
-        Control? content,
-        Control? connector,
-        Control? arrow,
-        Control? panelArrow,
-        Control? itemWrapper,
-        Size indicatorSize,
-        Rect itemRect)
-    {
+        // The resolved title placement is vertical only when the orientation is
+        // horizontal, so the body is stacked centered below the indicator.
         var indicatorSlot = new Rect(
             layoutRect.X + Math.Max(0, (layoutRect.Width - indicatorSize.Width) / 2),
             layoutRect.Y,
@@ -445,18 +399,17 @@ internal class StepsItemLayoutPanel : Panel
 
         var indicatorBounds = GetArrangedBounds(indicator, indicatorSlot);
         var bodyY           = layoutRect.Y + indicatorSize.Height;
-        if (header is not null || subHeader is not null || content is not null)
+        if (section?.HasVisibleBody == true)
         {
             bodyY += IndicatorSpacing;
         }
 
-        ArrangeVerticalBodyCentered(
-            header,
-            subHeader,
-            content,
-            layoutRect,
-            indicatorBounds.Center.X,
-            ref bodyY);
+        var sectionWidth = Math.Min(section?.DesiredSize.Width ?? 0, layoutRect.Width);
+        var sectionX = Math.Clamp(
+            indicatorBounds.Center.X - sectionWidth / 2,
+            layoutRect.X,
+            Math.Max(layoutRect.X, layoutRect.Right - sectionWidth));
+        section?.Arrange(new Rect(sectionX, bodyY, sectionWidth, section?.DesiredSize.Height ?? 0));
 
         var connectorThickness = Math.Max(0, ConnectorThickness);
         var connectorGap       = Math.Max(0, HorizontalConnectorGap);
@@ -468,60 +421,8 @@ internal class StepsItemLayoutPanel : Panel
             indicatorBounds.Center.Y - connectorThickness / 2,
             Math.Max(0, connectorWidth),
             connectorThickness));
-        ArrangeItemWrapper(itemWrapper, itemRect, Padding, indicator, header, subHeader, content);
+        ArrangeItemWrapper(itemWrapper, itemRect, Padding, indicator, section);
         ArrangeArrow(arrow, panelArrow, itemRect);
-    }
-
-    private static void ArrangeVerticalBody(
-        Control? header,
-        Control? subHeader,
-        Control? content,
-        double x,
-        double width,
-        ref double y)
-    {
-        ArrangeBodyPart(header, x, ref y, width);
-        ArrangeBodyPart(subHeader, x, ref y, width);
-        ArrangeBodyPart(content, x, ref y, width);
-    }
-
-    private static void ArrangeVerticalBodyCentered(
-        Control? header,
-        Control? subHeader,
-        Control? content,
-        Rect layoutRect,
-        double centerX,
-        ref double y)
-    {
-        ArrangeBodyPartCentered(header, layoutRect, centerX, ref y);
-        ArrangeBodyPartCentered(subHeader, layoutRect, centerX, ref y);
-        ArrangeBodyPartCentered(content, layoutRect, centerX, ref y);
-    }
-
-    private static void ArrangeBodyPart(Control? child, double x, ref double y, double width)
-    {
-        if (child is null)
-        {
-            return;
-        }
-
-        var height = child.DesiredSize.Height;
-        child.Arrange(new Rect(x, y, width, height));
-        y += height;
-    }
-
-    private static void ArrangeBodyPartCentered(Control? child, Rect layoutRect, double centerX, ref double y)
-    {
-        if (child is null)
-        {
-            return;
-        }
-
-        var width  = Math.Min(child.DesiredSize.Width, layoutRect.Width);
-        var height = child.DesiredSize.Height;
-        var x      = Math.Clamp(centerX - width / 2, layoutRect.X, layoutRect.Right - width);
-        child.Arrange(new Rect(x, y, width, height));
-        y += height;
     }
 
     private void ArrangeItemWrapper(
@@ -530,15 +431,15 @@ internal class StepsItemLayoutPanel : Panel
         Thickness padding,
         params Control?[] wrappedChildren)
     {
-        if (Type == StepsType.Inline)
-        {
-            ArrangeInlineItemWrapper(wrapper, itemRect);
-            return;
-        }
-
         if (Type == StepsType.Panel)
         {
             wrapper?.Arrange(itemRect);
+            return;
+        }
+
+        if (Type == StepsType.Inline)
+        {
+            ArrangeInlineItemWrapper(wrapper, itemRect);
             return;
         }
 
@@ -681,7 +582,7 @@ internal class StepsItemLayoutPanel : Panel
 
         var width = Math.Max(1, indicator.DesiredSize.Width);
         var height = Math.Max(1, indicator.DesiredSize.Height);
-        indicator.Arrange(EffectiveOrientation == Orientation.Horizontal
+        indicator.Arrange(Orientation == Orientation.Horizontal
             ? new Rect(0, Math.Max(0, finalSize.Height - height), finalSize.Width, height)
             : new Rect(Math.Max(0, finalSize.Width - width), 0, width, finalSize.Height));
     }
@@ -725,6 +626,19 @@ internal class StepsItemLayoutPanel : Panel
         return bounds.Width > 0 || bounds.Height > 0 ? bounds : fallback;
     }
 
+    private double GetVerticalConnectorHeight(
+        Rect layoutRect,
+        double headingHeight,
+        double indicatorHeight,
+        Rect indicatorBounds)
+    {
+        var connectorMargin = Math.Max(0, VerticalConnectorMargin);
+        var railOffset      = Math.Max(0, (headingHeight - indicatorHeight) / 2);
+        var connectorTop    = indicatorBounds.Bottom + connectorMargin;
+        var connectorBottom = layoutRect.Bottom - connectorMargin + railOffset;
+        return Math.Max(0, connectorBottom - connectorTop);
+    }
+
     private double GetPanelLeadingInset(Control? panelArrow = null)
     {
         if (Type != StepsType.Panel ||
@@ -744,19 +658,6 @@ internal class StepsItemLayoutPanel : Panel
         return !double.IsNaN(width) && width > 0
             ? width
             : Math.Max(0, panelArrow.DesiredSize.Width);
-    }
-
-    private double GetVerticalConnectorHeight(
-        Rect layoutRect,
-        double headingHeight,
-        double indicatorHeight,
-        Rect indicatorBounds)
-    {
-        var connectorMargin = Math.Max(0, VerticalConnectorMargin);
-        var railOffset      = Math.Max(0, (headingHeight - indicatorHeight) / 2);
-        var connectorTop    = indicatorBounds.Bottom + connectorMargin;
-        var connectorBottom = layoutRect.Bottom - connectorMargin + railOffset;
-        return Math.Max(0, connectorBottom - connectorTop);
     }
 
     private Control? FindChild(StepsItemLayoutRole role, bool includeInvisible = false)

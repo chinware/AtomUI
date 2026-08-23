@@ -11,6 +11,12 @@ internal sealed class SemanticPartPreviewLayoutPanel : Panel
     public static readonly StyledProperty<double> SpacingProperty =
         AvaloniaProperty.Register<SemanticPartPreviewLayoutPanel, double>(nameof(Spacing), 24);
 
+    public static readonly StyledProperty<double> CompactPaneMaxHeightProperty =
+        AvaloniaProperty.Register<SemanticPartPreviewLayoutPanel, double>(nameof(CompactPaneMaxHeight), 400);
+
+    public static readonly StyledProperty<double> PaneMaxHeightProperty =
+        AvaloniaProperty.Register<SemanticPartPreviewLayoutPanel, double>(nameof(PaneMaxHeight), 400);
+
     public double CompactBreakpoint
     {
         get => GetValue(CompactBreakpointProperty);
@@ -21,6 +27,32 @@ internal sealed class SemanticPartPreviewLayoutPanel : Panel
     {
         get => GetValue(SpacingProperty);
         set => SetValue(SpacingProperty, value);
+    }
+
+    public double CompactPaneMaxHeight
+    {
+        get => GetValue(CompactPaneMaxHeightProperty);
+        set => SetValue(CompactPaneMaxHeightProperty, value);
+    }
+
+    public double PaneMaxHeight
+    {
+        get => GetValue(PaneMaxHeightProperty);
+        set => SetValue(PaneMaxHeightProperty, value);
+    }
+
+    static SemanticPartPreviewLayoutPanel()
+    {
+        AffectsMeasure<SemanticPartPreviewLayoutPanel>(
+            CompactBreakpointProperty,
+            SpacingProperty,
+            CompactPaneMaxHeightProperty,
+            PaneMaxHeightProperty);
+        AffectsArrange<SemanticPartPreviewLayoutPanel>(
+            CompactBreakpointProperty,
+            SpacingProperty,
+            CompactPaneMaxHeightProperty,
+            PaneMaxHeightProperty);
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -38,18 +70,35 @@ internal sealed class SemanticPartPreviewLayoutPanel : Panel
 
         if (ShouldUseCompactLayout(availableSize.Width))
         {
-            var childSize = new Size(availableSize.Width, double.PositiveInfinity);
-            Children[0].Measure(childSize);
-            Children[1].Measure(childSize);
+            // The compact layout stacks the preview above the parts pane. A bounded
+            // available height (the host clamps the semantic tab content to the page
+            // viewport remainder) is split between the preview and the pane, so the
+            // pane scrolls internally instead of pushing the preview out of the page
+            // viewport. An unbounded host falls back to the fixed pane cap.
+            Children[0].Measure(new Size(availableSize.Width, double.PositiveInfinity));
+            var compactPaneMeasureHeight = double.IsFinite(availableSize.Height)
+                ? Math.Max(0, availableSize.Height - Children[0].DesiredSize.Height - Spacing)
+                : CompactPaneMaxHeight;
+            Children[1].Measure(new Size(availableSize.Width, compactPaneMeasureHeight));
+            var paneHeight = Math.Min(Children[1].DesiredSize.Height, compactPaneMeasureHeight);
             return new Size(
                 Math.Max(Children[0].DesiredSize.Width, Children[1].DesiredSize.Width),
-                Children[0].DesiredSize.Height + Spacing + Children[1].DesiredSize.Height);
+                Children[0].DesiredSize.Height + Spacing + paneHeight);
         }
 
+        // The wide layout measures the pane with the full available height: when the
+        // host bounds the semantic tab content to the page viewport remainder, the
+        // pane fills that remainder and scrolls its card list internally. An
+        // unbounded host falls back to the fixed PaneMaxHeight cap, so a pane whose
+        // list grows without limit can never push the preview out of the page
+        // viewport.
         var rightWidth = ResolveRightWidth(availableSize.Width);
         var leftWidth = Math.Max(0, availableSize.Width - Spacing - rightWidth);
+        var paneMeasureHeight = double.IsFinite(availableSize.Height)
+            ? availableSize.Height
+            : PaneMaxHeight;
         Children[0].Measure(new Size(leftWidth, availableSize.Height));
-        Children[1].Measure(new Size(rightWidth, availableSize.Height));
+        Children[1].Measure(new Size(rightWidth, paneMeasureHeight));
         return new Size(
             Children[0].DesiredSize.Width + Spacing + Children[1].DesiredSize.Width,
             Math.Max(Children[0].DesiredSize.Height, Children[1].DesiredSize.Height));

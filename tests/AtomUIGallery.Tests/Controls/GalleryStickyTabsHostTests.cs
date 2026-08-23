@@ -92,6 +92,10 @@ public class GalleryStickyTabsHostTests
         hostSource.ShouldContain("ContentProperty");
         hostSource.ShouldContain("IsStickyMirrorEnabledProperty");
         hostSource.ShouldContain("HasStickyContentProperty");
+        hostSource.ShouldContain("IsContentHeightBoundedProperty");
+        hostSource.ShouldContain("UpdateContentMaxHeight");
+        hostSource.ShouldContain("PART_HeaderHost");
+        hostSource.ShouldContain("PART_ContentHost");
         hostSource.ShouldContain("[Content]");
         hostSource.ShouldNotContain("RegisterTokenResourceScope");
         hostSource.ShouldContain("ScopeAwareAdornerLayer.GetLayer(this)");
@@ -129,7 +133,10 @@ public class GalleryStickyTabsHostTests
         themeSource.ShouldContain("IsVisible=\"{TemplateBinding HasStickyContent}\"");
         themeSource.ShouldContain("ZIndex=\"1\"");
         themeSource.ShouldNotContain("<VisualLayerManager>");
-        themeSource.ShouldContain("<ContentPresenter Content=\"{TemplateBinding Content}\" />");
+        themeSource.ShouldContain("Name=\"PART_ContentHost\"");
+        themeSource.ShouldContain("Content=\"{TemplateBinding Content}\"");
+        themeSource.ShouldNotContain("ElementName=");
+        themeSource.ShouldNotContain("MultiBinding");
         assetManifest.ShouldContain("Controls/Themes/GalleryStickyTabsHostTheme.axaml");
     }
 
