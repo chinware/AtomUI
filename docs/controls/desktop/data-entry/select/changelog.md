@@ -3,6 +3,12 @@
 本文档记录 Select 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-08-23
+
+- Architecture
+  - Align Select input surfaces with the shared `InputControlFrame` / `AddOnDecoratedBox` composition.
+  - Keep selection, candidate, popup and result state in Select while using the shared EffectiveStatus and Form/native validation pipeline.
+
 ## 2026-08-19
 
 - Design

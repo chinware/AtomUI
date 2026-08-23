@@ -1,6 +1,6 @@
 # Cascader 桌面版实现原理
 
-本文档描述 Cascader 桌面版的输入壳体、选项集合、级联展开、选择同步、勾选、过滤、异步加载、绑定型选项和资源生命周期。公共设计与 API 契约见 [Cascader 桌面版架构设计](overview.md)，候选列表状态契约见 [候选列表统一交互设计](../select/candidate-interaction-design.md)，Token 语义见 [Cascader Token 设计](token.md)，变化记录见 [Cascader Changelog](changelog.md)。
+本文档描述 Cascader 桌面版的输入壳体、选项集合、级联展开、选择同步、勾选、过滤、异步加载、绑定型选项和资源生命周期。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，公共设计与 API 契约见 [Cascader 桌面版架构设计](overview.md)，候选列表状态契约见 [候选列表统一交互设计](../select/candidate-interaction-design.md)，Token 语义见 [Cascader Token 设计](token.md)，变化记录见 [Cascader Changelog](changelog.md)。
 
 ## 1. 实现定位
 
@@ -20,7 +20,7 @@ Cascader 的实现由外层 `Cascader` 和内部 `CascaderView` 组成。`Cascad
 - `src/AtomUI.Desktop.Controls/Cascader/CascaderViewItem.cs`：选项容器、checked / expanded / selected 事件、leaf 判断和绑定型选项同步。
 - `src/AtomUI.Desktop.Controls/Cascader/CascaderOption.cs`：`ICascaderOption`、默认轻量 `CascaderOption` 和层级 helper。
 - `src/AtomUI.Desktop.Controls/Cascader/BindableCascaderOption.cs`：绑定型选项模型，使用 scoped resource host generator。
-- `src/AtomUI.Desktop.Controls/Cascader/CascaderAddOnDecoratedBox.cs`：Cascader 输入壳体扩展。
+- `src/AtomUI.Desktop.Controls/Cascader/CascaderAddOnDecoratedBox.cs`：Cascader 输入布局扩展，复用 `InputControlFrame` 的输入表面状态。
 - `src/AtomUI.Desktop.Controls/Cascader/CascaderViewPanel.cs`：弹层 frame 布局与边框测量。
 - `src/AtomUI.Desktop.Controls/Cascader/CascaderViewFilterList.cs`、`CascaderViewFilterListItemData.cs`：过滤结果列表和路径数据。
 - `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`：共享溢出 tooltip attached behavior，供单选路径和多选 tag 复用。

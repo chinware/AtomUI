@@ -1,6 +1,6 @@
 # ComboBox 桌面版实现原理
 
-本文档描述 ComboBox 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [ComboBox 桌面版架构设计](overview.md)，候选列表状态契约见 [候选列表统一交互设计](../../data-entry/select/candidate-interaction-design.md)，变化记录见 [ComboBox Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [ComboBox Token 设计](token.md)。
+本文档描述 ComboBox 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [ComboBox 桌面版架构设计](overview.md)，输入表面共享状态见 [输入控件共享架构设计](../../data-entry/input-control-architecture-design.md)，候选列表状态契约见 [候选列表统一交互设计](../../data-entry/select/candidate-interaction-design.md)，变化记录见 [ComboBox Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [ComboBox Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -57,7 +57,7 @@ Public API / ItemsSource / Command / Event
 
 - 内容与数据：`ContentLeftAddOn`、`ContentLeftAddOnTemplate`、`ContentRightAddOn`、`ContentRightAddOnTemplate`、`FilterValue`、`FilterValueSelector`、`LeftAddOnTemplate`、`OptionFontSize`、`RightAddOnTemplate`。
 - 选择与集合：`SelectedItem`、`SelectedIndex`、`DropDownDisplayPageSize`、`Filter`、`IsFilterEnabled`。
-- 交互与状态：`IsAllowClear`、`IsMotionEnabled`、`ShouldUseOverlayPopup`、`Status`、`IsShowOverflowTip`、`OverflowTipDelay`、`OverflowTipPlacement`。
+- 交互与状态：`IsAllowClear`、`IsMotionEnabled`、`ShouldUseOverlayPopup`、`Status`、`FormStatus`、`IsShowOverflowTip`、`OverflowTipDelay`、`OverflowTipPlacement`。
 - 视觉与布局：`SizeType`、`StyleVariant`。
 - 其他稳定入口：`LeftAddOn`、`RightAddOn`。
 
@@ -101,6 +101,7 @@ ComboBox 的交互事件应从输入源收敛到控件级语义事件：
 - 弹层、窗口或 overlay 类路径必须稳定处理打开、关闭、取消、重复打开和宿主失活。
 - 集合类路径必须稳定处理 container prepare、clear、过滤、分组和虚拟化回收。
 - 输入类路径必须保持 Form、validation、clear、placeholder 和键盘行为一致。
+- `FormStatus` 由 `IFormItemAware.NotifyValidateStatus` 写入并绑定到 `AddOnDecoratedBox`；它不能覆盖 `Status`，也不能绕过 `DataValidationErrors` 另建 native error。`AddOnDecoratedBox` 通过共享 `EffectiveStatus` 负责 warning/error 视觉投影。
 - Form 值变化通知可以由展示值变化触发，但真实表单值 owner 始终是 `SelectedItem`，不能使用 `SelectionBoxItem` 或 `ToString()` 作为替代状态。
 
 当前没有抽取到控件专属 public 事件；交互语义主要通过继承事件、命令、属性变化和 Gallery 可观察行为体现。

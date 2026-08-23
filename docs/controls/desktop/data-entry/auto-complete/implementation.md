@@ -1,6 +1,6 @@
 # AutoComplete 桌面版实现原理
 
-本文档描述 AutoComplete 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [AutoComplete 桌面版架构设计](overview.md)，候选列表状态契约见 [候选列表统一交互设计](../select/candidate-interaction-design.md)，变化记录见 [AutoComplete Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [AutoComplete Token 设计](token.md)。
+本文档描述 AutoComplete 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，公共设计与 API 契约见 [AutoComplete 桌面版架构设计](overview.md)，候选列表状态契约见 [候选列表统一交互设计](../select/candidate-interaction-design.md)，变化记录见 [AutoComplete Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [AutoComplete Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -61,6 +61,7 @@
 - 控件实例是 public API 和运行时状态 owner。
 - Template part 是视觉协作对象，生命周期必须受 `OnApplyTemplate` 或模板加载流程管理。
 - 数据对象、选项对象、任务对象或节点对象只保存业务数据，不应反向持有不可释放的视觉对象。
+- 输入 box 复用 `AbstractTextInput` 和 `InputControlFrame`；AutoComplete 只拥有候选、过滤、popup 和异步状态，不复制输入表面状态 selector。
 - 弹层、窗口、计时器、异步 loader 和全局管理器必须有明确关闭、解绑或释放路径。
 
 ## 4. 状态与数据流

@@ -203,6 +203,9 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     
     internal static readonly StyledProperty<bool> IsUsedInCompactSpaceProperty = 
         CompactSpaceAwareControlProperty.IsUsedInCompactSpaceProperty.AddOwner<NumericUpDown>();
+
+    internal static readonly StyledProperty<FormValidateStatus> FormStatusProperty =
+        InputControlState.FormStatusProperty.AddOwner<NumericUpDown>();
     
     internal double SpinnerHandleWidth
     {
@@ -240,6 +243,12 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     {
         get => GetValue(IsUsedInCompactSpaceProperty);
         set => SetValue(IsUsedInCompactSpaceProperty, value);
+    }
+
+    internal FormValidateStatus FormStatus
+    {
+        get => GetValue(FormStatusProperty);
+        private set => SetCurrentValue(FormStatusProperty, value);
     }
     
     #endregion
@@ -405,25 +414,9 @@ public class NumericUpDown : AvaloniaNumericUpDown,
 
     protected virtual void NotifyValidateStatus(FormValidateStatus status)
     {
-        if (status == FormValidateStatus.Error)
+        if (FormStatus != status)
         {
-            SetStatusIfChanged(InputControlStatus.Error);
-        }
-        else if (status == FormValidateStatus.Warning)
-        {
-            SetStatusIfChanged(InputControlStatus.Warning);
-        }
-        else
-        {
-            SetStatusIfChanged(InputControlStatus.Default);
-        }
-    }
-
-    private void SetStatusIfChanged(InputControlStatus status)
-    {
-        if (Status != status)
-        {
-            SetCurrentValue(StatusProperty, status);
+            SetCurrentValue(FormStatusProperty, status);
         }
     }
 

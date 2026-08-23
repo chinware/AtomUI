@@ -1,6 +1,6 @@
 # AutoComplete 桌面版架构设计
 
-本文档定义 `AutoComplete` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，候选列表统一交互见 [候选列表统一交互设计](../select/candidate-interaction-design.md)，内部实现原理见 [AutoComplete 桌面版实现原理](implementation.md)，AutoComplete Token 的专项设计见 [AutoComplete Token 设计](token.md)，设计和契约变化记录见 [AutoComplete Changelog](changelog.md)。
+本文档定义 `AutoComplete` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，候选列表统一交互见 [候选列表统一交互设计](../select/candidate-interaction-design.md)，内部实现原理见 [AutoComplete 桌面版实现原理](implementation.md)，AutoComplete Token 的专项设计见 [AutoComplete Token 设计](token.md)，设计和契约变化记录见 [AutoComplete Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -84,6 +84,8 @@ Public API / inherited command / item source / user input
 
 AutoComplete 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
+`AutoCompleteLineEditBox`、`AutoCompleteSearchEditBox` 和 `AutoCompleteTextAreaBox` 分别复用 `LineEdit`、`SearchEdit` 和 `TextArea` 的 `AbstractTextInput` 逻辑层与 `InputControlFrame` 输入表面。候选 popup 和过滤状态属于 AutoComplete 自身，不得重新声明输入边框、状态或 Form error owner。
+
 | 主题文件 | 职责 |
 | --- | --- |
 | `AbstractAutoCompleteTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
@@ -109,11 +111,11 @@ AutoComplete 与同分类控件共享尺寸、状态、Token、Gallery 展示和
 - `AbstractAutoComplete`：跨平台或共享基类，承载公共 API、状态归一和模板生命周期。
 - `AbstractAutoCompleteTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
 - `AutoComplete`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `AutoCompleteLineEditBox`：模板协作类型，承载内容展示、宿主或视觉边界。
+- `AutoCompleteLineEditBox`：继承 LineEdit 的模板协作类型，承载内容展示和候选宿主边界，输入表面由 shared frame 提供。
 - `AutoCompleteSearchEdit`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `AutoCompleteSearchEditBox`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `AutoCompleteTextArea`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `AutoCompleteTextAreaBox`：模板协作类型，承载内容展示、宿主或视觉边界。
+- `AutoCompleteTextAreaBox`：继承 TextArea 的模板协作类型，承载多行内容和候选宿主边界，输入表面由 shared frame 提供。
 - `AutoCompleteToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `CompactSpaceAwareAutoComplete`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `CompleteOptionsLoadResult`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。

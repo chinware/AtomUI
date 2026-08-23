@@ -2,6 +2,12 @@
 
 本文档记录 AutoComplete 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-23
+
+- Architecture
+  - Align `AutoCompleteLineEditBox`, `AutoCompleteSearchEditBox` and `AutoCompleteTextAreaBox` with the shared `AbstractTextInput` and `InputControlFrame` layers.
+  - Keep candidate, filter, popup and async state in AutoComplete while delegating input-surface status to the shared frame.
+
 ## 2026-08-19
 
 - Behavior

@@ -29,9 +29,32 @@
                                             IsActive="{Binding IsActive}"
                                             IsInputTarget="{Binding IsInputTarget}"
                                             IsMotionEnabled="{Binding IsMotionEnabled}"
-                                            EffectiveStatus="{Binding EffectiveStatus}"
+                                            Status="{Binding EffectiveStatus}"
                                             SizeType="{Binding SizeType}"
-                                            StyleVariant="{Binding StyleVariant}" />
+                                            StyleVariant="{Binding StyleVariant}">
+                                            <atom:OtpTextBox
+                                                Name="PART_TextBox"
+                                                HorizontalAlignment="Stretch"
+                                                VerticalAlignment="Stretch"
+                                                HorizontalContentAlignment="Center"
+                                                VerticalContentAlignment="Center"
+                                                TextAlignment="Center"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Padding="0"
+                                                Focusable="False"
+                                                IsReadOnly="True"
+                                                IsTabStop="False"
+                                                Foreground="{Binding $parent[atom:OtpLineEditCell].Foreground}"
+                                                FontSize="{Binding $parent[atom:OtpLineEditCell].FontSize}"
+                                                CaretBrush="{atom:SharedTokenResource ColorText}"
+                                                SelectionBrush="{atom:SharedTokenResource SelectionBackground}"
+                                                SelectionForegroundBrush="{atom:SharedTokenResource SelectionForeground}"
+                                                SourcePlaceholderText="{Binding PlaceholderText}"
+                                                PlaceholderForeground="{atom:SharedTokenResource ColorTextPlaceholder}"
+                                                IsCellActive="{Binding IsActive}"
+                                                Text="{Binding DisplayText}" />
+                                        </atom:OtpLineEditCell>
                                         <ContentControl
                                             Name="PART_SeparatorPresenter"
                                             Margin="4,0"

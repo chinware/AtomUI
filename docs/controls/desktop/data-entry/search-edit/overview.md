@@ -1,6 +1,6 @@
 # SearchEdit 桌面版架构设计
 
-本文档定义 `AtomUI.Desktop.Controls.SearchEdit` 的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，Control Token 分层见 [AtomUI Control Token 设计规范](../../../../engineering/development/control-token-guidelines.md)，内部实现原理见 [SearchEdit 桌面版实现原理](implementation.md)，设计和契约变化记录见 [SearchEdit Changelog](changelog.md)。SearchEdit 拥有独立 Control identity，但当前没有 Own Token，因此不创建 `SearchEditToken` 或独立 `token.md`。
+本文档定义 `AtomUI.Desktop.Controls.SearchEdit` 的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，Control Token 分层见 [AtomUI Control Token 设计规范](../../../../engineering/development/control-token-guidelines.md)，内部实现原理见 [SearchEdit 桌面版实现原理](implementation.md)，设计和契约变化记录见 [SearchEdit Changelog](changelog.md)。SearchEdit 拥有独立 Control identity，但当前没有 Own Token，因此不创建 `SearchEditToken` 或独立 `token.md`。
 
 ## 1. 控件定位
 
@@ -53,7 +53,7 @@ SearchEdit 专项 API：
 | `Text` / `PlaceholderText` | 搜索关键字和空文本提示。 |
 | `SizeType` | 输入尺寸密度，类型为 `CustomizableSizeType`。 |
 | `StyleVariant` | 输入表面样式。 |
-| `Status` | 手动输入反馈状态；native validation error 以 `DataValidationErrors` 为最高优先级。 |
+| `Status` | 显式输入反馈状态；最终视觉由 `InputControlFrame.EffectiveStatus` 计算，native validation error 以 `DataValidationErrors` 为唯一真源。 |
 | `IsAllowClear` / `ClearIcon` | 搜索文本清除入口。 |
 | `InnerLeftContent` / `InnerRightContent` | 输入框内部前后缀内容。 |
 | `LeftAddOn` / `LeftAddOnTemplate` | 输入框左侧外部附加内容。 |
@@ -65,7 +65,7 @@ SearchEdit 的右侧外部 add-on 位置由搜索按钮占用。维护时不应�
 
 | Template Part | 类型 | 所属主题 | 职责 |
 | --- | --- | --- | --- |
-| `PART_AddOnDecoratedBox` | `SearchEditDecoratedBox` | `SearchEditTheme.axaml` | 搜索输入壳体、状态、Addon、CompactSpace 和搜索按钮协作入口。 |
+| `PART_InputControlFrame` | `SearchEditDecoratedBox` | `SearchEditTheme.axaml` | 输入表面、effective status、CompactSpace 和搜索按钮组合入口；具体 decorated box 只扩展搜索布局。 |
 | `PART_RightAddOn` | `Button` | `SearchEditDecoratedBoxTheme.axaml` | public Button 语义部件，承载图标、文字、loading、按钮样式和点击事件。 |
 | `PART_ContentFrame` | `Border` | `SearchEditDecoratedBoxTheme.axaml` | 文本输入框视觉边框和背景。 |
 | `PART_ScrollViewer` | `ScrollViewer` | `SearchEditTheme.axaml` | 文本滚动区域。 |
@@ -103,14 +103,18 @@ if !IsOperating raise SearchRequested
 
 ```text
 Disabled
+> Native Error
+> Form Error
+> Form Warning
+> Explicit Warning
+> Explicit Error
 > Searching button loading
-> Error / Warning
 > Focus
 > PointerOver / Pressed
 > Normal
 ```
 
-`IsEnabled=false` 会传递给搜索按钮，使输入壳体和按钮一起进入 disabled 视觉。native validation error 通过 `DataValidationErrors` 优先影响输入框边框、文本前景和搜索按钮状态色；`Status=Warning` 继续表达 AtomUI warning 视觉，显式 `Status=Error` 只作为无 native error 时的手动错误视觉请求。`SearchButtonStyle` 只控制按钮强调度，不改变文本编辑、清除、Form 或搜索事件语义。
+`IsEnabled=false` 会传递给搜索按钮，使 frame 和按钮一起进入 disabled 视觉。`DataValidationErrors`、Form warning/status 和用户 `Status` 分别通过 frame 的 native validation、`FormStatus` 和 `Status` 输入参与 `EffectiveStatus`；最终由 `InputControlFrame.EffectiveStatus` 按共享优先级投射到输入表面和搜索按钮。`SearchButtonStyle` 只控制按钮强调度，不改变文本编辑、清除、Form 或搜索事件语义。
 
 ## 5. 视觉与主题模型
 
@@ -118,8 +122,9 @@ SearchEdit 使用三层主题协作：
 
 | 主题 | 职责 |
 | --- | --- |
-| `SearchEditTheme.axaml` | SearchEdit 根模板、文本 presenter、placeholder、clear/reveal/inner-right 内容、focus/status 视觉。 |
-| `SearchEditDecoratedBoxTheme.axaml` | 输入框内容边框、搜索按钮、左右布局、搜索按钮 style 和 z-index 关系。 |
+| `SearchEditTheme.axaml` | SearchEdit 根模板、文本 presenter、placeholder、clear/reveal/inner-right 内容和 frame 组合。 |
+| `InputControlFrameTheme.axaml` | 输入表面 variant、effective status、边框、背景、focus/hover/pressed、disabled、CompactSpace 和 motion。 |
+| `SearchEditDecoratedBoxTheme.axaml` | 搜索按钮、左右布局、搜索按钮 style 和 z-index 关系；不重复实现 frame 状态 selector。 |
 | `SearchButtonTheme.axaml` | 搜索按钮在不同输入表面中的背景、前景和状态色。 |
 
 SearchEdit 拥有独立 `ControlTokenIdentity`，但不定义 Own Token。它继承 `LineEdit` 的行为并不意味着继承或借用
@@ -130,8 +135,8 @@ Token。合法但没有被当前主题直接或间接消费的 Global Token 可�
 
 | Token 来源 | 用途 |
 | --- | --- |
-| `SearchEditTokenResource` | 读取 SearchEdit Effective Global Token，负责输入与搜索按钮组合语义，例如 focus shadow、主色和输入状态背景。 |
-| `AddOnDecoratedBoxTokenResource` | 由 `SearchEditDecoratedBoxTheme` 的 BasedOn 主题显式读取输入壳体 Own/Effective Global Token。 |
+| `SearchEditTokenResource` | 读取 SearchEdit Effective Global Token，仅负责 SearchEdit 专属组合值；通用输入表面值由 frame theme 从 SharedToken 消费。 |
+| `InputControlFrameTheme` / `SharedTokenResource` | 负责输入表面边框、背景、圆角、focus shadow、状态色、disabled 和 CompactSpace；不由 SearchEditDecoratedBox 重复实现。 |
 | `ButtonTokenResource` | 由真实 Button 和 `SearchButtonTheme` 显式读取 Button Own/Effective Global Token，负责按钮基础视觉。 |
 | `SharedTokenResource` | 读取真正的 Global Token，只用于不响应 SearchEdit Control 级覆盖的共享值。 |
 
@@ -146,7 +151,7 @@ Token。合法但没有被当前主题直接或间接消费的 Global Token 可�
 SearchEdit 是 LineEdit 家族的搜索专用入口：
 
 - 继承 `LineEdit`：复用文本输入、输入状态、Form、清除按钮、内部内容和 CompactSpace。
-- 使用 `SearchEditDecoratedBox`：把搜索按钮纳入 AddOnDecoratedBox 输入壳体。
+- 使用 `SearchEditDecoratedBox`：在 `InputControlFrame` / `AddOnDecoratedBox` 基础上把搜索按钮纳入一体化布局。
 - 使用 public `Button` 作为 `PART_RightAddOn`：Button 保留自己的 identity，输入表面和 status 组合视觉由 SearchEdit owner theme 投射。
 - 被 `AutoCompleteSearchEditBox` 复用：AutoComplete 搜索输入框内部使用 SearchEdit 样式和搜索按钮契约。
 - Gallery 中 SearchEdit 示例与 LineEdit 页面共存；继承 API 以 LineEdit 文档为入口，SearchEdit identity 与资源边界以本文第 5 节为准。
@@ -160,12 +165,12 @@ SearchEdit 是 LineEdit 家族的搜索专用入口：
 - `IsOperating=true` 必须阻止按钮和 Enter 键产生重复搜索请求，但不得自动管理异步任务或修改 `Text`。
 - `IsSearchOnEnterEnabled=false` 时不得消费 Enter 键；已经标记为 handled 的 Enter 键不得触发搜索。
 - `SearchRequestedEventArgs.Query` 必须是触发时的查询文本快照，`Trigger` 必须准确表示 `Button` 或 `EnterKey`。
-- 搜索按钮的 `IsEnabled`、`SizeType` 和 loading 必须跟随 SearchEdit；按钮组合视觉必须响应输入壳体的 `Status` 和 `StyleVariant`。
+- 搜索按钮的 `IsEnabled`、`SizeType` 和 loading 必须跟随 SearchEdit；按钮组合视觉必须响应 `InputControlFrame.EffectiveStatus` 和 `StyleVariant`。
 - 右侧外部 add-on 位置属于搜索按钮；内部右侧内容必须继续由 `InnerRightContent` 承载。
 - SearchEdit 的按钮边框和输入框边框必须在 Large、Middle、Small 和 Custom 高度下严格对齐。
 - `SizeType=Custom` 必须以 Middle 作为未显式覆盖时的视觉基线。
 - SearchEdit 保持独立 Control identity；当前不新增 Own Token，也不得借用 LineEdit 或 Button identity。
-- `SearchButtonTheme` 必须继续以 public Button 为 TargetType，并显式区分 SearchEdit 组合语义与 Button 基础视觉。
+- `SearchButtonTheme` 必须继续以 public Button 为 TargetType，并显式区分 SearchEdit 组合语义与 Button 基础视觉；通用输入表面由 frame theme 提供。
 - 重新套用模板时必须释放旧搜索按钮 click 订阅。
 
 ## 8. 专项模型
@@ -228,6 +233,6 @@ LLMS 导出来源：
 | Public API | 搜索按钮属性、`IsOperating`、`IsSearchOnEnterEnabled`、`SearchRequested`、继承文本输入 API 和 Form API。 |
 | 状态 | `IsOperating`、Enter 搜索开关、disabled、focus、hover、pressed、error、warning、clear/reveal。 |
 | AXAML/Theme | template part、搜索按钮 style、z-index、SizeType、Custom 高度、Borderless/Filled/Outlined/Underlined。 |
-| Token | 验证 SearchEdit exact identity、无 Own Token、任意 Global Token 配置、`SearchEditTokenResource` fallback，以及与 `ButtonTokenResource` / `AddOnDecoratedBoxTokenResource` / `SharedTokenResource` 的显式边界。 |
+| Token | 验证 SearchEdit exact identity、无 Own Token、任意 Global Token 配置、`SearchEditTokenResource` fallback，以及与 `ButtonTokenResource`、`SharedTokenResource` 和 `InputControlFrameTheme` 的显式边界。 |
 | Gallery | 走查 SearchEdit 基础、状态、尺寸、Custom、loading、disabled、内部右侧内容和 AutoComplete 搜索示例。 |
 | 回归测试 | 运行 SearchEdit 行为与布局测试、LineEdit Gallery 示例测试和 `git diff --check`。 |

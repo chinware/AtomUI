@@ -1,10 +1,10 @@
 # Select 桌面版实现原理
 
-本文档描述 Select 桌面版的输入壳体、选项集合、选择同步、过滤、Tags 动态选项、候选弹层、异步加载、Form 和 Token 资源边界。公共设计与 API 契约见 [Select 桌面版架构设计](overview.md)，鼠标与键盘的统一候选状态见 [Select 候选交互设计](candidate-interaction-design.md)，Token 语义见 [Select Token 设计](token.md)，变化记录见 [Select Changelog](changelog.md)。
+本文档描述 Select 桌面版的输入壳体、选项集合、选择同步、过滤、Tags 动态选项、候选弹层、异步加载、Form 和 Token 资源边界。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，公共设计与 API 契约见 [Select 桌面版架构设计](overview.md)，鼠标与键盘的统一候选状态见 [Select 候选交互设计](candidate-interaction-design.md)，Token 语义见 [Select Token 设计](token.md)，变化记录见 [Select Changelog](changelog.md)。
 
 ## 1. 实现定位
 
-Select 的实现以 `AbstractSelect` 为输入与弹层基类，`Select` 本体负责选择业务状态，候选列表和结果区域由内部控件承载。实现文档聚焦 Select 自身的状态编排、生命周期和维护边界，不重新说明 ListView 的通用虚拟化、AddOnDecoratedBox 的通用输入外观或 PopupHost 的全局资源规则。
+Select 的实现以 `AbstractSelect` 为选择与弹层基类，输入表面复用 `InputControlFrame` / `AddOnDecoratedBox`，`Select` 本体负责选择业务状态，候选列表和结果区域由内部控件承载。实现文档聚焦 Select 自身的状态编排、生命周期和维护边界，不重新说明 ListView 的通用虚拟化、shared frame 的输入外观或 PopupHost 的全局资源规则。
 
 Tags 模式的动态选项必须作为 Select 自身运行时状态维护。用户声明的 `Options`、绑定的 `OptionsSource` 和异步加载结果都属于用户选项源，Select 不得为了创建自定义 tag 写入这些源集合。
 
@@ -27,7 +27,7 @@ Tags 模式的动态选项必须作为 Select 自身运行时状态维护。用�
 
 ## 3. 核心类职责
 
-`AbstractSelect` 是 Select 家族的输入与弹层边界。它维护 `IsDropDownOpen`、popup placement、弹层打开/关闭事件、打开期间可见性订阅、TopLevel 失活订阅、Form 状态映射和 CompactSpace 边框厚度计算。
+`AbstractSelect` 是 Select 家族的选择与弹层边界。它维护 `IsDropDownOpen`、popup placement、弹层打开/关闭事件、打开期间可见性订阅、TopLevel 失活订阅、Form 状态映射和 shared frame 的 CompactSpace 投射；它不重新计算输入表面有效状态。
 
 `Select` 是选项选择协调器。它维护用户选项源、运行时动态选项、有效候选选项、`SelectedOption`、`SelectedOptions`、`Mode`、过滤值、默认值映射和候选列表同步。它不直接绘制候选项或标签，而是把状态传给内部控件。
 
@@ -112,9 +112,9 @@ Form.GetValue()
 Form.ClearValue()
   → clear current selection
 DataValidationErrors
-  → native error visual + AddOn effective error state
+  → InputControlFrame.EffectiveStatus
 ValidateStatus
-  → Warning/Success/Validating extension state
+  → FormStatus → InputControlFrame + feedback
 FeedbackControl
   → FormFeedback → SelectHandle
 ```
@@ -125,7 +125,7 @@ FeedbackControl
 
 - 重新计算 popup 最大高度。
 - 解除旧 `Popup.Opened` / `Popup.Closed` 订阅。
-- 获取新的 `PART_Popup` 和 `PART_AddOnDecoratedBox`。
+- 获取新的 `PART_Popup` 和 `PART_InputControlFrame`（具体类型为 `SelectAddOnDecoratedBox`）。
 - 订阅新 popup 的 opened / closed。
 
 `Select.OnApplyTemplate()` 在基类接入前调用 `ClearPopupContent()`，确保旧候选列表、popup frame 和事件订阅被释放。基类接入后，Select 获取 `PART_SingleFilterInput`，设置 `Popup.OverlayInputPassThroughElement`，并重新配置 placeholder、选择空状态、单选结果、伪类、过滤输入、有效搜索状态和 `SelectHandle` 输入状态 binding。
@@ -260,7 +260,7 @@ Select 根模板中的稳定 template part 关系优先由 AXAML 表达。右侧
 - `PART_ContentRightAddOnPresenter` 通过 compiled ancestor binding 接收 `ContentRightAddOn`、`ContentRightAddOnTemplate`，并用 `ObjectConverters.IsNotNull` 控制显示。
 - `SelectHandle` 通过 compiled ancestor binding 接收 Form feedback、loading 图标、展开图标、过滤状态、启用状态、motion、loading、clear、选择为空和下拉打开状态。
 
-`SetupSelectHandleInputStateBindings()` 只保留 `AddOnDecoratedBox` 到 `SelectHandle` 的 hover / pressed 状态转发。这个关系的 source 是同一模板中的 sibling part，不是 templated parent，无法用 `TemplateBinding` 或 selector 在不改变模板契约的前提下表达。该 binding 在每次重新应用模板前释放旧 `CompositeDisposable`，生命周期与模板 part 获取路径一致。
+`SetupSelectHandleInputStateBindings()` 只保留 frame layout part 到 `SelectHandle` 的 hover / pressed sibling 状态转发。这个关系的 source 是同一模板中的 sibling part，不是 templated parent，无法用 `TemplateBinding` 或 selector 在不改变模板契约的前提下表达；它只转发交互状态，不改变 `InputControlFrame` 对 variant、effective status、error、warning 或 disabled 的唯一 ownership。该 binding 在每次重新应用模板前释放旧 `CompositeDisposable`，生命周期与模板 part 获取路径一致。
 
 ### 7.7 内部抑制状态
 
@@ -279,7 +279,7 @@ Select 不依赖运行时反射发现模板结构。模板协作通过固定 tem
 
 - `SubscriptionsOnOpen` 只在 popup 打开期间持有可见性订阅，popup 关闭时清空。
 - `_deactivationSubscription` 在 attach 时创建，detach 时释放。
-- `_selectHandleInputStateBindings` 每次模板接入前释放旧绑定，仅持有 AddOnDecoratedBox → SelectHandle 的 hover / pressed sibling part 状态转发。
+- `_selectHandleInputStateBindings` 每次模板接入前释放旧绑定，仅持有 frame layout part → SelectHandle 的 hover / pressed sibling 状态转发，不承载输入表面状态归一。
 - `_candidateList` 的事件订阅和 `ItemsSource` 必须在 `ClearPopupContent()` 中释放。
 - active candidate 在 popup 关闭、popup 内容释放、detach、过滤上下文变化和候选失效时清除；容器回收只清理本地投影。
 - `SelectHandle` 订阅 `FormFeedback.ValidateStatus` 时必须在 feedback 变化和 logical detach 时释放。

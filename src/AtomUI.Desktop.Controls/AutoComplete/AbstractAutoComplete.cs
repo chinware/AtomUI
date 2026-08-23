@@ -494,6 +494,9 @@ public abstract class AbstractAutoComplete : TemplatedControl,
     
     internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty = 
         AvaloniaProperty.Register<AbstractAutoComplete, FormValidateFeedback?>(nameof(FormFeedback));
+
+    internal static readonly StyledProperty<FormValidateStatus> FormStatusProperty =
+        InputControlState.FormStatusProperty.AddOwner<AbstractAutoComplete>();
     
     private double _itemHeight;
 
@@ -547,6 +550,12 @@ public abstract class AbstractAutoComplete : TemplatedControl,
     {
         get => GetValue(FormFeedbackProperty);
         set => SetValue(FormFeedbackProperty, value);
+    }
+
+    internal FormValidateStatus FormStatus
+    {
+        get => GetValue(FormStatusProperty);
+        private set => SetCurrentValue(FormStatusProperty, value);
     }
     
     protected AvaloniaTextBox? TextInputBox
@@ -1747,17 +1756,9 @@ public abstract class AbstractAutoComplete : TemplatedControl,
 
     protected virtual void NotifyValidateStatus(FormValidateStatus status)
     {
-        if (status == FormValidateStatus.Error)
+        if (FormStatus != status)
         {
-            SetCurrentValue(StatusProperty, InputControlStatus.Error);
-        }
-        else if (status == FormValidateStatus.Warning)
-        {
-            SetCurrentValue(StatusProperty, InputControlStatus.Warning);
-        }
-        else
-        {
-            SetCurrentValue(StatusProperty, InputControlStatus.Default);
+            SetCurrentValue(FormStatusProperty, status);
         }
     }
     

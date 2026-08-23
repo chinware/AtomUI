@@ -1,10 +1,10 @@
 # NumericUpDown Token 设计
 
-本文档定义 `AtomUI.Desktop.Controls.NumericUpDownToken` 的 NumericUpDown 专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/development/control-token-guidelines.md)。NumericUpDown 整体架构见 [NumericUpDown 桌面版架构设计](overview.md)，内部实现原理见 [NumericUpDown 桌面版实现原理](implementation.md)，设计和契约变化记录见 [NumericUpDown Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.NumericUpDownToken` 的 NumericUpDown 专属语义、分类、使用范围和兼容边界。共享输入表面分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/development/control-token-guidelines.md)。NumericUpDown 整体架构见 [NumericUpDown 桌面版架构设计](overview.md)，内部实现原理见 [NumericUpDown 桌面版实现原理](implementation.md)，设计和契约变化记录见 [NumericUpDown Changelog](changelog.md)。
 
 ## 1. 定位
 
-NumericUpDownToken 是 NumericUpDown 的控件级 Token scope。它继承 `ButtonSpinnerToken`，以独立 `NumericUpDown` scope 提供数值输入控件可消费的输入壳体、步进 Handle、字体和尺寸语义。
+NumericUpDownToken 是 NumericUpDown 的控件级 Token scope。它继承 `ButtonSpinnerToken`，以独立 `NumericUpDown` scope 提供步进 Handle、字体和尺寸语义；输入表面边框、背景、圆角、focus shadow、error/warning、disabled 和 motion 统一由 `InputControlFrameTheme` 与 `SharedToken` 提供。
 
 该设计使 NumericUpDown 能复用 ButtonSpinner 输入壳体体系，同时保留控件级 Token scope。生成的 `NumericUpDownTokenKind` 表达 NumericUpDown scope 下可展示和可覆盖的 Token；默认主题中的输入壳体和 Handle 仍通过 `ButtonSpinnerTokenResource` 消费共享 ButtonSpinner 语义值。
 
@@ -49,7 +49,7 @@ NumericUpDownToken 当前继承 ButtonSpinnerToken 的 Token 集合，按 Numeri
 
 ### 2.4 输入壳体继承 Token
 
-NumericUpDownToken 继承自 `ButtonSpinnerToken`，而 `ButtonSpinnerToken` 继承自 `LineEditToken`。因此 NumericUpDown scope 可以消费输入控件家族的字体、尺寸、边框和状态相关语义。只有实际服务 NumericUpDown / ButtonSpinner 输入壳体的值才应保留在该继承链中。
+NumericUpDownToken 继承自 `ButtonSpinnerToken`，而 `ButtonSpinnerToken` 消费 LineEdit 输入家族的文本尺寸语义。输入表面边框、背景、圆角、focus shadow、error/warning、disabled 和 motion 不进入 NumericUpDown 或 ButtonSpinner Token 继承链。
 
 ## 3. 控件专项模型中的 Token 使用
 
@@ -83,17 +83,17 @@ ButtonSpinner 相关主题使用的 Token：
 - `HandleHoverColor`：控制 hover 图标色。
 - `HandleBorderColor`：控制 Handle 边框色。
 
-NumericUpDown 不为 `Error`、`Warning`、`Disabled`、`Focused` 或 `PointerOver` 状态定义独立组合 Token。这些状态通过 SharedToken、AddOnDecoratedBoxToken、LineEditToken 和 ButtonSpinner 主题变量映射完成。
+NumericUpDown 不为 `Error`、`Warning`、`Disabled`、`Focused` 或 `PointerOver` 状态定义独立组合 Token。这些状态通过 `InputControlFrameTheme`、SharedToken、LineEdit 文本尺寸 Token 和 ButtonSpinner 布局主题映射完成。
 
 Spinner mode 不新增专属 Token。`Mode=Spinner` 的三段式拨轮结构复用输入控件家族的 padding、标准图标尺寸和已有 Handle 状态色：
 
-- `AddOnDecoratedBoxToken.Padding` / `PaddingLG` / `PaddingSM`：控制左右 action 段和中间输入段的横向 padding，使 action 宽度随输入尺寸自适应。
+- `SharedToken.InputPadding` / `InputPaddingLG` / `InputPaddingSM`：控制左右 action 段和中间输入段的横向 padding，使 action 宽度随输入尺寸自适应。
 - `SharedToken.IconSize`：控制 `MinusOutlined` / `PlusOutlined` 图标尺寸，保持加减号为普通 action 图标。
 - `HandleBorderColor`：控制左右 action 段与中间输入段之间的分隔线颜色。
 - `HandleHoverColor`：控制左右 action 段 hover 图标色。
 - `HandleActiveBg`：控制左右 action 段 pressed 背景。
 
-`Mode=Spinner` 不使用 `HandleWidth` 计算左右 action 段宽度，也不使用 `HandleIconSize` 计算 `MinusOutlined` / `PlusOutlined` 图标尺寸。普通背景跟随输入壳体表面；Outlined、Filled、Borderless、Disabled、Focused 等输入表面状态仍由 AddOnDecoratedBox / ButtonSpinner 主题负责。
+`Mode=Spinner` 不使用 `HandleWidth` 计算左右 action 段宽度，也不使用 `HandleIconSize` 计算 `MinusOutlined` / `PlusOutlined` 图标尺寸。普通背景跟随 frame 输入表面；Outlined、Filled、Borderless、Underlined、Disabled、Focused 等输入表面状态由 `InputControlFrameTheme` 统一负责。
 
 `Mode=Spinner` 的外层 content frame 不消费输入 padding Token。输入 padding 只由左右 action 段和中间 TextBox 消费，避免外层 frame padding 与内部 padding 叠加，破坏标准输入控件高度。
 

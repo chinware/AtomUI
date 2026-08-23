@@ -1,6 +1,5 @@
 using AtomUI.Theme.DesignTokens;
 using Avalonia;
-using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -12,11 +11,6 @@ internal class TextBoxToken : AbstractControlDesignToken
 
     {
     }
-
-    /// <summary>
-    /// 默认边框色
-    /// </summary>
-    public Color BorderColor { get; set; }
 
     /// <summary>
     /// 默认内边距
@@ -33,21 +27,6 @@ internal class TextBoxToken : AbstractControlDesignToken
     /// </summary>
     public Thickness ContentPaddingLG { get; set; }
 
-    /// <summary>
-    /// 悬浮态边框色
-    /// </summary>
-    public Color HoverBorderColor { get; set; }
-
-    /// <summary>
-    /// 激活态边框色
-    /// </summary>
-    public Color ActiveBorderColor { get; set; }
-
-    /// <summary>
-    /// 激活态阴影
-    /// </summary>
-    public BoxShadows ActiveShadow { get; set; }
-
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
@@ -58,7 +37,6 @@ internal class TextBoxToken : AbstractControlDesignToken
         var lineHeightLG = EffectiveGlobalToken.RelativeLineHeightLG;
         var lineWidth    = EffectiveGlobalToken.LineWidth;
 
-        BorderColor     = EffectiveGlobalToken.ColorBorder;
         ContentPadding = new Thickness(EffectiveGlobalToken.UniformlyPaddingSM - lineWidth,
             Math.Round((EffectiveGlobalToken.ControlHeight - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth);
         ContentPaddingSM = new Thickness(EffectiveGlobalToken.ControlPaddingHorizontalSM - lineWidth,
@@ -66,13 +44,6 @@ internal class TextBoxToken : AbstractControlDesignToken
         ContentPaddingLG = new Thickness(EffectiveGlobalToken.ControlPaddingHorizontal - lineWidth,
             Math.Ceiling((EffectiveGlobalToken.ControlHeightLG - fontSizeLG * lineHeightLG) / 2 * 10) / 10 -
             lineWidth);
-        HoverBorderColor  = EffectiveGlobalToken.ColorPrimaryHover;
-        ActiveBorderColor = EffectiveGlobalToken.ColorPrimary;
-        ActiveShadow = new BoxShadows(new BoxShadow
-        {
-            Spread = EffectiveGlobalToken.ControlOutlineWidth,
-            Color  = EffectiveGlobalToken.ColorControlOutline
-        });
     }
 
 }

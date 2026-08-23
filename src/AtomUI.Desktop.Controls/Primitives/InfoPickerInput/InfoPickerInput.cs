@@ -230,6 +230,9 @@ public abstract class InfoPickerInput : TemplatedControl,
     
     internal static readonly StyledProperty<bool> IsUsedInCompactSpaceProperty = 
         CompactSpaceAwareControlProperty.IsUsedInCompactSpaceProperty.AddOwner<InfoPickerInput>();
+
+    internal static readonly StyledProperty<FormValidateStatus> FormStatusProperty =
+        InputControlState.FormStatusProperty.AddOwner<InfoPickerInput>();
     
     internal static readonly StyledProperty<IFormValidateFeedback?> FormFeedbackProperty =
         AvaloniaProperty.Register<InfoPickerInput, IFormValidateFeedback?>(nameof (FormFeedback));
@@ -302,6 +305,12 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
         get => GetValue(IsUsedInCompactSpaceProperty);
         set => SetValue(IsUsedInCompactSpaceProperty, value);
+    }
+
+    internal FormValidateStatus FormStatus
+    {
+        get => GetValue(FormStatusProperty);
+        private set => SetCurrentValue(FormStatusProperty, value);
     }
     
     internal IFormValidateFeedback? FormFeedback
@@ -823,6 +832,7 @@ public abstract class InfoPickerInput : TemplatedControl,
         }
 
         if (change.Property == StatusProperty ||
+            change.Property == FormStatusProperty ||
             change.Property == DataValidationErrors.HasErrorsProperty ||
             change.Property == DataValidationErrors.ErrorsProperty)
         {
@@ -839,9 +849,7 @@ public abstract class InfoPickerInput : TemplatedControl,
 
     private void UpdateEffectiveStatus()
     {
-        var effectiveStatus = DataValidationErrors.GetHasErrors(this)
-            ? InputControlStatus.Error
-            : Status;
+        var effectiveStatus = InputControlState.ResolveEffectiveStatus(this, Status, FormStatus);
         if (EffectiveStatus != effectiveStatus)
         {
             EffectiveStatus = effectiveStatus;
@@ -906,25 +914,9 @@ public abstract class InfoPickerInput : TemplatedControl,
 
     protected virtual void NotifyValidateStatus(FormValidateStatus status)
     {
-        if (status == FormValidateStatus.Error)
+        if (FormStatus != status)
         {
-            SetStatusIfChanged(InputControlStatus.Error);
-        }
-        else if (status == FormValidateStatus.Warning)
-        {
-            SetStatusIfChanged(InputControlStatus.Warning);
-        }
-        else
-        {
-            SetStatusIfChanged(InputControlStatus.Default);
-        }
-    }
-
-    private void SetStatusIfChanged(InputControlStatus status)
-    {
-        if (Status != status)
-        {
-            SetCurrentValue(StatusProperty, status);
+            SetCurrentValue(FormStatusProperty, status);
         }
     }
     

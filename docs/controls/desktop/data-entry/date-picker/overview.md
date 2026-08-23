@@ -1,6 +1,6 @@
 # DatePicker 桌面版架构设计
 
-本文档定义 `DatePicker` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [DatePicker 桌面版实现原理](implementation.md)，CalendarView 的系统性优化设计见 [CalendarView 系统性优化设计](calendar-view-system-optimization.md)，DatePicker Token 的专项设计见 [DatePicker Token 设计](token.md)，设计和契约变化记录见 [DatePicker Changelog](changelog.md)。
+本文档定义 `DatePicker` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [DatePicker 桌面版实现原理](implementation.md)，CalendarView 的系统性优化设计见 [CalendarView 系统性优化设计](calendar-view-system-optimization.md)，DatePicker Token 的专项设计见 [DatePicker Token 设计](token.md)，设计和契约变化记录见 [DatePicker Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -118,7 +118,7 @@ Public API / inherited command / item source / user input
 - 当归一化后的 `MinDate` 晚于 `MaxDate` 时，有效范围收敛为 `MinDate` 所在的一个 picker unit，但控件不得修改或回写调用方设置的原始属性值。
 - 外部受控值越界时，`SelectedDateTime`、`RangeStartSelectedDate` 和 `RangeEndSelectedDate` 保持不变，输入框继续显示外部值；Calendar 不标记越界值为选中，确认操作不可提交该值。用户选择有效日期后，才按既有 TwoWay 契约更新受控值。
 - 设置 `PickerDisplayDate` 后不得写入 `SelectedDateTime`，不得改变输入框文本、Form value 或清除按钮状态；当已有已选值时，弹出面板仍优先围绕已选值展示。
-- DatePicker / RangeDatePicker 输入壳体必须把 `DataValidationErrors` 同步转发到外层 AddOn 和内部文本框；range indicator 等附属视觉读取 effective status，native error 优先于手动 warning/error 状态。
+- DatePicker / RangeDatePicker 必须把 `DataValidationErrors`、FormStatus 和显式 Status 投射到 shared `InputControlFrame`；range indicator 等附属视觉读取 `EffectiveStatus`，native error 优先于 Form/显式 warning/error 状态。Calendar 和 picker panel 只拥有日期选择、范围预览和面板交互状态。
 - `PickerMode=Week` 的月视图是带周序号列的 8 列 week panel，不是普通日期面板的 7 个日期按钮逐个选中；选中视觉和 hover 视觉都必须按整周连续行渲染，不能退回单个日期按钮的普通 pointerover 背景。
 - 非 `Date` 颗粒度仍使用 `DateTime?` 保存提交值：`Week` 保存 ISO 周起始日，`Month` 保存当月 1 日，`Quarter` 保存季度首月 1 日，`Year` 保存当年 1 月 1 日。
 - `IsShowTime` 只在 `PickerMode=Date` 时形成有效时间选择；其他颗粒度忽略时间面板和时间拼接。
@@ -128,7 +128,7 @@ Public API / inherited command / item source / user input
 
 ## 5. 视觉与主题模型
 
-DatePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
+DatePicker 的视觉模型由 `InputControlFrame` 输入表面、InfoPicker 输入子控件、控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。输入表面状态由 shared frame 统一表达，DatePicker 主题只扩展日期、范围和弹层内容。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -136,6 +136,8 @@ DatePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要
 | `CalendarDayButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 | `CalendarItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `CalendarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
+| `InfoPickerTextBoxTheme.axaml` | 通过 `StyleVariant=Borderless` 提供内部日期文本输入的无 chrome 布局。 |
+| `InputControlFrameTheme.axaml` | 提供输入表面 variant、effective status、focus、disabled、error、warning、CompactSpace 和 motion。 |
 | `DualMonthCalendarItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `DualMonthRangeCalendarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `RangeCalendarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
@@ -170,6 +172,8 @@ DatePicker 与同分类控件共享尺寸、状态、Token、Gallery 展示和�
 - `DatePicker`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `DatePickerPresenter`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `DatePickerPresenterTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
+- `InfoPickerTextBox`：internal `AbstractTextInput` 输入子控件，负责日期文本编辑、Form/native validation 接入和 Borderless 输入布局。
+- `InputControlFrame`：internal 输入表面组合控件，负责 DatePicker/RangeDatePicker 的 variant、effective status、边框、背景和 CompactSpace 视觉。
 - `DatePickerToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `DualMonthArrowDecoratedBox`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `DualMonthCalendarItem`：集合项、节点或容器类型，承载单项状态和模板协作。

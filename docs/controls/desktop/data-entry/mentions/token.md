@@ -1,10 +1,10 @@
 # Mentions Token 设计
 
-本文档定义 `AtomUI.Desktop.Controls.MentionsToken` 的专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/development/control-token-guidelines.md)。Mentions 整体架构见 [Mentions 桌面版架构设计](overview.md)，内部实现原理见 [Mentions 桌面版实现原理](implementation.md)，设计和契约变化记录见 [Mentions Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.MentionsToken` 的专属语义、分类、使用范围和兼容边界。共享输入表面分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/development/control-token-guidelines.md)。Mentions 整体架构见 [Mentions 桌面版架构设计](overview.md)，内部实现原理见 [Mentions 桌面版实现原理](implementation.md)，设计和契约变化记录见 [Mentions Changelog](changelog.md)。
 
 ## 1. 定位
 
-MentionsToken 是 Mentions 的控件级 Token scope，只描述候选弹层的结构尺寸。输入框本体由内部 `MentionTextArea` 复用 TextArea / AddOnDecoratedBox / SharedToken 体系；候选列表项的选择、hover、disabled 和文本状态由 CandidateList 主题处理。
+MentionsToken 是 Mentions 的控件级 Token scope，只描述候选弹层的结构尺寸。输入框本体由内部 `MentionTextArea` 复用 TextArea / `AbstractTextInput` / `InputControlFrame` / SharedToken 体系；候选列表项的选择、hover、disabled 和文本状态由 CandidateList 主题处理。
 
 MentionsToken 不承载以下状态：
 

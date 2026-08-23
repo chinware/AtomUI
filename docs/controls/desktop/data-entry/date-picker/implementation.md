@@ -1,6 +1,6 @@
 # DatePicker 桌面版实现原理
 
-本文档描述 DatePicker 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [DatePicker 桌面版架构设计](overview.md)，CalendarView 的系统性优化目标见 [CalendarView 系统性优化设计](calendar-view-system-optimization.md)，变化记录见 [DatePicker Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [DatePicker Token 设计](token.md)。
+本文档描述 DatePicker 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，公共设计与 API 契约见 [DatePicker 桌面版架构设计](overview.md)，CalendarView 的系统性优化目标见 [CalendarView 系统性优化设计](calendar-view-system-optimization.md)，变化记录见 [DatePicker Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [DatePicker Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -35,7 +35,7 @@
 - `DatePickerPresenter`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `DatePickerDateRangeConstraint`：internal 纯值约束模型，按 `PickerMode` 归一 `MinDate`、`MaxDate`，提供 picker unit 有效性判断和显示锚点收敛，不持有控件或视觉对象。
 - `DatePickerPresenterTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
-- `InfoPickerTextBox`：internal 输入子控件，负责 picker 输入框的无 chrome padding 和文本 presenter 间距；DatePicker/RangeDatePicker 主题只负责直接子控件的状态颜色。
+- `InfoPickerTextBox`：internal `AbstractTextInput` 输入子控件，使用 `StyleVariant=Borderless` 表达无 chrome 语义；DatePicker/RangeDatePicker 主题只负责 picker 专用内容和布局。
 - `DatePickerToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `DualMonthArrowDecoratedBox`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `DualMonthCalendarItem`：集合项、节点或容器类型，承载单项状态和模板协作。

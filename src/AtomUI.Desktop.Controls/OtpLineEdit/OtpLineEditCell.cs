@@ -1,18 +1,17 @@
 using AtomUI.Animations;
-using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
-using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 
 using AvaloniaTextBox = Avalonia.Controls.TextBox;
 
 namespace AtomUI.Desktop.Controls;
 
-[PseudoClasses(StdPseudoClass.Pressed, ":cell-active", ":input-target")]
-public class OtpLineEditCell : TemplatedControl
+[PseudoClasses(":cell-active", ":input-target")]
+internal class OtpLineEditCell : InputControlFrame
 {
     #region 公共属性定义
 
@@ -24,15 +23,6 @@ public class OtpLineEditCell : TemplatedControl
 
     public static readonly StyledProperty<bool> IsActiveProperty =
         AvaloniaProperty.Register<OtpLineEditCell, bool>(nameof(IsActive));
-
-    public static readonly StyledProperty<InputControlStatus> EffectiveStatusProperty =
-        AvaloniaProperty.Register<OtpLineEditCell, InputControlStatus>(nameof(EffectiveStatus));
-
-    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
-        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<OtpLineEditCell>();
-
-    public static readonly StyledProperty<InputControlStyleVariant> StyleVariantProperty =
-        InputControlStyleVariantProperty.StyleVariantProperty.AddOwner<OtpLineEditCell>();
 
     public string? DisplayText
     {
@@ -52,39 +42,12 @@ public class OtpLineEditCell : TemplatedControl
         set => SetValue(IsActiveProperty, value);
     }
 
-    public InputControlStatus EffectiveStatus
-    {
-        get => GetValue(EffectiveStatusProperty);
-        set => SetValue(EffectiveStatusProperty, value);
-    }
-
-    public CustomizableSizeType SizeType
-    {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
-    }
-
-    public InputControlStyleVariant StyleVariant
-    {
-        get => GetValue(StyleVariantProperty);
-        set => SetValue(StyleVariantProperty, value);
-    }
-
     #endregion
 
     #region 内部属性定义
 
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
-        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<OtpLineEditCell>();
-
     internal static readonly StyledProperty<bool> IsInputTargetProperty =
         AvaloniaProperty.Register<OtpLineEditCell, bool>(nameof(IsInputTarget));
-
-    internal bool IsMotionEnabled
-    {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
-    }
 
     internal bool IsInputTarget
     {
@@ -100,11 +63,6 @@ public class OtpLineEditCell : TemplatedControl
     private const string InputTargetPseudoClass = ":input-target";
 
     internal AvaloniaTextBox? TextBoxPart => _textBox;
-
-    static OtpLineEditCell()
-    {
-        PressedMixin.Attach<OtpLineEditCell>();
-    }
 
     protected override void OnInitialized()
     {
@@ -122,7 +80,8 @@ public class OtpLineEditCell : TemplatedControl
     {
         base.OnApplyTemplate(e);
 
-        _textBox = e.NameScope.Find<OtpTextBox>("PART_TextBox");
+        _textBox = Content as OtpTextBox;
+        ConfigureTextBoxCursor();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -132,11 +91,32 @@ public class OtpLineEditCell : TemplatedControl
         if (change.Property == IsActiveProperty)
         {
             PseudoClasses.Set(CellActivePseudoClass, change.GetNewValue<bool>());
+            IsInputFocusWithin = change.GetNewValue<bool>();
         }
 
         if (change.Property == IsInputTargetProperty)
         {
             PseudoClasses.Set(InputTargetPseudoClass, change.GetNewValue<bool>());
+            ConfigureTextBoxCursor();
+        }
+
+        if (change.Property == ContentProperty ||
+            change.Property == IsEffectivelyEnabledProperty)
+        {
+            _textBox = Content as OtpTextBox;
+            ConfigureTextBoxCursor();
+        }
+    }
+
+    private void ConfigureTextBoxCursor()
+    {
+        if (_textBox is not null)
+        {
+            _textBox.SetCurrentValue(
+                CursorProperty,
+                IsInputTarget && IsEffectivelyEnabled
+                    ? new Cursor(StandardCursorType.Ibeam)
+                    : new Cursor(StandardCursorType.Arrow));
         }
     }
 

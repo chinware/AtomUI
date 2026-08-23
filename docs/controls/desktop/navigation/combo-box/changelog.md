@@ -2,6 +2,15 @@
 
 本文档记录 ComboBox 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-23
+
+- Behavior
+  - Route Form validation through `FormStatus` and the shared input-frame effective-status pipeline without overwriting explicit `Status`.
+- Theme
+  - Forward `FormStatus`, focus-within and native validation from `ComboBox` to its decorated input frame.
+- Docs
+  - Link ComboBox to the shared input-control architecture and document the validation-state ownership boundary.
+
 ## 2026-08-19
 
 - Behavior

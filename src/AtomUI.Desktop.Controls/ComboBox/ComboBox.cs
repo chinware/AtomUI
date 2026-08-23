@@ -252,6 +252,9 @@ public class ComboBox : AvaloniaComboBox,
     internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty =
         AvaloniaProperty.Register<ComboBox, FormValidateFeedback?>(nameof(FormFeedback));
 
+    internal static readonly StyledProperty<FormValidateStatus> FormStatusProperty =
+        InputControlState.FormStatusProperty.AddOwner<ComboBox>();
+
     internal static readonly DirectProperty<ComboBox, bool> IsFormFeedbackVisibleProperty =
         AvaloniaProperty.RegisterDirect<ComboBox, bool>(
             nameof(IsFormFeedbackVisible),
@@ -291,6 +294,12 @@ public class ComboBox : AvaloniaComboBox,
     {
         get => GetValue(FormFeedbackProperty);
         set => SetValue(FormFeedbackProperty, value);
+    }
+
+    internal FormValidateStatus FormStatus
+    {
+        get => GetValue(FormStatusProperty);
+        private set => SetCurrentValue(FormStatusProperty, value);
     }
 
     private bool _isFormFeedbackVisible;
@@ -519,6 +528,7 @@ public class ComboBox : AvaloniaComboBox,
         base.OnPropertyChanged(change);
 
         if (change.Property == StatusProperty ||
+            change.Property == FormStatusProperty ||
             change.Property == DataValidationErrors.HasErrorsProperty ||
             change.Property == DataValidationErrors.ErrorsProperty)
         {
@@ -714,17 +724,9 @@ public class ComboBox : AvaloniaComboBox,
 
     protected virtual void NotifyValidateStatus(FormValidateStatus status)
     {
-        if (status == FormValidateStatus.Error)
+        if (FormStatus != status)
         {
-            SetCurrentValue(StatusProperty, InputControlStatus.Error);
-        }
-        else if (status == FormValidateStatus.Warning)
-        {
-            SetCurrentValue(StatusProperty, InputControlStatus.Warning);
-        }
-        else
-        {
-            SetCurrentValue(StatusProperty, InputControlStatus.Default);
+            SetCurrentValue(FormStatusProperty, status);
         }
     }
     
@@ -766,8 +768,9 @@ public class ComboBox : AvaloniaComboBox,
 
     private void UpdatePseudoClasses()
     {
+        var effectiveStatus = InputControlState.ResolveEffectiveStatus(this, Status, FormStatus);
         PseudoClasses.Set(StdPseudoClass.Warning,
-            Status == InputControlStatus.Warning && !DataValidationErrors.GetHasErrors(this));
+            effectiveStatus == InputControlStatus.Warning);
     }
 
     private void ConfigureMaxDropdownHeight()

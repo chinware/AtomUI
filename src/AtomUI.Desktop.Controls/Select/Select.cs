@@ -796,7 +796,7 @@ public partial class Select : AbstractSelect
             return false;
         }
 
-        if (e.Source is TextBox textBox && string.IsNullOrWhiteSpace(textBox.Text) == false)
+        if (e.Source is AbstractTextInput textInput && string.IsNullOrWhiteSpace(textInput.Text) == false)
         {
             return false;
         }
@@ -1123,9 +1123,9 @@ public partial class Select : AbstractSelect
     {
         if (_candidateList != null)
         {
-            if (e.Source is TextBox textBox)
+            if (e.Source is AbstractTextInput textInput)
             {
-                if (ReferenceEquals(textBox, _singleFilterInput) &&
+                if (ReferenceEquals(textInput, _singleFilterInput) &&
                     Mode == SelectMode.Single &&
                     (_syncingSingleFilterInputText || !IsDropDownOpen || !IsEffectiveFilterEnabled))
                 {
@@ -1133,7 +1133,7 @@ public partial class Select : AbstractSelect
                     return;
                 }
 
-                var searchText = textBox.Text?.Trim();
+                var searchText = textInput.Text?.Trim();
                 FilterValue = string.IsNullOrEmpty(searchText) ? null : searchText;
             }
 

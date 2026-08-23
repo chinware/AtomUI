@@ -37,7 +37,7 @@ public class AutoCompleteCandidateInteractionTests
         try
         {
             var textBox = autoComplete.GetVisualDescendants()
-                                      .OfType<TextBox>()
+                                      .OfType<AbstractTextInput>()
                                       .Single();
             textBox.Text       = "Al";
             textBox.CaretIndex = 2;

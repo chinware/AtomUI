@@ -472,6 +472,9 @@ public abstract class AbstractSelect : TemplatedControl,
     internal static readonly StyledProperty<bool> IsUsedInCompactSpaceProperty =
         CompactSpaceAwareControlProperty.IsUsedInCompactSpaceProperty.AddOwner<AbstractSelect>();
 
+    internal static readonly StyledProperty<FormValidateStatus> FormStatusProperty =
+        InputControlState.FormStatusProperty.AddOwner<AbstractSelect>();
+
     internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty =
         AvaloniaProperty.Register<AbstractSelect, FormValidateFeedback?>(nameof(FormFeedback));
 
@@ -573,6 +576,12 @@ public abstract class AbstractSelect : TemplatedControl,
         set => SetValue(IsUsedInCompactSpaceProperty, value);
     }
 
+    internal FormValidateStatus FormStatus
+    {
+        get => GetValue(FormStatusProperty);
+        private set => SetCurrentValue(FormStatusProperty, value);
+    }
+
     internal FormValidateFeedback? FormFeedback
     {
         get => GetValue(FormFeedbackProperty);
@@ -670,6 +679,7 @@ public abstract class AbstractSelect : TemplatedControl,
     {
         base.OnPropertyChanged(change);
         if (change.Property == StatusProperty ||
+            change.Property == FormStatusProperty ||
             change.Property == DataValidationErrors.HasErrorsProperty ||
             change.Property == DataValidationErrors.ErrorsProperty)
         {
@@ -705,9 +715,10 @@ public abstract class AbstractSelect : TemplatedControl,
 
     protected void UpdatePseudoClasses()
     {
+        var effectiveStatus = InputControlState.ResolveEffectiveStatus(this, Status, FormStatus);
         PseudoClasses.Set(SelectPseudoClass.DropdownOpen, IsDropDownOpen);
         PseudoClasses.Set(StdPseudoClass.Warning,
-            Status == InputControlStatus.Warning && !DataValidationErrors.GetHasErrors(this));
+            effectiveStatus == InputControlStatus.Warning);
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Outline, StyleVariant == InputControlStyleVariant.Outlined);
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Filled, StyleVariant == InputControlStyleVariant.Filled);
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Borderless, StyleVariant == InputControlStyleVariant.Borderless);
@@ -902,17 +913,9 @@ public abstract class AbstractSelect : TemplatedControl,
 
     protected virtual void NotifyValidateStatus(FormValidateStatus status)
     {
-        if (status == FormValidateStatus.Error)
+        if (FormStatus != status)
         {
-            SetStatusIfChanged(InputControlStatus.Error);
-        }
-        else if (status == FormValidateStatus.Warning)
-        {
-            SetStatusIfChanged(InputControlStatus.Warning);
-        }
-        else
-        {
-            SetStatusIfChanged(InputControlStatus.Default);
+            SetCurrentValue(FormStatusProperty, status);
         }
     }
 
@@ -983,11 +986,4 @@ public abstract class AbstractSelect : TemplatedControl,
         }
     }
 
-    private void SetStatusIfChanged(InputControlStatus status)
-    {
-        if (Status != status)
-        {
-            SetCurrentValue(StatusProperty, status);
-        }
-    }
 }

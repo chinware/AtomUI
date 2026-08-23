@@ -1,6 +1,6 @@
 # TimePicker 桌面版架构设计
 
-本文档定义 `TimePicker` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [TimePicker 桌面版实现原理](implementation.md)，TimePicker Token 的专项设计见 [TimePicker Token 设计](token.md)，设计和契约变化记录见 [TimePicker Changelog](changelog.md)。
+本文档定义 `TimePicker` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [TimePicker 桌面版实现原理](implementation.md)，TimePicker Token 的专项设计见 [TimePicker Token 设计](token.md)，设计和契约变化记录见 [TimePicker Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -46,7 +46,7 @@ TimePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
 
-`SelectedTime` 是 `TimePicker` 的受控 Form 值属性，默认绑定模式为 `TwoWay`，并启用 Avalonia data validation。Form、绑定验证和输入壳体错误视觉必须基于 `DataValidationErrors` 投射，不允许另建与 native validation 并行的错误状态。
+`SelectedTime` 是 `TimePicker` 的受控 Form 值属性，默认绑定模式为 `TwoWay`，并启用 Avalonia data validation。Form、绑定验证和输入表面错误视觉必须基于 `DataValidationErrors` 投射，不允许另建与 native validation 并行的错误状态。TimePicker/RangeTimePicker 还必须把 `FormStatus` 和显式 `Status` 投射到 shared `InputControlFrame`；TimeView 只拥有时间面板和选择交互状态。
 
 主要公开类型与枚举：
 
@@ -106,11 +106,13 @@ Public API / inherited command / item source / user input
 
 ## 5. 视觉与主题模型
 
-TimePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
+TimePicker 的视觉模型由 `InputControlFrame` 输入表面、InfoPicker 输入子控件、控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。输入表面状态由 shared frame 统一表达，TimePicker 主题只扩展时间面板、范围和弹层内容。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `RangeTimePickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
+| `InfoPickerTextBoxTheme.axaml` | 通过 `StyleVariant=Borderless` 提供内部时间文本输入的无 chrome 布局。 |
+| `InputControlFrameTheme.axaml` | 提供输入表面 variant、effective status、focus、disabled、error、warning、CompactSpace 和 motion。 |
 | `TimePickerPresenterTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `TimePickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TimeViewCellTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
@@ -135,6 +137,8 @@ TimePicker 与同分类控件共享尺寸、状态、Token、Gallery 展示和�
 - `RangeTimePicker`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TimePicker`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TimePickerPresenter`：模板协作类型，承载内容展示、宿主或视觉边界。
+- `InfoPickerTextBox`：internal `AbstractTextInput` 输入子控件，负责时间文本编辑、Form/native validation 接入和 Borderless 输入布局。
+- `InputControlFrame`：internal 输入表面组合控件，负责 TimePicker/RangeTimePicker 的 variant、effective status、边框、背景和 CompactSpace 视觉。
 - `TimePickerToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
 - `TimeView`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TimeViewCell`：集合项、节点或容器类型，承载单项状态和模板协作。

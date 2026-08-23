@@ -19,6 +19,8 @@
                     StyleVariant="{TemplateBinding StyleVariant}"
                     SizeType="{TemplateBinding SizeType}"
                     Status="{TemplateBinding Status}"
+                    FormStatus="{TemplateBinding FormStatus}"
+                    IsInputFocusWithin="{TemplateBinding IsKeyboardFocusWithin}"
                     DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                     CompactSpaceItemPosition="{TemplateBinding CompactSpaceItemPosition}"
@@ -151,54 +153,5 @@
             </Style>
         </Style>
 
-        <Style Selector="^[StyleVariant=Outlined] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Default][IsInnerBoxHover=True],
-                         ^[StyleVariant=Underlined] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Default][IsInnerBoxHover=True]">
-            <Setter Property="BorderBrush"
-                    Value="{atom:LineEditTokenResource ColorPrimaryHover}" />
-        </Style>
-        <Style Selector="^:focus-within[StyleVariant=Outlined] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Default],
-                         ^:focus-within[StyleVariant=Underlined] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Default]">
-            <Setter Property="BorderBrush"
-                    Value="{atom:LineEditTokenResource ColorPrimary}" />
-            <Setter Property="BoxShadow"
-                    Value="{atom:LineEditTokenResource InputActiveShadow}" />
-        </Style>
-        <Style Selector="^:focus-within[StyleVariant=Filled] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Default]">
-            <Setter Property="BorderBrush"
-                    Value="{atom:LineEditTokenResource ColorPrimary}" />
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BoxShadow"
-                    Value="{atom:LineEditTokenResource InputActiveShadow}" />
-        </Style>
-        <Style Selector="^:focus-within[StyleVariant=Outlined] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Error],
-                         ^:focus-within[StyleVariant=Underlined] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Error]">
-            <Setter Property="BorderBrush"
-                    Value="{atom:SharedTokenResource ColorError}" />
-            <Setter Property="BoxShadow"
-                    Value="{atom:LineEditTokenResource InputErrorActiveShadow}" />
-        </Style>
-        <Style Selector="^:focus-within[StyleVariant=Filled] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Error]">
-            <Setter Property="BorderBrush"
-                    Value="{atom:SharedTokenResource ColorError}" />
-            <Setter Property="Background"
-                    Value="{atom:LineEditTokenResource ColorTransparent}" />
-            <Setter Property="BoxShadow"
-                    Value="{atom:LineEditTokenResource InputErrorActiveShadow}" />
-        </Style>
-        <Style Selector="^:focus-within[StyleVariant=Outlined] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Warning],
-                         ^:focus-within[StyleVariant=Underlined] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Warning]">
-            <Setter Property="BorderBrush"
-                    Value="{atom:SharedTokenResource ColorWarning}" />
-            <Setter Property="BoxShadow"
-                    Value="{atom:LineEditTokenResource InputWarningActiveShadow}" />
-        </Style>
-        <Style Selector="^:focus-within[StyleVariant=Filled] /template/ atom|AddOnDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Warning]">
-            <Setter Property="BorderBrush"
-                    Value="{atom:SharedTokenResource ColorWarning}" />
-            <Setter Property="Background"
-                    Value="{atom:LineEditTokenResource ColorTransparent}" />
-            <Setter Property="BoxShadow"
-                    Value="{atom:LineEditTokenResource InputWarningActiveShadow}" />
-        </Style>
     </ControlTheme>
 </ResourceDictionary>

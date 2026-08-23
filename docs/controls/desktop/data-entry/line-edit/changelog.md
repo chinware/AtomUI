@@ -14,6 +14,18 @@
   - Define an internal text viewport metric owned by TextBox/TextArea so consumers can react to effective text width without traversing input templates.
   - Define viewport, padding, presenter margin and template reapply lifecycle as the single source of truth for input text width.
 
+## 2026-08-23
+
+- Architecture
+  - Establish `AbstractTextInput` as the shared text-input logic owner for `TextBox`, `LineEdit` and `TextArea`.
+  - Establish `InputControlFrame` as the shared input-surface owner for variant, effective status, border, background, corner, shadow, CompactSpace and motion.
+  - Define `AddOnDecoratedBox` and its specialized descendants as layout extensions of `InputControlFrame`; they no longer own duplicated input-surface status selectors.
+- API
+  - Align `StyleVariant`, `Status`, clear, count, Form, native validation and CompactSpace semantics across the three base text-input controls.
+  - Define `NativeValidationStatus`, `FormStatus`, `ExplicitStatus` and the `EffectiveStatus` priority used by all input surfaces.
+- Theme
+  - Move shared input-surface values to `SharedToken` and the frame theme; retain control tokens only for stable text/layout or TextArea resize differences.
+
 ## 2026-06-26
 
 - Docs

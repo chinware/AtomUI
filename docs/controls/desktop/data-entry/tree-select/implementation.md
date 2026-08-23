@@ -1,17 +1,17 @@
 # TreeSelect 桌面版实现原理
 
-本文档描述 TreeSelect 桌面版的输入壳体、树数据集合、选择同步、过滤、候选弹层、Form 和 Token 资源边界。公共设计与 API 契约见 [TreeSelect 桌面版架构设计](overview.md)，Token 语义见 [TreeSelect Token 设计](token.md)，变化记录见 [TreeSelect Changelog](changelog.md)。
+本文档描述 TreeSelect 桌面版的输入壳体、树数据集合、选择同步、过滤、候选弹层、Form 和 Token 资源边界。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，公共设计与 API 契约见 [TreeSelect 桌面版架构设计](overview.md)，Token 语义见 [TreeSelect Token 设计](token.md)，变化记录见 [TreeSelect Changelog](changelog.md)。
 
 ## 1. 实现定位
 
-TreeSelect 的实现以 `AbstractSelect` 为输入与弹层基类，`TreeSelect` 本体负责树数据、树选择、过滤输入和结果展示协调。树节点容器、展开、勾选和异步加载由 TreeView 家族承担。本文档聚焦 TreeSelect 自身的状态编排、生命周期和维护边界，不重新说明 TreeView 的通用容器回放、AddOnDecoratedBox 的通用输入外观或 PopupHost 的全局资源规则。
+TreeSelect 的实现以 `AbstractSelect` 为选择与弹层基类，输入表面复用 `InputControlFrame` / `AddOnDecoratedBox`，`TreeSelect` 本体负责树数据、树选择、过滤输入和结果展示协调。树节点容器、展开、勾选和异步加载由 TreeView 家族承担。本文档聚焦 TreeSelect 自身的状态编排、生命周期和维护边界，不重新说明 TreeView 的通用容器回放、shared frame 的输入外观或 PopupHost 的全局资源规则。
 
 ## 2. 源码文件结构
 
 主要源码：
 
 - `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelect.cs`：public TreeSelect API、生命周期、弹层树懒创建、选择同步、过滤输入、Form 映射和私有算法。
-- `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelectAddOnDecoratedBox.cs`：TreeSelect 输入壳体内部状态，扩展 `AddOnDecoratedBox` 的多选和选择空状态。
+- `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelectAddOnDecoratedBox.cs`：TreeSelect 输入布局扩展，复用 `InputControlFrame` 并承载多选和选择空状态。
 - `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelectTreeView.cs`：TreeSelect 候选树，使用 TreeView 样式键并创建专用容器。
 - `src/AtomUI.Desktop.Controls/TreeSelect/TreeViewSelectTreeViewItem.cs`：候选树节点容器，承接最大选择数状态。
 - `src/AtomUI.Desktop.Controls/TreeSelect/Converters/*`：树节点显示转换辅助。
@@ -23,7 +23,7 @@ TreeSelect 的实现以 `AbstractSelect` 为输入与弹层基类，`TreeSelect`
 
 `TreeSelect` 是树形选择协调器。它维护 `Items`、`ItemsSource`、`SelectedItem`、`SelectedItems`、`EffectiveSelectedItems`、过滤值、勾选策略和 popup 树内容同步。
 
-`TreeSelectAddOnDecoratedBox` 是 TreeSelect 输入表面边界。它继承 AddOnDecoratedBox 的 variant、status、Addon、CompactSpace 和尺寸能力，并额外承载 `IsMultiple`、`IsSelectionEmpty` 和 `IsDropDownOpen`。
+`TreeSelectAddOnDecoratedBox` 是 TreeSelect 输入布局扩展。它复用 `InputControlFrame` 的 variant、effective status、Addon、CompactSpace 和尺寸能力，并额外承载 `IsMultiple`、`IsSelectionEmpty` 和 `IsDropDownOpen`；不重新定义输入表面状态优先级。
 
 `TreeSelectTreeView` 是候选树边界。它继承 AtomUI `TreeView`，复用 TreeView 的视觉和交互能力，并把 `IsMaxSelectReached` 转发到 `TreeViewSelectTreeViewItem`。
 
@@ -92,9 +92,9 @@ Form.GetValue()
 Form.ClearValue()
   → clear current selection
 DataValidationErrors
-  → native error visual + AddOn effective error state
+  → InputControlFrame.EffectiveStatus
 ValidateStatus
-  → Warning/Success/Validating extension state
+  → FormStatus → InputControlFrame + feedback
 FeedbackControl
   → FormFeedback → SelectHandle
 ```
@@ -184,7 +184,7 @@ TreeSelect 根模板中的稳定 template part 关系优先由 AXAML 表达：
 - `PART_ContentRightAddOnPresenter` 通过 compiled ancestor binding 接收 `ContentRightAddOn`、`ContentRightAddOnTemplate`，并用 `ObjectConverters.IsNotNull` 控制显示。
 - `SelectHandle` 通过 compiled ancestor binding 接收 Form feedback、loading 图标、展开图标、过滤状态、启用状态、motion、loading、clear、选择为空和下拉打开状态。
 
-`SetupSelectHandleInputStateBindings()` 只保留 `AddOnDecoratedBox` 到 `SelectHandle` 的 hover / pressed 状态转发。这个关系的 source 是同一模板中的 sibling part，不是 templated parent，无法用 `TemplateBinding` 或 ancestor binding 在不改变模板契约的前提下表达。该 binding 在每次重新应用模板前释放旧 `CompositeDisposable`，生命周期与模板 part 获取路径一致。
+`SetupSelectHandleInputStateBindings()` 只保留 frame layout part 到 `SelectHandle` 的 hover / pressed sibling 状态转发。这个关系的 source 是同一模板中的 sibling part，不是 templated parent，无法用 `TemplateBinding` 或 ancestor binding 在不改变模板契约的前提下表达；它只转发交互状态，不改变 `InputControlFrame` 对 variant、effective status、error、warning 或 disabled 的唯一 ownership。该 binding 在每次重新应用模板前释放旧 `CompositeDisposable`，生命周期与模板 part 获取路径一致。
 
 ## 8. 资源、性能与 AOT 边界
 
@@ -192,7 +192,7 @@ TreeSelect 不依赖运行时反射发现模板结构。模板协作通过固定
 
 资源和生命周期边界：
 
-- `_selectHandleInputStateBindings` 每次模板接入前释放旧绑定，仅持有 AddOnDecoratedBox → SelectHandle 的 hover / pressed sibling part 状态转发。
+- `_selectHandleInputStateBindings` 每次模板接入前释放旧绑定，仅持有 frame layout part → SelectHandle 的 hover / pressed sibling 状态转发，不承载输入表面状态归一。
 - `_treeView` 的事件订阅和 `ItemsSource` 必须在 `ClearPopupContent()` 中释放。
 - 懒创建的 `PopupFrame` 和 `TreeSelectTreeView` 必须设置 `TemplatedParent`，并在清理时置空。
 - `Items.CollectionChanged` 是控件实例持有自身集合的订阅，生命周期与控件实例一致。

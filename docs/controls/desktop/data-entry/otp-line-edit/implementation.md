@@ -1,6 +1,6 @@
 # OtpLineEdit 桌面版实现原理
 
-本文档描述 OtpLineEdit 桌面版一次性验证码输入控件的内部状态同步、模板接入、cell 生成、粘贴分发、Form 和 native validation 集成。公共设计与 API 契约见 [OtpLineEdit 桌面版架构设计](overview.md)，Token 语义见 [OtpLineEdit Token 设计](token.md)，变化记录见 [OtpLineEdit Changelog](changelog.md)。
+本文档描述 OtpLineEdit 桌面版一次性验证码输入控件的内部状态同步、模板接入、cell 生成、粘贴分发、Form 和 native validation 集成。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，公共设计与 API 契约见 [OtpLineEdit 桌面版架构设计](overview.md)，Token 语义见 [OtpLineEdit Token 设计](token.md)，变化记录见 [OtpLineEdit Changelog](changelog.md)。
 
 ## 1. 实现定位
 
@@ -11,11 +11,9 @@ OtpLineEdit 的实现以控件根节点作为值、焦点位置、验证状态�
 主要源码：
 
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEdit.cs`：公共 API、Avalonia 属性注册、事件、Form 接口、状态入口和模板生命周期。
-- `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEdit.Input.cs`：键盘、文本输入、粘贴、删除、导航和 completed 检查。
-- `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEdit.Value.cs`：`Text` 归一化、`Length` 裁剪、formatter、input mode filter 和 cell projection。
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEditCell.cs`：内部 cell 控件，承载单字符显示、placeholder、active、mask 和事件回调。
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEditSeparatorContext.cs`：separator 模板上下文，提供前后 cell index 和 display index。
-- `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEditToken.cs`：cell 宽度、cell 间距和 separator 间距 Token。
+- `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEditToken.cs`：cell 宽度和 cell 间距 Token。
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/Themes/OtpLineEditTheme.axaml`：根模板、cell host、清除按钮和 feedback 区。
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/Themes/OtpLineEditCellTheme.axaml`：cell 的字符显示、mask、placeholder、active/focus/error 状态。
 
@@ -34,7 +32,7 @@ OtpLineEdit 的实现以控件根节点作为值、焦点位置、验证状态�
 
 `OtpLineEditSeparatorContext` 是 separator 模板上下文。它只描述 separator 所处位置，不引用 owner 控件的可变状态，也不参与输入和验证。
 
-`OtpLineEditToken` 定义 OtpLineEdit 专属布局 Token。输入表面颜色、边框、focus shadow、disabled、error 和 warning 继续由 SharedToken、AddOnDecoratedBoxToken 和输入家族主题资源表达。
+`OtpLineEditToken` 定义 OtpLineEdit 专属布局 Token。输入表面颜色、边框、focus shadow、disabled、error 和 warning 由 `InputControlFrameTheme` 与 SharedToken 表达，cell 文本字号直接复用 SharedToken 的输入字号。
 
 ## 4. 状态与数据流
 
@@ -77,8 +75,8 @@ Form.SetValue(object?) → Text normalization
 Text changed           → IFormItemAware.ValueChanged
 Form.GetValue()        → Text
 Form.ClearValue()      → Clear()
-DataValidationErrors   → root :error + all cell effective error state
-ValidateStatus         → Warning/Success/Validating extension state
+DataValidationErrors   → root effective status → all cell error projection
+ValidateStatus         → FormStatus → InputControlFrame + FormFeedback
 Form feedback control  → PART_FormFeedBack
 ```
 
@@ -128,7 +126,7 @@ OtpLineEdit
 - `Text` 的默认值为空字符串或 `null` 时，cell display 统一按空文本处理。
 - `Focusable=true`，根控件负责键盘输入和焦点状态。
 - cell 内部允许使用轻量 `Avalonia.Controls.TextBox` 承载 `TextPresenter` 和 caret，但真实键盘焦点始终由根 `OtpLineEdit` 持有，cell `TextBox` 不参与 tab/focus owner 竞争。
-- cell 的 `StyleVariant` 视觉由 `OtpLineEditCellTheme.axaml` 表达，四种取值与 `LineEdit.StyleVariant` 同名同义；状态优先级为 disabled > native error/status > active/hover > variant default。
+- cell 的 `StyleVariant` 和有效状态视觉由 `OtpLineEditCellTheme.axaml` 基于 `InputControlFrameTheme` 投射根控件的有效状态；cell 不维护独立的 native validation、Form 或显式 status owner。根控件遵守 disabled/read-only 交互门禁及 shared `EffectiveStatus` 优先级，cell 的 active/hover 只在有效状态允许时叠加。
 
 `OnApplyTemplate` 规则：
 

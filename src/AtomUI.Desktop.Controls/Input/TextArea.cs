@@ -1,60 +1,24 @@
-using System.Reactive.Disposables;
-using AtomUI.Controls;
-using AtomUI.Controls.Commons;
-using AtomUI.Data;
 using AtomUI.Desktop.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Media.TextFormatting;
 
 namespace AtomUI.Desktop.Controls;
 
-using AvaloniaTextBox = Avalonia.Controls.TextBox;
-
-public class TextArea : AvaloniaTextBox,
-                        IMotionAwareControl,
-                        ICustomizableSizeTypeAware,
-                        IFormItemAware,
-                        IInputControlStatusAware,
-                        IInputControlStyleVariantAware,
-                        IFormItemFeedbackAware
+public class TextArea : AbstractTextInput
 {
     #region 公共属性定义
-    public static readonly StyledProperty<PathIcon?> ClearIconProperty =
-        AvaloniaProperty.Register<TextArea, PathIcon?>(nameof(ClearIcon));
-    
     public static readonly StyledProperty<int> LinesProperty =
         AvaloniaProperty.Register<TextArea, int>(nameof(Lines), 2);
     
     public static readonly StyledProperty<bool> IsAutoSizeProperty =
         AvaloniaProperty.Register<TextArea, bool>(nameof(IsAutoSize), false);
     
-    public static readonly StyledProperty<bool> IsShowCountProperty =
-        AvaloniaProperty.Register<TextArea, bool>(nameof(IsShowCount));
-
     public static readonly StyledProperty<bool> IsResizableProperty =
         AvaloniaProperty.Register<TextArea, bool>(nameof(IsResizable));
-    
-    public static readonly StyledProperty<InputControlStyleVariant> StyleVariantProperty =
-        InputControlStyleVariantProperty.StyleVariantProperty.AddOwner<TextArea>();
-
-    public static readonly StyledProperty<InputControlStatus> StatusProperty =
-        InputControlStatusProperty.StatusProperty.AddOwner<TextArea>();
-
-    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
-        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<TextArea>();
-
-    public static readonly StyledProperty<bool> IsAllowClearProperty =
-        AvaloniaProperty.Register<TextArea, bool>(nameof(IsAllowClear));
-
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
-        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TextArea>();
 
     public static readonly StyledProperty<IDataTemplate?> InnerLeftContentTemplateProperty =
         AvaloniaProperty.Register<TextArea, IDataTemplate?>(nameof(InnerLeftContentTemplate));
@@ -62,12 +26,6 @@ public class TextArea : AvaloniaTextBox,
     public static readonly StyledProperty<IDataTemplate?> InnerRightContentTemplateProperty =
         AvaloniaProperty.Register<TextArea, IDataTemplate?>(nameof(InnerRightContentTemplate));
     
-    public PathIcon? ClearIcon
-    {
-        get => GetValue(ClearIconProperty);
-        set => SetValue(ClearIconProperty, value);
-    }
-
     public int Lines
     {
         get => GetValue(LinesProperty);
@@ -84,46 +42,10 @@ public class TextArea : AvaloniaTextBox,
         set => SetValue(IsAutoSizeProperty, value);
     }
     
-    public bool IsShowCount
-    {
-        get => GetValue(IsShowCountProperty);
-        set => SetValue(IsShowCountProperty, value);
-    }
-    
     public bool IsResizable
     {
         get => GetValue(IsResizableProperty);
         set => SetValue(IsResizableProperty, value);
-    }
-
-    public InputControlStyleVariant StyleVariant
-    {
-        get => GetValue(StyleVariantProperty);
-        set => SetValue(StyleVariantProperty, value);
-    }
-
-    public InputControlStatus Status
-    {
-        get => GetValue(StatusProperty);
-        set => SetValue(StatusProperty, value);
-    }
-
-    public CustomizableSizeType SizeType
-    {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
-    }
-
-    public bool IsAllowClear
-    {
-        get => GetValue(IsAllowClearProperty);
-        set => SetValue(IsAllowClearProperty, value);
-    }
-    
-    public bool IsMotionEnabled
-    {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     public IDataTemplate? InnerLeftContentTemplate
@@ -142,79 +64,11 @@ public class TextArea : AvaloniaTextBox,
 
     #region 内部属性定义
 
-    internal static readonly DirectProperty<TextArea, bool> IsEffectiveShowClearButtonProperty =
-        AvaloniaProperty.RegisterDirect<TextArea, bool>(nameof(IsEffectiveShowClearButton),
-            o => o.IsEffectiveShowClearButton,
-            (o, v) => o.IsEffectiveShowClearButton = v);
-    
-    internal static readonly DirectProperty<TextArea, string?> CountTextProperty =
-        AvaloniaProperty.RegisterDirect<TextArea, string?>(nameof(CountText),
-            o => o.CountText,
-            (o, v) => o.CountText = v);
-    
-    internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty =
-        AvaloniaProperty.Register<TextArea, FormValidateFeedback?>(nameof(FormFeedback));
-
-    internal static readonly DirectProperty<TextArea, bool> IsFormFeedbackVisibleProperty =
-        AvaloniaProperty.RegisterDirect<TextArea, bool>(
-            nameof(IsFormFeedbackVisible),
-            o => o.IsFormFeedbackVisible);
-
-    internal static readonly DirectProperty<TextArea, bool> IsPlaceholderTextVisibleProperty =
-        AvaloniaProperty.RegisterDirect<TextArea, bool>(
-            nameof(IsPlaceholderTextVisible),
-            o => o.IsPlaceholderTextVisible,
-            (o, v) => o.IsPlaceholderTextVisible = v);
-
-    private bool _isEffectiveShowClearButton;
-
-    internal bool IsEffectiveShowClearButton
-    {
-        get => _isEffectiveShowClearButton;
-        set => SetAndRaise(IsEffectiveShowClearButtonProperty, ref _isEffectiveShowClearButton, value);
-    }
-    
-    private string? _countText;
-
-    internal string? CountText
-    {
-        get => _countText;
-        set => SetAndRaise(CountTextProperty, ref _countText, value);
-    }
-    
-    internal FormValidateFeedback? FormFeedback
-    {
-        get => GetValue(FormFeedbackProperty);
-        set => SetValue(FormFeedbackProperty, value);
-    }
-
-    private bool _isFormFeedbackVisible;
-
-    internal bool IsFormFeedbackVisible
-    {
-        get => _isFormFeedbackVisible;
-        private set => SetAndRaise(IsFormFeedbackVisibleProperty, ref _isFormFeedbackVisible, value);
-    }
-
-    private bool _isPlaceholderTextVisible = true;
-
-    internal bool IsPlaceholderTextVisible
-    {
-        get => _isPlaceholderTextVisible;
-        set => SetAndRaise(IsPlaceholderTextVisibleProperty, ref _isPlaceholderTextVisible, value);
-    }
-    
     #endregion
 
     private ScrollViewer? _scrollViewer;
     private TextAreaDecoratedBox? _textAreaDecoratedBox;
-    private IconButton? _clearButton;
     private ResizeHandle? _resizeHandle;
-    private CompositeDisposable? _contentRightAddOnBindings;
-    private IDisposable? _feedbackStatusSubscription;
-    private TextPresenter? _textPresenter;
-    private IDisposable? _preeditTextSubscription;
-    private IDisposable? _textViewportSubscription;
     private double? _originHeight; // 拖动改变高度的初始值
     private double _minResizeHeight; // 拖动改变高度时允许的最小 TextArea.Height
     private double _maxResizeHeight; // 拖动改变高度时允许的最大 TextArea.Height
@@ -222,100 +76,30 @@ public class TextArea : AvaloniaTextBox,
     static TextArea()
     {
         AffectsMeasure<TextArea>(IsAutoSizeProperty, LinesProperty);
-        TextChangedEvent.AddClassHandler<TextArea>((textArea, args) => textArea.HandleTextChanged());
     }
     
     public TextArea()
     {
     }
 
-    private void UpdatePseudoClasses()
-    {
-        PseudoClasses.Set(StdPseudoClass.Warning,
-            Status == InputControlStatus.Warning && !DataValidationErrors.GetHasErrors(this));
-        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Outline, StyleVariant == InputControlStyleVariant.Outlined);
-        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Filled, StyleVariant == InputControlStyleVariant.Filled);
-        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Borderless, StyleVariant == InputControlStyleVariant.Borderless);
-    }
+    protected override bool AllowsClearForMultilineInput => true;
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (change.Property == StatusProperty ||
-            change.Property == DataValidationErrors.HasErrorsProperty ||
-            change.Property == DataValidationErrors.ErrorsProperty)
-        {
-            UpdatePseudoClasses();
-        }
-
-        if (change.Property == AcceptsReturnProperty ||
-            change.Property == IsReadOnlyProperty ||
-            change.Property == TextProperty ||
-            change.Property == IsAllowClearProperty)
-        {
-            ConfigureEffectiveShowClearButton();
-            ConfigurePlaceholderTextVisibility();
-        }
-        else if (change.Property == IsShowCountProperty)
-        {
-            HandleInputChanged(Text);
-        }
-        else if (change.Property == FormFeedbackProperty)
-        {
-            ConfigureFormFeedbackSubscription();
-        }
-    }
-
-    private void ConfigureFormFeedbackSubscription()
-    {
-        _feedbackStatusSubscription?.Dispose();
-        _feedbackStatusSubscription = null;
-        if (FormFeedback is { } feedback)
-        {
-            _feedbackStatusSubscription = feedback.GetObservable(FormValidateFeedback.ValidateStatusProperty)
-                                                  .Subscribe(status => IsFormFeedbackVisible = status != FormValidateStatus.Default);
-        }
-        else
-        {
-            IsFormFeedbackVisible = false;
-        }
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        _feedbackStatusSubscription?.Dispose();
-        _feedbackStatusSubscription = null;
-    }
+    protected override AvaloniaProperty? InnerRightContentTemplatePropertyForBinding =>
+        InnerRightContentTemplateProperty;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
 
-        _textViewportSubscription?.Dispose();
-        _textViewportSubscription = null;
-        TextViewportMetrics.SetViewportWidth(this, null);
         if (_textAreaDecoratedBox is not null)
         {
             _textAreaDecoratedBox.Owner = null;
         }
 
-        SetupTextPresenterPreeditSubscription(e);
         _textAreaDecoratedBox = e.NameScope.Find<TextAreaDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
         if (_textAreaDecoratedBox is not null)
         {
             _textAreaDecoratedBox.Owner = this;
-        }
-
-        if (_clearButton != null)
-        {
-            _clearButton.Click -= HandleClearButtonClicked;
-        }
-
-        _clearButton   = e.NameScope.Find<IconButton>("PART_ClearButton");
-        if (_clearButton != null)
-        {
-            _clearButton.Click += HandleClearButtonClicked;
         }
 
         _resizeHandle = e.NameScope.Find<ResizeHandle>("PART_ResizeHandle");
@@ -324,81 +108,13 @@ public class TextArea : AvaloniaTextBox,
             _resizeHandle.Owner = this;
         }
 
-        UpdatePseudoClasses();
-        ConfigureEffectiveShowClearButton();
-        ConfigurePlaceholderTextVisibility();
-        HandleInputChanged(Text);
-        SetupContentRightAddOnBindings(e);
-    }
-
-    private void SetupTextPresenterPreeditSubscription(TemplateAppliedEventArgs e)
-    {
-        _preeditTextSubscription?.Dispose();
-        _preeditTextSubscription = null;
-
-        _textPresenter = e.NameScope.Find<TextPresenter>("PART_TextPresenter");
-        if (_textPresenter is not null)
-        {
-            _preeditTextSubscription = _textPresenter.GetObservable(TextPresenter.PreeditTextProperty)
-                                                     .Subscribe(_ => ConfigurePlaceholderTextVisibility());
-        }
-    }
-
-    private void ConfigurePlaceholderTextVisibility()
-    {
-        SetCurrentValue(IsPlaceholderTextVisibleProperty,
-            string.IsNullOrEmpty(Text) && string.IsNullOrEmpty(_textPresenter?.PreeditText));
-    }
-
-    private void SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)
-    {
-        _contentRightAddOnBindings?.Dispose();
-        _contentRightAddOnBindings = new CompositeDisposable();
-
-        if (e.NameScope.Find<InputClearIconButton>("PART_ClearButton") is { } clearButton)
-        {
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, clearButton,
-                AbstractIconButton.IsMotionEnabledProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsEffectiveShowClearButtonProperty, clearButton,
-                Visual.IsVisibleProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ClearIconProperty, clearButton,
-                AbstractIconButton.IconProperty));
-        }
-
-        if (e.NameScope.Find<ContentPresenter>("PART_FormFeedBack") is { } formFeedback)
-        {
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsFormFeedbackVisibleProperty, formFeedback,
-                Visual.IsVisibleProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, FormFeedbackProperty, formFeedback,
-                ContentPresenter.ContentProperty));
-        }
-
-        if (e.NameScope.Find<ContentPresenter>("PART_InnerRightContentPresenter") is { } innerRightContent)
-        {
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, InnerRightContentProperty, innerRightContent,
-                ContentPresenter.ContentProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, InnerRightContentTemplateProperty,
-                innerRightContent, ContentPresenter.ContentTemplateProperty));
-        }
-
-    }
-
-    private void HandleClearButtonClicked(object? sender, RoutedEventArgs args)
-    {
-        NotifyClearButtonClicked();
     }
 
     internal void NotifyScrollViewerCreated(ScrollViewer scrollViewer)
     {
         _scrollViewer = scrollViewer;
         this.SetScrollViewer(scrollViewer);
-        SetupTextViewportMetrics(scrollViewer);
-    }
-
-    private void SetupTextViewportMetrics(ScrollViewer scrollViewer)
-    {
-        _textViewportSubscription?.Dispose();
-        _textViewportSubscription = TextViewportMetrics.PublishViewportWidth(this, scrollViewer, _textPresenter);
+        NotifyTextViewportCreated(scrollViewer);
     }
 
     private void ValidateLinesValue(int lines)
@@ -444,17 +160,6 @@ public class TextArea : AvaloniaTextBox,
         return Math.Ceiling(textLayout.Height + verticalSpace);
     }
     
-    private void ConfigureEffectiveShowClearButton()
-    {
-        if (!IsAllowClear)
-        {
-            IsEffectiveShowClearButton = false;
-            return;
-        }
-        
-        SetCurrentValue(IsEffectiveShowClearButtonProperty, !IsReadOnly && !string.IsNullOrEmpty(Text));
-    }
-    
     private class LineTextSource : ITextSource
     {
         private readonly int _lines;
@@ -474,19 +179,6 @@ public class TextArea : AvaloniaTextBox,
         }
     }
     
-    protected virtual void NotifyClearButtonClicked()
-    {
-        Clear();
-    }
-    
-    private void HandleInputChanged(string? text)
-    {
-        if (IsShowCount)
-        {
-            SetCurrentValue(CountTextProperty, $"{text?.Length ?? 0} / {MaxLength}");
-        }
-    }
-
     internal void NotifyAboutToResize()
     {
         if (!IsResizable)
@@ -530,72 +222,4 @@ public class TextArea : AvaloniaTextBox,
         _originHeight = null;
     }
     
-    #region 实现 FormItem 接口
-    private EventHandler? _formValueChanged;
-    event EventHandler? IFormItemAware.ValueChanged
-    {
-        add => _formValueChanged += value;
-        remove => _formValueChanged -= value;
-    }
-
-    void IFormItemAware.SetFormValue(object? value) => NotifySetFormValue(value?.ToString());
-
-    object? IFormItemAware.GetFormValue() => NotifyGetFormValue();
-    void IFormItemAware.ClearFormValue() => NotifyClearFormValue();
-    void IFormItemAware.NotifyValidateStatus(FormValidateStatus status) => NotifyValidateStatus(status);
-    void IFormItemFeedbackAware.SetFeedbackControl(FormValidateFeedback? value) => NotifySetFeedBackControl(value);
-    
-    private void HandleTextChanged()
-    {
-        HandleInputChanged(Text);
-        _formValueChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    protected virtual void NotifySetFormValue(string? value)
-    {
-        SetCurrentValue(TextProperty, value);
-    }
-
-    protected virtual string? NotifyGetFormValue()
-    {
-        return Text;
-    }
-
-    protected virtual void NotifyClearFormValue()
-    {
-        SetCurrentValue(TextProperty, null);
-    }
-
-    protected virtual void NotifyValidateStatus(FormValidateStatus status)
-    {
-        if (status == FormValidateStatus.Error)
-        {
-            SetStatusIfChanged(InputControlStatus.Error);
-        }
-        else if (status == FormValidateStatus.Warning)
-        {
-            SetStatusIfChanged(InputControlStatus.Warning);
-        }
-        else
-        {
-            SetStatusIfChanged(InputControlStatus.Default);
-        }
-    }
-    
-    protected virtual void NotifySetFeedBackControl(FormValidateFeedback? value)
-    {
-        if (!ReferenceEquals(FormFeedback, value))
-        {
-            FormFeedback = value;
-        }
-    }
-
-    private void SetStatusIfChanged(InputControlStatus status)
-    {
-        if (Status != status)
-        {
-            SetCurrentValue(StatusProperty, status);
-        }
-    }
-    #endregion
 }

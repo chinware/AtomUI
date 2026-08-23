@@ -73,7 +73,7 @@
                     <Setter Property="Padding" Value="0" />
                 </Style>
                 <Setter Property="TextAreaFramePadding"
-                        Value="{atom:TextAreaTokenResource InputPaddingLG}" />
+                        Value="{atom:SharedTokenResource InputPaddingLG}" />
                 <Style Selector="^ /template/ atom|AddOnContentPresenter#PART_ContentRightAddOn">
                     <Setter Property="Padding" Value="{atom:TextAreaTokenResource RightAddOnPaddingLG}" />
                 </Style>
@@ -83,7 +83,7 @@
                     <Setter Property="Padding" Value="0" />
                 </Style>
                 <Setter Property="TextAreaFramePadding"
-                        Value="{atom:TextAreaTokenResource InputPadding}" />
+                        Value="{atom:SharedTokenResource InputPadding}" />
                 <Style Selector="^ /template/ atom|AddOnContentPresenter#PART_ContentRightAddOn">
                     <Setter Property="Padding" Value="{atom:TextAreaTokenResource RightAddOnPadding}" />
                 </Style>
@@ -96,7 +96,7 @@
                     <Setter Property="Padding" Value="{atom:TextAreaTokenResource RightAddOnPaddingSM}" />
                 </Style>
                 <Setter Property="TextAreaFramePadding"
-                        Value="{atom:TextAreaTokenResource InputPaddingSM}" />
+                        Value="{atom:SharedTokenResource InputPaddingSM}" />
             </Style>
 
         </Style>

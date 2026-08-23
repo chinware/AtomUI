@@ -776,9 +776,9 @@ public class Cascader : AbstractSelect
     {
         if (Filter != null)
         {
-            if (e.Source is TextBox textBox)
+            if (e.Source is AbstractTextInput textInput)
             {
-                FilterValue = textBox.Text?.Trim();
+                FilterValue = textInput.Text?.Trim();
             }
             ConfigurePlaceholderVisible();
         }

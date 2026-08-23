@@ -437,6 +437,9 @@ public class Mentions : TemplatedControl,
     
     internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty = 
         AvaloniaProperty.Register<Mentions, FormValidateFeedback?>(nameof(FormFeedback));
+
+    internal static readonly StyledProperty<FormValidateStatus> FormStatusProperty =
+        InputControlState.FormStatusProperty.AddOwner<Mentions>();
     
     private string? _filterValue;
 
@@ -513,6 +516,12 @@ public class Mentions : TemplatedControl,
     {
         get => GetValue(FormFeedbackProperty);
         set => SetValue(FormFeedbackProperty, value);
+    }
+
+    internal FormValidateStatus FormStatus
+    {
+        get => GetValue(FormStatusProperty);
+        private set => SetCurrentValue(FormStatusProperty, value);
     }
     #endregion
     
@@ -592,17 +601,9 @@ public class Mentions : TemplatedControl,
 
     protected virtual void NotifyValidateStatus(FormValidateStatus status)
     {
-        if (status == FormValidateStatus.Error)
+        if (FormStatus != status)
         {
-            SetCurrentValue(StatusProperty, InputControlStatus.Error);
-        }
-        else if (status == FormValidateStatus.Warning)
-        {
-            SetCurrentValue(StatusProperty, InputControlStatus.Warning);
-        }
-        else
-        {
-            SetCurrentValue(StatusProperty, InputControlStatus.Default);
+            SetCurrentValue(FormStatusProperty, status);
         }
     }
 

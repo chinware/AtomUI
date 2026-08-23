@@ -1,6 +1,6 @@
 # Mentions 桌面版实现原理
 
-本文档描述 Mentions 桌面版的内部模板组合、触发符识别、候选弹层、同步/异步加载、过滤、候选插入、Form 和 Token 资源边界。公共设计与 API 契约见 [Mentions 桌面版架构设计](overview.md)，候选列表状态契约见 [候选列表统一交互设计](../select/candidate-interaction-design.md)，Token 语义见 [Mentions Token 设计](token.md)，变化记录见 [Mentions Changelog](changelog.md)。
+本文档描述 Mentions 桌面版的内部模板组合、触发符识别、候选弹层、同步/异步加载、过滤、候选插入、Form 和 Token 资源边界。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，公共设计与 API 契约见 [Mentions 桌面版架构设计](overview.md)，候选列表状态契约见 [候选列表统一交互设计](../select/candidate-interaction-design.md)，Token 语义见 [Mentions Token 设计](token.md)，变化记录见 [Mentions Changelog](changelog.md)。
 
 ## 1. 实现定位
 
@@ -25,7 +25,7 @@ Mentions 的实现以 `MentionTextArea` 为输入内核，`Popup` 和 `Candidate
 
 `Mentions` 是状态协调器。它不直接编辑文本 run，也不渲染候选项；它接收 `MentionTextArea` 的候选打开/关闭请求，协调本地/异步候选数据，维护候选视图，控制 popup 生命周期，并把候选提交结果写回内部文本区域。
 
-`MentionTextArea` 是文本输入和 trigger 检测边界。它继承 `TextArea`，复用 TextArea 的多行输入、清除、状态、Form feedback 和尺寸能力，并增加 `TriggerPrefix`、`FilterValue`、`IsDropDownOpen`、`CandidateOpenRequest` 和 `CandidateCloseRequest`。
+`MentionTextArea` 是文本输入和 trigger 检测边界。它继承 `TextArea`，复用 `AbstractTextInput` 的多行输入、清除、状态、Form feedback、尺寸和 `InputControlFrame` 输入表面，并增加 `TriggerPrefix`、`FilterValue`、`IsDropDownOpen`、`CandidateOpenRequest` 和 `CandidateCloseRequest`。
 
 `CandidateList` 是候选选择边界和 active candidate owner。Mentions 只依赖 `ICandidateList` 的 `ItemsSource`、`SelectedItem`、`Commit`、`Cancel` 和 `HandleKeyDown()`，不直接管理候选项容器；鼠标候选迁移、键盘导航和 `Enter` 提交必须最终读取同一 active candidate。
 
@@ -83,8 +83,8 @@ Form.SetValue(object?) → Value
 Value changed          → IFormItemAware.ValueChanged
 Form.GetValue()        → Value
 Form.ClearValue()      → Value = null
-DataValidationErrors   → native error visual + AddOn effective error state
-ValidateStatus         → Warning/Success/Validating extension state
+DataValidationErrors   → InputControlFrame.EffectiveStatus
+ValidateStatus         → FormStatus → InputControlFrame + FormFeedback
 FeedbackControl        → FormFeedback
 ```
 
