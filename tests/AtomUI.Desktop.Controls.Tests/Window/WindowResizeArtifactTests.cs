@@ -1158,18 +1158,24 @@ public class WindowResizeArtifactTests
     }
 
     [Fact]
-    public void AtomUI_Defaults_Use_Redirection_Surface_For_Windows_Live_Resize()
+    public void AtomUI_Defaults_Use_Ordered_Windows_Composition_Fallbacks_For_Live_Resize()
     {
         var source = File.ReadAllText(GetRepoFile("src/AtomUI.Core/AppBuilderExtensions.cs"));
 
         source.ShouldContain(".With(new Win32PlatformOptions");
         source.ShouldContain("Win32RenderingMode.AngleEgl");
         source.ShouldContain("Win32RenderingMode.Software");
-        source.ShouldContain("CompositionMode = [Win32CompositionMode.RedirectionSurface]");
+        source.ShouldContain("Win32CompositionMode.WinUIComposition");
+        source.ShouldContain("Win32CompositionMode.DirectComposition");
+        source.ShouldContain("Win32CompositionMode.LowLatencyDxgiSwapChain");
+        source.ShouldContain("Win32CompositionMode.RedirectionSurface");
+        source.IndexOf("Win32CompositionMode.WinUIComposition", StringComparison.Ordinal)
+              .ShouldBeLessThan(source.IndexOf("Win32CompositionMode.DirectComposition", StringComparison.Ordinal));
+        source.IndexOf("Win32CompositionMode.DirectComposition", StringComparison.Ordinal)
+              .ShouldBeLessThan(source.IndexOf("Win32CompositionMode.LowLatencyDxgiSwapChain", StringComparison.Ordinal));
+        source.IndexOf("Win32CompositionMode.LowLatencyDxgiSwapChain", StringComparison.Ordinal)
+              .ShouldBeLessThan(source.IndexOf("Win32CompositionMode.RedirectionSurface", StringComparison.Ordinal));
         source.ShouldNotContain("WindowsAppBuilderDefaults");
-        source.ShouldNotContain("Win32CompositionMode.WinUIComposition");
-        source.ShouldNotContain("Win32CompositionMode.DirectComposition");
-        source.ShouldNotContain("Win32CompositionMode.LowLatencyDxgiSwapChain");
         source.ShouldNotContain("ShouldRenderOnUIThread = true");
     }
 

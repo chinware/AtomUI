@@ -17,8 +17,8 @@ public static class AppBuilderExtensions
     /// <list type="bullet">
     ///   <item>
     ///     <description>
-    ///     <b>Windows</b>：Windows 10 和 Windows 11 都使用 RedirectionSurface，避免
-    ///     WinUIComposition / DirectComposition 在 live resize 期间提交与 HWND 尺寸不同步的表面。
+    ///     <b>Windows</b>：Windows 10 和 Windows 11 按 Avalonia 的合成回退顺序使用 WinUIComposition、
+    ///     DirectComposition、LowLatencyDxgiSwapChain 和 RedirectionSurface；CSD 窗口保留主题背景配置。
     ///     </description>
     ///   </item>
     ///   <item>
@@ -71,7 +71,13 @@ public static class AppBuilderExtensions
                     Win32RenderingMode.AngleEgl,
                     Win32RenderingMode.Software
                 ],
-                CompositionMode = [Win32CompositionMode.RedirectionSurface]
+                CompositionMode =
+                [
+                    Win32CompositionMode.WinUIComposition,
+                    Win32CompositionMode.DirectComposition,
+                    Win32CompositionMode.LowLatencyDxgiSwapChain,
+                    Win32CompositionMode.RedirectionSurface
+                ]
             });
         }
         if (OperatingSystem.IsLinux())

@@ -34,8 +34,8 @@ Windows 10         ✅ 开启     Avalonia CSD         DWM redirection      Aval
 
 ```
 OperatingSystem.IsWindows()?
-  ├─ Win10 → IsCsdEnabled=true + RedirectionSurface
-  └─ Win11+ → IsCsdEnabled=true + RedirectionSurface
+  ├─ Win10 → IsCsdEnabled=true + WinUIComposition → DirectComposition → LowLatencyDxgiSwapChain → RedirectionSurface
+  └─ Win11+ → IsCsdEnabled=true + WinUIComposition → DirectComposition → LowLatencyDxgiSwapChain → RedirectionSurface
 OperatingSystem.IsMacOS()?
   └─ 永远 → IsCsdEnabled=false → 非 CSD 模板 + NSWindow 原生标题栏布局
 OperatingSystem.IsLinux()?
@@ -218,20 +218,20 @@ Wayland input region 当前没有公开框架 API；AtomUI 当前越过 proxy �
 | --- | --- | --- |
 | IsCsdEnabled | `true` | `true` |
 | WindowDrawnDecorations | 创建 | 创建 |
-| 合成模式 | RedirectionSurface | RedirectionSurface |
+| 合成模式 | WinUIComposition → DirectComposition → LowLatencyDxgiSwapChain → RedirectionSurface | WinUIComposition → DirectComposition → LowLatencyDxgiSwapChain → RedirectionSurface |
 | 非客户区与 resize | Avalonia Win32 | Avalonia Win32 |
 | AtomUI WndProc | 普通 Window chrome 无；Native 可提供受限 sizing helper | 普通 Window chrome 无；Native 可提供受限 sizing helper |
 
-### 为什么 Windows 使用 RedirectionSurface
+### Windows 合成模式与 live resize 策略
 
-WinUI drawing surface 的尺寸提交依赖 `RenderTargetSceneInfo.Size`。Windows 10 与 Windows 11 的
+DXGI swap chain 可以减少 live resize 期间的整窗空帧，但尺寸提交仍依赖 `RenderTargetSceneInfo.Size`。Windows 10 与 Windows 11 的
 `RequestCommitAsync` 完成回调位置不同；两者组合后，在测试机的 Windows 10 live resize 中会出现
 scene 与窗口尺寸错帧，
 表现为拖动左边缘或上边缘时，右边缘或下边缘剧烈抖动。
 
-`RedirectionSurface` 让 DWM redirection bitmap 与 HWND resize 走同一条系统路径，避免该错帧。
-后续 Windows 11 实机视频也显示同类错帧，因此 Windows 11 默认同样使用 `RedirectionSurface`，
-优先保证 live resize 稳定。
+`WinUIComposition` 是 Avalonia 的通用首选路径；`LowLatencyDxgiSwapChain` 作为后续路径可以避免已验证的整页空帧。在 Feature Level 或系统能力不满足时，
+由后续合成模式提供兼容性回退。各种路径都不能保证完全消除 `WM_SIZE`、ResizeBuffers、Present 与 DWM
+之间的边缘时序差，因此右侧边缘仍可能出现短暂闪烁。
 
 ### 为什么必须使用 Avalonia CSD
 
@@ -253,7 +253,13 @@ sizing helper 修正 `WM_GETMINMAXINFO` 边界，但 helper 必须由 host 显�
 `WithAtomUIDefaultOptions()`，不使用反射、字符串枚举名或动态泛型调用：
 
 ```csharp
-CompositionMode = [RedirectionSurface];
+CompositionMode =
+[
+    WinUIComposition,
+    DirectComposition,
+    LowLatencyDxgiSwapChain,
+    RedirectionSurface
+];
 ```
 
 ### Snap Layout
@@ -349,7 +355,7 @@ Windows 标题栏按钮在 AXAML 中声明 `WindowDecorationProperties.ElementRo
 
 | # | 陷阱 | 影响平台 | 现象 | 解决 |
 | --- | --- | --- | --- | --- |
-| 1 | Windows 使用 WinUIComposition | Windows | 对向边缘在 live resize 时抖动 | 使用 RedirectionSurface |
+| 1 | Windows 使用不适合当前环境的合成模式 | Windows | live resize 期间整页空帧、透明带或对向边缘抖动 | 使用官方合成回退顺序，并按目标机验证视觉结果 |
 | 2 | AtomUI 再处理 WM_NCCALCSIZE | Windows | 黑边、原生标题栏按钮闪现 | 非客户区完全交给 Avalonia CSD |
 | 3 | 自定义 HTMAXBUTTON hook | Win11 | 输入状态重复、维护两套命中测试 | 使用 Avalonia ElementRole |
 | 4 | macOS 写 WindowDrawnDecorations 主题 | macOS | 不生效 | 使用非 CSD 模板和 NSWindow 原生按钮 |

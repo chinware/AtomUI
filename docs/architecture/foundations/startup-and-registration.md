@@ -22,8 +22,8 @@ AtomUI Window 从首帧开始使用 CSD，不能先显示 compositor 标题栏�
 
 `WithAtomUIDefaultOptions()` 当前设置：
 
-- Windows 10：`AngleEgl/Software` 渲染回退与 `RedirectionSurface` 合成。
-- Windows 11+：`AngleEgl/Software` 渲染回退与 `RedirectionSurface` 合成。
+- Windows 10：`AngleEgl/Software` 渲染回退与 `WinUIComposition`、`DirectComposition`、`LowLatencyDxgiSwapChain`、`RedirectionSurface` 顺序的合成回退策略。
+- Windows 11+：`AngleEgl/Software` 渲染回退与 `WinUIComposition`、`DirectComposition`、`LowLatencyDxgiSwapChain`、`RedirectionSurface` 顺序的合成回退策略。
 - macOS Avalonia Native 渲染优先级：OpenGL、Metal、Software。
 - X11 平台选项：`EnableDrawnDecorations = true`。
 - 字体 fallback：`Microsoft YaHei`。
