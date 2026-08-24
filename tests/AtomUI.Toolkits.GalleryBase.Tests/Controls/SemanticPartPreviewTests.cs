@@ -81,6 +81,59 @@ public class SemanticPartPreviewTests
     }
 
     [Fact]
+    public void Title_Renders_Inside_The_Preview_Stage_Only_When_Provided()
+    {
+        var preview = CreatePreview(new AtomUIButton
+        {
+            Content = "Semantic Button"
+        });
+        preview.Title = "TabItem";
+
+        using var context = ShowInWindow(preview);
+        preview.ActivatePreview();
+
+        var title = preview.GetVisualDescendants()
+                           .OfType<TextBlock>()
+                           .Single(static textBlock => textBlock.Name == "PART_Title");
+        title.Text.ShouldBe("TabItem");
+        title.IsVisible.ShouldBeTrue();
+        title.FindAncestorOfType<Border>()!.Name.ShouldBe("PART_PreviewStage");
+
+        preview.Title = null;
+        Dispatcher.UIThread.RunJobs();
+
+        title.IsVisible.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Title_Does_Not_Change_The_Parts_Pane_Viewport()
+    {
+        var preview = CreatePreview(new AtomUIButton
+        {
+            Content = "Semantic Button"
+        });
+
+        using var context = ShowInWindow(preview);
+        preview.ActivatePreview();
+        Dispatcher.UIThread.RunJobs();
+
+        var pane = preview.GetVisualDescendants()
+                          .OfType<Border>()
+                          .Single(static border => border.Name == "PART_PartsPane");
+        var scroller = pane.GetVisualDescendants()
+                           .OfType<AtomUI.Desktop.Controls.ScrollViewer>()
+                           .Single();
+        var paneBoundsWithoutTitle = pane.Bounds;
+        var viewportWithoutTitle = scroller.Viewport;
+
+        preview.Title = "Button";
+        Dispatcher.UIThread.RunJobs();
+
+        pane.Bounds.ShouldBe(paneBoundsWithoutTitle);
+        scroller.Viewport.ShouldBe(viewportWithoutTitle);
+    }
+
+    [Fact]
     public void Effective_Part_Uses_Pin_Over_Hover_And_Deactivate_Releases_The_Session()
     {
         var button = new AtomUIButton
@@ -213,7 +266,10 @@ public class SemanticPartPreviewTests
         previewStage.Background.ShouldBeNull();
         previewStage.BorderThickness.ShouldBe(default);
         previewStage.CornerRadius.ShouldBe(default);
-        var previewPresenter = previewStage.Child.ShouldBeOfType<ContentPresenter>();
+        var previewStageLayout = previewStage.Child.ShouldBeOfType<Grid>();
+        var previewTitle = previewStageLayout.Children[0].ShouldBeOfType<TextBlock>();
+        previewTitle.Name.ShouldBe("PART_Title");
+        var previewPresenter = previewStageLayout.Children[1].ShouldBeOfType<ContentPresenter>();
         previewPresenter.HorizontalAlignment.ShouldBe(HorizontalAlignment.Stretch);
         previewPresenter.HorizontalContentAlignment.ShouldBe(HorizontalAlignment.Stretch);
         previewPresenter.VerticalAlignment.ShouldBe(VerticalAlignment.Top);
@@ -221,6 +277,7 @@ public class SemanticPartPreviewTests
 
         var partsPane = layout.Children[1].ShouldBeOfType<Border>();
         partsPane.Name.ShouldBe("PART_PartsPane");
+        partsPane.ClipToBounds.ShouldBeTrue();
         partsPane.BorderThickness.ShouldBe(new Thickness(1, 0, 0, 0));
         partsPane.CornerRadius.ShouldBe(default);
 
@@ -312,6 +369,12 @@ public class SemanticPartPreviewTests
                            .Single(static border => border.Name == "PART_InspectionPanel");
         var rootLayout = frame.Child.ShouldBeOfType<Grid>();
         rootLayout.RowDefinitions.Count.ShouldBe(2);
+
+        var title = frame.GetVisualDescendants()
+                         .OfType<TextBlock>()
+                         .Single(static textBlock => textBlock.Name == "PART_Title");
+        title.IsVisible.ShouldBeFalse();
+        title.FindAncestorOfType<Border>()!.Name.ShouldBe("PART_PreviewStage");
 
         var layout = rootLayout.Children
                                .OfType<SemanticPartPreviewLayoutPanel>()
@@ -456,7 +519,7 @@ public class SemanticPartPreviewTests
     }
 
     [Fact]
-    public void Bounded_Measure_Uses_The_Available_Height_For_The_Parts_Pane_Instead_Of_The_Fixed_Cap()
+    public void Measure_Uses_The_Available_Height_Or_Default_Cap_For_The_Parts_Pane()
     {
         var preview = new SemanticPartPreview
         {

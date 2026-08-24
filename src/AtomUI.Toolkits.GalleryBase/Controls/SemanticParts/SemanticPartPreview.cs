@@ -34,6 +34,9 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
     public static readonly StyledProperty<Type?> SemanticOwnerTypeProperty =
         AvaloniaProperty.Register<SemanticPartPreview, Type?>(nameof(SemanticOwnerType));
 
+    public static readonly StyledProperty<string?> TitleProperty =
+        AvaloniaProperty.Register<SemanticPartPreview, string?>(nameof(Title));
+
     internal static readonly DirectProperty<SemanticPartPreview, IReadOnlyList<SemanticPartPreviewItem>> ItemsProperty =
         AvaloniaProperty.RegisterDirect<SemanticPartPreview, IReadOnlyList<SemanticPartPreviewItem>>(
             nameof(Items),
@@ -85,6 +88,12 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
     {
         get => GetValue(SemanticOwnerTypeProperty);
         set => SetValue(SemanticOwnerTypeProperty, value);
+    }
+
+    public string? Title
+    {
+        get => GetValue(TitleProperty);
+        set => SetValue(TitleProperty, value);
     }
 
     public AvaloniaList<SemanticPartDescription> PartDescriptions { get; } = [];
@@ -254,9 +263,9 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
 
         var descriptions = BuildDescriptions(descriptor);
         var partsByPath = descriptor.Parts.ToDictionary(static part => part.Path, StringComparer.Ordinal);
-        var orderedParts = PartDescriptions
-                           .Select(description => partsByPath[description.Path])
-                           .Concat(descriptor.Parts.Where(part => !descriptions.ContainsKey(part.Path)));
+        var describedParts = PartDescriptions.Select(description => partsByPath[description.Path]);
+        var orderedParts =
+            describedParts.Concat(descriptor.Parts.Where(part => !descriptions.ContainsKey(part.Path)));
         _effectiveOwner = owner;
         _registry = registry;
         _controlDescriptor = descriptor;

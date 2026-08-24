@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using AtomUI.Controls;
+using AtomUI.Controls.Primitives;
 using AtomUI.Desktop.Controls;
 using AtomUI.Toolkits.GalleryBase.Controls;
 using AtomUIGallery.ShowCases.TabControl;
@@ -56,6 +57,7 @@ public class TabControlShowCasePageTests
         source.ShouldContain("Name=\"TabControlSemanticPreview\"");
         source.ShouldContain("Name=\"CardTabControlSemanticPreview\"");
         source.ShouldContain("Name=\"TabItemSemanticPreview\"");
+        source.ShouldContain("Title=\"TabItem\"");
         source.ShouldContain("SemanticOwner=\"{Binding #TabControlSemanticOwner}\"");
         source.ShouldContain("SemanticOwner=\"{Binding #CardTabControlSemanticOwner}\"");
         source.ShouldContain("SemanticOwner=\"{Binding #TabItemSemanticOwner}\"");
@@ -113,6 +115,23 @@ public class TabControlShowCasePageTests
 
             page.GetVisualDescendants().OfType<SemanticPartPreview>().Count().ShouldBe(3);
 
+            var pageScroller = page.GetVisualDescendants()
+                                   .OfType<AtomUI.Desktop.Controls.ScrollViewer>()
+                                   .Single(static candidate => candidate.Name == "PART_ScrollViewer");
+            pageScroller.Extent.Height.ShouldBeGreaterThan(pageScroller.Viewport.Height);
+            foreach (var preview in page.GetVisualDescendants().OfType<SemanticPartPreview>())
+            {
+                var partsPane = preview.GetVisualDescendants()
+                                       .OfType<Border>()
+                                       .Single(static candidate => candidate.Name == "PART_PartsPane");
+                var partsScroller = partsPane.GetVisualDescendants()
+                                             .OfType<AtomUI.Desktop.Controls.ScrollViewer>()
+                                             .Single();
+                partsPane.ClipToBounds.ShouldBeTrue();
+                partsScroller.Extent.Height.ShouldBeGreaterThan(partsScroller.Viewport.Height);
+                partsScroller.Viewport.Height.ShouldBe(400, 1);
+            }
+
             var tabControlPreview = page.GetVisualDescendants()
                                         .OfType<SemanticPartPreview>()
                                         .Single(static candidate => candidate.Name == "TabControlSemanticPreview");
@@ -123,6 +142,9 @@ public class TabControlShowCasePageTests
                               .ShouldBe(3);
             semanticTabControl.GetVisualDescendants()
                               .Count(static item => item is ContentPresenter && item.Classes.Contains("semantic-content"))
+                              .ShouldBe(1);
+            semanticTabControl.GetVisualDescendants()
+                              .Count(static item => item.Classes.Contains("semantic-indicator"))
                               .ShouldBe(1);
 
             var cardPreview = page.GetVisualDescendants()
@@ -149,9 +171,6 @@ public class TabControlShowCasePageTests
                            .Count(static item => item.Classes.Contains("semantic-icon"))
                            .ShouldBe(1);
             semanticTabItem.GetVisualDescendants()
-                           .Count(static item => item.Classes.Contains("semantic-label"))
-                           .ShouldBe(1);
-            semanticTabItem.GetVisualDescendants()
                            .Count(static item => item.Classes.Contains("semantic-close"))
                            .ShouldBe(1);
 
@@ -174,17 +193,19 @@ public class TabControlShowCasePageTests
         source.ShouldContain("Name=\"TabControlSemanticPreview\"");
         source.ShouldContain("Name=\"CardTabControlSemanticPreview\"");
         source.ShouldContain("Name=\"TabItemSemanticPreview\"");
+        source.ShouldContain("Title=\"TabItem\"");
         source.ShouldContain("SemanticOwner=\"{Binding #TabControlSemanticOwner}\"");
         source.ShouldContain("SemanticOwner=\"{Binding #CardTabControlSemanticOwner}\"");
         source.ShouldContain("SemanticOwner=\"{Binding #TabItemSemanticOwner}\"");
         source.ShouldContain("SemanticOwnerType=\"{x:Type atom:TabControl}\"");
         source.ShouldContain("SemanticOwnerType=\"{x:Type atom:CardTabControl}\"");
         source.ShouldContain("SemanticOwnerType=\"{x:Type atom:TabItem}\"");
-        CountOccurrences(source, "<gallery:SemanticPartDescription").ShouldBe(11);
-        foreach (var path in new[] { "root", "add", "content", "item", "close", "icon", "label" })
+        CountOccurrences(source, "<gallery:SemanticPartDescription").ShouldBe(12);
+        foreach (var path in new[] { "root", "header", "add", "content", "item", "indicator", "icon", "close" })
         {
             source.ShouldContain($"Path=\"{path}\"");
         }
+        CountOccurrences(source, "Path=\"indicator\"").ShouldBe(1);
 
         semanticSource.ShouldContain("SourceKey=\"tabcontrol-semantic-part\"");
         semanticSource.ShouldContain("BadgeText=\"{x:Static gallery:GalleryVersionInfo.DisplayVersion}\"");
@@ -192,30 +213,38 @@ public class TabControlShowCasePageTests
         semanticSource.ShouldContain("TabControlShowCaseLangResource SemanticPartStyleDescription");
         semanticSource.ShouldContain("Selector=\"atom|TabControl.semantic-style-demo\"");
         semanticSource.ShouldContain("Selector=\"atom|TabItem.semantic-style-demo\"");
-        semanticSource.ShouldContain("Selector=\"atom|CardTabControl.semantic-style-demo\"");
-        semanticSource.ShouldContain("Selector=\"^:selected\"");
         semanticSource.ShouldContain("Property=\"Padding\"");
         semanticSource.ShouldContain("Value=\"16\"");
+        semanticSource.ShouldContain("Value=\"6,10\"");
         semanticSource.ShouldContain("Property=\"Background\"");
-        semanticSource.ShouldContain("Value=\"#0F1677FF\"");
-        semanticSource.ShouldContain("Value=\"#1A1677FF\"");
-        semanticSource.ShouldContain("Property=\"Margin\"");
-        semanticSource.ShouldContain("Value=\"0,0,4,0\"");
+        semanticSource.ShouldContain("Value=\"#CCE6F7FF\"");
         semanticSource.ShouldContain("Property=\"FontWeight\"");
-        semanticSource.ShouldContain("Value=\"SemiBold\"");
-        semanticSource.ShouldContain("Property=\"CornerRadius\"");
-        semanticSource.ShouldContain("Value=\"4\"");
+        semanticSource.ShouldContain("Value=\"Bold\"");
+        semanticSource.ShouldContain("Property=\"Foreground\"");
+        semanticSource.ShouldContain("Value=\"#1890FF\"");
+        semanticSource.ShouldContain("TabStripPlacement=\"Left\"");
+        semanticSource.ShouldContain("Initialized=\"HandleSemanticStyleDemoTabControlInitialized\"");
+        semanticSource.ShouldContain("BorderThickness=\"2\"");
+        semanticSource.ShouldNotContain("<atom:PixelAlignedBorder ");
+        CountOccurrences(semanticSource, "BorderDashArray=\"4,2\"").ShouldBe(2);
+        semanticSource.ShouldContain("BorderBrush=\"#E0000000\"");
+        semanticSource.ShouldContain("Background=\"#CCFAFAFA\"");
+        semanticSource.ShouldContain("BorderBrush=\"#D9D9D9\"");
+        semanticSource.ShouldContain("Padding=\"16\"");
         CountOccurrences(semanticSource, "<atom:TabControlContentStyle ").ShouldBe(1);
         CountOccurrences(semanticSource, "<atom:TabControlItemStyle ").ShouldBe(1);
-        CountOccurrences(semanticSource, "<atom:TabItemIconStyle ").ShouldBe(1);
         CountOccurrences(semanticSource, "<atom:TabItemLabelStyle ").ShouldBe(1);
-        CountOccurrences(semanticSource, "<atom:CardTabControlAddStyle ").ShouldBe(1);
+        CountOccurrences(semanticSource, "<atom:TabControlHeaderStyle ").ShouldBe(1);
+        semanticSource.ShouldContain("Value=\"#80F5F5F5\"");
         CountOccurrences(semanticSource, "x:SetterTargetType=\"atom:TabItem\"").ShouldBe(1);
         CountOccurrences(semanticSource, "x:SetterTargetType=\"ContentPresenter\"").ShouldBe(2);
-        CountOccurrences(semanticSource, "x:SetterTargetType=\"atom:IconPresenter\"").ShouldBe(1);
-        CountOccurrences(semanticSource, "x:SetterTargetType=\"atom:IconButton\"").ShouldBe(1);
+        CountOccurrences(semanticSource, "x:SetterTargetType=\"Border\"").ShouldBe(1);
         CountOccurrences(semanticSource, "<atom:TabControl ").ShouldBe(1);
         CountOccurrences(semanticSource, "<atom:CardTabControl ").ShouldBe(1);
+        semanticSource.ShouldNotContain("Selector=\"atom|CardTabControl.semantic-style-demo\"");
+        semanticSource.ShouldNotContain("Selector=\"^:selected\"");
+        semanticSource.ShouldNotContain("<atom:TabItemIconStyle ");
+        semanticSource.ShouldNotContain("<atom:CardTabControlAddStyle ");
         semanticSource.ShouldNotContain("/template/");
         semanticSource.ShouldNotContain("semantic dom", Case.Insensitive);
         english.ShouldContain("Custom Semantic Part styling");
@@ -251,43 +280,67 @@ public class TabControlShowCasePageTests
 
             var lineDemo = demoControls.OfType<AtomUITabControl>().Single();
             var cardDemo = demoControls.OfType<AtomUICardTabControl>().Single();
-            lineDemo.GetVisualParent().ShouldBeSameAs(cardDemo.GetVisualParent());
+
+            var lineFrame = lineDemo.GetVisualChildren().OfType<PixelAlignedBorder>()
+                                    .Single(static candidate => candidate.Name == "Frame");
+            lineFrame.BorderThickness.ShouldBe(new Thickness(2));
+            AssertSolidColor(lineFrame.BorderBrush, "#E0000000");
+            lineFrame.StrokeDashArray.ShouldNotBeNull().Count.ShouldBe(2);
+            lineFrame.StrokeDashArray[0].ShouldBe(4d);
+            lineFrame.StrokeDashArray[1].ShouldBe(2d);
+            lineFrame.Padding.ShouldBe(new Thickness(16));
+
+            var lineHeader = lineDemo.GetVisualDescendants().OfType<Border>()
+                                     .Single(static candidate => candidate.Classes.Contains("semantic-header"));
+            AssertSolidColor(lineHeader.Background, "#80F5F5F5");
+
+            var cardFrame = cardDemo.GetVisualChildren().OfType<PixelAlignedBorder>()
+                                    .Single(static candidate => candidate.Name == "Frame");
+            AssertSolidColor(cardFrame.Background, "#CCFAFAFA");
+            AssertSolidColor(cardFrame.BorderBrush, "#D9D9D9");
+            cardFrame.BorderThickness.ShouldBe(new Thickness(2));
+            cardFrame.StrokeDashArray.ShouldNotBeNull().Count.ShouldBe(2);
+            cardFrame.StrokeDashArray[0].ShouldBe(4d);
+            cardFrame.StrokeDashArray[1].ShouldBe(2d);
+            cardFrame.Padding.ShouldBe(new Thickness(16));
+            cardDemo.TabStripPlacement.ShouldBe(Dock.Left);
 
             var contentPresenter = lineDemo.GetVisualDescendants()
                                            .OfType<ContentPresenter>()
                                            .Single(static candidate => candidate.Classes.Contains("semantic-content"));
             contentPresenter.Padding.ShouldBe(new Thickness(16));
-            AssertSolidColor(contentPresenter.Background, "#0F1677FF");
+            AssertSolidColor(contentPresenter.Background, "#CCE6F7FF");
 
             var lineItems = lineDemo.GetVisualDescendants()
                                     .OfType<AtomUITabItem>()
                                     .Where(static item => item.Classes.Contains("semantic-item"))
                                     .ToArray();
             lineItems.Length.ShouldBe(3);
-            var lineSelected = lineItems.Single(static item => item is ISelectable { IsSelected: true });
-            AssertSolidColor(lineSelected.Background, "#1A1677FF");
-            foreach (var lineItem in lineItems.Where(static item => item is not ISelectable { IsSelected: true }))
+            foreach (var lineItem in lineItems)
             {
-                lineItem.Margin.ShouldBe(new Thickness(0, 0, 4, 0));
+                lineItem.Padding.ShouldBe(new Thickness(6, 10));
+                lineItem.GetVisualDescendants()
+                        .OfType<ContentPresenter>()
+                        .Single(static candidate => candidate.Classes.Contains("semantic-label"))
+                        .ShouldSatisfyAllConditions(
+                            label =>
+                            {
+                                label.FontWeight.ShouldBe(FontWeight.Bold);
+                                AssertSolidColor(label.Foreground, "#1890FF");
+                            });
             }
+
+            var indicator = lineDemo.GetVisualDescendants()
+                                    .OfType<Border>()
+                                    .Single(static candidate => candidate.Name == "PART_SelectedItemIndicator");
+            AssertSolidColor(indicator.Background, "#4DFF4D4F");
+            indicator.Height.ShouldBe(4d);
 
             var cardItems = cardDemo.GetVisualDescendants()
                                     .OfType<AtomUITabItem>()
                                     .Where(static item => item.Classes.Contains("semantic-item"))
                                     .ToArray();
-            cardItems.Length.ShouldBe(2);
-            cardItems[0].GetVisualDescendants()
-                        .Count(static candidate => candidate.Classes.Contains("semantic-icon"))
-                        .ShouldBe(1);
-            cardItems[0].GetVisualDescendants()
-                        .OfType<ContentPresenter>()
-                        .Single(static candidate => candidate.Classes.Contains("semantic-label"))
-                        .FontWeight.ShouldBe(FontWeight.SemiBold);
-
-            var addButton = cardDemo.GetVisualDescendants()
-                                    .OfType<IconButton>()
-                                    .Single(static candidate => candidate.Classes.Contains("semantic-add"));
-            addButton.CornerRadius.ShouldBe(new CornerRadius(4));
+            cardItems.Length.ShouldBe(3);
         });
     }
 
@@ -301,8 +354,8 @@ public class TabControlShowCasePageTests
         zhCn["SemanticItemDescription"].ShouldBe("页签元素，设置页签的尺寸、内边距、悬停态与选中态样式");
         zhCn["SemanticAddDescription"].ShouldBe("新增元素，设置加号按钮的尺寸、颜色与圆角样式");
         zhCn["SemanticIconDescription"].ShouldBe("图标元素，设置页签图标的尺寸与间距样式");
-        zhCn["SemanticLabelDescription"].ShouldBe("标题元素，设置页签标题的字体与颜色样式");
         zhCn["SemanticCloseDescription"].ShouldBe("关闭元素，设置关闭按钮的尺寸与颜色样式");
+        zhCn["SemanticIndicatorDescription"].ShouldBe("指示条元素，设置选中页签墨条的颜色样式");
         zhCn["SemanticPartStyleTitle"].ShouldBe("自定义 Semantic Part 样式");
 
         var zhTw = XliffTestDocument.Read(
@@ -312,8 +365,8 @@ public class TabControlShowCasePageTests
         zhTw["SemanticItemDescription"].ShouldBe("頁籤元素，設定頁籤的尺寸、內邊距、懸停態與選中態樣式");
         zhTw["SemanticAddDescription"].ShouldBe("新增元素，設定加號按鈕的尺寸、顏色與圓角樣式");
         zhTw["SemanticIconDescription"].ShouldBe("圖示元素，設定頁籤圖示的尺寸與間距樣式");
-        zhTw["SemanticLabelDescription"].ShouldBe("標題元素，設定頁籤標題的字型與顏色樣式");
         zhTw["SemanticCloseDescription"].ShouldBe("關閉元素，設定關閉按鈕的尺寸與顏色樣式");
+        zhTw["SemanticIndicatorDescription"].ShouldBe("指示條元素，設定選中頁籤墨條的顏色樣式");
         zhTw["SemanticPartStyleTitle"].ShouldBe("自定義 Semantic Part 樣式");
 
         var enUs = XliffTestDocument.Read(
@@ -325,9 +378,12 @@ public class TabControlShowCasePageTests
             "Item element, set size, padding, hover state and selected state styles for each tab");
         enUs["SemanticAddDescription"].ShouldBe(
             "Add element, set size, color and corner radius styles for the plus button");
-        enUs["SemanticIconDescription"].ShouldBe("Icon element, set size and margin styles for the tab icon");
-        enUs["SemanticLabelDescription"].ShouldBe("Label element, set font and color styles for the tab title");
-        enUs["SemanticCloseDescription"].ShouldBe("Close element, set size and color styles for the close button");
+        enUs["SemanticIconDescription"].ShouldBe(
+            "Icon element, set size and margin styles for the tab icon");
+        enUs["SemanticCloseDescription"].ShouldBe(
+            "Close element, set size and color styles for the close button");
+        enUs["SemanticIndicatorDescription"].ShouldBe(
+            "Indicator element, set color styles for the selected tab ink bar");
         enUs["SemanticPartStyleTitle"].ShouldBe("Custom Semantic Part styling");
 
         var ptBr = XliffTestDocument.Read(
@@ -342,10 +398,10 @@ public class TabControlShowCasePageTests
             "Elemento de adição, define tamanho, cor e estilos de raio de canto para o botão de mais");
         ptBr["SemanticIconDescription"].ShouldBe(
             "Elemento de ícone, define tamanho e estilos de margem para o ícone da aba");
-        ptBr["SemanticLabelDescription"].ShouldBe(
-            "Elemento de rótulo, define estilos de fonte e cor para o título da aba");
         ptBr["SemanticCloseDescription"].ShouldBe(
             "Elemento de fechamento, define tamanho e estilos de cor para o botão de fechar");
+        ptBr["SemanticIndicatorDescription"].ShouldBe(
+            "Elemento indicador, define estilos de cor para a barra de tinta da aba selecionada");
         ptBr["SemanticPartStyleTitle"].ShouldBe("Personalizar estilo de Semantic Part");
     }
 

@@ -16,7 +16,7 @@ Token 按控件语义分类维护：
 
 | 分类 | 语义 | 代表 Token |
 | --- | --- | --- |
-| 尺寸与密度 | 控件高度、宽度、图标尺寸、内容最小尺寸。 | `CardSize`、`TitleFontSize`、`TitleFontSizeLG`、`TitleFontSizeSM` |
+| 尺寸与密度 | 控件高度、宽度、图标尺寸、内容最小尺寸。 | `CardSize`、`TitleFontSize`、`TitleFontSizeLG`、`TitleFontSizeSM`、`InkBarThickness` |
 | 间距与布局 | padding、margin、gap、offset、popup content padding。 | `CardPadding`、`CardPaddingSM`、`CardPaddingLG`、`HorizontalMargin`、`HorizontalItemMargin`、`HorizontalItemPadding` |
 | 颜色与状态视觉 | 文本、背景、边框、hover、selected、active、disabled 视觉。 | `CardBg`、`InkBarColor`、`ItemColor`、`ItemHoverColor`、`ItemSelectedColor` |
 | 结构与装饰 | 圆角、阴影、指示器、弹层和装饰线相关变量。 | `MenuIndicatorPaddingHorizontal`、`MenuIndicatorPaddingVertical` |
@@ -33,6 +33,7 @@ TabControl 的控件专项模型通过 Theme 消费 Token：
 - Token 类型、生成数据和 token.md 应显式维护，不依赖运行时反射扫描。
 - `VerticalItemGutter` 表达默认 Line Tab 在 `Left` / `Right` placement 下的紧凑相邻间距；Card Tab 不消费该 Token，而继续使用 `CardGutter` 维持独立卡片节奏。
 - `VerticalItemPadding` 保留给 Card Tab 的垂直 placement padding 语义；默认 Line Tab 的 `Left` / `Right` padding 由默认 Line theme 内部保持紧凑，不新增公开 Token。
+- `InkBarThickness` 表达选中指示墨条的厚度，默认从 SharedToken 的 `LineWidthBold` 派生；按实例定制时通过控件 `Resources` 覆盖 `TabControlTokenKind.InkBarThickness`，与 `InkBarColor` 的定制方式一致。
 
 ## 4. 控件家族影响
 

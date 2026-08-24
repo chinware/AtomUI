@@ -26,15 +26,26 @@
                                 <Border Name="PART_PreviewStage"
                                         MinHeight="360"
                                         Padding="32">
-                                    <ContentPresenter Name="PART_PreviewContentHost"
-                                                      Content="{TemplateBinding PreviewContent}"
-                                                      HorizontalAlignment="Stretch"
-                                                      VerticalAlignment="Top"
-                                                      HorizontalContentAlignment="Stretch"
-                                                      VerticalContentAlignment="Top" />
+                                    <Grid RowDefinitions="Auto,*">
+                                        <TextBlock Name="PART_Title"
+                                                   Margin="0,0,0,12"
+                                                   Text="{TemplateBinding Title}"
+                                                   FontSize="16"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{atom:SharedTokenResource ColorText}"
+                                                   IsVisible="{TemplateBinding Title, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                        <ContentPresenter Name="PART_PreviewContentHost"
+                                                          Grid.Row="1"
+                                                          Content="{TemplateBinding PreviewContent}"
+                                                          HorizontalAlignment="Stretch"
+                                                          VerticalAlignment="Top"
+                                                          HorizontalContentAlignment="Stretch"
+                                                          VerticalContentAlignment="Top" />
+                                    </Grid>
                                 </Border>
 
                                 <Border Name="PART_PartsPane"
+                                        ClipToBounds="True"
                                         BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
                                         BorderThickness="1,0,0,0">
                                     <atom:ScrollViewer VerticalScrollBarVisibility="Auto"
@@ -80,6 +91,9 @@
 
         <Style Selector="^:compact /template/ Border#PART_InspectionPanel">
             <Setter Property="Margin" Value="16,16,16,24" />
+        </Style>
+        <Style Selector="^:compact /template/ TextBlock#PART_Title">
+            <Setter Property="Margin" Value="0,0,0,8" />
         </Style>
         <Style Selector="^.preview-content-centered /template/ ContentPresenter#PART_PreviewContentHost">
             <Setter Property="VerticalAlignment" Value="Stretch" />

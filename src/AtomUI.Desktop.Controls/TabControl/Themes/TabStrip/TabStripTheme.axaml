@@ -41,7 +41,7 @@
         </Setter>
 
         <Setter Property="SelectedIndicatorThickness"
-                Value="{atom:SharedTokenResource LineWidthBold}" />
+                Value="{atom:TabControlTokenResource InkBarThickness}" />
 
         <Style Selector="^ /template/ Border#PART_SelectedItemIndicator">
             <Setter Property="Background" Value="{atom:TabControlTokenResource InkBarColor}" />

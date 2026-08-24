@@ -1,8 +1,21 @@
 using AtomUI.Theme;
+using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 
 namespace AtomUI.Desktop.Controls;
 
+[SemanticPart(
+    "header",
+    SelectorClass = "semantic-header",
+    ContractType = typeof(Border),
+    Cardinality = SemanticPartCardinality.Single,
+    Since = "6.2")]
+[SemanticPart(
+    "indicator",
+    SelectorClass = "semantic-indicator",
+    ContractType = typeof(Border),
+    Cardinality = SemanticPartCardinality.Single,
+    Since = "6.2")]
 [SemanticPart(
     "content",
     SelectorClass = "semantic-content",

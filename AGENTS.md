@@ -111,6 +111,7 @@ Detailed AI collaboration rules live in [docs/engineering/contributing/agent-gui
 - Keep changes scoped to the user request and the ownership boundary.
 - When the user asks to reference another project's source, follow the local-first lookup order in [Reference Project Source Lookup](docs/engineering/contributing/reference-project-source-guidelines.md) before using GitHub or relying on memory.
 - Prefer root-cause fixes over trigger-point patches.
+- For hover, pointer, hit-testing, wheel, scrolling, clipping, or overlay bugs, preserve the original UX contract and follow the [UI input and scrolling bug discipline](docs/engineering/contributing/agent-guidelines.md#ui-输入与滚动-bug).
 - Treat AOT compatibility as a first-class design constraint for new features and bug fixes.
 - Verify with tests or publish checks that match the risk of the change.
 - Follow the mandatory Superpowers workflow before any creation, change, implementation, or bug fix: invoke `superpowers:using-superpowers`, then route through `superpowers:brainstorming` (new features/components), `superpowers:systematic-debugging` (bugs), `superpowers:test-driven-development` (implementation), `superpowers:writing-plans`/`superpowers:executing-plans` (multi-step work), and `superpowers:verification-before-completion` (before claiming done). Never skip a skill that could apply; only an explicit user instruction may narrow it.

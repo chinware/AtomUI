@@ -3406,9 +3406,12 @@ Source: ./controls/tab-control/semantic-cn.md
 | Owner | Part | Selector | ContractType | Cardinality | Customization | CrossVisualRoot | RuntimeCreated |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `TabControl` | `root` | owner | `TabControl` | `Single` | `Root` | `false` | `false` |
+| `TabControl` | `header` | `.semantic-header` | `Border` | `Single` | `Selector` | `false` | `false` |
 | `TabControl` | `content` | `.semantic-content` | `ContentPresenter` | `Single` | `Selector` | `false` | `false` |
 | `TabControl` | `item` | `.semantic-item` | `TabItem` | `Multiple` | `Selector` | `false` | `true` |
+| `TabControl` | `indicator` | `.semantic-indicator` | `Border` | `Single` | `Selector` | `false` | `false` |
 | `CardTabControl` | `root` | owner | `CardTabControl` | `Single` | `Root` | `false` | `false` |
+| `CardTabControl` | `header` | `.semantic-header` | `Border` | `Single` | `Selector` | `false` | `false` |
 | `CardTabControl` | `add` | `.semantic-add` | `IconButton` | `Single` | `Selector` | `false` | `false` |
 | `CardTabControl` | `content` | `.semantic-content` | `ContentPresenter` | `Single` | `Selector` | `false` | `false` |
 | `CardTabControl` | `item` | `.semantic-item` | `TabItem` | `Multiple` | `Selector` | `false` | `true` |
@@ -3423,15 +3426,16 @@ Source: ./controls/tab-control/semantic-cn.md
 `CreateContainerForItemOverride` / `PrepareContainerForItemOverride` 中应用到生成的 `TabItem` 容器；直接以
 `TabItem` 实例加入 `Items` 的 item 同样在 prepare 阶段获得 marker。
 
-`TabItem` 的 `close` / `icon` / `label` 与两个 Control 的 `content`、`CardTabControl` 的 `add` 是内置模板中的静态
-marker，通过 `Classes.semantic-*="True"` 声明，运行期间不随可见性、选中或禁用状态增删。
+`TabItem` 的 `close` / `icon` / `label`、两个 Control 的 `content` 与 `header`、`TabControl` 的 `indicator`、
+`CardTabControl` 的 `add` 是内置模板中的静态 marker，通过 `Classes.semantic-*="True"` 声明，运行期间不随可见性、
+选中或禁用状态增删。
 
 ## Abstract AXAML Structure
 
 来源：`src/AtomUI.Desktop.Controls/TabControl/Themes/TabControlTheme.axaml`
 
 ```xml
-<Border Name="Frame">
+<PixelAlignedBorder Name="Frame">
     <DockPanel>
         <Panel Name="PART_AlignWrapper">
             <Border>
@@ -3447,7 +3451,7 @@ marker，通过 `Classes.semantic-*="True"` 声明，运行期间不随可见性
         </Panel>
         <ContentPresenter />
     </DockPanel>
-</Border>
+</PixelAlignedBorder>
 ```
 
 ## Composition Model
@@ -3485,7 +3489,7 @@ TabControl
               -> IconButton#PART_ItemCloseButton (template-stable)
         -> Rectangle#LineMask (template-stable)
   -> TabControl (control theme, TabControlTheme.axaml)
-     -> Border#Frame (template-stable)
+     -> PixelAlignedBorder#Frame (template-stable)
         -> DockPanel (template-stable)
            -> Panel#PART_AlignWrapper (template-stable)
               -> Border (template-stable)
@@ -3530,8 +3534,8 @@ TabControl
 | `ContentPresenter` | template node (ContentPresenter) | `CardTabItemTheme.axaml` | TabItem | `Header`, `HeaderTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_ItemCloseButton` | template node (IconButton) | `CardTabItemTheme.axaml` | TabItem | `CloseButtonOpacity`, `CloseIcon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `LineMask` | template node (Rectangle) | `CardTabItemTheme.axaml` | TabItem | `Background`, `LineMaskMargin` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `TabControl` | control theme | `TabControlTheme.axaml` | 用户代码 / 控件宿主 | `ContentPadding`, `EffectiveHeaderPadding`, `HeaderEndExtraContent`, `HeaderEndExtraContentTemplate`, `HeaderStartExtraContent`, `HeaderStartExtraContentTemplate` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Frame` | template node (Border) | `TabControlTheme.axaml` | TabControl | `ContentPadding`, `EffectiveHeaderPadding`, `HeaderEndExtraContent`, `HeaderEndExtraContentTemplate`, `HeaderStartExtraContent`, `HeaderStartExtraContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `TabControl` | control theme | `TabControlTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BackgroundSizing`, `BorderBrush`, `BorderDashArray`, `BorderDashOffset`, `BorderThickness` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Frame` | template node (PixelAlignedBorder) | `TabControlTheme.axaml` | TabControl | `Background`, `BackgroundSizing`, `BorderBrush`, `BorderDashArray`, `BorderDashOffset`, `BorderThickness` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `DockPanel` | template node (DockPanel) | `TabControlTheme.axaml` | TabControl | `ContentPadding`, `EffectiveHeaderPadding`, `HeaderEndExtraContent`, `HeaderEndExtraContentTemplate`, `HeaderStartExtraContent`, `HeaderStartExtraContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_AlignWrapper` | template node (Panel) | `TabControlTheme.axaml` | TabControl | `EffectiveHeaderPadding`, `HeaderEndExtraContent`, `HeaderEndExtraContentTemplate`, `HeaderStartExtraContent`, `HeaderStartExtraContentTemplate`, `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `HeaderLayout` | template node (DockPanel) | `TabControlTheme.axaml` | TabControl | `HeaderEndExtraContent`, `HeaderEndExtraContentTemplate`, `HeaderStartExtraContent`, `HeaderStartExtraContentTemplate`, `IsMotionEnabled`, `ItemsPanel` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -3641,9 +3645,15 @@ TabControl Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - Semantic Part descriptor、静态 `Classes.semantic-*="True"` marker、运行时 `semantic-item` marker 同步规则与生成的
-  `TabControlItemStyle` / `TabControlContentStyle` / `CardTabControlAddStyle` / `TabItemIconStyle` /
-  `TabItemLabelStyle` / `TabItemCloseStyle` 等 Style 类型。选中指示墨条、header extra、overflow 菜单项与
-  Card `LineMask` 不携带语义 marker 属于稳定契约，不能通过主题或代码改动破坏。
+  `TabControlItemStyle` / `TabControlContentStyle` / `TabControlHeaderStyle` / `TabControlIndicatorStyle` /
+  `CardTabControlAddStyle` / `CardTabControlHeaderStyle` / `TabItemIconStyle` / `TabItemLabelStyle` /
+  `TabItemCloseStyle` 等 Style 类型。
+  选中指示墨条为 motion actor（尺寸与位移运行时维护）、header extra、overflow 菜单项与 Card `LineMask` 不携带
+  语义 marker 属于稳定契约，不能通过主题或代码改动破坏。
+- 模板根 `Frame`（`TabControlTheme` 与 `CardTabControlTheme` 均为 `PixelAlignedBorder`）对 `Background` /
+  `BackgroundSizing` / `BorderBrush` / `BorderThickness` / `CornerRadius` / `Padding` / `BorderDashArray` /
+  `BorderDashOffset` 的 TemplateBinding 属于稳定契约；标签条分隔线由 internal `SeparatorBorderBrush` /
+  `SeparatorBorderThickness` 承载主题 token，公开 `BorderBrush` / `BorderThickness` 默认保持 null/0。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - 拖动排序释放时必须修改逻辑集合顺序，拖动中允许用 `RenderTransform` 和临时 `ZIndex` 做实时视觉预览，但不能只调整 `Panel.Children`、`ZIndex` 或 transform 作为最终排序结果。
 - 选中项必须跟随同一个逻辑 item，不能跟随旧 index；重排后内容页、指示条、overflow 菜单和关闭状态必须从新顺序统一推导。

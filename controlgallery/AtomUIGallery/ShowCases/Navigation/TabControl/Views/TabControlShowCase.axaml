@@ -32,11 +32,12 @@
                             <gallery:SemanticPartPreview.PreviewContent>
                                 <atom:TabControl Name="TabControlSemanticOwner"
                                                  Width="420"
+                                                 IsTabClosable="True"
                                                  HorizontalAlignment="Center"
                                                  VerticalAlignment="Center">
-                                    <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
-                                    <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
-                                    <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                                    <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" IsAutoHideCloseButton="False" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                                    <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" IsClosable="False" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                                    <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" IsClosable="False" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
                                 </atom:TabControl>
                             </gallery:SemanticPartPreview.PreviewContent>
                             <gallery:SemanticPartPreview.PartDescriptions>
@@ -44,11 +45,17 @@
                                     Path="root"
                                     Description="{gallery:TabControlShowCaseLangResource SemanticRootDescription}" />
                                 <gallery:SemanticPartDescription
+                                    Path="header"
+                                    Description="{gallery:TabControlShowCaseLangResource SemanticHeaderDescription}" />
+                                <gallery:SemanticPartDescription
                                     Path="content"
                                     Description="{gallery:TabControlShowCaseLangResource SemanticContentDescription}" />
                                 <gallery:SemanticPartDescription
                                     Path="item"
                                     Description="{gallery:TabControlShowCaseLangResource SemanticItemDescription}" />
+                                <gallery:SemanticPartDescription
+                                    Path="indicator"
+                                    Description="{gallery:TabControlShowCaseLangResource SemanticIndicatorDescription}" />
                             </gallery:SemanticPartPreview.PartDescriptions>
                         </gallery:SemanticPartPreview>
                         <gallery:SemanticPartPreview Name="CardTabControlSemanticPreview"
@@ -71,6 +78,9 @@
                                     Path="root"
                                     Description="{gallery:TabControlShowCaseLangResource SemanticRootDescription}" />
                                 <gallery:SemanticPartDescription
+                                    Path="header"
+                                    Description="{gallery:TabControlShowCaseLangResource SemanticHeaderDescription}" />
+                                <gallery:SemanticPartDescription
                                     Path="add"
                                     Description="{gallery:TabControlShowCaseLangResource SemanticAddDescription}" />
                                 <gallery:SemanticPartDescription
@@ -82,6 +92,7 @@
                             </gallery:SemanticPartPreview.PartDescriptions>
                         </gallery:SemanticPartPreview>
                         <gallery:SemanticPartPreview Name="TabItemSemanticPreview"
+                                                     Title="TabItem"
                                                      Classes="preview-content-centered"
                                                      SemanticOwner="{Binding #TabItemSemanticOwner}"
                                                      SemanticOwnerType="{x:Type atom:TabItem}">
@@ -101,17 +112,11 @@
                             </gallery:SemanticPartPreview.PreviewContent>
                             <gallery:SemanticPartPreview.PartDescriptions>
                                 <gallery:SemanticPartDescription
-                                    Path="root"
-                                    Description="{gallery:TabControlShowCaseLangResource SemanticRootDescription}" />
-                                <gallery:SemanticPartDescription
-                                    Path="close"
-                                    Description="{gallery:TabControlShowCaseLangResource SemanticCloseDescription}" />
-                                <gallery:SemanticPartDescription
                                     Path="icon"
                                     Description="{gallery:TabControlShowCaseLangResource SemanticIconDescription}" />
                                 <gallery:SemanticPartDescription
-                                    Path="label"
-                                    Description="{gallery:TabControlShowCaseLangResource SemanticLabelDescription}" />
+                                    Path="close"
+                                    Description="{gallery:TabControlShowCaseLangResource SemanticCloseDescription}" />
                             </gallery:SemanticPartPreview.PartDescriptions>
                         </gallery:SemanticPartPreview>
                     </StackPanel>
@@ -572,53 +577,54 @@
                         <StackPanel Spacing="16">
                             <StackPanel.Styles>
                                 <Style Selector="atom|TabControl.semantic-style-demo">
+                                    <atom:TabControlHeaderStyle x:SetterTargetType="Border">
+                                        <Setter Property="Background" Value="#80F5F5F5" />
+                                    </atom:TabControlHeaderStyle>
                                     <atom:TabControlContentStyle x:SetterTargetType="ContentPresenter">
                                         <Setter Property="Padding" Value="16" />
-                                        <Setter Property="Background" Value="#0F1677FF" />
+                                        <Setter Property="Background" Value="#CCE6F7FF" />
                                     </atom:TabControlContentStyle>
                                     <atom:TabControlItemStyle x:SetterTargetType="atom:TabItem">
-                                        <Setter Property="Margin" Value="0,0,4,0" />
-                                        <Style Selector="^:selected">
-                                            <Setter Property="Background" Value="#1A1677FF" />
-                                        </Style>
+                                        <Setter Property="Padding" Value="6,10" />
                                     </atom:TabControlItemStyle>
                                 </Style>
                                 <Style Selector="atom|TabItem.semantic-style-demo">
-                                    <atom:TabItemIconStyle x:SetterTargetType="atom:IconPresenter">
-                                        <Setter Property="Margin" Value="0,0,4,0" />
-                                    </atom:TabItemIconStyle>
                                     <atom:TabItemLabelStyle x:SetterTargetType="ContentPresenter">
-                                        <Setter Property="FontWeight" Value="SemiBold" />
+                                        <Setter Property="FontWeight" Value="Bold" />
+                                        <Setter Property="Foreground" Value="#1890FF" />
                                     </atom:TabItemLabelStyle>
                                 </Style>
-                                <Style Selector="atom|CardTabControl.semantic-style-demo">
-                                    <atom:CardTabControlAddStyle x:SetterTargetType="atom:IconButton">
-                                        <Setter Property="CornerRadius" Value="4" />
-                                    </atom:CardTabControlAddStyle>
-                                </Style>
                             </StackPanel.Styles>
-                            <atom:TabControl Classes="semantic-style-demo">
+                            <atom:TabControl Classes="semantic-style-demo"
+                                             BorderThickness="2"
+                                             BorderBrush="#E0000000"
+                                             BorderDashArray="4,2"
+                                             Padding="16"
+                                             Margin="0,0,0,10"
+                                             Initialized="HandleSemanticStyleDemoTabControlInitialized">
                                 <atom:TabItem Classes="semantic-style-demo"
                                               Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}"
-                                              Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}"
                                               Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
                                 <atom:TabItem Classes="semantic-style-demo"
                                               Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}"
-                                              Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}"
                                               Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
                                 <atom:TabItem Classes="semantic-style-demo"
                                               Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}"
                                               Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
                             </atom:TabControl>
                             <atom:CardTabControl Classes="semantic-style-demo"
-                                                 IsShowAddTabButton="True">
-                                <atom:TabItem Classes="semantic-style-demo"
-                                              Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}"
-                                              Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}"
+                                                 TabStripPlacement="Left"
+                                                 Background="#CCFAFAFA"
+                                                 BorderThickness="2"
+                                                 BorderBrush="#D9D9D9"
+                                                 BorderDashArray="4,2"
+                                                 Padding="16">
+                                <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}"
                                               Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
-                                <atom:TabItem Classes="semantic-style-demo"
-                                              Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}"
+                                <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}"
                                               Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                                <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}"
+                                              Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
                             </atom:CardTabControl>
                         </StackPanel>
                     </DataTemplate>

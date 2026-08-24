@@ -19,12 +19,14 @@ namespace AtomUI.Desktop.Controls.Tests.TabControl;
 
 public class TabControlSemanticPartTests
 {
-    private const string ItemClass    = "semantic-item";
-    private const string ContentClass = "semantic-content";
-    private const string AddClass     = "semantic-add";
-    private const string IconClass    = "semantic-icon";
-    private const string LabelClass   = "semantic-label";
-    private const string CloseClass   = "semantic-close";
+    private const string ItemClass      = "semantic-item";
+    private const string HeaderClass    = "semantic-header";
+    private const string ContentClass   = "semantic-content";
+    private const string AddClass       = "semantic-add";
+    private const string IndicatorClass = "semantic-indicator";
+    private const string IconClass      = "semantic-icon";
+    private const string LabelClass     = "semantic-label";
+    private const string CloseClass     = "semantic-close";
 
     static TabControlSemanticPartTests()
     {
@@ -40,9 +42,17 @@ public class TabControlSemanticPartTests
 
         registry.TryGetControl(typeof(AtomUITabControl), out var tabControlDescriptor).ShouldBeTrue();
         tabControlDescriptor.ShouldNotBeNull();
-        tabControlDescriptor.Parts.Select(static part => part.Name).ShouldBe(["root", "content", "item"]);
+        tabControlDescriptor.Parts.Select(static part => part.Name).ShouldBe(["root", "content", "header", "indicator", "item"]);
 
         AssertRoot(tabControlDescriptor.Parts.Single(static part => part.Name == "root"), typeof(AtomUITabControl));
+        AssertPart(tabControlDescriptor.Parts.Single(static part => part.Name == "header"),
+            HeaderClass, "/template/ .semantic-header", typeof(Border),
+            SemanticPartCardinality.Single, typeof(TabControlHeaderStyle), runtimeCreated: false,
+            since: "6.2");
+        AssertPart(tabControlDescriptor.Parts.Single(static part => part.Name == "indicator"),
+            IndicatorClass, "/template/ .semantic-indicator", typeof(Border),
+            SemanticPartCardinality.Single, typeof(TabControlIndicatorStyle), runtimeCreated: false,
+            since: "6.2");
         AssertPart(tabControlDescriptor.Parts.Single(static part => part.Name == "content"),
             ContentClass, "/template/ .semantic-content", typeof(ContentPresenter),
             SemanticPartCardinality.Single, typeof(TabControlContentStyle), runtimeCreated: false);
@@ -52,9 +62,13 @@ public class TabControlSemanticPartTests
 
         registry.TryGetControl(typeof(AtomUICardTabControl), out var cardDescriptor).ShouldBeTrue();
         cardDescriptor.ShouldNotBeNull();
-        cardDescriptor.Parts.Select(static part => part.Name).ShouldBe(["root", "add", "content", "item"]);
+        cardDescriptor.Parts.Select(static part => part.Name).ShouldBe(["root", "add", "content", "header", "item"]);
 
         AssertRoot(cardDescriptor.Parts.Single(static part => part.Name == "root"), typeof(AtomUICardTabControl));
+        AssertPart(cardDescriptor.Parts.Single(static part => part.Name == "header"),
+            HeaderClass, "/template/ .semantic-header", typeof(Border),
+            SemanticPartCardinality.Single, typeof(CardTabControlHeaderStyle), runtimeCreated: false,
+            since: "6.2");
         AssertPart(cardDescriptor.Parts.Single(static part => part.Name == "add"),
             AddClass, "/template/ .semantic-add", typeof(IconButton),
             SemanticPartCardinality.Single, typeof(CardTabControlAddStyle), runtimeCreated: false);
@@ -85,9 +99,9 @@ public class TabControlSemanticPartTests
 
     [Theory]
     [InlineData("src/AtomUI.Desktop.Controls/TabControl/Themes/TabControlTheme.axaml",
-        new[] { "semantic-content:ContentPresenter" })]
+        new[] { "semantic-content:ContentPresenter", "semantic-header:Border", "semantic-indicator:Border" })]
     [InlineData("src/AtomUI.Desktop.Controls/TabControl/Themes/CardTabControlTheme.axaml",
-        new[] { "semantic-add:IconButton", "semantic-content:ContentPresenter" })]
+        new[] { "semantic-add:IconButton", "semantic-content:ContentPresenter", "semantic-header:Border" })]
     [InlineData("src/AtomUI.Desktop.Controls/TabControl/Themes/BaseTabItemTheme.axaml",
         new[] { "semantic-close:IconButton", "semantic-icon:IconPresenter", "semantic-label:ContentPresenter" })]
     [InlineData("src/AtomUI.Desktop.Controls/TabControl/Themes/CardTabItemTheme.axaml",
@@ -276,6 +290,65 @@ public class TabControlSemanticPartTests
         largeItem.FontSize.ShouldBeGreaterThan(smallItem.FontSize);
     }
 
+    [Fact]
+    public void Generated_Header_Styles_Apply_To_The_Header_Container()
+    {
+        var tabControl = new AtomUITabControl();
+        tabControl.ItemsSource = new[] { "First" };
+        tabControl.Classes.Add("semantic-owner");
+
+        var ownerStyle = new Style(selector => selector.OfType<AtomUITabControl>().Class("semantic-owner"));
+        ownerStyle.Children.Add(new TabControlHeaderStyle
+        {
+            Setters = { new Setter(Control.TagProperty, "header") }
+        });
+        tabControl.Styles.Add(ownerStyle);
+
+        using (Show(tabControl))
+        {
+            GetSemanticElements(tabControl, HeaderClass).OfType<Control>()
+                                                       .Single().Tag.ShouldBe("header");
+        }
+
+        var cardTabControl = new AtomUICardTabControl();
+        cardTabControl.ItemsSource = new[] { "First" };
+        cardTabControl.Classes.Add("semantic-owner");
+
+        var cardOwnerStyle = new Style(selector => selector.OfType<AtomUICardTabControl>().Class("semantic-owner"));
+        cardOwnerStyle.Children.Add(new CardTabControlHeaderStyle
+        {
+            Setters = { new Setter(Control.TagProperty, "header") }
+        });
+        cardTabControl.Styles.Add(cardOwnerStyle);
+
+        using (Show(cardTabControl))
+        {
+            GetSemanticElements(cardTabControl, HeaderClass).OfType<Control>()
+                                                           .Single().Tag.ShouldBe("header");
+        }
+    }
+
+    [Fact]
+    public void Generated_Indicator_Style_Applies_To_The_Indicator_Border()
+    {
+        var tabControl = new AtomUITabControl();
+        tabControl.ItemsSource = new[] { "First" };
+        tabControl.Classes.Add("semantic-owner");
+
+        var ownerStyle = new Style(selector => selector.OfType<AtomUITabControl>().Class("semantic-owner"));
+        ownerStyle.Children.Add(new TabControlIndicatorStyle
+        {
+            Setters = { new Setter(Control.TagProperty, "indicator") }
+        });
+        tabControl.Styles.Add(ownerStyle);
+
+        using (Show(tabControl))
+        {
+            GetSemanticElements(tabControl, IndicatorClass).OfType<Control>()
+                                                          .Single().Tag.ShouldBe("indicator");
+        }
+    }
+
     private static void AssertRoot(SemanticPartDescriptor part, Type ownerType)
     {
         part.Path.ShouldBe("root");
@@ -297,7 +370,8 @@ public class TabControlSemanticPartTests
         Type contractType,
         SemanticPartCardinality cardinality,
         Type styleType,
-        bool runtimeCreated)
+        bool runtimeCreated,
+        string since = "6.0")
     {
         part.SelectorClass.ShouldBe(selectorClass);
         part.SelectorRoute.ShouldBe(selectorRoute);
@@ -307,7 +381,7 @@ public class TabControlSemanticPartTests
         part.CrossVisualRoot.ShouldBeFalse();
         part.RuntimeCreated.ShouldBe(runtimeCreated);
         part.StyleType.ShouldBe(styleType);
-        part.Since.ShouldBe("6.0");
+        part.Since.ShouldBe(since);
     }
 
     private static void AssertItemSubPartMarkers(Control owner)

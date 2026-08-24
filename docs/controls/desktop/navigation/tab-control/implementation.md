@@ -135,6 +135,9 @@ Semantic marker 接入点：
 - `TabControl.content` 与 `CardTabControl.content` 为静态标记：`TabControlTheme.axaml` 与
   `CardTabControlTheme.axaml` 在模板末尾承载 `SelectedContent` 的 `ContentPresenter` 上声明
   `Classes.semantic-content="True"`，每个模板恰好一个 marker。
+- `TabControl.header` 与 `CardTabControl.header` 为静态标记：`TabControlTheme.axaml` 与 `CardTabControlTheme.axaml`
+  在包裹标签条的 header `Border`（`Padding="{TemplateBinding EffectiveHeaderPadding}"`）上声明
+  `Classes.semantic-header="True"`，每个模板恰好一个 marker。
 - `TabControl.item` 与 `CardTabControl.item` 为运行时创建的语义标记（`RuntimeCreated = true`），路由
   `> .semantic-item`，即 marker 挂在 owner 的直接逻辑子节点（`TabItem` container）上：owner 在
   `CreateContainerForItemOverride` 中把 `semantic-item` 应用到新建容器，并在 `PrepareContainerForItemOverride`
@@ -148,8 +151,11 @@ Semantic marker 接入点：
   `PART_ItemCloseButton` 上声明 `Classes.semantic-icon="True"` / `Classes.semantic-label="True"` /
   `Classes.semantic-close="True"`，每个模板各恰好一个 marker；`HasIcon` / `IsClosable` /
   `IsAutoHideCloseButton` 只控制可见性或透明度，marker 不随状态增删。
-- 选中指示墨条 `PART_SelectedItemIndicator`、`HeaderStartExtraContent` / `HeaderEndExtraContent`、
-  `PART_TabsContainer` 滚动容器与 Card 模板的 `LineMask` 是内部协作节点，不声明语义 marker。
+- `TabControl.indicator` 为静态标记：`TabControlTheme.axaml` 在 `Border#PART_SelectedItemIndicator` 上声明
+  `Classes.semantic-indicator="True"`，每个模板恰好一个 marker。墨条尺寸与位移仍由 `SetupSelectedIndicator`
+  运行时维护，marker 只承载视觉样式定制；`CardTabControl` 模板不含墨条节点，descriptor 不含 `indicator`。
+- `HeaderStartExtraContent` / `HeaderEndExtraContent`、`PART_TabsContainer` 滚动容器与 Card 模板的 `LineMask`
+  是内部协作节点，不声明语义 marker。
 
 ## 6. 交互与事件处理
 
@@ -258,9 +264,15 @@ TabControl 的交互事件应从输入源收敛到控件级语义事件：
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - Semantic Part descriptor、静态 `Classes.semantic-*="True"` marker、运行时 `semantic-item` marker 同步规则与生成的
-  `TabControlItemStyle` / `TabControlContentStyle` / `CardTabControlAddStyle` / `TabItemIconStyle` /
-  `TabItemLabelStyle` / `TabItemCloseStyle` 等 Style 类型。选中指示墨条、header extra、overflow 菜单项与
-  Card `LineMask` 不携带语义 marker 属于稳定契约，不能通过主题或代码改动破坏。
+  `TabControlItemStyle` / `TabControlContentStyle` / `TabControlHeaderStyle` / `TabControlIndicatorStyle` /
+  `CardTabControlAddStyle` / `CardTabControlHeaderStyle` / `TabItemIconStyle` / `TabItemLabelStyle` /
+  `TabItemCloseStyle` 等 Style 类型。
+  选中指示墨条为 motion actor（尺寸与位移运行时维护）、header extra、overflow 菜单项与 Card `LineMask` 不携带
+  语义 marker 属于稳定契约，不能通过主题或代码改动破坏。
+- 模板根 `Frame`（`TabControlTheme` 与 `CardTabControlTheme` 均为 `PixelAlignedBorder`）对 `Background` /
+  `BackgroundSizing` / `BorderBrush` / `BorderThickness` / `CornerRadius` / `Padding` / `BorderDashArray` /
+  `BorderDashOffset` 的 TemplateBinding 属于稳定契约；标签条分隔线由 internal `SeparatorBorderBrush` /
+  `SeparatorBorderThickness` 承载主题 token，公开 `BorderBrush` / `BorderThickness` 默认保持 null/0。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - 拖动排序释放时必须修改逻辑集合顺序，拖动中允许用 `RenderTransform` 和临时 `ZIndex` 做实时视觉预览，但不能只调整 `Panel.Children`、`ZIndex` 或 transform 作为最终排序结果。
 - 选中项必须跟随同一个逻辑 item，不能跟随旧 index；重排后内容页、指示条、overflow 菜单和关闭状态必须从新顺序统一推导。

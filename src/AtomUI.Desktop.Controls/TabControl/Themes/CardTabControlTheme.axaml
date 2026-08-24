@@ -12,12 +12,20 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <atom:PixelAlignedBorder Name="Frame"
-                                         BorderThickness="{TemplateBinding BorderThickness}">
+                                         Background="{TemplateBinding Background}"
+                                         BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         CornerRadius="{TemplateBinding CornerRadius}"
+                                         Padding="{TemplateBinding Padding}"
+                                         StrokeDashArray="{TemplateBinding BorderDashArray}"
+                                         StrokeDaskOffset="{TemplateBinding BorderDashOffset}">
                     <DockPanel>
                         <Panel Name="PART_AlignWrapper"
                                DockPanel.Dock="{TemplateBinding TabStripPlacement}"
                                Margin="{TemplateBinding TabStripMargin}">
-                            <Border Padding="{TemplateBinding EffectiveHeaderPadding}">
+                            <Border Classes.semantic-header="True"
+                                    Padding="{TemplateBinding EffectiveHeaderPadding}">
                                 <DockPanel LastChildFill="True" Name="HeaderLayout">
                                     <ContentPresenter Name="HeaderStartExtraContent"
                                                       Content="{TemplateBinding HeaderStartExtraContent}"

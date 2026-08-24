@@ -59,6 +59,11 @@ internal sealed class TabControlToken : AbstractControlDesignToken
     public Color InkBarColor { get; set; }
 
     /// <summary>
+    /// 指示条厚度
+    /// </summary>
+    public double InkBarThickness { get; set; }
+
+    /// <summary>
     /// 横向标签页外间距
     /// </summary>
     public Thickness HorizontalMargin { get; set; }
@@ -181,6 +186,8 @@ internal sealed class TabControlToken : AbstractControlDesignToken
         TitleFontSizeSM = EffectiveGlobalToken.FontSize;
 
         InkBarColor = EffectiveGlobalToken.ColorPrimary;
+
+        InkBarThickness = EffectiveGlobalToken.LineWidthBold;
 
         HorizontalMargin     = new Thickness(0, 0, EffectiveGlobalToken.UniformlyMargin, 0);
         HorizontalItemGutter = 32;
