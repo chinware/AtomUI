@@ -9,6 +9,7 @@ AtomUI 是基于 Avalonia/.NET 的桌面与跨平台控件系统。整体架构�
 - [跨模块系统](systems/overview.md)：主题、本地化、Control 基础设施、渲染和窗口系统的架构入口。
 - [字体子系统](systems/typography/overview.md)：字体包注册、字体族回退、字号与行高 Token 派生。
 - [Control 基础设施](systems/control-infrastructure/overview.md)：异步加载、过滤与响应式共享契约。
+- [统一图片加载系统](systems/image-loading/overview.md)：当前应用级图片管线、公共 Source、缓存安全和控件 API。
 - [渲染系统](systems/rendering/overview.md)：边框渲染与跨 VisualRoot 的视觉层规则。
 - [Mobile 系统](systems/mobile/overview.md)：预实现的移动 Runtime、平台能力、Navigation/Overlay、Gesture 和双平台验证契约。
 
@@ -81,6 +82,22 @@ flowchart LR
 目标依赖、包 ownership 和 Runtime 不变量分别见 [项目依赖关系](foundations/dependency-graph.md)、
 [Mobile Controls 模块](../modules/mobile-controls/overview.md)和 [Mobile 系统架构](systems/mobile/overview.md)。
 
+## 统一图片加载层
+
+统一图片加载不新增项目，也不改变 `Core -> Controls.Shared -> Controls -> Desktop.Controls` 的依赖方向：
+
+```mermaid
+flowchart LR
+    Core["AtomUI.Core\n通用 owned-service 生命周期"] --> Shared["AtomUI.Controls.Shared\n应用级 ImageLoader、缓存、传输、安全、raster codec"]
+    Shared --> Controls["AtomUI.Controls\nAsyncImage、controller、Avatar、trusted Asset SVG"]
+    Controls --> Desktop["AtomUI.Desktop.Controls\nImagePreviewer current/cover/preload 策略"]
+    Desktop --> Gallery["AtomUIGallery\n只消费 AtomUI AsyncImage"]
+```
+
+Core 只提供通用应用托管服务收集、attach、回滚和逆序销毁，不引用 `ImageLoadSource`、HTTP、codec 或 cache。完整公共 API、
+管线、平台和验证契约由 [统一图片加载系统](systems/image-loading/overview.md)拥有；各 Control 文档描述对应控件契约，不得
+另行维护平行的图片加载 API。
+
 ## 核心运行链路
 
 AtomUI 应用通常分两步接入：
@@ -111,7 +128,7 @@ descriptor 和 ControlTheme asset manifest；本地化链路收集 Catalog、编
 
 ## 横切系统
 
-- 主题、Token、Semantic Part 和本地化属于跨模块系统，由 `architecture/systems/` 统一导航。
+- 主题、Token、Semantic Part、本地化和统一图片加载属于跨模块系统，由 `architecture/systems/` 统一导航。
 - 平台差异遵守 [运行平台策略](foundations/runtime-platforms.md)。
 - Control 边框遵守 [边框渲染架构](systems/rendering/border-rendering.md)。
 - 跨普通视觉树绘制遵守 [视觉层规范](systems/rendering/visual-layers.md)。

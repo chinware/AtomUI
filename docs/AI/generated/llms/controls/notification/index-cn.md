@@ -158,6 +158,7 @@ Notification Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - `src/AtomUI.Desktop.Controls/Notifications/Themes/WindowNotificationManagerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Notifications/Utils/NotificationProgressBarVisibleConverter.cs`
 - `src/AtomUI.Desktop.Controls/Notifications/WindowNotificationManager.cs`
+- `src/AtomUI.Core/MotionScene/MotionExecutionState.cs`
 
 职责边界：
 

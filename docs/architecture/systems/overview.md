@@ -9,6 +9,7 @@
 - [字体子系统](typography/overview.md)：字体资源注册、字体族回退、字号阶梯派生和文本度量边界。
 - [本地化系统](localization/overview.md)：运行时、Generator、Build Tasks、语言包和 XLIFF Reference。
 - [Control 基础设施](control-infrastructure/overview.md)：异步加载、过滤和响应式共享契约。
+- [统一图片加载系统](image-loading/overview.md)：当前统一 Source、应用级 loader、两级缓存、内容安全与控件 API。
 - [渲染系统](rendering/overview.md)：边框渲染、视觉层职责和跨树宿主选择。
 - [Windowing 系统](windowing/overview.md)：窗口合成、CSD 所有权、平台能力和验证矩阵。
 - [Mobile 系统](mobile/overview.md)：预实现的移动 Runtime、Viewport、Overlay、Gesture、Theme/API 映射和双平台验证契约。

@@ -48,7 +48,7 @@ TimePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
 
-`SelectedTime` 是 `TimePicker` 的受控 Form 值属性，默认绑定模式为 `TwoWay`，并启用 Avalonia data validation。Form、绑定验证和输入壳体错误视觉必须基于 `DataValidationErrors` 投射，不允许另建与 native validation 并行的错误状态。
+`SelectedTime` 是 `TimePicker` 的受控 Form 值属性，默认绑定模式为 `TwoWay`，并启用 Avalonia data validation。Form、绑定验证和输入表面错误视觉必须基于 `DataValidationErrors` 投射，不允许另建与 native validation 并行的错误状态。TimePicker/RangeTimePicker 还必须把 `FormStatus` 和显式 `Status` 投射到 shared `InputControlFrame`；TimeView 只拥有时间面板和选择交互状态。
 
 主要公开类型与枚举：
 
@@ -120,11 +120,13 @@ Public API / inherited command / item source / user input
 
 ## 主题与 Design Token
 
-TimePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
+TimePicker 的视觉模型由 `InputControlFrame` 输入表面、InfoPicker 输入子控件、控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。输入表面状态由 shared frame 统一表达，TimePicker 主题只扩展时间面板、范围和弹层内容。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `RangeTimePickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
+| `InfoPickerTextBoxTheme.axaml` | 通过 `StyleVariant=Borderless` 提供内部时间文本输入的无 chrome 布局。 |
+| `InputControlFrameTheme.axaml` | 提供输入表面 variant、effective status、focus、disabled、error、warning、CompactSpace 和 motion。 |
 | `TimePickerPresenterTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `TimePickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TimeViewCellTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |

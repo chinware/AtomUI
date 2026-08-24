@@ -13,8 +13,10 @@ Presenter 绘制视觉。
 ## 2. 源码文件结构
 
 - `src/AtomUI.Desktop.Controls/Popup/Popup.cs`：公共 API、自定义定位、翻转通知、frame shadow 选择、动效和 wheel guard。
+- `src/AtomUI.Desktop.Controls/Popup/PopupReflectionExtensions.cs`：对 Avalonia Popup 私有 closing、parent 与定位入口的集中反射桥接。
 - `src/AtomUI.Desktop.Controls/Popup/PopupUtils.cs`：placement 算法、popup scope 和 owning popup 查询。
 - `src/AtomUI.Desktop.Controls/Popup/PopupToken.cs`：Popup 家族的阴影、圆角和 anchor margin Token。
+- `src/AtomUI.Core/MotionScene/MotionExecutionState.cs`：MotionScene 共享的 internal 动效执行生命周期定义。
 - `src/AtomUI.Desktop.Controls/Popup/Themes/PopupTheme.axaml`：Popup shadow 和 motion Theme 值；不覆盖 surface 默认值。
 - `src/AtomUI.Desktop.Controls/Popup/Themes/PopupRootTheme.axaml`：native transparent host 组合。
 - `src/AtomUI.Desktop.Controls/Popup/Themes/OverlayPopupHostTheme.axaml`：overlay host 组合。
@@ -82,9 +84,20 @@ logical attach 时，`ShadowsAwareContainer` 创建一个 `CompositeDisposable`�
 ContentPresenter Child observable 在 Child/Presenter 替换时重新配置圆角和 arrow geometry，detach 时释放。frame renderer
 设置 logical parent 并随 container 生命周期存在。
 
-Popup 的 open/close motion cancellation token 由 Popup 实例持有；关闭、快速切换和最终 close 对称取消和释放。打开时安装
-Child wheel guard，关闭时释放。placement transform tracking 只在打开且 placement 需要 anchor 时存在；关闭或 target
-不可见时释放或关闭 Popup。
+Popup 实例拥有 open/close motion cancellation token 和本次关闭执行状态；Core 的 `MotionExecutionState` 只定义
+`Idle -> Pending -> Playing -> Completing` 阶段语义，不拥有任何控件实例或任务。Popup 同一时刻最多调度一次关闭动效，
+快速重开把 Pending/Playing 收敛回 Idle，Completing 只允许 Avalonia 执行一次最终 close。`Closed` 统一取消并释放 token、
+清空 motion actor、打开时 TopLevel、placement tracker 与 wheel guard。
+
+关闭动效只能延迟仍然有效的普通关闭。Popup 打开时记录该会话的 owning `TopLevel` 以及当时是否已有 logical owner；
+`Closing` 发生时验证当前实际 PlacementTarget 仍在 visual tree、目标仍属于原 TopLevel，并且目标能够转换到该 TopLevel。
+若打开时已有 logical owner，还要求 Popup 继续挂在 rooted logical tree；打开时没有 logical owner 的 Direct Popup 不虚构该
+约束。任一已建立的会话条件失效都表示 Avalonia host 生命周期已经结束或即将结束，AtomUI 不取消关闭，允许 Avalonia 同步
+释放 PopupHost、定位订阅和 open state。placement target detach、既有 Popup logical owner detach、跨 TopLevel target 切换
+因此不会留下无锚点但仍打开的 Popup。
+
+打开时安装 Child wheel guard，关闭时释放。placement transform tracking 只在打开且 placement 需要 anchor 时存在；目标仍在
+有效会话但滚出可见区域时可以走普通关闭动效，target 或宿主生命周期失效时则由上述强制 teardown 规则立即关闭。
 
 ## 7. 默认消费路径
 
@@ -98,7 +111,8 @@ AtomUI 自有弹层通过 Popup 原语统一继承 `SurfaceBackground=null`：
 
 ## 8. 输入与宿主边界
 
-Popup placement target、Popup logical owner 和实际 host 必须解析到同一 owning `TopLevel`。Dialog 使用低于 popup 的
+Popup placement target 和实际 host 必须解析到同一 owning `TopLevel`；Popup 存在 logical owner 时，该 owner 也必须属于
+同一会话。没有 logical owner 的 Direct Popup 由显式 PlacementTarget 建立宿主归属。Dialog 使用低于 popup 的
 `OverlayLayer`，content popup 使用同一 Window 的 `PopupOverlayLayer`；native popup 则使用独立 `PopupRoot`。两条 host
 路径共享 frame renderer 和 surface ownership。
 
@@ -110,8 +124,10 @@ light-dismiss、focus 和 host teardown 继续由 Avalonia Popup 协议负责。
 可选 surface 不增加 host 或 wrapper；只扩展既有 renderer。renderer 因 shadow 或显式 surface 按需创建并复用，surface
 更新只 invalidates render。默认路径没有 surface Theme resource，也不创建全局非 Visual resource host。
 
-实现不使用反射、runtime type discovery 或动态注册；StyledProperty 和 ControlTheme 均为静态/AOT 可发现契约。源码库存
-测试使用正则扫描，但只存在于测试项目，不进入 runtime 或 NativeAOT 路径。
+`PopupReflectionExtensions` 集中反射 Avalonia Popup 的私有 closing event、parent setter、open-state flag 与定位刷新入口，
+每个反射成员都通过 `DynamicDependency` 声明 NativeAOT 保留要求；Popup 不做程序集扫描或 runtime type discovery。
+StyledProperty 和 ControlTheme 均为静态/AOT 可发现契约。源码库存测试使用正则扫描，但只存在于测试项目，不进入 runtime
+或 NativeAOT 路径。
 
 ## 10. 维护不变量
 
@@ -121,11 +137,17 @@ light-dismiss、focus 和 host teardown 继续由 Avalonia Popup 协议负责。
 - `SurfaceBackground` 的属性默认值必须为 `null`，Popup Theme 不得覆盖该默认值。
 - content-owned Popup 不重复设置 `null`；host-owned Popup 必须显式提供非空 Brush。
 - relay binding 的 attach/re-attach/detach 必须有单一 owner 和对称释放。
+- close motion 只能延迟仍连接到打开时 owning TopLevel 的普通关闭；打开时已存在的 logical owner、host 或 anchor 生命周期
+  失效时不得保留 Avalonia open state。没有 logical owner 的 Direct Popup 以显式 PlacementTarget 会话为准。
+- Popup 必须以共享 `MotionExecutionState` 表达关闭动效阶段；`Pending`、`Playing` 和 `Completing` 单向收敛，重复
+  close 不得创建并行关闭动效，`Closed` 必须回到 `Idle`。
 
 ## 11. 测试与验证
 
 - `PopupShadowTests` 验证公开 surface API、`null` 默认值、显式 renderer fill、透明 frame 和 shadow clipping。
-- `PopupPlacementTests` 与 `ToolTipPopupModeTests` 验证 placement、host mode 和 transparent PopupRoot。
+- `PopupPlacementTests` 与 `PopupLifecycleTests` 验证 placement、关闭动效状态、placement target/logical owner detach、跨 TopLevel
+  target 切换和 host teardown。
+- `ToolTipPopupModeTests` 验证 host mode 和 transparent PopupRoot。
 - `DialogPopupPrimitiveLayeringTests` 验证 Direct Popup 与四类 content-owned 原语。
 - `PopupEntryInventoryTests` 守卫所有 runtime 入口、无冗余默认值覆盖和 Popup Theme 的 `null` 默认契约。
 - `DialogPopupControlFamilyTests`、DataGrid popup tests 和代表性控件测试验证家族行为与视觉所有权未变。

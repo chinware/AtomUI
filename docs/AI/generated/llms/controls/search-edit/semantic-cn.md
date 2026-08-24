@@ -107,7 +107,7 @@ SearchEdit
 
 | Template Part | 类型 | 所属主题 | 职责 |
 | --- | --- | --- | --- |
-| `PART_AddOnDecoratedBox` | `SearchEditDecoratedBox` | `SearchEditTheme.axaml` | 搜索输入壳体、状态、Addon、CompactSpace 和搜索按钮协作入口。 |
+| `PART_InputControlFrame` | `SearchEditDecoratedBox` | `SearchEditTheme.axaml` | 输入表面、effective status、CompactSpace 和搜索按钮组合入口；具体 decorated box 只扩展搜索布局。 |
 | `PART_RightAddOn` | `Button` | `SearchEditDecoratedBoxTheme.axaml` | public Button 语义部件，承载图标、文字、loading、按钮样式和点击事件。 |
 | `PART_ContentFrame` | `Border` | `SearchEditDecoratedBoxTheme.axaml` | 文本输入框视觉边框和背景。 |
 | `PART_ScrollViewer` | `ScrollViewer` | `SearchEditTheme.axaml` | 文本滚动区域。 |
@@ -149,14 +149,18 @@ if !IsOperating raise SearchRequested
 
 ```text
 Disabled
+> Native Error
+> Form Error
+> Form Warning
+> Explicit Warning
+> Explicit Error
 > Searching button loading
-> Error / Warning
 > Focus
 > PointerOver / Pressed
 > Normal
 ```
 
-`IsEnabled=false` 会传递给搜索按钮，使输入壳体和按钮一起进入 disabled 视觉。native validation error 通过 `DataValidationErrors` 优先影响输入框边框、文本前景和搜索按钮状态色；`Status=Warning` 继续表达 AtomUI warning 视觉，显式 `Status=Error` 只作为无 native error 时的手动错误视觉请求。`SearchButtonStyle` 只控制按钮强调度，不改变文本编辑、清除、Form 或搜索事件语义。
+`IsEnabled=false` 会传递给搜索按钮，使 frame 和按钮一起进入 disabled 视觉。`DataValidationErrors`、Form warning/status 和用户 `Status` 分别通过 frame 的 native validation、`FormStatus` 和 `Status` 输入参与 `EffectiveStatus`；最终由 `InputControlFrame.EffectiveStatus` 按共享优先级投射到输入表面和搜索按钮。`SearchButtonStyle` 只控制按钮强调度，不改变文本编辑、清除、Form 或搜索事件语义。
 
 ## Theme and Token Boundaries
 
@@ -164,8 +168,9 @@ SearchEdit 使用三层主题协作：
 
 | 主题 | 职责 |
 | --- | --- |
-| `SearchEditTheme.axaml` | SearchEdit 根模板、文本 presenter、placeholder、clear/reveal/inner-right 内容、focus/status 视觉。 |
-| `SearchEditDecoratedBoxTheme.axaml` | 输入框内容边框、搜索按钮、左右布局、搜索按钮 style 和 z-index 关系。 |
+| `SearchEditTheme.axaml` | SearchEdit 根模板、文本 presenter、placeholder、clear/reveal/inner-right 内容和 frame 组合。 |
+| `InputControlFrameTheme.axaml` | 输入表面 variant、effective status、边框、背景、focus/hover/pressed、disabled、CompactSpace 和 motion。 |
+| `SearchEditDecoratedBoxTheme.axaml` | 搜索按钮、左右布局、搜索按钮 style 和 z-index 关系；不重复实现 frame 状态 selector。 |
 | `SearchButtonTheme.axaml` | 搜索按钮在不同输入表面中的背景、前景和状态色。 |
 
 SearchEdit 拥有独立 `ControlTokenIdentity`，但不定义 Own Token。它继承 `LineEdit` 的行为并不意味着继承或借用
@@ -176,8 +181,8 @@ Token。合法但没有被当前主题直接或间接消费的 Global Token 可�
 
 | Token 来源 | 用途 |
 | --- | --- |
-| `SearchEditTokenResource` | 读取 SearchEdit Effective Global Token，负责输入与搜索按钮组合语义，例如 focus shadow、主色和输入状态背景。 |
-| `AddOnDecoratedBoxTokenResource` | 由 `SearchEditDecoratedBoxTheme` 的 BasedOn 主题显式读取输入壳体 Own/Effective Global Token。 |
+| `SearchEditTokenResource` | 读取 SearchEdit Effective Global Token，仅负责 SearchEdit 专属组合值；通用输入表面值由 frame theme 从 SharedToken 消费。 |
+| `InputControlFrameTheme` / `SharedTokenResource` | 负责输入表面边框、背景、圆角、focus shadow、状态色、disabled 和 CompactSpace；不由 SearchEditDecoratedBox 重复实现。 |
 | `ButtonTokenResource` | 由真实 Button 和 `SearchButtonTheme` 显式读取 Button Own/Effective Global Token，负责按钮基础视觉。 |
 | `SharedTokenResource` | 读取真正的 Global Token，只用于不响应 SearchEdit Control 级覆盖的共享值。 |
 
@@ -200,12 +205,12 @@ Token 边界：
 - `IsOperating=true` 必须阻止按钮和 Enter 键产生重复搜索请求，但不得自动管理异步任务或修改 `Text`。
 - `IsSearchOnEnterEnabled=false` 时不得消费 Enter 键；已经标记为 handled 的 Enter 键不得触发搜索。
 - `SearchRequestedEventArgs.Query` 必须是触发时的查询文本快照，`Trigger` 必须准确表示 `Button` 或 `EnterKey`。
-- 搜索按钮的 `IsEnabled`、`SizeType` 和 loading 必须跟随 SearchEdit；按钮组合视觉必须响应输入壳体的 `Status` 和 `StyleVariant`。
+- 搜索按钮的 `IsEnabled`、`SizeType` 和 loading 必须跟随 SearchEdit；按钮组合视觉必须响应 `InputControlFrame.EffectiveStatus` 和 `StyleVariant`。
 - 右侧外部 add-on 位置属于搜索按钮；内部右侧内容必须继续由 `InnerRightContent` 承载。
 - SearchEdit 的按钮边框和输入框边框必须在 Large、Middle、Small 和 Custom 高度下严格对齐。
 - `SizeType=Custom` 必须以 Middle 作为未显式覆盖时的视觉基线。
 - SearchEdit 保持独立 Control identity；当前不新增 Own Token，也不得借用 LineEdit 或 Button identity。
-- `SearchButtonTheme` 必须继续以 public Button 为 TargetType，并显式区分 SearchEdit 组合语义与 Button 基础视觉。
+- `SearchButtonTheme` 必须继续以 public Button 为 TargetType，并显式区分 SearchEdit 组合语义与 Button 基础视觉；通用输入表面由 frame theme 提供。
 - 重新套用模板时必须释放旧搜索按钮 click 订阅。
 
 维护不变量：
@@ -218,9 +223,9 @@ Token 边界：
 - `SearchRequestedEventArgs.Query` 和 `Trigger` 必须准确反映触发时的文本与输入来源。
 - 搜索按钮和内容框的边框必须在同一布局高度下绘制。
 - `SearchEditPanel` 的按钮左边框重叠算法不能破坏单线边框视觉。
-- 搜索按钮必须接收 SearchEdit 的 `SizeType`、`IsEnabled` 和 loading；`StyleVariant` 与 effective status 的组合视觉由 SearchEdit owner theme 投射。
+- 搜索按钮必须接收 SearchEdit 的 `SizeType`、`IsEnabled` 和 loading；`StyleVariant` 与 `EffectiveStatus` 的组合视觉由 shared frame theme 投射。
 - 搜索按钮必须保持 public Button 类型；不得重新引入借用 LineEdit 或 Button identity 的 internal SearchButton。
-- `SearchButtonTheme` 必须继续作为强类型 Semantic Part Theme，并允许实例级替换。
+- `SearchButtonTheme` 必须继续作为强类型 Semantic Part Theme，并允许实例级替换；其状态色只能消费 frame 投射的有效状态，不得成为 validation owner。
 - 搜索按钮右侧外部 AddOn 位置不可被用户内容替代。
 - `InnerRightContent`、clear、reveal 和文本 presenter 的绑定仍由 LineEdit 模板路径维护。
 - AutoCompleteSearchEdit 复用 SearchEdit 视觉时不能绕过 SearchEdit 搜索按钮契约。

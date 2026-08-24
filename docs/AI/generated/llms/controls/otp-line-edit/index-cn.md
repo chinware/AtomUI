@@ -63,7 +63,7 @@ OtpLineEdit 的公共 API 以文本值、长度、输入约束、显示辅助和
 | --- | --- |
 | `SizeType` | 输入尺寸密度，类型为 `CustomizableSizeType`。 |
 | `StyleVariant` | 输入表面样式，复用 `InputControlStyleVariant`。 |
-| `Status` | 手动输入反馈状态；native validation error 以 `DataValidationErrors` 为最高优先级。 |
+| `Status` | 显式输入反馈状态；最终视觉由 `InputControlFrame.EffectiveStatus` 计算，native validation error 以 `DataValidationErrors` 为唯一真源。 |
 | `Separator` | 分隔符内容，仅参与视觉展示，不进入 `Text`。 |
 | `SeparatorInterval` | 分隔符间隔，例如 `3` 表示 `123-456`。 |
 | `SeparatorTemplate` | 分隔符内容模板。 |
@@ -116,7 +116,10 @@ OtpLineEdit 的交互优先级：
 Disabled
 > ReadOnly
 > Native Error
-> Warning / Manual Error
+> Form Error
+> Form Warning
+> Explicit Warning
+> Explicit Error
 > Focus
 > PointerOver
 > Normal
@@ -171,27 +174,27 @@ OtpLineEdit 使用“根输入控件 + cell presenter + separator + action 区�
 
 - `SizeType` 控制 cell 高度、宽度、字号和间距。
 - `StyleVariant` 与 `LineEdit` 保持一致，支持 `Outlined`、`Filled`、`Borderless` 和 `Underlined` 四种输入表面；`Filled` 使用填充背景，`Borderless` 移除边框，`Underlined` 只保留下边线。
-- `Status` 只作为无 native error 时的手动状态请求。
+- `Status` 形成 `ExplicitStatus`，在无 native error 且无更高优先级 Form 状态时参与有效状态计算。
 - `DataValidationErrors.HasErrors=true` 时，根控件和所有 cell 呈现 error 视觉。
 - `IsMasked=true` 只改变字符展示，不改变 `Text`、复制、Form 值或 Completed 事件。
 - `Separator` 只占据视觉布局位置，不参与输入、复制、验证或长度计算。
 
-`OtpLineEditToken` 定义 cell 宽度、cell 间距和 separator 间距。边框、背景、focus shadow、disabled、error、warning 等输入表面语义优先复用 SharedToken、AddOnDecoratedBoxToken 与 LineEdit 输入家族 Token。
+`OtpLineEditToken` 定义 cell 宽度和 cell 间距。separator 的默认外边距属于模板布局常量；边框、背景、focus shadow、disabled、error、warning 等输入表面语义由 `InputControlFrameTheme` 与 SharedToken 统一提供，cell 文本字号复用 SharedToken 的输入字号。
 
 Token 来源：
 
-OtpLineEdit 使用 `OtpLineEditToken` 表达 OTP 分格输入的专属布局语义。它只定义 cell 宽度、cell 间距和 separator 间距，不承载验证码文本、active cell、mask、placeholder、Form 状态、validation error、focus、hover、pressed 或 disabled 等运行时状态。
+OtpLineEdit 使用 `OtpLineEditToken` 表达 OTP 分格输入的专属布局语义。它只定义 cell 宽度和 cell 间距，不承载验证码文本、separator 内容、active cell、mask、placeholder、Form 状态、validation error、focus、hover、pressed 或 disabled 等运行时状态。
 
-输入表面的颜色、边框、背景、focus shadow、disabled、error 和 warning 语义优先复用 SharedToken、AddOnDecoratedBoxToken 和 LineEdit 输入家族主题资源。OtpLineEditToken 不复制这些已有输入体系 Token。
+输入表面的颜色、边框、背景、focus shadow、disabled、error 和 warning 语义统一复用 `InputControlFrameTheme` 和 SharedToken。OtpLineEditToken 不复制这些已有输入体系 Token。
 
 ## AOT 与裁剪注意事项
 
 资源和生命周期边界：
 
 - 动态生成 cell 是 `Length` 驱动的控件内部结构，必须由 owner 管理创建、复用和释放。
-- cell 事件订阅必须以 owner 为释放点，模板重建和 detach 都要释放。
+- cell 输入由根控件 routed input 处理，不为每个 cell 建立 owner 外部订阅。
 - clear button click 订阅必须在新模板接入前解绑旧按钮。
-- Form feedback subscription 必须在 feedback 对象变化和 detach 时释放。
+- Form feedback subscription 必须在 feedback 对象变化和 logical detach 时释放，并在 logical attach 时重新建立。
 - separator context 不持有 owner 强引用，避免模板内容长期保留控件实例。
 
 性能边界：
@@ -213,11 +216,9 @@ AOT 边界：
 主要源码：
 
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEdit.cs`：公共 API、Avalonia 属性注册、事件、Form 接口、状态入口和模板生命周期。
-- `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEdit.Input.cs`：键盘、文本输入、粘贴、删除、导航和 completed 检查。
-- `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEdit.Value.cs`：`Text` 归一化、`Length` 裁剪、formatter、input mode filter 和 cell projection。
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEditCell.cs`：内部 cell 控件，承载单字符显示、placeholder、active、mask 和事件回调。
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEditSeparatorContext.cs`：separator 模板上下文，提供前后 cell index 和 display index。
-- `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEditToken.cs`：cell 宽度、cell 间距和 separator 间距 Token。
+- `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEditToken.cs`：cell 宽度和 cell 间距 Token。
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/Themes/OtpLineEditTheme.axaml`：根模板、cell host、清除按钮和 feedback 区。
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/Themes/OtpLineEditCellTheme.axaml`：cell 的字符显示、mask、placeholder、active/focus/error 状态。
 

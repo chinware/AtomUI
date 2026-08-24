@@ -55,7 +55,7 @@ SearchEdit 专项 API：
 | `Text` / `PlaceholderText` | 搜索关键字和空文本提示。 |
 | `SizeType` | 输入尺寸密度，类型为 `CustomizableSizeType`。 |
 | `StyleVariant` | 输入表面样式。 |
-| `Status` | 手动输入反馈状态；native validation error 以 `DataValidationErrors` 为最高优先级。 |
+| `Status` | 显式输入反馈状态；最终视觉由 `InputControlFrame.EffectiveStatus` 计算，native validation error 以 `DataValidationErrors` 为唯一真源。 |
 | `IsAllowClear` / `ClearIcon` | 搜索文本清除入口。 |
 | `InnerLeftContent` / `InnerRightContent` | 输入框内部前后缀内容。 |
 | `LeftAddOn` / `LeftAddOnTemplate` | 输入框左侧外部附加内容。 |
@@ -67,7 +67,7 @@ SearchEdit 的右侧外部 add-on 位置由搜索按钮占用。维护时不应�
 
 | Template Part | 类型 | 所属主题 | 职责 |
 | --- | --- | --- | --- |
-| `PART_AddOnDecoratedBox` | `SearchEditDecoratedBox` | `SearchEditTheme.axaml` | 搜索输入壳体、状态、Addon、CompactSpace 和搜索按钮协作入口。 |
+| `PART_InputControlFrame` | `SearchEditDecoratedBox` | `SearchEditTheme.axaml` | 输入表面、effective status、CompactSpace 和搜索按钮组合入口；具体 decorated box 只扩展搜索布局。 |
 | `PART_RightAddOn` | `Button` | `SearchEditDecoratedBoxTheme.axaml` | public Button 语义部件，承载图标、文字、loading、按钮样式和点击事件。 |
 | `PART_ContentFrame` | `Border` | `SearchEditDecoratedBoxTheme.axaml` | 文本输入框视觉边框和背景。 |
 | `PART_ScrollViewer` | `ScrollViewer` | `SearchEditTheme.axaml` | 文本滚动区域。 |
@@ -120,14 +120,18 @@ if !IsOperating raise SearchRequested
 
 ```text
 Disabled
+> Native Error
+> Form Error
+> Form Warning
+> Explicit Warning
+> Explicit Error
 > Searching button loading
-> Error / Warning
 > Focus
 > PointerOver / Pressed
 > Normal
 ```
 
-`IsEnabled=false` 会传递给搜索按钮，使输入壳体和按钮一起进入 disabled 视觉。native validation error 通过 `DataValidationErrors` 优先影响输入框边框、文本前景和搜索按钮状态色；`Status=Warning` 继续表达 AtomUI warning 视觉，显式 `Status=Error` 只作为无 native error 时的手动错误视觉请求。`SearchButtonStyle` 只控制按钮强调度，不改变文本编辑、清除、Form 或搜索事件语义。
+`IsEnabled=false` 会传递给搜索按钮，使 frame 和按钮一起进入 disabled 视觉。`DataValidationErrors`、Form warning/status 和用户 `Status` 分别通过 frame 的 native validation、`FormStatus` 和 `Status` 输入参与 `EffectiveStatus`；最终由 `InputControlFrame.EffectiveStatus` 按共享优先级投射到输入表面和搜索按钮。`SearchButtonStyle` 只控制按钮强调度，不改变文本编辑、清除、Form 或搜索事件语义。
 
 ## 主题与 Design Token
 
@@ -135,8 +139,9 @@ SearchEdit 使用三层主题协作：
 
 | 主题 | 职责 |
 | --- | --- |
-| `SearchEditTheme.axaml` | SearchEdit 根模板、文本 presenter、placeholder、clear/reveal/inner-right 内容、focus/status 视觉。 |
-| `SearchEditDecoratedBoxTheme.axaml` | 输入框内容边框、搜索按钮、左右布局、搜索按钮 style 和 z-index 关系。 |
+| `SearchEditTheme.axaml` | SearchEdit 根模板、文本 presenter、placeholder、clear/reveal/inner-right 内容和 frame 组合。 |
+| `InputControlFrameTheme.axaml` | 输入表面 variant、effective status、边框、背景、focus/hover/pressed、disabled、CompactSpace 和 motion。 |
+| `SearchEditDecoratedBoxTheme.axaml` | 搜索按钮、左右布局、搜索按钮 style 和 z-index 关系；不重复实现 frame 状态 selector。 |
 | `SearchButtonTheme.axaml` | 搜索按钮在不同输入表面中的背景、前景和状态色。 |
 
 SearchEdit 拥有独立 `ControlTokenIdentity`，但不定义 Own Token。它继承 `LineEdit` 的行为并不意味着继承或借用
@@ -147,8 +152,8 @@ Token。合法但没有被当前主题直接或间接消费的 Global Token 可�
 
 | Token 来源 | 用途 |
 | --- | --- |
-| `SearchEditTokenResource` | 读取 SearchEdit Effective Global Token，负责输入与搜索按钮组合语义，例如 focus shadow、主色和输入状态背景。 |
-| `AddOnDecoratedBoxTokenResource` | 由 `SearchEditDecoratedBoxTheme` 的 BasedOn 主题显式读取输入壳体 Own/Effective Global Token。 |
+| `SearchEditTokenResource` | 读取 SearchEdit Effective Global Token，仅负责 SearchEdit 专属组合值；通用输入表面值由 frame theme 从 SharedToken 消费。 |
+| `InputControlFrameTheme` / `SharedTokenResource` | 负责输入表面边框、背景、圆角、focus shadow、状态色、disabled 和 CompactSpace；不由 SearchEditDecoratedBox 重复实现。 |
 | `ButtonTokenResource` | 由真实 Button 和 `SearchButtonTheme` 显式读取 Button Own/Effective Global Token，负责按钮基础视觉。 |
 | `SharedTokenResource` | 读取真正的 Global Token，只用于不响应 SearchEdit Control 级覆盖的共享值。 |
 
@@ -173,7 +178,7 @@ SearchEdit 不依赖运行时反射发现模板结构。跨模板协作使用固
 - 搜索按钮高度同步使用 XAML binding，不在布局过程中写本地 `Height` 值。
 - 搜索按钮状态不创建异步任务；业务异步状态由外部设置 `IsOperating`。
 - SearchEdit 有独立 Control identity、没有 Own Token；运行时状态不得进入 Token schema。
-- `SearchEditTokenResource` 读取 SearchEdit Effective Global Token；Button 基础视觉继续显式读取 `ButtonTokenResource`。
+- `SearchEditTokenResource` 只读取 SearchEdit 专属组合值；`InputControlFrameTheme` 读取 SharedToken 表达通用输入表面，Button 基础视觉继续显式读取 `ButtonTokenResource`。
 
 AOT 边界：
 

@@ -99,7 +99,7 @@ public event EventHandler<MasonryLayoutChangedEventArgs>? LayoutChanged;
 
 ### {gallery:MasonryShowCaseLangResource BasicTitle}
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml:41`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml:40`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -123,22 +123,23 @@ Gallery key：`ExamplesContent` / item `0`
                            HorizontalAlignment="Stretch"
                            IsVisible="{Binding IsSpecial}">
                     <atom:Card.Cover>
-                        <Panel MinHeight="210"
-                               Loaded="HandleImageSkeletonLoaded"
-                               ClipToBounds="True">
-                            <Image Name="SpecialCoverImage"
-                                   asyncImageLoader:ImageLoader.Source="{Binding CoverSource}"
-                                   Stretch="UniformToFill" />
-                            <Border Name="SpecialCoverSkeleton"
-                                    Padding="16,16">
-                                <atom:Skeleton IsLoading="True"
-                                               IsActive="True"
-                                               IsShowAvatar="False"
-                                               IsShowTitle="True"
-                                               ParagraphRows="3"
-                                               IsRound="True" />
-                            </Border>
-                        </Panel>
+                        <atom:AsyncImage Name="SpecialCoverImage"
+                                         Source="{Binding CoverSource}"
+                                         MinHeight="210"
+                                         ClipToBounds="True"
+                                         Stretch="UniformToFill">
+                            <atom:AsyncImage.LoadingContent>
+                                <Border Name="SpecialCoverSkeleton"
+                                        Padding="16,16">
+                                    <atom:Skeleton IsLoading="True"
+                                                   IsActive="True"
+                                                   IsShowAvatar="False"
+                                                   IsShowTitle="True"
+                                                   ParagraphRows="3"
+                                                   IsRound="True" />
+                                </Border>
+                            </atom:AsyncImage.LoadingContent>
+                        </atom:AsyncImage>
                     </atom:Card.Cover>
                     <atom:CardMetaContent Header="{Binding Title}"
                                           Content="{Binding Description}" />
@@ -186,23 +187,24 @@ Gallery key：`ExamplesContent` / item `2`
               HorizontalAlignment="Stretch">
     <atom:Masonry.ItemTemplate>
         <DataTemplate x:DataType="vm:MasonryImageItem">
-            <Panel ClipToBounds="True"
-                   Loaded="HandleImageSkeletonLoaded">
-                <Image Name="MasonryImage"
-                       asyncImageLoader:ImageLoader.Source="{Binding ImageSource}"
-                       Stretch="Uniform"
-                       HorizontalAlignment="Stretch" />
-                <Border Name="MasonryImageSkeleton"
-                        MinHeight="210"
-                        Padding="16,16">
-                    <atom:Skeleton IsLoading="True"
-                                   IsActive="True"
-                                   IsShowAvatar="False"
-                                   IsShowTitle="True"
-                                   ParagraphRows="3"
-                                   IsRound="True" />
-                </Border>
-            </Panel>
+            <atom:AsyncImage Name="MasonryImage"
+                             Source="{Binding ImageSource}"
+                             ClipToBounds="True"
+                             Stretch="Uniform"
+                             HorizontalAlignment="Stretch">
+                <atom:AsyncImage.LoadingContent>
+                    <Border Name="MasonryImageSkeleton"
+                            MinHeight="210"
+                            Padding="16,16">
+                        <atom:Skeleton IsLoading="True"
+                                       IsActive="True"
+                                       IsShowAvatar="False"
+                                       IsShowTitle="True"
+                                       ParagraphRows="3"
+                                       IsRound="True" />
+                    </Border>
+                </atom:AsyncImage.LoadingContent>
+            </atom:AsyncImage>
         </DataTemplate>
     </atom:Masonry.ItemTemplate>
 </atom:Masonry>

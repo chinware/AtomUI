@@ -14,6 +14,8 @@ public enum AvatarShowCaseLangResourceKind
     BasicDescription,
     TypeTitle,
     TypeDescription,
+    NetworkImageTitle,
+    NetworkImageDescription,
     AutoSetFontSizeTitle,
     AutoSetFontSizeDescription,
     AvatarGroupTitle,

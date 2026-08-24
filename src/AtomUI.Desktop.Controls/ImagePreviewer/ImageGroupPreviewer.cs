@@ -33,11 +33,6 @@ public class ImageGroupPreviewer : AbstractImagePreviewer
     {
     }
 
-    internal ImageGroupPreviewer(IImageSourceLoader imageSourceLoader)
-        : base(imageSourceLoader)
-    {
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -89,9 +84,25 @@ public class ImageGroupPreviewer : AbstractImagePreviewer
             return;
         }
 
+        var scaling = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1;
+        var width = Quantize(CoverWidth * scaling);
+        var height = Quantize(CoverHeight * scaling);
+        if (width == 0 && height == 0)
+        {
+            return;
+        }
         foreach (var item in effectiveItems)
         {
-            RequestItemLoad(item, ImagePreviewLoadPriority.Cover);
+            RequestThumbnailLoad(item, width, height, AtomUI.Controls.ImageRequestPriority.High);
         }
+    }
+
+    private static int Quantize(double value)
+    {
+        if (!double.IsFinite(value) || value <= 0)
+        {
+            return 0;
+        }
+        return checked((int)(Math.Ceiling(value / 16) * 16));
     }
 }

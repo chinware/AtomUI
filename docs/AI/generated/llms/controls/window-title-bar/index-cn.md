@@ -12,7 +12,7 @@
 - 自动发现最近的 AtomUI `Window`，接收平台、激活状态、窗口状态和操作命令，并投影为稳定的模板状态。
 - 在不同平台和窗口装饰模式下保持标题、原生按钮、managed buttons 与 add-on 互不覆盖。
 
-`WindowTitleBar` 不是通用工具栏或导航栏。业务操作应放入 `LeftAddOn`、`RightAddOn` 或专用控件，并保留标题栏拖动区域和系统窗口操作的优先级。
+`WindowTitleBar` 不是通用工具栏或导航栏。业务操作应放入 `LeftAddOn`、`RightAddOn` 或专用控件，并保留标题栏拖动区域和系统窗口操作的优先级。需要复用 AtomUI managed caption visual 的业务按钮使用 `WindowTitleBarButton` 或 `WindowTitleBarToggleButton`；这两个控件不承载系统窗口操作。
 
 ## 包与命名空间
 
@@ -42,10 +42,12 @@
 | 类型 | 可见性 | 职责 |
 | --- | --- | --- |
 | `WindowTitleBar` | public | 公共内容契约、宿主状态投影、交互入口和主题入口。 |
+| `WindowTitleBarButton` | public | 在 LeftAddOn/RightAddOn 中提供与 managed caption visual 一致的普通图标按钮。 |
+| `WindowTitleBarToggleButton` | public | 在 LeftAddOn/RightAddOn 中提供与 managed caption visual 一致的 checked/unchecked 图标按钮。 |
 | `WindowTitleBarLogoVisibility` | public | 定义 Logo 的显示策略。 |
 | `WindowTitleBarTitleAlignment` | public | 定义标题组的跨平台对齐语义。 |
 | `CaptionButtonGroup` | internal | 根据宿主投影的能力、requested visibility 和窗口状态推导 effective visibility，并把固定窗口操作转发给宿主命令。 |
-| `CaptionButton` | internal | 承载 caption icon、checked icon 和按钮视觉状态。 |
+| `CaptionButton` | internal | 承载系统 caption icon、checked icon 和按钮视觉状态。 |
 | `WindowsCaptionButton` | internal | 提供 Windows 方形 caption button 尺寸和 hover 状态修正。 |
 
 internal 类型服务于 AtomUI 内置主题，不属于应用可直接创建或继承的公共控件 API。
@@ -76,6 +78,11 @@ internal 类型服务于 AtomUI 内置主题，不属于应用可直接创建或
 
 Add-on 可以包含可交互控件，也可以是 `null`、隐藏节点或当前没有孩子的容器。内置模板必须保留其命中测试能力，同时避免 Title 覆盖这些区域。Windows/Linux 仅在 `PART_Logo` 与 `PART_LeftAddOn` 两个 presenter 同时可见时产生 `LogoAndLeftAddOnSpacing`；Logo 隐藏、LeftAddOn 为 `null` 或 presenter 不可见时不保留该间距。该条件遵循 Avalonia sibling layout 的可见性语义，不根据子内容的实测宽度建立第二套状态。Leading 或 Trailing 的实测宽度为零时，该区域不占用标题安全空间，也不产生 `HeaderHorizontalSpacing`；内容出现、隐藏或动态替换后由正常 measure invalidation 重新计算。
 
+需要与标题栏 managed caption visual 保持一致的应用操作，可以直接使用 `WindowTitleBarButton` 或
+`WindowTitleBarToggleButton`。前者继承 `IconButton`，使用 `Icon`、`Command` 和标准按钮输入语义；后者继承
+`ToggleIconButton`，使用 `CheckedIcon`、`UnCheckedIcon`、`IsChecked` 和标准 ToggleButton 输入语义。两个控件的
+业务命令、启用状态和 checked 状态仍由应用所有，不映射到 Window 的系统操作。
+
 ### 3.3 宿主状态
 
 | API | 语义 |
@@ -97,6 +104,7 @@ Add-on 可以包含可交互控件，也可以是 `null`、隐藏节点或当前
 
 ## 事件与命令
 
+业务命令、启用状态和 checked 状态仍由应用所有，不映射到 Window 的系统操作。
 ### 3.4 交互事件
 事件在对应的 `PointerReleased` 阶段发出，避免窗口同步 resize 破坏当前 pointer capture。pointer capture 丢失或释放条件不匹配时，请求被取消。
 
@@ -229,6 +237,9 @@ src/AtomUI.Desktop.Controls/
 │       └── FullscreenPopoverLayerTheme.axaml
 ├── WindowTitleBar/
 │   ├── WindowTitleBar.cs
+│   ├── WindowTitleBarButton.cs
+│   ├── WindowTitleBarToggleButton.cs
+│   ├── WindowTitleBarHostContext.cs
 │   ├── WindowTitleBarLogoVisibility.cs
 │   ├── WindowTitleBarTitleAlignment.cs
 │   ├── WindowTitleBarLayoutPanel.cs
@@ -243,6 +254,8 @@ src/AtomUI.Desktop.Controls/
 │   │   └── LinuxWindowTitleBarLayoutStrategy.cs
 │   └── Themes/
 │       ├── WindowTitleBarTheme.axaml
+│       ├── WindowTitleBarButtonTheme.axaml
+│       ├── WindowTitleBarToggleButtonTheme.axaml
 │       ├── CaptionButtonGroupTheme.axaml
 │       ├── CaptionButtonTheme.axaml
 │       └── WindowsCaptionButtonTheme.axaml

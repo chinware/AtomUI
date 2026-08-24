@@ -11,6 +11,7 @@ using Avalonia.Input.TextInput;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -174,10 +175,11 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
     #region 动画相关字段
 
-    private bool _isClosingAnimating;
-    private bool _isPlayingCloseMotion;
+    private MotionExecutionState _closeMotionState;
+    private bool _isLogicallyAttachedAtOpen;
     private CancellationTokenSource? _motionCts;
     private PopupMotionActor? _motionActor;
+    private TopLevel? _openTopLevel;
 
     #endregion
 
@@ -199,6 +201,11 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
     private void HandlePopupOpened(object? sender, EventArgs e)
     {
+        _isLogicallyAttachedAtOpen = ((ILogical)this).IsAttachedToLogicalTree;
+        _openTopLevel = ResolvePlacementTarget() is { } target
+            ? TopLevel.GetTopLevel(target)
+            : null;
+        _closeMotionState = MotionExecutionState.Idle;
         AttachWheelGuard();
         UpdatePlacementTransformTracker();
         CancelMotion();
@@ -226,6 +233,10 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     private void HandlePopupClosed(object? sender, EventArgs e)
     {
         CancelMotion();
+        _closeMotionState             = MotionExecutionState.Idle;
+        _isLogicallyAttachedAtOpen    = false;
+        _motionActor                  = null;
+        _openTopLevel                 = null;
         ClearPlacementTransformTracker();
         DetachWheelGuard();
     }
@@ -239,20 +250,28 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
     private void HandlePopupClosing(object? sender, CancelEventArgs e)
     {
-        if (_isClosingAnimating)
+        if (_closeMotionState == MotionExecutionState.Completing)
         {
-            _isClosingAnimating = false;
-            _motionActor        = null;
+            _closeMotionState = MotionExecutionState.Idle;
             return;
         }
 
-        if (!IsMotionEnabled || CloseMotion is null || _motionActor is null)
+        if (!CanDelayCloseForMotion() ||
+            !IsMotionEnabled ||
+            CloseMotion is not { } closeMotion ||
+            _motionActor is not { } motionActor)
         {
             return;
         }
 
         e.Cancel = true;
-        Dispatcher.InvokeAsync(() => PlayCloseMotionAndCloseAsync(_motionActor));
+        if (_closeMotionState != MotionExecutionState.Idle)
+        {
+            return;
+        }
+
+        _closeMotionState = MotionExecutionState.Pending;
+        Dispatcher.InvokeAsync(() => PlayCloseMotionAndCloseAsync(motionActor, closeMotion));
     }
 
     private async Task PlayMotionAsync(AbstractMotion motion, BaseMotionActor actor, CancellationToken cancellationToken)
@@ -267,45 +286,96 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         }
     }
 
-    private async Task PlayCloseMotionAndCloseAsync(BaseMotionActor actor)
+    private async Task PlayCloseMotionAndCloseAsync(BaseMotionActor actor, AbstractMotion motion)
     {
-        if (_motionCts != null)
+        if (_closeMotionState != MotionExecutionState.Pending)
         {
-            await _motionCts.CancelAsync();
+            return;
         }
 
-        _isPlayingCloseMotion = true;
-        _motionCts            = new CancellationTokenSource();
+        if (_motionCts is { } previousMotionCts)
+        {
+            await previousMotionCts.CancelAsync();
+            previousMotionCts.Dispose();
+            if (ReferenceEquals(_motionCts, previousMotionCts))
+            {
+                _motionCts = null;
+            }
+        }
 
-        var motion = CloseMotion!;
+        if (_closeMotionState != MotionExecutionState.Pending)
+        {
+            return;
+        }
+
+        var closeMotionCts = new CancellationTokenSource();
+        _motionCts         = closeMotionCts;
+        _closeMotionState  = MotionExecutionState.Playing;
         motion.Duration = MotionDuration;
 
         try
         {
-            await motion.RunAsync(actor, cancellationToken: _motionCts.Token);
+            await motion.RunAsync(actor, cancellationToken: closeMotionCts.Token);
         }
         catch (OperationCanceledException)
         {
-            _isPlayingCloseMotion = false;
+            if (_closeMotionState == MotionExecutionState.Playing)
+            {
+                _closeMotionState = MotionExecutionState.Idle;
+            }
+            return;
+        }
+        finally
+        {
+            if (ReferenceEquals(_motionCts, closeMotionCts))
+            {
+                _motionCts = null;
+                closeMotionCts.Dispose();
+            }
+        }
+
+        if (_closeMotionState != MotionExecutionState.Playing)
+        {
             return;
         }
 
-        _isPlayingCloseMotion = false;
-        _isClosingAnimating   = true;
+        _closeMotionState = MotionExecutionState.Completing;
         Dispatcher.Post(Close);
+    }
+
+    private bool CanDelayCloseForMotion()
+    {
+        if (_openTopLevel is null ||
+            (_isLogicallyAttachedAtOpen && !((ILogical)this).IsAttachedToLogicalTree))
+        {
+            return false;
+        }
+
+        var target = ResolvePlacementTarget();
+        return target is not null &&
+               target.IsAttachedToVisualTree() &&
+               ReferenceEquals(TopLevel.GetTopLevel(target), _openTopLevel) &&
+               target.TransformToVisual(_openTopLevel) is not null;
+    }
+
+    private Control? ResolvePlacementTarget()
+    {
+        return PlacementTarget ?? this.FindLogicalAncestorOfType<Control>();
     }
 
     #endregion
 
-    internal bool IsPlayingCloseMotion => _isPlayingCloseMotion;
+    internal bool IsPlayingCloseMotion =>
+        _closeMotionState is MotionExecutionState.Pending or MotionExecutionState.Playing;
 
     internal void CancelCloseAnimation()
     {
-        if (!_isPlayingCloseMotion)
+        if (!IsPlayingCloseMotion)
         {
             return;
         }
 
+        _closeMotionState = MotionExecutionState.Idle;
         _motionCts?.Cancel();
         if (_motionActor is not null)
         {

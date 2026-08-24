@@ -1,0 +1,182 @@
+using System.Diagnostics;
+using Avalonia;
+
+namespace AtomUI.Controls;
+
+internal sealed class ImageLoader : IImageLoader, IAtomUIOwnedService
+{
+    private readonly ImageLoadingOptions _options;
+    private readonly ImageLoaderPipeline _pipeline;
+    private readonly CancellationTokenSource _rootCancellation = new();
+    private Application? _application;
+    private long _cacheHits;
+    private long _cacheMisses;
+    private long _canceledLoads;
+    private long _failedLoads;
+    private int _disposed;
+
+    internal ImageLoader(
+        ImageLoadingOptions options,
+        IEnumerable<ImageCodec> codecs,
+        HttpMessageHandler? httpMessageHandler = null)
+    {
+        _options = options;
+        _pipeline = new ImageLoaderPipeline(options, codecs, httpMessageHandler);
+    }
+
+    internal bool IsDisposed => Volatile.Read(ref _disposed) != 0;
+
+    public ImageLoaderSnapshot Snapshot => new(
+        _pipeline.ActiveReads,
+        _pipeline.QueuedReads,
+        _pipeline.ActiveDecodes,
+        _pipeline.QueuedDecodes,
+        _pipeline.EncodedCacheEntries,
+        _pipeline.EncodedCacheBytes,
+        _pipeline.DecodedCacheEntries,
+        _pipeline.DecodedCacheBytes,
+        Interlocked.Read(ref _cacheHits),
+        Interlocked.Read(ref _cacheMisses),
+        Interlocked.Read(ref _canceledLoads),
+        Interlocked.Read(ref _failedLoads));
+
+    public event EventHandler<ImageLoaderEventArgs>? LoadEvent;
+
+    public async ValueTask<ImageLoadResult> LoadAsync(
+        ImageLoadRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ObjectDisposedException.ThrowIf(IsDisposed, this);
+        ArgumentNullException.ThrowIfNull(request);
+        var normalized = ImageCacheKey.Normalize(request, _options, forceReload: false);
+        var stopwatch = Stopwatch.StartNew();
+        RaiseEvent(ImageLoaderEventKind.Started, normalized.Source.Kind, ImageCacheSource.None, null, stopwatch.Elapsed);
+
+        using var timeoutCancellation = new CancellationTokenSource(normalized.Timeout);
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(
+            cancellationToken,
+            timeoutCancellation.Token,
+            _rootCancellation.Token);
+        try
+        {
+            var result = await _pipeline.LoadAsync(
+                normalized,
+                linked.Token).ConfigureAwait(false);
+            if (result.CacheSource is ImageCacheSource.DecodedMemory or ImageCacheSource.EncodedMemory or
+                ImageCacheSource.Persistent or ImageCacheSource.Revalidated)
+            {
+                Interlocked.Increment(ref _cacheHits);
+            }
+            else
+            {
+                Interlocked.Increment(ref _cacheMisses);
+            }
+            RaiseEvent(
+                result.CacheSource is ImageCacheSource.DecodedMemory or ImageCacheSource.EncodedMemory or
+                    ImageCacheSource.Persistent or ImageCacheSource.Revalidated
+                    ? ImageLoaderEventKind.CacheHit
+                    : ImageLoaderEventKind.Completed,
+                normalized.Source.Kind,
+                result.CacheSource,
+                null,
+                stopwatch.Elapsed);
+            return result;
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            Interlocked.Increment(ref _canceledLoads);
+            RaiseEvent(ImageLoaderEventKind.Canceled, normalized.Source.Kind, ImageCacheSource.None, null, stopwatch.Elapsed);
+            throw;
+        }
+        catch (OperationCanceledException) when (timeoutCancellation.IsCancellationRequested)
+        {
+            Interlocked.Increment(ref _failedLoads);
+            var error = new ImageLoadError(
+                ImageLoadErrorCode.Timeout,
+                "The image request timed out.",
+                SourceDisplayName: normalized.Source.DisplayName);
+            RaiseEvent(ImageLoaderEventKind.Failed, normalized.Source.Kind, ImageCacheSource.None, error.Code, stopwatch.Elapsed);
+            return new ImageLoadResult(error, normalized.Timing.Snapshot());
+        }
+        catch (OperationCanceledException) when (_rootCancellation.IsCancellationRequested)
+        {
+            throw new ObjectDisposedException(nameof(ImageLoader));
+        }
+        catch (ImageLoadFailureException exception)
+        {
+            Interlocked.Increment(ref _failedLoads);
+            RaiseEvent(
+                ImageLoaderEventKind.Failed,
+                normalized.Source.Kind,
+                ImageCacheSource.None,
+                exception.Error.Code,
+                stopwatch.Elapsed);
+            return new ImageLoadResult(exception.Error, normalized.Timing.Snapshot());
+        }
+    }
+
+    public ValueTask ClearCacheAsync(
+        ImageCacheClearRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ObjectDisposedException.ThrowIf(IsDisposed, this);
+        return _pipeline.ClearCacheAsync(request, cancellationToken);
+    }
+
+    public void Attach(Application application)
+    {
+        ObjectDisposedException.ThrowIf(IsDisposed, this);
+        ArgumentNullException.ThrowIfNull(application);
+        if (Interlocked.CompareExchange(ref _application, application, null) is not null)
+        {
+            throw new InvalidOperationException("Image loader is already attached to an Application.");
+        }
+        try
+        {
+            ImageLoaderStore.Attach(application, this);
+        }
+        catch
+        {
+            Interlocked.Exchange(ref _application, null);
+            throw;
+        }
+    }
+
+    public void Detach(Application application)
+    {
+        ArgumentNullException.ThrowIfNull(application);
+        if (!ReferenceEquals(Volatile.Read(ref _application), application))
+        {
+            return;
+        }
+        ImageLoaderStore.Detach(application, this);
+        Interlocked.CompareExchange(ref _application, null, application);
+    }
+
+    public void Dispose()
+    {
+        if (Interlocked.Exchange(ref _disposed, 1) != 0)
+        {
+            return;
+        }
+        var application = Interlocked.Exchange(ref _application, null);
+        if (application is not null)
+        {
+            ImageLoaderStore.Detach(application, this);
+        }
+        _rootCancellation.Cancel();
+        LoadEvent = null;
+        _pipeline.Dispose();
+        _rootCancellation.Dispose();
+    }
+
+    private void RaiseEvent(
+        ImageLoaderEventKind kind,
+        ImageLoadSourceKind sourceKind,
+        ImageCacheSource cacheSource,
+        ImageLoadErrorCode? errorCode,
+        TimeSpan elapsed)
+    {
+        LoadEvent?.Invoke(this, new ImageLoaderEventArgs(kind, sourceKind, cacheSource, errorCode, elapsed));
+    }
+}

@@ -5,14 +5,15 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
 internal class ImagePreviewerCover : ContentControl, IMotionAwareControl
 {
     #region 公共属性定义
-    public static readonly StyledProperty<LoadedImageSource?> ImageSourceProperty =
-        AvaloniaProperty.Register<ImagePreviewerCover, LoadedImageSource?>(nameof(ImageSource));
+    public static readonly StyledProperty<IImage?> ImageSourceProperty =
+        AvaloniaProperty.Register<ImagePreviewerCover, IImage?>(nameof(ImageSource));
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ImagePreviewerCover>();
@@ -38,7 +39,7 @@ internal class ImagePreviewerCover : ContentControl, IMotionAwareControl
     public static readonly StyledProperty<IDataTemplate?> ErrorContentTemplateProperty =
         AvaloniaProperty.Register<ImagePreviewerCover, IDataTemplate?>(nameof(ErrorContentTemplate));
     
-    public LoadedImageSource? ImageSource
+    public IImage? ImageSource
     {
         get => GetValue(ImageSourceProperty);
         set => SetValue(ImageSourceProperty, value);

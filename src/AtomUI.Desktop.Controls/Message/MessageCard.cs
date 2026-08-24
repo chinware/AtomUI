@@ -134,6 +134,7 @@ public class MessageCard : TemplatedControl, IMotionAwareControl
     #endregion
 
     private bool _isClosing;
+    private MotionExecutionState _closeMotionState;
     private BaseMotionActor? _motionActor;
     
     public MessageCard()
@@ -184,7 +185,7 @@ public class MessageCard : TemplatedControl, IMotionAwareControl
         {
             if (IsClosing)
             {
-                Dispatcher.InvokeAsync(ApplyHideMotionAsync);
+                ScheduleHideMotion();
             }
         }
     }
@@ -199,7 +200,7 @@ public class MessageCard : TemplatedControl, IMotionAwareControl
         }
         if (IsClosing)
         {
-            Dispatcher.InvokeAsync(ApplyHideMotionAsync, DispatcherPriority.Loaded);
+            ScheduleHideMotion(DispatcherPriority.Loaded);
         }
         else
         {
@@ -229,16 +230,58 @@ public class MessageCard : TemplatedControl, IMotionAwareControl
 
     private async Task ApplyHideMotionAsync()
     {
+        if (_closeMotionState != MotionExecutionState.Pending)
+        {
+            return;
+        }
+
+        _closeMotionState = MotionExecutionState.Playing;
         if (_motionActor is null || !IsMotionEnabled)
         {
-            IsClosed = true;
+            CompleteCloseMotion();
             return;
         }
 
         var motion =
             new MoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
         await motion.RunAsync(_motionActor);
-        IsClosed = true;
+        CompleteCloseMotion();
+    }
+
+    private void ScheduleHideMotion(DispatcherPriority? priority = null)
+    {
+        if (!IsClosing || IsClosed || _closeMotionState != MotionExecutionState.Idle)
+        {
+            return;
+        }
+
+        _closeMotionState = MotionExecutionState.Pending;
+        if (priority is { } dispatcherPriority)
+        {
+            Dispatcher.InvokeAsync(ApplyHideMotionAsync, dispatcherPriority);
+        }
+        else
+        {
+            Dispatcher.InvokeAsync(ApplyHideMotionAsync);
+        }
+    }
+
+    private void CompleteCloseMotion()
+    {
+        if (_closeMotionState != MotionExecutionState.Playing)
+        {
+            return;
+        }
+
+        _closeMotionState = MotionExecutionState.Completing;
+        try
+        {
+            IsClosed = true;
+        }
+        finally
+        {
+            _closeMotionState = MotionExecutionState.Idle;
+        }
     }
 
     private void UpdatePseudoClasses()

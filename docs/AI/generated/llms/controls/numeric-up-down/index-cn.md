@@ -70,7 +70,7 @@ AtomUI 输入扩展 API：
 | `SizeType` | `CustomizableSizeType` | 输入框尺寸密度；`Custom` 未显式覆盖时以 `Middle` 为视觉基线。 |
 | `IsCustomFontSize` | `bool` | 为 `true` 时内部 `TextBox` 不由 `SizeType` 字号样式覆盖 `FontSize`。 |
 | `StyleVariant` | `InputControlStyleVariant` | 输入表面样式。 |
-| `Status` | `InputControlStatus` | 手动输入反馈状态；native validation error 以 `DataValidationErrors` 为最高优先级。 |
+| `Status` | `InputControlStatus` | 显式输入反馈状态；最终视觉由 `InputControlFrame.EffectiveStatus` 计算，native validation error 以 `DataValidationErrors` 为唯一真源。 |
 | `IsAllowClear` | `bool` | 是否展示清除按钮。 |
 | `ClearIcon` | `PathIcon?` | 清除按钮图标。 |
 | `IsKeyboardEnabled` | `bool` | 是否允许方向键和 PageUp / PageDown 触发步进。 |
@@ -84,7 +84,7 @@ AtomUI 输入扩展 API：
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_Spinner` | `ButtonSpinner` | 输入壳体、外部 AddOn、内部前后缀、步进入口和 CompactSpace 状态承载。 |
+| `PART_Spinner` | `ButtonSpinner` | `InputControlFrame` / AddOnDecoratedBox 组合、外部 AddOn、内部前后缀、步进入口和 CompactSpace 布局承载。 |
 | `PART_TextBox` | `TextBox` | 文本输入、占位符、只读、数据校验和文本双向绑定。 |
 | `PART_ClearButton` | `InputClearIconButton` | 清除 `Value` 的内部按钮。 |
 | `PART_InnerRightContentPresenter` | `ContentPresenter` | 用户 `InnerRightContent` 的内部右侧内容承载。 |
@@ -228,7 +228,7 @@ NumericUpDown 采用按需模板模型。`Mode=Input` 使用默认输入框模�
 
 - `Mode=Input` 的默认模板不得预埋 spinner 模式左右按钮或无职责 wrapper；`ShowButtonSpinner=false` 时必须隐藏浮动 Handle。
 - `Mode=Spinner` 使用独立 `ControlTemplate`，不通过同一模板内两套视觉树加 `IsVisible` 切换实现；`ShowButtonSpinner=false` 时必须隐藏左右 action 段。
-- `ButtonSpinner` 是默认输入壳体边界，不应被普通 `Border` 或 `Grid` 包装替代。
+- `ButtonSpinner` 是默认输入组合边界，复用 `InputControlFrame` 的输入表面和有效状态，不应被普通 `Border` 或 `Grid` 包装替代。
 - `PART_TextBox` 的 `BorderThickness=0` 是为了避免内层 TextBox 与外层输入壳体重复绘制边框。
 - `PART_ClearButton` 与 `PART_InnerRightContentPresenter` 共用内部右侧 stack，必须保留顺序：清除按钮在用户内部右侧内容之前。
 - 浮动 Handle 由 `ButtonSpinnerDecoratedBox` 控制透明度和偏移，不应在 NumericUpDown 模板中动态创建或移除。
@@ -243,11 +243,11 @@ NumericUpDown 采用按需模板模型。`Mode=Input` 使用默认输入框模�
 | `ButtonSpinnerDecoratedBoxTheme.axaml` | 输入壳体、Addon、浮动 Handle 透明度和偏移。 |
 | `ButtonSpinnerHandleTheme.axaml` | Handle 背景、边框、图标尺寸和交互视觉。 |
 | `TextBoxTheme.axaml` | 文本编辑器、placeholder、disabled 文本色和内部文本 presenter。 |
-| `AddOnDecoratedBoxTheme.axaml` | 输入 variant、focus、hover、error、warning、disabled 外观。 |
+| `InputControlFrameTheme.axaml` | 输入 variant、effective status、focus、hover、pressed、error、warning、disabled 和 motion 外观。 |
 
 Token 来源：
 
-NumericUpDownToken 是 NumericUpDown 的控件级 Token scope。它继承 `ButtonSpinnerToken`，以独立 `NumericUpDown` scope 提供数值输入控件可消费的输入壳体、步进 Handle、字体和尺寸语义。
+NumericUpDownToken 是 NumericUpDown 的控件级 Token scope。它继承 `ButtonSpinnerToken`，以独立 `NumericUpDown` scope 提供步进 Handle、字体和尺寸语义；输入表面边框、背景、圆角、focus shadow、error/warning、disabled 和 motion 统一由 `InputControlFrameTheme` 与 `SharedToken` 提供。
 
 该设计使 NumericUpDown 能复用 ButtonSpinner 输入壳体体系，同时保留控件级 Token scope。生成的 `NumericUpDownTokenKind` 表达 NumericUpDown scope 下可展示和可覆盖的 Token；默认主题中的输入壳体和 Handle 仍通过 `ButtonSpinnerTokenResource` 消费共享 ButtonSpinner 语义值。
 
@@ -264,7 +264,7 @@ NumericUpDownToken 不承载以下状态：
 
 NumericUpDown 不通过反射访问 ButtonSpinner、TextBox 或 AddOnDecoratedBox 内部状态。跨控件协同通过公开属性、稳定 template part 和接口完成。
 
-`Mode=Input` 是默认路径，必须避免 spinner 模式额外节点和额外按钮事件订阅。共享视觉问题应修在 ButtonSpinner、TextBox 或 AddOnDecoratedBox 主题层；NumericUpDown 专用的 inline 按钮视觉应修在 NumericUpDownSpinnerTheme 中，不能在 NumericUpDown 主题中复制跨模板 selector。
+`Mode=Input` 是默认路径，必须避免 spinner 模式额外节点和额外按钮事件订阅。共享视觉问题应修在 `InputControlFrameTheme` 或 ButtonSpinner 布局主题层；NumericUpDown 专用的 inline 按钮视觉应修在 NumericUpDownSpinnerTheme 中，不能在 NumericUpDown 主题中复制跨模板 selector。
 
 Token 通过动态资源进入主题。NumericUpDown 不把实例状态、当前值、文本、按钮 enabled 状态或模板切换状态写入 Token。
 
@@ -280,7 +280,7 @@ Token 通过动态资源进入主题。NumericUpDown 不把实例状态、当前
 - `src/AtomUI.Desktop.Controls/NumericUpDown/Themes/NumericUpDownTheme.axaml`：输入模式和 spinner 模式外层模板、状态传递。
 - `src/AtomUI.Desktop.Controls/NumericUpDown/Themes/NumericUpDownSpinnerTheme.axaml`：NumericUpDownSpinner 的 inline 模板、分隔线、加减按钮和按钮状态视觉。
 - `src/AtomUI.Desktop.Controls/ButtonSpinner/ButtonSpinner.cs`：输入壳体和 spin 入口。
-- `src/AtomUI.Desktop.Controls/ButtonSpinner/ButtonSpinnerDecoratedBox.cs`：浮动 Handle、Addon、CompactSpace 和输入状态视觉。
+- `src/AtomUI.Desktop.Controls/ButtonSpinner/ButtonSpinnerDecoratedBox.cs`：在 shared frame 上扩展浮动 Handle、Addon、CompactSpace 和 spinner 布局。
 - `src/AtomUI.Desktop.Controls/ButtonSpinner/ButtonSpinnerHandle.cs`：Handle 按钮和上下箭头。
 - `src/AtomUI.Desktop.Controls/Input/TextBox.cs`：文本编辑器。
 - `src/AtomUI.Desktop.Controls/Input/InputClearIconButton.cs`：清除按钮。

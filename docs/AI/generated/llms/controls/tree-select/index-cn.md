@@ -82,7 +82,7 @@ TreeSelect 继承 `AbstractSelect` 的输入壳体、弹层、清除、状态、
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_AddOnDecoratedBox` | `TreeSelectAddOnDecoratedBox` | 输入壳体、Addon、variant、status、CompactSpace 和多选状态承载。 |
+| `PART_InputControlFrame` | `TreeSelectAddOnDecoratedBox` | `InputControlFrame` / AddOnDecoratedBox 组合、Addon、EffectiveStatus、CompactSpace 和多选布局承载。 |
 | `PART_SingleFilterInput` | `SelectFilterTextBox` | 单选模式结果显示和搜索输入。 |
 | `SelectedItemsBox` | `SelectTagAwareTextBox` | 多选和勾选模式已选 tag 展示。 |
 | `PART_SelectMaxCountIndicator` | `SelectMaxCountIndicator` | 最大选择数量提示。 |
@@ -176,25 +176,25 @@ Form value + MaxCount state
 
 ## 主题与 Design Token
 
-TreeSelect 的默认视觉由 TreeSelect 专属主题、Select 家族输入壳体、TreeView 和 PopupHost 协作完成。
+TreeSelect 的默认视觉由 TreeSelect 专属主题、`InputControlFrame` / Select 家族 AddOnDecoratedBox、TreeView 和 PopupHost 协作完成。
 
 | 主题或资源 | 职责 |
 | --- | --- |
 | `TreeSelectTheme.axaml` | 根模板、输入壳体、单选输入、多选结果区域、handle、popup 和基础 selector。 |
 | `SelectTagAwareTextBox` / `SelectTag` 主题 | 多选 tag 布局、高度、关闭按钮和禁用态。 |
 | `TreeView` / `TreeViewItem` 主题 | 树节点缩进、展开、勾选、图标、连线和过滤视觉。 |
-| `AddOnDecoratedBoxToken` | 输入壳体边框、圆角、状态、focus 和 CompactSpace 视觉。 |
+| `InputControlFrameTheme` / `SharedToken` | 输入壳体边框、圆角、effective status、focus 和 CompactSpace 视觉。 |
 | `PopupHostToken` | popup 阴影、圆角和 anchor margin。 |
 | `TreeSelectToken` | TreeSelect 候选弹层最小宽度。 |
 | `SelectToken` | TreeSelect 复用的 popup padding、多选 tag 和输入内容 padding。 |
 
 单选结果文本和多选 tag 的完整内容提示复用共享 `OverflowTip` attached behavior。主题通过 `IsShowOverflowTip`、`OverflowTipDelay` 和 `OverflowTipPlacement` 控制提示开关、延迟和位置，实际 tooltip 仅在文本视觉溢出时托管到 `ToolTip`。
 
-右侧 count、content add-on 和 handle 的稳定 template part 状态由 AXAML compiled ancestor binding 表达。C# 中只保留 AddOnDecoratedBox hover / pressed 到 SelectHandle 的 sibling 状态转发，因为该关系不是 templated parent 绑定，不能用 `TemplateBinding` 表达。
+右侧 count、content add-on 和 handle 的稳定 template part 状态由 AXAML compiled ancestor binding 表达。C# 中只保留 frame layout part 到 SelectHandle 的 hover / pressed sibling 状态转发，因为该关系不是 templated parent 绑定，不能用 `TemplateBinding` 表达；该转发不改变 `InputControlFrame` 对输入表面状态的唯一 ownership。
 
 Token 来源：
 
-TreeSelectToken 是 TreeSelect 的控件级 Token scope，目前只承载 TreeSelect 候选弹层的最小宽度下限。输入壳体的通用边框、圆角、状态色、focus ring、disabled 背景和 AddOn 结构来自 SharedToken、AddOnDecoratedBoxToken 和 PopupHostToken；多选 tag、popup padding 和输入内容 padding 复用 SelectToken。
+TreeSelectToken 是 TreeSelect 的控件级 Token scope，目前只承载 TreeSelect 候选弹层的最小宽度下限。输入表面的通用边框、圆角、effective status、focus ring、disabled 背景和 AddOn 结构来自 `InputControlFrameTheme`、SharedToken 和 PopupHostToken；多选 tag、popup padding 和输入内容 padding 复用 SelectToken。
 
 TreeSelectToken 不承载以下状态：
 
@@ -209,7 +209,7 @@ TreeSelect 不依赖运行时反射发现模板结构。模板协作通过固定
 
 资源和生命周期边界：
 
-- `_selectHandleInputStateBindings` 每次模板接入前释放旧绑定，仅持有 AddOnDecoratedBox → SelectHandle 的 hover / pressed sibling part 状态转发。
+- `_selectHandleInputStateBindings` 每次模板接入前释放旧绑定，仅持有 frame layout part → SelectHandle 的 hover / pressed sibling 状态转发，不承载输入表面状态归一。
 - `_treeView` 的事件订阅和 `ItemsSource` 必须在 `ClearPopupContent()` 中释放。
 - 懒创建的 `PopupFrame` 和 `TreeSelectTreeView` 必须设置 `TemplatedParent`，并在清理时置空。
 - `Items.CollectionChanged` 是控件实例持有自身集合的订阅，生命周期与控件实例一致。
@@ -227,7 +227,7 @@ AOT 边界：
 主要源码：
 
 - `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelect.cs`：public TreeSelect API、生命周期、弹层树懒创建、选择同步、过滤输入、Form 映射和私有算法。
-- `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelectAddOnDecoratedBox.cs`：TreeSelect 输入壳体内部状态，扩展 `AddOnDecoratedBox` 的多选和选择空状态。
+- `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelectAddOnDecoratedBox.cs`：TreeSelect 输入布局扩展，复用 `InputControlFrame` 并承载多选和选择空状态。
 - `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelectTreeView.cs`：TreeSelect 候选树，使用 TreeView 样式键并创建专用容器。
 - `src/AtomUI.Desktop.Controls/TreeSelect/TreeViewSelectTreeViewItem.cs`：候选树节点容器，承接最大选择数状态。
 - `src/AtomUI.Desktop.Controls/TreeSelect/Converters/*`：树节点显示转换辅助。

@@ -15,8 +15,8 @@ namespace AtomUI.Desktop.Controls;
 internal class ImagePreviewerOverlayHost : ContentControl,
                                            IMotionAwareControl
 {
-    public static readonly StyledProperty<IList<ImagePreviewItem>?> ItemsSourceProperty =
-        AvaloniaProperty.Register<ImagePreviewerOverlayHost, IList<ImagePreviewItem>?>(nameof(ItemsSource));
+    public static readonly StyledProperty<IList<ImagePreviewEntry>?> ItemsSourceProperty =
+        AvaloniaProperty.Register<ImagePreviewerOverlayHost, IList<ImagePreviewEntry>?>(nameof(ItemsSource));
 
     public static readonly StyledProperty<bool> IsImageMovableProperty =
         ImagePreviewer.IsImageMovableProperty.AddOwner<ImagePreviewerOverlayHost>();
@@ -59,7 +59,7 @@ internal class ImagePreviewerOverlayHost : ContentControl,
     public static readonly StyledProperty<Transform?> TransformProperty =
         AvaloniaProperty.Register<ImagePreviewerOverlayHost, Transform?>(nameof(Transform));
 
-    public IList<ImagePreviewItem>? ItemsSource
+    public IList<ImagePreviewEntry>? ItemsSource
     {
         get => GetValue(ItemsSourceProperty);
         set => SetValue(ItemsSourceProperty, value);
@@ -147,8 +147,8 @@ internal class ImagePreviewerOverlayHost : ContentControl,
 
     public TopLevel ParentTopLevel { get; }
 
-    internal static readonly DirectProperty<ImagePreviewerOverlayHost, LoadedImageSource?> CurrentImageProperty =
-        AvaloniaProperty.RegisterDirect<ImagePreviewerOverlayHost, LoadedImageSource?>(
+    internal static readonly DirectProperty<ImagePreviewerOverlayHost, IImage?> CurrentImageProperty =
+        AvaloniaProperty.RegisterDirect<ImagePreviewerOverlayHost, IImage?>(
             nameof(CurrentImage),
             o => o.CurrentImage,
             (o, v) => o.CurrentImage = v);
@@ -231,9 +231,9 @@ internal class ImagePreviewerOverlayHost : ContentControl,
             o => o.SuppressTransformAnimation,
             (o, v) => o.SuppressTransformAnimation = v);
 
-    private LoadedImageSource? _currentImage;
+    private IImage? _currentImage;
 
-    internal LoadedImageSource? CurrentImage
+    internal IImage? CurrentImage
     {
         get => _currentImage;
         set => SetAndRaise(CurrentImageProperty, ref _currentImage, value);
@@ -347,7 +347,7 @@ internal class ImagePreviewerOverlayHost : ContentControl,
 
     private readonly AbstractImagePreviewer _imagePreviewer;
     private readonly ImageViewer _imageViewer;
-    private ImagePreviewItem? _currentItem;
+    private ImagePreviewEntry? _currentItem;
     private IconButton? _closeButton;
     private ImageSwitchTransformPolicy _switchTransformPolicy = ImageSwitchTransformPolicy.CreateDefault();
 
@@ -563,7 +563,7 @@ internal class ImagePreviewerOverlayHost : ContentControl,
         return CurrentIndex;
     }
 
-    private void SetCurrentItem(ImagePreviewItem? item)
+    private void SetCurrentItem(ImagePreviewEntry? item)
     {
         if (ReferenceEquals(_currentItem, item))
         {
@@ -587,10 +587,10 @@ internal class ImagePreviewerOverlayHost : ContentControl,
 
     private void HandleCurrentItemPropertyChanged(object? sender, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == nameof(ImagePreviewItem.LoadedSource) ||
-            args.PropertyName == nameof(ImagePreviewItem.State) ||
-            args.PropertyName == nameof(ImagePreviewItem.IsLoading) ||
-            args.PropertyName == nameof(ImagePreviewItem.IsFailed))
+        if (args.PropertyName == nameof(ImagePreviewEntry.FullImage) ||
+            args.PropertyName == nameof(ImagePreviewEntry.FullState) ||
+            args.PropertyName == nameof(ImagePreviewEntry.IsFullLoading) ||
+            args.PropertyName == nameof(ImagePreviewEntry.IsFullFailed))
         {
             UpdateCurrentImageState();
         }
@@ -598,9 +598,9 @@ internal class ImagePreviewerOverlayHost : ContentControl,
 
     private void UpdateCurrentImageState()
     {
-        SetCurrentValue(CurrentImageProperty, _currentItem?.LoadedSource);
-        SetCurrentValue(IsCurrentImageLoadingProperty, _currentItem?.IsLoading == true);
-        SetCurrentValue(IsCurrentImageFailedProperty, _currentItem?.IsFailed == true);
+        SetCurrentValue(CurrentImageProperty, _currentItem?.FullImage);
+        SetCurrentValue(IsCurrentImageLoadingProperty, _currentItem?.IsFullLoading == true);
+        SetCurrentValue(IsCurrentImageFailedProperty, _currentItem?.IsFullFailed == true);
         UpdateScaleCapability();
     }
 

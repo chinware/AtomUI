@@ -25,6 +25,21 @@ builder.UseCommonControls();
 
 `UseDesktopControls()` 会先调用 `UseCommonControls()`，所以普通桌面应用无需单独调用本方法。
 
+## 图片加载职责
+
+`AtomUI.Controls` 拥有：
+
+- `AsyncImage` 通用异步显示控件及 Theme。
+- `ImageLoadController`，统一 `AsyncImage` 与 Avatar 的 generation、取消、fallback、progress、状态提交和结果租约。
+- Avatar 的 `Source`/`FallbackSource`/`RequestOptions` 统一 API，并删除 `Src`、`BitmapSrc` 和 proposed `BitmapUrl`。
+- 只匹配 `avares` Asset 的 trusted SVG codec，以及在 `UseCommonControls()` 中对该 codec 和 Shared image service 的显式注册。
+
+Controls 不拥有 HTTP、memory/file cache、全局 scheduler 或第二个 loader。`UseCommonControls()` 幂等地补齐
+Shared 默认图片注册并添加本包 SVG codec；`UseDesktopControls()` 继续通过 Common 得到同一个 application-scoped loader。
+准确 API 和生命周期只在 [统一图片加载系统](../../architecture/systems/image-loading/overview.md)及其
+[控件 API](../../architecture/systems/image-loading/control-apis.md)中定义；底层类型见
+[公共契约](../../architecture/systems/image-loading/public-contracts.md)。
+
 ## 关键目录
 
 | 目录 | 说明 |

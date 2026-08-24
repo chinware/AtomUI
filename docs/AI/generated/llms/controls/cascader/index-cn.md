@@ -116,7 +116,7 @@ Cascader 继承 `AbstractSelect` 的输入表面契约：
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_AddOnDecoratedBox` | `CascaderAddOnDecoratedBox` | 输入壳体、Addon、variant、status、CompactSpace、多选状态和 content padding 承载。 |
+| `PART_InputControlFrame` | `CascaderAddOnDecoratedBox` | `InputControlFrame` / AddOnDecoratedBox 组合、Addon、EffectiveStatus、CompactSpace、多选状态和 content padding 承载。 |
 | `PART_SingleFilterInput` | `SelectFilterTextBox` | 单选过滤输入，过滤启用时显示。 |
 | `SelectedOptionsBox` | `SelectTagAwareTextBox` | 多选结果 tag 展示和多选过滤输入承载。 |
 | `PART_SelectMaxCountIndicator` | `SelectMaxCountIndicator` | 最大选择数量提示。 |
@@ -132,7 +132,7 @@ Cascader 继承 `AbstractSelect` 的输入表面契约：
 稳定伪类来自 `AbstractSelect` 和 `CascaderViewItem`：
 
 - `:dropdownopen`、native validation `:error`、AtomUI warning `:warning`、`:pressed`。
-- AddOnDecoratedBox variant 伪类：`:outlined`、`:filled`、`:borderless`。
+- `InputControlFrame` variant 伪类：`:outlined`、`:filled`、`:borderless`、`:underlined`；Cascader 专用伪类只表达 dropdown、候选和结果状态。
 - `CascaderViewItem` 使用 `:expanded`、`:checked`、`:selected` 和 checkbox toggle type 伪类。
 
 ## 事件与命令
@@ -286,7 +286,7 @@ Form：
 
 ## 主题与 Design Token
 
-Cascader 的默认视觉由 Cascader 根主题、输入壳体、PopupHost、CascaderView、CascaderViewItem、SelectTagAwareTextBox、SelectHandle 和 CascaderToken 协作完成。
+Cascader 的默认视觉由 Cascader 根主题、`InputControlFrame` / CascaderAddOnDecoratedBox、PopupHost、CascaderView、CascaderViewItem、SelectTagAwareTextBox、SelectHandle 和 CascaderToken 协作完成。
 
 | 主题或资源 | 职责 |
 | --- | --- |
@@ -302,7 +302,7 @@ Cascader 的默认视觉由 Cascader 根主题、输入壳体、PopupHost、Casc
 
 主题不可破坏的视觉边界：
 
-- 输入壳体必须继续由 `CascaderAddOnDecoratedBox` 承载，保持 variant、status、CompactSpace 和 content padding 语义。
+- 输入表面必须继续由 `InputControlFrame` 承载；`CascaderAddOnDecoratedBox` 只扩展多选、dropdown 和 content padding 布局。
 - `PART_SelectHandle` 的 hover / pressed / dropdown open / clear / loading 状态必须与输入壳体保持同步。
 - `OptionTemplate` 的 DataContext 必须保持为 `ICascaderOption`，不能改为 header 文本。
 - Popup 宽度和空状态宽度匹配语义必须保持：普通级联列使用列宽，空状态需要匹配输入宽度。
@@ -339,7 +339,7 @@ Token 来源：
 - `src/AtomUI.Desktop.Controls/Cascader/CascaderViewItem.cs`：选项容器、checked / expanded / selected 事件、leaf 判断和绑定型选项同步。
 - `src/AtomUI.Desktop.Controls/Cascader/CascaderOption.cs`：`ICascaderOption`、默认轻量 `CascaderOption` 和层级 helper。
 - `src/AtomUI.Desktop.Controls/Cascader/BindableCascaderOption.cs`：绑定型选项模型，使用 scoped resource host generator。
-- `src/AtomUI.Desktop.Controls/Cascader/CascaderAddOnDecoratedBox.cs`：Cascader 输入壳体扩展。
+- `src/AtomUI.Desktop.Controls/Cascader/CascaderAddOnDecoratedBox.cs`：Cascader 输入布局扩展，复用 `InputControlFrame` 的输入表面状态。
 - `src/AtomUI.Desktop.Controls/Cascader/CascaderViewPanel.cs`：弹层 frame 布局与边框测量。
 - `src/AtomUI.Desktop.Controls/Cascader/CascaderViewFilterList.cs`、`CascaderViewFilterListItemData.cs`：过滤结果列表和路径数据。
 - `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`：共享溢出 tooltip attached behavior，供单选路径和多选 tag 复用。

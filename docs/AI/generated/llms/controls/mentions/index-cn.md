@@ -4,7 +4,7 @@
 
 ## 概述
 
-Mentions 是 AtomUI 桌面数据录入体系中的提及输入控件，用于在多行文本输入中识别触发前缀，展示候选项弹层，并把用户选择的候选项插入到文本中。它以 `TextArea` 为输入壳体，结合 `Popup`、`CandidateList`、同步/异步数据加载、过滤、Form 和 Token 体系，提供类似 `@user`、`#tag` 的文本提及体验。
+Mentions 是 AtomUI 桌面数据录入体系中的提及输入控件，用于在多行文本输入中识别触发前缀，展示候选项弹层，并把用户选择的候选项插入到文本中。它以 `TextArea` / `AbstractTextInput` 为逻辑输入层，以 `InputControlFrame` 为输入表面，结合 `Popup`、`CandidateList`、同步/异步数据加载、过滤、Form 和 Token 体系，提供类似 `@user`、`#tag` 的文本提及体验。
 
 Mentions 的职责是编辑单个字符串值，并在触发上下文中完成候选项选择和文本插入。它不负责远程服务协议、权限判断、富文本 token 渲染、结构化 mention 实体存储、消息发送或搜索结果管理。业务层需要保存结构化 mention 信息时，应在 `Value` 文本和业务数据之间建立自己的解析模型。
 
@@ -81,7 +81,7 @@ Mentions 的公共 API 由文本值、触发符、候选数据、过滤、弹层
 | --- | --- | --- |
 | `SizeType` | `CustomizableSizeType` | 输入尺寸密度。 |
 | `StyleVariant` | `InputControlStyleVariant` | 输入表面样式。 |
-| `Status` | `InputControlStatus` | 手动输入反馈状态；native validation error 以 `DataValidationErrors` 为最高优先级。 |
+| `Status` | `InputControlStatus` | 显式输入反馈状态；最终视觉由 `InputControlFrame.EffectiveStatus` 计算，native validation error 以 `DataValidationErrors` 为唯一真源。 |
 | `ContentLeftAddOn` / `ContentRightAddOn` | `object?` | 内部左右附加内容，传递给内部 `MentionTextArea`。 |
 | `ContentLeftAddOnTemplate` / `ContentRightAddOnTemplate` | `IDataTemplate?` | 内部左右附加内容模板。 |
 | `IsMotionEnabled` | `bool` | 内部输入壳体、候选列表和 popup 动效开关。 |
@@ -230,7 +230,7 @@ Disabled / invisible / window deactivated
 - `F4` 切换弹层打开状态。
 - 弹层关闭时，`Down` 可打开弹层，除非该按键被 XY focus 导航占用。
 
-Form 集成以 `Value` 作为表单值。`Value` 是用户拥有的受控文本值，默认双向绑定；错误校验状态通过 `DataValidationErrors` 投射到外层 AddOn 和内部 `MentionTextArea`；`NotifyValidateStatus` 只同步 warning、success、validating 等 Form 扩展状态。Form feedback 控件传递给内部 `MentionTextArea`。
+Form 集成以 `Value` 作为表单值。`Value` 是用户拥有的受控文本值，默认双向绑定；错误校验状态通过 `DataValidationErrors` 投射到 shared `InputControlFrame.EffectiveStatus`，驱动外层输入表面和内部 `MentionTextArea`；`NotifyValidateStatus` 只同步 warning、success、validating 等 Form 扩展状态。Form feedback 控件传递给内部 `MentionTextArea`。
 
 ## 主题与 Design Token
 
@@ -244,11 +244,11 @@ Mentions 的默认视觉由 `MentionsTheme.axaml` 和内部 TextArea 主题协�
 | `PopupHostToken` | popup 阴影、圆角和 anchor margin。 |
 | `MentionsToken` | popup 内容 padding、候选项高度和最小宽度。 |
 
-输入框本体不由 Mentions 自己重写边框和文本 presenter，而是通过内部 `MentionTextArea` 复用 TextArea 体系。Mentions 的控件级 Token 只服务候选弹层，不承载文本高度、输入边框、状态颜色或 Form feedback。
+输入框本体不由 Mentions 自己重写边框和文本 presenter，而是通过内部 `MentionTextArea` 复用 TextArea 的 `AbstractTextInput` 与 `InputControlFrame` 体系。Mentions 的控件级 Token 只服务候选弹层，不承载文本高度、输入边框、状态颜色或 Form feedback。
 
 Token 来源：
 
-MentionsToken 是 Mentions 的控件级 Token scope，只描述候选弹层的结构尺寸。输入框本体由内部 `MentionTextArea` 复用 TextArea / AddOnDecoratedBox / SharedToken 体系；候选列表项的选择、hover、disabled 和文本状态由 CandidateList 主题处理。
+MentionsToken 是 Mentions 的控件级 Token scope，只描述候选弹层的结构尺寸。输入框本体由内部 `MentionTextArea` 复用 TextArea / `AbstractTextInput` / `InputControlFrame` / SharedToken 体系；候选列表项的选择、hover、disabled 和文本状态由 CandidateList 主题处理。
 
 MentionsToken 不承载以下状态：
 

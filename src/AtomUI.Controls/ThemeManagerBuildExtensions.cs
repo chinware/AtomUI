@@ -9,6 +9,8 @@ internal static class ThemeManagerBuilderExtensions
     public static IAtomUIBuilder UseCommonControls(this IAtomUIBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
+        builder.UseImageLoading();
+        builder.AddImageCodec(static () => new AssetSvgImageCodec());
         GeneratedControlPackageRegistration.Register(
             builder.Theme,
             RuntimePlatform.Features.SupportsNativeWindow

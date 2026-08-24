@@ -6,12 +6,13 @@
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `ImagePreviewer` / `ImageGroupPreviewer` | 图片预览控件根语义区域，承载 public API、图片来源、当前项、封面索引和主题入口。 | `Source`、`Sources`、`FallbackSource`、`CurrentIndex`、`CoverIndex`、`IsOpen` | `ImagePreviewerToken` | stable |
-| `cover` | `ImagePreviewerCover` | 普通页面中的封面展示区域，承载 `CoverIndex` 对应图片、mask、loading 和 error 内容。 | `CoverIndex`、`CoverIndicatorContent`、`CoverWidth`、`CoverHeight`、`IsShowCoverMask`、`LoadingContent`、`ErrorContent` | `MaskBgColor`、`CoverImageWidth` | stable |
-| `viewer` | `ImageViewer` / `PART_ImageViewerScene` / `PART_ImageRenderer` | 预览宿主中的图片场景和渲染区域，承载缩放、旋转、翻转和拖拽坐标空间。 | `ImageScaleStep`、`ImageMinScale`、`ImageMaxScale`、`Stretch`、`Transform` | `DialogMinWidth`、`DialogMinHeight` | stable |
-| `title` | `ImagePreviewerTitleBar` / `PART_TitleLayout` / `PART_IconPresenter` | 预览窗口标题区域，承载 effective title 和显式标题图标。 | `PreviewTitle`、`PreviewTitleIcon`、`PreviewTitleResolver` | `TitleBarBackgroundColor`、`WindowTitleBarToken.LogoAndTitleSpacing` | template-stable |
-| `toolbar` | `ImagePreviewToolbar` / `ImagePreviewFloatToolbar` | 预览操作区域，承载上一张、下一张、缩放、fit-to-window、翻转和旋转动作。 | toolbar request events、`CurrentIndex`、`Count` | `ToolbarBoxShadow`、`ToolbarBgColor` | stable |
-| `host` | `ImagePreviewerDialog` / `ImagePreviewerOverlayHost` | 预览宿主区域，承载窗口化或 overlay 打开、关闭、modal、topmost 和释放语义。 | `IsOpen`、`IsDialogModal`、`IsDialogTopmost`、`IsModal` | `DialogMinWidth`、`DialogMinHeight` | internal-observable |
+| `root` | `AbstractImagePreviewer` | 归一 ItemsSource、current、open state、宿主与加载策略。 | `ItemsSource`、`CurrentIndex`、`IsOpen`、`PreloadCount` | SharedToken、ImagePreviewerToken | public |
+| `cover` | `ImagePreviewer` / `PART_CoverItemsControl` | 展示单封面或 group 缩略图及其 loading/error 状态。 | `CoverIndex`、cover size/state、`ItemsPanel` | Cover size、mask、radius Token | public/template-stable |
+| `host` | `ImagePreviewerDialog` / `ImagePreviewerOverlayHost` | 承载 Desktop window 或 Browser overlay。 | dialog、modal、topmost、title、motion API | Window、overlay、motion Token | internal-observable |
+| `viewer` | `ImageViewer` / `PART_ImageViewerScene` | 当前项导航、fit、拖拽、缩放和旋转。 | interaction、scale、CurrentIndex | Viewer background、toolbar Token | internal-observable |
+| `renderer` | `PART_ImageRenderer` | 只渲染 entry 已持有的 `IImage`。 | current load state | 无独立加载 Token | template-stable |
+| `loading` | `PART_LoadingPresenter` | 呈现 Skeleton 或 Spin，不拥有请求。 | LoadingContent/Template | Loading、Skeleton、Spin Token | template-stable |
+| `error` | `PART_ErrorPresenter` | 呈现最终失败内容，不改变状态机。 | ErrorContent/Template | Error semantic Token | template-stable |
 
 ## Abstract AXAML Structure
 
@@ -171,86 +172,101 @@ ImagePreviewer
 
 ## Template Parts
 
-| 契约组 | 代表成员 | 维护含义 |
-| --- | --- | --- |
-| 图片来源 | `Source`、`Sources`、`FallbackSource`、`IImagePreviewSource` | 统一表达单图、多图和失败兜底图片来源。`IImagePreviewSource` 是唯一来源契约，URI 场景通过 `UriImagePreviewSource` 显式进入来源集合，数据流场景通过 `StreamImagePreviewSource` 按需打开。 |
-| 内容与数据 | `CoverIndicatorContent`、`CoverIndicatorContentTemplate`、`LoadingContent`、`LoadingContentTemplate`、`ErrorContent`、`ErrorContentTemplate`、`ImageMaxScale`、`ImageMinScale`、`ImageScaleStep`、`ImageTranslateX`、`ImageTranslateY` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `Count`、`CurrentIndex` | 维护当前预览项、多图切换和集合状态；`CurrentIndex` 是控件级当前项索引，默认双向绑定，只决定打开预览后的当前图片。 |
-| 封面展示 | `CoverIndex` | 只决定关闭态 `ImagePreviewer` 封面显示哪一张来源图片。它不参与打开行为、导航行为或 `CurrentIndex` 同步。 |
-| 加载调度 | `MaxConcurrentLoads`、`PreloadCount` | 控制图片加载并发和打开预览后的邻近图片预加载窗口，避免大集合一次性加载全部图片。 |
-| 预览标题 | `PreviewTitle`、`PreviewTitleIcon`、`PreviewTitleResolver`、`IImagePreviewTitleResolver`、`ImagePreviewTitleResolveContext` | 定义预览宿主标题和标题图标契约。显式标题非空时优先显示；显式标题为空时由 resolver 基于 current effective item 解析标题；`PreviewTitleIcon` 使用 `PathIcon?`，只在显式设置时显示，不继承应用或主窗口图标。 |
-| 交互与状态 | `IsDialogModal`、`IsDialogTopmost`、`IsModal`、`IsMotionEnabled`、`IsOpen`、`IsShowCoverMask` | 表达用户可观察状态、可用性、清除、加载或反馈语义；`IsOpen` 默认双向绑定。 |
-| 视觉与布局 | `CoverHeight`、`CoverWidth` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
-| 其他稳定入口 | `MaxScale`、`MinScale`、`ScaleStep`、`Stretch`、`Transform` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `AbstractImagePreviewer` | 归一 ItemsSource、current、open state、宿主与加载策略。 | `ItemsSource`、`CurrentIndex`、`IsOpen`、`PreloadCount` | SharedToken、ImagePreviewerToken | public |
+| `cover` | `ImagePreviewer` / `PART_CoverItemsControl` | 展示单封面或 group 缩略图及其 loading/error 状态。 | `CoverIndex`、cover size/state、`ItemsPanel` | Cover size、mask、radius Token | public/template-stable |
+| `host` | `ImagePreviewerDialog` / `ImagePreviewerOverlayHost` | 承载 Desktop window 或 Browser overlay。 | dialog、modal、topmost、title、motion API | Window、overlay、motion Token | internal-observable |
+| `viewer` | `ImageViewer` / `PART_ImageViewerScene` | 当前项导航、fit、拖拽、缩放和旋转。 | interaction、scale、CurrentIndex | Viewer background、toolbar Token | internal-observable |
+| `renderer` | `PART_ImageRenderer` | 只渲染 entry 已持有的 `IImage`。 | current load state | 无独立加载 Token | template-stable |
+| `loading` | `PART_LoadingPresenter` | 呈现 Skeleton 或 Spin，不拥有请求。 | LoadingContent/Template | Loading、Skeleton、Spin Token | template-stable |
+| `error` | `PART_ErrorPresenter` | 呈现最终失败内容，不改变状态机。 | ErrorContent/Template | Error semantic Token | template-stable |
 
 ## Pseudo Classes
 
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | current item、open/close、image loading、loaded/failed、fallback、motion。 |
-| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | ImagePreviewer Token + ControlTheme。 |
+源文档未声明控件专属伪类。控件仍可能消费 Avalonia 标准状态，例如 `:pointerover`、`:pressed`、`:disabled` 和 focus 相关状态。
 
 ## State Flow
 
-ImagePreviewer 的状态流按以下路径收敛：
+### 4.1 集合与状态所有权
+
+`ItemsSource` 每次物化为控件内部的 `ImagePreviewEntry` 集合。entry 持有两个独立通道：
+
+| 通道 | 内容 | 状态与租约 |
+| --- | --- | --- |
+| Full | 预览完整图 | FullState/Error/Progress、generation、CTS、`ImageLoadResult` lease |
+| Thumbnail | 页面封面 | ThumbnailState/Error/Progress、generation、CTS、独立 lease |
+
+集合必须支持普通 enumerable replacement，以及 `INotifyCollectionChanged` 的 Add、Remove、Move、Replace 和 Reset。未变的
+immutable item 复用 entry 与已有租约；被移除或替换的 entry 立即取消并 dispose。控件 detach 期间解除集合订阅，reattach 时
+重新物化当前集合，补齐离线变更。
+
+当前项和封面都按显示索引 clamp。Clamp 只用于选择 entry，不能把外部 TwoWay `CurrentIndex` 写回为边界值。
+
+### 4.2 加载优先级与懒加载
+
+Previewer 使用应用级调度预算，优先级固定为：
+
+| 场景 | `ImageRequestPriority` |
+| --- | --- |
+| 当前完整图 | `Critical` |
+| 单封面或 group 缩略图 | `High` |
+| 邻近完整图预加载 | `Preload` |
+
+打开态加载当前完整图和 `PreloadCount` 邻近窗口；离开窗口的未完成 Full waiter 被取消。邻项按与 CurrentIndex 的距离从近到远
+提交。关闭宿主时释放所有 Full lease，再恢复关闭态封面请求；缩略图 lease 保留供页面封面继续显示。
+
+Previewer 不公开控件级最大并发数。下载/读取与解码并发、请求提升、两级去重、缓存和 waiter-local timeout 都由
+Application-scoped loader 统一控制。
+
+完整图解码目标来自 TopLevel ClientSize，封面目标来自 CoverWidth/CoverHeight 或实际 Bounds，均乘 render scaling 并向上量化
+到 16 px bucket。Full 与 Thumbnail 分别按物理像素 bucket 保持请求幂等；初始占位布局、最终 Arrange、窗口尺寸或 DPI 变化产生
+更合适的 bucket 时会保留当前图片并异步升级，成功后原子替换，避免把低分辨率封面长期放大。明确得到 0 x 0 时不发起无意义的
+封面请求；直接 loader 请求的显式非法目标由统一错误契约处理。
+
+### 4.3 Fallback、Reload 与事件
+
+Fallback 是每个 item 的局部策略，不是整个集合的替换策略。一个 item 失败不能删除其他 item、替换 ItemsSource 或改变
+CurrentIndex。Full 与 Thumbnail 通道分别按自己的来源顺序尝试 fallback。
+
+Reload 使用 item 的 RequestOptions 副本并把 `CacheMode` 改为 `Reload`：HTTP 使用条件重验证，File/Asset/Storage/Bytes/Stream
+强制重读。Reload 只增加目标通道的 generation；同一 item 的另一个通道以及其他 item 不受影响。
+
+只有当前 Full entry 从非 Loaded 进入 Loaded 时触发 `ImageOpened`，从非 Failed 进入 Failed 时触发 `ImageFailed`。预加载项和
+封面状态不冒充当前项事件。
+
+### 4.4 标题契约
+
+标题优先级固定为：
 
 ```text
-Public API / IImagePreviewSource / ImageSourceUri / inherited command / user input
-  -> 控件实例状态
-  -> ImagePreviewItem state / effective state / pseudo-class / template property
-  -> ControlTheme selector / loading presenter / error presenter / renderer
-  -> Gallery 可观察行为
+宿主显式 Window.Title / PreviewTitle
+  > ImagePreviewItem.Title
+  > IImagePreviewTitleResolver
+  > 空标题
 ```
 
-状态维护规则：
+`PreviewTitle` 被转接到 dialog 的 `Window.Title`。当显式标题为空时，宿主先读取当前 item 的 `Title`，再调用 resolver。
+resolver 上下文只包含 immutable `ImagePreviewItem`、显示用 CurrentIndex 和 Count，不发起 I/O。
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- `IImagePreviewSource` 是用户输入层，`ImagePreviewItem` 是控件内部图片项状态 owner，`LoadedImageSource` 是加载完成结果。三者不能混用职责。
-- 图片项状态按 `Pending -> Loading -> Loaded/Failed` 收敛。单项加载失败只影响该项自身；`FallbackSource` 只在当前来源集合全部失败时作为整组兜底。
-- current item、open/close、image loading、loaded/failed、fallback、motion 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- `IsOpen` 与 `CurrentIndex` 是默认 `TwoWay` 的受控状态；dialog 和 overlay 只能消费或回写这条 public 状态路径，不能保留独立打开状态或当前项状态。
-- `CurrentIndex` 是弹出 dialog 和 overlay host 共享的当前项状态。普通封面只消费 `CoverIndex`，不得反向改写 `CurrentIndex`。
-- `CoverIndex` 从当前来源集合中选择关闭态封面。显示层可以对越界 `CoverIndex` 做有效范围 clamp 以稳定渲染，但不能静默修改用户设置的 public 属性值。
-- 预览标题由单一 effective title 算法生成：非空白显式标题优先；显式标题为空时，使用 resolver 基于 current effective item 解析标题；解析不到标题时标题区域保持空态。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放；过期异步加载结果不能回写新来源。
-- 关闭态只加载封面所需图片；打开态加载当前图片、`PreloadCount` 定义的邻近图片，并保留或补加载 `CoverIndex` 对应封面，保证非模态预览切换时页面封面不消失。控件不得因为 `Sources` 包含大量来源而一次性加载全部图片。
+默认 resolver 返回 `Item.Source.DisplayName`。`PreviewTitleIcon` 只显示在预览标题栏，不投射到普通 Window icon。
 
 ## Theme and Token Boundaries
 
-ImagePreviewer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
+Desktop 支持 native window 时使用 `ImagePreviewerDialog`；Browser 等无 native window 平台使用
+`ImagePreviewerOverlayHost`。两种宿主共享 ItemsSource、CurrentIndex TwoWay、交互、占位、动效和 modal 语义。
 
-| 主题文件 | 职责 |
-| --- | --- |
-| `ImageGroupPreviewerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `ImagePreviewFloatToolbarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `ImagePreviewNavButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `ImagePreviewToolbarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `ImagePreviewerCoverTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `ImagePreviewerDialogTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `ImagePreviewerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `ImagePreviewerTitleBarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `ImageViewerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
+稳定主题节点包括：
 
-ImagePreviewer 使用 `ImagePreviewerToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 current item、open/close、image loading、loaded/failed、fallback 或 motion 运行时状态。
+- `PART_CoverItemsControl`：group 封面集合。
+- `PART_ImageViewerScene`、`PART_ImageRenderer`：预览坐标空间与图片 renderer。
+- `PART_LoadingPresenter`、`PART_ErrorPresenter`：封面和 viewer 的状态占位。
+- `PART_PreviousButton`、`PART_NextButton` 与 toolbar 操作按钮。
+- `PART_TitleLayout`、`PART_IconPresenter`：dialog 标题与图标。
+- `PART_CloseButton`：overlay 关闭入口。
 
-预览窗口标题栏使用 `ImagePreviewer.PreviewTitleIcon` 作为标题图标来源。`PreviewTitleIcon` 是 `PathIcon?` 契约，表示只属于 ImagePreviewer 预览窗口标题的显式图标；未设置时标题栏不显示图标，也不从 `Window.Icon`、`Window.Logo`、应用图标或主窗口图标回退。`ImagePreviewerTitleBarTheme` 将 `PART_IconPresenter` 和标题内容放入共享布局的 Title 角色，图片工具栏放入 Leading，右侧 add-on 与 caption buttons 放入 Trailing。图标位于标题左侧，仅当图标和标题都有效时使用 `WindowTitleBarToken.LogoAndTitleSpacing`。预览 dialog 的 `TitleAlignment` 默认值覆盖为 `WindowCenter`，因此 Windows、Linux 和 macOS 都默认以完整窗口水平中心作为标题基准；显式设置 `TitleAlignment` 时仍通过 `ImagePreviewerTitleBar` 投射，并继续由 `WindowTitleBarLayoutPanel` 处理左右安全区裁剪。三个平台模板都通过 `NativeChromeInsets` 避让实际与客户区重叠的原生按钮，不使用外层单侧 Padding/Margin 缩窄完整 frame。
-
-预览 dialog 的图片查看层必须绘制与 dialog `Background` 一致的实心背景，用于覆盖 Windows CSD maximize/restore 期间可能短暂暴露的通用窗口 underlay 背景。窗口状态或尺寸变化期间，dialog 还会短暂关闭查看层的图片 transform/translate 过渡，避免外层窗口 resize 与内层图片居中动画叠加成闪动；overlay host 的查看层保持透明，由 overlay 模板自身背景承载遮罩语义。
-
-加载视觉遵循以下规则：
-
-- 封面加载态使用图片 Skeleton 占位，保持封面尺寸稳定，不显示 hover mask。
-- 预览层加载态使用居中 Spin，缩放、旋转、拖拽和 fit-to-window 在当前图片未加载完成前禁用。
-- loading 视觉允许短暂延迟显示以避免本地文件或 `avares://` 资源快速完成造成闪烁；延迟只影响视觉，不影响 `ImagePreviewItemState`。
-- `LoadingContent` / `LoadingContentTemplate` 替换默认加载内容，`ErrorContent` / `ErrorContentTemplate` 替换默认失败内容；替换内容不得重新定义 `Pending -> Loading -> Loaded/Failed` 状态机。
-- 封面 loading 和 failed 状态必须使用稳定占位尺寸。尺寸解析优先使用显式 `CoverWidth` / `CoverHeight`，其次使用控件布局约束中的有效宽高，最后使用 `ImagePreviewerToken.CoverImageWidth` 作为兜底基准。没有图片自然尺寸时，失败态不能由错误文案撑开成窄条。
-- 默认失败态使用图片失败占位视觉：图标、简短本地化文案和低干扰背景共同表达失败。失败文案来自 ImagePreviewer 控件语言资源，主题中不得硬编码英文 `Image load failed`。
-
-主题维护规则：
-
-- 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
-- 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
-- 不把 hover、pressed、current item、loading、failed、fallback、popup open 等运行时状态写入 Token。
-- Browser 或平台特化主题必须保持同一 API 的语义一致。
+Renderer 只消费 entry 中的 `IImage`，不得自行打开 Source。Loading 时封面使用稳定尺寸 Skeleton 语义，viewer 使用居中 Spin；
+Failed 时使用本地化默认错误内容或用户模板。
 
 Token 边界：
 
@@ -262,40 +278,21 @@ ImagePreviewer Token 只表达组件级视觉变量，例如尺寸、间距、�
 
 ## Customization Boundaries
 
-维护 ImagePreviewer 时必须保持以下不变量：
-
-- 不擅自新增、删除、重命名或改变已批准的 public/protected API、Avalonia 属性、事件和默认值。
-- 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
-- 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
-- Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
-- 图片加载不得在 UI 线程执行网络 I/O，不得通过同步 `Stream` API 承载远程来源。
-- `Source` / `Sources` / `FallbackSource`、URI 便利入口和数据流来源的解析、来源身份解析和取消语义必须一致。
-- `CurrentIndex` 不得退化为弹层专属状态；dialog 和 overlay 必须消费同一当前项语义。封面由 `CoverIndex` 独立决定，只负责关闭态展示，不参与打开后的当前项行为。
-- `MaxConcurrentLoads` 必须限制所有图片加载入口的实际并发，不能只限制预加载路径。
-- `PreloadCount` 只扩大打开态当前图片附近的加载窗口，不改变 `CurrentIndex`、`CoverIndex`、`Count` 或导航语义。
-- 预览标题不得使用过期图片项：标题必须随 current effective item、effective items、显式标题和 resolver 变化重新计算；非空白显式标题的优先级不能被默认 resolver 覆盖。
-- 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
-- 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
-- 文档只描述当前稳定设计；历史变化记录在 `changelog.md`。
+- 关闭 dialog/overlay：释放 host bindings、事件订阅、logical parent 和全部 Full lease，保留关闭态需要的 Thumbnail lease。
+- detach：解除集合订阅，取消 Full/Thumbnail waiter 并释放全部 lease。
+- TopLevel resize 或 render scaling 变化：重新计算当前物理像素 bucket，相同 bucket 不重复读取，不同 bucket 触发替换请求。
+- reattach：重新物化集合并按 IsOpen 选择当前加载策略。
+- source replacement、collection remove/reset：旧 entry 不能回写或继续保留图片。
+- 当前 API 不包含旧 source 接口、单/多 source 属性、私有 loader 或私有 scheduler；不提供兼容 shim。
+- 不允许同步 I/O、固定延迟、反射发现 loader/codec，或在 Previewer 内创建 `HttpClient`。
 
 维护不变量：
 
-维护 ImagePreviewer 时不得破坏：
-
-- Public API、默认值、事件顺序和 Gallery 可观察行为。
-- Template part 名称、ControlTheme key、伪类和资源 key。
-- 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
-- 图片加载状态的单 owner：`IImagePreviewSource` 是来源，`ImagePreviewItem` 是状态，`LoadedImageSource` 是结果，`ImagePreviewRenderer` 只负责渲染。
-- `Source`、`Sources`、`FallbackSource`、URI 便利入口和数据流来源的加载、取消、来源身份和失败处理一致性。
-- 单图 `ImagePreviewer` 与 `ImageGroupPreviewer` 对 `CoverWidth` / `CoverHeight` 的消费一致性。远程图片 loading/failed 时不能因为没有图片自然尺寸而丢失封面高度。
-- 默认 loading/error 视觉不能破坏自定义内容入口。用户设置 `LoadingContent` 或 `ErrorContent` 后，模板仍负责稳定尺寸、状态显隐和 mask 抑制。
-- 默认失败文案必须走控件本地化资源，不允许在 `ImagePreviewerCoverTheme.axaml` 或 `ImageViewerTheme.axaml` 中硬编码英文字符串。
-- `CurrentIndex` 的单一语义：dialog 和 overlay 使用同一 current effective item；普通封面只使用 `CoverIndex`。点击封面、封面加载状态和封面错误状态不得修改 `CurrentIndex`。
-- `CoverIndex` 的单一语义：它只选择关闭态封面图片，不参与打开、导航、标题解析、fallback 批次判定或 selection 同步。
-- `MaxConcurrentLoads` 的单一闸门语义：任何新增加载入口都必须接入同一调度器，不能形成第二套并发队列。
-- `PreloadCount` 的窗口语义：只影响打开态邻近加载范围，不改变 public selection、封面索引或 `Count`。
-- 预览标题的单一算法：非空白 `Window.Title` 或 `PreviewTitle` 优先，resolver 只在显式标题为空时运行；标题必须跟随 current effective item，不能保留旧集合项的文件名。
-- 预览标题图标的单一路径：`PreviewTitleIcon` 只能进入 `ImagePreviewerDialog.TitleIcon`，再绑定到 `ImagePreviewerTitleBar.Icon` 和 `PART_IconPresenter`；不得转接 `Window.Icon`、`Window.Logo` 或右侧扩展区域来表达标题图标。
-- 加载完成后必须重新计算 `ImageViewer` 的布局、居中、fit-to-window 和交互边界。
-- Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
+- public `ImagePreviewItem` 保持 immutable，只保存配置；所有可变加载状态只属于 internal entry。
+- Full 与 Thumbnail 的 generation、CTS、state、progress 和 lease 相互独立，Reload 一个通道不能干扰另一个通道。
+- Full 与 Thumbnail 分别记录活动/已提交物理像素 bucket；布局或 DPI 变化后不得继续放大较小 bucket 的旧结果。
+- current、cover 和 collection clamp 只决定显示 entry，不静默改写外部 TwoWay 索引。
+- 所有请求进入 Application-scoped `IImageLoader`；Previewer 不增加本地 semaphore、cache、transport 或 codec。
+- host close 释放 Full leases，detach 释放 Full/Thumbnail leases；旧 entry、旧 generation 和已关闭 host 都不能回写。
+- renderer、loading presenter 和 error presenter 只消费状态，不发起 I/O 或拥有结果。
+- native dialog 与 Browser overlay 必须共享 item、current、navigation、loading 和关闭语义。

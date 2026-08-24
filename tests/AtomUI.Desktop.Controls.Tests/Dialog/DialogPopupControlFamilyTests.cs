@@ -327,17 +327,17 @@ public class DialogPopupControlFamilyTests
                 IsMotionEnabled = false,
                 Children =
                 {
-                    new AtomUI.Desktop.Controls.Avatar { Text = "A" },
-                    new AtomUI.Desktop.Controls.Avatar { Text = "B" },
-                    new AtomUI.Desktop.Controls.Avatar { Text = "C" },
-                    new AtomUI.Desktop.Controls.Avatar { Text = "D" }
+                    new AtomUI.Controls.Avatar { Text = "A" },
+                    new AtomUI.Controls.Avatar { Text = "B" },
+                    new AtomUI.Controls.Avatar { Text = "C" },
+                    new AtomUI.Controls.Avatar { Text = "D" }
                 }
             };
             using var host = DialogPopupTestHost.Open(avatarGroup);
             var foldHost = avatarGroup.GetVisualDescendants()
                                       .OfType<AtomUI.Desktop.Controls.FlyoutHost>()
                                       .Single();
-            var foldAvatar = foldHost.Content.ShouldBeOfType<AtomUI.Desktop.Controls.Avatar>();
+            var foldAvatar = foldHost.Content.ShouldBeOfType<AtomUI.Controls.Avatar>();
 
             host.Click(foldAvatar);
             TopLevel.GetTopLevel(host.FindPopupHost()).ShouldBeSameAs(host.Window);

@@ -49,6 +49,18 @@
         <target state="translated">穩定</target>
       </segment>
     </unit>
+    <unit id="NetworkImageDescription">
+      <segment>
+        <source>Load avatar images directly from HTTPS URLs through the shared image-loading pipeline.</source>
+        <target state="translated">透過統一圖片載入管線，直接從 HTTPS 位址載入頭像圖片。</target>
+      </segment>
+    </unit>
+    <unit id="NetworkImageTitle">
+      <segment>
+        <source>Remote Image</source>
+        <target state="translated">網路圖片</target>
+      </segment>
+    </unit>
     <unit id="P2ContentA">
       <segment>
         <source>A</source>

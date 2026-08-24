@@ -1,0 +1,343 @@
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Media;
+using Avalonia.Threading;
+
+namespace AtomUI.Controls;
+
+internal interface IImageLoadControllerHost
+{
+    Visual Visual { get; }
+
+    ImageLoadSource? Source { get; }
+
+    ImageLoadSource? FallbackSource { get; }
+
+    ImageRequestOptions? RequestOptions { get; }
+
+    ImageRequestPriority Priority { get; }
+
+    bool IsImageLoadAttached { get; }
+
+    (int Width, int Height)? GetDecodePixelSize();
+
+    ImageLoadError? GetConfigurationError();
+
+    void SetLoadedImage(IImage? image);
+
+    void SetLoadState(ImageLoadState state, ImageLoadError? error, ImageLoadProgress? progress, bool isFallback);
+
+    void RaiseImageOpened(ImageOpenedEventArgs eventArgs);
+
+    void RaiseImageFailed(ImageFailedEventArgs eventArgs);
+}
+
+internal sealed class ImageLoadController : IDisposable
+{
+    private readonly IImageLoadControllerHost _host;
+    private CancellationTokenSource? _requestCancellation;
+    private IDisposable? _scalingSubscription;
+    private ImageLoadResult? _currentResult;
+    private string? _currentSourceIdentity;
+    private (int Width, int Height)? _lastDecodeSize;
+    private long _generation;
+    private bool _disposed;
+
+    internal ImageLoadController(IImageLoadControllerHost host)
+    {
+        _host = host;
+    }
+
+    internal void Attach()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        _scalingSubscription?.Dispose();
+        var topLevel = TopLevel.GetTopLevel(_host.Visual);
+        if (topLevel is not null)
+        {
+            EventHandler handler = (_, _) => RefreshSize();
+            topLevel.ScalingChanged += handler;
+            _scalingSubscription = new DelegateDisposable(() => topLevel.ScalingChanged -= handler);
+        }
+        Restart(reload: false, configurationChanged: true);
+    }
+
+    internal void Detach()
+    {
+        _scalingSubscription?.Dispose();
+        _scalingSubscription = null;
+        CancelCurrentRequest();
+        ReleaseCurrentResult();
+        _currentSourceIdentity = null;
+        _lastDecodeSize = null;
+        _host.SetLoadedImage(null);
+        _host.SetLoadState(ImageLoadState.Idle, null, null, false);
+    }
+
+    internal void SourceConfigurationChanged()
+    {
+        Restart(reload: false, configurationChanged: true);
+    }
+
+    internal void RefreshSize()
+    {
+        if (!_host.IsImageLoadAttached)
+        {
+            return;
+        }
+        var size = _host.GetDecodePixelSize();
+        if (size == _lastDecodeSize)
+        {
+            return;
+        }
+        _lastDecodeSize = size;
+        Restart(reload: false, configurationChanged: false);
+    }
+
+    internal void Reload()
+    {
+        Restart(reload: true, configurationChanged: false);
+    }
+
+    public void Dispose()
+    {
+        if (_disposed)
+        {
+            return;
+        }
+        _disposed = true;
+        _scalingSubscription?.Dispose();
+        _scalingSubscription = null;
+        CancelCurrentRequest();
+        ReleaseCurrentResult();
+    }
+
+    private void Restart(bool reload, bool configurationChanged)
+    {
+        if (_disposed || !_host.IsImageLoadAttached)
+        {
+            return;
+        }
+        var source = _host.Source;
+        if (source is null)
+        {
+            CancelCurrentRequest();
+            ReleaseCurrentResult();
+            _currentSourceIdentity = null;
+            _lastDecodeSize = null;
+            _host.SetLoadedImage(null);
+            _host.SetLoadState(ImageLoadState.Idle, null, null, false);
+            return;
+        }
+
+        var configurationError = _host.GetConfigurationError();
+        if (configurationError is not null)
+        {
+            CancelCurrentRequest();
+            ReleaseCurrentResult();
+            _currentSourceIdentity = source.Identity;
+            _lastDecodeSize = null;
+            _host.SetLoadedImage(null);
+            _host.SetLoadState(ImageLoadState.Failed, configurationError, null, false);
+            _host.RaiseImageFailed(new ImageFailedEventArgs(source, false, configurationError));
+            return;
+        }
+
+        var decodeSize = _host.GetDecodePixelSize();
+        if (decodeSize is null)
+        {
+            return;
+        }
+        var sourceChanged = _currentSourceIdentity is not null && _currentSourceIdentity != source.Identity;
+        if (sourceChanged)
+        {
+            ReleaseCurrentResult();
+            _host.SetLoadedImage(null);
+        }
+        _currentSourceIdentity = source.Identity;
+        _lastDecodeSize = decodeSize;
+        CancelCurrentRequest();
+        var cancellation = new CancellationTokenSource();
+        _requestCancellation = cancellation;
+        var generation = Interlocked.Increment(ref _generation);
+        var fallback = _host.FallbackSource;
+        var options = _host.RequestOptions;
+        var priority = _host.Priority;
+        _host.SetLoadState(ImageLoadState.Loading, null, null, false);
+        _ = LoadGenerationAsync(
+            source,
+            fallback,
+            options,
+            priority,
+            decodeSize.Value,
+            generation,
+            reload,
+            cancellation.Token);
+    }
+
+    private async Task LoadGenerationAsync(
+        ImageLoadSource source,
+        ImageLoadSource? fallback,
+        ImageRequestOptions? requestOptions,
+        ImageRequestPriority priority,
+        (int Width, int Height) decodeSize,
+        long generation,
+        bool reload,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var application = Application.Current ?? throw new InvalidOperationException(
+                "Image controls require an active Avalonia Application.");
+            var loader = application.GetImageLoader();
+            var options = requestOptions;
+            if (reload)
+            {
+                options = (options ?? new ImageRequestOptions()) with { CacheMode = ImageCacheMode.Reload };
+            }
+            var progress = new CallbackProgress<ImageLoadProgress>(value => PublishProgress(generation, value));
+            var primaryResult = await loader.LoadAsync(
+                new ImageLoadRequest(source)
+                {
+                    Options = options,
+                    DecodePixelWidth = decodeSize.Width,
+                    DecodePixelHeight = decodeSize.Height,
+                    Priority = priority,
+                    Progress = progress
+                },
+                cancellationToken).ConfigureAwait(false);
+            if (primaryResult.IsSuccess)
+            {
+                await CommitSuccessAsync(generation, source, primaryResult, isFallback: false).ConfigureAwait(false);
+                return;
+            }
+
+            var primaryError = primaryResult.Error!;
+            primaryResult.Dispose();
+            if (fallback is not null && fallback.Identity != source.Identity)
+            {
+                var fallbackResult = await loader.LoadAsync(
+                    new ImageLoadRequest(fallback)
+                    {
+                        Options = options,
+                        DecodePixelWidth = decodeSize.Width,
+                        DecodePixelHeight = decodeSize.Height,
+                        Priority = priority,
+                        Progress = progress
+                    },
+                    cancellationToken).ConfigureAwait(false);
+                if (fallbackResult.IsSuccess)
+                {
+                    await CommitSuccessAsync(generation, fallback, fallbackResult, isFallback: true).ConfigureAwait(false);
+                    return;
+                }
+                var fallbackError = fallbackResult.Error!;
+                fallbackResult.Dispose();
+                await CommitFailureAsync(generation, fallback, fallbackError, isFallback: true).ConfigureAwait(false);
+                return;
+            }
+            await CommitFailureAsync(generation, source, primaryError, isFallback: false).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+        catch (Exception exception)
+        {
+            var error = new ImageLoadError(
+                ImageLoadErrorCode.InvalidSource,
+                "The image loader is not available.",
+                SourceDisplayName: source.DisplayName,
+                Exception: exception);
+            await CommitFailureAsync(generation, source, error, isFallback: false).ConfigureAwait(false);
+        }
+    }
+
+    private void PublishProgress(long generation, ImageLoadProgress progress)
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (generation == Volatile.Read(ref _generation) && _host.IsImageLoadAttached)
+            {
+                _host.SetLoadState(ImageLoadState.Loading, null, progress, false);
+            }
+        });
+    }
+
+    private async Task CommitSuccessAsync(
+        long generation,
+        ImageLoadSource source,
+        ImageLoadResult result,
+        bool isFallback)
+    {
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            if (generation != Volatile.Read(ref _generation) || !_host.IsImageLoadAttached)
+            {
+                result.Dispose();
+                return;
+            }
+            var previous = _currentResult;
+            _currentResult = result;
+            _host.SetLoadedImage(result.Image);
+            _host.SetLoadState(ImageLoadState.Loaded, null, null, isFallback);
+            previous?.Dispose();
+            _host.RaiseImageOpened(new ImageOpenedEventArgs(
+                source,
+                isFallback,
+                result.CacheSource,
+                result.DecodedPixelWidth,
+                result.DecodedPixelHeight));
+        });
+    }
+
+    private async Task CommitFailureAsync(
+        long generation,
+        ImageLoadSource source,
+        ImageLoadError error,
+        bool isFallback)
+    {
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            if (generation != Volatile.Read(ref _generation) || !_host.IsImageLoadAttached)
+            {
+                return;
+            }
+            _host.SetLoadedImage(null);
+            _host.SetLoadState(ImageLoadState.Failed, error, null, false);
+            ReleaseCurrentResult();
+            _host.RaiseImageFailed(new ImageFailedEventArgs(source, isFallback, error));
+        });
+    }
+
+    private void CancelCurrentRequest()
+    {
+        Interlocked.Increment(ref _generation);
+        var cancellation = Interlocked.Exchange(ref _requestCancellation, null);
+        if (cancellation is null)
+        {
+            return;
+        }
+        cancellation.Cancel();
+        cancellation.Dispose();
+    }
+
+    private void ReleaseCurrentResult()
+    {
+        Interlocked.Exchange(ref _currentResult, null)?.Dispose();
+    }
+
+    private sealed class DelegateDisposable : IDisposable
+    {
+        private Action? _dispose;
+
+        internal DelegateDisposable(Action dispose)
+        {
+            _dispose = dispose;
+        }
+
+        public void Dispose()
+        {
+            Interlocked.Exchange(ref _dispose, null)?.Invoke();
+        }
+    }
+}

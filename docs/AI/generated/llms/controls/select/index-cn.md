@@ -97,7 +97,7 @@ Select 的公共 API 分布在 `AbstractSelect` 和 `Select` 两层。`AbstractS
 | --- | --- | --- |
 | `SizeType` | `CustomizableSizeType` | 输入尺寸密度，支持 `Large/Middle/Small/Custom`。 |
 | `StyleVariant` | `InputControlStyleVariant` | 输入表面样式。 |
-| `Status` | `InputControlStatus` | 手动输入反馈状态；native validation error 以 `DataValidationErrors` 为最高优先级。 |
+| `Status` | `InputControlStatus` | 显式输入反馈状态；最终视觉由 `InputControlFrame.EffectiveStatus` 计算，native validation error 以 `DataValidationErrors` 为唯一真源。 |
 | `PlaceholderText` / `PlaceholderForeground` | `string?` / `IBrush?` | 空选择时的占位文本和颜色。 |
 | `IsAllowClear` / `ClearIcon` | `bool` / `PathIcon?` | 清除入口和图标。 |
 | `SuffixIcon` / `SuffixLoadingIcon` | `PathIcon?` | 普通展开指示和 loading 指示。 |
@@ -131,7 +131,7 @@ Select 的公共 API 分布在 `AbstractSelect` 和 `Select` 两层。`AbstractS
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_AddOnDecoratedBox` | `SelectAddOnDecoratedBox` | 输入壳体、Addon、variant、status、CompactSpace 和 hover/pressed 状态承载。 |
+| `PART_InputControlFrame` | `SelectAddOnDecoratedBox` | `InputControlFrame` / AddOnDecoratedBox 组合、Addon、EffectiveStatus、CompactSpace 和 hover/pressed 状态承载；选择专用节点只扩展内容布局。 |
 | `PART_SingleFilterInput` | `SelectFilterTextBox` | 单选模式结果显示和搜索输入。 |
 | `SelectedOptionsBox` | `SelectResultOptionsBox` | 多选和 Tags 模式已选标签与搜索输入。 |
 | `PART_SelectMaxCountIndicator` | `SelectMaxCountIndicator` | 最大选择数量提示。 |
@@ -141,7 +141,7 @@ Select 的公共 API 分布在 `AbstractSelect` 和 `Select` 两层。`AbstractS
 | `PopupFrame` | `Border` | 懒创建的候选弹层外壳。 |
 | `PART_CandidateList` | `SelectCandidateList` | 懒创建的候选项列表、键盘导航和提交/取消。 |
 
-Select 的稳定伪类包括 `:dropdownopen`，同时通过标准 `:pressed`、`:disabled` 和 AddOnDecoratedBox 相关状态表达输入表面视觉。
+Select 的稳定伪类包括 `:dropdownopen`；输入表面通过 `InputControlFrame` 统一表达 `StyleVariant`、`EffectiveStatus`、`:pressed`、`:disabled` 和 CompactSpace，选择专用伪类只表达 popup、候选和结果状态。
 
 ## 事件与命令
 
@@ -259,12 +259,13 @@ Disabled / invisible / window deactivated
 
 ## 主题与 Design Token
 
-Select 的默认视觉由 Select 专属主题、AddOnDecoratedBox、ListView 和 PopupHost 协作完成。
+Select 的默认视觉由 Select 专属主题、`InputControlFrame` / AddOnDecoratedBox、ListView 和 PopupHost 协作完成。
 
 | 主题或资源 | 职责 |
 | --- | --- |
 | `SelectTheme.axaml` | 根模板、输入壳体、单选输入、多选结果区域、handle、popup 和基础 selector。 |
-| `SelectAddOnDecoratedBoxTheme.axaml` | 输入框 variant、status、dropdown open、hover、pressed 和多选 padding。 |
+| `InputControlFrameTheme.axaml` | 输入框 variant、effective status、hover、pressed、disabled、CompactSpace 和 motion。 |
+| `SelectAddOnDecoratedBoxTheme.axaml` | dropdown open、多选 padding、handle 和选择结果布局；不重复实现 frame 状态 selector。 |
 | `SelectResultOptionsBoxTheme.axaml` | 多选标签布局、响应式标签布局和搜索输入承载。 |
 | `SelectCandidateListTheme.axaml` | 候选列表基础 ListView 主题和默认候选模板。 |
 | `SelectCandidateListItemTheme.axaml` | 候选项 active、selected、disabled 和隐藏已选项视觉；active 只由统一候选状态驱动。 |
@@ -279,7 +280,7 @@ Select 的默认视觉由 Select 专属主题、AddOnDecoratedBox、ListView 和
 
 Token 来源：
 
-SelectToken 是 Select 的控件级 Token scope，描述多选标签、候选项、候选弹层 padding 和 Select 输入内容 padding。输入壳体的通用边框、圆角、状态色、focus ring、disabled 背景和 AddOn 结构来自 SharedToken、AddOnDecoratedBoxToken 和 PopupHostToken。
+SelectToken 是 Select 的控件级 Token scope，描述多选标签、候选项、候选弹层 padding 和 Select 输入内容 padding。输入表面的通用边框、圆角、状态色、focus ring、disabled 背景、CompactSpace 和 AddOn 结构来自 `InputControlFrameTheme`、SharedToken 和 PopupHostToken；SelectToken 不复制这些共享职责。
 
 SelectToken 不承载以下状态：
 
@@ -296,10 +297,10 @@ Select 不依赖运行时反射发现模板结构。模板协作通过固定 tem
 
 - `SubscriptionsOnOpen` 只在 popup 打开期间持有可见性订阅，popup 关闭时清空。
 - `_deactivationSubscription` 在 attach 时创建，detach 时释放。
-- `_selectHandleInputStateBindings` 每次模板接入前释放旧绑定，仅持有 AddOnDecoratedBox → SelectHandle 的 hover / pressed sibling part 状态转发。
+- `_selectHandleInputStateBindings` 每次模板接入前释放旧绑定，仅持有 frame layout part → SelectHandle 的 hover / pressed sibling 状态转发，不承载输入表面状态归一。
 - `_candidateList` 的事件订阅和 `ItemsSource` 必须在 `ClearPopupContent()` 中释放。
 - active candidate 在 popup 关闭、popup 内容释放、detach、过滤上下文变化和候选失效时清除；容器回收只清理本地投影。
-- `SelectHandle` 订阅 `FormFeedback.ValidateStatus` 时必须在 feedback 变化和 logical detach 时释放。
+- `SelectHandle` 订阅 `FormFeedback.ValidateStatus` 时必须在 feedback 变化和 logical detach 时释放，并在 logical attach 时按当前 feedback 状态重新建立。
 - 异步加载通过 `AsyncSearchLoadCoordinator` 处理超时、取消和跳过旧结果。
 
 AOT 边界：

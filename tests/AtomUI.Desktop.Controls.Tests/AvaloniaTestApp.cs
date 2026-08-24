@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Headless;
 using Avalonia.Headless.XUnit;
+using AtomUI.Controls;
 using AtomUI.Localization;
 
 [assembly: AvaloniaTestApplication(typeof(AtomUI.Desktop.Controls.Tests.TestAppBuilder))]
@@ -44,6 +45,11 @@ internal sealed class TestApplication : Application
     public override void Initialize()
     {
         this.UseAtomUI(builder => builder.UseDesktopControls()
+                                         .UseImageLoading(options =>
+                                         {
+                                             options.MaxConcurrentDownloads = 1;
+                                             options.MaxConcurrentDecodes = 1;
+                                         })
                                          .UseDesktopColorPicker()
                                          .UseDesktopExtras()
                                          .UseLanguages(

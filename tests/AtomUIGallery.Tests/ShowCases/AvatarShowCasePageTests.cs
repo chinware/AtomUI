@@ -39,6 +39,8 @@ public class AvatarShowCasePageTests
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("AvatarShowCaseLangResource BasicTitle");
         source.ShouldContain("AvatarShowCaseLangResource TypeTitle");
+        source.ShouldContain("AvatarShowCaseLangResource NetworkImageTitle");
+        source.ShouldContain("https://api.dicebear.com/7.x/miniavs/svg?seed=1");
         source.ShouldContain("AvatarShowCaseLangResource AutoSetFontSizeTitle");
         source.ShouldContain("AvatarShowCaseLangResource AvatarGroupTitle");
         source.ShouldNotContain("<atom:TabControl");

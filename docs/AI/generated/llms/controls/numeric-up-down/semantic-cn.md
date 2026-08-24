@@ -134,7 +134,7 @@ NumericUpDown
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_Spinner` | `ButtonSpinner` | 输入壳体、外部 AddOn、内部前后缀、步进入口和 CompactSpace 状态承载。 |
+| `PART_Spinner` | `ButtonSpinner` | `InputControlFrame` / AddOnDecoratedBox 组合、外部 AddOn、内部前后缀、步进入口和 CompactSpace 布局承载。 |
 | `PART_TextBox` | `TextBox` | 文本输入、占位符、只读、数据校验和文本双向绑定。 |
 | `PART_ClearButton` | `InputClearIconButton` | 清除 `Value` 的内部按钮。 |
 | `PART_InnerRightContentPresenter` | `ContentPresenter` | 用户 `InnerRightContent` 的内部右侧内容承载。 |
@@ -196,7 +196,7 @@ NumericUpDown 采用按需模板模型。`Mode=Input` 使用默认输入框模�
 
 - `Mode=Input` 的默认模板不得预埋 spinner 模式左右按钮或无职责 wrapper；`ShowButtonSpinner=false` 时必须隐藏浮动 Handle。
 - `Mode=Spinner` 使用独立 `ControlTemplate`，不通过同一模板内两套视觉树加 `IsVisible` 切换实现；`ShowButtonSpinner=false` 时必须隐藏左右 action 段。
-- `ButtonSpinner` 是默认输入壳体边界，不应被普通 `Border` 或 `Grid` 包装替代。
+- `ButtonSpinner` 是默认输入组合边界，复用 `InputControlFrame` 的输入表面和有效状态，不应被普通 `Border` 或 `Grid` 包装替代。
 - `PART_TextBox` 的 `BorderThickness=0` 是为了避免内层 TextBox 与外层输入壳体重复绘制边框。
 - `PART_ClearButton` 与 `PART_InnerRightContentPresenter` 共用内部右侧 stack，必须保留顺序：清除按钮在用户内部右侧内容之前。
 - 浮动 Handle 由 `ButtonSpinnerDecoratedBox` 控制透明度和偏移，不应在 NumericUpDown 模板中动态创建或移除。
@@ -211,11 +211,11 @@ NumericUpDown 采用按需模板模型。`Mode=Input` 使用默认输入框模�
 | `ButtonSpinnerDecoratedBoxTheme.axaml` | 输入壳体、Addon、浮动 Handle 透明度和偏移。 |
 | `ButtonSpinnerHandleTheme.axaml` | Handle 背景、边框、图标尺寸和交互视觉。 |
 | `TextBoxTheme.axaml` | 文本编辑器、placeholder、disabled 文本色和内部文本 presenter。 |
-| `AddOnDecoratedBoxTheme.axaml` | 输入 variant、focus、hover、error、warning、disabled 外观。 |
+| `InputControlFrameTheme.axaml` | 输入 variant、effective status、focus、hover、pressed、error、warning、disabled 和 motion 外观。 |
 
 Token 边界：
 
-NumericUpDownToken 是 NumericUpDown 的控件级 Token scope。它继承 `ButtonSpinnerToken`，以独立 `NumericUpDown` scope 提供数值输入控件可消费的输入壳体、步进 Handle、字体和尺寸语义。
+NumericUpDownToken 是 NumericUpDown 的控件级 Token scope。它继承 `ButtonSpinnerToken`，以独立 `NumericUpDown` scope 提供步进 Handle、字体和尺寸语义；输入表面边框、背景、圆角、focus shadow、error/warning、disabled 和 motion 统一由 `InputControlFrameTheme` 与 `SharedToken` 提供。
 
 该设计使 NumericUpDown 能复用 ButtonSpinner 输入壳体体系，同时保留控件级 Token scope。生成的 `NumericUpDownTokenKind` 表达 NumericUpDown scope 下可展示和可覆盖的 Token；默认主题中的输入壳体和 Handle 仍通过 `ButtonSpinnerTokenResource` 消费共享 ButtonSpinner 语义值。
 

@@ -1,4 +1,4 @@
-namespace AtomUI.Controls.Commons;
+namespace AtomUI.Controls;
 
 public static class AvatarPseudoClass
 {

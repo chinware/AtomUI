@@ -7,10 +7,10 @@
 | 模块文档 | 对应源码项目或包 | 推荐架构阅读 |
 |---|---|---|
 | [Native](native/overview.md) | `src/AtomUI.Native` | [运行平台](../architecture/foundations/runtime-platforms.md)、[Windowing](../architecture/systems/windowing/overview.md) |
-| [Core](core/overview.md) | `src/AtomUI.Core` | [主题系统](../architecture/systems/theming/overview.md)、[本地化系统](../architecture/systems/localization/overview.md) |
+| [Core](core/overview.md) | `src/AtomUI.Core` | [主题系统](../architecture/systems/theming/overview.md)、[本地化系统](../architecture/systems/localization/overview.md)、[统一图片加载](../architecture/systems/image-loading/overview.md) |
 | [Localization](localization/overview.md) | `src/AtomUI.Localization` | [本地化系统](../architecture/systems/localization/overview.md) |
-| [Controls.Shared](controls-shared/overview.md) | `src/AtomUI.Controls.Shared` | [Control 基础设施](../architecture/systems/control-infrastructure/overview.md) |
-| [Controls](controls/overview.md) | `src/AtomUI.Controls` | [渲染系统](../architecture/systems/rendering/overview.md) |
+| [Controls.Shared](controls-shared/overview.md) | `src/AtomUI.Controls.Shared` | [Control 基础设施](../architecture/systems/control-infrastructure/overview.md)、[统一图片加载](../architecture/systems/image-loading/overview.md) |
+| [Controls](controls/overview.md) | `src/AtomUI.Controls` | [渲染系统](../architecture/systems/rendering/overview.md)、[统一图片加载](../architecture/systems/image-loading/overview.md) |
 | [Mobile Controls](mobile-controls/overview.md) | `AtomUI.Mobile.Controls` 预实现目标项目与包；Source 未实现 | [Mobile 系统](../architecture/systems/mobile/overview.md) |
 | [Generator](generator/overview.md) | `src/AtomUI.Generator` | [主题系统](../architecture/systems/theming/overview.md)、[本地化系统](../architecture/systems/localization/overview.md) |
 | [Fonts](fonts/overview.md) | `src/AtomUI.Fonts.*` | [主题系统](../architecture/systems/theming/overview.md) |

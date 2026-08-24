@@ -8,7 +8,7 @@ Avatar Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 当前 Token scope：
 
-- `AvatarToken`，scope id 为 `Avatar`，源码位于 `src/AtomUI.Desktop.Controls/Avatar/AvatarToken.cs`。
+- `AvatarToken`，scope id 为 `Avatar`，源码位于 `src/AtomUI.Controls/Avatar/AvatarToken.cs`。
 
 ## 2. Token 分类
 
@@ -17,7 +17,7 @@ Token 按控件语义分类维护：
 | 分类 | 语义 | 代表 Token |
 | --- | --- | --- |
 | 尺寸与密度 | 控件高度、宽度、图标尺寸、内容最小尺寸。 | `ContainerSize`、`ContainerSizeLG`、`ContainerSizeSM`、`TextFontSize`、`TextFontSizeLG`、`TextFontSizeSM` |
-| 间距与布局 | padding、margin、gap、offset、popup content padding。 | 按源码 Token 语义维护 |
+| 间距与布局 | 单头像组间距和重叠距离。 | `GroupSpace`、`GroupOverlapping` |
 | 颜色与状态视觉 | 文本、背景、边框、hover、selected、active、disabled 视觉。 | `GroupBorderColor`、`AvatarBg`、`AvatarColor` |
 | 结构与装饰 | 圆角、阴影、指示器、弹层和装饰线相关变量。 | 按源码 Token 语义维护 |
 
@@ -48,6 +48,7 @@ Avatar 的控件专项模型通过 Theme 消费 Token：
 - 不在 Token 中展开颜色、variant 和状态的组合矩阵；组合关系应由 Theme selector 表达。
 - Token 默认值变更必须同步评估 Gallery 示例和截图可观察外观。
 - 如需引入新 Token，必须同步 Token 类型、生成资源、主题引用和本文档。
+- `AvatarToken` 由 `AtomUI.Controls` 拥有；Desktop 的 `AvatarGroupTheme` 只能消费它，不能在 Desktop 再定义同名 Token。
 
 ## 6. 验证策略
 

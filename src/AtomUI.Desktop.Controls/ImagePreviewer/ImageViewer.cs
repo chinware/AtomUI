@@ -152,8 +152,8 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
     
     #region 内部属性定义
     
-    internal static readonly DirectProperty<ImageViewer, LoadedImageSource?> CurrentImageProperty =
-        AvaloniaProperty.RegisterDirect<ImageViewer, LoadedImageSource?>(
+    internal static readonly DirectProperty<ImageViewer, IImage?> CurrentImageProperty =
+        AvaloniaProperty.RegisterDirect<ImageViewer, IImage?>(
             nameof(CurrentImage),
             o => o.CurrentImage,
             (o, v) => o.CurrentImage = v);
@@ -244,9 +244,9 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
             o => o.SuppressTransformAnimation,
             (o, v) => o.SuppressTransformAnimation = v);
     
-    private LoadedImageSource? _currentImage;
+    private IImage? _currentImage;
 
-    internal LoadedImageSource? CurrentImage
+    internal IImage? CurrentImage
     {
         get => _currentImage;
         set => SetAndRaise(CurrentImageProperty, ref _currentImage, value);

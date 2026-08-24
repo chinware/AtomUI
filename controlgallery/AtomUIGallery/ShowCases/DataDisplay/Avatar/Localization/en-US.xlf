@@ -41,6 +41,16 @@
         <source>Stable</source>
       </segment>
     </unit>
+    <unit id="NetworkImageDescription">
+      <segment>
+        <source>Load avatar images directly from HTTPS URLs through the shared image-loading pipeline.</source>
+      </segment>
+    </unit>
+    <unit id="NetworkImageTitle">
+      <segment>
+        <source>Remote Image</source>
+      </segment>
+    </unit>
     <unit id="P2ContentA">
       <segment>
         <source>A</source>

@@ -13,8 +13,8 @@
                                          BorderBrush="{TemplateBinding BorderBrush}"
                                          CornerRadius="{TemplateBinding CornerRadius}">
                     <atom:ImagePreviewerCover ImageSource="{TemplateBinding EffectiveCoverImage}"
-                                              IsLoading="{TemplateBinding IsCoverImageLoading}"
-                                              IsFailed="{TemplateBinding IsCoverImageFailed}"
+                                              IsLoading="{TemplateBinding IsCoverLoading}"
+                                              IsFailed="{TemplateBinding IsCoverFailed}"
                                               Width="{TemplateBinding CoverWidth}"
                                               Height="{TemplateBinding CoverHeight}"
                                               LoadingContent="{TemplateBinding LoadingContent}"

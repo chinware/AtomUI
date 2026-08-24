@@ -138,6 +138,8 @@ Public API / inherited command / item source / user input
 
 AutoComplete 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
+`AutoCompleteLineEditBox`、`AutoCompleteSearchEditBox` 和 `AutoCompleteTextAreaBox` 分别复用 `LineEdit`、`SearchEdit` 和 `TextArea` 的 `AbstractTextInput` 逻辑层与 `InputControlFrame` 输入表面。候选 popup 和过滤状态属于 AutoComplete 自身，不得重新声明输入边框、状态或 Form error owner。
+
 | 主题文件 | 职责 |
 | --- | --- |
 | `AbstractAutoCompleteTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |

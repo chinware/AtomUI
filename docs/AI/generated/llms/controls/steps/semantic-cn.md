@@ -44,13 +44,14 @@ Steps
         -> IconPresenter#CustomIconPresenter (internal-observable)
   -> StepsItem (item container control theme, StepsItemTheme.axaml)
      -> StepsItemLayoutPanel (internal-observable)
-        -> Border#ItemWrapper (template-stable)
+        -> StepsPanelItemFrame#ItemWrapper (internal-observable)
         -> StepsItemIndicator#PART_Indicator (template-stable)
         -> ContentPresenter#HeaderPresenter (internal-observable)
         -> ContentPresenter#SubHeaderPresenter (internal-observable)
         -> PixelAlignedBorder#Connector (template-stable)
         -> ContentPresenter#ContentPresenter (internal-observable)
         -> StepsNavigationArrow#NavigationArrow (internal-observable)
+        -> StepsPanelArrow#PanelArrow (internal-observable)
         -> PixelAlignedBorder#NavigationActiveIndicator (template-stable)
   -> Steps (control theme, StepsTheme.axaml)
      -> ItemsPresenter#PART_ItemsPresenter (template-stable)
@@ -69,15 +70,16 @@ Steps
 | `FinishedMark` | template node (CheckOutlined) | `StepsItemIndicatorTheme.axaml` | StepsItemIndicator | `FontSize` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ErrorMark` | template node (CloseOutlined) | `StepsItemIndicatorTheme.axaml` | StepsItemIndicator | `FontSize` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CustomIconPresenter` | template node (IconPresenter) | `StepsItemIndicatorTheme.axaml` | StepsItemIndicator | `Icon`, `IsCustom` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `StepsItem` | item container control theme | `StepsItemTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `CanInvoke`, `Content`, `ContentTemplate`, `EffectiveStatus`, `Foreground` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `StepsItemLayoutPanel` | template node (StepsItemLayoutPanel) | `StepsItemTheme.axaml` | StepsItem | `Background`, `CanInvoke`, `Content`, `ContentTemplate`, `EffectiveStatus`, `Foreground` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `ItemWrapper` | template node (Border) | `StepsItemTheme.axaml` | StepsItem | `Background` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `StepsItem` | item container control theme | `StepsItemTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `BorderThickness`, `CanInvoke`, `Content`, `ContentTemplate` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `StepsItemLayoutPanel` | template node (StepsItemLayoutPanel) | `StepsItemTheme.axaml` | StepsItem | `Background`, `BorderBrush`, `BorderThickness`, `CanInvoke`, `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `ItemWrapper` | template node (StepsPanelItemFrame) | `StepsItemTheme.axaml` | StepsItem | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `IsFirst`, `PanelVariant` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_Indicator` | template node (StepsItemIndicator) | `StepsItemTheme.axaml` | StepsItem | `CanInvoke`, `EffectiveStatus`, `Icon`, `IsCurrent`, `IsMotionEnabled`, `IsProgressFrameReserved` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `HeaderPresenter` | template node (ContentPresenter) | `StepsItemTheme.axaml` | StepsItem | `Foreground`, `Header`, `HeaderTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `SubHeaderPresenter` | template node (ContentPresenter) | `StepsItemTheme.axaml` | StepsItem | `SubHeader`, `SubHeaderTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Connector` | template node (PixelAlignedBorder) | `StepsItemTheme.axaml` | StepsItem | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentPresenter` | template node (ContentPresenter) | `StepsItemTheme.axaml` | StepsItem | `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `NavigationArrow` | template node (StepsNavigationArrow) | `StepsItemTheme.axaml` | StepsItem | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PanelArrow` | template node (StepsPanelArrow) | `StepsItemTheme.axaml` | StepsItem | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `NavigationActiveIndicator` | template node (PixelAlignedBorder) | `StepsItemTheme.axaml` | StepsItem | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Steps` | control theme | `StepsTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `PART_ItemsPresenter` | template node (ItemsPresenter) | `StepsTheme.axaml` | Steps | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -172,7 +174,7 @@ Steps 使用统一语义模板，而不是按 Type、Orientation 和 TitlePlacem
 | 主题文件 | 职责 |
 | --- | --- |
 | `StepsTheme.axaml` | 根模板、ItemsPresenter、StepsPanel 和根展示输入映射。 |
-| `StepsItemTheme.axaml` | 统一 item 语义模板、状态颜色、Connector、内容和交互视觉。 |
+| `StepsItemTheme.axaml` | 统一 item 语义模板、Panel item frame、状态颜色、Connector、内容和交互视觉。 |
 | `StepsItemIndicatorTheme.axaml` | 统一 Indicator 模板、Dot、Icon、状态图标、Progress 和 Wave。 |
 
 运行时组合：
@@ -189,11 +191,20 @@ Steps
                 ├── ContentPresenter#SubHeaderPresenter
                 ├── PixelAlignedBorder#Connector
                 ├── ContentPresenter#ContentPresenter
+                ├── StepsPanelItemFrame#ItemWrapper
                 ├── PathIcon#NavigationArrow
+                ├── StepsPanelArrow#PanelArrow
                 └── PixelAlignedBorder#NavigationActiveIndicator
 ```
 
-`StepsPanel` 负责 item 间的 flex/stack 布局；`StepsItemLayoutPanel` 负责 item 内固定语义区域、Connector 线宽和 Navigation active 线的排列。二者不创建视觉、不计算状态。
+`StepsPanel` 负责 item 间的 flex/stack 布局；Panel 类型强制水平排列并将每个 item 等宽。`StepsItemLayoutPanel` 负责 item 内固定语义区域、Connector 线宽、Panel 外溢箭头和 Navigation active 线的排列。二者不创建状态。
+
+Panel 类型的几何规则：
+
+- Indicator 和普通 Connector 不参与可见布局。
+- ItemWrapper 覆盖完整 item 单元，PanelArrow 在非末项的外侧拉伸为楔形箭头。
+- LTR 箭头向右外溢，RTL 箭头向左外溢；末项不创建可见箭头。
+- `Filled` 使用状态背景作为面板表面，并在非首项裁出左侧 notch；`Outlined` 保留共享接缝的箭头边框，非当前 Error 项保持容器背景并使用红色文字和边框，当前 Error 项才使用浅红 active 背景。
 `OutlineDot` 复用 `Dot` 的布局路径，只改变 Indicator 的填充、边框和 Wave 语义。
 
 ### 5.1 Item 语义样式覆盖
@@ -226,7 +237,7 @@ Type == Navigation      -> Horizontal
 
 Token 边界：
 
-StepsToken 描述步骤标题、详情内容、Indicator、Dot、OutlineDot、Connector、Navigation、Inline 和 Progress ring 的组件级视觉语义。
+StepsToken 描述步骤标题、详情内容、Indicator、Dot、OutlineDot、Connector、Navigation、Inline、Panel 和 Progress ring 的组件级视觉语义。
 
 StepsToken 不承载：
 

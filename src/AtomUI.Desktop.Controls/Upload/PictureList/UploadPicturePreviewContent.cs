@@ -1,3 +1,4 @@
+using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -8,13 +9,13 @@ internal class UploadPicturePreviewContent : AbstractUploadPictureContent
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<IList<IImagePreviewSource>?> SourcesProperty =
-        AvaloniaProperty.Register<UploadPicturePreviewContent, IList<IImagePreviewSource>?>(nameof(Sources));
+    public static readonly StyledProperty<IEnumerable<ImagePreviewItem>?> ItemsSourceProperty =
+        AvaloniaProperty.Register<UploadPicturePreviewContent, IEnumerable<ImagePreviewItem>?>(nameof(ItemsSource));
     
-    public IList<IImagePreviewSource>? Sources
+    public IEnumerable<ImagePreviewItem>? ItemsSource
     {
-        get => GetValue(SourcesProperty);
-        set => SetValue(SourcesProperty, value);
+        get => GetValue(ItemsSourceProperty);
+        set => SetValue(ItemsSourceProperty, value);
     }
 
     #endregion
@@ -33,11 +34,11 @@ internal class UploadPicturePreviewContent : AbstractUploadPictureContent
         {
             if (FilePath != null)
             {
-                SetCurrentValue(SourcesProperty, new[] { new UriImagePreviewSource(FilePath.ToString()) });
+                SetCurrentValue(ItemsSourceProperty, new[] { new ImagePreviewItem(ImageLoadSource.FromUri(FilePath)) });
             }
             else
             {
-                SetCurrentValue(SourcesProperty, null);
+                SetCurrentValue(ItemsSourceProperty, null);
             }
         }
     }

@@ -7,7 +7,7 @@
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
 | `root` | `OtpLineEdit` | 控件根语义区域，承载 public API、文本值、验证状态和主题入口。 | `Text`、`Length`、`Status`、`SizeType` | `OtpLineEditToken`、SharedToken | stable |
-| `cell-list` | `PART_CellsHost` | 根据 `Length` 展示 cell 和 separator。 | `Length`、`Separator`、`SeparatorInterval` | `CellGap`、`SeparatorMarginInline` | template-stable |
+| `cell-list` | `PART_CellsHost` | 根据 `Length` 展示 cell 和 separator。 | `Length`、`Separator`、`SeparatorInterval` | `CellGap`、`CellWidth*` | template-stable |
 | `cell` | `OtpLineEditCell` | 展示单个字符、placeholder、mask、active/focus 和 error 状态。 | `Text`、`IsMasked`、`MaskChar` | `CellWidth`、LineEdit 输入字号 | internal-observable |
 | `action` | `PART_ClearButton` | 清空完整验证码文本。 | `IsAllowClear`、`Clear()` | 输入 action 主题资源 | template-stable |
 | `validation` | `PART_FormFeedBack` | 承载 Form feedback 和 native validation 投射。 | `Status`、`IFormItemAware` | SharedToken、Form Token | template-stable |
@@ -36,7 +36,7 @@
 OtpLineEdit
   -> OtpLineEditCell (control theme, OtpLineEditCellTheme.axaml)
      -> PixelAlignedBorder#PART_Frame (template-stable)
-        -> OtpTextBox#PART_TextBox (template-stable)
+        -> ContentPresenter (internal-observable)
   -> OtpLineEdit (control theme, OtpLineEditTheme.axaml)
      -> Grid#PART_RootPanel (template-stable)
         -> StackPanel (template-stable)
@@ -55,9 +55,9 @@ OtpLineEdit
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `OtpLineEdit` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `OtpLineEditCell` | control theme | `OtpLineEditCellTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `DisplayText`, `FontSize` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `PART_Frame` | template node (PixelAlignedBorder) | `OtpLineEditCellTheme.axaml` | OtpLineEditCell | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `DisplayText`, `FontSize` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_TextBox` | template node (OtpTextBox) | `OtpLineEditCellTheme.axaml` | OtpLineEditCell | `DisplayText`, `FontSize`, `Foreground`, `IsActive`, `PlaceholderText` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `OtpLineEditCell` | control theme | `OtpLineEditCellTheme.axaml` | OtpLineEdit | `Background`, `BorderBrush`, `BorderThickness`, `BoxShadow`, `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_Frame` | template node (PixelAlignedBorder) | `OtpLineEditCellTheme.axaml` | OtpLineEditCell | `Background`, `BorderBrush`, `BorderThickness`, `BoxShadow`, `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ContentPresenter` | template node (ContentPresenter) | `OtpLineEditCellTheme.axaml` | OtpLineEditCell | `Content`, `ContentTemplate`, `HorizontalContentAlignment`, `VerticalContentAlignment` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `OtpLineEdit` | control theme | `OtpLineEditTheme.axaml` | 用户代码 / 控件宿主 | `CellItems`, `ClearIcon`, `FormFeedback`, `IsEffectiveShowClearButton`, `IsFormFeedbackVisible`, `IsMotionEnabled` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `PART_RootPanel` | template node (Grid) | `OtpLineEditTheme.axaml` | OtpLineEdit | `CellItems`, `ClearIcon`, `FormFeedback`, `IsEffectiveShowClearButton`, `IsFormFeedbackVisible`, `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `StackPanel` | template node (StackPanel) | `OtpLineEditTheme.axaml` | OtpLineEdit | `CellItems`, `ClearIcon`, `FormFeedback`, `IsEffectiveShowClearButton`, `IsFormFeedbackVisible`, `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -100,7 +100,10 @@ OtpLineEdit 的交互优先级：
 Disabled
 > ReadOnly
 > Native Error
-> Warning / Manual Error
+> Form Error
+> Form Warning
+> Explicit Warning
+> Explicit Error
 > Focus
 > PointerOver
 > Normal
@@ -155,18 +158,18 @@ OtpLineEdit 使用“根输入控件 + cell presenter + separator + action 区�
 
 - `SizeType` 控制 cell 高度、宽度、字号和间距。
 - `StyleVariant` 与 `LineEdit` 保持一致，支持 `Outlined`、`Filled`、`Borderless` 和 `Underlined` 四种输入表面；`Filled` 使用填充背景，`Borderless` 移除边框，`Underlined` 只保留下边线。
-- `Status` 只作为无 native error 时的手动状态请求。
+- `Status` 形成 `ExplicitStatus`，在无 native error 且无更高优先级 Form 状态时参与有效状态计算。
 - `DataValidationErrors.HasErrors=true` 时，根控件和所有 cell 呈现 error 视觉。
 - `IsMasked=true` 只改变字符展示，不改变 `Text`、复制、Form 值或 Completed 事件。
 - `Separator` 只占据视觉布局位置，不参与输入、复制、验证或长度计算。
 
-`OtpLineEditToken` 定义 cell 宽度、cell 间距和 separator 间距。边框、背景、focus shadow、disabled、error、warning 等输入表面语义优先复用 SharedToken、AddOnDecoratedBoxToken 与 LineEdit 输入家族 Token。
+`OtpLineEditToken` 定义 cell 宽度和 cell 间距。separator 的默认外边距属于模板布局常量；边框、背景、focus shadow、disabled、error、warning 等输入表面语义由 `InputControlFrameTheme` 与 SharedToken 统一提供，cell 文本字号复用 SharedToken 的输入字号。
 
 Token 边界：
 
-OtpLineEdit 使用 `OtpLineEditToken` 表达 OTP 分格输入的专属布局语义。它只定义 cell 宽度、cell 间距和 separator 间距，不承载验证码文本、active cell、mask、placeholder、Form 状态、validation error、focus、hover、pressed 或 disabled 等运行时状态。
+OtpLineEdit 使用 `OtpLineEditToken` 表达 OTP 分格输入的专属布局语义。它只定义 cell 宽度和 cell 间距，不承载验证码文本、separator 内容、active cell、mask、placeholder、Form 状态、validation error、focus、hover、pressed 或 disabled 等运行时状态。
 
-输入表面的颜色、边框、背景、focus shadow、disabled、error 和 warning 语义优先复用 SharedToken、AddOnDecoratedBoxToken 和 LineEdit 输入家族主题资源。OtpLineEditToken 不复制这些已有输入体系 Token。
+输入表面的颜色、边框、背景、focus shadow、disabled、error 和 warning 语义统一复用 `InputControlFrameTheme` 和 SharedToken。OtpLineEditToken 不复制这些已有输入体系 Token。
 
 ## Customization Boundaries
 
@@ -196,6 +199,6 @@ OtpLineEdit 使用 `OtpLineEditToken` 表达 OTP 分格输入的专属布局语�
 - native validation error 必须从根控件投射到全部 cell，不允许 cell 自行维护 error。
 - `IsReadOnly=true` 时禁止输入、粘贴、删除和清除，但保留复制和焦点视觉。
 - `IsEnabled=false` 时禁止全部交互入口。
-- 模板重建和 detach 不能泄漏事件订阅、binding、separator context 或 feedback subscription。
+- 模板重建不能泄漏旧按钮事件、binding 或 separator context；logical reattach 后模板按钮交互保持有效，Form feedback subscription 必须恢复。
 - separator 和 mask 不参与 `Text`、Form value、复制、验证和 completed 判断。
 - 粘贴分发必须通过 overlay 单次写入，避免视觉闪烁和状态中间态暴露。

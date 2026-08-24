@@ -161,6 +161,44 @@ ColorPicker、Extras、GalleryBase 和普通第三方包默认使用单一 Packa
 `[ControlPackageRegistrationEntry]`。Generator 从方法符号生成 entry manifest，不再要求项目文件维护完整类型名和方法名。
 Common 不是独立 linked Package，不声明该 Attribute，也不进入应用 Package plan；其完整注册仍由 Desktop 入口按上述顺序触发。
 
+## 图片加载注册
+
+图片系统复用 `UseAtomUI()` 构建窗口，不引入进程静态初始化或 Control 首次加载时的延迟注册：
+
+```csharp
+this.UseAtomUI(builder =>
+{
+    builder.UseImageLoading(options =>
+    {
+        options.MaxConcurrentDownloads = 6;
+        options.MaxConcurrentDecodes = 4;
+    });
+    builder.UseDesktopControls();
+});
+```
+
+顺序与幂等规则固定为：
+
+1. `UseImageLoading()` 在 Shared 的 Builder accumulator 中登记一个应用级 `ImageLoader` owned-service factory，并合并用户配置。
+2. `UseCommonControls()` 调用同一 `UseImageLoading()` 默认入口，再显式注册 Controls 拥有的 trusted
+   `avares` SVG codec；默认值不得覆盖用户显式值。
+3. `UseDesktopControls()` 仍先调用 `UseCommonControls()`，不另建 Desktop loader；DataGrid、ColorPicker 和 Extras 也不重复注册。
+4. configure callback 返回后，Core 冻结图片 options 与 codec registration；Shared pipeline 静态构造每个 source kind 的 reader，
+   然后构建 Localization、Theme 和 owned services。
+5. `ApplicationScope` 按注册顺序 attach owned services；`ImageLoader` attach 后才由
+   `Application.GetImageLoader()` 可见。
+6. 任一步失败按已成功 attach 的逆序回滚；`ApplicationScope` 销毁时按逆序 detach/dispose loader，再完成既有 Theme/
+   Localization 销毁。
+
+重复调用 `UseImageLoading()` 只合并同一个应用注册，不能产生多个 loader。source reader 按 kind 唯一，codec 按稳定 Id 和
+Version 去重；冲突在启动阶段失败。linked publish 的静态 registration closure 必须保留由 `UseCommonControls()` 引入的
+service factory、raster reader/codec 和 Asset SVG codec，不依赖反射或程序集扫描。
+
+Core 的 owned-service 机制是通用生命周期能力，不包含图片类型；完整设计见
+[管线、并发与生命周期](../systems/image-loading/pipeline-and-lifecycle.md)。图片公共配置、控件 API 与平台限制见
+[公共契约](../systems/image-loading/public-contracts.md)和
+[平台、性能与 AOT](../systems/image-loading/platforms-and-aot.md)。
+
 ## 源生成池
 
 当前 Control 包不手工维护完整 Token、主题资产或 Language 列表，而是依赖 `AtomUI.Generator` 生成：

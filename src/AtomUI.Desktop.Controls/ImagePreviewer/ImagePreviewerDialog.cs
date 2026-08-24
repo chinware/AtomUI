@@ -15,8 +15,8 @@ internal class ImagePreviewerDialog : Window,
                                       IMotionAwareControl
 {
     #region 公共属性定义
-    public static readonly StyledProperty<IList<ImagePreviewItem>?> ItemsSourceProperty =
-        AvaloniaProperty.Register<ImagePreviewerDialog, IList<ImagePreviewItem>?>(nameof(ItemsSource));
+    public static readonly StyledProperty<IList<ImagePreviewEntry>?> ItemsSourceProperty =
+        AvaloniaProperty.Register<ImagePreviewerDialog, IList<ImagePreviewEntry>?>(nameof(ItemsSource));
 
     public static readonly StyledProperty<bool> IsImageMovableProperty =
         ImagePreviewer.IsImageMovableProperty.AddOwner<ImagePreviewerDialog>();
@@ -65,7 +65,7 @@ internal class ImagePreviewerDialog : Window,
     public static readonly StyledProperty<Transform?> TransformProperty =
         AvaloniaProperty.Register<ImagePreviewerDialog, Transform?>(nameof(Transform));
 
-    public IList<ImagePreviewItem>? ItemsSource
+    public IList<ImagePreviewEntry>? ItemsSource
     {
         get => GetValue(ItemsSourceProperty);
         set => SetValue(ItemsSourceProperty, value);
@@ -169,8 +169,8 @@ internal class ImagePreviewerDialog : Window,
 
     #region 内部属性定义
 
-    internal static readonly DirectProperty<ImagePreviewerDialog, LoadedImageSource?> CurrentImageProperty =
-        AvaloniaProperty.RegisterDirect<ImagePreviewerDialog, LoadedImageSource?>(
+    internal static readonly DirectProperty<ImagePreviewerDialog, IImage?> CurrentImageProperty =
+        AvaloniaProperty.RegisterDirect<ImagePreviewerDialog, IImage?>(
             nameof(CurrentImage),
             o => o.CurrentImage,
             (o, v) => o.CurrentImage = v);
@@ -259,9 +259,9 @@ internal class ImagePreviewerDialog : Window,
             o => o.EffectivePreviewTitle,
             (o, v) => o.EffectivePreviewTitle = v);
 
-    private LoadedImageSource? _currentImage;
+    private IImage? _currentImage;
 
-    internal LoadedImageSource? CurrentImage
+    internal IImage? CurrentImage
     {
         get => _currentImage;
         set => SetAndRaise(CurrentImageProperty, ref _currentImage, value);
@@ -385,7 +385,7 @@ internal class ImagePreviewerDialog : Window,
 
     private readonly AbstractImagePreviewer _imagePreviewer;
     private readonly ImageViewer _imageViewer;
-    private ImagePreviewItem? _currentItem;
+    private ImagePreviewEntry? _currentItem;
     private bool _firstSizeCalculated;
     private int _windowResizeTransformSuppressionVersion;
     private ImageSwitchTransformPolicy _switchTransformPolicy = ImageSwitchTransformPolicy.CreateDefault();
@@ -624,7 +624,7 @@ internal class ImagePreviewerDialog : Window,
         UpdateEffectivePreviewTitle();
     }
 
-    private void SetCurrentItem(ImagePreviewItem? item)
+    private void SetCurrentItem(ImagePreviewEntry? item)
     {
         if (ReferenceEquals(_currentItem, item))
         {
@@ -648,10 +648,10 @@ internal class ImagePreviewerDialog : Window,
 
     private void HandleCurrentItemPropertyChanged(object? sender, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == nameof(ImagePreviewItem.LoadedSource) ||
-            args.PropertyName == nameof(ImagePreviewItem.State) ||
-            args.PropertyName == nameof(ImagePreviewItem.IsLoading) ||
-            args.PropertyName == nameof(ImagePreviewItem.IsFailed))
+        if (args.PropertyName == nameof(ImagePreviewEntry.FullImage) ||
+            args.PropertyName == nameof(ImagePreviewEntry.FullState) ||
+            args.PropertyName == nameof(ImagePreviewEntry.IsFullLoading) ||
+            args.PropertyName == nameof(ImagePreviewEntry.IsFullFailed))
         {
             UpdateCurrentImageState();
         }
@@ -659,9 +659,9 @@ internal class ImagePreviewerDialog : Window,
 
     private void UpdateCurrentImageState()
     {
-        SetCurrentValue(CurrentImageProperty, _currentItem?.LoadedSource);
-        SetCurrentValue(IsCurrentImageLoadingProperty, _currentItem?.IsLoading == true);
-        SetCurrentValue(IsCurrentImageFailedProperty, _currentItem?.IsFailed == true);
+        SetCurrentValue(CurrentImageProperty, _currentItem?.FullImage);
+        SetCurrentValue(IsCurrentImageLoadingProperty, _currentItem?.IsFullLoading == true);
+        SetCurrentValue(IsCurrentImageFailedProperty, _currentItem?.IsFullFailed == true);
         UpdateScaleCapability();
     }
 
@@ -678,15 +678,23 @@ internal class ImagePreviewerDialog : Window,
 
     private string? ResolvePreviewTitle()
     {
-        if (PreviewTitleResolver is null ||
-            ItemsSource is not { Count: > 0 } items)
+        if (ItemsSource is not { Count: > 0 } items)
         {
             return null;
         }
 
         var currentIndex = ResolveDisplayCurrentIndex(items.Count);
-        var context      = new ImagePreviewTitleResolveContext(items[currentIndex].Source, currentIndex, items.Count);
-        var title        = PreviewTitleResolver.ResolveTitle(context);
+        var item = items[currentIndex].Item;
+        if (!string.IsNullOrWhiteSpace(item.Title))
+        {
+            return item.Title;
+        }
+        if (PreviewTitleResolver is null)
+        {
+            return null;
+        }
+        var context = new ImagePreviewTitleResolveContext(item, currentIndex, items.Count);
+        var title = PreviewTitleResolver.ResolveTitle(in context);
         return string.IsNullOrWhiteSpace(title) ? null : title;
     }
 

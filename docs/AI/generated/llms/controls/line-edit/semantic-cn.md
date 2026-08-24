@@ -38,7 +38,7 @@ LineEdit
   -> EmbeddedTextBox (control theme, EmbeddedTextBoxTheme.axaml)
   -> InputClearIconButton (control theme, InputClearIconButtonTheme.axaml)
   -> LineEdit (control theme, LineEditTheme.axaml)
-     -> AddOnDecoratedBox#{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart} (template-stable)
+     -> AddOnDecoratedBox#{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart} (internal-observable)
         -> ScrollViewer#PART_ScrollViewer (template-stable)
            -> Panel (template-stable)
               -> TextBlock#Placeholder (template-stable)
@@ -51,13 +51,13 @@ LineEdit
         -> PixelAlignedBorder#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart} (template-stable)
            -> AddOnContentPresenter#PART_LeftAddOnPresenter (template-stable)
         -> Button#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart} (template-stable)
-        -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
+        -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (internal-observable)
            -> DockPanel#ContentLayout (template-stable)
               -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
               -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
   -> TextAreaDecoratedBox (control theme, TextAreaDecoratedBoxTheme.axaml)
-     -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
+     -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (internal-observable)
         -> Border#TextAreaContentFrame (template-stable)
            -> DockPanel#ContentLayout (template-stable)
               -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
@@ -75,7 +75,7 @@ LineEdit
 | `EmbeddedTextBox` | control theme | `EmbeddedTextBoxTheme.axaml` | LineEdit | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `InputClearIconButton` | control theme | `InputClearIconButtonTheme.axaml` | LineEdit | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `LineEdit` | control theme | `LineEditTheme.axaml` | 用户代码 / 控件宿主 | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `ClipToBounds`, `CompactSpaceItemPosition`, `CompactSpaceOrientation` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}` | template node (AddOnDecoratedBox) | `LineEditTheme.axaml` | LineEdit | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `ClipToBounds`, `CompactSpaceItemPosition`, `CompactSpaceOrientation` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}` | template node (AddOnDecoratedBox) | `LineEditTheme.axaml` | LineEdit | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `ClipToBounds`, `CompactSpaceItemPosition`, `CompactSpaceOrientation` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_ScrollViewer` | template node (ScrollViewer) | `LineEditTheme.axaml` | LineEdit | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `HorizontalContentAlignment`, `IsPlaceholderTextVisible`, `LineHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Panel` | template node (Panel) | `LineEditTheme.axaml` | LineEdit | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `HorizontalContentAlignment`, `IsPlaceholderTextVisible`, `LineHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Placeholder` | template node (TextBlock) | `LineEditTheme.axaml` | LineEdit | `HorizontalContentAlignment`, `IsPlaceholderTextVisible`, `LineHeight`, `PlaceholderForeground`, `PlaceholderText`, `TextAlignment` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -88,13 +88,13 @@ LineEdit
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}` | template node (PixelAlignedBorder) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnBorderThickness`, `LeftAddOnCornerRadius`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_LeftAddOnPresenter` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}` | template node (Button) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `IsEnabled`, `IsSearchButtonLoading`, `SearchButtonText`, `SearchButtonTheme`, `SizeType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ContentLayout` | template node (DockPanel) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentRightAddOn`, `ContentRightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `TextAreaDecoratedBox` | control theme | `TextAreaDecoratedBoxTheme.axaml` | LineEdit | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `TextAreaContentFrame` | template node (Border) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentLayout` | template node (DockPanel) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (AddOnContentPresenter) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
@@ -107,7 +107,7 @@ LineEdit
 
 | Template Part | 类型 | 所属主题 | 职责 |
 | --- | --- | --- | --- |
-| `PART_AddOnDecoratedBox` | `AddOnDecoratedBox` / 派生 decorated box | `LineEditTheme`、`SearchEditTheme`、`TextAreaTheme` | 输入壳体、Addon、状态视觉和 CompactSpace 状态承载。 |
+| `PART_InputControlFrame` | `InputControlFrame` / `AddOnDecoratedBox` 派生类型 | 全家族输入主题 | 输入表面、边框、背景、状态视觉、CompactSpace 和动效承载；派生 decorated box 只增加 AddOn 或专用布局。 |
 | `PART_ScrollViewer` / `ScrollViewer` | `ScrollViewer` | 全家族 | 文本滚动区域。 |
 | `PART_TextPresenter` | `InputTextPresenter` | 全家族 | 文本显示、光标、选择和密码 reveal。 |
 | `Placeholder` | `TextBlock` | 全家族 | 空文本占位提示。 |
@@ -120,7 +120,17 @@ LineEdit
 
 ## Pseudo Classes
 
-源文档未声明控件专属伪类。控件仍可能消费 Avalonia 标准状态，例如 `:pointerover`、`:pressed`、`:disabled` 和 focus 相关状态。
+| `InputControlFrame` | internal 输入表面组合控件，统一 variant、effective status、边框、背景、圆角、阴影、交互伪类、CompactSpace 和动效；不作为公共控件入口。 |
+
+继承与组合关系固定为：
+
+```text
+Avalonia.Controls.TextBox
+        ↓
+AbstractTextInput
+   ├── TextBox
+   ├── LineEdit
+   └── TextArea
 
 ## State Flow
 
@@ -128,12 +138,35 @@ LineEdit 家族的交互优先级：
 
 ```text
 Disabled
-> ReadOnly
-> Error / Warning
+> Native Error
+> Form Error
+> Form Warning
+> Explicit Warning
+> Explicit Error
 > Focus
 > PointerOver
 > Normal
 ```
+
+输入状态由三个来源组成：
+
+| 来源 | owner | 语义 |
+| --- | --- | --- |
+| `NativeValidationStatus` | `DataValidationErrors` | Avalonia 原生校验结果；`Error` 是 native error 的唯一视觉真源。 |
+| `FormStatus` | Form 集成层 | Form 写入的 warning、success、validating 及其 feedback；Form error 通过 Form-owned native validation entry 写入 `DataValidationErrors`。 |
+| `ExplicitStatus` | `AbstractTextInput.Status` | 用户显式设置的 error/warning 请求，不覆盖 native error，也不修改 Form 自己写入的状态。 |
+
+有效状态由 `InputControlFrame` 计算：
+
+```text
+Native Error / Form Error
+    > Form Warning
+    > Explicit Warning
+    > Explicit Error
+    > Default
+```
+
+Form reset 只清理 Form 自己写入的状态；`Status=Error` 不写入 native error；`Warning` 伪类只在最终有效状态为 Warning 时出现。
 
 `Disabled` 表示不可交互，文本使用 disabled 文本色，内部按钮不可作为操作入口。`IsReadOnly` 保持文本可见和可选中，但不允许编辑或清除。
 
@@ -164,15 +197,17 @@ LineEdit 家族使用输入壳体和文本 presenter 分层：
 
 | 主题 | 职责 |
 | --- | --- |
-| `TextBoxTheme.axaml` | 基础文本框模板、边框、padding、清除按钮、reveal、字数统计、基础 SizeType 字号和 TextPresenter margin。 |
-| `LineEditTheme.axaml` | 单行输入壳体、外部 AddOn、variant/status/focus 视觉，并把 native validation error 投射到外层输入壳体。 |
-| `SearchEditTheme.axaml` | 搜索输入壳体、搜索按钮状态传递和搜索按钮布局。 |
-| `SearchEditDecoratedBoxTheme.axaml` | 搜索按钮与输入壳体的一体化边框和布局。 |
-| `TextAreaTheme.axaml` | 多行输入壳体、字数统计、resize handle、固定行数和状态视觉。 |
-| `TextAreaDecoratedBoxTheme.axaml` | TextArea 内部 padding、右侧附加内容和 resize 相关布局。 |
+| `AbstractTextInput` shared template contract | 统一文本输入属性、placeholder、clear/reveal/count、Form feedback、native validation、CompactSpace 和 viewport metrics 接入。 |
+| `InputControlFrameTheme.axaml` | Outlined、Filled、Borderless、Underlined、hover、focus-within、pressed、disabled、error、warning、corner、shadow、CompactSpace 和 motion。 |
+| `TextBoxTheme.axaml` | 基础文本编辑模板、文本 presenter、TextBox 专属 padding、clear/reveal、字数统计和 frame 组合。 |
+| `LineEditTheme.axaml` | 单行文本布局、外部 AddOn、内部前后缀和 `InputControlFrame` 组合。 |
+| `SearchEditTheme.axaml` | 搜索输入模板、搜索按钮状态传递和 `SearchEditDecoratedBox` 组合。 |
+| `SearchEditDecoratedBoxTheme.axaml` | 搜索按钮与 frame 的一体化布局；不重复实现 frame 状态 selector。 |
+| `TextAreaTheme.axaml` | 多行文本、字数统计、固定行数和 `InputControlFrame` 组合。 |
+| `TextAreaDecoratedBoxTheme.axaml` | TextArea 内部 padding、右侧附加内容、scroll viewer 和 resize 相关布局。 |
 | `InputClearIconButtonTheme.axaml` / `RevealButtonTheme.axaml` | 内部 action 按钮视觉。 |
 
-`TextBoxToken` 提供基础 TextBox 边框、padding、hover/focus 和 shadow Token。`LineEditToken` 提供单行输入字号 Token。`TextAreaToken` 提供多行输入字号、右侧附加 padding 和 resize handle Token。LineEdit / TextArea 输入壳体的背景、状态、focus shadow 和 disabled 语义主要来自 SharedToken 与 AddOnDecoratedBoxToken。
+共享输入表面值由 `SharedToken` 和 `InputControlFrameTheme` 消费。`TextBoxToken`、`LineEditToken`、`TextAreaToken` 只保留各自稳定的文本尺寸、padding 和多行 resize 专属语义，不再承载输入表面边框、背景、focus shadow、error/warning 或 disabled 状态。
 
 Token 边界：
 
@@ -180,11 +215,11 @@ LineEdit 输入家族使用三个控件级 Token scope：
 
 | Token | Scope | 职责 |
 | --- | --- | --- |
-| `TextBoxToken` | `TextBox` | 基础文本框边框、圆角、尺寸 padding、hover/focus 边框和 focus shadow。 |
+| `TextBoxToken` | `TextBox` | TextBox 专属内容 padding。 |
 | `LineEditToken` | `LineEdit` | 单行输入框字号。 |
 | `TextAreaToken` | `TextArea` | 多行输入框字号、右侧附加 padding 和 resize handle 视觉。 |
 
-TextBox / LineEdit / TextArea Token 不承载文本值、placeholder、清除状态、密码 reveal、Form 状态、SearchEdit 运行状态、focus/hover/pressed 状态或 CompactSpace 运行时状态。这些状态分别由控件实例属性、共享输入主题、AddOnDecoratedBox、Form 和 C# 状态模型处理。
+TextBox / LineEdit / TextArea Token 不承载文本值、placeholder、清除状态、密码 reveal、Form 状态、SearchEdit 运行状态、focus/hover/pressed 状态或 CompactSpace 运行时状态。输入表面边框、背景、圆角、shadow、error/warning、disabled 和 motion 由 `InputControlFrameTheme` 与 `SharedToken` 处理；运行时状态由 `AbstractTextInput`、Form 和 frame 状态模型处理。
 
 ## Customization Boundaries
 
@@ -195,7 +230,9 @@ TextBox / LineEdit / TextArea Token 不承载文本值、placeholder、清除状
 - `SizeType=Custom` 以 `Middle` 作为未显式覆盖时的默认视觉基线。
 - `IsCustomFontSize=true` 时不得由 SizeType 样式覆盖用户设置的 `FontSize`。
 - 清除按钮只在有效状态为 true 时显示，且清除动作进入统一 `Clear()` 语义。
-- `LineEdit` 的外部 AddOn 必须由 `AddOnDecoratedBox` 承载，不在控件 C# 中动态创建视觉结构。
+- `InputControlFrame` 是所有输入表面状态 selector、边框、背景、focus shadow、error/warning、disabled 和 motion 的唯一 owner。
+- `AddOnDecoratedBox` 及其派生类型只承载 AddOn、内部内容和专用布局，不复制 frame 的状态计算或视觉 selector。
+- `StyleVariant`、`Status`、`SizeType`、Form 状态和 native validation 必须先由 `AbstractTextInput` 归一，再通过稳定绑定传给 frame。
 - `SearchEdit.IsOperating=true` 时按钮和 Enter 键不重复触发 `SearchRequested`。
 - `TextArea.Lines` 必须遵守 `MinLines` / `MaxLines`，resize 不得突破行数边界。
 - Form feedback 订阅必须在 detach 时释放。
@@ -207,10 +244,12 @@ TextBox / LineEdit / TextArea Token 不承载文本值、placeholder、清除状
 
 - `TextChanged` 继续驱动字数统计和 Form value changed。
 - 清除按钮可见性不在 AXAML 与 C# 中形成相互冲突的状态源。
+- TextBox 外框宽度由父布局和 `Width` / `MinWidth` / `MaxWidth` 契约决定，不能随 placeholder 或当前文本的测量宽度伸缩。
 - `IsCustomFontSize=true` 不能被 SizeType 字体样式覆盖。
-- `LineEdit` 的 error 视觉必须优先响应 `DataValidationErrors`；`Status` 只作为无 native error 时的手动视觉请求，并继续支持 warning 扩展视觉。
+- `InputControlFrame.EffectiveStatus` 必须遵守 Native Error / Form Error > Form Warning > Explicit Warning > Explicit Error > Default；native error 由 `DataValidationErrors` 唯一提供，Form reset 不得清理外部 native error。
+- 所有 `*AddOnDecoratedBox` 只能扩展 frame 布局，不能重新定义 variant/status/error/warning/disabled/motion selector。
 - `SearchEdit.IsOperating=true` 必须阻止按钮和 Enter 键产生重复搜索请求。
 - `TextArea` 的 fixed lines、auto-size 和 resize 不互相覆盖高度状态。
-- 重新套用模板不能泄漏旧按钮 click、旧 binding 或旧 Form feedback 订阅。
+- 重新套用模板不能泄漏旧按钮 click、旧模板 binding、旧 preedit 或旧 viewport source；logical reattach 后当前模板交互与状态绑定必须保持有效，Form feedback 必须重新订阅。
 - TextPresenter margin 是输入模板视觉契约；文本有效宽度由输入控件在模板所有权边界内统一计算并发布，不在业务控件或消费 behavior 中加入隐藏补偿。
 - 输入控件不得向内部消费方暴露 `TextPresenter` / `ScrollViewer` 实例；模板结构变化只能影响输入控件自己的度量实现。

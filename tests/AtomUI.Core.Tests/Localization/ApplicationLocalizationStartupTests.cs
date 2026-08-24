@@ -12,7 +12,7 @@ namespace AtomUI.Core.Tests.Localization;
 public class ApplicationLocalizationStartupTests
 {
     [Fact]
-    public void UseAtomUI_Publishes_Default_Application_Runtime_Services()
+    public void UseAtomUI_Publishes_Default_Application_Services()
     {
         HeadlessTestApp.Run(() =>
         {
@@ -22,12 +22,12 @@ public class ApplicationLocalizationStartupTests
             application.GetLocalizer().ShouldBeNull();
             application.UseAtomUI();
 
-            var runtime = AtomUIApplicationRuntimeStore.Get(application).ShouldNotBeNull();
-            application.GetLanguageManager().ShouldBeSameAs(runtime.LanguageManager);
-            application.GetLocalizer().ShouldBeSameAs(runtime.Localizer);
-            application.GetThemeManager().ShouldBeSameAs(runtime.ThemeManager);
-            runtime.LanguageManager.Current.CurrentLanguage.ShouldBe(LanguageTags.EnUS);
-            runtime.LanguageManager.Current.Revision.ShouldBe(0);
+            var scope = ApplicationScopeRegistry.Get(application).ShouldNotBeNull();
+            application.GetLanguageManager().ShouldBeSameAs(scope.LanguageManager);
+            application.GetLocalizer().ShouldBeSameAs(scope.Localizer);
+            application.GetThemeManager().ShouldBeSameAs(scope.ThemeManager);
+            scope.LanguageManager.Current.CurrentLanguage.ShouldBe(LanguageTags.EnUS);
+            scope.LanguageManager.Current.Revision.ShouldBe(0);
         });
     }
 

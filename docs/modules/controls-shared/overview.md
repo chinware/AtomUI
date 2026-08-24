@@ -26,4 +26,25 @@
 - [异步加载使用指南](../../guides/control-infrastructure/async-loading.md)
 - [过滤使用指南](../../guides/control-infrastructure/filtering.md)
 
+## 图片加载职责
+
+Shared 拥有统一图片系统的完整 engine 与公共数据契约：`ImageLoader.cs`、`ImageLoaderStore.cs`、Source/Request/Result/Error/
+Progress、Builder options、两级请求合并、下载/解码调度、encoded/decoded/file cache、HTTP transport、source readers、内容
+校验和 raster codec。所有文件位于单层 `src/AtomUI.Controls.Shared/ImageLoading/`；不创建 `Application/`、`Runtime/` 或
+`Internal/` 子目录。
+
+该模块只依赖 Core 提供的通用 owned-service 生命周期。它不引用 `AtomUI.Controls`，不包含 Avatar fallback、AsyncImage Theme、
+Previewer Current/Cover/Preload 策略，也不通过反射发现上层 SVG codec。Controls 使用显式 Builder 调用把 trusted Asset SVG
+codec 注册到同一个应用 loader。
+
+API、文件布局与引擎规则见：
+
+- [统一图片加载系统](../../architecture/systems/image-loading/overview.md)
+- [公共契约](../../architecture/systems/image-loading/public-contracts.md)
+- [控件 API](../../architecture/systems/image-loading/control-apis.md)
+- [管线、并发与生命周期](../../architecture/systems/image-loading/pipeline-and-lifecycle.md)
+- [缓存、HTTP 与内容安全](../../architecture/systems/image-loading/caching-and-security.md)
+- [平台、性能与 AOT](../../architecture/systems/image-loading/platforms-and-aot.md)
+- [验证与完成门禁](../../architecture/systems/image-loading/verification.md)
+
 过滤专题中的部分实现位于 `AtomUI.Desktop.Controls`，但统一契约和共享数据结构属于本模块的重要背景。

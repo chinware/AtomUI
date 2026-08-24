@@ -2,6 +2,25 @@
 
 本文档记录 ImagePreviewer 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-24
+
+- Breaking API
+  - Replace the single/multiple source properties and preview-specific source interfaces with `ItemsSource: IEnumerable<ImagePreviewItem>?`.
+  - Make `ImagePreviewItem` an immutable configuration record using `ImageLoadSource`, optional `ThumbnailSource`, per-item `FallbackSource`, `RequestOptions`, `Title` and `Tag`.
+  - Remove the control-private loader, loaded result types, scheduler and `MaxConcurrentLoads`; do not provide compatibility shims.
+  - Add current and cover load state projections, `ImageOpened`/`ImageFailed`, `ReloadCurrent()`, `ReloadItem(index)` and `ReloadCover()`.
+- Loading
+  - Route current, cover and neighbor requests through the application-scoped `IImageLoader` with Critical, High and Preload priorities.
+  - Keep Full and Thumbnail generations, cancellation and result leases isolated in internal `ImagePreviewEntry` instances.
+  - Apply fallback per item and per channel; one failed item never replaces the collection.
+  - Make Full and Thumbnail requests size-aware: re-decode when the 16 px physical bucket grows after real layout, resize or DPI change, keep
+    the previous lease during replacement, and deduplicate repeated requests for the same bucket.
+- Collections and lifecycle
+  - Support enumerable replacement and observable Add, Remove, Move, Replace and Reset while reusing unchanged entries.
+  - Re-materialize on reattach, release Full leases when the preview host closes, and release Full/Thumbnail leases on detach.
+- Titles
+  - Resolve titles in the order explicit preview/window title, item title, resolver and empty state.
+
 ## 2026-07-23
 
 - Behavior

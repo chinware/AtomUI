@@ -79,6 +79,12 @@ thickness。Direct Popup 的 host frame 默认透明；可见弹层内容必须�
 AtomUI 自有的 content-owned 消费者继承 Popup 原语的 `null` 默认值，不在 AXAML 入口或共享 C# 构造路径重复赋值。
 新增 Popup-bearing 控件只有在明确选择 host-owned 模式时才设置非空 Brush，并更新库存测试和控件家族回归。
 
+关闭分为普通交互关闭和生命周期 teardown。普通关闭在实际 PlacementTarget 与打开时的 owning `TopLevel` 仍属于同一
+有效会话时允许播放 `CloseMotion`；若 Popup 打开时存在 logical owner，该 owner 也必须继续有效。PlacementTarget detach、
+已建立的 Popup logical owner detach、PlacementTarget 切换到其他 `TopLevel` 或目标无法转换到原 TopLevel 时，关闭不得被
+动效延迟，必须立即释放 Avalonia PopupHost 和定位订阅。自身没有 logical owner、但具有有效显式 PlacementTarget 的 Direct
+Popup 仍可使用普通关闭动效。
+
 ## Theme and Token Boundaries
 
 ```text
@@ -120,7 +126,8 @@ Token 边界：
 - native/overlay 切换只改变宿主和 shadow token，不改变 `SurfaceBackground` 语义。
 - `SurfaceBackground=null` 时 frame renderer 继续使用透明 fill，专用 Presenter 的背景、圆角、Padding、阴影和定位保持不变。
 - Popup Child 内未被内部滚动控件消费的 wheel 事件在 popup 边界终止，避免滚动外层 placement target 祖先。
-- close motion、快速重开、detach 和 host cleanup 必须保持成对生命周期。
+- 普通 close motion、快速重开和 motion completion 必须保持单一关闭状态流；placement target detach、logical detach、
+  跨 `TopLevel` 与 transform 失效属于不可延迟的 host teardown。
 - `SurfaceBackground` 是可选公共 StyledProperty；默认 `null` 保持 Direct Popup 与专用 Popup 家族的透明 host frame 契约；
   需要遮挡下层内容的 Direct Popup Child 必须拥有自己的背景。
 
@@ -132,3 +139,7 @@ Token 边界：
 - `SurfaceBackground` 的属性默认值必须为 `null`，Popup Theme 不得覆盖该默认值。
 - content-owned Popup 不重复设置 `null`；host-owned Popup 必须显式提供非空 Brush。
 - relay binding 的 attach/re-attach/detach 必须有单一 owner 和对称释放。
+- close motion 只能延迟仍连接到打开时 owning TopLevel 的普通关闭；打开时已存在的 logical owner、host 或 anchor 生命周期
+  失效时不得保留 Avalonia open state。没有 logical owner 的 Direct Popup 以显式 PlacementTarget 会话为准。
+- Popup 必须以共享 `MotionExecutionState` 表达关闭动效阶段；`Pending`、`Playing` 和 `Completing` 单向收敛，重复
+  close 不得创建并行关闭动效，`Closed` 必须回到 `Idle`。

@@ -78,25 +78,25 @@ public static IAtomUIBuilder UseLanguages(
 
 ---
 
-### Task 3: Own Application runtime services and resource lifetime
+### Task 3: Own Application-scoped services and resource lifetime
 
 **Files:**
-- Create: `src/AtomUI.Core/AtomUIApplicationRuntime.cs`
-- Create: `src/AtomUI.Core/AtomUIApplicationRuntimeStore.cs`
-- Create: `tests/AtomUI.Core.Tests/Localization/AtomUIApplicationRuntimeTests.cs`
+- Create: `src/AtomUI.Core/ApplicationScope.cs`
+- Create: `src/AtomUI.Core/ApplicationScopeRegistry.cs`
+- Create: `tests/AtomUI.Core.Tests/Localization/ApplicationScopeTests.cs`
 
 **Interfaces:**
-- `AtomUIApplicationRuntime` owns the concrete ThemeManager and LocalizationRuntime.
-- The runtime mounts/removes the stable provider in `Application.Resources.MergedDictionaries`.
-- The runtime mounts/removes one `TopLevel` style whose `Visual.FlowDirectionProperty` uses the internal dynamic language resource key.
-- The store uses Application identity, rejects duplicate attach, supports exact detach, and does not use AvaloniaLocator for localization.
+- `ApplicationScope` owns the concrete ThemeManager and LocalizationHost.
+- The scope mounts/removes the stable provider in `Application.Resources.MergedDictionaries`.
+- The scope mounts/removes one `TopLevel` style whose `Visual.FlowDirectionProperty` uses the internal dynamic language resource key.
+- The registry uses Application identity, rejects duplicate registration, supports exact unregistration, and does not use AvaloniaLocator for localization.
 
 - [ ] Write RED tests for one provider mount, stable provider identity, service identity, duplicate attach rejection, FlowDirection dynamic update, and disposal cleanup.
-- [ ] Run tests and confirm missing runtime/store RED.
-- [ ] Implement the application-owned runtime and weak identity store.
+- [ ] Run tests and confirm missing scope/registry RED.
+- [ ] Implement the application-owned scope and weak identity registry.
 - [ ] Ensure disposal removes provider/style and disposes Manager subscriptions without retaining Window or ViewModel objects.
 - [ ] Run Core tests to GREEN.
-- [ ] Commit `feat(Core): own application localization runtime`.
+- [ ] Commit `feat(Core): own application localization scope`.
 
 ---
 

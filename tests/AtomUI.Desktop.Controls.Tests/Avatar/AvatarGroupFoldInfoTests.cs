@@ -8,7 +8,7 @@ using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 
-using DesktopAvatar = AtomUI.Desktop.Controls.Avatar;
+using DesktopAvatar = AtomUI.Controls.Avatar;
 
 namespace AtomUI.Desktop.Controls.Tests.Avatar;
 
@@ -214,22 +214,27 @@ public class AvatarGroupFoldInfoTests
     }
 
     [Fact]
-    public void Avatar_BitmapSrc_Content_Is_Clipped_By_Circle_Shape()
+    public void Avatar_Borrowed_Image_Content_Is_Clipped_By_Circle_Shape()
     {
         using var bitmap = new RenderTargetBitmap(new PixelSize(4, 4), new Vector(96, 96));
         var avatar = new DesktopAvatar
         {
             Size      = 64,
-            Shape     = AvatarShape.Circle,
-            BitmapSrc = bitmap
+            Shape  = AvatarShape.Circle,
+            Source = ImageLoadSource.FromImage(bitmap)
         };
+        avatar.Measure(new Size(64, 64));
+        avatar.Arrange(new Rect(0, 0, 64, 64));
 
         ShowInWindow(avatar, () =>
         {
+            avatar.LoadError.ShouldBeNull();
+            avatar.LoadState.ShouldBe(ImageLoadState.Loaded);
             var imagePresenter = avatar.GetVisualDescendants()
                                        .OfType<Image>()
                                        .Single(image => image.Name == "ImagePresenter");
 
+            imagePresenter.Source.ShouldBeSameAs(bitmap);
             imagePresenter.IsVisible.ShouldBeTrue();
 
             var clippingFrame = imagePresenter.GetVisualAncestors()
@@ -287,6 +292,17 @@ public class AvatarGroupFoldInfoTests
         {
             window.Show();
             Dispatcher.UIThread.RunJobs();
+            if (content is IImageLoadControl imageControl && imageControl.Source is not null)
+            {
+                SpinWait.SpinUntil(
+                        () =>
+                        {
+                            Dispatcher.UIThread.RunJobs();
+                            return imageControl.LoadState is ImageLoadState.Loaded or ImageLoadState.Failed;
+                        },
+                        TimeSpan.FromSeconds(2))
+                    .ShouldBeTrue("the image request should reach a terminal state");
+            }
             assertion();
         }
         finally

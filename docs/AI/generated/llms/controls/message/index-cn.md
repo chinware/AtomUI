@@ -151,6 +151,7 @@ Message Token 只表达组件级视觉变量，例如尺寸、间距、颜色、
 - `src/AtomUI.Desktop.Controls/Message/Themes/MessageCardTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Message/Themes/WindowMessageManagerTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Message/WindowMessageManager.cs`
+- `src/AtomUI.Core/MotionScene/MotionExecutionState.cs`
 
 职责边界：
 

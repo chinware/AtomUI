@@ -2,6 +2,16 @@
 
 本文档记录 Popup 控件级 API、Theme、Token、实现结构和设计契约变化，不替代仓库根目录 `CHANGELOG.md`。
 
+## 2026-08-24
+
+- Lifecycle
+  - Separate ordinary animated close from placement-target and logical-owner teardown; invalid popup sessions now close synchronously instead of retaining an Avalonia host without a valid anchor.
+  - Require an animated close to preserve every owner established for the current open session: an existing logical owner must remain attached, while the effective PlacementTarget must remain attached, transformable and owned by the captured TopLevel. Direct Popup sessions that started without a logical owner continue to animate against an explicit valid PlacementTarget.
+- Motion
+  - Replace independent close-motion flags with the shared internal `AtomUI.MotionScene.MotionExecutionState` flow (`Idle` / `Pending` / `Playing` / `Completing`), coalesce repeated close requests and clear motion/session state from the `Closed` boundary.
+- Verification
+  - Add lifecycle regressions for placement-target detach, Popup logical detach, cross-TopLevel target replacement and ordinary animated close behavior.
+
 ## 2026-08-21
 
 - API

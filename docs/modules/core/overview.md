@@ -29,7 +29,7 @@
 | `Theme/DesignTokens/` | 仅供编译阶段使用的 DesignToken、ControlToken builder、定义和 value converter |
 | `Localization/` | 根 Builder 的本地化扩展；Catalog、Snapshot、Manager 和资源扩展位于 `AtomUI.Localization` 项目 |
 | `Animations/` | Avalonia Transition 扩展 |
-| `MotionScene/` | 进入、离开、移动、折叠等 Motion 抽象 |
+| `MotionScene/` | 进入、离开、移动、折叠等 Motion 抽象，以及供上层控件复用的 internal 动效执行生命周期词汇 |
 | `Assets/Themes/` | 内置主题定义 |
 | `Reflection/`、`Input/`、`Media/`、`Utils/` | 面向上层控件复用的内部工具 |
 
@@ -41,6 +41,17 @@ type/identity、允许零 Own Token 的 descriptor、ControlTheme asset manifest
 registry 后不扫描上层程序集或 AXAML。它对多个上层项目开放 `InternalsVisibleTo`，因此修改内部 API 时需要同时
 检查上层 Control 包。
 
+## 图片加载生命周期职责
+
+Core 增加内部 `IAtomUIOwnedService`、Builder factory 收集和 `ApplicationScope` 的 attach/回滚/逆序 dispose。该机制供
+Shared 的 `ImageLoader` 使用，但 Core 不定义图片 Source、请求、缓存、HTTP、codec 或控件状态，也不反向引用
+`AtomUI.Controls.Shared`。
+
+owned service 必须在 `UseAtomUI()` 构建阶段一次性冻结，按注册顺序 attach，启动失败和应用销毁按逆序清理。图片 loader 的
+Application 映射由 Shared 的 `ImageLoaderStore` 管理；Core 不增加 `ApplicationImageLoader`、图片 service locator 或进程级
+静态 cache。完整生命周期见
+[图片加载管线、并发与生命周期](../../architecture/systems/image-loading/pipeline-and-lifecycle.md)。
+
 ## 相关文档
 
 - [主题系统架构](../../architecture/systems/theming/runtime.md)
@@ -51,3 +62,4 @@ registry 后不扫描上层程序集或 AXAML。它对多个上层项目开放 `
 - [AtomUI Theme Definition XML Schema v1](../../reference/theming/schemas/atomui-theme-v1.xsd)
 - [启动与注册链路](../../architecture/foundations/startup-and-registration.md)
 - [运行平台策略](../../architecture/foundations/runtime-platforms.md)
+- [统一图片加载系统](../../architecture/systems/image-loading/overview.md)

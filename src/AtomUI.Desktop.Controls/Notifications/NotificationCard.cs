@@ -150,6 +150,7 @@ public class NotificationCard : ContentControl, IMotionAwareControl
     #endregion
 
     private bool _isClosing;
+    private MotionExecutionState _closeMotionState;
     private readonly WindowNotificationManager _notificationManager;
     private Grid? _layout;
     private IconButton? _closeButton;
@@ -225,7 +226,7 @@ public class NotificationCard : ContentControl, IMotionAwareControl
 
         if (IsClosing)
         {
-            Dispatcher.InvokeAsync(ApplyHideMotionAsync, DispatcherPriority.Loaded);
+            ScheduleHideMotion(DispatcherPriority.Loaded);
         }
         else
         {
@@ -275,9 +276,15 @@ public class NotificationCard : ContentControl, IMotionAwareControl
 
     private async Task ApplyHideMotionAsync()
     {
+        if (_closeMotionState != MotionExecutionState.Pending)
+        {
+            return;
+        }
+
+        _closeMotionState = MotionExecutionState.Playing;
         if (_motionActor is null || !IsMotionEnabled)
         {
-            IsClosed = true;
+            CompleteCloseMotion();
             return;
         }
 
@@ -304,7 +311,43 @@ public class NotificationCard : ContentControl, IMotionAwareControl
         }
 
         await motion.RunAsync(_motionActor);
-        IsClosed = true;
+        CompleteCloseMotion();
+    }
+
+    private void ScheduleHideMotion(DispatcherPriority? priority = null)
+    {
+        if (!IsClosing || IsClosed || _closeMotionState != MotionExecutionState.Idle)
+        {
+            return;
+        }
+
+        _closeMotionState = MotionExecutionState.Pending;
+        if (priority is { } dispatcherPriority)
+        {
+            Dispatcher.InvokeAsync(ApplyHideMotionAsync, dispatcherPriority);
+        }
+        else
+        {
+            Dispatcher.InvokeAsync(ApplyHideMotionAsync);
+        }
+    }
+
+    private void CompleteCloseMotion()
+    {
+        if (_closeMotionState != MotionExecutionState.Playing)
+        {
+            return;
+        }
+
+        _closeMotionState = MotionExecutionState.Completing;
+        try
+        {
+            IsClosed = true;
+        }
+        finally
+        {
+            _closeMotionState = MotionExecutionState.Idle;
+        }
     }
 
     private void HandleCloseButtonClose(object? sender, EventArgs args)
@@ -342,7 +385,7 @@ public class NotificationCard : ContentControl, IMotionAwareControl
         {
             if (IsClosing)
             {
-                Dispatcher.InvokeAsync(ApplyHideMotionAsync);
+                ScheduleHideMotion();
             }
         } 
         else if (change.Property == IconProperty)

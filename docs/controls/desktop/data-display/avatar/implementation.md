@@ -1,140 +1,169 @@
 # Avatar 桌面版实现原理
 
-本文档描述 Avatar 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [Avatar 桌面版架构设计](overview.md)，变化记录见 [Avatar Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [Avatar Token 设计](token.md)。
+本文档描述 Avatar 控件家族的源码 ownership、图片加载状态流、模板生命周期和资源释放规则。公共契约见
+[Avatar 控件家族架构设计](overview.md)，Token 语义见 [Avatar Token 设计](token.md)。
 
 ## 1. 实现定位
 
-本文档覆盖 Avatar 的控件实现、主题接入、状态同步和 Gallery 可见维护边界。具体属性注册、默认值、绘制细节和 AXAML selector 仍应直接阅读源码；本文只记录维护者必须理解的稳定结构和不变量。
+本文覆盖单头像、桌面 AvatarGroup、共享单图 controller、主题接入和图片租约生命周期。具体 StyledProperty 注册、Token 派生值和
+AXAML selector 仍以源码为准；本文只记录跨文件协作和维护时不可破坏的实现边界。
 
 ## 2. 源码文件结构
 
-主要源码文件：
+`AtomUI.Controls` 拥有单头像实现：
 
-- `src/AtomUI.Controls/Avatar/AbstractAvatar.cs`
-- `src/AtomUI.Controls/Avatar/AvatarPseudoClass.cs`
-- `src/AtomUI.Controls/Avatar/AvatarShape.cs`
-- `src/AtomUI.Desktop.Controls/Avatar/Avatar.cs`
-- `src/AtomUI.Desktop.Controls/Avatar/AvatarGroup.cs`
-- `src/AtomUI.Desktop.Controls/Avatar/AvatarToken.cs`
-- `src/AtomUI.Desktop.Controls/Avatar/Themes/AvatarGroupTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Avatar/Themes/AvatarTheme.axaml`
+```text
+src/AtomUI.Controls/Avatar/
+├── AbstractAvatar.cs
+├── Avatar.cs
+├── AvatarPseudoClass.cs
+├── AvatarShape.cs
+├── AvatarToken.cs
+└── Themes/AvatarTheme.axaml
+```
 
-职责边界：
+`AtomUI.Desktop.Controls` 只拥有桌面组合控件：
 
-- 控件主文件保留 public/protected API、Avalonia 属性注册、事件和主要生命周期入口。
-- Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
-- Token 文件只提供组件视觉变量，不保存实例状态。
-- Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
+```text
+src/AtomUI.Desktop.Controls/Avatar/
+├── AvatarGroup.cs
+├── AvatarGroupFoldInfo.cs
+└── Themes/AvatarGroupTheme.axaml
+```
+
+`Avatar` 和 `AvatarToken` 不在 Desktop 包中保留副本。Desktop 通过对 Controls 的正常项目引用复用类型和 Token resource。
 
 ## 3. 核心类职责
 
-- `AbstractAvatar`：跨平台或共享基类，承载公共 API、状态归一和模板生命周期。
-- `Avatar`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `AvatarGroup`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `AvatarToken`：控件 Token scope，负责从全局 token 派生控件语义变量。
-
-核心协作规则：
-
-- 控件实例是 public API 和运行时状态 owner。
-- Template part 是视觉协作对象，生命周期必须受 `OnApplyTemplate` 或模板加载流程管理。
-- 数据对象、选项对象、任务对象或节点对象只保存业务数据，不应反向持有不可释放的视觉对象。
-- 弹层、窗口、计时器、异步 loader 和全局管理器必须有明确关闭、解绑或释放路径。
+- `AbstractAvatar`：Avalonia 属性、图片 controller host、内容优先级、尺寸/形状归一、加载状态和模板生命周期。
+- `Avatar`：可实例化的公共控件类型，不建立第二套状态。
+- `ImageLoadController`：与 `AsyncImage` 共用的单图片请求 owner，负责 generation、取消、fallback、Reload、progress 和租约提交。
+- `AvatarToken`：从全局 Token 派生 Avatar 与 AvatarGroup 共用的视觉值。
+- `AvatarGroup`：子 Avatar 排列、重叠宽度、折叠计数和 Flyout 生命周期。
 
 ## 4. 状态与数据流
 
-Avatar 的状态流遵循下面路径：
-
 ```text
-Public API / ItemsSource / Command / Event
-  -> 控件实例状态
-  -> internal state / effective state / pseudo-class
-  -> template part property / AXAML selector
-  -> renderer / popup / adorner / Gallery observable behavior
+Source / FallbackSource / RequestOptions / Bounds / render scaling
+  -> ImageLoadController generation
+  -> Application.GetImageLoader().LoadAsync(...)
+  -> ImageLoadResult lease
+  -> UI dispatcher generation check
+  -> LoadedImage + LoadState/Error/Progress
+  -> ContentType(Image/Text/Icon) + pseudo-classes
+  -> AvatarTheme
 ```
 
-源码中的状态入口按以下语义维护：
+`AbstractAvatar` 实现 `IImageLoadControllerHost`。它只向 controller 暴露当前 Visual、Normal priority、attach 状态、16 px
+量化后的物理解码尺寸和状态提交回调，不直接访问 transport 或 cache。
 
-- 内容与数据：`BitmapSrc`、`FoldAvatarFlyoutTriggerType`、`FoldInfoAvatarBackground`、`FoldInfoAvatarForeground`、`Icon`、`Src`、`Text`。
-- 选择与集合：`MaxDisplayCount`。
-- 交互与状态：`IsMotionEnabled`。
-- 视觉与布局：`Gap`、`Shape`、`Size`、`SizeType`。
+Source、FallbackSource 或 RequestOptions 变化调用 `SourceConfigurationChanged()`。Arrange 完成后调用 `RefreshSize()`；只有有效
+Bounds 产生新的尺寸 bucket 时才需要新请求。属性快照和状态提交均在 UI 线程边界完成。
 
-维护要求：
+## 5. 组合结构模型
 
-- 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
-- 集合、选择、展开、过滤、分页、上传任务或异步 loader 必须能处理 reset、replace 和 clear。
-- 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
-- overview.md 的 API 契约说明应与源码实际状态流一致。
+### 控件角色图
 
-## 5. 生命周期与模板接入
+```text
+Avatar
+  -> Border#Frame (internal-observable)
+     -> ContentPresenter#IconPresenter (internal-observable)
+     -> Image#ImagePresenter (internal-observable)
+     -> TextBlock#PART_TextPresenter (template-stable)
 
-生命周期规则：
+AvatarGroup
+  -> child Avatar collection (public)
+  -> fold Avatar + Flyout (internal-observable)
+```
 
-- 构造阶段只注册必要状态，不依赖 template part。
-- 模板应用时获取 part、建立事件订阅和绑定，并先释放旧 part 订阅。
-- 控件卸载、弹层关闭、窗口关闭、集合替换或 container recycle 时释放事件订阅和资源宿主。
-- DynamicResource、TokenResourceBinder 或 C# binding 必须有明确 owner 和释放点。
-- Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
+### 协作节点
 
-稳定 template part 接入点：
+| 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
+| --- | --- | --- | --- | --- | --- | --- |
+| `Avatar` | public control | `AvatarTheme.axaml` | visual tree | 单头像全部 API | public | 用户可直接使用 |
+| `ImageLoadController` | internal coordinator | C# | `AbstractAvatar` | Source、fallback、状态、Reload | internal-observable | 只用于理解统一状态机 |
+| `PART_TextPresenter` | `TextBlock` | `AvatarTheme.axaml` | template | Text、Gap、Size | template-stable | 改名需同步实现、主题和文档 |
+| `AvatarGroup` | public control | `AvatarGroupTheme.axaml` | visual tree | Children、折叠和尺寸投影 | public | 用户可直接使用 |
+| fold Avatar/Flyout | internal visual | C# + Theme | `AvatarGroup` | MaxDisplayCount、trigger、fold colors | internal-observable | 不作为独立 API 暴露 |
 
-- `PART_TextPresenter`：展示用户内容、文本、图标或模板化数据。
+内容选择只有三个结果：
 
-## 6. 交互与事件处理
+1. `LoadedImage != null` 时选择 Image。
+2. 否则 `Text != null` 时选择 Text。
+3. 否则选择 Icon。
 
-Avatar 的交互事件应从输入源收敛到控件级语义事件：
+因此 Loading、取消或主来源失败不会主动清空 Text/Icon。Controller 在主来源终态失败后至多请求一次 FallbackSource；主来源
+和 fallback 身份相同则不重复请求。fallback 成功时设置 `:loaded` 与 `:fallback`，最终失败时设置 `:failed`。
 
-- Pointer、keyboard、focus 和 command 事件不应绕过 Avalonia 基础控件语义。
-- 弹层、窗口或 overlay 类路径必须稳定处理打开、关闭、取消、重复打开和宿主失活。
-- 非集合控件不应通过隐藏集合状态模拟业务数据。
-- 输入类路径必须保持 Form、validation、clear、placeholder 和键盘行为一致。
+事件与状态提交顺序必须一致：先保存当前结果和状态，再触发 `ImageOpened`；最终失败先提交错误状态，再触发 `ImageFailed`。
+取消、detach 和 generation 过期不属于图片失败事件。
 
-当前没有抽取到控件专属 public 事件；交互语义主要通过继承事件、命令、属性变化和 Gallery 可观察行为体现。
+## 6. 生命周期与模板接入
 
-## 7. 内部算法与关键流程
+成功的 `ImageLoadResult` 是图片使用租约。Controller 持有当前租约，来源变化、detach、最终失败或 controller dispose 时释放。
+替换图片时先接管新租约，再释放旧租约，避免 decoded cache entry 在视觉切换前被销毁。
 
-维护者需要重点关注以下流程：
+`Reload()` 不创建新的公开来源状态；它对当前 Source 发起 `ImageCacheMode.Reload` 请求：
 
-- API 默认值到 effective state 的归一。
-- Template part 重新应用时的状态回放。
-- 主题资源、Token 和 SharedToken 计算后的视觉更新。
-- 内容、命令和视觉状态在模板节点之间的同步。
-- 动效启停、初始加载阶段 transition 抑制和卸载取消。
+- HTTP 允许使用已有 metadata 做条件重验证。
+- File、Asset、StorageFile、Bytes 和 Stream 强制重新读取来源。
+- Reload 期间可保留旧图片；新结果只有通过 generation 校验后才能替换。
 
-实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
+`ImageLoadSource.FromImage` 是 borrowed source。其结果租约只约束消费期，不能 dispose 调用方的 `IImage`。
 
-## 8. 资源、性能与 AOT 边界
+| 获取/建立 | 对应释放 |
+| --- | --- |
+| controller attach 与 loader waiter | visual detach 时 controller detach/cancel |
+| 当前 `ImageLoadResult` lease | Source 清空、替换终态、detach 或 dispose |
+| `PART_TextPresenter.SizeChanged` | template reapply 前解除 |
+| AvatarGroup motion binding | group detach 时 dispose |
+| AvatarGroup fold Flyout/临时视觉 | rebuild、detach 或 owner 释放时清理 |
 
-资源和 AOT 约束：
+Reattach 时 controller 使用当前 Source 和当前尺寸重新请求。模板重套用必须先解除旧 TextBlock 事件，再连接新
+`PART_TextPresenter`。AvatarGroup 只管理组合视觉，不取消或复用子 Avatar 的图片请求。
 
-- 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
-- 不把可静态声明的模板结构迁移到 C# 动态创建。
-- 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
-- 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
-- Source generator 生成文件不手工编辑；需要修改时改输入源或 generator。
+## 7. 交互与事件处理
 
-性能边界：
+Avatar 没有独立的 pointer 或 keyboard 状态机；基础交互由 Avalonia 控件和 Theme 处理。图片回调先在 UI dispatcher 校验
+generation 和 attach 状态，再提交结果。成功时先保存 lease、状态和内容，再触发 `ImageOpened`；最终失败时先提交 error 状态，
+再触发 `ImageFailed`。取消、detach 和过期 generation 不触发失败事件。`Reload()` 是唯一命令式图片入口。
 
-- 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
-- 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
-- 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
+## 8. 内部算法与关键流程
 
-## 9. 维护不变量
+`AvatarTheme.axaml` 通过 internal `ContentType` 选择 Image、Text 或 Icon presenter。唯一稳定 template part 是
+`PART_TextPresenter: Avalonia.Controls.TextBlock`。
 
-维护 Avatar 时不得破坏：
+模板重套用时先解除旧 `SizeChanged` 订阅，再取得并订阅新 TextBlock。文本缩放输入为最终控件宽度、`Gap`、FontSize 和
+FontFamily；缩放上限为 1，不放大短文本。`Gap * 2 >= Width` 或非 Text 状态时清除 transform。
 
-- Public API、默认值、事件顺序和 Gallery 可观察行为。
-- Template part 名称、ControlTheme key、伪类和资源 key。
-- 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
-- Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
+`Size` 非 `NaN` 时保存原 SizeType 并切换到 Custom；恢复 `NaN` 后回到原 SizeType。Circle 形状把最终宽度的一半写入模板
+CornerRadius。图片请求尺寸来自 Bounds 与 TopLevel render scaling，而不是 Token 名称或逻辑像素直接值。
 
-## 10. 测试与验证
+## 9. 资源、性能与 AOT 边界
 
-推荐验证：
+- 不进行同步网络或文件 I/O。
+- 不使用固定延迟等待布局；Arrange 和尺寸 bucket 是唯一尺寸就绪信号。
+- 不创建控件私有 `HttpClient`、cache 或 scheduler。
+- Theme、codec 和 loader 通过静态注册保留，不使用反射扫描。
+- Browser 使用统一 loader 的 Browser 能力矩阵；Avatar 不增加平台分支 API。
+- 快速 Source 切换只允许当前 generation 回写，旧结果必须及时释放。
 
-- 纯文档改动运行 `git diff --check` 并检查相对链接。
-- 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
-- DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
-- Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests`。
-- AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。
+## 10. 维护不变量
+
+- `ImageLoadController` 是 Avatar 与 `AsyncImage` 的单图状态机 owner，不在 Avatar 内复制请求协调逻辑。
+- 内容优先级始终为 Image、Text、Icon；Loading 和取消不清空可用降级内容。
+- 每个已提交 cache image 必须由一个有效 lease 支撑；borrowed image 永不由控件销毁。
+- Source、options、尺寸或 attach generation 变化后，旧结果只能释放，不能回写状态。
+- Template reapply、detach、group rebuild 和 Application dispose 都有明确的取消、解绑和释放路径。
+- 单头像和 Token 只存在于 `AtomUI.Controls`，Desktop 包只拥有 AvatarGroup 组合能力。
+
+## 11. 测试与验证
+
+维护 Avatar 时至少覆盖：
+
+- Source、FallbackSource、Text、Icon 优先级与状态伪类。
+- A -> B 快速切换、Reload、detach/reattach、尺寸 bucket 和 render scaling。
+- 主失败/fallback 成功、最终失败、事件顺序和 progress generation。
+- owned cache image 与 borrowed image 的释放责任。
+- AvatarTheme 独立于 Desktop 类型，AvatarGroup 仍能消费同一 Token。
+- Gallery 示例只使用 `Source`/`ImageLoadSource`。

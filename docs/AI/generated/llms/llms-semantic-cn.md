@@ -1807,9 +1807,9 @@ ComboBox
 | `Panel` | template node (Panel) | `ComboBoxTextBoxTheme.axaml` | ComboBoxTextBox | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `HorizontalContentAlignment`, `LineHeight`, `PasswordChar` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Placeholder` | template node (TextBlock) | `ComboBoxTextBoxTheme.axaml` | ComboBoxTextBox | `HorizontalContentAlignment`, `LineHeight`, `PlaceholderForeground`, `PlaceholderText`, `TextAlignment`, `TextWrapping` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_TextPresenter` | template node (InputTextPresenter) | `ComboBoxTextBoxTheme.axaml` | ComboBoxTextBox | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `HorizontalContentAlignment`, `LineHeight`, `PasswordChar` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `ComboBox` | control theme | `ComboBoxTheme.axaml` | 用户代码 / 控件宿主 | `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors`, `EffectivePopupWidth`, `IsDropDownOpen`, `IsEditable` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Panel` | template node (Panel) | `ComboBoxTheme.axaml` | ComboBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors`, `EffectivePopupWidth`, `IsDropDownOpen`, `IsEditable` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}` | template node (AddOnDecoratedBox) | `ComboBoxTheme.axaml` | ComboBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors`, `IsEditable`, `IsEnabled`, `IsShowOverflowTip` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ComboBox` | control theme | `ComboBoxTheme.axaml` | 用户代码 / 控件宿主 | `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors`, `EffectivePopupWidth`, `FormStatus`, `IsDropDownOpen` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Panel` | template node (Panel) | `ComboBoxTheme.axaml` | ComboBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors`, `EffectivePopupWidth`, `FormStatus`, `IsDropDownOpen` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}` | template node (AddOnDecoratedBox) | `ComboBoxTheme.axaml` | ComboBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors`, `FormStatus`, `IsEditable`, `IsEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PlaceholderText` | template node (TextBlock) | `ComboBoxTheme.axaml` | ComboBox | `PlaceholderText`, `SelectingItemsControl` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `SelectedContentPresenter` | template node (ContentPresenter) | `ComboBoxTheme.axaml` | ComboBox | `IsShowOverflowTip`, `OverflowTipDelay`, `OverflowTipPlacement`, `SelectionBoxItem`, `SelectionBoxItemTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_EditableTextBox` | template node (ComboBoxTextBox) | `ComboBoxTheme.axaml` | ComboBox | `IsEditable`, `PlaceholderForeground`, `PlaceholderText`, `Text` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -1824,7 +1824,7 @@ ComboBox
 | --- | --- | --- |
 | 内容与数据 | `ContentLeftAddOn`、`ContentLeftAddOnTemplate`、`ContentRightAddOn`、`ContentRightAddOnTemplate`、`FilterValue`、`FilterValueSelector`、`LeftAddOnTemplate`、`OptionFontSize`、`RightAddOnTemplate` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
 | 选择与集合 | `SelectedItem`、`SelectedIndex`、`DropDownDisplayPageSize`、`Filter`、`IsFilterEnabled` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsAllowClear`、`IsMotionEnabled`、`ShouldUseOverlayPopup`、`Status`、`IsShowOverflowTip`、`OverflowTipDelay`、`OverflowTipPlacement` | 表达用户可观察状态、可用性、清除、加载、反馈和非编辑态选中内容溢出提示语义。 |
+| 交互与状态 | `IsAllowClear`、`IsMotionEnabled`、`ShouldUseOverlayPopup`、`Status`、`IsShowOverflowTip`、`OverflowTipDelay`、`OverflowTipPlacement` | 表达用户可观察状态、可用性、清除、加载、反馈和非编辑态选中内容溢出提示语义。Form 校验扩展状态进入内部 `FormStatus`，不覆盖显式 `Status`。 |
 | 视觉与布局 | `SizeType`、`StyleVariant` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 其他稳定入口 | `LeftAddOn`、`RightAddOn` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
@@ -1848,6 +1848,7 @@ Public API / inherited command / item source / user input
 状态维护规则：
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
+- `DataValidationErrors` 是 native error 唯一真源；`FormStatus` 承载 Form 的 warning、success、validating 和 error 投影，`Status` 只表示用户显式请求。输入表面通过 `InputControlState.ResolveEffectiveStatus` 计算有效状态，native/Form error 优先于 Form warning，再优先于显式 warning/error。
 - open/close、collection/filter、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
 - 单选结果以继承的 `SelectedItem` / `SelectedIndex` 为准；AtomUI Form 集成使用 `SelectedItem` 作为 ComboBox 的默认表单值，`SetFormValue`、`GetFormValue` 和 `ClearFormValue` 不应转换为字符串或读取展示文本。
 - 下拉项的 active candidate 与 `SelectedItem` / `SelectedIndex` 分离。鼠标移动和键盘 `Up` / `Down` 共享同一个 active candidate；迁移只改变候选视觉，`Enter` 才提交 `SelectedItem`。`:pointerover` 不得形成第二个候选高亮，selected 视觉优先于 active 视觉。
@@ -2886,13 +2887,14 @@ Steps
         -> IconPresenter#CustomIconPresenter (internal-observable)
   -> StepsItem (item container control theme, StepsItemTheme.axaml)
      -> StepsItemLayoutPanel (internal-observable)
-        -> Border#ItemWrapper (template-stable)
+        -> StepsPanelItemFrame#ItemWrapper (internal-observable)
         -> StepsItemIndicator#PART_Indicator (template-stable)
         -> ContentPresenter#HeaderPresenter (internal-observable)
         -> ContentPresenter#SubHeaderPresenter (internal-observable)
         -> PixelAlignedBorder#Connector (template-stable)
         -> ContentPresenter#ContentPresenter (internal-observable)
         -> StepsNavigationArrow#NavigationArrow (internal-observable)
+        -> StepsPanelArrow#PanelArrow (internal-observable)
         -> PixelAlignedBorder#NavigationActiveIndicator (template-stable)
   -> Steps (control theme, StepsTheme.axaml)
      -> ItemsPresenter#PART_ItemsPresenter (template-stable)
@@ -2911,15 +2913,16 @@ Steps
 | `FinishedMark` | template node (CheckOutlined) | `StepsItemIndicatorTheme.axaml` | StepsItemIndicator | `FontSize` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ErrorMark` | template node (CloseOutlined) | `StepsItemIndicatorTheme.axaml` | StepsItemIndicator | `FontSize` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CustomIconPresenter` | template node (IconPresenter) | `StepsItemIndicatorTheme.axaml` | StepsItemIndicator | `Icon`, `IsCustom` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `StepsItem` | item container control theme | `StepsItemTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `CanInvoke`, `Content`, `ContentTemplate`, `EffectiveStatus`, `Foreground` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `StepsItemLayoutPanel` | template node (StepsItemLayoutPanel) | `StepsItemTheme.axaml` | StepsItem | `Background`, `CanInvoke`, `Content`, `ContentTemplate`, `EffectiveStatus`, `Foreground` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `ItemWrapper` | template node (Border) | `StepsItemTheme.axaml` | StepsItem | `Background` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `StepsItem` | item container control theme | `StepsItemTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `BorderThickness`, `CanInvoke`, `Content`, `ContentTemplate` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `StepsItemLayoutPanel` | template node (StepsItemLayoutPanel) | `StepsItemTheme.axaml` | StepsItem | `Background`, `BorderBrush`, `BorderThickness`, `CanInvoke`, `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `ItemWrapper` | template node (StepsPanelItemFrame) | `StepsItemTheme.axaml` | StepsItem | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `IsFirst`, `PanelVariant` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_Indicator` | template node (StepsItemIndicator) | `StepsItemTheme.axaml` | StepsItem | `CanInvoke`, `EffectiveStatus`, `Icon`, `IsCurrent`, `IsMotionEnabled`, `IsProgressFrameReserved` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `HeaderPresenter` | template node (ContentPresenter) | `StepsItemTheme.axaml` | StepsItem | `Foreground`, `Header`, `HeaderTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `SubHeaderPresenter` | template node (ContentPresenter) | `StepsItemTheme.axaml` | StepsItem | `SubHeader`, `SubHeaderTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Connector` | template node (PixelAlignedBorder) | `StepsItemTheme.axaml` | StepsItem | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentPresenter` | template node (ContentPresenter) | `StepsItemTheme.axaml` | StepsItem | `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `NavigationArrow` | template node (StepsNavigationArrow) | `StepsItemTheme.axaml` | StepsItem | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PanelArrow` | template node (StepsPanelArrow) | `StepsItemTheme.axaml` | StepsItem | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `NavigationActiveIndicator` | template node (PixelAlignedBorder) | `StepsItemTheme.axaml` | StepsItem | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Steps` | control theme | `StepsTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `PART_ItemsPresenter` | template node (ItemsPresenter) | `StepsTheme.axaml` | Steps | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -3014,7 +3017,7 @@ Steps 使用统一语义模板，而不是按 Type、Orientation 和 TitlePlacem
 | 主题文件 | 职责 |
 | --- | --- |
 | `StepsTheme.axaml` | 根模板、ItemsPresenter、StepsPanel 和根展示输入映射。 |
-| `StepsItemTheme.axaml` | 统一 item 语义模板、状态颜色、Connector、内容和交互视觉。 |
+| `StepsItemTheme.axaml` | 统一 item 语义模板、Panel item frame、状态颜色、Connector、内容和交互视觉。 |
 | `StepsItemIndicatorTheme.axaml` | 统一 Indicator 模板、Dot、Icon、状态图标、Progress 和 Wave。 |
 
 运行时组合：
@@ -3031,11 +3034,20 @@ Steps
                 ├── ContentPresenter#SubHeaderPresenter
                 ├── PixelAlignedBorder#Connector
                 ├── ContentPresenter#ContentPresenter
+                ├── StepsPanelItemFrame#ItemWrapper
                 ├── PathIcon#NavigationArrow
+                ├── StepsPanelArrow#PanelArrow
                 └── PixelAlignedBorder#NavigationActiveIndicator
 ```
 
-`StepsPanel` 负责 item 间的 flex/stack 布局；`StepsItemLayoutPanel` 负责 item 内固定语义区域、Connector 线宽和 Navigation active 线的排列。二者不创建视觉、不计算状态。
+`StepsPanel` 负责 item 间的 flex/stack 布局；Panel 类型强制水平排列并将每个 item 等宽。`StepsItemLayoutPanel` 负责 item 内固定语义区域、Connector 线宽、Panel 外溢箭头和 Navigation active 线的排列。二者不创建状态。
+
+Panel 类型的几何规则：
+
+- Indicator 和普通 Connector 不参与可见布局。
+- ItemWrapper 覆盖完整 item 单元，PanelArrow 在非末项的外侧拉伸为楔形箭头。
+- LTR 箭头向右外溢，RTL 箭头向左外溢；末项不创建可见箭头。
+- `Filled` 使用状态背景作为面板表面，并在非首项裁出左侧 notch；`Outlined` 保留共享接缝的箭头边框，非当前 Error 项保持容器背景并使用红色文字和边框，当前 Error 项才使用浅红 active 背景。
 `OutlineDot` 复用 `Dot` 的布局路径，只改变 Indicator 的填充、边框和 Wave 语义。
 
 ### 5.1 Item 语义样式覆盖
@@ -3068,7 +3080,7 @@ Type == Navigation      -> Horizontal
 
 Token 边界：
 
-StepsToken 描述步骤标题、详情内容、Indicator、Dot、OutlineDot、Connector、Navigation、Inline 和 Progress ring 的组件级视觉语义。
+StepsToken 描述步骤标题、详情内容、Indicator、Dot、OutlineDot、Connector、Navigation、Inline、Panel 和 Progress ring 的组件级视觉语义。
 
 StepsToken 不承载：
 
@@ -3611,6 +3623,8 @@ Public API / inherited command / item source / user input
 
 AutoComplete 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
 
+`AutoCompleteLineEditBox`、`AutoCompleteSearchEditBox` 和 `AutoCompleteTextAreaBox` 分别复用 `LineEdit`、`SearchEdit` 和 `TextArea` 的 `AbstractTextInput` 逻辑层与 `InputControlFrame` 输入表面。候选 popup 和过滤状态属于 AutoComplete 自身，不得重新声明输入边框、状态或 Form error owner。
+
 | 主题文件 | 职责 |
 | --- | --- |
 | `AbstractAutoCompleteTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
@@ -3784,7 +3798,7 @@ Cascader
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_AddOnDecoratedBox` | `CascaderAddOnDecoratedBox` | 输入壳体、Addon、variant、status、CompactSpace、多选状态和 content padding 承载。 |
+| `PART_InputControlFrame` | `CascaderAddOnDecoratedBox` | `InputControlFrame` / AddOnDecoratedBox 组合、Addon、EffectiveStatus、CompactSpace、多选状态和 content padding 承载。 |
 | `PART_SingleFilterInput` | `SelectFilterTextBox` | 单选过滤输入，过滤启用时显示。 |
 | `SelectedOptionsBox` | `SelectTagAwareTextBox` | 多选结果 tag 展示和多选过滤输入承载。 |
 | `PART_SelectMaxCountIndicator` | `SelectMaxCountIndicator` | 最大选择数量提示。 |
@@ -3802,7 +3816,7 @@ Cascader
 稳定伪类来自 `AbstractSelect` 和 `CascaderViewItem`：
 
 - `:dropdownopen`、native validation `:error`、AtomUI warning `:warning`、`:pressed`。
-- AddOnDecoratedBox variant 伪类：`:outlined`、`:filled`、`:borderless`。
+- `InputControlFrame` variant 伪类：`:outlined`、`:filled`、`:borderless`、`:underlined`；Cascader 专用伪类只表达 dropdown、候选和结果状态。
 - `CascaderViewItem` 使用 `:expanded`、`:checked`、`:selected` 和 checkbox toggle type 伪类。
 
 ## State Flow
@@ -3873,7 +3887,7 @@ Form：
 
 ## Theme and Token Boundaries
 
-Cascader 的默认视觉由 Cascader 根主题、输入壳体、PopupHost、CascaderView、CascaderViewItem、SelectTagAwareTextBox、SelectHandle 和 CascaderToken 协作完成。
+Cascader 的默认视觉由 Cascader 根主题、`InputControlFrame` / CascaderAddOnDecoratedBox、PopupHost、CascaderView、CascaderViewItem、SelectTagAwareTextBox、SelectHandle 和 CascaderToken 协作完成。
 
 | 主题或资源 | 职责 |
 | --- | --- |
@@ -3889,7 +3903,7 @@ Cascader 的默认视觉由 Cascader 根主题、输入壳体、PopupHost、Casc
 
 主题不可破坏的视觉边界：
 
-- 输入壳体必须继续由 `CascaderAddOnDecoratedBox` 承载，保持 variant、status、CompactSpace 和 content padding 语义。
+- 输入表面必须继续由 `InputControlFrame` 承载；`CascaderAddOnDecoratedBox` 只扩展多选、dropdown 和 content padding 布局。
 - `PART_SelectHandle` 的 hover / pressed / dropdown open / clear / loading 状态必须与输入壳体保持同步。
 - `OptionTemplate` 的 DataContext 必须保持为 `ICascaderOption`，不能改为 header 文本。
 - Popup 宽度和空状态宽度匹配语义必须保持：普通级联列使用列宽，空状态需要匹配输入宽度。
@@ -4378,7 +4392,7 @@ Public API / inherited command / item source / user input
 - 当归一化后的 `MinDate` 晚于 `MaxDate` 时，有效范围收敛为 `MinDate` 所在的一个 picker unit，但控件不得修改或回写调用方设置的原始属性值。
 - 外部受控值越界时，`SelectedDateTime`、`RangeStartSelectedDate` 和 `RangeEndSelectedDate` 保持不变，输入框继续显示外部值；Calendar 不标记越界值为选中，确认操作不可提交该值。用户选择有效日期后，才按既有 TwoWay 契约更新受控值。
 - 设置 `PickerDisplayDate` 后不得写入 `SelectedDateTime`，不得改变输入框文本、Form value 或清除按钮状态；当已有已选值时，弹出面板仍优先围绕已选值展示。
-- DatePicker / RangeDatePicker 输入壳体必须把 `DataValidationErrors` 同步转发到外层 AddOn 和内部文本框；range indicator 等附属视觉读取 effective status，native error 优先于手动 warning/error 状态。
+- DatePicker / RangeDatePicker 必须把 `DataValidationErrors`、FormStatus 和显式 Status 投射到 shared `InputControlFrame`；range indicator 等附属视觉读取 `EffectiveStatus`，native error 优先于 Form/显式 warning/error 状态。Calendar 和 picker panel 只拥有日期选择、范围预览和面板交互状态。
 - `PickerMode=Week` 的月视图是带周序号列的 8 列 week panel，不是普通日期面板的 7 个日期按钮逐个选中；选中视觉和 hover 视觉都必须按整周连续行渲染，不能退回单个日期按钮的普通 pointerover 背景。
 - 非 `Date` 颗粒度仍使用 `DateTime?` 保存提交值：`Week` 保存 ISO 周起始日，`Month` 保存当月 1 日，`Quarter` 保存季度首月 1 日，`Year` 保存当年 1 月 1 日。
 - `IsShowTime` 只在 `PickerMode=Date` 时形成有效时间选择；其他颗粒度忽略时间面板和时间拼接。
@@ -4388,7 +4402,7 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-DatePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
+DatePicker 的视觉模型由 `InputControlFrame` 输入表面、InfoPicker 输入子控件、控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。输入表面状态由 shared frame 统一表达，DatePicker 主题只扩展日期、范围和弹层内容。
 
 | 主题文件 | 职责 |
 | --- | --- |
@@ -4396,6 +4410,8 @@ DatePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要
 | `CalendarDayButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
 | `CalendarItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `CalendarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
+| `InfoPickerTextBoxTheme.axaml` | 通过 `StyleVariant=Borderless` 提供内部日期文本输入的无 chrome 布局。 |
+| `InputControlFrameTheme.axaml` | 提供输入表面 variant、effective status、focus、disabled、error、warning、CompactSpace 和 motion。 |
 | `DualMonthCalendarItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `DualMonthRangeCalendarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `RangeCalendarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
@@ -4734,7 +4750,7 @@ LineEdit
   -> EmbeddedTextBox (control theme, EmbeddedTextBoxTheme.axaml)
   -> InputClearIconButton (control theme, InputClearIconButtonTheme.axaml)
   -> LineEdit (control theme, LineEditTheme.axaml)
-     -> AddOnDecoratedBox#{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart} (template-stable)
+     -> AddOnDecoratedBox#{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart} (internal-observable)
         -> ScrollViewer#PART_ScrollViewer (template-stable)
            -> Panel (template-stable)
               -> TextBlock#Placeholder (template-stable)
@@ -4747,13 +4763,13 @@ LineEdit
         -> PixelAlignedBorder#{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart} (template-stable)
            -> AddOnContentPresenter#PART_LeftAddOnPresenter (template-stable)
         -> Button#{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart} (template-stable)
-        -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
+        -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (internal-observable)
            -> DockPanel#ContentLayout (template-stable)
               -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
               -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart} (internal-observable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
   -> TextAreaDecoratedBox (control theme, TextAreaDecoratedBoxTheme.axaml)
-     -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (template-stable)
+     -> AddOnDecoratedBoxContentFrame#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart} (internal-observable)
         -> Border#TextAreaContentFrame (template-stable)
            -> DockPanel#ContentLayout (template-stable)
               -> AddOnContentPresenter#{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart} (internal-observable)
@@ -4771,7 +4787,7 @@ LineEdit
 | `EmbeddedTextBox` | control theme | `EmbeddedTextBoxTheme.axaml` | LineEdit | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `InputClearIconButton` | control theme | `InputClearIconButtonTheme.axaml` | LineEdit | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `LineEdit` | control theme | `LineEditTheme.axaml` | 用户代码 / 控件宿主 | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `ClipToBounds`, `CompactSpaceItemPosition`, `CompactSpaceOrientation` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}` | template node (AddOnDecoratedBox) | `LineEditTheme.axaml` | LineEdit | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `ClipToBounds`, `CompactSpaceItemPosition`, `CompactSpaceOrientation` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}` | template node (AddOnDecoratedBox) | `LineEditTheme.axaml` | LineEdit | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `ClipToBounds`, `CompactSpaceItemPosition`, `CompactSpaceOrientation` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_ScrollViewer` | template node (ScrollViewer) | `LineEditTheme.axaml` | LineEdit | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `HorizontalContentAlignment`, `IsPlaceholderTextVisible`, `LineHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Panel` | template node (Panel) | `LineEditTheme.axaml` | LineEdit | `CaretBlinkInterval`, `CaretBrush`, `CaretIndex`, `HorizontalContentAlignment`, `IsPlaceholderTextVisible`, `LineHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Placeholder` | template node (TextBlock) | `LineEditTheme.axaml` | LineEdit | `HorizontalContentAlignment`, `IsPlaceholderTextVisible`, `LineHeight`, `PlaceholderForeground`, `PlaceholderText`, `TextAlignment` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -4784,13 +4800,13 @@ LineEdit
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}` | template node (PixelAlignedBorder) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnBorderThickness`, `LeftAddOnCornerRadius`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_LeftAddOnPresenter` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}` | template node (Button) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `IsEnabled`, `IsSearchButtonLoading`, `SearchButtonText`, `SearchButtonTheme`, `SizeType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `ContentLayout` | template node (DockPanel) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}` | template node (AddOnContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `ContentRightAddOn`, `ContentRightAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `SearchEditDecoratedBoxTheme.axaml` | SearchEditDecoratedBox | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `TextAreaDecoratedBox` | control theme | `TextAreaDecoratedBoxTheme.axaml` | LineEdit | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}` | template node (AddOnDecoratedBoxContentFrame) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Background`, `BorderBrush`, `BoxShadow`, `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `TextAreaContentFrame` | template node (Border) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentLayout` | template node (DockPanel) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `Content`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `ContentRightAddOn`, `ContentRightAddOnTemplate`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}` | template node (AddOnContentPresenter) | `TextAreaDecoratedBoxTheme.axaml` | TextAreaDecoratedBox | `ContentLeftAddOn`, `ContentLeftAddOnTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
@@ -4803,7 +4819,7 @@ LineEdit
 
 | Template Part | 类型 | 所属主题 | 职责 |
 | --- | --- | --- | --- |
-| `PART_AddOnDecoratedBox` | `AddOnDecoratedBox` / 派生 decorated box | `LineEditTheme`、`SearchEditTheme`、`TextAreaTheme` | 输入壳体、Addon、状态视觉和 CompactSpace 状态承载。 |
+| `PART_InputControlFrame` | `InputControlFrame` / `AddOnDecoratedBox` 派生类型 | 全家族输入主题 | 输入表面、边框、背景、状态视觉、CompactSpace 和动效承载；派生 decorated box 只增加 AddOn 或专用布局。 |
 | `PART_ScrollViewer` / `ScrollViewer` | `ScrollViewer` | 全家族 | 文本滚动区域。 |
 | `PART_TextPresenter` | `InputTextPresenter` | 全家族 | 文本显示、光标、选择和密码 reveal。 |
 | `Placeholder` | `TextBlock` | 全家族 | 空文本占位提示。 |
@@ -4816,7 +4832,17 @@ LineEdit
 
 ## Pseudo Classes
 
-源文档未声明控件专属伪类。控件仍可能消费 Avalonia 标准状态，例如 `:pointerover`、`:pressed`、`:disabled` 和 focus 相关状态。
+| `InputControlFrame` | internal 输入表面组合控件，统一 variant、effective status、边框、背景、圆角、阴影、交互伪类、CompactSpace 和动效；不作为公共控件入口。 |
+
+继承与组合关系固定为：
+
+```text
+Avalonia.Controls.TextBox
+        ↓
+AbstractTextInput
+   ├── TextBox
+   ├── LineEdit
+   └── TextArea
 
 ## State Flow
 
@@ -4824,12 +4850,35 @@ LineEdit 家族的交互优先级：
 
 ```text
 Disabled
-> ReadOnly
-> Error / Warning
+> Native Error
+> Form Error
+> Form Warning
+> Explicit Warning
+> Explicit Error
 > Focus
 > PointerOver
 > Normal
 ```
+
+输入状态由三个来源组成：
+
+| 来源 | owner | 语义 |
+| --- | --- | --- |
+| `NativeValidationStatus` | `DataValidationErrors` | Avalonia 原生校验结果；`Error` 是 native error 的唯一视觉真源。 |
+| `FormStatus` | Form 集成层 | Form 写入的 warning、success、validating 及其 feedback；Form error 通过 Form-owned native validation entry 写入 `DataValidationErrors`。 |
+| `ExplicitStatus` | `AbstractTextInput.Status` | 用户显式设置的 error/warning 请求，不覆盖 native error，也不修改 Form 自己写入的状态。 |
+
+有效状态由 `InputControlFrame` 计算：
+
+```text
+Native Error / Form Error
+    > Form Warning
+    > Explicit Warning
+    > Explicit Error
+    > Default
+```
+
+Form reset 只清理 Form 自己写入的状态；`Status=Error` 不写入 native error；`Warning` 伪类只在最终有效状态为 Warning 时出现。
 
 `Disabled` 表示不可交互，文本使用 disabled 文本色，内部按钮不可作为操作入口。`IsReadOnly` 保持文本可见和可选中，但不允许编辑或清除。
 
@@ -4860,15 +4909,17 @@ LineEdit 家族使用输入壳体和文本 presenter 分层：
 
 | 主题 | 职责 |
 | --- | --- |
-| `TextBoxTheme.axaml` | 基础文本框模板、边框、padding、清除按钮、reveal、字数统计、基础 SizeType 字号和 TextPresenter margin。 |
-| `LineEditTheme.axaml` | 单行输入壳体、外部 AddOn、variant/status/focus 视觉，并把 native validation error 投射到外层输入壳体。 |
-| `SearchEditTheme.axaml` | 搜索输入壳体、搜索按钮状态传递和搜索按钮布局。 |
-| `SearchEditDecoratedBoxTheme.axaml` | 搜索按钮与输入壳体的一体化边框和布局。 |
-| `TextAreaTheme.axaml` | 多行输入壳体、字数统计、resize handle、固定行数和状态视觉。 |
-| `TextAreaDecoratedBoxTheme.axaml` | TextArea 内部 padding、右侧附加内容和 resize 相关布局。 |
+| `AbstractTextInput` shared template contract | 统一文本输入属性、placeholder、clear/reveal/count、Form feedback、native validation、CompactSpace 和 viewport metrics 接入。 |
+| `InputControlFrameTheme.axaml` | Outlined、Filled、Borderless、Underlined、hover、focus-within、pressed、disabled、error、warning、corner、shadow、CompactSpace 和 motion。 |
+| `TextBoxTheme.axaml` | 基础文本编辑模板、文本 presenter、TextBox 专属 padding、clear/reveal、字数统计和 frame 组合。 |
+| `LineEditTheme.axaml` | 单行文本布局、外部 AddOn、内部前后缀和 `InputControlFrame` 组合。 |
+| `SearchEditTheme.axaml` | 搜索输入模板、搜索按钮状态传递和 `SearchEditDecoratedBox` 组合。 |
+| `SearchEditDecoratedBoxTheme.axaml` | 搜索按钮与 frame 的一体化布局；不重复实现 frame 状态 selector。 |
+| `TextAreaTheme.axaml` | 多行文本、字数统计、固定行数和 `InputControlFrame` 组合。 |
+| `TextAreaDecoratedBoxTheme.axaml` | TextArea 内部 padding、右侧附加内容、scroll viewer 和 resize 相关布局。 |
 | `InputClearIconButtonTheme.axaml` / `RevealButtonTheme.axaml` | 内部 action 按钮视觉。 |
 
-`TextBoxToken` 提供基础 TextBox 边框、padding、hover/focus 和 shadow Token。`LineEditToken` 提供单行输入字号 Token。`TextAreaToken` 提供多行输入字号、右侧附加 padding 和 resize handle Token。LineEdit / TextArea 输入壳体的背景、状态、focus shadow 和 disabled 语义主要来自 SharedToken 与 AddOnDecoratedBoxToken。
+共享输入表面值由 `SharedToken` 和 `InputControlFrameTheme` 消费。`TextBoxToken`、`LineEditToken`、`TextAreaToken` 只保留各自稳定的文本尺寸、padding 和多行 resize 专属语义，不再承载输入表面边框、背景、focus shadow、error/warning 或 disabled 状态。
 
 Token 边界：
 
@@ -4876,11 +4927,11 @@ LineEdit 输入家族使用三个控件级 Token scope：
 
 | Token | Scope | 职责 |
 | --- | --- | --- |
-| `TextBoxToken` | `TextBox` | 基础文本框边框、圆角、尺寸 padding、hover/focus 边框和 focus shadow。 |
+| `TextBoxToken` | `TextBox` | TextBox 专属内容 padding。 |
 | `LineEditToken` | `LineEdit` | 单行输入框字号。 |
 | `TextAreaToken` | `TextArea` | 多行输入框字号、右侧附加 padding 和 resize handle 视觉。 |
 
-TextBox / LineEdit / TextArea Token 不承载文本值、placeholder、清除状态、密码 reveal、Form 状态、SearchEdit 运行状态、focus/hover/pressed 状态或 CompactSpace 运行时状态。这些状态分别由控件实例属性、共享输入主题、AddOnDecoratedBox、Form 和 C# 状态模型处理。
+TextBox / LineEdit / TextArea Token 不承载文本值、placeholder、清除状态、密码 reveal、Form 状态、SearchEdit 运行状态、focus/hover/pressed 状态或 CompactSpace 运行时状态。输入表面边框、背景、圆角、shadow、error/warning、disabled 和 motion 由 `InputControlFrameTheme` 与 `SharedToken` 处理；运行时状态由 `AbstractTextInput`、Form 和 frame 状态模型处理。
 
 ## Customization Boundaries
 
@@ -4891,7 +4942,9 @@ TextBox / LineEdit / TextArea Token 不承载文本值、placeholder、清除状
 - `SizeType=Custom` 以 `Middle` 作为未显式覆盖时的默认视觉基线。
 - `IsCustomFontSize=true` 时不得由 SizeType 样式覆盖用户设置的 `FontSize`。
 - 清除按钮只在有效状态为 true 时显示，且清除动作进入统一 `Clear()` 语义。
-- `LineEdit` 的外部 AddOn 必须由 `AddOnDecoratedBox` 承载，不在控件 C# 中动态创建视觉结构。
+- `InputControlFrame` 是所有输入表面状态 selector、边框、背景、focus shadow、error/warning、disabled 和 motion 的唯一 owner。
+- `AddOnDecoratedBox` 及其派生类型只承载 AddOn、内部内容和专用布局，不复制 frame 的状态计算或视觉 selector。
+- `StyleVariant`、`Status`、`SizeType`、Form 状态和 native validation 必须先由 `AbstractTextInput` 归一，再通过稳定绑定传给 frame。
 - `SearchEdit.IsOperating=true` 时按钮和 Enter 键不重复触发 `SearchRequested`。
 - `TextArea.Lines` 必须遵守 `MinLines` / `MaxLines`，resize 不得突破行数边界。
 - Form feedback 订阅必须在 detach 时释放。
@@ -4903,11 +4956,13 @@ TextBox / LineEdit / TextArea Token 不承载文本值、placeholder、清除状
 
 - `TextChanged` 继续驱动字数统计和 Form value changed。
 - 清除按钮可见性不在 AXAML 与 C# 中形成相互冲突的状态源。
+- TextBox 外框宽度由父布局和 `Width` / `MinWidth` / `MaxWidth` 契约决定，不能随 placeholder 或当前文本的测量宽度伸缩。
 - `IsCustomFontSize=true` 不能被 SizeType 字体样式覆盖。
-- `LineEdit` 的 error 视觉必须优先响应 `DataValidationErrors`；`Status` 只作为无 native error 时的手动视觉请求，并继续支持 warning 扩展视觉。
+- `InputControlFrame.EffectiveStatus` 必须遵守 Native Error / Form Error > Form Warning > Explicit Warning > Explicit Error > Default；native error 由 `DataValidationErrors` 唯一提供，Form reset 不得清理外部 native error。
+- 所有 `*AddOnDecoratedBox` 只能扩展 frame 布局，不能重新定义 variant/status/error/warning/disabled/motion selector。
 - `SearchEdit.IsOperating=true` 必须阻止按钮和 Enter 键产生重复搜索请求。
 - `TextArea` 的 fixed lines、auto-size 和 resize 不互相覆盖高度状态。
-- 重新套用模板不能泄漏旧按钮 click、旧 binding 或旧 Form feedback 订阅。
+- 重新套用模板不能泄漏旧按钮 click、旧模板 binding、旧 preedit 或旧 viewport source；logical reattach 后当前模板交互与状态绑定必须保持有效，Form feedback 必须重新订阅。
 - TextPresenter margin 是输入模板视觉契约；文本有效宽度由输入控件在模板所有权边界内统一计算并发布，不在业务控件或消费 behavior 中加入隐藏补偿。
 - 输入控件不得向内部消费方暴露 `TextPresenter` / `ScrollViewer` 实例；模板结构变化只能影响输入控件自己的度量实现。
 
@@ -5048,7 +5103,7 @@ Disabled / invisible / window deactivated
 - `F4` 切换弹层打开状态。
 - 弹层关闭时，`Down` 可打开弹层，除非该按键被 XY focus 导航占用。
 
-Form 集成以 `Value` 作为表单值。`Value` 是用户拥有的受控文本值，默认双向绑定；错误校验状态通过 `DataValidationErrors` 投射到外层 AddOn 和内部 `MentionTextArea`；`NotifyValidateStatus` 只同步 warning、success、validating 等 Form 扩展状态。Form feedback 控件传递给内部 `MentionTextArea`。
+Form 集成以 `Value` 作为表单值。`Value` 是用户拥有的受控文本值，默认双向绑定；错误校验状态通过 `DataValidationErrors` 投射到 shared `InputControlFrame.EffectiveStatus`，驱动外层输入表面和内部 `MentionTextArea`；`NotifyValidateStatus` 只同步 warning、success、validating 等 Form 扩展状态。Form feedback 控件传递给内部 `MentionTextArea`。
 
 ## Theme and Token Boundaries
 
@@ -5062,11 +5117,11 @@ Mentions 的默认视觉由 `MentionsTheme.axaml` 和内部 TextArea 主题协�
 | `PopupHostToken` | popup 阴影、圆角和 anchor margin。 |
 | `MentionsToken` | popup 内容 padding、候选项高度和最小宽度。 |
 
-输入框本体不由 Mentions 自己重写边框和文本 presenter，而是通过内部 `MentionTextArea` 复用 TextArea 体系。Mentions 的控件级 Token 只服务候选弹层，不承载文本高度、输入边框、状态颜色或 Form feedback。
+输入框本体不由 Mentions 自己重写边框和文本 presenter，而是通过内部 `MentionTextArea` 复用 TextArea 的 `AbstractTextInput` 与 `InputControlFrame` 体系。Mentions 的控件级 Token 只服务候选弹层，不承载文本高度、输入边框、状态颜色或 Form feedback。
 
 Token 边界：
 
-MentionsToken 是 Mentions 的控件级 Token scope，只描述候选弹层的结构尺寸。输入框本体由内部 `MentionTextArea` 复用 TextArea / AddOnDecoratedBox / SharedToken 体系；候选列表项的选择、hover、disabled 和文本状态由 CandidateList 主题处理。
+MentionsToken 是 Mentions 的控件级 Token scope，只描述候选弹层的结构尺寸。输入框本体由内部 `MentionTextArea` 复用 TextArea / `AbstractTextInput` / `InputControlFrame` / SharedToken 体系；候选列表项的选择、hover、disabled 和文本状态由 CandidateList 主题处理。
 
 MentionsToken 不承载以下状态：
 
@@ -5243,7 +5298,7 @@ NumericUpDown
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_Spinner` | `ButtonSpinner` | 输入壳体、外部 AddOn、内部前后缀、步进入口和 CompactSpace 状态承载。 |
+| `PART_Spinner` | `ButtonSpinner` | `InputControlFrame` / AddOnDecoratedBox 组合、外部 AddOn、内部前后缀、步进入口和 CompactSpace 布局承载。 |
 | `PART_TextBox` | `TextBox` | 文本输入、占位符、只读、数据校验和文本双向绑定。 |
 | `PART_ClearButton` | `InputClearIconButton` | 清除 `Value` 的内部按钮。 |
 | `PART_InnerRightContentPresenter` | `ContentPresenter` | 用户 `InnerRightContent` 的内部右侧内容承载。 |
@@ -5305,7 +5360,7 @@ NumericUpDown 采用按需模板模型。`Mode=Input` 使用默认输入框模�
 
 - `Mode=Input` 的默认模板不得预埋 spinner 模式左右按钮或无职责 wrapper；`ShowButtonSpinner=false` 时必须隐藏浮动 Handle。
 - `Mode=Spinner` 使用独立 `ControlTemplate`，不通过同一模板内两套视觉树加 `IsVisible` 切换实现；`ShowButtonSpinner=false` 时必须隐藏左右 action 段。
-- `ButtonSpinner` 是默认输入壳体边界，不应被普通 `Border` 或 `Grid` 包装替代。
+- `ButtonSpinner` 是默认输入组合边界，复用 `InputControlFrame` 的输入表面和有效状态，不应被普通 `Border` 或 `Grid` 包装替代。
 - `PART_TextBox` 的 `BorderThickness=0` 是为了避免内层 TextBox 与外层输入壳体重复绘制边框。
 - `PART_ClearButton` 与 `PART_InnerRightContentPresenter` 共用内部右侧 stack，必须保留顺序：清除按钮在用户内部右侧内容之前。
 - 浮动 Handle 由 `ButtonSpinnerDecoratedBox` 控制透明度和偏移，不应在 NumericUpDown 模板中动态创建或移除。
@@ -5320,11 +5375,11 @@ NumericUpDown 采用按需模板模型。`Mode=Input` 使用默认输入框模�
 | `ButtonSpinnerDecoratedBoxTheme.axaml` | 输入壳体、Addon、浮动 Handle 透明度和偏移。 |
 | `ButtonSpinnerHandleTheme.axaml` | Handle 背景、边框、图标尺寸和交互视觉。 |
 | `TextBoxTheme.axaml` | 文本编辑器、placeholder、disabled 文本色和内部文本 presenter。 |
-| `AddOnDecoratedBoxTheme.axaml` | 输入 variant、focus、hover、error、warning、disabled 外观。 |
+| `InputControlFrameTheme.axaml` | 输入 variant、effective status、focus、hover、pressed、error、warning、disabled 和 motion 外观。 |
 
 Token 边界：
 
-NumericUpDownToken 是 NumericUpDown 的控件级 Token scope。它继承 `ButtonSpinnerToken`，以独立 `NumericUpDown` scope 提供数值输入控件可消费的输入壳体、步进 Handle、字体和尺寸语义。
+NumericUpDownToken 是 NumericUpDown 的控件级 Token scope。它继承 `ButtonSpinnerToken`，以独立 `NumericUpDown` scope 提供步进 Handle、字体和尺寸语义；输入表面边框、背景、圆角、focus shadow、error/warning、disabled 和 motion 统一由 `InputControlFrameTheme` 与 `SharedToken` 提供。
 
 该设计使 NumericUpDown 能复用 ButtonSpinner 输入壳体体系，同时保留控件级 Token scope。生成的 `NumericUpDownTokenKind` 表达 NumericUpDown scope 下可展示和可覆盖的 Token；默认主题中的输入壳体和 Handle 仍通过 `ButtonSpinnerTokenResource` 消费共享 ButtonSpinner 语义值。
 
@@ -5388,7 +5443,7 @@ Source: ./controls/otp-line-edit/semantic-cn.md
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
 | `root` | `OtpLineEdit` | 控件根语义区域，承载 public API、文本值、验证状态和主题入口。 | `Text`、`Length`、`Status`、`SizeType` | `OtpLineEditToken`、SharedToken | stable |
-| `cell-list` | `PART_CellsHost` | 根据 `Length` 展示 cell 和 separator。 | `Length`、`Separator`、`SeparatorInterval` | `CellGap`、`SeparatorMarginInline` | template-stable |
+| `cell-list` | `PART_CellsHost` | 根据 `Length` 展示 cell 和 separator。 | `Length`、`Separator`、`SeparatorInterval` | `CellGap`、`CellWidth*` | template-stable |
 | `cell` | `OtpLineEditCell` | 展示单个字符、placeholder、mask、active/focus 和 error 状态。 | `Text`、`IsMasked`、`MaskChar` | `CellWidth`、LineEdit 输入字号 | internal-observable |
 | `action` | `PART_ClearButton` | 清空完整验证码文本。 | `IsAllowClear`、`Clear()` | 输入 action 主题资源 | template-stable |
 | `validation` | `PART_FormFeedBack` | 承载 Form feedback 和 native validation 投射。 | `Status`、`IFormItemAware` | SharedToken、Form Token | template-stable |
@@ -5417,7 +5472,7 @@ Source: ./controls/otp-line-edit/semantic-cn.md
 OtpLineEdit
   -> OtpLineEditCell (control theme, OtpLineEditCellTheme.axaml)
      -> PixelAlignedBorder#PART_Frame (template-stable)
-        -> OtpTextBox#PART_TextBox (template-stable)
+        -> ContentPresenter (internal-observable)
   -> OtpLineEdit (control theme, OtpLineEditTheme.axaml)
      -> Grid#PART_RootPanel (template-stable)
         -> StackPanel (template-stable)
@@ -5436,9 +5491,9 @@ OtpLineEdit
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `OtpLineEdit` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `OtpLineEditCell` | control theme | `OtpLineEditCellTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `DisplayText`, `FontSize` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `PART_Frame` | template node (PixelAlignedBorder) | `OtpLineEditCellTheme.axaml` | OtpLineEditCell | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `DisplayText`, `FontSize` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_TextBox` | template node (OtpTextBox) | `OtpLineEditCellTheme.axaml` | OtpLineEditCell | `DisplayText`, `FontSize`, `Foreground`, `IsActive`, `PlaceholderText` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `OtpLineEditCell` | control theme | `OtpLineEditCellTheme.axaml` | OtpLineEdit | `Background`, `BorderBrush`, `BorderThickness`, `BoxShadow`, `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_Frame` | template node (PixelAlignedBorder) | `OtpLineEditCellTheme.axaml` | OtpLineEditCell | `Background`, `BorderBrush`, `BorderThickness`, `BoxShadow`, `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ContentPresenter` | template node (ContentPresenter) | `OtpLineEditCellTheme.axaml` | OtpLineEditCell | `Content`, `ContentTemplate`, `HorizontalContentAlignment`, `VerticalContentAlignment` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `OtpLineEdit` | control theme | `OtpLineEditTheme.axaml` | 用户代码 / 控件宿主 | `CellItems`, `ClearIcon`, `FormFeedback`, `IsEffectiveShowClearButton`, `IsFormFeedbackVisible`, `IsMotionEnabled` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `PART_RootPanel` | template node (Grid) | `OtpLineEditTheme.axaml` | OtpLineEdit | `CellItems`, `ClearIcon`, `FormFeedback`, `IsEffectiveShowClearButton`, `IsFormFeedbackVisible`, `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `StackPanel` | template node (StackPanel) | `OtpLineEditTheme.axaml` | OtpLineEdit | `CellItems`, `ClearIcon`, `FormFeedback`, `IsEffectiveShowClearButton`, `IsFormFeedbackVisible`, `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -5481,7 +5536,10 @@ OtpLineEdit 的交互优先级：
 Disabled
 > ReadOnly
 > Native Error
-> Warning / Manual Error
+> Form Error
+> Form Warning
+> Explicit Warning
+> Explicit Error
 > Focus
 > PointerOver
 > Normal
@@ -5536,18 +5594,18 @@ OtpLineEdit 使用“根输入控件 + cell presenter + separator + action 区�
 
 - `SizeType` 控制 cell 高度、宽度、字号和间距。
 - `StyleVariant` 与 `LineEdit` 保持一致，支持 `Outlined`、`Filled`、`Borderless` 和 `Underlined` 四种输入表面；`Filled` 使用填充背景，`Borderless` 移除边框，`Underlined` 只保留下边线。
-- `Status` 只作为无 native error 时的手动状态请求。
+- `Status` 形成 `ExplicitStatus`，在无 native error 且无更高优先级 Form 状态时参与有效状态计算。
 - `DataValidationErrors.HasErrors=true` 时，根控件和所有 cell 呈现 error 视觉。
 - `IsMasked=true` 只改变字符展示，不改变 `Text`、复制、Form 值或 Completed 事件。
 - `Separator` 只占据视觉布局位置，不参与输入、复制、验证或长度计算。
 
-`OtpLineEditToken` 定义 cell 宽度、cell 间距和 separator 间距。边框、背景、focus shadow、disabled、error、warning 等输入表面语义优先复用 SharedToken、AddOnDecoratedBoxToken 与 LineEdit 输入家族 Token。
+`OtpLineEditToken` 定义 cell 宽度和 cell 间距。separator 的默认外边距属于模板布局常量；边框、背景、focus shadow、disabled、error、warning 等输入表面语义由 `InputControlFrameTheme` 与 SharedToken 统一提供，cell 文本字号复用 SharedToken 的输入字号。
 
 Token 边界：
 
-OtpLineEdit 使用 `OtpLineEditToken` 表达 OTP 分格输入的专属布局语义。它只定义 cell 宽度、cell 间距和 separator 间距，不承载验证码文本、active cell、mask、placeholder、Form 状态、validation error、focus、hover、pressed 或 disabled 等运行时状态。
+OtpLineEdit 使用 `OtpLineEditToken` 表达 OTP 分格输入的专属布局语义。它只定义 cell 宽度和 cell 间距，不承载验证码文本、separator 内容、active cell、mask、placeholder、Form 状态、validation error、focus、hover、pressed 或 disabled 等运行时状态。
 
-输入表面的颜色、边框、背景、focus shadow、disabled、error 和 warning 语义优先复用 SharedToken、AddOnDecoratedBoxToken 和 LineEdit 输入家族主题资源。OtpLineEditToken 不复制这些已有输入体系 Token。
+输入表面的颜色、边框、背景、focus shadow、disabled、error 和 warning 语义统一复用 `InputControlFrameTheme` 和 SharedToken。OtpLineEditToken 不复制这些已有输入体系 Token。
 
 ## Customization Boundaries
 
@@ -5577,7 +5635,7 @@ OtpLineEdit 使用 `OtpLineEditToken` 表达 OTP 分格输入的专属布局语�
 - native validation error 必须从根控件投射到全部 cell，不允许 cell 自行维护 error。
 - `IsReadOnly=true` 时禁止输入、粘贴、删除和清除，但保留复制和焦点视觉。
 - `IsEnabled=false` 时禁止全部交互入口。
-- 模板重建和 detach 不能泄漏事件订阅、binding、separator context 或 feedback subscription。
+- 模板重建不能泄漏旧按钮事件、binding 或 separator context；logical reattach 后模板按钮交互保持有效，Form feedback subscription 必须恢复。
 - separator 和 mask 不参与 `Text`、Form value、复制、验证和 completed 判断。
 - 粘贴分发必须通过 overlay 单次写入，避免视觉闪烁和状态中间态暴露。
 
@@ -5995,7 +6053,7 @@ SearchEdit
 
 | Template Part | 类型 | 所属主题 | 职责 |
 | --- | --- | --- | --- |
-| `PART_AddOnDecoratedBox` | `SearchEditDecoratedBox` | `SearchEditTheme.axaml` | 搜索输入壳体、状态、Addon、CompactSpace 和搜索按钮协作入口。 |
+| `PART_InputControlFrame` | `SearchEditDecoratedBox` | `SearchEditTheme.axaml` | 输入表面、effective status、CompactSpace 和搜索按钮组合入口；具体 decorated box 只扩展搜索布局。 |
 | `PART_RightAddOn` | `Button` | `SearchEditDecoratedBoxTheme.axaml` | public Button 语义部件，承载图标、文字、loading、按钮样式和点击事件。 |
 | `PART_ContentFrame` | `Border` | `SearchEditDecoratedBoxTheme.axaml` | 文本输入框视觉边框和背景。 |
 | `PART_ScrollViewer` | `ScrollViewer` | `SearchEditTheme.axaml` | 文本滚动区域。 |
@@ -6037,14 +6095,18 @@ if !IsOperating raise SearchRequested
 
 ```text
 Disabled
+> Native Error
+> Form Error
+> Form Warning
+> Explicit Warning
+> Explicit Error
 > Searching button loading
-> Error / Warning
 > Focus
 > PointerOver / Pressed
 > Normal
 ```
 
-`IsEnabled=false` 会传递给搜索按钮，使输入壳体和按钮一起进入 disabled 视觉。native validation error 通过 `DataValidationErrors` 优先影响输入框边框、文本前景和搜索按钮状态色；`Status=Warning` 继续表达 AtomUI warning 视觉，显式 `Status=Error` 只作为无 native error 时的手动错误视觉请求。`SearchButtonStyle` 只控制按钮强调度，不改变文本编辑、清除、Form 或搜索事件语义。
+`IsEnabled=false` 会传递给搜索按钮，使 frame 和按钮一起进入 disabled 视觉。`DataValidationErrors`、Form warning/status 和用户 `Status` 分别通过 frame 的 native validation、`FormStatus` 和 `Status` 输入参与 `EffectiveStatus`；最终由 `InputControlFrame.EffectiveStatus` 按共享优先级投射到输入表面和搜索按钮。`SearchButtonStyle` 只控制按钮强调度，不改变文本编辑、清除、Form 或搜索事件语义。
 
 ## Theme and Token Boundaries
 
@@ -6052,8 +6114,9 @@ SearchEdit 使用三层主题协作：
 
 | 主题 | 职责 |
 | --- | --- |
-| `SearchEditTheme.axaml` | SearchEdit 根模板、文本 presenter、placeholder、clear/reveal/inner-right 内容、focus/status 视觉。 |
-| `SearchEditDecoratedBoxTheme.axaml` | 输入框内容边框、搜索按钮、左右布局、搜索按钮 style 和 z-index 关系。 |
+| `SearchEditTheme.axaml` | SearchEdit 根模板、文本 presenter、placeholder、clear/reveal/inner-right 内容和 frame 组合。 |
+| `InputControlFrameTheme.axaml` | 输入表面 variant、effective status、边框、背景、focus/hover/pressed、disabled、CompactSpace 和 motion。 |
+| `SearchEditDecoratedBoxTheme.axaml` | 搜索按钮、左右布局、搜索按钮 style 和 z-index 关系；不重复实现 frame 状态 selector。 |
 | `SearchButtonTheme.axaml` | 搜索按钮在不同输入表面中的背景、前景和状态色。 |
 
 SearchEdit 拥有独立 `ControlTokenIdentity`，但不定义 Own Token。它继承 `LineEdit` 的行为并不意味着继承或借用
@@ -6064,8 +6127,8 @@ Token。合法但没有被当前主题直接或间接消费的 Global Token 可�
 
 | Token 来源 | 用途 |
 | --- | --- |
-| `SearchEditTokenResource` | 读取 SearchEdit Effective Global Token，负责输入与搜索按钮组合语义，例如 focus shadow、主色和输入状态背景。 |
-| `AddOnDecoratedBoxTokenResource` | 由 `SearchEditDecoratedBoxTheme` 的 BasedOn 主题显式读取输入壳体 Own/Effective Global Token。 |
+| `SearchEditTokenResource` | 读取 SearchEdit Effective Global Token，仅负责 SearchEdit 专属组合值；通用输入表面值由 frame theme 从 SharedToken 消费。 |
+| `InputControlFrameTheme` / `SharedTokenResource` | 负责输入表面边框、背景、圆角、focus shadow、状态色、disabled 和 CompactSpace；不由 SearchEditDecoratedBox 重复实现。 |
 | `ButtonTokenResource` | 由真实 Button 和 `SearchButtonTheme` 显式读取 Button Own/Effective Global Token，负责按钮基础视觉。 |
 | `SharedTokenResource` | 读取真正的 Global Token，只用于不响应 SearchEdit Control 级覆盖的共享值。 |
 
@@ -6088,12 +6151,12 @@ Token 边界：
 - `IsOperating=true` 必须阻止按钮和 Enter 键产生重复搜索请求，但不得自动管理异步任务或修改 `Text`。
 - `IsSearchOnEnterEnabled=false` 时不得消费 Enter 键；已经标记为 handled 的 Enter 键不得触发搜索。
 - `SearchRequestedEventArgs.Query` 必须是触发时的查询文本快照，`Trigger` 必须准确表示 `Button` 或 `EnterKey`。
-- 搜索按钮的 `IsEnabled`、`SizeType` 和 loading 必须跟随 SearchEdit；按钮组合视觉必须响应输入壳体的 `Status` 和 `StyleVariant`。
+- 搜索按钮的 `IsEnabled`、`SizeType` 和 loading 必须跟随 SearchEdit；按钮组合视觉必须响应 `InputControlFrame.EffectiveStatus` 和 `StyleVariant`。
 - 右侧外部 add-on 位置属于搜索按钮；内部右侧内容必须继续由 `InnerRightContent` 承载。
 - SearchEdit 的按钮边框和输入框边框必须在 Large、Middle、Small 和 Custom 高度下严格对齐。
 - `SizeType=Custom` 必须以 Middle 作为未显式覆盖时的视觉基线。
 - SearchEdit 保持独立 Control identity；当前不新增 Own Token，也不得借用 LineEdit 或 Button identity。
-- `SearchButtonTheme` 必须继续以 public Button 为 TargetType，并显式区分 SearchEdit 组合语义与 Button 基础视觉。
+- `SearchButtonTheme` 必须继续以 public Button 为 TargetType，并显式区分 SearchEdit 组合语义与 Button 基础视觉；通用输入表面由 frame theme 提供。
 - 重新套用模板时必须释放旧搜索按钮 click 订阅。
 
 维护不变量：
@@ -6106,9 +6169,9 @@ Token 边界：
 - `SearchRequestedEventArgs.Query` 和 `Trigger` 必须准确反映触发时的文本与输入来源。
 - 搜索按钮和内容框的边框必须在同一布局高度下绘制。
 - `SearchEditPanel` 的按钮左边框重叠算法不能破坏单线边框视觉。
-- 搜索按钮必须接收 SearchEdit 的 `SizeType`、`IsEnabled` 和 loading；`StyleVariant` 与 effective status 的组合视觉由 SearchEdit owner theme 投射。
+- 搜索按钮必须接收 SearchEdit 的 `SizeType`、`IsEnabled` 和 loading；`StyleVariant` 与 `EffectiveStatus` 的组合视觉由 shared frame theme 投射。
 - 搜索按钮必须保持 public Button 类型；不得重新引入借用 LineEdit 或 Button identity 的 internal SearchButton。
-- `SearchButtonTheme` 必须继续作为强类型 Semantic Part Theme，并允许实例级替换。
+- `SearchButtonTheme` 必须继续作为强类型 Semantic Part Theme，并允许实例级替换；其状态色只能消费 frame 投射的有效状态，不得成为 validation owner。
 - 搜索按钮右侧外部 AddOn 位置不可被用户内容替代。
 - `InnerRightContent`、clear、reveal 和文本 presenter 的绑定仍由 LineEdit 模板路径维护。
 - AutoCompleteSearchEdit 复用 SearchEdit 视觉时不能绕过 SearchEdit 搜索按钮契约。
@@ -6223,7 +6286,7 @@ Select
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_AddOnDecoratedBox` | `SelectAddOnDecoratedBox` | 输入壳体、Addon、variant、status、CompactSpace 和 hover/pressed 状态承载。 |
+| `PART_InputControlFrame` | `SelectAddOnDecoratedBox` | `InputControlFrame` / AddOnDecoratedBox 组合、Addon、EffectiveStatus、CompactSpace 和 hover/pressed 状态承载；选择专用节点只扩展内容布局。 |
 | `PART_SingleFilterInput` | `SelectFilterTextBox` | 单选模式结果显示和搜索输入。 |
 | `SelectedOptionsBox` | `SelectResultOptionsBox` | 多选和 Tags 模式已选标签与搜索输入。 |
 | `PART_SelectMaxCountIndicator` | `SelectMaxCountIndicator` | 最大选择数量提示。 |
@@ -6235,7 +6298,7 @@ Select
 
 ## Pseudo Classes
 
-Select 的稳定伪类包括 `:dropdownopen`，同时通过标准 `:pressed`、`:disabled` 和 AddOnDecoratedBox 相关状态表达输入表面视觉。
+Select 的稳定伪类包括 `:dropdownopen`；输入表面通过 `InputControlFrame` 统一表达 `StyleVariant`、`EffectiveStatus`、`:pressed`、`:disabled` 和 CompactSpace，选择专用伪类只表达 popup、候选和结果状态。
 
 ## State Flow
 
@@ -6297,12 +6360,13 @@ Disabled / invisible / window deactivated
 
 ## Theme and Token Boundaries
 
-Select 的默认视觉由 Select 专属主题、AddOnDecoratedBox、ListView 和 PopupHost 协作完成。
+Select 的默认视觉由 Select 专属主题、`InputControlFrame` / AddOnDecoratedBox、ListView 和 PopupHost 协作完成。
 
 | 主题或资源 | 职责 |
 | --- | --- |
 | `SelectTheme.axaml` | 根模板、输入壳体、单选输入、多选结果区域、handle、popup 和基础 selector。 |
-| `SelectAddOnDecoratedBoxTheme.axaml` | 输入框 variant、status、dropdown open、hover、pressed 和多选 padding。 |
+| `InputControlFrameTheme.axaml` | 输入框 variant、effective status、hover、pressed、disabled、CompactSpace 和 motion。 |
+| `SelectAddOnDecoratedBoxTheme.axaml` | dropdown open、多选 padding、handle 和选择结果布局；不重复实现 frame 状态 selector。 |
 | `SelectResultOptionsBoxTheme.axaml` | 多选标签布局、响应式标签布局和搜索输入承载。 |
 | `SelectCandidateListTheme.axaml` | 候选列表基础 ListView 主题和默认候选模板。 |
 | `SelectCandidateListItemTheme.axaml` | 候选项 active、selected、disabled 和隐藏已选项视觉；active 只由统一候选状态驱动。 |
@@ -6317,7 +6381,7 @@ Select 的默认视觉由 Select 专属主题、AddOnDecoratedBox、ListView 和
 
 Token 边界：
 
-SelectToken 是 Select 的控件级 Token scope，描述多选标签、候选项、候选弹层 padding 和 Select 输入内容 padding。输入壳体的通用边框、圆角、状态色、focus ring、disabled 背景和 AddOn 结构来自 SharedToken、AddOnDecoratedBoxToken 和 PopupHostToken。
+SelectToken 是 Select 的控件级 Token scope，描述多选标签、候选项、候选弹层 padding 和 Select 输入内容 padding。输入表面的通用边框、圆角、状态色、focus ring、disabled 背景、CompactSpace 和 AddOn 结构来自 `InputControlFrameTheme`、SharedToken 和 PopupHostToken；SelectToken 不复制这些共享职责。
 
 SelectToken 不承载以下状态：
 
@@ -6704,11 +6768,13 @@ Public API / inherited command / item source / user input
 
 ## Theme and Token Boundaries
 
-TimePicker 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
+TimePicker 的视觉模型由 `InputControlFrame` 输入表面、InfoPicker 输入子控件、控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。输入表面状态由 shared frame 统一表达，TimePicker 主题只扩展时间面板、范围和弹层内容。
 
 | 主题文件 | 职责 |
 | --- | --- |
 | `RangeTimePickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
+| `InfoPickerTextBoxTheme.axaml` | 通过 `StyleVariant=Borderless` 提供内部时间文本输入的无 chrome 布局。 |
+| `InputControlFrameTheme.axaml` | 提供输入表面 variant、effective status、focus、disabled、error、warning、CompactSpace 和 motion。 |
 | `TimePickerPresenterTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `TimePickerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 | `TimeViewCellTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
@@ -7202,7 +7268,7 @@ TreeSelect
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_AddOnDecoratedBox` | `TreeSelectAddOnDecoratedBox` | 输入壳体、Addon、variant、status、CompactSpace 和多选状态承载。 |
+| `PART_InputControlFrame` | `TreeSelectAddOnDecoratedBox` | `InputControlFrame` / AddOnDecoratedBox 组合、Addon、EffectiveStatus、CompactSpace 和多选布局承载。 |
 | `PART_SingleFilterInput` | `SelectFilterTextBox` | 单选模式结果显示和搜索输入。 |
 | `SelectedItemsBox` | `SelectTagAwareTextBox` | 多选和勾选模式已选 tag 展示。 |
 | `PART_SelectMaxCountIndicator` | `SelectMaxCountIndicator` | 最大选择数量提示。 |
@@ -7250,25 +7316,25 @@ Form value + MaxCount state
 
 ## Theme and Token Boundaries
 
-TreeSelect 的默认视觉由 TreeSelect 专属主题、Select 家族输入壳体、TreeView 和 PopupHost 协作完成。
+TreeSelect 的默认视觉由 TreeSelect 专属主题、`InputControlFrame` / Select 家族 AddOnDecoratedBox、TreeView 和 PopupHost 协作完成。
 
 | 主题或资源 | 职责 |
 | --- | --- |
 | `TreeSelectTheme.axaml` | 根模板、输入壳体、单选输入、多选结果区域、handle、popup 和基础 selector。 |
 | `SelectTagAwareTextBox` / `SelectTag` 主题 | 多选 tag 布局、高度、关闭按钮和禁用态。 |
 | `TreeView` / `TreeViewItem` 主题 | 树节点缩进、展开、勾选、图标、连线和过滤视觉。 |
-| `AddOnDecoratedBoxToken` | 输入壳体边框、圆角、状态、focus 和 CompactSpace 视觉。 |
+| `InputControlFrameTheme` / `SharedToken` | 输入壳体边框、圆角、effective status、focus 和 CompactSpace 视觉。 |
 | `PopupHostToken` | popup 阴影、圆角和 anchor margin。 |
 | `TreeSelectToken` | TreeSelect 候选弹层最小宽度。 |
 | `SelectToken` | TreeSelect 复用的 popup padding、多选 tag 和输入内容 padding。 |
 
 单选结果文本和多选 tag 的完整内容提示复用共享 `OverflowTip` attached behavior。主题通过 `IsShowOverflowTip`、`OverflowTipDelay` 和 `OverflowTipPlacement` 控制提示开关、延迟和位置，实际 tooltip 仅在文本视觉溢出时托管到 `ToolTip`。
 
-右侧 count、content add-on 和 handle 的稳定 template part 状态由 AXAML compiled ancestor binding 表达。C# 中只保留 AddOnDecoratedBox hover / pressed 到 SelectHandle 的 sibling 状态转发，因为该关系不是 templated parent 绑定，不能用 `TemplateBinding` 表达。
+右侧 count、content add-on 和 handle 的稳定 template part 状态由 AXAML compiled ancestor binding 表达。C# 中只保留 frame layout part 到 SelectHandle 的 hover / pressed sibling 状态转发，因为该关系不是 templated parent 绑定，不能用 `TemplateBinding` 表达；该转发不改变 `InputControlFrame` 对输入表面状态的唯一 ownership。
 
 Token 边界：
 
-TreeSelectToken 是 TreeSelect 的控件级 Token scope，目前只承载 TreeSelect 候选弹层的最小宽度下限。输入壳体的通用边框、圆角、状态色、focus ring、disabled 背景和 AddOn 结构来自 SharedToken、AddOnDecoratedBoxToken 和 PopupHostToken；多选 tag、popup padding 和输入内容 padding 复用 SelectToken。
+TreeSelectToken 是 TreeSelect 的控件级 Token scope，目前只承载 TreeSelect 候选弹层的最小宽度下限。输入表面的通用边框、圆角、effective status、focus ring、disabled 背景和 AddOn 结构来自 `InputControlFrameTheme`、SharedToken 和 PopupHostToken；多选 tag、popup padding 和输入内容 padding 复用 SelectToken。
 
 TreeSelectToken 不承载以下状态：
 
@@ -7525,114 +7591,85 @@ Source: ./controls/avatar/semantic-cn.md
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `Avatar` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `root` | `Avatar` | 归一图片来源、内容优先级、尺寸、形状和加载状态。 | `Source`、`FallbackSource`、`RequestOptions`、`Text`、`Icon`、`SizeType`、`Size`、`Shape` | `AvatarToken`、SharedToken | public |
+| `surface` | `Frame` | 绘制背景、边框和圆角。 | `Shape`、`SizeType`、`Size` | Avatar background、border、size Token | internal-observable |
+| `image` | `ImagePresenter` | 展示当前有效 `IImage`，不自行加载来源。 | `LoadState`、`IsLoaded` | Avatar size/radius Token | internal-observable |
+| `text` | `PART_TextPresenter` | 展示 Text 并应用基于 Gap 的缩放。 | `Text`、`Gap` | Font、size Token | template-stable |
+| `icon` | `IconPresenter` | 在无图片和 Text 时展示 Icon。 | `Icon` | Icon size Token | internal-observable |
+| `group` | `AvatarGroup` | 排列子 Avatar、折叠超出项并管理 Flyout。 | `Children`、`MaxDisplayCount`、`FoldAvatarFlyoutTriggerType` | AvatarGroup spacing/fold Token | public |
 
 ## Abstract AXAML Structure
 
-来源：`src/AtomUI.Desktop.Controls/Avatar/Themes/AvatarTheme.axaml`
-
-```xml
-<Panel Name="RootLayout">
-    <PixelAlignedBorder Name="Frame" />
-    <IconPresenter Name="IconPresenter" />
-    <Border>
-        <Image Name="ImagePresenter" />
-    </Border>
-    <Border>
-        <Svg Name="SvgPresenter" />
-    </Border>
-    <TextBlock Name="PART_TextPresenter" />
-</Panel>
-```
+未定位到可生成抽象 AXAML 结构的 ControlTheme 模板。生成器不会根据 semantic parts 发明 AXAML 节点；请以 Template Parts、主题文件和源码索引为准。
 
 ## Composition Model
 
-该章节由控件 `Themes/` 文件夹中的真实主题文件生成，用于说明 public 控件与内部协作对象之间的运行时结构。内部节点只用于理解和维护，不应指导用户代码直接依赖。
-
-### 控件角色图
-
-```text
-Avatar
-  -> AvatarGroup (control theme, AvatarGroupTheme.axaml)
-  -> Avatar (control theme, AvatarTheme.axaml)
-     -> Panel#RootLayout (template-stable)
-        -> PixelAlignedBorder#Frame (template-stable)
-        -> IconPresenter#IconPresenter (internal-observable)
-        -> Border (template-stable)
-           -> Image#ImagePresenter (template-stable)
-        -> Border (template-stable)
-           -> Svg#SvgPresenter (template-stable)
-        -> TextBlock#PART_TextPresenter (template-stable)
-```
-
-### 协作节点
-
-| 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
-| --- | --- | --- | --- | --- | --- | --- |
-| `Avatar` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `AvatarGroup` | control theme | `AvatarGroupTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Avatar` | control theme | `AvatarTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BitmapSrc`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `EffectiveIconSize` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `RootLayout` | template node (Panel) | `AvatarTheme.axaml` | Avatar | `Background`, `BitmapSrc`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `EffectiveIconSize` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Frame` | template node (PixelAlignedBorder) | `AvatarTheme.axaml` | Avatar | `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `IconPresenter` | template node (IconPresenter) | `AvatarTheme.axaml` | Avatar | `EffectiveIconSize`, `Foreground`, `Icon` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `ImagePresenter` | template node (Image) | `AvatarTheme.axaml` | Avatar | `BitmapSrc`, `Height`, `Width` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `SvgPresenter` | template node (Svg) | `AvatarTheme.axaml` | Avatar | `Height`, `Src`, `Width` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_TextPresenter` | template node (TextBlock) | `AvatarTheme.axaml` | Avatar | `Text`, `TextRenderTransform` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+该控件主要由 public 控件和 ControlTheme 模板直接表达，没有额外运行时组合层。
 
 ## Template Parts
 
-| 契约组 | 代表成员 | 维护含义 |
-| --- | --- | --- |
-| 内容与数据 | `BitmapSrc`、`FoldAvatarFlyoutTriggerType`、`FoldInfoAvatarBackground`、`FoldInfoAvatarForeground`、`Icon`、`Src`、`Text` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `MaxDisplayCount` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsMotionEnabled` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 视觉与布局 | `Gap`、`Shape`、`Size`、`SizeType` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `Avatar` | 归一图片来源、内容优先级、尺寸、形状和加载状态。 | `Source`、`FallbackSource`、`RequestOptions`、`Text`、`Icon`、`SizeType`、`Size`、`Shape` | `AvatarToken`、SharedToken | public |
+| `surface` | `Frame` | 绘制背景、边框和圆角。 | `Shape`、`SizeType`、`Size` | Avatar background、border、size Token | internal-observable |
+| `image` | `ImagePresenter` | 展示当前有效 `IImage`，不自行加载来源。 | `LoadState`、`IsLoaded` | Avatar size/radius Token | internal-observable |
+| `text` | `PART_TextPresenter` | 展示 Text 并应用基于 Gap 的缩放。 | `Text`、`Gap` | Font、size Token | template-stable |
+| `icon` | `IconPresenter` | 在无图片和 Text 时展示 Icon。 | `Icon` | Icon size Token | internal-observable |
+| `group` | `AvatarGroup` | 排列子 Avatar、折叠超出项并管理 Flyout。 | `Children`、`MaxDisplayCount`、`FoldAvatarFlyoutTriggerType` | AvatarGroup spacing/fold Token | public |
 
 ## Pseudo Classes
 
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Avatar Token + ControlTheme。 |
+回到 Text/Icon。加载状态通过状态属性和伪类表达，而不是由模板猜测图片是否存在。
 
 ## State Flow
 
-Avatar 的状态流按以下路径收敛：
+可见内容优先级固定为：
 
 ```text
-Public API / inherited command / item source / user input
-  -> 控件实例状态
-  -> effective state / pseudo-class / template property
-  -> ControlTheme selector / presenter / renderer
-  -> Gallery 可观察行为
+已加载 Image > Text > Icon
 ```
 
-状态维护规则：
+主来源处于 Loading 或 Failed、fallback 尚未成功时，不清空可用的 `Text` 或 `Icon`。只有图片成功提交后才切换为 Image。
+Source 清空、来源替换、控件 detach 或最终失败会释放不再使用的图片租约。
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- open/close、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+加载状态由以下伪类表达：
+
+| 伪类 | 条件 |
+| --- | --- |
+| `:loading` | 当前 generation 正在加载主来源或 fallback |
+| `:loaded` | 当前 generation 已成功提交图片 |
+| `:failed` | 主来源和可用 fallback 均终态失败 |
+| `:fallback` | 当前已加载图片来自 `FallbackSource` |
+
+尺寸伪类 `:small`、`:middle`、`:large`、`:custom-size` 继续表达主题尺寸选择。图片加载伪类和尺寸伪类相互独立。
+
+Avatar 通过 `ImageLoadController` 使用当前 `Application` 的 `IImageLoader`：
+
+1. attach 后根据 Source、RequestOptions、有效 Bounds 和 render scaling 创建请求。
+2. 解码目标使用物理像素并向上量化到 16 px bucket，避免微小布局变化反复解码。
+3. Source、fallback、options、尺寸 bucket 或 attach 状态变化时递增 generation 并取消旧 waiter。
+4. 同来源 Reload 或尺寸变化可在 Loading 期间保留旧图片，成功后原子替换；最终失败后释放旧租约。
+5. 结果回到 UI dispatcher 后再次校验 generation 和 attach 状态，旧结果只能释放，不能回写。
+
+HTTP 条件重验证、非网络来源 Reload 强制重读、两级请求合并、缓存、安全限制和应用销毁由统一 loader 负责，Avatar
+不复制 transport、cache 或 scheduler。
 
 ## Theme and Token Boundaries
 
-Avatar 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
+`AvatarTheme.axaml` 位于 `AtomUI.Controls/Avatar/Themes`，使用以下稳定视觉节点：
 
-| 主题文件 | 职责 |
+| 节点 | 职责 |
 | --- | --- |
-| `AvatarGroupTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `AvatarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
+| `Frame` | 背景、边框和圆角 |
+| `IconPresenter` | Icon 内容 |
+| `ImagePresenter` | 已加载 `IImage` |
+| `PART_TextPresenter` | Avalonia 原生 `TextBlock`，负责文字和缩放 transform |
 
-Avatar 使用 `AvatarToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、input/value、motion、visual option 运行时状态。
+`PART_TextPresenter` 不依赖 Desktop Controls，保证 `Avatar` 可以由 `AtomUI.Controls` 独立提供。Circle 形状根据最终宽度设置
+圆角；文本宽度超过可用区域时按 `Gap` 计算缩放，不改变布局尺寸。
 
-主题维护规则：
-
-- 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
-- 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
-- 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
-- Browser 或平台特化主题必须保持同一 API 的语义一致。
+`AvatarGroupTheme.axaml` 位于 `AtomUI.Desktop.Controls/Avatar/Themes`，消费同一个 `AvatarToken`，但只负责 group spacing、
+overlap、折叠头像颜色和桌面 Flyout 视觉。
 
 Token 边界：
 
@@ -7640,29 +7677,26 @@ Avatar Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 当前 Token scope：
 
-- `AvatarToken`，scope id 为 `Avatar`，源码位于 `src/AtomUI.Desktop.Controls/Avatar/AvatarToken.cs`。
+- `AvatarToken`，scope id 为 `Avatar`，源码位于 `src/AtomUI.Controls/Avatar/AvatarToken.cs`。
 
 ## Customization Boundaries
 
-维护 Avatar 时必须保持以下不变量：
-
-- 不擅自新增、删除、重命名或改变 public/protected API、Avalonia 属性、事件和默认值。
-- 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
-- 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
-- Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
-- 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
-- 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
-- 文档只描述当前稳定设计；历史变化记录在 `changelog.md`。
+- 当前 API 只有 `Source`、`FallbackSource` 和 `RequestOptions`；不恢复旧来源属性或兼容 shim。
+- 图片、Text、Icon 的优先级和 Loading 期间的 fallback 内容必须稳定。
+- `ImageOpened`、`ImageFailed`、状态属性和伪类必须来自同一个 generation。
+- Template reapply 必须解除旧 `PART_TextPresenter.SizeChanged` 订阅。
+- detach 必须取消 waiter、释放图片租约和 motion binding；reattach 根据当前配置重新请求。
+- borrowed `ImageLoadSource.FromImage` 永不由 Avatar 销毁。
+- Public API、Theme、Gallery 示例和 `AtomUI.Controls.Tests` 必须同步验证。
 
 维护不变量：
 
-维护 Avatar 时不得破坏：
-
-- Public API、默认值、事件顺序和 Gallery 可观察行为。
-- Template part 名称、ControlTheme key、伪类和资源 key。
-- 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
-- Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
+- `ImageLoadController` 是 Avatar 与 `AsyncImage` 的单图状态机 owner，不在 Avatar 内复制请求协调逻辑。
+- 内容优先级始终为 Image、Text、Icon；Loading 和取消不清空可用降级内容。
+- 每个已提交 cache image 必须由一个有效 lease 支撑；borrowed image 永不由控件销毁。
+- Source、options、尺寸或 attach generation 变化后，旧结果只能释放，不能回写状态。
+- Template reapply、detach、group rebuild 和 Application dispose 都有明确的取消、解绑和释放路径。
+- 单头像和 Token 只存在于 `AtomUI.Controls`，Desktop 包只拥有 AvatarGroup 组合能力。
 
 Source: ./controls/badge/semantic-cn.md
 
@@ -9542,12 +9576,13 @@ Source: ./controls/image-previewer/semantic-cn.md
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `ImagePreviewer` / `ImageGroupPreviewer` | 图片预览控件根语义区域，承载 public API、图片来源、当前项、封面索引和主题入口。 | `Source`、`Sources`、`FallbackSource`、`CurrentIndex`、`CoverIndex`、`IsOpen` | `ImagePreviewerToken` | stable |
-| `cover` | `ImagePreviewerCover` | 普通页面中的封面展示区域，承载 `CoverIndex` 对应图片、mask、loading 和 error 内容。 | `CoverIndex`、`CoverIndicatorContent`、`CoverWidth`、`CoverHeight`、`IsShowCoverMask`、`LoadingContent`、`ErrorContent` | `MaskBgColor`、`CoverImageWidth` | stable |
-| `viewer` | `ImageViewer` / `PART_ImageViewerScene` / `PART_ImageRenderer` | 预览宿主中的图片场景和渲染区域，承载缩放、旋转、翻转和拖拽坐标空间。 | `ImageScaleStep`、`ImageMinScale`、`ImageMaxScale`、`Stretch`、`Transform` | `DialogMinWidth`、`DialogMinHeight` | stable |
-| `title` | `ImagePreviewerTitleBar` / `PART_TitleLayout` / `PART_IconPresenter` | 预览窗口标题区域，承载 effective title 和显式标题图标。 | `PreviewTitle`、`PreviewTitleIcon`、`PreviewTitleResolver` | `TitleBarBackgroundColor`、`WindowTitleBarToken.LogoAndTitleSpacing` | template-stable |
-| `toolbar` | `ImagePreviewToolbar` / `ImagePreviewFloatToolbar` | 预览操作区域，承载上一张、下一张、缩放、fit-to-window、翻转和旋转动作。 | toolbar request events、`CurrentIndex`、`Count` | `ToolbarBoxShadow`、`ToolbarBgColor` | stable |
-| `host` | `ImagePreviewerDialog` / `ImagePreviewerOverlayHost` | 预览宿主区域，承载窗口化或 overlay 打开、关闭、modal、topmost 和释放语义。 | `IsOpen`、`IsDialogModal`、`IsDialogTopmost`、`IsModal` | `DialogMinWidth`、`DialogMinHeight` | internal-observable |
+| `root` | `AbstractImagePreviewer` | 归一 ItemsSource、current、open state、宿主与加载策略。 | `ItemsSource`、`CurrentIndex`、`IsOpen`、`PreloadCount` | SharedToken、ImagePreviewerToken | public |
+| `cover` | `ImagePreviewer` / `PART_CoverItemsControl` | 展示单封面或 group 缩略图及其 loading/error 状态。 | `CoverIndex`、cover size/state、`ItemsPanel` | Cover size、mask、radius Token | public/template-stable |
+| `host` | `ImagePreviewerDialog` / `ImagePreviewerOverlayHost` | 承载 Desktop window 或 Browser overlay。 | dialog、modal、topmost、title、motion API | Window、overlay、motion Token | internal-observable |
+| `viewer` | `ImageViewer` / `PART_ImageViewerScene` | 当前项导航、fit、拖拽、缩放和旋转。 | interaction、scale、CurrentIndex | Viewer background、toolbar Token | internal-observable |
+| `renderer` | `PART_ImageRenderer` | 只渲染 entry 已持有的 `IImage`。 | current load state | 无独立加载 Token | template-stable |
+| `loading` | `PART_LoadingPresenter` | 呈现 Skeleton 或 Spin，不拥有请求。 | LoadingContent/Template | Loading、Skeleton、Spin Token | template-stable |
+| `error` | `PART_ErrorPresenter` | 呈现最终失败内容，不改变状态机。 | ErrorContent/Template | Error semantic Token | template-stable |
 
 ## Abstract AXAML Structure
 
@@ -9707,86 +9742,101 @@ ImagePreviewer
 
 ## Template Parts
 
-| 契约组 | 代表成员 | 维护含义 |
-| --- | --- | --- |
-| 图片来源 | `Source`、`Sources`、`FallbackSource`、`IImagePreviewSource` | 统一表达单图、多图和失败兜底图片来源。`IImagePreviewSource` 是唯一来源契约，URI 场景通过 `UriImagePreviewSource` 显式进入来源集合，数据流场景通过 `StreamImagePreviewSource` 按需打开。 |
-| 内容与数据 | `CoverIndicatorContent`、`CoverIndicatorContentTemplate`、`LoadingContent`、`LoadingContentTemplate`、`ErrorContent`、`ErrorContentTemplate`、`ImageMaxScale`、`ImageMinScale`、`ImageScaleStep`、`ImageTranslateX`、`ImageTranslateY` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `Count`、`CurrentIndex` | 维护当前预览项、多图切换和集合状态；`CurrentIndex` 是控件级当前项索引，默认双向绑定，只决定打开预览后的当前图片。 |
-| 封面展示 | `CoverIndex` | 只决定关闭态 `ImagePreviewer` 封面显示哪一张来源图片。它不参与打开行为、导航行为或 `CurrentIndex` 同步。 |
-| 加载调度 | `MaxConcurrentLoads`、`PreloadCount` | 控制图片加载并发和打开预览后的邻近图片预加载窗口，避免大集合一次性加载全部图片。 |
-| 预览标题 | `PreviewTitle`、`PreviewTitleIcon`、`PreviewTitleResolver`、`IImagePreviewTitleResolver`、`ImagePreviewTitleResolveContext` | 定义预览宿主标题和标题图标契约。显式标题非空时优先显示；显式标题为空时由 resolver 基于 current effective item 解析标题；`PreviewTitleIcon` 使用 `PathIcon?`，只在显式设置时显示，不继承应用或主窗口图标。 |
-| 交互与状态 | `IsDialogModal`、`IsDialogTopmost`、`IsModal`、`IsMotionEnabled`、`IsOpen`、`IsShowCoverMask` | 表达用户可观察状态、可用性、清除、加载或反馈语义；`IsOpen` 默认双向绑定。 |
-| 视觉与布局 | `CoverHeight`、`CoverWidth` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
-| 其他稳定入口 | `MaxScale`、`MinScale`、`ScaleStep`、`Stretch`、`Transform` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `AbstractImagePreviewer` | 归一 ItemsSource、current、open state、宿主与加载策略。 | `ItemsSource`、`CurrentIndex`、`IsOpen`、`PreloadCount` | SharedToken、ImagePreviewerToken | public |
+| `cover` | `ImagePreviewer` / `PART_CoverItemsControl` | 展示单封面或 group 缩略图及其 loading/error 状态。 | `CoverIndex`、cover size/state、`ItemsPanel` | Cover size、mask、radius Token | public/template-stable |
+| `host` | `ImagePreviewerDialog` / `ImagePreviewerOverlayHost` | 承载 Desktop window 或 Browser overlay。 | dialog、modal、topmost、title、motion API | Window、overlay、motion Token | internal-observable |
+| `viewer` | `ImageViewer` / `PART_ImageViewerScene` | 当前项导航、fit、拖拽、缩放和旋转。 | interaction、scale、CurrentIndex | Viewer background、toolbar Token | internal-observable |
+| `renderer` | `PART_ImageRenderer` | 只渲染 entry 已持有的 `IImage`。 | current load state | 无独立加载 Token | template-stable |
+| `loading` | `PART_LoadingPresenter` | 呈现 Skeleton 或 Spin，不拥有请求。 | LoadingContent/Template | Loading、Skeleton、Spin Token | template-stable |
+| `error` | `PART_ErrorPresenter` | 呈现最终失败内容，不改变状态机。 | ErrorContent/Template | Error semantic Token | template-stable |
 
 ## Pseudo Classes
 
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | current item、open/close、image loading、loaded/failed、fallback、motion。 |
-| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | ImagePreviewer Token + ControlTheme。 |
+源文档未声明控件专属伪类。控件仍可能消费 Avalonia 标准状态，例如 `:pointerover`、`:pressed`、`:disabled` 和 focus 相关状态。
 
 ## State Flow
 
-ImagePreviewer 的状态流按以下路径收敛：
+### 4.1 集合与状态所有权
+
+`ItemsSource` 每次物化为控件内部的 `ImagePreviewEntry` 集合。entry 持有两个独立通道：
+
+| 通道 | 内容 | 状态与租约 |
+| --- | --- | --- |
+| Full | 预览完整图 | FullState/Error/Progress、generation、CTS、`ImageLoadResult` lease |
+| Thumbnail | 页面封面 | ThumbnailState/Error/Progress、generation、CTS、独立 lease |
+
+集合必须支持普通 enumerable replacement，以及 `INotifyCollectionChanged` 的 Add、Remove、Move、Replace 和 Reset。未变的
+immutable item 复用 entry 与已有租约；被移除或替换的 entry 立即取消并 dispose。控件 detach 期间解除集合订阅，reattach 时
+重新物化当前集合，补齐离线变更。
+
+当前项和封面都按显示索引 clamp。Clamp 只用于选择 entry，不能把外部 TwoWay `CurrentIndex` 写回为边界值。
+
+### 4.2 加载优先级与懒加载
+
+Previewer 使用应用级调度预算，优先级固定为：
+
+| 场景 | `ImageRequestPriority` |
+| --- | --- |
+| 当前完整图 | `Critical` |
+| 单封面或 group 缩略图 | `High` |
+| 邻近完整图预加载 | `Preload` |
+
+打开态加载当前完整图和 `PreloadCount` 邻近窗口；离开窗口的未完成 Full waiter 被取消。邻项按与 CurrentIndex 的距离从近到远
+提交。关闭宿主时释放所有 Full lease，再恢复关闭态封面请求；缩略图 lease 保留供页面封面继续显示。
+
+Previewer 不公开控件级最大并发数。下载/读取与解码并发、请求提升、两级去重、缓存和 waiter-local timeout 都由
+Application-scoped loader 统一控制。
+
+完整图解码目标来自 TopLevel ClientSize，封面目标来自 CoverWidth/CoverHeight 或实际 Bounds，均乘 render scaling 并向上量化
+到 16 px bucket。Full 与 Thumbnail 分别按物理像素 bucket 保持请求幂等；初始占位布局、最终 Arrange、窗口尺寸或 DPI 变化产生
+更合适的 bucket 时会保留当前图片并异步升级，成功后原子替换，避免把低分辨率封面长期放大。明确得到 0 x 0 时不发起无意义的
+封面请求；直接 loader 请求的显式非法目标由统一错误契约处理。
+
+### 4.3 Fallback、Reload 与事件
+
+Fallback 是每个 item 的局部策略，不是整个集合的替换策略。一个 item 失败不能删除其他 item、替换 ItemsSource 或改变
+CurrentIndex。Full 与 Thumbnail 通道分别按自己的来源顺序尝试 fallback。
+
+Reload 使用 item 的 RequestOptions 副本并把 `CacheMode` 改为 `Reload`：HTTP 使用条件重验证，File/Asset/Storage/Bytes/Stream
+强制重读。Reload 只增加目标通道的 generation；同一 item 的另一个通道以及其他 item 不受影响。
+
+只有当前 Full entry 从非 Loaded 进入 Loaded 时触发 `ImageOpened`，从非 Failed 进入 Failed 时触发 `ImageFailed`。预加载项和
+封面状态不冒充当前项事件。
+
+### 4.4 标题契约
+
+标题优先级固定为：
 
 ```text
-Public API / IImagePreviewSource / ImageSourceUri / inherited command / user input
-  -> 控件实例状态
-  -> ImagePreviewItem state / effective state / pseudo-class / template property
-  -> ControlTheme selector / loading presenter / error presenter / renderer
-  -> Gallery 可观察行为
+宿主显式 Window.Title / PreviewTitle
+  > ImagePreviewItem.Title
+  > IImagePreviewTitleResolver
+  > 空标题
 ```
 
-状态维护规则：
+`PreviewTitle` 被转接到 dialog 的 `Window.Title`。当显式标题为空时，宿主先读取当前 item 的 `Title`，再调用 resolver。
+resolver 上下文只包含 immutable `ImagePreviewItem`、显示用 CurrentIndex 和 Count，不发起 I/O。
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- `IImagePreviewSource` 是用户输入层，`ImagePreviewItem` 是控件内部图片项状态 owner，`LoadedImageSource` 是加载完成结果。三者不能混用职责。
-- 图片项状态按 `Pending -> Loading -> Loaded/Failed` 收敛。单项加载失败只影响该项自身；`FallbackSource` 只在当前来源集合全部失败时作为整组兜底。
-- current item、open/close、image loading、loaded/failed、fallback、motion 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- `IsOpen` 与 `CurrentIndex` 是默认 `TwoWay` 的受控状态；dialog 和 overlay 只能消费或回写这条 public 状态路径，不能保留独立打开状态或当前项状态。
-- `CurrentIndex` 是弹出 dialog 和 overlay host 共享的当前项状态。普通封面只消费 `CoverIndex`，不得反向改写 `CurrentIndex`。
-- `CoverIndex` 从当前来源集合中选择关闭态封面。显示层可以对越界 `CoverIndex` 做有效范围 clamp 以稳定渲染，但不能静默修改用户设置的 public 属性值。
-- 预览标题由单一 effective title 算法生成：非空白显式标题优先；显式标题为空时，使用 resolver 基于 current effective item 解析标题；解析不到标题时标题区域保持空态。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放；过期异步加载结果不能回写新来源。
-- 关闭态只加载封面所需图片；打开态加载当前图片、`PreloadCount` 定义的邻近图片，并保留或补加载 `CoverIndex` 对应封面，保证非模态预览切换时页面封面不消失。控件不得因为 `Sources` 包含大量来源而一次性加载全部图片。
+默认 resolver 返回 `Item.Source.DisplayName`。`PreviewTitleIcon` 只显示在预览标题栏，不投射到普通 Window icon。
 
 ## Theme and Token Boundaries
 
-ImagePreviewer 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
+Desktop 支持 native window 时使用 `ImagePreviewerDialog`；Browser 等无 native window 平台使用
+`ImagePreviewerOverlayHost`。两种宿主共享 ItemsSource、CurrentIndex TwoWay、交互、占位、动效和 modal 语义。
 
-| 主题文件 | 职责 |
-| --- | --- |
-| `ImageGroupPreviewerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `ImagePreviewFloatToolbarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `ImagePreviewNavButtonTheme.axaml` | 定义局部操作入口、按钮或 handle 的状态视觉。 |
-| `ImagePreviewToolbarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `ImagePreviewerCoverTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `ImagePreviewerDialogTheme.axaml` | 定义弹层、窗口或 overlay 宿主视觉。 |
-| `ImagePreviewerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `ImagePreviewerTitleBarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `ImageViewerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
+稳定主题节点包括：
 
-ImagePreviewer 使用 `ImagePreviewerToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 current item、open/close、image loading、loaded/failed、fallback 或 motion 运行时状态。
+- `PART_CoverItemsControl`：group 封面集合。
+- `PART_ImageViewerScene`、`PART_ImageRenderer`：预览坐标空间与图片 renderer。
+- `PART_LoadingPresenter`、`PART_ErrorPresenter`：封面和 viewer 的状态占位。
+- `PART_PreviousButton`、`PART_NextButton` 与 toolbar 操作按钮。
+- `PART_TitleLayout`、`PART_IconPresenter`：dialog 标题与图标。
+- `PART_CloseButton`：overlay 关闭入口。
 
-预览窗口标题栏使用 `ImagePreviewer.PreviewTitleIcon` 作为标题图标来源。`PreviewTitleIcon` 是 `PathIcon?` 契约，表示只属于 ImagePreviewer 预览窗口标题的显式图标；未设置时标题栏不显示图标，也不从 `Window.Icon`、`Window.Logo`、应用图标或主窗口图标回退。`ImagePreviewerTitleBarTheme` 将 `PART_IconPresenter` 和标题内容放入共享布局的 Title 角色，图片工具栏放入 Leading，右侧 add-on 与 caption buttons 放入 Trailing。图标位于标题左侧，仅当图标和标题都有效时使用 `WindowTitleBarToken.LogoAndTitleSpacing`。预览 dialog 的 `TitleAlignment` 默认值覆盖为 `WindowCenter`，因此 Windows、Linux 和 macOS 都默认以完整窗口水平中心作为标题基准；显式设置 `TitleAlignment` 时仍通过 `ImagePreviewerTitleBar` 投射，并继续由 `WindowTitleBarLayoutPanel` 处理左右安全区裁剪。三个平台模板都通过 `NativeChromeInsets` 避让实际与客户区重叠的原生按钮，不使用外层单侧 Padding/Margin 缩窄完整 frame。
-
-预览 dialog 的图片查看层必须绘制与 dialog `Background` 一致的实心背景，用于覆盖 Windows CSD maximize/restore 期间可能短暂暴露的通用窗口 underlay 背景。窗口状态或尺寸变化期间，dialog 还会短暂关闭查看层的图片 transform/translate 过渡，避免外层窗口 resize 与内层图片居中动画叠加成闪动；overlay host 的查看层保持透明，由 overlay 模板自身背景承载遮罩语义。
-
-加载视觉遵循以下规则：
-
-- 封面加载态使用图片 Skeleton 占位，保持封面尺寸稳定，不显示 hover mask。
-- 预览层加载态使用居中 Spin，缩放、旋转、拖拽和 fit-to-window 在当前图片未加载完成前禁用。
-- loading 视觉允许短暂延迟显示以避免本地文件或 `avares://` 资源快速完成造成闪烁；延迟只影响视觉，不影响 `ImagePreviewItemState`。
-- `LoadingContent` / `LoadingContentTemplate` 替换默认加载内容，`ErrorContent` / `ErrorContentTemplate` 替换默认失败内容；替换内容不得重新定义 `Pending -> Loading -> Loaded/Failed` 状态机。
-- 封面 loading 和 failed 状态必须使用稳定占位尺寸。尺寸解析优先使用显式 `CoverWidth` / `CoverHeight`，其次使用控件布局约束中的有效宽高，最后使用 `ImagePreviewerToken.CoverImageWidth` 作为兜底基准。没有图片自然尺寸时，失败态不能由错误文案撑开成窄条。
-- 默认失败态使用图片失败占位视觉：图标、简短本地化文案和低干扰背景共同表达失败。失败文案来自 ImagePreviewer 控件语言资源，主题中不得硬编码英文 `Image load failed`。
-
-主题维护规则：
-
-- 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
-- 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
-- 不把 hover、pressed、current item、loading、failed、fallback、popup open 等运行时状态写入 Token。
-- Browser 或平台特化主题必须保持同一 API 的语义一致。
+Renderer 只消费 entry 中的 `IImage`，不得自行打开 Source。Loading 时封面使用稳定尺寸 Skeleton 语义，viewer 使用居中 Spin；
+Failed 时使用本地化默认错误内容或用户模板。
 
 Token 边界：
 
@@ -9798,43 +9848,24 @@ ImagePreviewer Token 只表达组件级视觉变量，例如尺寸、间距、�
 
 ## Customization Boundaries
 
-维护 ImagePreviewer 时必须保持以下不变量：
-
-- 不擅自新增、删除、重命名或改变已批准的 public/protected API、Avalonia 属性、事件和默认值。
-- 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
-- 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
-- Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
-- 图片加载不得在 UI 线程执行网络 I/O，不得通过同步 `Stream` API 承载远程来源。
-- `Source` / `Sources` / `FallbackSource`、URI 便利入口和数据流来源的解析、来源身份解析和取消语义必须一致。
-- `CurrentIndex` 不得退化为弹层专属状态；dialog 和 overlay 必须消费同一当前项语义。封面由 `CoverIndex` 独立决定，只负责关闭态展示，不参与打开后的当前项行为。
-- `MaxConcurrentLoads` 必须限制所有图片加载入口的实际并发，不能只限制预加载路径。
-- `PreloadCount` 只扩大打开态当前图片附近的加载窗口，不改变 `CurrentIndex`、`CoverIndex`、`Count` 或导航语义。
-- 预览标题不得使用过期图片项：标题必须随 current effective item、effective items、显式标题和 resolver 变化重新计算；非空白显式标题的优先级不能被默认 resolver 覆盖。
-- 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
-- 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
-- 文档只描述当前稳定设计；历史变化记录在 `changelog.md`。
+- 关闭 dialog/overlay：释放 host bindings、事件订阅、logical parent 和全部 Full lease，保留关闭态需要的 Thumbnail lease。
+- detach：解除集合订阅，取消 Full/Thumbnail waiter 并释放全部 lease。
+- TopLevel resize 或 render scaling 变化：重新计算当前物理像素 bucket，相同 bucket 不重复读取，不同 bucket 触发替换请求。
+- reattach：重新物化集合并按 IsOpen 选择当前加载策略。
+- source replacement、collection remove/reset：旧 entry 不能回写或继续保留图片。
+- 当前 API 不包含旧 source 接口、单/多 source 属性、私有 loader 或私有 scheduler；不提供兼容 shim。
+- 不允许同步 I/O、固定延迟、反射发现 loader/codec，或在 Previewer 内创建 `HttpClient`。
 
 维护不变量：
 
-维护 ImagePreviewer 时不得破坏：
-
-- Public API、默认值、事件顺序和 Gallery 可观察行为。
-- Template part 名称、ControlTheme key、伪类和资源 key。
-- 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
-- 图片加载状态的单 owner：`IImagePreviewSource` 是来源，`ImagePreviewItem` 是状态，`LoadedImageSource` 是结果，`ImagePreviewRenderer` 只负责渲染。
-- `Source`、`Sources`、`FallbackSource`、URI 便利入口和数据流来源的加载、取消、来源身份和失败处理一致性。
-- 单图 `ImagePreviewer` 与 `ImageGroupPreviewer` 对 `CoverWidth` / `CoverHeight` 的消费一致性。远程图片 loading/failed 时不能因为没有图片自然尺寸而丢失封面高度。
-- 默认 loading/error 视觉不能破坏自定义内容入口。用户设置 `LoadingContent` 或 `ErrorContent` 后，模板仍负责稳定尺寸、状态显隐和 mask 抑制。
-- 默认失败文案必须走控件本地化资源，不允许在 `ImagePreviewerCoverTheme.axaml` 或 `ImageViewerTheme.axaml` 中硬编码英文字符串。
-- `CurrentIndex` 的单一语义：dialog 和 overlay 使用同一 current effective item；普通封面只使用 `CoverIndex`。点击封面、封面加载状态和封面错误状态不得修改 `CurrentIndex`。
-- `CoverIndex` 的单一语义：它只选择关闭态封面图片，不参与打开、导航、标题解析、fallback 批次判定或 selection 同步。
-- `MaxConcurrentLoads` 的单一闸门语义：任何新增加载入口都必须接入同一调度器，不能形成第二套并发队列。
-- `PreloadCount` 的窗口语义：只影响打开态邻近加载范围，不改变 public selection、封面索引或 `Count`。
-- 预览标题的单一算法：非空白 `Window.Title` 或 `PreviewTitle` 优先，resolver 只在显式标题为空时运行；标题必须跟随 current effective item，不能保留旧集合项的文件名。
-- 预览标题图标的单一路径：`PreviewTitleIcon` 只能进入 `ImagePreviewerDialog.TitleIcon`，再绑定到 `ImagePreviewerTitleBar.Icon` 和 `PART_IconPresenter`；不得转接 `Window.Icon`、`Window.Logo` 或右侧扩展区域来表达标题图标。
-- 加载完成后必须重新计算 `ImageViewer` 的布局、居中、fit-to-window 和交互边界。
-- Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
+- public `ImagePreviewItem` 保持 immutable，只保存配置；所有可变加载状态只属于 internal entry。
+- Full 与 Thumbnail 的 generation、CTS、state、progress 和 lease 相互独立，Reload 一个通道不能干扰另一个通道。
+- Full 与 Thumbnail 分别记录活动/已提交物理像素 bucket；布局或 DPI 变化后不得继续放大较小 bucket 的旧结果。
+- current、cover 和 collection clamp 只决定显示 entry，不静默改写外部 TwoWay 索引。
+- 所有请求进入 Application-scoped `IImageLoader`；Previewer 不增加本地 semaphore、cache、transport 或 codec。
+- host close 释放 Full leases，detach 释放 Full/Thumbnail leases；旧 entry、旧 generation 和已关闭 host 都不能回写。
+- renderer、loading presenter 和 error presenter 只消费状态，不发起 I/O 或拥有结果。
+- native dialog 与 Browser overlay 必须共享 item、current、navigation、loading 和关闭语义。
 
 Source: ./controls/info-flyout/semantic-cn.md
 
@@ -12346,6 +12377,7 @@ Message Token 只表达组件级视觉变量，例如尺寸、间距、颜色、
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
+- `IsClosing` / `IsClosed` public 状态不得与 internal `MotionExecutionState` 合并；重复调度不得创建并行退出动效。
 
 Source: ./controls/modal/semantic-cn.md
 
@@ -12598,6 +12630,7 @@ Notification Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
+- `IsClosing` / `IsClosed` public 状态不得与 internal `MotionExecutionState` 合并；重复调度不得创建并行退出动效。
 
 Source: ./controls/popup-confirm/semantic-cn.md
 
@@ -14082,6 +14115,7 @@ WindowTitleBar
         -> Border#PART_Frame (template-stable)
         -> Border (template-stable)
            -> IconPresenter#PART_IconPresenter (template-stable)
+  -> WindowTitleBarButton (control theme, WindowTitleBarButtonTheme.axaml)
   -> WindowTitleBar (control theme, WindowTitleBarTheme.axaml)
      -> Border#Frame (template-stable)
         -> WindowTitleBarLayoutPanel (internal-observable)
@@ -14112,6 +14146,7 @@ WindowTitleBar
            -> StackPanel (template-stable)
               -> ContentPresenter#PART_RightAddOn (template-stable)
               -> CaptionButtonGroup#PART_CaptionButtonGroup (template-stable)
+  -> WindowTitleBarToggleButton (control theme, WindowTitleBarToggleButtonTheme.axaml)
   -> WindowsCaptionButton (control theme, WindowsCaptionButtonTheme.axaml)
      -> Border#PART_Frame (template-stable)
         -> IconPresenter#PART_IconPresenter (template-stable)
@@ -14138,16 +14173,18 @@ WindowTitleBar
 | `Panel` | template node (Panel) | `CaptionButtonTheme.axaml` | CaptionButton | `Background`, `BackgroundInset`, `EffectiveCornerRadius`, `EffectiveIcon`, `HorizontalAlignment`, `IconHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Frame` | template node (Border) | `CaptionButtonTheme.axaml` | CaptionButton | `Background`, `BackgroundInset`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_IconPresenter` | template node (IconPresenter) | `CaptionButtonTheme.axaml` | CaptionButton | `EffectiveIcon`, `IconHeight`, `IconWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `WindowTitleBarButton` | control theme | `WindowTitleBarButtonTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `WindowTitleBar` | control theme | `WindowTitleBarTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `CanMaximize`, `CanMinimize`, `CaptionButtonCommand`, `HostWindowState`, `IsCloseCaptionButtonVisible` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `Frame` | template node (Border) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `Background`, `CanMaximize`, `CanMinimize`, `CaptionButtonCommand`, `HostWindowState`, `IsCloseCaptionButtonVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `WindowTitleBarLayoutPanel` | template node (WindowTitleBarLayoutPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `CanMaximize`, `CanMinimize`, `CaptionButtonCommand`, `HostWindowState`, `IsCloseCaptionButtonVisible`, `IsCsdEnabled` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `DockPanel` | template node (DockPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `LeftAddOn`, `LeftAddOnTemplate`, `Logo`, `LogoTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `DockPanel` | template node (DockPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn`, `LeftAddOnTemplate`, `Logo` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Logo` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `Logo`, `LogoTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_LeftAddOn` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_LeftAddOn` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `Title`, `TitleTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `StackPanel` | template node (StackPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `CanMaximize`, `CanMinimize`, `CaptionButtonCommand`, `HostWindowState`, `IsCloseCaptionButtonVisible`, `IsFullScreenCaptionButtonVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_RightAddOn` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `RightAddOn`, `RightAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_RightAddOn` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsMotionEnabled`, `IsWindowActive`, `RightAddOn`, `RightAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_CaptionButtonGroup` | template node (CaptionButtonGroup) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `CanMaximize`, `CanMinimize`, `CaptionButtonCommand`, `HostWindowState`, `IsCloseCaptionButtonVisible`, `IsFullScreenCaptionButtonVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `WindowTitleBarToggleButton` | control theme | `WindowTitleBarToggleButtonTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `WindowsCaptionButton` | control theme | `WindowsCaptionButtonTheme.axaml` | WindowTitleBar | `Background`, `EffectiveCornerRadius`, `EffectiveIcon`, `IconHeight`, `IconWidth`, `Padding` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_Frame` | template node (Border) | `WindowsCaptionButtonTheme.axaml` | WindowsCaptionButton | `Background`, `EffectiveCornerRadius`, `EffectiveIcon`, `IconHeight`, `IconWidth`, `Padding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_IconPresenter` | template node (IconPresenter) | `WindowsCaptionButtonTheme.axaml` | WindowsCaptionButton | `EffectiveIcon`, `IconHeight`, `IconWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -14527,6 +14564,12 @@ thickness。Direct Popup 的 host frame 默认透明；可见弹层内容必须�
 AtomUI 自有的 content-owned 消费者继承 Popup 原语的 `null` 默认值，不在 AXAML 入口或共享 C# 构造路径重复赋值。
 新增 Popup-bearing 控件只有在明确选择 host-owned 模式时才设置非空 Brush，并更新库存测试和控件家族回归。
 
+关闭分为普通交互关闭和生命周期 teardown。普通关闭在实际 PlacementTarget 与打开时的 owning `TopLevel` 仍属于同一
+有效会话时允许播放 `CloseMotion`；若 Popup 打开时存在 logical owner，该 owner 也必须继续有效。PlacementTarget detach、
+已建立的 Popup logical owner detach、PlacementTarget 切换到其他 `TopLevel` 或目标无法转换到原 TopLevel 时，关闭不得被
+动效延迟，必须立即释放 Avalonia PopupHost 和定位订阅。自身没有 logical owner、但具有有效显式 PlacementTarget 的 Direct
+Popup 仍可使用普通关闭动效。
+
 ## Theme and Token Boundaries
 
 ```text
@@ -14568,7 +14611,8 @@ Token 边界：
 - native/overlay 切换只改变宿主和 shadow token，不改变 `SurfaceBackground` 语义。
 - `SurfaceBackground=null` 时 frame renderer 继续使用透明 fill，专用 Presenter 的背景、圆角、Padding、阴影和定位保持不变。
 - Popup Child 内未被内部滚动控件消费的 wheel 事件在 popup 边界终止，避免滚动外层 placement target 祖先。
-- close motion、快速重开、detach 和 host cleanup 必须保持成对生命周期。
+- 普通 close motion、快速重开和 motion completion 必须保持单一关闭状态流；placement target detach、logical detach、
+  跨 `TopLevel` 与 transform 失效属于不可延迟的 host teardown。
 - `SurfaceBackground` 是可选公共 StyledProperty；默认 `null` 保持 Direct Popup 与专用 Popup 家族的透明 host frame 契约；
   需要遮挡下层内容的 Direct Popup Child 必须拥有自己的背景。
 
@@ -14580,3 +14624,7 @@ Token 边界：
 - `SurfaceBackground` 的属性默认值必须为 `null`，Popup Theme 不得覆盖该默认值。
 - content-owned Popup 不重复设置 `null`；host-owned Popup 必须显式提供非空 Brush。
 - relay binding 的 attach/re-attach/detach 必须有单一 owner 和对称释放。
+- close motion 只能延迟仍连接到打开时 owning TopLevel 的普通关闭；打开时已存在的 logical owner、host 或 anchor 生命周期
+  失效时不得保留 Avalonia open state。没有 logical owner 的 Direct Popup 以显式 PlacementTarget 会话为准。
+- Popup 必须以共享 `MotionExecutionState` 表达关闭动效阶段；`Pending`、`Playing` 和 `Completing` 单向收敛，重复
+  close 不得创建并行关闭动效，`Closed` 必须回到 `Idle`。

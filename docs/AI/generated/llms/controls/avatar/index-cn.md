@@ -4,68 +4,87 @@
 
 ## 概述
 
-Avatar 是 AtomUI 桌面控件体系中的头像控件，用于展示用户、组织或对象的图像、文字和图标标识。
+Avatar 展示用户、组织或对象的图像、文字或图标标识。它不负责资料卡、图片编辑、上传或大图预览。
 
-Avatar 不负责完整用户资料卡或图片预览器。这些职责应由业务层、组合控件或更专用的 AtomUI 控件承担。
+包边界如下：
 
-主要源码入口：
-
-- `src/AtomUI.Controls/Avatar`
-- `src/AtomUI.Desktop.Controls/Avatar`
+| 类型 | NuGet 包 | .NET 命名空间 | 职责 |
+| --- | --- | --- | --- |
+| `AbstractAvatar`、`Avatar`、`AvatarShape` | `AtomUI.Controls` | `AtomUI.Controls` | 单个头像、统一图片来源与加载状态 |
+| `AvatarGroup` | `AtomUI.Desktop.Controls` | `AtomUI.Desktop.Controls` | 桌面端重叠排列、折叠计数与 Flyout |
 
 ## 包与命名空间
 
 | 项 | 值 |
 | --- | --- |
-| NuGet 包 | `AtomUI.Desktop.Controls` |
-| .NET 命名空间 | `AtomUI.Desktop.Controls` |
+| NuGet 包 | `AtomUI.Controls` / `AtomUI.Desktop.Controls` |
+| .NET 命名空间 | `AtomUI.Controls` / `AtomUI.Desktop.Controls` |
 | AXAML 命名空间 | `https://atomui.net` |
 | Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Avatar` |
 | 状态 | Stable |
 
 ## 何时使用
 
-Avatar 的设计语言围绕控件职责、可观察状态和主题契约组织，而不是围绕模板节点组织。
+Avatar 使用有限面积内的强识别内容表达主体身份。图片是首选内容，文字缩写和图标是稳定的降级内容；Circle 与 Square
+只改变轮廓，不改变身份语义。Small、Middle、Large 与 Custom 提供一致的尺寸层级，`AvatarGroup` 通过重叠排列和折叠计数
+表达“多个主体属于同一上下文”，不改变单个 Avatar 的加载和内容规则。
 
-| 维度 | 含义 | Avatar 中的表达 |
-| --- | --- | --- |
-| 产品语义 | 控件在界面中承担的稳定职责。 | Avatar 是 AtomUI 桌面控件体系中的头像控件，用于展示用户、组织或对象的图像、文字和图标标识。 |
-| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `BitmapSrc`、`FoldAvatarFlyoutTriggerType`、`FoldInfoAvatarBackground`、`FoldInfoAvatarForeground`、`Icon`、`Src`、`Text`。 |
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | open/close、input/value、motion、visual option。 |
-| 主题语义 | ControlTheme、SharedToken、控件 Token 和模板绑定如何表达视觉。 | Avatar Token + ControlTheme。 |
+加载过程本身不应造成内容闪烁：旧图片或可用的 Text/Icon 在新请求完成前保持可见，成功提交后才切换为新图片，最终失败则
+回到 Text/Icon。加载状态通过状态属性和伪类表达，而不是由模板猜测图片是否存在。
 
 ## 公共 API
 
-Avatar 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
+`Avatar` 的公共 API 由 `AbstractAvatar` 提供：
 
-核心 public surface 按语义分组维护：
-
-| 契约组 | 代表成员 | 维护含义 |
+| 契约 | 默认值 | 语义 |
 | --- | --- | --- |
-| 内容与数据 | `BitmapSrc`、`FoldAvatarFlyoutTriggerType`、`FoldInfoAvatarBackground`、`FoldInfoAvatarForeground`、`Icon`、`Src`、`Text` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `MaxDisplayCount` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsMotionEnabled` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
-| 视觉与布局 | `Gap`、`Shape`、`Size`、`SizeType` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
+| `Source: ImageLoadSource?` | `null` | 唯一主图片来源，支持 HTTP、File、Asset、Storage、Bytes、Stream 和已有 `IImage` |
+| `FallbackSource: ImageLoadSource?` | `null` | 主来源终态失败后的单次备用来源 |
+| `RequestOptions: ImageRequestOptions?` | `null` | cache mode、partition、variant、timeout 和 HTTP headers |
+| `Text: string?` | `null` | 无已加载图片时优先于 Icon 展示的文字内容，也是 content property |
+| `Icon: PathIcon?` | `null` | 无已加载图片和 Text 时展示的图标 |
+| `Gap: double` | `4` | 文本与头像边缘的最小逻辑间距，用于文本缩放 |
+| `SizeType: CustomizableSizeType` | `Middle` | Small、Middle、Large 或 Custom 尺寸语义 |
+| `Size: double` | `NaN` | 显式尺寸；非 `NaN` 时进入 Custom，恢复 `NaN` 时恢复原 SizeType |
+| `Shape: AvatarShape` | `Circle` | Circle 或 Square |
+| `IsMotionEnabled: bool` | SharedToken | 控制主题动效，不改变加载状态机 |
 
-当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
+只读加载状态：
 
-主要公开类型与枚举：
+- `LoadState: ImageLoadState`
+- `LoadError: ImageLoadError?`
+- `LoadProgress: ImageLoadProgress?`
+- `IsLoading`、`IsLoaded`、`IsFailed`
 
-- 类型：`AbstractAvatar`、`Avatar`、`AvatarGroup`。
-- 枚举：`AvatarShape`。
+命令式入口与事件：
 
-稳定 template part：
+- `Reload()` 使用 `ImageCacheMode.Reload` 重新请求当前来源。
+- `ImageOpened` 只在主来源或 fallback 成功并成为当前图片时触发。
+- `ImageFailed` 只在最终失败时触发；主来源失败但 fallback 成功不触发最终失败事件。
 
-| Template Part | 类型 | 职责 |
-| --- | --- | --- |
-| `PART_TextPresenter` | `TextBlock` | 展示用户内容、文本、图标或模板化数据。 |
+Avatar 不公开 URL、Bitmap 或 loader 属性族，也不允许单个控件替换应用级 loader。
 
-控件专属或内部伪类包括 `Custom=:custom-size`、`Large=:large`、`Middle=:middle`、`Small=:small`。这些伪类属于主题 selector 可观察契约，不能在未同步主题和 Gallery 的情况下重命名或删除。
+`AvatarGroup` 的桌面端 API 包括 `Children`、`MaxDisplayCount`、`FoldAvatarFlyoutTriggerType`、
+`FoldInfoAvatarBackground`、`FoldInfoAvatarForeground`、`SizeType`、`Size` 和 `Shape`。Group 只组织子控件，不接管
+每个 Avatar 的 Source、加载状态、结果租约或 Reload。
+
+`PART_TextPresenter` 是稳定 template part。其他命名视觉节点服务主题实现，不构成额外 public API。
+
+LLMS 语义区域：
+
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `Avatar` | 归一图片来源、内容优先级、尺寸、形状和加载状态。 | `Source`、`FallbackSource`、`RequestOptions`、`Text`、`Icon`、`SizeType`、`Size`、`Shape` | `AvatarToken`、SharedToken | public |
+| `surface` | `Frame` | 绘制背景、边框和圆角。 | `Shape`、`SizeType`、`Size` | Avatar background、border、size Token | internal-observable |
+| `image` | `ImagePresenter` | 展示当前有效 `IImage`，不自行加载来源。 | `LoadState`、`IsLoaded` | Avatar size/radius Token | internal-observable |
+| `text` | `PART_TextPresenter` | 展示 Text 并应用基于 Gap 的缩放。 | `Text`、`Gap` | Font、size Token | template-stable |
+| `icon` | `IconPresenter` | 在无图片和 Text 时展示 Icon。 | `Icon` | Icon size Token | internal-observable |
+| `group` | `AvatarGroup` | 排列子 Avatar、折叠超出项并管理 Flyout。 | `Children`、`MaxDisplayCount`、`FoldAvatarFlyoutTriggerType` | AvatarGroup spacing/fold Token | public |
 
 ## 事件与命令
 
-Avatar 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
-当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
+命令式入口与事件：
+- `ImageFailed` 只在最终失败时触发；主来源失败但 fallback 成功不触发最终失败事件。
 
 ## 使用示例
 
@@ -75,40 +94,53 @@ Avatar 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 ## 状态模型
 
-Avatar 的状态流按以下路径收敛：
+可见内容优先级固定为：
 
 ```text
-Public API / inherited command / item source / user input
-  -> 控件实例状态
-  -> effective state / pseudo-class / template property
-  -> ControlTheme selector / presenter / renderer
-  -> Gallery 可观察行为
+已加载 Image > Text > Icon
 ```
 
-状态维护规则：
+主来源处于 Loading 或 Failed、fallback 尚未成功时，不清空可用的 `Text` 或 `Icon`。只有图片成功提交后才切换为 Image。
+Source 清空、来源替换、控件 detach 或最终失败会释放不再使用的图片租约。
 
-- Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- open/close、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
-- 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
+加载状态由以下伪类表达：
+
+| 伪类 | 条件 |
+| --- | --- |
+| `:loading` | 当前 generation 正在加载主来源或 fallback |
+| `:loaded` | 当前 generation 已成功提交图片 |
+| `:failed` | 主来源和可用 fallback 均终态失败 |
+| `:fallback` | 当前已加载图片来自 `FallbackSource` |
+
+尺寸伪类 `:small`、`:middle`、`:large`、`:custom-size` 继续表达主题尺寸选择。图片加载伪类和尺寸伪类相互独立。
+
+Avatar 通过 `ImageLoadController` 使用当前 `Application` 的 `IImageLoader`：
+
+1. attach 后根据 Source、RequestOptions、有效 Bounds 和 render scaling 创建请求。
+2. 解码目标使用物理像素并向上量化到 16 px bucket，避免微小布局变化反复解码。
+3. Source、fallback、options、尺寸 bucket 或 attach 状态变化时递增 generation 并取消旧 waiter。
+4. 同来源 Reload 或尺寸变化可在 Loading 期间保留旧图片，成功后原子替换；最终失败后释放旧租约。
+5. 结果回到 UI dispatcher 后再次校验 generation 和 attach 状态，旧结果只能释放，不能回写。
+
+HTTP 条件重验证、非网络来源 Reload 强制重读、两级请求合并、缓存、安全限制和应用销毁由统一 loader 负责，Avatar
+不复制 transport、cache 或 scheduler。
 
 ## 主题与 Design Token
 
-Avatar 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
+`AvatarTheme.axaml` 位于 `AtomUI.Controls/Avatar/Themes`，使用以下稳定视觉节点：
 
-| 主题文件 | 职责 |
+| 节点 | 职责 |
 | --- | --- |
-| `AvatarGroupTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
-| `AvatarTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
+| `Frame` | 背景、边框和圆角 |
+| `IconPresenter` | Icon 内容 |
+| `ImagePresenter` | 已加载 `IImage` |
+| `PART_TextPresenter` | Avalonia 原生 `TextBlock`，负责文字和缩放 transform |
 
-Avatar 使用 `AvatarToken` 作为控件 Token scope。Token 只表达组件视觉语义，不承载 open/close、input/value、motion、visual option 运行时状态。
+`PART_TextPresenter` 不依赖 Desktop Controls，保证 `Avatar` 可以由 `AtomUI.Controls` 独立提供。Circle 形状根据最终宽度设置
+圆角；文本宽度超过可用区域时按 `Gap` 计算缩放，不改变布局尺寸。
 
-主题维护规则：
-
-- 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
-- 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
-- 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
-- Browser 或平台特化主题必须保持同一 API 的语义一致。
+`AvatarGroupTheme.axaml` 位于 `AtomUI.Desktop.Controls/Avatar/Themes`，消费同一个 `AvatarToken`，但只负责 group spacing、
+overlap、折叠头像颜色和桌面 Flyout 视觉。
 
 Token 来源：
 
@@ -116,43 +148,41 @@ Avatar Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 当前 Token scope：
 
-- `AvatarToken`，scope id 为 `Avatar`，源码位于 `src/AtomUI.Desktop.Controls/Avatar/AvatarToken.cs`。
+- `AvatarToken`，scope id 为 `Avatar`，源码位于 `src/AtomUI.Controls/Avatar/AvatarToken.cs`。
 
 ## AOT 与裁剪注意事项
 
-资源和 AOT 约束：
-
-- 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
-- 不把可静态声明的模板结构迁移到 C# 动态创建。
-- 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
-- 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
-- Source generator 生成文件不手工编辑；需要修改时改输入源或 generator。
-
-性能边界：
-
-- 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
-- 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
-- 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
+- 不进行同步网络或文件 I/O。
+- 不使用固定延迟等待布局；Arrange 和尺寸 bucket 是唯一尺寸就绪信号。
+- 不创建控件私有 `HttpClient`、cache 或 scheduler。
+- Theme、codec 和 loader 通过静态注册保留，不使用反射扫描。
+- Browser 使用统一 loader 的 Browser 能力矩阵；Avatar 不增加平台分支 API。
+- 快速 Source 切换只允许当前 generation 回写，旧结果必须及时释放。
 
 ## 源码索引
 
-主要源码文件：
+`AtomUI.Controls` 拥有单头像实现：
 
-- `src/AtomUI.Controls/Avatar/AbstractAvatar.cs`
-- `src/AtomUI.Controls/Avatar/AvatarPseudoClass.cs`
-- `src/AtomUI.Controls/Avatar/AvatarShape.cs`
-- `src/AtomUI.Desktop.Controls/Avatar/Avatar.cs`
-- `src/AtomUI.Desktop.Controls/Avatar/AvatarGroup.cs`
-- `src/AtomUI.Desktop.Controls/Avatar/AvatarToken.cs`
-- `src/AtomUI.Desktop.Controls/Avatar/Themes/AvatarGroupTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Avatar/Themes/AvatarTheme.axaml`
+```text
+src/AtomUI.Controls/Avatar/
+├── AbstractAvatar.cs
+├── Avatar.cs
+├── AvatarPseudoClass.cs
+├── AvatarShape.cs
+├── AvatarToken.cs
+└── Themes/AvatarTheme.axaml
+```
 
-职责边界：
+`AtomUI.Desktop.Controls` 只拥有桌面组合控件：
 
-- 控件主文件保留 public/protected API、Avalonia 属性注册、事件和主要生命周期入口。
-- Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
-- Token 文件只提供组件视觉变量，不保存实例状态。
-- Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
+```text
+src/AtomUI.Desktop.Controls/Avatar/
+├── AvatarGroup.cs
+├── AvatarGroupFoldInfo.cs
+└── Themes/AvatarGroupTheme.axaml
+```
+
+`Avatar` 和 `AvatarToken` 不在 Desktop 包中保留副本。Desktop 通过对 Controls 的正常项目引用复用类型和 Token resource。
 
 ## 相关文档
 

@@ -49,6 +49,18 @@
         <target state="translated">Estável</target>
       </segment>
     </unit>
+    <unit id="NetworkImageDescription">
+      <segment>
+        <source>Load avatar images directly from HTTPS URLs through the shared image-loading pipeline.</source>
+        <target state="translated">Carregue imagens de avatar diretamente de URLs HTTPS pelo pipeline compartilhado de carregamento de imagens.</target>
+      </segment>
+    </unit>
+    <unit id="NetworkImageTitle">
+      <segment>
+        <source>Remote Image</source>
+        <target state="translated">Imagem remota</target>
+      </segment>
+    </unit>
     <unit id="P2ContentA">
       <segment>
         <source>A</source>

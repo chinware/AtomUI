@@ -1,0 +1,267 @@
+# 统一图片加载控件 API
+
+> 状态：当前架构。本文定义 AsyncImage、Avatar 与 ImagePreviewer public surface。底层 Source、Options、Loader、Result 与 Error 由
+> [图片加载公共契约](public-contracts.md)拥有。
+
+`AsyncImage` 与 Avatar 位于 `AtomUI.Controls` namespace；Previewer 类型位于 `AtomUI.Desktop.Controls`。
+本文件是跨控件图片加载 API 的事实来源；Avatar 与 ImagePreviewer Control 文档负责描述各自当前的完整控件契约。
+
+## 单图片控件统一面
+
+`AsyncImage` 和 Avatar 共同实现：
+
+```csharp
+public interface IImageLoadControl
+{
+    ImageLoadSource? Source { get; set; }
+    ImageLoadSource? FallbackSource { get; set; }
+    ImageRequestOptions? RequestOptions { get; set; }
+
+    ImageLoadState LoadState { get; }
+    ImageLoadError? LoadError { get; }
+    ImageLoadProgress? LoadProgress { get; }
+    bool IsLoading { get; }
+    bool IsLoaded { get; }
+    bool IsFailed { get; }
+
+    event EventHandler<ImageOpenedEventArgs>? ImageOpened;
+    event EventHandler<ImageFailedEventArgs>? ImageFailed;
+
+    void Reload();
+}
+```
+
+`Source == null` 时状态为 `Idle`。主来源失败且存在 `FallbackSource` 时，控件保持 `Loading` 并尝试 fallback；
+fallback 成功后状态为 `Loaded`，`ImageOpenedEventArgs.IsFallback == true`。只有最终没有可显示图片时才进入
+`Failed` 并触发 `ImageFailed`。Source 变化会清空上一轮 `LoadError` 和进度。`LoadProgress` 只在 `Loading` 时有值，进入
+Idle/Loaded/Failed 后清空；主来源错误在 fallback 尝试期间不发布为最终 `LoadError`。
+
+`FallbackSource` 与主 Source 规范化身份相同时不重复请求，直接使用主失败作为最终失败。`Reload()` 在 Source 为空时保持
+Idle 并 no-op；加载中调用会创建新 generation。状态映射到统一 `:loading`、`:loaded`、`:failed` pseudo-class，三者互斥；
+成功显示 fallback 时额外设置 `:fallback`。Idle 不设置上述伪类。
+
+来源未变化的 Reload/尺寸桶替换可以在 Loading 期间继续显示旧租约，避免短暂空白；新结果成功后原子替换，最终失败时释放
+旧租约并进入 Failed，保证 `LoadState`、可见内容和 error template 不出现“显示成功图但状态失败”的双重语义。
+
+## AsyncImage
+
+`AsyncImage` 位于 `AtomUI.Controls`，是通用异步图片显示控件：
+
+```csharp
+public class AsyncImage : TemplatedControl, IImageLoadControl
+{
+    public ImageLoadSource? Source { get; set; }
+    public ImageLoadSource? FallbackSource { get; set; }
+    public ImageRequestOptions? RequestOptions { get; set; }
+
+    public Stretch Stretch { get; set; } = Stretch.Uniform;
+    public StretchDirection StretchDirection { get; set; } = StretchDirection.Both;
+    public ImageDecodeMode DecodeMode { get; set; } = ImageDecodeMode.Auto;
+    public int DecodePixelWidth { get; set; }
+    public int DecodePixelHeight { get; set; }
+    public ImageRequestPriority Priority { get; set; } = ImageRequestPriority.Normal;
+
+    public object? LoadingContent { get; set; }
+    public IDataTemplate? LoadingContentTemplate { get; set; }
+    public object? ErrorContent { get; set; }
+    public IDataTemplate? ErrorContentTemplate { get; set; }
+
+    public ImageLoadState LoadState { get; }
+    public ImageLoadError? LoadError { get; }
+    public ImageLoadProgress? LoadProgress { get; }
+    public bool IsLoading { get; }
+    public bool IsLoaded { get; }
+    public bool IsFailed { get; }
+
+    public void Reload();
+}
+```
+
+`Auto` 根据 arranged Bounds 与 TopLevel render scaling 计算物理像素目标，并使用稳定尺寸桶抑制微小布局变化；
+`Original` 请求原始尺寸；`Explicit` 使用 `DecodePixelWidth`/`DecodePixelHeight` 形成保持宽高比的最大边界，至少一边
+必须大于零；明确配置 0 x 0 时不启动 loader，并以 typed `InvalidSource` 进入 Failed。`Reload()` 对当前有效来源执行一次
+`Reload` 语义，不永久修改 `RequestOptions.CacheMode`。
+
+`LoadingContent` 只在当前没有可显示租约时替代图片 presenter；同来源替换仍显示旧图并保持 `:loading`。最终失败释放图片并
+显示 `ErrorContent`。template reapply 不重启身份、尺寸和 options 均未变化的请求，也不泄漏旧 part 订阅。
+
+## Avatar
+
+Avatar 不再区分 URL、Bitmap 和本地 SVG 属性：
+
+```csharp
+public abstract class AbstractAvatar : TemplatedControl, IImageLoadControl
+{
+    public ImageLoadSource? Source { get; set; }
+    public ImageLoadSource? FallbackSource { get; set; }
+    public ImageRequestOptions? RequestOptions { get; set; }
+
+    public string? Text { get; set; }
+    public PathIcon? Icon { get; set; }
+
+    public ImageLoadState LoadState { get; }
+    public ImageLoadError? LoadError { get; }
+    public ImageLoadProgress? LoadProgress { get; }
+    public bool IsLoading { get; }
+    public bool IsLoaded { get; }
+    public bool IsFailed { get; }
+
+    public void Reload();
+}
+```
+
+Avatar 内容优先级固定为：成功的 `Source`、成功的 `FallbackSource`、`Text`、`Icon`。加载中仍显示 Text/Icon
+fallback，不展示空白图片 presenter。Avatar 始终按有效头像尺寸乘 render scaling 请求目标尺寸，不公开解码尺寸属性。
+本地 `avares` SVG 直接进入 `Source`；HTTP SVG 被 loader 拒绝。
+
+## ImagePreviewer
+
+Previewer 使用不可变配置项，而不是把加载状态写进调用方集合：
+
+```csharp
+public sealed record ImagePreviewItem
+{
+    public ImagePreviewItem(ImageLoadSource source);
+
+    public ImageLoadSource Source { get; init; }
+    public ImageLoadSource? ThumbnailSource { get; init; }
+    public ImageLoadSource? FallbackSource { get; init; }
+    public ImageRequestOptions? RequestOptions { get; init; }
+    public string? Title { get; init; }
+    public object? Tag { get; init; }
+}
+```
+
+`Source` 是打开预览时的完整图片；`ThumbnailSource` 是可选封面来源，为空时使用 Source 的目标尺寸解码；
+`FallbackSource` 只替代当前 item，不替代整个集合。内部 `ImagePreviewEntry` 持有状态、generation 和租约，不公开。
+缩略图/cover 加载顺序为 `ThumbnailSource`（存在时）、同一 item 的 `Source` 缩略尺寸、`FallbackSource`；完整预览顺序为
+`Source`、`FallbackSource`。因此失效的专用缩略图不会阻断仍可加载的完整来源。
+
+```csharp
+public abstract class AbstractImagePreviewer : TemplatedControl
+{
+    public IEnumerable<ImagePreviewItem>? ItemsSource { get; set; }
+    public int CurrentIndex { get; set; }
+    public int CoverIndex { get; set; }
+    public int PreloadCount { get; set; } = 1;
+
+    public string? PreviewTitle { get; set; }
+    public PathIcon? PreviewTitleIcon { get; set; }
+    public IImagePreviewTitleResolver? PreviewTitleResolver { get; set; }
+
+    public object? LoadingContent { get; set; }
+    public IDataTemplate? LoadingContentTemplate { get; set; }
+    public object? ErrorContent { get; set; }
+    public IDataTemplate? ErrorContentTemplate { get; set; }
+
+    public bool IsOpen { get; set; }
+    public bool IsMotionEnabled { get; set; }
+    public double CoverWidth { get; set; } = double.NaN;
+    public double CoverHeight { get; set; } = double.NaN;
+    public bool IsImageMovable { get; set; } = true;
+    public double ImageScaleStep { get; set; } = 0.5;
+    public double ImageMinScale { get; set; } = 1.0;
+    public double ImageMaxScale { get; set; } = 50.0;
+    public bool IsDialogModal { get; set; }
+    public bool IsDialogTopmost { get; set; }
+
+    public ImagePreviewItem? CurrentItem { get; }
+    public ImageLoadState CurrentLoadState { get; }
+    public ImageLoadError? CurrentLoadError { get; }
+    public ImageLoadProgress? CurrentLoadProgress { get; }
+    public bool IsCurrentLoading { get; }
+    public bool IsCurrentLoaded { get; }
+    public bool IsCurrentFailed { get; }
+
+    public event EventHandler<ImagePreviewOpenedEventArgs>? ImageOpened;
+    public event EventHandler<ImagePreviewFailedEventArgs>? ImageFailed;
+    public event EventHandler? DialogOpened;
+    public event EventHandler<CancelEventArgs>? DialogClosing;
+    public event EventHandler? DialogClosed;
+
+    public void ReloadCurrent();
+    public void ReloadItem(int index);
+    public void OpenDialog();
+}
+```
+
+`ItemsSource` 实现 `INotifyCollectionChanged` 时必须增量同步；普通 enumerable 在属性替换时重新物化。`CurrentIndex`
+保持 TwoWay binding 语义，宿主显示时可以 clamp，但不能把临时 clamp 值反写破坏调用方值。
+Previewer 的 `ImageOpened`/`ImageFailed` 只对应当前完整图片的最终提交；cover 和 preload 通过各自状态观察，不产生伪装成
+current item 的公共事件。
+
+`ImagePreviewer` 的完整 cover loading surface 为：
+
+```csharp
+public class ImagePreviewer : AbstractImagePreviewer
+{
+    public object? CoverIndicatorContent { get; set; }
+    public IDataTemplate? CoverIndicatorContentTemplate { get; set; }
+    public bool IsShowCoverMask { get; set; } = true;
+
+    public ImageLoadState CoverLoadState { get; }
+    public ImageLoadError? CoverLoadError { get; }
+    public ImageLoadProgress? CoverLoadProgress { get; }
+    public bool IsCoverLoading { get; }
+    public bool IsCoverLoaded { get; }
+    public bool IsCoverFailed { get; }
+
+    public void ReloadCover();
+}
+```
+
+`ImageGroupPreviewer` 只增加 `ItemsPanel`。Previewer 不再公开 `MaxConcurrentLoads`，全局并发由应用 loader 控制。保留的
+title、dialog、motion、cover size 和 image interaction API 不参与 source 兼容；它们消费新的 entry/state，但名称和语义不因
+loader 统一而另造第二套。
+
+标题解析上下文改为：
+
+```csharp
+public readonly record struct ImagePreviewTitleResolveContext(
+    ImagePreviewItem Item,
+    int CurrentIndex,
+    int Count);
+```
+
+标题优先级固定为宿主显式 Window title、非空 `PreviewTitle`、当前 `ImagePreviewItem.Title`、
+`IImagePreviewTitleResolver`、空态。resolver 只在 item title 为空时调用，不发起 I/O 或反射读取业务对象。
+
+```csharp
+public interface IImagePreviewTitleResolver
+{
+    string? ResolveTitle(in ImagePreviewTitleResolveContext context);
+}
+
+public class ImageGroupPreviewer : AbstractImagePreviewer
+{
+    public ITemplate<Panel?> ItemsPanel { get; set; }
+}
+```
+
+## 无兼容公共面
+
+统一图片加载不提供 obsolete shim、类型转发或双写属性。以下旧 public surface 不属于当前 API：
+
+```text
+Avatar.Src
+Avatar.BitmapSrc
+Avatar.BitmapUrl
+AbstractImagePreviewer.Source
+AbstractImagePreviewer.Sources
+AbstractImagePreviewer.FallbackSource
+AbstractImagePreviewer.MaxConcurrentLoads
+IImagePreviewSource
+IImagePreviewSourceIdentity
+UriImagePreviewSource
+StreamImagePreviewSource
+ImageSourceUri
+ImageSourceUriKind
+IImageSourceLoader
+DefaultImageSourceLoader
+LoadedImageSource
+LoadedImageSourceType
+ImagePreviewItemState
+```
+
+`ImagePreviewerCover`、`ImagePreviewRenderer`、`ImagePreviewerDialog`、`ImagePreviewerOverlayHost` 和运行时 entry 类型
+都是 internal template/runtime 组件，不进入新 public surface。

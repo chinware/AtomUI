@@ -1,0 +1,125 @@
+# 图片加载平台、性能与 AOT 边界
+
+> 状态：当前架构。本文区分跨平台不变量和真实平台能力，不把 Desktop 行为虚构成 Browser 已具备能力。
+
+## 平台能力矩阵
+
+| 能力 | Desktop | Browser WebAssembly | 当前处理 |
+| --- | --- | --- | --- |
+| HTTP/HTTPS | 支持 | 支持，受 Fetch/CORS 限制 | 统一 `HttpImageTransport` 契约、平台 adapter |
+| HTTP 逐跳重定向检查 | 支持，关闭自动跳转 | 中间跳通常不可观测 | Browser 依赖 Fetch/mixed-content，校验初始和可见最终 URI |
+| File path | 支持 | 不支持任意本机路径 | Browser 返回 `AccessDenied`/`UnsupportedScheme`，不模拟文件系统 |
+| `avares` Asset | 支持 | 支持 | 统一 Asset reader |
+| `IStorageFile` | 支持 | 支持用户授权得到的 handle | 每次读取仍遵守 stream ownership 与上限 |
+| Bytes/Stream | 支持 | 支持 | 无稳定 key 时不持久缓存 |
+| borrowed `IImage` | 支持 | 支持 | AtomUI 永不 dispose 原对象 |
+| raster codec | 支持 | 支持平台可用格式 | 显式注册并探测 capability |
+| trusted `avares` SVG | 支持 | 支持 | Controls 显式注册 Asset-only SVG codec |
+| remote SVG | 拒绝 | 拒绝 | 校验阶段先于 codec 选择 |
+| persistent cache | 可选、默认关闭 | 不可用 | Browser 配置启用时启动失败并给出 diagnostics |
+| NativeAOT/trimming | publish/启动必须验证 | AOT publish 用于裁剪诊断；当前不要求启动 | 不使用动态发现或未声明反射 |
+
+移动产品包尚未落地，不能在本架构中宣称 iOS/Android 已验证。任何 Mobile adapter 必须复用 Shared 的 source/key/cache/
+security contract，并在 [Mobile 系统架构](../mobile/overview.md) 的平台验证矩阵中补充真实证据，不能复制一套 loader。
+
+## Codec 边界
+
+internal `ImageCodec` 使用稳定 Id、Version 和 `CanDecode(probe, source)` capability 显式注册。registry 要求每个实际 probe
+恰好匹配一个 codec，零匹配返回 `UnsupportedFormat`，多匹配视为实现配置错误；不扫描程序集、不读取 Type 名称字符串、不用
+`Activator.CreateInstance`。
+
+`RasterImageCodec` 是 Shared 的 raster 边界：负责 header probe、目标尺寸计算、解码、真实 decoded byte 报告和 owned
+image release。具体实现只能使用当前目标框架和 Avalonia/Skia 提供的公开、可裁剪 API，或引入经过单独依赖评审且明确支持
+Desktop、Browser 和 NativeAOT 的 codec 库；不得为复用某个内部方法加入反射、动态 delegate 或未验证的私有 API。
+当前 baseline 至少覆盖 PNG、JPEG、WebP、BMP 和单帧 GIF；codec capability probe 发现多帧容器时返回
+`AnimationNotSupported`。平台无法可靠支持的额外格式不能只在某一后端静默出现，必须进入能力矩阵和跨平台测试。
+
+Controls 的 Asset SVG codec 只在 source kind 为 `Asset`、scheme 为 `avares` 且内容来自应用资源 reader 时匹配。它不能因为
+MIME 是 `image/svg+xml` 就接管 HTTP/File/Stream。SVG 解析错误映射为 typed error，渲染对象的释放也进入租约模型。
+
+动画图片时间轴不属于统一系统。codec 必须识别动画容器并按安全策略拒绝，而不是后台持续解码多帧或静默制造无法控制
+的 CPU/内存负担；任何动画支持都必须先具备独立公共状态、时钟、缓存和可见性契约。
+
+## 解码尺寸与 RenderScaling
+
+Control 层把逻辑尺寸转换为物理像素：
+
+```text
+targetWidth  = ceil(max(0, arrangedWidth)  * TopLevel.RenderScaling)
+targetHeight = ceil(max(0, arrangedHeight) * TopLevel.RenderScaling)
+```
+
+然后每个非零轴向上量化到 16 physical-pixel bucket；bucket 不得超过安全上限，codec 最终按保持宽高比的最大边界解码。
+RenderScaling、Bounds 或 Stretch 约束使 bucket 改变时才请求新 decoded key，桶内 1 px 布局抖动不重新解码。
+
+- `Auto`：使用上述有效 arranged size；两个轴都无效时等待真实 Arrange 信号，不启动原图下载后的无界解码。
+- `Original`：请求原始尺寸，仍受原始尺寸、像素和 decoded-byte 上限。
+- `Explicit`：使用公开 `DecodePixelWidth/Height` 物理像素边界，至少一轴大于零；明确的 0 x 0 配置不发起请求，控件返回
+  `InvalidSource` 状态。
+- Avatar：按最终头像逻辑尺寸和 scaling 计算，不公开解码尺寸属性。
+- Preview cover/thumbnail：按 cover presenter 的物理尺寸；当前完整图按 viewport 与缩放策略所需的最大初始尺寸，交互放大超过
+  当前 bucket 时可请求更高分辨率并保留旧租约到替换完成。
+
+尺寸计算在 UI dispatcher 读取 Visual 状态，生成纯值 `ImageLoadRequest` 后，loader 不再持有 Control/TopLevel。跨 TopLevel 移动
+或 scaling 变化由 controller 递增 generation 并重新计算。
+
+## 线程与提交边界
+
+- URI 规范化、cache 查询、网络/stream 读取、摘要、内容校验和允许后台执行的 raster decode 不占用 UI dispatcher。
+- codec 明确声明是否需要 dispatcher；scheduler 为该 codec 切换，但仍受 decode 并发预算控制。
+- Loader event/diagnostics 不操作 AvaloniaObject；订阅方负责自己的线程切换。
+- Control 的 `Image`、`LoadState`、`LoadError`、`LoadProgress`、pseudo-class 和事件提交全部在 UI dispatcher。
+- generation 的最终检查必须与属性提交处于同一个 dispatcher work item；只在 await 前检查不足以阻止 stale result。
+- 释放租约可从任意线程调用；cache/codec 把实际图像释放调度到其声明的合法线程，不要求调用方猜测。
+
+进度回调需要节流，默认每 50 ms 或每新增 64 KiB 至多发布一次，并始终发布阶段切换/最终快照。节流发生在 loader，不用 UI
+timer；多个 waiter 对同一下载各自获得快照，取消的 waiter 不再接收进度。
+
+## 默认并发与背压
+
+| 平台 | 下载/读取默认 / hard cap | decode 默认 / hard cap | 原因 |
+| --- | --- | --- | --- |
+| Desktop | 6 / 32 | `min(4, max(1, ProcessorCount - 1))` / 8 | 利用网络并行且保留 UI/业务 CPU |
+| Browser | 4 / 8 | 2 / 4 | 限制 WASM heap 和主线程/worker 压力 |
+
+配置只能设置正整数并受平台 hard cap 约束。并发槽从实际 I/O/decode 开始到 owned resource 释放后才归还；排队请求不打开
+stream、不创建 response、不占 decoded buffer。单个大响应通过 streaming byte limit 产生背压，不允许先无限复制到多个
+MemoryStream。
+
+Loader snapshot 和 event 只暴露有界 diagnostics：队列长度、active count、cache byte/entry count、hit/miss、取消和错误码计数。
+不包含完整 URI、header、partition、byte buffer 或活动 Control 引用。`LoadEvent` 使用标准强事件语义，订阅方负责 `-=`；
+AtomUI 控件不依赖该 diagnostics event，loader dispose 会清空 handler 列表。
+
+## AOT 与裁剪
+
+统一图片加载必须遵守 [AOT 编程规范](../../../engineering/development/aot-programming-guidelines.md)和
+[AOT 与裁剪架构](../../foundations/aot-and-trimming.md)：
+
+- source reader、codec、owned service 和 package integration 全部显式代码注册。
+- 不使用程序集扫描、`Type.GetType(string)`、反射构造、动态代理或运行时生成序列化 metadata。
+- file-cache metadata 使用手写 binary contract 或 source-generated serializer，并带 schema version。
+- `ImageLoadSourceConverter` 是直接引用的 converter 类型，不按名称反射查找。
+- AXAML 只绑定公开/生成式可保留成员；`AsyncImage` Theme 与 Avatar Theme 的 Source/状态属性进入正常 Control descriptor/asset
+  注册，不通过运行时枚举属性。
+- linked publish 的 registration closure 必须保留 `UseCommonControls()` 引入的 image service factory、raster reader/codec 和
+  Asset SVG codec，即使静态分析只看到 AXAML 中的 `AsyncImage`。
+- 未被应用显式注册的自定义 codec/reader 不作为动态 fallback 保留。
+
+当前 Browser 交付门禁以 `RunAOTCompilation=false`、`WasmEnableWebcil=false` 的 publish 和实际启动为准。Browser AOT publish
+用于验证 linked registration closure、converter、AXAML property 和 codec 没有在裁剪阶段丢失；它不是当前图片模块的运行
+完成门禁。仓库现行工具链下，Browser AOT 产物会在 `mono_wasm_load_runtime` 阶段以
+`RuntimeError: remainder by zero` 失败，尚未进入 managed `Main`，因此不能把该失败归因于图片加载实现，也不能通过修改业务
+代码规避。只有 SDK、wasm-tools、runtime pack、Avalonia Browser 或浏览器升级后，按
+[AOT 编程规范的当前 Browser AOT 结论](../../../engineering/development/aot-programming-guidelines.md#当前-browser-aot-结论)
+重新证明 AOT 产物可启动，才能把 Browser AOT 启动恢复为图片系统门禁。
+
+当前实现不得复制 `AsyncImageLoader.Avalonia` 的静态 service locator 或通过反射发现 loader。可借鉴的是请求取消、缓存和
+attached-control 生命周期经验，但 AtomUI 的正式边界是 Application scoped loader、显式 registry、租约和安全校验。
+
+## Application 销毁所有权
+
+`ApplicationScope` 拥有 image service 的 attach/dispose，不由首个 Window、最后一个 Control 或 Gallery 页面推断应用
+结束。受控桌面 lifetime 退出、宿主显式销毁 application scope、测试 teardown 和启动失败必须汇合到同一幂等 dispose 路径。
+
+Browser single-view lifetime 通常与页面进程同寿；仍必须实现 scope dispose 供测试、热重载宿主和显式 teardown 调用。
+即使宿主最终由进程回收，也不能以此为理由省略 CTS、response、stream、cache entry 和事件订阅的释放实现。

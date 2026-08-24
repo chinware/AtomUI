@@ -2,6 +2,22 @@
 
 本文档记录 Avatar 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-24
+
+- Breaking API
+  - Replace the old image source properties with `Source`, `FallbackSource` and `RequestOptions` based on `ImageLoadSource`.
+  - Add `LoadState`, `LoadError`, `LoadProgress`, `IsLoading`, `IsLoaded`, `IsFailed`, `ImageOpened`, `ImageFailed` and `Reload()`.
+  - Do not provide obsolete aliases, type forwarding or a per-control loader override.
+- Ownership
+  - Move `Avatar`, `AbstractAvatar`, `AvatarShape`, `AvatarToken` and `AvatarTheme` to `AtomUI.Controls`.
+  - Keep `AvatarGroup` and `AvatarGroupTheme` in `AtomUI.Desktop.Controls` while consuming the shared Avatar Token.
+- Behavior
+  - Use the application-scoped `IImageLoader`, generation checks, 16 px physical decode buckets, fallback and result leases.
+  - Keep the stable content priority `Image > Text > Icon`; loading and failure preserve available Text/Icon fallback content.
+- Theme
+  - Add `:loading`, `:loaded`, `:failed` and `:fallback` states.
+  - Use Avalonia `TextBlock` for `PART_TextPresenter` so the common Avatar theme has no Desktop Controls dependency.
+
 ## 2026-06-26
 
 - Docs

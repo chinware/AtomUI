@@ -66,7 +66,25 @@
 主题策略或平台默认配置下沉到 Native。反过来，P/Invoke、原生结构体、协议对象和可释放 native hook
 也不应散落在控件实现里。
 
-## 已批准目标依赖
+## 统一图片加载职责
+
+统一图片加载不新增项目引用；它使用当前的 `AtomUI.Core -> AtomUI.Controls.Shared -> AtomUI.Controls ->
+AtomUI.Desktop.Controls` 方向，其中箭头表示“后者引用前者”的源码依赖：
+
+| 项目 | 当前职责 | 不得新增的反向依赖或重复实现 |
+| --- | --- | --- |
+| `AtomUI.Core` | 通用 `IAtomUIOwnedService` 收集、Application attach/rollback/逆序 dispose | 不引用 Shared，不定义图片 Source、HTTP、cache 或 codec |
+| `AtomUI.Controls.Shared` | 完整应用级图片 engine 与 public contracts | 不引用 Controls，不拥有 Avatar/Previewer 视觉策略 |
+| `AtomUI.Controls` | `AsyncImage`、`ImageLoadController`、Avatar 统一 API、trusted `avares` SVG codec 注册 | 不建立第二套 transport/cache/scheduler |
+| `AtomUI.Desktop.Controls` | Previewer item/entry 与 Current/Cover/Preload 策略 | 不保留 Previewer 私有 loader、HttpClient 或全局并发属性 |
+| `AtomUIGallery` | 使用 AtomUI `AsyncImage` | 不引用 `AsyncImageLoader.Avalonia` 包或附加属性 |
+
+Shared 通过 Core 已有的 internal visibility 实现 owned-service 契约；Core 始终不知道具体 service 类型。Controls 的 SVG codec
+通过显式 Builder 注册进入 Shared registry，不能让 Shared 反向引用 Controls。该系统的目录、启动和生命周期见
+[统一图片加载系统](../systems/image-loading/overview.md)与
+[管线、并发与生命周期](../systems/image-loading/pipeline-and-lifecycle.md)。
+
+## 已批准 Mobile 目标依赖
 
 以下关系属于 Mobile Foundation 的目标架构，不是当前 `AtomUI.slnx` 项目或当前直接引用：
 
