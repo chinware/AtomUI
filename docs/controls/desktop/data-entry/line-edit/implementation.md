@@ -111,12 +111,13 @@ OverflowTip and other internal consumers
 - 旧清除按钮 click 订阅必须解除，再绑定新 `PART_ClearButton`。
 - `AbstractTextInput` 每次套用模板都重新获取 `PART_InputControlFrame`，并把共有状态回放到 frame；frame 负责初始 transitions 抑制、边框厚度和 CompactSpace 状态计算。
 - `AddOnDecoratedBox` 派生 part 只接收 frame 状态并建立 AddOn/内部内容布局，不再承担独立状态选择器。
-- `LineEdit` / `TextArea` 的 `_contentRightAddOnBindings` 在重新套用模板时先 dispose，再绑定 clear/reveal/form/inner-right/count presenter。
+- clear/reveal/form/inner-right/count 等稳定 control-to-template 状态由 AXAML `TemplateBinding` 或显式 typed ancestor binding 表达；`AddOnDecoratedBox.ContentRightAddOn` 跨模板边界内的节点使用 `$parent[atom:<InputType>]` 绑定到对应输入控件。
 - `SearchEdit` 获取 `SearchEditDecoratedBox` 后设置 `OwningSearchEdit`，由 decorated box 回调搜索事件。
 - `TextArea` 获取 `TextAreaDecoratedBox` 后设置 `Owner`，获取 `ResizeHandle` 后设置 `Owner`。
 - `TextBox` / `TextArea` 每次套用模板时先释放旧文本 viewport source 订阅，再由当前模板中的 scroll viewer 和 text presenter 发布新的有效宽度；旧 part 后续变化不得再影响控件度量。
 - `TextAreaDecoratedBox` 只在自己的 `OnApplyTemplate` 中获取 `PART_ScrollViewer`，再通过直接 owner 协作把 source 交给 `TextArea`。`TextArea` 和外部 behavior 都不得进入 decorated box 的模板查找该 part。
-- Form feedback 订阅在 `FormFeedback` 变化时替换，在 detach 时释放。
+- 模板 part 的 click、preedit 和 viewport 订阅随当前模板实例存续，只在重新套用模板前释放；logical detach 不销毁仍然有效的模板连接。
+- Form feedback 属于外部对象订阅：在 `FormFeedback` 变化时替换，在 logical detach 时释放，并在 logical attach 时按当前 feedback 状态重新建立。
 
 模板 part 属于主题契约。需要调整内部视觉时，应优先在 AXAML 中维护静态模板和 selector，不把 clear/reveal/search/resize 视觉搬到 C# 动态创建。
 
@@ -188,13 +189,14 @@ effective width = ScrollViewer.Viewport.Width
 
 ## 8. 资源、性能与 AOT 边界
 
-LineEdit 家族不依赖运行时反射发现模板结构。跨模板协作通过稳定 part、`TemplateBinding`、`BindUtils.RelayBind`、接口和 owner 引用完成。
+LineEdit 家族不依赖运行时反射发现模板结构。固定 control-to-template 状态通过稳定 part、`TemplateBinding` 和 typed ancestor binding 表达；运行时协作通过接口和显式 owner 引用完成。
 
 资源和生命周期边界：
 
-- `_contentRightAddOnBindings` 必须在重新套用模板前 dispose。
-- `_feedbackStatusSubscription` 必须在 `FormFeedback` 变化和 detach 时释放。
+- 固定模板状态不创建 C# relay binding；`ContentRightAddOn` 内容边界内使用 typed ancestor binding，生命周期由模板拥有。
+- `_feedbackStatusSubscription` 必须在 `FormFeedback` 变化和 logical detach 时释放，并在 logical attach 时重新建立。
 - clear button click 订阅必须在新模板接入前解绑旧按钮。
+- preedit 和文本 viewport source 订阅必须在新模板接入前释放旧 source；普通 logical detach 不释放当前模板仍需使用的订阅。
 - 文本 viewport source 的 `Viewport`、`Padding` 和 presenter `Margin` 订阅必须由 TextBox/TextArea 持有，并在模板重套用时成组替换。
 - TextArea resize 不创建全局订阅；拖拽状态保存在控件实例字段中。
 - SharedToken 与 frame 主题表达输入表面值；TextBox/LineEdit/TextArea Token 只表达稳定的字体、padding 和 resize 视觉语义，不承载文本值、清除状态、Form 状态或搜索运行状态。
@@ -216,7 +218,7 @@ AOT 边界：
 - 所有 `*AddOnDecoratedBox` 只能扩展 frame 布局，不能重新定义 variant/status/error/warning/disabled/motion selector。
 - `SearchEdit.IsOperating=true` 必须阻止按钮和 Enter 键产生重复搜索请求。
 - `TextArea` 的 fixed lines、auto-size 和 resize 不互相覆盖高度状态。
-- 重新套用模板不能泄漏旧按钮 click、旧 binding 或旧 Form feedback 订阅。
+- 重新套用模板不能泄漏旧按钮 click、旧模板 binding、旧 preedit 或旧 viewport source；logical reattach 后当前模板交互与状态绑定必须保持有效，Form feedback 必须重新订阅。
 - TextPresenter margin 是输入模板视觉契约；文本有效宽度由输入控件在模板所有权边界内统一计算并发布，不在业务控件或消费 behavior 中加入隐藏补偿。
 - 输入控件不得向内部消费方暴露 `TextPresenter` / `ScrollViewer` 实例；模板结构变化只能影响输入控件自己的度量实现。
 
@@ -226,6 +228,7 @@ AOT 边界：
 
 - `LineEditShowCasePageTests` 覆盖 Gallery 页面结构、示例 snapshot 和源码片段入口。
 - 清除按钮：空文本、非空文本、read-only、TextArea 和 single-line 差异。
+- 生命周期：基础输入、全部内部派生输入和 AutoComplete 组合宿主在 logical detach/reattach 后保持 reveal、clear、inner-right、IME preedit、viewport 和 Form feedback 连接。
 - SizeType：Large/Middle/Small/Custom 字号、高度、line height 和 `IsCustomFontSize` 优先级。
 - Variant/status：Outlined、Filled、Borderless、Underlined、Error、Warning、focus、disabled。
 - AddOn：外部 left/right AddOn、内部 left/right content、Form feedback、字数统计顺序。

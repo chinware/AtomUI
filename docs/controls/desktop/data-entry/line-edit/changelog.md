@@ -20,11 +20,15 @@
   - Establish `AbstractTextInput` as the shared text-input logic owner for `TextBox`, `LineEdit` and `TextArea`.
   - Establish `InputControlFrame` as the shared input-surface owner for variant, effective status, border, background, corner, shadow, CompactSpace and motion.
   - Define `AddOnDecoratedBox` and its specialized descendants as layout extensions of `InputControlFrame`; they no longer own duplicated input-surface status selectors.
+  - Define template-owned events and subscriptions as template-lifetime resources replaced on template reapply, while external Form feedback subscriptions follow logical attach/detach.
 - API
   - Align `StyleVariant`, `Status`, clear, count, Form, native validation and CompactSpace semantics across the three base text-input controls.
   - Define `NativeValidationStatus`, `FormStatus`, `ExplicitStatus` and the `EffectiveStatus` priority used by all input surfaces.
 - Theme
   - Move shared input-surface values to `SharedToken` and the frame theme; retain control tokens only for stable text/layout or TextArea resize differences.
+  - Move stable clear, reveal, feedback, inner-right and count state projection from C# relay bindings to AXAML template or typed ancestor bindings.
+- Tests
+  - Cover logical detach/reattach for the complete `AbstractTextInput` descendant set and AutoComplete composition hosts.
 
 ## 2026-06-26
 

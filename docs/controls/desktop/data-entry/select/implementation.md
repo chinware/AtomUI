@@ -282,7 +282,7 @@ Select 不依赖运行时反射发现模板结构。模板协作通过固定 tem
 - `_selectHandleInputStateBindings` 每次模板接入前释放旧绑定，仅持有 frame layout part → SelectHandle 的 hover / pressed sibling 状态转发，不承载输入表面状态归一。
 - `_candidateList` 的事件订阅和 `ItemsSource` 必须在 `ClearPopupContent()` 中释放。
 - active candidate 在 popup 关闭、popup 内容释放、detach、过滤上下文变化和候选失效时清除；容器回收只清理本地投影。
-- `SelectHandle` 订阅 `FormFeedback.ValidateStatus` 时必须在 feedback 变化和 logical detach 时释放。
+- `SelectHandle` 订阅 `FormFeedback.ValidateStatus` 时必须在 feedback 变化和 logical detach 时释放，并在 logical attach 时按当前 feedback 状态重新建立。
 - 异步加载通过 `AsyncSearchLoadCoordinator` 处理超时、取消和跳过旧结果。
 
 AOT 边界：

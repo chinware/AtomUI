@@ -1,13 +1,10 @@
-using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Controls.Commons;
-using AtomUI.Data;
 using AtomUI.Icons.AntDesign;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
@@ -245,7 +242,6 @@ public abstract class AbstractTextInput : AvaloniaTextBox,
     private IDisposable? _preeditTextSubscription;
     private IDisposable? _textViewportSubscription;
     private IDisposable? _feedbackStatusSubscription;
-    private CompositeDisposable? _templateBindings;
     private EventHandler? _formValueChanged;
 
     static AbstractTextInput()
@@ -300,14 +296,7 @@ public abstract class AbstractTextInput : AvaloniaTextBox,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-
-        _templateBindings?.Dispose();
-        _templateBindings = new CompositeDisposable();
-
-        if (_clearButton is not null)
-        {
-            _clearButton.Click -= HandleClearButtonClicked;
-        }
+        ReleaseTemplateResources();
 
         _clearButton = e.NameScope.Find<IconButton>("PART_ClearButton");
         if (_clearButton is not null)
@@ -320,59 +309,6 @@ public abstract class AbstractTextInput : AvaloniaTextBox,
         _preeditTextSubscription = _textPresenter?.GetObservable(TextPresenter.PreeditTextProperty)
             .Subscribe(_ => ConfigurePlaceholderTextVisibility());
 
-        var revealButton = e.NameScope.Find<RevealButton>("PART_RevealButton");
-        if (revealButton is not null)
-        {
-            _templateBindings.Add(BindUtils.RelayBind(this, RevealPasswordProperty, revealButton,
-                ToggleButton.IsCheckedProperty, BindingMode.TwoWay));
-            _templateBindings.Add(BindUtils.RelayBind(this, IsEnableRevealButtonProperty, revealButton,
-                Visual.IsVisibleProperty));
-            _templateBindings.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, revealButton,
-                AbstractIconButton.IsMotionEnabledProperty));
-        }
-
-        if (_clearButton is not null)
-        {
-            _templateBindings.Add(BindUtils.RelayBind(this, ClearIconProperty, _clearButton,
-                AbstractIconButton.IconProperty));
-            _templateBindings.Add(BindUtils.RelayBind(this, IsEffectiveShowClearButtonProperty, _clearButton,
-                Visual.IsVisibleProperty));
-            _templateBindings.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, _clearButton,
-                AbstractIconButton.IsMotionEnabledProperty));
-        }
-
-        var feedbackPresenter = FindFirst<ContentPresenter>(e,
-            "FormFeedBack", "PART_FormFeedBack");
-        if (feedbackPresenter is not null)
-        {
-            _templateBindings.Add(BindUtils.RelayBind(this, FormFeedbackProperty, feedbackPresenter,
-                ContentPresenter.ContentProperty));
-            _templateBindings.Add(BindUtils.RelayBind(this, IsFormFeedbackVisibleProperty, feedbackPresenter,
-                Visual.IsVisibleProperty));
-        }
-
-        var countIndicator = FindFirst<TextBlock>(e, "TextCountIndicator");
-        if (countIndicator is not null)
-        {
-            _templateBindings.Add(BindUtils.RelayBind(this, CountTextProperty, countIndicator,
-                TextBlock.TextProperty));
-            _templateBindings.Add(BindUtils.RelayBind(this, IsShowCountProperty, countIndicator,
-                Visual.IsVisibleProperty));
-        }
-
-        var innerRightPresenter = FindFirst<ContentPresenter>(e,
-            "InnerRightContentPresenter", "PART_InnerRightContentPresenter");
-        if (innerRightPresenter is not null)
-        {
-            _templateBindings.Add(BindUtils.RelayBind(this, AvaloniaTextBox.InnerRightContentProperty,
-                innerRightPresenter, ContentPresenter.ContentProperty));
-            if (InnerRightContentTemplatePropertyForBinding is { } templateProperty)
-            {
-                _templateBindings.Add(BindUtils.RelayBind(this, templateProperty,
-                    innerRightPresenter, ContentPresenter.ContentTemplateProperty));
-            }
-        }
-
         SetupTextViewportMetrics(
             e.NameScope.Find<ScrollViewer>("PART_ScrollViewer") ??
             e.NameScope.Find<ScrollViewer>("ScrollViewer"));
@@ -382,10 +318,15 @@ public abstract class AbstractTextInput : AvaloniaTextBox,
         UpdateWarningPseudoClass();
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        ConfigureFormFeedbackSubscription();
+    }
+
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromLogicalTree(e);
-        DisposeTemplateResources();
         _feedbackStatusSubscription?.Dispose();
         _feedbackStatusSubscription = null;
     }
@@ -452,20 +393,6 @@ public abstract class AbstractTextInput : AvaloniaTextBox,
 
     #endregion
 
-    private static T? FindFirst<T>(TemplateAppliedEventArgs e, params string[] names)
-        where T : Control
-    {
-        foreach (var name in names)
-        {
-            if (e.NameScope.Find<T>(name) is { } control)
-            {
-                return control;
-            }
-        }
-
-        return null;
-    }
-
     private void HandleTextChanged()
     {
         HandleInputChanged(Text);
@@ -502,6 +429,13 @@ public abstract class AbstractTextInput : AvaloniaTextBox,
     private void ConfigureFormFeedbackSubscription()
     {
         _feedbackStatusSubscription?.Dispose();
+        _feedbackStatusSubscription = null;
+        if (!((ILogical)this).IsAttachedToLogicalTree)
+        {
+            IsFormFeedbackVisible = false;
+            return;
+        }
+
         _feedbackStatusSubscription = FormFeedback?.GetObservable(FormValidateFeedback.ValidateStatusProperty)
             .Subscribe(status => IsFormFeedbackVisible = status != FormValidateStatus.Default);
         if (FormFeedback is null)
@@ -526,7 +460,7 @@ public abstract class AbstractTextInput : AvaloniaTextBox,
         NotifyClearButtonClicked();
     }
 
-    private void DisposeTemplateResources()
+    private void ReleaseTemplateResources()
     {
         if (_clearButton is not null)
         {
@@ -534,8 +468,6 @@ public abstract class AbstractTextInput : AvaloniaTextBox,
             _clearButton = null;
         }
 
-        _templateBindings?.Dispose();
-        _templateBindings = null;
         _preeditTextSubscription?.Dispose();
         _preeditTextSubscription = null;
         _textViewportSubscription?.Dispose();

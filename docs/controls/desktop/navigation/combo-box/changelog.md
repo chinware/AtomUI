@@ -6,6 +6,8 @@
 
 - Behavior
   - Route Form validation through `FormStatus` and the shared input-frame effective-status pipeline without overwriting explicit `Status`.
+- Architecture
+  - Pair the external Form feedback status subscription with logical attach/detach so a reused ComboBox reconnects without requiring template reapplication.
 - Theme
   - Forward `FormStatus`, focus-within and native validation from `ComboBox` to its decorated input frame.
 - Docs

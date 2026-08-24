@@ -7,9 +7,12 @@
 - Architecture
   - Align OtpLineEdit with the shared input-state contract and `InputControlFrame` input-surface layer.
   - Define OTP cells as projections of the root `EffectiveStatus`; cells do not own an independent validation or Form status source.
+  - Keep clear-button interaction for the lifetime of the applied template and pair external Form feedback subscriptions with logical attach/detach.
 - Theme / Token
   - Route input-surface border, background, focus shadow, disabled, error and warning semantics through `InputControlFrameTheme` and SharedToken.
   - Keep `OtpLineEditToken` limited to cell geometry; separator placement remains a template layout concern.
+- Tests
+  - Cover clear-button and Form feedback behavior across logical detach/reattach.
 
 ## 2026-07-07
 

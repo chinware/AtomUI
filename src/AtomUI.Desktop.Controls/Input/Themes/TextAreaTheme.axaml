@@ -40,18 +40,25 @@
                                             Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
                                     <atom:InputClearIconButton
                                         Name="PART_ClearButton"
-                                        VerticalAlignment="Center" />
+                                        VerticalAlignment="Center"
+                                        Icon="{Binding $parent[atom:TextArea].ClearIcon}"
+                                        IsVisible="{Binding $parent[atom:TextArea].IsEffectiveShowClearButton}"
+                                        IsMotionEnabled="{Binding $parent[atom:TextArea].IsMotionEnabled}" />
                                     <ContentPresenter
                                         Name="PART_FormFeedBack"
                                         VerticalAlignment="Stretch"
                                         VerticalContentAlignment="Center"
-                                        HorizontalAlignment="Right" />
+                                        HorizontalAlignment="Right"
+                                        Content="{Binding $parent[atom:TextArea].FormFeedback}"
+                                        IsVisible="{Binding $parent[atom:TextArea].IsFormFeedbackVisible}" />
                                     <atom:AddOnContentPresenter
                                         Name="PART_InnerRightContentPresenter"
                                         VerticalAlignment="Center"
                                         VerticalContentAlignment="Center"
                                         HorizontalAlignment="Right"
-                                        Focusable="False" />
+                                        Focusable="False"
+                                        Content="{Binding $parent[atom:TextArea].InnerRightContent}"
+                                        ContentTemplate="{Binding $parent[atom:TextArea].InnerRightContentTemplate}" />
                                 </StackPanel>
                             </atom:TextAreaDecoratedBox.ContentRightAddOn>
 

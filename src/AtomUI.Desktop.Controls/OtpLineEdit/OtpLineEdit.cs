@@ -397,16 +397,15 @@ public class OtpLineEdit : TemplatedControl,
         UpdateCellItems();
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        ConfigureFormFeedbackSubscription();
+    }
+
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromLogicalTree(e);
-
-        if (_clearButton is not null)
-        {
-            _clearButton.Click -= HandleClearButtonClicked;
-            _clearButton = null;
-        }
-
         _feedbackStatusSubscription?.Dispose();
         _feedbackStatusSubscription = null;
     }
@@ -767,6 +766,11 @@ public class OtpLineEdit : TemplatedControl,
     {
         _feedbackStatusSubscription?.Dispose();
         _feedbackStatusSubscription = null;
+        if (!((ILogical)this).IsAttachedToLogicalTree)
+        {
+            IsFormFeedbackVisible = false;
+            return;
+        }
 
         if (FormFeedback is { } feedback)
         {

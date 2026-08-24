@@ -138,7 +138,9 @@ OtpLineEdit
 
 detach 规则：
 
-- 释放 clear button click、cell input handler、Form feedback subscription 和模板 part 引用。
+- logical detach 只释放外部 Form feedback subscription，并在 logical attach 时按当前 feedback 状态重新建立。
+- clear button click 属于当前模板实例，在重新套用模板前解绑旧 part；detach/reattach 同一模板实例时保持连接。
+- cell 输入通过根控件 routed input 入口处理，不建立需要在 detach 时销毁的逐 cell handler。
 - 不清除 `DataValidationErrors` 中非 Form 写入的 error。
 - 不因为 detach 改变 `Text` 或 completed 状态。
 
@@ -291,9 +293,9 @@ native error 始终压过 warning 和手动 status。warning 不写入 `DataVali
 资源和生命周期边界：
 
 - 动态生成 cell 是 `Length` 驱动的控件内部结构，必须由 owner 管理创建、复用和释放。
-- cell 事件订阅必须以 owner 为释放点，模板重建和 detach 都要释放。
+- cell 输入由根控件 routed input 处理，不为每个 cell 建立 owner 外部订阅。
 - clear button click 订阅必须在新模板接入前解绑旧按钮。
-- Form feedback subscription 必须在 feedback 对象变化和 detach 时释放。
+- Form feedback subscription 必须在 feedback 对象变化和 logical detach 时释放，并在 logical attach 时重新建立。
 - separator context 不持有 owner 强引用，避免模板内容长期保留控件实例。
 
 性能边界：
@@ -323,7 +325,7 @@ AOT 边界：
 - native validation error 必须从根控件投射到全部 cell，不允许 cell 自行维护 error。
 - `IsReadOnly=true` 时禁止输入、粘贴、删除和清除，但保留复制和焦点视觉。
 - `IsEnabled=false` 时禁止全部交互入口。
-- 模板重建和 detach 不能泄漏事件订阅、binding、separator context 或 feedback subscription。
+- 模板重建不能泄漏旧按钮事件、binding 或 separator context；logical reattach 后模板按钮交互保持有效，Form feedback subscription 必须恢复。
 - separator 和 mask 不参与 `Text`、Form value、复制、验证和 completed 判断。
 - 粘贴分发必须通过 overlay 单次写入，避免视觉闪烁和状态中间态暴露。
 
@@ -343,6 +345,6 @@ AOT 边界：
 - `Completed` 只在从未完成进入完成时触发。
 - `DataValidationErrors` 驱动根控件和所有 cell 的 error 视觉。
 - Form reset 不清除非 Form 写入的 native validation error。
-- 模板重建和 detach 不泄漏事件订阅。
+- 模板重建不保留旧模板事件；logical detach 释放外部 feedback 订阅，reattach 后恢复 feedback 观察且当前模板交互继续有效。
 - Gallery 示例、源码片段和源码片段可被测试发现。
 - 文档改动运行 `git diff --check`，并检查相对链接存在。

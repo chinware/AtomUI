@@ -186,6 +186,12 @@ internal class SelectHandle : TemplatedControl
         }
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        ConfigureFormFeedbackSubscription();
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -227,6 +233,12 @@ internal class SelectHandle : TemplatedControl
     {
         _feedbackStatusSubscription?.Dispose();
         _feedbackStatusSubscription = null;
+        if (!((ILogical)this).IsAttachedToLogicalTree)
+        {
+            IsFormFeedbackVisible = false;
+            return;
+        }
+
         if (FormFeedback is { } feedback)
         {
             _feedbackStatusSubscription = feedback.GetObservable(FormValidateFeedback.ValidateStatusProperty)

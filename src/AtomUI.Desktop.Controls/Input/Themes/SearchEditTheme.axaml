@@ -35,15 +35,24 @@
                     <atom:SearchEditDecoratedBox.ContentRightAddOn>
                         <StackPanel Orientation="Horizontal"
                                     Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
-                            <atom:InputClearIconButton Name="PART_ClearButton" />
-                            <!-- 新增显示密码按钮 -->
-                            <atom:RevealButton Name="PART_RevealButton" />
+                            <atom:InputClearIconButton
+                                Name="PART_ClearButton"
+                                Icon="{Binding $parent[atom:SearchEdit].ClearIcon}"
+                                IsVisible="{Binding $parent[atom:SearchEdit].IsEffectiveShowClearButton}"
+                                IsMotionEnabled="{Binding $parent[atom:SearchEdit].IsMotionEnabled}" />
+                            <atom:RevealButton
+                                Name="PART_RevealButton"
+                                IsChecked="{Binding $parent[atom:SearchEdit].RevealPassword, Mode=TwoWay}"
+                                IsVisible="{Binding $parent[atom:SearchEdit].IsEnableRevealButton}"
+                                IsMotionEnabled="{Binding $parent[atom:SearchEdit].IsMotionEnabled}" />
                             <atom:AddOnContentPresenter
                                 Name="InnerRightContentPresenter"
                                 VerticalAlignment="Stretch"
                                 VerticalContentAlignment="Center"
                                 HorizontalAlignment="Right"
-                                Focusable="False" />
+                                Focusable="False"
+                                Content="{Binding $parent[atom:SearchEdit].InnerRightContent}"
+                                ContentTemplate="{Binding $parent[atom:SearchEdit].InnerRightContentTemplate}" />
                         </StackPanel>
                     </atom:SearchEditDecoratedBox.ContentRightAddOn>
 

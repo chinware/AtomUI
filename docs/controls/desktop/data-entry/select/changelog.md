@@ -8,6 +8,7 @@
 - Architecture
   - Align Select input surfaces with the shared `InputControlFrame` / `AddOnDecoratedBox` composition.
   - Keep selection, candidate, popup and result state in Select while using the shared EffectiveStatus and Form/native validation pipeline.
+  - Pair `SelectHandle` Form feedback observation with logical attach/detach so reused Select input surfaces reconnect deterministically.
 
 ## 2026-08-19
 

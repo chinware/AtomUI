@@ -78,6 +78,7 @@ Public API / ItemsSource / Command / Event
 - 构造阶段只注册必要状态，不依赖 template part。
 - 模板应用时获取 part、建立事件订阅和绑定，并先释放旧 part 订阅。
 - 控件卸载、弹层关闭、窗口关闭、集合替换或 container recycle 时释放事件订阅和资源宿主。
+- `FormFeedback.ValidateStatus` 属于外部对象订阅，在 logical detach 时释放，并在 logical attach 时按当前 feedback 状态重新建立。
 - DynamicResource、TokenResourceBinder 或 C# binding 必须有明确 owner 和释放点。
 - Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
 

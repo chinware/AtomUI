@@ -447,6 +447,12 @@ public class ComboBox : AvaloniaComboBox,
             TopLevelDeactivation.Subscribe(TopLevel.GetTopLevel(this), HandleWindowDeactivated);
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        ConfigureFormFeedbackSubscription();
+    }
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
@@ -755,6 +761,12 @@ public class ComboBox : AvaloniaComboBox,
     {
         _feedbackStatusSubscription?.Dispose();
         _feedbackStatusSubscription = null;
+        if (!((ILogical)this).IsAttachedToLogicalTree)
+        {
+            IsFormFeedbackVisible = false;
+            return;
+        }
+
         if (FormFeedback is { } feedback)
         {
             _feedbackStatusSubscription = feedback.GetObservable(FormValidateFeedback.ValidateStatusProperty)

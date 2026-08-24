@@ -152,7 +152,7 @@ Form 不维护与 native validation 并行的 error 真源。Form reset、重新
 | 逻辑层 | 文本值、选择、清除、reveal、count、Form value、native validation、FormStatus 和 viewport metrics。 |
 | frame 层 | 四种 `StyleVariant`、EffectiveStatus 优先级、hover/focus/pressed/disabled、CompactSpace、motion 和 Light/Dark 主题。 |
 | 组合层 | AddOn、搜索按钮、handle、tag、popup、resize 和内部内容布局不重复绘制 frame。 |
-| 生命周期 | template reapply、detach、Form reset、旧 part 解绑、旧 binding 释放和 popup/按钮资源释放。 |
+| 生命周期 | template reapply 负责旧 part、模板事件和模板 binding 的替换；logical attach/detach 负责外部 owner、Form feedback、popup 和窗口级订阅的获取与释放；Form reset 只清理 Form-owned 状态。 |
 | AOT/文档 | generator registration、主题 asset、Semantic Part 边界、overview/implementation/token/changelog 术语一致。 |
 
 具体控件文档只描述本控件的业务状态和专用模板；当它引用输入表面、状态优先级、Form error 或 Token 共享规则时，以本文档为唯一共享定义。
