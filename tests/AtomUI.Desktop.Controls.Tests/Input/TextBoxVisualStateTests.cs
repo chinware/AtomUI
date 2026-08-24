@@ -95,6 +95,32 @@ public class TextBoxVisualStateTests
         });
     }
 
+    [Fact]
+    public void TextBox_Input_Frame_Width_Remains_Stable_When_Text_Changes()
+    {
+        var textBox = new AtomUITextBox
+        {
+            Width           = 360,
+            PlaceholderText = "AtomUI TextBox",
+            IsMotionEnabled = false
+        };
+
+        ShowInWindow(textBox, () =>
+        {
+            var frame = FindTemplatePart<InputControlFrame>(textBox, "PART_InputControlFrame");
+
+            frame.Bounds.Width.ShouldBe(textBox.Bounds.Width);
+
+            textBox.Text = "2";
+            Dispatcher.UIThread.RunJobs();
+            frame.Bounds.Width.ShouldBe(textBox.Bounds.Width);
+
+            textBox.Text = "2wewwerwewerwerwe";
+            Dispatcher.UIThread.RunJobs();
+            frame.Bounds.Width.ShouldBe(textBox.Bounds.Width);
+        }, window => window.Width = 480);
+    }
+
     [Theory]
     [InlineData(ControlAlgorithmMode.Global, true)]
     [InlineData(ControlAlgorithmMode.Disabled, false)]

@@ -8,6 +8,13 @@
 - 不记录临时讨论、纯格式化或没有长期价值的实现细节。
 - 架构文档始终描述最新设计状态；历史变化记录在本文档。
 
+## 2026-08-24
+
+- Theme
+  - Make the TextBox input frame fill the width allocated by its owner so placeholder and text measurement cannot resize the visible input surface.
+- Tests
+  - Cover stable TextBox frame width across placeholder, short-text and long-text states.
+
 ## 2026-08-03
 
 - Architecture

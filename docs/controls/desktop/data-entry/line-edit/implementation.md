@@ -110,6 +110,7 @@ OverflowTip and other internal consumers
 
 - 旧清除按钮 click 订阅必须解除，再绑定新 `PART_ClearButton`。
 - `AbstractTextInput` 每次套用模板都重新获取 `PART_InputControlFrame`，并把共有状态回放到 frame；frame 负责初始 transitions 抑制、边框厚度和 CompactSpace 状态计算。
+- `TextBox` 的 `PART_InputControlFrame` 必须水平填满 TextBox 已分配宽度；placeholder、短文本和长文本只改变内部文本布局，不改变输入外框宽度。
 - `AddOnDecoratedBox` 派生 part 只接收 frame 状态并建立 AddOn/内部内容布局，不再承担独立状态选择器。
 - clear/reveal/form/inner-right/count 等稳定 control-to-template 状态由 AXAML `TemplateBinding` 或显式 typed ancestor binding 表达；`AddOnDecoratedBox.ContentRightAddOn` 跨模板边界内的节点使用 `$parent[atom:<InputType>]` 绑定到对应输入控件。
 - `SearchEdit` 获取 `SearchEditDecoratedBox` 后设置 `OwningSearchEdit`，由 decorated box 回调搜索事件。
@@ -213,6 +214,7 @@ AOT 边界：
 
 - `TextChanged` 继续驱动字数统计和 Form value changed。
 - 清除按钮可见性不在 AXAML 与 C# 中形成相互冲突的状态源。
+- TextBox 外框宽度由父布局和 `Width` / `MinWidth` / `MaxWidth` 契约决定，不能随 placeholder 或当前文本的测量宽度伸缩。
 - `IsCustomFontSize=true` 不能被 SizeType 字体样式覆盖。
 - `InputControlFrame.EffectiveStatus` 必须遵守 Native Error / Form Error > Form Warning > Explicit Warning > Explicit Error > Default；native error 由 `DataValidationErrors` 唯一提供，Form reset 不得清理外部 native error。
 - 所有 `*AddOnDecoratedBox` 只能扩展 frame 布局，不能重新定义 variant/status/error/warning/disabled/motion selector。
@@ -228,6 +230,7 @@ AOT 边界：
 
 - `LineEditShowCasePageTests` 覆盖 Gallery 页面结构、示例 snapshot 和源码片段入口。
 - 清除按钮：空文本、非空文本、read-only、TextArea 和 single-line 差异。
+- TextBox 布局：显式宽度和父布局分配宽度保持稳定，placeholder、单字符和长文本切换不改变 input frame 宽度。
 - 生命周期：基础输入、全部内部派生输入和 AutoComplete 组合宿主在 logical detach/reattach 后保持 reveal、clear、inner-right、IME preedit、viewport 和 Form feedback 连接。
 - SizeType：Large/Middle/Small/Custom 字号、高度、line height 和 `IsCustomFontSize` 优先级。
 - Variant/status：Outlined、Filled、Borderless、Underlined、Error、Warning、focus、disabled。

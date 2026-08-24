@@ -8,6 +8,7 @@
         <ControlTemplate TargetType="atom:TextBox">
             <atom:InputControlFrame
                 Name="PART_InputControlFrame"
+                HorizontalAlignment="Stretch"
                 Padding="{TemplateBinding Padding}"
                 BorderThickness="{TemplateBinding BorderThickness}"
                 CornerRadius="{TemplateBinding EffectiveCornerRadius}"
