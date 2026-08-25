@@ -15,7 +15,7 @@
                 <ContentPresenter Name="PART_LoadingPresenter"
                                   Content="{TemplateBinding LoadingContent}"
                                   ContentTemplate="{TemplateBinding LoadingContentTemplate}"
-                                  HorizontalContentAlignment="Center"
+                                  HorizontalContentAlignment="Stretch"
                                   VerticalContentAlignment="Center"
                                   IsVisible="False" />
                 <ContentPresenter Name="PART_ErrorPresenter"

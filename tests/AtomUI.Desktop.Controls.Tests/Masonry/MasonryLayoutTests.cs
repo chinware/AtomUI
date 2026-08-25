@@ -1,5 +1,7 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using AtomUI.Controls;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
@@ -9,6 +11,7 @@ using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 using AvaloniaWindow = Avalonia.Controls.Window;
@@ -116,6 +119,84 @@ public class MasonryLayoutTests
         }
         finally
         {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Async_Image_Loading_Content_Provides_The_Initial_Masonry_Height()
+    {
+        var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var source = ImageLoadSource.FromStream(
+            async token =>
+            {
+                started.TrySetResult();
+                await release.Task.WaitAsync(token);
+                return new MemoryStream(new byte[] { 1 });
+            },
+            $"masonry-loading-{Guid.NewGuid():N}",
+            "v1");
+        AsyncImage? image = null;
+        AtomUI.Desktop.Controls.Skeleton? skeleton = null;
+        var masonry = new AtomUI.Desktop.Controls.Masonry
+        {
+            ColumnCount = 4,
+            ColumnGap = 16,
+            RowGap = 16,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            ItemsSource = new[] { source },
+            ItemTemplate = new FuncDataTemplate<ImageLoadSource>(
+                _ => true,
+                item => image = new AsyncImage
+                {
+                    Source = item,
+                    MinHeight = 210,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    LoadingContent = new Border
+                    {
+                        Padding = new Thickness(16),
+                        Child = skeleton = new AtomUI.Desktop.Controls.Skeleton
+                        {
+                            IsLoading = true,
+                            IsActive = true,
+                            IsShowAvatar = false,
+                            IsShowTitle = true,
+                            ParagraphRows = 3,
+                            IsRound = true
+                        }
+                    }
+                })
+        };
+        var window = new AvaloniaWindow
+        {
+            Width = 1024,
+            Height = 800,
+            Content = masonry
+        };
+
+        try
+        {
+            window.Show();
+            RunLayoutJobs();
+
+            image.ShouldNotBeNull();
+            image.IsLoading.ShouldBeTrue();
+            image.DesiredSize.Height.ShouldBeGreaterThanOrEqualTo(210);
+            image.GetVisualDescendants()
+                 .OfType<ContentPresenter>()
+                 .Single(control => control.Name == "PART_LoadingPresenter")
+                 .IsVisible.ShouldBeTrue();
+            skeleton.ShouldNotBeNull();
+            skeleton.Bounds.Width.ShouldBeGreaterThan(0);
+            skeleton.GetVisualDescendants()
+                    .OfType<SkeletonLine>()
+                    .ShouldContain(line => line.Bounds.Width > 0);
+            WaitUntil(() => started.Task.IsCompleted, "Masonry async image request start");
+        }
+        finally
+        {
+            release.TrySetResult();
             window.Close();
         }
     }
@@ -717,6 +798,21 @@ public class MasonryLayoutTests
     private static void RunLayoutJobs()
     {
         Dispatcher.UIThread.RunJobs();
+        Dispatcher.UIThread.RunJobs();
+    }
+
+    private static void WaitUntil(Func<bool> predicate, string description)
+    {
+        var timeout = Stopwatch.StartNew();
+        while (!predicate())
+        {
+            Dispatcher.UIThread.RunJobs();
+            if (timeout.Elapsed >= TimeSpan.FromSeconds(5))
+            {
+                throw new TimeoutException($"Timed out waiting for {description}.");
+            }
+            Thread.Yield();
+        }
         Dispatcher.UIThread.RunJobs();
     }
 

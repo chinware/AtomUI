@@ -207,7 +207,7 @@ public class AsyncImage : TemplatedControl, IImageLoadControl, IImageLoadControl
     protected override Size ArrangeOverride(Size finalSize)
     {
         var arranged = base.ArrangeOverride(finalSize);
-        _controller.RefreshSize();
+        _controller.RefreshSize(GetDecodePixelSize(arranged));
         return arranged;
     }
 
@@ -227,13 +227,18 @@ public class AsyncImage : TemplatedControl, IImageLoadControl, IImageLoadControl
 
     (int Width, int Height)? IImageLoadControllerHost.GetDecodePixelSize()
     {
+        return GetDecodePixelSize(Bounds.Size);
+    }
+
+    private (int Width, int Height)? GetDecodePixelSize(Size arrangedSize)
+    {
         return DecodeMode switch
         {
             ImageDecodeMode.Original => (0, 0),
             ImageDecodeMode.Explicit when DecodePixelWidth > 0 || DecodePixelHeight > 0 =>
                 (DecodePixelWidth, DecodePixelHeight),
             ImageDecodeMode.Explicit => null,
-            _ => GetAutoDecodeSize()
+            _ => GetAutoDecodeSize(arrangedSize)
         };
     }
 
@@ -277,11 +282,11 @@ public class AsyncImage : TemplatedControl, IImageLoadControl, IImageLoadControl
     void IImageLoadControllerHost.RaiseImageFailed(ImageFailedEventArgs eventArgs) =>
         ImageLoadEventDispatcher.Dispatch(ImageFailed, this, eventArgs);
 
-    private (int Width, int Height)? GetAutoDecodeSize()
+    private (int Width, int Height)? GetAutoDecodeSize(Size arrangedSize)
     {
         var scaling = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1;
-        var width = Quantize(Bounds.Width * scaling);
-        var height = Quantize(Bounds.Height * scaling);
+        var width = Quantize(arrangedSize.Width * scaling);
+        var height = Quantize(arrangedSize.Height * scaling);
         return width == 0 && height == 0 ? null : (width, height);
     }
 

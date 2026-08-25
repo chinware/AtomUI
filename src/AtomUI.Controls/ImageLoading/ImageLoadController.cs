@@ -85,13 +85,21 @@ internal sealed class ImageLoadController : IDisposable
         {
             return;
         }
-        var size = _host.GetDecodePixelSize();
-        if (size == _lastDecodeSize)
+        RefreshSize(_host.GetDecodePixelSize());
+    }
+
+    internal void RefreshSize((int Width, int Height)? decodeSize)
+    {
+        if (!_host.IsImageLoadAttached)
         {
             return;
         }
-        _lastDecodeSize = size;
-        Restart(reload: false, configurationChanged: false);
+        if (decodeSize == _lastDecodeSize)
+        {
+            return;
+        }
+        _lastDecodeSize = decodeSize;
+        Restart(reload: false, configurationChanged: false, decodeSize);
     }
 
     internal void Reload()
@@ -113,6 +121,18 @@ internal sealed class ImageLoadController : IDisposable
     }
 
     private void Restart(bool reload, bool configurationChanged)
+    {
+        if (_disposed || !_host.IsImageLoadAttached)
+        {
+            return;
+        }
+        Restart(reload, configurationChanged, _host.GetDecodePixelSize());
+    }
+
+    private void Restart(
+        bool reload,
+        bool configurationChanged,
+        (int Width, int Height)? decodeSize)
     {
         if (_disposed || !_host.IsImageLoadAttached)
         {
@@ -143,18 +163,24 @@ internal sealed class ImageLoadController : IDisposable
             return;
         }
 
-        var decodeSize = _host.GetDecodePixelSize();
-        if (decodeSize is null)
-        {
-            return;
-        }
         var sourceChanged = _currentSourceIdentity is not null && _currentSourceIdentity != source.Identity;
         if (sourceChanged)
         {
+            CancelCurrentRequest();
             ReleaseCurrentResult();
             _host.SetLoadedImage(null);
         }
         _currentSourceIdentity = source.Identity;
+
+        if (decodeSize is null)
+        {
+            _lastDecodeSize = null;
+            if (_currentResult is null)
+            {
+                _host.SetLoadState(ImageLoadState.Loading, null, null, false);
+            }
+            return;
+        }
         _lastDecodeSize = decodeSize;
         CancelCurrentRequest();
         var cancellation = new ImageCancellationState();
