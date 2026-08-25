@@ -157,12 +157,6 @@ $RECYCLE.BIN/
 #################
 ## Cake
 #################
-tools/*
-!tools/packages.config
-!tools/AtomUI.Docs.LLMsGenerator/
-!tools/AtomUI.Docs.LLMsGenerator/**
-!tools/performances/
-!tools/performances/**
 tools/**/[Bb]in/
 tools/**/[Oo]bj/
 .nuget
