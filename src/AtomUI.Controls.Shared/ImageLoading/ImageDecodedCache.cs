@@ -26,7 +26,28 @@ internal sealed class ImageDecodedCache : IDisposable
         get { lock (_gate) return _bytes; }
     }
 
-    internal bool TryGet(ImageDecodedCacheKey key, out ImageDecodedCacheEntry? entry)
+    internal bool TryAcquireResult(
+        ImageDecodedCacheKey key,
+        ImageCacheSource cacheSource,
+        IReadOnlyDictionary<ImageLoadStage, TimeSpan>? stageDurations,
+        out ImageLoadResult? result)
+    {
+        lock (_gate)
+        {
+            ThrowIfDisposed();
+            if (!_items.TryGetValue(key, out var item))
+            {
+                result = null;
+                return false;
+            }
+            _lru.Remove(item.Node);
+            _lru.AddFirst(item.Node);
+            result = item.Entry.AcquireResult(cacheSource, stageDurations);
+            return true;
+        }
+    }
+
+    internal bool TryRetain(ImageDecodedCacheKey key, out ImageDecodedCacheEntry? entry)
     {
         lock (_gate)
         {
@@ -38,6 +59,7 @@ internal sealed class ImageDecodedCache : IDisposable
             }
             _lru.Remove(item.Node);
             _lru.AddFirst(item.Node);
+            item.Entry.RetainOperation();
             entry = item.Entry;
             return true;
         }

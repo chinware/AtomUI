@@ -211,7 +211,7 @@ public class ImageRequestSchedulerTests
     }
 
     [Fact]
-    public async Task Dispose_Cancels_Active_And_Queued_Work_And_Waits_For_Workers()
+    public async Task Dispose_Cancels_Active_And_Queued_Work()
     {
         var scheduler = new ImageRequestScheduler(1, 1, 1);
         var activeStarted = NewSignal();
@@ -240,6 +240,64 @@ public class ImageRequestSchedulerTests
         scheduler.QueuedReads.ShouldBe(0);
     }
 
+    [Fact]
+    public async Task Dispose_Does_Not_Wait_For_An_Active_Action_That_Ignores_Cancellation()
+    {
+        var scheduler = new ImageRequestScheduler(1, 1, 1);
+        var started = NewSignal();
+        var canceled = NewSignal();
+        var release = NewSignal();
+        var lateResult = new DisposableResult();
+        var work = scheduler.ScheduleDecodeAsync(
+            async token =>
+            {
+                using var registration = token.Register(() => canceled.TrySetResult());
+                started.TrySetResult();
+                await release.Task;
+                return lateResult;
+            },
+            () => ImageRequestPriority.Normal,
+            CancellationToken.None,
+            static result => result.Dispose());
+        await started.Task;
+
+        var disposeTask = Task.Run(scheduler.Dispose, TestContext.Current.CancellationToken);
+        await canceled.Task;
+        var returnedBeforeAction = false;
+        try
+        {
+            await disposeTask.WaitAsync(TimeSpan.FromSeconds(1), TestContext.Current.CancellationToken);
+            returnedBeforeAction = true;
+        }
+        catch (TimeoutException)
+        {
+        }
+        finally
+        {
+            release.TrySetResult();
+            await disposeTask;
+        }
+
+        returnedBeforeAction.ShouldBeTrue();
+        await Should.ThrowAsync<OperationCanceledException>(async () => await work);
+        await lateResult.Disposed.Task.WaitAsync(TestContext.Current.CancellationToken);
+        lateResult.DisposeCount.ShouldBe(1);
+    }
+
     private static TaskCompletionSource NewSignal() =>
         new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+    private sealed class DisposableResult : IDisposable
+    {
+        internal int DisposeCount { get; private set; }
+
+        internal TaskCompletionSource Disposed { get; } =
+            new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public void Dispose()
+        {
+            DisposeCount++;
+            Disposed.TrySetResult();
+        }
+    }
 }

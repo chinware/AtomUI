@@ -337,6 +337,38 @@ public class ImagePreviewerImageLoadingTests
     }
 
     [Fact]
+    public void Svg_Cover_And_Full_Request_Reuse_The_Same_Vector_Decode()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var reads = 0;
+            var bytes = Encoding.UTF8.GetBytes(
+                "<svg xmlns='http://www.w3.org/2000/svg' width='128' height='96' " +
+                "viewBox='0 0 128 96'><rect width='128' height='96' fill='#1677ff'/></svg>");
+            var source = ImageLoadSource.FromStream(
+                _ =>
+                {
+                    reads++;
+                    return ValueTask.FromResult<Stream>(new MemoryStream(bytes));
+                },
+                $"preview-vector-{Guid.NewGuid():N}",
+                "v1");
+            var previewer = CreatePreviewer(new ImagePreviewItem(source));
+            using var host = new PreviewerHost(previewer);
+            var entry = previewer.EffectiveItems.ShouldNotBeNull().Single();
+            WaitUntil(() => previewer.IsCoverLoaded, "SVG cover load");
+
+            previewer.OpenDialog();
+            WaitUntil(() => previewer.IsCurrentLoaded, "SVG full load");
+
+            reads.ShouldBe(1);
+            entry.FullImage.ShouldBeSameAs(entry.ThumbnailImage);
+            entry.FullCacheSource.ShouldBe(ImageCacheSource.DecodedMemory);
+            entry.FullImage.ShouldNotBeNull().Size.ShouldBe(new Size(128, 96));
+        });
+    }
+
+    [Fact]
     public void Auto_Sized_Rectangular_Cover_Settles_After_The_Initial_Load()
     {
         Dispatcher.UIThread.Invoke(() =>

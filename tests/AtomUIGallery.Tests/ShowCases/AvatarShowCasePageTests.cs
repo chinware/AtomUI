@@ -59,6 +59,22 @@ public class AvatarShowCasePageTests
             .ShouldBe(NormalizeMarkup(approved));
     }
 
+    [Fact]
+    public void Avatar_Group_Primary_Images_Use_Ant_Design_Network_Sources()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Avatar/Views/AvatarShowCase.axaml");
+
+        source.ShouldContain("https://api.dicebear.com/10.x/lorelei/svg?seed=1");
+        source.ShouldContain("https://api.dicebear.com/10.x/lorelei/svg?seed=2");
+        source.ShouldContain("https://api.dicebear.com/10.x/lorelei/svg?seed=3");
+        source.ShouldContain("https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png");
+        source.ShouldNotContain("api.dicebear.com/10.x/lorelei/png");
+        source.ShouldNotContain("Assets/AvatarShowCase/PeopleAvatar1.svg");
+        source.ShouldNotContain("Assets/AvatarShowCase/PeopleAvatar2.svg");
+        source.ShouldNotContain("Assets/AvatarShowCase/PeopleAvatar3.svg");
+        source.ShouldNotContain("Assets/AvatarShowCase/PeopleAvatar4.png");
+    }
+
     private static string ExtractAvatarExampleItems(string source)
     {
         const string firstItemMarker  = "<gallery:ShowCaseItem";

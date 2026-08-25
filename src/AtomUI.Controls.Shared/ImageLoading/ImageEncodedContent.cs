@@ -16,7 +16,7 @@ internal sealed record ImageEncodedContent(
     string? SourceVersion = null,
     string[]? VaryHeaders = null,
     string? VaryDigest = null,
-    int SecurityPolicyVersion = 1,
+    int SecurityPolicyVersion = 0,
     DateTimeOffset? ResponseDate = null,
     TimeSpan? ResponseAge = null,
     DateTimeOffset? Expires = null,
@@ -29,4 +29,9 @@ internal sealed record ImageEncodedContent(
         !NoCache && FreshUntil is not null && FreshUntil.Value > now;
 
     internal ImageEncodedContent WithCacheSource(ImageCacheSource source) => this with { CacheSource = source };
+
+    internal ImageEncodedContent MarkValidated() => this with
+    {
+        SecurityPolicyVersion = ImageSecurityPolicy.Version
+    };
 }

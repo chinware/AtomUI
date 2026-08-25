@@ -74,19 +74,68 @@ internal sealed class ImageLoaderPipeline : IDisposable
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         ImageProgressDispatcher.Report(request.Progress, ImageLoadProgress.Create(ImageLoadStage.Resolving));
+        if (request.Source.Kind == ImageLoadSourceKind.Image)
+        {
+            return await LoadBorrowedImageAsync(request, cancellationToken).ConfigureAwait(false);
+        }
+
+        if (CanReadDecodedCache(request.CacheMode))
+        {
+            foreach (var candidate in _codecs.CreateDecodedKeyCandidates(request))
+            {
+                if (!_decodedCache.TryAcquireResult(
+                        candidate,
+                        ImageCacheSource.DecodedMemory,
+                        request.Timing.Snapshot(),
+                        out var cachedResult))
+                {
+                    continue;
+                }
+                ImageProgressDispatcher.Report(request.Progress, ImageLoadProgress.Create(ImageLoadStage.CacheLookup));
+                return cachedResult!;
+            }
+        }
+
+        var epoch = GetEpoch(request.PartitionHash);
+        var validated = await _coordinator.GetEncodedAsync(
+            request.EncodedOperationKey,
+            request.Priority,
+            (context, operationCancellation) => LoadEncodedCoreAsync(
+                request,
+                context,
+                operationCancellation),
+            request.Progress,
+            cancellationToken).ConfigureAwait(false);
+        var encoded = validated.Content;
+        if (encoded.NoStore)
+        {
+            _decodedCache.RemoveByEncodedKey(request.EncodedKey);
+        }
+
+        var codec = _codecs.Select(validated.Probe, request.Source);
+        var decodedKey = codec.CreateDecodedCacheKey(request);
         if (CanReadDecodedCache(request.CacheMode) &&
-            _decodedCache.TryGet(request.DecodedKey, out var cachedEntry))
+            _decodedCache.TryAcquireResult(
+                decodedKey,
+                ImageCacheSource.DecodedMemory,
+                request.Timing.Snapshot(),
+                out var exactCachedResult))
         {
             ImageProgressDispatcher.Report(request.Progress, ImageLoadProgress.Create(ImageLoadStage.CacheLookup));
-            return cachedEntry!.AcquireResult(
-                ImageCacheSource.DecodedMemory,
-                request.Timing.Snapshot());
+            return exactCachedResult!;
         }
 
         return await _coordinator.GetDecodedAsync(
-            request.DecodedOperationKey,
+            ImageCacheKey.CreateDecodedOperationKey(request, decodedKey),
             request.Priority,
-            (context, operationCancellation) => DecodeCoreAsync(request, context, operationCancellation),
+            (context, operationCancellation) => DecodeCoreAsync(
+                request,
+                validated,
+                codec,
+                decodedKey,
+                epoch,
+                context,
+                operationCancellation),
             entry => entry.AcquireResult(entry.OriginCacheSource, request.Timing.Snapshot()),
             request.Progress,
             cancellationToken).ConfigureAwait(false);
@@ -137,56 +186,21 @@ internal sealed class ImageLoaderPipeline : IDisposable
 
     private async Task<ImageDecodedCacheEntry> DecodeCoreAsync(
         NormalizedImageRequest request,
+        ImageValidatedContent validated,
+        ImageCodec codec,
+        ImageDecodedCacheKey decodedKey,
+        (long Global, long Partition) epoch,
         ImageRequestCoordinator.SharedOperationContext context,
         CancellationToken cancellationToken)
     {
         if (CanReadDecodedCache(request.CacheMode) &&
-            _decodedCache.TryGet(request.DecodedKey, out var cachedEntry))
+            _decodedCache.TryRetain(decodedKey, out var cachedEntry))
         {
-            cachedEntry!.RetainOperation();
-            return cachedEntry;
+            return cachedEntry!;
         }
 
-        var epoch = GetEpoch(request.PartitionHash);
-        if (request.Source.Kind == ImageLoadSourceKind.Image)
-        {
-            context.Report(ImageLoadProgress.Create(ImageLoadStage.Reading));
-            var readResult = await _readers.Get(request.Source.Kind)
-                .ReadAsync(request, null, null, cancellationToken)
-                .ConfigureAwait(false);
-            var borrowed = readResult.BorrowedImage!;
-            var width = Math.Max(1, (int)Math.Ceiling(borrowed.Size.Width));
-            var height = Math.Max(1, (int)Math.Ceiling(borrowed.Size.Height));
-            var entry = new ImageDecodedCacheEntry(
-                borrowed,
-                ownsImage: false,
-                width,
-                height,
-                width,
-                height,
-                checked((long)width * height * 4),
-                null,
-                ImageCacheSource.Local);
-            entry.RetainOperation();
-            return entry;
-        }
-
-        var encoded = await _coordinator.GetEncodedAsync(
-            request.EncodedOperationKey,
-            context.Priority,
-            (encodedContext, operationCancellation) => LoadEncodedCoreAsync(
-                request,
-                encodedContext,
-                operationCancellation),
-            new CallbackProgress<ImageLoadProgress>(context.Report),
-            cancellationToken).ConfigureAwait(false);
-        if (encoded.NoStore)
-        {
-            _decodedCache.RemoveByEncodedKey(request.EncodedKey);
-        }
-        context.Report(ImageLoadProgress.Create(ImageLoadStage.Validating, encoded.Bytes.LongLength, encoded.Bytes.LongLength));
-        var probe = _validator.Validate(encoded, request.Source);
-        var codec = _codecs.Select(probe, request.Source);
+        var encoded = validated.Content;
+        var probe = validated.Probe;
         context.Report(ImageLoadProgress.Create(ImageLoadStage.Queued));
         var decoded = await _scheduler.ScheduleDecodeAsync(
             async token =>
@@ -195,16 +209,68 @@ internal sealed class ImageLoaderPipeline : IDisposable
                 return await codec.DecodeAsync(encoded, probe, request, token).ConfigureAwait(false);
             },
             () => context.Priority,
-            cancellationToken).ConfigureAwait(false);
+            cancellationToken,
+            static entry => entry.Discard()).ConfigureAwait(false);
         decoded.RetainOperation();
-        if (CanWriteCache(request, encoded) && IsEpochCurrent(request.PartitionHash, epoch))
+        try
         {
-            _decodedCache.TryAdd(request.DecodedKey, decoded);
+            cancellationToken.ThrowIfCancellationRequested();
+            if (CanWriteCache(request, encoded) && IsEpochCurrent(request.PartitionHash, epoch))
+            {
+                _decodedCache.TryAdd(decodedKey, decoded);
+            }
+            return decoded;
         }
-        return decoded;
+        catch
+        {
+            decoded.ReleaseOperation();
+            throw;
+        }
     }
 
-    private async Task<ImageEncodedContent> LoadEncodedCoreAsync(
+    private Task<ImageLoadResult> LoadBorrowedImageAsync(
+        NormalizedImageRequest request,
+        CancellationToken cancellationToken)
+    {
+        return _coordinator.GetDecodedAsync(
+            ImageCacheKey.CreateBorrowedDecodedOperationKey(request),
+            request.Priority,
+            (context, operationCancellation) => LoadBorrowedImageCoreAsync(
+                request,
+                context,
+                operationCancellation),
+            entry => entry.AcquireResult(entry.OriginCacheSource, request.Timing.Snapshot()),
+            request.Progress,
+            cancellationToken);
+    }
+
+    private async Task<ImageDecodedCacheEntry> LoadBorrowedImageCoreAsync(
+        NormalizedImageRequest request,
+        ImageRequestCoordinator.SharedOperationContext context,
+        CancellationToken cancellationToken)
+    {
+        context.Report(ImageLoadProgress.Create(ImageLoadStage.Reading));
+        var readResult = await _readers.Get(request.Source.Kind)
+            .ReadAsync(request, null, null, cancellationToken)
+            .ConfigureAwait(false);
+        var borrowed = readResult.BorrowedImage!;
+        var width = Math.Max(1, (int)Math.Ceiling(borrowed.Size.Width));
+        var height = Math.Max(1, (int)Math.Ceiling(borrowed.Size.Height));
+        var entry = new ImageDecodedCacheEntry(
+            borrowed,
+            ownsImage: false,
+            width,
+            height,
+            width,
+            height,
+            checked((long)width * height * 4),
+            null,
+            ImageCacheSource.Local);
+        entry.RetainOperation();
+        return entry;
+    }
+
+    private async Task<ImageValidatedContent> LoadEncodedCoreAsync(
         NormalizedImageRequest request,
         ImageRequestCoordinator.SharedOperationContext context,
         CancellationToken cancellationToken)
@@ -214,7 +280,11 @@ internal sealed class ImageLoaderPipeline : IDisposable
         ImageEncodedContent? cached = null;
         if (CanReadEncodedCache(request.CacheMode) && _encodedCache.TryGet(request.EncodedKey, out var memoryContent))
         {
-            if (MatchesVary(request, memoryContent!))
+            if (memoryContent!.SecurityPolicyVersion != ImageSecurityPolicy.Version)
+            {
+                _encodedCache.Remove(request.EncodedKey);
+            }
+            else if (MatchesVary(request, memoryContent))
             {
                 cached = memoryContent;
             }
@@ -226,8 +296,7 @@ internal sealed class ImageLoaderPipeline : IDisposable
                 (CanUseWithoutSourceProbe(request, cached) ||
                  CanUseCacheOnlyWithoutSourceProbe(request)))
             {
-                _validator.Validate(cached, request.Source);
-                return cached;
+                return ValidateContent(cached, request.Source, cancellationToken);
             }
         }
 
@@ -243,9 +312,9 @@ internal sealed class ImageLoaderPipeline : IDisposable
                 (CanUseWithoutSourceProbe(request, cached) ||
                  CanUseCacheOnlyWithoutSourceProbe(request)))
             {
-                _validator.Validate(cached, request.Source);
-                _encodedCache.Set(request.EncodedKey, cached);
-                return cached;
+                var validated = ValidateContent(cached, request.Source, cancellationToken);
+                _encodedCache.Set(request.EncodedKey, validated.Content);
+                return validated;
             }
         }
 
@@ -270,7 +339,8 @@ internal sealed class ImageLoaderPipeline : IDisposable
             cancellationToken).ConfigureAwait(false);
         var content = result.EncodedContent ?? throw new InvalidOperationException("Source reader did not return encoded content.");
         context.Report(ImageLoadProgress.Create(ImageLoadStage.Validating, content.Bytes.LongLength, content.Bytes.LongLength));
-        _validator.Validate(content, request.Source);
+        var validatedContent = ValidateContent(content, request.Source, cancellationToken);
+        content = validatedContent.Content;
 
         if (content.NoStore)
         {
@@ -279,7 +349,7 @@ internal sealed class ImageLoaderPipeline : IDisposable
             {
                 await _fileCache.RemoveAsync(request.EncodedKey, cancellationToken).ConfigureAwait(false);
             }
-            return content;
+            return validatedContent;
         }
         if (CanWriteCache(request, content) && IsEpochCurrent(request.PartitionHash, epoch))
         {
@@ -289,7 +359,16 @@ internal sealed class ImageLoaderPipeline : IDisposable
                 await _fileCache.SetAsync(request.EncodedKey, content, cancellationToken).ConfigureAwait(false);
             }
         }
-        return content;
+        return validatedContent;
+    }
+
+    private ImageValidatedContent ValidateContent(
+        ImageEncodedContent content,
+        ImageLoadSource source,
+        CancellationToken cancellationToken)
+    {
+        var probe = _validator.Validate(content, source, cancellationToken);
+        return new ImageValidatedContent(content.MarkValidated(), probe);
     }
 
     private static bool CanReadDecodedCache(ImageCacheMode mode) =>

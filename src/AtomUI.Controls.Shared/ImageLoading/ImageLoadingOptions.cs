@@ -24,4 +24,5 @@ internal sealed record ImageLoadingOptions(
     bool AllowAuthenticatedPersistentCache,
     FrozenSet<string> AuthenticationHeaderNames,
     FrozenSet<string> AllowedHttpOrigins,
-    FrozenSet<string> CredentialForwardingOrigins);
+    FrozenSet<string> CredentialForwardingOrigins,
+    SvgImageLoadingOptions Svg);

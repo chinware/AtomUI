@@ -83,6 +83,8 @@ public enum ImageLoadErrorCode
     UnsupportedFormat,
     UnsafeVectorContent,
     InvalidImageData,
+    VectorComplexityLimitExceeded,
+    EmbeddedResourceLimitExceeded,
     DimensionLimitExceeded,
     PixelLimitExceeded,
     DecodedByteLimitExceeded,

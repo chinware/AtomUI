@@ -14,8 +14,7 @@
 | Bytes/Stream | 支持 | 支持 | 无稳定 key 时不持久缓存 |
 | borrowed `IImage` | 支持 | 支持 | AtomUI 永不 dispose 原对象 |
 | raster codec | 支持 | 支持平台可用格式 | 显式注册并探测 capability |
-| trusted `avares` SVG | 支持 | 支持 | Controls 显式注册 Asset-only SVG codec |
-| remote SVG | 拒绝 | 拒绝 | 校验阶段先于 codec 选择 |
+| 受限静态 SVG | HTTP、Asset、File、Storage、Bytes、Stream | HTTP、Asset、Storage、Bytes、Stream；File 仍受平台限制 | Shared 安全验证，Controls 显式 `SvgImageCodec`；renderer 不发起外部 I/O |
 | persistent cache | 可选、默认关闭 | 不可用 | Browser 配置启用时启动失败并给出 diagnostics |
 | NativeAOT/trimming | publish/启动必须验证 | AOT publish 用于裁剪诊断；当前不要求启动 | 不使用动态发现或未声明反射 |
 
@@ -34,8 +33,12 @@ Desktop、Browser 和 NativeAOT 的 codec 库；不得为复用某个内部方�
 当前 baseline 至少覆盖 PNG、JPEG、WebP、BMP 和单帧 GIF；codec capability probe 发现多帧容器时返回
 `AnimationNotSupported`。平台无法可靠支持的额外格式不能只在某一后端静默出现，必须进入能力矩阵和跨平台测试。
 
-Controls 的 Asset SVG codec 只在 source kind 为 `Asset`、scheme 为 `avares` 且内容来自应用资源 reader 时匹配。它不能因为
-MIME 是 `image/svg+xml` 就接管 HTTP/File/Stream。SVG 解析错误映射为 typed error，渲染对象的释放也进入租约模型。
+Controls 的 `SvgImageCodec` 只匹配 Shared 已按当前 `ImageSecurityPolicy` 验证为 `ImageContentFormat.Svg` 的内容，不按 HTTP、File、
+Asset、Storage、Bytes 或 Stream 分裂 codec。AtomUI 只调用 `SvgSource.Load(stream, parameters)`；不得把源 URL、文件路径或可解析
+外部资源的 `BaseUri` 交给 renderer，也不得调用会自行访问 URL/File 的 path overload。
+
+SVG 依赖基线、`SecureStatic` load options、静态子集与资源预算由[网络 SVG 加载设计](network-svg.md)统一定义。依赖升级必须重新
+验证 XML DTD 行为、CSS/资源解析、线程归属、Browser 和 NativeAOT；不得通过修改上游进程级 static 开关实现单次请求安全策略。
 
 动画图片时间轴不属于统一系统。codec 必须识别动画容器并按安全策略拒绝，而不是后台持续解码多帧或静默制造无法控制
 的 CPU/内存负担；任何动画支持都必须先具备独立公共状态、时钟、缓存和可见性契约。
@@ -65,12 +68,18 @@ RenderScaling、Bounds 或 Stretch 约束使 bucket 改变时才请求新 decode
 
 ## 线程与提交边界
 
-- URI 规范化、cache 查询、网络/stream 读取、摘要、内容校验和允许后台执行的 raster decode 不占用 UI dispatcher。
+- URI 规范化、cache 查询、网络/stream 读取、摘要、raster/SVG 内容校验、`SvgSource.Load(stream, ...)` 和允许后台执行的 raster
+  decode 不占用 UI dispatcher。
 - codec 明确声明是否需要 dispatcher；scheduler 为该 codec 切换，但仍受 decode 并发预算控制。
 - Loader event/diagnostics 不操作 AvaloniaObject；订阅方负责自己的线程切换。
 - Control 的 `Image`、`LoadState`、`LoadError`、`LoadProgress`、pseudo-class 和事件提交全部在 UI dispatcher。
 - generation 的最终检查必须与属性提交处于同一个 dispatcher work item；只在 await 前检查不足以阻止 stale result。
 - 释放租约可从任意线程调用；cache/codec 把实际图像释放调度到其声明的合法线程，不要求调用方猜测。
+- `SvgImage` 的创建、`Source` 赋值、`Size` 首次读取和 `Source` 解除只在 UI dispatcher；owned wrapper 缓存纯值 `Size`，后台
+  measure/cache clear/dispose 不再访问线程绑定 AvaloniaObject。后台释放只异步 post，不能同步等待 UI。
+
+UI 线程和 cache/coordinator lock 内禁止 `.Wait()`、`.Result`、`GetAwaiter().GetResult()` 或同步 dispatcher call。上游同步 SVG
+模型构建在开始/结束检查 cancellation，构建中的最坏工作量由 XML、path、引用和嵌入资源预算限制。
 
 进度回调需要节流，默认每 50 ms 或每新增 64 KiB 至多发布一次，并始终发布阶段切换/最终快照。节流发生在 loader，不用 UI
 timer；多个 waiter 对同一下载各自获得快照，取消的 waiter 不再接收进度。
@@ -103,8 +112,8 @@ Loader snapshot 和 event 只暴露有界 diagnostics：队列长度、active co
 - `ImageLoadSourceConverter` 是直接引用的 converter 类型，不按名称反射查找。
 - AXAML 只绑定公开/生成式可保留成员；`AsyncImage` Theme 与 Avatar Theme 的 Source/状态属性进入正常 Control descriptor/asset
   注册，不通过运行时枚举属性。
-- linked publish 的 registration closure 必须保留 `UseCommonControls()` 引入的 image service factory、raster reader/codec 和
-  Asset SVG codec，即使静态分析只看到 AXAML 中的 `AsyncImage`。
+- linked publish 的 registration closure 必须保留 `UseCommonControls()` 引入的 image service factory、raster reader/codec、
+  `SvgImageCodec`、安全验证器和直接引用的 SVG dependency 类型，即使静态分析只看到 AXAML 中的 `AsyncImage`。
 - 未被应用显式注册的自定义 codec/reader 不作为动态 fallback 保留。
 
 当前 Browser 交付门禁以 `RunAOTCompilation=false`、`WasmEnableWebcil=false` 的 publish 和实际启动为准。Browser AOT publish

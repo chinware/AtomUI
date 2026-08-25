@@ -12,7 +12,8 @@ public class ImageContentValidatorTests
         var validator = new ImageContentValidator(ImageLoadingTestSupport.CreateOptions());
         var probe = validator.Validate(
             ImageLoadingTestSupport.CreateContent(ImageLoadingTestSupport.CreatePngHeader(32, 24)),
-            ImageLoadSource.FromBytes(new byte[] { 1 }, "png", "v1"));
+            ImageLoadSource.FromBytes(new byte[] { 1 }, "png", "v1"),
+            TestContext.Current.CancellationToken);
 
         probe.Format.ShouldBe(ImageContentFormat.Png);
         probe.MediaType.ShouldBe("image/png");
@@ -32,28 +33,38 @@ public class ImageContentValidatorTests
     }
 
     [Fact]
-    public void Remote_And_Untrusted_Svg_Are_Rejected()
+    public void Remote_Svg_Is_Allowed_After_Static_Content_Validation()
     {
-        AssertFailure(
-            ImageLoadErrorCode.UnsafeVectorContent,
-            ImageLoadingTestSupport.CreateContent("<svg />"u8.ToArray(), "image/svg+xml"),
-            ImageLoadSource.FromUri("https://example.com/image.svg"));
+        var validator = new ImageContentValidator(ImageLoadingTestSupport.CreateOptions());
+        var probe = validator.Validate(
+            ImageLoadingTestSupport.CreateContent(
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\"/>"u8.ToArray(),
+                "image/svg+xml"),
+            ImageLoadSource.FromUri("https://example.com/image.svg"),
+            TestContext.Current.CancellationToken);
+
+        probe.Format.ShouldBe(ImageContentFormat.Svg);
+        probe.SvgMetadata.ShouldNotBeNull();
     }
 
     [Fact]
     public void Trusted_Avalonia_Asset_Svg_Is_Allowed()
     {
         var validator = new ImageContentValidator(ImageLoadingTestSupport.CreateOptions());
-        var content = ImageLoadingTestSupport.CreateContent("<svg />"u8.ToArray(), "image/svg+xml") with
+        var content = ImageLoadingTestSupport.CreateContent(
+            "<svg xmlns=\"http://www.w3.org/2000/svg\"/>"u8.ToArray(),
+            "image/svg+xml") with
         {
             IsTrustedAsset = true
         };
 
         var probe = validator.Validate(
             content,
-            ImageLoadSource.FromUri("avares://AtomUI.Tests/Assets/image.svg"));
+            ImageLoadSource.FromUri("avares://AtomUI.Tests/Assets/image.svg"),
+            TestContext.Current.CancellationToken);
 
         probe.Format.ShouldBe(ImageContentFormat.Svg);
+        probe.SvgMetadata.ShouldNotBeNull();
     }
 
     [Fact]
@@ -95,7 +106,8 @@ public class ImageContentValidatorTests
 
         var probe = new ImageContentValidator(ImageLoadingTestSupport.CreateOptions()).Validate(
             ImageLoadingTestSupport.CreateContent(bytes, "image/gif"),
-            ImageLoadSource.FromBytes(new byte[] { 1 }, "gif", "v1"));
+            ImageLoadSource.FromBytes(new byte[] { 1 }, "gif", "v1"),
+            TestContext.Current.CancellationToken);
 
         probe.IsAnimated.ShouldBeFalse();
         probe.PixelWidth.ShouldBe(1);

@@ -21,6 +21,7 @@
 
     <ItemGroup>
         <InternalsVisibleTo Include="AtomUI.Controls" />
+        <InternalsVisibleTo Include="AtomUI.Controls.Tests" />
         <InternalsVisibleTo Include="AtomUI.Controls.Shared.Tests" />
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls" />
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls.Tests" />

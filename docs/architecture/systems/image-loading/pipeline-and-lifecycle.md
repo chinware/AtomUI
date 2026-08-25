@@ -13,6 +13,8 @@ src/AtomUI.Controls.Shared/ImageLoading/
 ├── ImageLoaderStore.cs
 ├── ImageLoadingOptions.cs
 ├── ImageLoadingOptionsBuilder.cs
+├── SvgImageLoadingOptions.cs
+├── SvgImageLoadingOptionsBuilder.cs
 ├── ImageLoadingBuilderExtensions.cs
 ├── IImageLoader.cs
 ├── ImageLoadSource.cs
@@ -42,6 +44,11 @@ src/AtomUI.Controls.Shared/ImageLoading/
 ├── HttpImageTransport.cs
 ├── HttpImageSourceReader.cs
 ├── ImageContentValidator.cs
+├── SvgContentValidator.cs
+├── SvgContentMetadata.cs
+├── SvgCssReferenceValidator.cs
+├── SvgDataImageValidator.cs
+├── ImageSecurityPolicy.cs
 ├── ImageSourceReader.cs
 ├── FileImageSourceReader.cs
 ├── AssetImageSourceReader.cs
@@ -56,7 +63,8 @@ src/AtomUI.Controls.Shared/ImageLoading/
 当单个实现需要 partial class 时仍保持同目录、按职责命名文件；不得重新引入 `ApplicationImageLoader`、
 `ApplicationImageLoaderStore`、`ImageLoadingRuntime` 或 `Internal/ImageLoaderPipeline` 等变体。
 
-`AtomUI.Controls/ImageLoading/` 拥有 `AsyncImage`、`ImageLoadController` 和受信任 Asset SVG codec；Avatar 复用同一个
+`AtomUI.Controls/ImageLoading/` 拥有 `AsyncImage`、`ImageLoadController`、`SvgImageCodec` 和 UI-thread-owned SVG wrapper；
+Avatar 复用同一个
 controller。`AtomUI.Desktop.Controls/ImagePreviewer/` 只保留预览 item/entry、导航和优先级策略，不复制 Shared
 中的 scheduler、transport、cache 或 codec。
 
@@ -97,8 +105,9 @@ owned transport/file-cache 资源。没有在途工作时 Dispose 保持同步�
 
 ## 注册语义
 
-`UseImageLoading()` 由 Shared 提供，`UseCommonControls()` 调用它；Controls 随后把本包的受信任
-`avares` SVG codec 添加到同一个图片 Builder。`UseDesktopControls()` 先调用 `UseCommonControls()`，所以 Desktop 和
+`UseImageLoading()` 由 Shared 提供，`UseCommonControls()` 调用它；Controls 随后把统一 `SvgImageCodec` 添加到同一个图片
+Builder。codec 只处理已经由 Shared 通过当前 security policy 验证的静态 SVG，不按 source kind 建立 Asset/HTTP 两套实现。
+`UseDesktopControls()` 先调用 `UseCommonControls()`，所以 Desktop 和
 Gallery 自然得到同一个应用 loader。
 
 重复注册是同一个构建期 accumulator 的幂等合并，不是多个 singleton：
@@ -115,15 +124,18 @@ Gallery 自然得到同一个应用 loader。
 ```mermaid
 flowchart TD
     Control["Control / Previewer waiter"] --> Normalize["规范化 Source 和 Options snapshot"]
-    Normalize --> DecodedLookup["decoded key 查询"]
-    DecodedLookup -->|hit| Lease["创建独立结果租约"]
-    DecodedLookup -->|miss| DecodedJoin["加入或创建 decoded in-flight"]
-    DecodedJoin --> EncodedLookup["encoded key 查询"]
-    EncodedLookup -->|hit| Validate["header/尺寸安全校验"]
+    Normalize --> CandidateLookup["registered codec decoded-key candidates 查询"]
+    CandidateLookup -->|hit| Lease["创建独立结果租约"]
+    CandidateLookup -->|miss| EncodedLookup["encoded key 查询"]
+    EncodedLookup -->|hit| Validate["当前 security policy 内容校验"]
     EncodedLookup -->|miss| EncodedJoin["加入或创建 encoded in-flight"]
     EncodedJoin --> Read["HTTP / File / Asset / Storage / Bytes / Stream reader"]
     Read --> Validate
-    Validate --> DecodeQueue["decode priority queue"]
+    Validate --> CodecSelect["唯一 codec 选择与精确 decoded key"]
+    CodecSelect --> DecodedLookup["精确 decoded cache 查询"]
+    DecodedLookup -->|hit| Lease
+    DecodedLookup -->|miss| DecodedJoin["加入或创建 decoded in-flight"]
+    DecodedJoin --> DecodeQueue["decode priority queue"]
     DecodeQueue --> Codec["显式 codec decode"]
     Codec --> Insert["decoded cache insert"]
     Insert --> Lease
@@ -132,12 +144,14 @@ flowchart TD
 管线阶段固定为：
 
 1. 对 `ImageLoadSource` 和 `ImageRequestOptions` 做不可变快照、协议校验和身份规范化。
-2. 计算 source identity、encoded key 和 decoded key；先查询 decoded memory cache。
-3. decoded miss 时加入 decoded in-flight；该 operation 再查询 encoded memory/file cache。
-4. encoded miss 时加入 encoded in-flight，由 source reader 获取拥有明确所有权的编码流或 borrowed image。
-5. 在完整物化前后执行长度、MIME、Magic Bytes、codec header、维度、像素和估算解码字节校验。
-6. 通过 decode scheduler 选择显式 codec，生成 decoded entry；成功后创建每个 waiter 独立的结果租约。
-7. 调用方在 UI dispatcher 校验 generation 后提交结果；过期结果立即释放。
+2. 计算 source identity 和 encoded key；registry 为每个显式 codec 生成确定的 decoded-key candidate，先查询 decoded memory。
+3. candidate 全部 miss 时加入 encoded in-flight；encoded memory/file 命中和新读取内容都按当前 security policy 验证。
+4. encoded miss 时由 source reader 获取拥有明确所有权的编码流或 borrowed image；只有验证成功的 encoded content 可以写缓存。
+5. 执行长度、MIME、Magic Bytes、raster header 或 SVG XML/CSS/资源预算、维度、像素和估算解码字节校验。
+6. 选择唯一 codec 并生成精确 decoded key；再次查询 decoded cache，miss 时才加入 decoded in-flight 和 decode scheduler。
+7. codec 生成 decoded entry；pipeline 在接收 scheduler 结果时先建立 operation reference，随后才检查取消并尝试写 cache；任一
+   提交异常都释放该引用。cache hit 在 cache lock 内原子建立 result lease 或 operation reference，成功后再把所有权交给 waiter。
+8. 调用方在 UI dispatcher 校验 generation 后提交结果；过期结果立即释放。
 
 `ImageLoaderPipeline` 编排阶段，`ImageRequestCoordinator` 拥有两级 in-flight map 和 waiter，
 `ImageRequestScheduler` 拥有 HTTP 下载、本地读取与解码三个独立并发池。慢网络不能占用 Asset/File/Storage/Bytes/Stream
@@ -157,15 +171,17 @@ source identity 不包含目标解码尺寸：
 - Image：使用对象身份，始终 borrowed，不进入可释放 decoded cache 或持久缓存。
 
 encoded key 由 source identity、`Variant`、`CachePartition`、影响响应内容的请求 header 摘要和 source-reader contract 版本组成。
-header 原值不进入 key 的可打印形式。decoded key 在 encoded key 上增加物理像素尺寸桶、codec Id/版本和解码格式选项。
-因此不同控件可共享一次下载，但 64 px Avatar 和原图 Previewer 不会共享错误尺寸的 Bitmap。
+header 原值不进入 key 的可打印形式。decoded key 在 encoded key 上增加 codec Id/版本、security policy version 和
+codec-specific options。raster codec 的 options 包含物理像素尺寸桶；`SvgImageCodec` 是尺寸无关 codec，不把目标尺寸加入 key。
+因此不同控件可共享一次下载，64 px Avatar 和原图 Previewer 不会共享错误尺寸的 Bitmap，但同一静态 SVG 可以共享一个矢量
+decoded entry。
 
 ## 两级在途合并与取消
 
 下载/读取和解码必须分别合并：
 
 - 相同 encoded key 共享编码获取，即使调用方请求不同尺寸。
-- 相同 decoded key 共享同一次解码；不同尺寸建立不同 decoded operation，但可等待同一个 encoded operation。
+- 相同 decoded key 共享同一次解码；raster 不同尺寸建立不同 decoded operation，SVG 不因显示尺寸不同重复构建矢量模型。
 - cache mode、partition、variant 或内容相关 header 不同的请求不得合并。
 - `Reload` 不加入普通缓存读取 operation；兼容的同时 Reload 请求可以彼此合并，但不能把普通 waiter 静默升级为 Reload。
 - `NoStore` 可以在同一时刻合并完全相同请求以节省工作，但完成后不写 memory/file cache；无 partition 的认证请求是例外，

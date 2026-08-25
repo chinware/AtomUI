@@ -122,6 +122,25 @@ internal sealed class ImageDecodedCacheEntry
         DisposeImage(dispose);
     }
 
+    internal void Discard()
+    {
+        IImage? dispose;
+        lock (_gate)
+        {
+            if (_image is null)
+            {
+                return;
+            }
+            if (_hasCacheMembership || _operationReferences != 0 || _leaseCount != 0)
+            {
+                throw new InvalidOperationException("A retained decoded cache entry cannot be discarded.");
+            }
+            dispose = _image;
+            _image = null;
+        }
+        DisposeImage(_ownsImage ? dispose : null);
+    }
+
     private void ReleaseLease()
     {
         IImage? dispose = null;

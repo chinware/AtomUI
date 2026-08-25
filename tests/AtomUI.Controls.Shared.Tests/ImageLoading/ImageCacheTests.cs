@@ -30,6 +30,45 @@ public class ImageCacheTests
     }
 
     [Fact]
+    public void Decoded_Cache_Result_Acquisition_Holds_The_Image_Across_Clear()
+    {
+        using var cache = new ImageDecodedCache(maxBytes: 1_000, maxEntries: 1);
+        var image = new TestImage();
+        var entry = CreateEntry(image, decodedBytes: 400);
+        var key = CreateDecodedKey("atomic-result");
+        cache.TryAdd(key, entry).ShouldBeTrue();
+
+        cache.TryAcquireResult(
+                key,
+                ImageCacheSource.DecodedMemory,
+                stageDurations: null,
+                out var result)
+            .ShouldBeTrue();
+        cache.Clear(partitionHash: null);
+
+        image.DisposeCount.ShouldBe(0);
+        result.ShouldNotBeNull().Dispose();
+        image.DisposeCount.ShouldBe(1);
+    }
+
+    [Fact]
+    public void Decoded_Cache_Operation_Retention_Holds_The_Image_Across_Clear()
+    {
+        using var cache = new ImageDecodedCache(maxBytes: 1_000, maxEntries: 1);
+        var image = new TestImage();
+        var entry = CreateEntry(image, decodedBytes: 400);
+        var key = CreateDecodedKey("atomic-operation");
+        cache.TryAdd(key, entry).ShouldBeTrue();
+
+        cache.TryRetain(key, out var retained).ShouldBeTrue();
+        cache.Clear(partitionHash: null);
+
+        image.DisposeCount.ShouldBe(0);
+        retained.ShouldNotBeNull().ReleaseOperation();
+        image.DisposeCount.ShouldBe(1);
+    }
+
+    [Fact]
     public void Borrowed_Image_Is_Never_Disposed_By_Operation_Or_Result_Lease()
     {
         var image = new TestImage();
@@ -73,6 +112,22 @@ public class ImageCacheTests
     }
 
     [Fact]
+    public void Encoded_Cache_Rejects_Content_That_Was_Not_Validated_By_The_Current_Policy()
+    {
+        using var cache = new ImageEncodedCache(maxBytes: 100, maxEntries: 2);
+        var key = new ImageEncodedCacheKey("raw", string.Empty);
+        var raw = ImageLoadingTestSupport.CreateContent([1, 2, 3]) with
+        {
+            SecurityPolicyVersion = 0
+        };
+
+        cache.Set(key, raw);
+
+        cache.TryGet(key, out _).ShouldBeFalse();
+        cache.Count.ShouldBe(0);
+    }
+
+    [Fact]
     public async Task File_Cache_RoundTrips_Metadata_And_Verifies_Content_Digest()
     {
         var directory = CreateTempDirectory();
@@ -92,6 +147,7 @@ public class ImageCacheTests
                 IsRemote: true,
                 VaryHeaders: ["Accept-Language"],
                 VaryDigest: "digest",
+                SecurityPolicyVersion: ImageSecurityPolicy.Version,
                 MaxAge: TimeSpan.FromMinutes(5),
                 IsPrivate: true);
 
@@ -113,6 +169,63 @@ public class ImageCacheTests
             (await cache.TryGetAsync(key, CancellationToken.None)).ShouldBeNull();
             File.Exists(Path.Combine(directory, "entry.bin")).ShouldBeFalse();
             File.Exists(Path.Combine(directory, "entry.meta")).ShouldBeFalse();
+        }
+        finally
+        {
+            Directory.Delete(directory, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task File_Cache_Rejects_Writes_That_Were_Not_Validated_By_The_Current_Policy()
+    {
+        var directory = CreateTempDirectory();
+        try
+        {
+            using var cache = new ImageFileCache(directory, maxBytes: 1_000, maxEntries: 10);
+            var key = new ImageEncodedCacheKey("raw", string.Empty);
+            var raw = ImageLoadingTestSupport.CreateContent([1, 2, 3]) with
+            {
+                SecurityPolicyVersion = 0
+            };
+
+            await cache.SetAsync(key, raw, TestContext.Current.CancellationToken);
+
+            (await cache.TryGetAsync(key, TestContext.Current.CancellationToken)).ShouldBeNull();
+            File.Exists(Path.Combine(directory, "raw.bin")).ShouldBeFalse();
+            File.Exists(Path.Combine(directory, "raw.meta")).ShouldBeFalse();
+        }
+        finally
+        {
+            Directory.Delete(directory, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task File_Cache_Deletes_Entries_From_An_Older_Security_Policy()
+    {
+        var directory = CreateTempDirectory();
+        try
+        {
+            var key = new ImageEncodedCacheKey("old-policy", string.Empty);
+            var content = ImageLoadingTestSupport.CreateContent([1, 2, 3]) with
+            {
+                SecurityPolicyVersion = ImageSecurityPolicy.Version - 1
+            };
+            await File.WriteAllBytesAsync(
+                Path.Combine(directory, "old-policy.bin"),
+                content.Bytes,
+                TestContext.Current.CancellationToken);
+            await using (var metadata = File.Create(Path.Combine(directory, "old-policy.meta")))
+            {
+                ImageFileCacheMetadata.FromContent(key.PartitionHash, content).Write(metadata);
+            }
+            using var cache = new ImageFileCache(directory, maxBytes: 1_000, maxEntries: 10);
+
+            (await cache.TryGetAsync(key, TestContext.Current.CancellationToken)).ShouldBeNull();
+
+            File.Exists(Path.Combine(directory, "old-policy.bin")).ShouldBeFalse();
+            File.Exists(Path.Combine(directory, "old-policy.meta")).ShouldBeFalse();
         }
         finally
         {

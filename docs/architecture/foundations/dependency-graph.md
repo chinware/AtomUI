@@ -75,7 +75,7 @@ AtomUI.Desktop.Controls` 方向，其中箭头表示“后者引用前者”的�
 | --- | --- | --- |
 | `AtomUI.Core` | 通用 `IAtomUIOwnedService` 收集、Application attach/rollback/逆序 dispose | 不引用 Shared，不定义图片 Source、HTTP、cache 或 codec |
 | `AtomUI.Controls.Shared` | 完整应用级图片 engine 与 public contracts | 不引用 Controls，不拥有 Avatar/Previewer 视觉策略 |
-| `AtomUI.Controls` | `AsyncImage`、`ImageLoadController`、Avatar 统一 API、trusted `avares` SVG codec 注册 | 不建立第二套 transport/cache/scheduler |
+| `AtomUI.Controls` | `AsyncImage`、`ImageLoadController`、Avatar 统一 API、受限静态 `SvgImageCodec` 注册与 Avalonia SVG bridge | 不建立第二套 transport/cache/scheduler，不让 renderer 自行访问 URL/File |
 | `AtomUI.Desktop.Controls` | Previewer item/entry 与 Current/Cover/Preload 策略 | 不保留 Previewer 私有 loader、HttpClient 或全局并发属性 |
 | `AtomUIGallery` | 使用 AtomUI `AsyncImage` | 不引用 `AsyncImageLoader.Avalonia` 包或附加属性 |
 

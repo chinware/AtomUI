@@ -89,7 +89,7 @@ flowchart LR
 ```mermaid
 flowchart LR
     Core["AtomUI.Core\n通用 owned-service 生命周期"] --> Shared["AtomUI.Controls.Shared\n应用级 ImageLoader、缓存、传输、安全、raster codec"]
-    Shared --> Controls["AtomUI.Controls\nAsyncImage、controller、Avatar、trusted Asset SVG"]
+    Shared --> Controls["AtomUI.Controls\nAsyncImage、controller、Avatar、受限静态 SVG renderer"]
     Controls --> Desktop["AtomUI.Desktop.Controls\nImagePreviewer current/cover/preload 策略"]
     Desktop --> Gallery["AtomUIGallery\n只消费 AtomUI AsyncImage"]
 ```

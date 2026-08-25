@@ -109,6 +109,27 @@ public class ImageLoaderPipelineTests
     }
 
     [Fact]
+    public async Task Size_Independent_Codec_Reuses_One_Decode_Across_Display_Sizes()
+    {
+        var codec = new SizeIndependentTestCodec();
+        using var loader = CreateLoader(codec);
+        var source = ImageLoadSource.FromBytes(
+            "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'/>"u8.ToArray(),
+            "vector",
+            "v1");
+
+        using var small = await loader.LoadAsync(
+            new ImageLoadRequest(source) { DecodePixelWidth = 32, DecodePixelHeight = 32 },
+            TestContext.Current.CancellationToken);
+        using var large = await loader.LoadAsync(
+            new ImageLoadRequest(source) { DecodePixelWidth = 512, DecodePixelHeight = 512 },
+            TestContext.Current.CancellationToken);
+
+        codec.DecodeCalls.ShouldBe(1);
+        large.CacheSource.ShouldBe(ImageCacheSource.DecodedMemory);
+    }
+
+    [Fact]
     public async Task Unversioned_Keyed_Bytes_Do_Not_Reuse_A_Previous_Content()
     {
         var codec = new TestCodec();
@@ -251,6 +272,36 @@ public class ImageLoaderPipelineTests
     }
 
     [Fact]
+    public async Task Post_Decode_Commit_Failure_Releases_The_Decoded_Image()
+    {
+        var decodeStarted = NewSignal();
+        var releaseDecode = NewSignal();
+        var codec = new TestCodec(decodeStarted, releaseDecode);
+        using var loader = CreateLoader(codec);
+        var load = loader.LoadAsync(
+            new ImageLoadRequest(ImageLoadSource.FromBytes(
+                ImageLoadingTestSupport.CreatePngHeader(),
+                "post-decode-commit",
+                "v1")),
+            TestContext.Current.CancellationToken).AsTask();
+        await decodeStarted.Task;
+
+        var pipeline = typeof(ImageLoader)
+            .GetField("_pipeline", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .GetValue(loader)!;
+        var decodedCache = (ImageDecodedCache)pipeline.GetType()
+            .GetField("_decodedCache", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .GetValue(pipeline)!;
+        decodedCache.Dispose();
+        releaseDecode.TrySetResult();
+
+        using var result = await load;
+
+        result.IsSuccess.ShouldBeFalse();
+        codec.Images.Single().DisposeCount.ShouldBe(1);
+    }
+
+    [Fact]
     public async Task Borrowed_Image_Result_Is_Not_Disposed_By_Loader_Or_Lease()
     {
         var borrowed = new TestImage(20, 30);
@@ -330,6 +381,42 @@ public class ImageLoaderPipelineTests
                 checked((long)width * height * 4),
                 probe.MediaType,
                 content.CacheSource);
+        }
+    }
+
+    private sealed class SizeIndependentTestCodec : ImageCodec
+    {
+        private int _decodeCalls;
+
+        internal override string Id => "test.vector";
+
+        internal override int Version => 1;
+
+        internal override bool IsDecodeSizeDependent => false;
+
+        internal int DecodeCalls => Volatile.Read(ref _decodeCalls);
+
+        internal override bool CanDecode(ImageProbeResult probe, ImageLoadSource source) =>
+            probe.Format == ImageContentFormat.Svg;
+
+        internal override Task<ImageDecodedCacheEntry> DecodeAsync(
+            ImageEncodedContent content,
+            ImageProbeResult probe,
+            NormalizedImageRequest request,
+            CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            Interlocked.Increment(ref _decodeCalls);
+            return Task.FromResult(new ImageDecodedCacheEntry(
+                new TestImage(64, 64),
+                ownsImage: true,
+                64,
+                64,
+                64,
+                64,
+                probe.SvgMetadata!.EstimatedDecodedCost,
+                probe.MediaType,
+                content.CacheSource));
         }
     }
 }

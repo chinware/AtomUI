@@ -32,10 +32,12 @@ builder.UseCommonControls();
 - `AsyncImage` 通用异步显示控件及 Theme。
 - `ImageLoadController`，统一 `AsyncImage` 与 Avatar 的 generation、取消、fallback、progress、状态提交和结果租约。
 - Avatar 的 `Source`/`FallbackSource`/`RequestOptions` 统一 API，并删除 `Src`、`BitmapSrc` 和 proposed `BitmapUrl`。
-- 只匹配 `avares` Asset 的 trusted SVG codec，以及在 `UseCommonControls()` 中对该 codec 和 Shared image service 的显式注册。
+- 统一 `SvgImageCodec`、Avalonia SVG owned wrapper，以及在 `UseCommonControls()` 中对该 codec 和 Shared image service 的显式注册。
 
 Controls 不拥有 HTTP、memory/file cache、全局 scheduler 或第二个 loader。`UseCommonControls()` 幂等地补齐
 Shared 默认图片注册并添加本包 SVG codec；`UseDesktopControls()` 继续通过 Common 得到同一个 application-scoped loader。
+codec 只消费 Shared 已按当前安全策略验证的不可变 SVG 字节，始终使用 stream overload，不自行打开 URL/File；`SvgImage` 创建、
+Source/Size 访问和释放遵守 UI dispatcher ownership。
 准确 API 和生命周期只在 [统一图片加载系统](../../architecture/systems/image-loading/overview.md)及其
 [控件 API](../../architecture/systems/image-loading/control-apis.md)中定义；底层类型见
 [公共契约](../../architecture/systems/image-loading/public-contracts.md)。

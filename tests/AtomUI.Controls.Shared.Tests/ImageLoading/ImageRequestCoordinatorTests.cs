@@ -68,7 +68,7 @@ public class ImageRequestCoordinatorTests
         var release = NewSignal();
         var underlyingCanceled = false;
 
-        async Task<ImageEncodedContent> Factory(
+        async Task<ImageValidatedContent> Factory(
             ImageRequestCoordinator.SharedOperationContext context,
             CancellationToken cancellationToken)
         {
@@ -76,7 +76,7 @@ public class ImageRequestCoordinatorTests
             try
             {
                 await release.Task.WaitAsync(cancellationToken);
-                return ImageLoadingTestSupport.CreateContent([1]);
+                return CreateValidated([1]);
             }
             catch (OperationCanceledException)
             {
@@ -104,7 +104,7 @@ public class ImageRequestCoordinatorTests
         underlyingCanceled.ShouldBeFalse();
 
         release.TrySetResult();
-        (await second).Bytes.ShouldBe([1]);
+        (await second).Content.Bytes.ShouldBe([1]);
         underlyingCanceled.ShouldBeFalse();
     }
 
@@ -150,11 +150,11 @@ public class ImageRequestCoordinatorTests
         var calls = 0;
         var key = CreateEncodedOperationKey("completed");
 
-        Task<ImageEncodedContent> Factory(
+        Task<ImageValidatedContent> Factory(
             ImageRequestCoordinator.SharedOperationContext context,
             CancellationToken cancellationToken)
         {
-            return Task.FromResult(ImageLoadingTestSupport.CreateContent([
+            return Task.FromResult(CreateValidated([
                 checked((byte)Interlocked.Increment(ref calls))
             ]));
         }
@@ -172,8 +172,8 @@ public class ImageRequestCoordinatorTests
             null,
             CancellationToken.None);
 
-        first.Bytes.ShouldBe([1]);
-        second.Bytes.ShouldBe([2]);
+        first.Content.Bytes.ShouldBe([1]);
+        second.Content.Bytes.ShouldBe([2]);
         calls.ShouldBe(2);
     }
 
@@ -187,13 +187,13 @@ public class ImageRequestCoordinatorTests
         var release = NewSignal();
         var key = CreateEncodedOperationKey("priority");
 
-        async Task<ImageEncodedContent> Factory(
+        async Task<ImageValidatedContent> Factory(
             ImageRequestCoordinator.SharedOperationContext context,
             CancellationToken cancellationToken)
         {
             contextSignal.TrySetResult(context);
             await release.Task.WaitAsync(cancellationToken);
-            return ImageLoadingTestSupport.CreateContent([1]);
+            return CreateValidated([1]);
         }
 
         var preload = coordinator.GetEncodedAsync(
@@ -220,6 +220,48 @@ public class ImageRequestCoordinatorTests
         await preload;
     }
 
+    [Fact]
+    public async Task Dispose_Cancels_InFlight_Work_Without_Waiting_For_The_Factory_To_Return()
+    {
+        var coordinator = new ImageRequestCoordinator();
+        var started = NewSignal();
+        var canceled = NewSignal();
+        var release = NewSignal();
+        var loadTask = coordinator.GetEncodedAsync(
+            CreateEncodedOperationKey("dispose-non-blocking"),
+            ImageRequestPriority.Normal,
+            async (_, token) =>
+            {
+                using var registration = token.Register(() => canceled.TrySetResult());
+                started.TrySetResult();
+                await release.Task;
+                return CreateValidated([1]);
+            },
+            null,
+            CancellationToken.None);
+        await started.Task;
+
+        var disposeTask = Task.Run(coordinator.Dispose, TestContext.Current.CancellationToken);
+        await canceled.Task;
+        var returnedBeforeFactory = false;
+        try
+        {
+            await disposeTask.WaitAsync(TimeSpan.FromSeconds(1), TestContext.Current.CancellationToken);
+            returnedBeforeFactory = true;
+        }
+        catch (TimeoutException)
+        {
+        }
+        finally
+        {
+            release.TrySetResult();
+            await disposeTask;
+        }
+
+        returnedBeforeFactory.ShouldBeTrue();
+        await Should.ThrowAsync<OperationCanceledException>(async () => await loadTask);
+    }
+
     private static ImageDecodedCacheEntry CreateOperationEntry(TestImage image)
     {
         return new ImageDecodedCacheEntry(
@@ -231,6 +273,13 @@ public class ImageRequestCoordinatorTests
             10,
             400,
             "image/png");
+    }
+
+    private static ImageValidatedContent CreateValidated(byte[] bytes)
+    {
+        return new ImageValidatedContent(
+            ImageLoadingTestSupport.CreateContent(bytes),
+            new ImageProbeResult(ImageContentFormat.Png, "image/png", 1, 1, false));
     }
 
     private static ImageEncodedOperationKey CreateEncodedOperationKey(string value)

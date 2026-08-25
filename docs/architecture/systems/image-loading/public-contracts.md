@@ -107,9 +107,28 @@ public sealed class ImageLoadingOptionsBuilder
     public int PersistentCacheEntries { get; set; }
     public bool AllowAuthenticatedPersistentCache { get; set; }
 
+    public SvgImageLoadingOptionsBuilder Svg { get; }
+
     public void AddAuthenticationHeaderName(string name);
     public void AllowHttpOrigin(string origin);
     public void AllowCredentialForwardingOrigin(string origin);
+}
+```
+
+SVG 配置只调整有界资源预算，不允许应用放开脚本、DTD 或外部资源：
+
+```csharp
+public sealed class SvgImageLoadingOptionsBuilder
+{
+    public long MaxDocumentBytes { get; set; } = 4L * 1024 * 1024;
+    public long MaxXmlCharacters { get; set; } = 8_000_000;
+    public int MaxElementCount { get; set; } = 20_000;
+    public int MaxAttributeCount { get; set; } = 100_000;
+    public int MaxElementDepth { get; set; } = 256;
+    public int MaxReferenceDepth { get; set; } = 64;
+    public long MaxPathDataCharacters { get; set; } = 2_000_000;
+    public int MaxEmbeddedImageCount { get; set; } = 16;
+    public long MaxEmbeddedImageBytes { get; set; } = 8L * 1024 * 1024;
 }
 ```
 
@@ -122,7 +141,9 @@ allowlist 只影响跨 origin redirect，不能允许 HTTPS downgrade。封闭 s
 所有标量在 `UseAtomUI()` 构建阶段验证并冻结；控件运行后不能修改全局容量。重复调用 `UseImageLoading()` 合并到同一
 应用注册，service factory 只注册一次；reader 按 source kind 唯一注册，codec 按稳定 Id 和 Version 去重，冲突属于启动错误。
 
-`UseCommonControls()` 调用同一注册入口并增加受信任 `avares` SVG codec，因此
+`UseCommonControls()` 调用同一注册入口并增加统一 `SvgImageCodec`，因此 HTTP、File、Asset、Storage、Bytes 和 Stream 中
+通过安全验证的静态 SVG 都使用同一个 codec；renderer 不自行打开 URL/File。完整安全子集见
+[网络 SVG 加载设计](network-svg.md)。因此
 `UseDesktopControls()` 的应用无需额外注册。应用可以在同一个 `UseAtomUI()` configure callback 内显式调用
 `UseImageLoading()` 覆盖默认容量；默认注册不得覆盖用户已经写入的显式值。完整链路见
 [启动与注册链路](../../foundations/startup-and-registration.md)。
@@ -154,7 +175,8 @@ generation 的进度。
 `ImageLoadErrorCode` 至少覆盖 `InvalidSource`、`UnsupportedScheme`、`AccessDenied`、`NotFound`、
 `NetworkFailure`、`Timeout`、`HttpStatus`、`TooManyRedirects`、`CacheMiss`、`ResponseTooLarge`、
 `RedirectBlocked`、`OriginNotAllowed`、`ContentTypeMismatch`、`UnsupportedFormat`、`UnsafeVectorContent`、
-`InvalidImageData`、`DimensionLimitExceeded`、`PixelLimitExceeded`、`DecodedByteLimitExceeded`、
+`InvalidImageData`、`VectorComplexityLimitExceeded`、`EmbeddedResourceLimitExceeded`、
+`DimensionLimitExceeded`、`PixelLimitExceeded`、`DecodedByteLimitExceeded`、
 `AnimationNotSupported` 和 `DecodeFailed`。调用方取消仍抛出
 `OperationCanceledException`；loader 已销毁属于编程错误，抛出 `ObjectDisposedException`，不伪装成图片失败。
 

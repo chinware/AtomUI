@@ -18,19 +18,29 @@ internal readonly record struct ImageProbeResult(
     string MediaType,
     int PixelWidth,
     int PixelHeight,
-    bool IsAnimated);
+    bool IsAnimated,
+    SvgContentMetadata? SvgMetadata = null);
 
 internal sealed class ImageContentValidator
 {
     private readonly ImageLoadingOptions _options;
+    private readonly SvgContentValidator _svgValidator;
 
     internal ImageContentValidator(ImageLoadingOptions options)
     {
         _options = options;
+        _svgValidator = new SvgContentValidator(options, ValidateEmbeddedRaster);
     }
 
-    internal ImageProbeResult Validate(ImageEncodedContent content, ImageLoadSource source)
+    internal ImageProbeResult Validate(ImageEncodedContent content, ImageLoadSource source) =>
+        Validate(content, source, CancellationToken.None);
+
+    internal ImageProbeResult Validate(
+        ImageEncodedContent content,
+        ImageLoadSource source,
+        CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         var bytes = content.Bytes.AsSpan();
         if (bytes.IsEmpty)
         {
@@ -58,16 +68,23 @@ internal sealed class ImageContentValidator
         {
             probe = ProbeWebP(bytes, source);
         }
-        else if (LooksLikeMarkup(bytes, out var isSvg))
+        else if (LooksLikeMarkup(bytes))
         {
-            if (!isSvg || !content.IsTrustedAsset || source.Kind != ImageLoadSourceKind.Asset)
+            if (IsUnsafeMarkupMediaType(content.MediaType))
             {
                 throw Failure(
                     ImageLoadErrorCode.UnsafeVectorContent,
-                    "Remote and untrusted vector or markup image content is not allowed.",
+                    "Unsafe markup image content type was rejected.",
                     source);
             }
-            probe = new ImageProbeResult(ImageContentFormat.Svg, "image/svg+xml", 0, 0, false);
+            var metadata = _svgValidator.Validate(content.Bytes, source, cancellationToken);
+            probe = new ImageProbeResult(
+                ImageContentFormat.Svg,
+                "image/svg+xml",
+                ToPixelDimension(metadata.IntrinsicWidth ?? metadata.ViewBoxWidth),
+                ToPixelDimension(metadata.IntrinsicHeight ?? metadata.ViewBoxHeight),
+                false,
+                metadata);
         }
         else
         {
@@ -79,10 +96,41 @@ internal sealed class ImageContentValidator
         return probe;
     }
 
+    private ImageProbeResult ValidateEmbeddedRaster(
+        byte[] bytes,
+        string mediaType,
+        ImageLoadSource source)
+    {
+        var span = bytes.AsSpan();
+        ImageProbeResult probe;
+        if (IsPng(span))
+        {
+            probe = ProbePng(span, source);
+        }
+        else if (IsJpeg(span))
+        {
+            probe = ProbeJpeg(span, source);
+        }
+        else if (IsWebP(span))
+        {
+            probe = ProbeWebP(span, source);
+        }
+        else
+        {
+            throw Failure(ImageLoadErrorCode.InvalidImageData, "SVG embedded image format is invalid.", source);
+        }
+        ValidateMediaType(mediaType, probe, source);
+        ValidateDimensions(probe, source);
+        return probe;
+    }
+
     private void ValidateDimensions(ImageProbeResult probe, ImageLoadSource source)
     {
         if (probe.Format == ImageContentFormat.Svg)
         {
+            var metadata = probe.SvgMetadata!;
+            ValidateSvgDimension(metadata.IntrinsicWidth ?? metadata.ViewBoxWidth, _options.MaxImageWidth, source);
+            ValidateSvgDimension(metadata.IntrinsicHeight ?? metadata.ViewBoxHeight, _options.MaxImageHeight, source);
             return;
         }
         if (probe.PixelWidth <= 0 || probe.PixelHeight <= 0)
@@ -129,20 +177,19 @@ internal sealed class ImageContentValidator
         ImageProbeResult probe,
         ImageLoadSource source)
     {
-        if (string.IsNullOrWhiteSpace(declaredMediaType) ||
-            declaredMediaType.Equals("application/octet-stream", StringComparison.OrdinalIgnoreCase))
+        var normalizedMediaType = NormalizeMediaType(declaredMediaType);
+        if (normalizedMediaType is null || normalizedMediaType == "application/octet-stream")
         {
             return;
         }
-        if (declaredMediaType.StartsWith("text/", StringComparison.OrdinalIgnoreCase) ||
-            declaredMediaType is "application/xml" or "image/svg+xml")
+        if (probe.Format == ImageContentFormat.Svg)
         {
-            if (probe.Format != ImageContentFormat.Svg || source.Kind != ImageLoadSourceKind.Asset)
+            if (normalizedMediaType is "image/svg+xml" or "application/xml" or "text/xml")
             {
-                throw Failure(ImageLoadErrorCode.UnsafeVectorContent, "Unsafe image content type was rejected.", source);
+                return;
             }
         }
-        if (!declaredMediaType.Equals(probe.MediaType, StringComparison.OrdinalIgnoreCase))
+        if (!normalizedMediaType.Equals(probe.MediaType, StringComparison.OrdinalIgnoreCase))
         {
             throw Failure(
                 ImageLoadErrorCode.ContentTypeMismatch,
@@ -375,14 +422,71 @@ internal sealed class ImageContentValidator
         return new ImageProbeResult(ImageContentFormat.WebP, "image/webp", width, height, animated);
     }
 
-    private static bool LooksLikeMarkup(ReadOnlySpan<byte> bytes, out bool isSvg)
+    private static bool LooksLikeMarkup(ReadOnlySpan<byte> bytes)
     {
-        var prefixLength = Math.Min(bytes.Length, 4096);
-        var text = Encoding.UTF8.GetString(bytes[..prefixLength]).TrimStart('\ufeff', ' ', '\t', '\r', '\n');
-        isSvg = text.StartsWith("<svg", StringComparison.OrdinalIgnoreCase) ||
-            (text.StartsWith("<?xml", StringComparison.OrdinalIgnoreCase) &&
-             text.Contains("<svg", StringComparison.OrdinalIgnoreCase));
-        return isSvg || text.StartsWith("<", StringComparison.Ordinal);
+        if (bytes.Length >= 3 && bytes[0] == 0xef && bytes[1] == 0xbb && bytes[2] == 0xbf)
+        {
+            bytes = bytes[3..];
+        }
+        if (bytes.Length >= 2 &&
+            ((bytes[0] == 0xff && bytes[1] == 0xfe) ||
+             (bytes[0] == 0xfe && bytes[1] == 0xff)))
+        {
+            return true;
+        }
+        foreach (var value in bytes)
+        {
+            if (value is (byte)' ' or (byte)'\t' or (byte)'\r' or (byte)'\n')
+            {
+                continue;
+            }
+            return value == (byte)'<';
+        }
+        return false;
+    }
+
+    private static bool IsUnsafeMarkupMediaType(string? mediaType)
+    {
+        var normalized = NormalizeMediaType(mediaType);
+        return normalized is "text/html" or "application/xhtml+xml";
+    }
+
+    private static string? NormalizeMediaType(string? mediaType)
+    {
+        if (string.IsNullOrWhiteSpace(mediaType))
+        {
+            return null;
+        }
+        var separator = mediaType.IndexOf(';');
+        return (separator < 0 ? mediaType : mediaType[..separator]).Trim().ToLowerInvariant();
+    }
+
+    private static int ToPixelDimension(double? value)
+    {
+        if (value is null || !double.IsFinite(value.Value) || value.Value <= 0)
+        {
+            return 0;
+        }
+        return value.Value >= int.MaxValue ? int.MaxValue : (int)Math.Ceiling(value.Value);
+    }
+
+    private static void ValidateSvgDimension(double? value, int limit, ImageLoadSource source)
+    {
+        if (value is null)
+        {
+            return;
+        }
+        if (!double.IsFinite(value.Value) || value.Value <= 0)
+        {
+            throw Failure(ImageLoadErrorCode.InvalidImageData, "SVG dimensions are invalid.", source);
+        }
+        if (value.Value > limit)
+        {
+            throw Failure(
+                ImageLoadErrorCode.DimensionLimitExceeded,
+                "SVG dimensions exceed the configured limit.",
+                source);
+        }
     }
 
     private static int ReadPngDimension(ReadOnlySpan<byte> value, ImageLoadSource source)

@@ -6,13 +6,15 @@
 
 | 层 | 内容 | 默认状态 | Owner |
 | --- | --- | --- | --- |
-| decoded memory | 已解码 `IImage`、尺寸、codec 信息、租约计数 | 启用 | `ImageDecodedCache` |
-| encoded memory | 已验证编码字节、HTTP/local metadata | 启用 | `ImageEncodedCache` |
-| persistent encoded | 编码字节、校验摘要和重验证 metadata | 实现但默认关闭 | `ImageFileCache` |
+| decoded memory | 已解码 raster 或受限静态 SVG 绘制对象、codec/security identity、租约计数 | 启用 | `ImageDecodedCache` |
+| encoded memory | 当前安全策略已验证的编码字节、格式 metadata、HTTP/local metadata | 启用 | `ImageEncodedCache` |
+| persistent encoded | 已验证编码字节、校验摘要、格式 metadata 和重验证 metadata | 实现但默认关闭 | `ImageFileCache` |
 
 缓存同时受最大字节数和最大条目数约束，任一到达上限都触发 LRU 驱逐。单条目大于该层字节预算时可以返回给当前 waiter，
-但不得插入该层。容量统计使用实际 encoded buffer 大小；decoded 使用 codec 报告值，无法报告时按
-`pixelWidth * pixelHeight * 4` 的 checked 上界估算，禁止按对象数量假装内存可控。
+但不得插入该层。容量统计使用实际 encoded buffer 大小；raster decoded 使用 codec 报告值，无法报告时按
+`pixelWidth * pixelHeight * 4` 的 checked 上界估算。SVG decoded 成本使用主文档字节、嵌入 raster decoded estimate、元素、
+属性和 path/reference complexity 的 checked 估算，并设置最小非零成本；不得用 `viewBox area * 4` 把矢量画布当成像素缓冲，
+也不得按对象数量把复杂矢量模型视为零成本。
 
 默认预算如下；应用可以在 `UseImageLoading()` 中降低或提高，但不能超过平台可表示范围，也不能把安全上限设为零来表示
 “无限”：
@@ -24,20 +26,25 @@
 
 ### 租约感知驱逐
 
-decoded entry 分为 cache membership 和 active lease 两种持有。LRU 驱逐先原子地从 key map/LRU 移除 membership，使后续请求
-不能再获取该 entry；active lease 为零时立即 dispose 图片，否则标记 deferred-dispose，并在最后一个 lease 释放时销毁。
-已驱逐 entry 不得因为旧 lease 尚在而重新进入 cache。
+decoded entry 有 cache membership、active operation reference 和 active result lease 三类持有。普通 cache hit 必须在 cache lock
+内原子建立 result lease；decoded in-flight 的二次 cache hit 必须在同一临界区建立 operation reference，不能先返回裸 entry 再在
+lock 外 retain。LRU 驱逐先原子地从 key map/LRU 移除 membership，使后续请求不能再获取该 entry；operation reference 和 lease
+均为零时立即 dispose 图片，否则延迟到最后一个引用释放。已驱逐 entry 不得因为旧 operation 或 lease 尚在而重新进入 cache。
 
-替换相同 key、清空缓存和 loader dispose 都走同一状态机。图片 dispose、codec release callback 和租约完成回调必须在 cache
-lock 外执行。`ImageLoadSource.FromImage(IImage)` 是 borrowed 特例：cache 不获得 membership ownership，结果释放永远不
-dispose 调用方对象。
+替换相同 key、清空缓存和 loader dispose 都走同一状态机。图片 dispose、codec release callback、operation release 和租约完成
+回调必须在 cache lock 外执行。decode scheduler 把新 entry 交给 pipeline 后，pipeline 必须先建立 operation reference；其后的
+取消、cache insert 拒绝或异常都释放该引用，不能遗留无 owner 的 decoded image。`ImageLoadSource.FromImage(IImage)` 是 borrowed
+特例：cache 不获得 membership ownership，结果释放永远不 dispose 调用方对象。
 
 `ClearCacheAsync` 对目标分区/层递增 cache epoch，并默认取消相同 scope 的 encoded/decoded in-flight operation。operation
 完成写入前必须比较创建 epoch；旧 epoch 只能把结果交给仍允许完成的直接 waiter，不能重新污染已清理 cache。清理不强制
 销毁控件正在持有的租约。
 
 encoded entry 的 byte owner 只属于 cache 或当前 pipeline；插入成功后所有权转移，插入失败/被拒绝时由 pipeline 释放。
-file cache 读取必须先验证 metadata 版本、长度、内容摘要和安全策略版本，任何不一致都按 miss 删除，不能把损坏条目送入 codec。
+file cache 读取必须先验证 metadata schema、长度、内容摘要和集中定义的安全策略版本，任何不一致都按 miss 删除，不能把损坏
+或旧策略条目送入 codec。当前 `ImageSecurityPolicy.Version` 为 `2`；reader raw content 使用 `0`，完整验证后才标记为 `2`。
+memory encoded entry 同样记录安全策略版本；策略版本变化时必须重新验证完全相同的不可变字节，重新验证失败即移除，不能依赖
+旧验证结论。
 
 ## CacheMode 语义
 
@@ -111,22 +118,22 @@ container 并忽略 `Set-Cookie`；Browser transport 默认使用 Fetch `credent
 
 ## 内容验证
 
-所有不可信编码内容必须在 raster decode 前通过三层一致性检查：
+所有编码内容必须在 codec 构建完整 raster buffer 或 SVG 绘制模型前通过分层一致性检查：
 
 1. 响应声明：HTTP status、Content-Length 和规范化 MIME。
-2. 内容探测：固定上限前缀的 Magic Bytes，拒绝 HTML/XML/SVG 文本、脚本或未知格式。
-3. codec header probe：由选中的显式 codec 只读解析格式、原始宽高、帧信息和预计解码成本，不分配完整像素缓冲。
+2. 格式探测：raster 使用有界 Magic Bytes；markup 候选进入安全 XML reader，不按字符串片段猜测 SVG。
+3. 格式验证：raster codec header probe 解析宽高、帧与预计解码成本；`SvgContentValidator` 解析完整 XML/CSS、引用图、
+   data raster 和复杂度预算。
+4. codec 选择：只有携带当前安全策略验证 metadata 的内容才能匹配唯一显式 codec。
 
-允许 `application/octet-stream` 或缺失 MIME 在 Magic Bytes 与 codec probe 一致时加载；声明为具体 `image/png` 但内容实际为
-JPEG 属于 `ContentTypeMismatch`。任何 `text/html`、`text/xml`、`application/xml`、`image/svg+xml` 或探测为 SVG/XML/HTML
-的远程响应都返回 `UnsafeVectorContent`，即使应用注册了 SVG codec。
+允许 `application/octet-stream` 或缺失 MIME 在实际内容验证一致时加载；声明为具体 `image/png` 但内容实际为 JPEG/SVG 属于
+`ContentTypeMismatch`。SVG 实际内容允许 `image/svg+xml`、`application/xml`、`text/xml`、`application/octet-stream` 或缺失
+MIME；`text/html`、`application/xhtml+xml`、非 SVG XML 和 HTML/XML/SVG polyglot 始终拒绝。
 
-受信任 vector 仅指 `avares` source 通过 Controls 显式注册的 Asset SVG codec。File、Storage、Bytes、Stream 和 HTTP 中的
-SVG 默认均不属于 trusted vector；要支持应用生成的非 Asset vector 必须未来新增具有独立 trust contract 的 source kind，
-不能复用当前通道绕过远程 SVG 禁令。
-
-即使是 trusted Asset SVG，codec 也不得执行 script、`foreignObject`、外部 entity、网络/File URI、外部 stylesheet/font 或
-其他脱离资源包的引用；解析只产生本地矢量绘制数据。资源作者可信不等于允许 SVG 触发 I/O 或可执行内容。
+网络、File、Storage、Bytes、Stream 和 Asset SVG 使用同一受限静态子集。验证器拒绝 DTD/entity、script、任意 `on*`、
+`foreignObject`、`xml:base`、外部 image/use/filter/paint/stylesheet/font URI、危险 CSS 和递归 `data:image/svg+xml`；只允许
+同文档 `#id` 引用、内联 CSS、内联 SVG font 和预算内的 `data:image/png|jpeg|webp`。Asset 来源同样不能触发 renderer 隐式 I/O。
+完整规则和错误映射见[网络 SVG 加载设计](network-svg.md)。
 
 ## 资源上限
 
@@ -145,12 +152,17 @@ SVG 默认均不属于 trusted vector；要支持应用生成的非 Asset vector
 读取循环同时检查 Content-Length 和实际累计字节，处理 chunked、压缩和错误长度。达到上限时立即取消/关闭响应，不继续把剩余
 内容读入内存。压缩传输的限制以解压后的实际响应字节为准。
 
+SVG 主文档还受 `ImageLoadingOptionsBuilder.Svg` 的文档字符、元素、属性、深度、path 字符、引用深度、data image 数量和累计
+字节预算约束；主文档字节上限取 `MaxResponseBytes` 与 `Svg.MaxDocumentBytes` 的较小值。配置只能调整资源预算，不能允许脚本、
+DTD 或外部资源。嵌入 raster 继续受本表的宽高、像素和 decoded-byte 上限约束。
+
 ## 持久缓存
 
 `ImageFileCache` 必须完整实现但默认关闭。启用时：
 
 - 目录由应用显式配置或使用带 Application Id 的平台 cache 目录，绝不使用工作目录。
 - 文件名只包含 encoded key 的加密哈希；metadata 使用版本化、AOT-safe 的显式序列化格式。
+- metadata 保存集中定义的 `ImageSecurityPolicy.Version` 和格式验证 metadata；版本不匹配的条目删除后按 miss 处理。
 - 写入采用同目录临时文件、flush、原子 replace/rename；崩溃残留临时文件在下次启动清理。
 - 一个跨进程 lock 保护同 key 写入；竞争失败可以回退网络，不允许读半文件。
 - lock 名称按 encoded key 稳定存在，不能在释放句柄后无条件删除：在 Unix 上这会产生删除后重新创建同名 lock 的

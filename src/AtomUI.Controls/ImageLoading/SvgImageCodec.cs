@@ -2,18 +2,23 @@ using Avalonia;
 using Avalonia.Media;
 using Avalonia.Svg;
 using Avalonia.Threading;
+using Svg;
+using Svg.Model;
+using AvaloniaSvgImage = Avalonia.Svg.SvgImage;
 
 namespace AtomUI.Controls;
 
-internal sealed class AssetSvgImageCodec : ImageCodec
+internal sealed class SvgImageCodec : ImageCodec
 {
-    internal override string Id => "atomui.asset-svg";
+    internal override string Id => "atomui.svg";
 
-    internal override int Version => 1;
+    internal override int Version => 2;
+
+    internal override bool IsDecodeSizeDependent => false;
 
     internal override bool CanDecode(ImageProbeResult probe, ImageLoadSource source)
     {
-        return probe.Format == ImageContentFormat.Svg && source.Kind == ImageLoadSourceKind.Asset;
+        return probe.Format == ImageContentFormat.Svg && probe.SvgMetadata is not null;
     }
 
     internal override async Task<ImageDecodedCacheEntry> DecodeAsync(
@@ -23,25 +28,49 @@ internal sealed class AssetSvgImageCodec : ImageCodec
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        SvgSource? source = null;
+        OwnedSvgImage? image = null;
         try
         {
             using var stream = new MemoryStream(content.Bytes, writable: false);
-            var source = SvgSource.Load(stream, parameters: null);
-            var image = await OwnedSvgImage.CreateAsync(source, cancellationToken);
+            source = SvgSource.Load(stream, CreateParameters());
+            if (source.Picture is null)
+            {
+                throw ImageSourceReadHelpers.Failure(
+                    ImageLoadErrorCode.DecodeFailed,
+                    "SVG image decoding did not produce a drawable model.",
+                    request.Source.DisplayName);
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+            image = await OwnedSvgImage.CreateAsync(source, cancellationToken).ConfigureAwait(false);
+            source = null;
+            cancellationToken.ThrowIfCancellationRequested();
+
             var width = Math.Max(1, (int)Math.Ceiling(image.Size.Width));
             var height = Math.Max(1, (int)Math.Ceiling(image.Size.Height));
-            return new ImageDecodedCacheEntry(
+            var entry = new ImageDecodedCacheEntry(
                 image,
                 ownsImage: true,
                 width,
                 height,
                 width,
                 height,
-                checked((long)width * height * 4),
+                probe.SvgMetadata!.EstimatedDecodedCost,
                 probe.MediaType,
                 content.CacheSource);
+            image = null;
+            return entry;
         }
-        catch (Exception exception) when (exception is not OperationCanceledException)
+        catch (ImageLoadFailureException)
+        {
+            throw;
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception exception)
         {
             throw ImageSourceReadHelpers.Failure(
                 ImageLoadErrorCode.DecodeFailed,
@@ -49,19 +78,50 @@ internal sealed class AssetSvgImageCodec : ImageCodec
                 request.Source.DisplayName,
                 exception);
         }
+        finally
+        {
+            image?.Dispose();
+            if (source is not null)
+            {
+                source.Picture = null!;
+            }
+        }
+    }
+
+    internal static SvgParameters CreateParameters()
+    {
+        return new SvgParameters(
+            Entities: null,
+            Css: null,
+            CurrentColor: null,
+            LoadOptions: new SvgDocumentLoadOptions
+            {
+                ProcessingMode = SvgProcessingMode.SecureStatic,
+                ExternalResources = SvgExternalResourcePolicy.SameDocumentAndDataOnly,
+                PreserveUnknownElements = false,
+                PreferSvg2Href = true
+            });
     }
 
     private sealed class OwnedSvgImage : IImage, IDisposable
     {
-        private readonly SvgImage _image;
+        private readonly AvaloniaSvgImage _image;
         private readonly Size _size;
         private SvgSource? _source;
 
         private OwnedSvgImage(SvgSource source)
         {
             _source = source;
-            _image = new SvgImage { Source = source };
+            _image = new AvaloniaSvgImage { Source = source };
             _size = _image.Size;
+            if (!double.IsFinite(_size.Width) || !double.IsFinite(_size.Height) ||
+                _size.Width <= 0 || _size.Height <= 0)
+            {
+                _image.Source = null!;
+                source.Picture = null!;
+                _source = null;
+                throw new InvalidOperationException("SVG image has no finite drawable size.");
+            }
         }
 
         public Size Size => _size;
@@ -70,12 +130,17 @@ internal sealed class AssetSvgImageCodec : ImageCodec
             SvgSource source,
             CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             if (Dispatcher.UIThread.CheckAccess())
             {
                 return new OwnedSvgImage(source);
             }
             return await Dispatcher.UIThread.InvokeAsync(
-                () => new OwnedSvgImage(source),
+                () =>
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return new OwnedSvgImage(source);
+                },
                 DispatcherPriority.Background,
                 cancellationToken);
         }

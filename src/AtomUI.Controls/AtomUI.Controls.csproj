@@ -11,6 +11,8 @@
     <ItemGroup>
         <PackageReference Include="Avalonia" />
         <PackageReference Include="Svg.Controls.Avalonia" />
+        <PackageReference Include="Svg.Model" />
+        <PackageReference Include="Svg.Custom" />
         <PackageReference Include="SkiaSharp.QrCode" />
     </ItemGroup>
 

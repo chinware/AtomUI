@@ -36,9 +36,7 @@ internal sealed record NormalizedImageRequest(
     IProgress<ImageLoadProgress>? Progress,
     ImageLoadTimingTracker Timing,
     ImageEncodedCacheKey EncodedKey,
-    ImageDecodedCacheKey DecodedKey,
     ImageEncodedOperationKey EncodedOperationKey,
-    ImageDecodedOperationKey DecodedOperationKey,
     bool HasAuthentication,
     bool CanShare,
     bool CanPersist);
@@ -93,13 +91,7 @@ internal static class ImageCacheKey
             headerHash,
             "reader-v1");
         var encodedKey = new ImageEncodedCacheKey(Hash(encodedIdentity), partitionHash);
-        var decodedKey = new ImageDecodedCacheKey(
-            encodedKey,
-            request.DecodePixelWidth,
-            request.DecodePixelHeight,
-            "codec-registry-v1");
         var encodedOperationKey = new ImageEncodedOperationKey(encodedKey, cacheMode, shareScope);
-        var decodedOperationKey = new ImageDecodedOperationKey(decodedKey, cacheMode, shareScope);
         var canPersist = request.Source.Kind switch
         {
             ImageLoadSourceKind.Http or ImageLoadSourceKind.Asset or ImageLoadSourceKind.File => true,
@@ -126,12 +118,31 @@ internal static class ImageCacheKey
             progress,
             timing,
             encodedKey,
-            decodedKey,
             encodedOperationKey,
-            decodedOperationKey,
             hasAuthentication,
             !(hasAuthentication && partition is null),
             canPersist);
+    }
+
+    internal static ImageDecodedOperationKey CreateDecodedOperationKey(
+        NormalizedImageRequest request,
+        ImageDecodedCacheKey decodedKey)
+    {
+        return new ImageDecodedOperationKey(
+            decodedKey,
+            request.CacheMode,
+            request.EncodedOperationKey.ShareScope);
+    }
+
+    internal static ImageDecodedOperationKey CreateBorrowedDecodedOperationKey(
+        NormalizedImageRequest request)
+    {
+        var decodedKey = new ImageDecodedCacheKey(
+            request.EncodedKey,
+            0,
+            0,
+            "atomui.borrowed-image:v1:security-v0");
+        return CreateDecodedOperationKey(request, decodedKey);
     }
 
     internal static string NormalizeOrigin(Uri uri)

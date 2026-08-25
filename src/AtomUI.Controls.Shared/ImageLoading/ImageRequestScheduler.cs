@@ -40,9 +40,14 @@ internal sealed class ImageRequestScheduler : IDisposable
     internal Task<T> ScheduleDecodeAsync<T>(
         Func<CancellationToken, Task<T>> action,
         Func<ImageRequestPriority> priority,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        Action<T>? releaseCanceledResult = null)
     {
-        return _decodeScheduler.ScheduleAsync(action, priority, cancellationToken);
+        return _decodeScheduler.ScheduleAsync(
+            action,
+            priority,
+            cancellationToken,
+            releaseCanceledResult);
     }
 
     public void Dispose()
@@ -82,7 +87,8 @@ internal sealed class ImageRequestScheduler : IDisposable
         internal Task<T> ScheduleAsync<T>(
             Func<CancellationToken, Task<T>> action,
             Func<ImageRequestPriority> priority,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            Action<T>? releaseCanceledResult = null)
         {
             ArgumentNullException.ThrowIfNull(action);
             ArgumentNullException.ThrowIfNull(priority);
@@ -91,7 +97,8 @@ internal sealed class ImageRequestScheduler : IDisposable
                 priority,
                 Interlocked.Increment(ref _sequence),
                 _clock(),
-                cancellationToken);
+                cancellationToken,
+                releaseCanceledResult);
             lock (_gate)
             {
                 ObjectDisposedException.ThrowIf(_disposed, this);
@@ -120,15 +127,24 @@ internal sealed class ImageRequestScheduler : IDisposable
                 item.Cancel();
             }
             _signal.Release(_workers.Length);
+            _ = CompleteDisposalAsync();
+        }
+
+        private async Task CompleteDisposalAsync()
+        {
             try
             {
-                Task.WhenAll(_workers).GetAwaiter().GetResult();
+                await Task.WhenAll(_workers).ConfigureAwait(false);
             }
-            catch (OperationCanceledException)
+            catch
             {
+                // Work-item failures are delivered through their own completion tasks.
             }
-            _disposeCancellation.Dispose();
-            _signal.Dispose();
+            finally
+            {
+                _disposeCancellation.Dispose();
+                _signal.Dispose();
+            }
         }
 
         private async Task WorkerAsync()
@@ -235,6 +251,7 @@ internal sealed class ImageRequestScheduler : IDisposable
             private readonly Func<CancellationToken, Task<T>> _action;
             private readonly Func<ImageRequestPriority> _priority;
             private readonly CancellationToken _cancellationToken;
+            private readonly Action<T>? _releaseCanceledResult;
             private readonly TaskCompletionSource<T> _completion =
                 new(TaskCreationOptions.RunContinuationsAsynchronously);
 
@@ -243,11 +260,13 @@ internal sealed class ImageRequestScheduler : IDisposable
                 Func<ImageRequestPriority> priority,
                 long sequence,
                 DateTimeOffset enqueuedAt,
-                CancellationToken cancellationToken)
+                CancellationToken cancellationToken,
+                Action<T>? releaseCanceledResult)
             {
                 _action = action;
                 _priority = priority;
                 _cancellationToken = cancellationToken;
+                _releaseCanceledResult = releaseCanceledResult;
                 Sequence = sequence;
                 EnqueuedAt = enqueuedAt;
             }
@@ -263,9 +282,17 @@ internal sealed class ImageRequestScheduler : IDisposable
                 using var linked = CancellationTokenSource.CreateLinkedTokenSource(
                     schedulerCancellation,
                     _cancellationToken);
+                using var registration = linked.Token.Register(() =>
+                    _completion.TrySetCanceled(_cancellationToken.IsCancellationRequested
+                        ? _cancellationToken
+                        : schedulerCancellation));
                 try
                 {
-                    _completion.TrySetResult(await _action(linked.Token).ConfigureAwait(false));
+                    var result = await _action(linked.Token).ConfigureAwait(false);
+                    if (linked.IsCancellationRequested || !_completion.TrySetResult(result))
+                    {
+                        _releaseCanceledResult?.Invoke(result);
+                    }
                 }
                 catch (OperationCanceledException) when (linked.IsCancellationRequested)
                 {

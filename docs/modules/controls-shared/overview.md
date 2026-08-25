@@ -30,12 +30,12 @@
 
 Shared 拥有统一图片系统的完整 engine 与公共数据契约：`ImageLoader.cs`、`ImageLoaderStore.cs`、Source/Request/Result/Error/
 Progress、Builder options、两级请求合并、下载/解码调度、encoded/decoded/file cache、HTTP transport、source readers、内容
-校验和 raster codec。所有文件位于单层 `src/AtomUI.Controls.Shared/ImageLoading/`；不创建 `Application/`、`Runtime/` 或
-`Internal/` 子目录。
+校验、raster codec，以及 SVG 的安全 XML/CSS/data raster/复杂度验证和集中 security policy version。所有文件位于单层
+`src/AtomUI.Controls.Shared/ImageLoading/`；不创建 `Application/`、`Runtime/` 或 `Internal/` 子目录。
 
 该模块只依赖 Core 提供的通用 owned-service 生命周期。它不引用 `AtomUI.Controls`，不包含 Avatar fallback、AsyncImage Theme、
-Previewer Current/Cover/Preload 策略，也不通过反射发现上层 SVG codec。Controls 使用显式 Builder 调用把 trusted Asset SVG
-codec 注册到同一个应用 loader。
+Previewer Current/Cover/Preload 策略，也不引用 `Svg.Controls.Avalonia` 或通过反射发现上层 codec。Controls 使用显式 Builder
+调用把统一 `SvgImageCodec` 注册到同一个应用 loader；Shared 只向 codec 交付当前安全策略已经验证的不可变字节和 metadata。
 
 API、文件布局与引擎规则见：
 
@@ -44,6 +44,7 @@ API、文件布局与引擎规则见：
 - [控件 API](../../architecture/systems/image-loading/control-apis.md)
 - [管线、并发与生命周期](../../architecture/systems/image-loading/pipeline-and-lifecycle.md)
 - [缓存、HTTP 与内容安全](../../architecture/systems/image-loading/caching-and-security.md)
+- [网络 SVG 加载](../../architecture/systems/image-loading/network-svg.md)
 - [平台、性能与 AOT](../../architecture/systems/image-loading/platforms-and-aot.md)
 - [验证与完成门禁](../../architecture/systems/image-loading/verification.md)
 

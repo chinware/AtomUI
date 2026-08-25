@@ -45,7 +45,9 @@ internal sealed class ImageEncodedCache : IDisposable
 
     internal void Set(ImageEncodedCacheKey key, ImageEncodedContent content)
     {
-        if (content.NoStore || content.Size > _maxBytes)
+        if (content.NoStore ||
+            content.SecurityPolicyVersion != ImageSecurityPolicy.Version ||
+            content.Size > _maxBytes)
         {
             return;
         }

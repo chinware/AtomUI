@@ -85,6 +85,9 @@ public class AsyncImage : TemplatedControl, IImageLoadControl
 `LoadingContent` 只在当前没有可显示租约时替代图片 presenter；同来源替换仍显示旧图并保持 `:loading`。最终失败释放图片并
 显示 `ErrorContent`。template reapply 不重启身份、尺寸和 options 均未变化的请求，也不泄漏旧 part 订阅。
 
+`Source` 对 raster 和受限静态 SVG 使用同一契约。SVG 保持矢量结果，`Auto`/`Original`/`Explicit` 的尺寸仍用于控件请求身份和
+raster 解码，但不会让 SVG codec 预栅格化或为每个尺寸生成不同 decoded entry。
+
 ## Avatar
 
 Avatar 不再区分 URL、Bitmap 和本地 SVG 属性：
@@ -112,7 +115,8 @@ public abstract class AbstractAvatar : TemplatedControl, IImageLoadControl
 
 Avatar 内容优先级固定为：成功的 `Source`、成功的 `FallbackSource`、`Text`、`Icon`。加载中仍显示 Text/Icon
 fallback，不展示空白图片 presenter。Avatar 始终按有效头像尺寸乘 render scaling 请求目标尺寸，不公开解码尺寸属性。
-本地 `avares` SVG 直接进入 `Source`；HTTP SVG 被 loader 拒绝。
+HTTP/HTTPS 与本地 SVG 直接进入同一 `Source`；loader 只接受通过统一静态 SVG 安全子集的内容。首次有效 Arrange 的头像尺寸
+必须直接参与当轮请求，不能依赖旧 `Bounds`、额外 layout pass 或固定延迟才能启动网络加载。
 
 ## ImagePreviewer
 
@@ -136,6 +140,9 @@ public sealed record ImagePreviewItem
 `FallbackSource` 只替代当前 item，不替代整个集合。内部 `ImagePreviewEntry` 持有状态、generation 和租约，不公开。
 缩略图/cover 加载顺序为 `ThumbnailSource`（存在时）、同一 item 的 `Source` 缩略尺寸、`FallbackSource`；完整预览顺序为
 `Source`、`FallbackSource`。因此失效的专用缩略图不会阻断仍可加载的完整来源。
+
+`Source`、`ThumbnailSource` 与 `FallbackSource` 均可使用受限静态 SVG。cover、current 和 preload 复用同一矢量 decoded entry；
+fit、zoom、rotate 和 viewport 尺寸变化不把 SVG 预栅格化成低分辨率 Bitmap，也不建立 Previewer 私有 SVG loader。
 
 ```csharp
 public abstract class AbstractImagePreviewer : TemplatedControl

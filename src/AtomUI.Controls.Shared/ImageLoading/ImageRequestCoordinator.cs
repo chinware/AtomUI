@@ -3,14 +3,14 @@ namespace AtomUI.Controls;
 internal sealed class ImageRequestCoordinator : IDisposable
 {
     private readonly object _gate = new();
-    private readonly Dictionary<ImageEncodedOperationKey, SharedOperation<ImageEncodedContent>> _encoded = [];
+    private readonly Dictionary<ImageEncodedOperationKey, SharedOperation<ImageValidatedContent>> _encoded = [];
     private readonly Dictionary<ImageDecodedOperationKey, SharedOperation<ImageDecodedCacheEntry>> _decoded = [];
     private bool _disposed;
 
-    internal Task<ImageEncodedContent> GetEncodedAsync(
+    internal Task<ImageValidatedContent> GetEncodedAsync(
         ImageEncodedOperationKey key,
         ImageRequestPriority priority,
-        Func<SharedOperationContext, CancellationToken, Task<ImageEncodedContent>> factory,
+        Func<SharedOperationContext, CancellationToken, Task<ImageValidatedContent>> factory,
         IProgress<ImageLoadProgress>? progress,
         CancellationToken cancellationToken)
     {
@@ -95,16 +95,6 @@ internal sealed class ImageRequestCoordinator : IDisposable
         foreach (var operation in operations)
         {
             operation.Cancel();
-        }
-        try
-        {
-            Task.WhenAll(operations.Select(operation => operation.Completion))
-                .GetAwaiter()
-                .GetResult();
-        }
-        catch
-        {
-            // In-flight failures are delivered to their waiters; disposal only waits for cleanup.
         }
     }
 
@@ -332,22 +322,35 @@ internal sealed class ImageRequestCoordinator : IDisposable
 
         private async Task<T> RunAsync()
         {
+            T? factoryValue = default;
+            var hasFactoryValue = false;
             try
             {
-                var value = await _factory(_context, _cancellation.Token).ConfigureAwait(false);
+                factoryValue = await _factory(_context, _cancellation.Token).ConfigureAwait(false);
+                hasFactoryValue = true;
+                _cancellation.Token.ThrowIfCancellationRequested();
                 var release = false;
                 lock (_gate)
                 {
-                    _completedValue = value;
+                    _completedValue = factoryValue;
                     _hasCompletedValue = true;
+                    hasFactoryValue = false;
                     release = _waiters.Count == 0 && !_released;
                     _released |= release;
                 }
                 if (release)
                 {
-                    _releaseValue?.Invoke(value);
+                    _releaseValue?.Invoke(factoryValue);
                 }
-                return value;
+                return factoryValue;
+            }
+            catch
+            {
+                if (hasFactoryValue)
+                {
+                    _releaseValue?.Invoke(factoryValue!);
+                }
+                throw;
             }
             finally
             {

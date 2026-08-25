@@ -10,7 +10,7 @@ internal static class ThemeManagerBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
         builder.UseImageLoading();
-        builder.AddImageCodec(static () => new AssetSvgImageCodec());
+        builder.AddImageCodec(static () => new SvgImageCodec());
         GeneratedControlPackageRegistration.Register(
             builder.Theme,
             RuntimePlatform.Features.SupportsNativeWindow

@@ -59,7 +59,7 @@ internal sealed class ImageFileCache : IDisposable
                     metadata = ImageFileCacheMetadata.Read(metadataStream);
                 }
                 if (metadata.PartitionHash != key.PartitionHash ||
-                    metadata.SecurityPolicyVersion != 1 ||
+                    metadata.SecurityPolicyVersion != ImageSecurityPolicy.Version ||
                     metadata.ContentLength < 0 ||
                     metadata.ContentLength > _maxBytes)
                 {
@@ -95,7 +95,9 @@ internal sealed class ImageFileCache : IDisposable
         ImageEncodedContent content,
         CancellationToken cancellationToken)
     {
-        if (content.NoStore || content.Size > _maxBytes)
+        if (content.NoStore ||
+            content.SecurityPolicyVersion != ImageSecurityPolicy.Version ||
+            content.Size > _maxBytes)
         {
             return;
         }

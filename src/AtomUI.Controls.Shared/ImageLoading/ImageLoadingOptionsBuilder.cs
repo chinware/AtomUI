@@ -14,6 +14,8 @@ public sealed class ImageLoadingOptionsBuilder
     private readonly HashSet<string> _allowedHttpOrigins = new(StringComparer.OrdinalIgnoreCase);
     private readonly HashSet<string> _credentialForwardingOrigins = new(StringComparer.OrdinalIgnoreCase);
 
+    public SvgImageLoadingOptionsBuilder Svg { get; } = new();
+
     public int MaxConcurrentDownloads { get; set; } = OperatingSystem.IsBrowser() ? 4 : 6;
 
     internal int MaxConcurrentLocalReads { get; set; } = OperatingSystem.IsBrowser() ? 4 : 16;
@@ -117,7 +119,8 @@ public sealed class ImageLoadingOptionsBuilder
             AllowAuthenticatedPersistentCache,
             _authenticationHeaderNames.ToFrozenSet(StringComparer.OrdinalIgnoreCase),
             _allowedHttpOrigins.ToFrozenSet(StringComparer.OrdinalIgnoreCase),
-            _credentialForwardingOrigins.ToFrozenSet(StringComparer.OrdinalIgnoreCase));
+            _credentialForwardingOrigins.ToFrozenSet(StringComparer.OrdinalIgnoreCase),
+            Svg.Build());
     }
 
     private void Validate()

@@ -269,7 +269,7 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl, II
     protected override Size ArrangeOverride(Size finalSize)
     {
         var arranged = base.ArrangeOverride(finalSize);
-        _controller.RefreshSize();
+        _controller.RefreshSize(GetDecodePixelSize(arranged));
         return arranged;
     }
 
@@ -289,9 +289,14 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl, II
 
     (int Width, int Height)? IImageLoadControllerHost.GetDecodePixelSize()
     {
+        return GetDecodePixelSize(Bounds.Size);
+    }
+
+    private (int Width, int Height)? GetDecodePixelSize(Size arrangedSize)
+    {
         var scaling = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1;
-        var width = Quantize(Bounds.Width * scaling);
-        var height = Quantize(Bounds.Height * scaling);
+        var width = Quantize(arrangedSize.Width * scaling);
+        var height = Quantize(arrangedSize.Height * scaling);
         return width == 0 && height == 0 ? null : (width, height);
     }
 

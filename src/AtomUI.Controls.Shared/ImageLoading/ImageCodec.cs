@@ -6,6 +6,17 @@ internal abstract class ImageCodec
 
     internal abstract int Version { get; }
 
+    internal virtual bool IsDecodeSizeDependent => true;
+
+    internal ImageDecodedCacheKey CreateDecodedCacheKey(NormalizedImageRequest request)
+    {
+        return new ImageDecodedCacheKey(
+            request.EncodedKey,
+            IsDecodeSizeDependent ? request.DecodePixelWidth : 0,
+            IsDecodeSizeDependent ? request.DecodePixelHeight : 0,
+            $"{Id}:v{Version}:security-v{ImageSecurityPolicy.Version}");
+    }
+
     internal abstract bool CanDecode(ImageProbeResult probe, ImageLoadSource source);
 
     internal abstract Task<ImageDecodedCacheEntry> DecodeAsync(
@@ -25,6 +36,14 @@ internal sealed class ImageCodecRegistry
         var result = new List<ImageCodec>();
         foreach (var codec in codecs)
         {
+            if (string.IsNullOrWhiteSpace(codec.Id))
+            {
+                throw new InvalidOperationException("Image codec ids cannot be empty.");
+            }
+            if (codec.Version <= 0)
+            {
+                throw new InvalidOperationException($"Image codec '{codec.Id}' must have a positive version.");
+            }
             if (ids.TryGetValue(codec.Id, out var existing))
             {
                 if (existing.Type != codec.GetType() || existing.Version != codec.Version)
@@ -37,6 +56,14 @@ internal sealed class ImageCodecRegistry
             result.Add(codec);
         }
         _codecs = result;
+    }
+
+    internal IEnumerable<ImageDecodedCacheKey> CreateDecodedKeyCandidates(NormalizedImageRequest request)
+    {
+        foreach (var codec in _codecs)
+        {
+            yield return codec.CreateDecodedCacheKey(request);
+        }
     }
 
     internal ImageCodec Select(ImageProbeResult probe, ImageLoadSource source)

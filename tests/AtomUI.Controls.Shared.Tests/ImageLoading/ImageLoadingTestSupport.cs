@@ -56,7 +56,8 @@ internal static class ImageLoadingTestSupport
             mediaType,
             cacheSource,
             DateTimeOffset.UtcNow,
-            NoStore: noStore);
+            NoStore: noStore,
+            SecurityPolicyVersion: ImageSecurityPolicy.Version);
     }
 }
 
