@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System.Reactive.Disposables;
+using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
@@ -119,6 +120,7 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ICustomizableSiz
     private SpinIndicatorDotPanel? _builtInIndicatorLayout;
     private ContentPresenter? _customIndicatorPresenter;
     private Control? _animatedIndicatorTarget;
+    private CompositeDisposable? _effectiveVisibilitySubscriptions;
 
     static AbstractSpinIndicator()
     {
@@ -135,8 +137,16 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ICustomizableSiz
         StartIndicatorAnimation();
     }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        ConfigureEffectiveVisibilityTracking();
+    }
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        _effectiveVisibilitySubscriptions?.Dispose();
+        _effectiveVisibilitySubscriptions = null;
         StopIndicatorAnimation();
         base.OnDetachedFromVisualTree(e);
     }
@@ -184,17 +194,6 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ICustomizableSiz
             SyncCustomIndicatorState();
             RestartIndicatorAnimation();
         }
-        else if (change.Property == IsVisibleProperty)
-        {
-            if (change.GetNewValue<bool>())
-            {
-                StartIndicatorAnimation();
-            }
-            else
-            {
-                StopIndicatorAnimation();
-            }
-        }
         else if (change.Property == MotionDurationProperty ||
                  change.Property == MotionEasingCurveProperty)
         {
@@ -209,7 +208,7 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ICustomizableSiz
 
     private void StartIndicatorAnimation()
     {
-        if (!IsVisible || !IsLoaded || !this.IsAttachedToVisualTree())
+        if (!IsEffectivelyVisible || !IsLoaded || !this.IsAttachedToVisualTree())
         {
             return;
         }
@@ -250,6 +249,26 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ICustomizableSiz
     {
         StopIndicatorAnimation();
         StartIndicatorAnimation();
+    }
+
+    private void ConfigureEffectiveVisibilityTracking()
+    {
+        _effectiveVisibilitySubscriptions?.Dispose();
+        var subscriptions = new CompositeDisposable();
+        _effectiveVisibilitySubscriptions = subscriptions;
+        this.TrackEffectiveVisibility(HandleEffectiveVisibilityChanged, subscriptions);
+    }
+
+    private void HandleEffectiveVisibilityChanged(bool isEffectivelyVisible)
+    {
+        if (isEffectivelyVisible)
+        {
+            StartIndicatorAnimation();
+        }
+        else
+        {
+            StopIndicatorAnimation();
+        }
     }
 
     private Control? GetActiveAnimationTarget()

@@ -2,6 +2,13 @@
 
 本文档记录 Spin 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-25
+
+- Fixed
+  - Stop and restart Spin Compositor rotation and dot-opacity animations across effective visibility changes.
+- Docs
+  - Document ancestor visibility tracking and Compositor cleanup ownership.
+
 ## 2026-06-26
 
 - Docs

@@ -2,6 +2,13 @@
 
 本文档记录 Icon 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-25
+
+- Fixed
+  - Stop loading Icon Compositor animation when the Icon becomes effectively invisible and resume it when visible again.
+- Docs
+  - Document loading animation visibility tracking and unload/detach cleanup.
+
 ## 2026-08-09
 
 - Fixed

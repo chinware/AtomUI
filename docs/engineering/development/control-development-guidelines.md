@@ -166,6 +166,16 @@ Theme 中增加 `Custom` selector。
 - 父主题可以根据自身状态设置直接模板子控件的属性，例如 `Foreground` 或 `IsVisible`，但不能依赖子控件的内部 `PART`、`TextPresenter` 或其他模板节点。
 - 生产 AXAML 应由主题边界回归测试扫描，确保每个 selector 分支最多包含一个 `/template/` 边界。
 
+## 持续视觉工作生命周期
+
+无限动画、Compositor 循环动画、自动播放定时器、倒计时刷新和其他周期性视觉工作必须以控件的有效可见性为运行边界。有效可见性同时包含控件自身和当前 Visual 祖先链；只检查实例 `IsVisible` 不能覆盖隐藏页面、隐藏容器或切页后仍保留在 VisualTree 中的场景。
+
+- 手工调用 `Animation.RunAsync` 的持续 Avalonia 动画必须显式使用 `PlaybackBehavior.OnlyIfVisible`。不能依赖默认 `Auto`，因为手工启动动画的默认语义不会因有效不可见而暂停。
+- Compositor 的 `AnimationIterationBehavior.Forever` 动画和 `DispatcherTimer` 不会自动遵守控件有效可见性。owner 必须跟踪自身及 Visual 祖先链的可见性，在有效不可见时停止，在恢复可见时按控件语义重新启动。
+- 暂停与恢复必须保持业务同步。纯装饰动画可以从初始状态重启；自动播放进度等与定时器耦合的状态必须和计时 owner 同步重置或恢复；基于绝对时间的统计值必须在恢复时先以当前时间重算，再继续周期刷新。
+- 可见性订阅、animation cancellation、Compositor target 和 timer handler 必须由启动持续工作的控件持有，并在 detach、unload、re-template 或功能关闭的对应路径释放。
+- 回归测试至少覆盖有效可见到不可见的停止路径，以及重新可见后的恢复路径。仅验证控件自身 `IsVisible=false` 不足以覆盖隐藏祖先场景。
+
 ## 输入控件验证集成
 
 输入类控件不得在 Avalonia `DataValidationErrors` 之外另建一套独立 error 机制。AtomUI 的 Form、`InputControlStatus`、feedback 图标和 AddOn 视觉只能作为 native validation 的扩展投影：

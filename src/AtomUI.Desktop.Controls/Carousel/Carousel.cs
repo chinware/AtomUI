@@ -1,3 +1,4 @@
+using System.Reactive.Disposables;
 using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Animation;
@@ -260,6 +261,7 @@ public class Carousel : SelectingItemsControl, IMotionAwareControl
     private IScrollable? _scroller;
     private CarouselPagination? _pagination;
     private DispatcherTimer? _autoPlayTimer;
+    private CompositeDisposable? _autoPlayVisibilitySubscriptions;
     private IconButton? _previousButton;
     private IconButton? _nextButton;
     private bool _isPointerGestureActive;
@@ -582,19 +584,15 @@ public class Carousel : SelectingItemsControl, IMotionAwareControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        if (IsAutoPlay)
-        {
-            _autoPlayTimer?.Start();
-        }
+        ConfigureAutoPlayVisibilityTracking();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        _autoPlayVisibilitySubscriptions?.Dispose();
+        _autoPlayVisibilitySubscriptions = null;
+        _autoPlayTimer?.Stop();
         base.OnDetachedFromVisualTree(e);
-        if (IsAutoPlay)
-        {
-            _autoPlayTimer?.Stop();
-        }
     }
 
     private void ConfigureNavButtons()
@@ -719,6 +717,8 @@ public class Carousel : SelectingItemsControl, IMotionAwareControl
             }
             _autoPlayTimer = null;
         }
+
+        ConfigureAutoPlayVisibilityTracking();
     }
 
     private void HandleAutoPlayTick(object? sender, EventArgs e)
@@ -731,6 +731,34 @@ public class Carousel : SelectingItemsControl, IMotionAwareControl
         if (_autoPlayTimer != null)
         {
             _autoPlayTimer.Interval = AutoPlaySpeed;
+        }
+    }
+
+    private void ConfigureAutoPlayVisibilityTracking()
+    {
+        _autoPlayVisibilitySubscriptions?.Dispose();
+        _autoPlayVisibilitySubscriptions = null;
+
+        if (!IsAutoPlay || !this.IsAttachedToVisualTree())
+        {
+            _autoPlayTimer?.Stop();
+            return;
+        }
+
+        var subscriptions = new CompositeDisposable();
+        _autoPlayVisibilitySubscriptions = subscriptions;
+        this.TrackEffectiveVisibility(HandleEffectiveVisibilityChanged, subscriptions);
+    }
+
+    private void HandleEffectiveVisibilityChanged(bool isEffectivelyVisible)
+    {
+        if (isEffectivelyVisible)
+        {
+            _autoPlayTimer?.Start();
+        }
+        else
+        {
+            _autoPlayTimer?.Stop();
         }
     }
 }

@@ -68,6 +68,59 @@ public static class VisualExtensions
         }
     }
 
+    internal static void TrackEffectiveVisibility(
+        this Visual visual,
+        Action<bool> handler,
+        CompositeDisposable disposable)
+    {
+        EventHandler<AvaloniaPropertyChangedEventArgs> propertyChangedHandler = (_, args) =>
+        {
+            if (args.Property == Visual.IsVisibleProperty)
+            {
+                handler(IsVisualChainVisible(visual));
+            }
+        };
+
+        Visual? current = visual;
+        while (current is not null)
+        {
+            var subscribedVisual = current;
+            subscribedVisual.PropertyChanged += propertyChangedHandler;
+            Disposable.Create(() => subscribedVisual.PropertyChanged -= propertyChangedHandler)
+                      .DisposeWith(disposable);
+
+            if (current is TopLevel)
+            {
+                break;
+            }
+
+            current = current.GetVisualParent();
+        }
+
+        handler(IsVisualChainVisible(visual));
+    }
+
+    private static bool IsVisualChainVisible(Visual visual)
+    {
+        Visual? current = visual;
+        while (current is not null)
+        {
+            if (!current.IsVisible)
+            {
+                return false;
+            }
+
+            if (current is TopLevel)
+            {
+                break;
+            }
+
+            current = current.GetVisualParent();
+        }
+
+        return true;
+    }
+
     internal static Visual? GetVisualRoot(this Visual visual)
     {
         return visual.GetPresentationSource()?.RootVisual;

@@ -198,6 +198,7 @@ public abstract class AbstractSkeleton : TemplatedControl
             Easing         = MotionEasingCurve ?? DefaultActiveMotionEasing,
             Duration       = MotionDuration,
             IterationCount = IterationCount.Infinite,
+            PlaybackBehavior = PlaybackBehavior.OnlyIfVisible,
             Children =
             {
                 new KeyFrame

@@ -1,6 +1,7 @@
 ﻿// Reimplementation reference: https://github.com/irihitech/Irihi.Iconica.IconPark
 
 using System.Diagnostics;
+using System.Reactive.Disposables;
 using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Animation.Easings;
@@ -11,6 +12,7 @@ using Avalonia.Media;
 using Avalonia.Rendering;
 using Avalonia.Rendering.Composition;
 using Avalonia.Rendering.Composition.Animations;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -131,6 +133,8 @@ public abstract class Icon : PathIcon, ICustomHitTest
     private const float FULL_ROTATION_RADIANS = (float)(Math.PI * 2);
     private const string ROTATION_PROPERTY    = "RotationAngle";
 
+    private CompositeDisposable? _effectiveVisibilitySubscriptions;
+
     protected virtual IList<DrawingInstruction> DrawingInstructions { get; } = Array.Empty<DrawingInstruction>();
     protected Rect ViewBox;
     
@@ -225,24 +229,13 @@ public abstract class Icon : PathIcon, ICustomHitTest
         {
             if (change.Property == LoadingAnimationProperty)
             {
-                RestartLoadingAnimation();
+                ConfigureLoadingAnimationVisibilityTracking();
             }
             else if (change.Property == LoadingAnimationDurationProperty)
             {
                 if (IsLoadingAnimationConfigured())
                 {
                     RestartLoadingAnimation();
-                }
-            }
-            else if (change.Property == IsVisibleProperty)
-            {
-                if (change.GetNewValue<bool>())
-                {
-                    StartLoadingAnimation();
-                }
-                else
-                {
-                    StopLoadingAnimation();
                 }
             }
             else if (change.Property == BoundsProperty)
@@ -355,9 +348,37 @@ public abstract class Icon : PathIcon, ICustomHitTest
 
     private bool CanRunLoadingAnimation()
     {
-        return IsVisible &&
+        return IsEffectivelyVisible &&
                IsLoaded &&
                IsLoadingAnimationConfigured();
+    }
+
+    private void ConfigureLoadingAnimationVisibilityTracking()
+    {
+        _effectiveVisibilitySubscriptions?.Dispose();
+        _effectiveVisibilitySubscriptions = null;
+
+        if (!this.IsAttachedToVisualTree() || !IsLoadingAnimationConfigured())
+        {
+            StopLoadingAnimation();
+            return;
+        }
+
+        var subscriptions = new CompositeDisposable();
+        _effectiveVisibilitySubscriptions = subscriptions;
+        this.TrackEffectiveVisibility(HandleEffectiveVisibilityChanged, subscriptions);
+    }
+
+    private void HandleEffectiveVisibilityChanged(bool isEffectivelyVisible)
+    {
+        if (isEffectivelyVisible)
+        {
+            StartLoadingAnimation();
+        }
+        else
+        {
+            StopLoadingAnimation();
+        }
     }
 
     private bool IsLoadingAnimationConfigured()
@@ -391,11 +412,13 @@ public abstract class Icon : PathIcon, ICustomHitTest
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        StartLoadingAnimation();
+        ConfigureLoadingAnimationVisibilityTracking();
     }
 
     protected override void OnUnloaded(RoutedEventArgs e)
     {
+        _effectiveVisibilitySubscriptions?.Dispose();
+        _effectiveVisibilitySubscriptions = null;
         StopLoadingAnimation();
         base.OnUnloaded(e);
     }
@@ -403,11 +426,13 @@ public abstract class Icon : PathIcon, ICustomHitTest
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        StartLoadingAnimation();
+        ConfigureLoadingAnimationVisibilityTracking();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        _effectiveVisibilitySubscriptions?.Dispose();
+        _effectiveVisibilitySubscriptions = null;
         StopLoadingAnimation();
         base.OnDetachedFromVisualTree(e);
     }

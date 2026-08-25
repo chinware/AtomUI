@@ -101,6 +101,8 @@ Icon 的交互事件应从输入源收敛到控件级语义事件：
 - 内容、命令和视觉状态在模板节点之间的同步。
 - 状态变化时避免创建不必要的视觉对象、订阅或动画对象。
 
+`LoadingAnimation=Spin/Pulse` 使用 Icon 对应 `CompositionVisual` 的无限旋转动画。Icon 只在已加载、动画已配置且有效可见时启动；自身或 Visual 祖先不可见时停止动画并把 rotation 复位，重新可见时按当前 duration 和 bounds 重建动画。可见性订阅与 Compositor target 必须在 unload 和 detach 时释放。
+
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 
 ## 8. 资源、性能与 AOT 边界
@@ -117,6 +119,7 @@ Icon 的交互事件应从输入源收敛到控件级语义事件：
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
+- 未配置 loading animation 的普通 Icon 不建立有效可见性跟踪；隐藏祖先下的 loading Icon 不保留 Compositor 无限动画。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
 
 ## 9. 维护不变量

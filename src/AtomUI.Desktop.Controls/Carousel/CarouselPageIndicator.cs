@@ -1,3 +1,4 @@
+using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls;
 using Avalonia;
@@ -8,6 +9,7 @@ using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -94,6 +96,7 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
     
     private Animation? _animation;
     private CancellationTokenSource? _cancellationTokenSource;
+    private CompositeDisposable? _effectiveVisibilitySubscriptions;
     private Border? _frame;
     
     static CarouselPageIndicator()
@@ -116,14 +119,16 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
         if (change.Property == IsShowTransitionProgressProperty)
         {
             BuildProgressAnimation(true);
+            ConfigureProgressVisibilityTracking();
         }
         else if (change.Property == AutoPlaySpeedProperty)
         {
             ConfigureProgressAnimation();
+            UpdateProgressAnimationState(IsEffectivelyVisible);
         }
         else if (change.Property == IsSelectedProperty)
         {
-            HandleSelectChanged();
+            ConfigureProgressVisibilityTracking();
         }
         else if (change.Property == ProgressValueProperty)
         {
@@ -139,19 +144,19 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
         {
             BuildProgressAnimation(false);
         }
+        UpdateProgressAnimationState(IsEffectivelyVisible);
     }
 
     private void BuildProgressAnimation(bool force = false)
     {
         if (force || _animation is null)
         {
-            _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource?.Dispose();
-            _cancellationTokenSource = null;
+            StopProgressAnimation();
             _animation = new Animation
             {
-                Easing         = DefaultProgressEasing,
-                Duration       = AutoPlaySpeed,
+                Easing           = DefaultProgressEasing,
+                Duration         = AutoPlaySpeed,
+                PlaybackBehavior = PlaybackBehavior.OnlyIfVisible,
                 Children =
                 {
                     new KeyFrame
@@ -178,27 +183,60 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
         }
     }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        ConfigureProgressVisibilityTracking();
+    }
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        _effectiveVisibilitySubscriptions?.Dispose();
+        _effectiveVisibilitySubscriptions = null;
+        StopProgressAnimation();
         base.OnDetachedFromVisualTree(e);
+    }
+
+    private void ConfigureProgressVisibilityTracking()
+    {
+        _effectiveVisibilitySubscriptions?.Dispose();
+        _effectiveVisibilitySubscriptions = null;
+        StopProgressAnimation();
+
+        if (!IsSelected ||
+            !IsShowTransitionProgress ||
+            !this.IsAttachedToVisualTree())
+        {
+            return;
+        }
+
+        var subscriptions = new CompositeDisposable();
+        _effectiveVisibilitySubscriptions = subscriptions;
+        this.TrackEffectiveVisibility(UpdateProgressAnimationState, subscriptions);
+    }
+
+    private void UpdateProgressAnimationState(bool isEffectivelyVisible)
+    {
+        StopProgressAnimation();
+        if (!isEffectivelyVisible ||
+            !IsSelected ||
+            !IsShowTransitionProgress ||
+            _animation is null ||
+            !this.IsAttachedToVisualTree())
+        {
+            return;
+        }
+
+        _cancellationTokenSource = new CancellationTokenSource();
+        _animation.RunAsync(this, _cancellationTokenSource.Token);
+    }
+
+    private void StopProgressAnimation()
+    {
         _cancellationTokenSource?.Cancel();
         _cancellationTokenSource?.Dispose();
         _cancellationTokenSource = null;
-    }
-
-    private void HandleSelectChanged()
-    {
-        _cancellationTokenSource?.Cancel();
-        _cancellationTokenSource?.Dispose();
-        if (IsSelected && IsShowTransitionProgress)
-        {
-            _cancellationTokenSource = new CancellationTokenSource();
-            _animation?.RunAsync(this, _cancellationTokenSource.Token);
-        }
-        else
-        {
-            _cancellationTokenSource = null;
-        }
+        SetCurrentValue(ProgressValueProperty, 0d);
     }
 
     private void ConfigureProgressWidth()

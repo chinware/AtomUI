@@ -107,6 +107,8 @@ Statistic 的交互事件应从输入源收敛到控件级语义事件：
 - ItemsSource、selection、checked、expanded、filter、paging 或 upload task 的集合同步。
 - 动效启停、初始加载阶段 transition 抑制和卸载取消。
 
+`TimerStatistic` 以绝对 `DateTime` 作为值 owner，`DispatcherTimer` 只负责刷新显示，不累计相对 tick。控件 attach 后跟踪自身及 Visual 祖先链；有效不可见时停止 timer，重新可见时先使用 `DateTime.Now` 重算 `RemainingTime`，再恢复周期刷新。该规则保证隐藏期间不产生 UI 线程 tick，同时倒计时和正计时不会因暂停刷新而产生时间漂移。
+
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 
 ## 8. 资源、性能与 AOT 边界
@@ -123,6 +125,7 @@ Statistic 的交互事件应从输入源收敛到控件级语义事件：
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
+- 隐藏祖先下的 TimerStatistic 不运行刷新 timer；恢复时必须从绝对时间重算，不补发隐藏期间的 tick。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
 
 ## 9. 维护不变量
