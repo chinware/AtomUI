@@ -213,10 +213,60 @@ public class ImagePreviewer : AbstractImagePreviewer
 
     private (int Width, int Height) GetCoverDecodeSize()
     {
-        var scaling = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1;
-        var logicalWidth = double.IsNaN(CoverWidth) ? Bounds.Width : CoverWidth;
-        var logicalHeight = double.IsNaN(CoverHeight) ? Bounds.Height : CoverHeight;
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel is null)
+        {
+            return (0, 0);
+        }
+
+        var hasStableWidth = IsFinitePositive(CoverWidth) || IsFinitePositive(Width);
+        var hasStableHeight = IsFinitePositive(CoverHeight) || IsFinitePositive(Height);
+        var logicalWidth = hasStableWidth ? ResolveStableAxis(CoverWidth, Width, Bounds.Width) : Bounds.Width;
+        var logicalHeight = hasStableHeight ? ResolveStableAxis(CoverHeight, Height, Bounds.Height) : Bounds.Height;
+
+        if (!hasStableWidth && !hasStableHeight)
+        {
+            if (logicalWidth >= logicalHeight)
+            {
+                logicalHeight = 0;
+            }
+            else
+            {
+                logicalWidth = 0;
+            }
+        }
+        else
+        {
+            if (!hasStableWidth)
+            {
+                logicalWidth = 0;
+            }
+            if (!hasStableHeight)
+            {
+                logicalHeight = 0;
+            }
+        }
+
+        var scaling = topLevel.RenderScaling;
         return (Quantize(logicalWidth * scaling), Quantize(logicalHeight * scaling));
+    }
+
+    private static double ResolveStableAxis(double coverValue, double controlValue, double boundsValue)
+    {
+        if (IsFinitePositive(coverValue))
+        {
+            return coverValue;
+        }
+        if (IsFinitePositive(controlValue))
+        {
+            return controlValue;
+        }
+        return boundsValue;
+    }
+
+    private static bool IsFinitePositive(double value)
+    {
+        return double.IsFinite(value) && value > 0;
     }
 
     private static int Quantize(double value)

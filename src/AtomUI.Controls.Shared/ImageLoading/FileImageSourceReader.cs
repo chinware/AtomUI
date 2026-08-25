@@ -50,7 +50,7 @@ internal sealed class FileImageSourceReader : ImageSourceReader
                 FileShare.Read,
                 64 * 1024,
                 FileOptions.Asynchronous | FileOptions.SequentialScan);
-            progress?.Report(ImageLoadProgress.Create(ImageLoadStage.Reading));
+            ImageProgressDispatcher.Report(progress, ImageLoadProgress.Create(ImageLoadStage.Reading));
             var bytes = await ImageSourceReadHelpers.ReadAllBytesAsync(
                 stream,
                 _options.MaxResponseBytes,

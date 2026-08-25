@@ -77,6 +77,26 @@ public class AsyncImageTests
     }
 
     [Fact]
+    public void ImageOpened_Observer_Failure_Does_Not_Break_Load_State_Or_Stop_Other_Observers()
+    {
+        var observed = 0;
+        var image = new AsyncImage
+        {
+            Width = 32,
+            Height = 32,
+            Source = ImageLoadSource.FromImage(new TestBorrowedImage())
+        };
+        image.ImageOpened += (_, _) => throw new InvalidOperationException("observer failed");
+        image.ImageOpened += (_, _) => Interlocked.Increment(ref observed);
+
+        using var host = new ImageControlTestHost(image);
+
+        ImageControlTestHost.WaitUntil(() => image.IsLoaded, "image opened observer isolation");
+        observed.ShouldBe(1);
+        image.LoadError.ShouldBeNull();
+    }
+
+    [Fact]
     public void Failed_Primary_Uses_Fallback_Within_The_Same_Generation()
     {
         var fallback = new TestBorrowedImage();

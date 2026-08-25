@@ -63,6 +63,15 @@ public class ImageLoadSourceTests
     }
 
     [Fact]
+    public void Keyed_Sources_Without_Version_Use_Object_Identity()
+    {
+        var first = ImageLoadSource.FromBytes(new byte[] { 1 }, "avatar");
+        var second = ImageLoadSource.FromBytes(new byte[] { 2 }, "avatar");
+
+        first.Identity.ShouldNotBe(second.Identity);
+    }
+
+    [Fact]
     public void Normalize_Uses_NoStore_And_Unique_Share_Scope_For_Unpartitioned_Credentials()
     {
         var options = ImageLoadingTestSupport.CreateOptions();

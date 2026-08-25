@@ -32,7 +32,7 @@ internal sealed class StreamImageSourceReader : ImageSourceReader
                 "Image stream factory returned null.",
                 request.Source.DisplayName);
         }
-        progress?.Report(ImageLoadProgress.Create(ImageLoadStage.Reading));
+        ImageProgressDispatcher.Report(progress, ImageLoadProgress.Create(ImageLoadStage.Reading));
         var bytes = await ImageSourceReadHelpers.ReadAllBytesAsync(
             stream,
             _options.MaxResponseBytes,

@@ -28,7 +28,7 @@ internal sealed class StorageFileImageSourceReader : ImageSourceReader
         try
         {
             await using var stream = await ((IStorageFile)request.Source.Value).OpenReadAsync().ConfigureAwait(false);
-            progress?.Report(ImageLoadProgress.Create(ImageLoadStage.Reading));
+            ImageProgressDispatcher.Report(progress, ImageLoadProgress.Create(ImageLoadStage.Reading));
             var bytes = await ImageSourceReadHelpers.ReadAllBytesAsync(
                 stream,
                 _options.MaxResponseBytes,

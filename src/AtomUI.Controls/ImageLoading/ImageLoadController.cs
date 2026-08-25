@@ -35,7 +35,7 @@ internal interface IImageLoadControllerHost
 internal sealed class ImageLoadController : IDisposable
 {
     private readonly IImageLoadControllerHost _host;
-    private CancellationTokenSource? _requestCancellation;
+    private ImageCancellationState? _requestCancellation;
     private IDisposable? _scalingSubscription;
     private ImageLoadResult? _currentResult;
     private string? _currentSourceIdentity;
@@ -157,14 +157,14 @@ internal sealed class ImageLoadController : IDisposable
         _currentSourceIdentity = source.Identity;
         _lastDecodeSize = decodeSize;
         CancelCurrentRequest();
-        var cancellation = new CancellationTokenSource();
+        var cancellation = new ImageCancellationState();
         _requestCancellation = cancellation;
         var generation = Interlocked.Increment(ref _generation);
         var fallback = _host.FallbackSource;
         var options = _host.RequestOptions;
         var priority = _host.Priority;
         _host.SetLoadState(ImageLoadState.Loading, null, null, false);
-        _ = LoadGenerationAsync(
+        _ = ObserveAsync(LoadGenerationAsync(
             source,
             fallback,
             options,
@@ -172,7 +172,7 @@ internal sealed class ImageLoadController : IDisposable
             decodeSize.Value,
             generation,
             reload,
-            cancellation.Token);
+            cancellation));
     }
 
     private async Task LoadGenerationAsync(
@@ -183,8 +183,9 @@ internal sealed class ImageLoadController : IDisposable
         (int Width, int Height) decodeSize,
         long generation,
         bool reload,
-        CancellationToken cancellationToken)
+        ImageCancellationState cancellation)
     {
+        var cancellationToken = cancellation.Token;
         try
         {
             var application = Application.Current ?? throw new InvalidOperationException(
@@ -241,7 +242,7 @@ internal sealed class ImageLoadController : IDisposable
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
         }
-        catch (Exception exception)
+        catch (Exception exception) when (ImageLoadEventDispatcher.IsNonFatal(exception))
         {
             var error = new ImageLoadError(
                 ImageLoadErrorCode.InvalidSource,
@@ -250,17 +251,28 @@ internal sealed class ImageLoadController : IDisposable
                 Exception: exception);
             await CommitFailureAsync(generation, source, error, isFallback: false).ConfigureAwait(false);
         }
+        finally
+        {
+            CompleteCancellation(ref _requestCancellation, cancellation);
+        }
     }
 
     private void PublishProgress(long generation, ImageLoadProgress progress)
     {
-        Dispatcher.UIThread.Post(() =>
+        try
         {
-            if (generation == Volatile.Read(ref _generation) && _host.IsImageLoadAttached)
+            Dispatcher.UIThread.Post(() =>
             {
-                _host.SetLoadState(ImageLoadState.Loading, null, progress, false);
-            }
-        });
+                if (generation == Volatile.Read(ref _generation) && _host.IsImageLoadAttached)
+                {
+                    _host.SetLoadState(ImageLoadState.Loading, null, progress, false);
+                }
+            });
+        }
+        catch (InvalidOperationException)
+        {
+            // The dispatcher can reject late progress during application shutdown.
+        }
     }
 
     private async Task CommitSuccessAsync(
@@ -269,25 +281,35 @@ internal sealed class ImageLoadController : IDisposable
         ImageLoadResult result,
         bool isFallback)
     {
-        await Dispatcher.UIThread.InvokeAsync(() =>
+        ImageLoadResult? pending = result;
+        try
         {
-            if (generation != Volatile.Read(ref _generation) || !_host.IsImageLoadAttached)
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                result.Dispose();
-                return;
-            }
-            var previous = _currentResult;
-            _currentResult = result;
-            _host.SetLoadedImage(result.Image);
-            _host.SetLoadState(ImageLoadState.Loaded, null, null, isFallback);
-            previous?.Dispose();
-            _host.RaiseImageOpened(new ImageOpenedEventArgs(
-                source,
-                isFallback,
-                result.CacheSource,
-                result.DecodedPixelWidth,
-                result.DecodedPixelHeight));
-        });
+                var owned = pending!;
+                pending = null;
+                if (generation != Volatile.Read(ref _generation) || !_host.IsImageLoadAttached)
+                {
+                    owned.Dispose();
+                    return;
+                }
+                var previous = _currentResult;
+                _currentResult = owned;
+                _host.SetLoadedImage(owned.Image);
+                _host.SetLoadState(ImageLoadState.Loaded, null, null, isFallback);
+                previous?.Dispose();
+                _host.RaiseImageOpened(new ImageOpenedEventArgs(
+                    source,
+                    isFallback,
+                    owned.CacheSource,
+                    owned.DecodedPixelWidth,
+                    owned.DecodedPixelHeight));
+            });
+        }
+        finally
+        {
+            pending?.Dispose();
+        }
     }
 
     private async Task CommitFailureAsync(
@@ -318,7 +340,37 @@ internal sealed class ImageLoadController : IDisposable
             return;
         }
         cancellation.Cancel();
-        cancellation.Dispose();
+        cancellation.ReleaseController();
+    }
+
+    private static void CompleteCancellation(
+        ref ImageCancellationState? field,
+        ImageCancellationState cancellation)
+    {
+        if (ReferenceEquals(Interlocked.CompareExchange(ref field, null, cancellation), cancellation))
+        {
+            cancellation.ReleaseController();
+        }
+        cancellation.ReleaseOperation();
+    }
+
+    private static async Task ObserveAsync(Task task)
+    {
+        try
+        {
+            await task.ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (InvalidOperationException)
+        {
+            // A detached control may outlive the application dispatcher.
+        }
+        catch (Exception exception) when (ImageLoadEventDispatcher.IsNonFatal(exception))
+        {
+            // A late UI commit or observer must not become an unobserved task failure.
+        }
     }
 
     private void ReleaseCurrentResult()

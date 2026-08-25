@@ -4,6 +4,7 @@ namespace AtomUI.Controls;
 
 internal sealed record ImageLoadingOptions(
     int MaxConcurrentDownloads,
+    int MaxConcurrentLocalReads,
     int MaxConcurrentDecodes,
     long EncodedMemoryCacheBytes,
     int EncodedMemoryCacheEntries,

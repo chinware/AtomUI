@@ -20,7 +20,7 @@
 
 ### 来源与键
 
-1. HTTP 大小写、默认端口、fragment、dot segment 和 query 顺序的规范化。
+1. HTTP 大小写、默认端口、fragment、dot segment 的规范化，以及 path/query 语义顺序保持不变。
 2. embedded credentials、未知 scheme、相对歧义路径和非法 Asset URI 的拒绝。
 3. File 平台 comparer、Storage/Bytes/Stream 有无 cacheKey/version 的共享边界。
 4. header、Variant、CachePartition、reader/codec version 和 decode bucket 对 encoded/decoded key 的影响。
@@ -32,7 +32,8 @@
 2. 同 decoded key 多 waiter 只读取/解码一次，返回不同结果租约。
 3. Reload、NoStore、CacheOnly 和 Default 不发生非法跨模式合并。
 4. Critical/High/Normal/Low/Preload 排队顺序、同优先级 FIFO、aging 和 preload 空闲启动。
-5. 下载和 decode 各自不超过配置并发，取消排队项不打开资源。
+5. HTTP 下载、本地读取和 decode 各自不超过对应并发；慢 HTTP 占满下载池时，Asset/File/Storage/Bytes/Stream
+   仍可从独立本地读取池推进，取消排队项不打开资源。
 6. 当前 Previewer 请求可以越过排队 preload，但不会中断仍被 waiter 共享的运行中操作。
 
 ### 取消与竞态

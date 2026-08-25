@@ -6,6 +6,7 @@ using System.Text;
 using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Headless;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
@@ -42,6 +43,48 @@ public class ImagePreviewerImageLoadingTests
             previewer.CurrentItem.ShouldNotBeNull().Source.ShouldBeSameAs(
                 previewer.ItemsSource.ShouldNotBeNull().Single().Source);
             previewer.EffectiveItems.ShouldNotBeNull().Single().FullImage.ShouldBeSameAs(second);
+        });
+    }
+
+    [Fact]
+    public void Current_Index_Switch_Does_Not_Commit_The_Previous_Full_Request()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var firstStarted = NewSignal();
+            var releaseFirst = NewSignal();
+            var firstSource = ImageLoadSource.FromStream(
+                async token =>
+                {
+                    firstStarted.TrySetResult();
+                    await releaseFirst.Task.WaitAsync(token);
+                    return new MemoryStream(CreatePng(32, 32));
+                },
+                $"preview-switch-first-{Guid.NewGuid():N}",
+                "v1");
+            var secondImage = new TestImage();
+            var previewer = CreatePreviewer(
+                new ImagePreviewItem(firstSource),
+                new ImagePreviewItem(ImageLoadSource.FromImage(secondImage)));
+            using var host = new PreviewerHost(previewer);
+
+            previewer.OpenDialog();
+            WaitUntil(() => firstStarted.Task.IsCompleted, "first full request start");
+
+            previewer.CurrentIndex = 1;
+            WaitUntil(
+                () => previewer.IsCurrentLoaded &&
+                      ReferenceEquals(previewer.EffectiveItems![1].FullImage, secondImage),
+                "second current full request");
+
+            releaseFirst.TrySetResult();
+            WaitUntil(() => previewer.EffectiveItems![0].FullState != ImageLoadState.Loading,
+                "cancelled first full request cleanup");
+
+            var entries = previewer.EffectiveItems.ShouldNotBeNull();
+            previewer.CurrentIndex.ShouldBe(1);
+            previewer.CurrentItem.ShouldBeSameAs(previewer.ItemsSource!.ElementAt(1));
+            entries[1].FullImage.ShouldBeSameAs(secondImage);
         });
     }
 
@@ -258,6 +301,102 @@ public class ImagePreviewerImageLoadingTests
 
             reads.ShouldBe(1);
             GetThumbnailPixelSize(entry).ShouldBe(new PixelSize(32, 32));
+        });
+    }
+
+    [Fact]
+    public void Smaller_Thumbnail_Request_Reuses_The_Existing_Decode()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var reads = 0;
+            var bytes = CreatePng(512, 256);
+            var source = ImageLoadSource.FromStream(
+                _ =>
+                {
+                    reads++;
+                    return ValueTask.FromResult<Stream>(new MemoryStream(bytes));
+                },
+                $"thumbnail-downsize-{Guid.NewGuid():N}",
+                "v1");
+            var item = new ImagePreviewItem(source)
+            {
+                RequestOptions = new ImageRequestOptions { CacheMode = ImageCacheMode.NoStore }
+            };
+            using var entry = new ImagePreviewEntry(item);
+
+            entry.LoadThumbnail(208, 208, ImageRequestPriority.High);
+            WaitUntil(() => entry.ThumbnailState == ImageLoadState.Loaded, "initial thumbnail request");
+
+            entry.LoadThumbnail(208, 112, ImageRequestPriority.High);
+            Dispatcher.UIThread.RunJobs();
+
+            reads.ShouldBe(1);
+            entry.ThumbnailState.ShouldBe(ImageLoadState.Loaded);
+        });
+    }
+
+    [Fact]
+    public void Auto_Sized_Rectangular_Cover_Settles_After_The_Initial_Load()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var reads = 0;
+            var bytes = CreatePng(512, 256);
+            var source = ImageLoadSource.FromStream(
+                _ =>
+                {
+                    reads++;
+                    return ValueTask.FromResult<Stream>(new MemoryStream(bytes));
+                },
+                $"auto-cover-settle-{Guid.NewGuid():N}",
+                "v1");
+            var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
+            {
+                Width = 200,
+                ItemsSource =
+                [
+                    new ImagePreviewItem(source)
+                    {
+                        RequestOptions = new ImageRequestOptions { CacheMode = ImageCacheMode.NoStore }
+                    }
+                ]
+            };
+            using var host = new PreviewerHost(previewer);
+
+            WaitUntil(() => previewer.IsCoverLoaded, "auto-sized rectangular cover");
+            for (var index = 0; index < 10; index++)
+            {
+                Dispatcher.UIThread.RunJobs();
+            }
+
+            reads.ShouldBeLessThanOrEqualTo(2);
+            previewer.Bounds.Width.ShouldBe(200);
+            previewer.Bounds.Height.ShouldBeGreaterThan(0);
+        });
+    }
+
+    [Fact]
+    public void Width_Only_Cover_Decode_Leaves_The_Auto_Height_Unbounded()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var source = ImageLoadSource.FromBytes(
+                CreatePng(1004, 986),
+                $"width-only-cover-{Guid.NewGuid():N}",
+                "v1");
+            var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
+            {
+                Width = 200,
+                ItemsSource = [new ImagePreviewItem(source)]
+            };
+            using var host = new PreviewerHost(previewer, renderScaling: 2);
+            var entry = previewer.EffectiveItems.ShouldNotBeNull().Single();
+
+            WaitUntil(() => entry.ThumbnailState == ImageLoadState.Loaded, "width-only cover decode");
+
+            GetThumbnailResultRequestSize(entry).ShouldBe(new PixelSize(400, 0));
+            GetThumbnailPixelSize(entry).Width.ShouldBe(400);
         });
     }
 
@@ -569,6 +708,15 @@ public class ImagePreviewerImageLoadingTests
         return entry.ThumbnailImage.ShouldBeOfType<Bitmap>().PixelSize;
     }
 
+    private static PixelSize? GetThumbnailResultRequestSize(ImagePreviewEntry entry)
+    {
+        return (PixelSize?)typeof(ImagePreviewEntry)
+            .GetField(
+                "_thumbnailResultRequestSize",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!
+            .GetValue(entry);
+    }
+
     private static byte[] CreatePng(int width, int height)
     {
         using var output = new MemoryStream();
@@ -648,7 +796,7 @@ public class ImagePreviewerImageLoadingTests
     {
         private readonly Avalonia.Controls.Window _window;
 
-        internal PreviewerHost(Control previewer)
+        internal PreviewerHost(Control previewer, double? renderScaling = null)
         {
             _window = new Avalonia.Controls.Window
             {
@@ -657,6 +805,11 @@ public class ImagePreviewerImageLoadingTests
                 Content = previewer
             };
             _window.Show();
+            if (renderScaling is not null)
+            {
+                _window.SetRenderScaling(renderScaling.Value);
+                _window.UpdateLayout();
+            }
             Dispatcher.UIThread.RunJobs();
         }
 

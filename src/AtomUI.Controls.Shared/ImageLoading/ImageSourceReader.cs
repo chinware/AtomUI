@@ -98,12 +98,12 @@ internal static class ImageSourceReadHelpers
             var now = DateTimeOffset.UtcNow;
             if (received - lastReportedBytes >= 64 * 1024 || now - lastReport >= TimeSpan.FromMilliseconds(50))
             {
-                progress?.Report(ImageLoadProgress.Create(stage, received, totalBytes));
+                ImageProgressDispatcher.Report(progress, ImageLoadProgress.Create(stage, received, totalBytes));
                 lastReport = now;
                 lastReportedBytes = received;
             }
         }
-        progress?.Report(ImageLoadProgress.Create(stage, received, totalBytes));
+        ImageProgressDispatcher.Report(progress, ImageLoadProgress.Create(stage, received, totalBytes));
         return buffer.ToArray();
     }
 

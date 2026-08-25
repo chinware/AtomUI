@@ -1,6 +1,7 @@
 using AtomUI.Controls;
 using Shouldly;
 using Xunit;
+using System.Reflection;
 
 namespace AtomUI.Controls.Shared.Tests.ImageLoading;
 
@@ -105,6 +106,120 @@ public class ImageLoaderPipelineTests
         first.CacheSource.ShouldBe(ImageCacheSource.Local);
         second.CacheSource.ShouldBe(ImageCacheSource.DecodedMemory);
         codec.DecodeCalls.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task Unversioned_Keyed_Bytes_Do_Not_Reuse_A_Previous_Content()
+    {
+        var codec = new TestCodec();
+        using var loader = CreateLoader(codec);
+        var cancellationToken = TestContext.Current.CancellationToken;
+
+        using var first = await loader.LoadAsync(
+            new ImageLoadRequest(ImageLoadSource.FromBytes(
+                ImageLoadingTestSupport.CreatePngHeader(2, 3),
+                "avatar")),
+            cancellationToken);
+        using var second = await loader.LoadAsync(
+            new ImageLoadRequest(ImageLoadSource.FromBytes(
+                ImageLoadingTestSupport.CreatePngHeader(8, 9),
+                "avatar")),
+            cancellationToken);
+
+        first.OriginalPixelWidth.ShouldBe(2);
+        first.OriginalPixelHeight.ShouldBe(3);
+        second.OriginalPixelWidth.ShouldBe(8);
+        second.OriginalPixelHeight.ShouldBe(9);
+        codec.DecodeCalls.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task Mismatched_Encoded_Memory_Vary_Entry_Is_Treated_As_A_Cache_Miss()
+    {
+        var codec = new TestCodec();
+        using var loader = CreateLoader(codec);
+        var source = ImageLoadSource.FromBytes(
+            ImageLoadingTestSupport.CreatePngHeader(7, 11),
+            "vary-memory",
+            "v1");
+        var request = new ImageLoadRequest(source);
+        var normalized = ImageCacheKey.Normalize(
+            request,
+            ImageLoadingTestSupport.CreateOptions(),
+            forceReload: false);
+        var pipeline = typeof(ImageLoader)
+            .GetField("_pipeline", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .GetValue(loader)!;
+        var encodedCache = pipeline.GetType()
+            .GetField("_encodedCache", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .GetValue(pipeline)!;
+        var mismatched = ImageLoadingTestSupport.CreateContent(
+            ImageLoadingTestSupport.CreatePngHeader(2, 2)) with
+        {
+            VaryHeaders = ["Accept-Language"],
+            VaryDigest = "does-not-match"
+        };
+        encodedCache.GetType()
+            .GetMethod("Set", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .Invoke(encodedCache, [normalized.EncodedKey, mismatched]);
+
+        using var result = await loader.LoadAsync(request, TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue();
+        result.OriginalPixelWidth.ShouldBe(7);
+        result.OriginalPixelHeight.ShouldBe(11);
+        codec.DecodeCalls.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task CacheOnly_File_Request_Uses_Persistent_Entry_Without_Probing_Source()
+    {
+        var directory = Path.Combine(Path.GetTempPath(), $"atomui-image-cache-{Guid.NewGuid():N}");
+        var filePath = Path.Combine(directory, "image.png");
+        Directory.CreateDirectory(directory);
+        await File.WriteAllBytesAsync(
+            filePath,
+            ImageLoadingTestSupport.CreatePngHeader(13, 17),
+            TestContext.Current.CancellationToken);
+        try
+        {
+            var options = ImageLoadingTestSupport.CreateOptions(builder =>
+            {
+                builder.IsPersistentCacheEnabled = true;
+                builder.PersistentCacheDirectory = directory;
+            });
+            var firstCodec = new TestCodec();
+            using (var firstLoader = new ImageLoader(options, [firstCodec]))
+            {
+                using var first = await firstLoader.LoadAsync(
+                    new ImageLoadRequest(ImageLoadSource.FromFile(filePath)),
+                    TestContext.Current.CancellationToken);
+                first.IsSuccess.ShouldBeTrue();
+            }
+
+            File.Delete(filePath);
+            var secondCodec = new TestCodec();
+            using var secondLoader = new ImageLoader(options, [secondCodec]);
+            using var second = await secondLoader.LoadAsync(
+                new ImageLoadRequest(ImageLoadSource.FromFile(filePath))
+                {
+                    Options = new ImageRequestOptions { CacheMode = ImageCacheMode.CacheOnly }
+                },
+                TestContext.Current.CancellationToken);
+
+            second.IsSuccess.ShouldBeTrue();
+            second.OriginalPixelWidth.ShouldBe(13);
+            second.OriginalPixelHeight.ShouldBe(17);
+            second.CacheSource.ShouldBe(ImageCacheSource.Persistent);
+            secondCodec.DecodeCalls.ShouldBe(1);
+        }
+        finally
+        {
+            if (Directory.Exists(directory))
+            {
+                Directory.Delete(directory, recursive: true);
+            }
+        }
     }
 
     [Fact]

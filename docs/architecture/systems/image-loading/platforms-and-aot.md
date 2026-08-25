@@ -87,8 +87,10 @@ stream、不创建 response、不占 decoded buffer。单个大响应通过 stre
 MemoryStream。
 
 Loader snapshot 和 event 只暴露有界 diagnostics：队列长度、active count、cache byte/entry count、hit/miss、取消和错误码计数。
-不包含完整 URI、header、partition、byte buffer 或活动 Control 引用。`LoadEvent` 使用标准强事件语义，订阅方负责 `-=`；
-AtomUI 控件不依赖该 diagnostics event，loader dispose 会清空 handler 列表。
+不包含完整 URI、header、partition、byte buffer 或活动 Control 引用。`LoadEvent` 逐订阅者隔离非致命异常：诊断观察者抛出的普通
+异常不会改变图片请求结果，也不会阻止后续观察者收到同一事件；`OutOfMemoryException`、`StackOverflowException` 和
+`AccessViolationException` 等致命异常仍不会被吞掉。订阅方负责 `-=`；AtomUI 控件不依赖该 diagnostics event，loader dispose
+会清空 handler 列表。
 
 ## AOT 与裁剪
 

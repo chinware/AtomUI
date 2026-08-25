@@ -91,7 +91,8 @@ application-keyed store；静态入口只用于取得 Application，不保存 lo
 `ApplicationScope` 是 loader 的唯一 owner。控件、Previewer、Gallery 和调用方只能释放自己的 `ImageLoadResult`，不能 dispose
 loader。Runtime 先调用 service detach，使 `ImageLoaderStore` 立即停止发布该 loader，再调用 dispose。Loader dispose 的顺序
 固定为：拒绝新请求、取消 root cancellation、使所有在途完成路径只执行资源释放、清空 coordinator、驱逐并释放缓存、关闭
-owned transport/file-cache 资源。同步 dispose 不在 UI 线程阻塞等待任意网络超时；取消 token source、HTTP response、stream
+owned transport/file-cache 资源。没有在途工作时 Dispose 保持同步完成；如果 UI 线程上仍有在途工作，则只执行拒绝新请求和取消 root token，
+把剩余管线 drain 转移到后台，不能同步等待 dispatcher、网络或解码 worker。取消 token source、HTTP response、stream
 和图片释放不得在持有 coordinator/cache lock 时执行。
 
 ## 注册语义
@@ -139,7 +140,8 @@ flowchart TD
 7. 调用方在 UI dispatcher 校验 generation 后提交结果；过期结果立即释放。
 
 `ImageLoaderPipeline` 编排阶段，`ImageRequestCoordinator` 拥有两级 in-flight map 和 waiter，
-`ImageRequestScheduler` 拥有下载/读取与解码两个独立并发池。Cache 不启动任务，transport 不写 decoded cache，codec 不做
+`ImageRequestScheduler` 拥有 HTTP 下载、本地读取与解码三个独立并发池。慢网络不能占用 Asset/File/Storage/Bytes/Stream
+的本地读取槽位；本地读取仍使用独立的有界队列，不能退化为无限并发。Cache 不启动任务，transport 不写 decoded cache，codec 不做
 HTTP 或控件状态提交，职责不能重新揉进 `ImageLoader` 巨型类。
 
 ## 身份与键
@@ -181,7 +183,8 @@ timeout 也是 waiter-local cancellation，计时从请求接纳而非取得 sch
 
 ## 调度与优先级
 
-下载/读取池和 decode 池各自限制并发，排队项共享以下优先级：
+HTTP 下载池、本地读取池和 decode 池各自限制并发，排队项共享以下优先级。`MaxConcurrentDownloads` 只约束 HTTP，
+本地 source 不得因远程请求超时、限流或连接失败而发生队首阻塞：
 
 | 场景 | 优先级 |
 | --- | --- |

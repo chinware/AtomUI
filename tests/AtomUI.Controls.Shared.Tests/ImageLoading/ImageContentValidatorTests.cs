@@ -83,6 +83,50 @@ public class ImageContentValidatorTests
     }
 
     [Fact]
+    public void Static_Gif_With_Comma_Byte_In_Image_Data_Is_Not_Marked_Animated()
+    {
+        var bytes = new byte[]
+        {
+            (byte)'G', (byte)'I', (byte)'F', (byte)'8', (byte)'9', (byte)'a',
+            1, 0, 1, 0, 0, 0, 0,
+            0x2c, 0, 0, 0, 0, 1, 0, 1, 0, 0,
+            0x02, 0x01, 0x2c, 0x00, 0x3b
+        };
+
+        var probe = new ImageContentValidator(ImageLoadingTestSupport.CreateOptions()).Validate(
+            ImageLoadingTestSupport.CreateContent(bytes, "image/gif"),
+            ImageLoadSource.FromBytes(new byte[] { 1 }, "gif", "v1"));
+
+        probe.IsAnimated.ShouldBeFalse();
+        probe.PixelWidth.ShouldBe(1);
+        probe.PixelHeight.ShouldBe(1);
+    }
+
+    [Fact]
+    public void Extreme_Png_And_Bmp_Dimensions_Return_Typed_Failures()
+    {
+        var png = ImageLoadingTestSupport.CreatePngHeader();
+        png[16] = 0xff;
+        png[17] = 0xff;
+        png[18] = 0xff;
+        png[19] = 0xff;
+        AssertFailure(
+            ImageLoadErrorCode.DimensionLimitExceeded,
+            ImageLoadingTestSupport.CreateContent(png),
+            ImageLoadSource.FromBytes(new byte[] { 1 }, "png", "overflow"));
+
+        var bmp = new byte[26];
+        bmp[0] = (byte)'B';
+        bmp[1] = (byte)'M';
+        System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(bmp.AsSpan(18, 4), int.MinValue);
+        System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(bmp.AsSpan(22, 4), 1);
+        AssertFailure(
+            ImageLoadErrorCode.DimensionLimitExceeded,
+            ImageLoadingTestSupport.CreateContent(bmp, "image/bmp"),
+            ImageLoadSource.FromBytes(new byte[] { 1 }, "bmp", "overflow"));
+    }
+
+    [Fact]
     public void Empty_Markup_And_Unknown_Bytes_Are_Rejected_With_Typed_Errors()
     {
         AssertFailure(

@@ -6,7 +6,10 @@ internal sealed class ImageFileCache : IDisposable
     private readonly string _directory;
     private readonly long _maxBytes;
     private readonly int _maxEntries;
-    private bool _disposed;
+    private readonly object _lifecycleGate = new();
+    private int _activeOperations;
+    private int _disposed;
+    private bool _gateDisposed;
 
     internal ImageFileCache(string directory, long maxBytes, int maxEntries)
     {
@@ -23,12 +26,17 @@ internal sealed class ImageFileCache : IDisposable
         ImageEncodedCacheKey key,
         CancellationToken cancellationToken)
     {
-        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        await EnterAsync(cancellationToken).ConfigureAwait(false);
         try
         {
             ThrowIfDisposed();
             var dataPath = GetDataPath(key);
             var metadataPath = GetMetadataPath(key);
+            await using var keyLock = TryAcquireKeyLock(key);
+            if (keyLock is null)
+            {
+                return null;
+            }
             if (!File.Exists(dataPath) || !File.Exists(metadataPath))
             {
                 return null;
@@ -44,10 +52,16 @@ internal sealed class ImageFileCache : IDisposable
                     4096,
                     FileOptions.Asynchronous | FileOptions.SequentialScan))
                 {
+                    if (metadataStream.Length > 64 * 1024)
+                    {
+                        throw new InvalidDataException("Image cache metadata is too large.");
+                    }
                     metadata = ImageFileCacheMetadata.Read(metadataStream);
                 }
                 if (metadata.PartitionHash != key.PartitionHash ||
-                    metadata.SecurityPolicyVersion != 1)
+                    metadata.SecurityPolicyVersion != 1 ||
+                    metadata.ContentLength < 0 ||
+                    metadata.ContentLength > _maxBytes)
                 {
                     DeleteEntryCore(key);
                     return null;
@@ -63,7 +77,7 @@ internal sealed class ImageFileCache : IDisposable
                 File.SetLastAccessTimeUtc(metadataPath, DateTime.UtcNow);
                 return metadata.ToContent(bytes);
             }
-            catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or InvalidDataException)
+            catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or InvalidDataException or ArgumentException)
             {
                 DeleteEntryCore(key);
                 return null;
@@ -72,6 +86,7 @@ internal sealed class ImageFileCache : IDisposable
         finally
         {
             _gate.Release();
+            ExitOperation();
         }
     }
 
@@ -84,13 +99,18 @@ internal sealed class ImageFileCache : IDisposable
         {
             return;
         }
-        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        await EnterAsync(cancellationToken).ConfigureAwait(false);
         try
         {
             ThrowIfDisposed();
             Directory.CreateDirectory(_directory);
             var dataPath = GetDataPath(key);
             var metadataPath = GetMetadataPath(key);
+            await using var keyLock = TryAcquireKeyLock(key);
+            if (keyLock is null)
+            {
+                return;
+            }
             var dataTemp = dataPath + $".{Guid.NewGuid():N}.tmp";
             var metadataTemp = metadataPath + $".{Guid.NewGuid():N}.tmp";
             try
@@ -120,12 +140,13 @@ internal sealed class ImageFileCache : IDisposable
         finally
         {
             _gate.Release();
+            ExitOperation();
         }
     }
 
     internal async Task ClearAsync(string? partitionHash, CancellationToken cancellationToken)
     {
-        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        await EnterAsync(cancellationToken).ConfigureAwait(false);
         try
         {
             ThrowIfDisposed();
@@ -133,12 +154,14 @@ internal sealed class ImageFileCache : IDisposable
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 var key = Path.GetFileNameWithoutExtension(metadataPath);
+                string? entryPartition = null;
                 if (partitionHash is not null)
                 {
                     try
                     {
                         using var stream = File.OpenRead(metadataPath);
-                        if (ImageFileCacheMetadata.Read(stream).PartitionHash != partitionHash)
+                        entryPartition = ImageFileCacheMetadata.Read(stream).PartitionHash;
+                        if (entryPartition != partitionHash)
                         {
                             continue;
                         }
@@ -148,6 +171,24 @@ internal sealed class ImageFileCache : IDisposable
                         // Corrupt metadata is removed by the same clear pass.
                     }
                 }
+                else
+                {
+                    try
+                    {
+                        using var stream = File.OpenRead(metadataPath);
+                        entryPartition = ImageFileCacheMetadata.Read(stream).PartitionHash;
+                    }
+                    catch
+                    {
+                        // Corrupt metadata is removed by the same clear pass.
+                    }
+                }
+                await using var keyLock = TryAcquireKeyLock(
+                    new ImageEncodedCacheKey(key, entryPartition ?? string.Empty));
+                if (keyLock is null)
+                {
+                    continue;
+                }
                 TryDelete(Path.Combine(_directory, key + ".bin"));
                 TryDelete(metadataPath);
             }
@@ -155,6 +196,7 @@ internal sealed class ImageFileCache : IDisposable
         finally
         {
             _gate.Release();
+            ExitOperation();
         }
     }
 
@@ -162,22 +204,31 @@ internal sealed class ImageFileCache : IDisposable
         ImageEncodedCacheKey key,
         CancellationToken cancellationToken)
     {
-        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        await EnterAsync(cancellationToken).ConfigureAwait(false);
         try
         {
             ThrowIfDisposed();
+            await using var keyLock = TryAcquireKeyLock(key);
+            if (keyLock is null)
+            {
+                return;
+            }
             DeleteEntryCore(key);
         }
         finally
         {
             _gate.Release();
+            ExitOperation();
         }
     }
 
     public void Dispose()
     {
-        _disposed = true;
-        _gate.Dispose();
+        Interlocked.Exchange(ref _disposed, 1);
+        lock (_lifecycleGate)
+        {
+            DisposeGateIfIdle();
+        }
     }
 
     private void TrimCore()
@@ -193,6 +244,12 @@ internal sealed class ImageFileCache : IDisposable
             var entry = entries[index++];
             bytes -= entry.Length;
             var key = Path.GetFileNameWithoutExtension(entry.Name);
+            using var keyLock = TryAcquireKeyLock(new ImageEncodedCacheKey(key, string.Empty));
+            if (keyLock is null)
+            {
+                bytes += entry.Length;
+                continue;
+            }
             TryDelete(entry.FullName);
             TryDelete(Path.Combine(_directory, key + ".meta"));
         }
@@ -209,7 +266,11 @@ internal sealed class ImageFileCache : IDisposable
             var key = Path.GetFileNameWithoutExtension(dataPath);
             if (!File.Exists(Path.Combine(_directory, key + ".meta")))
             {
-                TryDelete(dataPath);
+                using var keyLock = TryAcquireKeyLock(new ImageEncodedCacheKey(key, string.Empty));
+                if (keyLock is not null)
+                {
+                    TryDelete(dataPath);
+                }
             }
         }
         foreach (var metadataPath in Directory.EnumerateFiles(_directory, "*.meta"))
@@ -217,7 +278,11 @@ internal sealed class ImageFileCache : IDisposable
             var key = Path.GetFileNameWithoutExtension(metadataPath);
             if (!File.Exists(Path.Combine(_directory, key + ".bin")))
             {
-                TryDelete(metadataPath);
+                using var keyLock = TryAcquireKeyLock(new ImageEncodedCacheKey(key, string.Empty));
+                if (keyLock is not null)
+                {
+                    TryDelete(metadataPath);
+                }
             }
         }
     }
@@ -231,6 +296,30 @@ internal sealed class ImageFileCache : IDisposable
     private string GetDataPath(ImageEncodedCacheKey key) => Path.Combine(_directory, key.Value + ".bin");
 
     private string GetMetadataPath(ImageEncodedCacheKey key) => Path.Combine(_directory, key.Value + ".meta");
+
+    private FileStream? TryAcquireKeyLock(ImageEncodedCacheKey key)
+    {
+        try
+        {
+            return new FileStream(
+                GetLockPath(key),
+                FileMode.OpenOrCreate,
+                FileAccess.ReadWrite,
+                FileShare.None,
+                1,
+                FileOptions.Asynchronous);
+        }
+        catch (IOException)
+        {
+            return null;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return null;
+        }
+    }
+
+    private string GetLockPath(ImageEncodedCacheKey key) => Path.Combine(_directory, key.Value + ".lock");
 
     private static void TryDelete(string path)
     {
@@ -248,6 +337,42 @@ internal sealed class ImageFileCache : IDisposable
 
     private void ThrowIfDisposed()
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        ObjectDisposedException.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
+    }
+
+    private async Task EnterAsync(CancellationToken cancellationToken)
+    {
+        lock (_lifecycleGate)
+        {
+            ThrowIfDisposed();
+            _activeOperations++;
+        }
+        try
+        {
+            await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        }
+        catch
+        {
+            ExitOperation();
+            throw;
+        }
+    }
+
+    private void ExitOperation()
+    {
+        lock (_lifecycleGate)
+        {
+            _activeOperations--;
+            DisposeGateIfIdle();
+        }
+    }
+
+    private void DisposeGateIfIdle()
+    {
+        if (Volatile.Read(ref _disposed) != 0 && _activeOperations == 0 && !_gateDisposed)
+        {
+            _gateDisposed = true;
+            _gate.Dispose();
+        }
     }
 }

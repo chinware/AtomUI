@@ -51,9 +51,11 @@ file cache 读取必须先验证 metadata 版本、长度、内容摘要和安�
 本地 Asset/File/Storage 的版本判断由 source reader 提供。没有稳定 version 的 Stream/Bytes/Storage source 不进入持久缓存。
 错误结果和 4xx/5xx 不做负缓存；重试只由新的显式请求或 `Reload()` 发起。
 
-File cache entry 保存规范路径、长度和 last-write token；Default 复用前由 reader probe 比较，变化即失效。Asset 在单个
+File cache entry 保存规范路径、长度和 last-write token；`Default` 复用前由 reader probe 比较，变化即失效。Asset 在单个
 Application build/resource identity 内视为不可变；StorageFile 优先使用调用方 version，未提供稳定 version 时只允许当前
-对象生命周期 memory reuse。`CacheOnly` 不访问原始 File/Storage 做 probe，因此缺少可证明 freshness 的本地条目按 miss 处理。
+对象生命周期 memory reuse。`CacheOnly` 明确禁止访问原始 File/Storage/Stream 做 freshness probe，但允许使用已经通过
+metadata、摘要和当前内容安全策略校验的本地缓存 body；这是一项显式的 stale-cache 选择，不代表 `Default` 可以跳过 freshness
+检查。远程 HTTP 条目仍必须满足当前可接受的 freshness/validator 规则，不能因为 `CacheOnly` 绕过网络一致性策略。
 
 ## HTTP 缓存一致性
 
@@ -151,6 +153,9 @@ SVG 默认均不属于 trusted vector；要支持应用生成的非 Asset vector
 - 文件名只包含 encoded key 的加密哈希；metadata 使用版本化、AOT-safe 的显式序列化格式。
 - 写入采用同目录临时文件、flush、原子 replace/rename；崩溃残留临时文件在下次启动清理。
 - 一个跨进程 lock 保护同 key 写入；竞争失败可以回退网络，不允许读半文件。
+- lock 名称按 encoded key 稳定存在，不能在释放句柄后无条件删除：在 Unix 上这会产生删除后重新创建同名 lock 的
+  TOCTOU 窗口并破坏跨进程互斥。lock 文件不计入 encoded byte/entry 限额，启动恢复只清理临时文件和孤儿 bin/meta；
+  宿主若长期生成大量历史 key，应把持久缓存目录按应用/租户生命周期整体淘汰，而不是由 loader 删除可能仍被其他进程使用的 lock。
 - LRU index 可重建，index 损坏不能使整个 loader 启动失败。
 - 清理遵守 byte/entry 双上限，删除失败记录 diagnostics 并继续，不阻塞 UI 线程。
 - Browser 构建不注册 file-cache implementation；即使配置启用也在启动阶段以明确 diagnostics 失败，而不是静默退化。

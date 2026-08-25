@@ -84,15 +84,15 @@
             <DataTemplate x:DataType="vm:AvatarViewModel">
         <StackPanel Orientation="Horizontal" Spacing="10">
             <atom:Avatar Size="64"
-                         Source="https://api.dicebear.com/7.x/miniavs/svg?seed=1"
+                         Source="https://api.dicebear.com/7.x/miniavs/png?seed=1&amp;size=128"
                          FallbackSource="avares://AtomUIGallery/Assets/AvatarShowCase/AntDesign.svg" />
             <atom:Avatar SizeType="Large"
-                         Source="https://api.dicebear.com/7.x/miniavs/svg?seed=2"
+                         Source="https://api.dicebear.com/7.x/miniavs/png?seed=2&amp;size=128"
                          FallbackSource="avares://AtomUIGallery/Assets/AvatarShowCase/AntDesign.svg" />
-            <atom:Avatar Source="https://api.dicebear.com/7.x/miniavs/svg?seed=3"
+            <atom:Avatar Source="https://api.dicebear.com/7.x/miniavs/png?seed=3&amp;size=128"
                          FallbackSource="avares://AtomUIGallery/Assets/AvatarShowCase/AntDesign.svg" />
             <atom:Avatar Shape="Square"
-                         Source="https://api.dicebear.com/7.x/miniavs/svg?seed=4"
+                         Source="https://api.dicebear.com/7.x/miniavs/png?seed=4&amp;size=128"
                          FallbackSource="avares://AtomUIGallery/Assets/AvatarShowCase/AntDesign.svg" />
         </StackPanel>
             </DataTemplate>

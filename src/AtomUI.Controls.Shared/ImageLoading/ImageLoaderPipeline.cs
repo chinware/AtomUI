@@ -33,7 +33,10 @@ internal sealed class ImageLoaderPipeline : IDisposable
                 options.PersistentCacheBytes,
                 options.PersistentCacheEntries)
             : null;
-        _scheduler = new ImageRequestScheduler(options.MaxConcurrentDownloads, options.MaxConcurrentDecodes);
+        _scheduler = new ImageRequestScheduler(
+            options.MaxConcurrentDownloads,
+            options.MaxConcurrentLocalReads,
+            options.MaxConcurrentDecodes);
         _coordinator = new ImageRequestCoordinator();
         _validator = new ImageContentValidator(options);
         _codecs = new ImageCodecRegistry(codecs);
@@ -54,6 +57,12 @@ internal sealed class ImageLoaderPipeline : IDisposable
     internal int QueuedReads => _scheduler.QueuedReads;
     internal int ActiveDecodes => _scheduler.ActiveDecodes;
     internal int QueuedDecodes => _scheduler.QueuedDecodes;
+    internal bool HasInFlightWork =>
+        _coordinator.HasInFlightOperations ||
+        ActiveReads != 0 ||
+        QueuedReads != 0 ||
+        ActiveDecodes != 0 ||
+        QueuedDecodes != 0;
     internal int EncodedCacheEntries => _encodedCache.Count;
     internal long EncodedCacheBytes => _encodedCache.Bytes;
     internal int DecodedCacheEntries => _decodedCache.Count;
@@ -64,11 +73,11 @@ internal sealed class ImageLoaderPipeline : IDisposable
         CancellationToken cancellationToken)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        request.Progress?.Report(ImageLoadProgress.Create(ImageLoadStage.Resolving));
+        ImageProgressDispatcher.Report(request.Progress, ImageLoadProgress.Create(ImageLoadStage.Resolving));
         if (CanReadDecodedCache(request.CacheMode) &&
             _decodedCache.TryGet(request.DecodedKey, out var cachedEntry))
         {
-            request.Progress?.Report(ImageLoadProgress.Create(ImageLoadStage.CacheLookup));
+            ImageProgressDispatcher.Report(request.Progress, ImageLoadProgress.Create(ImageLoadStage.CacheLookup));
             return cachedEntry!.AcquireResult(
                 ImageCacheSource.DecodedMemory,
                 request.Timing.Snapshot());
@@ -213,10 +222,12 @@ internal sealed class ImageLoaderPipeline : IDisposable
             {
                 _encodedCache.Remove(request.EncodedKey);
             }
-            if (CanUseWithoutSourceProbe(request, cached!))
+            if (cached is not null &&
+                (CanUseWithoutSourceProbe(request, cached) ||
+                 CanUseCacheOnlyWithoutSourceProbe(request)))
             {
-                _validator.Validate(cached!, request.Source);
-                return cached!;
+                _validator.Validate(cached, request.Source);
+                return cached;
             }
         }
 
@@ -228,7 +239,9 @@ internal sealed class ImageLoaderPipeline : IDisposable
                 await _fileCache.RemoveAsync(request.EncodedKey, cancellationToken).ConfigureAwait(false);
                 cached = null;
             }
-            if (cached is not null && CanUseWithoutSourceProbe(request, cached))
+            if (cached is not null &&
+                (CanUseWithoutSourceProbe(request, cached) ||
+                 CanUseCacheOnlyWithoutSourceProbe(request)))
             {
                 _validator.Validate(cached, request.Source);
                 _encodedCache.Set(request.EncodedKey, cached);
@@ -247,6 +260,7 @@ internal sealed class ImageLoaderPipeline : IDisposable
 
         context.Report(ImageLoadProgress.Create(ImageLoadStage.Queued));
         var result = await _scheduler.ScheduleReadAsync(
+            request.Source.Kind,
             token => _readers.Get(request.Source.Kind).ReadAsync(
                 request,
                 cached,
@@ -308,6 +322,13 @@ internal sealed class ImageLoaderPipeline : IDisposable
             _ => false
         };
     }
+
+    private static bool CanUseCacheOnlyWithoutSourceProbe(NormalizedImageRequest request) =>
+        request.CacheMode == ImageCacheMode.CacheOnly &&
+        request.Source.Kind is ImageLoadSourceKind.Asset or
+            ImageLoadSourceKind.File or
+            ImageLoadSourceKind.StorageFile or
+            ImageLoadSourceKind.Stream;
 
     private static bool MatchesVary(
         NormalizedImageRequest request,

@@ -22,10 +22,11 @@
                                 MinWidth="{atom:ImagePreviewerTokenResource CoverImageWidth}"
                                 MinHeight="{atom:ImagePreviewerTokenResource CoverImageWidth}"
                                 Background="{atom:SharedTokenResource ColorFillTertiary}"
-                                IsVisible="{TemplateBinding IsLoading}">
+                                IsVisible="False">
                             <Panel HorizontalAlignment="Center"
                                    VerticalAlignment="Center">
-                                <atom:SkeletonImage IsActive="True"
+                                <atom:SkeletonImage Name="PART_LoadingSkeleton"
+                                                    IsActive="False"
                                                     IsVisible="{TemplateBinding LoadingContent, Converter={x:Static ObjectConverters.IsNull}}" />
                                 <ContentPresenter Content="{TemplateBinding LoadingContent}"
                                                   ContentTemplate="{TemplateBinding LoadingContentTemplate}"
@@ -40,7 +41,7 @@
                                 MinWidth="{atom:ImagePreviewerTokenResource CoverImageWidth}"
                                 MinHeight="{atom:ImagePreviewerTokenResource CoverImageWidth}"
                                 Background="{atom:SharedTokenResource ColorFillTertiary}"
-                                IsVisible="{TemplateBinding IsFailed}">
+                                IsVisible="{TemplateBinding HasError}">
                             <Panel HorizontalAlignment="Center"
                                    VerticalAlignment="Center">
                                 <StackPanel Name="DefaultErrorLayout"
@@ -92,6 +93,13 @@
             <Setter Property="Width" Value="48" />
             <Setter Property="Height" Value="48" />
             <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorTextTertiary}" />
+        </Style>
+
+        <Style Selector="^:loading:not(:has-image) /template/ Border#PART_LoadingPresenter">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:loading-skeleton /template/ atom|SkeletonImage#PART_LoadingSkeleton">
+            <Setter Property="IsActive" Value="True" />
         </Style>
 
         <Style Selector="^[IsCoverMaskVisible=True]:pointerover">

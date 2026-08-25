@@ -8,8 +8,8 @@ namespace AtomUI.Desktop.Controls;
 
 internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
 {
-    private CancellationTokenSource? _fullCancellation;
-    private CancellationTokenSource? _thumbnailCancellation;
+    private ImageCancellationState? _fullCancellation;
+    private ImageCancellationState? _thumbnailCancellation;
     private ImageLoadResult? _fullResult;
     private ImageLoadResult? _thumbnailResult;
     private PixelSize? _fullRequestSize;
@@ -167,20 +167,20 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
         }
         var generation = ++_fullGeneration;
         Cancel(ref _fullCancellation);
-        var cancellation = new CancellationTokenSource();
+        var cancellation = new ImageCancellationState();
         _fullCancellation = cancellation;
         _fullRequestSize = requestSize;
         _fullRequestPriority = priority;
         FullError = null;
         FullProgress = null;
         FullState = ImageLoadState.Loading;
-        _ = LoadFullAsync(
+        _ = ObserveAsync(LoadFullAsync(
             generation,
             decodePixelWidth,
             decodePixelHeight,
             priority,
             reload,
-            cancellation);
+            cancellation));
     }
 
     internal void LoadThumbnail(
@@ -204,20 +204,20 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
         }
         var generation = ++_thumbnailGeneration;
         Cancel(ref _thumbnailCancellation);
-        var cancellation = new CancellationTokenSource();
+        var cancellation = new ImageCancellationState();
         _thumbnailCancellation = cancellation;
         _thumbnailRequestSize = requestSize;
         _thumbnailRequestPriority = priority;
         ThumbnailError = null;
         ThumbnailProgress = null;
         ThumbnailState = ImageLoadState.Loading;
-        _ = LoadThumbnailAsync(
+        _ = ObserveAsync(LoadThumbnailAsync(
             generation,
             decodePixelWidth,
             decodePixelHeight,
             priority,
             reload,
-            cancellation);
+            cancellation));
     }
 
     internal void CancelFullLoad()
@@ -310,7 +310,7 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
         int height,
         ImageRequestPriority priority,
         bool reload,
-        CancellationTokenSource cancellation)
+        ImageCancellationState cancellation)
     {
         try
         {
@@ -322,10 +322,20 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
                 reload,
                 progress => PublishFullProgress(generation, progress),
                 cancellation.Token).ConfigureAwait(false);
-            await Dispatcher.UIThread.InvokeAsync(() => CommitFull(
-                generation,
-                new PixelSize(width, height),
-                result));
+            ImageLoadResult? pending = result;
+            try
+            {
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    var owned = pending!;
+                    pending = null;
+                    CommitFull(generation, new PixelSize(width, height), owned);
+                });
+            }
+            finally
+            {
+                pending?.Dispose();
+            }
         }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
         {
@@ -342,7 +352,7 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
         int height,
         ImageRequestPriority priority,
         bool reload,
-        CancellationTokenSource cancellation)
+        ImageCancellationState cancellation)
     {
         try
         {
@@ -354,10 +364,20 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
                 reload,
                 progress => PublishThumbnailProgress(generation, progress),
                 cancellation.Token).ConfigureAwait(false);
-            await Dispatcher.UIThread.InvokeAsync(() => CommitThumbnail(
-                generation,
-                new PixelSize(width, height),
-                result));
+            ImageLoadResult? pending = result;
+            try
+            {
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    var owned = pending!;
+                    pending = null;
+                    CommitThumbnail(generation, new PixelSize(width, height), owned);
+                });
+            }
+            finally
+            {
+                pending?.Dispose();
+            }
         }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
         {
@@ -416,7 +436,7 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
         {
             throw;
         }
-        catch (Exception exception)
+        catch (Exception exception) when (ImageLoadEventDispatcher.IsNonFatal(exception))
         {
             return new ImageLoadResult(new ImageLoadError(
                 ImageLoadErrorCode.InvalidSource,
@@ -492,27 +512,42 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
 
     private void PublishFullProgress(long generation, ImageLoadProgress progress)
     {
-        Dispatcher.UIThread.Post(() =>
+        try
         {
-            if (!_disposed && generation == _fullGeneration && FullState == ImageLoadState.Loading)
+            Dispatcher.UIThread.Post(() =>
             {
-                FullProgress = progress;
-            }
-        });
+                if (!_disposed && generation == _fullGeneration && FullState == ImageLoadState.Loading)
+                {
+                    FullProgress = progress;
+                }
+            });
+        }
+        catch (InvalidOperationException)
+        {
+        }
+        catch (Exception exception) when (ImageLoadEventDispatcher.IsNonFatal(exception))
+        {
+        }
     }
 
     private void PublishThumbnailProgress(long generation, ImageLoadProgress progress)
     {
-        Dispatcher.UIThread.Post(() =>
+        try
         {
-            if (!_disposed && generation == _thumbnailGeneration && ThumbnailState == ImageLoadState.Loading)
+            Dispatcher.UIThread.Post(() =>
             {
-                ThumbnailProgress = progress;
-            }
-        });
+                if (!_disposed && generation == _thumbnailGeneration && ThumbnailState == ImageLoadState.Loading)
+                {
+                    ThumbnailProgress = progress;
+                }
+            });
+        }
+        catch (InvalidOperationException)
+        {
+        }
     }
 
-    private static void Cancel(ref CancellationTokenSource? cancellation)
+    private static void Cancel(ref ImageCancellationState? cancellation)
     {
         var current = Interlocked.Exchange(ref cancellation, null);
         if (current is null)
@@ -520,17 +555,32 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
             return;
         }
         current.Cancel();
-        current.Dispose();
+        current.ReleaseController();
+    }
+
+    private static async Task ObserveAsync(Task task)
+    {
+        try
+        {
+            await task.ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (InvalidOperationException)
+        {
+        }
     }
 
     private static void CompleteCancellation(
-        ref CancellationTokenSource? field,
-        CancellationTokenSource cancellation)
+        ref ImageCancellationState? field,
+        ImageCancellationState cancellation)
     {
         if (ReferenceEquals(Interlocked.CompareExchange(ref field, null, cancellation), cancellation))
         {
-            cancellation.Dispose();
+            cancellation.ReleaseController();
         }
+        cancellation.ReleaseOperation();
     }
 
     private static bool RequiresLoad(
@@ -548,10 +598,25 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
         }
         return state switch
         {
-            ImageLoadState.Loading => activeRequestSize != requestSize || priority < activePriority,
-            ImageLoadState.Loaded => resultRequestSize != requestSize,
+            ImageLoadState.Loading => !Covers(activeRequestSize, requestSize) || priority < activePriority,
+            ImageLoadState.Loaded => !Covers(resultRequestSize, requestSize),
             _ => true
         };
+    }
+
+    private static bool Covers(PixelSize? existingRequestSize, PixelSize requestedSize)
+    {
+        if (existingRequestSize is not { } existing)
+        {
+            return false;
+        }
+        return CoversAxis(existing.Width, requestedSize.Width) &&
+               CoversAxis(existing.Height, requestedSize.Height);
+    }
+
+    private static bool CoversAxis(int existing, int requested)
+    {
+        return existing == 0 || requested > 0 && existing >= requested;
     }
 
     private void RaisePropertyChanged(string propertyName)

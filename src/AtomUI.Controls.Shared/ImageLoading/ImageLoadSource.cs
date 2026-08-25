@@ -151,7 +151,7 @@ public sealed class ImageLoadSource
         ArgumentNullException.ThrowIfNull(storageFile);
         ValidateOptionalKey(cacheKey, nameof(cacheKey));
         ValidateOptionalKey(version, nameof(version));
-        var identity = cacheKey is not null
+        var identity = cacheKey is not null && version is not null
             ? $"storage:key:{cacheKey}:{version}"
             : $"storage:object:{GetObjectIdentity(storageFile)}";
         return new ImageLoadSource(
@@ -171,7 +171,7 @@ public sealed class ImageLoadSource
         ValidateOptionalKey(cacheKey, nameof(cacheKey));
         ValidateOptionalKey(version, nameof(version));
         var copy = bytes.ToArray();
-        var identity = cacheKey is not null
+        var identity = cacheKey is not null && version is not null
             ? $"bytes:key:{cacheKey}:{version}"
             : $"bytes:object:{GetObjectIdentity(copy)}";
         return new ImageLoadSource(
@@ -192,7 +192,7 @@ public sealed class ImageLoadSource
         ArgumentNullException.ThrowIfNull(openStream);
         ValidateOptionalKey(cacheKey, nameof(cacheKey));
         ValidateOptionalKey(version, nameof(version));
-        var identity = cacheKey is not null
+        var identity = cacheKey is not null && version is not null
             ? $"stream:key:{cacheKey}:{version}"
             : $"stream:object:{GetObjectIdentity(openStream)}";
         return new ImageLoadSource(

@@ -16,6 +16,8 @@ public sealed class ImageLoadingOptionsBuilder
 
     public int MaxConcurrentDownloads { get; set; } = OperatingSystem.IsBrowser() ? 4 : 6;
 
+    internal int MaxConcurrentLocalReads { get; set; } = OperatingSystem.IsBrowser() ? 4 : 16;
+
     public int MaxConcurrentDecodes { get; set; } = OperatingSystem.IsBrowser()
         ? 2
         : Math.Min(4, Math.Max(1, Environment.ProcessorCount - 1));
@@ -95,6 +97,7 @@ public sealed class ImageLoadingOptionsBuilder
         }
         return new ImageLoadingOptions(
             MaxConcurrentDownloads,
+            MaxConcurrentLocalReads,
             MaxConcurrentDecodes,
             EncodedMemoryCacheBytes,
             EncodedMemoryCacheEntries,
@@ -122,6 +125,7 @@ public sealed class ImageLoadingOptionsBuilder
         var downloadCap = OperatingSystem.IsBrowser() ? 8 : 32;
         var decodeCap = OperatingSystem.IsBrowser() ? 4 : 8;
         ValidateRange(MaxConcurrentDownloads, 1, downloadCap, nameof(MaxConcurrentDownloads));
+        ValidateRange(MaxConcurrentLocalReads, 1, 32, nameof(MaxConcurrentLocalReads));
         ValidateRange(MaxConcurrentDecodes, 1, decodeCap, nameof(MaxConcurrentDecodes));
         ValidatePositive(EncodedMemoryCacheBytes, nameof(EncodedMemoryCacheBytes));
         ValidatePositive(EncodedMemoryCacheEntries, nameof(EncodedMemoryCacheEntries));

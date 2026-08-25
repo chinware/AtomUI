@@ -39,7 +39,7 @@ internal sealed class ImageLoadTimingTracker
             _currentStage = value.Stage;
             _currentStageStarted = now;
         }
-        progress?.Report(value);
+        ImageProgressDispatcher.Report(progress, value);
     }
 
     private static void AddDuration(

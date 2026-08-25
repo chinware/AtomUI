@@ -121,7 +121,7 @@ public class ImageCacheTests
     }
 
     [Fact]
-    public void File_Cache_Startup_Removes_Temporary_And_Orphaned_Files()
+    public void File_Cache_Startup_Removes_Temporary_And_Orphaned_Entries_But_Preserves_Lock_Names()
     {
         var directory = CreateTempDirectory();
         try
@@ -132,7 +132,10 @@ public class ImageCacheTests
 
             using var cache = new ImageFileCache(directory, maxBytes: 100, maxEntries: 10);
 
-            Directory.EnumerateFiles(directory).ShouldBeEmpty();
+            Directory.EnumerateFiles(directory, "*.tmp").ShouldBeEmpty();
+            Directory.EnumerateFiles(directory, "*.bin").ShouldBeEmpty();
+            Directory.EnumerateFiles(directory, "*.meta").ShouldBeEmpty();
+            Directory.EnumerateFiles(directory, "*.lock").Count().ShouldBe(2);
         }
         finally
         {
@@ -158,6 +161,33 @@ public class ImageCacheTests
 
             await cache.RemoveAsync(second, CancellationToken.None);
             (await cache.TryGetAsync(second, CancellationToken.None)).ShouldBeNull();
+        }
+        finally
+        {
+            Directory.Delete(directory, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task File_Cache_Clear_Skips_A_Key_Held_By_Another_Process()
+    {
+        var directory = CreateTempDirectory();
+        try
+        {
+            using var cache = new ImageFileCache(directory, maxBytes: 100, maxEntries: 10);
+            var key = new ImageEncodedCacheKey("held", "partition");
+            await cache.SetAsync(key, ImageLoadingTestSupport.CreateContent([1, 2, 3]), CancellationToken.None);
+
+            using (var heldLock = new FileStream(
+                       Path.Combine(directory, "held.lock"),
+                       FileMode.OpenOrCreate,
+                       FileAccess.ReadWrite,
+                       FileShare.None))
+            {
+                await cache.ClearAsync(null, CancellationToken.None);
+            }
+
+            (await cache.TryGetAsync(key, CancellationToken.None)).ShouldNotBeNull();
         }
         finally
         {

@@ -95,6 +95,53 @@ public class ImageLoaderLifecycleTests
         Volatile.Read(ref underlyingCanceled).ShouldBe(0);
     }
 
+    [Fact]
+    public async Task Unexpected_Source_Exception_Is_Reported_As_A_Typed_Failure()
+    {
+        using var loader = CreateLoader();
+        var source = ImageLoadSource.FromStream(
+            _ => ValueTask.FromException<Stream>(new InvalidOperationException("source failed")),
+            "throwing-source");
+
+        using var result = await loader.LoadAsync(
+            new ImageLoadRequest(source),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.Error.ShouldNotBeNull().Code.ShouldBe(ImageLoadErrorCode.InvalidSource);
+        result.Error.Exception.ShouldBeOfType<InvalidOperationException>();
+    }
+
+    [Fact]
+    public async Task LoadEvent_Observer_Failure_Does_Not_Change_Load_Result_Or_Stop_Other_Observers()
+    {
+        using var loader = CreateLoader();
+        var observed = 0;
+        loader.LoadEvent += (_, _) => throw new InvalidOperationException("diagnostics observer failed");
+        loader.LoadEvent += (_, _) => Interlocked.Increment(ref observed);
+
+        using var result = await loader.LoadAsync(
+            new ImageLoadRequest(ImageLoadSource.FromBytes(ImageLoadingTestSupport.CreatePngHeader())),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue();
+        Volatile.Read(ref observed).ShouldBeGreaterThanOrEqualTo(2);
+    }
+
+    [Fact]
+    public async Task Progress_Observer_Failure_Does_Not_Change_Load_Result()
+    {
+        using var loader = CreateLoader();
+        using var result = await loader.LoadAsync(
+            new ImageLoadRequest(ImageLoadSource.FromBytes(ImageLoadingTestSupport.CreatePngHeader()))
+            {
+                Progress = new ThrowingProgress()
+            },
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue();
+    }
+
     private static ImageLoader CreateLoader()
     {
         return new ImageLoader(
@@ -104,6 +151,11 @@ public class ImageLoaderLifecycleTests
 
     private static TaskCompletionSource NewSignal() =>
         new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+    private sealed class ThrowingProgress : IProgress<ImageLoadProgress>
+    {
+        public void Report(ImageLoadProgress value) => throw new InvalidOperationException("progress observer failed");
+    }
 
     private sealed class PassThroughCodec : ImageCodec
     {

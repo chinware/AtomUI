@@ -181,16 +181,39 @@ internal sealed class HttpImageTransport : IDisposable
                         "Image content exceeds the configured size limit.",
                         request.Source.DisplayName);
                 }
-                progress?.Report(ImageLoadProgress.Create(ImageLoadStage.Downloading));
-                await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-                var bytes = await ImageSourceReadHelpers.ReadAllBytesAsync(
-                    stream,
-                    _options.MaxResponseBytes,
-                    ImageLoadStage.Downloading,
-                    progress,
-                    contentLength,
-                    cancellationToken).ConfigureAwait(false);
-                return CreateContent(bytes, response, request);
+                ImageProgressDispatcher.Report(progress, ImageLoadProgress.Create(ImageLoadStage.Downloading));
+                try
+                {
+                    await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+                    var bytes = await ImageSourceReadHelpers.ReadAllBytesAsync(
+                        stream,
+                        _options.MaxResponseBytes,
+                        ImageLoadStage.Downloading,
+                        progress,
+                        contentLength,
+                        cancellationToken).ConfigureAwait(false);
+                    return CreateContent(bytes, response, request);
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (HttpRequestException exception)
+                {
+                    throw ImageSourceReadHelpers.Failure(
+                        ImageLoadErrorCode.NetworkFailure,
+                        "The image response could not be read.",
+                        request.Source.DisplayName,
+                        exception);
+                }
+                catch (IOException exception)
+                {
+                    throw ImageSourceReadHelpers.Failure(
+                        ImageLoadErrorCode.NetworkFailure,
+                        "The image response could not be read.",
+                        request.Source.DisplayName,
+                        exception);
+                }
             }
         }
     }

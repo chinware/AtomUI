@@ -9,11 +9,12 @@ public class ImageRequestSchedulerTests
     [Fact]
     public async Task Same_Priority_Work_Runs_In_Fifo_Order()
     {
-        using var scheduler = new ImageRequestScheduler(1, 1);
+        using var scheduler = new ImageRequestScheduler(1, 1, 1);
         var blockerStarted = NewSignal();
         var releaseBlocker = NewSignal();
         var order = new List<int>();
         var blocker = scheduler.ScheduleReadAsync(
+            ImageLoadSourceKind.Http,
             async token =>
             {
                 blockerStarted.TrySetResult();
@@ -25,6 +26,7 @@ public class ImageRequestSchedulerTests
         await blockerStarted.Task;
 
         var first = scheduler.ScheduleReadAsync(
+            ImageLoadSourceKind.Http,
             _ =>
             {
                 order.Add(1);
@@ -33,6 +35,7 @@ public class ImageRequestSchedulerTests
             () => ImageRequestPriority.Normal,
             CancellationToken.None);
         var second = scheduler.ScheduleReadAsync(
+            ImageLoadSourceKind.Http,
             _ =>
             {
                 order.Add(2);
@@ -50,12 +53,13 @@ public class ImageRequestSchedulerTests
     [Fact]
     public async Task Queued_Work_Uses_Latest_Promoted_And_Demoted_Priority()
     {
-        using var scheduler = new ImageRequestScheduler(1, 1);
+        using var scheduler = new ImageRequestScheduler(1, 1, 1);
         var blockerStarted = NewSignal();
         var releaseBlocker = NewSignal();
         var order = new List<string>();
         var dynamicPriority = ImageRequestPriority.Low;
         var blocker = scheduler.ScheduleReadAsync(
+            ImageLoadSourceKind.Http,
             async token =>
             {
                 blockerStarted.TrySetResult();
@@ -67,6 +71,7 @@ public class ImageRequestSchedulerTests
         await blockerStarted.Task;
 
         var dynamic = scheduler.ScheduleReadAsync(
+            ImageLoadSourceKind.Http,
             _ =>
             {
                 order.Add("dynamic");
@@ -75,6 +80,7 @@ public class ImageRequestSchedulerTests
             () => dynamicPriority,
             CancellationToken.None);
         var high = scheduler.ScheduleReadAsync(
+            ImageLoadSourceKind.Http,
             _ =>
             {
                 order.Add("high");
@@ -93,6 +99,7 @@ public class ImageRequestSchedulerTests
         releaseBlocker = NewSignal();
         dynamicPriority = ImageRequestPriority.Critical;
         blocker = scheduler.ScheduleReadAsync(
+            ImageLoadSourceKind.Http,
             async token =>
             {
                 blockerStarted.TrySetResult();
@@ -103,6 +110,7 @@ public class ImageRequestSchedulerTests
             CancellationToken.None);
         await blockerStarted.Task;
         dynamic = scheduler.ScheduleReadAsync(
+            ImageLoadSourceKind.Http,
             _ =>
             {
                 order.Add("dynamic");
@@ -111,6 +119,7 @@ public class ImageRequestSchedulerTests
             () => dynamicPriority,
             CancellationToken.None);
         high = scheduler.ScheduleReadAsync(
+            ImageLoadSourceKind.Http,
             _ =>
             {
                 order.Add("high");
@@ -129,11 +138,12 @@ public class ImageRequestSchedulerTests
     public async Task Aging_Promotes_Waiting_Low_Work_Without_Real_Time_Delay()
     {
         var now = DateTimeOffset.UtcNow;
-        using var scheduler = new ImageRequestScheduler(1, 1, () => now);
+        using var scheduler = new ImageRequestScheduler(1, 1, 1, () => now);
         var blockerStarted = NewSignal();
         var releaseBlocker = NewSignal();
         var order = new List<string>();
         var blocker = scheduler.ScheduleReadAsync(
+            ImageLoadSourceKind.Http,
             async token =>
             {
                 blockerStarted.TrySetResult();
@@ -144,6 +154,7 @@ public class ImageRequestSchedulerTests
             CancellationToken.None);
         await blockerStarted.Task;
         var low = scheduler.ScheduleReadAsync(
+            ImageLoadSourceKind.Http,
             _ =>
             {
                 order.Add("low");
@@ -153,6 +164,7 @@ public class ImageRequestSchedulerTests
             CancellationToken.None);
         now = now.AddSeconds(6);
         var normal = scheduler.ScheduleReadAsync(
+            ImageLoadSourceKind.Http,
             _ =>
             {
                 order.Add("normal");
@@ -168,11 +180,43 @@ public class ImageRequestSchedulerTests
     }
 
     [Fact]
+    public async Task Blocked_Http_Download_Does_Not_Block_Local_Read()
+    {
+        using var scheduler = new ImageRequestScheduler(1, 1, 1);
+        var downloadStarted = NewSignal();
+        var releaseDownload = NewSignal();
+        var download = scheduler.ScheduleReadAsync(
+            ImageLoadSourceKind.Http,
+            async token =>
+            {
+                downloadStarted.TrySetResult();
+                await releaseDownload.Task.WaitAsync(token);
+                return 1;
+            },
+            () => ImageRequestPriority.Normal,
+            CancellationToken.None);
+        await downloadStarted.Task;
+
+        var localRead = scheduler.ScheduleReadAsync(
+            ImageLoadSourceKind.Asset,
+            _ => Task.FromResult(2),
+            () => ImageRequestPriority.Normal,
+            CancellationToken.None);
+
+        (await localRead.WaitAsync(
+            TimeSpan.FromSeconds(1),
+            TestContext.Current.CancellationToken)).ShouldBe(2);
+        releaseDownload.TrySetResult();
+        (await download).ShouldBe(1);
+    }
+
+    [Fact]
     public async Task Dispose_Cancels_Active_And_Queued_Work_And_Waits_For_Workers()
     {
-        var scheduler = new ImageRequestScheduler(1, 1);
+        var scheduler = new ImageRequestScheduler(1, 1, 1);
         var activeStarted = NewSignal();
         var active = scheduler.ScheduleReadAsync(
+            ImageLoadSourceKind.Http,
             async token =>
             {
                 activeStarted.TrySetResult();
@@ -183,6 +227,7 @@ public class ImageRequestSchedulerTests
             CancellationToken.None);
         await activeStarted.Task;
         var queued = scheduler.ScheduleReadAsync(
+            ImageLoadSourceKind.Http,
             _ => Task.FromResult(2),
             () => ImageRequestPriority.Normal,
             CancellationToken.None);

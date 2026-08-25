@@ -13,7 +13,7 @@ internal sealed class BorrowedImageSourceReader : ImageSourceReader
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        progress?.Report(ImageLoadProgress.Create(ImageLoadStage.Reading));
+        ImageProgressDispatcher.Report(progress, ImageLoadProgress.Create(ImageLoadStage.Reading));
         return Task.FromResult(new ImageSourceReadResult(BorrowedImage: (IImage)request.Source.Value));
     }
 }

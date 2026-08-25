@@ -272,10 +272,10 @@ public class AsyncImage : TemplatedControl, IImageLoadControl, IImageLoadControl
     }
 
     void IImageLoadControllerHost.RaiseImageOpened(ImageOpenedEventArgs eventArgs) =>
-        ImageOpened?.Invoke(this, eventArgs);
+        ImageLoadEventDispatcher.Dispatch(ImageOpened, this, eventArgs);
 
     void IImageLoadControllerHost.RaiseImageFailed(ImageFailedEventArgs eventArgs) =>
-        ImageFailed?.Invoke(this, eventArgs);
+        ImageLoadEventDispatcher.Dispatch(ImageFailed, this, eventArgs);
 
     private (int Width, int Height)? GetAutoDecodeSize()
     {

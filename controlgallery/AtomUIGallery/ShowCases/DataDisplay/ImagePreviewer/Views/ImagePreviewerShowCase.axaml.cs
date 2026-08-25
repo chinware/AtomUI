@@ -34,6 +34,11 @@ public partial class ImagePreviewerShowCase : GalleryReactiveUserControl<ImagePr
 
     private void EnsurePreviewAssets()
     {
+        if (ReferenceEquals(_activeViewModel, DataContext))
+        {
+            return;
+        }
+
         if (_activeViewModel is not null &&
             !ReferenceEquals(_activeViewModel, DataContext))
         {

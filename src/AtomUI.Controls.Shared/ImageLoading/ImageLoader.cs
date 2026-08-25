@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Avalonia;
+using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -102,6 +103,26 @@ internal sealed class ImageLoader : IImageLoader, IAtomUIOwnedService
         {
             throw new ObjectDisposedException(nameof(ImageLoader));
         }
+        catch (OperationCanceledException exception)
+        {
+            Interlocked.Increment(ref _failedLoads);
+            var error = new ImageLoadError(
+                ImageLoadErrorCode.InvalidSource,
+                "The image source canceled its own load operation.",
+                SourceDisplayName: normalized.Source.DisplayName,
+                Exception: exception);
+            RaiseEvent(
+                ImageLoaderEventKind.Failed,
+                normalized.Source.Kind,
+                ImageCacheSource.None,
+                error.Code,
+                stopwatch.Elapsed);
+            return new ImageLoadResult(error, normalized.Timing.Snapshot());
+        }
+        catch (ObjectDisposedException) when (IsDisposed)
+        {
+            throw new ObjectDisposedException(nameof(ImageLoader));
+        }
         catch (ImageLoadFailureException exception)
         {
             Interlocked.Increment(ref _failedLoads);
@@ -112,6 +133,22 @@ internal sealed class ImageLoader : IImageLoader, IAtomUIOwnedService
                 exception.Error.Code,
                 stopwatch.Elapsed);
             return new ImageLoadResult(exception.Error, normalized.Timing.Snapshot());
+        }
+        catch (Exception exception) when (IsNonFatal(exception))
+        {
+            Interlocked.Increment(ref _failedLoads);
+            var error = new ImageLoadError(
+                ImageLoadErrorCode.InvalidSource,
+                "The image source could not be loaded.",
+                SourceDisplayName: normalized.Source.DisplayName,
+                Exception: exception);
+            RaiseEvent(
+                ImageLoaderEventKind.Failed,
+                normalized.Source.Kind,
+                ImageCacheSource.None,
+                error.Code,
+                stopwatch.Elapsed);
+            return new ImageLoadResult(error, normalized.Timing.Snapshot());
         }
     }
 
@@ -166,8 +203,26 @@ internal sealed class ImageLoader : IImageLoader, IAtomUIOwnedService
         }
         _rootCancellation.Cancel();
         LoadEvent = null;
-        _pipeline.Dispose();
-        _rootCancellation.Dispose();
+        if (Dispatcher.UIThread.CheckAccess() && _pipeline.HasInFlightWork)
+        {
+            _ = Task.Run(DisposePipeline);
+        }
+        else
+        {
+            DisposePipeline();
+        }
+    }
+
+    private void DisposePipeline()
+    {
+        try
+        {
+            _pipeline.Dispose();
+        }
+        finally
+        {
+            _rootCancellation.Dispose();
+        }
     }
 
     private void RaiseEvent(
@@ -177,6 +232,12 @@ internal sealed class ImageLoader : IImageLoader, IAtomUIOwnedService
         ImageLoadErrorCode? errorCode,
         TimeSpan elapsed)
     {
-        LoadEvent?.Invoke(this, new ImageLoaderEventArgs(kind, sourceKind, cacheSource, errorCode, elapsed));
+        ImageLoadEventDispatcher.Dispatch(
+            LoadEvent,
+            this,
+            new ImageLoaderEventArgs(kind, sourceKind, cacheSource, errorCode, elapsed));
     }
+
+    private static bool IsNonFatal(Exception exception) =>
+        exception is not OperationCanceledException && ImageLoadEventDispatcher.IsNonFatal(exception);
 }

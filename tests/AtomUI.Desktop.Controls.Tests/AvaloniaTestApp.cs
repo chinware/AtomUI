@@ -48,6 +48,7 @@ internal sealed class TestApplication : Application
                                          .UseImageLoading(options =>
                                          {
                                              options.MaxConcurrentDownloads = 1;
+                                             options.MaxConcurrentLocalReads = 1;
                                              options.MaxConcurrentDecodes = 1;
                                          })
                                          .UseDesktopColorPicker()

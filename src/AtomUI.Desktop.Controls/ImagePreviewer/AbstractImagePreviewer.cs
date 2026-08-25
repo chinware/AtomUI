@@ -743,14 +743,20 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
             var index = EffectiveItems?.IndexOf(_currentEntry) ?? -1;
             if (state == ImageLoadState.Loaded)
             {
-                ImageOpened?.Invoke(this, new ImagePreviewOpenedEventArgs(
-                    _currentEntry.Item,
-                    index,
-                    _currentEntry.FullCacheSource));
+                ImageLoadEventDispatcher.Dispatch(
+                    ImageOpened,
+                    this,
+                    new ImagePreviewOpenedEventArgs(
+                        _currentEntry.Item,
+                        index,
+                        _currentEntry.FullCacheSource));
             }
             else if (state == ImageLoadState.Failed && _currentEntry.FullError is { } error)
             {
-                ImageFailed?.Invoke(this, new ImagePreviewFailedEventArgs(_currentEntry.Item, index, error));
+                ImageLoadEventDispatcher.Dispatch(
+                    ImageFailed,
+                    this,
+                    new ImagePreviewFailedEventArgs(_currentEntry.Item, index, error));
             }
         }
         _lastNotifiedCurrentState = state;

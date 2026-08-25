@@ -113,6 +113,9 @@ public sealed class ImageLoadingOptionsBuilder
 }
 ```
 
+`MaxConcurrentDownloads` 只限制 HTTP/HTTPS 下载。Asset、File、Storage、Bytes 和 Stream 使用独立的内部有界读取池，
+因此慢网络请求不会阻塞本地图片，同时大量本地 source 也不会形成无限并发。
+
 空 HTTP origin allowlist 表示应用未启用 host 收紧；一旦添加任一 origin，只有 allowlist 成员可以请求。credential forwarding
 allowlist 只影响跨 origin redirect，不能允许 HTTPS downgrade。封闭 source kind 对应的 reader 与 codec registry 由 AtomUI
 包显式静态注册；reader/codec 替换不属于应用 public plug-in API。

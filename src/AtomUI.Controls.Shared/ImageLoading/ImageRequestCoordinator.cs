@@ -64,6 +64,17 @@ internal sealed class ImageRequestCoordinator : IDisposable
         }
     }
 
+    internal bool HasInFlightOperations
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _encoded.Count != 0 || _decoded.Count != 0;
+            }
+        }
+    }
+
     public void Dispose()
     {
         SharedOperationBase[] operations;
@@ -203,7 +214,7 @@ internal sealed class ImageRequestCoordinator : IDisposable
             }
             foreach (var reporter in reporters)
             {
-                reporter.Report(progress);
+                ImageProgressDispatcher.Report(reporter, progress);
             }
         }
     }
@@ -221,6 +232,7 @@ internal sealed class ImageRequestCoordinator : IDisposable
         private readonly Func<SharedOperationContext, CancellationToken, Task<T>> _factory;
         private readonly Action<T>? _releaseValue;
         private readonly CancellationTokenSource _cancellation = new();
+        private readonly object _cancellationGate = new();
         private readonly Dictionary<long, ImageRequestPriority> _waiters = [];
         private readonly SharedOperationContext _context = new();
         private Task<T>? _task;
@@ -287,13 +299,12 @@ internal sealed class ImageRequestCoordinator : IDisposable
                     _cancelRequested |= cancel;
                     release = _hasCompletedValue && !_released;
                     _released |= release;
-                    disposeCancellation = _completed && !_cancellationDisposed;
-                    _cancellationDisposed |= disposeCancellation;
+                    disposeCancellation = _completed;
                 }
             }
             if (cancel)
             {
-                _cancellation.Cancel();
+                CancelCancellation();
             }
             if (release)
             {
@@ -301,7 +312,7 @@ internal sealed class ImageRequestCoordinator : IDisposable
             }
             if (disposeCancellation)
             {
-                _cancellation.Dispose();
+                DisposeCancellation();
             }
         }
 
@@ -315,7 +326,7 @@ internal sealed class ImageRequestCoordinator : IDisposable
             }
             if (cancel)
             {
-                _cancellation.Cancel();
+                CancelCancellation();
             }
         }
 
@@ -347,8 +358,7 @@ internal sealed class ImageRequestCoordinator : IDisposable
                     _completed = true;
                     release = _hasCompletedValue && _waiters.Count == 0 && !_released;
                     _released |= release;
-                    disposeCancellation = _waiters.Count == 0 && !_cancellationDisposed;
-                    _cancellationDisposed |= disposeCancellation;
+                    disposeCancellation = _waiters.Count == 0;
                 }
                 if (release)
                 {
@@ -357,7 +367,7 @@ internal sealed class ImageRequestCoordinator : IDisposable
                 Completed?.Invoke(this, EventArgs.Empty);
                 if (disposeCancellation)
                 {
-                    _cancellation.Dispose();
+                    DisposeCancellation();
                 }
             }
         }
@@ -367,6 +377,30 @@ internal sealed class ImageRequestCoordinator : IDisposable
             _context.SetPriority(_waiters.Count == 0
                 ? ImageRequestPriority.Preload
                 : _waiters.Values.Min());
+        }
+
+        private void CancelCancellation()
+        {
+            lock (_cancellationGate)
+            {
+                if (!_cancellationDisposed)
+                {
+                    _cancellation.Cancel();
+                }
+            }
+        }
+
+        private void DisposeCancellation()
+        {
+            lock (_cancellationGate)
+            {
+                if (_cancellationDisposed)
+                {
+                    return;
+                }
+                _cancellationDisposed = true;
+                _cancellation.Dispose();
+            }
         }
     }
 }

@@ -27,6 +27,11 @@ internal class ImagePreviewerCover : ContentControl, IMotionAwareControl
     public static readonly StyledProperty<bool> IsFailedProperty =
         AvaloniaProperty.Register<ImagePreviewerCover, bool>(nameof(IsFailed));
 
+    internal static readonly DirectProperty<ImagePreviewerCover, bool> HasErrorProperty =
+        AvaloniaProperty.RegisterDirect<ImagePreviewerCover, bool>(
+            nameof(HasError),
+            control => control.HasError);
+
     public static readonly StyledProperty<object?> LoadingContentProperty =
         AvaloniaProperty.Register<ImagePreviewerCover, object?>(nameof(LoadingContent));
 
@@ -112,6 +117,9 @@ internal class ImagePreviewerCover : ContentControl, IMotionAwareControl
     }
 
     private bool _isCoverMaskVisible = true;
+    private bool _hasError;
+
+    internal bool HasError => _hasError;
 
     internal bool IsCoverMaskVisible
     {
@@ -124,18 +132,21 @@ internal class ImagePreviewerCover : ContentControl, IMotionAwareControl
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsShowCoverMaskProperty ||
+        if (change.Property == ImageSourceProperty ||
+            change.Property == IsShowCoverMaskProperty ||
             change.Property == IsLoadingProperty ||
-            change.Property == IsFailedProperty)
+            change.Property == IsFailedProperty ||
+            change.Property == LoadingContentProperty ||
+            change.Property == LoadingContentTemplateProperty)
         {
-            UpdateCoverMaskVisible();
+            UpdateVisualState();
         }
     }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        UpdateCoverMaskVisible();
+        UpdateVisualState();
         this.DisableTransitions();
     }
 
@@ -145,8 +156,13 @@ internal class ImagePreviewerCover : ContentControl, IMotionAwareControl
         Dispatcher.Post(this.EnableTransitions);
     }
 
-    private void UpdateCoverMaskVisible()
+    private void UpdateVisualState()
     {
+        PseudoClasses.Set(":has-image", ImageSource is not null);
+        PseudoClasses.Set(":loading", IsLoading);
+        PseudoClasses.Set(":failed", IsFailed);
+        PseudoClasses.Set(":loading-skeleton", IsLoading && ImageSource is null && LoadingContent is null);
+        SetAndRaise(HasErrorProperty, ref _hasError, IsFailed && ImageSource is null);
         SetCurrentValue(IsCoverMaskVisibleProperty, IsShowCoverMask && !IsLoading && !IsFailed);
         if (IsLoading || IsFailed)
         {

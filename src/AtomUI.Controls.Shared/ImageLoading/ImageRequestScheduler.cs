@@ -2,32 +2,39 @@ namespace AtomUI.Controls;
 
 internal sealed class ImageRequestScheduler : IDisposable
 {
-    private readonly PriorityScheduler _readScheduler;
+    private readonly PriorityScheduler _downloadScheduler;
+    private readonly PriorityScheduler _localReadScheduler;
     private readonly PriorityScheduler _decodeScheduler;
 
     internal ImageRequestScheduler(
-        int maxConcurrentReads,
+        int maxConcurrentDownloads,
+        int maxConcurrentLocalReads,
         int maxConcurrentDecodes,
         Func<DateTimeOffset>? clock = null)
     {
-        _readScheduler = new PriorityScheduler(maxConcurrentReads, clock);
+        _downloadScheduler = new PriorityScheduler(maxConcurrentDownloads, clock);
+        _localReadScheduler = new PriorityScheduler(maxConcurrentLocalReads, clock);
         _decodeScheduler = new PriorityScheduler(maxConcurrentDecodes, clock);
     }
 
-    internal int ActiveReads => _readScheduler.ActiveCount;
+    internal int ActiveReads => _downloadScheduler.ActiveCount + _localReadScheduler.ActiveCount;
 
-    internal int QueuedReads => _readScheduler.QueuedCount;
+    internal int QueuedReads => _downloadScheduler.QueuedCount + _localReadScheduler.QueuedCount;
 
     internal int ActiveDecodes => _decodeScheduler.ActiveCount;
 
     internal int QueuedDecodes => _decodeScheduler.QueuedCount;
 
     internal Task<T> ScheduleReadAsync<T>(
+        ImageLoadSourceKind sourceKind,
         Func<CancellationToken, Task<T>> action,
         Func<ImageRequestPriority> priority,
         CancellationToken cancellationToken)
     {
-        return _readScheduler.ScheduleAsync(action, priority, cancellationToken);
+        var scheduler = sourceKind == ImageLoadSourceKind.Http
+            ? _downloadScheduler
+            : _localReadScheduler;
+        return scheduler.ScheduleAsync(action, priority, cancellationToken);
     }
 
     internal Task<T> ScheduleDecodeAsync<T>(
@@ -40,7 +47,8 @@ internal sealed class ImageRequestScheduler : IDisposable
 
     public void Dispose()
     {
-        _readScheduler.Dispose();
+        _downloadScheduler.Dispose();
+        _localReadScheduler.Dispose();
         _decodeScheduler.Dispose();
     }
 

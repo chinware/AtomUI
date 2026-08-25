@@ -24,7 +24,11 @@ public class ImagePreviewerLoadingVisualTests
         theme.ShouldContain("MinWidth=\"{atom:ImagePreviewerTokenResource CoverImageWidth}\"");
         theme.ShouldContain("MinHeight=\"{atom:ImagePreviewerTokenResource CoverImageWidth}\"");
         theme.ShouldContain("atom:SkeletonImage");
-        theme.ShouldContain("IsActive=\"True\"");
+        theme.ShouldContain("Name=\"PART_LoadingSkeleton\"");
+        theme.ShouldContain("IsActive=\"False\"");
+        theme.ShouldContain("^:loading:not(:has-image) /template/ Border#PART_LoadingPresenter");
+        theme.ShouldContain("^:loading-skeleton /template/ atom|SkeletonImage#PART_LoadingSkeleton");
+        theme.ShouldContain("<Setter Property=\"IsActive\" Value=\"True\" />");
     }
 
     [Fact]
@@ -39,6 +43,7 @@ public class ImagePreviewerLoadingVisualTests
         coverTheme.ShouldNotContain("Image load failed");
         viewerTheme.ShouldNotContain("Image load failed");
         coverTheme.ShouldContain("Name=\"PART_ErrorPresenter\"");
+        coverTheme.ShouldContain("IsVisible=\"{TemplateBinding HasError}\"");
         coverTheme.ShouldContain("MinWidth=\"{atom:ImagePreviewerTokenResource CoverImageWidth}\"");
         coverTheme.ShouldContain("MinHeight=\"{atom:ImagePreviewerTokenResource CoverImageWidth}\"");
         coverTheme.ShouldContain("{atom:ImagePreviewerLangResource ImageLoadFailed}");

@@ -26,7 +26,7 @@ internal sealed class BytesImageSourceReader : ImageSourceReader
                 "Image content exceeds the configured size limit.",
                 request.Source.DisplayName);
         }
-        progress?.Report(ImageLoadProgress.Create(ImageLoadStage.Reading, bytes.LongLength, bytes.LongLength));
+        ImageProgressDispatcher.Report(progress, ImageLoadProgress.Create(ImageLoadStage.Reading, bytes.LongLength, bytes.LongLength));
         return Task.FromResult(new ImageSourceReadResult(new ImageEncodedContent(
             bytes,
             null,

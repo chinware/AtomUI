@@ -26,7 +26,7 @@ internal sealed class AssetImageSourceReader : ImageSourceReader
         try
         {
             await using var stream = AssetLoader.Open((Uri)request.Source.Value);
-            progress?.Report(ImageLoadProgress.Create(ImageLoadStage.Reading));
+            ImageProgressDispatcher.Report(progress, ImageLoadProgress.Create(ImageLoadStage.Reading));
             var bytes = await ImageSourceReadHelpers.ReadAllBytesAsync(
                 stream,
                 _options.MaxResponseBytes,

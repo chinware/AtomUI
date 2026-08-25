@@ -153,13 +153,39 @@ internal sealed class ImageContentValidator
 
     private static ImageProbeResult ProbePng(ReadOnlySpan<byte> bytes, ImageLoadSource source)
     {
-        if (bytes.Length < 24)
+        if (bytes.Length < 33)
         {
             throw Failure(ImageLoadErrorCode.InvalidImageData, "PNG header is incomplete.", source);
         }
-        var width = checked((int)BinaryPrimitives.ReadUInt32BigEndian(bytes[16..20]));
-        var height = checked((int)BinaryPrimitives.ReadUInt32BigEndian(bytes[20..24]));
-        var animated = IndexOf(bytes, "acTL"u8) >= 0;
+        if (BinaryPrimitives.ReadUInt32BigEndian(bytes[8..12]) != 13 ||
+            !bytes[12..16].SequenceEqual("IHDR"u8))
+        {
+            throw Failure(ImageLoadErrorCode.InvalidImageData, "PNG IHDR chunk is invalid.", source);
+        }
+        var width = ReadPngDimension(bytes[16..20], source);
+        var height = ReadPngDimension(bytes[20..24], source);
+        var animated = false;
+        var offset = 8;
+        while (offset <= bytes.Length - 12)
+        {
+            var chunkLength = BinaryPrimitives.ReadUInt32BigEndian(bytes[offset..]);
+            var dataStart = offset + 8;
+            if (chunkLength > (uint)(bytes.Length - dataStart - 4))
+            {
+                throw Failure(ImageLoadErrorCode.InvalidImageData, "PNG chunk is truncated.", source);
+            }
+            var dataLength = (int)chunkLength;
+            var chunkType = bytes[(offset + 4)..(offset + 8)];
+            if (chunkType.SequenceEqual("acTL"u8))
+            {
+                animated = true;
+            }
+            offset = dataStart + dataLength + 4;
+            if (chunkType.SequenceEqual("IEND"u8))
+            {
+                break;
+            }
+        }
         return new ImageProbeResult(ImageContentFormat.Png, "image/png", width, height, animated);
     }
 
@@ -212,21 +238,84 @@ internal sealed class ImageContentValidator
 
     private static ImageProbeResult ProbeGif(ReadOnlySpan<byte> bytes, ImageLoadSource source)
     {
-        if (bytes.Length < 10)
+        if (bytes.Length < 13)
         {
             throw Failure(ImageLoadErrorCode.InvalidImageData, "GIF header is incomplete.", source);
         }
         var width = BinaryPrimitives.ReadUInt16LittleEndian(bytes[6..8]);
         var height = BinaryPrimitives.ReadUInt16LittleEndian(bytes[8..10]);
         var frameCount = 0;
-        for (var index = 10; index < bytes.Length; index++)
+        var index = 13;
+        if ((bytes[10] & 0x80) != 0)
         {
-            if (bytes[index] == 0x2c && ++frameCount > 1)
+            index += 3 * (1 << ((bytes[10] & 0x07) + 1));
+        }
+        if (index > bytes.Length)
+        {
+            throw Failure(ImageLoadErrorCode.InvalidImageData, "GIF color table is truncated.", source);
+        }
+        while (index < bytes.Length)
+        {
+            var introducer = bytes[index++];
+            switch (introducer)
             {
-                break;
+                case 0x3b:
+                    return new ImageProbeResult(ImageContentFormat.Gif, "image/gif", width, height, frameCount > 1);
+                case 0x2c:
+                    if (index + 9 > bytes.Length)
+                    {
+                        throw Failure(ImageLoadErrorCode.InvalidImageData, "GIF image descriptor is truncated.", source);
+                    }
+                    var packed = bytes[index + 8];
+                    index += 9;
+                    if ((packed & 0x80) != 0)
+                    {
+                        index += 3 * (1 << ((packed & 0x07) + 1));
+                        if (index > bytes.Length)
+                        {
+                            throw Failure(ImageLoadErrorCode.InvalidImageData, "GIF color table is truncated.", source);
+                        }
+                    }
+                    if (index >= bytes.Length)
+                    {
+                        throw Failure(ImageLoadErrorCode.InvalidImageData, "GIF image data is truncated.", source);
+                    }
+                    index++;
+                    SkipGifSubBlocks(bytes, ref index, source);
+                    frameCount++;
+                    break;
+                case 0x21:
+                    if (index >= bytes.Length)
+                    {
+                        throw Failure(ImageLoadErrorCode.InvalidImageData, "GIF extension is truncated.", source);
+                    }
+                    var label = bytes[index++];
+                    var fixedLength = label switch
+                    {
+                        0xf9 => 4,
+                        0x01 => 12,
+                        0xff => 11,
+                        _ => 0
+                    };
+                    if (fixedLength > 0)
+                    {
+                        if (index >= bytes.Length || bytes[index++] != fixedLength)
+                        {
+                            throw Failure(ImageLoadErrorCode.InvalidImageData, "GIF extension block is invalid.", source);
+                        }
+                        index += fixedLength;
+                        if (index > bytes.Length)
+                        {
+                            throw Failure(ImageLoadErrorCode.InvalidImageData, "GIF extension block is truncated.", source);
+                        }
+                    }
+                    SkipGifSubBlocks(bytes, ref index, source);
+                    break;
+                default:
+                    throw Failure(ImageLoadErrorCode.InvalidImageData, "GIF data contains an invalid block.", source);
             }
         }
-        return new ImageProbeResult(ImageContentFormat.Gif, "image/gif", width, height, frameCount > 1);
+        throw Failure(ImageLoadErrorCode.InvalidImageData, "GIF trailer is missing.", source);
     }
 
     private static ImageProbeResult ProbeBmp(ReadOnlySpan<byte> bytes, ImageLoadSource source)
@@ -235,8 +324,14 @@ internal sealed class ImageContentValidator
         {
             throw Failure(ImageLoadErrorCode.InvalidImageData, "BMP header is incomplete.", source);
         }
-        var width = Math.Abs(BinaryPrimitives.ReadInt32LittleEndian(bytes[18..22]));
-        var height = Math.Abs(BinaryPrimitives.ReadInt32LittleEndian(bytes[22..26]));
+        var rawWidth = BinaryPrimitives.ReadInt32LittleEndian(bytes[18..22]);
+        var rawHeight = BinaryPrimitives.ReadInt32LittleEndian(bytes[22..26]);
+        if (rawWidth == int.MinValue || rawHeight == int.MinValue)
+        {
+            throw Failure(ImageLoadErrorCode.DimensionLimitExceeded, "BMP dimensions exceed the configured limit.", source);
+        }
+        var width = Math.Abs(rawWidth);
+        var height = Math.Abs(rawHeight);
         return new ImageProbeResult(ImageContentFormat.Bmp, "image/bmp", width, height, false);
     }
 
@@ -290,9 +385,38 @@ internal sealed class ImageContentValidator
         return isSvg || text.StartsWith("<", StringComparison.Ordinal);
     }
 
-    private static int IndexOf(ReadOnlySpan<byte> value, ReadOnlySpan<byte> pattern)
+    private static int ReadPngDimension(ReadOnlySpan<byte> value, ImageLoadSource source)
     {
-        return value.IndexOf(pattern);
+        var dimension = BinaryPrimitives.ReadUInt32BigEndian(value);
+        if (dimension > int.MaxValue)
+        {
+            throw Failure(ImageLoadErrorCode.DimensionLimitExceeded, "PNG dimensions exceed the configured limit.", source);
+        }
+        return (int)dimension;
+    }
+
+    private static void SkipGifSubBlocks(
+        ReadOnlySpan<byte> bytes,
+        ref int index,
+        ImageLoadSource source)
+    {
+        while (true)
+        {
+            if (index >= bytes.Length)
+            {
+                throw Failure(ImageLoadErrorCode.InvalidImageData, "GIF data sub-blocks are truncated.", source);
+            }
+            var length = bytes[index++];
+            if (length == 0)
+            {
+                return;
+            }
+            if (length > bytes.Length - index)
+            {
+                throw Failure(ImageLoadErrorCode.InvalidImageData, "GIF data sub-block is truncated.", source);
+            }
+            index += length;
+        }
     }
 
     private static int ReadUInt24LittleEndian(ReadOnlySpan<byte> value)
