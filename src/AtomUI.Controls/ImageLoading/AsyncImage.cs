@@ -81,6 +81,8 @@ public class AsyncImage : TemplatedControl, IImageLoadControl, IImageLoadControl
     private bool _isFailed;
     private IImage? _loadedImage;
     private bool _isAttached;
+    private Size _lastMeasureAvailableSize;
+    private bool _hasMeasureAvailableSize;
 
     public AsyncImage()
     {
@@ -211,6 +213,13 @@ public class AsyncImage : TemplatedControl, IImageLoadControl, IImageLoadControl
         return arranged;
     }
 
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        _lastMeasureAvailableSize = availableSize;
+        _hasMeasureAvailableSize = true;
+        return base.MeasureOverride(availableSize);
+    }
+
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
@@ -221,6 +230,7 @@ public class AsyncImage : TemplatedControl, IImageLoadControl, IImageLoadControl
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         _isAttached = false;
+        _hasMeasureAvailableSize = false;
         _controller.Detach();
         base.OnDetachedFromVisualTree(e);
     }
@@ -286,8 +296,25 @@ public class AsyncImage : TemplatedControl, IImageLoadControl, IImageLoadControl
     {
         var scaling = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1;
         var width = Quantize(arrangedSize.Width * scaling);
-        var height = Quantize(arrangedSize.Height * scaling);
+        var height = Quantize(ResolveDecodeHeight() * scaling);
         return width == 0 && height == 0 ? null : (width, height);
+    }
+
+    private double ResolveDecodeHeight()
+    {
+        if (double.IsFinite(Height))
+        {
+            return Math.Max(0, Height);
+        }
+        if (double.IsFinite(MaxHeight))
+        {
+            return Math.Max(0, MaxHeight);
+        }
+        if (_hasMeasureAvailableSize && double.IsFinite(_lastMeasureAvailableSize.Height))
+        {
+            return Math.Max(0, _lastMeasureAvailableSize.Height);
+        }
+        return 0;
     }
 
     private static int Quantize(double value)

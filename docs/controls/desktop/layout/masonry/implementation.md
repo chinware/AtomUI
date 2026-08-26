@@ -82,10 +82,13 @@ MeasureOverride(availableSize)
   return Size(resolvedWidth, maxColumnHeight)
 
 ArrangeOverride(finalSize)
-  recompute layout if final width changed
+  reuse the Measure layout when the effective width is unchanged
+  recompute only when no compatible Measure result exists or width changed
   arrange each child using cached rect
   return finalSize
 ```
+
+`MeasureOverride` 保存本次测量生成的完整 `MasonryLayout`（矩形、列分配、整行标记、有效宽度）。`ArrangeOverride` 先解析最终尺寸对应的有效宽度；如果与 Measure 结果一致，直接复用该结果，不再重复遍历 item 和列高集合。宽度变化、断点变化或下一次 Measure 会使缓存失效。缓存只跨越当前 Measure→Arrange 周期，Arrange 消费后立即释放，避免保留已脱离视觉树的 item container。
 
 有效列数：
 
@@ -135,6 +138,8 @@ Masonry 不使用反射读取 item template 内部元素，不创建不可见测
 - 直接子元素模式不额外包装子项。
 - `ItemsSource` 模式通过基类生成 `ContentPresenter`，Masonry 不重写容器生成。
 - 响应式断点变化只触发布局失效，不在断点回调中执行完整布局或派发事件。
+- Measure→Arrange 同一有效宽度必须复用已测量的布局结果；不得在正常布局周期中无条件重复执行第二次 `O(items × columns)` 计算。
+- 布局缓存不得跨越宽度、断点或下一次 Measure；Arrange 消费后必须释放缓存引用。
 - `LayoutChanged` 不在 layout pass 内同步派发。
 - 替换 `ItemsPanel` 等价于替换布局引擎，Masonry-specific 布局语义不再由默认面板保证。
 

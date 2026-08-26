@@ -55,7 +55,7 @@ targetHeight = ceil(max(0, arrangedHeight) * TopLevel.RenderScaling)
 然后每个非零轴向上量化到 16 physical-pixel bucket；bucket 不得超过安全上限，codec 最终按保持宽高比的最大边界解码。
 RenderScaling、Bounds 或 Stretch 约束使 bucket 改变时才请求新 decoded key，桶内 1 px 布局抖动不重新解码。
 
-- `Auto`：使用上述有效 arranged size；两个轴都无效时等待真实 Arrange 信号，不启动原图下载后的无界解码。
+- `Auto`：使用有效 arranged width；只有控件自身存在有限 `Height`/`MaxHeight`，或父布局在 Measure 时提供有限高度上限时，才把高度作为解码边界。无界内容布局（例如 Masonry 子项）只按宽度桶解码，避免解码结果的固有高度反向改变布局并形成尺寸反馈环。两个轴都无效时等待真实 Arrange 信号，不启动原图下载后的无界解码。
 - `Original`：请求原始尺寸，仍受原始尺寸、像素和 decoded-byte 上限。
 - `Explicit`：使用公开 `DecodePixelWidth/Height` 物理像素边界，至少一轴大于零；明确的 0 x 0 配置不发起请求，控件返回
   `InvalidSource` 状态。

@@ -3,6 +3,14 @@
 本文档记录 Masonry 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-08-25
+
+- Performance
+  - Reuse the complete layout produced by `MeasureOverride` during `ArrangeOverride` when the effective width is unchanged.
+  - Recalculate only for a changed effective width or after the measured-layout cache is invalidated, while preserving non-virtualized layout and outer scrolling semantics.
+- Verification
+  - Add regression coverage for same-width Arrange reuse and width-change recalculation.
+
 ## 2026-06-26
 
 - Docs

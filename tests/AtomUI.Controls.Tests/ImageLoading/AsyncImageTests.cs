@@ -252,6 +252,22 @@ public class AsyncImageTests
     }
 
     [Fact]
+    public void Auto_Decode_Does_Not_Use_Content_Derived_Height_When_Height_Was_Unconstrained()
+    {
+        var image = new AsyncImage
+        {
+            Width = 168.5,
+            Source = ImageLoadSource.FromImage(new TestBorrowedImage(523, 349))
+        };
+
+        image.Measure(new Size(168.5, double.PositiveInfinity));
+        image.Arrange(new Rect(0, 0, 168.5, 112));
+
+        var host = (IImageLoadControllerHost)image;
+        host.GetDecodePixelSize().ShouldBe((176, 0));
+    }
+
+    [Fact]
     public void Asset_Svg_Decoded_Off_Thread_Can_Be_Measured_On_The_Ui_Thread()
     {
         var image = new AsyncImage
@@ -323,7 +339,14 @@ public class AsyncImageTests
     {
         private int _disposeCount;
 
-        public Size Size => new(24, 24);
+        private readonly Size _size;
+
+        internal TestBorrowedImage(double width = 24, double height = 24)
+        {
+            _size = new Size(width, height);
+        }
+
+        public Size Size => _size;
 
         internal int DisposeCount => Volatile.Read(ref _disposeCount);
 

@@ -86,6 +86,9 @@ internal class MasonryPanel : Panel
     private List<Rect> _arrangeRects = new();
     private List<int> _arrangeColumns = new();
     private List<bool> _arrangeFullSpans = new();
+    private MasonryLayout? _measuredLayout;
+    private double _measuredEffectiveWidth;
+    private bool _hasMeasuredLayout;
     private int[]? _lastColumns;
     private bool[]? _lastFullSpans;
     private bool _hasPublishedLayout;
@@ -118,6 +121,8 @@ internal class MasonryPanel : Panel
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        _hasMeasuredLayout = false;
+        _measuredLayout = null;
         if (_mediaOwner != null)
         {
             _mediaOwner.MediaBreakPointChanged -= HandleMediaBreakChanged;
@@ -128,24 +133,30 @@ internal class MasonryPanel : Panel
     private void HandleMediaBreakChanged(object? sender, MediaBreakPointChangedEventArgs args)
     {
         _breakPoint = args.MediaBreakPoint;
+        _hasMeasuredLayout = false;
+        _measuredLayout = null;
         InvalidateMeasure();
     }
 
     protected override Size MeasureOverride(Size availableSize)
     {
         var layout = CalculateLayout(availableSize.Width, measureChildren: true);
-        _arrangeRects       = layout.Rects;
-        _arrangeColumns     = layout.Columns;
-        _arrangeFullSpans   = layout.FullSpans;
+        _measuredLayout = layout;
+        _measuredEffectiveWidth = layout.Width;
+        _hasMeasuredLayout = true;
+        PublishLayout(layout);
         return new Size(layout.Width, layout.Height);
     }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        var layout = CalculateLayout(finalSize.Width, measureChildren: false);
-        _arrangeRects       = layout.Rects;
-        _arrangeColumns     = layout.Columns;
-        _arrangeFullSpans   = layout.FullSpans;
+        var effectiveWidth = ResolveEffectiveWidth(finalSize.Width);
+        var layout = _hasMeasuredLayout && AreClose(_measuredEffectiveWidth, effectiveWidth)
+            ? _measuredLayout!.Value
+            : CalculateLayout(finalSize.Width, measureChildren: false);
+        _hasMeasuredLayout = false;
+        _measuredLayout = null;
+        PublishLayout(layout);
 
         for (var i = 0; i < Children.Count; i++)
         {
@@ -154,6 +165,25 @@ internal class MasonryPanel : Panel
 
         MaybeNotifyLayoutChanged();
         return finalSize;
+    }
+
+    private void PublishLayout(MasonryLayout layout)
+    {
+        _arrangeRects     = layout.Rects;
+        _arrangeColumns   = layout.Columns;
+        _arrangeFullSpans = layout.FullSpans;
+    }
+
+    private double ResolveEffectiveWidth(double availableWidth)
+    {
+        var breakPoint = GetBreakPoint();
+        var (columnGap, _) = ResolveGaps(breakPoint);
+        return ResolveAvailableWidth(availableWidth, columnGap);
+    }
+
+    private static bool AreClose(double left, double right)
+    {
+        return Math.Abs(left - right) < 0.01;
     }
 
     private MasonryLayout CalculateLayout(double availableWidth, bool measureChildren)

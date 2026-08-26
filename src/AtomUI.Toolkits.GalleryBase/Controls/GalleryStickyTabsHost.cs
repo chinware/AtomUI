@@ -104,6 +104,7 @@ public class GalleryStickyTabsHost : TemplatedControl
     private ScopeAwareAdornerLayer? _stickyMirrorLayer;
     private Border? _stickyMirror;
     private VisualBrush? _stickyMirrorBrush;
+    private IDisposable? _stickyContentHostBoundsSubscription;
     private bool _stickyMirrorUpdateQueued;
 
     public GalleryStickyTabsHost()
@@ -122,7 +123,8 @@ public class GalleryStickyTabsHost : TemplatedControl
 
         _stickyPanel.PropertyChanged += HandleStickyPanelPropertyChanged;
         _scrollViewer.ScrollChanged  += HandleScrollChanged;
-        _inlineStickyContentHost.LayoutUpdated += HandleStickyContentHostLayoutUpdated;
+        _stickyContentHostBoundsSubscription = _inlineStickyContentHost.GetObservable(BoundsProperty)
+                                                   .Subscribe(_ => QueueStickyMirrorUpdate());
 
         UpdateStickyMirror();
     }
@@ -150,7 +152,7 @@ public class GalleryStickyTabsHost : TemplatedControl
                  change.Property == StickyBorderBrushProperty ||
                  change.Property == StickyContentPaddingProperty)
         {
-            InvalidateStickyMirrorBrush();
+            QueueStickyMirrorUpdate();
         }
     }
 
@@ -172,9 +174,11 @@ public class GalleryStickyTabsHost : TemplatedControl
 
         if (_inlineStickyContentHost is not null)
         {
-            _inlineStickyContentHost.LayoutUpdated -= HandleStickyContentHostLayoutUpdated;
             _inlineStickyContentHost = null;
         }
+
+        _stickyContentHostBoundsSubscription?.Dispose();
+        _stickyContentHostBoundsSubscription = null;
 
         _stickyMirrorUpdateQueued = false;
     }
@@ -188,11 +192,6 @@ public class GalleryStickyTabsHost : TemplatedControl
     }
 
     private void HandleScrollChanged(object? sender, ScrollChangedEventArgs e)
-    {
-        QueueStickyMirrorUpdate();
-    }
-
-    private void HandleStickyContentHostLayoutUpdated(object? sender, EventArgs e)
     {
         QueueStickyMirrorUpdate();
     }
@@ -226,7 +225,6 @@ public class GalleryStickyTabsHost : TemplatedControl
         {
             EnsureStickyMirror();
             UpdateStickyMirrorBounds();
-            InvalidateStickyMirrorBrush();
         }
         else
         {
@@ -324,15 +322,4 @@ public class GalleryStickyTabsHost : TemplatedControl
         return ScopeAwareAdornerLayer.GetLayer(this);
     }
 
-    private void InvalidateStickyMirrorBrush()
-    {
-        if (_stickyMirrorBrush is null ||
-            _inlineStickyContentHost is null)
-        {
-            return;
-        }
-
-        _stickyMirrorBrush.Visual = null;
-        _stickyMirrorBrush.Visual = _inlineStickyContentHost;
-    }
 }

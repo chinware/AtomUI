@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Toolkits.GalleryBase.Controls;
 
@@ -18,6 +19,10 @@ public class ShowCaseMasonryPanel : Panel
         AvaloniaProperty.Register<ShowCaseMasonryPanel, double>(nameof(RowGap), 16);
 
     private List<Rect> _arrangeRects = new();
+    private MasonryLayout? _measuredLayout;
+    private double _measuredEffectiveWidth;
+    private int _measuredChildCount;
+    private bool _hasMeasuredLayout;
 
     public double MinItemWidth
     {
@@ -55,13 +60,24 @@ public class ShowCaseMasonryPanel : Panel
     protected override Size MeasureOverride(Size availableSize)
     {
         var layout = CalculateLayout(availableSize.Width, true);
+        _measuredLayout = layout;
+        _measuredEffectiveWidth = layout.Width;
+        _measuredChildCount = Children.Count;
+        _hasMeasuredLayout = true;
         _arrangeRects = layout.Rects;
         return new Size(layout.Width, layout.Height);
     }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        var layout = CalculateLayout(finalSize.Width, false);
+        var effectiveWidth = ResolveAvailableWidth(finalSize.Width);
+        var layout = _hasMeasuredLayout &&
+                     _measuredChildCount == Children.Count &&
+                     AreClose(_measuredEffectiveWidth, effectiveWidth)
+            ? _measuredLayout!.Value
+            : CalculateLayout(finalSize.Width, false);
+        _hasMeasuredLayout = false;
+        _measuredLayout = null;
         _arrangeRects = layout.Rects;
 
         for (var i = 0; i < Children.Count; i++)
@@ -70,6 +86,18 @@ public class ShowCaseMasonryPanel : Panel
         }
 
         return finalSize;
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        _hasMeasuredLayout = false;
+        _measuredLayout = null;
+        base.OnDetachedFromVisualTree(e);
+    }
+
+    private static bool AreClose(double left, double right)
+    {
+        return Math.Abs(left - right) < 0.01;
     }
 
     private MasonryLayout CalculateLayout(double availableWidth, bool measureChildren)

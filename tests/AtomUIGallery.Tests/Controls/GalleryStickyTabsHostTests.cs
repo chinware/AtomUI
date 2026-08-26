@@ -144,6 +144,45 @@ public class GalleryStickyTabsHostTests
     }
 
     [Fact]
+    public void Sticky_Mirror_Does_Not_Create_A_VisualParent_Cycle_When_Pinned()
+    {
+        var host = CreateStickyHost(new FixedSizeControl(320, 800));
+        var visualLayerManager = new VisualLayerManager
+        {
+            EnableAdornerLayer = true,
+            Child = host
+        };
+        var window = new AvaloniaWindow
+        {
+            Width   = 360,
+            Height  = 180,
+            Content = visualLayerManager
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            PinStickyContent(host);
+
+            foreach (var visual in window.GetVisualDescendants().Prepend(window))
+            {
+                var visited = new HashSet<Visual>();
+                for (Visual? current = visual; current is not null; current = current.GetVisualParent())
+                {
+                    visited.Add(current).ShouldBeTrue(
+                        $"Visual parent cycle detected at {current.GetType().FullName} while walking from {visual.GetType().FullName}");
+                }
+            }
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    [Fact]
     public void Sticky_Host_Collapses_Sticky_Content_Row_When_No_StickyContent_Is_Set()
     {
         var host = new GalleryStickyTabsHost
