@@ -1,6 +1,7 @@
 ﻿using System.Collections.Specialized;
 using AtomUI.Controls;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -255,6 +256,9 @@ public class ComboBox : AvaloniaComboBox,
     internal static readonly StyledProperty<FormValidateStatus> FormStatusProperty =
         InputControlState.FormStatusProperty.AddOwner<ComboBox>();
 
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Popup.IsPopupPinnedOpenProperty.AddOwner<ComboBox>();
+
     internal static readonly DirectProperty<ComboBox, bool> IsFormFeedbackVisibleProperty =
         AvaloniaProperty.RegisterDirect<ComboBox, bool>(
             nameof(IsFormFeedbackVisible),
@@ -302,6 +306,12 @@ public class ComboBox : AvaloniaComboBox,
         private set => SetCurrentValue(FormStatusProperty, value);
     }
 
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
+
     private bool _isFormFeedbackVisible;
 
     internal bool IsFormFeedbackVisible
@@ -330,11 +340,13 @@ public class ComboBox : AvaloniaComboBox,
 
     private Popup? _popup;
     private IDisposable? _deactivationSubscription;
+    private IDisposable? _popupPinnedOpenBinding;
     private ComboBoxHandle? _comboBoxHandle;
     private AddOnDecoratedBox? _addOnDecoratedBox;
     private AvaloniaTextBox? _editableTextBox;
     private IDisposable? _editableTextBoxTextSubscription;
     private TextBlock? _editableTextBoxPlaceholder;
+    private int _popupLifecycleCloseDepth;
     private TextPresenter? _editableTextBoxPresenter;
     private IDisposable? _editableTextBoxPreeditTextSubscription;
     private string? _editableTextBeforeUserEditKeyDown;
@@ -395,6 +407,8 @@ public class ComboBox : AvaloniaComboBox,
 
         if (_popup != null)
         {
+            _popupPinnedOpenBinding?.Dispose();
+            _popupPinnedOpenBinding = null;
             _popup.Opened -= HandlePopupOpened;
             _popup.OverlayInputPassThroughElement = null;
         }
@@ -412,6 +426,11 @@ public class ComboBox : AvaloniaComboBox,
         _popup = e.NameScope.Find<Popup>("PART_Popup");
         if (_popup != null)
         {
+            _popupPinnedOpenBinding = BindUtils.RelayBind(
+                this,
+                IsPopupPinnedOpenProperty,
+                _popup,
+                Popup.IsPopupPinnedOpenProperty);
             _popup.Opened += HandlePopupOpened;
         }
         if (_editableTextBox != null)
@@ -445,6 +464,10 @@ public class ComboBox : AvaloniaComboBox,
         base.OnAttachedToVisualTree(e);
         _deactivationSubscription =
             TopLevelDeactivation.Subscribe(TopLevel.GetTopLevel(this), HandleWindowDeactivated);
+        if (IsPopupPinnedOpen && !IsDropDownOpen)
+        {
+            SetCurrentValue(IsDropDownOpenProperty, true);
+        }
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -455,6 +478,17 @@ public class ComboBox : AvaloniaComboBox,
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        _popupLifecycleCloseDepth++;
+        try
+        {
+            _popup?.CloseForLifecycle();
+            SetCurrentValue(IsDropDownOpenProperty, false);
+        }
+        finally
+        {
+            _popupLifecycleCloseDepth--;
+        }
+
         base.OnDetachedFromVisualTree(e);
         _deactivationSubscription?.Dispose();
         _deactivationSubscription = null;
@@ -533,6 +567,15 @@ public class ComboBox : AvaloniaComboBox,
     {
         base.OnPropertyChanged(change);
 
+        if (change.Property == IsDropDownOpenProperty &&
+            !IsDropDownOpen &&
+            IsPopupPinnedOpen &&
+            _popupLifecycleCloseDepth == 0)
+        {
+            SetCurrentValue(IsDropDownOpenProperty, true);
+            return;
+        }
+
         if (change.Property == StatusProperty ||
             change.Property == FormStatusProperty ||
             change.Property == DataValidationErrors.HasErrorsProperty ||
@@ -567,6 +610,12 @@ public class ComboBox : AvaloniaComboBox,
             {
                 ClearCandidateItemSelection();
             }
+        }
+        else if (change.Property == IsPopupPinnedOpenProperty &&
+                 change.GetNewValue<bool>() &&
+                 !IsDropDownOpen)
+        {
+            SetCurrentValue(IsDropDownOpenProperty, true);
         }
         else if (change.Property == FormFeedbackProperty)
         {

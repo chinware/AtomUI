@@ -2,6 +2,8 @@
 
 本文档描述 Mentions 桌面版的内部模板组合、触发符识别、候选弹层、同步/异步加载、过滤、候选插入、Form 和 Token 资源边界。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，公共设计与 API 契约见 [Mentions 桌面版架构设计](overview.md)，候选列表状态契约见 [候选列表统一交互设计](../select/candidate-interaction-design.md)，Token 语义见 [Mentions Token 设计](token.md)，变化记录见 [Mentions Changelog](changelog.md)。
 
+Popup 接入边界：`Mentions` 负责业务状态和内容准备，internal Popup 负责实际显示。模板重建或宿主切换时必须先释放旧 relay，再绑定新的 Popup；普通外点、Escape、失焦和业务关闭在 pinned 状态下被拦截，detach、窗口销毁、跨 TopLevel 和无效锚点必须走生命周期关闭并释放 Popup host。完整状态机见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。
+
 ## 1. 实现定位
 
 Mentions 的实现以 `MentionTextArea` 为输入内核，`Popup` 和 `CandidateList` 为候选选择层，`Mentions` 本体负责状态编排、数据加载、过滤、弹层生命周期和 Form 集成。实现文档聚焦 Mentions 自身的状态流，不重新说明 TextArea 的文本布局、选择渲染和输入表面细节。

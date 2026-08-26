@@ -10,6 +10,8 @@ Popup 实现把 Avalonia 的 native/overlay host 能力与 AtomUI 的定位、�
 实现边界是：host 默认透明，frame 只在调用方显式提供 Brush 时于 Child bounds 内绘制表面，content-owned 控件继续由自身
 Presenter 绘制视觉。
 
+Popup 的物理关闭策略还承载内部钉住打开状态。`IsPopupPinnedOpen` 由控件或 Flyout owner relay 到实际 Popup；普通 Closing 在 pinned 状态下取消且不启动 CloseMotion，content removal、宿主 detach、PlacementTarget/effective state 失效、跨 TopLevel、模板重建和窗口销毁使用生命周期关闭路径。解除 pin 不关闭已打开 Popup，但会取消未打开的 pending request。状态机和 owner 边界见 [Popup 钉住打开设计](popup-pinned-open-design.md)。
+
 ## 2. 源码文件结构
 
 - `src/AtomUI.Desktop.Controls/Popup/Popup.cs`：公共 API、自定义定位、翻转通知、frame shadow 选择、动效和 wheel guard。
@@ -55,6 +57,20 @@ surface ownership 由 Popup 的最终属性值决定：没有 local/style value 
 非空 Brush 时切换为 host-owned。Theme 和 AtomUI 内置消费控件都不重复设置 `null`。renderer 不检查 Child 类型、
 Background 或 opacity。
 
+Pinned open state 使用请求值和有效显示值分离的数据流：
+
+```text
+semantic owner IsPopupPinnedOpen
+  -> business open-state coercion
+  -> Popup.IsPopupPinnedOpen relay
+  -> Popup.IsOpen coercion
+  -> content + target + attach + effective state + TopLevel + placement gate
+  -> physical PopupHost
+```
+
+`Popup.IsOpen=false` 始终保持 false；pinned 状态下无效的 `true` 只形成 pending request，不触发 `Opened`。拥有业务 open state
+的控件使用 lifecycle close depth 区分普通 false 与 teardown false，普通关闭不会发布瞬态 `false -> true` 通知。
+
 ## 5. 内部算法与关键流程
 
 ### 5.1 frame renderer
@@ -96,6 +112,16 @@ Popup 实例拥有 open/close motion cancellation token 和本次关闭执行状
 释放 PopupHost、定位订阅和 open state。placement target detach、既有 Popup logical owner detach、跨 TopLevel target 切换
 因此不会留下无锚点但仍打开的 Popup。
 
+Pinned request 获取当前 PlacementTarget 后，订阅 target attach/detach，并订阅 target 到 TopLevel 祖先链上的 visible、bounds
+和 effective enabled 变化。target replacement、unpin 和 logical detach 释放旧订阅；generation 使旧 Dispatcher callback 在
+replacement、re-template、detach 或 unpin 后失效。显式 `Flyout.ShowAt` 在 `OnOpening` 使用同一物理门禁，无效 target 不发布
+Flyout/Popup opened state。
+
+生命周期关闭先使 generation 失效、取消 motion、恢复 motion actor，再进入可嵌套的 close bypass scope。即使 Popup 当前
+有效 `IsOpen=false`，该入口仍调用 Avalonia close，以清理 coercion 下保留的 base open request 和 AtomUI pending request。
+Unpin 对已打开 Popup 只释放 close guard；对 pending Popup 则同时清理 PlacementTarget、Popup parent、target tracking 和
+Flyout global resource bindings。Window deactivation 是普通关闭来源，只有窗口销毁或会话失效才属于 lifecycle teardown。
+
 打开时安装 Child wheel guard，关闭时释放。placement transform tracking 只在打开且 placement 需要 anchor 时存在；目标仍在
 有效会话但滚出可见区域时可以走普通关闭动效，target 或宿主生命周期失效时则由上述强制 teardown 规则立即关闭。
 
@@ -124,6 +150,10 @@ light-dismiss、focus 和 host teardown 继续由 Avalonia Popup 协议负责。
 可选 surface 不增加 host 或 wrapper；只扩展既有 renderer。renderer 因 shadow 或显式 surface 按需创建并复用，surface
 更新只 invalidates render。默认路径没有 surface Theme resource，也不创建全局非 Visual resource host。
 
+Pinned target/ancestor 订阅只在请求有效期内存在，并由 target replacement、unpin、logical detach 或 lifecycle teardown
+释放。Pinned open 不使用 retry timer、程序集扫描、runtime type discovery、反射查找控件或字符串 binding；恢复只依赖
+generation-checked Dispatcher callback 和 AvaloniaProperty relay。
+
 `PopupReflectionExtensions` 集中反射 Avalonia Popup 的私有 closing event、parent setter、open-state flag 与定位刷新入口，
 每个反射成员都通过 `DynamicDependency` 声明 NativeAOT 保留要求；Popup 不做程序集扫描或 runtime type discovery。
 StyledProperty 和 ControlTheme 均为静态/AOT 可发现契约。源码库存测试使用正则扫描，但只存在于测试项目，不进入 runtime
@@ -139,14 +169,18 @@ StyledProperty 和 ControlTheme 均为静态/AOT 可发现契约。源码库存�
 - relay binding 的 attach/re-attach/detach 必须有单一 owner 和对称释放。
 - close motion 只能延迟仍连接到打开时 owning TopLevel 的普通关闭；打开时已存在的 logical owner、host 或 anchor 生命周期
   失效时不得保留 Avalonia open state。没有 logical owner 的 Direct Popup 以显式 PlacementTarget 会话为准。
+- Pinned open 的有效性必须同时包含 content、target attach、effective visible/enabled、TopLevel 和 placement transform；无效 true 不得发布 `Opened`。
+- Pinned 普通关闭包括外点、Escape、失焦、window deactivation、`Close`/`Hide` 和业务 open state false；lifecycle close 必须跳过 motion 并释放 host、binding、subscription、tracker、wheel guard 和 timer。
+- Unpin 不关闭已打开 Popup；pending unpin 必须清除隐藏 open request，target 恢复后不得复活旧请求。
+- 业务 open state coercion 不得通过 suppression flag 发布瞬态 false；lifecycle close scope 是唯一允许 pinned 业务状态变为 false 的路径。
 - Popup 必须以共享 `MotionExecutionState` 表达关闭动效阶段；`Pending`、`Playing` 和 `Completing` 单向收敛，重复
   close 不得创建并行关闭动效，`Closed` 必须回到 `Idle`。
 
 ## 11. 测试与验证
 
 - `PopupShadowTests` 验证公开 surface API、`null` 默认值、显式 renderer fill、透明 frame 和 shadow clipping。
-- `PopupPlacementTests` 与 `PopupLifecycleTests` 验证 placement、关闭动效状态、placement target/logical owner detach、跨 TopLevel
-  target 切换和 host teardown。
+- `PopupPlacementTests` 与 `PopupLifecycleTests` 验证 placement、关闭动效状态、pinned 有效性门禁、显式 `ShowAt`、pending unpin、placement target/logical owner detach、跨 TopLevel target 切换和 host teardown。
+- `PopupPinnedOpenContractTests` 验证 Property 字段、CLR wrapper 和 ToolTip attached accessors 都保持 internal，且 Gallery/API/AXAML surface 不包含该能力。
 - `ToolTipPopupModeTests` 验证 host mode 和 transparent PopupRoot。
 - `DialogPopupPrimitiveLayeringTests` 验证 Direct Popup 与四类 content-owned 原语。
 - `PopupEntryInventoryTests` 守卫所有 runtime 入口、无冗余默认值覆盖和 Popup Theme 的 `null` 默认契约。

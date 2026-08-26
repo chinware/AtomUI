@@ -2,6 +2,12 @@
 
 本文档记录 DropdownButton 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-25
+
+- Docs
+  - Add the shared Popup pinned-open design link and record DropdownButton as the semantic owner, with DropdownFlyout/MenuFlyout used only as relay adapters.
+  - Preserve ordinary close behavior after unpinning and allow lifecycle teardown to release the Popup host.
+
 ## 2026-08-03
 
 - Design

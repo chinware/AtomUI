@@ -11,7 +11,6 @@ using Avalonia.Automation.Peers;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
-using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
@@ -19,6 +18,7 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -281,6 +281,9 @@ public class NavMenu : ItemsControl,
             nameof(EntryItemSpacing),
             inherits: true);
 
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Popup.IsPopupPinnedOpenProperty.AddOwner<NavMenu>();
+
     private NavMenuMode _effectiveMode = NavMenuMode.Inline;
 
     internal NavMenuMode EffectiveMode
@@ -309,6 +312,12 @@ public class NavMenu : ItemsControl,
         private set => SetValue(EntryItemSpacingProperty, value);
     }
 
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
+
     #endregion
 
     private IEnumerable<INavMenuItem> EnumerateSubItems()
@@ -334,6 +343,8 @@ public class NavMenu : ItemsControl,
     private CancellationTokenSource? _inlineCollapsedWidthMotionCancellationTokenSource;
     private readonly NavMenuSelectionCoordinator _selectionCoordinator = new();
     private readonly NavMenuEntryOwnershipCoordinator _entryOwnershipCoordinator;
+    private readonly List<NavMenuItem> _pinnedOpenItems = new();
+    private int _pinnedOpenGeneration;
     private double _lastInlineExpandedWidth = double.NaN;
     
     static NavMenu()
@@ -437,11 +448,23 @@ public class NavMenu : ItemsControl,
             CancelInlineCollapsedWidthMotion();
             ClearInlineCollapsedLayoutWidth();
         }
+        else if (change.Property == IsPopupPinnedOpenProperty)
+        {
+            if (change.GetNewValue<bool>())
+            {
+                EnsurePinnedOpenItem();
+            }
+            else
+            {
+                _pinnedOpenGeneration++;
+                ClearPinnedOpenItems();
+            }
+        }
     }
     
     private void HandleModeChanged()
     {
-        Close();
+        CloseOpenSubmenusPreservingSelection(this);
         UpdateEffectiveMode();
         ConfigureInteractionHandler(true);
     }
@@ -479,10 +502,17 @@ public class NavMenu : ItemsControl,
         base.OnAttachedToVisualTree(e);
         CoerceInlineCollapsedLayoutConstraints();
         ConfigureInteractionHandler(true);
+        EnsurePinnedOpenItem();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        if (IsPopupPinnedOpen)
+        {
+            _pinnedOpenGeneration++;
+            ClosePinnedForLifecycle();
+        }
+
         base.OnDetachedFromVisualTree(e);
         CancelInlineCollapsedWidthMotion();
         ClearInlineCollapsedLayoutWidth();
@@ -523,8 +553,140 @@ public class NavMenu : ItemsControl,
 
     internal void ForgetGeneratedContainer(NavMenuItem menuItem)
     {
+        if (_pinnedOpenItems.Any(item => IsSameOrDescendant(item, menuItem)))
+        {
+            for (var i = _pinnedOpenItems.Count - 1; i >= 0; i--)
+            {
+                var pinnedItem = _pinnedOpenItems[i];
+                if (!IsSameOrDescendant(pinnedItem, menuItem))
+                {
+                    continue;
+                }
+
+                pinnedItem.IsPopupPinnedOpen = false;
+                _pinnedOpenItems.RemoveAt(i);
+            }
+
+            menuItem.CloseForLifecycle();
+        }
+
         _selectionCoordinator.Forget(menuItem);
         InteractionHandler?.Forget(menuItem);
+        QueuePinnedOpenItem();
+    }
+
+    private void EnsurePinnedOpenItem()
+    {
+        if (!IsPopupPinnedOpen ||
+            EffectiveMode == NavMenuMode.Inline ||
+            !this.IsAttachedToVisualTree())
+        {
+            return;
+        }
+
+        var menuItem = NavMenuSemanticNavigator.EnumerateDirectItems(this)
+                                               .OfType<NavMenuItem>()
+                                               .FirstOrDefault(item => item.HasSubMenu && item.IsSubMenuOpen) ??
+                       NavMenuSemanticNavigator.EnumerateDirectItems(this)
+                                               .OfType<NavMenuItem>()
+                                               .FirstOrDefault(item => item.HasSubMenu);
+        if (menuItem == null)
+        {
+            return;
+        }
+
+        var deepestOpenItem = menuItem;
+        while (NavMenuSemanticNavigator.EnumerateDirectItems(deepestOpenItem)
+                                             .OfType<NavMenuItem>()
+                                             .FirstOrDefault(item => item.HasSubMenu && item.IsSubMenuOpen) is { } child)
+        {
+            deepestOpenItem = child;
+        }
+
+        PinOpenPath(deepestOpenItem);
+    }
+
+    private void PinOpenPath(NavMenuItem leafItem)
+    {
+        var path = new List<NavMenuItem>();
+        for (var current = leafItem;
+             current != null && ReferenceEquals(current.OwnerMenu, this);
+             current = current.SemanticParentItem)
+        {
+            if (current.HasSubMenu && current.Mode != NavMenuMode.Inline)
+            {
+                path.Add(current);
+            }
+        }
+        path.Reverse();
+
+        for (var i = _pinnedOpenItems.Count - 1; i >= 0; i--)
+        {
+            var pinnedItem = _pinnedOpenItems[i];
+            if (path.Any(item => ReferenceEquals(item, pinnedItem)))
+            {
+                continue;
+            }
+
+            pinnedItem.IsPopupPinnedOpen = false;
+            _pinnedOpenItems.RemoveAt(i);
+        }
+
+        foreach (var item in path)
+        {
+            if (!_pinnedOpenItems.Any(pinnedItem => ReferenceEquals(pinnedItem, item)))
+            {
+                _pinnedOpenItems.Add(item);
+            }
+
+            item.IsPopupPinnedOpen = true;
+        }
+    }
+
+    private void ClearPinnedOpenItems()
+    {
+        foreach (var menuItem in _pinnedOpenItems)
+        {
+            menuItem.IsPopupPinnedOpen = false;
+        }
+
+        _pinnedOpenItems.Clear();
+    }
+
+    private void QueuePinnedOpenItem()
+    {
+        var generation = ++_pinnedOpenGeneration;
+        Dispatcher.UIThread.Post(
+            () =>
+            {
+                if (generation == _pinnedOpenGeneration)
+                {
+                    EnsurePinnedOpenItem();
+                }
+            },
+            DispatcherPriority.Loaded);
+    }
+
+    private void ClosePinnedForLifecycle()
+    {
+        ClearPinnedOpenItems();
+        foreach (var menuItem in NavMenuSemanticNavigator.EnumerateDirectItems(this).OfType<NavMenuItem>())
+        {
+            menuItem.CloseForLifecycle();
+        }
+    }
+
+    private static bool IsSameOrDescendant(NavMenuItem candidate, NavMenuItem ancestor)
+    {
+        for (var current = candidate; current != null; current = current.SemanticParentItem)
+        {
+            if (ReferenceEquals(current, ancestor))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     internal void SelectNavMenuItem(NavMenuItem menuItem)
@@ -628,6 +790,13 @@ public class NavMenu : ItemsControl,
     
     protected virtual void NotifySubmenuOpened(RoutedEventArgs e)
     {
+        if (IsPopupPinnedOpen &&
+            e.Source is NavMenuItem openedItem &&
+            ReferenceEquals(openedItem.OwnerMenu, this))
+        {
+            PinOpenPath(openedItem);
+        }
+
         if (IsAccordionMode)
         {
             if (e.Source is INavMenuItem menuItem && menuItem.Parent == this)
@@ -1138,6 +1307,11 @@ public class NavMenu : ItemsControl,
 
     public void Close()
     {
+        if (IsPopupPinnedOpen)
+        {
+            return;
+        }
+
         foreach (var menuItem in NavMenuSemanticNavigator.EnumerateDirectItems(this))
         {
             menuItem.Close();

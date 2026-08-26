@@ -102,6 +102,216 @@ public class DataGridFilterDialogPopupTests
         });
     }
 
+    [Fact]
+    public void DataGrid_Pinned_Filter_Uses_First_Eligible_Column_And_Reopens_After_Detach()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var firstColumn = CreateFilterColumn("First");
+            var secondColumn = CreateFilterColumn("Second");
+            var grid = new global::AtomUI.Desktop.Controls.DataGrid
+            {
+                AutoGenerateColumns  = false,
+                CanUserFilterColumns = true,
+                IsMotionEnabled      = false,
+                IsPopupPinnedOpen    = true,
+                Width                = 360,
+                Height               = 220,
+                ItemsSource = new[]
+                {
+                    new DialogFilterRow("Alpha"),
+                    new DialogFilterRow("Beta")
+                }
+            };
+            grid.Columns.Add(firstColumn);
+            grid.Columns.Add(secondColumn);
+            var window = new AtomUI.Desktop.Controls.Window
+            {
+                Width   = 640,
+                Height  = 480,
+                Content = grid
+            };
+
+            try
+            {
+                window.Show();
+                PumpAndRender();
+
+                var firstIndicator  = FindFilterIndicator(grid, firstColumn);
+                var secondIndicator = FindFilterIndicator(grid, secondColumn);
+                var firstFlyout     = firstIndicator.Flyout.ShouldBeOfType<DataGridMenuFilterFlyout>();
+                firstFlyout.IsOpen.ShouldBeTrue();
+                firstFlyout.Popup.IsOpen.ShouldBeTrue();
+                secondIndicator.Flyout.ShouldNotBeNull().IsOpen.ShouldBeFalse();
+
+                firstFlyout.Hide();
+                PumpAndRender();
+                firstFlyout.IsOpen.ShouldBeTrue();
+                firstFlyout.Popup.IsOpen.ShouldBeTrue();
+
+                window.Content = null;
+                PumpAndRender();
+                firstFlyout.IsOpen.ShouldBeFalse();
+                firstFlyout.Popup.IsOpen.ShouldBeFalse();
+
+                window.Content = grid;
+                PumpAndRender();
+                var reopenedFlyout = FindFilterIndicator(grid, firstColumn)
+                    .Flyout.ShouldBeOfType<DataGridMenuFilterFlyout>();
+                reopenedFlyout.IsOpen.ShouldBeTrue();
+                reopenedFlyout.Popup.IsOpen.ShouldBeTrue();
+
+                grid.IsPopupPinnedOpen = false;
+                PumpAndRender();
+                reopenedFlyout.IsOpen.ShouldBeTrue();
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void DataGrid_Pinned_Filter_Replaces_Target_When_First_Column_Becomes_Ineligible()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var firstColumn = CreateFilterColumn("First");
+            var secondColumn = CreateFilterColumn("Second");
+            var grid = new global::AtomUI.Desktop.Controls.DataGrid
+            {
+                AutoGenerateColumns  = false,
+                CanUserFilterColumns = true,
+                IsMotionEnabled      = false,
+                IsPopupPinnedOpen    = true,
+                Width                = 360,
+                Height               = 220,
+                ItemsSource = new[]
+                {
+                    new DialogFilterRow("Alpha"),
+                    new DialogFilterRow("Beta")
+                }
+            };
+            grid.Columns.Add(firstColumn);
+            grid.Columns.Add(secondColumn);
+            var window = new AtomUI.Desktop.Controls.Window
+            {
+                Width   = 640,
+                Height  = 480,
+                Content = grid
+            };
+
+            try
+            {
+                window.Show();
+                PumpAndRender();
+
+                var firstIndicator  = FindFilterIndicator(grid, firstColumn);
+                var secondIndicator = FindFilterIndicator(grid, secondColumn);
+                var firstFlyout     = firstIndicator.Flyout.ShouldBeOfType<DataGridMenuFilterFlyout>();
+                var secondFlyout    = secondIndicator.Flyout.ShouldBeOfType<DataGridMenuFilterFlyout>();
+                firstFlyout.IsOpen.ShouldBeTrue();
+                secondFlyout.IsOpen.ShouldBeFalse();
+
+                firstColumn.IsVisible = false;
+                PumpAndRender();
+                firstFlyout.IsOpen.ShouldBeFalse();
+                firstFlyout.Popup.IsOpen.ShouldBeFalse();
+                secondFlyout.IsOpen.ShouldBeTrue();
+                secondFlyout.Popup.IsOpen.ShouldBeTrue();
+
+                firstColumn.IsVisible = true;
+                PumpAndRender();
+                secondFlyout.IsOpen.ShouldBeFalse();
+                secondFlyout.Popup.IsOpen.ShouldBeFalse();
+                firstFlyout.IsOpen.ShouldBeTrue();
+                firstFlyout.Popup.IsOpen.ShouldBeTrue();
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    [Fact]
+    public void DataGrid_Pinned_Filter_Replaces_Flyout_When_Presenter_Mode_Changes()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var column = CreateFilterColumn("Name");
+            var grid = new global::AtomUI.Desktop.Controls.DataGrid
+            {
+                AutoGenerateColumns  = false,
+                CanUserFilterColumns = true,
+                IsMotionEnabled      = false,
+                IsPopupPinnedOpen    = true,
+                Width                = 360,
+                Height               = 220,
+                ItemsSource = new[]
+                {
+                    new DialogFilterRow("Alpha"),
+                    new DialogFilterRow("Beta")
+                }
+            };
+            grid.Columns.Add(column);
+            var window = new AtomUI.Desktop.Controls.Window
+            {
+                Width   = 640,
+                Height  = 480,
+                Content = grid
+            };
+
+            try
+            {
+                window.Show();
+                PumpAndRender();
+
+                var indicator = FindFilterIndicator(grid, column);
+                var menuFlyout = indicator.Flyout.ShouldBeOfType<DataGridMenuFilterFlyout>();
+                menuFlyout.IsOpen.ShouldBeTrue();
+
+                column.FilterPresenterMode = DataGridFilterPresenterMode.Tree;
+                PumpAndRender();
+
+                menuFlyout.IsOpen.ShouldBeFalse();
+                menuFlyout.Popup.IsOpen.ShouldBeFalse();
+                var treeFlyout = indicator.Flyout.ShouldBeOfType<DataGridTreeFilterFlyout>();
+                treeFlyout.IsOpen.ShouldBeTrue();
+                treeFlyout.Popup.IsOpen.ShouldBeTrue();
+            }
+            finally
+            {
+                window.Close();
+            }
+        });
+    }
+
+    private static DataGridTextColumn CreateFilterColumn(string header)
+    {
+        return new DataGridTextColumn
+        {
+            Header           = header,
+            Binding          = new Binding(nameof(DialogFilterRow.Name)),
+            FilterMemberPath = nameof(DialogFilterRow.Name),
+            Filters = new[]
+            {
+                new DataGridFilterItem { Text = "Alpha", Value = "Alpha" },
+                new DataGridFilterItem { Text = "Beta", Value = "Beta" }
+            }
+        };
+    }
+
+    private static DataGridFilterIndicator FindFilterIndicator(
+        global::AtomUI.Desktop.Controls.DataGrid grid,
+        DataGridColumn column)
+    {
+        return grid.GetVisualDescendants()
+                   .OfType<DataGridFilterIndicator>()
+                   .Single(indicator => ReferenceEquals(indicator.OwningColumn, column));
+    }
+
     private static OverlayPopupHost FindPopupHost(AtomUI.Desktop.Controls.Window window)
     {
         for (var attempt = 0; attempt < 20; attempt++)

@@ -363,6 +363,7 @@ internal static class NavMenuEntryContainerCoordinator
         menuItem.ClearValue(NavMenuItem.IsInSelectedPathProperty);
         menuItem.ClearValue(NavMenuItem.IsSelectedProperty);
         menuItem.ClearValue(NavMenuItem.IsSubMenuOpenProperty);
+        menuItem.ClearValue(NavMenuItem.IsPopupPinnedOpenProperty);
     }
 
     private static EntryContext ResolveContext(ItemsControl owner)

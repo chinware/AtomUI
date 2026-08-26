@@ -1,6 +1,7 @@
 using System.Reactive.Disposables;
 using System.Windows.Input;
 using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Exceptions;
 using AtomUI.Input;
 using AtomUI.MotionScene;
@@ -19,6 +20,7 @@ using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Rendering;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -287,6 +289,9 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     internal static readonly StyledProperty<bool> IsInSelectedPathProperty = 
         AvaloniaProperty.Register<NavMenuItem, bool>(nameof (IsInSelectedPath));
 
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Popup.IsPopupPinnedOpenProperty.AddOwner<NavMenuItem>();
+
     internal static readonly DirectProperty<NavMenuItem, bool> IsKeyboardActiveProperty =
         AvaloniaProperty.RegisterDirect<NavMenuItem, bool>(
             nameof(IsKeyboardActive),
@@ -402,6 +407,12 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         set => SetValue(IsInSelectedPathProperty, value);
     }
 
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
+
     private bool _isKeyboardActive;
 
     internal bool IsKeyboardActive
@@ -506,6 +517,8 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     private bool _isInlineMotionRunning;
     private CancellationTokenSource? _inlineMotionCancellation;
     private CompositeDisposable? _nodeBindingDisposables;
+    private IDisposable? _popupPinnedOpenBinding;
+    private bool _isClosingForLifecycle;
     
     internal Popup? Popup => _popup;
     internal NavMenu? OwnerMenu { get; private set; }
@@ -576,6 +589,11 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     
     public void Close()
     {
+        if (IsPopupPinnedOpen)
+        {
+            return;
+        }
+
         if (ShouldIgnoreInlineToggleDuringMotion())
         {
             return;
@@ -721,7 +739,14 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         }
         else if (change.Property == IsSubMenuOpenProperty)
         {
-            HandleSubMenuOpenChanged(change);
+            if (!change.GetNewValue<bool>() && IsPopupPinnedOpen && !_isClosingForLifecycle)
+            {
+                SetCurrentValue(IsSubMenuOpenProperty, true);
+            }
+            else
+            {
+                HandleSubMenuOpenChanged(change);
+            }
         }
         else if (change.Property == CommandProperty)
         {
@@ -755,6 +780,42 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         else if (change.Property == SelectionModeProperty)
         {
             ValidateSelectionMode();
+        }
+        else if (change.Property == IsPopupPinnedOpenProperty && change.GetNewValue<bool>())
+        {
+            TryOpenPinned();
+        }
+    }
+
+    private void TryOpenPinned()
+    {
+        if (!IsPopupPinnedOpen ||
+            !HasSubMenu ||
+            Mode == NavMenuMode.Inline ||
+            !this.IsAttachedToVisualTree())
+        {
+            return;
+        }
+
+        SetCurrentValue(IsSubMenuOpenProperty, true);
+    }
+
+    internal void CloseForLifecycle()
+    {
+        _isClosingForLifecycle = true;
+        try
+        {
+            foreach (var child in NavMenuSemanticNavigator.EnumerateDirectItems(this).OfType<NavMenuItem>())
+            {
+                child.CloseForLifecycle();
+            }
+
+            _popup?.CloseForLifecycle();
+            SetCurrentValue(IsSubMenuOpenProperty, false);
+        }
+        finally
+        {
+            _isClosingForLifecycle = false;
         }
     }
 
@@ -1153,6 +1214,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         base.OnAttachedToVisualTree(e);
         UpdatePseudoClasses();
         TryUpdateCanExecute();
+        TryOpenPinned();
         if (_popup != null)
         {
             _popup.Opened -= PopupOpened;
@@ -1164,6 +1226,11 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        if (IsPopupPinnedOpen)
+        {
+            CloseForLifecycle();
+        }
+
         base.OnDetachedFromVisualTree(e);
         if (_popup != null)
         {
@@ -1199,15 +1266,24 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         base.OnApplyTemplate(e);
         if (_popup != null)
         {
+            _popup.CloseForLifecycle();
             _popup.Opened             -= PopupOpened;
             _popup.Closed             -= PopupClosed;
             _popup.DependencyResolver =  null;
         }
 
+        _popupPinnedOpenBinding?.Dispose();
+        _popupPinnedOpenBinding = null;
+
         _popup = e.NameScope.Find<Popup>("PART_Popup");
 
         if (_popup != null)
         {
+            _popupPinnedOpenBinding = BindUtils.RelayBind(
+                this,
+                IsPopupPinnedOpenProperty,
+                _popup,
+                Popup.IsPopupPinnedOpenProperty);
             _popup.Opened += PopupOpened;
             _popup.Closed += PopupClosed;
         }

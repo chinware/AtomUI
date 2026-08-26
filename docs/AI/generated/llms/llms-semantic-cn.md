@@ -8815,6 +8815,10 @@ DataGrid Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - 列过滤只能有一个选中状态 owner；`Filters`、flyout checked state、`SelectedFilterValues` 和 `FilterDescriptions` 之间不得形成互相覆盖的并行状态源。
+- Pinned filter 同一时间只能有一个目标，目标必须按 DisplayIndex 选择第一个 eligible column；Header -> Indicator -> Flyout
+  relay 必须在 replacement、container clear、detach 和 template reapply 时对称释放。
+- DataGrid unpin 不关闭已打开 filter Flyout；目标 replacement 或 lifecycle teardown 必须关闭旧 Popup，且旧 Loaded callback
+  不得重新打开已释放的 Flyout。
 - 行拖动只能有一个 DataGrid 实例级会话 owner；禁止在 handle 类型上保存 static Pointer、row、index、bounds、
   offset 或 owner 状态。
 - Handle、RowsPresenter 和 CollectionView 的职责不能重新混合：handle 不修改数据，presenter 不决定移动语义，
@@ -14570,6 +14574,11 @@ AtomUI 自有的 content-owned 消费者继承 Popup 原语的 `null` 默认值�
 动效延迟，必须立即释放 Avalonia PopupHost 和定位订阅。自身没有 logical owner、但具有有效显式 PlacementTarget 的 Direct
 Popup 仍可使用普通关闭动效。
 
+Pinned 状态不改变上述会话分类：外点、Escape、失焦、window deactivation、`Close`/`Hide` 和业务 open state 写 `false`
+属于普通关闭并被拒绝；content removal、target/owner detach、effective visible/enabled 失效、跨 TopLevel、模板重建和窗口销毁
+属于生命周期 teardown。无效的 pinned `IsOpen=true` 只保留请求，不发布 `Opened`；unpin 时已打开 Popup 保持打开，pending
+请求则被清理且不能在锚点恢复后复活。
+
 ## Theme and Token Boundaries
 
 ```text
@@ -14608,6 +14617,8 @@ Token 边界：
 ## Customization Boundaries
 
 - Popup placement target、host 与 Dialog/Drawer presentation 必须属于同一 owning `TopLevel`。
+- Pinned 打开只能在 content、anchor、attach、effective visible/enabled 和 placement 同时有效时发生；显式 `ShowAt` 与自动恢复使用同一门禁。
+- 业务 open state 和 Popup `IsOpen` 的 coercion 不得发布瞬态关闭；`false` 必须保持真实的 false 请求语义。
 - native/overlay 切换只改变宿主和 shadow token，不改变 `SurfaceBackground` 语义。
 - `SurfaceBackground=null` 时 frame renderer 继续使用透明 fill，专用 Presenter 的背景、圆角、Padding、阴影和定位保持不变。
 - Popup Child 内未被内部滚动控件消费的 wheel 事件在 popup 边界终止，避免滚动外层 placement target 祖先。
@@ -14626,5 +14637,9 @@ Token 边界：
 - relay binding 的 attach/re-attach/detach 必须有单一 owner 和对称释放。
 - close motion 只能延迟仍连接到打开时 owning TopLevel 的普通关闭；打开时已存在的 logical owner、host 或 anchor 生命周期
   失效时不得保留 Avalonia open state。没有 logical owner 的 Direct Popup 以显式 PlacementTarget 会话为准。
+- Pinned open 的有效性必须同时包含 content、target attach、effective visible/enabled、TopLevel 和 placement transform；无效 true 不得发布 `Opened`。
+- Pinned 普通关闭包括外点、Escape、失焦、window deactivation、`Close`/`Hide` 和业务 open state false；lifecycle close 必须跳过 motion 并释放 host、binding、subscription、tracker、wheel guard 和 timer。
+- Unpin 不关闭已打开 Popup；pending unpin 必须清除隐藏 open request，target 恢复后不得复活旧请求。
+- 业务 open state coercion 不得通过 suppression flag 发布瞬态 false；lifecycle close scope 是唯一允许 pinned 业务状态变为 false 的路径。
 - Popup 必须以共享 `MotionExecutionState` 表达关闭动效阶段；`Pending`、`Playing` 和 `Completing` 单向收敛，重复
   close 不得创建并行关闭动效，`Closed` 必须回到 `Idle`。

@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
@@ -155,6 +156,9 @@ public class DropdownButton : Button
         AvaloniaProperty.RegisterDirect<DropdownButton, bool>(nameof(IsContentVisible),
             o => o.IsContentVisible,
             (o, v) => o.IsContentVisible = v);
+
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        FlyoutControl.IsPopupPinnedOpenProperty.AddOwner<DropdownButton>();
         
     private bool _isContentVisible;
 
@@ -164,10 +168,17 @@ public class DropdownButton : Button
         set => SetAndRaise(IsContentVisibleProperty, ref _isContentVisible, value);
     }
 
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
+
     #endregion
     
     private readonly FlyoutStateHelper _flyoutStateHelper;
     private CompositeDisposable? _flyoutBindingDisposables;
+    private int _pinnedOpenGeneration;
     private MenuFlyout? _registeredDropdownFlyout;
     static DropdownButton()
     {
@@ -223,7 +234,7 @@ public class DropdownButton : Button
         menuFlyout.MenuItemClicked += HandleMenuItemClicked;
 
         _flyoutBindingDisposables?.Dispose();
-        _flyoutBindingDisposables = new CompositeDisposable(8);
+        _flyoutBindingDisposables = new CompositeDisposable(9);
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, menuFlyout, FlyoutControl.RequestedPlacementProperty));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementAnchorProperty, menuFlyout));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementGravityProperty, menuFlyout));
@@ -232,6 +243,12 @@ public class DropdownButton : Button
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, MarginToAnchorProperty, menuFlyout));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, menuFlyout));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, ShouldUseOverlayPopupProperty, menuFlyout, MenuFlyout.ShouldUseOverlayPopupProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsPopupPinnedOpenProperty, menuFlyout, FlyoutControl.IsPopupPinnedOpenProperty));
+
+        if (IsPopupPinnedOpen && this.IsAttachedToVisualTree())
+        {
+            QueuePinnedOpen();
+        }
     }
 
     private void UnregisterDropdownFlyout(MenuFlyout? menuFlyout)
@@ -242,12 +259,8 @@ public class DropdownButton : Button
         }
 
         menuFlyout.MenuItemClicked -= HandleMenuItemClicked;
-        if (menuFlyout.IsOpen)
-        {
-            menuFlyout.Hide();
-        }
-
-        menuFlyout.ReleaseGlobalResourceBindings();
+        ++_pinnedOpenGeneration;
+        menuFlyout.CloseForLifecycle();
         _registeredDropdownFlyout = null;
         _flyoutBindingDisposables?.Dispose();
         _flyoutBindingDisposables = null;
@@ -274,6 +287,17 @@ public class DropdownButton : Button
                 RegisterDropdownFlyout(newMenuFlyout);
             }
         }
+        else if (change.Property == IsPopupPinnedOpenProperty && this.IsAttachedToVisualTree())
+        {
+            if (change.GetNewValue<bool>())
+            {
+                QueuePinnedOpen();
+            }
+            else
+            {
+                ++_pinnedOpenGeneration;
+            }
+        }
 
         if (change.Property == ContentProperty ||
             change.Property == ContentTemplateProperty ||
@@ -298,5 +322,21 @@ public class DropdownButton : Button
     private void ConfigureContentVisible()
     {
         SetCurrentValue(IsContentVisibleProperty, IsLoading || Content != null || ContentTemplate != null || Icon != null);
+    }
+
+    private void QueuePinnedOpen()
+    {
+        var generation = ++_pinnedOpenGeneration;
+        var flyout     = _registeredDropdownFlyout;
+        Dispatcher.Post(() =>
+        {
+            if (generation == _pinnedOpenGeneration &&
+                IsPopupPinnedOpen &&
+                this.IsAttachedToVisualTree() &&
+                ReferenceEquals(flyout, _registeredDropdownFlyout))
+            {
+                _flyoutStateHelper.ShowFlyout(immediately: true);
+            }
+        });
     }
 }

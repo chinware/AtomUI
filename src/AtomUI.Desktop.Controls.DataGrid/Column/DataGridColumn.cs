@@ -301,6 +301,7 @@ public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IT
             {
                 HeaderCell.CanUserFilter = value;
             }
+            OwningGrid?.RefreshPopupPinnedOpenFilterTarget();
         }
     }
 
@@ -809,6 +810,14 @@ public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IT
             RegisterFilterItemsSource(change.OldValue as IEnumerable, change.NewValue as IEnumerable);
             PruneSelectedFilterValuesToFilterItems();
             NotifyFilterItemsChanged();
+        }
+        else if (change.Property == FilterPresenterModeProperty ||
+                 change.Property == FilterSelectionModeProperty)
+        {
+            if (HasHeaderCell)
+            {
+                HeaderCell.NotifyFilterConfigurationChanged();
+            }
         }
         else if (change.Property == SelectedFilterValuesProperty)
         {

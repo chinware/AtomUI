@@ -74,7 +74,9 @@ public class PopupEntryInventoryTests
                     "src/AtomUI.Desktop.Controls/Flyouts/FlyoutStateHelper.cs",
                     "src/AtomUI.Desktop.Controls/Flyouts/MenuFlyoutPresenter.cs",
                     "src/AtomUI.Desktop.Controls/TabControl/TabControlScrollViewer.cs",
-                    "src/AtomUI.Desktop.Controls/TabControl/TabStrip/TabStripScrollViewer.cs"
+                    "src/AtomUI.Desktop.Controls/TabControl/TabStrip/TabStripScrollViewer.cs",
+                    "src/AtomUI.Desktop.Controls/Transfer/TransferSelectDropdown.cs",
+                    "src/AtomUI.Desktop.Controls/TreeView/FloatableTreeView.cs"
                 ]
             },
             {
@@ -99,9 +101,11 @@ public class PopupEntryInventoryTests
                 @"\busing\s+\w+\s*=\s*(?:(?:(?:global::)?Avalonia\.Controls\.Primitives\.)?PopupFlyoutBase|(?:(?:global::)?AtomUI\.Desktop\.Controls\.)?(?:Popup|FlyoutStateHelper|FlyoutHost|Flyout|MenuFlyout|TreeViewFlyout|PopupConfirmFlyout|DataGridMenuFilterFlyout|DataGridTreeFilterFlyout))\s*;",
                 [
                     "src/AtomUI.Desktop.Controls.ColorPicker/AbstractColorPicker.cs",
+                    "src/AtomUI.Desktop.Controls.DataGrid/Column/Filters/DataGridFilterIndicator.cs",
                     "src/AtomUI.Desktop.Controls/DropdownButton/DropdownButton.cs",
                     "src/AtomUI.Desktop.Controls/Flyouts/Flyout.cs",
-                    "src/AtomUI.Desktop.Controls/Flyouts/FlyoutHost.cs"
+                    "src/AtomUI.Desktop.Controls/Flyouts/FlyoutHost.cs",
+                    "src/AtomUI.Desktop.Controls/Transfer/TransferSelectDropdown.cs"
                 ]
             }
         };

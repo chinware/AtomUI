@@ -105,6 +105,9 @@ internal partial class DataGridColumnHeader : ContentControl
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGridColumnHeader>();
+
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Flyout.IsPopupPinnedOpenProperty.AddOwner<DataGridColumnHeader>();
     
     internal static readonly DirectProperty<DataGridColumnHeader, bool> IsFrozenProperty =
         AvaloniaProperty.RegisterDirect<DataGridColumnHeader, bool>(
@@ -200,6 +203,7 @@ internal partial class DataGridColumnHeader : ContentControl
                 return;
             }
 
+            CloseFilterPopupForLifecycle();
             UnregisterFilterItems();
             _owningColumn = value;
             RegisterFilterItems(value);
@@ -229,6 +233,12 @@ internal partial class DataGridColumnHeader : ContentControl
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
     }
     
     bool _isFrozen = false;
@@ -288,6 +298,7 @@ internal partial class DataGridColumnHeader : ContentControl
     private static double _rightFrozenColumnsWidth;
     private bool _areHandlersSuspended;
     private bool _desiredSeparatorVisibility = true;
+    private IDisposable? _popupPinnedOpenRelay;
     private INotifyCollectionChanged? _subscribedFilterItems;
     private RectangleGeometry? _clipGeometry;
     private static Lazy<Cursor> ResizeCursor = new (() => new Cursor(StandardCursorType.SizeWestEast));
@@ -1096,6 +1107,10 @@ internal partial class DataGridColumnHeader : ContentControl
     {
         if (_filterIndicator != null)
         {
+            _filterIndicator.ClosePopupForLifecycle();
+            _popupPinnedOpenRelay?.Dispose();
+            _popupPinnedOpenRelay = null;
+            _filterIndicator.SetCurrentValue(DataGridFilterIndicator.IsPopupPinnedOpenProperty, false);
             _filterIndicator.FilterRequest -= HandleFilterRequest;
             _filterIndicator.OwningColumn = null;
             _filterIndicator = null;
@@ -1115,6 +1130,7 @@ internal partial class DataGridColumnHeader : ContentControl
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        CloseFilterPopupForLifecycle();
         base.OnDetachedFromVisualTree(e);
         var removeDragIndicator = e.AttachmentPoint != null;
         ReleaseDragStateIfOwned(

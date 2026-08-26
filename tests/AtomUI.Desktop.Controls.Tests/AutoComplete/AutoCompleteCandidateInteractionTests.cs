@@ -22,6 +22,120 @@ public class AutoCompleteCandidateInteractionTests
     }
 
     [Fact]
+    public void Pinned_Open_Request_Opens_AutoComplete_And_Its_Popup()
+    {
+        var autoComplete = new Desktop.Controls.AutoComplete
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            Value           = "A",
+            OptionsSource   =
+            [
+                new AutoCompleteOption { Header = "Alpha", Content = "Alpha" },
+                new AutoCompleteOption { Header = "Alpine", Content = "Alpine" }
+            ]
+        };
+        var window = CreateWindow(autoComplete);
+
+        try
+        {
+            autoComplete.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var popup = autoComplete.GetVisualDescendants()
+                                    .OfType<Popup>()
+                                    .Single(item => item.Name == AutoCompleteThemeConstants.PopupPart);
+            autoComplete.IsDropDownOpen.ShouldBeTrue();
+            popup.IsPopupPinnedOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue();
+        }
+        finally
+        {
+            autoComplete.IsPopupPinnedOpen = false;
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Pinned_AutoComplete_Rejects_Business_Close_Request()
+    {
+        var autoComplete = new Desktop.Controls.AutoComplete
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            Value           = "A",
+            OptionsSource   = [new AutoCompleteOption { Header = "Alpha", Content = "Alpha" }]
+        };
+        var window = CreateWindow(autoComplete);
+
+        try
+        {
+            autoComplete.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            var popup = autoComplete.GetVisualDescendants()
+                                    .OfType<Popup>()
+                                    .Single(item => item.Name == AutoCompleteThemeConstants.PopupPart);
+
+            autoComplete.IsDropDownOpen = false;
+            Dispatcher.UIThread.RunJobs();
+
+            autoComplete.IsDropDownOpen.ShouldBeTrue();
+            popup.IsPopupPinnedOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue();
+        }
+        finally
+        {
+            autoComplete.IsPopupPinnedOpen = false;
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Pinned_AutoComplete_Detach_Closes_And_Reattach_Reopens_It()
+    {
+        var autoComplete = new Desktop.Controls.AutoComplete
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            Value           = "A",
+            OptionsSource   = [new AutoCompleteOption { Header = "Alpha", Content = "Alpha" }]
+        };
+        var window = CreateWindow(autoComplete);
+
+        try
+        {
+            var visualLayerManager = window.Content.ShouldBeOfType<VisualLayerManager>();
+            var overlayPanel = visualLayerManager.Child.ShouldBeOfType<ScopeAwareOverlayLayerPanel>();
+            autoComplete.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            var popup = autoComplete.GetVisualDescendants()
+                                    .OfType<Popup>()
+                                    .Single(item => item.Name == AutoCompleteThemeConstants.PopupPart);
+            popup.IsOpen.ShouldBeTrue();
+
+            overlayPanel.Children.Remove(autoComplete);
+            Dispatcher.UIThread.RunJobs();
+
+            autoComplete.IsPopupPinnedOpen.ShouldBeTrue();
+            autoComplete.IsDropDownOpen.ShouldBeFalse();
+            popup.IsOpen.ShouldBeFalse();
+            window.GetVisualDescendants().OfType<OverlayPopupHost>().ShouldBeEmpty();
+
+            overlayPanel.Children.Add(autoComplete);
+            Dispatcher.UIThread.RunJobs();
+
+            autoComplete.IsDropDownOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue();
+        }
+        finally
+        {
+            autoComplete.IsPopupPinnedOpen = false;
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    [Fact]
     public void Pointer_Move_Then_Enter_Commits_The_Pointer_Candidate()
     {
         var alpha = new AutoCompleteOption { Header = "Alpha", Content = "Alpha" };

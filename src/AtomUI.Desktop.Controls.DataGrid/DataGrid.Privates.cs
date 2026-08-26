@@ -68,6 +68,9 @@ public partial class DataGrid
             nameof(EffectivePaginationVisibility),
             o => o.EffectivePaginationVisibility,
             (o, v) => o.EffectivePaginationVisibility = v);
+
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Flyout.IsPopupPinnedOpenProperty.AddOwner<DataGrid>();
     
 
     internal bool IsGroupHeaderMode
@@ -114,6 +117,12 @@ public partial class DataGrid
     {
         get => _isEmptyDataSource;
         set => SetAndRaise(IsEmptyDataSourceProperty, ref _isEmptyDataSource, value);
+    }
+
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
     }
 
     private bool _isEmptyDataSource = false;
@@ -1288,6 +1297,8 @@ public partial class DataGrid
                 CheckFrozenColumnCount();
             }
         }
+
+        RefreshPopupPinnedOpenFilterTarget();
     }
 
     private void SetupColumnGroupFrozenState()
@@ -2264,6 +2275,11 @@ public partial class DataGrid
         if (!IsEnabled)
         {
             CancelRowReorder();
+            SuspendPopupPinnedOpenFilterTarget();
+        }
+        else
+        {
+            RefreshPopupPinnedOpenFilterTarget();
         }
     }
 

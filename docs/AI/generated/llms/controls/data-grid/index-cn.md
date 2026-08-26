@@ -226,6 +226,8 @@ DataGrid Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
   完成或取消时释放。移动能力通过直接接口能力判断，不使用反射、动态调用或运行时类型扫描。
 - 列宽求解复用列集合可见宽度缓存和 `AdjustColumnWidths`；无 star 列、输入无限、adjustment 为零或初始 Auto
   测量未完成时应直接退出，不在 presenter 中分配辅助集合或建立额外订阅。
+- Pinned filter 目标选择直接遍历 displayed columns，不做反射、runtime type discovery 或全视觉树扫描；两级 relay 只在
+  当前 Header/Indicator/Flyout 生命周期内存在，Loaded callback 由 generation 合并和失效。
 
 ## 源码索引
 

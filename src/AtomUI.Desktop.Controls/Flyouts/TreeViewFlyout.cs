@@ -77,7 +77,7 @@ public class TreeViewFlyout : Flyout
     protected override Control CreatePresenter()
     {
         _presenterBindingDisposables?.Dispose();
-        _presenterBindingDisposables = new CompositeDisposable(5);
+        _presenterBindingDisposables = new CompositeDisposable(6);
 
         Presenter = new TreeViewFlyoutPresenter
         {
@@ -90,6 +90,7 @@ public class TreeViewFlyout : Flyout
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsArrowVisibleEffectiveProperty, Presenter, TreeViewFlyoutPresenter.IsArrowVisibleProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, Presenter, TreeViewFlyoutPresenter.IsMotionEnabledProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ArrowPositionProperty, Presenter, TreeViewFlyoutPresenter.ArrowPositionProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsPopupPinnedOpenProperty, Presenter, TreeView.IsPopupPinnedOpenProperty));
         ConfigureShowArrowEffective();
         ConfigureArrowPosition();
 

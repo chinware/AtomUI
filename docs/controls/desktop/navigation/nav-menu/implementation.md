@@ -2,6 +2,8 @@
 
 本文档描述 NavMenu 桌面版的 entry 集合、内部容器生成、语义导航树、交互 handler、选择协调、默认路径 replay、popup 接入和主题状态维护。公共设计与 API 契约见 [NavMenu 桌面版架构设计](overview.md)，Token 语义见 [NavMenu Token 设计](token.md)，变化记录见 [NavMenu Changelog](changelog.md)。
 
+Popup 接入边界：`NavMenu` / `NavMenuItem` 负责业务状态和内容准备，submenu Popup 负责实际显示。模板重建或宿主切换时必须先释放旧 relay，再绑定新的 Popup；普通外点、Escape、失焦和业务关闭在 pinned 状态下被拦截，detach、窗口销毁、跨 TopLevel 和无效锚点必须走生命周期关闭并释放 Popup host。完整状态机见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。
+
 ## 1. 实现定位
 
 NavMenu 的实现目标是在 `ItemsControl` 容器体系内维护包含节点、分组和分隔线的有序 entry 树，同时保持节点导航语义独立，并按 mode 选择不同交互策略。实现文档聚焦 `NavMenu`、entry 数据模型、三类内部容器、语义 owner、命令投影、handler、selection coordinator、semantic navigator、inline collapsed coordinator 和 theme part 的协作关系。
@@ -89,7 +91,7 @@ Interaction handler + KeyboardNavigationCoordinator + SelectionCoordinator
 Header theme / Popup frame / Inline child frame
 ```
 
-`SelectedItem` 是持续选择状态。selection coordinator 中的已应用节点身份用于描述当前视觉投影，不替代 `SelectedItem` 公共状态；realized container 引用只在对应容器仍服务同一节点时有效。容器回收只失效临时引用，视觉树 detach 也不能清空已应用节点身份，因为同一控件及其选择视觉可以随后重新挂载。只有显式清空选择时，公共选择和已应用投影才共同复位。`DefaultSelectedPath` 和 `DefaultOpenPaths` 只在初始路径应用中参与 replay。程序连续设置多个选择时，过期 replay 必须被忽略，只应用最新 revision。
+`SelectedItem` 是持续选择状态。selection coordinator 中的已应用节点身份用于描述当前视觉投影，不替代 `SelectedItem` 公共状态；realized container 引用只在对应容器仍服务同一节点时有效。容器回收只失效临时引用，视觉树 detach 也不能清空已应用节点身份，因为同一控件及其选择视觉可以随后重新挂载。只有显式设置 `SelectedItem=null`、interaction handler 的显式 clear 或 public `Close()` 才能让公共选择和已应用投影共同复位。pointer 外点、窗口停用、平台失焦、非客户端点击、Esc、inline collapsed 过渡和 public `Mode` 切换只负责关闭 popup/submenu，不能借用 public `Close()` 清空选择。`DefaultSelectedPath` 和 `DefaultOpenPaths` 只在初始路径应用中参与 replay。程序连续设置多个选择时，过期 replay 必须被忽略，只应用最新 revision。
 
 `IsInlineCollapsed` 是 `Inline` 模式附加状态。进入折叠时，当前 inline 打开路径写入 cache，主视觉树中的 inline 子菜单关闭，effective mode 切为 `Vertical`；退出折叠时，折叠期间打开的 popup 关闭，再从 cache 恢复 inline 打开路径。这个流程不能调用 `NavMenu.Close()`，不能改写 `SelectedItem`。
 
@@ -105,7 +107,9 @@ Header theme / Popup frame / Inline child frame
 
 ## 5. 生命周期与模板接入
 
-`NavMenu` 在 mode 或 inline collapsed 状态变化时同步 root pseudo-class、ItemsPanel 方向、interaction handler、effective mode 和已打开子菜单状态。切换 public `Mode` 必须关闭旧模式下的 popup 或 inline 子菜单，避免旧 handler 的 pointer、delay、popup 或 motion 状态泄漏。切换 `IsInlineCollapsed` 不能走 public mode change 的 `Close()` 路径，而要走 inline collapsed coordinator 的 cache / restore 流程。
+`NavMenu` 在 mode 或 inline collapsed 状态变化时同步 root pseudo-class、ItemsPanel 方向、interaction handler、effective mode 和已打开子菜单状态。切换 public `Mode` 必须通过保留选择的递归关闭流程结束旧模式下的 popup 或 inline 子菜单，避免旧 handler 的 pointer、delay、popup 或 motion 状态泄漏，同时保持 `SelectedItem` 和重新生成容器上的 selected path。切换 `IsInlineCollapsed` 同样不能走 public `Close()` 路径，而要走 inline collapsed coordinator 的 cache / restore 流程。
+
+Default interaction handler 将 pointer 外点、窗口停用、平台失焦和非客户端点击统一映射为关闭已打开的顶层菜单项。该路径递归关闭对应 popup 分支，但不调用 `NavMenu.Close()`；public `Close()` 保留显式“关闭全部子菜单并清空选择”语义，不能作为 popup 生命周期的通用内部入口。
 
 `IsInlineCollapsed` 变化时的生命周期顺序必须固定：
 
@@ -381,7 +385,8 @@ inline collapsed cache 不得持有 `NavMenuItem`、header、popup 或 template 
 
 内部重构必须保持以下不变量：
 
-- mode 切换时重新挂接 handler，并清理旧模式打开状态。
+- mode 切换时重新挂接 handler，并通过保留选择的关闭路径清理旧模式打开状态；当前 `SelectedItem` 和 selected path 必须在当前容器上继续投影。
+- pointer 外点、窗口停用、平台失焦和非客户端点击关闭 popup 时不得调用 `NavMenu.Close()`，不得清空 `SelectedItem`；public `Close()` 的显式清空合同保持不变。
 - `IsInlineCollapsed` 切换不得改写 public `Mode`，不得调用 `Close()`，不得清空 `SelectedItem`。
 - inline collapsed 进入时缓存 inline open path，退出时恢复 cache；折叠期间 popup 打开状态不得污染 cache。
 - `InlineCollapsedWidth` 默认来自 `NavMenuToken.InlineCollapsedWidth`，本地属性值必须按 Avalonia 优先级覆盖 token 默认值。

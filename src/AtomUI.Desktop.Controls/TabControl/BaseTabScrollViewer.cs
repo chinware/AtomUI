@@ -3,6 +3,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 using AtomUI.Utils;
 using Colors = Avalonia.Media.Colors;
 using GradientStop = Avalonia.Media.GradientStop;
@@ -30,6 +32,9 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
             o => o.MenuEdgeThickness,
             (o, v) => o.MenuEdgeThickness = v);
 
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Flyout.IsPopupPinnedOpenProperty.AddOwner<BaseTabScrollViewer>();
+
     private Dock _tabStripPlacement;
 
     internal Dock TabStripPlacement
@@ -53,6 +58,12 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
         get => _menuEdgeThickness;
         set => SetAndRaise(MenuEdgeThicknessProperty, ref _menuEdgeThickness, value);
     }
+
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
     
     #endregion
 
@@ -60,6 +71,7 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
     private protected Border? StartEdgeIndicator;
     private protected Border? EndEdgeIndicator;
     private protected MenuFlyout? MenuFlyout;
+    private int _pinnedOpenGeneration;
 
     static BaseTabScrollViewer()
     {
@@ -75,6 +87,24 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
             change.Property == ViewportProperty)
         {
             SetupIndicatorsVisibility();
+        }
+
+        if (change.Property == IsPopupPinnedOpenProperty)
+        {
+            if (change.GetNewValue<bool>())
+            {
+                QueuePinnedOpen();
+            }
+            else
+            {
+                ++_pinnedOpenGeneration;
+            }
+        }
+        else if ((change.Property == IsEffectivelyEnabledProperty ||
+                  change.Property == IsVisibleProperty) &&
+                 IsPopupPinnedOpen)
+        {
+            QueuePinnedOpen();
         }
     }
 
@@ -175,12 +205,28 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        CloseForLifecycle();
         base.OnApplyTemplate(e);
         MenuIndicator      = e.NameScope.Find<IconButton>("PART_ScrollMenuIndicator");
         StartEdgeIndicator = e.NameScope.Find<Border>("PART_ScrollStartEdgeIndicator");
         EndEdgeIndicator   = e.NameScope.Find<Border>("PART_ScrollEndEdgeIndicator");
 
         SetupIndicatorsVisibility();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        if (IsPopupPinnedOpen)
+        {
+            QueuePinnedOpen();
+        }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        CloseForLifecycle();
+        base.OnDetachedFromVisualTree(e);
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -221,7 +267,51 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
             var endEdgeVisible   = EndEdgeIndicator?.IsVisible ?? false;
             MenuIndicator.IsVisible = startEdgeVisible || endEdgeVisible;
         }
+
+        if (IsPopupPinnedOpen)
+        {
+            QueuePinnedOpen();
+        }
     }
+
+    internal void CloseForLifecycle()
+    {
+        ++_pinnedOpenGeneration;
+        CloseMenuFlyout();
+    }
+
+    private void QueuePinnedOpen()
+    {
+        if (!IsPopupPinnedOpen || MenuFlyout is not null)
+        {
+            return;
+        }
+
+        var generation = ++_pinnedOpenGeneration;
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (generation == _pinnedOpenGeneration &&
+                IsPopupPinnedOpen &&
+                MenuFlyout is null &&
+                this.IsAttachedToVisualTree() &&
+                IsEffectivelyEnabled &&
+                IsVisible &&
+                MenuIndicator is
+                {
+                    IsEffectivelyEnabled: true,
+                    IsVisible: true
+                } indicator &&
+                indicator.IsAttachedToVisualTree() &&
+                TopLevel.GetTopLevel(indicator) is not null)
+            {
+                OpenMenuFlyout();
+            }
+        }, DispatcherPriority.Loaded);
+    }
+
+    private protected abstract void OpenMenuFlyout();
+
+    private protected abstract void CloseMenuFlyout();
 
     private static bool CalculateEdgeIndicatorVisibility(double offset, double extent, double viewport, double target)
     {

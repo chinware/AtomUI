@@ -2,6 +2,8 @@
 
 本文档描述 Select 桌面版的输入壳体、选项集合、选择同步、过滤、Tags 动态选项、候选弹层、异步加载、Form 和 Token 资源边界。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，公共设计与 API 契约见 [Select 桌面版架构设计](overview.md)，鼠标与键盘的统一候选状态见 [Select 候选交互设计](candidate-interaction-design.md)，Token 语义见 [Select Token 设计](token.md)，变化记录见 [Select Changelog](changelog.md)。
 
+Popup 接入边界：`AbstractSelect` 负责业务状态和内容准备，`PART_Popup` 负责实际显示。模板重建或宿主切换时必须先释放旧 relay，再绑定新的 Popup；普通外点、Escape、失焦和业务关闭在 pinned 状态下被拦截，detach、窗口销毁、跨 TopLevel 和无效锚点必须走生命周期关闭并释放 Popup host。完整状态机见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。
+
 ## 1. 实现定位
 
 Select 的实现以 `AbstractSelect` 为选择与弹层基类，输入表面复用 `InputControlFrame` / `AddOnDecoratedBox`，`Select` 本体负责选择业务状态，候选列表和结果区域由内部控件承载。实现文档聚焦 Select 自身的状态编排、生命周期和维护边界，不重新说明 ListView 的通用虚拟化、shared frame 的输入外观或 PopupHost 的全局资源规则。

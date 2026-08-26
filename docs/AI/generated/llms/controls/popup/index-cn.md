@@ -11,6 +11,8 @@ ContextMenu、菜单、选择器和 Picker 等专用控件复用该原语，但�
 Popup 不提供默认 Padding、边框、箭头或内容布局。调用方负责 Child 内容结构；Popup 只在 Child bounds 内提供可选的
 frame surface 与 host shadow。
 
+Popup 同时拥有弹层家族的内部钉住打开物理契约。`internal IsPopupPinnedOpen` 只供测试和内部诊断使用：内容、锚点、attach、effective visible/enabled、TopLevel 和 placement 全部有效后保持 Popup 打开，普通关闭和关闭动效被拦截；PlacementTarget、logical owner、content、TopLevel 或窗口生命周期失效时仍必须立即清理。解除 pin 不关闭已打开 Popup，但必须取消尚未打开的 pending 请求。控件语义 owner、Flyout、ToolTip 和 ContextMenu 的接入规则见 [Popup 钉住打开设计](popup-pinned-open-design.md)。
+
 ## 包与命名空间
 
 | 项 | 值 |
@@ -80,6 +82,11 @@ AtomUI 自有的 content-owned 消费者继承 Popup 原语的 `null` 默认值�
 动效延迟，必须立即释放 Avalonia PopupHost 和定位订阅。自身没有 logical owner、但具有有效显式 PlacementTarget 的 Direct
 Popup 仍可使用普通关闭动效。
 
+Pinned 状态不改变上述会话分类：外点、Escape、失焦、window deactivation、`Close`/`Hide` 和业务 open state 写 `false`
+属于普通关闭并被拒绝；content removal、target/owner detach、effective visible/enabled 失效、跨 TopLevel、模板重建和窗口销毁
+属于生命周期 teardown。无效的 pinned `IsOpen=true` 只保留请求，不发布 `Opened`；unpin 时已打开 Popup 保持打开，pending
+请求则被清理且不能在锚点恢复后复活。
+
 ## 主题与 Design Token
 
 ```text
@@ -119,6 +126,10 @@ Token 来源：
 
 可选 surface 不增加 host 或 wrapper；只扩展既有 renderer。renderer 因 shadow 或显式 surface 按需创建并复用，surface
 更新只 invalidates render。默认路径没有 surface Theme resource，也不创建全局非 Visual resource host。
+
+Pinned target/ancestor 订阅只在请求有效期内存在，并由 target replacement、unpin、logical detach 或 lifecycle teardown
+释放。Pinned open 不使用 retry timer、程序集扫描、runtime type discovery、反射查找控件或字符串 binding；恢复只依赖
+generation-checked Dispatcher callback 和 AvaloniaProperty relay。
 
 `PopupReflectionExtensions` 集中反射 Avalonia Popup 的私有 closing event、parent setter、open-state flag 与定位刷新入口，
 每个反射成员都通过 `DynamicDependency` 声明 NativeAOT 保留要求；Popup 不做程序集扫描或 runtime type discovery。

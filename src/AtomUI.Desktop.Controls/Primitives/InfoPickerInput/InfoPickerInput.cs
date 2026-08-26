@@ -241,7 +241,10 @@ public abstract class InfoPickerInput : TemplatedControl,
         AvaloniaProperty.Register<InfoPickerInput, bool>(nameof(ShouldUseOverlayPopup), true);
 
     internal static readonly StyledProperty<bool> IsPickerOpenProperty =
-        AvaloniaProperty.Register<InfoPickerInput, bool>(nameof(IsPickerOpen));
+        AvaloniaProperty.Register<InfoPickerInput, bool>(nameof(IsPickerOpen), coerce: CoerceIsPickerOpen);
+
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Popup.IsPopupPinnedOpenProperty.AddOwner<InfoPickerInput>();
     
     internal static readonly DirectProperty<InfoPickerInput, bool> IsArrowVisibleEffectiveProperty =
         AvaloniaProperty.RegisterDirect<InfoPickerInput, bool>(nameof(IsArrowVisibleEffective),
@@ -330,6 +333,12 @@ public abstract class InfoPickerInput : TemplatedControl,
         get => GetValue(IsPickerOpenProperty);
         set => SetValue(IsPickerOpenProperty, value);
     }
+
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
     
     private bool _isArrowVisibleEffective;
 
@@ -382,6 +391,8 @@ public abstract class InfoPickerInput : TemplatedControl,
     private protected bool IsChoosing;
     private AddOnDecoratedBox? _addOnDecoratedBox;
     private IDisposable? _deactivationSubscription;
+    private IDisposable? _popupPinnedOpenBinding;
+    private int _popupLifecycleCloseDepth;
     private Control? _ownedPickerPresenter;
     
 
@@ -466,6 +477,9 @@ public abstract class InfoPickerInput : TemplatedControl,
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        _popupPinnedOpenBinding?.Dispose();
+        _popupPinnedOpenBinding = null;
+
         if (DecoratedBox != null)
         {
             DecoratedBox.TemplateApplied -= HandleDecoratedBoxTemplateApplied;
@@ -487,6 +501,14 @@ public abstract class InfoPickerInput : TemplatedControl,
         if (PickerPopup != null && InfoInputBox != null)
         {
             PickerPopup.OverlayInputPassThroughElement = InfoInputBox;
+        }
+        if (PickerPopup != null)
+        {
+            _popupPinnedOpenBinding = BindUtils.RelayBind(
+                this,
+                IsPopupPinnedOpenProperty,
+                PickerPopup,
+                Popup.IsPopupPinnedOpenProperty);
         }
         if (DecoratedBox != null)
         {
@@ -720,6 +742,10 @@ public abstract class InfoPickerInput : TemplatedControl,
         base.OnAttachedToVisualTree(e);
         _deactivationSubscription =
             TopLevelDeactivation.Subscribe(TopLevel.GetTopLevel(this), HandleWindowDeactivated);
+        if (IsPopupPinnedOpen)
+        {
+            SetPickerOpenIfChanged(true);
+        }
     }
 
     private void HandleWindowDeactivated(object? sender, EventArgs e)
@@ -742,6 +768,7 @@ public abstract class InfoPickerInput : TemplatedControl,
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        ClosePickerForLifecycle();
         base.OnDetachedFromVisualTree(e);
 
         _deactivationSubscription?.Dispose();
@@ -761,6 +788,20 @@ public abstract class InfoPickerInput : TemplatedControl,
         ClearOwnedPickerPresenter();
     }
 
+    private void ClosePickerForLifecycle()
+    {
+        try
+        {
+            ++_popupLifecycleCloseDepth;
+            PickerPopup?.CloseForLifecycle();
+            SetPickerOpenIfChanged(false);
+        }
+        finally
+        {
+            --_popupLifecycleCloseDepth;
+        }
+    }
+
     protected virtual bool ShowClearButtonPredicate()
     {
         return false;
@@ -777,6 +818,14 @@ public abstract class InfoPickerInput : TemplatedControl,
         }
 
         return value;
+    }
+
+    private static bool CoerceIsPickerOpen(AvaloniaObject sender, bool value)
+    {
+        return !value &&
+               sender is InfoPickerInput { IsPopupPinnedOpen: true, _popupLifecycleCloseDepth: 0 }
+            ? true
+            : value;
     }
     
     void ICompactSpaceAware.NotifyPositionChange(SpaceItemPosition? position)
@@ -844,6 +893,25 @@ public abstract class InfoPickerInput : TemplatedControl,
             change.Property == IsPopupVerticalFlippedProperty)
         {
             ConfigureArrowPosition();
+        }
+
+        if (change.Property == IsPopupPinnedOpenProperty)
+        {
+            if (change.GetNewValue<bool>())
+            {
+                SetPickerOpenIfChanged(true);
+            }
+            else if (IsPickerOpen)
+            {
+                if (PickerPopup is { IsOpen: true })
+                {
+                    SetCurrentValue(IsPickerOpenProperty, true);
+                }
+                else
+                {
+                    ClosePickerForLifecycle();
+                }
+            }
         }
     }
 

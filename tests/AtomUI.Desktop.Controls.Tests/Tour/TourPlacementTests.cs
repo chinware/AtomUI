@@ -57,6 +57,80 @@ public class TourPlacementTests
     }
 
     [Fact]
+    public void Popup_Pin_Opens_Tour_State_And_Physical_Popup()
+    {
+        var target = CreateTarget(320, 100, 72, 32);
+        var tour   = CreateTour(target, Desktop.Controls.TourPlacementMode.Bottom);
+        var root   = CreateRoot(target, tour);
+
+        ShowInWindow(root, window =>
+        {
+            var popup = GetPopup(tour);
+
+            tour.IsPopupPinnedOpen = true;
+            RunLayout(window);
+
+            tour.IsOpen.ShouldBeTrue();
+            popup.IsPopupPinnedOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue();
+            popup.PlacementTarget.ShouldBeSameAs(target);
+        });
+    }
+
+    [Fact]
+    public void Popup_Pin_Rejects_Tour_Hide_Request()
+    {
+        var target = CreateTarget(320, 100, 72, 32);
+        var tour   = CreateTour(target, Desktop.Controls.TourPlacementMode.Bottom);
+        var root   = CreateRoot(target, tour);
+
+        ShowInWindow(root, window =>
+        {
+            var popup = GetPopup(tour);
+            tour.IsPopupPinnedOpen = true;
+            RunLayout(window);
+
+            tour.HideTour();
+            RunLayout(window);
+
+            tour.IsOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue();
+            window.GetVisualDescendants().OfType<TourLayer>().Single().IsVisible.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public void Pinned_Tour_Detach_Closes_And_Reattach_Reopens_It()
+    {
+        var target = CreateTarget(320, 100, 72, 32);
+        var tour   = CreateTour(target, Desktop.Controls.TourPlacementMode.Bottom);
+        var root   = CreateRoot(target, tour);
+
+        ShowInWindow(root, window =>
+        {
+            var popup = GetPopup(tour);
+            tour.IsPopupPinnedOpen = true;
+            RunLayout(window);
+            popup.IsOpen.ShouldBeTrue();
+
+            root.Children.Remove(tour);
+            RunLayout(window);
+
+            tour.IsPopupPinnedOpen.ShouldBeTrue();
+            tour.IsOpen.ShouldBeFalse();
+            popup.IsOpen.ShouldBeFalse();
+            window.GetVisualDescendants().OfType<OverlayPopupHost>().ShouldBeEmpty();
+
+            root.Children.Add(tour);
+            RunLayout(window);
+
+            tour.IsOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue();
+            window.GetVisualDescendants().OfType<OverlayPopupHost>().ShouldHaveSingleItem();
+        });
+    }
+
+    [Fact]
     public void IsOpen_Positions_First_Popup_Below_Target()
     {
         var target = CreateTarget(320, 100, 72, 32);

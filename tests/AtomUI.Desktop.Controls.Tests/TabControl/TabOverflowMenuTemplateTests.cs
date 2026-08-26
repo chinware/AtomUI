@@ -93,11 +93,104 @@ public class TabOverflowMenuTemplateTests
         });
     }
 
+    [Fact]
+    public void CardTabControl_Pinned_Overflow_Menu_Reopens_After_Detach()
+    {
+        var tabControl = new CardTabControl
+        {
+            Width                 = 220,
+            Height                = 180,
+            SelectedIndex         = 0,
+            IsTabClosable         = true,
+            IsMotionEnabled       = false,
+            IsPopupPinnedOpen     = true
+        };
+        foreach (var tab in CreateTabs())
+        {
+            tabControl.Items.Add(new TabItem
+            {
+                Header  = tab.Title,
+                Content = tab.Title
+            });
+        }
+
+        ShowInWindowWithHost(tabControl, (_, host) =>
+        {
+            var scrollViewer = GetOverflowScrollViewer(tabControl);
+            var flyout       = GetMenuFlyout(scrollViewer);
+            flyout.IsOpen.ShouldBeTrue();
+            flyout.Popup.IsOpen.ShouldBeTrue();
+
+            flyout.Hide();
+            Dispatcher.UIThread.RunJobs();
+            flyout.IsOpen.ShouldBeTrue();
+            flyout.Popup.IsOpen.ShouldBeTrue();
+
+            host.Children.Remove(tabControl);
+            Dispatcher.UIThread.RunJobs();
+            flyout.IsOpen.ShouldBeFalse();
+            flyout.Popup.IsOpen.ShouldBeFalse();
+            flyout.IsPopupPinnedOpen.ShouldBeFalse();
+
+            host.Children.Add(tabControl);
+            Dispatcher.UIThread.RunJobs();
+            var reopenedFlyout = GetMenuFlyout(GetOverflowScrollViewer(tabControl));
+            reopenedFlyout.IsOpen.ShouldBeTrue();
+            reopenedFlyout.Popup.IsOpen.ShouldBeTrue();
+
+            tabControl.IsPopupPinnedOpen = false;
+            Dispatcher.UIThread.RunJobs();
+            reopenedFlyout.IsOpen.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public void CardTabStrip_Pinned_Overflow_Menu_Reopens_After_Detach()
+    {
+        var tabStrip = new CardTabStrip
+        {
+            Width                 = 220,
+            ItemsSource           = CreateTabs(),
+            ItemTemplate          = CreateHeaderTemplate(),
+            SelectedIndex         = 0,
+            IsTabClosable         = true,
+            IsMotionEnabled       = false,
+            IsPopupPinnedOpen     = true
+        };
+
+        ShowInWindowWithHost(tabStrip, (_, host) =>
+        {
+            var scrollViewer = GetOverflowScrollViewer(tabStrip);
+            var flyout       = GetMenuFlyout(scrollViewer);
+            flyout.IsOpen.ShouldBeTrue();
+            flyout.Popup.IsOpen.ShouldBeTrue();
+
+            flyout.Hide();
+            Dispatcher.UIThread.RunJobs();
+            flyout.IsOpen.ShouldBeTrue();
+            flyout.Popup.IsOpen.ShouldBeTrue();
+
+            host.Children.Remove(tabStrip);
+            Dispatcher.UIThread.RunJobs();
+            flyout.IsOpen.ShouldBeFalse();
+            flyout.Popup.IsOpen.ShouldBeFalse();
+            flyout.IsPopupPinnedOpen.ShouldBeFalse();
+
+            host.Children.Add(tabStrip);
+            Dispatcher.UIThread.RunJobs();
+            var reopenedFlyout = GetMenuFlyout(GetOverflowScrollViewer(tabStrip));
+            reopenedFlyout.IsOpen.ShouldBeTrue();
+            reopenedFlyout.Popup.IsOpen.ShouldBeTrue();
+
+            tabStrip.IsPopupPinnedOpen = false;
+            Dispatcher.UIThread.RunJobs();
+            reopenedFlyout.IsOpen.ShouldBeTrue();
+        });
+    }
+
     private static MenuFlyoutPresenter OpenOverflowMenu(Control owner, AvaloniaWindow window)
     {
-        var scrollViewer = owner.GetVisualDescendants()
-                                .OfType<BaseTabScrollViewer>()
-                                .ShouldHaveSingleItem();
+        var scrollViewer = GetOverflowScrollViewer(owner);
         scrollViewer.Extent.Width.ShouldBeGreaterThan(scrollViewer.Viewport.Width);
 
         var menuIndicator = scrollViewer.GetVisualDescendants()
@@ -110,6 +203,24 @@ public class TabOverflowMenuTemplateTests
         return window.GetVisualDescendants()
                      .OfType<MenuFlyoutPresenter>()
                      .ShouldHaveSingleItem();
+    }
+
+    private static BaseTabScrollViewer GetOverflowScrollViewer(Control owner)
+    {
+        var scrollViewer = owner.GetVisualDescendants()
+                                .OfType<BaseTabScrollViewer>()
+                                .ShouldHaveSingleItem();
+        scrollViewer.Extent.Width.ShouldBeGreaterThan(scrollViewer.Viewport.Width);
+        return scrollViewer;
+    }
+
+    private static MenuFlyout GetMenuFlyout(BaseTabScrollViewer scrollViewer)
+    {
+        var field = typeof(BaseTabScrollViewer).GetField(
+            "MenuFlyout",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        field.ShouldNotBeNull();
+        return field.GetValue(scrollViewer).ShouldBeOfType<MenuFlyout>();
     }
 
     private static FuncDataTemplate<DemoTab> CreateHeaderTemplate()
@@ -139,6 +250,36 @@ public class TabOverflowMenuTemplateTests
             window.Show();
             Dispatcher.UIThread.RunJobs();
             assertion(window);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    private static void ShowInWindowWithHost(
+        Control content,
+        Action<AvaloniaWindow, ScopeAwareOverlayLayerPanel> assertion)
+    {
+        var overlayPanel = new ScopeAwareOverlayLayerPanel
+        {
+            Width  = 360,
+            Height = 260
+        };
+        overlayPanel.Children.Add(content);
+
+        var window = new AvaloniaWindow
+        {
+            Width   = 360,
+            Height  = 260,
+            Content = CreatePopupOverlayHost(overlayPanel)
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            assertion(window, overlayPanel);
         }
         finally
         {

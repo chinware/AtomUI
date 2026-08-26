@@ -44,7 +44,7 @@ public class ToolTip : ContentControl,
         AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsPointAtCenter");
     
     public static readonly AttachedProperty<bool> IsOpenProperty =
-        AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsOpen");
+        AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsOpen", coerce: CoerceIsOpen);
 
     public static readonly AttachedProperty<PlacementMode> PlacementProperty =
         AvaloniaProperty.RegisterAttached<ToolTip, Control, PlacementMode>("Placement",
@@ -106,6 +106,9 @@ public class ToolTip : ContentControl,
     internal static readonly AttachedProperty<ToolTip?> ToolTipProperty =
         AvaloniaProperty.RegisterAttached<ToolTip, Control, ToolTip?>("ToolTip");
 
+    internal static readonly AttachedProperty<bool> IsPopupPinnedOpenProperty =
+        AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsPopupPinnedOpen");
+
     private static readonly AttachedProperty<EventHandler<VisualTreeAttachmentEventArgs>?> PendingAttachHandlerProperty =
         AvaloniaProperty.RegisterAttached<ToolTip, Control, EventHandler<VisualTreeAttachmentEventArgs>?>("PendingAttachHandler");
     
@@ -140,6 +143,7 @@ public class ToolTip : ContentControl,
     {
         IsOpenProperty.Changed.Subscribe(IsOpenChanged);
         TipProperty.Changed.Subscribe(TipChanged);
+        IsPopupPinnedOpenProperty.Changed.Subscribe(IsPopupPinnedOpenChanged);
     }
 
     #region 附加属性访问器
@@ -350,16 +354,55 @@ public class ToolTip : ContentControl,
     public static void RemoveToolTipClosingHandler(Control element, EventHandler<RoutedEventArgs> handler) =>
         element.RemoveHandler(ToolTipClosingEvent, handler);
 
+    internal static bool GetIsPopupPinnedOpen(Control element)
+    {
+        return element.GetValue(IsPopupPinnedOpenProperty);
+    }
+
+    internal static void SetIsPopupPinnedOpen(Control element, bool value)
+    {
+        element.SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
+
     #endregion
 
     private static void IsOpenChanged(AvaloniaPropertyChangedEventArgs e)
     {
-        ReconcileOpenState((Control)e.Sender);
+        var control = (Control)e.Sender;
+        ReconcileOpenState(control);
     }
 
     private static void TipChanged(AvaloniaPropertyChangedEventArgs e)
     {
         ReconcileOpenState((Control)e.Sender);
+    }
+
+    private static void IsPopupPinnedOpenChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        var control = (Control)e.Sender;
+        if (e.GetNewValue<bool>())
+        {
+            if (!GetIsOpen(control))
+            {
+                control.SetCurrentValue(IsOpenProperty, true);
+                return;
+            }
+        }
+        else if (GetIsOpen(control))
+        {
+            var toolTip = control.GetValue(ToolTipProperty);
+            control.SetCurrentValue(IsOpenProperty, toolTip?._popup?.IsOpen == true);
+            return;
+        }
+
+        ReconcileOpenState(control);
+    }
+
+    private static bool CoerceIsOpen(AvaloniaObject sender, bool value)
+    {
+        return !value && sender is Control control && GetIsPopupPinnedOpen(control)
+            ? true
+            : value;
     }
 
     /// <summary>
@@ -415,7 +458,14 @@ public class ToolTip : ContentControl,
         {
             // 只关闭物理弹层；IsOpen 仍为 true（Tip 未就绪或宿主已卸载）时保留期望状态，
             // 条件满足后由调和流程重新打开。
-            toolTip.Close();
+            if (GetIsPopupPinnedOpen(control))
+            {
+                toolTip.CloseForLifecycle();
+            }
+            else
+            {
+                toolTip.Close();
+            }
         }
     }
 
@@ -475,6 +525,7 @@ public class ToolTip : ContentControl,
             _popup.Bind(Popup.RequestedPlacementProperty, ResolveValueSource(control, PlacementProperty).GetBindingObservable(PlacementProperty, v => (PlacementMode?)v)),
             _popup.Bind(Popup.MarginToAnchorProperty, ResolveValueSource(control, MarginToAnchorProperty).GetBindingObservable(MarginToAnchorProperty)),
             _popup.Bind(Popup.IsPointAtCenterProperty, ResolveValueSource(control, IsPointAtCenterProperty).GetBindingObservable(IsPointAtCenterProperty)),
+            _popup.Bind(Popup.IsPopupPinnedOpenProperty, control.GetBindingObservable(IsPopupPinnedOpenProperty)),
         ]);
 
         _popup.PlacementTarget = control;
@@ -525,6 +576,18 @@ public class ToolTip : ContentControl,
         if (_popup != null)
         {
             _popup.IsOpen = false;
+        }
+        else
+        {
+            _subscriptions?.Dispose();
+        }
+    }
+
+    private void CloseForLifecycle()
+    {
+        if (_popup != null)
+        {
+            _popup.CloseForLifecycle();
         }
         else
         {

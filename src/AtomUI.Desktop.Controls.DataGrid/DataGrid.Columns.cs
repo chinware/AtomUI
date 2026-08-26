@@ -13,12 +13,14 @@ using AtomUI.Controls.Data;
 using AtomUI.Desktop.Controls.Data;
 using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Utils;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml.MarkupExtensions;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -119,6 +121,7 @@ public partial class DataGrid
     private DataGridColumnHeadersPresenter? _columnHeadersPresenter;
     private DataGridGroupColumnHeadersPresenter? _groupColumnHeadersPresenter;
     private DataGridColumnDraggingOverIndicator? _dataGridDraggingOverIndicator;
+    private DataGridColumn? _popupPinnedOpenFilterColumn;
     private double? _columnViewportWidth;
 
     protected virtual void NotifyColumnDisplayIndexChanged(DataGridColumnEventArgs e)
@@ -606,6 +609,8 @@ public partial class DataGrid
             EnsureRowsPresenterVisibility();
             InvalidateRowHeightEstimate();
         }
+
+        RefreshPopupPinnedOpenFilterTarget();
     }
 
     internal void HandleColumnCollectionChangedPreNotification(bool columnsGrew)
@@ -645,6 +650,7 @@ public partial class DataGrid
         // Invalidate layout
         CorrectColumnFrozenStates();
         EnsureHorizontalLayout();
+        RefreshPopupPinnedOpenFilterTarget();
     }
 
     internal void HandleColumnDisplayIndexChanging(DataGridColumn targetColumn, int newDisplayIndex)
@@ -844,6 +850,8 @@ public partial class DataGrid
             row.Cells[updatedColumn.Index].IsVisible = updatedColumn.IsVisible;
             row.InvalidateCellsIndex();
         }
+
+        RefreshPopupPinnedOpenFilterTarget();
     }
 
     internal void HandleColumnVisibleStateChanging(DataGridColumn targetColumn)
@@ -869,6 +877,95 @@ public partial class DataGrid
                 SetCurrentCellCore(dataGridColumn.Index, CurrentSlot);
             }
         }
+    }
+
+    private void HandleCanUserFilterColumnsChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        foreach (var column in ColumnsInternal.GetDisplayedColumns())
+        {
+            if (column.HasHeaderCell)
+            {
+                column.HeaderCell.CanUserFilter = column.CanUserFilter;
+            }
+        }
+
+        RefreshPopupPinnedOpenFilterTarget();
+    }
+
+    private void HandlePopupPinnedOpenChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        if (change.GetNewValue<bool>())
+        {
+            RefreshPopupPinnedOpenFilterTarget();
+        }
+        else
+        {
+            UnpinPopupPinnedOpenFilterTarget();
+        }
+    }
+
+    internal void RefreshPopupPinnedOpenFilterTarget()
+    {
+        if (!IsPopupPinnedOpen ||
+            !IsEffectivelyEnabled ||
+            !IsEffectivelyVisible ||
+            !this.IsAttachedToVisualTree() ||
+            TopLevel.GetTopLevel(this) is null)
+        {
+            SuspendPopupPinnedOpenFilterTarget();
+            return;
+        }
+
+        DataGridColumn? targetColumn = null;
+        foreach (var column in ColumnsInternal.GetDisplayedColumns())
+        {
+            if (column is not DataGridFillerColumn &&
+                column.IsVisible &&
+                column.CanUserFilter &&
+                column.HasFilterItems &&
+                column.HasHeaderCell)
+            {
+                targetColumn = column;
+                break;
+            }
+        }
+
+        if (!ReferenceEquals(_popupPinnedOpenFilterColumn, targetColumn))
+        {
+            if (_popupPinnedOpenFilterColumn is { HasHeaderCell: true } previousColumn)
+            {
+                previousColumn.HeaderCell.CloseFilterPopupForLifecycle();
+                previousColumn.HeaderCell.SetCurrentValue(DataGridColumnHeader.IsPopupPinnedOpenProperty, false);
+            }
+
+            _popupPinnedOpenFilterColumn = targetColumn;
+        }
+
+        if (_popupPinnedOpenFilterColumn is { HasHeaderCell: true } currentColumn)
+        {
+            currentColumn.HeaderCell.SetCurrentValue(DataGridColumnHeader.IsPopupPinnedOpenProperty, true);
+        }
+    }
+
+    private void SuspendPopupPinnedOpenFilterTarget()
+    {
+        if (_popupPinnedOpenFilterColumn is { HasHeaderCell: true } column)
+        {
+            column.HeaderCell.CloseFilterPopupForLifecycle();
+            column.HeaderCell.SetCurrentValue(DataGridColumnHeader.IsPopupPinnedOpenProperty, false);
+        }
+
+        _popupPinnedOpenFilterColumn = null;
+    }
+
+    private void UnpinPopupPinnedOpenFilterTarget()
+    {
+        if (_popupPinnedOpenFilterColumn is { HasHeaderCell: true } column)
+        {
+            column.HeaderCell.SetCurrentValue(DataGridColumnHeader.IsPopupPinnedOpenProperty, false);
+        }
+
+        _popupPinnedOpenFilterColumn = null;
     }
 
     internal void HandleColumnWidthChanged(DataGridColumn updatedColumn)

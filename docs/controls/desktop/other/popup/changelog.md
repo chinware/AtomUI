@@ -2,6 +2,15 @@
 
 本文档记录 Popup 控件级 API、Theme、Token、实现结构和设计契约变化，不替代仓库根目录 `CHANGELOG.md`。
 
+## 2026-08-25
+
+- Design
+  - Define the internal-only pinned-open contract across semantic owners, Flyout adapters, and the physical Popup.
+- Implementation
+  - Gate pinned opening on content, anchor, attachment, effective visibility/enabled state, TopLevel, and placement validity.
+  - Reject ordinary close sources without starting close motion, while lifecycle teardown clears hosts, pending requests, bindings, subscriptions, trackers, and timers.
+  - Keep an already open Popup open after unpinning, but cancel and clean a not-yet-open pending request without transient business-state close notifications.
+
 ## 2026-08-24
 
 - Lifecycle

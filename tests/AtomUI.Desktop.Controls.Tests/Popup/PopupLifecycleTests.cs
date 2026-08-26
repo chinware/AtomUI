@@ -19,6 +19,320 @@ public class PopupLifecycleTests
     }
 
     [Fact]
+    public void Pinned_Open_Request_Opens_Valid_Popup()
+    {
+        var (window, _, _, popup) = CreateAnimatedPopupWindow();
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsOpen.ShouldBeTrue();
+            window.GetVisualDescendants().OfType<OverlayPopupHost>().ShouldHaveSingleItem();
+        }
+        finally
+        {
+            popup.IsPopupPinnedOpen = false;
+            CloseWindow(window, popup);
+        }
+    }
+
+    [Fact]
+    public void Pinned_Popup_Rejects_Normal_Close_Without_Starting_Close_Motion()
+    {
+        var (window, _, _, popup) = CreateAnimatedPopupWindow();
+        var closeMotion = new CountingFadeOutMotion();
+        popup.CloseMotion = closeMotion;
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            popup.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            popup.Close();
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsOpen.ShouldBeTrue();
+            popup.IsPlayingCloseMotion.ShouldBeFalse();
+            closeMotion.ConfigurationCount.ShouldBe(0);
+            window.GetVisualDescendants().OfType<OverlayPopupHost>().ShouldHaveSingleItem();
+        }
+        finally
+        {
+            popup.IsPopupPinnedOpen = false;
+            CloseWindow(window, popup);
+        }
+    }
+
+    [Fact]
+    public void Pinned_Popup_Closes_Immediately_When_PlacementTarget_Detaches()
+    {
+        var (window, panel, target, popup) = CreateAnimatedPopupWindow();
+        var closedCount = 0;
+        popup.Closed += (_, _) => closedCount++;
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            popup.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            panel.Children.Remove(target);
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsOpen.ShouldBeFalse();
+            popup.IsPlayingCloseMotion.ShouldBeFalse();
+            closedCount.ShouldBe(1);
+            window.GetVisualDescendants().OfType<OverlayPopupHost>().ShouldBeEmpty();
+        }
+        finally
+        {
+            popup.IsPopupPinnedOpen = false;
+            CloseWindow(window, popup);
+        }
+    }
+
+    [Fact]
+    public void Pinned_Open_Request_Waits_For_PlacementTarget_To_Attach()
+    {
+        var (window, _, _, popup) = CreateAnimatedPopupWindow();
+
+        try
+        {
+            popup.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsOpen.ShouldBeFalse();
+
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsOpen.ShouldBeTrue();
+            window.GetVisualDescendants().OfType<OverlayPopupHost>().ShouldHaveSingleItem();
+        }
+        finally
+        {
+            popup.IsPopupPinnedOpen = false;
+            CloseWindow(window, popup);
+        }
+    }
+
+    [Fact]
+    public void Pinned_Open_Request_Waits_For_PlacementTarget_To_Become_Visible()
+    {
+        var (window, _, target, popup) = CreateAnimatedPopupWindow();
+        target.IsVisible = false;
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            popup.IsOpen.ShouldBeFalse();
+
+            target.IsVisible = true;
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsOpen.ShouldBeTrue();
+            window.GetVisualDescendants().OfType<OverlayPopupHost>().ShouldHaveSingleItem();
+        }
+        finally
+        {
+            popup.IsPopupPinnedOpen = false;
+            CloseWindow(window, popup);
+        }
+    }
+
+    [Fact]
+    public void Pinned_Open_Request_Waits_For_PlacementTarget_To_Become_Enabled()
+    {
+        var (window, _, target, popup) = CreateAnimatedPopupWindow();
+        target.IsEnabled = false;
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            popup.IsOpen.ShouldBeFalse();
+
+            target.IsEnabled = true;
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsOpen.ShouldBeTrue();
+            window.GetVisualDescendants().OfType<OverlayPopupHost>().ShouldHaveSingleItem();
+        }
+        finally
+        {
+            popup.IsPopupPinnedOpen = false;
+            CloseWindow(window, popup);
+        }
+    }
+
+    [Fact]
+    public void Pinned_Explicit_Open_Waits_For_PlacementTarget_To_Become_Enabled()
+    {
+        var (window, _, target, popup) = CreateAnimatedPopupWindow();
+        target.IsEnabled = false;
+        var openedCount = 0;
+        popup.Opened += (_, _) => openedCount++;
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsPopupPinnedOpen = true;
+            popup.IsOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            popup.IsOpen.ShouldBeFalse();
+            openedCount.ShouldBe(0);
+
+            target.IsEnabled = true;
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsOpen.ShouldBeTrue();
+            openedCount.ShouldBe(1);
+            window.GetVisualDescendants().OfType<OverlayPopupHost>().ShouldHaveSingleItem();
+        }
+        finally
+        {
+            popup.IsPopupPinnedOpen = false;
+            CloseWindow(window, popup);
+        }
+    }
+
+    [Fact]
+    public void Unpinning_A_Pending_Explicit_Open_Clears_The_Open_Request()
+    {
+        var (window, _, target, popup) = CreateAnimatedPopupWindow();
+        target.IsEnabled = false;
+        var openedCount = 0;
+        popup.Opened += (_, _) => openedCount++;
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsPopupPinnedOpen = true;
+            popup.IsOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            popup.IsOpen.ShouldBeFalse();
+            openedCount.ShouldBe(0);
+
+            popup.IsPopupPinnedOpen = false;
+            target.IsEnabled = true;
+            popup.CoerceValue(Popup.IsOpenProperty);
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsOpen.ShouldBeFalse();
+            openedCount.ShouldBe(0);
+        }
+        finally
+        {
+            popup.IsPopupPinnedOpen = false;
+            CloseWindow(window, popup);
+        }
+    }
+
+    [Fact]
+    public void Pinned_Open_Request_Waits_For_Content_To_Become_Available()
+    {
+        var (window, _, _, popup) = CreateAnimatedPopupWindow();
+        var child = popup.Child;
+        popup.Child = null;
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            popup.IsOpen.ShouldBeFalse();
+
+            popup.Child = child;
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsOpen.ShouldBeTrue();
+            window.GetVisualDescendants().OfType<OverlayPopupHost>().ShouldHaveSingleItem();
+        }
+        finally
+        {
+            popup.IsPopupPinnedOpen = false;
+            CloseWindow(window, popup);
+        }
+    }
+
+    [Fact]
+    public void Lifecycle_Close_Bypasses_Pin_And_Close_Motion()
+    {
+        var (window, _, _, popup) = CreateAnimatedPopupWindow();
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            popup.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            popup.CloseForLifecycle();
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsPopupPinnedOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeFalse();
+            popup.IsPlayingCloseMotion.ShouldBeFalse();
+            window.GetVisualDescendants().OfType<OverlayPopupHost>().ShouldBeEmpty();
+        }
+        finally
+        {
+            popup.IsPopupPinnedOpen = false;
+            CloseWindow(window, popup);
+        }
+    }
+
+    [Fact]
+    public void Pinning_During_Close_Motion_Cancels_The_Pending_Close()
+    {
+        var (window, _, _, popup) = CreateAnimatedPopupWindow();
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            OpenPopup(popup);
+
+            popup.Close();
+            Dispatcher.UIThread.RunJobs();
+            popup.IsPlayingCloseMotion.ShouldBeTrue();
+
+            popup.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsOpen.ShouldBeTrue();
+            popup.IsPlayingCloseMotion.ShouldBeFalse();
+            window.GetVisualDescendants().OfType<OverlayPopupHost>().ShouldHaveSingleItem();
+        }
+        finally
+        {
+            popup.IsPopupPinnedOpen = false;
+            CloseWindow(window, popup);
+        }
+    }
+
+    [Fact]
     public void PlacementTarget_Detach_ForceCloses_Animated_Popup()
     {
         var (window, panel, target, popup) = CreateAnimatedPopupWindow();

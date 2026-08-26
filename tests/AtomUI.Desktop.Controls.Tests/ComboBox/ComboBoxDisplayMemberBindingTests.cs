@@ -32,6 +32,88 @@ public class ComboBoxDisplayMemberBindingTests
     }
 
     [Fact]
+    public void Pinned_Open_Request_Opens_ComboBox_And_Its_Template_Popup()
+    {
+        var comboBox = new AtomUIComboBox
+        {
+            Width           = 200,
+            IsMotionEnabled = false,
+            ItemsSource     = new[] { "Alpha", "Beta" }
+        };
+
+        ShowInWindow(comboBox, () =>
+        {
+            comboBox.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var popup = GetVisualDescendant<Popup>(comboBox, "PART_Popup");
+            comboBox.IsDropDownOpen.ShouldBeTrue();
+            popup.IsPopupPinnedOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public void Pinned_ComboBox_Rejects_Business_Close_Request()
+    {
+        var comboBox = new AtomUIComboBox
+        {
+            Width           = 200,
+            IsMotionEnabled = false,
+            ItemsSource     = new[] { "Alpha", "Beta" }
+        };
+
+        ShowInWindow(comboBox, () =>
+        {
+            comboBox.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            var popup = GetVisualDescendant<Popup>(comboBox, "PART_Popup");
+
+            comboBox.IsDropDownOpen = false;
+            Dispatcher.UIThread.RunJobs();
+
+            comboBox.IsDropDownOpen.ShouldBeTrue();
+            popup.IsPopupPinnedOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public void Pinned_ComboBox_Detach_Closes_And_Reattach_Reopens_It()
+    {
+        var comboBox = new AtomUIComboBox
+        {
+            Width           = 200,
+            IsMotionEnabled = false,
+            ItemsSource     = new[] { "Alpha", "Beta" }
+        };
+
+        ShowInWindow(comboBox, window =>
+        {
+            var visualLayerManager = window.Content.ShouldBeOfType<VisualLayerManager>();
+            var overlayPanel = visualLayerManager.Child.ShouldBeOfType<ScopeAwareOverlayLayerPanel>();
+            comboBox.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            var popup = GetVisualDescendant<Popup>(comboBox, "PART_Popup");
+            popup.IsOpen.ShouldBeTrue();
+
+            overlayPanel.Children.Remove(comboBox);
+            Dispatcher.UIThread.RunJobs();
+
+            comboBox.IsPopupPinnedOpen.ShouldBeTrue();
+            comboBox.IsDropDownOpen.ShouldBeFalse();
+            popup.IsOpen.ShouldBeFalse();
+            window.GetVisualDescendants().OfType<OverlayPopupHost>().ShouldBeEmpty();
+
+            overlayPanel.Children.Add(comboBox);
+            Dispatcher.UIThread.RunJobs();
+
+            comboBox.IsDropDownOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
     public void DisplayMemberBinding_DropDown_Item_Content_Is_Vertically_Centered()
     {
         var comboBox = new TestComboBox

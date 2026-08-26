@@ -8,6 +8,7 @@ using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
 using AtomUI.Controls.AsyncLoad;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls.DataLoad;
 using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Icons.AntDesign;
@@ -438,6 +439,9 @@ public class Mentions : TemplatedControl,
     internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty = 
         AvaloniaProperty.Register<Mentions, FormValidateFeedback?>(nameof(FormFeedback));
 
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Popup.IsPopupPinnedOpenProperty.AddOwner<Mentions>();
+
     internal static readonly StyledProperty<FormValidateStatus> FormStatusProperty =
         InputControlState.FormStatusProperty.AddOwner<Mentions>();
     
@@ -523,6 +527,12 @@ public class Mentions : TemplatedControl,
         get => GetValue(FormStatusProperty);
         private set => SetCurrentValue(FormStatusProperty, value);
     }
+
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
     #endregion
     
     private static bool IsValidAsyncLoadDebounce(TimeSpan value) => value.TotalMilliseconds >= 0.0;
@@ -539,6 +549,7 @@ public class Mentions : TemplatedControl,
     private IDisposable? _collectionChangeSubscription;
     private readonly AsyncSearchLoadCoordinator<string?, MentionOptionsLoadResult> _asyncLoadCoordinator = new();
     private IDisposable? _deactivationSubscription;
+    private IDisposable? _popupPinnedOpenBinding;
 
     private enum DropDownOpenChangeReason
     {
@@ -648,6 +659,8 @@ public class Mentions : TemplatedControl,
 
         if (_popup != null)
         {
+            _popupPinnedOpenBinding?.Dispose();
+            _popupPinnedOpenBinding = null;
             _popup.Opened -= HandlePopupOpened;
             _popup.Closed -= HandlePopupClosed;
         }
@@ -665,6 +678,11 @@ public class Mentions : TemplatedControl,
 
         if (_popup != null)
         {
+            _popupPinnedOpenBinding = BindUtils.RelayBind(
+                this,
+                IsPopupPinnedOpenProperty,
+                _popup,
+                Popup.IsPopupPinnedOpenProperty);
             _popup.Opened              += HandlePopupOpened;
             _popup.Closed              += HandlePopupClosed;
             _popup.OverlayInputPassThroughElement = _textArea;
@@ -692,6 +710,10 @@ public class Mentions : TemplatedControl,
 
         _deactivationSubscription =
             TopLevelDeactivation.Subscribe(TopLevel.GetTopLevel(this), HandleWindowDeactivated);
+        if (IsPopupPinnedOpen && !IsDropDownOpen)
+        {
+            SetCurrentValue(IsDropDownOpenProperty, true);
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -704,10 +726,7 @@ public class Mentions : TemplatedControl,
         _collectionChangeSubscription = null;
         _deactivationSubscription?.Dispose();
         _deactivationSubscription = null;
-        if (_popup?.IsOpen == true)
-        {
-            _popup.IsOpen = false;
-        }
+        _popup?.CloseForLifecycle();
         if (IsDropDownOpen)
         {
             SetDropDownOpenFromInternalSync(false);
@@ -733,6 +752,12 @@ public class Mentions : TemplatedControl,
         {
             ConfigureMaxPopupHeight();
         }
+        else if (change.Property == IsPopupPinnedOpenProperty &&
+                 change.GetNewValue<bool>() &&
+                 !IsDropDownOpen)
+        {
+            SetCurrentValue(IsDropDownOpenProperty, true);
+        }
     }
 
     #endregion
@@ -747,6 +772,12 @@ public class Mentions : TemplatedControl,
         if (_dropDownOpenChangeReason == DropDownOpenChangeReason.InternalSync)
         {
             UpdatePseudoClasses();
+            return;
+        }
+
+        if (!newValue && IsPopupPinnedOpen)
+        {
+            SetDropDownOpenFromInternalSync(oldValue);
             return;
         }
 

@@ -2,6 +2,8 @@
 
 本文档定义 `AtomUI.Desktop.Controls.NavMenu` 桌面版的最新设计定位、公共契约、导航状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [NavMenu 桌面版实现原理](implementation.md)，NavMenu Token 的专项设计见 [NavMenu Token 设计](token.md)，设计和契约变化记录见 [NavMenu Changelog](changelog.md)。
 
+该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。本控件的语义 owner 为 `NavMenu` / `NavMenuItem`，其 internal `IsPopupPinnedOpen` 只供测试和内部诊断使用；设置为 true 时保持 submenu open state 并 relay 到 submenu Popup，设置为 false 时只解除关闭拦截。控件卸载、锚点失效、TopLevel 改变和模板重建仍按共享生命周期规则清理。
+
 ## 1. 控件定位
 
 | 项 | 值 |
@@ -160,7 +162,7 @@ NavMenu 的交互行为由 mode 决定。
 
 - 带子菜单的项目通过 Popup 展开。
 - hover 可以延迟打开子菜单；pointer 离开后延迟关闭。
-- 点击叶子节点时选中节点；弹出层关闭由 pointer、窗口失焦、非客户端点击和同级打开状态共同控制。
+- 点击叶子节点时选中节点；弹出层关闭由 pointer、窗口失焦、非客户端点击和同级打开状态共同控制。这些关闭入口只结束临时 popup open state，不清空持续的 `SelectedItem` 或 selected path。
 - `Horizontal` 顶层菜单 popup 位于下方；非顶层 popup 按右侧边缘对齐。
 - 键盘导航以当前打开的可见菜单层级为边界移动 active/focus 项，跳过禁用项、分割线和不可聚焦内容。
 - 键盘 active 初次移动时优先以当前可见且已生成的 `SelectedItem` 容器作为方向键锚点，并立即移动到前一个或后一个可导航节点；如果没有选中项，或选中项隐藏在未打开的子菜单中，则从第一个可导航节点开始。
@@ -252,6 +254,7 @@ NavMenu 不实现 Form、CompactSpace 或 Button 家族接口。
 - `InlineCollapsedWidth` 默认由 `NavMenuToken.InlineCollapsedWidth` 提供，开发者本地设置必须能覆盖 token 默认值。
 - `SelectedItem` 优先级高于 `DefaultSelectedPath`。
 - `DefaultOpenPaths` 和 `DefaultSelectedPath` 不依赖固定时间延迟。
+- pointer 外点、窗口停用、平台失焦、非客户端点击和 `Mode` 切换只关闭 popup/submenu，不得通过 `Close()` 隐式清空 `SelectedItem`；显式调用 public `Close()` 仍保持“关闭全部子菜单并清空选择”的既有合同。
 - 进入或退出 inline collapsed 不得调用 `Close()`，不得清空 `SelectedItem`，不得丢失 selected path。
 - inline collapsed 期间打开的 popup 状态不得污染展开后恢复的 inline open path cache。
 - 键盘 active/focus 状态不得进入公共 API，不得改变 `SelectedItem`、`DefaultSelectedPath` 或 `DefaultOpenPaths` 的语义。

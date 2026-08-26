@@ -5,6 +5,8 @@
 [Avatar Changelog](changelog.md)。统一图片加载契约见
 [AtomUI 统一图片加载系统](../../../../architecture/systems/image-loading/overview.md)。
 
+该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。本控件的语义 owner 为 `AvatarGroup`，其 internal `IsPopupPinnedOpen` 只供测试和内部诊断使用；设置为 true 时保持 fold-count Flyout open state，并 relay 到内部 `FlyoutHost` 及其 Popup，设置为 false 时只解除关闭拦截。控件卸载、锚点失效、TopLevel 改变和模板重建仍按共享生命周期规则清理。
+
 ## 1. 控件定位
 
 | 项 | 值 |

@@ -2,6 +2,8 @@
 
 本文档描述 TabControl 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [TabControl 桌面版架构设计](overview.md)，变化记录见 [TabControl Changelog](changelog.md)。涉及控件 Token 的实现应同时阅读 [TabControl Token 设计](token.md)。
 
+Popup 接入边界：`BaseTabControl` 负责 overflow 业务状态和内容准备，`TabControlScrollViewer` 仅作为 relay 适配层，tab overflow Popup 负责实际显示。模板重建或宿主切换时必须先释放旧 relay，再绑定新的 Popup；普通外点、Escape、失焦和业务关闭在 pinned 状态下被拦截，detach、窗口销毁、跨 TopLevel 和无效锚点必须走生命周期关闭并释放 Popup host。完整状态机见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。
+
 ## 1. 实现定位
 
 本文档覆盖 TabControl 的控件实现、主题接入、状态同步和 Gallery 可见维护边界。具体属性注册、默认值、绘制细节和 AXAML selector 仍应直接阅读源码；本文只记录维护者必须理解的稳定结构和不变量。

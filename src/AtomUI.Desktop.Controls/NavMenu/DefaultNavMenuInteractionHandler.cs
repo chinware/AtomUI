@@ -325,7 +325,7 @@ internal class DefaultNavMenuInteractionHandler : NavMenuInteractionHandlerBase
 
     private void TopLevelLostPlatformFocus()
     {
-        Menu?.Close();
+        CloseAllTopLevelMenuItems();
     }
 
     private static IDisposable DefaultDelayRun(Action action, TimeSpan timeSpan)

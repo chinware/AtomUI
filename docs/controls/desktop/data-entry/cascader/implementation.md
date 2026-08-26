@@ -2,6 +2,8 @@
 
 本文档描述 Cascader 桌面版的输入壳体、选项集合、级联展开、选择同步、勾选、过滤、异步加载、绑定型选项和资源生命周期。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，公共设计与 API 契约见 [Cascader 桌面版架构设计](overview.md)，候选列表状态契约见 [候选列表统一交互设计](../select/candidate-interaction-design.md)，Token 语义见 [Cascader Token 设计](token.md)，变化记录见 [Cascader Changelog](changelog.md)。
 
+Popup 接入边界：`AbstractSelect` 负责业务状态和内容准备，`PART_Popup` 负责实际显示。模板重建或宿主切换时必须先释放旧 relay，再绑定新的 Popup；普通外点、Escape、失焦和业务关闭在 pinned 状态下被拦截，detach、窗口销毁、跨 TopLevel 和无效锚点必须走生命周期关闭并释放 Popup host。完整状态机见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。
+
 ## 1. 实现定位
 
 Cascader 的实现由外层 `Cascader` 和内部 `CascaderView` 组成。`Cascader` 负责输入表面、popup、选择结果、默认值、Form 和 AddOn 集成；`CascaderView` 负责弹层内的级联列、过滤、展开、勾选和异步加载。本文档聚焦 Cascader 自身的状态编排、容器生命周期、数据节点边界和维护不变量，不重复 Select 家族输入壳体的通用实现。

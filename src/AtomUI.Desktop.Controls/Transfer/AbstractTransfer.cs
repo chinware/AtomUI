@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using AtomUI.Controls;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Icons.AntDesign;
 using Avalonia;
 using Avalonia.Controls;
@@ -10,6 +11,8 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Metadata;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -345,6 +348,9 @@ public abstract class AbstractTransfer: TemplatedControl,
     
     internal static readonly StyledProperty<bool> IsPaginationEnabledProperty =
         AvaloniaProperty.Register<AbstractTransfer, bool>(nameof(IsPaginationEnabled));
+
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        TransferSelectDropdown.IsPopupPinnedOpenProperty.AddOwner<AbstractTransfer>();
     
     internal IEnumerable<IItemKey>? SourceViewSource
     {
@@ -391,6 +397,12 @@ public abstract class AbstractTransfer: TemplatedControl,
         get => GetValue(IsPaginationEnabledProperty);
         set => SetValue(IsPaginationEnabledProperty, value);
     }
+
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
     
     #endregion
 
@@ -399,6 +411,9 @@ public abstract class AbstractTransfer: TemplatedControl,
     private ITransferView? _sourceView;
     private ITransferView? _targetView;
     private Grid? _rootLayout;
+    private IDisposable? _popupPinnedOpenBinding;
+    private TransferSelectDropdown? _pinnedOpenDropdown;
+    private int _pinnedOpenGeneration;
     private INotifyCollectionChanged? _selectedKeysCollectionChangedSource;
     private INotifyCollectionChanged? _targetKeysCollectionChangedSource;
     private bool _isVisualTreeAttached;
@@ -426,6 +441,7 @@ public abstract class AbstractTransfer: TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        ReleasePinnedOpenDropdown();
         if (ToSourceTransferIcon == null)
         {
             SetCurrentValue(ToSourceTransferIconProperty, new LeftOutlined());
@@ -468,6 +484,11 @@ public abstract class AbstractTransfer: TemplatedControl,
         {
             _targetViewDecorator.TransferViewCreated += HandleTransferViewCreated;
         }
+
+        if (_isVisualTreeAttached && IsPopupPinnedOpen)
+        {
+            QueuePinnedOpenDropdownRegistration();
+        }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -478,11 +499,16 @@ public abstract class AbstractTransfer: TemplatedControl,
         ConfigureTargetKeysCollectionChangedSource(TargetKeys);
         ConfigurePanelItemsSourceForFilter(FilterChangeType.Both);
         ApplySelectedKeysToTransferViews();
+        if (IsPopupPinnedOpen)
+        {
+            QueuePinnedOpenDropdownRegistration();
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         _isVisualTreeAttached = false;
+        ReleasePinnedOpenDropdown();
         ReleaseSelectedKeysCollectionChangedSource();
         ReleaseTargetKeysCollectionChangedSource();
         base.OnDetachedFromVisualTree(e);
@@ -522,6 +548,77 @@ public abstract class AbstractTransfer: TemplatedControl,
         {
             ConfigureRootLayout();
         }
+        else if (change.Property == IsPopupPinnedOpenProperty)
+        {
+            if (change.GetNewValue<bool>() &&
+                _isVisualTreeAttached &&
+                _pinnedOpenDropdown is null)
+            {
+                QueuePinnedOpenDropdownRegistration();
+            }
+            else if (!change.GetNewValue<bool>())
+            {
+                UnpinPinnedOpenDropdown();
+            }
+        }
+    }
+
+    private void QueuePinnedOpenDropdownRegistration()
+    {
+        var generation = ++_pinnedOpenGeneration;
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (generation != _pinnedOpenGeneration ||
+                !IsPopupPinnedOpen ||
+                !_isVisualTreeAttached)
+            {
+                return;
+            }
+
+            var dropdowns = this.GetVisualDescendants()
+                                .OfType<TransferSelectDropdown>()
+                                .ToArray();
+            var dropdown = dropdowns.FirstOrDefault(candidate => candidate.ViewType == TransferViewType.Source)
+                           ?? dropdowns.FirstOrDefault();
+            RegisterPinnedOpenDropdown(dropdown);
+        }, DispatcherPriority.Loaded);
+    }
+
+    private void RegisterPinnedOpenDropdown(TransferSelectDropdown? dropdown)
+    {
+        if (dropdown is null || ReferenceEquals(dropdown, _pinnedOpenDropdown))
+        {
+            return;
+        }
+
+        ReleasePinnedOpenDropdown();
+        _pinnedOpenDropdown      = dropdown;
+        _popupPinnedOpenBinding = BindUtils.RelayBind(
+            this,
+            IsPopupPinnedOpenProperty,
+            dropdown,
+            TransferSelectDropdown.IsPopupPinnedOpenProperty);
+    }
+
+    private void ReleasePinnedOpenDropdown()
+    {
+        ++_pinnedOpenGeneration;
+        _pinnedOpenDropdown?.CloseForLifecycle();
+        ClearPinnedOpenDropdownRegistration();
+    }
+
+    private void UnpinPinnedOpenDropdown()
+    {
+        ++_pinnedOpenGeneration;
+        ClearPinnedOpenDropdownRegistration();
+    }
+
+    private void ClearPinnedOpenDropdownRegistration()
+    {
+        _popupPinnedOpenBinding?.Dispose();
+        _popupPinnedOpenBinding = null;
+        _pinnedOpenDropdown?.SetCurrentValue(TransferSelectDropdown.IsPopupPinnedOpenProperty, false);
+        _pinnedOpenDropdown = null;
     }
 
     protected virtual void ConfigurePanelItemsSourceForFilter(FilterChangeType changeType)

@@ -68,6 +68,118 @@ public class MentionsBehaviorTests
     }
 
     [Fact]
+    public void Popup_Pin_Opens_Business_State_And_Physical_Popup()
+    {
+        var mentions = new AtomUIMentions
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            OptionsSource =
+            [
+                new MentionOption { Header = "afc163", Value = "afc163" },
+                new MentionOption { Header = "zombieJ", Value = "zombieJ" }
+            ]
+        };
+        var window = CreateWindow(mentions);
+
+        try
+        {
+            var popup = FindPopup(mentions);
+
+            mentions.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            mentions.IsDropDownOpen.ShouldBeTrue();
+            popup.IsPopupPinnedOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Popup_Pin_Rejects_Business_Close_Request()
+    {
+        var mentions = new AtomUIMentions
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            OptionsSource =
+            [
+                new MentionOption { Header = "afc163", Value = "afc163" },
+                new MentionOption { Header = "zombieJ", Value = "zombieJ" }
+            ]
+        };
+        var window = CreateWindow(mentions);
+
+        try
+        {
+            var popup = FindPopup(mentions);
+            mentions.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            mentions.IsDropDownOpen = false;
+            Dispatcher.UIThread.RunJobs();
+
+            mentions.IsDropDownOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Pinned_Mentions_Detach_Closes_Popup_And_Reattach_Reopens_It()
+    {
+        var mentions = new AtomUIMentions
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            OptionsSource =
+            [
+                new MentionOption { Header = "afc163", Value = "afc163" },
+                new MentionOption { Header = "zombieJ", Value = "zombieJ" }
+            ]
+        };
+        var window = CreateWindow(mentions);
+
+        try
+        {
+            var visualLayerManager = window.Content.ShouldBeOfType<VisualLayerManager>();
+            var overlayPanel = visualLayerManager.Child.ShouldBeOfType<ScopeAwareOverlayLayerPanel>();
+            var popup = FindPopup(mentions);
+            mentions.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            popup.IsOpen.ShouldBeTrue();
+
+            overlayPanel.Children.Remove(mentions);
+            Dispatcher.UIThread.RunJobs();
+
+            mentions.IsPopupPinnedOpen.ShouldBeTrue();
+            mentions.IsDropDownOpen.ShouldBeFalse();
+            popup.IsOpen.ShouldBeFalse();
+            window.GetVisualDescendants().OfType<OverlayPopupHost>().ShouldBeEmpty();
+
+            overlayPanel.Children.Add(mentions);
+            Dispatcher.UIThread.RunJobs();
+
+            mentions.IsDropDownOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue();
+            window.GetVisualDescendants().OfType<OverlayPopupHost>().ShouldHaveSingleItem();
+        }
+        finally
+        {
+            mentions.IsPopupPinnedOpen = false;
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    [Fact]
     public void OptionsSource_Replace_Before_First_Open_Does_Not_Require_View()
     {
         var options = new ObservableCollection<IMentionOption>

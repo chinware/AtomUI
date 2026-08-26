@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.MotionScene;
@@ -180,9 +181,24 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
         set => SetValue(ShouldUseOverlayPopupProperty, value);
     }
     #endregion
+
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        FlyoutControl.IsPopupPinnedOpenProperty.AddOwner<FlyoutHost>();
+
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
+
+    #endregion
     
     private readonly FlyoutStateHelper _flyoutStateHelper;
     private CompositeDisposable? _flyoutDisposables;
+    private CompositeDisposable? _pinnedOpenHostSubscriptions;
+    private int _pinnedOpenGeneration;
     private Flyout? _registeredFlyout;
     
     static FlyoutHost()
@@ -205,10 +221,17 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
         base.OnAttachedToVisualTree(e);
         RegisterFlyoutProperties(Flyout);
         _flyoutStateHelper.NotifyAttachedToVisualTree();
+        if (IsPopupPinnedOpen)
+        {
+            SubscribeToPinnedOpenHostState();
+            ReconcilePinnedOpenHostState();
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        ++_pinnedOpenGeneration;
+        ReleasePinnedOpenHostSubscriptions();
         base.OnDetachedFromVisualTree(e);
         _flyoutStateHelper.NotifyDetachedFromVisualTree();
         UnregisterFlyoutProperties(_registeredFlyout);
@@ -223,7 +246,7 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
 
         UnregisterFlyoutProperties(_registeredFlyout);
         _registeredFlyout  = flyout;
-        _flyoutDisposables = new CompositeDisposable(13);
+        _flyoutDisposables = new CompositeDisposable(14);
         _flyoutDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, flyout, FlyoutControl.RequestedPlacementProperty));
         _flyoutDisposables.Add(BindUtils.RelayBind(this, PlacementAnchorProperty, flyout, FlyoutControl.PlacementAnchorProperty));
         _flyoutDisposables.Add(BindUtils.RelayBind(this, PlacementGravityProperty, flyout, FlyoutControl.PlacementGravityProperty));
@@ -237,6 +260,7 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
         _flyoutDisposables.Add(BindUtils.RelayBind(this, PopupRootShadowProperty, flyout, FlyoutControl.PopupRootShadowProperty));
         _flyoutDisposables.Add(BindUtils.RelayBind(this, OverlayHostShadowProperty, flyout, FlyoutControl.OverlayHostShadowProperty));
         _flyoutDisposables.Add(BindUtils.RelayBind(this, ShouldUseOverlayPopupProperty, flyout, FlyoutControl.ShouldUseOverlayPopupProperty));
+        _flyoutDisposables.Add(BindUtils.RelayBind(this, IsPopupPinnedOpenProperty, flyout, FlyoutControl.IsPopupPinnedOpenProperty));
         ConfigureMotion(Placement);
     }
 
@@ -247,12 +271,7 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
             return;
         }
 
-        if (flyout.IsOpen)
-        {
-            flyout.Hide();
-        }
-
-        flyout.ReleaseGlobalResourceBindings();
+        flyout.CloseForLifecycle();
         _registeredFlyout = null;
         _flyoutDisposables?.Dispose();
         _flyoutDisposables = null;
@@ -273,12 +292,92 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
             if (this.IsAttachedToVisualTree())
             {
                 RegisterFlyoutProperties(newFlyout);
+                if (IsPopupPinnedOpen)
+                {
+                    QueuePinnedOpen();
+                }
             }
         }
         else if (change.Property == PlacementProperty && this.IsAttachedToVisualTree())
         {
             ConfigureMotion(Placement);
         }
+        else if (change.Property == IsPopupPinnedOpenProperty &&
+                 this.IsAttachedToVisualTree())
+        {
+            if (change.GetNewValue<bool>())
+            {
+                SubscribeToPinnedOpenHostState();
+                ReconcilePinnedOpenHostState();
+            }
+            else
+            {
+                ++_pinnedOpenGeneration;
+                ReleasePinnedOpenHostSubscriptions();
+            }
+        }
+    }
+
+    private void SubscribeToPinnedOpenHostState()
+    {
+        ReleasePinnedOpenHostSubscriptions();
+        if (!IsPopupPinnedOpen || !this.IsAttachedToVisualTree())
+        {
+            return;
+        }
+
+        _pinnedOpenHostSubscriptions = new CompositeDisposable();
+        this.GetObservable(IsVisibleProperty)
+            .Subscribe(_ => ReconcilePinnedOpenHostState())
+            .DisposeWith(_pinnedOpenHostSubscriptions);
+        this.GetObservable(IsEffectivelyEnabledProperty)
+            .Subscribe(_ => ReconcilePinnedOpenHostState())
+            .DisposeWith(_pinnedOpenHostSubscriptions);
+        this.SubscribeAncestorIsVisible(
+            _ => ReconcilePinnedOpenHostState(),
+            _pinnedOpenHostSubscriptions);
+    }
+
+    private void ReleasePinnedOpenHostSubscriptions()
+    {
+        _pinnedOpenHostSubscriptions?.Dispose();
+        _pinnedOpenHostSubscriptions = null;
+    }
+
+    private void ReconcilePinnedOpenHostState()
+    {
+        if (!IsPopupPinnedOpen || !this.IsAttachedToVisualTree())
+        {
+            return;
+        }
+
+        if (IsEffectivelyVisible && IsEffectivelyEnabled)
+        {
+            QueuePinnedOpen();
+        }
+        else
+        {
+            ++_pinnedOpenGeneration;
+            _registeredFlyout?.CloseForLifecycle();
+        }
+    }
+
+    private void QueuePinnedOpen()
+    {
+        var generation = ++_pinnedOpenGeneration;
+        var flyout     = _registeredFlyout;
+        Dispatcher.Post(() =>
+        {
+            if (generation == _pinnedOpenGeneration &&
+                IsPopupPinnedOpen &&
+                this.IsAttachedToVisualTree() &&
+                IsEffectivelyVisible &&
+                IsEffectivelyEnabled &&
+                ReferenceEquals(flyout, _registeredFlyout))
+            {
+                _flyoutStateHelper.ShowFlyout(immediately: true);
+            }
+        });
     }
 
     public void ShowFlyout(bool immediately)

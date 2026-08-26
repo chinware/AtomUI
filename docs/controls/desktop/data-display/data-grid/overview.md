@@ -2,6 +2,8 @@
 
 本文档定义 `DataGrid` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [DataGrid 桌面版实现原理](implementation.md)，列宽测量与分配见 [DataGrid 列宽分配设计](column-sizing-design.md)，DataGrid Token 的专项设计见 [DataGrid Token 设计](token.md)，设计和契约变化记录见 [DataGrid Changelog](changelog.md)。
 
+该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。本控件的语义 owner 为 `DataGrid`，其 internal `IsPopupPinnedOpen` 只供测试和内部诊断使用；设置为 true 时按 DisplayIndex 选择第一个有效列过滤入口，并通过 Header、FilterIndicator 和 Flyout relay 到具体 Popup，设置为 false 时只解除关闭拦截。控件卸载、锚点失效、TopLevel 改变、目标列替换和模板重建仍按共享生命周期规则清理。
+
 ## 1. 控件定位
 
 | 项 | 值 |
@@ -287,6 +289,24 @@ Column.Filters / Filter*MemberPath
 `DataConnection.FilterDescriptions` 是 collection view 执行过滤所需的内部描述集合。列过滤管线负责根据 `SelectedFilterValues` 创建、替换或移除当前列对应的 `DataGridFilterDescription`。外部 collection view 状态变化需要同步回列级选中值时，必须通过同一归一化逻辑处理，避免过滤图标激活态、菜单 checked state 和 VM 绑定值不一致。
 
 `FilterEvaluator` 用于表达列过滤谓词。默认谓词应按选中值集合判断当前单元格值是否匹配；复杂场景通过显式 evaluator 扩展，不应把字符串 `Contains` 作为所有过滤值类型的唯一默认语义。
+
+DataGrid 的 internal pinned filter 只选择一个目标，目标顺序来自 `ColumnsInternal.GetDisplayedColumns()`，即当前
+DisplayIndex 顺序。候选列必须不是 filler、可见、允许过滤、具有过滤项并已创建 Header；前一目标因 DisplayIndex、
+可见性、`CanUserFilter`、过滤项或列集合变化而失效时，先对旧 Header 执行 lifecycle close 和 unpin，再 pin 新目标。
+
+Pinned 状态只沿以下单向路径传播：
+
+```text
+DataGrid
+  -> DataGridColumnHeader
+  -> DataGridFilterIndicator
+  -> DataGridMenuFilterFlyout / DataGridTreeFilterFlyout
+  -> Popup
+```
+
+Header 和 Indicator 都是 internal relay adapter，不成为第二个测试入口，也不拥有过滤业务状态。Unpin 只解除当前 Flyout
+的关闭拦截；目标替换、Header/Indicator detach、Flyout presenter mode replacement、DataGrid detach 和 template reapply
+必须强制关闭旧 Popup 并释放两级 relay。
 
 ### 8.5 列宽分配模型
 

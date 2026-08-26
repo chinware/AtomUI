@@ -166,10 +166,19 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     internal static readonly StyledProperty<BoxShadows> FrameShadowProperty =
         AvaloniaProperty.Register<Popup, BoxShadows>(nameof(FrameShadow));    
 
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        AvaloniaProperty.Register<Popup, bool>(nameof(IsPopupPinnedOpen));
+
     internal BoxShadows FrameShadow
     {
         get => GetValue(FrameShadowProperty);
         set => SetValue(FrameShadowProperty, value);
+    }
+
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
     }
     #endregion
 
@@ -187,8 +196,19 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     // 订阅对象要记录下来,保证 open/close 成对摘挂。
     private InputElement? _wheelGuardSubscribedOn;
     private int _ignoreRequestedPlacementChange;
+    private int _lifecycleCloseDepth;
+    private int _pinnedOpenGeneration;
+    private bool _isPinnedOpenSuspended;
+    private readonly List<Visual> _pinnedOpenTargetStateSubscriptions = [];
+    private Control? _pinnedOpenTrackingTarget;
     private Control? _placementTransformTrackingTarget;
     private IDisposable? _placementTransformTracker;
+
+    static Popup()
+    {
+        IsOpenProperty.OverrideMetadata<Popup>(
+            new StyledPropertyMetadata<bool>(coerce: CoerceIsOpen));
+    }
 
     public Popup()
     {
@@ -201,6 +221,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
     private void HandlePopupOpened(object? sender, EventArgs e)
     {
+        _isPinnedOpenSuspended = false;
         _isLogicallyAttachedAtOpen = ((ILogical)this).IsAttachedToLogicalTree;
         _openTopLevel = ResolvePlacementTarget() is { } target
             ? TopLevel.GetTopLevel(target)
@@ -250,14 +271,26 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
     private void HandlePopupClosing(object? sender, CancelEventArgs e)
     {
+        if (_lifecycleCloseDepth > 0 ||
+            !CanDelayCloseForMotion() ||
+            (IsPopupPinnedOpen && !HasValidPinnedOpenTarget()))
+        {
+            return;
+        }
+
+        if (IsPopupPinnedOpen)
+        {
+            e.Cancel = true;
+            return;
+        }
+
         if (_closeMotionState == MotionExecutionState.Completing)
         {
             _closeMotionState = MotionExecutionState.Idle;
             return;
         }
 
-        if (!CanDelayCloseForMotion() ||
-            !IsMotionEnabled ||
+        if (!IsMotionEnabled ||
             CloseMotion is not { } closeMotion ||
             _motionActor is not { } motionActor)
         {
@@ -385,6 +418,28 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         IsOpen = true;
     }
 
+    internal void CloseForLifecycle()
+    {
+        ++_pinnedOpenGeneration;
+        _isPinnedOpenSuspended = true;
+        _closeMotionState      = MotionExecutionState.Idle;
+        CancelMotion();
+        if (_motionActor is not null)
+        {
+            _motionActor.Opacity = 1.0d;
+        }
+
+        try
+        {
+            ++_lifecycleCloseDepth;
+            Close();
+        }
+        finally
+        {
+            --_lifecycleCloseDepth;
+        }
+    }
+
     internal void NotifyFlipped(bool horizontalFlipped,  bool verticalFlipped)
     {
         IsHorizontalFlipped = horizontalFlipped;
@@ -453,12 +508,49 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         {
             ConfigureFrameShadow();
         }
+        else if (change.Property == IsPopupPinnedOpenProperty)
+        {
+            if (change.GetNewValue<bool>())
+            {
+                _isPinnedOpenSuspended = false;
+                CancelCloseAnimation();
+                UpdatePinnedOpenTargetSubscription();
+                QueuePinnedOpen();
+            }
+            else
+            {
+                ++_pinnedOpenGeneration;
+                ClearPinnedOpenTargetSubscription();
+                if (!IsOpen)
+                {
+                    CloseForLifecycle();
+                }
+            }
+        }
+        else if (change.Property == ChildProperty && IsPopupPinnedOpen)
+        {
+            if (Child is null)
+            {
+                CloseForLifecycle();
+            }
+            else
+            {
+                _isPinnedOpenSuspended = false;
+                QueuePinnedOpen();
+            }
+        }
 
         if (change.Property == PlacementTargetProperty ||
             change.Property == PlacementProperty ||
             change.Property == RequestedPlacementProperty)
         {
             UpdatePlacementTransformTracker();
+            if (change.Property == PlacementTargetProperty && IsPopupPinnedOpen)
+            {
+                _isPinnedOpenSuspended = false;
+                UpdatePinnedOpenTargetSubscription();
+                QueuePinnedOpen();
+            }
         }
     }
 
@@ -612,6 +704,172 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     {
         base.OnAttachedToLogicalTree(e);
         ConfigureFrameShadow();
+        if (IsPopupPinnedOpen)
+        {
+            _isPinnedOpenSuspended = false;
+            UpdatePinnedOpenTargetSubscription();
+            QueuePinnedOpen();
+        }
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        ++_pinnedOpenGeneration;
+        ClearPinnedOpenTargetSubscription();
+        base.OnDetachedFromLogicalTree(e);
+    }
+
+    private void QueuePinnedOpen()
+    {
+        var generation = ++_pinnedOpenGeneration;
+        Dispatcher.Post(() =>
+        {
+            if (generation != _pinnedOpenGeneration ||
+                !IsPopupPinnedOpen ||
+                _isPinnedOpenSuspended ||
+                IsOpen ||
+                Child is null)
+            {
+                return;
+            }
+
+            if (!CanOpenPinnedPopup())
+            {
+                return;
+            }
+
+            IsOpen = true;
+            CoerceValue(IsOpenProperty);
+        });
+    }
+
+    private void UpdatePinnedOpenTargetSubscription()
+    {
+        var target = IsPopupPinnedOpen ? ResolvePlacementTarget() : null;
+        if (ReferenceEquals(_pinnedOpenTrackingTarget, target))
+        {
+            return;
+        }
+
+        ClearPinnedOpenTargetSubscription();
+        if (target is null)
+        {
+            return;
+        }
+
+        _pinnedOpenTrackingTarget = target;
+        target.AttachedToVisualTree += HandlePinnedOpenTargetAttached;
+        target.DetachedFromVisualTree += HandlePinnedOpenTargetDetached;
+        if (target.IsAttachedToVisualTree())
+        {
+            SubscribeToPinnedOpenTargetState(target);
+        }
+    }
+
+    private void ClearPinnedOpenTargetSubscription()
+    {
+        if (_pinnedOpenTrackingTarget is not null)
+        {
+            _pinnedOpenTrackingTarget.AttachedToVisualTree -= HandlePinnedOpenTargetAttached;
+            _pinnedOpenTrackingTarget.DetachedFromVisualTree -= HandlePinnedOpenTargetDetached;
+            _pinnedOpenTrackingTarget = null;
+        }
+        ClearPinnedOpenTargetStateSubscriptions();
+    }
+
+    private void HandlePinnedOpenTargetAttached(object? sender, VisualTreeAttachmentEventArgs e)
+    {
+        if (sender is Control target && ReferenceEquals(target, _pinnedOpenTrackingTarget))
+        {
+            SubscribeToPinnedOpenTargetState(target);
+            ReconcilePinnedOpenTargetState();
+        }
+    }
+
+    private void HandlePinnedOpenTargetDetached(object? sender, VisualTreeAttachmentEventArgs e)
+    {
+        if (!ReferenceEquals(sender, _pinnedOpenTrackingTarget))
+        {
+            return;
+        }
+
+        ClearPinnedOpenTargetStateSubscriptions();
+        CloseForLifecycle();
+    }
+
+    private void SubscribeToPinnedOpenTargetState(Control target)
+    {
+        ClearPinnedOpenTargetStateSubscriptions();
+        Visual? current = target;
+        while (current is not null)
+        {
+            current.PropertyChanged += HandlePinnedOpenTargetStatePropertyChanged;
+            _pinnedOpenTargetStateSubscriptions.Add(current);
+            current = current.GetVisualParent();
+        }
+    }
+
+    private void ClearPinnedOpenTargetStateSubscriptions()
+    {
+        foreach (var visual in _pinnedOpenTargetStateSubscriptions)
+        {
+            visual.PropertyChanged -= HandlePinnedOpenTargetStatePropertyChanged;
+        }
+        _pinnedOpenTargetStateSubscriptions.Clear();
+    }
+
+    private void HandlePinnedOpenTargetStatePropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property == Visual.IsVisibleProperty ||
+            e.Property == Visual.BoundsProperty ||
+            e.Property == InputElement.IsEffectivelyEnabledProperty)
+        {
+            ReconcilePinnedOpenTargetState();
+        }
+    }
+
+    private void ReconcilePinnedOpenTargetState()
+    {
+        if (!IsPopupPinnedOpen || _pinnedOpenTrackingTarget is null)
+        {
+            return;
+        }
+
+        if (HasValidPinnedOpenTarget())
+        {
+            _isPinnedOpenSuspended = false;
+            QueuePinnedOpen();
+        }
+        else
+        {
+            CloseForLifecycle();
+        }
+    }
+
+    private bool HasValidPinnedOpenTarget()
+    {
+        var target = ResolvePlacementTarget();
+        if (target is not { IsEffectivelyVisible: true, IsEffectivelyEnabled: true } ||
+            !target.IsAttachedToVisualTree() ||
+            TopLevel.GetTopLevel(target) is not { } topLevel)
+        {
+            return false;
+        }
+
+        return IsPlacementTargetVisibleInTopLevel(target, target.TransformToVisual(topLevel));
+    }
+
+    internal bool CanOpenPinnedPopup()
+    {
+        return Child is not null && HasValidPinnedOpenTarget();
+    }
+
+    private static bool CoerceIsOpen(AvaloniaObject sender, bool value)
+    {
+        return value &&
+               (sender is not Popup popup ||
+                !popup.IsPopupPinnedOpen ||
+                popup.CanOpenPinnedPopup());
     }
 
     private void ConfigureFrameShadow()
@@ -705,7 +963,14 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         {
             if (!IsPlacementTargetVisibleInTopLevel(target, matrix))
             {
-                Close();
+                if (IsPopupPinnedOpen)
+                {
+                    CloseForLifecycle();
+                }
+                else
+                {
+                    Close();
+                }
                 return;
             }
 

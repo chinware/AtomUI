@@ -30,6 +30,139 @@ public class SelectBehaviorTests
     }
 
     [Fact]
+    public void Pinned_Open_Request_Opens_Select_And_Its_Template_Popup()
+    {
+        var select = new Desktop.Controls.Select
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            OptionsSource   = [new SelectOption { Header = "Jack", Content = "jack" }]
+        };
+
+        ShowInWindow(select, () =>
+        {
+            select.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var popup = GetVisualDescendant<Popup>(select, "PART_Popup");
+            select.IsDropDownOpen.ShouldBeTrue();
+            popup.IsPopupPinnedOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public void Pinned_Select_Rejects_Business_Close_Request()
+    {
+        var select = new Desktop.Controls.Select
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            OptionsSource   = [new SelectOption { Header = "Jack", Content = "jack" }]
+        };
+
+        ShowInWindow(select, () =>
+        {
+            select.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            var popup = GetVisualDescendant<Popup>(select, "PART_Popup");
+
+            select.IsDropDownOpen = false;
+            Dispatcher.UIThread.RunJobs();
+
+            select.IsDropDownOpen.ShouldBeTrue();
+            popup.IsPopupPinnedOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public void Pinned_Select_Detach_Closes_Popup_And_Reattach_Reopens_It()
+    {
+        var select = new Desktop.Controls.Select
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            OptionsSource   = [new SelectOption { Header = "Jack", Content = "jack" }]
+        };
+        var window = CreateWindow(select);
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            var visualLayerManager = window.Content.ShouldBeOfType<VisualLayerManager>();
+            var overlayPanel = visualLayerManager.Child.ShouldBeOfType<ScopeAwareOverlayLayerPanel>();
+
+            select.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            var popup = GetVisualDescendant<Popup>(select, "PART_Popup");
+            popup.IsOpen.ShouldBeTrue();
+
+            overlayPanel.Children.Remove(select);
+            Dispatcher.UIThread.RunJobs();
+
+            select.IsPopupPinnedOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeFalse();
+            window.GetVisualDescendants().OfType<OverlayPopupHost>().ShouldBeEmpty();
+
+            overlayPanel.Children.Add(select);
+            Dispatcher.UIThread.RunJobs();
+
+            select.IsDropDownOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue(
+                $"selectAttached={select.IsAttachedToVisualTree()}, popupAttached={popup.IsAttachedToVisualTree()}, " +
+                $"popupPinned={popup.IsPopupPinnedOpen}, child={popup.Child is not null}, " +
+                $"placementTarget={popup.PlacementTarget?.GetType().Name ?? "null"}, " +
+                $"suspended={GetPrivateField<bool>(popup, "_isPinnedOpenSuspended")}, " +
+                $"trackedTarget={GetPrivateField<Control?>(popup, "_pinnedOpenTrackingTarget")?.GetType().Name ?? "null"}");
+            window.GetVisualDescendants().OfType<OverlayPopupHost>().ShouldHaveSingleItem();
+        }
+        finally
+        {
+            select.IsPopupPinnedOpen = false;
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    [Fact]
+    public void Pinned_Select_Template_Replacement_Closes_Old_Popup_And_Opens_New_Popup()
+    {
+        var select = new Desktop.Controls.Select
+        {
+            Width           = 240,
+            IsMotionEnabled = false,
+            OptionsSource   = [new SelectOption { Header = "Jack", Content = "jack" }]
+        };
+
+        ShowInWindow(select, () =>
+        {
+            select.IsPopupPinnedOpen = true;
+            Dispatcher.UIThread.RunJobs();
+            var oldPopup = GetVisualDescendant<Popup>(select, "PART_Popup");
+            var template = select.Template;
+            template.ShouldNotBeNull();
+
+            select.Template = null;
+            select.ApplyTemplate();
+            Dispatcher.UIThread.RunJobs();
+
+            oldPopup.IsOpen.ShouldBeFalse();
+
+            select.Template = template;
+            select.ApplyTemplate();
+            Dispatcher.UIThread.RunJobs();
+
+            var newPopup = GetVisualDescendant<Popup>(select, "PART_Popup");
+            newPopup.ShouldNotBeSameAs(oldPopup);
+            select.IsDropDownOpen.ShouldBeTrue();
+            newPopup.IsPopupPinnedOpen.ShouldBeTrue();
+            newPopup.IsOpen.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
     public void OptionsSource_Replacement_Preserves_Single_Selection_By_Content()
     {
         var firstLucy = new SelectOption
@@ -1217,6 +1350,13 @@ public class SelectBehaviorTests
                                 .SingleOrDefault(x => x.Name == name);
         descendant.ShouldNotBeNull();
         return descendant;
+    }
+
+    private static T GetPrivateField<T>(object target, string fieldName)
+    {
+        var field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+        field.ShouldNotBeNull();
+        return (T)field!.GetValue(target)!;
     }
 
     private static T GetThemeResource<T>(object key)

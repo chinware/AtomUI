@@ -1,5 +1,7 @@
 using Avalonia;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -45,14 +47,21 @@ public class FloatableTreeView : TreeView
     #endregion
 
     private TreeViewFlyout? _flyout;
+    private TreeViewFlyout? _registeredFlyout;
+    private int _pinnedOpenGeneration;
 
     public TreeViewFlyout? TreeViewFlyout
     {
         get => _flyout;
         set
         {
-            NotifyFlyoutAssigned(_flyout);
+            if (ReferenceEquals(_flyout, value))
+            {
+                return;
+            }
+
             _flyout = value;
+            NotifyFlyoutAssigned(value);
         }
     }
 
@@ -75,17 +84,98 @@ public class FloatableTreeView : TreeView
 
     protected virtual void NotifyFlyoutAssigned(Flyout? flyout)
     {
-        if (_flyout != null)
+        UnregisterFlyout(_registeredFlyout);
+        if (flyout is TreeViewFlyout treeViewFlyout && this.IsAttachedToVisualTree())
         {
-            _flyout.Opened -= HandleFlyoutOpened;
-            _flyout.Closed -= HandleFlyoutClosed;
+            RegisterFlyout(treeViewFlyout);
+        }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        RegisterFlyout(TreeViewFlyout);
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        UnregisterFlyout(_registeredFlyout);
+        base.OnDetachedFromVisualTree(e);
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IsPopupPinnedOpenProperty)
+        {
+            if (_registeredFlyout is { } flyout)
+            {
+                flyout.SetCurrentValue(Flyout.IsPopupPinnedOpenProperty, change.GetNewValue<bool>());
+            }
+
+            if (change.GetNewValue<bool>() && this.IsAttachedToVisualTree())
+            {
+                QueuePinnedOpen();
+            }
+            else
+            {
+                ++_pinnedOpenGeneration;
+            }
+        }
+    }
+
+    private void RegisterFlyout(TreeViewFlyout? flyout)
+    {
+        if (flyout is null || ReferenceEquals(flyout, _registeredFlyout))
+        {
+            return;
         }
 
-        if (flyout != null)
+        UnregisterFlyout(_registeredFlyout);
+        _registeredFlyout = flyout;
+        flyout.Opened += HandleFlyoutOpened;
+        flyout.Closed += HandleFlyoutClosed;
+        flyout.SetCurrentValue(Flyout.IsPopupPinnedOpenProperty, IsPopupPinnedOpen);
+        IsOpen = flyout.IsOpen;
+        if (IsPopupPinnedOpen)
         {
-            flyout.Opened += HandleFlyoutOpened;
-            flyout.Closed += HandleFlyoutClosed;
+            QueuePinnedOpen();
         }
+    }
+
+    private void UnregisterFlyout(TreeViewFlyout? flyout)
+    {
+        if (flyout is null || !ReferenceEquals(flyout, _registeredFlyout))
+        {
+            return;
+        }
+
+        ++_pinnedOpenGeneration;
+        flyout.CloseForLifecycle();
+        flyout.Opened -= HandleFlyoutOpened;
+        flyout.Closed -= HandleFlyoutClosed;
+        flyout.SetCurrentValue(Flyout.IsPopupPinnedOpenProperty, false);
+        _registeredFlyout = null;
+        IsOpen = false;
+    }
+
+    private void QueuePinnedOpen()
+    {
+        var generation = ++_pinnedOpenGeneration;
+        var flyout     = _registeredFlyout;
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (generation == _pinnedOpenGeneration &&
+                IsPopupPinnedOpen &&
+                this.IsAttachedToVisualTree() &&
+                IsEffectivelyEnabled &&
+                IsVisible &&
+                ReferenceEquals(flyout, _registeredFlyout) &&
+                flyout is { IsOpen: false })
+            {
+                flyout.ShowAt(this);
+            }
+        }, DispatcherPriority.Loaded);
     }
 
     private void HandleFlyoutOpened(object? sender, EventArgs e)

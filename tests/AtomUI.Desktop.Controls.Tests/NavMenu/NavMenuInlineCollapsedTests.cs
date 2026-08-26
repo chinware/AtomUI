@@ -6,6 +6,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Headless;
 using Avalonia.Layout;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -591,6 +592,391 @@ public class NavMenuInlineCollapsedTests
     }
 
     [Fact]
+    public void InlineCollapsed_Opening_Sibling_Submenu_Preserves_Selected_Path()
+    {
+        var space = new NavMenuNode
+        {
+            Header  = "Space",
+            ItemKey = "space"
+        };
+        var layout = new NavMenuNode
+        {
+            Header  = "Layout",
+            ItemKey = "layout"
+        };
+        layout.Children.Add(space);
+
+        var autoComplete = new NavMenuNode
+        {
+            Header  = "AutoComplete",
+            ItemKey = "auto-complete"
+        };
+        var dataEntry = new NavMenuNode
+        {
+            Header  = "Data Entry",
+            ItemKey = "data-entry"
+        };
+        dataEntry.Children.Add(autoComplete);
+
+        var components = new NavMenuNode
+        {
+            Header  = "Components",
+            ItemKey = "components"
+        };
+        components.Children.Add(layout);
+        components.Children.Add(dataEntry);
+
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false,
+            Width           = 240
+        };
+        menu.Items.Add(components);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 480,
+            Height  = 320,
+            Content = CreatePopupOverlayHost(menu)
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var componentsContainer = menu.ContainerFromItem(components).ShouldBeOfType<NavMenuItem>();
+            componentsContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var layoutContainer = componentsContainer.ContainerFromItem(layout).ShouldBeOfType<NavMenuItem>();
+            layoutContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var spaceContainer = layoutContainer.ContainerFromItem(space).ShouldBeOfType<NavMenuItem>();
+            menu.InteractionHandler.ShouldNotBeNull();
+            menu.InteractionHandler.Select(spaceContainer);
+            Dispatcher.UIThread.RunJobs();
+
+            menu.IsInlineCollapsed = true;
+            WaitForWidth(menu, menu.InlineCollapsedWidth);
+
+            componentsContainer = menu.ContainerFromItem(components).ShouldBeOfType<NavMenuItem>();
+            menu.InteractionHandler.Select(componentsContainer);
+            Dispatcher.UIThread.RunJobs();
+
+            layoutContainer = componentsContainer.ContainerFromItem(layout).ShouldBeOfType<NavMenuItem>();
+            var dataEntryContainer = componentsContainer.ContainerFromItem(dataEntry).ShouldBeOfType<NavMenuItem>();
+            layoutContainer.IsInSelectedPath.ShouldBeTrue();
+
+            menu.InteractionHandler.Select(dataEntryContainer);
+            Dispatcher.UIThread.RunJobs();
+
+            menu.SelectedItem.ShouldBeSameAs(space);
+            layoutContainer.IsInSelectedPath.ShouldBeTrue(
+                "opening a sibling submenu must not replace the route's selected path.");
+            dataEntryContainer.IsInSelectedPath.ShouldBeFalse();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void InlineCollapsed_Selecting_Leaf_In_Sibling_Branch_Clears_Previous_Selected_Path()
+    {
+        var space = new NavMenuNode
+        {
+            Header  = "Space",
+            ItemKey = "space"
+        };
+        var layout = new NavMenuNode
+        {
+            Header  = "Layout",
+            ItemKey = "layout"
+        };
+        layout.Children.Add(space);
+
+        var buttonSpinner = new NavMenuNode
+        {
+            Header  = "ButtonSpinner",
+            ItemKey = "button-spinner"
+        };
+        var navigation = new NavMenuNode
+        {
+            Header  = "Navigation",
+            ItemKey = "navigation"
+        };
+        navigation.Children.Add(buttonSpinner);
+
+        var components = new NavMenuNode
+        {
+            Header  = "Components",
+            ItemKey = "components"
+        };
+        components.Children.Add(layout);
+        components.Children.Add(navigation);
+
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false,
+            Width           = 240
+        };
+        menu.Items.Add(components);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 480,
+            Height  = 320,
+            Content = CreatePopupOverlayHost(menu)
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var componentsContainer = menu.ContainerFromItem(components).ShouldBeOfType<NavMenuItem>();
+            componentsContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var layoutContainer = componentsContainer.ContainerFromItem(layout).ShouldBeOfType<NavMenuItem>();
+            layoutContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var spaceContainer = layoutContainer.ContainerFromItem(space).ShouldBeOfType<NavMenuItem>();
+            menu.InteractionHandler.ShouldNotBeNull();
+            menu.InteractionHandler.Select(spaceContainer);
+            Dispatcher.UIThread.RunJobs();
+
+            menu.IsInlineCollapsed = true;
+            WaitForWidth(menu, menu.InlineCollapsedWidth);
+
+            componentsContainer = menu.ContainerFromItem(components).ShouldBeOfType<NavMenuItem>();
+            menu.InteractionHandler.Select(componentsContainer);
+            Dispatcher.UIThread.RunJobs();
+
+            layoutContainer = componentsContainer.ContainerFromItem(layout).ShouldBeOfType<NavMenuItem>();
+            var navigationContainer = componentsContainer.ContainerFromItem(navigation).ShouldBeOfType<NavMenuItem>();
+            layoutContainer.IsInSelectedPath.ShouldBeTrue();
+
+            menu.InteractionHandler.Select(navigationContainer);
+            Dispatcher.UIThread.RunJobs();
+
+            layoutContainer.IsSubMenuOpen.ShouldBeFalse(
+                "opening the sibling branch must close the popup that contains the previous selected leaf.");
+            var buttonSpinnerContainer = navigationContainer.ContainerFromItem(buttonSpinner)
+                                                                  .ShouldBeOfType<NavMenuItem>();
+            menu.InteractionHandler.Select(buttonSpinnerContainer);
+            Dispatcher.UIThread.RunJobs();
+
+            menu.SelectedItem.ShouldBeSameAs(buttonSpinner);
+            buttonSpinnerContainer.IsSelected.ShouldBeTrue();
+            navigationContainer.IsInSelectedPath.ShouldBeTrue();
+            layoutContainer.IsInSelectedPath.ShouldBeFalse(
+                "selecting a leaf in a sibling popup branch must clear the previous branch's selected-path state even when its leaf container is no longer realized.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void InlineCollapsed_Clearing_Unrealized_Selection_Clears_Previous_Selected_Path()
+    {
+        var space = new NavMenuNode
+        {
+            Header  = "Space",
+            ItemKey = "space"
+        };
+        var layout = new NavMenuNode
+        {
+            Header  = "Layout",
+            ItemKey = "layout"
+        };
+        layout.Children.Add(space);
+
+        var navigation = new NavMenuNode
+        {
+            Header  = "Navigation",
+            ItemKey = "navigation"
+        };
+        navigation.Children.Add(new NavMenuNode
+        {
+            Header  = "ButtonSpinner",
+            ItemKey = "button-spinner"
+        });
+
+        var components = new NavMenuNode
+        {
+            Header  = "Components",
+            ItemKey = "components"
+        };
+        components.Children.Add(layout);
+        components.Children.Add(navigation);
+
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false,
+            Width           = 240
+        };
+        menu.Items.Add(components);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 480,
+            Height  = 320,
+            Content = CreatePopupOverlayHost(menu)
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var componentsContainer = menu.ContainerFromItem(components).ShouldBeOfType<NavMenuItem>();
+            componentsContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var layoutContainer = componentsContainer.ContainerFromItem(layout).ShouldBeOfType<NavMenuItem>();
+            layoutContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var spaceContainer = layoutContainer.ContainerFromItem(space).ShouldBeOfType<NavMenuItem>();
+            menu.InteractionHandler.ShouldNotBeNull();
+            menu.InteractionHandler.Select(spaceContainer);
+            Dispatcher.UIThread.RunJobs();
+
+            menu.IsInlineCollapsed = true;
+            WaitForWidth(menu, menu.InlineCollapsedWidth);
+
+            componentsContainer = menu.ContainerFromItem(components).ShouldBeOfType<NavMenuItem>();
+            menu.InteractionHandler.Select(componentsContainer);
+            Dispatcher.UIThread.RunJobs();
+
+            layoutContainer = componentsContainer.ContainerFromItem(layout).ShouldBeOfType<NavMenuItem>();
+            var navigationContainer = componentsContainer.ContainerFromItem(navigation).ShouldBeOfType<NavMenuItem>();
+            layoutContainer.IsInSelectedPath.ShouldBeTrue();
+
+            menu.InteractionHandler.Select(navigationContainer);
+            Dispatcher.UIThread.RunJobs();
+
+            layoutContainer.IsSubMenuOpen.ShouldBeFalse();
+            menu.SelectedItem = null;
+            Dispatcher.UIThread.RunJobs();
+
+            layoutContainer.IsInSelectedPath.ShouldBeFalse(
+                "clearing a selection must remove the previous selected-path state even when the selected leaf container is no longer realized.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void InlineCollapsed_Pointer_Opening_Sibling_Submenu_Does_Not_Project_Selected_State()
+    {
+        var space = new NavMenuNode
+        {
+            Header  = "Space",
+            ItemKey = "space"
+        };
+        var layout = new NavMenuNode
+        {
+            Header  = "Layout",
+            ItemKey = "layout"
+        };
+        layout.Children.Add(space);
+
+        var dataEntry = new NavMenuNode
+        {
+            Header  = "Data Entry",
+            ItemKey = "data-entry"
+        };
+        dataEntry.Children.Add(new NavMenuNode
+        {
+            Header  = "AutoComplete",
+            ItemKey = "auto-complete"
+        });
+
+        var components = new NavMenuNode
+        {
+            Header  = "Components",
+            ItemKey = "components"
+        };
+        components.Children.Add(layout);
+        components.Children.Add(dataEntry);
+
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false,
+            Width           = 240
+        };
+        menu.Items.Add(components);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 480,
+            Height  = 320,
+            Content = CreatePopupOverlayHost(menu)
+        };
+
+        var originalShowDelay = DefaultNavMenuInteractionHandler.MenuShowDelay;
+        DefaultNavMenuInteractionHandler.MenuShowDelay = TimeSpan.Zero;
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var componentsContainer = menu.ContainerFromItem(components).ShouldBeOfType<NavMenuItem>();
+            componentsContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var layoutContainer = componentsContainer.ContainerFromItem(layout).ShouldBeOfType<NavMenuItem>();
+            layoutContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var spaceContainer = layoutContainer.ContainerFromItem(space).ShouldBeOfType<NavMenuItem>();
+            menu.InteractionHandler.ShouldNotBeNull();
+            menu.InteractionHandler.Select(spaceContainer);
+            Dispatcher.UIThread.RunJobs();
+
+            menu.IsInlineCollapsed = true;
+            WaitForWidth(menu, menu.InlineCollapsedWidth);
+
+            componentsContainer = menu.ContainerFromItem(components).ShouldBeOfType<NavMenuItem>();
+            menu.InteractionHandler.Select(componentsContainer);
+            Dispatcher.UIThread.RunJobs();
+
+            var dataEntryContainer = componentsContainer.ContainerFromItem(dataEntry).ShouldBeOfType<NavMenuItem>();
+            var dataEntryHeader = GetItemHeader(dataEntryContainer);
+            MouseMove(dataEntryHeader, window);
+            Dispatcher.UIThread.RunJobs();
+
+            dataEntryContainer.IsSubMenuOpen.ShouldBeTrue(
+                "the regression scenario must reach the nested popup-open state shown in the Gallery screenshot.");
+            dataEntryContainer.Popup.ShouldNotBeNull();
+            dataEntryContainer.Popup.IsOpen.ShouldBeTrue();
+            dataEntryContainer.IsSelected.ShouldBeFalse();
+            dataEntryContainer.IsInSelectedPath.ShouldBeFalse();
+            dataEntryContainer.IsKeyboardActive.ShouldBeFalse();
+            menu.SelectedItem.ShouldBeSameAs(space);
+        }
+        finally
+        {
+            DefaultNavMenuInteractionHandler.MenuShowDelay = originalShowDelay;
+            window.Close();
+        }
+    }
+
+    [Fact]
     public void InlineCollapsed_Handler_Recreation_Does_Not_Leave_Previous_Item_Selected()
     {
         var option1 = new NavMenuNode
@@ -953,6 +1339,15 @@ public class NavMenuInlineCollapsedTests
             BindingFlags.Instance | BindingFlags.NonPublic);
         field.ShouldNotBeNull();
         return (BaseNavMenuItemHeader)field.GetValue(container)!;
+    }
+
+    private static void MouseMove(Control control, Avalonia.Controls.Window window)
+    {
+        var point = control.TranslatePoint(
+            new Point(control.Bounds.Width / 2, control.Bounds.Height / 2),
+            window);
+        point.ShouldNotBeNull();
+        window.MouseMove(point.Value);
     }
 
     private static void WaitForWidth(Control control, double expectedWidth)

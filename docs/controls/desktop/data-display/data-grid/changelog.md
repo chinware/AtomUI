@@ -2,6 +2,14 @@
 
 本文档记录 DataGrid 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-25
+
+- Design
+  - Define `DataGrid` as the internal pinned-filter semantic owner and select one eligible filter column in DisplayIndex order.
+- Implementation
+  - Relay pinned state through Header -> FilterIndicator -> Menu/Tree Flyout -> Popup without reflection or runtime discovery.
+  - Close and release the previous target on column, presenter, template, or lifecycle replacement while keeping an already open filter Flyout open after ordinary unpin.
+
 ## 2026-08-18
 
 - Implementation

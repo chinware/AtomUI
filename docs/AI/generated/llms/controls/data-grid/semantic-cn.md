@@ -162,6 +162,10 @@ DataGrid Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - 列过滤只能有一个选中状态 owner；`Filters`、flyout checked state、`SelectedFilterValues` 和 `FilterDescriptions` 之间不得形成互相覆盖的并行状态源。
+- Pinned filter 同一时间只能有一个目标，目标必须按 DisplayIndex 选择第一个 eligible column；Header -> Indicator -> Flyout
+  relay 必须在 replacement、container clear、detach 和 template reapply 时对称释放。
+- DataGrid unpin 不关闭已打开 filter Flyout；目标 replacement 或 lifecycle teardown 必须关闭旧 Popup，且旧 Loaded callback
+  不得重新打开已释放的 Flyout。
 - 行拖动只能有一个 DataGrid 实例级会话 owner；禁止在 handle 类型上保存 static Pointer、row、index、bounds、
   offset 或 owner 状态。
 - Handle、RowsPresenter 和 CollectionView 的职责不能重新混合：handle 不修改数据，presenter 不决定移动语义，

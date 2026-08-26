@@ -207,6 +207,7 @@ public abstract partial class DataGridColumn
         {
             HeaderCell.NotifyFilterItemsChanged();
         }
+        OwningGrid?.RefreshPopupPinnedOpenFilterTarget();
     }
 
     private void NotifySelectedFilterValuesChanged()

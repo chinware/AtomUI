@@ -982,6 +982,10 @@ public partial class DataGrid : TemplatedControl,
             x.HandleCanUserReorderRowsChanged(e));
         CanUserResizeColumnsProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
             x.HandleCanUserResizeColumnsChanged(e));
+        CanUserFilterColumnsProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
+            x.HandleCanUserFilterColumnsChanged(e));
+        IsPopupPinnedOpenProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
+            x.HandlePopupPinnedOpenChanged(e));
         ColumnWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleColumnWidthChanged(e));
         LeftFrozenColumnCountProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleFrozenColumnCountChanged(e));
         GridLinesVisibilityProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleGridLinesVisibilityChanged(e));
@@ -1213,11 +1217,14 @@ public partial class DataGrid : TemplatedControl,
             _bottomPagination.CurrentPageChanged -= HandlePageChangeRequest;
             _bottomPagination.CurrentPageChanged += HandlePageChangeRequest;
         }
+
+        RefreshPopupPinnedOpenFilterTarget();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         CancelRowReorder();
+        SuspendPopupPinnedOpenFilterTarget();
         base.OnDetachedFromVisualTree(e);
         // When wired to INotifyCollectionChanged, the DataGrid will be cleaned up by GC
         if (DataConnection.DataSource != null && DataConnection.EventsWired)
@@ -1506,6 +1513,7 @@ public partial class DataGrid : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         CancelRowReorder();
+        SuspendPopupPinnedOpenFilterTarget();
 
         // The template has changed, so we need to refresh the visuals
         _measured = false;
@@ -1656,6 +1664,7 @@ public partial class DataGrid : TemplatedControl,
         }
         
         _templatedApplied = true;
+        RefreshPopupPinnedOpenFilterTarget();
     }
 
     /// <summary>
@@ -1788,6 +1797,18 @@ public partial class DataGrid : TemplatedControl,
             change.Property == HeadersVisibilityProperty)
         {
             ConfigureHeaderCornerRadius();
+        }
+
+        if (change.Property == IsVisibleProperty)
+        {
+            if (IsVisible)
+            {
+                RefreshPopupPinnedOpenFilterTarget();
+            }
+            else
+            {
+                SuspendPopupPinnedOpenFilterTarget();
+            }
         }
 
         if (change.Property == PageSizeProperty ||

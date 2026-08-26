@@ -3,6 +3,8 @@
 本文档描述 Avatar 控件家族的源码 ownership、图片加载状态流、模板生命周期和资源释放规则。公共契约见
 [Avatar 控件家族架构设计](overview.md)，Token 语义见 [Avatar Token 设计](token.md)。
 
+Popup 接入边界：`AvatarGroup` 负责业务状态和内容准备，内部 `FlyoutHost` 仅作为 relay 适配层，fold-count Flyout Popup 负责实际显示。模板重建或宿主切换时必须先释放旧 relay，再绑定新的 Popup；普通外点、Escape、失焦和业务关闭在 pinned 状态下被拦截，detach、窗口销毁、跨 TopLevel 和无效锚点必须走生命周期关闭并释放 Popup host。完整状态机见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。
+
 ## 1. 实现定位
 
 本文覆盖单头像、桌面 AvatarGroup、共享单图 controller、主题接入和图片租约生命周期。具体 StyledProperty 注册、Token 派生值和

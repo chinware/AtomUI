@@ -2,6 +2,20 @@
 
 本文档记录 NavMenu 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-08-26
+
+- Architecture
+  - Separate transient popup/submenu closing from persistent selection clearing: pointer outside, window deactivation, platform focus loss, non-client click, inline-collapsed transitions, and mode changes preserve `SelectedItem` and selected path.
+  - Keep public `Close()` compatible as the explicit operation that closes all submenus and clears selection.
+- Verification
+  - Cover platform focus loss, mode replacement, popup reopen projection, and the public `Close()` selection-clearing boundary.
+
+## 2026-08-25
+
+- Docs
+  - Add the shared Popup pinned-open design link and record NavMenu/NavMenuItem as the semantic owner for NavMenu.
+  - Preserve ordinary close behavior after unpinning and allow lifecycle teardown to release the Popup host.
+
 ## 2026-08-19
 
 - API

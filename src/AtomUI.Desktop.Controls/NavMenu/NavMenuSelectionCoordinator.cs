@@ -23,23 +23,15 @@ internal sealed class NavMenuSelectionCoordinator
 
         var newItems         = NavMenu.CollectSelectPathItems(menuItem);
         var newSelectedPaths = NavMenu.BuildSelectPathSet(newItems);
-        var oldSelectedItem  = ResolveLatestSelectedItem(menu);
+        var oldSelectedNode  = ResolveLatestSelectedNode(menu);
+        var oldSelectedItem  = ResolveLatestSelectedItem(menu, oldSelectedNode);
+        var oldSelectedPaths = ResolveRealizedSelectedPathItems(menu, oldSelectedNode);
 
-        HashSet<NavMenuItem>? oldSelectedPaths = null;
-        if (oldSelectedItem != null)
+        foreach (var oldInSelectPathItem in oldSelectedPaths)
         {
-            var oldItems = NavMenu.CollectSelectPathItems(oldSelectedItem);
-            oldSelectedPaths = NavMenu.BuildSelectPathSet(oldItems);
-        }
-
-        if (oldSelectedPaths != null)
-        {
-            foreach (var oldInSelectPathItem in oldSelectedPaths)
+            if (!newSelectedPaths.Contains(oldInSelectPathItem))
             {
-                if (!newSelectedPaths.Contains(oldInSelectPathItem))
-                {
-                    oldInSelectPathItem.SetCurrentValue(NavMenuItem.IsInSelectedPathProperty, false);
-                }
+                oldInSelectPathItem.SetCurrentValue(NavMenuItem.IsInSelectedPathProperty, false);
             }
         }
 
@@ -63,21 +55,25 @@ internal sealed class NavMenuSelectionCoordinator
 
     public void ClearSelection(NavMenu menu)
     {
-        var oldSelectedItem = ResolveLatestSelectedItem(menu);
-        if (oldSelectedItem is null)
+        var oldSelectedNode = ResolveLatestSelectedNode(menu);
+        if (oldSelectedNode is null)
         {
             Reset();
             return;
         }
 
-        var oldItems = NavMenu.CollectSelectPathItems(oldSelectedItem);
-        foreach (var oldInSelectPathItem in oldItems)
+        foreach (var oldInSelectPathItem in ResolveRealizedSelectedPathItems(menu, oldSelectedNode))
         {
             oldInSelectPathItem.SetCurrentValue(NavMenuItem.IsInSelectedPathProperty, false);
         }
 
-        var oldParentItem = ResolveSelectionOwner(menu, oldSelectedItem);
-        oldParentItem.SelectChildItem(oldSelectedItem, false);
+        var oldSelectedItem = ResolveLatestSelectedItem(menu, oldSelectedNode);
+        if (oldSelectedItem is not null)
+        {
+            var oldParentItem = ResolveSelectionOwner(menu, oldSelectedItem);
+            oldParentItem.SelectChildItem(oldSelectedItem, false);
+        }
+
         Reset();
     }
 
@@ -110,13 +106,8 @@ internal sealed class NavMenuSelectionCoordinator
         }
     }
 
-    private NavMenuItem? ResolveLatestSelectedItem(NavMenu menu)
+    private INavMenuNode? ResolveLatestSelectedNode(NavMenu menu)
     {
-        if (_appliedSelectedItem is not null)
-        {
-            return _appliedSelectedItem;
-        }
-
         var selectedNode = _appliedSelectedNode ?? menu.SelectedItem;
         if (selectedNode is null)
         {
@@ -129,7 +120,36 @@ internal sealed class NavMenuSelectionCoordinator
             return null;
         }
 
-        return menu.FindRealizedMenuItem(selectedNode);
+        return selectedNode;
+    }
+
+    private NavMenuItem? ResolveLatestSelectedItem(NavMenu menu, INavMenuNode? selectedNode)
+    {
+        if (_appliedSelectedItem is not null)
+        {
+            return _appliedSelectedItem;
+        }
+
+        return selectedNode is not null ? menu.FindRealizedMenuItem(selectedNode) : null;
+    }
+
+    private static HashSet<NavMenuItem> ResolveRealizedSelectedPathItems(
+        NavMenu menu,
+        INavMenuNode? selectedNode)
+    {
+        var selectedPathItems = new HashSet<NavMenuItem>();
+        var current = selectedNode?.ParentNode as INavMenuNode;
+        while (current is not null)
+        {
+            if (menu.FindRealizedMenuItem(current) is { } menuItem)
+            {
+                selectedPathItems.Add(menuItem);
+            }
+
+            current = current.ParentNode as INavMenuNode;
+        }
+
+        return selectedPathItems;
     }
 
     private static bool BelongsToMenu(NavMenu menu, INavMenuNode node)

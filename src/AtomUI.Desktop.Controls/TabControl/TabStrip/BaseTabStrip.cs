@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using AtomUI.Animations;
 using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -204,6 +205,9 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
         AvaloniaProperty.RegisterDirect<BaseTabStrip, Thickness>(nameof(EffectiveHeaderPadding),
             o => o.EffectiveHeaderPadding,
             (o, v) => o.EffectiveHeaderPadding = v);
+
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Flyout.IsPopupPinnedOpenProperty.AddOwner<BaseTabStrip>();
         
     private Thickness _effectiveHeaderPadding;
 
@@ -213,12 +217,20 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
         set => SetAndRaise(EffectiveHeaderPaddingProperty, ref _effectiveHeaderPadding, value);
     }
 
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
+
     #endregion
 
     private Pen? _tabStripBorderPen;
     private IBrush? _tabStripBorderPenBrush;
     private double _tabStripBorderPenThickness;
     private BaseTabScrollViewer? _tabReorderScrollViewer;
+    private BaseTabScrollViewer? _popupPinnedOpenScrollViewer;
+    private IDisposable? _popupPinnedOpenRelay;
     private DispatcherTimer? _tabReorderAutoScrollTimer;
     private TabStripItem? _pendingTabActivationContainer;
     private IPointer? _pendingTabActivationPointer;
@@ -615,18 +627,67 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     {
         ClearPendingTabActivation();
         CancelTabReorder();
+        ReleasePopupPinnedOpenScrollViewer();
         base.OnApplyTemplate(e);
         _tabReorderScrollViewer = TabReorderHelper.FindTabScrollViewer(e.NameScope);
+        ReplacePopupPinnedOpenScrollViewer(_tabReorderScrollViewer);
         ConfigureEffectiveHeaderPadding();
         UpdateIconSlotReservation();
     }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        ResumePopupPinnedOpenRelay();
+    }
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        SuspendPopupPinnedOpenRelay();
         ClearPendingTabActivation();
         CancelTabReorder();
         _tabReorderScrollViewer = null;
         base.OnDetachedFromVisualTree(e);
+    }
+
+    private void ReplacePopupPinnedOpenScrollViewer(BaseTabScrollViewer? scrollViewer)
+    {
+        _popupPinnedOpenScrollViewer = scrollViewer;
+        ResumePopupPinnedOpenRelay();
+    }
+
+    private void ResumePopupPinnedOpenRelay()
+    {
+        if (_popupPinnedOpenRelay is not null || _popupPinnedOpenScrollViewer is not { } scrollViewer)
+        {
+            return;
+        }
+
+        _popupPinnedOpenRelay = BindUtils.RelayBind(
+            this,
+            IsPopupPinnedOpenProperty,
+            scrollViewer,
+            BaseTabScrollViewer.IsPopupPinnedOpenProperty);
+    }
+
+    private void SuspendPopupPinnedOpenRelay()
+    {
+        if (_popupPinnedOpenScrollViewer is { } scrollViewer)
+        {
+            scrollViewer.CloseForLifecycle();
+        }
+
+        _popupPinnedOpenRelay?.Dispose();
+        _popupPinnedOpenRelay = null;
+        _popupPinnedOpenScrollViewer?.SetCurrentValue(
+            BaseTabScrollViewer.IsPopupPinnedOpenProperty,
+            false);
+    }
+
+    private void ReleasePopupPinnedOpenScrollViewer()
+    {
+        SuspendPopupPinnedOpenRelay();
+        _popupPinnedOpenScrollViewer = null;
     }
 
     protected override bool ShouldTriggerSelection(Visual selectable, PointerEventArgs eventArgs)

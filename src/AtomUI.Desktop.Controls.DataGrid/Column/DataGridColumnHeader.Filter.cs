@@ -4,6 +4,7 @@
 // All other rights reserved.
 
 using System.Diagnostics;
+using AtomUI.Data;
 using Avalonia;
 
 namespace AtomUI.Desktop.Controls;
@@ -64,7 +65,29 @@ internal partial class DataGridColumnHeader
         if (_filterIndicator != null)
         {
             _filterIndicator.FilterRequest += HandleFilterRequest;
+            _popupPinnedOpenRelay = BindUtils.RelayBind(
+                this,
+                IsPopupPinnedOpenProperty,
+                _filterIndicator,
+                DataGridFilterIndicator.IsPopupPinnedOpenProperty);
         }
+    }
+
+    internal void CloseFilterPopupForLifecycle()
+    {
+        _filterIndicator?.ClosePopupForLifecycle();
+    }
+
+    internal void NotifyFilterConfigurationChanged()
+    {
+        if (_filterIndicator is null || OwningColumn is null)
+        {
+            return;
+        }
+
+        _filterIndicator.FilterPresenterMode = OwningColumn.FilterPresenterMode;
+        _filterIndicator.IsMultipleSelectionEnabled =
+            OwningColumn.FilterSelectionMode == DataGridFilterSelectionMode.Multiple;
     }
 
     private void HandleFilterRequest(object? sender, DataGridColumnFilterEventArgs args)

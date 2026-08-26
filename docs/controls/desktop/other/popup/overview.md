@@ -22,6 +22,8 @@ ContextMenu、菜单、选择器和 Picker 等专用控件复用该原语，但�
 Popup 不提供默认 Padding、边框、箭头或内容布局。调用方负责 Child 内容结构；Popup 只在 Child bounds 内提供可选的
 frame surface 与 host shadow。
 
+Popup 同时拥有弹层家族的内部钉住打开物理契约。`internal IsPopupPinnedOpen` 只供测试和内部诊断使用：内容、锚点、attach、effective visible/enabled、TopLevel 和 placement 全部有效后保持 Popup 打开，普通关闭和关闭动效被拦截；PlacementTarget、logical owner、content、TopLevel 或窗口生命周期失效时仍必须立即清理。解除 pin 不关闭已打开 Popup，但必须取消尚未打开的 pending 请求。控件语义 owner、Flyout、ToolTip 和 ContextMenu 的接入规则见 [Popup 钉住打开设计](popup-pinned-open-design.md)。
+
 ## 2. 设计语言
 
 Popup 的设计语言是“可定位的透明承载原语”。宿主保持透明并提供窗口/layer 能力，内容默认拥有自己的表面；调用方
@@ -71,6 +73,11 @@ AtomUI 自有的 content-owned 消费者继承 Popup 原语的 `null` 默认值�
 动效延迟，必须立即释放 Avalonia PopupHost 和定位订阅。自身没有 logical owner、但具有有效显式 PlacementTarget 的 Direct
 Popup 仍可使用普通关闭动效。
 
+Pinned 状态不改变上述会话分类：外点、Escape、失焦、window deactivation、`Close`/`Hide` 和业务 open state 写 `false`
+属于普通关闭并被拒绝；content removal、target/owner detach、effective visible/enabled 失效、跨 TopLevel、模板重建和窗口销毁
+属于生命周期 teardown。无效的 pinned `IsOpen=true` 只保留请求，不发布 `Opened`；unpin 时已打开 Popup 保持打开，pending
+请求则被清理且不能在锚点恢复后复活。
+
 ## 5. 视觉与主题模型
 
 ```text
@@ -104,6 +111,8 @@ Dialog/Drawer 只影响 Popup 的 owning TopLevel 和 layer 归属，不改变 s
 ## 7. 兼容性不变量
 
 - Popup placement target、host 与 Dialog/Drawer presentation 必须属于同一 owning `TopLevel`。
+- Pinned 打开只能在 content、anchor、attach、effective visible/enabled 和 placement 同时有效时发生；显式 `ShowAt` 与自动恢复使用同一门禁。
+- 业务 open state 和 Popup `IsOpen` 的 coercion 不得发布瞬态关闭；`false` 必须保持真实的 false 请求语义。
 - native/overlay 切换只改变宿主和 shadow token，不改变 `SurfaceBackground` 语义。
 - `SurfaceBackground=null` 时 frame renderer 继续使用透明 fill，专用 Presenter 的背景、圆角、Padding、阴影和定位保持不变。
 - Popup Child 内未被内部滚动控件消费的 wheel 事件在 popup 边界终止，避免滚动外层 placement target 祖先。
@@ -124,6 +133,7 @@ host-owned/content-owned 是 Popup 家族唯一的表面分类维度；native/ov
 
 - [Popup 桌面版实现原理](implementation.md)
 - [Popup Token 设计](token.md)
+- [Popup 钉住打开设计](popup-pinned-open-design.md)
 - [Popup Changelog](changelog.md)
 - [Modal 内容弹层叠放设计](../../feedback/modal/popup-layering-design.md)
 

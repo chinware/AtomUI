@@ -2,6 +2,8 @@
 
 本文档描述 DataGrid 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [DataGrid 桌面版架构设计](overview.md)，列宽算法和 presenter 协作见 [DataGrid 列宽分配设计](column-sizing-design.md)，变化记录见 [DataGrid Changelog](changelog.md)。涉及 Control Own Token 的实现应同时阅读 [DataGrid Token 设计](token.md)。
 
+Popup 接入边界：`DataGrid` 负责 column-filter 业务状态和内容准备，filter Flyout 仅作为 relay 适配层，filter Popup 负责实际显示。模板重建或宿主切换时必须先释放旧 relay，再绑定新的 Popup；普通外点、Escape、失焦和业务关闭在 pinned 状态下被拦截，detach、窗口销毁、跨 TopLevel 和无效锚点必须走生命周期关闭并释放 Popup host。完整状态机见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。
+
 ## 1. 实现定位
 
 本文档覆盖 DataGrid 的控件实现、主题接入、状态同步和 Gallery 可见维护边界。具体属性注册、默认值、绘制细节和 AXAML selector 仍应直接阅读源码；本文只记录维护者必须理解的稳定结构和不变量。
@@ -152,6 +154,22 @@ DataGridColumn.Filters
 
 `Filters` 是过滤候选项数据源，必须允许替换、绑定和集合变更通知。过滤项可以来自 `DataGridFilterItem`，也可以来自业务 DTO；解析文本、值和 children 时优先使用列上的 member path 配置，避免把 Gallery 示例对象变成业务层必须依赖的模型。DTO member path 解析只允许生成 accessor 路径，不在过滤项解析中启用运行时反射。`SelectedFilterValues` 是当前选中值集合，负责连接 VM、filter flyout checked state 和 collection view 过滤描述。`FilterDescriptions` 只由列过滤管线生成和回收，不直接承担 public 选中状态。
 
+Pinned filter 状态由 `DataGrid` 单独拥有，并与过滤选择状态正交：
+
+```text
+DataGrid.IsPopupPinnedOpen
+  -> first eligible column in DisplayIndex order
+  -> DataGridColumnHeader.IsPopupPinnedOpen
+  -> DataGridFilterIndicator.IsPopupPinnedOpen
+  -> current filter Flyout.IsPopupPinnedOpen
+  -> Popup.IsPopupPinnedOpen
+```
+
+目标筛选使用 `ColumnsInternal.GetDisplayedColumns()`，跳过 filler、不可见、不可过滤、无过滤项或无 Header 的列。同一时间
+只有一个 Header 被 pin。列集合、DisplayIndex、可见性、`CanUserFilterColumns`、列级 `CanUserFilter` 和过滤项变化都会重新
+计算目标；replacement 先 lifecycle-close 旧 Popup 并 unpin 旧 Header，再 pin 新 Header。Header 到 Indicator、Indicator 到
+当前 Menu/Tree Flyout 的两个 `BindUtils.RelayBind` 分别由 `ClearFilterIndicator` 和 `ClearFlyout` 释放。
+
 列绑定通过 `DataGridColumn.DataContext` 完成。`DataGridColumn` 实现 `IDataContextProvider`，列插入 `DataGridColumnCollection` 时复制当前 `DataGrid.DataContext`，`DataGrid.OnDataContextEndUpdate` 时向所有列同步新 `DataContext`，列移除或清空时释放为 `null`。这条 acquire/release 配对是 `Filters="{Binding NameFilters}"` 和 `SelectedFilterValues="{Binding SelectedNames}"` 可用的基础，也避免列持有旧 ViewModel。列订阅外部 `Filters` / `SelectedFilterValues` collection 时必须跟随列 attach/detach 注册和释放；过滤投影写入 `FilterDescriptions` 必须避开列集合插入/删除的中间态，等列集合索引、display index 和 current cell 状态稳定后再刷新 collection view。由用户操作、`Filter(...)` 或清除过滤触发的选中值更新，应优先修改现有可变 `SelectedFilterValues` 列表实例；只有当前没有可变列表时才替换属性值。这样双向绑定、代码侧赋值和 Gallery 示例接线都共享同一个列表 owner。
 
 Gallery 或业务 XAML 常见写法会在 `DataGrid` 上用 `x:DataType` 声明行模型类型，以便 `Binding="{Binding Address}"` 这类单元格绑定被编译。此时列级 ViewModel 绑定不能只写裸 `{Binding NameFilters}`，否则 XAML 编译器可能按行模型解析。优先在列级绑定上显式指定 VM 类型；如果 IDE、XAML 编译器或模板嵌套让上下文仍然歧义，则在页面加载或 View 初始化时直接设置 `Filters` 与 `SelectedFilterValues`。这种代码侧接线只能替代 binding 表达式，不能引入第二套 selected/filter 状态，也不能绕过列过滤管线。
@@ -207,6 +225,12 @@ PointerReleased
   恢复 transition，最后清除会话引用。会话清理必须幂等，允许 release、capture lost 和 detach 连续到达。
 - 源行因自动滚动而被虚拟化回收时，会话立即取消；同一 PointerMoved 帧必须在滚动返回后重新检查会话，
   不得继续读取已经清空的坐标、row 或 presenter 状态。
+- Pinned filter 的 Header、Indicator 或 Flyout replacement 先失效旧 Loaded-priority callback，再 lifecycle-close 旧 Popup、
+  dispose relay 和事件订阅。Indicator callback 校验 generation、pin、attach、effective enabled/visible、OwningGrid、TopLevel
+  和 Flyout identity，旧模板或旧列不能在 teardown 后复活。
+- DataGrid unpin 只清除当前 Header pin，不关闭已经打开的 filter Flyout；DataGrid detach、template reapply、禁用或本地隐藏
+  则清空目标并走 lifecycle close。Header/Indicator 单独 detach 依赖各自 teardown 和 Popup target tracking，重新 attach 时
+  由仍然有效的 DataGrid pin 请求重新创建 Flyout shell 并打开。
 
 稳定 template part 接入点：
 
@@ -344,6 +368,8 @@ Frame 与 Header 圆角不变量：
   完成或取消时释放。移动能力通过直接接口能力判断，不使用反射、动态调用或运行时类型扫描。
 - 列宽求解复用列集合可见宽度缓存和 `AdjustColumnWidths`；无 star 列、输入无限、adjustment 为零或初始 Auto
   测量未完成时应直接退出，不在 presenter 中分配辅助集合或建立额外订阅。
+- Pinned filter 目标选择直接遍历 displayed columns，不做反射、runtime type discovery 或全视觉树扫描；两级 relay 只在
+  当前 Header/Indicator/Flyout 生命周期内存在，Loaded callback 由 generation 合并和失效。
 
 ## 9. 维护不变量
 
@@ -353,6 +379,10 @@ Frame 与 Header 圆角不变量：
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - 列过滤只能有一个选中状态 owner；`Filters`、flyout checked state、`SelectedFilterValues` 和 `FilterDescriptions` 之间不得形成互相覆盖的并行状态源。
+- Pinned filter 同一时间只能有一个目标，目标必须按 DisplayIndex 选择第一个 eligible column；Header -> Indicator -> Flyout
+  relay 必须在 replacement、container clear、detach 和 template reapply 时对称释放。
+- DataGrid unpin 不关闭已打开 filter Flyout；目标 replacement 或 lifecycle teardown 必须关闭旧 Popup，且旧 Loaded callback
+  不得重新打开已释放的 Flyout。
 - 行拖动只能有一个 DataGrid 实例级会话 owner；禁止在 handle 类型上保存 static Pointer、row、index、bounds、
   offset 或 owner 状态。
 - Handle、RowsPresenter 和 CollectionView 的职责不能重新混合：handle 不修改数据，presenter 不决定移动语义，
@@ -382,3 +412,5 @@ Frame 与 Header 圆角不变量：
   `1* + 2*`、空视口 resize、空数据新增后再次清空，以及普通/分组表头一致性。
 - 列宽约束测试覆盖 min/max、冻结列、行头、滚动条和 filler：star 可吸收空间时 filler 为零，只有约束阻止
   继续分配时才允许 filler 为正。
+- `DataGridFilterDialogPopupTests` 覆盖按 DisplayIndex 选择唯一 pinned filter、普通 Hide 拦截、detach/reattach、目标列失效
+  replacement、Menu/Tree presenter mode replacement 和 unpin 后保持已打开状态。

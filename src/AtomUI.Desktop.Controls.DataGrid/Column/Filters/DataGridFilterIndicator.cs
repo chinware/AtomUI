@@ -1,6 +1,7 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
 using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls.Data;
 using AtomUI.Icons.AntDesign;
 using Avalonia;
@@ -8,6 +9,9 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
+using FlyoutControl = AtomUI.Desktop.Controls.Flyout;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -57,6 +61,9 @@ internal class DataGridFilterIndicator : IconButton
             nameof(SelectedAllText),
             o => o.SelectedAllText,
             (o, v) => o.SelectedAllText = v);
+
+    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        FlyoutControl.IsPopupPinnedOpenProperty.AddOwner<DataGridFilterIndicator>();
     
     internal string? SelectedAllText
     {
@@ -64,6 +71,12 @@ internal class DataGridFilterIndicator : IconButton
         set => SetAndRaise(SelectedAllTextProperty, ref _selectedAllText, value);
     }
     private string? _selectedAllText;
+
+    internal bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
 
     #endregion
     
@@ -74,6 +87,8 @@ internal class DataGridFilterIndicator : IconButton
     private IDataGridCollectionView? _subscribedCollectionView;
     private INotifyCollectionChanged? _subscribedFilters;
     private bool _isFlyoutContentMaterialized;
+    private IDisposable? _popupPinnedOpenRelay;
+    private int _pinnedOpenGeneration;
 
     internal DataGridColumn? OwningColumn
     {
@@ -85,6 +100,7 @@ internal class DataGridFilterIndicator : IconButton
                 return;
             }
 
+            ClosePopupForLifecycle();
             UnregisterOwningColumnSubscriptions();
             _owningColumn = value;
             if (_owningColumn != null)
@@ -136,6 +152,17 @@ internal class DataGridFilterIndicator : IconButton
                 MaterializeFlyoutContent();
             }
         }
+        else if (changed.Property == IsPopupPinnedOpenProperty)
+        {
+            if (changed.GetNewValue<bool>())
+            {
+                RefreshFilterFlyoutState();
+            }
+            else
+            {
+                ++_pinnedOpenGeneration;
+            }
+        }
     }
 
     internal void RefreshFilterFlyoutState()
@@ -143,6 +170,10 @@ internal class DataGridFilterIndicator : IconButton
         if (ShouldProvideFlyout())
         {
             EnsureFlyoutShell();
+            if (IsPopupPinnedOpen)
+            {
+                QueuePinnedOpen();
+            }
         }
         else
         {
@@ -191,6 +222,11 @@ internal class DataGridFilterIndicator : IconButton
 
             Flyout                          =  menuFlyout;
             _flyoutStateHelper.Flyout       =  menuFlyout;
+            _popupPinnedOpenRelay = BindUtils.RelayBind(
+                this,
+                IsPopupPinnedOpenProperty,
+                menuFlyout,
+                FlyoutControl.IsPopupPinnedOpenProperty);
             menuFlyout.FilterValuesSelected += HandleFilterValuesSelected;
         }
         else if (FilterPresenterMode == DataGridFilterPresenterMode.Tree && Flyout is not DataGridTreeFilterFlyout)
@@ -208,6 +244,11 @@ internal class DataGridFilterIndicator : IconButton
 
             Flyout                    = treeFlyout;
             _flyoutStateHelper.Flyout = treeFlyout;
+            _popupPinnedOpenRelay = BindUtils.RelayBind(
+                this,
+                IsPopupPinnedOpenProperty,
+                treeFlyout,
+                FlyoutControl.IsPopupPinnedOpenProperty);
             treeFlyout.FilterValuesSelected += HandleFilterValuesSelected;
         }
 
@@ -329,6 +370,7 @@ internal class DataGridFilterIndicator : IconButton
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        ++_pinnedOpenGeneration;
         base.OnDetachedFromVisualTree(e);
         _flyoutStateHelper.NotifyDetachedFromVisualTree();
         UnregisterOwningColumnSubscriptions();
@@ -508,9 +550,17 @@ internal class DataGridFilterIndicator : IconButton
 
     private void ClearFlyout()
     {
-        if (Flyout is PopupFlyoutBase { IsOpen: true } openFlyout)
+        ++_pinnedOpenGeneration;
+        if (Flyout is FlyoutControl atomFlyout)
         {
-            openFlyout.Hide();
+            atomFlyout.CloseForLifecycle();
+        }
+
+        _popupPinnedOpenRelay?.Dispose();
+        _popupPinnedOpenRelay = null;
+        if (Flyout is FlyoutControl releasedFlyout)
+        {
+            releasedFlyout.SetCurrentValue(FlyoutControl.IsPopupPinnedOpenProperty, false);
         }
 
         if (Flyout is DataGridMenuFilterFlyout menuFlyout)
@@ -529,5 +579,35 @@ internal class DataGridFilterIndicator : IconButton
         Flyout                    = null;
         _flyoutStateHelper.Flyout = null;
         _isFlyoutContentMaterialized = false;
+    }
+
+    internal void ClosePopupForLifecycle()
+    {
+        ++_pinnedOpenGeneration;
+        if (Flyout is FlyoutControl flyout)
+        {
+            flyout.CloseForLifecycle();
+        }
+    }
+
+    private void QueuePinnedOpen()
+    {
+        var generation = ++_pinnedOpenGeneration;
+        var flyout     = Flyout as FlyoutControl;
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (generation == _pinnedOpenGeneration &&
+                IsPopupPinnedOpen &&
+                this.IsAttachedToVisualTree() &&
+                IsEffectivelyEnabled &&
+                IsEffectivelyVisible &&
+                OwningColumn?.OwningGrid is not null &&
+                TopLevel.GetTopLevel(this) is not null &&
+                ReferenceEquals(flyout, Flyout) &&
+                flyout is { IsOpen: false })
+            {
+                _flyoutStateHelper.ShowFlyout(immediately: true);
+            }
+        }, DispatcherPriority.Loaded);
     }
 }
