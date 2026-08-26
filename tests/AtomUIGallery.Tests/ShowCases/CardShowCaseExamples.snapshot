@@ -315,7 +315,7 @@
             <atom:CardMetaContent Header="{gallery:CardShowCaseLangResource P2HeaderObjectCardMeta}"
                                   Content="{gallery:CardShowCaseLangResource P2ContentThisIsTheDescription}">
                 <atom:CardMetaContent.Avatar>
-                    <atom:Avatar Src="avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar1.svg" />
+                    <atom:Avatar Source="avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar1.svg" />
                 </atom:CardMetaContent.Avatar>
             </atom:CardMetaContent>
             <atom:Card.Actions>
@@ -339,7 +339,7 @@
                                   Header="{gallery:CardShowCaseLangResource P2HeaderFunctionCardMeta}"
                                   Content="{gallery:CardShowCaseLangResource P2ContentThisIsTheDescription}">
                 <atom:CardMetaContent.Avatar>
-                    <atom:Avatar Src="avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar1.svg" />
+                    <atom:Avatar Source="avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar1.svg" />
                 </atom:CardMetaContent.Avatar>
             </atom:CardMetaContent>
             <atom:Card.Actions>
