@@ -57,8 +57,8 @@
 ### 待执行批次
 
 - [x] 第一批：基础控件，共 16 个家族。
-- [ ] 第二批：集合与容器，共 16 个家族。
-- [ ] 第三批：输入与选择，共 15 个家族。
+- [x] 第二批：集合与容器，共 16 个家族。（2026-08-27 复核：全部家族均已按用户授权提交）
+- [ ] 第三批：输入与选择，共 15 个家族。（进行中：Upload 已提交；AutoComplete、LineEdit 实现完成、待用户验收授权；其余 12 个家族未开始。）
 - [ ] 第四批：Popup 与独立宿主，共 9 个家族。
 - [ ] 第五批：高密度控件，共 2 个家族。
 
@@ -136,13 +136,18 @@
 
 **计划：** [第二批任务清单](2026-08-12-semantic-part-batch-2-collections-containers.md)
 
-- [ ] 只有第一批形成稳定审核节奏后才能开始，除非用户明确调整优先级。
-- [ ] 每个适用家族都必须提供容器和运行时创建 marker 的生命周期证据。
+**状态（2026-08-27）：** Calendar、Collapse、ListView / ListBox、Segmented、Tag、Timeline、TreeView、Slider、Masonry、Space、Splitter、Breadcrumb、Pagination、Steps、TabControl 家族（含 TabStrip、CardTabStrip）已全部完成经用户授权的提交。
+
+- [x] 只有第一批形成稳定审核节奏后才能开始，除非用户明确调整优先级。
+- [x] 每个适用家族都必须提供容器和运行时创建 marker 的生命周期证据。
 - [ ] 15 个家族全部提交后，运行集合/虚拟化回归测试和完整通用检查。
+    - 2026-08-27 复跑受阻：`ImageLoaderDisposeTests.Dispose_On_UI_Thread_Does_Not_Block_An_InFlight_UI_Dispatch`（`d58243b15` 引入，非 Semantic Part 改动）在本机 headless 下稳定挂起并中止套件；其前 201 个用例通过。此外 Gallery 套件另有与本改造无关的存量失败（CustomizeTheme 算法断言）。上述存量问题修复后需完整重跑再勾选。
 
 ### 任务 3：第三批 - 输入与选择
 
 **计划：** [第三批任务清单](2026-08-12-semantic-part-batch-3-input-selection.md)
+
+**进度（2026-08-27）：** Upload 已提交（`cd9caea9a`）；AutoComplete 与 LineEdit 的实现已在专用工作树（`feature/semantic-AutoComplete`、`feature/semantic-lineEdit`）完成并暂存，等待用户验收与授权提交；Cascader、ColorPicker、DatePicker、Form、Mentions、NumericUpDown、OtpLineEdit、SearchEdit、Select、TimePicker、Transfer、TreeSelect 未开始。
 
 - [ ] 开放 input frame/content/icon 区域前，必须分析 SizeType 和布局 Setter。
 - [ ] candidate、option、calendar 和 time panel 必须提供 Popup 打开-关闭-重新打开的证据。
