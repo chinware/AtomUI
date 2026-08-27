@@ -445,29 +445,68 @@ public class ButtonBehaviorTests
         });
     }
 
-    [Theory]
-    [InlineData("primary-solid", true)]
-    [InlineData("primary-outlined", false)]
-    [InlineData("primary-text", false)]
-    [InlineData("danger-solid", false)]
-    [InlineData("disabled-primary-solid", false)]
-    public void Button_CustomBackground_Visibility_Follows_Effective_State(
-        string scenario,
-        bool expectedVisible)
+    [Fact]
+    public void Button_Root_Background_Renders_On_Frame_And_Survives_Interaction_States()
     {
-        var customBackground = CreateCustomBackground();
-        var button           = CreateCustomBackgroundButton(scenario, customBackground);
+        var customBackground = CreateGradientBrush();
+        var button = new AtomUIButton
+        {
+            ButtonType      = ButtonType.Primary,
+            Background      = customBackground,
+            IsMotionEnabled = false
+        };
 
         ShowInWindow(button, () =>
         {
-            GetInternalPropertyValue<bool>(button, "HasCustomBackground")
-                .ShouldBe(expectedVisible);
+            var frame = FindTemplateDashedBorder(button, "Frame");
+            frame.Background.ShouldBeSameAs(customBackground,
+                "The root Background set on the Button must render directly on the frame.");
 
-            var customBackgroundLayer = FindTemplateBorder(button, "CustomBackgroundLayer");
-            customBackgroundLayer.Background.ShouldBeSameAs(customBackground);
-            customBackgroundLayer.IsVisible.ShouldBe(expectedVisible);
-            customBackgroundLayer.Opacity.ShouldBe(expectedVisible ? 1.0 : 0.0);
+            // A customized root background intentionally freezes the hover/pressed/disabled
+            // color changes of that slot, matching antd inline style semantics.
+            SetPseudoClass(button, StdPseudoClass.PointerOver, true);
+            Dispatcher.UIThread.RunJobs();
+            frame.Background.ShouldBeSameAs(customBackground);
+
+            SetPseudoClass(button, StdPseudoClass.Pressed, true);
+            Dispatcher.UIThread.RunJobs();
+            frame.Background.ShouldBeSameAs(customBackground);
+
+            button.IsEnabled = false;
+            Dispatcher.UIThread.RunJobs();
+            frame.Background.ShouldBeSameAs(customBackground);
+
+            button.IsEnabled  = true;
+            button.ClearValue(Avalonia.Controls.Primitives.TemplatedControl.BackgroundProperty);
+            SetPseudoClass(button, StdPseudoClass.PointerOver, false);
+            SetPseudoClass(button, StdPseudoClass.Pressed, false);
+            Dispatcher.UIThread.RunJobs();
+
+            BrushShouldHaveSameColor(
+                frame.Background,
+                GetInternalPropertyValue<IBrush?>(button, "VariantBackgroundBrush"),
+                "Clearing the root background must restore the theme variant state machine.");
         });
+    }
+
+    [Fact]
+    public void Button_Root_Surface_Has_No_CustomBackground_Workaround()
+    {
+        var sources = new[]
+        {
+            "src/AtomUI.Desktop.Controls/Button/Button.cs",
+            "src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.axaml",
+            "src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonTheme.axaml",
+            "src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonBaseTheme.axaml",
+            "src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/ButtonTheme.axaml",
+            "src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/DropdownButtonTheme.axaml"
+        };
+
+        foreach (var source in sources)
+        {
+            ReadRepoFile(source).ShouldNotContain("CustomBackground",
+                customMessage: $"The root surface channel is the standard Background property; {source} must not reintroduce a parallel customization property.");
+        }
     }
 
     [Theory]
@@ -573,7 +612,7 @@ public class ButtonBehaviorTests
         {
             Width               = 120,
             Height              = 40,
-            BorderBrush         = CreateCustomBackground(),
+            BorderBrush         = CreateGradientBrush(),
             Background          = Brushes.Transparent,
             IsMotionEnabled     = true,
             IsWaveSpiritEnabled = true
@@ -593,16 +632,18 @@ public class ButtonBehaviorTests
     }
 
     [Fact]
-    public void Button_CustomBackground_Does_Not_Change_WaveSpiritBrush()
+    public void Button_Custom_Root_Background_Is_A_WaveSpiritBrush_Source()
     {
-        var customBackground = CreateCustomBackground();
+        var customBackground = new SolidColorBrush(Color.Parse("#13C2C2"));
         var button = new AtomUIButton
         {
-            ButtonType       = ButtonType.Primary,
-            CustomBackground = customBackground,
-            Width            = 120,
-            Height           = 40,
-            IsMotionEnabled  = true
+            ButtonType         = ButtonType.Primary,
+            BorderBrush        = Brushes.Transparent,
+            Background         = customBackground,
+            Width              = 120,
+            Height             = 40,
+            IsMotionEnabled    = true,
+            IsWaveSpiritEnabled = true
         };
 
         ShowInWindow(button, window =>
@@ -613,8 +654,7 @@ public class ButtonBehaviorTests
             Click(button, window);
 
             var waveBrush = GetPublicPropertyValue<IBrush?>(waveSpiritDecorator, "WaveBrush");
-            waveBrush.ShouldNotBeSameAs(customBackground);
-            BrushShouldHaveSameColor(waveBrush, button.Background);
+            BrushShouldHaveSameColor(waveBrush, customBackground);
         });
     }
 
@@ -686,33 +726,6 @@ public class ButtonBehaviorTests
     }
 
     [Fact]
-    public void Button_CustomBackground_Layer_Overlays_Frame_In_Normal_State()
-    {
-        var button = new AtomUIButton
-        {
-            ButtonType       = ButtonType.Primary,
-            CustomBackground = CreateCustomBackground(),
-            IsMotionEnabled  = false
-        };
-
-        ShowInWindow(button, () =>
-        {
-            var frame                 = FindTemplateDashedBorder(button, "Frame");
-            var customBackgroundLayer = FindTemplateBorder(button, "CustomBackgroundLayer");
-            var rootPanel             = frame.GetVisualParent<Panel>();
-            rootPanel.ShouldNotBeNull();
-
-            var rootChildren                = rootPanel!.GetVisualChildren().ToList();
-            var frameIndex                  = rootChildren.IndexOf(frame);
-            var customBackgroundLayerIndex  = rootChildren.IndexOf(customBackgroundLayer);
-
-            frameIndex.ShouldBeGreaterThanOrEqualTo(0);
-            customBackgroundLayerIndex.ShouldBeGreaterThan(frameIndex);
-            BrushShouldHaveSameColor(frame.Background, GetInternalPropertyValue<IBrush?>(button, "VariantBackgroundBrush"));
-        });
-    }
-
-    [Fact]
     public void Button_Default_Frame_Uses_AtomUI_Border_Rendering()
     {
         var button = new AtomUIButton
@@ -733,42 +746,6 @@ public class ButtonBehaviorTests
 
             GetBorderRenderHelperThickness(frame).ShouldBe(new Thickness(2d / 3d));
         });
-    }
-
-    private static AtomUIButton CreateCustomBackgroundButton(string scenario, IBrush customBackground)
-    {
-        var button = new AtomUIButton
-        {
-            CustomBackground = customBackground,
-            IsMotionEnabled  = false
-        };
-
-        switch (scenario)
-        {
-            case "primary-solid":
-                button.ButtonType = ButtonType.Primary;
-                break;
-            case "primary-outlined":
-                button.Color   = ButtonColor.Primary;
-                button.Variant = ButtonVariant.Outlined;
-                break;
-            case "primary-text":
-                button.Color   = ButtonColor.Primary;
-                button.Variant = ButtonVariant.Text;
-                break;
-            case "danger-solid":
-                button.ButtonType = ButtonType.Primary;
-                button.IsDanger   = true;
-                break;
-            case "disabled-primary-solid":
-                button.ButtonType = ButtonType.Primary;
-                button.IsEnabled  = false;
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(scenario), scenario, null);
-        }
-
-        return button;
     }
 
     private static AtomUIButton CreateTextVariantButton(string scenario)
@@ -822,7 +799,7 @@ public class ButtonBehaviorTests
         return button;
     }
 
-    private static LinearGradientBrush CreateCustomBackground()
+    private static LinearGradientBrush CreateGradientBrush()
     {
         return new LinearGradientBrush
         {
@@ -985,9 +962,33 @@ public class ButtonBehaviorTests
         GetSolidBrushColor(brush).A.ShouldBe((byte)0);
     }
 
-    private static void BrushShouldHaveSameColor(IBrush? actual, IBrush? expected)
+    private static void BrushShouldHaveSameColor(IBrush? actual, IBrush? expected, string? message = null)
     {
-        GetSolidBrushColor(actual).ShouldBe(GetSolidBrushColor(expected));
+        GetSolidBrushColor(actual).ShouldBe(GetSolidBrushColor(expected), message);
+    }
+
+    private static string ReadRepoFile(string relativePath)
+    {
+        var path = GetRepoFile(relativePath);
+        File.Exists(path).ShouldBeTrue($"Expected repository file to exist: {relativePath}");
+        return File.ReadAllText(path);
+    }
+
+    private static string GetRepoFile(string relativePath)
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            var candidate = Path.Combine(directory.FullName, relativePath);
+            if (File.Exists(candidate))
+            {
+                return candidate;
+            }
+
+            directory = directory.Parent;
+        }
+
+        return Path.Combine(AppContext.BaseDirectory, relativePath);
     }
 
     private static void BrushShouldHaveColor(IBrush? actual, Color expected)

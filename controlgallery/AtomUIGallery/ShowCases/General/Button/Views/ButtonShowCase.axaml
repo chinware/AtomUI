@@ -486,21 +486,21 @@
                                        LineSpacing="12">
                                 <atom:Button ButtonType="Primary"
                                              Content="{gallery:ButtonShowCaseLangResource P2ContentGradient}">
-                                    <atom:Button.CustomBackground>
+                                    <atom:Button.Background>
                                         <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
                                             <GradientStop Color="#6253E1" Offset="0" />
                                             <GradientStop Color="#04BEFE" Offset="1" />
                                         </LinearGradientBrush>
-                                    </atom:Button.CustomBackground>
+                                    </atom:Button.Background>
                                 </atom:Button>
                                 <atom:Button ButtonType="Primary"
                                              Content="{gallery:ButtonShowCaseLangResource P2ContentWarmGradient}">
-                                    <atom:Button.CustomBackground>
+                                    <atom:Button.Background>
                                         <LinearGradientBrush StartPoint="0%,100%" EndPoint="100%,0%">
                                             <GradientStop Color="#FF7A45" Offset="0" />
                                             <GradientStop Color="#FFD666" Offset="1" />
                                         </LinearGradientBrush>
-                                    </atom:Button.CustomBackground>
+                                    </atom:Button.Background>
                                 </atom:Button>
                             </WrapPanel>
                         </DataTemplate>

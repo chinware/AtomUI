@@ -284,7 +284,7 @@ public class ButtonShowCasePageTests
     }
 
     [Fact]
-    public void Button_Gradient_Example_Is_Separate_ShowCase_With_Two_Custom_Backgrounds()
+    public void Button_Gradient_Example_Is_Separate_ShowCase_With_Two_Root_Backgrounds()
     {
         var source   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml");
         var examples = ExtractButtonExampleItems(source);
@@ -297,8 +297,8 @@ public class ButtonShowCasePageTests
         var gradientItem = ExtractShowCaseItemByTitle(examples, "ButtonShowCaseLangResource GradientButtonTitle");
         gradientItem.ShouldContain("BadgeText=\"v6.0.5\"");
         gradientItem.ShouldNotContain("Span=\"Full\"");
-        gradientItem.ShouldContain("CustomBackground");
-        CountOccurrences(gradientItem, "<atom:Button.CustomBackground>").ShouldBe(2);
+        gradientItem.ShouldNotContain("CustomBackground");
+        CountOccurrences(gradientItem, "<atom:Button.Background>").ShouldBe(2);
         CountOccurrences(gradientItem, "<LinearGradientBrush").ShouldBe(2);
         gradientItem.ShouldContain("#6253E1");
         gradientItem.ShouldContain("#04BEFE");
