@@ -57,7 +57,10 @@ public class LineEditSemanticPartTests
         AssertPart(descriptor, "suffix", SuffixClass, typeof(StackPanel),
             "/template/ .semantic-scope-input-frame /template/ .semantic-scope-suffix > .semantic-suffix");
 
-        registry.TryGetControl(typeof(AtomUISearchEdit), out _).ShouldBeFalse();
+        registry.TryGetControl(typeof(AtomUISearchEdit), out var searchDescriptor).ShouldBeTrue();
+        searchDescriptor.ShouldNotBeNull();
+        searchDescriptor.Parts.Select(static part => part.Name)
+                  .ShouldBe(["root", "button", "clear", "input", "prefix", "suffix"]);
     }
 
     [Fact]

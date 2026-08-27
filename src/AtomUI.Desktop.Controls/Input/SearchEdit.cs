@@ -38,7 +38,7 @@ public sealed class SearchRequestedEventArgs : RoutedEventArgs
     public SearchTriggerSource Trigger { get; }
 }
 
-public class SearchEdit : LineEdit
+public partial class SearchEdit : LineEdit
 {
     #region 公共属性定义
 
