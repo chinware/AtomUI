@@ -104,6 +104,12 @@ AtomUI 输入扩展 API：
 | `RightAddOn` / `RightAddOnTemplate` | `LineEdit` | 外部右侧附加内容和模板；SearchEdit 的右侧外部 add-on 位置由搜索按钮占用。 |
 | `InnerLeftContentTemplate` / `InnerRightContentTemplate` | `LineEdit`、`TextArea` | 内部前后缀模板。 |
 
+Root 表面定制 API：
+
+| API | 语义 |
+| --- | --- |
+| `Background` / `BorderBrush` | `TemplatedControl` 标准属性，是输入表面 root 定制的唯一通道，不引入平行定制属性。owner 上出现任何有效值（本地值、应用层 Style Setter 或 `DynamicResource` 求值结果）时，由 `AbstractTextInput` 以 LocalValue 中继到 `InputControlFrame` 同名属性，优先级高于 frame 状态机：定制期间 hover / pressed / focus 引起的边框变色让位，focus 的 `BoxShadow` 光晕作用在独立属性槽、不受边框定制影响。清除定制（置 `null`）后 frame 恢复主题状态机。语义与内联样式（本地值优先于状态类）一致。 |
+
 SearchEdit 专项 API：
 
 | API | 语义 |
@@ -323,6 +329,7 @@ LineEdit 家族不依赖运行时反射发现模板结构。固定 control-to-te
 AOT 边界：
 
 - Token 类型通过 generator 显式注册。
+- LineEdit Semantic descriptor 与强类型 Style 通过 generator 静态生成，运行时不反射 `SemanticPartAttribute`，也不扫描模板发现 marker。
 - API 与 Token 契约由控件文档、源码 public surface、Token 类型或生成数据维护，不依赖运行时反射扫描。
 - 文档中描述的 template part 名称应与 AXAML 和 C# 查找代码保持一致。
 
@@ -334,6 +341,7 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Primitives/InputControlFrame.cs`：internal 输入表面组合控件，统一边框、背景、圆角、shadow、交互状态、有效状态和 CompactSpace 视觉。
 - `src/AtomUI.Desktop.Controls/Input/TextBox.cs`：AtomUI 基础 TextBox，继承 `AbstractTextInput`，提供基础文本编辑模板。
 - `src/AtomUI.Desktop.Controls/Input/LineEdit.cs`：标准单行输入框，继承 `AbstractTextInput`，提供外部 AddOn、内部右侧内容绑定和单行布局。
+- `src/AtomUI.Desktop.Controls/Input/LineEdit.SemanticParts.cs`：LineEdit 的 `prefix`、`input`、`suffix`、`clear`、`count` Semantic Part 声明；`root` 由 generator 隐式补齐。
 - `src/AtomUI.Desktop.Controls/Input/SearchEdit.cs`：搜索输入框，提供搜索按钮样式、搜索按钮文本、加载态和搜索点击事件。
 - `src/AtomUI.Desktop.Controls/Input/TextArea.cs`：多行输入框，继承 `AbstractTextInput`，提供固定行数、自动高度和 resize。
 - `src/AtomUI.Desktop.Controls/Input/InputTextPresenter.cs`：输入文本 presenter，处理 Avalonia 12 selection foreground 缓存刷新。
@@ -345,11 +353,13 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Input/LineEditToken.cs`：单行输入字号 Token。
 - `src/AtomUI.Desktop.Controls/Input/TextAreaToken.cs`：TextArea 字号、右侧 padding 和 resize Token。
 - `src/AtomUI.Desktop.Controls/Input/Themes/*.axaml`：TextBox、LineEdit、SearchEdit、TextArea 和内部按钮主题。
+- `src/AtomUI.Desktop.Controls/Primitives/AddOnDecoratedBox/Themes/AddOnDecoratedBoxTheme.axaml`：提供 LineEdit 生成 Style 穿过输入 frame 模板所需的内部 prefix / suffix route scope。
 
 ## 相关文档
 
 - 源设计文档：`docs/controls/desktop/data-entry/line-edit/overview.md`
 - 实现文档：`docs/controls/desktop/data-entry/line-edit/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-entry/line-edit/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-entry/line-edit/token.md`
 - 变更记录：`docs/controls/desktop/data-entry/line-edit/changelog.md`
 - 语义结构：`./semantic-cn.md`

@@ -110,7 +110,7 @@ OtpLineEdit 的公共 API 以文本值、长度、输入约束、显示辅助和
 
 ### OTP 双向绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml:182`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml:223`
 
 SourceKey：`line-edit-otp-two-way`
 
@@ -132,7 +132,7 @@ SourceKey：`line-edit-otp-two-way`
 
 ### OTP 表单验证
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml:207`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml:248`
 
 SourceKey：`line-edit-otp-form`
 
@@ -160,7 +160,7 @@ SourceKey：`line-edit-otp-form`
 
 ### 一次性密码框
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml:239`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml:280`
 
 SourceKey：`line-edit-otp-ant-design`
 
