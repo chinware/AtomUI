@@ -4,15 +4,56 @@
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| Part | Selector | SelectorRoute | ContractType | Cardinality | RuntimeCreated |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `Upload` | 上传状态协调器，拥有文件集合、用户输入范围、上传队列、Form 值投影和生命周期。 | `Files`、`IsMultipleEnabled`、`UploadTransport`、`FileValueMode` | `UploadToken`、SharedToken | stable |
-| `trigger` | `TriggerContent` / `UploadTrigger` | 承载文件或目录选择入口，只提交选择动作，不持有上传状态。 | `TriggerContent`、`SourceKind`、`SelectFilesAsync()`、`SelectDirectoriesAsync()` | Upload trigger 主题资源 | stable |
-| `drop-zone` | `UploadDropZone` | 协商拖动效果、取得 Drop 快照并创建统一输入批次。 | `IsOpenFileDialogOnClick`、`DirectoryDropMode`、`DragState` | Upload drop-zone 主题资源 | stable |
-| `drop-area` | `UploadDefaultDropArea` | 渲染默认拖动图标、标题、副标题和边框，不处理 DataTransfer。 | `DropIcon`、`Header`、`SubHeader` | Upload Token、SharedToken | stable |
-| `list` | `UploadList` | 渲染 `Files` 并拥有列表滚动边界，不创建第二份文件状态。 | `Files`、`ListType`、`ListMaxHeight`、`ListScrollBarVisibility` | Upload list 主题资源 | internal-observable |
-| `item` | `AbstractUploadListItem` 派生容器 | 投射单个 `UploadFileItem` 的状态、进度和操作入口。 | `UploadFileItem.Status`、`Progress`、`ErrorMessage`、`Result` | Upload item 主题资源 | internal-observable |
-| `validation` | `Upload` Form / validation 投影 | 按 `FileValueMode` 输出 Form 值，并把错误投射到 `DataValidationErrors`。 | `FileValueMode`、`IFormItemAware` | SharedToken、Form Token | stable |
+| `root` | owner | 不适用 | `Upload` | `Single` | `false` |
+| `list` | `.semantic-list` | `/template/ .semantic-list` | `ItemsControl` | `Single` | `false` |
+| `item` | `.semantic-item` | `/template/ .semantic-list > .semantic-item` | `TemplatedControl` | `Multiple` | `true` |
+
+三个 Part 的 `Customization` 分别为 `Root`、`Selector`、`Selector`，`CrossVisualRoot` 均为 `false`，`Since`
+均为 `6.0`。`root` 是隐式 Part，不声明 `.semantic-root` marker。
+
+### 1.1 `root`
+
+`root` 是 `Upload` owner 本身，承载 `Files`、`TriggerContent`、`ListType`、`IsShowUploadList`、输入管线、上传队列、
+Form 值投影和生命周期。每个 Upload 实例恰好一个 root，并作为 `list` 与 `item` 生成 Style 的 owner scope。
+
+root 定制直接使用 `Upload` 的 public 控件契约，例如尺寸、对齐、透明度、裁剪、Classes 和实例 Styles。当前内置模板
+不把 `Background`、`BorderBrush`、`BorderThickness`、`CornerRadius` 或 `Padding` 投影为独立根 frame，因此这些属性
+不构成 Upload root 的表面绘制保证。应用需要完整替换根表面时，应提供自己的 ControlTheme，并同时实现本文件定义的
+`list` 和 `item` marker 契约。
+
+### 1.2 `list`
+
+`list` 表示当前 `ListType` 使用的唯一文件列表：
+
+- Text 与 Picture 模式由 `UploadList` 实现。
+- PictureCard 与 PictureCircle 模式由 `UploadPictureShapeList` 实现。
+
+两种实现都是 internal 类型，因此公共 `ContractType` 使用最低稳定 public 类型 `ItemsControl`。应用可以稳定设置
+`Background`、`Padding`、`Margin`、尺寸、对齐、透明度等 `ItemsControl`/`TemplatedControl` 属性，不得依赖
+`UploadList`、`UploadPictureShapeList`、`PART_ItemsPresenter` 或内部 ScrollViewer 的具体类型与名称。
+
+每个内置 Upload 模板恰好实例化一个 list 节点。`IsShowUploadList=false` 只隐藏节点，不移除 marker，因此 cardinality
+仍为 `Single`。切换 `ListType` 会重新选择根 ControlTemplate，但新的模板继续提供相同 `semantic-list` 契约。
+
+### 1.3 `item`
+
+`item` 表示每个真实 `UploadFileItem` 对应的列表容器。Text、Picture、PictureCard 和 PictureCircle 分别使用
+`UploadTextListItem`、`UploadPictureListItem` 或 `UploadPictureShapeListItem`，这些实现均为 internal 的
+`TemplatedControl` 派生类型，因此公共 `ContractType` 为 `TemplatedControl`。
+
+item marker 在 `UploadList.CreateContainerForItemOverride` 创建容器时通过生成的 `UploadSemanticParts.ItemClass`
+一次性添加。Pending、Uploading、Success、Failed 和 Cancelled 只替换或切换容器内部模板，不替换 item owner，
+因此 marker、route 和应用 Semantic Style 在状态变化期间保持稳定。
+
+`item` 明确不包含以下节点：
+
+- PictureCard/PictureCircle 的 `UploadAppendContentItem` append trigger；它不进入 `Files`。
+- item 内部的缩略图、文件名、进度条、遮罩和操作按钮；这些节点尚未形成独立公共 Part。
+- 用户 `TriggerContent` 或 `ItemTemplate` 生成的子树。
+
+空文件集合允许零个 item；非空集合中每个真实文件恰好一个 marker，所以 cardinality 为 `Multiple`。
 
 ## Abstract AXAML Structure
 
@@ -94,7 +135,7 @@ Upload
 | 输入结果 | `InputBatchCompleted`、`UploadInputBatchCompletedEventArgs` | 每个输入批次在 UI 线程统一报告接受项、拒绝项以及 Completed、Cancelled 或 Failed 终态。 |
 | 文件内容 | `UploadFileInfo`、`IUploadFileSource` | Transport 通过可打开内容源读取文件，不假定本地路径可访问。 |
 | 上传队列 | `UploadTransport`、`AutoUpload`、`MaxConcurrentTasks`、`UploadQueue` | 上传调度与视觉控件解耦，生命周期由 `Upload` 统一释放。 |
-| 列表展示 | `UploadList`、`ListType`、`ListMaxHeight`、`ListScrollBarVisibility` | 列表内部滚动，触发区保持固定。 |
+| 列表展示 | `UploadList`、`ListType`、`ListMaxHeight`、`ListScrollBarVisibility` | 列表内部滚动，触发区保持固定；应用通过 `list` / `item` Semantic Part 定制稳定区域。 |
 | 触发入口 | `TriggerContent`、`UploadTrigger`、Picture append slot | 文件/目录触发器由用户布局组合，PictureCard/PictureCircle 通过显示源 append slot 呈现。 |
 | 状态反馈 | `SuccessAutoRemoveDelay`、`PendingText`、`FileValueMode` | 成功自动移除、待上传文案和 Form 值投影可配置。 |
 | 视觉与动效 | `IsMotionEnabled`、Upload Token | 只表达视觉状态，不保存业务任务状态。 |
@@ -163,6 +204,10 @@ Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和控件 Tok
 - 可由 AXAML 表达的模板状态必须优先留在 AXAML。
 - Token 只表达视觉变量，不承载上传状态、队列状态或 Form 错误。
 
+公开 Semantic Part 为 `root`、`list` 与 `item`。`list` 在四种 `ListType` 下都表示唯一活动文件列表，`item`
+只表示真实 `UploadFileItem` 容器，不包含 PictureCard/PictureCircle 的 append trigger。完整 Selector、ContractType、
+状态矩阵和定制边界见 [Upload Semantic Part 契约](semantic-part.md)。
+
 Token 边界：
 
 Upload Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆角、阴影、图标尺寸和弹层边界。Token 不承载运行时选择、展开、加载、错误、上传任务、过滤条件或业务状态。
@@ -182,6 +227,7 @@ Upload Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
 - `UploadDropZone` 和 `UploadDefaultDropArea` 的 ControlTheme、模板视觉树、Token 映射、布局和默认渲染结果保持稳定。
 - `UploadDropZone` 的新增拖动状态伪类只提供自定义主题入口；AtomUI 默认主题不得据此改变 pointerover、disabled、motion、Light/Dark 或缩放后的视觉结果。
+- `root`、`list`、`item` 的 selector class、route、ContractType 和 cardinality 属于公共主题 API；所有内置模板变体必须实现相同契约。
 - 文档只描述稳定设计；历史变化记录在 `changelog.md`。
 
 维护不变量：
@@ -198,6 +244,7 @@ Upload Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - ownership transfer 必须由 typed batch operation 验证；不得重新引入 `ownsFileSources`、`queueAlreadyCancelled` 或通用 transfer callback。
 - 默认 DropZone/DropArea ControlTheme、模板视觉树、Token、布局和渲染结果不得因输入管线重构改变。
 - PictureCard/PictureCircle 的上传入口只能通过 `EffectivePictureItems` 中的 display append slot 呈现，确保与图片项处于同一 wrap flow。
+- `semantic-list` 必须存在于两套 Upload 根模板，`semantic-item` 只存在于真实文件容器；append slot 不属于 item cardinality。
 - `RemoveFileAsync`、外部集合变更、`Files` 替换、Form Set/Clear、`ResetAsync` 和 detach 必须以各自时序释放上传任务、source lease、auto-remove delay、集合订阅和 container 绑定。
 - `DataValidationErrors` 是 error 状态来源，Upload 不维护独立 error 机制。
 - AXAML-first binding 是默认选择；C# binding 必须说明 AXAML 不能表达的原因和释放 owner。

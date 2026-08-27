@@ -25,6 +25,7 @@
                                                                     PaneMaxHeight="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MaxHeight, Converter={x:Static gallery:SemanticPartPreview.PaneMaxHeightConverter}}">
                                 <Border Name="PART_PreviewStage"
                                         MinHeight="360"
+                                        Background="{atom:SharedTokenResource ColorBgLayout}"
                                         Padding="32">
                                     <Grid RowDefinitions="Auto,*">
                                         <TextBlock Name="PART_Title"

@@ -26,8 +26,14 @@ public class UploadShowCasePageTests
         source.ShouldNotContain("Tag=\"Examples\"");
         source.ShouldNotContain("Tag=\"Api\"");
         source.ShouldNotContain("Tag=\"DesignToken\"");
-        source.ShouldContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldContain("<gallery:GalleryShowCaseHost");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
+        source.ShouldContain("<gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>");
+        source.ShouldContain("Name=\"UploadSemanticPreview\"");
+        source.ShouldContain("SemanticOwnerType=\"{x:Type atom:Upload}\"");
+        source.ShouldContain("Path=\"root\"");
+        source.ShouldContain("Path=\"list\"");
+        source.ShouldContain("Path=\"item\"");
         source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
         source.ShouldContain("Name=\"ExamplesContent\"");
@@ -43,15 +49,18 @@ public class UploadShowCasePageTests
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:UploadShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(12);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(12);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:UploadViewModel\"").ShouldBe(12);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(13);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(13);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:UploadViewModel\"").ShouldBe(14);
         source.ShouldContain("UploadShowCaseLangResource UploadByClickingTitle");
         source.ShouldContain("UploadShowCaseLangResource PicturesWallTitle");
         source.ShouldContain("UploadShowCaseLangResource FileAndDirectoryTitle");
         source.ShouldContain("UploadShowCaseLangResource ScrollableListTitle");
         source.ShouldContain("UploadShowCaseLangResource SuccessAutoRemoveTitle");
         source.ShouldContain("UploadShowCaseLangResource UploadPngOnlyTitle");
+        source.ShouldContain("SourceKey=\"upload-semantic-part\"");
+        source.ShouldContain("<atom:UploadListStyle x:SetterTargetType=\"ItemsControl\">");
+        source.ShouldContain("<atom:UploadItemStyle x:SetterTargetType=\"TemplatedControl\">");
         source.ShouldContain("<atom:UploadTrigger SourceKind=\"Files\"");
         source.ShouldContain("<atom:UploadTrigger SourceKind=\"Directories\"");
         Regex.IsMatch(

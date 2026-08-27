@@ -263,7 +263,7 @@ public class SemanticPartPreviewTests
 
         var previewStage = layout.Children[0].ShouldBeOfType<Border>();
         previewStage.Name.ShouldBe("PART_PreviewStage");
-        previewStage.Background.ShouldBeNull();
+        previewStage.Background.ShouldNotBeNull();
         previewStage.BorderThickness.ShouldBe(default);
         previewStage.CornerRadius.ShouldBe(default);
         var previewStageLayout = previewStage.Child.ShouldBeOfType<Grid>();

@@ -62,7 +62,7 @@ Upload 以 `Files` 作为唯一上传文件状态 owner。触发器、拖拽区�
 | 输入结果 | `InputBatchCompleted`、`UploadInputBatchCompletedEventArgs` | 每个输入批次在 UI 线程统一报告接受项、拒绝项以及 Completed、Cancelled 或 Failed 终态。 |
 | 文件内容 | `UploadFileInfo`、`IUploadFileSource` | Transport 通过可打开内容源读取文件，不假定本地路径可访问。 |
 | 上传队列 | `UploadTransport`、`AutoUpload`、`MaxConcurrentTasks`、`UploadQueue` | 上传调度与视觉控件解耦，生命周期由 `Upload` 统一释放。 |
-| 列表展示 | `UploadList`、`ListType`、`ListMaxHeight`、`ListScrollBarVisibility` | 列表内部滚动，触发区保持固定。 |
+| 列表展示 | `UploadList`、`ListType`、`ListMaxHeight`、`ListScrollBarVisibility` | 列表内部滚动，触发区保持固定；应用通过 `list` / `item` Semantic Part 定制稳定区域。 |
 | 触发入口 | `TriggerContent`、`UploadTrigger`、Picture append slot | 文件/目录触发器由用户布局组合，PictureCard/PictureCircle 通过显示源 append slot 呈现。 |
 | 状态反馈 | `SuccessAutoRemoveDelay`、`PendingText`、`FileValueMode` | 成功自动移除、待上传文案和 Form 值投影可配置。 |
 | 视觉与动效 | `IsMotionEnabled`、Upload Token | 只表达视觉状态，不保存业务任务状态。 |
@@ -160,7 +160,7 @@ Upload 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 ### 拖拽上传
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Upload/Views/UploadShowCase.axaml:183`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Upload/Views/UploadShowCase.axaml:216`
 
 Gallery key：`ExamplesContent` / item `5`
 
@@ -237,6 +237,10 @@ Upload 的视觉模型由控件模板、ControlTheme、SharedToken 和控件 Tok
 - 可由 AXAML 表达的模板状态必须优先留在 AXAML。
 - Token 只表达视觉变量，不承载上传状态、队列状态或 Form 错误。
 
+公开 Semantic Part 为 `root`、`list` 与 `item`。`list` 在四种 `ListType` 下都表示唯一活动文件列表，`item`
+只表示真实 `UploadFileItem` 容器，不包含 PictureCard/PictureCircle 的 append trigger。完整 Selector、ContractType、
+状态矩阵和定制边界见 [Upload Semantic Part 契约](semantic-part.md)。
+
 Token 来源：
 
 Upload Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆角、阴影、图标尺寸和弹层边界。Token 不承载运行时选择、展开、加载、错误、上传任务、过滤条件或业务状态。
@@ -270,6 +274,7 @@ AOT 边界：
 - 不通过运行时反射扫描 public API、Token、API 契约摘要或上传模型。
 - 拖动输入使用 typed DataTransfer、StorageItem 和显式策略，不依赖平台私有反射或动态发现。
 - 新增 public 类型应显式引用并由源码、Gallery 和测试覆盖。
+- Semantic descriptor、`UploadListStyle`、`UploadItemStyle` 与 class 常量由生成器静态产生，不使用运行时类型发现。
 - Source generator 生成文件不手工编辑；LLMS 产物也不在本次运行时代码任务中手工修改。
 
 ## 源码索引
@@ -279,6 +284,7 @@ AOT 边界：
 | 路径 | 职责 |
 | --- | --- |
 | `src/AtomUI.Desktop.Controls/Upload/Upload.cs` | 保留 public/protected API、Avalonia 属性注册、构造、display source 桥接、`IFormItemAware` 和顶层上传协调。 |
+| `src/AtomUI.Desktop.Controls/Upload/Upload.SemanticParts.cs` | 声明 `list` / `item` 公共 Semantic Part，并驱动 descriptor、生成 Style、class 常量和静态注册。 |
 | `src/AtomUI.Desktop.Controls/Upload/UploadAppendContentItem.cs` | internal picture append visual slot，用于把 `TriggerContent` 放入 PictureCard/PictureCircle 的同一 wrap flow；不进入 `Files`。 |
 | `src/AtomUI.Desktop.Controls/Upload/Upload.FileSelection.cs` | 封装文件选择和目录选择动作，并把同一个 `IsMultipleEnabled` 值投射到两种 picker 的 `AllowMultiple`。 |
 | `src/AtomUI.Desktop.Controls/Upload/IUploadStorageProviderAdapter.cs` | 隔离 Avalonia storage picker 调用，向文件选择和目录选择提供可测试的 typed StorageItem 边界。 |
@@ -308,7 +314,7 @@ AOT 边界：
 
 | 路径 | 职责 |
 | --- | --- |
-| `src/AtomUI.Desktop.Controls/Upload/Themes/UploadTheme.axaml` | 根模板，连接 `TriggerContent`、list 和 picture display source，并保持触发区与列表的稳定间距。 |
+| `src/AtomUI.Desktop.Controls/Upload/Themes/UploadTheme.axaml` | 根模板，连接 `TriggerContent`、list 和 picture display source，保持触发区与列表的稳定间距，并在两套模板变体上声明 `semantic-list`。 |
 | `src/AtomUI.Desktop.Controls/Upload/Themes/UploadTriggerTheme.axaml` | 触发器 shell，只承载用户内容和点击表面。 |
 | `src/AtomUI.Desktop.Controls/Upload/Themes/UploadDropZoneTheme.axaml` | 拖拽行为 shell，只承载用户内容和内容对齐。 |
 | `src/AtomUI.Desktop.Controls/Upload/Themes/UploadDefaultDropAreaTheme.axaml` | 默认拖动视觉，保持 Frame、内容 presenter、Token 和动效结构。 |
@@ -320,6 +326,7 @@ AOT 边界：
 
 - 源设计文档：`docs/controls/desktop/data-entry/upload/overview.md`
 - 实现文档：`docs/controls/desktop/data-entry/upload/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-entry/upload/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-entry/upload/token.md`
 - 变更记录：`docs/controls/desktop/data-entry/upload/changelog.md`
 - 语义结构：`./semantic-cn.md`

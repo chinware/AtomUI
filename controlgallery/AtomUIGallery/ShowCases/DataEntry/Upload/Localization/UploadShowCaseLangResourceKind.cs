@@ -48,5 +48,10 @@ public enum UploadShowCaseLangResourceKind
     PageDescription,
     ComponentCategory,
     ComponentStatusStable,
-    ScenarioExamples
+    ScenarioExamples,
+    SemanticPartStyleTitle,
+    SemanticPartStyleDescription,
+    SemanticRootDescription,
+    SemanticListDescription,
+    SemanticItemDescription
 }
