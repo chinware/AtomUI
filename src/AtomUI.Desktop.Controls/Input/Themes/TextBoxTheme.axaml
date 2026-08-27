@@ -13,8 +13,6 @@
                 Padding="{TemplateBinding Padding}"
                 BorderThickness="{TemplateBinding BorderThickness}"
                 CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                BorderBrush="{TemplateBinding BorderBrush}"
-                Background="{TemplateBinding Background}"
                 StyleVariant="{TemplateBinding StyleVariant}"
                 SizeType="{TemplateBinding SizeType}"
                 Status="{TemplateBinding Status}"
@@ -104,8 +102,6 @@
     <Style Selector="^:is(atom|TextBox)">
         <Setter Property="atom:ScrollViewer.IsLiteMode" Value="True" />
         <Setter Property="atom:ScrollViewer.AllowAutoHide" Value="True" />
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
         <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
         <Setter Property="SelectionBrush" Value="{atom:SharedTokenResource SelectionBackground}" />
         <Setter Property="CaretBrush" Value="{atom:SharedTokenResource ColorText}" />

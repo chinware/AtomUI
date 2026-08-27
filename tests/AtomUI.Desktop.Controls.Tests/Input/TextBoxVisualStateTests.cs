@@ -329,7 +329,9 @@ public class TextBoxVisualStateTests
     {
         var source = ReadRepoFile("src/AtomUI.Desktop.Controls/Input/Themes/TextBoxTheme.axaml");
 
-        source.ShouldContain("SharedTokenResource ColorBorder");
+        // The owner level must stay free of dead surface defaults: the frame theme owns
+        // the rest state and the owner value is the relay's customization signal.
+        source.ShouldNotContain("SharedTokenResource ColorBorder");
         source.ShouldContain("SharedTokenResource BorderThickness");
         source.ShouldContain("SharedTokenResource BorderRadiusLG");
         source.ShouldContain("SharedTokenResource BorderRadius");
