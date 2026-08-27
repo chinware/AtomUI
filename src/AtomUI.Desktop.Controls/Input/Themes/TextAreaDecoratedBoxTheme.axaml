@@ -45,6 +45,7 @@
                                 </atom:ScrollViewer>
                                 <atom:AddOnContentPresenter
                                     Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}"
+                                    Classes.semantic-scope-suffix="True"
                                     VerticalAlignment="Stretch"
                                     VerticalContentAlignment="Center"
                                     HorizontalAlignment="Right"

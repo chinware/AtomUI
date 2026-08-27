@@ -8,7 +8,7 @@ using Avalonia.Media.TextFormatting;
 
 namespace AtomUI.Desktop.Controls;
 
-public class TextArea : AbstractTextInput
+public partial class TextArea : AbstractTextInput
 {
     #region 公共属性定义
     public static readonly StyledProperty<int> LinesProperty =

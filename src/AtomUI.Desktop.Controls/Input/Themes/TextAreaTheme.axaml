@@ -10,6 +10,7 @@
                 <DockPanel LastChildFill="True"
                            Height="{TemplateBinding Height}">
                     <atom:TextBlock Name="TextCountIndicator"
+                                    Classes.semantic-count="True"
                                     DockPanel.Dock="Bottom"
                                     VerticalAlignment="Center"
                                     HorizontalAlignment="Right"
@@ -18,6 +19,7 @@
                     <Panel>
                         <atom:TextAreaDecoratedBox
                             Name="{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}"
+                            Classes.semantic-scope-input-frame="True"
                             ContentLeftAddOn="{TemplateBinding InnerLeftContent}"
                             ContentLeftAddOnTemplate="{TemplateBinding InnerLeftContentTemplate}"
                             StyleVariant="{TemplateBinding StyleVariant}"
@@ -37,9 +39,11 @@
                             IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}">
                             <atom:TextAreaDecoratedBox.ContentRightAddOn>
                                 <StackPanel Orientation="Vertical"
+                                            Classes.semantic-suffix="True"
                                             Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
                                     <atom:InputClearIconButton
                                         Name="PART_ClearButton"
+                                        Classes.semantic-clear="True"
                                         VerticalAlignment="Center"
                                         Icon="{Binding $parent[atom:TextArea].ClearIcon}"
                                         IsVisible="{Binding $parent[atom:TextArea].IsEffectiveShowClearButton}"
@@ -75,6 +79,7 @@
                                     IsVisible="{TemplateBinding IsPlaceholderTextVisible}" />
                                 <atom:InputTextPresenter
                                     Name="PART_TextPresenter"
+                                    Classes.semantic-textarea="True"
                                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                     CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
