@@ -25,7 +25,7 @@ public class LineEditShowCasePageTests
         source.ShouldNotContain("Tag=\"Examples\"");
         source.ShouldNotContain("Tag=\"Api\"");
         source.ShouldNotContain("Tag=\"DesignToken\"");
-        source.ShouldContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldContain("<gallery:GalleryShowCaseHost");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
         source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
@@ -42,8 +42,8 @@ public class LineEditShowCasePageTests
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:LineEditShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(21);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(21);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(22);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(22);
         source.ShouldContain("LineEditShowCaseLangResource BasicUsageTitle");
         source.ShouldContain("LineEditShowCaseLangResource TextBoxTitle");
         source.ShouldContain("LineEditShowCaseLangResource InputSizesTitle");
@@ -60,6 +60,7 @@ public class LineEditShowCasePageTests
         source.ShouldContain("LineEditShowCaseLangResource OtpLineEditTwoWayBindingTitle");
         source.ShouldContain("LineEditShowCaseLangResource OtpLineEditFormTitle");
         source.ShouldContain("LineEditShowCaseLangResource OtpLineEditAntDesignTitle");
+        source.ShouldContain("LineEditShowCaseLangResource SemanticPartStyleTitle");
         source.ShouldNotContain("SourceKey=\"line-edit-otp-basic\"");
         source.ShouldContain("SourceKey=\"line-edit-otp-two-way\"");
         source.ShouldContain("SourceKey=\"line-edit-otp-form\"");
@@ -69,6 +70,58 @@ public class LineEditShowCasePageTests
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
+    }
+
+    [Fact]
+    public void LineEdit_ShowCase_Declares_The_Semantic_Preview_And_Style_Example()
+    {
+        var source = ReadRepoFile(
+            "controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml");
+        var english = ReadRepoFile(
+            "controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Localization/en-US.xlf");
+        var semanticExample = ExtractShowCaseItem(source, "line-edit-semantic-part");
+
+        source.ShouldContain("<gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>");
+        source.ShouldContain("Name=\"LineEditSemanticPreview\"");
+        source.ShouldContain("SemanticOwner=\"{Binding #LineEditSemanticOwner}\"");
+        source.ShouldContain("SemanticOwnerType=\"{x:Type atom:LineEdit}\"");
+        source.ShouldContain("Name=\"LineEditSemanticOwner\"");
+        source.ShouldContain("SizeType=\"Middle\"");
+        source.ShouldContain("StyleVariant=\"Outlined\"");
+        source.ShouldContain("IsAllowClear=\"True\"");
+        source.ShouldContain("IsShowCount=\"True\"");
+        foreach (var path in new[] { "root", "prefix", "input", "suffix", "clear", "count" })
+        {
+            source.ShouldContain($"Path=\"{path}\"");
+        }
+
+        semanticExample.ShouldContain("SourceKey=\"line-edit-semantic-part\"");
+        semanticExample.ShouldContain("BadgeText=\"{x:Static gallery:GalleryVersionInfo.DisplayVersion}\"");
+        semanticExample.ShouldContain("Selector=\"atom|LineEdit.semantic-text-demo\"");
+        semanticExample.ShouldContain("Selector=\"atom|LineEdit.semantic-prefix-demo\"");
+        semanticExample.ShouldContain("Selector=\"atom|LineEdit.semantic-clear-demo\"");
+        semanticExample.ShouldContain("Selector=\"atom|LineEdit.semantic-accent-demo\"");
+        semanticExample.ShouldContain("<atom:LineEditPrefixStyle x:SetterTargetType=\"ContentPresenter\">");
+        semanticExample.ShouldContain("<atom:LineEditInputStyle x:SetterTargetType=\"TextPresenter\">");
+        semanticExample.ShouldContain("<atom:LineEditClearStyle x:SetterTargetType=\"atom:IconButton\">");
+        CountOccurrences(semanticExample, "Classes=\"semantic-").ShouldBe(4);
+        foreach (var caption in new[] { "SemanticPartTextStyleTitle", "SemanticPartPrefixStyleTitle", "SemanticPartClearStyleTitle", "SemanticPartAccentStyleTitle" })
+        {
+            semanticExample.ShouldContain($"LineEditShowCaseLangResource {caption}");
+            english.ShouldContain($"unit id=\"{caption}\"");
+        }
+        semanticExample.ShouldNotContain("Property=\"Background\" Value=\"#F0F5FF\"");
+        semanticExample.ShouldContain("SizeType=\"Middle\"");
+        semanticExample.ShouldContain("StyleVariant=\"Outlined\"");
+
+        english.ShouldContain("unit id=\"SemanticRootDescription\"");
+        english.ShouldContain("unit id=\"SemanticPrefixDescription\"");
+        english.ShouldContain("unit id=\"SemanticInputDescription\"");
+        english.ShouldContain("unit id=\"SemanticSuffixDescription\"");
+        english.ShouldContain("unit id=\"SemanticClearDescription\"");
+        english.ShouldContain("unit id=\"SemanticCountDescription\"");
+        english.ShouldContain("unit id=\"SemanticPartStyleTitle\"");
+        english.ShouldContain("unit id=\"SemanticPartStyleDescription\"");
     }
 
     [Fact]

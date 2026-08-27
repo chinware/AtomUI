@@ -366,6 +366,66 @@
         <source>Helpful information about this field</source>
       </segment>
     </unit>
+    <unit id="SemanticClearDescription">
+      <segment>
+        <source>Clear action button that removes the current text.</source>
+      </segment>
+    </unit>
+    <unit id="SemanticCountDescription">
+      <segment>
+        <source>Character count indicator for the current text and maximum length.</source>
+      </segment>
+    </unit>
+    <unit id="SemanticInputDescription">
+      <segment>
+        <source>Text presentation and editing area for value, placeholder, caret, and selection.</source>
+      </segment>
+    </unit>
+    <unit id="SemanticPartStyleDescription">
+      <segment>
+        <source>Use an owner-scoped selector and the generated LineEdit Semantic Styles to customize the published parts.</source>
+      </segment>
+    </unit>
+    <unit id="SemanticPartTextStyleTitle">
+      <segment>
+        <source>Customize the input text</source>
+      </segment>
+    </unit>
+    <unit id="SemanticPartPrefixStyleTitle">
+      <segment>
+        <source>Customize the prefix</source>
+      </segment>
+    </unit>
+    <unit id="SemanticPartAccentStyleTitle">
+      <segment>
+        <source>Restyle all parts together</source>
+      </segment>
+    </unit>
+    <unit id="SemanticPartClearStyleTitle">
+      <segment>
+        <source>Customize the clear button</source>
+      </segment>
+    </unit>
+    <unit id="SemanticPartStyleTitle">
+      <segment>
+        <source>Custom Semantic Part styling</source>
+      </segment>
+    </unit>
+    <unit id="SemanticPrefixDescription">
+      <segment>
+        <source>Leading inner content shown before the text editing area.</source>
+      </segment>
+    </unit>
+    <unit id="SemanticRootDescription">
+      <segment>
+        <source>Root input surface that owns size, variant, border, background, focus, and validation state.</source>
+      </segment>
+    </unit>
+    <unit id="SemanticSuffixDescription">
+      <segment>
+        <source>Trailing content and action cluster for reveal, feedback, custom suffix, clear, and count content.</source>
+      </segment>
+    </unit>
     <unit id="ScenarioBasic">
       <segment>
         <source>Basic</source>

@@ -439,6 +439,78 @@
         <target state="translated">關於此欄位的提示資訊</target>
       </segment>
     </unit>
+    <unit id="SemanticClearDescription">
+      <segment>
+        <source>Clear action button that removes the current text.</source>
+        <target state="translated">清除目前文字的操作按鈕。</target>
+      </segment>
+    </unit>
+    <unit id="SemanticCountDescription">
+      <segment>
+        <source>Character count indicator for the current text and maximum length.</source>
+        <target state="translated">顯示目前文字長度與最大長度的字元計數指示器。</target>
+      </segment>
+    </unit>
+    <unit id="SemanticInputDescription">
+      <segment>
+        <source>Text presentation and editing area for value, placeholder, caret, and selection.</source>
+        <target state="translated">承載文字值、預留位置、游標和選取內容的顯示與編輯區域。</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartStyleDescription">
+      <segment>
+        <source>Use an owner-scoped selector and the generated LineEdit Semantic Styles to customize the published parts.</source>
+        <target state="translated">使用 owner-scoped selector 和產生的 LineEdit Semantic Style 自訂已發佈的部件。</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartTextStyleTitle">
+      <segment>
+        <source>Customize the input text</source>
+        <target state="translated">自訂輸入文字樣式</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartPrefixStyleTitle">
+      <segment>
+        <source>Customize the prefix</source>
+        <target state="translated">自訂前綴區域</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartAccentStyleTitle">
+      <segment>
+        <source>Restyle all parts together</source>
+        <target state="translated">統一定制全部部件</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartClearStyleTitle">
+      <segment>
+        <source>Customize the clear button</source>
+        <target state="translated">自訂清除按鈕樣式</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPartStyleTitle">
+      <segment>
+        <source>Custom Semantic Part styling</source>
+        <target state="translated">自訂 Semantic Part 樣式</target>
+      </segment>
+    </unit>
+    <unit id="SemanticPrefixDescription">
+      <segment>
+        <source>Leading inner content shown before the text editing area.</source>
+        <target state="translated">顯示在文字編輯區域前方的內部前綴內容。</target>
+      </segment>
+    </unit>
+    <unit id="SemanticRootDescription">
+      <segment>
+        <source>Root input surface that owns size, variant, border, background, focus, and validation state.</source>
+        <target state="translated">承載尺寸、變體、邊框、背景、焦點和驗證狀態的根輸入表面。</target>
+      </segment>
+    </unit>
+    <unit id="SemanticSuffixDescription">
+      <segment>
+        <source>Trailing content and action cluster for reveal, feedback, custom suffix, clear, and count content.</source>
+        <target state="translated">承載密碼顯示、表單回饋、自訂後綴、清除和計數內容的尾部內容與操作區域。</target>
+      </segment>
+    </unit>
     <unit id="ScenarioBasic">
       <segment>
         <source>Basic</source>

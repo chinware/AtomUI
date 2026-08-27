@@ -57,6 +57,7 @@
                     <atom:AdaptiveSpacingDockPanel Name="ContentLayout" LastChildFill="True">
                         <atom:AddOnContentPresenter
                             Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}"
+                            Classes.semantic-scope-prefix="True"
                             DockPanel.Dock="Left"
                             VerticalAlignment="Stretch"
                             VerticalContentAlignment="Center"
@@ -68,6 +69,7 @@
                         <atom:AddOnContentPresenter
                             DockPanel.Dock="Right"
                             Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}"
+                            Classes.semantic-scope-suffix="True"
                             VerticalAlignment="Stretch"
                             VerticalContentAlignment="Center"
                             HorizontalAlignment="Right"

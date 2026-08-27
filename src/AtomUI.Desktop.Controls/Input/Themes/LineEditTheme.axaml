@@ -8,12 +8,11 @@
             <ControlTemplate>
                 <atom:AddOnDecoratedBox
                     Name="{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}"
+                    Classes.semantic-scope-input-frame="True"
                     LeftAddOn="{TemplateBinding LeftAddOn}"
                     LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
                     RightAddOn="{TemplateBinding RightAddOn}"
                     RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
-                    ContentLeftAddOn="{TemplateBinding InnerLeftContent}"
-                    ContentLeftAddOnTemplate="{TemplateBinding InnerLeftContentTemplate}"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     StyleVariant="{TemplateBinding StyleVariant}"
@@ -28,10 +27,23 @@
                     IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}"
                     Focusable="True"
                     ClipToBounds="{TemplateBinding ClipToBounds}">
+                    <atom:AddOnDecoratedBox.ContentLeftAddOn>
+                        <atom:AddOnContentPresenter
+                            Classes.semantic-prefix="True"
+                            Content="{Binding InnerLeftContent, RelativeSource={RelativeSource AncestorType=atom:LineEdit}}"
+                            ContentTemplate="{Binding InnerLeftContentTemplate, RelativeSource={RelativeSource AncestorType=atom:LineEdit}}"
+                            VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Center"
+                            HorizontalAlignment="Left"
+                            Focusable="False" />
+                    </atom:AddOnDecoratedBox.ContentLeftAddOn>
+
                     <atom:AddOnDecoratedBox.ContentRightAddOn>
                         <StackPanel Orientation="Horizontal"
+                                    Classes.semantic-suffix="True"
                                     Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
                             <atom:InputClearIconButton
+                                Classes.semantic-clear="True"
                                 Name="PART_ClearButton"
                                 Icon="{Binding $parent[atom:LineEdit].ClearIcon}"
                                 IsVisible="{Binding $parent[atom:LineEdit].IsEffectiveShowClearButton}"
@@ -57,6 +69,7 @@
                                 Content="{Binding $parent[atom:LineEdit].InnerRightContent}"
                                 ContentTemplate="{Binding $parent[atom:LineEdit].InnerRightContentTemplate}" />
                             <atom:TextBlock Name="TextCountIndicator"
+                                            Classes.semantic-count="True"
                                             VerticalAlignment="Center"
                                             Foreground="{atom:SharedTokenResource ColorTextPlaceholder}"
                                             Text="{Binding $parent[atom:LineEdit].CountText}"
@@ -84,6 +97,7 @@
                                 IsVisible="{TemplateBinding IsPlaceholderTextVisible}" />
                             <atom:InputTextPresenter
                                 Name="PART_TextPresenter"
+                                Classes.semantic-input="True"
                                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                 CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"

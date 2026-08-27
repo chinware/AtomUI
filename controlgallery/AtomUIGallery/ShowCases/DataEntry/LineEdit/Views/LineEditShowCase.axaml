@@ -11,8 +11,8 @@
     </UserControl.Resources>
 
     <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
-        <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
-            <gallery:GalleryStickyTabsHost.Header>
+        <gallery:GalleryShowCaseHost StickyContentPadding="28,0,28,0">
+            <gallery:GalleryShowCaseHost.Header>
                 <gallery:GalleryShowCaseHeader
                     Title="LineEdit"
                     Category="{gallery:LineEditShowCaseLangResource ComponentCategory}"
@@ -22,7 +22,48 @@
                     Namespace="AtomUI.Desktop.Controls"
                     Package="AtomUI.Desktop.Controls"
                     BaseClass="TextBox" />
-            </gallery:GalleryStickyTabsHost.Header>
+            </gallery:GalleryShowCaseHost.Header>
+
+            <gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>
+                <DataTemplate x:DataType="vm:LineEditViewModel">
+                    <gallery:SemanticPartPreview Name="LineEditSemanticPreview"
+                                                 SemanticOwner="{Binding #LineEditSemanticOwner}"
+                                                 SemanticOwnerType="{x:Type atom:LineEdit}">
+                        <gallery:SemanticPartPreview.PreviewContent>
+                            <atom:LineEdit Name="LineEditSemanticOwner"
+                                           Width="420"
+                                           SizeType="Middle"
+                                           StyleVariant="Outlined"
+                                           Text="atomui"
+                                           InnerLeftContent="https://"
+                                           InnerRightContent=".com"
+                                           IsAllowClear="True"
+                                           IsShowCount="True"
+                                           MaxLength="20" />
+                        </gallery:SemanticPartPreview.PreviewContent>
+                        <gallery:SemanticPartPreview.PartDescriptions>
+                            <gallery:SemanticPartDescription
+                                Path="root"
+                                Description="{gallery:LineEditShowCaseLangResource SemanticRootDescription}" />
+                            <gallery:SemanticPartDescription
+                                Path="prefix"
+                                Description="{gallery:LineEditShowCaseLangResource SemanticPrefixDescription}" />
+                            <gallery:SemanticPartDescription
+                                Path="input"
+                                Description="{gallery:LineEditShowCaseLangResource SemanticInputDescription}" />
+                            <gallery:SemanticPartDescription
+                                Path="suffix"
+                                Description="{gallery:LineEditShowCaseLangResource SemanticSuffixDescription}" />
+                            <gallery:SemanticPartDescription
+                                Path="clear"
+                                Description="{gallery:LineEditShowCaseLangResource SemanticClearDescription}" />
+                            <gallery:SemanticPartDescription
+                                Path="count"
+                                Description="{gallery:LineEditShowCaseLangResource SemanticCountDescription}" />
+                        </gallery:SemanticPartPreview.PartDescriptions>
+                    </gallery:SemanticPartPreview>
+                </DataTemplate>
+            </gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>
 
 
             <gallery:ShowCasePanel Name="ExamplesContent"
@@ -671,7 +712,114 @@
             </DataTemplate>
         </gallery:ShowCaseItem.DeferredContentTemplate>
     </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:LineEditShowCaseLangResource SemanticPartStyleTitle}"
+        Description="{gallery:LineEditShowCaseLangResource SemanticPartStyleDescription}"
+        SourceKey="line-edit-semantic-part"
+        BadgeText="{x:Static gallery:GalleryVersionInfo.DisplayVersion}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:LineEditViewModel">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Spacing="20">
+                    <StackPanel.Styles>
+                        <Style Selector="atom|LineEdit.semantic-text-demo">
+                            <atom:LineEditInputStyle x:SetterTargetType="TextPresenter">
+                                <Setter Property="TextElement.FontSize" Value="15" />
+                                <Setter Property="TextElement.FontWeight" Value="SemiBold" />
+                                <Setter Property="TextElement.Foreground" Value="#696FC7" />
+                            </atom:LineEditInputStyle>
+                        </Style>
+                        <Style Selector="atom|LineEdit.semantic-prefix-demo">
+                            <atom:LineEditPrefixStyle x:SetterTargetType="ContentPresenter">
+                                <Setter Property="Margin" Value="8,0" />
+                            </atom:LineEditPrefixStyle>
+                        </Style>
+                        <Style Selector="atom|LineEdit.semantic-clear-demo">
+                            <atom:LineEditClearStyle x:SetterTargetType="atom:IconButton">
+                                <Setter Property="IconBrush" Value="#FA8C16" />
+                            </atom:LineEditClearStyle>
+                        </Style>
+                        <Style Selector="atom|LineEdit.semantic-accent-demo">
+                            <atom:LineEditInputStyle x:SetterTargetType="TextPresenter">
+                                <Setter Property="TextElement.FontSize" Value="15" />
+                                <Setter Property="TextElement.FontWeight" Value="SemiBold" />
+                                <Setter Property="TextElement.Foreground" Value="#4DA8DA" />
+                            </atom:LineEditInputStyle>
+                            <atom:LineEditClearStyle x:SetterTargetType="atom:IconButton">
+                                <Setter Property="IconBrush" Value="#4DA8DA" />
+                            </atom:LineEditClearStyle>
+                        </Style>
+                    </StackPanel.Styles>
+
+                    <StackPanel Orientation="Vertical" Spacing="12">
+                        <atom:TextBlock Text="{gallery:LineEditShowCaseLangResource SemanticPartTextStyleTitle}"
+                                        FontSize="16"
+                                        FontWeight="SemiBold" />
+                        <atom:LineEdit Classes="semantic-text-demo"
+                                       Width="420"
+                                       SizeType="Middle"
+                                       StyleVariant="Outlined"
+                                       Text="atomui"
+                                       InnerLeftContent="https://"
+                                       InnerRightContent=".com"
+                                       IsAllowClear="True"
+                                       IsShowCount="True"
+                                       MaxLength="20" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical" Spacing="12">
+                        <atom:TextBlock Text="{gallery:LineEditShowCaseLangResource SemanticPartPrefixStyleTitle}"
+                                        FontSize="16"
+                                        FontWeight="SemiBold" />
+                        <atom:LineEdit Classes="semantic-prefix-demo"
+                                       Width="420"
+                                       SizeType="Middle"
+                                       StyleVariant="Outlined"
+                                       Text="atomui"
+                                       InnerLeftContent="https://"
+                                       InnerRightContent=".com"
+                                       IsAllowClear="True"
+                                       IsShowCount="True"
+                                       MaxLength="20" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical" Spacing="12">
+                        <atom:TextBlock Text="{gallery:LineEditShowCaseLangResource SemanticPartClearStyleTitle}"
+                                        FontSize="16"
+                                        FontWeight="SemiBold" />
+                        <atom:LineEdit Classes="semantic-clear-demo"
+                                       Width="420"
+                                       SizeType="Middle"
+                                       StyleVariant="Outlined"
+                                       Text="atomui"
+                                       InnerLeftContent="https://"
+                                       InnerRightContent=".com"
+                                       IsAllowClear="True"
+                                       IsShowCount="True"
+                                       MaxLength="20" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical" Spacing="12">
+                        <atom:TextBlock Text="{gallery:LineEditShowCaseLangResource SemanticPartAccentStyleTitle}"
+                                        FontSize="16"
+                                        FontWeight="SemiBold" />
+                        <atom:LineEdit Classes="semantic-accent-demo"
+                                       Width="420"
+                                       SizeType="Middle"
+                                       StyleVariant="Outlined"
+                                       Text="atomui"
+                                       InnerLeftContent="https://"
+                                       InnerRightContent=".com"
+                                       IsAllowClear="True"
+                                       IsShowCount="True"
+                                       MaxLength="20" />
+                    </StackPanel>
+                </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
             </gallery:ShowCasePanel>
-        </gallery:GalleryStickyTabsHost>
+        </gallery:GalleryShowCaseHost>
     </Grid>
 </UserControl>
