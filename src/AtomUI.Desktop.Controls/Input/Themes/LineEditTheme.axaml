@@ -45,11 +45,13 @@
                             <atom:InputClearIconButton
                                 Classes.semantic-clear="True"
                                 Name="PART_ClearButton"
+                                VerticalAlignment="Center"
                                 Icon="{Binding $parent[atom:LineEdit].ClearIcon}"
                                 IsVisible="{Binding $parent[atom:LineEdit].IsEffectiveShowClearButton}"
                                 IsMotionEnabled="{Binding $parent[atom:LineEdit].IsMotionEnabled}" />
                             <atom:RevealButton
                                 Name="PART_RevealButton"
+                                VerticalAlignment="Center"
                                 IsChecked="{Binding $parent[atom:LineEdit].RevealPassword, Mode=TwoWay}"
                                 IsVisible="{Binding $parent[atom:LineEdit].IsEnableRevealButton}"
                                 IsMotionEnabled="{Binding $parent[atom:LineEdit].IsMotionEnabled}" />

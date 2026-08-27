@@ -37,11 +37,13 @@
                                     Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
                             <atom:InputClearIconButton
                                 Name="PART_ClearButton"
+                                VerticalAlignment="Center"
                                 Icon="{Binding $parent[atom:SearchEdit].ClearIcon}"
                                 IsVisible="{Binding $parent[atom:SearchEdit].IsEffectiveShowClearButton}"
                                 IsMotionEnabled="{Binding $parent[atom:SearchEdit].IsMotionEnabled}" />
                             <atom:RevealButton
                                 Name="PART_RevealButton"
+                                VerticalAlignment="Center"
                                 IsChecked="{Binding $parent[atom:SearchEdit].RevealPassword, Mode=TwoWay}"
                                 IsVisible="{Binding $parent[atom:SearchEdit].IsEnableRevealButton}"
                                 IsMotionEnabled="{Binding $parent[atom:SearchEdit].IsMotionEnabled}" />
