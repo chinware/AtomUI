@@ -160,7 +160,7 @@ Upload 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 ### 拖拽上传
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Upload/Views/UploadShowCase.axaml:216`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Upload/Views/UploadShowCase.axaml:221`
 
 Gallery key：`ExamplesContent` / item `5`
 

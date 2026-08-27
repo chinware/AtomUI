@@ -76,9 +76,9 @@
         <source>Examples</source>
       </segment>
     </unit>
-    <unit id="SemanticRootDescription">
+    <unit id="SemanticFunctionStylesTitle">
       <segment>
-        <source>Root element, sets relative positioning, flex layout and masonry container styles.</source>
+        <source>classNames and styles Function</source>
       </segment>
     </unit>
     <unit id="SemanticItemDescription">
@@ -86,9 +86,9 @@
         <source>Item element, sets absolute positioning, width calculation, transition animation and masonry item styles.</source>
       </segment>
     </unit>
-    <unit id="SemanticPartStyleTitle">
+    <unit id="SemanticObjectStylesTitle">
       <segment>
-        <source>Custom semantic dom styling</source>
+        <source>classNames and styles Object</source>
       </segment>
     </unit>
     <unit id="SemanticPartStyleDescription">
@@ -96,14 +96,14 @@
         <source>You can customize the semantic dom style of Masonry by passing objects/functions through `classNames` and `styles`.</source>
       </segment>
     </unit>
-    <unit id="SemanticObjectStylesTitle">
+    <unit id="SemanticPartStyleTitle">
       <segment>
-        <source>classNames and styles Object</source>
+        <source>Custom semantic dom styling</source>
       </segment>
     </unit>
-    <unit id="SemanticFunctionStylesTitle">
+    <unit id="SemanticRootDescription">
       <segment>
-        <source>classNames and styles Function</source>
+        <source>Root element, sets relative positioning, flex layout and masonry container styles.</source>
       </segment>
     </unit>
   </file>

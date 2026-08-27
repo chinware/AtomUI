@@ -229,18 +229,6 @@
         <target state="translated">可滚动列表</target>
       </segment>
     </unit>
-    <unit id="SuccessAutoRemoveDescription">
-      <segment>
-        <source>Use SuccessAutoRemoveDelay to remove successful files after a short delay.</source>
-        <target state="translated">通过 SuccessAutoRemoveDelay 在上传成功后延迟移除文件。</target>
-      </segment>
-    </unit>
-    <unit id="SuccessAutoRemoveTitle">
-      <segment>
-        <source>Auto remove successful files</source>
-        <target state="translated">成功后自动移除</target>
-      </segment>
-    </unit>
     <unit id="SemanticItemDescription">
       <segment>
         <source>Each realized file container. The PictureCard and PictureCircle append trigger is not a file item.</source>
@@ -269,6 +257,18 @@
       <segment>
         <source>The Upload owner that coordinates the trigger and list layout through the Upload control contract.</source>
         <target state="translated">通过 Upload 控件契约协调触发入口和列表布局的 Upload 根控件。</target>
+      </segment>
+    </unit>
+    <unit id="SuccessAutoRemoveDescription">
+      <segment>
+        <source>Use SuccessAutoRemoveDelay to remove successful files after a short delay.</source>
+        <target state="translated">通过 SuccessAutoRemoveDelay 在上传成功后延迟移除文件。</target>
+      </segment>
+    </unit>
+    <unit id="SuccessAutoRemoveTitle">
+      <segment>
+        <source>Auto remove successful files</source>
+        <target state="translated">成功后自动移除</target>
       </segment>
     </unit>
     <unit id="UploadByClickingDescription">

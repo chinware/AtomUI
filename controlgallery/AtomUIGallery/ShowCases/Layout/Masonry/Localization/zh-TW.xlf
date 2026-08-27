@@ -91,10 +91,10 @@
         <target state="translated">範例</target>
       </segment>
     </unit>
-    <unit id="SemanticRootDescription">
+    <unit id="SemanticFunctionStylesTitle">
       <segment>
-        <source>Root element, sets relative positioning, flex layout and masonry container styles.</source>
-        <target state="translated">根元素，用於設定相對定位、flex 版面與 Masonry 容器樣式。</target>
+        <source>classNames and styles Function</source>
+        <target state="translated">classNames 和 styles 函式</target>
       </segment>
     </unit>
     <unit id="SemanticItemDescription">
@@ -103,10 +103,10 @@
         <target state="translated">項目元素，用於設定絕對定位、寬度計算、過渡動畫與 Masonry 項目樣式。</target>
       </segment>
     </unit>
-    <unit id="SemanticPartStyleTitle">
+    <unit id="SemanticObjectStylesTitle">
       <segment>
-        <source>Custom semantic dom styling</source>
-        <target state="translated">自訂語義 DOM 樣式</target>
+        <source>classNames and styles Object</source>
+        <target state="translated">classNames 和 styles 物件</target>
       </segment>
     </unit>
     <unit id="SemanticPartStyleDescription">
@@ -115,16 +115,16 @@
         <target state="translated">你可以透過 `classNames` 和 `styles` 傳入物件或函式，自訂 Masonry 的語義 DOM 樣式。</target>
       </segment>
     </unit>
-    <unit id="SemanticObjectStylesTitle">
+    <unit id="SemanticPartStyleTitle">
       <segment>
-        <source>classNames and styles Object</source>
-        <target state="translated">classNames 和 styles 物件</target>
+        <source>Custom semantic dom styling</source>
+        <target state="translated">自訂語義 DOM 樣式</target>
       </segment>
     </unit>
-    <unit id="SemanticFunctionStylesTitle">
+    <unit id="SemanticRootDescription">
       <segment>
-        <source>classNames and styles Function</source>
-        <target state="translated">classNames 和 styles 函式</target>
+        <source>Root element, sets relative positioning, flex layout and masonry container styles.</source>
+        <target state="translated">根元素，用於設定相對定位、flex 版面與 Masonry 容器樣式。</target>
       </segment>
     </unit>
   </file>

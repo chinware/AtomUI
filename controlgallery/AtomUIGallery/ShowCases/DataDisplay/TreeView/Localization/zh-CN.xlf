@@ -565,6 +565,12 @@
         <target state="translated">每个节点的图标区域，控制图标尺寸与边距。</target>
       </segment>
     </unit>
+    <unit id="SemanticItemIndicatorDescription">
+      <segment>
+        <source>Checkbox or radio toggle indicator of each node, driven by ToggleType and check state.</source>
+        <target state="translated">每个节点的勾选指示（checkbox 或 radio），由 ToggleType 与勾选状态驱动。</target>
+      </segment>
+    </unit>
     <unit id="SemanticItemSwitcherDescription">
       <segment>
         <source>Expand/collapse switcher of each node, with state icons.</source>
@@ -575,12 +581,6 @@
       <segment>
         <source>Title region of each node, with text color and alignment.</source>
         <target state="translated">每个节点的标题区域，控制文字颜色与对齐。</target>
-      </segment>
-    </unit>
-    <unit id="SemanticItemIndicatorDescription">
-      <segment>
-        <source>Checkbox or radio toggle indicator of each node, driven by ToggleType and check state.</source>
-        <target state="translated">每个节点的勾选指示（checkbox 或 radio），由 ToggleType 与勾选状态驱动。</target>
       </segment>
     </unit>
     <unit id="SemanticNodeRootDescription">

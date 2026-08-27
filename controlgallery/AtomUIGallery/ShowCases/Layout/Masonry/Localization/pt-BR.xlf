@@ -91,10 +91,10 @@
         <target state="translated">Exemplos</target>
       </segment>
     </unit>
-    <unit id="SemanticRootDescription">
+    <unit id="SemanticFunctionStylesTitle">
       <segment>
-        <source>Root element, sets relative positioning, flex layout and masonry container styles.</source>
-        <target state="translated">Elemento raiz, define posicionamento relativo, layout flex e estilos do contêiner masonry.</target>
+        <source>classNames and styles Function</source>
+        <target state="translated">classNames e styles Function</target>
       </segment>
     </unit>
     <unit id="SemanticItemDescription">
@@ -103,10 +103,10 @@
         <target state="translated">Elemento de item, define posicionamento absoluto, cálculo de largura, animação de transição e estilos de item masonry.</target>
       </segment>
     </unit>
-    <unit id="SemanticPartStyleTitle">
+    <unit id="SemanticObjectStylesTitle">
       <segment>
-        <source>Custom semantic dom styling</source>
-        <target state="translated">Estilo semantic dom personalizado</target>
+        <source>classNames and styles Object</source>
+        <target state="translated">classNames e styles Object</target>
       </segment>
     </unit>
     <unit id="SemanticPartStyleDescription">
@@ -115,16 +115,16 @@
         <target state="translated">Você pode personalizar o estilo semantic dom do Masonry passando objetos/funções por meio de `classNames` e `styles`.</target>
       </segment>
     </unit>
-    <unit id="SemanticObjectStylesTitle">
+    <unit id="SemanticPartStyleTitle">
       <segment>
-        <source>classNames and styles Object</source>
-        <target state="translated">classNames e styles Object</target>
+        <source>Custom semantic dom styling</source>
+        <target state="translated">Estilo semantic dom personalizado</target>
       </segment>
     </unit>
-    <unit id="SemanticFunctionStylesTitle">
+    <unit id="SemanticRootDescription">
       <segment>
-        <source>classNames and styles Function</source>
-        <target state="translated">classNames e styles Function</target>
+        <source>Root element, sets relative positioning, flex layout and masonry container styles.</source>
+        <target state="translated">Elemento raiz, define posicionamento relativo, layout flex e estilos do contêiner masonry.</target>
       </segment>
     </unit>
   </file>

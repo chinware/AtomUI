@@ -229,18 +229,6 @@
         <target state="translated">Scrollable lista</target>
       </segment>
     </unit>
-    <unit id="SuccessAutoRemoveDescription">
-      <segment>
-        <source>Use SuccessAutoRemoveDelay to remove successful files after a short delay.</source>
-        <target state="translated">Usar SuccessAutoRemoveDelay para remover successful arquivos depois a curto delay.</target>
-      </segment>
-    </unit>
-    <unit id="SuccessAutoRemoveTitle">
-      <segment>
-        <source>Auto remove successful files</source>
-        <target state="translated">Auto remover successful arquivos</target>
-      </segment>
-    </unit>
     <unit id="SemanticItemDescription">
       <segment>
         <source>Each realized file container. The PictureCard and PictureCircle append trigger is not a file item.</source>
@@ -269,6 +257,18 @@
       <segment>
         <source>The Upload owner that coordinates the trigger and list layout through the Upload control contract.</source>
         <target state="translated">O proprietário Upload que coordena o gatilho e o layout da lista por meio do contrato do controle Upload.</target>
+      </segment>
+    </unit>
+    <unit id="SuccessAutoRemoveDescription">
+      <segment>
+        <source>Use SuccessAutoRemoveDelay to remove successful files after a short delay.</source>
+        <target state="translated">Usar SuccessAutoRemoveDelay para remover successful arquivos depois a curto delay.</target>
+      </segment>
+    </unit>
+    <unit id="SuccessAutoRemoveTitle">
+      <segment>
+        <source>Auto remove successful files</source>
+        <target state="translated">Auto remover successful arquivos</target>
       </segment>
     </unit>
     <unit id="UploadByClickingDescription">

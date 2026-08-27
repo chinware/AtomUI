@@ -471,6 +471,11 @@
         <source>Icon region of each node, with icon size and margin.</source>
       </segment>
     </unit>
+    <unit id="SemanticItemIndicatorDescription">
+      <segment>
+        <source>Checkbox or radio toggle indicator of each node, driven by ToggleType and check state.</source>
+      </segment>
+    </unit>
     <unit id="SemanticItemSwitcherDescription">
       <segment>
         <source>Expand/collapse switcher of each node, with state icons.</source>
@@ -479,11 +484,6 @@
     <unit id="SemanticItemTitleDescription">
       <segment>
         <source>Title region of each node, with text color and alignment.</source>
-      </segment>
-    </unit>
-    <unit id="SemanticItemIndicatorDescription">
-      <segment>
-        <source>Checkbox or radio toggle indicator of each node, driven by ToggleType and check state.</source>
       </segment>
     </unit>
     <unit id="SemanticNodeRootDescription">

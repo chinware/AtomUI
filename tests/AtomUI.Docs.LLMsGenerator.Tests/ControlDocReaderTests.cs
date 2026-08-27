@@ -65,7 +65,7 @@ public class ControlDocReaderTests
     [Fact]
     public void ReaderFallsBackToOverviewWhenDedicatedSemanticPartDocumentIsAbsent()
     {
-        var model = ReadModel("upload");
+        var model = ReadModel("avatar");
 
         model.SourceSemanticPartPath.ShouldBeNull();
         model.SourceSemanticPartRelativePath.ShouldBeNull();
