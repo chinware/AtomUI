@@ -71,11 +71,16 @@ public class ShowCaseMasonryPanel : Panel
     protected override Size ArrangeOverride(Size finalSize)
     {
         var effectiveWidth = ResolveAvailableWidth(finalSize.Width);
-        var layout = _hasMeasuredLayout &&
-                     _measuredChildCount == Children.Count &&
-                     AreClose(_measuredEffectiveWidth, effectiveWidth)
+        var canReuseMeasuredLayout = _hasMeasuredLayout &&
+                                      _measuredChildCount == Children.Count &&
+                                      AreClose(_measuredEffectiveWidth, effectiveWidth);
+        // A ScrollViewer (and similar hosts) can measure us with an unbounded width and then
+        // arrange us at the viewport width. The child DesiredSize then belongs to a different
+        // column width; remeasure before arranging so height-dependent Masonry positions do not
+        // lag one layout pass behind the actual viewport.
+        var layout = canReuseMeasuredLayout
             ? _measuredLayout!.Value
-            : CalculateLayout(finalSize.Width, false);
+            : CalculateLayout(finalSize.Width, measureChildren: true);
         _hasMeasuredLayout = false;
         _measuredLayout = null;
         _arrangeRects = layout.Rects;

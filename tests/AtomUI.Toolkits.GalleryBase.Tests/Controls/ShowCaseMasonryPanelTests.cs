@@ -59,6 +59,30 @@ public class ShowCaseMasonryPanelTests
             "a changed effective width must invalidate the cached Masonry layout");
     }
 
+    [Fact]
+    public void Arrange_ReMeasures_Children_When_Unbounded_Measure_Width_Differs_From_Final_Width()
+    {
+        var panel = new TestShowCaseMasonryPanel
+        {
+            MinItemWidth = 1,
+            MaxColumns = 2,
+            ColumnGap = 0,
+            RowGap = 0
+        };
+        var first = new WidthDependentHeightControl();
+        var second = new WidthDependentHeightControl();
+        panel.Children.Add(first);
+        panel.Children.Add(second);
+
+        panel.MeasureForTest(new Size(double.PositiveInfinity, double.PositiveInfinity));
+        panel.ArrangeForTest(new Size(400, 400));
+
+        first.Bounds.Width.ShouldBe(200, 0.01);
+        first.Bounds.Height.ShouldBe(100, 0.01,
+            "a child measured with an unbounded width must be re-measured for the final Masonry column width");
+        second.Bounds.Height.ShouldBe(100, 0.01);
+    }
+
     private sealed class VariableHeightControl : Control
     {
         public VariableHeightControl(double height)
@@ -71,6 +95,14 @@ public class ShowCaseMasonryPanelTests
         protected override Size MeasureOverride(Size availableSize)
         {
             return new Size(Math.Min(availableSize.Width, 100), MeasuredHeight);
+        }
+    }
+
+    private sealed class WidthDependentHeightControl : Control
+    {
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            return new Size(availableSize.Width, availableSize.Width / 2);
         }
     }
 
