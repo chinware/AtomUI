@@ -459,38 +459,16 @@
     </unit>
     <unit id="SemanticPartStyleDescription">
       <segment>
-        <source>Use an owner-scoped selector and the generated LineEdit Semantic Styles to customize the published parts.</source>
-        <target state="translated">Use um seletor com escopo do owner e os Semantic Styles gerados do LineEdit para personalizar as partes publicadas.</target>
+        <source>You can customize the semantic dom style of Input by passing objects/functions through `classNames` and `styles`.</source>
+        <target state="translated">É possível personalizar o estilo semântico do dom do Input passando objetos/funções por `classNames` e `styles`.</target>
       </segment>
     </unit>
-    <unit id="SemanticPartTextStyleTitle">
-      <segment>
-        <source>Customize the input text</source>
-        <target state="translated">Personalizar o texto de entrada</target>
-      </segment>
-    </unit>
-    <unit id="SemanticPartPrefixStyleTitle">
-      <segment>
-        <source>Customize the prefix</source>
-        <target state="translated">Personalizar o prefixo</target>
-      </segment>
-    </unit>
-    <unit id="SemanticPartAccentStyleTitle">
-      <segment>
-        <source>Restyle all parts together</source>
-        <target state="translated">Personalizar todas as partes juntas</target>
-      </segment>
-    </unit>
-    <unit id="SemanticPartClearStyleTitle">
-      <segment>
-        <source>Customize the clear button</source>
-        <target state="translated">Personalizar o botão de limpar</target>
-      </segment>
-    </unit>
+
+
     <unit id="SemanticPartStyleTitle">
       <segment>
-        <source>Custom Semantic Part styling</source>
-        <target state="translated">Estilo personalizado de Semantic Part</target>
+        <source>Custom semantic dom styling</source>
+        <target state="translated">Personalização semântica do dom</target>
       </segment>
     </unit>
     <unit id="SemanticPrefixDescription">

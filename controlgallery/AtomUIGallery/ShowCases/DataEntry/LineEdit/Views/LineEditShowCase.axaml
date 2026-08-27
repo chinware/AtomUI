@@ -721,100 +721,76 @@
         IsDeferredContentEnabled="True">
         <gallery:ShowCaseItem.DeferredContentTemplate>
             <DataTemplate x:DataType="vm:LineEditViewModel">
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Spacing="20">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Spacing="24">
                     <StackPanel.Styles>
-                        <Style Selector="atom|LineEdit.semantic-text-demo">
-                            <atom:LineEditInputStyle x:SetterTargetType="TextPresenter">
-                                <Setter Property="TextElement.FontSize" Value="15" />
-                                <Setter Property="TextElement.FontWeight" Value="SemiBold" />
-                                <Setter Property="TextElement.Foreground" Value="#696FC7" />
-                            </atom:LineEditInputStyle>
+                        <Style Selector="atom|LineEdit.style-class-base">
+                            <Setter Property="Width" Value="320" />
+                            <Setter Property="BorderThickness" Value="{atom:SharedTokenResource LineWidth}" />
+                            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
                         </Style>
-                        <Style Selector="atom|LineEdit.semantic-prefix-demo">
-                            <atom:LineEditPrefixStyle x:SetterTargetType="ContentPresenter">
-                                <Setter Property="Margin" Value="8,0" />
-                            </atom:LineEditPrefixStyle>
+                        <Style Selector="atom|LineEdit.style-class-fn">
+                            <Setter Property="BorderBrush" Value="#696FC7" />
                         </Style>
-                        <Style Selector="atom|LineEdit.semantic-clear-demo">
-                            <atom:LineEditClearStyle x:SetterTargetType="atom:IconButton">
-                                <Setter Property="IconBrush" Value="#FA8C16" />
-                            </atom:LineEditClearStyle>
+                        <Style Selector="atom|TextArea.style-class-textarea">
+                            <Setter Property="Width" Value="320" />
+                            <Setter Property="BorderThickness" Value="{atom:SharedTokenResource LineWidth}" />
+                            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
+                            <Setter Property="BorderBrush" Value="#BDE3C3" />
                         </Style>
-                        <Style Selector="atom|LineEdit.semantic-accent-demo">
-                            <atom:LineEditInputStyle x:SetterTargetType="TextPresenter">
-                                <Setter Property="TextElement.FontSize" Value="15" />
-                                <Setter Property="TextElement.FontWeight" Value="SemiBold" />
-                                <Setter Property="TextElement.Foreground" Value="#4DA8DA" />
-                            </atom:LineEditInputStyle>
-                            <atom:LineEditClearStyle x:SetterTargetType="atom:IconButton">
-                                <Setter Property="IconBrush" Value="#4DA8DA" />
-                            </atom:LineEditClearStyle>
+                        <Style Selector="atom|TextArea.style-class-textarea /template/ atom|TextBlock.semantic-count">
+                            <Setter Property="Foreground" Value="#BDE3C3" />
+                        </Style>
+                        <Style Selector="atom|LineEdit.style-class-password">
+                            <Setter Property="BorderBrush" Value="#F5D3C4" />
+                        </Style>
+                        <Style Selector="atom|OtpLineEdit.style-class-otp">
+                            <Setter Property="CellWidth" Value="32" />
+                            <Setter Property="CellBorderBrush" Value="#6E8CFB" />
+                        </Style>
+                        <Style Selector="atom|SearchEdit.style-class-search">
+                            <Setter Property="Width" Value="320" />
+                            <Setter Property="Foreground" Value="#4DA8DA" />
+                            <Setter Property="BorderBrush" Value="#4DA8DA" />
+                        </Style>
+                        <Style Selector="atom|SearchEdit.style-class-search /template/ .semantic-scope-input-frame /template/ atom|Button.semantic-button">
+                            <Setter Property="Foreground" Value="#4DA8DA" />
+                            <Setter Property="BorderBrush" Value="#4DA8DA" />
                         </Style>
                     </StackPanel.Styles>
 
-                    <StackPanel Orientation="Vertical" Spacing="12">
-                        <atom:TextBlock Text="{gallery:LineEditShowCaseLangResource SemanticPartTextStyleTitle}"
-                                        FontSize="16"
-                                        FontWeight="SemiBold" />
-                        <atom:LineEdit Classes="semantic-text-demo"
-                                       Width="420"
-                                       SizeType="Middle"
-                                       StyleVariant="Outlined"
-                                       Text="atomui"
-                                       InnerLeftContent="https://"
-                                       InnerRightContent=".com"
-                                       IsAllowClear="True"
-                                       IsShowCount="True"
-                                       MaxLength="20" />
-                    </StackPanel>
+                    <atom:LineEdit
+                        Classes="style-class-base"
+                        PlaceholderText="Object" />
 
-                    <StackPanel Orientation="Vertical" Spacing="12">
-                        <atom:TextBlock Text="{gallery:LineEditShowCaseLangResource SemanticPartPrefixStyleTitle}"
-                                        FontSize="16"
-                                        FontWeight="SemiBold" />
-                        <atom:LineEdit Classes="semantic-prefix-demo"
-                                       Width="420"
-                                       SizeType="Middle"
-                                       StyleVariant="Outlined"
-                                       Text="atomui"
-                                       InnerLeftContent="https://"
-                                       InnerRightContent=".com"
-                                       IsAllowClear="True"
-                                       IsShowCount="True"
-                                       MaxLength="20" />
-                    </StackPanel>
+                    <atom:LineEdit
+                        Classes="style-class-base style-class-fn"
+                        PlaceholderText="Function"
+                        SizeType="Middle" />
 
-                    <StackPanel Orientation="Vertical" Spacing="12">
-                        <atom:TextBlock Text="{gallery:LineEditShowCaseLangResource SemanticPartClearStyleTitle}"
-                                        FontSize="16"
-                                        FontWeight="SemiBold" />
-                        <atom:LineEdit Classes="semantic-clear-demo"
-                                       Width="420"
-                                       SizeType="Middle"
-                                       StyleVariant="Outlined"
-                                       Text="atomui"
-                                       InnerLeftContent="https://"
-                                       InnerRightContent=".com"
-                                       IsAllowClear="True"
-                                       IsShowCount="True"
-                                       MaxLength="20" />
-                    </StackPanel>
+                    <atom:TextArea
+                        Classes="style-class-textarea"
+                        Text="TextArea"
+                        IsShowCount="True"
+                        MaxLength="100"
+                        IsResizable="False" />
 
-                    <StackPanel Orientation="Vertical" Spacing="12">
-                        <atom:TextBlock Text="{gallery:LineEditShowCaseLangResource SemanticPartAccentStyleTitle}"
-                                        FontSize="16"
-                                        FontWeight="SemiBold" />
-                        <atom:LineEdit Classes="semantic-accent-demo"
-                                       Width="420"
-                                       SizeType="Middle"
-                                       StyleVariant="Outlined"
-                                       Text="atomui"
-                                       InnerLeftContent="https://"
-                                       InnerRightContent=".com"
-                                       IsAllowClear="True"
-                                       IsShowCount="True"
-                                       MaxLength="20" />
-                    </StackPanel>
+                    <atom:LineEdit
+                        Classes="style-class-base style-class-password"
+                        Text="Password"
+                        RevealPassword="False"
+                        PasswordChar="•"
+                        IsEnableRevealButton="True"
+                        SizeType="Middle" />
+
+                    <atom:OtpLineEdit
+                        Classes="style-class-otp"
+                        Length="6"
+                        Separator="*" />
+
+                    <atom:SearchEdit
+                        Classes="style-class-search"
+                        PlaceholderText="Search"
+                        SizeType="Large" />
                 </StackPanel>
             </DataTemplate>
         </gallery:ShowCaseItem.DeferredContentTemplate>

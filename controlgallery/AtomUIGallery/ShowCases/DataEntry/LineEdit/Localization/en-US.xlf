@@ -383,32 +383,14 @@
     </unit>
     <unit id="SemanticPartStyleDescription">
       <segment>
-        <source>Use an owner-scoped selector and the generated LineEdit Semantic Styles to customize the published parts.</source>
+        <source>You can customize the semantic dom style of Input by passing objects/functions through `classNames` and `styles`.</source>
       </segment>
     </unit>
-    <unit id="SemanticPartTextStyleTitle">
-      <segment>
-        <source>Customize the input text</source>
-      </segment>
-    </unit>
-    <unit id="SemanticPartPrefixStyleTitle">
-      <segment>
-        <source>Customize the prefix</source>
-      </segment>
-    </unit>
-    <unit id="SemanticPartAccentStyleTitle">
-      <segment>
-        <source>Restyle all parts together</source>
-      </segment>
-    </unit>
-    <unit id="SemanticPartClearStyleTitle">
-      <segment>
-        <source>Customize the clear button</source>
-      </segment>
-    </unit>
+
+
     <unit id="SemanticPartStyleTitle">
       <segment>
-        <source>Custom Semantic Part styling</source>
+        <source>Custom semantic dom styling</source>
       </segment>
     </unit>
     <unit id="SemanticPrefixDescription">

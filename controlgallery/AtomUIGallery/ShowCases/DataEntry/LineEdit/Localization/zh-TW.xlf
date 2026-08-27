@@ -459,38 +459,16 @@
     </unit>
     <unit id="SemanticPartStyleDescription">
       <segment>
-        <source>Use an owner-scoped selector and the generated LineEdit Semantic Styles to customize the published parts.</source>
-        <target state="translated">使用 owner-scoped selector 和產生的 LineEdit Semantic Style 自訂已發佈的部件。</target>
+        <source>You can customize the semantic dom style of Input by passing objects/functions through `classNames` and `styles`.</source>
+        <target state="translated">透過 `classNames` 和 `styles` 傳入物件/函式，可以自訂 Input 的語義化結構樣式。</target>
       </segment>
     </unit>
-    <unit id="SemanticPartTextStyleTitle">
-      <segment>
-        <source>Customize the input text</source>
-        <target state="translated">自訂輸入文字樣式</target>
-      </segment>
-    </unit>
-    <unit id="SemanticPartPrefixStyleTitle">
-      <segment>
-        <source>Customize the prefix</source>
-        <target state="translated">自訂前綴區域</target>
-      </segment>
-    </unit>
-    <unit id="SemanticPartAccentStyleTitle">
-      <segment>
-        <source>Restyle all parts together</source>
-        <target state="translated">統一定制全部部件</target>
-      </segment>
-    </unit>
-    <unit id="SemanticPartClearStyleTitle">
-      <segment>
-        <source>Customize the clear button</source>
-        <target state="translated">自訂清除按鈕樣式</target>
-      </segment>
-    </unit>
+
+
     <unit id="SemanticPartStyleTitle">
       <segment>
-        <source>Custom Semantic Part styling</source>
-        <target state="translated">自訂 Semantic Part 樣式</target>
+        <source>Custom semantic dom styling</source>
+        <target state="translated">自訂語義化結構樣式</target>
       </segment>
     </unit>
     <unit id="SemanticPrefixDescription">

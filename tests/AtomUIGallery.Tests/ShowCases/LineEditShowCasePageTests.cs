@@ -97,22 +97,39 @@ public class LineEditShowCasePageTests
 
         semanticExample.ShouldContain("SourceKey=\"line-edit-semantic-part\"");
         semanticExample.ShouldContain("BadgeText=\"{x:Static gallery:GalleryVersionInfo.DisplayVersion}\"");
-        semanticExample.ShouldContain("Selector=\"atom|LineEdit.semantic-text-demo\"");
-        semanticExample.ShouldContain("Selector=\"atom|LineEdit.semantic-prefix-demo\"");
-        semanticExample.ShouldContain("Selector=\"atom|LineEdit.semantic-clear-demo\"");
-        semanticExample.ShouldContain("Selector=\"atom|LineEdit.semantic-accent-demo\"");
-        semanticExample.ShouldContain("<atom:LineEditPrefixStyle x:SetterTargetType=\"ContentPresenter\">");
-        semanticExample.ShouldContain("<atom:LineEditInputStyle x:SetterTargetType=\"TextPresenter\">");
-        semanticExample.ShouldContain("<atom:LineEditClearStyle x:SetterTargetType=\"atom:IconButton\">");
-        CountOccurrences(semanticExample, "Classes=\"semantic-").ShouldBe(4);
-        foreach (var caption in new[] { "SemanticPartTextStyleTitle", "SemanticPartPrefixStyleTitle", "SemanticPartClearStyleTitle", "SemanticPartAccentStyleTitle" })
-        {
-            semanticExample.ShouldContain($"LineEditShowCaseLangResource {caption}");
-            english.ShouldContain($"unit id=\"{caption}\"");
-        }
-        semanticExample.ShouldNotContain("Property=\"Background\" Value=\"#F0F5FF\"");
+        semanticExample.ShouldContain("Selector=\"atom|LineEdit.style-class-base\"");
+        semanticExample.ShouldContain("Selector=\"atom|LineEdit.style-class-fn\"");
+        semanticExample.ShouldContain("Selector=\"atom|LineEdit.style-class-password\"");
+        semanticExample.ShouldContain("Selector=\"atom|TextArea.style-class-textarea\"");
+        semanticExample.ShouldContain("Selector=\"atom|OtpLineEdit.style-class-otp\"");
+        semanticExample.ShouldContain("Selector=\"atom|SearchEdit.style-class-search\"");
+        semanticExample.ShouldContain("<Setter Property=\"BorderThickness\" Value=\"{atom:SharedTokenResource LineWidth}\" />");
+        semanticExample.ShouldContain("<Setter Property=\"CornerRadius\" Value=\"{atom:SharedTokenResource BorderRadius}\" />");
+        semanticExample.ShouldContain("Selector=\"atom|TextArea.style-class-textarea /template/ atom|TextBlock.semantic-count\"");
+        semanticExample.ShouldContain("Selector=\"atom|SearchEdit.style-class-search /template/ .semantic-scope-input-frame /template/ atom|Button.semantic-button\"");
+        CountOccurrences(semanticExample, "<Setter Property=\"Foreground\" Value=\"#4DA8DA\" />").ShouldBe(2);
+        CountOccurrences(semanticExample, "<Setter Property=\"BorderBrush\" Value=\"#4DA8DA\" />").ShouldBe(2);
+        CountOccurrences(semanticExample, "#696FC7").ShouldBe(1);
+        CountOccurrences(semanticExample, "#BDE3C3").ShouldBe(2);
+        CountOccurrences(semanticExample, "#F5D3C4").ShouldBe(1);
+        CountOccurrences(semanticExample, "#6E8CFB").ShouldBe(1);
+        CountOccurrences(semanticExample, "#4DA8DA").ShouldBeGreaterThanOrEqualTo(3);
+        CountOccurrences(semanticExample, "<atom:LineEdit").ShouldBe(3);
+        semanticExample.ShouldContain("Classes=\"style-class-base style-class-fn\"");
+        semanticExample.ShouldContain("Classes=\"style-class-base style-class-password\"");
         semanticExample.ShouldContain("SizeType=\"Middle\"");
-        semanticExample.ShouldContain("StyleVariant=\"Outlined\"");
+        semanticExample.ShouldContain("Length=\"6\"");
+        semanticExample.ShouldContain("Separator=\"*\"");
+        semanticExample.ShouldContain("<Setter Property=\"CellWidth\" Value=\"32\" />");
+        semanticExample.ShouldContain("<Setter Property=\"CellBorderBrush\" Value=\"#6E8CFB\" />");
+        semanticExample.ShouldContain("SizeType=\"Large\"");
+
+        foreach (var staleCaption in new[] { "SemanticPartTextStyleTitle", "SemanticPartPrefixStyleTitle", "SemanticPartClearStyleTitle", "SemanticPartAccentStyleTitle" })
+        {
+            source.ShouldNotContain(staleCaption);
+            english.ShouldNotContain($"unit id=\"{staleCaption}\"");
+        }
+        english.ShouldContain("<source>Custom semantic dom styling</source>");
 
         english.ShouldContain("unit id=\"SemanticRootDescription\"");
         english.ShouldContain("unit id=\"SemanticPrefixDescription\"");
