@@ -178,7 +178,7 @@ content 不公开内容模板生成的用户子树、文本内部 presenter、�
 
 以下区域明确不属于 Button Semantic Part：
 
-- Wave actor、阴影层、主体 Frame 和自定义背景覆层。
+- Wave actor、阴影层和主体 Frame。
 - 根布局、图标排列容器、间距 wrapper 和 focus visual。
 - 用户 `ContentTemplate` 创建的子树。
 - `PART_*` 名称、internal 类型、转换器和 motion phase。

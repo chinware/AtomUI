@@ -8,12 +8,34 @@
 - 不记录临时讨论、纯格式化或没有长期价值的实现细节。
 - 架构文档始终描述最新设计状态；历史变化记录在本文档。
 
+## 2026-08-27
+
+- API
+  - Make the standard root `Background` / `BorderBrush` a real customization channel for `TextBox`, `LineEdit`, `SearchEdit` and `TextArea`. `AbstractTextInput` relays effective owner values onto `InputControlFrame` as local values, mirroring inline style semantics where local values win over state classes: customized slots freeze the interactive color changes of that property, the focus `BoxShadow` glow survives on its own slot, and clearing the value restores the frame state machine. This fixes a broken API surface instead of adding parallel customization properties.
+- Theme
+  - Remove the dead owner-level `Background` / `BorderBrush` defaults from the LineEdit, TextBox, SearchEdit and TextArea themes, and remove the two `TemplateBinding`s from the TextBox template. The frame theme is the single rest-state source and the owner value doubles as the customization signal.
+  - Align the TextBox rest background with `ColorBgContainer`, matching LineEdit / SearchEdit / TextArea.
+- Tests
+  - Add `TextInputRootBrushRelayTests` covering the relay, hover/focus border yielding, focus glow survival, clear-to-restore, pre-template assignment and the uncustomized rest baseline across all four controls.
+
 ## 2026-08-24
 
+- Semantic Parts
+  - Publish the `root`, `prefix`, `input`, `suffix`, `clear` and `count` Semantic Part contract for `LineEdit`.
+  - Add explicit owner-relative selector routes through `AddOnDecoratedBox` while keeping route scope classes internal.
+  - Keep all selector Part markers static and `Single`; content, visibility, status and size changes do not add or remove markers.
+  - Keep `SearchEdit`, `TextArea` and `TextBox` outside this descriptor scope.
 - Theme
+  - Add a stable `AddOnContentPresenter` prefix wrapper that preserves content, template-only and `InnerLeftContentTemplate` behavior while exposing `ContentPresenter` as the public contract type.
+  - Preserve the existing Large / Middle / Small and Outlined / Filled / Borderless / Underlined size baselines.
   - Make the TextBox input frame fill the width allocated by its owner so placeholder and text measurement cannot resize the visible input surface.
+- Gallery
+  - Add the deferred Semantic Parts Preview, localized descriptions and a strongly typed LineEdit Semantic Style example.
 - Tests
+  - Add descriptor, marker, generated Style, state stability, size matrix, Gallery snapshot and prefix template regressions.
   - Cover stable TextBox frame width across placeholder, short-text and long-text states.
+- Docs
+  - Add the complete LineEdit Semantic Part contract and regenerate the LineEdit LLMS output from source documentation.
 
 ## 2026-08-03
 

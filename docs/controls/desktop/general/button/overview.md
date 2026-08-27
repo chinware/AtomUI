@@ -54,7 +54,10 @@ Button 的公共 API 是控件最重要的稳定契约。公共属性、事件�
 - `IsDanger`、`IsGhost`、`IsLoading`。
 - `SizeType`、`Icon`、`IconPlacement`、`IconWidth`、`IconHeight`。
 - `IsMotionEnabled`、`IsWaveSpiritEnabled`。
-- `CustomBackground`。
+
+Root 表面定制 API：
+
+- `Background` / `BorderBrush`（`TemplatedControl` 标准属性）：Button 表面定制的唯一通道，不设平行定制属性。模板 `Frame` 直接 `TemplateBinding` 这两个属性，用户本地值按 Avalonia 优先级高于主题 Style / StyleTrigger——定制期间 hover、pressed、disabled 引起的背景或边框变色保持定制值，语义与内联样式（本地值优先于状态类）一致；清除定制后恢复主题状态机。渐变、图片等非纯色表面同样通过 `Background` 表达。
 
 正交 API：
 
@@ -86,8 +89,6 @@ public ButtonVariant? Variant { get; set; }
 
 `ButtonColor` 不暴露 `Link`。`ButtonType.Link` 是兼容入口，内部映射到链接视觉。
 
-`CustomBackground` 表示 Button normal 状态的受控自定义背景覆层，主要用于渐变、图片或其他非纯色表面。它不是颜色语义，不参与 `Color + Variant` 的状态归一、文字色、边框色或阴影计算，也不作为 wave 的直接取色源。`CustomBackground == null` 表示不启用自定义背景覆层。
-
 `SizeType` 使用可自定义尺寸模型，支持 `Large`、`Middle`、`Small` 和 `Custom`。`Large`、`Middle`、`Small` 是 Button
 预设尺寸档，主题通过对应 ControlHeight Token 设置 `MinHeight` 基线，并由内容、Padding 和其他布局属性决定是否向上
 扩展。`Custom` 不设置预设高度基线，表示用户希望基于 Button 现有属性进行实例级尺寸定制，而不是引入 Button 专属的
@@ -113,8 +114,7 @@ Template part 与主题入口：
 | --- | --- |
 | `PART_WaveSpirit` | 承载点击 wave 反馈。 |
 | `ShadowsFrame` | 承载按钮阴影。 |
-| `Frame` | 承载主体背景、边框、圆角和尺寸基底。 |
-| `CustomBackgroundLayer` | 主题内部自定义背景覆层，不作为用户 template part。 |
+| `Frame` | 承载主体背景、边框、圆角和尺寸基底；`Background` / `BorderBrush` 直接 `TemplateBinding` owner 属性，是 root 定制的落点。 |
 | `PART_RootLayout` | 排列 loading icon、icon 和 content，并根据 `IconPlacement` 调整用户 icon 位置。 |
 | `PART_LoadingIcon` | 展示 loading 状态图标，宽高通过 `TemplateBinding` 跟随 `IconWidth`、`IconHeight`。 |
 | `PART_ButtonIcon` | 展示用户设置的 icon，位置由 `IconPlacement` 控制，宽高通过 `TemplateBinding` 跟随 `IconWidth`、`IconHeight`。 |
@@ -129,7 +129,7 @@ Button 支持以下 Semantic Part：
 | `content` | `.semantic-content` | `Single` | 用户内容展示与排版区域。 |
 
 完整的 Selector、`ContractType`、存在条件、逐 Part 定制说明、状态矩阵和排除边界见
-[Button Semantic Part 契约](semantic-part.md)。`PART_WaveSpirit`、`ShadowsFrame`、`Frame`、`CustomBackgroundLayer` 和
+[Button Semantic Part 契约](semantic-part.md)。`PART_WaveSpirit`、`ShadowsFrame`、`Frame` 和
 `PART_RootLayout` 属于 Button Composition Model，不是公开 Semantic Part。
 
 ## 4. 行为与状态模型
@@ -154,11 +154,11 @@ Button 的 effective state 由 C# 层归一，AXAML 主题只消费已经归一�
 - `EffectiveIsDanger`、`EffectiveIsGhost`、`EffectiveIsBordered`。
 - `EffectiveBorderThickness`、`EffectiveCornerRadius`。
 - `WaveSpiritType`。
-- icon-only、loading、custom background 可见性相关伪类。
+- icon-only、loading 相关伪类。
 
 ## 5. 视觉与主题模型
 
-Button 模板应保持阴影层、主体绘制层、内容层、wave 层和自定义背景覆层的职责分离。可以移除无明确职责的包装层，但不得合并承担不同视觉职责的节点。
+Button 模板应保持阴影层、主体绘制层、内容层和 wave 层的职责分离。可以移除无明确职责的包装层，但不得合并承担不同视觉职责的节点。
 
 Button 主题采用分层变量模型，避免直接展开 `Color × Variant × State` 的组合样式。
 
@@ -171,9 +171,6 @@ Variant Selector
 
 State Selector
   将 Normal / PointerOver / Pressed / Disabled / Loading 状态应用到最终视觉属性
-
-Custom Background Selector
-  在受支持状态显示自定义背景覆层，在 hover / pressed / disabled / danger 状态隐藏覆层
 ```
 
 用于 AXAML `Setter`、selector、动态资源和主题切换的变量应定义为 internal `StyledProperty`。普通 CLR 属性不适合作为主题变量，`DirectProperty` 仅适用于不参与 Style 系统的内部运行时状态。
@@ -216,7 +213,10 @@ Button 与 CompactSpace、FormItem、Wave 和宿主注册协同。`Color + Varia
 - wave 播放条件不变；播放前必须从 Button 当前最终视觉属性解析 wave brush，依次检查有效实色
   `BorderBrush` 和 `Background`，使 Theme 状态、Semantic root Style 与普通用户 Style 使用同一视觉事实源。
 - 透明、纯白或非实色的最终 Brush 不作为 wave 颜色；无有效颜色时清除 Button 写入的 wave brush，使
-  `WaveSpiritDecorator` 回到主题默认值。`CustomBackground` 是独立覆层，不参与该取色顺序。
+  `WaveSpiritDecorator` 回到主题默认值。
+- root 表面定制语义保持不变：用户在 Button 上设置的本地 `Background` / `BorderBrush` 直接由模板 `Frame`
+  渲染并冻结该属性槽在 hover / pressed / disabled 的状态变色，清除后恢复主题状态机；不得重新引入平行
+  定制属性或模板内定制覆层。
 - 同一 Button 家族主题资产在 Native 与 Browser 支持宿主下保持同一 API 语义，不通过平台专用主题资产复制视觉。
 
 如果实现某项能力时无法保持这些不变量，应先停止实现，说明原因、影响范围、替代方案和迁移方式，并获得授权。
@@ -236,11 +236,13 @@ Button 与 CompactSpace、FormItem、Wave 和宿主注册协同。`Color + Varia
 - 品牌色文本动作使用 `Color=Primary + Variant=Text`，其 normal、hover、pressed 状态跟随当前主题主色色阶。
 - Danger Text 使用错误语义色阶，与品牌主色保持独立。
 
-### 8.2 CustomBackground 视觉覆层模型
+### 8.2 Root 表面定制模型
 
-`CustomBackground` 是 Button 的受控视觉覆层模型，用于表达 normal 状态下的自定义按钮表面。覆层只在 `EffectiveVariant=Solid`、非危险态、非禁用态下显示；hover 与 pressed 状态隐藏覆层，露出标准 Button 状态背景。
-
-自定义背景覆层是主题内部实现细节，不形成用户可依赖的 `/template/` 样式入口。该模型用于表达 normal 状态的受控自定义表面，交互状态回落到 Button 原有语义状态。
+Button 的表面定制由 `TemplatedControl` 标准 `Background` / `BorderBrush` 属性表达，模板 `Frame` 通过
+`TemplateBinding` 直接渲染这两个属性。用户本地值按 Avalonia 属性优先级高于主题 Style 与状态 StyleTrigger：
+定制期间该属性槽在 hover、pressed、disabled 的状态变色保持定制值（与内联样式语义一致，本地值优先于状态类），`Foreground`
+文字色、wave 反馈和布局不受影响；清除定制后恢复主题状态机的状态变色。渐变、图片等非纯色表面同样经由
+`Background` 表达，不引入平行定制属性或模板内定制覆层。
 
 ### 8.3 Custom 尺寸模型
 

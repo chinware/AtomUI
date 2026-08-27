@@ -17,6 +17,16 @@
   - Add regression coverage that rejects Button-family Browser theme override assets in source and generated theme manifests.
   - Add Desktop.Controls coverage that rejects Browser-specific theme asset folders while keeping exact Browser unsupported-control identity filtering.
 
+## 2026-08-27
+
+- API (Breaking)
+  - Remove the public `CustomBackground` property, the internal `HasCustomBackground` flag and the template `CustomBackgroundLayer` overlay from Button and DropdownButton. The property duplicated the standard `Background` responsibility during the period when root customization was broken.
+  - Migration: set the standard `Background` (or `BorderBrush`) directly on the button. Semantic change: a customized surface now keeps the custom value across hover, pressed and disabled states (matching inline style semantics), instead of fading out to the state background.
+- Theme
+  - Drop the custom background overlay layer and its selector rules from the Button family themes. The frame `Frame` renders `Background` / `BorderBrush` directly via `TemplateBinding`.
+- Tests
+  - Rewrite the custom-background gating tests into root surface contract tests: local `Background` (including gradients) renders on the frame and survives pointerover / pressed / disabled; wave brush keeps resolving from final visual properties; source contract asserts no `CustomBackground` remains in `Button.cs` or Button family themes.
+
 ## 2026-08-13
 
 - Docs

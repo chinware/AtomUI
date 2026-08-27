@@ -8,7 +8,7 @@
 
 ## 1. 实现定位
 
-Button 的实现目标是把兼容 API、正交 `Color + Variant` API、图标尺寸、loading、shape、compact、wave 和自定义背景覆层归一为模板可消费的 stable state。实现文档只描述维护者必须理解的内部结构，不逐个复述私有方法。
+Button 的实现目标是把兼容 API、正交 `Color + Variant` API、图标尺寸、loading、shape、compact 和 wave 归一为模板可消费的 stable state。实现文档只描述维护者必须理解的内部结构，不逐个复述私有方法。
 
 Button.cs 保留公共属性、事件和接口实现入口；内部 helper 可以按职责拆分，但拆分不能改变 public API、模板契约、伪类或渲染结果。
 
@@ -53,7 +53,7 @@ Button 状态流：
 ```text
 ButtonType / IsDanger / IsGhost / IsLoading / Shape / SizeType / Icon
 IconWidth / IconHeight / IconPlacement
-Color? / Variant? / CustomBackground
+Color? / Variant?
       ↓
 Normalize semantic state
       ↓
@@ -67,8 +67,9 @@ Shared ControlTheme visual projection
 
 `Color` 与 `Variant` 为 nullable，是兼容优先级的关键。归一逻辑必须能区分“用户未设置正交 API”和“用户显式设置默认值”。
 
-自定义背景只影响 normal 状态的视觉覆层可见性。它不参与颜色语义、文字色、边框色或阴影计算，也不作为
-wave brush 的直接取色源。
+Root 表面定制不进入归一流程：`Background` / `BorderBrush` 是 `TemplatedControl` 标准属性，由模板 `Frame` 直接
+`TemplateBinding` 渲染；用户本地值按 Avalonia 属性优先级冻结该属性槽的状态变色，清除后回到主题状态机。归一层与
+主题变量不感知、不保存这两个属性的用户值。
 
 兼容 API 与正交 API 使用同一条颜色路径。`ButtonType=Text` 归一为 `Default + Text`，保持中性文字语义；需要品牌色
 Text 时使用 `Primary + Text`。两者都由 `ConfigureVariantThemeVariables()` 生成最终 normal、hover、pressed 主题变量，
@@ -109,12 +110,13 @@ Button owner Style 中的 `ButtonIconStyle` 和 `ButtonContentStyle` 消费 Part
 
 ## 6. 交互与事件处理
 
-Button 交互沿 Avalonia Button 基类处理点击、命令、键盘和 enabled 状态。AtomUI 只在状态同步层补充 loading、wave、icon-only、shape、compact 和 custom background 可见性。
+Button 交互沿 Avalonia Button 基类处理点击、命令、键盘和 enabled 状态。AtomUI 只在状态同步层补充 loading、wave、icon-only、shape 和 compact。
 
 Wave 播放条件必须同时考虑 `IsWaveSpiritEnabled`、`IsMotionEnabled`、disabled、loading 和 Button 语义状态。释放触发
 Wave 时，Button 读取当时已经合并 Theme、状态 selector、Semantic root Style 和用户 Style 的最终视觉属性，按
 `BorderBrush -> Background` 顺序选择有效实色 Brush。透明、纯白和非实色 Brush 不参与取色；没有有效 Brush 时清除
-本地 `WaveBrush`，由 `WaveSpiritDecorator` 使用主题默认值。`CustomBackground` 是独立视觉覆层，不进入该数据流。
+本地 `WaveBrush`，由 `WaveSpiritDecorator` 使用主题默认值。用户定制的 root `Background` / `BorderBrush` 属于最终
+视觉属性，同样参与该取色顺序。
 
 Loading 状态影响 loading icon、原 icon 可见性和交互反馈，但不应通过直接禁用控件来模拟。
 
@@ -139,7 +141,7 @@ Loading 状态影响 loading icon、原 icon 可见性和交互反馈，但不�
   `Width`、`Height`、Min/Max 约束，最后根据受约束高度计算 Circle 正方形边界或 Round 胶囊最小宽度。不得用未应用
   `MinHeight` 的内容高度派生 Shape 几何，否则预设高度基线会在 MeasureCore 末尾单独抬高高度，造成 Circle 椭圆或
   icon-only Button 宽高不一致。
-- 自定义背景：由 `CustomBackground`、`EffectiveVariant`、危险态和 enabled 状态决定覆层是否参与显示。
+- Root 表面：`Background` / `BorderBrush` 由模板 `Frame` 直接渲染，无归一、无中间层；用户本地值冻结该属性槽的状态变色，清除后恢复主题状态机。
 - Wave 几何：Button 暴露 wave 所需边框和圆角，使 wave 与最终按钮边界一致。
 
 这些流程必须保持 C# 层归一、AXAML 层消费的分工。不得把 API 优先级判断下沉到大量 AXAML selector 组合中。
@@ -174,7 +176,7 @@ listener；同一 Part 的 Setter 应合并在一个 Style 中，并在批量 Bu
 
 `IconWidth`、`IconHeight` 使用 Avalonia 属性优先级完成 Theme 默认值与 LocalValue 的覆盖，不增加订阅、运行时 part 遍历或状态变化时的视觉对象创建。两个模板 part 共享同一对属性，因此 loading 切换只改变可见性和默认状态映射，不引入尺寸同步副本。
 
-Custom background 覆层是现有模板内的一层视觉节点，启用时不应增加额外控件实例或重建模板。未设置 `CustomBackground` 时，覆层保持不可见，不应影响默认路径的命中测试、wave 或内容布局。
+Root 表面定制复用 `Frame` 的既有 `TemplateBinding`，不增加模板节点、控件实例、订阅或命中测试区域；未定制路径与默认渲染完全一致。
 
 Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好的资源查找路径。
 
@@ -202,8 +204,8 @@ Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好�
   `.semantic-root`。
 - 普通用户 icon 和非 loading 的 icon-only 用户 icon 保持 `IconSize*` 默认值；只有 icon-only loading 默认使用 `OnlyIconSize*`。
 - DropdownButton 继承同一图标尺寸属性与投影规则，`OpenIndicator` 继续由独立的 DropdownButton 主题尺寸控制；SplitButton 不纳入这一属性继承范围。
-- `CustomBackgroundLayer` 不成为用户可依赖 template part。
-- wave brush 不从 `CustomBackground` 覆层或内部模板节点反推；Button root 的最终 hover、pressed 或外部样式结果是
+- Root 表面定制不得重新引入平行定制属性或模板内定制覆层；`Background` / `BorderBrush` 的本地值语义（冻结该属性槽状态变色、清除恢复状态机）保持不变。
+- wave brush 不从内部模板节点反推；Button root 的最终 hover、pressed 或外部样式结果是
   合法取色输入。
 - CompactSpace 圆角和边框折叠行为不变。
 - 同一 Button 家族主题资产必须在 Native 与 Browser 支持宿主下保持同一 API 语义；不得维护
@@ -221,9 +223,11 @@ Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好�
 - 状态同步：覆盖 disabled、loading、hover、pressed、icon-only、circle、round；预设 `MinHeight` 与 icon-only、Circle、
   Round 组合必须验证最终 Bounds、宽高关系、垂直居中和 loading 替代节点。
 - 图标投影：覆盖 Button、DropdownButton 模板的两个 part，并验证 Browser 注册使用同一套共享主题资产；验证普通 icon-only 仍使用 `IconSize*`、只有 icon-only loading 使用 `OnlyIconSize*`，并验证非正方形本地尺寸同时作用于用户 icon 和 loading icon。
-- Wave：覆盖危险态、预设色、Semantic root Style、运行时最终 Brush 更新、custom background，以及 disabled /
+- Wave：覆盖危险态、预设色、Semantic root Style、运行时最终 Brush 更新、root `Background` 定制取色，以及 disabled /
   loading 播放条件；验证取色发生在每次播放前，不缓存初始化颜色。
-- Theme：检查 default、primary、dashed、text、link、solid、outlined、filled、danger 和 custom background 视觉；Text
+- Root 表面：验证本地 `Background`（含渐变）与 `BorderBrush` 由 `Frame` 渲染，并在 pointerover、pressed、disabled
+  下保持定制值；清除后状态变色恢复；`Button.cs` 与 Button 家族主题不再包含 `CustomBackground`。
+- Theme：检查 default、primary、dashed、text、link、solid、outlined、filled、danger 视觉；Text
   必须覆盖 Default、Primary、Danger 的 normal、hover、pressed 以及主题 Token 动态刷新。
 - 家族控件：检查 DropdownButton 继承图标尺寸 API 且不影响 `OpenIndicator`，SplitButton 保持复合控件边界，IconButton、HyperLinkButton 保持既有同名 API 语义。
 - Semantic Part：验证 registry 中只有 `root/icon/content`，共享 Button 模板实现相同 marker 数量与 ContractType，并用

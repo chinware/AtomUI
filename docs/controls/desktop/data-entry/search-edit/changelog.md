@@ -2,6 +2,11 @@
 
 本文档记录 SearchEdit 控件级设计、API、主题契约、Token 和实现结构的变化。它用于维护控件设计历史，不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-27
+
+- API
+  - Follow the shared input family change: the standard root `Background` / `BorderBrush` now reach `InputControlFrame` through the `AbstractTextInput` relay with inline style semantics, and the SearchEdit theme no longer carries dead owner-level defaults. The full family contract is recorded in the LineEdit family changelog.
+
 ## 2026-08-23
 
 - Architecture
