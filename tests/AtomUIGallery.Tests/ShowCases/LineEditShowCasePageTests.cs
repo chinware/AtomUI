@@ -103,8 +103,8 @@ public class LineEditShowCasePageTests
         semanticExample.ShouldContain("Selector=\"atom|TextArea.style-class-textarea\"");
         semanticExample.ShouldContain("Selector=\"atom|OtpLineEdit.style-class-otp\"");
         semanticExample.ShouldContain("Selector=\"atom|SearchEdit.style-class-search\"");
-        semanticExample.ShouldContain("<Setter Property=\"BorderThickness\" Value=\"{atom:SharedTokenResource LineWidth}\" />");
-        semanticExample.ShouldContain("<Setter Property=\"CornerRadius\" Value=\"{atom:SharedTokenResource BorderRadius}\" />");
+        semanticExample.ShouldNotContain("BorderThickness");
+        semanticExample.ShouldNotContain("CornerRadius");
         semanticExample.ShouldContain("Selector=\"atom|TextArea.style-class-textarea /template/ atom|TextBlock.semantic-count\"");
         semanticExample.ShouldContain("Selector=\"atom|SearchEdit.style-class-search /template/ .semantic-scope-input-frame /template/ atom|Button.semantic-button\"");
         CountOccurrences(semanticExample, "<Setter Property=\"Foreground\" Value=\"#4DA8DA\" />").ShouldBe(2);

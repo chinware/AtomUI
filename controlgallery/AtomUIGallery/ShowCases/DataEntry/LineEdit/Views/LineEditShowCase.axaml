@@ -725,16 +725,12 @@
                     <StackPanel.Styles>
                         <Style Selector="atom|LineEdit.style-class-base">
                             <Setter Property="Width" Value="320" />
-                            <Setter Property="BorderThickness" Value="{atom:SharedTokenResource LineWidth}" />
-                            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
                         </Style>
                         <Style Selector="atom|LineEdit.style-class-fn">
                             <Setter Property="BorderBrush" Value="#696FC7" />
                         </Style>
                         <Style Selector="atom|TextArea.style-class-textarea">
                             <Setter Property="Width" Value="320" />
-                            <Setter Property="BorderThickness" Value="{atom:SharedTokenResource LineWidth}" />
-                            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
                             <Setter Property="BorderBrush" Value="#BDE3C3" />
                         </Style>
                         <Style Selector="atom|TextArea.style-class-textarea /template/ atom|TextBlock.semantic-count">
