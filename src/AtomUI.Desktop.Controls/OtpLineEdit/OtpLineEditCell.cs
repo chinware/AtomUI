@@ -3,8 +3,10 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 
 using AvaloniaTextBox = Avalonia.Controls.TextBox;
 
@@ -58,6 +60,7 @@ internal class OtpLineEditCell : InputControlFrame
     #endregion
 
     private OtpTextBox? _textBox;
+    private OtpLineEdit? _owner;
 
     private const string CellActivePseudoClass = ":cell-active";
     private const string InputTargetPseudoClass = ":input-target";
@@ -74,6 +77,24 @@ internal class OtpLineEditCell : InputControlFrame
     {
         base.OnLoaded(e);
         Dispatcher.Post(this.EnableTransitions);
+    }
+
+    private void RelayOwnerOverride(AvaloniaProperty sourceProperty, AvaloniaProperty targetProperty)
+    {
+        if (_owner is null)
+        {
+            return;
+        }
+
+        var value = _owner.GetValue(sourceProperty);
+        if (value is null || ReferenceEquals(value, AvaloniaProperty.UnsetValue))
+        {
+            ClearValue(targetProperty);
+        }
+        else
+        {
+            SetValue(targetProperty, value, BindingPriority.LocalValue);
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -120,10 +141,42 @@ internal class OtpLineEditCell : InputControlFrame
         }
     }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+
+        _owner = this.GetVisualAncestors().OfType<OtpLineEdit>().FirstOrDefault();
+        if (_owner is not null)
+        {
+            _owner.PropertyChanged += OwnerPropertyChanged;
+            RelayOwnerOverride(OtpLineEdit.CellWidthProperty, WidthProperty);
+            RelayOwnerOverride(OtpLineEdit.CellBorderBrushProperty, BorderBrushProperty);
+        }
+    }
+
+    private void OwnerPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs change)
+    {
+        if (change.Property == OtpLineEdit.CellWidthProperty)
+        {
+            RelayOwnerOverride(change.Property, WidthProperty);
+        }
+        else if (change.Property == OtpLineEdit.CellBorderBrushProperty)
+        {
+            RelayOwnerOverride(change.Property, BorderBrushProperty);
+        }
+    }
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
 
+        if (_owner is not null)
+        {
+            _owner.PropertyChanged -= OwnerPropertyChanged;
+            ClearValue(WidthProperty);
+            ClearValue(BorderBrushProperty);
+        }
+        _owner = null;
         _textBox = null;
     }
 }

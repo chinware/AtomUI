@@ -7,6 +7,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
+using Avalonia.Media;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
@@ -69,6 +70,12 @@ public class OtpLineEdit : TemplatedControl,
 
     public static readonly StyledProperty<IDataTemplate?> SeparatorTemplateProperty =
         AvaloniaProperty.Register<OtpLineEdit, IDataTemplate?>(nameof(SeparatorTemplate));
+
+    public static readonly StyledProperty<double?> CellWidthProperty =
+        AvaloniaProperty.Register<OtpLineEdit, double?>(nameof(CellWidth));
+
+    public static readonly StyledProperty<IBrush?> CellBorderBrushProperty =
+        AvaloniaProperty.Register<OtpLineEdit, IBrush?>(nameof(CellBorderBrush));
 
     public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
         CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<OtpLineEdit>();
@@ -158,6 +165,18 @@ public class OtpLineEdit : TemplatedControl,
     {
         get => GetValue(SeparatorTemplateProperty);
         set => SetValue(SeparatorTemplateProperty, value);
+    }
+
+    public double? CellWidth
+    {
+        get => GetValue(CellWidthProperty);
+        set => SetValue(CellWidthProperty, value);
+    }
+
+    public IBrush? CellBorderBrush
+    {
+        get => GetValue(CellBorderBrushProperty);
+        set => SetValue(CellBorderBrushProperty, value);
     }
 
     public CustomizableSizeType SizeType
