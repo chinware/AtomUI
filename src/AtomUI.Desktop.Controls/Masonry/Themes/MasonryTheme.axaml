@@ -20,7 +20,8 @@
                     MaxColumnCount="{Binding MaxColumnCount, RelativeSource={RelativeSource AncestorType=atom:Masonry}}"
                     ColumnGap="{Binding ColumnGap, RelativeSource={RelativeSource AncestorType=atom:Masonry}}"
                     RowGap="{Binding RowGap, RelativeSource={RelativeSource AncestorType=atom:Masonry}}"
-                    Gutter="{Binding Gutter, RelativeSource={RelativeSource AncestorType=atom:Masonry}}" />
+                    Gutter="{Binding Gutter, RelativeSource={RelativeSource AncestorType=atom:Masonry}}"
+                    LayoutStrategy="{Binding LayoutStrategy, RelativeSource={RelativeSource AncestorType=atom:Masonry}}" />
             </ItemsPanelTemplate>
         </Setter>
     </ControlTheme>

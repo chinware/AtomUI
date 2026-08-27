@@ -61,8 +61,9 @@ Masonry 本身没有 hover、pressed、disabled、loading 或 checked 等交互�
 - 子项显式列。
 - 子项是否整行。
 - 最终有效列分配。
+- 自动列分配策略，以及 `StableColumns` 下按 item container 实例维护的已提交列归属。
 
-`Tab`、读屏顺序、logical children 顺序和 item container 顺序必须保持 `ItemsControl` 源集合顺序。shortest-column 视觉排列不会重排 logical order，也不会改变数据绑定容器生成顺序。
+`Tab`、读屏顺序、logical children 顺序和 item container 顺序必须保持 `ItemsControl` 源集合顺序。两种列分配策略都只改变视觉位置，不重排 logical order，也不改变数据绑定容器生成顺序。
 
 ## Theme and Token Boundaries
 
@@ -108,6 +109,8 @@ Token 边界：
 - 不改变 `ColumnInfo`、`ColumnCount` 与容器自适应列数之间的优先级。
 - 不改变 `Gutter` 与 `ColumnGap` / `RowGap` 之间的优先级。
 - 不在 `Gutter` 未声明垂直维度时把有效垂直间距隐式改为 `0`。
+- `LayoutStrategy` 的默认值保持 `StableColumns`；经典 shortest-column 重排必须通过 `Reflow` 显式选择。
+- `StableColumns` 在有效列数不变时按 item container 引用保持已提交列归属，不得退化为按索引或数据项值关联。
 - 不把 `Masonry.Column`、`Masonry.Span` 的读取对象从 item container 隐式改为 `ItemTemplate` 内部元素。
 - 不破坏继承自 `ItemsControl` 的 `ItemsPanel` 公共契约。
 - `MasonryPanel` 保持 `internal`，仅作为 `Masonry` 的默认 `ItemsPanel` 装配。
@@ -123,5 +126,12 @@ Token 边界：
 - 直接子元素模式不额外包装子项。
 - `ItemsSource` 模式通过基类生成 `ContentPresenter`，Masonry 不重写容器生成。
 - 响应式断点变化只触发布局失效，不在断点回调中执行完整布局或派发事件。
+- Measure→Arrange 同一有效宽度必须复用已测量的布局结果；不得在正常布局周期中无条件重复执行第二次 `O(items × columns)` 计算。
+- 布局缓存不得跨越宽度、断点或下一次 Measure；Arrange 消费后必须释放缓存引用。
 - `LayoutChanged` 不在 layout pass 内同步派发。
+- `LayoutChanged` 只比较 item container 数量、顺序、有效列和整行状态，不因像素矩形、列宽或列内纵向位置变化派发。
+- `StableColumns` 的持久状态只由 `MasonryPanel` 拥有，并按 item container 引用关联；不得退化为按索引保存。
+- `StableColumns` 只在 Arrange 后提交分配；Measure 不得修改已提交快照。
+- `StableColumns` 不等待异步内容加载完成；调用方通过尺寸约束控制首次分配依据。
+- `Reflow` 每次布局计算都从当前高度状态执行 shortest-column 分配，不读取稳定列快照。
 - 替换 `ItemsPanel` 等价于替换布局引擎，Masonry-specific 布局语义不再由默认面板保证。

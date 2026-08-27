@@ -12,7 +12,7 @@
 | Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/Layout/Masonry` |
 | 控件状态 | Stable |
 
-Masonry 是桌面端瀑布流布局控件，用于将高度不一致的内容块按列组织，并通过 shortest-column 策略降低列高差。它适合图片墙、卡片流、示例集合、资源列表等内容高度不可预先统一的场景。
+Masonry 是桌面端瀑布流布局控件，用于将高度不一致的内容块按列组织。它支持稳定列归属和每轮 shortest-column 重排两种策略，适合图片墙、卡片流、示例集合、资源列表等内容高度不可预先统一的场景。
 
 `Masonry` 派生自 Avalonia `ItemsControl`，同时承担数据绑定入口和子项布局元数据 attached property 容器（`atom:Masonry.Column`、`atom:Masonry.Span`）两种职责。
 
@@ -31,7 +31,7 @@ Masonry 表达的是“密集但有秩序”的内容浏览体验。它利用可
 
 设计语言要求：
 
-- 视觉上按列平衡内容高度，降低单列过长造成的空白和浏览断层。
+- 首次自动分配以当前最短列降低初始列高差；后续由 `LayoutStrategy` 在视觉连续性和实时列高平衡之间取舍。
 - 逻辑上保留子元素顺序，保证读屏、键盘导航、数据绑定容器生成顺序和源集合顺序一致。
 - 不为子项强加卡片外观。子项可以是 Card、Image、ShowCaseItem 或任意 `Control`。
 - 不插入额外视觉包装层，使 VisualTree 保持最小。
@@ -52,6 +52,7 @@ Masonry 的公共 API 采用 Avalonia 原生属性模型。需要 XAML 设置、
 | `ColumnGap` | `double` | `16d` | 水平列间距。 |
 | `RowGap` | `double` | `16d` | 垂直行间距。 |
 | `Gutter` | `ResponsiveGutter?` | `null` | 按媒体断点变化的水平/垂直间距。 |
+| `LayoutStrategy` | `MasonryLayoutStrategy` | `StableColumns` | 控制自动子项在后续布局中保持原列，或每次重新按最短列分配。 |
 
 响应式属性遵循 [AtomUI 响应式机制设计](../../../../architecture/systems/control-infrastructure/responsive.md)。Masonry 不复制断点定义、解析顺序或 partial map 继承规则；它只在 effective state 层提供列数和间距 fallback。
 
@@ -75,13 +76,40 @@ Masonry 的公共 API 采用 Avalonia 原生属性模型。需要 XAML 设置、
 
 attached property 的消费对象是 `MasonryPanel.Children` 中被测量和排列的 item container。直接放置子元素时写在子元素本身；`ItemsSource` 场景应写在 generated container 上，例如通过 `ItemContainerTheme` 绑定。
 
+布局策略：
+
+| 场景 | `StableColumns`（默认） | `Reflow` |
+| --- | --- | --- |
+| 首次成功 Arrange | 自动子项按当前最短列分配；Arrange 完成后，该结果成为后续布局保持的列归属。 | 自动子项按当前最短列分配，不保留跨布局列归属。 |
+| 有效列数不变的 resize | 已提交的 item container 保持原列；重新测量宽高并按列内顺序更新纵向位置。 | 按本轮测得高度从头执行 shortest-column 分配，部分或全部自动子项可能换列。 |
+| 子项内容或 DesiredSize 变化 | 已提交 container 保持原列；只更新尺寸、列高和后续子项纵向位置。 | 从头重新计算自动列分配。 |
+| 新增 item container | 已存在 container 保持原列；新 container 进入当前最短列。 | 包含新增项在内从头重新计算。 |
+| 删除 item container | 其余现存 container 保持原列；删除项不再参与后续布局。 | 对剩余自动子项从头重新计算。 |
+| 有效列数变化 | 既有列归属不再适用，全部自动子项按新列数重新计算。 | 按新列数从头重新计算。 |
+| `Masonry.Column` / `Masonry.Span` 变化 | attached property 继续优先于自动策略，并重新建立全部自动列归属。 | attached property 继续优先于自动策略，本轮按新规则重新计算。 |
+| 策略切换 | 放弃既有稳定列归属；切换后的下一次布局按目标策略执行。 | 放弃既有稳定列归属；后续不再复用列归属。 |
+
+`StableColumns` 的“首次”指 item container 第一次完成 Arrange，而不是图片、网络内容或其他异步内容全部加载完成。若占位内容与最终内容高度不同，首次 Arrange 时的高度决定初始列归属；后续加载只改变该列中的尺寸和纵向位置。需要始终追求当前列高平衡的场景应显式选择 `Reflow`，图片墙希望初始分配也接近最终高度时应提供稳定的宽高比或等价尺寸约束。
+
+默认策略无需声明：
+
+```xml
+<atom:Masonry />
+```
+
+经典 shortest-column 重排需要显式选择：
+
+```xml
+<atom:Masonry LayoutStrategy="Reflow" />
+```
+
 事件模型：
 
 ```csharp
 public event EventHandler<MasonryLayoutChangedEventArgs>? LayoutChanged;
 ```
 
-`LayoutChanged` 是有效布局分配通知，不是像素级滚动或动画事件。它只表达 item container 顺序、有效列和整行状态的变化。
+`LayoutChanged` 是有效布局分配通知，不是像素级滚动或动画事件。它只表达 item container 顺序、有效列和整行状态的变化。`StableColumns` 下仅有尺寸或纵向位置变化时不派发；`Reflow` 也只有最终有效列分配实际变化时才派发。
 
 ## 4. 行为与状态模型
 
@@ -97,8 +125,9 @@ Masonry 本身没有 hover、pressed、disabled、loading 或 checked 等交互�
 - 子项显式列。
 - 子项是否整行。
 - 最终有效列分配。
+- 自动列分配策略，以及 `StableColumns` 下按 item container 实例维护的已提交列归属。
 
-`Tab`、读屏顺序、logical children 顺序和 item container 顺序必须保持 `ItemsControl` 源集合顺序。shortest-column 视觉排列不会重排 logical order，也不会改变数据绑定容器生成顺序。
+`Tab`、读屏顺序、logical children 顺序和 item container 顺序必须保持 `ItemsControl` 源集合顺序。两种列分配策略都只改变视觉位置，不重排 logical order，也不改变数据绑定容器生成顺序。
 
 ## 5. 视觉与主题模型
 
@@ -153,6 +182,8 @@ Masonry 不提供虚拟化语义。瀑布流虚拟化涉及滚动偏移、容器
 - 不改变 `ColumnInfo`、`ColumnCount` 与容器自适应列数之间的优先级。
 - 不改变 `Gutter` 与 `ColumnGap` / `RowGap` 之间的优先级。
 - 不在 `Gutter` 未声明垂直维度时把有效垂直间距隐式改为 `0`。
+- `LayoutStrategy` 的默认值保持 `StableColumns`；经典 shortest-column 重排必须通过 `Reflow` 显式选择。
+- `StableColumns` 在有效列数不变时按 item container 引用保持已提交列归属，不得退化为按索引或数据项值关联。
 - 不把 `Masonry.Column`、`Masonry.Span` 的读取对象从 item container 隐式改为 `ItemTemplate` 内部元素。
 - 不破坏继承自 `ItemsControl` 的 `ItemsPanel` 公共契约。
 - `MasonryPanel` 保持 `internal`，仅作为 `Masonry` 的默认 `ItemsPanel` 装配。

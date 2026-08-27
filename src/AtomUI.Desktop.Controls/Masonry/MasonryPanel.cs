@@ -39,6 +39,9 @@ internal class MasonryPanel : Panel
     public static readonly StyledProperty<ResponsiveGutter?> GutterProperty =
         Masonry.GutterProperty.AddOwner<MasonryPanel>();
 
+    public static readonly StyledProperty<MasonryLayoutStrategy> LayoutStrategyProperty =
+        Masonry.LayoutStrategyProperty.AddOwner<MasonryPanel>();
+
     public int ColumnCount
     {
         get => GetValue(ColumnCountProperty);
@@ -81,6 +84,12 @@ internal class MasonryPanel : Panel
         set => SetValue(GutterProperty, value);
     }
 
+    public MasonryLayoutStrategy LayoutStrategy
+    {
+        get => GetValue(LayoutStrategyProperty);
+        set => SetValue(LayoutStrategyProperty, value);
+    }
+
     #endregion
 
     private List<Rect> _arrangeRects = new();
@@ -92,6 +101,9 @@ internal class MasonryPanel : Panel
     private int[]? _lastColumns;
     private bool[]? _lastFullSpans;
     private bool _hasPublishedLayout;
+    private readonly Dictionary<Control, int> _stableColumns = new(ReferenceEqualityComparer.Instance);
+    private int _stableColumnCount;
+    private bool _hasStableAssignments;
     private MediaBreakPoint? _breakPoint;
     private IMediaBreakAwareControl? _mediaOwner;
 
@@ -104,7 +116,8 @@ internal class MasonryPanel : Panel
             MaxColumnCountProperty,
             ColumnGapProperty,
             RowGapProperty,
-            GutterProperty);
+            GutterProperty,
+            LayoutStrategyProperty);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -118,11 +131,21 @@ internal class MasonryPanel : Panel
         }
     }
 
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == LayoutStrategyProperty)
+        {
+            ClearStableAssignments();
+        }
+    }
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
         _hasMeasuredLayout = false;
         _measuredLayout = null;
+        ClearStableAssignments();
         if (_mediaOwner != null)
         {
             _mediaOwner.MediaBreakPointChanged -= HandleMediaBreakChanged;
@@ -135,6 +158,12 @@ internal class MasonryPanel : Panel
         _breakPoint = args.MediaBreakPoint;
         _hasMeasuredLayout = false;
         _measuredLayout = null;
+        InvalidateMeasure();
+    }
+
+    internal void InvalidateStableAssignments()
+    {
+        ClearStableAssignments();
         InvalidateMeasure();
     }
 
@@ -151,9 +180,15 @@ internal class MasonryPanel : Panel
     protected override Size ArrangeOverride(Size finalSize)
     {
         var effectiveWidth = ResolveEffectiveWidth(finalSize.Width);
-        var layout = _hasMeasuredLayout && AreClose(_measuredEffectiveWidth, effectiveWidth)
+        var canReuseMeasuredLayout = _hasMeasuredLayout &&
+                                      AreClose(_measuredEffectiveWidth, effectiveWidth);
+        // A ScrollViewer (and similar hosts) can measure us with an unbounded width and then
+        // arrange us at the viewport width. In that case DesiredSize was produced for a different
+        // column width, so arranging it without a fresh child measure leaves height-dependent
+        // masonry positions stale and causes visible reflow when content reports its real size.
+        var layout = canReuseMeasuredLayout
             ? _measuredLayout!.Value
-            : CalculateLayout(finalSize.Width, measureChildren: false);
+            : CalculateLayout(finalSize.Width, measureChildren: true);
         _hasMeasuredLayout = false;
         _measuredLayout = null;
         PublishLayout(layout);
@@ -163,6 +198,7 @@ internal class MasonryPanel : Panel
             Children[i].Arrange(_arrangeRects[i]);
         }
 
+        CommitStableAssignments(layout);
         MaybeNotifyLayoutChanged();
         return finalSize;
     }
@@ -234,7 +270,7 @@ internal class MasonryPanel : Panel
                 var explicitColumn = child.GetValue(Masonry.ColumnProperty);
                 var columnIndex = explicitColumn.HasValue
                     ? Math.Clamp(explicitColumn.Value, 0, columnCount - 1)
-                    : IndexOfShortestColumn(columnHeights);
+                    : ResolveColumnIndex(child, columnHeights, columnCount);
                 var x = columnIndex * (columnWidth + columnGap);
                 var y = columnHeights[columnIndex] > 0 ? columnHeights[columnIndex] + rowGap : 0;
                 rects.Add(new Rect(x, y, columnWidth, childHeight));
@@ -244,7 +280,7 @@ internal class MasonryPanel : Panel
             }
         }
 
-        return new MasonryLayout(width, Max(columnHeights), rects, columns, fullSpans);
+        return new MasonryLayout(width, Max(columnHeights), columnCount, rects, columns, fullSpans);
     }
 
     private double ResolveAvailableWidth(double availableWidth, double columnGap)
@@ -337,6 +373,58 @@ internal class MasonryPanel : Panel
         return columnIndex;
     }
 
+    private int ResolveColumnIndex(Control child, double[] columnHeights, int columnCount)
+    {
+        var shortestColumn = IndexOfShortestColumn(columnHeights);
+        if (LayoutStrategy == MasonryLayoutStrategy.Reflow ||
+            !_hasStableAssignments ||
+            _stableColumnCount != columnCount ||
+            !_stableColumns.TryGetValue(child, out var previousColumn))
+        {
+            return shortestColumn;
+        }
+
+        if (previousColumn < 0 || previousColumn >= columnCount)
+        {
+            return shortestColumn;
+        }
+
+        return previousColumn;
+    }
+
+    private void CommitStableAssignments(MasonryLayout layout)
+    {
+        if (LayoutStrategy != MasonryLayoutStrategy.StableColumns)
+        {
+            return;
+        }
+
+        _stableColumns.Clear();
+        for (var i = 0; i < Children.Count && i < layout.Columns.Count; i++)
+        {
+            if (!Children[i].IsVisible || layout.FullSpans[i])
+            {
+                continue;
+            }
+
+            var column = layout.Columns[i];
+            if (column >= 0 && column < layout.ColumnCount)
+            {
+                _stableColumns[Children[i]] = column;
+            }
+        }
+
+        _stableColumnCount = layout.ColumnCount;
+        _hasStableAssignments = true;
+    }
+
+    private void ClearStableAssignments()
+    {
+        _stableColumns.Clear();
+        _stableColumnCount = 0;
+        _hasStableAssignments = false;
+    }
+
     private static double Max(double[] values)
     {
         var max = 0d;
@@ -406,6 +494,7 @@ internal class MasonryPanel : Panel
     private readonly record struct MasonryLayout(
         double Width,
         double Height,
+        int ColumnCount,
         List<Rect> Rects,
         List<int> Columns,
         List<bool> FullSpans);

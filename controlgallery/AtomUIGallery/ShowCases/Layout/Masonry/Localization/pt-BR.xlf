@@ -39,8 +39,8 @@
     </unit>
     <unit id="DynamicDescription">
       <segment>
-        <source>Demonstrate how masonry layout updates dynamically. Use item.column to keep items in place.</source>
-        <target state="translated">Demonstrate how masonry layout updates dynamically. Use item.column to keep items in place.</target>
+        <source>Demonstrate dynamic item updates and explicit Masonry.Column assignments.</source>
+        <target state="translated">Demonstra atualizações dinâmicas de itens e atribuições explícitas de Masonry.Column.</target>
       </segment>
     </unit>
     <unit id="DynamicTitle">
@@ -51,8 +51,8 @@
     </unit>
     <unit id="ImageDescription">
       <segment>
-        <source>Positions are adjusted dynamically as images load.</source>
-        <target state="translated">Positions são adjusted dynamically as imagens load.</target>
+        <source>With StableColumns, images update size and vertical positions as they load without moving existing items between columns.</source>
+        <target state="translated">Com StableColumns, as imagens atualizam o tamanho e as posições verticais durante o carregamento sem mover os itens existentes entre colunas.</target>
       </segment>
     </unit>
     <unit id="ImageTitle">
@@ -63,14 +63,14 @@
     </unit>
     <unit id="PageDescription">
       <segment>
-        <source>Masonry arranges cards, images, or arbitrary controls into a shortest-column waterfall layout, with fixed or adaptive column counts and row/column gaps.</source>
-        <target state="translated">Masonry arranges cartões, imagens, ou arbitrary controles into a shortest-coluna waterfall layout, com fixed ou adaptive coluna counts e linha/coluna gaps.</target>
+        <source>Masonry uses stable column assignments by default and can opt into classic shortest-column reflow, with fixed or adaptive column counts and row/column gaps.</source>
+        <target state="translated">Masonry mantém as colunas atribuídas por padrão e pode optar pelo refluxo clássico da coluna mais curta, com contagens de colunas fixas ou adaptáveis e espaçamentos entre linhas e colunas.</target>
       </segment>
     </unit>
     <unit id="PageSubtitle">
       <segment>
-        <source>Lay out children of unequal heights into balanced columns.</source>
-        <target state="translated">Lay out children de unequal heights into balanced colunas.</target>
+        <source>Lay out children of unequal heights into stable or reflowing columns.</source>
+        <target state="translated">Organiza itens de alturas diferentes em colunas estáveis ou com refluxo.</target>
       </segment>
     </unit>
     <unit id="ResponsiveDescription">

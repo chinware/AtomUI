@@ -39,8 +39,8 @@
     </unit>
     <unit id="DynamicDescription">
       <segment>
-        <source>Demonstrate how masonry layout updates dynamically. Use item.column to keep items in place.</source>
-        <target state="translated">展示瀑布流动态更新的效果，配合 item.column 固化位置。</target>
+        <source>Demonstrate dynamic item updates and explicit Masonry.Column assignments.</source>
+        <target state="translated">展示瀑布流子项的动态增删和显式 Masonry.Column 列分配。</target>
       </segment>
     </unit>
     <unit id="DynamicTitle">
@@ -51,8 +51,8 @@
     </unit>
     <unit id="ImageDescription">
       <segment>
-        <source>Positions are adjusted dynamically as images load.</source>
-        <target state="translated">随加载动态调整位置。</target>
+        <source>With StableColumns, images update size and vertical positions as they load without moving existing items between columns.</source>
+        <target state="translated">在 StableColumns 策略下，图片加载时会更新尺寸和纵向位置，但现有项不会在列之间移动。</target>
       </segment>
     </unit>
     <unit id="ImageTitle">
@@ -63,14 +63,14 @@
     </unit>
     <unit id="PageDescription">
       <segment>
-        <source>Masonry arranges cards, images, or arbitrary controls into a shortest-column waterfall layout, with fixed or adaptive column counts and row/column gaps.</source>
-        <target state="translated">Masonry 把卡片、图片或任意控件按最短列策略排列成瀑布流，支持固定列数或自适应列数以及行列间距。</target>
+        <source>Masonry uses stable column assignments by default and can opt into classic shortest-column reflow, with fixed or adaptive column counts and row/column gaps.</source>
+        <target state="translated">Masonry 默认保持已分配列，也可选择经典最短列重排，并支持固定或自适应列数以及行列间距。</target>
       </segment>
     </unit>
     <unit id="PageSubtitle">
       <segment>
-        <source>Lay out children of unequal heights into balanced columns.</source>
-        <target state="translated">将高度不一的子元素按列组织成均衡的瀑布流。</target>
+        <source>Lay out children of unequal heights into stable or reflowing columns.</source>
+        <target state="translated">将不同高度的子项排列为稳定列或动态重排列。</target>
       </segment>
     </unit>
     <unit id="ResponsiveDescription">

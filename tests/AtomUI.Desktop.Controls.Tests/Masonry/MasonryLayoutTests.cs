@@ -37,6 +37,7 @@ public class MasonryLayoutTests
         masonry.ColumnGap.ShouldBe(16d);
         masonry.RowGap.ShouldBe(16d);
         masonry.Gutter.ShouldBeNull();
+        masonry.LayoutStrategy.ShouldBe(MasonryLayoutStrategy.StableColumns);
     }
 
     [Fact]
@@ -81,6 +82,152 @@ public class MasonryLayoutTests
 
         child.Bounds.Height.ShouldBe(80,
             "a changed effective width must invalidate the cached Masonry layout");
+    }
+
+    [Fact]
+    public void Arrange_ReMeasures_Children_When_Unbounded_Measure_Width_Differs_From_Final_Width()
+    {
+        var panel = new TestMasonryPanel
+        {
+            ColumnCount = 2,
+            ColumnGap = 0,
+            RowGap = 0
+        };
+        var first = new WidthDependentHeightControl();
+        var second = new WidthDependentHeightControl();
+        panel.Children.Add(first);
+        panel.Children.Add(second);
+
+        panel.MeasureForTest(new Size(double.PositiveInfinity, double.PositiveInfinity));
+        panel.ArrangeForTest(new Size(400, 400));
+
+        first.Bounds.Width.ShouldBe(200, 0.01);
+        first.Bounds.Height.ShouldBe(100, 0.01,
+            "a child measured with an unbounded width must be re-measured for the final Masonry column width");
+        second.Bounds.Height.ShouldBe(100, 0.01);
+    }
+
+    [Fact]
+    public void StableColumns_Strategy_Keeps_Item_Columns_When_Width_Changes()
+    {
+        var narrowFirstPanel = CreateGalleryImagePanel();
+        var narrowColumns = ArrangeAtColumnWidth(narrowFirstPanel, 261.49);
+        narrowColumns.ShouldBe(new[] { 0, 1, 2, 3, 0, 2, 3, 3, 1, 1, 3, 2, 0, 1, 2, 3 });
+
+        var widerColumns = ArrangeAtColumnWidth(narrowFirstPanel, 261.51);
+        widerColumns.ShouldBe(narrowColumns,
+            "StableColumns must not reassign existing cards while the effective column count is unchanged");
+
+        var wideFirstPanel = CreateGalleryImagePanel();
+        var wideColumns = ArrangeAtColumnWidth(wideFirstPanel, 261.51);
+        wideColumns.ShouldBe(new[] { 0, 1, 2, 3, 0, 2, 3, 3, 1, 3, 1, 2, 0, 3, 2, 1 });
+
+        var narrowerColumns = ArrangeAtColumnWidth(wideFirstPanel, 261.49);
+        narrowerColumns.ShouldBe(wideColumns,
+            "StableColumns must preserve assignments while resizing in either direction");
+    }
+
+    [Fact]
+    public void Reflow_Strategy_Recomputes_Item_Columns_When_Width_Changes()
+    {
+        var panel = CreateGalleryImagePanel();
+        panel.LayoutStrategy = MasonryLayoutStrategy.Reflow;
+
+        var narrowColumns = ArrangeAtColumnWidth(panel, 261.49);
+        var widerColumns = ArrangeAtColumnWidth(panel, 261.51);
+
+        widerColumns.ShouldBe(new[] { 0, 1, 2, 3, 0, 2, 3, 3, 1, 3, 1, 2, 0, 3, 2, 1 });
+        widerColumns.ShouldNotBe(narrowColumns,
+            "Reflow must recompute the shortest-column assignment after a resize");
+    }
+
+    [Fact]
+    public void LayoutStrategy_Is_Forwarded_To_The_Default_ItemsPanel()
+    {
+        var masonry = new AtomUI.Desktop.Controls.Masonry
+        {
+            Width = 400,
+            Height = 300,
+            ColumnCount = 2,
+            LayoutStrategy = MasonryLayoutStrategy.Reflow
+        };
+        masonry.Items.Add(new Border { Height = 40 });
+        var window = new AvaloniaWindow
+        {
+            Width = 400,
+            Height = 300,
+            Content = masonry
+        };
+
+        try
+        {
+            window.Show();
+            RunLayoutJobs();
+
+            var panel = masonry.GetVisualDescendants().OfType<MasonryPanel>().Single();
+            panel.LayoutStrategy.ShouldBe(MasonryLayoutStrategy.Reflow);
+
+            masonry.LayoutStrategy = MasonryLayoutStrategy.StableColumns;
+            RunLayoutJobs();
+
+            panel.LayoutStrategy.ShouldBe(MasonryLayoutStrategy.StableColumns);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void StableColumns_Tracks_Existing_Items_By_Control_Instance()
+    {
+        var panel = new TestMasonryPanel
+        {
+            ColumnCount = 2,
+            ColumnGap = 0,
+            RowGap = 0
+        };
+        var first = new Border { Height = 100 };
+        var second = new Border { Height = 200 };
+        var third = new Border { Height = 20 };
+        panel.Children.Add(first);
+        panel.Children.Add(second);
+        panel.Children.Add(third);
+
+        panel.MeasureForTest(new Size(200, double.PositiveInfinity));
+        panel.ArrangeForTest(new Size(200, 400));
+        new[] { first.Bounds.X, second.Bounds.X, third.Bounds.X }.ShouldBe(new[] { 0d, 100d, 0d });
+
+        panel.Children.Insert(0, new Border { Height = 10 });
+        panel.MeasureForTest(new Size(200, double.PositiveInfinity));
+        panel.ArrangeForTest(new Size(200, 400));
+
+        new[] { first.Bounds.X, second.Bounds.X, third.Bounds.X }.ShouldBe(new[] { 0d, 100d, 0d },
+            "inserting an item must not move existing controls merely because their indexes changed");
+    }
+
+    [Fact]
+    public void StableColumns_Recomputes_Assignments_When_Column_Count_Changes()
+    {
+        var panel = new TestMasonryPanel
+        {
+            ColumnCount = 2,
+            ColumnGap = 0,
+            RowGap = 0
+        };
+        for (var i = 0; i < 4; i++)
+        {
+            panel.Children.Add(new Border { Height = 100 });
+        }
+
+        panel.MeasureForTest(new Size(200, double.PositiveInfinity));
+        panel.ArrangeForTest(new Size(200, 400));
+
+        panel.ColumnCount = 3;
+        panel.MeasureForTest(new Size(300, double.PositiveInfinity));
+        panel.ArrangeForTest(new Size(300, 400));
+
+        panel.Children.Select(child => child.Bounds.X).ShouldBe(new[] { 0d, 100d, 200d, 0d });
     }
 
     /// <summary>
@@ -845,6 +992,36 @@ public class MasonryLayoutTests
         Dispatcher.UIThread.RunJobs();
     }
 
+    private static TestMasonryPanel CreateGalleryImagePanel()
+    {
+        var panel = new TestMasonryPanel
+        {
+            ColumnCount = 4,
+            ColumnGap = 16,
+            RowGap = 16,
+            UseLayoutRounding = false
+        };
+        var imageHeights = new[] { 349, 785, 349, 349, 930, 785, 349, 349, 294, 349, 697, 349, 732, 784, 349, 349 };
+        foreach (var imageHeight in imageHeights)
+        {
+            panel.Children.Add(new AspectRatioHeightControl(imageHeight / 523d)
+            {
+                UseLayoutRounding = false
+            });
+        }
+        return panel;
+    }
+
+    private static int[] ArrangeAtColumnWidth(TestMasonryPanel panel, double columnWidth)
+    {
+        var panelWidth = columnWidth * panel.ColumnCount + panel.ColumnGap * (panel.ColumnCount - 1);
+        panel.MeasureForTest(new Size(panelWidth, double.PositiveInfinity));
+        panel.ArrangeForTest(new Size(panelWidth, 2000));
+        return panel.Children
+                    .Select(child => (int)Math.Round(child.Bounds.X / (columnWidth + panel.ColumnGap)))
+                    .ToArray();
+    }
+
     private static void WaitUntil(Func<bool> predicate, string description)
     {
         var timeout = Stopwatch.StartNew();
@@ -890,6 +1067,23 @@ public class MasonryLayoutTests
         protected override Size MeasureOverride(Size availableSize)
         {
             return new Size(Math.Min(availableSize.Width, 100), MeasuredHeight);
+        }
+    }
+
+    private sealed class WidthDependentHeightControl : Control
+    {
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            var width = double.IsFinite(availableSize.Width) ? availableSize.Width : 656;
+            return new Size(width, width / 2);
+        }
+    }
+
+    private sealed class AspectRatioHeightControl(double heightPerWidth) : Control
+    {
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            return new Size(availableSize.Width, availableSize.Width * heightPerWidth);
         }
     }
 

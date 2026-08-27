@@ -39,8 +39,8 @@
     </unit>
     <unit id="DynamicDescription">
       <segment>
-        <source>Demonstrate how masonry layout updates dynamically. Use item.column to keep items in place.</source>
-        <target state="translated">展示瀑布流動態更新的效果，配合 item.column 固化位置。</target>
+        <source>Demonstrate dynamic item updates and explicit Masonry.Column assignments.</source>
+        <target state="translated">展示瀑布流子項的動態增刪和明確 Masonry.Column 欄位分配。</target>
       </segment>
     </unit>
     <unit id="DynamicTitle">
@@ -51,8 +51,8 @@
     </unit>
     <unit id="ImageDescription">
       <segment>
-        <source>Positions are adjusted dynamically as images load.</source>
-        <target state="translated">隨載入動態調整位置。</target>
+        <source>With StableColumns, images update size and vertical positions as they load without moving existing items between columns.</source>
+        <target state="translated">在 StableColumns 策略下，圖片載入時會更新尺寸和縱向位置，但現有項目不會在欄之間移動。</target>
       </segment>
     </unit>
     <unit id="ImageTitle">
@@ -63,14 +63,14 @@
     </unit>
     <unit id="PageDescription">
       <segment>
-        <source>Masonry arranges cards, images, or arbitrary controls into a shortest-column waterfall layout, with fixed or adaptive column counts and row/column gaps.</source>
-        <target state="translated">Masonry 把卡片、圖片或任意控件按最短列策略排列成瀑布流，支援固定列數或自適應列數以及行列間距。</target>
+        <source>Masonry uses stable column assignments by default and can opt into classic shortest-column reflow, with fixed or adaptive column counts and row/column gaps.</source>
+        <target state="translated">Masonry 預設保持已分配欄，也可選擇經典最短欄重排，並支援固定或自適應欄數以及行列間距。</target>
       </segment>
     </unit>
     <unit id="PageSubtitle">
       <segment>
-        <source>Lay out children of unequal heights into balanced columns.</source>
-        <target state="translated">將高度不一的子元素按列組織成均衡的瀑布流。</target>
+        <source>Lay out children of unequal heights into stable or reflowing columns.</source>
+        <target state="translated">將不同高度的子項排列為穩定欄或動態重排欄。</target>
       </segment>
     </unit>
     <unit id="ResponsiveDescription">

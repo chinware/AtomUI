@@ -33,7 +33,7 @@
     </unit>
     <unit id="DynamicDescription">
       <segment>
-        <source>Demonstrate how masonry layout updates dynamically. Use item.column to keep items in place.</source>
+        <source>Demonstrate dynamic item updates and explicit Masonry.Column assignments.</source>
       </segment>
     </unit>
     <unit id="DynamicTitle">
@@ -43,7 +43,7 @@
     </unit>
     <unit id="ImageDescription">
       <segment>
-        <source>Positions are adjusted dynamically as images load.</source>
+        <source>With StableColumns, images update size and vertical positions as they load without moving existing items between columns.</source>
       </segment>
     </unit>
     <unit id="ImageTitle">
@@ -53,12 +53,12 @@
     </unit>
     <unit id="PageDescription">
       <segment>
-        <source>Masonry arranges cards, images, or arbitrary controls into a shortest-column waterfall layout, with fixed or adaptive column counts and row/column gaps.</source>
+        <source>Masonry uses stable column assignments by default and can opt into classic shortest-column reflow, with fixed or adaptive column counts and row/column gaps.</source>
       </segment>
     </unit>
     <unit id="PageSubtitle">
       <segment>
-        <source>Lay out children of unequal heights into balanced columns.</source>
+        <source>Lay out children of unequal heights into stable or reflowing columns.</source>
       </segment>
     </unit>
     <unit id="ResponsiveDescription">

@@ -206,7 +206,7 @@ Grid 是响应式机制的基准控件。
 1. `Gutter` 命中当前断点时，使用响应式水平/垂直间距。
 2. 使用兼容属性 `ColumnGap` 与 `RowGap`。
 
-Masonry 的 shortest-column 布局、整行项、显式列、`ItemsSource` 容器模型和 `LayoutChanged` 事件不属于响应式 resolver 职责。
+Masonry 的 `StableColumns` / `Reflow` 自动列策略、整行项、显式列、`ItemsSource` 容器模型和 `LayoutChanged` 事件不属于响应式 resolver 职责。
 
 ## 7. Fallback 边界
 
