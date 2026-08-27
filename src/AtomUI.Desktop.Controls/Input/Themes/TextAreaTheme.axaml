@@ -200,6 +200,26 @@
             <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextPlaceholder}" />
         </Style>
 
+        <Style Selector="^[StyleVariant=Outlined] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Default][IsInnerBoxHover=True],
+                         ^[StyleVariant=Underlined] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Default][IsInnerBoxHover=True]">
+            <Setter Property="BorderBrush"
+                    Value="{atom:TextAreaTokenResource ColorPrimaryHover}" />
+        </Style>
+        <Style Selector="^:focus-within[StyleVariant=Outlined] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Default],
+                         ^:focus-within[StyleVariant=Underlined] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Default]">
+            <Setter Property="BorderBrush"
+                    Value="{atom:TextAreaTokenResource ColorPrimary}" />
+            <Setter Property="BoxShadow"
+                    Value="{atom:TextAreaTokenResource InputActiveShadow}" />
+        </Style>
+        <Style Selector="^:focus-within[StyleVariant=Filled] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Default]">
+            <Setter Property="BorderBrush"
+                    Value="{atom:TextAreaTokenResource ColorPrimary}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BoxShadow"
+                    Value="{atom:TextAreaTokenResource InputActiveShadow}" />
+        </Style>
+
         <Style Selector="^:disabled">
             <Setter Property="Foreground"
                     Value="{atom:SharedTokenResource ColorTextDisabled}" />

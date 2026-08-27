@@ -75,7 +75,9 @@ Registration、Localization 和 Theme Asset 的扁平 feature 文件。`AtomUI.L
 影子目录的 `<ShadowKey>` 来自 `AtomUI.Build.Tasks` 构建后盖章的
 `output/bin/<Configuration>/netstandard2.0/AtomUI.BuildTasks.ShadowKey.props`（键为编译产物的 SHA256，确定性编译保证
 无变化时键稳定），`_AtomUIStageBuildTasksToolset`（`AtomUI.Repository.targets`）在任务执行前把工具集复制到该目录，
-并清理旧键的过期影子目录（仍被孤儿 TaskHost 锁定的目录跳过重试，不会在迭代开发工具集时无限累积）。
+正常 consumer 构建只追加或复用影子副本，不删除其他键的目录。另一个已完成求值的并发构建可能仍引用旧键；若 staging
+期间清理非当前目录，会在任务延迟加载前删除其 DLL 并随机触发 `MSB4062`。旧影子副本随显式 clean 或整个输出目录清理，
+不得在普通 Build target 中回收。
 NuGet consumer 由 `AtomUI.Generator.props` 回退解析相邻 `tools/netstandard2.0/AtomUI.Build.Tasks.dll`。不得新增功能专用的 Build Tasks
 路径属性或只为该属性增加单独文件。调用 Build Tasks 的 target 必须同时按真实输入 item 门控；没有 AXAML、语言文件或
 linked registration 输入的项目不得仅因导入共享 targets 就要求任务程序集已经存在。这样可以保证直接、干净的项目构建

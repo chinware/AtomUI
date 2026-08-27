@@ -73,6 +73,20 @@ public sealed class BuildLayoutTests
     }
 
     [Fact]
+    public void Build_Task_Shadow_Copies_Are_Not_Removed_During_Consumer_Builds()
+    {
+        var repositoryTargets = XDocument.Load(GetRepoFile("build/AtomUI.Repository.targets"));
+        var stagingTarget = repositoryTargets.Descendants("Target")
+                                              .Single(element =>
+                                                  (string?)element.Attribute("Name") ==
+                                                  "_AtomUIStageBuildTasksToolset");
+
+        stagingTarget.Descendants()
+                     .Where(element => element.Name.LocalName == "RemoveDir")
+                     .ShouldBeEmpty();
+    }
+
+    [Fact]
     public void Generator_Build_Assets_Have_One_Explicit_Manifest()
     {
         var repositoryProps = XDocument.Load(GetRepoFile("build/AtomUI.Repository.props"));

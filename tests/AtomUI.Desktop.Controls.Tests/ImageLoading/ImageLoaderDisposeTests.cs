@@ -34,7 +34,9 @@ public class ImageLoaderDisposeTests
         var loadTask = loader.LoadAsync(
             new ImageLoadRequest(ImageLoadSource.FromBytes(CreatePngHeader())),
             TestContext.Current.CancellationToken).AsTask();
-        await decodeStarted.Task.WaitAsync(TestContext.Current.CancellationToken);
+        await decodeStarted.Task.WaitAsync(
+            TimeSpan.FromSeconds(2),
+            TestContext.Current.CancellationToken);
 
         var disposeTask = Dispatcher.UIThread.InvokeAsync(() =>
         {
@@ -48,11 +50,16 @@ public class ImageLoaderDisposeTests
 
     private static byte[] CreatePngHeader()
     {
-        var bytes = new byte[24];
+        var bytes = new byte[45];
         new byte[] { 0x89, (byte)'P', (byte)'N', (byte)'G', 0x0d, 0x0a, 0x1a, 0x0a }
             .CopyTo(bytes, 0);
+        BinaryPrimitives.WriteUInt32BigEndian(bytes.AsSpan(8, 4), 13);
+        "IHDR"u8.CopyTo(bytes.AsSpan(12));
         BinaryPrimitives.WriteUInt32BigEndian(bytes.AsSpan(16, 4), 2);
         BinaryPrimitives.WriteUInt32BigEndian(bytes.AsSpan(20, 4), 2);
+        bytes[24] = 8;
+        bytes[25] = 6;
+        "IEND"u8.CopyTo(bytes.AsSpan(37));
         return bytes;
     }
 
