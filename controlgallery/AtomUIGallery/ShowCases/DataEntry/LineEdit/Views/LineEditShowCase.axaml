@@ -755,6 +755,10 @@
                             <Setter Property="Foreground" Value="#4DA8DA" />
                             <Setter Property="BorderBrush" Value="#4DA8DA" />
                         </Style>
+                        <Style Selector="atom|SearchEdit.style-class-search /template/ TextPresenter.semantic-input">
+                            <Setter Property="TextElement.Foreground" Value="#4DA8DA" />
+                            <Setter Property="CaretBrush" Value="#4DA8DA" />
+                        </Style>
                         <Style Selector="atom|SearchEdit.style-class-search /template/ .semantic-scope-input-frame /template/ atom|Button.semantic-button">
                             <Setter Property="Foreground" Value="#4DA8DA" />
                             <Setter Property="BorderBrush" Value="#4DA8DA" />

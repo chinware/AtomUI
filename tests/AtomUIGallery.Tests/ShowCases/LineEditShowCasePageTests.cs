@@ -110,8 +110,11 @@ public class LineEditShowCasePageTests
         semanticExample.ShouldNotContain("BorderThickness");
         semanticExample.ShouldNotContain("CornerRadius");
         semanticExample.ShouldContain("Selector=\"atom|TextArea.style-class-textarea /template/ atom|TextBlock.semantic-count\"");
+        semanticExample.ShouldContain("Selector=\"atom|SearchEdit.style-class-search /template/ TextPresenter.semantic-input\"");
         semanticExample.ShouldContain("Selector=\"atom|SearchEdit.style-class-search /template/ .semantic-scope-input-frame /template/ atom|Button.semantic-button\"");
         CountOccurrences(semanticExample, "<Setter Property=\"Foreground\" Value=\"#4DA8DA\" />").ShouldBe(2);
+        semanticExample.ShouldContain("<Setter Property=\"TextElement.Foreground\" Value=\"#4DA8DA\" />");
+        semanticExample.ShouldContain("<Setter Property=\"CaretBrush\" Value=\"#4DA8DA\" />");
         CountOccurrences(semanticExample, "<Setter Property=\"BorderBrush\" Value=\"#4DA8DA\" />").ShouldBe(2);
         CountOccurrences(semanticExample, "#696FC7").ShouldBe(1);
         CountOccurrences(semanticExample, "#BDE3C3").ShouldBe(2);
