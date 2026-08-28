@@ -276,6 +276,24 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
         {
             return false;
         }
+
+        if (!TabReorderHelper.TryResolveItemsList(this, out var list) ||
+            !TabReorderHelper.CanMoveItems(list))
+        {
+            return false;
+        }
+
+        var index = IndexFromContainer(tabStripItem);
+        if (!TabReorderHelper.IsValidIndex(index, list.Count))
+        {
+            index = list.IndexOf(tabStripItem);
+        }
+
+        if (!TabReorderHelper.IsValidIndex(index, list.Count))
+        {
+            return false;
+        }
+
         var closingArgs = new TabStripClosingEventArgs(ClosingEvent, tabStripItem);
         RaiseEvent(closingArgs);
 
@@ -284,14 +302,13 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
             return false;
         }
 
-        if (SelectedItem == tabStripItem)
+        if (SelectedIndex == index)
         {
-            var index = Items.IndexOf(tabStripItem);
             if (index > 0)
             {
                 SelectedIndex = index - 1;
             }
-            else if (Items.Count > 1)
+            else if (list.Count > 1)
             {
                 SelectedIndex = 1;
             }
@@ -301,7 +318,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
             }
         }
         
-        Items.Remove(tabStripItem);
+        list.RemoveAt(index);
         
         var closedArgs = new TabStripClosedEventArgs(ClosedEvent, tabStripItem);
         RaiseEvent(closedArgs);

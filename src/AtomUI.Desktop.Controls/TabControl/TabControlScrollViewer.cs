@@ -193,30 +193,13 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
 
     private void HandleCloseTabRequest(object? sender, RoutedEventArgs args)
     {
-        if (sender is TabControlOverflowMenuItem tabControlMenuItem)
+        if (sender is TabControlOverflowMenuItem { TabItem: { } tabItem } tabControlMenuItem &&
+            TabControl is { } tabControl &&
+            tabControl.CloseTab(tabItem))
         {
-            if (TabControl is not null)
-            {
-                if (TabControl.SelectedItem is TabItem selectedItem)
-                {
-                    if (selectedItem == tabControlMenuItem.TabItem)
-                    {
-                        var     selectedIndex   = TabControl.SelectedIndex;
-                        object? newSelectedItem = null;
-                        if (selectedIndex != 0)
-                        {
-                            newSelectedItem = TabControl.Items[--selectedIndex];
-                        }
-
-                        TabControl.Items.Remove(tabControlMenuItem.TabItem);
-                        TabControl.SelectedItem = newSelectedItem;
-                    }
-                    else
-                    {
-                        TabControl.Items.Remove(tabControlMenuItem.TabItem);
-                    }
-                }
-            }
+            tabControlMenuItem.Click    -= HandleMenuItemClicked;
+            tabControlMenuItem.CloseTab -= HandleCloseTabRequest;
+            tabControlMenuItem.RemoveFromMenu();
         }
     }
 }

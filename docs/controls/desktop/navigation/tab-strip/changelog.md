@@ -2,6 +2,16 @@
 
 本文档记录 TabStrip 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-08-28
+
+- Behavior
+  - Route overflow close requests through `BaseTabStrip.CloseTab`, including mutable `ItemsSource` lists, and reject read-only or fixed-size sources without changing the source collection or flyout.
+
+- Docs
+  - Define overflow menu items as alternate presentations of the source `TabStripItem`, including propagation of effective `IsClosable` and `ContentTemplate` semantics.
+  - Define `BaseOverflowMenuItemTheme` close-button visibility from `IsClosable`, and require overflow close requests to delegate to `BaseTabStrip.CloseTab` so `Closing`, cancellation, selection, collection and `Closed` semantics remain unified.
+  - Require canceled or rejected closes to retain both the source tab and its overflow menu item; only a successful owner close may remove the menu item.
+
 ## 2026-08-25
 
 - Docs

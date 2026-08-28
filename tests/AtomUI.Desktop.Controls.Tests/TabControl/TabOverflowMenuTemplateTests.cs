@@ -94,6 +94,259 @@ public class TabOverflowMenuTemplateTests
     }
 
     [Fact]
+    public void CardTabControl_Overflow_Item_Hides_Close_Button_When_Tab_Is_Not_Closable()
+    {
+        var tabControl = new CardTabControl
+        {
+            Width           = 220,
+            Height          = 180,
+            SelectedIndex   = 0,
+            IsTabClosable   = false,
+            IsMotionEnabled = false
+        };
+        foreach (var tab in CreateTabItems())
+        {
+            tabControl.Items.Add(tab);
+        }
+
+        ShowInWindow(tabControl, window =>
+        {
+            var presenter   = OpenOverflowMenu(tabControl, window);
+            var overflowItem = presenter.MenuFlyout!.Items
+                                         .OfType<TabControlOverflowMenuItem>()
+                                         .First();
+
+            overflowItem.IsClosable.ShouldBeFalse();
+            GetOverflowCloseButton(overflowItem).IsVisible.ShouldBeFalse();
+        });
+    }
+
+    [Fact]
+    public void CardTabStrip_Overflow_Item_Hides_Close_Button_When_Tab_Is_Not_Closable()
+    {
+        var tabStrip = new CardTabStrip
+        {
+            Width           = 220,
+            SelectedIndex   = 0,
+            IsTabClosable   = false,
+            IsMotionEnabled = false
+        };
+        foreach (var tab in CreateTabStripItems())
+        {
+            tabStrip.Items.Add(tab);
+        }
+
+        ShowInWindow(tabStrip, window =>
+        {
+            var presenter   = OpenOverflowMenu(tabStrip, window);
+            var overflowItem = presenter.MenuFlyout!.Items
+                                         .OfType<TabStripOverflowMenuItem>()
+                                         .First();
+
+            overflowItem.IsClosable.ShouldBeFalse();
+            GetOverflowCloseButton(overflowItem).IsVisible.ShouldBeFalse();
+        });
+    }
+
+    [Fact]
+    public void CardTabControl_Overflow_Close_Uses_Owner_Closing_Contract()
+    {
+        var tabControl = new CardTabControl
+        {
+            Width           = 220,
+            Height          = 180,
+            SelectedIndex   = 0,
+            IsTabClosable   = true,
+            IsMotionEnabled = false
+        };
+        foreach (var tab in CreateTabItems())
+        {
+            tabControl.Items.Add(tab);
+        }
+
+        var closingCount = 0;
+        var closedCount  = 0;
+        tabControl.Closing += (_, args) =>
+        {
+            closingCount++;
+            args.Cancel = true;
+        };
+        tabControl.Closed += (_, _) => closedCount++;
+
+        ShowInWindow(tabControl, window =>
+        {
+            var presenter    = OpenOverflowMenu(tabControl, window);
+            var overflowItem = presenter.MenuFlyout!.Items
+                                          .OfType<TabControlOverflowMenuItem>()
+                                          .First();
+            var itemCount    = tabControl.Items.Count;
+            var menuCount    = presenter.MenuFlyout.Items.Count;
+
+            ClickOverflowCloseButton(overflowItem);
+
+            closingCount.ShouldBe(1);
+            closedCount.ShouldBe(0);
+            tabControl.Items.Count.ShouldBe(itemCount);
+            presenter.MenuFlyout.Items.Count.ShouldBe(menuCount);
+            presenter.MenuFlyout.Items.ShouldContain(overflowItem);
+        });
+    }
+
+    [Fact]
+    public void CardTabStrip_Overflow_Close_Uses_Owner_Closing_Contract()
+    {
+        var tabStrip = new CardTabStrip
+        {
+            Width           = 220,
+            SelectedIndex   = 0,
+            IsTabClosable   = true,
+            IsMotionEnabled = false
+        };
+        foreach (var tab in CreateTabStripItems())
+        {
+            tabStrip.Items.Add(tab);
+        }
+
+        var closingCount = 0;
+        var closedCount  = 0;
+        tabStrip.Closing += (_, args) =>
+        {
+            closingCount++;
+            args.Cancel = true;
+        };
+        tabStrip.Closed += (_, _) => closedCount++;
+
+        ShowInWindow(tabStrip, window =>
+        {
+            var presenter    = OpenOverflowMenu(tabStrip, window);
+            var overflowItem = presenter.MenuFlyout!.Items
+                                          .OfType<TabStripOverflowMenuItem>()
+                                          .First();
+            var itemCount    = tabStrip.Items.Count;
+            var menuCount    = presenter.MenuFlyout.Items.Count;
+
+            ClickOverflowCloseButton(overflowItem);
+
+            closingCount.ShouldBe(1);
+            closedCount.ShouldBe(0);
+            tabStrip.Items.Count.ShouldBe(itemCount);
+            presenter.MenuFlyout.Items.Count.ShouldBe(menuCount);
+            presenter.MenuFlyout.Items.ShouldContain(overflowItem);
+        });
+    }
+
+    [Fact]
+    public void CardTabControl_Overflow_Close_Removes_Menu_Item_After_Owner_Succeeds()
+    {
+        var tabControl = new CardTabControl
+        {
+            Width           = 220,
+            Height          = 180,
+            SelectedIndex   = 0,
+            IsTabClosable   = true,
+            IsMotionEnabled = false
+        };
+        foreach (var tab in CreateTabItems())
+        {
+            tabControl.Items.Add(tab);
+        }
+
+        var eventOrder = new List<string>();
+        tabControl.Closing += (_, _) => eventOrder.Add("closing");
+        tabControl.Closed += (_, _) => eventOrder.Add("closed");
+
+        ShowInWindow(tabControl, window =>
+        {
+            var presenter    = OpenOverflowMenu(tabControl, window);
+            var overflowItem = presenter.MenuFlyout!.Items
+                                          .OfType<TabControlOverflowMenuItem>()
+                                          .First();
+            var tabItem = overflowItem.TabItem.ShouldNotBeNull();
+            var itemCount = tabControl.Items.Count;
+
+            ClickOverflowCloseButton(overflowItem);
+
+            eventOrder.ShouldBe(["closing", "closed"]);
+            tabControl.Items.Count.ShouldBe(itemCount - 1);
+            tabControl.Items.ShouldNotContain(tabItem);
+            presenter.MenuFlyout.Items.ShouldNotContain(overflowItem);
+        });
+    }
+
+    [Fact]
+    public void CardTabStrip_Overflow_Close_Removes_Menu_Item_After_Owner_Succeeds()
+    {
+        var tabStrip = new CardTabStrip
+        {
+            Width           = 220,
+            SelectedIndex   = 0,
+            IsTabClosable   = true,
+            IsMotionEnabled = false
+        };
+        foreach (var tab in CreateTabStripItems())
+        {
+            tabStrip.Items.Add(tab);
+        }
+
+        var eventOrder = new List<string>();
+        tabStrip.Closing += (_, _) => eventOrder.Add("closing");
+        tabStrip.Closed += (_, _) => eventOrder.Add("closed");
+
+        ShowInWindow(tabStrip, window =>
+        {
+            var presenter    = OpenOverflowMenu(tabStrip, window);
+            var overflowItem = presenter.MenuFlyout!.Items
+                                          .OfType<TabStripOverflowMenuItem>()
+                                          .First();
+            var tabItem = overflowItem.TabStripItem.ShouldNotBeNull();
+            var itemCount = tabStrip.Items.Count;
+
+            ClickOverflowCloseButton(overflowItem);
+
+            eventOrder.ShouldBe(["closing", "closed"]);
+            tabStrip.Items.Count.ShouldBe(itemCount - 1);
+            tabStrip.Items.ShouldNotContain(tabItem);
+            presenter.MenuFlyout.Items.ShouldNotContain(overflowItem);
+        });
+    }
+
+    [Fact]
+    public void CardTabStrip_Overflow_Close_Removes_Item_From_Writable_ItemsSource()
+    {
+        var source = CreateTabs().ToList();
+        var tabStrip = new CardTabStrip
+        {
+            Width           = 220,
+            ItemsSource     = source,
+            ItemTemplate    = CreateHeaderTemplate(),
+            SelectedIndex   = 0,
+            IsTabClosable   = true,
+            IsMotionEnabled = false
+        };
+
+        var closedCount = 0;
+        tabStrip.Closed += (_, _) => closedCount++;
+
+        ShowInWindow(tabStrip, window =>
+        {
+            var presenter    = OpenOverflowMenu(tabStrip, window);
+            var overflowItem = presenter.MenuFlyout!.Items
+                                          .OfType<TabStripOverflowMenuItem>()
+                                          .First();
+            var tabStripItem = overflowItem.TabStripItem.ShouldNotBeNull();
+            var sourceItem   = tabStripItem.Content.ShouldBeOfType<DemoTab>();
+
+            source.ShouldContain(sourceItem);
+            ClickOverflowCloseButton(overflowItem);
+
+            closedCount.ShouldBe(1);
+            source.ShouldNotContain(sourceItem);
+            tabStrip.Items.Count.ShouldBe(source.Count);
+            presenter.MenuFlyout.Items.ShouldNotContain(overflowItem);
+        });
+    }
+
+    [Fact]
     public void CardTabControl_Pinned_Overflow_Menu_Reopens_After_Detach()
     {
         var tabControl = new CardTabControl
@@ -223,6 +476,20 @@ public class TabOverflowMenuTemplateTests
         return field.GetValue(scrollViewer).ShouldBeOfType<MenuFlyout>();
     }
 
+    private static IconButton GetOverflowCloseButton(BaseOverflowMenuItem overflowItem)
+    {
+        return overflowItem.GetVisualDescendants()
+                           .OfType<IconButton>()
+                           .Single(button => button.Name == "PART_ItemCloseButton");
+    }
+
+    private static void ClickOverflowCloseButton(BaseOverflowMenuItem overflowItem)
+    {
+        var closeButton = GetOverflowCloseButton(overflowItem);
+        closeButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent, closeButton));
+        Dispatcher.UIThread.RunJobs();
+    }
+
     private static FuncDataTemplate<DemoTab> CreateHeaderTemplate()
     {
         return new FuncDataTemplate<DemoTab>(
@@ -233,6 +500,27 @@ public class TabOverflowMenuTemplateTests
     {
         return Enumerable.Range(1, 8)
                          .Select(index => new DemoTab($"Document {index:00}"))
+                         .ToArray();
+    }
+
+    private static TabItem[] CreateTabItems()
+    {
+        return Enumerable.Range(1, 8)
+                         .Select(index => new TabItem
+                         {
+                             Header  = $"Document {index:00}",
+                             Content = $"Content {index:00}"
+                         })
+                         .ToArray();
+    }
+
+    private static TabStripItem[] CreateTabStripItems()
+    {
+        return Enumerable.Range(1, 8)
+                         .Select(index => new TabStripItem
+                         {
+                             Content = $"Document {index:00}"
+                         })
                          .ToArray();
     }
 

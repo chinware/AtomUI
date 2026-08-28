@@ -55,6 +55,13 @@
         <Style Selector="^ /template/ atom|IconButton#PART_ItemCloseButton">
             <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeSM}" />
             <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeSM}" />
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+
+        <Style Selector="^[IsClosable=True]">
+            <Style Selector="^ /template/ atom|IconButton#PART_ItemCloseButton">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
         </Style>
         
         <Style Selector="^:disabled">

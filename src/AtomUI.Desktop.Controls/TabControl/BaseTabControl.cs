@@ -399,7 +399,7 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
     {
         if (ItemsSource is IList list)
         {
-            return IsValidIndex(index, list.Count);
+            return TabReorderHelper.CanMoveItems(list) && IsValidIndex(index, list.Count);
         }
 
         if (ItemsSource is null)

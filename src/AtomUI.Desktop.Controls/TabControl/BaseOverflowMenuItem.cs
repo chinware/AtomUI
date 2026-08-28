@@ -56,6 +56,19 @@ internal class BaseOverflowMenuItem : MenuItem
         NotifyCloseRequest();
     }
 
+    internal void RemoveFromMenu()
+    {
+        if (Parent is MenuFlyoutPresenter menuFlyoutPresenter)
+        {
+            var menuFlyout = menuFlyoutPresenter.MenuFlyout;
+            menuFlyout?.Items.Remove(this);
+            if (menuFlyout?.Items.Count == 0)
+            {
+                Dispatcher.Post(menuFlyoutPresenter.Close);
+            }
+        }
+    }
+
     protected virtual void NotifyCloseRequest()
     {
     }

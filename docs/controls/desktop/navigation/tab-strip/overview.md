@@ -80,8 +80,10 @@ Public API / inherited command / item source / user input
 - Tab 激活触发由 `TabActivationTrigger` 控制，默认值为 `PointerReleased`；按下时只记录候选 Tab，只有鼠标在同一个 Tab 上松开才激活。
 - `TabActivationTrigger=PointerPressed` 表达按下立即激活；该模式仍必须通过统一选择入口更新 `SelectedIndex`、`SelectedItem`、伪类和主题状态。
 - `PointerReleased` 模式下，按下 Tab A、移动到 Tab B 或 Tab 外松开不应激活新 Tab；拖动排序进入 active reorder 后，释放事件不得再触发 Tab 激活。
+- `IsTabClosable` 是生成 `TabStripItem` 的模板级默认值；overflow 菜单使用容器最终生效的 `IsClosable`，因此控件级默认、单项覆盖和 overflow 呈现必须保持同一语义。
 - 拖动排序开启后，排序结果必须提交到 `ItemsSource` 或 `Items` 的逻辑集合顺序；拖动过程采用 Chrome 式轨道内实时让位预览，被拖 Tab 只沿 Tab 轨道主轴移动并覆盖在兄弟 Tab 上方，其他 Tab 通过临时 transform 让出目标位置，不能直接把 `ItemsPresenter.Panel.Children` 当作排序数据源。
 - `TabStripPlacement=Top/Bottom` 时主轴为 X 轴，被拖 Tab 的 Y 位移必须保持为 0；`TabStripPlacement=Left/Right` 时主轴为 Y 轴，被拖 Tab 的 X 位移必须保持为 0。目标位置由被拖 Tab 的前进边缘跨过被覆盖兄弟 Tab 主轴中线决定：向后拖动使用 trailing edge，向前拖动使用 leading edge，相当于覆盖兄弟 Tab 约一半宽度或高度即触发让位，而不是由 pointer 的非主轴偏移决定。
+- overflow 菜单项是对应 `TabStripItem` 的临时替代呈现，不拥有独立的关闭语义；其 `IsClosable` 必须复制源 Tab 的有效值，关闭请求必须回到 `BaseTabStrip.CloseTab` 统一处理。
 
 ## 5. 视觉与主题模型
 
@@ -96,6 +98,7 @@ TabStrip 当前没有专属 Token 文档；主题通过 SharedToken、关联控�
 - 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
 - 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
 - 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
+- `BaseOverflowMenuItemTheme` 必须根据 `IsClosable` 控制 `PART_ItemCloseButton` 的可见性：不可关闭项隐藏关闭按钮，可关闭项显示关闭按钮；该规则对 `TabStrip`、`CardTabStrip` 及其对应 overflow item 统一生效。
 - Browser 或平台特化主题必须保持同一 API 的语义一致。
 
 ## 6. 控件家族或集成关系
@@ -104,12 +107,12 @@ TabStrip 与同分类控件共享尺寸、状态、Token、Gallery 展示和验�
 
 主要协作类型：
 
-- `BaseTabStrip`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `BaseTabStrip`：控件核心或内部协作类型，维护 public surface、页签选择、滚动、overflow、统一关闭流程和拖动排序提交路径。
 - `CardTabStrip`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TabStrip`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `TabStripItem`：集合项、节点或容器类型，承载单项状态和模板协作。
 - `TabStripOverflowMenuItem`：集合项、节点或容器类型，承载单项状态和模板协作。
-- `TabStripScrollViewer`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
+- `TabStripScrollViewer`：控件核心或内部协作类型，收集 overflow 页签、复制呈现状态并把导航/关闭请求 relay 到 owner，不直接拥有关闭或集合删除语义。
 
 集成关系：
 
@@ -152,15 +155,25 @@ TabStrip 的拖动排序是选择与集合模型的扩展能力，由 `IsTabReor
 
 选中状态必须跟随同一个逻辑 item，而不是跟随旧 index。重排完成后，`SelectedItem`、`SelectedIndex`、选中指示条、关闭按钮状态和 overflow 菜单都应从新的集合顺序重新推导，不能用延迟刷新或强制重设选择掩盖状态同步问题。拖动预览期间，如果选中 Tab 是被拖源或正在让位的兄弟 Tab，选中指示条必须叠加对应临时 transform 的主轴位移，使指示条跟随当前视觉位置，而不是停留在旧 layout bounds。
 
-### 8.3 弹层与宿主模型
+### 8.3 溢出页签与关闭模型
+
+当页签空间不足时，`TabStripScrollViewer` 将未完全显示的 `TabStripItem` 投影为 overflow 菜单项。该菜单项只负责导航和转发操作，仍以源 `TabStripItem` 及 `BaseTabStrip` 作为状态和数据 owner。
+
+- 菜单项必须成对复制源 `TabStripItem` 的 `Content`、`ContentTemplate` 和有效 `IsClosable`；复制后的值只服务于当前 flyout 生命周期，不形成第二份业务状态。
+- `BaseOverflowMenuItemTheme` 通过 `IsClosable` 控制 `PART_ItemCloseButton`。`IsClosable=False` 时关闭按钮不可见且不可触发；`IsClosable=True` 时才提供关闭入口。
+- overflow 关闭请求必须调用 `BaseTabStrip.CloseTab`，不得由 `TabStripScrollViewer` 或菜单项直接修改 `Items`。owner 关闭流程负责再次检查 `IsClosable`、触发 `Closing`、处理 `Cancel`、更新选中项、按控件集合契约删除项并触发 `Closed`。
+- 只有 `CloseTab` 成功返回后，overflow 菜单项才允许从当前 flyout 移除；关闭被拒绝或 `Closing.Cancel=True` 时，源页签和菜单项都必须保留。
+- `TabStrip`、`CardTabStrip`、Line/Card TabStripItem 主题和 Desktop/Browser 宿主必须共享上述语义；overflow 仅改变呈现位置，不改变关闭事件顺序或集合所有权。
+
+### 8.4 弹层与宿主模型
 
 TabStrip 涉及弹层、窗口或 overlay 宿主时，打开状态、取消事件、定位和宿主释放必须保持一致。重复打开、关闭、窗口失活和 template reapply 都必须释放旧宿主引用。
 
-### 8.4 动效模型
+### 8.5 动效模型
 
 TabStrip 的动效只表达状态变化反馈，不应改变 public API 语义。初始加载、禁用态和卸载路径应能抑制或取消动效，避免保留旧控件实例。
 
-### 8.5 视觉选项模型
+### 8.6 视觉选项模型
 
 TabStrip 的视觉选项通过 public API 归一为 theme variables、伪类或模板绑定。Token 保存组件语义值，不能保存实例运行时状态或业务色值。
 
@@ -206,6 +219,7 @@ LLMS 导出来源：
 | Public API | 覆盖属性默认值、事件触发、命令和继承语义。 |
 | 状态模型 | 覆盖 selection/checked/active、reorder、motion、visual option、disabled、hover、pressed、focus 以及控件特有状态。 |
 | 拖动排序 | 覆盖 Top/Bottom 横向排序、Left/Right 纵向排序、选中项保持、可写/只读 ItemsSource、取消事件、overflow 自动滚动和 close/add/extra 区域排除。 |
+| 溢出与关闭 | 覆盖 `IsTabClosable=False` 时 overflow 关闭按钮隐藏、不可关闭项不能删除、`Closing` 取消时菜单项保留、成功关闭时 `Closing`/集合更新/`Closed` 顺序一致，以及控件支持的集合路径。 |
 | AXAML/Theme | 检查 template part、伪类、资源 key、Light/Dark 主题和 Browser 主题。 |
 | Token | 确认没有新增专属 Token，主题仍复用 SharedToken 或关联控件 Token。 |
 | Gallery | 走查对应 ShowCase 示例和源码片段入口。 |

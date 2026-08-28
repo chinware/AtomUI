@@ -1,6 +1,4 @@
 ﻿using Avalonia.Controls;
-using Avalonia.Threading;
-
 namespace AtomUI.Desktop.Controls;
 
 internal class TabControlOverflowMenuItem : BaseOverflowMenuItem
@@ -10,19 +8,10 @@ internal class TabControlOverflowMenuItem : BaseOverflowMenuItem
 
     protected override void NotifyCloseRequest()
     {
-        if (Parent is MenuBase menu)
+        if (Parent is MenuBase)
         {
             var eventArgs = new CloseTabRequestEventArgs(CloseTabEvent, TabItem!);
             RaiseEvent(eventArgs);
-            if (menu is MenuFlyoutPresenter menuFlyoutPresenter)
-            {
-                var menuFlyout = menuFlyoutPresenter.MenuFlyout;
-                menuFlyout?.Items.Remove(this);
-                if (menuFlyout?.Items.Count == 0)
-                {
-                    Dispatcher.Post(() => { menu.Close(); });
-                }
-            }
         }
     }
 }
