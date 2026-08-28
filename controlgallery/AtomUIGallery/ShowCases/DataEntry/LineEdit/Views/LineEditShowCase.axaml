@@ -793,7 +793,8 @@
                     <atom:OtpLineEdit
                         Classes="style-class-otp"
                         Length="6"
-                        Separator="*" />
+                        Separator="*"
+                        SeparatorInterval="1" />
 
                     <atom:SearchEdit
                         Classes="style-class-search"

@@ -70,6 +70,36 @@ public class OtpLineEditCellCustomizationTests
         }
     }
 
+    [Fact]
+    public void Separator_Renders_Between_Cells_When_Interval_Is_One()
+    {
+        var otp = new AtomUIOtpLineEdit
+        {
+            Length = 6,
+            Separator = "*",
+            SeparatorInterval = 1,
+            IsMotionEnabled = false
+        };
+
+        var window = Show(otp);
+        try
+        {
+            var separators = otp.GetVisualDescendants()
+                                .OfType<ContentControl>()
+                                .Where(control => control.Classes.Contains("semantic-separator") == false)
+                                .Where(control => control.Name == "PART_SeparatorPresenter")
+                                .ToArray();
+            separators.Length.ShouldBe(6);
+            separators.Count(static separator => separator.IsEffectivelyVisible).ShouldBe(5);
+            separators.Where(static separator => separator.IsEffectivelyVisible)
+                      .ShouldAllBe(static separator => (string?)separator.Content == "*");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     private static IReadOnlyList<OtpLineEditCell> GetCells(AtomUIOtpLineEdit owner)
     {
         return owner.GetVisualDescendants().OfType<OtpLineEditCell>().ToArray();
