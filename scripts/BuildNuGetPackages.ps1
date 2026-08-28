@@ -11,7 +11,7 @@ $ErrorActionPreference = "Stop"
 . "$PSScriptRoot/NuGetPackageProjects.ps1"
 
 if ([string]::IsNullOrWhiteSpace($PackageOutputDir)) {
-    $PackageOutputDir = Join-Path $repositoryRoot "output/Nuget/$BuildType"
+    $PackageOutputDir = Join-Path $repositoryRoot ".artifacts/Nuget/$BuildType"
 }
 $PackageOutputDir = [System.IO.Path]::GetFullPath($PackageOutputDir)
 New-Item -Path $PackageOutputDir -ItemType Directory -Force | Out-Null

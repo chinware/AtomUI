@@ -22,7 +22,7 @@ on:
             default: false
 env:
    SOURCE_DIR: ${{ github.workspace }}
-   BASE_OUTPUT_DIR: ${{ github.workspace }}/output
+   BASE_OUTPUT_DIR: ${{ github.workspace }}/.artifacts
    LOCAL_NUGET_DIR: ${{ github.workspace }}/nuget
 jobs:
    BuildAtomUINuget:

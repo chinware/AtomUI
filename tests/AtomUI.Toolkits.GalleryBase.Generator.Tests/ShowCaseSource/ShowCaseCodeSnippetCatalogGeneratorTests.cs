@@ -274,8 +274,8 @@ public class ShowCaseCodeSnippetCatalogGeneratorTests
         var compilation = CreateCompilation();
         var axamlOriginalPath = "/repo/controlgallery/AtomUIGallery/ShowCases/General/Foo/Views/FooShowCase.axaml";
         var codeBehindOriginalPath = "/repo/controlgallery/AtomUIGallery/ShowCases/General/Foo/Views/FooShowCase.axaml.cs";
-        var axamlMirrorPath = "/repo/output/AtomUIGallery/obj/Debug/GallerySourceCodeDisplay/ShowCases/General/Foo/Views/FooShowCase.axaml.gallerysource";
-        var codeBehindMirrorPath = "/repo/output/AtomUIGallery/obj/Debug/GallerySourceCodeDisplay/ShowCases/General/Foo/Views/FooShowCase.axaml.cs.gallerysource";
+        var axamlMirrorPath = "/repo/.artifacts/AtomUIGallery/obj/Debug/GallerySourceCodeDisplay/ShowCases/General/Foo/Views/FooShowCase.axaml.gallerysource";
+        var codeBehindMirrorPath = "/repo/.artifacts/AtomUIGallery/obj/Debug/GallerySourceCodeDisplay/ShowCases/General/Foo/Views/FooShowCase.axaml.cs.gallerysource";
         var additionalFiles = ImmutableArray.Create<AdditionalText>(
             new InMemoryAdditionalText(
                 axamlMirrorPath,

@@ -241,7 +241,7 @@ Generating native code
 
 ```powershell
 rg -n "Microsoft.DotNet.ILCompiler|runtime.win-x64.Microsoft.DotNet.ILCompiler" `
-  .\output\AtomUIGallery.Desktop\obj\project.assets.json
+  .\.artifacts\AtomUIGallery.Desktop\obj\project.assets.json
 ```
 
 ### 文件验证
@@ -460,12 +460,12 @@ dotnet restore .\controlgallery\AtomUIGallery.Desktop\AtomUIGallery.Desktop.cspr
 ```text
 AtomUIGallery.Desktop.GlobalUsings.g.cs
 AtomUIGallery.Desktop.csproj.FileListAbsolute.txt
-output\<Project>\obj\*.tmp
+.artifacts\<Project>\obj\*.tmp
 ```
 
 常见原因：
 
-- 受限沙箱没有写入 `output/obj` 的权限。
+- 受限沙箱没有写入 `.artifacts/obj` 的权限。
 - 另一个构建进程或 IDE 持有文件。
 - 并行 restore/publish 在同一个中间目录写临时文件。
 
@@ -545,7 +545,7 @@ git update-index --refresh
 - [ ] 日志出现 `Generating native code`。
 - [ ] 没有 `Platform linker not found`。
 - [ ] 没有 `NU1301` 网络错误。
-- [ ] 没有 NuGetScratch lock 或 output/obj 写入权限错误。
+- [ ] 没有 NuGetScratch lock 或 `.artifacts/obj` 写入权限错误。
 
 发布后：
 

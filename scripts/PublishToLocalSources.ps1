@@ -4,12 +4,12 @@ param (
 )
 
 $ErrorActionPreference = "Stop"
-$packageOutputDir = Join-Path $PSScriptRoot "../output/Nuget/$buildType"
+$packageOutputDir = Join-Path $PSScriptRoot "../.artifacts/Nuget/$buildType"
 
 function Push-NuGetPackages {
     [CmdletBinding(SupportsShouldProcess = $true)]
     param(
-        [string]$PackagePath = "../output/Nuget",
+        [string]$PackagePath = "../.artifacts/Nuget",
         [Parameter(Mandatory = $true)]
         [string]$Source
     )

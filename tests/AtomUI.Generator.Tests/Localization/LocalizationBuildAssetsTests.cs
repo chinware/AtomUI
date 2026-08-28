@@ -357,7 +357,7 @@ public class LocalizationBuildAssetsTests
         var configuration = new DirectoryInfo(AppContext.BaseDirectory).Parent?.Name ?? "Debug";
         var buildTasksAssembly = Path.Combine(
             repoRoot,
-            "output",
+            ".artifacts",
             "bin",
             configuration,
             "netstandard2.0",

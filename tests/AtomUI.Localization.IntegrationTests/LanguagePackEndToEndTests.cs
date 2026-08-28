@@ -180,7 +180,7 @@ public sealed partial class LanguagePackEndToEndTests
                 $"-p:RestoreAdditionalProjectFallbackFolders={globalPackages}");
             var assetsFile = Path.Combine(
                 repositoryRoot,
-                "output",
+                ".artifacts",
                 "Consumer",
                 "obj",
                 "project.assets.json");

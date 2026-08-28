@@ -71,9 +71,9 @@ Registration、Localization 和 Theme Asset 的扁平 feature 文件。`AtomUI.L
 `AtomUI.Generator` 时注入同包工具程序集。
 
 所有需要 `AtomUI.Build.Tasks` 的 feature target 都使用唯一属性 `$(AtomUIBuildTasksAssembly)`。Repository 构建将它
-指向每个项目自己的影子副本 `output/<ProjectName>/obj/<Configuration>/AtomUIBuildTasksShadow/<TargetFramework>/<ShadowKey>/AtomUI.Build.Tasks.dll`；
+指向每个项目自己的影子副本 `.artifacts/<ProjectName>/obj/<Configuration>/AtomUIBuildTasksShadow/<TargetFramework>/<ShadowKey>/AtomUI.Build.Tasks.dll`；
 影子目录的 `<ShadowKey>` 来自 `AtomUI.Build.Tasks` 构建后盖章的
-`output/bin/<Configuration>/netstandard2.0/AtomUI.BuildTasks.ShadowKey.props`（键为编译产物的 SHA256，确定性编译保证
+`.artifacts/bin/<Configuration>/netstandard2.0/AtomUI.BuildTasks.ShadowKey.props`（键为编译产物的 SHA256，确定性编译保证
 无变化时键稳定），`_AtomUIStageBuildTasksToolset`（`AtomUI.Repository.targets`）在任务执行前把工具集复制到该目录，
 正常 consumer 构建只追加或复用影子副本，不删除其他键的目录。另一个已完成求值的并发构建可能仍引用旧键；若 staging
 期间清理非当前目录，会在任务延迟加载前删除其 DLL 并随机触发 `MSB4062`。旧影子副本随显式 clean 或整个输出目录清理，

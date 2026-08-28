@@ -226,7 +226,7 @@ Generating native code
 
 ```bash
 rg -n "Microsoft.DotNet.ILCompiler|runtime.linux-x64.Microsoft.DotNet.ILCompiler" \
-  output/AtomUIGallery.Desktop/obj/project.assets.json
+  .artifacts/AtomUIGallery.Desktop/obj/project.assets.json
 ```
 
 ### 文件验证

@@ -133,6 +133,7 @@ public sealed class LinkedRegistrationPublishFixturesTests
         source.ShouldContain("restore_fixture \"$fixture\" true");
         source.ShouldContain("--no-restore");
         source.ShouldContain("local fixture_assembly=");
+        source.ShouldContain(".artifacts/bin/$configuration/net10.0");
         source.ShouldContain("dotnet \"$fixture_assembly\"");
         source.ShouldNotContain("local run_args=(run");
         source.ShouldNotContain("dotnet run");

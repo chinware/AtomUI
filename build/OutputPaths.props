@@ -1,9 +1,9 @@
 <Project>
     <PropertyGroup>
-        <PackageOutputPath>$(MSBuildThisFileDirectory)../output/Nuget/$(Configuration)</PackageOutputPath>
-        <OutputPathWithoutFramework>$(MSBuildThisFileDirectory)../output/bin/$(Configuration)</OutputPathWithoutFramework>
+        <PackageOutputPath>$(MSBuildThisFileDirectory)../.artifacts/Nuget/$(Configuration)</PackageOutputPath>
+        <OutputPathWithoutFramework>$(MSBuildThisFileDirectory)../.artifacts/bin/$(Configuration)</OutputPathWithoutFramework>
         <OutputPath>$(OutputPathWithoutFramework)</OutputPath>
-        <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)../output/$(MSBuildProjectName)/obj</BaseIntermediateOutputPath>
+        <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)../.artifacts/$(MSBuildProjectName)/obj</BaseIntermediateOutputPath>
         <IntermediateOutputPathWithoutFramework>$(BaseIntermediateOutputPath)</IntermediateOutputPathWithoutFramework>
         <IntermediateOutputPath>$(BaseIntermediateOutputPath)/$(Configuration)</IntermediateOutputPath>
     </PropertyGroup>

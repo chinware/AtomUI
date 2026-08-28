@@ -81,7 +81,7 @@ run_fixture() {
     local run_log="$output_file.run.log"
     local project
     project="$(fixture_project "$fixture")"
-    local fixture_assembly="$repo_root/output/bin/$configuration/net10.0/AtomUI.LinkedRegistration.Fixtures.$fixture.dll"
+    local fixture_assembly="$repo_root/.artifacts/bin/$configuration/net10.0/AtomUI.LinkedRegistration.Fixtures.$fixture.dll"
     local build_args=(
         build "$project"
         -c "$configuration"

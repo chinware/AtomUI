@@ -225,17 +225,17 @@ public sealed class BuildLayoutTests
 
         outputPaths.Descendants("PackageOutputPath")
                    .ShouldHaveSingleItem()
-                   .Value.ShouldBe("$(MSBuildThisFileDirectory)../output/Nuget/$(Configuration)");
+                   .Value.ShouldBe("$(MSBuildThisFileDirectory)../.artifacts/Nuget/$(Configuration)");
         outputPaths.Descendants("OutputPathWithoutFramework")
                    .ShouldHaveSingleItem()
-                   .Value.ShouldBe("$(MSBuildThisFileDirectory)../output/bin/$(Configuration)");
+                   .Value.ShouldBe("$(MSBuildThisFileDirectory)../.artifacts/bin/$(Configuration)");
         outputPaths.Descendants("OutputPath")
                    .ShouldHaveSingleItem()
                    .Value.ShouldBe("$(OutputPathWithoutFramework)");
         outputPaths.Descendants("BaseIntermediateOutputPath")
                    .ShouldHaveSingleItem()
                    .Value.ShouldBe(
-                       "$(MSBuildThisFileDirectory)../output/$(MSBuildProjectName)/obj");
+                       "$(MSBuildThisFileDirectory)../.artifacts/$(MSBuildProjectName)/obj");
     }
 
     [Fact]

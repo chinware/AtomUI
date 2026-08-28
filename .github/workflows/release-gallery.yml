@@ -93,8 +93,8 @@ jobs:
                $galleryScriptsPath = "${{ env.SourceDir }}/controlgallery/AtomUIGallery.Desktop/scripts"
                $galleryPublishDirX64 = "${{ env.GalleryPublishDir }}/osx-x64"
 
-               if (Test-Path "${{ env.SourceDir }}/output") {
-                  Remove-Item -Path "${{ env.SourceDir }}/output" -Recurse -Force
+               if (Test-Path "${{ env.SourceDir }}/.artifacts") {
+                  Remove-Item -Path "${{ env.SourceDir }}/.artifacts" -Recurse -Force
                }
 
                Set-Location $galleryScriptsPath
@@ -183,8 +183,8 @@ jobs:
                $galleryScriptsPath = "${{ env.SourceDir }}/controlgallery/AtomUIGallery.Desktop/scripts"
                $galleryPublishDirArm64 = "${{ env.GalleryPublishDir }}/osx-arm64"
 
-               if (Test-Path "${{ env.SourceDir }}/output") {
-                  Remove-Item -Path "${{ env.SourceDir }}/output" -Recurse -Force
+               if (Test-Path "${{ env.SourceDir }}/.artifacts") {
+                  Remove-Item -Path "${{ env.SourceDir }}/.artifacts" -Recurse -Force
                }
 
                Set-Location $galleryScriptsPath
@@ -264,8 +264,8 @@ jobs:
                $galleryPublishDirX64 = "${{ env.GalleryPublishDir }}/linux-x64"
                $appImageOutputDirX64 = "${{ env.GalleryArtifactsOutputDir }}/appimage/x64"
 
-               if (Test-Path "${{ env.SourceDir }}/output") {
-                  Remove-Item -Path "${{ env.SourceDir }}/output" -Recurse -Force
+               if (Test-Path "${{ env.SourceDir }}/.artifacts") {
+                  Remove-Item -Path "${{ env.SourceDir }}/.artifacts" -Recurse -Force
                }
 
                Set-Location $galleryScriptsPath
@@ -344,8 +344,8 @@ jobs:
                $galleryPublishDirArm64 = "${{ env.GalleryPublishDir }}/linux-arm64"
                $appImageOutputDirArm64 = "${{ env.GalleryArtifactsOutputDir }}/appimage/arm64"
 
-               if (Test-Path "${{ env.SourceDir }}/output") {
-                  Remove-Item -Path "${{ env.SourceDir }}/output" -Recurse -Force
+               if (Test-Path "${{ env.SourceDir }}/.artifacts") {
+                  Remove-Item -Path "${{ env.SourceDir }}/.artifacts" -Recurse -Force
                }
 
                Set-Location $galleryScriptsPath
@@ -407,8 +407,8 @@ jobs:
                $galleryScriptsPath = "${{ env.SourceDir }}/controlgallery/AtomUIGallery.Desktop/scripts"
                $galleryPublishDirX64 = "${{ env.GalleryPublishDir }}/win-x64"
 
-               if (Test-Path "${{ env.SourceDir }}/output") {
-                 Remove-Item -Path "${{ env.SourceDir }}/output" -Recurse -Force
+               if (Test-Path "${{ env.SourceDir }}/.artifacts") {
+                 Remove-Item -Path "${{ env.SourceDir }}/.artifacts" -Recurse -Force
                }
 
                Set-Location $galleryScriptsPath
@@ -466,8 +466,8 @@ jobs:
                $galleryScriptsPath = "${{ env.SourceDir }}/controlgallery/AtomUIGallery.Desktop/scripts"
                $galleryPublishDirArm64 = "${{ env.GalleryPublishDir }}/win-arm64"
 
-               if (Test-Path "${{ env.SourceDir }}/output") {
-                 Remove-Item -Path "${{ env.SourceDir }}/output" -Recurse -Force
+               if (Test-Path "${{ env.SourceDir }}/.artifacts") {
+                 Remove-Item -Path "${{ env.SourceDir }}/.artifacts" -Recurse -Force
                }
 
                Set-Location $galleryScriptsPath
