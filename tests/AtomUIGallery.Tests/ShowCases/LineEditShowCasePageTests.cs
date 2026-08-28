@@ -99,8 +99,7 @@ public class LineEditShowCasePageTests
         semanticExample.ShouldContain("BadgeText=\"{x:Static gallery:GalleryVersionInfo.DisplayVersion}\"");
         semanticExample.ShouldContain("Selector=\"atom|LineEdit.style-class-base\"");
         semanticExample.ShouldContain("Selector=\"atom|LineEdit.style-class-object\"");
-        semanticExample.ShouldContain("Selector=\"atom|LineEdit.style-class-object:pointerover\"");
-        semanticExample.ShouldContain("Selector=\"atom|LineEdit.style-class-object:focus\"");
+        semanticExample.ShouldContain("Selector=\"atom|LineEdit.style-class-object:focus-within\"");
         semanticExample.ShouldContain("<Setter Property=\"BorderBrush\" Value=\"#D9D9D9\" />");
         semanticExample.ShouldContain("<Setter Property=\"BorderBrush\" Value=\"#A9A9A9\" />");
         semanticExample.ShouldContain("Selector=\"atom|LineEdit.style-class-fn\"");

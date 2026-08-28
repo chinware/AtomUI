@@ -728,11 +728,9 @@
                         </Style>
                         <Style Selector="atom|LineEdit.style-class-object">
                             <Setter Property="Width" Value="320" />
-                        </Style>
-                        <Style Selector="atom|LineEdit.style-class-object:pointerover">
                             <Setter Property="BorderBrush" Value="#D9D9D9" />
                         </Style>
-                        <Style Selector="atom|LineEdit.style-class-object:focus">
+                        <Style Selector="atom|LineEdit.style-class-object:focus-within">
                             <Setter Property="BorderBrush" Value="#A9A9A9" />
                         </Style>
                         <Style Selector="atom|LineEdit.style-class-fn">
