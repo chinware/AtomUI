@@ -30,12 +30,12 @@ internal sealed class UploadToken : AbstractControlDesignToken
     public Thickness TextListNamePadding { get; set; }
 
     /// <summary>
-    /// 文本列表项的内间距（垂直方向，对齐 antd 列表项 paddingBlock）
+    /// 文本列表项的内间距（垂直方向）
     /// </summary>
     public Thickness TextListItemPadding { get; set; }
 
     /// <summary>
-    /// 文本列表上传进度线的高度（对齐 antd 上传列表进度条 size 高度）
+    /// 文本列表上传进度线的高度
     /// </summary>
     public double TextListProgressLineHeight { get; set; }
 

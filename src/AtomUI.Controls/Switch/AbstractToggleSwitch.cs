@@ -365,7 +365,7 @@ public abstract class AbstractToggleSwitch : ToggleButton,
         }
 
         var switchHeight  = TrackHeight;
-        // 无内容时内边距不参与宽度计算，宽度收敛到 TrackMinWidth（与 antd 一致）
+        // 无内容时内边距不参与宽度计算，宽度收敛到 TrackMinWidth
         var switchWidth   = extraInfoWidth > 0
             ? extraInfoWidth + InnerMinMargin + InnerMaxMargin
             : extraInfoWidth;
