@@ -111,6 +111,35 @@ internal static class WindowUtilsInterop
     [DllImport("/usr/lib/libobjc.A.dylib")]
     public static extern IntPtr sel_registerName(string selectorName);
 
+    [DllImport("/usr/lib/libobjc.A.dylib")]
+    public static extern IntPtr objc_getClass(string className);
+
+    [DllImport("/usr/lib/libobjc.A.dylib")]
+    public static extern IntPtr objc_allocateClassPair(IntPtr superclass, string className, IntPtr extraBytes);
+
+    [DllImport("/usr/lib/libobjc.A.dylib")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static extern bool class_addMethod(
+        IntPtr cls,
+        IntPtr name,
+        IntPtr imp,
+        [MarshalAs(UnmanagedType.LPStr)] string types);
+
+    [DllImport("/usr/lib/libobjc.A.dylib")]
+    public static extern void objc_registerClassPair(IntPtr cls);
+
+    [DllImport("/usr/lib/libobjc.A.dylib")]
+    public static extern IntPtr class_createInstance(IntPtr cls, IntPtr extraBytes);
+
+    [DllImport("/usr/lib/libSystem.B.dylib")]
+    private static extern IntPtr dlopen(string path, int mode);
+
+    [DllImport("/usr/lib/libSystem.B.dylib")]
+    private static extern IntPtr dlsym(IntPtr handle, string symbolName);
+
+    [DllImport("/usr/lib/libSystem.B.dylib")]
+    private static extern int dlclose(IntPtr handle);
+
     // objc_msgSend 函数的不同重载
     [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
     public static extern IntPtr objc_msgSend_intptr(IntPtr receiver, IntPtr selector);
@@ -119,7 +148,41 @@ internal static class WindowUtilsInterop
     public static extern IntPtr objc_msgSend_intptr_long(IntPtr receiver, IntPtr selector, long arg);
 
     [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
+    public static extern IntPtr objc_msgSend_intptr_utf8String(
+        IntPtr receiver,
+        IntPtr selector,
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string arg);
+
+    [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
     public static extern void objc_msgSend_void_bool(IntPtr receiver, IntPtr selector, bool arg);
+
+    [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
+    public static extern void objc_msgSend_void_intptr(IntPtr receiver, IntPtr selector, IntPtr arg);
+
+    [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
+    public static extern void objc_msgSend_void_intptr_intptr_intptr_intptr(
+        IntPtr receiver,
+        IntPtr selector,
+        IntPtr arg1,
+        IntPtr arg2,
+        IntPtr arg3,
+        IntPtr arg4);
+
+    [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
+    public static extern void objc_msgSend_void_intptr_intptr_nuint_intptr(
+        IntPtr receiver,
+        IntPtr selector,
+        IntPtr arg1,
+        IntPtr arg2,
+        nuint arg3,
+        IntPtr arg4);
+
+    [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
+    public static extern void objc_msgSend_void_intptr_intptr(
+        IntPtr receiver,
+        IntPtr selector,
+        IntPtr arg1,
+        IntPtr arg2);
 
     [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
     public static extern bool objc_msgSend_bool(IntPtr receiver, IntPtr selector);
@@ -144,9 +207,62 @@ internal static class WindowUtilsInterop
     public static readonly IntPtr FrameSelector = sel_registerName("frame");
     public static readonly IntPtr SuperviewSelector = sel_registerName("superview");
     public static readonly IntPtr SetFrameOriginSelector = sel_registerName("setFrameOrigin:");
+    public static readonly IntPtr IsHiddenSelector = sel_registerName("isHidden");
+    public static readonly IntPtr PostsFrameChangedNotificationsSelector =
+        sel_registerName("postsFrameChangedNotifications");
+    public static readonly IntPtr SetPostsFrameChangedNotificationsSelector =
+        sel_registerName("setPostsFrameChangedNotifications:");
     public static readonly IntPtr SetShowsResizeIndicatorSelector = sel_registerName("setShowsResizeIndicator:");
     public static readonly IntPtr UpdateTrackingAreasSelector = sel_registerName("updateTrackingAreas");
     public static readonly IntPtr SetNeedsDisplaySelector = sel_registerName("setNeedsDisplay:");
+    public static readonly IntPtr InitSelector = sel_registerName("init");
+    public static readonly IntPtr RetainSelector = sel_registerName("retain");
+    public static readonly IntPtr ReleaseSelector = sel_registerName("release");
+    public static readonly IntPtr StringWithUtf8StringSelector = sel_registerName("stringWithUTF8String:");
+    public static readonly IntPtr NotificationCenterDefaultCenterSelector = sel_registerName("defaultCenter");
+    public static readonly IntPtr NotificationCenterAddObserverSelector =
+        sel_registerName("addObserver:selector:name:object:");
+    public static readonly IntPtr NotificationCenterRemoveObserverSelector = sel_registerName("removeObserver:");
+    public static readonly IntPtr AddObserverForKeyPathSelector =
+        sel_registerName("addObserver:forKeyPath:options:context:");
+    public static readonly IntPtr RemoveObserverForKeyPathSelector =
+        sel_registerName("removeObserver:forKeyPath:");
+    public static readonly IntPtr NSViewFrameDidChangeNotificationName =
+        GetAppKitGlobalObject("NSViewFrameDidChangeNotification");
+
+    private static IntPtr GetAppKitGlobalObject(string symbolName)
+    {
+        const int RtldLazy = 0x1;
+        var appKit = dlopen("/System/Library/Frameworks/AppKit.framework/AppKit", RtldLazy);
+        if (appKit == IntPtr.Zero)
+        {
+            return IntPtr.Zero;
+        }
+
+        try
+        {
+            var symbol = dlsym(appKit, symbolName);
+            return symbol == IntPtr.Zero ? IntPtr.Zero : Marshal.ReadIntPtr(symbol);
+        }
+        finally
+        {
+            dlclose(appKit);
+        }
+    }
+
+    public static IntPtr CreateRetainedNSString(string value)
+    {
+        var stringClass = objc_getClass("NSString");
+        if (stringClass == IntPtr.Zero)
+        {
+            return IntPtr.Zero;
+        }
+
+        var nativeString = objc_msgSend_intptr_utf8String(stringClass, StringWithUtf8StringSelector, value);
+        return nativeString == IntPtr.Zero
+            ? IntPtr.Zero
+            : objc_msgSend_intptr(nativeString, RetainSelector);
+    }
 
     // 辅助方法
     public static IntPtr GetStandardWindowButton(IntPtr window, long buttonType)
@@ -198,6 +314,36 @@ internal static class WindowUtilsInterop
             throw new ArgumentException("Invalid view handle");
         }
         objc_msgSend_void_point(view, SetFrameOriginSelector, point);
+    }
+
+    public static bool IsHidden(IntPtr view)
+    {
+        if (view == IntPtr.Zero)
+        {
+            return true;
+        }
+
+        return objc_msgSend_bool(view, IsHiddenSelector);
+    }
+
+    public static bool PostsFrameChangedNotifications(IntPtr view)
+    {
+        if (view == IntPtr.Zero)
+        {
+            return false;
+        }
+
+        return objc_msgSend_bool(view, PostsFrameChangedNotificationsSelector);
+    }
+
+    public static void SetPostsFrameChangedNotifications(IntPtr view, bool flag)
+    {
+        if (view == IntPtr.Zero)
+        {
+            return;
+        }
+
+        objc_msgSend_void_bool(view, SetPostsFrameChangedNotificationsSelector, flag);
     }
 
     public static void UpdateTrackingAreas(IntPtr view)

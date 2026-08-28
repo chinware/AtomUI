@@ -5,6 +5,7 @@ using AtomUI.Controls;
 using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Media;
 using AtomUI.Native;
+using AtomUI.Native.MacOS;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
@@ -507,7 +508,14 @@ public partial class Window : AvaloniaWindow,
     private double? _macOsCachedOffsetX;
     private double? _macOsCachedSpacing;
     private Size _macOsCachedClientSize;
+    private double? _macOsCachedButtonX;
+    private double? _macOsCachedButtonY;
     private bool _macOsCacheValid;
+    private bool _macOsWindowConfigurationQueued;
+    private bool _macOsWindowConfigurationFollowUpQueued;
+    private IDisposable? _macOsWindowButtonObserver;
+    private bool _macOsWindowConfigurationApplying;
+    private int _macOsNativeButtonChangeQueued;
     
     static Window()
     {
@@ -950,6 +958,115 @@ public partial class Window : AvaloniaWindow,
         }
     }
 
+    internal void QueueMacOsWindowConfiguration(bool forceFollowUp = false)
+    {
+        if (!OperatingSystem.IsMacOS())
+        {
+            return;
+        }
+
+        _macOsCacheValid = false;
+        if (_macOsWindowConfigurationQueued)
+        {
+            _macOsWindowConfigurationFollowUpQueued |= forceFollowUp;
+            return;
+        }
+
+        _macOsWindowConfigurationQueued = true;
+        Dispatcher.Post(ApplyQueuedMacOsWindowConfiguration, Avalonia.Threading.DispatcherPriority.Render);
+    }
+
+    [SupportedOSPlatform("macos")]
+    private void EnsureMacOsWindowButtonObserver()
+    {
+        if (_macOsWindowButtonObserver is null)
+        {
+            _macOsWindowButtonObserver = this.ObserveStandardWindowButtonChanges(
+                HandleMacOsNativeWindowButtonChange);
+        }
+    }
+
+    private void StopMacOsWindowButtonObserver()
+    {
+        _macOsWindowButtonObserver?.Dispose();
+        _macOsWindowButtonObserver = null;
+    }
+
+    private void HandleMacOsNativeWindowButtonChange()
+    {
+        if (Volatile.Read(ref _macOsWindowConfigurationApplying))
+        {
+            return;
+        }
+
+        if (Interlocked.Exchange(ref _macOsNativeButtonChangeQueued, 1) != 0)
+        {
+            return;
+        }
+
+        Dispatcher.Post(HandleMacOsNativeWindowButtonChangeOnUi, Avalonia.Threading.DispatcherPriority.Render);
+    }
+
+    private void HandleMacOsNativeWindowButtonChangeOnUi()
+    {
+        Interlocked.Exchange(ref _macOsNativeButtonChangeQueued, 0);
+        if (!OperatingSystem.IsMacOS() ||
+            _macOsWindowConfigurationApplying ||
+            !IsVisible ||
+            !ExtendClientAreaToDecorationsHint ||
+            WindowState == WindowState.FullScreen ||
+            !this.IsStandardWindowButtonsVisible())
+        {
+            return;
+        }
+
+        var closeFrame = this.GetStandardWindowButtonFrame(WindowUtilsInterop.NSWindowButton.CloseButton);
+        if (closeFrame is not { } frame ||
+            _macOsCachedButtonX is not { } expectedX ||
+            _macOsCachedButtonY is not { } expectedY ||
+            Math.Abs(frame.X - expectedX) > 0.5 ||
+            Math.Abs(frame.Y - expectedY) > 0.5)
+        {
+            QueueMacOsWindowConfiguration();
+        }
+    }
+
+    private void ApplyQueuedMacOsWindowConfiguration()
+    {
+        _macOsWindowConfigurationQueued = false;
+        if (!OperatingSystem.IsMacOS())
+        {
+            return;
+        }
+
+        _macOsWindowConfigurationApplying = true;
+        try
+        {
+            ConfigureMacOsWindow();
+        }
+        finally
+        {
+            _macOsWindowConfigurationApplying = false;
+        }
+
+        if (IsVisible &&
+            ExtendClientAreaToDecorationsHint &&
+            WindowState != WindowState.FullScreen)
+        {
+            EnsureMacOsWindowButtonObserver();
+        }
+        else
+        {
+            StopMacOsWindowButtonObserver();
+        }
+
+        if (_macOsWindowConfigurationFollowUpQueued)
+        {
+            _macOsWindowConfigurationFollowUpQueued = false;
+            QueueMacOsWindowConfiguration();
+        }
+    }
+
     private void HandleTitleBarPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
         if (ReferenceEquals(sender, _moveDragTitleBar) && e.InitialPressMouseButton == MouseButton.Left)
@@ -1201,8 +1318,18 @@ public partial class Window : AvaloniaWindow,
     {
         if (!ExtendClientAreaToDecorationsHint)
         {
+            StopMacOsWindowButtonObserver();
             NativeChromeInsets = default;
+            _macOsCachedButtonX = null;
+            _macOsCachedButtonY = null;
             _macOsCacheValid   = false;
+            return;
+        }
+
+        // AppKit 在录屏/窗口共享期间会暂时隐藏标准按钮。隐藏期间不写回坐标，
+        // 等收到恢复通知后再执行一次完整布局，避免覆盖 AppKit 的共享控件状态。
+        if (!this.IsStandardWindowButtonsVisible())
+        {
             return;
         }
 
@@ -1253,10 +1380,23 @@ public partial class Window : AvaloniaWindow,
 
         NativeChromeInsets = new Thickness(titleBarOffset, 0, 0, 0);
 
+        var closeFrame = this.GetStandardWindowButtonFrame(
+            WindowUtilsInterop.NSWindowButton.CloseButton);
+        if (closeFrame is not { } configuredCloseFrame)
+        {
+            NativeChromeInsets = default;
+            _macOsCachedButtonX = null;
+            _macOsCachedButtonY = null;
+            _macOsCacheValid = false;
+            return;
+        }
+
         _macOsCachedTitleBarHeight = titleBarHeight;
         _macOsCachedOffsetX        = offsetX;
         _macOsCachedSpacing        = spacing;
         _macOsCachedClientSize     = currentClientSize;
+        _macOsCachedButtonX        = configuredCloseFrame.X;
+        _macOsCachedButtonY        = configuredCloseFrame.Y;
         _macOsCacheValid           = true;
     }
 
@@ -1271,8 +1411,8 @@ public partial class Window : AvaloniaWindow,
         ApplyDefaultLogoIfNeeded();
         if (OperatingSystem.IsMacOS())
         {
-            _macOsCacheValid = false;
-            ConfigureMacOsWindow();
+            QueueMacOsWindowConfiguration();
+            EnsureMacOsWindowButtonObserver();
         }
 
         if (!_mediaQueryReady)
@@ -1283,6 +1423,7 @@ public partial class Window : AvaloniaWindow,
 
     protected override void OnClosed(EventArgs e)
     {
+        StopMacOsWindowButtonObserver();
         if (_titleBar != null)
         {
             DetachTitleBar(_titleBar);
@@ -1370,7 +1511,7 @@ public partial class Window : AvaloniaWindow,
         base.OnSizeChanged(e);
         if (OperatingSystem.IsMacOS())
         {
-            ConfigureMacOsWindow();
+            QueueMacOsWindowConfiguration();
         }
     }
 
@@ -1404,20 +1545,11 @@ public partial class Window : AvaloniaWindow,
                 // WindowState / Title / WindowDecorations 变化都可能让 AppKit 重置 standard button frame。
                 // 即使 AtomUI 的布局输入没有变化，原生按钮当前位置也可能已经偏离目标，
                 // 所以必须先让缓存失效再重新下发布局。
-                _macOsCacheValid = false;
-                ConfigureMacOsWindow();
+                QueueMacOsWindowConfiguration();
                 if (change.Property == TitleProperty ||
                     change.Property == WindowDecorationsProperty)
                 {
-                    Dispatcher.Post(() =>
-                    {
-                        if (!OperatingSystem.IsMacOS())
-                        {
-                            return;
-                        }
-                        _macOsCacheValid = false;
-                        ConfigureMacOsWindow();
-                    }, Avalonia.Threading.DispatcherPriority.Loaded);
+                    QueueMacOsWindowConfiguration(forceFollowUp: true);
                 }
             }
         }

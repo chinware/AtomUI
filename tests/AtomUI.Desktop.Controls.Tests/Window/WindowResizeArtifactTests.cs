@@ -687,8 +687,67 @@ public class WindowResizeArtifactTests
                 "change.Property == WindowDecorationsProperty",
                 StringSplitOptions.None).Length - 1)
             .ShouldBe(2);
-        relayoutBlock.ShouldContain("Dispatcher.Post");
-        relayoutBlock.ShouldContain("Avalonia.Threading.DispatcherPriority.Loaded");
+        relayoutBlock.ShouldContain("QueueMacOsWindowConfiguration");
+        relayoutBlock.ShouldContain("forceFollowUp: true");
+        windowSource.ShouldContain("DispatcherPriority.Render");
+    }
+
+    [Fact]
+    public void MacOs_TitleBar_Height_Changes_Defer_Traffic_Light_Layout_Until_Render()
+    {
+        var windowSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
+        var relayoutBlockStart = windowSource.IndexOf(
+            "if (change.Property == WindowStateProperty ||",
+            StringComparison.Ordinal);
+        var relayoutBlockEnd = windowSource.IndexOf(
+            "if (change.Property == ExtendClientAreaTitleBarHeightHintProperty ||",
+            relayoutBlockStart + 1,
+            StringComparison.Ordinal);
+        var relayoutBlock = windowSource[relayoutBlockStart..relayoutBlockEnd];
+
+        relayoutBlock.ShouldContain("change.Property == ExtendClientAreaTitleBarHeightHintProperty");
+        relayoutBlock.ShouldContain("QueueMacOsWindowConfiguration");
+        windowSource.ShouldContain("DispatcherPriority.Render");
+        windowSource.ShouldContain("ApplyQueuedMacOsWindowConfiguration");
+    }
+
+    [Fact]
+    public void MacOs_Window_Sharing_Transitions_Recheck_Native_Button_Frame()
+    {
+        var windowSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
+        var nativeSource = File.ReadAllText(GetRepoFile("src/AtomUI.Native/MacOS/WindowUtils.MacOS.cs"));
+        var interopSource = File.ReadAllText(GetRepoFile("src/AtomUI.Native/MacOS/WindowUtils.Interop.cs"));
+
+        windowSource.ShouldNotContain("DispatcherTimer");
+        windowSource.ShouldContain("ObserveStandardWindowButtonChanges");
+        windowSource.ShouldContain("_macOsWindowButtonObserver");
+        windowSource.ShouldContain("StopMacOsWindowButtonObserver");
+        nativeSource.ShouldContain("IsStandardWindowButtonsVisible");
+        nativeSource.ShouldContain("ObserveStandardWindowButtonChanges");
+        nativeSource.ShouldContain("NSNotificationCenter");
+        nativeSource.ShouldContain("GetStandardWindowButtonFrame");
+        interopSource.ShouldContain("isHidden");
+        interopSource.ShouldContain("postsFrameChangedNotifications");
+        interopSource.ShouldContain("NSViewFrameDidChangeNotification");
+        nativeSource.ShouldContain("observeValueForKeyPath");
+        nativeSource.ShouldContain("HiddenKeyPath");
+        interopSource.ShouldContain("removeObserver:forKeyPath:");
+        windowSource.ShouldContain("_macOsCachedButtonY");
+    }
+
+    [Fact]
+    public void MacOs_Window_Button_Observer_Releases_All_Native_Resources()
+    {
+        var nativeSource = File.ReadAllText(GetRepoFile("src/AtomUI.Native/MacOS/WindowUtils.MacOS.cs"));
+        var interopSource = File.ReadAllText(GetRepoFile("src/AtomUI.Native/MacOS/WindowUtils.Interop.cs"));
+
+        interopSource.ShouldContain("dlclose");
+        nativeSource.ShouldContain("_hiddenKeyPath");
+        nativeSource.ShouldNotContain("private static readonly IntPtr HiddenKeyPath");
+        nativeSource.ShouldContain("RemoveNativeRegistrations");
+        nativeSource.ShouldContain("_keyValueObserversRegistered");
+        nativeSource.ShouldContain("_frameNotificationStateCaptured");
+        nativeSource.ShouldContain("WindowUtilsInterop.ReleaseSelector");
     }
 
     [Fact]

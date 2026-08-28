@@ -1,3 +1,7 @@
+using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using AtomUI.Native.MacOS;
 using Avalonia.Controls;
@@ -10,6 +14,15 @@ internal readonly record struct ButtonFrame(double X, double Y, double Width, do
 [SupportedOSPlatform("macos")]
 internal static class WindowUtilsMacOS
 {
+    private static readonly ConcurrentDictionary<IntPtr, NativeNotificationObserverRegistration>
+        NativeNotificationObservers = new();
+    private static readonly object NativeNotificationObserverClassGate = new();
+    private static IntPtr _nativeNotificationObserverClass;
+    private static readonly IntPtr NativeNotificationObserverCallbackSelector =
+        WindowUtilsInterop.sel_registerName("atomui_nativeNotification:");
+    private static readonly IntPtr NativeKeyValueObserverCallbackSelector =
+        WindowUtilsInterop.sel_registerName("observeValueForKeyPath:ofObject:change:context:");
+
     public static void SetWindowIgnoreMouseEventsMacOS(IntPtr handle, bool flag)
     {
         if (handle == IntPtr.Zero)
@@ -81,6 +94,338 @@ internal static class WindowUtilsMacOS
 
         var f = WindowUtilsInterop.GetFrame(btn);
         return new ButtonFrame(f.Origin.X, f.Origin.Y, f.Size.Width, f.Size.Height);
+    }
+
+    /// <summary>
+    /// 以红色关闭按钮作为 macOS 标准按钮组的可见性哨兵。
+    /// 录屏/窗口共享期间 AppKit 会暂时隐藏整组标准按钮；关闭按钮恢复时才允许重新布局。
+    /// 这能避免把隐藏按钮的位置写回到 macOS 自己显示的共享控件状态。
+    /// </summary>
+    public static bool IsStandardWindowButtonsVisible(this Window window)
+    {
+        if (!OperatingSystem.IsMacOS())
+        {
+            return false;
+        }
+
+        var ns = GetNSWindow(window);
+        if (ns == IntPtr.Zero)
+        {
+            return false;
+        }
+
+        var closeButton = GetButton(ns, WindowUtilsInterop.NSWindowButton.CloseButton);
+        return closeButton != IntPtr.Zero && !WindowUtilsInterop.IsHidden(closeButton);
+    }
+
+    /// <summary>
+    /// 监听标准窗口按钮的 AppKit 原生通知。
+    /// <c>NSViewFrameDidChangeNotification</c> 只有在
+    /// <c>postsFrameChangedNotifications</c> 打开时才会发布；这里为每个按钮开启该选项，
+    /// 覆盖录屏结束后 AppKit 重新布局按钮的路径。
+    /// </summary>
+    /// <remarks>
+    /// 返回的 disposable 必须在窗口关闭时释放，否则 NotificationCenter 会继续持有原生 observer，
+    /// 同时也会保留托管回调和窗口实例。
+    /// </remarks>
+    public static IDisposable? ObserveStandardWindowButtonChanges(this Window window, Action callback)
+    {
+        if (!OperatingSystem.IsMacOS())
+        {
+            return null;
+        }
+
+        var ns = GetNSWindow(window);
+        if (ns == IntPtr.Zero)
+        {
+            return null;
+        }
+
+        if (WindowUtilsInterop.NSViewFrameDidChangeNotificationName == IntPtr.Zero)
+        {
+            return null;
+        }
+
+        var observedObjects = new List<IntPtr>(3);
+        for (int i = 0; i <= 2; i++)
+        {
+            var button = GetButton(ns, (WindowUtilsInterop.NSWindowButton)i);
+            if (button != IntPtr.Zero && !observedObjects.Contains(button))
+            {
+                observedObjects.Add(button);
+            }
+        }
+
+        return observedObjects.Count == 0
+            ? null
+            : NativeNotificationObserverRegistration.Create(observedObjects, callback);
+    }
+
+    private static IntPtr EnsureNativeNotificationObserverClass()
+    {
+        if (_nativeNotificationObserverClass != IntPtr.Zero)
+        {
+            return _nativeNotificationObserverClass;
+        }
+
+        lock (NativeNotificationObserverClassGate)
+        {
+            if (_nativeNotificationObserverClass != IntPtr.Zero)
+            {
+                return _nativeNotificationObserverClass;
+            }
+
+            var baseClass = WindowUtilsInterop.objc_getClass("NSObject");
+            if (baseClass == IntPtr.Zero)
+            {
+                throw new InvalidOperationException("NSObject is not available on macOS.");
+            }
+
+            const string className = "AtomUIWindowNotificationObserver";
+            var observerClass = WindowUtilsInterop.objc_getClass(className);
+            if (observerClass == IntPtr.Zero)
+            {
+                observerClass = WindowUtilsInterop.objc_allocateClassPair(baseClass, className, IntPtr.Zero);
+                if (observerClass == IntPtr.Zero)
+                {
+                    throw new InvalidOperationException("Unable to create the macOS notification observer class.");
+                }
+
+                unsafe
+                {
+                    var notificationCallbackPointer =
+                        (IntPtr)(void*)(delegate* unmanaged[Cdecl]<IntPtr, IntPtr, IntPtr, void>)
+                        &HandleNativeNotification;
+                    if (!WindowUtilsInterop.class_addMethod(
+                            observerClass,
+                            NativeNotificationObserverCallbackSelector,
+                            notificationCallbackPointer,
+                            "v@:@"))
+                    {
+                        throw new InvalidOperationException(
+                            "Unable to add the macOS notification observer callback.");
+                    }
+
+                    var keyValueCallbackPointer =
+                        (IntPtr)(void*)(delegate* unmanaged[Cdecl]<
+                            IntPtr, IntPtr, IntPtr, IntPtr, IntPtr, IntPtr, void>)
+                        &HandleNativeKeyValueChange;
+                    if (!WindowUtilsInterop.class_addMethod(
+                            observerClass,
+                            NativeKeyValueObserverCallbackSelector,
+                            keyValueCallbackPointer,
+                            "v@:@@@^v"))
+                    {
+                        throw new InvalidOperationException(
+                            "Unable to add the macOS key-value observer callback.");
+                    }
+                }
+
+                WindowUtilsInterop.objc_registerClassPair(observerClass);
+            }
+
+            _nativeNotificationObserverClass = observerClass;
+            return observerClass;
+        }
+    }
+
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    private static void HandleNativeNotification(IntPtr observer, IntPtr selector, IntPtr notification)
+    {
+        if (!NativeNotificationObservers.TryGetValue(observer, out var registration))
+        {
+            return;
+        }
+
+        registration.Notify();
+    }
+
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    private static void HandleNativeKeyValueChange(
+        IntPtr observer,
+        IntPtr selector,
+        IntPtr keyPath,
+        IntPtr observedObject,
+        IntPtr change,
+        IntPtr context)
+    {
+        if (!NativeNotificationObservers.TryGetValue(observer, out var registration))
+        {
+            return;
+        }
+
+        registration.Notify();
+    }
+
+    private sealed class NativeNotificationObserverRegistration : IDisposable
+    {
+        private readonly IntPtr _notificationCenter;
+        private readonly IntPtr _observer;
+        private readonly IntPtr _hiddenKeyPath;
+        private readonly IntPtr[] _observedObjects;
+        private readonly bool[] _previousFrameNotificationStates;
+        private readonly bool[] _frameNotificationStateCaptured;
+        private readonly bool[] _keyValueObserversRegistered;
+        private Action? _callback;
+        private int _disposed;
+
+        private NativeNotificationObserverRegistration(IReadOnlyList<IntPtr> observedObjects, Action callback)
+        {
+            _callback = callback;
+            _observedObjects = observedObjects.ToArray();
+            _previousFrameNotificationStates = new bool[_observedObjects.Length];
+            _frameNotificationStateCaptured = new bool[_observedObjects.Length];
+            _keyValueObserversRegistered = new bool[_observedObjects.Length];
+
+            _hiddenKeyPath = WindowUtilsInterop.CreateRetainedNSString("hidden");
+            if (_hiddenKeyPath == IntPtr.Zero)
+            {
+                throw new InvalidOperationException("Unable to create the macOS hidden key path.");
+            }
+
+            _notificationCenter = WindowUtilsInterop.objc_msgSend_intptr(
+                WindowUtilsInterop.objc_getClass("NSNotificationCenter"),
+                WindowUtilsInterop.NotificationCenterDefaultCenterSelector);
+            if (_notificationCenter == IntPtr.Zero)
+            {
+                WindowUtilsInterop.objc_msgSend_void(_hiddenKeyPath, WindowUtilsInterop.ReleaseSelector);
+                throw new InvalidOperationException("NSNotificationCenter is not available on macOS.");
+            }
+
+            var observer = WindowUtilsInterop.class_createInstance(
+                EnsureNativeNotificationObserverClass(),
+                IntPtr.Zero);
+            if (observer == IntPtr.Zero)
+            {
+                WindowUtilsInterop.objc_msgSend_void(_hiddenKeyPath, WindowUtilsInterop.ReleaseSelector);
+                throw new InvalidOperationException("Unable to allocate the macOS notification observer.");
+            }
+
+            _observer = WindowUtilsInterop.objc_msgSend_intptr(observer, WindowUtilsInterop.InitSelector);
+            if (_observer == IntPtr.Zero)
+            {
+                WindowUtilsInterop.objc_msgSend_void(_hiddenKeyPath, WindowUtilsInterop.ReleaseSelector);
+                throw new InvalidOperationException("Unable to initialize the macOS notification observer.");
+            }
+
+            if (!NativeNotificationObservers.TryAdd(_observer, this))
+            {
+                WindowUtilsInterop.objc_msgSend_void(_observer, WindowUtilsInterop.ReleaseSelector);
+                WindowUtilsInterop.objc_msgSend_void(_hiddenKeyPath, WindowUtilsInterop.ReleaseSelector);
+                throw new InvalidOperationException("Unable to register the macOS notification observer.");
+            }
+            try
+            {
+                for (var i = 0; i < _observedObjects.Length; i++)
+                {
+                    WindowUtilsInterop.objc_msgSend_void_intptr_intptr_intptr_intptr(
+                        _notificationCenter,
+                        WindowUtilsInterop.NotificationCenterAddObserverSelector,
+                        _observer,
+                        NativeNotificationObserverCallbackSelector,
+                        WindowUtilsInterop.NSViewFrameDidChangeNotificationName,
+                        _observedObjects[i]);
+                }
+
+                for (var i = 0; i < _observedObjects.Length; i++)
+                {
+                    var button = _observedObjects[i];
+                    _previousFrameNotificationStates[i] =
+                        WindowUtilsInterop.PostsFrameChangedNotifications(button);
+                    _frameNotificationStateCaptured[i] = true;
+                    WindowUtilsInterop.SetPostsFrameChangedNotifications(button, true);
+                    WindowUtilsInterop.objc_msgSend_void_intptr_intptr_nuint_intptr(
+                        button,
+                        WindowUtilsInterop.AddObserverForKeyPathSelector,
+                        _observer,
+                        _hiddenKeyPath,
+                        0,
+                        IntPtr.Zero);
+                    _keyValueObserversRegistered[i] = true;
+                }
+            }
+            catch
+            {
+                NativeNotificationObservers.TryRemove(_observer, out _);
+                RemoveNativeRegistrations();
+                WindowUtilsInterop.objc_msgSend_void(_observer, WindowUtilsInterop.ReleaseSelector);
+                WindowUtilsInterop.objc_msgSend_void(_hiddenKeyPath, WindowUtilsInterop.ReleaseSelector);
+                throw;
+            }
+        }
+
+        public static IDisposable Create(IReadOnlyList<IntPtr> observedObjects, Action callback)
+        {
+            ArgumentNullException.ThrowIfNull(callback);
+            return new NativeNotificationObserverRegistration(observedObjects, callback);
+        }
+
+        public void Notify()
+        {
+            if (Volatile.Read(ref _disposed) != 0)
+            {
+                return;
+            }
+
+            var callback = _callback;
+            if (callback is null)
+            {
+                return;
+            }
+
+            try
+            {
+                callback();
+            }
+            catch (Exception ex)
+            {
+                // Objective-C 不允许异常穿过消息分发边界；窗口回调会在 UI 线程重新投递工作。
+                Debug.WriteLine($"AtomUI macOS window notification callback failed: {ex}");
+            }
+        }
+
+        public void Dispose()
+        {
+            if (Interlocked.Exchange(ref _disposed, 1) != 0)
+            {
+                return;
+            }
+
+            _callback = null;
+            NativeNotificationObservers.TryRemove(_observer, out _);
+            RemoveNativeRegistrations();
+            WindowUtilsInterop.objc_msgSend_void(_observer, WindowUtilsInterop.ReleaseSelector);
+            WindowUtilsInterop.objc_msgSend_void(_hiddenKeyPath, WindowUtilsInterop.ReleaseSelector);
+        }
+
+        private void RemoveNativeRegistrations()
+        {
+            WindowUtilsInterop.objc_msgSend_void_intptr(
+                _notificationCenter,
+                WindowUtilsInterop.NotificationCenterRemoveObserverSelector,
+                _observer);
+
+            for (var i = 0; i < _observedObjects.Length; i++)
+            {
+                if (_keyValueObserversRegistered[i])
+                {
+                    WindowUtilsInterop.objc_msgSend_void_intptr_intptr(
+                        _observedObjects[i],
+                        WindowUtilsInterop.RemoveObserverForKeyPathSelector,
+                        _observer,
+                        _hiddenKeyPath);
+                    _keyValueObserversRegistered[i] = false;
+                }
+
+                if (_frameNotificationStateCaptured[i])
+                {
+                    WindowUtilsInterop.SetPostsFrameChangedNotifications(
+                        _observedObjects[i],
+                        _previousFrameNotificationStates[i]);
+                    _frameNotificationStateCaptured[i] = false;
+                }
+            }
+        }
     }
 
     /// <summary>
