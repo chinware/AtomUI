@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
+using AtomUI.Generated.AtomUIDesktopControls;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -70,6 +71,7 @@ internal class SearchEditDecoratedBox : AddOnDecoratedBox
         if (_searchButton != null)
         {
             _searchButton.Click += HandleSearchButtonClick;
+            _searchButton.Classes.Add(SearchEditSemanticParts.ButtonClass);
         }
     }
 
