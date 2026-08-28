@@ -98,6 +98,11 @@ public class LineEditShowCasePageTests
         semanticExample.ShouldContain("SourceKey=\"line-edit-semantic-part\"");
         semanticExample.ShouldContain("BadgeText=\"{x:Static gallery:GalleryVersionInfo.DisplayVersion}\"");
         semanticExample.ShouldContain("Selector=\"atom|LineEdit.style-class-base\"");
+        semanticExample.ShouldContain("Selector=\"atom|LineEdit.style-class-object\"");
+        semanticExample.ShouldContain("Selector=\"atom|LineEdit.style-class-object:pointerover\"");
+        semanticExample.ShouldContain("Selector=\"atom|LineEdit.style-class-object:focus\"");
+        semanticExample.ShouldContain("<Setter Property=\"BorderBrush\" Value=\"#D9D9D9\" />");
+        semanticExample.ShouldContain("<Setter Property=\"BorderBrush\" Value=\"#A9A9A9\" />");
         semanticExample.ShouldContain("Selector=\"atom|LineEdit.style-class-fn\"");
         semanticExample.ShouldContain("Selector=\"atom|LineEdit.style-class-password\"");
         semanticExample.ShouldContain("Selector=\"atom|TextArea.style-class-textarea\"");
