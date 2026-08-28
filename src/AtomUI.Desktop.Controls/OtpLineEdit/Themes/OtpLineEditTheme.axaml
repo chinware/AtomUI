@@ -55,14 +55,25 @@
                                                 IsCellActive="{Binding IsActive}"
                                                 Text="{Binding DisplayText}" />
                                         </atom:OtpLineEditCell>
-                                        <ContentControl
-                                            Name="PART_SeparatorPresenter"
+                                        <!--
+                                            星号等分隔符的字形墨迹偏行盒上半区、偏
+                                            advance 左侧，属字体排版事实；补偿量由
+                                            OtpLineEditToken 的光学补偿比例按 FontSize
+                                            驱动（主题可覆盖），容器保持与 cell 中心
+                                            对齐（测试锁定）。
+                                        -->
+                                        <Border
                                             Margin="4,0"
                                             VerticalAlignment="Center"
-                                            VerticalContentAlignment="Center"
-                                            Content="{Binding Separator}"
-                                            ContentTemplate="{Binding SeparatorTemplate}"
-                                            IsVisible="{Binding IsSeparatorVisible}" />
+                                            IsVisible="{Binding IsSeparatorVisible}">
+                                            <ContentControl
+                                                Name="PART_SeparatorPresenter"
+                                                atom:OtpSeparatorGlyphAlignment.X="0.1"
+                                                atom:OtpSeparatorGlyphAlignment.Y="0.21"
+                                                VerticalContentAlignment="Center"
+                                                Content="{Binding Separator}"
+                                                ContentTemplate="{Binding SeparatorTemplate}" />
+                                        </Border>
                                     </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>

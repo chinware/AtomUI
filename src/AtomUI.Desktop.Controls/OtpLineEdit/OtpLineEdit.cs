@@ -384,6 +384,16 @@ public class OtpLineEdit : TemplatedControl,
         }
     }
 
+    protected override void OnGotFocus(FocusChangedEventArgs e)
+    {
+        base.OnGotFocus(e);
+
+        // 聚焦时活动格定位到第一空格（全满则为最后一格），
+        // 保证聚焦即见光标，而不是停留在陈旧位置
+        SetActiveIndexToFirstEmptyCell();
+        UpdateCellItems();
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -599,14 +609,12 @@ public class OtpLineEdit : TemplatedControl,
             return;
         }
 
+        // 删除后光标留在被删格（该格已空），继续退格时前移删除
+        // 前一个字符
         var activeIndex      = Math.Clamp(_activeIndex, 0, Length - 1);
         var removeIndex      = Math.Min(activeIndex, current.Length - 1);
-        var removesEmptyCell = activeIndex >= current.Length;
-        var nextActiveIndex  = removesEmptyCell
-            ? removeIndex
-            : Math.Max(0, removeIndex - 1);
 
-        _activeIndex = Math.Clamp(nextActiveIndex, 0, Length - 1);
+        _activeIndex = Math.Clamp(removeIndex, 0, Length - 1);
         SetCurrentValue(TextProperty, RemoveAt(current, removeIndex));
     }
 

@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -85,13 +86,24 @@ public class OtpLineEditCellCustomizationTests
         {
             var separators = otp.GetVisualDescendants()
                                 .OfType<ContentControl>()
-                                .Where(control => control.Classes.Contains("semantic-separator") == false)
                                 .Where(control => control.Name == "PART_SeparatorPresenter")
                                 .ToArray();
             separators.Length.ShouldBe(6);
             separators.Count(static separator => separator.IsEffectivelyVisible).ShouldBe(5);
-            separators.Where(static separator => separator.IsEffectivelyVisible)
-                      .ShouldAllBe(static separator => (string?)separator.Content == "*");
+
+            var cell = otp.GetVisualDescendants().OfType<OtpLineEditCell>().First();
+            foreach (var separator in separators.Where(static separator => separator.IsEffectivelyVisible))
+            {
+                ((string?)separator.Content).ShouldBe("*");
+
+                // 结构居中锁定：wrapper 与 cell 等高、Border 垂直居中对齐；
+                // ContentControl 的 token 光学补偿是渲染变换，不参与布局
+                var border = separator.Parent.ShouldBeOfType<Border>();
+                border.VerticalAlignment.ShouldBe(Avalonia.Layout.VerticalAlignment.Center);
+                var wrapper = border.Parent.ShouldBeOfType<StackPanel>();
+                wrapper.Bounds.Height.ShouldBe(cell.Bounds.Height, 0.5,
+                    "separator wrapper must share the cell height so centering holds");
+            }
         }
         finally
         {
