@@ -103,7 +103,10 @@ public class SearchEditSemanticPartTests
                                                $"{attribute.Name.LocalName}:{element.Name.LocalName}"))
                                        .ToArray();
 
-        buttonMarkers.ShouldBeEmpty();
+        buttonMarkers.ShouldBe([
+            "Classes.semantic-scope-prefix:AddOnContentPresenter",
+            "Classes.semantic-scope-suffix:AddOnContentPresenter"
+        ]);
     }
 
     [Fact]
