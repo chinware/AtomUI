@@ -52,6 +52,12 @@ Only when the release contains breaking public API changes:
 - Run `git diff --check`.
 - Run targeted tests for the controls or modules changed. Prefer
   `dotnet test <test-project> --framework net10.0 --no-restore`.
+- **Run the full regression test suite. This step is mandatory when
+  executing the `version-release` skill and cannot be replaced by targeted
+  module tests. Use the repository's maintained full-test entry point, such
+  as `dotnet test AtomUI.slnx --framework net10.0 --no-restore`, when
+  applicable. Record the command, result, and any unrelated failures
+  separately.**
 - Run build or pack validation when packaging or build files changed.
 - Run the Gallery NativeAOT publish flow when the release affects AOT, trimming,
   Window, theme, control templates, or source generators.
