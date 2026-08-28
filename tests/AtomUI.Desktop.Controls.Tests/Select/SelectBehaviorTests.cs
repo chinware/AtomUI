@@ -191,6 +191,66 @@ public class SelectBehaviorTests
     }
 
     [Fact]
+    public void OptionsSource_Replacement_Refreshes_Localized_Multiple_Tag_Layout()
+    {
+        var firstOption = new SelectOption
+        {
+            Header  = "A",
+            Content = "a"
+        };
+        var secondOption = new SelectOption
+        {
+            Header  = "B",
+            Content = "b"
+        };
+        var select = new Desktop.Controls.Select
+        {
+            Width              = 240,
+            Mode               = SelectMode.Multiple,
+            IsFilterEnabled    = true,
+            IsResponsiveTagMode = true,
+            MaxTagCount        = 1,
+            OptionsSource      = [firstOption, secondOption],
+            SelectedOptions    = [firstOption, secondOption]
+        };
+        var firstLocalizedOption = new SelectOption
+        {
+            Header  = "A much longer localized option",
+            Content = "a"
+        };
+        var secondLocalizedOption = new SelectOption
+        {
+            Header  = "B much longer localized option",
+            Content = "b"
+        };
+        var firstLocalizedHeader = (string)firstLocalizedOption.Header!;
+
+        ShowInWindow(select, () =>
+        {
+            var selectedOptionsBox = GetVisualDescendant<SelectResultOptionsBox>(select, "SelectedOptionsBox");
+            var maxCountPanel = GetVisualDescendant<SelectMaxTagAwarePanel>(select, "PART_MaxCountAwarePanel");
+
+            select.OptionsSource = [firstLocalizedOption, secondLocalizedOption];
+            Dispatcher.UIThread.RunJobs();
+
+            select.SelectedOptions.ShouldBe([firstLocalizedOption, secondLocalizedOption]);
+            selectedOptionsBox.GetVisualDescendants()
+                              .OfType<SelectTag>()
+                              .ShouldContain(tag => tag.Text == firstLocalizedHeader);
+
+            var infoTag = maxCountPanel.Children
+                                        .OfType<SelectRemainInfoTag>()
+                                        .Single();
+            var searchTextBox = GetTagsSearchTextBox(select);
+
+            infoTag.IsVisible.ShouldBeTrue();
+            infoTag.Bounds.Right.ShouldBeLessThanOrEqualTo(maxCountPanel.Bounds.Right + 0.001);
+            searchTextBox.Bounds.X.ShouldBeGreaterThanOrEqualTo(infoTag.Bounds.Right - 0.001);
+            searchTextBox.Bounds.Right.ShouldBeLessThanOrEqualTo(maxCountPanel.Bounds.Right + 0.001);
+        });
+    }
+
+    [Fact]
     public void DefaultValues_Selects_Single_Option_On_Load()
     {
         var lucy = new SelectOption
