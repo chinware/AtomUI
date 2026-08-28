@@ -12,6 +12,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -501,6 +502,21 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
         ClearPreparedTreeItemNodeData();
         base.OnDetachedFromVisualTree(e);
         OwnerTreeView = null;
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        OwnerTreeView = this.FindAncestorOfType<TreeView>();
+
+        if (_treeItemNodeBindingDisposables is null &&
+            Header is BindableTreeItemNode bindableTreeItemNode &&
+            OwnerTreeView is not null)
+        {
+            base.PrepareContainerForItemOverride(this, bindableTreeItemNode, -1);
+            var resourceHost = this.FindAncestorOfType<TreeViewItem>() as IResourceHost ?? OwnerTreeView;
+            PrepareTreeItemNodeData(bindableTreeItemNode, resourceHost);
+        }
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
