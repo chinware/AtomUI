@@ -23,14 +23,13 @@
             Classes.pinned="{Binding IsPinned}"
             BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
             BorderThickness="0,0,0,1"
-            MinHeight="100"
-            Padding="16">
+            Padding="12">
         <Grid ColumnDefinitions="*,Auto"
-              ColumnSpacing="16">
+              ColumnSpacing="12">
             <StackPanel Grid.Column="0"
-                        Spacing="10">
+                        Spacing="8">
                 <atom:TextBlock Text="{Binding Name}"
-                                FontSize="16"
+                                FontSize="14"
                                 FontWeight="SemiBold" />
 
                 <atom:TextBlock Text="{Binding Description}"
@@ -43,20 +42,20 @@
                         Spacing="4"
                         VerticalAlignment="Top">
                 <atom:IconButton Name="PART_PinButton"
-                                 Width="30"
-                                 Height="30"
-                                 IconWidth="16"
-                                 IconHeight="16"
+                                 Width="24"
+                                 Height="24"
+                                 IconWidth="14"
+                                 IconHeight="14"
                                  atom:ToolTip.Tip="{gallery:SemanticPartPreviewLangResource PinAction}">
                     <atom:IconButton.Icon>
                         <antdicons:PushpinOutlined />
                     </atom:IconButton.Icon>
                 </atom:IconButton>
                 <atom:IconButton Name="PART_InfoButton"
-                                 Width="30"
-                                 Height="30"
-                                 IconWidth="16"
-                                 IconHeight="16"
+                                 Width="24"
+                                 Height="24"
+                                 IconWidth="14"
+                                 IconHeight="14"
                                  atom:ToolTip.Tip="{gallery:SemanticPartPreviewLangResource InfoAction}">
                     <atom:IconButton.Icon>
                         <antdicons:InfoCircleOutlined />

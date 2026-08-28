@@ -26,7 +26,6 @@
                 <DataTemplate x:DataType="vm:TabControlViewModel">
                     <StackPanel Spacing="24">
                         <gallery:SemanticPartPreview Name="TabControlSemanticPreview"
-                                                     Classes="preview-content-centered"
                                                      SemanticOwner="{Binding #TabControlSemanticOwner}"
                                                      SemanticOwnerType="{x:Type atom:TabControl}">
                             <gallery:SemanticPartPreview.PreviewContent>
@@ -59,7 +58,6 @@
                             </gallery:SemanticPartPreview.PartDescriptions>
                         </gallery:SemanticPartPreview>
                         <gallery:SemanticPartPreview Name="CardTabControlSemanticPreview"
-                                                     Classes="preview-content-centered"
                                                      SemanticOwner="{Binding #CardTabControlSemanticOwner}"
                                                      SemanticOwnerType="{x:Type atom:CardTabControl}">
                             <gallery:SemanticPartPreview.PreviewContent>
@@ -93,7 +91,6 @@
                         </gallery:SemanticPartPreview>
                         <gallery:SemanticPartPreview Name="TabItemSemanticPreview"
                                                      Title="TabItem"
-                                                     Classes="preview-content-centered"
                                                      SemanticOwner="{Binding #TabItemSemanticOwner}"
                                                      SemanticOwnerType="{x:Type atom:TabItem}">
                             <gallery:SemanticPartPreview.PreviewContent>

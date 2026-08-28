@@ -26,7 +26,7 @@
                                 <Border Name="PART_PreviewStage"
                                         MinHeight="360"
                                         Background="{atom:SharedTokenResource ColorBgLayout}"
-                                        Padding="32">
+                                        Padding="16">
                                     <Grid RowDefinitions="Auto,*">
                                         <TextBlock Name="PART_Title"
                                                    Margin="0,0,0,12"
@@ -39,9 +39,9 @@
                                                           Grid.Row="1"
                                                           Content="{TemplateBinding PreviewContent}"
                                                           HorizontalAlignment="Stretch"
-                                                          VerticalAlignment="Top"
+                                                          VerticalAlignment="Stretch"
                                                           HorizontalContentAlignment="Stretch"
-                                                          VerticalContentAlignment="Top" />
+                                                          VerticalContentAlignment="{TemplateBinding PreviewContentAlignment}" />
                                     </Grid>
                                 </Border>
 
@@ -95,10 +95,6 @@
         </Style>
         <Style Selector="^:compact /template/ TextBlock#PART_Title">
             <Setter Property="Margin" Value="0,0,0,8" />
-        </Style>
-        <Style Selector="^.preview-content-centered /template/ ContentPresenter#PART_PreviewContentHost">
-            <Setter Property="VerticalAlignment" Value="Stretch" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
         <Style Selector="^:compact /template/ Border#PART_PreviewStage">
             <Setter Property="MinHeight" Value="280" />

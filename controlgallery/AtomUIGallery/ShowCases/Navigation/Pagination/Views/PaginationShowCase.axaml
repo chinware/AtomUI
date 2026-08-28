@@ -23,7 +23,6 @@
                 <DataTemplate x:DataType="vm:PaginationViewModel">
                     <StackPanel Spacing="24">
                         <gallery:SemanticPartPreview Name="PaginationSemanticPreview"
-                                                     Classes="preview-content-centered"
                                                      SemanticOwner="{Binding #PaginationSemanticOwner}"
                                                      SemanticOwnerType="{x:Type atom:Pagination}">
                             <gallery:SemanticPartPreview.PreviewContent>
@@ -43,7 +42,6 @@
                             </gallery:SemanticPartPreview.PartDescriptions>
                         </gallery:SemanticPartPreview>
                         <gallery:SemanticPartPreview Name="SimplePaginationSemanticPreview"
-                                                     Classes="preview-content-centered"
                                                      SemanticOwner="{Binding #SimplePaginationSemanticOwner}"
                                                      SemanticOwnerType="{x:Type atom:SimplePagination}">
                             <gallery:SemanticPartPreview.PreviewContent>

@@ -25,6 +25,50 @@ public class SemanticPartPreviewTests
     }
 
     [Fact]
+    public void LineEdit_Resolves_Highlight_Targets_For_Every_Declared_Part()
+    {
+        var lineEdit = new AtomUI.Desktop.Controls.LineEdit
+        {
+            Width             = 420,
+            Text              = "atomui",
+            InnerLeftContent  = "https://",
+            InnerRightContent = ".com",
+            IsAllowClear      = true,
+            IsShowCount       = true,
+            MaxLength         = 20
+        };
+        var preview = CreatePreviewCore(lineEdit, typeof(AtomUI.Desktop.Controls.LineEdit));
+        foreach (var path in new[] { "root", "prefix", "input", "suffix", "clear", "count" })
+        {
+            preview.PartDescriptions.Add(new SemanticPartDescription
+            {
+                Path        = path,
+                Description = path + " part."
+            });
+        }
+
+        var window = new AtomUIWindow { Width = 640, Height = 240, Content = preview };
+        window.Show();
+        preview.ActivatePreview();
+        Dispatcher.UIThread.RunJobs();
+
+        foreach (var item in preview.Items)
+        {
+            preview.SetHoveredPart(item, true);
+            Dispatcher.UIThread.RunJobs();
+            var session = preview.ActiveHighlightSession.ShouldNotBeNull();
+            session.TotalMatchCount.ShouldBe(1,
+                $"part '{item.Name}' must resolve exactly one highlight target inside the preview owner.");
+            session.HighlightedTargetCount.ShouldBe(1);
+            session.IsTruncated.ShouldBeFalse();
+            preview.SetHoveredPart(item, false);
+            Dispatcher.UIThread.RunJobs();
+            (preview.ActiveHighlightSession?.HighlightedTargetCount ?? 0).ShouldBe(0);
+        }
+        window.Close();
+    }
+
+    [Fact]
     public void Activate_Builds_Descriptor_Items_Without_Creating_A_Highlight_Session()
     {
         var button = new AtomUIButton
@@ -272,8 +316,9 @@ public class SemanticPartPreviewTests
         var previewPresenter = previewStageLayout.Children[1].ShouldBeOfType<ContentPresenter>();
         previewPresenter.HorizontalAlignment.ShouldBe(HorizontalAlignment.Stretch);
         previewPresenter.HorizontalContentAlignment.ShouldBe(HorizontalAlignment.Stretch);
-        previewPresenter.VerticalAlignment.ShouldBe(VerticalAlignment.Top);
-        previewPresenter.VerticalContentAlignment.ShouldBe(VerticalAlignment.Top);
+        previewPresenter.VerticalAlignment.ShouldBe(VerticalAlignment.Stretch);
+        previewPresenter.VerticalContentAlignment.ShouldBe(preview.PreviewContentAlignment);
+        preview.PreviewContentAlignment.ShouldBe(VerticalAlignment.Center);
 
         var partsPane = layout.Children[1].ShouldBeOfType<Border>();
         partsPane.Name.ShouldBe("PART_PartsPane");
@@ -550,13 +595,24 @@ public class SemanticPartPreviewTests
             Math.Max(0, 500 - previewStage.DesiredSize.Height - layout.Spacing), 0.01);
     }
 
-    private static SemanticPartPreview CreatePreview(AtomUIButton button)
+    private static SemanticPartPreview CreatePreview(Avalonia.Controls.Control content, Type ownerType)
+    {
+        return CreatePreviewCore(content, ownerType);
+    }
+
+    private static SemanticPartPreview CreatePreviewCore(Avalonia.Controls.Control content, Type ownerType)
     {
         var preview = new SemanticPartPreview
         {
-            PreviewContent    = button,
-            SemanticOwnerType = typeof(AtomUIButton)
+            PreviewContent    = content,
+            SemanticOwnerType = ownerType
         };
+        return preview;
+    }
+
+    private static SemanticPartPreview CreatePreview(AtomUIButton button)
+    {
+        var preview = CreatePreviewCore(button, typeof(AtomUIButton));
         preview.PartDescriptions.Add(new SemanticPartDescription
         {
             Path        = "root",

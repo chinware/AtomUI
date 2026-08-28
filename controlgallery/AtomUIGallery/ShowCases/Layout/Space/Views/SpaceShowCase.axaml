@@ -48,7 +48,6 @@
                 <DataTemplate x:DataType="viewModels:SpaceViewModel">
                     <StackPanel Spacing="24">
                         <gallery:SemanticPartPreview Name="SpaceSemanticPreview"
-                                                     Classes="preview-content-centered"
                                                      SemanticOwner="{Binding #SpaceSemanticOwner}"
                                                      SemanticOwnerType="{x:Type atom:Space}">
                             <gallery:SemanticPartPreview.PreviewContent>

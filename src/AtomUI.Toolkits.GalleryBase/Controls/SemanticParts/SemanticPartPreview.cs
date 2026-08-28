@@ -5,6 +5,7 @@ using AtomUI.Toolkits.GalleryBase.Localization;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data.Converters;
@@ -27,6 +28,20 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
 
     public static readonly StyledProperty<Control?> PreviewContentProperty =
         AvaloniaProperty.Register<SemanticPartPreview, Control?>(nameof(PreviewContent));
+
+    /// <summary>
+    /// 预览内容在画布中的垂直对齐方式，默认居中；
+    /// 内容型预览（如大尺寸组件）可按需覆盖为 Top。
+    /// </summary>
+    public static readonly StyledProperty<VerticalAlignment> PreviewContentAlignmentProperty =
+        AvaloniaProperty.Register<SemanticPartPreview, VerticalAlignment>(
+            nameof(PreviewContentAlignment), VerticalAlignment.Center);
+
+    public VerticalAlignment PreviewContentAlignment
+    {
+        get => GetValue(PreviewContentAlignmentProperty);
+        set => SetValue(PreviewContentAlignmentProperty, value);
+    }
 
     public static readonly StyledProperty<Control?> SemanticOwnerProperty =
         AvaloniaProperty.Register<SemanticPartPreview, Control?>(nameof(SemanticOwner));

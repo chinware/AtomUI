@@ -62,25 +62,15 @@ internal static class SemanticPartTargetResolver
             return new SemanticPartTargetResolution(targets, totalMatchCount);
         }
 
-        if (part.RuntimeCreated)
+        // 模板节点被嵌套控件的内容属性收养时（decorated box 的左右 addon 等），
+        // Avalonia 会清空其 TemplatedParent，因此不能按 TemplatedParent 过滤；
+        // 统一沿 owner 的视觉子树收集，并以嵌套语义 owner 作为遍历边界。
+        if (part.RuntimeCreated && HasMarker(owner, part))
         {
-            if (HasMarker(owner, part))
-            {
-                AddMatch(owner);
-            }
+            AddMatch(owner);
+        }
 
-            TraverseOwnerScope(owner, owner, part, registry, AddMatch);
-        }
-        else if (owner is TemplatedControl templatedOwner)
-        {
-            foreach (var candidate in templatedOwner.GetTemplateDescendants())
-            {
-                if (ReferenceEquals(candidate.TemplatedParent, owner) && HasMarker(candidate, part))
-                {
-                    AddMatch(candidate);
-                }
-            }
-        }
+        TraverseOwnerScope(owner, owner, part, registry, AddMatch);
 
         if (part.CrossVisualRoot && additionalRoots is not null)
         {

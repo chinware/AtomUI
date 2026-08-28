@@ -34,7 +34,6 @@
             <gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>
                 <DataTemplate x:DataType="vm:BreadcrumbViewModel">
                     <gallery:SemanticPartPreview Name="BreadcrumbSemanticPreview"
-                                                 Classes="preview-content-centered"
                                                  SemanticOwner="{Binding #BreadcrumbSemanticOwner}"
                                                  SemanticOwnerType="{x:Type atom:Breadcrumb}">
                         <gallery:SemanticPartPreview.PreviewContent>

@@ -25,7 +25,6 @@
                 <DataTemplate x:DataType="vm:TabStripViewModel">
                     <StackPanel Spacing="24">
                         <gallery:SemanticPartPreview Name="TabStripSemanticPreview"
-                                                     Classes="preview-content-centered"
                                                      SemanticOwner="{Binding #TabStripSemanticOwner}"
                                                      SemanticOwnerType="{x:Type atom:TabStrip}">
                             <gallery:SemanticPartPreview.PreviewContent>
@@ -48,7 +47,6 @@
                             </gallery:SemanticPartPreview.PartDescriptions>
                         </gallery:SemanticPartPreview>
                         <gallery:SemanticPartPreview Name="CardTabStripSemanticPreview"
-                                                     Classes="preview-content-centered"
                                                      SemanticOwner="{Binding #CardTabStripSemanticOwner}"
                                                      SemanticOwnerType="{x:Type atom:CardTabStrip}">
                             <gallery:SemanticPartPreview.PreviewContent>
@@ -75,7 +73,6 @@
                             </gallery:SemanticPartPreview.PartDescriptions>
                         </gallery:SemanticPartPreview>
                         <gallery:SemanticPartPreview Name="TabStripItemSemanticPreview"
-                                                     Classes="preview-content-centered"
                                                      SemanticOwner="{Binding #TabStripItemSemanticOwner}"
                                                      SemanticOwnerType="{x:Type atom:TabStripItem}">
                             <gallery:SemanticPartPreview.PreviewContent>

@@ -26,7 +26,6 @@
                 <DataTemplate x:DataType="vm:StepsViewModel">
                     <StackPanel Spacing="24">
                         <gallery:SemanticPartPreview Name="StepsSemanticPreview"
-                                                     Classes="preview-content-centered"
                                                      SemanticOwner="{Binding #StepsSemanticOwner}"
                                                      SemanticOwnerType="{x:Type atom:Steps}">
                             <gallery:SemanticPartPreview.PreviewContent>
