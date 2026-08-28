@@ -63,7 +63,6 @@ OtpLineEdit 的公共 API 以文本值、长度、输入约束、显示辅助和
 | `StyleVariant` | 输入表面样式，复用 `InputControlStyleVariant`。 |
 | `Status` | 显式输入反馈状态；最终视觉由 `InputControlFrame.EffectiveStatus` 计算，native validation error 以 `DataValidationErrors` 为唯一真源。 |
 | `Separator` | 分隔符内容，仅参与视觉展示，不进入 `Text`。 |
-| `SeparatorInterval` | 分隔符间隔，例如 `3` 表示 `123-456`。 |
 | `SeparatorTemplate` | 分隔符内容模板。 |
 
 事件与方法：
@@ -207,7 +206,7 @@ OtpLineEdit 以 `Text` 表达完整验证码。内部 cell 的显示字符由 `T
 
 ### 8.3 分隔符模型
 
-`SeparatorInterval` 定义分隔符插入规则。分隔符位于 cell 之间，只由视觉 host 渲染，不参与焦点导航、输入位置、`Text.Length`、复制、Form 值或验证。
+设置 `Separator` 后，分隔符自动插入到每个 cell 之间，只由视觉 host 渲染，不参与焦点导航、输入位置、`Text.Length`、复制、Form 值或验证。
 
 ### 8.4 掩码模型
 
@@ -230,7 +229,7 @@ LLMS 语义区域：
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
 | `root` | `OtpLineEdit` | 控件根语义区域，承载 public API、文本值、验证状态和主题入口。 | `Text`、`Length`、`Status`、`SizeType` | `OtpLineEditToken`、SharedToken | stable |
-| `cell-list` | `PART_CellsHost` | 根据 `Length` 展示 cell 和 separator。 | `Length`、`Separator`、`SeparatorInterval` | `CellGap`、`CellWidth*` | template-stable |
+| `cell-list` | `PART_CellsHost` | 根据 `Length` 展示 cell 和 separator。 | `Length`、`Separator` | `CellGap`、`CellWidth*` | template-stable |
 | `cell` | `OtpLineEditCell` | 展示单个字符、placeholder、mask、active/focus 和 error 状态。 | `Text`、`IsMasked`、`MaskChar` | `CellWidth`、LineEdit 输入字号 | internal-observable |
 | `action` | `PART_ClearButton` | 清空完整验证码文本。 | `IsAllowClear`、`Clear()` | 输入 action 主题资源 | template-stable |
 | `validation` | `PART_FormFeedBack` | 承载 Form feedback 和 native validation 投射。 | `Status`、`IFormItemAware` | SharedToken、Form Token | template-stable |

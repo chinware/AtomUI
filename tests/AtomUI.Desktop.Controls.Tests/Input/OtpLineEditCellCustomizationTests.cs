@@ -71,13 +71,12 @@ public class OtpLineEditCellCustomizationTests
     }
 
     [Fact]
-    public void Separator_Renders_Between_Cells_When_Interval_Is_One()
+    public void Separator_Renders_By_Default_Without_Setting_Interval()
     {
         var otp = new AtomUIOtpLineEdit
         {
             Length = 6,
             Separator = "*",
-            SeparatorInterval = 1,
             IsMotionEnabled = false
         };
 

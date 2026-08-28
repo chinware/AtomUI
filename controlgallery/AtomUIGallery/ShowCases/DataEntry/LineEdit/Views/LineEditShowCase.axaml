@@ -320,16 +320,14 @@
                 <atom:TextBlock Text="With custom separator"
                                 FontSize="16"
                                 FontWeight="SemiBold" />
-                <atom:OtpLineEdit Separator="/"
-                                  SeparatorInterval="1" />
+                <atom:OtpLineEdit Separator="/" />
             </StackPanel>
 
             <StackPanel Orientation="Vertical" Spacing="14">
                 <atom:TextBlock Text="With custom function separator"
                                 FontSize="16"
                                 FontWeight="SemiBold" />
-                <atom:OtpLineEdit Separator="—"
-                                  SeparatorInterval="1">
+                <atom:OtpLineEdit Separator="—">
                     <atom:OtpLineEdit.SeparatorTemplate>
                         <DataTemplate x:DataType="atom:OtpLineEditSeparatorContext">
                             <TextBlock Text="{Binding Content}"
@@ -793,8 +791,7 @@
                     <atom:OtpLineEdit
                         Classes="style-class-otp"
                         Length="6"
-                        Separator="*"
-                        SeparatorInterval="1" />
+                        Separator="*" />
 
                     <atom:SearchEdit
                         Classes="style-class-search"

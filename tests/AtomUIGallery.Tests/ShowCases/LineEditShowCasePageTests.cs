@@ -128,7 +128,6 @@ public class LineEditShowCasePageTests
         semanticExample.ShouldContain("SizeType=\"Middle\"");
         semanticExample.ShouldContain("Length=\"6\"");
         semanticExample.ShouldContain("Separator=\"*\"");
-        semanticExample.ShouldContain("SeparatorInterval=\"1\"");
         semanticExample.ShouldContain("<Setter Property=\"CellWidth\" Value=\"32\" />");
         semanticExample.ShouldContain("<Setter Property=\"CellBorderBrush\" Value=\"#6E8CFB\" />");
         semanticExample.ShouldContain("SizeType=\"Large\"");
@@ -241,7 +240,6 @@ public class LineEditShowCasePageTests
         demo.ShouldContain("IsMasked=\"True\"");
         demo.ShouldContain("Separator=\"/\"");
         demo.ShouldContain("Separator=\"—\"");
-        demo.ShouldContain("SeparatorInterval=\"1\"");
         demo.ShouldContain("SeparatorTemplate");
         demo.ShouldContain("OtpLineEditSeparatorBrushConverter");
         demo.ShouldContain("CellIndex");

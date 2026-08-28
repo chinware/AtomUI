@@ -868,8 +868,7 @@ public class OtpLineEditBehaviorTests
     {
         var otpLineEdit = new AtomUI.Desktop.Controls.OtpLineEdit
         {
-            Separator         = "/",
-            SeparatorInterval = 1
+            Separator = "/"
         };
 
         ShowInWindow(otpLineEdit, () =>
@@ -893,7 +892,6 @@ public class OtpLineEditBehaviorTests
         var otpLineEdit = new AtomUI.Desktop.Controls.OtpLineEdit
         {
             Separator         = "—",
-            SeparatorInterval = 1,
             SeparatorTemplate = new FuncDataTemplate<OtpLineEditSeparatorContext>(
                 (context, _) => new TextBlock
                 {

@@ -63,11 +63,6 @@ public class OtpLineEdit : TemplatedControl,
     public static readonly StyledProperty<object?> SeparatorProperty =
         AvaloniaProperty.Register<OtpLineEdit, object?>(nameof(Separator));
 
-    public static readonly StyledProperty<int> SeparatorIntervalProperty =
-        AvaloniaProperty.Register<OtpLineEdit, int>(
-            nameof(SeparatorInterval),
-            coerce: (_, value) => Math.Max(0, value));
-
     public static readonly StyledProperty<IDataTemplate?> SeparatorTemplateProperty =
         AvaloniaProperty.Register<OtpLineEdit, IDataTemplate?>(nameof(SeparatorTemplate));
 
@@ -153,12 +148,6 @@ public class OtpLineEdit : TemplatedControl,
     {
         get => GetValue(SeparatorProperty);
         set => SetValue(SeparatorProperty, value);
-    }
-
-    public int SeparatorInterval
-    {
-        get => GetValue(SeparatorIntervalProperty);
-        set => SetValue(SeparatorIntervalProperty, value);
     }
 
     public IDataTemplate? SeparatorTemplate
@@ -373,7 +362,6 @@ public class OtpLineEdit : TemplatedControl,
             change.Property == MaskCharProperty ||
             change.Property == PlaceholderTextProperty ||
             change.Property == SeparatorProperty ||
-            change.Property == SeparatorIntervalProperty ||
             change.Property == SeparatorTemplateProperty ||
             change.Property == SizeTypeProperty ||
             change.Property == StyleVariantProperty ||
@@ -770,15 +758,12 @@ public class OtpLineEdit : TemplatedControl,
 
         return SeparatorTemplate is null
             ? Separator
-            : new OtpLineEditSeparatorContext(index, (index + 1) / SeparatorInterval, Separator, SeparatorTemplate);
+            : new OtpLineEditSeparatorContext(index, index + 1, Separator, SeparatorTemplate);
     }
 
     private bool ShouldShowSeparatorAfter(int index)
     {
-        return Separator is not null &&
-               SeparatorInterval > 0 &&
-               index < Length - 1 &&
-               (index + 1) % SeparatorInterval == 0;
+        return Separator is not null && index < Length - 1;
     }
 
     private void ConfigureFormFeedbackSubscription()

@@ -72,6 +72,6 @@ Token 变更要求：
 | --- | --- |
 | 修改 cell 宽度 Token | 验证 Large/Middle/Small/Custom 下的 cell 宽度、字符居中、focus ring 和 error 状态。 |
 | 修改 cell 间距 Token | 验证相邻 cell、清除按钮、Form feedback 和整体布局不重叠。 |
-| 修改 separator 模板布局 | 验证 `SeparatorInterval`、静态 separator、模板 separator 和不同 SizeType 的对齐。 |
+| 修改 separator 模板布局 | 验证静态 separator、模板 separator 和不同 SizeType 的对齐。 |
 | 删除或重命名 Token | 默认不允许；如获授权，需同步 AXAML 引用、生成文件、Token 类型、生成数据和 token.md和控件文档。 |
 | 文档改动 | 运行 `git diff --check`，检查文档链接存在。 |
