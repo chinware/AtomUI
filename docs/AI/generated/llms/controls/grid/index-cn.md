@@ -68,7 +68,231 @@ Grid 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/Layout/Grid/Views/GridShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础栅格
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Grid/Views/GridShowCase.axaml:57`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<StackPanel Margin="20" Spacing="12">
+    <atom:Row Gutter="16,16">
+        <atom:Col Span="24">
+            <Border Classes="grid-cell">
+                <TextBlock Classes="grid-cell-text" Text="col" />
+            </Border>
+        </atom:Col>
+    </atom:Row>
+    <atom:Row Gutter="16,16">
+        <atom:Col Span="12">
+            <Border Classes="grid-cell">
+                <TextBlock Classes="grid-cell-text" Text="列-12" />
+            </Border>
+        </atom:Col>
+        <atom:Col Span="12">
+            <Border Classes="grid-cell alt">
+                <TextBlock Classes="grid-cell-text" Text="列-12" />
+            </Border>
+        </atom:Col>
+    </atom:Row>
+    <atom:Row Gutter="16,16">
+        <atom:Col Span="8">
+            <Border Classes="grid-cell">
+                <TextBlock Classes="grid-cell-text" Text="列-8" />
+            </Border>
+        </atom:Col>
+        <atom:Col Span="8">
+            <Border Classes="grid-cell alt">
+                <TextBlock Classes="grid-cell-text" Text="列-8" />
+            </Border>
+        </atom:Col>
+        <atom:Col Span="8">
+            <Border Classes="grid-cell">
+                <TextBlock Classes="grid-cell-text" Text="列-8" />
+            </Border>
+        </atom:Col>
+    </atom:Row>
+    <atom:Row Gutter="16,16">
+        <atom:Col Span="6">
+            <Border Classes="grid-cell">
+                <TextBlock Classes="grid-cell-text" Text="列-6" />
+            </Border>
+        </atom:Col>
+        <atom:Col Span="6">
+            <Border Classes="grid-cell alt">
+                <TextBlock Classes="grid-cell-text" Text="列-6" />
+            </Border>
+        </atom:Col>
+        <atom:Col Span="6">
+            <Border Classes="grid-cell">
+                <TextBlock Classes="grid-cell-text" Text="列-6" />
+            </Border>
+        </atom:Col>
+        <atom:Col Span="6">
+            <Border Classes="grid-cell alt">
+                <TextBlock Classes="grid-cell-text" Text="列-6" />
+            </Border>
+        </atom:Col>
+    </atom:Row>
+</StackPanel>
+```
+
+### 偏移
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Grid/Views/GridShowCase.axaml:248`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel Margin="20" Spacing="12">
+    <atom:Row Gutter="16,16">
+        <atom:Col Span="8">
+            <Border Classes="grid-cell">
+                <TextBlock Classes="grid-cell-text" Text="列-8" />
+            </Border>
+        </atom:Col>
+        <atom:Col Span="8" Offset="8">
+            <Border Classes="grid-cell alt">
+                <TextBlock Classes="grid-cell-text" Text="列-8 列-offset-8" />
+            </Border>
+        </atom:Col>
+    </atom:Row>
+    <atom:Row Gutter="16,16">
+        <atom:Col Span="6" Offset="6">
+            <Border Classes="grid-cell">
+                <TextBlock Classes="grid-cell-text" Text="列-6 列-offset-6" />
+            </Border>
+        </atom:Col>
+    </atom:Row>
+    <atom:Row Gutter="16,16">
+        <atom:Col Span="12" Offset="6">
+            <Border Classes="grid-cell alt">
+                <TextBlock Classes="grid-cell-text" Text="列-12 列-offset-6" />
+            </Border>
+        </atom:Col>
+    </atom:Row>
+    <atom:Row Gutter="16,16">
+        <atom:Col Span="6" Offset="18">
+            <Border Classes="grid-cell">
+                <TextBlock Classes="grid-cell-text" Text="列-6 列-offset-18" />
+            </Border>
+        </atom:Col>
+    </atom:Row>
+</StackPanel>
+```
+
+### 推拉排序
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Grid/Views/GridShowCase.axaml:290`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<StackPanel Margin="20" Spacing="12">
+    <atom:Row Gutter="16,16">
+        <atom:Col Span="18" Push="6">
+            <Border Classes="grid-cell alt">
+                <TextBlock Classes="grid-cell-text" Text="列-18 列-push-6" />
+            </Border>
+        </atom:Col>
+        <atom:Col Span="6" Pull="18">
+            <Border Classes="grid-cell">
+                <TextBlock Classes="grid-cell-text" Text="列-6 列-pull-18" />
+            </Border>
+        </atom:Col>
+    </atom:Row>
+</StackPanel>
+```
+
+### 交叉轴对齐
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Grid/Views/GridShowCase.axaml:475`
+
+Gallery key：`ExamplesContent` / item `5`
+
+```axaml
+<StackPanel Margin="20" Spacing="12">
+    <TextBlock Classes="grid-section-title" Text="Align Top" />
+    <Border Classes="grid-row-surface">
+        <atom:Row Gutter="16,16" Justify="center" Align="top">
+            <atom:Col Span="4">
+                <Border Classes="grid-cell" Height="72">
+                    <TextBlock Classes="grid-cell-text" Text="列-4" />
+                </Border>
+            </atom:Col>
+            <atom:Col Span="4">
+                <Border Classes="grid-cell alt" Height="48">
+                    <TextBlock Classes="grid-cell-text" Text="列-4" />
+                </Border>
+            </atom:Col>
+            <atom:Col Span="4">
+                <Border Classes="grid-cell" Height="64">
+                    <TextBlock Classes="grid-cell-text" Text="列-4" />
+                </Border>
+            </atom:Col>
+            <atom:Col Span="4">
+                <Border Classes="grid-cell alt" Height="56">
+                    <TextBlock Classes="grid-cell-text" Text="列-4" />
+                </Border>
+            </atom:Col>
+        </atom:Row>
+    </Border>
+
+    <TextBlock Classes="grid-section-title" Text="Align Middle" />
+    <Border Classes="grid-row-surface">
+        <atom:Row Gutter="16,16" Justify="center" Align="middle">
+            <atom:Col Span="4">
+                <Border Classes="grid-cell" Height="72">
+                    <TextBlock Classes="grid-cell-text" Text="列-4" />
+                </Border>
+            </atom:Col>
+            <atom:Col Span="4">
+                <Border Classes="grid-cell alt" Height="48">
+                    <TextBlock Classes="grid-cell-text" Text="列-4" />
+                </Border>
+            </atom:Col>
+            <atom:Col Span="4">
+                <Border Classes="grid-cell" Height="64">
+                    <TextBlock Classes="grid-cell-text" Text="列-4" />
+                </Border>
+            </atom:Col>
+            <atom:Col Span="4">
+                <Border Classes="grid-cell alt" Height="56">
+                    <TextBlock Classes="grid-cell-text" Text="列-4" />
+                </Border>
+            </atom:Col>
+        </atom:Row>
+    </Border>
+
+    <TextBlock Classes="grid-section-title" Text="Align Bottom" />
+    <Border Classes="grid-row-surface">
+        <atom:Row Gutter="16,16" Justify="center" Align="bottom">
+            <atom:Col Span="4">
+                <Border Classes="grid-cell" Height="72">
+                    <TextBlock Classes="grid-cell-text" Text="列-4" />
+                </Border>
+            </atom:Col>
+            <atom:Col Span="4">
+                <Border Classes="grid-cell alt" Height="48">
+                    <TextBlock Classes="grid-cell-text" Text="列-4" />
+                </Border>
+            </atom:Col>
+            <atom:Col Span="4">
+                <Border Classes="grid-cell" Height="64">
+                    <TextBlock Classes="grid-cell-text" Text="列-4" />
+                </Border>
+            </atom:Col>
+            <atom:Col Span="4">
+                <Border Classes="grid-cell alt" Height="56">
+                    <TextBlock Classes="grid-cell-text" Text="列-4" />
+                </Border>
+            </atom:Col>
+        </atom:Row>
+    </Border>
+</StackPanel>
+```
 
 ## 状态模型
 

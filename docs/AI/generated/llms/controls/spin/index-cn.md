@@ -74,7 +74,7 @@ Spin 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:SpinShowCaseLangResource BasicUsageTitle}
+### 基础用法
 
 来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml:36`
 
@@ -84,7 +84,7 @@ Gallery key：`ExamplesContent` / item `0`
 <atom:SpinIndicator />
 ```
 
-### {gallery:SpinShowCaseLangResource SizeTitle}
+### 尺寸
 
 来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml:47`
 
@@ -96,6 +96,74 @@ Gallery key：`ExamplesContent` / item `1`
     <atom:SpinIndicator SizeType="Middle" VerticalAlignment="Center" />
     <atom:SpinIndicator SizeType="Large" VerticalAlignment="Center" />
     <atom:SpinIndicator SizeType="Custom" IndicatorSize="44" DotSize="14" VerticalAlignment="Center" />
+</StackPanel>
+```
+
+### 自定义描述
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml:63`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10">
+    <StackPanel Orientation="Horizontal" Spacing="10">
+        <atom:Spin IsSpinning="True" SizeType="Small"
+                   IsTipVisible="True"
+                   Tip="加载中...">
+            <Border Width="100" Height="100" Background="#0D000000" />
+        </atom:Spin>
+        <atom:Spin IsSpinning="True" SizeType="Middle"
+                   IsTipVisible="True"
+                   Tip="加载中...">
+            <Border Width="100" Height="100" Background="#0D000000" />
+        </atom:Spin>
+        <atom:Spin IsSpinning="True" SizeType="Large"
+                   IsTipVisible="True"
+                   Tip="加载中...">
+            <Border Width="100" Height="100" Background="#0D000000" />
+        </atom:Spin>
+    </StackPanel>
+    <atom:Spin IsSpinning="True"
+               IsTipVisible="True"
+               Tip="加载中...">
+        <atom:Alert Message="提示消息标题"
+                    Description="关于这条提示上下文的更多详细信息。"
+                    Type="Info" />
+    </atom:Spin>
+</StackPanel>
+```
+
+### 嵌入模式
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinShowCase.axaml:121`
+
+Gallery key：`ExamplesContent` / item `4`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10">
+    <atom:Spin IsSpinning="{Binding IsLoadingSwitchChecked}"
+               IsTipVisible="True"
+               HorizontalAlignment="Stretch"
+               Tip="加载中...">
+        <atom:Alert Message="提示消息标题"
+                    Description="关于这条提示上下文的更多详细信息。"
+                    Type="Info" />
+    </atom:Spin>
+
+    <atom:Spin IsSpinning="{Binding IsLoadingSwitchChecked}"
+               IsTipVisible="True"
+               Tip="加载中..."
+               HorizontalAlignment="Stretch"
+               IsMaskBlurEnabled="True">
+        <atom:Alert Message="提示消息标题"
+                    Description="关于这条提示上下文的更多详细信息。"
+                    Type="Info" />
+    </atom:Spin>
+    <StackPanel Orientation="Horizontal" Spacing="10">
+        <atom:TextBlock Text="加载状态：" />
+        <atom:ToggleSwitch IsChecked="{Binding IsLoadingSwitchChecked}" />
+    </StackPanel>
 </StackPanel>
 ```
 
@@ -158,6 +226,7 @@ Spin Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
+- 隐藏祖先下的 Spin 不得保留旋转或 dot opacity 的 Compositor 无限动画。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
 
 ## 源码索引

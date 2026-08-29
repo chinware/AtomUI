@@ -45,7 +45,7 @@ Steps 表达“有序流程 + 当前进度 + 可选导航请求”。
 | 反馈 | Wave 表达真实 pointer click，不表达状态变化。 | Indicator Wave。 |
 | 密度 | 尺寸控制 Indicator、文字和间距。 | `SizeType`。 |
 
-`StepsType.Default` 表达标准流程，`Dot` 表达实心点状流程，`OutlineDot` 表达空心点状流程，`Navigation` 强调导航入口，`Inline` 表达紧凑内联流程，`Panel` 表达 Ant Design 风格的面板式分段步骤。
+`StepsType.Default` 表达标准流程，`Dot` 表达实心点状流程，`OutlineDot` 表达空心点状流程，`Navigation` 强调导航入口，`Inline` 表达紧凑内联流程，`Panel` 表达面板式分段步骤。
 
 ## 3. API 与契约模型
 

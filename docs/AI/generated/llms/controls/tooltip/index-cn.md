@@ -79,7 +79,94 @@ Tooltip 的公共契约由 public/protected 类型成员、Avalonia 属性、事
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tooltip/Views/TooltipShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tooltip/Views/TooltipShowCase.axaml:36`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10">
+    <atom:TextBlock
+        HorizontalAlignment="Left"
+        atom:ToolTip.Tip="提示文本" Text="鼠标移入时显示提示。" />
+</StackPanel>
+```
+
+### 弹出位置
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tooltip/Views/TooltipShowCase.axaml:51`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<Grid>
+    <Grid.Styles>
+        <Style Selector="atom|Button">
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="Width" Value="80" />
+            <Setter Property="atom:ToolTip.Tip" Value="提示文本" />
+        </Style>
+    </Grid.Styles>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+    </Grid.ColumnDefinitions>
+
+    <atom:Button Grid.Row="1" Grid.Column="0" Content="左上">
+        <atom:ToolTip.Placement>LeftEdgeAlignedTop</atom:ToolTip.Placement>
+    </atom:Button>
+    <atom:Button Grid.Row="2" Grid.Column="0" Content="左侧">
+        <atom:ToolTip.Placement>Left</atom:ToolTip.Placement>
+    </atom:Button>
+    <atom:Button Grid.Row="3" Grid.Column="0" Content="左下">
+        <atom:ToolTip.Placement>LeftEdgeAlignedBottom</atom:ToolTip.Placement>
+    </atom:Button>
+
+    <atom:Button Grid.Row="0" Grid.Column="1" Content="上左">
+        <atom:ToolTip.Placement>TopEdgeAlignedLeft</atom:ToolTip.Placement>
+    </atom:Button>
+    <atom:Button Grid.Row="0" Grid.Column="2" Content="上方">
+        <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
+    </atom:Button>
+    <atom:Button Grid.Row="0" Grid.Column="3" Content="上右">
+        <atom:ToolTip.Placement>TopEdgeAlignedRight</atom:ToolTip.Placement>
+    </atom:Button>
+
+    <atom:Button Grid.Row="1" Grid.Column="4" Content="右上">
+        <atom:ToolTip.Placement>RightEdgeAlignedTop</atom:ToolTip.Placement>
+    </atom:Button>
+    <atom:Button Grid.Row="2" Grid.Column="4" Content="右侧">
+        <atom:ToolTip.Placement>Right</atom:ToolTip.Placement>
+    </atom:Button>
+    <atom:Button Grid.Row="3" Grid.Column="4" Content="右下">
+        <atom:ToolTip.Placement>RightEdgeAlignedBottom</atom:ToolTip.Placement>
+    </atom:Button>
+
+    <atom:Button Grid.Row="4" Grid.Column="1" Content="下左">
+        <atom:ToolTip.Placement>BottomEdgeAlignedLeft</atom:ToolTip.Placement>
+    </atom:Button>
+    <atom:Button Grid.Row="4" Grid.Column="2" Content="下方">
+        <atom:ToolTip.Placement>Bottom</atom:ToolTip.Placement>
+    </atom:Button>
+    <atom:Button Grid.Row="4" Grid.Column="3" Content="下右">
+        <atom:ToolTip.Placement>BottomEdgeAlignedRight</atom:ToolTip.Placement>
+    </atom:Button>
+
+</Grid>
+```
 
 ## 状态模型
 

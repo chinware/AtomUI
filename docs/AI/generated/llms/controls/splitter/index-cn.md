@@ -88,7 +88,91 @@ Splitter 的公共契约由根控件 API、面板附加属性、折叠模型、�
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Views/SplitterShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Views/SplitterShowCase.axaml:59`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<Border Classes="splitter-surface">
+    <atom:Splitter Orientation="Vertical" Height="220">
+        <Border Classes="splitter-panel" atom:Splitter.Size="30%">
+            <TextBlock Classes="splitter-label" Text="第一项" />
+        </Border>
+        <Border Classes="splitter-panel" atom:Splitter.DefaultSize="100" atom:Splitter.MinSize="60">
+            <TextBlock Classes="splitter-label" Text="第二项" />
+        </Border>
+    </atom:Splitter>
+</Border>
+```
+
+### 水平分割
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Views/SplitterShowCase.axaml:77`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<Border Classes="splitter-surface">
+    <atom:Splitter Orientation="Horizontal" Height="220">
+        <Border Classes="splitter-panel" atom:Splitter.Size="40%">
+            <TextBlock Classes="splitter-label" Text="顶部" />
+        </Border>
+        <Border Classes="splitter-panel alt">
+            <TextBlock Classes="splitter-label" Text="底部" />
+        </Border>
+    </atom:Splitter>
+</Border>
+```
+
+### 组合布局
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Views/SplitterShowCase.axaml:95`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<Border Classes="splitter-surface">
+    <atom:Splitter Orientation="Vertical" Height="260">
+        <Border Classes="splitter-panel" atom:Splitter.Size="40%">
+            <TextBlock Classes="splitter-label" Text="左侧" />
+        </Border>
+        <atom:Splitter Orientation="Horizontal">
+            <Border Classes="splitter-panel">
+                <TextBlock Classes="splitter-label" Text="顶部" />
+            </Border>
+            <Border Classes="splitter-panel alt">
+                <TextBlock Classes="splitter-label" Text="底部" />
+            </Border>
+        </atom:Splitter>
+    </atom:Splitter>
+</Border>
+```
+
+### 禁用拖拽调整
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/Views/SplitterShowCase.axaml:118`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<Border Classes="splitter-surface">
+    <atom:Splitter Orientation="Vertical" Height="220">
+        <Border Classes="splitter-panel" atom:Splitter.Size="35%">
+            <TextBlock Classes="splitter-label" Text="Resizable" />
+        </Border>
+        <Border Classes="splitter-panel alt" atom:Splitter.DefaultSize="120" atom:Splitter.IsResizable="False">
+            <TextBlock Classes="splitter-label" Text="Not Resizable" />
+        </Border>
+        <Border Classes="splitter-panel" atom:Splitter.DefaultSize="120">
+            <TextBlock Classes="splitter-label" Text="Resizable" />
+        </Border>
+    </atom:Splitter>
+</Border>
+```
 
 ## 状态模型
 

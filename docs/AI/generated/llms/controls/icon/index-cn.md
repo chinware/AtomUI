@@ -128,6 +128,7 @@ Icon Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
+- 未配置 loading animation 的普通 Icon 不建立有效可见性跟踪；隐藏祖先下的 loading Icon 不保留 Compositor 无限动画。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
 
 ## 源码索引

@@ -2,11 +2,13 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using AtomUI.Localization;
+using AtomUI;
 using AtomUI.Theme;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Definitions;
 using AtomUI.Theme.Resources;
 using Avalonia.Media;
+using Avalonia;
 
 namespace AtomUI.LinkedRegistration.Fixtures;
 
@@ -23,24 +25,26 @@ internal static class FixtureHost
         ArgumentNullException.ThrowIfNull(register);
         ArgumentNullException.ThrowIfNull(usageMarkers);
 
-        var theme = new RecordingThemeManagerBuilder();
-        var localization = new RecordingLocalizationBuilder();
-        var builder = new RecordingAtomUIBuilder(theme, localization);
+        var builder = new AtomUIBuilder(new Application());
 
         register(builder);
         GC.KeepAlive(usageMarkers);
 
-        WriteSnapshot(Console.OpenStandardOutput(), fixtureName, theme, localization);
+        WriteSnapshot(
+            Console.OpenStandardOutput(),
+            fixtureName,
+            builder.ThemeManagerBuilder,
+            builder.LocalizationBuilder);
         return 0;
     }
 
     private static void WriteSnapshot(
         Stream output,
         string fixtureName,
-        RecordingThemeManagerBuilder theme,
-        RecordingLocalizationBuilder localization)
+        ThemeManagerBuilder theme,
+        LocalizationBuilder localization)
     {
-        var packages = theme.Packages.OrderBy(static package => package.Id, StringComparer.Ordinal)
+        var packages = theme.ControlPackages.OrderBy(static package => package.Id, StringComparer.Ordinal)
                             .ToArray();
         var desktopPackage = packages.SingleOrDefault(static package => package.Id == DesktopPackageId);
         var catalogIds = localization.Catalogs.Select(static catalog => catalog.CatalogId)
@@ -138,86 +142,4 @@ internal static class FixtureHost
         return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(source.ToString())));
     }
 
-    private sealed class RecordingAtomUIBuilder(
-        IThemeManagerBuilder theme,
-        ILocalizationBuilder localization) : IAtomUIBuilder
-    {
-        public IThemeManagerBuilder Theme { get; } = theme;
-        public ILocalizationBuilder Localization { get; } = localization;
-    }
-
-    private sealed class RecordingThemeManagerBuilder : IThemeManagerBuilder
-    {
-        internal List<ControlPackageRegistration> Packages { get; } = [];
-        internal int InitializerCount { get; private set; }
-
-        public void AddThemeDefinitionResolver(IThemeDefinitionResolver resolver)
-        {
-        }
-
-        public void AddControlPackage(ControlPackageRegistration package)
-        {
-            Packages.Add(package);
-        }
-
-        public void AddInitializer(Action<IThemeManager> initializer)
-        {
-            ArgumentNullException.ThrowIfNull(initializer);
-            InitializerCount++;
-        }
-
-        public void WithInitialTheme(string themeId, ThemeConfig? config = null)
-        {
-        }
-
-        public void WithFollowSystemThemes(ThemeRequest light, ThemeRequest dark)
-        {
-        }
-
-        public void WithApplicationId(string applicationId)
-        {
-        }
-
-        public void UseUserThemeDirectory()
-        {
-        }
-
-        public void UseUserThemeDirectory(string directory)
-        {
-        }
-
-        public void WithDefaultFontFamily(FontFamily fontFamily)
-        {
-        }
-
-        public void WithDefaultFontFamily(string fontFamily)
-        {
-        }
-    }
-
-    private sealed class RecordingLocalizationBuilder : ILocalizationBuilder
-    {
-        internal List<LanguageCatalogDescriptor> Catalogs { get; } = [];
-        internal List<TranslationBundleDescriptor> TranslationBundles { get; } = [];
-
-        public void AddCatalog(LanguageCatalogDescriptor descriptor)
-        {
-            Catalogs.Add(descriptor);
-        }
-
-        public void AddTranslationBundle(TranslationBundleDescriptor descriptor)
-        {
-            TranslationBundles.Add(descriptor);
-        }
-
-        public void AddLanguageDefinition(LanguageDefinition definition)
-        {
-        }
-
-        public void ConfigureLanguages(
-            LanguageTag defaultLanguage,
-            IEnumerable<LanguageTag> supportedLanguages)
-        {
-        }
-    }
 }

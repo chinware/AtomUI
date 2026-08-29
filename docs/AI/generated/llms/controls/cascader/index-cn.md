@@ -148,74 +148,90 @@ Cascader 继承 `AbstractSelect` 的输入表面契约：
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:CascaderShowCaseLangResource BasicCascaderViewTitle}
+### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:626`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:37`
 
-Gallery key：`ExamplesContent` / item `15`
-
-```axaml
-<StackPanel Orientation="Vertical" Spacing="10">
-    <atom:CascaderView OptionsSource="{Binding BasicCascaderViewNodes}" />
-
-    <atom:CascaderView OptionsSource="{Binding BasicCheckableCascaderViewNodes}"
-                       IsCheckable="True" />
-
-    <atom:CascaderView />
-</StackPanel>
-```
-
-### {gallery:CascaderShowCaseLangResource GenerateByTemplateTitle}
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:644`
-
-Gallery key：`ExamplesContent` / item `16`
+Gallery key：`ExamplesContent` / item `0`
 
 ```axaml
-<StackPanel Orientation="Vertical" Spacing="10">
-    <atom:CascaderView
-        Name="BasicCascaderView"
-        OptionsSource="{Binding BasicCascaderViewNodes}">
-        <atom:CascaderView.OptionTemplate>
-            <TreeDataTemplate ItemsSource="{Binding Children}"
-                              x:DataType="atom:ICascaderOption">
-                <atom:TextBlock Text="{Binding Header}" />
-            </TreeDataTemplate>
-        </atom:CascaderView.OptionTemplate>
-    </atom:CascaderView>
-
-    <atom:CascaderView
-        Name="BasicCheckableCascaderView"
-        OptionsSource="{Binding BasicCheckableCascaderViewNodes}"
-        IsCheckable="True">
-        <atom:CascaderView.OptionTemplate>
-            <TreeDataTemplate x:DataType="atom:ICascaderOption"
-                              ItemsSource="{Binding Children}">
-                <atom:TextBlock Text="{Binding Header}" />
-            </TreeDataTemplate>
-        </atom:CascaderView.OptionTemplate>
-    </atom:CascaderView>
-</StackPanel>
-```
-
-### {gallery:CascaderShowCaseLangResource LoadOptionsLazilyTitle}
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:678`
-
-Gallery key：`ExamplesContent` / item `17`
-
-```axaml
-<atom:CascaderView
-    Name="AsyncLoadCascaderView"
-    OptionsSource="{Binding AsyncLoadCascaderViewNodes}"
-    DataLoader="{Binding AsyncCascaderNodeLoader}">
-    <atom:CascaderView.OptionTemplate>
+<atom:Cascader
+    Name="BasicCascader"
+    PlaceholderText="请选择"
+    OptionsSource="{Binding BasicCascaderViewNodes}"
+    IsAllowClear="True">
+    <atom:Cascader.OptionTemplate>
         <TreeDataTemplate ItemsSource="{Binding Children}"
                           x:DataType="atom:ICascaderOption">
             <atom:TextBlock Text="{Binding Header}" />
         </TreeDataTemplate>
-    </atom:CascaderView.OptionTemplate>
-</atom:CascaderView>
+    </atom:Cascader.OptionTemplate>
+</atom:Cascader>
+```
+
+### 默认值
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:59`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<atom:Cascader
+    Name="DefaultValueCascader"
+    PlaceholderText="请选择"
+    OptionsSource="{Binding BasicCascaderViewNodes}"
+    DefaultSelectOptionPath="{Binding DefaultSelectOptionPath}"
+    IsAllowClear="True">
+    <atom:Cascader.OptionTemplate>
+        <TreeDataTemplate ItemsSource="{Binding Children}"
+                          x:DataType="atom:ICascaderOption">
+            <atom:TextBlock Text="{Binding Header}" />
+        </TreeDataTemplate>
+    </atom:Cascader.OptionTemplate>
+</atom:Cascader>
+```
+
+### 悬停展开
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:188`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<atom:Cascader
+    Name="HoverCascader"
+    PlaceholderText="请选择"
+    OptionsSource="{Binding HoverCascaderNodes}"
+    IsAllowClear="True"
+    ExpandTrigger="Hover">
+    <atom:Cascader.OptionTemplate>
+        <TreeDataTemplate ItemsSource="{Binding Children}"
+                          x:DataType="atom:ICascaderOption">
+            <atom:TextBlock Text="{Binding Header}" />
+        </TreeDataTemplate>
+    </atom:Cascader.OptionTemplate>
+</atom:Cascader>
+```
+
+### 禁用选项
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:211`
+
+Gallery key：`ExamplesContent` / item `4`
+
+```axaml
+<atom:Cascader
+    Name="DisabledCascader"
+    PlaceholderText="请选择"
+    OptionsSource="{Binding DisabledCascaderNodes}"
+    IsAllowClear="True">
+    <atom:Cascader.OptionTemplate>
+        <TreeDataTemplate ItemsSource="{Binding Children}"
+                          x:DataType="atom:ICascaderOption">
+            <atom:TextBlock Text="{Binding Header}" />
+        </TreeDataTemplate>
+    </atom:Cascader.OptionTemplate>
+</atom:Cascader>
 ```
 
 ## 状态模型

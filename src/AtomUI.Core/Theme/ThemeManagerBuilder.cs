@@ -37,10 +37,14 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
     internal ThemeRequest? FollowSystemLightRequest { get; private set; }
     internal ThemeRequest? FollowSystemDarkRequest { get; private set; }
     internal IReadOnlyList<Action<IThemeManager>> Initializers => _initializers;
+    internal int InitializerCount => _initializers.Count;
+    internal IReadOnlyList<ControlPackageRegistration> ControlPackages => _controlPackages;
     internal IReadOnlyList<IThemeDefinitionResolver> ThemeDefinitionResolvers => _themeDefinitionResolvers;
     internal string? ApplicationId { get; private set; }
     internal bool UsesUserThemeDirectory => _useUserThemeDirectory;
     internal string? UserThemeDirectory => _userThemeDirectory;
+
+    private readonly List<ControlPackageRegistration> _controlPackages = new();
 
     public void AddThemeDefinitionResolver(IThemeDefinitionResolver resolver)
     {
@@ -80,6 +84,7 @@ internal sealed class ThemeManagerBuilder : IThemeManagerBuilder
                 $"Control theme provider '{package.ControlThemesProvider.Id}' is already registered.");
         }
         _registeredControlPackageIds.Add(package.Id);
+        _controlPackages.Add(package);
         foreach (var descriptor in package.Controls)
         {
             _registeredControlTokenIdentities.Add(descriptor.Identity);

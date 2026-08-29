@@ -127,18 +127,6 @@
         <target state="translated">Navegação Etapas</target>
       </segment>
     </unit>
-    <unit id="PanelStepsDescription">
-      <segment>
-        <source>Panel steps with filled and outlined variants.</source>
-        <target state="translated">Etapas em painel com variantes preenchida e contornada.</target>
-      </segment>
-    </unit>
-    <unit id="PanelStepsTitle">
-      <segment>
-        <source>Panel Steps</source>
-        <target state="translated">Etapas em painel</target>
-      </segment>
-    </unit>
     <unit id="P2ContentDone">
       <segment>
         <source>Done</source>
@@ -389,6 +377,18 @@
       <segment>
         <source>Guide users through ordered tasks and process states.</source>
         <target state="translated">Guide usuários through ordered tasks e process states.</target>
+      </segment>
+    </unit>
+    <unit id="PanelStepsDescription">
+      <segment>
+        <source>Panel steps with filled and outlined variants.</source>
+        <target state="translated">Etapas em painel com variantes preenchida e contornada.</target>
+      </segment>
+    </unit>
+    <unit id="PanelStepsTitle">
+      <segment>
+        <source>Panel Steps</source>
+        <target state="translated">Etapas em painel</target>
       </segment>
     </unit>
     <unit id="ScenarioBasic">

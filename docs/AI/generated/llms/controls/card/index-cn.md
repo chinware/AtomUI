@@ -93,10 +93,118 @@ Card 没有专用 public routed event 或命令。
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Card/Views/CardAdvancedShowCase.axaml`
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Card/Views/CardBasicShowCase.axaml`
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Card/Views/CardLayoutShowCase.axaml`
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Card/Views/CardShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 带标签页
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Card/Views/CardAdvancedShowCase.axaml:54`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="20">
+    <atom:Card Header="卡片标题" HorizontalAlignment="Stretch" SizeType="Large">
+        <atom:Card.Extra>
+            <atom:HyperLinkButton Content="更多" />
+        </atom:Card.Extra>
+        <atom:CardTabsContent>
+            <atom:TabItem Header="标签页 1" Content="内容 1" />
+            <atom:TabItem Header="标签页 2" Content="内容 2" />
+        </atom:CardTabsContent>
+    </atom:Card>
+
+    <atom:Card HorizontalAlignment="Stretch">
+        <atom:CardTabsContent>
+            <atom:CardTabsContent.TabBarExtraContent>
+                <atom:HyperLinkButton Content="更多" />
+            </atom:CardTabsContent.TabBarExtraContent>
+            <atom:TabItem Header="文章" Content="文章内容" />
+            <atom:TabItem Header="应用" Content="应用内容" />
+            <atom:TabItem Header="项目" Content="项目内容" />
+        </atom:CardTabsContent>
+    </atom:Card>
+</StackPanel>
+```
+
+### 基础卡片
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Card/Views/CardBasicShowCase.axaml:12`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<WrapPanel ItemSpacing="20" LineSpacing="20">
+    <atom:Card Header="大尺寸卡片" SizeType="Large" Width="300">
+        <atom:Card.Extra>
+            <atom:HyperLinkButton Content="更多" />
+        </atom:Card.Extra>
+        <StackPanel Orientation="Vertical" Spacing="3">
+            <atom:TextBlock Text="卡片内容" />
+            <atom:TextBlock Text="卡片内容" />
+            <atom:TextBlock Text="卡片内容" />
+        </StackPanel>
+    </atom:Card>
+
+    <atom:Card Header="默认尺寸卡片" SizeType="Middle" Width="300">
+        <atom:Card.Extra>
+            <atom:HyperLinkButton Content="更多" />
+        </atom:Card.Extra>
+        <StackPanel Orientation="Vertical" Spacing="3">
+            <atom:TextBlock Text="卡片内容" />
+            <atom:TextBlock Text="卡片内容" />
+            <atom:TextBlock Text="卡片内容" />
+        </StackPanel>
+    </atom:Card>
+
+    <atom:Card Header="小尺寸卡片" SizeType="Small" Width="300">
+        <atom:Card.Extra>
+            <atom:HyperLinkButton Content="更多" />
+        </atom:Card.Extra>
+        <StackPanel Orientation="Vertical" Spacing="3">
+            <atom:TextBlock Text="卡片内容" />
+            <atom:TextBlock Text="卡片内容" />
+            <atom:TextBlock Text="卡片内容" />
+        </StackPanel>
+    </atom:Card>
+</WrapPanel>
+```
+
+### 无边框
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Card/Views/CardBasicShowCase.axaml:52`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<Border Padding="20" Background="{Binding BorderlessFrameBg}">
+    <atom:Card Header="卡片标题" Width="300" StyleVariant="Borderless" HorizontalAlignment="Left">
+        <atom:Card.Extra>
+            <atom:HyperLinkButton Content="更多" />
+        </atom:Card.Extra>
+        <StackPanel Orientation="Vertical" Spacing="3">
+            <atom:TextBlock Text="卡片内容" />
+            <atom:TextBlock Text="卡片内容" />
+            <atom:TextBlock Text="卡片内容" />
+        </StackPanel>
+    </atom:Card>
+</Border>
+```
+
+### 简单卡片
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Card/Views/CardBasicShowCase.axaml:69`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<atom:Card Width="300" HorizontalAlignment="Left">
+    <StackPanel Orientation="Vertical" Spacing="3">
+        <atom:TextBlock Text="卡片内容" />
+        <atom:TextBlock Text="卡片内容" />
+        <atom:TextBlock Text="卡片内容" />
+    </StackPanel>
+</atom:Card>
+```
 
 ## 状态模型
 

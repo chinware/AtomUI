@@ -76,7 +76,36 @@ CheckBox 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:CheckBoxShowCaseLangResource ControlledCheckboxTitle}
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/CheckBox/Views/CheckBoxShowCase.axaml:40`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<StackPanel HorizontalAlignment="Left" Spacing="10">
+    <atom:CheckBox Content="复选框" />
+</StackPanel>
+```
+
+### 禁用
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/CheckBox/Views/CheckBoxShowCase.axaml:53`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
+    <atom:CheckBox IsChecked="False" IsEnabled="False"
+                   Content="未选中" />
+    <atom:CheckBox IsChecked="{x:Null}" IsEnabled="False"
+                   Content="半选" />
+    <atom:CheckBox IsChecked="True" IsEnabled="False"
+                   Content="选中" />
+</StackPanel>
+```
+
+### 受控复选框
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/CheckBox/Views/CheckBoxShowCase.axaml:71`
 
@@ -99,6 +128,42 @@ Gallery key：`ExamplesContent` / item `2`
                      Command="{Binding EnableStatusCommand}"
                      Content="{Binding EnableStatusBtnText}" />
     </StackPanel>
+</StackPanel>
+```
+
+### 复选框组
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/CheckBox/Views/CheckBoxShowCase.axaml:98`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
+    <atom:CheckBoxGroup>
+        <atom:CheckBox IsChecked="True"
+                       Content="苹果" />
+        <atom:CheckBox IsChecked="True"
+                       Content="梨" />
+        <atom:CheckBox IsChecked="True"
+                       Content="橙子" />
+    </atom:CheckBoxGroup>
+    <atom:CheckBoxGroup>
+        <atom:CheckBox Content="苹果" />
+        <atom:CheckBox IsChecked="True"
+                       Content="梨" />
+        <atom:CheckBox Content="橙子" />
+    </atom:CheckBoxGroup>
+    <atom:CheckBoxGroup>
+        <atom:CheckBox IsChecked="True" IsEnabled="False"
+                       Content="苹果" />
+        <atom:CheckBox IsEnabled="False"
+                       Content="梨" />
+        <atom:CheckBox IsEnabled="False"
+                       Content="橙子" />
+    </atom:CheckBoxGroup>
+    <atom:CheckBoxGroup Name="BasicCheckBoxGroup"
+                        ItemsSource="{Binding CheckBoxOptions}"
+                        CheckedItems="{Binding DefaultCheckBoxOptions}" />
 </StackPanel>
 ```
 

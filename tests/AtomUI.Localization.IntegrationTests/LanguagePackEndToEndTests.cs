@@ -93,10 +93,11 @@ public sealed partial class LanguagePackEndToEndTests
                 "-m:1",
                 "-nr:false",
                 "-p:Configuration=Debug",
-                $"-p:Version={packageVersion}",
+                $"-p:PackageVersion={packageVersion}",
                 $"-p:PackageOutputPath={feed}",
                 $"-p:RestorePackagesPath={globalPackages}",
                 "-p:NoPackageAnalysis=true");
+            AssertRepositoryCoreAssemblyVersion(repositoryRoot);
             var verifiedPackResult = await RunProcess(
                 "Pack language pack",
                 repositoryRoot,
@@ -125,7 +126,7 @@ public sealed partial class LanguagePackEndToEndTests
                 "-m:1",
                 "-nr:false",
                 "-p:Configuration=Debug",
-                $"-p:Version={packageVersion}",
+                $"-p:PackageVersion={packageVersion}",
                 $"-p:PackageOutputPath={feed}",
                 $"-p:RestorePackagesPath={globalPackages}",
                 "-p:NoPackageAnalysis=true");
@@ -279,9 +280,10 @@ public sealed partial class LanguagePackEndToEndTests
                 "-m:1",
                 "-nr:false",
                 "-p:Configuration=Debug",
-                $"-p:Version={packageVersion}",
+                $"-p:PackageVersion={packageVersion}",
                 $"-p:PackageOutputPath={feed}",
                 "-p:NoPackageAnalysis=true");
+            AssertRepositoryCoreAssemblyVersion(repositoryRoot);
 
             var templateProject = Path.Combine(templateProjectDirectory, "TemplateExport.csproj");
             var globalPackages = Path.Combine(
@@ -357,6 +359,23 @@ public sealed partial class LanguagePackEndToEndTests
                 Directory.Delete(temporaryRoot, recursive: true);
             }
         }
+    }
+
+    private static void AssertRepositoryCoreAssemblyVersion(string repositoryRoot)
+    {
+        var versionDocument = XDocument.Load(Path.Combine(repositoryRoot, "build", "Versions.props"));
+        var atomUIVersion = versionDocument.Descendants("AtomUIVersion").Single().Value;
+        var expectedVersion = new Version($"{atomUIVersion}.0");
+        var coreAssemblyPath = Path.Combine(
+            repositoryRoot,
+            ".artifacts",
+            "bin",
+            "Debug",
+            "net10.0",
+            "AtomUI.Core.dll");
+
+        File.Exists(coreAssemblyPath).ShouldBeTrue($"Expected '{coreAssemblyPath}' to be built by the fixture.");
+        System.Reflection.AssemblyName.GetAssemblyName(coreAssemblyPath).Version.ShouldBe(expectedVersion);
     }
 
     private static void AssertPackageLayouts(string feed, string packageVersion)

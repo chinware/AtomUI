@@ -69,7 +69,62 @@ Statistic 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Statistic/Views/StatisticShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Statistic/Views/StatisticShowCase.axaml:34`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<UniformGrid Columns="2" Rows="2">
+    <atom:Statistic Header="活跃用户" Value="112893" />
+    <StackPanel Orientation="Vertical" Spacing="16">
+        <atom:Statistic Header="账户余额（CNY）" Value="112893" Precision="2" />
+        <atom:Button ButtonType="Primary" Content="充值" />
+    </StackPanel>
+    <atom:Statistic Header="活跃用户" Value="112893" IsLoading="True" />
+</UniformGrid>
+```
+
+### 动画数字
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Statistic/Views/StatisticShowCase.axaml:94`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<UniformGrid Columns="2" Rows="2">
+    <atom:Statistic Header="活跃用户" Value="112893">
+        <atom:Statistic.Content>
+            <atom:StatisticCountUp EndValue="{Binding Values}" Precision="2" />
+        </atom:Statistic.Content>
+    </atom:Statistic>
+    <atom:Statistic Header="账户余额（CNY）" Value="112893">
+        <atom:Statistic.Content>
+            <atom:StatisticCountUp EndValue="{Binding Values}" Precision="2" />
+        </atom:Statistic.Content>
+    </atom:Statistic>
+</UniformGrid>
+```
+
+### 计时器
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Statistic/Views/StatisticShowCase.axaml:114`
+
+Gallery key：`ExamplesContent` / item `4`
+
+```axaml
+<UniformGrid Columns="2" Rows="3" RowSpacing="10">
+    <atom:TimerStatistic Value="{Binding Deadline}" />
+    <atom:TimerStatistic Header="毫秒" Value="{Binding Deadline}" Format="hh\:mm\:ss\.fff" />
+    <atom:TimerStatistic Header="倒计时" Value="{Binding TenSecondsLater}" />
+    <atom:TimerStatistic Header="正计时" Value="{Binding Before}" />
+    <atom:TimerStatistic Header="天级倒计时" Value="{Binding Deadline}" Format="d\ \天\ h\ \时\ m\ \分\ s\ \秒" />
+    <atom:TimerStatistic Header="天级正计时" Value="{Binding Before}" Format="d\ \天\ h\ \时\ m\ \分\ s\ \秒" />
+</UniformGrid>
+```
 
 ## 状态模型
 
@@ -132,6 +187,7 @@ Statistic Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
+- 隐藏祖先下的 TimerStatistic 不运行刷新 timer；恢复时必须从绝对时间重算，不补发隐藏期间的 tick。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
 
 ## 源码索引

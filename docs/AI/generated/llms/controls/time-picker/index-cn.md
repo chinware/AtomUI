@@ -95,7 +95,86 @@ TimePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/Views/TimePickerShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/Views/TimePickerShowCase.axaml:35`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<atom:TimePicker PlaceholderText="选择时间" IsNeedConfirm="False" IsShowNow="True" />
+```
+
+### SelectedTime 绑定
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/Views/TimePickerShowCase.axaml:47`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="16">
+    <StackPanel Orientation="Vertical" Spacing="12">
+        <atom:TimePicker SelectedTime="{Binding BoundSelectedTime}"
+                         PlaceholderText="选择时间" />
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <atom:TextBlock VerticalAlignment="Center"
+                            Text="选中值：" />
+            <atom:TextBlock VerticalAlignment="Center"
+                            Text="{Binding BoundSelectedTimeText}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <atom:Button SizeType="Small"
+                         Click="SetBoundSelectedTimeToNoon"
+                         Content="设置为中午" />
+            <atom:Button SizeType="Small"
+                         Click="ClearBoundSelectedTime"
+                         Content="清空" />
+        </StackPanel>
+    </StackPanel>
+    <StackPanel Orientation="Vertical" Spacing="12">
+        <atom:RangeTimePicker RangeStartSelectedTime="{Binding BoundRangeStartSelectedTime}"
+                              RangeEndSelectedTime="{Binding BoundRangeEndSelectedTime}"
+                              PlaceholderText="开始时间"
+                              SecondaryPlaceholderText="结束时间" />
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <atom:TextBlock VerticalAlignment="Center"
+                            Text="选中范围：" />
+            <atom:TextBlock VerticalAlignment="Center"
+                            Text="{Binding BoundRangeSelectedTimeText}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <atom:Button SizeType="Small"
+                         Click="SetBoundSelectedTimeRangeToWorkHours"
+                         Content="设置工作时间" />
+            <atom:Button SizeType="Small"
+                         Click="ClearBoundSelectedTimeRange"
+                         Content="清空" />
+        </StackPanel>
+    </StackPanel>
+</StackPanel>
+```
+
+### 弹出面板显示时间
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/Views/TimePickerShowCase.axaml:98`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<atom:TimePicker PlaceholderText="选择时间"
+```
+
+### 12 小时和 24 小时格式
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/Views/TimePickerShowCase.axaml:111`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<atom:TimePicker PlaceholderText="选择时间" IsNeedConfirm="True" IsShowNow="True"
+```
 
 ## 状态模型
 

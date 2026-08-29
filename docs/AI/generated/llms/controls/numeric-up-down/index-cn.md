@@ -101,7 +101,7 @@ NumericUpDown 的事件与命令以控件文档、源码 public surface 和 Aval
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:NumberUpDownShowCaseLangResource BasicUsageTitle}
+### 基础用法
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml:42`
 
@@ -111,7 +111,7 @@ Gallery key：`ExamplesContent` / item `0`
 <atom:NumericUpDown Value="3"
 ```
 
-### {gallery:NumberUpDownShowCaseLangResource SpinnerModeTitle}
+### 拨轮
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml:55`
 
@@ -140,7 +140,7 @@ Gallery key：`ExamplesContent` / item `1`
 </StackPanel>
 ```
 
-### {gallery:NumberUpDownShowCaseLangResource HideHandleTitle}
+### 隐藏步进按钮
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml:86`
 
@@ -167,14 +167,25 @@ Gallery key：`ExamplesContent` / item `2`
 </StackPanel>
 ```
 
-### {gallery:NumberUpDownShowCaseLangResource MouseWheelBehaviorTitle}
+### 字符串模式（高精度）
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml:154`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml:114`
 
-Gallery key：`ExamplesContent` / item `5`
+Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
-<atom:NumericUpDown Value="2.5"
+<StackPanel Orientation="Vertical" Spacing="10">
+    <atom:NumericUpDown IsStringMode="True"
+                        StringValue="{Binding StringModeValue, Mode=TwoWay}"
+                        Increment="0.0001"
+                        Minimum="0"
+                        Maximum="100"
+                        PlaceholderText="输入重量" />
+    <TextBlock>
+        <Run Text="原始值：" />
+        <Run Text="{Binding StringModeValue}" />
+    </TextBlock>
+</StackPanel>
 ```
 
 ## 状态模型

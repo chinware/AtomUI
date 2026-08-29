@@ -75,7 +75,7 @@ AutoComplete 的公共契约由 public/protected 类型成员、Avalonia 属性�
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:AutoCompleteShowCaseLangResource BasicUsageTitle}
+### 基础用法
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/AutoComplete/Views/AutoCompleteShowCase.axaml:35`
 
@@ -85,7 +85,7 @@ Gallery key：`ExamplesContent` / item `0`
 <atom:AutoComplete Name="BasicAutoComplete"
 ```
 
-### {gallery:AutoCompleteShowCaseLangResource CustomizedTitle}
+### 自定义
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/AutoComplete/Views/AutoCompleteShowCase.axaml:48`
 
@@ -95,24 +95,74 @@ Gallery key：`ExamplesContent` / item `1`
 <atom:AutoComplete Name="CustomizedAutoComplete"
 ```
 
-### {gallery:AutoCompleteShowCaseLangResource TextAreaAutoCompletionTitle}
+### 自定义选项渲染
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/AutoComplete/Views/AutoCompleteShowCase.axaml:165`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/AutoComplete/Views/AutoCompleteShowCase.axaml:61`
 
-Gallery key：`ExamplesContent` / item `5`
+Gallery key：`ExamplesContent` / item `2`
 
 ```axaml
-<atom:AutoCompleteTextArea Name="TextAreaAutoComplete"
+<atom:AutoComplete Name="CityAutoComplete"
+                   OptionsSource="{Binding CityOptions}"
+                   PlaceholderText="try 'a' or 'b'"
+                   Width="320"
+                   IsAllowClear="True"
+                   Filter="{atom:ValueFilterProvider Contains}">
+    <atom:AutoComplete.OptionTemplate>
+        <DataTemplate x:DataType="vm:CityAutoCompleteOption">
+            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" RowSpacing="2">
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                           Text="{Binding Header}"
+                           FontWeight="SemiBold"
+                           TextTrimming="CharacterEllipsis" />
+                <Border Grid.Row="0" Grid.Column="1"
+                        Padding="6 0"
+                        VerticalAlignment="Center"
+                        Background="{atom:SharedTokenResource ColorFillSecondary}"
+                        CornerRadius="{atom:SharedTokenResource BorderRadiusXS}">
+                    <TextBlock Text="{Binding Country}"
+                               FontSize="{atom:SharedTokenResource FontSizeSM}" />
+                </Border>
+                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                           Text="{Binding Population, StringFormat='Population {0:N0}'}"
+                           FontSize="{atom:SharedTokenResource FontSizeSM}"
+                           Foreground="{atom:SharedTokenResource ColorTextTertiary}" />
+            </Grid>
+        </DataTemplate>
+    </atom:AutoComplete.OptionTemplate>
+</atom:AutoComplete>
 ```
 
-### {gallery:AutoCompleteShowCaseLangResource NonCaseSensitiveTitle}
+### SizeType
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/AutoComplete/Views/AutoCompleteShowCase.axaml:180`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/AutoComplete/Views/AutoCompleteShowCase.axaml:99`
 
-Gallery key：`ExamplesContent` / item `6`
+Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
-<atom:AutoComplete Name="FilterAutoComplete"
+<StackPanel Spacing="10">
+    <atom:AutoComplete Width="220"
+                       Name="LargeAutoComplete"
+                       OptionsAsyncLoader="{Binding BasicOptionsAsyncLoader}"
+                       SizeType="Large"
+                       PlaceholderText="SizeType：Large" />
+    <atom:AutoComplete Width="220"
+                       Name="MiddleAutoComplete"
+                       OptionsAsyncLoader="{Binding BasicOptionsAsyncLoader}"
+                       SizeType="Middle"
+                       PlaceholderText="SizeType：Middle" />
+    <atom:AutoComplete Width="220"
+                       Name="SmallAutoComplete"
+                       OptionsAsyncLoader="{Binding BasicOptionsAsyncLoader}"
+                       SizeType="Small"
+                       PlaceholderText="SizeType：Small" />
+    <atom:AutoComplete Width="220"
+                       Name="CustomAutoComplete"
+                       OptionsAsyncLoader="{Binding BasicOptionsAsyncLoader}"
+                       SizeType="Custom"
+                       Height="36"
+                       PlaceholderText="SizeType：Custom" />
+</StackPanel>
 ```
 
 ## 状态模型

@@ -76,7 +76,61 @@ InfoFlyout 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/InfoFlyout/Views/InfoFlyoutShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/InfoFlyout/Views/InfoFlyoutShowCase.axaml:35`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10">
+    <atom:FlyoutHost Trigger="Hover" ShouldUseOverlayPopup="False">
+        <atom:FlyoutHost.Flyout>
+            <atom:Flyout>
+                <TextBlock Width="200" Height="100" Padding="20" Text="这是最基础的示例。" />
+            </atom:Flyout>
+        </atom:FlyoutHost.Flyout>
+        <atom:Button ButtonType="Primary" Content="移入我" />
+    </atom:FlyoutHost>
+</StackPanel>
+```
+
+### 三种触发方式
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/InfoFlyout/Views/InfoFlyoutShowCase.axaml:55`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel Orientation="Horizontal" Spacing="10">
+    <atom:FlyoutHost Trigger="Hover" ShouldUseOverlayPopup="False">
+        <atom:FlyoutHost.Flyout>
+            <atom:Flyout>
+                <TextBlock Width="200" Height="100" Padding="20" Text="这是最基础的示例。" />
+            </atom:Flyout>
+        </atom:FlyoutHost.Flyout>
+        <atom:Button Content="移入我" />
+    </atom:FlyoutHost>
+    <atom:FlyoutHost Trigger="Focus" ShouldUseOverlayPopup="False">
+        <atom:FlyoutHost.Flyout>
+            <atom:Flyout>
+                <TextBlock Width="220" Height="100" Padding="20" Text="这是最基础的示例。" />
+            </atom:Flyout>
+        </atom:FlyoutHost.Flyout>
+        <atom:Button Content="聚焦我" />
+    </atom:FlyoutHost>
+    <atom:FlyoutHost Trigger="Click" ShouldUseOverlayPopup="False">
+        <atom:FlyoutHost.Flyout>
+            <atom:Flyout>
+                <TextBlock Width="200" Height="100" Padding="20" Text="这是最基础的示例。" />
+            </atom:Flyout>
+        </atom:FlyoutHost.Flyout>
+        <atom:Button Content="点击我" />
+    </atom:FlyoutHost>
+</StackPanel>
+```
 
 ## 状态模型
 

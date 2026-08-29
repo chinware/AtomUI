@@ -69,7 +69,99 @@ Alert 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/Feedback/Alert/Views/AlertShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Alert/Views/AlertShowCase.axaml:36`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<StackPanel Orientation="Vertical">
+    <atom:Alert Type="Success" Message="成功文本" />
+</StackPanel>
+```
+
+### 更多类型
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Alert/Views/AlertShowCase.axaml:49`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10">
+    <atom:Alert Type="Success" Message="成功文本" />
+    <atom:Alert Type="Info" Message="信息文本" />
+    <atom:Alert Type="Warning" Message="警告文本" />
+    <atom:Alert Type="Error" Message="错误文本" />
+</StackPanel>
+```
+
+### 含描述信息
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Alert/Views/AlertShowCase.axaml:83`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10">
+    <atom:Alert Type="Success"
+                Message="成功提示文本"
+                Description="成功描述 成功描述 成功描述" />
+    <atom:Alert Type="Info"
+                Message="信息提示文本"
+                Description="信息描述 信息描述 信息描述 信息描述" />
+    <atom:Alert Type="Warning"
+                Message="警告提示文本"
+                Description="警告描述 警告描述 警告描述 警告描述" />
+    <atom:Alert Type="Error"
+                Message="错误提示文本"
+                Description="错误描述 错误描述 错误描述 错误描述" />
+</StackPanel>
+```
+
+### 图标
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Alert/Views/AlertShowCase.axaml:108`
+
+Gallery key：`ExamplesContent` / item `4`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10">
+    <atom:Alert Type="Success"
+                Message="成功提示"
+                IsShowIcon="True" />
+    <atom:Alert Type="Info"
+                Message="信息说明"
+                IsShowIcon="True" />
+    <atom:Alert Type="Warning"
+                Message="警告"
+                IsShowIcon="True"
+                IsClosable="True" />
+    <atom:Alert Type="Error"
+                Message="错误"
+                IsShowIcon="True" />
+
+    <atom:Alert Type="Success"
+                Message="成功提示"
+                IsShowIcon="True"
+                Description="关于成功提示文案的详细说明和建议。" />
+    <atom:Alert Type="Info"
+                Message="信息说明"
+                IsShowIcon="True"
+                Description="关于提示文案的补充说明和信息。" />
+    <atom:Alert Type="Warning"
+                Message="警告"
+                IsClosable="True"
+                IsShowIcon="True"
+                Description="这是一条关于提示文案的警告通知。" />
+    <atom:Alert Type="Error"
+                Message="错误"
+                IsShowIcon="True"
+                Description="这是一条关于提示文案的错误信息。" />
+</StackPanel>
+```
 
 ## 状态模型
 

@@ -4,6 +4,36 @@ All notable changes to AtomUI are documented in this file.
 
 `AtomUI` follows Semantic Versioning 2.0.0.
 
+## 6.1.6
+
+`2026-08-29`
+
+- Breaking Changes
+  - Avatar: move `Avatar` and `AbstractAvatar` to `AtomUI.Controls`; replace `Src` and `BitmapSrc` with typed `Source`, `FallbackSource` and `RequestOptions`; internalize `TextRenderTransform`; and move generated Avatar token APIs to `AtomUI.Controls.DesignTokens`. `CardMetaContent.Avatar` now uses the base-controls Avatar type.
+  - ImagePreviewer: replace `Source`, `Sources`, `FallbackSource`, `MaxConcurrentLoads` and the preview-specific source/loader contracts with `ItemsSource` containing immutable `ImagePreviewItem` values backed by `ImageLoadSource`. Configure concurrency through application-level `UseImageLoading`, and update title resolvers to accept `in ImagePreviewTitleResolveContext` and read `context.Item`.
+  - Input controls: `LineEdit` no longer derives from AtomUI `TextBox`; `LineEdit`, `TextBox` and `TextArea` now share the public `AbstractTextInput` base. `OtpLineEditCell` and its generated cell-token surface are internal; configure OTP appearance through `OtpLineEdit` and the shared input-frame contract. See [6.1.6 API change examples](docs/releases/6.1.6-api-changes.md).
+- Image Loading, Avatar and ImagePreviewer
+  - Add an application-scoped image-loading pipeline with `AsyncImage`, typed URI/file/asset/storage/bytes/stream/image sources, request options, load state, progress and error events, bounded concurrency, priorities and encoded/decoded caching.
+  - Add secure network SVG loading with redirect, response-size, image-dimension and credential-forwarding controls, and harden cancellation, cache ownership and attach/detach lifecycle behavior.
+  - Migrate Avatar and ImagePreviewer to the unified pipeline, including thumbnail/fallback sources, reload support, cover/current load state, immutable preview items and stable title metadata.
+- Input Controls and Form
+  - Establish `AbstractTextInput` and `InputControlFrame` as the shared validation, status, size, variant, add-on and feedback architecture for TextBox, TextArea, LineEdit and OTP inputs.
+  - Keep TextBox frame width stable while editing and preserve validation feedback subscriptions across template and lifecycle changes.
+- Steps, Masonry and Navigation
+  - Add the Steps `Panel` type with Filled and Outlined variants, tokenized surfaces and responsive layout behavior.
+  - Add Masonry `StableColumns` and `Reflow` layout strategies, using stable columns by default while preventing decode/layout feedback loops and restoring final-width measurement and loading skeleton layout.
+  - Restore TreeView node bindings after visual-tree reattachment, preserve NavMenu selection when transient popup state closes, and remeasure ToggleSwitch content after language changes.
+- TabControl and TabStrip
+  - Fix overflow-tab closing to honor effective `IsClosable`, route requests through the owner close workflow, preserve the source tab and menu item when closing is rejected or canceled, and keep `Closing`/`Closed`, selection and collection semantics consistent for `Items` and `ItemsSource`.
+- Window and Platform
+  - Add public `WindowTitleBarButton` and `WindowTitleBarToggleButton` controls for title-bar add-ons.
+  - Fix Windows live-resize composition fallback alignment and macOS caption-button placement after screen recording or display-geometry changes.
+- Motion, Popup and Lifecycle
+  - Pause recurring animations, timers and visual work while controls are effectively hidden, then resume from current state when they become visible.
+- Build, Packaging and Localization
+  - Load MSBuild tasks from content-keyed shadow copies to prevent stale task assemblies and dependency collisions across repeated builds.
+  - Move managed build outputs to `.artifacts` and hide language-pack implementation files from consumer project trees.
+
 ## 6.1.5
 
 `2026-08-21`

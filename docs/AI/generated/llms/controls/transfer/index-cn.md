@@ -76,7 +76,7 @@ Transfer 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:TransferShowCaseLangResource BasicTitle}
+### 基础用法
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Transfer/Views/TransferShowCase.axaml:37`
 
@@ -86,16 +86,73 @@ Gallery key：`ExamplesContent` / item `0`
 <atom:ListTransfer Name="BasicListTransfer"
 ```
 
-### {gallery:TransferShowCaseLangResource StatusTitle}
+### 单向模式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Transfer/Views/TransferShowCase.axaml:200`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Transfer/Views/TransferShowCase.axaml:51`
 
-Gallery key：`ExamplesContent` / item `7`
+Gallery key：`ExamplesContent` / item `1`
 
 ```axaml
 <StackPanel Spacing="20">
-    <atom:ListTransfer Status="Error"/>
-    <atom:ListTransfer Status="Warning"/>
+    <atom:ListTransfer Name="OneWayTransferList"
+                       SourceTitle="源列表"
+                       TargetTitle="目标列表"
+                       IsOneWay="True"
+                       IsEnabled="{Binding OneWayTransferEnabled}"
+                       ItemsSource="{Binding OneWayTransferItems}" />
+    <atom:ToggleSwitch IsChecked="{Binding OneWayTransferEnabled, Mode=TwoWay}"
+                       OnContent="禁用"
+                       OffContent="启用" />
+</StackPanel>
+```
+
+### 搜索
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Transfer/Views/TransferShowCase.axaml:72`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel Spacing="20">
+    <atom:ListTransfer Name="SearchTransferList"
+                       IsFilterEnabled="True"
+                       FilterPlaceholderText="在此搜索"
+                       FilterValueSelector="{Binding TransferFilterValueSelector}"
+                       ItemsSource="{Binding SearchTransferItems}" />
+</StackPanel>
+```
+
+### 受控 key
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Transfer/Views/TransferShowCase.axaml:90`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<StackPanel Spacing="20">
+    <atom:ListTransfer Name="ControlledTransferList"
+                       SourceTitle="源列表"
+                       TargetTitle="目标列表"
+                       ItemsSource="{Binding ControlledTransferItems}"
+                       TargetKeys="{Binding ControlledTransferTargetKeys}"
+                       SelectedKeys="{Binding ControlledTransferSelectedKeys}" />
+    <StackPanel Orientation="Horizontal" Spacing="8">
+        <atom:Button SizeType="Small"
+                     Click="AddControlledTransferTargetKey"
+                     Content="添加 key 3 到目标" />
+        <atom:Button SizeType="Small"
+                     Click="ClearControlledTransferTargetKeys"
+                     Content="清空目标 key" />
+        <atom:Button SizeType="Small"
+                     Click="SelectControlledTransferSourceKey"
+                     Content="选中 key 4" />
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Spacing="8">
+        <atom:TextBlock Text="目标 key：" />
+        <atom:TextBlock Text="{Binding ControlledTransferTargetKeys.Count}" />
+        <atom:TextBlock Text="选中 key：" />
+        <atom:TextBlock Text="{Binding ControlledTransferSelectedKeys.Count}" />
+    </StackPanel>
 </StackPanel>
 ```
 

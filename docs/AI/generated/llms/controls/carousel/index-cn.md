@@ -78,7 +78,7 @@ Carousel 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:CarouselShowCaseLangResource BasicTitle}
+### 基础用法
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Carousel/Views/CarouselShowCase.axaml:45`
 
@@ -93,7 +93,37 @@ Gallery key：`ExamplesContent` / item `0`
 </atom:Carousel>
 ```
 
-### {gallery:CarouselShowCaseLangResource AutoScrollTitle}
+### 卡片形态位置
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Carousel/Views/CarouselShowCase.axaml:62`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="20">
+    <StackPanel Orientation="Horizontal" Spacing="5">
+        <atom:TextBlock VerticalAlignment="Center" Text="Pagination Position:" />
+        <atom:OptionButtonGroup ButtonStyle="Outline"
+                                Name="PositionOptionGroup"
+                                OptionCheckedChanged="HandlePositionOptionChanged">
+            <atom:OptionButton Content="顶部" />
+            <atom:OptionButton IsChecked="True" Content="底部" />
+            <atom:OptionButton Content="左侧" />
+            <atom:OptionButton Content="右侧" />
+        </atom:OptionButtonGroup>
+    </StackPanel>
+
+    <atom:Carousel PaginationPosition="{Binding PaginationPosition}">
+        <atom:CarouselPage>1</atom:CarouselPage>
+        <atom:CarouselPage>2</atom:CarouselPage>
+        <atom:CarouselPage>3</atom:CarouselPage>
+        <atom:CarouselPage>4</atom:CarouselPage>
+    </atom:Carousel>
+
+</StackPanel>
+```
+
+### 自动滚动
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Carousel/Views/CarouselShowCase.axaml:92`
 
@@ -108,7 +138,7 @@ Gallery key：`ExamplesContent` / item `2`
 </atom:Carousel>
 ```
 
-### {gallery:CarouselShowCaseLangResource FadeInTitle}
+### 淡入切换
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Carousel/Views/CarouselShowCase.axaml:107`
 
@@ -121,29 +151,6 @@ Gallery key：`ExamplesContent` / item `3`
     <atom:CarouselPage Background="#262626">3</atom:CarouselPage>
     <atom:CarouselPage Background="#CCAD8F">4</atom:CarouselPage>
 </atom:Carousel>
-```
-
-### {gallery:CarouselShowCaseLangResource SwitchArrowsTitle}
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Carousel/Views/CarouselShowCase.axaml:122`
-
-Gallery key：`ExamplesContent` / item `4`
-
-```axaml
-<StackPanel Orientation="Vertical" Spacing="10">
-    <atom:Carousel IsShowNavButtons="True">
-        <atom:CarouselPage>1</atom:CarouselPage>
-        <atom:CarouselPage>2</atom:CarouselPage>
-        <atom:CarouselPage>3</atom:CarouselPage>
-        <atom:CarouselPage>4</atom:CarouselPage>
-    </atom:Carousel>
-    <atom:Carousel PaginationPosition="Left" IsShowNavButtons="True" IsInfinite="False">
-        <atom:CarouselPage>1</atom:CarouselPage>
-        <atom:CarouselPage>2</atom:CarouselPage>
-        <atom:CarouselPage>3</atom:CarouselPage>
-        <atom:CarouselPage>4</atom:CarouselPage>
-    </atom:Carousel>
-</StackPanel>
 ```
 
 ## 状态模型
@@ -208,6 +215,7 @@ Carousel Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
+- 隐藏祖先下的 Carousel 不推进 autoplay timer 或选中页 progress animation。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
 
 ## 源码索引

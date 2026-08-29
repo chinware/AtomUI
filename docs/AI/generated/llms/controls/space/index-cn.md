@@ -70,7 +70,139 @@ Space 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 垂直间距
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:74`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<atom:Space Orientation="Vertical" HorizontalAlignment="Stretch" Height="300">
+    <atom:Card Header="卡片" SizeType="Middle" HorizontalAlignment="Stretch">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:TextBlock Text="卡片内容" />
+            <atom:TextBlock Text="卡片内容" />
+        </StackPanel>
+    </atom:Card>
+
+    <atom:Card Header="卡片" SizeType="Middle" HorizontalAlignment="Stretch">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:TextBlock Text="卡片内容" />
+            <atom:TextBlock Text="卡片内容" />
+        </StackPanel>
+    </atom:Card>
+
+    <atom:Card Header="卡片" SizeType="Middle" HorizontalAlignment="Stretch">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:TextBlock Text="卡片内容" />
+            <atom:TextBlock Text="卡片内容" />
+        </StackPanel>
+    </atom:Card>
+</atom:Space>
+```
+
+### 间距尺寸
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:105`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="15">
+    <StackPanel Orientation="Horizontal" Spacing="10">
+        <atom:RadioButton Tag="{x:Static atom:CustomizableSizeType.Small}"
+                          IsCheckedChanged="HandleSizeTypeChanged"
+                          IsChecked="True" Content="小号" />
+        <atom:RadioButton Tag="{x:Static atom:CustomizableSizeType.Middle}"
+                          IsCheckedChanged="HandleSizeTypeChanged" Content="中号" />
+        <atom:RadioButton Tag="{x:Static atom:CustomizableSizeType.Large}"
+                          IsCheckedChanged="HandleSizeTypeChanged" Content="大号" />
+        <atom:RadioButton Tag="{x:Static atom:CustomizableSizeType.Custom}"
+                          IsCheckedChanged="HandleSizeTypeChanged" Content="自定义" />
+    </StackPanel>
+    <atom:Slider Name="CustomSizeSlider"
+                 Minimum="0" Maximum="100"
+                 Value="{Binding CustomSpacingValue, Mode=TwoWay}"
+                 ValueChanged="HandleCustomSpacingValueChanged"
+                 IsVisible="False"/>
+    <atom:Space Name="SizeDemoSpace"
+                Orientation="Horizontal"
+                SizeType="{Binding SizeType}">
+        <atom:Button ButtonType="Primary" Content="主要" />
+        <atom:Button Content="默认" />
+        <atom:Button ButtonType="Dashed" Content="虚线" />
+        <atom:Button ButtonType="Link" Content="链接" />
+    </atom:Space>
+</StackPanel>
+```
+
+### 对齐
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:140`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<StackPanel Orientation="Horizontal" Spacing="10">
+    <Border Classes="align-box">
+        <atom:Space ItemsAlignment="Start" Orientation="Horizontal">
+            <atom:TextBlock Text="居中" />
+            <atom:Button ButtonType="Primary" Content="主要" />
+            <Border Classes="align-block-item">
+                <atom:TextBlock VerticalAlignment="Center" Text="块" />
+            </Border>
+        </atom:Space>
+    </Border>
+
+    <Border Classes="align-box">
+        <atom:Space ItemsAlignment="Center" Orientation="Horizontal">
+            <atom:TextBlock Text="居中" />
+            <atom:Button ButtonType="Primary" Content="主要" />
+            <Border Classes="align-block-item">
+                <atom:TextBlock VerticalAlignment="Center" Text="块" />
+            </Border>
+        </atom:Space>
+    </Border>
+
+    <Border Classes="align-box">
+        <atom:Space ItemsAlignment="End" Orientation="Horizontal">
+            <atom:TextBlock Text="居中" />
+            <atom:Button ButtonType="Primary" Content="主要" />
+            <Border Classes="align-block-item">
+                <atom:TextBlock VerticalAlignment="Center" Text="块" />
+            </Border>
+        </atom:Space>
+    </Border>
+</StackPanel>
+```
+
+### 自动换行
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:180`
+
+Gallery key：`ExamplesContent` / item `4`
+
+```axaml
+<atom:Space Orientation="Horizontal" ItemSpacing="8" LineSpacing="16">
+    <atom:Button Content="按钮" />
+    <atom:Button Content="按钮" />
+    <atom:Button Content="按钮" />
+    <atom:Button Content="按钮" />
+    <atom:Button Content="按钮" />
+    <atom:Button Content="按钮" />
+    <atom:Button Content="按钮" />
+    <atom:Button Content="按钮" />
+    <atom:Button Content="按钮" />
+    <atom:Button Content="按钮" />
+    <atom:Button Content="按钮" />
+    <atom:Button Content="按钮" />
+    <atom:Button Content="按钮" />
+    <atom:Button Content="按钮" />
+    <atom:Button Content="按钮" />
+</atom:Space>
+```
 
 ## 状态模型
 

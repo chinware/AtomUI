@@ -83,7 +83,72 @@ Group 的 `CheckedItem` 和 `CheckedItems` 默认支持 TwoWay binding；前者�
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tag/Views/TagShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 可选择标签
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tag/Views/TagShowCase.axaml:59`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<atom:Form LabelColInfo="6*"
+           WrapperColInfo="18*"
+           MaxWidth="560"
+           HorizontalAlignment="Stretch">
+    <atom:FormItem LabelText="可选择">
+        <atom:CheckableTag Content="是"
+                           IsChecked="{Binding IsCheckableTagChecked, Mode=TwoWay}" />
+    </atom:FormItem>
+    <atom:FormItem LabelText="单选">
+        <atom:CheckableTagGroup Options="{Binding CheckableTagOptions}"
+                                CheckedItem="{Binding SingleCheckedTag, Mode=TwoWay}" />
+    </atom:FormItem>
+    <atom:FormItem LabelText="多选">
+        <atom:CheckableTagGroup IsMultiple="True"
+                                Options="{Binding CheckableTagOptions}"
+                                CheckedItems="{Binding MultipleCheckedTags, Mode=TwoWay}" />
+    </atom:FormItem>
+</atom:Form>
+```
+
+### 形态变体
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tag/Views/TagShowCase.axaml:303`
+
+Gallery key：`ExamplesContent` / item `5`
+
+```axaml
+<StackPanel Orientation="Vertical">
+    <atom:TextBlock FontWeight="Bold" FontSize="14" Margin="0, 0, 0, 10" Text="默认颜色" />
+    <WrapPanel HorizontalAlignment="Left">
+        <atom:Tag Variant="Filled" Text="浅色填充" />
+        <atom:Tag Variant="Solid" Text="实色填充" />
+        <atom:Tag Variant="Outlined" Text="描边" />
+    </WrapPanel>
+
+    <atom:TextBlock FontWeight="Bold" FontSize="14" Margin="0, 20, 0, 10" Text="预设颜色" />
+    <WrapPanel HorizontalAlignment="Left">
+        <atom:Tag TagColor="blue" Variant="Filled" Text="蓝色" />
+        <atom:Tag TagColor="blue" Variant="Solid" Text="蓝色" />
+        <atom:Tag TagColor="blue" Variant="Outlined" Text="蓝色" />
+    </WrapPanel>
+
+    <atom:TextBlock FontWeight="Bold" FontSize="14" Margin="0, 20, 0, 10" Text="状态颜色" />
+    <WrapPanel HorizontalAlignment="Left">
+        <atom:Tag TagColor="success" Variant="Filled" Text="成功" />
+        <atom:Tag TagColor="success" Variant="Solid" Text="成功" />
+        <atom:Tag TagColor="success" Variant="Outlined" Text="成功" />
+    </WrapPanel>
+
+    <atom:TextBlock FontWeight="Bold" FontSize="14" Margin="0, 20, 0, 10" Text="自定义颜色" />
+    <WrapPanel HorizontalAlignment="Left">
+        <atom:Tag TagColor="#1677ff" Variant="Filled" Text="#1677ff" />
+        <atom:Tag TagColor="#1677ff" Variant="Solid" Text="#1677ff" />
+        <atom:Tag TagColor="#1677ff" Variant="Outlined" Text="#1677ff" />
+    </WrapPanel>
+</StackPanel>
+```
 
 ## 状态模型
 

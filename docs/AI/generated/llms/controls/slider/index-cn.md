@@ -106,7 +106,46 @@ Slider 的事件与命令以控件文档、源码 public surface 和 Avalonia �
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:SliderShowCaseLangResource MultiHandleTitle}
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderShowCase.axaml:34`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="20">
+    <atom:Slider
+        Maximum="100"
+        Minimum="0"
+        TickFrequency="5"
+        IsEnabled="{Binding NormalEnabled}"
+        Value="50" />
+
+    <atom:Slider
+        Maximum="100"
+        Minimum="0"
+        IsRangeMode="True"
+        TickFrequency="5"
+        IsEnabled="{Binding NormalEnabled}"
+        RangeValues="{Binding DefaultRangeValues, Mode=OneWay}" />
+    <atom:Slider
+        Name="Slider1"
+        Marks="{Binding SliderMarks}"
+        Maximum="100"
+        Minimum="0"
+        IsEnabled="{Binding NormalEnabled}"
+        IsRangeMode="True"
+        TickFrequency="5"
+        RangeValues="{Binding DefaultRangeValues, Mode=OneWay}" />
+
+    <StackPanel Orientation="Horizontal" Spacing="2">
+        <atom:TextBlock VerticalAlignment="Center" Text="Enabled:" />
+        <atom:ToggleSwitch VerticalAlignment="Center" SizeType="Small" IsChecked="{Binding NormalEnabled, Mode=TwoWay}" />
+    </StackPanel>
+</StackPanel>
+```
+
+### 多点组合
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderShowCase.axaml:74`
 
@@ -132,66 +171,68 @@ Gallery key：`ExamplesContent` / item `1`
 </Grid>
 ```
 
-### {gallery:SliderShowCaseLangResource CustomizeTooltipTitle}
+### 禁用指定滑块
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderShowCase.axaml:169`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderShowCase.axaml:101`
 
-Gallery key：`ExamplesContent` / item `4`
+Gallery key：`ExamplesContent` / item `2`
 
 ```axaml
-<StackPanel Orientation="Vertical" Spacing="20">
+<StackPanel MinHeight="160"
+            VerticalAlignment="Center"
+            Spacing="24">
     <atom:Slider
         Maximum="100"
         Minimum="0"
-        TickFrequency="1"
-        IsSnapToTickEnabled="True"
-        ValueFormatTemplate="\{0\}%"
-        Value="20" />
+        IsRangeMode="True"
+        RangeValues="{Binding DisabledHandleRangeValues, Mode=OneWay}"
+        DisabledHandles="{Binding DisabledHandles}" />
+    <WrapPanel Orientation="Horizontal"
+               ItemSpacing="20"
+               LineSpacing="12">
+        <atom:CheckBox
+            Content="Disabled Handle 1"
+            IsChecked="{Binding IsHandle1Disabled, Mode=TwoWay}" />
+        <atom:CheckBox
+            Content="Disabled Handle 2"
+            IsChecked="{Binding IsHandle2Disabled, Mode=TwoWay}" />
+        <atom:CheckBox
+            Content="Disabled Handle 3"
+            IsChecked="{Binding IsHandle3Disabled, Mode=TwoWay}" />
+    </WrapPanel>
 </StackPanel>
 ```
 
-### {gallery:SliderShowCaseLangResource VerticalTitle}
+### RangeValues 绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderShowCase.axaml:188`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider/Views/SliderShowCase.axaml:135`
 
-Gallery key：`ExamplesContent` / item `5`
+Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
-<StackPanel Orientation="Horizontal" Spacing="20" Height="300">
+<StackPanel Orientation="Vertical" Spacing="12">
     <atom:Slider
+        Width="260"
         Maximum="100"
         Minimum="0"
-        Orientation="Vertical"
-        TickFrequency="1"
-        Value="20" />
-    <atom:Slider
-        Maximum="100"
-        Minimum="0"
-        Orientation="Vertical"
-        TickFrequency="5"
         IsRangeMode="True"
-        RangeValues="{Binding DefaultRangeValues, Mode=OneWay}"
         IsSnapToTickEnabled="True"
-        Value="20" />
-
-    <atom:Slider
-        Name="Slider2"
-        Marks="{Binding SliderMarks}"
-        Maximum="100"
-        Minimum="0"
-        Orientation="Vertical"
-        TickFrequency="1"
-        Value="20" />
-
-    <atom:Slider
-        Name="Slider3"
-        Marks="{Binding SliderMarks}"
-        Maximum="100"
-        Minimum="0"
-        IsRangeMode="True"
-        Orientation="Vertical"
         TickFrequency="5"
-        RangeValues="{Binding DefaultRangeValues, Mode=OneWay}" />
+        RangeValues="{Binding BoundRangeValues}" />
+    <StackPanel Orientation="Horizontal" Spacing="8">
+        <atom:TextBlock VerticalAlignment="Center"
+                        Text="绑定范围：" />
+        <atom:TextBlock VerticalAlignment="Center"
+                        Text="{Binding BoundRangeValuesText}" />
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Spacing="10">
+        <atom:Button SizeType="Small"
+                     Command="{Binding SetBoundRangeValuesCommand}"
+                     Content="设为 35-85" />
+        <atom:Button SizeType="Small"
+                     Command="{Binding ClearBoundRangeValuesCommand}"
+                     Content="清空" />
+    </StackPanel>
 </StackPanel>
 ```
 

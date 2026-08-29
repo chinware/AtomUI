@@ -70,21 +70,68 @@ Breadcrumb 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:BreadcrumbShowCaseLangResource GenerateByTemplateTitle}
+### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Breadcrumb/Views/BreadcrumbShowCase.axaml:129`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Breadcrumb/Views/BreadcrumbShowCase.axaml:37`
 
-Gallery key：`ExamplesContent` / item `5`
+Gallery key：`ExamplesContent` / item `0`
 
 ```axaml
 <StackPanel>
-    <atom:Breadcrumb Name="TplBreadcrumb"
-                     ItemsSource="{Binding BreadcrumbItems}">
-        <atom:Breadcrumb.ItemTemplate>
-            <DataTemplate x:DataType="atom:BreadcrumbItemData">
-                <TextBlock Text="{Binding Content}"/>
-            </DataTemplate>
-        </atom:Breadcrumb.ItemTemplate>
+    <atom:Breadcrumb>
+        <atom:BreadcrumbItem Content="Home" />
+        <atom:BreadcrumbItem NavigateContext="#" Content="Application Center" />
+        <atom:BreadcrumbItem NavigateContext="#" Content="Application List" />
+        <atom:BreadcrumbItem Content="An Application" />
+    </atom:Breadcrumb>
+</StackPanel>
+```
+
+### 带参数
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Breadcrumb/Views/BreadcrumbShowCase.axaml:74`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel>
+    <atom:Breadcrumb NavigateRequest="HandleNavigateRequest">
+        <atom:BreadcrumbItem Content="Users" />
+        <atom:BreadcrumbItem NavigateContext="Param(1)" Content="Param" />
+    </atom:Breadcrumb>
+</StackPanel>
+```
+
+### 配置分隔符
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Breadcrumb/Views/BreadcrumbShowCase.axaml:91`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<StackPanel>
+    <atom:Breadcrumb Separator=">">
+        <atom:BreadcrumbItem Content="Home" />
+        <atom:BreadcrumbItem NavigateContext="#" Content="Application Center" />
+        <atom:BreadcrumbItem NavigateContext="#" Content="Application List" />
+        <atom:BreadcrumbItem Content="An Application" />
+    </atom:Breadcrumb>
+</StackPanel>
+```
+
+### 单独配置分隔符
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Breadcrumb/Views/BreadcrumbShowCase.axaml:110`
+
+Gallery key：`ExamplesContent` / item `4`
+
+```axaml
+<StackPanel>
+    <atom:Breadcrumb>
+        <atom:BreadcrumbItem Separator=":" Content="Location" />
+        <atom:BreadcrumbItem NavigateContext="#" Content="Application Center" />
+        <atom:BreadcrumbItem NavigateContext="#" Content="Application List" />
+        <atom:BreadcrumbItem Content="An Application" />
     </atom:Breadcrumb>
 </StackPanel>
 ```

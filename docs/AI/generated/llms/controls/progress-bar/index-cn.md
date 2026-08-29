@@ -129,7 +129,7 @@ ProgressBar 的事件与命令以控件文档、源码 public surface 和 Avalon
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:ProgressBarShowCaseLangResource ProgressBarTitle}
+### 进度条
 
 来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/Views/ProgressBarShowCase.axaml:46`
 
@@ -145,7 +145,7 @@ Gallery key：`ExamplesContent` / item `0`
 </StackPanel>
 ```
 
-### {gallery:ProgressBarShowCaseLangResource CircularProgressBarTitle}
+### 环形进度条
 
 来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/Views/ProgressBarShowCase.axaml:64`
 
@@ -159,7 +159,7 @@ Gallery key：`ExamplesContent` / item `1`
 </WrapPanel>
 ```
 
-### {gallery:ProgressBarShowCaseLangResource MiniSizeTitle}
+### 迷你尺寸进度条
 
 来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/Views/ProgressBarShowCase.axaml:80`
 
@@ -175,7 +175,7 @@ Gallery key：`ExamplesContent` / item `2`
 </WrapPanel>
 ```
 
-### {gallery:ProgressBarShowCaseLangResource SmallerCircularProgressBarTitle}
+### 更小的环形进度条
 
 来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar/Views/ProgressBarShowCase.axaml:98`
 

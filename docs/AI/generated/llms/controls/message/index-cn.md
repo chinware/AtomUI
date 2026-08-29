@@ -74,7 +74,52 @@ Message 的公共契约由 public/protected 类型成员、Avalonia 属性、事
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageShowCase.axaml:35`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<atom:Button ButtonType="Primary" Click="ShowSimpleMessage" Content="显示普通消息" />
+```
+
+### 其他消息类型
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageShowCase.axaml:46`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel Orientation="Horizontal" Spacing="10">
+    <atom:Button ButtonType="Default" Click="ShowSuccessMessage" Content="成功" />
+    <atom:Button ButtonType="Default" Click="ShowInfoMessage" Content="信息" />
+    <atom:Button ButtonType="Default" Click="ShowWarningMessage" Content="警告" />
+    <atom:Button ButtonType="Default" Click="ShowErrorMessage" Content="错误" />
+</StackPanel>
+```
+
+### 带加载指示器的消息
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageShowCase.axaml:61`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<atom:Button ButtonType="Default" Click="ShowLoadingMessage" Content="显示加载指示器" />
+```
+
+### 回调
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageShowCase.axaml:72`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<atom:Button ButtonType="Default" Click="ShowSequentialMessage" Content="显示加载指示器" />
+```
 
 ## 状态模型
 

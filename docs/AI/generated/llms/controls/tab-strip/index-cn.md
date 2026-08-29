@@ -71,7 +71,23 @@ TabStrip 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:TabStripShowCaseLangResource TabStripItemsSourceTitle}
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml:37`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="20">
+    <atom:TabStrip>
+        <atom:TabStripItem IsClosable="True" Content="标签页 1" />
+        <atom:TabStripItem IsClosable="True" Content="标签页 2" />
+        <atom:TabStripItem IsClosable="True" Content="标签页 3" />
+    </atom:TabStrip>
+</StackPanel>
+```
+
+### 通过 ItemSource 生成 TabStripItem
 
 来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml:54`
 
@@ -86,6 +102,50 @@ Gallery key：`ExamplesContent` / item `1`
             </DataTemplate>
         </atom:TabStrip.ItemTemplate>
     </atom:TabStrip>
+</StackPanel>
+```
+
+### 禁用标签
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml:163`
+
+Gallery key：`ExamplesContent` / item `4`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="20">
+    <atom:CardTabStrip>
+        <atom:TabStripItem Content="标签页 1" />
+        <atom:TabStripItem IsEnabled="False" IsClosable="True" Content="标签页 2" />
+        <atom:TabStripItem Content="标签页 3" />
+    </atom:CardTabStrip>
+
+    <atom:TabStrip>
+        <atom:TabStripItem Content="标签页 1" />
+        <atom:TabStripItem IsEnabled="False" Content="标签页 2" />
+        <atom:TabStripItem Content="标签页 3" />
+    </atom:TabStrip>
+</StackPanel>
+```
+
+### 居中显示
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml:186`
+
+Gallery key：`ExamplesContent` / item `5`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="20">
+    <atom:TabStrip TabAlignmentCenter="True">
+        <atom:TabStripItem Content="标签页 1" />
+        <atom:TabStripItem Content="标签页 2" />
+        <atom:TabStripItem Content="标签页 3" />
+    </atom:TabStrip>
+
+    <atom:CardTabStrip TabAlignmentCenter="True">
+        <atom:TabStripItem Content="标签页 1" />
+        <atom:TabStripItem Content="标签页 2" />
+        <atom:TabStripItem Content="标签页 3" />
+    </atom:CardTabStrip>
 </StackPanel>
 ```
 
@@ -110,8 +170,10 @@ Public API / inherited command / item source / user input
 - Tab 激活触发由 `TabActivationTrigger` 控制，默认值为 `PointerReleased`；按下时只记录候选 Tab，只有鼠标在同一个 Tab 上松开才激活。
 - `TabActivationTrigger=PointerPressed` 表达按下立即激活；该模式仍必须通过统一选择入口更新 `SelectedIndex`、`SelectedItem`、伪类和主题状态。
 - `PointerReleased` 模式下，按下 Tab A、移动到 Tab B 或 Tab 外松开不应激活新 Tab；拖动排序进入 active reorder 后，释放事件不得再触发 Tab 激活。
+- `IsTabClosable` 是生成 `TabStripItem` 的模板级默认值；overflow 菜单使用容器最终生效的 `IsClosable`，因此控件级默认、单项覆盖和 overflow 呈现必须保持同一语义。
 - 拖动排序开启后，排序结果必须提交到 `ItemsSource` 或 `Items` 的逻辑集合顺序；拖动过程采用 Chrome 式轨道内实时让位预览，被拖 Tab 只沿 Tab 轨道主轴移动并覆盖在兄弟 Tab 上方，其他 Tab 通过临时 transform 让出目标位置，不能直接把 `ItemsPresenter.Panel.Children` 当作排序数据源。
 - `TabStripPlacement=Top/Bottom` 时主轴为 X 轴，被拖 Tab 的 Y 位移必须保持为 0；`TabStripPlacement=Left/Right` 时主轴为 Y 轴，被拖 Tab 的 X 位移必须保持为 0。目标位置由被拖 Tab 的前进边缘跨过被覆盖兄弟 Tab 主轴中线决定：向后拖动使用 trailing edge，向前拖动使用 leading edge，相当于覆盖兄弟 Tab 约一半宽度或高度即触发让位，而不是由 pointer 的非主轴偏移决定。
+- overflow 菜单项是对应 `TabStripItem` 的临时替代呈现，不拥有独立的关闭语义；其 `IsClosable` 必须复制源 Tab 的有效值，关闭请求必须回到 `BaseTabStrip.CloseTab` 统一处理。
 
 ## 主题与 Design Token
 
@@ -126,6 +188,7 @@ TabStrip 当前没有专属 Token 文档；主题通过 SharedToken、关联控�
 - 不删除或重命名已经稳定的 ControlTheme key、template part、伪类和资源 key。
 - 不把可由 AXAML 表达的模板状态迁移为 C# 动态创建视觉。
 - 不把 hover、pressed、selected、expanded、loading、filter、popup open 等运行时状态写入 Token。
+- `BaseOverflowMenuItemTheme` 必须根据 `IsClosable` 控制 `PART_ItemCloseButton` 的可见性：不可关闭项隐藏关闭按钮，可关闭项显示关闭按钮；该规则对 `TabStrip`、`CardTabStrip` 及其对应 overflow item 统一生效。
 - Browser 或平台特化主题必须保持同一 API 的语义一致。
 
 Token 来源：
@@ -170,6 +233,7 @@ Token 来源：
 - Token 文件只提供组件视觉变量，不保存实例状态。
 - Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
 - Tab 拖动排序属于 `BaseTabStrip` 的集合与选择协作路径；实现应落在 `BaseTabStrip`、`TabStripItem`、滚动视口和内部拖动协作对象之间，不能把排序状态散落到 Gallery、theme 或业务数据对象中。
+- overflow 菜单属于滚动视口创建的临时呈现层；`BaseOverflowMenuItem` 只承载菜单视觉和请求转发，`BaseTabStrip` 仍是关闭状态、事件和集合变更的唯一 owner。
 - 垂直页签图标对齐属于 `BaseTabStrip` 的 owner 级布局状态；`Left` / `Right` placement 下由 owner 统一判断同组是否存在图标，再把内部保留图标槽状态投射到 `TabStripItem`，不能通过 Gallery 手工补空图标或新增 public API。
 - 默认 Line TabStrip 的 `Left` / `Right` placement 应保持紧凑的垂直节奏；相邻间距和 item 自身垂直 padding 都应按 Line 紧凑模型处理。Card TabStrip 使用独立 `CardGutter` 和 Card padding 视觉节奏，本规则不得改变 Card 外观。
 

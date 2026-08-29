@@ -106,7 +106,128 @@ OtpLineEdit 的公共 API 以文本值、长度、输入约束、显示辅助和
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### OTP 双向绑定
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml:182`
+
+SourceKey：`line-edit-otp-two-way`
+
+```axaml
+<StackPanel HorizontalAlignment="Left" Spacing="12">
+    <atom:OtpLineEdit Text="{Binding OtpLineEditBoundValue, Mode=TwoWay}"
+                      InputMode="Numeric" />
+    <StackPanel Orientation="Horizontal" Spacing="8">
+        <atom:Button SizeType="Small"
+                     Content="设为 654321"
+                     Command="{Binding SetOtpLineEditBoundValueCommand}" />
+        <atom:Button SizeType="Small"
+                     Content="清空"
+                     Command="{Binding ClearOtpLineEditBoundValueCommand}" />
+    </StackPanel>
+    <atom:TextBlock Text="{Binding OtpLineEditBoundValueSummary}" />
+</StackPanel>
+```
+
+### OTP 表单验证
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml:207`
+
+SourceKey：`line-edit-otp-form`
+
+```axaml
+<atom:Form LabelColInfo="8*"
+           WrapperColInfo="16*"
+           MinWidth="480"
+           HorizontalAlignment="Left">
+    <atom:FormItem LabelText="验证码"
+                   FieldName="otp">
+        <atom:FormItem.Validators>
+            <atom:FormValidatorProvider>
+                <atom:FormStringNotEmptyValidator Message="请输入验证码" />
+            </atom:FormValidatorProvider>
+        </atom:FormItem.Validators>
+        <atom:OtpLineEdit Length="6"
+                          InputMode="Numeric"
+                          PlaceholderText="000000" />
+    </atom:FormItem>
+    <atom:FormActionsItem>
+        <atom:SubmitButton />
+    </atom:FormActionsItem>
+</atom:Form>
+```
+
+### 一次性密码框
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml:239`
+
+SourceKey：`line-edit-otp-ant-design`
+
+```axaml
+<StackPanel Orientation="Vertical"
+            HorizontalAlignment="Left"
+            Spacing="28">
+    <StackPanel Orientation="Vertical" Spacing="14">
+        <atom:TextBlock Text="With formatter (Upcase)"
+                        FontSize="16"
+                        FontWeight="SemiBold" />
+        <atom:OtpLineEdit Formatter="{Binding OtpLineEditUppercaseFormatter}" />
+    </StackPanel>
+
+    <StackPanel Orientation="Vertical" Spacing="14">
+        <atom:TextBlock Text="With Disabled"
+                        FontSize="16"
+                        FontWeight="SemiBold" />
+        <atom:OtpLineEdit IsEnabled="False" />
+    </StackPanel>
+
+    <StackPanel Orientation="Vertical" Spacing="14">
+        <atom:TextBlock Text="With Length (8)"
+                        FontSize="16"
+                        FontWeight="SemiBold" />
+        <atom:OtpLineEdit Length="8" />
+    </StackPanel>
+
+    <StackPanel Orientation="Vertical" Spacing="14">
+        <atom:TextBlock Text="With variant"
+                        FontSize="16"
+                        FontWeight="SemiBold" />
+        <atom:OtpLineEdit StyleVariant="Filled" />
+    </StackPanel>
+
+    <StackPanel Orientation="Vertical" Spacing="14">
+        <atom:TextBlock Text="With custom display character"
+                        FontSize="16"
+                        FontWeight="SemiBold" />
+        <atom:OtpLineEdit IsMasked="True"
+                          MaskChar="●" />
+    </StackPanel>
+
+    <StackPanel Orientation="Vertical" Spacing="14">
+        <atom:TextBlock Text="With custom separator"
+                        FontSize="16"
+                        FontWeight="SemiBold" />
+        <atom:OtpLineEdit Separator="/"
+                          SeparatorInterval="1" />
+    </StackPanel>
+
+    <StackPanel Orientation="Vertical" Spacing="14">
+        <atom:TextBlock Text="With custom function separator"
+                        FontSize="16"
+                        FontWeight="SemiBold" />
+        <atom:OtpLineEdit Separator="—"
+                          SeparatorInterval="1">
+            <atom:OtpLineEdit.SeparatorTemplate>
+                <DataTemplate x:DataType="atom:OtpLineEditSeparatorContext">
+                    <TextBlock Text="{Binding Content}"
+                               Foreground="{Binding CellIndex, Converter={StaticResource OtpLineEditSeparatorBrushConverter}}" />
+                </DataTemplate>
+            </atom:OtpLineEdit.SeparatorTemplate>
+        </atom:OtpLineEdit>
+    </StackPanel>
+</StackPanel>
+```
 
 ## 状态模型
 

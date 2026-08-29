@@ -79,10 +79,101 @@ Collapse 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Collapse/Views/CollapseAppearanceShowCase.axaml`
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Collapse/Views/CollapseBasicShowCase.axaml`
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Collapse/Views/CollapseBehaviorShowCase.axaml`
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Collapse/Views/CollapseShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 无边框
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Collapse/Views/CollapseAppearanceShowCase.axaml:12`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<atom:Collapse IsBorderless="True">
+    <atom:CollapseItem Header="这是面板标题 1">
+        <atom:TextBlock TextWrapping="Wrap" Text="狗是一种被驯养的动物。它以忠诚和可靠著称，在世界各地许多家庭中都是受欢迎的成员。" />
+    </atom:CollapseItem>
+    <atom:CollapseItem Header="这是面板标题 2">
+        <atom:TextBlock TextWrapping="Wrap" Text="狗是一种被驯养的动物。它以忠诚和可靠著称，在世界各地许多家庭中都是受欢迎的成员。" />
+    </atom:CollapseItem>
+    <atom:CollapseItem Header="这是面板标题 3">
+        <atom:TextBlock TextWrapping="Wrap" Text="狗是一种被驯养的动物。它以忠诚和可靠著称，在世界各地许多家庭中都是受欢迎的成员。" />
+    </atom:CollapseItem>
+</atom:Collapse>
+```
+
+### 幽灵折叠面板
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Collapse/Views/CollapseAppearanceShowCase.axaml:28`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<atom:Collapse IsGhostStyle="True">
+    <atom:CollapseItem Header="这是面板标题 1">
+        <atom:TextBlock TextWrapping="Wrap" Text="狗是一种被驯养的动物。它以忠诚和可靠著称，在世界各地许多家庭中都是受欢迎的成员。" />
+    </atom:CollapseItem>
+    <atom:CollapseItem Header="这是面板标题 2">
+        <atom:TextBlock TextWrapping="Wrap" Text="狗是一种被驯养的动物。它以忠诚和可靠著称，在世界各地许多家庭中都是受欢迎的成员。" />
+    </atom:CollapseItem>
+    <atom:CollapseItem Header="这是面板标题 3">
+        <atom:TextBlock TextWrapping="Wrap" Text="狗是一种被驯养的动物。它以忠诚和可靠著称，在世界各地许多家庭中都是受欢迎的成员。" />
+    </atom:CollapseItem>
+</atom:Collapse>
+```
+
+### 自定义标题和内容间距
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Collapse/Views/CollapseAppearanceShowCase.axaml:44`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="20">
+    <atom:Collapse ItemHeaderPadding="5" ItemContentPadding="5">
+        <atom:CollapseItem Header="这是面板标题 1">
+            <atom:TextBlock TextWrapping="Wrap" Text="狗是一种被驯养的动物。它以忠诚和可靠著称，在世界各地许多家庭中都是受欢迎的成员。" />
+        </atom:CollapseItem>
+        <atom:CollapseItem Header="这是面板标题 2">
+            <atom:TextBlock TextWrapping="Wrap" Text="狗是一种被驯养的动物。它以忠诚和可靠著称，在世界各地许多家庭中都是受欢迎的成员。" />
+        </atom:CollapseItem>
+        <atom:CollapseItem Header="这是面板标题 3">
+            <atom:TextBlock TextWrapping="Wrap" Text="狗是一种被驯养的动物。它以忠诚和可靠著称，在世界各地许多家庭中都是受欢迎的成员。" />
+        </atom:CollapseItem>
+    </atom:Collapse>
+
+    <atom:Collapse ItemHeaderPadding="0" ItemContentPadding="0" IsGhostStyle="True">
+        <atom:CollapseItem Header="这是面板标题 1">
+            <atom:TextBlock TextWrapping="Wrap" Text="狗是一种被驯养的动物。它以忠诚和可靠著称，在世界各地许多家庭中都是受欢迎的成员。" />
+        </atom:CollapseItem>
+        <atom:CollapseItem Header="这是面板标题 2">
+            <atom:TextBlock TextWrapping="Wrap" Text="狗是一种被驯养的动物。它以忠诚和可靠著称，在世界各地许多家庭中都是受欢迎的成员。" />
+        </atom:CollapseItem>
+        <atom:CollapseItem Header="这是面板标题 3">
+            <atom:TextBlock TextWrapping="Wrap" Text="狗是一种被驯养的动物。它以忠诚和可靠著称，在世界各地许多家庭中都是受欢迎的成员。" />
+        </atom:CollapseItem>
+    </atom:Collapse>
+</StackPanel>
+```
+
+### 折叠面板
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Collapse/Views/CollapseBasicShowCase.axaml:12`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<atom:Collapse>
+    <atom:CollapseItem Header="这是面板标题 1">
+        <atom:TextBlock TextWrapping="Wrap" Text="狗是一种被驯养的动物。它以忠诚和可靠著称，在世界各地许多家庭中都是受欢迎的成员。" />
+    </atom:CollapseItem>
+    <atom:CollapseItem Header="这是面板标题 2">
+        <atom:TextBlock TextWrapping="Wrap" Text="狗是一种被驯养的动物。它以忠诚和可靠著称，在世界各地许多家庭中都是受欢迎的成员。" />
+    </atom:CollapseItem>
+    <atom:CollapseItem Header="这是面板标题 3">
+        <atom:TextBlock TextWrapping="Wrap" Text="狗是一种被驯养的动物。它以忠诚和可靠著称，在世界各地许多家庭中都是受欢迎的成员。" />
+    </atom:CollapseItem>
+</atom:Collapse>
+```
 
 ## 状态模型
 

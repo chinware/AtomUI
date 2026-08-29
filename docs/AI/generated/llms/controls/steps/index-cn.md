@@ -47,7 +47,7 @@ Steps 表达“有序流程 + 当前进度 + 可选导航请求”。
 | 反馈 | Wave 表达真实 pointer click，不表达状态变化。 | Indicator Wave。 |
 | 密度 | 尺寸控制 Indicator、文字和间距。 | `SizeType`。 |
 
-`StepsType.Default` 表达标准流程，`Dot` 表达实心点状流程，`OutlineDot` 表达空心点状流程，`Navigation` 强调导航入口，`Inline` 表达紧凑内联流程，`Panel` 表达 Ant Design 风格的面板式分段步骤。
+`StepsType.Default` 表达标准流程，`Dot` 表达实心点状流程，`OutlineDot` 表达空心点状流程，`Navigation` 强调导航入口，`Inline` 表达紧凑内联流程，`Panel` 表达面板式分段步骤。
 
 ## 公共 API
 
@@ -147,25 +147,60 @@ public event EventHandler<StepsCurrentChangeRequestedEventArgs>?
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:StepsShowCaseLangResource PanelStepsTitle}
+### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml:342`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml:41`
 
-SourceKey：`steps-panel`
+SourceKey：`steps-basic`
 
 ```axaml
-<StackPanel Orientation="Vertical" Spacing="20">
-    <atom:Steps Current="0" Type="Panel" IsItemClickable="True" CurrentChangeRequested="HandleLocalCurrentChangeRequested">
-        <atom:StepsItem Header="Step 1" SubHeader="00:00" Content="This is a content." />
-        <atom:StepsItem Header="Step 2" Content="This is a content." Status="Error" />
-        <atom:StepsItem Header="Step 3" Content="This is a content." />
-    </atom:Steps>
-    <atom:Steps Current="0" Type="Panel" PanelVariant="Outlined" SizeType="Small" IsItemClickable="True" CurrentChangeRequested="HandleLocalCurrentChangeRequested">
-        <atom:StepsItem Header="Step 1" SubHeader="00:00" Content="This is a content." />
-        <atom:StepsItem Header="Step 2" Content="This is a content." Status="Error" />
-        <atom:StepsItem Header="Step 3" Content="This is a content." />
-    </atom:Steps>
-</StackPanel>
+<atom:Steps Current="0">
+    <atom:StepsItem Header="已完成" Content="这是一段描述。" />
+    <atom:StepsItem Header="进行中" Content="这是一段描述。" SubHeader="剩余 00:00:08" />
+    <atom:StepsItem Header="等待中" Content="这是一段描述。" />
+</atom:Steps>
+```
+
+### 迷你版本
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml:59`
+
+SourceKey：`steps-small`
+
+```axaml
+<atom:Steps Current="0" SizeType="Small">
+    <atom:StepsItem Header="已完成" Content="这是一段描述。" />
+    <atom:StepsItem Header="进行中" Content="这是一段描述。" SubHeader="剩余 00:00:08" />
+    <atom:StepsItem Header="等待中" Content="这是一段描述。" />
+</atom:Steps>
+```
+
+### 垂直方向
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml:142`
+
+SourceKey：`steps-vertical`
+
+```axaml
+<atom:Steps Current="1" Orientation="Vertical">
+    <atom:StepsItem Header="已完成" Content="这是一段描述。" />
+    <atom:StepsItem Header="进行中" Content="这是一段描述。" SubHeader="剩余 00:00:08" />
+    <atom:StepsItem Header="等待中" Content="这是一段描述。" />
+</atom:Steps>
+```
+
+### 垂直迷你版本
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml:160`
+
+SourceKey：`steps-vertical-small`
+
+```axaml
+<atom:Steps Current="1" Orientation="Vertical" SizeType="Small">
+    <atom:StepsItem Header="已完成" Content="这是一段描述。" />
+    <atom:StepsItem Header="进行中" Content="这是一段描述。" SubHeader="剩余 00:00:08" />
+    <atom:StepsItem Header="等待中" Content="这是一段描述。" />
+</atom:Steps>
 ```
 
 ## 状态模型

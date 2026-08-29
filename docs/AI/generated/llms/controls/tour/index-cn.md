@@ -76,7 +76,35 @@ Tour 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tour/Views/TourShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 位置
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tour/Views/TourShowCase.axaml:110`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10" Loaded="HandleTourExampleLoaded">
+    <atom:Button ButtonType="Primary" Click="HandlePlacementBeginTour" Name="PlacementBeginTour" Content="开始引导" />
+    <atom:Tour IsOpen="{Binding PlacementTourOpened, Mode=TwoWay}" IsShowMask="True">
+        <atom:TourStep Title="居中"
+                       Description="显示在屏幕中央。" />
+        <atom:TourStep Name="PlacementRightStep"
+                       Title="右侧"
+                       Description="位于目标右侧。"
+                       Placement="Right" />
+        <atom:TourStep Name="PlacementTopStep"
+                       Title="顶部"
+                       Description="位于目标上方。"
+                       Placement="Top" />
+        <atom:TourStep Name="PlacementLeftStep"
+                       Title="左侧"
+                       Description="位于目标左侧。"
+                       Placement="Left" />
+    </atom:Tour>
+</StackPanel>
+```
 
 ## 状态模型
 

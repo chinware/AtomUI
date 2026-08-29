@@ -132,7 +132,222 @@ DataGrid 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/Views/DataGridShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础表格
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/Views/DataGridShowCase.axaml:37`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<atom:DataGrid x:Name="BasicCaseGrid"
+               IsHideOnSinglePage="True"
+               IsFrameBorderVisible="True"
+               x:DataType="vm:DataGridBaseInfo"
+                   AttachedToVisualTree="HandleExampleDataGridAttached">
+    <atom:DataGrid.Columns>
+        <atom:DataGridTemplateColumn Header="姓名">
+            <atom:DataGridTemplateColumn.CellTemplate>
+                <DataTemplate x:DataType="vm:DataGridBaseInfo">
+                    <atom:HyperLinkTextBlock Text="{Binding Name}" />
+                </DataTemplate>
+            </atom:DataGridTemplateColumn.CellTemplate>
+        </atom:DataGridTemplateColumn>
+        <atom:DataGridTextColumn Header="年龄" Binding="{Binding Age}" CanUserResize="True" />
+        <atom:DataGridTextColumn Header="地址" Binding="{Binding Address}" />
+        <atom:DataGridTemplateColumn Header="标签">
+            <atom:DataGridTemplateColumn.CellTemplate>
+                <DataTemplate x:DataType="vm:DataGridBaseInfo">
+                    <ItemsControl ItemsSource="{Binding Tags}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="5" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:TagInfo">
+                                <atom:Tag Text="{Binding Name}" TagColor="{Binding Color}"></atom:Tag>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </DataTemplate>
+            </atom:DataGridTemplateColumn.CellTemplate>
+        </atom:DataGridTemplateColumn>
+        <atom:DataGridTemplateColumn Header="操作">
+            <atom:DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" Spacing="15">
+                        <atom:HyperLinkTextBlock Text="邀请" />
+                        <atom:HyperLinkTextBlock Text="修改" />
+                        <atom:HyperLinkTextBlock Text="删除" />
+                    </StackPanel>
+                </DataTemplate>
+            </atom:DataGridTemplateColumn.CellTemplate>
+        </atom:DataGridTemplateColumn>
+    </atom:DataGrid.Columns>
+</atom:DataGrid>
+```
+
+### 选择
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/Views/DataGridShowCase.axaml:94`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10">
+    <StackPanel Orientation="Horizontal" Spacing="10">
+        <atom:RadioButton x:Name="ExtendedSelection" IsChecked="True" IsCheckedChanged="HandleSelectionModeCheckedChanged" Content="多选" />
+        <atom:RadioButton x:Name="SingleSelection" IsCheckedChanged="HandleSelectionModeCheckedChanged" Content="单选" />
+    </StackPanel>
+    <atom:DataGrid x:Name="SelectionDataGrid" SelectionMode="Extended" SelectTriggerType="Cell"
+                           x:DataType="vm:DataGridBaseInfo"
+                   AttachedToVisualTree="HandleExampleDataGridAttached">
+        <atom:DataGrid.Columns>
+            <atom:DataGridSelectionColumn />
+            <atom:DataGridTemplateColumn Header="姓名">
+                <atom:DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate x:DataType="vm:DataGridBaseInfo">
+                        <atom:HyperLinkTextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </atom:DataGridTemplateColumn.CellTemplate>
+            </atom:DataGridTemplateColumn>
+            <atom:DataGridTextColumn Header="年龄" Binding="{Binding Age}" />
+            <atom:DataGridTextColumn Header="地址" Binding="{Binding Address}" />
+            <atom:DataGridTemplateColumn Header="标签">
+                <atom:DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate x:DataType="vm:DataGridBaseInfo">
+                        <ItemsControl ItemsSource="{Binding Tags}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="5" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:TagInfo">
+                                    <atom:Tag Text="{Binding Name}" TagColor="{Binding Color}"></atom:Tag>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </DataTemplate>
+                </atom:DataGridTemplateColumn.CellTemplate>
+            </atom:DataGridTemplateColumn>
+            <atom:DataGridTemplateColumn Header="操作">
+                <atom:DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Spacing="15">
+                            <atom:HyperLinkTextBlock Text="邀请" />
+                            <atom:HyperLinkTextBlock Text="修改" />
+                            <atom:HyperLinkTextBlock Text="删除" />
+                        </StackPanel>
+                    </DataTemplate>
+                </atom:DataGridTemplateColumn.CellTemplate>
+            </atom:DataGridTemplateColumn>
+        </atom:DataGrid.Columns>
+    </atom:DataGrid>
+</StackPanel>
+```
+
+### 拖拽调整列宽
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/Views/DataGridShowCase.axaml:156`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<atom:DataGrid x:Name="DragResizeColumn" IsHideOnSinglePage="True" CanUserResizeColumns="True"
+                           x:DataType="vm:DataGridBaseInfo"
+                   AttachedToVisualTree="HandleExampleDataGridAttached">
+    <atom:DataGrid.Columns>
+        <atom:DataGridTemplateColumn Header="姓名" CanUserResize="True">
+            <atom:DataGridTemplateColumn.CellTemplate>
+                <DataTemplate x:DataType="vm:DataGridBaseInfo">
+                    <atom:HyperLinkTextBlock Text="{Binding Name}" />
+                </DataTemplate>
+            </atom:DataGridTemplateColumn.CellTemplate>
+        </atom:DataGridTemplateColumn>
+        <atom:DataGridTextColumn Header="年龄" Binding="{Binding Age}" CanUserResize="True"
+                                 CanUserSort="True" />
+        <atom:DataGridTextColumn Header="地址" Binding="{Binding Address}" />
+        <atom:DataGridTemplateColumn Header="标签">
+            <atom:DataGridTemplateColumn.CellTemplate>
+                <DataTemplate x:DataType="vm:DataGridBaseInfo">
+                    <ItemsControl ItemsSource="{Binding Tags}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="5" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:TagInfo">
+                                <atom:Tag Text="{Binding Name}" TagColor="{Binding Color}"></atom:Tag>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </DataTemplate>
+            </atom:DataGridTemplateColumn.CellTemplate>
+        </atom:DataGridTemplateColumn>
+        <atom:DataGridTemplateColumn Header="操作">
+            <atom:DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" Spacing="15">
+                        <atom:HyperLinkTextBlock Text="邀请" />
+                        <atom:HyperLinkTextBlock Text="修改" />
+                        <atom:HyperLinkTextBlock Text="删除" />
+                    </StackPanel>
+                </DataTemplate>
+            </atom:DataGridTemplateColumn.CellTemplate>
+        </atom:DataGridTemplateColumn>
+    </atom:DataGrid.Columns>
+</atom:DataGrid>
+```
+
+### 尺寸
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/Views/DataGridShowCase.axaml:212`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<StackPanel Spacing="10">
+    <atom:DataGrid x:Name="LargeSizeDataGrid" SizeType="Large"
+                           x:DataType="vm:DataGridBaseInfo"
+                   AttachedToVisualTree="HandleExampleDataGridAttached">
+        <atom:DataGrid.Columns>
+            <atom:DataGridTextColumn Header="姓名"
+                                     Binding="{Binding Name}" />
+            <atom:DataGridTextColumn Header="年龄" Binding="{Binding Age}" />
+            <atom:DataGridTextColumn Header="地址"
+                                     Binding="{Binding Address}" />
+        </atom:DataGrid.Columns>
+    </atom:DataGrid>
+
+    <atom:DataGrid x:Name="MiddleSizeDataGrid" SizeType="Middle"
+                           x:DataType="vm:DataGridBaseInfo"
+                   AttachedToVisualTree="HandleExampleDataGridAttached">
+        <atom:DataGrid.Columns>
+            <atom:DataGridTextColumn Header="姓名"
+                                     Binding="{Binding Name}" />
+            <atom:DataGridTextColumn Header="年龄" Binding="{Binding Age}" />
+            <atom:DataGridTextColumn Header="地址"
+                                     Binding="{Binding Address}" />
+        </atom:DataGrid.Columns>
+    </atom:DataGrid>
+
+    <atom:DataGrid x:Name="SmallSizeDataGrid" SizeType="Small"
+                           x:DataType="vm:DataGridBaseInfo"
+                   AttachedToVisualTree="HandleExampleDataGridAttached">
+        <atom:DataGrid.Columns>
+            <atom:DataGridTextColumn Header="姓名"
+                                     Binding="{Binding Name}" />
+            <atom:DataGridTextColumn Header="年龄" Binding="{Binding Age}" />
+            <atom:DataGridTextColumn Header="地址"
+                                     Binding="{Binding Address}" />
+        </atom:DataGrid.Columns>
+    </atom:DataGrid>
+</StackPanel>
+```
 
 ## 状态模型
 

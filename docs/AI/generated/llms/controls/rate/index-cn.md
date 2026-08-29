@@ -76,7 +76,7 @@ Rate 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:RateShowCaseLangResource BasicTitle}
+### 基础用法
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Views/RateShowCase.axaml:36`
 
@@ -86,7 +86,28 @@ Gallery key：`ExamplesContent` / item `0`
 <atom:Rate/>
 ```
 
-### {gallery:RateShowCaseLangResource HalfStarTitle}
+### 双向绑定
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Views/RateShowCase.axaml:48`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10">
+    <atom:Rate Value="{Binding TwoWayValue}" />
+    <atom:TextBlock Text="{Binding TwoWayValueSummary}" />
+    <StackPanel Orientation="Horizontal" Spacing="10">
+        <atom:Button SizeType="Small"
+                     Command="{Binding SetFourStarsCommand}"
+                     Content="设为 4 星" />
+        <atom:Button SizeType="Small"
+                     Command="{Binding ClearTwoWayValueCommand}"
+                     Content="清空" />
+    </StackPanel>
+</StackPanel>
+```
+
+### 半星
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Views/RateShowCase.axaml:70`
 
@@ -96,7 +117,7 @@ Gallery key：`ExamplesContent` / item `2`
 <atom:Rate DefaultValue="3.5" IsAllowHalf="True"/>
 ```
 
-### {gallery:RateShowCaseLangResource ShowCopywritingTitle}
+### 显示文案
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Views/RateShowCase.axaml:81`
 
@@ -109,16 +130,6 @@ Gallery key：`ExamplesContent` / item `3`
                ValueChanged="HandleValueChanged"/>
     <TextBlock Text="{Binding ActiveTooltip}"/>
 </StackPanel>
-```
-
-### {gallery:RateShowCaseLangResource ReadOnlyTitle}
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Rate/Views/RateShowCase.axaml:97`
-
-Gallery key：`ExamplesContent` / item `4`
-
-```axaml
-<atom:Rate DefaultValue="2" IsEnabled="False"/>
 ```
 
 ## 状态模型

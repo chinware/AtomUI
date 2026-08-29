@@ -76,7 +76,7 @@ Badge 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:BadgeShowCaseLangResource BasicTitle}
+### 基础用法
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge/Views/BadgeShowCase.axaml:35`
 
@@ -99,7 +99,7 @@ Gallery key：`ExamplesContent` / item `0`
 </StackPanel>
 ```
 
-### {gallery:BadgeShowCaseLangResource OverflowCountTitle}
+### 封顶数字
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge/Views/BadgeShowCase.axaml:58`
 
@@ -134,7 +134,7 @@ Gallery key：`ExamplesContent` / item `1`
 </StackPanel>
 ```
 
-### {gallery:BadgeShowCaseLangResource OffsetTitle}
+### 偏移量
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge/Views/BadgeShowCase.axaml:93`
 
@@ -151,7 +151,7 @@ Gallery key：`ExamplesContent` / item `2`
 </StackPanel>
 ```
 
-### {gallery:BadgeShowCaseLangResource SizeTitle}
+### 尺寸
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge/Views/BadgeShowCase.axaml:109`
 

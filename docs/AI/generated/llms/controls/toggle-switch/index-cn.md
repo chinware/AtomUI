@@ -78,7 +78,7 @@ ToggleSwitch 的事件与命令以控件文档、源码 public surface 和 Avalo
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:ToggleSwitchShowCaseLangResource BasicTitle}
+### 基础用法
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml:37`
 
@@ -87,6 +87,56 @@ Gallery key：`ExamplesContent` / item `0`
 ```axaml
 <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Horizontal">
     <atom:ToggleSwitch />
+</StackPanel>
+```
+
+### 禁用
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml:50`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
+    <atom:ToggleSwitch x:Name="ToggleDisabledSwitch"
+                       IsEnabled="{Binding IsDisabledDemoEnabled}" />
+    <atom:Button ButtonType="Primary"
+                 Click="HandleToggleDisabledButtonClick"
+                 Content="切换禁用" />
+</StackPanel>
+```
+
+### 尺寸
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml:101`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
+    <atom:ToggleSwitch />
+    <atom:ToggleSwitch SizeType="Small" />
+    <atom:ToggleSwitch Name="CustomSizeTypeToggleSwitch"
+                       SizeType="Custom"
+                       IsChecked="True"
+                       OnContent="自定义"
+                       OffContent="自定义" />
+</StackPanel>
+```
+
+### 加载中
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml:120`
+
+Gallery key：`ExamplesContent` / item `4`
+
+```axaml
+<StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
+    <atom:ToggleSwitch IsLoading="{Binding IsLoadingDemoLoading}" IsChecked="true" x:Name="ToggleSwitchDefault" />
+    <atom:ToggleSwitch SizeType="Small" IsLoading="{Binding IsLoadingDemoLoading}" x:Name="ToggleSwitchSmall" />
+    <atom:Button ButtonType="Primary"
+                 Click="HandleToggleLoadingButtonClick"
+                 Content="切换加载" />
 </StackPanel>
 ```
 
@@ -160,6 +210,7 @@ ToggleSwitch 不通过反射访问模板结构。模板结构由稳定 part 和 
 - on/off 图标内容的 relay binding 必须在内容替换时释放。
 - `IsLoading` 设置的 cursor local value 必须在退出 loading 时 dispose。
 - `SwitchKnob` 的 loading `CancellationTokenSource` 必须在停止 loading 和 detach 时释放。
+- 隐藏祖先下的 loading animation 不得继续推进 animation clock。
 - Token 只表达尺寸、颜色、阴影、字体和加载动画周期，不承载 `IsChecked`、`IsLoading` 或内容实例状态。
 
 当前图标内容绑定使用 C# relay binding，因为目标对象来自用户提供的 runtime content，不是稳定模板 part。模板内部固定关系应继续优先使用 AXAML binding 和 selector。

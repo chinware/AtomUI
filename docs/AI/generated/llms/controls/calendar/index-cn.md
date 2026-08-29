@@ -100,7 +100,7 @@ Calendar 的公共契约由 Avalonia 属性、事件、模板、上下文类型�
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:CalendarShowCaseLangResource BasicTitle}
+### 基础用法
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:44`
 
@@ -110,7 +110,38 @@ Gallery key：`ExamplesContent` / item `0`
 <atom:Calendar Value="{Binding SampleDate}"
 ```
 
-### {gallery:CalendarShowCaseLangResource CardTitle}
+### 跨日期事件
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:170`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<atom:Calendar Value="{Binding CrossDateEventsSampleDate}"
+               MinWidth="640"
+               HorizontalAlignment="Stretch">
+    <atom:Calendar.RangeBars>
+        <atom:CalendarRangeBar StartDate="2026-01-08"
+                               EndDate="2026-01-10"
+                               Label="发布窗口"
+                               Background="{atom:SharedTokenResource ColorPrimary}" />
+        <atom:CalendarRangeBar StartDate="2026-01-14"
+                               EndDate="2026-01-14"
+                               Label="设计评审"
+                               Background="{atom:SharedTokenResource ColorSuccess}" />
+        <atom:CalendarRangeBar StartDate="2026-01-21"
+                               EndDate="2026-01-24"
+                               Label="维护窗口"
+                               Background="{atom:SharedTokenResource ColorWarning}" />
+        <atom:CalendarRangeBar StartDate="2026-01-30"
+                               EndDate="2026-01-31"
+                               Label="缺陷修复"
+                               Background="{atom:SharedTokenResource ColorError}" />
+    </atom:Calendar.RangeBars>
+</atom:Calendar>
+```
+
+### 卡片模式
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:201`
 
@@ -126,7 +157,7 @@ Gallery key：`ExamplesContent` / item `3`
 </Border>
 ```
 
-### {gallery:CalendarShowCaseLangResource LunarCalendarTitle}
+### 农历日历
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:217`
 
@@ -134,27 +165,6 @@ Gallery key：`ExamplesContent` / item `4`
 
 ```axaml
 <atom:LunarCalendar Value="{Binding LunarCalendarSampleDate}"
-```
-
-### {gallery:CalendarShowCaseLangResource LunarCalendarCardTitle}
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar/Views/CalendarShowCase.axaml:234`
-
-Gallery key：`ExamplesContent` / item `5`
-
-```axaml
-<Border MinWidth="300"
-        HorizontalAlignment="Left"
-        BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
-        BorderThickness="{atom:SharedTokenResource BorderThickness}"
-        CornerRadius="{atom:SharedTokenResource BorderRadiusLG}">
-    <atom:LunarCalendar Value="{Binding LunarCalendarSampleDate}"
-                         Fullscreen="False"
-                         ShowSolarTerms="True"
-                         ShowTraditionalFestivals="True"
-                         ShowHolidays="True"
-                         HighlightWeekends="False" />
-</Border>
 ```
 
 ## 状态模型

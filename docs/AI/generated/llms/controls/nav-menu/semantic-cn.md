@@ -160,7 +160,7 @@ NavMenu 的交互行为由 mode 决定。
 
 - 带子菜单的项目通过 Popup 展开。
 - hover 可以延迟打开子菜单；pointer 离开后延迟关闭。
-- 点击叶子节点时选中节点；弹出层关闭由 pointer、窗口失焦、非客户端点击和同级打开状态共同控制。
+- 点击叶子节点时选中节点；弹出层关闭由 pointer、窗口失焦、非客户端点击和同级打开状态共同控制。这些关闭入口只结束临时 popup open state，不清空持续的 `SelectedItem` 或 selected path。
 - `Horizontal` 顶层菜单 popup 位于下方；非顶层 popup 按右侧边缘对齐。
 - 键盘导航以当前打开的可见菜单层级为边界移动 active/focus 项，跳过禁用项、分割线和不可聚焦内容。
 - 键盘 active 初次移动时优先以当前可见且已生成的 `SelectedItem` 容器作为方向键锚点，并立即移动到前一个或后一个可导航节点；如果没有选中项，或选中项隐藏在未打开的子菜单中，则从第一个可导航节点开始。
@@ -253,6 +253,7 @@ NavMenuToken 不承载 `SelectedItem`、`IsSubMenuOpen`、`IsInSelectedPath`、`
 - `InlineCollapsedWidth` 默认由 `NavMenuToken.InlineCollapsedWidth` 提供，开发者本地设置必须能覆盖 token 默认值。
 - `SelectedItem` 优先级高于 `DefaultSelectedPath`。
 - `DefaultOpenPaths` 和 `DefaultSelectedPath` 不依赖固定时间延迟。
+- pointer 外点、窗口停用、平台失焦、非客户端点击和 `Mode` 切换只关闭 popup/submenu，不得通过 `Close()` 隐式清空 `SelectedItem`；显式调用 public `Close()` 仍保持“关闭全部子菜单并清空选择”的既有合同。
 - 进入或退出 inline collapsed 不得调用 `Close()`，不得清空 `SelectedItem`，不得丢失 selected path。
 - inline collapsed 期间打开的 popup 状态不得污染展开后恢复的 inline open path cache。
 - 键盘 active/focus 状态不得进入公共 API，不得改变 `SelectedItem`、`DefaultSelectedPath` 或 `DefaultOpenPaths` 的语义。
@@ -285,7 +286,8 @@ NavMenuToken 不承载 `SelectedItem`、`IsSubMenuOpen`、`IsInSelectedPath`、`
 
 内部重构必须保持以下不变量：
 
-- mode 切换时重新挂接 handler，并清理旧模式打开状态。
+- mode 切换时重新挂接 handler，并通过保留选择的关闭路径清理旧模式打开状态；当前 `SelectedItem` 和 selected path 必须在当前容器上继续投影。
+- pointer 外点、窗口停用、平台失焦和非客户端点击关闭 popup 时不得调用 `NavMenu.Close()`，不得清空 `SelectedItem`；public `Close()` 的显式清空合同保持不变。
 - `IsInlineCollapsed` 切换不得改写 public `Mode`，不得调用 `Close()`，不得清空 `SelectedItem`。
 - inline collapsed 进入时缓存 inline open path，退出时恢复 cache；折叠期间 popup 打开状态不得污染 cache。
 - `InlineCollapsedWidth` 默认来自 `NavMenuToken.InlineCollapsedWidth`，本地属性值必须按 Avalonia 优先级覆盖 token 默认值。

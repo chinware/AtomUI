@@ -135,7 +135,85 @@ Button 的公共 API 是控件最重要的稳定契约。公共属性、事件�
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 按钮类型
+
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:43`
+
+SourceKey：`button-type`
+
+```axaml
+<WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
+    <atom:Button ButtonType="Primary" Content="主要按钮" />
+    <atom:Button Content="默认按钮" />
+    <atom:Button ButtonType="Dashed" Content="虚线" />
+    <atom:Button ButtonType="Text" Content="文本按钮" />
+    <atom:Button ButtonType="Link" Content="链接按钮" />
+</WrapPanel>
+```
+
+### 按钮形状
+
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:61`
+
+SourceKey：`button-shape`
+
+```axaml
+<StackPanel Orientation="Vertical">
+    <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0, 0, 0, 20">
+        <atom:Button ButtonType="Primary" Content="主要" />
+        <atom:Button Content="默认" />
+
+        <atom:Button ButtonType="Text" Content="文本" />
+        <atom:Button ButtonType="Link" Content="链接" />
+    </WrapPanel>
+    <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0, 0, 0, 20">
+        <atom:Button ButtonType="Primary" Shape="Round" Content="主要" />
+        <atom:Button Shape="Round" Content="默认" />
+        <atom:Button ButtonType="Text" Shape="Round" Content="文本" />
+        <atom:Button ButtonType="Link" Shape="Round" Content="链接" />
+    </WrapPanel>
+    <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Horizontal" Margin="0, 0, 0, 20">
+        <atom:Button ButtonType="Primary" Shape="Circle" Content="AA" />
+        <atom:Button Shape="Circle" Content="AA" />
+        <atom:Button ButtonType="Text" Shape="Circle" Content="AA" />
+        <atom:Button ButtonType="Link" Shape="Circle" Content="AA" />
+    </StackPanel>
+</StackPanel>
+```
+
+### 通栏按钮
+
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:316`
+
+SourceKey：`button-block`
+
+```axaml
+<StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Margin="10">
+    <atom:Button ButtonType="Primary" HorizontalAlignment="Stretch" Content="主要" />
+    <atom:Button ButtonType="Default" HorizontalAlignment="Stretch" Content="默认" />
+    <atom:Button ButtonType="Dashed" HorizontalAlignment="Stretch" Content="虚线" />
+    <atom:Button ButtonType="Text" HorizontalAlignment="Stretch" Content="文本" />
+    <atom:Button ButtonType="Link" HorizontalAlignment="Stretch" Content="链接" />
+</StackPanel>
+```
+
+### 危险按钮
+
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml:334`
+
+SourceKey：`button-danger`
+
+```axaml
+<WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+    <atom:Button ButtonType="Primary" IsDanger="True" Content="主要" />
+    <atom:Button ButtonType="Default" IsDanger="True" Content="默认" />
+    <atom:Button ButtonType="Dashed" IsDanger="True" Content="虚线" />
+    <atom:Button ButtonType="Text" IsDanger="True" Content="文本" />
+    <atom:Button ButtonType="Link" IsDanger="True" Content="链接" />
+</WrapPanel>
+```
 
 ## 状态模型
 

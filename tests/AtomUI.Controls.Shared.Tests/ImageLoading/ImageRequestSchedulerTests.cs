@@ -236,6 +236,7 @@ public class ImageRequestSchedulerTests
 
         await Should.ThrowAsync<OperationCanceledException>(async () => await active);
         await Should.ThrowAsync<OperationCanceledException>(async () => await queued);
+        await WaitUntilAsync(() => scheduler.ActiveReads == 0);
         scheduler.ActiveReads.ShouldBe(0);
         scheduler.QueuedReads.ShouldBe(0);
     }
@@ -286,6 +287,16 @@ public class ImageRequestSchedulerTests
 
     private static TaskCompletionSource NewSignal() =>
         new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+    private static async Task WaitUntilAsync(Func<bool> condition)
+    {
+        for (var attempt = 0; attempt < 100 && !condition(); attempt++)
+        {
+            await Task.Delay(10, TestContext.Current.CancellationToken);
+        }
+
+        condition().ShouldBeTrue();
+    }
 
     private sealed class DisposableResult : IDisposable
     {

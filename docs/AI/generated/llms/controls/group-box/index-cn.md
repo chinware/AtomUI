@@ -69,7 +69,95 @@ GroupBox 的事件与命令以控件文档、源码 public surface 和 Avalonia 
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/GroupBox/Views/GroupBoxShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/GroupBox/Views/GroupBoxShowCase.axaml:36`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<atom:GroupBox HeaderTitle="标题信息">
+    <Panel Height="100">
+        <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="分组框内容" />
+    </Panel>
+</atom:GroupBox>
+```
+
+### 自动高度
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/GroupBox/Views/GroupBoxShowCase.axaml:52`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<atom:GroupBox HeaderTitle="自动高度">
+    <StackPanel Spacing="8">
+        <atom:TextBlock Text="下面的 GroupBox 没有设置 Height，内容区域会随着文本行数自动增长。" TextWrapping="Wrap" />
+        <atom:TextBlock Text="当内容来自 StackPanel、Grid 或显式尺寸控件时，GroupBox 会使用内容的 DesiredSize 计算整体高度。" TextWrapping="Wrap" />
+        <atom:TextBlock Text="如果父容器设置了固定高度或 MaxHeight，则仍然会按 Avalonia 布局约束进行裁剪或滚动。" TextWrapping="Wrap" />
+    </StackPanel>
+</atom:GroupBox>
+```
+
+### 标题位置
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/GroupBox/Views/GroupBoxShowCase.axaml:69`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10">
+    <atom:GroupBox HeaderTitle="标题信息">
+        <Panel Height="40">
+            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="分组框内容" />
+        </Panel>
+    </atom:GroupBox>
+    <atom:GroupBox HeaderTitle="标题信息" HeaderTitlePosition="Center">
+        <Panel Height="40">
+            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="分组框内容" />
+        </Panel>
+    </atom:GroupBox>
+    <atom:GroupBox HeaderTitle="标题信息" HeaderTitlePosition="Right">
+        <Panel Height="40">
+            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="分组框内容" />
+        </Panel>
+    </atom:GroupBox>
+</StackPanel>
+```
+
+### 标题样式
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/GroupBox/Views/GroupBoxShowCase.axaml:96`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10">
+    <atom:GroupBox HeaderTitle="标题信息" HeaderFontStyle="Italic">
+        <Panel Height="40">
+            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="分组框内容" />
+        </Panel>
+    </atom:GroupBox>
+    <atom:GroupBox HeaderTitle="标题信息" HeaderTitlePosition="Center" HeaderFontWeight="Bold">
+        <Panel Height="40">
+            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="分组框内容" />
+        </Panel>
+    </atom:GroupBox>
+    <atom:GroupBox HeaderTitle="标题信息" HeaderTitlePosition="Right" HeaderFontStyle="Oblique">
+        <Panel Height="40">
+            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="分组框内容" />
+        </Panel>
+    </atom:GroupBox>
+    <atom:GroupBox HeaderTitle="标题信息" HeaderTitlePosition="Center" HeaderFontStyle="Oblique"
+                   HeaderTitleColor="Coral" HeaderFontWeight="Medium">
+        <Panel Height="40">
+            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="分组框内容" />
+        </Panel>
+    </atom:GroupBox>
+</StackPanel>
+```
 
 ## 状态模型
 

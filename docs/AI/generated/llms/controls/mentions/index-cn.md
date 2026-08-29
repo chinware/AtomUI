@@ -132,7 +132,7 @@ Mentions 的公共 API 由文本值、触发符、候选数据、过滤、弹层
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:MentionsShowCaseLangResource BasicTitle}
+### 基础用法
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:36`
 
@@ -142,7 +142,51 @@ Gallery key：`ExamplesContent` / item `0`
 <atom:Mentions Name="BasicMentions"
 ```
 
-### {gallery:MentionsShowCaseLangResource AsynchronousLoadingTitle}
+### Value 绑定
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:51`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="12">
+    <atom:Mentions HorizontalAlignment="Stretch"
+                   OptionsSource="{Binding BasicMentionOptions}"
+                   IsAllowClear="True"
+                   Value="{Binding BoundValue}" />
+    <StackPanel Orientation="Horizontal" Spacing="8">
+        <atom:TextBlock VerticalAlignment="Center"
+                        Text="绑定值：" />
+        <atom:TextBlock VerticalAlignment="Center"
+                        Text="{Binding BoundValueText}" />
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Spacing="10">
+        <atom:Button SizeType="Small"
+                     Command="{Binding SetBoundValueCommand}"
+                     Content="设置提及" />
+        <atom:Button SizeType="Small"
+                     Command="{Binding ClearBoundValueCommand}"
+                     Content="清空" />
+    </StackPanel>
+</StackPanel>
+```
+
+### 变体
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:116`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10">
+    <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Outlined" PlaceholderText="线框风格"/>
+    <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Filled" PlaceholderText="填充风格"/>
+    <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Borderless" PlaceholderText="无边框"/>
+    <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Underlined" PlaceholderText="下划线"/>
+</StackPanel>
+```
+
+### 异步加载
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:132`
 
@@ -150,26 +194,6 @@ Gallery key：`ExamplesContent` / item `4`
 
 ```axaml
 <atom:Mentions HorizontalAlignment="Stretch" OptionsAsyncLoader="{Binding MentionOptionAsyncLoader}"/>
-```
-
-### {gallery:MentionsShowCaseLangResource CustomizeTriggerTokenTitle}
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:143`
-
-Gallery key：`ExamplesContent` / item `5`
-
-```axaml
-<atom:Mentions HorizontalAlignment="Stretch"
-```
-
-### {gallery:MentionsShowCaseLangResource PlacementTitle}
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:179`
-
-Gallery key：`ExamplesContent` / item `7`
-
-```axaml
-<atom:Mentions Name="PlacementMentions"
 ```
 
 ## 状态模型

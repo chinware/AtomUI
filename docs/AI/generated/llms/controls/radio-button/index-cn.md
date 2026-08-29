@@ -77,7 +77,59 @@ RadioButton 的公共契约由 public/protected 类型成员、Avalonia 属性�
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:RadioButtonShowCaseLangResource ItemsSourceRadioGroupTitle}
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml:36`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Horizontal">
+    <atom:RadioButton Content="单选框" />
+</StackPanel>
+```
+
+### 禁用
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml:49`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel HorizontalAlignment="Left" Orientation="Vertical">
+    <StackPanel Orientation="Horizontal">
+        <atom:RadioButton x:Name="ToggleDisabledRadioUnChecked"
+                          IsEnabled="{Binding ToggleDisabledRadioUnCheckedEnabled}"
+                          Content="单选框 1" />
+        <atom:RadioButton x:Name="ToggleDisabledRadioChecked"
+                          IsChecked="True"
+                          IsEnabled="{Binding ToggleDisabledRadioCheckedEnabled}"
+                          Content="单选框 2" />
+    </StackPanel>
+    <atom:Button ButtonType="Primary"
+                 x:Name="ToggleDisabledButton"
+                 Margin="0, 20, 0, 0"
+                 Command="{Binding ToggleDisabledCommand}"
+                 Content="切换禁用" />
+</StackPanel>
+```
+
+### 垂直单选框组
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml:111`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<atom:RadioButtonGroup Orientation="Vertical" HorizontalAlignment="Left">
+    <atom:RadioButton Content="选项 A" />
+    <atom:RadioButton Content="选项 B" />
+    <atom:RadioButton Content="选项 C" />
+    <atom:RadioButton Content="选项 D" />
+</atom:RadioButtonGroup>
+```
+
+### 通过 ItemsSource 生成单选框组
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/RadioButton/Views/RadioButtonShowCase.axaml:127`
 

@@ -153,7 +153,7 @@ ListView 的公共契约由数据视图 API、选择 API、分页 API、视觉 A
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:ListShowCaseLangResource FilterTitle}
+### 筛选
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/List/Views/ListAdvancedShowCase.axaml:12`
 
@@ -163,7 +163,7 @@ Gallery key：`ExamplesContent` / item `0`
 <atom:ListView Name="FilteredList"
 ```
 
-### {gallery:ListShowCaseLangResource OrderedTitle}
+### 排序
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/List/Views/ListAdvancedShowCase.axaml:22`
 
@@ -173,7 +173,23 @@ Gallery key：`ExamplesContent` / item `1`
 <atom:ListView Name="OrderedList"
 ```
 
-### {gallery:ListShowCaseLangResource SimpleListBoxItemsSourceTitle}
+### 简单列表框控件
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/List/Views/ListAdvancedShowCase.axaml:30`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<atom:ListBox>
+    <atom:ListBoxItem Content="赛车向人群喷出燃烧的燃料。" />
+    <atom:ListBoxItem Content="日本公主将嫁给平民。" />
+    <atom:ListBoxItem Content="澳大利亚人在内陆车祸后步行 100 公里。" />
+    <atom:ListBoxItem Content="男子因婚礼女孩失踪案被起诉。" />
+    <atom:ListBoxItem Content="洛杉矶抗击大规模山火。" />
+</atom:ListBox>
+```
+
+### 简单列表框控件
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/List/Views/ListAdvancedShowCase.axaml:42`
 
@@ -181,25 +197,6 @@ Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
 <atom:ListBox ItemsSource="{Binding BasicListBoxItems}"
-```
-
-### {gallery:ListShowCaseLangResource PaginationListTitle}
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/List/Views/ListAdvancedShowCase.axaml:65`
-
-Gallery key：`ExamplesContent` / item `5`
-
-```axaml
-<atom:ListView
-    ItemsSource="{Binding PaginationListItems}"
-    PaginationVisibility="Bottom"
-    SelectionMode="Multiple"
-    Height="400"
-    PageSize="100">
-    <atom:ListView.BottomPagination>
-        <atom:Pagination />
-    </atom:ListView.BottomPagination>
-</atom:ListView>
 ```
 
 ## 状态模型

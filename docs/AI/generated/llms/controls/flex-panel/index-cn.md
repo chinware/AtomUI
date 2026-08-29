@@ -67,7 +67,152 @@ FlexPanel 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础布局
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelShowCase.axaml:33`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<StackPanel Margin="20" Spacing="16" AttachedToVisualTree="InitializeBasicExample">
+    <StackPanel Orientation="Horizontal" Spacing="20">
+        <atom:RadioButton x:Name="DirectionHorizontal" IsChecked="True" Content="horizontal" />
+        <atom:RadioButton x:Name="DirectionVertical" Content="vertical" />
+    </StackPanel>
+
+    <atom:PixelAlignedBorder BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="6" Padding="12"
+                             HorizontalAlignment="Stretch">
+        <atom:FlexPanel x:Name="BasicFlexPanel"
+                        Direction="Row"
+                        AlignItems="Stretch"
+                        HorizontalAlignment="Stretch">
+            <Border x:Name="BasicItem1" Background="#4F7CF5" Height="60" MinWidth="80" />
+            <Border x:Name="BasicItem2" Background="#1F5BFF" Height="60" MinWidth="80" />
+            <Border x:Name="BasicItem3" Background="#4F7CF5" Height="60" MinWidth="80" />
+            <Border x:Name="BasicItem4" Background="#1F5BFF" Height="60" MinWidth="80" />
+        </atom:FlexPanel>
+    </atom:PixelAlignedBorder>
+</StackPanel>
+```
+
+### 对齐
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelShowCase.axaml:59`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel Margin="20" Spacing="12" AttachedToVisualTree="InitializeAlignmentExample">
+    <atom:TextBlock FontWeight="Bold" Text="选择 justify：" />
+    <atom:Segmented x:Name="JustifySegmented">
+        <atom:SegmentedItem IsSelected="True" Content="flex-start" />
+        <atom:SegmentedItem Content="center" />
+        <atom:SegmentedItem Content="flex-end" />
+        <atom:SegmentedItem Content="space-between" />
+        <atom:SegmentedItem Content="space-around" />
+        <atom:SegmentedItem Content="space-evenly" />
+    </atom:Segmented>
+
+    <atom:TextBlock FontWeight="Bold" Text="选择 align：" />
+    <atom:Segmented x:Name="AlignSegmented">
+        <atom:SegmentedItem Content="flex-start" />
+        <atom:SegmentedItem Content="center" />
+        <atom:SegmentedItem IsSelected="True" Content="flex-end" />
+        <atom:SegmentedItem Content="stretch" />
+    </atom:Segmented>
+
+    <atom:PixelAlignedBorder BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="6"  Height="120">
+        <atom:FlexPanel x:Name="AlignFlexPanel"
+                        Direction="Row"
+                        JustifyContent="FlexStart"
+                        AlignItems="FlexEnd">
+            <atom:Button ButtonType="Primary" Content="主要" />
+            <atom:Button ButtonType="Primary" Content="主要" />
+            <atom:Button ButtonType="Primary" Content="主要" />
+            <atom:Button ButtonType="Primary" Content="主要" />
+        </atom:FlexPanel>
+    </atom:PixelAlignedBorder>
+</StackPanel>
+```
+
+### 间距
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelShowCase.axaml:97`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel Margin="20" Spacing="16" AttachedToVisualTree="InitializeGapExample">
+    <StackPanel Orientation="Horizontal" Spacing="20">
+        <atom:RadioButton x:Name="GapSmall" IsChecked="True" GroupName="GapMode" Content="small" />
+        <atom:RadioButton x:Name="GapMiddle" GroupName="GapMode" Content="middle" />
+        <atom:RadioButton x:Name="GapLarge" GroupName="GapMode" Content="large" />
+        <atom:RadioButton x:Name="GapCustomize" GroupName="GapMode" Content="customize" />
+    </StackPanel>
+
+    <StackPanel x:Name="GapCustomPanel" Orientation="Horizontal" Spacing="8" IsVisible="False">
+        <atom:TextBlock VerticalAlignment="Center" Text="自定义间距：" />
+        <Slider x:Name="GapValueSlider"
+                Width="200"
+                Minimum="0"
+                Maximum="100"
+                TickFrequency="4"
+                Value="12" />
+    </StackPanel>
+
+    <atom:FlexPanel x:Name="GapFlexPanel" Direction="Row" ColumnSpacing="8" RowSpacing="8">
+        <atom:Button ButtonType="Primary" Content="主要" />
+        <atom:Button ButtonType="Default" Content="默认" />
+        <atom:Button ButtonType="Dashed" Content="虚线" />
+        <atom:Button ButtonType="Link" Content="链接" />
+    </atom:FlexPanel>
+</StackPanel>
+```
+
+### 自动换行
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelShowCase.axaml:129`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<StackPanel Margin="20" Spacing="16" AttachedToVisualTree="InitializeAutoWrapExample">
+    <StackPanel Orientation="Horizontal" Spacing="20">
+        <atom:RadioButton x:Name="WrapEnabled" IsChecked="True" GroupName="WrapMode" Content="wrap" />
+        <atom:RadioButton x:Name="WrapDisabled" GroupName="WrapMode" Content="nowrap" />
+    </StackPanel>
+    <atom:PixelAlignedBorder BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="6" Padding="12">
+        <atom:ScrollViewer x:Name="WrapScrollViewer"
+                           HorizontalScrollBarVisibility="Disabled"
+                           VerticalScrollBarVisibility="Disabled">
+            <atom:FlexPanel x:Name="WrapFlexPanel"
+                            Direction="Row"
+                            Wrap="Wrap"
+                            ColumnSpacing="8"
+                            RowSpacing="8"
+                            JustifyContent="FlexStart">
+                <atom:Button ButtonType="Primary" Content="按钮" />
+                <atom:Button ButtonType="Primary" Content="按钮" />
+                <atom:Button ButtonType="Primary" Content="按钮" />
+                <atom:Button ButtonType="Primary" Content="按钮" />
+                <atom:Button ButtonType="Primary" Content="按钮" />
+                <atom:Button ButtonType="Primary" Content="按钮" />
+                <atom:Button ButtonType="Primary" Content="按钮" />
+                <atom:Button ButtonType="Primary" Content="按钮" />
+                <atom:Button ButtonType="Primary" Content="按钮" />
+                <atom:Button ButtonType="Primary" Content="按钮" />
+                <atom:Button ButtonType="Primary" Content="按钮" />
+                <atom:Button ButtonType="Primary" Content="按钮" />
+                <atom:Button ButtonType="Primary" Content="按钮" />
+                <atom:Button ButtonType="Primary" Content="按钮" />
+                <atom:Button ButtonType="Primary" Content="按钮" />
+            </atom:FlexPanel>
+        </atom:ScrollViewer>
+    </atom:PixelAlignedBorder>
+</StackPanel>
+```
 
 ## 状态模型
 

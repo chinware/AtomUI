@@ -102,7 +102,7 @@ TreeSelect 的事件与命令以控件文档、源码 public surface 和 Avaloni
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:TreeSelectShowCaseLangResource BasicTitle}
+### 基础用法
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml:36`
 
@@ -112,7 +112,65 @@ Gallery key：`ExamplesContent` / item `0`
 <atom:TreeSelect Name="BasicTreeSelect"
 ```
 
-### {gallery:TreeSelectShowCaseLangResource MultipleSelectionTitle}
+### 绑定
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml:54`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="16">
+    <StackPanel Spacing="8">
+        <TextBlock Text="单选绑定"
+                   FontWeight="SemiBold" />
+        <atom:TreeSelect Name="BindingSingleTreeSelect"
+                         HorizontalAlignment="Stretch"
+                         IsDefaultExpandAll="True"
+                         IsAllowClear="True"
+                         IsFilterEnabled="True"
+                         ItemsSource="{Binding BindingSingleTreeNodes}"
+                         SelectedItem="{Binding BoundSelectedItem}"
+                         PlaceholderText="请选择" />
+        <WrapPanel ItemSpacing="8">
+            <atom:Button SizeType="Small"
+                         Command="{Binding SetBoundSelectedItemCommand}"
+                         Content="选择你的叶子" />
+            <atom:Button SizeType="Small"
+                         Command="{Binding ClearBoundSelectedItemCommand}"
+                         Content="清空" />
+        </WrapPanel>
+        <TextBlock Text="ViewModel 值：" />
+        <TextBlock Text="{Binding BoundSelectedItemText}" />
+    </StackPanel>
+
+    <StackPanel Spacing="8">
+        <TextBlock Text="多选绑定"
+                   FontWeight="SemiBold" />
+        <atom:TreeSelect Name="BindingMultipleTreeSelect"
+                         HorizontalAlignment="Stretch"
+                         IsDefaultExpandAll="True"
+                         IsAllowClear="True"
+                         IsFilterEnabled="True"
+                         IsMultiple="True"
+                         ItemsSource="{Binding BindingMultipleTreeNodes}"
+                         SelectedItems="{Binding BoundSelectedItems}"
+                         PlaceholderText="请选择" />
+        <WrapPanel ItemSpacing="8">
+            <atom:Button SizeType="Small"
+                         Command="{Binding SetBoundSelectedItemsCommand}"
+                         Content="选择两个节点" />
+            <atom:Button SizeType="Small"
+                         Command="{Binding ClearBoundSelectedItemsCommand}"
+                         Content="清空" />
+        </WrapPanel>
+        <TextBlock Text="ViewModel 值：" />
+        <TextBlock Text="{Binding BoundSelectedItemsText}"
+                   TextWrapping="Wrap" />
+    </StackPanel>
+</StackPanel>
+```
+
+### 多选
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml:112`
 
@@ -122,7 +180,7 @@ Gallery key：`ExamplesContent` / item `2`
 <atom:TreeSelect Name="MultiSelectionTreeSelect"
 ```
 
-### {gallery:TreeSelectShowCaseLangResource GenerateFromTreeDataTitle}
+### 由树数据生成
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml:129`
 
@@ -130,16 +188,6 @@ Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
 <atom:TreeSelect Name="ItemsSourceTreeSelect"
-```
-
-### {gallery:TreeSelectShowCaseLangResource CheckableTitle}
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml:145`
-
-Gallery key：`ExamplesContent` / item `4`
-
-```axaml
-<atom:TreeSelect Name="CheckableTreeSelect"
 ```
 
 ## 状态模型

@@ -101,8 +101,183 @@ Dialog 公开 `Opened`、`Closing`、`Accepted`、`Rejected`、`Finished`、`Clo
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalShowCase.axaml`
-- `controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalUserControlView.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalShowCase.axaml:35`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
+    <Panel>
+        <atom:Button ButtonType="Primary" Name="BasicOpenModalButton" Content="打开浮层模态框" />
+        <atom:Dialog Name="BasicDialog"
+                     IsOpen="{Binding IsBasicModalOpened, Mode=TwoWay}"
+                     Title="基础模态框"
+                     IsModal="False"
+                     IsResizable="True"
+                     IsDragMovable="True"
+                     StandardButtons="Cancel,Ok"
+                     DefaultStandardButton="Ok"
+                     HorizontalStartupLocation="Center"
+                     VerticalOffset="30%"
+                     HostMinWidth="300"
+                     HostMaxWidth="520"
+                     HostMaxHeight="360">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="一些内容..." />
+                <TextBlock Text="一些内容..." />
+                <TextBlock Text="一些内容..." />
+            </StackPanel>
+        </atom:Dialog>
+    </Panel>
+    <Panel>
+        <atom:Button ButtonType="Primary" Name="BasicWindowOpenModalButton" Content="打开窗口模态框" />
+        <atom:Dialog Name="BasicWindowDialog"
+                     IsOpen="{Binding IsBasicWindowModalOpened, Mode=TwoWay}"
+                     Title="基础窗口模态框"
+                     IsModal="True"
+                     IsResizable="True"
+                     IsClosable="True"
+                     IsDragMovable="True"
+                     IsMaximizable="True"
+                     DialogHostType="Window"
+                     HorizontalStartupLocation="Center"
+                     VerticalOffset="30%"
+                     StandardButtons="Yes"
+                     DefaultStandardButton="Yes"
+                     HostMinWidth="300"
+                     HostMaxWidth="520"
+                     HostMaxHeight="360">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="一些内容..." />
+                <TextBlock Text="一些内容..." />
+                <TextBlock Text="一些内容..." />
+            </StackPanel>
+        </atom:Dialog>
+    </Panel>
+</StackPanel>
+```
+
+### 异步关闭
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalShowCase.axaml:94`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
+    <Panel>
+        <atom:Button ButtonType="Primary" Name="AsyncDialogOpenModalButton" Content="打开带异步逻辑的模态框" />
+        <atom:Dialog Name="AsyncDialog"
+                     IsOpen="{Binding IsAsyncDialogOpened, Mode=TwoWay}"
+                     Title="异步关闭模态框"
+                     IsModal="True"
+                     IsDragMovable="True"
+                     IsResizable="False"
+                     IsMaximizable="False"
+                     StandardButtons="Ok, Cancel"
+                     HorizontalStartupLocation="Center"
+                     VerticalStartupLocation="Center"
+                     DefaultStandardButton="Ok"
+                     ButtonClicked="HandleAsyncDialogButtonClicked"
+                     HostMinWidth="400">
+            <StackPanel>
+                <TextBlock Text="模态框内容" />
+            </StackPanel>
+        </atom:Dialog>
+    </Panel>
+</StackPanel>
+```
+
+### 加载状态
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalShowCase.axaml:219`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
+    <Panel>
+        <atom:Button ButtonType="Primary" Name="LoadingDialogOpenModalButton" Content="打开模态框" />
+        <atom:Dialog Name="LoadingDialog"
+                     IsOpen="{Binding IsLoadingMsgBoxOpened, Mode=TwoWay}"
+                     Title="加载中模态框"
+                     IsModal="True"
+                     IsLoading="True"
+                     IsDragMovable="True"
+                     IsResizable="False"
+                     IsMaximizable="False"
+                     StandardButtons="Reload"
+                     HorizontalStartupLocation="Center"
+                     VerticalStartupLocation="Center"
+                     DefaultStandardButton="Reload"
+                     Opened="HandleLoadingDialogOpened"
+                     ButtonClicked="HandleLoadingDialogButtonClicked"
+                     HostMinWidth="400">
+            <StackPanel>
+                <TextBlock Text="一些内容..." />
+                <TextBlock Text="一些内容..." />
+                <TextBlock Text="一些内容..." />
+            </StackPanel>
+        </atom:Dialog>
+    </Panel>
+</StackPanel>
+```
+
+### 自定义页脚按钮
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Modal/Views/ModalShowCase.axaml:255`
+
+Gallery key：`ExamplesContent` / item `4`
+
+```axaml
+<StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
+    <Panel>
+        <atom:Button ButtonType="Primary" Name="CustomFooterDialogOpenButton" Content="打开模态框" />
+        <atom:Dialog Name="CustomFooterDialog"
+                     IsOpen="{Binding IsCustomFooterDialogOpened, Mode=TwoWay}"
+                     Title="标题"
+                     IsModal="True"
+                     DialogHostType="Window"
+                     StandardButtons="Ok, Cancel"
+                     HorizontalStartupLocation="Center"
+                     VerticalStartupLocation="Center"
+                     DefaultStandardButton="Ok"
+                     HostMinWidth="400">
+            <atom:Dialog.CustomButtons>
+                <atom:DialogButton Role="ActionRole" Content="自定义按钮" />
+            </atom:Dialog.CustomButtons>
+            <StackPanel Spacing="5">
+                <TextBlock Text="一些内容..." />
+                <TextBlock Text="一些内容..." />
+                <TextBlock Text="一些内容..." />
+                <TextBlock Text="一些内容..." />
+                <TextBlock Text="一些内容..." />
+            </StackPanel>
+        </atom:Dialog>
+    </Panel>
+
+    <Panel>
+        <atom:Button ButtonType="Primary" Name="CustomFooterMsgBoxOpenButton" Content="打开模态框" />
+        <atom:MessageBox Name="CustomFooterMsgBox"
+                         IsOpen="{Binding IsCustomFooterMsgBoxOpened, Mode=TwoWay}"
+                         Title="确认"
+                         IsModal="True"
+                         Style="Confirm"
+                         HostMinWidth="400">
+            <atom:MessageBox.CustomButtons>
+                <atom:DialogButton Role="ActionRole" Content="自定义按钮" />
+            </atom:MessageBox.CustomButtons>
+            <StackPanel Spacing="5">
+                <TextBlock Text="一些文本 ..." />
+            </StackPanel>
+        </atom:MessageBox>
+    </Panel>
+</StackPanel>
+```
 
 ## 状态模型
 

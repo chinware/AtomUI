@@ -125,7 +125,7 @@ public event EventHandler<MasonryLayoutChangedEventArgs>? LayoutChanged;
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:MasonryShowCaseLangResource BasicTitle}
+### 基础用法
 
 来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml:40`
 
@@ -178,7 +178,7 @@ Gallery key：`ExamplesContent` / item `0`
 </atom:Masonry>
 ```
 
-### {gallery:MasonryShowCaseLangResource ResponsiveTitle}
+### 响应式
 
 来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml:96`
 
@@ -201,7 +201,7 @@ Gallery key：`ExamplesContent` / item `1`
 </atom:Masonry>
 ```
 
-### {gallery:MasonryShowCaseLangResource ImageTitle}
+### 图片
 
 来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml:122`
 

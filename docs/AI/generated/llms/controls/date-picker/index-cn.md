@@ -109,7 +109,28 @@ DatePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:DatePickerShowCaseLangResource SwitchableTitle}
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml:35`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10">
+    <atom:DatePicker PickerMode="Date"
+                     PlaceholderText="选择日期" />
+    <atom:DatePicker PickerMode="Week"
+                     PlaceholderText="选择周" />
+    <atom:DatePicker PickerMode="Month"
+                     PlaceholderText="选择月份" />
+    <atom:DatePicker PickerMode="Quarter"
+                     PlaceholderText="选择季度" />
+    <atom:DatePicker PickerMode="Year"
+                     PlaceholderText="选择年份" />
+</StackPanel>
+```
+
+### 切换不同的选择器
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml:57`
 
@@ -133,7 +154,59 @@ Gallery key：`ExamplesContent` / item `1`
 </StackPanel>
 ```
 
-### {gallery:DatePickerShowCaseLangResource PickerDisplayDateTitle}
+### SelectedDateTime 绑定
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml:83`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="16">
+    <StackPanel Orientation="Vertical" Spacing="12">
+        <atom:DatePicker Width="240"
+                         SelectedDateTime="{Binding BoundSelectedDateTime}"
+                         PlaceholderText="选择日期" />
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <atom:TextBlock VerticalAlignment="Center"
+                            Text="选中值：" />
+            <atom:TextBlock VerticalAlignment="Center"
+                            Text="{Binding BoundSelectedDateTimeText}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <atom:Button SizeType="Small"
+                         Click="SetBoundSelectedDateTimeTomorrow"
+                         Content="设置为明天" />
+            <atom:Button SizeType="Small"
+                         Click="ClearBoundSelectedDateTime"
+                         Content="清空" />
+        </StackPanel>
+    </StackPanel>
+    <StackPanel Orientation="Vertical" Spacing="12">
+        <atom:RangeDatePicker PickerMode="Date"
+                              IsShowTime="False"
+                              RangeStartSelectedDate="{Binding BoundRangeStartSelectedDate}"
+                              RangeEndSelectedDate="{Binding BoundRangeEndSelectedDate}"
+                              PlaceholderText="开始日期"
+                              SecondaryPlaceholderText="结束日期" />
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <atom:TextBlock VerticalAlignment="Center"
+                            Text="选中范围：" />
+            <atom:TextBlock VerticalAlignment="Center"
+                            Text="{Binding BoundRangeSelectedDateText}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <atom:Button SizeType="Small"
+                         Click="SetBoundSelectedDateRangeThisWeek"
+                         Content="设置为本周" />
+            <atom:Button SizeType="Small"
+                         Click="ClearBoundSelectedDateRange"
+                         Content="清空" />
+        </StackPanel>
+    </StackPanel>
+</StackPanel>
+```
+
+### 弹出面板显示日期
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml:137`
 
@@ -141,16 +214,6 @@ Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
 <atom:DatePicker PickerDisplayDate="2026-10-20"
-```
-
-### {gallery:DatePickerShowCaseLangResource MinMaxTitle}
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml:149`
-
-Gallery key：`ExamplesContent` / item `4`
-
-```axaml
-<atom:DatePicker SelectedDateTime="2019-09-03"
 ```
 
 ## 状态模型

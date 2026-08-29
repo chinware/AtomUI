@@ -85,7 +85,7 @@ event EventHandler? BorderBeamGeometryChanged;
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:BorderBeamShowCaseLangResource BasicTitle}
+### 基础
 
 来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:36`
 
@@ -127,6 +127,82 @@ Gallery key：`ExamplesContent` / item `0`
         </Grid>
     </atom:Card>
 </atom:BorderBeam>
+```
+
+### 非统一圆角
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:81`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<atom:BorderBeam Width="360"
+                 Outset="0"
+                 BorderThickness="1"
+                 CornerRadius="20,20,0,0"
+                 HorizontalAlignment="Left">
+    <atom:PixelAlignedBorder ClipToBounds="True"
+                             CornerRadius="20,20,0,0"
+                             BorderThickness="1"
+                             BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                             Background="{atom:SharedTokenResource ColorBgContainer}"
+                             Padding="24">
+        <StackPanel Spacing="8">
+            <atom:TextBlock Text="Non-uniform radius"
+                            FontWeight="Bold" />
+            <atom:TextBlock Text="顶部圆角保持较大半径，底部角保持直角。"
+                            TextWrapping="Wrap"
+                            Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+        </StackPanel>
+    </atom:PixelAlignedBorder>
+</atom:BorderBeam>
+```
+
+### 自定义颜色
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:112`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel Spacing="16"
+            HorizontalAlignment="Left">
+    <atom:Segmented ItemsSource="{Binding ColorPresets}"
+                    SelectedItem="{Binding SelectedColorPreset}"
+                    HorizontalAlignment="Left" />
+    <atom:BorderBeam Width="420"
+                     ColorStops="{Binding SelectedColorStops}"
+                     HorizontalAlignment="Left">
+        <atom:Card Header="{Binding SelectedColorPreset.Name}"
+                   BorderThickness="1"
+                   CornerRadius="8">
+            <StackPanel Spacing="12">
+                <atom:TextBlock Text="分段选择器会切换流光使用的颜色停靠点集合。"
+                                TextWrapping="Wrap"
+                                Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                <StackPanel Orientation="Horizontal"
+                            Spacing="8">
+                    <Border Width="28"
+                            Height="12"
+                            CornerRadius="6"
+                            Background="#1677FF" />
+                    <Border Width="28"
+                            Height="12"
+                            CornerRadius="6"
+                            Background="#36CFC9" />
+                    <Border Width="28"
+                            Height="12"
+                            CornerRadius="6"
+                            Background="#F759AB" />
+                    <Border Width="28"
+                            Height="12"
+                            CornerRadius="6"
+                            Background="#B37FEB" />
+                </StackPanel>
+            </StackPanel>
+        </atom:Card>
+    </atom:BorderBeam>
+</StackPanel>
 ```
 
 ## 状态模型
@@ -188,7 +264,7 @@ BorderBeamToken 不承载 `Content`、`Color`、`ColorStops`、`Outset`、`Progr
 
 BorderBeam 不使用反射，不访问内容控件 internal 属性或 template part。集成通过 `IBorderBeamAwareControl` 完成。
 
-实例级 motion 未启用时不应启动循环动画。动画取消资源必须在 detached、模板替换、content 替换和实例 motion 关闭时释放。
+实例级 motion 未启用时不应启动循环动画。隐藏祖先下的动画必须暂停；动画取消资源必须在 detached、模板替换、content 替换和实例 motion 关闭时释放。
 
 ColorStops 使用实例级集合，避免共享默认集合。集合变更应触发渐变重建和 presenter 重绘，不应重建整个模板。
 

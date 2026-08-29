@@ -139,7 +139,35 @@ TreeView 的公共契约由 TreeView API、TreeViewItem API、节点数据 API�
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:TreeViewShowCaseLangResource GenerateByTemplateTitle}
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView/Views/TreeViewShowCase.axaml:37`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<atom:TreeView ToggleType="CheckBox"
+               DefaultExpandedPaths="{Binding BasicTreeViewDefaultExpandedPaths}"
+               DefaultSelectedPaths="{Binding BasicTreeViewDefaultSelectedPaths}"
+               DefaultCheckedPaths="{Binding BasicTreeViewDefaultCheckedPaths}">
+    <atom:TreeViewItem Header="父节点 1" ItemKey="0-0">
+        <atom:TreeViewItem Header="父节点 1-0" ItemKey="0-0-0">
+            <atom:TreeViewItem Header="叶子节点" ItemKey="0-0-0-0" IsEnabled="False" />
+            <atom:TreeViewItem Header="叶子节点" ItemKey="0-0-0-1" />
+        </atom:TreeViewItem>
+        <atom:TreeViewItem Header="父节点 1-1" ItemKey="0-0-1">
+            <atom:TreeViewItem Header="示例一" ItemKey="0-0-1-0">
+                <atom:TreeViewItem Header="示例二" ItemKey="0-0-1-0-0" />
+            </atom:TreeViewItem>
+            <atom:TreeViewItem Header="示例三" ItemKey="0-0-1-1">
+                <atom:TreeViewItem Header="示例四" ItemKey="0-0-1-1-0" />
+            </atom:TreeViewItem>
+        </atom:TreeViewItem>
+    </atom:TreeViewItem>
+</atom:TreeView>
+```
+
+### 使用模板生成
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView/Views/TreeViewShowCase.axaml:66`
 
@@ -159,21 +187,103 @@ Gallery key：`ExamplesContent` / item `1`
 </atom:TreeView>
 ```
 
-### {gallery:TreeViewShowCaseLangResource AsyncLoadDataTitle}
+### SelectedItem 绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView/Views/TreeViewShowCase.axaml:355`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView/Views/TreeViewShowCase.axaml:89`
 
-Gallery key：`ExamplesContent` / item `8`
+Gallery key：`ExamplesContent` / item `2`
 
 ```axaml
-<atom:TreeView ItemsSource="{Binding AsyncLoadTreeNodes}"
-               DataLoader="{Binding AsyncLoadTreeNodeLoader}">
-    <atom:TreeView.ItemTemplate>
-        <TreeDataTemplate ItemsSource="{Binding Children}" DataType="atom:ITreeItemNode">
-            <atom:TextBlock Text="{Binding Header}" />
-        </TreeDataTemplate>
-    </atom:TreeView.ItemTemplate>
-</atom:TreeView>
+<Grid ColumnDefinitions="300,*" ColumnSpacing="24">
+    <StackPanel Grid.Column="0" Spacing="8">
+        <TextBlock FontWeight="SemiBold"
+                   Text="SelectedItem" />
+        <atom:TreeView ItemsSource="{Binding BasicTreeNodes}"
+                       DefaultExpandedPaths="{Binding BasicTreeViewDefaultExpandedPaths}"
+                       SelectedItem="{Binding BoundSelectedTreeNode, Mode=TwoWay}">
+            <atom:TreeView.ItemTemplate>
+                <TreeDataTemplate ItemsSource="{Binding Children}" DataType="atom:ITreeItemNode">
+                    <atom:TextBlock Text="{Binding Header}" />
+                </TreeDataTemplate>
+            </atom:TreeView.ItemTemplate>
+        </atom:TreeView>
+    </StackPanel>
+
+    <StackPanel Grid.Column="1" MinWidth="260" Spacing="10">
+        <TextBlock FontWeight="SemiBold"
+                   Text="绑定值" />
+        <StackPanel Spacing="4">
+            <TextBlock Text="SelectedItem" />
+            <atom:TextBlock Text="{Binding BoundSelectedTreeNodeText}" />
+        </StackPanel>
+        <WrapPanel>
+            <atom:Button Margin="0,0,8,8"
+                         SizeType="Small"
+                         Click="HandleSelectFirstBindingTreeNodeClick"
+                         Content="选择 parent 1-0" />
+            <atom:Button Margin="0,0,8,8"
+                         SizeType="Small"
+                         Click="HandleSelectSecondBindingTreeNodeClick"
+                         Content="选择 parent 1-1" />
+            <atom:Button Margin="0,0,8,8"
+                         SizeType="Small"
+                         Click="HandleClearBindingTreeNodeSelectionClick"
+                         Content="清空" />
+        </WrapPanel>
+    </StackPanel>
+</Grid>
+```
+
+### SelectedItems 绑定
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView/Views/TreeViewShowCase.axaml:139`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<Grid ColumnDefinitions="300,*" ColumnSpacing="24">
+    <StackPanel Grid.Column="0" Spacing="8">
+        <TextBlock FontWeight="SemiBold"
+                   Text="SelectedItems" />
+        <atom:TreeView ItemsSource="{Binding BasicTreeNodes}"
+                       DefaultExpandedPaths="{Binding BasicTreeViewDefaultExpandedPaths}"
+                       SelectionMode="Multiple"
+                       SelectedItems="{Binding BoundSelectedTreeNodes, Mode=TwoWay}">
+            <atom:TreeView.ItemTemplate>
+                <TreeDataTemplate ItemsSource="{Binding Children}" DataType="atom:ITreeItemNode">
+                    <atom:TextBlock Text="{Binding Header}" />
+                </TreeDataTemplate>
+            </atom:TreeView.ItemTemplate>
+        </atom:TreeView>
+    </StackPanel>
+
+    <StackPanel Grid.Column="1" MinWidth="260" Spacing="10">
+        <TextBlock FontWeight="SemiBold"
+                   Text="绑定值" />
+        <StackPanel Spacing="4">
+            <TextBlock Text="SelectedItems" />
+            <atom:TextBlock Text="{Binding BoundSelectedTreeNodesText}" TextWrapping="Wrap" />
+        </StackPanel>
+        <WrapPanel>
+            <atom:Button Margin="0,0,8,8"
+                         SizeType="Small"
+                         Click="HandleSelectFirstBindingTreeNodesClick"
+                         Content="选择 parent 1-0" />
+            <atom:Button Margin="0,0,8,8"
+                         SizeType="Small"
+                         Click="HandleSelectSecondBindingTreeNodesClick"
+                         Content="选择 parent 1-1" />
+            <atom:Button Margin="0,0,8,8"
+                         SizeType="Small"
+                         Click="HandleSelectBothBindingTreeNodesClick"
+                         Content="选择两个节点" />
+            <atom:Button Margin="0,0,8,8"
+                         SizeType="Small"
+                         Click="HandleClearBindingTreeNodesSelectionClick"
+                         Content="清空" />
+        </WrapPanel>
+    </StackPanel>
+</Grid>
 ```
 
 ## 状态模型

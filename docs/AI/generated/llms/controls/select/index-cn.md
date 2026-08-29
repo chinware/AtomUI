@@ -156,7 +156,99 @@ Select 的稳定伪类包括 `:dropdownopen`；输入表面通过 `InputControlF
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:SelectShowCaseLangResource SearchFieldTitle}
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:38`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<WrapPanel ItemSpacing="10" LineSpacing="10">
+    <atom:Select Mode="Single" PlaceholderText="请选择" Width="120"
+                 DefaultValues="lucy"
+                 OptionsSource="{Binding BasicSelectedOptions}" />
+
+    <atom:Select Mode="Single" PlaceholderText="请选择" IsEnabled="False" Width="120"
+                 DefaultValues="lucy"
+                 OptionsSource="{Binding SingleLucyOptions}" />
+
+    <atom:Select Name="AsyncLoadSelect"
+                 Mode="Single"
+                 PlaceholderText="请选择"
+                 Width="120"
+                 DefaultValues="lucy"
+                 OptionsSource="{Binding SingleLucyOptions}"
+                 OptionsLoader="{Binding SelectOptionsAsyncLoader}" />
+
+    <atom:Select Mode="Single" PlaceholderText="请选择" IsAllowClear="True" Width="120"
+                 OptionsSource="{Binding SingleLucyOptions}" />
+
+    <atom:Select Name="DefaultSelectedSelect"
+                 Mode="Single"
+                 PlaceholderText="请选择"
+                 IsAllowClear="True"
+                 Width="120"
+                 OptionsSource="{Binding BasicSelectedOptions}"
+                 SelectedOption="{Binding DefaultSelectedOption}" />
+
+</WrapPanel>
+```
+
+### 双向绑定
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:79`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<WrapPanel ItemSpacing="24" LineSpacing="16">
+    <StackPanel Spacing="8" MinWidth="260">
+        <TextBlock Text="SelectedOption"
+                   FontWeight="SemiBold" />
+        <atom:Select Mode="Single"
+                     PlaceholderText="请选择"
+                     IsAllowClear="True"
+                     Width="220"
+                     OptionsSource="{Binding BasicSelectedOptions}"
+                     SelectedOption="{Binding BoundSelectedOption}" />
+        <WrapPanel ItemSpacing="8">
+            <atom:Button SizeType="Small"
+                         Command="{Binding SetBoundSelectedOptionCommand}"
+                         Content="设为 Lucy" />
+            <atom:Button SizeType="Small"
+                         Command="{Binding ClearBoundSelectedOptionCommand}"
+                         Content="清空" />
+        </WrapPanel>
+        <TextBlock Text="ViewModel 值" />
+        <TextBlock Text="{Binding BoundSelectedOptionText}" />
+    </StackPanel>
+
+    <StackPanel Spacing="8" MinWidth="320">
+        <TextBlock Text="SelectedOptions"
+                   FontWeight="SemiBold" />
+        <atom:Select Mode="Multiple"
+                     PlaceholderText="请选择人员"
+                     IsAllowClear="True"
+                     IsFilterEnabled="True"
+                     Width="300"
+                     OptionsSource="{Binding BasicSelectedOptions}"
+                     SelectedOptions="{Binding BoundSelectedOptions}" />
+        <WrapPanel ItemSpacing="8">
+            <atom:Button SizeType="Small"
+                         Command="{Binding SetBoundSelectedOptionsCommand}"
+                         Content="设为 Jack + Yiminghe" />
+            <atom:Button SizeType="Small"
+                         Command="{Binding ClearBoundSelectedOptionsCommand}"
+                         Content="清空" />
+        </WrapPanel>
+        <TextBlock Text="ViewModel 值" />
+        <TextBlock Text="{Binding BoundSelectedOptionsText}"
+                   TextWrapping="Wrap" />
+    </StackPanel>
+</WrapPanel>
+```
+
+### 带搜索框的选择器
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:135`
 
@@ -166,7 +258,7 @@ Gallery key：`ExamplesContent` / item `2`
 <atom:Select Mode="Single"
 ```
 
-### {gallery:SelectShowCaseLangResource CustomSearchTitle}
+### 自定义搜索
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:150`
 
@@ -174,29 +266,6 @@ Gallery key：`ExamplesContent` / item `3`
 
 ```axaml
 <atom:Select Name="CustomSearchSelect"
-```
-
-### {gallery:SelectShowCaseLangResource HideAlreadySelectedTitle}
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:259`
-
-Gallery key：`ExamplesContent` / item `8`
-
-```axaml
-<atom:Select Mode="Multiple"
-```
-
-### {gallery:SelectShowCaseLangResource StatusTitle}
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:432`
-
-Gallery key：`ExamplesContent` / item `13`
-
-```axaml
-<StackPanel Orientation="Vertical" Spacing="10">
-    <atom:Select Mode="Single" HorizontalAlignment="Stretch" Status="Error" />
-    <atom:Select Mode="Single" HorizontalAlignment="Stretch" Status="Warning" />
-</StackPanel>
 ```
 
 ## 状态模型

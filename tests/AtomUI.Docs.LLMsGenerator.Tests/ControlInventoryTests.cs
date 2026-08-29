@@ -31,7 +31,7 @@ public class ControlInventoryTests
 
         var controls = ControlInventory.Discover(TestRepository.RootPath, config);
 
-        controls.Count.ShouldBe(78);
+        controls.Count.ShouldBe(79);
         controls.ShouldContain(control => control.Category == "general" &&
                                           control.Name == "button" &&
                                           control.OutputIndexPath == "docs/AI/generated/llms/controls/button/index-cn.md" &&

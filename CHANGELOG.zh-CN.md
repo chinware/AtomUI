@@ -6,6 +6,36 @@ AtomUI 的重要变更记录在此文件中。
 
 英文版本见 [CHANGELOG.md](CHANGELOG.md)。
 
+## 6.1.6
+
+`2026-08-29`
+
+- 破坏性变更
+  - Avatar：将 `Avatar` 和 `AbstractAvatar` 移至 `AtomUI.Controls`；以强类型 `Source`、`FallbackSource` 和 `RequestOptions` 替代 `Src`、`BitmapSrc`；将 `TextRenderTransform` 调整为内部 API；并将生成的 Avatar Token API 移至 `AtomUI.Controls.DesignTokens`。`CardMetaContent.Avatar` 现在使用基础控件包中的 Avatar 类型。
+  - ImagePreviewer：以包含不可变 `ImagePreviewItem` 的 `ItemsSource` 替代 `Source`、`Sources`、`FallbackSource`、`MaxConcurrentLoads` 及预览器专用的 source/loader 契约，图片来源统一使用 `ImageLoadSource`。并发改为通过应用级 `UseImageLoading` 配置，标题解析器需接受 `in ImagePreviewTitleResolveContext` 并读取 `context.Item`。
+  - 输入控件：`LineEdit` 不再继承 AtomUI `TextBox`；`LineEdit`、`TextBox` 和 `TextArea` 现在共享公开基类 `AbstractTextInput`。`OtpLineEditCell` 及其生成的单元格 Token API 调整为内部实现；OTP 外观应通过 `OtpLineEdit` 和共享输入框架契约配置。迁移示例见 [6.1.6 API 变更示例](docs/releases/6.1.6-api-changes.zh-CN.md)。
+- 图片加载、Avatar 与 ImagePreviewer
+  - 新增应用级统一图片加载管线，提供 `AsyncImage`、强类型 URI/文件/资源/存储/字节/流/图片来源、请求选项、加载状态、进度与错误事件、有界并发、优先级以及编码/解码缓存。
+  - 新增安全的网络 SVG 加载，并提供重定向、响应大小、图片尺寸和凭据转发限制；同时强化取消、缓存所有权以及附加/分离生命周期行为。
+  - 将 Avatar 和 ImagePreviewer 迁移到统一管线，支持缩略图/回退来源、重新加载、封面与当前图片加载状态、不可变预览项和稳定的标题元数据。
+- 输入控件与 Form
+  - 以 `AbstractTextInput` 和 `InputControlFrame` 统一 TextBox、TextArea、LineEdit 与 OTP 输入的校验、状态、尺寸、外观变体、AddOn 和反馈架构。
+  - 编辑期间保持 TextBox 输入框架宽度稳定，并在模板和生命周期变化后保留校验反馈订阅。
+- Steps、Masonry 与导航
+  - 新增 Steps `Panel` 类型及 Filled、Outlined 变体，提供 Token 化表面和响应式布局行为。
+  - 新增 Masonry `StableColumns` 和 `Reflow` 布局策略，默认使用稳定列，同时避免图片解码与布局反馈循环，并恢复最终宽度测量和加载骨架布局。
+  - TreeView 重新附加到可视树后恢复节点绑定；NavMenu 临时弹层关闭时保留选择；语言切换后重新测量 ToggleSwitch 内容。
+- TabControl 和 TabStrip
+  - 修复 overflow 页签关闭行为：遵循最终生效的 `IsClosable`，统一转发到控件 owner 的关闭流程；关闭被拒绝或取消时保留源页签和菜单项，并确保 `Items` 与 `ItemsSource` 路径下的 `Closing`/`Closed`、选择状态和集合语义一致。
+- Window 与平台
+  - 新增公开的 `WindowTitleBarButton` 和 `WindowTitleBarToggleButton`，用于实现标题栏 AddOn 操作。
+  - 修复 Windows 实时调整窗口大小时的合成回退对齐，以及 macOS 录屏或显示几何变化后的 caption button 位置。
+- Motion、Popup 与生命周期
+  - 控件实际不可见时暂停周期性动画、计时器和视觉工作，恢复可见后从当前状态继续。
+- 构建、打包与本地化
+  - 从按内容键控的影子副本加载 MSBuild Task，避免重复构建时使用过期 Task 程序集或发生依赖冲突。
+  - 将托管构建输出迁移到 `.artifacts`，并在消费项目树中隐藏语言包实现文件。
+
 ## 6.1.5
 
 `2026-08-21`

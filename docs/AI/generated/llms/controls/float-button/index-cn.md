@@ -85,7 +85,7 @@ FloatButton 的公共契约由 public/protected 类型成员、Avalonia 属性�
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:FloatButtonShowCaseLangResource BasicTitle}
+### 基础用法
 
 来源：`controlgallery/AtomUIGallery/ShowCases/General/FloatButton/Views/FloatButtonShowCase.axaml:36`
 
@@ -96,6 +96,50 @@ Gallery key：`ExamplesContent` / item `0`
     <Border Background="White">
         <Panel Height="500">
             <atom:FloatButtonHost />
+        </Panel>
+    </Border>
+</atom:ScrollViewer>
+```
+
+### 带提示的 FloatButton
+
+来源：`controlgallery/AtomUIGallery/ShowCases/General/FloatButton/Views/FloatButtonShowCase.axaml:164`
+
+Gallery key：`ExamplesContent` / item `4`
+
+```axaml
+<atom:ScrollViewer Height="300">
+    <Border Background="White">
+        <Panel Height="500">
+            <atom:FloatButtonHost FloatOffsetX="80"
+                                  Tooltip="自 5.25.0 起" TooltipColor="blue" />
+            <atom:FloatButtonHost Tooltip="文档" />
+        </Panel>
+    </Border>
+</atom:ScrollViewer>
+```
+
+### 回到顶部
+
+来源：`controlgallery/AtomUIGallery/ShowCases/General/FloatButton/Views/FloatButtonShowCase.axaml:408`
+
+Gallery key：`ExamplesContent` / item `11`
+
+```axaml
+<atom:ScrollViewer Height="300">
+    <Border Background="White">
+        <Panel Height="1000">
+            <StackPanel>
+                <TextBlock Text="滚动到底部" />
+                <TextBlock Text="滚动到底部" />
+                <TextBlock Text="滚动到底部" />
+                <TextBlock Text="滚动到底部" />
+                <TextBlock Text="滚动到底部" />
+                <TextBlock Text="滚动到底部" />
+                <TextBlock Text="滚动到底部" />
+                <TextBlock Text="滚动到底部" />
+            </StackPanel>
+            <atom:BackTopFloatButtonHost ButtonType="Default" />
         </Panel>
     </Border>
 </atom:ScrollViewer>

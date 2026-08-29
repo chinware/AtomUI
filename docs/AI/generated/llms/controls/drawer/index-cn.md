@@ -73,7 +73,142 @@ Drawer 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:40`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<Panel>
+    <atom:ToggleSwitch />
+    <atom:Drawer IsOpen="{Binding $parent[Panel].((atom:ToggleSwitch)Children[0]).IsChecked}"
+                 Title="基础抽屉"
+                 DialogSize="50%">
+        <StackPanel Orientation="Vertical" Spacing="5">
+            <atom:TextBlock Text="一些内容..." />
+            <atom:TextBlock Text="一些内容..." />
+            <atom:TextBlock Text="一些内容..." />
+        </StackPanel>
+    </atom:Drawer>
+</Panel>
+```
+
+### 多层抽屉
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:60`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<Panel>
+    <StackPanel Height="120" Classes="ControllerPanel">
+        <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
+            <atom:TextBlock VerticalAlignment="Center" Text="弹出位置：" />
+            <atom:OptionButtonGroup ButtonStyle="Outline"
+                                    Name="MultiLevelPlacementGroup"
+                                    OptionCheckedChanged="HandleMultiLevelPlacementChanged">
+                <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Left}" Content="左侧" />
+                <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Top}" Content="顶部" />
+                <atom:OptionButton IsChecked="True" Tag="{x:Static atom:DrawerPlacement.Right}" Content="右侧" />
+                <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Bottom}" Content="底部" />
+            </atom:OptionButtonGroup>
+        </StackPanel>
+        <atom:ToggleSwitch />
+    </StackPanel>
+
+    <atom:Drawer Title="一级抽屉"
+                 IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
+                 Placement="{Binding MultiLevelPlacement}">
+        <StackPanel Orientation="Vertical" Spacing="5">
+            <atom:TextBlock Text="一些内容..." />
+            <atom:TextBlock Text="一些内容..." />
+            <atom:TextBlock Text="一些内容..." />
+            <atom:Button ButtonType="Primary"
+                         Click="HandleOpenMultilevelLevelTwoDrawer" Content="二级抽屉" />
+            <atom:Drawer Title="二级抽屉"
+                         Name="MultiLevelDrawerLevelTwo"
+                         Placement="{Binding MultiLevelPlacement}">
+                <StackPanel Orientation="Vertical" Spacing="5">
+                    <atom:TextBlock Text="一些内容..." />
+                    <atom:TextBlock Text="一些内容..." />
+                    <atom:TextBlock Text="一些内容..." />
+                </StackPanel>
+            </atom:Drawer>
+        </StackPanel>
+    </atom:Drawer>
+</Panel>
+```
+
+### 额外区域和页脚
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:105`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<Panel>
+    <StackPanel Classes="ControllerPanel">
+        <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
+            <atom:TextBlock VerticalAlignment="Center" Text="弹出位置：" />
+            <atom:OptionButtonGroup ButtonStyle="Outline"
+                                    Name="ExtraAndFooterPlacementGroup"
+                                    OptionCheckedChanged="HandleExtraAndFooterPlacementChanged">
+                <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Left}" Content="左侧" />
+                <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Top}" Content="顶部" />
+                <atom:OptionButton IsChecked="True" Tag="{x:Static atom:DrawerPlacement.Right}" Content="右侧" />
+                <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Bottom}" Content="底部" />
+            </atom:OptionButtonGroup>
+        </StackPanel>
+        <atom:ToggleSwitch Content="打开" />
+    </StackPanel>
+    <atom:Drawer IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
+                 Title="基础抽屉"
+                 Placement="{Binding ExtraAndFooterPlacement}">
+        <atom:Drawer.Extra>
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <atom:Button Content="取消" />
+                <atom:Button ButtonType="Primary" Content="确定" />
+            </StackPanel>
+        </atom:Drawer.Extra>
+        <atom:Drawer.Footer>
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <atom:Button Content="编辑" />
+                <atom:Button ButtonType="Primary" Content="上传" />
+                <atom:Button ButtonType="Primary" IsDanger="True" Content="删除" />
+            </StackPanel>
+        </atom:Drawer.Footer>
+        <StackPanel Orientation="Vertical" Spacing="5">
+            <atom:TextBlock Text="一些内容..." />
+            <atom:TextBlock Text="一些内容..." />
+            <atom:TextBlock Text="一些内容..." />
+        </StackPanel>
+    </atom:Drawer>
+</Panel>
+```
+
+### 无遮罩
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:249`
+
+Gallery key：`ExamplesContent` / item `4`
+
+```axaml
+<Panel>
+    <atom:ToggleSwitch Content="打开" />
+    <atom:Drawer IsOpen="{Binding $parent[Panel].((atom:ToggleSwitch)Children[0]).IsChecked}"
+                 Title="基础抽屉"
+                 IsShowMask="False">
+        <StackPanel Orientation="Vertical" Spacing="5">
+            <atom:TextBlock Text="一些内容..." />
+            <atom:TextBlock Text="一些内容..." />
+            <atom:TextBlock Text="一些内容..." />
+        </StackPanel>
+    </atom:Drawer>
+</Panel>
+```
 
 ## 状态模型
 

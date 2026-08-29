@@ -89,7 +89,64 @@ item API：
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:SegmentedShowCaseLangResource DynamicTitle}
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:36`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
+    <atom:Segmented Margin="20">
+        <atom:SegmentedItem Content="每日" />
+        <atom:SegmentedItem Content="每周" />
+        <atom:SegmentedItem Content="每月" />
+        <atom:SegmentedItem Content="每季度" />
+        <atom:SegmentedItem Content="每年" />
+    </atom:Segmented>
+</StackPanel>
+```
+
+### 块级分段控制器
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:71`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel HorizontalAlignment="Stretch" Orientation="Vertical">
+    <atom:Segmented IsExpanding="True" Margin="20">
+        <atom:SegmentedItem>123</atom:SegmentedItem>
+        <atom:SegmentedItem>456</atom:SegmentedItem>
+        <atom:SegmentedItem Content="长文本-长文本-长文本-长文本" />
+    </atom:Segmented>
+</StackPanel>
+```
+
+### 禁用
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:113`
+
+Gallery key：`ExamplesContent` / item `4`
+
+```axaml
+<StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Spacing="10">
+    <atom:Segmented Margin="20">
+        <atom:SegmentedItem IsEnabled="False" Content="地图" />
+        <atom:SegmentedItem IsEnabled="False" Content="公交" />
+        <atom:SegmentedItem IsEnabled="False" Content="卫星" />
+    </atom:Segmented>
+    <atom:Segmented>
+        <atom:SegmentedItem Content="每日" />
+        <atom:SegmentedItem IsEnabled="False" Content="每周" />
+        <atom:SegmentedItem Content="每月" />
+        <atom:SegmentedItem IsEnabled="False" Content="每季度" />
+        <atom:SegmentedItem Content="每年" />
+    </atom:Segmented>
+</StackPanel>
+```
+
+### 动态数据
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedShowCase.axaml:138`
 

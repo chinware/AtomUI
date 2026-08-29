@@ -88,7 +88,161 @@ Descriptions 没有 public routed event、命令或专用伪类。内部生成�
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Descriptions/Views/DescriptionsShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Descriptions/Views/DescriptionsShowCase.axaml:33`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<atom:Descriptions Header="用户信息">
+    <atom:DescriptionItem Label="用户名" Content="周毛毛" />
+    <atom:DescriptionItem Label="电话" Content="1810000000" />
+    <atom:DescriptionItem Label="居住地" Content="浙江杭州" />
+    <atom:DescriptionItem Label="备注" Content="暂无" />
+    <atom:DescriptionItem Label="地址"
+                          Content="中国浙江省杭州市西湖区万塘路 18 号" />
+</atom:Descriptions>
+```
+
+### 边框
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Descriptions/Views/DescriptionsShowCase.axaml:50`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<atom:Descriptions IsBordered="True">
+    <atom:DescriptionItem Label="产品" Content="云数据库" />
+    <atom:DescriptionItem Label="计费方式" Content="预付费" />
+    <atom:DescriptionItem Label="自动续费" Content="是" />
+    <atom:DescriptionItem Label="订购时间" Content="2018-04-24 18:00:00" />
+    <atom:DescriptionItem Label="使用时间" Content="2019-04-24 18:00:00" Span="2" />
+    <atom:DescriptionItem Label="状态" Content="运行中" Span="3" />
+    <atom:DescriptionItem Label="协商金额" Content="$80.00" />
+    <atom:DescriptionItem Label="折扣" Content="$20.00" />
+    <atom:DescriptionItem Label="官方收据" Content="$60.00" />
+    <atom:DescriptionItem Label="配置信息">
+        <atom:DescriptionItem.Content>
+            <StackPanel Orientation="Vertical" Spacing="5">
+                <TextBlock Text="数据盘类型：MongoDB" />
+                <TextBlock Text="数据库版本：3.4" />
+                <TextBlock Text="套餐：dds.mongo.mid" />
+                <TextBlock Text="存储空间：10 GB" />
+                <TextBlock Text="副本因子：3" />
+                <TextBlock Text="地域：华东 1" />
+            </StackPanel>
+        </atom:DescriptionItem.Content>
+    </atom:DescriptionItem>
+</atom:Descriptions>
+```
+
+### 自定义尺寸
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Descriptions/Views/DescriptionsShowCase.axaml:82`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="30">
+    <StackPanel Orientation="Horizontal" Spacing="10">
+        <atom:RadioButton Name="DefaultSizeRadioButton"
+                          IsChecked="True"
+                          Tag="{x:Static atom:SizeType.Large}"
+                          IsCheckedChanged="SizeTypeCheckChanged"
+                          Content="大号" />
+        <atom:RadioButton Name="MiddleSizeRadioButton"
+                          Tag="{x:Static atom:SizeType.Middle}"
+                          IsCheckedChanged="SizeTypeCheckChanged"
+                          Content="中号" />
+        <atom:RadioButton Name="SmallSizeRadioButton"
+                          Tag="{x:Static atom:SizeType.Small}"
+                          IsCheckedChanged="SizeTypeCheckChanged"
+                          Content="小号" />
+    </StackPanel>
+    <atom:Descriptions IsBordered="True"
+                       SizeType="{Binding DescriptionsSizeType}"
+                       Header="自定义尺寸">
+        <atom:Descriptions.Extra>
+            <atom:Button ButtonType="Primary" Content="编辑" />
+        </atom:Descriptions.Extra>
+        <atom:DescriptionItem Label="产品" Content="云数据库" />
+        <atom:DescriptionItem Label="计费方式" Content="预付费" />
+        <atom:DescriptionItem Label="自动续费" Content="是" />
+        <atom:DescriptionItem Label="订购时间" Content="2018-04-24 18:00:00" />
+        <atom:DescriptionItem Label="使用时间" Content="2019-04-24 18:00:00" Span="2" />
+        <atom:DescriptionItem Label="状态" Content="运行中" Span="3" />
+        <atom:DescriptionItem Label="协商金额" Content="$80.00" />
+        <atom:DescriptionItem Label="折扣" Content="$20.00" />
+        <atom:DescriptionItem Label="官方收据" Content="$60.00" />
+        <atom:DescriptionItem Label="配置信息">
+            <atom:DescriptionItem.Content>
+                <StackPanel Orientation="Vertical" Spacing="5">
+                    <TextBlock Text="数据盘类型：MongoDB" />
+                    <TextBlock Text="数据库版本：3.4" />
+                    <TextBlock Text="套餐：dds.mongo.mid" />
+                    <TextBlock Text="存储空间：10 GB" />
+                    <TextBlock Text="副本因子：3" />
+                    <TextBlock Text="地域：华东 1" />
+                </StackPanel>
+            </atom:DescriptionItem.Content>
+        </atom:DescriptionItem>
+    </atom:Descriptions>
+
+    <atom:Descriptions Header="自定义尺寸"
+                       SizeType="{Binding DescriptionsSizeType}">
+        <atom:Descriptions.Extra>
+            <atom:Button ButtonType="Primary" Content="编辑" />
+        </atom:Descriptions.Extra>
+        <atom:DescriptionItem Label="用户名" Content="周毛毛" />
+        <atom:DescriptionItem Label="电话" Content="1810000000" />
+        <atom:DescriptionItem Label="居住地" Content="浙江杭州" />
+        <atom:DescriptionItem Label="备注" Content="暂无" />
+        <atom:DescriptionItem Label="地址"
+                              Content="中国浙江省杭州市西湖区万塘路 18 号" />
+    </atom:Descriptions>
+</StackPanel>
+```
+
+### 响应式
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Descriptions/Views/DescriptionsShowCase.axaml:150`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<atom:Descriptions IsBordered="True"
+                   SizeType="{Binding DescriptionsSizeType}"
+                   Header="响应式描述列表"
+                   ColumnInfo="xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4">
+    <atom:DescriptionItem Label="产品" Content="云数据库" />
+    <atom:DescriptionItem Label="计费" Content="预付费" />
+    <atom:DescriptionItem Label="时间" Content="18:00:00" />
+    <atom:DescriptionItem Label="金额" Content="$80.00" />
+    <atom:DescriptionItem Label="折扣" Content="$20.00" Span="xl: 2, xxl: 2" />
+    <atom:DescriptionItem Label="官方" Content="$60.00" Span="xl: 2, xxl: 2" />
+    <atom:DescriptionItem Label="配置信息" Span="xs: 1, sm: 2, md: 3, lg: 3, xl: 2, xxl: 2">
+        <atom:DescriptionItem.Content>
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="数据盘类型：MongoDB" />
+                <TextBlock Text="数据库版本：3.4" />
+                <TextBlock Text="套餐：dds.mongo.mid" />
+            </StackPanel>
+        </atom:DescriptionItem.Content>
+    </atom:DescriptionItem>
+    <atom:DescriptionItem Label="硬件信息" Span="xs: 1, sm: 2, md: 3, lg: 3, xl: 2, xxl: 2">
+        <atom:DescriptionItem.Content>
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="CPU：6 核 3.5 GHz" />
+                <TextBlock Text="副本因子：3" />
+                <TextBlock Text="地域：华东 1" />
+            </StackPanel>
+        </atom:DescriptionItem.Content>
+    </atom:DescriptionItem>
+</atom:Descriptions>
+```
 
 ## 状态模型
 

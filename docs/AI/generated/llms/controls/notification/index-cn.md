@@ -75,7 +75,67 @@ Notification 的公共契约由 public/protected 类型成员、Avalonia 属性�
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/Feedback/Notification/Views/NotificationShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Notification/Views/NotificationShowCase.axaml:32`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<atom:Button ButtonType="Primary" Click="ShowSimpleNotification" Content="显示通知" />
+```
+
+### 自动关闭时长
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Notification/Views/NotificationShowCase.axaml:41`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<atom:Button ButtonType="Primary" Click="ShowNeverCloseNotification" Content="打开通知框" />
+```
+
+### 带图标通知
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Notification/Views/NotificationShowCase.axaml:50`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel Orientation="Horizontal" Spacing="10">
+    <atom:Button ButtonType="Default" Click="ShowSuccessNotification" Content="成功" />
+    <atom:Button ButtonType="Default" Click="ShowInfoNotification" Content="信息" />
+    <atom:Button ButtonType="Default" Click="ShowWarningNotification" Content="警告" />
+    <atom:Button ButtonType="Default" Click="ShowErrorNotification" Content="错误" />
+</StackPanel>
+```
+
+### 弹出位置
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Notification/Views/NotificationShowCase.axaml:64`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10">
+    <StackPanel Orientation="Horizontal" Spacing="10">
+        <atom:Button ButtonType="Primary" Click="ShowTopNotification" Content="顶部" />
+        <atom:Button ButtonType="Primary" Click="ShowBottomNotification" Content="底部" />
+    </StackPanel>
+    <atom:Separator />
+    <StackPanel Orientation="Horizontal" Spacing="10">
+        <atom:Button ButtonType="Primary" Click="ShowTopLeftNotification" Content="左上" />
+        <atom:Button ButtonType="Primary" Click="ShowTopRightNotification" Content="右上" />
+    </StackPanel>
+    <atom:Separator />
+    <StackPanel Orientation="Horizontal" Spacing="10">
+        <atom:Button ButtonType="Primary" Click="ShowBottomLeftNotification" Content="左下" />
+        <atom:Button ButtonType="Primary" Click="ShowBottomRightNotification" Content="右下" />
+    </StackPanel>
+</StackPanel>
+```
 
 ## 状态模型
 

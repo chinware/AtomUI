@@ -93,7 +93,99 @@ Timeline 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml:36`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<atom:Timeline>
+    <atom:TimelineItem Content="2024-01-01 AtomUI 正式启动" />
+    <atom:TimelineItem IndicatorColor="green" Content="2024-08-12 经过 7 个多月的开发，AtomUI 正式开源。欢迎大家关注我们。" />
+    <atom:TimelineItem IndicatorColor="red" Content="2024-10-01 发布 0.0.1 预览版" />
+</atom:Timeline>
+```
+
+### 颜色
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml:49`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<atom:Timeline>
+    <atom:TimelineItem IndicatorColor="green" Content="2024-01-01 AtomUI 正式启动" />
+    <atom:TimelineItem IndicatorColor="blue" Content="2024-01-01 AtomUI 正式启动" />
+    <atom:TimelineItem IndicatorColor="Red" Content="2024-01-01 AtomUI 正式启动" />
+    <atom:TimelineItem IndicatorColor="gray" Content="2024-01-01 AtomUI 正式启动" />
+    <atom:TimelineItem IndicatorColor="#00CCFF" Content="2024-01-01 AtomUI 正式启动" />
+</atom:Timeline>
+```
+
+### 最后节点和反转
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml:64`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel>
+    <atom:Timeline
+        Pending="记录中..."
+        IsReverse="{Binding ReverseTimelineIsReverse}"
+        x:Name="ReverseTimeline">
+        <atom:TimelineItem Label="2024-01-01" Content="2024-01-01 AtomUI 正式启动。1" />
+        <atom:TimelineItem Label="2024-08-12" Content="2024-01-01 AtomUI 正式启动。2" />
+        <atom:TimelineItem Label="2024-10-01" Content="2024-01-01 AtomUI 正式启动。3" />
+    </atom:Timeline>
+    <DockPanel>
+        <atom:Button ButtonType="Primary"
+                     x:Name="ReverseButton"
+                     Click="ReverseButtonClick"
+                     Content="切换反转" />
+    </DockPanel>
+</StackPanel>
+```
+
+### 动态模式
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Timeline/Views/TimelineShowCase.axaml:104`
+
+Gallery key：`ExamplesContent` / item `4`
+
+```axaml
+<StackPanel>
+    <WrapPanel Margin="0,0,0,20" Orientation="Horizontal">
+        <WrapPanel.Styles>
+            <Style Selector="atom|RadioButton">
+                <Setter Property="Margin" Value="5" />
+            </Style>
+        </WrapPanel.Styles>
+        <atom:RadioButton IsChecked="True"
+                          x:Name="ModeStart"
+                          Tag="{x:Static atom:TimelineMode.Start}"
+                          IsCheckedChanged="ModeChecked"
+                          Content="起始" />
+        <atom:RadioButton x:Name="ModeEnd"
+                          Tag="{x:Static atom:TimelineMode.End}"
+                          IsCheckedChanged="ModeChecked"
+                          Content="结束" />
+        <atom:RadioButton x:Name="ModeAlternate"
+                          Tag="{x:Static atom:TimelineMode.Alternate}"
+                          IsCheckedChanged="ModeChecked"
+                          Content="交替" />
+    </WrapPanel>
+    <atom:Timeline Mode="{Binding SelectedTimelineMode}" x:Name="LabelTimeline">
+        <atom:TimelineItem Label="2024-01-01" Content="AtomUI 正式启动" />
+        <atom:TimelineItem Label="2015-09-01 09:12:11" Content="创建服务站点" />
+        <atom:TimelineItem Content="Qinware 网站上线" />
+        <atom:TimelineItem Label="2029-09-01" Content="网络问题正在解决" />
+    </atom:Timeline>
+</StackPanel>
+```
 
 ## 状态模型
 

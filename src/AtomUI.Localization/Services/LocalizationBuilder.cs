@@ -11,6 +11,10 @@ internal sealed class LocalizationBuilder : ILocalizationBuilder
     private LanguageTag[]? _supportedLanguages;
     private bool _isFrozen;
 
+    internal IReadOnlyList<LanguageCatalogDescriptor> Catalogs => _catalogs;
+
+    internal IReadOnlyList<TranslationBundleDescriptor> TranslationBundles => _bundles;
+
     public void AddCatalog(LanguageCatalogDescriptor descriptor)
     {
         EnsureMutable();

@@ -76,7 +76,7 @@ ButtonSpinner 的公共契约由 public/protected 类型成员、Avalonia 属性
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:ButtonSpinnerShowCaseLangResource BasicTitle}
+### 基础用法
 
 来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ButtonSpinner/Views/ButtonSpinnerShowCase.axaml:36`
 
@@ -91,7 +91,69 @@ Gallery key：`ExamplesContent` / item `0`
 </atom:ButtonSpinner>
 ```
 
-### {gallery:ButtonSpinnerShowCaseLangResource VariantsTitle}
+### 按钮微调器尺寸
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ButtonSpinner/Views/ButtonSpinnerShowCase.axaml:52`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<Grid ColumnDefinitions="Auto,Auto"
+      RowDefinitions="Auto,Auto,Auto,Auto"
+      ColumnSpacing="12"
+      RowSpacing="10"
+      Margin="0,0,20,0">
+    <atom:TextBlock VerticalAlignment="Center"
+                    Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                    Text="大号" />
+    <atom:ButtonSpinner Grid.Column="1" SizeType="Large">
+        <atom:TextBlock
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Text="床前明月光" />
+    </atom:ButtonSpinner>
+
+    <atom:TextBlock Grid.Row="1"
+                    VerticalAlignment="Center"
+                    Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                    Text="中号" />
+    <atom:ButtonSpinner Grid.Row="1" Grid.Column="1" SizeType="Middle">
+        <atom:TextBlock
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Text="床前明月光" />
+    </atom:ButtonSpinner>
+
+    <atom:TextBlock Grid.Row="2"
+                    VerticalAlignment="Center"
+                    Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                    Text="小号" />
+    <atom:ButtonSpinner Grid.Row="2" Grid.Column="1" SizeType="Small">
+        <atom:TextBlock
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Text="床前明月光" />
+    </atom:ButtonSpinner>
+
+    <atom:TextBlock Grid.Row="3"
+                    VerticalAlignment="Center"
+                    Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                    Text="Custom" />
+    <atom:ButtonSpinner Grid.Row="3"
+                        Grid.Column="1"
+                        SizeType="Custom"
+                        Height="36"
+                        SpinnerHandleWidth="28">
+        <atom:TextBlock
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            FontSize="15"
+            Text="床前明月光" />
+    </atom:ButtonSpinner>
+</Grid>
+```
+
+### 不同形态
 
 来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ButtonSpinner/Views/ButtonSpinnerShowCase.axaml:115`
 
@@ -120,7 +182,7 @@ Gallery key：`ExamplesContent` / item `2`
 </StackPanel>
 ```
 
-### {gallery:ButtonSpinnerShowCaseLangResource DisabledTitle}
+### 禁用状态
 
 来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ButtonSpinner/Views/ButtonSpinnerShowCase.axaml:145`
 

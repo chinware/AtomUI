@@ -77,7 +77,61 @@ Menu 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:MenuShowCaseLangResource MenuItemItemsSourceTitle}
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml:37`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<atom:Menu>
+    <atom:MenuItem Header="_文件">
+        <atom:MenuItem Header="新建文本文件" InputGesture="Ctrl+N" />
+        <atom:MenuItem Header="新建文件" InputGesture="Ctrl+Alt+N" />
+        <atom:MenuItem Header="新建窗口" InputGesture="Ctrl+Shift+N" />
+    </atom:MenuItem>
+    <atom:MenuItem Header="_编辑">
+        <atom:MenuItem Header="撤销" InputGesture="Ctrl+Shift+Z" />
+        <atom:MenuSeparator />
+        <atom:MenuItem Header="剪切" InputGesture="Ctrl+X" />
+    </atom:MenuItem>
+    <atom:MenuItem Header="禁用项" IsEnabled="False" />
+</atom:Menu>
+```
+
+### 可滚动菜单
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml:122`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<StackPanel Spacing="12">
+    <StackPanel Orientation="Horizontal" Spacing="8">
+        <atom:ToggleSwitch IsChecked="{Binding IsPopupScrollEnabled}" />
+        <atom:TextBlock VerticalAlignment="Center"
+                        Text="开启弹层滚动" />
+    </StackPanel>
+    <atom:Menu IsScrollEnabled="{Binding IsPopupScrollEnabled}">
+        <atom:MenuItem Header="_菜单">
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+            <atom:MenuItem Header="菜单项" />
+        </atom:MenuItem>
+    </atom:Menu>
+</StackPanel>
+```
+
+### 通过 ItemsSource 生成 MenuItem
 
 来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml:155`
 
@@ -95,7 +149,7 @@ Gallery key：`ExamplesContent` / item `4`
 </atom:Menu>
 ```
 
-### {gallery:MenuShowCaseLangResource InlineNavMenuItemsSourceTitle}
+### 通过 ItemsSource 生成内联 NavMenu
 
 来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml:174`
 
@@ -111,16 +165,6 @@ Gallery key：`ExamplesContent` / item `5`
         </TreeDataTemplate>
     </atom:NavMenu.ItemTemplate>
 </atom:NavMenu>
-```
-
-### {gallery:MenuShowCaseLangResource NavMenuItemItemsSourceTitle}
-
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Menu/Views/MenuShowCase.axaml:193`
-
-Gallery key：`ExamplesContent` / item `6`
-
-```axaml
-<atom:NavMenu Name="ItemsSourceDemoNavMenu"
 ```
 
 ## 状态模型

@@ -89,14 +89,158 @@ Splash 的事件与命令以控件文档、源码 public surface 和 Avalonia �
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:SplashShowCaseLangResource WindowServiceTitle}
+### 基础
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml:209`
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml:49`
 
-Gallery key：`ExamplesContent` / item `4`
+Gallery key：`ExamplesContent` / item `0`
 
 ```axaml
-<atom:Button ButtonType="Primary"
+<atom:Splash Classes="preview-splash"
+             Logo="{Binding BasicLogo}"
+             Title="AtomUI"
+             Subtitle="桌面启动流程"
+             Message="正在准备工作区"
+             Detail="正在加载主题、语言资源和缓存状态。"
+             IsIndeterminate="True"
+             HorizontalAlignment="Left">
+    <atom:Splash.LogoTemplate>
+        <DataTemplate x:DataType="vm:SplashLogoInfo">
+            <Border Width="52"
+                    Height="52"
+                    CornerRadius="14"
+                    Background="{Binding Background}">
+                <atom:TextBlock Text="{Binding Text}"
+                                Foreground="{Binding Foreground}"
+                                FontSize="20"
+                                FontWeight="Bold"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+            </Border>
+        </DataTemplate>
+    </atom:Splash.LogoTemplate>
+</atom:Splash>
+```
+
+### 确定进度
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml:83`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<atom:Splash Classes="preview-splash"
+             Logo="{Binding BasicLogo}"
+             Title="AtomUI"
+             Subtitle="桌面启动流程"
+             Message="正在加载模块"
+             Detail="主题、图标和路由目录已就绪，正在初始化可选包。"
+             Progress="{Binding ProgressValue}"
+             IsIndeterminate="False"
+             HorizontalAlignment="Left">
+    <atom:Splash.LogoTemplate>
+        <DataTemplate x:DataType="vm:SplashLogoInfo">
+            <Border Width="52"
+                    Height="52"
+                    CornerRadius="14"
+                    Background="{Binding Background}">
+                <atom:TextBlock Text="{Binding Text}"
+                                Foreground="{Binding Foreground}"
+                                FontSize="20"
+                                FontWeight="Bold"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+            </Border>
+        </DataTemplate>
+    </atom:Splash.LogoTemplate>
+</atom:Splash>
+```
+
+### 状态
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml:119`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<WrapPanel Orientation="Horizontal"
+           ItemSpacing="20"
+           LineSpacing="20">
+    <atom:Splash Classes="status-splash"
+                 Title="AtomUI"
+                 Message="工作区已就绪"
+                 Detail="满足最短展示时长后即可显示主窗口。"
+                 Status="Success"
+                 Progress="1"
+                 IsIndeterminate="False"
+                 Footer="Gallery 静态预览" />
+    <atom:Splash Classes="status-splash"
+                 Title="AtomUI"
+                 Message="启动失败"
+                 Detail="可通过 SetErrorAsync 在关闭前呈现阻塞型启动错误。"
+                 Status="Error"
+                 IsIndeterminate="False"
+                 Footer="Gallery 静态预览" />
+</WrapPanel>
+```
+
+### Logo、内容与页脚
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml:149`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<atom:Splash Width="420"
+             MinHeight="300"
+             Logo="{Binding ComposedLogo}"
+             Title="AtomUI Gallery"
+             Subtitle="桌面启动流程"
+             Message="正在加载模块"
+             Detail="主题、图标和路由目录已就绪，正在初始化可选包。"
+             Progress="{Binding ProgressValue}"
+             IsIndeterminate="False"
+             Footer="{Binding ComposedFooter}"
+             HorizontalAlignment="Left">
+    <StackPanel Orientation="Horizontal"
+                Spacing="8"
+                HorizontalAlignment="Center">
+        <atom:Tag Text="核心"
+                  TagColor="success" />
+        <atom:Tag Text="主题"
+                  TagColor="processing" />
+        <atom:Tag Text="Gallery"
+                  TagColor="warning" />
+    </StackPanel>
+    <atom:Splash.LogoTemplate>
+        <DataTemplate x:DataType="vm:SplashLogoInfo">
+            <Border Width="56"
+                    Height="56"
+                    CornerRadius="18"
+                    Background="{Binding Background}">
+                <atom:TextBlock Text="{Binding Text}"
+                                Foreground="{Binding Foreground}"
+                                FontSize="18"
+                                FontWeight="Bold"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+            </Border>
+        </DataTemplate>
+    </atom:Splash.LogoTemplate>
+    <atom:Splash.FooterTemplate>
+        <DataTemplate x:DataType="vm:SplashFooterInfo">
+            <StackPanel Orientation="Horizontal"
+                        Spacing="8"
+                        VerticalAlignment="Center">
+                <atom:Tag Text="{Binding Version}"
+                          TagColor="geekblue" />
+                <atom:TextBlock Text="{Binding Description}"
+                                Foreground="{atom:SharedTokenResource ColorTextTertiary}"
+                                VerticalAlignment="Center" />
+            </StackPanel>
+        </DataTemplate>
+    </atom:Splash.FooterTemplate>
+</atom:Splash>
 ```
 
 ## 状态模型

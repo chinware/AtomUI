@@ -80,7 +80,7 @@ Skeleton 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:SkeletonShowCaseLangResource BasicTitle}
+### 基础用法
 
 来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Skeleton/Views/SkeletonShowCase.axaml:37`
 
@@ -90,7 +90,7 @@ Gallery key：`ExamplesContent` / item `0`
 <atom:Skeleton IsLoading="True"/>
 ```
 
-### {gallery:SkeletonShowCaseLangResource ComplexCombinationTitle}
+### 复杂组合
 
 来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Skeleton/Views/SkeletonShowCase.axaml:49`
 
@@ -100,7 +100,7 @@ Gallery key：`ExamplesContent` / item `1`
 <atom:Skeleton IsShowAvatar="True" ParagraphRows="4" IsLoading="True"/>
 ```
 
-### {gallery:SkeletonShowCaseLangResource ActiveAnimationTitle}
+### 动态效果
 
 来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Skeleton/Views/SkeletonShowCase.axaml:61`
 
@@ -108,6 +108,25 @@ Gallery key：`ExamplesContent` / item `2`
 
 ```axaml
 <atom:Skeleton IsActive="True" IsLoading="True"/>
+```
+
+### 包含子组件
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Skeleton/Views/SkeletonShowCase.axaml:147`
+
+Gallery key：`ExamplesContent` / item `4`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10">
+    <atom:Skeleton IsLoading="{Binding SkeletonLoading}">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <atom:TextBlock FontWeight="Bold" Text="AtomUI，一套设计语言" />
+            <atom:TextBlock TextWrapping="Wrap" Text="我们提供一系列设计原则、实用模式和高质量设计资源（Sketch 和 Axure），帮助人们高效而优雅地创建产品原型。" />
+        </StackPanel>
+    </atom:Skeleton>
+    <atom:Button IsEnabled="{Binding SkeletonLoading, Converter={x:Static BoolConverters.Not}}"
+                 Click="HandleLoadingButtonClicked" Content="显示骨架屏" />
+</StackPanel>
 ```
 
 ## 状态模型
@@ -177,6 +196,7 @@ Skeleton Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
+- 隐藏页面中保留的 active Skeleton 不得继续推进 shimmer 或产生 UI 线程 animation tick。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
 
 ## 源码索引

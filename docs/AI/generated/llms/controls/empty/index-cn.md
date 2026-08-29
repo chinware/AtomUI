@@ -71,7 +71,7 @@ Empty 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:EmptyShowCaseLangResource BasicTitle}
+### 基础用法
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Empty/Views/EmptyShowCase.axaml:35`
 
@@ -81,7 +81,7 @@ Gallery key：`ExamplesContent` / item `0`
 <atom:Empty PresetImage="Default" />
 ```
 
-### {gallery:EmptyShowCaseLangResource SizeTitle}
+### 尺寸
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Empty/Views/EmptyShowCase.axaml:46`
 
@@ -97,7 +97,7 @@ Gallery key：`ExamplesContent` / item `1`
 </StackPanel>
 ```
 
-### {gallery:EmptyShowCaseLangResource NoDescriptionTitle}
+### 无描述
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Empty/Views/EmptyShowCase.axaml:79`
 

@@ -77,7 +77,41 @@ PopupConfirm 的公共契约由 public/protected 类型成员、Avalonia 属性�
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/Feedback/PopupConfirm/Views/PopupConfirmShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/PopupConfirm/Views/PopupConfirmShowCase.axaml:36`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<atom:PopupConfirm
+    Title="删除任务"
+    ConfirmContent="确定要删除这个任务吗？"
+    ShouldUseOverlayPopup="False"
+    OkText="确定"
+    CancelText="取消"
+    Placement="Top"
+    IsArrowVisible="True">
+    <atom:Button ButtonType="Default" IsDanger="True" Content="删除" />
+</atom:PopupConfirm>
+```
+
+### 本地化文本
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/PopupConfirm/Views/PopupConfirmShowCase.axaml:56`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<atom:PopupConfirm
+    ShouldUseOverlayPopup="False"
+    Title="删除任务"
+    ConfirmContent="确定要删除这个任务吗？">
+    <atom:Button ButtonType="Default" IsDanger="True" Content="删除" />
+</atom:PopupConfirm>
+```
 
 ## 状态模型
 

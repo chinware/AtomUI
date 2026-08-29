@@ -447,7 +447,7 @@ public static partial class GalleryExampleReader
         var result = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var unit in document.Descendants().Where(static element => element.Name.LocalName == "unit"))
         {
-            var name = unit.Attribute("name")?.Value;
+            var name = unit.Attribute("id")?.Value ?? unit.Attribute("name")?.Value;
             var target = unit.Descendants().FirstOrDefault(static element => element.Name.LocalName == "target");
             if (!string.IsNullOrWhiteSpace(name) && target is not null)
             {

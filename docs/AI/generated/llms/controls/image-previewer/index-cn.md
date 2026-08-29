@@ -120,7 +120,7 @@ LLMS 语义区域：
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:ImagePreviewerShowCaseLangResource BasicUsageTitle}
+### 基础用法
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:36`
 
@@ -130,31 +130,19 @@ Gallery key：`ExamplesContent` / item `0`
 <atom:ImagePreviewer Width="200"
 ```
 
-### {gallery:ImagePreviewerShowCaseLangResource RemoteImageLoadingTitle}
+### 远程图片加载
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:48`
 
 Gallery key：`ExamplesContent` / item `1`
 
 ```axaml
-<StackPanel Orientation="Horizontal"
-            Spacing="{atom:SharedTokenResource SpacingLG}">
-    <atom:ImagePreviewer Width="200"
-                         ItemsSource="{Binding RemoteImages}" />
-    <Border Width="200"
-            Height="200"
-            Background="{atom:SharedTokenResource ColorFillTertiary}">
-        <Panel HorizontalAlignment="Center"
-               VerticalAlignment="Center">
-            <atom:SkeletonImage IsActive="True" />
-        </Panel>
-    </Border>
-</StackPanel>
+<atom:ImagePreviewer Width="200"
 ```
 
-### {gallery:ImagePreviewerShowCaseLangResource FaultTolerantTitle}
+### 容错
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:71`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:60`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -162,9 +150,9 @@ Gallery key：`ExamplesContent` / item `2`
 <atom:ImagePreviewer Width="200"
 ```
 
-### {gallery:ImagePreviewerShowCaseLangResource TwentyRemoteImagesTitle}
+### 20 张远程图片
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:83`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:72`
 
 Gallery key：`ExamplesContent` / item `3`
 

@@ -86,11 +86,76 @@ SearchEdit 的右侧外部 add-on 位置由搜索按钮占用。维护时不应�
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditBasicShowCase.axaml`
-- `controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditSearchShowCase.axaml`
-- `controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml`
-- `controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditStateShowCase.axaml`
-- `controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditTextAreaShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditBasicShowCase.axaml:13`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<atom:LineEdit PlaceholderText="基础用法" />
+```
+
+### 变体
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditBasicShowCase.axaml:32`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10">
+    <atom:Separator Title="普通" />
+    <atom:LineEdit PlaceholderText="线框风格" StyleVariant="Outlined" />
+    <atom:LineEdit PlaceholderText="填充风格" StyleVariant="Filled" />
+    <atom:LineEdit PlaceholderText="无边框" StyleVariant="Borderless" />
+    <atom:LineEdit PlaceholderText="下划线" StyleVariant="Underlined" />
+    <atom:SearchEdit PlaceholderText="填充风格" StyleVariant="Filled" />
+    <atom:Separator Title="左侧附加和右侧附加" />
+    <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="我的站点" />
+    <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="我的站点" StyleVariant="Filled" />
+    <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="我的站点" StyleVariant="Borderless" />
+    <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="我的站点" StyleVariant="Underlined" />
+</StackPanel>
+```
+
+### 带清除图标
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditBasicShowCase.axaml:64`
+
+Gallery key：`ExamplesContent` / item `4`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10">
+    <atom:LineEdit PlaceholderText="带清除图标的输入框" IsAllowClear="True" />
+    <atom:TextArea PlaceholderText="带清除图标的文本域" IsAllowClear="True" />
+</StackPanel>
+```
+
+### 密码框
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditBasicShowCase.axaml:73`
+
+Gallery key：`ExamplesContent` / item `5`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10">
+    <atom:LineEdit PlaceholderText="输入密码"
+                   Width="400"
+                   RevealPassword="False"
+                   PasswordChar="•"
+                   HorizontalAlignment="Left"
+                   IsEnableRevealButton="True" />
+    <atom:LineEdit PlaceholderText="输入密码"
+                   Width="400"
+                   RevealPassword="False"
+                   HorizontalAlignment="Left"
+                   PasswordChar="•"
+                   IsEnableRevealButton="True"
+                   IsAllowClear="True" />
+</StackPanel>
+```
 
 ## 状态模型
 

@@ -3,6 +3,7 @@ using Avalonia.Headless;
 using AtomUI;
 using AtomUI.Desktop.Controls;
 using AtomUI.Localization;
+using AtomUI.Toolkits.GalleryBase;
 using Xunit;
 
 [assembly: AvaloniaTestApplication(typeof(AtomUIGallery.Tests.TestAppBuilder))]
@@ -44,6 +45,7 @@ internal sealed partial class TestApplication : Application
             builder.UseDesktopExtras();
             builder.UseDesktopColorPicker();
             builder.UseDesktopDataGrid();
+            builder.UseGalleryBase(global::AtomUIGallery.AtomUIGalleryModule.Configure);
             builder.UseGalleryControls();
             builder.UseLanguages(
                 LanguageTags.EnUS,

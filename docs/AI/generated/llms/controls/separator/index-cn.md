@@ -71,7 +71,85 @@ Separator 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/General/Separator/Views/SeparatorShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 水平分割线
+
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Separator/Views/SeparatorShowCase.axaml:35`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<StackPanel Orientation="Vertical">
+    <atom:TextBlock TextWrapping="Wrap" Text="这是一段用于演示分割线效果的示例文本。分割线可以组织内容层次，让页面结构更加清晰。" />
+    <atom:Separator/>
+    <atom:TextBlock TextWrapping="Wrap" Text="这是一段用于演示分割线效果的示例文本。分割线可以组织内容层次，让页面结构更加清晰。" />
+    <atom:Separator/>
+    <atom:TextBlock TextWrapping="Wrap" Text="这是一段用于演示分割线效果的示例文本。分割线可以组织内容层次，让页面结构更加清晰。" />
+</StackPanel>
+```
+
+### 带标题的分割线
+
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Separator/Views/SeparatorShowCase.axaml:52`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel Orientation="Vertical">
+    <atom:TextBlock TextWrapping="Wrap" Text="这是一段用于演示分割线效果的示例文本。分割线可以组织内容层次，让页面结构更加清晰。" />
+    <atom:Separator Title="文本" FontStyle="Italic" IsVisible="False"/>
+    <atom:TextBlock TextWrapping="Wrap" Text="这是一段用于演示分割线效果的示例文本。分割线可以组织内容层次，让页面结构更加清晰。" />
+    <atom:Separator Title="左侧文本" TitlePosition="Left" FontWeight="Bold" />
+    <atom:TextBlock TextWrapping="Wrap" Text="这是一段用于演示分割线效果的示例文本。分割线可以组织内容层次，让页面结构更加清晰。" />
+    <atom:Separator Title="右侧文本" TitlePosition="Right" FontStyle="Oblique" />
+    <atom:TextBlock TextWrapping="Wrap" Text="这是一段用于演示分割线效果的示例文本。分割线可以组织内容层次，让页面结构更加清晰。" />
+    <atom:Separator Title="orientationMargin 为 0 的左侧文本" TitlePosition="Left" FontStyle="Oblique"
+                    FontWeight="Medium" OrientationMargin="0" />
+    <atom:TextBlock TextWrapping="Wrap" Text="这是一段用于演示分割线效果的示例文本。分割线可以组织内容层次，让页面结构更加清晰。" />
+
+    <atom:Separator Title="orientationMargin 为 50px 的右侧文本" TitlePosition="Right" TitleColor="Coral"
+                    FontWeight="Medium"
+                    OrientationMargin="50" />
+    <atom:TextBlock TextWrapping="Wrap" Text="这是一段用于演示分割线效果的示例文本。分割线可以组织内容层次，让页面结构更加清晰。" />
+</StackPanel>
+```
+
+### 无标题样式文本
+
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Separator/Views/SeparatorShowCase.axaml:79`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel Orientation="Vertical">
+    <atom:TextBlock TextWrapping="Wrap" Text="这是一段用于演示分割线效果的示例文本。分割线可以组织内容层次，让页面结构更加清晰。" />
+    <atom:Separator Title="文本" IsPlain="True"/>
+    <atom:TextBlock TextWrapping="Wrap" Text="这是一段用于演示分割线效果的示例文本。分割线可以组织内容层次，让页面结构更加清晰。" />
+    <atom:Separator Title="左侧文本" TitlePosition="Left" IsPlain="True"/>
+    <atom:TextBlock TextWrapping="Wrap" Text="这是一段用于演示分割线效果的示例文本。分割线可以组织内容层次，让页面结构更加清晰。" />
+    <atom:Separator Title="右侧文本" TitlePosition="Right" IsPlain="True"/>
+    <atom:TextBlock TextWrapping="Wrap" Text="这是一段用于演示分割线效果的示例文本。分割线可以组织内容层次，让页面结构更加清晰。" />
+</StackPanel>
+```
+
+### 设置分割线间距
+
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Separator/Views/SeparatorShowCase.axaml:98`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<StackPanel Orientation="Vertical">
+    <atom:TextBlock TextWrapping="Wrap" Text="这是一段用于演示分割线效果的示例文本。分割线可以组织内容层次，让页面结构更加清晰。" />
+    <atom:Separator SizeType="Small"/>
+    <atom:TextBlock TextWrapping="Wrap" Text="这是一段用于演示分割线效果的示例文本。分割线可以组织内容层次，让页面结构更加清晰。" />
+    <atom:Separator SizeType="Middle"/>
+    <atom:TextBlock TextWrapping="Wrap" Text="这是一段用于演示分割线效果的示例文本。分割线可以组织内容层次，让页面结构更加清晰。" />
+    <atom:Separator SizeType="Large"/>
+    <atom:TextBlock TextWrapping="Wrap" Text="这是一段用于演示分割线效果的示例文本。分割线可以组织内容层次，让页面结构更加清晰。" />
+</StackPanel>
+```
 
 ## 状态模型
 

@@ -79,7 +79,129 @@ ComboBox 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Views/ComboBoxShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Views/ComboBoxShowCase.axaml:37`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<atom:ComboBox PlaceholderText="请选择" Width="300">
+    <atom:ComboBoxItem Content="床前明月光" />
+    <atom:ComboBoxItem Content="疑是地上霜" />
+    <atom:ComboBoxItem Content="举头望明月" />
+    <atom:ComboBoxItem Content="低头思故乡" />
+    <atom:ComboBoxItem Content="床前明月光" />
+    <atom:ComboBoxItem Content="疑是地上霜" />
+    <atom:ComboBoxItem Content="举头望明月" />
+    <atom:ComboBoxItem Content="低头思故乡" />
+    <atom:ComboBoxItem Content="床前明月光" />
+    <atom:ComboBoxItem Content="疑是地上霜" />
+    <atom:ComboBoxItem Content="举头望明月" />
+    <atom:ComboBoxItem Content="低头思故乡" />
+    <atom:ComboBoxItem Content="床前明月光" />
+    <atom:ComboBoxItem Content="疑是地上霜" />
+    <atom:ComboBoxItem Content="举头望明月" />
+    <atom:ComboBoxItem Content="低头思故乡" />
+    <atom:ComboBoxItem Content="床前明月光" />
+    <atom:ComboBoxItem Content="疑是地上霜" />
+    <atom:ComboBoxItem Content="举头望明月" />
+    <atom:ComboBoxItem Content="低头思故乡" />
+    <atom:ComboBoxItem Content="床前明月光" />
+    <atom:ComboBoxItem Content="疑是地上霜" />
+    <atom:ComboBoxItem Content="举头望明月" />
+    <atom:ComboBoxItem Content="低头思故乡" />
+    <atom:ComboBoxItem Content="床前明月光" />
+    <atom:ComboBoxItem Content="疑是地上霜" />
+    <atom:ComboBoxItem Content="举头望明月" />
+    <atom:ComboBoxItem Content="低头思故乡" />
+    <atom:ComboBoxItem Content="床前明月光" />
+    <atom:ComboBoxItem Content="疑是地上霜" />
+    <atom:ComboBoxItem Content="举头望明月" />
+    <atom:ComboBoxItem Content="低头思故乡" />
+    <atom:ComboBoxItem Content="床前明月光" />
+    <atom:ComboBoxItem Content="疑是地上霜" />
+    <atom:ComboBoxItem Content="举头望明月" />
+    <atom:ComboBoxItem Content="低头思故乡" />
+    <atom:ComboBoxItem Content="床前明月光" />
+    <atom:ComboBoxItem Content="疑是地上霜" />
+    <atom:ComboBoxItem Content="举头望明月" />
+    <atom:ComboBoxItem Content="低头思故乡" />
+</atom:ComboBox>
+```
+
+### 通过 ItemsSource 生成 ComboBoxItem
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Views/ComboBoxShowCase.axaml:89`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<atom:ComboBox Name="TplComboBox"
+               PlaceholderText="请选择" Width="300"
+               ItemsSource="{Binding ComboBoxItems}">
+    <atom:ComboBox.ItemTemplate>
+        <DataTemplate>
+            <atom:TextBlock Text="{Binding Text}" VerticalAlignment="Center"/>
+        </DataTemplate>
+    </atom:ComboBox.ItemTemplate>
+</atom:ComboBox>
+```
+
+### SelectedItem 绑定
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Views/ComboBoxShowCase.axaml:109`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel Spacing="8" MinWidth="320">
+    <TextBlock Text="SelectedItem"
+               FontWeight="SemiBold" />
+    <atom:ComboBox PlaceholderText="请选择"
+                   Width="300"
+                   IsAllowClear="True"
+                   ItemsSource="{Binding ComboBoxItems}"
+                   SelectedItem="{Binding BoundSelectedItem}">
+        <atom:ComboBox.ItemTemplate>
+            <DataTemplate>
+                <atom:TextBlock Text="{Binding Text}" VerticalAlignment="Center" />
+            </DataTemplate>
+        </atom:ComboBox.ItemTemplate>
+    </atom:ComboBox>
+    <WrapPanel ItemSpacing="8">
+        <atom:Button SizeType="Small"
+                     Command="{Binding SetBoundSelectedItemCommand}"
+                     Content="设为第三句" />
+        <atom:Button SizeType="Small"
+                     Command="{Binding ClearBoundSelectedItemCommand}"
+                     Content="清空" />
+    </WrapPanel>
+    <TextBlock Text="ViewModel 值" />
+    <TextBlock Text="{Binding BoundSelectedItemText}" />
+</StackPanel>
+```
+
+### 可编辑过滤
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/ComboBox/Views/ComboBoxShowCase.axaml:144`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<atom:ComboBox PlaceholderText="输入内容过滤"
+               Width="300"
+               IsEditable="True"
+               IsFilterEnabled="True">
+    <atom:ComboBoxItem Content="Alpha" />
+    <atom:ComboBoxItem Content="Alpine" />
+    <atom:ComboBoxItem Content="Beta" />
+    <atom:ComboBoxItem Content="Gamma" />
+    <atom:ComboBoxItem Content="Delta" />
+</atom:ComboBox>
+```
 
 ## 状态模型
 

@@ -158,7 +158,7 @@ Upload 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:UploadShowCaseLangResource DragAndDropTitle}
+### 拖拽上传
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Upload/Views/UploadShowCase.axaml:183`
 

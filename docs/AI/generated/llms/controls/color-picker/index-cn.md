@@ -101,7 +101,7 @@ ColorPicker 的公共契约由 public/protected 类型成员、Avalonia 属性�
 
 以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
 
-### {gallery:ColorPickerShowCaseLangResource BasicTitle}
+### 基础用法
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:35`
 
@@ -111,7 +111,113 @@ Gallery key：`ExamplesContent` / item `0`
 <atom:ColorPicker DefaultValue="#1677ff"/>
 ```
 
-### {gallery:ColorPickerShowCaseLangResource LineGradientTitle}
+### Value 绑定
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:47`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="12">
+    <StackPanel Orientation="Horizontal" Spacing="10">
+        <atom:ColorPicker Value="{Binding BoundColorValue}"
+                          IsTextVisible="True"
+                          IsClearEnabled="True" />
+        <atom:GradientColorPicker Value="{Binding BoundGradientValue}"
+                                  IsTextVisible="True"
+                                  IsClearEnabled="True" />
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Spacing="8">
+        <atom:TextBlock VerticalAlignment="Center"
+                        Text="绑定颜色：" />
+        <atom:TextBlock VerticalAlignment="Center"
+                        Text="{Binding BoundColorValueText}" />
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Spacing="8">
+        <atom:TextBlock VerticalAlignment="Center"
+                        Text="绑定渐变：" />
+        <atom:TextBlock VerticalAlignment="Center"
+                        Text="{Binding BoundGradientValueText}" />
+    </StackPanel>
+    <WrapPanel ItemSpacing="10" LineSpacing="8">
+        <atom:Button SizeType="Small"
+                     Command="{Binding SetBoundColorValueCommand}"
+                     Content="设置颜色" />
+        <atom:Button SizeType="Small"
+                     Command="{Binding SetBoundGradientValueCommand}"
+                     Content="设置渐变" />
+        <atom:Button SizeType="Small"
+                     Command="{Binding ClearBoundColorValueCommand}"
+                     Content="清空颜色" />
+        <atom:Button SizeType="Small"
+                     Command="{Binding ClearBoundGradientValueCommand}"
+                     Content="清空渐变" />
+    </WrapPanel>
+</StackPanel>
+```
+
+### 触发器尺寸
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:93`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="10">
+    <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+        <atom:TextBlock Width="64"
+                        VerticalAlignment="Center"
+                        Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                        Text="小号" />
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <atom:ColorPicker DefaultValue="#1677ff" SizeType="Small"/>
+            <atom:ColorPicker DefaultValue="#1677ff" SizeType="Small" IsTextVisible="True"/>
+        </StackPanel>
+    </StackPanel>
+
+    <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+        <atom:TextBlock Width="64"
+                        VerticalAlignment="Center"
+                        Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                        Text="中号" />
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <atom:ColorPicker DefaultValue="#1677ff" SizeType="Middle"/>
+            <atom:ColorPicker DefaultValue="#1677ff" SizeType="Middle" IsTextVisible="True"/>
+        </StackPanel>
+    </StackPanel>
+
+    <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+        <atom:TextBlock Width="64"
+                        VerticalAlignment="Center"
+                        Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                        Text="大号" />
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <atom:ColorPicker DefaultValue="#1677ff" SizeType="Large"/>
+            <atom:ColorPicker DefaultValue="#1677ff" SizeType="Large" IsTextVisible="True"/>
+        </StackPanel>
+    </StackPanel>
+
+    <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+        <atom:TextBlock Width="64"
+                        VerticalAlignment="Center"
+                        Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                        Text="Custom" />
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <atom:ColorPicker DefaultValue="#1677ff"
+                              SizeType="Custom"
+                              Width="48"
+                              Height="48" />
+            <atom:ColorPicker DefaultValue="#1677ff"
+                              SizeType="Custom"
+                              IsTextVisible="True"
+                              Height="48"
+                              FontSize="18" />
+        </StackPanel>
+    </StackPanel>
+</StackPanel>
+```
+
+### 线性渐变
 
 来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:155`
 
@@ -127,34 +233,6 @@ Gallery key：`ExamplesContent` / item `3`
             </LinearGradientBrush>
         </atom:GradientColorPicker.DefaultValue>
     </atom:GradientColorPicker>
-</StackPanel>
-```
-
-### {gallery:ColorPickerShowCaseLangResource RenderingTriggerTextTitle}
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:175`
-
-Gallery key：`ExamplesContent` / item `4`
-
-```axaml
-<StackPanel Orientation="Vertical" Spacing="10">
-    <atom:ColorPicker DefaultValue="#1677ff" IsTextVisible="True" IsClearEnabled="True"/>
-    <atom:ColorPicker Name="CustomRenderText"
-                      DefaultValue="#1677ff"
-                      IsTextVisible="True"
-                      AttachedToVisualTree="HandleCustomRenderTextAttached" />
-</StackPanel>
-```
-
-### {gallery:ColorPickerShowCaseLangResource DisabledTitle}
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:192`
-
-Gallery key：`ExamplesContent` / item `5`
-
-```axaml
-<StackPanel Orientation="Vertical" Spacing="10">
-    <atom:ColorPicker DefaultValue="#1677ff" IsTextVisible="True" IsEnabled="False"/>
 </StackPanel>
 ```
 

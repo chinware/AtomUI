@@ -102,10 +102,61 @@ Expander 没有专用 routed event 或 command。展开状态通过继承的 `Is
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Expander/Views/ExpanderAppearanceShowCase.axaml`
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Expander/Views/ExpanderBasicShowCase.axaml`
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Expander/Views/ExpanderBehaviorShowCase.axaml`
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Expander/Views/ExpanderShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 无边框
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Expander/Views/ExpanderAppearanceShowCase.axaml:12`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<atom:Expander IsBorderless="True" Header="这是面板标题 1">
+    <atom:TextBlock TextWrapping="Wrap" Text="狗是一种被驯养的动物。它以忠诚和可靠著称，在世界各地许多家庭中都是受欢迎的成员。" />
+</atom:Expander>
+```
+
+### 幽灵展开器
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Expander/Views/ExpanderAppearanceShowCase.axaml:20`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<atom:Expander IsGhostStyle="True" Header="这是面板标题 1">
+    <atom:TextBlock TextWrapping="Wrap" Text="狗是一种被驯养的动物。它以忠诚和可靠著称，在世界各地许多家庭中都是受欢迎的成员。" />
+</atom:Expander>
+```
+
+### 自定义标题和内容间距
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Expander/Views/ExpanderAppearanceShowCase.axaml:28`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="20">
+    <atom:Expander Header="这是面板标题 1" HeaderPadding="5" ContentPadding="5">
+        <atom:TextBlock TextWrapping="Wrap" Text="狗是一种被驯养的动物。它以忠诚和可靠著称，在世界各地许多家庭中都是受欢迎的成员。" />
+    </atom:Expander>
+
+    <atom:Expander Header="这是面板标题 1" IsGhostStyle="True" HeaderPadding="5" ContentPadding="5">
+        <atom:TextBlock TextWrapping="Wrap" Text="狗是一种被驯养的动物。它以忠诚和可靠著称，在世界各地许多家庭中都是受欢迎的成员。" />
+    </atom:Expander>
+</StackPanel>
+```
+
+### 展开器
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Expander/Views/ExpanderBasicShowCase.axaml:12`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<atom:Expander Header="这是面板标题 1">
+    <atom:TextBlock TextWrapping="Wrap" Text="狗是一种被驯养的动物。它以忠诚和可靠著称，在世界各地许多家庭中都是受欢迎的成员。" />
+</atom:Expander>
+```
 
 ## 状态模型
 

@@ -120,7 +120,211 @@ Form 的公共契约由 Form、FormItem、FormItemDecorator、FormValidateFeedba
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础用法
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml:46`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<atom:Form LabelColInfo="8*"
+           WrapperColInfo="16*"
+           MinWidth="600"
+           HorizontalAlignment="Left"
+           Name="BasicForm"
+           AttachedToVisualTree="HandleBasicFormAttached">
+    <atom:FormItem LabelText="用户名"
+                   FieldName="username"
+                   IsRequired="True">
+        <atom:FormItem.Validators>
+            <atom:FormValidatorProvider>
+                <atom:FormStringNotEmptyValidator Message="请输入用户名！" />
+            </atom:FormValidatorProvider>
+        </atom:FormItem.Validators>
+        <atom:LineEdit />
+    </atom:FormItem>
+    <atom:FormItem LabelText="密码"
+                   FieldName="password"
+                   IsRequired="True">
+        <atom:FormItem.Validators>
+            <atom:FormValidatorProvider>
+                <atom:FormStringNotEmptyValidator Message="请输入密码！" />
+            </atom:FormValidatorProvider>
+        </atom:FormItem.Validators>
+        <atom:LineEdit RevealPassword="False"
+                       PasswordChar="•"
+                       IsEnableRevealButton="True" />
+    </atom:FormItem>
+    <atom:FormItem FieldName="remember">
+        <atom:CheckBox Content="记住我" />
+    </atom:FormItem>
+
+    <atom:FormActionsItem>
+        <atom:SubmitButton />
+    </atom:FormActionsItem>
+</atom:Form>
+```
+
+### 表单布局
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml:152`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="20">
+    <StackPanel Orientation="Horizontal" Spacing="10">
+        <atom:TextBlock VerticalAlignment="Center" Text="表单布局：" />
+        <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleFormLayoutOptionCheckedChanged">
+            <atom:OptionButton  Tag="{x:Static atom:FormLayout.Horizontal}" Content="水平" />
+            <atom:OptionButton Tag="{x:Static atom:FormLayout.Vertical}" Content="垂直" />
+            <atom:OptionButton IsChecked="True" Tag="{x:Static atom:FormLayout.Inline}" Content="行内" />
+        </atom:OptionButtonGroup>
+    </StackPanel>
+
+    <atom:Form LabelColInfo="8*"
+               WrapperColInfo="16*"
+               Name="LayoutCaseForm"
+               AttachedToVisualTree="HandleLayoutCaseFormAttached"
+               DetachedFromVisualTree="HandleLayoutCaseFormDetached"
+               FormLayout="{Binding FormLayout}"
+               HorizontalAlignment="Left"
+               MinWidth="600">
+        <atom:FormItem LabelText="字段 A" FieldName="FieldA">
+            <atom:LineEdit MinWidth="160"/>
+        </atom:FormItem>
+        <atom:FormItem LabelText="字段 B" FieldName="Field B">
+            <atom:LineEdit MinWidth="160"/>
+        </atom:FormItem>
+
+        <atom:FormActionsItem>
+            <atom:SubmitButton />
+        </atom:FormActionsItem>
+    </atom:Form>
+</StackPanel>
+```
+
+### 标签可换行
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml:290`
+
+Gallery key：`ExamplesContent` / item `4`
+
+```axaml
+<atom:Form LabelColInfo="120"
+           WrapperColInfo="*"
+           MinWidth="600"
+           HorizontalAlignment="Left"
+           LabelAlign="Left"
+           IsShowColon="False"
+           LabelWrapping="Wrap">
+    <atom:FormItem LabelText="普通标签"
+                   FieldName="username"
+                   IsRequired="True">
+        <atom:FormItem.Validators>
+            <atom:FormValidatorProvider>
+                <atom:FormStringNotEmptyValidator Message="请输入用户名！" />
+            </atom:FormValidatorProvider>
+        </atom:FormItem.Validators>
+        <atom:LineEdit />
+    </atom:FormItem>
+    <atom:FormItem LabelText="一段超长标签文本"
+                   FieldName="password"
+                   IsRequired="True">
+        <atom:FormItem.Validators>
+            <atom:FormValidatorProvider>
+                <atom:FormStringNotEmptyValidator Message="请输入用户名！" />
+            </atom:FormValidatorProvider>
+        </atom:FormItem.Validators>
+        <atom:LineEdit />
+    </atom:FormItem>
+    <atom:FormItem LabelText="一段超长标签文本"
+                   FieldName="password1">
+        <atom:LineEdit />
+    </atom:FormItem>
+
+    <atom:FormActionsItem>
+        <atom:SubmitButton />
+    </atom:FormActionsItem>
+</atom:Form>
+```
+
+### 必填样式
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml:634`
+
+Gallery key：`ExamplesContent` / item `8`
+
+```axaml
+<StackPanel Orientation="Vertical" Spacing="20">
+    <StackPanel Orientation="Horizontal" Spacing="10">
+        <atom:TextBlock VerticalAlignment="Center" Text="必填标记：" />
+        <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleFormSizeTypeChanged">
+            <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Small}" Content="小号" />
+            <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Middle}" IsChecked="True" Content="中号" />
+            <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Large}" Content="大号" />
+        </atom:OptionButtonGroup>
+    </StackPanel>
+
+    <atom:Form LabelColInfo="8*"
+               WrapperColInfo="16*"
+               MinWidth="600"
+               HorizontalAlignment="Left"
+               SizeType="{Binding FormSizeType}">
+        <atom:FormItem LabelText="输入框"
+                       FieldName="input">
+            <atom:LineEdit />
+        </atom:FormItem>
+        <atom:FormItem LabelText="数字输入框"
+                       FieldName="inputNumber">
+            <atom:NumericUpDown Width="200" />
+        </atom:FormItem>
+        <atom:FormItem LabelText="开关"
+                       FieldName="switch">
+            <atom:ToggleSwitch />
+        </atom:FormItem>
+
+        <atom:FormItem LabelText="提及"
+                       FieldName="mentions">
+            <atom:Mentions />
+        </atom:FormItem>
+
+        <atom:FormItem LabelText="选择器"
+                       FieldName="select">
+            <atom:Select HorizontalAlignment="Stretch"
+                         Mode="Multiple"
+                         OptionsSource="{Binding RequiredStyleSelectOptions}" />
+        </atom:FormItem>
+
+        <atom:FormItem LabelText="级联选择"
+                       FieldName="cascader">
+            <atom:Cascader HorizontalAlignment="Stretch" />
+        </atom:FormItem>
+
+        <atom:FormItem LabelText="树选择"
+                       FieldName="treeSelect">
+            <atom:TreeSelect HorizontalAlignment="Stretch" />
+        </atom:FormItem>
+
+        <atom:FormItem LabelText="日期选择器"
+                       FieldName="datePicker">
+            <atom:DatePicker PlaceholderText="请选择" />
+        </atom:FormItem>
+
+        <atom:FormItem LabelText="范围选择器"
+                       FieldName="rangePicker">
+            <atom:RangeDatePicker PlaceholderText="开始日期"
+                                  SecondaryPlaceholderText="结束日期" />
+        </atom:FormItem>
+
+        <atom:FormActionsItem>
+            <atom:SubmitButton />
+        </atom:FormActionsItem>
+    </atom:Form>
+</StackPanel>
+```
 
 ## 状态模型
 

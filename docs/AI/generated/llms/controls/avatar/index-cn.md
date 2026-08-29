@@ -90,7 +90,32 @@ LLMS 语义区域：
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Avatar/Views/AvatarShowCase.axaml`
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 自动设置字号
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Avatar/Views/AvatarShowCase.axaml:107`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<StackPanel Orientation="Horizontal" Spacing="10">
+    <atom:Avatar Background="{Binding AvatarBackground}"
+                 Gap="{Binding AvatarGap}"
+                 SizeType="Large"
+                 Text="{Binding AvatarText}"/>
+    <atom:Button Name="ChangeUserButton"
+                 ButtonType="Default"
+                 SizeType="Small"
+                 Command="{Binding ChangeUserCommand}"
+                 VerticalAlignment="Center" Content="切换用户" />
+    <atom:Button Name="ChangeGapButton"
+                 ButtonType="Default"
+                 SizeType="Small"
+                 Command="{Binding ChangeGapCommand}"
+                 VerticalAlignment="Center" Content="切换间距" />
+</StackPanel>
+```
 
 ## 状态模型
 
