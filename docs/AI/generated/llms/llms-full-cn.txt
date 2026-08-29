@@ -14711,7 +14711,7 @@ SourceKey：`empty-semantic-part`
     <atom:Empty Classes="semantic-style-demo semantic-object-styles"
                 PresetImage="Simple"
                 SizeType="Small"
-                Description="Object styles">
+                Description="对象样式">
         <atom:Empty.Footer>
             <atom:Button ButtonType="Primary"
                          Content="Create Now" />
@@ -14721,7 +14721,7 @@ SourceKey：`empty-semantic-part`
     <atom:Empty Classes="semantic-style-demo semantic-function-styles"
                 PresetImage="Simple"
                 SizeType="Small"
-                Description="Function styles">
+                Description="功能样式">
         <atom:Empty.Footer>
             <atom:Button ButtonType="Primary"
                          Content="Create Now" />

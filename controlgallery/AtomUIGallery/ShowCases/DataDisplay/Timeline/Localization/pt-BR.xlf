@@ -172,7 +172,7 @@
     <unit id="P2ContentSolveInitialNetworkProblems">
       <segment>
         <source>Solve initial network problems</source>
-        <target state="translated">Solve initial network problems</target>
+        <target state="translated">Resolver problemas iniciais de rede</target>
       </segment>
     </unit>
     <unit id="P2ContentStart">
@@ -184,7 +184,7 @@
     <unit id="P2ContentTechnicalTesting">
       <segment>
         <source>Technical testing</source>
-        <target state="translated">Technical testing</target>
+        <target state="translated">Testes técnicos</target>
       </segment>
     </unit>
     <unit id="P2ContentToggleReverse">

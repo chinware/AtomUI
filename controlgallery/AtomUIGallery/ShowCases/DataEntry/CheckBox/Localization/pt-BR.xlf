@@ -256,13 +256,13 @@
     <unit id="SemanticPartConditionalTitle">
       <segment>
         <source>Conditional styling</source>
-        <target state="translated">Conditional styling</target>
+        <target state="translated">Estilo condicional</target>
       </segment>
     </unit>
     <unit id="SemanticPartFixedTitle">
       <segment>
         <source>Fixed styling</source>
-        <target state="translated">Fixed styling</target>
+        <target state="translated">Estilo fixo</target>
       </segment>
     </unit>
     <unit id="SemanticPartStyleDescription">
@@ -274,7 +274,7 @@
     <unit id="SemanticPartStyleTitle">
       <segment>
         <source>Custom Semantic Part styling</source>
-        <target state="translated">Custom Semantic Part styling</target>
+        <target state="translated">Estilo personalizado de Semantic Part</target>
       </segment>
     </unit>
     <unit id="SemanticRootDescription">

@@ -64,13 +64,13 @@
     <unit id="P2DescriptionFunctionStyles">
       <segment>
         <source>Function styles</source>
-        <target state="translated">Function styles</target>
+        <target state="translated">Estilos funcionais</target>
       </segment>
     </unit>
     <unit id="P2DescriptionObjectStyles">
       <segment>
         <source>Object styles</source>
-        <target state="translated">Object styles</target>
+        <target state="translated">Estilos de objeto</target>
       </segment>
     </unit>
     <unit id="PageDescription">

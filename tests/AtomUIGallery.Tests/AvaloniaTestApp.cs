@@ -1,7 +1,6 @@
 using Avalonia;
 using Avalonia.Headless;
 using AtomUI;
-using AtomUI.Toolkits.GalleryBase;
 using AtomUI.Desktop.Controls;
 using AtomUI.Localization;
 using AtomUI.Toolkits.GalleryBase;
@@ -48,7 +47,6 @@ internal sealed partial class TestApplication : Application
             builder.UseDesktopDataGrid();
             builder.UseGalleryBase(global::AtomUIGallery.AtomUIGalleryModule.Configure);
             builder.UseGalleryControls();
- builder.UseGalleryBase(AtomUIGalleryModule.Configure);
             builder.UseLanguages(
                 LanguageTags.EnUS,
                 [LanguageTags.EnUS, LanguageTags.ZhCN, LanguageTags.ZhTW, LanguageTags.PtBR]);
