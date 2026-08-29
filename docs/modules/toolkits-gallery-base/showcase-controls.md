@@ -263,18 +263,18 @@ GalleryStickyTabsHost
 - 提供页面级 ScrollViewer。
 - 让 Header、StickyContent、Content 共用一个滚动上下文。
 - StickyContent 到达顶部后保持可见。
-- 通过只读 sticky mirror 解决窗口级 Adorner 覆盖 sticky tabs 的问题。
+- 通过 sticky elevation（提升真实 StickyContent 宿主）解决窗口级 Adorner 覆盖 sticky tabs 的问题。
 - `IsContentHeightBounded=true` 时宿主在 code-behind 中把 Content 宿主 MaxHeight 计算为页面视口减去 Header 与
   StickyContent 后的剩余高度（`UpdateContentMaxHeight`，随 ScrollChanged/LayoutUpdated 与属性变化更新），
   供 Semantic Parts 单个 Preview 的 Part 列表填满剩余高度并在列表内部滚动；其余情况恢复无限高度。
 
 规则：
 
-- 真实 StickyContent 不移出原视觉树。
-- sticky mirror 只绘制视觉镜像，`IsHitTestVisible=false`。
-- sticky mirror 由 AtomUI 受控 adorner 层承载，并作为低 ZIndex 子项，低于 Drawer、Dialog、Tour 等真正浮层。
+- 吸顶期间真实 StickyContent 宿主被提升进 AtomUI 受控 adorner 层，作为低 ZIndex 子项，低于 Drawer、Dialog、Tour 等真正浮层；原 sticky 槽位由占位元素保留布局空间。
+- 不得用 VisualBrush 等像素快照实现吸顶镜像：Avalonia 12 只在 brush 创建时录制一次合成内容，选中态、hover 与窗口尺寸变化都不会刷新。
+- 取消吸顶、StickyContent 置空、宿主 detach 或模板重放时，宿主必须完整归还 `GalleryStickyTabsPanel` 并清理显式尺寸、Canvas 定位与提升期间的 DataContext 覆盖。
 - 不在滚动时销毁或重建 TabStrip。
-- detach 时释放 ScrollViewer、StickyPanel、LayoutUpdated 和 sticky mirror 资源。
+- detach 时释放 ScrollViewer、StickyPanel、LayoutUpdated 和 sticky elevation 资源。
 
 ## GalleryShowCaseScenarioController
 
@@ -377,7 +377,7 @@ xmlns:gallery="https://atomui.net/toolkits/gallery-base"
 - `GalleryShowCaseHeader` 对空值 Tag、空值文本行和空值 metadata 项执行隐藏规则。
 - `GalleryShowCaseHeader` 的 Tag 行在窄宽度下换行且不挤压标题。
 - `GalleryShowCaseHeader` metadata label 使用 GalleryBase 通用语言资源。
-- Sticky host detach 后释放 sticky mirror。
+- Sticky host detach 后归还被提升的 sticky 宿主并释放资源。
 - Scenario controller 首次切换创建 lazy content，后续切换复用缓存。
 - Semantic Part Preview 按正式设计验证真延迟 factory、owner-scoped 解析和确定性释放。
 - Semantic Part 内容根包含多个 Preview 时，factory 仍只构建一次，全部 Preview 在 Tab 切换时同步激活或停用，并在宿主 detach

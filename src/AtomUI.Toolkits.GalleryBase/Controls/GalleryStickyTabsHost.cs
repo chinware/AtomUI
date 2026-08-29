@@ -23,7 +23,10 @@ public class GalleryStickyTabsHost : TemplatedControl
     private const string HeaderHostPart        = "PART_HeaderHost";
     private const string StickyContentHostPart = "PART_StickyContentHost";
     private const string ContentHostPart       = "PART_ContentHost";
-    private const int StickyMirrorZIndex       = -1;
+
+    // 吸顶时真实 StickyContent 宿主被提升到受控 adorner 层，必须低于同层其他
+    // adorner 以及 Drawer、Dialog、Tour 等真正的浮层。
+    private const int StickyElevationZIndex = -1;
 
     public static readonly StyledProperty<object?> HeaderProperty =
         AvaloniaProperty.Register<GalleryStickyTabsHost, object?>(nameof(Header));
@@ -117,12 +120,13 @@ public class GalleryStickyTabsHost : TemplatedControl
     private ContentPresenter? _headerHost;
     private Control? _inlineStickyContentHost;
     private ContentPresenter? _contentHost;
-    private ScopeAwareAdornerLayer? _stickyMirrorLayer;
-    private Border? _stickyMirror;
-    private VisualBrush? _stickyMirrorBrush;
+    private ScopeAwareAdornerLayer? _stickyElevationLayer;
+    private Border? _stickySlotPlaceholder;
     private IDisposable? _stickyContentHostBoundsSubscription;
+    private IDisposable? _stickySlotBoundsSubscription;
     private IDisposable? _headerHostBoundsSubscription;
-    private bool _stickyMirrorUpdateQueued;
+    private bool _stickyElevationUpdateQueued;
+    private bool _elevatedDataContextApplied;
 
     public GalleryStickyTabsHost()
     {
@@ -145,14 +149,14 @@ public class GalleryStickyTabsHost : TemplatedControl
         _stickyContentHostBoundsSubscription = _inlineStickyContentHost.GetObservable(BoundsProperty)
                                                    .Subscribe(_ =>
                                                    {
-                                                       QueueStickyMirrorUpdate();
+                                                       QueueStickyElevationUpdate();
                                                        UpdateContentMaxHeight();
                                                    });
         _headerHostBoundsSubscription = _headerHost.GetObservable(BoundsProperty)
                                                        .Subscribe(_ => UpdateContentMaxHeight());
 
         UpdateContentMaxHeight();
-        UpdateStickyMirror();
+        UpdateStickyElevation();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -172,13 +176,13 @@ public class GalleryStickyTabsHost : TemplatedControl
                 HasStickyContent = StickyContent is not null;
             }
 
-            QueueStickyMirrorUpdate();
+            QueueStickyElevationUpdate();
         }
         else if (change.Property == StickyBackgroundProperty ||
                  change.Property == StickyBorderBrushProperty ||
                  change.Property == StickyContentPaddingProperty)
         {
-            QueueStickyMirrorUpdate();
+            QueueStickyElevationUpdate();
         }
         else if (change.Property == IsContentHeightBoundedProperty)
         {
@@ -188,7 +192,7 @@ public class GalleryStickyTabsHost : TemplatedControl
 
     private void ReleaseTemplateParts()
     {
-        RemoveStickyMirror();
+        DemoteStickyContent();
 
         if (_stickyPanel is not null)
         {
@@ -205,26 +209,29 @@ public class GalleryStickyTabsHost : TemplatedControl
         _stickyContentHostBoundsSubscription?.Dispose();
         _stickyContentHostBoundsSubscription = null;
 
+        _stickySlotBoundsSubscription?.Dispose();
+        _stickySlotBoundsSubscription = null;
+
         _headerHostBoundsSubscription?.Dispose();
         _headerHostBoundsSubscription = null;
 
         _inlineStickyContentHost = null;
         _headerHost              = null;
         _contentHost             = null;
-        _stickyMirrorUpdateQueued = false;
+        _stickyElevationUpdateQueued = false;
     }
 
     private void HandleStickyPanelPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property == GalleryStickyTabsPanel.IsStickyPinnedProperty)
         {
-            QueueStickyMirrorUpdate();
+            QueueStickyElevationUpdate();
         }
     }
 
     private void HandleScrollChanged(object? sender, ScrollChangedEventArgs e)
     {
-        QueueStickyMirrorUpdate();
+        QueueStickyElevationUpdate();
         UpdateContentMaxHeight();
     }
 
@@ -242,30 +249,31 @@ public class GalleryStickyTabsHost : TemplatedControl
         }
 
         var headerHeight = _headerHost?.Bounds.Height ?? 0;
-        var stickyHeight = _inlineStickyContentHost?.Bounds.Height ?? 0;
+        var stickyHeight = _stickySlotPlaceholder?.Bounds.Height
+                           ?? _inlineStickyContentHost?.Bounds.Height ?? 0;
         _contentHost.MaxHeight = Math.Max(0, _scrollViewer.Viewport.Height - headerHeight - stickyHeight);
     }
 
-    private void QueueStickyMirrorUpdate()
+    private void QueueStickyElevationUpdate()
     {
-        if (_stickyMirrorUpdateQueued)
+        if (_stickyElevationUpdateQueued)
         {
             return;
         }
 
-        _stickyMirrorUpdateQueued = true;
+        _stickyElevationUpdateQueued = true;
         Dispatcher.UIThread.Post(() =>
         {
-            _stickyMirrorUpdateQueued = false;
-            UpdateStickyMirror();
+            _stickyElevationUpdateQueued = false;
+            UpdateStickyElevation();
         }, DispatcherPriority.Render);
     }
 
-    private void UpdateStickyMirror()
+    private void UpdateStickyElevation()
     {
         if (!IsStickyMirrorEnabled)
         {
-            RemoveStickyMirror();
+            DemoteStickyContent();
             return;
         }
 
@@ -273,91 +281,128 @@ public class GalleryStickyTabsHost : TemplatedControl
             _stickyPanel?.IsStickyPinned == true &&
             _inlineStickyContentHost is not null)
         {
-            EnsureStickyMirror();
-            UpdateStickyMirrorBounds();
+            ElevateStickyContent();
+            UpdateElevatedStickyContentBounds();
         }
         else
         {
-            RemoveStickyMirror();
+            DemoteStickyContent();
         }
     }
 
-    private void EnsureStickyMirror()
+    /// <summary>
+    /// 吸顶期间把真实的 StickyContent 宿主提升到窗口级受控 adorner 层。
+    /// Avalonia 12 的 VisualBrush 只在创建时录制一次内容，无法跟随选中态、
+    /// hover 和窗口尺寸变化刷新，因此不能用视觉镜像代替真实控件。
+    /// </summary>
+    private void ElevateStickyContent()
     {
-        if (_stickyMirror is not null)
-        {
-            return;
-        }
-
-        _stickyMirrorLayer = ResolveStickyMirrorLayer();
-        if (_stickyMirrorLayer is null ||
+        if (_stickySlotPlaceholder is not null ||
+            _stickyPanel is null ||
             _inlineStickyContentHost is null)
         {
             return;
         }
 
-        _stickyMirrorBrush = new VisualBrush
-        {
-            Visual  = _inlineStickyContentHost,
-            Stretch = Stretch.Fill
-        };
-
-        _stickyMirror = new Border
-        {
-            Background       = _stickyMirrorBrush,
-            ClipToBounds     = true,
-            Focusable        = false,
-            IsHitTestVisible = false,
-            ZIndex           = StickyMirrorZIndex
-        };
-
-        _stickyMirrorLayer.Children.Add(_stickyMirror);
-    }
-
-    private void RemoveStickyMirror()
-    {
-        if (_stickyMirror is not null &&
-            _stickyMirrorLayer?.Children.Contains(_stickyMirror) == true)
-        {
-            _stickyMirrorLayer.Children.Remove(_stickyMirror);
-        }
-
-        if (_stickyMirrorBrush is not null)
-        {
-            _stickyMirrorBrush.Visual = null;
-        }
-
-        _stickyMirror      = null;
-        _stickyMirrorBrush = null;
-        _stickyMirrorLayer = null;
-    }
-
-    private void UpdateStickyMirrorBounds()
-    {
-        if (_stickyMirror is null ||
-            _inlineStickyContentHost is null ||
-            _stickyMirrorLayer is null)
+        _stickyElevationLayer = ResolveStickyElevationLayer();
+        if (_stickyElevationLayer is null)
         {
             return;
         }
 
-        var transform = _inlineStickyContentHost.TransformToVisual(_stickyMirrorLayer);
+        var stickyHost    = _inlineStickyContentHost;
+        var stickyIndex   = _stickyPanel.StickyIndex;
+        var desiredHeight = stickyHost.DesiredSize.Height;
+
+        _stickySlotPlaceholder = new Border
+        {
+            Height           = desiredHeight,
+            Focusable        = false,
+            IsHitTestVisible = false
+        };
+        _stickyPanel.Children.Insert(stickyIndex + 1, _stickySlotPlaceholder);
+        _stickyPanel.Children.Remove(stickyHost);
+        _stickySlotBoundsSubscription = _stickySlotPlaceholder.GetObservable(BoundsProperty)
+                                              .Subscribe(_ =>
+                                              {
+                                                  QueueStickyElevationUpdate();
+                                                  UpdateContentMaxHeight();
+                                              });
+
+        // 提升后 DataContext 不再从页面继承，显式固定为提升前的继承值。
+        var inheritedDataContext = stickyHost.DataContext;
+        stickyHost.SetValue(DataContextProperty, inheritedDataContext);
+        _elevatedDataContextApplied = true;
+
+        stickyHost.ZIndex = StickyElevationZIndex;
+        _stickyElevationLayer.Children.Add(stickyHost);
+    }
+
+    private void DemoteStickyContent()
+    {
+        if (_stickySlotPlaceholder is null)
+        {
+            return;
+        }
+
+        var stickyHost = _inlineStickyContentHost;
+        if (stickyHost is not null &&
+            ReferenceEquals(stickyHost.GetVisualParent(), _stickyElevationLayer))
+        {
+            _stickyElevationLayer?.Children.Remove(stickyHost);
+            stickyHost.ClearValue(WidthProperty);
+            stickyHost.ClearValue(HeightProperty);
+            stickyHost.ClearValue(Canvas.LeftProperty);
+            stickyHost.ClearValue(Canvas.TopProperty);
+            stickyHost.ClearValue(ZIndexProperty);
+            if (_elevatedDataContextApplied)
+            {
+                stickyHost.ClearValue(DataContextProperty);
+                _elevatedDataContextApplied = false;
+            }
+
+            if (_stickyPanel is not null &&
+                _stickyPanel.Children.Contains(_stickySlotPlaceholder))
+            {
+                var stickyIndex = _stickyPanel.Children.IndexOf(_stickySlotPlaceholder);
+                _stickyPanel.Children.RemoveAt(stickyIndex);
+                _stickyPanel.Children.Insert(stickyIndex, stickyHost);
+            }
+        }
+
+        _stickySlotBoundsSubscription?.Dispose();
+        _stickySlotBoundsSubscription = null;
+
+        _stickySlotPlaceholder = null;
+        _stickyElevationLayer  = null;
+    }
+
+    private void UpdateElevatedStickyContentBounds()
+    {
+        if (_inlineStickyContentHost is null ||
+            _stickySlotPlaceholder is null ||
+            _stickyElevationLayer is null)
+        {
+            return;
+        }
+
+        var transform = _stickySlotPlaceholder.TransformToVisual(_stickyElevationLayer);
         if (!transform.HasValue)
         {
             return;
         }
 
         var position = transform.Value.Transform(default);
-        var width    = Math.Max(0, _inlineStickyContentHost.Bounds.Width);
-        var height   = Math.Max(0, _inlineStickyContentHost.Bounds.Height);
+        var width    = Math.Max(0, _stickySlotPlaceholder.Bounds.Width);
+        var height   = Math.Max(0, _stickySlotPlaceholder.Bounds.Height);
 
-        Canvas.SetLeft(_stickyMirror, position.X);
-        Canvas.SetTop(_stickyMirror, position.Y);
-        _stickyMirror.Width  = width;
-        _stickyMirror.Height = height;
+        Canvas.SetLeft(_inlineStickyContentHost, position.X);
+        Canvas.SetTop(_inlineStickyContentHost, position.Y);
+        _inlineStickyContentHost.Width  = width;
+        _inlineStickyContentHost.Height = height;
     }
 
-    private ScopeAwareAdornerLayer? ResolveStickyMirrorLayer()
+    private ScopeAwareAdornerLayer? ResolveStickyElevationLayer()
     {
         if (this.FindAncestorOfType<VisualLayerManager>() is { } visualLayerManager)
         {

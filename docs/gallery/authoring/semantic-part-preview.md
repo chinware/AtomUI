@@ -74,7 +74,7 @@ GalleryShowCaseHost
 - 枚举该内容根中已经构造的全部 `SemanticPartPreview`，在 Tab 切换和页面 detach 时统一激活、停用和释放。
 - detach 时释放 Preview 缓存和宿主持有的 Tab 导航 Visual；reattach 时按当前选择状态重建，禁止已脱离页面通过
   缓存控件继续保留旧合成资源。
-- 复用 `GalleryStickyTabsHost` 的滚动上下文和只读 sticky mirror。
+- 复用 `GalleryStickyTabsHost` 的滚动上下文和 sticky elevation（吸顶时真实标签条宿主被提升进受控 adorner 层）。
 
 页面不得为 Semantic Part 手写 `ScenarioTabs`、`ScenarioContentHost`、私有 lazy controller 或 Tab 切换 code-behind。
 API、Design Token 和 Semantic Parts 不能共用旧 sidecar 场景模型。
