@@ -11,6 +11,7 @@
 ## 2026-08-30
 
 - Behavior
+  - Move the `clear` button from the suffix addon row into the input segment (right edge of the text area, before the spinner action buttons) in both mode templates; its semantic route simplifies to `/template/ .semantic-clear`.
   - Relay the owner `BorderBrush` onto the input frame as a local value (mirroring the shared `AbstractTextInput` behavior and antd `styles.root.borderColor`), so application root border customization wins over the frame state machine; clearing the owner value restores the themed border.
   - Fix the Spinner-mode input text riding the top of the frame: `EmbeddedTextBoxTheme` now stretches `PART_InputControlFrame` so the frame follows the text box whenever a host stretches it beyond its natural line height (the frame theme defaults to top alignment); the Input mode is unaffected because its text box already matches its natural height.
 - Semantic Part

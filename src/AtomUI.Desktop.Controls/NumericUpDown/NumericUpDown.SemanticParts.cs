@@ -25,7 +25,7 @@ namespace AtomUI.Desktop.Controls;
 [SemanticPart(
     "clear",
     SelectorClass = "semantic-clear",
-    SelectorRoute = "/template/ .semantic-scope-spinner /template/ .semantic-scope-frame /template/ .semantic-scope-suffix > .semantic-suffix > .semantic-clear",
+    SelectorRoute = "/template/ .semantic-clear",
     ContractType = typeof(AvaloniaButton),
     Since = "6.0")]
 public partial class NumericUpDown

@@ -43,11 +43,6 @@
                         <StackPanel Orientation="Horizontal"
                                     Classes.semantic-suffix="True"
                                     Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
-                            <atom:InputClearIconButton
-                                Name="PART_ClearButton"
-                                Classes.semantic-clear="True"
-                                VerticalAlignment="Center"
-                                IsPassthroughMouseEvent="False" />
                             <atom:AddOnContentPresenter
                                 Name="PART_InnerRightContentPresenter"
                                 VerticalAlignment="Stretch"
@@ -56,27 +51,35 @@
                                 Focusable="False" />
                         </StackPanel>
                     </atom:ButtonSpinner.InnerRightContent>
+                    <DockPanel LastChildFill="True">
+                        <atom:InputClearIconButton
+                            DockPanel.Dock="Right"
+                            Name="PART_ClearButton"
+                            Classes.semantic-clear="True"
+                            VerticalAlignment="Center"
+                            IsPassthroughMouseEvent="False" />
                     <atom:EmbeddedTextBox
-                        Name="PART_TextBox"
-                        Classes.semantic-input="True"
-                        VerticalContentAlignment="Center"
-                        VerticalAlignment="Stretch"
-                        HorizontalAlignment="Stretch"
-                        BorderThickness="0"
-                        Padding="0"
-                        FontSize="{TemplateBinding FontSize}"
-                        FontFamily="{TemplateBinding FontFamily}"
-                        FontStyle="{TemplateBinding FontStyle}"
-                        FontWeight="{TemplateBinding FontWeight}"
-                        TextWrapping="NoWrap"
-                        AcceptsReturn="False"
-                        DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
-                        SizeType="Custom"
-                        IsReadOnly="{TemplateBinding IsReadOnly}"
-                        Text="{TemplateBinding Text, Mode=TwoWay}"
-                        PlaceholderText="{TemplateBinding PlaceholderText}"
-                        PlaceholderForeground="{TemplateBinding PlaceholderForeground}"
+                            Name="PART_TextBox"
+                            Classes.semantic-input="True"
+                            VerticalContentAlignment="Center"
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                            BorderThickness="0"
+                            Padding="0"
+                            FontSize="{TemplateBinding FontSize}"
+                            FontFamily="{TemplateBinding FontFamily}"
+                            FontStyle="{TemplateBinding FontStyle}"
+                            FontWeight="{TemplateBinding FontWeight}"
+                            TextWrapping="NoWrap"
+                            AcceptsReturn="False"
+                            DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
+                            SizeType="Custom"
+                            IsReadOnly="{TemplateBinding IsReadOnly}"
+                            Text="{TemplateBinding Text, Mode=TwoWay}"
+                            PlaceholderText="{TemplateBinding PlaceholderText}"
+                            PlaceholderForeground="{TemplateBinding PlaceholderForeground}"
                         />
+                        </DockPanel>
                 </atom:NumericUpDownSpinner>
             </ControlTemplate>
         </Setter>
@@ -120,11 +123,6 @@
                             <StackPanel Orientation="Horizontal"
                                         Classes.semantic-suffix="True"
                                         Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
-                                <atom:InputClearIconButton
-                                    Name="PART_ClearButton"
-                                    Classes.semantic-clear="True"
-                                    VerticalAlignment="Center"
-                                    IsPassthroughMouseEvent="False" />
                                 <atom:AddOnContentPresenter
                                     Name="PART_InnerRightContentPresenter"
                                     VerticalAlignment="Stretch"
@@ -133,27 +131,36 @@
                                     Focusable="False" />
                             </StackPanel>
                         </atom:ButtonSpinner.InnerRightContent>
+                        <DockPanel LastChildFill="True">
+                            <atom:InputClearIconButton
+                                DockPanel.Dock="Right"
+                                Name="PART_ClearButton"
+                                Classes.semantic-clear="True"
+                                VerticalAlignment="Center"
+                                IsPassthroughMouseEvent="False" />
                         <atom:EmbeddedTextBox
-                            Name="PART_TextBox"
-                            Classes.semantic-input="True"
-                            VerticalContentAlignment="Center"
-                            VerticalAlignment="Stretch"
-                            HorizontalAlignment="Stretch"
-                            BorderThickness="0"
-                            Padding="0"
-                            FontSize="{TemplateBinding FontSize}"
-                            FontFamily="{TemplateBinding FontFamily}"
-                            FontStyle="{TemplateBinding FontStyle}"
-                            FontWeight="{TemplateBinding FontWeight}"
-                            TextWrapping="NoWrap"
-                            AcceptsReturn="False"
-                            DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
-                            SizeType="Custom"
-                            IsReadOnly="{TemplateBinding IsReadOnly}"
-                            Text="{TemplateBinding Text, Mode=TwoWay}"
-                            TextAlignment="Center"
-                            PlaceholderText="{TemplateBinding PlaceholderText}"
-                            PlaceholderForeground="{TemplateBinding PlaceholderForeground}" />
+                                Name="PART_TextBox"
+                                Classes.semantic-input="True"
+                                VerticalContentAlignment="Center"
+                                VerticalAlignment="Stretch"
+                                HorizontalAlignment="Stretch"
+                                BorderThickness="0"
+                                Padding="0"
+                                FontSize="{TemplateBinding FontSize}"
+                                FontFamily="{TemplateBinding FontFamily}"
+                                FontStyle="{TemplateBinding FontStyle}"
+                                FontWeight="{TemplateBinding FontWeight}"
+                                TextWrapping="NoWrap"
+                                AcceptsReturn="False"
+                                DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
+                                SizeType="Custom"
+                                IsReadOnly="{TemplateBinding IsReadOnly}"
+                                Text="{TemplateBinding Text, Mode=TwoWay}"
+                                TextAlignment="Center"
+                                PlaceholderText="{TemplateBinding PlaceholderText}"
+                            PlaceholderForeground="{TemplateBinding PlaceholderForeground}"
+                            />
+                        </DockPanel>
                     </atom:NumericUpDownSpinner>
                 </ControlTemplate>
             </Setter>

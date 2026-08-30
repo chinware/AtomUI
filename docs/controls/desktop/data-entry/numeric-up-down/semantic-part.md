@@ -118,20 +118,20 @@ clear 与用户右侧内容仍各有边界，用户内容子树不由 `suffix` �
 | Owner | `NumericUpDown` |
 | Part | `clear` |
 | Selector | `.semantic-clear` |
-| SelectorRoute | `/template/ .semantic-scope-spinner /template/ .semantic-scope-frame /template/ .semantic-scope-suffix > .semantic-suffix > .semantic-clear` |
+| SelectorRoute | `/template/ .semantic-clear` |
 | Style Type | `NumericUpDownClearStyle` |
 | ContractType | `Avalonia.Controls.Button` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
 | CrossVisualRoot | `false` |
 | RuntimeCreated | `false` |
-| AtomUI 节点 | `InputClearIconButton#PART_ClearButton` |
+| AtomUI 节点 | `InputClearIconButton#PART_ClearButton`（输入段内右缘，位于内部 + / 浮动 handle 之前） |
 | 职责 | 提供清空当前数值的操作入口。 |
 | 相关 API | `IsAllowClear`、`ClearIcon`、`IsReadOnly`、`Text` |
 | 相关 Token | clear 按钮主题与 SharedToken |
 | 稳定性 | stable since 6.0 |
 
-`clear` 节点始终存在，`IsEffectiveShowClearButton` 只切换可见性。它适合定制 `Opacity`、`Margin`、`Cursor` 和
+`clear` 节点始终存在于两个模板变体的输入段内（与 `input` 同级，紧贴输入文本右缘），`IsEffectiveShowClearButton` 只切换可见性。它适合定制 `Opacity`、`Margin`、`Cursor` 和
 Button 级交互属性；清除命令仍进入 `NotifyClearButtonClicked()` 的统一行为。
 
 ## 2. 模板变体与 route

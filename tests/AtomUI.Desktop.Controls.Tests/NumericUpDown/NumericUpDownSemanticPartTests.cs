@@ -43,7 +43,7 @@ public class NumericUpDownSemanticPartTests
 
         AssertRoot(descriptor);
         AssertPart(descriptor, "clear", ClearClass, typeof(AvaloniaButton),
-            "/template/ .semantic-scope-spinner /template/ .semantic-scope-frame /template/ .semantic-scope-suffix > .semantic-suffix > .semantic-clear");
+            "/template/ .semantic-clear");
         AssertPart(descriptor, "input", InputClass, typeof(TextBox),
             "/template/ .semantic-input");
         AssertPart(descriptor, "prefix", PrefixClass, typeof(ContentPresenter),
@@ -247,14 +247,15 @@ public class NumericUpDownSemanticPartTests
         string name,
         string selectorClass,
         Type contractType,
-        string selectorRoute)
+        string selectorRoute,
+        SemanticPartCardinality cardinality = SemanticPartCardinality.Single)
     {
         var part = descriptor.Parts.Single(candidate => candidate.Name == name);
         part.Path.ShouldBe(name);
         part.SelectorClass.ShouldBe(selectorClass);
         part.SelectorRoute.ShouldBe(selectorRoute);
         part.ContractType.ShouldBe(contractType);
-        part.Cardinality.ShouldBe(SemanticPartCardinality.Single);
+        part.Cardinality.ShouldBe(cardinality);
         part.Customization.ShouldBe(SemanticPartCustomization.Selector);
         part.CrossVisualRoot.ShouldBeFalse();
         part.RuntimeCreated.ShouldBeFalse();
