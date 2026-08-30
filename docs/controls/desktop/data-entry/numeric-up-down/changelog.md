@@ -12,6 +12,7 @@
 
 - Behavior
   - Relay the owner `BorderBrush` onto the input frame as a local value (mirroring the shared `AbstractTextInput` behavior and antd `styles.root.borderColor`), so application root border customization wins over the frame state machine; clearing the owner value restores the themed border.
+  - Fix the Spinner-mode input text riding the top of the frame: `EmbeddedTextBoxTheme` now stretches `PART_InputControlFrame` so the frame follows the text box whenever a host stretches it beyond its natural line height (the frame theme defaults to top alignment); the Input mode is unaffected because its text box already matches its natural height.
 - Semantic Part
   - Add Semantic Part descriptors for `NumericUpDown`: `root`（owner）、`prefix`（`AddOnContentPresenter`，`.semantic-prefix`，`ContractType` 为 `ContentPresenter`）、`input`（`EmbeddedTextBox#PART_TextBox`，`.semantic-input`，`ContractType` 为 AtomUI `TextBox`）、`suffix`（内部 `StackPanel`，`.semantic-suffix`）与 `clear`（`InputClearIconButton#PART_ClearButton`，`.semantic-clear`，`ContractType` 为 `Avalonia.Controls.Button`）。所有 Part 均为 `Single`。
   - Fix the `clear` button riding the top of the suffix row: the button template node now pins `VerticalAlignment="Center"` in both mode templates (matching LineEdit) instead of inheriting the `IconButtonTheme` `Top` default, which made the button overshoot the frame top whenever suffix content was taller than the icon.
