@@ -98,18 +98,15 @@ public class NumberUpDownShowCasePageTests
         source.ShouldContain("BadgeText=\"{x:Static gallery:GalleryVersionInfo.DisplayVersion}\"");
         source.ShouldContain("NumberUpDownShowCaseLangResource SemanticPartStyleTitle");
         source.ShouldContain("NumberUpDownShowCaseLangResource SemanticPartStyleDescription");
-        source.ShouldContain("Selector=\"atom|NumericUpDown.semantic-fixed\"");
-        source.ShouldContain("Selector=\"atom|NumericUpDown.semantic-conditional\"");
-        CountOccurrences(source, "<atom:NumericUpDownInputStyle").ShouldBe(1);
-        CountOccurrences(source, "<atom:NumericUpDownPrefixStyle").ShouldBe(1);
-        CountOccurrences(source, "<atom:NumericUpDownSuffixStyle").ShouldBe(1);
-        CountOccurrences(source, "<atom:NumericUpDownClearStyle").ShouldBe(1);
-        source.ShouldContain("x:SetterTargetType=\"{x:Type atom:TextBox}\"");
-        source.ShouldContain("x:SetterTargetType=\"ContentPresenter\"");
-        source.ShouldContain("x:SetterTargetType=\"StackPanel\"");
-        source.ShouldContain("x:SetterTargetType=\"Button\"");
-        CountOccurrences(source, "Classes=\"semantic-fixed\"").ShouldBe(1);
-        CountOccurrences(source, "Classes=\"semantic-conditional\"").ShouldBe(1);
+        source.ShouldContain("Selector=\"atom|NumericUpDown.semantic-object\"");
+        source.ShouldContain("Selector=\"atom|NumericUpDown.semantic-function\"");
+        CountOccurrences(source, "Property=\"BorderBrush\"").ShouldBe(2);
+        source.ShouldContain("Value=\"#1677FF\"");
+        source.ShouldContain("Value=\"#722ED1\"");
+        source.ShouldContain("Classes=\"semantic-object\"");
+        source.ShouldContain("Classes=\"semantic-function\"");
+        source.ShouldContain("PlaceholderText=\"Object\"");
+        source.ShouldContain("PlaceholderText=\"Function\"");
 
         english.ShouldContain("<unit id=\"SemanticRootDescription\">");
         english.ShouldContain("<unit id=\"SemanticPartStyleTitle\">");

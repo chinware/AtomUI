@@ -9,6 +9,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -437,8 +438,40 @@ public partial class NumericUpDown : AvaloniaNumericUpDown,
         ClearButtonPart = e.NameScope.Find<IconButton>("PART_ClearButton");
         TextBoxPart     = e.NameScope.Find<TextBox>("PART_TextBox");
         ConfigureEffectiveShowClearButton();
-        _buttonSpinner = e.NameScope.Find<ButtonSpinner>("PART_Spinner");
+        if (e.NameScope.Find<ButtonSpinner>("PART_Spinner") is { } buttonSpinner)
+        {
+            _buttonSpinner = buttonSpinner;
+            // The frame node lives inside the spinner's own template; apply it now so the
+            // border relay below can reach the decorated box instead of silently no-oping.
+            buttonSpinner.ApplyTemplate();
+        }
+        RelayFrameBorderBrush();
         SetupTemplatePartBindings(e);
+    }
+
+    /// <summary>
+    /// Relays the owner's root border brush onto the input frame as a local value so
+    /// application-level customization wins over the frame state machine, mirroring antd
+    /// inline styles.root semantics and the shared AbstractTextInput behavior. An unset
+    /// owner value restores the state machine.
+    /// </summary>
+    private void RelayFrameBorderBrush()
+    {
+        var decoratedBox = _buttonSpinner?.DecoratedBox;
+        if (decoratedBox is null)
+        {
+            return;
+        }
+
+        var value = GetValue(BorderBrushProperty);
+        if (value is null || ReferenceEquals(value, AvaloniaProperty.UnsetValue))
+        {
+            decoratedBox.ClearValue(BorderBrushProperty);
+        }
+        else
+        {
+            decoratedBox.SetValue(BorderBrushProperty, value, BindingPriority.LocalValue);
+        }
     }
 
     private void HandleClearButtonClicked(object? sender, RoutedEventArgs args)
@@ -484,6 +517,11 @@ public partial class NumericUpDown : AvaloniaNumericUpDown,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
+        if (change.Property == BorderBrushProperty)
+        {
+            RelayFrameBorderBrush();
+        }
+
         if (change.Property == IsReadOnlyProperty ||
             change.Property == TextProperty ||
             change.Property == IsAllowClearProperty)

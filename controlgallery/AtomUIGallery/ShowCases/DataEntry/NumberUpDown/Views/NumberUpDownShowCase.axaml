@@ -415,35 +415,22 @@
                             HorizontalAlignment="Left"
                             Spacing="12">
                     <StackPanel.Styles>
-                        <Style Selector="atom|NumericUpDown.semantic-fixed">
-                            <atom:NumericUpDownInputStyle x:SetterTargetType="{x:Type atom:TextBox}">
-                                <Setter Property="Foreground" Value="#1677ff" />
-                            </atom:NumericUpDownInputStyle>
-                            <atom:NumericUpDownPrefixStyle x:SetterTargetType="ContentPresenter">
-                                <Setter Property="Foreground" Value="#597EF7" />
-                            </atom:NumericUpDownPrefixStyle>
+                        <Style Selector="atom|NumericUpDown.semantic-object">
+                            <Setter Property="BorderBrush" Value="#1677FF" />
                         </Style>
-                        <Style Selector="atom|NumericUpDown.semantic-conditional">
-                            <atom:NumericUpDownSuffixStyle x:SetterTargetType="StackPanel">
-                                <Setter Property="Opacity" Value="0.6" />
-                            </atom:NumericUpDownSuffixStyle>
-                            <atom:NumericUpDownClearStyle x:SetterTargetType="Button">
-                                <Setter Property="Opacity" Value="0.55" />
-                            </atom:NumericUpDownClearStyle>
+                        <Style Selector="atom|NumericUpDown.semantic-function">
+                            <Setter Property="BorderBrush" Value="#722ED1" />
                         </Style>
                     </StackPanel.Styles>
 
-                    <atom:NumericUpDown Classes="semantic-fixed"
+                    <atom:NumericUpDown Classes="semantic-object"
                                         Width="320"
-                                        Value="100"
-                                        InnerLeftContent="$"
-                                        InnerRightContent="kg" />
-                    <atom:NumericUpDown Classes="semantic-conditional"
+                                        HorizontalAlignment="Left"
+                                        PlaceholderText="Object" />
+                    <atom:NumericUpDown Classes="semantic-function"
                                         Width="320"
-                                        Value="66"
-                                        IsAllowClear="True"
-                                        InnerLeftContent="$"
-                                        InnerRightContent="kg" />
+                                        HorizontalAlignment="Left"
+                                        PlaceholderText="Function" />
                 </StackPanel>
             </DataTemplate>
         </gallery:ShowCaseItem.DeferredContentTemplate>
