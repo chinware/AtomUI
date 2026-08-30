@@ -140,11 +140,8 @@ public class SpinShowCasePageTests
                 Dispatcher.UIThread.RunJobs();
             }
 
-            var activeContentValue = typeof(GalleryShowCaseHost)
-                                     .GetProperty("ActiveContent", BindingFlags.Instance | BindingFlags.NonPublic)
-                                     ?.GetValue(host);
-            activeContentValue.ShouldNotBeNull();
-            var activeContent = activeContentValue.ShouldBeAssignableTo<Control>();
+            // 语义 tab 激活时语义内容已挂载，直接以宿主为根断言。
+            var activeContent = host;
             activeContent.GetVisualDescendants().OfType<SemanticPartPreview>().Count().ShouldBe(2);
             var semanticSpin = activeContent.GetVisualDescendants()
                                             .OfType<AtomUISpin>()
@@ -222,7 +219,7 @@ public class SpinShowCasePageTests
 
             host.SelectedTab = GalleryShowCaseTab.Examples;
             Dispatcher.UIThread.RunJobs();
-            page.GetVisualDescendants().OfType<SemanticPartPreview>().ShouldBeEmpty();
+            Assert.All(page.GetVisualDescendants().OfType<SemanticPartPreview>(), preview => Assert.False(preview.IsEffectivelyVisible));
         });
     }
 

@@ -1,3 +1,4 @@
+using System.Xml.Linq;
 using AtomUI.Toolkits.GalleryBase.Controls;
 using AtomUI.Localization;
 using System.Runtime.CompilerServices;
@@ -61,14 +62,20 @@ public class GalleryShowCaseHostTests
             host.SelectedTab = GalleryShowCaseTab.Examples;
             Dispatcher.UIThread.RunJobs();
 
+            // 双内容槽契约：切回 Examples 后语义内容隐藏挂载，不再销毁重建。
             buildCount.ShouldBe(1);
-            host.GetVisualDescendants().OfType<SemanticPartPreview>().ShouldBeEmpty();
+            var cachedPreview = host.GetVisualDescendants()
+                                    .OfType<SemanticPartPreview>()
+                                    .Single();
+            cachedPreview.IsEffectivelyVisible.ShouldBeFalse();
+            host.IsSemanticPartsContentMaterialized.ShouldBeTrue();
 
             host.SelectedTab = GalleryShowCaseTab.SemanticParts;
             Dispatcher.UIThread.RunJobs();
 
             buildCount.ShouldBe(1);
             host.GetVisualDescendants().OfType<SemanticPartPreview>().Count().ShouldBe(1);
+            cachedPreview.IsEffectivelyVisible.ShouldBeTrue();
         });
     }
 
@@ -122,8 +129,11 @@ public class GalleryShowCaseHostTests
             host.SelectedTab = GalleryShowCaseTab.Examples;
             Dispatcher.UIThread.RunJobs();
 
+            // 双内容槽契约：切回 Examples 后两个 preview 隐藏挂载并停用。
             buildCount.ShouldBe(1);
-            host.GetVisualDescendants().OfType<SemanticPartPreview>().ShouldBeEmpty();
+            host.GetVisualDescendants().OfType<SemanticPartPreview>().Count().ShouldBe(2);
+            firstPreview.IsEffectivelyVisible.ShouldBeFalse();
+            secondPreview.IsEffectivelyVisible.ShouldBeFalse();
             firstPreview.IsPreviewActive.ShouldBeFalse();
             secondPreview.IsPreviewActive.ShouldBeFalse();
         });
@@ -266,6 +276,69 @@ public class GalleryShowCaseHostTests
     }
 
     [Fact]
+    public void Switching_Back_To_Examples_Keeps_Semantic_Content_Attached_But_Hidden()
+    {
+        var host = new GalleryShowCaseHost
+        {
+            Header          = new Border(),
+            ExamplesContent = new Border(),
+            SemanticPartsContentTemplate = new FuncDataTemplate<object?>(
+                (_, _) => new SemanticPartPreview
+                {
+                    PreviewContent    = new AtomUI.Desktop.Controls.Button { Content = "Semantic Button" },
+                    SemanticOwnerType = typeof(AtomUI.Desktop.Controls.Button)
+                })
+        };
+
+        ShowInWindow(host, () =>
+        {
+            var examplesContent = host.ExamplesContent.ShouldNotBeNull().ShouldBeAssignableTo<Control>();
+
+            host.SelectedTab = GalleryShowCaseTab.SemanticParts;
+            Dispatcher.UIThread.RunJobs();
+
+            var semanticContent = host.SemanticPartsContent.ShouldNotBeNull().ShouldBeAssignableTo<Control>();
+            semanticContent.IsAttachedToVisualTree().ShouldBeTrue();
+            semanticContent.IsEffectivelyVisible.ShouldBeTrue();
+            examplesContent.IsAttachedToVisualTree().ShouldBeTrue();
+            examplesContent.IsEffectivelyVisible.ShouldBeFalse();
+
+            host.SelectedTab = GalleryShowCaseTab.Examples;
+            Dispatcher.UIThread.RunJobs();
+
+            // 双内容槽基础设施：切回 Examples 不再整树 detach 语义内容，
+            // 而是隐藏挂载，消除来回切换的整树 attach/detach 卡顿。
+            semanticContent.IsAttachedToVisualTree().ShouldBeTrue();
+            semanticContent.IsEffectivelyVisible.ShouldBeFalse();
+            examplesContent.IsEffectivelyVisible.ShouldBeTrue();
+            host.IsSemanticPartsContentMaterialized.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public void Theme_Declares_Dual_Tab_Content_Presenters()
+    {
+        var themePath = FindRepoFile(
+            "src/AtomUI.Toolkits.GalleryBase/Controls/Themes/GalleryShowCaseHostTheme.axaml");
+        var document = System.Xml.Linq.XDocument.Load(themePath, System.Xml.Linq.LoadOptions.SetLineInfo);
+        var names = document.Descendants()
+                            .Attributes()
+                            .Where(static attribute => attribute.Name.LocalName == "Name")
+                            .Select(static attribute => attribute.Value)
+                            .ToArray();
+
+        names.ShouldContain("PART_ExamplesContentHost");
+        names.ShouldContain("PART_SemanticPartsContentHost");
+
+        // 双内容槽由宿主 C# 驱动：内容层 TemplatedParent 会被呈现器重绑定为
+        // GalleryStickyTabsHost，模板内 TemplateBinding 解析不到宿主属性。
+        var markup = File.ReadAllText(themePath);
+        markup.ShouldNotContain("TemplateBinding ExamplesContent");
+        markup.ShouldNotContain("TemplateBinding SemanticPartsContent");
+        markup.ShouldNotContain("TemplateBinding ActiveContent");
+    }
+
+    [Fact]
     public void Detach_Releases_The_Materialized_Preview_And_Demo_Control()
     {
         var (host, previewReference, demoReference) = CreateDetachedSemanticContentReferences();
@@ -316,7 +389,7 @@ public class GalleryShowCaseHostTests
 
         window.Content = null;
         Dispatcher.UIThread.RunJobs();
-        host.ActiveContent.ShouldBeSameAs(host.ExamplesContent);
+        host.SemanticPartsContent.ShouldBeNull();
         host.GetVisualDescendants().OfType<SemanticPartPreview>().ShouldBeEmpty();
         host.GetLogicalDescendants().OfType<SemanticPartPreview>().ShouldBeEmpty();
         window.Close();
@@ -325,8 +398,24 @@ public class GalleryShowCaseHostTests
         return (host, previewReference, demoReference);
     }
 
-    private static void ShowInWindow(Control content, Action assertion)
+    private static string FindRepoFile(string relativePath)
     {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            var candidate = Path.Combine(directory.FullName, relativePath);
+            if (File.Exists(candidate))
+            {
+                return candidate;
+            }
+
+            directory = directory.Parent;
+        }
+
+        throw new FileNotFoundException($"Could not locate repository file '{relativePath}'.");
+    }
+
+    private static void ShowInWindow(Control content, Action assertion)    {
         var window = new Window
         {
             Width   = 900,

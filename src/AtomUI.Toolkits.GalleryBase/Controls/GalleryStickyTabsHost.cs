@@ -58,6 +58,11 @@ public class GalleryStickyTabsHost : TemplatedControl
     internal static readonly StyledProperty<bool> IsContentHeightBoundedProperty =
         AvaloniaProperty.Register<GalleryStickyTabsHost, bool>(nameof(IsContentHeightBounded));
 
+    internal static readonly DirectProperty<GalleryStickyTabsHost, double> ContentMaxHeightProperty =
+        AvaloniaProperty.RegisterDirect<GalleryStickyTabsHost, double>(
+            nameof(ContentMaxHeight),
+            host => host.ContentMaxHeight);
+
     public object? Header
     {
         get => GetValue(HeaderProperty);
@@ -115,7 +120,19 @@ public class GalleryStickyTabsHost : TemplatedControl
         set => SetValue(IsContentHeightBoundedProperty, value);
     }
 
+    /// <summary>
+    /// 当前应用到内容宿主上的高度上限；未受约束时为正无穷。
+    /// 内容若为模板子级（不经过本控件内容属性收养），MaxHeight 继承链会
+    /// 在模板边界断裂（继承走逻辑树），需要宿主显式读取该值转发。
+    /// </summary>
+    internal double ContentMaxHeight
+    {
+        get => _contentMaxHeight;
+        private set => SetAndRaise(ContentMaxHeightProperty, ref _contentMaxHeight, value);
+    }
+
     private ScrollViewer? _scrollViewer;
+    private double _contentMaxHeight = double.PositiveInfinity;
     private GalleryStickyTabsPanel? _stickyPanel;
     private ContentPresenter? _headerHost;
     private Control? _inlineStickyContentHost;
@@ -245,6 +262,7 @@ public class GalleryStickyTabsHost : TemplatedControl
         if (!IsContentHeightBounded)
         {
             _contentHost.MaxHeight = double.PositiveInfinity;
+            ContentMaxHeight       = double.PositiveInfinity;
             return;
         }
 
@@ -252,6 +270,7 @@ public class GalleryStickyTabsHost : TemplatedControl
         var stickyHeight = _stickySlotPlaceholder?.Bounds.Height
                            ?? _inlineStickyContentHost?.Bounds.Height ?? 0;
         _contentHost.MaxHeight = Math.Max(0, _scrollViewer.Viewport.Height - headerHeight - stickyHeight);
+        ContentMaxHeight       = _contentHost.MaxHeight;
     }
 
     private void QueueStickyElevationUpdate()

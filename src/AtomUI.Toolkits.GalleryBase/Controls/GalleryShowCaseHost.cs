@@ -1,7 +1,7 @@
-using AtomUI.Desktop.Controls;
 using AtomUI.Toolkits.GalleryBase.Localization;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Markup.Xaml.MarkupExtensions;
@@ -20,6 +20,10 @@ public enum GalleryShowCaseTab
 
 public class GalleryShowCaseHost : TemplatedControl
 {
+    private const string ExamplesContentHostPart   = "PART_ExamplesContentHost";
+    private const string SemanticPartsContentHostPart = "PART_SemanticPartsContentHost";
+    private const string StickyHostPart             = "PART_StickyHost";
+
     public static readonly StyledProperty<object?> HeaderProperty =
         AvaloniaProperty.Register<GalleryShowCaseHost, object?>(nameof(Header));
 
@@ -42,10 +46,10 @@ public class GalleryShowCaseHost : TemplatedControl
             nameof(NavigationContent),
             host => host.NavigationContent);
 
-    internal static readonly DirectProperty<GalleryShowCaseHost, object?> ActiveContentProperty =
-        AvaloniaProperty.RegisterDirect<GalleryShowCaseHost, object?>(
-            nameof(ActiveContent),
-            host => host.ActiveContent);
+    public static readonly DirectProperty<GalleryShowCaseHost, Control?> SemanticPartsContentProperty =
+        AvaloniaProperty.RegisterDirect<GalleryShowCaseHost, Control?>(
+            nameof(SemanticPartsContent),
+            host => host.SemanticPartsContent);
 
     internal static readonly DirectProperty<GalleryShowCaseHost, bool> HasSemanticPartsProperty =
         AvaloniaProperty.RegisterDirect<GalleryShowCaseHost, bool>(
@@ -63,10 +67,13 @@ public class GalleryShowCaseHost : TemplatedControl
             host => host.IsSemanticPartsContentHeightBounded);
 
     private AtomUITabStrip? _tabStrip;
+    private ContentPresenter? _examplesContentHost;
+    private ContentPresenter? _semanticPartsContentHost;
+    private GalleryStickyTabsHost? _stickyHost;
+    private IDisposable? _contentMaxHeightSubscription;
     private Control? _semanticPartsContent;
     private IReadOnlyList<SemanticPartPreview> _semanticPartPreviews = Array.Empty<SemanticPartPreview>();
     private object? _navigationContent;
-    private object? _activeContent;
     private bool _hasSemanticParts;
     private bool _isSemanticPartsContentMaterialized;
     private bool _isSemanticPartsContentHeightBounded;
@@ -109,10 +116,10 @@ public class GalleryShowCaseHost : TemplatedControl
         private set => SetAndRaise(NavigationContentProperty, ref _navigationContent, value);
     }
 
-    internal object? ActiveContent
+    public Control? SemanticPartsContent
     {
-        get => _activeContent;
-        private set => SetAndRaise(ActiveContentProperty, ref _activeContent, value);
+        get => _semanticPartsContent;
+        private set => SetAndRaise(SemanticPartsContentProperty, ref _semanticPartsContent, value);
     }
 
     internal bool HasSemanticParts
@@ -144,13 +151,13 @@ public class GalleryShowCaseHost : TemplatedControl
         {
             ReleaseSemanticPartsContent();
             RebuildNavigation();
-            UpdateActiveContent();
+            UpdateTabContent();
         }
         else if (change.Property == ExamplesContentProperty ||
                  change.Property == SelectedTabProperty)
         {
             SynchronizeTabStripSelection();
-            UpdateActiveContent();
+            UpdateTabContent();
         }
         else if (change.Property == DataContextProperty)
         {
@@ -165,13 +172,44 @@ public class GalleryShowCaseHost : TemplatedControl
         {
             RebuildNavigation();
         }
-        UpdateActiveContent();
+        UpdateTabContent();
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _contentMaxHeightSubscription?.Dispose();
+        _contentMaxHeightSubscription = null;
+        _stickyHost = e.NameScope.Find<GalleryStickyTabsHost>(StickyHostPart);
+        _examplesContentHost = e.NameScope.Find<ContentPresenter>(ExamplesContentHostPart);
+        _semanticPartsContentHost = e.NameScope.Find<ContentPresenter>(SemanticPartsContentHostPart);
+        if (_stickyHost is not null)
+        {
+            _contentMaxHeightSubscription = _stickyHost
+                .GetObservable(GalleryStickyTabsHost.ContentMaxHeightProperty)
+                .Subscribe(value =>
+                {
+                    if (_semanticPartsContentHost is not null)
+                    {
+                        _semanticPartsContentHost.MaxHeight = value;
+                    }
+                });
+            if (_semanticPartsContentHost is not null)
+            {
+                _semanticPartsContentHost.MaxHeight = _stickyHost.ContentMaxHeight;
+            }
+        }
+
+        UpdateTabContent();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         ReleaseSemanticPartsContent();
         ReleaseNavigation();
+        _contentMaxHeightSubscription?.Dispose();
+        _contentMaxHeightSubscription = null;
+        _stickyHost = null;
         base.OnDetachedFromVisualTree(e);
     }
 
@@ -265,11 +303,12 @@ public class GalleryShowCaseHost : TemplatedControl
         }
     }
 
-    private void UpdateActiveContent()
+    private void UpdateTabContent()
     {
-        if (SelectedTab == GalleryShowCaseTab.SemanticParts && HasSemanticParts)
+        var isSemanticTab = SelectedTab == GalleryShowCaseTab.SemanticParts && HasSemanticParts;
+        if (isSemanticTab)
         {
-            ActiveContent = EnsureSemanticPartsContent();
+            EnsureSemanticPartsContent();
             foreach (var preview in _semanticPartPreviews)
             {
                 preview.ActivatePreview();
@@ -281,7 +320,23 @@ public class GalleryShowCaseHost : TemplatedControl
             {
                 preview.DeactivatePreview();
             }
-            ActiveContent = ExamplesContent;
+        }
+
+        // 双内容槽常驻挂载，tab 切换只翻转可见性：IsVisible=False 的子树
+        // 完全退出 measure/arrange/render，避免整棵 Examples 树与语义树
+        // 来回 detach/attach 造成的整树重布局卡顿。
+        // 内容槽的 TemplatedParent 会被呈现器重绑定为 GalleryStickyTabsHost，
+        // 模板内 TemplateBinding 解析不到宿主属性，因此这里直接驱动。
+        if (_examplesContentHost is not null)
+        {
+            _examplesContentHost.Content   = ExamplesContent;
+            _examplesContentHost.IsVisible = !isSemanticTab;
+        }
+
+        if (_semanticPartsContentHost is not null)
+        {
+            _semanticPartsContentHost.Content   = SemanticPartsContent;
+            _semanticPartsContentHost.IsVisible = isSemanticTab;
         }
 
         // The semantic tab content is bounded to the page viewport remainder only
@@ -290,9 +345,7 @@ public class GalleryShowCaseHost : TemplatedControl
         // several previews keep the content-sized layout so every preview stays
         // reachable through the page scroll.
         IsSemanticPartsContentHeightBounded =
-            SelectedTab == GalleryShowCaseTab.SemanticParts &&
-            HasSemanticParts &&
-            _semanticPartPreviews.Count == 1;
+            isSemanticTab && _semanticPartPreviews.Count == 1;
     }
 
     private Control? EnsureSemanticPartsContent()
@@ -327,11 +380,11 @@ public class GalleryShowCaseHost : TemplatedControl
                 $"{nameof(SemanticPartPreview)}.");
         }
 
-        _semanticPartsContent = content;
+        SemanticPartsContent = content;
         _semanticPartPreviews = previews;
-        _semanticPartsContent.DataContext = DataContext;
+        content.DataContext = DataContext;
         IsSemanticPartsContentMaterialized = true;
-        return _semanticPartsContent;
+        return content;
     }
 
     private void SynchronizeContentDataContext()
@@ -349,7 +402,7 @@ public class GalleryShowCaseHost : TemplatedControl
 
     private void ReleaseSemanticPartsContent()
     {
-        if (_semanticPartsContent is null)
+        if (SemanticPartsContent is null)
         {
             return;
         }
@@ -358,16 +411,17 @@ public class GalleryShowCaseHost : TemplatedControl
         {
             preview.DeactivatePreview();
         }
-        if (ReferenceEquals(ActiveContent, _semanticPartsContent))
-        {
-            ActiveContent = ExamplesContent;
-        }
 
         foreach (var preview in _semanticPartPreviews)
         {
             preview.Dispose();
         }
-        _semanticPartsContent = null;
+        if (_semanticPartsContentHost is not null)
+        {
+            _semanticPartsContentHost.Content = null;
+        }
+
+        SemanticPartsContent = null;
         _semanticPartPreviews = Array.Empty<SemanticPartPreview>();
         IsSemanticPartsContentMaterialized = false;
     }

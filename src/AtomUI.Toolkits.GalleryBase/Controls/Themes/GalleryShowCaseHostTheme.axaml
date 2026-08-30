@@ -6,12 +6,27 @@
                   TargetType="{x:Type gallery:GalleryShowCaseHost}">
         <Setter Property="Template">
             <ControlTemplate TargetType="{x:Type gallery:GalleryShowCaseHost}">
+                <!--
+                    Examples 与 SemanticParts 两个内容槽常驻挂载，tab 切换只翻转
+                    IsVisible：IsVisible=False 的子树完全退出 measure/arrange/render
+                    （Layoutable.MeasureCore/ArrangeCore 短路），避免单呈现器换内容
+                    时两棵深树来回 detach/attach 造成的整树重布局卡顿。
+                    两个内容槽的 Content 与 IsVisible 由宿主在 OnApplyTemplate 和
+                    UpdateTabContent 中直接驱动：它们处于 GalleryStickyTabsHost 的
+                    内容层，TemplatedParent 会被呈现器重绑定为 GalleryStickyTabsHost，
+                    模板内的 TemplateBinding 解析不到宿主属性（运行时已验证）。
+                -->
                 <gallery:GalleryStickyTabsHost
+                    Name="PART_StickyHost"
                     Header="{TemplateBinding Header}"
                     StickyContent="{TemplateBinding NavigationContent}"
                     StickyContentPadding="{TemplateBinding StickyContentPadding}"
-                    Content="{TemplateBinding ActiveContent}"
-                    IsContentHeightBounded="{TemplateBinding IsSemanticPartsContentHeightBounded}" />
+                    IsContentHeightBounded="{TemplateBinding IsSemanticPartsContentHeightBounded}">
+                    <Panel>
+                        <ContentPresenter Name="PART_ExamplesContentHost" />
+                        <ContentPresenter Name="PART_SemanticPartsContentHost" />
+                    </Panel>
+                </gallery:GalleryStickyTabsHost>
             </ControlTemplate>
         </Setter>
     </ControlTheme>

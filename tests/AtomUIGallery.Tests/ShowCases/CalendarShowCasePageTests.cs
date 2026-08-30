@@ -174,7 +174,7 @@ public class CalendarShowCasePageTests
 
             host.SelectedTab = GalleryShowCaseTab.Examples;
             Dispatcher.UIThread.RunJobs();
-            page.GetVisualDescendants().OfType<SemanticPartPreview>().ShouldBeEmpty();
+            Assert.All(page.GetVisualDescendants().OfType<SemanticPartPreview>(), preview => Assert.False(preview.IsEffectivelyVisible));
         });
     }
 

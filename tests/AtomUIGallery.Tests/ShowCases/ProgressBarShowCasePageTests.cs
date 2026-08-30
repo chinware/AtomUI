@@ -206,8 +206,8 @@ public class ProgressBarShowCasePageTests
 
             host.SelectedTab = GalleryShowCaseTab.Examples;
             Dispatcher.UIThread.RunJobs();
-            page.GetVisualDescendants().OfType<SemanticPartPreview>().ShouldBeEmpty();
-            GetSemanticPreviewOwners(page).ShouldBeEmpty();
+            Assert.All(page.GetVisualDescendants().OfType<SemanticPartPreview>(), preview => Assert.False(preview.IsEffectivelyVisible));
+            Assert.All(GetSemanticPreviewOwners(page), owner => Assert.False(owner.IsEffectivelyVisible));
         });
     }
 
