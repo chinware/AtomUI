@@ -109,7 +109,7 @@ OtpLineEdit 的公共 API 以文本值、长度、输入约束、显示辅助和
 
 ### OTP 双向绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml:223`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml:354`
 
 SourceKey：`line-edit-otp-two-way`
 
@@ -131,7 +131,7 @@ SourceKey：`line-edit-otp-two-way`
 
 ### OTP 表单验证
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml:248`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml:379`
 
 SourceKey：`line-edit-otp-form`
 
@@ -159,7 +159,7 @@ SourceKey：`line-edit-otp-form`
 
 ### 一次性密码框
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml:280`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml:411`
 
 SourceKey：`line-edit-otp-ant-design`
 
@@ -228,7 +228,7 @@ SourceKey：`line-edit-otp-ant-design`
 
 ### 自定义语义化结构样式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml:722`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml:853`
 
 SourceKey：`line-edit-semantic-part`
 
@@ -422,6 +422,7 @@ AOT 边界：
 主要源码：
 
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEdit.cs`：公共 API、Avalonia 属性注册、事件、Form 接口、状态入口和模板生命周期。
+- `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEdit.SemanticParts.cs`：Semantic Part descriptor 声明（`root`、`cellList`、`cell`、`separator`），cell 与 separator 为 `Multiple` + RuntimeCreated。
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEditCell.cs`：内部 cell 控件，承载单字符显示、placeholder、active、mask 和事件回调。
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEditSeparatorContext.cs`：separator 模板上下文，提供前后 cell index 和 display index。
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEditToken.cs`：cell 宽度和 cell 间距 Token。

@@ -208,6 +208,8 @@ OtpLineEdit 以 `Text` 表达完整验证码。内部 cell 的显示字符由 `T
 
 设置 `Separator` 后，分隔符自动插入到每个 cell 之间，只由视觉 host 渲染，不参与焦点导航、输入位置、`Text.Length`、复制、Form 值或验证。
 
+分隔符字形由 `OtpSeparatorPresenter` 按当前字体的 glyph metrics 实测墨迹盒（XBearing/YBearing/Width/Height，设计单位按字号缩放），把墨迹中心平移到行盒中心：任意字符、字体和字号都自动居中，无需逐字符人工校准；度量不可用或字形无墨迹时回退为不平移。非文本内容（自定义 `SeparatorTemplate`）不做处理，居中由内容自行负责。
+
 ### 8.4 掩码模型
 
 `IsMasked=true` 时，已输入 cell 显示 `MaskChar`，空 cell 仍显示 placeholder。掩码不改变 `Text`，也不影响 `Completed` 判断。复制或提交时始终使用真实 `Text`。
@@ -229,10 +231,9 @@ LLMS 语义区域：
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
 | `root` | `OtpLineEdit` | 控件根语义区域，承载 public API、文本值、验证状态和主题入口。 | `Text`、`Length`、`Status`、`SizeType` | `OtpLineEditToken`、SharedToken | stable |
-| `cell-list` | `PART_CellsHost` | 根据 `Length` 展示 cell 和 separator。 | `Length`、`Separator` | `CellGap`、`CellWidth*` | template-stable |
+| `cellList` | `PART_CellsHost` | 根据 `Length` 展示 cell 和 separator。 | `Length`、`Separator` | `CellGap`、`CellWidth*` | template-stable |
 | `cell` | `OtpLineEditCell` | 展示单个字符、placeholder、mask、active/focus 和 error 状态。 | `Text`、`IsMasked`、`MaskChar` | `CellWidth`、LineEdit 输入字号 | internal-observable |
-| `action` | `PART_ClearButton` | 清空完整验证码文本。 | `IsAllowClear`、`Clear()` | 输入 action 主题资源 | template-stable |
-| `validation` | `PART_FormFeedBack` | 承载 Form feedback 和 native validation 投射。 | `Status`、`IFormItemAware` | SharedToken、Form Token | template-stable |
+| `separator` | 分隔符容器 Border | 展示 cell 之间的分隔符字形，由 `OtpSeparatorPresenter` 按墨迹盒自动居中。 | `Separator`、`SeparatorTemplate` | — | template-stable |
 
 LLMS 导出来源：
 

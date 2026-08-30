@@ -4,9 +4,10 @@
 
 ## Semantic Parts
 
-`LineEdit` 公开 `root`、`prefix`、`input`、`suffix`、`clear`、`count` 六个职责区域。契约只属于 public owner
-`LineEdit`；`SearchEdit`、`TextArea`、`TextBox` 以及 internal `AddOnDecoratedBox` 本轮不注册独立 descriptor。
-它们即使复用相邻模板结构，也不能通过继承关系自动获得 LineEdit 的 owner-scoped Semantic Style。
+`LineEdit` 公开 `root`、`prefix`、`input`、`suffix`、`clear`、`count` 六个职责区域（§1.1–1.6）；`SearchEdit`
+公开 `root`、`prefix`、`input`、`suffix`、`clear`、`button`（§1.7）；`TextArea` 公开 `root`、`textarea`、`clear`、
+`count`（§1.8）。每个 descriptor 只属于各自的 public owner；`TextBox` 与 internal `AddOnDecoratedBox` 不注册独立
+descriptor，也不能通过继承关系自动获得其他 owner 的 owner-scoped Semantic Style。
 
 ### 1.1 `root`
 
@@ -152,6 +153,60 @@ Button 级交互属性；清除命令仍必须进入 `NotifyClearButtonClicked()
 
 `count` 节点始终存在，`IsShowCount=false` 只切换可见性。它适合定制 `Foreground`、`FontSize`、`FontWeight`、`Opacity`、
 `Margin` 和对齐；计数格式和刷新时机由 `AbstractTextInput` 维护，不属于 Semantic Style。
+
+### 1.7 `SearchEdit`
+
+`SearchEdit` 注册独立 descriptor，Part 集合为 `root`、`prefix`、`input`、`suffix`、`clear`、`button`。`prefix`、
+`input`、`suffix`、`clear` 的 selector、route、`ContractType` 与 LineEdit 同名 Part 一致，只是 owner-scoped Style
+类型换为 `SearchEdit*` 前缀（如 `SearchEditInputStyle`，`SetterTargetType` 仍为最低 public 类型）。以下只列出差异字段：
+
+| 字段 | `button` |
+| --- | --- |
+| Owner | `SearchEdit` |
+| Part | `button` |
+| Selector | `.semantic-button` |
+| SelectorRoute | `/template/ .semantic-scope-input-frame /template/ .semantic-button` |
+| Style Type | `SearchEditButtonStyle` |
+| ContractType | `Button`（AtomUI） |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | internal `SearchEditDecoratedBox` 模板内的 `atom:Button#PART_RightAddOn` |
+| 职责 | 承载搜索动作按钮的根视觉、文字与图标（loading 状态沿用按钮自身的 loading 呈现）。 |
+| 相关 API | `SearchButtonStyle`、`SearchButtonText`、`SearchButtonTheme`、`IsOperating` |
+| 稳定性 | stable since 6.0 |
+
+`button` 的 marker 由 `SearchEditDecoratedBox` 在模板应用后通过 C# 追加（RuntimeCreated 契约），因此主题资产内没有
+静态 `Classes.semantic-button` 声明。`SearchEdit` 不提供 `count` Part：其模板不包含计数指示器。`root` 不生成 Style；
+用户定制搜索按钮整体背景 / 边框时应作用在 `button` Part 而不是 `root`。
+
+### 1.8 `TextArea`
+
+`TextArea` 注册独立 descriptor，Part 集合为 `root`、`textarea`、`clear`、`count`。`clear`、`count` 的 selector、
+route、`ContractType` 与 LineEdit 同名 Part 一致（`TextArea*` Style 前缀）；`root` 由生成器隐式补齐。以下只列出
+差异字段：
+
+| 字段 | `textarea` |
+| --- | --- |
+| Owner | `TextArea` |
+| Part | `textarea` |
+| Selector | `.semantic-textarea` |
+| SelectorRoute | `/template/ .semantic-textarea` |
+| Style Type | `TextAreaTextareaStyle` |
+| ContractType | `TextPresenter` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `InputTextPresenter#PART_TextPresenter` |
+| 职责 | 承载多行文本的输入、光标、选择与换行展示。 |
+| 相关 API | `Text`、`Lines`、`MinLines`、`MaxLines`、`IsAutoSize`、`IsResizable` |
+| 稳定性 | stable since 6.0 |
+
+`TextArea` 的 `count` 位于 owner 模板底部（DockPanel 下缘），route 为默认 `/template/ .semantic-count`；`clear`
+位于右侧 addon 区，route 与 LineEdit 同形。`TextArea` 不提供 `prefix` / `suffix` Part；resize handle 与
+`Placeholder` 文本不属于 Semantic Part。
 
 ## Abstract AXAML Structure
 
@@ -400,7 +455,7 @@ TextBox / LineEdit / TextArea Token 不承载文本值、placeholder、清除状
 - Form feedback 订阅必须在 detach 时释放。
 - TextPresenter 的 margin、placeholder、selection、caret 和 disabled 文本色属于输入模板契约，不应在业务控件中用 magic width 补偿。
 - LineEdit 的 `root`、`prefix`、`input`、`suffix`、`clear`、`count` Part 名称、route、最低 public `ContractType` 与 `Single` 数量语义必须保持稳定。
-- `SearchEdit`、`TextArea`、`TextBox` 不因继承或模板复用自动获得 LineEdit descriptor；扩展其契约必须单独评审 public owner 边界。
+- `SearchEdit` 与 `TextArea` 拥有各自注册的 descriptor（见 Semantic Part 契约 1.7 / 1.8）；`TextBox` 不因继承或模板复用自动获得家族 descriptor，扩展其契约必须单独评审 public owner 边界。
 
 维护不变量：
 

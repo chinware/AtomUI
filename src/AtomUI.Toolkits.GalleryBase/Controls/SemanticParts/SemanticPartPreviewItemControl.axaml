@@ -7,8 +7,10 @@
     x:Class="AtomUI.Toolkits.GalleryBase.Controls.SemanticPartPreviewItemControl"
     x:DataType="gallery:SemanticPartPreviewItem">
     <UserControl.Styles>
+        <!-- 行需要实底背景：透明背景在 Avalonia 12 的合成器命中测试中不产生命中，
+             行右侧空白区域会穿透到下层，导致列表行部分区域无法响应鼠标 -->
         <Style Selector="Border.part-row">
-            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
         </Style>
         <Style Selector="Border.part-row:pointerover">
             <Setter Property="Background" Value="{atom:SharedTokenResource ColorFillTertiary}" />

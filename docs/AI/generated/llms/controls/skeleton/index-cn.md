@@ -133,25 +133,6 @@ Gallery key：`ExamplesContent` / item `4`
 </StackPanel>
 ```
 
-### 包含子组件
-
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Skeleton/Views/SkeletonShowCase.axaml:147`
-
-Gallery key：`ExamplesContent` / item `4`
-
-```axaml
-<StackPanel Orientation="Vertical" Spacing="10">
-    <atom:Skeleton IsLoading="{Binding SkeletonLoading}">
-        <StackPanel Orientation="Vertical" Spacing="20">
-            <atom:TextBlock FontWeight="Bold" Text="AtomUI，一套设计语言" />
-            <atom:TextBlock TextWrapping="Wrap" Text="我们提供一系列设计原则、实用模式和高质量设计资源（Sketch 和 Axure），帮助人们高效而优雅地创建产品原型。" />
-        </StackPanel>
-    </atom:Skeleton>
-    <atom:Button IsEnabled="{Binding SkeletonLoading, Converter={x:Static BoolConverters.Not}}"
-                 Click="HandleLoadingButtonClicked" Content="显示骨架屏" />
-</StackPanel>
-```
-
 ## 状态模型
 
 Skeleton 的状态流按以下路径收敛：

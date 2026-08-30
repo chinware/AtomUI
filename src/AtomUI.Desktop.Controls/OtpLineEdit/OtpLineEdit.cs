@@ -14,13 +14,13 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
-public class OtpLineEdit : TemplatedControl,
-                           IMotionAwareControl,
-                           ICustomizableSizeTypeAware,
-                           IInputControlStyleVariantAware,
-                           IInputControlStatusAware,
-                           IFormItemAware,
-                           IFormItemFeedbackAware
+public partial class OtpLineEdit : TemplatedControl,
+                                   IMotionAwareControl,
+                                   ICustomizableSizeTypeAware,
+                                   IInputControlStyleVariantAware,
+                                   IInputControlStatusAware,
+                                   IFormItemAware,
+                                   IFormItemFeedbackAware
 {
     #region 公共属性定义
 

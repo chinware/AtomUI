@@ -164,7 +164,7 @@ public event EventHandler<StepsCurrentChangeRequestedEventArgs>?
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml:99`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml:98`
 
 SourceKey：`steps-basic`
 
@@ -178,7 +178,7 @@ SourceKey：`steps-basic`
 
 ### 迷你版本
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml:117`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml:116`
 
 SourceKey：`steps-small`
 
@@ -192,7 +192,7 @@ SourceKey：`steps-small`
 
 ### 垂直方向
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml:200`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml:199`
 
 SourceKey：`steps-vertical`
 
@@ -206,7 +206,7 @@ SourceKey：`steps-vertical`
 
 ### 垂直迷你版本
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml:218`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml:217`
 
 SourceKey：`steps-vertical-small`
 

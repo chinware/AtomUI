@@ -1,5 +1,24 @@
 # LineEdit Changelog
 
+## 2026-08-29
+
+- Contract
+  - Register the `OtpLineEdit` Semantic Part descriptor (`root`, `cellList`, `cell`, `separator`), matching the model documented in `otp-line-edit/overview.md`. `cell` and `separator` are `Multiple` + RuntimeCreated parts realized by the cells host's item template through the internal `.semantic-scope-cell` route scope.
+- API
+  - Center the `OtpLineEdit` separator glyph automatically: the new internal `OtpSeparatorPresenter` measures the glyph ink box from the current font's glyph metrics at display time and translates the ink center onto the line-box center, so any character, font, and font size renders centered without per-character tuning. The interim `SeparatorGlyphCompensationRatioX/Y` properties and the compensation tokens were removed before release; measurement falls back to no translation when glyph metrics are unavailable, and custom `SeparatorTemplate` content owns its own centering.
+- Gallery
+  - Add the `OtpLineEdit` Semantic Part preview to the LineEdit Semantic Parts tab, listing the four registered parts next to the LineEdit, Password, TextArea, and SearchEdit previews. The preview uses an empty value without the clear button and zero compensation so the `-` separator stays centered.
+
+## 2026-08-28
+
+- Contract
+  - Register dedicated Semantic Part descriptors for `SearchEdit` (`root`, `prefix`, `input`, `suffix`, `clear`, `button`) and `TextArea` (`root`, `textarea`, `clear`, `count`). Each descriptor stays bound to its public owner; inheritance or template reuse does not grant another owner's Semantic Styles.
+  - Mark `SearchEdit`'s search `button` as a RuntimeCreated part: the marker class is applied by `SearchEditDecoratedBox` after template application, and the generated `SearchEditButtonStyle` route documents the decorated-box scope.
+- Docs
+  - Rewrite the family Semantic Part contract to cover the three registered owners, their style types and customization boundaries; drop the earlier "not registered this round" boundary statements.
+  - Document the compensation tokens for OTP separator glyph alignment and the self-drawn focused-cell caret for `OtpLineEdit`.
+
+
 本文档记录 LineEdit 输入控件家族级设计、API、主题契约、Token 和实现结构的变化。它用于维护控件设计历史，不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
 记录原则：

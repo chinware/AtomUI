@@ -91,7 +91,7 @@ Pagination 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 ### 基础分页
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:86`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:84`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -101,7 +101,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 受控绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:100`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:98`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -140,7 +140,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 对齐方式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:142`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:140`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -154,7 +154,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 更多页码
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:159`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/Pagination/Views/PaginationShowCase.axaml:157`
 
 Gallery key：`ExamplesContent` / item `3`
 

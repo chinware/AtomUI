@@ -194,8 +194,10 @@ effective width = ScrollViewer.Viewport.Width
 
 ### 7.7 Semantic Part 映射
 
-`LineEdit.SemanticParts.cs` 只声明 public owner `LineEdit`。generator 在编译期补齐 root descriptor，并为五个 selector Part
-生成强类型 Style。`SearchEdit` 虽继承 `LineEdit`，本轮不注册 descriptor；Semantic registry 不通过继承或模板扫描推断 owner。
+`LineEdit.SemanticParts.cs`、`SearchEdit.SemanticParts.cs` 与 `TextArea.SemanticParts.cs` 分别声明各自的 public
+owner。generator 在编译期补齐 root descriptor，并为各 selector Part 生成强类型 Style；`SearchEdit` 的 `button` Part
+为 RuntimeCreated 契约，marker 由 `SearchEditDecoratedBox` 在模板应用后追加。Semantic registry 不通过继承或模板扫描
+推断 owner。
 
 模板映射：
 

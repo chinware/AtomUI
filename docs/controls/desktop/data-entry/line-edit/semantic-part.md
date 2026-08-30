@@ -1,15 +1,17 @@
-# LineEdit Semantic Part 契约
+# LineEdit 家族 Semantic Part 契约
 
-本文档定义 `LineEdit` 对应用公开的 Semantic Part、Selector、类型约束、数量语义和定制边界。LineEdit 的整体设计见
+本文档定义 LineEdit 输入控件家族公开的 Semantic Part、Selector、类型约束、数量语义和定制边界，覆盖 public owner
+`LineEdit`、`SearchEdit` 与 `TextArea`。家族整体设计见
 [LineEdit 桌面版架构设计](overview.md)，真实模板、状态投影与尺寸基线见
 [LineEdit 桌面版实现原理](implementation.md)，系统级规则见
 [AtomUI Semantic Part 系统设计](../../../../architecture/systems/theming/semantic-parts.md)。
 
 ## 1. Semantic Parts
 
-`LineEdit` 公开 `root`、`prefix`、`input`、`suffix`、`clear`、`count` 六个职责区域。契约只属于 public owner
-`LineEdit`；`SearchEdit`、`TextArea`、`TextBox` 以及 internal `AddOnDecoratedBox` 本轮不注册独立 descriptor。
-它们即使复用相邻模板结构，也不能通过继承关系自动获得 LineEdit 的 owner-scoped Semantic Style。
+`LineEdit` 公开 `root`、`prefix`、`input`、`suffix`、`clear`、`count` 六个职责区域（§1.1–1.6）；`SearchEdit`
+公开 `root`、`prefix`、`input`、`suffix`、`clear`、`button`（§1.7）；`TextArea` 公开 `root`、`textarea`、`clear`、
+`count`（§1.8）。每个 descriptor 只属于各自的 public owner；`TextBox` 与 internal `AddOnDecoratedBox` 不注册独立
+descriptor，也不能通过继承关系自动获得其他 owner 的 owner-scoped Semantic Style。
 
 ### 1.1 `root`
 
@@ -156,6 +158,60 @@ Button 级交互属性；清除命令仍必须进入 `NotifyClearButtonClicked()
 `count` 节点始终存在，`IsShowCount=false` 只切换可见性。它适合定制 `Foreground`、`FontSize`、`FontWeight`、`Opacity`、
 `Margin` 和对齐；计数格式和刷新时机由 `AbstractTextInput` 维护，不属于 Semantic Style。
 
+### 1.7 `SearchEdit`
+
+`SearchEdit` 注册独立 descriptor，Part 集合为 `root`、`prefix`、`input`、`suffix`、`clear`、`button`。`prefix`、
+`input`、`suffix`、`clear` 的 selector、route、`ContractType` 与 LineEdit 同名 Part 一致，只是 owner-scoped Style
+类型换为 `SearchEdit*` 前缀（如 `SearchEditInputStyle`，`SetterTargetType` 仍为最低 public 类型）。以下只列出差异字段：
+
+| 字段 | `button` |
+| --- | --- |
+| Owner | `SearchEdit` |
+| Part | `button` |
+| Selector | `.semantic-button` |
+| SelectorRoute | `/template/ .semantic-scope-input-frame /template/ .semantic-button` |
+| Style Type | `SearchEditButtonStyle` |
+| ContractType | `Button`（AtomUI） |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | internal `SearchEditDecoratedBox` 模板内的 `atom:Button#PART_RightAddOn` |
+| 职责 | 承载搜索动作按钮的根视觉、文字与图标（loading 状态沿用按钮自身的 loading 呈现）。 |
+| 相关 API | `SearchButtonStyle`、`SearchButtonText`、`SearchButtonTheme`、`IsOperating` |
+| 稳定性 | stable since 6.0 |
+
+`button` 的 marker 由 `SearchEditDecoratedBox` 在模板应用后通过 C# 追加（RuntimeCreated 契约），因此主题资产内没有
+静态 `Classes.semantic-button` 声明。`SearchEdit` 不提供 `count` Part：其模板不包含计数指示器。`root` 不生成 Style；
+用户定制搜索按钮整体背景 / 边框时应作用在 `button` Part 而不是 `root`。
+
+### 1.8 `TextArea`
+
+`TextArea` 注册独立 descriptor，Part 集合为 `root`、`textarea`、`clear`、`count`。`clear`、`count` 的 selector、
+route、`ContractType` 与 LineEdit 同名 Part 一致（`TextArea*` Style 前缀）；`root` 由生成器隐式补齐。以下只列出
+差异字段：
+
+| 字段 | `textarea` |
+| --- | --- |
+| Owner | `TextArea` |
+| Part | `textarea` |
+| Selector | `.semantic-textarea` |
+| SelectorRoute | `/template/ .semantic-textarea` |
+| Style Type | `TextAreaTextareaStyle` |
+| ContractType | `TextPresenter` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `InputTextPresenter#PART_TextPresenter` |
+| 职责 | 承载多行文本的输入、光标、选择与换行展示。 |
+| 相关 API | `Text`、`Lines`、`MinLines`、`MaxLines`、`IsAutoSize`、`IsResizable` |
+| 稳定性 | stable since 6.0 |
+
+`TextArea` 的 `count` 位于 owner 模板底部（DockPanel 下缘），route 为默认 `/template/ .semantic-count`；`clear`
+位于右侧 addon 区，route 与 LineEdit 同形。`TextArea` 不提供 `prefix` / `suffix` Part；resize handle 与
+`Placeholder` 文本不属于 Semantic Part。
+
 ## 2. Selector 用法
 
 生成的 Style Type 已封装 LineEdit owner 类型保护和跨 `AddOnDecoratedBox` 模板的 `SelectorRoute`，应用不直接复制
@@ -192,7 +248,8 @@ Button 级交互属性；清除命令仍必须进入 `NotifyClearButtonClicked()
 - 把 `ContentPresenter.semantic-prefix`、`TextPresenter.semantic-input` 等 `ContractType` 写入 Part 身份 selector。
 - 直接复制多层 `/template/ .semantic-scope-*` route；这些 scope class 只用于生成 Style 的 owner-relative 路由。
 - 穿过 `InnerLeftContentTemplate` / `InnerRightContentTemplate` 创建的用户内容继续匹配内部 Visual。
-- 把 `SearchEdit`、`TextArea` 或 `TextBox` 当作 LineEdit descriptor owner。
+- 把 `TextBox` 当作 LineEdit / SearchEdit / TextArea 的 descriptor owner；`SearchEdit` 与 `TextArea` 的
+  契约属于各自 owner，不因继承或模板复用自动获得 LineEdit descriptor。
 
 ## 3. 状态与数量语义
 
@@ -231,7 +288,8 @@ CompactSpace 几何，不能把偏离基线解释为 descriptor 问题。
 - placeholder、scroll viewer、selection、caret、密码 reveal 按钮和 Form feedback。
 - `InnerRightContentTemplate` / `InnerLeftContentTemplate` 创建的用户子树。
 - `InputControlFrame` 的边框绘制节点、CompactSpace 几何、effective status 和 motion actor。
-- `SearchEdit` 搜索按钮、`TextArea` resize handle、`TextBox` 基础模板和 `OtpLineEdit` 单元格。
+- `TextArea` resize handle、`TextBox` 基础模板和 `OtpLineEdit` 单元格；`SearchEdit` 的搜索按钮由
+  `SearchEdit` 自身的 `button` Part 覆盖（见 1.7）。
 - `PART_*` 名称、internal 类型、`.semantic-scope-*` 路由标记与模板层级。
 
 默认主题不消费 `.semantic-*` selector；静态 marker 只提供应用样式命中点，不改变默认属性优先级或增加状态订阅。
@@ -245,12 +303,17 @@ marker，均属于公共主题契约变更。
 
 验证至少覆盖：
 
-- descriptor 只有 `root`、`prefix`、`input`、`suffix`、`clear`、`count`，字段值与本文一致；`SearchEdit` 不注册 descriptor。
+- `LineEdit` descriptor 只有 `root`、`prefix`、`input`、`suffix`、`clear`、`count`，字段值与本文一致；
+  `SearchEdit` 注册 `root`、`prefix`、`input`、`suffix`、`clear`、`button`；`TextArea` 注册
+  `root`、`textarea`、`clear`、`count`；`OtpLineEdit` 注册 `root`、`cellList`、`cell`、`separator`
+  （`cell`、`separator` 为 `Multiple` + RuntimeCreated），字段值与 `otp-line-edit/overview.md` 一致。
 - LineEdit 模板的五个公开 marker 与三个内部 route scope 静态存在，prefix 使用 `AddOnContentPresenter` 保持 template-only 语义，root 不声明 `.semantic-root`。
 - 生成的 `LineEdit*Style` 可以编译并跨 LineEdit / AddOnDecoratedBox 两层模板命中最低 public `ContractType`。
 - clear、count、prefix、suffix 在内容、可见性、read-only、disabled、status 与 focus 变化时保持对象身份和 `Single` 数量。
 - Large / Middle / Small × Outlined / Filled / Borderless / Underlined 尺寸矩阵保持本文基线。
 - prefix 同时支持 `InnerLeftContent`、`InnerLeftContentTemplate` 和 template-only 输入，不丢失内容。
 - 默认主题不消费 `.semantic-*`，未声明用户 Semantic Style 时不增加 selector activator。
-- Gallery Semantic Parts Tab 延迟创建 Preview，并展示六个 Part 与强类型 Style 示例。
+- Gallery Semantic Parts Tab 延迟创建 Preview，展示 LineEdit 六 Part、LineEdit 密码模式（Password）六 Part、
+  SearchEdit 六 Part（含 RuntimeCreated 搜索按钮）、TextArea 四 Part 与 OtpLineEdit 四 Part（`cell`、
+  `separator` 为 Multiple + RuntimeCreated）的强类型 Style 示例，且每个可静态解析的 Part 均可高亮解析唯一目标。
 - descriptor、生成 Style 与 NativeAOT 路径使用编译期生成数据，不依赖运行时反射或 VisualTree 扫描。

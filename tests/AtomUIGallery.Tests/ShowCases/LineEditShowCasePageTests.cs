@@ -1,5 +1,10 @@
 using System.Security.Cryptography;
 using System.Text;
+using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
+using AvaloniaWindow = Avalonia.Controls.Window;
 using Shouldly;
 using Xunit;
 
@@ -95,6 +100,52 @@ public class LineEditShowCasePageTests
             source.ShouldContain($"Path=\"{path}\"");
         }
 
+        source.ShouldContain("Title=\"TextArea\"");
+        source.ShouldContain("SemanticOwner=\"{Binding #TextAreaSemanticOwner}\"");
+        source.ShouldContain("SemanticOwnerType=\"{x:Type atom:TextArea}\"");
+        source.ShouldContain("Name=\"TextAreaSemanticOwner\"");
+        source.ShouldContain("Path=\"textarea\"");
+        source.ShouldContain("IsShowCount=\"True\"");
+        source.ShouldContain("MaxLength=\"100\"");
+
+        source.ShouldContain("Title=\"SearchEdit\"");
+        source.ShouldContain("SemanticOwner=\"{Binding #SearchEditSemanticOwner}\"");
+        source.ShouldContain("SemanticOwnerType=\"{x:Type atom:SearchEdit}\"");
+        source.ShouldContain("Name=\"SearchEditSemanticOwner\"");
+        source.ShouldContain("Path=\"button\"");
+        source.ShouldContain("SearchButtonStyle=\"Primary\"");
+        source.ShouldContain("IsOperating=\"True\"");
+
+        var passwordPreview = ExtractSemanticPreview(source, "Name=\"PasswordSemanticPreview\"");
+        passwordPreview.ShouldContain("Title=\"Password\"");
+        passwordPreview.ShouldContain("SemanticOwner=\"{Binding #PasswordSemanticOwner}\"");
+        passwordPreview.ShouldContain("SemanticOwnerType=\"{x:Type atom:LineEdit}\"");
+        passwordPreview.ShouldContain("Name=\"PasswordSemanticOwner\"");
+        passwordPreview.ShouldContain("PasswordChar=\"•\"");
+        passwordPreview.ShouldContain("RevealPassword=\"False\"");
+        passwordPreview.ShouldContain("IsEnableRevealButton=\"True\"");
+        passwordPreview.ShouldContain("InnerLeftContent=\"{antdicons:AntDesignIconProvider Kind=UserOutlined}\"");
+        passwordPreview.ShouldContain("IsAllowClear=\"True\"");
+        passwordPreview.ShouldContain("IsShowCount=\"True\"");
+        passwordPreview.ShouldContain("MaxLength=\"20\"");
+        foreach (var path in new[] { "root", "prefix", "input", "suffix", "clear", "count" })
+        {
+            passwordPreview.ShouldContain($"Path=\"{path}\"");
+        }
+
+        var otpPreview = ExtractSemanticPreview(source, "Name=\"OtpSemanticPreview\"");
+        otpPreview.ShouldContain("Title=\"OtpLineEdit\"");
+        otpPreview.ShouldContain("SemanticOwner=\"{Binding #OtpSemanticOwner}\"");
+        otpPreview.ShouldContain("SemanticOwnerType=\"{x:Type atom:OtpLineEdit}\"");
+        otpPreview.ShouldContain("Name=\"OtpSemanticOwner\"");
+        otpPreview.ShouldContain("Length=\"6\"");
+        otpPreview.ShouldContain("Separator=\"-\"");
+        otpPreview.ShouldNotContain("IsAllowClear");
+        foreach (var path in new[] { "root", "cell", "cellList", "separator" })
+        {
+            otpPreview.ShouldContain($"Path=\"{path}\"");
+        }
+
         semanticExample.ShouldContain("SourceKey=\"line-edit-semantic-part\"");
         semanticExample.ShouldContain("BadgeText=\"{x:Static gallery:GalleryVersionInfo.DisplayVersion}\"");
         semanticExample.ShouldContain("Selector=\"atom|LineEdit.style-class-base\"");
@@ -139,6 +190,22 @@ public class LineEditShowCasePageTests
         }
         english.ShouldContain("<source>Custom semantic dom styling</source>");
 
+        foreach (var caption in new[]
+                 {
+                     "SemanticTextAreaRootDescription", "SemanticTextAreaDescription",
+                     "SemanticTextAreaClearDescription", "SemanticTextAreaCountDescription",
+                     "SemanticSearchRootDescription", "SemanticSearchPrefixDescription",
+                     "SemanticSearchInputDescription", "SemanticSearchSuffixDescription",
+                     "SemanticSearchClearDescription", "SemanticSearchButtonDescription",
+                     "SemanticPasswordRootDescription", "SemanticPasswordPrefixDescription",
+                     "SemanticPasswordInputDescription", "SemanticPasswordSuffixDescription",
+                     "SemanticPasswordClearDescription", "SemanticPasswordCountDescription",
+                     "SemanticOtpRootDescription", "SemanticOtpCellListDescription",
+                     "SemanticOtpCellDescription", "SemanticOtpSeparatorDescription"
+                 })
+        {
+            english.ShouldContain($"unit id=\"{caption}\"");
+        }
         english.ShouldContain("unit id=\"SemanticRootDescription\"");
         english.ShouldContain("unit id=\"SemanticPrefixDescription\"");
         english.ShouldContain("unit id=\"SemanticInputDescription\"");
@@ -262,6 +329,66 @@ public class LineEditShowCasePageTests
     }
 
     [Fact]
+    public void Diag_Maximized_Preview_Geometry()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+        var page = new AtomUIGallery.ShowCases.LineEdit.LineEditShowCase();
+
+        var visualLayerManager = new Avalonia.Controls.Primitives.VisualLayerManager
+        {
+            EnableAdornerLayer = true,
+            Child = page
+        };
+        var window = new AvaloniaWindow
+        {
+            Content = visualLayerManager,
+            Width = 1920,
+            Height = 1040
+        };
+        window.Show();
+        try
+        {
+            var host = page.GetVisualDescendants()
+                           .OfType<AtomUI.Toolkits.GalleryBase.Controls.GalleryShowCaseHost>()
+                           .Single();
+            host.SelectedTab = AtomUI.Toolkits.GalleryBase.Controls.GalleryShowCaseTab.SemanticParts;
+            for (var round = 0; round < 8; round++)
+            {
+                Dispatcher.UIThread.RunJobs();
+                window.UpdateLayout();
+            }
+
+            var sb = new System.Text.StringBuilder();
+            foreach (var preview in page.GetVisualDescendants()
+                                        .OfType<AtomUI.Toolkits.GalleryBase.Controls.SemanticPartPreview>())
+            {
+                sb.AppendLine($"preview {preview.Title}: bounds={preview.Bounds}");
+                var layout = preview.GetVisualDescendants()
+                                    .FirstOrDefault(static candidate =>
+                                        candidate.GetType().Name.Contains("SemanticPartPreviewLayoutPanel"));
+                if (layout is not null)
+                {
+                    sb.AppendLine($"  layout bounds={layout.Bounds}");
+                }
+
+                var stage = preview.GetVisualDescendants()
+                                   .OfType<Border>()
+                                   .FirstOrDefault(static candidate => candidate.Name == "PART_PreviewStage");
+                var pane = preview.GetVisualDescendants()
+                                  .OfType<Border>()
+                                  .FirstOrDefault(static candidate => candidate.Name == "PART_PartsPane");
+                sb.AppendLine($"  stage bounds={stage?.Bounds.ToString() ?? "null"} pane bounds={pane?.Bounds.ToString() ?? "null"} paneVisible={pane?.IsEffectivelyVisible}");
+            }
+            throw new Exception(sb.ToString());
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    [Fact]
     public void LineEdit_ShowCase_Examples_Match_Approved_Control_Demo_Content()
     {
         var source   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml");
@@ -284,6 +411,23 @@ public class LineEditShowCasePageTests
         panelCloseStart.ShouldBeGreaterThan(firstItemStart);
 
         return StripDeferredLoadingMarkup(source[firstItemStart..panelCloseStart]);
+    }
+
+    private static string ExtractSemanticPreview(string source, string nameMarker)
+    {
+        var nameIndex = source.IndexOf(nameMarker, StringComparison.Ordinal);
+        nameIndex.ShouldBeGreaterThanOrEqualTo(0);
+
+        const string previewStartMarker = "<gallery:SemanticPartPreview";
+        const string previewEndMarker   = "</gallery:SemanticPartPreview>";
+
+        var previewStart = source.LastIndexOf(previewStartMarker, nameIndex, StringComparison.Ordinal);
+        previewStart.ShouldBeGreaterThanOrEqualTo(0);
+
+        var previewEnd = source.IndexOf(previewEndMarker, nameIndex, StringComparison.Ordinal);
+        previewEnd.ShouldBeGreaterThan(nameIndex);
+
+        return source[previewStart..(previewEnd + previewEndMarker.Length)];
     }
 
     private static string ExtractShowCaseItem(string source, string titleMarker)

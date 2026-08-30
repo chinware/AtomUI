@@ -76,7 +76,7 @@ Space 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 ### 垂直间距
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:119`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:118`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -107,7 +107,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 间距尺寸
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:150`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:149`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -142,7 +142,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 对齐
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:185`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:184`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -182,7 +182,7 @@ Gallery key：`ExamplesContent` / item `3`
 
 ### 自动换行
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:225`
+来源：`controlgallery/AtomUIGallery/ShowCases/Layout/Space/Views/SpaceShowCase.axaml:224`
 
 Gallery key：`ExamplesContent` / item `4`
 

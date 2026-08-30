@@ -73,7 +73,7 @@ TabStrip 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml:125`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml:122`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -89,7 +89,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 通过 ItemSource 生成 TabStripItem
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml:142`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml:139`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -107,7 +107,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 禁用标签
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml:251`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml:248`
 
 Gallery key：`ExamplesContent` / item `4`
 
@@ -129,7 +129,7 @@ Gallery key：`ExamplesContent` / item `4`
 
 ### 居中显示
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml:274`
+来源：`controlgallery/AtomUIGallery/ShowCases/Navigation/TabStrip/Views/TabStripShowCase.axaml:271`
 
 Gallery key：`ExamplesContent` / item `5`
 

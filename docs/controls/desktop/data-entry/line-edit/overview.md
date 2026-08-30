@@ -253,7 +253,7 @@ LineEdit 是 Data Entry 文本输入家族的根入口，与 NumericUpDown、Dat
 - Form feedback 订阅必须在 detach 时释放。
 - TextPresenter 的 margin、placeholder、selection、caret 和 disabled 文本色属于输入模板契约，不应在业务控件中用 magic width 补偿。
 - LineEdit 的 `root`、`prefix`、`input`、`suffix`、`clear`、`count` Part 名称、route、最低 public `ContractType` 与 `Single` 数量语义必须保持稳定。
-- `SearchEdit`、`TextArea`、`TextBox` 不因继承或模板复用自动获得 LineEdit descriptor；扩展其契约必须单独评审 public owner 边界。
+- `SearchEdit` 与 `TextArea` 拥有各自注册的 descriptor（见 Semantic Part 契约 1.7 / 1.8）；`TextBox` 不因继承或模板复用自动获得家族 descriptor，扩展其契约必须单独评审 public owner 边界。
 
 ## 8. 专项模型
 
@@ -275,8 +275,10 @@ TextArea 支持固定行数、自动高度和拖拽 resize。固定行数模式�
 suffix、clear、count 的内容或可见性变化不增删 marker。完整 selector route、`ContractType`、尺寸矩阵和定制边界见
 [LineEdit Semantic Part 契约](semantic-part.md)。
 
-该契约只属于 `LineEdit` owner。`SearchEdit`、`TextArea`、`TextBox` 与 `OtpLineEdit` 本轮不注册同名 descriptor，
-placeholder、reveal、Form feedback、外部 AddOn 和用户内容模板子树也不属于 LineEdit Semantic Part。
+`LineEdit`、`SearchEdit` 与 `TextArea` 各自注册独立 descriptor：`SearchEdit` 额外提供 `button` Part，
+`TextArea` 提供 `textarea` Part。placeholder、reveal、Form feedback、外部 AddOn 和用户内容模板子树仍不属于
+Semantic Part；完整 selector route、`ContractType` 与定制边界见
+[LineEdit 家族 Semantic Part 契约](semantic-part.md)。
 
 ## 9. 文档导航、LLMS 导出与验证策略
 

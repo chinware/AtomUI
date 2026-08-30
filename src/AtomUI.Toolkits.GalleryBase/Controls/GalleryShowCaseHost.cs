@@ -199,6 +199,13 @@ public class GalleryShowCaseHost : TemplatedControl
             }
         };
         _tabStrip.SelectionChanged += HandleTabSelectionChanged;
+
+        // TabStrip 会被 sticky 镜像/搬移呈现，离开页面视觉继承链；
+        // 显式绑定文字继承属性，保证钉住呈现与内联呈现字号一致。
+        _tabStrip.Bind(TemplatedControl.FontFamilyProperty, this.GetObservable(TemplatedControl.FontFamilyProperty));
+        _tabStrip.Bind(TemplatedControl.FontSizeProperty, this.GetObservable(TemplatedControl.FontSizeProperty));
+        _tabStrip.Bind(TemplatedControl.FontWeightProperty, this.GetObservable(TemplatedControl.FontWeightProperty));
+
         NavigationContent = _tabStrip;
     }
 

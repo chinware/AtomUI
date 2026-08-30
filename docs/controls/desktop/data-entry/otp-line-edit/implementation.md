@@ -11,6 +11,7 @@ OtpLineEdit 的实现以控件根节点作为值、焦点位置、验证状态�
 主要源码：
 
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEdit.cs`：公共 API、Avalonia 属性注册、事件、Form 接口、状态入口和模板生命周期。
+- `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEdit.SemanticParts.cs`：Semantic Part descriptor 声明（`root`、`cellList`、`cell`、`separator`），cell 与 separator 为 `Multiple` + RuntimeCreated。
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEditCell.cs`：内部 cell 控件，承载单字符显示、placeholder、active、mask 和事件回调。
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEditSeparatorContext.cs`：separator 模板上下文，提供前后 cell index 和 display index。
 - `src/AtomUI.Desktop.Controls/OtpLineEdit/OtpLineEditToken.cs`：cell 宽度和 cell 间距 Token。

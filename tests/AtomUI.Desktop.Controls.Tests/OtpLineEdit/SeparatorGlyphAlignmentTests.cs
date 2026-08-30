@@ -6,6 +6,7 @@ using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 using AtomUIOtpLineEdit = AtomUI.Desktop.Controls.OtpLineEdit;
+using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace AtomUI.Desktop.Controls.Tests.OtpLineEdit;
 
@@ -17,42 +18,41 @@ public class SeparatorGlyphAlignmentTests
     }
 
     [Fact]
-    public void Compensation_Scales_With_Font_Size()
+    public void Presenter_Falls_Back_To_No_Transform_When_Ink_Metrics_Are_Unavailable()
     {
-        var host = new ContentControl { FontSize = 14 };
-        OtpSeparatorGlyphAlignment.SetX(host, 0.10);
-        OtpSeparatorGlyphAlignment.SetY(host, 0.21);
+        // headless 测试宿主使用 BareMinimum 桩字体，字形度量退化，
+        // presenter 必须回退为不平移，而不是基于无效数据位移。
+        var otp = new AtomUIOtpLineEdit
+        {
+            Length          = 3,
+            Separator       = "*",
+            IsMotionEnabled = false
+        };
 
-        var transform = host.RenderTransform.ShouldBeOfType<TranslateTransform>();
-        transform.X.ShouldBe(1.4, 0.001);
-        transform.Y.ShouldBe(2.94, 0.001);
+        using var _ = Show(otp);
 
-        host.FontSize = 16;
-        Dispatcher.UIThread.RunJobs();
-        transform.X.ShouldBe(1.6, 0.001);
-        transform.Y.ShouldBe(3.36, 0.001);
+        var presenters = otp.GetVisualDescendants()
+                            .OfType<OtpSeparatorPresenter>()
+                            .ToArray();
+        presenters.ShouldNotBeEmpty();
+        foreach (var presenter in presenters)
+        {
+            presenter.ComputedInkOffsetX.ShouldBe(0);
+            presenter.ComputedInkOffsetY.ShouldBe(0);
+            presenter.RenderTransform.ShouldBeNull();
+        }
     }
 
     [Fact]
-    public void Zero_Compensation_Removes_Transform()
-    {
-        var host = new ContentControl { FontSize = 14 };
-        OtpSeparatorGlyphAlignment.SetX(host, 0.0);
-        OtpSeparatorGlyphAlignment.SetY(host, 0.0);
-
-        host.RenderTransform.ShouldBeNull();
-    }
-
-    [Fact]
-    public void Gallery_Separator_Receives_Token_Driven_Compensation()
+    public void Separator_Container_Stays_Centered_With_Adjacent_Cells()
     {
         var otp = new AtomUIOtpLineEdit
         {
-            Length = 2,
-            Separator = "*",
+            Length          = 3,
+            Separator       = "-",
             IsMotionEnabled = false
         };
-        var window = new Avalonia.Controls.Window { Width = 480, Height = 120, Content = otp };
+        var window = new AvaloniaWindow { Width = 480, Height = 120, Content = otp };
         window.Show();
         otp.ApplyTemplate();
         window.UpdateLayout();
@@ -60,17 +60,67 @@ public class SeparatorGlyphAlignmentTests
 
         try
         {
-            var separator = otp.GetVisualDescendants()
-                               .OfType<ContentControl>()
-                               .First(control => control.Name == "PART_SeparatorPresenter");
-            var transform = separator.RenderTransform.ShouldBeOfType<TranslateTransform>();
-            transform.Y.ShouldBeGreaterThan(0);
-            var token = OtpSeparatorGlyphAlignment.GetX(separator);
-            transform.X.ShouldBe(separator.FontSize * token, 0.001);
+            var cells = otp.GetVisualDescendants()
+                           .OfType<OtpLineEditCell>()
+                           .OrderBy(static cell => cell.Bounds.X)
+                           .ToArray();
+            cells.Length.ShouldBe(3);
+
+            var separators = otp.GetVisualDescendants()
+                                .OfType<Border>()
+                                .Where(static candidate =>
+                                    candidate.Classes.Contains("semantic-separator") &&
+                                    candidate.IsEffectivelyVisible)
+                                .OrderBy(static border => border.Bounds.X)
+                                .ToArray();
+            separators.Length.ShouldBe(2);
+
+            for (var index = 0; index < separators.Length; index++)
+            {
+                var leftCellCenter  = CenterInWindow(cells[index], window);
+                var rightCellCenter = CenterInWindow(cells[index + 1], window);
+                var separatorCenter = CenterInWindow(separators[index], window);
+
+                separatorCenter.Y.ShouldBe(leftCellCenter.Y, 1.0);
+                separatorCenter.Y.ShouldBe(rightCellCenter.Y, 1.0);
+
+                var leftCellRight = leftCellCenter.X + cells[index].Bounds.Width / 2;
+                var rightCellLeft = rightCellCenter.X - cells[index + 1].Bounds.Width / 2;
+                separatorCenter.X.ShouldBe((leftCellRight + rightCellLeft) / 2, 1.0);
+            }
         }
         finally
         {
             window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    private static Point CenterInWindow(Visual visual, Avalonia.Controls.Window window)
+    {
+        var topLeft = visual.TransformToVisual(window)!.Value.Transform(default);
+        return new Point(topLeft.X + visual.Bounds.Width / 2, topLeft.Y + visual.Bounds.Height / 2);
+    }
+
+    private static IDisposable Show(Control content)
+    {
+        var window = new AvaloniaWindow
+        {
+            Width   = 640,
+            Height  = 260,
+            Content = content
+        };
+        window.Show();
+        Dispatcher.UIThread.RunJobs();
+        return new WindowLifetime(window);
+    }
+
+    private sealed class WindowLifetime(AvaloniaWindow window) : IDisposable
+    {
+        public void Dispose()
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
         }
     }
 }

@@ -7,10 +7,9 @@
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
 | `root` | `OtpLineEdit` | 控件根语义区域，承载 public API、文本值、验证状态和主题入口。 | `Text`、`Length`、`Status`、`SizeType` | `OtpLineEditToken`、SharedToken | stable |
-| `cell-list` | `PART_CellsHost` | 根据 `Length` 展示 cell 和 separator。 | `Length`、`Separator` | `CellGap`、`CellWidth*` | template-stable |
+| `cellList` | `PART_CellsHost` | 根据 `Length` 展示 cell 和 separator。 | `Length`、`Separator` | `CellGap`、`CellWidth*` | template-stable |
 | `cell` | `OtpLineEditCell` | 展示单个字符、placeholder、mask、active/focus 和 error 状态。 | `Text`、`IsMasked`、`MaskChar` | `CellWidth`、LineEdit 输入字号 | internal-observable |
-| `action` | `PART_ClearButton` | 清空完整验证码文本。 | `IsAllowClear`、`Clear()` | 输入 action 主题资源 | template-stable |
-| `validation` | `PART_FormFeedBack` | 承载 Form feedback 和 native validation 投射。 | `Status`、`IFormItemAware` | SharedToken、Form Token | template-stable |
+| `separator` | 分隔符容器 Border | 展示 cell 之间的分隔符字形，由 `OtpSeparatorPresenter` 按墨迹盒自动居中。 | `Separator`、`SeparatorTemplate` | — | template-stable |
 
 ## Abstract AXAML Structure
 
@@ -36,7 +35,9 @@
 OtpLineEdit
   -> OtpLineEditCell (control theme, OtpLineEditCellTheme.axaml)
      -> PixelAlignedBorder#PART_Frame (template-stable)
-        -> ContentPresenter (internal-observable)
+        -> Panel (template-stable)
+           -> ContentPresenter (internal-observable)
+           -> Rectangle#PART_Caret (template-stable)
   -> OtpLineEdit (control theme, OtpLineEditTheme.axaml)
      -> Grid#PART_RootPanel (template-stable)
         -> StackPanel (template-stable)
@@ -57,7 +58,9 @@ OtpLineEdit
 | `OtpLineEdit` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `OtpLineEditCell` | control theme | `OtpLineEditCellTheme.axaml` | OtpLineEdit | `Background`, `BorderBrush`, `BorderThickness`, `BoxShadow`, `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_Frame` | template node (PixelAlignedBorder) | `OtpLineEditCellTheme.axaml` | OtpLineEditCell | `Background`, `BorderBrush`, `BorderThickness`, `BoxShadow`, `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Panel` | template node (Panel) | `OtpLineEditCellTheme.axaml` | OtpLineEditCell | `Content`, `ContentTemplate`, `HorizontalContentAlignment`, `VerticalContentAlignment` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentPresenter` | template node (ContentPresenter) | `OtpLineEditCellTheme.axaml` | OtpLineEditCell | `Content`, `ContentTemplate`, `HorizontalContentAlignment`, `VerticalContentAlignment` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_Caret` | template node (Rectangle) | `OtpLineEditCellTheme.axaml` | OtpLineEditCell | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `OtpLineEdit` | control theme | `OtpLineEditTheme.axaml` | 用户代码 / 控件宿主 | `CellItems`, `ClearIcon`, `FormFeedback`, `IsEffectiveShowClearButton`, `IsFormFeedbackVisible`, `IsMotionEnabled` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `PART_RootPanel` | template node (Grid) | `OtpLineEditTheme.axaml` | OtpLineEdit | `CellItems`, `ClearIcon`, `FormFeedback`, `IsEffectiveShowClearButton`, `IsFormFeedbackVisible`, `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `StackPanel` | template node (StackPanel) | `OtpLineEditTheme.axaml` | OtpLineEdit | `CellItems`, `ClearIcon`, `FormFeedback`, `IsEffectiveShowClearButton`, `IsFormFeedbackVisible`, `IsMotionEnabled` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
