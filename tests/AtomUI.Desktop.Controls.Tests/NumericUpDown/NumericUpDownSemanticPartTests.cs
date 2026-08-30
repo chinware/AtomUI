@@ -188,6 +188,35 @@ public class NumericUpDownSemanticPartTests
         }
     }
 
+    [Fact]
+    public void Clear_Button_Stays_Vertically_Centered_When_Suffix_Content_Is_Taller()
+    {
+        var stackPanel = new StackPanel { Width = 24, Height = 24 };
+        var numericUpDown = new AtomUINumericUpDown
+        {
+            Width = 320,
+            Value = 66m,
+            IsAllowClear = true,
+            InnerLeftContent = "$",
+            InnerRightContent = stackPanel,
+            IsMotionEnabled = false
+        };
+
+        var window = Show(numericUpDown);
+        try
+        {
+            var clear = FindSemanticControl<AvaloniaButton>(numericUpDown, ClearClass);
+            clear.IsEffectivelyVisible.ShouldBeTrue();
+            var clearCenter = clear.TransformToVisual(numericUpDown).ShouldNotBeNull()
+                                        .Transform(new Point(0, 0)).Y + clear.Bounds.Height / 2;
+            clearCenter.ShouldBe(numericUpDown.Bounds.Height / 2, 1.0);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     private static AtomUINumericUpDown CreatePopulatedNumericUpDown()
     {
         return new AtomUINumericUpDown

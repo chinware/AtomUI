@@ -12,6 +12,7 @@
 
 - Semantic Part
   - Add Semantic Part descriptors for `NumericUpDown`: `root`（owner）、`prefix`（`AddOnContentPresenter`，`.semantic-prefix`，`ContractType` 为 `ContentPresenter`）、`input`（`EmbeddedTextBox#PART_TextBox`，`.semantic-input`，`ContractType` 为 AtomUI `TextBox`）、`suffix`（内部 `StackPanel`，`.semantic-suffix`）与 `clear`（`InputClearIconButton#PART_ClearButton`，`.semantic-clear`，`ContractType` 为 `Avalonia.Controls.Button`）。所有 Part 均为 `Single`。
+  - Fix the `clear` button riding the top of the suffix row: the button template node now pins `VerticalAlignment="Center"` in both mode templates (matching LineEdit) instead of inheriting the `IconButtonTheme` `Top` default, which made the button overshoot the frame top whenever suffix content was taller than the icon.
   - Add static `Classes.semantic-*="True"` markers to both the Input-mode and Spinner-mode templates; `Mode` 切换重建模板子树后仍提供相同 Part 集合。
   - Route `prefix` / `suffix` / `clear` through the spinner scope (`.semantic-scope-spinner`), decorated-box scope (`.semantic-scope-frame`, annotated in `ButtonSpinnerTheme` and `NumericUpDownSpinnerTheme`) and the shared content add-on slots (`.semantic-scope-prefix` / `.semantic-scope-suffix`, annotated in `AddOnDecoratedBoxTheme` and `ButtonSpinnerDecoratedBoxTheme`).
   - Align the Spinner-mode `NumericUpDownSpinner` template to present `InnerLeftContent` / `InnerRightContent` through the decorated box `ContentLeftAddOn` / `ContentRightAddOn` slots, matching the Input-mode structure so both variants share one `SelectorRoute` per part.

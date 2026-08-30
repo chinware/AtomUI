@@ -46,6 +46,7 @@
                             <atom:InputClearIconButton
                                 Name="PART_ClearButton"
                                 Classes.semantic-clear="True"
+                                VerticalAlignment="Center"
                                 IsPassthroughMouseEvent="False" />
                             <atom:AddOnContentPresenter
                                 Name="PART_InnerRightContentPresenter"
@@ -122,6 +123,7 @@
                                 <atom:InputClearIconButton
                                     Name="PART_ClearButton"
                                     Classes.semantic-clear="True"
+                                    VerticalAlignment="Center"
                                     IsPassthroughMouseEvent="False" />
                                 <atom:AddOnContentPresenter
                                     Name="PART_InnerRightContentPresenter"
