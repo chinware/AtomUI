@@ -19,7 +19,7 @@ namespace AtomUI.Desktop.Controls;
 [SemanticPart(
     "suffix",
     SelectorClass = "semantic-suffix",
-    SelectorRoute = "/template/ .semantic-scope-spinner /template/ .semantic-scope-frame /template/ .semantic-scope-suffix > .semantic-suffix",
+    SelectorRoute = "/template/ .semantic-suffix",
     ContractType = typeof(StackPanel),
     Since = "6.0")]
 [SemanticPart(

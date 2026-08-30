@@ -49,7 +49,7 @@ public class NumericUpDownSemanticPartTests
         AssertPart(descriptor, "prefix", PrefixClass, typeof(ContentPresenter),
             "/template/ .semantic-scope-spinner /template/ .semantic-scope-frame /template/ .semantic-scope-prefix > .semantic-prefix");
         AssertPart(descriptor, "suffix", SuffixClass, typeof(StackPanel),
-            "/template/ .semantic-scope-spinner /template/ .semantic-scope-frame /template/ .semantic-scope-suffix > .semantic-suffix");
+            "/template/ .semantic-suffix");
     }
 
     [Fact]
