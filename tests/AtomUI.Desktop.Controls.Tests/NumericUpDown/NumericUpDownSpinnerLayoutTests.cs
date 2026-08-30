@@ -1,5 +1,10 @@
+using System.IO;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Primitives;
+using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -52,6 +57,55 @@ public class NumericUpDownSpinnerLayoutTests
             var frameCenter = frame.TransformToVisual(textBox).ShouldNotBeNull()
                                        .Transform(new Point(0, 0)).Y + frame.Bounds.Height / 2;
             frameCenter.ShouldBe(textBox.Bounds.Height / 2, 0.5);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Suffix_Group_Keeps_A_Visible_Gap_From_The_Spinner_Action_Divider()
+    {
+        var numericUpDown = new AtomUINumericUpDown
+        {
+            Width = 320,
+            Mode = NumericUpDownMode.Spinner,
+            Minimum = 1,
+            Maximum = 100,
+            Value = 10m,
+            IsAllowClear = true,
+            InnerLeftContent = "$",
+            InnerRightContent = "kg",
+            IsMotionEnabled = false
+        };
+
+        var window = new AvaloniaWindow { Width = 480, Height = 120, Content = numericUpDown };
+        window.Show();
+        numericUpDown.ApplyTemplate();
+        window.UpdateLayout();
+        Dispatcher.UIThread.RunJobs();
+        window.UpdateLayout();
+        Dispatcher.UIThread.RunJobs();
+
+        try
+        {
+            var suffix = numericUpDown.GetVisualDescendants()
+                                      .OfType<StackPanel>()
+                                      .Single(control => control.Classes.Contains("semantic-suffix"));
+            var segmentFrames = numericUpDown.GetVisualDescendants()
+                                             .OfType<Layoutable>()
+                                             .Where(control => control.Name == "Frame")
+                                             .Select(control => (Layout: control,
+                                                 X: control.TransformToVisual(numericUpDown).ShouldNotBeNull()
+                                                     .Transform(new Point(0, 0)).X))
+                                             .ToArray();
+            segmentFrames.ShouldNotBeEmpty();
+            var increaseDividerX = segmentFrames.Max(static entry => entry.X);
+
+            var suffixRight = suffix.TransformToVisual(numericUpDown).ShouldNotBeNull()
+                                    .Transform(new Point(0, 0)).X + suffix.Bounds.Width;
+            (increaseDividerX - suffixRight).ShouldBeGreaterThanOrEqualTo(6d);
         }
         finally
         {

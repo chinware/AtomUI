@@ -123,6 +123,7 @@
                             <StackPanel Orientation="Horizontal"
                                         Classes.semantic-suffix="True"
                                         DockPanel.Dock="Right"
+                                        Margin="0,0,8,0"
                                         Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
                                 <atom:InputClearIconButton
                                     Name="PART_ClearButton"
