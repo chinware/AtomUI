@@ -32,18 +32,29 @@
                  Link="LinkedRegistrationProtocol/LinkedRegistrationManifestCodec.cs" />
     </ItemGroup>
 
-    <!-- Stamp the shadow key next to the built toolset. The key is the content hash of the
-         compiled assembly: builds are deterministic, so no-op recompiles keep the key stable
-         and consumers only switch shadow directories when the toolset actually changes.
-         AfterTargets="CoreCompile" fires even for up-to-date (skipped) compiles, which is
-         harmless because the hash of the unchanged intermediate assembly stays the same.
-         Consumers import the stamped props file at evaluation time; see
-         AtomUIBuildTasksAssembly in build/AtomUI.Repository.props. -->
-    <Target Name="_AtomUIWriteBuildTasksShadowKey" AfterTargets="CoreCompile">
+    <!-- Publish the toolset into the content-addressed cache and only then stamp the shadow
+         key next to the built toolset. The key is the content hash of the compiled assembly:
+         builds are deterministic, so no-op recompiles keep the key stable. Ordering matters:
+         the cache directory for a key is fully populated BEFORE the key becomes visible to
+         consumer evaluations, so a UsingTask path that an evaluation resolves can never be
+         missing. Cache directories are write-once; rebuilds that change toolset content land
+         in a fresh directory, so a lingering task host locking a previous copy can never
+         block the build. AfterTargets="CopyFilesToOutputDirectory" fires even for up-to-date
+         (skipped) builds and guarantees the output files are already in the shared output
+         folder when the cache is staged. Consumers import the stamped props file at
+         evaluation time; see AtomUIBuildTasksAssembly in build/AtomUI.Repository.props. -->
+    <Target Name="_AtomUIWriteBuildTasksShadowKey" AfterTargets="CopyFilesToOutputDirectory">
         <GetFileHash Files="@(IntermediateAssembly)" Algorithm="SHA256">
             <Output TaskParameter="Hash" PropertyName="_AtomUIBuildTasksShadowKey" />
         </GetFileHash>
         <MakeDir Directories="$(OutputPathWithoutFramework)/netstandard2.0" />
+        <ItemGroup>
+            <_AtomUIBuildTasksCachedToolsetFile Include="$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.Build.Tasks.dll" />
+            <_AtomUIBuildTasksCachedToolsetFile Include="$(OutputPathWithoutFramework)/netstandard2.0/System.*.dll" />
+        </ItemGroup>
+        <Copy SourceFiles="@(_AtomUIBuildTasksCachedToolsetFile)"
+              DestinationFolder="$(AtomUIToolsetCacheRoot)/AtomUI.Build.Tasks/$(_AtomUIBuildTasksShadowKey)"
+              SkipUnchangedFiles="true" />
         <WriteLinesToFile File="$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.BuildTasks.ShadowKey.props"
                           Lines="&lt;Project&gt;&lt;PropertyGroup&gt;&lt;AtomUIBuildTasksShadowKey&gt;$(_AtomUIBuildTasksShadowKey)&lt;/AtomUIBuildTasksShadowKey&gt;&lt;/PropertyGroup&gt;&lt;/Project&gt;"
                           Overwrite="true" />

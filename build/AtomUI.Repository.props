@@ -10,15 +10,19 @@
         <AtomUILinkedPublishGeneratorAssembly Condition="'$(AtomUILinkedPublishGeneratorAssembly)' == ''">$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.Generator.LinkedPublish.dll</AtomUILinkedPublishGeneratorAssembly>
     </PropertyGroup>
 
-    <!-- MSBuild keeps loaded task assemblies locked for the lifetime of the build node. In
-         repository builds, UsingTask registrations therefore point at a per-project shadow
-         copy whose directory changes whenever the toolset content changes, so a rebuild
-         never has to overwrite a file an active node still holds. The shadow key is produced
-         by the AtomUI.Build.Tasks build itself: file metadata and content are only
-         accessible inside targets, so the producer stamps AtomUI.BuildTasks.ShadowKey.props
-         next to the DLL (SHA256 of the compiled assembly; stable across no-op recompiles)
-         and consumers import it here at evaluation time. The copy itself is staged by
-         _AtomUIStageBuildTasksToolset in AtomUI.Repository.targets. -->
+    <!-- .NET task hosts (TaskHostFactory, Runtime="NET") keep loaded task assemblies locked
+         after the build, and an orphaned host can hold the lock indefinitely. In repository
+         builds, UsingTask registrations therefore never point at the build output directly.
+         They resolve to a content-addressed toolset cache directory under .artifacts/tools
+         that the AtomUI.Build.Tasks build itself populates BEFORE publishing the shadow key
+         props imported below: any evaluation that can read key K is therefore guaranteed
+         that the cache directory for K already exists. Cache directories are written once
+         and never mutated or cleaned, so a lingering task host locking a previous copy can
+         never block a rebuild, and cleaning or rebuilding any consumer project can never
+         invalidate an assembly path another evaluation already resolved. The `pending` key
+         is the bootstrap state used before AtomUI.Build.Tasks has been built in this
+         checkout; consumers stage the toolset into their own obj for that case only (see
+         _AtomUIStageBuildTasksToolset in AtomUI.Repository.targets). -->
     <Import Project="$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.BuildTasks.ShadowKey.props"
             Condition="Exists('$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.BuildTasks.ShadowKey.props')" />
 
@@ -28,8 +32,9 @@
              SDK appends the TargetFramework segment to it after this props file is imported, so
              execution-time reads of IntermediateOutputPath would produce a mismatched path. -->
         <AtomUIBuildTasksShadowRoot>$(IntermediateOutputPath)/AtomUIBuildTasksShadow</AtomUIBuildTasksShadowRoot>
-        <AtomUIBuildTasksShadowDirectory>$(AtomUIBuildTasksShadowRoot)/$(TargetFramework)/$(AtomUIBuildTasksShadowKey)</AtomUIBuildTasksShadowDirectory>
-        <AtomUIBuildTasksAssembly Condition="'$(AtomUIBuildTasksAssembly)' == ''">$(AtomUIBuildTasksShadowDirectory)/AtomUI.Build.Tasks.dll</AtomUIBuildTasksAssembly>
+        <AtomUIBuildTasksToolsetDirectory Condition="'$(AtomUIBuildTasksShadowKey)' != 'pending'">$(AtomUIToolsetCacheRoot)/AtomUI.Build.Tasks/$(AtomUIBuildTasksShadowKey)</AtomUIBuildTasksToolsetDirectory>
+        <AtomUIBuildTasksToolsetDirectory Condition="'$(AtomUIBuildTasksShadowKey)' == 'pending'">$(AtomUIBuildTasksShadowRoot)/$(TargetFramework)/pending</AtomUIBuildTasksToolsetDirectory>
+        <AtomUIBuildTasksAssembly Condition="'$(AtomUIBuildTasksAssembly)' == ''">$(AtomUIBuildTasksToolsetDirectory)/AtomUI.Build.Tasks.dll</AtomUIBuildTasksAssembly>
     </PropertyGroup>
 
     <ItemGroup>

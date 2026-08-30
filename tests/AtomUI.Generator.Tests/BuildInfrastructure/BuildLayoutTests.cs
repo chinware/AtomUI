@@ -103,6 +103,75 @@ public sealed class BuildLayoutTests
     }
 
     [Fact]
+    public void Build_Task_Toolset_Cache_Lives_Outside_Project_Obj_And_Is_Content_Addressed()
+    {
+        var outputPaths = XDocument.Load(GetRepoFile("build/OutputPaths.props"));
+        outputPaths.Descendants("AtomUIToolsetCacheRoot")
+                   .ShouldHaveSingleItem()
+                   .Value.ShouldBe("$(MSBuildThisFileDirectory)../.artifacts/tools");
+
+        var repositoryProps = XDocument.Load(GetRepoFile("build/AtomUI.Repository.props"));
+        var toolsetDirectories = repositoryProps.Descendants("AtomUIBuildTasksToolsetDirectory").ToArray();
+        toolsetDirectories.Length.ShouldBe(2);
+        toolsetDirectories
+            .ShouldContain(element => element.Attribute("Condition")!.Value
+                .Contains("'$(AtomUIBuildTasksShadowKey)' != 'pending'") &&
+                element.Value.Trim() ==
+                "$(AtomUIToolsetCacheRoot)/AtomUI.Build.Tasks/$(AtomUIBuildTasksShadowKey)");
+        toolsetDirectories
+            .ShouldContain(element => element.Attribute("Condition")!.Value
+                .Contains("'$(AtomUIBuildTasksShadowKey)' == 'pending'") &&
+                element.Value.Trim()
+                    .Contains("$(AtomUIBuildTasksShadowRoot)/$(TargetFramework)/pending"));
+
+        repositoryProps.Descendants("AtomUIBuildTasksAssembly")
+                       .ShouldHaveSingleItem()
+                       .Value.Trim()
+                       .ShouldBe("$(AtomUIBuildTasksToolsetDirectory)/AtomUI.Build.Tasks.dll");
+    }
+
+    [Fact]
+    public void Build_Task_Consumers_Never_Write_The_Toolset_Cache()
+    {
+        var repositoryTargets = XDocument.Load(GetRepoFile("build/AtomUI.Repository.targets"));
+        var stagingTarget = repositoryTargets.Descendants("Target")
+                                              .Single(element =>
+                                                  (string?)element.Attribute("Name") ==
+                                                  "_AtomUIStageBuildTasksToolset");
+
+        ((string?)stagingTarget.Attribute("Condition")).ShouldNotBeNull()
+            .ShouldContain("'$(AtomUIBuildTasksShadowKey)' == 'pending'");
+        stagingTarget.Descendants("Copy")
+                     .ShouldAllBe(element =>
+                         ((string?)element.Attribute("DestinationFolder") ?? string.Empty)
+                         .Contains("$(AtomUIBuildTasksToolsetDirectory)"));
+    }
+
+    [Fact]
+    public void Build_Tasks_Producer_Publishes_The_Cache_Before_The_Shadow_Key()
+    {
+        var project = XDocument.Load(GetRepoFile("src/AtomUI.Build.Tasks/AtomUI.Build.Tasks.csproj"));
+        var publishTarget = project.Descendants("Target")
+                                   .Single(element =>
+                                       (string?)element.Attribute("Name") ==
+                                       "_AtomUIWriteBuildTasksShadowKey");
+        ((string?)publishTarget.Attribute("AfterTargets"))
+            .ShouldBe("CopyFilesToOutputDirectory");
+
+        var children = publishTarget.Elements().ToArray();
+        var cacheCopy = children.Single(element => element.Name.LocalName == "Copy");
+        ((string?)cacheCopy.Attribute("DestinationFolder"))
+            .ShouldBe("$(AtomUIToolsetCacheRoot)/AtomUI.Build.Tasks/$(_AtomUIBuildTasksShadowKey)");
+
+        var keyWrite = children.Single(element => element.Name.LocalName == "WriteLinesToFile");
+        keyWrite.Attribute("File")!.Value
+                 .ShouldContain("AtomUI.BuildTasks.ShadowKey.props");
+
+        Array.IndexOf(children, cacheCopy)
+            .ShouldBeLessThan(Array.IndexOf(children, keyWrite));
+    }
+
+    [Fact]
     public void Generator_Build_Assets_Have_One_Explicit_Manifest()
     {
         var repositoryProps = XDocument.Load(GetRepoFile("build/AtomUI.Repository.props"));

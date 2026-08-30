@@ -70,25 +70,29 @@ Registration、Localization 和 Theme Asset 的扁平 feature 文件。`AtomUI.L
 `buildTransitive/<PackageId>.targets`。它继续从包根导入 Generator 入口，并只在最终 `@(Analyzer)` 中没有
 `AtomUI.Generator` 时注入同包工具程序集。
 
-所有需要 `AtomUI.Build.Tasks` 的 feature target 都使用唯一属性 `$(AtomUIBuildTasksAssembly)`。Repository 构建将它
-指向每个项目自己的影子副本 `.artifacts/<ProjectName>/obj/<Configuration>/AtomUIBuildTasksShadow/<TargetFramework>/<ShadowKey>/AtomUI.Build.Tasks.dll`；
-影子目录的 `<ShadowKey>` 来自 `AtomUI.Build.Tasks` 构建后盖章的
-`.artifacts/bin/<Configuration>/netstandard2.0/AtomUI.BuildTasks.ShadowKey.props`（键为编译产物的 SHA256，确定性编译保证
-无变化时键稳定），`_AtomUIStageBuildTasksToolset`（`AtomUI.Repository.targets`）在任务执行前把工具集复制到该目录，
-正常 consumer 构建只追加或复用影子副本，不删除其他键的目录。另一个已完成求值的并发构建可能仍引用旧键；若 staging
-期间清理非当前目录，会在任务延迟加载前删除其 DLL 并随机触发 `MSB4062`。旧影子副本随显式 clean 或整个输出目录清理，
-不得在普通 Build target 中回收。
+所有需要 `AtomUI.Build.Tasks` 的 feature target 都使用唯一属性 `$(AtomUIBuildTasksAssembly)`。Repository 构建将它指向
+内容寻址的工具集缓存 `.artifacts/tools/AtomUI.Build.Tasks/<ShadowKey>/AtomUI.Build.Tasks.dll`；`<ShadowKey>` 来自
+`AtomUI.Build.Tasks` 构建后盖章的 `.artifacts/bin/<Configuration>/netstandard2.0/AtomUI.BuildTasks.ShadowKey.props`（键为
+编译产物的 SHA256，确定性编译保证无变化时键稳定）。缓存位于所有项目的 bin/obj 之外：单个项目的 clean 或 Rebuild 不可能
+使某个求值已经解析出的任务程序集路径失效，这正是旧按项目影子副本方案反复出现 `MSB4062` 的根因。生产者
+`_AtomUIWriteBuildTasksShadowKey`（`AtomUI.Build.Tasks.csproj`，`AfterTargets="CopyFilesToOutputDirectory"`）先完整填充
+`<ShadowKey>` 的缓存目录，然后才写 key props——任何求值能读到键 K，就保证 K 的缓存目录已经存在，任务延迟加载不可能再
+指向缺失文件。缓存目录只写一次、从不修改或回收；工具集内容变化时新键落在新目录，被孤儿 TaskHost 锁定的旧副本不受影响。
+全新 checkout 尚未构建过 `AtomUI.Build.Tasks` 时键为 `pending`，`_AtomUIStageBuildTasksToolset`
+（`AtomUI.Repository.targets`）仅在该 bootstrap 状态下把工具集复制到消费项目自己的 obj；
+正常 consumer 构建不执行任何复制，也不写缓存。
 NuGet consumer 由 `AtomUI.Generator.props` 回退解析相邻 `tools/netstandard2.0/AtomUI.Build.Tasks.dll`。不得新增功能专用的 Build Tasks
 路径属性或只为该属性增加单独文件。调用 Build Tasks 的 target 必须同时按真实输入 item 门控；没有 AXAML、语言文件或
 linked registration 输入的项目不得仅因导入共享 targets 就要求任务程序集已经存在。这样可以保证直接、干净的项目构建
 不依赖解决方案项目顺序，也不会给无输入的 Debug 编译增加任务成本。
 
-所有引用 `$(AtomUIBuildTasksAssembly)` 的 `UsingTask` 只声明 `AssemblyFile`，使用默认的进程内
-`AssemblyTaskFactory` 从影子副本加载。不得重新引入 `Runtime="NET"` 或 `TaskFactory="TaskHostFactory"`：
-.NET 10 SDK 的嵌套 publish 图里，TaskHost 可能在 `MetadataLoadContext` 生命周期结束后仍尝试跨进程回传
-MSBuild item，随机触发 `MSB4216` / `MSB4027`。文件锁隔离由上述按 ShadowKey 版本化的影子副本承担：
-重编译后的工具集落在全新目录，永不覆盖仍被活动 build node 锁定的旧副本。该约束同时适用于仓库构建和随
-NuGet 交付的 buildTransitive targets，并由 build-assets 架构测试全局守卫。
+所有引用 `$(AtomUIBuildTasksAssembly)` 的 `UsingTask` 必须使用 `Runtime="NET"` 与
+`TaskFactory="TaskHostFactory"` 在短生命周期的 .NET TaskHost 中执行。不得让默认的进程内
+`AssemblyTaskFactory` 把任务程序集加载进 IDE 或 MSBuild 常驻节点；否则仓库内重新构建
+`AtomUI.Build.Tasks` 时，共享输出 DLL 会因仍被宿主进程占用而无法替换。TaskHost 并不保证随构建结束退出，
+孤儿宿主可能无限期持有旧程序集的文件锁，因此仓库构建还必须使用上述按 ShadowKey 版本化的内容寻址缓存：
+重编译后的工具集落在全新目录，永不覆盖仍被锁定的旧副本。该约束同时适用于仓库构建和随 NuGet
+交付的 buildTransitive targets，并由 build-assets 架构测试全局守卫。
 
 ## Target Framework
 
