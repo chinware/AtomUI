@@ -25,7 +25,7 @@ public enum NumericUpDownMode
     Spinner
 }
 
-public class NumericUpDown : AvaloniaNumericUpDown, 
+public partial class NumericUpDown : AvaloniaNumericUpDown,
                              IMotionAwareControl,
                              ICompactSpaceAware,
                              IFormItemAware,

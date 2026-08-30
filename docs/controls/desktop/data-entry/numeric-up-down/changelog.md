@@ -8,6 +8,19 @@
 - 不记录临时讨论、纯格式化或没有长期价值的实现细节。
 - 架构文档始终描述最新设计状态；历史变化记录在本文档。
 
+## 2026-08-30
+
+- Semantic Part
+  - Add Semantic Part descriptors for `NumericUpDown`: `root`（owner）、`prefix`（`AddOnContentPresenter`，`.semantic-prefix`，`ContractType` 为 `ContentPresenter`）、`input`（`EmbeddedTextBox#PART_TextBox`，`.semantic-input`，`ContractType` 为 AtomUI `TextBox`）、`suffix`（内部 `StackPanel`，`.semantic-suffix`）与 `clear`（`InputClearIconButton#PART_ClearButton`，`.semantic-clear`，`ContractType` 为 `Avalonia.Controls.Button`）。所有 Part 均为 `Single`。
+  - Add static `Classes.semantic-*="True"` markers to both the Input-mode and Spinner-mode templates; `Mode` 切换重建模板子树后仍提供相同 Part 集合。
+  - Route `prefix` / `suffix` / `clear` through the spinner scope (`.semantic-scope-spinner`), decorated-box scope (`.semantic-scope-frame`, annotated in `ButtonSpinnerTheme` and `NumericUpDownSpinnerTheme`) and the shared content add-on slots (`.semantic-scope-prefix` / `.semantic-scope-suffix`, annotated in `AddOnDecoratedBoxTheme` and `ButtonSpinnerDecoratedBoxTheme`).
+  - Align the Spinner-mode `NumericUpDownSpinner` template to present `InnerLeftContent` / `InnerRightContent` through the decorated box `ContentLeftAddOn` / `ContentRightAddOn` slots, matching the Input-mode structure so both variants share one `SelectorRoute` per part.
+  - Keep the spinner action buttons (`PART_IncreaseButton` / `PART_DecreaseButton`) and the floating handle outside the public contract; they are candidates for future compatible part additions.
+- Gallery
+  - Migrate the NumberUpDown ShowCase from `GalleryStickyTabsHost` to `GalleryShowCaseHost` with a lazy Semantic Parts Preview (Input and Spinner mode) and add a custom Semantic Part styling example using the generated `NumericUpDown*Style` types.
+- Docs
+  - Add `semantic-part.md` and rewrite the stale `root/input/trigger/popup/validation` LLMS semantic table to `root/prefix/input/suffix/clear`.
+
 ## 2026-08-23
 
 - Architecture

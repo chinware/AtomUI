@@ -8,6 +8,7 @@
             <ControlTemplate>
                 <atom:ButtonSpinnerDecoratedBox
                     Name="PART_DecoratedBox"
+                    Classes.semantic-scope-frame="True"
                     LeftAddOn="{TemplateBinding LeftAddOn}"
                     LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
                     RightAddOn="{TemplateBinding RightAddOn}"

@@ -25,7 +25,8 @@ public class NumberUpDownShowCasePageTests
         source.ShouldNotContain("Tag=\"Examples\"");
         source.ShouldNotContain("Tag=\"Api\"");
         source.ShouldNotContain("Tag=\"DesignToken\"");
-        source.ShouldContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldNotContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldContain("<gallery:GalleryShowCaseHost");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
         source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
@@ -43,9 +44,9 @@ public class NumberUpDownShowCasePageTests
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:NumberUpDownShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(15);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(15);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:NumberUpDownViewModel\"").ShouldBe(15);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(16);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(16);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:NumberUpDownViewModel\"").ShouldBe(17);
         source.ShouldContain("NumberUpDownShowCaseLangResource BasicUsageTitle");
         source.ShouldContain("NumberUpDownShowCaseLangResource SpinnerModeTitle");
         source.ShouldContain("Title=\"{gallery:NumberUpDownShowCaseLangResource SpinnerModeTitle}\"\n        BadgeText=\"v6.0.5\"");
@@ -73,6 +74,45 @@ public class NumberUpDownShowCasePageTests
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
+    }
+
+    [Fact]
+    public void NumberUpDown_ShowCase_Declares_The_Semantic_Previews_And_Style_Example()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml");
+        var english = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Localization/en-US.xlf");
+
+        source.ShouldContain("<gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>");
+        source.ShouldContain("Name=\"NumberUpDownSemanticPreview\"");
+        source.ShouldContain("Name=\"SpinnerModeSemanticPreview\"");
+        source.ShouldContain("SemanticOwner=\"{Binding #NumberUpDownSemanticOwner}\"");
+        source.ShouldContain("SemanticOwner=\"{Binding #SpinnerModeSemanticOwner}\"");
+        source.ShouldContain("SemanticOwnerType=\"{x:Type atom:NumericUpDown}\"");
+        CountOccurrences(source, "<gallery:SemanticPartDescription").ShouldBe(10);
+        foreach (var path in new[] { "root", "prefix", "input", "suffix", "clear" })
+        {
+            CountOccurrences(source, $"Path=\"{path}\"").ShouldBe(2);
+        }
+
+        source.ShouldContain("SourceKey=\"numericupdown-semantic-part\"");
+        source.ShouldContain("BadgeText=\"{x:Static gallery:GalleryVersionInfo.DisplayVersion}\"");
+        source.ShouldContain("NumberUpDownShowCaseLangResource SemanticPartStyleTitle");
+        source.ShouldContain("NumberUpDownShowCaseLangResource SemanticPartStyleDescription");
+        source.ShouldContain("Selector=\"atom|NumericUpDown.semantic-fixed\"");
+        source.ShouldContain("Selector=\"atom|NumericUpDown.semantic-conditional\"");
+        CountOccurrences(source, "<atom:NumericUpDownInputStyle").ShouldBe(1);
+        CountOccurrences(source, "<atom:NumericUpDownPrefixStyle").ShouldBe(1);
+        CountOccurrences(source, "<atom:NumericUpDownSuffixStyle").ShouldBe(1);
+        CountOccurrences(source, "<atom:NumericUpDownClearStyle").ShouldBe(1);
+        source.ShouldContain("x:SetterTargetType=\"{x:Type atom:TextBox}\"");
+        source.ShouldContain("x:SetterTargetType=\"ContentPresenter\"");
+        source.ShouldContain("x:SetterTargetType=\"StackPanel\"");
+        source.ShouldContain("x:SetterTargetType=\"Button\"");
+        CountOccurrences(source, "Classes=\"semantic-fixed\"").ShouldBe(1);
+        CountOccurrences(source, "Classes=\"semantic-conditional\"").ShouldBe(1);
+
+        english.ShouldContain("<unit id=\"SemanticRootDescription\">");
+        english.ShouldContain("<unit id=\"SemanticPartStyleTitle\">");
     }
 
     [Fact]

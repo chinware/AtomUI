@@ -217,11 +217,22 @@ Spinner mode 对齐 参考 InputNumber 的 `mode="spinner"` 设计：同一个�
 
 NumericUpDown 通过 `IFormItemAware` 暴露表单值能力。Form 集成只以 `Value` 作为表单值，不直接使用 `StringValue`。
 
+### 8.6 Semantic Part
+
+`NumericUpDown` 公开 `root`、`prefix`、`input`、`suffix`、`clear` 五个职责区域。所有 Part 均为 `Single`，且在
+`Mode=Input` 与 `Mode=Spinner` 两个模板变体中提供相同的 marker 与 route；`Mode` 切换重建模板子树后仍提供相同
+Part 集合。完整 selector route、`ContractType`、模板变体矩阵和定制边界见
+[NumericUpDown Semantic Part 契约](semantic-part.md)。
+
+增减按钮区域（Spinner 模式的 +/− 按钮与 Input 模式的浮动 handle）尚未开放为 Semantic Part，其内部节点不属于
+公共契约。
+
 ## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [NumericUpDown 桌面版实现原理](implementation.md)
+- [NumericUpDown Semantic Part 契约](semantic-part.md)
 - [NumericUpDown Token 设计](token.md)
 - [NumericUpDown Changelog](changelog.md)
 
@@ -229,11 +240,15 @@ LLMS 语义区域：
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `NumericUpDown` | 数据录入控件根语义区域，承载 public API、值状态、验证状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `input` | `输入或编辑区域` | 承载用户输入、当前值、占位、格式化或只读状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `trigger` | `触发区域` | 承载清除、展开、提交、步进、上传或辅助操作。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `popup` | `弹层或候选区域` | 承载下拉、候选项、日历、颜色面板或异步内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `validation` | `校验反馈区域` | 承载 Form、status、错误、警告、help 或 loading 状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `root` | `NumericUpDown` | 数值输入控件根语义区域，承载 public API、数值与字符串状态、验证状态和主题入口。 | `Value`、`StringValue`、`FormatString`、`SizeType`、`StyleVariant`、`Status` | `NumericUpDownToken`、`ButtonSpinnerToken` | stable |
+| `prefix` | internal `AddOnContentPresenter` | 内部前缀内容语义区域，承载 `InnerLeftContent` 的最终呈现。 | `InnerLeftContent`、`InnerLeftContentTemplate` | `SpacingXXS` | stable |
+| `input` | internal `EmbeddedTextBox#PART_TextBox` | 数值文本编辑表面，承载字体、文本对齐、光标与选择呈现。 | `Text`、`PlaceholderText`、`IsStringMode`、`IsReadOnly` | `FontSize`、文本与 caret 资源 | stable |
+| `suffix` | 内部后缀布局 `StackPanel` | 后缀布局语义区域，组织 clear 与 `InnerRightContent`。 | `InnerRightContent`、`InnerRightContentTemplate`、`IsAllowClear` | `UniformlyPaddingXXS` | stable |
+| `clear` | `InputClearIconButton#PART_ClearButton` | 清空数值的操作入口。 | `IsAllowClear`、`ClearIcon` | clear 按钮主题与 SharedToken | stable |
+
+`prefix`、`suffix` 与共享 frame 结构的 content 前缀 / 后缀槽对齐；`input` 由内嵌 `TextBox` 承担并在两个模板变体中
+使用同一条默认 route。增减按钮、外部 AddOn、placeholder 与用户内容模板子树不属于 Semantic Part。完整契约见
+[NumericUpDown Semantic Part 契约](semantic-part.md)。
 
 LLMS 导出来源：
 

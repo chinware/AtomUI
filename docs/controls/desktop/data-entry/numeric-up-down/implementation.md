@@ -1,6 +1,6 @@
 # NumericUpDown 桌面版实现原理
 
-本文档描述 NumericUpDown 桌面版的内部数值同步、string mode、模板切换、ButtonSpinner 接入和 Form / CompactSpace 集成。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，公共设计与 API 契约见 [NumericUpDown 桌面版架构设计](overview.md)，Token 语义见 [NumericUpDown Token 设计](token.md)，变化记录见 [NumericUpDown Changelog](changelog.md)。
+本文档描述 NumericUpDown 桌面版的内部数值同步、string mode、模板切换、ButtonSpinner 接入和 Form / CompactSpace 集成。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，公共设计与 API 契约见 [NumericUpDown 桌面版架构设计](overview.md)，Token 语义见 [NumericUpDown Token 设计](token.md)，变化记录见 [NumericUpDown Changelog](changelog.md)，Semantic Part 契约见 [NumericUpDown Semantic Part 契约](semantic-part.md)。
 
 ## 1. 实现定位
 
@@ -11,6 +11,7 @@ NumericUpDown 的实现基于 Avalonia `NumericUpDown`，AtomUI 通过 `InputCon
 主要源码：
 
 - `src/AtomUI.Desktop.Controls/NumericUpDown/NumericUpDown.cs`：public API、数值同步、custom size、string mode、清除按钮、键盘处理、Form / CompactSpace / Motion 接口。
+- `src/AtomUI.Desktop.Controls/NumericUpDown/NumericUpDown.SemanticParts.cs`：Semantic Part 声明（`root`、`prefix`、`input`、`suffix`、`clear`）。
 - `src/AtomUI.Desktop.Controls/NumericUpDown/NumericUpDownSpinner.cs`：internal Spinner 子控件，复用 ButtonSpinner 的数值步进语义并承载 NumericUpDown 专用 inline 模板。
 - `src/AtomUI.Desktop.Controls/NumericUpDown/NumericUpDownToken.cs`：NumericUpDown Token scope。
 - `src/AtomUI.Desktop.Controls/NumericUpDown/Themes/NumericUpDownTheme.axaml`：输入模式和 spinner 模式外层模板、状态传递。
@@ -74,6 +75,17 @@ IsStringMode=true
 `SetupTemplatePartBindings` 统一接入清除按钮图标、清除按钮动效、清除按钮可见性、内部右侧内容、内部右侧模板和内部 `TextBox.IsCustomFontSize`。这些绑定在下一次模板接入前必须通过 `CompositeDisposable` 释放。清除按钮和内部 `TextBox` 的事件订阅由成对 part setter 负责，避免在 `OnApplyTemplate` 中散落重复解绑逻辑。
 
 `Mode=Input` 默认模板不能创建 spinner 模式左右按钮。`Mode=Spinner` 的按钮、分隔线和专用布局节点只在启用 spinner 模式时实例化。两个模板分支都必须消费继承的 `ShowButtonSpinner`，不能用写死的模板值覆盖用户设置。
+
+两个模板变体还承载 Semantic Part marker：`PART_Spinner` 携带 `.semantic-scope-spinner`，`PART_TextBox` 携带
+`.semantic-input`，`InnerLeftContent` 包装 presenter 携带 `.semantic-prefix`，后缀 `StackPanel` 携带
+`.semantic-suffix`，`PART_ClearButton` 携带 `.semantic-clear`。所有 marker 使用静态
+`Classes.semantic-*="True"` 声明，不使用 Binding 或运行时赋值。`prefix` / `suffix` / `clear` 的 route 依次穿越
+spinner（`.semantic-scope-spinner`）、decorated box（`.semantic-scope-frame`，由 `ButtonSpinnerTheme` 与
+`NumericUpDownSpinnerTheme` 同时标注）和共享 frame 结构的 content 前缀 / 后缀槽
+（`.semantic-scope-prefix` / `.semantic-scope-suffix`，由 `AddOnDecoratedBoxTheme` 与
+`ButtonSpinnerDecoratedBoxTheme` 提供）。Spinner 模式模板把 `InnerLeftContent` / `InnerRightContent` 通过
+decorated box 的 `ContentLeftAddOn` / `ContentRightAddOn` 呈现，与 Input 模式共用同一结构，保证两个变体命中
+相同的 route。完整契约见 [NumericUpDown Semantic Part 契约](semantic-part.md)。
 
 ## 6. 交互与事件处理
 

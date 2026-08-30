@@ -8537,7 +8537,7 @@ NumericUpDown 的事件与命令以控件文档、源码 public surface 和 Aval
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml:42`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml:113`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -8547,7 +8547,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 拨轮
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml:55`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml:126`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -8576,7 +8576,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 隐藏步进按钮
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml:86`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml:157`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -8603,7 +8603,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 字符串模式（高精度）
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml:114`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown/Views/NumberUpDownShowCase.axaml:185`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -8720,6 +8720,7 @@ Token 通过动态资源进入主题。NumericUpDown 不把实例状态、当前
 主要源码：
 
 - `src/AtomUI.Desktop.Controls/NumericUpDown/NumericUpDown.cs`：public API、数值同步、custom size、string mode、清除按钮、键盘处理、Form / CompactSpace / Motion 接口。
+- `src/AtomUI.Desktop.Controls/NumericUpDown/NumericUpDown.SemanticParts.cs`：Semantic Part 声明（`root`、`prefix`、`input`、`suffix`、`clear`）。
 - `src/AtomUI.Desktop.Controls/NumericUpDown/NumericUpDownSpinner.cs`：internal Spinner 子控件，复用 ButtonSpinner 的数值步进语义并承载 NumericUpDown 专用 inline 模板。
 - `src/AtomUI.Desktop.Controls/NumericUpDown/NumericUpDownToken.cs`：NumericUpDown Token scope。
 - `src/AtomUI.Desktop.Controls/NumericUpDown/Themes/NumericUpDownTheme.axaml`：输入模式和 spinner 模式外层模板、状态传递。
@@ -8734,6 +8735,7 @@ Token 通过动态资源进入主题。NumericUpDown 不把实例状态、当前
 
 - 源设计文档：`docs/controls/desktop/data-entry/numeric-up-down/overview.md`
 - 实现文档：`docs/controls/desktop/data-entry/numeric-up-down/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-entry/numeric-up-down/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-entry/numeric-up-down/token.md`
 - 变更记录：`docs/controls/desktop/data-entry/numeric-up-down/changelog.md`
 - 语义结构：`./semantic-cn.md`

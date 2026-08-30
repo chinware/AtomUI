@@ -5504,13 +5504,130 @@ Source: ./controls/numeric-up-down/semantic-cn.md
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `NumericUpDown` | 数据录入控件根语义区域，承载 public API、值状态、验证状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `input` | `输入或编辑区域` | 承载用户输入、当前值、占位、格式化或只读状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `trigger` | `触发区域` | 承载清除、展开、提交、步进、上传或辅助操作。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `popup` | `弹层或候选区域` | 承载下拉、候选项、日历、颜色面板或异步内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `validation` | `校验反馈区域` | 承载 Form、status、错误、警告、help 或 loading 状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+`NumericUpDown` 公开 `root`、`prefix`、`input`、`suffix`、`clear` 五个职责区域（§1.1–1.5）。每个 Part 均为
+`Single`，且在 `Mode=Input` 与 `Mode=Spinner` 两个内置模板变体中提供相同的 marker 与 route。internal
+`NumericUpDownSpinner`、`ButtonSpinnerDecoratedBox` 与 `EmbeddedTextBox` 不注册独立 descriptor，也不能通过模板
+复用自动获得其他 owner 的 owner-scoped Semantic Style。
+
+### 1.1 `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `NumericUpDown` |
+| Part | `root` |
+| Selector | NumericUpDown 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
+| ContractType | `NumericUpDown` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | NumericUpDown owner |
+| 职责 | 承载数值、尺寸、variant、验证状态和 owner-scoped Semantic Style 入口。 |
+| 相关 API | `Value`、`FormatString`、`SizeType`、`StyleVariant`、`Status`、`IsEnabled`、`IsReadOnly`、`IsAllowClear`、`Increment`、`Maximum`、`Minimum` |
+| 相关 Token | SharedToken、`NumericUpDownToken`、`ButtonSpinnerToken` |
+| 稳定性 | stable since 6.0 |
+
+`root` 是控件自身，不声明 `.semantic-root` marker。它适合定制 NumericUpDown 整体 `Background`、`BorderBrush`、
+`Opacity`、对齐和尺寸约束；variant、effective status 与 CompactSpace 的状态归一仍由共享 frame 结构负责。
+
+### 1.2 `prefix`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `NumericUpDown` |
+| Part | `prefix` |
+| Selector | `.semantic-prefix` |
+| SelectorRoute | `/template/ .semantic-scope-spinner /template/ .semantic-scope-frame /template/ .semantic-scope-prefix > .semantic-prefix` |
+| Style Type | `NumericUpDownPrefixStyle` |
+| ContractType | `ContentPresenter` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | internal `AddOnContentPresenter`（最低 public 类型为 `ContentPresenter`） |
+| 职责 | 承载 `InnerLeftContent` 与 `InnerLeftContentTemplate` 的最终呈现。 |
+| 相关 API | `InnerLeftContent`、`InnerLeftContentTemplate` |
+| 相关 Token | `SpacingXXS`、输入尺寸 padding |
+| 稳定性 | stable since 6.0 |
+
+`prefix` 是 NumericUpDown 模板中的稳定 presenter，通过 `ButtonSpinner.InnerLeftContent` 传递并由共享 frame 结构的
+content 前缀槽呈现，两个模板变体的呈现槽一致。`InnerLeftContent=null` 且 template 也为 null 时 presenter 仍属于
+静态模板结构；适合定制 `Opacity`、`Margin`、`Foreground` 和 presenter 级排版属性。
+`InnerLeftContentTemplate` 创建的用户子树不属于 NumericUpDown Semantic Part。
+
+### 1.3 `input`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `NumericUpDown` |
+| Part | `input` |
+| Selector | `.semantic-input` |
+| SelectorRoute | `/template/ .semantic-input` |
+| Style Type | `NumericUpDownInputStyle` |
+| ContractType | `TextBox`（AtomUI public 控件） |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | internal `EmbeddedTextBox#PART_TextBox`（最低 public 类型为 `TextBox`） |
+| 职责 | 承载数值文本的编辑表面，包含字体、文本对齐、光标与选择呈现。 |
+| 相关 API | `Text`、`PlaceholderText`、`IsReadOnly`、`IsStringMode`、`FormatString`、`IsKeyboardEnabled` |
+| 相关 Token | `FontSize`、文本与 caret 资源 |
+| 稳定性 | stable since 6.0 |
+
+`input` 的最低 public `ContractType` 是 AtomUI `TextBox`，而不是 internal `EmbeddedTextBox` 实现细节。与 LineEdit 的
+`input`（TextPresenter）不同，NumericUpDown 的文本编辑表面由内嵌 `TextBox` 承担，marker 位于 owner 模板内的
+`EmbeddedTextBox#PART_TextBox` 节点上，因此在 `Mode=Input` 与 `Mode=Spinner` 两个变体中使用同一条默认 route。
+它适合定制 `Foreground`、`FontSize`、`Opacity`、`TextAlignment` 等文本级属性；数值解析、字符串模式与键盘行为仍由
+`NumericUpDown` 拥有，不通过 Semantic Style 改写。
+
+### 1.4 `suffix`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `NumericUpDown` |
+| Part | `suffix` |
+| Selector | `.semantic-suffix` |
+| SelectorRoute | `/template/ .semantic-scope-spinner /template/ .semantic-scope-frame /template/ .semantic-scope-suffix > .semantic-suffix` |
+| Style Type | `NumericUpDownSuffixStyle` |
+| ContractType | `StackPanel` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | 内部后缀布局 `StackPanel` |
+| 职责 | 组织 clear 与 `InnerRightContent` 的横向布局。 |
+| 相关 API | `InnerRightContent`、`InnerRightContentTemplate`、`IsAllowClear` |
+| 相关 Token | `UniformlyPaddingXXS`、输入尺寸 padding |
+| 稳定性 | stable since 6.0 |
+
+`suffix` 是稳定的布局区域，不等于用户 `InnerRightContent` 本身。适合定制 `Spacing`、`Opacity`、`Margin` 和对齐；
+clear 与用户右侧内容仍各有边界，用户内容子树不由 `suffix` 契约继续展开。
+
+### 1.5 `clear`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `NumericUpDown` |
+| Part | `clear` |
+| Selector | `.semantic-clear` |
+| SelectorRoute | `/template/ .semantic-scope-spinner /template/ .semantic-scope-frame /template/ .semantic-scope-suffix > .semantic-suffix > .semantic-clear` |
+| Style Type | `NumericUpDownClearStyle` |
+| ContractType | `Avalonia.Controls.Button` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `InputClearIconButton#PART_ClearButton` |
+| 职责 | 提供清空当前数值的操作入口。 |
+| 相关 API | `IsAllowClear`、`ClearIcon`、`IsReadOnly`、`Text` |
+| 相关 Token | clear 按钮主题与 SharedToken |
+| 稳定性 | stable since 6.0 |
+
+`clear` 节点始终存在，`IsEffectiveShowClearButton` 只切换可见性。它适合定制 `Opacity`、`Margin`、`Cursor` 和
+Button 级交互属性；清除命令仍进入 `NotifyClearButtonClicked()` 的统一行为。
 
 ## Abstract AXAML Structure
 
@@ -5579,8 +5696,6 @@ NumericUpDown
            -> PixelAlignedBorder (template-stable)
               -> IconButton#PART_IncreaseButton (template-stable)
            -> DockPanel (template-stable)
-              -> AddOnContentPresenter (internal-observable)
-              -> AddOnContentPresenter (internal-observable)
               -> ContentPresenter (internal-observable)
   -> NumericUpDown (control theme, NumericUpDownTheme.axaml)
      -> NumericUpDownSpinner#PART_Spinner (template-stable)

@@ -14,10 +14,15 @@
                 <ControlTemplate TargetType="atom:NumericUpDownSpinner">
                     <atom:ButtonSpinnerDecoratedBox
                         Name="PART_DecoratedBox"
+                        Classes.semantic-scope-frame="True"
                         LeftAddOn="{TemplateBinding LeftAddOn}"
                         LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
                         RightAddOn="{TemplateBinding RightAddOn}"
                         RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
+                        ContentLeftAddOn="{TemplateBinding InnerLeftContent}"
+                        ContentLeftAddOnTemplate="{TemplateBinding InnerLeftContentTemplate}"
+                        ContentRightAddOn="{TemplateBinding InnerRightContent}"
+                        ContentRightAddOnTemplate="{TemplateBinding InnerRightContentTemplate}"
                         StyleVariant="{TemplateBinding StyleVariant}"
                         SizeType="{TemplateBinding SizeType}"
                         Status="{TemplateBinding Status}"
@@ -69,22 +74,6 @@
                                     VerticalAlignment="Stretch" />
                             </atom:PixelAlignedBorder>
                             <DockPanel LastChildFill="True">
-                                <atom:AddOnContentPresenter
-                                    DockPanel.Dock="Left"
-                                    VerticalAlignment="Stretch"
-                                    VerticalContentAlignment="Center"
-                                    HorizontalAlignment="Left"
-                                    Focusable="False"
-                                    Content="{TemplateBinding InnerLeftContent}"
-                                    ContentTemplate="{TemplateBinding InnerLeftContentTemplate}" />
-                                <atom:AddOnContentPresenter
-                                    DockPanel.Dock="Right"
-                                    VerticalAlignment="Stretch"
-                                    VerticalContentAlignment="Center"
-                                    HorizontalAlignment="Right"
-                                    Focusable="False"
-                                    Content="{TemplateBinding InnerRightContent}"
-                                    ContentTemplate="{TemplateBinding InnerRightContentTemplate}" />
                                 <ContentPresenter
                                     Content="{TemplateBinding Content}"
                                     ContentTemplate="{TemplateBinding ContentTemplate}" />

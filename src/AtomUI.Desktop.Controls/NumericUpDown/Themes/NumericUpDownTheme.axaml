@@ -9,6 +9,7 @@
             <ControlTemplate>
                 <atom:NumericUpDownSpinner
                     Name="PART_Spinner"
+                    Classes.semantic-scope-spinner="True"
                     IsSpinEnabled="{TemplateBinding AllowSpin}"
                     IsEnabled="{TemplateBinding IsEnabled}"
                     SizeType="{TemplateBinding SizeType}"
@@ -24,17 +25,27 @@
                     LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
                     RightAddOn="{TemplateBinding RightAddOn}"
                     RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
-                    InnerLeftContent="{TemplateBinding InnerLeftContent}"
-                    InnerLeftContentTemplate="{TemplateBinding InnerLeftContentTemplate}"
                     SpinnerHandleWidth="{TemplateBinding SpinnerHandleWidth}"
                     CompactSpaceItemPosition="{TemplateBinding CompactSpaceItemPosition}"
                     CompactSpaceOrientation="{TemplateBinding CompactSpaceOrientation}"
                     IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}">
+                    <atom:ButtonSpinner.InnerLeftContent>
+                        <atom:AddOnContentPresenter
+                            Classes.semantic-prefix="True"
+                            Content="{TemplateBinding InnerLeftContent}"
+                            ContentTemplate="{TemplateBinding InnerLeftContentTemplate}"
+                            VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Center"
+                            HorizontalAlignment="Left"
+                            Focusable="False" />
+                    </atom:ButtonSpinner.InnerLeftContent>
                     <atom:ButtonSpinner.InnerRightContent>
                         <StackPanel Orientation="Horizontal"
+                                    Classes.semantic-suffix="True"
                                     Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
                             <atom:InputClearIconButton
                                 Name="PART_ClearButton"
+                                Classes.semantic-clear="True"
                                 IsPassthroughMouseEvent="False" />
                             <atom:AddOnContentPresenter
                                 Name="PART_InnerRightContentPresenter"
@@ -46,6 +57,7 @@
                     </atom:ButtonSpinner.InnerRightContent>
                     <atom:EmbeddedTextBox
                         Name="PART_TextBox"
+                        Classes.semantic-input="True"
                         VerticalContentAlignment="Center"
                         VerticalAlignment="Stretch"
                         HorizontalAlignment="Stretch"
@@ -73,6 +85,7 @@
                 <ControlTemplate>
                     <atom:NumericUpDownSpinner
                         Name="PART_Spinner"
+                        Classes.semantic-scope-spinner="True"
                         IsSpinEnabled="{TemplateBinding AllowSpin}"
                         IsEnabled="{TemplateBinding IsEnabled}"
                         SizeType="{TemplateBinding SizeType}"
@@ -88,17 +101,27 @@
                         LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
                         RightAddOn="{TemplateBinding RightAddOn}"
                         RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
-                        InnerLeftContent="{TemplateBinding InnerLeftContent}"
-                        InnerLeftContentTemplate="{TemplateBinding InnerLeftContentTemplate}"
                         SpinnerHandleWidth="{TemplateBinding SpinnerHandleWidth}"
                         CompactSpaceItemPosition="{TemplateBinding CompactSpaceItemPosition}"
                         CompactSpaceOrientation="{TemplateBinding CompactSpaceOrientation}"
                         IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}">
+                        <atom:ButtonSpinner.InnerLeftContent>
+                            <atom:AddOnContentPresenter
+                                Classes.semantic-prefix="True"
+                                Content="{TemplateBinding InnerLeftContent}"
+                                ContentTemplate="{TemplateBinding InnerLeftContentTemplate}"
+                                VerticalAlignment="Stretch"
+                                VerticalContentAlignment="Center"
+                                HorizontalAlignment="Left"
+                                Focusable="False" />
+                        </atom:ButtonSpinner.InnerLeftContent>
                         <atom:ButtonSpinner.InnerRightContent>
                             <StackPanel Orientation="Horizontal"
+                                        Classes.semantic-suffix="True"
                                         Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
                                 <atom:InputClearIconButton
                                     Name="PART_ClearButton"
+                                    Classes.semantic-clear="True"
                                     IsPassthroughMouseEvent="False" />
                                 <atom:AddOnContentPresenter
                                     Name="PART_InnerRightContentPresenter"
@@ -110,6 +133,7 @@
                         </atom:ButtonSpinner.InnerRightContent>
                         <atom:EmbeddedTextBox
                             Name="PART_TextBox"
+                            Classes.semantic-input="True"
                             VerticalContentAlignment="Center"
                             VerticalAlignment="Stretch"
                             HorizontalAlignment="Stretch"
