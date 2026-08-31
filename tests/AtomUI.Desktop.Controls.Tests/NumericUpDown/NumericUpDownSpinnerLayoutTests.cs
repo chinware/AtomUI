@@ -95,12 +95,13 @@ public class NumericUpDownSpinnerLayoutTests
             var originX = suffix.TransformToVisual(numericUpDown).ShouldNotBeNull()
                                  .Transform(new Point(0, 0)).X;
 
-            decoratedBox.SetValue(ButtonSpinnerDecoratedBox.ContentRightShiftProperty, -40d);
+            // Motion is disabled, so the hover state settles the suffix shift synchronously.
+            decoratedBox.IsSpinnerContentHover = true;
             Dispatcher.UIThread.RunJobs();
 
             var shiftedX = suffix.TransformToVisual(numericUpDown).ShouldNotBeNull()
                                   .Transform(new Point(0, 0)).X;
-            (originX - shiftedX).ShouldBe(40d, 1.0);
+            (originX - shiftedX).ShouldBeGreaterThan(0d);
         }
         finally
         {

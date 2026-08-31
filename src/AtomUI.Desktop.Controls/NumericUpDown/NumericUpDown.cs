@@ -5,6 +5,7 @@ using AtomUI.Controls.Commons;
 using AtomUI.Data;
 using AtomUI.Icons.AntDesign;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
@@ -521,16 +522,37 @@ public partial class NumericUpDown : AvaloniaNumericUpDown,
 
         // The suffix group renders inside the spinner content segment, outside the decorated box's
         // ContentRightAddOn slot, so the floating-handle shift no longer reaches it through the
-        // template; mirror the decorated box's animated ContentRightShift onto the group here.
+        // template. Drive the group from the hover state with its own transition instead of
+        // re-mirroring the decorated box's animated value frame by frame: a per-frame relay fights
+        // the render clock and shows up as a one-frame jump when the pointer re-enters quickly.
         if (e.NameScope.Find<StackPanel>("PART_SuffixGroup") is { } suffixGroup &&
             _buttonSpinner?.DecoratedBox is { } decoratedBox)
         {
             var suffixShift = new TranslateTransform();
+            if (IsMotionEnabled)
+            {
+                suffixShift.Transitions = new Transitions
+                {
+                    TransitionUtils.CreateTransition<DoubleTransition>(TranslateTransform.XProperty)
+                };
+            }
             suffixGroup.RenderTransform = suffixShift;
             _templatePartBindings.Add(decoratedBox.GetPropertyChangedObservable(
-                    ButtonSpinnerDecoratedBox.ContentRightShiftProperty)
-                .Subscribe(shift => suffixShift.X = shift.NewValue is double value ? value : 0d));
+                    ButtonSpinnerDecoratedBox.IsSpinnerContentHoverProperty)
+                .Subscribe(_ => SyncSuffixGroupShift(suffixShift, decoratedBox)));
+            SyncSuffixGroupShift(suffixShift, decoratedBox);
         }
+    }
+
+    private static void SyncSuffixGroupShift(TranslateTransform suffixShift,
+                                             ButtonSpinnerDecoratedBox decoratedBox)
+    {
+        var target = decoratedBox.IsHandleFloatable &&
+                     decoratedBox.IsSpinnerContentHover &&
+                     decoratedBox.ButtonSpinnerLocation == Desktop.Controls.ButtonSpinnerLocation.Right
+            ? -decoratedBox.EffectiveContentPadding.Right * 1.5
+            : 0d;
+        suffixShift.X = target;
     }
     
     protected virtual void NotifyClearButtonClicked()
