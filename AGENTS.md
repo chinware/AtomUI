@@ -126,6 +126,12 @@ Detailed AI collaboration rules live in [docs/engineering/contributing/agent-gui
 3. **迁移义务**：发现既有的代码绑定实际上可以等价迁移到 ControlTheme 时，在触及该文件的改动中一并迁移，不留“下次再说”。
 4. **声明位置边界**：`Transitions` 必须声明在 ControlTheme 的 style setter 中，禁止直接写在 ControlTemplate 内容里——模板构建期元素尚未挂载 clock，会抛 NullReferenceException。
 
+## 提交审查强约束（本项目生效）
+
+1. **未经明确指令不得提交**：没有用户的明确要求，完成一个任务或模块的开发之后，必须先交用户审查；未通过审查前，禁止自行创建 git commit，同样禁止 amend、rebase 等改写已有提交的动作。
+2. **验证照常、提交信息可先备好**：构建、测试、运行验证不受本条限制照常执行；提交信息可以预先准备好（如用 commit-msg 技能生成草稿），但执行提交必须等用户明确指令。
+3. **例外仅限用户授权**：仅当用户明确要求提交（如“提交”、"commit"、“创建 commit”）或事先授权（如“这个任务做完直接提交”）时才可提交，且只提交授权范围内的工作，不顺手捎带未审查的改动。
+
 ## Common Commands
 
 Use the command that matches the touched area, and prefer targeted tests while iterating.
