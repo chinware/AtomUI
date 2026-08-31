@@ -157,7 +157,6 @@ ButtonToken 不定义 `BlueSolidHoverBg`、`PurpleFilledActiveBg` 这类组合 T
 ButtonToken 当前被 Button 家族主题共同引用。Token 变更必须评估：
 
 - 默认 Button
-- Browser Button
 - DropdownButton
 - SplitButton
 - HyperLinkButton

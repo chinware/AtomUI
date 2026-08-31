@@ -189,9 +189,10 @@ Button 家族控件应共享一致的动作语义和状态解释。
 - `SplitButton` 保持主动作和附加动作的语义区分，但两部分的颜色、尺寸和禁用状态应与 Button 体系一致。它是包含两个图标角色的复合控件，不继承本次 Button 图标尺寸 API。
 - `IconButton` 保留 Button 的动作语义，只改变内容呈现密度；其既有 `IconWidth`、`IconHeight` 继续由自身模板解释。
 - `HyperLinkButton` 保持链接式动作语义，并复用 Button 尺寸、字体和 icon 相关 Token；其既有 `IconWidth`、`IconHeight` 与 Button 保持同名尺寸语义。
-- `BrowserButtonThemes` 可以存在平台视觉差异，但同一 API 的语义解释必须与桌面主题一致。
+- Button 家族不维护 `BrowserButtonThemes` 或 `Buttons/Themes/Browser/` 形式的平台主题分叉；同一套主题资产必须在
+  Native 与 Browser 支持宿主下解释同一 API。
 
-Button 与 CompactSpace、FormItem、Wave、Browser 主题协同。`Color + Variant` 等语义能力不应只覆盖默认 Button，Button 家族控件必须明确继承、覆盖或声明不支持该语义。
+Button 与 CompactSpace、FormItem、Wave 和宿主注册协同。`Color + Variant` 等语义能力不应只覆盖默认 Button，Button 家族控件必须明确继承、覆盖或声明不支持该语义。
 
 ## 7. 兼容性不变量
 
@@ -212,7 +213,7 @@ Button 与 CompactSpace、FormItem、Wave、Browser 主题协同。`Color + Vari
 - CompactSpace 下的有效圆角、有效边框和 z-index 行为不变。
 - wave 播放条件和危险态 wave brush 不变。
 - `CustomBackground` 不改变 `WaveSpiritDecorator` 的 wave brush，wave 颜色仍由 `EffectiveColor + EffectiveVariant` 推导。
-- Browser 主题与桌面主题在同一 API 下语义一致。
+- 同一 Button 家族主题资产在 Native 与 Browser 支持宿主下保持同一 API 语义，不通过平台专用主题资产复制视觉。
 
 如果实现某项能力时无法保持这些不变量，应先停止实现，说明原因、影响范围、替代方案和迁移方式，并获得授权。
 
@@ -263,7 +264,7 @@ Button 的 `Icon` 是单一用户图标入口，`IconPlacement` 只描述这个�
 
 ### 8.5 Icon 尺寸投影模型
 
-Button 以控件自身的 `IconWidth`、`IconHeight` 作为图标尺寸的唯一公共 owner。桌面、Browser 和 DropdownButton 模板中的 `PART_ButtonIcon`、`PART_LoadingIcon` 只通过 `TemplateBinding` 读取这两个属性，不在模板内部重新定义一套可供外部定位的尺寸入口。
+Button 以控件自身的 `IconWidth`、`IconHeight` 作为图标尺寸的唯一公共 owner。Button 与 DropdownButton 模板中的 `PART_ButtonIcon`、`PART_LoadingIcon` 只通过 `TemplateBinding` 读取这两个属性，不在模板内部重新定义一套可供外部定位的尺寸入口。
 
 Theme 默认值矩阵：
 
@@ -301,8 +302,8 @@ LLMS 导出来源：
 | --- | --- |
 | 文档改动 | `git diff --check`，确认未改实现文件。 |
 | C# 状态模型改动 | Button 行为测试，覆盖旧 API 兼容映射以及 `IconWidth`、`IconHeight` 的属性注册、测量失效和本地值优先级。 |
-| AXAML 主题改动 | 检查桌面、Browser、DropdownButton 模板的 `TemplateBinding`，覆盖三档尺寸、Custom、loading 和 icon-only 状态。 |
-| Token / Palette 改动 | Light / Dark 主题检查，确认 Browser 主题一致性。 |
+| AXAML 主题改动 | 检查 Button、DropdownButton 模板的 `TemplateBinding`，覆盖三档尺寸、Custom、loading 和 icon-only 状态，并确认 Browser 注册仍使用共享主题资产。 |
+| Token / Palette 改动 | Light / Dark 主题检查，确认 Native 与 Browser 支持宿主使用同一共享主题语义。 |
 | Button 家族影响 | 覆盖 `DropdownButton`、`SplitButton`、`IconButton`、`HyperLinkButton` 关联场景。 |
 | Public API 改动 | 需要授权，并补充 API 兼容测试与文档。 |
 | LLMS 导出改动 | 重新生成 `controls/button/index-cn.md`、`controls/button/semantic-cn.md`、`llms-full-cn.txt` 和 `llms-semantic-cn.md`，确认来源表、API、Token、示例和 semantic parts 一致。 |

@@ -58,10 +58,8 @@ public class ButtonIconOnlyVisualContractTests
 
     [Theory]
     [InlineData("src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.axaml")]
-    [InlineData("src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/ButtonTheme.axaml")]
     [InlineData("src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonBaseTheme.axaml")]
     [InlineData("src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonTheme.axaml")]
-    [InlineData("src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/DropdownButtonTheme.axaml")]
     public void Button_Template_Icon_Parts_Bind_Size_To_Control_Properties(string relativePath)
     {
         var document = XDocument.Load(GetRepoFile(relativePath));
@@ -82,10 +80,8 @@ public class ButtonIconOnlyVisualContractTests
 
     [Theory]
     [InlineData("src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.axaml")]
-    [InlineData("src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/ButtonTheme.axaml")]
     [InlineData("src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonBaseTheme.axaml")]
     [InlineData("src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonTheme.axaml")]
-    [InlineData("src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/DropdownButtonTheme.axaml")]
     [InlineData("controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml")]
     public void Button_Icon_Dimensions_Are_Not_Set_Through_Template_Selectors(string relativePath)
     {

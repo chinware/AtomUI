@@ -8,6 +8,15 @@
 - 不记录临时讨论、纯格式化或没有长期价值的实现细节。
 - 架构文档始终描述最新设计状态；历史变化记录在本文档。
 
+## 2026-08-31
+
+- Fix
+  - Remove Button-family Browser-only theme override assets and require Browser registration to use the shared Button, DropdownButton and IconButton theme assets.
+  - Remove the Desktop control package asset-path selector that rewrote shared theme assets to `Themes/Browser/` overrides.
+- Tests
+  - Add regression coverage that rejects Button-family Browser theme override assets in source and generated theme manifests.
+  - Add Desktop.Controls coverage that rejects Browser-specific theme asset folders while keeping exact Browser unsupported-control identity filtering.
+
 ## 2026-08-03
 
 - Design

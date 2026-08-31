@@ -61,8 +61,7 @@ public static class ThemeManagerBuilderExtensions
             AotTrimRegistrationPlanRegistry.ApplyPackage(
                 builder,
                 PackageId,
-                provider,
-                selectAssets: DesktopControlThemeAssetSelector.SelectNative);
+                provider);
         }
         else
         {
@@ -71,8 +70,7 @@ public static class ThemeManagerBuilderExtensions
                 builder,
                 PackageId,
                 provider,
-                DesktopControlThemeAssetSelector.IsBrowserControlSupported,
-                DesktopControlThemeAssetSelector.SelectBrowser);
+                DesktopControlRegistrationSelector.IsBrowserControlSupported);
         }
     }
 
@@ -82,16 +80,14 @@ public static class ThemeManagerBuilderExtensions
         {
             GeneratedControlPackageRegistration.Register(
                 builder.Theme,
-                new DesktopControlThemesProvider(),
-                selectAssets: DesktopControlThemeAssetSelector.SelectNative);
+                new DesktopControlThemesProvider());
         }
         else
         {
             GeneratedControlPackageRegistration.Register(
                 builder.Theme,
                 new BrowserDesktopControlThemesProvider(),
-                DesktopControlThemeAssetSelector.IsBrowserControlSupported,
-                DesktopControlThemeAssetSelector.SelectBrowser);
+                DesktopControlRegistrationSelector.IsBrowserControlSupported);
         }
     }
 

@@ -90,9 +90,9 @@ Common generated resources 正常加载：
 
 `UseDesktopControls()` 先注册 Common 包，再按 `RuntimePlatform.Features.SupportsNativeWindow` 选择生成式注册参数：
 
-- Native：注册全部 Control descriptor，排除 `Themes/Browser/` 下的替代资产。
-- Browser：按 exact identity 排除确认不支持的 Control，再由 manifest 自动排除引用这些 identity 的资产；最后以
-  `Themes/Browser/` 中的同路径资产替换普通资产。
+- Native：注册全部 Control descriptor 和共享主题资产。
+- Browser：按 exact identity 排除确认不支持的 Control，再由 manifest 自动排除引用这些 identity 的资产；被支持的
+  Control 继续使用同一份共享主题资产。
 
 当前 Browser 排除的 identity 是：
 
@@ -109,16 +109,9 @@ WindowTitleBar
 这是平台能力筛选，不是 Token 白名单。其余被选择 Control 仍拥有完整 identity、可选 Own Token 和全部可配置
 Global Token。
 
-Button 家族的 Browser 替代资产是三个独立叶子：
-
-```text
-Buttons/Themes/Browser/ButtonTheme.axaml
-Buttons/Themes/Browser/DropdownButtonTheme.axaml
-Buttons/Themes/Browser/IconButtonTheme.axaml
-```
-
-Browser selector 通过相对资产路径替换对应普通主题；Native selector 不加载这些 Browser 叶子。不存在
-`BrowserButtonThemes.axaml` 或逐 Control 聚合主题。
+Control 包不维护 Browser 专用主题替代资产。Button 家族必须通过 `ButtonTheme.axaml`、`DropdownButtonTheme.axaml` 和
+`IconButtonTheme.axaml` 本身支持 Native 与 Browser；不得通过 `Buttons/Themes/Browser/` 或 `BrowserButtonThemes.axaml`
+复制一套平台视觉。
 
 ### 3.3 Optional Packages
 
@@ -158,8 +151,8 @@ Window、WindowTitleBar 和其他 native host 能力由 exact identity 筛选与
 | 现象 | 根因 | 当前处理 |
 | --- | --- | --- |
 | Browser 启动出现 `ImmutableSolidColorBrush -> SolidColorBrush` 转换异常 | `TopLevel.SystemBarColorProperty` 是具体类型 API 边界 | 在 `EmbeddableControlRootTheme` 显式构造 `SolidColorBrush`，并保留回归测试。 |
-| 新 Control 或主题在 Browser 中容易遗漏 | 迁移期维护了独立 Token/主题清单 | 使用 generated package registration；只维护少量确有平台差异的 identity 和替代资产。 |
-| Button Browser 替代主题覆盖不完整或加载到 Native | 多个按钮主题曾通过单个聚合入口选择 | 使用三个独立 Browser 叶子，并测试 Native 排除与 Browser 同路径替换。 |
+| 新 Control 或主题在 Browser 中容易遗漏 | 迁移期维护了独立 Token/主题清单 | 使用 generated package registration；只维护少量确有平台能力差异的 identity 排除。 |
+| Button Browser 替代主题覆盖不完整或加载到 Native | Button 曾通过 Browser 专用主题资产复制平台视觉 | Button 家族只保留共享主题资产，Browser 注册不再做主题路径替换，并用回归测试禁止 Browser 专用主题目录。 |
 | FloatButton 展开后子按钮保持隐藏 | Browser 未注册 `TransformOperations` animator | 所有平台注册 Motion animator，native-only 服务继续受 feature 判断保护。 |
 | ReactiveUI 页面无法激活 | Browser AppBuilder 未注册 Avalonia activation 和共享 ViewLocator | `UseReactiveUI(...)` 与 `AtomUIGalleryModule.RegisterViews(...)` 统一注册。 |
 | DOM 文本为空但页面实际已渲染 | Avalonia Browser 主要绘制到 canvas | 结合 splash error、当前端口 console、canvas 像素和截图验证。 |
@@ -167,7 +160,7 @@ Window、WindowTitleBar 和其他 native host 能力由 exact identity 筛选与
 
 ## 7. 验证基线
 
-涉及 Browser 主题、包注册或平台筛选时至少执行：
+涉及 Browser 注册、包注册、共享主题或平台筛选时至少执行：
 
 ```bash
 dotnet build controlgallery/AtomUIGallery.Browser/AtomUIGallery.Browser.csproj -c Debug
@@ -183,11 +176,11 @@ git diff --check
 ## 8. 扩展规则
 
 1. 新 Control 按标准目录提供 public Control、可选 `[ControlDesignToken]` Own Token 和独立 `*Theme.axaml` 叶子，
-   不修改 Browser Token/主题清单。
-2. 只有确认 Control 依赖 Browser 不支持的平台能力时，才把 exact identity 加入 Browser 排除集合，并增加 selector
+   不修改 Browser Token/主题清单，也不新增 Browser 专用主题目录。
+2. 只有确认 Control 依赖 Browser 不支持的平台能力时，才把 exact identity 加入 Browser 排除集合，并增加身份过滤
    与运行时测试。
-3. 需要 Browser 专用视觉时，在 `Themes/Browser/` 下提供与普通资产相同的相对文件名；Native 和 Browser selector
-   必须分别验证排除与替换。
+3. 支持平台差异时，优先把差异收敛到共享 Control 实现、共享主题状态、公共 Avalonia 能力或明确的 host/capability
+   adapter；不得通过 Browser 专用主题资产复制完整控件视觉。
 4. Window、Dialog native host、Notification native host、文件系统和平台协议能力必须通过 feature 判断或独立
    host 边界处理，不能污染共享 Token schema。
 5. Browser 启动异常优先定位完整异常类型和 API 属性边界；不要先删除主题资产或缩小 Global Token schema。

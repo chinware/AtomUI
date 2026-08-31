@@ -15,7 +15,6 @@ Popup 接入边界：`DropdownButton` 负责业务状态和内容准备，`Dropd
 - `src/AtomUI.Desktop.Controls/DropdownButton/DropdownButton.cs`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonBaseTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonTheme.axaml`
-- `src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/DropdownButtonTheme.axaml`
 
 职责边界：
 
@@ -75,9 +74,9 @@ Public API / ItemsSource / Command / Event
 - 模板应用时获取 part、建立事件订阅和绑定，并先释放旧 part 订阅。
 - 控件卸载、弹层关闭、窗口关闭、集合替换或 container recycle 时释放事件订阅和资源宿主。
 - DynamicResource、TokenResourceBinder 或 C# binding 必须有明确 owner 和释放点。
-- Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
+- Native 和 Browser 支持宿主下的主题加载顺序不得影响 public API 语义。
 
-图标尺寸不在模板生命周期中手工同步。桌面 `DropdownButtonBaseTheme`、具体 `DropdownButtonTheme` 和 Browser `DropdownButtonTheme` 中的 `PART_ButtonIcon`、`PART_LoadingIcon` 都通过 `TemplateBinding IconWidth/IconHeight` 读取 owner 属性；Theme selector 也只设置 owner 属性默认值。`PART_DropdownIndicator` 继续按 DropdownButton 的 OpenIndicator 主题规则独立设置尺寸。
+图标尺寸不在模板生命周期中手工同步。`DropdownButtonBaseTheme` 和具体 `DropdownButtonTheme` 中的 `PART_ButtonIcon`、`PART_LoadingIcon` 都通过 `TemplateBinding IconWidth/IconHeight` 读取 owner 属性；Theme selector 也只设置 owner 属性默认值。`PART_DropdownIndicator` 继续按 DropdownButton 的 OpenIndicator 主题规则独立设置尺寸。
 
 稳定 template part 接入点：
 

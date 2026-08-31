@@ -10,9 +10,6 @@ public class ButtonFamilyTokenIsolationTests
         "src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonTheme.axaml",
         "DropdownButtonTokenResource")]
     [InlineData(
-        "src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/DropdownButtonTheme.axaml",
-        "DropdownButtonTokenResource")]
-    [InlineData(
         "src/AtomUI.Desktop.Controls/Buttons/Themes/HyperLinkButtonTheme.axaml",
         "HyperLinkButtonTokenResource")]
     [InlineData(
