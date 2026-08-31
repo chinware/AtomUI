@@ -49,6 +49,8 @@
                                 Name="PART_ClearButton"
                                 Classes.semantic-clear="True"
                                 VerticalAlignment="Center"
+                                Icon="{TemplateBinding ClearIcon}"
+                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                 IsPassthroughMouseEvent="False" />
                             <atom:AddOnContentPresenter
                                 Name="PART_InnerRightContentPresenter"
@@ -75,6 +77,7 @@
                             AcceptsReturn="False"
                             DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
                             SizeType="Custom"
+                            IsCustomFontSize="{TemplateBinding IsCustomFontSize}"
                             IsReadOnly="{TemplateBinding IsReadOnly}"
                             Text="{TemplateBinding Text, Mode=TwoWay}"
                             PlaceholderText="{TemplateBinding PlaceholderText}"
@@ -131,6 +134,8 @@
                                     Name="PART_ClearButton"
                                     Classes.semantic-clear="True"
                                     VerticalAlignment="Center"
+                                    Icon="{TemplateBinding ClearIcon}"
+                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                     IsPassthroughMouseEvent="False" />
                                 <atom:AddOnContentPresenter
                                     Name="PART_InnerRightContentPresenter"
@@ -157,6 +162,7 @@
                                 AcceptsReturn="False"
                                 DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
                                 SizeType="Custom"
+                                IsCustomFontSize="{TemplateBinding IsCustomFontSize}"
                                 IsReadOnly="{TemplateBinding IsReadOnly}"
                                 Text="{TemplateBinding Text, Mode=TwoWay}"
                                 TextAlignment="Center"

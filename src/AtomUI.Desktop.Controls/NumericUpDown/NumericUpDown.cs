@@ -488,10 +488,9 @@ public partial class NumericUpDown : AvaloniaNumericUpDown,
 
         if (e.NameScope.Find<InputClearIconButton>("PART_ClearButton") is { } clearButton)
         {
-            _templatePartBindings.Add(BindUtils.RelayBind(this, ClearIconProperty, clearButton,
-                AbstractIconButton.IconProperty));
-            _templatePartBindings.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, clearButton,
-                AbstractIconButton.IsMotionEnabledProperty));
+            // Only the visibility relay stays in code: IsEffectiveShowClearButton is an internal
+            // direct property, invisible to compiled template bindings. Icon and IsMotionEnabled
+            // are template-bound in the ControlTheme.
             _templatePartBindings.Add(BindUtils.RelayBind(this, IsEffectiveShowClearButtonProperty, clearButton,
                 Visual.IsVisibleProperty));
         }
@@ -506,19 +505,9 @@ public partial class NumericUpDown : AvaloniaNumericUpDown,
                 innerLeftContent, ContentPresenter.ContentTemplateProperty));
         }
 
-        if (e.NameScope.Find<ContentPresenter>("PART_InnerRightContentPresenter") is { } innerRightContent)
-        {
-            _templatePartBindings.Add(BindUtils.RelayBind(this, InnerRightContentProperty, innerRightContent,
-                ContentPresenter.ContentProperty));
-            _templatePartBindings.Add(BindUtils.RelayBind(this, InnerRightContentTemplateProperty,
-                innerRightContent, ContentPresenter.ContentTemplateProperty));
-        }
-
-        if (e.NameScope.Find<TextBox>("PART_TextBox") is { } textBox)
-        {
-            _templatePartBindings.Add(BindUtils.RelayBind(this, IsCustomFontSizeProperty, textBox,
-                TextBox.IsCustomFontSizeProperty));
-        }
+        // InnerRightContent / InnerRightContentTemplate and the text box IsCustomFontSize are
+        // template-bound in the ControlTheme (the parts sit in direct template content where
+        // TemplatedParent propagates), so no code relay is needed for them.
 
         // The suffix group renders inside the spinner content segment, outside the decorated box's
         // ContentRightAddOn slot, so the floating-handle shift no longer reaches it through the

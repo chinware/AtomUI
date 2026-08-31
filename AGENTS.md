@@ -115,7 +115,16 @@ Detailed AI collaboration rules live in [docs/engineering/contributing/agent-gui
 - Treat AOT compatibility as a first-class design constraint for new features and bug fixes.
 - Verify with tests or publish checks that match the risk of the change.
 - Follow the mandatory Superpowers workflow before any creation, change, implementation, or bug fix: invoke `superpowers:using-superpowers`, then route through `superpowers:brainstorming` (new features/components), `superpowers:systematic-debugging` (bugs), `superpowers:test-driven-development` (implementation), `superpowers:writing-plans`/`superpowers:executing-plans` (multi-step work), and `superpowers:verification-before-completion` (before claiming done). Never skip a skill that could apply; only an explicit user instruction may narrow it.
-- Prefer declaring template/style bindings (RenderTransform, Transitions, template-part properties, pseudo-class driven setters) in AXAML ControlThemes whenever a selector/Setter can reach the target, the runtime behavior is identical, and there is no measurable performance cost. Fall back to code-behind binding only when the ControlTheme cannot express it — for example targets inside a Content subtree beyond the `/template/` chain, internal members invisible to compiled bindings, runtime-computed values, or AOT-unsafe reflection — and state the reason in a code comment. When an existing code-side binding can be migrated to a ControlTheme with identical behavior and performance, migrate it as part of any change that touches the file. Note: `Transitions` must be declared in ControlTheme style setters, never directly inside ControlTemplate content (template build has no clock attached and throws NRE).
+
+## 主题绑定优先强约束（本项目生效）
+
+1. **ControlTheme 优先**：Avalonia 控件的模板/样式类绑定（含 RenderTransform、Transitions、模板部件属性、伪类驱动的 Setter 等），只要同时满足以下全部条件，必须优先放在 AXAML ControlTheme 中声明，禁止先写成代码绑定：
+   - ControlTheme 能表达该绑定（选择器 / Setter / 模板绑定可达目标元素）；
+   - 逻辑效果与代码绑定完全一致（触发时机、状态条件、取值、动画行为）；
+   - 性能无可测量差异。
+2. **代码绑定是兜底**：仅当 ControlTheme 无法完成时（如目标元素在 Content 子树跨不进 `/template/` 链、依赖 internal 成员而 XAML 编译绑定不可见、目标值为运行时计算值、AOT 约束禁止反射绑定等），才允许放到控件代码中绑定，且必须在代码注释中写明 ControlTheme 不可行的具体原因。
+3. **迁移义务**：发现既有的代码绑定实际上可以等价迁移到 ControlTheme 时，在触及该文件的改动中一并迁移，不留“下次再说”。
+4. **声明位置边界**：`Transitions` 必须声明在 ControlTheme 的 style setter 中，禁止直接写在 ControlTemplate 内容里——模板构建期元素尚未挂载 clock，会抛 NullReferenceException。
 
 ## Common Commands
 
