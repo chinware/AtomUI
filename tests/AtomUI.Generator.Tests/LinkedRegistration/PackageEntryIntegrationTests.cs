@@ -99,7 +99,7 @@ public sealed class PackageEntryIntegrationTests
             "src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj"));
 
         desktopProject.ShouldNotContain("AtomUIRegistrationUnit");
-        File.Exists(GetRepoFile("src/AtomUI.Desktop.Controls/Button/Button.cs")).ShouldBeTrue();
+        File.Exists(GetRepoFile("src/AtomUI.Desktop.Controls/Buttons/Button.cs")).ShouldBeTrue();
         File.Exists(GetRepoFile(
             "src/AtomUI.Desktop.Controls/DropdownButton/DropdownButton.cs")).ShouldBeTrue();
         File.Exists(GetRepoFile(
