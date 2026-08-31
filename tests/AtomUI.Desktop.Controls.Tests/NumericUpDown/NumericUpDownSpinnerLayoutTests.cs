@@ -65,6 +65,50 @@ public class NumericUpDownSpinnerLayoutTests
     }
 
     [Fact]
+    public void Suffix_Group_Slides_Left_With_The_Floating_Handle_Shift()
+    {
+        var numericUpDown = new AtomUINumericUpDown
+        {
+            Width = 320,
+            Mode = NumericUpDownMode.Input,
+            Value = 3m,
+            InnerRightContent = "kg",
+            IsMotionEnabled = false
+        };
+
+        var window = new AvaloniaWindow { Width = 480, Height = 120, Content = numericUpDown };
+        window.Show();
+        numericUpDown.ApplyTemplate();
+        window.UpdateLayout();
+        Dispatcher.UIThread.RunJobs();
+        window.UpdateLayout();
+        Dispatcher.UIThread.RunJobs();
+
+        try
+        {
+            var suffix = numericUpDown.GetVisualDescendants()
+                                      .OfType<StackPanel>()
+                                      .Single(control => control.Classes.Contains("semantic-suffix"));
+            var decoratedBox = numericUpDown.GetVisualDescendants()
+                                            .OfType<ButtonSpinnerDecoratedBox>()
+                                            .Single();
+            var originX = suffix.TransformToVisual(numericUpDown).ShouldNotBeNull()
+                                 .Transform(new Point(0, 0)).X;
+
+            decoratedBox.SetValue(ButtonSpinnerDecoratedBox.ContentRightShiftProperty, -40d);
+            Dispatcher.UIThread.RunJobs();
+
+            var shiftedX = suffix.TransformToVisual(numericUpDown).ShouldNotBeNull()
+                                  .Transform(new Point(0, 0)).X;
+            (originX - shiftedX).ShouldBe(40d, 1.0);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
     public void Suffix_Group_Keeps_A_Visible_Gap_From_The_Spinner_Action_Divider()
     {
         var numericUpDown = new AtomUINumericUpDown

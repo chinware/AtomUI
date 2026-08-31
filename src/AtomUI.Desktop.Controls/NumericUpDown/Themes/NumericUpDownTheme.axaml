@@ -31,9 +31,8 @@
                     IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}">
                     <atom:ButtonSpinner.InnerLeftContent>
                         <atom:AddOnContentPresenter
+                            Name="PART_InnerLeftContentPresenter"
                             Classes.semantic-prefix="True"
-                            Content="{TemplateBinding InnerLeftContent}"
-                            ContentTemplate="{TemplateBinding InnerLeftContentTemplate}"
                             VerticalAlignment="Stretch"
                             VerticalContentAlignment="Center"
                             HorizontalAlignment="Left"
@@ -41,6 +40,7 @@
                     </atom:ButtonSpinner.InnerLeftContent>
                     <DockPanel LastChildFill="True">
                         <StackPanel Orientation="Horizontal"
+                                    Name="PART_SuffixGroup"
                                     Classes.semantic-suffix="True"
                                     DockPanel.Dock="Right"
                                     Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
@@ -111,9 +111,8 @@
                         IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}">
                         <atom:ButtonSpinner.InnerLeftContent>
                             <atom:AddOnContentPresenter
+                                Name="PART_InnerLeftContentPresenter"
                                 Classes.semantic-prefix="True"
-                                Content="{TemplateBinding InnerLeftContent}"
-                                ContentTemplate="{TemplateBinding InnerLeftContentTemplate}"
                                 VerticalAlignment="Stretch"
                                 VerticalContentAlignment="Center"
                                 HorizontalAlignment="Left"
@@ -121,6 +120,7 @@
                         </atom:ButtonSpinner.InnerLeftContent>
                         <DockPanel LastChildFill="True">
                             <StackPanel Orientation="Horizontal"
+                                        Name="PART_SuffixGroup"
                                         Classes.semantic-suffix="True"
                                         DockPanel.Dock="Right"
                                         Margin="0,0,8,0"

@@ -15,6 +15,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Metadata;
+using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -494,6 +495,16 @@ public partial class NumericUpDown : AvaloniaNumericUpDown,
                 Visual.IsVisibleProperty));
         }
 
+        if (e.NameScope.Find<ContentPresenter>("PART_InnerLeftContentPresenter") is { } innerLeftContent)
+        {
+            // The presenter lives in a ButtonSpinner.InnerLeftContent property-element subtree, where
+            // TemplatedParent never propagates, so template bindings stay dead there; relay in code.
+            _templatePartBindings.Add(BindUtils.RelayBind(this, InnerLeftContentProperty, innerLeftContent,
+                ContentPresenter.ContentProperty));
+            _templatePartBindings.Add(BindUtils.RelayBind(this, InnerLeftContentTemplateProperty,
+                innerLeftContent, ContentPresenter.ContentTemplateProperty));
+        }
+
         if (e.NameScope.Find<ContentPresenter>("PART_InnerRightContentPresenter") is { } innerRightContent)
         {
             _templatePartBindings.Add(BindUtils.RelayBind(this, InnerRightContentProperty, innerRightContent,
@@ -506,6 +517,19 @@ public partial class NumericUpDown : AvaloniaNumericUpDown,
         {
             _templatePartBindings.Add(BindUtils.RelayBind(this, IsCustomFontSizeProperty, textBox,
                 TextBox.IsCustomFontSizeProperty));
+        }
+
+        // The suffix group renders inside the spinner content segment, outside the decorated box's
+        // ContentRightAddOn slot, so the floating-handle shift no longer reaches it through the
+        // template; mirror the decorated box's animated ContentRightShift onto the group here.
+        if (e.NameScope.Find<StackPanel>("PART_SuffixGroup") is { } suffixGroup &&
+            _buttonSpinner?.DecoratedBox is { } decoratedBox)
+        {
+            var suffixShift = new TranslateTransform();
+            suffixGroup.RenderTransform = suffixShift;
+            _templatePartBindings.Add(decoratedBox.GetPropertyChangedObservable(
+                    ButtonSpinnerDecoratedBox.ContentRightShiftProperty)
+                .Subscribe(shift => suffixShift.X = shift.NewValue is double value ? value : 0d));
         }
     }
     
