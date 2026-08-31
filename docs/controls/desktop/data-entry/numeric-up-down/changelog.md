@@ -22,6 +22,7 @@
   - Route `prefix` / `suffix` / `clear` through the spinner scope (`.semantic-scope-spinner`), decorated-box scope (`.semantic-scope-frame`, annotated in `ButtonSpinnerTheme` and `NumericUpDownSpinnerTheme`) and the shared content add-on slots (`.semantic-scope-prefix` / `.semantic-scope-suffix`, annotated in `AddOnDecoratedBoxTheme` and `ButtonSpinnerDecoratedBoxTheme`).
   - Align the Spinner-mode `NumericUpDownSpinner` template to present `InnerLeftContent` / `InnerRightContent` through the decorated box `ContentLeftAddOn` / `ContentRightAddOn` slots, matching the Input-mode structure so both variants share one `SelectorRoute` per part.
   - Keep the spinner action buttons (`PART_IncreaseButton` / `PART_DecreaseButton`) and the floating handle outside the public contract; they are candidates for future compatible part additions.
+  - Restore the theme for `SizeTypeAwareIconPresenter` by moving its ControlTheme dictionary under a `Themes/` folder inside `ButtonSpinner` so the theme asset manifest picks it up again; addon `PathIcon`s (for example the `SettingOutlined` right add-on) had been rendering at zero size since the compiled-theme refactor dropped the old `PrimitiveThemes.axaml` include. The hover left-shift behavior of the suffix group is unchanged.
 - Gallery
   - Migrate the NumberUpDown ShowCase from `GalleryStickyTabsHost` to `GalleryShowCaseHost` with a lazy Semantic Parts Preview (Input and Spinner mode) and add a custom Semantic Part styling example using the generated `NumericUpDown*Style` types.
 - Docs
