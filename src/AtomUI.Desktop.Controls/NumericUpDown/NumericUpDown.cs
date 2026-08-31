@@ -4,8 +4,8 @@ using AtomUI.Controls;
 using AtomUI.Controls.Commons;
 using AtomUI.Data;
 using AtomUI.Icons.AntDesign;
+using AtomUI.Media;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
@@ -522,29 +522,23 @@ public partial class NumericUpDown : AvaloniaNumericUpDown,
 
         // The suffix group renders inside the spinner content segment, outside the decorated box's
         // ContentRightAddOn slot, so the floating-handle shift no longer reaches it through the
-        // template. Drive the group from the hover state with its own transition instead of
-        // re-mirroring the decorated box's animated value frame by frame: a per-frame relay fights
-        // the render clock and shows up as a one-frame jump when the pointer re-enters quickly.
+        // template. The transform and its transition are declared in the ControlTheme; only the
+        // hover trigger stays in code because the hover state is an internal property on the
+        // decorated box that selectors cannot reach back across the spinner Content boundary,
+        // and the target offset is derived from runtime padding. Do not re-mirror the animated
+        // ContentRightShift frame by frame here: a per-frame relay fights the render clock and
+        // shows up as a one-frame jump when the pointer re-enters quickly.
         if (e.NameScope.Find<StackPanel>("PART_SuffixGroup") is { } suffixGroup &&
             _buttonSpinner?.DecoratedBox is { } decoratedBox)
         {
-            var suffixShift = new TranslateTransform();
-            if (IsMotionEnabled)
-            {
-                suffixShift.Transitions = new Transitions
-                {
-                    TransitionUtils.CreateTransition<DoubleTransition>(TranslateTransform.XProperty)
-                };
-            }
-            suffixGroup.RenderTransform = suffixShift;
             _templatePartBindings.Add(decoratedBox.GetPropertyChangedObservable(
                     ButtonSpinnerDecoratedBox.IsSpinnerContentHoverProperty)
-                .Subscribe(_ => SyncSuffixGroupShift(suffixShift, decoratedBox)));
-            SyncSuffixGroupShift(suffixShift, decoratedBox);
+                .Subscribe(_ => SyncSuffixGroupShift(suffixGroup, decoratedBox)));
+            SyncSuffixGroupShift(suffixGroup, decoratedBox);
         }
     }
 
-    private static void SyncSuffixGroupShift(TranslateTransform suffixShift,
+    private static void SyncSuffixGroupShift(StackPanel suffixGroup,
                                              ButtonSpinnerDecoratedBox decoratedBox)
     {
         var target = decoratedBox.IsHandleFloatable &&
@@ -552,7 +546,10 @@ public partial class NumericUpDown : AvaloniaNumericUpDown,
                      decoratedBox.ButtonSpinnerLocation == Desktop.Controls.ButtonSpinnerLocation.Right
             ? -decoratedBox.EffectiveContentPadding.Right * 1.5
             : 0d;
-        suffixShift.X = target;
+        // Replacing the RenderTransform value (not mutating a transform property) is what arms the
+        // ControlTheme TransformOperationsTransition.
+        suffixGroup.RenderTransform = TransformParser.Parse(
+            FormattableString.Invariant($"translateX({target}px)"));
     }
     
     protected virtual void NotifyClearButtonClicked()

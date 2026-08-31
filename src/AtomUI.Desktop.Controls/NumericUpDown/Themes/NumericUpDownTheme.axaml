@@ -43,7 +43,8 @@
                                     Name="PART_SuffixGroup"
                                     Classes.semantic-suffix="True"
                                     DockPanel.Dock="Right"
-                                    Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
+                                    Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}"
+                                    RenderTransform="translateX(0px)">
                             <atom:InputClearIconButton
                                 Name="PART_ClearButton"
                                 Classes.semantic-clear="True"
@@ -124,7 +125,8 @@
                                         Classes.semantic-suffix="True"
                                         DockPanel.Dock="Right"
                                         Margin="0,0,8,0"
-                                        Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
+                                        Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}"
+                                        RenderTransform="translateX(0px)">
                                 <atom:InputClearIconButton
                                     Name="PART_ClearButton"
                                     Classes.semantic-clear="True"
@@ -175,6 +177,18 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="PlaceholderForeground" Value="{atom:SharedTokenResource ColorTextPlaceholder}" />
+
+        <!-- The suffix group slides away from the floating handle on hover; the shift value is
+             applied by NumericUpDown code (internal decorated-box state + runtime padding), the
+             transition itself lives here so it follows the shared motion token. -->
+        <Style Selector="^[IsMotionEnabled=True] /template/ StackPanel#PART_SuffixGroup">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform"
+                                                   Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                </Transitions>
+            </Setter>
+        </Style>
 
     </ControlTheme>
 </ResourceDictionary>
