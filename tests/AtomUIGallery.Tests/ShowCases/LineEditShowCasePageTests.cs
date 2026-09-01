@@ -1,10 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Threading;
-using Avalonia.VisualTree;
-using AvaloniaWindow = Avalonia.Controls.Window;
 using Shouldly;
 using Xunit;
 
@@ -332,66 +328,6 @@ public class LineEditShowCasePageTests
         item.ShouldContain("SizeType=\"Custom\"");
         item.ShouldContain("Height=\"38\"");
         item.ShouldContain("FontSize=\"15\"");
-    }
-
-    [Fact]
-    public void Diag_Maximized_Preview_Geometry()
-    {
-        AvaloniaTestApp.EnsureInitialized();
-        var page = new AtomUIGallery.ShowCases.LineEdit.LineEditShowCase();
-
-        var visualLayerManager = new Avalonia.Controls.Primitives.VisualLayerManager
-        {
-            EnableAdornerLayer = true,
-            Child = page
-        };
-        var window = new AvaloniaWindow
-        {
-            Content = visualLayerManager,
-            Width = 1920,
-            Height = 1040
-        };
-        window.Show();
-        try
-        {
-            var host = page.GetVisualDescendants()
-                           .OfType<AtomUI.Toolkits.GalleryBase.Controls.GalleryShowCaseHost>()
-                           .Single();
-            host.SelectedTab = AtomUI.Toolkits.GalleryBase.Controls.GalleryShowCaseTab.SemanticParts;
-            for (var round = 0; round < 8; round++)
-            {
-                Dispatcher.UIThread.RunJobs();
-                window.UpdateLayout();
-            }
-
-            var sb = new System.Text.StringBuilder();
-            foreach (var preview in page.GetVisualDescendants()
-                                        .OfType<AtomUI.Toolkits.GalleryBase.Controls.SemanticPartPreview>())
-            {
-                sb.AppendLine($"preview {preview.Title}: bounds={preview.Bounds}");
-                var layout = preview.GetVisualDescendants()
-                                    .FirstOrDefault(static candidate =>
-                                        candidate.GetType().Name.Contains("SemanticPartPreviewLayoutPanel"));
-                if (layout is not null)
-                {
-                    sb.AppendLine($"  layout bounds={layout.Bounds}");
-                }
-
-                var stage = preview.GetVisualDescendants()
-                                   .OfType<Border>()
-                                   .FirstOrDefault(static candidate => candidate.Name == "PART_PreviewStage");
-                var pane = preview.GetVisualDescendants()
-                                  .OfType<Border>()
-                                  .FirstOrDefault(static candidate => candidate.Name == "PART_PartsPane");
-                sb.AppendLine($"  stage bounds={stage?.Bounds.ToString() ?? "null"} pane bounds={pane?.Bounds.ToString() ?? "null"} paneVisible={pane?.IsEffectivelyVisible}");
-            }
-            throw new Exception(sb.ToString());
-        }
-        finally
-        {
-            window.Close();
-            Dispatcher.UIThread.RunJobs();
-        }
     }
 
     [Fact]

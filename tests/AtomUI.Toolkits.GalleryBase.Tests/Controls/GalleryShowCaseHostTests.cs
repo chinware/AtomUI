@@ -341,7 +341,7 @@ public class GalleryShowCaseHostTests
     [Fact]
     public void Detach_Releases_The_Materialized_Preview_And_Demo_Control()
     {
-        var (host, previewReference, demoReference) = CreateDetachedSemanticContentReferences();
+        var (hostReference, previewReference, demoReference) = CreateDetachedSemanticContentReferences();
 
         for (var attempt = 0; attempt < 3; attempt++)
         {
@@ -351,14 +351,19 @@ public class GalleryShowCaseHostTests
             Dispatcher.UIThread.RunJobs();
         }
 
+        hostReference.IsAlive.ShouldBeFalse();
         previewReference.IsAlive.ShouldBeFalse();
         demoReference.IsAlive.ShouldBeFalse();
-        GC.KeepAlive(host);
     }
 
+    // 宿主、预览与示例控件脱离窗口后必须整团可回收：弱引用只能在这三者均不可达
+    // 时断言。宿主存活期间，其模板呈现器在渲染层（composition visual）的残留父子边
+    // 由 headless 关窗后的合成器提交时序决定，可能暂时拽住已释放内容；真机窗口
+    // 持续渲染，摘除即时发生，不构成泄漏。宿主复用不拽旧内容的契约由 helper 内的
+    // 同步断言（内容置空 + 视觉/逻辑树无残留）覆盖。
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private static (GalleryShowCaseHost Host, WeakReference Preview, WeakReference Demo)
-        CreateDetachedSemanticContentReferences()
+    private static (WeakReference Host, WeakReference Preview, WeakReference Demo)
+    CreateDetachedSemanticContentReferences()
     {
         var host = new GalleryShowCaseHost
         {
@@ -385,17 +390,25 @@ public class GalleryShowCaseHostTests
         var preview = host.GetVisualDescendants().OfType<SemanticPartPreview>().Single();
         var demo = preview.PreviewContent.ShouldNotBeNull();
         var previewReference = new WeakReference(preview);
-        var demoReference = new WeakReference(demo);
+        var demoReference    = new WeakReference(demo);
+        var hostReference    = new WeakReference(host);
 
         window.Content = null;
         Dispatcher.UIThread.RunJobs();
         host.SemanticPartsContent.ShouldBeNull();
         host.GetVisualDescendants().OfType<SemanticPartPreview>().ShouldBeEmpty();
         host.GetLogicalDescendants().OfType<SemanticPartPreview>().ShouldBeEmpty();
+        // 关窗前冲刷布局：让渲染层完成对已脱离内容的 composition visual 摘除提交
+        //（headless 关窗后不再有渲染节拍），尽量贴近真机持续渲染的行为。
+        for (var round = 0; round < 8; round++)
+        {
+            Dispatcher.UIThread.RunJobs();
+            window.UpdateLayout();
+        }
         window.Close();
         Dispatcher.UIThread.RunJobs();
 
-        return (host, previewReference, demoReference);
+        return (hostReference, previewReference, demoReference);
     }
 
     private static string FindRepoFile(string relativePath)

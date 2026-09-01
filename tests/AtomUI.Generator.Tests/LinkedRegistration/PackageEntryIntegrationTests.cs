@@ -223,7 +223,9 @@ public sealed class PackageEntryIntegrationTests
         fullBody.ShouldNotContain("RegisterGeneratedDesktopPackage");
         source.ShouldContain("AotTrimRegistrationPlanRegistry.ApplyPackage(");
         source.ShouldContain("\"AtomUI.Desktop.Controls\"");
+        source.ShouldContain("RuntimePlatform.Features.SupportsNativeWindow");
         source.ShouldContain("DesktopControlRegistrationSelector.IsBrowserControlSupported");
+        source.ShouldContain("BrowserDesktopControlThemesProvider");
         source.ShouldNotContain("DesktopControlThemeAssetSelector");
         source.ShouldNotContain("selectAssets:");
     }

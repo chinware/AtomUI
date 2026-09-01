@@ -93,7 +93,10 @@ public class BreadcrumbShowCasePageTests
         source.ShouldContain("<gallery:SemanticPartPreview");
         source.ShouldContain("SemanticOwner=\"{Binding #BreadcrumbSemanticOwner}\"");
         source.ShouldContain("SemanticOwnerType=\"{x:Type atom:Breadcrumb}\"");
-        source.ShouldContain("Classes=\"preview-content-centered\"");
+        // 预览画布默认居中内容（SemanticPartPreview.PreviewContentAlignment=Center），
+        // 面包屑宿主自身再以对齐属性显式居中。
+        source.ShouldContain("HorizontalAlignment=\"Center\"");
+        source.ShouldContain("VerticalAlignment=\"Center\"");
         source.ShouldContain("Kind=HomeOutlined");
         source.ShouldContain("Kind=UserOutlined");
         source.ShouldContain("SourceKey=\"breadcrumb-semantic-part\"");
