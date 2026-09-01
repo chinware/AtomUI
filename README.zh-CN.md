@@ -308,16 +308,6 @@ Avalonia 是一个跨平台的 .NET UI 框架，使用 XAML 语言设计界面�
 在使用已发布二进制包链接的情况下可以免费使用</strong>。如果基于源码定制 AtomUI，则需要按协议开放修改代码，
 或购买商业授权。商业授权请联系：北京秦派软件科技有限公司。
 
-#### 特别感谢
-
-<div>
-    <div align="left">
-      <h1>RoutinAI</h1>
-       <img width="154" height="151" src="./resources/images/readme/RoutinAI.png"/>
-    </div>
-[RoutinAI](https://routin.ai/) 是一个企业级统一 LLM API 网关，提供单一、类型安全的接口，可访问来自 GPT、Claude 和 Gemini 系列的 100 多个主流大语言模型，包括 gpt-5.4、claude-opus-4-6 和 gemini-3.1-pro-preview 等模型。它通过提供零延迟边缘路由、无需修改代码即可无缝切换模型、统一计费以及带有消费上限和访问策略的集中治理，消除了管理多个 AI 供应商的复杂性。
-</div>
-
 ### 🤝 贡献
 
 欢迎各界人士贡献各种资源，如果您对贡献代码感兴趣，请随意查看我们的 GitHub [问题页面][github-issues-link]，让我们见识一下您的实力。
