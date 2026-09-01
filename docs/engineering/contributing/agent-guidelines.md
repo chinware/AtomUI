@@ -168,6 +168,19 @@ Gallery 改动时注意：
 - 抽象只在能消除实际重复、降低共享复杂度或匹配既有模式时引入。
 - 生成文件不要手改；改 generator 或输入源，并验证输出。
 
+### 命名约定
+
+C# 命名约定的唯一事实来源是仓库根目录的 [.editorconfig](../../../.editorconfig)（`dotnet_naming_rule` 机器规则，IDE 与
+`dotnet format style` 均可执行）。核心约定：
+
+- 局部变量、模式匹配命名变量（`is Type name`）、`out var` 命名使用 camelCase。
+- 方法参数使用 camelCase。
+- 私有实例字段使用 `_camelCase`；私有静态可变字段使用 `s_camelCase`；私有 `static readonly` 与 `const` 字段使用 PascalCase。
+- 公共/受保护/内部成员与类型使用 PascalCase；接口以 `I` 为前缀。
+
+提交前可用 `dotnet format style --verify-no-changes` 检查命名违规（默认报告 warning 级以上，`--severity info`
+可查看全部）。存量违规随触及文件逐步清理，不做一次性全仓重命名。
+
 ## 控件研发标准
 
 控件 C# 实现、AXAML 主题、API 和主题契约变更必须遵循 [AtomUI 控件研发标准规范](../development/control-development-guidelines.md)。优化代码和修复 bug 时，如果涉及控件既有 API、主题契约或可观察行为变化，必须先获得用户明确授权。
