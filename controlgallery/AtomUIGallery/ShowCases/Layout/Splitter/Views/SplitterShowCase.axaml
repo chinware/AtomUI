@@ -321,7 +321,7 @@
                                 <Setter Property="BorderThickness" Value="2" />
                                 <Setter Property="BorderDashArray" Value="4,2" />
                             </Style>
-                            <Style Selector="TextBlock.semantic-style-demo-label">
+                            <Style Selector="TextBlock.splitter-demo-label">
                                 <Setter Property="HorizontalAlignment" Value="Center" />
                                 <Setter Property="VerticalAlignment" Value="Center" />
                                 <Setter Property="FontWeight" Value="SemiBold" />
@@ -333,11 +333,11 @@
                             <atom:Splitter Classes="semantic-style-demo-default"
                                            Orientation="Vertical">
                                 <Border>
-                                    <TextBlock Classes="semantic-style-demo-label"
+                                    <TextBlock Classes="splitter-demo-label"
                                                Text="{gallery:SplitterShowCaseLangResource P2TextFirst}" />
                                 </Border>
                                 <Border>
-                                    <TextBlock Classes="semantic-style-demo-label"
+                                    <TextBlock Classes="splitter-demo-label"
                                                Text="{gallery:SplitterShowCaseLangResource P2TextSecond}" />
                                 </Border>
                             </atom:Splitter>

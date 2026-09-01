@@ -7402,7 +7402,7 @@ Form 的公共契约由 Form、FormItem、FormItemDecorator、FormValidateFeedba
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml:46`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml:106`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -7447,7 +7447,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 表单布局
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml:152`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml:212`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -7486,7 +7486,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 标签可换行
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml:290`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml:350`
 
 Gallery key：`ExamplesContent` / item `4`
 
@@ -7531,7 +7531,7 @@ Gallery key：`ExamplesContent` / item `4`
 
 ### 必填样式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml:634`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml:694`
 
 Gallery key：`ExamplesContent` / item `8`
 
@@ -7730,8 +7730,9 @@ AOT 边界：
 - `src/AtomUI.Controls/Form/FormValues.cs`、`FormValidateMessage.cs`、事件参数类型：表单值和验证事件数据结构。
 - `src/AtomUI.Desktop.Controls/Form/Form.cs`：桌面 Form 容器、表单项配置同步、验证聚合、提交、重置、动态删除和 ItemsControl 容器逻辑。
 - `src/AtomUI.Desktop.Controls/Form/FormItem.cs`：字段级布局、模板接入、内容接入、Form 配置接收、反馈创建和响应式列宽。
-- `src/AtomUI.Desktop.Controls/Form/FormItem.Validation.cs`：FormItem 验证运行、debounce、取消、策略执行、结果应用和消息 inlines 构建。
+- `src/AtomUI.Desktop.Controls/Form/FormItem.Validation.cs`：FormItem 验证运行、debounce、取消、策略执行、结果应用和逐条消息 items 构建。
 - `src/AtomUI.Desktop.Controls/Form/FormItemDecorator.cs`：组合输入控件的表单能力转发。
+- `src/AtomUI.Desktop.Controls/Form/FormItem.SemanticParts.cs`：FormItem Semantic Part 声明（`label`、`content`、`extra`、`help`）。
 - `src/AtomUI.Desktop.Controls/Form/FormSizeTypeBindingHelper.cs`：`CustomizableSizeType` 到新旧尺寸接口的转发规则。
 - `src/AtomUI.Desktop.Controls/Form/SubmitButton.cs`、`ResetButton.cs`：表单操作按钮和路由事件。
 - `src/AtomUI.Desktop.Controls/Form/FormToken.cs`：Form 控件 Token。
@@ -7741,6 +7742,7 @@ AOT 边界：
 
 - 源设计文档：`docs/controls/desktop/data-entry/form/overview.md`
 - 实现文档：`docs/controls/desktop/data-entry/form/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-entry/form/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-entry/form/token.md`
 - 变更记录：`docs/controls/desktop/data-entry/form/changelog.md`
 - 语义结构：`./semantic-cn.md`

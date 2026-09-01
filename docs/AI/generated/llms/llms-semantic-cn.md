@@ -4807,13 +4807,182 @@ Source: ./controls/form/semantic-cn.md
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Form` | 数据录入控件根语义区域，承载 public API、值状态、验证状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `input` | `输入或编辑区域` | 承载用户输入、当前值、占位、格式化或只读状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `trigger` | `触发区域` | 承载清除、展开、提交、步进、上传或辅助操作。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `popup` | `弹层或候选区域` | 承载下拉、候选项、日历、颜色面板或异步内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `validation` | `校验反馈区域` | 承载 Form、status、错误、警告、help 或 loading 状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+Form 家族的 Semantic Part 契约由 `FormItem` 声明：`root`、`label`、`content`、`extra`、`help`、`helpItem` 六个职责区域
+（§1.1–1.6）。除 `helpItem` 外均为 `Single`，且来自 `FormItemTheme.axaml` 的唯一内置模板——
+`Layout`、`FormLayout`、`RequiredMark`、验证状态和 `IsHideItemLabel` 只改变布局排列、可见性或有效视觉值，
+不增删模板节点。`helpItem` 是运行时逐条创建的消息节点，数量随验证状态和 `Help` 变化（§1.6）。
+
+`Form` 容器自身不注册 descriptor。上游稳定发布基线（6.6.0）的 Form semantic API（`root`、`label`、`content`、`help`、
+`helpItem`、`extra`）中，form 级仅 `root` 落在表单根元素上；在 AtomUI 中对 Form owner 的整体定制通过
+Avalonia 原生 owner 样式（`atom|Form` 类型 selector、ControlTheme、实例 Styles）直接完成，不需要
+`.semantic-*` 契约。字段级语义（label、content、help、extra）全部由 `FormItem` 的模板节点承载。
+
+### 1.1 `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `FormItem` |
+| Part | `root` |
+| Selector | FormItem 本身 |
+| SelectorRoute | 不适用 |
+| ContractType | `FormItem` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | FormItem owner |
+| 职责 | 承载字段布局、验证状态、内容接入和 owner-scoped Semantic Style 入口。 |
+| 相关 API | `Layout`、`LabelAlign`、`ValidateStatus`、`ValidateResult`、`IsRequired`、`Content` |
+| 相关 Token | `FormToken`、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+`root` 是控件自身，不声明 `.semantic-root` marker。它适合定制 FormItem 整体 `Margin`、`Opacity`、对齐和
+尺寸约束；标签列与内容列的 Grid 几何由 `PART_BodyLayout` 布局算法拥有（见实现原理 §7.1），不通过 Semantic
+Style 改写。`FormActionsItem` 复用 FormItem 模板，`atom|FormItem` 类型 selector 同样命中它，不注册独立
+descriptor。
+
+### 1.2 `label`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `FormItem` |
+| Part | `label` |
+| Selector | `.semantic-label` |
+| SelectorRoute | `/template/ .semantic-label` |
+| Style Type | `FormItemLabelStyle` |
+| ContractType | `TextBlock` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `TextBlock#PART_Label`（`PART_LabelContentLayout` 内的标签文本） |
+| 职责 | 承载 `LabelText` 的文本呈现，包含颜色、字号、对齐和换行。 |
+| 相关 API | `LabelText`、`LabelAlign`、`LabelWrapping`、`IsHideItemLabel` |
+| 相关 Token | `LabelColor`、`LabelFontSize` |
+| 稳定性 | stable since 6.0 |
+
+`label` 对齐上游 `classNames.label` 的文本语义：标记（冒号、必填星号、可选文案、tooltip 图标和自定义
+mark）拥有各自的 token 驱动样式，不属于 `label` Part。它适合定制 `Foreground`、`FontSize`、`TextAlignment`、
+`Opacity` 和 `Margin`；默认主题的 `LabelColor`、`LabelFontSize` 和 `LabelAlign` selector 可以被同优先级的用户
+Semantic Style 覆盖。
+
+布局边界：水平布局下 `PART_Label` 的 `MaxWidth` 通过 `TemplateBinding` 投影自 `LabelMaxWidth`（由
+`LayoutUpdated` 测量标签列宽后写入）。用户 Setter 覆盖 `Width` / `MaxWidth` 会中断该测量闭环，导致换行与
+裁剪行为退化；这两个属性槽不推荐定制，标签列宽度应通过 `LabelColInfo` API 控制。
+
+### 1.3 `content`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `FormItem` |
+| Part | `content` |
+| Selector | `.semantic-content` |
+| SelectorRoute | `/template/ .semantic-content` |
+| Style Type | `FormItemContentStyle` |
+| ContractType | `ContentPresenter` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `ContentPresenter#ContentPresenter`（`ContentFrame` 内主内容 presenter） |
+| 职责 | 承载 `Content` 输入控件的最终呈现位置。 |
+| 相关 API | `Content`、`IsValidateContentType`、`ChildrenSpacing` |
+| 相关 Token | `FormItemSpacing`、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+`content` 对齐上游 `classNames.content` 语义，是内容呈现区域，
+不等于用户 `Content` 子控件本身。适合定制 `Margin`、`Opacity`、`VerticalAlignment` 和 presenter 级排版属性；
+`Content` 创建的输入控件子树（LineEdit、Select 等自身的模板与 Semantic Part）不属于本 Part，继续由各自
+owner 契约拥有。
+
+布局边界：presenter 的 `MaxWidth` 投影自 `ContentPresenterMaxWidth`（`LayoutUpdated` 测量内容列宽后写入，
+`FormLayout=Inline` 时为正无穷）。用户 Setter 覆盖 `Width` / `MaxWidth` 会中断测量闭环；内容列宽度应通过
+`WrapperColInfo` API 控制。`ContentFrame` 的最小高度与标签列对齐，属于布局算法内部节点。
+
+### 1.4 `extra`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `FormItem` |
+| Part | `extra` |
+| Selector | `.semantic-extra` |
+| SelectorRoute | `/template/ .semantic-extra` |
+| Style Type | `FormItemExtraStyle` |
+| ContractType | `ContentPresenter` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `ContentPresenter#ExtraPresenter`（`PART_ContentLayout` 内 help 区域之后的 Extra presenter） |
+| 职责 | 承载 `Extra` 与 `ExtraTemplate` 的最终呈现。 |
+| 相关 API | `Extra`、`ExtraTemplate` |
+| 相关 Token | SharedToken `ColorTextDescription`、`ControlHeightSM` |
+| 稳定性 | stable since 6.0 |
+
+`extra` 对齐上游 `classNames.extra` 语义，是 `Extra` API 的呈现区域。呈现位置与上游一致：位于输入控件
+与 help 区域（`additional` 区）下方、与内容列对齐，不占用控件水平空间；默认主题使用说明文字色
+（`ColorTextDescription`）与 `ControlHeightSM` 最小高度。`ExtraTemplate` 创建的用户子树不属于本 Part。
+`Extra=null` 时 presenter 隐藏（`IsVisible` 绑定 `Extra` 非空），仍属于静态模板结构，marker 与 `Single`
+数量不变。
+
+### 1.5 `help`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `FormItem` |
+| Part | `help` |
+| Selector | `.semantic-help` |
+| SelectorRoute | `/template/ .semantic-help` |
+| Style Type | `FormItemHelpStyle` |
+| ContractType | `StackPanel` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `StackPanel#ExtraInfoLayout`（`PART_ContentLayout` 内消息区域） |
+| 职责 | 承载验证消息与 `Help` 文案的聚合展示区域。 |
+| 相关 API | `Help`、`ValidateStatus`、`ErrorMessageForeground`、`WarningMessageForeground` |
+| 相关 Token | `FormItemSpacing`、`ColorErrorText`、`ColorWarningText`、`ColorTextDescription` |
+| 稳定性 | stable since 6.0 |
+
+`help` 对齐上游 `classNames.help`（ErrorList 根节点）语义，覆盖同一段视觉职责：验证错误消息、警告
+消息和 `Help` 帮助文案共同居住在该区域，逐条内容以 `helpItem` 节点呈现（§1.6）。`HasErrorOrWarningMsg=False`
+时默认主题把该区域折叠为 `MaxHeight=0` 并由 `PART_ContentLayout` 的 `FormItemSpacing` 收紧间距；容器节点与
+marker 始终存在，数量语义为 `Single`。
+
+消息文本颜色由 `ValidateStatus` selector（`ColorErrorText` / `ColorWarningText` / `ColorTextDescription`）和
+`ErrorMessageForeground` / `WarningMessageForeground` API 拥有，`help` 容器 Setter 不改变消息着色。适合定制
+`Margin`、`Spacing`、`Opacity` 和对齐。
+
+### 1.6 `helpItem`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `FormItem` |
+| Part | `helpItem` |
+| Selector | `.semantic-help-item` |
+| SelectorRoute | `/template/ .semantic-help > .semantic-help-item` |
+| Style Type | `FormItemHelpItemStyle` |
+| ContractType | `TextBlock` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | `ExtraInfoLayout` 内逐条消息 `TextBlock`（运行时创建）与静态 `TextBlock#HelpText` |
+| 职责 | 承载单条验证错误、警告消息或 `Help` 帮助文案的文本呈现。 |
+| 相关 API | `Help`、`ValidateStatus`、`ErrorMessageForeground`、`WarningMessageForeground` |
+| 相关 Token | `ColorErrorText`、`ColorWarningText`、`ColorTextDescription` |
+| 稳定性 | stable since 6.0 |
+
+`helpItem` 对齐上游 `classNames.helpItem`（ErrorList 逐条消息项）语义。FormItem 在验证结果变化时以代码逐条
+创建消息 `TextBlock`，使用生成的 semantic class 常量添加 marker，并按"错误与警告消息在前、`Help` 文案在后"
+的顺序排列；静态 `HelpText` 节点同样携带 marker，是 `Help` 文案的固定实例。消息节点带显式
+`Foreground`（来自 `ErrorMessageForeground` / `WarningMessageForeground`），`HelpText` 着色由 `ValidateStatus`
+selector 拥有；Semantic Style 服从 Avalonia 原生优先级，可以按需覆盖。
+
+运行时边界：消息节点由验证结果应用的统一写入点创建、重建和清空，reset、detach 与新一轮验证不会遗留旧节点或
+旧 marker；节点是 `ExtraInfoLayout` 的直接子节点，不进入 logical tree，不持有验证状态。适合定制 `FontSize`、
+`Margin`、`Opacity` 和文本排版属性。
 
 ## Abstract AXAML Structure
 
@@ -4854,12 +5023,10 @@ Form
                  -> TextBlock#PART_Label (template-stable)
            -> StackPanel#PART_ContentLayout (template-stable)
               -> Border#ContentFrame (template-stable)
-                 -> DockPanel (template-stable)
-                    -> ContentPresenter#ExtraPresenter (internal-observable)
-                    -> ContentPresenter#ContentPresenter (internal-observable)
+                 -> ContentPresenter#ContentPresenter (internal-observable)
               -> StackPanel#ExtraInfoLayout (template-stable)
-                 -> TextBlock#PART_ErrorMsg (template-stable)
                  -> TextBlock#HelpText (template-stable)
+              -> ContentPresenter#ExtraPresenter (internal-observable)
   -> Form (control theme, FormTheme.axaml)
      -> Border#Frame (template-stable)
         -> ItemsPresenter#PART_ItemsPresenter (template-stable)
@@ -4890,16 +5057,14 @@ Form
 | `CustomOptionalMarkPresenter` | template node (ContentPresenter) | `FormItemTheme.axaml` | FormItem | `CustomOptionalMark`, `CustomOptionalMarkTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_DefaultRequireMark` | template node (TextBlock) | `FormItemTheme.axaml` | FormItem | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Label` | template node (TextBlock) | `FormItemTheme.axaml` | FormItem | `LabelMaxWidth`, `LabelText`, `LabelWrapping` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ContentLayout` | template node (StackPanel) | `FormItemTheme.axaml` | FormItem | `Content`, `ContentPresenterMaxWidth`, `ErrorMessageInlines`, `Extra`, `ExtraTemplate`, `Help` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `ContentFrame` | template node (Border) | `FormItemTheme.axaml` | FormItem | `Content`, `ContentPresenterMaxWidth`, `Extra`, `ExtraTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `DockPanel` | template node (DockPanel) | `FormItemTheme.axaml` | FormItem | `Content`, `ContentPresenterMaxWidth`, `Extra`, `ExtraTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `ExtraPresenter` | template node (ContentPresenter) | `FormItemTheme.axaml` | FormItem | `Extra`, `ExtraTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_ContentLayout` | template node (StackPanel) | `FormItemTheme.axaml` | FormItem | `Content`, `ContentPresenterMaxWidth`, `Extra`, `ExtraTemplate`, `Help` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ContentFrame` | template node (Border) | `FormItemTheme.axaml` | FormItem | `Content`, `ContentPresenterMaxWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentPresenter` | template node (ContentPresenter) | `FormItemTheme.axaml` | FormItem | `Content`, `ContentPresenterMaxWidth` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `ExtraInfoLayout` | template node (StackPanel) | `FormItemTheme.axaml` | FormItem | `ErrorMessageInlines`, `Help` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ErrorMsg` | template node (TextBlock) | `FormItemTheme.axaml` | FormItem | `ErrorMessageInlines` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ExtraInfoLayout` | template node (StackPanel) | `FormItemTheme.axaml` | FormItem | `Help` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `HelpText` | template node (TextBlock) | `FormItemTheme.axaml` | FormItem | `Help` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Form` | control theme | `FormTheme.axaml` | 用户代码 / 控件宿主 | `CornerRadius`, `Padding` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Frame` | template node (Border) | `FormTheme.axaml` | Form | `CornerRadius`, `Padding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `ExtraPresenter` | template node (ContentPresenter) | `FormItemTheme.axaml` | FormItem | `Extra`, `ExtraTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `Form` | control theme | `FormTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `BorderThickness`, `BoxShadow`, `CornerRadius`, `Padding` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Frame` | template node (Border) | `FormTheme.axaml` | Form | `Background`, `BorderBrush`, `BorderThickness`, `BoxShadow`, `CornerRadius`, `Padding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ItemsPresenter` | template node (ItemsPresenter) | `FormTheme.axaml` | Form | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `FormValidateFeedback` | control theme | `FormValidateFeedbackTheme.axaml` | Form | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Content` | template node (ContentPresenter) | `FormValidateFeedbackTheme.axaml` | FormValidateFeedback | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
@@ -4910,7 +5075,7 @@ Form
 | --- | --- | --- |
 | `PART_BodyLayout` | `Grid` | FormItem 标签列和内容列布局。 |
 | `PART_LabelLayout` | `Panel` | 标签、必填标记、tooltip、可选标记和冒号承载。 |
-| `PART_ContentLayout` | `Panel` | 输入内容、Extra、错误消息和帮助文本承载。 |
+| `PART_ContentLayout` | `Panel` | 输入内容、错误消息/帮助文本与 Extra 承载。 |
 
 ## Pseudo Classes
 
@@ -5529,8 +5694,10 @@ Source: ./controls/numeric-up-down/semantic-cn.md
 | 相关 Token | SharedToken、`NumericUpDownToken`、`ButtonSpinnerToken` |
 | 稳定性 | stable since 6.0 |
 
-`root` 是控件自身，不声明 `.semantic-root` marker。它适合定制 NumericUpDown 整体 `Background`、`BorderBrush`、
-`Opacity`、对齐和尺寸约束；variant、effective status 与 CompactSpace 的状态归一仍由共享 frame 结构负责。
+`root` 是控件自身，不声明 `.semantic-root` marker。它适合定制 NumericUpDown 整体 `BorderBrush`、`Opacity`、对齐和
+尺寸约束；`BorderBrush` 会以 LocalValue 中继到输入 frame 生效（对齐 LineEdit 与 antd `styles.root.borderColor`
+语义）——定制期间该属性槽的 hover / focus 变色冻结，focus 的 `BoxShadow` 光晕不受影响，置空后恢复 frame 状态机。
+variant、effective status 与 CompactSpace 的状态归一仍由共享 frame 结构负责。
 
 ### 1.2 `prefix`
 
@@ -5613,20 +5780,20 @@ clear 与用户右侧内容仍各有边界，用户内容子树不由 `suffix` �
 | Owner | `NumericUpDown` |
 | Part | `clear` |
 | Selector | `.semantic-clear` |
-| SelectorRoute | `/template/ .semantic-scope-spinner /template/ .semantic-scope-frame /template/ .semantic-scope-suffix > .semantic-suffix > .semantic-clear` |
+| SelectorRoute | `/template/ .semantic-clear` |
 | Style Type | `NumericUpDownClearStyle` |
 | ContractType | `Avalonia.Controls.Button` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
 | CrossVisualRoot | `false` |
 | RuntimeCreated | `false` |
-| AtomUI 节点 | `InputClearIconButton#PART_ClearButton` |
+| AtomUI 节点 | `InputClearIconButton#PART_ClearButton`（输入段内右缘，位于内部 + / 浮动 handle 之前） |
 | 职责 | 提供清空当前数值的操作入口。 |
 | 相关 API | `IsAllowClear`、`ClearIcon`、`IsReadOnly`、`Text` |
 | 相关 Token | clear 按钮主题与 SharedToken |
 | 稳定性 | stable since 6.0 |
 
-`clear` 节点始终存在，`IsEffectiveShowClearButton` 只切换可见性。它适合定制 `Opacity`、`Margin`、`Cursor` 和
+`clear` 节点始终存在于两个模板变体的输入段内（与 `input` 同级，紧贴输入文本右缘），`IsEffectiveShowClearButton` 只切换可见性。它适合定制 `Opacity`、`Margin`、`Cursor` 和
 Button 级交互属性；清除命令仍进入 `NotifyClearButtonClicked()` 的统一行为。
 
 ## Abstract AXAML Structure
@@ -5635,7 +5802,13 @@ Button 级交互属性；清除命令仍进入 `NotifyClearButtonClicked()` 的�
 
 ```xml
 <NumericUpDownSpinner Name="PART_Spinner">
-    <EmbeddedTextBox Name="PART_TextBox" />
+    <DockPanel>
+        <StackPanel Name="PART_SuffixGroup">
+            <InputClearIconButton Name="PART_ClearButton" />
+            <AddOnContentPresenter Name="PART_InnerRightContentPresenter" />
+        </StackPanel>
+        <EmbeddedTextBox Name="PART_TextBox" />
+    </DockPanel>
 </NumericUpDownSpinner>
 ```
 
@@ -5699,9 +5872,17 @@ NumericUpDown
               -> ContentPresenter (internal-observable)
   -> NumericUpDown (control theme, NumericUpDownTheme.axaml)
      -> NumericUpDownSpinner#PART_Spinner (template-stable)
-        -> EmbeddedTextBox#PART_TextBox (template-stable)
+        -> DockPanel (template-stable)
+           -> StackPanel#PART_SuffixGroup (template-stable)
+              -> InputClearIconButton#PART_ClearButton (template-stable)
+              -> AddOnContentPresenter#PART_InnerRightContentPresenter (template-stable)
+           -> EmbeddedTextBox#PART_TextBox (template-stable)
      -> NumericUpDownSpinner#PART_Spinner (template-stable)
-        -> EmbeddedTextBox#PART_TextBox (template-stable)
+        -> DockPanel (template-stable)
+           -> StackPanel#PART_SuffixGroup (template-stable)
+              -> InputClearIconButton#PART_ClearButton (template-stable)
+              -> AddOnContentPresenter#PART_InnerRightContentPresenter (template-stable)
+           -> EmbeddedTextBox#PART_TextBox (template-stable)
 ```
 
 ### 协作节点

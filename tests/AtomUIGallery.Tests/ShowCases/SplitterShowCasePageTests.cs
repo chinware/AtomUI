@@ -163,7 +163,7 @@ public class SplitterShowCasePageTests
         semanticSource.ShouldNotContain("x:SetterTargetType=\"Border\"");
         CountOccurrences(semanticSource, "<atom:Splitter ").ShouldBe(2);
         CountOccurrences(semanticSource, "Classes=\"splitter-surface\"").ShouldBe(2);
-        semanticSource.ShouldContain("Classes=\"semantic-style-demo-label\"");
+        semanticSource.ShouldContain("Classes=\"splitter-demo-label\"");
         semanticSource.ShouldContain("Classes=\"splitter-label\"");
         semanticSource.ShouldNotContain("Width=\"480\"");
         semanticSource.ShouldNotContain("HorizontalAlignment=\"Left\"");
@@ -209,7 +209,7 @@ public class SplitterShowCasePageTests
             AssertDraggerBackground(defaultDemo, "#66C2DFFC");
             var defaultLabels = defaultDemo.GetVisualDescendants()
                                            .OfType<TextBlock>()
-                                           .Where(static label => label.Classes.Contains("semantic-style-demo-label"))
+                                           .Where(static label => label.Classes.Contains("splitter-demo-label"))
                                            .ToArray();
             defaultLabels.Length.ShouldBe(2);
             foreach (var label in defaultLabels)

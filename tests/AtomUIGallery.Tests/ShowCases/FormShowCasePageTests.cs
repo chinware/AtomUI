@@ -31,7 +31,8 @@ public class FormShowCasePageTests
         source.ShouldNotContain("Tag=\"Examples\"");
         source.ShouldNotContain("Tag=\"Api\"");
         source.ShouldNotContain("Tag=\"DesignToken\"");
-        source.ShouldContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldNotContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldContain("<gallery:GalleryShowCaseHost");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
         source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
@@ -48,10 +49,11 @@ public class FormShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:FormShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(20);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(20);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(20);
-        CountOccurrences(source, "DataTemplate x:DataType=\"viewModels:FormViewModel\"").ShouldBe(20);
+        var examples = ExtractFormExampleItems(source);
+        CountShowCaseItemElements(examples).ShouldBe(21);
+        CountOccurrences(examples, "IsDeferredContentEnabled=\"True\"").ShouldBe(21);
+        CountOccurrences(examples, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(21);
+        CountOccurrences(examples, "DataTemplate x:DataType=\"viewModels:FormViewModel\"").ShouldBe(21);
         CountOccurrences(source, "IsOccupyEntireRow=\"True\"").ShouldBeGreaterThanOrEqualTo(18);
         source.ShouldContain("FormShowCaseLangResource BasicUsageTitle");
         source.ShouldContain("FormShowCaseLangResource FormLayoutTitle");
@@ -147,6 +149,97 @@ public class FormShowCasePageTests
         ComputeSha256(normalized).ShouldBe(ReadSnapshotHash(approved));
     }
 
+    [Fact]
+    public void Form_ShowCase_Declares_The_Semantic_Preview_Matching_Upstream_Example()
+    {
+        var source  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml");
+        var english = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Localization/en-US.xlf");
+
+        source.ShouldContain("<gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>");
+        source.ShouldContain("Name=\"FormItemSemanticPreview\"");
+        source.ShouldContain("SemanticOwner=\"{Binding #PasswordSemanticItem}\"");
+        source.ShouldContain("SemanticOwnerType=\"{x:Type atom:FormItem}\"");
+        CountOccurrences(source, "<gallery:SemanticPartDescription").ShouldBe(6);
+        foreach (var path in new[] { "root", "label", "content", "help", "helpItem", "extra" })
+        {
+            CountOccurrences(source, $"Path=\"{path}\"").ShouldBe(1);
+        }
+
+        // The semantic demo form must mirror the upstream Semantic DOM example:
+        // Username only carries help text; Password carries two error messages
+        // plus the extra hint, laid out with labelCol 8 / wrapperCol 16.
+        source.ShouldContain("LabelColInfo=\"8*\"");
+        source.ShouldContain("WrapperColInfo=\"16*\"");
+        source.ShouldContain("AttachedToVisualTree=\"HandleSemanticDemoFormAttached\"");
+        source.ShouldContain("Help=\"{gallery:FormShowCaseLangResource SemanticHelpUse4To16Characters}\"");
+        source.ShouldContain("Extra=\"{gallery:FormShowCaseLangResource SemanticExtraPasswordMustContainLettersAndNumbers}\"");
+        source.ShouldContain("FormShowCaseLangResource P2MessagePleaseInputYourPassword");
+        source.ShouldContain("FormShowCaseLangResource SemanticMessageUseAtLeast8Characters");
+        source.ShouldContain("<atom:LineEdit PasswordChar=\"*\" />");
+
+        english.ShouldContain("Use 4 to 16 characters.");
+        english.ShouldContain("Use at least 8 characters.");
+        english.ShouldContain("Password must contain letters and numbers.");
+    }
+
+    [Fact]
+    public void Form_ShowCase_Declares_The_Semantic_Styling_Example_Matching_Upstream_Demo()
+    {
+        var source  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml");
+        var english = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Localization/en-US.xlf");
+
+        // Mirrors the upstream "Custom semantic dom styling" demo, rendered as the
+        // LAST ShowCaseItem of the Examples list: two card forms sharing
+        // Username/Email/Submit+reset content, the second one on the filled
+        // variant with a blue root border and blue labels.
+        source.ShouldContain("FormShowCaseLangResource SemanticStylingTitle");
+        source.ShouldContain("FormShowCaseLangResource SemanticStylingDescription");
+        source.ShouldContain("SourceKey=\"form-semantic-part\"");
+        source.ShouldContain("BadgeText=\"{x:Static gallery:GalleryVersionInfo.DisplayVersion}\"");
+        source.ShouldContain("Span=\"Full\"");
+        source.IndexOf("SourceKey=\"form-semantic-part\"", StringComparison.Ordinal)
+              .ShouldBeGreaterThan(source.LastIndexOf("IsOccupyEntireRow=\"True\"", StringComparison.Ordinal));
+        // 2 existing demos plus the 2 semantic styling forms use the 4/20 grid.
+        CountOccurrences(source, "LabelColInfo=\"4*\"").ShouldBe(4);
+        CountOccurrences(source, "WrapperColInfo=\"20*\"").ShouldBe(4);
+        source.ShouldContain("Classes=\"semantic-card semantic-object\"");
+        source.ShouldContain("Classes=\"semantic-card semantic-function\"");
+        source.ShouldContain("StyleVariant=\"Filled\"");
+        // The card shell is styled with control-level properties relayed by
+        // the Form template root (the NumericUpDown root-relay precedent);
+        // part styling must use the generated dedicated Semantic Part
+        // styles, never hand-written part selectors.
+        source.ShouldContain("Selector=\"atom|Form.semantic-card\"");
+        source.ShouldContain("<Setter Property=\"BoxShadow\" Value=\"0 2 8 0 #1A000000\" />");
+        source.ShouldContain("Selector=\"atom|Form.semantic-function\"");
+        CountOccurrences(source, "<atom:FormItemLabelStyle x:SetterTargetType=\"TextBlock\">").ShouldBe(2);
+        CountOccurrences(source, "<atom:FormItemContentStyle x:SetterTargetType=\"ContentPresenter\">").ShouldBe(1);
+        source.ShouldNotContain("/template/ TextBlock.semantic-label");
+        source.ShouldNotContain("/template/ ContentPresenter.semantic-content");
+        source.ShouldNotContain("/template/ Border#Frame");
+        // The two cards stack vertically; each stretches horizontally up to the
+        // same MaxWidth so the 4*/20* star grid yields identical label columns.
+        CountOccurrences(source, "MaxWidth=\"800\"").ShouldBe(2);
+        // Regression: neither card may pin HorizontalAlignment — a Left
+        // alignment hugs content width and defeats the shared MaxWidth cap.
+        ExtractSemanticStylingRegion(source).ShouldNotContain("HorizontalAlignment");
+        source.ShouldContain("Value=\"#1677FF\"");
+        CountOccurrences(source, "<atom:SubmitButton Content=\"{gallery:FormShowCaseLangResource SemanticStyleSubmitButtonText}\" />").ShouldBe(2);
+        CountOccurrences(source, "<atom:ResetButton Content=\"{gallery:FormShowCaseLangResource SemanticStyleResetButtonText}\" />").ShouldBe(2);
+        source.ShouldContain("FormShowCaseLangResource SemanticStyleMessagePleaseEnterUsername");
+        source.ShouldContain("FormShowCaseLangResource SemanticStyleMessagePleaseEnterEmail");
+        source.ShouldContain("FormShowCaseLangResource SemanticStyleUsernamePlaceholder");
+        source.ShouldContain("FormShowCaseLangResource SemanticStyleEmailPlaceholder");
+
+        english.ShouldContain("Custom semantic styling");
+        english.ShouldContain("You can customize the semantic style of Form by passing objects/functions through `classNames` and `styles`.");
+        english.ShouldNotContain("semantic dom");
+        english.ShouldContain("Please enter username!");
+        english.ShouldContain("Please enter email!");
+        english.ShouldContain("Please enter username");
+        english.ShouldContain("Please enter email");
+    }
+
     private static string ExtractFormExampleItems(string source)
     {
         const string firstItemMarker  = "<gallery:ShowCaseItem";
@@ -159,6 +252,20 @@ public class FormShowCasePageTests
         panelCloseStart.ShouldBeGreaterThan(firstItemStart);
 
         return source[firstItemStart..panelCloseStart];
+    }
+
+    private static string ExtractSemanticStylingRegion(string source)
+    {
+        const string startMarker = "Classes=\"semantic-card semantic-object\"";
+        const string endMarker   = "</gallery:ShowCaseItem.DeferredContentTemplate>";
+
+        var start = source.IndexOf(startMarker, StringComparison.Ordinal);
+        start.ShouldBeGreaterThanOrEqualTo(0);
+
+        var end = source.IndexOf(endMarker, start, StringComparison.Ordinal);
+        end.ShouldBeGreaterThan(start);
+
+        return source[start..end];
     }
 
     private static string ExtractRequiredLayoutDemo(string source)

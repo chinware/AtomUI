@@ -160,10 +160,17 @@ public class LineEditShowCasePageTests
         semanticExample.ShouldContain("Selector=\"atom|SearchEdit.style-class-search\"");
         semanticExample.ShouldNotContain("BorderThickness");
         semanticExample.ShouldNotContain("CornerRadius");
-        semanticExample.ShouldContain("Selector=\"atom|TextArea.style-class-textarea /template/ atom|TextBlock.semantic-count\"");
-        semanticExample.ShouldContain("Selector=\"atom|SearchEdit.style-class-search /template/ .semantic-input\"");
-        semanticExample.ShouldContain("x:SetterTargetType=\"TextPresenter\"");
-        semanticExample.ShouldContain("Selector=\"atom|SearchEdit.style-class-search /template/ .semantic-scope-input-frame /template/ atom|Button.semantic-button\"");
+        // Part styling must use the generated dedicated Semantic Part styles
+        // (TextAreaCountStyle / SearchEditInputStyle / SearchEditButtonStyle),
+        // never hand-written part selectors. SearchEditButtonStyle collides
+        // with the SearchEdit enum of the same name under the atom: prefix,
+        // so it is referenced through the explicit semantic: xmlns.
+        CountOccurrences(semanticExample, "<atom:TextAreaCountStyle x:SetterTargetType=\"TextBlock\">").ShouldBe(1);
+        CountOccurrences(semanticExample, "<atom:SearchEditInputStyle x:SetterTargetType=\"TextPresenter\">").ShouldBe(1);
+        CountOccurrences(semanticExample, "<semantic:SearchEditButtonStyle x:SetterTargetType=\"atom:Button\">").ShouldBe(1);
+        semanticExample.ShouldNotContain("/template/ atom|TextBlock.semantic-count");
+        semanticExample.ShouldNotContain("/template/ .semantic-input");
+        semanticExample.ShouldNotContain(".semantic-scope-input-frame");
         CountOccurrences(semanticExample, "<Setter Property=\"Foreground\" Value=\"#4DA8DA\" />").ShouldBe(2);
         semanticExample.ShouldContain("<Setter Property=\"TextElement.Foreground\" Value=\"#4DA8DA\" />");
         CountOccurrences(semanticExample, "<Setter Property=\"BorderBrush\" Value=\"#4DA8DA\" />").ShouldBe(2);

@@ -29,8 +29,10 @@
 | 相关 Token | SharedToken、`NumericUpDownToken`、`ButtonSpinnerToken` |
 | 稳定性 | stable since 6.0 |
 
-`root` 是控件自身，不声明 `.semantic-root` marker。它适合定制 NumericUpDown 整体 `Background`、`BorderBrush`、
-`Opacity`、对齐和尺寸约束；variant、effective status 与 CompactSpace 的状态归一仍由共享 frame 结构负责。
+`root` 是控件自身，不声明 `.semantic-root` marker。它适合定制 NumericUpDown 整体 `BorderBrush`、`Opacity`、对齐和
+尺寸约束；`BorderBrush` 会以 LocalValue 中继到输入 frame 生效（对齐 LineEdit 与 antd `styles.root.borderColor`
+语义）——定制期间该属性槽的 hover / focus 变色冻结，focus 的 `BoxShadow` 光晕不受影响，置空后恢复 frame 状态机。
+variant、effective status 与 CompactSpace 的状态归一仍由共享 frame 结构负责。
 
 ### 1.2 `prefix`
 
@@ -113,20 +115,20 @@ clear 与用户右侧内容仍各有边界，用户内容子树不由 `suffix` �
 | Owner | `NumericUpDown` |
 | Part | `clear` |
 | Selector | `.semantic-clear` |
-| SelectorRoute | `/template/ .semantic-scope-spinner /template/ .semantic-scope-frame /template/ .semantic-scope-suffix > .semantic-suffix > .semantic-clear` |
+| SelectorRoute | `/template/ .semantic-clear` |
 | Style Type | `NumericUpDownClearStyle` |
 | ContractType | `Avalonia.Controls.Button` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
 | CrossVisualRoot | `false` |
 | RuntimeCreated | `false` |
-| AtomUI 节点 | `InputClearIconButton#PART_ClearButton` |
+| AtomUI 节点 | `InputClearIconButton#PART_ClearButton`（输入段内右缘，位于内部 + / 浮动 handle 之前） |
 | 职责 | 提供清空当前数值的操作入口。 |
 | 相关 API | `IsAllowClear`、`ClearIcon`、`IsReadOnly`、`Text` |
 | 相关 Token | clear 按钮主题与 SharedToken |
 | 稳定性 | stable since 6.0 |
 
-`clear` 节点始终存在，`IsEffectiveShowClearButton` 只切换可见性。它适合定制 `Opacity`、`Margin`、`Cursor` 和
+`clear` 节点始终存在于两个模板变体的输入段内（与 `input` 同级，紧贴输入文本右缘），`IsEffectiveShowClearButton` 只切换可见性。它适合定制 `Opacity`、`Margin`、`Cursor` 和
 Button 级交互属性；清除命令仍进入 `NotifyClearButtonClicked()` 的统一行为。
 
 ## Abstract AXAML Structure
@@ -135,7 +137,13 @@ Button 级交互属性；清除命令仍进入 `NotifyClearButtonClicked()` 的�
 
 ```xml
 <NumericUpDownSpinner Name="PART_Spinner">
-    <EmbeddedTextBox Name="PART_TextBox" />
+    <DockPanel>
+        <StackPanel Name="PART_SuffixGroup">
+            <InputClearIconButton Name="PART_ClearButton" />
+            <AddOnContentPresenter Name="PART_InnerRightContentPresenter" />
+        </StackPanel>
+        <EmbeddedTextBox Name="PART_TextBox" />
+    </DockPanel>
 </NumericUpDownSpinner>
 ```
 
@@ -199,9 +207,17 @@ NumericUpDown
               -> ContentPresenter (internal-observable)
   -> NumericUpDown (control theme, NumericUpDownTheme.axaml)
      -> NumericUpDownSpinner#PART_Spinner (template-stable)
-        -> EmbeddedTextBox#PART_TextBox (template-stable)
+        -> DockPanel (template-stable)
+           -> StackPanel#PART_SuffixGroup (template-stable)
+              -> InputClearIconButton#PART_ClearButton (template-stable)
+              -> AddOnContentPresenter#PART_InnerRightContentPresenter (template-stable)
+           -> EmbeddedTextBox#PART_TextBox (template-stable)
      -> NumericUpDownSpinner#PART_Spinner (template-stable)
-        -> EmbeddedTextBox#PART_TextBox (template-stable)
+        -> DockPanel (template-stable)
+           -> StackPanel#PART_SuffixGroup (template-stable)
+              -> InputClearIconButton#PART_ClearButton (template-stable)
+              -> AddOnContentPresenter#PART_InnerRightContentPresenter (template-stable)
+           -> EmbeddedTextBox#PART_TextBox (template-stable)
 ```
 
 ### 协作节点
