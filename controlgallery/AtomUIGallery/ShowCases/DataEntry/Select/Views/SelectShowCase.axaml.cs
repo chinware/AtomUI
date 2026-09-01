@@ -62,9 +62,9 @@ public partial class SelectShowCase : GalleryReactiveUserControl<SelectViewModel
 
     private void HandleCustomSearchSelectAttached(object? sender, VisualTreeAttachmentEventArgs args)
     {
-        if (sender is AtomUISelect CustomSearchSelect)
+        if (sender is AtomUISelect customSearchSelect)
         {
-            CustomSearchSelect.Filter = new CustomFilter();
+            customSearchSelect.Filter = new CustomFilter();
         }
     }
 

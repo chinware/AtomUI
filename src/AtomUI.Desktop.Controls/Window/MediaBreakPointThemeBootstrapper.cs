@@ -23,8 +23,8 @@ internal static class MediaBreakPointThemeBootstrapper
     // 意味着一旦加入 ControlTheme.Children 就无法 Remove。因此首次加载后缓存 CQ,
     // 后续主题切换只就地更新 Query (断点阈值),不再增删节点。
     private static readonly List<ContainerQuery> InjectedQueries = new();
-    private static ControlTheme? _windowTheme;
-    private static ThemeManager? _themeManager;
+    private static ControlTheme? s_windowTheme;
+    private static ThemeManager? s_themeManager;
 
     private static readonly (Func<ThemeSnapshot, double?> Min, Func<ThemeSnapshot, double?> Max, MediaBreakPoint Bp)[] Rows =
     {
@@ -39,12 +39,12 @@ internal static class MediaBreakPointThemeBootstrapper
 
     public static void Attach(ThemeManager themeManager)
     {
-        if (_themeManager != null)
+        if (s_themeManager != null)
         {
             return;
         }
 
-        _themeManager              =  themeManager;
+        s_themeManager              =  themeManager;
         themeManager.ThemeChanged  += HandleThemeChanged;
         if (themeManager.CurrentSnapshot is { } snapshot)
         {
@@ -67,19 +67,19 @@ internal static class MediaBreakPointThemeBootstrapper
 
     private static void Rebuild(ThemeManager themeManager, ThemeSnapshot snapshot)
     {
-        if (_windowTheme == null)
+        if (s_windowTheme == null)
         {
             if (!themeManager.TryGetResource(typeof(Window), null, out var resource) ||
                 resource is not ControlTheme controlTheme)
             {
                 return;
             }
-            _windowTheme = controlTheme;
+            s_windowTheme = controlTheme;
         }
 
         if (InjectedQueries.Count == 0)
         {
-            var children = _windowTheme.Children;
+            var children = s_windowTheme.Children;
             foreach (var (minFn, maxFn, bp) in Rows)
             {
                 var cq = BuildContainerQuery(minFn(snapshot), maxFn(snapshot), bp);

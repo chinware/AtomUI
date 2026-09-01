@@ -10,16 +10,16 @@ namespace AtomUI.Controls.Tests;
 
 internal static class AvaloniaTestApp
 {
-    private static int _initialized;
+    private static int s_initialized;
 
     internal static void EnsureInitialized()
     {
         if (Application.Current is not null)
         {
-            Volatile.Write(ref _initialized, 1);
+            Volatile.Write(ref s_initialized, 1);
             return;
         }
-        if (Interlocked.Exchange(ref _initialized, 1) == 1)
+        if (Interlocked.Exchange(ref s_initialized, 1) == 1)
         {
             return;
         }

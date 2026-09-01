@@ -36,7 +36,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
 
     #endregion
     
-    RangeDatePickState PickState = RangeDatePickState.None;
+    RangeDatePickState _pickState = RangeDatePickState.None;
     private DateTime? _pendingRangeOpenDisplayAnchor;
 
     protected void EmitRangePartConfirmed()
@@ -57,15 +57,15 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
 
     internal void ResetRangePickState()
     {
-        PickState = RangeDatePickState.None;
+        _pickState = RangeDatePickState.None;
         if (SelectedDateTime is not null)
         {
-            PickState |= RangeDatePickState.PartStart;
+            _pickState |= RangeDatePickState.PartStart;
         }
 
         if (SecondarySelectedDateTime is not null)
         {
-            PickState |= RangeDatePickState.PartEnd;
+            _pickState |= RangeDatePickState.PartEnd;
         }
     }
 
@@ -136,7 +136,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
         EmitChoosingStatusChanged(false);
         MarkActiveRangePartPicked();
 
-        var pickState    = PickState;
+        var pickState    = _pickState;
         var hasPartStart = (pickState & RangeDatePickState.PartStart) == RangeDatePickState.PartStart;
         var hasPartEnd   = (pickState & RangeDatePickState.PartEnd) == RangeDatePickState.PartEnd;
         if (hasPartStart && hasPartEnd &&
@@ -157,12 +157,12 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
         {
             if (SelectedDateTime is not null)
             {
-                PickState |= RangeDatePickState.PartStart;
+                _pickState |= RangeDatePickState.PartStart;
             }
         }
         else if (SecondarySelectedDateTime is not null)
         {
-            PickState |= RangeDatePickState.PartEnd;
+            _pickState |= RangeDatePickState.PartEnd;
         }
     }
     
@@ -314,7 +314,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        PickState = RangeDatePickState.None;
+        _pickState = RangeDatePickState.None;
     }
 }
 

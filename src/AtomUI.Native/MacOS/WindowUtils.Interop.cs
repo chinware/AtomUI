@@ -232,8 +232,8 @@ internal static class WindowUtilsInterop
 
     private static IntPtr GetAppKitGlobalObject(string symbolName)
     {
-        const int RtldLazy = 0x1;
-        var appKit = dlopen("/System/Library/Frameworks/AppKit.framework/AppKit", RtldLazy);
+        const int rtldLazy = 0x1;
+        var appKit = dlopen("/System/Library/Frameworks/AppKit.framework/AppKit", rtldLazy);
         if (appKit == IntPtr.Zero)
         {
             return IntPtr.Zero;

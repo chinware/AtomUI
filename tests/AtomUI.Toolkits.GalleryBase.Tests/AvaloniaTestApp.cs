@@ -14,7 +14,7 @@ namespace AtomUI.Toolkits.GalleryBase.Tests;
 
 internal static class AvaloniaTestApp
 {
-    private static int _initialized;
+    private static int s_initialized;
 
     public static void EnsureInitialized()
     {
@@ -23,7 +23,7 @@ internal static class AvaloniaTestApp
             return;
         }
 
-        if (Interlocked.Exchange(ref _initialized, 1) == 1)
+        if (Interlocked.Exchange(ref s_initialized, 1) == 1)
         {
             return;
         }
