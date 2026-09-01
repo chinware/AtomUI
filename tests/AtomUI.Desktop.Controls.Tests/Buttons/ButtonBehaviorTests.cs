@@ -494,12 +494,10 @@ public class ButtonBehaviorTests
     {
         var sources = new[]
         {
-            "src/AtomUI.Desktop.Controls/Button/Button.cs",
+            "src/AtomUI.Desktop.Controls/Buttons/Button.cs",
             "src/AtomUI.Desktop.Controls/Buttons/Themes/ButtonTheme.axaml",
             "src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonTheme.axaml",
-            "src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonBaseTheme.axaml",
-            "src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/ButtonTheme.axaml",
-            "src/AtomUI.Desktop.Controls/Buttons/Themes/Browser/DropdownButtonTheme.axaml"
+            "src/AtomUI.Desktop.Controls/Buttons/Themes/DropdownButtonBaseTheme.axaml"
         };
 
         foreach (var source in sources)
