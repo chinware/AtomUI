@@ -11,7 +11,7 @@ internal class SearchEditDecoratedBox : AddOnDecoratedBox
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<SearchEditButtonStyle> SearchButtonStyleProperty =
+    public static readonly StyledProperty<SearchButtonType> SearchButtonStyleProperty =
         SearchEdit.SearchButtonStyleProperty.AddOwner<SearchEditDecoratedBox>();
 
     public static readonly StyledProperty<string> SearchButtonTextProperty =
@@ -23,7 +23,7 @@ internal class SearchEditDecoratedBox : AddOnDecoratedBox
     public static readonly StyledProperty<ControlTheme?> SearchButtonThemeProperty =
         SearchEdit.SearchButtonThemeProperty.AddOwner<SearchEditDecoratedBox>();
     
-    public SearchEditButtonStyle SearchButtonStyle
+    public SearchButtonType SearchButtonStyle
     {
         get => GetValue(SearchButtonStyleProperty);
         set => SetValue(SearchButtonStyleProperty, value);

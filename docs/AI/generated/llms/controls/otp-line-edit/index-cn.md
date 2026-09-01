@@ -251,9 +251,9 @@ SourceKey：`line-edit-semantic-part`
         <Style Selector="atom|TextArea.style-class-textarea">
             <Setter Property="Width" Value="320" />
             <Setter Property="BorderBrush" Value="#BDE3C3" />
-        </Style>
-        <Style Selector="atom|TextArea.style-class-textarea /template/ atom|TextBlock.semantic-count">
-            <Setter Property="Foreground" Value="#BDE3C3" />
+            <atom:TextAreaCountStyle x:SetterTargetType="TextBlock">
+                <Setter Property="Foreground" Value="#BDE3C3" />
+            </atom:TextAreaCountStyle>
         </Style>
         <Style Selector="atom|LineEdit.style-class-password">
             <Setter Property="BorderBrush" Value="#F5D3C4" />
@@ -267,14 +267,13 @@ SourceKey：`line-edit-semantic-part`
             <Setter Property="Foreground" Value="#4DA8DA" />
             <Setter Property="BorderBrush" Value="#4DA8DA" />
             <Setter Property="CaretBrush" Value="#4DA8DA" />
-        </Style>
-        <Style Selector="atom|SearchEdit.style-class-search /template/ .semantic-input"
-               x:SetterTargetType="TextPresenter">
-            <Setter Property="TextElement.Foreground" Value="#4DA8DA" />
-        </Style>
-        <Style Selector="atom|SearchEdit.style-class-search /template/ .semantic-scope-input-frame /template/ atom|Button.semantic-button">
-            <Setter Property="Foreground" Value="#4DA8DA" />
-            <Setter Property="BorderBrush" Value="#4DA8DA" />
+            <atom:SearchEditInputStyle x:SetterTargetType="TextPresenter">
+                <Setter Property="TextElement.Foreground" Value="#4DA8DA" />
+            </atom:SearchEditInputStyle>
+            <atom:SearchEditButtonStyle x:SetterTargetType="atom:Button">
+                <Setter Property="Foreground" Value="#4DA8DA" />
+                <Setter Property="BorderBrush" Value="#4DA8DA" />
+            </atom:SearchEditButtonStyle>
         </Style>
     </StackPanel.Styles>
 

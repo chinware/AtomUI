@@ -8,7 +8,7 @@ using Avalonia.Styling;
 
 namespace AtomUI.Desktop.Controls;
 
-public enum SearchEditButtonStyle
+public enum SearchButtonType
 {
     Default,
     Primary
@@ -42,8 +42,8 @@ public partial class SearchEdit : LineEdit
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<SearchEditButtonStyle> SearchButtonStyleProperty =
-        AvaloniaProperty.Register<SearchEdit, SearchEditButtonStyle>(nameof(SearchButtonStyle));
+    public static readonly StyledProperty<SearchButtonType> SearchButtonStyleProperty =
+        AvaloniaProperty.Register<SearchEdit, SearchButtonType>(nameof(SearchButtonStyle));
 
     public static readonly StyledProperty<string> SearchButtonTextProperty =
         AvaloniaProperty.Register<SearchEdit, string>(nameof(SearchButtonText));
@@ -57,7 +57,7 @@ public partial class SearchEdit : LineEdit
     public static readonly StyledProperty<bool> IsSearchOnEnterEnabledProperty =
         AvaloniaProperty.Register<SearchEdit, bool>(nameof(IsSearchOnEnterEnabled), true);
 
-    public SearchEditButtonStyle SearchButtonStyle
+    public SearchButtonType SearchButtonStyle
     {
         get => GetValue(SearchButtonStyleProperty);
         set => SetValue(SearchButtonStyleProperty, value);

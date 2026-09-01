@@ -39,7 +39,7 @@ SearchEdit 专项 API：
 
 | API | 类型 | 语义 |
 | --- | --- | --- |
-| `SearchButtonStyle` | `SearchEditButtonStyle` | 搜索按钮样式，支持 `Default` 和 `Primary`。 |
+| `SearchButtonStyle` | `SearchButtonType` | 搜索按钮样式，支持 `Default` 和 `Primary`。 |
 | `SearchButtonText` | `string` | 搜索按钮显示文本；未设置时按钮以搜索图标为主要视觉。 |
 | `IsOperating` | `bool` | 搜索进行中状态；为 `true` 时显示按钮 loading 并阻止重复触发搜索请求。 |
 | `IsSearchOnEnterEnabled` | `bool` | 是否允许未处理的 Enter `KeyUp` 触发搜索请求，默认值为 `true`。 |

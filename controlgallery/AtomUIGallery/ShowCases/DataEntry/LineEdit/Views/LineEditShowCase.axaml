@@ -3,7 +3,6 @@
              x:Class="AtomUIGallery.ShowCases.LineEdit.LineEditShowCase"
              xmlns:vm="using:AtomUIGallery.ShowCases.LineEdit"
              xmlns:atom="https://atomui.net"
-             xmlns:semantic="clr-namespace:AtomUI.Theme.Styling;assembly=AtomUI.Desktop.Controls"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              x:DataType="vm:LineEditViewModel">
@@ -888,13 +887,10 @@
                             <atom:SearchEditInputStyle x:SetterTargetType="TextPresenter">
                                 <Setter Property="TextElement.Foreground" Value="#4DA8DA" />
                             </atom:SearchEditInputStyle>
-                            <!-- SearchEditButtonStyle 与 SearchEdit 控件的同名枚举在 atom: 前缀下
-                                 重名，XAML 编译器无法消歧(触发 AVLN2000)，故用 semantic: 前缀直达
-                                 生成类所在的 AtomUI.Theme.Styling 命名空间 -->
-                            <semantic:SearchEditButtonStyle x:SetterTargetType="atom:Button">
+                            <atom:SearchEditButtonStyle x:SetterTargetType="atom:Button">
                                 <Setter Property="Foreground" Value="#4DA8DA" />
                                 <Setter Property="BorderBrush" Value="#4DA8DA" />
-                            </semantic:SearchEditButtonStyle>
+                            </atom:SearchEditButtonStyle>
                         </Style>
                     </StackPanel.Styles>
 

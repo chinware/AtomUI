@@ -2,6 +2,11 @@
 
 本文档记录 SearchEdit 控件级设计、API、主题契约、Token 和实现结构的变化。它用于维护控件设计历史，不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-09-01
+
+- API
+  - Rename the public enum `SearchEditButtonStyle` to `SearchButtonType`; values (`Default`, `Primary`) and the `SearchButtonStyle` property are unchanged. The old name collided with the generated `AtomUI.Theme.Styling.SearchEditButtonStyle` Semantic Part style class under the shared `atom:` XML namespace, which crashed the XAML compiler (AVLN2000) whenever both were referenced from XAML.
+
 ## 2026-08-27
 
 - API

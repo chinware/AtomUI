@@ -162,15 +162,14 @@ public class LineEditShowCasePageTests
         semanticExample.ShouldNotContain("CornerRadius");
         // Part styling must use the generated dedicated Semantic Part styles
         // (TextAreaCountStyle / SearchEditInputStyle / SearchEditButtonStyle),
-        // never hand-written part selectors. SearchEditButtonStyle collides
-        // with the SearchEdit enum of the same name under the atom: prefix,
-        // so it is referenced through the explicit semantic: xmlns.
+        // never hand-written part selectors.
         CountOccurrences(semanticExample, "<atom:TextAreaCountStyle x:SetterTargetType=\"TextBlock\">").ShouldBe(1);
         CountOccurrences(semanticExample, "<atom:SearchEditInputStyle x:SetterTargetType=\"TextPresenter\">").ShouldBe(1);
-        CountOccurrences(semanticExample, "<semantic:SearchEditButtonStyle x:SetterTargetType=\"atom:Button\">").ShouldBe(1);
+        CountOccurrences(semanticExample, "<atom:SearchEditButtonStyle x:SetterTargetType=\"atom:Button\">").ShouldBe(1);
         semanticExample.ShouldNotContain("/template/ atom|TextBlock.semantic-count");
         semanticExample.ShouldNotContain("/template/ .semantic-input");
         semanticExample.ShouldNotContain(".semantic-scope-input-frame");
+        semanticExample.ShouldNotContain("clr-namespace:AtomUI.Theme.Styling");
         CountOccurrences(semanticExample, "<Setter Property=\"Foreground\" Value=\"#4DA8DA\" />").ShouldBe(2);
         semanticExample.ShouldContain("<Setter Property=\"TextElement.Foreground\" Value=\"#4DA8DA\" />");
         CountOccurrences(semanticExample, "<Setter Property=\"BorderBrush\" Value=\"#4DA8DA\" />").ShouldBe(2);
