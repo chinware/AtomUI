@@ -283,6 +283,25 @@ The gallery is intentionally comprehensive. If you prefer compact starter projec
 
 These samples show smaller application setups that are easier to copy into a new project.
 
+#### Sponsors
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <a href="https://sophnet.com/">
+        <img src="./resources/images/readme/sponsors/sophnet.png" height="56" alt="SophNet"/>
+      </a>
+      <p>SophNet provides an AI model API platform for stable, efficient model integration.</p>
+    </td>
+    <td align="center" width="50%">
+      <a href="https://hsy.com/aboutus/">
+        <img src="./resources/images/readme/sponsors/hsycloud.svg" height="56" alt="HSY"/>
+      </a>
+      <p>HSY provides cloud servers, DDoS protection and GPU compute services for secure business cloud deployment.</p>
+    </td>
+  </tr>
+</table>
+
 #### Acknowledgements
 
 <div>

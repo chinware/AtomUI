@@ -265,6 +265,25 @@ Gallery 项目覆盖面较完整。如果您希望先看更小的入门项目，
 
 这些示例展示了更紧凑的应用搭建方式，更适合作为新项目起点。
 
+#### 赞助商
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <a href="https://sophnet.com/">
+        <img src="./resources/images/readme/sponsors/sophnet.png" height="56" alt="SophNet"/>
+      </a>
+      <p>SophNet 提供稳定高效的 AI 模型 API 平台，帮助开发者快速接入大模型能力。</p>
+    </td>
+    <td align="center" width="50%">
+      <a href="https://hsy.com/aboutus/">
+        <img src="./resources/images/readme/sponsors/hsycloud.svg" height="56" alt="火数云"/>
+      </a>
+      <p>火数云提供云服务器、高防与 GPU 算力服务，支持企业安全、可靠地完成业务上云。</p>
+    </td>
+  </tr>
+</table>
+
 #### 致谢
 
 <div>
