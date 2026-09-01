@@ -9,6 +9,7 @@
             <atom:InputControlFrame
                 Name="PART_InputControlFrame"
                 HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
                 Padding="{TemplateBinding Padding}"
                 BorderThickness="{TemplateBinding BorderThickness}"
                 CornerRadius="{TemplateBinding EffectiveCornerRadius}"

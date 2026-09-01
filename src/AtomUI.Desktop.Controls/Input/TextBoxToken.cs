@@ -32,15 +32,18 @@ internal class TextBoxToken : AbstractControlDesignToken
         base.CalculateTokenValues(isDarkMode);
 
         var fontSize     = EffectiveGlobalToken.FontSize;
+        var fontSizeSM   = EffectiveGlobalToken.FontSizeSM;
         var fontSizeLG   = EffectiveGlobalToken.FontSizeLG;
         var lineHeight   = EffectiveGlobalToken.RelativeLineHeight;
+        var lineHeightSM = EffectiveGlobalToken.RelativeLineHeightSM;
         var lineHeightLG = EffectiveGlobalToken.RelativeLineHeightLG;
         var lineWidth    = EffectiveGlobalToken.LineWidth;
 
         ContentPadding = new Thickness(EffectiveGlobalToken.UniformlyPaddingSM - lineWidth,
             Math.Round((EffectiveGlobalToken.ControlHeight - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth);
         ContentPaddingSM = new Thickness(EffectiveGlobalToken.ControlPaddingHorizontalSM - lineWidth,
-            Math.Round((EffectiveGlobalToken.ControlHeightSM - fontSize * lineHeight) / 2 * 10) / 10 - lineWidth * 2);
+            Math.Round((EffectiveGlobalToken.ControlHeightSM - fontSizeSM * lineHeightSM) / 2 * 10) / 10 -
+            lineWidth);
         ContentPaddingLG = new Thickness(EffectiveGlobalToken.ControlPaddingHorizontal - lineWidth,
             Math.Ceiling((EffectiveGlobalToken.ControlHeightLG - fontSizeLG * lineHeightLG) / 2 * 10) / 10 -
             lineWidth);

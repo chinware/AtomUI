@@ -406,6 +406,43 @@ public class TextBoxVisualStateTests
         });
     }
 
+    [Theory]
+    [InlineData(CustomizableSizeType.Large, nameof(SharedTokenKind.ControlHeightLG), double.NaN, null)]
+    [InlineData(CustomizableSizeType.Middle, nameof(SharedTokenKind.ControlHeight), double.NaN, null)]
+    [InlineData(CustomizableSizeType.Small, nameof(SharedTokenKind.ControlHeightSM), double.NaN, null)]
+    [InlineData(CustomizableSizeType.Custom, null, 42.0, "12,0")]
+    public void TextBox_Frame_Fills_SizeType_And_Custom_Control_Height(
+        CustomizableSizeType sizeType,
+        string? tokenKindName,
+        double height,
+        string? paddingText)
+    {
+        var textBox = new AtomUITextBox
+        {
+            Width           = 360,
+            SizeType        = sizeType,
+            Height          = height,
+            Text            = sizeType.ToString(),
+            IsMotionEnabled = false
+        };
+        if (paddingText is not null)
+        {
+            textBox.Padding = Thickness.Parse(paddingText);
+        }
+
+        var expectedHeight = tokenKindName is null
+            ? height
+            : GetThemeResource<double>((SharedTokenKind)Enum.Parse(typeof(SharedTokenKind), tokenKindName));
+
+        ShowInWindow(textBox, () =>
+        {
+            var frame = FindTemplatePart<InputControlFrame>(textBox, "PART_InputControlFrame");
+
+            textBox.Bounds.Height.ShouldBe(expectedHeight, 0.5);
+            frame.Bounds.Height.ShouldBe(textBox.Bounds.Height, 0.5);
+        }, window => window.Height = 180);
+    }
+
     [Fact]
     public void TextBox_Custom_Size_Does_Not_Apply_TextBox_Padding_Token()
     {
