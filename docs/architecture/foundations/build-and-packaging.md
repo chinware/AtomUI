@@ -83,13 +83,12 @@ NuGet consumer 由 `AtomUI.Generator.props` 回退解析相邻 `tools/netstandar
 linked registration 输入的项目不得仅因导入共享 targets 就要求任务程序集已经存在。这样可以保证直接、干净的项目构建
 不依赖解决方案项目顺序，也不会给无输入的 Debug 编译增加任务成本。
 
-所有引用 `$(AtomUIBuildTasksAssembly)` 的 `UsingTask` 必须使用 `Runtime="NET"` 与
-`TaskFactory="TaskHostFactory"` 在短生命周期的 .NET TaskHost 中执行。不得让默认的进程内
-`AssemblyTaskFactory` 把任务程序集加载进 IDE 或 MSBuild 常驻节点；否则仓库内重新构建
-`AtomUI.Build.Tasks` 时，共享输出 DLL 会因仍被宿主进程占用而无法替换。TaskHost 并不保证随构建结束退出，
-孤儿宿主可能无限期持有旧程序集的文件锁，因此仓库构建还必须使用上述按 ShadowKey 版本化的影子副本：
-重编译后的工具集落在全新目录，永不覆盖仍被锁定的旧副本。该约束同时适用于仓库构建和随 NuGet
-交付的 buildTransitive targets，并由 build-assets 架构测试全局守卫。
+所有引用 `$(AtomUIBuildTasksAssembly)` 的 `UsingTask` 只声明 `AssemblyFile`，使用默认的进程内
+`AssemblyTaskFactory` 从影子副本加载。不得重新引入 `Runtime="NET"` 或 `TaskFactory="TaskHostFactory"`：
+.NET 10 SDK 的嵌套 publish 图里，TaskHost 可能在 `MetadataLoadContext` 生命周期结束后仍尝试跨进程回传
+MSBuild item，随机触发 `MSB4216` / `MSB4027`。文件锁隔离由上述按 ShadowKey 版本化的影子副本承担：
+重编译后的工具集落在全新目录，永不覆盖仍被活动 build node 锁定的旧副本。该约束同时适用于仓库构建和随
+NuGet 交付的 buildTransitive targets，并由 build-assets 架构测试全局守卫。
 
 ## Target Framework
 

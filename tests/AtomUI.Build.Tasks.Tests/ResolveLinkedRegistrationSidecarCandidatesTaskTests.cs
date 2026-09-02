@@ -17,9 +17,9 @@ public sealed class ResolveLinkedRegistrationSidecarCandidatesTaskTests
             new TestTaskItem(sidecar, ("AtomUILinkedSidecarSource", "Package")));
 
         task.Execute().ShouldBeTrue();
-        task.CanonicalSidecars.Length.ShouldBe(1);
-        task.CanonicalSidecars[0].ItemSpec.ShouldBe(sidecar);
-        task.CanonicalSidecars[0].GetMetadata("AtomUILinkedSidecarAssembly")
+        var canonicalSidecar = task.CanonicalSidecars.ShouldHaveSingleItem();
+        canonicalSidecar.ItemSpec.ShouldBe(sidecar);
+        canonicalSidecar.GetMetadata("AtomUILinkedSidecarAssembly")
             .ShouldBe(fixture.AssemblyName);
         task.ExtractableReferences.ShouldBeEmpty();
     }
@@ -32,9 +32,9 @@ public sealed class ResolveLinkedRegistrationSidecarCandidatesTaskTests
 
         task.Execute().ShouldBeTrue();
         task.CanonicalSidecars.ShouldBeEmpty();
-        task.ExtractableReferences.Length.ShouldBe(1);
-        task.ExtractableReferences[0].ItemSpec.ShouldBe(fixture.ReferencePath);
-        task.ExtractableReferences[0].GetMetadata("AtomUILinkedAssemblyName")
+        var extractableReference = task.ExtractableReferences.ShouldHaveSingleItem();
+        extractableReference.ItemSpec.ShouldBe(fixture.ReferencePath);
+        extractableReference.GetMetadata("AtomUILinkedAssemblyName")
             .ShouldBe(fixture.AssemblyName);
     }
 

@@ -42,18 +42,18 @@
     <!-- Stage the AtomUI.Build.Tasks toolset next to the shadow assembly path used by the
          UsingTask registrations (see AtomUIBuildTasksAssembly in AtomUI.Repository.props).
          The destination directory embeds the source DLL's content key, so a rebuilt
-         toolset lands in a fresh directory and a lingering task host locking a previous
-         shadow copy can never block the build. Anchored on BeforeBuild plus every target
-         that invokes these tasks, including GetAtomUILinkedRegistrationSidecar, which other
-         projects invoke directly through ProjectReference target calls where BeforeBuild
-         never runs. Missing source assemblies are tolerated here: projects without task
-         inputs must build without the toolset, and the feature targets keep their own
-         Exists guards for projects that do consume the tasks. Older shadow directories are
-         intentionally retained: another concurrently evaluated build may still be using an
-         older key, so deleting any non-current directory here would reintroduce the missing
-         task assembly race this staging target is meant to avoid. Cross-targeting pack builds
-         also stage the toolset because package asset preparation runs tasks before the inner
-         target frameworks are selected. -->
+         toolset lands in a fresh directory and a build node locking a previous shadow copy
+         can never block the build. Anchored on BeforeBuild plus every target that invokes
+         these tasks, including GetAtomUILinkedRegistrationSidecar, which other projects
+         invoke directly through ProjectReference target calls where BeforeBuild never runs.
+         Missing source assemblies are tolerated here: projects without task inputs must
+         build without the toolset, and the feature targets keep their own Exists guards for
+         projects that do consume the tasks. Older shadow directories are intentionally
+         retained: another concurrently evaluated build may still be using an older key, so
+         deleting any non-current directory here would reintroduce the missing task assembly
+         race this staging target is meant to avoid. Cross-targeting pack builds also stage
+         the toolset because package asset preparation runs tasks before the inner target
+         frameworks are selected. -->
     <Target Name="_AtomUIStageBuildTasksToolset"
             BeforeTargets="BeforeBuild;GenerateAtomUIThemeAssetWrappers;AtomUIGetLanguageModuleSourceAssets;AtomUIResolveLanguageContractProjectReferences;AtomUIInferLanguagePackageContractPolicy;AtomUIGetLanguagePackProjectAssets;AtomUIResolveLanguagePackProjectReferences;AtomUIExportLanguageTemplates;AtomUIPrepareLanguagePackage;AtomUIPrepareLanguageModuleAssets;CollectAtomUIProjectReferenceSidecars;CollectAtomUIAxamlUsage;EmitAtomUILinkedRegistrationSidecar;GetAtomUILinkedRegistrationSidecar;AtomUIPrepareLinkedRegistrationSidecarForPack;ValidateAtomUIApplicationRegistrationPlan"
             Condition="'$(MSBuildProjectName)' != 'AtomUI.Build.Tasks' and

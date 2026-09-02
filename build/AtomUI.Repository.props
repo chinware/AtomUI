@@ -10,15 +10,14 @@
         <AtomUILinkedPublishGeneratorAssembly Condition="'$(AtomUILinkedPublishGeneratorAssembly)' == ''">$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.Generator.LinkedPublish.dll</AtomUILinkedPublishGeneratorAssembly>
     </PropertyGroup>
 
-    <!-- .NET task hosts (TaskHostFactory, Runtime="NET") keep loaded task assemblies locked
-         after the build, and an orphaned host can hold the lock indefinitely. In repository
-         builds, UsingTask registrations therefore point at a per-project shadow copy whose
-         directory changes whenever the toolset content changes, so a rebuild never has to
-         overwrite a file a lingering host still holds. The shadow key is produced by the
-         AtomUI.Build.Tasks build itself: file metadata and content are only accessible inside
-         targets, so the producer stamps AtomUI.BuildTasks.ShadowKey.props next to the DLL
-         (SHA256 of the compiled assembly; stable across no-op recompiles) and consumers
-         import it here at evaluation time. The copy itself is staged by
+    <!-- MSBuild keeps loaded task assemblies locked for the lifetime of the build node. In
+         repository builds, UsingTask registrations therefore point at a per-project shadow
+         copy whose directory changes whenever the toolset content changes, so a rebuild
+         never has to overwrite a file an active node still holds. The shadow key is produced
+         by the AtomUI.Build.Tasks build itself: file metadata and content are only
+         accessible inside targets, so the producer stamps AtomUI.BuildTasks.ShadowKey.props
+         next to the DLL (SHA256 of the compiled assembly; stable across no-op recompiles)
+         and consumers import it here at evaluation time. The copy itself is staged by
          _AtomUIStageBuildTasksToolset in AtomUI.Repository.targets. -->
     <Import Project="$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.BuildTasks.ShadowKey.props"
             Condition="Exists('$(OutputPathWithoutFramework)/netstandard2.0/AtomUI.BuildTasks.ShadowKey.props')" />

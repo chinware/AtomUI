@@ -6,6 +6,19 @@ AtomUI 的重要变更记录在此文件中。
 
 英文版本见 [CHANGELOG.md](CHANGELOG.md)。
 
+## 6.1.7
+
+`2026-09-02`
+
+- DataGrid
+  - 修复启用网格线和冻结列时左上角表头在行表头旁额外绘制列分隔线的问题。
+- TextBox
+  - 修复 `SizeType=Small` 与自定义高度 TextBox 的布局，使输入框架正确跟随共享尺寸 Token 或本地高度。
+- Button 和 Browser Gallery
+  - Browser 环境下的桌面控件改用共享的 Button、DropdownButton 和 IconButton 主题资产，不再维护 Browser-only override 副本，使 Button 家族在不同目标上的视觉表现保持一致。
+- 文档
+  - 刷新 README 赞助者致谢信息。
+
 ## 6.1.6
 
 `2026-08-29`

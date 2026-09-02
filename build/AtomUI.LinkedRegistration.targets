@@ -23,21 +23,13 @@
     </ItemGroup>
 
     <UsingTask TaskName="AtomUI.Build.Tasks.CollectAxamlUsageTask"
-               AssemblyFile="$(AtomUIBuildTasksAssembly)"
-               Runtime="NET"
-               TaskFactory="TaskHostFactory" />
+               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
     <UsingTask TaskName="AtomUI.Build.Tasks.ValidateAssemblyMetadataMarkerTask"
-               AssemblyFile="$(AtomUIBuildTasksAssembly)"
-               Runtime="NET"
-               TaskFactory="TaskHostFactory" />
+               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
     <UsingTask TaskName="AtomUI.Build.Tasks.GenerateLinkedRegistrationSidecarTask"
-               AssemblyFile="$(AtomUIBuildTasksAssembly)"
-               Runtime="NET"
-               TaskFactory="TaskHostFactory" />
+               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
     <UsingTask TaskName="AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask"
-               AssemblyFile="$(AtomUIBuildTasksAssembly)"
-               Runtime="NET"
-               TaskFactory="TaskHostFactory" />
+               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
 
     <Target Name="CollectAtomUIProjectReferenceSidecars"
             BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;CoreCompile"
@@ -45,21 +37,28 @@
             Condition="'$(AtomUILinkedPublish)' == 'true' and '@(ReferencePath)' != '' and '$(IsRoslynComponent)' != 'true' and '$(MSBuildProjectName)' != 'AtomUI.Build.Tasks'">
         <ItemGroup>
             <_AtomUILegacyLinkedSidecarCandidate
-                Include="@(AdditionalFiles->WithMetadataValue('AtomUILinkedSidecar', 'true'))" />
+                Include="@(AdditionalFiles->WithMetadataValue('AtomUILinkedSidecar', 'true'))"
+                KeepMetadata="AtomUILinkedSidecarSource" />
             <AtomUILinkedSidecarCandidate
                 Include="@(_AtomUILegacyLinkedSidecarCandidate)"
+                KeepMetadata="AtomUILinkedSidecarSource"
                 AtomUILinkedSidecarSource="Package" />
             <AdditionalFiles Remove="@(_AtomUILegacyLinkedSidecarCandidate)" />
+            <_AtomUILinkedReferencePath
+                Include="@(ReferencePath->'%(FullPath)')"
+                KeepMetadata="FullPath" />
             <_AtomUILinkedReferenceSidecarCandidate
                 Include="@(ReferencePath->'%(FullPath).atomui-link.json')"
+                KeepMetadata="AtomUILinkedSidecarSource"
                 AtomUILinkedSidecarSource="ProjectCompanion" />
             <AtomUILinkedSidecarCandidate
                 Include="@(_AtomUILinkedReferenceSidecarCandidate)"
+                KeepMetadata="AtomUILinkedSidecarSource"
                 Condition="Exists('%(Identity)')" />
         </ItemGroup>
         <AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask
             SidecarCandidates="@(AtomUILinkedSidecarCandidate)"
-            ReferencePaths="@(ReferencePath)"
+            ReferencePaths="@(_AtomUILinkedReferencePath)"
             Condition="Exists('$(AtomUIBuildTasksAssembly)')">
             <Output TaskParameter="CanonicalSidecars"
                     ItemName="_AtomUIFormalCanonicalLinkedSidecar" />
@@ -93,7 +92,7 @@
         </ItemGroup>
         <AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask
             SidecarCandidates="@(_AtomUILinkedSidecarCanonicalCandidate)"
-            ReferencePaths="@(ReferencePath)"
+            ReferencePaths="@(_AtomUILinkedReferencePath)"
             Condition="Exists('$(AtomUIBuildTasksAssembly)')">
             <Output TaskParameter="CanonicalSidecars"
                     ItemName="_AtomUICanonicalLinkedSidecar" />

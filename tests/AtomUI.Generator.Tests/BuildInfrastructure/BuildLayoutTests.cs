@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Xml.Linq;
 using Shouldly;
 using Xunit;
@@ -195,7 +196,7 @@ public sealed class BuildLayoutTests
     }
 
     [Fact]
-    public void NuGet_Build_Tasks_Run_Out_Of_Process_To_Keep_The_Task_Assembly_Replaceable()
+    public void NuGet_Build_Tasks_Load_From_Shadow_Copy_In_Process()
     {
         var buildRoot = Path.Combine(GetRepositoryRoot(), "build");
         var usingTasks = s_expectedNuGetBuildAssets
@@ -210,9 +211,9 @@ public sealed class BuildLayoutTests
 
         usingTasks.ShouldNotBeEmpty();
         usingTasks.ShouldAllBe(element =>
-            (string?)element.Attribute("Runtime") == "NET");
+            element.Attribute("Runtime") == null);
         usingTasks.ShouldAllBe(element =>
-            (string?)element.Attribute("TaskFactory") == "TaskHostFactory");
+            element.Attribute("TaskFactory") == null);
     }
 
     [Fact]
@@ -254,17 +255,12 @@ public sealed class BuildLayoutTests
     }
 
     [Fact]
-    public void Tool_Source_Exceptions_Do_Not_Expose_Build_Output_Directories()
+    public void Tool_Source_Files_Stay_Trackable_While_Tool_Build_Outputs_Are_Ignored()
     {
-        var ignoreLines = File.ReadAllLines(GetRepoFile(".gitignore"));
-        var lastToolSourceException = Array.FindLastIndex(ignoreLines, line =>
-            line is "!tools/AtomUI.Docs.LLMsGenerator/**" or "!tools/performances/**");
-        var binIgnore = Array.IndexOf(ignoreLines, "tools/**/[Bb]in/");
-        var objIgnore = Array.IndexOf(ignoreLines, "tools/**/[Oo]bj/");
-
-        lastToolSourceException.ShouldBeGreaterThanOrEqualTo(0);
-        binIgnore.ShouldBeGreaterThan(lastToolSourceException);
-        objIgnore.ShouldBeGreaterThan(lastToolSourceException);
+        IsIgnoredByGit("tools/AtomUI.Docs.LLMsGenerator/Program.cs").ShouldBeFalse();
+        IsIgnoredByGit("tools/performances/AtomUI.Performance/Program.cs").ShouldBeFalse();
+        IsIgnoredByGit("tools/AtomUI.Docs.LLMsGenerator/bin/Debug/tool.dll").ShouldBeTrue();
+        IsIgnoredByGit("tools/performances/AtomUI.Performance/obj/project.assets.json").ShouldBeTrue();
     }
 
     [Fact]
@@ -419,5 +415,28 @@ public sealed class BuildLayoutTests
         }
 
         throw new DirectoryNotFoundException("Could not locate the AtomUI repository root.");
+    }
+
+    private static bool IsIgnoredByGit(string relativePath)
+    {
+        using var process = Process.Start(new ProcessStartInfo
+        {
+            FileName               = "git",
+            WorkingDirectory       = GetRepositoryRoot(),
+            RedirectStandardOutput = true,
+            RedirectStandardError  = true,
+            ArgumentList =
+            {
+                "check-ignore",
+                "--quiet",
+                "--no-index",
+                "--",
+                relativePath
+            }
+        });
+        process.ShouldNotBeNull();
+        process.WaitForExit();
+        process.ExitCode.ShouldBeOneOf(0, 1);
+        return process.ExitCode == 0;
     }
 }

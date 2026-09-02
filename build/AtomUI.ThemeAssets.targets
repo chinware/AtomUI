@@ -19,9 +19,7 @@
     </ItemGroup>
 
     <UsingTask TaskName="AtomUI.Build.Tasks.GenerateThemeAssetWrappersTask"
-               AssemblyFile="$(AtomUIBuildTasksAssembly)"
-               Runtime="NET"
-               TaskFactory="TaskHostFactory" />
+               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
 
     <Target Name="GenerateAtomUIThemeAssetWrappers"
             BeforeTargets="GenerateAvaloniaResources"

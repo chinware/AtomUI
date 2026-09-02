@@ -4,6 +4,19 @@ All notable changes to AtomUI are documented in this file.
 
 `AtomUI` follows Semantic Versioning 2.0.0.
 
+## 6.1.7
+
+`2026-09-02`
+
+- DataGrid
+  - Fix the top-left corner header so DataGrid no longer renders an extra column-header separator beside row headers when grid lines and frozen columns are enabled.
+- TextBox
+  - Fix `SizeType=Small` and custom-height TextBox layout so the input frame follows the expected shared size token or local height.
+- Button and Browser Gallery
+  - Use the shared Button, DropdownButton and IconButton theme assets in browser-hosted desktop controls instead of Browser-only override copies, keeping Button family visuals consistent across targets.
+- Documentation
+  - Refresh README sponsor acknowledgements.
+
 ## 6.1.6
 
 `2026-08-29`
