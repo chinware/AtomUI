@@ -1564,11 +1564,6 @@ public partial class DataGrid
     {
         if (IsColumnHeadersVisible)
         {
-            if (_topLeftCornerHeader is DataGridColumnHeader cornerHeader)
-            {
-                cornerHeader.IsSeparatorFullHeight = AreVerticalGridLinesVisible;
-            }
-
             double totalColumnsWidth = 0;
             foreach (DataGridColumn column in ColumnsInternal)
             {
