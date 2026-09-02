@@ -78,7 +78,7 @@ Transfer 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Transfer/Views/TransferShowCase.axaml:37`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Transfer/Views/TransferShowCase.axaml:255`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -88,7 +88,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 单向模式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Transfer/Views/TransferShowCase.axaml:51`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Transfer/Views/TransferShowCase.axaml:269`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -108,7 +108,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 搜索
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Transfer/Views/TransferShowCase.axaml:72`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Transfer/Views/TransferShowCase.axaml:290`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -124,7 +124,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 受控 key
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Transfer/Views/TransferShowCase.axaml:90`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Transfer/Views/TransferShowCase.axaml:308`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -245,6 +245,7 @@ Transfer Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 
 - 源设计文档：`docs/controls/desktop/data-entry/transfer/overview.md`
 - 实现文档：`docs/controls/desktop/data-entry/transfer/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-entry/transfer/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-entry/transfer/token.md`
 - 变更记录：`docs/controls/desktop/data-entry/transfer/changelog.md`
 - 语义结构：`./semantic-cn.md`

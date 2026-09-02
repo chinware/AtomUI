@@ -17,7 +17,8 @@ internal sealed class SemanticPartDeclaration
         string? since,
         bool runtimeCreated,
         Location location,
-        ITypeSymbol? themeTargetType = null)
+        ITypeSymbol? themeTargetType = null,
+        bool crossNestedOwners = false)
     {
         Name = name;
         Path = path;
@@ -30,6 +31,7 @@ internal sealed class SemanticPartDeclaration
         CrossVisualRoot = crossVisualRoot;
         Since = since;
         RuntimeCreated = runtimeCreated;
+        CrossNestedOwners = crossNestedOwners;
         Location = location;
         ThemeTargetType = themeTargetType;
     }
@@ -45,6 +47,7 @@ internal sealed class SemanticPartDeclaration
     internal bool CrossVisualRoot { get; }
     internal string? Since { get; }
     internal bool RuntimeCreated { get; }
+    internal bool CrossNestedOwners { get; }
     internal Location Location { get; }
     internal ITypeSymbol? ThemeTargetType { get; }
 
@@ -63,7 +66,8 @@ internal sealed class SemanticPartDeclaration
             Since,
             RuntimeCreated,
             Location,
-            targetType);
+            targetType,
+            CrossNestedOwners);
     }
 
     internal SemanticPartDeclaration WithSelectorRoute(string selectorRoute)
@@ -81,7 +85,8 @@ internal sealed class SemanticPartDeclaration
             Since,
             RuntimeCreated,
             Location,
-            ThemeTargetType);
+            ThemeTargetType,
+            CrossNestedOwners);
     }
 }
 
@@ -158,6 +163,7 @@ internal sealed class SemanticControlDeclaration
         var crossVisualRoot = false;
         string? since = null;
         var runtimeCreated = false;
+        var crossNestedOwners = false;
 
         foreach (var argument in attribute.NamedArguments)
         {
@@ -193,6 +199,9 @@ internal sealed class SemanticControlDeclaration
                 case "RuntimeCreated":
                     runtimeCreated = argument.Value.Value is true;
                     break;
+                case "CrossNestedOwners":
+                    crossNestedOwners = argument.Value.Value is true;
+                    break;
             }
         }
 
@@ -209,6 +218,8 @@ internal sealed class SemanticControlDeclaration
             crossVisualRoot,
             since,
             runtimeCreated,
-            location);
+            location,
+            null,
+            crossNestedOwners);
     }
 }

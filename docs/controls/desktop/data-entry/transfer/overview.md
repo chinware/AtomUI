@@ -167,11 +167,29 @@ Transfer 的动效只表达状态变化反馈，不应改变 public API 语义�
 
 Transfer 的视觉选项通过 public API 归一为 theme variables、伪类或模板绑定。Token 保存组件语义值，不能保存实例运行时状态或业务色值。
 
+### 8.5 Semantic Part
+
+`ListTransfer` 与 `TreeTransfer` 公开 `root`、`source.section`、`target.section`、`actions`、`header`、`title`、
+`body`、`list`、`footer` 九个职责区域及十个方向限定变体（`source.header` / `target.header` / `source.title` /
+`target.title` / `source.body` / `target.body` / `source.list` / `target.list` / `source.footer` /
+`target.footer`），与上游 Transfer 语义键逐字对齐（`.` 为层级分隔符）；两个 owner 发布相同 Part 集合，
+`source.section` / `target.section` /
+`actions` 为 `Single`，`header` / `title` / `body` / `list` / `footer` 位于共享分区模板内为 `Multiple`（源、目标
+各一）。条目容器 `TransferListItem` 自身发布 `itemIcon` / `itemContent`，上游 `item` 键由 `TransferListView`
+继承 `ListView` 的 `item` 契约覆盖。完整 selector route、`ContractType`、状态矩阵和定制边界见
+[Transfer Semantic Part 契约](semantic-part.md)。
+
+操作按钮属于 Button 家族、过滤输入属于 LineEdit 家族，均不由 Transfer Part 承担；上游的方向作用域内层区域
+方向差异化由分区级与条目级限定 Part 直接承担：分区内部件经 `.semantic-source` / `.semantic-target` 方向锚点
+路由限定，条目级（`source.item` / `target.item` / `source.itemIcon` 等）由视图 `ViewType` 在 prepare 路径一次性
+补挂方向条目类区分。
+
 ## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [Transfer 桌面版实现原理](implementation.md)
+- [Transfer Semantic Part 契约](semantic-part.md)
 - [Transfer Token 设计](token.md)
 - [Transfer Changelog](changelog.md)
 
@@ -179,11 +197,25 @@ LLMS 语义区域：
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `Transfer` | 数据录入控件根语义区域，承载 public API、值状态、验证状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `input` | `输入或编辑区域` | 承载用户输入、当前值、占位、格式化或只读状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `trigger` | `触发区域` | 承载清除、展开、提交、步进、上传或辅助操作。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `popup` | `弹层或候选区域` | 承载下拉、候选项、日历、颜色面板或异步内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `validation` | `校验反馈区域` | 承载 Form、status、错误、警告、help 或 loading 状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `root` | `ListTransfer` / `TreeTransfer` | 穿梭框根语义区域，承载 public API、数据、选择状态、过滤和主题入口。 | `ItemsSource`、`TargetKeys`、`SelectedKeys`、`IsOneWay`、`IsStretchView` | `ListTransferToken` / `TreeTransferToken` | stable |
+| `source.section` | internal `TransferItemDecorator#SourceDecoratorView` | 源方向列表分区外框，承载 header、过滤输入、列表宿主和 footer 的组织边界。 | `SourceTitle`、`SourceViewFooter`、`ListWidth`、`ListHeight` | `HeaderHeight`、`HeaderPadding` | stable |
+| `target.section` | internal `TransferItemDecorator#TargetDecoratorView` | 目标方向列表分区外框，与 `source` 结构一致仅方向不同。 | `TargetTitle`、`TargetViewFooter`、`IsOneWay` | 同 `source` | stable |
+| `actions` | `StackPanel#ActionsLayout` | 组织"移至目标 / 移回源"操作按钮的中间操作区。 | `ToTargetTransferIcon`、`ToSourceTransferIcon`、`ToTargetButtonText`、`ToSourceButtonText` | `SpacingXXS`、`SpacingXS` | stable |
+| `header` | `TransferItemDecorator` 模板内 `PixelAlignedBorder#HeaderFrame` | 面板头部分区，承载全选指示、选择计数与标题。 | `IsShowSelectAllCheckbox`、`IsShowSelectDropdownMenu`、`SelectionsIcon` | `HeaderHeight`、`HeaderPadding`、`ColorSplit` | stable |
+| `title` | `TransferItemDecorator` 模板内 `ContentPresenter#TitleContentPresenter` | 承载 `SourceTitle` / `TargetTitle` 及其模板的最终呈现。 | `SourceTitle`、`SourceTitleTemplate`、`TargetTitle`、`TargetTitleTemplate` | `HeaderPadding` | stable |
+| `body` | `TransferItemDecorator` 模板内 `DockPanel#BodyLayout` | 分区主体区域，承载过滤输入与列表宿主的组织边界。 | `IsFilterEnabled`、`FilterPlaceholderText`、`ListHeight` | `MarginXS` | stable |
+| `list` | `TransferItemDecorator` 模板内 `ContentPresenter#ContentPresenter` | 承载源/目标视图控件的宿主分区。 | `ListHeight`、`PageSize`、`ItemTemplate` | `ListHeight`、`BorderRadiusLG` | stable |
+| `footer` | `TransferItemDecorator` 模板内 `PixelAlignedBorder#FooterFrame` | 面板底部分区，承载方向 footer 内容呈现边界。 | `SourceViewFooter`、`TargetViewFooter` | `HeaderPadding`、`ColorSplit` | stable |
+| `source.header` / `target.header` | 同 `header`（方向锚点路由） | 单侧面板头部分区，仅作用于源 / 目标面板。 | 同 `header` | 同 `header` | stable |
+| `source.title` / `target.title` | 同 `title`（方向锚点路由） | 单侧面板标题呈现区域。 | 同 `title` | 同 `title` | stable |
+| `source.body` / `target.body` | 同 `body`（方向锚点路由） | 单侧面板主体区域。 | 同 `body` | 同 `body` | stable |
+| `source.list` / `target.list` | 同 `list`（方向锚点路由） | 单侧视图宿主分区。 | 同 `list` | 同 `list` | stable |
+| `source.footer` / `target.footer` | 同 `footer`（方向锚点路由） | 单侧面板底部区域。 | 同 `footer` | 同 `footer` | stable |
+| `itemIcon` | `TransferListItem` 模板内 `CheckBox#SelectedIndicator` | 条目选择指示区域（仅 `ListTransfer` 发布）。 | `SelectedKeys`、`TargetKeys` | SharedToken | stable |
+| `itemContent` | `TransferListItem` 模板内 `ContentPresenter#ContentPresenter` | 条目内容呈现区域（仅 `ListTransfer` 发布）。 | `ItemTemplate` | SharedToken | stable |
+| `source.item` / `target.item` | 视图容器（`TransferListItem` / `TransferTreeViewItem`） | 单侧条目容器（方向条目类由视图 `ViewType` 在 prepare 补挂）。 | `ItemsSource`、`TargetKeys` | SharedToken | stable |
+| `source.itemIcon` / `target.itemIcon` | 同 `itemIcon`（自锚点路由） | 单侧条目选择指示区域。 | 同 `itemIcon` | SharedToken | stable |
+| `source.itemContent` / `target.itemContent` | 同 `itemContent`（自锚点路由） | 单侧条目内容呈现区域。 | 同 `itemContent` | SharedToken | stable |
 
 LLMS 导出来源：
 

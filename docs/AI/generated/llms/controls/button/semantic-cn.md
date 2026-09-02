@@ -124,32 +124,6 @@ Button
               -> LoadingOutlined#PART_LoadingIcon (template-stable)
               -> IconPresenter#PART_ButtonIcon (template-stable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
-  -> Button (control theme, ButtonTheme.axaml)
-     -> Panel (template-stable)
-        -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
-        -> Border#ShadowsFrame (template-stable)
-        -> DashedBorder#Frame (template-stable)
-        -> Border (template-stable)
-           -> DockPanel#PART_RootLayout (template-stable)
-              -> LoadingOutlined#PART_LoadingIcon (template-stable)
-              -> IconPresenter#PART_ButtonIcon (template-stable)
-              -> ContentPresenter#PART_ContentPresenter (template-stable)
-     -> Panel (template-stable)
-        -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
-        -> Border#ShadowsFrame (template-stable)
-        -> DashedBorder#Frame (template-stable)
-           -> DockPanel#PART_RootLayout (template-stable)
-              -> LoadingOutlined#PART_LoadingIcon (template-stable)
-              -> IconPresenter#PART_ButtonIcon (template-stable)
-              -> ContentPresenter#PART_ContentPresenter (template-stable)
-     -> Panel (template-stable)
-        -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
-        -> Border#ShadowsFrame (template-stable)
-        -> DashedBorder#Frame (template-stable)
-           -> DockPanel#PART_RootLayout (template-stable)
-              -> LoadingOutlined#PART_LoadingIcon (template-stable)
-              -> IconPresenter#PART_ButtonIcon (template-stable)
-              -> ContentPresenter#PART_ContentPresenter (template-stable)
 ```
 
 ### 协作节点
@@ -163,7 +137,7 @@ Button
 | `ShadowsFrame` | template node (Border) | `ButtonTheme.axaml` | Button | `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Frame` | template node (DashedBorder) | `ButtonTheme.axaml` | Button | `Background`, `BackgroundSizing`, `BorderBrush`, `EffectiveBorderThickness`, `EffectiveCornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_RootLayout` | template node (DockPanel) | `ButtonTheme.axaml` | Button | `Content`, `ContentTemplate`, `Foreground`, `HorizontalContentAlignment`, `Icon`, `IconHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_LoadingIcon` | template node (LoadingOutlined) | `ButtonTheme.axaml` | Button | `IconHeight`, `IconWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_LoadingIcon` | template node (LoadingOutlined) | `ButtonTheme.axaml` | Button | `Foreground`, `IconHeight`, `IconWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ButtonIcon` | template node (IconPresenter) | `ButtonTheme.axaml` | Button | `Foreground`, `Icon`, `IconHeight`, `IconWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `ButtonTheme.axaml` | Button | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
@@ -269,8 +243,7 @@ ButtonToken 不承载 `IsPressed`、`IsPointerOver`、`IsLoading`、`EffectiveCo
 - root 表面定制语义保持不变：用户在 Button 上设置的本地 `Background` / `BorderBrush` 直接由模板 `Frame`
   渲染并冻结该属性槽在 hover / pressed / disabled 的状态变色，清除后恢复主题状态机；不得重新引入平行
   定制属性或模板内定制覆层。
-- 同一 Button 家族主题资产必须在 Native 与 Browser 支持宿主下保持同一 API 语义；不得维护
-  `Buttons/Themes/Browser/` 或 `BrowserButtonThemes.axaml` 形式的平台主题分叉。
+- 同一 Button 家族主题资产在 Native 与 Browser 支持宿主下保持同一 API 语义，不通过平台专用主题资产复制视觉。
 
 如果实现某项能力时无法保持这些不变量，应先停止实现，说明原因、影响范围、替代方案和迁移方式，并获得授权。
 

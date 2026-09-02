@@ -56,9 +56,9 @@ internal sealed class SemanticPartContractValidator
     {
         validatedPart = part;
         var valid = true;
-        if (!IsCamelCaseSegment(part.Name) || string.Equals(part.Name, "root", StringComparison.Ordinal))
+        if (!IsPartPath(part.Name) || string.Equals(part.Name, "root", StringComparison.Ordinal))
         {
-            ReportInvalidDeclaration(control, part, "name must be camelCase and cannot be root");
+            ReportInvalidDeclaration(control, part, "name must be dot-separated camelCase segments and cannot be root");
             valid = false;
         }
         if (!IsPartPath(part.Path))
@@ -144,11 +144,13 @@ internal sealed class SemanticPartContractValidator
         var valid = true;
         valid &= ValidateUnique(control, parts, static part => part.Name, "name");
         valid &= ValidateUnique(control, parts, static part => part.Path, "path");
+        // 同一终端 marker 可以被未限定与限定（如 source.header）部件共享，
+        // 真正需要防重的是完全相同的解析路由。
         valid &= ValidateUnique(
             control,
             parts,
-            static part => part.SelectorClass ?? string.Empty,
-            "selector class");
+            static part => part.SelectorRoute ?? string.Empty,
+            "selector route");
         return valid;
     }
 
@@ -402,29 +404,53 @@ internal sealed class SemanticPartContractValidator
         }
 
         var tokens = selectorRoute.Split(' ');
-        if (tokens.Length < 2 || tokens.Length % 2 != 0)
+        if (tokens.Length < 2)
         {
             return false;
         }
 
-        for (var index = 0; index < tokens.Length; index += 2)
+        // 可选的首段自锚点：owner 节点自身携带的过滤类（如方向限定的 source-item），
+        // 出现时整体 token 数为奇数，其余仍按 step/class 成对解析。
+        var index = 0;
+        if (tokens[0].StartsWith(".", StringComparison.Ordinal))
         {
-            if (tokens[index] is not ("/template/" or ">"))
+            if (!IsRouteClassToken(tokens[0]))
             {
                 return false;
             }
 
-            var classToken = tokens[index + 1];
-            if (classToken.Length < 2 ||
-                classToken[0] != '.' ||
-                !IsSemanticSelectorClass(classToken.Substring(1)))
+            index = 1;
+        }
+
+        if ((tokens.Length - index) < 2 || (tokens.Length - index) % 2 != 0)
+        {
+            return false;
+        }
+
+        for (; index < tokens.Length; index += 2)
+        {
+            if (tokens[index] is not ("/template/" or ">" or ">>"))
             {
                 return false;
             }
 
+            if (!IsRouteClassToken(tokens[index + 1]))
+            {
+                return false;
+            }
         }
 
         return string.Equals(tokens[tokens.Length - 1], $".{part.SelectorClass}", StringComparison.Ordinal);
+    }
+
+    private static bool IsRouteClassToken(string token)
+    {
+        if (token.Length < 2 || token[0] != '.')
+        {
+            return false;
+        }
+
+        return IsSemanticSelectorClass(token.Substring(1));
     }
 
     private void ReportInvalidDeclaration(

@@ -152,7 +152,10 @@ internal sealed class SemanticPartManifestWriter
         source.Append("                        \"").Append(Escape(part.SelectorRoute ?? string.Empty)).AppendLine("\",");
         source.Append("                        typeof(global::AtomUI.Theme.Styling.")
               .Append(SemanticPartStyleContract.GetTypeName(control, part))
-              .AppendLine(")),");
+              .AppendLine("),");
+        source.Append("                        ")
+              .Append(part.CrossNestedOwners ? "true" : "false")
+              .AppendLine("),");
     }
 
     private void WriteConstants(SemanticControlDeclaration control)
@@ -237,6 +240,10 @@ internal sealed class SemanticPartManifestWriter
             else if (string.Equals(token, ">", StringComparison.Ordinal))
             {
                 source.AppendLine("            .Child()");
+            }
+            else if (string.Equals(token, ">>", StringComparison.Ordinal))
+            {
+                source.AppendLine("            .Descendant()");
             }
             else if (token.StartsWith(".", StringComparison.Ordinal))
             {

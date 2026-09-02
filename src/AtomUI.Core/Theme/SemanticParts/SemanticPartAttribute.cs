@@ -20,4 +20,5 @@ public sealed class SemanticPartAttribute : Attribute
     public bool CrossVisualRoot { get; set; }
     public string? Since { get; set; }
     public bool RuntimeCreated { get; set; }
+    public bool CrossNestedOwners { get; set; }
 }

@@ -39,10 +39,12 @@ public sealed class ControlSemanticDescriptor
 
         EnsureUnique(partArray, static part => part.Name, "name");
         EnsureUnique(partArray, static part => part.Path, "path");
+        // 限定部件（如 source.header）与未限定部件共享终端 selector class，
+        // 去重键使用解析路由：真正需要防重的是完全相同的路由声明。
         EnsureUnique(
             partArray.Where(static part => part.SelectorClass is not null),
-            static part => part.SelectorClass!,
-            "selector class");
+            static part => part.SelectorRoute ?? $"/template/ .{part.SelectorClass}",
+            "selector route");
 
         ControlType = controlType;
         Identity = identity;

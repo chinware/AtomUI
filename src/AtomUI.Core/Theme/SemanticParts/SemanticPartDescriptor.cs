@@ -17,7 +17,8 @@ public sealed class SemanticPartDescriptor
         string? since,
         bool runtimeCreated,
         string? selectorRoute = null,
-        Type? styleType = null)
+        Type? styleType = null,
+        bool crossNestedOwners = false)
     {
         ValidatePartName(name, nameof(name));
         ValidatePartPath(path, nameof(path));
@@ -120,6 +121,7 @@ public sealed class SemanticPartDescriptor
         CrossVisualRoot = crossVisualRoot;
         Since = string.IsNullOrWhiteSpace(since) ? null : since;
         RuntimeCreated = runtimeCreated;
+        CrossNestedOwners = crossNestedOwners;
         StyleType = styleType;
     }
 
@@ -134,15 +136,16 @@ public sealed class SemanticPartDescriptor
     public bool CrossVisualRoot { get; }
     public string? Since { get; }
     public bool RuntimeCreated { get; }
+    public bool CrossNestedOwners { get; }
     public Type? StyleType { get; }
 
     private static void ValidatePartName(string value, string parameterName)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(value, parameterName);
-        if (!IsCamelCaseSegment(value))
+        if (value.Split('.').Any(static segment => !IsCamelCaseSegment(segment)))
         {
             throw new ArgumentException(
-                $"'{value}' is not a valid camelCase Semantic Part name.",
+                $"'{value}' is not a valid dot-separated camelCase Semantic Part name.",
                 parameterName);
         }
     }
@@ -249,35 +252,60 @@ public sealed class SemanticPartDescriptor
         }
 
         var tokens = value.Split(' ');
-        if (tokens.Length < 2 || tokens.Length % 2 != 0)
+        if (tokens.Length < 2)
         {
             return false;
         }
 
-        for (var index = 0; index < tokens.Length; index += 2)
+        // 可选的首段自锚点：owner 节点自身携带的过滤类（方向限定等场景）。
+        var index = 0;
+        if (tokens[0].StartsWith(".", StringComparison.Ordinal))
         {
-            if (tokens[index] is not ("/template/" or ">"))
+            if (!IsValidRouteClassToken(tokens[0]))
             {
                 return false;
             }
 
-            var classToken = tokens[index + 1];
-            if (classToken.Length < 2 || classToken[0] != '.')
+            index = 1;
+        }
+
+        if ((tokens.Length - index) < 2 || (tokens.Length - index) % 2 != 0)
+        {
+            return false;
+        }
+
+        for (; index < tokens.Length; index += 2)
+        {
+            if (tokens[index] is not ("/template/" or ">" or ">>"))
             {
                 return false;
             }
 
-            try
-            {
-                ValidateSelectorClass(classToken.Substring(1), nameof(value));
-            }
-            catch (ArgumentException)
+            if (!IsValidRouteClassToken(tokens[index + 1]))
             {
                 return false;
             }
-
         }
 
         return string.Equals(tokens[^1], $".{selectorClass}", StringComparison.Ordinal);
+    }
+
+    private static bool IsValidRouteClassToken(string token)
+    {
+        if (token.Length < 2 || token[0] != '.')
+        {
+            return false;
+        }
+
+        try
+        {
+            ValidateSelectorClass(token.Substring(1), nameof(token));
+        }
+        catch (ArgumentException)
+        {
+            return false;
+        }
+
+        return true;
     }
 }

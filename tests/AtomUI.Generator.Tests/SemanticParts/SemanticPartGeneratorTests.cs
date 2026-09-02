@@ -2031,7 +2031,8 @@ public class SemanticPartGeneratorTests
                     string since,
                     bool runtimeCreated,
                     string? selectorRoute = null,
-                    System.Type? styleType = null)
+                    System.Type? styleType = null,
+                    bool crossNestedOwners = false)
                 {
                 }
             }

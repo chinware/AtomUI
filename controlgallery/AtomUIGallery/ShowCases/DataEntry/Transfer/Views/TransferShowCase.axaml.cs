@@ -1,5 +1,6 @@
 using AtomUIGallery.Localization;
 using System.Globalization;
+using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
@@ -46,6 +47,9 @@ public partial class TransferShowCase : GalleryReactiveUserControl<TransferViewM
                 Disposable.Create(() =>
                 {
                     viewModel.BasicTransferItems                  = null;
+                    viewModel.SemanticDemoTargetKeys              = null;
+                    viewModel.SemanticPreviewTargetKeys           = null;
+                    viewModel.SemanticTreePreviewTargetKeys        = null;
                     viewModel.OneWayTransferItems                 = null;
                     viewModel.SearchTransferItems                 = null;
                     viewModel.ControlledTransferItems             = null;
@@ -102,6 +106,19 @@ public partial class TransferShowCase : GalleryReactiveUserControl<TransferViewM
         }
 
         vm.BasicTransferItems = items;
+        vm.SemanticDemoTargetKeys = Enumerable.Range(11, 9)
+                                              .Select(index => new EntityKey($"{index}"))
+                                              .ToList();
+        vm.SemanticPreviewTargetKeys = new List<EntityKey>
+        {
+            new("3"),
+            new("9")
+        };
+        vm.SemanticTreePreviewTargetKeys = new List<EntityKey>
+        {
+            new("0-1-0"),
+            new("0-1-1")
+        };
     }
 
     private void InitOneWayTransferItems(TransferViewModel vm)
