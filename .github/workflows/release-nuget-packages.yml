@@ -22,7 +22,7 @@ on:
             default: false
 env:
    SOURCE_DIR: ${{ github.workspace }}
-   BASE_OUTPUT_DIR: ${{ github.workspace }}/.artifacts
+   BASE_OUTPUT_DIR: ${{ github.workspace }}/nuget-artifacts
    LOCAL_NUGET_DIR: ${{ github.workspace }}/nuget
 jobs:
    BuildAtomUINuget:
@@ -76,6 +76,7 @@ jobs:
             with:
                name: NuGetPackages
                path: ${{ env.BASE_OUTPUT_DIR }}/*.nupkg
+               if-no-files-found: error
          -  name: Publish to nuget.org
             if: ${{ inputs.PublishToNuget == true }}
             shell: pwsh

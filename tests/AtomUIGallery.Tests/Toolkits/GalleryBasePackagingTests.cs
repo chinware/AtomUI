@@ -38,6 +38,22 @@ public class GalleryBasePackagingTests
     }
 
     [Fact]
+    public void Main_Release_Workflow_Uploads_From_Visible_Package_Directory_And_Fails_When_No_Artifacts_Match()
+    {
+        var workflow = ReadRepoFile(".github/workflows/release-nuget-packages.yml");
+        var baseOutputLine = workflow.Split('\n')
+                                     .Single(line => line.TrimStart()
+                                                         .StartsWith("BASE_OUTPUT_DIR:", StringComparison.Ordinal));
+        var baseOutputDir = baseOutputLine.Split(':', 2)[1].Trim();
+        var baseOutputLeaf = baseOutputDir.Split('/').Last();
+
+        baseOutputLeaf.ShouldNotStartWith(".");
+        var uploadStep = GetWorkflowStep(workflow, "-  name: Upload NuGet artifacts");
+        uploadStep.ShouldContain("path: ${{ env.BASE_OUTPUT_DIR }}/*.nupkg");
+        uploadStep.ShouldContain("if-no-files-found: error");
+    }
+
+    [Fact]
     public void Package_Build_Script_Builds_Prerequisites_Before_Packing_And_Verifies_All_Artifacts()
     {
         var manifest = ReadRepoFile(PackageManifest);
@@ -113,5 +129,15 @@ public class GalleryBasePackagingTests
         }
 
         return AppContext.BaseDirectory;
+    }
+
+    private static string GetWorkflowStep(string workflow, string stepName)
+    {
+        var start = workflow.IndexOf(stepName, StringComparison.Ordinal);
+        start.ShouldBeGreaterThanOrEqualTo(0);
+        var nextStep = workflow.IndexOf("\n         -", start + stepName.Length, StringComparison.Ordinal);
+        return nextStep < 0
+            ? workflow[start..]
+            : workflow[start..nextStep];
     }
 }
