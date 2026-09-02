@@ -114,9 +114,13 @@
                         CompactSpaceOrientation="{TemplateBinding CompactSpaceOrientation}"
                         IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}">
                         <atom:ButtonSpinner.InnerLeftContent>
+                            <!-- Spinner 模式下 prefix 渲染在 −/+ 手柄之间的输入区内；
+                                 外边距跟随手柄的 InputPadding token。空内容时 presenter
+                                 自折叠（AddOnContentPresenter），外边距随之不占位。 -->
                             <atom:AddOnContentPresenter
                                 Name="PART_InnerLeftContentPresenter"
                                 Classes.semantic-prefix="True"
+                                Margin="{atom:NumericUpDownTokenResource InputPadding}"
                                 VerticalAlignment="Stretch"
                                 VerticalContentAlignment="Center"
                                 HorizontalAlignment="Left"

@@ -8,7 +8,7 @@ namespace AtomUI.Desktop.Controls;
 [SemanticPart(
     "prefix",
     SelectorClass = "semantic-prefix",
-    SelectorRoute = "/template/ .semantic-scope-spinner /template/ .semantic-scope-frame /template/ .semantic-scope-prefix > .semantic-prefix",
+    SelectorRoute = "/template/ .semantic-scope-spinner >> .semantic-prefix",
     ContractType = typeof(ContentPresenter),
     Since = "6.0")]
 [SemanticPart(

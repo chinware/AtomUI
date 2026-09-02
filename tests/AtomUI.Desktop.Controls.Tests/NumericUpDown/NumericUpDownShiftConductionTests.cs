@@ -96,9 +96,29 @@ public class NumericUpDownShiftConductionTests
         {
             var inner = numericUpDown.GetVisualDescendants()
                                      .OfType<ContentPresenter>()
-                                     .Single(p => p.Name == "PART_InnerLeftContentPresenter");
-            inner.Content.ShouldBe("$");
-            inner.Bounds.Width.ShouldBeGreaterThan(0d, "InnerLeftContent 应该在输入区渲染出前缀");
+                                     .Where(p => p.Name == "PART_InnerLeftContentPresenter")
+                                     .ToList();
+            var dump = string.Join(" ;; ", inner.Select(p =>
+            {
+                var chain = new System.Text.StringBuilder();
+                foreach (var a in p.GetSelfAndVisualAncestors())
+                {
+                    chain.Append(a.GetType().Name);
+                    if (a.Classes.Count > 0)
+                    {
+                        chain.Append("(").Append(string.Join("+", a.Classes)).Append(")");
+                    }
+                    chain.Append(" > ");
+                    if (a is Avalonia.Controls.Window)
+                    {
+                        break;
+                    }
+                }
+                return chain.ToString();
+            }));
+            inner.Count.ShouldBe(1, dump);
+            inner[0].Content.ShouldBe("$");
+            inner[0].Bounds.Width.ShouldBeGreaterThan(0d, "InnerLeftContent 应该在输入区渲染出前缀");
         }
         finally
         {

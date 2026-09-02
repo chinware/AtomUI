@@ -47,7 +47,7 @@ public class NumericUpDownSemanticPartTests
         AssertPart(descriptor, "input", InputClass, typeof(TextBox),
             "/template/ .semantic-input");
         AssertPart(descriptor, "prefix", PrefixClass, typeof(ContentPresenter),
-            "/template/ .semantic-scope-spinner /template/ .semantic-scope-frame /template/ .semantic-scope-prefix > .semantic-prefix");
+            "/template/ .semantic-scope-spinner >> .semantic-prefix");
         AssertPart(descriptor, "suffix", SuffixClass, typeof(StackPanel),
             "/template/ .semantic-suffix");
     }
