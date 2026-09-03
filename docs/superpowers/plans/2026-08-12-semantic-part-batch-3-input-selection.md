@@ -41,11 +41,11 @@
 
 **风险类型：** Popup、分层运行时容器、异步加载、filter 模式。
 
-- [ ] **Gate A 设计审核：** 审计 Cascader input/decorated box、popup CascaderView、level/filter lists 和 items；确认 selector/clear/expand/check/item regions 与 multiple/single、filter/hierarchy variants，记录 async child load、level rebuild、Popup 和容器生命周期。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Cascader/CascaderSemanticPartTests.cs`，覆盖 single/multiple、filter/hierarchy、async loading、level navigation、check/select、Popup reopen、collection reset 和 marker budget。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
-- [ ] **强制停止：** 保持 Cascader 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
+- [x] **Gate A 设计审核：** 审计 Cascader input/decorated box、popup CascaderView、level/filter lists 和 items；确认 selector/clear/expand/check/item regions 与 multiple/single、filter/hierarchy variants，记录 async child load、level rebuild、Popup 和容器生命周期。
+- [x] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Cascader/CascaderSemanticPartTests.cs`，覆盖 single/multiple、filter/hierarchy、async loading、level navigation、check/select、Popup reopen、collection reset 和 marker budget。
+- [x] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
+- [x] **强制停止：** 保持 Cascader 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。（已按用户授权提交 `fd5cbd97a`；视觉验收已按裁剪范围关闭）
 
 ### 任务 3：ColorPicker
 

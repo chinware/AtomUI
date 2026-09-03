@@ -1,14 +1,18 @@
 # Cascader Semantic Part 改造 · 真机视觉验收步骤
 
-> 状态：**待视觉验收（部分通过）**。改造代码与测试已完成（见 `docs/superpowers/plans/2026-09-03-cascader-semantic-part.md`
-> 执行期修订记录）；预览弹层钉住场景已由用户截图确认通过，其余走查项仍待回传截图。
+> 状态：**已关闭（2026-09-03，经用户授权裁剪范围）**。改造代码与测试已完成（见 `docs/superpowers/plans/2026-09-03-cascader-semantic-part.md`
+> 执行期修订记录）。Semantic Part 相关判定——预览弹层钉住 + 步骤 1.6 静态判定（含 Filled 填充修复）——已由用户截图确认通过；
+> 其余基线回归走查项（1.1–1.5、1.6 弹层展开子项、1.7、1.8、2.2–2.8、2.10）按用户 2026-09-03 指示裁剪：
+> 本分支原则上只做 Semantic Part 相关视觉验收，除非 bug 修复需要，回归走查不再作为逐项门槛。
 >
 > ## 验收结论记录（文字证据）
 
 | 日期 | 证据 | 结论 | 修复记录 |
 | --- | --- | --- | --- |
 | 2026-09-03 | 用户回传截图：Data Entry → Cascader → Semantic Parts 页签。预览为多选 + 预选 "West Lake" 标签；弹层钉住常开且页面无遮罩阻挡；`popup.list` 高亮同时罩住两列；右侧部件列表含 itemRemove / clear / popup.root / popup.list / popup.listItem | 预览弹层钉住 + light-dismiss 机制确认与 AutoComplete 一致，**步骤 2.1 / 2.9 的 popup 部分通过**（该场景即本轮 IsOpen 绑定移除 + AbstractSelect 机制下沉的修复点） | 移除模板 `IsOpen` 绑定、机制下沉 AbstractSelect（见计划修订记录第 8 条） |
-| 2026-09-03 | 用户回传截图：样式示例两个带 prefix 的 Cascader（Outlined / Filled），已选中 "Zhejiang/Hangzhou"。像素实测：Outlined 控件 64 原始px = 32 逻辑px；Filled 灰底仅 60 原始px = 30 逻辑px，且与上方控件间距 42 原始px（= 间距 20 + 1px 透明边框环），证明布局高度本就是 32、可见填充被 `InnerBorderEdge` 裁进 1px 透明边框内侧 | **步骤 1.6 的 Filled 变体暴露共享层缺陷：填充可见高度比 Outlined 矮 2px**（Middle 应为 32）。headless 探针证实布局高度 Filled=32 无差异，根因为 Filled 保留 1px 透明占位边框 + ContentFrame `InnerBorderEdge` 裁切 | 共享 `AddOnDecoratedBoxTheme` 为 Filled 变体追加 `BackgroundSizing=OuterBorderEdge`（见计划修订记录 8.3）；新增 `AddOnDecoratedBoxVariantTests` 回归（先红后绿）。**修复后待用户重跑步骤 1.6 回传截图确认** |
+| 2026-09-03 | 用户回传截图：样式示例两个带 prefix 的 Cascader（Outlined / Filled），已选中 "Zhejiang/Hangzhou"。像素实测：Outlined 控件 64 原始px = 32 逻辑px；Filled 灰底仅 60 原始px = 30 逻辑px，且与上方控件间距 42 原始px（= 间距 20 + 1px 透明边框环），证明布局高度本就是 32、可见填充被 `InnerBorderEdge` 裁进 1px 透明边框内侧 | **步骤 1.6 的 Filled 变体暴露共享层缺陷：填充可见高度比 Outlined 矮 2px**（Middle 应为 32）。headless 探针证实布局高度 Filled=32 无差异，根因为 Filled 保留 1px 透明占位边框 + ContentFrame `InnerBorderEdge` 裁切 | 共享 `AddOnDecoratedBoxTheme` 为 Filled 变体追加 `BackgroundSizing=OuterBorderEdge`（见计划修订记录 8.3）；新增 `AddOnDecoratedBoxVariantTests` 回归（先红后绿）。修复后经下一行截图复核关闭 |
+| 2026-09-03 | 用户回传截图：Customize semantic structure styles 两个带 prefix 的 Cascader（object styles=Outlined / function styles=Filled）。像素实测：Outlined 外框 y=1266–1329 共 64 原始px = 32 逻辑px；Filled 灰底 #F4F4F4 连续带 y=1370–1433 共 64 原始px = 32 逻辑px，首末行（y=1370/1371、1432/1433）全宽均为灰底无白边，两框间距 40 原始px = 20 逻辑px 即纯布局间距（证明填充已铺到外框边缘）；Filled 箭头主色 (24,144,255) = #1890FF，Outlined 箭头 (192,192,192) 默认浅灰；prefix 文字 #BFBFBF、占位符 #1890FF | **步骤 1.6 静态判定通过**：`BackgroundSizing=OuterBorderEdge` 修复真机确认生效——Filled 与 Outlined 等高 32px、灰底铺满圆角框上下无白边、Filled 箭头蓝色 #1890FF 且未样式化控件箭头保持默认浅灰。1.6 的弹层展开子项（object 弹层蓝框/候选项深色字、function 弹层灰框/候选项蓝字）仍待展开态截图 | 无需修复（纯验收确认） |
+| 2026-09-03 | 用户指示：本分支原则上只做 Semantic Part 相关视觉验收（除非 bug 修复需要），1.1–1.5、1.6 弹层展开子项、1.7 全景、1.8 Select 抽查、2.2–2.8、2.10 等基线回归走查属多余项 | **Cascader 视觉验收关闭**：以已确认的弹层钉住 + light-dismiss 机制、1.6 静态判定（两框等高 32px / Filled 灰底铺满 / 箭头蓝色 #1890FF）为准；回归走查项不再等待回传 | 无需修复 |
 
 ## 背景
 

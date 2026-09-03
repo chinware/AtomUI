@@ -20,6 +20,7 @@
 - 不得手工编辑 `docs/AI/generated`。
 - 不得向生产控件引入运行时 VisualTree 搜索、反射、运行时 AXAML 解析、动态 marker binding 或永久监听器。
 - AtomUI 默认主题不得使用 Semantic selector 驱动内置样式。
+- 本分支的视觉验收范围原则上仅限 Semantic Part 新增视觉与本轮修复点；与 6.1.7 基线一致性相关的全量回归走查不作为逐项门槛，仅在怀疑 bug 时执行（2026-09-03 用户指示）。
 - 单个控件实现完成后必须保持所有变更未提交；只有用户完成验证并明确授权后才能创建提交。
 
 ---
@@ -147,7 +148,7 @@
 
 **计划：** [第三批任务清单](2026-08-12-semantic-part-batch-3-input-selection.md)
 
-**进度（2026-09-03）：** Upload、LineEdit（含 TextArea）、SearchEdit、OtpLineEdit、NumericUpDown、Form、Transfer、AutoComplete 已提交；NumericUpDown、Form、Transfer、AutoComplete 四家族视觉验收已关闭（NumericUpDown、Form 经用户截图走查后确认通过；Transfer、AutoComplete 由用户授权豁免关闭，未逐步回传证据，记录见 docs/superpowers/specs/ 各验收文档）；AutoComplete 的暂存实现曾随专用工作树（`feature/semantic-AutoComplete`）丢失，后已按原计划重做并提交；Cascader、ColorPicker、DatePicker、Mentions、Select、TimePicker、TreeSelect 未开始。
+**进度（2026-09-03）：** Upload、LineEdit（含 TextArea）、SearchEdit、OtpLineEdit、NumericUpDown、Form、Transfer、AutoComplete、Cascader 已提交；NumericUpDown、Form、Transfer、AutoComplete、Cascader 五家族视觉验收已关闭（NumericUpDown、Form 经用户截图走查后确认通过；Transfer、AutoComplete 由用户授权豁免关闭；Cascader 经用户授权按裁剪范围关闭——弹层钉住与 1.6 静态判定截图确认通过，基线回归走查项裁剪，记录见 docs/superpowers/specs/ 各验收文档）；AutoComplete 的暂存实现曾随专用工作树（`feature/semantic-AutoComplete`）丢失，后已按原计划重做并提交；ColorPicker、DatePicker、Mentions、Select、TimePicker、TreeSelect 未开始。
 
 - [ ] 开放 input frame/content/icon 区域前，必须分析 SizeType 和布局 Setter。
 - [ ] candidate、option、calendar 和 time panel 必须提供 Popup 打开-关闭-重新打开的证据。
