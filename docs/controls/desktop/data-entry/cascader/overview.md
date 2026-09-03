@@ -2,7 +2,9 @@
 
 本文档定义 `AtomUI.Desktop.Controls.Cascader` 的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，候选列表统一交互见 [候选列表统一交互设计](../select/candidate-interaction-design.md)，内部实现原理见 [Cascader 桌面版实现原理](implementation.md)，Cascader Token 的专项设计见 [Cascader Token 设计](token.md)，设计和契约变化记录见 [Cascader Changelog](changelog.md)。
 
-该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。本控件的语义 owner 为 `AbstractSelect`，其 internal `IsPopupPinnedOpen` 只供测试和内部诊断使用；设置为 true 时保持 `IsDropDownOpen` 并 relay 到 `PART_Popup`，设置为 false 时只解除关闭拦截。控件卸载、锚点失效、TopLevel 改变和模板重建仍按共享生命周期规则清理。
+该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。`AbstractSelect` 提供 public `IsPopupPinnedOpen`：设置为 true 时保持 `IsDropDownOpen` 并 relay 到 `PART_Popup`；Cascader 在弹层打开前依据钉住状态抑制 light-dismiss 遮罩，取消钉住后恢复模板默认值，使 Gallery 语义预览等场景可以持续展示 `popup.*` 部件。控件卸载、锚点失效、TopLevel 改变和模板重建仍按共享生命周期规则清理。
+
+Cascader 公开 13 个 Semantic Part（`root`、`prefix`、`content`、`placeholder`、`input`、`suffix`、`clear`、`item`、`itemContent`、`itemRemove`、`popup.root`、`popup.list`、`popup.listItem`），与 Ant Design Cascader 的 Semantic Part 语义对齐；完整 Part 表、Selector 用法与定制边界见 [Cascader Semantic Part 契约](semantic-part.md)。
 
 ## 1. 控件定位
 
@@ -291,6 +293,7 @@ Cascader 使用 `ItemKey` 或 `Value` 组成 `TreeNodePath`，用于默认选择
 ## 9. 文档导航、LLMS 导出与验证策略
 
 - [Cascader 桌面版实现原理](implementation.md)
+- [Cascader Semantic Part 契约](semantic-part.md)
 - [Cascader Token 设计](token.md)
 - [Cascader Changelog](changelog.md)
 

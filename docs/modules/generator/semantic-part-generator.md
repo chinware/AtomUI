@@ -303,9 +303,11 @@ typed `BasedOn` 按 Avalonia 12 的应用顺序展开：派生 Theme 携带任�
 `Style.Selector` 文本。解析使用 XML attribute 结构，不从 AXAML 文本正则匹配。Selector 的 owner scope、`/template/`
 边界和状态组合由架构规范、控件主题 review 与运行时 selector 测试保证。
 
-`SelectorRoute` 自身使用受限语法验证，不调用 Avalonia runtime parser：route 必须从 `/template/` 或 `>` 开始，并由
-“combinator + `.semantic-*` class”成对组成；禁止空格 descendant、类型、Name、`PART_*`、属性 selector 和其他 token；
-最后一个 class 必须等于该 Part 的 `SelectorClass`。这项验证只处理公开 route 元数据，不解析任意 AXAML Selector。
+`SelectorRoute` 自身使用受限语法验证，不调用 Avalonia runtime parser：route 必须从 `/template/`、`>` 或（仅限
+`CrossNestedOwners=true` 部件的）`>>` 开始，并由“combinator + `.semantic-*` class”成对组成；禁止空格 descendant、
+类型、Name、`PART_*`、属性 selector 和其他 token；最后一个 class 必须等于该 Part 的 `SelectorClass`。`>>` 开头的
+路由服务于锚点节点位于 owner 模板属性值子树（无 `TemplatedParent` 传播）的场景，运行时由 Descendant 步进从 owner
+到达锚点后再进入嵌套控件模板。这项验证只处理公开 route 元数据，不解析任意 AXAML Selector。
 
 `BasedOn` 支持属性语法的 `{StaticResource {x:Type ...}}` 与元素语法的
 `<ControlTheme.BasedOn><themes:X TargetType="..."/></ControlTheme.BasedOn>` 两种 typed 形式；元素语法按子元素的

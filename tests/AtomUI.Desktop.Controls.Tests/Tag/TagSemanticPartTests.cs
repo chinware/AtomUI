@@ -91,7 +91,11 @@ public class TagSemanticPartTests
             [
                 "semantic-close:IconButton",
                 "semantic-content:TextBlock",
-                "semantic-icon:IconPresenter"
+                "semantic-icon:IconPresenter",
+                // 以下两个 marker 由 Cascader 的 itemContent / itemRemove 部件经
+                // 跨嵌套校验消费（SelectTag : Tag 复用本模板），对 Tag 契约是 inert class。
+                "semantic-item-content:TextBlock",
+                "semantic-item-remove:IconButton"
             ]);
         AssertThemeMarkers(
             "src/AtomUI.Desktop.Controls/Tag/Themes/CheckableTagGroupTheme.axaml",

@@ -151,6 +151,10 @@ container clear / detach -> dispose attachment and subscriptions
 
 `CascaderView.OnApplyTemplate()` 获取 `PART_ItemsPanel`、`PART_RootLevelList` 和 `PART_FilterList`。Root level list 设置 `Level=1` 和 `OwnerView=this`，filter list 必须解除旧 selection 订阅再订阅新实例。
 
+钉住弹层（`IsPopupPinnedOpen`）的遮罩抑制机制由 `AbstractSelect` 统一承载（与 `AbstractAutoComplete` 同构）：`OnPropertyChanged` 的钉住分支在自动打开前抑制 `PART_Popup.IsLightDismissEnabled`，`OnApplyTemplate` 在 relay 绑定后按钉住状态抑制，尾部 `IsDropDownOpen && !Popup.IsOpen → OpeningDropDown(false)` 负责模板应用后的打开；`PopupClosed` 强制回写 `IsDropDownOpen=false`，覆盖 light-dismiss 关闭路径的状态同步。Cascader 模板的 Popup 因此不声明 `IsOpen` 模板绑定——模板充气阶段的绑定求值会在抑制之前打开弹层并留下不可消除的遮罩层。取消钉住时抑制恢复模板默认 true，下一轮打开恢复常规遮罩行为；该机制只服务 Gallery 语义预览等钉住场景，不改变普通打开/关闭流程。
+
+Semantic Part marker 的维护边界：`CascaderTheme.axaml` 承载触发区静态 marker（`semantic-scope-input`、`semantic-prefix`、`semantic-suffix`、`semantic-scope-handle`、`semantic-content`、`semantic-placeholder`、`semantic-input`、`semantic-popup-root`、`semantic-scope-view`）；`CascaderViewTheme.axaml` 承载 `semantic-scope-frame` 与根列、过滤列表的 `semantic-popup-list` 静态 marker；共享 `SelectHandleTheme.axaml` 承载清除按钮的 `semantic-clear` marker（`clear` Part 声明 `CrossNestedOwners=true`，生成器沿 SelectHandle 主题链校验）。运行时注入点：`CascaderView` 创建子级列时追加 `CascaderSemanticParts.PopupListClass`；`CascaderViewLevelList.CreateContainerForItemOverride()` 与 `CascaderViewFilterList.CreateContainerForItemOverride()` 向容器追加 `CascaderSemanticParts.PopupListItemClass`。marker 随容器实例创建一次，prepare/clear/recycle 路径不得增删。
+
 `CascaderView` 分别持有树列和过滤列的 active candidate owner。普通树列的 pointer move 先把 enabled item 提升为 active candidate，再按 `ExpandTrigger` 执行展开；过滤列 pointer move 同样迁移过滤候选，不再无条件清除。过滤结果重建或清空、filter list 重套模板、popup 关闭时 `ResetInteractionState()` 清除两类候选并折叠展开路径。虚拟化树容器回收时必须清除 `IsCandidateSelectedProperty`，不能让候选视觉进入下一个 option 的复用容器。
 
 `CascaderViewLevelList.ContainerForItemPreparedOverride()` 对每个 `ICascaderOption` 调用 `CascaderViewItem.PrepareCascaderOptionData()`。如果 option 是 `BindableCascaderOption`，容器创建同一生命周期的 `CompositeDisposable`，用于保存 resource host attachment、属性订阅和 children 集合订阅。
@@ -280,6 +284,8 @@ Pointer 路径：
 - `CascaderLazyLoadTests`：异步加载时弹层保持打开、loading 和 loaded children。
 - `CascaderChangeOnSelectTests`：父级可选时立即选择并保持弹层打开。
 - `CascaderThemeContractTests`：主题 binding 和模板契约。
+- `CascaderSemanticPartTests`：descriptor 十 Part 契约、模板静态 marker 清单、默认主题不消费 semantic selector、生成 Style 命中触发区目标。
+- `CascaderPinnedPopupTests`：钉住弹层打开前抑制 light-dismiss、`popup.list` / `popup.listItem` 部件命中、重开与数据源重置后 marker 保持。
 
 验证命令：
 

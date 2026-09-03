@@ -20,7 +20,7 @@ namespace AtomUI.Desktop.Controls;
 
 using ItemCollection = AtomUI.Collections.ItemCollection;
 
-public class Cascader : AbstractSelect
+public partial class Cascader : AbstractSelect
 {
     #region 公共属性定义
     public static readonly StyledProperty<TreeSelectCheckedStrategy> ShowCheckedStrategyProperty =

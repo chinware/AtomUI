@@ -479,7 +479,11 @@ public abstract class AbstractSelect : TemplatedControl,
     internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty =
         AvaloniaProperty.Register<AbstractSelect, FormValidateFeedback?>(nameof(FormFeedback));
 
-    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+    /// <summary>
+    /// 钉住候选弹层：开启后弹层忽略 light-dismiss 关闭请求，保持强制打开。
+    /// 典型场景是 Gallery 语义部件预览需要持续高亮 popup.* 部件。
+    /// </summary>
+    public static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
         Popup.IsPopupPinnedOpenProperty.AddOwner<AbstractSelect>();
 
     private double _itemHeight;
@@ -592,7 +596,11 @@ public abstract class AbstractSelect : TemplatedControl,
         set => SetValue(FormFeedbackProperty, value);
     }
 
-    internal bool IsPopupPinnedOpen
+    /// <summary>
+    /// 钉住候选弹层：开启后弹层忽略 light-dismiss 关闭请求，保持强制打开。
+    /// 典型场景是 Gallery 语义部件预览需要持续高亮 popup.* 部件。
+    /// </summary>
+    public bool IsPopupPinnedOpen
     {
         get => GetValue(IsPopupPinnedOpenProperty);
         set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
@@ -677,6 +685,20 @@ public abstract class AbstractSelect : TemplatedControl,
                 Popup.IsPopupPinnedOpenProperty);
             Popup.Opened += PopupOpened;
             Popup.Closed += PopupClosed;
+            // 钉住的弹层会忽略 light-dismiss 关闭请求，而 Avalonia 只在弹层打开瞬间
+            // 读取 IsLightDismissEnabled 创建遮罩，因此必须赶在下方 OpeningDropDown
+            // 之前抑制，否则预览等钉住场景会留下一个只挡交互的遮罩层。
+            if (IsPopupPinnedOpen)
+            {
+                Popup.IsLightDismissEnabled = false;
+            }
+        }
+
+        // If the drop down property indicates that the popup is open,
+        // flip its value to invoke the changed handler.
+        if (IsDropDownOpen && Popup != null && !Popup.IsOpen)
+        {
+            OpeningDropDown(false);
         }
     }
 
@@ -684,6 +706,12 @@ public abstract class AbstractSelect : TemplatedControl,
     {
         SubscriptionsOnOpen.Clear();
         PopupHasOpened = false;
+        // 弹层关闭（含 light-dismiss 路径）时强制回写宿主状态，
+        // 保持 IsDropDownOpen 与弹层实际状态同步（与 AbstractAutoComplete 一致）。
+        if (IsDropDownOpen)
+        {
+            SetCurrentValue(IsDropDownOpenProperty, false);
+        }
         NotifyPopupClosed();
     }
 
@@ -716,11 +744,19 @@ public abstract class AbstractSelect : TemplatedControl,
         {
             ConfigureMaxDropdownHeight();
         }
-        else if (change.Property == IsPopupPinnedOpenProperty &&
-                 change.GetNewValue<bool>() &&
-                 !IsDropDownOpen)
+        else if (change.Property == IsPopupPinnedOpenProperty)
         {
-            SetCurrentValue(IsDropDownOpenProperty, true);
+            if (Popup != null)
+            {
+                // 钉住期间抑制 light-dismiss 遮罩；取消钉住恢复模板默认值，下一轮
+                // 打开时恢复常规遮罩行为。
+                Popup.IsLightDismissEnabled = !change.GetNewValue<bool>();
+            }
+
+            if (change.GetNewValue<bool>() && !IsDropDownOpen)
+            {
+                SetCurrentValue(IsDropDownOpenProperty, true);
+            }
         }
     }
 

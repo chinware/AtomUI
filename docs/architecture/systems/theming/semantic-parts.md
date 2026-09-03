@@ -104,8 +104,11 @@ descriptions content:
   SelectorRoute = /template/ .semantic-scope-items > .semantic-scope-item /template/ .semantic-content
 ```
 
-`SelectorRoute` 从 public owner 之后开始，不重复 owner type 或业务 class。它是声明、descriptor、生成器和诊断使用的底层
-路径契约；应用的正常使用入口是生成的 Semantic Style，不直接拼接 route。例如上述 Descriptions route 生成：
+`SelectorRoute` 从 public owner 之后开始，不重复 owner type 或业务 class。路由可以以 `>>` 开头，表示从 owner 的
+逻辑/可视后代直接定位第一个锚点节点；该形态仅限声明 `CrossNestedOwners=true` 且锚点节点位于 owner 模板的属性值
+子树（不参与 `TemplatedParent` 传播）时使用，例如 Cascader 的 `clear` 经 `>> .semantic-scope-handle /template/
+.semantic-clear` 越过属性值子树进入嵌套控件模板。它是声明、descriptor、生成器和诊断使用的底层路径契约；应用的
+正常使用入口是生成的 Semantic Style，不直接拼接 route。例如上述 Descriptions route 生成：
 
 ```csharp
 public sealed class DescriptionsContentStyle : Style

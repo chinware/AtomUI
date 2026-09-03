@@ -1,3 +1,4 @@
+using AtomUI.Generated.AtomUIDesktopControls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -42,7 +43,9 @@ internal class CascaderViewFilterList : ListBox
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
-        return new CascaderViewFilterListItem();
+        var listItem = new CascaderViewFilterListItem();
+        listItem.Classes.Add(CascaderSemanticParts.PopupListItemClass);
+        return listItem;
     }
 
     protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)

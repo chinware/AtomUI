@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using AtomUI.Controls;
+using AtomUI.Generated.AtomUIDesktopControls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -56,6 +57,7 @@ internal class CascaderViewLevelList : SelectingItemsControl, IListVirtualizingC
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
         var cascaderViewItem = new CascaderViewItem();
+        cascaderViewItem.Classes.Add(CascaderSemanticParts.PopupListItemClass);
         if (item is ICascaderOption option)
         {
             CascaderViewItem.ApplyOptionData(cascaderViewItem, option);

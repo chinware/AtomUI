@@ -10,6 +10,10 @@ namespace AtomUI.Desktop.Controls;
 
 internal class SelectTagAwareTextBox : TemplatedControl
 {
+    /// 多选标签容器标记：Select 族共享，宿主（如 Cascader）的 item 部件经
+    /// descendant 路由命中该标记。
+    internal const string TagItemClass = "semantic-item";
+
     #region 公共属性定义
 
     public static readonly DirectProperty<SelectTagAwareTextBox, IList?> SelectedItemsProperty =
@@ -261,6 +265,8 @@ internal class SelectTagAwareTextBox : TemplatedControl
                                 Text = tagTextProvider.TagText,
                                 Item    = item
                             };
+                            // 容器运行时创建，标记在创建时注入（与 ListBox semantic-item 相同模式）。
+                            tag.Classes.Add(TagItemClass);
                             BindTagMetrics(tag);
                             _defaultPanel.Children.Add(tag);
                         }
@@ -290,6 +296,7 @@ internal class SelectTagAwareTextBox : TemplatedControl
                                 Text = tagTextProvider.TagText,
                                 Item    = item
                             };
+                            tag.Classes.Add(TagItemClass);
                             BindTagMetrics(tag);
                             _maxCountAwarePanel.Children.Add(tag);
                         }

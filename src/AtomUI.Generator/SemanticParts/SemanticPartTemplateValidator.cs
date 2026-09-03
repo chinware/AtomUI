@@ -158,13 +158,15 @@ internal sealed class SemanticPartTemplateValidator
             }
         }
 
-        return ValidateCrossNestedOwnerParts(crossOwnerParts, templates) && valid;
+        return ValidateCrossNestedOwnerParts(parts, crossOwnerParts, templates) && valid;
     }
 
-    /// 跨嵌套控件部件：路由中 ">>" 前的锚点类定位宿主模板里的嵌套控件节点，
-    /// 沿其类型继承链找到承载目标模板的主题资产，并在该范围内校验标记数量与
-    /// ContractType 兼容性，保持与宿主模板校验同等级的静态检查能力。
+    /// 跨嵌套控件部件：路由中首个边界操作符前的锚点类定位宿主模板里的嵌套控件节点，
+    /// 沿其类型继承链找到承载目标模板的主题资产；锚点与目标之间允许经过同控件已声明的
+    /// RuntimeCreated 部件（以其 ContractType 为节点类型继续解析主题链），保持与宿主模板
+    /// 校验同等级的静态检查能力。
     private bool ValidateCrossNestedOwnerParts(
+        IReadOnlyList<SemanticPartDeclaration> allDeclarations,
         IReadOnlyList<SemanticPartDeclaration> parts,
         IReadOnlyList<(ThemeAssetInfo Asset, ThemeAssetSemanticTemplateInfo Template)> ownerTemplates)
     {
@@ -185,7 +187,7 @@ internal sealed class SemanticPartTemplateValidator
         var valid = true;
         foreach (var part in parts)
         {
-            var targetMarkers = CollectCrossNestedOwnerMarkers(part, ownerTemplates, allThemes, resolvedTargets);
+            var targetMarkers = CollectCrossNestedOwnerMarkers(part, allDeclarations, ownerTemplates, allThemes, resolvedTargets);
             var enabledCount = targetMarkers.Count(static marker => marker.IsStaticallyEnabled);
             if (!MatchesCardinality(part.Cardinality, enabledCount))
             {
@@ -229,6 +231,7 @@ internal sealed class SemanticPartTemplateValidator
 
     private IReadOnlyList<ThemeAssetSemanticMarkerInfo> CollectCrossNestedOwnerMarkers(
         SemanticPartDeclaration part,
+        IReadOnlyList<SemanticPartDeclaration> allParts,
         IReadOnlyList<(ThemeAssetInfo Asset, ThemeAssetSemanticTemplateInfo Template)> ownerTemplates,
         IReadOnlyList<ThemeAssetSemanticThemeInfo> allThemes,
         Dictionary<ThemeAssetSemanticThemeInfo, INamedTypeSymbol?> resolvedTargets)
@@ -258,6 +261,7 @@ internal sealed class SemanticPartTemplateValidator
         {
             return Array.Empty<ThemeAssetSemanticMarkerInfo>();
         }
+
         var candidateThemes = new List<ThemeAssetSemanticThemeInfo>();
         foreach (var entry in ownerTemplates)
         {
@@ -281,10 +285,94 @@ internal sealed class SemanticPartTemplateValidator
 
         // 嵌套控件经 StyleKeyOverride 只消费最派生的主题；基类主题（如 SearchEdit 之上的
         // LineEdit）不参与运行时解析，这里同样剔除，避免重复计数。
-        var targetThemeSet = new HashSet<ThemeAssetSemanticThemeInfo>(candidateThemes.Where(theme =>
+        var targetThemeSet = DedupeMostDerivedThemes(candidateThemes, resolvedTargets);
+
+        var selectorClass = part.SelectorClass!;
+        var targetMarkers = targetThemeSet
+                            .SelectMany(static theme => theme.Templates)
+                            .SelectMany(static template => template.Markers)
+                            .Where(marker => string.Equals(marker.SelectorClass, selectorClass, StringComparison.Ordinal))
+                            .ToList();
+        if (targetMarkers.Count > 0)
+        {
+            return targetMarkers;
+        }
+
+        // 锚点主题链中不存在目标标记时，允许路由经由中间跳步继续解析：静态标记节点
+        // 按其实际类型下沉到对应主题；同控件已声明的 RuntimeCreated 部件（标记由容器
+        // 创建路径注入，静态主题中不可见）以 ContractType 承转主题链（如 Cascader 的
+        // item 标签容器承转 itemContent / itemRemove）。
+        var routeClasses = tokens.Where(static token => token.StartsWith(".", StringComparison.Ordinal))
+                                 .Select(static token => token.Substring(1))
+                                 .ToArray();
+        var hopCount = routeClasses.Length - 2;
+        for (var hopIndex = 1; hopIndex <= hopCount && targetMarkers.Count == 0; hopIndex++)
+        {
+            var hopClass = routeClasses[hopIndex];
+            var hopMarkerTypes = targetThemeSet
+                                 .SelectMany(static theme => theme.Templates)
+                                 .SelectMany(static template => template.Markers)
+                                 .Where(marker => string.Equals(
+                                     marker.SelectorClass,
+                                     hopClass,
+                                     StringComparison.Ordinal))
+                                 .Select(marker => _typeResolver.ResolveMarkerType(marker))
+                                 .Where(static markerType => markerType is not null)
+                                 .Cast<INamedTypeSymbol>()
+                                 .ToArray();
+            if (hopMarkerTypes.Length > 0)
+            {
+                targetThemeSet = DedupeMostDerivedThemes(
+                    hopMarkerTypes.SelectMany(nodeType => allThemes.Where(theme =>
+                    {
+                        var themeTarget = resolvedTargets[theme];
+                        return themeTarget is not null &&
+                               SemanticPartTypeResolver.IsAssignableTo(nodeType, themeTarget);
+                    })),
+                    resolvedTargets);
+                continue;
+            }
+
+            var sibling = allParts.FirstOrDefault(candidate =>
+                !ReferenceEquals(candidate, part) &&
+                candidate.RuntimeCreated &&
+                string.Equals(candidate.SelectorClass, hopClass, StringComparison.Ordinal));
+            if (sibling?.ContractType is not INamedTypeSymbol siblingContractType)
+            {
+                return Array.Empty<ThemeAssetSemanticMarkerInfo>();
+            }
+
+            targetThemeSet = DedupeMostDerivedThemes(
+                allThemes.Where(theme =>
+                {
+                    var themeTarget = resolvedTargets[theme];
+                    return themeTarget is not null &&
+                           SemanticPartTypeResolver.IsAssignableTo(siblingContractType, themeTarget);
+                }),
+                resolvedTargets);
+        }
+
+        if (targetMarkers.Count == 0)
+        {
+            targetMarkers = targetThemeSet
+                            .SelectMany(static theme => theme.Templates)
+                            .SelectMany(static template => template.Markers)
+                            .Where(marker => string.Equals(marker.SelectorClass, selectorClass, StringComparison.Ordinal))
+                            .ToList();
+        }
+
+        return targetMarkers;
+    }
+
+    private HashSet<ThemeAssetSemanticThemeInfo> DedupeMostDerivedThemes(
+        IEnumerable<ThemeAssetSemanticThemeInfo> candidateThemes,
+        Dictionary<ThemeAssetSemanticThemeInfo, INamedTypeSymbol?> resolvedTargets)
+    {
+        var candidates = candidateThemes.ToList();
+        return new HashSet<ThemeAssetSemanticThemeInfo>(candidates.Where(theme =>
         {
             var themeTarget = resolvedTargets[theme]!;
-            return !candidateThemes.Any(other =>
+            return !candidates.Any(other =>
                 !ReferenceEquals(other, theme) &&
                 resolvedTargets[other] is { } otherTarget &&
                 !string.Equals(otherTarget.ToDisplayString(),
@@ -292,13 +380,6 @@ internal sealed class SemanticPartTemplateValidator
                     StringComparison.Ordinal) &&
                 SemanticPartTypeResolver.IsAssignableTo(otherTarget, themeTarget));
         }));
-
-        var selectorClass = part.SelectorClass!;
-        return targetThemeSet
-               .SelectMany(static theme => theme.Templates)
-               .SelectMany(static template => template.Markers)
-               .Where(marker => string.Equals(marker.SelectorClass, selectorClass, StringComparison.Ordinal))
-               .ToArray();
     }
 
     private IReadOnlyList<(

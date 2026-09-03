@@ -111,5 +111,20 @@ public enum CascaderShowCaseLangResourceKind
     P2ContentTopleft,
     P2ContentTopright,
     P2ContentBottomleft,
-    P2ContentBottomright
+    P2ContentBottomright,
+    SemanticRootDescription,
+    SemanticPrefixDescription,
+    SemanticContentDescription,
+    SemanticPlaceholderDescription,
+    SemanticInputDescription,
+    SemanticSuffixDescription,
+    SemanticClearDescription,
+    SemanticPopupRootDescription,
+    SemanticPopupListDescription,
+    SemanticPopupListItemDescription,
+    SemanticItemDescription,
+    SemanticItemContentDescription,
+    SemanticItemRemoveDescription,
+    StyleClassTitle,
+    StyleClassDescription
 }

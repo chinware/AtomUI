@@ -107,6 +107,21 @@
             <Setter Property="HorizontalSpacing" Value="{atom:SharedTokenResource SpacingXXS}" />
         </Style>
 
+        <!-- 右侧后缀区默认前景色：作为下拉箭头（SelectHandle 继承链）与后缀内容的默认颜色，
+             用户 suffix Part Style 在 suffix 容器上以更高优先级覆写 -->
+        <Style Selector="^ /template/ atom|AddOnContentPresenter#PART_ContentRightAddOn">
+            <Setter Property="TextElement.Foreground"
+                    Value="{atom:SharedTokenResource ColorTextQuaternary}" />
+        </Style>
+
+        <!--
+            Filled 变体保留 1px 透明边框与 Outlined 等高占位，背景必须铺满 border-box，
+            否则可见填充比 Outlined 矮上下各 1px。
+        -->
+        <Style Selector="^[StyleVariant=Filled] /template/ atom|AddOnDecoratedBoxContentFrame#PART_ContentFrame">
+            <Setter Property="BackgroundSizing" Value="OuterBorderEdge" />
+        </Style>
+
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_LeftAddOn">
                 <Setter Property="Padding" Value="{atom:SharedTokenResource InputPaddingLG}" />

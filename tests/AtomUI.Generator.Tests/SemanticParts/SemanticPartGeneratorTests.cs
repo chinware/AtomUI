@@ -1629,6 +1629,169 @@ public class SemanticPartGeneratorTests
         manifest.ShouldNotContain("PopupTheme");
     }
 
+    [Fact]
+    public void Resolves_Cross_Nested_Parts_Through_A_Runtime_Created_Sibling_Part()
+    {
+        const string source = """
+            using AtomUI.Theme;
+            using Avalonia.Controls;
+            using Avalonia.Controls.Presenters;
+
+            namespace Demo;
+
+            public class TagBox : Control
+            {
+            }
+
+            public class InputBox : Control
+            {
+            }
+
+            [SemanticPart(
+                "item",
+                SelectorClass = "semantic-item",
+                SelectorRoute = ">> .semantic-scope-host >> .semantic-item",
+                CrossNestedOwners = true,
+                ContractType = typeof(TagBox),
+                Cardinality = SemanticPartCardinality.Multiple,
+                RuntimeCreated = true,
+                Since = "6.0")]
+            [SemanticPart(
+                "itemContent",
+                SelectorClass = "semantic-item-content",
+                SelectorRoute = ">> .semantic-scope-host >> .semantic-item /template/ .semantic-item-content",
+                CrossNestedOwners = true,
+                ContractType = typeof(ContentPresenter),
+                Since = "6.0")]
+            public partial class TagHost : Control
+            {
+            }
+            """;
+        var hostTheme = new InMemoryAdditionalText(
+            "TagHost/Themes/TagHostTheme.axaml",
+            """
+            <ControlTheme xmlns="https://github.com/avaloniaui"
+                          xmlns:atom="using:Demo"
+                          TargetType="atom:TagHost">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <Panel>
+                            <atom:InputBox Classes="semantic-scope-host" />
+                        </Panel>
+                    </ControlTemplate>
+                </Setter>
+            </ControlTheme>
+            """);
+        var inputTheme = new InMemoryAdditionalText(
+            "InputBox/Themes/InputBoxTheme.axaml",
+            """
+            <ControlTheme xmlns="https://github.com/avaloniaui"
+                          xmlns:atom="using:Demo"
+                          TargetType="atom:InputBox">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <Border />
+                    </ControlTemplate>
+                </Setter>
+            </ControlTheme>
+            """);
+        var tagTheme = new InMemoryAdditionalText(
+            "TagBox/Themes/TagBoxTheme.axaml",
+            """
+            <ControlTheme xmlns="https://github.com/avaloniaui"
+                          xmlns:atom="using:Demo"
+                          TargetType="atom:TagBox">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <ContentPresenter Classes="semantic-item-content" />
+                    </ControlTemplate>
+                </Setter>
+            </ControlTheme>
+            """);
+
+        var output = RunGenerator(source, out var diagnostics, hostTheme, inputTheme, tagTheme);
+
+        diagnostics.ShouldBeEmpty();
+        var manifest = GetGeneratedSource(output, "GeneratedSemanticPartManifest.g.cs");
+        manifest.ShouldContain("\"semantic-item-content\"");
+    }
+
+    [Fact]
+    public void Reports_Cross_Nested_Parts_Whose_Runtime_Sibling_Hop_Is_Missing()
+    {
+        const string source = """
+            using AtomUI.Theme;
+            using Avalonia.Controls;
+            using Avalonia.Controls.Presenters;
+
+            namespace Demo;
+
+            public class TagBox : Control
+            {
+            }
+
+            public class InputBox : Control
+            {
+            }
+
+            [SemanticPart(
+                "itemContent",
+                SelectorClass = "semantic-item-content",
+                SelectorRoute = ">> .semantic-scope-host >> .semantic-item /template/ .semantic-item-content",
+                CrossNestedOwners = true,
+                ContractType = typeof(ContentPresenter),
+                Since = "6.0")]
+            public partial class TagHost : Control
+            {
+            }
+            """;
+        var hostTheme = new InMemoryAdditionalText(
+            "TagHost/Themes/TagHostTheme.axaml",
+            """
+            <ControlTheme xmlns="https://github.com/avaloniaui"
+                          xmlns:atom="using:Demo"
+                          TargetType="atom:TagHost">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <Panel>
+                            <atom:InputBox Classes="semantic-scope-host" />
+                        </Panel>
+                    </ControlTemplate>
+                </Setter>
+            </ControlTheme>
+            """);
+        var inputTheme = new InMemoryAdditionalText(
+            "InputBox/Themes/InputBoxTheme.axaml",
+            """
+            <ControlTheme xmlns="https://github.com/avaloniaui"
+                          xmlns:atom="using:Demo"
+                          TargetType="atom:InputBox">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <Border />
+                    </ControlTemplate>
+                </Setter>
+            </ControlTheme>
+            """);
+        var tagTheme = new InMemoryAdditionalText(
+            "TagBox/Themes/TagBoxTheme.axaml",
+            """
+            <ControlTheme xmlns="https://github.com/avaloniaui"
+                          xmlns:atom="using:Demo"
+                          TargetType="atom:TagBox">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <ContentPresenter Classes="semantic-item-content" />
+                    </ControlTemplate>
+                </Setter>
+            </ControlTheme>
+            """);
+
+        _ = RunGenerator(source, out var diagnostics, hostTheme, inputTheme, tagTheme);
+
+        diagnostics.ShouldContain(diagnostic => diagnostic.Id == "ATOMUIGEN025");
+    }
+
     private static CSharpCompilation RunGenerator(
         string source,
         out ImmutableArray<Diagnostic> diagnostics,
@@ -1907,6 +2070,7 @@ public class SemanticPartGeneratorTests
                 public SemanticPartCustomization Customization { get; set; }
                 public string? ThemePropertyName { get; set; }
                 public bool CrossVisualRoot { get; set; }
+                public bool CrossNestedOwners { get; set; }
                 public string? Since { get; set; }
                 public bool RuntimeCreated { get; set; }
             }

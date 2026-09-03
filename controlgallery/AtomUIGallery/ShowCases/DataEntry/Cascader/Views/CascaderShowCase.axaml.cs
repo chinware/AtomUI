@@ -55,6 +55,9 @@ public partial class CascaderShowCase : GalleryReactiveUserControl<CascaderViewM
                     viewModel.AsyncCascaderNodeLoader            = null;
                     viewModel.DefaultExpandCascaderViewNodes     = null;
                     viewModel.DefaultExpandPath                  = null;
+                    viewModel.SemanticPreviewOptions             = null;
+                    viewModel.SemanticPreviewSelectedOptions     = null;
+                    viewModel.StyleClassOptions                  = null;
                 }));
             }
         });
@@ -207,6 +210,8 @@ public partial class CascaderShowCase : GalleryReactiveUserControl<CascaderViewM
         InitCascaderViewAsyncLoadData(viewModel);
         InitCascaderViewSearchData(viewModel);
         InitCascaderViewDefaultExpandData(viewModel);
+        InitSemanticPreviewData(viewModel);
+        InitStyleClassData(viewModel);
     }
 
     private static string Lang(CascaderShowCaseLangResourceKind resourceKind, string fallback)
@@ -217,30 +222,6 @@ public partial class CascaderShowCase : GalleryReactiveUserControl<CascaderViewM
     private void InitBasicCascaderData(CascaderViewModel viewModel)
     {
         viewModel.BasicCascaderViewNodes = [
-            new CascaderOption()
-            {
-                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhejiang, "Zhejiang"),
-                ItemKey = "zhejiang",
-                Children = [
-                    new CascaderOption()
-                    {
-                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderHangzhou, "Hangzhou"),
-                        ItemKey = "hangzhou",
-                        Children = [
-                            new CascaderOption()
-                            {
-                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderWestLake, "West Lake"),
-                                ItemKey = "xihu",
-                            },
-                            new CascaderOption()
-                            {
-                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderLingyinShi, "Lingyin shi"),
-                                ItemKey = "lingyinshi",
-                            }
-                        ]
-                    }
-                ]
-            },
             new CascaderOption()
             {
                 Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderJiangsu, "Jiangsu"),
@@ -929,6 +910,106 @@ public partial class CascaderShowCase : GalleryReactiveUserControl<CascaderViewM
                             {
                                 Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhongHuaMen, "Zhong Hua Men"),
                                 Value  = "zhonghuamen",
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+    }
+
+    private void InitStyleClassData(CascaderViewModel viewModel)
+    {
+        viewModel.StyleClassOptions = [
+            new CascaderOption()
+            {
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhejiang, "Zhejiang"),
+                ItemKey = "zhejiang",
+                Children = [
+                    new CascaderOption()
+                    {
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderHangzhou, "Hangzhou"),
+                        ItemKey = "hangzhou",
+                    }
+                ]
+            },
+            new CascaderOption()
+            {
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderJiangsu, "Jiangsu"),
+                ItemKey = "jiangsu",
+                Children = [
+                    new CascaderOption()
+                    {
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderNanjing, "Nanjing"),
+                        ItemKey = "nanjing",
+                    }
+                ]
+            }
+        ];
+    }
+
+    private void InitSemanticPreviewData(CascaderViewModel viewModel)
+    {
+        var zhejiang = new CascaderOption()
+        {
+            Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhejiang, "Zhejiang"),
+            ItemKey = "zhejiang",
+            Children = [
+                new CascaderOption()
+                {
+                    Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderHangzhou, "Hangzhou"),
+                    ItemKey = "hangzhou",
+                    Children = [
+                        new CascaderOption()
+                        {
+                            Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderWestLake, "West Lake"),
+                            ItemKey = "xihu",
+                        }
+                    ]
+                }
+            ]
+        };
+        viewModel.SemanticPreviewSelectedOptions = [zhejiang.Children.First().Children.First()];
+        viewModel.SemanticPreviewOptions = [
+            zhejiang,
+            new CascaderOption()
+            {
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhejiang, "Zhejiang"),
+                ItemKey = "zhejiang",
+                Children = [
+                    new CascaderOption()
+                    {
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderHangzhou, "Hangzhou"),
+                        ItemKey = "hangzhou",
+                        Children = [
+                            new CascaderOption()
+                            {
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderWestLake, "West Lake"),
+                                ItemKey = "xihu",
+                            },
+                            new CascaderOption()
+                            {
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderLingyinShi, "Lingyin shi"),
+                                ItemKey = "lingyinshi",
+                            }
+                        ]
+                    }
+                ]
+            },
+            new CascaderOption()
+            {
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderJiangsu, "Jiangsu"),
+                ItemKey = "jiangsu",
+                Children = [
+                    new CascaderOption()
+                    {
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderNanjing, "Nanjing"),
+                        ItemKey = "nanjing",
+                        Children = [
+                            new CascaderOption()
+                            {
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhongHuaMen, "Zhong Hua Men"),
+                                ItemKey = "zhonghuamen",
                             }
                         ]
                     }

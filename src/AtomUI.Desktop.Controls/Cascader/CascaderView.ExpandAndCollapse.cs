@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using AtomUI.Generated.AtomUIDesktopControls;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
@@ -311,6 +312,7 @@ public partial class CascaderView
         childLevelList[!CascaderViewLevelList.ItemTemplateProperty]        = this[!OptionTemplateProperty];
         childLevelList[!CascaderViewLevelList.IsAllowSelectParentProperty] = this[!IsAllowSelectParentProperty];
         childLevelList[!CascaderViewLevelList.ExpandTriggerProperty]       = this[!ExpandTriggerProperty];
+        childLevelList.Classes.Add(CascaderSemanticParts.PopupListClass);
 
         _itemsPanel.Children.Add(childLevelList);
     }

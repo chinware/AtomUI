@@ -26,7 +26,8 @@ public class CascaderShowCasePageTests
         source.ShouldNotContain("Tag=\"Examples\"");
         source.ShouldNotContain("Tag=\"Api\"");
         source.ShouldNotContain("Tag=\"DesignToken\"");
-        source.ShouldContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldContain("<gallery:GalleryShowCaseHost");
+        source.ShouldContain("gallery:GalleryShowCaseHost.SemanticPartsContentTemplate");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
         source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
@@ -42,14 +43,18 @@ public class CascaderShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:CascaderShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(22);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(22);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(22);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:CascaderViewModel\"").ShouldBe(22);
+        CountShowCaseItemElements(source).ShouldBe(23);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(23);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(23);
+        // 23 个示例模板 + 1 个语义部件预览模板
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:CascaderViewModel\"").ShouldBe(24);
         source.ShouldContain("CascaderShowCaseLangResource BasicTitle");
         source.ShouldContain("CascaderShowCaseLangResource MultipleTitle");
         source.ShouldContain("CascaderShowCaseLangResource PrefixAndSuffixTitle");
         source.ShouldContain("CascaderShowCaseLangResource SizeTitle");
+        source.ShouldContain("CascaderShowCaseLangResource StyleClassTitle");
+        source.ShouldContain("SourceKey=\"cascader-semantic-part\"");
+        source.ShouldContain("atom:CascaderPopupListItemStyle");
         source.ShouldContain("PlaceholderText=\"{gallery:CascaderShowCaseLangResource P2PlaceholderSizeTypeLarge}\"");
         source.ShouldContain("PlaceholderText=\"{gallery:CascaderShowCaseLangResource P2PlaceholderSizeTypeMiddle}\"");
         source.ShouldContain("PlaceholderText=\"{gallery:CascaderShowCaseLangResource P2PlaceholderSizeTypeSmall}\"");
