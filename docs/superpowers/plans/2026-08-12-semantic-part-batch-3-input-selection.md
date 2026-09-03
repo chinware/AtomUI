@@ -125,11 +125,11 @@
 
 **风险类型：** ICustomizableSizeTypeAware、嵌入式 editor、spinner button、validation/layout。
 
-- [ ] **Gate A 设计审核：** 审计 NumericUpDown、spinner 和 embedded text editor owner，确认 input、increase/decrease handles、prefix/suffix/clear/status regions；记录 parse/format/invalid state、keyboard/wheel、SizeType/Custom 和 repeated spin action。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/NumericUpDown/NumericUpDownSemanticPartTests.cs`，覆盖 button/keyboard/wheel、invalid/readonly、prefix/suffix、所有尺寸和 Custom layout Setter；Gallery 测试使用实际的 `NumberUpDown` 目录命名。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
-- [ ] **强制停止：** 保持 NumericUpDown 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
+- [x] **Gate A 设计审核：** 审计 NumericUpDown、spinner 和 embedded text editor owner，确认 input、increase/decrease handles、prefix/suffix/clear/status regions；记录 parse/format/invalid state、keyboard/wheel、SizeType/Custom 和 repeated spin action。
+- [x] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/NumericUpDown/NumericUpDownSemanticPartTests.cs`，覆盖 button/keyboard/wheel、invalid/readonly、prefix/suffix、所有尺寸和 Custom layout Setter；Gallery 测试使用实际的 `NumberUpDown` 目录命名。
+- [x] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
+- [x] **强制停止：** 保持 NumericUpDown 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
 
 ### 任务 9：OtpLineEdit
 

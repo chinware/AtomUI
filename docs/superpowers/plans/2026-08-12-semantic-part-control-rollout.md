@@ -58,7 +58,7 @@
 
 - [x] 第一批：基础控件，共 16 个家族。
 - [x] 第二批：集合与容器，共 16 个家族。（2026-08-27 复核：全部家族均已按用户授权提交）
-- [ ] 第三批：输入与选择，共 15 个家族。（进行中：Upload 已提交；AutoComplete、LineEdit 实现完成、待用户验收授权；其余 12 个家族未开始。）
+- [ ] 第三批：输入与选择，共 15 个家族。（进行中：Upload、LineEdit、SearchEdit、OtpLineEdit、NumericUpDown、Form、Transfer、AutoComplete 已提交，其中 NumericUpDown 视觉验收已通过；Cascader、ColorPicker、DatePicker、Mentions、Select、TimePicker、TreeSelect 未开始。）
 - [ ] 第四批：Popup 与独立宿主，共 9 个家族。
 - [ ] 第五批：高密度控件，共 2 个家族。
 
@@ -147,7 +147,7 @@
 
 **计划：** [第三批任务清单](2026-08-12-semantic-part-batch-3-input-selection.md)
 
-**进度（2026-08-27）：** Upload 已提交（`cd9caea9a`）；AutoComplete 与 LineEdit 的实现已在专用工作树（`feature/semantic-AutoComplete`、`feature/semantic-lineEdit`）完成并暂存，等待用户验收与授权提交；Cascader、ColorPicker、DatePicker、Form、Mentions、NumericUpDown、OtpLineEdit、SearchEdit、Select、TimePicker、Transfer、TreeSelect 未开始。
+**进度（2026-09-03）：** Upload、LineEdit（含 TextArea）、SearchEdit、OtpLineEdit、NumericUpDown、Form、Transfer、AutoComplete 已提交；NumericUpDown 真机视觉验收已通过（记录见 [验收文档](../specs/2026-08-30-numericupdown-semantic-visual-acceptance.md)）；AutoComplete 的暂存实现曾随专用工作树（`feature/semantic-AutoComplete`）丢失，后已按原计划重做并提交；Cascader、ColorPicker、DatePicker、Mentions、Select、TimePicker、TreeSelect 未开始。
 
 - [ ] 开放 input frame/content/icon 区域前，必须分析 SizeType 和布局 Setter。
 - [ ] candidate、option、calendar 和 time panel 必须提供 Popup 打开-关闭-重新打开的证据。
