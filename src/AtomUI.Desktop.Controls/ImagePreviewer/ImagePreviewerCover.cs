@@ -163,10 +163,9 @@ internal class ImagePreviewerCover : ContentControl, IMotionAwareControl
         PseudoClasses.Set(":failed", IsFailed);
         PseudoClasses.Set(":loading-skeleton", IsLoading && ImageSource is null && LoadingContent is null);
         SetAndRaise(HasErrorProperty, ref _hasError, IsFailed && ImageSource is null);
-        SetCurrentValue(IsCoverMaskVisibleProperty, IsShowCoverMask && !IsLoading && !IsFailed);
-        if (IsLoading || IsFailed)
-        {
-            SetCurrentValue(MaskOpacityProperty, 0.0);
-        }
+        // mask 是悬停操作层（点击打开预览在任何加载态都有效），只由 IsShowCoverMask
+        // 决定，与加载/图片/失败状态解耦：透明度完全交给主题（基础 0，悬停 1），
+        // 避免 C# 强制值与悬停样式/过渡互相打断造成闪烁
+        SetCurrentValue(IsCoverMaskVisibleProperty, IsShowCoverMask);
     }
 }

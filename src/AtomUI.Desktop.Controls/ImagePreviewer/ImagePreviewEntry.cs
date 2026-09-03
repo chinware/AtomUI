@@ -16,8 +16,6 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
     private PixelSize? _thumbnailRequestSize;
     private PixelSize? _fullResultRequestSize;
     private PixelSize? _thumbnailResultRequestSize;
-    private ImageRequestPriority _fullRequestPriority;
-    private ImageRequestPriority _thumbnailRequestPriority;
     private long _fullGeneration;
     private long _thumbnailGeneration;
     private ImageLoadState _fullState;
@@ -159,8 +157,6 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
                 requestSize,
                 _fullRequestSize,
                 _fullResultRequestSize,
-                priority,
-                _fullRequestPriority,
                 reload))
         {
             return;
@@ -170,7 +166,6 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
         var cancellation = new ImageCancellationState();
         _fullCancellation = cancellation;
         _fullRequestSize = requestSize;
-        _fullRequestPriority = priority;
         FullError = null;
         FullProgress = null;
         FullState = ImageLoadState.Loading;
@@ -196,8 +191,6 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
                 requestSize,
                 _thumbnailRequestSize,
                 _thumbnailResultRequestSize,
-                priority,
-                _thumbnailRequestPriority,
                 reload))
         {
             return;
@@ -207,7 +200,6 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
         var cancellation = new ImageCancellationState();
         _thumbnailCancellation = cancellation;
         _thumbnailRequestSize = requestSize;
-        _thumbnailRequestPriority = priority;
         ThumbnailError = null;
         ThumbnailProgress = null;
         ThumbnailState = ImageLoadState.Loading;
@@ -301,7 +293,44 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
         Cancel(ref _thumbnailCancellation);
         Interlocked.Exchange(ref _fullResult, null)?.Dispose();
         Interlocked.Exchange(ref _thumbnailResult, null)?.Dispose();
+        NotifyDisposedReset();
         PropertyChanged = null;
+    }
+
+    // Dispose 会静默释放位图租约；先通知持有者丢弃图像引用，
+    // 避免 DisplayTracker 等订阅方继续渲染已释放的位图。
+    // 无订阅者时零开销；有订阅者时使用缓存 EventArgs，零分配。
+    private static readonly PropertyChangedEventArgs[] DisposedResetArgs =
+    [
+        new(nameof(FullState)),
+        new(nameof(IsFullLoading)),
+        new(nameof(IsFullLoaded)),
+        new(nameof(IsFullFailed)),
+        new(nameof(FullImage)),
+        new(nameof(ThumbnailState)),
+        new(nameof(IsThumbnailLoading)),
+        new(nameof(IsThumbnailLoaded)),
+        new(nameof(IsThumbnailFailed)),
+        new(nameof(ThumbnailImage)),
+    ];
+
+    private void NotifyDisposedReset()
+    {
+        var handlers = PropertyChanged;
+        if (handlers is null)
+        {
+            return;
+        }
+        _fullState         = ImageLoadState.Idle;
+        _thumbnailState    = ImageLoadState.Idle;
+        _fullError         = null;
+        _thumbnailError    = null;
+        _fullProgress      = null;
+        _thumbnailProgress = null;
+        foreach (var args in DisposedResetArgs)
+        {
+            handlers.Invoke(this, args);
+        }
     }
 
     private async Task LoadFullAsync(
@@ -337,12 +366,33 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
                 pending?.Dispose();
             }
         }
-        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+        catch (OperationCanceledException)
         {
+            // 调用方取消与共享操作内部取消同样按取消处理，不产生失败提交
+            HandleFullCanceled(generation);
         }
         finally
         {
             CompleteCancellation(ref _fullCancellation, cancellation);
+        }
+    }
+
+    private void HandleFullCanceled(long generation)
+    {
+        if (_disposed || generation != _fullGeneration)
+        {
+            return; // 已被更新的请求接管
+        }
+        FullProgress = null;
+        FullError    = null;
+        if (_fullResult is null)
+        {
+            FullState = ImageLoadState.Idle;
+        }
+        else
+        {
+            // 保留已提交的旧图（与 CancelFullLoad 的状态归位一致）
+            FullState = ImageLoadState.Loaded;
         }
     }
 
@@ -379,12 +429,32 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
                 pending?.Dispose();
             }
         }
-        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+        catch (OperationCanceledException)
         {
+            // 调用方取消与共享操作内部取消同样按取消处理，不产生失败提交
+            HandleThumbnailCanceled(generation);
         }
         finally
         {
             CompleteCancellation(ref _thumbnailCancellation, cancellation);
+        }
+    }
+
+    private void HandleThumbnailCanceled(long generation)
+    {
+        if (_disposed || generation != _thumbnailGeneration)
+        {
+            return; // 已被更新的请求接管
+        }
+        ThumbnailProgress = null;
+        ThumbnailError    = null;
+        if (_thumbnailResult is null)
+        {
+            ThumbnailState = ImageLoadState.Idle;
+        }
+        else
+        {
+            ThumbnailState = ImageLoadState.Loaded;
         }
     }
 
@@ -432,11 +502,8 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
                 ImageLoadErrorCode.InvalidSource,
                 "No image source is configured."));
         }
-        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-        {
-            throw;
-        }
-        catch (Exception exception) when (ImageLoadEventDispatcher.IsNonFatal(exception))
+        catch (Exception exception) when (exception is not OperationCanceledException &&
+                                          ImageLoadEventDispatcher.IsNonFatal(exception))
         {
             return new ImageLoadResult(new ImageLoadError(
                 ImageLoadErrorCode.InvalidSource,
@@ -588,8 +655,6 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
         PixelSize requestSize,
         PixelSize? activeRequestSize,
         PixelSize? resultRequestSize,
-        ImageRequestPriority priority,
-        ImageRequestPriority activePriority,
         bool reload)
     {
         if (reload)
@@ -598,7 +663,9 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
         }
         return state switch
         {
-            ImageLoadState.Loading => !Covers(activeRequestSize, requestSize) || priority < activePriority,
+            // 同尺寸桶下的在途请求直接采纳（含优先级提升）：
+            // 重启会丢弃接近完成的进度，使"切换快于加载"场景下永远没有请求能完成
+            ImageLoadState.Loading => !Covers(activeRequestSize, requestSize),
             ImageLoadState.Loaded => !Covers(resultRequestSize, requestSize),
             _ => true
         };

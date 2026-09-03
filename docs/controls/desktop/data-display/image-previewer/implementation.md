@@ -1,7 +1,8 @@
 # ImagePreviewer 桌面版实现原理
 
 本文档描述 ImagePreviewer 当前源码 ownership、entry 状态机、集合同步、应用级加载集成、宿主生命周期和维护不变量。
-公共契约见 [ImagePreviewer 桌面版架构设计](overview.md)，Token 语义见 [ImagePreviewer Token 设计](token.md)。
+公共契约见 [ImagePreviewer 桌面版架构设计](overview.md)，Token 语义见 [ImagePreviewer Token 设计](token.md)，
+切换显示策略与保留帧状态机见 [ImagePreviewer 切换显示设计](switch-display-design.md)。
 
 ## 1. 实现定位
 
@@ -16,7 +17,8 @@
 | --- | --- |
 | `AbstractImagePreviewer` | public API、ItemsSource 物化、current entry、预加载策略和 dialog/overlay 生命周期 |
 | `ImagePreviewItem` | immutable public 配置，包含 Source、Thumbnail、Fallback、Options、Title 和 Tag |
-| `ImagePreviewEntry` | internal Full/Thumbnail 状态、generation、取消和结果租约 owner |
+| `ImagePreviewEntry` | internal Full/Thumbnail 状态、generation、取消、结果租约 owner；Dispose 前广播重置通知 |
+| `ImagePreviewDisplayTracker` | internal 宿主显示状态机：目标项与保留帧跟踪、显示图三值解析（见[切换显示设计](switch-display-design.md)） |
 | `ImagePreviewer` | 单封面选择、状态投影和 `ReloadCover()` |
 | `ImageGroupPreviewer` | 多封面 ItemsControl、点击索引和关闭态缩略图请求 |
 | `ImagePreviewerDialog` | Desktop native window、标题算法、CurrentIndex relay 和 viewer 组合 |
@@ -77,7 +79,8 @@ result field、记录该结果对应的请求 bucket、更新状态并通知 ren
 清空该通道旧图、保存 typed error 并释放失败结果。
 
 取消不写 Failed。若取消尺寸升级时仍有已提交结果，状态恢复为 Loaded 并继续使用该结果；没有结果时回到 Idle。
-`UnloadFull()` 只清理 Full；`Unload()` 清理两个通道；`Dispose()` 还会清空 PropertyChanged subscriber。
+`UnloadFull()` 只清理 Full；`Unload()` 清理两个通道；`Dispose()` 在清空 subscriber 之前先以缓存 EventArgs 广播 Full/Thumbnail 的状态与图像
+重置通知，保证显示持有者在位图租约释放前丢弃图像引用。
 
 ### 4.3 Current 与 Cover 投影
 
@@ -89,6 +92,17 @@ FullError 和 FullProgress 投影为控件的 `CurrentLoad*` 属性。只有 cur
 订阅。
 
 Group 不维护单一 cover entry；Theme 的 `PART_CoverItemsControl` 直接消费每个 entry 的 ThumbnailImage 和 Thumbnail 状态。
+
+### 4.4 宿主显示投影与保留帧
+
+Dialog 与 OverlayHost 不各自维护 current-entry 订阅；两者共用 internal `ImagePreviewDisplayTracker`。tracker 以宿主 `CurrentIndex`
+解析出的目标项为输入，维护"目标项 + 保留帧"两个引用与对应订阅，按 `ImageSwitchMode` 与 Immediate 宽限期解析显示图、目标加载态和目标失败态，宿主把结果写入自身
+`CurrentImage` / `IsCurrentImageLoading` / `IsCurrentImageFailed` 直通属性。目标项与保留帧的订阅分别只经 `SetCurrentItem` 与 `SetRetained`
+成对退订/订阅；保留帧耗尽时从 previewer 的 `LatestLoadedFullEntry`（最近完成的全图加载）补充。宿主订阅有效集合的
+`INotifyCollectionChanged`：集合封顶裁剪等增量变更下 CurrentIndex 属性值不变但索引处 entry 更换，宿主必须与 previewer 的
+`ConfigureCurrentEntry` 同步重配，否则显示跟踪持有过期（可能已 Dispose）的 entry 表现为预览窗口白屏。宿主关闭路径统一经
+`Close()` 退订集合并清空 tracker。显示决策算法、显示矩阵、宽限期与保留帧失效路径见
+[ImagePreviewer 切换显示设计](switch-display-design.md)。
 
 ## 5. 组合结构模型
 
@@ -111,6 +125,7 @@ ImagePreviewer / ImageGroupPreviewer
 | --- | --- | --- | --- | --- | --- | --- |
 | `AbstractImagePreviewer` | public base control | C# | visual tree | Items、current、open、interaction、events | public | 派生控件共享契约 |
 | `ImagePreviewEntry` | internal state object | C# | previewer effective collection | current/cover load state | internal-observable | 不作为用户 item 暴露 |
+| `ImagePreviewDisplayTracker` | internal display state machine | C# | 打开态宿主（dialog/overlay 各持一份） | `ImageSwitchMode` 显示行为 | internal-observable | 只由宿主消费，不发起加载 |
 | `PART_CoverItemsControl` | template part | group Theme | template | `ItemsPanel`、cover states | template-stable | 改名需同步主题和文档 |
 | dialog/overlay host | internal host | C# + Theme | open state | IsOpen、modal、title、close events | internal-observable | 平台能力实现，不是替代 API |
 | `ImageViewer` | internal control | Theme | host | navigation、move、scale、rotate | internal-observable | 不直接加载 Source |
@@ -121,8 +136,8 @@ ImagePreviewer / ImageGroupPreviewer
 attach 时订阅当前 `ItemsSource`、TopLevel `SizeChanged` / `ScalingChanged`，物化 entries 并按 `IsOpen` 请求 Full 或 Thumbnail。
 TopLevel 尺寸或 render scaling 变化后重新计算物理像素 bucket；相同 bucket 由 entry 幂等拒绝，不同 bucket 启动替换请求。detach
 时解除这些订阅和集合订阅，取消两个通道的 waiter，释放全部 leases，并清理 open host。打开宿主建立 relay bindings、事件、
-logical parent 和 modal subscription；关闭时先处理可取消 `DialogClosing`，再释放 host state 和全部 Full leases，最后恢复关闭态
-Thumbnail 策略。Template 只绑定 entry 状态和图片，不持有结果 lease。
+logical parent 和 modal subscription，并构造显示 tracker；关闭时先处理可取消 `DialogClosing`，再释放 host state（含清空显示 tracker 与保留帧）
+和全部 Full leases，最后恢复关闭态 Thumbnail 策略。Template 只绑定 entry 状态和图片，不持有结果 lease。
 
 ## 7. 交互与事件处理
 
@@ -202,13 +217,17 @@ Dialog 和 overlay 对 CurrentIndex 只做显示 clamp，并通过 TwoWay relay 
 
 Theme 文件负责 cover mask、Skeleton/Spin、错误内容、viewer scene、toolbar、title bar 和 platform title layout。
 `ImagePreviewRenderer` 只接收当前 `IImage` 与 transform/stretch 状态，不调用 loader。图片尺寸变化需要让 viewer 重新计算
-fit-to-window 与缩放能力，但不能反向修改 entry 状态。
+fit-to-window 与缩放能力，但不能反向修改 entry 状态。`ImageViewer` 由显示状态同步 `:loading` / `:has-image` 伪类，
+`PART_LoadingPresenter` 由 `^:loading:not(:has-image)` 选择器置可见，只在无可显示图片时呈现，与封面和 `AsyncImage` 门控语义一致。
 
 Loading/error 自定义模板只替换内容。模板不能通过视觉存在与否推导加载成功，也不能持有 entry 之外的结果租约。
 
 ## 9. 资源、性能与 AOT 边界
 
 - ItemsSource、entry、host 和 loader 之间没有 Visual -> business item 的反向长期引用。
+- 显示 tracker 重算热路径零分配；目标项与保留帧订阅严格经单一变更通道配对，`Immediate` 模式不持有保留帧（额外持有恒为 0），
+  `WaitForLoaded` 至多持有 1 个保留帧 entry 及其解码图租约。
+- entry Dispose 的重置通知使用静态缓存 EventArgs，无订阅者时零开销。
 - 任何 cancellation、result dispose 或 event callback 都不在 Shared coordinator/cache lock 内由 Previewer执行。
 - 不进行同步 HTTP/File I/O，不使用固定延迟，不创建私有 cache/scheduler。
 - Public data model、AXAML property 和 title resolver 都不依赖反射扫描。
@@ -220,9 +239,20 @@ Loading/error 自定义模板只替换内容。模板不能通过视觉存在与
 - public `ImagePreviewItem` 保持 immutable，只保存配置；所有可变加载状态只属于 internal entry。
 - Full 与 Thumbnail 的 generation、CTS、state、progress 和 lease 相互独立，Reload 一个通道不能干扰另一个通道。
 - Full 与 Thumbnail 分别记录活动/已提交物理像素 bucket；布局或 DPI 变化后不得继续放大较小 bucket 的旧结果。
+- 同尺寸桶下的优先级提升必须采纳在途请求，不得重启；取消（调用方或共享操作内部）必须良性归位
+  （保留旧图或回 Idle），不得产生 Failed 提交或 `ImageFailed`。
+- `ImageLoader` 的取消分类：非超时、非销毁的 `OperationCanceledException` 一律按取消交付，禁止上报为源失败。
 - current、cover 和 collection clamp 只决定显示 entry，不静默改写外部 TwoWay 索引。
 - 所有请求进入 Application-scoped `IImageLoader`；Previewer 不增加本地 semaphore、cache、transport 或 codec。
 - host close 释放 Full leases，detach 释放 Full/Thumbnail leases；旧 entry、旧 generation 和已关闭 host 都不能回写。
+- dialog 与 overlay 必须共用 `ImagePreviewDisplayTracker`，不允许在任一宿主内复制目标项/保留帧跟踪；目标项与保留帧
+  订阅只在 `SetCurrentItem` / `SetRetained` 内成对变更；宿主必须订阅有效集合增量变更（索引不变但 entry 更换时重配），
+  宿主关闭必须退订集合并清空 tracker。
+- 显示解析（预览与封面）在构造上不允许瞬态空洞：目标"尚无图且未失败"期间一律保留上一张；Immediate 超过
+  300ms 宽限（`Task.Delay` + 世代号防陈旧回调）回退占位；保留帧至多 1 个且两级来源（当前项完成 / 最近完成的全图加载）。
+- entry `Dispose()` 必须先广播 Full/Thumbnail 重置通知再清空 subscriber；显示持有者不得在通知后继续引用已释放位图。
+- viewer 加载指示器只在无显示图时呈现（`:loading:not(:has-image)` 门控）；封面 mask 只由 `IsShowCoverMask` 决定，
+  与加载/失败状态解耦；错误呈现仍绑定 `IsCurrentImageFailed`。
 - renderer、loading presenter 和 error presenter 只消费状态，不发起 I/O 或拥有结果。
 - native dialog 与 Browser overlay 必须共享 item、current、navigation、loading 和关闭语义。
 
@@ -236,6 +266,10 @@ Loading/error 自定义模板只替换内容。模板不能通过视觉存在与
 - Full/Thumbnail fallback、progress、ReloadCurrent/Item/Cover 隔离。
 - auto-sized cover 从占位 Bounds 升级到最终物理像素 bucket、显式 cover resize、同 bucket 幂等和替换期间旧 lease 保留。
 - dialog/overlay close 释放 Full lease、保留或恢复 Thumbnail；detach 释放两者。
+- 两种 `ImageSwitchMode` 的显示矩阵：`WaitForLoaded` 加载期间保持上一张、完成换新、失败呈现错误、保留帧源移除后回退占位；
+  `Immediate` 保持既有清空行为。
+- 显示 tracker 的订阅配对（Clear/切换后事件不再触达）、`Immediate` 零持有与保留帧上界不变量。
+- viewer `:loading` / `:has-image` 伪类与 `PART_LoadingPresenter` 门控选择器的主题契约断言。
 - current/cover clamp 不破坏 TwoWay CurrentIndex。
 - PreviewTitle、item.Title、resolver 的优先级与默认 DisplayName。
 - Gallery、Browser、NativeAOT 和 public API baseline。

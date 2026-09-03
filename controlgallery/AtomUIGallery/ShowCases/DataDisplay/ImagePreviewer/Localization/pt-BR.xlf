@@ -103,6 +103,42 @@
         <target state="translated">Preview de um imagem</target>
       </segment>
     </unit>
+    <unit id="RapidSwitchDescription">
+      <segment>
+        <source>Append a new image every 200 ms and track the latest one. Toggle the mode to compare Immediate blank-frame switching with WaitForLoaded hold-until-loaded switching.</source>
+        <target state="translated">Adiciona uma nova imagem a cada 200 ms e acompanha a mais recente. Alterne o modo para comparar Immediate (quadros em branco) com WaitForLoaded (mantém a imagem anterior até carregar).</target>
+      </segment>
+    </unit>
+    <unit id="RapidSwitchModeImmediate">
+      <segment>
+        <source>Immediate</source>
+        <target state="translated">Imediato</target>
+      </segment>
+    </unit>
+    <unit id="RapidSwitchModeWaitForLoaded">
+      <segment>
+        <source>Wait For Loaded</source>
+        <target state="translated">Aguardar carregamento</target>
+      </segment>
+    </unit>
+    <unit id="RapidSwitchStart">
+      <segment>
+        <source>Start</source>
+        <target state="translated">Iniciar</target>
+      </segment>
+    </unit>
+    <unit id="RapidSwitchStop">
+      <segment>
+        <source>Stop</source>
+        <target state="translated">Parar</target>
+      </segment>
+    </unit>
+    <unit id="RapidSwitchTitle">
+      <segment>
+        <source>Rapid switching</source>
+        <target state="translated">Troca rápida</target>
+      </segment>
+    </unit>
     <unit id="RemoteImageLoadingDescription">
       <segment>
         <source>Load an image directly from an HTTPS source URI.</source>

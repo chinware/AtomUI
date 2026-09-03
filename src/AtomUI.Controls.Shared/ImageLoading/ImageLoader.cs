@@ -103,21 +103,18 @@ internal sealed class ImageLoader : IImageLoader, IAtomUIOwnedService
         {
             throw new ObjectDisposedException(nameof(ImageLoader));
         }
-        catch (OperationCanceledException exception)
+        catch (OperationCanceledException)
         {
-            Interlocked.Increment(ref _failedLoads);
-            var error = new ImageLoadError(
-                ImageLoadErrorCode.InvalidSource,
-                "The image source canceled its own load operation.",
-                SourceDisplayName: normalized.Source.DisplayName,
-                Exception: exception);
+            // 共享操作的内部取消（并发 waiter 竞争退出触发拆除、ClearCache(CancelInFlight) 等）
+            // 不是源失败：与调用方取消一致，按取消交付，由调用方归类为取消。
+            Interlocked.Increment(ref _canceledLoads);
             RaiseEvent(
-                ImageLoaderEventKind.Failed,
+                ImageLoaderEventKind.Canceled,
                 normalized.Source.Kind,
                 ImageCacheSource.None,
-                error.Code,
+                null,
                 stopwatch.Elapsed);
-            return new ImageLoadResult(error, normalized.Timing.Snapshot());
+            throw;
         }
         catch (ObjectDisposedException) when (IsDisposed)
         {

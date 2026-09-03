@@ -142,6 +142,46 @@ public class ImageLoaderLifecycleTests
         result.IsSuccess.ShouldBeTrue();
     }
 
+    [Fact]
+    public async Task Internal_Shared_Operation_Cancellation_Is_Not_Reported_As_A_Source_Failure()
+    {
+        var readStarted = NewSignal();
+        var releaseRead = NewSignal();
+        var source = ImageLoadSource.FromStream(
+            async token =>
+            {
+                readStarted.TrySetResult();
+                await releaseRead.Task.WaitAsync(token);
+                return new MemoryStream(ImageLoadingTestSupport.CreatePngHeader());
+            },
+            "shared-cancel-misclassify",
+            "v1");
+        using var loader = CreateLoader();
+        var cancellationToken = TestContext.Current.CancellationToken;
+
+        var waiter = loader.LoadAsync(
+            new ImageLoadRequest(source)
+            {
+                Options = new ImageRequestOptions { Timeout = TimeSpan.FromSeconds(30) }
+            },
+            cancellationToken).AsTask();
+        await readStarted.Task.WaitAsync(cancellationToken);
+
+        try
+        {
+            // ClearCacheAsync(CancelInFlight) 拆除共享操作；调用方自身 token 并未取消。
+            // 该内部取消必须按取消（OperationCanceledException）交付，而不是源失败结果。
+            await loader.ClearCacheAsync(new ImageCacheClearRequest(), cancellationToken);
+
+            await Should.ThrowAsync<OperationCanceledException>(
+                () => waiter.WaitAsync(TimeSpan.FromSeconds(5), cancellationToken));
+        }
+        finally
+        {
+            releaseRead.TrySetResult();
+        }
+    }
+
     private static ImageLoader CreateLoader()
     {
         return new ImageLoader(

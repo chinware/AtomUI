@@ -19,6 +19,18 @@ using Avalonia.Metadata;
 
 namespace AtomUI.Desktop.Controls;
 
+/// <summary>
+/// 预览窗口切换图片时的显示策略。
+/// </summary>
+public enum ImageSwitchMode
+{
+    /// <summary>切换后立即清空显示并进入加载态（默认）。</summary>
+    Immediate = 0,
+
+    /// <summary>目标图片未加载完成前保持显示上一张已加载图片，加载完成后一次性切换。</summary>
+    WaitForLoaded = 1,
+}
+
 public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareControl
 {
     #region 公共属性定义
@@ -79,6 +91,11 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
             nameof(PreloadCount),
             1,
             coerce: CoerceNonNegativeValue);
+
+    public static readonly StyledProperty<ImageSwitchMode> ImageSwitchModeProperty =
+        AvaloniaProperty.Register<AbstractImagePreviewer, ImageSwitchMode>(
+            nameof(ImageSwitchMode),
+            ImageSwitchMode.Immediate);
 
     public static readonly DirectProperty<AbstractImagePreviewer, ImagePreviewItem?> CurrentItemProperty =
         AvaloniaProperty.RegisterDirect<AbstractImagePreviewer, ImagePreviewItem?>(
@@ -207,6 +224,12 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         set => SetValue(PreloadCountProperty, value);
     }
 
+    public ImageSwitchMode ImageSwitchMode
+    {
+        get => GetValue(ImageSwitchModeProperty);
+        set => SetValue(ImageSwitchModeProperty, value);
+    }
+
     public ImagePreviewItem? CurrentItem => _currentItem;
 
     public ImageLoadState CurrentLoadState => _currentLoadState;
@@ -307,6 +330,16 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         set => SetAndRaise(EffectiveItemsProperty, ref _effectiveItems, value);
     }
 
+    /// <summary>
+    /// 最近一个完成全图加载且图像仍可用的 entry。WaitForLoaded 模式下作为保留帧种子：
+    /// 当切换快于加载完成时，当前项可能在完成前被取代，保留帧必须能从任何完成者补充，
+    /// 否则显示会回退占位符并随偶发完成振荡（频闪）。
+    /// </summary>
+    internal ImagePreviewEntry? LatestLoadedFullEntry =>
+        _latestLoadedFullEntry is { IsFullLoaded: true, FullImage: not null }
+            ? _latestLoadedFullEntry
+            : null;
+
     #endregion
 
     private bool _ignoreIsOpenChanged;
@@ -318,6 +351,7 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
     private bool _isItemsSourceSubscribed;
     private bool _isAttachedToVisualTree;
     private ImagePreviewEntry? _currentEntry;
+    private ImagePreviewEntry? _latestLoadedFullEntry;
     private ImagePreviewItem? _currentItem;
     private ImageLoadState _currentLoadState;
     private ImageLoadError? _currentLoadError;
@@ -707,6 +741,19 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
 
     private void HandleEffectiveEntryPropertyChanged(object? sender, PropertyChangedEventArgs args)
     {
+        if (args.PropertyName is nameof(ImagePreviewEntry.IsFullLoaded) or
+            nameof(ImagePreviewEntry.FullImage))
+        {
+            // 保留帧种子：任何 entry 完成全图加载都更新；图像失效（卸载/释放）时清除
+            if (sender is ImagePreviewEntry { IsFullLoaded: true, FullImage: not null } loaded)
+            {
+                _latestLoadedFullEntry = loaded;
+            }
+            else if (ReferenceEquals(sender, _latestLoadedFullEntry))
+            {
+                _latestLoadedFullEntry = null;
+            }
+        }
         if (ReferenceEquals(sender, _currentEntry))
         {
             UpdateCurrentState();

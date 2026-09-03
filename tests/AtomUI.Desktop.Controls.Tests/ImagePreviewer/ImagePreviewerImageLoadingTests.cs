@@ -213,6 +213,56 @@ public class ImagePreviewerImageLoadingTests
     }
 
     [Fact]
+    public void Dispose_Notifies_Subscribers_To_Drop_Image_References()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var image = new TestImage();
+            var item = new ImagePreviewItem(ImageLoadSource.FromImage(image))
+            {
+                ThumbnailSource = ImageLoadSource.FromImage(new TestImage())
+            };
+            var entry = new ImagePreviewEntry(item);
+            var fullImageReset = false;
+            var fullStateReset = false;
+            var thumbnailImageReset = false;
+            entry.PropertyChanged += (_, args) =>
+            {
+                if (args.PropertyName == nameof(ImagePreviewEntry.FullImage))
+                {
+                    fullImageReset = true;
+                }
+                if (args.PropertyName == nameof(ImagePreviewEntry.FullState))
+                {
+                    fullStateReset = true;
+                }
+                if (args.PropertyName == nameof(ImagePreviewEntry.ThumbnailImage))
+                {
+                    thumbnailImageReset = true;
+                }
+            };
+
+            entry.LoadFull(16, 16, ImageRequestPriority.Critical);
+            entry.LoadThumbnail(16, 16, ImageRequestPriority.High);
+            WaitUntil(() => entry.FullState == ImageLoadState.Loaded &&
+                             entry.ThumbnailState == ImageLoadState.Loaded, "entry loads");
+
+            // 排除加载阶段 CommitFull/CommitThumbnail 的常规通知，只观察 Dispose 的重置通知
+            fullImageReset      = false;
+            fullStateReset      = false;
+            thumbnailImageReset = false;
+
+            entry.Dispose();
+
+            entry.FullImage.ShouldBeNull();
+            entry.ThumbnailImage.ShouldBeNull();
+            fullImageReset.ShouldBeTrue();
+            fullStateReset.ShouldBeTrue();
+            thumbnailImageReset.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
     public void Cover_Size_Change_Upgrades_The_Thumbnail_Decode_Bucket()
     {
         Dispatcher.UIThread.Invoke(() =>
@@ -678,6 +728,456 @@ public class ImagePreviewerImageLoadingTests
 
             WaitUntil(() => blockerTask.IsCompleted, "blocker completion");
             blockerTask.GetAwaiter().GetResult().Dispose();
+        });
+    }
+
+    [Fact]
+    public void ImageSwitchMode_Defaults_To_Immediate()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var previewer = CreatePreviewer();
+            previewer.ImageSwitchMode.ShouldBe(ImageSwitchMode.Immediate);
+            previewer.ImageSwitchMode = ImageSwitchMode.WaitForLoaded;
+            previewer.ImageSwitchMode.ShouldBe(ImageSwitchMode.WaitForLoaded);
+        });
+    }
+
+    [Fact]
+    public void Dialog_WaitForLoaded_Holds_The_Previous_Image_Until_The_Next_Load_Completes()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var first = new TestImage();
+            var secondStarted = NewSignal();
+            var releaseSecond = NewSignal();
+            var secondSource = ImageLoadSource.FromStream(
+                async token =>
+                {
+                    secondStarted.TrySetResult();
+                    await releaseSecond.Task.WaitAsync(token);
+                    return new MemoryStream(CreatePng(32, 32));
+                },
+                $"dialog-hold-{Guid.NewGuid():N}", "v1");
+            var previewer = new TestPreviewer
+            {
+                Width = 96,
+                Height = 96,
+                PreloadCount = 0,
+                ImageSwitchMode = ImageSwitchMode.WaitForLoaded,
+                ItemsSource = new[]
+                {
+                    new ImagePreviewItem(ImageLoadSource.FromImage(first)),
+                    new ImagePreviewItem(secondSource)
+                }
+            };
+            using var host = new PreviewerHost(previewer);
+            var entries = previewer.EffectiveItems.ShouldNotBeNull();
+            previewer.RequestPreviewLoads();
+            WaitUntil(() => entries[0].FullState == ImageLoadState.Loaded, "first full load");
+
+            var dialog = new ImagePreviewerDialog(new global::Avalonia.Controls.Window(), previewer);
+            dialog.ItemsSource = entries;
+            Dispatcher.UIThread.RunJobs();
+            dialog.CurrentImage.ShouldBeSameAs(first);
+
+            entries[1].LoadFull(16, 16, ImageRequestPriority.Critical);
+            dialog.CurrentIndex = 1;
+            WaitUntil(() => secondStarted.Task.IsCompleted, "second load start");
+            Dispatcher.UIThread.RunJobs();
+            dialog.CurrentImage.ShouldBeSameAs(first); // 保留上一张
+            dialog.IsCurrentImageLoading.ShouldBeTrue();
+
+            releaseSecond.TrySetResult();
+            WaitUntil(() => entries[1].FullState == ImageLoadState.Loaded, "second full load");
+            WaitUntil(() => ReferenceEquals(dialog.CurrentImage, entries[1].FullImage), "display swap");
+            dialog.IsCurrentImageLoading.ShouldBeFalse();
+
+            dialog.Close();
+            dialog.CurrentImage.ShouldBeNull();
+        });
+    }
+
+    [Fact]
+    public void Dialog_WaitForLoaded_Shows_Error_When_The_Target_Fails()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var first = new TestImage();
+            var previewer = new TestPreviewer
+            {
+                Width = 96,
+                Height = 96,
+                PreloadCount = 0,
+                ImageSwitchMode = ImageSwitchMode.WaitForLoaded,
+                ItemsSource = new[]
+                {
+                    new ImagePreviewItem(ImageLoadSource.FromImage(first)),
+                    new ImagePreviewItem(ImageLoadSource.FromBytes(new byte[] { 1 }, "dialog-fail", "v1"))
+                }
+            };
+            using var host = new PreviewerHost(previewer);
+            var entries = previewer.EffectiveItems.ShouldNotBeNull();
+            previewer.RequestPreviewLoads();
+            WaitUntil(() => entries[0].FullState == ImageLoadState.Loaded, "first full load");
+
+            var dialog = new ImagePreviewerDialog(new global::Avalonia.Controls.Window(), previewer);
+            dialog.ItemsSource = entries;
+            Dispatcher.UIThread.RunJobs();
+
+            entries[1].LoadFull(16, 16, ImageRequestPriority.Critical);
+            dialog.CurrentIndex = 1;
+            WaitUntil(() => dialog.IsCurrentImageFailed && dialog.CurrentImage is null, "failed display");
+        });
+    }
+
+    [Fact]
+    public void Dialog_WaitForLoaded_Clears_The_Held_Image_When_Its_Source_Item_Is_Removed()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var first = new TestImage();
+            var secondStarted = NewSignal();
+            var releaseSecond = NewSignal();
+            var secondSource = ImageLoadSource.FromStream(
+                async token =>
+                {
+                    secondStarted.TrySetResult();
+                    await releaseSecond.Task.WaitAsync(token);
+                    return new MemoryStream(CreatePng(32, 32));
+                },
+                $"dialog-remove-{Guid.NewGuid():N}", "v1");
+            var items = new ObservableCollection<ImagePreviewItem>(
+            [
+                new ImagePreviewItem(ImageLoadSource.FromImage(first)),
+                new ImagePreviewItem(secondSource)
+            ]);
+            var previewer = new TestPreviewer
+            {
+                Width = 96,
+                Height = 96,
+                PreloadCount = 0,
+                ImageSwitchMode = ImageSwitchMode.WaitForLoaded,
+                ItemsSource = items
+            };
+            using var host = new PreviewerHost(previewer);
+            var entries = previewer.EffectiveItems.ShouldNotBeNull();
+            previewer.RequestPreviewLoads();
+            WaitUntil(() => entries[0].FullState == ImageLoadState.Loaded, "first full load");
+
+            var dialog = new ImagePreviewerDialog(new global::Avalonia.Controls.Window(), previewer);
+            dialog.ItemsSource = entries;
+            Dispatcher.UIThread.RunJobs();
+            entries[1].LoadFull(16, 16, ImageRequestPriority.Critical);
+            dialog.CurrentIndex = 1;
+            WaitUntil(() => secondStarted.Task.IsCompleted, "second load start");
+            Dispatcher.UIThread.RunJobs();
+            dialog.CurrentImage.ShouldNotBeNull();
+            dialog.CurrentImage.ShouldBeSameAs(first);
+
+            items.RemoveAt(0); // 移除保留帧源
+
+            WaitUntil(() => dialog.CurrentImage is null, "held image cleared after item removal");
+            releaseSecond.TrySetResult();
+        });
+    }
+
+    [Fact]
+    public void Rapid_Shared_Source_Switching_Never_Reports_Cancellation_As_Failure()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            // 与 issue #450 demo 完全同构：两个 previewer 共享 item，每 tick 从磁盘复制出新文件、
+            // 追加、裁剪并切换到最新；PreloadCount=1 令邻项在 Preload→Critical 升级时取消旧请求。
+            // 同一图片源的请求在管线内合并为共享操作，竞争退出/拆除产生的内部取消
+            // 绝不能被 ImageLoader 误判为 InvalidSource 失败（"canceled its own load operation"）。
+            var root = Path.Combine(Path.GetTempPath(), $"issue450-regress-{Guid.NewGuid():N}");
+            var templateDir = Path.Combine(root, "tpl");
+            var feedDir = Path.Combine(root, "feed");
+            Directory.CreateDirectory(templateDir);
+            Directory.CreateDirectory(feedDir);
+            try
+            {
+                var png = CreatePng(800, 520);
+                var templates = new string[60];
+                for (var t = 0; t < templates.Length; t++)
+                {
+                    templates[t] = Path.Combine(templateDir, $"tpl-{t:D4}.png");
+                    File.WriteAllBytes(templates[t], png);
+                }
+
+                var failures = new List<string>();
+                for (var round = 0; round < 2; round++)
+                {
+                    var items = new ObservableCollection<ImagePreviewItem>();
+                    var holdPreviewer = new TestPreviewer
+                    {
+                        Width = 96,
+                        Height = 96,
+                        PreloadCount = 1,
+                        ImageSwitchMode = ImageSwitchMode.WaitForLoaded,
+                        ItemsSource = items
+                    };
+                    var immediatePreviewer = new TestPreviewer
+                    {
+                        Width = 96,
+                        Height = 96,
+                        PreloadCount = 1,
+                        ImageSwitchMode = ImageSwitchMode.Immediate,
+                        ItemsSource = items
+                    };
+                    holdPreviewer.ImageFailed += (_, args) =>
+                        failures.Add($"hold:{args.Error.Code}:{args.Error.Message}");
+                    immediatePreviewer.ImageFailed += (_, args) =>
+                        failures.Add($"immediate:{args.Error.Code}:{args.Error.Message}");
+                    using var holdHost = new PreviewerHost(holdPreviewer);
+                    using var immediateHost = new PreviewerHost(immediatePreviewer);
+                    holdPreviewer.OpenDialog();
+                    immediatePreviewer.OpenDialog();
+
+                    var counter = 0;
+                    for (var tick = 0; tick < 150; tick++)
+                    {
+                        var feedFile = Path.Combine(feedDir, $"frame-{round}-{counter:D6}.png");
+                        File.Copy(templates[counter % templates.Length], feedFile, true);
+                        counter++;
+                        items.Add(new ImagePreviewItem(ImageLoadSource.FromUri(new Uri(feedFile))));
+                        if (items.Count > 60)
+                        {
+                            items.RemoveAt(0);
+                        }
+                        holdPreviewer.CurrentIndex      = items.Count - 1;
+                        immediatePreviewer.CurrentIndex = items.Count - 1;
+                        Dispatcher.UIThread.RunJobs();
+                        Thread.Sleep(2);
+                    }
+                    for (var spin = 0; spin < 40; spin++)
+                    {
+                        Dispatcher.UIThread.RunJobs();
+                        Thread.Sleep(10);
+                    }
+                }
+
+                failures.ShouldBeEmpty();
+            }
+            finally
+            {
+                Directory.Delete(root, true);
+            }
+        });
+    }
+
+    [Fact]
+    public void Internal_Shared_Cancel_Does_Not_Fail_The_Preview_Entry()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var started = NewSignal();
+            var release = NewSignal();
+            var source = ImageLoadSource.FromStream(
+                async token =>
+                {
+                    started.TrySetResult();
+                    await release.Task.WaitAsync(token);
+                    return new MemoryStream(CreatePng(16, 16));
+                },
+                $"entry-foreign-cancel-{Guid.NewGuid():N}",
+                "v1");
+            var entry = new ImagePreviewEntry(new ImagePreviewItem(source));
+            var failedRaised = false;
+            entry.PropertyChanged += (_, args) =>
+            {
+                if (args.PropertyName == nameof(ImagePreviewEntry.IsFullFailed) && entry.IsFullFailed)
+                {
+                    failedRaised = true;
+                }
+            };
+
+            entry.LoadFull(16, 16, ImageRequestPriority.Critical);
+            WaitUntil(() => started.Task.IsCompleted, "full load start");
+
+            // ClearCacheAsync(CancelInFlight) 以内部取消拆除在途共享操作，entry 自身 token 未取消；
+            // 该取消必须按取消处理：不产生 Failed 提交与 FullError。
+            Application.Current.ShouldNotBeNull()
+                .GetImageLoader()
+                .ClearCacheAsync(new ImageCacheClearRequest())
+                .AsTask()
+                .Wait(TimeSpan.FromSeconds(5));
+
+            WaitUntil(() => entry.FullState != ImageLoadState.Loading, "foreign cancel resolves");
+            entry.FullState.ShouldBe(ImageLoadState.Idle);
+            entry.FullError.ShouldBeNull();
+            failedRaised.ShouldBeFalse();
+
+            release.TrySetResult();
+            entry.Dispose();
+        });
+    }
+
+    [Fact]
+    public void Cover_WaitForLoaded_Keeps_The_Previous_Image_While_The_New_Cover_Loads()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var first = new TestImage();
+            var secondStarted = NewSignal();
+            var releaseSecond = NewSignal();
+            var secondSource = ImageLoadSource.FromStream(
+                async token =>
+                {
+                    secondStarted.TrySetResult();
+                    await releaseSecond.Task.WaitAsync(token);
+                    return new MemoryStream(CreatePng(32, 32));
+                },
+                $"cover-hold-{Guid.NewGuid():N}", "v1");
+            var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
+            {
+                Width = 96,
+                Height = 96,
+                ImageSwitchMode = ImageSwitchMode.WaitForLoaded,
+                ItemsSource = new[]
+                {
+                    new ImagePreviewItem(ImageLoadSource.FromImage(first)),
+                    new ImagePreviewItem(secondSource)
+                }
+            };
+            using var host = new PreviewerHost(previewer);
+            WaitUntil(() => previewer.IsCoverLoaded, "first cover load");
+            previewer.EffectiveCoverImage.ShouldBeSameAs(first);
+
+            previewer.CoverIndex = 1;
+            WaitUntil(() => secondStarted.Task.IsCompleted, "second cover load start");
+            Dispatcher.UIThread.RunJobs();
+            previewer.EffectiveCoverImage.ShouldBeSameAs(first); // 封面保持上一张
+            previewer.IsCoverLoading.ShouldBeTrue();
+
+            releaseSecond.TrySetResult();
+            var entries = previewer.EffectiveItems.ShouldNotBeNull();
+            WaitUntil(() => previewer.CoverLoadState == ImageLoadState.Loaded &&
+                             ReferenceEquals(previewer.EffectiveCoverImage, entries[1].ThumbnailImage),
+                "cover swap after load");
+        });
+    }
+
+    [Fact]
+    public void Cover_Immediate_Holds_Within_Grace_Then_Falls_Back_To_Placeholder()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var first = new TestImage();
+            var secondStarted = NewSignal();
+            var releaseSecond = NewSignal();
+            var secondSource = ImageLoadSource.FromStream(
+                async token =>
+                {
+                    secondStarted.TrySetResult();
+                    await releaseSecond.Task.WaitAsync(token);
+                    return new MemoryStream(CreatePng(32, 32));
+                },
+                $"cover-grace-{Guid.NewGuid():N}", "v1");
+            var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
+            {
+                Width = 96,
+                Height = 96,
+                ImageSwitchMode = ImageSwitchMode.Immediate,
+                ItemsSource = new[]
+                {
+                    new ImagePreviewItem(ImageLoadSource.FromImage(first)),
+                    new ImagePreviewItem(secondSource)
+                }
+            };
+            using var host = new PreviewerHost(previewer);
+            WaitUntil(() => previewer.IsCoverLoaded, "first cover load");
+
+            previewer.CoverIndex = 1;
+            WaitUntil(() => secondStarted.Task.IsCompleted, "second cover load start");
+            Dispatcher.UIThread.RunJobs();
+            previewer.EffectiveCoverImage.ShouldBeSameAs(first); // 宽限期内保留旧图
+
+            // 宽限期届满仍未就绪：回退骨架占位（Immediate 与 WaitForLoaded 的语义差异）
+            WaitUntil(() => previewer.EffectiveCoverImage is null, "cover placeholder after grace");
+            previewer.IsCoverLoading.ShouldBeTrue();
+
+            releaseSecond.TrySetResult();
+        });
+    }
+
+    [Fact]
+    public void Cover_WaitForLoaded_Never_Flashes_A_Null_Image_During_Target_Switches()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var first = new TestImage();
+            var secondStarted = NewSignal();
+            var releaseSecond = NewSignal();
+            var secondSource = ImageLoadSource.FromStream(
+                async token =>
+                {
+                    secondStarted.TrySetResult();
+                    await releaseSecond.Task.WaitAsync(token);
+                    return new MemoryStream(CreatePng(32, 32));
+                },
+                $"cover-no-flash-{Guid.NewGuid():N}", "v1");
+            var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
+            {
+                Width = 96,
+                Height = 96,
+                ImageSwitchMode = ImageSwitchMode.WaitForLoaded,
+                ItemsSource = new[]
+                {
+                    new ImagePreviewItem(ImageLoadSource.FromImage(first)),
+                    new ImagePreviewItem(secondSource)
+                }
+            };
+            using var host = new PreviewerHost(previewer);
+            WaitUntil(() => previewer.IsCoverLoaded, "first cover load");
+
+            // 记录切换全程的 EffectiveCoverImage 通知值：不允许出现 null
+            // （Idle 瞬态的 null 会经 mask 透明度过渡放大为可见闪烁）
+            var observed = new List<IImage?>();
+            previewer.GetPropertyChangedObservable(global::AtomUI.Desktop.Controls.ImagePreviewer.EffectiveCoverImageProperty)
+                .Subscribe(_ => observed.Add(previewer.EffectiveCoverImage));
+            previewer.CoverIndex = 1;
+            WaitUntil(() => secondStarted.Task.IsCompleted, "second cover load start");
+            releaseSecond.TrySetResult();
+            WaitUntil(() => previewer.CoverLoadState == ImageLoadState.Loaded, "second cover load");
+
+            observed.ShouldNotBeEmpty();
+            observed.Count(v => v is null).ShouldBe(0);
+        });
+    }
+
+    [Fact]
+    public void Same_Bucket_Priority_Upgrade_Adopts_The_Running_Request()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var started = NewSignal();
+            var release = NewSignal();
+            var source = ImageLoadSource.FromStream(
+                async token =>
+                {
+                    started.TrySetResult();
+                    await release.Task.WaitAsync(token);
+                    return new MemoryStream(CreatePng(32, 32));
+                },
+                $"adopt-upgrade-{Guid.NewGuid():N}", "v1");
+            var entry = new ImagePreviewEntry(new ImagePreviewItem(source));
+
+            entry.LoadFull(16, 16, ImageRequestPriority.Preload);
+            WaitUntil(() => started.Task.IsCompleted, "preload request start");
+
+            // 同尺寸桶下优先级提升（Preload→Critical）不得重启请求：
+            // 重启会丢弃在途进度，使快于加载完成的切换场景永远没有请求能完成
+            entry.LoadFull(16, 16, ImageRequestPriority.Critical);
+            Dispatcher.UIThread.RunJobs();
+            started.Task.IsCompleted.ShouldBeTrue();
+
+            release.TrySetResult();
+            WaitUntil(() => entry.FullState == ImageLoadState.Loaded, "adopted request completes");
+            entry.FullImage.ShouldNotBeNull();
+
+            entry.Dispose();
         });
     }
 

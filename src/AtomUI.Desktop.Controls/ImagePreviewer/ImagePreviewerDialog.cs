@@ -1,4 +1,4 @@
-using System.ComponentModel;
+using System.Collections.Specialized;
 using AtomUI.Controls;
 using AtomUI.Utils;
 using Avalonia;
@@ -385,7 +385,8 @@ internal class ImagePreviewerDialog : Window,
 
     private readonly AbstractImagePreviewer _imagePreviewer;
     private readonly ImageViewer _imageViewer;
-    private ImagePreviewEntry? _currentItem;
+    private readonly ImagePreviewDisplayTracker _displayTracker;
+    private INotifyCollectionChanged? _observedItemsSource;
     private bool _firstSizeCalculated;
     private int _windowResizeTransformSuppressionVersion;
     private ImageSwitchTransformPolicy _switchTransformPolicy = ImageSwitchTransformPolicy.CreateDefault();
@@ -467,6 +468,10 @@ internal class ImagePreviewerDialog : Window,
     {
         ParentTopLevel  = parent;
         _imagePreviewer = imagePreviewer;
+        _displayTracker = new ImagePreviewDisplayTracker(
+            () => _imagePreviewer.ImageSwitchMode,
+            UpdateCurrentImageState,
+            () => _imagePreviewer.LatestLoadedFullEntry);
         _imageViewer    = CreateImageViewer();
         Content         = _imageViewer;
         SetCurrentValue(TitleProperty, null);
@@ -565,6 +570,7 @@ internal class ImagePreviewerDialog : Window,
         }
         else if (change.Property == ItemsSourceProperty)
         {
+            ObserveItemsSource();
             SetCurrentValue(IsMultiImagesProperty, ItemsSource?.Count > 1);
             Count = ItemsSource?.Count ?? 0;
             HandleCurrentIndexChanged();
@@ -610,13 +616,13 @@ internal class ImagePreviewerDialog : Window,
         if (ItemsSource is { Count: > 0 } items)
         {
             var currentIndex = ResolveDisplayCurrentIndex(items.Count);
-            SetCurrentItem(items[currentIndex]);
+            _displayTracker.SetCurrentItem(items[currentIndex]);
             SetCurrentValue(IsFirstImageProperty, currentIndex == 0);
             SetCurrentValue(IsLastImageProperty, currentIndex == items.Count - 1);
         }
         else if (ItemsSource == null || ItemsSource?.Count == 0)
         {
-            SetCurrentItem(null);
+            _displayTracker.SetCurrentItem(null);
             SetCurrentValue(IsLastImageProperty, false);
             SetCurrentValue(IsFirstImageProperty, false);
         }
@@ -624,44 +630,11 @@ internal class ImagePreviewerDialog : Window,
         UpdateEffectivePreviewTitle();
     }
 
-    private void SetCurrentItem(ImagePreviewEntry? item)
-    {
-        if (ReferenceEquals(_currentItem, item))
-        {
-            UpdateCurrentImageState();
-            return;
-        }
-
-        if (_currentItem != null)
-        {
-            _currentItem.PropertyChanged -= HandleCurrentItemPropertyChanged;
-        }
-
-        _currentItem = item;
-        if (_currentItem != null)
-        {
-            _currentItem.PropertyChanged += HandleCurrentItemPropertyChanged;
-        }
-
-        UpdateCurrentImageState();
-    }
-
-    private void HandleCurrentItemPropertyChanged(object? sender, PropertyChangedEventArgs args)
-    {
-        if (args.PropertyName == nameof(ImagePreviewEntry.FullImage) ||
-            args.PropertyName == nameof(ImagePreviewEntry.FullState) ||
-            args.PropertyName == nameof(ImagePreviewEntry.IsFullLoading) ||
-            args.PropertyName == nameof(ImagePreviewEntry.IsFullFailed))
-        {
-            UpdateCurrentImageState();
-        }
-    }
-
     private void UpdateCurrentImageState()
     {
-        SetCurrentValue(CurrentImageProperty, _currentItem?.FullImage);
-        SetCurrentValue(IsCurrentImageLoadingProperty, _currentItem?.IsFullLoading == true);
-        SetCurrentValue(IsCurrentImageFailedProperty, _currentItem?.IsFullFailed == true);
+        SetCurrentValue(CurrentImageProperty, _displayTracker.EffectiveImage);
+        SetCurrentValue(IsCurrentImageLoadingProperty, _displayTracker.IsCurrentLoading);
+        SetCurrentValue(IsCurrentImageFailedProperty, _displayTracker.IsCurrentFailed);
         UpdateScaleCapability();
     }
 
@@ -728,9 +701,47 @@ internal class ImagePreviewerDialog : Window,
 
     public void Close(Action? callback = null)
     {
-        SetCurrentItem(null);
+        UnobserveItemsSource();
+        _displayTracker.Clear();
         base.Close();
         callback?.Invoke();
+    }
+
+    private void ObserveItemsSource()
+    {
+        var source = ItemsSource as INotifyCollectionChanged;
+        if (ReferenceEquals(_observedItemsSource, source))
+        {
+            return;
+        }
+        if (_observedItemsSource is not null)
+        {
+            _observedItemsSource.CollectionChanged -= HandleItemsSourceCollectionChanged;
+        }
+        _observedItemsSource = source;
+        if (_observedItemsSource is not null)
+        {
+            _observedItemsSource.CollectionChanged += HandleItemsSourceCollectionChanged;
+        }
+    }
+
+    private void UnobserveItemsSource()
+    {
+        if (_observedItemsSource is not null)
+        {
+            _observedItemsSource.CollectionChanged -= HandleItemsSourceCollectionChanged;
+            _observedItemsSource = null;
+        }
+    }
+
+    private void HandleItemsSourceCollectionChanged(object? sender, NotifyCollectionChangedEventArgs args)
+    {
+        // 有效集合增量变更时 CurrentIndex 属性值可能不变（如封顶裁剪后索引稳定），
+        // 但索引处的 entry 已更换：宿主必须与 previewer 的 ConfigureCurrentEntry 同步重配
+        // 当前项，否则显示跟踪会持有过期（可能已 Dispose）的 entry，表现为预览窗口白屏。
+        SetCurrentValue(IsMultiImagesProperty, ItemsSource?.Count > 1);
+        Count = ItemsSource?.Count ?? 0;
+        HandleCurrentIndexChanged();
     }
 
     private void UpdateSwitchTransformPolicy(ImagePreviewToolbarSource source)

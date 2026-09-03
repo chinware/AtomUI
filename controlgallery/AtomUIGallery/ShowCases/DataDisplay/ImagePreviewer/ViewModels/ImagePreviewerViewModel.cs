@@ -1,11 +1,31 @@
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Reactive;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
+using Avalonia.Platform;
+using Avalonia.Threading;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.ImagePreviewer;
 
 public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
 {
+    private const int RapidSwitchIntervalMs      = 200;
+    private const int RapidSwitchLoadDelayMs     = 300;
+    private const int RapidSwitchMaxItems        = 40;
+
+    private static readonly string[] RapidSwitchAssets =
+    [
+        "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/1.png",
+        "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/4.webp",
+        "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/5.webp",
+        "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/6.webp"
+    ];
+
+    private static readonly object RapidAssetCacheGate = new();
+    private static readonly byte[]?[] RapidAssetCache  = new byte[4][];
+
     public static EntityKey ID = "ImagePreviewer";
 
     public IScreen HostScreen { get; }
@@ -60,9 +80,61 @@ public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _fallbackImages, value);
     }
 
+    private ObservableCollection<ImagePreviewItem>? _rapidImages;
+
+    public ObservableCollection<ImagePreviewItem>? RapidImages
+    {
+        get => _rapidImages;
+        set => this.RaiseAndSetIfChanged(ref _rapidImages, value);
+    }
+
+    private int _rapidCurrentIndex;
+
+    public int RapidCurrentIndex
+    {
+        get => _rapidCurrentIndex;
+        set => this.RaiseAndSetIfChanged(ref _rapidCurrentIndex, value);
+    }
+
+    private ImageSwitchMode _rapidSwitchMode = ImageSwitchMode.Immediate;
+
+    public ImageSwitchMode RapidSwitchMode
+    {
+        get => _rapidSwitchMode;
+        set => this.RaiseAndSetIfChanged(ref _rapidSwitchMode, value);
+    }
+
+    private bool _rapidWaitForLoaded;
+
+    public bool RapidWaitForLoaded
+    {
+        get => _rapidWaitForLoaded;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _rapidWaitForLoaded, value);
+            RapidSwitchMode = value ? ImageSwitchMode.WaitForLoaded : ImageSwitchMode.Immediate;
+        }
+    }
+
+    private bool _isRapidSwitchRunning;
+
+    public bool IsRapidSwitchRunning
+    {
+        get => _isRapidSwitchRunning;
+        private set => this.RaiseAndSetIfChanged(ref _isRapidSwitchRunning, value);
+    }
+
+    public ReactiveCommand<Unit, Unit> StartRapidSwitchCommand { get; }
+    public ReactiveCommand<Unit, Unit> StopRapidSwitchCommand { get; }
+
+    private DispatcherTimer? _rapidSwitchTimer;
+    private int _rapidSwitchCounter;
+
     public ImagePreviewerViewModel(IScreen screen)
     {
-        HostScreen = screen;
+        HostScreen            = screen;
+        StartRapidSwitchCommand = ReactiveCommand.Create(HandleStartRapidSwitch);
+        StopRapidSwitchCommand  = ReactiveCommand.Create(HandleStopRapidSwitch);
     }
 
     public void EnsurePreviewAssets()
@@ -117,16 +189,91 @@ public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
                     "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/Fallback.png")
             }
         ];
+        RapidImages      = [CreateRapidItem(_rapidSwitchCounter++)];
+        RapidCurrentIndex = 0;
     }
 
     public void ClearPreviewAssets()
     {
+        HandleStopRapidSwitch();
         RemoteImages       = null;
         DefaultImages      = null;
         ThreeImages        = null;
         TwoImages          = null;
         TwentyRemoteImages = null;
         FallbackImages     = null;
+        RapidImages        = null;
+        RapidCurrentIndex  = 0;
+    }
+
+    private void HandleStartRapidSwitch()
+    {
+        if (IsRapidSwitchRunning)
+        {
+            return;
+        }
+        IsRapidSwitchRunning = true;
+        _rapidSwitchTimer     = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(RapidSwitchIntervalMs) };
+        _rapidSwitchTimer.Tick += (_, _) => AppendRapidItem();
+        _rapidSwitchTimer.Start();
+    }
+
+    private void HandleStopRapidSwitch()
+    {
+        _rapidSwitchTimer?.Stop();
+        _rapidSwitchTimer = null;
+        IsRapidSwitchRunning = false;
+    }
+
+    private void AppendRapidItem()
+    {
+        var items = RapidImages;
+        if (items is null)
+        {
+            return;
+        }
+        items.Add(CreateRapidItem(_rapidSwitchCounter++));
+        if (items.Count > RapidSwitchMaxItems)
+        {
+            items.RemoveAt(0);
+        }
+        RapidCurrentIndex = items.Count - 1;
+    }
+
+    private static ImagePreviewItem CreateRapidItem(int index)
+    {
+        var assetIndex = Math.Abs(index) % RapidSwitchAssets.Length;
+        return new ImagePreviewItem(ImageLoadSource.FromStream(
+            async token =>
+            {
+                // 模拟磁盘读取/解码耗时，制造可观察的加载窗口用于对比两种切换模式
+                await Task.Delay(RapidSwitchLoadDelayMs, token);
+                var bytes = GetRapidAssetBytes(assetIndex);
+                return new MemoryStream(bytes);
+            },
+            $"rapid-switch-{Guid.NewGuid():N}",
+            "v1"));
+    }
+
+    private static byte[] GetRapidAssetBytes(int assetIndex)
+    {
+        lock (RapidAssetCacheGate)
+        {
+            var cached = RapidAssetCache[assetIndex];
+            if (cached is not null)
+            {
+                return cached;
+            }
+        }
+        using var stream = AssetLoader.Open(new Uri(RapidSwitchAssets[assetIndex]));
+        using var memory = new MemoryStream();
+        stream.CopyTo(memory);
+        var bytes = memory.ToArray();
+        lock (RapidAssetCacheGate)
+        {
+            RapidAssetCache[assetIndex] ??= bytes;
+        }
+        return bytes;
     }
 
     private static ImagePreviewItem CreateItem(string source)

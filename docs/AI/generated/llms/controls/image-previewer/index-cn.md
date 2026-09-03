@@ -61,6 +61,7 @@ public sealed record ImagePreviewItem
 | 当前项 | `CurrentIndex=0`、`CurrentItem` | `CurrentIndex` 默认 TwoWay；显示时 clamp，但不静默改写外部值 |
 | 封面 | `CoverIndex=0`、`CoverWidth=NaN`、`CoverHeight=NaN` | CoverIndex 非负并在显示时 clamp，与 CurrentIndex 独立 |
 | 预加载 | `PreloadCount=1` | 当前项前后各预加载的完整图片数量 |
+| 切换显示 | `ImageSwitchMode=Immediate` | 预览窗口与封面的切换显示策略：两种模式都保持显示连续性（无空白帧频闪）；`Immediate` 在目标超过 300ms 宽限仍无图时回退加载占位，`WaitForLoaded` 无限期保持上一张 |
 | 当前加载状态 | `CurrentLoadState/Error/Progress`、`IsCurrentLoading/Loaded/Failed` | 当前完整图 entry 的只读投影 |
 | 占位内容 | `LoadingContent/Template`、`ErrorContent/Template` | 只替换主题 presenter 内容，不改变状态机 |
 | 打开状态 | `IsOpen=false` | 默认 TwoWay，统一驱动 native dialog 或 Browser overlay |
@@ -209,7 +210,15 @@ Reload 使用 item 的 RequestOptions 副本并把 `CacheMode` 改为 `Reload`�
 只有当前 Full entry 从非 Loaded 进入 Loaded 时触发 `ImageOpened`，从非 Failed 进入 Failed 时触发 `ImageFailed`。预加载项和
 封面状态不冒充当前项事件。
 
-### 4.4 标题契约
+### 4.4 切换显示策略
+
+`ImageSwitchMode` 决定切换目标图片时加载占位的回退时机。两种模式共享显示连续性：目标无图期间
+保留上一张已加载图（含切换瞬间的 Idle 态，无空白帧/转圈频闪），保留帧由当前项完成或"最近完成的全图
+加载"补充。`Immediate`（默认）在目标超过 300ms 宽限仍无图时回退加载占位；`WaitForLoaded` 无限期保持。
+失败呈现、事件时序、加载请求与租约语义两种模式一致。显示矩阵、保留帧与宽限机制、宿主跟随集合增量
+变更的规则见 [ImagePreviewer 切换显示设计](switch-display-design.md)。
+
+### 4.5 标题契约
 
 标题优先级固定为：
 
@@ -240,7 +249,8 @@ Desktop 支持 native window 时使用 `ImagePreviewerDialog`；Browser 等无 n
 - `PART_CloseButton`：overlay 关闭入口。
 
 Renderer 只消费 entry 中的 `IImage`，不得自行打开 Source。Loading 时封面使用稳定尺寸 Skeleton 语义，viewer 使用居中 Spin；
-Failed 时使用本地化默认错误内容或用户模板。
+Failed 时使用本地化默认错误内容或用户模板。viewer 的加载指示器由 `:loading:not(:has-image)` 伪类门控，只在无可显示图片时呈现，
+与封面和 `AsyncImage` 的门控语义一致。
 
 Token 来源：
 
@@ -253,6 +263,9 @@ ImagePreviewer Token 只表达组件级视觉变量，例如尺寸、间距、�
 ## AOT 与裁剪注意事项
 
 - ItemsSource、entry、host 和 loader 之间没有 Visual -> business item 的反向长期引用。
+- 显示 tracker 重算热路径零分配；目标项与保留帧订阅严格经单一变更通道配对，`Immediate` 模式不持有保留帧（额外持有恒为 0），
+  `WaitForLoaded` 至多持有 1 个保留帧 entry 及其解码图租约。
+- entry Dispose 的重置通知使用静态缓存 EventArgs，无订阅者时零开销。
 - 任何 cancellation、result dispose 或 event callback 都不在 Shared coordinator/cache lock 内由 Previewer执行。
 - 不进行同步 HTTP/File I/O，不使用固定延迟，不创建私有 cache/scheduler。
 - Public data model、AXAML property 和 title resolver 都不依赖反射扫描。
@@ -267,7 +280,8 @@ ImagePreviewer Token 只表达组件级视觉变量，例如尺寸、间距、�
 | --- | --- |
 | `AbstractImagePreviewer` | public API、ItemsSource 物化、current entry、预加载策略和 dialog/overlay 生命周期 |
 | `ImagePreviewItem` | immutable public 配置，包含 Source、Thumbnail、Fallback、Options、Title 和 Tag |
-| `ImagePreviewEntry` | internal Full/Thumbnail 状态、generation、取消和结果租约 owner |
+| `ImagePreviewEntry` | internal Full/Thumbnail 状态、generation、取消、结果租约 owner；Dispose 前广播重置通知 |
+| `ImagePreviewDisplayTracker` | internal 宿主显示状态机：目标项与保留帧跟踪、显示图三值解析（见[切换显示设计](switch-display-design.md)） |
 | `ImagePreviewer` | 单封面选择、状态投影和 `ReloadCover()` |
 | `ImageGroupPreviewer` | 多封面 ItemsControl、点击索引和关闭态缩略图请求 |
 | `ImagePreviewerDialog` | Desktop native window、标题算法、CurrentIndex relay 和 viewer 组合 |

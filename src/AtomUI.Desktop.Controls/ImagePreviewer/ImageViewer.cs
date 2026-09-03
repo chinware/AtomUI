@@ -3,16 +3,17 @@ using AtomUI.Controls;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
+[PseudoClasses(":loading", ":has-image")]
 internal class ImageViewer : TemplatedControl, IMotionAwareControl
 {
     public static readonly StyledProperty<bool> IsImageMovableProperty =
@@ -461,6 +462,15 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
         {
             _isSelfChangedPosition = false;
             InvalidateMeasure();
+        }
+
+        if (change.Property == CurrentImageProperty ||
+            change.Property == IsCurrentImageLoadingProperty)
+        {
+            // 与 ImagePreviewerCover/AsyncImage 相同的视觉门控契约：
+            // 有图显示时不呈现加载指示器
+            PseudoClasses.Set(":has-image", CurrentImage is not null);
+            PseudoClasses.Set(":loading", IsCurrentImageLoading);
         }
     }
 

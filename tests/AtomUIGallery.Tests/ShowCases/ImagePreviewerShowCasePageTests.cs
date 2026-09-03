@@ -43,10 +43,10 @@ public class ImagePreviewerShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:ImagePreviewerShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(7);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(7);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(7);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:ImagePreviewerViewModel\"").ShouldBe(7);
+        CountShowCaseItemElements(source).ShouldBe(8);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(8);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(8);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:ImagePreviewerViewModel\"").ShouldBe(8);
         source.ShouldContain("ImagePreviewerShowCaseLangResource BasicUsageTitle");
         source.ShouldContain("ImagePreviewerShowCaseLangResource RemoteImageLoadingTitle");
         source.ShouldContain("ImagePreviewerShowCaseLangResource TwentyRemoteImagesTitle");
@@ -61,6 +61,9 @@ public class ImagePreviewerShowCasePageTests
         source.ShouldNotContain("CoverSource");
         source.ShouldContain("ItemsSource=\"{Binding TwoImages}\"");
         source.ShouldContain("ItemsSource=\"{Binding TwentyRemoteImages}\"");
+        source.ShouldContain("ItemsSource=\"{Binding RapidImages}\"");
+        source.ShouldContain("ImageSwitchMode=\"{Binding RapidSwitchMode}\"");
+        source.ShouldContain("ImagePreviewerShowCaseLangResource RapidSwitchTitle");
         source.ShouldNotContain("SourceUri=\"");
         source.ShouldNotContain("SourceUris=\"");
         source.ShouldNotContain("FallbackSourceUri=\"");

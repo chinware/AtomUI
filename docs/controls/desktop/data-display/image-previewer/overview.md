@@ -62,6 +62,7 @@ public sealed record ImagePreviewItem
 | 当前项 | `CurrentIndex=0`、`CurrentItem` | `CurrentIndex` 默认 TwoWay；显示时 clamp，但不静默改写外部值 |
 | 封面 | `CoverIndex=0`、`CoverWidth=NaN`、`CoverHeight=NaN` | CoverIndex 非负并在显示时 clamp，与 CurrentIndex 独立 |
 | 预加载 | `PreloadCount=1` | 当前项前后各预加载的完整图片数量 |
+| 切换显示 | `ImageSwitchMode=Immediate` | 预览窗口与封面的切换显示策略：两种模式都保持显示连续性（无空白帧频闪）；`Immediate` 在目标超过 300ms 宽限仍无图时回退加载占位，`WaitForLoaded` 无限期保持上一张 |
 | 当前加载状态 | `CurrentLoadState/Error/Progress`、`IsCurrentLoading/Loaded/Failed` | 当前完整图 entry 的只读投影 |
 | 占位内容 | `LoadingContent/Template`、`ErrorContent/Template` | 只替换主题 presenter 内容，不改变状态机 |
 | 打开状态 | `IsOpen=false` | 默认 TwoWay，统一驱动 native dialog 或 Browser overlay |
@@ -158,7 +159,15 @@ Reload 使用 item 的 RequestOptions 副本并把 `CacheMode` 改为 `Reload`�
 只有当前 Full entry 从非 Loaded 进入 Loaded 时触发 `ImageOpened`，从非 Failed 进入 Failed 时触发 `ImageFailed`。预加载项和
 封面状态不冒充当前项事件。
 
-### 4.4 标题契约
+### 4.4 切换显示策略
+
+`ImageSwitchMode` 决定切换目标图片时加载占位的回退时机。两种模式共享显示连续性：目标无图期间
+保留上一张已加载图（含切换瞬间的 Idle 态，无空白帧/转圈频闪），保留帧由当前项完成或"最近完成的全图
+加载"补充。`Immediate`（默认）在目标超过 300ms 宽限仍无图时回退加载占位；`WaitForLoaded` 无限期保持。
+失败呈现、事件时序、加载请求与租约语义两种模式一致。显示矩阵、保留帧与宽限机制、宿主跟随集合增量
+变更的规则见 [ImagePreviewer 切换显示设计](switch-display-design.md)。
+
+### 4.5 标题契约
 
 标题优先级固定为：
 
@@ -189,7 +198,8 @@ Desktop 支持 native window 时使用 `ImagePreviewerDialog`；Browser 等无 n
 - `PART_CloseButton`：overlay 关闭入口。
 
 Renderer 只消费 entry 中的 `IImage`，不得自行打开 Source。Loading 时封面使用稳定尺寸 Skeleton 语义，viewer 使用居中 Spin；
-Failed 时使用本地化默认错误内容或用户模板。
+Failed 时使用本地化默认错误内容或用户模板。viewer 的加载指示器由 `:loading:not(:has-image)` 伪类门控，只在无可显示图片时呈现，
+与封面和 `AsyncImage` 的门控语义一致。
 
 ## 6. 控件家族或集成关系
 
@@ -225,10 +235,18 @@ Critical 请求 current，以 Preload 请求前后 `PreloadCount`；关闭态封
 标题优先级为显式 host title、item title、resolver、空标题。Native dialog 与 Browser overlay 共享 current、navigation、loading、
 modal 和 close 语义；只有 native host 消费 Window/Topmost 能力。
 
+### 8.4 切换显示与保留帧
+
+打开态显示与关闭态封面都由"目标 + 保留帧（两级来源）+ Immediate 宽限期"解析：目标无图期间保留
+上一张已加载图，`Immediate` 超过 300ms 宽限回退占位，`WaitForLoaded` 无限期保持；保留帧至多一个。
+宿主订阅有效集合增量变更以保证索引不变时显示跟踪不失效。宿主显示状态机、管线取消交付、entry
+Dispose 通知与加载指示器/mask 门控见 [ImagePreviewer 切换显示设计](switch-display-design.md)。
+
 ## 9. 文档导航、LLMS 导出与验证策略
 
 - [ImagePreviewer 桌面版实现原理](implementation.md)
 - [ImagePreviewer Token 设计](token.md)
+- [ImagePreviewer 切换显示设计](switch-display-design.md)
 - [ImagePreviewer Changelog](changelog.md)
 - [统一图片加载系统](../../../../architecture/systems/image-loading/overview.md)
 
@@ -244,7 +262,8 @@ LLMS 导出来源：
 | 源码索引 | implementation.md | 定位 Previewer、host、viewer、renderer 和 Themes |
 
 验证必须覆盖集合 replacement/add/remove/move/replace/reset、item/entry 状态隔离、Current/cover/preload 优先级、fallback、
-Reload 三个入口、标题优先级、dialog close、detach/reattach 和租约释放。Gallery API 与 ShowCase 只能使用
+Reload 三个入口、标题优先级、dialog close、detach/reattach、租约释放，以及两种 `ImageSwitchMode` 的显示矩阵（保持/清空/失败/保留帧源
+释放）、订阅配对与保留帧内存上界（见[切换显示设计](switch-display-design.md)）。Gallery API 与 ShowCase 只能使用
 `ItemsSource` 和 `ImagePreviewItem`。
 
 生成 LLMS 输入来自本文、[实现原理](implementation.md)、[Token 设计](token.md)、源码和 Gallery；不手工编辑

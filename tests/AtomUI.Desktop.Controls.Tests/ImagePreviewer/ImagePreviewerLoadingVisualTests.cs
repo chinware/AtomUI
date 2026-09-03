@@ -76,6 +76,15 @@ public class ImagePreviewerLoadingVisualTests
         viewerTheme.ShouldContain("<Panel Background=\"{TemplateBinding Background}\">");
     }
 
+    [Fact]
+    public void Viewer_Loading_Presenter_Is_Gated_By_The_Has_Image_Pseudo_Class()
+    {
+        var viewerTheme = ReadRepoFile("src/AtomUI.Desktop.Controls/ImagePreviewer/Themes/ImageViewerTheme.axaml");
+
+        viewerTheme.ShouldContain("^:loading:not(:has-image) /template/ Border#PART_LoadingPresenter");
+        viewerTheme.ShouldNotContain("IsVisible=\"{TemplateBinding IsCurrentImageLoading}\"");
+    }
+
     private static string ReadRepoFile(string relativePath)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

@@ -2,6 +2,26 @@
 
 本文档记录 ImagePreviewer 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-09-03
+
+- API
+  - Add `ImageSwitchMode` (`Immediate`, `WaitForLoaded`) and `AbstractImagePreviewer.ImageSwitchMode` (default `Immediate`) to select when the loading placeholder replaces the previous image while the target item switches.
+- Behavior
+  - Unify display continuity for both preview surface and cover: while the target has no image yet (including the Idle transient right after a switch) the previously loaded image stays visible; `Immediate` falls back to the loading placeholder only after a 300 ms grace period, `WaitForLoaded` keeps it indefinitely. High-frequency add-and-track-latest switching no longer produces blank-frame or spinner strobing in either mode.
+  - Feed the retained frame from two levels: the current item when it completes, and the latest completed full load across entries when the current item is superseded before finishing (switching faster than loading).
+  - Keep `ImageOpened` / `ImageFailed` timing bound to the target entry state machine; cancellations never produce failure events.
+- Loading pipeline
+  - Classify shared-operation internal cancellations (racing waiter teardown, `ClearCache(CancelInFlight)`) as cancellations instead of `InvalidSource` source failures in `ImageLoader`.
+  - Resolve cancellations benignly in `ImagePreviewEntry`: keep a previously committed image or return to Idle, without a Failed commit; the non-fatal fallback no longer swallows `OperationCanceledException`.
+  - Broadcast cached Full/Thumbnail reset notifications from `ImagePreviewEntry.Dispose()` before clearing subscribers so display holders drop references to released bitmaps.
+  - Adopt in-flight requests on same-bucket priority upgrades (Preload→Critical) instead of restarting them, so requests can complete when switching outpaces loading.
+- Hosts and theme
+  - Introduce the internal `ImagePreviewDisplayTracker` as the single display state machine shared by `ImagePreviewerDialog` and `ImagePreviewerOverlayHost`, replacing their duplicated current-entry tracking.
+  - Make both hosts observe effective-collection incremental changes so the display target follows entry replacement even when `CurrentIndex` keeps the same value (capped-list trimming no longer leaves a stale, eventually disposed entry displayed as a blank preview).
+  - Gate the viewer loading presenter with the `:loading:not(:has-image)` selector and make the cover hover mask depend only on `IsShowCoverMask`, decoupling both from raw load-state flicker.
+- Docs
+  - Add the switching display design document covering the display matrix, retained-frame lifecycle with grace and seeding, host collection following, subscription pairing, pipeline cancellation delivery and resource bounds; link it from the overview and implementation docs.
+
 ## 2026-08-24
 
 - Breaking API

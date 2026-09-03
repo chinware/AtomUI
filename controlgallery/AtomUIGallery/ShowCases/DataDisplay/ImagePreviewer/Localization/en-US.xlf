@@ -86,6 +86,36 @@
         <source>Preview from one image</source>
       </segment>
     </unit>
+    <unit id="RapidSwitchDescription">
+      <segment>
+        <source>Append a new image every 200 ms and track the latest one. Toggle the mode to compare Immediate blank-frame switching with WaitForLoaded hold-until-loaded switching.</source>
+      </segment>
+    </unit>
+    <unit id="RapidSwitchModeImmediate">
+      <segment>
+        <source>Immediate</source>
+      </segment>
+    </unit>
+    <unit id="RapidSwitchModeWaitForLoaded">
+      <segment>
+        <source>Wait For Loaded</source>
+      </segment>
+    </unit>
+    <unit id="RapidSwitchStart">
+      <segment>
+        <source>Start</source>
+      </segment>
+    </unit>
+    <unit id="RapidSwitchStop">
+      <segment>
+        <source>Stop</source>
+      </segment>
+    </unit>
+    <unit id="RapidSwitchTitle">
+      <segment>
+        <source>Rapid switching</source>
+      </segment>
+    </unit>
     <unit id="RemoteImageLoadingDescription">
       <segment>
         <source>Load an image directly from an HTTPS source URI.</source>

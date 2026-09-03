@@ -73,35 +73,6 @@ Button
               -> LoadingOutlined#PART_LoadingIcon (template-stable)
               -> IconPresenter#PART_ButtonIcon (template-stable)
               -> ContentPresenter#PART_ContentPresenter (template-stable)
-  -> Button (control theme, ButtonTheme.axaml)
-     -> Panel (template-stable)
-        -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
-        -> Border#ShadowsFrame (template-stable)
-        -> DashedBorder#Frame (template-stable)
-        -> Border#CustomBackgroundLayer (template-stable)
-        -> Border (template-stable)
-           -> DockPanel#PART_RootLayout (template-stable)
-              -> LoadingOutlined#PART_LoadingIcon (template-stable)
-              -> IconPresenter#PART_ButtonIcon (template-stable)
-              -> ContentPresenter#PART_ContentPresenter (template-stable)
-     -> Panel (template-stable)
-        -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
-        -> Border#ShadowsFrame (template-stable)
-        -> Border#CustomBackgroundLayer (template-stable)
-        -> DashedBorder#Frame (template-stable)
-           -> DockPanel#PART_RootLayout (template-stable)
-              -> LoadingOutlined#PART_LoadingIcon (template-stable)
-              -> IconPresenter#PART_ButtonIcon (template-stable)
-              -> ContentPresenter#PART_ContentPresenter (template-stable)
-     -> Panel (template-stable)
-        -> WaveSpiritDecorator#PART_WaveSpirit (template-stable)
-        -> Border#ShadowsFrame (template-stable)
-        -> Border#CustomBackgroundLayer (template-stable)
-        -> DashedBorder#Frame (template-stable)
-           -> DockPanel#PART_RootLayout (template-stable)
-              -> LoadingOutlined#PART_LoadingIcon (template-stable)
-              -> IconPresenter#PART_ButtonIcon (template-stable)
-              -> ContentPresenter#PART_ContentPresenter (template-stable)
 ```
 
 ### 协作节点
@@ -116,7 +87,7 @@ Button
 | `Frame` | template node (DashedBorder) | `ButtonTheme.axaml` | Button | `Background`, `BackgroundSizing`, `BorderBrush`, `EffectiveBorderThickness`, `EffectiveCornerRadius`, `Height` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `CustomBackgroundLayer` | template node (Border) | `ButtonTheme.axaml` | Button | `CustomBackground`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_RootLayout` | template node (DockPanel) | `ButtonTheme.axaml` | Button | `Content`, `ContentTemplate`, `Foreground`, `HorizontalContentAlignment`, `Icon`, `IconHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_LoadingIcon` | template node (LoadingOutlined) | `ButtonTheme.axaml` | Button | `IconHeight`, `IconWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_LoadingIcon` | template node (LoadingOutlined) | `ButtonTheme.axaml` | Button | `Foreground`, `IconHeight`, `IconWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ButtonIcon` | template node (IconPresenter) | `ButtonTheme.axaml` | Button | `Foreground`, `Icon`, `IconHeight`, `IconWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `ButtonTheme.axaml` | Button | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
@@ -228,7 +199,7 @@ ButtonToken 不承载 `IsPressed`、`IsPointerOver`、`IsLoading`、`EffectiveCo
 - CompactSpace 下的有效圆角、有效边框和 z-index 行为不变。
 - wave 播放条件和危险态 wave brush 不变。
 - `CustomBackground` 不改变 `WaveSpiritDecorator` 的 wave brush，wave 颜色仍由 `EffectiveColor + EffectiveVariant` 推导。
-- Browser 主题与桌面主题在同一 API 下语义一致。
+- 同一 Button 家族主题资产在 Native 与 Browser 支持宿主下保持同一 API 语义，不通过平台专用主题资产复制视觉。
 
 如果实现某项能力时无法保持这些不变量，应先停止实现，说明原因、影响范围、替代方案和迁移方式，并获得授权。
 
@@ -241,7 +212,7 @@ ButtonToken 不承载 `IsPressed`、`IsPointerOver`、`IsLoading`、`EffectiveCo
 - `Button.cs` 保留公共属性、事件、方法和接口入口；实现拆分只承载内部逻辑。
 - `Color + Variant` 优先级和旧 API 映射结果不变。
 - `ButtonType=Text` 保持 `Default + Text` 中性语义；`Primary + Text` 跟随当前主题 `ColorPrimary` 色阶。
-- 桌面和 Browser 主题必须共享 C# 计算出的最终颜色变量，不得各自维护兼容 API 颜色矩阵。
+- Button 家族主题必须共享 C# 计算出的最终颜色变量，不得按平台或兼容 API 复制颜色矩阵。
 - `SizeType=Custom` 不引入 Button 专属 `Custom*` 尺寸属性；未设置本地尺寸属性时表现等同 `Middle`，设置本地属性时由 Avalonia 属性优先级自然覆盖。
 - 主题不得以高于本地值的优先级写入 Custom 默认尺寸。
 - `IconWidthProperty`、`IconHeightProperty` 及其 CLR wrapper 是 Button 公共契约，属性变化必须参与 measure invalidation。
@@ -251,4 +222,5 @@ ButtonToken 不承载 `IsPressed`、`IsPointerOver`、`IsLoading`、`EffectiveCo
 - `CustomBackgroundLayer` 不成为用户可依赖 template part。
 - wave brush 不从 `CustomBackground`、模板背景或 hover 背景反推。
 - CompactSpace 圆角和边框折叠行为不变。
-- Browser 主题与桌面主题在同一 API 下语义一致。
+- 同一 Button 家族主题资产必须在 Native 与 Browser 支持宿主下保持同一 API 语义；不得维护
+  `Buttons/Themes/Browser/` 或 `BrowserButtonThemes.axaml` 形式的平台主题分叉。

@@ -102,6 +102,36 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
+                    Title="{gallery:ImagePreviewerShowCaseLangResource RapidSwitchTitle}"
+                    Description="{gallery:ImagePreviewerShowCaseLangResource RapidSwitchDescription}"
+                    IsOccupyEntireRow="True"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
+                            <StackPanel Spacing="{atom:SharedTokenResource SpacingSM}"
+                                        HorizontalAlignment="Left">
+                                <atom:ImagePreviewer Width="200"
+                                                     ItemsSource="{Binding RapidImages}"
+                                                     CurrentIndex="{Binding RapidCurrentIndex, Mode=TwoWay}"
+                                                     ImageSwitchMode="{Binding RapidSwitchMode}" />
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="{atom:SharedTokenResource SpacingSM}">
+                                    <atom:ToggleSwitch OnContent="{gallery:ImagePreviewerShowCaseLangResource RapidSwitchModeWaitForLoaded}"
+                                                       OffContent="{gallery:ImagePreviewerShowCaseLangResource RapidSwitchModeImmediate}"
+                                                       IsChecked="{Binding RapidWaitForLoaded}" />
+                                    <atom:Button Content="{gallery:ImagePreviewerShowCaseLangResource RapidSwitchStart}"
+                                                 Command="{Binding StartRapidSwitchCommand}"
+                                                 IsEnabled="{Binding !IsRapidSwitchRunning}" />
+                                    <atom:Button Content="{gallery:ImagePreviewerShowCaseLangResource RapidSwitchStop}"
+                                                 Command="{Binding StopRapidSwitchCommand}"
+                                                 IsEnabled="{Binding IsRapidSwitchRunning}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
                     Title="{gallery:ImagePreviewerShowCaseLangResource MultipleImagePreviewTitle}"
                     Description="{gallery:ImagePreviewerShowCaseLangResource MultipleImagePreviewDescription}"
                     IsOccupyEntireRow="True"

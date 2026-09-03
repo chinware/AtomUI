@@ -103,6 +103,42 @@
         <target state="translated">从单张图片预览集合</target>
       </segment>
     </unit>
+    <unit id="RapidSwitchDescription">
+      <segment>
+        <source>Append a new image every 200 ms and track the latest one. Toggle the mode to compare Immediate blank-frame switching with WaitForLoaded hold-until-loaded switching.</source>
+        <target state="translated">每 200 毫秒追加一张图片并跟踪显示最新一张。切换模式对比 Immediate（清空闪烁）与 WaitForLoaded（保留上一张直到加载完成）。</target>
+      </segment>
+    </unit>
+    <unit id="RapidSwitchModeImmediate">
+      <segment>
+        <source>Immediate</source>
+        <target state="translated">立即切换</target>
+      </segment>
+    </unit>
+    <unit id="RapidSwitchModeWaitForLoaded">
+      <segment>
+        <source>Wait For Loaded</source>
+        <target state="translated">等待加载</target>
+      </segment>
+    </unit>
+    <unit id="RapidSwitchStart">
+      <segment>
+        <source>Start</source>
+        <target state="translated">开始</target>
+      </segment>
+    </unit>
+    <unit id="RapidSwitchStop">
+      <segment>
+        <source>Stop</source>
+        <target state="translated">停止</target>
+      </segment>
+    </unit>
+    <unit id="RapidSwitchTitle">
+      <segment>
+        <source>Rapid switching</source>
+        <target state="translated">快速切换</target>
+      </segment>
+    </unit>
     <unit id="RemoteImageLoadingDescription">
       <segment>
         <source>Load an image directly from an HTTPS source URI.</source>
