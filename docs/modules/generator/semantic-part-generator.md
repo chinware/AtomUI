@@ -342,6 +342,27 @@ OverlayPopupHost。
 虚拟化或回收容器通常使用 `RuntimeCreated=true` 和 `Multiple`。生成器验证 descriptor，控件测试验证 prepare、clear、
 recycle 和 owner 切换后的实际 marker。
 
+重复容器的 marker 统一由列表 owner 在 `CreateContainerForItemOverride` 中向容器实例注入（先例：`ListBox.semantic-item`、
+`CandidateList.PopupListItemClass`），不放入 item 的 ControlTheme 模板——生成器按"携带 marker 的元素类型必须可赋值给
+`ContractType`"校验/解析，模板内部节点（如根 Panel）与容器 ContractType 不符会导致运行时永不命中；同时避免为语义
+标记复制 item 模板。`RuntimeCreated=true` 的容器部件因此天然跳过模板 marker 校验（无宿主模板可查），由控件测试兜底。
+
+弹层内列表项（如 AutoComplete 的 `popup.listItem`）在此之上再叠加：`CrossVisualRoot=true`（目标位于弹层独立可视根）、
+路由以上一级列表键（`popup.list`）的 SelectorClass 为锚点（`>>` descendant 步进），marker 注入与容器生成时机一致。
+
+### 4.6 跨嵌套控件模板部件
+
+`CrossNestedOwners=true` 且路由越过首个模板边界（含 `>>`，或锚点类之后的第二个 `/template/`）的静态部件，
+其 marker 位于嵌套控件自己的主题资产中，宿主模板校验不适用。生成器改为：
+
+1. 从路由中首个嵌套边界操作符前的锚点类，在宿主模板中定位嵌套控件节点并解析其类型；
+2. 在锚点类型基类链对应的主题资产中收集该部件 `SelectorClass` 的静态 marker——若嵌套控件经 `StyleKeyOverride`
+   消费基类主题，只统计最派生主题，避免重复计数；
+3. 校验 marker 数量满足 Cardinality（`ATOMUIGEN025`）且元素类型兼容 `ContractType`（`ATOMUIGEN026`）。
+
+未声明 `CrossNestedOwners` 的部件即使路由含 `>>`（如 NumericUpDown prefix，marker 仍在宿主模板内），继续按宿主
+模板校验。`RuntimeCreated` 部件不参与本节校验，沿用 4.5 的豁免规则。
+
 ## 5. 诊断
 
 当前诊断为：

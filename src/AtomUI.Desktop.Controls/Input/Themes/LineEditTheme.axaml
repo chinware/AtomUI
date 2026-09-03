@@ -4,6 +4,9 @@
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:LineEdit}" TargetType="atom:LineEdit">
+        <ControlTheme.Resources>
+            <atom:PlaceholderHorizontalAlignmentConverter x:Key="PlaceholderHorizontalAlignmentConverter" />
+        </ControlTheme.Resources>
         <Setter Property="Template">
             <ControlTemplate>
                 <atom:AddOnDecoratedBox
@@ -86,10 +89,11 @@
                         HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                         VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
                         IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}">
-                        <Panel>
+                        <Panel Classes.semantic-content="True">
                             <atom:TextBlock
                                 Name="Placeholder"
-                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                Classes.semantic-placeholder="True"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment, Converter={StaticResource PlaceholderHorizontalAlignmentConverter}}"
                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                 Text="{TemplateBinding PlaceholderText}"
                                 Foreground="{TemplateBinding PlaceholderForeground}"

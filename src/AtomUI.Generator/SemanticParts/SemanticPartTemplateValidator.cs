@@ -29,6 +29,35 @@ internal sealed class SemanticPartTemplateValidator
             return true;
         }
 
+        // 显式声明 CrossNestedOwners 且路由越过首个模板边界（">>" 或第二个 "/template/"）
+        // 的部件，把目标锚定在嵌套控件（如 AutoComplete 内嵌的输入控件）自己的模板里，
+        // 宿主模板中不存在其标记类；这类部件改为跨主题资产校验标记存在性。
+        // 未声明 CrossNestedOwners 的既有部件（如 NumericUpDown、LineEdit）继续按宿主模板校验。
+        static bool IsCrossNestedOwnerRoute(SemanticPartDeclaration part)
+        {
+            if (!part.CrossNestedOwners || part.SelectorRoute is null)
+            {
+                return false;
+            }
+
+            if (part.SelectorRoute.Contains(">>", StringComparison.Ordinal))
+            {
+                return true;
+            }
+
+            var templateStepCount = part.SelectorRoute.Split(' ')
+                                                     .Count(static token =>
+                                                         string.Equals(token, "/template/", StringComparison.Ordinal));
+            return templateStepCount > 1;
+        }
+
+        var localParts = staticParts
+                         .Where(static part => !IsCrossNestedOwnerRoute(part))
+                         .ToArray();
+        var crossOwnerParts = staticParts
+                              .Where(IsCrossNestedOwnerRoute)
+                              .ToArray();
+
         var templates = ResolveTemplates(control.ControlType);
         if (templates.Count == 0)
         {
@@ -40,7 +69,7 @@ internal sealed class SemanticPartTemplateValidator
         }
 
         var declaredClasses = new HashSet<string>(
-            staticParts.Select(static part => part.SelectorClass!),
+            localParts.Select(static part => part.SelectorClass!),
             StringComparer.Ordinal);
         var valid = true;
         foreach (var entry in templates)
@@ -83,7 +112,7 @@ internal sealed class SemanticPartTemplateValidator
                 valid = false;
             }
 
-            foreach (var part in staticParts)
+            foreach (var part in localParts)
             {
                 var markers = validMarkers
                               .Where(marker => string.Equals(
@@ -129,7 +158,147 @@ internal sealed class SemanticPartTemplateValidator
             }
         }
 
+        return ValidateCrossNestedOwnerParts(crossOwnerParts, templates) && valid;
+    }
+
+    /// 跨嵌套控件部件：路由中 ">>" 前的锚点类定位宿主模板里的嵌套控件节点，
+    /// 沿其类型继承链找到承载目标模板的主题资产，并在该范围内校验标记数量与
+    /// ContractType 兼容性，保持与宿主模板校验同等级的静态检查能力。
+    private bool ValidateCrossNestedOwnerParts(
+        IReadOnlyList<SemanticPartDeclaration> parts,
+        IReadOnlyList<(ThemeAssetInfo Asset, ThemeAssetSemanticTemplateInfo Template)> ownerTemplates)
+    {
+        if (parts.Count == 0)
+        {
+            return true;
+        }
+
+        var allThemes = _assets.OrderBy(static asset => asset.AssetPath, StringComparer.Ordinal)
+                               .SelectMany(static asset => asset.SemanticThemes)
+                               .ToArray();
+        var resolvedTargets = new Dictionary<ThemeAssetSemanticThemeInfo, INamedTypeSymbol?>();
+        foreach (var theme in allThemes)
+        {
+            resolvedTargets[theme] = _typeResolver.ResolveTargetType(theme.TargetType);
+        }
+
+        var valid = true;
+        foreach (var part in parts)
+        {
+            var targetMarkers = CollectCrossNestedOwnerMarkers(part, ownerTemplates, allThemes, resolvedTargets);
+            var enabledCount = targetMarkers.Count(static marker => marker.IsStaticallyEnabled);
+            if (!MatchesCardinality(part.Cardinality, enabledCount))
+            {
+                _reportDiagnostic(Diagnostic.Create(
+                    AtomUIDiagnosticDescriptors.SemanticPartTemplateCardinalityMismatch,
+                    part.Location,
+                    "(cross-nested-owner)",
+                    part.SelectorRoute ?? part.SelectorClass ?? part.Name,
+                    enabledCount,
+                    part.Name,
+                    DescribeCardinality(part.Cardinality)));
+                valid = false;
+            }
+
+            if (part.ContractType is not INamedTypeSymbol contractType)
+            {
+                continue;
+            }
+
+            foreach (var marker in targetMarkers.Where(static marker => marker.IsStaticallyEnabled))
+            {
+                var markerType = _typeResolver.ResolveMarkerType(marker);
+                if (markerType is null ||
+                    !SemanticPartTypeResolver.IsAssignableTo(markerType, contractType))
+                {
+                    _reportDiagnostic(Diagnostic.Create(
+                        AtomUIDiagnosticDescriptors.SemanticPartTemplateContractTypeMismatch,
+                        part.Location,
+                        "(cross-nested-owner)",
+                        part.SelectorRoute ?? part.SelectorClass ?? part.Name,
+                        part.Name,
+                        markerType?.ToDisplayString() ?? marker.TypeName,
+                        contractType.ToDisplayString()));
+                    valid = false;
+                }
+            }
+        }
+
         return valid;
+    }
+
+    private IReadOnlyList<ThemeAssetSemanticMarkerInfo> CollectCrossNestedOwnerMarkers(
+        SemanticPartDeclaration part,
+        IReadOnlyList<(ThemeAssetInfo Asset, ThemeAssetSemanticTemplateInfo Template)> ownerTemplates,
+        IReadOnlyList<ThemeAssetSemanticThemeInfo> allThemes,
+        Dictionary<ThemeAssetSemanticThemeInfo, INamedTypeSymbol?> resolvedTargets)
+    {
+        var route = part.SelectorRoute;
+        if (route is null)
+        {
+            return Array.Empty<ThemeAssetSemanticMarkerInfo>();
+        }
+
+        var tokens = route.Split(' ');
+        var anchorClass = string.Empty;
+        for (var index = 1; index < tokens.Length; index++)
+        {
+            if (tokens[index] is ">>" or "/template/")
+            {
+                if (tokens[index - 1].StartsWith(".", StringComparison.Ordinal))
+                {
+                    anchorClass = tokens[index - 1].Substring(1);
+                }
+
+                break;
+            }
+        }
+
+        if (anchorClass.Length == 0)
+        {
+            return Array.Empty<ThemeAssetSemanticMarkerInfo>();
+        }
+        var candidateThemes = new List<ThemeAssetSemanticThemeInfo>();
+        foreach (var entry in ownerTemplates)
+        {
+            foreach (var marker in entry.Template.Markers.Where(candidate =>
+                         string.Equals(candidate.SelectorClass, anchorClass, StringComparison.Ordinal)))
+            {
+                var nodeType = _typeResolver.ResolveMarkerType(marker);
+                if (nodeType is null)
+                {
+                    continue;
+                }
+
+                candidateThemes.AddRange(allThemes.Where(theme =>
+                {
+                    var themeTarget = resolvedTargets[theme];
+                    return themeTarget is not null &&
+                           SemanticPartTypeResolver.IsAssignableTo(nodeType, themeTarget);
+                }));
+            }
+        }
+
+        // 嵌套控件经 StyleKeyOverride 只消费最派生的主题；基类主题（如 SearchEdit 之上的
+        // LineEdit）不参与运行时解析，这里同样剔除，避免重复计数。
+        var targetThemeSet = new HashSet<ThemeAssetSemanticThemeInfo>(candidateThemes.Where(theme =>
+        {
+            var themeTarget = resolvedTargets[theme]!;
+            return !candidateThemes.Any(other =>
+                !ReferenceEquals(other, theme) &&
+                resolvedTargets[other] is { } otherTarget &&
+                !string.Equals(otherTarget.ToDisplayString(),
+                    themeTarget.ToDisplayString(),
+                    StringComparison.Ordinal) &&
+                SemanticPartTypeResolver.IsAssignableTo(otherTarget, themeTarget));
+        }));
+
+        var selectorClass = part.SelectorClass!;
+        return targetThemeSet
+               .SelectMany(static theme => theme.Templates)
+               .SelectMany(static template => template.Markers)
+               .Where(marker => string.Equals(marker.SelectorClass, selectorClass, StringComparison.Ordinal))
+               .ToArray();
     }
 
     private IReadOnlyList<(

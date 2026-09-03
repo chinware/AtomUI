@@ -6,7 +6,7 @@
     <ControlTheme.BasedOn>
         <atom:ListBoxItemTheme TargetType="atom:CandidateListItem" />
     </ControlTheme.BasedOn>
-    
+
     <Style Selector="^:is(atom|CandidateListItem)">
         <Style Selector="^:pointerover:not(:disabled)">
             <Setter Property="Foreground" Value="{atom:ListBoxTokenResource ItemColor}" />

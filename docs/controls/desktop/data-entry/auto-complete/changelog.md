@@ -7,6 +7,18 @@
 - Fix
   - The shared `CandidateList` now maintains `IsDefaultEmptyIndicatorVisible`, so an AutoComplete dropdown with an empty or fully filtered option set shows the built-in default `Empty` indicator instead of a blank panel. Note: Ant Design's combobox-mode AutoComplete renders no default empty content; if combobox-parity is preferred, set `IsShowEmptyIndicator=False` on the candidate list theme.
 
+## 2026-09-02
+
+- Architecture
+  - Add 9 semantic parts (`root`, `prefix`, `content`, `placeholder`, `input`, `clear`, `popup.root`, `popup.list`, `popup.listItem`) to `AutoComplete`, `AutoCompleteSearchEdit` and `AutoCompleteTextArea`, with cross-nested-owner routes for host input parts and runtime-created popup list items.
+- API
+  - Promote `IsPopupPinnedOpen` on `AbstractAutoComplete` (and its subclasses) from internal to public, exposing the shared Popup pinned-open mechanism; the semantic parts preview pins the candidate popup open so `popup.*` parts stay highlightable.
+  - A pinned popup now suppresses the light-dismiss overlay: `IsLightDismissEnabled` is turned off on the template popup before it opens (and restored on unpin), because a pinned popup ignores dismiss anyway and Avalonia only creates the dismiss overlay at open time.
+- Docs
+  - Add the [AutoComplete Semantic Part contract](semantic-part.md) covering part routes, contract types, cardinality and customization boundaries.
+- Gallery
+  - Align the 10 AutoComplete showcase examples with the Ant Design AutoComplete documentation, including a semantic structure style/class example and a Semantic Parts preview tab.
+
 ## 2026-08-25
 
 - Docs

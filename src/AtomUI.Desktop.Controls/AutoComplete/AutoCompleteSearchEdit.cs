@@ -4,7 +4,7 @@ using Avalonia.Controls.Primitives;
 
 namespace AtomUI.Desktop.Controls;
 
-public class AutoCompleteSearchEdit : CompactSpaceAwareAutoComplete
+public partial class AutoCompleteSearchEdit : CompactSpaceAwareAutoComplete
 {
     #region 公共属性定义
 

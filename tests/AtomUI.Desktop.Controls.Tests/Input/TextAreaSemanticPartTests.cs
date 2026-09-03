@@ -70,8 +70,11 @@ public class TextAreaSemanticPartTests
                .ShouldBe([
                    "Classes.semantic-count:TextBlock",
                    "Classes.semantic-scope-input-frame:TextAreaDecoratedBox",
+                   "Classes.semantic-prefix:AddOnContentPresenter",
                    "Classes.semantic-suffix:StackPanel",
                    "Classes.semantic-clear:InputClearIconButton",
+                   "Classes.semantic-content:Panel",
+                   "Classes.semantic-placeholder:TextBlock",
                    "Classes.semantic-textarea:InputTextPresenter"
                ]);
         markers.ShouldAllBe(static marker =>

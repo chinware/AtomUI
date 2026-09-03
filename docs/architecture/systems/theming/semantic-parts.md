@@ -45,6 +45,10 @@ Semantic Part 不负责：
    编译与运行时测试确认，并在 Avalonia 升级后重新验证。
 11. **Preview 渲染隔离**：Semantic Part Preview 的高亮是 GalleryBase 的临时覆盖层。它不得改变目标 Control 或其祖先的
     `ClipToBounds`、`Clip`、布局、主题或行为；高亮自身必须在目标 Bounds 外仍可完整绘制。
+12. **机制复用优先**：跨嵌套宿主部件（`CrossNestedOwners=true` + `>>` 或二次 `/template/` 路由，见 3.3.1）、弹层独立
+    可视根部件（`CrossVisualRoot=true` + `popup.*` 三级键，见 9.1）、运行时容器标记（容器创建时注入 semantic class，
+    见 8.3）等场景必须复用本文件定义的既有机制与配套的生成器校验、运行时解析支持；禁止为新控件另造等价的私有路由
+    语法、标记注入方式或跨根解析路径。
 
 ## 3. 术语与模型
 
@@ -124,10 +128,41 @@ public sealed class DescriptionsContentStyle : Style
 
 - `/template/ .semantic-*`：当前节点的直接 `TemplatedParent` 必须匹配前一段。
 - `> .semantic-*`：当前节点的直接 logical parent 必须匹配前一段。
+- `>> .semantic-*`：跨入嵌套控件的可视子树（仅供声明 `CrossNestedOwners=true` 的跨嵌套部件使用，见 3.3.1）。
 
 不允许普通空格 descendant、类型、`:is(...)`、Name、`PART_*`、属性 selector 或非 `.semantic-*` class。路由最后一段
 必须是 Part 自身的 `SelectorClass`。只用于路由、不单独发布为 Part 的中间 marker 统一使用 `.semantic-scope-*`；它们是稳定
 结构边界，不进入 Part 表，也不能被文档描述成独立视觉职责。
+
+#### 3.3.1 跨嵌套控件语义部件（CrossNestedOwners）
+
+当宿主控件把某个功能区整体委托给内嵌控件（如 AutoComplete 把输入区委托给 `LineEdit`/`TextArea`/`SearchEdit`），
+而语义部件的物理标记类位于**内嵌控件自己的模板**中时，该部件必须显式声明 `CrossNestedOwners = true`，并且其
+`SelectorRoute` 要越过首个模板边界进入嵌套控件的模板（`>>`，或锚点类之后的第二个 `/template/`）：
+
+```text
+# AutoComplete 的 content 部件：目标在嵌入的 LineEdit 模板内
+content:
+  SelectorClass      = semantic-content
+  SelectorRoute      = /template/ .semantic-scope-input /template/ .semantic-content
+  CrossNestedOwners  = true
+```
+
+锚点类（`semantic-scope-input`）标注宿主模板中的嵌套控件节点；越界后的路径段按嵌套控件自身模板的内部结构书写。
+
+跨嵌套部件的完整契约：
+
+- 生成器校验（`CrossNestedOwners=true` 且路由越界时启用）：不再要求宿主模板包含该部件的 marker，改为在锚点节点
+  类型基类链对应的主题资产中校验 marker 数量满足 Cardinality 且元素类型兼容 `ContractType`；若嵌套控件经
+  `StyleKeyOverride` 消费基类主题，只统计最派生主题，避免重复计数。
+- 运行时生成 Style：路由按既有步骤展开为嵌套 Avalonia selector，`>>` 展开为 `Descendant()`。
+- 运行时目标解析（GalleryBase `SemanticPartTargetResolver`）：`CrossNestedOwners=true` 的部件允许候选节点到 owner
+  的祖先链穿过其他已注册语义 owner 的视觉子树；路由中的非终端锚点类仍要求出现在候选祖先链上。
+- 内嵌控件自身的语义部件继续独立生效（如 LineEdit 的 prefix/input/clear），宿主部件与它们是层级复用关系，宿主不得
+  重复声明嵌套控件已发布的同名内部子部件路径。
+
+未声明 `CrossNestedOwners` 的既有部件即使路由含 `>>`（如 NumericUpDown 的 prefix，其 marker 仍在宿主模板内），
+继续按宿主模板校验，行为不变。
 
 Avalonia 12 的 `DescendantSelector` 会沿全部 `ILogical.LogicalParent` 祖先继续匹配，不存在“最近 Semantic owner”停止规则。
 因此 `atom|Descriptions .semantic-content` 会同时命中 Descriptions 自己的 content 和其 Header、Extra、用户内容中嵌套
@@ -515,6 +550,18 @@ C# 创建的公开 Part 必须：
 静态根模板 Part 未显式声明 route 时，生成器使用 `/template/ .<SelectorClass>`。`RuntimeCreated=true` 的 Part 必须显式声明
 route；运行时创建只描述节点创建时机，不允许以宽泛 logical descendant 替代 owner 边界。
 
+列表类 owner 的重复容器（`ListBoxItem`、`CandidateListItem` 等）统一采用**容器创建时注入 marker**：在
+`CreateContainerForItemOverride` 中向容器实例添加生成的 semantic class 常量（先例：`ListBox` 的 `semantic-item`、
+`CandidateList` 的 `PopupListItemClass`）。marker 不放在 item 自己的 ControlTheme 模板内部，原因有二：
+
+1. 解析器按"携带 marker 的元素本身必须是 `ContractType`"匹配——标记在模板内部节点（如根 Panel）上时与容器的
+   ContractType 不符，Part 永远无法命中（popup.listItem 首版即犯此错误）。
+2. item 模板不因语义标记而被复制，`BasedOn` 继承链保持原样。
+
+另外，marker 元素的 Bounds 即 Preview 高亮的度量基准。Ant Design 中以内联元素呈现的语义（如 placeholder 文字），
+对应 marker 元素必须紧贴内容排布（例如 `HorizontalContentAlignment` 的 Stretch 经 `PlaceholderHorizontalAlignmentConverter`
+收缩为 Left），否则高亮框会虚宽于真实语义区域。
+
 ### 8.4 自定义 ControlTheme
 
 应用替换 owner `ControlTheme` 后，由应用决定是否继续实现 AtomUI Semantic Part 契约。缺失 marker 不影响 Control
@@ -538,6 +585,18 @@ Avalonia 12 的 Popup 在打开时保留 Popup、PopupRoot 或 OverlayPopupHost 
 ```
 
 `CrossVisualRoot=true` 用于描述和测试，不自动要求 `PopupPresenterTheme`、`PopupHostTheme` 或其他新属性。
+
+模板内 Popup 的弹层内部件统一采用三级键并全部声明 `CrossVisualRoot=true`（首个完整先例：AutoComplete）：
+
+- `popup.root`——弹层框体（模板内 `PopupFrame`，marker 直接标注在宿主模板上）；
+- `popup.list`——候选列表区（模板内的列表 Control）；
+- `popup.listItem`——候选项，`Multiple` + `RuntimeCreated`，marker 由列表控件在容器创建时注入（见 8.3），
+  并以 `popup.list` 的 SelectorClass 作为路由锚点（如 `/template/ .semantic-popup-list >> .semantic-popup-list-item`）。
+
+Gallery 语义预览需要钉住弹层常开（如 AutoComplete 的 `IsDropDownOpen=true` + `IsPopupPinnedOpen=true`）才能解析
+`popup.*`。此时产品控件必须在弹层打开**之前**抑制 light-dismiss 遮罩：Avalonia 仅在 Popup 打开瞬间读取
+`IsLightDismissEnabled` 创建遮罩层，打开后再改无效；而钉住的弹层本就忽略 dismiss 关闭请求，遮罩只会阻断页面其余
+区域的交互（AutoComplete 在 `OnApplyTemplate` 打开弹层前依据 `IsPopupPinnedOpen` 抑制，取消钉住时恢复模板默认）。
 
 ### 9.2 独立宿主
 

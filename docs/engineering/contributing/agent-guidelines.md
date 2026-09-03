@@ -185,6 +185,21 @@ C# 命名约定的唯一事实来源是仓库根目录的 [.editorconfig](../../
 
 控件 C# 实现、AXAML 主题、API 和主题契约变更必须遵循 [AtomUI 控件研发标准规范](../development/control-development-guidelines.md)。优化代码和修复 bug 时，如果涉及控件既有 API、主题契约或可观察行为变化，必须先获得用户明确授权。
 
+## 语义部件复用
+
+为控件新增或改造 Semantic Part 前，必须先读 [Semantic Part 系统设计](../../architecture/systems/theming/semantic-parts.md)
+的相关章节，并复用既有底层机制，禁止重新发明等价轮子：
+
+- 目标在内嵌控件自己的模板内（宿主把功能区整体委托给内嵌控件）→ `CrossNestedOwners=true` + `>>` 或二次
+  `/template/` 路由（见该文档 3.3.1），生成器自动切换为跨主题资产校验。
+- 目标在模板 Popup 独立可视根内 → `CrossVisualRoot=true` + `popup.root` / `popup.list` / `popup.listItem` 三级键
+  （见该文档 9.1）。
+- 运行时创建的列表容器 → 容器创建时注入 semantic class（见该文档 8.3；先例 `ListBox`、`CandidateList`），
+  marker 不得放在 item 的 ControlTheme 模板内部。
+- Gallery 语义预览钉住弹层 → `IsDropDownOpen` + `IsPopupPinnedOpen`；light-dismiss 遮罩抑制由产品控件在弹层打开前
+  完成（见 [Semantic Part Gallery Preview](../../gallery/authoring/semantic-part-preview.md) 第 10 节），预览基础设施
+  不干预 Popup 行为。
+
 ## Changelog 与发布
 
 Changelog 维护规则见 [changelog-guidelines.md](changelog-guidelines.md)。普通修复、功能和内部重构不默认修改 `CHANGELOG.md`，只有用户明确要求准备 changelog、release、版本发布，或变更包含必须提前暴露的兼容性信息时才整理。

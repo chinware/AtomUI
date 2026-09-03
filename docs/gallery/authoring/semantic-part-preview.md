@@ -340,6 +340,17 @@ Children 删除 Visual 不能作为完整生命周期契约。
 Modal、Message、Notification 等由服务创建且不再能从 owner Popup 到达的独立宿主，不使用隐藏全局搜索。具体 Gallery Demo
 可以向 Preview 显式提供 `AdditionalRoots`；该能力属于 Gallery 接入信息，不得要求产品 Control 增加 Preview 接口。
 
+带模板 Popup 的控件（AutoComplete 先例）演示 `popup.*` 部件时，演示控件按以下模式钉住弹层常开，使 `popup.root`、
+`popup.list`、`popup.listItem` 随时可解析、可高亮：
+
+1. XAML 上设置 `IsDropDownOpen="True"` + `IsPopupPinnedOpen="True"`（钉住后忽略 light-dismiss 关闭请求）。
+2. 产品控件负责在弹层打开前抑制 light-dismiss 遮罩（见架构文档 9.1）；预览基础设施不得在 Popup 打开后改写
+   `IsLightDismissEnabled`——Avalonia 仅在打开瞬间读取该属性，打开后修改无效，该路径已被实现并否定。
+3. `popup.listItem` 等容器部件的 marker 由列表控件容器创建时注入，解析走本节 owner-scoped 路径即可命中，
+   Preview 无需额外处理。
+4. 高亮框以 marker 元素 Bounds 为准：内联语义（如 placeholder 文字）的 marker 元素必须紧贴内容排布，
+   Preview 侧不得通过放大 Adorner 矩形补偿。
+
 ## 11. 高密度预算
 
 `Multiple` Part 只处理已实例化且可见的节点。单次 `SemanticPartHighlightSession` 默认最多创建 32 个 Adorner：

@@ -5,6 +5,9 @@
     xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:SearchEdit}" TargetType="atom:SearchEdit">
+        <ControlTheme.Resources>
+            <atom:PlaceholderHorizontalAlignmentConverter x:Key="PlaceholderHorizontalAlignmentConverter" />
+        </ControlTheme.Resources>
         <Setter Property="Template">
             <ControlTemplate>
                 <atom:SearchEditDecoratedBox
@@ -76,10 +79,11 @@
                         HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                         VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
                         IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}">
-                        <Panel>
+                        <Panel Classes.semantic-content="True">
                             <atom:TextBlock
                                 Name="Placeholder"
-                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                Classes.semantic-placeholder="True"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment, Converter={StaticResource PlaceholderHorizontalAlignmentConverter}}"
                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                 Foreground="{TemplateBinding PlaceholderForeground}"
                                 Text="{TemplateBinding PlaceholderText}"

@@ -85,6 +85,8 @@ public class SearchEditSemanticPartTests
                    "Classes.semantic-prefix:AddOnContentPresenter",
                    "Classes.semantic-suffix:StackPanel",
                    "Classes.semantic-clear:InputClearIconButton",
+                   "Classes.semantic-content:Panel",
+                   "Classes.semantic-placeholder:TextBlock",
                    "Classes.semantic-input:InputTextPresenter"
                ]);
         markers.ShouldAllBe(static marker =>

@@ -4,6 +4,9 @@
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:TextArea}" TargetType="atom:TextArea">
+        <ControlTheme.Resources>
+            <atom:PlaceholderHorizontalAlignmentConverter x:Key="PlaceholderHorizontalAlignmentConverter" />
+        </ControlTheme.Resources>
 
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:TextArea">
@@ -20,8 +23,6 @@
                         <atom:TextAreaDecoratedBox
                             Name="{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}"
                             Classes.semantic-scope-input-frame="True"
-                            ContentLeftAddOn="{TemplateBinding InnerLeftContent}"
-                            ContentLeftAddOnTemplate="{TemplateBinding InnerLeftContentTemplate}"
                             StyleVariant="{TemplateBinding StyleVariant}"
                             SizeType="{TemplateBinding SizeType}"
                             Status="{TemplateBinding Status}"
@@ -37,6 +38,16 @@
                             HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                             VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
                             IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}">
+                            <atom:TextAreaDecoratedBox.ContentLeftAddOn>
+                                <atom:AddOnContentPresenter
+                                    Classes.semantic-prefix="True"
+                                    Content="{Binding InnerLeftContent, RelativeSource={RelativeSource AncestorType=atom:TextArea}}"
+                                    ContentTemplate="{Binding InnerLeftContentTemplate, RelativeSource={RelativeSource AncestorType=atom:TextArea}}"
+                                    VerticalAlignment="Stretch"
+                                    VerticalContentAlignment="Center"
+                                    HorizontalAlignment="Left"
+                                    Focusable="False" />
+                            </atom:TextAreaDecoratedBox.ContentLeftAddOn>
                             <atom:TextAreaDecoratedBox.ContentRightAddOn>
                                 <StackPanel Orientation="Vertical"
                                             Classes.semantic-suffix="True"
@@ -66,10 +77,11 @@
                                 </StackPanel>
                             </atom:TextAreaDecoratedBox.ContentRightAddOn>
 
-                            <Panel Name="ContentLayout">
+                            <Panel Name="ContentLayout" Classes.semantic-content="True">
                                 <atom:TextBlock
                                     Name="Placeholder"
-                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    Classes.semantic-placeholder="True"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment, Converter={StaticResource PlaceholderHorizontalAlignmentConverter}}"
                                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                     Text="{TemplateBinding PlaceholderText}"
                                     Foreground="{TemplateBinding PlaceholderForeground}"

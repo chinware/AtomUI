@@ -20,7 +20,8 @@ public class AutoCompleteShowCasePageTests
         source.ShouldNotContain("Tag=\"Examples\"");
         source.ShouldNotContain("Tag=\"Api\"");
         source.ShouldNotContain("Tag=\"DesignToken\"");
-        source.ShouldContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldNotContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldContain("<gallery:GalleryShowCaseHost");
         source.ShouldContain("<gallery:GalleryShowCaseHeader");
         source.ShouldContain("Title=\"AutoComplete\"");
         source.ShouldContain("Category=\"{gallery:AutoCompleteShowCaseLangResource ComponentCategory}\"");
@@ -31,32 +32,46 @@ public class AutoCompleteShowCasePageTests
         source.ShouldContain("Package=\"AtomUI.Desktop.Controls\"");
         source.ShouldContain("BaseClass=\"AbstractAutoComplete\"");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
+        source.ShouldContain("<gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>");
+        source.ShouldContain("<gallery:SemanticPartPreview ");
+        source.ShouldContain("SemanticOwnerType=\"{x:Type atom:AutoComplete}\"");
         source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
+        source.ShouldContain("IsDeferredLoadingEnabled=\"True\"");
+        source.ShouldContain("InitialDeferredLoadItemCount=\"4\"");
+        source.ShouldContain("DeferredLoadBatchSize=\"2\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
         source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
         source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
         source.ShouldNotContain("Classes=\"info-label\"");
         source.ShouldNotContain("Classes=\"info-value\"");
-        source.ShouldContain("<gallery:ShowCaseItem");
-        source.ShouldContain("AutoCompleteShowCaseLangResource BasicUsageTitle");
-        source.ShouldContain("AutoCompleteShowCaseLangResource CustomOptionRenderingTitle");
-        source.ShouldContain("AutoCompleteShowCaseLangResource SizeTypeTitle");
-        source.ShouldContain("PlaceholderText=\"{gallery:AutoCompleteShowCaseLangResource P2PlaceholderSizeTypeLarge}\"");
-        source.ShouldContain("PlaceholderText=\"{gallery:AutoCompleteShowCaseLangResource P2PlaceholderSizeTypeMiddle}\"");
-        source.ShouldContain("PlaceholderText=\"{gallery:AutoCompleteShowCaseLangResource P2PlaceholderSizeTypeSmall}\"");
-        source.ShouldContain("PlaceholderText=\"{gallery:AutoCompleteShowCaseLangResource P2PlaceholderSizeTypeCustom}\"");
-        source.ShouldContain("SizeType=\"Large\"");
-        source.ShouldContain("SizeType=\"Middle\"");
-        source.ShouldContain("SizeType=\"Small\"");
-        source.ShouldContain("SizeType=\"Custom\"");
-        source.ShouldContain("Height=\"36\"");
-        source.ShouldContain("AutoCompleteShowCaseLangResource TextAreaAutoCompletionTitle");
-        source.ShouldContain("AutoCompleteShowCaseLangResource CustomizeClearButtonTitle");
+        CountShowCaseItemElements(source).ShouldBe(10);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(10);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(10);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:AutoCompleteViewModel\"").ShouldBe(11);
+        source.ShouldContain("AutoCompleteShowCaseLangResource BasicTitle");
+        source.ShouldContain("AutoCompleteShowCaseLangResource CustomOptionsTitle");
+        source.ShouldContain("AutoCompleteShowCaseLangResource CustomInputTitle");
+        source.ShouldContain("AutoCompleteShowCaseLangResource NonCaseSensitiveTitle");
+        source.ShouldContain("AutoCompleteShowCaseLangResource CertainCategoryTitle");
+        source.ShouldContain("AutoCompleteShowCaseLangResource UncertainCategoryTitle");
+        source.ShouldContain("AutoCompleteShowCaseLangResource StatusTitle");
+        source.ShouldContain("AutoCompleteShowCaseLangResource VariantTitle");
+        source.ShouldContain("AutoCompleteShowCaseLangResource AllowClearTitle");
+        source.ShouldContain("AutoCompleteShowCaseLangResource StyleClassTitle");
+        source.ShouldContain("SourceKey=\"auto-complete-semantic-part\"");
+        source.ShouldContain("StyleVariant=\"Outlined\"");
+        source.ShouldContain("StyleVariant=\"Filled\"");
+        source.ShouldContain("StyleVariant=\"Borderless\"");
+        source.ShouldContain("StyleVariant=\"Underlined\"");
+        source.ShouldContain("Status=\"Error\"");
+        source.ShouldContain("Status=\"Warning\"");
+        source.ShouldContain("<atom:AutoCompleteTextArea ");
+        source.ShouldContain("<atom:AutoCompleteSearchEdit ");
         source.ShouldNotContain("<atom:TabControl");
-        source.ShouldNotContain("<atom:DataGrid");
+        source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain(">Gallery<");
     }
 
@@ -68,6 +83,11 @@ public class AutoCompleteShowCasePageTests
 
         NormalizeMarkup(ExtractAutoCompleteExampleItems(source))
             .ShouldBe(NormalizeMarkup(approved));
+    }
+
+private static int CountShowCaseItemElements(string source)
+    {
+        return CountOccurrences(source, "<gallery:ShowCaseItem ");
     }
 
     private static string ExtractAutoCompleteExampleItems(string source)

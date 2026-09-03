@@ -168,6 +168,7 @@ AutoComplete 的视觉选项通过 public API 归一为 theme variables、伪类
 
 - [AutoComplete 桌面版实现原理](implementation.md)
 - [AutoComplete Token 设计](token.md)
+- [AutoComplete Semantic Part 契约](semantic-part.md)
 - [AutoComplete Changelog](changelog.md)
 
 LLMS 语义区域：

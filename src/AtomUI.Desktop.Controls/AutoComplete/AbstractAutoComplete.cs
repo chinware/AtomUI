@@ -155,7 +155,10 @@ public abstract class AbstractAutoComplete : TemplatedControl,
     public static readonly StyledProperty<bool> IsDropDownOpenProperty =
         AvaloniaProperty.Register<AbstractAutoComplete, bool>(
             nameof(IsDropDownOpen));
-    
+
+    public static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Popup.IsPopupPinnedOpenProperty.AddOwner<AbstractAutoComplete>();
+
     public static readonly StyledProperty<AutoCompletePlacementMode> PlacementProperty =
         AvaloniaProperty.Register<AbstractAutoComplete, AutoCompletePlacementMode>(nameof(Placement), AutoCompletePlacementMode.Bottom);
     
@@ -378,6 +381,16 @@ public abstract class AbstractAutoComplete : TemplatedControl,
         get => GetValue(IsDropDownOpenProperty);
         set => SetValue(IsDropDownOpenProperty, value);
     }
+
+    /// <summary>
+    /// 钉住候选弹层：开启后弹层忽略 light-dismiss 关闭请求，保持强制打开。
+    /// 典型场景是 Gallery 语义部件预览需要持续高亮 popup.* 部件。
+    /// </summary>
+    public bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetValue(IsPopupPinnedOpenProperty, value);
+    }
     
     public AutoCompletePlacementMode Placement
     {
@@ -499,9 +512,6 @@ public abstract class AbstractAutoComplete : TemplatedControl,
     internal static readonly StyledProperty<FormValidateStatus> FormStatusProperty =
         InputControlState.FormStatusProperty.AddOwner<AbstractAutoComplete>();
 
-    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
-        Popup.IsPopupPinnedOpenProperty.AddOwner<AbstractAutoComplete>();
-    
     private double _itemHeight;
 
     internal double ItemHeight
@@ -562,12 +572,6 @@ public abstract class AbstractAutoComplete : TemplatedControl,
         private set => SetCurrentValue(FormStatusProperty, value);
     }
 
-    internal bool IsPopupPinnedOpen
-    {
-        get => GetValue(IsPopupPinnedOpenProperty);
-        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
-    }
-    
     protected AvaloniaTextBox? TextInputBox
     {
         get => _textInputBox;
@@ -721,11 +725,19 @@ public abstract class AbstractAutoComplete : TemplatedControl,
         {
             ConfigurePopupMotion();
         }
-        else if (change.Property == IsPopupPinnedOpenProperty &&
-                 change.GetNewValue<bool>() &&
-                 !IsDropDownOpen)
+        else if (change.Property == IsPopupPinnedOpenProperty)
         {
-            SetCurrentValue(IsDropDownOpenProperty, true);
+            if (_popup != null)
+            {
+                // 钉住期间抑制 light-dismiss 遮罩；取消钉住恢复模板默认值，下一轮
+                // 打开时恢复常规遮罩行为。
+                _popup.IsLightDismissEnabled = !change.GetNewValue<bool>();
+            }
+
+            if (change.GetNewValue<bool>() && !IsDropDownOpen)
+            {
+                SetCurrentValue(IsDropDownOpenProperty, true);
+            }
         }
     }
 
@@ -1362,6 +1374,13 @@ public abstract class AbstractAutoComplete : TemplatedControl,
             _popup.Closed              += HandlePopupClosed;
             _popup.OverlayInputPassThroughElement = TextInputBox;
             ConfigurePopupMotion();
+            // 钉住的弹层会忽略 light-dismiss 关闭请求，而 Avalonia 只在弹层打开瞬间
+            // 读取 IsLightDismissEnabled 创建遮罩，因此必须赶在下方 OpeningDropDown
+            // 之前抑制，否则预览等钉住场景会留下一个只挡交互的遮罩层。
+            if (IsPopupPinnedOpen)
+            {
+                _popup.IsLightDismissEnabled = false;
+            }
         }
         
         // If the drop down property indicates that the popup is open,

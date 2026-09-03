@@ -314,6 +314,11 @@ GalleryBase 拥有以下实现边界：
   独立 `SemanticPartPreview`，宿主统一管理其激活、停用、DataContext 和释放。
 - `SemanticPartPreview` 读取冻结 descriptor，呈现真实 Control、Part 列表和用户侧代码片段。
 - internal `SemanticPartHighlightSession` 负责一次有效 Hover/Pin 选择期间的 owner-scoped 解析与资源释放。
+- `SemanticPartTargetResolver` 支持跨嵌套控件语义部件（`CrossNestedOwners=true`，如 AutoComplete 内嵌输入控件的
+  content/placeholder）：候选解析允许穿过其他已注册语义 owner 的视觉子树，路由锚点类仍要求出现在候选祖先链上。
+  popup.* 部件位于独立可视根，Preview 演示控件通过 `IsDropDownOpen` + `IsPopupPinnedOpen` 钉住弹层保持打开，
+  使弹层内部件可解析、可高亮；钉住语义由产品控件负责在弹层打开前抑制 light-dismiss 遮罩（见 AutoComplete
+  changelog），预览基础设施不干预弹层行为。
 - internal `SemanticPartAdorner` 只负责无命中的高亮绘制，不进入产品 Control 的模板或状态模型。
 - 具体产品 Gallery 只提供演示 Control、本地化职责描述和页面接入；Button 是首个完整样例，不是架构 owner。
 
