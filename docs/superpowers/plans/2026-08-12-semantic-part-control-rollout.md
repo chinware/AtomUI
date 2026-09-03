@@ -147,7 +147,7 @@
 
 **计划：** [第三批任务清单](2026-08-12-semantic-part-batch-3-input-selection.md)
 
-**进度（2026-09-03）：** Upload、LineEdit（含 TextArea）、SearchEdit、OtpLineEdit、NumericUpDown、Form、Transfer、AutoComplete 已提交；NumericUpDown 真机视觉验收已通过（记录见 [验收文档](../specs/2026-08-30-numericupdown-semantic-visual-acceptance.md)）；AutoComplete 的暂存实现曾随专用工作树（`feature/semantic-AutoComplete`）丢失，后已按原计划重做并提交；Cascader、ColorPicker、DatePicker、Mentions、Select、TimePicker、TreeSelect 未开始。
+**进度（2026-09-03）：** Upload、LineEdit（含 TextArea）、SearchEdit、OtpLineEdit、NumericUpDown、Form、Transfer、AutoComplete 已提交；NumericUpDown、Form、Transfer、AutoComplete 四家族视觉验收已关闭（NumericUpDown、Form 经用户截图走查后确认通过；Transfer、AutoComplete 由用户授权豁免关闭，未逐步回传证据，记录见 docs/superpowers/specs/ 各验收文档）；AutoComplete 的暂存实现曾随专用工作树（`feature/semantic-AutoComplete`）丢失，后已按原计划重做并提交；Cascader、ColorPicker、DatePicker、Mentions、Select、TimePicker、TreeSelect 未开始。
 
 - [ ] 开放 input frame/content/icon 区域前，必须分析 SizeType 和布局 Setter。
 - [ ] candidate、option、calendar 和 time panel 必须提供 Popup 打开-关闭-重新打开的证据。
