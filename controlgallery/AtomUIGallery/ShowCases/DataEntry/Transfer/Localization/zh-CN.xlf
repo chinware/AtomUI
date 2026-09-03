@@ -295,12 +295,6 @@
         <target state="translated">面板头部区域，承载全选复选框、选择计数与标题</target>
       </segment>
     </unit>
-    <unit id="SemanticListDescription">
-      <segment>
-        <source>List content host that carries the source or target view control</source>
-        <target state="translated">列表内容宿主，承载源或目标方向的视图控件</target>
-      </segment>
-    </unit>
     <unit id="SemanticItemContentDescription">
       <segment>
         <source>Item content element, only applies to text content styles</source>
@@ -319,40 +313,10 @@
         <target state="translated">列表项图标元素，仅作用于图标样式</target>
       </segment>
     </unit>
-    <unit id="SemanticSourceItemContentDescription">
+    <unit id="SemanticListDescription">
       <segment>
-        <source>Source item content element, only applies to left text content styles</source>
-        <target state="translated">源列表项内容元素，仅作用于左侧文本内容样式</target>
-      </segment>
-    </unit>
-    <unit id="SemanticSourceItemDescription">
-      <segment>
-        <source>Source item element, only applies to left list item styles</source>
-        <target state="translated">源列表项元素，仅作用于左侧列表项样式</target>
-      </segment>
-    </unit>
-    <unit id="SemanticSourceItemIconDescription">
-      <segment>
-        <source>Source item icon element, only applies to left icon styles</source>
-        <target state="translated">源列表项图标元素，仅作用于左侧图标样式</target>
-      </segment>
-    </unit>
-    <unit id="SemanticTargetItemContentDescription">
-      <segment>
-        <source>Target item content element, only applies to right text content styles</source>
-        <target state="translated">目标列表项内容元素，仅作用于右侧文本内容样式</target>
-      </segment>
-    </unit>
-    <unit id="SemanticTargetItemDescription">
-      <segment>
-        <source>Target item element, only applies to right list item styles</source>
-        <target state="translated">目标列表项元素，仅作用于右侧列表项样式</target>
-      </segment>
-    </unit>
-    <unit id="SemanticTargetItemIconDescription">
-      <segment>
-        <source>Target item icon element, only applies to right icon styles</source>
-        <target state="translated">目标列表项图标元素，仅作用于右侧图标样式</target>
+        <source>List content host that carries the source or target view control</source>
+        <target state="translated">列表内容宿主，承载源或目标方向的视图控件</target>
       </segment>
     </unit>
     <unit id="SemanticPartFooterText">
@@ -379,22 +343,16 @@
         <target state="translated">根元素，组织源面板、操作区与目标面板的布局</target>
       </segment>
     </unit>
-    <unit id="SemanticSourceDescription">
-      <segment>
-        <source>Source panel container that wraps the whole source section decorator</source>
-        <target state="translated">源面板容器，包裹整个源方向分区装饰器</target>
-      </segment>
-    </unit>
-    <unit id="SemanticTargetDescription">
-      <segment>
-        <source>Target panel container that wraps the whole target section decorator</source>
-        <target state="translated">目标面板容器，包裹整个目标方向分区装饰器</target>
-      </segment>
-    </unit>
     <unit id="SemanticSourceBodyDescription">
       <segment>
         <source>Source body element, only applies to left list body styles</source>
         <target state="translated">源内容元素，仅作用于左侧列表主体区域样式</target>
+      </segment>
+    </unit>
+    <unit id="SemanticSourceDescription">
+      <segment>
+        <source>Source panel container that wraps the whole source section decorator</source>
+        <target state="translated">源面板容器，包裹整个源方向分区装饰器</target>
       </segment>
     </unit>
     <unit id="SemanticSourceFooterDescription">
@@ -407,6 +365,24 @@
       <segment>
         <source>Source header element, only applies to left header area styles</source>
         <target state="translated">源头部元素，仅作用于左侧头部区域样式</target>
+      </segment>
+    </unit>
+    <unit id="SemanticSourceItemContentDescription">
+      <segment>
+        <source>Source item content element, only applies to left text content styles</source>
+        <target state="translated">源列表项内容元素，仅作用于左侧文本内容样式</target>
+      </segment>
+    </unit>
+    <unit id="SemanticSourceItemDescription">
+      <segment>
+        <source>Source item element, only applies to left list item styles</source>
+        <target state="translated">源列表项元素，仅作用于左侧列表项样式</target>
+      </segment>
+    </unit>
+    <unit id="SemanticSourceItemIconDescription">
+      <segment>
+        <source>Source item icon element, only applies to left icon styles</source>
+        <target state="translated">源列表项图标元素，仅作用于左侧图标样式</target>
       </segment>
     </unit>
     <unit id="SemanticSourceListDescription">
@@ -427,6 +403,12 @@
         <target state="translated">目标内容元素，仅作用于右侧列表主体区域样式</target>
       </segment>
     </unit>
+    <unit id="SemanticTargetDescription">
+      <segment>
+        <source>Target panel container that wraps the whole target section decorator</source>
+        <target state="translated">目标面板容器，包裹整个目标方向分区装饰器</target>
+      </segment>
+    </unit>
     <unit id="SemanticTargetFooterDescription">
       <segment>
         <source>Target footer element, only applies to right footer area styles</source>
@@ -437,6 +419,24 @@
       <segment>
         <source>Target header element, only applies to right header area styles</source>
         <target state="translated">目标头部元素，仅作用于右侧头部区域样式</target>
+      </segment>
+    </unit>
+    <unit id="SemanticTargetItemContentDescription">
+      <segment>
+        <source>Target item content element, only applies to right text content styles</source>
+        <target state="translated">目标列表项内容元素，仅作用于右侧文本内容样式</target>
+      </segment>
+    </unit>
+    <unit id="SemanticTargetItemDescription">
+      <segment>
+        <source>Target item element, only applies to right list item styles</source>
+        <target state="translated">目标列表项元素，仅作用于右侧列表项样式</target>
+      </segment>
+    </unit>
+    <unit id="SemanticTargetItemIconDescription">
+      <segment>
+        <source>Target item icon element, only applies to right icon styles</source>
+        <target state="translated">目标列表项图标元素，仅作用于右侧图标样式</target>
       </segment>
     </unit>
     <unit id="SemanticTargetListDescription">

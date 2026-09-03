@@ -246,11 +246,6 @@
         <source>Panel header region that hosts the select-all checkbox, selection count and title</source>
       </segment>
     </unit>
-    <unit id="SemanticListDescription">
-      <segment>
-        <source>List content host that carries the source or target view control</source>
-      </segment>
-    </unit>
     <unit id="SemanticItemContentDescription">
       <segment>
         <source>Item content element, only applies to text content styles</source>
@@ -266,34 +261,9 @@
         <source>Item icon element, only applies to icon styles</source>
       </segment>
     </unit>
-    <unit id="SemanticSourceItemContentDescription">
+    <unit id="SemanticListDescription">
       <segment>
-        <source>Source item content element, only applies to left text content styles</source>
-      </segment>
-    </unit>
-    <unit id="SemanticSourceItemDescription">
-      <segment>
-        <source>Source item element, only applies to left list item styles</source>
-      </segment>
-    </unit>
-    <unit id="SemanticSourceItemIconDescription">
-      <segment>
-        <source>Source item icon element, only applies to left icon styles</source>
-      </segment>
-    </unit>
-    <unit id="SemanticTargetItemContentDescription">
-      <segment>
-        <source>Target item content element, only applies to right text content styles</source>
-      </segment>
-    </unit>
-    <unit id="SemanticTargetItemDescription">
-      <segment>
-        <source>Target item element, only applies to right list item styles</source>
-      </segment>
-    </unit>
-    <unit id="SemanticTargetItemIconDescription">
-      <segment>
-        <source>Target item icon element, only applies to right icon styles</source>
+        <source>List content host that carries the source or target view control</source>
       </segment>
     </unit>
     <unit id="SemanticPartFooterText">
@@ -316,19 +286,14 @@
         <source>Root element that lays out the source panel, the actions area and the target panel</source>
       </segment>
     </unit>
-    <unit id="SemanticSourceDescription">
-      <segment>
-        <source>Source panel container that wraps the whole source section decorator</source>
-      </segment>
-    </unit>
-    <unit id="SemanticTargetDescription">
-      <segment>
-        <source>Target panel container that wraps the whole target section decorator</source>
-      </segment>
-    </unit>
     <unit id="SemanticSourceBodyDescription">
       <segment>
         <source>Source body element, only applies to left list body styles</source>
+      </segment>
+    </unit>
+    <unit id="SemanticSourceDescription">
+      <segment>
+        <source>Source panel container that wraps the whole source section decorator</source>
       </segment>
     </unit>
     <unit id="SemanticSourceFooterDescription">
@@ -339,6 +304,21 @@
     <unit id="SemanticSourceHeaderDescription">
       <segment>
         <source>Source header element, only applies to left header area styles</source>
+      </segment>
+    </unit>
+    <unit id="SemanticSourceItemContentDescription">
+      <segment>
+        <source>Source item content element, only applies to left text content styles</source>
+      </segment>
+    </unit>
+    <unit id="SemanticSourceItemDescription">
+      <segment>
+        <source>Source item element, only applies to left list item styles</source>
+      </segment>
+    </unit>
+    <unit id="SemanticSourceItemIconDescription">
+      <segment>
+        <source>Source item icon element, only applies to left icon styles</source>
       </segment>
     </unit>
     <unit id="SemanticSourceListDescription">
@@ -356,6 +336,11 @@
         <source>Target body element, only applies to right list body styles</source>
       </segment>
     </unit>
+    <unit id="SemanticTargetDescription">
+      <segment>
+        <source>Target panel container that wraps the whole target section decorator</source>
+      </segment>
+    </unit>
     <unit id="SemanticTargetFooterDescription">
       <segment>
         <source>Target footer element, only applies to right footer area styles</source>
@@ -364,6 +349,21 @@
     <unit id="SemanticTargetHeaderDescription">
       <segment>
         <source>Target header element, only applies to right header area styles</source>
+      </segment>
+    </unit>
+    <unit id="SemanticTargetItemContentDescription">
+      <segment>
+        <source>Target item content element, only applies to right text content styles</source>
+      </segment>
+    </unit>
+    <unit id="SemanticTargetItemDescription">
+      <segment>
+        <source>Target item element, only applies to right list item styles</source>
+      </segment>
+    </unit>
+    <unit id="SemanticTargetItemIconDescription">
+      <segment>
+        <source>Target item icon element, only applies to right icon styles</source>
       </segment>
     </unit>
     <unit id="SemanticTargetListDescription">
