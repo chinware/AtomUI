@@ -9,7 +9,7 @@
 | `root` | `WindowTitleBar` | 承载公共内容契约、平台状态和标题栏主题入口。 | `Logo`、`Title`、`TitleAlignment` | `Height`、`TitleBarPadding`、标题字体与颜色 | public |
 | `frame` | `Border#Frame` | 绘制标题栏背景并定义完整可见 frame。 | `Background`、`Padding` | `Height`、`TitleBarPadding` | template-stable |
 | `leading` | Windows/Linux: `PART_Logo` + `PART_LeftAddOn`；macOS: `PART_LeftAddOn` | 承载起始侧应用操作并占用标题安全空间。Windows/Linux 中 Logo 是物理最左内容，且仅在 Logo 与 LeftAddOn 同时有效时产生内部间距。 | `Logo`、`LogoTemplate`、`LogoVisibility`、`LeftAddOn`、`LeftAddOnTemplate` | `LogoSize`、`LogoAndLeftAddOnSpacing`、`HeaderHorizontalSpacing` | template-stable |
-| `title` | Windows/Linux: `PART_ContentPresenter`；macOS: `PART_Logo` + `PART_ContentPresenter` | 展示、测量、对齐和裁剪标题内容；macOS 同时保留 Logo/Title 连续标题组。 | `Logo`、`LogoTemplate`、`LogoVisibility`、`Title`、`TitleTemplate` | `LogoAndTitleSpacing`、标题字体与颜色 | template-stable |
+| `title` | Windows/Linux: `PART_ContentPresenter`；macOS: `PART_Logo` + `PART_ContentPresenter` | 展示、测量、对齐和裁剪标题内容；macOS 同时保留 Logo/Title 连续标题组。 | `Logo`、`LogoTemplate`、`LogoVisibility`、`Title`、`TitleTemplate`、`IsTitleVisible` | `LogoAndTitleSpacing`、标题字体与颜色 | template-stable |
 | `trailing` | `PART_RightAddOn` + `PART_CaptionButtonGroup` | 承载结束侧应用操作和 managed window operations。 | `RightAddOn`、`RightAddOnTemplate`；五个 Window caption visibility 属性 | `HeaderHorizontalSpacing`、caption button 尺寸、间距与状态颜色 | template-stable |
 | `native-chrome` | 平台原生窗口按钮安全区 | 以逻辑像素 inset 约束标题安全空间，不进入 visual tree。 | 平台、CSD、WindowState | 不适用 | internal-observable |
 
@@ -128,7 +128,7 @@ WindowTitleBar
 | `DockPanel` | template node (DockPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn`, `LeftAddOnTemplate`, `Logo` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Logo` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `Logo`, `LogoTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_LeftAddOn` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_ContentPresenter` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `Title`, `TitleTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ContentPresenter` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveTitleVisible`, `Title`, `TitleTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `StackPanel` | template node (StackPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `CanMaximize`, `CanMinimize`, `CaptionButtonCommand`, `HostWindowState`, `IsCloseCaptionButtonVisible`, `IsFullScreenCaptionButtonVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_RightAddOn` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsMotionEnabled`, `IsWindowActive`, `RightAddOn`, `RightAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_CaptionButtonGroup` | template node (CaptionButtonGroup) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `CanMaximize`, `CanMinimize`, `CaptionButtonCommand`, `HostWindowState`, `IsCloseCaptionButtonVisible`, `IsFullScreenCaptionButtonVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -143,7 +143,7 @@ WindowTitleBar
 | --- | --- | --- |
 | `Frame` | `Border` | 绘制标题栏背景并提供完整可见 frame 的布局边界。 |
 | `PART_Logo` | `ContentPresenter` | 展示有效 Logo；Windows/Linux 模板中位于 Leading 最左侧，macOS 模板中位于 Title 内容前。 |
-| `PART_ContentPresenter` | `ContentPresenter` | 展示标题；字符串标题在安全宽度不足时使用字符省略号，且不参与命中测试。 |
+| `PART_ContentPresenter` | `ContentPresenter` | 展示标题，可见性绑定 `IsEffectiveTitleVisible`；字符串标题在安全宽度不足时使用字符省略号，且不参与命中测试。 |
 | `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容；Windows/Linux 中由 Leading 容器负责它与有效 Logo 之间的条件间距。 |
 | `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on。 |
 | `PART_CaptionButtonGroup` | `CaptionButtonGroup` | 消费宿主投影，推导 managed button 状态并转发固定窗口操作。 |
@@ -179,14 +179,28 @@ WindowTitleBar
 | 条件 | 结果 |
 | --- | --- |
 | 不存在 Logo 内容和 Logo 模板 | 隐藏。 |
-| 存在有效标题内容 | 显示。 |
+| 存在有效标题内容且标题未被 `IsTitleVisible=False` 隐藏 | 显示。 |
 | 无标题内容且平台为 macOS | 隐藏。 |
 | 无标题内容、平台不是 macOS、窗口非全屏 | 显示。 |
 | 无标题内容、平台不是 macOS、窗口全屏 | 隐藏。 |
 
 该模型只控制 Logo 的有效可见性，不修改 `Logo`、`Window.Icon` 或应用图标来源。
 
-### 4.2 窗口状态
+### 4.2 标题显示模型
+
+`IsTitleVisible` 控制标题栏内的标题文字呈现，与 `Window.IsTitleBarVisible`（隐藏整条标题栏）作用域不同：
+
+| `IsTitleVisible` | `Title` | 有效可见性 |
+| --- | --- | --- |
+| `true`（默认） | `null` | 隐藏。 |
+| `true`（默认） | 非 `null`（含空字符串） | 显示；空字符串渲染空内容，与历史行为逐位一致。 |
+| `false` | 任意 | 隐藏；系统级窗口标题（任务栏、窗口切换）不受影响。 |
+
+- 有效值计算为 `IsEffectiveTitleVisible = IsTitleVisible && Title is not null`；三平台模板的 `PART_ContentPresenter` 与全屏层 `FullscreenTitleText` 只绑定该 internal direct property（全屏层绑定 Window 侧 `IsEffectiveFullscreenTitleVisible`）。
+- `IsTitleVisible=False` 时 `LogoVisibility=Auto` 按“无标题”分支联动：macOS 上 Logo 随标题一起隐藏，全屏层同步；非 macOS 非全屏时 Logo 仍显示。`Always`/`Never` 不受影响。
+- `Window` 通过 `NotifyConfigureTitleBar` 投影 `IsTitleVisible`，与 `LogoVisibility` 同优先级。
+
+### 4.3 窗口状态
 
 `WindowTitleBar` 从宿主 `Window` 的单向属性投影接收状态并维护以下伪类：
 
@@ -202,7 +216,7 @@ WindowTitleBar
 
 标题栏在进入逻辑树时自动选择最近的 AtomUI `Window` 作为宿主，并为自身持有一个可释放的 host projection lease。同一 Window 可以包含多个 `WindowTitleBar`，每个实例都独立接收同一宿主状态；标题栏从逻辑树移除或转移到另一 Window 时，旧投影必须释放并由新宿主重新建立。
 
-### 4.3 Caption buttons
+### 4.4 Caption buttons
 
 caption button 的公共配置属于宿主 `Window`：
 
@@ -212,7 +226,7 @@ caption button 的公共配置属于宿主 `Window`：
 
 Minimize、Maximize 和 Close 默认显示，FullScreen 和 Pin 默认隐藏。全屏时隐藏最小化和最大化按钮；最大化时隐藏进入全屏按钮；capability 为 `false` 时不显示不可执行的 managed button。Wayland backend 不提供置顶按钮。隐藏按钮不修改 `CanMinimize`、`CanMaximize`、`Topmost` 或其他窗口操作入口。完整状态矩阵、平台边界和单向命令流见 [WindowTitleBar Caption Button 配置设计](caption-button-configuration-design.md)。
 
-### 4.4 拖动和双击
+### 4.5 拖动和双击
 
 `Window` 通过每个标题栏的 host lease 监听 pointer 事件，并在移动距离超过拖动阈值后调用原生 `BeginMoveDrag`。拖动状态记录具体来源标题栏，同一 Window 中其他标题栏的移动、释放或 capture lost 不能推进该次交互。`IsMoveEnabled=False` 或全屏状态禁止拖动。双击最大化与拖动共用标题栏输入表面，但 caption buttons 和 add-on 的已处理输入不应触发窗口拖动。
 
@@ -226,7 +240,7 @@ Minimize、Maximize 和 Close 默认显示，FullScreen 和 Pin 默认隐藏。�
 | --- | --- | --- |
 | `Frame` | `Border` | 绘制标题栏背景并提供完整可见 frame 的布局边界。 |
 | `PART_Logo` | `ContentPresenter` | 展示有效 Logo；Windows/Linux 模板中位于 Leading 最左侧，macOS 模板中位于 Title 内容前。 |
-| `PART_ContentPresenter` | `ContentPresenter` | 展示标题；字符串标题在安全宽度不足时使用字符省略号，且不参与命中测试。 |
+| `PART_ContentPresenter` | `ContentPresenter` | 展示标题，可见性绑定 `IsEffectiveTitleVisible`；字符串标题在安全宽度不足时使用字符省略号，且不参与命中测试。 |
 | `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容；Windows/Linux 中由 Leading 容器负责它与有效 Logo 之间的条件间距。 |
 | `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on。 |
 | `PART_CaptionButtonGroup` | `CaptionButtonGroup` | 消费宿主投影，推导 managed button 状态并转发固定窗口操作。 |
@@ -254,6 +268,7 @@ Token 负责尺寸、间距、字体和状态颜色，不负责以下运行时�
 
 - Public API 的类型、默认值、绑定语义和事件时序保持稳定。
 - `Auto` Logo 规则和标题对齐的显式枚举语义保持稳定。
+- `IsTitleVisible` 默认 `true`；默认路径与历史行为逐位一致（含空字符串标题语义）。设为 `false` 只影响标题栏与全屏层的标题呈现，不改变系统级窗口标题。
 - `PART_CaptionButtonGroup`、内容 presenter 名称、ControlTheme key 和伪类保持稳定。
 - Title 内容不参与命中测试；add-on 和 caption buttons 保持可交互。
 - Windows/Linux 中 Logo 始终位于 Leading 最左侧并参与左侧安全空间；有效 Logo 与有效 `LeftAddOn` 之间使用独立的条件间距。macOS 中 Logo 和 Title 作为连续 Title 组；add-on 不进入标题中心计算。

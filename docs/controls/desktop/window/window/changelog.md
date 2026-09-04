@@ -2,6 +2,15 @@
 
 本文档记录 Window 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-09-03
+
+- API
+  - Add the `IsTitleVisible` AddOwner facade (default `true`) for hiding the in-title-bar title text without affecting the OS-level window title.
+- Integration
+  - Project `IsTitleVisible` to the default title bar via `NotifyConfigureTitleBar`, and mirror the fullscreen effective title visibility (`IsEffectiveFullscreenTitleVisible`) consumed by `FullscreenPopoverLayer`.
+- Docs
+  - Update the public surface grouping and the title-bar projection description.
+
 ## 2026-08-21
 
 - Implementation

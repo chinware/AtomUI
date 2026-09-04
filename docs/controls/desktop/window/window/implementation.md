@@ -90,7 +90,7 @@ Public API / ItemsSource / Command / Event
 - 选择与集合：`ViewModel`。
 - 交互与状态：`IsMinimizeCaptionButtonVisible`、`IsMaximizeCaptionButtonVisible`、`IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsPinCaptionButtonVisible`、`IsMoveEnabled`。
 - 弹层与窗口：`WindowFrameLayer`、`WindowFrameLayerOpacity`。
-- 其他稳定入口：`Logo`、`LogoVisibility`、`MediaBreakPoint`、`OsType`、`OsVersion`。
+- 其他稳定入口：`Logo`、`LogoVisibility`、`IsTitleVisible`、`MediaBreakPoint`、`OsType`、`OsVersion`。
 
 维护要求：
 
@@ -116,7 +116,7 @@ Public API / ItemsSource / Command / Event
 Window 对标题栏的协作拆成两条独立路径：
 
 1. 通用 host projection：Window 定义 caption requested visibility、窗口能力、WindowState、active state、Topmost、平台/CSD 输入、native chrome metrics 和 CaptionButtonCommand 的强类型 binding 集合，并把标题栏双击与拖动 pointer 订阅纳入同一个 `IDisposable` lease。
-2. 默认内容配置：`NotifyConfigureTitleBar` 只投影 Title、Logo、TitleAlignment、LeftAddOn、RightAddOn 及其模板，服务 Window 模板创建的默认或派生标题栏。
+2. 默认内容配置：`NotifyConfigureTitleBar` 只投影 Title、IsTitleVisible、Logo、TitleAlignment、LeftAddOn、RightAddOn 及其模板，服务 Window 模板创建的默认或派生标题栏。
 
 每个 `WindowTitleBar` 按自己的 logical attach/detach 生命周期持有 host projection lease。同一 Window 中多个标题栏分别持有独立 lease；标题栏从 Window A 移到 Window B 时，必须先释放 A 的 lease，再从 B 创建新 lease。默认标题栏在 `OnApplyTemplate` 中无条件提前连接宿主，随后进入逻辑树时命中幂等路径；派生类覆盖 `NotifyConfigureTitleBar` 不能跳过通用宿主连接。
 

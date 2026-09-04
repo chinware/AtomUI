@@ -43,6 +43,9 @@ public class WindowTitleBar : TemplatedControl,
         AvaloniaProperty.Register<WindowTitleBar, WindowTitleBarTitleAlignment>(
             nameof(TitleAlignment),
             WindowTitleBarTitleAlignment.Auto);
+
+    public static readonly StyledProperty<bool> IsTitleVisibleProperty =
+        AvaloniaProperty.Register<WindowTitleBar, bool>(nameof(IsTitleVisible), true);
     
     public static readonly StyledProperty<object?> LeftAddOnProperty =
         AvaloniaProperty.Register<WindowTitleBar, object?>(nameof(LeftAddOn));
@@ -106,6 +109,12 @@ public class WindowTitleBar : TemplatedControl,
         set => SetValue(TitleAlignmentProperty, value);
     }
 
+    public bool IsTitleVisible
+    {
+        get => GetValue(IsTitleVisibleProperty);
+        set => SetValue(IsTitleVisibleProperty, value);
+    }
+
     [DependsOn(nameof(LeftAddOnTemplate))]
     public object? LeftAddOn
     {
@@ -155,6 +164,11 @@ public class WindowTitleBar : TemplatedControl,
             nameof(IsEffectiveLogoVisible),
             o => o.IsEffectiveLogoVisible);
 
+    internal static readonly DirectProperty<WindowTitleBar, bool> IsEffectiveTitleVisibleProperty =
+        AvaloniaProperty.RegisterDirect<WindowTitleBar, bool>(
+            nameof(IsEffectiveTitleVisible),
+            o => o.IsEffectiveTitleVisible);
+
     internal static readonly StyledProperty<Thickness> NativeChromeInsetsProperty =
         AvaloniaProperty.Register<WindowTitleBar, Thickness>(nameof(NativeChromeInsets));
 
@@ -200,6 +214,14 @@ public class WindowTitleBar : TemplatedControl,
     {
         get => _isEffectiveLogoVisible;
         private set => SetAndRaise(IsEffectiveLogoVisibleProperty, ref _isEffectiveLogoVisible, value);
+    }
+
+    private bool _isEffectiveTitleVisible;
+
+    internal bool IsEffectiveTitleVisible
+    {
+        get => _isEffectiveTitleVisible;
+        private set => SetAndRaise(IsEffectiveTitleVisibleProperty, ref _isEffectiveTitleVisible, value);
     }
 
     internal Thickness NativeChromeInsets
@@ -303,6 +325,7 @@ public class WindowTitleBar : TemplatedControl,
     {
         this.ConfigureOsType();
         UpdateWindowStatePseudoClasses(HostWindowState);
+        UpdateEffectiveTitleVisible();
         UpdateEffectiveLogoVisible();
     }
 
@@ -374,10 +397,16 @@ public class WindowTitleBar : TemplatedControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
+        if (change.Property == TitleProperty ||
+            change.Property == IsTitleVisibleProperty)
+        {
+            UpdateEffectiveTitleVisible();
+        }
         if (change.Property == LogoProperty ||
             change.Property == LogoTemplateProperty ||
             change.Property == LogoVisibilityProperty ||
             change.Property == TitleProperty ||
+            change.Property == IsTitleVisibleProperty ||
             change.Property == OsTypeProperty ||
             change.Property == HostWindowStateProperty)
         {
@@ -412,9 +441,14 @@ public class WindowTitleBar : TemplatedControl,
         };
     }
 
+    private void UpdateEffectiveTitleVisible()
+    {
+        IsEffectiveTitleVisible = IsTitleVisible && Title is not null;
+    }
+
     private bool ShouldShowLogoInAutoMode()
     {
-        if (HasTitleContent(Title))
+        if (HasTitleContent(Title) && IsEffectiveTitleVisible)
         {
             return true;
         }

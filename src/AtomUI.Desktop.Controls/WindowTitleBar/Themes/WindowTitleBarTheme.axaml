@@ -61,7 +61,7 @@
                                               TextTrimming="CharacterEllipsis"
                                               Content="{TemplateBinding Title}"
                                               ContentTemplate="{TemplateBinding TitleTemplate}"
-                                              IsVisible="{TemplateBinding Title, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                              IsVisible="{TemplateBinding IsEffectiveTitleVisible}" />
                         </DockPanel>
                         <StackPanel atom:WindowTitleBarLayoutPanel.Role="Trailing"
                                     Orientation="Horizontal">
@@ -146,7 +146,7 @@
                                               TextTrimming="CharacterEllipsis"
                                               Content="{TemplateBinding Title}"
                                               ContentTemplate="{TemplateBinding TitleTemplate}"
-                                              IsVisible="{TemplateBinding Title, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                              IsVisible="{TemplateBinding IsEffectiveTitleVisible}" />
                         </DockPanel>
                         <StackPanel atom:WindowTitleBarLayoutPanel.Role="Trailing"
                                     Orientation="Horizontal">
@@ -226,7 +226,7 @@
                                               TextTrimming="CharacterEllipsis"
                                               Content="{TemplateBinding Title}"
                                               ContentTemplate="{TemplateBinding TitleTemplate}"
-                                              IsVisible="{TemplateBinding Title, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                              IsVisible="{TemplateBinding IsEffectiveTitleVisible}" />
                         </DockPanel>
                         <StackPanel atom:WindowTitleBarLayoutPanel.Role="Trailing"
                                     Orientation="Horizontal">

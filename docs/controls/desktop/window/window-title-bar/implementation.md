@@ -116,9 +116,13 @@ Window 只发布 requested visibility、窗口能力、状态和操作命令。`
 
 ### 4.3 Effective Logo
 
-`Logo`、`LogoTemplate`、`LogoVisibility`、`Title`、`OsType` 或全屏状态变化时重新计算 `IsEffectiveLogoVisible`。Theme 只绑定这一 internal direct property，不在平台模板中复制 Logo 决策。
+`Logo`、`LogoTemplate`、`LogoVisibility`、`Title`、`IsTitleVisible`、`OsType` 或全屏状态变化时重新计算 `IsEffectiveLogoVisible`；`Auto` 分支要求标题内容有效且标题未被 `IsTitleVisible=False` 隐藏。Theme 只绑定这一 internal direct property，不在平台模板中复制 Logo 决策。
 
-### 4.4 标题对齐
+### 4.4 Effective Title
+
+`Title` 或 `IsTitleVisible` 变化时重新计算 `IsEffectiveTitleVisible = IsTitleVisible && Title is not null`；构造函数先行初始化，属性变更分发中标题重算先于 Logo 重算执行（Logo 的 `Auto` 分支读取标题有效值）。三平台模板的 `PART_ContentPresenter` 与全屏层 `FullscreenTitleText`（绑定 Window 侧 `IsEffectiveFullscreenTitleVisible`）只绑定 internal direct property，不在模板中复制标题判空逻辑。
+
+### 4.5 标题对齐
 
 ```text
 Window.TitleAlignment + add-on content/templates + platform/native metrics
@@ -131,7 +135,7 @@ Window.TitleAlignment + add-on content/templates + platform/native metrics
 
 平台层只发布逻辑像素 metrics；Panel 不查找 `Window`、不调用 native API。详细输入、CSD 矩阵、公式和失效条件由本文第 8 节集中定义。
 
-### 4.5 Theme 与 Token
+### 4.6 Theme 与 Token
 
 ```text
 SharedToken
@@ -213,7 +217,7 @@ Windows/Linux 默认模板的 Leading `DockPanel` 使用 `LogoAndLeftAddOnSpacin
 2. 通过 `NotifyCreateTitleBar(oldTitleBar)` 创建或替换标题栏。
 3. 无条件把新标题栏连接到当前 Window 的 host projection；该步骤不能由派生类 override 跳过。
 4. 只给默认标题栏连接 `SizeChanged`，用于标题栏高度提示和 CSD 几何。
-5. 通过 `NotifyConfigureTitleBar` 投影默认标题栏专属的 Title、Logo、对齐和 add-on 内容。
+5. 通过 `NotifyConfigureTitleBar` 投影默认标题栏专属的 Title、标题可见性、Logo、对齐和 add-on 内容。
 6. 将结果写入 internal `TitleBar`，交给 Window template 展示。
 
 派生 `Window` 可以覆盖两个 protected 方法，但通用宿主投影不依赖 override 实现。重复 apply template 不能让旧标题栏继续持有 Window 事件或 projection lease。

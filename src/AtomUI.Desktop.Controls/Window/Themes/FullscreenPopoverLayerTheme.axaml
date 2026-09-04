@@ -45,7 +45,7 @@
                                            TextWrapping="NoWrap"
                                            TextTrimming="CharacterEllipsis"
                                            Text="{Binding $parent[atom:Window].Title}"
-                                           IsVisible="{Binding $parent[atom:Window].Title, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                           IsVisible="{Binding $parent[atom:Window].IsEffectiveFullscreenTitleVisible}" />
                             </DockPanel>
 
                             <StackPanel Name="FullscreenCaptionButtonGroup"

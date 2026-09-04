@@ -2,6 +2,19 @@
 
 本文档记录 WindowTitleBar 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-09-03
+
+- Design
+  - Define the in-title-bar title text visibility model: `IsEffectiveTitleVisible = IsTitleVisible && Title is not null`, with `LogoVisibility=Auto` following the titleless branch when the title is hidden.
+- API
+  - Add `IsTitleVisible` (`bool`, default `true`) to `WindowTitleBar` and expose the `Window` AddOwner facade with `NotifyConfigureTitleBar` projection; the OS-level window title is unaffected.
+- Theme
+  - Bind the three platform templates' `PART_ContentPresenter` and the fullscreen layer's `FullscreenTitleText` to internal effective visibility direct properties instead of `Title != null`.
+- Docs
+  - Add the title display model section; update the API table, Logo Auto matrix, template contract, compatibility invariants, test list and LLMS semantic areas.
+- Verification
+  - Cover defaults, effective computation, empty-string semantics, Logo Auto interplay, Window projection and fullscreen binding in `WindowTitleBarTitleVisibilityTests`.
+
 ## 2026-08-23
 
 - Design

@@ -199,7 +199,7 @@ public class WindowTitleBarLogoVisibilityTests
             "titleBar.Bind(WindowTitleBar.LogoVisibilityProperty, this.GetObservable(LogoVisibilityProperty))");
         source.ShouldContain("IsEffectiveFullscreenLogoVisibleProperty");
         source.ShouldContain("UpdateEffectiveFullscreenLogoVisible()");
-        source.ShouldContain("_ => hasLogo && HasTitleContent(Title)");
+        source.ShouldContain("_ => hasLogo && HasTitleContent(Title) && IsEffectiveFullscreenTitleVisible");
         source.ShouldContain("TryApplyWindowIconLogo(Icon)");
         source.ShouldNotContain("Icon = null");
         source.ShouldNotContain("SetCurrentValue(IconProperty");

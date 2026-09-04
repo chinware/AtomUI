@@ -44,6 +44,9 @@ public partial class Window : AvaloniaWindow,
     public static readonly StyledProperty<WindowTitleBarTitleAlignment> TitleAlignmentProperty =
         WindowTitleBar.TitleAlignmentProperty.AddOwner<Window>();
 
+    public static readonly StyledProperty<bool> IsTitleVisibleProperty =
+        WindowTitleBar.IsTitleVisibleProperty.AddOwner<Window>();
+
     public static readonly StyledProperty<object?> LeftAddOnProperty =
         WindowTitleBar.LeftAddOnProperty.AddOwner<Window>();
 
@@ -148,6 +151,12 @@ public partial class Window : AvaloniaWindow,
     {
         get => GetValue(TitleAlignmentProperty);
         set => SetValue(TitleAlignmentProperty, value);
+    }
+
+    public bool IsTitleVisible
+    {
+        get => GetValue(IsTitleVisibleProperty);
+        set => SetValue(IsTitleVisibleProperty, value);
     }
 
     [DependsOn(nameof(LeftAddOnTemplate))]
@@ -338,6 +347,11 @@ public partial class Window : AvaloniaWindow,
             nameof(IsEffectiveFullscreenLogoVisible),
             o => o.IsEffectiveFullscreenLogoVisible);
 
+    internal static readonly DirectProperty<Window, bool> IsEffectiveFullscreenTitleVisibleProperty =
+        AvaloniaProperty.RegisterDirect<Window, bool>(
+            nameof(IsEffectiveFullscreenTitleVisible),
+            o => o.IsEffectiveFullscreenTitleVisible);
+
     internal static readonly DirectProperty<Window, bool> IsPinCaptionButtonSupportedProperty =
         AvaloniaProperty.RegisterDirect<Window, bool>(
             nameof(IsPinCaptionButtonSupported),
@@ -437,6 +451,14 @@ public partial class Window : AvaloniaWindow,
     {
         get => _isEffectiveFullscreenLogoVisible;
         private set => SetAndRaise(IsEffectiveFullscreenLogoVisibleProperty, ref _isEffectiveFullscreenLogoVisible, value);
+    }
+
+    private bool _isEffectiveFullscreenTitleVisible;
+
+    internal bool IsEffectiveFullscreenTitleVisible
+    {
+        get => _isEffectiveFullscreenTitleVisible;
+        private set => SetAndRaise(IsEffectiveFullscreenTitleVisibleProperty, ref _isEffectiveFullscreenTitleVisible, value);
     }
 
     private bool _isPinCaptionButtonSupported;
@@ -1226,6 +1248,7 @@ public partial class Window : AvaloniaWindow,
             titleBar.Bind(WindowTitleBar.LogoTemplateProperty, this.GetObservable(LogoTemplateProperty)),
             titleBar.Bind(WindowTitleBar.LogoVisibilityProperty, this.GetObservable(LogoVisibilityProperty)),
             titleBar.Bind(WindowTitleBar.TitleAlignmentProperty, this.GetObservable(TitleAlignmentProperty)),
+            titleBar.Bind(WindowTitleBar.IsTitleVisibleProperty, this.GetObservable(IsTitleVisibleProperty)),
             titleBar.Bind(
                 WindowTitleBar.LeftAddOnProperty,
                 this.GetObservable(LeftAddOnProperty),
@@ -1585,13 +1608,24 @@ public partial class Window : AvaloniaWindow,
         {
             ResetTitleBarMoveDragState();
         }
+        if (change.Property == TitleProperty ||
+            change.Property == IsTitleVisibleProperty)
+        {
+            UpdateEffectiveFullscreenTitleVisible();
+        }
         if (change.Property == LogoProperty ||
             change.Property == LogoTemplateProperty ||
             change.Property == LogoVisibilityProperty ||
-            change.Property == TitleProperty)
+            change.Property == TitleProperty ||
+            change.Property == IsTitleVisibleProperty)
         {
             UpdateEffectiveFullscreenLogoVisible();
         }
+    }
+
+    private void UpdateEffectiveFullscreenTitleVisible()
+    {
+        IsEffectiveFullscreenTitleVisible = IsTitleVisible && Title is not null;
     }
 
     private void UpdateEffectiveFullscreenLogoVisible()
@@ -1601,7 +1635,7 @@ public partial class Window : AvaloniaWindow,
         {
             WindowTitleBarLogoVisibility.Always => hasLogo,
             WindowTitleBarLogoVisibility.Never => false,
-            _ => hasLogo && HasTitleContent(Title)
+            _ => hasLogo && HasTitleContent(Title) && IsEffectiveFullscreenTitleVisible
         };
     }
 
