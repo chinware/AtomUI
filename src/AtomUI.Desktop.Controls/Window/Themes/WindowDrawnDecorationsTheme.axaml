@@ -102,8 +102,8 @@
                                                       VerticalAlignment="Center"
                                                       HorizontalContentAlignment="Center"
                                                       VerticalContentAlignment="Center"
-                                                      Content="{Binding $parent[atom:Window].Logo}"
-                                                      ContentTemplate="{Binding $parent[atom:Window].LogoTemplate}"
+                                                      Content="{Binding $parent[atom:Window].EffectiveLogo}"
+                                                      ContentTemplate="{Binding $parent[atom:Window].EffectiveLogoTemplate}"
                                                       IsVisible="{Binding $parent[atom:Window].IsEffectiveFullscreenLogoVisible}"/>
                                     <TextBlock Name="FullscreenTitleText"
                                                HorizontalAlignment="Left"
@@ -111,8 +111,8 @@
                                                IsHitTestVisible="False"
                                                TextWrapping="NoWrap"
                                                TextTrimming="CharacterEllipsis"
-                                               Text="{TemplateBinding Title}"
-                                               IsVisible="{TemplateBinding Title, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                               Text="{Binding $parent[atom:Window].Title}"
+                                               IsVisible="{Binding $parent[atom:Window].IsEffectiveFullscreenTitleVisible}" />
                                 </DockPanel>
                                 
                                 <StackPanel Name="CaptionButtonGroup"

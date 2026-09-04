@@ -1,0 +1,15 @@
+<atom:Window xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             x:Class="AtomUIGallery.ShowCases.Window.BasicDemoWindow"
+             x:ClassModifier="internal"
+             Title="AtomUI Window"
+             Width="520"
+             Height="340"
+             WindowStartupLocation="CenterOwner">
+    <StackPanel Margin="24" Spacing="12">
+        <atom:TextBlock Text="{gallery:WindowShowCaseLangResource BasicTitle}" FontWeight="Bold" />
+        <atom:TextBlock Text="{gallery:WindowShowCaseLangResource BasicWindowHint}" TextWrapping="Wrap" />
+    </StackPanel>
+</atom:Window>

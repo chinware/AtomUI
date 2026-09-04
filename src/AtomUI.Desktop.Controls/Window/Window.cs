@@ -347,6 +347,16 @@ public partial class Window : AvaloniaWindow,
             nameof(IsEffectiveFullscreenLogoVisible),
             o => o.IsEffectiveFullscreenLogoVisible);
 
+    internal static readonly DirectProperty<Window, object?> EffectiveLogoProperty =
+        AvaloniaProperty.RegisterDirect<Window, object?>(
+            nameof(EffectiveLogo),
+            o => o.EffectiveLogo);
+
+    internal static readonly DirectProperty<Window, IDataTemplate?> EffectiveLogoTemplateProperty =
+        AvaloniaProperty.RegisterDirect<Window, IDataTemplate?>(
+            nameof(EffectiveLogoTemplate),
+            o => o.EffectiveLogoTemplate);
+
     internal static readonly DirectProperty<Window, bool> IsEffectiveFullscreenTitleVisibleProperty =
         AvaloniaProperty.RegisterDirect<Window, bool>(
             nameof(IsEffectiveFullscreenTitleVisible),
@@ -453,6 +463,22 @@ public partial class Window : AvaloniaWindow,
         private set => SetAndRaise(IsEffectiveFullscreenLogoVisibleProperty, ref _isEffectiveFullscreenLogoVisible, value);
     }
 
+    private object? _effectiveLogo;
+
+    internal object? EffectiveLogo
+    {
+        get => _effectiveLogo;
+        private set => SetAndRaise(EffectiveLogoProperty, ref _effectiveLogo, value);
+    }
+
+    private IDataTemplate? _effectiveLogoTemplate;
+
+    internal IDataTemplate? EffectiveLogoTemplate
+    {
+        get => _effectiveLogoTemplate;
+        private set => SetAndRaise(EffectiveLogoTemplateProperty, ref _effectiveLogoTemplate, value);
+    }
+
     private bool _isEffectiveFullscreenTitleVisible;
 
     internal bool IsEffectiveFullscreenTitleVisible
@@ -520,6 +546,9 @@ public partial class Window : AvaloniaWindow,
     private WindowResizer? _windowResizer;
     private MediaBreakPointIndicator? _mediaBreakPointIndicator;
     private CompositeDisposable? _defaultTitleBarBindings;
+    private Window? _mainWindowLogoFallbackSource;
+    private CompositeDisposable? _mainWindowLogoFallbackLease;
+    private bool _isOpened;
     private int _drawnChromeOverlaySuppressionCount;
     private IDisposable? _windowsCsdFrameThemeSubscription;
     private ThemeContextLease? _themeContextLease;
@@ -1229,6 +1258,10 @@ public partial class Window : AvaloniaWindow,
             lease.Add(titleBar.Bind(
                 WindowTitleBar.CaptionButtonCommandProperty,
                 this.GetObservable(CaptionButtonCommandProperty)));
+            lease.Add(this.GetObservable(EffectiveLogoProperty).Subscribe(
+                _ => titleBar.NotifyHostEffectiveLogoChanged()));
+            lease.Add(this.GetObservable(EffectiveLogoTemplateProperty).Subscribe(
+                _ => titleBar.NotifyHostEffectiveLogoChanged()));
             return lease;
         }
         catch
@@ -1426,12 +1459,13 @@ public partial class Window : AvaloniaWindow,
     protected override void OnOpened(EventArgs e)
     {
         base.OnOpened(e);
+        _isOpened = true;
         UpdateCaptionButtonCapabilities();
         EnsureWindowsCsdFrameThemeSubscription();
         ApplyCurrentWindowsCsdFrameTheme();
         _platformChromeManager?.UpdateFrameGeometry();
         UpdateEffectiveContentFrameMargin();
-        ApplyDefaultLogoIfNeeded();
+        UpdateEffectiveLogo();
         if (OperatingSystem.IsMacOS())
         {
             QueueMacOsWindowConfiguration();
@@ -1446,6 +1480,7 @@ public partial class Window : AvaloniaWindow,
 
     protected override void OnClosed(EventArgs e)
     {
+        _isOpened = false;
         StopMacOsWindowButtonObserver();
         if (_titleBar != null)
         {
@@ -1457,52 +1492,95 @@ public partial class Window : AvaloniaWindow,
         ResetThemeContextState();
         _windowsCsdFrameThemeSubscription?.Dispose();
         _windowsCsdFrameThemeSubscription = null;
+        ReleaseMainWindowLogoFallbackSubscription();
         base.OnClosed(e);
     }
 
-    private void ApplyDefaultLogoIfNeeded()
+    private void UpdateEffectiveLogo()
     {
-        if (Logo != null || LogoTemplate != null)
-        {
-            return;
-        }
-
-        if (TryApplyWindowIconLogo(Icon))
-        {
-            return;
-        }
-
         var mainWindow = GetMainWindow();
-        if (mainWindow == null || ReferenceEquals(mainWindow, this))
+        UpdateMainWindowLogoFallbackSubscription(mainWindow);
+        var (logo, template) = ResolveEffectiveLogo(this, mainWindow);
+        EffectiveLogo         = logo;
+        EffectiveLogoTemplate = template;
+    }
+
+    private void UpdateMainWindowLogoFallbackSubscription(Window? mainWindow)
+    {
+        var fallbackSource = _isOpened &&
+                             Logo is null &&
+                             LogoTemplate is null &&
+                             Icon is null &&
+                             mainWindow is not null &&
+                             !ReferenceEquals(mainWindow, this)
+            ? mainWindow
+            : null;
+        if (ReferenceEquals(_mainWindowLogoFallbackSource, fallbackSource))
         {
             return;
         }
 
-        if (mainWindow.LogoTemplate != null)
+        ReleaseMainWindowLogoFallbackSubscription();
+        if (fallbackSource is null)
         {
-            SetCurrentValue(LogoTemplateProperty, mainWindow.LogoTemplate);
+            return;
         }
 
-        if (mainWindow.Logo != null)
+        var lease = new CompositeDisposable();
+        _mainWindowLogoFallbackSource = fallbackSource;
+        _mainWindowLogoFallbackLease  = lease;
+        try
         {
-            SetCurrentValue(LogoProperty, mainWindow.Logo);
+            lease.Add(fallbackSource.GetObservable(LogoProperty).Subscribe(_ => UpdateEffectiveLogo()));
+            lease.Add(fallbackSource.GetObservable(LogoTemplateProperty).Subscribe(_ => UpdateEffectiveLogo()));
+            lease.Add(fallbackSource.GetObservable(IconProperty).Subscribe(_ => UpdateEffectiveLogo()));
         }
-        else if (mainWindow.LogoTemplate == null)
+        catch
         {
-            TryApplyWindowIconLogo(mainWindow.Icon);
+            ReleaseMainWindowLogoFallbackSubscription();
+            throw;
         }
     }
 
-    private bool TryApplyWindowIconLogo(WindowIcon? icon)
+    private void ReleaseMainWindowLogoFallbackSubscription()
     {
-        if (icon == null)
+        _mainWindowLogoFallbackSource = null;
+        _mainWindowLogoFallbackLease?.Dispose();
+        _mainWindowLogoFallbackLease = null;
+    }
+
+    // Logo 回退解析（纯函数）：显式 Logo/LogoTemplate 优先；都未设置时依次回退到
+    // 本窗口 Icon → 主窗口显式 Logo/LogoTemplate → 主窗口 Icon。
+    // 回退结果只进 EffectiveLogo/EffectiveLogoTemplate 供渲染使用，绝不写回公开属性，
+    // 避免"运行时设置 Logo 时残留框架注入模板"之类的状态污染。
+    internal static (object? Logo, IDataTemplate? Template) ResolveEffectiveLogo(
+        Window window,
+        Window? mainWindow)
+    {
+        if (window.Logo is not null || window.LogoTemplate is not null)
         {
-            return false;
+            return (window.Logo, window.LogoTemplate);
         }
 
-        SetCurrentValue(LogoTemplateProperty, s_windowIconLogoTemplate);
-        SetCurrentValue(LogoProperty, icon);
-        return true;
+        if (window.Icon is { } hostIcon)
+        {
+            return (hostIcon, s_windowIconLogoTemplate);
+        }
+
+        if (mainWindow is not null && !ReferenceEquals(mainWindow, window))
+        {
+            if (mainWindow.Logo is not null || mainWindow.LogoTemplate is not null)
+            {
+                return (mainWindow.Logo, mainWindow.LogoTemplate);
+            }
+
+            if (mainWindow.Icon is { } mainIcon)
+            {
+                return (mainIcon, s_windowIconLogoTemplate);
+            }
+        }
+
+        return (null, null);
     }
 
     private static Control? CreateWindowIconLogo(WindowIcon? icon)
@@ -1615,6 +1693,12 @@ public partial class Window : AvaloniaWindow,
         }
         if (change.Property == LogoProperty ||
             change.Property == LogoTemplateProperty ||
+            change.Property == IconProperty)
+        {
+            UpdateEffectiveLogo();
+        }
+        if (change.Property == EffectiveLogoProperty ||
+            change.Property == EffectiveLogoTemplateProperty ||
             change.Property == LogoVisibilityProperty ||
             change.Property == TitleProperty ||
             change.Property == IsTitleVisibleProperty)
@@ -1630,7 +1714,7 @@ public partial class Window : AvaloniaWindow,
 
     private void UpdateEffectiveFullscreenLogoVisible()
     {
-        var hasLogo = Logo is not null || LogoTemplate is not null;
+        var hasLogo = EffectiveLogo is not null || EffectiveLogoTemplate is not null;
         IsEffectiveFullscreenLogoVisible = LogoVisibility switch
         {
             WindowTitleBarLogoVisibility.Always => hasLogo,

@@ -19,6 +19,7 @@ public enum CaseNavigationLangResourceKind
     General_SplitButton,
     General_Separator,
     General_CustomizeTheme,
+    General_Window,
     Layout,
     Layout_FlexPanel,
     Layout_Grid,

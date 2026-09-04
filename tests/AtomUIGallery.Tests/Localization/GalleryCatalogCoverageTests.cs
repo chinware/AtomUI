@@ -43,7 +43,7 @@ public class GalleryCatalogCoverageTests
             .OrderBy(static type => type.FullName, StringComparer.Ordinal)
             .ToArray();
 
-        catalogTypes.Length.ShouldBe(92);
+        catalogTypes.Length.ShouldBe(93);
         var memberOrderBaseline = LoadCatalogMemberOrderBaseline();
         memberOrderBaseline.Keys.ShouldBe(
             catalogTypes.Select(static type => type.FullName!),
@@ -68,7 +68,7 @@ public class GalleryCatalogCoverageTests
                       type.Name == "en_US" || type.Name == "zh_CN" || type.Name == "zh_TW");
 
         var files = LoadLanguageFiles(catalogTypes);
-        files.Length.ShouldBe(355);
+        files.Length.ShouldBe(359);
         files.GroupBy(static file => file.CatalogType)
              .ShouldAllBe(static group => group.Count() == 3 || group.Count() == 4);
         AssertXliffContracts(catalogTypes, files);
@@ -119,8 +119,8 @@ public class GalleryCatalogCoverageTests
                               .OrderBy(static path => path, StringComparer.Ordinal)
                               .ToArray();
 
-        sourceFiles.Length.ShouldBe(79);
-        sourceFiles.Sum(CountUnits).ShouldBe(3914);
+        sourceFiles.Length.ShouldBe(80);
+        sourceFiles.Sum(CountUnits).ShouldBe(3956);
         foreach (var sourcePath in sourceFiles)
         {
             var targetPath = Path.Combine(

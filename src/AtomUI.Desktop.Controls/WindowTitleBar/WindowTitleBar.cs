@@ -159,6 +159,16 @@ public class WindowTitleBar : TemplatedControl,
 
     #region 内部属性定义
 
+    internal static readonly DirectProperty<WindowTitleBar, object?> EffectiveLogoProperty =
+        AvaloniaProperty.RegisterDirect<WindowTitleBar, object?>(
+            nameof(EffectiveLogo),
+            o => o.EffectiveLogo);
+
+    internal static readonly DirectProperty<WindowTitleBar, IDataTemplate?> EffectiveLogoTemplateProperty =
+        AvaloniaProperty.RegisterDirect<WindowTitleBar, IDataTemplate?>(
+            nameof(EffectiveLogoTemplate),
+            o => o.EffectiveLogoTemplate);
+
     internal static readonly DirectProperty<WindowTitleBar, bool> IsEffectiveLogoVisibleProperty =
         AvaloniaProperty.RegisterDirect<WindowTitleBar, bool>(
             nameof(IsEffectiveLogoVisible),
@@ -207,6 +217,22 @@ public class WindowTitleBar : TemplatedControl,
 
     internal static readonly StyledProperty<ICommand?> CaptionButtonCommandProperty =
         AvaloniaProperty.Register<WindowTitleBar, ICommand?>(nameof(CaptionButtonCommand));
+
+    private object? _effectiveLogo;
+
+    internal object? EffectiveLogo
+    {
+        get => _effectiveLogo;
+        private set => SetAndRaise(EffectiveLogoProperty, ref _effectiveLogo, value);
+    }
+
+    private IDataTemplate? _effectiveLogoTemplate;
+
+    internal IDataTemplate? EffectiveLogoTemplate
+    {
+        get => _effectiveLogoTemplate;
+        private set => SetAndRaise(EffectiveLogoTemplateProperty, ref _effectiveLogoTemplate, value);
+    }
 
     private bool _isEffectiveLogoVisible;
 
@@ -326,7 +352,7 @@ public class WindowTitleBar : TemplatedControl,
         this.ConfigureOsType();
         UpdateWindowStatePseudoClasses(HostWindowState);
         UpdateEffectiveTitleVisible();
-        UpdateEffectiveLogoVisible();
+        UpdateEffectiveLogo();
     }
 
     internal void AttachHost(Window window)
@@ -342,11 +368,13 @@ public class WindowTitleBar : TemplatedControl,
         try
         {
             _hostProjectionLease = window.CreateTitleBarHostProjection(this);
+            UpdateEffectiveLogo();
         }
         catch
         {
             window.Closed -= HandleHostWindowClosed;
             _window = null;
+            UpdateEffectiveLogo();
             throw;
         }
     }
@@ -382,6 +410,11 @@ public class WindowTitleBar : TemplatedControl,
         }
     }
 
+    internal void NotifyHostEffectiveLogoChanged()
+    {
+        UpdateEffectiveLogo();
+    }
+
     private void ReleaseHost()
     {
         if (_window is { } window)
@@ -392,6 +425,7 @@ public class WindowTitleBar : TemplatedControl,
 
         _hostProjectionLease?.Dispose();
         _hostProjectionLease = null;
+        UpdateEffectiveLogo();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -403,8 +437,11 @@ public class WindowTitleBar : TemplatedControl,
             UpdateEffectiveTitleVisible();
         }
         if (change.Property == LogoProperty ||
-            change.Property == LogoTemplateProperty ||
-            change.Property == LogoVisibilityProperty ||
+            change.Property == LogoTemplateProperty)
+        {
+            UpdateEffectiveLogo();
+        }
+        if (change.Property == LogoVisibilityProperty ||
             change.Property == TitleProperty ||
             change.Property == IsTitleVisibleProperty ||
             change.Property == OsTypeProperty ||
@@ -430,9 +467,25 @@ public class WindowTitleBar : TemplatedControl,
         PseudoClasses.Set(StdPseudoClass.Fullscreen, state == WindowState.FullScreen);
     }
 
+    private void UpdateEffectiveLogo()
+    {
+        if (Logo is not null || LogoTemplate is not null)
+        {
+            EffectiveLogo         = Logo;
+            EffectiveLogoTemplate = LogoTemplate;
+        }
+        else
+        {
+            EffectiveLogo         = HostWindow?.EffectiveLogo;
+            EffectiveLogoTemplate = HostWindow?.EffectiveLogoTemplate;
+        }
+
+        UpdateEffectiveLogoVisible();
+    }
+
     private void UpdateEffectiveLogoVisible()
     {
-        var hasLogo = Logo is not null || LogoTemplate is not null;
+        var hasLogo = EffectiveLogo is not null || EffectiveLogoTemplate is not null;
         IsEffectiveLogoVisible = LogoVisibility switch
         {
             WindowTitleBarLogoVisibility.Always => hasLogo,

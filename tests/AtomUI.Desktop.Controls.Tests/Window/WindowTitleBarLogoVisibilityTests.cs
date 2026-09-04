@@ -200,9 +200,15 @@ public class WindowTitleBarLogoVisibilityTests
         source.ShouldContain("IsEffectiveFullscreenLogoVisibleProperty");
         source.ShouldContain("UpdateEffectiveFullscreenLogoVisible()");
         source.ShouldContain("_ => hasLogo && HasTitleContent(Title) && IsEffectiveFullscreenTitleVisible");
-        source.ShouldContain("TryApplyWindowIconLogo(Icon)");
-        source.ShouldNotContain("Icon = null");
-        source.ShouldNotContain("SetCurrentValue(IconProperty");
+        // Effective Logo 模式：回退解析只进 EffectiveLogo/EffectiveLogoTemplate 渲染层，
+        // 框架不再向 Logo/LogoTemplate/Icon 写入任何默认值
+        source.ShouldContain("UpdateEffectiveLogo()");
+        source.ShouldContain("ResolveEffectiveLogo");
+        source.ShouldContain("EffectiveLogoProperty");
+        source.ShouldNotContain("TryApplyWindowIconLogo");
+        source.ShouldNotContain("ApplyDefaultLogoIfNeeded");
+        source.ShouldNotContain("SetCurrentValue(LogoProperty");
+        source.ShouldNotContain("SetCurrentValue(LogoTemplateProperty");
     }
 
     [Fact]
@@ -227,6 +233,13 @@ public class WindowTitleBarLogoVisibilityTests
             "IsVisible=\"{Binding $parent[atom:Window].IsEffectiveFullscreenLogoVisible}\"");
         drawnDecorationsSource.ShouldContain(
             "IsVisible=\"{Binding $parent[atom:Window].IsEffectiveFullscreenLogoVisible}\"");
+
+        foreach (var source in new[] { fullscreenPopoverSource, drawnDecorationsSource })
+        {
+            source.ShouldContain("Content=\"{Binding $parent[atom:Window].EffectiveLogo}\"");
+            source.ShouldContain(
+                "ContentTemplate=\"{Binding $parent[atom:Window].EffectiveLogoTemplate}\"");
+        }
     }
 
     private static string GetRepoFile(string relativePath)

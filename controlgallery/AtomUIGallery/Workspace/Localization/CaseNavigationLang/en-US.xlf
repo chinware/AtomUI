@@ -336,6 +336,11 @@
         <source>SplitButton</source>
       </segment>
     </unit>
+    <unit id="General_Window">
+      <segment>
+        <source>Window</source>
+      </segment>
+    </unit>
     <unit id="Layout">
       <segment>
         <source>Layout</source>

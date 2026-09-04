@@ -403,6 +403,12 @@
         <target state="translated">SplitButton 分割按钮</target>
       </segment>
     </unit>
+    <unit id="General_Window">
+      <segment>
+        <source>Window</source>
+        <target state="translated">Window 窗口</target>
+      </segment>
+    </unit>
     <unit id="Layout">
       <segment>
         <source>Layout</source>

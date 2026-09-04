@@ -31,6 +31,7 @@ ShowCases/
         en-US.xlf
         zh-CN.xlf
         zh-TW.xlf
+        pt-BR.xlf
 ```
 
 ## Namespace 规则
@@ -50,6 +51,7 @@ ShowCases/DataEntry/AutoComplete/Localization/AutoCompleteShowCaseLangResourceKi
 ShowCases/DataEntry/AutoComplete/Localization/en-US.xlf
 ShowCases/DataEntry/AutoComplete/Localization/zh-CN.xlf
 ShowCases/DataEntry/AutoComplete/Localization/zh-TW.xlf
+ShowCases/DataEntry/AutoComplete/Localization/pt-BR.xlf
 ```
 
 这样做的原因：
@@ -74,6 +76,7 @@ ShowCases/
         en-US.xlf
         zh-CN.xlf
         zh-TW.xlf
+        pt-BR.xlf
 ```
 
 不要在 `Localization` 下再套一层 `AutoCompleteShowCaseLang/`。目录已经处在 `AutoComplete` 作用域内，额外层级会增加路径深度但没有维护收益。
@@ -135,6 +138,7 @@ ShowCases/
         en-US.xlf
         zh-CN.xlf
         zh-TW.xlf
+        pt-BR.xlf
 ```
 
 子场景不单独建立新的 ShowCase namespace，除非它已经成为左侧导航中的独立 ShowCase。
@@ -168,7 +172,7 @@ ShowCases/
 1. 先做纯目录重组，不改业务逻辑。
 2. 同步调整 namespace、XAML `x:Class` 和 `using:`。
 3. 确认 `ShowCaseRegister`、导航和 lazy tab 引用仍能正常解析。
-4. 再补充该 ShowCase 的 `Localization/<Catalog>ResourceKind.cs` 和 `en-US.xlf`、`zh-CN.xlf`、`zh-TW.xlf`。
+4. 再补充该 ShowCase 的 `Localization/<Catalog>ResourceKind.cs` 和 `en-US.xlf`、`zh-CN.xlf`、`zh-TW.xlf`、`pt-BR.xlf`。
 5. 每迁移一批后执行 Gallery Debug build。
 
 目录重组和多语言补齐可以分 commit 处理，避免一个提交同时包含大量移动和文案变更。

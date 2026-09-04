@@ -21899,7 +21899,7 @@ Window 不负责普通内容控件、Dialog 弹层或业务路由容器。这些
 | NuGet 包 | `AtomUI.Desktop.Controls` |
 | .NET 命名空间 | `AtomUI.Desktop.Controls` |
 | AXAML 命名空间 | `https://atomui.net` |
-| Gallery 页面 | `未独立 Gallery 页面；以 `docs/controls/desktop/window/window` 源文档为准` |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/General/Window` |
 | 状态 | Stable |
 
 ## 何时使用
@@ -21925,7 +21925,7 @@ Window 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 | 选择与集合 | `ViewModel` | 维护选择、展开、过滤、分页、分组或集合状态。 |
 | 交互与状态 | `IsMinimizeCaptionButtonVisible`、`IsMaximizeCaptionButtonVisible`、`IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsPinCaptionButtonVisible`、`IsMoveEnabled` | 表达 managed caption button 呈现、窗口移动和用户可观察状态；visibility 不替代窗口 capability。 |
 | 弹层与窗口 | `WindowFrameLayer`、`WindowFrameLayerOpacity` | 控制 popup、flyout、dialog、window 或 overlay 宿主协作。 |
-| 其他稳定入口 | `Logo`、`LogoVisibility`、`IsTitleVisible`、`MediaBreakPoint`、`OsType`、`OsVersion`、`TitleAlignment` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。`IsTitleVisible` 只控制默认标题栏内的标题文字呈现（`WindowTitleBar` AddOwner facade），不影响系统级窗口标题；与 `IsTitleBarVisible`（隐藏整条标题栏）作用域不同。 |
+| 其他稳定入口 | `Logo`、`LogoVisibility`、`IsTitleVisible`、`MediaBreakPoint`、`OsType`、`OsVersion`、`TitleAlignment` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。`IsTitleVisible` 只控制默认标题栏内的标题文字呈现（`WindowTitleBar` AddOwner facade），不影响系统级窗口标题；与 `IsTitleBarVisible`（隐藏整条标题栏）作用域不同。`Logo`/`LogoTemplate` 只承载显式值：未设置时标题栏渲染层回退到 `Icon`（再回退主窗口 Logo/Icon），运行时设为 `null` 回到默认，彻底隐藏用 `LogoVisibility=Never`。 |
 
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
 
@@ -21969,7 +21969,47 @@ Window 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-Gallery 目录 `未独立 Gallery 页面；以 `docs/controls/desktop/window/window` 源文档为准` 当前不存在；请检查控件文档中的 Gallery 页面元数据。
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础窗口
+
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Window/Views/WindowShowCase.axaml:34`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<atom:Button ButtonType="Primary"
+```
+
+### 标题对齐
+
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Window/Views/WindowShowCase.axaml:47`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<atom:Button ButtonType="Primary"
+```
+
+### 隐藏标题文字
+
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Window/Views/WindowShowCase.axaml:61`
+
+SourceKey：`window-title-visibility`
+
+```axaml
+<atom:Button ButtonType="Primary"
+```
+
+### Logo 显示策略
+
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Window/Views/WindowShowCase.axaml:74`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<atom:Button ButtonType="Primary"
+```
 
 ## 状态模型
 
@@ -22162,7 +22202,7 @@ Source: ./controls/window-title-bar/index-cn.md
 | NuGet 包 | `AtomUI.Desktop.Controls` |
 | .NET 命名空间 | `AtomUI.Desktop.Controls` |
 | AXAML 命名空间 | `https://atomui.net` |
-| Gallery 页面 | `未提供独立页面；以本目录源文档、控件源码和回归测试为准。` |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/General/Window` |
 | 状态 | Stable |
 
 ## 何时使用
@@ -22199,8 +22239,8 @@ internal 类型服务于 AtomUI 内置主题，不属于应用可直接创建或
 
 | API | 默认值 | 语义 |
 | --- | --- | --- |
-| `Logo` | `null` | Logo 内容对象。 |
-| `LogoTemplate` | `null` | Logo 数据模板。 |
+| `Logo` | `null` | Logo 内容对象；只承载开发者显式值，框架不写入默认值。未设置时标题栏渲染层回退到窗口 `Icon`（再回退主窗口 Logo/Icon），运行时设为 `null` 即回到该默认，彻底隐藏用 `LogoVisibility=Never`。 |
+| `LogoTemplate` | `null` | Logo 数据模板；与 `Logo` 同为显式值，未设置时由渲染层的 effective 解析决定。 |
 | `LogoVisibility` | `Auto` | Logo 显示策略。 |
 | `Title` | `null` | 标题内容对象。 |
 | `TitleTemplate` | `null` | 标题数据模板。 |
@@ -22254,7 +22294,47 @@ Add-on 可以包含可交互控件，也可以是 `null`、隐藏节点或当前
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-Gallery 目录 `未提供独立页面；以本目录源文档、控件源码和回归测试为准。` 当前不存在；请检查控件文档中的 Gallery 页面元数据。
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础窗口
+
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Window/Views/WindowShowCase.axaml:34`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<atom:Button ButtonType="Primary"
+```
+
+### 标题对齐
+
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Window/Views/WindowShowCase.axaml:47`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<atom:Button ButtonType="Primary"
+```
+
+### 隐藏标题文字
+
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Window/Views/WindowShowCase.axaml:61`
+
+SourceKey：`window-title-visibility`
+
+```axaml
+<atom:Button ButtonType="Primary"
+```
+
+### Logo 显示策略
+
+来源：`controlgallery/AtomUIGallery/ShowCases/General/Window/Views/WindowShowCase.axaml:74`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<atom:Button ButtonType="Primary"
+```
 
 ## 状态模型
 
@@ -22279,6 +22359,8 @@ Gallery 目录 `未提供独立页面；以本目录源文档、控件源码和�
 | 无标题内容、平台不是 macOS、窗口全屏 | 隐藏。 |
 
 该模型只控制 Logo 的有效可见性，不修改 `Logo`、`Window.Icon` 或应用图标来源。
+
+每个 `WindowTitleBar` 先解析自己的显式 `Logo` / `LogoTemplate`；两者都未设置时，才消费宿主 `Window` 解析出的有效 Logo。因而独立标题栏和窗口内的自定义标题栏都保留自身公共内容契约，宿主 `Icon` 与主窗口 Logo/Icon 仅作为回退，不覆盖标题栏的显式值。
 
 ### 4.2 标题显示模型
 
@@ -22360,12 +22442,12 @@ Token 负责尺寸、间距、字体和状态颜色，不负责以下运行时�
 
 ## AOT 与裁剪注意事项
 
-- Window 定义强类型 host projection 字段集合并创建 lease；每个 WindowTitleBar 按 logical attach/detach 生命周期独立持有和释放 lease。宿主引用本身不作为 caption 状态旁路，CaptionButtonGroup 不持有 Window relay binding 或宿主引用。
+- Window 定义强类型 host projection 字段集合并创建 lease；每个 WindowTitleBar 按 logical attach/detach 生命周期独立持有和释放 lease。effective Logo 通知属于同一 lease；宿主引用只用于解析 Logo 回退，不作为 caption 状态旁路，CaptionButtonGroup 不持有 Window relay binding 或宿主引用。
 - 宿主发现只遍历当前逻辑祖先，不使用全局 Window registry、反射、字符串 binding path 或程序集扫描。
 - 每个标题栏与每次宿主连接只创建一个固定大小 lease；状态更新复用现有 binding 和交互订阅，template reapply 不重建 lease。
 - 标题布局 Strategy 使用静态无状态实例；measure/arrange 不创建 Context、Plan、binding 或临时 Visual。
 - TemplateBinding 和 selector 承担静态视觉投影，不在状态变化时重建模板节点。
-- Logo 计算只在相关属性或 WindowState 变化时执行。
+- Logo 计算只在显式内容、Icon、宿主 effective 内容或显示策略相关状态变化时执行；子 Window 的主窗口回退订阅只在窗口已打开且依赖回退时存在，并在本地接管或 close 时释放。
 - native chrome metrics 缓存属于 Window/platform manager，不能复制到 Panel 或 Strategy。
 - 平台 Strategy 使用封闭 `OsType` switch，不使用反射、程序集扫描、字符串类型发现或运行时 DI。
 - Token 通过生成的静态资源入口消费；不反射枚举 public API 或 Token 属性。

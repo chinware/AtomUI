@@ -2,6 +2,17 @@
 
 本文档记录 Window 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-09-04
+
+- Integration
+  - Keep Window effective Logo resolution live for runtime `Icon` and main-window Logo/Icon changes, while preserving explicit child-window values.
+- Theme
+  - Make both fullscreen title hosts consume Window effective title visibility and effective Logo content.
+- Lifecycle
+  - Scope main-window fallback subscriptions to dependent child Windows only while they are open, and release them on local takeover or close so never-shown windows cannot be retained by the main window.
+- Verification
+  - Cover runtime Icon visibility, main-window fallback updates, zero pre-open subscriptions and release, both fullscreen hosts, and the Gallery `window-title-visibility` example.
+
 ## 2026-09-03
 
 - API

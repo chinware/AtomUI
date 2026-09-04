@@ -1,0 +1,147 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Window.WindowShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.Window"
+             x:DataType="vm:WindowViewModel">
+    <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
+        <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
+            <gallery:GalleryStickyTabsHost.Header>
+                <gallery:GalleryShowCaseHeader
+                    Title="Window"
+                    Category="{gallery:WindowShowCaseLangResource ComponentCategory}"
+                    Status="{gallery:WindowShowCaseLangResource ComponentStatusStable}"
+                    Subtitle="{gallery:WindowShowCaseLangResource PageSubtitle}"
+                    Description="{gallery:WindowShowCaseLangResource PageDescription}"
+                    Namespace="AtomUI.Desktop.Controls"
+                    Package="AtomUI.Desktop.Controls"
+                    BaseClass="Window" />
+            </gallery:GalleryStickyTabsHost.Header>
+
+            <gallery:ShowCasePanel Name="ExamplesContent"
+                                   IsScrollEnabled="False"
+                                   IsDeferredLoadingEnabled="True"
+                                   InitialDeferredLoadItemCount="4"
+                                   DeferredLoadBatchSize="2"
+                                   ContentMargin="28,10,28,28">
+                <gallery:ShowCaseItem
+                    Title="{gallery:WindowShowCaseLangResource BasicTitle}"
+                    Description="{gallery:WindowShowCaseLangResource BasicDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:WindowViewModel">
+                            <atom:Button ButtonType="Primary"
+                                         Content="{gallery:WindowShowCaseLangResource BasicOpenButtonText}"
+                                         Click="HandleBasicWindowButtonClick" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:WindowShowCaseLangResource TitleAlignmentTitle}"
+                    Description="{gallery:WindowShowCaseLangResource TitleAlignmentDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:WindowViewModel">
+                            <atom:Button ButtonType="Primary"
+                                         Content="{gallery:WindowShowCaseLangResource TitleAlignmentOpenButtonText}"
+                                         Click="HandleTitleAlignmentWindowButtonClick" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:WindowShowCaseLangResource IsTitleVisibleTitle}"
+                    Description="{gallery:WindowShowCaseLangResource IsTitleVisibleDescription}"
+                    SourceKey="window-title-visibility"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:WindowViewModel">
+                            <atom:Button ButtonType="Primary"
+                                         Content="{gallery:WindowShowCaseLangResource IsTitleVisibleOpenButtonText}"
+                                         Click="HandleIsTitleVisibleWindowButtonClick" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:WindowShowCaseLangResource LogoVisibilityTitle}"
+                    Description="{gallery:WindowShowCaseLangResource LogoVisibilityDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:WindowViewModel">
+                            <atom:Button ButtonType="Primary"
+                                         Content="{gallery:WindowShowCaseLangResource LogoVisibilityOpenButtonText}"
+                                         Click="HandleLogoVisibilityWindowButtonClick" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:WindowShowCaseLangResource AddOnTitle}"
+                    Description="{gallery:WindowShowCaseLangResource AddOnDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:WindowViewModel">
+                            <atom:Button ButtonType="Primary"
+                                         Content="{gallery:WindowShowCaseLangResource AddOnOpenButtonText}"
+                                         Click="HandleAddOnWindowButtonClick" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:WindowShowCaseLangResource CaptionButtonsTitle}"
+                    Description="{gallery:WindowShowCaseLangResource CaptionButtonsDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:WindowViewModel">
+                            <atom:Button ButtonType="Primary"
+                                         Content="{gallery:WindowShowCaseLangResource CaptionButtonsOpenButtonText}"
+                                         Click="HandleCaptionButtonsWindowButtonClick" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:WindowShowCaseLangResource TitleBarlessTitle}"
+                    Description="{gallery:WindowShowCaseLangResource TitleBarlessDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:WindowViewModel">
+                            <atom:Button ButtonType="Primary"
+                                         Content="{gallery:WindowShowCaseLangResource TitleBarlessOpenButtonText}"
+                                         Click="HandleTitleBarlessWindowButtonClick" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:WindowShowCaseLangResource FrameLayerTitle}"
+                    Description="{gallery:WindowShowCaseLangResource FrameLayerDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:WindowViewModel">
+                            <atom:Button ButtonType="Primary"
+                                         Content="{gallery:WindowShowCaseLangResource FrameLayerOpenButtonText}"
+                                         Click="HandleFrameLayerWindowButtonClick" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+                <gallery:ShowCaseItem
+                    Title="{gallery:WindowShowCaseLangResource PlaygroundTitle}"
+                    Description="{gallery:WindowShowCaseLangResource PlaygroundDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:WindowViewModel">
+                            <atom:Button ButtonType="Primary"
+                                         Content="{gallery:WindowShowCaseLangResource PlaygroundOpenButtonText}"
+                                         Click="HandlePlaygroundButtonClick" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+            </gallery:ShowCasePanel>
+        </gallery:GalleryStickyTabsHost>
+    </Grid>
+</UserControl>

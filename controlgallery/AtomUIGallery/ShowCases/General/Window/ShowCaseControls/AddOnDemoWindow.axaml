@@ -1,0 +1,34 @@
+<atom:Window xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             x:Class="AtomUIGallery.ShowCases.Window.AddOnDemoWindow"
+             x:ClassModifier="internal"
+             Title="AtomUI Window"
+             LogoVisibility="Always"
+             Width="680"
+             Height="420"
+             WindowStartupLocation="CenterOwner">
+    <atom:Window.LeftAddOn>
+        <StackPanel Orientation="Horizontal" Spacing="4">
+            <atom:WindowTitleBarButton Icon="{antdicons:AntDesignIconProvider Kind=MenuOutlined}"
+                                       atom:ToolTip.Tip="Menu" />
+            <atom:WindowTitleBarToggleButton CheckedIcon="{antdicons:AntDesignIconProvider Kind=PushpinFilled}"
+                                             UnCheckedIcon="{antdicons:AntDesignIconProvider Kind=PushpinOutlined}"
+                                             atom:ToolTip.Tip="Pin" />
+        </StackPanel>
+    </atom:Window.LeftAddOn>
+    <atom:Window.RightAddOn>
+        <StackPanel Orientation="Horizontal" Spacing="4">
+            <atom:WindowTitleBarButton Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}"
+                                       atom:ToolTip.Tip="Search" />
+            <atom:WindowTitleBarButton Icon="{antdicons:AntDesignIconProvider Kind=SettingOutlined}"
+                                       atom:ToolTip.Tip="Settings" />
+        </StackPanel>
+    </atom:Window.RightAddOn>
+    <StackPanel Margin="24" Spacing="12">
+        <atom:TextBlock Text="{gallery:WindowShowCaseLangResource AddOnTitle}" FontWeight="Bold" />
+        <atom:TextBlock Text="{gallery:WindowShowCaseLangResource AddOnHint}" TextWrapping="Wrap" />
+    </StackPanel>
+</atom:Window>

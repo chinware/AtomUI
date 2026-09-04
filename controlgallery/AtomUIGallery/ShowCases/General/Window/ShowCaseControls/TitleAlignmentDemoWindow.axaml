@@ -1,0 +1,26 @@
+<atom:Window xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:sc="clr-namespace:AtomUIGallery.ShowCases.Window"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             x:Class="AtomUIGallery.ShowCases.Window.TitleAlignmentDemoWindow"
+             x:ClassModifier="internal"
+             Title="AtomUI Window"
+             Width="680"
+             Height="420"
+             WindowStartupLocation="CenterOwner">
+    <atom:Window.Logo>
+        <sc:AtomUiLogoIcon />
+    </atom:Window.Logo>
+    <StackPanel Margin="24" Spacing="16">
+        <atom:TextBlock Text="{gallery:WindowShowCaseLangResource TitleAlignmentHint}" TextWrapping="Wrap" />
+        <atom:Segmented SelectionChanged="HandleAlignmentSelectionChanged">
+            <atom:SegmentedItem Content="Auto" />
+            <atom:SegmentedItem Content="Left" />
+            <atom:SegmentedItem Content="Center" />
+            <atom:SegmentedItem Content="WindowCenter" />
+            <atom:SegmentedItem Content="Right" />
+        </atom:Segmented>
+    </StackPanel>
+</atom:Window>

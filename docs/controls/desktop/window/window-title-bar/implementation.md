@@ -116,7 +116,13 @@ Window 只发布 requested visibility、窗口能力、状态和操作命令。`
 
 ### 4.3 Effective Logo
 
-`Logo`、`LogoTemplate`、`LogoVisibility`、`Title`、`IsTitleVisible`、`OsType` 或全屏状态变化时重新计算 `IsEffectiveLogoVisible`；`Auto` 分支要求标题内容有效且标题未被 `IsTitleVisible=False` 隐藏。Theme 只绑定这一 internal direct property，不在平台模板中复制 Logo 决策。
+Logo 的内容解析与可见性解析分为两层：
+
+**Window 内容层（`Window.EffectiveLogo` / `Window.EffectiveLogoTemplate`）**。公开的 `Logo` / `LogoTemplate` 只承载开发者显式值，框架从不写入。Window 在解析点按显式 `Logo`/`LogoTemplate` → 本窗口 `Icon` → 主窗口显式 `Logo`/`LogoTemplate` → 主窗口 `Icon` 的顺序求值；`WindowIcon` 内容配套内置模板。窗口打开前可以解析主窗口当前值，但不建立长期订阅；打开后且确实依赖主窗口回退时，子 Window 才持有对主窗口 `Logo`、`LogoTemplate` 和 `Icon` 的固定订阅 lease。`OnOpened` 重新解析以取得最新值，本地显式值或本地 `Icon` 接管时释放该 lease，窗口关闭时同样释放。两个全屏标题宿主直接绑定 Window effective 属性。
+
+**WindowTitleBar 内容层（`WindowTitleBar.EffectiveLogo` / `WindowTitleBar.EffectiveLogoTemplate`）**。标题栏自己的 `Logo` 或 `LogoTemplate` 任一非空时，effective 内容取标题栏显式值；两者都为空时才取 host projection 通知的 Window effective 内容。三平台 `PART_Logo` 通过 `TemplateBinding` 消费标题栏 effective 属性，因此 standalone 用法和 Window 内自定义标题栏的显式值不会被宿主回退覆盖。运行时设置 `Logo = <Control>` 直接渲染且不残留 WindowIcon 模板；`Logo = null` 回到宿主默认图标，彻底隐藏使用 `LogoVisibility = Never`。
+
+**可见性层（`IsEffectiveLogoVisible`）**。标题栏 effective 内容、`LogoVisibility`、`Title`、`IsTitleVisible`、`OsType` 或全屏状态变化时重新计算；`hasLogo` 只读取标题栏 effective 内容。`Auto` 分支要求标题内容有效且标题未被 `IsTitleVisible=False` 隐藏。Theme 只绑定 internal direct property，不在平台模板中复制 Logo 决策。
 
 ### 4.4 Effective Title
 
@@ -228,7 +234,7 @@ Windows/Linux 默认模板的 Leading `DockPanel` 使用 `LogoAndLeftAddOnSpacin
 
 1. `WindowTitleBar.OnAttachedToLogicalTree` 查找最近的 AtomUI `Window`。
 2. `WindowTitleBar.AttachHost(window)` 对相同 Window 幂等；宿主变化时先释放旧 lease。
-3. `Window` 创建一个固定内容的 host projection lease：把 caption requested visibility、窗口能力、WindowState、Topmost、active state、平台支持、CSD/native chrome 输入和宿主命令单向绑定给该标题栏，并订阅该标题栏的双击请求与拖动 pointer 事件。
+3. `Window` 创建一个固定内容的 host projection lease：把 caption requested visibility、窗口能力、WindowState、Topmost、active state、平台支持、CSD/native chrome 输入和宿主命令单向绑定给该标题栏，通知 Window effective Logo 变化，并订阅该标题栏的双击请求与拖动 pointer 事件。
 4. `WindowTitleBar` 持有返回的 `IDisposable` lease；Window 不集中保存任意内容区标题栏的 binding 或交互订阅生命周期。
 5. `OnDetachedFromLogicalTree`、宿主切换、默认标题栏替换或 Window close 释放 lease 和宿主引用。
 
@@ -236,7 +242,7 @@ Windows/Linux 默认模板的 Leading `DockPanel` 使用 `LogoAndLeftAddOnSpacin
 
 ### 6.3 Template reapply
 
-`WindowTitleBar.OnApplyTemplate` 只接入标题栏自身必须持有的 template part。标题、Logo、add-on 和 caption 配置通过 `TemplateBinding` 获取，不从宿主引用旁路读取，也不重复建立 host projection。Template reapply 与 logical host lifecycle 正交，不增加 Window binding 数量。
+`WindowTitleBar.OnApplyTemplate` 只接入标题栏自身必须持有的 template part。标题、effective Logo、add-on 和 caption 配置通过 `TemplateBinding` 获取；Logo 的宿主回退由标题栏状态层统一解析，不在模板中旁路读取 Window，也不重复建立 host projection。Template reapply 与 logical host lifecycle 正交，不增加 Window binding 数量。
 
 LeftAddOn 或 RightAddOn 的内容、可见性、子节点、模板和 margin 变化沿 Avalonia visual tree 使布局重新测量。Windows/Linux 中 Logo 或 LeftAddOn 的有效可见性变化同时重新计算 Leading `DockPanel` 的条件 sibling spacing。Panel 始终读取当前 `DesiredSize`，不保存 add-on 宽度或内部间距缓存，也不需要由标题栏代码手工调用 `InvalidateMeasure`。
 
@@ -289,12 +295,12 @@ Windows/Linux 默认模板把有效 Logo 放入 Leading direct role child，并�
 
 ## 9. 资源、性能与 AOT 边界
 
-- Window 定义强类型 host projection 字段集合并创建 lease；每个 WindowTitleBar 按 logical attach/detach 生命周期独立持有和释放 lease。宿主引用本身不作为 caption 状态旁路，CaptionButtonGroup 不持有 Window relay binding 或宿主引用。
+- Window 定义强类型 host projection 字段集合并创建 lease；每个 WindowTitleBar 按 logical attach/detach 生命周期独立持有和释放 lease。effective Logo 通知属于同一 lease；宿主引用只用于解析 Logo 回退，不作为 caption 状态旁路，CaptionButtonGroup 不持有 Window relay binding 或宿主引用。
 - 宿主发现只遍历当前逻辑祖先，不使用全局 Window registry、反射、字符串 binding path 或程序集扫描。
 - 每个标题栏与每次宿主连接只创建一个固定大小 lease；状态更新复用现有 binding 和交互订阅，template reapply 不重建 lease。
 - 标题布局 Strategy 使用静态无状态实例；measure/arrange 不创建 Context、Plan、binding 或临时 Visual。
 - TemplateBinding 和 selector 承担静态视觉投影，不在状态变化时重建模板节点。
-- Logo 计算只在相关属性或 WindowState 变化时执行。
+- Logo 计算只在显式内容、Icon、宿主 effective 内容或显示策略相关状态变化时执行；子 Window 的主窗口回退订阅只在窗口已打开且依赖回退时存在，并在本地接管或 close 时释放。
 - native chrome metrics 缓存属于 Window/platform manager，不能复制到 Panel 或 Strategy。
 - 平台 Strategy 使用封闭 `OsType` switch，不使用反射、程序集扫描、字符串类型发现或运行时 DI。
 - Token 通过生成的静态资源入口消费；不反射枚举 public API 或 Token 属性。
@@ -303,6 +309,7 @@ Windows/Linux 默认模板把有效 Logo 放入 Leading direct role child，并�
 
 - Window-defined host projection 与 `Window.NotifyConfigureTitleBar` 的默认内容投影必须分离：前者服务所有逻辑树内标题栏，后者只配置默认标题栏的 Title、Logo、对齐和 add-on。
 - 每个 `WindowTitleBar` 的宿主投影保持单向、完整且独立；AttachHost 对相同 Window 幂等，detach 或宿主切换必须释放旧 lease；CaptionButtonGroup 不通过 logical attach/detach 建立 Window 状态副本。
+- `WindowTitleBar` 的显式 Logo/Template 优先于宿主 effective Logo；三平台模板只消费标题栏 effective 属性。Window 的两个全屏宿主只消费 Window effective 属性，不能回退到原始 Logo/Title 判空。
 - 默认标题栏的 `LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn` 和 `RightAddOnTemplate` 由 `Window` 的同名 public API 以 `Template` 优先级提供，派生标题栏 local add-on 不被覆盖。
 - 所有已连接标题栏获得 Window 的拖动、双击最大化和 caption 宿主上下文；只有默认标题栏获得尺寸提示和 CSD 高度协作。
 - CSD 下隐藏默认标题栏必须保留 `WindowDecorations.Full`，`WindowDrawnDecorationsTheme` 以 `HasTitleBar && IsTitleBarVisible` 控制 frame、shadow 和 presenter 可见性。
@@ -315,7 +322,8 @@ Windows/Linux 默认模板把有效 Logo 放入 Leading direct role child，并�
 
 ## 11. 测试与验证
 
-- `WindowTitleBarLogoVisibilityTests` 覆盖 Logo 默认值、平台规则、全屏规则和 Window 投影。
+- `WindowTitleBarLogoVisibilityTests` 覆盖 Logo 默认值、平台规则、两个全屏宿主的 effective 绑定和 Window 投影。
+- `WindowTitleBarEffectiveLogoTests` 覆盖 Icon 回退、运行时内容替换、自定义标题栏显式值优先级、主窗口动态回退、显示前零订阅及 close 释放。
 - `WindowTitleBarAddOnTests` 覆盖 Window add-on API 默认值、模板类型及到默认标题栏的单向实时投影。
 - `WindowTitleBarButtonTests` 覆盖 AddOn 普通/Toggle 控件继承关系、checked/unchecked 图标切换、active/motion host projection、脱离宿主后的 standalone 回退和独立主题资产注册。
 - `WindowCaptionButtonConfigurationTests` 覆盖五个 visibility 属性默认值、capability 隔离、effective truth table、默认/内容区/多标题栏宿主发现、真实 pointer 双击切换、宿主切换、动态状态投影、lease 释放和 template reapply。

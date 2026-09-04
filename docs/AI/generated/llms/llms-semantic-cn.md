@@ -13881,7 +13881,7 @@ Window
 | `FullscreenCaptionButtonGroup` | template node (StackPanel) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_PopoverFullScreenButton` | template node (CaptionButton) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_PopoverCloseButton` | template node (CaptionButton) | `FullscreenPopoverLayerTheme.axaml` | FullscreenPopoverLayer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `WindowDrawnDecorations` | control theme | `WindowDrawnDecorationsTheme.axaml` | Window | `DefaultTitleBarHeight`, `ShadowThickness`, `Title`, `TitleBarHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `WindowDrawnDecorations` | control theme | `WindowDrawnDecorationsTheme.axaml` | Window | `DefaultTitleBarHeight`, `ShadowThickness`, `TitleBarHeight` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `WindowResizer` | control theme | `WindowResizerTheme.axaml` | Window | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PART_RootLayout` | template node (Panel) | `WindowResizerTheme.axaml` | WindowResizer | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `Window` | control theme | `WindowTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `Content`, `ContentFrameBackground`, `ContentFrameLayer`, `ContentFrameLayerOpacity`, `ContentFrameLayerTemplate` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
@@ -13911,7 +13911,7 @@ Window
 | 选择与集合 | `ViewModel` | 维护选择、展开、过滤、分页、分组或集合状态。 |
 | 交互与状态 | `IsMinimizeCaptionButtonVisible`、`IsMaximizeCaptionButtonVisible`、`IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsPinCaptionButtonVisible`、`IsMoveEnabled` | 表达 managed caption button 呈现、窗口移动和用户可观察状态；visibility 不替代窗口 capability。 |
 | 弹层与窗口 | `WindowFrameLayer`、`WindowFrameLayerOpacity` | 控制 popup、flyout、dialog、window 或 overlay 宿主协作。 |
-| 其他稳定入口 | `Logo`、`LogoVisibility`、`IsTitleVisible`、`MediaBreakPoint`、`OsType`、`OsVersion`、`TitleAlignment` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。`IsTitleVisible` 只控制默认标题栏内的标题文字呈现（`WindowTitleBar` AddOwner facade），不影响系统级窗口标题；与 `IsTitleBarVisible`（隐藏整条标题栏）作用域不同。 |
+| 其他稳定入口 | `Logo`、`LogoVisibility`、`IsTitleVisible`、`MediaBreakPoint`、`OsType`、`OsVersion`、`TitleAlignment` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。`IsTitleVisible` 只控制默认标题栏内的标题文字呈现（`WindowTitleBar` AddOwner facade），不影响系统级窗口标题；与 `IsTitleBarVisible`（隐藏整条标题栏）作用域不同。`Logo`/`LogoTemplate` 只承载显式值：未设置时标题栏渲染层回退到 `Icon`（再回退主窗口 Logo/Icon），运行时设为 `null` 回到默认，彻底隐藏用 `LogoVisibility=Never`。 |
 
 ## Pseudo Classes
 
@@ -14042,6 +14042,7 @@ Window Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
 - Caption visibility 与 capability 分离；隐藏 managed button 不修改 `CanMinimize`、`CanMaximize` 或其他窗口操作入口。
 - Window 定义 title-bar host projection，WindowTitleBar 拥有每次连接的 lease；同一 Window 支持多个标题栏，detach、宿主切换和 Window close 必须释放旧 lease。
+- 子 Window 的主窗口 Logo/Icon 回退订阅只在 Window 已打开且依赖回退时存在，本地来源接管或子 Window close 必须释放；从未显示的 Window 不得持有主窗口订阅。两个全屏标题宿主统一消费 Window effective 标题与 Logo。
 - 默认标题栏内容投影与通用宿主投影保持分离；所有已连接标题栏获得拖动、双击最大化和 caption 操作，只有默认标题栏获得尺寸提示和 CSD chrome 几何协作。
 - CSD 隐藏默认标题栏时保持 `WindowDecorations.Full`，由平台窗口管理器负责最小化/恢复和最大化/还原的原生转换及可用动画。
 - CSD 隐藏默认标题栏时，内容区必须通过 `EffectiveContentFrameMargin` 消除实际 drawn title-bar 高度的占位，同时保留 frame/shadow margin；不得通过把 height hint 设为 `0`、硬编码 Token 高度或修改 `WindowDecorations` 来消除空白。
@@ -14180,11 +14181,11 @@ WindowTitleBar
 | `PART_Frame` | template node (Border) | `CaptionButtonTheme.axaml` | CaptionButton | `Background`, `BackgroundInset`, `EffectiveCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_IconPresenter` | template node (IconPresenter) | `CaptionButtonTheme.axaml` | CaptionButton | `EffectiveIcon`, `IconHeight`, `IconWidth` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `WindowTitleBarButton` | control theme | `WindowTitleBarButtonTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `WindowTitleBar` | control theme | `WindowTitleBarTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `CanMaximize`, `CanMinimize`, `CaptionButtonCommand`, `HostWindowState`, `IsCloseCaptionButtonVisible` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Frame` | template node (Border) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `Background`, `CanMaximize`, `CanMinimize`, `CaptionButtonCommand`, `HostWindowState`, `IsCloseCaptionButtonVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `WindowTitleBarLayoutPanel` | template node (WindowTitleBarLayoutPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `CanMaximize`, `CanMinimize`, `CaptionButtonCommand`, `HostWindowState`, `IsCloseCaptionButtonVisible`, `IsCsdEnabled` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `DockPanel` | template node (DockPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn`, `LeftAddOnTemplate`, `Logo` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_Logo` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveLogoVisible`, `Logo`, `LogoTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `WindowTitleBar` | control theme | `WindowTitleBarTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `CanMaximize`, `CanMinimize`, `CaptionButtonCommand`, `EffectiveLogo`, `EffectiveLogoTemplate` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Frame` | template node (Border) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `Background`, `CanMaximize`, `CanMinimize`, `CaptionButtonCommand`, `EffectiveLogo`, `EffectiveLogoTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `WindowTitleBarLayoutPanel` | template node (WindowTitleBarLayoutPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `CanMaximize`, `CanMinimize`, `CaptionButtonCommand`, `EffectiveLogo`, `EffectiveLogoTemplate`, `HostWindowState` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `DockPanel` | template node (DockPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `EffectiveLogo`, `EffectiveLogoTemplate`, `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_Logo` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `EffectiveLogo`, `EffectiveLogoTemplate`, `IsEffectiveLogoVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_LeftAddOn` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveTitleVisible`, `Title`, `TitleTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `StackPanel` | template node (StackPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `CanMaximize`, `CanMinimize`, `CaptionButtonCommand`, `HostWindowState`, `IsCloseCaptionButtonVisible`, `IsFullScreenCaptionButtonVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
@@ -14243,6 +14244,8 @@ WindowTitleBar
 | 无标题内容、平台不是 macOS、窗口全屏 | 隐藏。 |
 
 该模型只控制 Logo 的有效可见性，不修改 `Logo`、`Window.Icon` 或应用图标来源。
+
+每个 `WindowTitleBar` 先解析自己的显式 `Logo` / `LogoTemplate`；两者都未设置时，才消费宿主 `Window` 解析出的有效 Logo。因而独立标题栏和窗口内的自定义标题栏都保留自身公共内容契约，宿主 `Icon` 与主窗口 Logo/Icon 仅作为回退，不覆盖标题栏的显式值。
 
 ### 4.2 标题显示模型
 
@@ -14340,6 +14343,7 @@ Token 负责尺寸、间距、字体和状态颜色，不负责以下运行时�
 
 - Window-defined host projection 与 `Window.NotifyConfigureTitleBar` 的默认内容投影必须分离：前者服务所有逻辑树内标题栏，后者只配置默认标题栏的 Title、Logo、对齐和 add-on。
 - 每个 `WindowTitleBar` 的宿主投影保持单向、完整且独立；AttachHost 对相同 Window 幂等，detach 或宿主切换必须释放旧 lease；CaptionButtonGroup 不通过 logical attach/detach 建立 Window 状态副本。
+- `WindowTitleBar` 的显式 Logo/Template 优先于宿主 effective Logo；三平台模板只消费标题栏 effective 属性。Window 的两个全屏宿主只消费 Window effective 属性，不能回退到原始 Logo/Title 判空。
 - 默认标题栏的 `LeftAddOn`、`LeftAddOnTemplate`、`RightAddOn` 和 `RightAddOnTemplate` 由 `Window` 的同名 public API 以 `Template` 优先级提供，派生标题栏 local add-on 不被覆盖。
 - 所有已连接标题栏获得 Window 的拖动、双击最大化和 caption 宿主上下文；只有默认标题栏获得尺寸提示和 CSD 高度协作。
 - CSD 下隐藏默认标题栏必须保留 `WindowDecorations.Full`，`WindowDrawnDecorationsTheme` 以 `HasTitleBar && IsTitleBarVisible` 控制 frame、shadow 和 presenter 可见性。

@@ -115,12 +115,14 @@ Public API / ItemsSource / Command / Event
 
 Window 对标题栏的协作拆成两条独立路径：
 
-1. 通用 host projection：Window 定义 caption requested visibility、窗口能力、WindowState、active state、Topmost、平台/CSD 输入、native chrome metrics 和 CaptionButtonCommand 的强类型 binding 集合，并把标题栏双击与拖动 pointer 订阅纳入同一个 `IDisposable` lease。
+1. 通用 host projection：Window 定义 caption requested visibility、窗口能力、WindowState、active state、Topmost、平台/CSD 输入、native chrome metrics、CaptionButtonCommand 和 effective Logo 通知的强类型集合，并把标题栏双击与拖动 pointer 订阅纳入同一个 `IDisposable` lease。
 2. 默认内容配置：`NotifyConfigureTitleBar` 只投影 Title、IsTitleVisible、Logo、TitleAlignment、LeftAddOn、RightAddOn 及其模板，服务 Window 模板创建的默认或派生标题栏。
 
 每个 `WindowTitleBar` 按自己的 logical attach/detach 生命周期持有 host projection lease。同一 Window 中多个标题栏分别持有独立 lease；标题栏从 Window A 移到 Window B 时，必须先释放 A 的 lease，再从 B 创建新 lease。默认标题栏在 `OnApplyTemplate` 中无条件提前连接宿主，随后进入逻辑树时命中幂等路径；派生类覆盖 `NotifyConfigureTitleBar` 不能跳过通用宿主连接。
 
 所有连接到 Window 的标题栏都通过各自 lease 获得 pointer 拖动、双击最大化、caption 状态和命令。只有默认标题栏额外注册 `SizeChanged` 并参与标题栏高度提示、Windows CSD 最小高度和唯一 CSD geometry owner 生命周期。
+
+Window 自身解析显式 Logo、`Icon` 与主窗口 Logo/Icon 的回退链。子 Window 打开前只解析主窗口当前值，不持有订阅；`OnOpened` 重新解析，且只有在窗口已打开并使用主窗口回退时才订阅主窗口 `Logo`、`LogoTemplate` 和 `Icon`。本地显式值或本地 `Icon` 接管时立即释放，`OnClosed` 也无条件释放。默认和自定义 `WindowTitleBar` 再以自身显式值优先、宿主 effective 值兜底的方式形成各自模板输入。
 
 稳定 template part 接入点：
 
@@ -250,6 +252,7 @@ Resolve owner ThemeContext
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
 - Caption visibility 与 capability 分离；隐藏 managed button 不修改 `CanMinimize`、`CanMaximize` 或其他窗口操作入口。
 - Window 定义 title-bar host projection，WindowTitleBar 拥有每次连接的 lease；同一 Window 支持多个标题栏，detach、宿主切换和 Window close 必须释放旧 lease。
+- 子 Window 的主窗口 Logo/Icon 回退订阅只在 Window 已打开且依赖回退时存在，本地来源接管或子 Window close 必须释放；从未显示的 Window 不得持有主窗口订阅。两个全屏标题宿主统一消费 Window effective 标题与 Logo。
 - 默认标题栏内容投影与通用宿主投影保持分离；所有已连接标题栏获得拖动、双击最大化和 caption 操作，只有默认标题栏获得尺寸提示和 CSD chrome 几何协作。
 - CSD 隐藏默认标题栏时保持 `WindowDecorations.Full`，由平台窗口管理器负责最小化/恢复和最大化/还原的原生转换及可用动画。
 - CSD 隐藏默认标题栏时，内容区必须通过 `EffectiveContentFrameMargin` 消除实际 drawn title-bar 高度的占位，同时保留 frame/shadow margin；不得通过把 height hint 设为 `0`、硬编码 Token 高度或修改 `WindowDecorations` 来消除空白。

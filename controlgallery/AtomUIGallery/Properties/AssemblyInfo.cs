@@ -79,4 +79,5 @@ using Avalonia.Metadata;
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.TreeView")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.Upload")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.Watermark")]
+[assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.Window")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.Localization")]

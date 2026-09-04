@@ -1,7 +1,14 @@
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
+using Avalonia.Styling;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
+using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace AtomUI.Desktop.Controls.Tests.Window;
 
@@ -81,6 +88,51 @@ public class WindowTitleBarTitleVisibilityTests
     }
 
     [Fact]
+    public void Hidden_Title_Presenter_Does_Not_Hide_Caption_Buttons()
+    {
+        var titleBar = new AtomUI.Desktop.Controls.WindowTitleBar
+        {
+            Width          = 360,
+            Height         = 40,
+            Title          = "AtomUI",
+            IsTitleVisible = false
+        };
+        titleBar.SetValue(AtomUI.Desktop.Controls.WindowTitleBar.OsTypeProperty, OsType.Windows);
+        Application.Current!.TryFindResource(typeof(AtomUI.Desktop.Controls.WindowTitleBar), out var resource)
+                   .ShouldBeTrue();
+        titleBar.Theme = resource.ShouldBeAssignableTo<ControlTheme>();
+
+        var host = new AvaloniaWindow
+        {
+            Width   = 360,
+            Height  = 100,
+            Content = titleBar
+        };
+
+        try
+        {
+            host.Show();
+            titleBar.ApplyTemplate();
+            Dispatcher.UIThread.RunJobs();
+            host.UpdateLayout();
+
+            var titlePresenter = titleBar.GetVisualDescendants()
+                                         .OfType<ContentPresenter>()
+                                         .Single(presenter => presenter.Name == "PART_ContentPresenter");
+            var captionButtons = titleBar.GetVisualDescendants()
+                                         .OfType<Control>()
+                                         .Single(control => control.Name == "PART_CaptionButtonGroup");
+
+            titlePresenter.IsVisible.ShouldBeFalse();
+            captionButtons.IsVisible.ShouldBeTrue();
+        }
+        finally
+        {
+            host.Close();
+        }
+    }
+
+    [Fact]
     public void Title_Bar_Templates_Bind_Title_Visibility_To_Effective_State()
     {
         var source = File.ReadAllText(GetRepoFile(
@@ -109,13 +161,33 @@ public class WindowTitleBarTitleVisibilityTests
     }
 
     [Fact]
-    public void Fullscreen_Layer_Binds_Title_Text_To_Effective_Title_Visibility()
+    public void Window_Hiding_Title_Text_Preserves_The_Os_Window_Title()
     {
-        var source = File.ReadAllText(GetRepoFile(
-            "src/AtomUI.Desktop.Controls/Window/Themes/FullscreenPopoverLayerTheme.axaml"));
+        var window = new AtomUI.Desktop.Controls.Window
+        {
+            Title          = "AtomUI Demo",
+            IsTitleVisible = false
+        };
 
-        source.ShouldContain(
-            "IsVisible=\"{Binding $parent[atom:Window].IsEffectiveFullscreenTitleVisible}\"");
+        window.Title.ShouldBe("AtomUI Demo");
+    }
+
+    [Fact]
+    public void Fullscreen_Layers_Bind_Title_Text_To_Effective_Title_Visibility()
+    {
+        var themePaths = new[]
+        {
+            "src/AtomUI.Desktop.Controls/Window/Themes/FullscreenPopoverLayerTheme.axaml",
+            "src/AtomUI.Desktop.Controls/Window/Themes/WindowDrawnDecorationsTheme.axaml"
+        };
+
+        foreach (var themePath in themePaths)
+        {
+            var source = File.ReadAllText(GetRepoFile(themePath));
+            source.ShouldContain("Text=\"{Binding $parent[atom:Window].Title}\"");
+            source.ShouldContain(
+                "IsVisible=\"{Binding $parent[atom:Window].IsEffectiveFullscreenTitleVisible}\"");
+        }
     }
 
     [Fact]

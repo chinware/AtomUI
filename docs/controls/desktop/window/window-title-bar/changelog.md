@@ -2,6 +2,21 @@
 
 本文档记录 WindowTitleBar 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-09-04
+
+- Design
+  - Split logo content resolution from explicit state: public `Logo`/`LogoTemplate` hold developer values only; rendering resolves `Window.EffectiveLogo`/`EffectiveLogoTemplate` (explicit → host `Icon` → main-window explicit logo → main-window `Icon`, with the built-in `WindowIcon` template).
+- API
+  - Remove the one-shot default-logo injection (`ApplyDefaultLogoIfNeeded`/`TryApplyWindowIconLogo`) that wrote fallback values into public properties; runtime `Logo = <Control>` now renders directly and `Logo = null` falls back to the default icon. `LogoVisibility = Never` remains the way to fully hide the logo.
+- Theme
+  - Bind the three platform templates' `PART_Logo` to `WindowTitleBar.EffectiveLogo` / `EffectiveLogoTemplate` through `TemplateBinding`, preserving standalone and custom-title-bar values; bind both fullscreen hosts to the Window effective title and logo state.
+- Lifecycle
+  - Move Window effective-logo notifications into every title bar's host projection lease; create child-window main-logo fallback subscriptions only while the child is open and release them on local takeover or close.
+- Docs
+  - Rewrite the Effective Logo section; document the fallback chain and the explicit-values-only contract.
+- Verification
+  - Add `WindowTitleBarEffectiveLogoTests` covering icon fallback, runtime control replacement without template residue, custom-title-bar precedence, runtime main-window updates, zero pre-open subscriptions and release on close; cover both fullscreen theme hosts and the caption-button-preserving title-hidden template state.
+
 ## 2026-09-03
 
 - Design

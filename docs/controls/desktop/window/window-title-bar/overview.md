@@ -9,7 +9,7 @@
 | NuGet 包 | `AtomUI.Desktop.Controls` |
 | .NET 命名空间 | `AtomUI.Desktop.Controls` |
 | AXAML 命名空间 | `https://atomui.net` |
-| Gallery 页面 | 未提供独立页面；以本目录源文档、控件源码和回归测试为准。 |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/General/Window` |
 | 控件状态 | Stable |
 
 `WindowTitleBar` 负责以下内容：
@@ -56,8 +56,8 @@ internal 类型服务于 AtomUI 内置主题，不属于应用可直接创建或
 
 | API | 默认值 | 语义 |
 | --- | --- | --- |
-| `Logo` | `null` | Logo 内容对象。 |
-| `LogoTemplate` | `null` | Logo 数据模板。 |
+| `Logo` | `null` | Logo 内容对象；只承载开发者显式值，框架不写入默认值。未设置时标题栏渲染层回退到窗口 `Icon`（再回退主窗口 Logo/Icon），运行时设为 `null` 即回到该默认，彻底隐藏用 `LogoVisibility=Never`。 |
+| `LogoTemplate` | `null` | Logo 数据模板；与 `Logo` 同为显式值，未设置时由渲染层的 effective 解析决定。 |
 | `LogoVisibility` | `Auto` | Logo 显示策略。 |
 | `Title` | `null` | 标题内容对象。 |
 | `TitleTemplate` | `null` | 标题数据模板。 |
@@ -124,6 +124,8 @@ Add-on 可以包含可交互控件，也可以是 `null`、隐藏节点或当前
 | 无标题内容、平台不是 macOS、窗口全屏 | 隐藏。 |
 
 该模型只控制 Logo 的有效可见性，不修改 `Logo`、`Window.Icon` 或应用图标来源。
+
+每个 `WindowTitleBar` 先解析自己的显式 `Logo` / `LogoTemplate`；两者都未设置时，才消费宿主 `Window` 解析出的有效 Logo。因而独立标题栏和窗口内的自定义标题栏都保留自身公共内容契约，宿主 `Icon` 与主窗口 Logo/Icon 仅作为回退，不覆盖标题栏的显式值。
 
 ### 4.2 标题显示模型
 
@@ -270,7 +272,7 @@ LLMS 导出来源：
 | 单控件语义文档 | `overview.md` + `implementation.md` + Themes | 生成 `controls/window-title-bar/semantic-cn.md` |
 | API 表 | 源码 public surface | 不在 `overview.md` 机械复制完整表 |
 | Design Token 表 | `WindowTitleBarToken.cs` + `token.md` | 不手工维护第二份生成表 |
-| 示例 | 无独立 Gallery 稳定示例 | 不把临时验收 Demo 纳入生成来源 |
+| 示例 | AtomUIGallery `General / Window` + source snippet catalog | `window-title-visibility` 是稳定示例键；临时验收 Demo 不进入生成来源 |
 | 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
 验证策略：

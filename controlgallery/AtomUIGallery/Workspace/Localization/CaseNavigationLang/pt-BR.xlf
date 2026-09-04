@@ -403,6 +403,12 @@
         <target state="translated">SplitButton</target>
       </segment>
     </unit>
+    <unit id="General_Window">
+      <segment>
+        <source>Window</source>
+        <target state="translated">Janela</target>
+      </segment>
+    </unit>
     <unit id="Layout">
       <segment>
         <source>Layout</source>

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="AtomUIGallery.Localization.WindowShowCaseLangResourceKind">
+    <unit id="AddOnDescription">
+      <segment>
+        <source>Place application-owned buttons in the title bar LeftAddOn/RightAddOn areas using WindowTitleBarButton and WindowTitleBarToggleButton.</source>
+      </segment>
+    </unit>
+    <unit id="AddOnHint">
+      <segment>
+        <source>The left add-on hosts a menu button and a pin toggle; the right add-on hosts search and settings buttons.</source>
+      </segment>
+    </unit>
+    <unit id="AddOnOpenButtonText">
+      <segment>
+        <source>Open add-on window</source>
+      </segment>
+    </unit>
+    <unit id="AddOnTitle">
+      <segment>
+        <source>Title bar add-on</source>
+      </segment>
+    </unit>
+    <unit id="BasicDescription">
+      <segment>
+        <source>The default Window shape: title, three caption buttons and standard interactions, as the baseline for other demos.</source>
+      </segment>
+    </unit>
+    <unit id="BasicOpenButtonText">
+      <segment>
+        <source>Open basic window</source>
+      </segment>
+    </unit>
+    <unit id="BasicTitle">
+      <segment>
+        <source>Basic window</source>
+      </segment>
+    </unit>
+    <unit id="BasicWindowHint">
+      <segment>
+        <source>This is the default look of an AtomUI Window. The title bar shows the title together with the standard caption buttons.</source>
+      </segment>
+    </unit>
+    <unit id="CaptionButtonsDescription">
+      <segment>
+        <source>Compose the caption button set: hide the minimize button and show the full screen and pin buttons.</source>
+      </segment>
+    </unit>
+    <unit id="CaptionButtonsHint">
+      <segment>
+        <source>Only full screen and pin buttons remain on the right of the title bar; minimizing is disabled for this window.</source>
+      </segment>
+    </unit>
+    <unit id="CaptionButtonsOpenButtonText">
+      <segment>
+        <source>Open caption buttons window</source>
+      </segment>
+    </unit>
+    <unit id="CaptionButtonsTitle">
+      <segment>
+        <source>Caption buttons</source>
+      </segment>
+    </unit>
+    <unit id="ComponentCategory">
+      <segment>
+        <source>General</source>
+      </segment>
+    </unit>
+    <unit id="ComponentStatusStable">
+      <segment>
+        <source>Stable</source>
+      </segment>
+    </unit>
+    <unit id="FrameLayerDescription">
+      <segment>
+        <source>Customize TitleBarFrameBackground, ContentFrameBackground and a decorative WindowFrameLayer with opacity.</source>
+      </segment>
+    </unit>
+    <unit id="FrameLayerHint">
+      <segment>
+        <source>The title bar uses a gradient, the content area a brand tint, and a corner-decorated layer floats above them.</source>
+      </segment>
+    </unit>
+    <unit id="FrameLayerOpenButtonText">
+      <segment>
+        <source>Open frame layer window</source>
+      </segment>
+    </unit>
+    <unit id="FrameLayerTitle">
+      <segment>
+        <source>Frame layer</source>
+      </segment>
+    </unit>
+    <unit id="IsTitleVisibleDescription">
+      <segment>
+        <source>IsTitleVisible=False hides only the title text inside the title bar; the taskbar and window switching still show the OS window title. Different from IsTitleBarVisible, which hides the whole title bar.</source>
+      </segment>
+    </unit>
+    <unit id="IsTitleVisibleHint">
+      <segment>
+        <source>The title bar shows no title text, but the taskbar still shows "AtomUI Demo".</source>
+      </segment>
+    </unit>
+    <unit id="IsTitleVisibleOpenButtonText">
+      <segment>
+        <source>Open title-hidden window</source>
+      </segment>
+    </unit>
+    <unit id="IsTitleVisibleTitle">
+      <segment>
+        <source>Hide title text</source>
+      </segment>
+    </unit>
+    <unit id="LogoVisibilityDescription">
+      <segment>
+        <source>Switch the Logo display policy between Auto, Always and Never.</source>
+      </segment>
+    </unit>
+    <unit id="LogoVisibilityHint">
+      <segment>
+        <source>Switch the segmented control below and watch the Logo visibility change.</source>
+      </segment>
+    </unit>
+    <unit id="LogoVisibilityOpenButtonText">
+      <segment>
+        <source>Open Logo policy window</source>
+      </segment>
+    </unit>
+    <unit id="LogoVisibilityTitle">
+      <segment>
+        <source>Logo visibility policy</source>
+      </segment>
+    </unit>
+    <unit id="PageDescription">
+      <segment>
+        <source>Explore Window title bar content, window chrome and frame layer customization.</source>
+      </segment>
+    </unit>
+    <unit id="PageSubtitle">
+      <segment>
+        <source>Window and title bar customization.</source>
+      </segment>
+    </unit>
+    <unit id="PlaygroundCaptionButtonsHint">
+      <segment>
+        <source>On macOS the system traffic lights are native: the minimize, maximize and full screen switches apply to the AtomUI-drawn buttons on Windows/Linux; only the pin switch takes effect here.</source>
+      </segment>
+    </unit>
+    <unit id="PlaygroundDescription">
+      <segment>
+        <source>A live window combining every option on this page: title text, alignment, logo policy, add-ons, caption buttons and frame backgrounds.</source>
+      </segment>
+    </unit>
+    <unit id="PlaygroundHint">
+      <segment>
+        <source>The panel on the right acts on this window's title bar and frame in real time.</source>
+      </segment>
+    </unit>
+    <unit id="PlaygroundOpenButtonText">
+      <segment>
+        <source>Open playground</source>
+      </segment>
+    </unit>
+    <unit id="PlaygroundTitle">
+      <segment>
+        <source>Playground</source>
+      </segment>
+    </unit>
+    <unit id="TitleAlignmentDescription">
+      <segment>
+        <source>Switch the title group alignment between Auto, Left, Center, WindowCenter and Right.</source>
+      </segment>
+    </unit>
+    <unit id="TitleAlignmentHint">
+      <segment>
+        <source>Switch the segmented control below and watch the title group alignment change.</source>
+      </segment>
+    </unit>
+    <unit id="TitleAlignmentOpenButtonText">
+      <segment>
+        <source>Open alignment window</source>
+      </segment>
+    </unit>
+    <unit id="TitleAlignmentTitle">
+      <segment>
+        <source>Title alignment</source>
+      </segment>
+    </unit>
+    <unit id="TitleBarlessDescription">
+      <segment>
+        <source>IsTitleBarVisible=False removes the built-in title bar; a custom header row and an embedded WindowTitleBar keep dragging and double-click maximize working.</source>
+      </segment>
+    </unit>
+    <unit id="TitleBarlessHint">
+      <segment>
+        <source>The top area is fully custom. The embedded title bar still supports dragging and double-click to maximize.</source>
+      </segment>
+    </unit>
+    <unit id="TitleBarlessOpenButtonText">
+      <segment>
+        <source>Open title barless window</source>
+      </segment>
+    </unit>
+    <unit id="TitleBarlessTitle">
+      <segment>
+        <source>Title barless</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

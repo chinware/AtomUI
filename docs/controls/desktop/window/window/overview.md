@@ -9,7 +9,7 @@
 | NuGet 包 | `AtomUI.Desktop.Controls` |
 | .NET 命名空间 | `AtomUI.Desktop.Controls` |
 | AXAML 命名空间 | `https://atomui.net` |
-| Gallery 页面 | 未独立 Gallery 页面；以 `docs/controls/desktop/window/window` 源文档为准 |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/General/Window` |
 | 控件状态 | Stable |
 
 Window 是 AtomUI 桌面控件体系中的桌面窗口控件，用于提供 AtomUI 自绘窗口、平台窗口能力和主题集成入口。
@@ -43,7 +43,7 @@ Window 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 | 选择与集合 | `ViewModel` | 维护选择、展开、过滤、分页、分组或集合状态。 |
 | 交互与状态 | `IsMinimizeCaptionButtonVisible`、`IsMaximizeCaptionButtonVisible`、`IsCloseCaptionButtonVisible`、`IsFullScreenCaptionButtonVisible`、`IsPinCaptionButtonVisible`、`IsMoveEnabled` | 表达 managed caption button 呈现、窗口移动和用户可观察状态；visibility 不替代窗口 capability。 |
 | 弹层与窗口 | `WindowFrameLayer`、`WindowFrameLayerOpacity` | 控制 popup、flyout、dialog、window 或 overlay 宿主协作。 |
-| 其他稳定入口 | `Logo`、`LogoVisibility`、`IsTitleVisible`、`MediaBreakPoint`、`OsType`、`OsVersion`、`TitleAlignment` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。`IsTitleVisible` 只控制默认标题栏内的标题文字呈现（`WindowTitleBar` AddOwner facade），不影响系统级窗口标题；与 `IsTitleBarVisible`（隐藏整条标题栏）作用域不同。 |
+| 其他稳定入口 | `Logo`、`LogoVisibility`、`IsTitleVisible`、`MediaBreakPoint`、`OsType`、`OsVersion`、`TitleAlignment` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。`IsTitleVisible` 只控制默认标题栏内的标题文字呈现（`WindowTitleBar` AddOwner facade），不影响系统级窗口标题；与 `IsTitleBarVisible`（隐藏整条标题栏）作用域不同。`Logo`/`LogoTemplate` 只承载显式值：未设置时标题栏渲染层回退到 `Icon`（再回退主窗口 Logo/Icon），运行时设为 `null` 回到默认，彻底隐藏用 `LogoVisibility=Never`。 |
 
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
 
