@@ -298,6 +298,12 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
             o => o.IsKeyboardActive,
             (o, v) => o.IsKeyboardActive = v);
 
+    internal static readonly DirectProperty<NavMenuItem, bool> IsPointerHoldProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuItem, bool>(
+            nameof(IsPointerHold),
+            o => o.IsPointerHold,
+            (o, v) => o.IsPointerHold = v);
+
     internal static readonly DirectProperty<NavMenuItem, bool> IsInlineCollapsedProperty =
         AvaloniaProperty.RegisterDirect<NavMenuItem, bool>(
             nameof(IsInlineCollapsed),
@@ -419,6 +425,14 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     {
         get => _isKeyboardActive;
         set => SetAndRaise(IsKeyboardActiveProperty, ref _isKeyboardActive, value);
+    }
+
+    private bool _isPointerHold;
+
+    internal bool IsPointerHold
+    {
+        get => _isPointerHold;
+        set => SetAndRaise(IsPointerHoldProperty, ref _isPointerHold, value);
     }
 
     private bool _isInlineCollapsed;
@@ -650,7 +664,10 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     {
         base.OnPointerReleased(e);
 
-        if (!_isEmbeddedInMenu)
+        if (!_isEmbeddedInMenu &&
+            e.InitialPressMouseButton == MouseButton.Left &&
+            this.GetVisualsAt(e.GetPosition(this)).Any(visual =>
+                ReferenceEquals(visual, this) || this.IsVisualAncestorOf(visual)))
         {
             //Normally the Menu's IMenuInteractionHandler is sending the click events for us
             //However when the item is not embedded into a menu we need to send them ourselves.

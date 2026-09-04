@@ -4,7 +4,7 @@
 
 ## 1. 定位
 
-NavMenuToken 是 NavMenu 的组件级设计变量层。它把全局颜色、尺寸、间距、圆角、字体和 popup 体系转换为 NavMenu 可消费的语义值。
+NavMenuToken 是 NavMenu 的组件级设计变量层。它把全局颜色、尺寸、间距、圆角、字体、动效和 popup 体系转换为 NavMenu 可消费的语义值。
 
 NavMenuToken 服务以下主题：
 
@@ -46,7 +46,7 @@ NavMenuToken 当前按 NavMenu 语义分为八类。
 
 用于菜单项前景、快捷键、分组标题和 horizontal 顶层文字状态。`GroupTitleColor`、`GroupTitleLineHeight`、`GroupTitleFontSize` 只服务 `NavMenuGroupItem` 的非交互标题，不应复用菜单项 selected、hover 或 disabled 状态。`ItemSelectedColor` 同时服务 selected leaf 和 selected path ancestor 的前景语义。
 
-### 2.3 菜单项背景 Token
+### 2.3 菜单项背景与动效 Token
 
 - `ItemHoverBg`
 - `ItemActiveBg`
@@ -54,8 +54,9 @@ NavMenuToken 当前按 NavMenu 语义分为八类。
 - `SubMenuItemBg`
 - `HorizontalItemHoverBg`
 - `HorizontalItemSelectedBg`
+- `ItemBackgroundMotionEasing`
 
-用于 header hover、active、selected 以及 inline submenu 背景块。`SubMenuItemBg` 只应用于 inline child frame，不应被用作 root menu 背景。
+用于 header hover、active、selected、背景状态过渡以及 inline submenu 背景块。`SubMenuItemBg` 只应用于 inline child frame，不应被用作 root menu 背景。`ItemBackgroundMotionEasing` 是所有 NavMenu item header 背景 transition 的统一缓动入口，默认值为 CSS `ease` 等价曲线 `0.25,0.1,0.25,1`；Base、Inline、Horizontal 主题必须通过 `NavMenuTokenResource` 消费它，不在 AXAML 中复制曲线常量。
 
 ### 2.4 尺寸、圆角与间距 Token
 
@@ -188,6 +189,8 @@ inline 子菜单第一项与父 header 之间不增加额外顶部 margin。inli
 
 Horizontal light style 的顶层选中主要由 `PART_ActiveIndicator` 表达，背景保持透明。Dark style 顶层选中可以使用 `DarkItemSelectedBg`。
 
+所有 item header 的背景状态切换共用 `ItemBackgroundMotionEasing`。该 Token 只定义缓动曲线；过渡时长继续使用有效的全局 `MotionDurationSlow`，全局关闭 motion 时由主题编译器把标准 duration 归零。
+
 ### 3.4 Group 与 Divider
 
 分组标题按语义使用：
@@ -227,6 +230,7 @@ Token 变更要求：
 - 不改变既有 Token 的语义含义。
 - 不把实例状态迁移到 Token。
 - 不把 root、popup、header、inline submenu block 背景合并为同一职责。
+- 不在 Base、Inline 或 Horizontal header 主题中直接构造背景 easing；统一使用 `ItemBackgroundMotionEasing`。
 - 不让 `VerticalChildItemsMargin` 在 `IsItemBackgroundEnabled=false` 时影响布局。
 - 不把 参考 block margin 映射改为 StackPanel spacing 叠加。
 - `VerticalItemsPanelSpacing` 的主题默认值保持 `0`；显式 `NavMenu.ItemSpacing` 可以增加实例级 panel spacing，但不能反向改写 `ItemContentMargin` 或 Token。
@@ -241,6 +245,7 @@ Token 变更要求：
 | --- | --- |
 | 新增 NavMenuToken | 检查生成的 `NavMenuTokenKind`、AXAML 引用和默认值计算。 |
 | 修改颜色 Token | 覆盖 light / dark root、popup、inline child、header hover、selected path。 |
+| 修改背景动效 Token | 覆盖默认曲线、Control Token override、Base/Inline/Horizontal header 消费和 motion disabled。 |
 | 修改间距 Token | 运行 `NavMenuLayoutTests`，覆盖 root inset、inline child gap、popup inset 和 `IsItemBackgroundEnabled` true/false。 |
 | 修改分组标题 Token | 覆盖 light/dark、root、nested、popup、Horizontal root 和 inline collapsed 标题可见性及排版。 |
 | 修改 `VerticalItemsPanelSpacing` 映射 | 覆盖 root、submenu、group 的默认 spacing，并验证显式 `NavMenu.ItemSpacing` 覆盖和纯默认视觉不变。 |

@@ -8,8 +8,10 @@ namespace AtomUI.Desktop.Controls;
 
 internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandler
 {
-    private bool _currentPressedIsValid;
-    private NavMenuItem? _latestClickedItem;
+    private NavMenuItem? _pressedItem;
+    private IPointer? _pressedPointer;
+    private Control? _pressedCaptureTarget;
+    private NavMenuItem? _pointerHoldItem;
     private NavMenuItem? _keyboardActiveItem;
 
     internal INavMenu? Menu { get; private set; }
@@ -18,7 +20,26 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
 
     public void Detach(NavMenu navMenu) => DetachCore(navMenu);
 
-    public abstract void Select(NavMenuItem menuItem);
+    protected abstract void ActivateSubMenuItem(NavMenuItem menuItem);
+
+    public void CommitItemActivation(NavMenuItem menuItem)
+    {
+        if (Menu is null || !IsInteractiveMenuItem(menuItem))
+        {
+            return;
+        }
+
+        if (menuItem.HasSubMenu)
+        {
+            ActivateSubMenuItem(menuItem);
+        }
+        else if ((Menu as NavMenu)?.SelectNavMenuItem(menuItem) != true)
+        {
+            return;
+        }
+
+        RaiseItemInvocation(menuItem);
+    }
 
     public void ClearSelection()
     {
@@ -32,9 +53,9 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
             ClearKeyboardActiveItem();
         }
 
-        if (ReferenceEquals(_latestClickedItem, menuItem))
+        if (ReferenceEquals(_pressedItem, menuItem))
         {
-            ResetPressState();
+            CancelTransaction();
         }
 
         OnForgotten(menuItem);
@@ -50,6 +71,7 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
         Menu                 =  navMenu;
         Menu.PointerPressed  += PointerPressed;
         Menu.PointerReleased += PointerReleased;
+        Menu.PointerMoved    += PointerMoved;
         if (Menu is InputElement inputElement)
         {
             inputElement.KeyDown += KeyDown;
@@ -66,6 +88,7 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
 
         Menu.PointerPressed  -= PointerPressed;
         Menu.PointerReleased -= PointerReleased;
+        Menu.PointerMoved    -= PointerMoved;
         if (Menu is InputElement inputElement)
         {
             inputElement.KeyDown -= KeyDown;
@@ -74,7 +97,7 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
 
         ClearKeyboardActiveItem();
         Menu = null;
-        ResetPressState();
+        CancelTransaction();
     }
 
     protected virtual void OnAttached(INavMenu navMenu)
@@ -91,44 +114,120 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
 
     protected virtual void PointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        ResetPressState();
-
         var sourceControl = e.Source as Control;
         var menuItem      = GetMenuItemCore(sourceControl);
-        if (menuItem is null || !menuItem.ItemHeader.IsVisualAncestorOf(sourceControl))
+        var itemHeader    = menuItem?.ItemHeader;
+        if (menuItem is null || itemHeader is null || !itemHeader.IsVisualAncestorOf(sourceControl))
         {
             return;
         }
 
-        _currentPressedIsValid = true;
-        _latestClickedItem     = menuItem;
         if (sender is Visual visual &&
             e.GetCurrentPoint(visual).Properties.IsLeftButtonPressed)
         {
-            Select(menuItem);
+            BeginTransaction(menuItem, itemHeader, e.Pointer);
             e.Handled = true;
         }
     }
 
-    protected virtual void PointerReleased(object? sender, PointerReleasedEventArgs e)
+    protected virtual void PointerMoved(object? sender, PointerEventArgs e)
     {
-        if (_latestClickedItem is null || !_currentPressedIsValid)
+        if (_pressedItem is null || !ReferenceEquals(e.Pointer, _pressedPointer))
         {
             return;
         }
 
+        SetPointerHoldItem(IsPointerOverItem(_pressedItem, e) ? _pressedItem : null);
+    }
+
+    protected virtual void PointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        if (_pressedItem is null || !ReferenceEquals(e.Pointer, _pressedPointer))
+        {
+            return;
+        }
+
+        var pressedItem  = _pressedItem;
+        var shouldCommit = e.InitialPressMouseButton == MouseButton.Left &&
+                           IsInteractiveMenuItem(pressedItem) &&
+                           IsPointerOverItem(pressedItem, e);
+        if (!shouldCommit)
+        {
+            CancelTransaction();
+            return;
+        }
+
+        EndTransaction(preservePointerHold: true);
         try
         {
-            if (e.InitialPressMouseButton == MouseButton.Left)
-            {
-                Click(_latestClickedItem);
-                e.Handled = true;
-            }
+            CommitItemActivation(pressedItem);
+            e.Handled = true;
         }
         finally
         {
-            ResetPressState();
+            SetPointerHoldItem(null);
         }
+    }
+
+    private void BeginTransaction(NavMenuItem menuItem, Control captureTarget, IPointer pointer)
+    {
+        CancelTransaction();
+        _pressedItem          = menuItem;
+        _pressedPointer       = pointer;
+        _pressedCaptureTarget = captureTarget;
+        // PointerCaptureLostEvent 是 Direct 路由：平台捕获丢失只派发给捕获目标自身，
+        // 因此事务期间直接订阅捕获目标，而不是挂接到菜单根上。
+        captureTarget.PointerCaptureLost += PressedItemCaptureLost;
+        SetPointerHoldItem(menuItem);
+        pointer.Capture(captureTarget);
+        menuItem.Focus();
+    }
+
+    private void PressedItemCaptureLost(object? sender, PointerCaptureLostEventArgs e)
+    {
+        if (ReferenceEquals(e.Pointer, _pressedPointer))
+        {
+            CancelTransaction();
+        }
+    }
+
+    private void CancelTransaction() => EndTransaction(preservePointerHold: false);
+
+    private void EndTransaction(bool preservePointerHold)
+    {
+        var pointer       = _pressedPointer;
+        var captureTarget = _pressedCaptureTarget;
+        _pressedItem          = null;
+        _pressedPointer       = null;
+        _pressedCaptureTarget = null;
+        if (captureTarget is not null)
+        {
+            captureTarget.PointerCaptureLost -= PressedItemCaptureLost;
+        }
+        pointer?.Capture(null);
+        if (!preservePointerHold)
+        {
+            SetPointerHoldItem(null);
+        }
+    }
+
+    private void SetPointerHoldItem(NavMenuItem? item)
+    {
+        if (ReferenceEquals(_pointerHoldItem, item))
+        {
+            return;
+        }
+
+        var previousItem = _pointerHoldItem;
+        _pointerHoldItem = item;
+        previousItem?.SetCurrentValue(NavMenuItem.IsPointerHoldProperty, false);
+        item?.SetCurrentValue(NavMenuItem.IsPointerHoldProperty, true);
+    }
+
+    private static bool IsPointerOverItem(NavMenuItem item, PointerEventArgs e)
+    {
+        var position = e.GetPosition(item);
+        return item.GetVisualAt(position) is not null;
     }
 
     protected virtual void KeyDown(object? sender, KeyEventArgs e)
@@ -317,21 +416,13 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
             return;
         }
 
-        if (activeItem.HasSubMenu)
+        if (activeItem.HasSubMenu && navMenu.EffectiveMode != NavMenuMode.Inline)
         {
-            if (navMenu.EffectiveMode == NavMenuMode.Inline)
-            {
-                Select(activeItem);
-            }
-            else
-            {
-                TryOpenSubmenuAndActivateFirstChild(navMenu, activeItem);
-            }
+            TryOpenSubmenuAndActivateFirstChild(navMenu, activeItem);
             return;
         }
 
-        Select(activeItem);
-        Click(activeItem);
+        CommitItemActivation(activeItem);
     }
 
     private void CloseKeyboardActiveBranch(NavMenu navMenu)
@@ -541,17 +632,26 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
             return;
         }
 
-        ClearKeyboardActiveItem();
+        var previousItem = _keyboardActiveItem;
         _keyboardActiveItem = item;
-        item.SetCurrentValue(NavMenuItem.IsKeyboardActiveProperty, true);
+        UpdateActiveVisual(previousItem);
+        UpdateActiveVisual(item);
     }
 
     private void ClearKeyboardActiveItem()
     {
-        if (_keyboardActiveItem is not null)
+        var previousItem = _keyboardActiveItem;
+        _keyboardActiveItem = null;
+        UpdateActiveVisual(previousItem);
+    }
+
+    private void UpdateActiveVisual(NavMenuItem? item)
+    {
+        if (item is not null)
         {
-            _keyboardActiveItem.SetCurrentValue(NavMenuItem.IsKeyboardActiveProperty, false);
-            _keyboardActiveItem = null;
+            item.SetCurrentValue(
+                NavMenuItem.IsKeyboardActiveProperty,
+                ReferenceEquals(item, _keyboardActiveItem));
         }
     }
 
@@ -576,7 +676,7 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
         return true;
     }
 
-    protected virtual void Click(INavMenuItem item)
+    protected virtual void RaiseItemInvocation(INavMenuItem item)
     {
         (item as IClickableControl)?.RaiseClick();
         if (Menu is NavMenu navMenu)
@@ -617,11 +717,5 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
         }
 
         return target;
-    }
-
-    private void ResetPressState()
-    {
-        _currentPressedIsValid = false;
-        _latestClickedItem     = null;
     }
 }

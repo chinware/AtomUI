@@ -4212,13 +4212,13 @@ Gallery 目录 `controlgallery/AtomUIGallery/ShowCases/Navigation/Menu`；结构
 
 ## 状态模型
 
-NavMenu 的交互行为由 mode 决定。
+NavMenu 的交互行为由 mode 决定。所有 mode 共用项激活事务契约：指针按下只建立待提交事务并尝试移动真实焦点，合法释放（按下与释放命中同一项）才按固定顺序提交选择并派发命令与事件，其余中断路径一律取消。键盘 Enter/Space 与指针合法释放复用激活入口；程序化 `SelectedItem` 是独立的选择入口，只同步选择状态，不执行节点命令或触发 `NavMenuItemClick`。完整状态机、提交顺序、同步重入和取消路径见 [NavMenu 项激活事务设计](item-activation-design.md)。
 
 `Inline` 模式：
 
-- 点击带子菜单的项目时切换 `IsSubMenuOpen`。
+- 合法释放带子菜单的项目时切换 `IsSubMenuOpen`。
 - 子菜单在当前视觉树中展开，使用 `LayoutAwareMotionActor` 承载展开收起 motion。
-- 点击叶子节点时选中该节点，并更新所有祖先 `IsInSelectedPath`。
+- 合法释放叶子节点时提交选择，并更新所有祖先 `IsInSelectedPath`。
 - `IsAccordionMode=true` 时，顶层子菜单互斥展开。
 - `IsInlineCollapsed=true` 时，public `Mode` 仍保持 `Inline`，但内部有效模式切换为 vertical popup 语义：顶层只显示图标或无图标首字符，inline 子树不在主视觉树中展开，带子菜单的顶层项目通过 popup 打开。
 - 有效 inline collapsed 状态下，顶层叶子节点通过实际 header control 承载 Tooltip。节点显式 `Tooltip` 优先；未设置时回退到 `Header`；菜单级或节点级 Tooltip 被禁用、节点拥有子菜单或退出有效折叠状态时，不创建有效提示内容。
@@ -4230,8 +4230,8 @@ NavMenu 的交互行为由 mode 决定。
 `Vertical` 与 `Horizontal` 模式：
 
 - 带子菜单的项目通过 Popup 展开。
-- hover 可以延迟打开子菜单；pointer 离开后延迟关闭。
-- 点击叶子节点时选中节点；弹出层关闭由 pointer、窗口失焦、非客户端点击和同级打开状态共同控制。这些关闭入口只结束临时 popup open state，不清空持续的 `SelectedItem` 或 selected path。
+- hover 可以延迟打开子菜单；pointer 离开后延迟关闭。hover 打开流程独立于激活事务。
+- 合法释放叶子节点时提交选择；弹出层关闭由 pointer、窗口失焦、非客户端点击和同级打开状态共同控制。这些关闭入口只结束临时 popup open state，不清空持续的 `SelectedItem` 或 selected path。
 - `Horizontal` 顶层菜单 popup 位于下方；非顶层 popup 按右侧边缘对齐。
 - 键盘导航以当前打开的可见菜单层级为边界移动 active/focus 项，跳过禁用项、分割线和不可聚焦内容。
 - 键盘 active 初次移动时优先以当前可见且已生成的 `SelectedItem` 容器作为方向键锚点，并立即移动到前一个或后一个可导航节点；如果没有选中项，或选中项隐藏在未打开的子菜单中，则从第一个可导航节点开始。
@@ -4243,11 +4243,11 @@ NavMenu 的交互行为由 mode 决定。
 公共交互状态：
 
 - `Disabled` 由节点 `IsEnabled` 和 command can-execute 共同决定，禁用项不应触发有效点击。
-- 节点命令必须复用 `NavMenuItem` 的有效点击入口；pointer 与 keyboard 提交不能形成两条独立命令执行路径，也不能因选择事件再次执行命令。
+- 节点命令必须复用 `NavMenuItem` 的有效激活入口；pointer 与 keyboard 提交不能形成两条独立命令执行路径，也不能因选择事件再次执行命令。
 - `PointerOver` 改变 header 前景和背景，但不能改变选中路径。
-- `Pressed` 只作为点击过程状态，不应通过 ancestor selector 误作用到 header。
-- `KeyboardActive` 表示键盘漫游中的当前项，只影响 focus 和 active 视觉，不改变选中路径。
-- `Selected` 表示当前叶子节点被选中。
+- `PressCandidate` 表示激活事务的待提交项，建立后一直保留到提交或取消；只有指针仍命中该项时才贡献与 selected 相同的背景，文字颜色保持按下前状态，不影响选中状态。
+- `KeyboardActive` 表示键盘漫游中的当前项，只影响键盘导航锚点和 active 视觉，不改变选中路径；pointer-hold 与 keyboard-active 由独立 owner 维护，可以同时存在。
+- `Selected` 表示当前叶子节点已提交选中。
 - `IsInSelectedPath` 表示某个祖先位于当前选中路径中。
 - `Open` 表示当前项目子菜单打开。
 
@@ -4285,7 +4285,7 @@ Theme 映射规则：
 - Root 背景使用 `ItemBg`，Dark root 背景使用 `DarkMenuBg`。
 - Popup 背景使用 `MenuPopupBg`，Dark popup 使用 `DarkMenuPopupBg`。
 - Header 默认背景为 `Transparent`，hover / selected 背景由 header state 直接控制。
-- Keyboard active 背景使用 `ItemActiveBg`，其优先级低于 `Selected`，高于普通默认态；它可以叠加在 `IsInSelectedPath` 父节点上，使父节点保留 selected-path 文字色的同时显示临时 active 背景。dark style 下使用 dark 语义的 active 视觉，不复用 selected 背景表达临时漫游。
+- Keyboard active 通过 `IsKeyboardActive` / `ItemActiveBg` 表达；指针按住通过独立的 `IsPointerHold` 只使用与 selected 相同的 `ItemSelectedBg`（dark 使用 `DarkItemSelectedBg`），不覆盖既有文字颜色。两者优先级都低于真实 `Selected`，清除其中一个 owner 不得覆盖另一个 owner 的状态。keyboard active 可以叠加在 `IsInSelectedPath` 父节点上，使父节点保留 selected-path 文字色的同时显示临时 active 背景。header 背景使用 `MotionDurationSlow`（默认 300ms）与 `ItemBackgroundMotionEasing`（默认 CSS `ease` 等价曲线），使 hover 灰在按下后过渡到 selected 色，而 selection 只在合法释放时提交。
 - Inline collapsed 根宽度使用 `InlineCollapsedWidth`，默认来自 `NavMenuToken.InlineCollapsedWidth=48`。折叠视觉只作用于 `Mode=Inline && IsInlineCollapsed=true`：一级 icon 使用 `CollapsedIconSize` 居中，标题和箭头收起，未配置 icon 的一级项从节点 `Header` 显示首字符；顶层叶子项使用独立 `Tooltip`，未设置时回退到 `Header`。
 - Inline/Vertical 的 Header 和 Footer 位于菜单滚动区之外；无 Header/Footer 时对应 presenter 折叠，不占用布局空间。Horizontal 中 Header 左停靠、Footer 右停靠，菜单项占用中间区域。进入 inline collapsed 后 Header 保持可见以承载展开入口，Footer 自动隐藏；Header 内容需要根据 `IsInlineCollapsed` 自适应折叠宽度。
 - 根层 inline collapsed 分组标题隐藏，分组及其透明嵌套分组内的节点继续继承根折叠状态，按顶层节点使用 `CollapsedIconSize` 居中；popup 或非根语义层级中的分组标题和节点保持普通 vertical 视觉。Horizontal 根层把分组渲染为透明水平集合并隐藏标题，popup 中恢复垂直分组标题。
@@ -4299,7 +4299,7 @@ Header 背景与 NavMenuItem / inline submenu 背景块是不同职责，不应�
 
 Token 来源：
 
-NavMenuToken 是 NavMenu 的组件级设计变量层。它把全局颜色、尺寸、间距、圆角、字体和 popup 体系转换为 NavMenu 可消费的语义值。
+NavMenuToken 是 NavMenu 的组件级设计变量层。它把全局颜色、尺寸、间距、圆角、字体、动效和 popup 体系转换为 NavMenu 可消费的语义值。
 
 NavMenuToken 服务以下主题：
 
@@ -4336,7 +4336,7 @@ handler 持有事件订阅时必须在 mode 切换、detached 或模板替换时
 
 inline collapsed cache 不得持有 `NavMenuItem`、header、popup 或 template part 引用。状态失效边界包括 ItemsSource reset、container clear、detach、mode change 和 default path replay revision 变化。
 
-生成容器进入 clear/recycle 时必须通过 `NavMenu.ForgetGeneratedContainer` 同时通知 selection coordinator 和当前 interaction handler。该入口清除 selection coordinator 的 realized container 引用、keyboard-active 引用、pointer press/release 目标，以及 Default handler 指向该容器的 pending open / close；之后才释放 binding、resource host 和 entry context，避免旧交互回调读取已清空的数据对象。
+生成容器进入 clear/recycle 时必须通过 `NavMenu.ForgetGeneratedContainer` 同时通知 selection coordinator 和当前 interaction handler。该入口清除 selection coordinator 的 realized container 引用、keyboard-active 引用、激活事务的待提交项与 pointer-hold 视觉，以及 Default handler 指向该容器的 pending open / close；之后才释放 binding、resource host 和 entry context，避免旧交互回调读取已清空的数据对象。
 
 键盘导航状态持有的 active item 引用必须随 detach、mode 切换、container clear、popup close 和 item disabled 变化失效。popup 内容可能在关闭后继续保留生成容器，因此有效性不能只看局部 `IsVisible`；必须同时验证 effective visible/effective enabled 和完整语义父链的打开状态。失效后第一次 Enter 只从当前可见层级重新建立 active 项，不提交旧项。
 
@@ -4362,9 +4362,9 @@ inline collapsed cache 不得持有 `NavMenuItem`、header、popup 或 template 
 - `src/AtomUI.Desktop.Controls/NavMenu/INavMenu.cs`、`INavMenuItem.cs`、`INavMenuElement.cs`：菜单和容器的内部/公共契约。
 - `src/AtomUI.Desktop.Controls/NavMenu/NavMenuSelectionCoordinator.cs`：选择状态和祖先路径状态同步。
 - `src/AtomUI.Desktop.Controls/NavMenu/NavMenuItemContainerBinder.cs`：节点数据与容器状态绑定。
-- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuInteractionHandlerBase.cs`：交互 handler 基类。
-- `src/AtomUI.Desktop.Controls/NavMenu/DefaultNavMenuInteractionHandler.cs`：Vertical / Horizontal popup 模式交互策略。
-- `src/AtomUI.Desktop.Controls/NavMenu/InlineNavMenuInteractionHandler.cs`：Inline 展开收起交互策略。
+- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuInteractionHandlerBase.cs`：交互 handler 基类，拥有激活事务状态、统一提交管线、释放合法性判定和取消路径。
+- `src/AtomUI.Desktop.Controls/NavMenu/DefaultNavMenuInteractionHandler.cs`：Vertical / Horizontal popup 模式交互策略，父节点激活确保 popup 打开，独立拥有 hover 延迟打开 / 关闭流程。
+- `src/AtomUI.Desktop.Controls/NavMenu/InlineNavMenuInteractionHandler.cs`：Inline 展开收起交互策略，父节点激活切换展开状态。
 - `src/AtomUI.Desktop.Controls/NavMenu/Header/`：三种 header 控件。
 - `src/AtomUI.Desktop.Controls/NavMenu/Themes/`：root、item、header 和 popup 主题。
 - `src/AtomUI.Desktop.Controls/NavMenu/NavMenuToken.cs`：控件 Token。

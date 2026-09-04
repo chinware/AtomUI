@@ -516,7 +516,7 @@ public class NavMenuInteractionHandlerTests
 
             var leafContainer = childContainer.ContainerFromItem(leaf).ShouldBeOfType<NavMenuItem>();
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(leafContainer);
+            menu.SelectNavMenuItem(leafContainer);
             Dispatcher.UIThread.RunJobs();
 
             menu.SelectedItem.ShouldBeSameAs(leaf);
@@ -581,7 +581,7 @@ public class NavMenuInteractionHandlerTests
             Dispatcher.UIThread.RunJobs();
             var leafContainer = parentContainer.ContainerFromItem(leaf).ShouldBeOfType<NavMenuItem>();
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(leafContainer);
+            menu.SelectNavMenuItem(leafContainer);
             Dispatcher.UIThread.RunJobs();
 
             menu.Close();
@@ -622,7 +622,7 @@ public class NavMenuInteractionHandlerTests
             Dispatcher.UIThread.RunJobs();
             var leafContainer = parentContainer.ContainerFromItem(leaf).ShouldBeOfType<NavMenuItem>();
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(leafContainer);
+            menu.SelectNavMenuItem(leafContainer);
             Dispatcher.UIThread.RunJobs();
 
             menu.Mode = NavMenuMode.Horizontal;

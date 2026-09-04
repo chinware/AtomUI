@@ -689,9 +689,9 @@ public class NavMenu : ItemsControl,
         return false;
     }
 
-    internal void SelectNavMenuItem(NavMenuItem menuItem)
+    internal bool SelectNavMenuItem(NavMenuItem menuItem)
     {
-        _selectionCoordinator.Select(this, menuItem);
+        return _selectionCoordinator.Select(this, menuItem);
     }
 
     internal void ClearSelectionState()
@@ -1199,7 +1199,7 @@ public class NavMenu : ItemsControl,
         {
             if (i == path.Length - 1)
             {
-                InteractionHandler?.Select(menuItem);
+                SelectNavMenuItem(menuItem);
             }
         });
 
@@ -1230,7 +1230,7 @@ public class NavMenu : ItemsControl,
                 selectedItemRevision == _selectedItemRevision &&
                 ReferenceEquals(SelectedItem, node))
             {
-                InteractionHandler?.Select(menuItem);
+                SelectNavMenuItem(menuItem);
             }
         });
 
@@ -1325,12 +1325,18 @@ public class NavMenu : ItemsControl,
         RaiseEvent(new NavMenuItemClickEventArgs(NavMenuItemClickEvent, menuItem));
     }
     
-    internal void RaiseNavMenuItemSelected(NavMenuItem menuItem)
+    internal bool TryPublishNavMenuItemSelection(NavMenuItem menuItem)
     {
         var node = (menuItem as INavMenuItem).Node;
         Debug.Assert(node != null);
-        RaiseEvent(new NavMenuNodeSelectedEventArgs(NavMenuNodeSelectedEvent, node));
         SetCurrentValue(SelectedItemProperty, node);
+        if (!ReferenceEquals(SelectedItem, node))
+        {
+            return false;
+        }
+
+        RaiseEvent(new NavMenuNodeSelectedEventArgs(NavMenuNodeSelectedEvent, node));
+        return ReferenceEquals(SelectedItem, node);
     }
 
     internal static List<NavMenuItem> CollectSelectPathItems(NavMenuItem menuItem)

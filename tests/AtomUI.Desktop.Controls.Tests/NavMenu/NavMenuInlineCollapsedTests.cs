@@ -356,7 +356,7 @@ public class NavMenuInlineCollapsedTests
 
             var childContainer = (NavMenuItem)parentContainer.ContainerFromItem(child)!;
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(childContainer);
+            menu.SelectNavMenuItem(childContainer);
             Dispatcher.UIThread.RunJobs();
 
             menu.SelectedItem.ShouldBeSameAs(child);
@@ -465,7 +465,7 @@ public class NavMenuInlineCollapsedTests
 
             var firstContainer = parentContainer.ContainerFromItem(firstChild).ShouldBeOfType<NavMenuItem>();
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(firstContainer);
+            menu.SelectNavMenuItem(firstContainer);
             Dispatcher.UIThread.RunJobs();
 
             for (var cycle = 0; cycle < 2; cycle++)
@@ -484,7 +484,7 @@ public class NavMenuInlineCollapsedTests
 
             firstContainer.IsSelected.ShouldBeTrue();
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(secondContainer);
+            menu.SelectNavMenuItem(secondContainer);
             Dispatcher.UIThread.RunJobs();
 
             menu.SelectedItem.ShouldBeSameAs(secondChild);
@@ -555,7 +555,7 @@ public class NavMenuInlineCollapsedTests
 
             var splashContainer = otherContainer.ContainerFromItem(splash).ShouldBeOfType<NavMenuItem>();
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(splashContainer);
+            menu.SelectNavMenuItem(splashContainer);
             Dispatcher.UIThread.RunJobs();
 
             menu.SelectedItem.ShouldBeSameAs(splash);
@@ -568,11 +568,11 @@ public class NavMenuInlineCollapsedTests
             for (var cycle = 0; cycle < 2; cycle++)
             {
                 menu.InteractionHandler.ShouldNotBeNull();
-                menu.InteractionHandler.Select(componentsContainer);
+                componentsContainer.Open();
                 Dispatcher.UIThread.RunJobs();
 
                 otherContainer = componentsContainer.ContainerFromItem(other).ShouldBeOfType<NavMenuItem>();
-                menu.InteractionHandler.Select(otherContainer);
+                otherContainer.Open();
                 Dispatcher.UIThread.RunJobs();
 
                 splashContainer = otherContainer.ContainerFromItem(splash).ShouldBeOfType<NavMenuItem>();
@@ -656,21 +656,21 @@ public class NavMenuInlineCollapsedTests
 
             var spaceContainer = layoutContainer.ContainerFromItem(space).ShouldBeOfType<NavMenuItem>();
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(spaceContainer);
+            menu.SelectNavMenuItem(spaceContainer);
             Dispatcher.UIThread.RunJobs();
 
             menu.IsInlineCollapsed = true;
             WaitForWidth(menu, menu.InlineCollapsedWidth);
 
             componentsContainer = menu.ContainerFromItem(components).ShouldBeOfType<NavMenuItem>();
-            menu.InteractionHandler.Select(componentsContainer);
+            componentsContainer.Open();
             Dispatcher.UIThread.RunJobs();
 
             layoutContainer = componentsContainer.ContainerFromItem(layout).ShouldBeOfType<NavMenuItem>();
             var dataEntryContainer = componentsContainer.ContainerFromItem(dataEntry).ShouldBeOfType<NavMenuItem>();
             layoutContainer.IsInSelectedPath.ShouldBeTrue();
 
-            menu.InteractionHandler.Select(dataEntryContainer);
+            dataEntryContainer.Open();
             Dispatcher.UIThread.RunJobs();
 
             menu.SelectedItem.ShouldBeSameAs(space);
@@ -749,28 +749,28 @@ public class NavMenuInlineCollapsedTests
 
             var spaceContainer = layoutContainer.ContainerFromItem(space).ShouldBeOfType<NavMenuItem>();
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(spaceContainer);
+            menu.SelectNavMenuItem(spaceContainer);
             Dispatcher.UIThread.RunJobs();
 
             menu.IsInlineCollapsed = true;
             WaitForWidth(menu, menu.InlineCollapsedWidth);
 
             componentsContainer = menu.ContainerFromItem(components).ShouldBeOfType<NavMenuItem>();
-            menu.InteractionHandler.Select(componentsContainer);
+            componentsContainer.Open();
             Dispatcher.UIThread.RunJobs();
 
             layoutContainer = componentsContainer.ContainerFromItem(layout).ShouldBeOfType<NavMenuItem>();
             var navigationContainer = componentsContainer.ContainerFromItem(navigation).ShouldBeOfType<NavMenuItem>();
             layoutContainer.IsInSelectedPath.ShouldBeTrue();
 
-            menu.InteractionHandler.Select(navigationContainer);
+            navigationContainer.Open();
             Dispatcher.UIThread.RunJobs();
 
             layoutContainer.IsSubMenuOpen.ShouldBeFalse(
                 "opening the sibling branch must close the popup that contains the previous selected leaf.");
             var buttonSpinnerContainer = navigationContainer.ContainerFromItem(buttonSpinner)
                                                                   .ShouldBeOfType<NavMenuItem>();
-            menu.InteractionHandler.Select(buttonSpinnerContainer);
+            menu.SelectNavMenuItem(buttonSpinnerContainer);
             Dispatcher.UIThread.RunJobs();
 
             menu.SelectedItem.ShouldBeSameAs(buttonSpinner);
@@ -849,21 +849,21 @@ public class NavMenuInlineCollapsedTests
 
             var spaceContainer = layoutContainer.ContainerFromItem(space).ShouldBeOfType<NavMenuItem>();
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(spaceContainer);
+            menu.SelectNavMenuItem(spaceContainer);
             Dispatcher.UIThread.RunJobs();
 
             menu.IsInlineCollapsed = true;
             WaitForWidth(menu, menu.InlineCollapsedWidth);
 
             componentsContainer = menu.ContainerFromItem(components).ShouldBeOfType<NavMenuItem>();
-            menu.InteractionHandler.Select(componentsContainer);
+            componentsContainer.Open();
             Dispatcher.UIThread.RunJobs();
 
             layoutContainer = componentsContainer.ContainerFromItem(layout).ShouldBeOfType<NavMenuItem>();
             var navigationContainer = componentsContainer.ContainerFromItem(navigation).ShouldBeOfType<NavMenuItem>();
             layoutContainer.IsInSelectedPath.ShouldBeTrue();
 
-            menu.InteractionHandler.Select(navigationContainer);
+            navigationContainer.Open();
             Dispatcher.UIThread.RunJobs();
 
             layoutContainer.IsSubMenuOpen.ShouldBeFalse();
@@ -945,14 +945,14 @@ public class NavMenuInlineCollapsedTests
 
             var spaceContainer = layoutContainer.ContainerFromItem(space).ShouldBeOfType<NavMenuItem>();
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(spaceContainer);
+            menu.SelectNavMenuItem(spaceContainer);
             Dispatcher.UIThread.RunJobs();
 
             menu.IsInlineCollapsed = true;
             WaitForWidth(menu, menu.InlineCollapsedWidth);
 
             componentsContainer = menu.ContainerFromItem(components).ShouldBeOfType<NavMenuItem>();
-            menu.InteractionHandler.Select(componentsContainer);
+            componentsContainer.Open();
             Dispatcher.UIThread.RunJobs();
 
             var dataEntryContainer = componentsContainer.ContainerFromItem(dataEntry).ShouldBeOfType<NavMenuItem>();
@@ -1023,7 +1023,7 @@ public class NavMenuInlineCollapsedTests
             Dispatcher.UIThread.RunJobs();
 
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(option2Container);
+            menu.SelectNavMenuItem(option2Container);
             Dispatcher.UIThread.RunJobs();
 
             option1Container.IsSelected.ShouldBeFalse(

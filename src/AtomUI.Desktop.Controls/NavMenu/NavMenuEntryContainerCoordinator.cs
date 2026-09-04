@@ -72,6 +72,7 @@ internal static class NavMenuEntryContainerCoordinator
         {
             case NavMenuItem menuItem:
                 menuItem.SetCurrentValue(NavMenuItem.IsKeyboardActiveProperty, false);
+                menuItem.SetCurrentValue(NavMenuItem.IsPointerHoldProperty, false);
                 menuItem.OwnerMenu?.ForgetGeneratedContainer(menuItem);
                 menuItem.ClearNodeBindingDisposables();
                 ClearNodeContainerBindings(menuItem);

@@ -2,6 +2,24 @@
 
 本文档记录 NavMenu 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-09-04
+
+- Architecture
+  - 将用户激活定义为“按下准备、合法释放提交”的有序事务：指针合法释放与键盘 Enter/Space 复用激活入口；程序化 `SelectedItem` 只进入选择协调器，不执行节点命令或触发 `NavMenuItemClick`。新增专项设计文档 [NavMenu 项激活事务设计](item-activation-design.md)。
+  - `SelectedItem` 语义收窄为已提交选择；指针按下只建立待提交事务、显示 selected 背景的 pointer-hold 视觉并按模式尝试移动真实焦点，文字颜色保持按下前状态，不覆盖 keyboard-active owner，不改变选择、不切换子菜单、不执行命令、不触发路由事件。
+  - 定义指针提交合法性判据（同一指针、主按钮、释放点命中待提交项视觉子树、节点与语义祖先可用）与取消路径集合（拖离释放、当前捕获指针丢失、节点移除或禁用、detach、非主按钮释放、新按下替代）。
+  - 修正叶子提交事件顺序：选中路径与 `IsSelected`、`SelectedItem`、`NavMenuNodeSelected` 先于节点 `Command` 与 `NavMenuItemClick`，事件回调读取的公共状态为已提交新值；父节点提交不修改 `SelectedItem`。
+  - 为同步重入定义 superseded policy：`SelectedItem` 在选择事件前被改写时不发布陈旧 `NavMenuNodeSelected`，在选择事件处理期间被改写时停止原节点后续命令与 `NavMenuItemClick`，避免部分提交。
+  - 交互 handler 基类统一持有激活事务（待提交项与指针身份），按激活目标分派叶子选择提交与父节点展开激活；Inline 父节点切换展开，Default 父节点确保 popup 打开，hover 延迟打开流程保持独立。
+- Theme
+  - pointer-hold 与 keyboard-active 由独立 owner 和独立主题输入维护：pointer-hold 通过 `IsPointerHold` 仅使用对应的 light/dark selected 背景 Token，不覆盖既有文字颜色；keyboard-active 通过 `IsKeyboardActive` 使用 `ItemActiveBg`。前者只预览 selected 背景，不写入 `IsSelected` / `SelectedItem`，拖出清除、移回恢复。
+  - 对齐 Ant Design 6.6.2 录屏中的背景变化：header 背景改用 300ms `MotionDurationSlow` 与 CSS `ease` 等价曲线；按下先置 pointer-hold 再捕获，合法释放时保留 pointer-hold 直到 selection 提交完成，避免中间 hover、透明或默认背景闪烁。
+  - 指针捕获目标改为带 `Cursor=Hand` 的 item header，按住期间持续显示手型指针；capture-lost 生命周期跟随实际捕获目标。
+- Token
+  - 新增 `ItemBackgroundMotionEasing` 作为 Base、Inline、Horizontal item header 背景 transition 的统一缓动入口，默认映射 CSS `ease`；主题不再内联构造或复制 `SplineEasing`。
+- Verification
+  - 覆盖按下零提交副作用、背景与 selected 相同且文字颜色不变、按下/释放背景无中间闪烁、300ms ease 背景过渡、手型捕获目标、合法释放单次提交、完整事件顺序、同步选择重入、捕获指针身份、handler 替换、父节点释放激活、键盘与指针提交一致性，以及 pointer-hold / keyboard-active 独立所有权。
+
 ## 2026-08-26
 
 - Architecture

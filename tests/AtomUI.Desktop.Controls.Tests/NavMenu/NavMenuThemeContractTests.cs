@@ -158,6 +158,42 @@ public class NavMenuThemeContractTests
     }
 
     [Fact]
+    public void Pointer_Hold_Visual_Uses_Only_Selected_Background_Without_ReUsing_Selected_State()
+    {
+        var headerSource      = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/Themes/BaseNavMenuItemHeaderTheme.axaml");
+        var navMenuItemSource = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/Themes/NavMenuItemTheme.axaml");
+
+        navMenuItemSource.ShouldContain("IsPointerHold=\"{TemplateBinding IsPointerHold}\"");
+        headerSource.ShouldContain("Selector=\"^[IsPointerHold=True]:not(^[IsSelected=True])\"");
+        headerSource.ShouldContain("Value=\"{atom:NavMenuTokenResource ItemSelectedBg}\"");
+        headerSource.ShouldContain("Value=\"{atom:NavMenuTokenResource DarkItemSelectedBg}\"");
+        headerSource.ShouldNotContain(
+            "Selector=\"^[IsPointerHold=True]:not(^[IsSelected=True])\">\n            <Setter Property=\"Foreground\"");
+        headerSource.ShouldNotContain(
+            "Selector=\"^[IsPointerHold=True]:not(^[IsSelected=True])\">\n                <Setter Property=\"Foreground\"");
+        headerSource.ShouldNotContain("Selector=\"^[IsPointerHold=True]:not(^[IsSelected=True])\">\n            <Setter Property=\"Background\"\n                    Value=\"{atom:NavMenuTokenResource ItemHoverBg}\"");
+    }
+
+    [Fact]
+    public void Every_Item_Header_Background_Transition_Consumes_The_NavMenu_Easing_Token()
+    {
+        var themePaths = new[]
+        {
+            "src/AtomUI.Desktop.Controls/NavMenu/Themes/BaseNavMenuItemHeaderTheme.axaml",
+            "src/AtomUI.Desktop.Controls/NavMenu/Themes/InlineNavMenuItemHeaderTheme.axaml",
+            "src/AtomUI.Desktop.Controls/NavMenu/Themes/HorizontalNavMenuItemHeaderTheme.axaml"
+        };
+
+        foreach (var themePath in themePaths)
+        {
+            var source = ReadRepoFile(themePath);
+            source.ShouldContain(
+                "<atom:SolidColorBrushTransition Property=\"Background\" Duration=\"{atom:SharedTokenResourceValue Kind=MotionDurationSlow}\" Easing=\"{atom:NavMenuTokenResource ItemBackgroundMotionEasing}\" />");
+            source.ShouldNotContain("<SplineEasing");
+        }
+    }
+
+    [Fact]
     public void Submenu_Title_Hover_Uses_Foreground_And_Background_Tokens()
     {
         var source = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/Themes/BaseNavMenuItemHeaderTheme.axaml");

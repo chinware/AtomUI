@@ -1,6 +1,7 @@
 ﻿using AtomUI.Media;
 using AtomUI.Theme.DesignTokens;
 using Avalonia;
+using Avalonia.Animation.Easings;
 using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;

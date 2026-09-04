@@ -336,7 +336,7 @@ public class NavMenuSelectionTests
 
             var firstContainer = menu.ContainerFromItem(first).ShouldBeOfType<NavMenuItem>();
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(firstContainer);
+            menu.SelectNavMenuItem(firstContainer);
 
             menu.Items.Clear();
             menu.Items.Add(replacement);
@@ -344,8 +344,14 @@ public class NavMenuSelectionTests
 
             var replacementContainer = menu.ContainerFromItem(replacement).ShouldBeOfType<NavMenuItem>();
             var replacementHeader = GetItemHeader(replacementContainer);
-            Should.NotThrow(() => MouseDown(replacementHeader, window));
-            Dispatcher.UIThread.RunJobs();
+            var replacementPoint = GetCenterPoint(replacementHeader, window);
+            Should.NotThrow(() =>
+            {
+                window.MouseDown(replacementPoint, MouseButton.Left);
+                Dispatcher.UIThread.RunJobs();
+                window.MouseUp(replacementPoint, MouseButton.Left);
+                Dispatcher.UIThread.RunJobs();
+            });
 
             replacementContainer.IsSelected.ShouldBeTrue();
             menu.SelectedItem.ShouldBeSameAs(replacement);
@@ -517,7 +523,7 @@ public class NavMenuSelectionTests
 
             var leafContainer = (NavMenuItem)secondLevelContainer.ContainerFromItem(leaf)!;
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(leafContainer);
+            menu.SelectNavMenuItem(leafContainer);
             Dispatcher.UIThread.RunJobs();
 
             firstLevelContainer.IsInSelectedPath.ShouldBeTrue(
@@ -571,7 +577,7 @@ public class NavMenuSelectionTests
             var groupContainer = menu.ContainerFromItem(group).ShouldBeOfType<NavMenuGroupItem>();
             var leafContainer = groupContainer.ContainerFromItem(leaf).ShouldBeOfType<NavMenuItem>();
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(leafContainer);
+            menu.SelectNavMenuItem(leafContainer);
 
             leafContainer.IsSelected.ShouldBeTrue();
             menu.SelectedItem.ShouldBeSameAs(leaf);
@@ -623,7 +629,7 @@ public class NavMenuSelectionTests
             var groupContainer = parentContainer.ContainerFromItem(group).ShouldBeOfType<NavMenuGroupItem>();
             var leafContainer = groupContainer.ContainerFromItem(leaf).ShouldBeOfType<NavMenuItem>();
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(leafContainer);
+            menu.SelectNavMenuItem(leafContainer);
 
             parentContainer.IsInSelectedPath.ShouldBeTrue();
             leafContainer.IsSelected.ShouldBeTrue();
@@ -674,7 +680,7 @@ public class NavMenuSelectionTests
 
             var leafContainer = (NavMenuItem)parentContainer.ContainerFromItem(leaf)!;
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(leafContainer);
+            menu.SelectNavMenuItem(leafContainer);
             Dispatcher.UIThread.RunJobs();
 
             var parentHeader             = GetItemHeader(parentContainer);
@@ -769,7 +775,7 @@ public class NavMenuSelectionTests
                 "NavMenuItemHeader hover visuals must stay available when NavMenuItem background is disabled.");
 
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(grandchildContainer);
+            menu.SelectNavMenuItem(grandchildContainer);
             Dispatcher.UIThread.RunJobs();
 
             GetSolidBrushColor(grandchildHeader.Background).ShouldNotBe(
@@ -831,7 +837,7 @@ public class NavMenuSelectionTests
 
             var itemContainer = (NavMenuItem)menu.ContainerFromItem(item)!;
             menu.InteractionHandler.ShouldNotBeNull();
-            menu.InteractionHandler.Select(itemContainer);
+            menu.SelectNavMenuItem(itemContainer);
             Dispatcher.UIThread.RunJobs();
 
             disabledDuringSelection.ShouldBeFalse(
@@ -1032,6 +1038,47 @@ public class NavMenuSelectionTests
 
             actor.IsVisible.ShouldBeTrue();
             actor.Opacity.ShouldBe(1.0);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void SelectedItem_Is_Already_Updated_When_NodeSelected_Event_Raises()
+    {
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false
+        };
+        var first = new NavMenuNode { Header = "First", ItemKey = "first" };
+        var second = new NavMenuNode { Header = "Second", ItemKey = "second" };
+        menu.Items.Add(first);
+        menu.Items.Add(second);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var secondContainer = menu.ContainerFromItem(second).ShouldBeOfType<NavMenuItem>();
+
+            INavMenuNode? observed = null;
+            menu.NavMenuNodeSelected += (_, _) => observed = menu.SelectedItem;
+            menu.SelectNavMenuItem(secondContainer);
+
+            observed.ShouldBeSameAs(second,
+                "NavMenuNodeSelected subscribers must observe the committed SelectedItem.");
+            menu.SelectedItem.ShouldBeSameAs(second);
         }
         finally
         {

@@ -141,13 +141,13 @@ NavMenu
 
 ## State Flow
 
-NavMenu 的交互行为由 mode 决定。
+NavMenu 的交互行为由 mode 决定。所有 mode 共用项激活事务契约：指针按下只建立待提交事务并尝试移动真实焦点，合法释放（按下与释放命中同一项）才按固定顺序提交选择并派发命令与事件，其余中断路径一律取消。键盘 Enter/Space 与指针合法释放复用激活入口；程序化 `SelectedItem` 是独立的选择入口，只同步选择状态，不执行节点命令或触发 `NavMenuItemClick`。完整状态机、提交顺序、同步重入和取消路径见 [NavMenu 项激活事务设计](item-activation-design.md)。
 
 `Inline` 模式：
 
-- 点击带子菜单的项目时切换 `IsSubMenuOpen`。
+- 合法释放带子菜单的项目时切换 `IsSubMenuOpen`。
 - 子菜单在当前视觉树中展开，使用 `LayoutAwareMotionActor` 承载展开收起 motion。
-- 点击叶子节点时选中该节点，并更新所有祖先 `IsInSelectedPath`。
+- 合法释放叶子节点时提交选择，并更新所有祖先 `IsInSelectedPath`。
 - `IsAccordionMode=true` 时，顶层子菜单互斥展开。
 - `IsInlineCollapsed=true` 时，public `Mode` 仍保持 `Inline`，但内部有效模式切换为 vertical popup 语义：顶层只显示图标或无图标首字符，inline 子树不在主视觉树中展开，带子菜单的顶层项目通过 popup 打开。
 - 有效 inline collapsed 状态下，顶层叶子节点通过实际 header control 承载 Tooltip。节点显式 `Tooltip` 优先；未设置时回退到 `Header`；菜单级或节点级 Tooltip 被禁用、节点拥有子菜单或退出有效折叠状态时，不创建有效提示内容。
@@ -159,8 +159,8 @@ NavMenu 的交互行为由 mode 决定。
 `Vertical` 与 `Horizontal` 模式：
 
 - 带子菜单的项目通过 Popup 展开。
-- hover 可以延迟打开子菜单；pointer 离开后延迟关闭。
-- 点击叶子节点时选中节点；弹出层关闭由 pointer、窗口失焦、非客户端点击和同级打开状态共同控制。这些关闭入口只结束临时 popup open state，不清空持续的 `SelectedItem` 或 selected path。
+- hover 可以延迟打开子菜单；pointer 离开后延迟关闭。hover 打开流程独立于激活事务。
+- 合法释放叶子节点时提交选择；弹出层关闭由 pointer、窗口失焦、非客户端点击和同级打开状态共同控制。这些关闭入口只结束临时 popup open state，不清空持续的 `SelectedItem` 或 selected path。
 - `Horizontal` 顶层菜单 popup 位于下方；非顶层 popup 按右侧边缘对齐。
 - 键盘导航以当前打开的可见菜单层级为边界移动 active/focus 项，跳过禁用项、分割线和不可聚焦内容。
 - 键盘 active 初次移动时优先以当前可见且已生成的 `SelectedItem` 容器作为方向键锚点，并立即移动到前一个或后一个可导航节点；如果没有选中项，或选中项隐藏在未打开的子菜单中，则从第一个可导航节点开始。
@@ -172,11 +172,11 @@ NavMenu 的交互行为由 mode 决定。
 公共交互状态：
 
 - `Disabled` 由节点 `IsEnabled` 和 command can-execute 共同决定，禁用项不应触发有效点击。
-- 节点命令必须复用 `NavMenuItem` 的有效点击入口；pointer 与 keyboard 提交不能形成两条独立命令执行路径，也不能因选择事件再次执行命令。
+- 节点命令必须复用 `NavMenuItem` 的有效激活入口；pointer 与 keyboard 提交不能形成两条独立命令执行路径，也不能因选择事件再次执行命令。
 - `PointerOver` 改变 header 前景和背景，但不能改变选中路径。
-- `Pressed` 只作为点击过程状态，不应通过 ancestor selector 误作用到 header。
-- `KeyboardActive` 表示键盘漫游中的当前项，只影响 focus 和 active 视觉，不改变选中路径。
-- `Selected` 表示当前叶子节点被选中。
+- `PressCandidate` 表示激活事务的待提交项，建立后一直保留到提交或取消；只有指针仍命中该项时才贡献与 selected 相同的背景，文字颜色保持按下前状态，不影响选中状态。
+- `KeyboardActive` 表示键盘漫游中的当前项，只影响键盘导航锚点和 active 视觉，不改变选中路径；pointer-hold 与 keyboard-active 由独立 owner 维护，可以同时存在。
+- `Selected` 表示当前叶子节点已提交选中。
 - `IsInSelectedPath` 表示某个祖先位于当前选中路径中。
 - `Open` 表示当前项目子菜单打开。
 
@@ -214,7 +214,7 @@ Theme 映射规则：
 - Root 背景使用 `ItemBg`，Dark root 背景使用 `DarkMenuBg`。
 - Popup 背景使用 `MenuPopupBg`，Dark popup 使用 `DarkMenuPopupBg`。
 - Header 默认背景为 `Transparent`，hover / selected 背景由 header state 直接控制。
-- Keyboard active 背景使用 `ItemActiveBg`，其优先级低于 `Selected`，高于普通默认态；它可以叠加在 `IsInSelectedPath` 父节点上，使父节点保留 selected-path 文字色的同时显示临时 active 背景。dark style 下使用 dark 语义的 active 视觉，不复用 selected 背景表达临时漫游。
+- Keyboard active 通过 `IsKeyboardActive` / `ItemActiveBg` 表达；指针按住通过独立的 `IsPointerHold` 只使用与 selected 相同的 `ItemSelectedBg`（dark 使用 `DarkItemSelectedBg`），不覆盖既有文字颜色。两者优先级都低于真实 `Selected`，清除其中一个 owner 不得覆盖另一个 owner 的状态。keyboard active 可以叠加在 `IsInSelectedPath` 父节点上，使父节点保留 selected-path 文字色的同时显示临时 active 背景。header 背景使用 `MotionDurationSlow`（默认 300ms）与 `ItemBackgroundMotionEasing`（默认 CSS `ease` 等价曲线），使 hover 灰在按下后过渡到 selected 色，而 selection 只在合法释放时提交。
 - Inline collapsed 根宽度使用 `InlineCollapsedWidth`，默认来自 `NavMenuToken.InlineCollapsedWidth=48`。折叠视觉只作用于 `Mode=Inline && IsInlineCollapsed=true`：一级 icon 使用 `CollapsedIconSize` 居中，标题和箭头收起，未配置 icon 的一级项从节点 `Header` 显示首字符；顶层叶子项使用独立 `Tooltip`，未设置时回退到 `Header`。
 - Inline/Vertical 的 Header 和 Footer 位于菜单滚动区之外；无 Header/Footer 时对应 presenter 折叠，不占用布局空间。Horizontal 中 Header 左停靠、Footer 右停靠，菜单项占用中间区域。进入 inline collapsed 后 Header 保持可见以承载展开入口，Footer 自动隐藏；Header 内容需要根据 `IsInlineCollapsed` 自适应折叠宽度。
 - 根层 inline collapsed 分组标题隐藏，分组及其透明嵌套分组内的节点继续继承根折叠状态，按顶层节点使用 `CollapsedIconSize` 居中；popup 或非根语义层级中的分组标题和节点保持普通 vertical 视觉。Horizontal 根层把分组渲染为透明水平集合并隐藏标题，popup 中恢复垂直分组标题。
@@ -228,7 +228,7 @@ Header 背景与 NavMenuItem / inline submenu 背景块是不同职责，不应�
 
 Token 边界：
 
-NavMenuToken 是 NavMenu 的组件级设计变量层。它把全局颜色、尺寸、间距、圆角、字体和 popup 体系转换为 NavMenu 可消费的语义值。
+NavMenuToken 是 NavMenu 的组件级设计变量层。它把全局颜色、尺寸、间距、圆角、字体、动效和 popup 体系转换为 NavMenu 可消费的语义值。
 
 NavMenuToken 服务以下主题：
 
@@ -270,6 +270,11 @@ NavMenuToken 不承载 `SelectedItem`、`IsSubMenuOpen`、`IsInSelectedPath`、`
 - `NavMenuNode` 只承载命令配置，不实现 `ICommandSource`，不直接订阅 `CanExecuteChanged`，也不保存当前 `NavMenuItem` 容器。
 - `CommandParameter` 保持标准显式参数语义，不隐式回退到 `ItemKey`、`Header`、`SelectedItem` 或节点自身。
 - `NavMenuItemClick` 和 `NavMenuNodeSelected` 的事件语义不变。
+- `SelectedItem` 只表示已提交选择；指针按下不改变选择、不执行命令、不触发 `NavMenuItemClick` 或 `NavMenuNodeSelected`。
+- 指针激活只有"合法释放提交"一种行为：按下与释放命中同一项才提交；释放到其他节点、菜单外以及激活事务的全部取消路径均不产生选择、命令或事件。
+- 叶子提交顺序固定为：选中路径与 `IsSelected` 更新、`SelectedItem` 更新、`NavMenuNodeSelected`、节点 `Command`、`NavMenuItemClick`。`NavMenuNodeSelected` 开始派发前，`SelectedItem` 必须仍指向该事件节点；若同步观察者或事件处理器改写选择，原节点提交被视为 superseded，并停止尚未发生的事件或动作。父节点提交不修改 `SelectedItem`、不触发 `NavMenuNodeSelected`。
+- 键盘 Enter/Space 与指针合法释放必须共用同一提交入口和事件顺序。
+- pointer-hold 的背景必须与 selected 完全一致、文字颜色保持不变，且不得提前写入 selected 状态。按下先交接 pointer-hold 再捕获带 `Cursor=Hand` 的 header；合法释放时保留 pointer-hold 直到 selection 提交完成，再清除临时状态，过程不得闪回 hover、透明或默认背景。
 - 方向键移动 active 项不得触发 `NavMenuItemClick` 或 `NavMenuNodeSelected`。
 - Esc 关闭 popup 分支不得调用 `Close()`，不得清空已选中节点。
 - `IsAccordionMode=true` 只控制同层展开互斥，不改变选中节点。
@@ -299,6 +304,11 @@ NavMenuToken 不承载 `SelectedItem`、`IsSubMenuOpen`、`IsInSelectedPath`、`
 - 默认路径应用不使用固定 50ms sleep 作为稳定策略。
 - selection coordinator 是选择状态的统一入口。
 - keyboard active/focus 状态不能替代 selection coordinator。
+- 激活事务由 interaction handler 基类唯一持有；按下只建立事务、置仅覆盖背景的 pointer-hold selected-background 视觉并按 mode 尝试移动真实焦点，不覆盖 keyboard-active owner、不写 selected 状态、不进入 selection coordinator、不执行命令、不触发路由事件、不切换 inline 展开状态。
+- 指针提交以“释放点命中待提交项视觉子树”为唯一合法性判据，不使用捕获期间的 `IsPointerOver`；取消路径（拖离释放、当前指针捕获丢失、节点移除或禁用、detach、非主按钮释放、新按下替代）零副作用，其他指针的 capture-lost 不得误取消。
+- 调用命令与触发 `NavMenuItemClick` 前必须先释放指针捕获并清理事务字段，防止用户回调重入时残留旧事务。
+- 叶子提交顺序固定：选中路径与 `IsSelected` 更新、`SelectedItem` 更新、`NavMenuNodeSelected`、节点 `Command`、`NavMenuItemClick`；同步重入替换选择时停止原提交尚未发生的事件与动作。父节点提交不修改 `SelectedItem`。
+- pointer-hold 与 keyboard-active 独立持有并分别投影到 header 的 `IsPointerHold` 与 `IsKeyboardActive`；前者只使用 selected 背景 Token 且不覆盖文字颜色，后者使用 active Token。pointer-hold 不写入 keyboard active、`IsSelected` / `IsInSelectedPath`，也不直接依赖捕获期间的原生 `:pointerover`。
 - 方向键移动不得触发点击或选中事件。
 - keyboard active 初始解析可以复用可见 `SelectedItem` 容器作为方向键移动锚点，但不得吃掉第一次方向键、触发选择事件或自动打开隐藏分支。
 - Esc 关闭 popup 分支不得调用 `NavMenu.Close()`，不得清空 `SelectedItem`。

@@ -30,6 +30,7 @@
                                                            IsSelected="{TemplateBinding SelectingItemsControl.IsSelected}"
                                                            IsInSelectedPath="{TemplateBinding IsInSelectedPath}"
                                                            IsKeyboardActive="{TemplateBinding IsKeyboardActive}"
+                                                           IsPointerHold="{TemplateBinding IsPointerHold}"
                                                            IsInlineCollapsed="{TemplateBinding IsInlineCollapsed}"
                                                            IsTopLevel="{TemplateBinding IsTopLevel}" />
                         <atom:Popup Name="PART_Popup"
@@ -80,6 +81,7 @@
                                                          IsSelected="{TemplateBinding SelectingItemsControl.IsSelected}"
                                                          IsInSelectedPath="{TemplateBinding IsInSelectedPath}"
                                                          IsKeyboardActive="{TemplateBinding IsKeyboardActive}"
+                                                         IsPointerHold="{TemplateBinding IsPointerHold}"
                                                          IsInlineCollapsed="{TemplateBinding IsInlineCollapsed}"
                                                          atom:ToolTip.Tip="{TemplateBinding EffectiveCollapsedTooltip}"
                                                          atom:ToolTip.Placement="{TemplateBinding CollapsedTooltipPlacement}"
@@ -133,6 +135,7 @@
                             Focusable="{TemplateBinding Focusable}"
                             IsInSelectedPath="{TemplateBinding IsInSelectedPath}"
                             IsKeyboardActive="{TemplateBinding IsKeyboardActive}"
+                            IsPointerHold="{TemplateBinding IsPointerHold}"
                             IsInlineCollapsed="{TemplateBinding IsInlineCollapsed}" />
 
                         <atom:LayoutAwareMotionActor

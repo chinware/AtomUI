@@ -2,22 +2,15 @@ namespace AtomUI.Desktop.Controls;
 
 internal class InlineNavMenuInteractionHandler : NavMenuInteractionHandlerBase
 {
-    public override void Select(NavMenuItem menuItem)
+    protected override void ActivateSubMenuItem(NavMenuItem menuItem)
     {
-        if (menuItem.HasSubMenu)
+        if (menuItem.IsSubMenuOpen)
         {
-            if (menuItem.IsSubMenuOpen)
-            {
-                menuItem.Close();
-            }
-            else
-            {
-                Open(menuItem);
-            }
+            menuItem.Close();
         }
         else
         {
-            (Menu as NavMenu)?.SelectNavMenuItem(menuItem);
+            Open(menuItem);
         }
     }
 

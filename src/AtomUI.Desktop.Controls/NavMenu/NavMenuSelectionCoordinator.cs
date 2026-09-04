@@ -7,18 +7,18 @@ internal sealed class NavMenuSelectionCoordinator
     private INavMenuNode? _appliedSelectedNode;
     private NavMenuItem? _appliedSelectedItem;
 
-    public void Select(NavMenu menu, NavMenuItem menuItem)
+    public bool Select(NavMenu menu, NavMenuItem menuItem)
     {
         var selectedNode = ((INavMenuItem)menuItem).Node;
         if (selectedNode is null)
         {
-            return;
+            return false;
         }
 
         if (ReferenceEquals(_appliedSelectedNode, selectedNode) && menuItem.IsSelected)
         {
             _appliedSelectedItem = menuItem;
-            return;
+            return ReferenceEquals(menu.SelectedItem, selectedNode);
         }
 
         var newItems         = NavMenu.CollectSelectPathItems(menuItem);
@@ -50,7 +50,7 @@ internal sealed class NavMenuSelectionCoordinator
         parentItem.SelectChildItem(menuItem, true);
         _appliedSelectedNode = selectedNode;
         _appliedSelectedItem = menuItem;
-        menu.RaiseNavMenuItemSelected(menuItem);
+        return menu.TryPublishNavMenuItemSelection(menuItem);
     }
 
     public void ClearSelection(NavMenu menu)

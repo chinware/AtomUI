@@ -108,18 +108,11 @@ internal class DefaultNavMenuInteractionHandler : NavMenuInteractionHandlerBase
         return e is NavMenuItemPointerEventArgs { PointerTimestamp: 0 };
     }
 
-    public override void Select(NavMenuItem menuItem)
+    protected override void ActivateSubMenuItem(NavMenuItem menuItem)
     {
-        if (menuItem.HasSubMenu)
+        if (!menuItem.IsSubMenuOpen)
         {
-            if (!menuItem.IsSubMenuOpen)
-            {
-                menuItem.Open();
-            }
-        }
-        else
-        {
-            (Menu as NavMenu)?.SelectNavMenuItem(menuItem);
+            menuItem.Open();
         }
     }
 
@@ -273,9 +266,9 @@ internal class DefaultNavMenuInteractionHandler : NavMenuInteractionHandlerBase
         }
     }
     
-    protected override void Click(INavMenuItem item)
+    protected override void RaiseItemInvocation(INavMenuItem item)
     {
-        base.Click(item);
+        base.RaiseItemInvocation(item);
         if (Menu is NavMenu)
         {
             if (!item.HasSubMenu && !item.StaysOpenOnClick)

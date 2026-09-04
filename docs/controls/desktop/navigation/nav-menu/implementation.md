@@ -1,6 +1,6 @@
 # NavMenu 桌面版实现原理
 
-本文档描述 NavMenu 桌面版的 entry 集合、内部容器生成、语义导航树、交互 handler、选择协调、默认路径 replay、popup 接入和主题状态维护。公共设计与 API 契约见 [NavMenu 桌面版架构设计](overview.md)，Token 语义见 [NavMenu Token 设计](token.md)，变化记录见 [NavMenu Changelog](changelog.md)。
+本文档描述 NavMenu 桌面版的 entry 集合、内部容器生成、语义导航树、交互 handler、选择协调、默认路径 replay、popup 接入和主题状态维护。公共设计与 API 契约见 [NavMenu 桌面版架构设计](overview.md)，项激活的提交契约见 [NavMenu 项激活事务设计](item-activation-design.md)，Token 语义见 [NavMenu Token 设计](token.md)，变化记录见 [NavMenu Changelog](changelog.md)。
 
 Popup 接入边界：`NavMenu` / `NavMenuItem` 负责业务状态和内容准备，submenu Popup 负责实际显示。模板重建或宿主切换时必须先释放旧 relay，再绑定新的 Popup；普通外点、Escape、失焦和业务关闭在 pinned 状态下被拦截，detach、窗口销毁、跨 TopLevel 和无效锚点必须走生命周期关闭并释放 Popup host。完整状态机见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。
 
@@ -26,9 +26,9 @@ NavMenu 的实现目标是在 `ItemsControl` 容器体系内维护包含节点�
 - `src/AtomUI.Desktop.Controls/NavMenu/INavMenu.cs`、`INavMenuItem.cs`、`INavMenuElement.cs`：菜单和容器的内部/公共契约。
 - `src/AtomUI.Desktop.Controls/NavMenu/NavMenuSelectionCoordinator.cs`：选择状态和祖先路径状态同步。
 - `src/AtomUI.Desktop.Controls/NavMenu/NavMenuItemContainerBinder.cs`：节点数据与容器状态绑定。
-- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuInteractionHandlerBase.cs`：交互 handler 基类。
-- `src/AtomUI.Desktop.Controls/NavMenu/DefaultNavMenuInteractionHandler.cs`：Vertical / Horizontal popup 模式交互策略。
-- `src/AtomUI.Desktop.Controls/NavMenu/InlineNavMenuInteractionHandler.cs`：Inline 展开收起交互策略。
+- `src/AtomUI.Desktop.Controls/NavMenu/NavMenuInteractionHandlerBase.cs`：交互 handler 基类，拥有激活事务状态、统一提交管线、释放合法性判定和取消路径。
+- `src/AtomUI.Desktop.Controls/NavMenu/DefaultNavMenuInteractionHandler.cs`：Vertical / Horizontal popup 模式交互策略，父节点激活确保 popup 打开，独立拥有 hover 延迟打开 / 关闭流程。
+- `src/AtomUI.Desktop.Controls/NavMenu/InlineNavMenuInteractionHandler.cs`：Inline 展开收起交互策略，父节点激活切换展开状态。
 - `src/AtomUI.Desktop.Controls/NavMenu/Header/`：三种 header 控件。
 - `src/AtomUI.Desktop.Controls/NavMenu/Themes/`：root、item、header 和 popup 主题。
 - `src/AtomUI.Desktop.Controls/NavMenu/NavMenuToken.cs`：控件 Token。
@@ -51,7 +51,7 @@ inline collapsed coordinator 由 `NavMenu` 拥有，负责根据 `Mode` 和 `IsI
 
 `NavMenuSelectionCoordinator` 统一处理旧选中节点清理、新选中节点设置、祖先路径标记和事件派发，避免选择逻辑散落在 click handler、默认路径 replay 和 property changed 分支中。它保存最后一次已应用选择的节点身份，并把当前 realized `NavMenuItem` 仅作为可失效缓存；容器回收后通过节点语义路径重新解析当前容器，不扫描或扁平化整棵 entry 树。每个 node container 完成 owner、node 和 semantic parent 准备后，都必须由 coordinator 投影当前 `IsSelected` / `IsInSelectedPath`，因此延迟打开的任意深度 popup 不依赖先前的 dispatcher 刷新时机。
 
-interaction handler 按 mode 分工：Inline handler 处理视觉树内展开，Default handler 处理 popup 打开、延迟关闭、窗口失焦和同级互斥。键盘导航由 interaction handler 层统一接入，负责 active/focus 漫游、层级进入/返回、Enter 提交和 Esc 关闭当前 popup 分支，不能散落到各个 `NavMenuItem` 的局部 key handler 中。
+interaction handler 按 mode 分工：Inline handler 处理视觉树内展开，Default handler 处理 popup 打开、延迟关闭、窗口失焦和同级互斥。激活事务由基类统一持有：待提交项与建立事务的指针身份描述一次事务，非空待提交项即代表事务存在；`CommitItemActivation` 是指针合法释放与键盘 Enter/Space 的公共提交入口，按激活目标分派为叶子选择提交（进入 `NavMenuSelectionCoordinator`）与父节点展开激活，最后统一执行命令与 `NavMenuItemClick` 派发。释放合法性以释放点对待提交项视觉子树的包含判定为唯一判据，不使用捕获期间的 `IsPointerOver`。键盘导航由 interaction handler 层统一接入，负责 active/focus 漫游、层级进入/返回、Enter 提交和 Esc 关闭当前 popup 分支，不能散落到各个 `NavMenuItem` 的局部 key handler 中。
 
 keyboard navigation coordinator 只拥有临时 active/focus 状态，不拥有选择状态。它可以请求打开或关闭子菜单，但叶子节点提交必须进入 `NavMenuSelectionCoordinator`，以保持 click、默认路径 replay 和键盘提交使用同一个选择入口。
 
@@ -99,7 +99,7 @@ Header theme / Popup frame / Inline child frame
 
 `InlineCollapsedWidth` 是布局输入。默认值由 `NavMenuTheme.axaml` 通过 `NavMenuToken.InlineCollapsedWidth` 提供；本地属性值覆盖 token 默认值。该属性只影响 `Mode=Inline && IsInlineCollapsed=true` 的根宽度和测量，不影响 `Vertical` / `Horizontal`。宽度约束由 `NavMenu` 内部通过 `Width` / `MinWidth` metadata coercion 表达：折叠时 effective `Width` 收敛到 `InlineCollapsedWidth`，较大的 effective `MinWidth` 向下收敛，展开后恢复原始 base value 或绑定。过渡动画不能挂在 root `Width` 的 `DoubleTransition` 上，因为 `IsInlineCollapsed` 切换时宽度来自 coercion，不是普通 styled value 变化；动画应由内部 `InlineCollapsedLayoutWidth` motion 按帧驱动 coercion。不要使用 `BindingPriority.Animation` relay binding 控制根宽度，也不要设置 `MaxWidth`，否则会破坏用户 base `Width` 或把收缩动画立即夹到目标宽度。
 
-键盘 active/focus 是临时交互状态。active 项变化不能写入 `SelectedItem`，不能触发 `NavMenuNodeSelected`，不能改变 `IsInSelectedPath`。只有 Enter 在叶子节点上提交时，才进入 selection coordinator。
+键盘 active/focus 是临时交互状态。active 项变化不能写入 `SelectedItem`，不能触发 `NavMenuNodeSelected`，不能改变 `IsInSelectedPath`。只有 Enter 在叶子节点上提交时，才进入 selection coordinator。激活事务的待提交项与 pointer-hold 视觉同样是临时交互状态，按下不写入任何选择状态，提交或取消时终结。
 
 `IsItemBackgroundEnabled` 下发到 `NavMenuItem` 和 header theme，但它只控制 item / submenu 背景块，不关闭 header 文本状态。
 
@@ -162,10 +162,19 @@ ClearContainerForItemOverride / rebind / recycle
 
 ## 6. 交互与事件处理
 
+激活事务契约见 [NavMenu 项激活事务设计](item-activation-design.md)。pointer 路径：
+
+- 按下只建立事务：确认主按钮与节点有效、取消旧事务、记录待提交项与指针身份，先置与 selected 背景一致且不覆盖文字颜色的 pointer-hold 视觉，再捕获带 `Cursor=Hand` 的 item header，最后按 mode 尝试移动真实焦点。该顺序避免捕获改变原生 `:pointerover` 时暴露默认背景，并保证按住期间保持手型指针。它不改写 keyboard-active owner 或 selected 状态，不进入 selection coordinator、不执行命令、不触发路由事件、不切换 inline 展开状态。
+- 按住阶段移动处理只维护 pointer-hold 视觉：拖出待提交项清除，移回恢复；不更新 `SelectedItem`。
+- 合法释放（同一指针、主按钮、释放点命中待提交项视觉子树、节点与全部语义祖先仍可用、未被卸载或遗忘）进入 `CommitItemActivation`；先清空事务字段并解除 header 的 capture-lost 订阅、释放捕获，但保留 pointer-hold selected-background 视觉；selection 提交与用户回调完成后才在 `finally` 清除 pointer-hold，避免浅蓝背景在释放瞬间闪回 hover，同时防止命令或导航重入残留旧事务。
+- 取消路径统一无副作用：释放到另一节点或菜单外、当前捕获指针丢失、按下后节点被移除或禁用、菜单 detach 或 handler 替换、非主按钮释放、新按下替代旧事务；其他指针的 capture-lost 事件不得终止当前事务。
+- pointer-hold 与 keyboard-active 由独立 owner 持有并分别投影：前者通过 header 的 `IsPointerHold` 只使用 `ItemSelectedBg` / `DarkItemSelectedBg`，不覆盖文字颜色；后者通过 `IsKeyboardActive` 使用 `ItemActiveBg`。清除指针事务不得清除键盘导航锚点；pointer-hold 不依赖捕获期间的原生 `:pointerover`，也不写入 keyboard active、`IsSelected` 或 `IsInSelectedPath`。
+- header 背景 transition 使用全局 `MotionDurationSlow`（默认 300ms）和 NavMenu Own Token `ItemBackgroundMotionEasing`（默认 `Spline(0.25,0.1,0.25,1)`），对应参考 Menu 的 `background-color 0.3s ease`；Base、Inline、Horizontal 主题只通过强类型 `NavMenuTokenResource` 消费该曲线，不在 AXAML 中重复构造 easing。mouse down 后背景从 hover 灰进入 selected 浅蓝，但合法释放才提交 selection。
+
 Inline handler：
 
-- 点击带子菜单项切换 `IsSubMenuOpen`。
-- 点击叶子节点进入 selection coordinator。
+- 父节点合法释放时切换 `IsSubMenuOpen`；按下阶段不切换。
+- 叶子节点合法释放进入 selection coordinator。
 - `IsAccordionMode=true` 时关闭同层其他打开项。
 - Inline 展开收起保持 motion，不通过临时关闭 motion 规避问题。
 - 当 `IsInlineCollapsed=true` 时不使用 Inline handler；有效交互切换到 Default handler，使带子菜单的顶层项通过 popup 打开。
@@ -174,8 +183,9 @@ Default handler：
 
 - pointer enter 可延迟打开 popup。
 - pointer leave 可延迟关闭 popup。
-- 延迟打开 / 关闭任务记录各自的目标容器；目标 container clear、handler detach 或新 pointer 状态替换旧任务时精确取消并清空目标引用。
-- 点击叶子节点进入 selection coordinator。
+- 延迟打开 / 关闭任务记录各自的目标容器；目标 container clear、handler detach 或新 pointer 状态替换旧任务时精确取消并清空目标引用。hover 延迟流程独立于激活事务。
+- 父节点合法释放时确保 popup 打开（已打开则保持）。
+- 叶子节点合法释放进入 selection coordinator。
 - popup close 由 pointer、窗口失焦、非客户端点击和同级打开状态共同控制。
 - Horizontal 顶层 popup 放置在下方，非顶层和 vertical popup 使用侧向层级。
 - inline collapsed 使用 Default handler 的 popup 路径，但仍保留 public `Mode=Inline`，以保持 API 语义和文档语义一致。
@@ -192,7 +202,7 @@ Keyboard navigation：
 - 键盘打开 popup 后必须确保子容器可生成，并把 active/focus 移动到第一个可交互子项；不能依赖固定 timer 等待 popup content。
 - Esc 只关闭当前 popup 分支，active/focus 回到父项；不能调用 `NavMenu.Close()`，避免清空 `SelectedItem`。
 
-`NavMenuItemClick` 表达 item 点击，`NavMenuNodeSelected` 表达叶子节点选择。禁用项不得触发有效点击、命令或选择。节点命令由同一次 `NavMenuItem` 有效点击或键盘提交执行，不能从 `NavMenuNodeSelected` 再次执行；pointer 与 keyboard 必须复用同一命令入口。
+`NavMenuItemClick` 表达 item 激活，`NavMenuNodeSelected` 表达叶子节点选择提交。禁用项不得触发有效激活、命令或选择。叶子提交顺序固定：selection coordinator 更新选中路径与 `IsSelected` / `IsInSelectedPath`、更新 `NavMenu.SelectedItem`、触发 `NavMenuNodeSelected`、执行节点 `Command`、触发 `NavMenuItemClick`；父节点提交不修改 `SelectedItem`。`SelectedItem` 更新后和 `NavMenuNodeSelected` 返回后都检查该节点是否仍是当前选择；同步重入改写选择时，原提交立即标记为 superseded，不发布陈旧选择事件，也不继续执行原节点命令或 `NavMenuItemClick`。程序化 `SelectedItem` 只进入 selection coordinator，不进入激活或命令路径。
 
 ## 7. 内部算法与关键流程
 
@@ -253,7 +263,7 @@ Execute once
 ### 7.4 选择流程
 
 ```text
-Select leaf item
+Commit leaf item
       ↓
 NavMenuSelectionCoordinator
       ↓
@@ -262,7 +272,15 @@ old ancestor IsInSelectedPath=false
 new selected container IsSelected=true
 new ancestors IsInSelectedPath=true
       ↓
-NavMenu.SelectedItem + NavMenuNodeSelected
+NavMenu.SelectedItem update
+      ↓
+确认 SelectedItem 仍是目标节点
+      ↓
+NavMenuNodeSelected
+      ↓
+再次确认 SelectedItem 仍是目标节点
+      ↓
+Command → NavMenuItemClick
 ```
 
 祖先路径只标记导航路径，不应通过 ancestor pointer state 让父级 header 进入 hover 背景。
@@ -271,7 +289,7 @@ NavMenu.SelectedItem + NavMenuNodeSelected
 
 选择协调器必须区分节点身份和容器身份。最后一次已应用的节点身份跨 template reapply、inline collapsed 切换和视觉树 detach 保留；realized container 被回收时只清除容器引用。新容器 prepare 时根据已应用节点及其 parent path 精确设置自身 selected/path 状态；如果程序化 `SelectedItem` 正在等待 revision replay，prepare 继续投影旧的已应用节点，不能提前覆盖 coordinator 状态。下一次选择若没有可用缓存，应沿目标节点的 semantic parent path 逐层解析旧选中容器，再清除旧 leaf 和旧祖先路径。查找工作只覆盖路径深度和各层透明分组的结构查找，不能为一次选择构造全树快照。
 
-键盘提交必须复用同一流程。active 项不是选择项，方向键移动不进入 selection coordinator。Enter 提交叶子节点时先触发 item click 语义，再由 selection coordinator 更新选中路径，确保键盘与 pointer click 的事件顺序一致。
+键盘提交必须复用同一激活流程。active 项不是选择项，方向键移动不进入 selection coordinator。Enter 与指针合法释放进入同一提交入口：先由 selection coordinator 更新选中路径与 `SelectedItem` 并触发 `NavMenuNodeSelected`，确认提交未被同步重入替换后，再执行节点命令并触发 `NavMenuItemClick`。程序化 `SelectedItem` 只复用前半段的选择协调流程。
 
 ### 7.5 默认路径 replay
 
@@ -371,7 +389,7 @@ handler 持有事件订阅时必须在 mode 切换、detached 或模板替换时
 
 inline collapsed cache 不得持有 `NavMenuItem`、header、popup 或 template part 引用。状态失效边界包括 ItemsSource reset、container clear、detach、mode change 和 default path replay revision 变化。
 
-生成容器进入 clear/recycle 时必须通过 `NavMenu.ForgetGeneratedContainer` 同时通知 selection coordinator 和当前 interaction handler。该入口清除 selection coordinator 的 realized container 引用、keyboard-active 引用、pointer press/release 目标，以及 Default handler 指向该容器的 pending open / close；之后才释放 binding、resource host 和 entry context，避免旧交互回调读取已清空的数据对象。
+生成容器进入 clear/recycle 时必须通过 `NavMenu.ForgetGeneratedContainer` 同时通知 selection coordinator 和当前 interaction handler。该入口清除 selection coordinator 的 realized container 引用、keyboard-active 引用、激活事务的待提交项与 pointer-hold 视觉，以及 Default handler 指向该容器的 pending open / close；之后才释放 binding、resource host 和 entry context，避免旧交互回调读取已清空的数据对象。
 
 键盘导航状态持有的 active item 引用必须随 detach、mode 切换、container clear、popup close 和 item disabled 变化失效。popup 内容可能在关闭后继续保留生成容器，因此有效性不能只看局部 `IsVisible`；必须同时验证 effective visible/effective enabled 和完整语义父链的打开状态。失效后第一次 Enter 只从当前可见层级重新建立 active 项，不提交旧项。
 
@@ -398,6 +416,11 @@ inline collapsed cache 不得持有 `NavMenuItem`、header、popup 或 template 
 - 默认路径应用不使用固定 50ms sleep 作为稳定策略。
 - selection coordinator 是选择状态的统一入口。
 - keyboard active/focus 状态不能替代 selection coordinator。
+- 激活事务由 interaction handler 基类唯一持有；按下只建立事务、置仅覆盖背景的 pointer-hold selected-background 视觉并按 mode 尝试移动真实焦点，不覆盖 keyboard-active owner、不写 selected 状态、不进入 selection coordinator、不执行命令、不触发路由事件、不切换 inline 展开状态。
+- 指针提交以“释放点命中待提交项视觉子树”为唯一合法性判据，不使用捕获期间的 `IsPointerOver`；取消路径（拖离释放、当前指针捕获丢失、节点移除或禁用、detach、非主按钮释放、新按下替代）零副作用，其他指针的 capture-lost 不得误取消。
+- 调用命令与触发 `NavMenuItemClick` 前必须先释放指针捕获并清理事务字段，防止用户回调重入时残留旧事务。
+- 叶子提交顺序固定：选中路径与 `IsSelected` 更新、`SelectedItem` 更新、`NavMenuNodeSelected`、节点 `Command`、`NavMenuItemClick`；同步重入替换选择时停止原提交尚未发生的事件与动作。父节点提交不修改 `SelectedItem`。
+- pointer-hold 与 keyboard-active 独立持有并分别投影到 header 的 `IsPointerHold` 与 `IsKeyboardActive`；前者只使用 selected 背景 Token 且不覆盖文字颜色，后者使用 active Token。pointer-hold 不写入 keyboard active、`IsSelected` / `IsInSelectedPath`，也不直接依赖捕获期间的原生 `:pointerover`。
 - 方向键移动不得触发点击或选中事件。
 - keyboard active 初始解析可以复用可见 `SelectedItem` 容器作为方向键移动锚点，但不得吃掉第一次方向键、触发选择事件或自动打开隐藏分支。
 - Esc 关闭 popup 分支不得调用 `NavMenu.Close()`，不得清空 `SelectedItem`。
@@ -428,6 +451,10 @@ inline collapsed cache 不得持有 `NavMenuItem`、header、popup 或 template 
 
 验证范围：
 
+- 激活事务：按下零副作用（已选中 A 时按下 B，选择、事件与命令均不变）；同项按下并释放单次提交；完整提交顺序（`SelectedItem` 与 `NavMenuNodeSelected` 先于节点 `Command` 与 `NavMenuItemClick`，命令执行时公共状态已是新值）；同一节点重复激活不重复触发 `NavMenuNodeSelected`。
+- 重入与取消：同步 `SelectedItem` 观察者改写选择时不产生陈旧选择事件或原节点 invocation；当前捕获指针丢失会取消、其他指针 capture-lost 不会误取消；释放到另一节点或菜单外、按下后禁用节点、handler 替换、新按下替代均零提交；按下 B 拖出后移回 B 释放提交且仅一次。
+- 父节点激活：Inline 父节点合法释放切换展开一次，Default 父节点合法释放打开 popup；按下阶段不切换。Enter/Space 与指针释放的分派、顺序和命令执行一致。
+- 事务视觉：pointer-hold 的背景与 selected 完全一致、文字颜色不变且不提交选择，低于真实 selected 优先级，按下置位 / 拖出清除 / 移回恢复；合法释放保持该视觉直到 selection 提交后再清除，且与使用 active Token 的 keyboard-active 独立持有。
 - Inline、Vertical、Horizontal 打开、关闭、hover、click 和同级互斥。
 - Inline collapsed 切换、effective mode、open path cache、初始 `DefaultOpenPaths` 缓存、展开恢复、popup 临时打开和 selected path 保持。
 - Inline、Vertical、Horizontal 的 Up / Down / Left / Right / Enter / Esc 键盘漫游、层级进入/返回、leaf commit 和 popup close。
