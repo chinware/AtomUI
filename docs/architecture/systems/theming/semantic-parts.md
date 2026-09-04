@@ -589,6 +589,14 @@ Avalonia 12 的 Popup 在打开时保留 Popup、PopupRoot 或 OverlayPopupHost 
 
 `CrossVisualRoot=true` 用于描述和测试，不自动要求 `PopupPresenterTheme`、`PopupHostTheme` 或其他新属性。
 
+弹层内容在打开时才由控件代码创建（如 ColorPicker 的 `CreatePresenter()` 动态创建 View）时，动态子树的
+`TemplatedParent` 链断在新控件的模板边界上，owner 的 `/template/` route 与 `>>` 视觉步进均不可达；此类
+控件的 popup 部件必须在 owner 模板内提供一个静态宿主节点承载 marker（例如 ColorPicker 的
+`popup.root` 由 `PART_Popup` 直接子节点 `ColorPickerPopupRootFrame`（`Border` 子类，向内容层
+`ArrowDecoratedBox` 转发 `IArrowAwareShadowMaskInfoProvider`）承载，语义边框贴合弹层外沿，对齐 antd
+popover root；共享 Popup 的箭头布局与阴影遮罩机制只识别直接 Child，转发宿主同时满足该约定），不得把
+marker 声明在动态创建的 View 模板内，也不得为此引入运行时 VisualTree 搜索。
+
 模板内 Popup 的弹层内部件统一采用三级键并全部声明 `CrossVisualRoot=true`（首个完整先例：AutoComplete）：
 
 - `popup.root`——弹层框体（模板内 `PopupFrame`，marker 直接标注在宿主模板上）；
@@ -599,7 +607,14 @@ Avalonia 12 的 Popup 在打开时保留 Popup、PopupRoot 或 OverlayPopupHost 
 Gallery 语义预览需要钉住弹层常开（如 AutoComplete 的 `IsDropDownOpen=true` + `IsPopupPinnedOpen=true`）才能解析
 `popup.*`。此时产品控件必须在弹层打开**之前**抑制 light-dismiss 遮罩：Avalonia 仅在 Popup 打开瞬间读取
 `IsLightDismissEnabled` 创建遮罩层，打开后再改无效；而钉住的弹层本就忽略 dismiss 关闭请求，遮罩只会阻断页面其余
-区域的交互（AutoComplete 在 `OnApplyTemplate` 打开弹层前依据 `IsPopupPinnedOpen` 抑制，取消钉住时恢复模板默认）。
+区域的交互。取消钉住时必须恢复控件或 trigger 的原配置；共享宿主的 effective 值应按
+`configured light-dismiss && !IsPopupPinnedOpen` 计算，不能固定恢复为 `true`。
+
+Popup 的请求状态、控件业务打开状态、`Popup.IsOpen` 物理状态和 motion actor 视觉状态是四个独立层级。延迟 host 必须同时
+支持 `Opened -> actor-ready` 与 `actor-ready -> Opened` 两种顺序，并从任一入口进入同一幂等开启动画路径；只断言
+`Popup.IsOpen=true` 不能证明弹层已经可见。Semantic Preview 不得通过永久关闭 motion 掩盖首次物化竞态，至少保留一个默认
+motion 开启的首次打开回归场景。完整事故分析、全局排查矩阵和测试范式见
+[Semantic Part Popup 首次打开生命周期竞态案例](../../../engineering/case-studies/semantic-part-popup-first-open-lifecycle-case-study.md)。
 
 ### 9.2 独立宿主
 

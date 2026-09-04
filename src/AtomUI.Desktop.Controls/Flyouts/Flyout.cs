@@ -307,9 +307,9 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         popup[!PopupControl.IsPointAtCenterProperty]        = this[!IsPointAtCenterProperty];
         popup[!PopupControl.IsPopupPinnedOpenProperty]      = this[!IsPopupPinnedOpenProperty];
         popup[!PopupControl.ShouldUseOverlayLayerProperty]  = this[!ShouldUseOverlayPopupProperty];
-        popup[!AvaloniaPopup.IsLightDismissEnabledProperty] = this[!IsLightDismissEnabledProperty];
         this[!IsPopupHorizontalFlippedProperty]             = popup[!PopupControl.IsHorizontalFlippedProperty];
         this[!IsPopupVerticalFlippedProperty]               = popup[!PopupControl.IsVerticalFlippedProperty];
+        ApplyPopupPinnedOpenSettings(popup);
 
         popup.Opened += HandlePopupOpened;
         popup.Opened += this.OnPopupOpened;
@@ -414,6 +414,7 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         if (Popup is PopupControl popup)
         {
             popup.SetCurrentValue(PopupControl.IsPopupPinnedOpenProperty, IsPopupPinnedOpen);
+            ApplyPopupPinnedOpenSettings(popup);
         }
         return base.ShowAtCore(placementTarget, showAtPointer);
     }
@@ -445,6 +446,13 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
             CancelPendingPinnedOpen();
         }
 
+        if ((change.Property == IsPopupPinnedOpenProperty ||
+             change.Property == IsLightDismissEnabledProperty) &&
+            Popup is PopupControl popup)
+        {
+            ApplyPopupPinnedOpenSettings(popup);
+        }
+
         if (change.Property == IsArrowVisibleProperty ||
             change.Property == PlacementProperty ||
             change.Property == RequestedPlacementProperty ||
@@ -467,6 +475,13 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
             SetCurrentValue(PlacementProperty, PlacementMode.Custom);
             ConfigurePointerPlacementOffsets();
         }
+    }
+
+    private void ApplyPopupPinnedOpenSettings(PopupControl popup)
+    {
+        popup.SetCurrentValue(
+            AvaloniaPopup.IsLightDismissEnabledProperty,
+            IsLightDismissEnabled && !IsPopupPinnedOpen);
     }
 
     protected void ConfigureShowArrowEffective()

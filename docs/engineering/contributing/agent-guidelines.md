@@ -199,6 +199,9 @@ C# 命名约定的唯一事实来源是仓库根目录的 [.editorconfig](../../
 - Gallery 语义预览钉住弹层 → `IsDropDownOpen` + `IsPopupPinnedOpen`；light-dismiss 遮罩抑制由产品控件在弹层打开前
   完成（见 [Semantic Part Gallery Preview](../../gallery/authoring/semantic-part-preview.md) 第 10 节），预览基础设施
   不干预 Popup 行为。
+- Popup 首次物化 → 分别验证请求、业务 open、物理 `Popup.IsOpen` 和视觉 actor 状态，并覆盖 `Opened` 与 actor-ready
+  的两种顺序；不得用永久关闭 motion 掩盖时序问题。案例与全局审计见
+  [Semantic Part Popup 首次打开生命周期竞态案例](../case-studies/semantic-part-popup-first-open-lifecycle-case-study.md)。
 
 ## Changelog 与发布
 

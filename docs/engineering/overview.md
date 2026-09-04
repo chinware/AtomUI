@@ -38,6 +38,7 @@
 ## Case Studies
 
 - [Avalonia DynamicResource 内存泄露案例](case-studies/avalonia-dynamic-resource-memory-leak-case-study.md)
+- [Semantic Part Popup 首次打开生命周期竞态案例](case-studies/semantic-part-popup-first-open-lifecycle-case-study.md)
 
 ## Tooling
 

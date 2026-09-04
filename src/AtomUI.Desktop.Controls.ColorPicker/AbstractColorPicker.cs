@@ -102,6 +102,12 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     public static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty =
         AvaloniaProperty.Register<AbstractColorPicker, bool>(nameof(ShouldUseOverlayPopup), true);
 
+    /// <summary>
+    /// Gets or sets whether the picker popup remains open while its placement target is available.
+    /// </summary>
+    public static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Popup.IsPopupPinnedOpenProperty.AddOwner<AbstractColorPicker>();
+
     public ColorFormat Format
     {
         get => GetValue(FormatProperty);
@@ -234,6 +240,15 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         set => SetValue(ShouldUseOverlayPopupProperty, value);
     }
 
+    /// <summary>
+    /// Gets or sets whether the picker popup remains open while its placement target is available.
+    /// </summary>
+    public bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
+
     #endregion
 
     #region 内部属性定义
@@ -268,9 +283,6 @@ public abstract class AbstractColorPicker : AvaloniaButton,
 
     internal static readonly StyledProperty<bool> IsPickerOpenProperty =
         AvaloniaProperty.Register<AbstractColorPicker, bool>(nameof(IsPickerOpen), coerce: CoerceIsPickerOpen);
-
-    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
-        Popup.IsPopupPinnedOpenProperty.AddOwner<AbstractColorPicker>();
 
     internal static readonly StyledProperty<Control?> PickerPresenterProperty =
         AvaloniaProperty.Register<AbstractColorPicker, Control?>(nameof(PickerPresenter));
@@ -350,12 +362,6 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     {
         get => GetValue(IsPickerOpenProperty);
         set => SetValue(IsPickerOpenProperty, value);
-    }
-
-    internal bool IsPopupPinnedOpen
-    {
-        get => GetValue(IsPopupPinnedOpenProperty);
-        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
     }
 
     internal Control? PickerPresenter
@@ -501,6 +507,9 @@ public abstract class AbstractColorPicker : AvaloniaButton,
             return;
         }
         _popup.OverlayDismissEventPassThrough = TriggerType != FlyoutTriggerType.Click;
+        _popup.SetCurrentValue(
+            Popup.IsLightDismissEnabledProperty,
+            IsLightDismissEnabled && !IsPopupPinnedOpen);
     }
 
     #region Hover trigger
@@ -911,6 +920,8 @@ public abstract class AbstractColorPicker : AvaloniaButton,
 
         if (change.Property == IsPopupPinnedOpenProperty)
         {
+            ApplyPopupTriggerSettings();
+
             if (change.GetNewValue<bool>())
             {
                 SetCurrentValue(IsPickerOpenProperty, true);
@@ -948,6 +959,12 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         ConfigureShowArrowEffective();
         ConfigureArrowPosition();
         ConfigureColorBlockSize();
+        // The business state can become open before the template has produced PART_Popup.
+        // Defer the physical open until placement, pinning and dismiss behavior are ready.
+        if (IsPickerOpen && _popup != null && !_popup.IsOpen)
+        {
+            _popup.IsOpen = true;
+        }
     }
 
     private void ConfigureColorBlockSize()
@@ -1004,20 +1021,26 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     private void HandlePopupClosed(object? sender, EventArgs e)
     {
         UnsubscribeFromPopupPointer();
+        // Keep the business state synchronized with light-dismiss and Escape closes.
+        if (IsPickerOpen)
+        {
+            SetCurrentValue(IsPickerOpenProperty, false);
+        }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
         SetupTriggerHandler();
-        if (IsPopupPinnedOpen && !IsPickerOpen)
-        {
-            SetCurrentValue(IsPickerOpenProperty, true);
-        }
         AttachPopupHandlers();
         if (IsPickerOpen)
         {
             RegisterWindowDeactivatedHandler();
+        }
+
+        if (IsPopupPinnedOpen && !IsPickerOpen)
+        {
+            SetCurrentValue(IsPickerOpenProperty, true);
         }
     }
 
@@ -1150,20 +1173,27 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         if (args.NewValue is true)
         {
             NotifyPickerOpened();
+            if (_popup != null && !_popup.IsOpen)
+            {
+                _popup.IsOpen = true;
+            }
         }
         else
         {
+            if (_popup is { IsOpen: true })
+            {
+                _popup.IsOpen = false;
+            }
             NotifyPickerClosed();
         }
+
         UpdatePseudoClasses();
     }
 
     private static bool CoerceIsPickerOpen(AvaloniaObject sender, bool value)
     {
-        return !value &&
-               sender is AbstractColorPicker { IsPopupPinnedOpen: true, _popupLifecycleCloseDepth: 0 }
-            ? true
-            : value;
+        return value ||
+               sender is AbstractColorPicker { IsPopupPinnedOpen: true, _popupLifecycleCloseDepth: 0 };
     }
 
     protected virtual void UpdatePseudoClasses()

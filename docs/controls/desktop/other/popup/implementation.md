@@ -105,6 +105,11 @@ Popup 实例拥有 open/close motion cancellation token 和本次关闭执行状
 快速重开把 Pending/Playing 收敛回 Idle，Completing 只允许 Avalonia 执行一次最终 close。`Closed` 统一取消并释放 token、
 清空 motion actor、打开时 TopLevel、placement tracker 与 wheel guard。
 
+开启动画同时接受 `Opened -> PopupMotionActor ready` 与 `actor ready -> Opened` 两种 host 物化顺序。`Opened` 记录当前打开周期，
+actor attach 通过 `NotifyMotionActorReady` 回报就绪；任一后到的入口都进入同一个 `StartOpenMotion` 路径。actor 在 attach 时为防止
+首帧闪烁而预置的 `Opacity=0` 必须由该路径收敛到动画终态，或在禁用 motion 时显式恢复为 `Opacity=1`。异步调度捕获本次 actor
+和 cancellation token，`Closed` 清除打开周期和 actor，禁止旧 host 状态进入下一轮。
+
 关闭动效只能延迟仍然有效的普通关闭。Popup 打开时记录该会话的 owning `TopLevel` 以及当时是否已有 logical owner；
 `Closing` 发生时验证当前实际 PlacementTarget 仍在 visual tree、目标仍属于原 TopLevel，并且目标能够转换到该 TopLevel。
 若打开时已有 logical owner，还要求 Popup 继续挂在 rooted logical tree；打开时没有 logical owner 的 Direct Popup 不虚构该
@@ -143,7 +148,8 @@ Popup placement target 和实际 host 必须解析到同一 owning `TopLevel`；
 路径共享 frame renderer 和 surface ownership。
 
 Child 内部控件已处理的 wheel 不被重复消费；未处理的 wheel 在 popup 边界终止，避免滚动 placement target 外层祖先。
-light-dismiss、focus 和 host teardown 继续由 Avalonia Popup 协议负责。
+light-dismiss、focus 和 host teardown 继续由 Avalonia Popup 协议负责；需要 pinned 常开的产品 owner 必须在首次物理打开前把
+effective light-dismiss 设为 false，解除 pin 后恢复 owner / trigger 配置，不能在 Popup 打开后补改。
 
 ## 9. 资源、性能与 AOT 边界
 
@@ -175,11 +181,12 @@ StyledProperty 和 ControlTheme 均为静态/AOT 可发现契约。源码库存�
 - 业务 open state coercion 不得通过 suppression flag 发布瞬态 false；lifecycle close scope 是唯一允许 pinned 业务状态变为 false 的路径。
 - Popup 必须以共享 `MotionExecutionState` 表达关闭动效阶段；`Pending`、`Playing` 和 `Completing` 单向收敛，重复
   close 不得创建并行关闭动效，`Closed` 必须回到 `Idle`。
+- Popup 开启动画必须覆盖 `Opened` 与 motion actor ready 的两种先后顺序；物理 `IsOpen=true` 但 actor 仍透明不是有效打开终态。
 
 ## 11. 测试与验证
 
 - `PopupShadowTests` 验证公开 surface API、`null` 默认值、显式 renderer fill、透明 frame 和 shadow clipping。
-- `PopupPlacementTests` 与 `PopupLifecycleTests` 验证 placement、关闭动效状态、pinned 有效性门禁、显式 `ShowAt`、pending unpin、placement target/logical owner detach、跨 TopLevel target 切换和 host teardown。
+- `PopupPlacementTests` 与 `PopupLifecycleTests` 验证 placement、开启动画 actor 乱序、关闭动效状态、pinned 有效性门禁、显式 `ShowAt`、pending unpin、placement target/logical owner detach、跨 TopLevel target 切换和 host teardown。
 - `PopupPinnedOpenContractTests` 验证 Property 字段、CLR wrapper 和 ToolTip attached accessors 都保持 internal，且 Gallery/API/AXAML surface 不包含该能力。
 - `ToolTipPopupModeTests` 验证 host mode 和 transparent PopupRoot。
 - `DialogPopupPrimitiveLayeringTests` 验证 Direct Popup 与四类 content-owned 原语。

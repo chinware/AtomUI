@@ -7,7 +7,7 @@ using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
-public class ColorPicker : AbstractColorPicker
+public partial class ColorPicker : AbstractColorPicker
 {
     #region 公共属性定义
     public static readonly StyledProperty<Color?> DefaultValueProperty =

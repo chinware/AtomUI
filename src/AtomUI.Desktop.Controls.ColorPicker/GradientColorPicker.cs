@@ -9,7 +9,7 @@ namespace AtomUI.Desktop.Controls;
 
 using AvaloniaTextBlock = Avalonia.Controls.TextBlock;
 
-public class GradientColorPicker : AbstractColorPicker
+public partial class GradientColorPicker : AbstractColorPicker
 {
     #region 公共属性定义
     public static readonly StyledProperty<LinearGradientBrush?> DefaultValueProperty =

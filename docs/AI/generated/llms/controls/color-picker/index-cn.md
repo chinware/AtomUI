@@ -103,7 +103,7 @@ ColorPicker 的公共契约由 public/protected 类型成员、Avalonia 属性�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:35`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:72`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -113,7 +113,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### Value 绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:47`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:84`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -158,7 +158,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 触发器尺寸
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:93`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:130`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -219,7 +219,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 线性渐变
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:155`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/ColorPicker/Views/ColorPickerShowCase.axaml:192`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -252,6 +252,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - open/close、collection/filter、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `IsPickerOpen` 是 picker 的业务打开状态，`Popup.IsOpen` 是物理宿主状态；pinned 期间普通关闭不能改变业务状态，锚点隐藏、detach 或 TopLevel 失效仍可关闭物理宿主，并在有效性恢复后重新打开。
 - `Value`、trigger 色块、trigger 文本、picker presenter 和 Form 值必须由同一份 current value 派生；清空状态以 `Value=null` 为源头。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
@@ -340,6 +341,7 @@ ColorPicker Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 
 - 源设计文档：`docs/controls/desktop/data-entry/color-picker/overview.md`
 - 实现文档：`docs/controls/desktop/data-entry/color-picker/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-entry/color-picker/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-entry/color-picker/token.md`
 - 变更记录：`docs/controls/desktop/data-entry/color-picker/changelog.md`
 - 语义结构：`./semantic-cn.md`

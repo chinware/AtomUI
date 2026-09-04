@@ -2,7 +2,9 @@
 
 本文档定义 `ColorPicker` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [ColorPicker 桌面版实现原理](implementation.md)，ColorPicker Token 的专项设计见 [ColorPicker Token 设计](token.md)，设计和契约变化记录见 [ColorPicker Changelog](changelog.md)。
 
-该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。本控件的语义 owner 为 `AbstractColorPicker`，其 internal `IsPopupPinnedOpen` 只供测试和内部诊断使用；设置为 true 时保持 picker open state 并 relay 到 color panel Popup，设置为 false 时只解除关闭拦截。控件卸载、锚点失效、TopLevel 改变和模板重建仍按共享生命周期规则清理。
+该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。`AbstractColorPicker` 提供 public `IsPopupPinnedOpen`：设置为 true 时保持 picker open state 并 relay 到 color panel Popup，使 Gallery 语义预览等场景可以持续展示 `popup.root` 部件；设置为 false 时只解除关闭拦截。控件卸载、锚点失效、TopLevel 改变和模板重建仍按共享生命周期规则清理。
+
+ColorPicker 与 GradientColorPicker 各自公开 5 个 Semantic Part（`root`、`body`、`content`、`description`、`popup.root`），与上游 ColorPicker 的公开语义 API 逐一对齐；完整 Part 表、Selector 用法与定制边界见 [ColorPicker Semantic Part 契约](semantic-part.md)。
 
 ## 1. 控件定位
 
@@ -105,6 +107,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - open/close、collection/filter、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `IsPickerOpen` 是 picker 的业务打开状态，`Popup.IsOpen` 是物理宿主状态；pinned 期间普通关闭不能改变业务状态，锚点隐藏、detach 或 TopLevel 失效仍可关闭物理宿主，并在有效性恢复后重新打开。
 - `Value`、trigger 色块、trigger 文本、picker presenter 和 Form 值必须由同一份 current value 派生；清空状态以 `Value=null` 为源头。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
@@ -219,6 +222,7 @@ ColorPicker 的视觉选项通过 public API 归一为 theme variables、伪类�
 关联文档：
 
 - [ColorPicker 桌面版实现原理](implementation.md)
+- [ColorPicker Semantic Part 契约](semantic-part.md)
 - [ColorPicker Token 设计](token.md)
 - [ColorPicker Changelog](changelog.md)
 

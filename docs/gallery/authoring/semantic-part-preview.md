@@ -350,6 +350,13 @@ Modal、Message、Notification 等由服务创建且不再能从 owner Popup 到
    Preview 无需额外处理。
 4. 高亮框以 marker 元素 Bounds 为准：内联语义（如 placeholder 文字）的 marker 元素必须紧贴内容排布，
    Preview 侧不得通过放大 Adorner 矩形补偿。
+5. 首次进入 Semantic Parts 时必须区分 pinned 请求、控件业务 open、`Popup.IsOpen` 和最终视觉可见四层状态；
+   物理 Popup 已打开但 motion actor 仍为透明不算成功。
+6. `Opened` 与延迟 host / actor ready 的先后顺序由产品控件或共享 Popup 对账。Preview 不直接操纵 actor，也不得把
+   `IsMotionEnabled="False"` 当作生命周期修复；至少一个使用共享 host 的验收样例保留默认 motion，覆盖首次物化。
+
+Popup 首次打开竞态、直接 Child wrapper 契约和 pinned light-dismiss 的完整排查记录见
+[Semantic Part Popup 首次打开生命周期竞态案例](../../engineering/case-studies/semantic-part-popup-first-open-lifecycle-case-study.md)。
 
 ## 11. 高密度预算
 
@@ -442,6 +449,9 @@ Button、ButtonTheme 和 Button Browser Theme 不因 Gallery Preview 新增任�
 18. 高亮渲染回归：root、静态模板 Part、runtime-created Part、跨视觉根 Popup、薄尺寸目标和多实例目标都通过统一
     `SemanticPartAdorner` 路径创建；每个 adorner 的 ancestor clipping 已关闭、自己的 Clip 为空、外扩几何不越出 Bounds，且
     被 `ClipToBounds=true` 祖先包裹时四边仍保持完整。
+19. Popup 首次物化回归：从 Examples 初始状态第一次选择 Semantic Parts 后，pinned 请求、业务 open、物理 open 和视觉可见
+    同时成立，`popup.*` 目标可高亮；切回、detach、reattach 和再次选择不依赖旧 host 或旧 actor。
+20. 至少一个共享 Popup host 样例在默认 motion 开启时覆盖首次进入；关闭 motion 的样例不能替代该回归。
 
 ## 16. 相关文档
 
@@ -450,3 +460,4 @@ Button、ButtonTheme 和 Button Browser Theme 不因 Gallery Preview 新增任�
 - [GalleryBase ShowCase 控件设计](../../modules/toolkits-gallery-base/showcase-controls.md)
 - [GalleryBase 架构](../../modules/toolkits-gallery-base/architecture.md)
 - [AOT 编程规范](../../engineering/development/aot-programming-guidelines.md)
+- [Semantic Part Popup 首次打开生命周期竞态案例](../../engineering/case-studies/semantic-part-popup-first-open-lifecycle-case-study.md)

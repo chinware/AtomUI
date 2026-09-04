@@ -42,6 +42,34 @@ public class PopupLifecycleTests
     }
 
     [Fact]
+    public void Open_Popup_Starts_Open_Motion_When_Actor_Becomes_Ready_After_Opened()
+    {
+        var (window, _, _, popup) = CreatePopupWindow();
+        popup.OpenMotion     = new FadeInMotion();
+        popup.MotionDuration = TimeSpan.Zero;
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            OpenPopup(popup);
+
+            // A lazily materialized popup can raise Opened before its host template
+            // attaches PopupMotionActor. The actor pre-hides itself to prevent a
+            // flash, so the late-ready path must still complete the opening motion.
+            var lateActor = new PopupMotionActor { Opacity = 0.0d };
+            popup.NotifyMotionActorReady(lateActor);
+            Dispatcher.UIThread.RunJobs();
+
+            lateActor.Opacity.ShouldBe(1.0d);
+        }
+        finally
+        {
+            CloseWindow(window, popup);
+        }
+    }
+
+    [Fact]
     public void Pinned_Popup_Rejects_Normal_Close_Without_Starting_Close_Motion()
     {
         var (window, _, _, popup) = CreateAnimatedPopupWindow();
@@ -519,12 +547,20 @@ public class PopupLifecycleTests
     private static (AtomUIWindow Window, Panel Panel, Control Target, AtomUIPopup Popup)
         CreateAnimatedPopupWindow()
     {
+        var result = CreatePopupWindow();
+        result.Popup.NotifyMotionActorReady(new PopupMotionActor());
+        return result;
+    }
+
+    private static (AtomUIWindow Window, Panel Panel, Control Target, AtomUIPopup Popup)
+        CreatePopupWindow()
+    {
         var target = new Border
         {
             Width  = 100,
             Height = 30
         };
-        var popup = CreateAnimatedPopup(target);
+        var popup = CreatePopup(target);
 
         var panel = new Canvas();
         panel.Children.Add(target);
@@ -541,6 +577,13 @@ public class PopupLifecycleTests
 
     private static AtomUIPopup CreateAnimatedPopup(Control target)
     {
+        var popup = CreatePopup(target);
+        popup.NotifyMotionActorReady(new PopupMotionActor());
+        return popup;
+    }
+
+    private static AtomUIPopup CreatePopup(Control target)
+    {
         var popup = new AtomUIPopup
         {
             PlacementTarget       = target,
@@ -555,7 +598,6 @@ public class PopupLifecycleTests
                 Height = 40
             }
         };
-        popup.NotifyMotionActorReady(new PopupMotionActor());
         return popup;
     }
 

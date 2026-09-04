@@ -6,8 +6,8 @@
              xmlns:vm="using:AtomUIGallery.ShowCases.ColorPicker"
              x:DataType="vm:ColorPickerViewModel">
     <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
-        <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
-            <gallery:GalleryStickyTabsHost.Header>
+        <gallery:GalleryShowCaseHost StickyContentPadding="28,0,28,0">
+            <gallery:GalleryShowCaseHost.Header>
                 <gallery:GalleryShowCaseHeader
                     Title="ColorPicker"
                     Category="{gallery:ColorPickerShowCaseLangResource ComponentCategory}"
@@ -17,7 +17,44 @@
                     Namespace="AtomUI.Desktop.Controls"
                     Package="AtomUI.Desktop.Controls.ColorPicker"
                     BaseClass="AbstractColorPicker" />
-            </gallery:GalleryStickyTabsHost.Header>
+            </gallery:GalleryShowCaseHost.Header>
+
+            <gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>
+                <DataTemplate x:DataType="vm:ColorPickerViewModel">
+                    <gallery:SemanticPartPreview Name="ColorPickerSemanticPreview"
+                                                 Title="ColorPicker"
+                                                 SemanticOwner="{Binding #ColorPickerSemanticOwner}"
+                                                 SemanticOwnerType="{x:Type atom:ColorPicker}">
+                        <gallery:SemanticPartPreview.PreviewContent>
+                            <!-- 弹层高约 470+边距：保证 trigger 下方有足够空间向下展开，
+                                 避免钉住弹层向上翻转盖住 Examples/Semantic Parts 页签 -->
+                            <Panel MinHeight="600">
+                                <atom:ColorPicker Name="ColorPickerSemanticOwner"
+                                                  DefaultValue="#1677ff"
+                                                  IsTextVisible="True"
+                                                  IsPopupPinnedOpen="True" />
+                            </Panel>
+                        </gallery:SemanticPartPreview.PreviewContent>
+                        <gallery:SemanticPartPreview.PartDescriptions>
+                            <gallery:SemanticPartDescription
+                                Path="root"
+                                Description="{gallery:ColorPickerShowCaseLangResource SemanticRootDescription}" />
+                            <gallery:SemanticPartDescription
+                                Path="body"
+                                Description="{gallery:ColorPickerShowCaseLangResource SemanticBodyDescription}" />
+                            <gallery:SemanticPartDescription
+                                Path="content"
+                                Description="{gallery:ColorPickerShowCaseLangResource SemanticContentDescription}" />
+                            <gallery:SemanticPartDescription
+                                Path="description"
+                                Description="{gallery:ColorPickerShowCaseLangResource SemanticDescriptionDescription}" />
+                            <gallery:SemanticPartDescription
+                                Path="popup.root"
+                                Description="{gallery:ColorPickerShowCaseLangResource SemanticPopupRootDescription}" />
+                        </gallery:SemanticPartPreview.PartDescriptions>
+                    </gallery:SemanticPartPreview>
+                </DataTemplate>
+            </gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>
 
 
             <gallery:ShowCasePanel Name="ExamplesContent"
@@ -293,7 +330,46 @@
             </DataTemplate>
         </gallery:ShowCaseItem.DeferredContentTemplate>
     </gallery:ShowCaseItem>
+                <!-- 自定义语义结构样式（精确复刻 antd style-class.tsx 示例） -->
+                <gallery:ShowCaseItem Title="{gallery:ColorPickerShowCaseLangResource StyleClassTitle}"
+                                      Description="{gallery:ColorPickerShowCaseLangResource StyleClassDescription}"
+                                      SourceKey="colorpicker-semantic-part"
+                                      BadgeText="{x:Static gallery:GalleryVersionInfo.DisplayVersion}"
+                                      IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ColorPickerViewModel">
+                            <StackPanel HorizontalAlignment="Left" Spacing="20">
+                                <StackPanel.Styles>
+                                    <Style Selector="atom|ColorPicker.semantic-styles-demo">
+                                        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
+                                    </Style>
+                                    <Style Selector="atom|ColorPicker.semantic-styles-white-popup">
+                                        <atom:ColorPickerPopupRootStyle x:SetterTargetType="Border">
+                                            <Setter Property="BorderBrush" Value="#FFFFFF" />
+                                            <Setter Property="BorderThickness" Value="1" />
+                                        </atom:ColorPickerPopupRootStyle>
+                                    </Style>
+                                    <Style Selector="atom|ColorPicker.semantic-styles-purple-popup">
+                                        <atom:ColorPickerPopupRootStyle x:SetterTargetType="Border">
+                                            <Setter Property="BorderBrush" Value="#722ED1" />
+                                            <Setter Property="BorderThickness" Value="1" />
+                                        </atom:ColorPickerPopupRootStyle>
+                                    </Style>
+                                </StackPanel.Styles>
+                                <atom:ColorPicker Classes="semantic-styles-demo semantic-styles-white-popup"
+                                                  Name="ObjectStylesColorPicker"
+                                                  DefaultValue="#1677ff"
+                                                  IsArrowVisible="False" />
+                                <atom:ColorPicker Classes="semantic-styles-demo semantic-styles-purple-popup"
+                                                  Name="FunctionStylesColorPicker"
+                                                  DefaultValue="#722ed1"
+                                                  SizeType="Large"
+                                                  IsArrowVisible="False" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
             </gallery:ShowCasePanel>
-        </gallery:GalleryStickyTabsHost>
+        </gallery:GalleryShowCaseHost>
     </Grid>
 </UserControl>

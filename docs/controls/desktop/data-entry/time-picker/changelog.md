@@ -2,6 +2,11 @@
 
 本文档记录 TimePicker 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-09-04
+
+- Behavior
+  - Inherit the shared InfoPickerInput first-open pinned light-dismiss fix for TimePicker and RangeTimePicker.
+
 ## 2026-08-25
 
 - Docs

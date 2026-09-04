@@ -54,6 +54,34 @@ public class ComboBoxDisplayMemberBindingTests
     }
 
     [Fact]
+    public void Pinned_Open_Request_Suppresses_Light_Dismiss_Before_First_Open_And_Unpin_Restores_It()
+    {
+        var comboBox = new AtomUIComboBox
+        {
+            Width             = 200,
+            IsMotionEnabled   = false,
+            IsPopupPinnedOpen = true,
+            ItemsSource       = new[] { "Alpha", "Beta" }
+        };
+
+        ShowInWindow(comboBox, () =>
+        {
+            var popup = GetVisualDescendant<Popup>(comboBox, "PART_Popup");
+
+            comboBox.IsDropDownOpen.ShouldBeTrue();
+            popup.IsPopupPinnedOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue();
+            popup.IsLightDismissEnabled.ShouldBeFalse();
+
+            comboBox.IsPopupPinnedOpen = false;
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsPopupPinnedOpen.ShouldBeFalse();
+            popup.IsLightDismissEnabled.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
     public void Pinned_ComboBox_Rejects_Business_Close_Request()
     {
         var comboBox = new AtomUIComboBox

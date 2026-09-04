@@ -509,6 +509,7 @@ public abstract class InfoPickerInput : TemplatedControl,
                 IsPopupPinnedOpenProperty,
                 PickerPopup,
                 Popup.IsPopupPinnedOpenProperty);
+            ApplyPopupPinnedOpenSettings();
         }
         if (DecoratedBox != null)
         {
@@ -897,6 +898,7 @@ public abstract class InfoPickerInput : TemplatedControl,
 
         if (change.Property == IsPopupPinnedOpenProperty)
         {
+            ApplyPopupPinnedOpenSettings();
             if (change.GetNewValue<bool>())
             {
                 SetPickerOpenIfChanged(true);
@@ -913,6 +915,11 @@ public abstract class InfoPickerInput : TemplatedControl,
                 }
             }
         }
+    }
+
+    private void ApplyPopupPinnedOpenSettings()
+    {
+        PickerPopup?.SetCurrentValue(Popup.IsLightDismissEnabledProperty, !IsPopupPinnedOpen);
     }
 
     private void UpdateEffectiveStatus()

@@ -43,5 +43,12 @@ public enum ColorPickerShowCaseLangResourceKind
     P2ContentSetColor,
     P2ContentSetGradient,
     P2ContentClearColor,
-    P2ContentClearGradient
+    P2ContentClearGradient,
+    SemanticRootDescription,
+    SemanticBodyDescription,
+    SemanticContentDescription,
+    SemanticDescriptionDescription,
+    SemanticPopupRootDescription,
+    StyleClassTitle,
+    StyleClassDescription
 }

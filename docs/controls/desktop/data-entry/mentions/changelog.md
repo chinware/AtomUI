@@ -13,6 +13,13 @@
 - Fix
   - The shared `CandidateList` now maintains `IsDefaultEmptyIndicatorVisible`, so a Mentions dropdown with no matching options shows the built-in default `Empty` indicator instead of a blank panel, matching Ant Design Mentions' default `notFoundContent` rendering. The `EmptyIndicator` / `EmptyIndicatorTemplate` / `IsShowEmptyIndicator` / `EmptyIndicatorPadding` public properties remain unwired for Mentions itself (see overview limitation note).
 
+## 2026-09-04
+
+- Behavior
+  - Apply pinned light-dismiss suppression before the first candidate Popup open and restore the template default after unpinning.
+- Tests
+  - Cover a pin request made before template materialization, including physical open state and unpin restoration.
+
 ## 2026-08-25
 
 - Docs

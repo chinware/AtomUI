@@ -432,6 +432,7 @@ public class ComboBox : AvaloniaComboBox,
                 _popup,
                 Popup.IsPopupPinnedOpenProperty);
             _popup.Opened += HandlePopupOpened;
+            ApplyPopupPinnedOpenSettings();
         }
         if (_editableTextBox != null)
         {
@@ -611,11 +612,13 @@ public class ComboBox : AvaloniaComboBox,
                 ClearCandidateItemSelection();
             }
         }
-        else if (change.Property == IsPopupPinnedOpenProperty &&
-                 change.GetNewValue<bool>() &&
-                 !IsDropDownOpen)
+        else if (change.Property == IsPopupPinnedOpenProperty)
         {
-            SetCurrentValue(IsDropDownOpenProperty, true);
+            ApplyPopupPinnedOpenSettings();
+            if (change.GetNewValue<bool>() && !IsDropDownOpen)
+            {
+                SetCurrentValue(IsDropDownOpenProperty, true);
+            }
         }
         else if (change.Property == FormFeedbackProperty)
         {
@@ -846,6 +849,11 @@ public class ComboBox : AvaloniaComboBox,
         {
             _popup.OverlayInputPassThroughElement = _addOnDecoratedBox;
         }
+    }
+
+    private void ApplyPopupPinnedOpenSettings()
+    {
+        _popup?.SetCurrentValue(Popup.IsLightDismissEnabledProperty, !IsPopupPinnedOpen);
     }
 
     private void ConfigureBaseEditableTextBoxFocusBehavior()

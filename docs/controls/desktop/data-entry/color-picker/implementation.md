@@ -92,6 +92,7 @@ Public API / ItemsSource / Command / Event
 - 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
 - 集合、选择、展开、过滤、分页、上传任务或异步 loader 必须能处理 reset、replace 和 clear。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
+- `IsPickerOpen` 保存业务打开状态，`Popup.IsOpen` 保存物理宿主状态。`IsPopupPinnedOpen=true` 时，`CoerceIsPickerOpen` 拒绝普通关闭请求；只有 `ClosePickerForLifecycle` 持有的 lifecycle scope 可以把业务状态置为 false。物理 Popup 由代码在 template part、placement、pinned relay 与 dismiss 设置完成后打开，不通过模板 TwoWay binding 竞争状态。
 - `ColorPicker.Value` / `GradientColorPicker.Value` 是 Form 和绑定的单一 current value owner，默认 `TwoWay` 并启用 Avalonia 数据验证；clear 路径必须先把 `Value` 置为 `null`，再由属性变化刷新色块、文本和 Form 状态。
 - overview.md 的 API 契约说明应与源码实际状态流一致。
 
@@ -101,6 +102,10 @@ Public API / ItemsSource / Command / Event
 
 - 构造阶段只注册必要状态，不依赖 template part。
 - 模板应用时获取 part、建立事件订阅和绑定，并先释放旧 part 订阅。
+- `OnApplyTemplate` 在连接 `PART_Popup` 的 pinned relay、事件和 dismiss 行为后，才把已有的业务打开状态投射到物理 Popup；Popup 外部关闭再回写业务状态。pinned 锚点暂时隐藏时，业务状态保持不变，物理宿主关闭并由共享 Popup 在锚点恢复后重开。
+- 开启动画由共享 Popup 管理；`PopupMotionActor` 无论在 `Opened` 前还是后挂载，都必须进入同一开启动画路径。`Closed` 负责取消动画并释放当前 actor，ColorPicker 不保存或补偿 motion actor 状态。
+- 首次打开竞态、Popup 直接 Child 转发契约、pinned light-dismiss 全局审计与回归测试范式统一记录在
+  [Semantic Part Popup 首次打开生命周期竞态案例](../../../../engineering/case-studies/semantic-part-popup-first-open-lifecycle-case-study.md)，本控件文档只维护 ColorPicker 自身不变量。
 - 控件卸载、弹层关闭、窗口关闭、集合替换或 container recycle 时释放事件订阅和资源宿主。
 - DynamicResource、TokenResourceBinder 或 C# binding 必须有明确 owner 和释放点。
 - Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
@@ -132,6 +137,8 @@ Public API / ItemsSource / Command / Event
 - `PART_PaletteGroup`：稳定模板协作入口，重命名前必须同步主题和实现。
 - `PART_Popup`：承载弹层宿主、打开关闭或候选内容。
 - 其他 10 个 part 按相同生命周期规则维护。
+
+Semantic Part marker 的维护边界：`ColorPickerTheme.axaml` 与 `GradientColorPickerTheme.axaml` 各自承载 `semantic-body`（`PART_ColorIndicator`）、`semantic-description`（`PART_ColorText` / `PART_ColorTextPanel`）与 `semantic-popup-root`（`PART_Popup` 直接子节点 `ColorPickerPopupRootFrame`——`Border` 子类，向内容层 `ArrowDecoratedBox` 转发 `IArrowAwareShadowMaskInfoProvider`，共享 Popup 的箭头布局与阴影遮罩机制只识别直接 Child；语义边框贴合弹层外沿，对齐上游 popup root）三个静态 marker；共享 `ColorBlockTheme.axaml` 承载 `semantic-content` marker（`PART_ColorPreview`）。`content` 部件声明 `CrossNestedOwners=true`，route 以 `.semantic-body` 为锚点经第二个 `/template/` 跨入 ColorBlock 自身模板，弹层内的 ColorBlock 实例（清除示例、颜色预览）不带 `semantic-body`，不会被误命中。`popup.root` 不落在弹层 View 模板内的原因：View 由 `CreatePresenter()` 在打开时动态创建，其模板节点的 `TemplatedParent` 链断在 View 上，owner 的 `/template/` route 在 overlay 弹层下不可达；静态包裹 Border 经 TemplatedParent 传播保持可达且默认零视觉影响。
 
 ## 6. 交互与事件处理
 
@@ -190,4 +197,5 @@ ColorPicker 的交互事件应从输入源收敛到控件级语义事件：
 - 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
 - Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests`。
+- Semantic Part 契约与 marker 变更运行 `tests/AtomUI.Desktop.Controls.Tests/ColorPicker/ColorPickerSemanticPartTests.cs`（descriptor 五部件、模板静态 marker 清单、默认主题不消费 semantic selector、`IsPopupPinnedOpen` 公共 API、overlay 弹层下生成 Style 命中触发区与 popup.root 目标）。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。

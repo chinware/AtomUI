@@ -154,3 +154,4 @@ Token 边界：
 - 业务 open state coercion 不得通过 suppression flag 发布瞬态 false；lifecycle close scope 是唯一允许 pinned 业务状态变为 false 的路径。
 - Popup 必须以共享 `MotionExecutionState` 表达关闭动效阶段；`Pending`、`Playing` 和 `Completing` 单向收敛，重复
   close 不得创建并行关闭动效，`Closed` 必须回到 `Idle`。
+- Popup 开启动画必须覆盖 `Opened` 与 motion actor ready 的两种先后顺序；物理 `IsOpen=true` 但 actor 仍透明不是有效打开终态。

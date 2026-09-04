@@ -100,6 +100,42 @@ public class MentionsBehaviorTests
     }
 
     [Fact]
+    public void Popup_Pin_Suppresses_Light_Dismiss_Before_First_Open_And_Unpin_Restores_It()
+    {
+        var mentions = new AtomUIMentions
+        {
+            Width             = 240,
+            IsMotionEnabled   = false,
+            IsPopupPinnedOpen = true,
+            OptionsSource =
+            [
+                new MentionOption { Header = "afc163", Value = "afc163" },
+                new MentionOption { Header = "zombieJ", Value = "zombieJ" }
+            ]
+        };
+        var window = CreateWindow(mentions);
+
+        try
+        {
+            var popup = FindPopup(mentions);
+
+            popup.IsPopupPinnedOpen.ShouldBeTrue();
+            popup.IsOpen.ShouldBeTrue();
+            popup.IsLightDismissEnabled.ShouldBeFalse();
+
+            mentions.IsPopupPinnedOpen = false;
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsPopupPinnedOpen.ShouldBeFalse();
+            popup.IsLightDismissEnabled.ShouldBeTrue();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
     public void Popup_Pin_Rejects_Business_Close_Request()
     {
         var mentions = new AtomUIMentions

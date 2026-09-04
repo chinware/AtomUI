@@ -4,13 +4,121 @@
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `ColorPicker` | 数据录入控件根语义区域，承载 public API、值状态、验证状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `input` | `输入或编辑区域` | 承载用户输入、当前值、占位、格式化或只读状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `trigger` | `触发区域` | 承载清除、展开、提交、步进、上传或辅助操作。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `popup` | `弹层或候选区域` | 承载下拉、候选项、日历、颜色面板或异步内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `validation` | `校验反馈区域` | 承载 Form、status、错误、警告、help 或 loading 状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+`ColorPicker` 与 `GradientColorPicker` 各自是唯一 Semantic owner，公开 5 个 Semantic Part（与上游
+ColorPicker 的官方语义 API 逐一对齐：`root` / `body` / `content` / `description` / `popup.root`）。
+声明分别位于 `ColorPicker.SemanticParts.cs` 与 `GradientColorPicker.SemanticParts.cs` partial 文件。
+
+触发区部件（`body` / `description`）与弹层根部件（`popup.root`）的 marker 均位于两个 owner 自有的
+`Themes/ColorPickerTheme.axaml`、`Themes/GradientColorPickerTheme.axaml` 宿主模板内；`content` 的
+marker 位于共享的 `Themes/ColorBlockTheme.axaml`（ColorBlock 自身模板内），因此 `content` 声明
+`CrossNestedOwners=true`——这与 Cascader 的 `clear` 部件（marker 在共享 `SelectHandle` 模板内）同构。
+
+#### `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ColorPicker` / `GradientColorPicker` |
+| Part | `root` |
+| Selector | owner 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
+| ContractType | `ColorPicker` / `GradientColorPicker` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | owner 根 |
+| 职责 | 触发器容器：边框、圆角、尺寸、状态与布局的组织边界。 |
+| 相关 API | `SizeType`、`Status`、`BorderBrush`、`TriggerPadding` 等 owner public API |
+| 相关 Token | ColorPickerToken、SharedToken（ColorBorder、BorderRadius*） |
+| 稳定性 | stable since 6.0 |
+
+#### `body`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ColorPicker` / `GradientColorPicker` |
+| Part | `body` |
+| Selector | `.semantic-body` |
+| SelectorRoute | `/template/ .semantic-body` |
+| Style Type | `ColorPickerBodyStyle` / `GradientColorPickerBodyStyle` |
+| ContractType | `Control` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | owner 模板中的 `PART_ColorIndicator`（内部控件 `ColorBlock` 的模板实例节点；公共契约承诺 Avalonia `Control`） |
+| 职责 | 触发器内的色块容器，承载底色、空色斜线与棋盘格呈现。 |
+| 相关 API | `ColorBlockSize`、`ColorBlockBackground` |
+| 相关 Token | ColorPickerHandlerSize*、ColorBlockInnerShadows |
+| 稳定性 | stable since 6.0 |
+
+#### `content`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ColorPicker` / `GradientColorPicker` |
+| Part | `content` |
+| Selector | `.semantic-content` |
+| SelectorRoute | `/template/ .semantic-body /template/ .semantic-content` |
+| Style Type | `ColorPickerContentStyle` / `GradientColorPickerContentStyle` |
+| ContractType | `Border` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `ColorBlockTheme.axaml` 中 `PART_ColorPreview`（`semantic-body` 节点自有模板内） |
+| 职责 | 色块颜色元素，呈现实际选择的颜色填充。 |
+| 相关 API | —（随 owner 的 `Value` 联动，不单独开放） |
+| 相关 Token | ColorBlockInnerShadows |
+| 稳定性 | stable since 6.0 |
+
+#### `description`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ColorPicker` / `GradientColorPicker` |
+| Part | `description` |
+| Selector | `.semantic-description` |
+| SelectorRoute | `/template/ .semantic-description` |
+| Style Type | `ColorPickerDescriptionStyle` / `GradientColorPickerDescriptionStyle` |
+| ContractType | `TextBlock`（GradientColorPicker：`Panel`） |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `ColorPickerTheme.axaml` 中 `PART_ColorText`；`GradientColorPickerTheme.axaml` 中 `PART_ColorTextPanel`（WrapPanel，逐渐变 stop 的文本格） |
+| 职责 | 触发器文本区：单色模式显示格式化颜色文本；渐变模式显示逐 stop 文本格。 |
+| 相关 API | `IsTextVisible`、`ColorTextFormatter`（attached）、`Format` |
+| 相关 Token | TriggerTextMargin、SharedToken（FontSize*、ColorText） |
+| 稳定性 | stable since 6.0 |
+
+#### `popup.root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ColorPicker` / `GradientColorPicker` |
+| Part | `popup.root` |
+| Selector | `.semantic-popup-root` |
+| SelectorRoute | `/template/ .semantic-popup-root` |
+| Style Type | `ColorPickerPopupRootStyle` / `GradientColorPickerPopupRootStyle` |
+| ContractType | `Border` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | owner 模板 `PART_Popup` 直接子节点 `ColorPickerPopupRootFrame`（`Border` 子类，向内容层 `ArrowDecoratedBox` 转发 `IArrowAwareShadowMaskInfoProvider`），语义边框贴合弹层外沿（对齐上游 popup root） |
+| 职责 | 弹层根容器：承载弹层边框、背景类视觉的定制入口；弹层 View 本身由 `CreatePresenter()` 动态创建，不经此 Part 发布。 |
+| 相关 API | `IsPopupPinnedOpen`（6.0 公共化）、`Placement`、`IsArrowVisible` |
+| 相关 Token | ColorPickerInsetShadow、SharedToken（ColorBgElevated） |
+| 稳定性 | stable since 6.0 |
+
+### GradientColorPicker 差异
+
+`GradientColorPicker` 与 `ColorPicker` 共享同一套 5 部件语义契约，仅 `description` 的 `ContractType`
+不同：触发文本区是 `WrapPanel`（`PART_ColorTextPanel`，内含逐 stop 的文本格），公共契约放宽为
+`Panel`。其推荐 selector 为 `atom|GradientColorPicker /template/ Panel.semantic-description`。其余四
+部件的 selector、ContractType、Cardinality 与 `ColorPicker` 完全一致。
 
 ## Abstract AXAML Structure
 
@@ -25,7 +133,11 @@
         </StackPanel>
     </PixelAlignedBorder>
     <Popup Name="PART_Popup">
-        <ArrowDecoratedBox />
+        <ColorPickerPopupRootFrame>
+            <ArrowDecoratedBox>
+                <ContentPresenter />
+            </ArrowDecoratedBox>
+        </ColorPickerPopupRootFrame>
     </Popup>
 </Panel>
 ```
@@ -66,6 +178,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - open/close、collection/filter、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `IsPickerOpen` 是 picker 的业务打开状态，`Popup.IsOpen` 是物理宿主状态；pinned 期间普通关闭不能改变业务状态，锚点隐藏、detach 或 TopLevel 失效仍可关闭物理宿主，并在有效性恢复后重新打开。
 - `Value`、trigger 色块、trigger 文本、picker presenter 和 Form 值必须由同一份 current value 派生；清空状态以 `Value=null` 为源头。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。

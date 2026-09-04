@@ -686,6 +686,7 @@ public class Mentions : TemplatedControl,
             _popup.Opened              += HandlePopupOpened;
             _popup.Closed              += HandlePopupClosed;
             _popup.OverlayInputPassThroughElement = _textArea;
+            ApplyPopupPinnedOpenSettings();
         }
         
         ConfigurePopupPlacement();
@@ -752,12 +753,19 @@ public class Mentions : TemplatedControl,
         {
             ConfigureMaxPopupHeight();
         }
-        else if (change.Property == IsPopupPinnedOpenProperty &&
-                 change.GetNewValue<bool>() &&
-                 !IsDropDownOpen)
+        else if (change.Property == IsPopupPinnedOpenProperty)
         {
-            SetCurrentValue(IsDropDownOpenProperty, true);
+            ApplyPopupPinnedOpenSettings();
+            if (change.GetNewValue<bool>() && !IsDropDownOpen)
+            {
+                SetCurrentValue(IsDropDownOpenProperty, true);
+            }
         }
+    }
+
+    private void ApplyPopupPinnedOpenSettings()
+    {
+        _popup?.SetCurrentValue(Popup.IsLightDismissEnabledProperty, !IsPopupPinnedOpen);
     }
 
     #endregion
