@@ -10,6 +10,15 @@
 
 ## 2026-09-05
 
+- API
+  - Promote `IsPopupPinnedOpen` from internal to public, aligning with Select and AutoComplete so the Gallery Semantic Parts preview can pin the candidate Popup open and expose the `popup.*` parts.
+- Architecture
+  - Publish the Mentions Semantic Part contract with nine parts (`root`, `prefix`, `content`, `placeholder`, `input`, `clear`, `popup.root`, `popup.list`, `popup.listItem`) aligned with the Ant Design Mentions semantic structure; see `Mentions.SemanticParts.cs` and `semantic-part.md`.
+  - Reuse the AutoCompleteTextArea cross-nested owner routing for the input region: `MentionTextArea` carries the `.semantic-scope-input` anchor, and `prefix` / `content` / `placeholder` / `input` / `clear` markers live in the shared `TextAreaTheme` and `TextAreaDecoratedBoxTheme`.
+  - Add the missing `.semantic-scope-prefix` anchor to the shared `TextAreaDecoratedBoxTheme` so the TextArea-based prefix part can route through the shared scope chain, matching `AddOnDecoratedBoxTheme` and `LineEditTheme`.
+  - Keep the popup triple-key structure (`popup.root` static `PopupFrame`, `popup.list` static `CandidateList`, `popup.listItem` runtime-injected at `CandidateList` container creation) identical to AutoComplete.
+- Tests
+  - Add `MentionsSemanticPartTests` covering descriptor shape, template marker inventory, default-theme non-consumption, generated style hits and popup part marker exposure.
 - Fix
   - The shared `CandidateList` now maintains `IsDefaultEmptyIndicatorVisible`, so a Mentions dropdown with no matching options shows the built-in default `Empty` indicator instead of a blank panel, matching Ant Design Mentions' default `notFoundContent` rendering. The `EmptyIndicator` / `EmptyIndicatorTemplate` / `IsShowEmptyIndicator` / `EmptyIndicatorPadding` public properties remain unwired for Mentions itself (see overview limitation note).
 

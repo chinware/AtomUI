@@ -253,6 +253,48 @@ public class MentionsBehaviorTests
     }
 
     [Fact]
+    public void Multiline_Popup_VerticalOffset_Aligns_To_Trigger_Line()
+    {
+        var mentions = new AtomUIMentions
+        {
+            Width              = 240,
+            Lines              = 3,
+            VerticalAlignment  = Avalonia.Layout.VerticalAlignment.Top,
+            IsMotionEnabled    = false,
+            OptionsSource =
+            [
+                new MentionOption { Header = "afc163", Value = "afc163" },
+                new MentionOption { Header = "zombieJ", Value = "zombieJ" }
+            ]
+        };
+        var window = CreateWindow(mentions);
+
+        try
+        {
+            var textArea = mentions.GetVisualDescendants()
+                                   .OfType<MentionTextArea>()
+                                   .Single();
+            textArea.Text       = "@";
+            textArea.CaretIndex = 1;
+            Dispatcher.UIThread.RunJobs();
+
+            mentions.IsDropDownOpen.ShouldBeTrue();
+            var popup = FindPopup(mentions);
+
+            // The trigger sits on the first line of a 3-line control. The popup
+            // must be pulled well above the control's bottom edge to align with
+            // that line, rather than staying anchored near the last line.
+            var controlHeight = mentions.DesiredSize.Height;
+            controlHeight.ShouldBeGreaterThan(0);
+            popup.VerticalOffset.ShouldBeLessThan(-(controlHeight / 3));
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
     public void Committing_Candidate_Without_Current_Trigger_Does_Not_Insert_Stale_Mention()
     {
         var option = new MentionOption { Header = "afc163", Value = "afc163" };

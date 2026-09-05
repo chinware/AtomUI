@@ -151,14 +151,14 @@ internal class MentionTextArea : TextArea
         }
     }
     
-    internal Rect GetTextPresenterBounds()
+    internal Rect GetTriggerBounds(Rect triggerBounds, Control? relativeControl = null)
     {
-        if (_textPresenter != null)
+        if (relativeControl != null && _textPresenter != null)
         {
-            var offset = _textPresenter.TranslatePoint(new Point(0, 0), this) ?? new Point(0, 0);
-            return new Rect(offset.X, offset.Y, _textPresenter.DesiredSize.Width, _textPresenter.DesiredSize.Height);
+            var offset = _textPresenter.TranslatePoint(triggerBounds.Position, relativeControl) ?? triggerBounds.Position;
+            return new Rect(offset, triggerBounds.Size);
         }
-        return default;
+        return triggerBounds;
     }
 
     private bool TryGetTriggerPrefix(char ch, out string triggerText)

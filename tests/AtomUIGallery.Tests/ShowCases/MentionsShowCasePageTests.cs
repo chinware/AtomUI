@@ -25,7 +25,8 @@ public class MentionsShowCasePageTests
         source.ShouldNotContain("Tag=\"Examples\"");
         source.ShouldNotContain("Tag=\"Api\"");
         source.ShouldNotContain("Tag=\"DesignToken\"");
-        source.ShouldContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldContain("<gallery:GalleryShowCaseHost");
+        source.ShouldContain("gallery:GalleryShowCaseHost.SemanticPartsContentTemplate");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
         source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
@@ -42,9 +43,10 @@ public class MentionsShowCasePageTests
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:MentionsShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(11);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(11);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:MentionsViewModel\"").ShouldBe(11);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(12);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(12);
+        // 12 个示例模板 + 1 个语义部件预览模板
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:MentionsViewModel\"").ShouldBe(13);
         source.ShouldContain("MentionsShowCaseLangResource BasicTitle");
         source.ShouldContain("MentionsShowCaseLangResource ValueBindingTitle");
         source.ShouldContain("BadgeText=\"v6.0.8\"");
@@ -58,6 +60,11 @@ public class MentionsShowCasePageTests
         source.ShouldContain("SizeType=\"Small\"");
         source.ShouldContain("SizeType=\"Custom\"");
         source.ShouldContain("MentionsShowCaseLangResource P2PlaceholderTextCustom");
+        source.ShouldContain("MentionsShowCaseLangResource StyleClassTitle");
+        source.ShouldContain("SourceKey=\"mentions-semantic-part\"");
+        source.ShouldContain("atom:MentionsPrefixStyle");
+        source.ShouldContain("atom:MentionsPopupRootStyle");
+        source.ShouldContain("SemanticOwnerType=\"{x:Type atom:Mentions}\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");

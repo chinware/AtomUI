@@ -45,5 +45,16 @@ public enum MentionsShowCaseLangResourceKind
     ComponentStatusStable,
     P2TextBoundValue,
     P2ContentSetMention,
-    P2ContentClear
+    P2ContentClear,
+    StyleClassTitle,
+    StyleClassDescription,
+    SemanticRootDescription,
+    SemanticPrefixDescription,
+    SemanticContentDescription,
+    SemanticPlaceholderDescription,
+    SemanticInputDescription,
+    SemanticClearDescription,
+    SemanticPopupRootDescription,
+    SemanticPopupListDescription,
+    SemanticPopupListItemDescription
 }

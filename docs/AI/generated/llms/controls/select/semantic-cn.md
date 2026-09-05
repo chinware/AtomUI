@@ -11,7 +11,8 @@ Select 是唯一 Semantic owner，公开 13 个 Semantic Part（语义对齐：`
 触发区部件的 marker 位于 `SelectTheme.axaml` 宿主模板内：`prefix` / `suffix` 借用共享
 `AddOnDecoratedBoxTheme` 的 `.semantic-scope-prefix` / `.semantic-scope-suffix` scope 锚点路由到宿主模板
 投影给 decorated box 的内容节点（与 Cascader 同构）；`content` / `placeholder` / `input` 直接标注宿主模板
-节点。`clear` / `item` / `itemContent` / `itemRemove` 声明 `CrossNestedOwners=true`：`clear` 的物理节点在
+节点。`input` 额外在多选/标签模式的运行时搜索框上注入同一 marker（`SelectResultOptionsBox` 创建搜索框时注入），
+使过滤输入在非单选态同样可被语义高亮与样式命中。`clear` / `item` / `itemContent` / `itemRemove` 声明 `CrossNestedOwners=true`：`clear` 的物理节点在
 共享 `SelectHandle` 自有模板内；多选标签的物理节点在共享标签机制内——`item` 的标记由
 `SelectResultOptionsBox` 在标签容器创建时注入，`itemContent` / `itemRemove` 的标记位于共享 `TagTheme`
 模板（`SelectTag : Tag` 复用其模板），二者经 `item` 部件（RuntimeCreated，ContractType=`Tag`）承转主题链
@@ -112,8 +113,8 @@ Select 是唯一 Semantic owner，公开 13 个 Semantic Part（语义对齐：`
 | Customization | `Selector` |
 | CrossVisualRoot | `false` |
 | RuntimeCreated | `false` |
-| AtomUI 节点 | `SelectTheme.axaml` 中 `PART_SingleFilterInput`（internal `SelectFilterTextBox`，公共契约承诺 Avalonia `TextBox`） |
-| 职责 | 过滤模式（`IsFilterEnabled`）下渲染的搜索输入框；非过滤态隐藏但模板节点存在。 |
+| AtomUI 节点 | 单选：`SelectTheme.axaml` 中 `PART_SingleFilterInput`；多选/标签：`SelectResultOptionsBox` 运行时创建的搜索 `SelectFilterTextBox`（两处均 internal，公共契约承诺 Avalonia `TextBox`） |
+| 职责 | 过滤模式（`IsFilterEnabled`）下渲染的搜索输入框；单选态为模板静态节点（非过滤态隐藏但节点存在），多选/标签态为标签盒内运行时搜索框。 |
 | 相关 API | `IsFilterEnabled`、`Filter`、`FilterValue` |
 | 相关 Token | SharedToken |
 | 稳定性 | stable since 6.0 |

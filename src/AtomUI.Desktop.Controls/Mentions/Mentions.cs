@@ -29,7 +29,7 @@ using Avalonia.VisualTree;
 namespace AtomUI.Desktop.Controls;
 
 [PseudoClasses(MentionPseudoClass.CandidatePopupOpen)]
-public class Mentions : TemplatedControl,
+public partial class Mentions : TemplatedControl,
                         IMotionAwareControl,
                         IFormItemAware,
                         IInputControlStatusAware,
@@ -158,6 +158,9 @@ public class Mentions : TemplatedControl,
         AvaloniaProperty.Register<Mentions, bool>(
             nameof(IsDropDownOpen));
     
+    public static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        Popup.IsPopupPinnedOpenProperty.AddOwner<Mentions>();
+
     public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
         CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<Mentions>();
     
@@ -381,6 +384,12 @@ public class Mentions : TemplatedControl,
         set => SetValue(IsDropDownOpenProperty, value);
     }
     
+    public bool IsPopupPinnedOpen
+    {
+        get => GetValue(IsPopupPinnedOpenProperty);
+        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
+    }
+
     public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -438,9 +447,6 @@ public class Mentions : TemplatedControl,
     
     internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty = 
         AvaloniaProperty.Register<Mentions, FormValidateFeedback?>(nameof(FormFeedback));
-
-    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
-        Popup.IsPopupPinnedOpenProperty.AddOwner<Mentions>();
 
     internal static readonly StyledProperty<FormValidateStatus> FormStatusProperty =
         InputControlState.FormStatusProperty.AddOwner<Mentions>();
@@ -526,12 +532,6 @@ public class Mentions : TemplatedControl,
     {
         get => GetValue(FormStatusProperty);
         private set => SetCurrentValue(FormStatusProperty, value);
-    }
-
-    internal bool IsPopupPinnedOpen
-    {
-        get => GetValue(IsPopupPinnedOpenProperty);
-        set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
     }
     #endregion
     
@@ -1042,16 +1042,15 @@ public class Mentions : TemplatedControl,
         CandidateTriggered?.Invoke(this, new MentionCandidateTriggeredEventArgs(eventArgs.TriggerChar));
         if (_popup != null && _textArea != null)
         {
-            var textPresenterBounds = _textArea.GetTextPresenterBounds();
-            var triggerBounds       = eventArgs.TriggerBounds;
-            _popup.HorizontalOffset = triggerBounds.X + textPresenterBounds.X;
+            var triggerBounds       = _textArea.GetTriggerBounds(eventArgs.TriggerBounds, this);
+            _popup.HorizontalOffset = triggerBounds.X;
             if (Placement == MentionsPlacementMode.Bottom)
             {
-                _popup.VerticalOffset = -(textPresenterBounds.Height - triggerBounds.Y - textPresenterBounds.Y) + triggerBounds.Height / 2;
+                _popup.VerticalOffset = Math.Min(-(DesiredSize.Height - triggerBounds.Y) + triggerBounds.Height, 0);
             }
             else
             {
-                _popup.VerticalOffset = textPresenterBounds.Y + triggerBounds.Y;
+                _popup.VerticalOffset = triggerBounds.Y;
             }
         }
 

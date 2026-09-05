@@ -4,13 +4,198 @@
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Mentions` | 数据录入控件根语义区域，承载 public API、值状态、验证状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `input` | `输入或编辑区域` | 承载用户输入、当前值、占位、格式化或只读状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `trigger` | `触发区域` | 承载清除、展开、提交、步进、上传或辅助操作。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `popup` | `弹层或候选区域` | 承载下拉、候选项、日历、颜色面板或异步内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `validation` | `校验反馈区域` | 承载 Form、status、错误、警告、help 或 loading 状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+Mentions 是唯一 Semantic owner，公开 9 个 Semantic Part。声明位于 `Mentions.SemanticParts.cs` partial 文件。
+
+Mentions 的输入表面整体委托给内部 `MentionTextArea : TextArea`，因此 `prefix` / `content` / `placeholder` /
+`input` / `clear` 五个输入区部件复用 AutoCompleteTextArea 的跨嵌套 owner 路由：`MentionTextArea` 节点在宿主模板
+上标注 `.semantic-scope-input` 锚点，随后跨入共享 `TextAreaTheme` 与 `TextAreaDecoratedBoxTheme` 的模板边界命中
+真实 marker。`prefix` 的 marker 本体是宿主模板 `TextAreaTheme.axaml` 里投影给 `TextAreaDecoratedBox.ContentLeftAddOn`
+的 `AddOnContentPresenter`，其经共享 `TextAreaDecoratedBoxTheme` 的 `.semantic-scope-prefix` 锚点路由可达。弹层三部件
+与 AutoComplete 同构：`popup.root` 是宿主模板 `PopupFrame` 静态 Border，`popup.list` 是模板内 `CandidateList`
+静态节点，`popup.listItem` 的 marker 由 `CandidateList` 容器创建路径注入。
+
+#### `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Mentions` |
+| Part | `root` |
+| Selector | Mentions 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
+| ContractType | `Mentions` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | Mentions owner |
+| 职责 | Mentions root 是文本值、触发符、候选数据、过滤、弹层与 Form 状态的组织边界。 |
+| 相关 API | 全部 Mentions public API |
+| 相关 Token | MentionsToken、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `prefix`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Mentions` |
+| Part | `prefix` |
+| Selector | `.semantic-prefix` |
+| SelectorRoute | `/template/ .semantic-scope-input >> .semantic-scope-input-frame /template/ .semantic-scope-prefix > .semantic-prefix` |
+| Style Type | `MentionsPrefixStyle` |
+| ContractType | `ContentPresenter` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `TextAreaTheme.axaml` 中投影给 `TextAreaDecoratedBox.ContentLeftAddOn` 的 `AddOnContentPresenter` |
+| 职责 | 输入内容前缀区域，承载 `ContentLeftAddOn` 用户内容，在内容框内联展示。 |
+| 相关 API | `ContentLeftAddOn`、`ContentLeftAddOnTemplate` |
+| 相关 Token | SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `content`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Mentions` |
+| Part | `content` |
+| Selector | `.semantic-content` |
+| SelectorRoute | `/template/ .semantic-scope-input /template/ .semantic-content` |
+| Style Type | `MentionsContentStyle` |
+| ContractType | `Panel` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `TextAreaTheme.axaml` 中 `ContentLayout` 内容面板 |
+| 职责 | 输入内容面板，承载占位符和多行文本 presenter。 |
+| 相关 API | `Value`、`PlaceholderText`、`Lines`、`MinLines`、`MaxLines`、`IsAutoSize` |
+| 相关 Token | SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `placeholder`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Mentions` |
+| Part | `placeholder` |
+| Selector | `.semantic-placeholder` |
+| SelectorRoute | `/template/ .semantic-scope-input /template/ .semantic-content > .semantic-placeholder` |
+| Style Type | `MentionsPlaceholderStyle` |
+| ContractType | `TextBlock` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `TextAreaTheme.axaml` 中 `Placeholder` TextBlock |
+| 职责 | 空文本状态下的占位符文本。 |
+| 相关 API | `PlaceholderText`、`PlaceholderForeground`（经 TextArea） |
+| 相关 Token | SharedToken（ColorTextPlaceholder） |
+| 稳定性 | stable since 6.0 |
+
+#### `input`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Mentions` |
+| Part | `input` |
+| Selector | `.semantic-textarea` |
+| SelectorRoute | `/template/ .semantic-scope-input /template/ .semantic-textarea` |
+| Style Type | `MentionsInputStyle` |
+| ContractType | `TextPresenter` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `TextAreaTheme.axaml` 中 `InputTextPresenter`（`PART_TextPresenter`，internal，公共契约承诺 Avalonia `TextPresenter`） |
+| 职责 | 多行文本编辑 presenter，承载 `Value` 文本与 caret/selection 状态。 |
+| 相关 API | `Value`、`IsReadOnly`、`IsAutoFocus` |
+| 相关 Token | SharedToken（ColorText、SelectionBackground、CaretBrush） |
+| 稳定性 | stable since 6.0 |
+
+#### `clear`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Mentions` |
+| Part | `clear` |
+| Selector | `.semantic-clear` |
+| SelectorRoute | `/template/ .semantic-scope-input >> .semantic-scope-input-frame /template/ .semantic-scope-suffix > .semantic-suffix > .semantic-clear` |
+| Style Type | `MentionsClearStyle` |
+| ContractType | `Button` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `TextAreaTheme.axaml` 中 `InputClearIconButton`（`PART_ClearButton`，internal，公共契约承诺 Avalonia `Button`） |
+| 职责 | 输入区后缀内的清除按钮，`IsAllowClear` 启用且内容非空时可见。 |
+| 相关 API | `IsAllowClear`、`ClearIcon` |
+| 相关 Token | SharedToken（IconSizeXS） |
+| 稳定性 | stable since 6.0 |
+
+#### `popup.root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Mentions` |
+| Part | `popup.root` |
+| Selector | `.semantic-popup-root` |
+| SelectorRoute | `/template/ .semantic-popup-root` |
+| Style Type | `MentionsPopupRootStyle` |
+| ContractType | `Border` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `MentionsTheme.axaml` 中 `PopupFrame`（`PART_Popup` 直接子节点） |
+| 职责 | 候选弹层根 `Border`，可定制弹层边框、背景、宽度与圆角。 |
+| 相关 API | `MaxPopupHeight`、`MinPopupWidth`、`PopupContentPadding` |
+| 相关 Token | PopupTokenResource（PopupCornerRadius）、SharedToken（ColorBgElevated） |
+| 稳定性 | stable since 6.0 |
+
+#### `popup.list`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Mentions` |
+| Part | `popup.list` |
+| Selector | `.semantic-popup-list` |
+| SelectorRoute | `/template/ .semantic-popup-root >> .semantic-popup-list` |
+| Style Type | `MentionsPopupListStyle` |
+| ContractType | `CandidateList` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `MentionsTheme.axaml` 中 `PART_CandidateList`（public `CandidateList`） |
+| 职责 | 弹层内候选列表容器，承载过滤后的候选项。 |
+| 相关 API | `OptionsSource`、`Filter`、`FilterValueSelector`、`OptionTemplate` |
+| 相关 Token | MentionsToken（OptionHeight）、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `popup.listItem`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Mentions` |
+| Part | `popup.listItem` |
+| Selector | `.semantic-popup-list-item` |
+| SelectorRoute | `/template/ .semantic-popup-list >> .semantic-popup-list-item` |
+| Style Type | `MentionsPopupListItemStyle` |
+| ContractType | `CandidateListItem` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | public `CandidateListItem`（`CandidateList.CreateContainerForItemOverride()` 注入 marker） |
+| 职责 | 候选列表中的单个选项条目，运行时容器创建，虚拟化回收复用时 marker 保持。 |
+| 相关 API | `OptionTemplate`、`DisplayCandidateCount` |
+| 相关 Token | SharedToken |
+| 稳定性 | stable since 6.0 |
+
+`ContractType` 不参与 selector 匹配，只约束 `x:SetterTargetType` 与兼容性下界；实现节点为 internal 类型时，
+公共契约承诺到最低 public 基类（`input`→`TextPresenter`、`clear`→`Button`）。
 
 ## Abstract AXAML Structure
 
@@ -189,3 +374,4 @@ MentionsToken 不承载以下状态：
 - 候选提交必须使用 `MentionTextArea.InsertMentionOption()`，保留 undo/redo 和 selection 语义。
 - 重新套用模板不能泄漏旧 part 的事件订阅。
 - MentionsToken 只服务 popup 尺寸，不承载候选数据、过滤值、loading 或输入状态。
+- Semantic Part marker 的维护边界：`MentionsTheme.axaml` 承载 `semantic-scope-input`（`MentionTextArea` 节点）、`semantic-popup-root`（`PopupFrame` Border）、`semantic-popup-list`（`PART_CandidateList`）静态 marker；`prefix` / `content` / `placeholder` / `input` / `clear` 的 marker 位于共享 `TextAreaTheme.axaml` 与 `TextAreaDecoratedBoxTheme.axaml`（`CrossNestedOwners=true`，生成器沿 `MentionTextArea` → `TextArea` 主题链校验）；`popup.listItem` 的 marker 由共享 `CandidateList.CreateContainerForItemOverride()` 注入（`RuntimeCreated=true`）。marker 随容器实例创建一次，prepare/clear/recycle 路径不得增删。
