@@ -93,5 +93,20 @@ public enum SelectShowCaseLangResourceKind
     P2GroupManager,
     P2GroupEngineer,
     P2ContentUser,
-    P2TextLongLabelPrefix
+    P2TextLongLabelPrefix,
+    StyleClassTitle,
+    StyleClassDescription,
+    SemanticRootDescription,
+    SemanticPrefixDescription,
+    SemanticContentDescription,
+    SemanticPlaceholderDescription,
+    SemanticInputDescription,
+    SemanticSuffixDescription,
+    SemanticClearDescription,
+    SemanticItemDescription,
+    SemanticItemContentDescription,
+    SemanticItemRemoveDescription,
+    SemanticPopupRootDescription,
+    SemanticPopupListDescription,
+    SemanticPopupListItemDescription
 }

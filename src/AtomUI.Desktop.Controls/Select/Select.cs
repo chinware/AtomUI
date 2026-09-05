@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Controls.Utils;
+using AtomUI.Generated.AtomUIDesktopControls;
 using AtomUI.Reflection;
 using AtomUI.Utils;
 using Avalonia;
@@ -264,7 +265,6 @@ public partial class Select : AbstractSelect
         ResetBehavior = ResetBehavior.Remove
     };
     private SelectCandidateList? _candidateList;
-    private Border? _popupFrame;
     private SelectFilterTextBox? _singleFilterInput;
     private SelectResultOptionsBox? _selectedOptionsBox;
     private IDisposable? _selectedOptionsBoxSearchInputSubscription;
@@ -377,18 +377,6 @@ public partial class Select : AbstractSelect
             return;
         }
 
-        if (_popupFrame == null)
-        {
-            _popupFrame = new Border
-            {
-                Name = "PopupFrame"
-            };
-            _popupFrame.SetTemplatedParent(this);
-            _popupFrame[!Layoutable.MaxHeightProperty] = this[!MaxPopupHeightProperty];
-            _popupFrame[!Layoutable.MinWidthProperty]  = this[!EffectivePopupWidthProperty];
-            _popupFrame[!Border.PaddingProperty]       = this[!PopupContentPaddingProperty];
-        }
-
         if (_candidateList == null)
         {
             _candidateList = new SelectCandidateList
@@ -397,6 +385,7 @@ public partial class Select : AbstractSelect
                 BorderThickness = new Thickness(0),
                 ItemsSource     = _effectiveOptions
             };
+            _candidateList.Classes.Add(SelectSemanticParts.PopupListClass);
             _candidateList.SetTemplatedParent(this);
             _candidateList[!ListView.IsShowEmptyIndicatorProperty]     = this[!IsShowEmptyIndicatorProperty];
             _candidateList[!ListView.EmptyIndicatorProperty]          = this[!EmptyIndicatorProperty];
@@ -418,13 +407,11 @@ public partial class Select : AbstractSelect
             SyncSelectionToCandidateList();
         }
 
-        if (!ReferenceEquals(_popupFrame.Child, _candidateList))
+        // PopupFrame 现在是 SelectTheme 中静态模板 Border（即 Popup.Child），
+        // 每次以 Popup.Child 为准取回，避免缓存字段在模板重应用后指向旧实例。
+        if (Popup.Child is Border popupFrame && !ReferenceEquals(popupFrame.Child, _candidateList))
         {
-            _popupFrame.Child = _candidateList;
-        }
-        if (!ReferenceEquals(Popup.Child, _popupFrame))
-        {
-            Popup.Child = _popupFrame;
+            popupFrame.Child = _candidateList;
         }
     }
 
@@ -855,22 +842,14 @@ public partial class Select : AbstractSelect
             _candidateList.SetTemplatedParent(null);
         }
 
-        if (_popupFrame != null)
+        // PopupFrame 是 SelectTheme 中静态模板 Border（即 Popup.Child），
+        // 仅清空其内部的候选列表，保留 Border 自身作为弹层根。
+        if (Popup != null && Popup.Child is Border popupFrame && ReferenceEquals(popupFrame.Child, _candidateList))
         {
-            if (ReferenceEquals(_popupFrame.Child, _candidateList))
-            {
-                _popupFrame.Child = null;
-            }
-            _popupFrame.SetTemplatedParent(null);
-        }
-
-        if (Popup != null && ReferenceEquals(Popup.Child, _popupFrame))
-        {
-            Popup.Child = null;
+            popupFrame.Child = null;
         }
 
         _candidateList          = null;
-        _popupFrame             = null;
         _candidateListActivated = false;
     }
 

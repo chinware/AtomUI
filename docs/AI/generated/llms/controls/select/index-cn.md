@@ -158,7 +158,7 @@ Select 的稳定伪类包括 `:dropdownopen`；输入表面通过 `InputControlF
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:38`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:102`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -196,7 +196,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 双向绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:79`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:143`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -250,7 +250,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 带搜索框的选择器
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:135`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:199`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -260,7 +260,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 自定义搜索
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:150`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml:214`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -391,6 +391,7 @@ AOT 边界：
 
 - `src/AtomUI.Desktop.Controls/Select/AbstractSelect.cs`：输入壳体、弹层状态、公共输入属性、Form / CompactSpace / Motion 接口和 popup 生命周期。
 - `src/AtomUI.Desktop.Controls/Select/Select.cs`：public Select API、protected 扩展 hook、用户选项源同步、有效候选选项同步、选择同步、过滤输入、Tags 动态选项、键盘和指针处理。
+- `src/AtomUI.Desktop.Controls/Select/Select.SemanticParts.cs`：Select 的 13 个 Semantic Part 声明（见 [Select Semantic Part 契约](semantic-part.md)）。
 - `src/AtomUI.Desktop.Controls/Select/Select.AsyncOptionsLoad.cs`：异步候选加载和私有加载完成流程。
 - `src/AtomUI.Desktop.Controls/Select/SelectOption.cs`：`ISelectOption` 和默认 `SelectOption`。
 - `src/AtomUI.Desktop.Controls/Select/SelectCandidateList.cs`：统一 active candidate、鼠标与键盘候选导航、提交取消、最大选择数和隐藏已选项。
@@ -406,6 +407,7 @@ AOT 边界：
 
 - 源设计文档：`docs/controls/desktop/data-entry/select/overview.md`
 - 实现文档：`docs/controls/desktop/data-entry/select/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-entry/select/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-entry/select/token.md`
 - 变更记录：`docs/controls/desktop/data-entry/select/changelog.md`
 - 语义结构：`./semantic-cn.md`

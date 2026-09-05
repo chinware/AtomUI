@@ -4,13 +4,288 @@
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Select` | 数据录入控件根语义区域，承载 public API、值状态、验证状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `input` | `输入或编辑区域` | 承载用户输入、当前值、占位、格式化或只读状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `trigger` | `触发区域` | 承载清除、展开、提交、步进、上传或辅助操作。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `popup` | `弹层或候选区域` | 承载下拉、候选项、日历、颜色面板或异步内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `validation` | `校验反馈区域` | 承载 Form、status、错误、警告、help 或 loading 状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+Select 是唯一 Semantic owner，公开 13 个 Semantic Part（语义对齐：`item` / `itemContent` /
+`itemRemove` 对应上游多选标签的 `item` 分组，`popup.*` 对应上游 `popup` 分组的 `root` / `list` /
+`listItem`）。声明位于 `Select.SemanticParts.cs` partial 文件。
+
+触发区部件的 marker 位于 `SelectTheme.axaml` 宿主模板内：`prefix` / `suffix` 借用共享
+`AddOnDecoratedBoxTheme` 的 `.semantic-scope-prefix` / `.semantic-scope-suffix` scope 锚点路由到宿主模板
+投影给 decorated box 的内容节点（与 Cascader 同构）；`content` / `placeholder` / `input` 直接标注宿主模板
+节点。`clear` / `item` / `itemContent` / `itemRemove` 声明 `CrossNestedOwners=true`：`clear` 的物理节点在
+共享 `SelectHandle` 自有模板内；多选标签的物理节点在共享标签机制内——`item` 的标记由
+`SelectResultOptionsBox` 在标签容器创建时注入，`itemContent` / `itemRemove` 的标记位于共享 `TagTheme`
+模板（`SelectTag : Tag` 复用其模板），二者经 `item` 部件（RuntimeCreated，ContractType=`Tag`）承转主题链
+完成校验。弹层三部件位于 owner 自有的 Popup 模板内：`popup.root` 标注在宿主模板的 `PopupFrame` 静态节点上，
+`popup.list` 与 `popup.listItem` 的 marker 在运行时容器创建路径注入。
+
+#### `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Select` |
+| Part | `root` |
+| Selector | Select 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
+| ContractType | `Select` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | Select owner |
+| 职责 | Select root 是数据源、选择、过滤、弹层与状态的组织边界。 |
+| 相关 API | 全部 Select public API |
+| 相关 Token | SelectToken、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `prefix`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Select` |
+| Part | `prefix` |
+| Selector | `.semantic-prefix` |
+| SelectorRoute | `/template/ .semantic-scope-input /template/ .semantic-scope-prefix > .semantic-prefix` |
+| Style Type | `SelectPrefixStyle` |
+| ContractType | `ContentPresenter` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `SelectTheme.axaml` 中投影给 `SelectAddOnDecoratedBox.ContentLeftAddOn` 的 `AddOnContentPresenter`（经 `$parent[atom:Select]` 编译绑定呈现公共 API 值） |
+| 职责 | 选择框内容前缀区域，承载 `ContentLeftAddOn` 用户内容，在内容框内联展示。 |
+| 相关 API | `ContentLeftAddOn`、`ContentLeftAddOnTemplate` |
+| 相关 Token | SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `content`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Select` |
+| Part | `content` |
+| Selector | `.semantic-content` |
+| SelectorRoute | `/template/ .semantic-content` |
+| Style Type | `SelectContentStyle` |
+| ContractType | `Panel` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `SelectTheme.axaml` 中 decorated box 内容面板 |
+| 职责 | 选择内容面板，承载占位符、单选结果文本、搜索输入与多选标签盒。 |
+| 相关 API | `PlaceholderText`、`SelectedOption`、`SelectedOptions` |
+| 相关 Token | SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `placeholder`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Select` |
+| Part | `placeholder` |
+| Selector | `.semantic-placeholder` |
+| SelectorRoute | `/template/ .semantic-content > .semantic-placeholder` |
+| Style Type | `SelectPlaceholderStyle` |
+| ContractType | `TextBlock` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `SelectTheme.axaml` 中 `PlaceholderText` |
+| 职责 | 未选择任何项时显示的占位符文本。 |
+| 相关 API | `PlaceholderText`、`PlaceholderForeground` |
+| 相关 Token | SharedToken（ColorTextPlaceholder） |
+| 稳定性 | stable since 6.0 |
+
+#### `input`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Select` |
+| Part | `input` |
+| Selector | `.semantic-input` |
+| SelectorRoute | `/template/ .semantic-content > .semantic-input` |
+| Style Type | `SelectInputStyle` |
+| ContractType | `TextBox` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `SelectTheme.axaml` 中 `PART_SingleFilterInput`（internal `SelectFilterTextBox`，公共契约承诺 Avalonia `TextBox`） |
+| 职责 | 过滤模式（`IsFilterEnabled`）下渲染的搜索输入框；非过滤态隐藏但模板节点存在。 |
+| 相关 API | `IsFilterEnabled`、`Filter`、`FilterValue` |
+| 相关 Token | SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `suffix`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Select` |
+| Part | `suffix` |
+| Selector | `.semantic-suffix` |
+| SelectorRoute | `/template/ .semantic-scope-input /template/ .semantic-scope-suffix > .semantic-suffix` |
+| Style Type | `SelectSuffixStyle` |
+| ContractType | `StackPanel` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `SelectTheme.axaml` 中 `ContentRightAddOn` StackPanel |
+| 职责 | 内容后缀区域，承载最大数量指示、用户 `ContentRightAddOn` 与选择 handle。 |
+| 相关 API | `ContentRightAddOn`、`ContentRightAddOnTemplate`、`MaxCount` |
+| 相关 Token | SharedToken `ColorTextQuaternary`（默认前景） |
+| 稳定性 | stable since 6.0 |
+
+suffix 区默认前景色为 `ColorTextQuaternary`，下拉指示箭头（SelectHandle 内图标）与后缀内容跟随该颜色：
+在 `SelectSuffixStyle` 上设置 `TextElement.Foreground` 即可同时定制箭头与后缀内容颜色（例如
+`#1890FF` 蓝色箭头，与上游语义样式示例一致）。清除按钮、表单校验反馈与最大数量指示各自维护颜色，
+不随该前景色变化。
+
+#### `clear`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Select` |
+| Part | `clear` |
+| Selector | `.semantic-clear` |
+| SelectorRoute | `>> .semantic-scope-handle /template/ .semantic-clear` |
+| Style Type | `SelectClearStyle` |
+| ContractType | `Button` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `SelectHandleTheme.axaml` 中 `PART_ClearButton`（internal `InputClearIconButton`，公共契约承诺 Avalonia `Button`） |
+| 职责 | 后缀 handle 内的清除按钮，`IsAllowClear` 启用、非空选择且输入区 hover / pressed 时可见。 |
+| 相关 API | `IsAllowClear`、`Clear()` |
+| 相关 Token | SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `item`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Select` |
+| Part | `item` |
+| Selector | `.semantic-item` |
+| SelectorRoute | `>> .semantic-scope-tags >> .semantic-item` |
+| Style Type | `SelectItemStyle` |
+| ContractType | `Tag` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | internal `SelectTag` 实例（`SelectResultOptionsBox` 创建标签容器时注入 marker），公共契约承诺 public `Tag` |
+| 职责 | 多选模式下选择器中的选中标签。 |
+| 相关 API | `Mode=Multiple`、`SelectedOptions`、`MaxTagCount`、`IsResponsiveTagMode` |
+| 相关 Token | SelectToken（MultipleItemBg、MultipleItemHeight*） |
+| 稳定性 | stable since 6.0 |
+
+#### `itemContent`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Select` |
+| Part | `itemContent` |
+| Selector | `.semantic-item-content` |
+| SelectorRoute | `>> .semantic-scope-tags >> .semantic-item /template/ .semantic-item-content` |
+| Style Type | `SelectItemContentStyle` |
+| ContractType | `TextBlock` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `TagTheme.axaml` 中 `TagTextLabel`（`SelectTag : Tag` 复用其模板） |
+| 职责 | 选中标签内的文本内容。 |
+| 相关 API | 无（随 tag 展示） |
+| 相关 Token | TagToken（TagLineHeight） |
+| 稳定性 | stable since 6.0 |
+
+#### `itemRemove`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Select` |
+| Part | `itemRemove` |
+| Selector | `.semantic-item-remove` |
+| SelectorRoute | `>> .semantic-scope-tags >> .semantic-item /template/ .semantic-item-remove` |
+| Style Type | `SelectItemRemoveStyle` |
+| ContractType | `IconButton` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `TagTheme.axaml` 中 `PART_CloseButton`（`IsClosable=false` 时隐藏但模板节点存在） |
+| 职责 | 选中标签内的移除按钮。 |
+| 相关 API | `IsClosable`（经标签机制） |
+| 相关 Token | SharedToken（IconSizeXS） |
+| 稳定性 | stable since 6.0 |
+
+#### `popup.root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Select` |
+| Part | `popup.root` |
+| Selector | `.semantic-popup-root` |
+| SelectorRoute | `/template/ .semantic-popup-root` |
+| Style Type | `SelectPopupRootStyle` |
+| ContractType | `Border` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `SelectTheme.axaml` 中 `PopupFrame`（`PART_Popup` 直接子节点） |
+| 职责 | 候选弹层根 `Border`，可定制弹层边框、背景与宽度。 |
+| 相关 API | `MaxPopupHeight`、`EffectivePopupWidth`、`PopupContentPadding` |
+| 相关 Token | PopupTokenResource（PopupCornerRadius）、SharedToken（ColorBgElevated） |
+| 稳定性 | stable since 6.0 |
+
+#### `popup.list`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Select` |
+| Part | `popup.list` |
+| Selector | `.semantic-popup-list` |
+| SelectorRoute | `/template/ .semantic-popup-root >> .semantic-popup-list` |
+| Style Type | `SelectPopupListStyle` |
+| ContractType | `Control` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | internal `SelectCandidateList`（`EnsurePopupContent` 创建并注入 marker），公共契约承诺 `Control` |
+| 职责 | 弹层内候选列表容器，承载过滤后的候选项。 |
+| 相关 API | `OptionsSource`、`Filter`、`IsGroupEnabled` |
+| 相关 Token | SelectToken（OptionPadding、OptionSelectedBg） |
+| 稳定性 | stable since 6.0 |
+
+#### `popup.listItem`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `Select` |
+| Part | `popup.listItem` |
+| Selector | `.semantic-popup-list-item` |
+| SelectorRoute | `/template/ .semantic-popup-root >> .semantic-popup-list-item` |
+| Style Type | `SelectPopupListItemStyle` |
+| ContractType | `TemplatedControl` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | internal `SelectCandidateListItem`（`CreateContainerForItemOverride` 注入 marker），公共祖先承诺 `TemplatedControl` |
+| 职责 | 候选列表中的单个选项条目，运行时容器创建，虚拟化回收复用时 marker 保持。 |
+| 相关 API | `OptionTemplate`、`IsHideSelectedOptions` |
+| 相关 Token | SelectToken（OptionPadding、HeaderHeight、OptionSelectedBg） |
+| 稳定性 | stable since 6.0 |
+
+`ContractType` 不参与 selector 匹配，只约束 `x:SetterTargetType` 与兼容性下界；实现节点为 internal 类型时，
+公共契约承诺到最低 public 基类（`input`→`TextBox`、`item`→`Tag`、`popup.list`→`Control`、
+`popup.listItem`→`TemplatedControl`）。
 
 ## Abstract AXAML Structure
 
@@ -25,7 +300,9 @@
             <SelectResultOptionsBox Name="SelectedOptionsBox" />
         </Panel>
     </SelectAddOnDecoratedBox>
-    <Popup Name="PART_Popup" />
+    <Popup Name="PART_Popup">
+        <Border Name="PopupFrame" />
+    </Popup>
 </Panel>
 ```
 
@@ -67,6 +344,7 @@ Select
               -> SelectFilterTextBox#PART_SingleFilterInput (template-stable)
               -> SelectResultOptionsBox#SelectedOptionsBox (internal-observable)
         -> Popup#PART_Popup (template-stable)
+           -> Border#PopupFrame (template-stable)
 ```
 
 ### 协作节点
@@ -94,13 +372,14 @@ Select
 | `PART_DefaultPanel` | template node (SelectWrapPanel) | `SelectTagAwareTextBoxTheme.axaml` | SelectTagAwareTextBox | `IsResponsiveTagMode` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_MaxCountAwarePanel` | template node (SelectMaxTagAwarePanel) | `SelectTagAwareTextBoxTheme.axaml` | SelectTagAwareTextBox | `IsResponsiveTagMode`, `MaxTagCount` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `SelectTag` | control theme | `SelectTagTheme.axaml` | Select | 主题状态 / visual state | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `Select` | control theme | `SelectTheme.axaml` | 用户代码 / 控件宿主 | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors`, `FontFamily` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `Panel` | template node (Panel) | `SelectTheme.axaml` | Select | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors`, `FontFamily` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}` | template node (SelectAddOnDecoratedBox) | `SelectTheme.axaml` | Select | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `ContentLeftAddOn`, `ContentLeftAddOnTemplate`, `DataValidationErrors`, `FontFamily` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `Select` | control theme | `SelectTheme.axaml` | 用户代码 / 控件宿主 | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `DataValidationErrors`, `EffectivePopupWidth`, `FontFamily`, `FontSize` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Panel` | template node (Panel) | `SelectTheme.axaml` | Select | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `DataValidationErrors`, `EffectivePopupWidth`, `FontFamily`, `FontSize` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}` | template node (SelectAddOnDecoratedBox) | `SelectTheme.axaml` | Select | `CompactSpaceItemPosition`, `CompactSpaceOrientation`, `DataValidationErrors`, `FontFamily`, `FontSize`, `FontStyle` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `PlaceholderText` | template node (TextBlock) | `SelectTheme.axaml` | Select | `IsPlaceholderTextVisible`, `PlaceholderForeground`, `PlaceholderText` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_SingleFilterInput` | template node (SelectFilterTextBox) | `SelectTheme.axaml` | Select | `FontFamily`, `FontSize`, `FontStyle`, `FontWeight`, `IsShowOverflowTip`, `OverflowTipDelay` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `SelectedOptionsBox` | template node (SelectResultOptionsBox) | `SelectTheme.axaml` | Select | `Height`, `IsDropDownOpen`, `IsEffectiveFilterEnabled`, `IsResponsiveTagMode`, `IsShowOverflowTip`, `MaxTagCount` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `PART_Popup` | template node (Popup) | `SelectTheme.axaml` | Select | `IsDropDownOpen`, `ShouldUseOverlayPopup` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_Popup` | template node (Popup) | `SelectTheme.axaml` | Select | `EffectivePopupWidth`, `MaxPopupHeight`, `PopupContentPadding`, `ShouldUseOverlayPopup` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PopupFrame` | template node (Border) | `SelectTheme.axaml` | Select | `EffectivePopupWidth`, `MaxPopupHeight`, `PopupContentPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 
@@ -255,4 +534,5 @@ SelectToken 不承载以下状态：
 - 多选搜索输入关闭弹层时只读并清空。
 - 弹层取消事件必须能阻止打开或关闭。
 - 重新套用模板和 detach 不能保留旧候选列表、旧 popup child、旧 template part 绑定或旧 TopLevel 订阅。
+- Semantic Part marker 的维护边界：`SelectTheme.axaml` 承载触发区静态 marker（`semantic-scope-input`、`semantic-prefix`、`semantic-suffix`、`semantic-scope-handle`、`semantic-content`、`semantic-placeholder`、`semantic-input`、`semantic-scope-tags`、`semantic-popup-root`）；共享 `SelectHandleTheme.axaml` 承载清除按钮的 `semantic-clear` marker（`clear` Part 声明 `CrossNestedOwners=true`，生成器沿 SelectHandle 主题链校验）；共享 `TagTheme.axaml` 承载 `itemContent` / `itemRemove` marker。运行时注入点：`SelectResultOptionsBox` 创建标签时追加 `SelectSemanticParts.ItemClass`；`Select.EnsurePopupContent` 创建候选列表时追加 `SelectSemanticParts.PopupListClass` 并显式 `SetTemplatedParent(this)`；`SelectCandidateList.CreateContainerForItemOverride()` 向容器追加 `SelectSemanticParts.PopupListItemClass`。marker 随容器实例创建一次，prepare/clear/recycle 路径不得增删。
 - `SelectToken` 不承载选项数据、过滤值、loading、选择集合、popup 打开状态或 Form 状态。

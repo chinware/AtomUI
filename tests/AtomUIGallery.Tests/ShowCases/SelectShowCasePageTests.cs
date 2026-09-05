@@ -26,7 +26,8 @@ public class SelectShowCasePageTests
         source.ShouldNotContain("Tag=\"Examples\"");
         source.ShouldNotContain("Tag=\"Api\"");
         source.ShouldNotContain("Tag=\"DesignToken\"");
-        source.ShouldContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldContain("<gallery:GalleryShowCaseHost");
+        source.ShouldContain("gallery:GalleryShowCaseHost.SemanticPartsContentTemplate");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
         source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
@@ -42,10 +43,11 @@ public class SelectShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:SelectShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(15);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(15);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(15);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:SelectViewModel\"").ShouldBe(15);
+        CountShowCaseItemElements(source).ShouldBe(16);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(16);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(16);
+        // 16 个示例模板 + 1 个语义部件预览模板
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:SelectViewModel\"").ShouldBe(17);
         source.ShouldContain("SelectShowCaseLangResource BasicTitle");
         source.ShouldContain("SelectShowCaseLangResource BindingTitle");
         source.ShouldContain("SelectShowCaseLangResource BindingDescription");
@@ -61,6 +63,12 @@ public class SelectShowCasePageTests
         source.ShouldContain("Property=\"Height\" Value=\"38\"");
         source.ShouldContain("Property=\"FontSize\" Value=\"15\"");
         source.ShouldContain("AttachedToVisualTree=\"HandleCustomSearchSelectAttached\"");
+        source.ShouldContain("SelectShowCaseLangResource StyleClassTitle");
+        source.ShouldContain("SourceKey=\"select-semantic-part\"");
+        source.ShouldContain("atom:SelectPrefixStyle");
+        source.ShouldContain("atom:SelectSuffixStyle");
+        source.ShouldContain("atom:SelectPopupRootStyle");
+        source.ShouldContain("SemanticOwnerType=\"{x:Type atom:Select}\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain(">Gallery<");

@@ -4,6 +4,8 @@
 
 该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。本控件的语义 owner 为 `AbstractSelect`，其 internal `IsPopupPinnedOpen` 只供测试和内部诊断使用；设置为 true 时保持 `IsDropDownOpen` 并 relay 到 `PART_Popup`，设置为 false 时只解除关闭拦截。控件卸载、锚点失效、TopLevel 改变和模板重建仍按共享生命周期规则清理。
 
+Select 公开 13 个 Semantic Part（`root`、`prefix`、`content`、`placeholder`、`input`、`suffix`、`clear`、`item`、`itemContent`、`itemRemove`、`popup.root`、`popup.list`、`popup.listItem`），与 Ant Design Select 的 Semantic Part 语义对齐；完整 Part 表、Selector 用法与定制边界见 [Select Semantic Part 契约](semantic-part.md)。
+
 ## 1. 控件定位
 
 | 项 | 值 |
@@ -299,6 +301,7 @@ Select 必须保持三层选项模型：
 
 - [Select 桌面版实现原理](implementation.md)
 - [Select 候选交互设计](candidate-interaction-design.md)
+- [Select Semantic Part 契约](semantic-part.md)
 - [Select Token 设计](token.md)
 - [Select Changelog](changelog.md)
 
