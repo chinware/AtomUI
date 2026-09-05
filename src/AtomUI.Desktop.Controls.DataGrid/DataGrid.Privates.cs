@@ -1622,6 +1622,9 @@ public partial class DataGrid
         }
 
         row.Cells.Insert(column.Index, newCell);
+        // 新建单元格在选中行等场景下没有机会经过回收/当前格刷新路径，
+        // 创建时按行与网格的当前状态初始化伪类，保证 :selected 等状态不缺失
+        newCell.UpdatePseudoClasses();
     }
 
     private bool BeginCellEdit(RoutedEventArgs editingEventArgs)

@@ -2,6 +2,12 @@
 
 本文档记录 DataGrid 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-09-04
+
+- Implementation
+  - Keep `DataGridCell` pseudo-classes authoritative with row state: push `:selected` to all cells when `DataGridRow.IsSelected` changes, and initialize pseudo-classes at cell creation, instead of relying only on opportunistic recycle/current-cell refresh paths.
+  - In the cell ControlTheme, make the sorted-column background (`BodySortBg`) yield to the row selection background when the cell is in a selected row, matching Ant Design where the selected-row cell background outranks `td.ant-table-column-sort`; unselected rows keep the sort tint. Fixes [#454](https://github.com/AtomUI/AtomUI/issues/454).
+
 ## 2026-08-25
 
 - Design

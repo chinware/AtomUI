@@ -8,7 +8,6 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Controls;
-using Avalonia.Threading;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
@@ -415,6 +414,9 @@ public partial class DataGridRow : TemplatedControl
             }
 
             PseudoClasses.Set(StdPseudoClass.Selected, value);
+            // 行是选中状态的唯一权威：选中变化必须同步到全部单元格的 :selected 伪类，
+            // 否则单元格级样式（如排序列底色让位）无法跟随行选中状态
+            ApplyCellsState();
         }
         else if (change.Property == IndexProperty)
         {

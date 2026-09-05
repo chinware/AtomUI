@@ -60,6 +60,11 @@
         
         <Style Selector="^[IsSorting=True]">
             <Setter Property="Background" Value="{atom:DataGridTokenResource BodySortBg}"/>
+            <!-- 选中行背景优先于排序列底色（对齐 Ant Design：tr-selected > td 的选择器特异性高于 td.ant-table-column-sort）：
+                 单元格绘制在行背景之上，选中时让位为透明，透出 DataGridRow 上的选中背景（含选中行 hover 变体） -->
+            <Style Selector="^:selected">
+                <Setter Property="Background" Value="Transparent"/>
+            </Style>
         </Style>
         
         <Style Selector="^[OwningColumnDragging=True]">
