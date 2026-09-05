@@ -13,6 +13,7 @@ TreeSelect 的实现以 `AbstractSelect` 为选择与弹层基类，输入表面
 主要源码：
 
 - `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelect.cs`：public TreeSelect API、生命周期、弹层树懒创建、选择同步、过滤输入、Form 映射和私有算法。
+- `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelect.SemanticParts.cs`：TreeSelect 的 13 个 Semantic Part 声明（见 [TreeSelect Semantic Part 契约](semantic-part.md)）。
 - `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelectAddOnDecoratedBox.cs`：TreeSelect 输入布局扩展，复用 `InputControlFrame` 并承载多选和选择空状态。
 - `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelectTreeView.cs`：TreeSelect 候选树，使用 TreeView 样式键并创建专用容器。
 - `src/AtomUI.Desktop.Controls/TreeSelect/TreeViewSelectTreeViewItem.cs`：候选树节点容器，承接最大选择数状态。
@@ -220,6 +221,7 @@ AOT 边界：
 - `ShowCheckedStrategy` 只能派生展示集合，不能改写真实选择集合。
 - `ItemsSource` 替换时的选择保留必须继续使用节点路径 identity。
 - popup 内容清理必须断开事件、ItemsSource、TemplatedParent 和 popup child 引用。
+- Semantic Part marker 的维护边界：`TreeSelectTheme.axaml` 承载触发区静态 marker（`semantic-scope-input`、`semantic-prefix`、`semantic-suffix`、`semantic-scope-handle`、`semantic-content`、`semantic-placeholder`、`semantic-input`、`semantic-scope-tags`、`semantic-popup-root`）；共享 `SelectHandleTheme.axaml` 承载清除按钮的 `semantic-clear` marker（`clear` Part 声明 `CrossNestedOwners=true`，生成器沿 SelectHandle 主题链校验）；共享 `TagTheme.axaml` 承载 `itemContent` / `itemRemove` marker。运行时注入点：共享 `SelectTagAwareTextBox` 创建标签时追加 `TagItemClass`、创建搜索框时追加 `TagSearchInputClass`；`TreeSelect.EnsurePopupContent` 创建候选树时追加 `TreeSelectSemanticParts.PopupListClass` 并显式 `SetTemplatedParent(this)`；`TreeViewSelectTreeViewItem` 构造函数追加 `TreeSelectSemanticParts.PopupListItemClass`。marker 随容器实例创建一次，prepare/clear/recycle 路径不得增删；`PopupFrame` 以 `Popup.Child` 取回，不在控件中缓存字段。
 
 ## 10. 测试与验证
 
@@ -228,6 +230,7 @@ AOT 边界：
 - `tests/AtomUI.Desktop.Controls.Tests/TreeSelect/TreeSelectBehaviorTests.cs`：模板右侧 AXAML binding 和剩余 sibling relay binding。
 - `tests/AtomUI.Desktop.Controls.Tests/TreeSelect/TreeSelectSelectionBindingTests.cs`：`SelectedItem` / `SelectedItems` 默认双向绑定、data validation metadata、`SelectedItems` 原地变更和 checkable TreeView 同步。
 - `tests/AtomUI.Desktop.Controls.Tests/SizeType/CustomizableSizeTypeContractTests.cs`：TreeSelect 的 `ICustomizableSizeTypeAware` 契约。
+- `tests/AtomUI.Desktop.Controls.Tests/TreeSelect/TreeSelectSemanticPartTests.cs`：descriptor 十三个 Part 契约、模板静态 marker 清单、默认主题不消费 semantic selector、生成 Style 命中触发区目标、标签部件样式命中、多选搜索输入 marker、前缀部件内联呈现、popup 部件 marker 暴露。
 - `tests/AtomUIGallery.Tests/ShowCases/TreeSelectShowCasePageTests.cs`：Gallery TreeSelect 页面结构、示例和源码片段约束。
 
 维护 TreeSelect 后至少运行：

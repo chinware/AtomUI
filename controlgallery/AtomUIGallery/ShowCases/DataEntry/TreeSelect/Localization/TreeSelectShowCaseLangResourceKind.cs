@@ -86,5 +86,20 @@ public enum TreeSelectShowCaseLangResourceKind
     P2HeaderChildNode6,
     P2HeaderChildNode7,
     P2HeaderExpandToLoad,
-    P2HeaderTreeNode
+    P2HeaderTreeNode,
+    StyleClassTitle,
+    StyleClassDescription,
+    SemanticRootDescription,
+    SemanticPrefixDescription,
+    SemanticContentDescription,
+    SemanticPlaceholderDescription,
+    SemanticInputDescription,
+    SemanticSuffixDescription,
+    SemanticClearDescription,
+    SemanticItemDescription,
+    SemanticItemContentDescription,
+    SemanticItemRemoveDescription,
+    SemanticPopupRootDescription,
+    SemanticPopupListDescription,
+    SemanticPopupListItemDescription
 }

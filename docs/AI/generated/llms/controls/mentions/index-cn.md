@@ -134,7 +134,7 @@ Mentions 的公共 API 由文本值、触发符、候选数据、过滤、弹层
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:36`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:86`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -144,7 +144,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### Value 绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:51`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:101`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -173,7 +173,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 变体
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:116`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:166`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -188,7 +188,7 @@ Gallery key：`ExamplesContent` / item `3`
 
 ### 异步加载
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:132`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Mentions/Views/MentionsShowCase.axaml:182`
 
 Gallery key：`ExamplesContent` / item `4`
 

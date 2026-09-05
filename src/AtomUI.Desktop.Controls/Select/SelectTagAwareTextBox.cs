@@ -14,6 +14,10 @@ internal class SelectTagAwareTextBox : TemplatedControl
     /// descendant 路由命中该标记。
     internal const string TagItemClass = "semantic-item";
 
+    /// 多选模式行内搜索输入标记：搜索框运行时创建，TreeSelect/Cascader 的
+    /// input 部件经模板路由命中该标记。
+    internal const string TagSearchInputClass = "semantic-input";
+
     #region 公共属性定义
 
     public static readonly DirectProperty<SelectTagAwareTextBox, IList?> SelectedItemsProperty =
@@ -223,6 +227,9 @@ internal class SelectTagAwareTextBox : TemplatedControl
         {
             HorizontalAlignment = HorizontalAlignment.Stretch
         };
+        // 多选/标签模式下的搜索输入是运行时创建的，静态模板中的 PART_SingleFilterInput
+        // 在非 Single 模式保持隐藏，因此此处注入 input 部件 marker 以便语义高亮/样式可达。
+        _searchTextBox.Classes.Add(TagSearchInputClass);
         _collapsedInfoTag = new SelectRemainInfoTag()
         {
             IsClosable = false

@@ -5,8 +5,20 @@
 
 ## 2026-09-05
 
+- Architecture
+  - Publish the TreeSelect Semantic Part contract with thirteen parts (`root`, `prefix`, `content`, `placeholder`, `input`, `suffix`, `clear`, `item`, `itemContent`, `itemRemove`, `popup.root`, `popup.list`, `popup.listItem`) aligned with the Ant Design TreeSelect semantic structure (popup tree node internals are covered by the `TreeViewItem` contract); see `TreeSelect.SemanticParts.cs` and `semantic-part.md`.
+  - Anchor trigger-part markers in the host template (`TreeSelectTheme.axaml`) projected into `TreeSelectAddOnDecoratedBox`, reusing the shared `AddOnDecoratedBoxTheme` scope anchors for `prefix` / `suffix`, and make `PopupFrame` a static template child of `PART_Popup` instead of a runtime-created border.
+  - Resolve multiple-selection tag parts through the shared tag mechanism: `item` markers are injected when `SelectTagAwareTextBox` creates tag containers, the multiple-mode search input carries the `semantic-input` marker, and `itemContent` / `itemRemove` markers live in `TagTheme.axaml` (`SelectTag : Tag`).
+  - Inject `popup.list` markers when `EnsurePopupContent` creates the candidate tree and `popup.listItem` markers in the `TreeViewSelectTreeViewItem` constructor, covering every nesting level and container recycle.
 - Theme
   - Apply the reused SelectToken `MultiModePrefixIndent*` values as the extra left `Margin` of `PART_ContentLeftAddOn` in `TreeSelectAddOnDecoratedBoxTheme` for `IsMultiple=True` with a non-empty selection, aligning the TreeSelect multiple-mode prefix with its single-mode horizontal padding.
+  - Fix the multiple-selection non-filter cursor style that targeted the nonexistent `SelectAddOnDecoratedBox` type inside the TreeSelect template, so `IsMultiple=True` with `IsFilterEnabled=False` now shows the hand cursor as the single-selection variant already does.
+- Gallery
+  - Add the TreeSelect Semantic Parts tab with a pinned-open multiple-selection preview and localized part descriptions; migrate the showcase host to `GalleryShowCaseHost` per the standard Semantic Part page model.
+  - Add the "Customize semantic structure styles" example (aligned with the upstream semantic styling demo): object-style and variant-conditioned TreeSelect part styles covering prefix / suffix / popup root.
+- Tests
+  - Add `TreeSelectSemanticPartTests` covering descriptor shape, template marker inventory, default-theme non-consumption, generated style hits, tag part style hits, multiple-mode search input marker, inline prefix presentation and popup part marker exposure.
+  - Update `TreeSelectShowCasePageTests` and `TreeSelectShowCaseExamples.snapshot` for the migrated host, added example and semantic preview template.
 
 ## 2026-08-25
 

@@ -5,6 +5,7 @@ using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.Generated.AtomUIDesktopControls;
 using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Controls;
@@ -23,7 +24,7 @@ namespace AtomUI.Desktop.Controls;
 using ItemCollection = AtomUI.Collections.ItemCollection;
 using AvaloniaTreeView = Avalonia.Controls.TreeView;
 
-public class TreeSelect : AbstractSelect
+public partial class TreeSelect : AbstractSelect
 {
     #region 公共属性定义
 
@@ -326,7 +327,6 @@ public class TreeSelect : AbstractSelect
     #endregion
 
     private SelectFilterTextBox? _singleFilterInput;
-    private Border? _popupFrame;
     private TreeView? _treeView;
     private CompositeDisposable? _selectHandleInputStateBindings;
     private INotifyCollectionChanged? _selectedItemsCollectionChangedSource;
@@ -514,18 +514,6 @@ public class TreeSelect : AbstractSelect
             return;
         }
 
-        if (_popupFrame == null)
-        {
-            _popupFrame = new Border
-            {
-                Name = "PopupFrame"
-            };
-            _popupFrame.SetTemplatedParent(this);
-            _popupFrame[!Layoutable.MaxHeightProperty] = this[!MaxPopupHeightProperty];
-            _popupFrame[!Layoutable.MinWidthProperty]  = this[!EffectivePopupWidthProperty];
-            _popupFrame[!Border.PaddingProperty]       = this[!PopupContentPaddingProperty];
-        }
-
         if (_treeView == null)
         {
             var treeView = new TreeSelectTreeView
@@ -536,6 +524,7 @@ public class TreeSelect : AbstractSelect
                 NodeHoverMode       = TreeItemHoverMode.Block,
                 ItemsSource         = BuildItemsSourceList(Items)
             };
+            treeView.Classes.Add(TreeSelectSemanticParts.PopupListClass);
             treeView.SetTemplatedParent(this);
             treeView[!SelectingItemsControl.AutoScrollToSelectedItemProperty] = this[!AutoScrollToSelectedItemProperty];
             treeView[!TreeView.ToggleTypeProperty]                            = this[!TreeViewToggleTypeProperty];
@@ -562,13 +551,11 @@ public class TreeSelect : AbstractSelect
             SyncSelectedItemsToTreeView();
         }
 
-        if (!ReferenceEquals(_popupFrame.Child, _treeView))
+        // PopupFrame 现在是 TreeSelectTheme 中静态模板 Border（即 Popup.Child），
+        // 每次以 Popup.Child 为准取回，避免缓存字段在模板重应用后指向旧实例。
+        if (Popup.Child is Border popupFrame && !ReferenceEquals(popupFrame.Child, _treeView))
         {
-            _popupFrame.Child = _treeView;
-        }
-        if (!ReferenceEquals(Popup.Child, _popupFrame))
-        {
-            Popup.Child = _popupFrame;
+            popupFrame.Child = _treeView;
         }
     }
 
@@ -844,22 +831,14 @@ public class TreeSelect : AbstractSelect
             _treeView.SetTemplatedParent(null);
         }
 
-        if (_popupFrame != null)
+        // PopupFrame 是 TreeSelectTheme 中静态模板 Border（即 Popup.Child），
+        // 仅清空其内部的树视图，保留 Border 自身作为弹层根。
+        if (Popup != null && Popup.Child is Border popupFrame && ReferenceEquals(popupFrame.Child, _treeView))
         {
-            if (ReferenceEquals(_popupFrame.Child, _treeView))
-            {
-                _popupFrame.Child = null;
-            }
-            _popupFrame.SetTemplatedParent(null);
+            popupFrame.Child = null;
         }
 
-        if (Popup != null && ReferenceEquals(Popup.Child, _popupFrame))
-        {
-            Popup.Child = null;
-        }
-
-        _treeView   = null;
-        _popupFrame = null;
+        _treeView = null;
     }
 
     private void SetupSelectHandleInputStateBindings(TemplateAppliedEventArgs e)

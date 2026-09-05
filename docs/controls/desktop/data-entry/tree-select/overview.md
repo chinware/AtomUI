@@ -4,6 +4,8 @@
 
 该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。本控件的语义 owner 为 `AbstractSelect`，其 internal `IsPopupPinnedOpen` 只供测试和内部诊断使用；设置为 true 时保持 `IsDropDownOpen` 并 relay 到 `PART_Popup`，设置为 false 时只解除关闭拦截。控件卸载、锚点失效、TopLevel 改变和模板重建仍按共享生命周期规则清理。
 
+TreeSelect 公开 13 个 Semantic Part（`root`、`prefix`、`content`、`placeholder`、`input`、`suffix`、`clear`、`item`、`itemContent`、`itemRemove`、`popup.root`、`popup.list`、`popup.listItem`），与 Ant Design TreeSelect 的 Semantic Part 语义对齐（弹层树节点内部槽位由 `TreeViewItem` 契约承载）；完整 Part 表、单选/多选存在条件、Selector 用法与定制边界见 [TreeSelect Semantic Part 契约](semantic-part.md)。
+
 ## 1. 控件定位
 
 | 项 | 值 |
@@ -192,6 +194,7 @@ TreeSelect 使用节点的 `ItemKey` 或 `Value` 组成 `TreeNodePath`，用于 
 ## 9. 文档导航、LLMS 导出与验证策略
 
 - [TreeSelect 桌面版实现原理](implementation.md)
+- [TreeSelect Semantic Part 契约](semantic-part.md)
 - [TreeSelect Token 设计](token.md)
 - [TreeSelect Changelog](changelog.md)
 

@@ -26,7 +26,8 @@ public class TreeSelectShowCasePageTests
         source.ShouldNotContain("Tag=\"Examples\"");
         source.ShouldNotContain("Tag=\"Api\"");
         source.ShouldNotContain("Tag=\"DesignToken\"");
-        source.ShouldContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldContain("<gallery:GalleryShowCaseHost");
+        source.ShouldContain("gallery:GalleryShowCaseHost.SemanticPartsContentTemplate");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
         source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
@@ -42,10 +43,11 @@ public class TreeSelectShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:TreeSelectShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(13);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(13);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(13);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:TreeSelectViewModel\"").ShouldBe(13);
+        CountShowCaseItemElements(source).ShouldBe(14);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(14);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(14);
+        // 14 个示例模板 + 1 个语义部件预览模板
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:TreeSelectViewModel\"").ShouldBe(15);
         source.ShouldContain("TreeSelectShowCaseLangResource BasicTitle");
         source.ShouldContain("TreeSelectShowCaseLangResource BindingTitle");
         source.ShouldContain("TreeSelectShowCaseLangResource BindingDescription");
@@ -61,6 +63,12 @@ public class TreeSelectShowCasePageTests
         source.ShouldContain("Selector=\"atom|TreeSelect.size-demo-tree-select[SizeType=Custom]\"");
         source.ShouldContain("TreeSelectShowCaseLangResource VariantsTitle");
         source.ShouldContain("TreeSelectShowCaseLangResource PrefixAndSuffixTitle");
+        source.ShouldContain("TreeSelectShowCaseLangResource StyleClassTitle");
+        source.ShouldContain("SourceKey=\"treeselect-semantic-part\"");
+        source.ShouldContain("atom:TreeSelectPrefixStyle");
+        source.ShouldContain("atom:TreeSelectSuffixStyle");
+        source.ShouldContain("atom:TreeSelectPopupRootStyle");
+        source.ShouldContain("SemanticOwnerType=\"{x:Type atom:TreeSelect}\"");
         source.ShouldContain("SuffixIcon=\"{antdicons:AntDesignIconProvider SmileOutlined}\"");
         source.ShouldContain("ContentLeftAddOn=\"{gallery:TreeSelectShowCaseLangResource P2AddOnPrefix}\"");
         Regex.IsMatch(
@@ -69,7 +77,8 @@ public class TreeSelectShowCasePageTests
                 RegexOptions.CultureInvariant)
             .ShouldBeFalse();
         source.ShouldContain("OptionCheckedChanged=\"HandlePlacementOptionCheckedChanged\"");
-        source.ShouldNotContain("{Binding #");
+        // 语义部件预览模板需要 {Binding #TreeSelectSemanticOwner} 引用预览控件，因此不再整体禁用。
+        source.ShouldContain("SemanticOwner=\"{Binding #TreeSelectSemanticOwner}\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain(">Gallery<");

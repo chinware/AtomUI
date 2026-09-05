@@ -104,7 +104,7 @@ TreeSelect 的事件与命令以控件文档、源码 public surface 和 Avaloni
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml:36`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml:102`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -114,7 +114,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml:54`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml:120`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -172,7 +172,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 多选
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml:112`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml:178`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -182,7 +182,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 由树数据生成
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml:129`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TreeSelect/Views/TreeSelectShowCase.axaml:195`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -275,6 +275,7 @@ AOT 边界：
 主要源码：
 
 - `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelect.cs`：public TreeSelect API、生命周期、弹层树懒创建、选择同步、过滤输入、Form 映射和私有算法。
+- `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelect.SemanticParts.cs`：TreeSelect 的 13 个 Semantic Part 声明（见 [TreeSelect Semantic Part 契约](semantic-part.md)）。
 - `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelectAddOnDecoratedBox.cs`：TreeSelect 输入布局扩展，复用 `InputControlFrame` 并承载多选和选择空状态。
 - `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelectTreeView.cs`：TreeSelect 候选树，使用 TreeView 样式键并创建专用容器。
 - `src/AtomUI.Desktop.Controls/TreeSelect/TreeViewSelectTreeViewItem.cs`：候选树节点容器，承接最大选择数状态。
@@ -287,6 +288,7 @@ AOT 边界：
 
 - 源设计文档：`docs/controls/desktop/data-entry/tree-select/overview.md`
 - 实现文档：`docs/controls/desktop/data-entry/tree-select/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-entry/tree-select/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-entry/tree-select/token.md`
 - 变更记录：`docs/controls/desktop/data-entry/tree-select/changelog.md`
 - 语义结构：`./semantic-cn.md`
