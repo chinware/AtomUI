@@ -791,6 +791,8 @@ internal class SelectCandidateList : ListView, ICandidateList
         {
             SetCurrentValue(IsEffectiveEmptyVisibleProperty, IsShowEmptyIndicator && (IsEmptyDataSource || !HasAnyVisibleItem));
         }
+        SetCurrentValue(IsDefaultEmptyIndicatorVisibleProperty,
+            IsEffectiveEmptyVisible && EmptyIndicator is null && EmptyIndicatorTemplate is null);
     }
 
     protected override Size ArrangeOverride(Size finalSize)

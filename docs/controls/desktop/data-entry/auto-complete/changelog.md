@@ -2,6 +2,11 @@
 
 本文档记录 AutoComplete 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-09-05
+
+- Fix
+  - The shared `CandidateList` now maintains `IsDefaultEmptyIndicatorVisible`, so an AutoComplete dropdown with an empty or fully filtered option set shows the built-in default `Empty` indicator instead of a blank panel. Note: Ant Design's combobox-mode AutoComplete renders no default empty content; if combobox-parity is preferred, set `IsShowEmptyIndicator=False` on the candidate list theme.
+
 ## 2026-08-25
 
 - Docs

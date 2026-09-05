@@ -393,12 +393,14 @@ public partial class Select : AbstractSelect
         {
             _candidateList = new SelectCandidateList
             {
-                Name                 = "PART_CandidateList",
-                BorderThickness      = new Thickness(0),
-                IsShowEmptyIndicator = true,
-                ItemsSource          = _effectiveOptions
+                Name            = "PART_CandidateList",
+                BorderThickness = new Thickness(0),
+                ItemsSource     = _effectiveOptions
             };
             _candidateList.SetTemplatedParent(this);
+            _candidateList[!ListView.IsShowEmptyIndicatorProperty]     = this[!IsShowEmptyIndicatorProperty];
+            _candidateList[!ListView.EmptyIndicatorProperty]          = this[!EmptyIndicatorProperty];
+            _candidateList[!ListView.EmptyIndicatorTemplateProperty]  = this[!EmptyIndicatorTemplateProperty];
             _candidateList[!ListView.FilterProperty]                    = this[!FilterProperty];
             _candidateList[!ListView.FilterValueProperty]               = this[!FilterValueProperty];
             _candidateList[!ListView.FilterValueSelectorProperty]       = this[!FilterValueSelectorProperty];

@@ -3,6 +3,18 @@
 本文档记录 Select 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-09-05
+
+- Fix
+  - Restore the built-in empty indicator for the dropdown: `SelectCandidateList.ConfigureEmptyIndicator()` now maintains `IsDefaultEmptyIndicatorVisible` like the `ListView` base, so an empty or fully filtered candidate list shows the default `Empty` (`PresetImage=Simple`, localized No data) instead of a blank panel, matching Ant Design's default `notFoundContent`.
+  - Wire `AbstractSelect.IsShowEmptyIndicator`, `EmptyIndicator` and `EmptyIndicatorTemplate` to the candidate list in `EnsurePopupContent()`; a custom empty indicator is honored and hides the default one. `EmptyIndicatorPadding` stays unwired (same as TreeSelect) so the theme per-size padding remains effective.
+- Theme
+  - Add `MultiModePrefixIndent` / `MultiModePrefixIndentSM` / `MultiModePrefixIndentLG` tokens and apply them as the extra left `Margin` of `PART_ContentLeftAddOn` in `SelectAddOnDecoratedBoxTheme` for Multiple / Tags mode with a non-empty selection.
+  - The content frame keeps the small multi-mode left padding for the tag area while the prefix (ContentLeftAddOn) aligns with the single-mode horizontal padding, matching Ant Design's selector-padding + prefix-margin model.
+- Tests
+  - Add headless tests for the empty dropdown indicator (default shown, custom honored, `IsShowEmptyIndicator=false` respected).
+  - Add headless layout tests asserting Multiple / Tags prefix left inset equals the Single mode inset, and a SelectToken unit test asserting `MultiModePadding*.Left + MultiModePrefixIndent*.Left == SingleModePadding*.Left` per size.
+
 ## 2026-08-25
 
 - Docs

@@ -592,6 +592,8 @@ public class CandidateList : ListBox, ICandidateList
         {
             SetCurrentValue(IsEffectiveEmptyVisibleProperty, isEffectiveEmptyVisible);
         }
+        SetCurrentValue(IsDefaultEmptyIndicatorVisibleProperty,
+            IsEffectiveEmptyVisible && EmptyIndicator is null && EmptyIndicatorTemplate is null);
     }
     
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)

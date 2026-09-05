@@ -148,6 +148,8 @@ OpenDropDown()
 
 `ClearPopupContent()` 必须解除 `_candidateList.SelectionChanged`、`Commit`、`Cancel`，清空 `ItemsSource`，移除 `TemplatedParent`，断开 `PopupFrame.Child` 和 `Popup.Child`，并清空 `_candidateListActivated`。
 
+空候选状态由 `EnsurePopupContent()` 中的绑定驱动：`AbstractSelect.IsShowEmptyIndicator`、`EmptyIndicator` 和 `EmptyIndicatorTemplate` 绑定到候选列表的对应 `ListView` 属性。`SelectCandidateList.ConfigureEmptyIndicator()` 覆写必须同时维护 `IsEffectiveEmptyVisible` 与 `IsDefaultEmptyIndicatorVisible`：未提供自定义 `EmptyIndicator` / `EmptyIndicatorTemplate` 时显示主题内置的默认 `Empty`（`PresetImage=Simple`，对应 Ant Design 的 No data）；`EmptyIndicatorPadding` 不在此处接线，由 `ListViewTheme` 按尺寸提供默认值。
+
 Popup 打开期间，`AbstractSelect.PopupOpened()` 创建 `SubscriptionsOnOpen`，订阅自身和祖先可见性变化；Popup 关闭时清空这些订阅。控件 detach 时释放 TopLevel deactivation 订阅，窗口失活时关闭弹层。
 
 ## 6. 交互与事件处理
