@@ -44,6 +44,9 @@ column / filter / group / programmatic intent
 6. 过滤、分页、分组、current item、编辑和移动也集中在 CollectionView，不能只替换表头事件而不处理状态所有权。
 7. DataGrid 当前模板已经提供 `Spin`、空状态、上下分页、表头、rows presenter 和滚动条；就绪态无需新增视觉节点。
 8. DataGrid 专用测试当前有 136 个 Fact/Theory，另有 Gallery、性能状态验证、AOT 与文档生成验证。
+9. 当前 UI 虚拟化由 DataGrid 手工维护 int SlotCount、DataGridDisplayData 循环 displayed elements、Row/GroupHeader 回收池
+   和 RowsPresenter 同步 Measure/Arrange；IChildIndexProvider 也要求精确 int child index/count。
+10. 当前大跨度滚动仍有按 slot 估算/循环与同步 GetDataItem 路径，不能直接把异步 Source 塞进 GenerateRow 或 Measure。
 
 ### 2.2 改造类型审计
 
@@ -53,11 +56,13 @@ column / filter / group / programmatic intent
 | 当前排序 owner | `IDataGridCollectionView.SortDescriptions` |
 | 当前分页 owner | `DataGridCollectionView` |
 | 当前视觉投影 | Header pseudo-class + per-cell subscription |
+| 当前 UI 虚拟化 owner | DataGrid slots + DataGridDisplayData + DataGridRowsPresenter |
 | 根问题 | 数据执行、交互策略、可变查询状态和视觉投影耦合 |
 | API 级别 | L3，用户已允许忽略兼容性 |
 | 渲染边界 | Ready 状态像素、布局、主题 key、Template Part、伪类语义不变 |
 | AOT 边界 | 正常路径无反射、无字符串成员发现、无表达式动态编译 |
 | 生命周期边界 | Source replacement、Query replacement、detach、re-template、取消和迟到结果均有确定终止路径 |
+| 虚拟化边界 | Source long data domain 与 UI int presentation domain 分离；layout 热路径零 I/O |
 
 ### 2.3 本次包含
 
@@ -109,7 +114,8 @@ column / filter / group / programmatic intent
 
 ### 3.4 有界资源
 
-- DataGrid 内存与 `TotalCount` 无关，只与已实现行、range block 数、列数以及用户实际产生的选择 key/interval 数有关。
+- DataGrid 内存与 `TotalCount` 无关，只与已实现行、range block 数、列数以及用户实际产生的选择/RowDetails/group-expansion
+  key/interval 数有关。
 - 请求并发、缓存 block、预取范围和重试次数都有上限。
 - 每个订阅、CancellationTokenSource、缓存数组和异步任务都有 owner、失效条件和释放路径。
 
@@ -119,6 +125,16 @@ column / filter / group / programmatic intent
 - Source schema 显式声明字段，DataGrid 不通过首行实例反射推断字段。
 - 本地 Source 使用静态强类型 getter/comparer；不使用 `Expression.Compile()`、`PropertyInfo.GetValue` 或动态泛型构造。
 - 服务端 Source 显式翻译 FieldId、OperatorId 和 scalar value；DataGrid 不猜测协议。
+
+### 3.6 虚拟化不可退化
+
+- Measure/Arrange 和 container prepare/recycle 不执行 Source I/O；滚动输入只计算/合并 intent，返回后才由 coordinator
+  调度异步 Source 请求，任何路径都不阻塞等待结果。
+- UI child/slot 数只与 viewport 和少数 pinned rows 有关，不与 TotalDataCount 或滚动距离有关。
+- Scroll extent、thumb、first/last slot 和行内偏移始终使用 display slot domain；IChildIndexProvider 始终使用 window data
+  domain，两者只通过已提交 entry 的 Slot/WindowDataIndex 显式映射。
+- 快速滚动只提交 latest desired viewport；过期 range 不能生成或重绑 container。
+- 自动行高、RowDetails、GroupHeader、冻结列、水平虚拟化和嵌套滚动链必须保留现有 UX 合同。
 
 ## 4. Public Query 模型
 
@@ -201,7 +217,10 @@ public readonly struct DataGridGroup : IEquatable<DataGridGroup>
 }
 ```
 
-`Groups` 顺序表示层级。Source 不声明对应能力时，DataGrid 在 Query 提交前拒绝该 Query，而不是请求后静默忽略。
+`Groups` 顺序表示层级，并隐式形成领先于 Query.Sorts 的稳定 group-field order；Query.Sorts 只决定组内后续顺序。
+Query 构造时拒绝同一 FieldId 同时出现在 Groups 与 Sorts，避免两个方向冲突或 Source 静默选边。这样相同 group 的业务行
+连续，Source 可以在不打乱 DataIndex 的前提下插入 GroupHeader。Source 不声明对应能力时，DataGrid 在 Query 提交前拒绝
+该 Query，而不是请求后静默忽略。
 
 ### 4.5 DataGridQuery
 
@@ -318,25 +337,31 @@ public readonly struct DataGridSourceEntry
     public DataGridRowKey RowKey { get; }
     public object? Item { get; }
     public DataGridGroupEntry? Group { get; }
+    public int WindowDataIndex { get; }
     public long DataIndex { get; }
 }
 ```
 
 Data entry 必须有有效且唯一的 RowKey；item 可以为 null。GroupHeader 的 RowKey 必须为无效默认值，Group 必须包含有效
 GroupKey、field、value、level 和 leaf count，不参与选择或编辑。展开状态由请求中的 GroupExpansion 投影，不由 Source
-结果维护第二份状态。Data entry 的 `DataIndex` 是 filter/sort 后、分页前的全局零基业务行索引；GroupHeader 为 -1。
+结果维护第二份状态。Data entry 的 `DataIndex` 是 filter/sort 后、分页前的全局零基业务行索引；WindowDataIndex 是活动
+PageWindow 内排除 GroupHeader 后的零基数据行索引。GroupHeader 的两个 index 都为 -1。
+
+GroupEntry.LeafCount 固定表示当前 PageWindow 内该 group 的业务行数，包含因 collapse 暂时不可见的 descendants；它不是跨页
+全局聚合数。若产品需要全局 group aggregates，应由独立显式 aggregate contract 提供，不能改变 LeafCount 语义。
 
 Source 返回的范围以扁平 display entry 为单位，因此普通行和 group header 可以共享同一个虚拟化序列。
 `TotalEntryCount` 表示当前活动窗口内的扁平 display entry 数并决定滚动 extent；`TotalDataCount` 表示 Query
-命中但尚未分页的全局业务行数并决定分页总数。连续滚动没有 page window，此时活动窗口就是完整查询结果。
+命中但尚未分页的全局业务行数并决定分页总数；`WindowDataCount` 表示当前活动 PageWindow 内、不含 GroupHeader 的业务
+行数并供 Row.Index 与辅助功能使用。连续滚动没有 page window，此时活动窗口就是完整查询结果。
 
 ### 5.3 Range、snapshot 与 result
 
 ```csharp
 public readonly struct DataGridRange
 {
-    public DataGridRange(long startIndex, int count);
-    public long StartIndex { get; }
+    public DataGridRange(int startIndex, int count);
+    public int StartIndex { get; }
     public int Count { get; }
 }
 
@@ -375,9 +400,10 @@ public readonly struct DataGridFetchRequest
 
 public sealed class DataGridRangeResult
 {
-    public long StartIndex { get; }
+    public int StartIndex { get; }
     public ImmutableArray<DataGridSourceEntry> Entries { get; }
-    public long TotalEntryCount { get; }
+    public int TotalEntryCount { get; }
+    public int WindowDataCount { get; }
     public long TotalDataCount { get; }
     public DataGridSnapshotId Snapshot { get; }
 }
@@ -403,13 +429,30 @@ expectedCount = min(request.Range.Count, max(0, TotalEntryCount - request.Range.
 result.StartIndex == request.Range.StartIndex
 result.Entries.Length == expectedCount
 0 <= TotalEntryCount
+0 <= WindowDataCount
 0 <= TotalDataCount
 ```
 
-未分组的连续窗口必须满足 `TotalEntryCount == TotalDataCount`。分页窗口或分组窗口不能假设两个 total 的大小关系。
+PageWindow 非 null 时还必须满足：
+
+```text
+WindowDataCount = min(PageWindow.DataCount, max(0, TotalDataCount - PageWindow.DataStartIndex))
+```
+
+PageWindow 为 null 时必须满足 `WindowDataCount == TotalDataCount`，因此连续模式要求业务行数不超过 int 上限。未分组窗口
+必须满足 `TotalEntryCount == WindowDataCount`；分组/折叠窗口不能假设 entry count 与 data count 的大小关系。
+每个 Data entry 还必须满足：
+
+```text
+0 <= WindowDataIndex < WindowDataCount
+DataIndex = (PageWindow?.DataStartIndex ?? 0) + WindowDataIndex
+```
+
+同一活动窗口按 display range 拼接后，Data entry 的 WindowDataIndex/DataIndex 严格递增；collapsed group 允许 index 出现间隙，
+不允许重复或倒序。
 Data row key 在整个 snapshot 内稳定且唯一；group entry key 在当前活动窗口内唯一。DataGrid 检测当前缓存范围内的重复
 key；Source 的合同测试负责覆盖同一活动窗口跨全部 range 的唯一性。相同 snapshot 的 `TotalDataCount` 必须恒定；相同
-`(snapshot, PageWindow, GroupExpansion)` 的 `TotalEntryCount` 必须恒定。
+`(snapshot, PageWindow)` 的 WindowDataCount、相同 `(snapshot, PageWindow, GroupExpansion)` 的 TotalEntryCount 必须恒定。
 
 每个 `(Source identity, QueryRevision, DataGeneration)` 的第一次请求使用 `ExpectedSnapshot=null`；后续请求携带该代际
 第一次成功结果的 snapshot。Source 必须返回相同 snapshot，或抛出 `DataGridSnapshotExpiredException`。DataGrid 绝不
@@ -454,7 +497,7 @@ public DataGridQuery AppliedQuery { get; }
 public DataGridLoadState LoadState { get; }
 public Exception? LoadError { get; }
 public long TotalItemCount { get; }
-public long TotalEntryCount { get; }
+public int TotalEntryCount { get; }
 public bool IsDataStale { get; }
 ```
 
@@ -621,51 +664,133 @@ Cancellation 和被替代请求不是 Error，不修改 LoadError，也不触发
 
 ## 9. Range 计算、缓存和虚拟化
 
-### 9.1 逻辑索引
+### 9.1 三个索引域
 
-Source 和 DataGrid viewport 使用 `long` logical index；单个内存 buffer 和已实现 child collection 继续使用 `int` count。
-`DataGridRow` 保存 long logical index。滚动 offset 到 logical index 的映射由 DataGrid 的行高 metrics owner 统一完成，
-不把总数据量物化为 IList placeholder。
+不能把 Source 的业务索引与 Avalonia 展示索引混成同一个类型：
 
-固定行高使用常数时间映射。可变行高复用并扩展现有稀疏行高表：默认 estimated height + 已测量行的 sparse delta；
-offset 查询和前缀和由分块索引完成，内存只与已测量范围有关。
+| 索引域 | 类型 | 含义 |
+| --- | --- | --- |
+| Source data domain | `long` | Query 命中的全局业务行、PageWindow.DataStartIndex、DataIndex、TotalDataCount |
+| Window data domain | `int` | 当前连续窗口或当前页内排除 GroupHeader 的 WindowDataIndex、Row.Index、IChildIndexProvider index/count |
+| Display slot domain | `int` | GroupExpansion 后 flatten 的 Slot、Range.StartIndex、TotalEntryCount、纵向虚拟化与滚动 extent |
 
-### 9.2 Block 策略
+`DataGridSourceEntry.DataIndex` 保持 long；DataGridRow.Index 取 WindowDataIndex，DataGridRow.Slot 取 display slot。
+`DataGridDisplayData`、IChildIndexProvider、WindowDataCount 和 TotalEntryCount 保持 int。连续 data/display window 超过 int
+上限时 Source 抛出 `DataGridPresentationLimitExceededException`，调用方必须启用 PageWindow。分页仍能通过 long
+DataStartIndex 访问超过 `int.MaxValue` 的业务数据，但任何时刻的活动 UI 窗口都保持准确的 int 索引。
+
+禁止 saturation、取模或 window-relative 假装 global child index。这样 Avalonia automation 的 child index/count、键盘导航、
+current slot 和容器回收不会溢出或报告错误位置。
+
+### 9.2 无 placeholder 的 PresentationIndex
+
+DataGrid 不创建长度为 TotalEntryCount 的 IList、null row 或 placeholder object。`DataGridPresentationIndex` 只保存：
+
+- int TotalEntryCount 与 WindowDataCount；
+- 当前 snapshot/generation；
+- 有界 RangeBlock cache；
+- committed viewport 的 first/last slot 与首行内部像素偏移；
+- 稀疏 height delta、row-details state 和必要的 key/index metadata。
+
+Slot 直接等于活动窗口的 flatten display index。Source 已经根据 GroupExpansion 排除 collapsed group 后代，因此新路径不再为
+全量数据建立 `RowGroupHeadersTable` 或 `_collapsedSlotsTable`；entry kind 和 group metadata 从命中的 RangeBlock 读取，前后可见
+slot 是 O(1) 的 `slot +/- 1`。Row 与 GroupHeader 仍使用各自现有 container pool。
+
+本次不在现有 DataGridRowsPresenter 外再套 ItemsRepeater、VirtualizingStackPanel 或第二套 scroll owner；双 virtualizer 会造成
+extent、BringIntoView、焦点与回收 ownership 冲突。保留现有 RowsPresenter/DisplayData/container pool 的视觉 ownership，只把
+“slot -> 同步 DataConnection item”替换为“slot -> 已提交 RangeBlock entry”。
+
+`DataGridRowsPresenter.Children` 只包含当前已实现、edit-pinned 或 drag-pinned controls。`TryGetTotalCount` 返回精确
+WindowDataCount，`GetChildIndex(row)` 返回等于 entry.WindowDataIndex 的 row.Index；GroupHeader 继续不冒充 data child，
+两者都绝不因此生成对应数量的 children。
+
+### 9.3 异步规划与同步布局隔离
+
+现有 `MeasureOverride`/`ArrangeOverride` 是同步热路径；它们不能调用 Source、等待 Task、获取锁、触发 QueryChanged 或分配
+range buffer。虚拟化拆成两个阶段：
+
+```text
+scroll / thumb / bring-into-view intent
+  -> DesiredViewport (coalesced, latest wins)
+  -> pure ViewportPlanner (offset -> slot -> required visible range)
+  -> RangeCoordinator ensures cache coverage asynchronously
+  -> UI-thread atomic CommittedViewport swap
+  -> one measure/arrange pass realizes cached entries only
+```
+
+RangeBlock 已命中时，viewport 可以在同一 UI turn 提交；未命中时保留最后一次 CommittedViewport 和现有 rows，合并连续滚轮或
+thumb 输入，只请求最终 desired range。结果到达前 Measure/Arrange 只访问旧 committed cache，不能同步 fetch。提交后
+`GetExactSlotElementHeight`/row generation 只能访问已验证、已 pin 的 block；缺失 block 是内部 invariant violation，不能偷偷
+返回 null row。
+
+后台 prefetch 不改变 LoadState、不触发布局。只有用户目标 viewport 缺失时进入 Refreshing；本地同步 Source 或已预取命中
+不会出现 Spin。远端等待期间 DataGrid 在 overlay 之前的输入路由层继续接收并合并滚动意图，不能让 Spin 截断快速滚动。
+
+### 9.4 高度、extent 与滚动锚点
+
+固定行高路径使用 `offset / rowHeight` 与 `slot * rowHeight`，保持 O(1)。自动行高、GroupHeader 和 RowDetails 使用：
+
+```text
+estimatedOffset(slot) = slot * defaultEstimate + sparsePrefixDelta(slot)
+```
+
+`SparseHeightDeltaIndex` 是按 block/slot 排序的增广树，只保存 pinned/current-LRU block 中已测量 entry 相对默认估值的
+delta；passive block eviction 时一并删除明细，并把样本吸收到按 entry kind/group level 划分的常量大小 HeightEstimator。
+prefix sum 与 offset-to-slot 查询为 O(log M)，M 受 cache/pin 上限约束。不能从 slot 0 循环累计到 FirstScrollingSlot，也不能为
+所有访问过或尚未加载的行建立 Fenwick array。RowDetails 的显式展开状态和高度以 row key 保存，属于用户产生的稀疏状态，
+container recycle 后仍归属于正确业务行。
+
+`RowDetailsVisibilityMode.Visible` 或声明式 select-all 导致的批量 details 可见性必须通过 count × DetailsHeightEstimate 纳入
+基础 extent，不能枚举所有 row key；只有已测量差值和显式单行 override 进入稀疏索引。
+
+所有 height、extent、Maximum、ViewportSize 和 offset 运算必须保持 finite、非负并使用 checked/clamped 边界。测量值修正估值
+时，以首个完整可见 entry key + intra-row offset 作为 scroll anchor，避免 thumb 抖动和内容跳行。
+
+成功提交新 Query 或 PageWindow 后垂直 offset 明确归零；GroupExpansion 变化时保持被操作 group header 的屏幕 Y 锚点；
+Source.Invalidated 时优先按首行 key 恢复，无法解析才使用合法的最近 slot。水平 column virtualization、冻结列和
+DataGridCellsPresenter 的可见列计算不在此重构中改变。
+
+### 9.5 Block、预取和 pin 策略
 
 ```text
 blockSize = clamp(source.Schema.PreferredRangeSize, 32, source.Schema.MaximumRangeSize)
-visibleTarget = visible range + one viewport before + one viewport after
-request range = block-aligned missing intervals inside visibleTarget
+visibleRange = planner 计算出的实际视口覆盖
+prefetchRange = visibleRange + one viewport before + one viewport after
+request ranges = block-aligned missing intervals inside prefetchRange
 ```
 
 初次布局尚无精确 viewport 时从 0 请求一个 block。每个 block 状态为 Missing、Queued、Loading 或 Ready；同一
 revision/generation/block 最多存在一个请求。
 
 新 generation 在 snapshot 尚未建立时只发一个 bootstrap block；取得 snapshot id 后，其余请求全部携带
-ExpectedSnapshot，再把并发提升到默认上限 2。当前可见缺口优先，其次按滚动方向预取。快速滚动时取消完全离开保留窗口
-的请求；Source 即使忽略 Cancellation，迟到结果仍被代际校验丢弃。
+ExpectedSnapshot，再把并发提升到默认上限 2。visible 缺口优先，其次按滚动方向预取。快速滚动时取消完全离开保留窗口的
+请求；Source 即使忽略 Cancellation，迟到结果仍被代际校验丢弃。
 
-缓存使用有界 LRU，默认保留至少当前 visible target 和相邻若干 block。具体 block 数通过性能测试确定，不能根据
-`TotalEntryCount` 扩张。被 presentation snapshot 引用的 block 在 snapshot 释放前不能回收。
+UI 提交只等待 visibleRange 完整覆盖，前后 prefetch 不得增加首屏或滚动提交延迟。缓存使用有界 LRU，默认保留 committed
+visible blocks 与相邻若干 block；具体 block 数通过性能测试确定，不能根据 TotalEntryCount 扩张。被 realized/edit/drag
+container 或 applied snapshot 引用的 block 必须 pin，owner 释放前不能 eviction；其余 block 按 LRU 回收。
 
-### 9.3 原子提交
+### 9.6 原子提交与容器回收
 
-Query 或 generation 变化时创建 pending snapshot。覆盖当前可见区的所有目标 block 到齐且合同验证通过后，先根据结果 total
-计算合法 PageWindow/scroll bounds；若需要 clamp，则丢弃该 pending presentation、递增 generation 并只请求最终窗口，不能先
-提交一个瞬时空页。无需 clamp 时，UI 线程一次性：
+Query 或 generation 变化时创建 pending snapshot。visibleRange block 到齐且合同验证通过后，先根据结果 total 计算合法
+PageWindow/scroll bounds；若需要 clamp，则丢弃该 pending presentation、递增 generation 并只请求最终窗口，不能先提交一个
+瞬时空页。无需 clamp 时，UI 线程一次性：
 
-1. 交换 applied snapshot；
-2. 更新 AppliedQuery、snapshot id、TotalEntryCount 和 TotalItemCount；
-3. 提交已验证的页码、GroupExpansion 和滚动位置；
-4. 按 row key 恢复 current/selection；
-5. 复用或回收已实现 row；
-6. 更新 empty/loading/pagination 状态；
-7. 请求一次必要布局。
+1. pin 新 visible blocks；
+2. 交换 applied snapshot 与 CommittedViewport；
+3. 更新 AppliedQuery、snapshot id、TotalEntryCount、WindowDataCount 和 TotalItemCount；
+4. 提交已验证的页码、GroupExpansion、scroll anchor 和 offset；
+5. 按 row key 恢复 current/selection/row-details state；
+6. 对离开 viewport 的 container 执行完整 detach/reset，再按 entry kind 复用给进入 viewport 的 slot；
+7. 更新 empty/loading/pagination 状态；
+8. unpin/evict 不再引用的旧 blocks；
+9. 只请求一次必要布局。
 
-不能先清空 rows、再逐 block 插入导致闪烁，也不能对每个 entry 发全局 Reset。相同 Query 下滚动到新范围时只更新进入或
-离开 viewport 的 containers。
+不能先清空 rows、再逐 block 插入导致闪烁，也不能对每个 entry 发全局 Reset。相同 Query 下滚动只更新进入或离开 viewport
+的 containers。prefetch/overscan 只缓存 entry，不预先创建 control；realized container 数必须受
+`visible rows + 至多一个 editing row + 至多一个 drag row` 约束，不能随滚动距离或 TotalEntryCount 累积。
 
-### 9.4 分页
+### 9.7 分页
 
 PageIndex/PageSize 是 DataGrid viewport 状态，不进入 Query。DataGrid 将其转换为请求携带的 PageWindow：
 
@@ -675,9 +800,9 @@ PageWindow.DataCount = PageSize
 ```
 
 Range 随后相对当前 PageWindow 的 display entries 从 0 开始。普通未分组结果的 display range 与页内 data range 相同；
-分组 Source 负责按“filter -> sort -> page data rows -> group page -> apply collapsed group keys -> flatten visible entries”的
-固定顺序返回当前页的 display entries。结果分别报告 Query 命中的全局 `TotalDataCount` 和当前页 collapse/flatten 后的
-`TotalEntryCount`。
+分组 Source 负责按“filter -> stable order by Groups then Sorts -> page data rows -> insert group headers for page -> apply
+collapsed group keys -> flatten visible entries”的固定顺序返回当前页的 display entries。结果分别报告 Query 命中的全局
+`TotalDataCount` 和当前页 collapse/flatten 后的 `TotalEntryCount`。
 
 PageIndex 或 PageSize 变化会递增 DataGeneration、取消旧页请求并以新的 PageWindow 创建 pending snapshot；它不改变 Query，
 不触发 QueryChanged。Query 改变时 PageIndex 在启动请求前同步归零，因此只产生 page 0 的一个 generation。若结果表明当前
@@ -708,8 +833,8 @@ API 接收普通 `Func<T, TKey>`，不是 expression tree；FieldId 由调用方
 3. 排序只排列 index；
 4. range fetch 通过 index 读取原始 source item 并建立小型 entry buffer。
 
-复合 comparer 按 Query.Sorts 顺序调用强类型 field comparer；所有字段相等时以原 source ordinal 作最终比较，因此
-即使底层 `Array.Sort` 不稳定，结果仍具有确定的稳定顺序。
+复合 comparer 先按 Query.Groups、再按 Query.Sorts 调用强类型 field comparer；所有字段相等时
+以原 source ordinal 作最终比较，因此即使底层 `Array.Sort` 不稳定，结果仍具有确定的稳定顺序。
 
 分组查询先复用 filter/sort index projection；PageWindow 非 null 时先切出页内 index slice，再只为该 slice 生成只读
 group tree，应用 GroupExpansion 后扁平化。连续窗口才在完整 projection 上建立可按 entry range 定位的 group directory。
@@ -784,8 +909,8 @@ interval/key 数增长，与总行数无关。
 
 状态失效规则固定如下：
 
-- PageWindow、GroupExpansion 和纯 Groups 变化不改变业务行 identity，保留 selection。
-- 纯 Sorts 变化保留 AllMatchingQuery，但清理普通 index interval；ExplicitKeys 保留。
+- PageWindow、GroupExpansion 不改变业务行 identity/order，完整保留 selection。
+- 纯 Sorts 或 Groups 变化保留 AllMatchingQuery 和 ExplicitKeys，但清理依赖旧 DataIndex 顺序的普通 index interval。
 - Filters 变化清理 AllMatchingQuery、全部 interval 和 ExcludedKeys，ExplicitKeys 保留但只在同 key 再次出现时显示。
 - Source.Invalidated 清理普通 index interval；AllMatchingQuery 继续表示当前 filter membership 的全部匹配行，ExplicitKeys
   保留。
@@ -830,11 +955,14 @@ DataGrid 在提交前验证：
 
 - Source、revision、generation、range、snapshot 是否匹配。
 - start、entry count、total counts 是否满足精确切片公式。
-- entry kind、key、item/group payload 是否合法。
+- entry kind、key、item/group payload、WindowDataIndex/DataIndex 映射是否合法。
 - 当前活动窗口 cache 中 row/group key 是否分别重复。
-- 相同 snapshot 的 TotalDataCount，以及相同 `(snapshot, PageWindow, GroupExpansion)` 的 TotalEntryCount 是否一致。
+- 相同 snapshot 的 TotalDataCount、相同 `(snapshot, PageWindow)` 的 WindowDataCount，以及相同
+  `(snapshot, PageWindow, GroupExpansion)` 的 TotalEntryCount 是否一致。
 
 合同错误包装为 `DataGridSourceContractException`，进入 Error，永不部分提交，也不吞异常。
+连续模式的 data/display count 无法用 int 精确表示时，Source 抛出 `DataGridPresentationLimitExceededException`；这是可操作的
+模式错误，LoadError 必须包含“启用分页或缩小 Query”的诊断，不得截断 total 或让 int 溢出。
 
 ### 13.2 生命周期配对
 
@@ -891,6 +1019,10 @@ Source replacement 是完整事务：
 | Ready state visual nodes | 不增加 |
 | local sort | 只排序 index projection；不重新物化完整 object list |
 | UI thread | 不执行远端 I/O，不执行大集合 O(N log N) sort |
+| Measure/Arrange Source 调用 | 0 次 fetch、0 次等待、0 次 range buffer 分配 |
+| realized row/group controls | 不超过 visible + edit/drag pin 上限；prefetch 不创建 control，滚动后不累积 |
+| 大跨度 offset 定位 | 固定行高 O(1)，可变行高 O(log M)，禁止从 slot 0 线性扫描 |
+| prefetch | 不阻塞 visible commit，不触发布局或 Loading 视觉 |
 
 不能在没有基线和重复测量时声明具体时间百分比。实施阶段必须用相同样本策略给出 before/after mean、median、P95、
 allocation 和结构计数。
@@ -907,10 +1039,11 @@ DataGrid 主文件保留 public/protected contract 和生命周期入口；稳�
 DataGrid.cs                         public contract + lifecycle
 DataGrid.Query.cs                   query commit and visual projection
 DataGrid.RangeLoading.cs            viewport -> coordinator integration
+DataGrid.Virtualization.cs          desired/committed viewport + container bridge
 Data/Query/*                        immutable values and validation
 Data/Source/*                       public source/schema/result contracts
 Data/Source/Local/*                 typed local source and projection
-Data/Virtualization/*               cache, snapshot and logical metrics
+Data/Virtualization/*               PresentationIndex, block cache, snapshot and sparse height metrics
 ```
 
 文件按 ownership 拆分，不按 public/private 或任意行数拆分。
@@ -942,11 +1075,13 @@ Data/Virtualization/*               cache, snapshot and logical metrics
 
 该改造按可独立证明的阶段实施，每阶段保持可构建，并在最终切换前不删除旧实现：
 
-1. **基线与合同冻结**：跑全量测试、DataGrid Gallery 视觉基线和性能基线；补现有排序/分页/过滤/分组/选择行为表。
+1. **基线与合同冻结**：跑全量测试、DataGrid Gallery 视觉基线和性能基线；补现有排序/分页/过滤/分组/选择以及虚拟化
+   行为表，记录 realized controls、extent、offset、slot 和滚动链基线。
 2. **纯模型**：实现 FieldId、Scalar、Query、schema、range/result 与纯策略测试，不接 UI。
 3. **协调器**：用 deterministic fake Source 覆盖 revision、generation、取消、迟到结果、snapshot、错误和 cache。
 4. **LocalSource**：实现 typed descriptor、index projection、稳定复合排序、过滤、分组和 observable invalidation。
-5. **内部 presentation path**：让 DataGrid rows/viewport 读取 range snapshot；保留 ready-state layout/theme contract。
+5. **内部 presentation path**：实现 int PresentationIndex、Desired/CommittedViewport、sparse height metrics 和 cache-only
+   container bridge；让 rows/viewport 读取 range snapshot，保留现有 container pools、水平虚拟化和 ready-state layout/theme。
 6. **Query UI**：接入 column/header/cell/filter/group，移除 per-cell sort subscription，保持现有伪类与主题。
 7. **selection/mutation/paging**：迁移 row-key selection/current、编辑、key-relative move 和上下 Pagination。
 8. **单路切换**：迁移 Gallery、性能场景和测试到 Source；删除 ItemsSource/CollectionView 数据执行路径及旧 API。
@@ -961,7 +1096,7 @@ Data/Virtualization/*               cache, snapshot and logical metrics
 ### 17.1 Query 纯逻辑
 
 - default ImmutableArray 归一、空 Query 单例、结构 equality/hash。
-- 非法/重复 field、operator、sort、group 和可变 filter value 被拒绝。
+- 非法/重复 field、operator、sort、group、group/sort 交叉字段和可变 filter value 被拒绝。
 - 单列方向循环、单方向列、多列 Shift、删除中间优先级、强制 Replace/Append。
 - 等价 Query no-op。
 - QueryChanged 时机、reason、revision 和同步重入。
@@ -969,11 +1104,12 @@ Data/Virtualization/*               cache, snapshot and logical metrics
 
 ### 17.2 Source 合同
 
-- 空数据、短尾页、range 超过尾部、long start、非法 count。
+- 空数据、短尾页、range 超过尾部、接近 int.MaxValue 的 start、非法 count。
 - start/count/total/snapshot 不一致均产生合同错误且不部分提交。
-- 同 snapshot 的 TotalDataCount 恒定，同 snapshot/window/expansion 的 TotalEntryCount 恒定，row/group key 分域唯一，
-  data/group payload 合法。
+- 同 snapshot 的 TotalDataCount、同 snapshot/window 的 WindowDataCount、同 snapshot/window/expansion 的
+  TotalEntryCount 恒定，row/group key 分域唯一，data/group payload 合法。
 - PageWindow 与 Range 的索引空间不混用；collapsed group 的后代不出现在 display range。
+- WindowDataIndex 在分组插入 header、collapse 产生间隙和跨 range 拼接时仍与 DataIndex 精确对应。
 - Source 同步完成、异步完成、后台线程完成、取消前后完成。
 - Invalidated、Source replacement、detach/reattach 的订阅数量和释放。
 
@@ -1013,7 +1149,27 @@ Data/Virtualization/*               cache, snapshot and logical metrics
 - reorder capability、取消、异常、source replacement 和 key-relative target。
 - group header、row details、frozen columns、column resize/reorder 与 range recycle 共存。
 
-### 17.6 视觉和输入
+### 17.6 虚拟化正确性
+
+- 0/1/短尾/int.MaxValue 边界下，SlotCount 精确等于 TotalEntryCount，IChildIndexProvider count 精确等于
+  WindowDataCount；分组时 Slot/Row.Index 映射正确，超界明确失败。
+- RowsPresenter.Children、row/group 回收池和 passive height-delta 条目峰值受 viewport/cache/pin 上限约束，往返滚动
+  10,000 次后不增长。
+- 给 Source 加调用探针，Measure/Arrange/container prepare/recycle 内 fetch 次数和同步等待次数必须为 0。
+- fixed height 的 offset<->slot 精确往返；variable height 的误差随测量收敛，offset 单调且首行 intra-offset 合法。
+- 小滚轮、大滚轮、触控惯性、scrollbar line/page、thumb track、Home/End/PageUp/PageDown、ScrollIntoView 全部覆盖。
+- 快速拖 thumb 产生 N 个 desired viewport 时只提交最后仍有效的目标；旧 range 不重绑任何 container。
+- cache miss 保留旧 committed rows；成功后一次交换，失败后恢复旧 offset/slot，不出现 null row、重复 row 或闪白 Reset。
+- cache eviction 不回收 realized/edit/drag 所 pin 的 block；container detach/reset 后没有旧 DataContext、状态、订阅或 RowDetails。
+- 自动行高、展开 RowDetails、排序/过滤后归零、invalidation anchor 恢复、底部 extent 修正和 thumb 稳定性。
+- group collapse/expand 改变 TotalEntryCount 后 slot 连续、header anchor 稳定，collapsed descendants 不生成 container。
+- 冻结列、水平滚动和列虚拟化的 realized cell 数与改造前一致；竖向 range 提交不全量重建 cells。
+- 保持 DataGrid 自身垂直滚动条可见性、内部滚动和边界处向外层 ScrollViewer 的滚动链；不能靠移除高度/overflow 规避。
+
+现有 `DataGridDetailExpanderColumnRecycleTests` 中 offset、extent、首行余量、向上/向下回收和 RowDetails 状态用例必须原样
+迁移并通过；只能增加断言，不能以新虚拟化为由删除或放宽。
+
+### 17.7 视觉和输入
 
 Ready 状态用基线截图和结构断言覆盖：
 
@@ -1028,7 +1184,7 @@ Ready 状态用基线截图和结构断言覆盖：
 
 Ready 状态非预期 pixel diff 为失败；不得用更新 golden 掩盖差异。异步新增状态只允许在设计明确的 Spin 区域出现差异。
 
-### 17.7 性能
+### 17.8 性能
 
 新增 DataGrid Regression.md 和可重复 benchmark：
 
@@ -1036,11 +1192,16 @@ Ready 状态非预期 pixel diff 为失败；不得用更新 golden 掩盖差异
 - 100 万逻辑远端行：首次 visible load、连续滚动、快速跳转、Q1/Q2 竞争。
 - 10/100/1000 已实现 cells 的订阅数：sort subscription 必须为 0。
 - block request 数、最大并发、cache peak entries、eviction。
+- 1,000,000 个 active entries 下滚到 90%/底部的 offset-to-slot 成本和 UI stall；不得出现 O(firstSlot) 扫描。
+- 冷/热 range 命中时的 realized row/group/cell 峰值、layout pass 数、Source fetch-in-layout 计数。
 - DataGrid.Basic、Filter、RowGroups、GalleryShape 的 before/after cold 和 repeated 指标。
 
-任何主要 Ready/Gallery 指标回退都必须定位、修复或回滚，不能用远端能力收益抵消普通 DataGrid 回退。
+实施前对同一 baseline commit 连续运行至少 10 轮，先冻结机器噪声区间和 non-inferiority 判定，再测试新实现；阈值不能在看到
+新结果后放宽。Ready local 场景的 realized control 数、订阅数和稳态 allocation 是结构性硬门槛，不允许增加；时间指标的
+置信区间必须落在预先冻结的 non-inferiority 区间内。任何主要 Ready/Gallery 指标回退都必须定位、修复或回滚，不能用远端
+能力收益抵消普通 DataGrid 回退。
 
-### 17.8 最终命令门禁
+### 17.9 最终命令门禁
 
 实施开始前先保存全量基线；完成后至少执行：
 
@@ -1065,7 +1226,7 @@ git diff --check
 Gallery 增加一个稳定 fake-remote ShowCase，不能依赖网络：
 
 - 逻辑总数至少 100,000，但内存只生成请求 range。
-- 显示当前 Query.Sorts、请求 range、revision、generation 和取消次数。
+- 显示当前 Query.Sorts、desired/committed viewport、请求 range、revision、generation、cache hit、realized row 数和取消次数。
 - 提供可控延迟、失败一次和乱序完成开关，用于人工验证 latest-wins 与 rollback。
 - 展示空 Source 仍可排序、Shift 多排序、分页和快速滚动。
 - 使用稳定 SourceKey，进入 LLMS 示例来源。
@@ -1091,9 +1252,12 @@ Gallery 增加一个稳定 fake-remote ShowCase，不能依赖网络：
 5. `dotnet test AtomUI.slnx` 全量零失败，DataGrid 性能状态验证通过。
 6. Ready 状态视觉矩阵无非预期差异，加载状态只出现设计允许的 Spin 差异。
 7. 本地排序不反射、不复制完整 object list；远端路径不请求全部数据。
-8. cache、请求、订阅和 Source 生命周期全部有界并通过 detach/re-template 验证。
-9. Release analyzer、完整 AOT/Trim 注册验证和真实 Gallery NativeAOT publish + startup smoke 通过。
-10. DataGrid 文档、Gallery、LLMS 输入和性能报告与最终 public contract 一致。
+8. Source long data index 与 UI int presentation slot 无溢出、截断或混用，IChildIndexProvider 报告精确。
+9. Measure/Arrange 零 Source I/O；大跨度滚动无 O(firstSlot) 扫描，realized containers 不随总数或滚动次数增长。
+10. 自动行高、RowDetails、分组折叠、滚动锚点、水平虚拟化和嵌套滚动链回归矩阵全部通过。
+11. cache、请求、订阅和 Source 生命周期全部有界并通过 detach/re-template 验证。
+12. Release analyzer、完整 AOT/Trim 注册验证和真实 Gallery NativeAOT publish + startup smoke 通过。
+13. DataGrid 文档、Gallery、LLMS 输入和性能报告与最终 public contract 一致。
 
 该门禁不能证明软件在数学意义上“绝无 bug”，但它把逻辑正确性、视觉一致性、并发安全、资源释放和性能都转化为
 可执行的设计不变量与验收证据；任何一项缺失都不以“基本完成”收尾。
