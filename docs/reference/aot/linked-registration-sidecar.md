@@ -10,6 +10,8 @@
 - NuGet 位置：`buildTransitive/AtomUI.LinkedRegistration/`。
 - ProjectReference 位置：项目 `obj` 输出，由 MSBuild target item 传递。
 - ProjectReference 旁路缺失时，consumer 直接从引用 assembly 的 metadata 记录提取 Sidecar 到自身 `obj`（见 `ExtractedManifest`）。
+- 预编译消费 DLL 没有正式 Sidecar 时，consumer 可从其 AssemblyRef/IL 恢复 Sidecar 到自身 `obj`（见
+  `ExtractedConsumerAssembly`）。
 - 不作为 `EmbeddedResource`、`Content`、runtime asset 或 publish asset。
 
 Producer 必须使用结构化 JSON writer。Consumer 必须使用结构化 parser；不得用正则或字符串切割解析。
@@ -145,15 +147,19 @@ Fallback record 包含：
 - `StaleSidecar`
 - `AnalysisBudgetExceeded`
 - `ExtractedManifest`
+- `ExtractedConsumerAssembly`
 
-Fallback 只能扩大保留范围。Consumer 不得忽略未知必需 reason，也不得把 fallback 降级为 Exact。例外有两个：
+Fallback 只能扩大保留范围。Consumer 不得忽略未知必需 reason，也不得把 fallback 降级为 Exact。以下三类有专门语义：
 
 - `DynamicInvocation`：提示性记录，Consumer 不扩大保留范围，只报告 `ATOMUILINK010` 警告，由显式
   `AtomUIRegistrationUnitRoot` / `AtomUIPackageRoot` 覆盖。
 - `ExtractedManifest`：consumer 从普通构建的 ProjectReference assembly metadata 提取的 Sidecar 标记。
   Package/Unit 清单完整，但 C# UnitEdge 只由 linked 库构建计算，所以 Consumer 必须对相关 Package 扩大为
-  full fallback，且不产生任何诊断。要获得完整裁剪，发布时以全局属性传入 `-p:PublishAot=true` /
-  `-p:PublishTrimmed=true` / `-p:AtomUILinkedPublish=true`，让引用库自行产出完整 Sidecar。
+  full fallback，且不产生任何诊断。要获得完整裁剪，让引用库作为当前 linked publish 图中的 ProjectReference 重新构建并产出
+  companion Sidecar；AtomUI targets 会自动传播内部 linked context。
+- `ExtractedConsumerAssembly`：consumer 从普通预编译 DLL 恢复的证据。Build Task 只扫描直接引用已知 control package assembly
+  的候选；每个相关 Package 产生 `PackageRoot`，IL 中直接命中已声明 entry method 才产生 `Entry`。Consumer 必须 full fallback
+  且不产生动态代码诊断；没有 Entry 时由 `ATOMUILINK008` 阻止构建。
 
 ## 确定性
 

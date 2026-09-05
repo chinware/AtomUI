@@ -17,6 +17,14 @@
             Condition="'$(AtomUILinkedSidecarOutputPath)' == ''">$(TargetPath).atomui-link.json</AtomUILinkedSidecarOutputPath>
     </PropertyGroup>
 
+    <ItemGroup Condition="'$(AtomUILinkedPublish)' == 'true' and '@(_AtomUIProjectReferenceLinkedContextApplied)' == ''">
+        <ProjectReference Update="@(ProjectReference->WithMetadataValue('OutputItemType', ''))">
+            <AdditionalProperties>%(ProjectReference.AdditionalProperties);AtomUILinkedPublish=true;AtomUIRegistrationPlanOwner=false</AdditionalProperties>
+            <AtomUILinkedContextApplied>true</AtomUILinkedContextApplied>
+        </ProjectReference>
+        <_AtomUIProjectReferenceLinkedContextApplied Include="$(MSBuildThisFileFullPath)" />
+    </ItemGroup>
+
     <ItemGroup>
         <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="AtomUIAxamlUsage" />
         <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="AtomUILinkedSidecar" />
@@ -30,6 +38,21 @@
                AssemblyFile="$(AtomUIBuildTasksAssembly)" />
     <UsingTask TaskName="AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask"
                AssemblyFile="$(AtomUIBuildTasksAssembly)" />
+    <UsingTask TaskName="AtomUI.Build.Tasks.DiscoverLinkedRegistrationConsumerReferencesTask"
+               AssemblyFile="$(AtomUIBuildTasksAssembly)" />
+
+    <Target Name="AtomUIApplyLinkedContextToTransitiveProjectReferences"
+            BeforeTargets="AssignProjectConfiguration"
+            DependsOnTargets="IncludeTransitiveProjectReferences"
+            Condition="'$(AtomUILinkedPublish)' == 'true' and '$(TargetFramework)' != ''">
+        <ItemGroup>
+            <ProjectReference Update="@(ProjectReference)"
+                              Condition="'%(ProjectReference.OutputItemType)' == '' and '%(ProjectReference.AtomUILinkedContextApplied)' != 'true'">
+                <AdditionalProperties>%(ProjectReference.AdditionalProperties);AtomUILinkedPublish=true;AtomUIRegistrationPlanOwner=false</AdditionalProperties>
+                <AtomUILinkedContextApplied>true</AtomUILinkedContextApplied>
+            </ProjectReference>
+        </ItemGroup>
+    </Target>
 
     <Target Name="CollectAtomUIProjectReferenceSidecars"
             BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;CoreCompile"
@@ -97,8 +120,46 @@
             <Output TaskParameter="CanonicalSidecars"
                     ItemName="_AtomUICanonicalLinkedSidecar" />
         </AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask>
+        <!--
+            A precompiled consumer DLL cannot participate in ProjectReference context
+            propagation. Limit IL inspection to references that directly name a known
+            control-package assembly, then recover conservative PackageRoot and Entry
+            evidence into a build-only Sidecar.
+        -->
+        <AtomUI.Build.Tasks.DiscoverLinkedRegistrationConsumerReferencesTask
+            ReferencePaths="@(_AtomUILinkedReferencePath)"
+            CatalogSidecars="@(_AtomUICanonicalLinkedSidecar)"
+            Condition="'@(_AtomUICanonicalLinkedSidecar)' != '' and Exists('$(AtomUIBuildTasksAssembly)')">
+            <Output TaskParameter="ConsumerReferences"
+                    ItemName="_AtomUILinkedConsumerReference" />
+        </AtomUI.Build.Tasks.DiscoverLinkedRegistrationConsumerReferencesTask>
+        <AtomUI.Build.Tasks.GenerateLinkedRegistrationSidecarTask
+            AssemblyPath="%(_AtomUILinkedConsumerReference.Identity)"
+            OutputPath="$(IntermediateOutputPath)AtomUIRecoveredConsumerSidecars/%(_AtomUILinkedConsumerReference.AtomUILinkedAssemblyName).atomui-link.json"
+            TargetFramework="$(TargetFramework)"
+            CatalogSidecars="@(_AtomUICanonicalLinkedSidecar)"
+            ExtractConsumerUsage="true"
+            Condition="'@(_AtomUILinkedConsumerReference)' != '' and Exists('$(AtomUIBuildTasksAssembly)')">
+            <Output TaskParameter="SidecarPath"
+                    ItemName="_AtomUIRecoveredConsumerLinkedSidecar" />
+        </AtomUI.Build.Tasks.GenerateLinkedRegistrationSidecarTask>
         <ItemGroup>
-            <AdditionalFiles Include="@(_AtomUICanonicalLinkedSidecar)"
+            <_AtomUILinkedSidecarFinalCandidate
+                Include="@(_AtomUICanonicalLinkedSidecar)" />
+            <_AtomUILinkedSidecarFinalCandidate
+                Include="@(_AtomUIRecoveredConsumerLinkedSidecar)"
+                AtomUILinkedSidecarSource="MetadataExtraction" />
+            <FileWrites Include="@(_AtomUIRecoveredConsumerLinkedSidecar)" />
+        </ItemGroup>
+        <AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask
+            SidecarCandidates="@(_AtomUILinkedSidecarFinalCandidate)"
+            ReferencePaths="@(_AtomUILinkedReferencePath)"
+            Condition="Exists('$(AtomUIBuildTasksAssembly)')">
+            <Output TaskParameter="CanonicalSidecars"
+                    ItemName="_AtomUIFinalCanonicalLinkedSidecar" />
+        </AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask>
+        <ItemGroup>
+            <AdditionalFiles Include="@(_AtomUIFinalCanonicalLinkedSidecar)"
                              AtomUILinkedSidecar="true"
                              Visible="false" />
         </ItemGroup>

@@ -29,6 +29,14 @@ public sealed class GenerateLinkedRegistrationSidecarTask : ITask
     /// </summary>
     public bool ExtractedFallback { get; set; }
 
+    /// <summary>
+    /// When true, recover conservative PackageRoot and registration Entry evidence from
+    /// the IL of an ordinary precompiled consumer assembly.
+    /// </summary>
+    public bool ExtractConsumerUsage { get; set; }
+
+    public ITaskItem[] CatalogSidecars { get; set; } = [];
+
     [Output]
     public string SidecarPath { get; private set; } = string.Empty;
 
@@ -75,6 +83,25 @@ public sealed class GenerateLinkedRegistrationSidecarTask : ITask
                 return LogError(error);
             }
             sidecar.Assembly.TargetFramework = TargetFramework.Trim();
+            if (ExtractConsumerUsage)
+            {
+                if (!LinkedRegistrationPackageCatalogReader.TryRead(
+                        CatalogSidecars.Select(GetItemPath),
+                        out var catalog,
+                        out error) ||
+                    !LinkedRegistrationAssemblyUsageExtractor.TryExtract(
+                        peReader,
+                        reader,
+                        catalog,
+                        out var extractedUsages,
+                        out var extractedFallbacks,
+                        out error))
+                {
+                    return LogError(error);
+                }
+                sidecar.Usages = sidecar.Usages.Concat(extractedUsages).ToArray();
+                sidecar.Fallbacks = sidecar.Fallbacks.Concat(extractedFallbacks).ToArray();
+            }
             if (ExtractedFallback && sidecar.Packages.Length != 0)
             {
                 sidecar.Fallbacks = sidecar.Fallbacks
@@ -87,6 +114,19 @@ public sealed class GenerateLinkedRegistrationSidecarTask : ITask
                         Column = 0
                     }))
                     .ToArray();
+            }
+            if (ExtractedFallback &&
+                sidecar.Packages.Length == 0 &&
+                sidecar.Usages.Length == 0 &&
+                sidecar.Fallbacks.Length == 0)
+            {
+                var emptyOutputPath = Path.GetFullPath(OutputPath);
+                if (File.Exists(emptyOutputPath))
+                {
+                    File.Delete(emptyOutputPath);
+                    WroteFile = true;
+                }
+                return true;
             }
             var bytes = LinkedRegistrationSidecarCodec.Write(sidecar);
             if (analysisBudgetExceeded ||
@@ -372,6 +412,12 @@ public sealed class GenerateLinkedRegistrationSidecarTask : ITask
     {
         var normalized = source.Replace('\\', '/');
         return Path.IsPathRooted(normalized) ? Path.GetFileName(normalized) : normalized;
+    }
+
+    private static string GetItemPath(ITaskItem item)
+    {
+        var fullPath = item.GetMetadata("FullPath");
+        return Path.GetFullPath(string.IsNullOrWhiteSpace(fullPath) ? item.ItemSpec : fullPath);
     }
 
     private static bool IsAssemblyMetadataAttribute(MetadataReader reader, EntityHandle constructor)

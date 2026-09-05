@@ -149,7 +149,7 @@ public sealed class LinkedRegistrationPublishFixturesTests
         source.ShouldContain("AtomUILinkedPublish=true");
         source.ShouldContain("AtomUIEmitVerificationPlan=true");
         source.ShouldContain("verify_minimal_plan");
-        source.ShouldContain("GeneratedRegistrationUnit_Button_");
+        source.ShouldContain("GeneratedRegistrationUnit_Buttons_");
         source.ShouldContain("GeneratedRegistrationUnit_Space_");
         source.ShouldContain("for forbidden_unit in DropdownButton SplitButton Flyouts Menu TreeView Dialog Tooltip DatePicker");
         source.ShouldContain("GeneratedRegistrationUnit_${forbidden_unit}_");

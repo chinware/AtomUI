@@ -342,7 +342,7 @@ public sealed class LinkedRegistrationBuildAssetsTests
                          "AtomUILinkedSidecarSource");
         var resolvers = collectTarget.Descendants("AtomUI.Build.Tasks.ResolveLinkedRegistrationSidecarCandidatesTask")
                                      .ToArray();
-        resolvers.Length.ShouldBe(2);
+        resolvers.Length.ShouldBe(3);
         resolvers.ShouldAllBe(element =>
             (string?)element.Attribute("ReferencePaths") == "@(_AtomUILinkedReferencePath)");
         collectTarget.Descendants("Output")
@@ -351,7 +351,7 @@ public sealed class LinkedRegistrationBuildAssetsTests
                          (string?)element.Attribute("ItemName") == "_AtomUICanonicalLinkedSidecar");
         collectTarget.Descendants("AdditionalFiles")
                      .ShouldContain(element =>
-                         (string?)element.Attribute("Include") == "@(_AtomUICanonicalLinkedSidecar)");
+                         (string?)element.Attribute("Include") == "@(_AtomUIFinalCanonicalLinkedSidecar)");
         getTarget.Attribute("DependsOnTargets").ShouldBeNull();
         getTarget.Descendants("_AtomUILinkedRegistrationSidecarTargetOutput")
                  .ShouldAllBe(element =>
@@ -405,7 +405,8 @@ public sealed class LinkedRegistrationBuildAssetsTests
                     (string?)element.Attribute("ItemName") == "_AtomUILinkedExtractableReference");
 
         var extraction = collectTarget.Descendants("AtomUI.Build.Tasks.GenerateLinkedRegistrationSidecarTask")
-                                      .ShouldHaveSingleItem();
+                                      .Single(element =>
+                                          (string?)element.Attribute("ExtractedFallback") == "true");
         ((string?)extraction.Attribute("ExtractedFallback")).ShouldBe("true");
         ((string?)extraction.Attribute("ContinueOnError")).ShouldBe("WarnAndContinue");
         var outputPath = (string?)extraction.Attribute("OutputPath");

@@ -239,12 +239,9 @@ public sealed class ApplicationRegistrationPlanGenerator : IIncrementalGenerator
                                               .ThenBy(static item => item.Column)
                                               .ThenBy(static item => item.Reason, StringComparer.Ordinal))
         {
-            // ExtractedManifest marks a consumer-extracted ProjectReference Sidecar: the plan
-            // already widened to full fallback, and the delivery mode is not a code problem.
-            if (string.Equals(
-                    fallback.Reason,
-                    LinkedRegistrationProtocol.FallbackReasonExtractedManifest,
-                    StringComparison.Ordinal))
+            // Build-time extraction fallbacks already widened the plan. They describe how
+            // evidence was delivered, not a dynamic-code problem in the application.
+            if (IsBuildTimeExtractionFallback(fallback.Reason))
             {
                 continue;
             }
@@ -402,6 +399,18 @@ public sealed class ApplicationRegistrationPlanGenerator : IIncrementalGenerator
             descriptor.Description,
             descriptor.HelpLinkUri,
             descriptor.CustomTags.ToArray());
+    }
+
+    private static bool IsBuildTimeExtractionFallback(string reason)
+    {
+        return string.Equals(
+                   reason,
+                   LinkedRegistrationProtocol.FallbackReasonExtractedManifest,
+                   StringComparison.Ordinal) ||
+               string.Equals(
+                   reason,
+                   LinkedRegistrationProtocol.FallbackReasonExtractedConsumerAssembly,
+                   StringComparison.Ordinal);
     }
 
     private static DiagnosticDescriptor GetFallbackDescriptor(bool strict, DiagnosticDescriptor descriptor)

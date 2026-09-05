@@ -21,4 +21,8 @@ internal static class LinkedRegistrationProtocol
     // computed by linked library builds. The plan must widen to full fallback for these
     // packages, and the reason is never surfaced as a diagnostic.
     internal const string FallbackReasonExtractedManifest = "ExtractedManifest";
+    // Sidecar reconstructed from the IL of an ordinary precompiled consumer assembly.
+    // The entry call is recoverable, but its complete control usage is not, so the plan
+    // conservatively keeps the referenced package without surfacing a code warning.
+    internal const string FallbackReasonExtractedConsumerAssembly = "ExtractedConsumerAssembly";
 }

@@ -15,4 +15,6 @@ internal static class LinkedRegistrationAnalysisBudget
     internal const int MaxTotalSidecarBytes = 32 * 1024 * 1024;
     internal const int MaxAxamlUsageBytes = 4 * 1024 * 1024;
     internal const int MaxAxamlCandidates = 50_000;
+    internal const int MaxConsumerAssemblyMethods = 100_000;
+    internal const int MaxConsumerAssemblyIlBytes = 64 * 1024 * 1024;
 }

@@ -31,6 +31,8 @@ public sealed class AotTrimRegistrationPlanRegistryTests : IDisposable
                 provider));
 
         exception.Message.ShouldContain("AtomUI.Desktop.Controls");
+        exception.Message.ShouldContain("ProjectReference");
+        exception.Message.ShouldContain("precompiled library");
         exception.Message.ShouldContain("AtomUIPackageRoot");
     }
 
@@ -82,6 +84,8 @@ public sealed class AotTrimRegistrationPlanRegistryTests : IDisposable
 
         exception.Message.ShouldContain(provider.Id);
         exception.Message.ShouldContain("UseXxxControls");
+        exception.Message.ShouldContain("ProjectReference");
+        exception.Message.ShouldContain("precompiled library");
         exception.Message.ShouldContain("AtomUIPackageRoot");
     }
 

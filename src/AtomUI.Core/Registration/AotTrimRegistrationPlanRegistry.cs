@@ -71,8 +71,11 @@ public static class AotTrimRegistrationPlanRegistry
         string reason)
     {
         return new InvalidOperationException(
-            $"{reason} '{packageId}'. Ensure the package's UseXxxControls() registration entry is invoked. " +
-            $"For compile-time unknown usage, add <AtomUIPackageRoot Include=\"{packageId}\" /> to the application project.");
+            $"{reason} '{packageId}'. Ensure the package's UseXxxControls() registration entry is visible " +
+            "from the application or a ProjectReference rebuilt with the linked publish graph. " +
+            "For a precompiled library, rebuild it with the current publish graph or upgrade to a version " +
+            "that carries linked-registration evidence. Only for genuinely compile-time unknown dynamic " +
+            $"control usage, add <AtomUIPackageRoot Include=\"{packageId}\" /> to the application project.");
     }
 
     private sealed record RegistrationPlanEntry(

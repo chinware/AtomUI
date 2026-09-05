@@ -101,6 +101,11 @@ MSBuild 必须在创建 linked AdditionalFiles、运行 AXAML usage task 和注�
 - 不向 incremental graph 提供 Compilation、SyntaxProvider 或 AdditionalTexts linked input。
 - 不因为项目是 Exe、存在 AXAML 或引用 AtomUI Package 而推断开启。
 
+linked 应用进入该模式后，`AtomUILinkedPublish=true` 与 `AtomUIRegistrationPlanOwner=false` 通过
+`ProjectReference.AdditionalProperties` 递归传给源码引用。传播既覆盖 evaluation 时已经声明的直接引用，也覆盖 SDK 在
+`IncludeTransitiveProjectReferences` 中展开的传递引用；analyzer 引用被排除，`PublishAot`、`RuntimeIdentifier`、`SelfContained`
+等最终产物属性不向类库传播。这样类库只贡献 usage sidecar，不会成为第二个 Application Plan owner。
+
 ## 5. Sidecar Manifest
 
 ### 5.1 资产边界
@@ -111,20 +116,24 @@ Sidecar 是纯编译资产：
 - Package 自己的 `<PackageId>.targets` 只在 linked build 中把它加入 `AdditionalFiles`。
 - linked ProjectReference 在程序集复制到 `TargetPath` 后生成 `<TargetPath>.atomui-link.json`；消费项目从已解析
   `ReferencePath` 的 companion 路径收集它，不递归调用 ProjectReference target。
-- companion Sidecar 缺失时（引用库是普通构建，例如 `PublishAot`/`PublishTrimmed` 只在应用项目局部设置），消费项目直接从
-  引用 assembly 的 metadata 记录提取 Sidecar 到自身 `obj`。普通库构建始终包含 Package/Unit/ControlMap/Axaml UnitEdge
+- companion Sidecar 缺失时（例如 `BuildProjectReferences=false`、`--no-build` 或复用旧的普通构建产物），消费项目直接从引用
+  assembly 的 metadata 记录提取 Sidecar 到自身 `obj`。普通库构建始终包含 Package/Unit/ControlMap/Axaml UnitEdge
   记录，但 C# UnitEdge 只由 linked 库构建计算，所以提取的 Sidecar 对每个 Package 附加 `ExtractedManifest` fallback：
-  Application Plan 对该 Package 保持 full fallback，且不产生诊断。publish 时以全局属性传入
-  `-p:PublishAot=true` / `-p:PublishTrimmed=true` / `-p:AtomUILinkedPublish=true`，引用库即自行产出完整 Sidecar，
-  提取路径自动旁路。
+  Application Plan 对该 Package 保持 full fallback，且不产生诊断。正常源码 ProjectReference 会自动接收 linked context 并产出
+  companion Sidecar；显式全局属性仍只保留给内部验证使用。
+- 对不能随当前项目图重编译、也没有正式 Sidecar 的预编译消费 DLL，先用 AssemblyRef 表筛出直接引用已知 control package
+  assembly 的候选，再读取其方法体 IL。每个相关 Package 产生 `PackageRoot`；`call`、`callvirt`、`ldftn` 或 `ldvirtftn`
+  精确命中 Sidecar 声明的 entry method 时产生 `Entry`。结果带 `ExtractedConsumerAssembly` fallback，使用 full registrar 且
+  不发动态代码警告；只有 PackageRoot 而没有 Entry 时由 `ATOMUILINK008` 在编译期失败。
 - `CopyToOutputDirectory`、`CopyToPublishDirectory` 均为 `Never`。
 - 不作为 EmbeddedResource，不进入运行时程序集、应用输出或 publish 目录。
 
-Sidecar 交付存在三种来源，但不代表三种来源都可以同时生效：
+Sidecar 交付存在四种路径，但不代表它们可以同时声明同一程序集：
 
 1. NuGet `buildTransitive` 正式 Sidecar。
 2. linked ProjectReference 输出旁的 companion Sidecar。
 3. 普通 ProjectReference 缺少 companion 时从 assembly metadata 提取的 `ExtractedManifest` fallback。
+4. 普通预编译消费 DLL 从 AssemblyRef/IL 恢复的 `ExtractedConsumerAssembly` fallback。
 
 消费端不能用 `ReferencePath` DLL 旁是否存在文件作为唯一判断。NuGet 正式 Sidecar 与 DLL 物理位置不同，必须先解析已经
 导入的 Package/companion Sidecar，再决定是否提取 fallback。
@@ -136,10 +145,12 @@ MSBuild/Build Task 的 Sidecar 收集必须产出一个带来源的 candidate ca
 ```text
 Package Sidecar ───────┐
 Project companion ─────┼─> identity + contractHash resolution ─> canonical Sidecars
-Metadata extraction ───┘                                      └─> AdditionalFiles
+Metadata extraction ───┘                                      │
+                                                              ├─> consumer discovery + IL recovery
+Recovered consumer ───────── final identity/hash resolution ──┴─> AdditionalFiles
 ```
 
-解析必须在 `ResolveReferences` 之后按两阶段执行：
+解析必须在 `ResolveReferences` 之后按以下阶段执行：
 
 1. 以最终 `ReferencePath` 为程序集全集，收集并解析 Package 与 ProjectReference companion 正式 Sidecar。
 2. 将正式 candidate 的 `assembly.name` 与实际解析引用绑定，并验证 Sidecar protocol 与 `contractHash` 自身完整性；未绑定到
@@ -147,7 +158,10 @@ Metadata extraction ───┘                                      └─> Ad
    字符串完全相同。
 3. 对同一实际引用的正式 candidates 先执行同身份、同 hash 折叠和异 hash 冲突检查。
 4. 只对没有正式 candidate 的实际引用执行 metadata extraction，并将提取结果标记为最低来源。
-5. 输出每个实际引用唯一的 canonical Sidecar，再一次性加入 `AdditionalFiles`。
+5. 用 canonical Package 清单筛选没有正式 Sidecar、且直接引用已知 Package assembly 的普通消费 DLL；从 IL 恢复其
+   PackageRoot/Entry 证据。
+6. 将恢复的 consumer Sidecar 再做一次 identity/hash resolution，输出每个实际引用唯一的 canonical Sidecar，最后一次性加入
+   `AdditionalFiles`。
 
 解析不变量如下：
 
@@ -157,8 +171,8 @@ Metadata extraction ───┘                                      └─> Ad
 - 已由正式 Sidecar 声明的程序集不得再次生成 `ExtractedManifest`。
 - `AdditionalFiles` 只接受 canonical 结果；不得先把所有来源注入 `AdditionalFiles`，再依赖 Generator 兜底去重。
 
-Build Task 可以读取 Sidecar 的强类型 Manifest 来建立身份表，但不得扫描应用运行时程序集或构造运行时发现路径。提取
-fallback 仍然只用于“引用输出没有正式 Sidecar”的普通类库，并继续触发对应 Package full fallback。
+Build Task 可以读取 Sidecar 的强类型 Manifest，并在构建期检查经过 AssemblyRef 过滤的普通引用程序集；不得在应用运行时扫描
+程序集或构造运行时发现路径。提取 fallback 只用于没有正式 Sidecar 的输入，并继续触发对应 Package full fallback。
 
 ### 5.3 记录模型
 
@@ -310,6 +324,7 @@ Sidecar 不进入运行时。`UseXxxControls()` 仍拥有 Package Core、Provide
 | 无法静态解析的 C# 动态创建 | 不扩大保留范围，报告 `ATOMUILINK010` 警告，由显式 root 覆盖 |
 | sidecar 缺失、陈旧或无法绑定 | 当前相关 Package full registrar |
 | Package 或 companion 已提供同程序集正式 Sidecar | 禁止再次生成 `ExtractedManifest` |
+| 预编译消费 DLL 从 AssemblyRef/IL 恢复（`ExtractedConsumerAssembly`） | 对应 Package full registrar，不产生诊断；缺 Entry 时 `ATOMUILINK008` |
 | 同程序集 Sidecar 同 hash | 合并为一个 canonical Sidecar |
 | 同程序集 Sidecar hash 冲突 | 构建 Error，并报告全部来源 |
 | 未知 protocol major | 构建 Error |
@@ -345,6 +360,9 @@ Warning 必须包含 Package、reason 和可定位的输入身份。不能只报
 | NuGet package Sidecar + `PublishAot=true` | 不生成同程序集 extraction，构建不报 `ATOMUILINK005` |
 | NuGet package Sidecar + `PublishTrimmed=true` | 与 NativeAOT 使用相同 canonical resolution |
 | ProjectReference companion 缺失 | 生成唯一 `ExtractedManifest`，相关 Package full fallback 且无诊断 |
+| 三层源码 ProjectReference，发布属性只写在 Host 项目中 | linked context 递归传播，Feature usage 进入 Host plan |
+| 预编译消费 DLL 调用 Package entry | 生成 Entry + PackageRoot，full fallback，Host 运行成功 |
+| 预编译消费 DLL 引用 Package 但未调用 entry | `ATOMUILINK008` 报告消费 DLL 文件名 |
 | companion 与 Package Sidecar 同身份同 hash | 只传递 companion canonical input |
 | 多个包传递同身份同 hash Sidecar | 最终 `AdditionalFiles` 只有一份 |
 | 同身份不同 hash | `ATOMUILINK005` 报告程序集、来源路径和 hash |

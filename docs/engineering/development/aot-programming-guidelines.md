@@ -292,12 +292,15 @@ Package、Unit、ControlMap 或 full fragment metadata。
 Attribute，不要为了让 Common 参与应用计划而复制 `UseDesktopControls()` 的方法 identity，也不要引入跨 Package Unit 闭包。
 
 类库只在被 linked 应用作为 ProjectReference 构建或执行 NuGet Pack 时生成 Usage Sidecar。普通 Debug/Release 必须跳过 usage
-分析和 Sidecar 生成。应用侧编译时如果 ProjectReference 旁路没有 Sidecar，consumer 直接从引用 assembly 的 metadata 记录提取
-（普通库构建始终包含 Package/Unit/ControlMap/Axaml UnitEdge 记录），用于诊断与入口校验；提取的 Sidecar 带
-`ExtractedManifest` fallback 标记，相关 Package 在 Application Plan 中保持 full fallback，不产生诊断。要获得 Unit 级裁剪，
-publish 时以全局属性传入 `-p:PublishAot=true` / `-p:PublishTrimmed=true`（命令行全局属性沿 ProjectReference 流动，引用库
-自行启用 linked 构建并产出含 C# UnitEdge 的完整 Sidecar）；如果应用在项目文件里局部设置这些属性，则 publish 时补传
-`-p:AtomUILinkedPublish=true`。缺失或无法验证的 Sidecar 不能解释为没有 usage，只能让相关 Package full fallback。
+分析和 Sidecar 生成。应用在项目文件内设置 `PublishAot`、`PublishTrimmed` 或 `RunAOTCompilation` 后，AtomUI targets 自动把
+`AtomUILinkedPublish=true`、`AtomUIRegistrationPlanOwner=false` 沿直接和传递 ProjectReference 递归传播；不要要求用户补传内部
+属性，也不要把 `PublishAot`、RID、SelfContained 传播给类库。analyzer 类型 ProjectReference 必须排除。
+
+如果 ProjectReference companion 仍缺失，consumer 从 package producer assembly 的 metadata 提取清单；结果带
+`ExtractedManifest`，相关 Package full fallback 且不产生诊断。对于不能随图重编译的普通预编译 DLL，只扫描直接引用已知
+control package assembly 的候选，通过 IL `call`/`callvirt`/`ldftn`/`ldvirtftn` 恢复 entry，并为相关 Package 产生
+`PackageRoot` 与 `ExtractedConsumerAssembly`。恢复路径始终 full fallback；只有 PackageRoot 没有 Entry 时必须用
+`ATOMUILINK008` 报告消费 DLL。缺失或无法验证的 Sidecar 不能解释为没有 usage。
 `ATOMUILINK002`、`ATOMUILINK007` 和 `ATOMUILINK010` 只在 linked publish 或显式 `AtomUIRegistrationStrict=true` 验证中显示；strict 模式用于
 CI 把自动 full fallback 或未覆盖的动态创建提升为 error。`ATOMUILINK010` 不触发 full fallback，只提示用显式 root 覆盖。
 
@@ -312,6 +315,8 @@ CI 把自动 full fallback 或未覆盖的动态创建提升为 error。`ATOMUIL
 - 同身份同 hash 可以折叠为一份；同身份不同 hash 必须失败并报告来源，不能随机保留第一份。
 - 已有正式 Package/companion Sidecar 的程序集禁止再次生成 `ExtractedManifest`；普通 ProjectReference 缺失 companion 时仍须保留
   extraction fallback。
+- `ExtractedConsumerAssembly` 只用于没有正式 Sidecar 的预编译消费 DLL；它必须同时经过最终 canonical resolution，不能覆盖或
+  合并掉正式 consumer Sidecar。
 
 任何新增 Sidecar、consumer target、Pack asset 或 extraction 逻辑，都必须同时验证 NuGet、ProjectReference、混合引用和重复传递
 包场景。不要在 Generator 中吞掉重复声明，也不要通过关闭 extraction、修改文件名或 suppress `ATOMUILINK005` 掩盖来源冲突。

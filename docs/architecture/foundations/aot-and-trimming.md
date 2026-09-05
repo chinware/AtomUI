@@ -174,6 +174,7 @@ dynamic、reflection、Loose AXAML 和插件输入触发 Package fallback。
 | 同程序集 Sidecar 身份相同且 `contractHash` 相同 | 合并为一个 canonical Sidecar |
 | 同程序集 Sidecar `contractHash` 不同 | 构建 Error，报告来源冲突 |
 | ProjectReference Sidecar 由 consumer 从普通构建的 assembly metadata 提取（`ExtractedManifest`） | 对应 Package full registrar，不产生诊断 |
+| 预编译消费 DLL 由 consumer 从 AssemblyRef/IL 恢复（`ExtractedConsumerAssembly`） | 对应 Package full registrar，不产生诊断；没有入口调用时构建失败 |
 | 分析预算超限 | 对应 Package full registrar |
 | 未知 protocol major | 构建 Error |
 | Fragment symbol 不存在 | 构建 Error |

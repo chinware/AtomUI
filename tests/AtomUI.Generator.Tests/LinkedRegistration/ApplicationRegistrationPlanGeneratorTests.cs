@@ -227,6 +227,41 @@ public sealed class ApplicationRegistrationPlanGeneratorTests
     }
 
     [Fact]
+    public void Extracted_Consumer_Assembly_Fallback_Widens_Without_A_Diagnostic()
+    {
+        var desktop = PlanGeneratorTestHost.StandardDesktopPackage();
+        var extractedConsumer = UsageGeneratorTestHost.CreateManifestReference(
+            "Consumer.ExtractedAssembly",
+            new LinkedUsageManifestRecord(
+                LinkedUsageKind.PackageRoot,
+                "AtomUI.Desktop.Controls",
+                "Consumer.dll",
+                0,
+                0),
+            new LinkedUsageManifestRecord(
+                LinkedUsageKind.Entry,
+                "AtomUI.Desktop.Controls",
+                "Consumer.dll",
+                0,
+                0),
+            new LinkedFallbackManifestRecord(
+                "AtomUI.Desktop.Controls",
+                LinkedRegistrationProtocol.FallbackReasonExtractedConsumerAssembly,
+                "Consumer.dll",
+                0,
+                0));
+
+        var result = PlanGeneratorTestHost.Run(string.Empty, [desktop, extractedConsumer]);
+        var planSource = result.PlanSource.ShouldNotBeNull();
+
+        planSource.ShouldContain("global::GeneratedDesktopFullFragment.Register(");
+        result.Diagnostics.ShouldNotContain(static diagnostic =>
+            diagnostic.Id == "ATOMUILINK002" ||
+            diagnostic.Id == "ATOMUILINK007" ||
+            diagnostic.Id == "ATOMUILINK010");
+    }
+
+    [Fact]
     public void Explicit_Unit_And_Package_Roots_Select_Precise_And_Full_Plans()
     {
         var desktop = PlanGeneratorTestHost.StandardDesktopPackage();

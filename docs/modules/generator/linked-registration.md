@@ -135,6 +135,10 @@ MSBuild 传入的重复 Sidecar；如果同一程序集的多个候选未经解�
 - 同身份同 hash 的候选可以折叠，但最终只保留一个 canonical input。
 - 同身份不同 hash 不能静默选择，必须报告所有来源和冲突 hash。
 - 已有正式 Package/companion Sidecar 的程序集不允许再次生成 `ExtractedManifest`。
+- linked 应用的源码 ProjectReference 自动接收 `AtomUILinkedPublish=true` 和 `AtomUIRegistrationPlanOwner=false`；传播同时覆盖
+  evaluation direct refs 与 SDK 展开的 transitive refs，并排除 analyzer refs。
+- 没有正式 Sidecar 的预编译消费 DLL 先按 AssemblyRef 过滤，再从 IL entry call 恢复 `PackageRoot`/`Entry`，并以
+  `ExtractedConsumerAssembly` 标记 full fallback。只有 PackageRoot 没有 Entry 时报告 `ATOMUILINK008`。
 
 这个契约保证 Generator 看到的是“每个程序集一个 Manifest”，同时保留普通 ProjectReference 缺少 companion 时的 full fallback
 兼容路径。路径名、包目录和 DLL 相邻文件关系只能作为候选发现线索，不能作为最终身份判断。

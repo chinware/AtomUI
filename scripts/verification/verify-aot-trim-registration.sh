@@ -172,7 +172,7 @@ verify_minimal_plan() {
         return 1
     fi
 
-    grep -q 'GeneratedRegistrationUnit_Button_' "$plan"
+    grep -q 'GeneratedRegistrationUnit_Buttons_' "$plan"
     grep -q 'GeneratedRegistrationUnit_Space_' "$plan"
 
     local forbidden_unit
