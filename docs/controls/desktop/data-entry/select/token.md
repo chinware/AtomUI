@@ -47,9 +47,14 @@ SelectToken 不承载以下状态：
 - `MultiModePadding`
 - `MultiModePaddingSM`
 - `MultiModePaddingLG`
+- `MultiModePrefixIndent`
+- `MultiModePrefixIndentSM`
+- `MultiModePrefixIndentLG`
 - `SelectAffixPadding`
 
 这些 Token 控制 Select 输入区域和多选内容区域的 padding。单选模式主要使用输入框默认内容布局；多选和 Tags 模式根据是否已有选中项切换普通 padding 与 multi mode padding。
+
+`MultiModePadding*` 的左值服务于标签区域（较小的起点），`MultiModePrefixIndent*` 作为 `PART_ContentLeftAddOn`（prefix）的额外左 Margin，使多选 / Tags 模式下有选中项时 prefix 的左内缩与单选模式一致（对齐 Ant Design：selector 小左内缩 + prefix 自身 margin 补偿）。两者之和等于对应尺寸的单选水平内边距。
 
 `SizeType=Custom` 在主题中与 `Middle` 共享 `Padding` 和 `MultiModePadding` 分支。它不是独立 Token 组。
 

@@ -3,6 +3,11 @@
 本文档记录 Cascader 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-09-05
+
+- Theme
+  - Apply the reused SelectToken `MultiModePrefixIndent*` values as the extra left `Margin` of `PART_ContentLeftAddOn` in `CascaderAddOnDecoratedBoxTheme` for `IsMultiple=True` with a non-empty selection, aligning the multiple-mode prefix with the single-mode horizontal padding (same fix as Select / TreeSelect).
+
 ## 2026-08-25
 
 - Docs
