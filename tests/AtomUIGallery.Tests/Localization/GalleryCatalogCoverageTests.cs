@@ -43,7 +43,7 @@ public class GalleryCatalogCoverageTests
             .OrderBy(static type => type.FullName, StringComparer.Ordinal)
             .ToArray();
 
-        catalogTypes.Length.ShouldBe(93);
+        catalogTypes.Length.ShouldBe(94);
         var memberOrderBaseline = LoadCatalogMemberOrderBaseline();
         memberOrderBaseline.Keys.ShouldBe(
             catalogTypes.Select(static type => type.FullName!),
@@ -68,7 +68,7 @@ public class GalleryCatalogCoverageTests
                       type.Name == "en_US" || type.Name == "zh_CN" || type.Name == "zh_TW");
 
         var files = LoadLanguageFiles(catalogTypes);
-        files.Length.ShouldBe(359);
+        files.Length.ShouldBe(363);
         files.GroupBy(static file => file.CatalogType)
              .ShouldAllBe(static group => group.Count() == 3 || group.Count() == 4);
         AssertXliffContracts(catalogTypes, files);
