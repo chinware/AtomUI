@@ -150,7 +150,7 @@ Cascader 继承 `AbstractSelect` 的输入表面契约：
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:37`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:107`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -171,7 +171,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 默认值
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:59`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:129`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -193,7 +193,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 悬停展开
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:188`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:258`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -215,7 +215,7 @@ Gallery key：`ExamplesContent` / item `3`
 
 ### 禁用选项
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:211`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader/Views/CascaderShowCase.axaml:281`
 
 Gallery key：`ExamplesContent` / item `4`
 
@@ -366,6 +366,7 @@ Token 来源：
 
 - 源设计文档：`docs/controls/desktop/data-entry/cascader/overview.md`
 - 实现文档：`docs/controls/desktop/data-entry/cascader/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-entry/cascader/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-entry/cascader/token.md`
 - 变更记录：`docs/controls/desktop/data-entry/cascader/changelog.md`
 - 语义结构：`./semantic-cn.md`

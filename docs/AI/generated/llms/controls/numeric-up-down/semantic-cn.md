@@ -205,6 +205,7 @@ NumericUpDown
               -> IconButton#PART_IncreaseButton (template-stable)
            -> DockPanel (template-stable)
               -> ContentPresenter (internal-observable)
+              -> ContentPresenter (internal-observable)
   -> NumericUpDown (control theme, NumericUpDownTheme.axaml)
      -> NumericUpDownSpinner#PART_Spinner (template-stable)
         -> DockPanel (template-stable)

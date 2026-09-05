@@ -4,13 +4,60 @@
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+AutoComplete 家族有三个 public owner：`AutoComplete`、`AutoCompleteSearchEdit` 与 `AutoCompleteTextArea`。三者
+声明完全相同的 9 个语义键：`root`、`prefix`、`content`、`placeholder`、`input`、`clear`、`popup.root`、
+`popup.list`、`popup.listItem`（与上游 AutoComplete 的语义 DOM 对齐，`popup.*` 对应上游 `popup`
+分组的 `root` / `list` / `listItem`）。声明位于各 owner 同目录的 `*.SemanticParts.cs` partial 文件。
+
+前 6 个宿主部件位于输入框模板内，且全部声明 `CrossNestedOwners=true`：`AutoCompleteSearchEdit` /
+`AutoCompleteTextArea` 内嵌 `LineEdit` / `TextArea` 输入控件，宿主部件的 marker 由嵌套输入控件自身模板携带，
+路由通过 `.semantic-scope-input` / `.semantic-scope-input-frame` scope 锚点从 owner 穿透到嵌套控件模板
+（`/template/` 链不能直接跨越嵌套 owner，因此这些 Part 由生成 Style 借助 scope 路由命中）。弹层三部件
+（`popup.root` / `popup.list` / `popup.listItem`）位于 owner 自有的 Popup 模板内，不涉及嵌套 owner。
+
+各 Part 的 Selector、SelectorRoute、ContractType 以 `AutoComplete.SemanticParts.cs` 为准；下表为 owner
+`AutoComplete` 的声明（SearchEdit / TextArea 声明同键，route 差异见 §1.2）：
+
+### 1.1 部件表（`AutoComplete`）
+
+| Part | SelectorClass | SelectorRoute | ContractType | Cardinality | Since |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `AutoComplete` | 数据录入控件根语义区域，承载 public API、值状态、验证状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `input` | `输入或编辑区域` | 承载用户输入、当前值、占位、格式化或只读状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `trigger` | `触发区域` | 承载清除、展开、提交、步进、上传或辅助操作。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `popup` | `弹层或候选区域` | 承载下拉、候选项、日历、颜色面板或异步内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `validation` | `校验反馈区域` | 承载 Form、status、错误、警告、help 或 loading 状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `root` | 不适用（owner 本身，无 marker） | 不适用 | `AutoComplete` | Single | 6.0 |
+| `prefix` | `.semantic-prefix` | `/template/ .semantic-scope-input >> .semantic-scope-input-frame /template/ .semantic-scope-prefix > .semantic-prefix` | `ContentPresenter` | Single | 6.0 |
+| `content` | `.semantic-content` | `/template/ .semantic-scope-input /template/ .semantic-content` | `Panel` | Single | 6.0 |
+| `placeholder` | `.semantic-placeholder` | `/template/ .semantic-scope-input /template/ .semantic-content > .semantic-placeholder` | `TextBlock` | Single | 6.0 |
+| `input` | `.semantic-input` | `/template/ .semantic-scope-input /template/ .semantic-input` | `TextPresenter` | Single | 6.0 |
+| `clear` | `.semantic-clear` | `/template/ .semantic-scope-input >> .semantic-scope-input-frame /template/ .semantic-scope-suffix > .semantic-suffix > .semantic-clear` | `Button` | Single | 6.0 |
+| `popup.root` | `.semantic-popup-root` | `/template/ .semantic-popup-root` | `Border` | Single | 6.0 |
+| `popup.list` | `.semantic-popup-list` | `/template/ .semantic-popup-root > .semantic-popup-list` | `CandidateList` | Single | 6.0 |
+| `popup.listItem` | `.semantic-popup-list-item` | `/template/ .semantic-popup-list >> .semantic-popup-list-item` | `CandidateListItem` | Multiple | 6.0 |
+
+`prefix`、`content`、`placeholder`、`input`、`clear` 均声明 `CrossNestedOwners=true`；`popup.listItem` 声明
+`RuntimeCreated=true`（候选条目运行时创建）。
+
+### 1.2 嵌套输入控件 owner 的 route 差异
+
+`AutoCompleteSearchEdit` 与 `AutoCompleteTextArea` 的声明与 §1.1 同键同 ContractType，仅两处 route 不同：
+
+- `AutoCompleteSearchEdit.prefix`：输入框 frame 由 SearchEdit 主题承担，route 为
+  `/template/ .semantic-scope-input >> .semantic-scope-input-frame /template/ .semantic-scope-prefix > .semantic-prefix`。
+- `AutoCompleteTextArea.input`：文本域的可编辑区域 marker 为 `.semantic-textarea`，SelectorRoute 为
+  `/template/ .semantic-scope-input /template/ .semantic-textarea`（SelectorClass 仍为 `semantic-input`，
+  Part 身份与生成 Style 类型保持 `input` 命名）。
+
+其余键（含 `clear`、`popup.*`）三个 owner 完全一致。
+
+### 1.3 职责说明
+
+- `root`：AutoComplete owner 本身，承载数据源、过滤、弹层与状态的组织边界，可定制 owner 级视觉属性。
+- `prefix`：输入框框架的前缀区域（`ContentLeftAddOn` 宿主）。
+- `content`：输入内容面板，承载文本呈现器与占位符。
+- `placeholder`：输入为空时显示的占位符文本。
+- `input`：可编辑输入区域的 `TextPresenter`。
+- `clear`：后缀区域的清除按钮，`IsAllowClear` 启用且有输入时可见（`ClearIcon` 可定制）。
+- `popup.root`：候选弹层根 `Border`，可定制弹层边框、背景与宽度。
+- `popup.list`：弹层内候选列表容器（`CandidateList`）。
+- `popup.listItem`：单个候选条目（`CandidateListItem`），每个选项运行时创建一个实例。
 
 ## Abstract AXAML Structure
 
@@ -165,3 +212,4 @@ AutoComplete Token 只表达组件级视觉变量，例如尺寸、间距、颜�
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
+- Semantic Part marker、selector class、route、`ContractType` 与 cardinality（见 [AutoComplete Semantic Part 契约](semantic-part.md)）；宿主部件 marker 由嵌套输入控件模板携带，跨 owner 回收路径不泄漏 marker。
