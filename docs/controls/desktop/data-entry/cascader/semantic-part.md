@@ -7,7 +7,7 @@
 
 ## 1. Semantic Parts
 
-Cascader 是唯一 Semantic owner，公开 13 个 Semantic Part（与 Ant Design Cascader 的 Semantic Part
+Cascader 是唯一 Semantic owner，公开 13 个 Semantic Part（与上游 Cascader 的 Semantic Part
 语义对齐：`item` / `itemContent` / `itemRemove` 对应上游多选标签的 `item` 分组，`popup.*` 对应上游
 `popup` 分组的 `root` / `list` / `listItem`）。声明位于 `Cascader.SemanticParts.cs` partial 文件。
 

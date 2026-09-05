@@ -4,7 +4,7 @@
 
 该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。`AbstractSelect` 提供 public `IsPopupPinnedOpen`：设置为 true 时保持 `IsDropDownOpen` 并 relay 到 `PART_Popup`；Cascader 在弹层打开前依据钉住状态抑制 light-dismiss 遮罩，取消钉住后恢复模板默认值，使 Gallery 语义预览等场景可以持续展示 `popup.*` 部件。控件卸载、锚点失效、TopLevel 改变和模板重建仍按共享生命周期规则清理。
 
-Cascader 公开 13 个 Semantic Part（`root`、`prefix`、`content`、`placeholder`、`input`、`suffix`、`clear`、`item`、`itemContent`、`itemRemove`、`popup.root`、`popup.list`、`popup.listItem`），与 Ant Design Cascader 的 Semantic Part 语义对齐；完整 Part 表、Selector 用法与定制边界见 [Cascader Semantic Part 契约](semantic-part.md)。
+Cascader 公开 13 个 Semantic Part（`root`、`prefix`、`content`、`placeholder`、`input`、`suffix`、`clear`、`item`、`itemContent`、`itemRemove`、`popup.root`、`popup.list`、`popup.listItem`），与上游 Cascader 的 Semantic Part 语义对齐；完整 Part 表、Selector 用法与定制边界见 [Cascader Semantic Part 契约](semantic-part.md)。
 
 ## 1. 控件定位
 

@@ -5,11 +5,11 @@
 [AutoComplete 桌面版实现原理](implementation.md)，系统级规则见
 [AtomUI Semantic Part 系统设计](../../../../architecture/systems/theming/semantic-parts.md)。
 
-## 1. Owner 与 Part 总览
+## 1. Semantic Parts 总览
 
 AutoComplete 家族有三个 public owner：`AutoComplete`、`AutoCompleteSearchEdit` 与 `AutoCompleteTextArea`。三者
 声明完全相同的 9 个语义键：`root`、`prefix`、`content`、`placeholder`、`input`、`clear`、`popup.root`、
-`popup.list`、`popup.listItem`（与上游 Ant Design AutoComplete 的语义 DOM 对齐，`popup.*` 对应上游 `popup`
+`popup.list`、`popup.listItem`（与上游 AutoComplete 的语义 DOM 对齐，`popup.*` 对应上游 `popup`
 分组的 `root` / `list` / `listItem`）。声明位于各 owner 同目录的 `*.SemanticParts.cs` partial 文件。
 
 前 6 个宿主部件位于输入框模板内，且全部声明 `CrossNestedOwners=true`：`AutoCompleteSearchEdit` /
