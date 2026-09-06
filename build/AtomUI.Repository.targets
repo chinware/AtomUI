@@ -39,6 +39,39 @@
 
     <Import Project="$(MSBuildThisFileDirectory)AtomUI.Generator.targets" />
 
+    <Target Name="AtomUICleanTestResultsBeforeRun"
+            BeforeTargets="VSTest"
+            Condition="'$(IsTestProject)' == 'true'">
+        <ItemGroup>
+            <_AtomUITestResultsDirectoryToCleanBeforeRun Include="$(MSBuildProjectDirectory)/TestResults"
+                                                         Condition="Exists('$(MSBuildProjectDirectory)/TestResults')" />
+            <_AtomUITestResultsDirectoryToCleanBeforeRun Include="$(AtomUITestResultsDirectory)"
+                                                         Condition="'$(AtomUITestResultsDirectory)' != '' and Exists('$(AtomUITestResultsDirectory)')" />
+        </ItemGroup>
+        <RemoveDir Directories="@(_AtomUITestResultsDirectoryToCleanBeforeRun)" />
+    </Target>
+
+    <Target Name="AtomUIRejectPersistentVSTestDumps"
+            BeforeTargets="VSTest"
+            Condition="'$(IsTestProject)' == 'true'">
+        <Error Condition="'$(VSTestBlameHangDumpType)' == 'full' or '$(VSTestBlameHangDumpType)' == 'mini'"
+               Text="AtomUI test runs must not collect persistent VSTest hang dumps. Use --blame-hang-dump-type none or move dump collection outside the repository." />
+        <Error Condition="'$(VSTestBlameCrashDumpType)' == 'full' or '$(VSTestBlameCrashDumpType)' == 'mini'"
+               Text="AtomUI test runs must not collect persistent VSTest crash dumps. Use --blame-crash-dump-type none or move dump collection outside the repository." />
+    </Target>
+
+    <Target Name="AtomUICleanTestResultsAfterRun"
+            AfterTargets="VSTest"
+            Condition="'$(IsTestProject)' == 'true'">
+        <ItemGroup>
+            <_AtomUITestResultsDirectoryToCleanAfterRun Include="$(MSBuildProjectDirectory)/TestResults"
+                                                        Condition="Exists('$(MSBuildProjectDirectory)/TestResults')" />
+            <_AtomUITestResultsDirectoryToCleanAfterRun Include="$(AtomUITestResultsDirectory)"
+                                                        Condition="'$(AtomUITestResultsDirectory)' != '' and Exists('$(AtomUITestResultsDirectory)')" />
+        </ItemGroup>
+        <RemoveDir Directories="@(_AtomUITestResultsDirectoryToCleanAfterRun)" />
+    </Target>
+
     <!-- Stage the AtomUI.Build.Tasks toolset next to the shadow assembly path used by the
          UsingTask registrations (see AtomUIBuildTasksAssembly in AtomUI.Repository.props).
          The destination directory embeds the source DLL's content key, so a rebuilt

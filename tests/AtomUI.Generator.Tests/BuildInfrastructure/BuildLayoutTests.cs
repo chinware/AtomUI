@@ -255,6 +255,96 @@ public sealed class BuildLayoutTests
     }
 
     [Fact]
+    public void Repository_Test_Runs_Clean_VSTest_Temporary_Results()
+    {
+        var outputPaths = XDocument.Load(GetRepoFile("build/OutputPaths.props"));
+        outputPaths.Descendants("AtomUITestResultsRoot")
+                   .ShouldHaveSingleItem()
+                   .Value.ShouldBe("$(MSBuildThisFileDirectory)../.artifacts/TestResults");
+        outputPaths.Descendants("AtomUITestResultsDirectory")
+                   .ShouldHaveSingleItem()
+                   .Value.ShouldBe("$(AtomUITestResultsRoot)/$(MSBuildProjectName)");
+        outputPaths.Descendants("VSTestResultsDirectory")
+                   .ShouldHaveSingleItem()
+                   .Value.ShouldBe("$(AtomUITestResultsDirectory)");
+
+        var repositoryTargets = XDocument.Load(GetRepoFile("build/AtomUI.Repository.targets"));
+        AssertTestResultsCleanupTarget(
+            repositoryTargets,
+            "AtomUICleanTestResultsBeforeRun",
+            "BeforeTargets",
+            "_AtomUITestResultsDirectoryToCleanBeforeRun");
+        AssertTestResultsCleanupTarget(
+            repositoryTargets,
+            "AtomUICleanTestResultsAfterRun",
+            "AfterTargets",
+            "_AtomUITestResultsDirectoryToCleanAfterRun");
+    }
+
+    [Fact]
+    public void Repository_Test_Runs_Forbid_Persistent_VSTest_Dumps()
+    {
+        var outputPaths = XDocument.Load(GetRepoFile("build/OutputPaths.props"));
+        var hangDumpType = outputPaths.Descendants("VSTestBlameHangDumpType")
+                                      .ShouldHaveSingleItem();
+        hangDumpType.Value.ShouldBe("none");
+        ((string?)hangDumpType.Attribute("Condition")).ShouldBe(
+            "'$(IsTestProject)' == 'true' and '$(VSTestBlameHang)' == 'true' and '$(VSTestBlameHangDumpType)' == ''");
+
+        var crashDumpType = outputPaths.Descendants("VSTestBlameCrashDumpType")
+                                       .ShouldHaveSingleItem();
+        crashDumpType.Value.ShouldBe("none");
+        ((string?)crashDumpType.Attribute("Condition")).ShouldBe(
+            "'$(IsTestProject)' == 'true' and '$(VSTestBlameCrash)' == 'true' and '$(VSTestBlameCrashDumpType)' == ''");
+
+        var repositoryTargets = XDocument.Load(GetRepoFile("build/AtomUI.Repository.targets"));
+        var guardTarget = repositoryTargets.Descendants("Target")
+                                           .Single(element =>
+                                               (string?)element.Attribute("Name") ==
+                                               "AtomUIRejectPersistentVSTestDumps");
+
+        ((string?)guardTarget.Attribute("BeforeTargets")).ShouldBe("VSTest");
+        ((string?)guardTarget.Attribute("Condition")).ShouldBe("'$(IsTestProject)' == 'true'");
+
+        var errors = guardTarget.Descendants("Error").ToArray();
+        errors.Length.ShouldBe(2);
+        errors.Select(element => (string?)element.Attribute("Condition"))
+              .ShouldBe([
+                  "'$(VSTestBlameHangDumpType)' == 'full' or '$(VSTestBlameHangDumpType)' == 'mini'",
+                  "'$(VSTestBlameCrashDumpType)' == 'full' or '$(VSTestBlameCrashDumpType)' == 'mini'"
+              ]);
+        errors.Select(element => (string?)element.Attribute("Text"))
+              .ShouldAllBe(text => text != null &&
+                                   text.Contains("must not collect persistent", StringComparison.Ordinal));
+    }
+
+    private static void AssertTestResultsCleanupTarget(
+        XDocument repositoryTargets,
+        string targetName,
+        string timingAttribute,
+        string itemName)
+    {
+        var cleanupTarget = repositoryTargets.Descendants("Target")
+                                             .Single(element =>
+                                                 (string?)element.Attribute("Name") == targetName);
+
+        ((string?)cleanupTarget.Attribute(timingAttribute)).ShouldBe("VSTest");
+        ((string?)cleanupTarget.Attribute("Condition")).ShouldBe("'$(IsTestProject)' == 'true'");
+
+        var directoriesToClean = cleanupTarget.Descendants(itemName)
+                                              .Select(element => (string?)element.Attribute("Include"))
+                                              .ToArray();
+        directoriesToClean.ShouldBe([
+            "$(MSBuildProjectDirectory)/TestResults",
+            "$(AtomUITestResultsDirectory)"
+        ]);
+
+        var removeDir = cleanupTarget.Descendants("RemoveDir").ShouldHaveSingleItem();
+        ((string?)removeDir.Attribute("Directories")).ShouldBe($"@({itemName})");
+        removeDir.Attribute("ContinueOnError").ShouldBeNull();
+    }
+
+    [Fact]
     public void Tool_Source_Files_Stay_Trackable_While_Tool_Build_Outputs_Are_Ignored()
     {
         IsIgnoredByGit("tools/AtomUI.Docs.LLMsGenerator/Program.cs").ShouldBeFalse();

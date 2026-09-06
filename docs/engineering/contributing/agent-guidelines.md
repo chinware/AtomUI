@@ -116,6 +116,10 @@ Gallery 改动时注意：
 - AOT、trim、发布配置、source generator 运行时注册：跑真实 NativeAOT publish。
 - 每次收尾都运行 `git diff --check`。
 
+测试运行产生的本地临时结果必须由仓库构建入口自动清理。不得在 `tests/**/TestResults`、`.artifacts/TestResults`
+或工作树副本中长期保留 VSTest 结果、hang dump、crash dump、coverage 临时文件等占用存储的测试产物；需要诊断 dump
+时必须将采集位置移出仓库，并在排障结束后主动清理。
+
 ### 回归测试范围（硬约束）
 
 - 新增、修改或删除代码后，如需执行回归测试，默认只运行与改动代码直接相关的模块回归测试，以及验证直接影响所必需的相邻模块测试。
