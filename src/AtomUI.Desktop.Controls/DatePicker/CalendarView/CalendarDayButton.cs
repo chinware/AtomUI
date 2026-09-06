@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using AtomUI.Animations;
 using AtomUI.Controls;
+using AtomUI.Generated.AtomUIDesktopControls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -288,6 +289,10 @@ internal sealed class CalendarDayButton : AvaloniaButton
     public CalendarDayButton()
     {
         //Focusable = false;
+        // CalendarDayButton 由 DatePicker 与 RangeDatePicker 两个 owner 的月网格共享;
+        // 两个 owner 的 popup.cell 生成常量值一致,构造期一次性注入 marker,
+        // 月网格 rebuild 与容器回收复用新实例时保持不变。
+        Classes.Add(DatePickerSemanticParts.PopupCellClass);
         SetCurrentValue(ContentProperty, DefaultContent.ToString(CultureInfo.InvariantCulture));
     }
 

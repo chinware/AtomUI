@@ -75,5 +75,20 @@ public enum DatePickerShowCaseLangResourceKind
     PageDescription,
     ComponentCategory,
     ComponentStatusStable,
-    ScenarioExamples
+    ScenarioExamples,
+    StyleClassTitle,
+    StyleClassDescription,
+    SemanticClearDescription,
+    SemanticInputDescription,
+    SemanticPopupBodyDescription,
+    SemanticPopupCellDescription,
+    SemanticPopupContainerDescription,
+    SemanticPopupContentDescription,
+    SemanticPopupFooterDescription,
+    SemanticPopupHeaderDescription,
+    SemanticPopupRootDescription,
+    SemanticPrefixDescription,
+    SemanticRootDescription,
+    SemanticSecondaryInputDescription,
+    SemanticSuffixDescription
 }

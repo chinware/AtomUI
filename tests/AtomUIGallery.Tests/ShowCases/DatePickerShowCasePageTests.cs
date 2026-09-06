@@ -23,7 +23,9 @@ public class DatePickerShowCasePageTests
         source.ShouldNotContain("Tag=\"Examples\"");
         source.ShouldNotContain("Tag=\"Api\"");
         source.ShouldNotContain("Tag=\"DesignToken\"");
-        source.ShouldContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldContain("<gallery:GalleryShowCaseHost");
+        source.ShouldNotContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldContain("<gallery:GalleryShowCaseHost.SemanticPartsContentTemplate>");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
         source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
@@ -63,7 +65,9 @@ public class DatePickerShowCasePageTests
             "DatePickerShowCaseLangResource BasicTitle",
             "DatePickerShowCaseLangResource SwitchableTitle",
             "DatePickerShowCaseLangResource BindingTitle");
-        source.ShouldContain("BadgeText=\"v6.0.8\"");
+        source.ShouldNotContain("BadgeText=\"v6.0.8\"");
+        source.ShouldNotContain("BadgeText=\"v6.0.7\"");
+        source.ShouldContain("BadgeText=\"{x:Static gallery:GalleryVersionInfo.DisplayVersion}\"");
         source.ShouldContain("DatePickerShowCaseLangResource PlacementTitle");
         source.ShouldContain("Name=\"PickerSizeTypeOptionGroup\"");
         source.ShouldContain("DatePickerShowCaseLangResource P2ContentCustom");
@@ -158,6 +162,41 @@ public class DatePickerShowCasePageTests
 
         NormalizeMarkup(ExtractDatePickerExampleItems(source))
             .ShouldBe(NormalizeMarkup(approved));
+    }
+
+    [Fact]
+    public void DatePicker_ShowCase_Exposes_Semantic_Parts_Tab_With_Version_Gated_Styling_Demo()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml");
+
+        source.ShouldContain("SemanticOwnerType=\"{x:Type atom:RangeDatePicker}\"");
+        source.ShouldContain("SemanticOwner=\"{Binding #DatePickerSemanticOwner}\"");
+        source.ShouldContain("IsPopupPinnedOpen=\"True\"");
+        source.ShouldContain("RangeStartSelectedDate=\"{Binding SemanticPreviewRangeStart}\"");
+        source.ShouldContain("RangeEndSelectedDate=\"{Binding SemanticPreviewRangeEnd}\"");
+        foreach (var partPath in new[]
+                 {
+                     "root", "prefix", "input", "secondaryInput", "suffix", "clear",
+                     "popup.root", "popup.container", "popup.header", "popup.body",
+                     "popup.content", "popup.cell", "popup.footer"
+                 })
+        {
+            source.ShouldContain($"Path=\"{partPath}\"");
+        }
+
+        source.ShouldContain("SourceKey=\"datepicker-semantic-part\"");
+        source.ShouldContain("atom:DatePickerPrefixStyle");
+        source.ShouldContain("atom:DatePickerSuffixStyle");
+        source.ShouldContain("atom:DatePickerPopupRootStyle");
+        source.ShouldContain("atom:RangeDatePickerInputStyle");
+        source.ShouldContain("atom:RangeDatePickerSecondaryInputStyle");
+        source.ShouldContain("atom:RangeDatePickerPopupCellStyle");
+        source.ShouldContain("atom:RangeDatePickerPopupFooterStyle");
+
+        var lowered = source.ToLowerInvariant();
+        lowered.ShouldNotContain("semantic dom");
+        lowered.ShouldNotContain("classnames");
+        lowered.ShouldNotContain("styles?\"");
     }
 
     private static string ExtractDatePickerExampleItems(string source)

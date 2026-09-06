@@ -4587,13 +4587,298 @@ Source: ./controls/date-picker/semantic-cn.md
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `DatePicker` | 数据录入控件根语义区域，承载 public API、值状态、验证状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `input` | `输入或编辑区域` | 承载用户输入、当前值、占位、格式化或只读状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `trigger` | `触发区域` | 承载清除、展开、提交、步进、上传或辅助操作。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `popup` | `弹层或候选区域` | 承载下拉、候选项、日历、颜色面板或异步内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `validation` | `校验反馈区域` | 承载 Form、status、错误、警告、help 或 loading 状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+`DatePicker` 公开 12 个 Semantic Part，`RangeDatePicker` 公开 13 个 Semantic Part（后者多出范围双输入框的
+`secondaryInput`）。声明分别位于 `DatePicker.SemanticParts.cs` 与 `RangeDatePicker.SemanticParts.cs` partial 文件。
+
+触发区部件的 marker 分布：
+
+- 单值 `DatePicker` 的宿主模板是共享 `InfoPickerInputTheme.axaml`（`DatePickerTheme.axaml` 纯 `BasedOn` 继承，
+  无自有模板）；`RangeDatePicker` 的宿主模板是自有 `RangeDatePickerTheme.axaml`。两个宿主模板按同一模式标注
+  `semantic-scope-input`（AddOnDecoratedBox 节点）、`semantic-input`（`PART_InfoInputBox`）、`semantic-suffix`
+  （右侧内容 StackPanel）、`semantic-scope-handle`（PickerClearUpButton 节点）与 `semantic-popup-root`
+  （`PART_Popup` 内的 `ArrowDecoratedBox` / `DualMonthArrowDecoratedBox`）。
+- `prefix` 借用共享 `AddOnDecoratedBoxTheme` 的 `.semantic-scope-prefix` scope 锚点路由到宿主模板新增的
+  `AddOnContentPresenter` 投影节点（与 Select 家族同构；投影节点以
+  `CompiledBinding $parent[atom:InfoPickerInput].ContentLeftAddOn` 呈现公共 API 值）。
+- `clear` 的物理按钮在共享 `PickerClearUpButtonTheme.axaml` 模板内（`PART_ClearButton`），声明
+  `CrossNestedOwners=true`，生成器沿 PickerClearUpButton 主题链校验；该共享主题同时服务于未来 TimePicker
+  家族的同名 Part（inert marker，未声明契约的控件零影响）。
+- `secondaryInput` 仅 `RangeDatePicker` 声明，标注自有模板的 `PART_SecondaryInfoInputBox`。
+
+弹层部件的 marker 分布（弹层内容全部由 owner `CreatePickerPresenter` 在首次打开时运行时创建）：
+
+- `popup.container` / `popup.footer` 标注 presenter 主题模板节点：`popup.container` 在模板根 `DockPanel #RootLayout`，
+  `popup.footer` 在 `PixelAlignedBorder #ButtonsFrame`；三个带模板的 presenter 主题
+  （`DatePickerPresenterTheme.axaml`、`DualMonthRangeDatePickerPresenterTheme.axaml`、
+  `TimedRangeDatePickerPresenterTheme.axaml`）均标注。`RangeDatePickerPresenterTheme.axaml` 纯继承无模板。
+- `popup.header` / `popup.body` / `popup.content` 标注 `CalendarItemTheme.axaml`（单月：
+  `PART_HeaderFrame` / `PART_MonthViewLayout` / `PART_MonthView`）与 `DualMonthCalendarItemTheme.axaml`
+  （双月：同名节点加 `PART_SecondaryMonthView`）。
+- `popup.cell` 为运行时注入：`CalendarDayButton` 构造函数追加生成 selector class 常量（共享 CalendarView
+  基础设施，两个 owner 的常量值一致），覆盖月网格重建与容器回收。
+- `popup.*` 全部声明 `RuntimeCreated=true`（presenter 子树在运行时组装，生成器豁免宿主模板 marker 校验，
+  由控件行为测试兜底），其中 `popup.root` 为宿主模板静态节点、`RuntimeCreated=false`。
+
+### `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `DatePicker` / `RangeDatePicker` |
+| Part | `root` |
+| Selector | owner 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
+| ContractType | `DatePicker` / `RangeDatePicker` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | DatePicker / RangeDatePicker owner |
+| 职责 | owner 是日期值、格式化、弹层状态、Form 值与验证状态的组织边界；owner 级 `BorderBrush` 经控件中继为输入框边框颜色（root 级定制入口，未设置时恢复共享状态机）。 |
+| 相关 API | 全部 DatePicker / RangeDatePicker public API |
+| 相关 Token | DatePickerToken、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+### `prefix`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `DatePicker` / `RangeDatePicker` |
+| Part | `prefix` |
+| Selector | `.semantic-prefix` |
+| SelectorRoute | `/template/ .semantic-scope-input /template/ .semantic-scope-prefix > .semantic-prefix` |
+| Style Type | `DatePickerPrefixStyle` / `RangeDatePickerPrefixStyle` |
+| ContractType | `ContentPresenter` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | 宿主模板中承载 `ContentLeftAddOn` 的 `AddOnContentPresenter` 投影节点 |
+| 职责 | 输入区内容前缀区域，承载 `ContentLeftAddOn` 用户内容，在内容框内联展示。 |
+| 相关 API | `ContentLeftAddOn`、`ContentLeftAddOnTemplate` |
+| 相关 Token | SharedToken |
+| 稳定性 | stable since 6.0 |
+
+### `input`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `DatePicker` / `RangeDatePicker` |
+| Part | `input` |
+| Selector | `.semantic-input` |
+| SelectorRoute | `/template/ .semantic-input` |
+| Style Type | `DatePickerInputStyle` / `RangeDatePickerInputStyle` |
+| ContractType | `TextBox` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | 宿主模板的 `InfoPickerTextBox #PART_InfoInputBox`（起始端输入框） |
+| 职责 | 日期文本输入框，承载格式化显示值、占位符与只读/校验状态。 |
+| 相关 API | `Text`、`PlaceholderText`、`Format`、`IsReadOnly`、`PreferredInputWidth` |
+| 相关 Token | SharedToken |
+| 稳定性 | stable since 6.0 |
+
+### `secondaryInput`（仅 RangeDatePicker）
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `RangeDatePicker` |
+| Part | `secondaryInput` |
+| Selector | `.semantic-secondary-input` |
+| SelectorRoute | `/template/ .semantic-secondary-input` |
+| Style Type | `RangeDatePickerSecondaryInputStyle` |
+| ContractType | `TextBox` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `RangeDatePickerTheme.axaml` 的 `InfoPickerTextBox #PART_SecondaryInfoInputBox`（结束端输入框） |
+| 职责 | 范围选择的结束端日期文本输入框，与 `input` 共用格式与宽度基线。 |
+| 相关 API | `SecondaryText`、`SecondaryPlaceholderText` |
+| 相关 Token | SharedToken |
+| 稳定性 | stable since 6.0 |
+
+### `suffix`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `DatePicker` / `RangeDatePicker` |
+| Part | `suffix` |
+| Selector | `.semantic-suffix` |
+| SelectorRoute | `/template/ .semantic-scope-input /template/ .semantic-scope-suffix > .semantic-suffix` |
+| Style Type | `DatePickerSuffixStyle` / `RangeDatePickerSuffixStyle` |
+| ContractType | `StackPanel` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | 宿主模板中投影给 `ContentRightAddOn` 的水平 StackPanel（含清除按钮与 `PART_ContentRightAddOnPresenter`） |
+| 职责 | 输入区后缀区域，承载清除按钮、Form 反馈与用户后缀内容。 |
+| 相关 API | `ContentRightAddOn`、`ContentRightAddOnTemplate` |
+| 相关 Token | SharedToken |
+| 稳定性 | stable since 6.0 |
+
+### `clear`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `DatePicker` / `RangeDatePicker` |
+| Part | `clear` |
+| Selector | `.semantic-clear` |
+| SelectorRoute | `>> .semantic-scope-handle /template/ .semantic-clear` |
+| Style Type | `DatePickerClearStyle` / `RangeDatePickerClearStyle` |
+| ContractType | `IconButton` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossNestedOwners | `true` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | 共享 `PickerClearUpButtonTheme.axaml` 模板内的 `InputClearIconButton #PART_ClearButton` |
+| 职责 | 后缀区清除按钮，进入清除模式（hover / focus）时渲染。 |
+| 相关 API | `ShowClearButtonPredicate`（DatePicker）/ 范围清除行为（RangeDatePicker） |
+| 相关 Token | SharedToken |
+| 稳定性 | stable since 6.0 |
+
+### `popup.root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `DatePicker` / `RangeDatePicker` |
+| Part | `popup.root` |
+| Selector | `.semantic-popup-root` |
+| SelectorRoute | `/template/ .semantic-popup-root` |
+| Style Type | `DatePickerPopupRootStyle` / `RangeDatePickerPopupRootStyle` |
+| ContractType | `ArrowDecoratedBox` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | 单选：`InfoPickerInputTheme.axaml` 中 `PART_Popup` 的 `ArrowDecoratedBox`；范围：`RangeDatePickerTheme.axaml` 中的 `DualMonthArrowDecoratedBox` |
+| 职责 | 弹层内容根视觉盒子，承载背景、边框、阴影与浮动箭头。 |
+| 相关 API | `IsArrowVisible`（经 `IsArrowVisibleEffective`）、`ArrowPosition`、`IsMotionEnabled` |
+| 相关 Token | PopupToken |
+| 稳定性 | stable since 6.0 |
+
+### `popup.container`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `DatePicker` / `RangeDatePicker` |
+| Part | `popup.container` |
+| Selector | `.semantic-popup-container` |
+| SelectorRoute | `/template/ .semantic-popup-root >> .semantic-popup-container` |
+| Style Type | `DatePickerPopupContainerStyle` / `RangeDatePickerPopupContainerStyle` |
+| ContractType | `DockPanel` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | presenter 主题模板根 `DockPanel #RootLayout`（三个 presenter 主题模板均标注） |
+| 职责 | 日历面板内容容器，组织主体区与底部按钮区的布局。 |
+| 相关 API | 无（面板内容布局容器） |
+| 相关 Token | DatePickerToken |
+| 稳定性 | stable since 6.0 |
+
+### `popup.header`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `DatePicker` / `RangeDatePicker` |
+| Part | `popup.header` |
+| Selector | `.semantic-popup-header` |
+| SelectorRoute | `/template/ .semantic-popup-root >> .semantic-popup-header` |
+| Style Type | `DatePickerPopupHeaderStyle` / `RangeDatePickerPopupHeaderStyle` |
+| ContractType | `Border` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | `CalendarItemTheme.axaml` / `DualMonthCalendarItemTheme.axaml` 的 `PixelAlignedBorder #PART_HeaderFrame`（双月布局内含左右两月导航按钮组） |
+| 职责 | 日历年月导航头部，承载年月标题与前进/后退/翻年按钮。 |
+| 相关 API | 无（导航按钮交互由 CalendarView 内部承担） |
+| 相关 Token | DatePickerToken |
+| 稳定性 | stable since 6.0 |
+
+### `popup.body`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `DatePicker` / `RangeDatePicker` |
+| Part | `popup.body` |
+| Selector | `.semantic-popup-body` |
+| SelectorRoute | `/template/ .semantic-popup-root >> .semantic-popup-body` |
+| Style Type | `DatePickerPopupBodyStyle` / `RangeDatePickerPopupBodyStyle` |
+| ContractType | `UniformGrid` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | `CalendarItemTheme.axaml` 的 `UniformGrid #PART_MonthViewLayout`；双月为 `DualMonthCalendarItemTheme.axaml` 的同名节点（Columns=2，包住两张月表） |
+| 职责 | 日期面板表格容器，按月视图/年视图模式承载表格布局。 |
+| 相关 API | 无 |
+| 相关 Token | DatePickerToken |
+| 稳定性 | stable since 6.0 |
+
+### `popup.content`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `DatePicker` / `RangeDatePicker` |
+| Part | `popup.content` |
+| Selector | `.semantic-popup-content` |
+| SelectorRoute | `/template/ .semantic-popup-root >> .semantic-popup-content` |
+| Style Type | `DatePickerPopupContentStyle` / `RangeDatePickerPopupContentStyle` |
+| ContractType | `Grid` |
+| Cardinality | `DatePicker`: `Single`；`RangeDatePicker`: `Multiple`（双月两张表，带时间单月一张） |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | 单月：`CalendarItemTheme.axaml` 的 `Grid #PART_MonthView`；双月：`DualMonthCalendarItemTheme.axaml` 的 `PART_MonthView` 与 `PART_SecondaryMonthView` |
+| 职责 | 单个月份的 7×7 日期表格本体（含周序号列变体），承载日期格子与周头标题。 |
+| 相关 API | 无（随 `popup.body` 呈现） |
+| 相关 Token | DatePickerToken |
+| 稳定性 | stable since 6.0 |
+
+### `popup.cell`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `DatePicker` / `RangeDatePicker` |
+| Part | `popup.cell` |
+| Selector | `.semantic-cell` |
+| SelectorRoute | `/template/ .semantic-popup-root >> .semantic-cell` |
+| Style Type | `DatePickerPopupCellStyle` / `RangeDatePickerPopupCellStyle` |
+| ContractType | `Button` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | 月网格运行时创建的 `CalendarDayButton`（`CalendarItem.PopulateMonthViewGrid` 与 `DualMonthCalendarItem.PopulateMonthViewsGrid` 创建路径，构造时注入 marker） |
+| 职责 | 日期格子按钮，承载可选日期、选中/范围/今天/禁用等状态视觉（伪类见 overview）。 |
+| 相关 API | 无（随 `popup.content` 呈现） |
+| 相关 Token | DatePickerToken |
+| 稳定性 | stable since 6.0 |
+
+### `popup.footer`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `DatePicker` / `RangeDatePicker` |
+| Part | `popup.footer` |
+| Selector | `.semantic-popup-footer` |
+| SelectorRoute | `/template/ .semantic-popup-root >> .semantic-popup-footer` |
+| Style Type | `DatePickerPopupFooterStyle` / `RangeDatePickerPopupFooterStyle` |
+| ContractType | `Border` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | presenter 主题模板的 `PixelAlignedBorder #ButtonsFrame`（内含 `PART_NowButton` / `PART_TodayButton` / `PART_ConfirmButton`） |
+| 职责 | 面板底部操作区，承载此刻/今天/确认按钮。 |
+| 相关 API | `IsNeedConfirm`、`IsShowNow` |
+| 相关 Token | DatePickerToken |
+| 稳定性 | stable since 6.0 |
 
 ## Abstract AXAML Structure
 
@@ -4798,6 +5083,7 @@ DatePicker Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 - `MinDate` / `MaxDate` 的包含边界、PickerMode 归一化、越界受控值不回写以及可见 disabled cell 语义。
+- Semantic Part marker 的维护边界：共享 `InfoPickerInputTheme.axaml` 承载单选触发区静态 marker（`semantic-scope-input`、`semantic-prefix`、`semantic-input`、`semantic-suffix`、`semantic-scope-handle`、`semantic-popup-root`）；`RangeDatePickerTheme.axaml` 承载范围触发区同名 marker 与 `semantic-secondary-input`；共享 `PickerClearUpButtonTheme.axaml` 承载 `semantic-clear` marker（`clear` Part 声明 `CrossNestedOwners=true`，生成器沿 PickerClearUpButton 主题链校验）；`DatePickerPresenterTheme.axaml` / `DualMonthRangeDatePickerPresenterTheme.axaml` / `TimedRangeDatePickerPresenterTheme.axaml` 承载 `semantic-popup-container` / `semantic-popup-footer`；`CalendarItemTheme.axaml` / `DualMonthCalendarItemTheme.axaml` 承载 `semantic-popup-header` / `semantic-popup-body` / `semantic-popup-content`（双月含 secondary 月表）。运行时注入点：`CalendarDayButton` 构造函数追加 `popup.cell` 的生成 selector class 常量（CalendarView 为家族内共享基础设施，两个 owner 常量值一致）。marker 随实例创建一次，月网格 rebuild、弹层重开和容器回收路径不得增删；共享主题 marker 对 TimePicker / RangeTimePicker 保持 inert。
 
 Source: ./controls/form/semantic-cn.md
 

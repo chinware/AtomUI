@@ -685,7 +685,10 @@ public partial class Mentions : TemplatedControl,
                 Popup.IsPopupPinnedOpenProperty);
             _popup.Opened              += HandlePopupOpened;
             _popup.Closed              += HandlePopupClosed;
-            _popup.OverlayInputPassThroughElement = _textArea;
+            if (!IsPopupPinnedOpen)
+            {
+                _popup.OverlayInputPassThroughElement = _textArea;
+            }
             ApplyPopupPinnedOpenSettings();
         }
         
@@ -765,7 +768,20 @@ public partial class Mentions : TemplatedControl,
 
     private void ApplyPopupPinnedOpenSettings()
     {
-        _popup?.SetCurrentValue(Popup.IsLightDismissEnabledProperty, !IsPopupPinnedOpen);
+        if (_popup is null)
+        {
+            return;
+        }
+
+        if (IsPopupPinnedOpen)
+        {
+            // 与 Select 家族相同:必须以 LocalValue 赶在打开之前抑制遮罩。
+            _popup.IsLightDismissEnabled = false;
+        }
+        else
+        {
+            _popup.ClearValue(Popup.IsLightDismissEnabledProperty);
+        }
     }
 
     #endregion

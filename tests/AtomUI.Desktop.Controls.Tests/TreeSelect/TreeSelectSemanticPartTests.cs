@@ -124,6 +124,19 @@ public class TreeSelectSemanticPartTests
     }
 
     [Fact]
+    public void Pinned_Open_Popup_Is_Not_Template_Bound_To_IsDropDownOpen()
+    {
+        var document = XDocument.Load(GetRepoFile(ThemePath), LoadOptions.SetLineInfo);
+        var popup = document.Descendants()
+                            .First(static element => (string?)element.Attribute("Name") == "PART_Popup");
+        popup.ShouldNotBeNull();
+
+        popup.Attributes("IsOpen").ShouldBeEmpty(
+            "the popup's IsOpen must be code-driven (AbstractSelect.OpenDropDown/CloseDropDown) so that " +
+            "pinned light-dismiss suppression runs before the popup opens, matching SelectTheme/CascaderTheme");
+    }
+
+    [Fact]
     public void Default_Theme_Does_Not_Consume_Semantic_Selectors()
     {
         var document = XDocument.Load(GetRepoFile(ThemePath), LoadOptions.SetLineInfo);
@@ -341,6 +354,111 @@ public class TreeSelectSemanticPartTests
                   .Count(control => control.Classes.Contains(PopupListItemClass))
                   .ShouldBeGreaterThanOrEqualTo(2);
         });
+    }
+
+    [Fact]
+    public void Pinned_Open_Disables_Light_Dismiss_On_The_Template_Popup()
+    {
+        var treeSelect = CreatePinnedTreeSelect();
+
+        ShowInWindow(treeSelect, window =>
+        {
+            var popup = treeSelect.GetVisualDescendants().OfType<Popup>().Single();
+            popup.IsOpen.ShouldBeTrue();
+            popup.IsLightDismissEnabled.ShouldBeFalse(
+                "a pinned preview popup must not leave a light-dismiss overlay blocking the rest of the window");
+            popup.OverlayInputPassThroughElement.ShouldNotBeNull(
+                "the input box stays registered as the overlay pass-through element, matching Select");
+        });
+    }
+
+    [Fact]
+    public void Pinned_Open_Does_Not_Block_Hit_Testing_Outside_The_Popup()
+    {
+        var treeSelect = CreatePinnedTreeSelect();
+
+        var outsideButton = new Button { Content = "outside" };
+        var stack = new StackPanel
+        {
+            Children = { treeSelect, outsideButton }
+        };
+
+        ShowInWindow(stack, window =>
+        {
+            Dispatcher.UIThread.RunJobs();
+            window.UpdateLayout();
+
+            var popup = treeSelect.GetVisualDescendants().OfType<Popup>().Single();
+            popup.IsOpen.ShouldBeTrue();
+
+            var buttonPoint = outsideButton.TranslatePoint(
+                new Point(outsideButton.Bounds.Width / 2, outsideButton.Bounds.Height / 2),
+                window.ShouldNotBeNull()).ShouldNotBeNull();
+            var hit = HitTest(window, buttonPoint);
+            hit.ShouldNotBeNull();
+            var reached = ReferenceEquals(hit, outsideButton) ||
+                          outsideButton.GetVisualDescendants().Contains(hit) ||
+                          hit is Avalonia.Controls.Button;
+            reached.ShouldBeTrue(
+                $"hit outside popup should reach the button but was {hit.GetType().Name}; visual chain: " +
+                string.Join(" <- ", AncestorNames(hit)));
+        });
+    }
+
+    private static AtomUITreeSelect CreatePinnedTreeSelect()
+    {
+        return new AtomUITreeSelect
+        {
+            Width = 320,
+            IsMotionEnabled = false,
+            IsPopupPinnedOpen = true,
+            IsDropDownOpen = true,
+            IsDefaultExpandAll = true,
+            ItemsSource = new List<ITreeItemNode>
+            {
+                new TreeItemNode
+                {
+                    Header   = "GuangDong",
+                    Value    = "guangdong",
+                    Children = new List<ITreeItemNode>
+                    {
+                        new TreeItemNode { Header = "GuangZhou", Value = "guangzhou" },
+                        new TreeItemNode { Header = "ShenZhen", Value = "shenzhen" }
+                    }
+                }
+            }
+        };
+    }
+
+    private static Visual? HitTest(Visual root, Point point)
+    {
+        foreach (var child in root.GetVisualChildren())
+        {
+            var bounds = new Rect(child.Bounds.Size);
+            var local = point - (Vector)child.Bounds.Position;
+            if (bounds.Contains(local))
+            {
+                var deeper = HitTest(child, local);
+                if (deeper is not null)
+                {
+                    return deeper;
+                }
+
+                return child;
+            }
+        }
+
+        return root.Bounds.Contains(point) ? root : null;
+    }
+
+    private static IEnumerable<string> AncestorNames(Visual? visual)
+    {
+        while (visual is not null)
+        {
+            yield return visual.GetType().Name +
+                   (visual is Control control && control.Name is { } name ? $"#{name}" : string.Empty);
+            visual = visual.GetVisualParent();
+        }
     }
 
     private static void AssertRoot(ControlSemanticDescriptor descriptor, Type controlType)

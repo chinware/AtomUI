@@ -947,7 +947,10 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         _popup = e.NameScope.Find<Popup>("PART_Popup");
         if (_popup != null)
         {
-            _popup.OverlayInputPassThroughElement = this;
+            if (!IsPopupPinnedOpen)
+            {
+                _popup.OverlayInputPassThroughElement = this;
+            }
             AttachPopupHandlers();
 
             this[!IsPopupHorizontalFlippedProperty] = _popup[!Popup.IsHorizontalFlippedProperty];

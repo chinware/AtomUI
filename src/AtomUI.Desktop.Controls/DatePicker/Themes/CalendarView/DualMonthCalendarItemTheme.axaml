@@ -20,6 +20,7 @@
                         Name="PART_ItemRootLayout"
                         LastChildFill="True">
                         <Border Name="PART_HeaderFrame"
+                                Classes.semantic-popup-header="True"
                                 DockPanel.Dock="Top">
                             <UniformGrid Name="PART_HeaderLayout"
                                          Columns="2"
@@ -95,9 +96,11 @@
                         </Border>
 
                         <UniformGrid Name="PART_MonthViewLayout"
+                                     Classes.semantic-popup-body="True"
                                      Columns="2"
                                      IsVisible="False">
                             <Grid Name="PART_MonthView"
+                                  Classes.semantic-popup-content="True"
                                   HorizontalAlignment="Stretch"
                                   IsVisible="{TemplateBinding IsVisible}">
                                 <Grid.RowDefinitions>
@@ -121,6 +124,7 @@
                             </Grid>
 
                             <Grid Name="PART_SecondaryMonthView"
+                                  Classes.semantic-popup-content="True"
                                   HorizontalAlignment="Stretch"
                                   IsVisible="{TemplateBinding IsVisible}">
                                 <Grid.RowDefinitions>

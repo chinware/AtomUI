@@ -43,6 +43,21 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
         set => SetValue(PreviewContentAlignmentProperty, value);
     }
 
+    /// <summary>
+    /// 预览画布的最小高度，默认 360。大型内容（如日历弹层）需要更大的
+    /// 锚点下方空间时调高；画布始终收缩到宿主钳制高度以内，不产生
+    /// 可视区之外的布局。
+    /// </summary>
+    public static readonly StyledProperty<double> PreviewStageMinHeightProperty =
+        AvaloniaProperty.Register<SemanticPartPreview, double>(
+            nameof(PreviewStageMinHeight), 360d);
+
+    public double PreviewStageMinHeight
+    {
+        get => GetValue(PreviewStageMinHeightProperty);
+        set => SetValue(PreviewStageMinHeightProperty, value);
+    }
+
     public static readonly StyledProperty<Control?> SemanticOwnerProperty =
         AvaloniaProperty.Register<SemanticPartPreview, Control?>(nameof(SemanticOwner));
 

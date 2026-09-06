@@ -69,9 +69,9 @@
 
 **风险类型：** Popup presenter、range/dual/timed 变体、日历容器、SizeType。
 
-- [ ] **Gate A 设计审核：** 审计 DatePicker/RangeDatePicker input regions、public presenters、calendar/day/month/year buttons、dual/timed presenters；确认 prefix/input/clear/suffix/popup/panel/cell/footer职责及 owner，记录 range modes、Popup、calendar rebuild 和 SizeType。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/DatePicker/DatePickerSemanticPartTests.cs`，覆盖 date/range/dual/timed、calendar modes、cell rebuild、clear/prefix/suffix、Popup reopen、invalid/disabled 和 所有尺寸。
+- [x] **Gate A 设计审核：** 审计 DatePicker/RangeDatePicker input regions、public presenters、calendar/day/month/year buttons、dual/timed presenters；确认 prefix/input/clear/suffix/popup/panel/cell/footer职责及 owner，记录 range modes、Popup、calendar rebuild 和 SizeType。
+- [x] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/DatePicker/DatePickerSemanticPartTests.cs`，覆盖 date/range/dual/timed、calendar modes、cell rebuild、clear/prefix/suffix、Popup reopen、invalid/disabled 和 所有尺寸。
 - [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
 - [ ] **强制停止：** 保持 DatePicker 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
 

@@ -12,8 +12,10 @@
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:DualMonthRangeDatePickerPresenter">
                 <DockPanel Name="RootLayout"
+                           Classes.semantic-popup-container="True"
                            LastChildFill="True">
                     <atom:PixelAlignedBorder Name="ButtonsFrame"
+                                             Classes.semantic-popup-footer="True"
                                              BorderThickness="{TemplateBinding BorderThickness, Converter={x:Static atom:DatePickerPresenterTheme.BorderThicknessFilterConverter}}"
                                              IsVisible="{TemplateBinding IsButtonsPanelVisible}"
                                              DockPanel.Dock="Bottom">

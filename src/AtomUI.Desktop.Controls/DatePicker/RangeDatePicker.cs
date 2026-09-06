@@ -1,6 +1,7 @@
 ﻿using AtomUI.Desktop.Controls.CalendarView;
 using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Icons.AntDesign;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -12,7 +13,7 @@ using AtomUI.Desktop.Controls.CalendarView.Infrastructure;
 
 namespace AtomUI.Desktop.Controls;
 
-public class RangeDatePicker : RangeInfoPickerInput
+public partial class RangeDatePicker : RangeInfoPickerInput
 {
     #region 公共属性定义
     
@@ -159,7 +160,7 @@ public class RangeDatePicker : RangeInfoPickerInput
         get => _preferredWidth;
         set
         {
-            if (_preferredWidth == value)
+            if (MathUtils.AreClose(_preferredWidth, value))
             {
                 return;
             }

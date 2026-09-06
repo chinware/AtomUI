@@ -111,7 +111,7 @@ DatePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml:35`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml:99`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -132,7 +132,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 切换不同的选择器
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml:57`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml:121`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -156,7 +156,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### SelectedDateTime 绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml:83`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml:147`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -208,7 +208,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 弹出面板显示日期
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml:137`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml:201`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -310,6 +310,7 @@ DatePicker Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 主要源码文件：
 
 - `src/AtomUI.Desktop.Controls/DatePicker`：DatePicker 控件家族根目录，代表文件 `DatePicker.cs`、`RangeDatePicker.cs`、`DatePickerPresenter.cs`、`DatePickerFormattingHelper.cs`、`DatePickerDateRangeConstraint.cs`、`DatePickerToken.cs`、`DualMonthRangeDatePickerPresenter.cs` 等。
+- `src/AtomUI.Desktop.Controls/DatePicker/DatePicker.SemanticParts.cs` 与 `RangeDatePicker.SemanticParts.cs`：DatePicker 家族两个 Semantic owner 的 Semantic Part 声明（见 [DatePicker Semantic Part 契约](semantic-part.md)）。
 - `src/AtomUI.Desktop.Controls/DatePicker/CalendarView`：CalendarView runtime。`State` 保存归一化状态和 action，`Models` 保存纯 panel model，`Rendering` 将 model 应用到 generated buttons，`Infrastructure` 封装 culture 和 pointer tracking。
 - `src/AtomUI.Desktop.Controls/DatePicker/Localization`：`DatePickerLangResourceKind.cs` 定义稳定 Catalog，`en-US.xlf`、`zh-CN.xlf`、`zh-TW.xlf` 提供内置翻译。
 - `src/AtomUI.Desktop.Controls/DatePicker/Themes`：19 个文件，代表文件 `CalendarButtonTheme.axaml`、`CalendarButtonTheme.cs`、`CalendarDayButtonTheme.axaml`、`CalendarItemTheme.axaml`、`CalendarItemTheme.cs` 等。
@@ -327,6 +328,7 @@ DatePicker Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 
 - 源设计文档：`docs/controls/desktop/data-entry/date-picker/overview.md`
 - 实现文档：`docs/controls/desktop/data-entry/date-picker/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-entry/date-picker/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-entry/date-picker/token.md`
 - 变更记录：`docs/controls/desktop/data-entry/date-picker/changelog.md`
 - 语义结构：`./semantic-cn.md`

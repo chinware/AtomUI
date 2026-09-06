@@ -13,6 +13,7 @@ Popup 接入边界：`InfoPickerInput` 负责业务状态和内容准备，`Pick
 主要源码文件：
 
 - `src/AtomUI.Desktop.Controls/DatePicker`：DatePicker 控件家族根目录，代表文件 `DatePicker.cs`、`RangeDatePicker.cs`、`DatePickerPresenter.cs`、`DatePickerFormattingHelper.cs`、`DatePickerDateRangeConstraint.cs`、`DatePickerToken.cs`、`DualMonthRangeDatePickerPresenter.cs` 等。
+- `src/AtomUI.Desktop.Controls/DatePicker/DatePicker.SemanticParts.cs` 与 `RangeDatePicker.SemanticParts.cs`：DatePicker 家族两个 Semantic owner 的 Semantic Part 声明（见 [DatePicker Semantic Part 契约](semantic-part.md)）。
 - `src/AtomUI.Desktop.Controls/DatePicker/CalendarView`：CalendarView runtime。`State` 保存归一化状态和 action，`Models` 保存纯 panel model，`Rendering` 将 model 应用到 generated buttons，`Infrastructure` 封装 culture 和 pointer tracking。
 - `src/AtomUI.Desktop.Controls/DatePicker/Localization`：`DatePickerLangResourceKind.cs` 定义稳定 Catalog，`en-US.xlf`、`zh-CN.xlf`、`zh-TW.xlf` 提供内置翻译。
 - `src/AtomUI.Desktop.Controls/DatePicker/Themes`：19 个文件，代表文件 `CalendarButtonTheme.axaml`、`CalendarButtonTheme.cs`、`CalendarDayButtonTheme.axaml`、`CalendarItemTheme.axaml`、`CalendarItemTheme.cs` 等。
@@ -110,6 +111,13 @@ DatePicker / RangeDatePicker MinDate, MaxDate, PickerMode
 - Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
 - presenter 应在 Calendar part 可用后按 `PickerMode -> effective range -> active range endpoint -> valid selection -> display anchor -> button state` 的顺序回放状态。模板重套用、运行时切换 `PickerMode`、边界变化和受控值变化都必须进入同一同步入口。
 - `DatePickerPresenterTheme.axaml`、`TimedRangeDatePickerPresenterTheme.axaml` 和 `DualMonthRangeDatePickerPresenterTheme.axaml` 不直接 `TemplateBinding` 原始 `SelectedDateTime` / `SecondarySelectedDateTime` 到 Calendar；presenter 在有效范围就绪后写入经过校验的 Calendar 选中状态，避免模板应用顺序使越界受控值进入 Calendar。
+
+弹层 Semantic Part 组装与生命周期：
+
+- 弹层内容由 owner `CreatePickerPresenter()` 在首次打开时运行时创建并经 `PickerPresenter` 属性装入 `PART_Popup` 的内容根盒子；presenter / CalendarItem 主题模板上的 Semantic marker 随模板应用静态存在，`popup.cell` marker 由 `CalendarDayButton` 构造函数注入。弹层关闭不销毁 marker，重开与模板重套用后 marker 保持；`OnDetachedFromVisualTree` 释放 owned presenter 后，下次打开重建并重新获得同一组 marker。
+- 单值 `DatePicker` 的触发区与 `popup.root` marker 位于共享 `InfoPickerInputTheme.axaml`；`RangeDatePicker` 的对应 marker 位于自有 `RangeDatePickerTheme.axaml`。共享主题中的 marker（含 `PickerClearUpButtonTheme.axaml` 的 `semantic-clear`）对尚未声明 Semantic Part 的 TimePicker / RangeTimePicker 是 inert class，不改变其视觉与状态行为。
+- `prefix` 投影节点（`AddOnContentPresenter`）以 `CompiledBinding $parent[atom:InfoPickerInput]` 接收 `ContentLeftAddOn` / `ContentLeftAddOnTemplate`；该投影是宿主模板对 `ContentLeftAddOn` 承载方式的等价重构，`ContentLeftAddOn` 为空的既有用法不受影响。
+- owner 级 `BorderBrush` 由 `RelayFrameBorderBrush()` 中继到 `_addOnDecoratedBox`（模板接入时与 `BorderBrushProperty` 变化时各执行一次）：中继使用 `LocalValue` 优先级才能胜过框体主题的状态触发器，`ControlTheme` 的 `TemplateBinding` 达不到该优先级；owner 未设置时执行 `ClearValue` 恢复共享状态机，模板重套用会重新中继。
 
 稳定 template part 接入点：
 
@@ -232,6 +240,17 @@ PickerMode 颗粒度维护规则：
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 
+Semantic Part 尺寸与状态基线矩阵（布局型 Part 进入实现前的事实基线）：
+
+| 项目 | 内容 |
+| --- | --- |
+| 完整尺寸分支 | `SizeType` 为 `CustomizableSizeType`（`Large` / `Middle` / `Small` / `Custom`），由 `InfoPickerInput` 经 `AddOwner` 提供；`Middle` / `Custom` 使用默认字号，`Large` / `Small` 映射 `FontSizeLG` / `FontSizeSM`。 |
+| 布局 owner | 触发区高度基线由共享 `AddOnDecoratedBox`（`InputControlFrame`）的按档 `MinHeight` 拥有，`PART_InfoInputBox` / `PART_SecondaryInfoInputBox` 垂直 stretch，自身不持有固定 `Height`；宽度由 owner 的 `PreferredInputWidth` 驱动（显式 `Width` 或 `Stretch` 时为 `NaN`），`prefix` / `suffix` 是内联 add-on，不拥有独立尺寸。 |
+| 布局型 Part 约束 | `input` / `secondaryInput` 的 Semantic Style 参与自然测量，但不得反向改变触发区档位高度；`popup.container` 的 `Padding`、`popup.footer` 的 `Margin` 按 presenter 模板既有 Token（`ButtonsPanelMargin`、`PanelContentPadding`）为基线做增量覆盖。 |
+| 状态矩阵 | 清除模式（clear 可见性）、`IsNeedConfirm` / `IsShowNow`（footer 可见性）、`IsShowTime`（单月+时钟 ↔ 双月）、`PickerMode` 五档（cell 内容与 Week 8 列）、`DisplayMode`（月 ↔ 年/十年）、disabled / validation 状态均只切换可见性或视觉值，不增删 marker。 |
+| 外部映射 | Ant Design `size=default|small|large` 对应 AtomUI `Middle` / `Small` / `Large` 完整分支；Ant Design 无 custom 档，AtomUI `Custom` 是本地扩展，语义 Setter 在所有档位行为一致。 |
+| 失败回归 | 最小回归：在 `SizeType=Small` 下经 `DatePickerInputStyle` 设置显式 `Padding`，断言 owner 触发区实测高度仍等于该档 `AddOnDecoratedBox` 基线（输入框被裁剪对齐而不是撑破行高）。若尺寸基线被错误建立在输入框自身 `Height` 上，该断言红灯（控件高度随语义 Padding 漂移）；以“档位基线归 AddOnDecoratedBox、输入框只参与自然测量”的单一根因修复恢复。 |
+
 ## 8. 资源、性能与 AOT 边界
 
 资源和 AOT 约束：
@@ -260,6 +279,7 @@ PickerMode 颗粒度维护规则：
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
 - `MinDate` / `MaxDate` 的包含边界、PickerMode 归一化、越界受控值不回写以及可见 disabled cell 语义。
+- Semantic Part marker 的维护边界：共享 `InfoPickerInputTheme.axaml` 承载单选触发区静态 marker（`semantic-scope-input`、`semantic-prefix`、`semantic-input`、`semantic-suffix`、`semantic-scope-handle`、`semantic-popup-root`）；`RangeDatePickerTheme.axaml` 承载范围触发区同名 marker 与 `semantic-secondary-input`；共享 `PickerClearUpButtonTheme.axaml` 承载 `semantic-clear` marker（`clear` Part 声明 `CrossNestedOwners=true`，生成器沿 PickerClearUpButton 主题链校验）；`DatePickerPresenterTheme.axaml` / `DualMonthRangeDatePickerPresenterTheme.axaml` / `TimedRangeDatePickerPresenterTheme.axaml` 承载 `semantic-popup-container` / `semantic-popup-footer`；`CalendarItemTheme.axaml` / `DualMonthCalendarItemTheme.axaml` 承载 `semantic-popup-header` / `semantic-popup-body` / `semantic-popup-content`（双月含 secondary 月表）。运行时注入点：`CalendarDayButton` 构造函数追加 `popup.cell` 的生成 selector class 常量（CalendarView 为家族内共享基础设施，两个 owner 常量值一致）。marker 随实例创建一次，月网格 rebuild、弹层重开和容器回收路径不得增删；共享主题 marker 对 TimePicker / RangeTimePicker 保持 inert。
 
 ## 10. 测试与验证
 
@@ -279,3 +299,7 @@ PickerMode 颗粒度维护规则：
 - pointer、keyboard、Enter、PageUp/PageDown、header 导航、双面板导航和 display anchor 收敛。
 - 范围外 cell 可见且 disabled，以及 `Today` / `Now` / Confirm 的视觉状态与点击防线。
 - 三条 presenter 模板路径在首次应用和模板重套用时都先应用范围再同步有效选中值。
+
+Semantic Part 行为验证：
+
+- `tests/AtomUI.Desktop.Controls.Tests/DatePicker/DatePickerSemanticPartTests.cs`：descriptor 契约（DatePicker 12 个、RangeDatePicker 13 个 Part）、宿主/共享/内部主题静态 marker 清单、`popup.cell` 运行时注入与 rebuild 保持、生成 Style 命中触发区与弹层目标（含 `secondaryInput` 与双月 `popup.content`）、弹层首次打开/关闭/重开 marker 保持、`IsShowTime` 切换、清除模式与 footer 可见性不增删 marker、默认主题不消费 `.semantic-*`、尺寸基线失败回归。

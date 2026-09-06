@@ -82,12 +82,24 @@ public enum ArrowPosition
 [TemplatePart("PART_ContentDecorator", typeof(Border))]
 [TemplatePart("PART_ArrowIndicatorLayout", typeof(Control))]
 [TemplatePart("PART_ArrowIndicator", typeof(ArrowIndicator))]
-public abstract class AbstractArrowDecoratedBox : ContentControl, 
-                                                  IArrowAwareShadowMaskInfoProvider, 
+[PseudoClasses(BorderedPseudoClass)]
+public abstract class AbstractArrowDecoratedBox : ContentControl,
+                                                  IArrowAwareShadowMaskInfoProvider,
                                                   IMotionAwareControl
 {
     public const string ArrowDecoratorPart = "PART_ArrowDecorator";
-    
+
+    /// <summary>
+    /// BorderThickness 非默认值时置位;内置主题按该状态隐藏浮动箭头,
+    /// 因为当前内置视觉不支持箭头与边框的融合呈现。
+    /// </summary>
+    public const string BorderedPseudoClass = ":bordered";
+
+    protected AbstractArrowDecoratedBox()
+    {
+        PseudoClasses.Set(BorderedPseudoClass, BorderThickness != default);
+    }
+
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsArrowVisibleProperty =
@@ -227,6 +239,11 @@ public abstract class AbstractArrowDecoratedBox : ContentControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
+        if (change.Property == BorderThicknessProperty)
+        {
+            PseudoClasses.Set(BorderedPseudoClass, BorderThickness != default);
+        }
+
         if (change.Property == ArrowPositionProperty)
         {
             SetArrowDirectionIfChanged(GetDirection(ArrowPosition));

@@ -17,6 +17,19 @@ internal sealed class SemanticPartPreviewLayoutPanel : Panel
     public static readonly StyledProperty<double> PaneMaxHeightProperty =
         AvaloniaProperty.Register<SemanticPartPreviewLayoutPanel, double>(nameof(PaneMaxHeight), 400);
 
+    /// <summary>
+    /// 预览画布的期望最小高度。测量阶段参与期望高度(向宿主要空间),
+    /// 排布阶段不设下限,宿主钳制高度不足时画布随之收缩。
+    /// </summary>
+    public static readonly StyledProperty<double> PreviewStageMinHeightProperty =
+        AvaloniaProperty.Register<SemanticPartPreviewLayoutPanel, double>(nameof(PreviewStageMinHeight), 360);
+
+    public double PreviewStageMinHeight
+    {
+        get => GetValue(PreviewStageMinHeightProperty);
+        set => SetValue(PreviewStageMinHeightProperty, value);
+    }
+
     public double CompactBreakpoint
     {
         get => GetValue(CompactBreakpointProperty);
@@ -47,7 +60,8 @@ internal sealed class SemanticPartPreviewLayoutPanel : Panel
             CompactBreakpointProperty,
             SpacingProperty,
             CompactPaneMaxHeightProperty,
-            PaneMaxHeightProperty);
+            PaneMaxHeightProperty,
+            PreviewStageMinHeightProperty);
         AffectsArrange<SemanticPartPreviewLayoutPanel>(
             CompactBreakpointProperty,
             SpacingProperty,
@@ -60,6 +74,16 @@ internal sealed class SemanticPartPreviewLayoutPanel : Panel
         if (Children.Count == 0)
         {
             return default;
+        }
+
+        // 画布下限写回 Stage 的 MinHeight:宿主钳制高度时下限随之收缩,
+        // 保证测量期望、排布尺寸与可视区域一致,不产生可视区之外的布局;
+        // 无界宿主使用完整配置值。
+        if (Children.Count > 0)
+        {
+            Children[0].MinHeight = double.IsFinite(availableSize.Height)
+                ? Math.Min(PreviewStageMinHeight, Math.Max(0, availableSize.Height))
+                : PreviewStageMinHeight;
         }
 
         if (Children.Count == 1)

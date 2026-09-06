@@ -18,7 +18,7 @@ public enum DatePickerMode
     Year
 }
 
-public class DatePicker : InfoPickerInput
+public partial class DatePicker : InfoPickerInput
 {
     #region 公共属性定义
 
