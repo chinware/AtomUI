@@ -24,6 +24,7 @@ or recorded visual evidence; implementation completion alone is not evidence.
 
 - [ ] Fixed-height rows map offset to display index in O(1) and preserve top-row anchoring after a commit.
 - [ ] Auto-height rows update the bounded sparse height index in O(log M) and preserve the first visible key plus intra-row offset.
+- [ ] Source rebind, filter, last-page, and collection Reset transitions from many short rows to fewer tall rows resample the committed generation's automatic height baseline; the vertical scrollbar remains visible with a positive legal Maximum and reaches the last row.
 - [ ] Group headers and expanded row details participate in offset mapping without creating placeholder rows.
 - [ ] Realized rows stay bounded by the visible viewport plus at most one edit pin and one drag pin.
 - [ ] Prefetch stays bounded to one viewport before and one viewport after the desired viewport.

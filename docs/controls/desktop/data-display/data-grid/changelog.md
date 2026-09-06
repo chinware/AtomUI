@@ -17,10 +17,13 @@
   - Remove per-cell sort subscriptions and project sort/filter/loading state from the single committed Query/presentation owner.
   - Make schema display access explicit with `DataGridFieldDisplayAccessor`; auto-generated columns now use disposable compiled bindings and never interpret protocol `FieldId` values as CLR property paths.
   - Keep committed content fully opaque while `LoadState` is `Refreshing`; only initial `Loading` or explicit `IsOperating` drives the existing Spin, so sort and other query refreshes do not produce a transient fade.
+  - Scope automatic row-height estimates to the committed data generation: successful source replacement, filter/query, page, and invalidation/reset presentations restart sampling from the default baseline, while pending or failed generations preserve the current estimate.
+  - Preserve the finite ScrollBar range invariant `Maximum >= Minimum`, including non-zero minima and subpixel travel ranges, so transient DataGrid extent changes cannot enter an invalid Avalonia RangeBase state.
 - Gallery and validation
   - Add the deterministic million-row fake-remote showcase with latency, cancellation, failure/reload and snapshot-expiry controls.
   - Give the Basic Paging example explicit Auto-column `MinWidth` baselines so its first committed page exposes natural horizontal overflow without preloading later ranges, and cover scrollbar stability across page changes with an attached headless Gallery regression.
   - Add Query/Source, selection, mutation, lifecycle, virtualization, RowDetails, Gallery and million-row performance coverage plus a dedicated repeatable DataGrid benchmark.
+  - Add the formal Issue457 regression suite for source rebind, filter, last-page, and collection-reset transitions, asserting generation height resampling, vertical scrollbar visibility, positive legal Maximum, and last-row reachability.
 - Docs
   - Synchronize the public overview, implementation guide, formal Query/Range Source design, generated LLMS sources and Data Display navigation with the final contract.
   - Clarify that virtualized Auto sizing measures realized cells only and that stable first-page content extent must come from declared column geometry rather than offscreen Source I/O, Star compression or forced scrollbar visibility.

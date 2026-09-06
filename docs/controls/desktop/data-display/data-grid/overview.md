@@ -245,7 +245,8 @@ immutable Query
 
 Source replacement、Invalidated、Reload、Query、PageRequest 和 GroupExpansion 通过单调 revision/generation 隔离迟到结果。
 `DesiredViewport` 与 `CommittedViewport` 分离；每个 generation 同时只有一个活动 viewport scope，scope 通过 block lease 保留新旧
-目标仍共享的请求，并取消已经离开最新目标的 visible/prefetch 工作。layout 只读取已提交并 pin 的 range block。完整 Source、
+目标仍共享的请求，并取消已经离开最新目标的 visible/prefetch 工作。自动行高估值也由 committed generation 所有：成功切换
+generation 后重新采样，pending/失败状态继续使用旧 presentation 的估值。layout 只读取已提交并 pin 的 range block。完整 Source、
 snapshot、请求优先级、缓存、索引域、虚拟化和回滚合同见
 [DataGrid Query 与 Range Source 设计](query-range-source-design.md)。
 

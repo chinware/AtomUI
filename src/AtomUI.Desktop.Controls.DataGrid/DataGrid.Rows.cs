@@ -979,6 +979,12 @@ public partial class DataGrid
         _lastEstimatedRow = -1;
     }
 
+    private void ResetRowHeightEstimateForDataGeneration()
+    {
+        RowHeightEstimate = DefaultRowHeight;
+        InvalidateRowHeightEstimate();
+    }
+
     private void NotifyElementsChanged(bool grew)
     {
         if (grew &&

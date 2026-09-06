@@ -66,6 +66,44 @@ public class ScrollViewerLayoutTests
     }
 
     [Fact]
+    public void Finite_Maximum_Below_Minimum_Is_Coerced_To_Minimum()
+    {
+        var scrollBar = CreateScrollBar(100);
+        scrollBar.Minimum = 10;
+        scrollBar.Value = 10;
+        var window = ShowInWindow(scrollBar, 1);
+
+        try
+        {
+            Should.NotThrow(() => scrollBar.Maximum = -10);
+            scrollBar.Maximum.ShouldBe(10);
+            scrollBar.Value.ShouldBe(10);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Subpixel_Finite_Range_Is_Coerced_To_Minimum()
+    {
+        var scrollBar = CreateScrollBar(100);
+        scrollBar.Minimum = 10;
+        var window = ShowInWindow(scrollBar, 1);
+
+        try
+        {
+            scrollBar.Maximum = 10.99;
+            scrollBar.Maximum.ShouldBe(10);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
     public void ScrollViewer_Hides_One_Pixel_Wayland_Resize_Remainder()
     {
         var scrollViewer = new ScrollViewer

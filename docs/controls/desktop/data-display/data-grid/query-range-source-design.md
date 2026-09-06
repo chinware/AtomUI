@@ -737,11 +737,19 @@ estimatedOffset(slot) = slot * defaultEstimate + sparsePrefixDelta(slot)
 passive block eviction 时删除对应明细，并把样本吸收到按 entry kind/group level 划分的常量大小 HeightEstimator。prefix sum 和
 offset-to-slot 查询为 O(log M)，M 受 cache/pin 与用户显式状态上限约束。
 
+自动 `RowHeightEstimate` 属于已提交的 data generation，不能跨 Source replacement、Query/filter、PageRequest 或 Invalidated/Reset
+复用。只有新 generation 的 presentation 完成校验并进入原子提交时，才把自动估值重置为 `DefaultRowHeight` 并清空旧的采样进度；
+pending 或失败的 generation 不得改变当前 presentation 的估值。新 generation 的首个有效 data-row 实测值重新建立 baseline，并
+以该 baseline rebase 新的稀疏高度索引；显式有限 `RowHeight` 始终优先，不参与自动重采样。该策略每个 generation 只增加 O(1)
+状态重置，单行测量仍只写一个 O(log M) 稀疏差值，不扫描总行数或历史行。
+
 不能从 slot 0 扫描到 FirstScrollingSlot，也不能按 TotalEntryCount 或所有历史访问行创建 Fenwick array。声明式全部
 RowDetails 可见通过 count × estimate 进入基础 extent；只有已测差值和显式单行 override 进入稀疏索引。
 
 估值被真实测量修正时，以首个完整可见 entry key 和 intra-row offset 为锚，保持内容位置。所有 height、extent、Maximum、
-ViewportSize 和 offset 运算保持 finite、非负并做 checked/clamped 边界处理。
+ViewportSize 和 offset 运算保持 finite、非负并做 checked/clamped 边界处理。通用 ScrollBar 对有限 Maximum 保持
+`Maximum >= Minimum`；小于一个物理像素的有效 travel range 按 `(Maximum - Minimum) * scale` 判断并收敛到 Minimum，不能用负
+Maximum 表示“无需滚动”。
 
 新 Query 或 PageRequest 成功后垂直 offset 归零；GroupExpansion 改变时保持操作 group header 的屏幕 Y；Invalidated 刷新优先按
 首行 key 恢复，无法解析时落到最近合法 slot。

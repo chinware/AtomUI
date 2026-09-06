@@ -338,10 +338,13 @@ public partial class DataGrid
     {
         var coordinator = _rangeCoordinator ??
                           throw new InvalidOperationException("The range coordinator is detached.");
-        var defaultHeight = GetRangeDefaultHeight(snapshot);
+        var isNewDataGeneration =
+            _rangePresentationIndex?.Snapshot.DataGeneration != snapshot.DataGeneration;
+        var defaultHeight = GetRangeDefaultHeight(
+            snapshot,
+            useDefaultRowHeightEstimate: isNewDataGeneration);
         var heightIndex = _rangeHeightIndex;
-        if (heightIndex is null ||
-            _rangePresentationIndex?.Snapshot.DataGeneration != snapshot.DataGeneration)
+        if (heightIndex is null || isNewDataGeneration)
         {
             heightIndex = new SparseHeightDeltaIndex(defaultHeight);
         }
@@ -423,6 +426,10 @@ public partial class DataGrid
             throw;
         }
 
+        if (isNewDataGeneration)
+        {
+            ResetRowHeightEstimateForDataGeneration();
+        }
         var previousPins = _rangeVisualPins;
         UnloadElements(recycle: true);
         _rangePresentationIndex = nextIndex;
@@ -902,9 +909,13 @@ public partial class DataGrid
             : DefaultRowHeight;
     }
 
-    private double GetRangeDefaultHeight(DataGridPresentationSnapshot? snapshot = null)
+    private double GetRangeDefaultHeight(
+        DataGridPresentationSnapshot? snapshot = null,
+        bool useDefaultRowHeightEstimate = false)
     {
-        var baseHeight = GetRangeBaseRowHeight();
+        var baseHeight = useDefaultRowHeightEstimate && double.IsNaN(RowHeight)
+            ? DefaultRowHeight
+            : GetRangeBaseRowHeight();
         if (RowDetailsVisibilityMode != DataGridRowDetailsVisibilityMode.Visible ||
             !double.IsFinite(RowDetailsHeightEstimate) ||
             RowDetailsHeightEstimate <= 0)

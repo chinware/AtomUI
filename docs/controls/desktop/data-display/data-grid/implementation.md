@@ -412,8 +412,18 @@ SparseHeightDeltaIndex 只保存 pinned/current-LRU block 的实测差值；pass
 kind/group level 分类的 estimator 并删除明细。prefix sum 和 offset-to-slot 是 O(log M)，M 受 cache/pin 与用户显式状态上限
 约束。禁止从 slot 0 扫描到 first slot，也禁止按 total/历史访问量创建全局 Fenwick array。
 
+自动 `RowHeightEstimate` 的 owner 是 committed data generation。`CommitRangePresentation` 先用 `DefaultRowHeight` 构建新
+generation 的高度索引；只有 range、snapshot、pins 与 staged containers 均准备成功、即将交换 presentation 时，才调用
+`ResetRowHeightEstimateForDataGeneration`。这样失败或迟到的 generation 不污染当前高度状态；Source 换绑、Query/filter、分页和
+Invalidated/collection Reset 成功后都从新 baseline 采样。首个有效 data row 的正常 measure 会更新 `RowHeightEstimate` 并 rebase
+稀疏索引，显式 `RowHeight` 继续优先。重置为 O(1)，不新增订阅、timer、CTS 或按总行数分配的结构。
+
 测量修正以首个完整可见 entry key 与 intra-row offset 为锚。Query/PageRequest 成功后 vertical offset 归零；GroupExpansion
 保持操作 header 的屏幕 Y；Invalidated 优先按首行 key 恢复，失败时 clamp 到最近合法 slot。
+
+DataGrid 写入 vertical scrollbar 前仍把 extent travel clamp 到非负；`AbstractScrollBar` 再对所有有限值统一保证
+`Maximum >= Minimum`。小于一个物理像素的 travel range 收敛到 Minimum，因此 Auto scrollbar 不抖动，也不会通过非法负
+Maximum 触发 Avalonia RangeBase 校验异常。
 
 ### 8.5 Container recycle
 
