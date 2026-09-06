@@ -14,7 +14,7 @@ public class DataGridSelectionColumnInitialStateTests
     }
 
     [Fact]
-    public void Selection_Column_Header_Can_Be_Created_Before_ItemsSource()
+    public void Selection_Column_Header_Can_Be_Created_Before_Source()
     {
         var grid = new global::AtomUI.Desktop.Controls.DataGrid
         {
@@ -31,7 +31,7 @@ public class DataGridSelectionColumnInitialStateTests
     }
 
     [Fact]
-    public void Selection_Column_Header_State_Refreshes_When_ItemsSource_Is_Set_After_Header_Creation()
+    public void Selection_Column_Header_State_Refreshes_When_Source_Is_Set_After_Header_Creation()
     {
         var selectedRow = new GridRow("zzz", "aaa");
         var grid = new global::AtomUI.Desktop.Controls.DataGrid
@@ -46,8 +46,12 @@ public class DataGridSelectionColumnInitialStateTests
         var headerCheckBox = grid.Columns[0].HeaderCell.Content.ShouldBeOfType<SelectionHeaderCheckBox>();
         headerCheckBox.IsChecked.ShouldBe(false);
 
-        grid.ItemsSource = new[] { selectedRow };
-        grid.SelectedItems.Add(selectedRow);
+        grid.ItemsSource = new TestDataGridSource<GridRow>([selectedRow]);
+        grid.Selection = new DataGridSelectionState(
+            [DataGridRowKey.FromInt64(1)],
+            null,
+            [],
+            []);
 
         var window = new Window
         {
@@ -76,12 +80,16 @@ public class DataGridSelectionColumnInitialStateTests
     [Theory]
     [InlineData(DataGridPaginationVisibility.Bottom)]
     [InlineData(DataGridPaginationVisibility.None)]
-    public void Initial_SelectedItems_State_Is_Applied_To_Selection_Column_CheckBoxes(
+    public void Initial_Selection_State_Is_Applied_To_Selection_Column_CheckBoxes(
         DataGridPaginationVisibility paginationVisibility)
     {
         var selectedRow = new GridRow("zzz", "aaa");
         var grid        = CreateGrid([selectedRow], paginationVisibility);
-        grid.SelectedItems.Add(selectedRow);
+        grid.Selection = new DataGridSelectionState(
+            [DataGridRowKey.FromInt64(1)],
+            null,
+            [],
+            []);
 
         var window = new Window
         {
@@ -105,7 +113,7 @@ public class DataGridSelectionColumnInitialStateTests
                                   .OfType<SelectionCheckBox>()
                                   .Single();
 
-            grid.SelectedItems.Count.ShouldBe(1);
+            grid.Selection.ExplicitKeys.Length.ShouldBe(1);
             dataGridRow.IsSelected.ShouldBeTrue();
             rowCheckBox.IsChecked.ShouldBe(true);
             headerCheckBox.IsChecked.ShouldBe(true);
@@ -129,7 +137,7 @@ public class DataGridSelectionColumnInitialStateTests
             IsHideOnSinglePage   = true,
             PaginationVisibility = paginationVisibility,
             PageSize             = 10,
-            ItemsSource          = rows,
+            ItemsSource               = new TestDataGridSource<GridRow>(rows),
             Width                = 540,
             Height               = 240
         };

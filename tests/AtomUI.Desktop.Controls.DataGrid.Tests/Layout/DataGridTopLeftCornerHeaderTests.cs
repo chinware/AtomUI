@@ -59,7 +59,8 @@ public class DataGridTopLeftCornerHeaderTests
             HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
             LeftFrozenColumnCount         = 3,
             RowHeaderWidth                = 32,
-            ItemsSource                   = Enumerable.Range(0, 30).Select(index => new GridRow(index)).ToArray(),
+            ItemsSource                        = new TestDataGridSource<GridRow>(
+                Enumerable.Range(0, 30).Select(index => new GridRow(index)).ToArray()),
             Width                         = 520,
             Height                        = 260
         };

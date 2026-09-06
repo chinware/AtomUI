@@ -4,7 +4,7 @@
 
 ## 概述
 
-DataGrid 是 AtomUI 桌面控件体系中的数据表格控件，用于列模型、行选择、排序、过滤、编辑、冻结列和分页展示。
+DataGrid 是 AtomUI 桌面控件体系中的数据表格控件，用于列模型、行选择、排序、过滤、分组、编辑、冻结列、连续虚拟滚动和分页展示。本地集合与远端服务通过同一个范围数据源契约接入。
 
 DataGrid 不负责简单列表、树视图或业务数据访问层。这些职责应由业务层、组合控件或更专用的 AtomUI 控件承担。
 
@@ -28,9 +28,9 @@ DataGrid 的设计语言围绕控件职责、可观察状态和主题契约组�
 
 | 维度 | 含义 | DataGrid 中的表达 |
 | --- | --- | --- |
-| 产品语义 | 控件在界面中承担的稳定职责。 | DataGrid 是 AtomUI 桌面控件体系中的数据表格控件，用于列模型、行选择、排序、过滤、编辑、冻结列和分页展示。 |
-| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `AutoGenerateColumns`、`CanUserFilterColumns`、`CanUserReorderColumns`、`CanUserReorderRows`、`CanUserResizeColumns`、`CanUserSortColumns`、`CellEditingTemplate`、`CellTemplate` 等 32 项。 |
-| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、collection/filter、motion、visual option。 |
+| 产品语义 | 控件在界面中承担的稳定职责。 | DataGrid 以不可变 Query 描述数据语义，以 Range Source 支持本地或远端数据，并只物化当前视口。 |
+| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `ItemsSource : IDataGridSource?`、`Query`、`GroupExpansion`、列 `FieldId`、`CellTemplate` 和 `CellEditingTemplate`。 |
+| 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | AppliedQuery、LoadState、Selection、CurrentRowKey、sort/filter/group projection、motion 和 visual option。 |
 | 主题语义 | ControlTheme、SharedToken、Control Own Token 和模板绑定如何表达视觉。 | DataGrid Token + ControlTheme。 |
 
 ## 公共 API
@@ -41,40 +41,27 @@ DataGrid 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
-| 内容与数据 | `AutoGenerateColumns`、`CanUserFilterColumns`、`CanUserReorderColumns`、`CanUserReorderRows`、`CanUserResizeColumns`、`CanUserSortColumns`、`CellEditingTemplate`、`CellTemplate`、`ColumnHeaderHeight`、`ContentHeight` 等 32 项 | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `ClipboardCopyMode`、`CurrentSortDirection`、`Filters`、`SelectedFilterValues`、`FilterPresenterMode`、`FilterSelectionMode`、`FilterApplyMode`、`Index`、`IsFilterActivated`、`IsHideOnSinglePage`、`IsHoverMode`、`IsSelected`、`IsSorterTooltipVisible` 等 | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `AscendingIndicatorVisible`、`DescendingIndicatorVisible`、`IsDeleteEnabled`、`IsDetailsVisible`、`IsEditEnabled`、`IsFrameBorderVisible`、`IsFrozen`、`IsLeaf`、`IsMotionEnabled`、`IsOperating` 等 19 项 | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
+| 内容与数据 | `ItemsSource`、`Query`、`AppliedQuery`、`GroupExpansion`、`TotalItemCount`、`TotalEntryCount`、`AutoGenerateColumns`、`CellTemplate`、`CellEditingTemplate` | 定义数据输入、查询、范围 presentation、模板和业务对象入口；`ItemsSource` 的类型是 `IDataGridSource?`。 |
+| 选择与当前项 | `Selection`、`CurrentRowKey`、`SelectionChanged`、`ClipboardCopyMode` | 以稳定 row key、query scope 和 index interval 维护可跨 range/page 的声明式状态。 |
+| 交互与加载 | `CanUserFilterColumns`、`CanUserReorderRows`、`CanUserResizeColumns`、`CanUserSortColumns`、`QueryChanged`、`LoadState`、`LoadError`、`IsDataStale`、`Reload()` | 表达用户查询意图、异步生命周期、错误与可提交能力。 |
 | 视觉与布局 | `BottomPaginationAlign`、`ColumnWidth`、`HorizontalAlignment`、`HorizontalScrollBarVisibility`、`MaxColumnWidth`、`MinColumnWidth`、`RowHeight`、`SeparatorBrush`、`SizeType`、`SublevelIndent` 等 14 项 | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
-| 其他稳定入口 | `CellTheme`、`CollectionView`、`CustomOperatingIndicator`、`EmptyIndicator`、`Footer`、`FormatString`、`GridLinesVisibility`、`Level`、`Maximum`、`Minimum` 等 15 项 | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+| 列查询契约 | `FieldId`、`CanUserSort`、`SupportedSortDirections`、只读 `SortState`、过滤候选展示属性 | 让列声明协议字段与能力覆盖，显示 Binding 不参与查询 identity。 |
+| 其他稳定入口 | `CellTheme`、`CustomOperatingIndicator`、`EmptyIndicator`、`Footer`、`FormatString`、`GridLinesVisibility`、`Level`、`Maximum`、`Minimum` 等 | 保留非数据架构 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
-稳定事件包括 `SelectionChanged`、`RowReordering` 和 `RowReordered`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
+`ItemsSource` 只接受 `IDataGridSource?`，不是旧集合型 `IEnumerable` 入口。本地集合使用 `DataGridLocalSource.Create(...)`
+建立强类型 range source，远端实现使用同一接口翻译 Query 并按请求范围返回数据；DataGrid 不拥有或 dispose 外部 Source。
 
-行拖动重排由 `CanUserReorderRows`、`DataGridRowReorderColumn`、`RowReordering`、`RowReordered` 和可选的
-`IDataGridCollectionViewMoveSupport` 共同表达。`DataGrid` 不直接把 View 索引解释为源集合索引，也不直接对
-`IList` 执行 `RemoveAt` / `Insert`。CollectionView 只有在实现移动能力接口并声明 `CanMove=true` 时才参与提交：
+稳定事件包括 `QueryChanged`、`SelectionChanged`、`RowReordering` 和 `RowReordered`。`QueryChanged` 是不可取消的观察事件，在 Query 的内存提交与视觉投影之后、对应 Source 请求之前触发；其他事件的参数和触发顺序同样属于契约。
 
-```csharp
-public interface IDataGridCollectionViewMoveSupport
-{
-    bool CanMove { get; }
-
-    bool TryMove(int sourceIndex, int targetIndex);
-}
-```
-
-`sourceIndex` 和 `targetIndex` 都使用当前 CollectionView 的零基索引。`TryMove` 只有在项目顺序发生实际变化并且
-提交成功时返回 `true`；同位置释放、能力缺失、索引失效或会话在提交前失效时返回 `false`，且不触发
-`RowReordered`。内置 `DataGridCollectionView` 只在源集合可写、非只读、非固定长度、未处于新增或编辑状态，
-并且没有排序、过滤、分组、分页或延迟刷新时提供移动能力。自定义 CollectionView 可以通过实现该可选接口
-定义自己的索引映射和提交语义，而不需要改变已有 `IDataGridCollectionView` 实现。
+行拖动重排由 `CanUserReorderRows`、`DataGridRowReorderColumn`、`RowReordering`、`RowReordered` 和可选
+`IDataGridMovableSource` 共同表达。DataGrid 使用 source row key 与目标 before/after key 提交移动，不把 view、window 或 display
+索引解释为 Source 集合索引。Source 不支持移动、当前 Query 语义禁止移动、编辑未能提交或 snapshot 失效时，handle 不进入
+可提交状态，也不发布 `RowReordered`。
 
 分页公共契约由 `PageSize`、`PaginationVisibility`、`TopPaginationAlign`、`BottomPaginationAlign` 和
-`IsHideOnSinglePage` 共同表达。`PageSize` 默认为 `0`，表示不启用内建分页；非零值配置当前
-`DataGridCollectionView` 的每页条数。`PaginationVisibility` 默认为 `Bottom`，只决定分页视觉投影出现的位置；
-`TopPaginationAlign` 与 `BottomPaginationAlign` 默认均为 `End`。`IsHideOnSinglePage` 默认为 `false`，只在已经
-启用分页后控制单页场景的有效可见性。实际总数、页大小和当前页由 `DataGridCollectionView` 持有，顶部和底部
-`Pagination` 只投影该状态并把用户翻页请求交回 CollectionView。`ItemsSource`、分页属性与模板应用的先后顺序
-不得改变分页结果；模板重新套用时必须从当前 CollectionView 回放状态，而不能把模板部件的默认值当成真源。
+`IsHideOnSinglePage` 共同表达。`PageSize=0` 表示连续模式；非零值形成 `DataGridPageRequest`，其中 data start 使用 long、单页
+count 使用 int。分页总数只来自已提交 Source result 的 `TotalDataCount`，顶部和底部 Pagination 只投影同一份 applied page
+state。翻页成功后垂直 offset 归零；失败时页码、rows、totals、scrollbar 和 Query 共同回退到最后成功 presentation。
 
 列宽公共契约由 `DataGrid.ColumnWidth`、`DataGridColumn.Width`、控件级与列级最小/最大宽度，以及
 `DataGridLengthUnitType` 共同表达。`ColumnWidth` 默认为 `Auto`；单列可以使用 `Pixel`、`Auto`、
@@ -83,16 +70,17 @@ public interface IDataGridCollectionViewMoveSupport
 布局可证明的有限宽度或内容测量结果。空数据时列宽求解不能依赖已隐藏的 rows presenter，完整契约见
 [DataGrid 列宽分配设计](column-sizing-design.md)。
 
-列过滤契约采用数据源与选中值分离的模型。`Filters` 是列过滤项数据源入口，应作为可绑定 Avalonia 属性维护，允许直接绑定 ViewModel 或数据库查询结果。`SelectedFilterValues` 是当前列过滤选中值的唯一 public 状态 owner，默认按双向绑定语义工作。`DataGridColumn` 实现 `IDataContextProvider`，列加入或离开 `DataGrid` 时由 `DataGrid` 同步/释放列级 `DataContext`，保证 `Filters="{Binding ...}"` 和 `SelectedFilterValues="{Binding ...}"` 能绑定到 Gallery 或业务 ViewModel。若同一个 `DataGrid` 通过 `x:DataType` 声明行模型类型，列级 ViewModel 绑定必须避免被行模型上下文捕获：可在 XAML 绑定上显式指定 VM 类型；若具体工具链无法稳定解析这种嵌套上下文，可在页面加载或 View 初始化时直接把 VM 集合赋给列属性，但仍必须复用 `SelectedFilterValues` 作为唯一状态 owner，不能另建并行选中状态。`DataGrid` 内部的 `FilterDescriptions` 只承载 collection view 过滤投影，不应成为列过滤菜单、VM 状态或 checked state 的并行 owner。
-
-列过滤项不应强制用户构造 UI 专属对象。`Filters` 中的元素可以是 `DataGridFilterItem`，也可以是业务 DTO；当使用业务 DTO 时，通过 `FilterTextMemberPath`、`FilterValueMemberPath` 和 `FilterChildrenMemberPath` 声明展示文本、过滤值和树形子项路径。DTO 成员路径只走生成的 data member accessor，DTO 类型需要使用 `[GenerateDataMemberAccessors]` 或等价生成描述；内置过滤项解析不做运行时反射兜底。过滤值以 `object?` 作为语义类型，字符串只是默认文本匹配路径的一种输入，不应成为过滤值契约的硬限制。
+列过滤候选项与过滤条件分离。列 `Filters` 只负责菜单或树形弹层中的候选内容，可以绑定 ViewModel 集合或数据库返回的
+DTO；`DataGrid.Query.Filters` 是已应用条件的唯一 owner。Flyout checked state、FilterIndicator 激活态与 Source request 都从
+Query 投影，用户确认后一次性生成新的不可变 Query。过滤 DTO 的显示成员可以使用 generated data member accessor；Query 中的
+值则转换为确定性的 `DataGridScalar`，不保留可变 object、predicate 或反射 path。
 
 过滤交互模式使用显式枚举表达：`FilterPresenterMode` 表达菜单或树形弹层，`FilterSelectionMode` 表达单选或多选，`FilterApplyMode` 表达确认、关闭或选择变化时应用过滤。枚举状态比布尔开关更适合作为长期 public API，因为它能把展示方式、选择方式和提交时机拆成三个正交状态，避免布尔组合在状态流中产生歧义。
 
 主要公开类型与枚举：
 
-- 类型：`DataGrid`、`DataGridAbstractTextColumn`、`DataGridAutoGeneratingColumnEventArgs`、`DataGridBeginningEditEventArgs`、`DataGridBoundColumn`、`DataGridCell`、`DataGridCellCollection`、`DataGridCellCoordinates`、`DataGridCellEditEndedEventArgs`、`DataGridCellEditEndingEventArgs` 等 public DataGrid 类型。
-- 枚举：`DataGridClipboardCopyMode`、`DataGridEditAction`、`DataGridEditingUnit`、`DataGridFilterPresenterMode`、`DataGridFilterSelectionMode`、`DataGridFilterApplyMode`、`DataGridGridLinesVisibility`、`DataGridHeadersVisibility`、`DataGridLangResourceKind`、`DataGridLengthUnitType`、`DataGridPaginationVisibility`、`DataGridRowDetailsVisibilityMode` 等。
+- 类型：`DataGrid`、`DataGridQuery`、`IDataGridSource`、`DataGridSourceSchema`、`DataGridFieldSchema`、`DataGridFieldDisplayAccessor`、`DataGridRange`、`DataGridPageRequest`、`DataGridRangeResult`、`DataGridSelectionState`、`DataGridColumn`、`DataGridRow` 和 `DataGridCell` 等。
+- 枚举：`DataGridSortDirection`、`DataGridSortUpdateMode`、`DataGridLoadState`、`DataGridSourceEntryKind`、`DataGridClipboardCopyMode`、`DataGridEditingUnit`、`DataGridLengthUnitType`、`DataGridPaginationVisibility` 和 `DataGridRowDetailsVisibilityMode` 等。
 
 稳定 template part：
 
@@ -100,7 +88,7 @@ public interface IDataGridCollectionViewMoveSupport
 | --- | --- | --- |
 | `PART_Ascending` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 | `PART_BottomGridLine` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
-| `PART_BottomPagination` | `Pagination` | 投影 CollectionView 分页状态并转发底部翻页请求。 |
+| `PART_BottomPagination` | `Pagination` | 投影 applied page state 并转发底部翻页意图。 |
 | `PART_ColumnHeadersPresenter` | `DataGridColumnHeadersPresenter` | 测量普通列头，并在空数据布局中提供有限列视口宽度。 |
 | `PART_ContentFrame` | `?` | 承载根视觉、边框、背景或尺寸基线。 |
 | `PART_ContentPresenter` | `?` | 展示用户内容、文本、图标或模板化数据。 |
@@ -116,7 +104,7 @@ public interface IDataGridCollectionViewMoveSupport
 | `PART_RootLayout` | `?` | 承载根视觉、边框、背景或尺寸基线。 |
 | `PART_RowPresenter` | `DataGridRowsPresenter` | 承载已物化行；空数据时保持隐藏，不作为 star 求解的必要前置。 |
 | `PART_SortIndicator` | `?` | 展示指示器、进度、分页或状态反馈。 |
-| `PART_TopPagination` | `Pagination` | 投影 CollectionView 分页状态并转发顶部翻页请求。 |
+| `PART_TopPagination` | `Pagination` | 投影 applied page state 并转发顶部翻页意图。 |
 | `PART_VerticalIndicator` | `?` | 展示指示器、进度、分页或状态反馈。 |
 | `PART_VerticalSeparator` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 
@@ -125,236 +113,20 @@ public interface IDataGridCollectionViewMoveSupport
 ## 事件与命令
 
 DataGrid 的公共契约由 public/protected 类型成员、Avalonia 属性、事件、命令、template part、伪类、ControlTheme key 和资源 key 共同组成。维护时应先确认这些契约是否已经被源码、Gallery 示例或文档暴露。
-稳定事件包括 `SelectionChanged`、`RowReordering` 和 `RowReordered`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
-- 类型：`DataGrid`、`DataGridAbstractTextColumn`、`DataGridAutoGeneratingColumnEventArgs`、`DataGridBeginningEditEventArgs`、`DataGridBoundColumn`、`DataGridCell`、`DataGridCellCollection`、`DataGridCellCoordinates`、`DataGridCellEditEndedEventArgs`、`DataGridCellEditEndingEventArgs` 等 public DataGrid 类型。
+稳定事件包括 `QueryChanged`、`SelectionChanged`、`RowReordering` 和 `RowReordered`。`QueryChanged` 是不可取消的观察事件，在 Query 的内存提交与视觉投影之后、对应 Source 请求之前触发；其他事件的参数和触发顺序同样属于契约。
 
 ## 使用示例
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
-
-### 基础表格
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/Views/DataGridShowCase.axaml:37`
-
-Gallery key：`ExamplesContent` / item `0`
-
-```axaml
-<atom:DataGrid x:Name="BasicCaseGrid"
-               IsHideOnSinglePage="True"
-               IsFrameBorderVisible="True"
-               x:DataType="vm:DataGridBaseInfo"
-                   AttachedToVisualTree="HandleExampleDataGridAttached">
-    <atom:DataGrid.Columns>
-        <atom:DataGridTemplateColumn Header="姓名">
-            <atom:DataGridTemplateColumn.CellTemplate>
-                <DataTemplate x:DataType="vm:DataGridBaseInfo">
-                    <atom:HyperLinkTextBlock Text="{Binding Name}" />
-                </DataTemplate>
-            </atom:DataGridTemplateColumn.CellTemplate>
-        </atom:DataGridTemplateColumn>
-        <atom:DataGridTextColumn Header="年龄" Binding="{Binding Age}" CanUserResize="True" />
-        <atom:DataGridTextColumn Header="地址" Binding="{Binding Address}" />
-        <atom:DataGridTemplateColumn Header="标签">
-            <atom:DataGridTemplateColumn.CellTemplate>
-                <DataTemplate x:DataType="vm:DataGridBaseInfo">
-                    <ItemsControl ItemsSource="{Binding Tags}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal" Spacing="5" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="vm:TagInfo">
-                                <atom:Tag Text="{Binding Name}" TagColor="{Binding Color}"></atom:Tag>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </DataTemplate>
-            </atom:DataGridTemplateColumn.CellTemplate>
-        </atom:DataGridTemplateColumn>
-        <atom:DataGridTemplateColumn Header="操作">
-            <atom:DataGridTemplateColumn.CellTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Spacing="15">
-                        <atom:HyperLinkTextBlock Text="邀请" />
-                        <atom:HyperLinkTextBlock Text="修改" />
-                        <atom:HyperLinkTextBlock Text="删除" />
-                    </StackPanel>
-                </DataTemplate>
-            </atom:DataGridTemplateColumn.CellTemplate>
-        </atom:DataGridTemplateColumn>
-    </atom:DataGrid.Columns>
-</atom:DataGrid>
-```
-
-### 选择
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/Views/DataGridShowCase.axaml:94`
-
-Gallery key：`ExamplesContent` / item `1`
-
-```axaml
-<StackPanel Orientation="Vertical" Spacing="10">
-    <StackPanel Orientation="Horizontal" Spacing="10">
-        <atom:RadioButton x:Name="ExtendedSelection" IsChecked="True" IsCheckedChanged="HandleSelectionModeCheckedChanged" Content="多选" />
-        <atom:RadioButton x:Name="SingleSelection" IsCheckedChanged="HandleSelectionModeCheckedChanged" Content="单选" />
-    </StackPanel>
-    <atom:DataGrid x:Name="SelectionDataGrid" SelectionMode="Extended" SelectTriggerType="Cell"
-                           x:DataType="vm:DataGridBaseInfo"
-                   AttachedToVisualTree="HandleExampleDataGridAttached">
-        <atom:DataGrid.Columns>
-            <atom:DataGridSelectionColumn />
-            <atom:DataGridTemplateColumn Header="姓名">
-                <atom:DataGridTemplateColumn.CellTemplate>
-                    <DataTemplate x:DataType="vm:DataGridBaseInfo">
-                        <atom:HyperLinkTextBlock Text="{Binding Name}" />
-                    </DataTemplate>
-                </atom:DataGridTemplateColumn.CellTemplate>
-            </atom:DataGridTemplateColumn>
-            <atom:DataGridTextColumn Header="年龄" Binding="{Binding Age}" />
-            <atom:DataGridTextColumn Header="地址" Binding="{Binding Address}" />
-            <atom:DataGridTemplateColumn Header="标签">
-                <atom:DataGridTemplateColumn.CellTemplate>
-                    <DataTemplate x:DataType="vm:DataGridBaseInfo">
-                        <ItemsControl ItemsSource="{Binding Tags}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal" Spacing="5" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="vm:TagInfo">
-                                    <atom:Tag Text="{Binding Name}" TagColor="{Binding Color}"></atom:Tag>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </DataTemplate>
-                </atom:DataGridTemplateColumn.CellTemplate>
-            </atom:DataGridTemplateColumn>
-            <atom:DataGridTemplateColumn Header="操作">
-                <atom:DataGridTemplateColumn.CellTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal" Spacing="15">
-                            <atom:HyperLinkTextBlock Text="邀请" />
-                            <atom:HyperLinkTextBlock Text="修改" />
-                            <atom:HyperLinkTextBlock Text="删除" />
-                        </StackPanel>
-                    </DataTemplate>
-                </atom:DataGridTemplateColumn.CellTemplate>
-            </atom:DataGridTemplateColumn>
-        </atom:DataGrid.Columns>
-    </atom:DataGrid>
-</StackPanel>
-```
-
-### 拖拽调整列宽
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/Views/DataGridShowCase.axaml:156`
-
-Gallery key：`ExamplesContent` / item `2`
-
-```axaml
-<atom:DataGrid x:Name="DragResizeColumn" IsHideOnSinglePage="True" CanUserResizeColumns="True"
-                           x:DataType="vm:DataGridBaseInfo"
-                   AttachedToVisualTree="HandleExampleDataGridAttached">
-    <atom:DataGrid.Columns>
-        <atom:DataGridTemplateColumn Header="姓名" CanUserResize="True">
-            <atom:DataGridTemplateColumn.CellTemplate>
-                <DataTemplate x:DataType="vm:DataGridBaseInfo">
-                    <atom:HyperLinkTextBlock Text="{Binding Name}" />
-                </DataTemplate>
-            </atom:DataGridTemplateColumn.CellTemplate>
-        </atom:DataGridTemplateColumn>
-        <atom:DataGridTextColumn Header="年龄" Binding="{Binding Age}" CanUserResize="True"
-                                 CanUserSort="True" />
-        <atom:DataGridTextColumn Header="地址" Binding="{Binding Address}" />
-        <atom:DataGridTemplateColumn Header="标签">
-            <atom:DataGridTemplateColumn.CellTemplate>
-                <DataTemplate x:DataType="vm:DataGridBaseInfo">
-                    <ItemsControl ItemsSource="{Binding Tags}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal" Spacing="5" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="vm:TagInfo">
-                                <atom:Tag Text="{Binding Name}" TagColor="{Binding Color}"></atom:Tag>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </DataTemplate>
-            </atom:DataGridTemplateColumn.CellTemplate>
-        </atom:DataGridTemplateColumn>
-        <atom:DataGridTemplateColumn Header="操作">
-            <atom:DataGridTemplateColumn.CellTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Spacing="15">
-                        <atom:HyperLinkTextBlock Text="邀请" />
-                        <atom:HyperLinkTextBlock Text="修改" />
-                        <atom:HyperLinkTextBlock Text="删除" />
-                    </StackPanel>
-                </DataTemplate>
-            </atom:DataGridTemplateColumn.CellTemplate>
-        </atom:DataGridTemplateColumn>
-    </atom:DataGrid.Columns>
-</atom:DataGrid>
-```
-
-### 尺寸
-
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/Views/DataGridShowCase.axaml:212`
-
-Gallery key：`ExamplesContent` / item `3`
-
-```axaml
-<StackPanel Spacing="10">
-    <atom:DataGrid x:Name="LargeSizeDataGrid" SizeType="Large"
-                           x:DataType="vm:DataGridBaseInfo"
-                   AttachedToVisualTree="HandleExampleDataGridAttached">
-        <atom:DataGrid.Columns>
-            <atom:DataGridTextColumn Header="姓名"
-                                     Binding="{Binding Name}" />
-            <atom:DataGridTextColumn Header="年龄" Binding="{Binding Age}" />
-            <atom:DataGridTextColumn Header="地址"
-                                     Binding="{Binding Address}" />
-        </atom:DataGrid.Columns>
-    </atom:DataGrid>
-
-    <atom:DataGrid x:Name="MiddleSizeDataGrid" SizeType="Middle"
-                           x:DataType="vm:DataGridBaseInfo"
-                   AttachedToVisualTree="HandleExampleDataGridAttached">
-        <atom:DataGrid.Columns>
-            <atom:DataGridTextColumn Header="姓名"
-                                     Binding="{Binding Name}" />
-            <atom:DataGridTextColumn Header="年龄" Binding="{Binding Age}" />
-            <atom:DataGridTextColumn Header="地址"
-                                     Binding="{Binding Address}" />
-        </atom:DataGrid.Columns>
-    </atom:DataGrid>
-
-    <atom:DataGrid x:Name="SmallSizeDataGrid" SizeType="Small"
-                           x:DataType="vm:DataGridBaseInfo"
-                   AttachedToVisualTree="HandleExampleDataGridAttached">
-        <atom:DataGrid.Columns>
-            <atom:DataGridTextColumn Header="姓名"
-                                     Binding="{Binding Name}" />
-            <atom:DataGridTextColumn Header="年龄" Binding="{Binding Age}" />
-            <atom:DataGridTextColumn Header="地址"
-                                     Binding="{Binding Address}" />
-        </atom:DataGrid.Columns>
-    </atom:DataGrid>
-</StackPanel>
-```
+- `controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/Views/DataGridShowCase.axaml`
 
 ## 状态模型
 
 DataGrid 的状态流按以下路径收敛：
 
 ```text
-Public API / inherited command / item source / user input
+Public API / inherited command / Source invalidation / user input
   -> 控件实例状态
   -> effective state / pseudo-class / template property
   -> ControlTheme selector / presenter / renderer
@@ -364,17 +136,21 @@ Public API / inherited command / item source / user input
 状态维护规则：
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
-- selection/checked/active、collection/filter、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
-- 列过滤状态以 `SelectedFilterValues` 为 owner：VM 更新它时重建当前列的 collection view 过滤投影并回放到 flyout checked state；用户在 flyout 中选择过滤项时先更新它，再由同一管线投影到 `FilterDescriptions`。
-- `Filters` 替换、reset 或 clear 时，Header 和 FilterIndicator 必须重新计算过滤入口可见性并重新物化 flyout 内容；已有 `SelectedFilterValues` 只能保留仍能匹配到有效过滤项的值。
-- `ClearFilters()` 和单列清除过滤必须通过清空列级 `SelectedFilterValues` 完成，不能只清空 `FilterDescriptions`，否则 VM 绑定、过滤图标激活态和 flyout 勾选态会分裂。
-- 分页状态以当前 `DataGridCollectionView` 为 owner；顶部和底部分页部件必须从同一份 `ItemCount`、`PageSize`
-  和 `PageIndex` 投影，不能互相覆盖，也不能在模板重建时反向重置 CollectionView。
+- Query、Selection、current、loading、motion 和 visual option 状态由 DataGrid 或明确 Source capability 单向推导，不能在 template part 之间双向竞争。
+- 排序、过滤和分组只由 `Query` 拥有；列、Header、Cell 和 Flyout 只投影相应字段状态。
+- `Filters` 候选项替换、reset 或 clear 时可以重新物化 Flyout 内容，但不能直接改变已应用 Query；用户确认或显式 API 才提交新的 Query。
+- 分页状态以 applied PageRequest 和 `TotalItemCount` 为 owner；上下 Pagination 不能互相覆盖，也不能在模板重建时反向重置 Query 或 Source。
+- Loading 没有可展示的已提交 presentation，实际挂起时驱动 Spin；Refreshing 保持旧 presentation 的几何与完整不透明度，
+  不自动启动 Spin。两种状态都禁止 edit/delete/move，成功时原子交换，失败时完整回退。
+- 连续滚轮、惯性或 scrollbar thumb 输入只保留最新有效 `DesiredViewport`。新目标先接管仍需要的 block，再使旧视口 scope
+  失效；不再被任何有效 scope 使用的排队或执行中请求立即收到取消，旧 prefetch 不能排在新 visible range 之前。
+- 同步 Source 与 cache hit 在当前调用中直接进入 Ready，不发布瞬时 Loading/Refreshing；调用方显式设置 `IsOperating=true`
+  时仍可在任意 LoadState 显示 Spin。
 - 行拖动状态以当前 `DataGrid` 的单一拖拽会话为 owner；handle 和 RowsPresenter 只投影输入与 ghost row，不能保存
-  跨 DataGrid 共享的静态拖拽状态。Pointer capture、源行、CollectionView 和目标索引必须属于同一个会话。
+  跨 DataGrid 共享的静态拖拽状态。Pointer capture、源 row key、Source snapshot 和目标邻接 key 必须属于同一个会话。
 - `RowReordering` 在超过拖动阈值后且创建 ghost row 前触发一次；事件取消或事件回调改变 DataGrid、源行、
-  ItemsSource、CollectionView 或移动能力时，本次 Pointer 会话保持取消状态，不得在后续移动帧重复开始。
-- `RowReordered` 只在 CollectionView 成功提交顺序变化，并且 ghost、capture、动画与会话状态全部清理后触发。
+  Source、Query、snapshot 或移动能力时，本次 Pointer 会话保持取消状态，不得在后续移动帧重复开始。
+- `RowReordered` 只在 movable Source 成功提交顺序变化，并且 ghost、capture、动画与会话状态全部清理后触发。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
@@ -422,55 +198,79 @@ DataGrid Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 
 ## AOT 与裁剪注意事项
 
-资源和 AOT 约束：
+### 9.1 热路径
 
-- 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
-- 不把可静态声明的模板结构迁移到 C# 动态创建。
-- 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
-- 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
-- Source generator 生成文件不手工编辑；需要修改时改输入源或 generator。
+- Scroll input 只更新/合并 DesiredViewport，handler 返回后由 coordinator 调度 request。
+- 每次不同的 DesiredViewport 只替换一个 active scope；旧排队项不会作为无界 task 留在 semaphore 前等待。
+- PointerMoved 只更新 drag session、ghost offset、target key 和必要自动滚动 intent。
+- Measure/Arrange/prepare/recycle 只做 committed index lookup 与 container state 投影。
+- Query no-op 不请求、不刷新 rows；sort state 没有 per-cell 长期订阅。
+- Ready 模板不增加 visual node；prefetch 不触发布局。
+- 同步 Source/cache hit 不发布瞬时 Loading/Refreshing；异步首次加载驱动 Spin，已有 snapshot 的异步刷新不启动自动遮罩。
 
-性能边界：
+### 9.2 复杂度与资源上限
 
-- 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
-- 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
-- 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
-- 行拖动 PointerMoved 热路径只更新会话坐标、目标索引、ghost offset 和必要的自动滚动请求；不在移动帧修改
-  集合、刷新 View、重建模板或分配新的 ghost row。
-- 每次有效 PointerPressed 最多创建一个轻量行拖动会话，每次进入 Dragging 最多创建一个 ghost row；两者在
-  完成或取消时释放。移动能力通过直接接口能力判断，不使用反射、动态调用或运行时类型扫描。
-- 列宽求解复用列集合可见宽度缓存和 `AdjustColumnWidths`；无 star 列、输入无限、adjustment 为零或初始 Auto
-  测量未完成时应直接退出，不在 presenter 中分配辅助集合或建立额外订阅。
-- Pinned filter 目标选择直接遍历 displayed columns，不做反射、runtime type discovery 或全视觉树扫描；两级 relay 只在
-  当前 Header/Indicator/Flyout 生命周期内存在，Loaded callback 由 generation 合并和失效。
+| 路径 | 上限 |
+| --- | --- |
+| fixed-height offset lookup | O(1) |
+| variable-height offset lookup | O(log M)，M 由 cache/pin/显式状态约束 |
+| realized row/group controls | visible + editing row + drag row |
+| request concurrency | 默认最多 2 |
+| active viewport scope | 每个 generation 1 个 |
+| queued obsolete viewport work | 0；scope supersede 时从可发现队列移除并取消 |
+| prefetch priority | 低于所有 visible 缺口，并绑定产生它的 committed scope |
+| range size | Schema.MaximumRangeSize，最大 4096 |
+| cache | 有限 block LRU，与 total 无关 |
+| snapshot-expiry auto retry | 每个用户操作最多 1 次 |
+
+所有 request、cache、pool、subscription 和 sparse state 必须在长时间往返滚动后达到稳态，不能随滚动次数或曾访问 row 数持续
+增长。
+
+### 9.3 AOT
+
+- Query/Source public 类型只位于 DataGrid package，不引入 Core/Shared 反向依赖。
+- LocalSource 使用静态泛型 descriptor，并把 typed getter 显式投影为 schema `DisplayAccessor`；generated
+  `IDataMemberAccessor` 可通过 `FromDataMember<TItem>` 复用。自动列只消费该 accessor 并生成 compiled binding，绝不把
+  FieldId 当作 CLR path。
+- 没有 `DisplayAccessor` 的远端 schema 字段只支持显式 Column/Binding；`PropertyChangedName` 与 FieldId 相互独立，binding
+  dispose/recycle 时解除 `INotifyPropertyChanged` 订阅。
+- 不使用 PropertyInfo.GetValue、Expression.Compile、assembly scan、runtime registration、动态泛型构造或字符串 Binding。
+- 不新增 linker root、trimming suppression 或反射 fallback。
+- Source generator 输出只通过输入源和 generator 更新。
 
 ## 源码索引
 
-主要源码文件：
+稳定 ownership 按职责组织：
 
-- `src/AtomUI.Desktop.Controls.DataGrid`：代表文件包括 `AtomUIDataGridThemesProvider.cs`、`ThemeManagerBuilderExtensions.cs`、`DataGrid.Cells.cs`、`DataGrid.Columns.cs`、`DataGrid.Privates.cs` 等。
-- `src/AtomUI.Desktop.Controls.DataGrid/Cell`：4 个文件，代表文件 `DataGridCell.cs`、`DataGridCellCollection.cs`、`DataGridCellCoordinates.cs`、`DataGridCellsPresenter.cs`。
-- `src/AtomUI.Desktop.Controls.DataGrid/Column`：31 个文件，代表文件 `DataGridAbstractTextColumn.cs`、`DataGridBoundColumn.cs`、`DataGridCheckBoxColumn.cs`、`DataGridColumn.Privates.cs`、`DataGridColumn.cs` 等。
-- `src/AtomUI.Desktop.Controls.DataGrid/Column/Filters`：7 个文件，代表文件 `DataGridFilterIndicator.cs`、`DataGridFilterItem.cs`、`DataGridFilterValuesSelectedEventArgs.cs`、`DataGridMenuFilterFlyout.cs`、`DataGridMenuFilterFlyoutPresenter.cs` 等。
-- `src/AtomUI.Desktop.Controls.DataGrid/Data`：15 个文件，代表文件 `CollectionViewGroupRoot.cs`、`DataGridCollectionView.cs`、`DataGridCollectionViewGroup.cs`、`DataGridCollectionViewGroupInternal.cs`、`DataGridCurrentChangingEventArgs.cs` 等。
-- `src/AtomUI.Desktop.Controls.DataGrid/EventArgs`：18 个文件，代表文件 `DataGridAutoGeneratingColumnEventArgs.cs`、`DataGridBeginningEditEventArgs.cs`、`DataGridCellEditEndedEventArgs.cs`、`DataGridCellEditEndingEventArgs.cs`、`DataGridCellEventArgs.cs` 等。
-- `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.Localization`：生成 Catalog descriptor、语言模块注册入口和 `DataGridLangResource` 扩展。
-- `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.ResourceHost.ScopedResourceHostGenerator`：1 个文件，代表文件 `GenerateScopedResourceHostAttribute.g.cs`。
-- `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.TokenResourceKeyGenerator`：生成 `GeneratedControlPackageRegistration.g.cs`、`GeneratedThemeSchema.g.cs` 和 `TokenResourceConst.g.cs`。
-- `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.ThemeAssetManifestGenerator`：生成独立主题叶子的 `GeneratedControlThemeAssetManifest.g.cs`。
-- `src/AtomUI.Desktop.Controls.DataGrid/Localization`：`DataGridLangResourceKind.cs` 定义稳定 Catalog，`en-US.xlf`、`zh-CN.xlf`、`zh-TW.xlf` 提供内置翻译。
-- `src/AtomUI.Desktop.Controls.DataGrid/Properties`：1 个文件，代表文件 `AssemblyInfo.cs`。
-- `src/AtomUI.Desktop.Controls.DataGrid/Row`：7 个文件，代表文件 `DataGridDetailsPresenter.cs`、`DataGridRow.Privates.cs`、`DataGridRow.cs`、`DataGridRowGroupHeader.cs`、`DataGridRowGroupInfo.cs` 等。
-- `src/AtomUI.Desktop.Controls.DataGrid/Themes`：21 个文件，代表文件 `DataGridCellTheme.axaml`、`DataGridColumnGroupHeaderTheme.axaml`、`DataGridColumnHeaderTheme.axaml`、`DataGridColumnHeaderTheme.cs`、`DataGridHeaderViewItemTheme.axaml` 等。
-- `src/AtomUI.Desktop.Controls.DataGrid/Utils`：8 个文件，代表文件 `DataGridFrozenGrid.cs`、`DataGridHelper.cs`、`DataGridValueConverter.cs`、`KeyboardHelper.cs`、`Range.cs` 等。
-- `src/AtomUI.Desktop.Controls.DataGrid/Utils/Converters`：2 个文件，代表文件 `DataGridPaginationVisibilityConvertor.cs`、`DataGridUniformBorderThicknessToScalarConverter.cs`。
+```text
+src/AtomUI.Desktop.Controls.DataGrid/
+├── DataGrid.cs                         public contract + lifecycle
+├── DataGrid.Query.cs                   Query commit and visual projection
+├── DataGrid.RangeLoading.cs            viewport-to-coordinator integration
+├── DataGrid.Virtualization.cs          desired/committed viewport + container bridge
+├── Data/
+│   ├── Query/                          immutable values, scalar and validation
+│   ├── Source/                         schema, request, result and capability contracts
+│   │   └── Local/                      typed local source and projection
+│   └── Virtualization/                 viewport scope, request scheduler, snapshot, cache, index and heights
+├── Column/                             column contract, header, sorting/filtering interaction
+├── Column/Filters/                     filter indicator, flyout and candidate presentation
+├── Row/                                row, group header, details and row presenters
+├── Cell/                               cell state and horizontal virtualization
+├── EventArgs/                          public event payloads
+├── Themes/                             static templates, selectors and resource binding
+├── Localization/                       generated-catalog-backed localized strings
+└── Utils/                              narrow shared algorithms and converters
+```
 
-职责边界：
+维护规则：
 
-- 控件主文件保留 public/protected API、Avalonia 属性注册、事件和主要生命周期入口。
-- Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
-- Token 文件只提供组件视觉变量，不保存实例状态。
-- Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
+- 主文件保留 public/protected API、Avalonia 属性注册、事件和主要生命周期入口。
+- partial 与 helper 按稳定 owner 拆分，不按 public/private 或单个触发点拆分。
+- Theme 文件负责静态视觉结构、Template Part、selector 和资源绑定；不在 C# 中动态复制同一结构。
+- Token 只保存组件视觉变量，不保存 Query、loading、selection、expanded 或 popup runtime state。
+- Gallery 只展示用法和验证行为，不成为运行时状态 owner。
+- GeneratedFiles 由对应 generator 维护，不手工编辑。
 
 ## 相关文档
 

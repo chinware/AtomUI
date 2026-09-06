@@ -103,16 +103,17 @@ internal class DataGridOperationButtons : TemplatedControl
         }
     }
 
-    private void DeleteRow()
+    private async void DeleteRow()
     {
-        if (OwningGrid != null)
+        if (OwningGrid is { } grid && OwningRow is { RowKey.IsValid: true } row)
         {
-            var dataCollectionView =  OwningGrid.DataConnection.CollectionView;
-            Debug.Assert(dataCollectionView != null);
-            var index              = OwningRow?.Index;
-            if (index.HasValue)
+            try
             {
-                dataCollectionView.RemoveAt(index.Value);
+                await grid.DeleteRowAsync(row.RowKey);
+            }
+            catch (OperationCanceledException)
+            {
+                // The row/query generation changed before the user action completed.
             }
         }
     }

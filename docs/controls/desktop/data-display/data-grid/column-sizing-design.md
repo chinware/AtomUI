@@ -25,6 +25,7 @@
 - 空数据视觉继续由模板控制；不能通过强制显示 `DataGridRowsPresenter` 获得列宽输入。
 - filler 只表示现有列在约束下确实无法吸收的空间，不能替代 star 列的正常分配。
 - `MinWidth`、`MaxWidth`、用户调整、冻结列和滚动布局继续复用统一列宽调整算法，不为特定 presenter 建立旁路。
+- range source 和纵向虚拟化只允许已实现的 cell 参与内容测量；列宽求解不能为了发现未加载内容的宽度而请求其他 range、扫描整页之外的数据或扩大 realized window。
 
 ## 3. 列宽模型与 Public API
 
@@ -149,7 +150,15 @@ CompleteAutoSizing(availableCellsWidth)
 
 空数据时不存在需要等待的 cell 内容，当前可见表头 presenter 可以在 header 测量完成后结束初始 Auto 阶段。数据随后出现时，新的 cell 内容仍可通过现有 Auto growth 路径提高期望宽度，并重新触发统一分配。
 
-### 7.3 失效与重新计算
+### 7.3 range source、分页与稳定水平 extent
+
+`Auto` 和 `SizeToCells` 的“已测量单元格”严格指当前已经实现并进入正常 measure 的 cells。对于 range source、分页和纵向虚拟化，未请求 range、未实现行以及其他页的数据不属于当前列宽输入。DataGrid 不预取或遍历这些数据来推断全局最大内容宽度，否则会把列宽测量变成隐式 Source I/O，破坏有界 range、首屏延迟和虚拟化复杂度。
+
+因此，纯 `Auto` 列可以在新的已实现内容更宽时自然增长，水平 scrollbar 也可以随真实 extent 增长；这属于内容驱动宽度的既定语义。如果产品要求首屏即具有稳定、内容不被压缩的水平 extent，列定义必须提供确定的几何基线：使用 `Pixel Width` 表达固定宽度，或在保留 `Auto` 增长能力时声明 `MinWidth`，必要时再配合 `MaxWidth`。`Star` 表达的是在有限视口内分配剩余空间，可能压缩内容，不等价于稳定内容宽度；强制 `HorizontalScrollBarVisibility=Visible` 只改变轨道可见性，也不能建立真实 extent。
+
+Gallery 的 Basic Paging 示例采用 `Auto + MinWidth`：首屏列最小宽度总和超过该示例的列视口时自然出现水平 scrollbar，翻页后更宽的已实现内容仍可扩展列宽，同时不读取其他页来预热宽度。
+
+### 7.4 失效与重新计算
 
 以下变化会使列宽输入或结果失效：
 
@@ -201,6 +210,7 @@ CompleteAutoSizing(availableCellsWidth)
 | 表头变体 | 普通表头和分组表头产生相同的叶列显示宽度。 |
 | 约束 | 单列和控件级 min/max、所有 star 达到 `MaxWidth`、收缩到 `MinWidth`。 |
 | 布局组合 | 左/右冻结列、行头、垂直和水平滚动条、用户调整列宽。 |
+| range 与分页 | `Auto + MinWidth` 首屏形成自然水平 overflow；翻页前后 scrollbar 保持正确；不得为宽度发现请求未显示 range。 |
 | filler | star 可吸收剩余空间时为零；所有可调整列受约束后才允许为正。 |
 | 无限空间 | 不执行有限 star 剩余空间分配，并保持既有退化行为。 |
 

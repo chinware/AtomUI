@@ -2,7 +2,6 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using AtomUI.Controls;
 using AtomUI.Data;
-using AtomUI.Desktop.Controls.Data;
 using AtomUI.Icons.AntDesign;
 using Avalonia;
 using Avalonia.Controls;
@@ -84,7 +83,6 @@ internal class DataGridFilterIndicator : IconButton
     private static int _indicatorSeed = 0;
     private string? _treeRadioCheckGroupName;
     private DataGrid? _subscribedGrid;
-    private IDataGridCollectionView? _subscribedCollectionView;
     private INotifyCollectionChanged? _subscribedFilters;
     private bool _isFlyoutContentMaterialized;
     private IDisposable? _popupPinnedOpenRelay;
@@ -424,7 +422,7 @@ internal class DataGridFilterIndicator : IconButton
             UnregisterGrid();
             _subscribedGrid = grid;
             _subscribedGrid.PropertyChanged += HandleOwningGridPropertyChanged;
-            RegisterCollectionView(grid.CollectionView);
+            UpdateFilterActivatedState();
         }
     }
 
@@ -445,34 +443,15 @@ internal class DataGridFilterIndicator : IconButton
             _subscribedGrid.PropertyChanged -= HandleOwningGridPropertyChanged;
             _subscribedGrid = null;
         }
-        RegisterCollectionView(null);
-    }
-
-    private void RegisterCollectionView(IDataGridCollectionView? collectionView)
-    {
-        if (ReferenceEquals(_subscribedCollectionView, collectionView))
-        {
-            return;
-        }
-
-        if (_subscribedCollectionView?.FilterDescriptions != null)
-        {
-            _subscribedCollectionView.FilterDescriptions.CollectionChanged -= HandleFilterDescriptionsChanged;
-        }
-
-        _subscribedCollectionView = collectionView;
-        if (_subscribedCollectionView?.FilterDescriptions != null)
-        {
-            _subscribedCollectionView.FilterDescriptions.CollectionChanged += HandleFilterDescriptionsChanged;
-        }
         UpdateFilterActivatedState();
     }
 
     private void HandleOwningGridPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs change)
     {
-        if (change.Property == DataGrid.CollectionViewProperty)
+        if (change.Property == DataGrid.QueryProperty ||
+                 change.Property == DataGrid.ItemsSourceProperty)
         {
-            RegisterCollectionView(change.NewValue as IDataGridCollectionView);
+            RefreshSelectedFilterValues();
         }
     }
 
@@ -500,24 +479,9 @@ internal class DataGridFilterIndicator : IconButton
         UpdateFilterActivatedState();
     }
 
-    private void HandleFilterDescriptionsChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        UpdateFilterActivatedState();
-    }
-
     private void UpdateFilterActivatedState()
     {
-        Debug.Assert(OwningColumn != null);
-        var collectionView = OwningColumn.OwningGrid?.CollectionView;
-        if (collectionView is not null)
-        {
-            var filterDescription = OwningColumn.GetFilterDescription();
-            IsFilterActivated = filterDescription != null;
-        }
-        else
-        {
-            IsFilterActivated = false;
-        }
+        IsFilterActivated = OwningColumn?.HasActiveQueryFilter == true;
     }
 
     private void ConfigureTreeFlyoutToggleType()

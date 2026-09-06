@@ -1,14 +1,11 @@
 using System.Collections;
 using System.Collections.Specialized;
-using AtomUI.Desktop.Controls.Data;
-
 namespace AtomUI.Desktop.Controls;
 
 public abstract partial class DataGridColumn
 {
-    private INotifyCollectionChanged? _subscribedFilterItemsSource;
+    private INotifyCollectionChanged? _subscribedFilterItems;
     private INotifyCollectionChanged? _subscribedSelectedFilterValues;
-    private readonly Dictionary<(Type ItemType, string Path), IDataGridDataMemberPathAccessor> _filterItemAccessors = new();
 
     internal bool HasFilterItems => Filters is not null && GetFilterItemsCount() > 0;
 
@@ -32,118 +29,81 @@ public abstract partial class DataGridColumn
     internal void SetSelectedFilterValuesFromFilterRequest(IEnumerable? filterValues)
     {
         var selectedValues = CopyFilterValues(filterValues);
-        if (TryUpdateExistingSelectedFilterValues(selectedValues))
-        {
-            return;
-        }
-
-        SelectedFilterValues = selectedValues;
+        OwningGrid?.ApplyFilterGesture(this, selectedValues);
     }
 
-    internal void ApplySelectedFilterValuesToFilterDescriptions()
+    internal void ApplySelectedFilterValuesToQuery()
     {
-        if (OwningGrid is not { } owningGrid ||
-            owningGrid.DataConnection is not { } dataConnection ||
-            dataConnection.FilterDescriptions is not { } filterDescriptions ||
-            dataConnection.CollectionView is not { } collectionView ||
-            !dataConnection.AllowFilter)
-        {
-            return;
-        }
-
-        var selectedValues = CopyFilterValues(SelectedFilterValues);
-        var filter         = GetFilterDescription();
-        using (collectionView.DeferRefresh())
-        {
-            if (selectedValues.Count == 0)
-            {
-                if (filter != null)
-                {
-                    filterDescriptions.Remove(filter);
-                }
-                return;
-            }
-
-            var propertyName = GetFilterPropertyName();
-            if (string.IsNullOrEmpty(propertyName))
-            {
-                return;
-            }
-
-            if (filter != null && FilterConditionsSetEquals(filter.FilterConditions, selectedValues))
-            {
-                return;
-            }
-
-            var newFilter = new DataGridFilterDescription
-            {
-                PropertyPath      = propertyName,
-                Filter            = GetFilterPredicate(),
-                FilterConditions  = selectedValues
-            };
-
-            if (filter == null)
-            {
-                filterDescriptions.Add(newFilter);
-                return;
-            }
-
-            var oldIndex = filterDescriptions.IndexOf(filter);
-            if (oldIndex >= 0)
-            {
-                filterDescriptions.Remove(filter);
-                filterDescriptions.Insert(oldIndex, newFilter);
-            }
-            else
-            {
-                filterDescriptions.Add(newFilter);
-            }
-        }
+        OwningGrid?.ApplyFilterGesture(this, CopyFilterValues(SelectedFilterValues));
     }
 
-    internal void RemoveFilterDescriptionProjection()
+    internal void RemoveFilterQueryProjection()
     {
-        if (OwningGrid?.DataConnection is not { } dataConnection ||
-            dataConnection.FilterDescriptions is not { } filterDescriptions ||
-            dataConnection.CollectionView is not { } collectionView)
-        {
-            return;
-        }
-
-        var filter = GetFilterDescription();
-        if (filter == null)
-        {
-            return;
-        }
-
-        using (collectionView.DeferRefresh())
-        {
-            filterDescriptions.Remove(filter);
-        }
+        // The DataGrid owns Query. Detaching a visual column must not mutate it.
     }
 
     internal bool IsFilterValueSelected(object? value)
     {
-        return ContainsValue(SelectedFilterValues, value);
+        if (OwningGrid is not null &&
+            FieldId is { IsValid: true } queryField &&
+            DataGridScalar.TryFromValue(value, out var scalar))
+        {
+            foreach (var filter in OwningGrid.Query.Filters)
+            {
+                if (filter.Field != queryField)
+                {
+                    continue;
+                }
+                foreach (var selected in filter.Values)
+                {
+                    if (selected == scalar)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            return false;
+        }
+        return false;
     }
 
-    private void RegisterFilterItemsSource(IEnumerable? oldSource, IEnumerable? newSource)
+    internal bool HasActiveQueryFilter
     {
-        if (ReferenceEquals(oldSource, newSource))
+        get
+        {
+            if (OwningGrid is null || FieldId is not { IsValid: true } queryField)
+            {
+                return false;
+            }
+            foreach (var filter in OwningGrid.Query.Filters)
+            {
+                if (filter.Field == queryField)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    private void RegisterFilterItems(IEnumerable? oldItems, IEnumerable? newItems)
+    {
+        if (ReferenceEquals(oldItems, newItems))
         {
             return;
         }
 
-        if (_subscribedFilterItemsSource != null)
+        if (_subscribedFilterItems != null)
         {
-            _subscribedFilterItemsSource.CollectionChanged -= HandleFilterItemsSourceCollectionChanged;
-            _subscribedFilterItemsSource = null;
+            _subscribedFilterItems.CollectionChanged -= HandleFilterItemsCollectionChanged;
+            _subscribedFilterItems = null;
         }
 
-        if (newSource is INotifyCollectionChanged notifyCollectionChanged)
+        if (newItems is INotifyCollectionChanged notifyCollectionChanged)
         {
-            _subscribedFilterItemsSource = notifyCollectionChanged;
-            _subscribedFilterItemsSource.CollectionChanged += HandleFilterItemsSourceCollectionChanged;
+            _subscribedFilterItems = notifyCollectionChanged;
+            _subscribedFilterItems.CollectionChanged += HandleFilterItemsCollectionChanged;
         }
     }
 
@@ -169,16 +129,16 @@ public abstract partial class DataGridColumn
 
     private void RegisterFilterCollectionSubscriptions()
     {
-        RegisterFilterItemsSource(_subscribedFilterItemsSource as IEnumerable, Filters);
+        RegisterFilterItems(_subscribedFilterItems as IEnumerable, Filters);
         RegisterSelectedFilterValues(_subscribedSelectedFilterValues as IList, SelectedFilterValues);
     }
 
     private void ReleaseFilterCollectionSubscriptions()
     {
-        if (_subscribedFilterItemsSource != null)
+        if (_subscribedFilterItems != null)
         {
-            _subscribedFilterItemsSource.CollectionChanged -= HandleFilterItemsSourceCollectionChanged;
-            _subscribedFilterItemsSource = null;
+            _subscribedFilterItems.CollectionChanged -= HandleFilterItemsCollectionChanged;
+            _subscribedFilterItems = null;
         }
 
         if (_subscribedSelectedFilterValues != null)
@@ -188,7 +148,7 @@ public abstract partial class DataGridColumn
         }
     }
 
-    private void HandleFilterItemsSourceCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    private void HandleFilterItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         PruneSelectedFilterValuesToFilterItems();
         NotifyFilterItemsChanged();
@@ -196,13 +156,12 @@ public abstract partial class DataGridColumn
 
     private void HandleSelectedFilterValuesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        ApplySelectedFilterValuesToFilterDescriptions();
+        ApplySelectedFilterValuesToQuery();
         NotifySelectedFilterValuesChanged();
     }
 
     private void NotifyFilterItemsChanged()
     {
-        _filterItemAccessors.Clear();
         if (HasHeaderCell)
         {
             HeaderCell.NotifyFilterItemsChanged();
@@ -281,83 +240,11 @@ public abstract partial class DataGridColumn
             return filterItem;
         }
 
-        var result = new DataGridFilterItem
+        return new DataGridFilterItem
         {
-            Text  = GetFilterItemText(item),
-            Value = GetFilterItemValue(item)
+            Text  = item.ToString() ?? string.Empty,
+            Value = item
         };
-
-        if (TryGetFilterItemChildren(item, out var children) && children is not null)
-        {
-            foreach (var child in children)
-            {
-                if (child is not null)
-                {
-                    result.Children.Add(CreateFilterItem(child));
-                }
-            }
-        }
-
-        return result;
-    }
-
-    private string GetFilterItemText(object item)
-    {
-        if (!string.IsNullOrEmpty(FilterTextMemberPath))
-        {
-            return GetFilterItemMemberValue(item, FilterTextMemberPath)?.ToString() ?? string.Empty;
-        }
-
-        return item.ToString() ?? string.Empty;
-    }
-
-    private object? GetFilterItemValue(object item)
-    {
-        if (!string.IsNullOrEmpty(FilterValueMemberPath))
-        {
-            return GetFilterItemMemberValue(item, FilterValueMemberPath);
-        }
-
-        return item;
-    }
-
-    private bool TryGetFilterItemChildren(object item, out IEnumerable? children)
-    {
-        children = null;
-        if (string.IsNullOrEmpty(FilterChildrenMemberPath))
-        {
-            return false;
-        }
-
-        children = GetFilterItemMemberValue(item, FilterChildrenMemberPath) as IEnumerable;
-        return children != null;
-    }
-
-    private object? GetFilterItemMemberValue(object item, string propertyPath)
-    {
-        var itemType = item.GetType();
-        var key      = (itemType, propertyPath);
-        if (!_filterItemAccessors.TryGetValue(key, out var accessor))
-        {
-            accessor = DataGridDataMemberPathAccessor.Resolve(
-                propertyPath,
-                itemType,
-                dataMemberAccessorDescriptor: null,
-                isDynamicCodeSupported: false);
-            _filterItemAccessors.Add(key, accessor);
-        }
-
-        return accessor.GetValue(item);
-    }
-
-    private Func<object, object, bool>? GetFilterPredicate()
-    {
-        if (FilterEvaluator != null)
-        {
-            return (value, condition) => FilterEvaluator(value, condition);
-        }
-
-        return OnFilter;
     }
 
     private static List<object> CopyFilterValues(IEnumerable? filterValues)
@@ -378,45 +265,6 @@ public abstract partial class DataGridColumn
         return values;
     }
 
-    private bool TryUpdateExistingSelectedFilterValues(IReadOnlyList<object> selectedValues)
-    {
-        if (SelectedFilterValues is not { } currentValues ||
-            currentValues.IsReadOnly ||
-            currentValues.IsFixedSize)
-        {
-            return false;
-        }
-
-        var currentValueSnapshot = CopyFilterValues(currentValues);
-        if (FilterValuesSequenceEqual(currentValueSnapshot, selectedValues))
-        {
-            ApplySelectedFilterValuesToFilterDescriptions();
-            NotifySelectedFilterValuesChanged();
-            return true;
-        }
-
-        var notifiesCollectionChanges = currentValues is INotifyCollectionChanged;
-        currentValues.Clear();
-        foreach (var selectedValue in selectedValues)
-        {
-            currentValues.Add(selectedValue);
-        }
-
-        if (!notifiesCollectionChanges)
-        {
-            ApplySelectedFilterValuesToFilterDescriptions();
-            NotifySelectedFilterValuesChanged();
-        }
-
-        return true;
-    }
-
-    private static bool FilterConditionsSetEquals(List<object> oldFilterValues, List<object> newFilterValues)
-    {
-        return DistinctValuesAreContained(oldFilterValues, newFilterValues) &&
-               DistinctValuesAreContained(newFilterValues, oldFilterValues);
-    }
-
     private static bool FilterValuesSequenceEqual(IReadOnlyList<object> oldFilterValues, IReadOnlyList<object> newFilterValues)
     {
         if (oldFilterValues.Count != newFilterValues.Count)
@@ -427,24 +275,6 @@ public abstract partial class DataGridColumn
         for (var i = 0; i < oldFilterValues.Count; i++)
         {
             if (!Equals(oldFilterValues[i], newFilterValues[i]))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static bool DistinctValuesAreContained(List<object> source, List<object> target)
-    {
-        for (var i = 0; i < source.Count; i++)
-        {
-            var value = source[i];
-            if (ContainsValue(source, value, i))
-            {
-                continue;
-            }
-
-            if (!ContainsValue(target, value))
             {
                 return false;
             }

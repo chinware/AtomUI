@@ -31,9 +31,12 @@ internal class DataGridMenuFilterFlyout : MenuFlyout
 
         Presenter = new DataGridMenuFilterFlyoutPresenter
         {
-            ItemsSource = Items,
-            MenuFlyout  = this
+            MenuFlyout = this
         };
+        foreach (var item in Items)
+        {
+            Presenter.Items.Add(item);
+        }
 
         Presenter[!MenuFlyoutPresenter.ItemTemplateProperty]          = this[!ItemTemplateProperty];
         Presenter[!MenuFlyoutPresenter.ItemContainerThemeProperty]    = this[!ItemContainerThemeProperty];

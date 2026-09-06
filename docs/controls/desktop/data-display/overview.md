@@ -33,6 +33,8 @@
 - [Collapse Changelog](collapse/changelog.md)
 - [DataGrid 桌面版架构设计](data-grid/overview.md)
 - [DataGrid 桌面版实现原理](data-grid/implementation.md)
+- [DataGrid Query 与 Range Source 设计](data-grid/query-range-source-design.md)
+- [DataGrid 列宽分配设计](data-grid/column-sizing-design.md)
 - [DataGrid Token 设计](data-grid/token.md)
 - [DataGrid Changelog](data-grid/changelog.md)
 - [Descriptions 桌面版架构设计](descriptions/overview.md)

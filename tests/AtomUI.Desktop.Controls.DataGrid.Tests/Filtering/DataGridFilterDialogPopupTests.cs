@@ -15,6 +15,9 @@ namespace AtomUI.Desktop.Controls.Tests.DataGrid.Filtering;
 
 public class DataGridFilterDialogPopupTests
 {
+    private static readonly DataGridFieldId NameField = new("name");
+    private static readonly DataGridOperatorId EqualsOperator = new("equals");
+
     static DataGridFilterDialogPopupTests()
     {
         AvaloniaTestApp.EnsureInitialized();
@@ -28,8 +31,8 @@ public class DataGridFilterDialogPopupTests
             var column = new DataGridTextColumn
             {
                 Header = "Name",
+                FieldId = NameField,
                 Binding = new Binding(nameof(DialogFilterRow.Name)),
-                FilterMemberPath = nameof(DialogFilterRow.Name),
                 Filters = new[]
                 {
                     new DataGridFilterItem { Text = "Alpha", Value = "Alpha" },
@@ -43,11 +46,11 @@ public class DataGridFilterDialogPopupTests
                 IsMotionEnabled = false,
                 Width = 360,
                 Height = 220,
-                ItemsSource = new[]
+                ItemsSource = CreateSource(new[]
                 {
                     new DialogFilterRow("Alpha"),
                     new DialogFilterRow("Beta")
-                }
+                })
             };
             grid.Columns.Add(column);
             var dialog = new Dialog
@@ -117,11 +120,11 @@ public class DataGridFilterDialogPopupTests
                 IsPopupPinnedOpen    = true,
                 Width                = 360,
                 Height               = 220,
-                ItemsSource = new[]
+                ItemsSource = CreateSource(new[]
                 {
                     new DialogFilterRow("Alpha"),
                     new DialogFilterRow("Beta")
-                }
+                })
             };
             grid.Columns.Add(firstColumn);
             grid.Columns.Add(secondColumn);
@@ -187,11 +190,11 @@ public class DataGridFilterDialogPopupTests
                 IsPopupPinnedOpen    = true,
                 Width                = 360,
                 Height               = 220,
-                ItemsSource = new[]
+                ItemsSource = CreateSource(new[]
                 {
                     new DialogFilterRow("Alpha"),
                     new DialogFilterRow("Beta")
-                }
+                })
             };
             grid.Columns.Add(firstColumn);
             grid.Columns.Add(secondColumn);
@@ -249,11 +252,11 @@ public class DataGridFilterDialogPopupTests
                 IsPopupPinnedOpen    = true,
                 Width                = 360,
                 Height               = 220,
-                ItemsSource = new[]
+                ItemsSource = CreateSource(new[]
                 {
                     new DialogFilterRow("Alpha"),
                     new DialogFilterRow("Beta")
-                }
+                })
             };
             grid.Columns.Add(column);
             var window = new AtomUI.Desktop.Controls.Window
@@ -293,8 +296,8 @@ public class DataGridFilterDialogPopupTests
         return new DataGridTextColumn
         {
             Header           = header,
+            FieldId          = NameField,
             Binding          = new Binding(nameof(DialogFilterRow.Name)),
-            FilterMemberPath = nameof(DialogFilterRow.Name),
             Filters = new[]
             {
                 new DataGridFilterItem { Text = "Alpha", Value = "Alpha" },
@@ -302,6 +305,25 @@ public class DataGridFilterDialogPopupTests
             }
         };
     }
+
+    private static TestDataGridSource<DialogFilterRow> CreateSource(
+        IReadOnlyList<DialogFilterRow> rows) =>
+        new(
+            rows,
+            new DataGridSourceSchema(
+                typeof(DialogFilterRow),
+                [new DataGridFieldSchema(
+                    NameField,
+                    typeof(string),
+                    DataGridSortDirections.All,
+                    [new DataGridFilterOperatorSchema(
+                        EqualsOperator,
+                        1,
+                        16,
+                        DataGridScalarKinds.String)],
+                    canGroup: false)],
+                preferredRangeSize: 32,
+                maximumRangeSize: 32));
 
     private static DataGridFilterIndicator FindFilterIndicator(
         global::AtomUI.Desktop.Controls.DataGrid grid,

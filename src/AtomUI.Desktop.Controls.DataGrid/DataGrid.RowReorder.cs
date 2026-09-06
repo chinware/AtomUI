@@ -1,9 +1,8 @@
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Data;
 using AtomUI.Desktop.Controls.Utils;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -24,8 +23,11 @@ public partial class DataGrid
             DataGridRowReorderHandle handle,
             DataGridRow row,
             object? item,
-            IDataGridCollectionView view,
-            IDataGridCollectionViewMoveSupport moveSupport,
+            IDataGridMovableSource source,
+            DataGridQuery query,
+            DataGridSnapshotId snapshot,
+            DataGridRowKey rowKey,
+            CancellationToken mutationCancellationToken,
             DataGridRowsPresenter rowsPresenter,
             Point startPosition)
         {
@@ -33,8 +35,11 @@ public partial class DataGrid
             Handle        = handle;
             Row           = row;
             Item          = item;
-            View          = view;
-            MoveSupport   = moveSupport;
+            RangeSource   = source;
+            RangeQuery    = query;
+            RangeSnapshot = snapshot;
+            RowKey        = rowKey;
+            MutationCancellationToken = mutationCancellationToken;
             RowsPresenter = rowsPresenter;
             StartPosition = startPosition;
             SourceIndex   = row.Index;
@@ -45,8 +50,11 @@ public partial class DataGrid
         public DataGridRowReorderHandle Handle { get; }
         public DataGridRow Row { get; }
         public object? Item { get; }
-        public IDataGridCollectionView View { get; }
-        public IDataGridCollectionViewMoveSupport MoveSupport { get; }
+        public IDataGridMovableSource? RangeSource { get; }
+        public DataGridQuery? RangeQuery { get; }
+        public DataGridSnapshotId RangeSnapshot { get; }
+        public DataGridRowKey RowKey { get; }
+        public CancellationToken MutationCancellationToken { get; }
         public DataGridRowsPresenter RowsPresenter { get; }
         public Point StartPosition { get; }
         public int SourceIndex { get; }
@@ -71,26 +79,33 @@ public partial class DataGrid
             !ReferenceEquals(handle.OwningRow, row) ||
             !ReferenceEquals(row.OwningGrid, this) ||
             row.Index < 0 ||
-            RowsPresenter is not { } rowsPresenter ||
-            CollectionView is not { } view ||
-            view is not IDataGridCollectionViewMoveSupport { CanMove: true } moveSupport)
+            RowsPresenter is not { } rowsPresenter)
         {
             return false;
         }
 
         var item = row.DataContext;
-        if (!RowReorderItemsMatch(DataConnection.GetDataItem(row.Index), item))
+        if (ItemsSource is not IDataGridMovableSource movableSource ||
+            !IsRangeMoveSemanticallyAllowed ||
+            _rangeGeneration is not { } generation ||
+            _rangePresentationIndex is not { } presentation ||
+            !row.IsRangeBacked ||
+            !TryGetCommittedRangeEntry(row.Slot, out var entry) ||
+            entry.Kind != DataGridSourceEntryKind.Data ||
+            entry.RowKey != row.RowKey)
         {
             return false;
         }
-
         var session = new RowReorderSession(
             pointer,
             handle,
             row,
             item,
-            view,
-            moveSupport,
+            movableSource,
+            presentation.Snapshot.Query,
+            presentation.Snapshot.Snapshot,
+            entry.RowKey,
+            generation.CancellationToken,
             rowsPresenter,
             startPosition);
         _rowReorderSession = session;
@@ -182,6 +197,7 @@ public partial class DataGrid
                            targetIndex.Value != session.SourceIndex &&
                            IsRowReorderSessionValid(session);
         var moved = false;
+        DataGridMoveRequest? rangeRequest = null;
 
         _rowReorderSession = null;
         ReleaseRowReorderPointerCapture(session);
@@ -189,7 +205,11 @@ public partial class DataGrid
         {
             if (shouldCommit)
             {
-                moved = session.MoveSupport.TryMove(session.SourceIndex, targetIndex!.Value);
+                moved = TryCreateRangeMoveRequest(
+                    session,
+                    targetIndex!.Value,
+                    out var request);
+                rangeRequest = moved ? request : null;
             }
             session.State = moved
                 ? RowReorderSessionState.Completed
@@ -205,14 +225,14 @@ public partial class DataGrid
             CleanupRowReorderSession(session, releasePointerCapture: false);
         }
 
-        if (moved && ReferenceEquals(CollectionView, session.View))
+        if (moved && rangeRequest is { } pendingMove)
         {
-            var eventRow = DisplayData.GetDisplayedRow(targetIndex!.Value);
-            if (eventRow == null || !RowReorderItemsMatch(eventRow.DataContext, session.Item))
-            {
-                eventRow = session.Row;
-            }
-            NotifyRowReordered(new DataGridRowEventArgs(eventRow));
+            _ = CompleteRangeRowReorderAsync(
+                new WeakReference<DataGrid>(this),
+                new WeakReference<DataGridRow>(session.Row),
+                session.RangeSource!,
+                pendingMove,
+                session.MutationCancellationToken);
         }
     }
 
@@ -256,20 +276,96 @@ public partial class DataGrid
 
     private bool IsRowReorderSessionValid(RowReorderSession session)
     {
-        return ReferenceEquals(_rowReorderSession, session) &&
-               IsEnabled &&
-               CanUserReorderRows &&
-               ReferenceEquals(RowsPresenter, session.RowsPresenter) &&
-               ReferenceEquals(CollectionView, session.View) &&
-               session.MoveSupport.CanMove &&
-               ReferenceEquals(session.Handle.OwningGrid, this) &&
-               ReferenceEquals(session.Handle.OwningRow, session.Row) &&
-               ReferenceEquals(session.Row.OwningGrid, this) &&
-               session.Row.Index == session.SourceIndex &&
-               IsSlotVisible(SlotFromRowIndex(session.SourceIndex)) &&
-               ReferenceEquals(DisplayData.GetDisplayedRow(session.SourceIndex), session.Row) &&
-               RowReorderItemsMatch(session.Row.DataContext, session.Item) &&
-               RowReorderItemsMatch(DataConnection.GetDataItem(session.SourceIndex), session.Item);
+        var common = ReferenceEquals(_rowReorderSession, session) &&
+                     IsEnabled &&
+                     CanUserReorderRows &&
+                     ReferenceEquals(RowsPresenter, session.RowsPresenter) &&
+                     ReferenceEquals(session.Handle.OwningGrid, this) &&
+                     ReferenceEquals(session.Handle.OwningRow, session.Row) &&
+                     ReferenceEquals(session.Row.OwningGrid, this) &&
+                     session.Row.Index == session.SourceIndex &&
+                     RowReorderItemsMatch(session.Row.DataContext, session.Item);
+        if (!common)
+        {
+            return false;
+        }
+        return IsRangeMoveSemanticallyAllowed &&
+               ReferenceEquals(ItemsSource, session.RangeSource) &&
+               _rangePresentationIndex is { } presentation &&
+               presentation.Snapshot.Query == session.RangeQuery &&
+               presentation.Snapshot.Snapshot == session.RangeSnapshot &&
+               IsSlotVisible(session.Row.Slot) &&
+               ReferenceEquals(DisplayData.GetDisplayedElement(session.Row.Slot), session.Row) &&
+               TryGetCommittedRangeEntry(session.Row.Slot, out var entry) &&
+               entry.Kind == DataGridSourceEntryKind.Data &&
+               entry.RowKey == session.RowKey;
+    }
+
+    private bool TryCreateRangeMoveRequest(
+        RowReorderSession session,
+        int targetIndex,
+        out DataGridMoveRequest request)
+    {
+        if (!TryGetCommittedRangeEntry(targetIndex, out var target) ||
+            target.Kind != DataGridSourceEntryKind.Data ||
+            target.RowKey == session.RowKey)
+        {
+            request = default;
+            return false;
+        }
+        request = targetIndex < session.SourceIndex
+            ? new DataGridMoveRequest(
+                session.RangeQuery!,
+                session.RangeSnapshot,
+                session.RowKey,
+                beforeKey: target.RowKey,
+                afterKey: null)
+            : new DataGridMoveRequest(
+                session.RangeQuery!,
+                session.RangeSnapshot,
+                session.RowKey,
+                beforeKey: null,
+                afterKey: target.RowKey);
+        return true;
+    }
+
+    private static async Task CompleteRangeRowReorderAsync(
+        WeakReference<DataGrid> ownerReference,
+        WeakReference<DataGridRow> rowReference,
+        IDataGridMovableSource source,
+        DataGridMoveRequest request,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            await source.MoveAsync(request, cancellationToken).ConfigureAwait(false);
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (!ownerReference.TryGetTarget(out var owner) ||
+                    !owner.CompleteRangeMove(source, request))
+                {
+                    return;
+                }
+                if (rowReference.TryGetTarget(out var row))
+                {
+                    owner.NotifyRowReordered(new DataGridRowEventArgs(row));
+                }
+            });
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (Exception exception)
+        {
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (ownerReference.TryGetTarget(out var owner) &&
+                    ReferenceEquals(owner.ItemsSource, source))
+                {
+                    owner.SetRangeError(exception);
+                }
+            });
+        }
     }
 
     private void CancelRowReorder(RowReorderSession session, bool releasePointerCapture = true)

@@ -3,7 +3,6 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
-using System.ComponentModel;
 using System.Diagnostics;
 using AtomUI.Controls;
 using AtomUI.Utils;
@@ -194,11 +193,11 @@ public class DataGridCell : ContentControl
 
     private Rectangle? _rightGridLine;
     private RectangleGeometry? _clipGeometry;
-    private IDisposable? _sortingStateSubscription;
     private IDisposable? _headerDragModeSubscription;
     private bool _templateApplied;
-    private static readonly Func<ListSortDirection?, bool> IsActiveSortDirectionConverter = IsActiveSortDirection;
     private static readonly Func<DataGridColumnHeader.DragMode, bool> IsReorderDragModeConverter = IsReorderDragMode;
+
+    internal bool HasLongLivedSortSubscription => false;
 
     static DataGridCell()
     {
@@ -217,8 +216,6 @@ public class DataGridCell : ContentControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         // 模板重新应用时先清理旧订阅，防止重复订阅累积
-        _sortingStateSubscription?.Dispose();
-        _sortingStateSubscription = null;
         _headerDragModeSubscription?.Dispose();
         _headerDragModeSubscription = null;
 
@@ -235,38 +232,25 @@ public class DataGridCell : ContentControl
         {
             EnsureGridLine(null);
         }
-        EnsureSortBindings();
+        EnsureColumnBindings();
     }
     
-    private void EnsureSortBindings()
+    private void EnsureColumnBindings()
     {
         if (OwningGrid == null ||
             OwningColumn == null ||
-            OwningColumn is DataGridFillerColumn ||
-            !OwningGrid.DataConnection.AllowSort)
+            OwningColumn is DataGridFillerColumn)
         {
             return;
         }
 
         var headerCell = OwningColumn.HeaderCell;
-        _sortingStateSubscription = this.Bind(
-            IsSortingProperty,
-            headerCell.GetObservable(
-                DataGridColumnHeader.CurrentSortingStateProperty,
-                IsActiveSortDirectionConverter),
-            BindingPriority.Template);
         _headerDragModeSubscription = this.Bind(
             OwningColumnDraggingProperty,
             headerCell.GetObservable(
                 DataGridColumnHeader.HeaderDragModeProperty,
                 IsReorderDragModeConverter),
             BindingPriority.Template);
-    }
-
-    private static bool IsActiveSortDirection(ListSortDirection? direction)
-    {
-        return direction == ListSortDirection.Ascending ||
-               direction == ListSortDirection.Descending;
     }
 
     private static bool IsReorderDragMode(DataGridColumnHeader.DragMode dragMode)
@@ -277,17 +261,15 @@ public class DataGridCell : ContentControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        if (_templateApplied && _sortingStateSubscription == null && _headerDragModeSubscription == null)
+        if (_templateApplied && _headerDragModeSubscription == null)
         {
-            EnsureSortBindings();
+            EnsureColumnBindings();
         }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        _sortingStateSubscription?.Dispose();
-        _sortingStateSubscription = null;
         _headerDragModeSubscription?.Dispose();
         _headerDragModeSubscription = null;
     }
@@ -441,6 +423,7 @@ public class DataGridCell : ContentControl
 
     private void OnOwningColumnSet(DataGridColumn? column)
     {
+        IsSorting = column?.SortState.Direction is not null;
         if (column == null)
         {
             Classes.Clear();

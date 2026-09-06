@@ -42,10 +42,10 @@ public class DataGridShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:DataGridShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(22);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(22);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(22);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:DataGridViewModel\"").ShouldBe(22);
+        CountShowCaseItemElements(source).ShouldBe(23);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(23);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(23);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:DataGridViewModel\"").ShouldBe(23);
         source.ShouldContain("DataGridShowCaseLangResource BasicTitle");
         source.ShouldContain("DataGridShowCaseLangResource SelectionTitle");
         source.ShouldContain("DataGridShowCaseLangResource FilterAndSorterTitle");
@@ -54,6 +54,11 @@ public class DataGridShowCasePageTests
         source.ShouldContain("DataGridShowCaseLangResource DragColumnSortingTitle");
         source.ShouldContain("DataGridShowCaseLangResource EditableCellsTitle");
         source.ShouldContain("DataGridShowCaseLangResource BasicPagingTitle");
+        source.ShouldContain("DataGridShowCaseLangResource RemoteRangeTitle");
+        source.ShouldContain("x:Name=\"RemoteRangeDataGrid\"");
+        source.ShouldContain("Click=\"HandleReloadRemoteRangeSource\"");
+        source.ShouldContain("Click=\"HandleFailRemoteRangeSource\"");
+        source.ShouldContain("Click=\"HandleExpireRemoteRangeSnapshot\"");
         source.ShouldContain("AttachedToVisualTree=\"HandleExampleDataGridAttached\"");
         source.ShouldContain("Click=\"HandleSortAgeBtnClick\"");
         source.ShouldContain("IsCheckedChanged=\"HandleColumnVisibleChanged\"");
@@ -85,6 +90,29 @@ public class DataGridShowCasePageTests
         ComputeSha256(normalized).ShouldBe(ReadSnapshotHash(approved));
     }
 
+    [Fact]
+    public void Basic_Paging_ShowCase_Preserves_Content_Width_And_Natural_Horizontal_Scrolling()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/Views/DataGridShowCase.axaml");
+        var gridMarkup = ExtractElement(
+            source,
+            "<atom:DataGrid x:Name=\"BasicPagingCaseGrid\"",
+            "</atom:DataGrid>");
+
+        var minimumWidths = Regex.Matches(
+                gridMarkup,
+                @"<atom:DataGrid(?:Template|Text)Column\b[^>]*\bMinWidth=""(?<width>[0-9]+)""",
+                RegexOptions.CultureInvariant)
+            .Select(match => match.Groups["width"].Value)
+            .ToArray();
+
+        minimumWidths.ShouldBe(["170", "64", "280", "300", "220"]);
+        gridMarkup.ShouldNotContain("Width=\"*\"");
+        gridMarkup.ShouldNotContain("HorizontalScrollBarVisibility=\"Visible\"");
+        gridMarkup.ShouldNotContain("HorizontalScrollBarVisibility=\"Hidden\"");
+        gridMarkup.ShouldNotContain("HorizontalScrollBarVisibility=\"Disabled\"");
+    }
+
     private static string ExtractDataGridExampleItems(string source)
     {
         const string firstItemMarker  = "<gallery:ShowCaseItem";
@@ -97,6 +125,17 @@ public class DataGridShowCasePageTests
         panelCloseStart.ShouldBeGreaterThan(firstItemStart);
 
         return source[firstItemStart..panelCloseStart];
+    }
+
+    private static string ExtractElement(string source, string startMarker, string endMarker)
+    {
+        var start = source.IndexOf(startMarker, StringComparison.Ordinal);
+        start.ShouldBeGreaterThanOrEqualTo(0);
+
+        var end = source.IndexOf(endMarker, start, StringComparison.Ordinal);
+        end.ShouldBeGreaterThan(start);
+
+        return source[start..(end + endMarker.Length)];
     }
 
     private static string NormalizeMarkup(string source)

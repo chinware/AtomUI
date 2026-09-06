@@ -745,6 +745,36 @@
         <target state="translated">Exibir, inspect, e editar structured dados.</target>
       </segment>
     </unit>
+    <unit id="RemoteRangeDescription">
+      <segment>
+        <source>Virtualizes one million remote rows by fetching only visible ranges. Reload, request failure, and snapshot expiry remain deterministic.</source>
+        <target state="translated">Virtualiza um milhão de linhas remotas buscando apenas os intervalos visíveis. Recarga, falha de requisição e expiração de snapshot permanecem determinísticas.</target>
+      </segment>
+    </unit>
+    <unit id="RemoteRangeExpireSnapshot">
+      <segment>
+        <source>Expire snapshot</source>
+        <target state="translated">Expirar snapshot</target>
+      </segment>
+    </unit>
+    <unit id="RemoteRangeFailNext">
+      <segment>
+        <source>Fail next reload</source>
+        <target state="translated">Falhar próxima recarga</target>
+      </segment>
+    </unit>
+    <unit id="RemoteRangeReload">
+      <segment>
+        <source>Reload</source>
+        <target state="translated">Recarregar</target>
+      </segment>
+    </unit>
+    <unit id="RemoteRangeTitle">
+      <segment>
+        <source>Remote range virtualization</source>
+        <target state="translated">Virtualização remota por intervalo</target>
+      </segment>
+    </unit>
     <unit id="ResetFiltersAndSortersDescription">
       <segment>
         <source>Control filters and sorters by API.</source>

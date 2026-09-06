@@ -37,7 +37,7 @@ public sealed class DataGridColumnHeaderLayoutTests
             HeadersVisibility   = DataGridHeadersVisibility.Column,
             Width               = 640,
             Height              = 240,
-            ItemsSource         = new[] { new Row("Alice") }
+            ItemsSource              = new TestDataGridSource<Row>([new Row("Alice")])
         };
         grid.Columns.Add(column);
 

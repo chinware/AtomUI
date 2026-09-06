@@ -1,6 +1,6 @@
 # DataGrid 不可变 Query 与 Range Source 架构设计
 
-> 状态：设计已确认，等待书面评审后制定实施计划。
+> 状态：设计已确认并同步到 [DataGrid Query 与 Range Source 正式设计](../../controls/desktop/data-display/data-grid/query-range-source-design.md)；实施计划单独维护。
 >
 > 关联需求：[AtomUI/AtomUI#455](https://github.com/AtomUI/AtomUI/issues/455)。
 
@@ -26,8 +26,9 @@ column / filter / group / programmatic intent
 - 业务 Source 把同一份 `DataGridQuery` 翻译为服务端协议，只返回请求范围。
 - DataGrid 只管理 query、请求代际、范围缓存、虚拟化投影和视觉状态，不执行来源特定逻辑。
 
-这是一次明确授权的 L3 破坏性重构。完成态不保留 `ItemsSource` 与新 `Source` 双通路，不保留
-`CollectionView.SortDescriptions` 与 `Query.Sorts` 双状态，也不使用兼容分支、反射排序或事件驱动的数据请求。
+这是一次明确授权的 L3 破坏性重构。完成态保留熟悉的 `ItemsSource` 属性名，但将它的类型唯一重定义为
+`IDataGridSource?`；不提供 `Source` 别名，也不保留旧 `IEnumerable`/CollectionView 数据通路。系统同样不保留
+`CollectionView.SortDescriptions` 与 `Query.Sorts` 双状态，不使用兼容分支、反射排序或事件驱动的数据请求。
 
 ## 2. 当前事实与改造边界
 
@@ -90,7 +91,7 @@ column / filter / group / programmatic intent
 
 - `DataGrid.Query` 是排序、过滤和分组条件的唯一 public owner。
 - `DataGrid.AppliedQuery` 只记录当前已提交 presentation snapshot 对应的 Query，不可由外部写入；presentation snapshot
-  同时保存 applied PageWindow、GroupExpansion 和 committed visible range，作为失败回滚的完整基线。
+  同时保存 applied PageRequest、GroupExpansion 和 committed visible range，作为失败回滚的完整基线。
 - Header、SortIndicator、FilterIndicator、cell sort tint 和 Gallery 状态只投影 Query，不反向拥有状态。
 - Source 只消费 request 并返回结果，不能回调修改 DataGrid Query。
 - `DataGridRange` 是视口请求，不属于 Query；滚动或翻页不制造新的业务 Query。
@@ -100,7 +101,7 @@ column / filter / group / programmatic intent
 - 同一个 presentation snapshot 只能组合相同 Query revision 和相同 Source snapshot id 的 range。
 - 已取消、过时代际、旧 Source、旧 snapshot 或合同不合法的结果永远不能进入当前视图。
 - Query 与已显示数据暂时不一致时，body 必须处于加载覆盖和不可提交状态。
-- 用户驱动的 Query/PageWindow/GroupExpansion/visible-range 加载失败时回退到最后成功的 applied presentation；不能留下
+- 用户驱动的 Query/PageRequest/GroupExpansion/visible-range 加载失败时回退到最后成功的 applied presentation；不能留下
   “新控件状态 + 旧数据”的可交互界面。
 - Source invalidation 刷新失败时允许展示旧快照，但快照明确标记 stale，编辑、删除和移动保持禁用直至刷新成功。
 
@@ -265,6 +266,15 @@ public sealed class DataGridFieldSchema
     public DataGridSortDirections SortDirections { get; }
     public ImmutableArray<DataGridFilterOperatorSchema> FilterOperators { get; }
     public bool CanGroup { get; }
+    public DataGridFieldDisplayAccessor? DisplayAccessor { get; }
+}
+
+public sealed class DataGridFieldDisplayAccessor
+{
+    public Type ItemType { get; }
+    public Type ValueType { get; }
+    public bool CanWrite { get; }
+    public string? PropertyChangedName { get; }
 }
 
 [Flags]
@@ -298,6 +308,11 @@ Schema 在 Source 生命周期内不可变。需要改变 schema 时替换 Sourc
 `[32, MaximumRangeSize]`；构造 Schema 时立即验证，避免 Source 通过极端 range 建议制造无界分配。
 Schema 还必须拒绝 null ItemType、default/重复 FieldId、同一 field 下的重复 operator id，以及互相矛盾的 field/value kind；
 display-only field 可以明确声明无 sort/filter/group capability。
+
+`DisplayAccessor` 是可选且显式的 AOT-safe 显示能力，其 ItemType/ValueType 必须与 Source/field 精确一致。
+`AutoGenerateColumns=true` 只为声明该能力的 field 生成 compiled binding；FieldId 永不作为 CLR path。远端 schema 可以省略
+accessor 并提供显式 Column/Binding。`PropertyChangedName` 独立于 FieldId；null 表示响应任意属性通知，binding dispose/recycle
+必须解除 `INotifyPropertyChanged` 订阅。
 
 Filter operator schema 明确校验 arity 和 scalar kind；`0 <= MinimumValueCount <= MaximumValueCount <= 1024`。
 DataGrid 内置 `in` 要求至少一个值；用户在过滤菜单清空全部选项时删除该 filter，而不是生成语义含糊的 `in []`。
@@ -345,15 +360,15 @@ public readonly struct DataGridSourceEntry
 Data entry 必须有有效且唯一的 RowKey；item 可以为 null。GroupHeader 的 RowKey 必须为无效默认值，Group 必须包含有效
 GroupKey、field、value、level 和 leaf count，不参与选择或编辑。展开状态由请求中的 GroupExpansion 投影，不由 Source
 结果维护第二份状态。Data entry 的 `DataIndex` 是 filter/sort 后、分页前的全局零基业务行索引；WindowDataIndex 是活动
-PageWindow 内排除 GroupHeader 后的零基数据行索引。GroupHeader 的两个 index 都为 -1。
+PageRequest 内排除 GroupHeader 后的零基数据行索引。GroupHeader 的两个 index 都为 -1。
 
-GroupEntry.LeafCount 固定表示当前 PageWindow 内该 group 的业务行数，包含因 collapse 暂时不可见的 descendants；它不是跨页
+GroupEntry.LeafCount 固定表示当前 PageRequest 内该 group 的业务行数，包含因 collapse 暂时不可见的 descendants；它不是跨页
 全局聚合数。若产品需要全局 group aggregates，应由独立显式 aggregate contract 提供，不能改变 LeafCount 语义。
 
 Source 返回的范围以扁平 display entry 为单位，因此普通行和 group header 可以共享同一个虚拟化序列。
 `TotalEntryCount` 表示当前活动窗口内的扁平 display entry 数并决定滚动 extent；`TotalDataCount` 表示 Query
-命中但尚未分页的全局业务行数并决定分页总数；`WindowDataCount` 表示当前活动 PageWindow 内、不含 GroupHeader 的业务
-行数并供 Row.Index 与辅助功能使用。连续滚动没有 page window，此时活动窗口就是完整查询结果。
+命中但尚未分页的全局业务行数并决定分页总数；`WindowDataCount` 表示当前活动 PageRequest 内、不含 GroupHeader 的业务
+行数并供 Row.Index 与辅助功能使用。连续滚动没有 PageRequest，此时活动窗口就是完整查询结果。
 
 ### 5.3 Range、snapshot 与 result
 
@@ -365,9 +380,9 @@ public readonly struct DataGridRange
     public int Count { get; }
 }
 
-public readonly struct DataGridPageWindow
+public readonly struct DataGridPageRequest
 {
-    public DataGridPageWindow(long dataStartIndex, int dataCount);
+    public DataGridPageRequest(long dataStartIndex, int dataCount);
     public long DataStartIndex { get; }
     public int DataCount { get; }
 }
@@ -390,7 +405,7 @@ public readonly struct DataGridSnapshotId : IEquatable<DataGridSnapshotId>
 public readonly struct DataGridFetchRequest
 {
     public DataGridQuery Query { get; }
-    public DataGridPageWindow? PageWindow { get; }
+    public DataGridPageRequest? PageRequest { get; }
     public DataGridGroupExpansion GroupExpansion { get; }
     public DataGridRange Range { get; }
     public DataGridSnapshotId? ExpectedSnapshot { get; }
@@ -410,16 +425,16 @@ public sealed class DataGridRangeResult
 ```
 
 DataGridRange 构造函数拒绝负 StartIndex 和非正 Count；协调器拒绝 Count 超过当前 Schema.MaximumRangeSize，且不调用
-零长度 fetch。DataGridPageWindow 拒绝负 DataStartIndex 和非正 DataCount。DataGridSnapshotId 拒绝 null、空白和控制字符；
+零长度 fetch。DataGridPageRequest 拒绝负 DataStartIndex 和非正 DataCount。DataGridSnapshotId 拒绝 null、空白和控制字符；
 其值是 Source 定义的不透明 identity，DataGrid 只做 ordinal equality，不解析版本格式。
 
-`PageWindow=null` 表示连续滚动；非 null 时，PageWindow 先在 Query 命中的业务行上切页。Source 再按
+`PageRequest=null` 表示连续滚动；非 null 时，PageRequest 先在 Query 命中的业务行上切页。Source 再按
 GroupExpansion 去掉 collapsed group 的后代并 flatten，Range 最后索引可见 display entries。Range 的 `StartIndex`
 永远相对活动窗口，不同时承担全局 data index 和页内 display index 两种含义。DataGrid 使用 checked arithmetic 生成
-PageWindow，Source 不自行读取 DataGrid 的 PageIndex。
+PageRequest，Source 不自行读取 DataGrid 的 PageIndex。
 
 GroupExpansion 使用排序、去重的 immutable array 形成确定 equality/hash/wire 顺序；`AllExpanded` 是空 collapsed set。
-Groups 结构改变或 Source replacement 时重置为 AllExpanded；只改变 sort/filter 或 PageWindow 时保留 collapsed keys，Source
+Groups 结构改变或 Source replacement 时重置为 AllExpanded；只改变 sort/filter 或 PageRequest 时保留 collapsed keys，Source
 忽略当前结果不存在的 key。该状态仅随显式用户展开/收起操作增长，不随 TotalDataCount 自动物化。
 
 每个结果必须是请求范围的精确切片：
@@ -433,26 +448,26 @@ result.Entries.Length == expectedCount
 0 <= TotalDataCount
 ```
 
-PageWindow 非 null 时还必须满足：
+PageRequest 非 null 时还必须满足：
 
 ```text
-WindowDataCount = min(PageWindow.DataCount, max(0, TotalDataCount - PageWindow.DataStartIndex))
+WindowDataCount = min(PageRequest.DataCount, max(0, TotalDataCount - PageRequest.DataStartIndex))
 ```
 
-PageWindow 为 null 时必须满足 `WindowDataCount == TotalDataCount`，因此连续模式要求业务行数不超过 int 上限。未分组窗口
+PageRequest 为 null 时必须满足 `WindowDataCount == TotalDataCount`，因此连续模式要求业务行数不超过 int 上限。未分组窗口
 必须满足 `TotalEntryCount == WindowDataCount`；分组/折叠窗口不能假设 entry count 与 data count 的大小关系。
 每个 Data entry 还必须满足：
 
 ```text
 0 <= WindowDataIndex < WindowDataCount
-DataIndex = (PageWindow?.DataStartIndex ?? 0) + WindowDataIndex
+DataIndex = (PageRequest?.DataStartIndex ?? 0) + WindowDataIndex
 ```
 
 同一活动窗口按 display range 拼接后，Data entry 的 WindowDataIndex/DataIndex 严格递增；collapsed group 允许 index 出现间隙，
 不允许重复或倒序。
 Data row key 在整个 snapshot 内稳定且唯一；group entry key 在当前活动窗口内唯一。DataGrid 检测当前缓存范围内的重复
 key；Source 的合同测试负责覆盖同一活动窗口跨全部 range 的唯一性。相同 snapshot 的 `TotalDataCount` 必须恒定；相同
-`(snapshot, PageWindow)` 的 WindowDataCount、相同 `(snapshot, PageWindow, GroupExpansion)` 的 TotalEntryCount 必须恒定。
+`(snapshot, PageRequest)` 的 WindowDataCount、相同 `(snapshot, PageRequest, GroupExpansion)` 的 TotalEntryCount 必须恒定。
 
 每个 `(Source identity, QueryRevision, DataGeneration)` 的第一次请求使用 `ExpectedSnapshot=null`；后续请求携带该代际
 第一次成功结果的 snapshot。Source 必须返回相同 snapshot，或抛出 `DataGridSnapshotExpiredException`。DataGrid 绝不
@@ -488,7 +503,7 @@ DataGrid 不 dispose 外部拥有的 Source。DataGrid 只订阅/退订 `Invalid
 ### 6.1 核心属性
 
 ```csharp
-public IDataGridSource? Source { get; set; }
+public IDataGridSource? ItemsSource { get; set; }
 public DataGridQuery Query { get; set; } = DataGridQuery.Empty;
 public DataGridGroupExpansion GroupExpansion { get; set; } = DataGridGroupExpansion.AllExpanded;
 public DataGridSelectionState Selection { get; set; } = DataGridSelectionState.Empty;
@@ -501,7 +516,7 @@ public int TotalEntryCount { get; }
 public bool IsDataStale { get; }
 ```
 
-这些都是 runtime data state，使用 DirectProperty；`Source`、`Query`、`GroupExpansion`、`Selection` 和 CurrentRowKey 可绑定，
+这些都是 runtime data state，使用 DirectProperty；`ItemsSource`、`Query`、`GroupExpansion`、`Selection` 和 CurrentRowKey 可绑定，
 Query/GroupExpansion/Selection 默认 TwoWay，Applied/Load/Total/Stale 状态只读。Query/GroupExpansion/Selection 不允许 null。
 
 ```csharp
@@ -537,7 +552,7 @@ Source 请求开始之前触发。参数包含 OldQuery、NewQuery、Revision �
 
 `Reload()` 不改变 Query、不触发 QueryChanged，只递增 DataGeneration 并刷新当前 Query。Collapse/Expand 只产生新的不可变
 GroupExpansion、递增 DataGeneration 并刷新活动窗口，不触发 QueryChanged；对已经处于目标状态的 key 是零请求 no-op。
-Query.Groups 为空时只接受 AllExpanded；用户触发 PageWindow/GroupExpansion 变化前同样必须先成功提交当前 edit。
+Query.Groups 为空时只接受 AllExpanded；用户触发 PageRequest/GroupExpansion 变化前同样必须先成功提交当前 edit。
 
 ### 6.3 列契约
 
@@ -601,9 +616,9 @@ None -> Ascending -> Descending -> None
 DataGrid 维护两个 `long` 计数器：
 
 - `QueryRevision`：Query 结构变化时递增。
-- `DataGeneration`：Source replacement、Reload、Invalidated、snapshot expiry、PageWindow 或 GroupExpansion 变化时递增。
+- `DataGeneration`：Source replacement、Reload、Invalidated、snapshot expiry、PageRequest 或 GroupExpansion 变化时递增。
 
-二者只递增，不复用。每个 request 捕获 Source identity、Query reference、revision、generation、PageWindow、
+二者只递增，不复用。每个 request 捕获 Source identity、Query reference、revision、generation、PageRequest、
 GroupExpansion、range 和 expected snapshot。结果提交前逐项比较，任一不匹配即丢弃。
 
 ### 8.2 Query 更新顺序
@@ -629,20 +644,21 @@ Source 为 null 时允许预先绑定结构合法的 Query；候选 Source 设�
 ### 8.3 Load 状态
 
 ```text
-Source=null                           -> Idle
+ItemsSource=null                      -> Idle
 no applied snapshot + request        -> Loading
 applied snapshot + new request       -> Refreshing
 visible target range atomically ready -> Ready
 non-cancellation failure             -> Error
 ```
 
-Loading/Refreshing 通过内部 `EffectiveIsOperating = IsOperating || coordinator.IsLoading` 复用现有 Spin。body 在新
-Query 未提交前保持旧 snapshot 但禁止 edit/delete/move；选择读取可保留，任何会写 Source 的操作被拒绝。
+Loading 通过内部 `EffectiveIsOperating = IsOperating || LoadState == Loading` 复用现有 Spin。Refreshing 在新 Query
+未提交前保持旧 snapshot、布局与完整不透明度，不自动启动 Spin，但禁止 edit/delete/move；选择读取可保留，任何会写 Source
+的操作被拒绝。用户显式 `IsOperating=true` 时仍可在任意 LoadState 显示 Spin。
 
-用户驱动的 Query、PageWindow、GroupExpansion 或 visible-range 请求失败且存在旧 snapshot 时：
+用户驱动的 Query、PageRequest、GroupExpansion 或 visible-range 请求失败且存在旧 snapshot 时：
 
 1. 丢弃 pending snapshot；
-2. 通过内部 `RollbackToAppliedPresentation` 状态转换恢复 snapshot 保存的 Query、PageWindow、GroupExpansion 和最后提交的
+2. 通过内部 `RollbackToAppliedPresentation` 状态转换恢复 snapshot 保存的 Query、PageRequest、GroupExpansion 和最后提交的
    visible range；只在 Query 实际回退时递增 QueryRevision，否则只递增 DataGeneration；
 3. 恢复旧 Header/Cell/Group/Pagination/scroll 投影；
 4. 设置 LoadState=Error、LoadError，并恢复旧 snapshot 的交互；
@@ -655,6 +671,9 @@ Query 未提交前保持旧 snapshot 但禁止 edit/delete/move；选择读取�
 Source invalidation 刷新失败时旧 snapshot 标记 `IsDataStale=true`，只读展示并等待 Reload；不谎称数据仍为最新。
 
 Cancellation 和被替代请求不是 Error，不修改 LoadError，也不触发回退。
+
+只有 FetchAsync 实际挂起时才发布 Loading/Refreshing。同步 Source 或已命中 cache 的请求在当前调用中完成合同验证和 UI
+原子提交，直接进入 Ready；内部 block 去重不能把同步完成强制延迟到 Dispatcher 后续 turn。
 
 ### 8.4 Snapshot expiry
 
@@ -670,13 +689,13 @@ Cancellation 和被替代请求不是 Error，不修改 LoadError，也不触发
 
 | 索引域 | 类型 | 含义 |
 | --- | --- | --- |
-| Source data domain | `long` | Query 命中的全局业务行、PageWindow.DataStartIndex、DataIndex、TotalDataCount |
+| Source data domain | `long` | Query 命中的全局业务行、PageRequest.DataStartIndex、DataIndex、TotalDataCount |
 | Window data domain | `int` | 当前连续窗口或当前页内排除 GroupHeader 的 WindowDataIndex、Row.Index、IChildIndexProvider index/count |
 | Display slot domain | `int` | GroupExpansion 后 flatten 的 Slot、Range.StartIndex、TotalEntryCount、纵向虚拟化与滚动 extent |
 
 `DataGridSourceEntry.DataIndex` 保持 long；DataGridRow.Index 取 WindowDataIndex，DataGridRow.Slot 取 display slot。
 `DataGridDisplayData`、IChildIndexProvider、WindowDataCount 和 TotalEntryCount 保持 int。连续 data/display window 超过 int
-上限时 Source 抛出 `DataGridPresentationLimitExceededException`，调用方必须启用 PageWindow。分页仍能通过 long
+上限时 Source 抛出 `DataGridPresentationLimitExceededException`，调用方必须启用 PageRequest。分页仍能通过 long
 DataStartIndex 访问超过 `int.MaxValue` 的业务数据，但任何时刻的活动 UI 窗口都保持准确的 int 索引。
 
 禁止 saturation、取模或 window-relative 假装 global child index。这样 Avalonia automation 的 child index/count、键盘导航、
@@ -704,7 +723,7 @@ extent、BringIntoView、焦点与回收 ownership 冲突。保留现有 RowsPre
 WindowDataCount，`GetChildIndex(row)` 返回等于 entry.WindowDataIndex 的 row.Index；GroupHeader 继续不冒充 data child，
 两者都绝不因此生成对应数量的 children。
 
-### 9.3 异步规划与同步布局隔离
+### 9.3 数据规划与同步布局隔离
 
 现有 `MeasureOverride`/`ArrangeOverride` 是同步热路径；它们不能调用 Source、等待 Task、获取锁、触发 QueryChanged 或分配
 range buffer。虚拟化拆成两个阶段：
@@ -713,7 +732,7 @@ range buffer。虚拟化拆成两个阶段：
 scroll / thumb / bring-into-view intent
   -> DesiredViewport (coalesced, latest wins)
   -> pure ViewportPlanner (offset -> slot -> required visible range)
-  -> RangeCoordinator ensures cache coverage asynchronously
+  -> RangeCoordinator ensures cache coverage (sync hit or async miss)
   -> UI-thread atomic CommittedViewport swap
   -> one measure/arrange pass realizes cached entries only
 ```
@@ -746,7 +765,7 @@ container recycle 后仍归属于正确业务行。
 所有 height、extent、Maximum、ViewportSize 和 offset 运算必须保持 finite、非负并使用 checked/clamped 边界。测量值修正估值
 时，以首个完整可见 entry key + intra-row offset 作为 scroll anchor，避免 thumb 抖动和内容跳行。
 
-成功提交新 Query 或 PageWindow 后垂直 offset 明确归零；GroupExpansion 变化时保持被操作 group header 的屏幕 Y 锚点；
+成功提交新 Query 或 PageRequest 后垂直 offset 明确归零；GroupExpansion 变化时保持被操作 group header 的屏幕 Y 锚点；
 Source.Invalidated 时优先按首行 key 恢复，无法解析才使用合法的最近 slot。水平 column virtualization、冻结列和
 DataGridCellsPresenter 的可见列计算不在此重构中改变。
 
@@ -759,7 +778,9 @@ prefetchRange = visibleRange + one viewport before + one viewport after
 request ranges = block-aligned missing intervals inside prefetchRange
 ```
 
-初次布局尚无精确 viewport 时从 0 请求一个 block。每个 block 状态为 Missing、Queued、Loading 或 Ready；同一
+初次布局尚无精确 viewport 时从 0 请求一个 block；显式有限 Height 可以直接估算首个 aligned visible target。数据先提交而
+RowsPresenter 尚无有效可用高度时，不提前实现整段 range。自动高度且 Bounds 仍为 0 的嵌套 DataGrid 在模板 part 就绪后只用
+已提交 bootstrap entry 建立 DesiredSize，Measure 本身不发请求。每个 block 状态为 Missing、Queued、Loading 或 Ready；同一
 revision/generation/block 最多存在一个请求。
 
 新 generation 在 snapshot 尚未建立时只发一个 bootstrap block；取得 snapshot id 后，其余请求全部携带
@@ -773,7 +794,7 @@ container 或 applied snapshot 引用的 block 必须 pin，owner 释放前不�
 ### 9.6 原子提交与容器回收
 
 Query 或 generation 变化时创建 pending snapshot。visibleRange block 到齐且合同验证通过后，先根据结果 total 计算合法
-PageWindow/scroll bounds；若需要 clamp，则丢弃该 pending presentation、递增 generation 并只请求最终窗口，不能先提交一个
+PageRequest/scroll bounds；若需要 clamp，则丢弃该 pending presentation、递增 generation 并只请求最终窗口，不能先提交一个
 瞬时空页。无需 clamp 时，UI 线程一次性：
 
 1. pin 新 visible blocks；
@@ -792,21 +813,21 @@ PageWindow/scroll bounds；若需要 clamp，则丢弃该 pending presentation�
 
 ### 9.7 分页
 
-PageIndex/PageSize 是 DataGrid viewport 状态，不进入 Query。DataGrid 将其转换为请求携带的 PageWindow：
+PageIndex/PageSize 是 DataGrid viewport 状态，不进入 Query。DataGrid 将其转换为请求携带的 PageRequest：
 
 ```text
-PageWindow.DataStartIndex = checked(PageIndex * PageSize)
-PageWindow.DataCount = PageSize
+PageRequest.DataStartIndex = checked(PageIndex * PageSize)
+PageRequest.DataCount = PageSize
 ```
 
-Range 随后相对当前 PageWindow 的 display entries 从 0 开始。普通未分组结果的 display range 与页内 data range 相同；
+Range 随后相对当前 PageRequest 的 display entries 从 0 开始。普通未分组结果的 display range 与页内 data range 相同；
 分组 Source 负责按“filter -> stable order by Groups then Sorts -> page data rows -> insert group headers for page -> apply
 collapsed group keys -> flatten visible entries”的固定顺序返回当前页的 display entries。结果分别报告 Query 命中的全局
 `TotalDataCount` 和当前页 collapse/flatten 后的 `TotalEntryCount`。
 
-PageIndex 或 PageSize 变化会递增 DataGeneration、取消旧页请求并以新的 PageWindow 创建 pending snapshot；它不改变 Query，
+PageIndex 或 PageSize 变化会递增 DataGeneration、取消旧页请求并以新的 PageRequest 创建 pending snapshot；它不改变 Query，
 不触发 QueryChanged。Query 改变时 PageIndex 在启动请求前同步归零，因此只产生 page 0 的一个 generation。若结果表明当前
-PageIndex 越界，DataGrid clamp 后只为最终 PageWindow 再发一次请求。上下 Pagination 始终投影同一 DataGrid page state。
+PageIndex 越界，DataGrid clamp 后只为最终 PageRequest 再发一次请求。上下 Pagination 始终投影同一 DataGrid page state。
 
 ## 10. 本地高性能 Source
 
@@ -816,8 +837,10 @@ PageIndex 越界，DataGrid clamp 后只为最终 PageWindow 再发一次请求�
 var source = DataGridLocalSource.Create(
     rows,
     DataGridLocalSourceDescriptor.For<PersonRow>(static row => row.Id)
-        .Field("name", static row => row.Name, StringComparer.CurrentCulture)
-        .Field("age", static row => row.Age));
+        .Field("name", static row => row.Name, StringComparer.CurrentCulture,
+            propertyChangedName: nameof(PersonRow.Name))
+        .Field("age", static row => row.Age,
+            propertyChangedName: nameof(PersonRow.Age)));
 ```
 
 API 接收普通 `Func<T, TKey>`，不是 expression tree；FieldId 由调用方显式提供。泛型 field descriptor 在内部以
@@ -833,15 +856,18 @@ API 接收普通 `Func<T, TKey>`，不是 expression tree；FieldId 由调用方
 3. 排序只排列 index；
 4. range fetch 通过 index 读取原始 source item 并建立小型 entry buffer。
 
+空 Query、无分页、无分组的 plain table 直接读取 request range，不创建或缓存全量 index projection。filter、sort、group 或
+page 存在时才进入上述 projection 路径，因此百万行普通首屏的读取与分配仍由 range 大小约束。
+
 复合 comparer 先按 Query.Groups、再按 Query.Sorts 调用强类型 field comparer；所有字段相等时
 以原 source ordinal 作最终比较，因此即使底层 `Array.Sort` 不稳定，结果仍具有确定的稳定顺序。
 
-分组查询先复用 filter/sort index projection；PageWindow 非 null 时先切出页内 index slice，再只为该 slice 生成只读
+分组查询先复用 filter/sort index projection；PageRequest 非 null 时先切出页内 index slice，再只为该 slice 生成只读
 group tree，应用 GroupExpansion 后扁平化。连续窗口才在完整 projection 上建立可按 entry range 定位的 group directory。
 只有分组路径承担 group metadata；plain table 不创建 group 对象。
 
 filter/sort 基础投影 cache key 为 `(sourceVersion, DataGridQuery)`；page/group/expansion 派生索引另以
-`(baseProjection, PageWindow, GroupExpansion)` 为 key，并受同一有界 LRU 管理。Source 集合变化时 sourceVersion 递增并触发
+`(baseProjection, PageRequest, GroupExpansion)` 为 key，并受同一有界 LRU 管理。Source 集合变化时 sourceVersion 递增并触发
 Invalidated。可观察集合通过弱转发订阅，Source dispose 后不再接收通知。
 
 ### 10.3 线程边界
@@ -879,11 +905,12 @@ Header drag mode binding 与本需求正交，不在该重构中顺手改动。
 ### 11.3 Loading 与 Ready
 
 DataGridTheme 的视觉树保持不变。`Spin.IsSpinning` 从 `IsOperating` 改为内部
-`EffectiveIsOperating = IsOperating || LoadState is Loading/Refreshing`。Ready、Idle 和普通用户设置 `IsOperating` 的
-既有视觉不变。
+`EffectiveIsOperating = IsOperating || LoadState == Loading`。首次异步 Loading 和普通用户设置 `IsOperating` 的既有视觉不变；
+Refreshing 保持已提交内容完整可见。
 
-加载中旧 rows 保持布局尺寸，Spin 阻止数据提交交互，因此不会发生列宽跳动或旧行误编辑。首次空加载继续使用同一 Frame、
-Header 和 scroll geometry。Error 信息通过 `LoadError` 暴露；本次不新增未经设计的 error popup 或动态 overlay。
+Refreshing 时旧 rows 保持布局尺寸与完整不透明度，LoadState 本身阻止数据提交交互，因此不会发生列宽跳动或旧行误编辑。
+首次空加载继续使用同一 Frame、Header 和 scroll geometry。Error 信息通过 `LoadError` 暴露；本次不新增未经设计的 error
+popup 或动态 overlay。
 
 ## 12. 选择、current、编辑和移动
 
@@ -909,7 +936,7 @@ interval/key 数增长，与总行数无关。
 
 状态失效规则固定如下：
 
-- PageWindow、GroupExpansion 不改变业务行 identity/order，完整保留 selection。
+- PageRequest、GroupExpansion 不改变业务行 identity/order，完整保留 selection。
 - 纯 Sorts 或 Groups 变化保留 AllMatchingQuery 和 ExplicitKeys，但清理依赖旧 DataIndex 顺序的普通 index interval。
 - Filters 变化清理 AllMatchingQuery、全部 interval 和 ExcludedKeys，ExplicitKeys 保留但只在同 key 再次出现时显示。
 - Source.Invalidated 清理普通 index interval；AllMatchingQuery 继续表示当前 filter membership 的全部匹配行，ExplicitKeys
@@ -943,7 +970,7 @@ Mutation request 必须携带 Query、snapshot 和 row key；Source 返回新的
 Row reorder 不再把 view index 当作源集合 index。请求使用 source key 与目标邻接 key；Source 不支持移动或当前 Query
 语义不允许移动时，handle 不进入可提交状态。LocalSource 在有 sort/filter/group/page 时默认拒绝 move，与当前行为一致。
 
-用户触发的 Query、PageWindow、GroupExpansion 或 Source replacement 前必须提交当前 edit；提交失败则中止该用户操作。
+用户触发的 Query、PageRequest、GroupExpansion 或 Source replacement 前必须提交当前 edit；提交失败则中止该用户操作。
 Source.Invalidated 属于无法拒绝的外部事实，DataGrid 立即取消当前 edit/mutation session、将 snapshot 标为 stale，再开始刷新，
 不能把已经失效的编辑提交回 Source。
 
@@ -957,8 +984,8 @@ DataGrid 在提交前验证：
 - start、entry count、total counts 是否满足精确切片公式。
 - entry kind、key、item/group payload、WindowDataIndex/DataIndex 映射是否合法。
 - 当前活动窗口 cache 中 row/group key 是否分别重复。
-- 相同 snapshot 的 TotalDataCount、相同 `(snapshot, PageWindow)` 的 WindowDataCount，以及相同
-  `(snapshot, PageWindow, GroupExpansion)` 的 TotalEntryCount 是否一致。
+- 相同 snapshot 的 TotalDataCount、相同 `(snapshot, PageRequest)` 的 WindowDataCount，以及相同
+  `(snapshot, PageRequest, GroupExpansion)` 的 TotalEntryCount 是否一致。
 
 合同错误包装为 `DataGridSourceContractException`，进入 Error，永不部分提交，也不吞异常。
 连续模式的 data/display count 无法用 int 精确表示时，Source 抛出 `DataGridPresentationLimitExceededException`；这是可操作的
@@ -970,7 +997,7 @@ DataGrid 在提交前验证：
 | --- | --- | --- |
 | `Source.Invalidated +=` | DataGrid attachment | Source replace、detach；reattach 时重新订阅 |
 | generation CTS | RangeCoordinator | Query/generation replace、detach、完成后 Dispose |
-| 单请求 linked CTS | Range request | request 完成、取消或 cache eviction 后 Dispose |
+| generation CancellationToken | Range request | generation replacement 或 coordinator detach 时取消；单请求不创建冗余 linked CTS |
 | pending cache blocks | pending snapshot | commit、failure、query replace、detach |
 | applied cache blocks | applied snapshot | snapshot replacement、Source replace、detach |
 | pooled entry/index arrays | LocalSource/cache block | block/projection eviction 或 Source dispose 时归还 |
@@ -983,14 +1010,14 @@ Detach 先使 revision/generation owner 失效，再取消请求、退订 Source
 
 Source replacement 是完整事务：
 
-1. 在不修改当前状态的前提下，验证非 null 候选 Source.Schema、当前 Query、活动列和 PageWindow；不适用则抛出明确异常，
+1. 在不修改当前状态的前提下，验证非 null 候选 Source.Schema、当前 Query、活动列和 PageRequest；不适用则抛出明确异常，
    旧 Source 与旧 presentation 保持原样，不静默删条件；
 2. 提交当前 edit 并结束 mutation session；提交失败则终止 replacement，旧 Source 继续生效；
 3. 一次性提交新 Source identity，递增 generation，使所有旧 continuation 从此失效；
 4. 取消旧请求、退订旧 Source，并清空旧 snapshot、cache、row key resolution 和 totals；
 5. 候选 Source 非 null 时订阅它；若外部 Source 的事件订阅违反合同并抛出异常，则进入可诊断 Error，且绝不重新使用
    已失效旧 owner；
-6. 候选 Source 非 null 时以当前 Query/PageWindow/GroupExpansion 加载首个可见范围；null 时进入 Idle 并保持空 presentation。
+6. 候选 Source 非 null 时以当前 Query/PageRequest/GroupExpansion 加载首个可见范围；null 时进入 Idle 并保持空 presentation。
 
 所有可预见的结构/schema/edit 失败都发生在步骤 3 前，因此不会产生半替换状态。步骤 3 后只有新 owner 可以提交结果；
 旧请求无论成功、失败还是忽略 Cancellation 都只能结束，不能复活旧 presentation。
@@ -1001,7 +1028,8 @@ Source replacement 是完整事务：
 
 - 所有 public Source/Query 类型位于 DataGrid package，不向 Core/Shared 引入反向依赖。
 - LocalSource descriptor 使用静态泛型 getter/comparer。
-- Auto-generation 继续复用 generated `IDataMemberAccessorDescriptor`；缺失 descriptor 时不在 NativeAOT 正常路径反射。
+- Auto-generation 只消费 schema `DataGridFieldDisplayAccessor` 并创建 compiled binding；可从 generated
+  `IDataMemberAccessor` 显式适配，缺失 accessor 时不生成该字段，而不是反射或字符串绑定。
 - Gallery 远端示例模型继续使用 generated accessors 和 compiled bindings。
 - 不新增 linker root、suppress、assembly scan、runtime registration 或字符串 Binding。
 
@@ -1054,7 +1082,7 @@ Data/Virtualization/*               PresentationIndex, block cache, snapshot and
 
 | 旧契约 | 新契约 |
 | --- | --- |
-| `DataGrid.ItemsSource` | `DataGrid.Source` |
+| `DataGrid.ItemsSource : IEnumerable?` | `DataGrid.ItemsSource : IDataGridSource?` |
 | `DataGrid.CollectionView` | `IDataGridSource` + read-only applied snapshot state |
 | `DataGridSortDescription*` | `DataGridQuery.Sorts` |
 | `SortMemberPath` | `DataGridColumn.FieldId` |
@@ -1084,7 +1112,7 @@ Data/Virtualization/*               PresentationIndex, block cache, snapshot and
    container bridge；让 rows/viewport 读取 range snapshot，保留现有 container pools、水平虚拟化和 ready-state layout/theme。
 6. **Query UI**：接入 column/header/cell/filter/group，移除 per-cell sort subscription，保持现有伪类与主题。
 7. **selection/mutation/paging**：迁移 row-key selection/current、编辑、key-relative move 和上下 Pagination。
-8. **单路切换**：迁移 Gallery、性能场景和测试到 Source；删除 ItemsSource/CollectionView 数据执行路径及旧 API。
+8. **单路切换**：迁移 Gallery、性能场景和测试到 range-typed `ItemsSource`；删除旧 ItemsSource/CollectionView 数据执行路径及旧 API，且不引入 `Source` 别名。
 9. **文档与发布验证**：同步 DataGrid overview/implementation/topic design/changelog、Gallery API/ShowCase、LLMS 和 AOT。
 10. **最终全量门禁**：所有测试、视觉矩阵、性能矩阵、analyzer、NativeAOT 和 diff hygiene 全部通过后才声明完成。
 
@@ -1108,7 +1136,7 @@ Data/Virtualization/*               PresentationIndex, block cache, snapshot and
 - start/count/total/snapshot 不一致均产生合同错误且不部分提交。
 - 同 snapshot 的 TotalDataCount、同 snapshot/window 的 WindowDataCount、同 snapshot/window/expansion 的
   TotalEntryCount 恒定，row/group key 分域唯一，data/group payload 合法。
-- PageWindow 与 Range 的索引空间不混用；collapsed group 的后代不出现在 display range。
+- PageRequest 与 Range 的索引空间不混用；collapsed group 的后代不出现在 display range。
 - WindowDataIndex 在分组插入 header、collapse 产生间隙和跨 range 拼接时仍与 DataIndex 精确对应。
 - Source 同步完成、异步完成、后台线程完成、取消前后完成。
 - Invalidated、Source replacement、detach/reattach 的订阅数量和释放。
@@ -1178,11 +1206,13 @@ Ready 状态用基线截图和结构断言覆盖：
 - 固定行高/自动行高、冻结列、水平/垂直滚动条、行详情。
 - sorted 未选行、sorted 选中行、hover、focus、disabled。
 - indicator 左/中/右命中，列 resize 边界不被排序手势吞掉。
-- Loading/Refreshing 保持 Frame、Header、列宽、scrollbar 和旧 rows 几何，不发生闪白或跳宽。
+- Loading 保持 Frame、Header、列宽和 scrollbar 几何；Refreshing 额外保持旧 rows 的完整不透明度且不启动自动 Spin，
+  不发生闪白、淡化或跳宽。
 - Query failure 后箭头、sort tint、rows 和 pagination 全部回到 applied snapshot。
 - Browser/Desktop 至少各走查一个 local 和 fake-remote 场景。
 
-Ready 状态非预期 pixel diff 为失败；不得用更新 golden 掩盖差异。异步新增状态只允许在设计明确的 Spin 区域出现差异。
+Ready 状态非预期 pixel diff 为失败；不得用更新 golden 掩盖差异。只有 Loading 或用户显式 `IsOperating` 允许在设计明确的
+Spin 区域出现差异，Refreshing 必须保持已提交内容的 opacity、geometry 和命中区域稳定。
 
 ### 17.8 性能
 
@@ -1207,8 +1237,8 @@ Ready 状态非预期 pixel diff 为失败；不得用更新 golden 掩盖差异
 
 ```bash
 dotnet test AtomUI.slnx -c Release --no-restore /m:1 /nr:false --nologo -v:minimal
-dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj \
-  -c Release --framework net10.0 --no-build -- --verify-datagrid-states
+dotnet run --project tools/performances/AtomUI.DataGridPerformance/AtomUI.DataGridPerformance.csproj \
+  -c Release --framework net10.0 --no-build -- --verify-states
 dotnet run --project tools/AtomUI.Docs.LLMsGenerator/AtomUI.Docs.LLMsGenerator.csproj \
   -- verify --config docs/AI/generated/llms.config.json
 scripts/verification/verify-aot-trim-registration.sh --full
@@ -1235,7 +1265,7 @@ Gallery 增加一个稳定 fake-remote ShowCase，不能依赖网络：
 
 - `docs/controls/desktop/data-display/data-grid/overview.md`：Source/Query public contract 和状态模型摘要。
 - `implementation.md`：query controller、range coordinator、snapshot/cache、生命周期和 AOT ownership。
-- 新建 `query-source-design.md`：只描述最终稳定设计，不保留 Issue、候选方案或实施状态。
+- 新建 `query-range-source-design.md`：只描述最终稳定设计，不保留 Issue、候选方案或实施状态。
 - `changelog.md`：记录 L3 API、数据 owner 和实现结构变化。
 - Gallery API/ShowCase、性能 Regression.md 和 LLMS 输入。
 

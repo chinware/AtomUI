@@ -3,11 +3,9 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
-using System.Collections;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Data;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -148,20 +146,6 @@ public partial class DataGrid : TemplatedControl,
     public static readonly StyledProperty<ScrollBarVisibility> VerticalScrollBarVisibilityProperty =
         AvaloniaProperty.Register<DataGrid, ScrollBarVisibility>(nameof(VerticalScrollBarVisibility));
 
-    public static readonly DirectProperty<DataGrid, int> SelectedIndexProperty =
-        AvaloniaProperty.RegisterDirect<DataGrid, int>(
-            nameof(SelectedIndex),
-            o => o.SelectedIndex,
-            (o, v) => o.SelectedIndex = v,
-            defaultBindingMode: BindingMode.TwoWay);
-
-    public static readonly DirectProperty<DataGrid, object?> SelectedItemProperty =
-        AvaloniaProperty.RegisterDirect<DataGrid, object?>(
-            nameof(SelectedItem),
-            o => o.SelectedItem,
-            (o, v) => o.SelectedItem = v,
-            defaultBindingMode: BindingMode.TwoWay);
-
     public static readonly StyledProperty<DataGridClipboardCopyMode> ClipboardCopyModeProperty =
         AvaloniaProperty.Register<DataGrid, DataGridClipboardCopyMode>(
             nameof(ClipboardCopyMode),
@@ -170,8 +154,82 @@ public partial class DataGrid : TemplatedControl,
     public static readonly StyledProperty<bool> AutoGenerateColumnsProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(AutoGenerateColumns));
 
-    public static readonly StyledProperty<IEnumerable?> ItemsSourceProperty =
-        AvaloniaProperty.Register<DataGrid, IEnumerable?>(nameof(ItemsSource));
+    public static readonly DirectProperty<DataGrid, IDataGridSource?> ItemsSourceProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid, IDataGridSource?>(
+            nameof(ItemsSource),
+            control => control.ItemsSource,
+            (control, value) => control.ItemsSource = value,
+            defaultBindingMode: BindingMode.TwoWay);
+
+    public static readonly DirectProperty<DataGrid, DataGridQuery> QueryProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid, DataGridQuery>(
+            nameof(Query),
+            control => control.Query,
+            (control, value) => control.Query = value,
+            defaultBindingMode: BindingMode.TwoWay);
+
+    public static readonly DirectProperty<DataGrid, DataGridGroupExpansion> GroupExpansionProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid, DataGridGroupExpansion>(
+            nameof(GroupExpansion),
+            control => control.GroupExpansion,
+            (control, value) => control.GroupExpansion = value,
+            defaultBindingMode: BindingMode.TwoWay);
+
+    public static readonly DirectProperty<DataGrid, DataGridPageRequest?> PageRequestProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid, DataGridPageRequest?>(
+            nameof(PageRequest),
+            control => control.PageRequest,
+            (control, value) => control.PageRequest = value,
+            defaultBindingMode: BindingMode.TwoWay);
+
+    public static readonly DirectProperty<DataGrid, DataGridSelectionState> SelectionProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid, DataGridSelectionState>(
+            nameof(Selection),
+            control => control.Selection,
+            (control, value) => control.Selection = value,
+            defaultBindingMode: BindingMode.TwoWay);
+
+    public static readonly DirectProperty<DataGrid, DataGridRowKey?> CurrentRowKeyProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid, DataGridRowKey?>(
+            nameof(CurrentRowKey),
+            control => control.CurrentRowKey,
+            (control, value) => control.CurrentRowKey = value,
+            defaultBindingMode: BindingMode.TwoWay);
+
+    public static readonly DirectProperty<DataGrid, DataGridQuery> AppliedQueryProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid, DataGridQuery>(
+            nameof(AppliedQuery),
+            control => control.AppliedQuery);
+
+    public static readonly DirectProperty<DataGrid, DataGridPageRequest?> AppliedPageRequestProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid, DataGridPageRequest?>(
+            nameof(AppliedPageRequest),
+            control => control.AppliedPageRequest);
+
+    public static readonly DirectProperty<DataGrid, DataGridLoadState> LoadStateProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid, DataGridLoadState>(
+            nameof(LoadState),
+            control => control.LoadState);
+
+    public static readonly DirectProperty<DataGrid, Exception?> LoadErrorProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid, Exception?>(
+            nameof(LoadError),
+            control => control.LoadError);
+
+    public static readonly DirectProperty<DataGrid, long> TotalItemCountProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid, long>(
+            nameof(TotalItemCount),
+            control => control.TotalItemCount);
+
+    public static readonly DirectProperty<DataGrid, int> TotalEntryCountProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid, int>(
+            nameof(TotalEntryCount),
+            control => control.TotalEntryCount);
+
+    public static readonly DirectProperty<DataGrid, bool> IsDataStaleProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid, bool>(
+            nameof(IsDataStale),
+            control => control.IsDataStale);
 
     public static readonly StyledProperty<bool> IsRowDetailsFrozenProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(IsRowDetailsFrozen));
@@ -182,10 +240,6 @@ public partial class DataGrid : TemplatedControl,
     public static readonly StyledProperty<DataGridRowDetailsVisibilityMode> RowDetailsVisibilityModeProperty =
         AvaloniaProperty.Register<DataGrid, DataGridRowDetailsVisibilityMode>(nameof(RowDetailsVisibilityMode),
             DataGridRowDetailsVisibilityMode.Collapsed);
-
-    public static readonly DirectProperty<DataGrid, IDataGridCollectionView?> CollectionViewProperty =
-        AvaloniaProperty.RegisterDirect<DataGrid, IDataGridCollectionView?>(nameof(CollectionView),
-            o => o.CollectionView);
 
     public static readonly StyledProperty<object?> TitleProperty =
         AvaloniaProperty.Register<DataGrid, object?>(nameof(Title));
@@ -501,31 +555,6 @@ public partial class DataGrid : TemplatedControl,
     }
     
     /// <summary>
-    /// Gets or sets the index of the current selection.
-    /// </summary>
-    /// <returns>
-    /// The index of the current selection, or -1 if the selection is empty.
-    /// </returns>
-    public int SelectedIndex
-    {
-        get => _selectedIndex;
-        set => SetAndRaise(SelectedIndexProperty, ref _selectedIndex, value);
-    }
-
-    private int _selectedIndex = -1;
-
-    /// <summary>
-    /// Gets or sets the data item corresponding to the selected row.
-    /// </summary>
-    public object? SelectedItem
-    {
-        get => _selectedItem;
-        set => SetAndRaise(SelectedItemProperty, ref _selectedItem, value);
-    }
-
-    private object? _selectedItem;
-
-    /// <summary>
     /// The property which determines how DataGrid content is copied to the Clipboard.
     /// </summary>
     public DataGridClipboardCopyMode ClipboardCopyMode
@@ -536,7 +565,7 @@ public partial class DataGrid : TemplatedControl,
 
     /// <summary>
     /// Gets or sets a value that indicates whether columns are created
-    /// automatically when the <see cref="P:DataGrid.ItemsSource" /> property is set.
+    /// automatically from the source schema.
     /// </summary>
     public bool AutoGenerateColumns
     {
@@ -544,14 +573,88 @@ public partial class DataGrid : TemplatedControl,
         set => SetValue(AutoGenerateColumnsProperty, value);
     }
 
+    private IDataGridSource? _source;
+
     /// <summary>
-    /// Gets or sets a collection that is used to generate the content of the control.
+    /// Gets or sets the range-based data source that supplies the grid.
     /// </summary>
-    public IEnumerable? ItemsSource
+    /// <remarks>
+    /// The data source is externally owned. The grid subscribes to its invalidation signal while attached,
+    /// but does not dispose it when this property changes or when the grid is detached.
+    /// </remarks>
+    public IDataGridSource? ItemsSource
     {
-        get => GetValue(ItemsSourceProperty);
-        set => SetValue(ItemsSourceProperty, value);
+        get => _source;
+        set => SetItemsSource(value);
     }
+
+    private DataGridQuery _query = DataGridQuery.Empty;
+
+    public DataGridQuery Query
+    {
+        get => _query;
+        set => SetQuery(value, DataGridQueryChangeReason.External);
+    }
+
+    private DataGridGroupExpansion _groupExpansion = DataGridGroupExpansion.AllExpanded;
+
+    public DataGridGroupExpansion GroupExpansion
+    {
+        get => _groupExpansion;
+        set => SetGroupExpansion(value);
+    }
+
+    private DataGridPageRequest? _pageRequest;
+
+    public DataGridPageRequest? PageRequest
+    {
+        get => _pageRequest;
+        set => SetPageRequest(value);
+    }
+
+    private DataGridSelectionState _selection = DataGridSelectionState.Empty;
+
+    public DataGridSelectionState Selection
+    {
+        get => _selection;
+        set => SetSelectionState(value);
+    }
+
+    private DataGridRowKey? _currentRowKey;
+
+    public DataGridRowKey? CurrentRowKey
+    {
+        get => _currentRowKey;
+        set => SetCurrentRowKey(value);
+    }
+
+    private DataGridQuery _appliedQuery = DataGridQuery.Empty;
+
+    public DataGridQuery AppliedQuery => _appliedQuery;
+
+    private DataGridPageRequest? _appliedPageRequest;
+
+    public DataGridPageRequest? AppliedPageRequest => _appliedPageRequest;
+
+    private DataGridLoadState _dataLoadState;
+
+    public DataGridLoadState LoadState => _dataLoadState;
+
+    private Exception? _loadError;
+
+    public Exception? LoadError => _loadError;
+
+    private long _totalItemCount;
+
+    public long TotalItemCount => _totalItemCount;
+
+    private int _totalEntryCount;
+
+    public int TotalEntryCount => _totalEntryCount;
+
+    private bool _isDataStale;
+
+    public bool IsDataStale => _isDataStale;
 
     /// <summary>
     /// Gets or sets a value that indicates whether the row details sections remain
@@ -580,11 +683,6 @@ public partial class DataGrid : TemplatedControl,
         get => GetValue(RowDetailsVisibilityModeProperty);
         set => SetValue(RowDetailsVisibilityModeProperty, value);
     }
-
-    /// <summary>
-    /// Gets current <see cref="IDataGridCollectionView"/>.
-    /// </summary>
-    public IDataGridCollectionView? CollectionView => DataConnection.CollectionView;
 
     [DependsOn(nameof(TitleTemplateProperty))]
     public object? Title
@@ -735,11 +833,6 @@ public partial class DataGrid : TemplatedControl,
 
     public ObservableCollection<IDataGridColumnGroupItem> ColumnGroups => ColumnGroupsInternal;
 
-    /// <summary>
-    /// Gets a list that contains the data items corresponding to the selected rows.
-    /// </summary>
-    public IList SelectedItems => _selectedItems;
-
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -786,12 +879,9 @@ public partial class DataGrid : TemplatedControl,
 
     #region 公共事件定义
 
-    public static readonly RoutedEvent<SelectionChangedEventArgs> SelectionChangedEvent =
-        RoutedEvent.Register<DataGrid, SelectionChangedEventArgs>(nameof(SelectionChanged), RoutingStrategies.Bubble);
-
     /// <summary>
     /// Occurs one time for each public, non-static property in the bound data type when the
-    /// <see cref="P:DataGrid.ItemsSource" /> property is changed and the
+    /// source schema is changed and the
     /// <see cref="P:DataGrid.AutoGenerateColumns" /> property is true.
     /// </summary>
     public event EventHandler<DataGridAutoGeneratingColumnEventArgs>? AutoGeneratingColumn;
@@ -879,14 +969,9 @@ public partial class DataGrid : TemplatedControl,
     public event EventHandler<DataGridRowEditEndingEventArgs>? RowEditEnding;
 
     /// <summary>
-    /// Occurs when the <see cref="P:DataGrid.SelectedItem" /> or
-    /// <see cref="P:DataGrid.SelectedItems" /> property value changes.
+    /// Occurs when the immutable declarative selection expression changes.
     /// </summary>
-    public event EventHandler<SelectionChangedEventArgs>? SelectionChanged
-    {
-        add => AddHandler(SelectionChangedEvent, value);
-        remove => RemoveHandler(SelectionChangedEvent, value);
-    }
+    public event EventHandler<DataGridSelectionChangedEventArgs>? SelectionChanged;
 
     /// <summary>
     /// Occurs when the <see cref="DataGridColumn"/> sorting request is triggered.
@@ -950,6 +1035,8 @@ public partial class DataGrid : TemplatedControl,
     /// </summary>
     public event EventHandler<PageChangingEventArgs>? PageChanging;
 
+    public event EventHandler<DataGridQueryChangedEventArgs>? QueryChanged;
+
     #endregion
 
     /// <summary>
@@ -959,12 +1046,10 @@ public partial class DataGrid : TemplatedControl,
     {
         get
         {
-            if (CurrentSlot == -1 || ItemsSource == null || RowGroupHeadersTable.Contains(CurrentSlot))
-            {
-                return null;
-            }
-
-            return DataConnection.GetDataItem(RowIndexFromSlot(CurrentSlot));
+            return TryGetCommittedRangeEntry(CurrentSlot, out var entry) &&
+                   entry.Kind == DataGridSourceEntryKind.Data
+                ? entry.Item
+                : null;
         }
     }
 
@@ -977,7 +1062,6 @@ public partial class DataGrid : TemplatedControl,
 
         SizeTypeProperty.OverrideDefaultValue<DataGrid>(CustomizableSizeType.Large);
 
-        ItemsSourceProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleItemsSourcePropertyChanged(e));
         CanUserReorderRowsProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
             x.HandleCanUserReorderRowsChanged(e));
         CanUserResizeColumnsProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
@@ -996,9 +1080,8 @@ public partial class DataGrid : TemplatedControl,
         RowHeightProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleRowHeightChanged(e));
         RowHeaderWidthProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleRowHeaderWidthChanged(e));
         SelectionModeProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleSelectionModeChanged(e));
-        SelectedIndexProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleSelectedIndexChanged(e));
-        SelectedItemProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleSelectedItemChanged(e));
         IsEnabledProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleIsEnabledChanged(e));
+        IsOperatingProperty.Changed.AddClassHandler<DataGrid>((x, _) => x.UpdateEffectiveIsOperating());
         IsRowGroupHeadersFrozenProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
             x.HandleIsRowGroupHeadersFrozenChanged(e));
         RowDetailsTemplateProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleRowDetailsTemplateChanged(e));
@@ -1015,8 +1098,6 @@ public partial class DataGrid : TemplatedControl,
         CurrentCellCoordinates   = new DataGridCellCoordinates(-1, -1);
         _loadedRows              = new List<DataGridRow>();
         _lostFocusActions        = new Queue<Action>();
-        _selectedItems           = new DataGridSelectedItemsCollection(this);
-        RowGroupHeadersTable     = new IndexToValueTable<DataGridRowGroupInfo>();
 
         DisplayData                            =  new DataGridDisplayData(this);
         ColumnGroupsInternal                   =  new ObservableCollection<IDataGridColumnGroupItem>();
@@ -1027,7 +1108,7 @@ public partial class DataGrid : TemplatedControl,
         RowDetailsHeightEstimate               =  0;
         _rowHeaderDesiredWidth                 =  0;
 
-        DataConnection       = new DataGridDataConnection(this);
+        RangeDataAccess       = new DataGridRangeDataAccess(this);
         _showDetailsTable    = new IndexToValueTable<bool>();
         _rowDetailsHeightEstimateTable = new IndexToValueTable<double>();
         _collapsedSlotsTable = new IndexToValueTable<bool>();
@@ -1050,6 +1131,11 @@ public partial class DataGrid : TemplatedControl,
     /// <returns>True if operation was successful. False otherwise.</returns>
     public bool BeginEdit(RoutedEventArgs editingEventArgs)
     {
+        // Inline edits require a committed row entry and an editable Source capability.
+        if (IsRangePresentationActive)
+        {
+            return false;
+        }
         if (CurrentColumnIndex == -1 || !GetRowSelection(CurrentSlot))
         {
             return false;
@@ -1120,7 +1206,7 @@ public partial class DataGrid : TemplatedControl,
     /// If column is not null: scrolls the column into view;
     /// If both item and column are null, the method returns without scrolling.
     /// </summary>
-    /// <param name="item">an item from the DataGrid's items source or a CollectionViewGroup from the collection view</param>
+    /// <param name="item">A currently cached source item.</param>
     /// <param name="column">a column from the DataGrid's columns collection</param>
     public void ScrollIntoView(object? item, DataGridColumn? column)
     {
@@ -1142,55 +1228,13 @@ public partial class DataGrid : TemplatedControl,
         }
         else
         {
-            int                   slot         = -1;
-            DataGridRowGroupInfo? rowGroupInfo = null;
-            if (item is DataGridCollectionViewGroup collectionViewGroup)
+            var slot = item is null ? -1 : FindCommittedRangeSlot(item);
+            if (slot < 0)
             {
-                rowGroupInfo = RowGroupInfoFromCollectionViewGroup(collectionViewGroup);
-                if (rowGroupInfo == null)
-                {
-                    Debug.Assert(false);
-                    return;
-                }
-
-                slot = rowGroupInfo.Slot;
-            }
-            else
-            {
-                // the row index will be set to -1 if the item is null or not in the list
-                int rowIndex = DataConnection.IndexOf(item);
-                if (rowIndex == -1)
-                {
-                    return;
-                }
-
-                slot = SlotFromRowIndex(rowIndex);
+                return;
             }
 
             int columnIndex = (column == null) ? FirstDisplayedNonFillerColumnIndex : column.Index;
-
-            if (_collapsedSlotsTable.Contains(slot))
-            {
-                // We need to expand all parent RowGroups so that the slot is visible
-                if (rowGroupInfo != null)
-                {
-                    ExpandRowGroupParentChain(rowGroupInfo.Level - 1, rowGroupInfo.Slot);
-                }
-                else
-                {
-                    rowGroupInfo = RowGroupHeadersTable.GetValueAt(RowGroupHeadersTable.GetPreviousIndex(slot));
-                    Debug.Assert(rowGroupInfo != null);
-                    ExpandRowGroupParentChain(rowGroupInfo.Level, rowGroupInfo.Slot);
-                }
-
-                // Update Scrollbar and display information
-                NegVerticalOffset = 0;
-                SetVerticalOffset(0);
-                ResetDisplayedRows();
-                DisplayData.FirstScrollingSlot = 0;
-                ComputeScrollBarsLayout();
-            }
-
             ScrollSlotIntoView(
                 columnIndex, slot,
                 forCurrentCellChange: true,
@@ -1201,11 +1245,7 @@ public partial class DataGrid : TemplatedControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        if (DataConnection.DataSource != null && !DataConnection.EventsWired)
-        {
-            DataConnection.WireEvents(DataConnection.DataSource);
-            InitializeElements(true /*recycleRows*/);
-        }
+        AttachRangeSource();
 
         if (_topPagination != null)
         {
@@ -1223,14 +1263,10 @@ public partial class DataGrid : TemplatedControl,
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        DetachRangeSource();
         CancelRowReorder();
         SuspendPopupPinnedOpenFilterTarget();
         base.OnDetachedFromVisualTree(e);
-        // When wired to INotifyCollectionChanged, the DataGrid will be cleaned up by GC
-        if (DataConnection.DataSource != null && DataConnection.EventsWired)
-        {
-            DataConnection.UnWireEvents(DataConnection.DataSource);
-        }
         if (_topPagination != null)
         {
             _topPagination.CurrentPageChanged -= HandlePageChangeRequest;
@@ -1287,8 +1323,18 @@ public partial class DataGrid : TemplatedControl,
         {
             _measured = true;
 
-            // We don't need to clear the rows because it was already done when the ItemsSource changed
-            RefreshRowsAndColumns(clearRows: false);
+            // Source attachment owns initial row materialization.
+            if (IsRangePresentationActive)
+            {
+                if (AutoGenerateColumns)
+                {
+                    AutoGenerateColumnsPrivate();
+                }
+            }
+            else
+            {
+                RefreshRowsAndColumns(clearRows: false);
+            }
 
             //// Update our estimates now that the DataGrid has all of the information necessary
             UpdateRowDetailsHeightEstimate();
@@ -1454,15 +1500,6 @@ public partial class DataGrid : TemplatedControl,
     protected virtual void NotifyRowEditEnding(DataGridRowEditEndingEventArgs e)
     {
         RowEditEnding?.Invoke(this, e);
-    }
-
-    /// <summary>
-    /// Raises the SelectionChanged event and clears the _selectionChanged.
-    /// This event won't get raised again until after _selectionChanged is set back to true.
-    /// </summary>
-    protected virtual void NotifySelectionChanged(SelectionChangedEventArgs e)
-    {
-        RaiseEvent(e);
     }
 
     /// <summary>
@@ -1648,10 +1685,7 @@ public partial class DataGrid : TemplatedControl,
         _topPagination    = e.NameScope.Find<Pagination>(DataGridThemeConstants.TopPaginationPart);
         _bottomPagination = e.NameScope.Find<Pagination>(DataGridThemeConstants.BottomPaginationPart);
 
-        if (CollectionView is DataGridCollectionView collectionView)
-        {
-            SyncPaginationState(collectionView);
-        }
+        SyncRangePaginationState();
 
         if (_topPagination != null)
         {
@@ -1665,6 +1699,7 @@ public partial class DataGrid : TemplatedControl,
         
         _templatedApplied = true;
         RefreshPopupPinnedOpenFilterTarget();
+        RestoreRangePresentationAfterTemplate();
     }
 
     /// <summary>
@@ -1697,32 +1732,13 @@ public partial class DataGrid : TemplatedControl,
 
     public void SelectAll()
     {
-        SetRowsSelection(0, SlotCount - 1);
-    }
-
-    /// <summary>
-    /// Returns the Group at the indicated level or null if the item is not in the ItemsSource
-    /// </summary>
-    /// <param name="item">item</param>
-    /// <param name="groupLevel">groupLevel</param>
-    /// <returns>The group the given item falls under or null if the item is not in the ItemsSource</returns>
-    public DataGridCollectionViewGroup? GetGroupFromItem(object item, int groupLevel)
-    {
-        int itemIndex = DataConnection.IndexOf(item);
-        if (itemIndex == -1)
+        var scope = GetCommittedSelectionScope();
+        if (SelectionMode == DataGridSelectionMode.Extended &&
+            TotalItemCount > 0 &&
+            scope is not null)
         {
-            return null;
+            Selection = Selection.WithAllMatching(scope);
         }
-
-        int                   groupHeaderSlot = RowGroupHeadersTable.GetPreviousIndex(SlotFromRowIndex(itemIndex));
-        DataGridRowGroupInfo? rowGroupInfo    = RowGroupHeadersTable.GetValueAt(groupHeaderSlot);
-        while (rowGroupInfo != null && rowGroupInfo.Level != groupLevel)
-        {
-            groupHeaderSlot = RowGroupHeadersTable.GetPreviousIndex(rowGroupInfo.Slot);
-            rowGroupInfo    = RowGroupHeadersTable.GetValueAt(groupHeaderSlot);
-        }
-
-        return rowGroupInfo?.CollectionViewGroup;
     }
 
     /// <summary>
@@ -1811,11 +1827,21 @@ public partial class DataGrid : TemplatedControl,
             }
         }
 
-        if (change.Property == PageSizeProperty ||
-            change.Property == PaginationVisibilityProperty)
+        if (change.Property == PageSizeProperty)
+        {
+            ReConfigurePagination();
+            refreshDisplayedRowsGridLines = true;
+        }
+        else if (change.Property == PaginationVisibilityProperty)
         {
             ConfigurePaginationVisibility();
             refreshDisplayedRowsGridLines = true;
+        }
+
+        if (change.Property == CanUserSortColumnsProperty ||
+            change.Property == CanUserFilterColumnsProperty)
+        {
+            RefreshColumnSortCapabilities();
         }
 
         if (refreshDisplayedRowsGridLines)
@@ -1837,10 +1863,6 @@ public partial class DataGrid : TemplatedControl,
                      change.Property == RightFrozenColumnCountProperty)
             {
                 CheckFrozenColumnCount();
-            }
-            else if (change.Property == PageSizeProperty)
-            {
-                ReConfigurePagination();
             }
         }
     }

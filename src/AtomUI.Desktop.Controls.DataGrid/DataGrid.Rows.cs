@@ -7,7 +7,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Data;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -168,6 +167,10 @@ public partial class DataGrid
     {
         get
         {
+            if (IsRangePresentationActive)
+            {
+                return GetRangeExtent();
+            }
             // If we're not displaying any rows or if we have infinite space the, relative height of our rows is 0
             if (DisplayData.LastScrollingSlot == -1 || double.IsPositiveInfinity(AvailableSlotElementRoom))
             {
@@ -188,35 +191,9 @@ public partial class DataGrid
         if (resetAnchorSlot)
         {
             AnchorSlot = -1;
+            _rangeSelectionAnchorDataIndex = -1;
         }
-
-        if (_selectedItems.Count > 0)
-        {
-            _noSelectionChangeCount++;
-            try
-            {
-                // Individually deselecting displayed rows to view potential transitions
-                for (int slot = DisplayData.FirstScrollingSlot;
-                     slot > -1 && slot <= DisplayData.LastScrollingSlot;
-                     slot++)
-                {
-                    if (DisplayData.GetDisplayedElement(slot) is DataGridRow row)
-                    {
-                        if (_selectedItems.ContainsSlot(row.Slot))
-                        {
-                            SelectSlot(row.Slot, false);
-                        }
-                    }
-                }
-
-                _selectedItems.ClearRows();
-                SelectionHasChanged = true;
-            }
-            finally
-            {
-                NoSelectionChangeCount--;
-            }
-        }
+        Selection = DataGridSelectionState.Empty;
     }
 
     /// <summary>
@@ -225,80 +202,36 @@ public partial class DataGrid
     /// </summary>
     internal void ClearRowSelection(int slotException, bool setAnchorSlot)
     {
-        _noSelectionChangeCount++;
-        try
+        if (!TryGetRangeSelectionOperand(slotException, out var entry, out var scope))
         {
-            bool exceptionAlreadySelected = false;
-            if (_selectedItems.Count > 0)
-            {
-                // Individually deselecting displayed rows to view potential transitions
-                for (int slot = DisplayData.FirstScrollingSlot;
-                     slot > -1 && slot <= DisplayData.LastScrollingSlot;
-                     slot++)
-                {
-                    if (slot != slotException && _selectedItems.ContainsSlot(slot))
-                    {
-                        SelectSlot(slot, false);
-                        SelectionHasChanged = true;
-                    }
-                }
-
-                exceptionAlreadySelected = _selectedItems.ContainsSlot(slotException);
-                int selectedCount = _selectedItems.Count;
-                if (selectedCount > 0)
-                {
-                    if (selectedCount > 1)
-                    {
-                        SelectionHasChanged = true;
-                    }
-                    else
-                    {
-                        int currentlySelectedSlot = _selectedItems.GetFirstSlot();
-                        if (currentlySelectedSlot != slotException)
-                        {
-                            SelectionHasChanged = true;
-                        }
-                    }
-
-                    _selectedItems.ClearRows();
-                }
-            }
-
-            if (exceptionAlreadySelected)
-            {
-                // Exception row was already selected. It just needs to be marked as selected again.
-                // No transition involved.
-                _selectedItems.SelectSlot(slotException, true /*select*/);
-                if (setAnchorSlot)
-                {
-                    AnchorSlot = slotException;
-                }
-            }
-            else
-            {
-                // Exception row was not selected. It needs to be selected with potential transition
-                SetRowSelection(slotException, true /*isSelected*/, setAnchorSlot);
-            }
+            return;
         }
-        finally
+        Selection = DataGridSelectionState.Empty.WithKey(
+            entry.RowKey,
+            entry.DataIndex,
+            scope,
+            isSelected: true,
+            single: true);
+        if (setAnchorSlot)
         {
-            NoSelectionChangeCount--;
+            AnchorSlot = slotException;
+            _rangeSelectionAnchorDataIndex = entry.DataIndex;
         }
     }
 
     internal int GetCollapsedSlotCount(int startSlot, int endSlot)
     {
-        return _collapsedSlotsTable.GetIndexCount(startSlot, endSlot);
+        return 0;
     }
 
     internal int GetNextVisibleSlot(int slot)
     {
-        return _collapsedSlotsTable.GetNextGap(slot);
+        return checked(slot + 1);
     }
 
     internal int GetPreviousVisibleSlot(int slot)
     {
-        return _collapsedSlotsTable.GetPreviousGap(slot);
+        return slot - 1;
     }
 
     /// <summary>
@@ -308,70 +241,21 @@ public partial class DataGrid
     /// <returns>null if the DataSource is null, the provided item in not in the source, or the item is not displayed; otherwise, the associated Row</returns>
     internal DataGridRow? GetRowFromItem(object dataItem)
     {
-        int rowIndex = DataConnection.IndexOf(dataItem);
-        if (rowIndex < 0)
+        foreach (var row in DisplayData.GetScrollingRows().Cast<DataGridRow>())
         {
-            return null;
+            if (ReferenceEquals(row.DataContext, dataItem) || Equals(row.DataContext, dataItem))
+            {
+                return row;
+            }
         }
-
-        int slot = SlotFromRowIndex(rowIndex);
-        return IsSlotVisible(slot) ? DisplayData.GetDisplayedElement(slot) as DataGridRow : null;
+        return null;
     }
 
     internal bool GetRowSelection(int slot)
     {
         Debug.Assert(slot != -1);
-        return _selectedItems.ContainsSlot(slot);
-    }
-
-    internal void InsertElementAt(int slot, int rowIndex, object? item, DataGridRowGroupInfo? groupInfo, bool isCollapsed)
-    {
-        Debug.Assert(slot >= 0 && slot <= SlotCount);
-
-        bool isRow = rowIndex != -1;
-        if (isCollapsed)
-        {
-            InsertElement(slot,
-                element: null,
-                updateVerticalScrollBarOnly: true,
-                isCollapsed: true,
-                isRow: isRow);
-        }
-        else if (SlotIsDisplayed(slot))
-        {
-            // Row at that index needs to be displayed
-            if (isRow)
-            {
-                InsertElement(slot, GenerateRow(rowIndex, slot, item), false /*updateVerticalScrollBarOnly*/,
-                    false /*isCollapsed*/, isRow);
-            }
-            else
-            {
-                InsertElement(slot, GenerateRowGroupHeader(slot, groupInfo),
-                    updateVerticalScrollBarOnly: false,
-                    isCollapsed: false,
-                    isRow: isRow);
-            }
-        }
-        else
-        {
-            InsertElement(slot,
-                element: null,
-                updateVerticalScrollBarOnly: _vScrollBar == null || _vScrollBar.IsVisible,
-                isCollapsed: false,
-                isRow: isRow);
-        }
-    }
-
-    internal void InsertRowAt(int rowIndex)
-    {
-        int     slot = SlotFromRowIndex(rowIndex);
-        object? item = DataConnection.GetDataItem(rowIndex);
-        
-        Debug.Assert(item != null);
-
-        // isCollapsed below is always false because we only use the method if we're not grouping
-        InsertElementAt(slot, rowIndex, item, null /*DataGridRowGroupInfo*/, false /*isCollapsed*/);
+        return TryGetRangeSelectionOperand(slot, out var entry, out var scope) &&
+               Selection.Contains(entry.RowKey, entry.DataIndex, scope);
     }
 
     internal bool IsColumnDisplayed(int columnIndex)
@@ -396,7 +280,11 @@ public partial class DataGrid
 
     internal void OnRowsMeasure()
     {
-        if (!MathUtils.IsZero(DisplayData.PendingVerticalScrollHeight))
+        if (IsRangePresentationActive)
+        {
+            DisplayData.PendingVerticalScrollHeight = 0;
+        }
+        else if (!MathUtils.IsZero(DisplayData.PendingVerticalScrollHeight))
         {
             ScrollSlotsByHeight(DisplayData.PendingVerticalScrollHeight);
             DisplayData.PendingVerticalScrollHeight = 0;
@@ -406,78 +294,30 @@ public partial class DataGrid
 
     internal void RefreshRows(bool recycleRows, bool clearRows)
     {
-        if (_measured)
+        if (_rangePresentationIndex is { } presentation &&
+            _rowsPresenter is not null &&
+            ColumnsItemsInternal.Count > 0)
         {
-            // _desiredCurrentColumnIndex is used in MakeFirstDisplayedCellCurrentCell to set the
-            // column position back to what it was before the refresh
-            _desiredCurrentColumnIndex = CurrentColumnIndex;
-            double verticalOffset = _verticalOffset;
-            if (DisplayData.PendingVerticalScrollHeight > 0)
-            {
-                // Use the pending vertical scrollbar position if there is one, in the case that the collection
-                // has been reset multiple times in a row.
-                verticalOffset = DisplayData.PendingVerticalScrollHeight;
-            }
-
-            _verticalOffset   = 0;
-            NegVerticalOffset = 0;
-
-            if (clearRows)
-            {
-                ClearRows(recycleRows);
-                ClearRowGroupHeadersTable();
-                PopulateRowGroupHeadersTable();
-            }
-
-            RefreshRowGroupHeaders();
-
-            // Update the CurrentSlot because it might have changed
-            if (recycleRows && DataConnection.CollectionView != null)
-            {
-                CurrentSlot = DataConnection.CollectionView.CurrentPosition == -1
-                    ? -1
-                    : SlotFromRowIndex(DataConnection.CollectionView.CurrentPosition);
-                if (CurrentSlot == -1)
-                {
-                    SetCurrentCellCore(-1, -1);
-                }
-            }
-
-            if (ColumnsItemsInternal.Count > 0)
-            {
-                AddSlots(DataConnection.Count);
-                AddSlots(DataConnection.Count + RowGroupHeadersTable.IndexCount);
-
-                InvalidateMeasure();
-            }
-
-            EnsureRowGroupSpacerColumn();
-
-            if (VerticalScrollBar != null)
-            {
-                DisplayData.PendingVerticalScrollHeight = Math.Min(verticalOffset, VerticalScrollBar.Maximum);
-            }
+            CommitRangePresentation(
+                presentation.Snapshot,
+                CaptureFirstCompleteRangeAnchor());
+            return;
         }
-        else
+
+        if (clearRows)
         {
-            if (clearRows)
-            {
-                ClearRows(recycleRows);
-            }
-
-            ClearRowGroupHeadersTable();
-            PopulateRowGroupHeadersTable();
+            ClearRows(recycleRows);
         }
-    }
-
-    internal void RemoveRowAt(int rowIndex, object item)
-    {
-        RemoveElementAt(SlotFromRowIndex(rowIndex), item, true);
+        ClearRowGroupHeadersTable();
+        PopulateRowGroupHeadersTable();
+        RefreshRowGroupHeaders();
+        EnsureRowGroupSpacerColumn();
+        InvalidateMeasure();
     }
 
     internal int RowIndexFromSlot(int slot)
     {
-        return slot - RowGroupHeadersTable.GetIndexCount(0, slot);
+        return GetCommittedRangeRowIndex(slot);
     }
 
     internal bool ScrollSlotIntoView(int slot, bool scrolledHorizontally)
@@ -609,41 +449,21 @@ public partial class DataGrid
     internal void SetRowSelection(int slot, bool isSelected, bool setAnchorSlot)
     {
         Debug.Assert(!(!isSelected && setAnchorSlot));
-        Debug.Assert(!IsSlotOutOfSelectionBounds(slot));
-        _noSelectionChangeCount++;
-        try
+        if (SelectionMode == DataGridSelectionMode.None ||
+            !TryGetRangeSelectionOperand(slot, out var entry, out var scope))
         {
-            if (SelectionMode != DataGridSelectionMode.None)
-            {
-                if (SelectionMode == DataGridSelectionMode.Single && isSelected)
-                {
-                    Debug.Assert(_selectedItems.Count <= 1);
-                    if (_selectedItems.Count > 0)
-                    {
-                        int currentlySelectedSlot = _selectedItems.GetFirstSlot();
-                        if (currentlySelectedSlot != slot)
-                        {
-                            SelectSlot(currentlySelectedSlot, false);
-                            SelectionHasChanged = true;
-                        }
-                    }
-                }
-
-                if (_selectedItems.ContainsSlot(slot) != isSelected)
-                {
-                    SelectSlot(slot, isSelected);
-                    SelectionHasChanged = true;
-                }
-
-                if (setAnchorSlot)
-                {
-                    AnchorSlot = slot;
-                }
-            }
+            return;
         }
-        finally
+        Selection = Selection.WithKey(
+            entry.RowKey,
+            entry.DataIndex,
+            scope,
+            isSelected,
+            single: SelectionMode == DataGridSelectionMode.Single);
+        if (setAnchorSlot)
         {
-            NoSelectionChangeCount--;
+            AnchorSlot = slot;
+            _rangeSelectionAnchorDataIndex = entry.DataIndex;
         }
     }
 
@@ -654,87 +474,31 @@ public partial class DataGrid
         Debug.Assert(endSlot >= 0 && endSlot < SlotCount);
         Debug.Assert(startSlot <= endSlot);
 
-        _noSelectionChangeCount++;
-        try
+        if (SelectionMode == DataGridSelectionMode.None ||
+            !TryGetRangeSelectionOperand(startSlot, out var start, out var scope) ||
+            !TryGetRangeSelectionOperand(endSlot, out var end, out _))
         {
-            if ( /*isSelected &&*/ !_selectedItems.ContainsAll(startSlot, endSlot))
-            {
-                // At least one row gets selected
-                SelectSlots(startSlot, endSlot, true);
-                SelectionHasChanged = true;
-            }
+            return;
         }
-        finally
+        if (SelectionMode == DataGridSelectionMode.Single)
         {
-            NoSelectionChangeCount--;
+            Selection = DataGridSelectionState.Empty.WithKey(
+                end.RowKey,
+                end.DataIndex,
+                scope,
+                isSelected: true,
+                single: true);
+            return;
         }
+        Selection = Selection.WithInterval(
+            Math.Min(start.DataIndex, end.DataIndex),
+            checked(Math.Max(start.DataIndex, end.DataIndex) + 1),
+            scope);
     }
 
     internal int SlotFromRowIndex(int rowIndex)
     {
-        return rowIndex + RowGroupHeadersTable.GetIndexCountBeforeGap(0, rowIndex);
-    }
-
-    private void AddSlotElement(int slot, Control element)
-    {
-#if DEBUG
-        if (element is DataGridRow row)
-        {
-            Debug.Assert(row.OwningGrid == this);
-            Debug.Assert(row.Cells.Count == ColumnsItemsInternal.Count);
-
-            int columnIndex = 0;
-            foreach (DataGridCell dataGridCell in row.Cells)
-            {
-                Debug.Assert(dataGridCell.OwningRow == row);
-                Debug.Assert(dataGridCell.OwningColumn == ColumnsItemsInternal[columnIndex]);
-                columnIndex++;
-            }
-        }
-#endif
-        Debug.Assert(slot == SlotCount);
-
-        NotifyAddedElementPhase1(slot, element);
-        SlotCount++;
-        VisibleSlotCount++;
-        NotifyAddedElementPhase2(slot, updateVerticalScrollBarOnly: false);
-        NotifyElementsChanged(grew: true);
-    }
-
-    private void AddSlots(int totalSlots)
-    {
-        SlotCount        = 0;
-        VisibleSlotCount = 0;
-        var groupSlots    = RowGroupHeadersTable.EnumerateIndexes().GetEnumerator();
-        int nextGroupSlot = groupSlots.MoveNext() ? groupSlots.Current : -1;
-
-        int slot      = 0;
-        int addedRows = 0;
-        while (slot < totalSlots && AvailableSlotElementRoom > 0)
-        {
-            if (slot == nextGroupSlot)
-            {
-                DataGridRowGroupInfo? groupRowInfo = RowGroupHeadersTable.GetValueAt(slot);
-                AddSlotElement(slot, GenerateRowGroupHeader(slot, groupRowInfo));
-                nextGroupSlot = groupSlots.MoveNext() ? groupSlots.Current : -1;
-            }
-            else
-            {
-                AddSlotElement(slot, GenerateRow(addedRows, slot));
-                addedRows++;
-            }
-
-            slot++;
-        }
-
-        if (slot < totalSlots)
-        {
-            SlotCount        += totalSlots - slot;
-            VisibleSlotCount += totalSlots - slot;
-            NotifyAddedElementPhase2(0,
-                updateVerticalScrollBarOnly: _vScrollBar == null || _vScrollBar.IsVisible);
-            NotifyElementsChanged(grew: true);
-        }
+        return GetCommittedRangeSlot(rowIndex);
     }
 
     private void ApplyDisplayedRowsState(int startSlot, int endSlot)
@@ -794,224 +558,6 @@ public partial class DataGrid
     }
 
     // Updates _collapsedSlotsTable and returns the number of pixels that were collapsed
-    private double CollapseSlotsInTable(int startSlot, int endSlot, ref int slotsExpanded, int lastDisplayedSlot,
-                                        ref double heightChangeBelowLastDisplayedSlot)
-    {
-        int    firstSlot = startSlot;
-        int    lastSlot;
-        double totalHeightChange = 0;
-        // Figure out which slots actually need to be expanded since some might already be collapsed
-        while (firstSlot <= endSlot)
-        {
-            firstSlot = _collapsedSlotsTable.GetNextGap(firstSlot - 1);
-            int nextCollapsedSlot = _collapsedSlotsTable.GetNextIndex(firstSlot) - 1;
-            lastSlot = nextCollapsedSlot == -2 ? endSlot : Math.Min(endSlot, nextCollapsedSlot);
-
-            if (firstSlot <= lastSlot)
-            {
-                double heightChange = GetHeightEstimate(firstSlot, lastSlot);
-                totalHeightChange -= heightChange;
-                slotsExpanded     -= lastSlot - firstSlot + 1;
-
-                if (lastSlot > lastDisplayedSlot)
-                {
-                    if (firstSlot > lastDisplayedSlot)
-                    {
-                        heightChangeBelowLastDisplayedSlot -= heightChange;
-                    }
-                    else
-                    {
-                        heightChangeBelowLastDisplayedSlot -= GetHeightEstimate(lastDisplayedSlot + 1, lastSlot);
-                    }
-                }
-
-                firstSlot = lastSlot + 1;
-            }
-        }
-
-        // Update _collapsedSlotsTable in one bulk operation
-        _collapsedSlotsTable.AddValues(startSlot, endSlot - startSlot + 1, false);
-
-        return totalHeightChange;
-    }
-
-    private static void CorrectRowAfterDeletion(DataGridRow row, bool rowDeleted)
-    {
-        row.Slot--;
-        if (rowDeleted)
-        {
-            row.Index--;
-        }
-    }
-
-    private static void CorrectRowAfterInsertion(DataGridRow row, bool rowInserted)
-    {
-        row.Slot++;
-        if (rowInserted)
-        {
-            row.Index++;
-        }
-    }
-
-    /// <summary>
-    /// Adjusts the index of all displayed, loaded and edited rows after a row was deleted.
-    /// Removes the deleted row from the list of loaded rows if present.
-    /// </summary>
-    private void CorrectSlotsAfterDeletion(int slotDeleted, bool wasRow)
-    {
-        Debug.Assert(slotDeleted >= 0);
-
-        // Take care of the non-visible loaded rows
-        for (int index = 0; index < _loadedRows.Count;)
-        {
-            DataGridRow dataGridRow = _loadedRows[index];
-            if (IsSlotVisible(dataGridRow.Slot))
-            {
-                index++;
-            }
-            else
-            {
-                if (dataGridRow.Slot > slotDeleted)
-                {
-                    CorrectRowAfterDeletion(dataGridRow, wasRow);
-                    index++;
-                }
-                else if (dataGridRow.Slot == slotDeleted)
-                {
-                    _loadedRows.RemoveAt(index);
-                }
-                else
-                {
-                    index++;
-                }
-            }
-        }
-
-        // Take care of the non-visible edited row
-        if (EditingRow != null &&
-            !IsSlotVisible(EditingRow.Slot) &&
-            EditingRow.Slot > slotDeleted)
-        {
-            CorrectRowAfterDeletion(EditingRow, wasRow);
-        }
-
-        // Take care of the non-visible focused row
-        if (_focusedRow != null &&
-            _focusedRow != EditingRow &&
-            !IsSlotVisible(_focusedRow.Slot) &&
-            _focusedRow.Slot > slotDeleted)
-        {
-            CorrectRowAfterDeletion(_focusedRow, wasRow);
-        }
-
-        // Take care of the visible rows
-        int displayedElementCount = DisplayData.NumDisplayedScrollingElements;
-        for (int displayIndex = 0; displayIndex < displayedElementCount; displayIndex++)
-        {
-            if (DisplayData.GetScrollingElementAtDisplayIndex(displayIndex) is DataGridRow row)
-            {
-                if (row.Slot > slotDeleted)
-                {
-                    CorrectRowAfterDeletion(row, wasRow);
-                    _rowsPresenter?.InvalidateChildIndex(row);
-                }
-            }
-        }
-
-        // Update the RowGroupHeaders
-        foreach (int slot in RowGroupHeadersTable.EnumerateIndexes())
-        {
-            DataGridRowGroupInfo? rowGroupInfo = RowGroupHeadersTable.GetValueAt(slot);
-            Debug.Assert(rowGroupInfo != null);
-            if (rowGroupInfo.Slot > slotDeleted)
-            {
-                rowGroupInfo.Slot--;
-            }
-
-            if (rowGroupInfo.LastSubItemSlot >= slotDeleted)
-            {
-                rowGroupInfo.LastSubItemSlot--;
-            }
-        }
-
-        // Update which row we've calculated the RowHeightEstimate up to
-        if (_lastEstimatedRow >= slotDeleted)
-        {
-            _lastEstimatedRow--;
-        }
-    }
-
-    /// <summary>
-    /// Adjusts the index of all displayed, loaded and edited rows after rows were deleted.
-    /// </summary>
-    private void CorrectSlotsAfterInsertion(int slotInserted, bool isCollapsed, bool rowInserted)
-    {
-        Debug.Assert(slotInserted >= 0);
-
-        // Take care of the non-visible loaded rows
-        foreach (DataGridRow dataGridRow in _loadedRows)
-        {
-            if (!IsSlotVisible(dataGridRow.Slot) && dataGridRow.Slot >= slotInserted)
-            {
-                CorrectRowAfterInsertion(dataGridRow, rowInserted);
-            }
-        }
-
-        // Take care of the non-visible focused row
-        if (_focusedRow != null &&
-            _focusedRow != EditingRow &&
-            !(IsSlotVisible(_focusedRow.Slot) || ((_focusedRow.Slot == slotInserted) && isCollapsed)) &&
-            _focusedRow.Slot >= slotInserted)
-        {
-            CorrectRowAfterInsertion(_focusedRow, rowInserted);
-        }
-
-        // Take care of the visible rows
-        int displayedElementCount = DisplayData.NumDisplayedScrollingElements;
-        for (int displayIndex = 0; displayIndex < displayedElementCount; displayIndex++)
-        {
-            if (DisplayData.GetScrollingElementAtDisplayIndex(displayIndex) is DataGridRow row)
-            {
-                if (row.Slot >= slotInserted)
-                {
-                    CorrectRowAfterInsertion(row, rowInserted);
-                    _rowsPresenter?.InvalidateChildIndex(row);
-                }
-            }
-        }
-
-        // Re-calculate the EditingRow's Slot and Index and ensure that it is still selected.
-        if (EditingRow != null)
-        {
-            EditingRow.Index = DataConnection.IndexOf(EditingRow.DataContext);
-            EditingRow.Slot  = SlotFromRowIndex(EditingRow.Index);
-        }
-
-        // Update the RowGroupHeaders
-        foreach (int slot in RowGroupHeadersTable.EnumerateIndexes(slotInserted))
-        {
-            DataGridRowGroupInfo? rowGroupInfo = RowGroupHeadersTable.GetValueAt(slot);
-            Debug.Assert(rowGroupInfo != null);
-            if (rowGroupInfo.Slot >= slotInserted)
-            {
-                rowGroupInfo.Slot++;
-            }
-
-            // We are purposefully checking GT and not GTE because the equality case is handled
-            // by the CorrectLastSubItemSlotsAfterInsertion method
-            if (rowGroupInfo.LastSubItemSlot > slotInserted)
-            {
-                rowGroupInfo.LastSubItemSlot++;
-            }
-        }
-
-        // Update which row we've calculated the RowHeightEstimate up to
-        if (_lastEstimatedRow >= slotInserted)
-        {
-            _lastEstimatedRow++;
-        }
-    }
-
     internal DataGridRowsEnumerable GetAllRows()
     {
         return new DataGridRowsEnumerable(_rowsPresenter);
@@ -1070,83 +616,6 @@ public partial class DataGrid
 
     // Expands slots from startSlot to endSlot inclusive and adds the amount expanded in this suboperation to
     // the given totalHeightChanged of the entire operation
-    private void ExpandSlots(int startSlot, int endSlot, bool isDisplayed, ref int slotsExpanded,
-                             ref double totalHeightChange)
-    {
-        double heightAboveStartSlot = 0;
-        if (isDisplayed)
-        {
-            int slot = DisplayData.FirstScrollingSlot;
-            while (slot < startSlot)
-            {
-                heightAboveStartSlot += GetExactSlotElementHeight(slot);
-                slot                 =  GetNextVisibleSlot(slot);
-            }
-
-            // First make the bottom rows available for recycling so we minimize element creation when expanding
-            for (int i = 0; (i < endSlot - startSlot + 1) && (DisplayData.LastScrollingSlot > endSlot); i++)
-            {
-                RemoveDisplayedElement(DisplayData.LastScrollingSlot, wasDeleted: false, updateSlotInformation: true);
-            }
-        }
-
-        // Figure out which slots actually need to be expanded since some might already be collapsed
-        double currentHeightChange = 0;
-        int    firstSlot           = startSlot;
-        int    lastSlot            = endSlot;
-        while (firstSlot <= endSlot)
-        {
-            firstSlot = _collapsedSlotsTable.GetNextIndex(firstSlot - 1);
-            if (firstSlot == -1)
-            {
-                break;
-            }
-
-            lastSlot = Math.Min(endSlot, _collapsedSlotsTable.GetNextGap(firstSlot) - 1);
-
-            if (firstSlot <= lastSlot)
-            {
-                if (!isDisplayed)
-                {
-                    // Estimate the height change if the slots aren't displayed.  If they are displayed, we can add real values
-                    double rowCount = lastSlot - firstSlot -
-                        GetRowGroupHeaderCount(firstSlot, lastSlot, false, out double headerHeight) + 1;
-                    double detailsCount = GetDetailsCountInclusive(firstSlot, lastSlot);
-                    currentHeightChange += headerHeight + (detailsCount * RowDetailsHeightEstimate) +
-                                           (rowCount * RowHeightEstimate);
-                }
-
-                slotsExpanded += lastSlot - firstSlot + 1;
-                firstSlot     =  lastSlot + 1;
-            }
-        }
-
-        // Update _collapsedSlotsTable in one bulk operation
-        _collapsedSlotsTable.RemoveValues(startSlot, endSlot - startSlot + 1);
-
-        if (isDisplayed)
-        {
-            double availableHeight = CellsEstimatedHeight - heightAboveStartSlot;
-            // Actually expand the displayed slots up to what we can display
-            for (int i = startSlot; (i <= endSlot) && (currentHeightChange < availableHeight); i++)
-            {
-                Control insertedElement = InsertDisplayedElement(i, updateSlotInformation: false);
-                currentHeightChange += GetMeasuredSlotElementHeight(i, insertedElement);
-                if (i > DisplayData.LastScrollingSlot)
-                {
-                    DisplayData.LastScrollingSlot = i;
-                }
-            }
-        }
-
-        // Update the total height for the entire Expand operation
-        totalHeightChange += currentHeightChange;
-    }
-
-    /// <summary>
-    /// Creates all the editing elements for the current editing row, so the bindings
-    /// all exist during validation.
-    /// </summary>
     private void GenerateEditingElements()
     {
         if (EditingRow != null)
@@ -1172,7 +641,17 @@ public partial class DataGrid
     /// </summary>
     private DataGridRow GenerateRow(int rowIndex, int slot)
     {
-        return GenerateRow(rowIndex, slot, DataConnection.GetDataItem(rowIndex));
+        if (IsRangePresentationActive)
+        {
+            var entry = GetCommittedRangeEntry(slot);
+            if (entry.Kind != DataGridSourceEntryKind.Data || entry.WindowDataIndex != rowIndex)
+            {
+                throw new DataGridPresentationInvariantException(
+                    $"Committed slot {slot} is not data row {rowIndex}.");
+            }
+            return (DataGridRow)CreateRangeElement(entry, slot);
+        }
+        return GenerateRow(rowIndex, slot, RangeDataAccess.GetDataItem(rowIndex));
     }
 
     /// <summary>
@@ -1185,6 +664,9 @@ public partial class DataGrid
         if (dataGridRow == null)
         {
             dataGridRow                                       = DisplayData.GetUsedRow() ?? new DataGridRow();
+            dataGridRow.RowKey                                = default;
+            dataGridRow.DataIndex                              = -1;
+            dataGridRow.IsRangeBacked                          = false;
             dataGridRow.Index                                 = rowIndex;
             dataGridRow.Slot                                  = slot;
             dataGridRow.OwningGrid                            = this;
@@ -1233,10 +715,13 @@ public partial class DataGrid
     // Returns an estimate for the height of the slots between fromSlot and toSlot
     private double GetHeightEstimate(int fromSlot, int toSlot)
     {
-        double rowCount = toSlot - fromSlot - GetRowGroupHeaderCount(fromSlot, toSlot, true, out double headerHeight) +
-                          1;
-
-        return headerHeight + GetRowDetailsHeightEstimateInclusive(fromSlot, toSlot) + (rowCount * RowHeightEstimate);
+        if (fromSlot < 0 || toSlot < fromSlot || toSlot >= SlotCount)
+        {
+            throw new ArgumentOutOfRangeException(nameof(fromSlot));
+        }
+        return SparseHeightDeltaIndex.SafeAdd(
+            GetRangeOffset(checked(toSlot + 1)),
+            -GetRangeOffset(fromSlot));
     }
 
     /// <summary>
@@ -1262,22 +747,7 @@ public partial class DataGrid
 
     private double GetEstimatedSlotElementHeight(int slot)
     {
-        DataGridRowGroupInfo? rowGroupInfo = RowGroupHeadersTable.GetValueAt(slot);
-        if (rowGroupInfo != null)
-        {
-            double groupHeaderHeight = _rowGroupHeightsByLevel[rowGroupInfo.Level];
-            if (!IsInvalidSlotElementHeight(groupHeaderHeight))
-            {
-                return groupHeaderHeight;
-            }
-
-            return !IsInvalidSlotElementHeight(RowGroupHeaderHeightEstimate)
-                ? RowGroupHeaderHeightEstimate
-                : DefaultRowHeight;
-        }
-
-        double rowHeight = RowHeightEstimate + GetRowDetailsHeightEstimate(slot);
-        return !IsInvalidSlotElementHeight(rowHeight) ? rowHeight : DefaultRowHeight;
+        return GetRangeHeight(slot);
     }
 
     private double GetMeasuredSlotElementHeight(int slot, Control slotElement)
@@ -1291,24 +761,31 @@ public partial class DataGrid
             return estimatedHeight;
         }
 
+        var measuredHeight = desiredHeight;
         if (slotElement is DataGridRow dataGridRow && GetRowDetailsVisibility(dataGridRow.Index))
         {
             double targetHeight = dataGridRow.TargetHeight;
             if (!IsInvalidSlotElementHeight(targetHeight))
             {
-                return MathUtils.GreaterThan(targetHeight, desiredHeight)
+                measuredHeight = MathUtils.GreaterThan(targetHeight, desiredHeight)
                     ? targetHeight
                     : desiredHeight;
             }
-
             if (!IsInvalidSlotElementHeight(estimatedHeight) &&
-                MathUtils.GreaterThan(estimatedHeight, desiredHeight))
+                MathUtils.GreaterThan(estimatedHeight, measuredHeight))
             {
-                return estimatedHeight;
+                measuredHeight = estimatedHeight;
             }
         }
 
-        return desiredHeight;
+        if (IsRangePresentationActive)
+        {
+            var heightClass = slotElement is DataGridRowGroupHeader groupHeader
+                ? DataGridHeightClass.GroupHeader(groupHeader.Level)
+                : DataGridHeightClass.Data;
+            RecordRangeMeasuredHeight(slot, measuredHeight, heightClass);
+        }
+        return measuredHeight;
     }
 
     internal double GetDisplayedElementHeight(Control element)
@@ -1316,8 +793,8 @@ public partial class DataGrid
         return element switch
         {
             DataGridRow row => GetMeasuredSlotElementHeight(row.Slot, row),
-            DataGridRowGroupHeader { RowGroupInfo: not null } groupHeader =>
-                GetMeasuredSlotElementHeight(groupHeader.RowGroupInfo.Slot, groupHeader),
+            DataGridRowGroupHeader groupHeader when groupHeader.DisplaySlot >= 0 =>
+                GetMeasuredSlotElementHeight(groupHeader.DisplaySlot, groupHeader),
             _ => IsInvalidSlotElementHeight(element.DesiredSize.Height) ? 0 : element.DesiredSize.Height
         };
     }
@@ -1352,6 +829,13 @@ public partial class DataGrid
     private double GetSlotElementsHeight(int fromSlot, int toSlot)
     {
         Debug.Assert(toSlot >= fromSlot);
+
+        if (IsRangePresentationActive)
+        {
+            return SparseHeightDeltaIndex.SafeAdd(
+                GetRangeOffset(checked(toSlot + 1)),
+                -GetRangeOffset(fromSlot));
+        }
 
         double height = 0;
         for (int slot = fromSlot; slot <= toSlot; slot++)
@@ -1406,18 +890,7 @@ public partial class DataGrid
 
     private Control InsertDisplayedElement(int slot, bool updateSlotInformation)
     {
-        Control slotElement;
-        if (RowGroupHeadersTable.Contains(slot))
-        {
-            slotElement = GenerateRowGroupHeader(slot, rowGroupInfo: RowGroupHeadersTable.GetValueAt(slot));
-        }
-        else
-        {
-            // If we're grouping, the GroupLevel needs to be fixed later by methods calling this
-            // which end up inserting rows. We don't do it here because elements could be inserted
-            // from top to bottom or bottom to up so it's better to do in one pass
-            slotElement = GenerateRow(RowIndexFromSlot(slot), slot);
-        }
+        var slotElement = CreateRangeElement(GetCommittedRangeEntry(slot), slot);
 
         InsertDisplayedElement(slot, slotElement, wasNewlyAdded: false, updateSlotInformation: updateSlotInformation);
         return slotElement;
@@ -1444,9 +917,8 @@ public partial class DataGrid
 
                 if (IsRowRecyclable(row))
                 {
-                    if (!row.IsRecycled)
+                    if (!_rowsPresenter.Children.Contains(element))
                     {
-                        Debug.Assert(!_rowsPresenter.Children.Contains(element));
                         _rowsPresenter.Children.Add(row);
                     }
                 }
@@ -1462,7 +934,7 @@ public partial class DataGrid
                 Debug.Assert(groupHeader != null); // Nothing other and Rows and RowGroups now
                 groupHeader.TotalIndent =
                     (groupHeader.Level == 0) ? 0 : RowGroupSublevelIndents[groupHeader.Level - 1];
-                if (!groupHeader.IsRecycled)
+                if (!_rowsPresenter.Children.Contains(element))
                 {
                     _rowsPresenter.Children.Add(element);
                 }
@@ -1477,12 +949,17 @@ public partial class DataGrid
 
             if (groupHeader != null)
             {
+                EnsureRangeGroupMetrics(groupHeader.Level + 1);
                 _rowGroupHeightsByLevel[groupHeader.Level] = measuredHeight;
             }
 
-            if (row != null && MathUtils.AreClose(RowHeightEstimate, DefaultRowHeight) && double.IsNaN(row.Height))
+            if (row != null &&
+                MathUtils.AreClose(RowHeightEstimate, DefaultRowHeight) &&
+                double.IsNaN(row.Height) &&
+                !GetRowDetailsVisibility(row.Index))
             {
                 RowHeightEstimate = measuredHeight;
+                RebaseRangeHeightIndex(discardMeasuredDataHeights: false);
             }
         }
 
@@ -1496,60 +973,10 @@ public partial class DataGrid
         }
     }
 
-    private void InsertElement(int slot, Control? element, bool updateVerticalScrollBarOnly, bool isCollapsed,
-                               bool isRow)
-    {
-        Debug.Assert(slot >= 0 && slot <= SlotCount);
-
-        NotifyInsertingElement(slot, true /*firstInsertion*/,
-            isCollapsed); // will throw an exception if the insertion is illegal
-
-        NotifyInsertedElementPhase1(slot, element, isCollapsed, isRow);
-        SlotCount++;
-        if (!isCollapsed)
-        {
-            VisibleSlotCount++;
-        }
-
-        NotifyInsertedElementPhase2(slot, updateVerticalScrollBarOnly, isCollapsed);
-    }
-
     private void InvalidateRowHeightEstimate()
     {
         // Start from scratch and assume that we haven't estimated any rows
         _lastEstimatedRow = -1;
-    }
-
-    private void NotifyAddedElementPhase1(int slot, Control element)
-    {
-        Debug.Assert(slot >= 0);
-
-        // Row needs to be potentially added to the displayed rows
-        if (SlotIsDisplayed(slot))
-        {
-            InsertDisplayedElement(slot, element, true /*wasNewlyAdded*/, true);
-        }
-    }
-
-    private void NotifyAddedElementPhase2(int slot, bool updateVerticalScrollBarOnly)
-    {
-        if (slot < DisplayData.FirstScrollingSlot - 1)
-        {
-            // The element was added above our viewport so it pushes the VerticalOffset down
-            double elementHeight = RowGroupHeadersTable.Contains(slot) ? RowGroupHeaderHeightEstimate : RowHeightEstimate;
-            SetVerticalOffset(_verticalOffset + elementHeight);
-        }
-
-        if (updateVerticalScrollBarOnly)
-        {
-            UpdateVerticalScrollBar();
-        }
-        else
-        {
-            ComputeScrollBarsLayout();
-            // Reposition rows in case we use a recycled one
-            InvalidateRowsArrange();
-        }
     }
 
     private void NotifyElementsChanged(bool grew)
@@ -1562,194 +989,6 @@ public partial class DataGrid
         }
     }
 
-    private void NotifyInsertedElementPhase1(int slot, Control? element, bool isCollapsed, bool isRow)
-    {
-        Debug.Assert(slot >= 0);
-
-        // Fix the Index of all following rows
-        CorrectSlotsAfterInsertion(slot, isCollapsed, isRow);
-
-        // Next, same effect as adding a row
-        if (element != null)
-        {
-#if DEBUG
-            if (element is DataGridRow dataGridRow)
-            {
-                Debug.Assert(dataGridRow.Cells.Count == ColumnsItemsInternal.Count);
-
-                int columnIndex = 0;
-                foreach (DataGridCell dataGridCell in dataGridRow.Cells)
-                {
-                    Debug.Assert(dataGridCell.OwningRow == dataGridRow);
-                    Debug.Assert(dataGridCell.OwningColumn == ColumnsItemsInternal[columnIndex]);
-                    columnIndex++;
-                }
-            }
-#endif
-            Debug.Assert(!isCollapsed);
-            NotifyAddedElementPhase1(slot, element);
-        }
-        else if (slot <= DisplayData.FirstScrollingSlot || (isCollapsed && slot <= DisplayData.LastScrollingSlot))
-        {
-            DisplayData.CorrectSlotsAfterInsertion(slot, null /*row*/, isCollapsed);
-        }
-    }
-
-    private void NotifyInsertedElementPhase2(int slot, bool updateVerticalScrollBarOnly, bool isCollapsed)
-    {
-        Debug.Assert(slot >= 0);
-
-        if (!isCollapsed)
-        {
-            // Same effect as adding a row
-            NotifyAddedElementPhase2(slot, updateVerticalScrollBarOnly);
-        }
-    }
-
-    private void NotifyInsertingElement(int slotInserted,
-                                        bool firstInsertion,
-                                        bool isCollapsed)
-    {
-        // Reset the current cell's address if it's after the inserted row.
-        if (firstInsertion)
-        {
-            if (CurrentSlot != -1 && slotInserted <= CurrentSlot)
-            {
-                // The underlying data was already added, therefore we need to avoid accessing any back-end data since we might be off by 1 row.
-                _temporarilyResetCurrentCell = true;
-                bool success = SetCurrentCellCore(-1, -1);
-                Debug.Assert(success);
-            }
-        }
-
-        _showDetailsTable.InsertIndex(slotInserted);
-        _rowDetailsHeightEstimateTable.InsertIndex(slotInserted);
-        // Update the slot ranges for the RowGroupHeaders before updating the _selectedItems table,
-        // because it's dependent on the slots being correct with regards to grouping.
-        RowGroupHeadersTable.InsertIndex(slotInserted);
-        _selectedItems.InsertIndex(slotInserted);
-
-        if (isCollapsed)
-        {
-            _collapsedSlotsTable.InsertIndexAndValue(slotInserted, false);
-        }
-        else
-        {
-            _collapsedSlotsTable.InsertIndex(slotInserted);
-        }
-
-        // If we've inserted rows before the current selected item, update its index
-        if (slotInserted <= SelectedIndex)
-        {
-            SetValueNoCallback(SelectedIndexProperty, SelectedIndex + 1);
-        }
-    }
-
-    private void NotifyRemovedElement(int slotDeleted, object? itemDeleted)
-    {
-        SlotCount--;
-        bool wasCollapsed = _collapsedSlotsTable.Contains(slotDeleted);
-        if (!wasCollapsed)
-        {
-            VisibleSlotCount--;
-        }
-
-        // If we're deleting the focused row, we need to clear the cached value
-        if (_focusedRow != null && _focusedRow.Slot == slotDeleted)
-        {
-            ResetFocusedRow();
-        }
-
-        // The element needs to be potentially removed from the displayed elements
-        Control? elementDeleted = null;
-        if (slotDeleted <= DisplayData.LastScrollingSlot)
-        {
-            if ((slotDeleted >= DisplayData.FirstScrollingSlot) && !wasCollapsed)
-            {
-                elementDeleted = DisplayData.GetDisplayedElement(slotDeleted);
-                // We need to retrieve the Element before updating the tables, but we need
-                // to update the tables before updating DisplayData in RemoveDisplayedElement
-                UpdateTablesForRemoval(slotDeleted, itemDeleted);
-
-                // Displayed row is removed
-                RemoveDisplayedElement(elementDeleted, slotDeleted, true /*wasDeleted*/,
-                    true /*updateSlotInformation*/);
-            }
-            else
-            {
-                UpdateTablesForRemoval(slotDeleted, itemDeleted);
-
-                // Removed row is not in view, just update the DisplayData
-                DisplayData.CorrectSlotsAfterDeletion(slotDeleted, wasCollapsed);
-            }
-        }
-        else
-        {
-            // The element was removed beyond the viewport so we just need to update the tables
-            UpdateTablesForRemoval(slotDeleted, itemDeleted);
-        }
-
-        // If a row was removed before the currently selected row, update its index
-        if (slotDeleted < SelectedIndex)
-        {
-            SetValueNoCallback(SelectedIndexProperty, SelectedIndex - 1);
-        }
-
-        if (!wasCollapsed)
-        {
-            if (slotDeleted >= DisplayData.LastScrollingSlot && elementDeleted == null)
-            {
-                // Deleted Row is below our Viewport, we just need to adjust the scrollbar
-                UpdateVerticalScrollBar();
-            }
-            else
-            {
-                if (elementDeleted != null)
-                {
-                    // Deleted Row is within our Viewport, update the AvailableRowRoom
-                    AvailableSlotElementRoom += GetDisplayedElementHeight(elementDeleted);
-                }
-                else
-                {
-                    // Deleted Row is above our Viewport, update the vertical offset
-                    SetVerticalOffset(Math.Max(0, _verticalOffset - RowHeightEstimate));
-                }
-
-                ComputeScrollBarsLayout();
-                // Reposition rows in case we use a recycled one
-                InvalidateRowsArrange();
-            }
-        }
-    }
-
-    private void OnRemovingElement(int slotDeleted)
-    {
-        // Note that the row needs to be deleted no matter what. The underlying data row was already deleted.
-
-        Debug.Assert(slotDeleted >= 0 && slotDeleted < SlotCount);
-        _temporarilyResetCurrentCell = false;
-
-        // Reset the current cell's address if it's on the deleted row, or after it.
-        if (CurrentSlot != -1 && slotDeleted <= CurrentSlot)
-        {
-            _desiredCurrentColumnIndex = CurrentColumnIndex;
-            if (slotDeleted == CurrentSlot)
-            {
-                // No editing is committed since the underlying entity was already deleted.
-                bool success = SetCurrentCellCore(-1, -1, false /*commitEdit*/, false /*endRowEdit*/);
-                Debug.Assert(success);
-            }
-            else
-            {
-                // Underlying data of deleted row is gone. It cannot be accessed anymore. Skip the commit of the editing.
-                _temporarilyResetCurrentCell = true;
-                bool success = SetCurrentCellCore(-1, -1);
-                Debug.Assert(success);
-            }
-        }
-    }
-
-    // Makes sure the row shows the proper visuals for selection, currency, details, etc.
     private void LoadRowVisualsForDisplay(DataGridRow row)
     {
         // If the row has been recycled, reapply the BackgroundBrush
@@ -1842,32 +1081,6 @@ public partial class DataGrid
             {
                 column.RemoveEditingElement();
             }
-        }
-    }
-
-    private void RemoveElementAt(int slot, object? item, bool isRow)
-    {
-        Debug.Assert(slot >= 0 && slot < SlotCount);
-
-        OnRemovingElement(slot);
-        CorrectSlotsAfterDeletion(slot, isRow);
-        NotifyRemovedElement(slot, item);
-
-        // Synchronize CurrentCellCoordinates, CurrentColumn, CurrentColumnIndex, CurrentItem
-        // and CurrentSlot with the currently edited cell, since OnRemovingElement called
-        // SetCurrentCellCore(-1, -1) to temporarily reset the current cell.
-        if (_temporarilyResetCurrentCell &&
-            _editingColumnIndex != -1 &&
-            _previousCurrentItem != null &&
-            EditingRow != null &&
-            EditingRow.Slot != -1)
-        {
-            ProcessSelectionAndCurrency(
-                columnIndex: _editingColumnIndex,
-                item: _previousCurrentItem,
-                backupSlot: EditingRow.Slot,
-                action: DataGridSelectionAction.None,
-                scrollIntoView: false);
         }
     }
 
@@ -2171,7 +1384,14 @@ public partial class DataGrid
 
     private int NormalizeFirstScrollingSlotOffset(int firstScrollingSlot)
     {
-        while (firstScrollingSlot >= 0 && firstScrollingSlot < SlotCount)
+        var committedEndExclusive = IsRangePresentationActive
+            ? checked(
+                _rangePresentationIndex!.Snapshot.CommittedViewport.FirstVisibleIndex +
+                _rangePresentationIndex.Snapshot.CommittedViewport.VisibleCount)
+            : SlotCount;
+        while (firstScrollingSlot >= 0 &&
+               firstScrollingSlot < SlotCount &&
+               firstScrollingSlot < committedEndExclusive)
         {
             double firstElementHeight = GetExactSlotElementHeight(firstScrollingSlot);
             if (MathUtils.LessThan(NegVerticalOffset, firstElementHeight))
@@ -2185,12 +1405,40 @@ public partial class DataGrid
                 NegVerticalOffset = 0;
                 break;
             }
+            if (nextVisibleSlot >= committedEndExclusive)
+            {
+                QueueRangeViewportBeyondCommittedRange(firstScrollingSlot);
+                NegVerticalOffset = Math.Min(
+                    NegVerticalOffset,
+                    Math.Max(0, Math.BitDecrement(firstElementHeight)));
+                break;
+            }
 
             NegVerticalOffset = Math.Max(0, NegVerticalOffset - firstElementHeight);
             firstScrollingSlot = nextVisibleSlot;
         }
 
         return firstScrollingSlot;
+    }
+
+    private void QueueRangeViewportBeyondCommittedRange(int firstVisibleSlot)
+    {
+        if (!IsRangePresentationActive || firstVisibleSlot < 0 || firstVisibleSlot >= SlotCount)
+        {
+            return;
+        }
+        var committed = _rangePresentationIndex!.Snapshot.CommittedViewport;
+        var requestedCount = (int)Math.Min(
+            SlotCount - (long)firstVisibleSlot,
+            (long)committed.VisibleCount + GetInitialRangeVisibleCount());
+        if (requestedCount > committed.VisibleCount ||
+            firstVisibleSlot != committed.FirstVisibleIndex)
+        {
+            QueueRangeViewport(new DataGridDesiredViewport(
+                firstVisibleSlot,
+                Math.Max(1, requestedCount),
+                1));
+        }
     }
 
     private double GetDisplayedRowsVerticalOffsetEstimate()
@@ -2282,32 +1530,6 @@ public partial class DataGrid
         }
     }
 
-    private void SelectSlot(int slot, bool isSelected)
-    {
-        _selectedItems.SelectSlot(slot, isSelected);
-        if (IsSlotVisible(slot))
-        {
-            SelectDisplayedElement(slot);
-        }
-    }
-
-    private void SelectSlots(int startSlot, int endSlot, bool isSelected)
-    {
-        _selectedItems.SelectSlots(startSlot, endSlot, isSelected);
-
-        // Apply the correct row state for display rows and also expand or collapse detail accordingly
-        int firstSlot = Math.Max(DisplayData.FirstScrollingSlot, startSlot);
-        int lastSlot  = Math.Min(DisplayData.LastScrollingSlot, endSlot);
-
-        for (int slot = firstSlot; slot <= lastSlot; slot++)
-        {
-            if (IsSlotVisible(slot))
-            {
-                SelectDisplayedElement(slot);
-            }
-        }
-    }
-
     private void UnloadElements(bool recycle)
     {
         // Since we're unloading all the elements, we can't be in editing mode anymore,
@@ -2342,9 +1564,13 @@ public partial class DataGrid
                 }
                 else if (element is DataGridRowGroupHeader groupHeader)
                 {
-                    if (groupHeader.RowGroupInfo != null && IsSlotVisible(groupHeader.RowGroupInfo.Slot))
+                    if (groupHeader.DisplaySlot >= 0 && IsSlotVisible(groupHeader.DisplaySlot))
                     {
                         OnUnloadingRowGroup(new DataGridRowGroupHeaderEventArgs(groupHeader));
+                    }
+                    if (!recycle)
+                    {
+                        groupHeader.DetachFromDataGrid();
                     }
                 }
             }
@@ -2391,6 +1617,12 @@ public partial class DataGrid
     private void UpdateDisplayedRows(int newFirstDisplayedSlot, double displayHeight)
     {
         Debug.Assert(!_collapsedSlotsTable.Contains(newFirstDisplayedSlot));
+        var committedStart = IsRangePresentationActive
+            ? _rangePresentationIndex!.Snapshot.CommittedViewport.FirstVisibleIndex
+            : 0;
+        var committedEndExclusive = IsRangePresentationActive
+            ? checked(committedStart + _rangePresentationIndex!.Snapshot.CommittedViewport.VisibleCount)
+            : SlotCount;
         int    firstDisplayedScrollingSlot = newFirstDisplayedSlot;
         int    lastDisplayedScrollingSlot  = -1;
         double deltaY                      = -NegVerticalOffset;
@@ -2404,11 +1636,15 @@ public partial class DataGrid
         if (firstDisplayedScrollingSlot == -1)
         {
             // 0 is fine because the element in the first slot cannot be collapsed
-            firstDisplayedScrollingSlot = 0;
+            firstDisplayedScrollingSlot = committedStart;
         }
+        firstDisplayedScrollingSlot = Math.Clamp(
+            firstDisplayedScrollingSlot,
+            committedStart,
+            Math.Max(committedStart, committedEndExclusive - 1));
 
         int slot = firstDisplayedScrollingSlot;
-        while (slot < SlotCount && !MathUtils.GreaterThanOrClose(deltaY, displayHeight))
+        while (slot < committedEndExclusive && !MathUtils.GreaterThanOrClose(deltaY, displayHeight))
         {
             deltaY += GetExactSlotElementHeight(slot);
             visibleScrollingRows++;
@@ -2416,10 +1652,19 @@ public partial class DataGrid
             slot                       = GetNextVisibleSlot(slot);
         }
 
-        while (MathUtils.LessThan(deltaY, displayHeight) && slot >= 0)
+        if (IsRangePresentationActive &&
+            slot >= committedEndExclusive &&
+            slot < SlotCount &&
+            MathUtils.LessThan(deltaY, displayHeight))
+        {
+            QueueRangeViewportBeyondCommittedRange(firstDisplayedScrollingSlot);
+        }
+
+        while (MathUtils.LessThan(deltaY, displayHeight) &&
+               firstDisplayedScrollingSlot > committedStart)
         {
             slot = GetPreviousVisibleSlot(firstDisplayedScrollingSlot);
-            if (slot >= 0)
+            if (slot >= committedStart)
             {
                 deltaY                      += GetExactSlotElementHeight(slot);
                 firstDisplayedScrollingSlot =  slot;
@@ -2473,6 +1718,13 @@ public partial class DataGrid
     {
         //Debug.Assert(!_collapsedSlotsTable.Contains(newLastDisplayedScrollingRow));
 
+        var committedStart = IsRangePresentationActive
+            ? _rangePresentationIndex!.Snapshot.CommittedViewport.FirstVisibleIndex
+            : 0;
+        var committedEndExclusive = IsRangePresentationActive
+            ? checked(committedStart + _rangePresentationIndex!.Snapshot.CommittedViewport.VisibleCount)
+            : SlotCount;
+
         int    lastDisplayedScrollingRow  = newLastDisplayedScrollingRow;
         int    firstDisplayedScrollingRow = -1;
         double displayHeight              = CellsEstimatedHeight;
@@ -2487,11 +1739,15 @@ public partial class DataGrid
 
         if (lastDisplayedScrollingRow == -1)
         {
-            lastDisplayedScrollingRow = 0;
+            lastDisplayedScrollingRow = committedStart;
         }
+        lastDisplayedScrollingRow = Math.Clamp(
+            lastDisplayedScrollingRow,
+            committedStart,
+            Math.Max(committedStart, committedEndExclusive - 1));
 
         int slot = lastDisplayedScrollingRow;
-        while (MathUtils.LessThan(deltaY, displayHeight) && slot >= 0)
+        while (MathUtils.LessThan(deltaY, displayHeight) && slot >= committedStart)
         {
             deltaY += GetExactSlotElementHeight(slot);
             visibleScrollingRows++;
@@ -2519,370 +1775,33 @@ public partial class DataGrid
         RefreshDisplayedRowsGridLines();
     }
 
-    private void UpdateTablesForRemoval(int slotDeleted, object? itemDeleted)
-    {
-        if (RowGroupHeadersTable.Contains(slotDeleted))
-        {
-            // A RowGroupHeader was removed
-            RowGroupHeadersTable.RemoveIndexAndValue(slotDeleted);
-            _collapsedSlotsTable.RemoveIndexAndValue(slotDeleted);
-            _rowDetailsHeightEstimateTable.RemoveIndex(slotDeleted);
-            _selectedItems.DeleteSlot(slotDeleted);
-        }
-        else
-        {
-            // Update the ranges of selected rows
-            if (_selectedItems.ContainsSlot(slotDeleted))
-            {
-                SelectionHasChanged = true;
-            }
-
-            _selectedItems.Delete(slotDeleted, itemDeleted);
-            RowGroupHeadersTable.RemoveIndex(slotDeleted);
-            _collapsedSlotsTable.RemoveIndex(slotDeleted);
-            _rowDetailsHeightEstimateTable.RemoveIndex(slotDeleted);
-        }
-    }
-
-    private void HandleCollectionViewGroupCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        // If we receive this event when the number of GroupDescriptions is different than what we have already
-        // accounted for, that means the ICollectionView is still in the process of updating its groups.  It will
-        // send a reset notification when it's done, at which point we can update our visuals.
-
-        if (DataConnection.CollectionView != null &&
-            DataConnection.CollectionView.IsGrouping &&
-            DataConnection.CollectionView.GroupingDepth == _rowGroupHeightsByLevel.Length)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    HandleCollectionViewGroupCollectionChangedAdd(sender, e);
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    HandleCollectionViewGroupCollectionChangedRemove(sender, e);
-                    break;
-            }
-        }
-    }
-
-    private void HandleCollectionViewGroupCollectionChangedAdd(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        if (e.NewItems != null && e.NewItems.Count > 0)
-        {
-            // We need to figure out the CollectionViewGroup that the sender belongs to.  We could cache
-            // it by tagging the collections ahead of time, but I think the extra storage might not be worth
-            // it since this lookup should be performant enough
-            int                         insertSlot      = -1;
-            DataGridRowGroupInfo?        parentGroupInfo = GetParentGroupInfo(sender);
-            DataGridCollectionViewGroup? group           = e.NewItems[0] as DataGridCollectionViewGroup;
-
-            if (parentGroupInfo != null)
-            {
-                if (group != null || parentGroupInfo.Level == -1)
-                {
-                    insertSlot = parentGroupInfo.Slot + 1;
-                    // For groups, we need to skip over subgroups to find the correct slot
-                    DataGridRowGroupInfo? groupInfo;
-                    for (int i = 0; i < e.NewStartingIndex; i++)
-                    {
-                        do
-                        {
-                            insertSlot = RowGroupHeadersTable.GetNextIndex(insertSlot);
-                            groupInfo  = RowGroupHeadersTable.GetValueAt(insertSlot);
-                        } while (groupInfo != null && groupInfo.Level > parentGroupInfo.Level + 1);
-
-                        if (groupInfo == null)
-                        {
-                            // We couldn't find the subchild so this should go at the end
-                            insertSlot = SlotCount;
-                        }
-                    }
-                }
-                else
-                {
-                    // For items the slot is a simple calculation
-                    insertSlot = parentGroupInfo.Slot + e.NewStartingIndex + 1;
-                }
-            }
-
-            // This could not be found when new GroupDescriptions are added to the PagedCollectionView
-            if (insertSlot != -1)
-            {
-                bool isCollapsed = (parentGroupInfo != null) &&
-                                   (!parentGroupInfo.IsVisible || _collapsedSlotsTable.Contains(parentGroupInfo.Slot));
-                if (group != null)
-                {
-                    Debug.Assert(parentGroupInfo != null);
-                    group.Items.CollectionChanged += HandleCollectionViewGroupCollectionChanged;
-
-                    var newGroupInfo =
-                        new DataGridRowGroupInfo(group, true, parentGroupInfo.Level + 1, insertSlot, insertSlot);
-                    InsertElementAt(insertSlot,
-                        rowIndex: -1,
-                        item: null,
-                        groupInfo: newGroupInfo,
-                        isCollapsed: isCollapsed);
-                    RowGroupHeadersTable.AddValue(insertSlot, newGroupInfo);
-                }
-                else
-                {
-                    // Assume we're adding a new row
-                    int rowIndex = DataConnection.IndexOf(e.NewItems[0]);
-                    Debug.Assert(rowIndex != -1);
-                    if (SlotCount == 0 && DataConnection.ShouldAutoGenerateColumns)
-                    {
-                        AutoGenerateColumnsPrivate();
-                    }
-
-                    InsertElementAt(insertSlot, rowIndex,
-                        item: e.NewItems[0],
-                        groupInfo: null,
-                        isCollapsed: isCollapsed);
-                }
-
-                CorrectLastSubItemSlotsAfterInsertion(parentGroupInfo);
-                if (parentGroupInfo != null && (parentGroupInfo.LastSubItemSlot - parentGroupInfo.Slot == 1))
-                {
-                    // We just added the first item to a RowGroup so the header should transition from Empty to either Expanded or Collapsed
-                    EnsureAncestorsExpanderButtonChecked(parentGroupInfo);
-                }
-            }
-        }
-    }
-
-    private void HandleCollectionViewGroupCollectionChangedRemove(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        Debug.Assert(e.OldItems != null);
-        Debug.Assert(e.OldItems.Count == 1);
-        if (e.OldItems != null && e.OldItems.Count > 0)
-        {
-            if (e.OldItems[0] is DataGridCollectionViewGroup removedGroup)
-            {
-                removedGroup.Items.CollectionChanged -= HandleCollectionViewGroupCollectionChanged;
-
-                DataGridRowGroupInfo? groupInfo = RowGroupInfoFromCollectionViewGroup(removedGroup);
-                Debug.Assert(groupInfo != null);
-                if ((groupInfo.Level == _rowGroupHeightsByLevel.Length - 1) &&
-                    (removedGroup.Items.Count > 0))
-                {
-                    Debug.Assert((groupInfo.LastSubItemSlot - groupInfo.Slot) == removedGroup.Items.Count);
-                    // If we're removing a leaf Group then remove all of its items before removing the Group
-                    for (int i = 0; i < removedGroup.Items.Count; i++)
-                    {
-                        RemoveElementAt(groupInfo.Slot + 1, item: removedGroup.Items[i], isRow: true);
-                    }
-                }
-
-                RemoveElementAt(groupInfo.Slot, item: null, isRow: false);
-            }
-            else
-            {
-                // A single item was removed from a leaf group
-                DataGridRowGroupInfo? parentGroupInfo = GetParentGroupInfo(sender);
-                if (parentGroupInfo != null)
-                {
-                    int slot;
-                    if (RowGroupHeadersTable.IndexCount > 0)
-                    {
-                        // In this case, we're removing from the root group.  If there are other groups, then this must
-                        // be the new item row that doesn't belong to any group because if there are other groups then
-                        // this item cannot be a child of the root group.
-                        slot = SlotCount - 1;
-                    }
-                    else
-                    {
-                        slot = parentGroupInfo.Slot + e.OldStartingIndex + 1;
-                    }
-
-                    RemoveElementAt(slot, e.OldItems[0], isRow: true);
-                }
-            }
-        }
-    }
-
     private void ClearRowGroupHeadersTable()
     {
-        // Detach existing handlers on CollectionViewGroup.Items.CollectionChanged
-        foreach (int slot in RowGroupHeadersTable.EnumerateIndexes())
-        {
-            DataGridRowGroupInfo? groupInfo = RowGroupHeadersTable.GetValueAt(slot);
-            if (groupInfo?.CollectionViewGroup != null)
-            {
-                groupInfo.CollectionViewGroup.Items.CollectionChanged -= HandleCollectionViewGroupCollectionChanged;
-            }
-        }
-
-        if (_topLevelGroup != null)
-        {
-            // The PagedCollectionView reuses the top level group so we need to detach any existing or else we'll get duplicate handers here
-            _topLevelGroup.CollectionChanged -= HandleCollectionViewGroupCollectionChanged;
-            _topLevelGroup                   =  null;
-        }
-
-        RowGroupHeadersTable.Clear();
-        // Unfortunately PagedCollectionView does not allow us to preserve expanded or collapsed states for RowGroups since
-        // the CollectionViewGroups are recreated when a Reset happens.  This is true in both SL and WPF
         _collapsedSlotsTable.Clear();
         _rowDetailsHeightEstimateTable.Clear();
-
         _rowGroupHeightsByLevel = [];
         RowGroupSublevelIndents = [];
     }
 
-    private void HandleCollectionViewGroupPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == "ItemCount")
-        {
-            DataGridRowGroupInfo? rowGroupInfo =
-                RowGroupInfoFromCollectionViewGroup(sender as DataGridCollectionViewGroup);
-            if (rowGroupInfo != null && IsSlotVisible(rowGroupInfo.Slot))
-            {
-                if (DisplayData.GetDisplayedElement(rowGroupInfo.Slot) is DataGridRowGroupHeader rowGroupHeader)
-                {
-                    rowGroupHeader.UpdateTitleElements();
-                }
-            }
-        }
-    }
-
-    // This method is necessary for incrementing the LastSubItemSlot property of the group ancestors
-    // because CorrectSlotsAfterInsertion only increments those that come after the specified group
-    private void CorrectLastSubItemSlotsAfterInsertion(DataGridRowGroupInfo? subGroupInfo)
-    {
-        int subGroupSlot;
-        int subGroupLevel;
-        while (subGroupInfo != null)
-        {
-            subGroupLevel = subGroupInfo.Level;
-            subGroupInfo.LastSubItemSlot++;
-
-            while (subGroupInfo != null && subGroupInfo.Level >= subGroupLevel)
-            {
-                subGroupSlot = RowGroupHeadersTable.GetPreviousIndex(subGroupInfo.Slot);
-                subGroupInfo = RowGroupHeadersTable.GetValueAt(subGroupSlot);
-            }
-        }
-    }
-
-    private int CountAndPopulateGroupHeaders(object group, int rootSlot, int level)
-    {
-        int treeCount = 1;
-
-        if (group is DataGridCollectionViewGroup collectionViewGroup)
-        {
-            if (collectionViewGroup.Items.Count > 0)
-            {
-                collectionViewGroup.Items.CollectionChanged += HandleCollectionViewGroupCollectionChanged;
-                if (collectionViewGroup.Items[0] is DataGridCollectionViewGroup)
-                {
-                    foreach (object subGroup in collectionViewGroup.Items)
-                    {
-                        treeCount += CountAndPopulateGroupHeaders(subGroup, rootSlot + treeCount, level + 1);
-                    }
-                }
-                else
-                {
-                    // Optimization: don't walk to the bottom level nodes
-                    treeCount += collectionViewGroup.Items.Count;
-                }
-            }
-
-            RowGroupHeadersTable.AddValue(rootSlot,
-                new DataGridRowGroupInfo(collectionViewGroup, true, level, rootSlot, rootSlot + treeCount - 1));
-        }
-
-        return treeCount;
-    }
-
-    private void EnsureAncestorsExpanderButtonChecked(DataGridRowGroupInfo parentGroupInfo)
-    {
-        if (IsSlotVisible(parentGroupInfo.Slot))
-        {
-            DataGridRowGroupHeader? ancestorGroupHeader =
-                DisplayData.GetDisplayedElement(parentGroupInfo.Slot) as DataGridRowGroupHeader;
-            while (ancestorGroupHeader != null)
-            {
-                ancestorGroupHeader.EnsureExpanderButtonIsChecked();
-                if (ancestorGroupHeader.Level > 0)
-                {
-                    Debug.Assert(ancestorGroupHeader.RowGroupInfo != null);
-                    int slot = RowGroupHeadersTable.GetPreviousIndex(ancestorGroupHeader.RowGroupInfo.Slot);
-                    if (IsSlotVisible(slot))
-                    {
-                        ancestorGroupHeader = DisplayData.GetDisplayedElement(slot) as DataGridRowGroupHeader;
-                        continue;
-                    }
-                }
-
-                break;
-            }
-        }
-    }
-
     private void PopulateRowGroupHeadersTable()
     {
-        if (DataConnection.CollectionView != null
-            && DataConnection.CollectionView.CanGroup
-            && DataConnection.CollectionView.Groups != null)
-        {
-            int totalSlots = 0;
-            _topLevelGroup                   =  DataConnection.CollectionView.Groups;
-            _topLevelGroup.CollectionChanged += HandleCollectionViewGroupCollectionChanged;
-            foreach (object group in DataConnection.CollectionView.Groups)
-            {
-                totalSlots += CountAndPopulateGroupHeaders(group, totalSlots, 0);
-            }
-        }
-
-        SlotCount        = DataConnection.Count + RowGroupHeadersTable.IndexCount;
+        SlotCount = RangeWindowDataCount;
         VisibleSlotCount = SlotCount;
     }
 
     private void RefreshRowGroupHeaders()
     {
-        if (DataConnection.CollectionView != null
-            && DataConnection.CollectionView.CanGroup
-            && DataConnection.CollectionView.Groups != null
-            && DataConnection.CollectionView.IsGrouping
-            && DataConnection.CollectionView.GroupingDepth > 0)
+        var levelCount = Query.Groups.Length;
+        if (levelCount > 0)
         {
-            // Initialize our array for the height of the RowGroupHeaders by Level.
-            // If the Length is the same, we can reuse the old array
-            int groupLevelCount = DataConnection.CollectionView.GroupingDepth;
-            if (_rowGroupHeightsByLevel.Length == 0 || _rowGroupHeightsByLevel.Length != groupLevelCount)
-            {
-                _rowGroupHeightsByLevel = new double[groupLevelCount];
-                for (int i = 0; i < groupLevelCount; i++)
-                {
-                    // Default height for now, the actual heights are updated as the RowGroupHeaders
-                    // are added and measured
-                    _rowGroupHeightsByLevel[i] = DefaultRowHeight;
-                }
-            }
-
-            if (RowGroupSublevelIndents.Length == 0 || RowGroupSublevelIndents.Length != groupLevelCount)
-            {
-                RowGroupSublevelIndents = new double[groupLevelCount];
-                double indent;
-                for (int i = 0; i < groupLevelCount; i++)
-                {
-                    indent                     = DefaultRowGroupSublevelIndent;
-                    RowGroupSublevelIndents[i] = indent;
-                    if (i > 0)
-                    {
-                        RowGroupSublevelIndents[i] += RowGroupSublevelIndents[i - 1];
-                    }
-                }
-            }
-
-            EnsureRowGroupSpacerColumnWidth(groupLevelCount);
+            EnsureRangeGroupMetrics(levelCount);
+            EnsureRowGroupSpacerColumnWidth(levelCount);
         }
     }
 
     private void EnsureRowGroupSpacerColumn()
     {
-        bool spacerColumnChanged = ColumnsInternal.EnsureRowGrouping(!RowGroupHeadersTable.IsEmpty);
+        bool spacerColumnChanged = ColumnsInternal.EnsureRowGrouping(Query.Groups.Length > 0);
         if (spacerColumnChanged)
         {
             Debug.Assert(ColumnsInternal.RowGroupSpacerColumn != null);
@@ -2909,453 +1828,45 @@ public partial class DataGrid
         }
     }
 
-    private void EnsureRowGroupVisibility(DataGridRowGroupInfo? rowGroupInfo, bool isVisible, bool setCurrent)
-    {
-        if (rowGroupInfo == null)
-        {
-            return;
-        }
-
-        if (rowGroupInfo.IsVisible != isVisible)
-        {
-            if (IsSlotVisible(rowGroupInfo.Slot))
-            {
-                DataGridRowGroupHeader? rowGroupHeader =
-                    DisplayData.GetDisplayedElement(rowGroupInfo.Slot) as DataGridRowGroupHeader;
-                Debug.Assert(rowGroupHeader != null);
-                rowGroupHeader.ToggleExpandCollapse(isVisible, setCurrent);
-            }
-            else
-            {
-                if (_collapsedSlotsTable.Contains(rowGroupInfo.Slot))
-                {
-                    // Somewhere up the parent chain, there's a collapsed header so all the slots remain the same and
-                    // we just need to mark this header with the new visibility
-                    rowGroupInfo.IsVisible = isVisible;
-                }
-                else
-                {
-                    if (rowGroupInfo.Slot < DisplayData.FirstScrollingSlot)
-                    {
-                        double heightChange = UpdateRowGroupVisibility(rowGroupInfo, isVisible, isDisplayed: false);
-                        // Use epsilon instead of 0 here so that in the off chance that our estimates put the vertical offset negative
-                        // the user can still scroll to the top since the offset is non-zero
-                        SetVerticalOffset(Math.Max(MathUtils.DoubleEpsilon, _verticalOffset + heightChange));
-                    }
-                    else
-                    {
-                        UpdateRowGroupVisibility(rowGroupInfo, isVisible, isDisplayed: false);
-                    }
-
-                    UpdateVerticalScrollBar();
-                }
-            }
-        }
-    }
-
-    // Returns the inclusive count of expanded RowGroupHeaders from startSlot to endSlot
-    private int GetRowGroupHeaderCount(int startSlot, int endSlot, bool? isVisible, out double headersHeight)
-    {
-        int count = 0;
-        headersHeight = 0;
-        foreach (int slot in RowGroupHeadersTable.EnumerateIndexes(startSlot))
-        {
-            if (slot > endSlot)
-            {
-                return count;
-            }
-
-            DataGridRowGroupInfo? rowGroupInfo = RowGroupHeadersTable.GetValueAt(slot);
-            if (!isVisible.HasValue ||
-                (isVisible.Value && !_collapsedSlotsTable.Contains(slot)) ||
-                (!isVisible.Value && _collapsedSlotsTable.Contains(slot)))
-            {
-                Debug.Assert(rowGroupInfo != null);
-                count++;
-                headersHeight += _rowGroupHeightsByLevel[rowGroupInfo.Level];
-            }
-        }
-
-        return count;
-    }
-
-    // This method does not check the state of the parent RowGroupHeaders, it assumes they're ready for this newVisibility to
-    // be applied this header
-    // Returns the number of pixels that were expanded or (collapsed); however, if we're expanding displayed rows, we only expand up
-    // to what we can display
-    private double UpdateRowGroupVisibility(DataGridRowGroupInfo targetRowGroupInfo, bool newIsVisible,
-                                            bool isDisplayed)
-    {
-        double heightChange  = 0;
-        int    slotsExpanded = 0;
-        int    startSlot     = targetRowGroupInfo.Slot + 1;
-        int    endSlot;
-
-        targetRowGroupInfo.IsVisible = newIsVisible;
-        if (newIsVisible)
-        {
-            // Expand
-            foreach (int slot in RowGroupHeadersTable.EnumerateIndexes(targetRowGroupInfo.Slot + 1))
-            {
-                if (slot >= startSlot)
-                {
-                    DataGridRowGroupInfo? rowGroupInfo = RowGroupHeadersTable.GetValueAt(slot);
-                    Debug.Assert(rowGroupInfo != null);
-                    if (rowGroupInfo.Level <= targetRowGroupInfo.Level)
-                    {
-                        break;
-                    }
-
-                    if (!rowGroupInfo.IsVisible)
-                    {
-                        // Skip over the items in collapsed subgroups
-                        endSlot = rowGroupInfo.Slot;
-                        ExpandSlots(startSlot, endSlot, isDisplayed, ref slotsExpanded, ref heightChange);
-                        startSlot = rowGroupInfo.LastSubItemSlot + 1;
-                    }
-                }
-            }
-
-            if (targetRowGroupInfo.LastSubItemSlot >= startSlot)
-            {
-                ExpandSlots(startSlot, targetRowGroupInfo.LastSubItemSlot, isDisplayed, ref slotsExpanded,
-                    ref heightChange);
-            }
-
-            if (isDisplayed)
-            {
-                UpdateDisplayedRows(DisplayData.FirstScrollingSlot, CellsEstimatedHeight);
-            }
-        }
-        else
-        {
-            // Collapse
-            endSlot = SlotCount - 1;
-            foreach (int slot in RowGroupHeadersTable.EnumerateIndexes(targetRowGroupInfo.Slot + 1))
-            {
-                DataGridRowGroupInfo? rowGroupInfo = RowGroupHeadersTable.GetValueAt(slot);
-                Debug.Assert(rowGroupInfo != null);
-                if (rowGroupInfo.Level <= targetRowGroupInfo.Level)
-                {
-                    endSlot = slot - 1;
-                    break;
-                }
-            }
-
-            int oldLastDisplayedSlot = DisplayData.LastScrollingSlot;
-            int endDisplayedSlot     = Math.Min(endSlot, DisplayData.LastScrollingSlot);
-            if (isDisplayed)
-            {
-                // We need to remove all the displayed slots that aren't already collapsed
-                int elementsToRemove = endDisplayedSlot - startSlot + 1 -
-                                       _collapsedSlotsTable.GetIndexCount(startSlot, endDisplayedSlot);
-
-                if (_focusedRow != null && _focusedRow.Slot >= startSlot && _focusedRow.Slot <= endSlot)
-                {
-                    Debug.Assert(EditingRow == null);
-                    // Don't call ResetFocusedRow here because we're already cleaning it up below, and we don't want to FullyRecycle yet
-                    _focusedRow = null;
-                }
-
-                for (int i = 0; i < elementsToRemove; i++)
-                {
-                    RemoveDisplayedElement(startSlot, wasDeleted: false, updateSlotInformation: false);
-                }
-            }
-
-            double heightChangeBelowLastDisplayedSlot = 0;
-            if (DisplayData.FirstScrollingSlot >= startSlot && DisplayData.FirstScrollingSlot <= endSlot)
-            {
-                // Our first visible slot was collapsed, find the replacement
-                int collapsedSlotsAbove = DisplayData.FirstScrollingSlot - startSlot -
-                                          _collapsedSlotsTable.GetIndexCount(startSlot, DisplayData.FirstScrollingSlot);
-                Debug.Assert(collapsedSlotsAbove > 0);
-                int newFirstScrollingSlot = GetNextVisibleSlot(DisplayData.FirstScrollingSlot);
-                while (collapsedSlotsAbove > 1 && newFirstScrollingSlot < SlotCount)
-                {
-                    collapsedSlotsAbove--;
-                    newFirstScrollingSlot = GetNextVisibleSlot(newFirstScrollingSlot);
-                }
-
-                heightChange += CollapseSlotsInTable(startSlot, endSlot, ref slotsExpanded, oldLastDisplayedSlot,
-                    ref heightChangeBelowLastDisplayedSlot);
-                if (isDisplayed)
-                {
-                    if (newFirstScrollingSlot >= SlotCount)
-                    {
-                        // No visible slots below, look up
-                        UpdateDisplayedRowsFromBottom(targetRowGroupInfo.Slot);
-                    }
-                    else
-                    {
-                        UpdateDisplayedRows(newFirstScrollingSlot, CellsEstimatedHeight);
-                    }
-                }
-            }
-            else
-            {
-                heightChange += CollapseSlotsInTable(startSlot, endSlot, ref slotsExpanded, oldLastDisplayedSlot,
-                    ref heightChangeBelowLastDisplayedSlot);
-            }
-
-            if (DisplayData.LastScrollingSlot >= startSlot && DisplayData.LastScrollingSlot <= endSlot)
-            {
-                // Collapsed the last scrolling row, we need to update it
-                DisplayData.LastScrollingSlot = GetPreviousVisibleSlot(DisplayData.LastScrollingSlot);
-            }
-
-            // Collapsing could cause the vertical offset to move up if we collapsed a lot of slots
-            // near the bottom of the DataGrid.  To do this, we compare the height we collapsed to
-            // the distance to the last visible row and adjust the scrollbar if we collapsed more
-            if (isDisplayed && _verticalOffset > 0)
-            {
-                int lastVisibleSlot = GetPreviousVisibleSlot(SlotCount);
-                int slot            = GetNextVisibleSlot(oldLastDisplayedSlot);
-                // AvailableSlotElementRoom ends up being the amount of the last slot that is partially scrolled off
-                // as a negative value, heightChangeBelowLastDisplayed slot is also a negative value since we're collapsing
-                double heightToLastVisibleSlot = AvailableSlotElementRoom + heightChangeBelowLastDisplayedSlot;
-                while ((heightToLastVisibleSlot > heightChange) && (slot < lastVisibleSlot))
-                {
-                    heightToLastVisibleSlot -= GetSlotElementHeight(slot);
-                    slot                    =  GetNextVisibleSlot(slot);
-                }
-
-                if (heightToLastVisibleSlot > heightChange)
-                {
-                    double newVerticalOffset = _verticalOffset + heightChange - heightToLastVisibleSlot;
-                    if (newVerticalOffset > 0)
-                    {
-                        SetVerticalOffset(newVerticalOffset);
-                    }
-                    else
-                    {
-                        // Collapsing causes the vertical offset to go to 0 so we should go back to the first row.
-                        ResetDisplayedRows();
-                        NegVerticalOffset = 0;
-                        SetVerticalOffset(0);
-                        int firstDisplayedRow = GetNextVisibleSlot(-1);
-                        UpdateDisplayedRows(firstDisplayedRow, CellsEstimatedHeight);
-                    }
-                }
-            }
-        }
-
-        // Update VisibleSlotCount
-        VisibleSlotCount += slotsExpanded;
-
-        return heightChange;
-    }
-
-    private DataGridRowGroupHeader GenerateRowGroupHeader(int slot, DataGridRowGroupInfo? rowGroupInfo)
-    {
-        Debug.Assert(slot > -1);
-        Debug.Assert(rowGroupInfo != null);
-
-        DataGridRowGroupHeader groupHeader = DisplayData.GetUsedGroupHeader() ?? new DataGridRowGroupHeader();
-        groupHeader.OwningGrid   = this;
-        groupHeader.RowGroupInfo = rowGroupInfo;
-        groupHeader.DataContext  = rowGroupInfo.CollectionViewGroup;
-        groupHeader.Level        = rowGroupInfo.Level;
-        if (RowGroupTheme is { } rowGroupTheme)
-        {
-            groupHeader.SetValue(ThemeProperty, rowGroupTheme, BindingPriority.Template);
-        }
-
-        // Set the RowGroupHeader's PropertyName. Unfortunately, CollectionViewGroup doesn't have this
-        // so we have to set it manually
-        Debug.Assert(DataConnection.CollectionView != null &&
-                     groupHeader.Level < DataConnection.CollectionView.GroupingDepth);
-        string propertyName = DataConnection.CollectionView.GetGroupingPropertyNameAtDepth(groupHeader.Level);
-
-        if (string.IsNullOrWhiteSpace(propertyName))
-        {
-            groupHeader.PropertyName = null;
-        }
-        else
-        {
-            groupHeader.PropertyName = DataConnection.GetDisplayName(propertyName) ?? propertyName;
-        }
-
-        if (rowGroupInfo.CollectionViewGroup is INotifyPropertyChanged inpc)
-        {
-            inpc.PropertyChanged -= new PropertyChangedEventHandler(HandleCollectionViewGroupPropertyChanged);
-            inpc.PropertyChanged += new PropertyChangedEventHandler(HandleCollectionViewGroupPropertyChanged);
-        }
-
-        groupHeader.UpdateTitleElements();
-
-        NotifyLoadingRowGroup(new DataGridRowGroupHeaderEventArgs(groupHeader));
-
-        return groupHeader;
-    }
-
-    private DataGridRowGroupInfo? GetParentGroupInfo(object? collection)
-    {
-        if (collection == DataConnection.CollectionView?.Groups)
-        {
-            // If the new item is a root level element, it has no parent group, so create an empty RowGroupInfo
-            return new DataGridRowGroupInfo(null, true, -1, -1, -1);
-        }
-        foreach (int slot in RowGroupHeadersTable.EnumerateIndexes())
-        {
-            DataGridRowGroupInfo? groupInfo = RowGroupHeadersTable.GetValueAt(slot);
-            if (groupInfo?.CollectionViewGroup?.Items == collection)
-            {
-                return groupInfo;
-            }
-        }
-
-        return null;
-    }
-
-    internal void OnRowGroupHeaderToggled(DataGridRowGroupHeader groupHeader, bool newIsVisible, bool setCurrent)
-    {
-        Debug.Assert(groupHeader.RowGroupInfo?.CollectionViewGroup != null && groupHeader.RowGroupInfo.CollectionViewGroup.ItemCount > 0);
-
-        if (WaitForLostFocus(delegate { OnRowGroupHeaderToggled(groupHeader, newIsVisible, setCurrent); }) ||
-            !CommitEdit())
-        {
-            return;
-        }
-
-        if (setCurrent && CurrentSlot != groupHeader.RowGroupInfo.Slot)
-        {
-            // Most of the time this is set by the MouseLeftButtonDown handler but validation could cause that code path to fail
-            UpdateSelectionAndCurrency(CurrentColumnIndex, groupHeader.RowGroupInfo.Slot,
-                DataGridSelectionAction.SelectCurrent, scrollIntoView: false);
-        }
-
-        UpdateRowGroupVisibility(groupHeader.RowGroupInfo, newIsVisible, isDisplayed: true);
-
-        ComputeScrollBarsLayout();
-        // We need force arrange since our Scrollings Rows could update without automatically triggering layout
-        InvalidateRowsArrange();
-    }
-
     internal void OnSublevelIndentUpdated(DataGridRowGroupHeader groupHeader, double newValue)
     {
-        Debug.Assert(DataConnection.CollectionView != null);
-        Debug.Assert(RowGroupSublevelIndents != null);
+        var groupLevelCount = RowGroupSublevelIndents.Length;
+        if (groupHeader.Level < 0 || groupHeader.Level >= groupLevelCount)
+        {
+            return;
+        }
 
-        int groupLevelCount = DataConnection.CollectionView.GroupingDepth;
-        Debug.Assert(groupHeader.Level >= 0 && groupHeader.Level < groupLevelCount);
-
-        double oldValue = RowGroupSublevelIndents[groupHeader.Level];
+        var oldValue = RowGroupSublevelIndents[groupHeader.Level];
         if (groupHeader.Level > 0)
         {
             oldValue -= RowGroupSublevelIndents[groupHeader.Level - 1];
         }
 
-        // Update the affected values in our table by the amount affected
-        double change = newValue - oldValue;
-        for (int i = groupHeader.Level; i < groupLevelCount; i++)
+        var change = newValue - oldValue;
+        for (var level = groupHeader.Level; level < groupLevelCount; level++)
         {
-            RowGroupSublevelIndents[i] += change;
-            Debug.Assert(RowGroupSublevelIndents[i] >= 0);
+            RowGroupSublevelIndents[level] += change;
         }
-
         EnsureRowGroupSpacerColumnWidth(groupLevelCount);
     }
 
-    internal DataGridRowGroupInfo? RowGroupInfoFromCollectionViewGroup(DataGridCollectionViewGroup? collectionViewGroup)
-    {
-        foreach (int slot in RowGroupHeadersTable.EnumerateIndexes())
-        {
-            DataGridRowGroupInfo? rowGroupInfo = RowGroupHeadersTable.GetValueAt(slot);
-            if (rowGroupInfo?.CollectionViewGroup == collectionViewGroup)
-            {
-                return rowGroupInfo;
-            }
-        }
-
-        return null;
-    }
-
-    /// <summary>
-    /// Collapses the DataGridRowGroupHeader that represents a given CollectionViewGroup
-    /// </summary>
-    /// <param name="collectionViewGroup">CollectionViewGroup</param>
-    /// <param name="collapseAllSubgroups">Set to true to collapse all Subgroups</param>
-    public void CollapseRowGroup(DataGridCollectionViewGroup? collectionViewGroup, bool collapseAllSubgroups)
-    {
-        if (WaitForLostFocus(delegate { CollapseRowGroup(collectionViewGroup, collapseAllSubgroups); }) ||
-            collectionViewGroup == null || !CommitEdit())
-        {
-            return;
-        }
-
-        EnsureRowGroupVisibility(RowGroupInfoFromCollectionViewGroup(collectionViewGroup), false, true);
-
-        if (collapseAllSubgroups)
-        {
-            foreach (object groupObj in collectionViewGroup.Items)
-            {
-                if (groupObj is DataGridCollectionViewGroup subGroup)
-                {
-                    CollapseRowGroup(subGroup, collapseAllSubgroups);
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Expands the DataGridRowGroupHeader that represents a given CollectionViewGroup
-    /// </summary>
-    /// <param name="collectionViewGroup">CollectionViewGroup</param>
-    /// <param name="expandAllSubgroups">Set to true to expand all Subgroups</param>
-    public void ExpandRowGroup(DataGridCollectionViewGroup? collectionViewGroup, bool expandAllSubgroups)
-    {
-        if (WaitForLostFocus(delegate { ExpandRowGroup(collectionViewGroup, expandAllSubgroups); }) ||
-            collectionViewGroup == null || !CommitEdit())
-            if (collectionViewGroup == null || !CommitEdit())
-            {
-                return;
-            }
-
-        EnsureRowGroupVisibility(RowGroupInfoFromCollectionViewGroup(collectionViewGroup), true, true);
-
-        if (expandAllSubgroups)
-        {
-            foreach (object groupObj in collectionViewGroup.Items)
-            {
-                if (groupObj is DataGridCollectionViewGroup subGroup)
-                {
-                    ExpandRowGroup(subGroup, expandAllSubgroups);
-                }
-            }
-        }
-    }
-
-    // Returns the number of rows with details visible between lowerBound and upperBound exclusive.
-    // As of now, the caller needs to account for Collapsed slots.  This method assumes everything
-    // is visible
     private int GetDetailsCountInclusive(int lowerBound, int upperBound)
     {
-        int indexCount = upperBound - lowerBound + 1;
-        if (indexCount <= 0)
+        if (upperBound < lowerBound)
         {
             return 0;
         }
-
-        if (RowDetailsVisibilityMode == DataGridRowDetailsVisibilityMode.Visible)
+        var count = 0;
+        for (var slot = lowerBound; slot <= upperBound; slot++)
         {
-            // Total rows minus ones which explicity turned details off minus the RowGroupHeaders
-            return indexCount - _showDetailsTable.GetIndexCount(lowerBound, upperBound, false) -
-                   RowGroupHeadersTable.GetIndexCount(lowerBound, upperBound);
+            if (TryGetCommittedRangeEntry(slot, out var entry) &&
+                entry.Kind == DataGridSourceEntryKind.Data &&
+                GetRowDetailsVisibility(entry.WindowDataIndex))
+            {
+                count++;
+            }
         }
-        if (RowDetailsVisibilityMode == DataGridRowDetailsVisibilityMode.Collapsed)
-        {
-            // Total rows with details explicitly turned on
-            return _showDetailsTable.GetIndexCount(lowerBound, upperBound, true);
-        }
-        if (RowDetailsVisibilityMode == DataGridRowDetailsVisibilityMode.VisibleWhenSelected)
-        {
-            // Total number of remaining rows that are selected
-            return _selectedItems.GetIndexCount(lowerBound, upperBound);
-        }
-
-        Debug.Assert(false); // Shouldn't ever happen
-        return 0;
+        return count;
     }
 
     private double GetDisplayedRowDetailsHeight(DataGridRow row, double rowHeight)
@@ -3475,13 +1986,9 @@ public partial class DataGrid
 
     private bool GetRowDetailsVisibilityFromSlot(int slot)
     {
-        if (slot < 0 || RowGroupHeadersTable.Contains(slot))
-        {
-            return false;
-        }
-
-        int rowIndex = RowIndexFromSlot(slot);
-        return rowIndex >= 0 && rowIndex < DataConnection.Count && GetRowDetailsVisibility(rowIndex);
+        return TryGetCommittedRangeEntry(slot, out var entry) &&
+               entry.Kind == DataGridSourceEntryKind.Data &&
+               GetRowDetailsVisibility(entry.WindowDataIndex);
     }
 
     private void EnsureRowDetailsVisibility(DataGridRow row, bool raiseNotification, bool animate)
@@ -3496,7 +2003,7 @@ public partial class DataGrid
         {
             object? dataItem = null;
             if (VisibleSlotCount > 0)
-                dataItem = DataConnection.GetDataItem(0);
+                dataItem = RangeDataAccess.GetDataItem(0);
             var detailsContent = RowDetailsTemplate.Build(dataItem);
             if (detailsContent != null)
             {
@@ -3522,14 +2029,56 @@ public partial class DataGrid
 
     private void UpdateRowDetailsHeightEstimateFromMeasuredDetails(int? slot, double measuredDetailsHeight, bool invalidateMeasure)
     {
-        if (IsInvalidSlotElementHeight(measuredDetailsHeight) ||
-            (slot.HasValue &&
-             _rowDetailsHeightEstimateTable.GetValueAt(slot.Value, out bool found) is { } cachedHeight &&
-             found &&
-             MathUtils.AreClose(cachedHeight, measuredDetailsHeight) &&
-             MathUtils.AreClose(RowDetailsHeightEstimate, measuredDetailsHeight)) ||
-            (!slot.HasValue && MathUtils.AreClose(RowDetailsHeightEstimate, measuredDetailsHeight)))
+        if (IsInvalidSlotElementHeight(measuredDetailsHeight))
         {
+            return;
+        }
+
+        if (IsRangePresentationActive)
+        {
+            var storedRangeMeasurement = false;
+            if (slot.HasValue &&
+                TryGetCommittedRangeEntry(slot.Value, out var entry) &&
+                entry.Kind == DataGridSourceEntryKind.Data &&
+                GetRowDetailsVisibility(entry.RowKey))
+            {
+                if (!_rangeMeasuredDetailsHeights.TryGetValue(entry.RowKey, out var previousHeight) ||
+                    MathUtils.GreaterThan(measuredDetailsHeight, previousHeight))
+                {
+                    _rangeMeasuredDetailsHeights[entry.RowKey] = measuredDetailsHeight;
+                    storedRangeMeasurement = true;
+                }
+            }
+
+            var estimateChanged = false;
+            if (IsInvalidSlotElementHeight(RowDetailsHeightEstimate) ||
+                MathUtils.GreaterThan(measuredDetailsHeight, RowDetailsHeightEstimate))
+            {
+                RowDetailsHeightEstimate = measuredDetailsHeight;
+                estimateChanged = true;
+                // The range default includes details only when every row shows them.
+                // In Collapsed/VisibleWhenSelected modes expanded rows are represented
+                // by their own sparse measured height, so rebasing here would move the
+                // viewport even though its default height did not change.
+                if (RowDetailsVisibilityMode == DataGridRowDetailsVisibilityMode.Visible)
+                {
+                    RebaseRangeHeightIndex(discardMeasuredDataHeights: false);
+                }
+            }
+            if ((storedRangeMeasurement || estimateChanged) &&
+                RowDetailsVisibilityMode != DataGridRowDetailsVisibilityMode.Visible &&
+                _rangePresentationIndex is { } presentation &&
+                _rangeHeightIndex is { } heightIndex)
+            {
+                SeedRangeDetailsHeights(
+                    presentation.Snapshot,
+                    heightIndex,
+                    preserveViewportAnchor: true);
+            }
+            if (invalidateMeasure && _measured && !_scrollingByHeight)
+            {
+                InvalidateMeasure();
+            }
             return;
         }
 
@@ -3584,9 +2133,86 @@ public partial class DataGrid
 
     internal void NotifyRowDetailsVisibilityPropertyChanged(int rowIndex, bool isVisible)
     {
-        Debug.Assert(rowIndex >= 0 && rowIndex < SlotCount);
+        var slot = GetCommittedRangeSlot(rowIndex);
+        if (slot >= 0 && TryGetCommittedRangeEntry(slot, out var entry))
+        {
+            NotifyRowDetailsVisibilityPropertyChanged(entry.RowKey, isVisible);
+            if (isVisible && _rangePresentationIndex is { } presentation)
+            {
+                _rangeDetailsSlotHints[entry.RowKey] =
+                    (presentation.Snapshot.DataGeneration, slot);
+            }
+        }
+    }
 
-        _showDetailsTable.AddValue(rowIndex, isVisible);
+    internal void NotifyRowDetailsVisibilityPropertyChanged(
+        DataGridRowKey rowKey,
+        int ungroupedWindowSlotHint,
+        bool isVisible)
+    {
+        if (ungroupedWindowSlotHint < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(ungroupedWindowSlotHint));
+        }
+        NotifyRowDetailsVisibilityPropertyChanged(rowKey, isVisible);
+        if (isVisible)
+        {
+            // A zero generation is an initialization hint. It is only consumed by
+            // an ungrouped, unpaged snapshot; committed entries replace it with a
+            // generation-bound display slot before later viewport changes.
+            _rangeDetailsSlotHints[rowKey] = (0, ungroupedWindowSlotHint);
+        }
+    }
+
+    internal void NotifyRowDetailsVisibilityPropertyChanged(DataGridRowKey rowKey, bool isVisible)
+    {
+        if (!rowKey.IsValid)
+        {
+            throw new ArgumentException("The row key must be valid.", nameof(rowKey));
+        }
+
+        _rangeDetailsVisibility[rowKey] = isVisible;
+        if (!isVisible)
+        {
+            _rangeMeasuredDetailsHeights.Remove(rowKey);
+            _rangeDetailsSlotHints.Remove(rowKey);
+        }
+    }
+
+    internal double GetRangeRowDetailsHeightEstimate(DataGridRowKey rowKey)
+    {
+        if (!GetRowDetailsVisibility(rowKey))
+        {
+            return 0;
+        }
+        return _rangeMeasuredDetailsHeights.TryGetValue(rowKey, out var measuredHeight) &&
+               MathUtils.GreaterThanOrClose(measuredHeight, RowDetailsHeightEstimate)
+            ? measuredHeight
+            : RowDetailsHeightEstimate;
+    }
+
+    internal bool GetRowDetailsVisibility(DataGridRowKey rowKey)
+    {
+        if (!rowKey.IsValid)
+        {
+            throw new ArgumentException("The row key must be valid.", nameof(rowKey));
+        }
+        if (_rangeDetailsVisibility.TryGetValue(rowKey, out var explicitVisibility))
+        {
+            return explicitVisibility;
+        }
+        if (RowDetailsVisibilityMode == DataGridRowDetailsVisibilityMode.Visible)
+        {
+            return true;
+        }
+        if (RowDetailsVisibilityMode != DataGridRowDetailsVisibilityMode.VisibleWhenSelected ||
+            _rangePresentationIndex?.FindSlot(rowKey) is not { } slot ||
+            !TryGetCommittedRangeEntry(slot, out var entry) ||
+            GetCommittedSelectionScope() is not { } scope)
+        {
+            return false;
+        }
+        return Selection.Contains(rowKey, entry.DataIndex, scope);
     }
 
     internal bool GetRowDetailsVisibility(int rowIndex)
@@ -3597,15 +2223,19 @@ public partial class DataGrid
     internal bool GetRowDetailsVisibility(int rowIndex, DataGridRowDetailsVisibilityMode gridLevelRowDetailsVisibility)
     {
         Debug.Assert(rowIndex != -1);
-        if (_showDetailsTable.Contains(rowIndex))
+        var slot = GetCommittedRangeSlot(rowIndex);
+        if (slot < 0 || !TryGetCommittedRangeEntry(slot, out var entry))
         {
-            // The user explicity set DetailsVisibility on a row so we should respect that
-            return _showDetailsTable.GetValueAt(rowIndex);
+            return false;
         }
-        return
-            gridLevelRowDetailsVisibility == DataGridRowDetailsVisibilityMode.Visible ||
-            (gridLevelRowDetailsVisibility == DataGridRowDetailsVisibilityMode.VisibleWhenSelected &&
-             _selectedItems.ContainsSlot(SlotFromRowIndex(rowIndex)));
+        if (_rangeDetailsVisibility.TryGetValue(entry.RowKey, out var explicitVisibility))
+        {
+            return explicitVisibility;
+        }
+        return gridLevelRowDetailsVisibility == DataGridRowDetailsVisibilityMode.Visible ||
+               (gridLevelRowDetailsVisibility == DataGridRowDetailsVisibilityMode.VisibleWhenSelected &&
+                GetCommittedSelectionScope() is { } scope &&
+                Selection.Contains(entry.RowKey, entry.DataIndex, scope));
     }
 
     /// <summary>
@@ -3623,27 +2253,37 @@ public partial class DataGrid
     /// <returns></returns>
     internal bool IsAllRowSelected()
     {
-        int itemCount = DataConnection.Count;
-        int selectedCount = SelectedItems.Count;
-        return itemCount > 0 && selectedCount == itemCount;
-    }
-
-#if DEBUG
-    internal void PrintRowGroupInfo()
-    {
-        Debug.WriteLine("-----------------------------------------------RowGroupHeaders");
-        foreach (int slot in RowGroupHeadersTable.EnumerateIndexes())
+        var scope = GetCommittedSelectionScope();
+        if (TotalItemCount <= 0 || scope is null)
         {
-            DataGridRowGroupInfo? info = RowGroupHeadersTable.GetValueAt(slot);
-            Debug.WriteLine(String.Format(System.Globalization.CultureInfo.InvariantCulture,
-                "{0} {1} Slot:{2} Last:{3} Level:{4}", info?.CollectionViewGroup?.Key, info?.IsVisible.ToString(), slot,
-                info?.LastSubItemSlot, info?.Level));
+            return false;
+        }
+        if (Selection.AllMatchingQuery?.Equals(scope) == true &&
+            Selection.ExcludedKeys.IsEmpty)
+        {
+            return true;
+        }
+        if (_rangePresentationIndex is null || TotalItemCount > int.MaxValue)
+        {
+            return false;
         }
 
-        Debug.WriteLine("-----------------------------------------------CollapsedSlots");
-        _collapsedSlotsTable.PrintIndexes();
+        var loadedKeys = new HashSet<DataGridRowKey>();
+        foreach (var block in _rangePresentationIndex.Snapshot.Blocks)
+        {
+            foreach (var entry in block.Entries)
+            {
+                if (entry.Kind == DataGridSourceEntryKind.Data &&
+                    loadedKeys.Add(entry.RowKey) &&
+                    !Selection.Contains(entry.RowKey, entry.DataIndex, scope))
+                {
+                    return false;
+                }
+            }
+        }
+        return loadedKeys.Count == TotalItemCount;
     }
-#endif
+
     
     private void HandleIsRowGroupHeadersFrozenChanged(AvaloniaPropertyChangedEventArgs change)
     {
@@ -3707,90 +2347,117 @@ public partial class DataGrid
 
     private void UpdateRowDetailsVisibilityMode(DataGridRowDetailsVisibilityMode newDetailsMode)
     {
-        int itemCount = DataConnection.Count;
-        if (_rowsPresenter != null && itemCount > 0)
+        _rangeDetailsVisibility.Clear();
+        _rangeMeasuredDetailsHeights.Clear();
+        _rangeDetailsSlotHints.Clear();
+        RebaseRangeHeightIndex(discardMeasuredDataHeights: true);
+        var updated = false;
+        foreach (var row in DisplayData.GetScrollingRows().Cast<DataGridRow>())
         {
-            bool newDetailsVisibility = false;
-            switch (newDetailsMode)
+            var newVisibility = GetRowDetailsVisibility(row.Index, newDetailsMode);
+            if (row.IsDetailsVisible != newVisibility)
             {
-                case DataGridRowDetailsVisibilityMode.Visible:
-                    newDetailsVisibility = true;
-                    _showDetailsTable.AddValues(0, itemCount, true);
-                    break;
-                case DataGridRowDetailsVisibilityMode.Collapsed:
-                    newDetailsVisibility = false;
-                    _showDetailsTable.AddValues(0, itemCount, false);
-                    break;
-                case DataGridRowDetailsVisibilityMode.VisibleWhenSelected:
-                    _showDetailsTable.Clear();
-                    break;
+                updated = true;
+                row.SetDetailsVisibilityInternal(
+                    newVisibility,
+                    raiseNotification: true,
+                    animate: false);
             }
-
-            bool updated = false;
-            foreach (DataGridRow row in GetAllRows())
-            {
-                if (row.IsVisible)
-                {
-                    if (newDetailsMode == DataGridRowDetailsVisibilityMode.VisibleWhenSelected)
-                    {
-                        // For VisibleWhenSelected, we need to calculate the value for each individual row
-                        newDetailsVisibility = _selectedItems.ContainsSlot(row.Slot);
-                    }
-
-                    if (row.IsDetailsVisible != newDetailsVisibility)
-                    {
-                        updated = true;
-
-                        row.SetDetailsVisibilityInternal(newDetailsVisibility, raiseNotification: true, animate: false);
-                    }
-                }
-            }
-
-            if (updated)
-            {
-                UpdateDisplayedRows(DisplayData.FirstScrollingSlot, CellsEstimatedHeight);
-                InvalidateRowsMeasure(invalidateIndividualElements: false);
-            }
+        }
+        if (updated)
+        {
+            UpdateDisplayedRows(DisplayData.FirstScrollingSlot, CellsEstimatedHeight);
+            InvalidateRowsMeasure(invalidateIndividualElements: false);
         }
     }
 
     private void ReConfigurePagination()
     {
-        if (CollectionView is DataGridCollectionView collectionView)
+        var currentPageRequest = PageRequest;
+        var currentPageSize = currentPageRequest?.DataCount ?? 0;
+        if (PageSize == currentPageSize)
         {
-            collectionView.PageSize = PageSize;
-            SyncPaginationState(collectionView);
+            ConfigurePaginationVisibility();
+            SyncRangePaginationState();
+            return;
+        }
+
+        DataGridPageRequest? nextPageRequest = null;
+        if (PageSize > 0)
+        {
+            var pageIndex = currentPageRequest is { } request
+                ? request.DataStartIndex / request.DataCount
+                : 0;
+            var dataStartIndex = checked(pageIndex * PageSize);
+            nextPageRequest = new DataGridPageRequest(dataStartIndex, PageSize);
+        }
+
+        SetPageRequest(nextPageRequest);
+        if (PageRequest != nextPageRequest)
+        {
+            SetCurrentValue(PageSizeProperty, currentPageSize);
         }
     }
 
-    private void SyncPaginationState(DataGridCollectionView collectionView)
+    private void SyncRangePaginationState()
     {
-        var currentPage = collectionView.PageIndex < 0
-            ? Pagination.DefaultCurrentPage
-            : collectionView.PageIndex + 1;
+        var pageRequest = AppliedPageRequest;
+        var total = TotalItemCount > int.MaxValue
+            ? int.MaxValue
+            : (int)TotalItemCount;
+        var pageSize = pageRequest?.DataCount ?? 0;
+        var currentPage = GetRangePaginationPage(pageRequest);
 
-        if (_topPagination != null)
+        _synchronizingRangePagination = true;
+        try
         {
-            _topPagination.Total       = collectionView.ItemCount;
-            _topPagination.PageSize    = collectionView.PageSize;
-            _topPagination.CurrentPage = currentPage;
+            if (_topPagination != null)
+            {
+                _topPagination.Total = total;
+                _topPagination.PageSize = pageSize;
+                _topPagination.CurrentPage = currentPage;
+            }
+            if (_bottomPagination != null)
+            {
+                _bottomPagination.Total = total;
+                _bottomPagination.PageSize = pageSize;
+                _bottomPagination.CurrentPage = currentPage;
+            }
         }
-
-        if (_bottomPagination != null)
+        finally
         {
-            _bottomPagination.Total       = collectionView.ItemCount;
-            _bottomPagination.PageSize    = collectionView.PageSize;
-            _bottomPagination.CurrentPage = currentPage;
+            _synchronizingRangePagination = false;
         }
     }
 
     private void HandlePageChangeRequest(object? sender, PageChangedEventArgs args)
     {
-        if (CollectionView is DataGridCollectionView collectionView)
+        if (_synchronizingRangePagination)
         {
-            collectionView.MoveToPage(args.PageIndex - 1);
+            return;
+        }
+        if (ItemsSource is not null && (AppliedPageRequest ?? PageRequest) is { } pageRequest)
+        {
+            // Pagination also raises CurrentPageChanged while applying a delayed template update.
+            // Treat the currently projected applied page as state synchronization, not user intent.
+            if (args.PageIndex == GetRangePaginationPage(pageRequest))
+            {
+                return;
+            }
+            var pageIndex = Math.Max(0, args.PageIndex - 1);
+            var dataStartIndex = checked((long)pageIndex * pageRequest.DataCount);
+            PageRequest = new DataGridPageRequest(dataStartIndex, pageRequest.DataCount);
+            SyncRangePaginationState();
+            return;
         }
     }
+
+    private static int GetRangePaginationPage(DataGridPageRequest? pageRequest) =>
+        pageRequest is null
+            ? Pagination.DefaultCurrentPage
+            : (int)Math.Min(
+                int.MaxValue - 4L,
+                pageRequest.Value.DataStartIndex / pageRequest.Value.DataCount + 1);
 
     private void HandlePageChanging(object? sender, PageChangingEventArgs args)
     {

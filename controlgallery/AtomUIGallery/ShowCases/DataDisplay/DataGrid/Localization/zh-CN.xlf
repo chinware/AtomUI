@@ -745,6 +745,36 @@
         <target state="translated">展示、查看和编辑结构化数据。</target>
       </segment>
     </unit>
+    <unit id="RemoteRangeDescription">
+      <segment>
+        <source>Virtualizes one million remote rows by fetching only visible ranges. Reload, request failure, and snapshot expiry remain deterministic.</source>
+        <target state="translated">仅按可见范围请求数据，实现一百万远程行的虚拟化，并可确定性演示重新加载、请求失败和快照过期。</target>
+      </segment>
+    </unit>
+    <unit id="RemoteRangeExpireSnapshot">
+      <segment>
+        <source>Expire snapshot</source>
+        <target state="translated">使快照过期</target>
+      </segment>
+    </unit>
+    <unit id="RemoteRangeFailNext">
+      <segment>
+        <source>Fail next reload</source>
+        <target state="translated">下次重载失败</target>
+      </segment>
+    </unit>
+    <unit id="RemoteRangeReload">
+      <segment>
+        <source>Reload</source>
+        <target state="translated">重新加载</target>
+      </segment>
+    </unit>
+    <unit id="RemoteRangeTitle">
+      <segment>
+        <source>Remote range virtualization</source>
+        <target state="translated">远程范围虚拟化</target>
+      </segment>
+    </unit>
     <unit id="ResetFiltersAndSortersDescription">
       <segment>
         <source>Control filters and sorters by API.</source>

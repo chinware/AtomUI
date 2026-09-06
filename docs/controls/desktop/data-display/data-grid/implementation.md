@@ -1,416 +1,568 @@
 # DataGrid 桌面版实现原理
 
-本文档描述 DataGrid 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [DataGrid 桌面版架构设计](overview.md)，列宽算法和 presenter 协作见 [DataGrid 列宽分配设计](column-sizing-design.md)，变化记录见 [DataGrid Changelog](changelog.md)。涉及 Control Own Token 的实现应同时阅读 [DataGrid Token 设计](token.md)。
+本文档描述 DataGrid 桌面版的内部 ownership、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见
+[DataGrid 桌面版架构设计](overview.md)，不可变查询、范围数据源、异步协调和虚拟化算法见
+[DataGrid Query 与 Range Source 设计](query-range-source-design.md)，列宽算法和 presenter 协作见
+[DataGrid 列宽分配设计](column-sizing-design.md)，Control Own Token 见 [DataGrid Token 设计](token.md)，变化记录见
+[DataGrid Changelog](changelog.md)。
 
-Popup 接入边界：`DataGrid` 负责 column-filter 业务状态和内容准备，filter Flyout 仅作为 relay 适配层，filter Popup 负责实际显示。模板重建或宿主切换时必须先释放旧 relay，再绑定新的 Popup；普通外点、Escape、失焦和业务关闭在 pinned 状态下被拦截，detach、窗口销毁、跨 TopLevel 和无效锚点必须走生命周期关闭并释放 Popup host。完整状态机见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。
+Popup 接入边界：`DataGrid` 负责 column-filter Query intent 与候选内容，filter Flyout 只作为 relay 适配层，filter Popup 负责
+实际显示。模板重建或宿主切换时先释放旧 relay，再绑定新的 Popup；普通外点、Escape、失焦和业务关闭在 pinned 状态下被
+拦截，detach、窗口销毁、跨 TopLevel 和无效锚点走生命周期关闭并释放 Popup host。完整状态机见
+[Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。
 
 ## 1. 实现定位
 
-本文档覆盖 DataGrid 的控件实现、主题接入、状态同步和 Gallery 可见维护边界。具体属性注册、默认值、绘制细节和 AXAML selector 仍应直接阅读源码；本文只记录维护者必须理解的稳定结构和不变量。
+DataGrid 的实现同时维护四条互不争夺 ownership 的链路：
+
+- Data：不可变 Query、Source schema、range request/result、snapshot 和 selection。
+- Presentation：range cache、display slot、已提交 viewport、row/group container 与 scroll extent。
+- Columns：列定义、列宽、冻结列、水平虚拟化和 header/cell 视觉投影。
+- Theme：ControlTheme、Template Part、伪类、Token、Popup 和平台宿主。
+
+DataGrid 是 public contract 与 UI transition owner；Source 执行业务查询；presenter 只布局已经提交的数据；template part 只投影
+状态。任何功能都不能通过在这些层之间建立第二份可变状态来完成同步。
 
 ## 2. 源码文件结构
 
-主要源码文件：
+稳定 ownership 按职责组织：
 
-- `src/AtomUI.Desktop.Controls.DataGrid`：代表文件包括 `AtomUIDataGridThemesProvider.cs`、`ThemeManagerBuilderExtensions.cs`、`DataGrid.Cells.cs`、`DataGrid.Columns.cs`、`DataGrid.Privates.cs` 等。
-- `src/AtomUI.Desktop.Controls.DataGrid/Cell`：4 个文件，代表文件 `DataGridCell.cs`、`DataGridCellCollection.cs`、`DataGridCellCoordinates.cs`、`DataGridCellsPresenter.cs`。
-- `src/AtomUI.Desktop.Controls.DataGrid/Column`：31 个文件，代表文件 `DataGridAbstractTextColumn.cs`、`DataGridBoundColumn.cs`、`DataGridCheckBoxColumn.cs`、`DataGridColumn.Privates.cs`、`DataGridColumn.cs` 等。
-- `src/AtomUI.Desktop.Controls.DataGrid/Column/Filters`：7 个文件，代表文件 `DataGridFilterIndicator.cs`、`DataGridFilterItem.cs`、`DataGridFilterValuesSelectedEventArgs.cs`、`DataGridMenuFilterFlyout.cs`、`DataGridMenuFilterFlyoutPresenter.cs` 等。
-- `src/AtomUI.Desktop.Controls.DataGrid/Data`：15 个文件，代表文件 `CollectionViewGroupRoot.cs`、`DataGridCollectionView.cs`、`DataGridCollectionViewGroup.cs`、`DataGridCollectionViewGroupInternal.cs`、`DataGridCurrentChangingEventArgs.cs` 等。
-- `src/AtomUI.Desktop.Controls.DataGrid/EventArgs`：18 个文件，代表文件 `DataGridAutoGeneratingColumnEventArgs.cs`、`DataGridBeginningEditEventArgs.cs`、`DataGridCellEditEndedEventArgs.cs`、`DataGridCellEditEndingEventArgs.cs`、`DataGridCellEventArgs.cs` 等。
-- `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.Localization`：生成 Catalog descriptor、语言模块注册入口和 `DataGridLangResource` 扩展。
-- `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.ResourceHost.ScopedResourceHostGenerator`：1 个文件，代表文件 `GenerateScopedResourceHostAttribute.g.cs`。
-- `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.TokenResourceKeyGenerator`：生成 `GeneratedControlPackageRegistration.g.cs`、`GeneratedThemeSchema.g.cs` 和 `TokenResourceConst.g.cs`。
-- `src/AtomUI.Desktop.Controls.DataGrid/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.ThemeAssetManifestGenerator`：生成独立主题叶子的 `GeneratedControlThemeAssetManifest.g.cs`。
-- `src/AtomUI.Desktop.Controls.DataGrid/Localization`：`DataGridLangResourceKind.cs` 定义稳定 Catalog，`en-US.xlf`、`zh-CN.xlf`、`zh-TW.xlf` 提供内置翻译。
-- `src/AtomUI.Desktop.Controls.DataGrid/Properties`：1 个文件，代表文件 `AssemblyInfo.cs`。
-- `src/AtomUI.Desktop.Controls.DataGrid/Row`：7 个文件，代表文件 `DataGridDetailsPresenter.cs`、`DataGridRow.Privates.cs`、`DataGridRow.cs`、`DataGridRowGroupHeader.cs`、`DataGridRowGroupInfo.cs` 等。
-- `src/AtomUI.Desktop.Controls.DataGrid/Themes`：21 个文件，代表文件 `DataGridCellTheme.axaml`、`DataGridColumnGroupHeaderTheme.axaml`、`DataGridColumnHeaderTheme.axaml`、`DataGridColumnHeaderTheme.cs`、`DataGridHeaderViewItemTheme.axaml` 等。
-- `src/AtomUI.Desktop.Controls.DataGrid/Utils`：8 个文件，代表文件 `DataGridFrozenGrid.cs`、`DataGridHelper.cs`、`DataGridValueConverter.cs`、`KeyboardHelper.cs`、`Range.cs` 等。
-- `src/AtomUI.Desktop.Controls.DataGrid/Utils/Converters`：2 个文件，代表文件 `DataGridPaginationVisibilityConvertor.cs`、`DataGridUniformBorderThicknessToScalarConverter.cs`。
+```text
+src/AtomUI.Desktop.Controls.DataGrid/
+├── DataGrid.cs                         public contract + lifecycle
+├── DataGrid.Query.cs                   Query commit and visual projection
+├── DataGrid.RangeLoading.cs            viewport-to-coordinator integration
+├── DataGrid.Virtualization.cs          desired/committed viewport + container bridge
+├── Data/
+│   ├── Query/                          immutable values, scalar and validation
+│   ├── Source/                         schema, request, result and capability contracts
+│   │   └── Local/                      typed local source and projection
+│   └── Virtualization/                 viewport scope, request scheduler, snapshot, cache, index and heights
+├── Column/                             column contract, header, sorting/filtering interaction
+├── Column/Filters/                     filter indicator, flyout and candidate presentation
+├── Row/                                row, group header, details and row presenters
+├── Cell/                               cell state and horizontal virtualization
+├── EventArgs/                          public event payloads
+├── Themes/                             static templates, selectors and resource binding
+├── Localization/                       generated-catalog-backed localized strings
+└── Utils/                              narrow shared algorithms and converters
+```
 
-职责边界：
+维护规则：
 
-- 控件主文件保留 public/protected API、Avalonia 属性注册、事件和主要生命周期入口。
-- Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
-- Token 文件只提供组件视觉变量，不保存实例状态。
-- Gallery 文件只展示用法和示例，不作为运行时逻辑 owner。
+- 主文件保留 public/protected API、Avalonia 属性注册、事件和主要生命周期入口。
+- partial 与 helper 按稳定 owner 拆分，不按 public/private 或单个触发点拆分。
+- Theme 文件负责静态视觉结构、Template Part、selector 和资源绑定；不在 C# 中动态复制同一结构。
+- Token 只保存组件视觉变量，不保存 Query、loading、selection、expanded 或 popup runtime state。
+- Gallery 只展示用法和验证行为，不成为运行时状态 owner。
+- GeneratedFiles 由对应 generator 维护，不手工编辑。
 
 ## 3. 核心类职责
 
-- `AtomUIDataGridThemesProvider`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `CollectionViewGroupComparer`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `CollectionViewGroupRoot`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `DataGrid`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `DataGridAbstractTextColumn`：集合项、节点或容器类型，承载单项状态和模板协作。
-- `DataGridBoundColumn`：集合项、节点或容器类型，承载单项状态和模板协作。
-- `DataGridCell`：集合项、节点或容器类型，承载单项状态和模板协作。
-- `DataGridCellCollection`：数据、状态或行为协作类型，维护集合同步和事件路径。
-- `DataGridCellCoordinates`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `DataGridCheckBoxColumn`：集合项、节点或容器类型，承载单项状态和模板协作。
-- `DataGridCollectionViewGroup`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `DataGridCollectionViewGroupInternal`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `DataGridColumnCollection`：数据、状态或行为协作类型，维护集合同步和事件路径。
-- `DataGridColumnDraggingOverIndicator`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `DataGridColumnGroupChangedArgs`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `DataGridColumnGroupHeader`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `DataGridColumnGroupItem`：集合项、节点或容器类型，承载单项状态和模板协作。
-- `DataGridColumnHeader`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `DataGridColumnHeaderTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
-- `DataGridComparerSortDescription`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `DataGridDataConnection`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `DataGridDefaultFilter`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `DataGridDisplayData`：数据、状态或行为协作类型，维护集合同步和事件路径。
-- 其他 54 个内部类型按源码目录分层维护，修改前应先确认所有引用路径。
+| 类型 | Ownership | 主要输入与输出 |
+| --- | --- | --- |
+| `DataGrid` | public API、模板生命周期、presentation transition | 接收 Query/Source/input，发布 applied state 与视觉更新。 |
+| `DataGridQueryController` | Query validation、revision 和交互策略 | 把外部设置、sort/filter/group intent 归一为唯一 Query。 |
+| `IDataGridSource` | schema、range fetch、snapshot 与 invalidation | 消费 DataGridFetchRequest，返回不可变精确切片。 |
+| `DataGridRangeCoordinator` | generation、viewport scope、请求优先级、block lease、pending cache 和错误 | 保留最新目标仍需要的工作，取消过时工作，确保 visible range 覆盖并形成可提交 snapshot。 |
+| `DataGridPresentationSnapshot` | 一次完整 applied presentation | 固定 Source/query/generation/snapshot、page、expansion、totals 与 viewport。 |
+| `DataGridPresentationIndex` | slot/entry/offset 映射 | 管理有限 block、sparse height delta 与 key/index metadata。 |
+| `DataGridDisplayData` | 已实现纵向容器和回收池 | 在 committed range 上复用 row/group header，不读取 Source。 |
+| `DataGridRowsPresenter` | 同步纵向布局与 child index | 只测量/排列 committed containers。 |
+| `DataGridCellsPresenter` | 可见列和冻结列布局 | 维持水平 virtualization，不拥有纵向 range 请求。 |
+| `DataGridColumn` | FieldId、列级能力、SortState | 从 Query/schema 推导 header 与 cell 状态。 |
+| `DataGridLocalSource<T>` | 本地 typed projection | 在稳定快照上 filter/sort/group，并只物化请求 range。 |
 
-核心协作规则：
+协作边界：
 
-- 控件实例是 public API 和运行时状态 owner。
-- Template part 是视觉协作对象，生命周期必须受 `OnApplyTemplate` 或模板加载流程管理。
-- 数据对象、选项对象、任务对象或节点对象只保存业务数据，不应反向持有不可释放的视觉对象。
-- 弹层、窗口、计时器、异步 loader 和全局管理器必须有明确关闭、解绑或释放路径。
-- `DataGrid` 是行拖动会话 owner；`DataGridRowReorderHandle` 只转发 Pointer 输入，`DataGridRowsPresenter` 只维护
-  ghost row，二者都不保存跨控件共享的拖拽状态。
-- `IDataGridCollectionViewMoveSupport` 是 CollectionView 的可选移动能力边界；`DataGridCollectionView` 负责
-  内置源集合的能力判断、索引解释、提交、通知和失败回滚。
-- `DataGrid` 是列宽状态和统一 star solver 的 owner；普通/分组列头、rows 和 cells presenter 只报告有限视口
-  或内容测量结果，不能各自维护列显示宽度。
-- `DataGridFillerColumn` 只投影统一调整后仍无法由真实列吸收的正剩余空间，不参与决定 star 分配是否执行。
+- Source 不捕获 DataGrid，也不返回可继续修改的 entry collection。
+- Coordinator 不解释业务协议；LocalSource 和业务 Source 不生成视觉对象。
+- RowsPresenter、DisplayData、Row 和 Cell 不发起 FetchAsync。
+- Header、FilterIndicator 和 Flyout 只产生 Query intent，不直接改 range cache。
+- 可选 editable、movable、key-lookup 和 bulk-selection 能力与只读 Source 分离。
+- DataGrid 是列宽 solver owner；header/rows/cells presenter 只提供有限 viewport 或内容测量输入。
 
 ## 4. 状态与数据流
 
-DataGrid 的状态流遵循下面路径：
+### 4.1 Query 到 presentation
 
 ```text
-Public API / ItemsSource / Command / Event
-  -> 控件实例状态
-  -> internal state / effective state / pseudo-class
-  -> template part property / AXAML selector
-  -> renderer / popup / adorner / Gallery observable behavior
+Public Query / column gesture / filter confirmation / group intent
+  -> DataGridQueryController validates structure and Source.Schema
+  -> commit pending edit
+  -> structural no-op check
+  -> QueryRevision++ and visual projection
+  -> QueryChanged
+  -> DataGridRangeCoordinator
+  -> IDataGridSource.FetchAsync
+  -> result contract validation
+  -> atomic DataGridPresentationSnapshot commit
+  -> rows / groups / pagination / scrollbar / selection projection
 ```
 
-源码中的状态入口按以下语义维护：
+Query 是 sort/filter/group 的唯一 owner；AppliedQuery 只属于已提交 snapshot。QueryChanged handler 若同步设置另一个 Query，新的
+revision 使外层 transition 失效。没有 suppress flag、ignore flag 或 Dispatcher 延时。
 
-- 内容与数据：`AutoGenerateColumns`、`CanUserFilterColumns`、`CanUserReorderColumns`、`CanUserReorderRows`、`CanUserResizeColumns`、`CanUserSortColumns`、`CellEditingTemplate`、`CellTemplate`、`ColumnHeaderHeight`、`ContentHeight` 等 32 项。
-- 选择与集合：`ClipboardCopyMode`、`CurrentSortDirection`、`Filters`、`SelectedFilterValues`、`FilterPresenterMode`、`FilterSelectionMode`、`FilterApplyMode`、`Index`、`IsFilterActivated`、`IsHideOnSinglePage`、`IsHoverMode`、`IsSelected`、`IsSorterTooltipVisible` 等。
-- 交互与状态：`AscendingIndicatorVisible`、`DescendingIndicatorVisible`、`IsDeleteEnabled`、`IsDetailsVisible`、`IsEditEnabled`、`IsFrameBorderVisible`、`IsFrozen`、`IsLeaf`、`IsMotionEnabled`、`IsOperating` 等 19 项。
-- 视觉与布局：`BottomPaginationAlign`、`ColumnWidth`、`HorizontalAlignment`、`HorizontalScrollBarVisibility`、`MaxColumnWidth`、`MinColumnWidth`、`RowHeight`、`SeparatorBrush`、`SizeType`、`SublevelIndent` 等 14 项。
-- 其他稳定入口：`CellTheme`、`CollectionView`、`CustomOperatingIndicator`、`EmptyIndicator`、`Footer`、`FormatString`、`GridLinesVisibility`、`Level`、`Maximum`、`Minimum` 等 15 项。
+Source replacement、Reload、Invalidated、snapshot expiry、PageRequest 与 GroupExpansion 变化递增 DataGeneration。每个 request
+同时携带 QueryRevision 与 DataGeneration，任何迟到或来自旧 Source/snapshot 的结果在 commit 前丢弃。
 
-维护要求：
-
-- 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
-- 集合、选择、展开、过滤、分页、上传任务或异步 loader 必须能处理 reset、replace 和 clear。
-- 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
-- overview.md 的 API 契约说明应与源码实际状态流一致。
-
-分页状态流以 `DataGridCollectionView` 为 owner：
+### 4.2 Desired 与 committed viewport
 
 ```text
-DataGrid.ItemsSource / DataGrid.PageSize
-  -> DataGridCollectionView.ItemCount / PageSize / PageIndex
-  -> DataGrid pagination state projection
+scroll / thumb / keyboard / bring-into-view intent
+  -> coalesced DesiredViewport
+  -> replace active ViewportRequestScope
+  -> pure ViewportPlanner
+  -> retain shared visible block leases and cancel orphaned work
+  -> foreground scheduler fills missing blocks (synchronous hit or asynchronous miss)
+  -> atomic CommittedViewport swap
+  -> one layout pass over committed blocks
+```
+
+DesiredViewport 是最新用户意图；CommittedViewport 是当前可以同步布局的完整范围。缓存 miss 时继续显示旧 committed rows，
+不创建 placeholder 或 null row。同一 generation 只有一个 active viewport scope；新 scope 先取得仍需 block 的 lease，再释放旧
+scope，避免相邻目标取消并重取共享 block。失去所有有效 lease 的工作从可发现 inflight 集合移除并取消，后续请求不会附着到
+已经取消的 task。prefetch 从属于产生它的 committed scope，只填 cache，不改变 loading visual、不触发布局、不创建 control，
+也不能阻塞新的 visible target。
+
+### 4.3 Load 与错误状态
+
+```text
+ItemsSource == null                    -> Idle
+no applied snapshot + active request  -> Loading
+applied snapshot + active request     -> Refreshing
+visible target atomically committed   -> Ready
+non-cancellation failure              -> Error
+```
+
+internal `EffectiveIsOperating` 只合并用户显式 `IsOperating` 与 Loading：
+
+```text
+EffectiveIsOperating = IsOperating || LoadState == Loading
+```
+
+Loading 表示没有可展示的已提交 snapshot，实际挂起时驱动现有 Spin。Refreshing 保留旧 rows 的几何与完整不透明度，
+不自动启动 Spin；读取类 selection 可以继续投影，edit/delete/move 仍被禁止。调用方显式设置 `IsOperating=true` 时，任意
+LoadState 都继续显示 Spin。
+
+只有 ValueTask 实际挂起时才发布 Loading/Refreshing。同步 Source 与 cache hit 在当前调用中完成 result validation、snapshot
+commit 和 Ready 投影，不增加一次 Dispatcher 调度，也不让嵌套 DataGrid 在一帧内停留于虚假的 Loading。
+
+用户 Query/page/group/scroll 失败时恢复最后成功 snapshot 的 Query、page、expansion、viewport、totals 和视觉；只有实际 Query
+回退发出一次 LoadRollback QueryChanged。初次失败保持空 presentation。Invalidated 刷新失败保留 stale 只读 snapshot 并等待
+Reload。Cancellation 和 superseded request 不进入 Error。
+
+### 4.4 选择与 current
+
+```text
+DataGridSelectionState + CurrentRowKey
+  -> committed DataGridSourceEntry(RowKey, DataIndex)
+  -> realized DataGridRow/DataGridCell pseudo-classes
+```
+
+Selection 使用 ExplicitKeys、AllMatchingQuery、IndexIntervals 和 ExcludedKeys 表达声明式状态，内存不随 total row count 增长。
+Row/Cell 只投影当前 entry 的判定结果，container recycle 不改变 selection。CurrentRowKey 是 identity；DataIndex hint 只用于定位。
+未加载 key 的解析依赖可选 `IDataGridKeyLookupSource`，不能伪造 SelectedItem 或 index。
+
+### 4.5 分页
+
+```text
+PageSize / current page intent
+  -> checked DataGridPageRequest(long data start, int count)
+  -> DataGridFetchRequest
+  -> applied TotalDataCount and page state
   -> PART_TopPagination / PART_BottomPagination
-
-Pagination.CurrentPageChanged
-  -> DataGridCollectionView.MoveToPage(oneBasedPage - 1)
-  -> DataGridCollectionView.PageChanging
-  -> both Pagination.CurrentPage
 ```
 
-`PageSize` 配置和分页部件状态投影是两个不同职责。数据或 `PageSize` 变化时，DataGrid 先配置 CollectionView，
-再把 CollectionView 最终的 `ItemCount`、`PageSize` 和 `PageIndex` 同步到当前分页部件。模板首次应用或重新套用时，
-CollectionView 已经是有效状态真源，只回放分页投影，不应重新配置数据视图。顶部和底部分页部件不持久保存分页状态；
-任一部件缺失时只跳过该视觉投影，不改变 CollectionView 或另一个部件。
+PageSize 为 0 时使用连续模式。非零时先按业务行切 PageRequest，再插入 group header、应用 expansion 和 display Range。上下两个
+Pagination 只投影同一 applied state；模板 reapply 先回放 state，再订阅 input。翻页成功后 vertical offset 归零，失败时整体
+回退。
 
-列宽状态流以 `DataGrid` 和 `DataGridColumn` 为 owner：
+### 4.6 列宽
 
 ```text
 DataGridColumnHeadersPresenter / DataGridGroupColumnHeadersPresenter
-  -> header desired widths + finite header viewport when rows are absent
+  -> header desired widths + finite viewport when rows are absent
 DataGridRowsPresenter / DataGridCellsPresenter
   -> CellsWidth + realized cell desired widths when rows are present
 DataGrid
-  -> complete initial Auto measurement
-  -> resolve star widths through AdjustColumnWidths
+  -> finish Auto measurement
+  -> AdjustColumnWidths resolves star widths
 DataGridColumn display widths
   -> headers / rows / cells / filler / scrollbars
 ```
 
-普通和分组列头 presenter 共享同一输入契约：完成 header 内容测量，并在 rows presenter 因空数据不参与布局时
-把有限 `availableSize.Width` 交给 DataGrid。正常数据路径继续以 `CellsWidth` 表达扣除行头等占用后的列区域。
-presenter 不直接修改一组 star 列，也不把 filler 当作宽度分配结果。完整模式矩阵、算法和兼容边界见
+普通与分组列头共享有限宽度入口；有行时使用 CellsWidth。Presenter 不独立修改 star 列，不把 filler 当作求解结果。完整矩阵见
 [DataGrid 列宽分配设计](column-sizing-design.md)。
 
-列过滤状态流以列对象为状态 owner：
+### 4.7 过滤与 pinned popup
 
 ```text
-DataGridColumn.Filters
-  -> DataGridFilterIndicator materialized items
-  -> DataGridColumn.SelectedFilterValues
-  -> DataConnection.FilterDescriptions
-  -> CollectionView refresh / filter icon active state
+Column.Filters / presentation metadata
+  -> filter Flyout Query intent
+  -> immutable DataGridQuery.Filters
+  -> Source request + Header/Indicator/Flyout projection
 ```
 
-`Filters` 是过滤候选项数据源，必须允许替换、绑定和集合变更通知。过滤项可以来自 `DataGridFilterItem`，也可以来自业务 DTO；解析文本、值和 children 时优先使用列上的 member path 配置，避免把 Gallery 示例对象变成业务层必须依赖的模型。DTO member path 解析只允许生成 accessor 路径，不在过滤项解析中启用运行时反射。`SelectedFilterValues` 是当前选中值集合，负责连接 VM、filter flyout checked state 和 collection view 过滤描述。`FilterDescriptions` 只由列过滤管线生成和回收，不直接承担 public 选中状态。
+Filters 只表示候选内容；Query.Filters 是 applied 条件 owner。Flyout 打开时从 Query 初始化 checked state，确认时构建一个完整新
+Query。Schema 声明 operator、arity 和 scalar kinds；LocalSource descriptor 提供 typed evaluator，远端 Source 显式翻译。
 
-Pinned filter 状态由 `DataGrid` 单独拥有，并与过滤选择状态正交：
+Pinned filter 由 DataGrid 独占 ownership：
 
 ```text
 DataGrid.IsPopupPinnedOpen
   -> first eligible column in DisplayIndex order
-  -> DataGridColumnHeader.IsPopupPinnedOpen
-  -> DataGridFilterIndicator.IsPopupPinnedOpen
-  -> current filter Flyout.IsPopupPinnedOpen
-  -> Popup.IsPopupPinnedOpen
+  -> DataGridColumnHeader
+  -> DataGridFilterIndicator
+  -> current filter Flyout
+  -> Popup
 ```
 
-目标筛选使用 `ColumnsInternal.GetDisplayedColumns()`，跳过 filler、不可见、不可过滤、无过滤项或无 Header 的列。同一时间
-只有一个 Header 被 pin。列集合、DisplayIndex、可见性、`CanUserFilterColumns`、列级 `CanUserFilter` 和过滤项变化都会重新
-计算目标；replacement 先 lifecycle-close 旧 Popup 并 unpin 旧 Header，再 pin 新 Header。Header 到 Indicator、Indicator 到
-当前 Menu/Tree Flyout 的两个 `BindUtils.RelayBind` 分别由 `ClearFilterIndicator` 和 `ClearFlyout` 释放。
+replacement 先 lifecycle-close 旧 Popup、释放 relay 和 callback，再接入新目标。Unpin 只解除关闭拦截；DataGrid detach、template
+reapply、禁用、隐藏、TopLevel 变化或锚点失效强制关闭旧 Popup。
 
-列绑定通过 `DataGridColumn.DataContext` 完成。`DataGridColumn` 实现 `IDataContextProvider`，列插入 `DataGridColumnCollection` 时复制当前 `DataGrid.DataContext`，`DataGrid.OnDataContextEndUpdate` 时向所有列同步新 `DataContext`，列移除或清空时释放为 `null`。这条 acquire/release 配对是 `Filters="{Binding NameFilters}"` 和 `SelectedFilterValues="{Binding SelectedNames}"` 可用的基础，也避免列持有旧 ViewModel。列订阅外部 `Filters` / `SelectedFilterValues` collection 时必须跟随列 attach/detach 注册和释放；过滤投影写入 `FilterDescriptions` 必须避开列集合插入/删除的中间态，等列集合索引、display index 和 current cell 状态稳定后再刷新 collection view。由用户操作、`Filter(...)` 或清除过滤触发的选中值更新，应优先修改现有可变 `SelectedFilterValues` 列表实例；只有当前没有可变列表时才替换属性值。这样双向绑定、代码侧赋值和 Gallery 示例接线都共享同一个列表 owner。
-
-Gallery 或业务 XAML 常见写法会在 `DataGrid` 上用 `x:DataType` 声明行模型类型，以便 `Binding="{Binding Address}"` 这类单元格绑定被编译。此时列级 ViewModel 绑定不能只写裸 `{Binding NameFilters}`，否则 XAML 编译器可能按行模型解析。优先在列级绑定上显式指定 VM 类型；如果 IDE、XAML 编译器或模板嵌套让上下文仍然歧义，则在页面加载或 View 初始化时直接设置 `Filters` 与 `SelectedFilterValues`。这种代码侧接线只能替代 binding 表达式，不能引入第二套 selected/filter 状态，也不能绕过列过滤管线。
-
-过滤状态同步必须避免循环：
-
-- VM 修改 `SelectedFilterValues` 时，列过滤管线比较归一化后的值集合；值未变时不重建 `DataGridFilterDescription`。
-- 用户操作 flyout 时，Presenter 只收集过滤值并提交给列；列先更新 `SelectedFilterValues`，再投影到 `FilterDescriptions`。
-- `FilterDescriptions` 因 collection view 或清除 API 变化时，同步回 `SelectedFilterValues` 前必须判断来源，避免 clear / apply 重入。
-- `Filters` 重置、替换或集合变更后需要重新物化 flyout，并通过同一管线剔除已不在有效叶子过滤项中的选中值。
-
-行拖动状态流以 `DataGrid` 实例会话和 CollectionView 移动能力为 owner：
+### 4.8 行拖动
 
 ```text
-DataGridRowReorderHandle.PointerPressed
-  -> RowReorderSession(Pressed, pointer, row, item, view, sourceIndex)
-  -> pointer distance > Constants.DragThreshold
+PointerPressed
+  -> RowReorderSession(Pressed, pointer, Source, snapshot, RowKey)
+  -> drag threshold
   -> RowReordering
-  -> revalidate owner / row / item / view / CanMove
-  -> DataGridRowsPresenter.ShowDragIndicator(item)
-  -> RowReorderSession(Dragging, targetIndex)
-
-PointerReleased
-  -> IDataGridCollectionViewMoveSupport.TryMove(sourceIndex, targetIndex)
-  -> CancelDragSession / cleanup
-  -> RowReordered (only when TryMove returned true and the view is still current)
+  -> revalidate owner/query/snapshot/capability
+  -> RowsPresenter ghost row
+  -> key-relative IDataGridMovableSource request
+  -> cleanup
+  -> RowReordered only after successful mutation
 ```
 
-会话状态只允许 `Idle -> Pressed -> Dragging -> Completed` 或
-`Idle -> Pressed/Dragging -> Cancelled`。取消状态在对应 Pointer 释放前保持终止，不能回到 Pressed 或重复触发
-`RowReordering`。Pointer、handle、row、item 和 CollectionView 必须全部匹配会话快照；任何公开事件或集合通知
-返回后都重新验证，不依赖事件调用前的视觉容器或索引继续执行。
+每个 DataGrid 只有一个会话。handle 不修改数据，presenter 不决定移动语义，Source 不持有视觉对象。Source、Query、snapshot、
+row、pointer 或 capability 变化均取消会话。完成和取消共用幂等清理入口，释放 capture、ghost、offset、transition 和引用。
 
-## 5. 生命周期与模板接入
+## 5. 组合结构模型
 
-生命周期规则：
+### 5.1 控件角色图
 
-- 构造阶段只注册必要状态，不依赖 template part。
-- 模板应用时获取 part、建立事件订阅和绑定，并先释放旧 part 订阅。
-- 分页模板部件取得后，先从当前 `DataGridCollectionView` 回放总数、页大小和当前页，再订阅
-  `CurrentPageChanged`。这一顺序防止属性回放产生的分页条件通知被误认为用户翻页请求。
-- 控件卸载、弹层关闭、窗口关闭、集合替换或 container recycle 时释放事件订阅和资源宿主。
-- DynamicResource、TokenResourceBinder 或 C# binding 必须有明确 owner 和释放点。
-- Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
-- `PART_ColumnHeadersPresenter` 与 `PART_GroupColumnHeadersPresenter` 在模板应用后必须接入同一列宽输入路径；
-  `PART_RowPresenter` 在空数据时保持隐藏，不能作为完成 star 求解的必要生命周期节点。
-- 空数据与有数据切换、表头模式切换或模板重套用时，新的 presenter 只接管几何输入，现有列宽 state owner
-  仍是 DataGrid 和 DataGridColumn。
-- 行拖动开始时由 handle 捕获并记录具体 Pointer；正常释放和 `PointerCaptureLost` 都进入同一个会话终止入口。
-- `IsEnabled=false`、`CanUserReorderRows=false`、ItemsSource 或 CollectionView 变化、源行回收、重排列移除、
-  模板重套用以及 DataGrid detach 必须主动取消当前行拖动，而不是等待 PointerReleased 补偿清理。
-- `CancelDragSession` 先把会话标记为终止以阻止事件重入，再释放 capture、移除 ghost row、重置拖动偏移、
-  恢复 transition，最后清除会话引用。会话清理必须幂等，允许 release、capture lost 和 detach 连续到达。
-- 源行因自动滚动而被虚拟化回收时，会话立即取消；同一 PointerMoved 帧必须在滚动返回后重新检查会话，
-  不得继续读取已经清空的坐标、row 或 presenter 状态。
-- Pinned filter 的 Header、Indicator 或 Flyout replacement 先失效旧 Loaded-priority callback，再 lifecycle-close 旧 Popup、
-  dispose relay 和事件订阅。Indicator callback 校验 generation、pin、attach、effective enabled/visible、OwningGrid、TopLevel
-  和 Flyout identity，旧模板或旧列不能在 teardown 后复活。
-- DataGrid unpin 只清除当前 Header pin，不关闭已经打开的 filter Flyout；DataGrid detach、template reapply、禁用或本地隐藏
-  则清空目标并走 lifecycle close。Header/Indicator 单独 detach 依赖各自 teardown 和 Popup target tracking，重新 attach 时
-  由仍然有效的 DataGrid pin 请求重新创建 Flyout shell 并打开。
+```text
+DataGrid (DataGridTheme.axaml)
+  -> PixelAlignedBorder#Frame (template-stable)
+     -> Border#FrameContentClip (template-stable)
+        -> Spin (internal-observable)
+           -> DockPanel
+              -> Pagination#PART_TopPagination (template-stable)
+              -> PixelAlignedBorder#TitleFrame
+                 -> ContentPresenter#Title
+              -> Pagination#PART_BottomPagination (template-stable)
+              -> ContentPresenter#Footer
+              -> Grid
+                 -> DataGridTopLeftColumnHeader#PART_TopLeftCorner (template-stable)
+                 -> Border#ColumnHeadersPresenterFrame
+                    -> Panel
+                       -> DataGridColumnHeadersPresenter#PART_ColumnHeadersPresenter (template-stable)
+                       -> DataGridGroupColumnHeadersPresenter#PART_GroupColumnHeadersPresenter (template-stable)
+                 -> PixelAlignedBorder#ColumnHeadersAndRowsSeparator
+                 -> DataGridRowsPresenter#PART_RowPresenter (template-stable)
+                    -> DataGridRow (internal-observable, virtualized)
+                       -> DataGridCellsPresenter (internal-observable, horizontally virtualized)
+                    -> DataGridRowGroupHeader (internal-observable, virtualized)
+                 -> ContentPresenter#EmptyIndicator
+                 -> ScrollBar#PART_VerticalScrollbar (template-stable)
+                 -> ScrollBar#PART_HorizontalScrollbar (template-stable)
+                 -> Border#DisabledVisualElement
+                 -> DataGridColumnDraggingOverIndicator#PART_DraggingOverIndicator (template-stable)
+```
 
-稳定 template part 接入点：
+模板中的 Spin 节点复用 DataGrid 的 operating state；Query/Range Source 只改变该状态的有效输入，不增加平行 overlay。RowsPresenter
+下面的 row、group header 和 cells 由 container lifecycle 动态接入，但必须继续遵守同一个 template/scroll ownership。
 
-- `PART_Ascending`：稳定模板协作入口，重命名前必须同步主题和实现。
-- `PART_BottomGridLine`：稳定模板协作入口，重命名前必须同步主题和实现。
-- `PART_BottomPagination`：底部分页状态投影；由 DataGrid 管理状态回放和翻页事件订阅。
-- `PART_ColumnHeadersPresenter`：普通表头内容测量与空数据有限列视口输入。
-- `PART_ContentFrame`：承载根视觉、边框、背景或尺寸基线。
-- `PART_ContentPresenter`：展示用户内容、文本、图标或模板化数据。
-- `PART_Descending`：稳定模板协作入口，重命名前必须同步主题和实现。
-- `PART_FocusVisual`：稳定模板协作入口，重命名前必须同步主题和实现。
-- `PART_Frame`：承载根视觉、边框、背景或尺寸基线。
-- `PART_GroupColumnHeadersPresenter`：分组表头组合测量，与普通表头共享列宽输入契约。
-- `PART_HeaderPresenter`：展示用户内容、文本、图标或模板化数据。
-- `PART_HorizontalIndicator`：展示指示器、进度、分页或状态反馈。
-- `PART_IndicatorIconButton`：承载用户触发入口、导航或关闭动作。
-- `PART_ItemsPresenter`：展示用户内容、文本、图标或模板化数据。
-- `PART_RightGridLine`：稳定模板协作入口，重命名前必须同步主题和实现。
-- `PART_RootLayout`：承载根视觉、边框、背景或尺寸基线。
-- `PART_RowPresenter`：已物化行布局入口；空数据时隐藏，不作为 star 求解的必要生命周期节点。
-- `PART_SortIndicator`：展示指示器、进度、分页或状态反馈。
-- `PART_TopPagination`：顶部分页状态投影；由 DataGrid 管理状态回放和翻页事件订阅。
-- `PART_VerticalIndicator`：展示指示器、进度、分页或状态反馈。
-- `PART_VerticalSeparator`：稳定模板协作入口，重命名前必须同步主题和实现。
+### 5.2 协作节点
 
-## 6. 交互与事件处理
+| 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | 使用边界 |
+| --- | --- | --- | --- | --- | --- | --- |
+| DataGrid | public control | `DataGrid.cs` | 应用/VisualTree | Source、Query、Selection、layout/theme API | public | 唯一 UI state owner。 |
+| Frame / FrameContentClip | template node | `DataGridTheme.axaml` | DataGrid template | border、corner、background | template-stable | 维护外框和内容裁剪，不能下沉到 row。 |
+| Spin | public child control | `DataGridTheme.axaml` | DataGrid template | IsOperating、LoadState | internal-observable | 只投影 effective operating state。 |
+| Top/Bottom Pagination | public child control | `DataGridTheme.axaml` | DataGrid template | PageSize、visibility、align | template-stable | 只投影 applied page state。 |
+| Column headers presenters | internal presenters | `DataGridTheme.axaml` | DataGrid template | headers、column width、Query intent | template-stable | 提供测量与交互，不拥有 Query。 |
+| RowsPresenter | internal presenter | `DataGridTheme.axaml` | DataGrid template | rows、scrolling、selection | template-stable | 只布局 committed entries，不调用 Source。 |
+| Row / GroupHeader | item containers | C# container generation | DataGridDisplayData | item/group/details/selection | internal-observable | recycle 时完整清理 entry state。 |
+| CellsPresenter | internal presenter | Row theme/C# | row container | columns、frozen、horizontal scroll | internal-observable | 继续拥有横向 virtualization。 |
+| EmptyIndicator | template node | `DataGridTheme.axaml` | DataGrid template | EmptyIndicator | internal-observable | 只由 committed empty state 控制。 |
+| ScrollBars | template nodes | `DataGridTheme.axaml` | DataGrid template | scrollbar visibility | template-stable | 与 PresentationIndex 的 extent/offset 同步。 |
+| DraggingOverIndicator | internal control | `DataGridTheme.axaml` | row reorder session | CanUserReorderRows | template-stable | 只绘制反馈，不提交数据。 |
+| Filter Flyout / Popup | internal overlay chain | filter themes/C# | current header/indicator/flyout | column filter options、pinned state | internal-observable | relay Query intent，replacement 对称释放。 |
 
-DataGrid 的交互事件应从输入源收敛到控件级语义事件：
+## 6. 生命周期与模板接入
 
-- Pointer、keyboard、focus 和 command 事件不应绕过 Avalonia 基础控件语义。
-- 没有弹层职责的路径不应引入额外 popup 或全局输入捕获。
-- 集合类路径必须稳定处理 container prepare、clear、过滤、分组和虚拟化回收。
-- 值提交或命令触发必须保持继承控件的事件顺序。
+### 6.1 控件生命周期
 
-稳定事件路径包括 `SelectionChanged`、`RowReordering` 和 `RowReordered`。事件参数和触发时机属于兼容边界。
+- 构造阶段注册属性与静态状态，不依赖 Template Part。
+- OnApplyTemplate 开始先解绑旧 part，再获取新 part、回放 applied state 并建立事件连接。
+- Attach 时订阅当前 Source.Invalidated；Source replacement 与 detach 时对称退订。
+- Detach 先失效 revision/generation identity，再取消 request、dispose CTS、释放 pending/applied cache、part 与 relay。
+- 迟到 continuation 必须核对 Source、revision、generation 和 snapshot；identity 失效后直接结束。
+- DataGrid 不 dispose 外部 Source；Source 自己拥有数据库连接、集合订阅和自身 IDisposable/IAsyncDisposable 生命周期。
 
-行重排事件路径遵循以下顺序：
+### 6.2 Source replacement
 
-- `RowReordering` 仅在 Pointer 移动超过 `Constants.DragThreshold` 后触发一次，并且发生在 ghost row 创建和数据提交前。
-- `RowReordering` 返回后重新确认 DataGrid、row、item、CollectionView 和 `CanMove`；回调导致任一 owner 变化时取消会话。
-- `RowReordered` 只表示 CollectionView 已经产生实际顺序变化。目标为空、同位置释放、取消、能力不足、
-  会话失效或移动失败都不触发该事件。
-- `RowReordered` 在 capture、ghost、offset、transition 和会话引用清理后触发，事件处理器可以安全替换 ItemsSource、
-  刷新 View 或移除重排列。
+Source replacement 遵循预验证事务：候选 schema、当前 Query、列与 page 首先在旧状态外验证；随后提交 edit；只有这些步骤成功
+才一次性切换 Source identity 和 generation。切换后取消/退订旧 owner、清空旧 cache/totals/key resolution，订阅新 Source 并
+加载首个范围。切换点之后旧 Source 永不重新成为有效 owner。
 
-## 7. 内部算法与关键流程
+### 6.3 Request 与 cache 生命周期
 
-维护者需要重点关注以下流程：
+| 资源 | Owner | 释放或失效 |
+| --- | --- | --- |
+| generation CTS | RangeCoordinator | Query/generation change、detach、完成后 Dispose |
+| viewport request scope | RangeCoordinator | 不同 DesiredViewport、generation replacement 或 detach 时 supersede；先转移共享 lease，再释放其余 lease |
+| block request lease | active viewport scope | scope supersede、visible commit 后 prefetch 失效、generation replacement 或 detach |
+| block work item CTS | block request scheduler | 最后一个有效 lease 释放或 generation/detach 失效时取消；work item 进入终态后 Dispose |
+| Source request CancellationToken | 单 block work item | 由 generation 与 work item 生命周期共同约束；不受已失效 caller continuation 复活 |
+| pending blocks | pending snapshot | commit、failure、query/source change、detach |
+| applied blocks | applied snapshot | snapshot/source change、detach |
+| realized/edit/drag block pin | 对应 visual/session owner | container/session detach 后 |
+| pooled entry/index arrays | LocalSource 或 block | projection/block eviction 或 Source dispose |
+| sparse height entries | PresentationIndex block/user state | block eviction 或显式 state 清理 |
 
-- API 默认值到 effective state 的归一。
-- Template part 重新应用时的状态回放。
-- 主题资源、Token 和 SharedToken 计算后的视觉更新。
-- ItemsSource、selection、checked、expanded、filter、paging 或 upload task 的集合同步。
-- 动效启停、初始加载阶段 transition 抑制和卸载取消。
+### 6.4 Template Part 接入
 
-实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
+- `PART_RowPresenter` 只承载 committed row/group containers；空数据隐藏，不成为列宽求解前置。
+- 显式有限高度的首个 snapshot 可以先只提交数据，由首次布局按真实 viewport 实现 rows；自动高度且尚无 Bounds 的嵌套
+  DataGrid 在模板就绪后实现一个已提交 bootstrap entry，以建立非零 DesiredSize，期间不从 Measure 请求 Source。
+- `PART_TopPagination` 与 `PART_BottomPagination` 先接收 applied state，再订阅翻页 intent。
+- `PART_ColumnHeadersPresenter` 与 `PART_GroupColumnHeadersPresenter` 接入同一个 DataGrid-owned column-width solver。
+- 现有 Spin 绑定 EffectiveIsOperating；首次异步 loading 显示 Spin，refreshing 保持已提交内容完全可见，两者都不改变
+  Frame/Header/scroll geometry。
+- SortIndicator、FilterIndicator、row/cell/group header 继续使用既有 theme、part 与 pseudo-class。
+- FrameContentClip、FrameCornerRadius 和 FrameBorderThickness 的 ownership 不因异步数据架构改变。
 
-分页同步不变量：
+## 7. 交互与事件处理
 
-- 分页部件的 `Total` 来自 `DataGridCollectionView.ItemCount`，`PageSize` 来自 CollectionView 接受后的
-  `PageSize`，不能分别从不同状态源读取。
-- 分页部件使用一基页码；CollectionView 使用零基 `PageIndex`。当 `PageIndex < 0` 时投影为
-  `Pagination.DefaultCurrentPage`，否则投影为 `PageIndex + 1`。
-- 模板状态回放必须发生在新分页部件订阅 `CurrentPageChanged` 之前；旧部件必须先解绑，避免重新套模板后
-  旧视觉对象继续发出翻页请求。
-- 运行期用户翻页只通过 `MoveToPage` 修改 CollectionView；CollectionView 的 `PageChanging` 再把同一目标页
-  投影到上下两个分页部件，确保双分页显示一致。
-- `PageSize = 0` 时由 `EffectivePaginationVisibility` 隐藏分页区域；位置可见性不能代替分页状态初始化。
+- Header pointer、keyboard、tooltip 与 `SetSort` 都调用同一 `DataGridSortPolicy`；resize 边界命中优先于排序手势。
+- Filter Flyout 只收集候选值并提交 Query intent；Query validation、edit commit 和 request scheduling 仍由 DataGrid 管理。
+- 滚轮、触控惯性、scrollbar line/page/thumb、Home/End/PageUp/PageDown 和 ScrollIntoView 统一产生 DesiredViewport。
+- Scroll handler 只合并 intent；到内部边界前由 DataGrid 消费，边界后允许外层 ScrollViewer 继续滚动。
+- QueryChanged 在内存提交与视觉投影后、Source request 前触发；回调重入后重新核对 revision。
+- SelectionChanged 描述声明式 OldSelection/NewSelection，不为事件参数加载 cache 外 item。
+- RowReordering 在超过拖动阈值且创建 ghost 前最多触发一次；回调后重新验证 Source、Query、snapshot、row 和 capability。
+- RowReordered 只在 Source mutation 成功且 capture、ghost、offset、transition 和会话引用清理后触发。
+- Disabled、detach、template reapply、Source/query replacement、capture lost 或 row recycle 终止当前 mutation/drag session。
+- Loading/Refreshing/stale 阻止 edit/delete/move 提交，但不能截断滚动 intent 的合并或破坏现有 focus/keyboard 路径。
 
-Frame 与 Header 圆角不变量：
+## 8. 内部算法与关键流程
 
-- `FrameCornerRadius` 是根外框 `Frame` 的派生圆角，只表达整张表外壳裁剪。`IsFrameBorderVisible=false` 时只保留顶部圆角，底部圆角必须为 `0`，避免最后一根横向分割线被根裁剪成短线；`IsFrameBorderVisible=true` 时使用完整 `CornerRadius`，由外边框承担整表圆角视觉。
-- `FrameBorderThickness` 是根外框 `Frame` 的派生边框厚度。`IsFrameBorderVisible=false` 时为 `0`；`IsFrameBorderVisible=true` 时必须使用完整 `BorderThickness`，不能因为存在横向行分割线而去掉底边框，否则底部圆角边框会缺失。
-- `FrameContentClip` 是 `Frame` 内部的内容裁剪层，必须和 `FrameCornerRadius` 保持一致，用于阻止行背景、分页、Footer 或加载态内容进入外框圆角区域并遮挡边框。不要把这层裁剪合并到 rows presenter 或单个 row 上，否则空数据、Footer、滚动条和加载态会出现不同的裁剪规则。
-- `PART_BottomGridLine` 和行头横向分割线只表达行间分隔，不表达整表外轮廓。`IsFrameBorderVisible=true` 且 rows 区域直接贴住 Frame 底边时，最后一个 displayed row 必须隐藏底部分割线，由 Frame 底边承担唯一底线；存在 `Footer`、底部分页或水平滚动条时，rows 区域下方还有内容，最后一行分割线必须恢复显示。
-- `HeaderCornerRadius` 只表达表头容器圆角。它根据 `Title`、`HeadersVisibility` 和 `CornerRadius` 派生，不应被根外框复用。
+### 8.1 Source result validation
 
-列宽分配不变量：
+UI commit 前验证：
 
-- 有限列视口宽度必须通过 DataGrid 的共享入口参与求解；普通列头、分组列头和 rows/cells 路径不得复制
-  `adjustment = availableCellsWidth - VisibleEdgedColumnsWidth` 之后的调整逻辑。
-- `AutoSizingColumns` 只覆盖初始内容测量期。完成初始测量时先固定当前已知的 desired widths，再使用同一次布局
-  提供的有限宽度执行 star 分配，最后重新 measure header/cell。
-- 空数据时，当前可见列头 presenter 是有限列视口的权威输入；`SizeToCells` 保持约束基线，`Auto` 使用 header
-  结果，star 列仍必须吸收可分配的剩余空间。
-- 有已物化行时继续使用 `CellsWidth`，保证行头、滚动条和横向滚动语义与现有布局一致。
-- `AdjustColumnWidths` 继续统一处理增长、收缩、star 权重、min/max 和用户调整约束。所有 star 列达到
-  `MaxWidth` 后仍存在的正剩余空间才允许进入 filler。
-- 无限宽度不执行有限剩余空间分配，保持既有 star 退化规则。
+- Source identity、QueryRevision、DataGeneration、request Range 与 ExpectedSnapshot 匹配。
+- StartIndex、Entries.Length 与 totals 满足精确切片公式。
+- Data/Group entry 的 payload、RowKey/GroupKey、WindowDataIndex 与 DataIndex 合法。
+- 当前 cache 范围内 row/group key 分域唯一且 data indices 严格递增。
+- 相同 snapshot 下 TotalDataCount、WindowDataCount 和 TotalEntryCount 的条件恒定。
 
-列过滤算法不变量：
+任何合同错误进入 `DataGridSourceContractException`，不部分提交。连续模式不能用 int 精确表示活动 data/display count 时抛出
+`DataGridPresentationLimitExceededException`，不能截断、饱和或取模。
 
-- `Filters` 替换或集合变更时，Header 过滤入口可见性、FilterIndicator 激活态和 flyout 内容必须来自同一份有效过滤项视图，并同步剪枝 `SelectedFilterValues`。
-- Flyout 物化菜单或树节点时，应按 `SelectedFilterValues` 初始化 checked state；不能只依赖当前 presenter 内部状态。
-- `SelectedFilterValues` 写入 `FilterDescriptions` 时应保留过滤值原始类型，不能提前转成字符串；默认文本匹配只在默认 evaluator 中发生。
-- 单选模式只允许一个有效过滤值进入 `SelectedFilterValues`；多选模式保持集合顺序稳定，但比较时按集合值语义去重。
-- 清除过滤通过清空 `SelectedFilterValues` 进入同一状态管线，最终移除对应 `DataGridFilterDescription` 并刷新图标激活态。
+### 8.2 三个索引域
 
-行拖动算法不变量：
+| Domain | 类型 | 使用位置 |
+| --- | --- | --- |
+| Source data | long | TotalDataCount、PageRequest.DataStartIndex、entry.DataIndex |
+| Window data | int | WindowDataCount、entry.WindowDataIndex、DataGridRow.Index、IChildIndexProvider |
+| Display slot | int | TotalEntryCount、Range.StartIndex、DataGridRow.Slot、vertical virtualization |
 
-- PointerPressed 只创建 Pressed 会话；Pointer 移动距离超过 `Constants.DragThreshold` 后才允许进入 Dragging。
-- 拖动目标索引来自当前显示 `DataGridRow.Index`，但只作为 CollectionView 的 View 索引传递，不能直接作为源
-  `IList` 索引使用。
-- 顶部自动滚动量限制在 `[-VerticalScrollBar.Value, 0]`，底部自动滚动量限制在
-  `[0, VerticalScrollBar.Maximum - VerticalScrollBar.Value]`。ghost offset 只能使用实际采用的滚动量。
-- `IDataGridCollectionViewMoveSupport.CanMove` 是开始拖动和提交前的双重能力门。内置 `DataGridCollectionView`
-  仅在源集合可写、非只读、非固定长度、没有新增或编辑事务、没有排序/过滤/分组/分页且未延迟刷新时返回 true。
-- `TryMove` 的两个索引都相对当前 View，范围为 `[0, Count)`；索引相同返回 false。内置平面 View 的源索引与
-  View 索引相同，移动时按源索引执行 `RemoveAt`，不能通过 `Remove(item)` 的值相等语义定位源对象。
-- 内置移动事务抑制自身对中间 Remove/Add 通知的普通处理，并验证预期项目身份、源集合数量和通知序列。
-  检测到额外集合重入时中止提交并执行可行回滚；提交成功后统一重建 View 并发出稳定的集合重置信号。
-- Insert 或通知处理失败时，移动事务尝试把原项目恢复到原索引并恢复 CollectionView 的处理标志；原始异常在
-  拖拽会话清理后继续向上传递。回滚本身失败时必须保留原始异常上下文，不能把数据异常转换成成功返回。
-- CollectionView 在 `TryMove` 期间被替换时，旧 View 可以完成已经开始的数据事务，但 DataGrid 不再向新 View
-  投射 ghost、目标索引或 `RowReordered`。
+不同 domain 只通过 committed entry 显式映射。GroupHeader 不占 WindowDataIndex。分页可以访问 long global index，但单个 UI
+window 的 child/slot count 必须保持准确 int。
 
-## 8. 资源、性能与 AOT 边界
+### 8.3 Range planning、cache 与 commit
 
-资源和 AOT 约束：
+Block size 由 Schema.PreferredRangeSize 在 `[32, MaximumRangeSize]` 内确定。generation 尚未取得 result identity 时，bootstrap
+是 generation 级前置工作，不随每个中间 viewport 重启；identity 建立后只为最新 target 补齐 visible block。最大 Source 并发
+为 2。
 
-- 不通过运行时反射扫描 public API、Token 或 Gallery 示例数据。
-- 不把可静态声明的模板结构迁移到 C# 动态创建。
-- 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
-- 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
-- Source generator 生成文件不手工编辑；需要修改时改输入源或 generator。
+Coordinator 在锁内完成 scope 交换和 lease 转移，在锁外执行取消与 Source 调用，避免业务 Source continuation 或 cancellation
+callback 进入内部 gate。新 scope 先取得仍需 visible block 的 lease，再释放旧 scope；没有 lease 的排队 work item 立即从调度队列
+和可发现 inflight 集合移除，没有 lease 的执行中 work item 立即取消。相同 generation/block 的有效 work item 继续去重；已经标记
+取消的 work item 不得被新 scope 复用，其迟到结果也不能写入 active pending cache、错误状态或 presentation。
 
-性能边界：
+调度器维护 visible 与 prefetch 两个有界优先级。空闲并发槽始终先取 visible；prefetch 只在没有 visible 缺口时进入 Source。
+新 visible intent 会先撤销旧 scope 的 prefetch lease，再调度自身缺口。已经进入 Source 的旧工作依赖 Source 协作取消释放槽位，
+但无论 Source 是否遵守取消，迟到结果都不能通过 generation、scope 与 lease identity 校验。
 
-- 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
-- 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
-- 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
-- 行拖动 PointerMoved 热路径只更新会话坐标、目标索引、ghost offset 和必要的自动滚动请求；不在移动帧修改
-  集合、刷新 View、重建模板或分配新的 ghost row。
-- 每次有效 PointerPressed 最多创建一个轻量行拖动会话，每次进入 Dragging 最多创建一个 ghost row；两者在
-  完成或取消时释放。移动能力通过直接接口能力判断，不使用反射、动态调用或运行时类型扫描。
-- 列宽求解复用列集合可见宽度缓存和 `AdjustColumnWidths`；无 star 列、输入无限、adjustment 为零或初始 Auto
-  测量未完成时应直接退出，不在 presenter 中分配辅助集合或建立额外订阅。
-- Pinned filter 目标选择直接遍历 displayed columns，不做反射、runtime type discovery 或全视觉树扫描；两级 relay 只在
-  当前 Header/Indicator/Flyout 生命周期内存在，Loaded callback 由 generation 合并和失效。
+同步 Source 或 cache hit 仍沿当前调用栈完成，不被优先级队列强制异步化。caller cancellation 只结束该 caller 的等待；只要同一
+work item 仍被 active scope 使用，就不能由单个 waiter 取消共享 Source 工作。scope supersede 和 generation 失效才改变 work item
+的有效 lease。旧 scope completion 不得覆盖新 scope 的 Loading/Refreshing；prefetch failure 只保留诊断信息，不改变可见状态。
 
-## 9. 维护不变量
+Cache 是有限 LRU，容量不依赖 TotalDataCount。prefetch block 不生成 control。visible blocks 完整且全部通过验证后一次性 pin
+新 block、交换 snapshot/viewport、更新 totals、回收旧容器、实现新容器、回放 selection/current/edit/details、更新
+extent/offset/scrollbar 并进入 Ready。旧容器 detach 后才解除旧 block pin。
+
+若 totals 变化导致 page/scroll target 越界，丢弃 pending presentation，递增 generation 并只请求最终合法 target，不能显示
+瞬时空页。
+
+### 8.4 Height、extent 与 anchor
+
+固定行高使用 O(1) offset/slot 公式。自动行高、GroupHeader 和 RowDetails 使用：
+
+```text
+estimatedOffset(slot) = slot * defaultEstimate + sparsePrefixDelta(slot)
+```
+
+SparseHeightDeltaIndex 只保存 pinned/current-LRU block 的实测差值；passive block eviction 时把样本吸收到常量大小、按 entry
+kind/group level 分类的 estimator 并删除明细。prefix sum 和 offset-to-slot 是 O(log M)，M 受 cache/pin 与用户显式状态上限
+约束。禁止从 slot 0 扫描到 first slot，也禁止按 total/历史访问量创建全局 Fenwick array。
+
+测量修正以首个完整可见 entry key 与 intra-row offset 为锚。Query/PageRequest 成功后 vertical offset 归零；GroupExpansion
+保持操作 header 的屏幕 Y；Invalidated 优先按首行 key 恢复，失败时 clamp 到最近合法 slot。
+
+### 8.5 Container recycle
+
+回收时清理 DataContext、RowKey、DataIndex、WindowDataIndex、Slot、group metadata、selection/current/edit/hover、RowDetails、
+cell sort/filter 状态和事件订阅。`DataGridDisplayData` 继续复用循环 displayed list 与 row/group pool；不能引入第二个
+ItemsRepeater、VirtualizingStackPanel 或 scroll owner。
+
+RowsPresenter.Children 只包含 visible 加一个 editing row 和一个 drag row 上限的 controls。Measure、Arrange、prepare 和 recycle
+不 fetch、不等待、不分配 range buffer。嵌套滚动在内部边界前由 DataGrid 消费，到边界后交给外层 ScrollViewer。
+
+### 8.6 Query 执行顺序
+
+Source 使用固定顺序：
+
+```text
+filter
+  -> stable Groups then Sorts
+  -> PageRequest over business rows
+  -> insert GroupHeader
+  -> apply GroupExpansion
+  -> flatten display entries
+  -> Range slice
+```
+
+Groups 形成领先 sort，同一 FieldId 不能重复出现在 Groups 与 Sorts。Source 省略 collapsed descendants；DataGrid 不为完整结果
+建立全局 group-header 或 collapsed-slot table。`GroupEntry.LeafCount` 表示当前 PageRequest 内包含 collapsed descendants 的业务
+行数，不是跨页 aggregate。
+
+### 8.7 LocalSource
+
+DataGridLocalSource<T> 在 owner thread 捕获稳定引用快照和 sourceVersion；后台只处理快照的 int index buffer。Filter 不复制业务
+对象，sort 依次比较 Groups、Sorts 和原 source ordinal，保证稳定输出。PageRequest 先切业务行；plain table 不建 group 对象；
+range fetch 只创建请求范围大小的 entry buffer。
+
+空 Query、无分页、无分组的 plain table 直接按 request range 读取稳定 source snapshot，不创建全量 projection cache。只有
+filter/sort/group/page 路径进入 index projection 与有限 LRU；因此百万行 plain 首屏仍只物化一个有界 range。
+
+typed descriptor 提供 `Func<T,TValue>` getter、`IComparer<TValue>`、operator evaluator 与 scalar converter。比较循环不执行 LINQ、
+反射、字符串 path、文化对象创建或 delegate 组合分配。projection cache 以 sourceVersion、Query、PageRequest 和 Expansion 的
+相应 identity 分层，并受有限 LRU 管理。
+
+### 8.8 Sort/filter visual delta
+
+Query.Sorts 被归一为 FieldId 到 `(direction, priority)` 的小型映射，只更新 old/new delta 涉及的 column。Column.SortState 驱动
+Header 的既有 sort pseudo-class 和 indicator。Cell 不长期订阅 Header；prepare/recycle 从 OwningColumn.SortState 初始化，Query
+delta 只遍历已实现 cells。
+
+Filter Flyout 从 Query.Filters 初始化，提交完整新 Query。候选 Filters 的集合变化只重新物化候选内容，不能绕过 Query owner。
+
+### 8.9 Frame、列宽与水平 virtualization
+
+- FrameCornerRadius 与 FrameContentClip 共同约束根内容裁剪；FrameBorderThickness 只由 frame border option 决定。
+- 最后一行 divider 与 Frame 底边保持唯一绘制责任；Footer、底部分页或横向滚动条存在时恢复行 divider。
+- 有限列 viewport 只进入 DataGrid-owned solver；Auto completion 与 star distribution 是独立阶段。
+- `Auto` / `SizeToCells` 只消费已实现 cells 的正常 measure 结果；列宽发现不得 fetch 未显示 range 或扩大纵向 realized window。
+- 首屏需要稳定内容 extent 的场景由列 `Pixel Width` 或 `MinWidth` 提供基线；水平 scrollbar 继续只投影真实 extent，不承担宽度策略。
+- Star 列仍能吸收空间时 filler 为零；只有所有可调列达到 min/max 后才允许正 filler。
+- 水平可见列、冻结列和 cell count 继续由 DataGridCellsPresenter 管理；纵向 commit 不全量重建 cells。
+
+## 9. 资源、性能与 AOT 边界
+
+### 9.1 热路径
+
+- Scroll input 只更新/合并 DesiredViewport，handler 返回后由 coordinator 调度 request。
+- 每次不同的 DesiredViewport 只替换一个 active scope；旧排队项不会作为无界 task 留在 semaphore 前等待。
+- PointerMoved 只更新 drag session、ghost offset、target key 和必要自动滚动 intent。
+- Measure/Arrange/prepare/recycle 只做 committed index lookup 与 container state 投影。
+- Query no-op 不请求、不刷新 rows；sort state 没有 per-cell 长期订阅。
+- Ready 模板不增加 visual node；prefetch 不触发布局。
+- 同步 Source/cache hit 不发布瞬时 Loading/Refreshing；异步首次加载驱动 Spin，已有 snapshot 的异步刷新不启动自动遮罩。
+
+### 9.2 复杂度与资源上限
+
+| 路径 | 上限 |
+| --- | --- |
+| fixed-height offset lookup | O(1) |
+| variable-height offset lookup | O(log M)，M 由 cache/pin/显式状态约束 |
+| realized row/group controls | visible + editing row + drag row |
+| request concurrency | 默认最多 2 |
+| active viewport scope | 每个 generation 1 个 |
+| queued obsolete viewport work | 0；scope supersede 时从可发现队列移除并取消 |
+| prefetch priority | 低于所有 visible 缺口，并绑定产生它的 committed scope |
+| range size | Schema.MaximumRangeSize，最大 4096 |
+| cache | 有限 block LRU，与 total 无关 |
+| snapshot-expiry auto retry | 每个用户操作最多 1 次 |
+
+所有 request、cache、pool、subscription 和 sparse state 必须在长时间往返滚动后达到稳态，不能随滚动次数或曾访问 row 数持续
+增长。
+
+### 9.3 AOT
+
+- Query/Source public 类型只位于 DataGrid package，不引入 Core/Shared 反向依赖。
+- LocalSource 使用静态泛型 descriptor，并把 typed getter 显式投影为 schema `DisplayAccessor`；generated
+  `IDataMemberAccessor` 可通过 `FromDataMember<TItem>` 复用。自动列只消费该 accessor 并生成 compiled binding，绝不把
+  FieldId 当作 CLR path。
+- 没有 `DisplayAccessor` 的远端 schema 字段只支持显式 Column/Binding；`PropertyChangedName` 与 FieldId 相互独立，binding
+  dispose/recycle 时解除 `INotifyPropertyChanged` 订阅。
+- 不使用 PropertyInfo.GetValue、Expression.Compile、assembly scan、runtime registration、动态泛型构造或字符串 Binding。
+- 不新增 linker root、trimming suppression 或反射 fallback。
+- Source generator 输出只通过输入源和 generator 更新。
+
+## 10. 维护不变量
 
 维护 DataGrid 时不得破坏：
 
-- Public API、默认值、事件顺序和 Gallery 可观察行为。
-- Template part 名称、ControlTheme key、伪类和资源 key。
-- 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
-- 列过滤只能有一个选中状态 owner；`Filters`、flyout checked state、`SelectedFilterValues` 和 `FilterDescriptions` 之间不得形成互相覆盖的并行状态源。
-- Pinned filter 同一时间只能有一个目标，目标必须按 DisplayIndex 选择第一个 eligible column；Header -> Indicator -> Flyout
-  relay 必须在 replacement、container clear、detach 和 template reapply 时对称释放。
-- DataGrid unpin 不关闭已打开 filter Flyout；目标 replacement 或 lifecycle teardown 必须关闭旧 Popup，且旧 Loaded callback
-  不得重新打开已释放的 Flyout。
-- 行拖动只能有一个 DataGrid 实例级会话 owner；禁止在 handle 类型上保存 static Pointer、row、index、bounds、
-  offset 或 owner 状态。
-- Handle、RowsPresenter 和 CollectionView 的职责不能重新混合：handle 不修改数据，presenter 不决定移动语义，
-  CollectionView 不持有视觉对象。
-- 所有行拖动终止路径都必须移除 ghost、释放 capture 并清空会话；`RowReordered` 不能用于通知未提交的拖动。
-- 列宽求解不能依赖 `DataGridRowsPresenter` 可见性；空数据、普通表头和分组表头必须共享 DataGrid-owned solver。
-- filler 不能掩盖未执行的 star 分配；star 可吸收剩余空间时 filler 宽度必须为零。
-- 过滤项解析必须支持业务 DTO 和 `DataGridFilterItem` 两类输入，不得要求 VM 反向依赖内部 flyout、menu item 或 tree item 类型；业务 DTO 必须有生成的 data member accessor，不在 AOT 敏感路径中使用运行时反射兜底。
-- Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
-- 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
+- Query、AppliedQuery、Source、Selection、CurrentRowKey 和 PresentationSnapshot 的单一 ownership。
+- QueryRevision/DataGeneration 与 Source identity/snapshot 的迟到结果隔离。
+- Result 精确切片、key 唯一性、totals 恒定和三索引域映射。
+- DesiredViewport 与 CommittedViewport 隔离，layout 热路径零 I/O。
+- 每个 generation 只有一个 active viewport scope；新 scope 先转移共享 block lease，再取消 orphaned visible/prefetch work。
+- visible queue 优先于 prefetch queue；旧 prefetch 不能占据新 visible target 的排队顺序。
+- Cache、pool、height metadata、selection 和 RowDetails 状态的有界或用户显式增长属性。
+- Container reset 完整性，以及 realized/edit/drag/applied block 的 pin 生命周期。
+- Pinned filter 的唯一目标和 Header -> Indicator -> Flyout relay 对称释放。
+- Row reorder 的 DataGrid session、presenter ghost 与 Source mutation 职责分离。
+- 列宽 solver 不依赖 RowsPresenter 可见性；filler 不掩盖 star 分配。
+- ControlTheme key、Template Part、伪类、Token、Semantic Part 和 Ready 视觉优先级。
+- Light/Dark、Browser/Desktop、SizeType、冻结列、RowDetails 和 nested scrolling 的一致语义。
+- 文档、源码 public surface、Gallery、tests 与 generated LLMS 的一致性。
 
-## 10. 测试与验证
+## 11. 测试与验证
 
-推荐验证：
+### 11.1 Query、Source 与状态机
 
-- 纯文档改动运行 `git diff --check` 并检查相对链接。
-- 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
-- DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
-- Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests`。
-- AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。
-- 行重排状态测试覆盖两个 DataGrid 的会话隔离、PointerCaptureLost、禁用和 detach 清理、拖动阈值、取消去重、
-  RowReordering 重入、自动滚动虚拟化回收和顶部/底部滚动边界。
-- CollectionView 移动测试覆盖普通可变列表、数组、只读或固定长度集合、普通 IEnumerable、编辑和新增状态、
-  排序/过滤/分组/分页拒绝、同位置释放、null 项目、重复 Equals 项目、自定义移动 View、异常回滚和额外集合重入。
-- 事件测试确认 `RowReordering` 每个 Pointer 会话最多一次，`RowReordered` 只在成功提交和完整清理之后一次触发。
-- 列宽测试覆盖空数据下 `Auto + * + *`、全 star、`Pixel` / `SizeToHeader` / `SizeToCells` 与 star 组合、
-  `1* + 2*`、空视口 resize、空数据新增后再次清空，以及普通/分组表头一致性。
-- 列宽约束测试覆盖 min/max、冻结列、行头、滚动条和 filler：star 可吸收空间时 filler 为零，只有约束阻止
-  继续分配时才允许 filler 为正。
-- `DataGridFilterDialogPopupTests` 覆盖按 DisplayIndex 选择唯一 pinned filter、普通 Hide 拦截、detach/reattach、目标列失效
-  replacement、Menu/Tree presenter mode replacement 和 unpin 后保持已打开状态。
+- Query validation、equality/hash、no-op、sort policy、schema capability 和 QueryChanged reentrancy。
+- Range/result 边界、snapshot/totals consistency、entry payload、key uniqueness 与 index mapping。
+- 旧 Query/Source/request 迟到、忽略 cancellation、snapshot expiry、Source replacement 和 detach。
+- viewport scope 替换、共享 block lease 转移、orphaned request 协作取消、取消后 inflight 不可复用和 visible/prefetch 优先级。
+- Initial error、refreshing error、stale invalidation、Query/page/group/scroll rollback。
+- LocalSource typed filter/sort/group/page、stable tie-break、collection invalidation、cancellation 与 NativeAOT。
+
+### 11.2 虚拟化与交互
+
+- 0、1、短尾、分组、collapse 和 int 上限下 SlotCount/WindowDataCount/child index 精确。
+- Source probe 证明 layout、prepare 和 recycle 的 fetch/wait 计数为 0。
+- 固定/自动行高、RowDetails、extent、anchor、滚轮、惯性、thumb、keyboard 与 ScrollIntoView。
+- 快速 viewport 跨多个 Dispatcher turn 时，旧排队/执行请求收到取消且最终 visible target 不等待过时队列；共享 block 不重复读取。
+- cache miss 保留旧 rows，superseded cancellation 不进入 Error/rollback，成功只提交最终 viewport，失败恢复 offset/slot，且无
+  null/duplicate/flash reset。
+- block pin、container reset、row/group pool 与 sparse heights 在 10,000 次滚动后不增长。
+- selection/current 跨 range/page/recycle；全量选择不枚举数据；无 bulk capability 时不伪造全量命令成功。
+- row reorder threshold、capture lost、session revalidation、key-relative target、source replacement 和异常清理。
+- nested scrolling 在 DataGrid 边界处正确向外层 ScrollViewer 链接。
+
+### 11.3 视觉、性能和发布
+
+- Light/Dark、所有 SizeType、普通/分组 header、empty/data、Title/Footer、上下 pagination、冻结列、scrollbar 与 RowDetails。
+- selected/sorted、hover/focus/disabled、Loading/Refreshing 与 rollback 的结构和截图基线。
+- 100 万本地/逻辑远端行的 sort、首屏、连续滚动、快速跳转、cache、并发、offset lookup 与 allocation。
+- DataGrid detail/recycle/offset/extent 测试保持或加强，不删除或放宽既有行为断言。
+- 运行 DataGrid 专用测试、完整 solution tests、DataGrid performance state verifier、LLMS verify、AOT/trim verify、Gallery
+  NativeAOT publish/startup smoke 和 `git diff --check`。

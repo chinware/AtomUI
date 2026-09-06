@@ -32,10 +32,10 @@ public class DataGridStarColumnLayoutTests
             HeadersVisibility            = DataGridHeadersVisibility.Column,
             HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
             LeftFrozenColumnCount        = 1,
-            ItemsSource = new[]
+            ItemsSource = new TestDataGridSource<GridRow>(new[]
             {
                 new GridRow("Size", "Used to control the component dimensions.", "double", "32")
-            },
+            }),
             Width  = 1280,
             Height = 260
         };
@@ -167,7 +167,8 @@ public class DataGridStarColumnLayoutTests
                 Binding = new Binding(nameof(GridRow.Description)),
                 Width   = new DataGridLength(1, DataGridLengthUnitType.Star)
             });
-        grid.ItemsSource = items;
+        var source = new TestDataGridSource<GridRow>(items);
+        grid.ItemsSource = source;
         var window = ShowGrid(grid);
 
         try
@@ -175,11 +176,13 @@ public class DataGridStarColumnLayoutTests
             AssertEmptyGridUsesAvailableWidth(grid);
 
             items.Add(new GridRow("Size", "Used to control the component dimensions.", "double", "32"));
+            source.Invalidate();
             grid.Width = 700;
             Dispatcher.UIThread.RunJobs();
             AssertColumnsUseAvailableWidth(grid);
 
             items.Clear();
+            source.Invalidate();
             grid.Width = 760;
             Dispatcher.UIThread.RunJobs();
             AssertEmptyGridUsesAvailableWidth(grid);
@@ -199,13 +202,13 @@ public class DataGridStarColumnLayoutTests
             HeadersVisibility             = DataGridHeadersVisibility.All,
             HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
             RowHeaderWidth                = 56,
-            ItemsSource = Enumerable.Range(0, 40)
+            ItemsSource = new TestDataGridSource<GridRow>(Enumerable.Range(0, 40)
                                     .Select(index => new GridRow(
                                         $"Property {index}",
                                         "Description",
                                         "string",
                                         "Default"))
-                                    .ToArray(),
+                                    .ToArray()),
             Width  = 880,
             Height = 260
         };
@@ -249,7 +252,7 @@ public class DataGridStarColumnLayoutTests
         {
             AutoGenerateColumns = false,
             HeadersVisibility   = DataGridHeadersVisibility.Column,
-            ItemsSource         = Array.Empty<GridRow>(),
+            ItemsSource              = new TestDataGridSource<GridRow>(Array.Empty<GridRow>()),
             Width               = 880,
             Height              = 260
         };
@@ -321,7 +324,7 @@ public class DataGridStarColumnLayoutTests
         {
             AutoGenerateColumns = false,
             HeadersVisibility   = DataGridHeadersVisibility.Column,
-            ItemsSource         = Array.Empty<GridRow>(),
+            ItemsSource              = new TestDataGridSource<GridRow>(Array.Empty<GridRow>()),
             Height              = 260
         };
         grid.Columns.Add(firstStarColumn);
@@ -360,7 +363,7 @@ public class DataGridStarColumnLayoutTests
         {
             AutoGenerateColumns = false,
             HeadersVisibility   = DataGridHeadersVisibility.Column,
-            ItemsSource         = Array.Empty<GridRow>(),
+            ItemsSource              = new TestDataGridSource<GridRow>(Array.Empty<GridRow>()),
             Width               = 880,
             Height              = 260
         };

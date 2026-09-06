@@ -17,6 +17,11 @@ internal class DataGridDisplayData
     public int NumDisplayedScrollingElements => _scrollingElements.Count;
     public int NumTotallyDisplayedScrollingElements { get; set; }
     internal double PendingVerticalScrollHeight { get; set; }
+
+    internal int RecycledRowCount => _recyclableRows.Count + _fullyRecycledRows.Count;
+
+    internal int RecycledGroupHeaderCount =>
+        _recyclableGroupHeaders.Count + _fullyRecycledGroupHeaders.Count;
     
     private Stack<DataGridRow> _fullyRecycledRows; // list of Rows that have been fully recycled (Collapsed)
     private int _headScrollingElements; // index of the row in _scrollingRows that is the first displayed row
@@ -45,6 +50,10 @@ internal class DataGridDisplayData
         Debug.Assert(!_recyclableRows.Contains(row));
         row.DetachFromDataGrid(true);
         row.IsVisible = false;
+        if (_owner.IsRangePresentationActive)
+        {
+            _owner.RowsPresenter?.Children.Remove(row);
+        }
         _recyclableRows.Push(row);
     }
     
@@ -69,8 +78,16 @@ internal class DataGridDisplayData
     internal void AddRecyclableRowGroupHeader(DataGridRowGroupHeader groupHeader)
     {
         Debug.Assert(!_recyclableGroupHeaders.Contains(groupHeader));
-        groupHeader.IsRecycled = true;
-        groupHeader.IsVisible  = false;
+        if (_owner.IsRangePresentationActive)
+        {
+            groupHeader.DetachFromDataGrid();
+            _owner.RowsPresenter?.Children.Remove(groupHeader);
+        }
+        else
+        {
+            groupHeader.IsRecycled = true;
+        }
+        groupHeader.IsVisible = false;
         _recyclableGroupHeaders.Push(groupHeader);
     }
     
@@ -341,7 +358,7 @@ internal class DataGridDisplayData
             }
             else if (element is DataGridRowGroupHeader groupHeader)
             {
-                Debug.WriteLine(String.Format(System.Globalization.CultureInfo.InvariantCulture, "Slot: {0} GroupHeader: {1}", groupHeader.RowGroupInfo?.Slot, groupHeader.RowGroupInfo?.CollectionViewGroup?.Key));
+                Debug.WriteLine(String.Format(System.Globalization.CultureInfo.InvariantCulture, "Slot: {0} GroupHeader: {1}", groupHeader.SourceSlot, groupHeader.SourceGroup?.Key));
             }
         }
     }

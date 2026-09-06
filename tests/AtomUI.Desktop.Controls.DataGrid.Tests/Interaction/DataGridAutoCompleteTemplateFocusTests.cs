@@ -92,10 +92,10 @@ public class DataGridAutoCompleteTemplateFocusTests
         var grid = new global::AtomUI.Desktop.Controls.DataGrid
         {
             AutoGenerateColumns = false,
-            ItemsSource = new List<GridRow>
+            ItemsSource = new TestDataGridSource<GridRow>(new List<GridRow>
             {
                 new("John Brown", "London")
-            },
+            }),
             Width  = 460,
             Height = 180
         };

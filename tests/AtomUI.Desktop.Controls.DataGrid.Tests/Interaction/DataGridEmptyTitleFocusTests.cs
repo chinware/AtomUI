@@ -17,10 +17,10 @@ public class DataGridEmptyTitleFocusTests
     }
 
     [Fact]
-    public void Title_Button_Click_Does_Not_Crash_When_ItemsSource_Is_Empty()
+    public void Title_Button_Click_Does_Not_Crash_When_Source_Is_Empty()
     {
         var grid = CreateGridWithTitleButton(out var titleButton, out var getClickCount);
-        grid.ItemsSource = Array.Empty<GridRow>();
+        grid.ItemsSource = new TestDataGridSource<GridRow>(Array.Empty<GridRow>());
         grid.Columns.Add(new DataGridTextColumn
         {
             Header  = "Name",
@@ -31,7 +31,7 @@ public class DataGridEmptyTitleFocusTests
     }
 
     [Fact]
-    public void Title_Button_Click_Does_Not_Crash_When_ItemsSource_Is_Null()
+    public void Title_Button_Click_Does_Not_Crash_When_Source_Is_Null()
     {
         var grid = CreateGridWithTitleButton(out var titleButton, out var getClickCount);
         grid.Columns.Add(new DataGridTextColumn
@@ -44,7 +44,7 @@ public class DataGridEmptyTitleFocusTests
     }
 
     [Fact]
-    public void Title_Button_Click_Does_Not_Crash_When_ItemsSource_And_Columns_Are_Missing()
+    public void Title_Button_Click_Does_Not_Crash_When_Source_And_Columns_Are_Missing()
     {
         var grid = CreateGridWithTitleButton(out var titleButton, out var getClickCount);
 

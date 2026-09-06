@@ -36,7 +36,7 @@ public class DataGridSelectionColumn : DataGridColumn
         {
             selector = BuildCheckBox();
         }
-        SyncSelectorCheckedState(selector, cell.OwningRow?.IsSelected ?? _owningGrid.SelectedItems.Contains(dataItem));
+        SyncSelectorCheckedState(selector, cell.OwningRow?.IsSelected ?? false);
         cell.SetCurrentValue(DataGridCell.IsClipContentProperty, false);
         return selector;
     }
@@ -146,7 +146,12 @@ public class DataGridSelectionColumn : DataGridColumn
     {
         if (_owningGrid != null)
         {
-            if (change.Property == DataGrid.CollectionViewProperty)
+            if (change.Property == DataGrid.ItemsSourceProperty)
+            {
+                SyncHeaderCheckBoxState();
+            }
+            else if (change.Property == DataGrid.SelectionProperty ||
+                     change.Property == DataGrid.TotalItemCountProperty)
             {
                 SyncHeaderCheckBoxState();
             }
@@ -188,7 +193,7 @@ public class DataGridSelectionColumn : DataGridColumn
         }
     }
 
-    private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    private void HandleSelectionChanged(object? sender, DataGridSelectionChangedEventArgs e)
     {
         if (_owningGrid == null)
         {
@@ -197,15 +202,9 @@ public class DataGridSelectionColumn : DataGridColumn
 
         SyncHeaderCheckBoxState();
 
-        foreach (var item in e.AddedItems)
+        foreach (var row in _owningGrid.GetAllRows())
         {
-            var content = GetCellContent(item);
-            SyncSelectorCheckedState(content, true);
-        }
-        foreach (var item in e.RemovedItems)
-        {
-            var content = GetCellContent(item);
-            SyncSelectorCheckedState(content, false);
+            SyncSelectorCheckedState(row.Cells[Index].Content as Control, row.IsSelected);
         }
     }
 
@@ -299,7 +298,7 @@ public class DataGridSelectionColumn : DataGridColumn
         {
             _headerCheckBox.IsChecked = true;
         }
-        else if (_owningGrid.SelectedItems.Count > 0)
+        else if (!_owningGrid.Selection.IsEmpty)
         {
             _headerCheckBox.IsChecked = null;
         }

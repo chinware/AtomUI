@@ -20,6 +20,9 @@ namespace AtomUI.Desktop.Controls.Tests.DataGrid.Sorting;
 // 未选中行保留排序列底色。
 public class DataGridSortColumnSelectedRowCellStyleIssue454Tests
 {
+    private static readonly DataGridFieldId NameField = new("name");
+    private static readonly DataGridFieldId AgeField = new("age");
+
     static DataGridSortColumnSelectedRowCellStyleIssue454Tests()
     {
         AvaloniaTestApp.EnsureInitialized();
@@ -97,15 +100,20 @@ public class DataGridSortColumnSelectedRowCellStyleIssue454Tests
     {
         var rows = new ObservableCollection<SortRow>
         {
-            new("John Brown", 32),
-            new("Jim Green", 42),
-            new("Joe Black", 30)
+            new(1, "John Brown", 32),
+            new(2, "Jim Green", 42),
+            new(3, "Joe Black", 30)
         };
+        var descriptor = DataGridLocalSourceDescriptor.For<SortRow>(
+                static row => DataGridRowKey.FromInt64(row.Id))
+            .Field(NameField, static row => row.Name, StringComparer.Ordinal)
+            .Field(AgeField, static row => row.Age);
+        var source = DataGridLocalSource.Create(rows, descriptor);
         var grid = new global::AtomUI.Desktop.Controls.DataGrid
         {
             AutoGenerateColumns = false,
             SelectionMode = DataGridSelectionMode.Extended,
-            ItemsSource = rows,
+            ItemsSource = source,
             Width = 480,
             Height = 240
         };
@@ -113,19 +121,25 @@ public class DataGridSortColumnSelectedRowCellStyleIssue454Tests
         grid.Columns.Add(new DataGridTextColumn
         {
             Header = "Name",
+            FieldId = NameField,
             Binding = new Binding(nameof(SortRow.Name)),
             Width = new DataGridLength(160)
         });
         grid.Columns.Add(new DataGridTextColumn
         {
             Header = "Age",
+            FieldId = AgeField,
             Binding = new Binding(nameof(SortRow.Age)),
             CanUserSort = true,
             Width = new DataGridLength(120)
         });
 
         // 选中某行
-        grid.SelectedItems.Add(rows[0]);
+        grid.Selection = new DataGridSelectionState(
+            [DataGridRowKey.FromInt64(1)],
+            null,
+            [],
+            []);
 
         var window = new Window
         {
@@ -135,7 +149,9 @@ public class DataGridSortColumnSelectedRowCellStyleIssue454Tests
         };
 
         window.Show();
-        Dispatcher.UIThread.RunJobs();
+        PumpUntil(() => grid.LoadState == DataGridLoadState.Ready &&
+                        grid.GetVisualDescendants().OfType<DataGridRow>().Count() == rows.Count);
+        window.Closed += (_, _) => source.Dispose();
 
         // 点击列排序（点击 Age 列的排序指示器）
         var sortIndicator = grid.GetVisualDescendants()
@@ -144,10 +160,13 @@ public class DataGridSortColumnSelectedRowCellStyleIssue454Tests
                                                      indicator.Bounds.Width > 0 &&
                                                      indicator.Bounds.Height > 0);
         Click(sortIndicator, window);
-        Dispatcher.UIThread.RunJobs();
-
-        grid.CollectionView.ShouldNotBeNull();
-        grid.CollectionView.Cast<SortRow>().Select(row => row.Age).ShouldBe([30, 32, 42]);
+        PumpUntil(() => grid.GetVisualDescendants()
+                            .OfType<DataGridRow>()
+                            .Select(row => new { Row = row, Position = row.TranslatePoint(default, grid) })
+                            .Where(item => item.Position is not null && item.Row.DataContext is SortRow)
+                            .OrderBy(item => item.Position!.Value.Y)
+                            .Select(item => ((SortRow)item.Row.DataContext!).Age)
+                            .SequenceEqual([30, 32, 42]));
 
         return (grid, window, rows);
     }
@@ -202,5 +221,17 @@ public class DataGridSortColumnSelectedRowCellStyleIssue454Tests
         window.MouseUp(point.Value, MouseButton.Left);
     }
 
-    private sealed record SortRow(string Name, int Age);
+    private static void PumpUntil(Func<bool> condition)
+    {
+        if (!SpinWait.SpinUntil(() =>
+            {
+                Dispatcher.UIThread.RunJobs();
+                return condition();
+            }, TimeSpan.FromSeconds(5)))
+        {
+            throw new TimeoutException("The expected sorted visual state was not reached.");
+        }
+    }
+
+    private sealed record SortRow(long Id, string Name, int Age);
 }

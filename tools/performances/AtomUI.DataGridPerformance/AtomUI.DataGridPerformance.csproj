@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>$(AtomUITargetFrameworks)</TargetFrameworks>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>AtomUI.DataGridPerformance</RootNamespace>
+        <AssemblyName>AtomUI.DataGridPerformance</AssemblyName>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia.Headless" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../../../src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="../AtomUI.Performance/Suites/DataGrid/DataGridStateVerification.cs"
+                 Link="DataGridStateVerification.cs" />
+    </ItemGroup>
+</Project>

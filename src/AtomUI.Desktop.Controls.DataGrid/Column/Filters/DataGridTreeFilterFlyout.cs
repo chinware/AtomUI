@@ -33,7 +33,6 @@ internal class DataGridTreeFilterFlyout : TreeViewFlyout
         var presenter = new DataGridTreeFilterFlyoutPresenter
         {
             IsDefaultExpandAll = true,
-            ItemsSource        = Items,
             TreeViewFlyout     = this
         };
         foreach (var item in Items)
@@ -43,6 +42,7 @@ internal class DataGridTreeFilterFlyout : TreeViewFlyout
                 control.SetLogicalParent(null);
                 control.SetVisualParent(null);
             }
+            presenter.Items.Add(item);
         }
 
         presenter[!DataGridTreeFilterFlyoutPresenter.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];

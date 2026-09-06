@@ -4,8 +4,8 @@
 // All other rights reserved.
 
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
-using AtomUI.Desktop.Controls.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -127,6 +127,91 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
     private ControlTheme? _cellTheme;
     private Classes? _cellStyleClasses;
     private bool _setWidthInternalNoCallback;
+    private DataGridColumnSortState _sortState = DataGridColumnSortState.None;
+
+    internal bool EffectiveCanUserSort
+    {
+        get
+        {
+            if (OwningGrid is null || this is DataGridFillerColumn)
+            {
+                return false;
+            }
+
+            if (OwningGrid.ItemsSource is not { } source ||
+                !(CanUserSortInternal ?? OwningGrid.CanUserSortColumns) ||
+                FieldId is not { IsValid: true } queryField ||
+                !source.Schema.TryGetField(queryField, out var schemaField) ||
+                (SupportedSortDirections & schemaField.SortDirections) == DataGridSortDirections.None ||
+                OwningGrid.EditingRow is not null)
+            {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    internal DataGridSortDirections EffectiveSupportedSortDirections
+    {
+        get
+        {
+            if (OwningGrid?.ItemsSource is { } source &&
+                FieldId is { IsValid: true } queryField &&
+                source.Schema.TryGetField(queryField, out var schemaField))
+            {
+                return SupportedSortDirections & schemaField.SortDirections;
+            }
+            return DataGridSortDirections.None;
+        }
+    }
+
+    internal bool EffectiveCanUserFilter
+    {
+        get
+        {
+            if (OwningGrid is null || this is DataGridFillerColumn)
+            {
+                return false;
+            }
+            return OwningGrid.ItemsSource is { } source &&
+                   (CanUserFilterInternal ?? OwningGrid.CanUserFilterColumns) &&
+                   FieldId is { IsValid: true } queryField &&
+                   source.Schema.TryGetField(queryField, out var schemaField) &&
+                   !schemaField.FilterOperators.IsEmpty &&
+                   OwningGrid.EditingRow is null;
+        }
+    }
+
+    internal void SetSortState(DataGridColumnSortState value)
+    {
+        if (_sortState == value)
+        {
+            return;
+        }
+
+        SetAndRaise(SortStateProperty, ref _sortState, value);
+        if (HasHeaderCell)
+        {
+            HeaderCell.CurrentSortingState = value.Direction switch
+            {
+                DataGridSortDirection.Ascending => ListSortDirection.Ascending,
+                DataGridSortDirection.Descending => ListSortDirection.Descending,
+                _ => null
+            };
+            HeaderCell.UpdatePseudoClasses();
+        }
+    }
+
+    internal void RefreshSortProjection()
+    {
+        if (HasHeaderCell)
+        {
+            HeaderCell.CanUserSort = EffectiveCanUserSort;
+            HeaderCell.SupportedSortDirections = EffectiveSupportedSortDirections;
+            HeaderCell.CanUserFilter = EffectiveCanUserFilter;
+        }
+        OwningGrid?.ProjectQueryToColumnsForColumn(this);
+    }
 
     /// <summary>
     /// Gets the value of a cell according to the specified binding.
@@ -285,6 +370,14 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
         result[!DataGridColumnHeader.SupportedSortDirectionsProperty] = this[!SupportedSortDirectionsProperty];
         result[!DataGridColumnHeader.HorizontalContentAlignmentProperty] = this[!HeaderContentHorizontalAlignmentProperty];
         result[!DataGridColumnHeader.VerticalContentAlignmentProperty] = this[!HeaderContentVerticalAlignmentProperty];
+        result.CanUserSort = EffectiveCanUserSort;
+        result.SupportedSortDirections = EffectiveSupportedSortDirections;
+        result.CurrentSortingState = SortState.Direction switch
+        {
+            DataGridSortDirection.Ascending => ListSortDirection.Ascending,
+            DataGridSortDirection.Descending => ListSortDirection.Descending,
+            _ => null
+        };
         return result;
     }
 
@@ -493,91 +586,4 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
         _editingElement = null;
     }
 
-    /// <summary>
-    /// We get the sort description from the data source.  We don't worry whether we can modify sort -- perhaps the sort description
-    /// describes an unchangeable sort that exists on the data.
-    /// </summary>
-    internal DataGridSortDescription? GetSortDescription()
-    {
-        var sortDescriptions = OwningGrid?.DataConnection.SortDescriptions;
-        if (sortDescriptions != null)
-        {
-            if (CustomSortComparer != null)
-            {
-                for (var i = 0; i < sortDescriptions.Count; i++)
-                {
-                    if (sortDescriptions[i] is DataGridComparerSortDescription comparerSort &&
-                        comparerSort.SourceComparer == CustomSortComparer)
-                    {
-                        return comparerSort;
-                    }
-                }
-
-                return null;
-            }
-
-            var propertyName = GetSortPropertyName();
-            for (var i = 0; i < sortDescriptions.Count; i++)
-            {
-                var sortDescription = sortDescriptions[i];
-                if (sortDescription.HasPropertyPath &&
-                    sortDescription.PropertyPath == propertyName)
-                {
-                    return sortDescription;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    internal string? GetSortPropertyName()
-    {
-        string? result = SortMemberPath;
-
-        if (string.IsNullOrEmpty(result))
-        {
-            if (this is DataGridBoundColumn boundColumn)
-            {
-                result = boundColumn.GetBindingPath();
-            }
-        }
-
-        return result;
-    }
-    
-    internal DataGridFilterDescription? GetFilterDescription()
-    {
-        var filterDescriptions = OwningGrid?.DataConnection.FilterDescriptions;
-        if (filterDescriptions != null)
-        {
-            var propertyName = GetFilterPropertyName();
-            for (var i = 0; i < filterDescriptions.Count; i++)
-            {
-                var filterDescription = filterDescriptions[i];
-                if (filterDescription.HasPropertyPath &&
-                    filterDescription.PropertyPath == propertyName)
-                {
-                    return filterDescription;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    internal string? GetFilterPropertyName()
-    {
-        string? result = FilterMemberPath;
-
-        if (string.IsNullOrEmpty(result))
-        {
-            if (this is DataGridBoundColumn boundColumn)
-            {
-                result = boundColumn.GetBindingPath();
-            }
-        }
-
-        return result;
-    }
 }

@@ -382,20 +382,21 @@ internal partial class DataGridColumnHeader : ContentControl
 
     internal void UpdatePseudoClasses()
     {
-        if (OwningGrid != null && OwningGrid.DataConnection.AllowSort)
+        if (OwningColumn is not null)
         {
-            var sort = OwningColumn?.GetSortDescription();
-            if (sort != null)
+            CurrentSortingState = OwningColumn.SortState.Direction switch
             {
-                CurrentSortingState = sort.Direction;
-            }
-            else
-            {
-                CurrentSortingState = null;
-            }
+                DataGridSortDirection.Ascending => ListSortDirection.Ascending,
+                DataGridSortDirection.Descending => ListSortDirection.Descending,
+                _ => null
+            };
         }
         PseudoClasses.Set(StdPseudoClass.SortAscending, CurrentSortingState == ListSortDirection.Ascending);
         PseudoClasses.Set(StdPseudoClass.SortDescending, CurrentSortingState == ListSortDirection.Descending);
+        if (OwningColumn is not null)
+        {
+            OwningGrid?.UpdateRealizedSortState(OwningColumn, CurrentSortingState is not null);
+        }
     }
     
     //TODO DragDrop

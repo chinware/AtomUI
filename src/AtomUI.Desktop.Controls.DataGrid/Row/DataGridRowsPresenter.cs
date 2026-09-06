@@ -4,7 +4,6 @@
 // All other rights reserved.
 
 using System.Diagnostics;
-using AtomUI.Desktop.Controls.Data;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -48,9 +47,11 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
 
     int IChildIndexProvider.GetChildIndex(ILogical child)
     {
-        return child is DataGridRow row
-            ? row.Index
-            : throw new InvalidOperationException("Invalid DataGrid child");
+        if (child is not DataGridRow row)
+        {
+            throw new InvalidOperationException("Group headers are not data children.");
+        }
+        return row.Index;
     }
 
     bool IChildIndexProvider.TryGetTotalCount(out int count)
@@ -61,7 +62,13 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
             return false;
         }
 
-        return OwningGrid.DataConnection.TryGetCount(false, true, out count);
+        if (OwningGrid.IsRangePresentationActive)
+        {
+            count = OwningGrid.RangeWindowDataCount;
+            return true;
+        }
+
+        return OwningGrid.RangeDataAccess.TryGetCount(false, true, out count);
     }
 
     internal void InvalidateChildIndex(DataGridRow row)
@@ -298,7 +305,7 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
             }
             else if (element is DataGridRowGroupHeader groupHeader)
             {
-                Debug.WriteLine(String.Format(System.Globalization.CultureInfo.InvariantCulture, "Slot: {0} GroupHeader: {1} Visibility: {2}", groupHeader.RowGroupInfo?.Slot, groupHeader?.RowGroupInfo?.CollectionViewGroup?.Key, groupHeader?.IsVisible));
+                Debug.WriteLine(String.Format(System.Globalization.CultureInfo.InvariantCulture, "Slot: {0} GroupHeader: {1} Visibility: {2}", groupHeader.SourceSlot, groupHeader.SourceGroup?.Key, groupHeader.IsVisible));
             }
         }
     }
