@@ -12138,13 +12138,134 @@ Source: ./controls/info-flyout/semantic-cn.md
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `InfoFlyout` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+InfoFlyout 的唯一 Semantic owner 是 `FlyoutHost`（`Flyout` 为 `PopupFlyoutBase`，非 Visual 控件，语义
+registry 按单一 `ControlType` 索引，不能作为 owner）。公开 5 个 Semantic Part：`root`（隐式）+ 4 个
+`popup.*`（`popup.root` / `popup.container` / `popup.content` / `popup.arrow`）。
+
+语义对齐上游 Popover 的语义 DOM（`_semantic.tsx`，槽位：root / container / title / content / arrow）。
+InfoFlyout 弹层没有标题节点，因此上游 `title` 槽位省略（后续引入标题节点时再补）。四个弹层槽位沿用
+AtomUI Select 家族的 `popup.` 前缀惯例，对应关系：
+
+| InfoFlyout Part | 上游 Popover 槽位 | AtomUI 节点 |
+| --- | --- | --- |
+| `root`（隐式） | 不适用（AtomUI 控件自身） | `FlyoutHost` owner |
+| `popup.root` | `root` | `FlyoutPresenter`（`ArrowDecoratedBox`） |
+| `popup.container` | `container` | `Border#PART_ContentDecorator` |
+| `popup.content` | `content` | `ContentPresenter#ContentPresenter` |
+| `popup.arrow` | `arrow` | `ArrowIndicator#PART_ArrowIndicator` |
+| （省略） | `title` | 无标题节点 |
+
+声明位于 `FlyoutHost.SemanticParts.cs` partial 文件。四个 `popup.*` 部件全部 `CrossVisualRoot=true`、
+`RuntimeCreated=true`：弹层根是 `Flyout.CreatePresenter()` 代码创建、跨视觉根的 Popup 子节点，不在
+owner 的 `FlyoutHostTheme` 模板内。marker 的注入策略如下：
+
+- `popup.root` 的 `semantic-popup-root` 标记在 `Flyout.CreatePresenter()` 创建 `FlyoutPresenter` 时注入。
+- `popup.container` / `popup.content` / `popup.arrow` 的标记在 `FlyoutPresenter.OnApplyTemplate` 中注入，
+  分别命中共享 `ArrowDecoratedBoxTheme` 的 `Border#PART_ContentDecorator`、`ContentPresenter#ContentPresenter`
+  与 `ArrowIndicator#PART_ArrowIndicator` 节点。这三个类 **不** 静态声明在 `ArrowDecoratedBoxTheme.axaml`
+  上：该主题被 DatePicker / TimePicker / Menu / TreeView / PopupConfirm 等众多 `ArrowDecoratedBox` 弹层共用，
+  静态追加会污染其它控件的语义标记，因此按 InfoFlyout 语义部件契约在代码路径注入（与 TreeSelect 的
+  `popup.list` / `popup.listItem` 等 RuntimeCreated 部件同构）。
+
+#### `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `FlyoutHost` |
+| Part | `root` |
+| Selector | FlyoutHost 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
+| ContractType | `FlyoutHost` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | FlyoutHost owner |
+| 职责 | InfoFlyout 触发宿主，是内容、触发方式、定位、动效与弹层打开状态的组织边界。 |
+| 相关 API | 全部 FlyoutHost public API |
+| 相关 Token | FlyoutHostToken、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `popup.root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `FlyoutHost` |
+| Part | `popup.root` |
+| Selector | `.semantic-popup-root` |
+| SelectorRoute | `>> .semantic-popup-root` |
+| Style Type | `FlyoutHostPopupRootStyle` |
+| ContractType | `FlyoutPresenter` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | `Flyout.CreatePresenter()` 创建的 `FlyoutPresenter`（`ArrowDecoratedBox`） |
+| 职责 | 弹层根节点，承载弹层背景、边框、内边距与箭头，对应上游 Popover `root` 槽位。 |
+| 相关 API | `Flyout`、`FlyoutPresenterTheme`、`ShouldUseOverlayPopup` |
+| 相关 Token | FlyoutHostToken、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `popup.container`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `FlyoutHost` |
+| Part | `popup.container` |
+| Selector | `.semantic-popup-container` |
+| SelectorRoute | `>> .semantic-popup-root >> .semantic-popup-container` |
+| Style Type | `FlyoutHostPopupContainerStyle` |
+| ContractType | `Border` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | `ArrowDecoratedBoxTheme.axaml` 的 `Border#PART_ContentDecorator`（背景/边框/圆角/内边距，模板绑定自 presenter） |
+| 职责 | 弹层内容内层容器，承载背景、边框、圆角与内边距，对应上游 Popover `container` 槽位。 |
+| 相关 API | `Content`、`ContentTemplate` |
+| 相关 Token | SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `popup.content`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `FlyoutHost` |
+| Part | `popup.content` |
+| Selector | `.semantic-popup-content` |
+| SelectorRoute | `>> .semantic-popup-root >> .semantic-popup-content` |
+| Style Type | `FlyoutHostPopupContentStyle` |
+| ContractType | `ContentPresenter` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | `ArrowDecoratedBoxTheme.axaml` 的 `ContentPresenter#ContentPresenter` |
+| 职责 | 弹层用户内容呈现区域，对应上游 Popover `content` 槽位。 |
+| 相关 API | `Content`、`ContentTemplate` |
+| 相关 Token | SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `popup.arrow`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `FlyoutHost` |
+| Part | `popup.arrow` |
+| Selector | `.semantic-popup-arrow` |
+| SelectorRoute | `>> .semantic-popup-root >> .semantic-popup-arrow` |
+| Style Type | `FlyoutHostPopupArrowStyle` |
+| ContractType | `ArrowIndicator` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | `ArrowDecoratedBoxTheme.axaml` 的 `ArrowIndicator#PART_ArrowIndicator` |
+| 职责 | 指向锚点的浮动箭头，对应上游 Popover `arrow` 槽位。 |
+| 相关 API | `IsArrowVisible`、`ArrowPosition`、`ArrowSize` |
+| 相关 Token | ArrowDecoratedBoxToken、SharedToken |
+| 稳定性 | stable since 6.0 |
 
 ## Abstract AXAML Structure
 
@@ -12192,7 +12313,7 @@ InfoFlyout
 | 选择与集合 | `DisplayPageSize` | 维护选择、展开、过滤、分页、分组或集合状态。 |
 | 交互与状态 | `IsArrowVisible`、`IsLightDismissEnabled`、`IsMotionEnabled`、`IsPointAtCenter`、`ShouldUseOverlayPopup` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 视觉与布局 | `ArrowPosition`、`MarginToAnchor`、`OverlayHostShadow`、`Placement`、`PlacementAnchor`、`PlacementGravity`、`PopupRootShadow`、`RequestedPlacement`、`SizeType` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
-| 弹层与窗口 | `Flyout`、`FlyoutPresenterTheme` | 控制 popup、flyout、dialog、window 或 overlay 宿主协作。 |
+| 弹层与窗口 | `Flyout`、`FlyoutPresenterTheme`、`IsPopupPinnedOpen` | 控制 popup、flyout、dialog、window 或 overlay 宿主协作。 |
 | 动效与异步 | `CloseMotion`、`MotionDuration`、`MouseEnterDelay`、`MouseLeaveDelay`、`OpenMotion` | 约束动效开关、异步加载、播放速度、超时和任务边界。 |
 | 其他稳定入口 | `AnchorTarget`、`Trigger`、`TriggerType` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
@@ -12258,6 +12379,7 @@ InfoFlyout Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
 - 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
+- 不破坏已发布的 Semantic Part 名称、selector class / route、ContractType 与数量语义（见 [Semantic Part 契约](semantic-part.md)）。
 - 文档只描述当前稳定设计；历史变化记录在 `changelog.md`。
 
 维护不变量：

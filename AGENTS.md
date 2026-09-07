@@ -126,6 +126,14 @@ Detailed AI collaboration rules live in [docs/engineering/contributing/agent-gui
 3. **迁移义务**：发现既有的代码绑定实际上可以等价迁移到 ControlTheme 时，在触及该文件的改动中一并迁移，不留“下次再说”。
 4. **声明位置边界**：`Transitions` 必须声明在 ControlTheme 的 style setter 中，禁止直接写在 ControlTemplate 内容里——模板构建期元素尚未挂载 clock，会抛 NullReferenceException。
 
+## Semantic PART 专用 Style 强约束（本项目生效）
+
+1. **专用 Style 是唯一定制入口**：Semantic PART 改造中，Gallery 示例、文档示例与测试对语义部件的样式定制，必须使用源生成器产出的专用 Semantic Part Style 类（如 `FlyoutHostPopupRootStyle`、`TreeSelectPopupListStyle`）在 AXAML 声明式应用；禁止在 code-behind 获取目标节点后直接设置属性（Background / Foreground / Padding / CornerRadius 等）作为定制手段。
+2. **专用 Style 不生效等于契约缺陷，不是限制**：生成的专用 Style 未命中目标节点时，说明 `SelectorRoute`（`/template/`、`>`、`>>` 组合器）与目标节点的真实树拓扑（模板内 / 逻辑后代 / 跨视觉根代码创建节点）不匹配，必须修正 route 并补可失败的命中测试；禁止把“生成 Style 无法命中”当作限制写进文档，或改用代码回退绕过专用 Style。
+3. **测试锁定专用 Style 形态**：新增或改写 Semantic PART 演示时，页面测试 / 快照必须断言专用 Style 类与关键 Setter 值的存在，并断言不存在以 Name / Loaded / Unloaded 事件处理器为特征的代码回退。
+
+详细规则见 [Semantic Part 系统设计](docs/architecture/systems/theming/semantic-parts.md)。
+
 ## 提交审查强约束（本项目生效）
 
 1. **未经明确指令不得提交**：没有用户的明确要求，完成一个任务或模块的开发之后，必须先交用户审查；未通过审查前，禁止自行创建 git commit，同样禁止 amend、rebase 等改写已有提交的动作。

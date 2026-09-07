@@ -105,10 +105,12 @@ descriptions content:
 ```
 
 `SelectorRoute` 从 public owner 之后开始，不重复 owner type 或业务 class。路由可以以 `>>` 开头，表示从 owner 的
-逻辑/可视后代直接定位第一个锚点节点；该形态仅限声明 `CrossNestedOwners=true` 且锚点节点位于 owner 模板的属性值
-子树（不参与 `TemplatedParent` 传播）时使用，例如 Cascader 的 `clear` 经 `>> .semantic-scope-handle /template/
-.semantic-clear` 越过属性值子树进入嵌套控件模板。它是声明、descriptor、生成器和诊断使用的底层路径契约；应用的
-正常使用入口是生成的 Semantic Style，不直接拼接 route。例如上述 Descriptions route 生成：
+逻辑后代直接定位第一个锚点节点。该形态用于两种场景：一是声明 `CrossNestedOwners=true` 且锚点节点位于 owner 模板
+的属性值子树（不参与 `TemplatedParent` 传播），例如 Cascader 的 `clear` 经 `>> .semantic-scope-handle /template/
+.semantic-clear` 越过属性值子树进入嵌套控件模板；二是声明 `CrossVisualRoot=true` 且目标节点经 Popup 的
+`PlacementTarget` 挂在 owner 逻辑树上的独立宿主弹层（如 FlyoutHost 的 `popup.root`，见 9.2）。它是声明、
+descriptor、生成器和诊断使用的底层路径契约；应用的正常使用入口是生成的 Semantic Style，不直接拼接 route。例如
+上述 Descriptions route 生成：
 
 ```csharp
 public sealed class DescriptionsContentStyle : Style
@@ -131,7 +133,9 @@ public sealed class DescriptionsContentStyle : Style
 
 - `/template/ .semantic-*`：当前节点的直接 `TemplatedParent` 必须匹配前一段。
 - `> .semantic-*`：当前节点的直接 logical parent 必须匹配前一段。
-- `>> .semantic-*`：跨入嵌套控件的可视子树（仅供声明 `CrossNestedOwners=true` 的跨嵌套部件使用，见 3.3.1）。
+- `>> .semantic-*`：沿逻辑祖先链的后代匹配。既用于 `CrossNestedOwners=true` 的跨嵌套部件（跨入嵌套控件的可视子树，
+  见 3.3.1），也用于 `CrossVisualRoot=true` 且目标节点经 Popup `PlacementTarget` 挂在 owner 逻辑树上的独立宿主弹层
+  （见 9.2）。
 
 不允许普通空格 descendant、类型、`:is(...)`、Name、`PART_*`、属性 selector 或非 `.semantic-*` class。路由最后一段
 必须是 Part 自身的 `SelectorClass`。只用于路由、不单独发布为 Part 的中间 marker 统一使用 `.semantic-scope-*`；它们是稳定
@@ -421,6 +425,23 @@ Control 的运行时状态继续由 StyledProperty、伪类和有效状态属性
 Semantic Part 不提供状态 callback、动态样式 delegate 或按 Part 名称索引的状态字典。数据驱动值使用正常 Binding，
 离散视觉状态使用伪类或属性 Selector。
 
+### 5.4 专用 Style 唯一入口（强约束）
+
+Gallery 示例、控件文档示例与测试对语义部件的样式定制，必须通过 §3.5 生成的专用 Semantic Part Style 类在 AXAML
+声明式应用，禁止在 code-behind 获取目标节点后直接设置属性（`Background` / `Foreground` / `Padding` / `CornerRadius`
+等）作为定制手段。
+
+生成 Style 未命中目标节点时，视为 `SelectorRoute` 与目标节点真实树拓扑不匹配的契约缺陷，按以下顺序处理：
+
+1. 核对目标节点是模板内节点（`/template/`）、owner 直接逻辑子节点（`>`）、跨嵌套控件可视子树（`>>` +
+   `CrossNestedOwners`，见 3.3.1），还是经 Popup `PlacementTarget` 挂在 owner 逻辑树上的跨视觉根节点（`>>` +
+   `CrossVisualRoot`，见 9.2）。
+2. 修正 `SelectorRoute`，并补可失败的运行期命中测试（先证明生成 Style 的 Setter 确实命中目标节点）。
+3. 禁止把“生成 Style 无法命中”写进文档作为限制，或改用 code-behind 属性回退绕过专用 Style。
+
+新增或改写 Semantic PART Gallery 演示时，页面测试与快照必须断言专用 Style 类与关键 Setter 值存在，且断言不存在
+以 Name / Loaded / Unloaded 事件处理器为特征的 code-behind 回退。
+
 ## 6. 与 Token、Property 和 ControlTheme 的边界
 
 | 能力 | Owner |
@@ -629,6 +650,12 @@ ContextMenu、Flyout、Dialog、Message、Notification 等由服务或独立 hos
 无法维持 owner Selector scope 时，应为该宿主定义明确的作用域或 public host 契约，不能通过 VisualTree 全局搜索
 复制 Style。
 
+Flyout / FlyoutHost 的弹层根是代码创建、跨视觉根的 `FlyoutPresenter`，但它的逻辑祖先链仍经 Popup 的
+`PlacementTarget` 回到 FlyoutHost，因此 owner-scoped `>>` 后代路由可达（先例：InfoFlyout 的 `popup.root` 等四个
+部件，`SelectorRoute` 以 `>> .semantic-popup-root` 开头）。这类部件统一声明 `CrossVisualRoot=true` +
+`RuntimeCreated=true`；owner-scoped Style 可达时即无需另立 public host 契约，Gallery 演示也仍走 §5.4 的专用
+生成 Style，不做 code-behind 属性回退。
+
 ### 9.3 ItemContainer 与虚拟化
 
 重复 Part 使用 `Multiple`。ItemContainer 创建、prepare、clear 和 recycle 必须保证：
@@ -834,6 +861,8 @@ Semantic Part 实现至少验证：
     内；至少用一个被 `ClipToBounds=true` 祖先包裹的 root 或 item 场景验证顶部、左侧、右侧和底部描边完整可见。
 14. Preview 的裁剪回归必须覆盖静态模板节点、runtime-created 容器、跨视觉根 Popup、薄尺寸目标和多实例合并；测试不得只断言
     marker 数值或 target 坐标，而必须断言 Adorner 的 clip 配置和最终可渲染几何边界。
+15. Gallery 演示与文档示例的样式定制使用 §3.5 生成的专用 Semantic Part Style 类在 AXAML 声明式应用，无 code-behind
+    属性回退；生成 Style 未命中目标节点时先修 `SelectorRoute` 并补命中回归，不写“无法命中”限制。
 
 Button 的 `root`、`icon`、`content` 可以作为基础契约测试样本；它不拥有 Semantic Part 系统架构。
 

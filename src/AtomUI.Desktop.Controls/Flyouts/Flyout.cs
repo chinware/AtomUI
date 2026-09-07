@@ -3,6 +3,7 @@ using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.DesignTokens;
+using AtomUI.Generated.AtomUIDesktopControls;
 using AtomUI.MotionScene;
 using AtomUI.Theme.Resources;
 using Avalonia;
@@ -428,6 +429,7 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
     protected override Control CreatePresenter()
     {
         var presenter = new FlyoutPresenter();
+        presenter.Classes.Add(FlyoutHostSemanticParts.PopupRootClass);
         presenter[!FlyoutPresenter.ContentProperty]         = this[!ContentProperty];
         presenter[!FlyoutPresenter.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
         presenter[!FlyoutPresenter.IsArrowVisibleProperty]     = this[!IsArrowVisibleEffectiveProperty];

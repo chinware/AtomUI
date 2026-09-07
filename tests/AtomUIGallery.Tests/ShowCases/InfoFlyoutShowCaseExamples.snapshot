@@ -44,7 +44,8 @@ Description="{gallery:InfoFlyoutShowCaseLangResource TriggerWaysDescription}">
 </gallery:ShowCaseItem>
 <gallery:ShowCaseItem
 Title="{gallery:InfoFlyoutShowCaseLangResource PlacementTitle}"
-Description="{gallery:InfoFlyoutShowCaseLangResource PlacementDescription}">
+Description="{gallery:InfoFlyoutShowCaseLangResource PlacementDescription}"
+IsOccupyEntireRow="True">
 <Grid>
 <Grid.Styles>
 <Style Selector="atom|Button">
@@ -166,7 +167,8 @@ Description="{gallery:InfoFlyoutShowCaseLangResource PlacementDescription}">
 </gallery:ShowCaseItem>
 <gallery:ShowCaseItem
 Title="{gallery:InfoFlyoutShowCaseLangResource ArrowTitle}"
-Description="{gallery:InfoFlyoutShowCaseLangResource ArrowDescription}">
+Description="{gallery:InfoFlyoutShowCaseLangResource ArrowDescription}"
+IsOccupyEntireRow="True">
 <StackPanel Orientation="Vertical" Spacing="10">
 <atom:Segmented x:Name="ArrowSegmented"
 SelectionChanged="HandleArrowSegmentedSelectionChanged">
@@ -340,5 +342,55 @@ IsPointAtCenter="{Binding  IsPointAtCenter}">
 <atom:Button Content="{gallery:InfoFlyoutShowCaseLangResource P2ContentBR}" />
 </atom:FlyoutHost>
 </Grid>
+</StackPanel>
+</gallery:ShowCaseItem>
+<gallery:ShowCaseItem
+Title="{gallery:InfoFlyoutShowCaseLangResource StyleClassTitle}"
+Description="{gallery:InfoFlyoutShowCaseLangResource StyleClassDescription}"
+SourceKey="infoflyout-semantic-part"
+BadgeText="{x:Static gallery:GalleryVersionInfo.DisplayVersion}">
+<StackPanel Orientation="Horizontal" Spacing="16">
+<StackPanel.Styles>
+<Style Selector="atom|FlyoutHost.semantic-styles-object-demo">
+<atom:FlyoutHostPopupRootStyle x:SetterTargetType="atom:FlyoutPresenter">
+<Setter Property="Background" Value="#EEEEEE" />
+<Setter Property="Foreground" Value="#262626" />
+<Setter Property="Padding" Value="10" />
+</atom:FlyoutHostPopupRootStyle>
+</Style>
+<Style Selector="atom|FlyoutHost.semantic-styles-function-demo">
+<atom:FlyoutHostPopupRootStyle x:SetterTargetType="atom:FlyoutPresenter">
+<Setter Property="Background" Value="#CC35477D" />
+<Setter Property="Foreground" Value="White" />
+<Setter Property="Padding" Value="12" />
+<Setter Property="CornerRadius" Value="4" />
+</atom:FlyoutHostPopupRootStyle>
+</Style>
+</StackPanel.Styles>
+<atom:FlyoutHost Classes="semantic-styles-object-demo"
+Trigger="Hover"
+ShouldUseOverlayPopup="False"
+IsArrowVisible="False"
+Placement="Top">
+<atom:FlyoutHost.Flyout>
+<atom:Flyout>
+<TextBlock Text="{gallery:InfoFlyoutShowCaseLangResource SemanticStyleObjectContent}" />
+</atom:Flyout>
+</atom:FlyoutHost.Flyout>
+<atom:Button Content="{gallery:InfoFlyoutShowCaseLangResource SemanticStyleObjectTrigger}" />
+</atom:FlyoutHost>
+<atom:FlyoutHost Classes="semantic-styles-function-demo"
+Trigger="Hover"
+ShouldUseOverlayPopup="False"
+IsArrowVisible="False"
+Placement="Top">
+<atom:FlyoutHost.Flyout>
+<atom:Flyout>
+<TextBlock Text="{gallery:InfoFlyoutShowCaseLangResource SemanticStyleFunctionContent}" />
+</atom:Flyout>
+</atom:FlyoutHost.Flyout>
+<atom:Button ButtonType="Primary"
+Content="{gallery:InfoFlyoutShowCaseLangResource SemanticStyleFunctionTrigger}" />
+</atom:FlyoutHost>
 </StackPanel>
 </gallery:ShowCaseItem>

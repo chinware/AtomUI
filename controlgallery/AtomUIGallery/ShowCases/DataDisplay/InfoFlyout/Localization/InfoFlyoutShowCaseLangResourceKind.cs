@@ -36,5 +36,18 @@ public enum InfoFlyoutShowCaseLangResourceKind
     PageSubtitle,
     PageDescription,
     ComponentCategory,
-    ComponentStatusStable
+    ComponentStatusStable,
+    StyleClassTitle,
+    StyleClassDescription,
+    SemanticRootDescription,
+    SemanticPopupRootDescription,
+    SemanticPopupContainerDescription,
+    SemanticPopupContentDescription,
+    SemanticPopupArrowDescription,
+    SemanticPreviewContentText,
+    SemanticPreviewTriggerContent,
+    SemanticStyleObjectContent,
+    SemanticStyleObjectTrigger,
+    SemanticStyleFunctionContent,
+    SemanticStyleFunctionTrigger
 }

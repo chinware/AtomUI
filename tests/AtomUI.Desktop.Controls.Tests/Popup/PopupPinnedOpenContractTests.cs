@@ -179,7 +179,7 @@ public class PopupPinnedOpenContractTests
         {
             var property = current.GetProperty(
                 propertyName,
-                BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
             if (property is not null)
             {
                 return property;

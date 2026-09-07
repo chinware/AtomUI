@@ -20,7 +20,7 @@ public enum FlyoutTriggerType
     Focus,
 }
 
-public class FlyoutHost : ContentControl, IMotionAwareControl
+public partial class FlyoutHost : ContentControl, IMotionAwareControl
 {
     #region 公共属性定义
     public static readonly StyledProperty<BoxShadows> PopupRootShadowProperty =
@@ -64,6 +64,12 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
     
     public static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty =
         Flyout.ShouldUseOverlayPopupProperty.AddOwner<FlyoutHost>();
+
+    /// <summary>
+    /// Gets or sets whether the flyout popup remains open while its placement target is available.
+    /// </summary>
+    public static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
+        FlyoutControl.IsPopupPinnedOpenProperty.AddOwner<FlyoutHost>();
 
     /// <summary>
     /// 距离 anchor 的边距，根据垂直和水平进行设置
@@ -180,19 +186,15 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
         get => GetValue(ShouldUseOverlayPopupProperty);
         set => SetValue(ShouldUseOverlayPopupProperty, value);
     }
-    #endregion
 
-    #region 内部属性定义
-
-    internal static readonly StyledProperty<bool> IsPopupPinnedOpenProperty =
-        FlyoutControl.IsPopupPinnedOpenProperty.AddOwner<FlyoutHost>();
-
-    internal bool IsPopupPinnedOpen
+    /// <summary>
+    /// Gets or sets whether the flyout popup remains open while its placement target is available.
+    /// </summary>
+    public bool IsPopupPinnedOpen
     {
         get => GetValue(IsPopupPinnedOpenProperty);
         set => SetCurrentValue(IsPopupPinnedOpenProperty, value);
     }
-
     #endregion
     
     private readonly FlyoutStateHelper _flyoutStateHelper;

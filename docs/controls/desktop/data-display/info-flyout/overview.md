@@ -2,7 +2,9 @@
 
 本文档定义 `InfoFlyout` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [InfoFlyout 桌面版实现原理](implementation.md)，InfoFlyout Token 的专项设计见 [InfoFlyout Token 设计](token.md)，设计和契约变化记录见 [InfoFlyout Changelog](changelog.md)。
 
-该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。本控件的语义 owner 为 `FlyoutHost` / `Flyout`，其 internal `IsPopupPinnedOpen` 只供测试和内部诊断使用；设置为 true 时保持 Flyout open state 并 relay 到 Flyout Popup，设置为 false 时只解除关闭拦截。控件卸载、锚点失效、TopLevel 改变和模板重建仍按共享生命周期规则清理。
+该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。本控件的语义 owner 为 `FlyoutHost`，其 `IsPopupPinnedOpen` 已公开（先例：AbstractColorPicker），供测试诊断与 Gallery 语义预览钉住弹层使用；设置为 true 时保持 Flyout open state 并 relay 到 Flyout Popup，设置为 false 时只解除关闭拦截。控件卸载、锚点失效、TopLevel 改变和模板重建仍按共享生命周期规则清理。
+
+InfoFlyout 公开 5 个 Semantic Part（`root`、`popup.root`、`popup.container`、`popup.content`、`popup.arrow`），与 Ant Design Popover 的 Semantic Part 语义对齐（上游 `title` 槽位因 InfoFlyout 无标题节点而省略）；完整 Part 表、存在条件、Selector 用法与定制边界见 [InfoFlyout Semantic Part 契约](semantic-part.md)。
 
 ## 1. 控件定位
 
@@ -45,7 +47,7 @@ InfoFlyout 的公共契约由 public/protected 类型成员、Avalonia 属性、
 | 选择与集合 | `DisplayPageSize` | 维护选择、展开、过滤、分页、分组或集合状态。 |
 | 交互与状态 | `IsArrowVisible`、`IsLightDismissEnabled`、`IsMotionEnabled`、`IsPointAtCenter`、`ShouldUseOverlayPopup` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 视觉与布局 | `ArrowPosition`、`MarginToAnchor`、`OverlayHostShadow`、`Placement`、`PlacementAnchor`、`PlacementGravity`、`PopupRootShadow`、`RequestedPlacement`、`SizeType` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
-| 弹层与窗口 | `Flyout`、`FlyoutPresenterTheme` | 控制 popup、flyout、dialog、window 或 overlay 宿主协作。 |
+| 弹层与窗口 | `Flyout`、`FlyoutPresenterTheme`、`IsPopupPinnedOpen` | 控制 popup、flyout、dialog、window 或 overlay 宿主协作。 |
 | 动效与异步 | `CloseMotion`、`MotionDuration`、`MouseEnterDelay`、`MouseLeaveDelay`、`OpenMotion` | 约束动效开关、异步加载、播放速度、超时和任务边界。 |
 | 其他稳定入口 | `AnchorTarget`、`Trigger`、`TriggerType` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
@@ -139,6 +141,7 @@ InfoFlyout 与同分类控件共享尺寸、状态、Token、Gallery 展示和�
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
 - 不引入运行时反射扫描作为 API、Token 或数据路径发现机制。
+- 不破坏已发布的 Semantic Part 名称、selector class / route、ContractType 与数量语义（见 [Semantic Part 契约](semantic-part.md)）。
 - 文档只描述当前稳定设计；历史变化记录在 `changelog.md`。
 
 ## 8. 专项模型
@@ -164,6 +167,7 @@ InfoFlyout 的视觉选项通过 public API 归一为 theme variables、伪类�
 关联文档：
 
 - [InfoFlyout 桌面版实现原理](implementation.md)
+- [InfoFlyout Semantic Part 契约](semantic-part.md)
 - [InfoFlyout Token 设计](token.md)
 - [InfoFlyout Changelog](changelog.md)
 

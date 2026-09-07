@@ -190,10 +190,16 @@ C# 命名约定的唯一事实来源是仓库根目录的 [.editorconfig](../../
 为控件新增或改造 Semantic Part 前，必须先读 [Semantic Part 系统设计](../../architecture/systems/theming/semantic-parts.md)
 的相关章节，并复用既有底层机制，禁止重新发明等价轮子：
 
+- Gallery 示例、文档示例与测试的样式定制必须用生成的专用 Semantic Part Style 类在 AXAML 声明式应用（见该文档
+  5.4）；禁止在 code-behind 获取目标节点后直接设置属性。生成 Style 未命中目标节点属于 route/拓扑契约缺陷，先修
+  `SelectorRoute` 并补命中回归，不写“无法命中”限制、不做代码回退。
 - 目标在内嵌控件自己的模板内（宿主把功能区整体委托给内嵌控件）→ `CrossNestedOwners=true` + `>>` 或二次
   `/template/` 路由（见该文档 3.3.1），生成器自动切换为跨主题资产校验。
 - 目标在模板 Popup 独立可视根内 → `CrossVisualRoot=true` + `popup.root` / `popup.list` / `popup.listItem` 三级键
   （见该文档 9.1）。
+- 目标在独立宿主弹层内（Flyout / FlyoutHost 代码创建的 presenter，经 Popup `PlacementTarget` 挂在 owner 逻辑树）→
+  `CrossVisualRoot=true` + `RuntimeCreated=true` + 以 `>>` 开头的 `SelectorRoute`（见该文档 9.2；先例 InfoFlyout 的
+  `popup.root` 等四个部件）。
 - 运行时创建的列表容器 → 容器创建时注入 semantic class（见该文档 8.3；先例 `ListBox`、`CandidateList`），
   marker 不得放在 item 的 ControlTheme 模板内部。
 - Gallery 语义预览钉住弹层 → `IsDropDownOpen` + `IsPopupPinnedOpen`；light-dismiss 遮罩抑制由产品控件在弹层打开前
