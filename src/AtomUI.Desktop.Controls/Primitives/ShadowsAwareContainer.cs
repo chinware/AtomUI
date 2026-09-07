@@ -318,7 +318,14 @@ internal class ShadowsAwareContainer : Decorator
         if (child is IArrowAwareShadowMaskInfoProvider arrowAwareShadowMaskInfoProvider)
         {
             var arrowDecoratedBox = arrowAwareShadowMaskInfoProvider.GetArrowDecoratedBox();
-            this[!CornerRadiusProperty]               = arrowDecoratedBox[!CornerRadiusProperty];
+            // 强制实例化 ArrowDecoratedBox 自身的模板，保证容器 Border 已就绪；
+            // 阴影圆角必须跟随真正可见的内容装饰器（容器 Border）：语义部件样式可能只覆盖
+            // 容器 Border 的圆角，此时 ArrowDecoratedBox 自身的 CornerRadius 与可见形状不一致，
+            // 直接绑定会导致角落出现白底空隙。
+            arrowDecoratedBox.ApplyTemplate();
+            this[!CornerRadiusProperty] = arrowDecoratedBox.ContentDecorator is { } contentDecorator
+                ? contentDecorator[!Border.CornerRadiusProperty]
+                : arrowDecoratedBox[!CornerRadiusProperty];
             this[!ArrowSizeProperty]                  = arrowDecoratedBox[!ArrowSizeProperty];
             this[!ArrowIndicatorLayoutBoundsProperty] = arrowDecoratedBox[!ArrowDecoratedBox.ArrowIndicatorLayoutBoundsProperty];
             this[!ArrowDirectionProperty]             = arrowDecoratedBox[!ArrowDirectionProperty];

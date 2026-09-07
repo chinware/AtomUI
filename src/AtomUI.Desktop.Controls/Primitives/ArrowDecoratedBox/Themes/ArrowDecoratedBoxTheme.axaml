@@ -16,6 +16,7 @@
                         ClipToBounds="False">
                         <atom:ArrowIndicator
                             Name="PART_ArrowIndicator"
+                            Classes.semantic-arrow="True"
                             FilledColor="{TemplateBinding Background}"
                             ArrowSize="{TemplateBinding ArrowSize}"
                             StrokeBrush="{atom:ArrowDecoratedBoxTokenResource ArrowStrokeColor}"
@@ -24,6 +25,7 @@
                 </Panel>
                 <Border
                     Name="PART_ContentDecorator"
+                    Classes.semantic-container="True"
                     Margin="0"
                     BackgroundSizing="{TemplateBinding BackgroundSizing}"
                     Background="{TemplateBinding Background}"

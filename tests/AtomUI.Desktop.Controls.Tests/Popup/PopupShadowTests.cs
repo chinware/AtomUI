@@ -1,8 +1,13 @@
 using System.Reflection;
+using AtomUI.Controls;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
+using AtomUIWindow = AtomUI.Desktop.Controls.Window;
 
 namespace AtomUI.Desktop.Controls.Tests.Popups;
 
@@ -76,6 +81,82 @@ public class PopupShadowTests
                       .ShouldBeNull();
     }
 
+    [Fact]
+    public void ToolTip_Shadow_Mask_Radius_Follows_Content_Decorator_Override()
+    {
+        var host = new Button();
+        ToolTip.SetTip(host, "Object text");
+        ToolTip.SetIsUseOverlayHost(host, true);
+
+        var window = ShowInWindow(host);
+        try
+        {
+            ToolTip.SetIsOpen(host, true);
+            Dispatcher.UIThread.RunJobs();
+
+            var toolTip = host.GetValue(ToolTip.ToolTipProperty);
+            toolTip.ShouldNotBeNull();
+
+            var arrowDecoratedBox = toolTip.GetVisualDescendants()
+                                           .OfType<ArrowDecoratedBox>()
+                                           .First();
+            var decorator = arrowDecoratedBox.GetVisualDescendants()
+                                             .OfType<Border>()
+                                             .First(b => b.Name == "PART_ContentDecorator");
+
+            // 未覆盖时蒙版圆角与容器 Border 一致（都来自 ToolTipCornerRadius 的模板绑定）
+            arrowDecoratedBox.GetMaskCornerRadius().ShouldBe(decorator.CornerRadius);
+
+            // 语义部件样式只覆盖容器 Border 的圆角时，阴影蒙版也必须跟随可见形状，
+            // 否则角落会出现白底空隙（圆角不同步）。
+            decorator.CornerRadius = new CornerRadius(12);
+            Dispatcher.UIThread.RunJobs();
+
+            arrowDecoratedBox.GetMaskCornerRadius().ShouldBe(new CornerRadius(12));
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void ShadowsAwareContainer_Radius_Tracks_Arrow_Child_Content_Decorator()
+    {
+        var host = new Button();
+        ToolTip.SetTip(host, "Object text");
+        ToolTip.SetIsUseOverlayHost(host, true);
+
+        var window = ShowInWindow(host);
+        try
+        {
+            ToolTip.SetIsOpen(host, true);
+            Dispatcher.UIThread.RunJobs();
+
+            var toolTip = host.GetValue(ToolTip.ToolTipProperty);
+            toolTip.ShouldNotBeNull();
+
+            var container = toolTip.GetVisualAncestors()
+                                   .OfType<ShadowsAwareContainer>()
+                                   .FirstOrDefault();
+            container.ShouldNotBeNull("overlay host 主题中 ToolTip 应被 ShadowsAwareContainer 包裹");
+
+            var decorator = toolTip.GetVisualDescendants()
+                                   .OfType<Border>()
+                                   .First(b => b.Name == "PART_ContentDecorator");
+
+            decorator.CornerRadius = new CornerRadius(12);
+            Dispatcher.UIThread.RunJobs();
+
+            container.CornerRadius.ShouldBe(new CornerRadius(12),
+                "弹层阴影圆角应跟随容器 Border 的实际圆角，而不是 ArrowDecoratedBox 自身的 CornerRadius");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     private static Control? GetFrameRenderer(ShadowsAwareContainer container)
     {
         var field = typeof(ShadowsAwareContainer).GetField(
@@ -83,5 +164,18 @@ public class PopupShadowTests
             BindingFlags.Instance | BindingFlags.NonPublic);
         field.ShouldNotBeNull();
         return (Control?)field!.GetValue(container);
+    }
+
+    private static AtomUIWindow ShowInWindow(Control content)
+    {
+        var window = new AtomUIWindow
+        {
+            Width   = 800,
+            Height  = 600,
+            Content = content
+        };
+        window.Show();
+        Dispatcher.UIThread.RunJobs();
+        return window;
     }
 }

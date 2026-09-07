@@ -50,5 +50,10 @@ public enum TooltipShowCaseLangResourceKind
     PageSubtitle,
     PageDescription,
     ComponentCategory,
-    ComponentStatusStable
+    ComponentStatusStable,
+    SemanticRootDescription,
+    SemanticContainerDescription,
+    SemanticArrowDescription,
+    SemanticPartStyleTitle,
+    SemanticPartStyleDescription
 }

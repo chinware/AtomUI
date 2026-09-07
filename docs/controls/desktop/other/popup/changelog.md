@@ -2,6 +2,13 @@
 
 本文档记录 Popup 控件级 API、Theme、Token、实现结构和设计契约变化，不替代仓库根目录 `CHANGELOG.md`。
 
+## 2026-09-07
+
+- Fix
+  - `ShadowsAwareContainer` and `AbstractArrowDecoratedBox.GetMaskCornerRadius` now derive the shadow mask radius from the visible content decorator (`PART_ContentDecorator`) instead of the `ArrowDecoratedBox`'s own `CornerRadius`; a semantic-part style that only overrides the container `Border` radius (for example `ToolTipContainerStyle`) no longer leaves white corner gaps between the surface and the popup shadow.
+- Tests
+  - Add regressions for the mask-radius contract and for `ShadowsAwareContainer` corner-radius tracking of arrow-decorated children.
+
 ## 2026-09-04
 
 - Motion

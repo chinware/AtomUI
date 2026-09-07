@@ -10,6 +10,7 @@ using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 using AtomUIButton = AtomUI.Desktop.Controls.Button;
+using AtomUIToolTip = AtomUI.Desktop.Controls.ToolTip;
 
 namespace AtomUI.Toolkits.GalleryBase.Tests.Controls;
 
@@ -98,6 +99,47 @@ public class SemanticPartPreviewLayoutTests
                                .OfType<Border>()
                                .First(control => control.Name == "PART_PreviewStage");
             stage.Bounds.Height.ShouldBeGreaterThanOrEqualTo(560);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Preview_Content_Centered_ToolTip_Hugs_Its_Text_Width()
+    {
+        // 回归：预览舞台以 Stretch 测量内容，ToolTip 若不显式非 Stretch 对齐会被
+        // 撑到 ToolTipMaxWidth(250) 满宽，胶囊宽度远超 "prompt text" 所需。
+        var preview = new SemanticPartPreview
+        {
+            Width = 900,
+            Title = "Tooltip",
+            PreviewContent = new AtomUIToolTip
+            {
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Content                = "prompt text"
+            }
+        };
+
+        var window = new Window
+        {
+            Width  = 980,
+            Height = 600,
+            Content = preview
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            window.UpdateLayout();
+            Dispatcher.UIThread.RunJobs();
+
+            var toolTip = (AtomUIToolTip)preview.PreviewContent!;
+            toolTip.Bounds.Width.ShouldBeGreaterThan(0);
+            toolTip.Bounds.Width.ShouldBeLessThan(250,
+                "居中对齐的 ToolTip 预览内容必须收缩到文本宽度，而不是被拉伸到 ToolTipMaxWidth 满宽");
         }
         finally
         {

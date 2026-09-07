@@ -9,7 +9,8 @@ atom:ToolTip.Tip="{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}" 
 </gallery:ShowCaseItem>
 <gallery:ShowCaseItem
 Title="{gallery:TooltipShowCaseLangResource PlacementTitle}"
-Description="{gallery:TooltipShowCaseLangResource PlacementDescription}">
+Description="{gallery:TooltipShowCaseLangResource PlacementDescription}"
+IsOccupyEntireRow="True">
 <Grid>
 <Grid.Styles>
 <Style Selector="atom|Button">
@@ -72,7 +73,8 @@ Description="{gallery:TooltipShowCaseLangResource PlacementDescription}">
 </gallery:ShowCaseItem>
 <gallery:ShowCaseItem
 Title="{gallery:TooltipShowCaseLangResource ArrowTitle}"
-Description="{gallery:TooltipShowCaseLangResource ArrowDescription}">
+Description="{gallery:TooltipShowCaseLangResource ArrowDescription}"
+IsOccupyEntireRow="True">
 <StackPanel Orientation="Vertical" Spacing="10">
 <atom:Segmented x:Name="ArrowSegmented"
 SelectionChanged="HandleArrowSegmentedSelectionChanged">
@@ -235,5 +237,40 @@ Description="{gallery:TooltipShowCaseLangResource ColorfulTooltipDescription}">
 <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
 </atom:Button>
 </WrapPanel>
+</StackPanel>
+</gallery:ShowCaseItem>
+<gallery:ShowCaseItem
+Title="{gallery:TooltipShowCaseLangResource SemanticPartStyleTitle}"
+Description="{gallery:TooltipShowCaseLangResource SemanticPartStyleDescription}"
+SourceKey="tooltip-semantic-part"
+BadgeText="{x:Static gallery:GalleryVersionInfo.DisplayVersion}">
+<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="20">
+<StackPanel.Styles>
+<Style Selector="atom|ToolTip.semantic-styles-demo">
+<atom:ToolTipContainerStyle x:SetterTargetType="Border">
+<Setter Property="Padding" Value="10" />
+<Setter Property="CornerRadius" Value="12" />
+<Setter Property="BoxShadow" Value="inset 0 0 8 #cccccc" />
+</atom:ToolTipContainerStyle>
+</Style>
+<Style Selector="atom|ToolTip.semantic-styles-filled-demo">
+<atom:ToolTipContainerStyle x:SetterTargetType="Border">
+<Setter Property="Background" Value="#CC35477D" />
+<Setter Property="TextElement.Foreground" Value="#FFFFFF" />
+<Setter Property="Padding" Value="12" />
+<Setter Property="CornerRadius" Value="4" />
+</atom:ToolTipContainerStyle>
+</Style>
+</StackPanel.Styles>
+<atom:Button Content="Object Style" atom:ToolTip.IsArrowVisible="False">
+<atom:ToolTip.Tip>
+<atom:ToolTip Classes="semantic-styles-demo" Content="Object text" />
+</atom:ToolTip.Tip>
+</atom:Button>
+<atom:Button ButtonType="Primary" Content="Function Style" atom:ToolTip.IsArrowVisible="False">
+<atom:ToolTip.Tip>
+<atom:ToolTip Classes="semantic-styles-filled-demo" Content="Function text" />
+</atom:ToolTip.Tip>
+</atom:Button>
 </StackPanel>
 </gallery:ShowCaseItem>

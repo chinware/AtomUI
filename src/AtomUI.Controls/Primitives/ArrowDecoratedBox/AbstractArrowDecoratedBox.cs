@@ -201,6 +201,8 @@ public abstract class AbstractArrowDecoratedBox : ContentControl,
     // 相对坐标
     internal (double, double) ArrowVertexPoint => GetArrowVertexPoint();
     private Border? _contentDecorator;
+
+    internal Border? ContentDecorator => _contentDecorator;
     private protected Control? ArrowIndicatorLayout;
     private protected ArrowIndicator? ArrowIndicator;
     private protected bool ArrowPlacementFlipped;
@@ -265,7 +267,10 @@ public abstract class AbstractArrowDecoratedBox : ContentControl,
 
     public CornerRadius GetMaskCornerRadius()
     {
-        return CornerRadius;
+        // 阴影蒙版圆角必须跟随真正可见的内容装饰器（容器 Border）：语义部件样式可以单独
+        // 覆盖容器 Border 的圆角，此时 ArrowDecoratedBox 自身的 CornerRadius 与可见形状
+        // 不一致，按可见形状取圆角才能避免弹层角落出现白底空隙。
+        return _contentDecorator?.CornerRadius ?? CornerRadius;
     }
 
     public IBrush? GetMaskBackground()

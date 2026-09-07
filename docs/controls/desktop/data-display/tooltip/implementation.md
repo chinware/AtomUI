@@ -14,10 +14,12 @@ Popup 接入边界：`ToolTip` 负责业务状态和内容准备，manually crea
 
 - `src/AtomUI.Desktop.Controls/Tooltip/Themes/ToolTipTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Tooltip/ToolTip.cs`
+- `src/AtomUI.Desktop.Controls/Tooltip/ToolTip.SemanticParts.cs`
 - `src/AtomUI.Desktop.Controls/Tooltip/ToolTipPseudoClass.cs`
 - `src/AtomUI.Desktop.Controls/Tooltip/ToolTipToken.cs`
 - `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`
 - `src/AtomUI.Desktop.Controls/PackageCore/ToolTipService.cs`
+- `src/AtomUI.Desktop.Controls/Primitives/ArrowDecoratedBox/Themes/ArrowDecoratedBoxTheme.axaml`（共享 `container`/`arrow` marker 宿主）
 
 职责边界：
 
@@ -114,6 +116,25 @@ attached properties + target text/font
 - `PART_ArrowDecorator`：稳定模板协作入口，重命名前必须同步主题和实现。
 - `PART_ContentPresenter`：展示用户内容、文本、图标或模板化数据。
 
+### 5.1 Semantic Part marker 映射
+
+Tooltip 公开 `root`/`container`/`arrow` 三个 Semantic Part，descriptor 位于 `ToolTip.SemanticParts.cs`。
+marker 与真实模板节点的对应关系：
+
+- `root`：owner 本身，无 marker。
+- `container`：marker `.semantic-container` 位于共享 `ArrowDecoratedBoxTheme.axaml` 的
+  `Border#PART_ContentDecorator`。
+- `arrow`：marker `.semantic-arrow` 位于共享 `ArrowDecoratedBoxTheme.axaml` 的
+  `ArrowIndicator#PART_ArrowIndicator`。
+
+`container` 与 `arrow` 声明 `CrossNestedOwners=true`。`ToolTip` 的模板只把自己的内容交给
+`ArrowDecoratedBox#PART_ArrowDecorator`（带 `.semantic-scope-arrow-decorated-box` scope 锚点），marker 节点位于
+`ArrowDecoratedBox` 自身模板中，`/template/` 链不能直接跨越嵌套 owner 进入该模板；生成 Style 通过 scope 锚点
+`/template/ .semantic-scope-arrow-decorated-box /template/ .semantic-*` 路由命中，解析器被允许跨越嵌套 owner 边界。
+
+descriptor 与 marker 均属于编译期生成与静态主题输入，不引入运行时反射或 VisualTree 扫描（系统规则见
+[AtomUI Semantic Part 系统设计](../../../../architecture/systems/theming/semantic-parts.md)）。
+
 ## 6. 交互与事件处理
 
 Tooltip 的交互事件应从输入源收敛到控件级语义事件：
@@ -171,6 +192,9 @@ Tooltip 的交互事件应从输入源收敛到控件级语义事件：
 
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
 - Template part 名称、ControlTheme key、伪类和资源 key。
+- Semantic Part 契约：descriptor 字段、selector class、route、`ContractType` 与 cardinality（见
+  [Tooltip Semantic Part 契约](semantic-part.md)）；marker 位于共享 `ArrowDecoratedBoxTheme.axaml`，结构性变更必须
+  同步评估 `ArrowDecoratedBox` 的家庭消费者。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
@@ -184,6 +208,7 @@ Tooltip 的交互事件应从输入源收敛到控件级语义事件：
 
 - 纯文档改动运行 `git diff --check` 并检查相对链接。
 - 打开状态调和回归：XAML 声明式 `IsOpen=True` 打开、`Tip` 晚于 `IsOpen` 就绪、宿主 detach/reattach 重开、`ToolTipOpening` 否决、attach 订阅无残留。
+- Semantic Part 回归：descriptor 三键、`ToolTipTheme.axaml` scope 锚点、共享 `ArrowDecoratedBoxTheme.axaml` 两个 marker、生成 Style 跨嵌套 owner 命中最低 `ContractType`（见 `tests/AtomUI.Desktop.Controls.Tests/Tooltip/ToolTipSemanticPartTests.cs`）。
 - 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
 - Gallery 示例或源码片段变更运行 `tests/AtomUIGallery.Tests`。

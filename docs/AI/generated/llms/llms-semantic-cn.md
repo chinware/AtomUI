@@ -14426,13 +14426,73 @@ Source: ./controls/tooltip/semantic-cn.md
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Tooltip` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+Tooltip 只有一个 public owner：`ToolTip`，公开 3 个语义键：`root`、`container`、`arrow`（与上游 antd Tooltip 的
+语义 DOM `root` / `container` / `arrow` 对齐）。声明位于
+`src/AtomUI.Desktop.Controls/Tooltip/ToolTip.SemanticParts.cs` partial 文件。
+
+`container` 与 `arrow` 均声明 `CrossNestedOwners=true`：`ToolTip` 的控件模板把自己的内容直接交给共享原语
+`ArrowDecoratedBox#PART_ArrowDecorator`（带有 `.semantic-scope-arrow-decorated-box` scope 锚点），两个 marker 由
+`ArrowDecoratedBox` 自身模板携带。`/template/` 链不能直接跨越嵌套 owner 进入 `ArrowDecoratedBox` 模板，因此这两个
+Part 由生成 Style 借助 scope 路由从 `ToolTip` 穿透到共享模板命中，解析器同时被允许跨越嵌套 owner 边界。
+
+各 Part 的 Selector、SelectorRoute、ContractType 以 `ToolTip.SemanticParts.cs` 为准。
+
+### 1.1 `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ToolTip` |
+| Part | `root` |
+| Selector | 不适用（owner 本身，无 marker） |
+| SelectorRoute | 不适用 |
+| ContractType | `ToolTip` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `ToolTip` 控件本体 |
+| 职责 | 工具提示的根语义区域，承载内容、弹层打开状态与主题入口的组织边界 |
+| 相关 API | `Content`、`IsMotionEnabled` |
+| 相关 Token | `ToolTipToken` / SharedToken |
+| 稳定性 | stable since 6.0 |
+
+### 1.2 `container`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ToolTip` |
+| Part | `container` |
+| Selector | `.semantic-container` |
+| SelectorRoute | `/template/ .semantic-scope-arrow-decorated-box /template/ .semantic-container` |
+| ContractType | `Border` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `Border#PART_ContentDecorator`（共享 `ArrowDecoratedBox` 模板） |
+| 职责 | 内容盒，承载内边距、背景、圆角与文本样式，内部 `ContentPresenter` 展示用户内容 |
+| 相关 API | `Background`、`BorderBrush`、`BorderThickness`、`CornerRadius`、`Padding`（模板绑定）、`Content` |
+| 相关 Token | `ToolTipToken.ToolTipBackground`、`ToolTipToken.ToolTipCornerRadius`、`ToolTipToken.ContentPadding` |
+| 稳定性 | stable since 6.0 |
+
+### 1.3 `arrow`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ToolTip` |
+| Part | `arrow` |
+| Selector | `.semantic-arrow` |
+| SelectorRoute | `/template/ .semantic-scope-arrow-decorated-box /template/ .semantic-arrow` |
+| ContractType | `ArrowIndicator` |
+| Cardinality | `Optional` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `ArrowIndicator#PART_ArrowIndicator`（共享 `ArrowDecoratedBox` 模板） |
+| 职责 | 指向锚定控件的箭头指示器 |
+| 相关 API | `IsArrowVisible`、`ArrowSize`、`Background`（`FilledColor` 模板绑定） |
+| 相关 Token | `ArrowDecoratedBoxToken.ArrowStrokeColor`、`ArrowDecoratedBoxToken.ArrowStrokeThickness`、`ArrowDecoratedBoxToken.ArrowSize` |
+| 稳定性 | stable since 6.0 |
 
 ## Abstract AXAML Structure
 
@@ -14520,6 +14580,7 @@ Tooltip Token 只表达组件级视觉变量，例如尺寸、间距、颜色、
 
 - 不擅自新增、删除、重命名或改变 public/protected API、Avalonia 属性、事件和默认值。
 - 不破坏 template part、伪类、ControlTheme key、Token 名称和资源 key。
+- 不破坏 Semantic Part 契约：`root`/`container`/`arrow` 的 selector class、route、`ContractType` 与 cardinality 以 [Tooltip Semantic Part 契约](semantic-part.md) 为准。
 - 不改变 Gallery 已展示的 XAML 用法、默认外观、交互顺序和状态优先级。
 - Template part 重新应用、集合替换、弹层关闭、窗口失活和控件 detach 时必须释放旧订阅和资源宿主。
 - 不通过隐藏延迟、强制刷新或吞异常掩盖状态同步问题。
@@ -14534,6 +14595,9 @@ Tooltip Token 只表达组件级视觉变量，例如尺寸、间距、颜色、
 
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
 - Template part 名称、ControlTheme key、伪类和资源 key。
+- Semantic Part 契约：descriptor 字段、selector class、route、`ContractType` 与 cardinality（见
+  [Tooltip Semantic Part 契约](semantic-part.md)）；marker 位于共享 `ArrowDecoratedBoxTheme.axaml`，结构性变更必须
+  同步评估 `ArrowDecoratedBox` 的家庭消费者。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。

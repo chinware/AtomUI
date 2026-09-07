@@ -16,9 +16,9 @@ using Avalonia.VisualTree;
 namespace AtomUI.Desktop.Controls;
 
 [PseudoClasses(":open")]
-public class ToolTip : ContentControl,
-                       IMotionAwareControl,
-                       IArrowAwareShadowMaskInfoProvider
+public partial class ToolTip : ContentControl,
+                               IMotionAwareControl,
+                               IArrowAwareShadowMaskInfoProvider
 {
     #region 附加属性定义
 

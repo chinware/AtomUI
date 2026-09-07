@@ -2,6 +2,24 @@
 
 本文档记录 Tooltip 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-09-07
+
+- API
+  - Expose `root` / `container` / `arrow` Semantic Parts on `ToolTip`, aligned with the upstream antd Tooltip semantic DOM.
+  - Declare `container` and `arrow` with `CrossNestedOwners=true`, routing through the `.semantic-scope-arrow-decorated-box` scope anchor into the shared `ArrowDecoratedBox` template; `arrow` is `Optional`.
+- Theme
+  - Add the `.semantic-scope-arrow-decorated-box` scope anchor to the `ArrowDecoratedBox#PART_ArrowDecorator` node in `ToolTipTheme.axaml`.
+  - Add `.semantic-container` / `.semantic-arrow` markers to `Border#PART_ContentDecorator` / `ArrowIndicator#PART_ArrowIndicator` in the shared `ArrowDecoratedBoxTheme.axaml`.
+- Docs
+  - Add `semantic-part.md` as the single source for the Tooltip Semantic Part contract.
+  - Re-scope overview's semantic region summary to `root` / `container` / `arrow` and link the new contract; document the descriptor↔marker mapping in implementation.
+- Gallery
+  - Add a Semantic Parts tab to the Tooltip showcase with a `SemanticPartPreview` and localized part descriptions.
+  - Center the Semantic Parts preview `ToolTip` (`HorizontalAlignment="Center"`) so the pill hugs its content instead of stretching to `ToolTipMaxWidth`.
+  - Add a `Custom Semantic Part styling` example (`SemanticPartStyleTitle` / `SemanticPartStyleDescription`) that customizes `container` via the generated `ToolTipContainerStyle` and hides `arrow` via `ToolTip.IsArrowVisible=False` on the trigger buttons, aligned with the antd `style-class` demo.
+- Fix
+  - The popup shadow now follows the visible container `Border` radius instead of the `ArrowDecoratedBox`'s own `CornerRadius`: overriding only `ToolTipContainerStyle`'s `CornerRadius` previously left the shadow mask at `ToolTipCornerRadius`, exposing white page corners behind the rounded pill.
+
 ## 2026-08-25
 
 - Docs
