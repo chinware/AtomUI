@@ -119,7 +119,7 @@ public class GalleryDeveloperToolsConventionsTests
     }
 
     [Fact]
-    public void Browser_Normal_Build_Skips_Native_Wasm_Link()
+    public void Browser_Normal_Build_Retains_Native_Wasm_Link_For_SkiaSharp()
     {
         var project = XDocument.Load(GetRepoFile(
             "controlgallery/AtomUIGallery.Browser/AtomUIGallery.Browser.csproj"));
@@ -127,19 +127,14 @@ public class GalleryDeveloperToolsConventionsTests
         ((string?)runAot.Attribute("Condition")).ShouldBe("'$(WasmBuildingForNestedPublish)' == 'true'");
         runAot.Value.ShouldBe("false");
 
-        var target = project.Descendants("Target")
-                            .Single(element =>
-                                (string?)element.Attribute("Name") ==
-                                "AtomUIUseManagedBrowserBuild");
+        var webcil = project.Descendants("WasmEnableWebcil").ShouldHaveSingleItem();
+        webcil.Attribute("Condition").ShouldBeNull();
+        webcil.Value.ShouldBe("false");
 
-        ((string?)target.Attribute("BeforeTargets")).ShouldBe("_SetWasmBuildNativeDefaults");
-        var condition = (string?)target.Attribute("Condition");
-        condition.ShouldNotBeNull();
-        condition.ShouldContain("WasmBuildingForNestedPublish");
-        condition.ShouldContain("RunAOTCompilation");
-        condition.ShouldContain("AtomUIBrowserNativeBuild");
-        target.Descendants("WasmBuildNative").ShouldHaveSingleItem().Value.ShouldBe("false");
-        target.Descendants("WasmEnableWebcil").ShouldHaveSingleItem().Value.ShouldBe("true");
+        project.Descendants("WasmBuildNative").ShouldBeEmpty();
+        project.Descendants("Target")
+               .ShouldNotContain(element =>
+                   (string?)element.Attribute("Name") == "AtomUIUseManagedBrowserBuild");
     }
 
     private static string ReadRepoFile(string relativePath)

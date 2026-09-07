@@ -17,22 +17,6 @@
         <DebuggerSupport Condition="'$(Configuration)' == 'Debug'">true</DebuggerSupport>
     </PropertyGroup>
 
-    <!--
-        A normal build only needs managed browser inputs. Native linking is required by the
-        nested publish path, and can still be requested explicitly for local browser runtime
-        validation with -p:AtomUIBrowserNativeBuild=true.
-    -->
-    <Target Name="AtomUIUseManagedBrowserBuild"
-            BeforeTargets="_SetWasmBuildNativeDefaults"
-            Condition="'$(WasmBuildingForNestedPublish)' != 'true' and
-                       '$(RunAOTCompilation)' != 'false' and
-                       '$(AtomUIBrowserNativeBuild)' != 'true'">
-        <PropertyGroup>
-            <WasmBuildNative>false</WasmBuildNative>
-            <WasmEnableWebcil>true</WasmEnableWebcil>
-        </PropertyGroup>
-    </Target>
-
     <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
         <MetricsSupport>true</MetricsSupport>
         <HasAvaloniaDiagnosticsSupport>true</HasAvaloniaDiagnosticsSupport>
