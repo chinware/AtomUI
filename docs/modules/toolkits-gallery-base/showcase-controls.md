@@ -122,8 +122,11 @@ public class ShowCasePanel : TemplatedControl
 布局规则：
 
 - 根据可用宽度、`MinItemWidth`、`MaxColumns` 计算列数。
-- 普通 item 放入当前最短列。
-- `ShowCaseItemSpan.Full` 或 `IsOccupyEntireRow=true` 占满整行。
+- 第一次有效排列时，普通 item 放入当前最短列；排列完成后按 item control 实例提交列归属。
+- 有效列数不变时，已经提交的普通 item 保持原列；宽度、高度和纵向位置仍按当前约束重新计算。
+- 新挂载、恢复可见或不再占满整行的 item 在首次重新进入普通布局时放入当前最短列。
+- 有效列数变化时清除旧列假设，并按当前最短列重新建立全部归属。
+- `ShowCaseItemSpan.Full` 或 `IsOccupyEntireRow=true` 占满整行，不进入普通列归属。
 - 不做虚拟化，只负责已挂载 children 的测量和排列。
 
 该面板保持简单，不引入 ItemsControl、ItemsSource 或数据模板。ShowCase 页面是文档式页面，不是无限列表。
