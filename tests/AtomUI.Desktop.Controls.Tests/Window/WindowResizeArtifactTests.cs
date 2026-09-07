@@ -285,6 +285,18 @@ public class WindowResizeArtifactTests
     }
 
     [Fact]
+    public void Wayland_Input_Region_Destroys_The_Protocol_Object_Before_Disposing_The_Local_Proxy()
+    {
+        var nativeSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Native/Linux/WaylandWindowUtils.cs"));
+
+        nativeSource.ShouldContain("region.Destroy();");
+        nativeSource.ShouldContain("region.Dispose();");
+        nativeSource.IndexOf("region.Destroy();", StringComparison.Ordinal)
+                    .ShouldBeLessThan(nativeSource.IndexOf("region.Dispose();", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void Browser_Wasm_Excludes_Wayland_Input_Region_Protocol_Assemblies()
     {
         var browserProject = File.ReadAllText(GetRepoFile(
@@ -1058,13 +1070,14 @@ public class WindowResizeArtifactTests
         windowSource.ShouldContain("SetCurrentValue(MinHeightProperty, minimumHeight);");
         windowSource.ShouldContain("PointerCaptureLost");
         windowSource.ShouldContain("ResetTitleBarMoveDragState();");
-        windowSource.ShouldContain("EnsureWindowsCsdFrameThemeSubscription();");
         windowSource.ShouldContain("ApplyCurrentWindowsCsdFrameTheme();");
-        windowSource.ShouldContain("themeManager.ThemeChanged += handler;");
-        windowSource.ShouldContain("TryResolveCurrentWindowDarkMode()");
-        windowSource.ShouldContain("args.State.Appearance == ThemeAppearance.Dark");
+        windowSource.ShouldContain("change.Property == ActualThemeVariantProperty");
+        windowSource.ShouldContain("(PlatformThemeVariant?)ActualThemeVariant");
+        windowSource.ShouldContain("platformThemeVariant == PlatformThemeVariant.Dark");
         windowSource.ShouldContain("private void ApplyWindowsCsdFrameTheme(bool isDarkMode)");
-        windowSource.ShouldNotContain("change.Property == ActualThemeVariantProperty");
+        windowSource.ShouldNotContain("EnsureWindowsCsdFrameThemeSubscription");
+        windowSource.ShouldNotContain("themeManager.ThemeChanged += handler;");
+        windowSource.ShouldNotContain("TryResolveCurrentWindowDarkMode");
         windowSource.ShouldNotContain("_isDragging");
         windowSource.ShouldNotContain("IsWindowsDrawnDecorationsEnabledProperty");
         windowSource.ShouldNotContain("WindowsInactiveFramePolicy.Apply(this)");

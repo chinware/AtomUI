@@ -33,7 +33,14 @@ internal static class WaylandWindowUtils
             }
             finally
             {
-                region.Destroy();
+                try
+                {
+                    region.Destroy();
+                }
+                finally
+                {
+                    region.Dispose();
+                }
             }
 
             return true;

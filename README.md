@@ -70,7 +70,7 @@ requests are welcome.
 #### Requirements
 
 .NET 8 or later (development supports .NET 10)<br>
-Avalonia 12.1.1<br>
+Avalonia 12.1.2<br>
 Windows, macOS and Linux<br>
 
 #### Latest Release Notes

@@ -19,6 +19,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Metadata;
+using Avalonia.Platform;
 using Avalonia.Styling;
 
 namespace AtomUI.Desktop.Controls;
@@ -550,7 +551,6 @@ public partial class Window : AvaloniaWindow,
     private CompositeDisposable? _mainWindowLogoFallbackLease;
     private bool _isOpened;
     private int _drawnChromeOverlaySuppressionCount;
-    private IDisposable? _windowsCsdFrameThemeSubscription;
     private ThemeContextLease? _themeContextLease;
     private WindowState _windowStateBeforeFullScreen = WindowState.Normal;
 
@@ -1461,7 +1461,6 @@ public partial class Window : AvaloniaWindow,
         base.OnOpened(e);
         _isOpened = true;
         UpdateCaptionButtonCapabilities();
-        EnsureWindowsCsdFrameThemeSubscription();
         ApplyCurrentWindowsCsdFrameTheme();
         _platformChromeManager?.UpdateFrameGeometry();
         UpdateEffectiveContentFrameMargin();
@@ -1490,8 +1489,6 @@ public partial class Window : AvaloniaWindow,
         _themeContextLease?.Dispose();
         _themeContextLease = null;
         ResetThemeContextState();
-        _windowsCsdFrameThemeSubscription?.Dispose();
-        _windowsCsdFrameThemeSubscription = null;
         ReleaseMainWindowLogoFallbackSubscription();
         base.OnClosed(e);
     }
@@ -1656,7 +1653,7 @@ public partial class Window : AvaloniaWindow,
         }
         if (change.Property == ExtendClientAreaTitleBarHeightHintProperty ||
             change.Property == IsCsdEnabledProperty ||
-            change.Property == RequestedThemeVariantProperty)
+            change.Property == ActualThemeVariantProperty)
         {
             ApplyCurrentWindowsCsdFrameTheme();
         }
@@ -1757,57 +1754,12 @@ public partial class Window : AvaloniaWindow,
         ConfigureCustomResizerVisible();
     }
 
-    private void EnsureWindowsCsdFrameThemeSubscription()
-    {
-        if (!OperatingSystem.IsWindows() || _windowsCsdFrameThemeSubscription is not null)
-        {
-            return;
-        }
-
-        var themeManager = Application.Current?.GetThemeManager();
-        if (themeManager is null)
-        {
-            return;
-        }
-
-        EventHandler<ThemeChangedEventArgs> handler = (_, args) =>
-            ApplyWindowsCsdFrameTheme(args.State.Appearance == ThemeAppearance.Dark);
-        themeManager.ThemeChanged += handler;
-        _windowsCsdFrameThemeSubscription = Disposable.Create(() =>
-            themeManager.ThemeChanged -= handler);
-    }
-
     private void ApplyCurrentWindowsCsdFrameTheme()
     {
-        if (TryResolveCurrentWindowDarkMode() is { } isDarkMode)
+        if ((PlatformThemeVariant?)ActualThemeVariant is { } platformThemeVariant)
         {
-            ApplyWindowsCsdFrameTheme(isDarkMode);
+            ApplyWindowsCsdFrameTheme(platformThemeVariant == PlatformThemeVariant.Dark);
         }
-    }
-
-    private bool? TryResolveCurrentWindowDarkMode()
-    {
-        if (GetValue(ThemeScope.ContextProperty) is { } context)
-        {
-            return context.Appearance == ThemeAppearance.Dark;
-        }
-
-        if (RequestedThemeVariant == ThemeVariant.Dark)
-        {
-            return true;
-        }
-
-        if (RequestedThemeVariant == ThemeVariant.Light)
-        {
-            return false;
-        }
-
-        return Application.Current?.GetThemeManager()?.CurrentTheme?.Appearance switch
-        {
-            ThemeAppearance.Dark  => true,
-            ThemeAppearance.Light => false,
-            _                     => null
-        };
     }
 
     private void ApplyWindowsCsdFrameTheme(bool isDarkMode)
