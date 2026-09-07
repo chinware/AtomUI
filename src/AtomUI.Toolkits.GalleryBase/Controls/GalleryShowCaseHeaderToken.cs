@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Toolkits.GalleryBase.Controls;
 
 [ControlDesignToken]
-internal class GalleryShowCaseHeaderToken : AbstractControlDesignToken
+internal sealed class GalleryShowCaseHeaderToken : AbstractControlDesignToken
 {
 
     public Thickness HeaderMargin { get; set; }

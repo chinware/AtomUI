@@ -4,7 +4,7 @@ using Avalonia.Animation.Easings;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class SplitViewToken : AbstractControlDesignToken
+internal sealed class SplitViewToken : AbstractControlDesignToken
 {
 
     public SplitViewToken()

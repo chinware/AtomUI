@@ -22,6 +22,13 @@ internal static class AtomUIDiagnosticIds
     public const string ThemeAssetSemanticPartTargetMismatch = "ATOMUIGEN017";
     public const string ThemeAssetUnknownTokenResource = "ATOMUIGEN018";
     public const string ControlTokenGlobalNameConflict = "ATOMUIGEN019";
+    public const string ControlTokenMustBeSealed = "ATOMUIGEN020";
+    public const string ControlTokenGenericLayer = "ATOMUIGEN021";
+    public const string ControlTokenPropertyConflict = "ATOMUIGEN022";
+    public const string ControlTokenInvalidProperty = "ATOMUIGEN023";
+    public const string ControlTokenInvalidCalculationChain = "ATOMUIGEN024";
+    public const string AbstractControlTokenInvalidName = "ATOMUIGEN025";
+    public const string ControlTokenNestedType = "ATOMUIGEN026";
     public const string LocalizationInvalidLanguageData = "ATOMUILOC001";
     public const string LocalizationDuplicateLanguageData = "ATOMUILOC002";
     public const string LocalizationInvalidCatalog = "ATOMUILOC003";

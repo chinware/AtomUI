@@ -6,7 +6,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class TagToken : AbstractControlDesignToken
+internal sealed class TagToken : AbstractControlDesignToken
 {
     /// <summary>
     /// 默认背景色

@@ -6,7 +6,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class TourToken : AbstractControlDesignToken
+internal sealed class TourToken : AbstractControlDesignToken
 {
     
     /// <summary>

@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class TreeViewToken : AbstractControlDesignToken
+internal sealed class TreeViewToken : AbstractControlDesignToken
 {
     
     public TreeViewToken()

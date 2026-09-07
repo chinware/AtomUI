@@ -3,7 +3,7 @@
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class LineEditToken : AbstractControlDesignToken
+internal sealed class LineEditToken : AbstractControlDesignToken
 {
     /// <summary>
     /// 字体大小

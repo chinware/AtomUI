@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Toolkits.GalleryBase.Controls;
 
 [ControlDesignToken]
-internal class ShowCaseItemToken : AbstractControlDesignToken
+internal sealed class ShowCaseItemToken : AbstractControlDesignToken
 {
 
     public Thickness CardPadding { get; set; }

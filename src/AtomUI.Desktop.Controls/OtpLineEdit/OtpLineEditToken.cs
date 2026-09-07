@@ -3,7 +3,7 @@ using AtomUI.Theme.DesignTokens;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class OtpLineEditToken : AbstractControlDesignToken
+internal sealed class OtpLineEditToken : AbstractControlDesignToken
 {
 
     public OtpLineEditToken()

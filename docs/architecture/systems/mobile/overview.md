@@ -77,6 +77,10 @@ Mobile Control 行为、Token、默认视觉、Overlay 状态机或平台产品�
 
 共享实现只有在两个产品包真实需要、语义稳定一致、不含平台判断并能降低实际重复时才允许下沉。
 
+Control Own Token 的跨 Desktop/Mobile 复用遵循 [Control Design Token 继承](../theming/control-design-token-inheritance.md)：
+共享视觉语义只能在出现至少两个真实终端后提取到 `AtomUI.Controls` 中的无 identity、显式标记抽象层；Mobile 产品包中的
+具体 Token 始终是 `sealed` 终端。当前 Mobile Controls 尚未实现，因此本架构不预建 Mobile 专用或跨平台空基类。
+
 ## 阅读顺序
 
 | 文档 | 职责 |

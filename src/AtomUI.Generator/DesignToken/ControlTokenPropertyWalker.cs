@@ -7,13 +7,16 @@ namespace AtomUI.Generator;
 
 internal class ControlTokenPropertyWalker : CSharpSyntaxWalker
 {
-    public const string NotTokenDefinitionAttribute = "NotTokenDefinition";
-    public const string BaseControlTokenClass = "global::AtomUI.Theme.DesignTokens.AbstractControlDesignToken";
     public ControlTokenInfo ControlTokenInfo { get; }
     private readonly SemanticModel _semanticModel;
-    public ControlTokenPropertyWalker(SemanticModel semanticModel)
+    private readonly CancellationToken _cancellationToken;
+
+    public ControlTokenPropertyWalker(
+        SemanticModel semanticModel,
+        CancellationToken cancellationToken = default)
     {
-        _semanticModel   = semanticModel;
+        _semanticModel = semanticModel;
+        _cancellationToken = cancellationToken;
         ControlTokenInfo = new ControlTokenInfo();
     }
 
@@ -27,82 +30,276 @@ internal class ControlTokenPropertyWalker : CSharpSyntaxWalker
     {
         ControlTokenInfo.TokenName = node.Identifier.Text;
         ControlTokenInfo.DeclarationLocation = node.Identifier.GetLocation();
-        if (node.Parent is FileScopedNamespaceDeclarationSyntax fileScopedNamespaceDecl)
-        {
-            ControlTokenInfo.TokenNamespace = fileScopedNamespaceDecl.Name.ToString();
-        }
-        else if (node.Parent is NamespaceDeclarationSyntax namespaceDecl)
-        {
-            ControlTokenInfo.TokenNamespace = namespaceDecl.Name.ToString();
-        }
 
-        var classDeclaredSymbol = _semanticModel.GetDeclaredSymbol(node);
+        var classDeclaredSymbol = _semanticModel.GetDeclaredSymbol(node, _cancellationToken);
         if (classDeclaredSymbol is not null)
         {
-            ReadControlIdentity(node, classDeclaredSymbol);
-            ValidateInheritance(node, classDeclaredSymbol);
-            AddTokenProperties(classDeclaredSymbol);
+            ControlTokenInfo.TokenNamespace = classDeclaredSymbol.ContainingNamespace.IsGlobalNamespace
+                ? string.Empty
+                : classDeclaredSymbol.ContainingNamespace.ToDisplayString();
+            ClassifyRole(node, classDeclaredSymbol);
+            ReadTokenName(node, classDeclaredSymbol);
+            var inheritance = ControlTokenInheritanceModel.Resolve(
+                classDeclaredSymbol,
+                _cancellationToken);
+            ControlTokenInfo.Diagnostics.AddRange(inheritance.Diagnostics);
+            if (inheritance.IsValid)
+            {
+                ControlTokenInfo.Diagnostics.AddRange(
+                    ControlTokenCalculationValidator.Validate(
+                        inheritance.Layers,
+                        _semanticModel.Compilation,
+                        _cancellationToken));
+                AddTokenProperties(classDeclaredSymbol, inheritance.Layers);
+            }
         }
-
-        base.VisitClassDeclaration(node);
     }
 
-    private void ReadControlIdentity(ClassDeclarationSyntax node, INamedTypeSymbol classSymbol)
+    private void ClassifyRole(ClassDeclarationSyntax node, INamedTypeSymbol classSymbol)
+    {
+        ControlTokenInfo.Role = classSymbol.IsAbstract
+            ? ControlTokenRole.AbstractLayer
+            : ControlTokenRole.Terminal;
+
+        if (ControlTokenInheritanceModel.IsEffectivelyGeneric(classSymbol))
+        {
+            ControlTokenInfo.Diagnostics.Add(Diagnostic.Create(
+                AtomUIDiagnosticDescriptors.ControlTokenGenericLayer,
+                node.Identifier.GetLocation(),
+                ControlTokenInheritanceModel.GetDiagnosticTypeName(classSymbol)));
+        }
+        else if (classSymbol.ContainingType is not null)
+        {
+            ControlTokenInfo.Diagnostics.Add(Diagnostic.Create(
+                AtomUIDiagnosticDescriptors.ControlTokenNestedType,
+                node.Identifier.GetLocation(),
+                ControlTokenInheritanceModel.GetDiagnosticTypeName(classSymbol)));
+        }
+
+        if (ControlTokenInfo.IsTerminal && !classSymbol.IsSealed)
+        {
+            ControlTokenInfo.Diagnostics.Add(Diagnostic.Create(
+                AtomUIDiagnosticDescriptors.ControlTokenMustBeSealed,
+                node.Identifier.GetLocation(),
+                classSymbol.Name));
+        }
+    }
+
+    private void ReadTokenName(ClassDeclarationSyntax node, INamedTypeSymbol classSymbol)
     {
         const string suffix = "Token";
         if (!classSymbol.Name.EndsWith(suffix, StringComparison.Ordinal) ||
             classSymbol.Name.Length == suffix.Length)
         {
             ControlTokenInfo.Diagnostics.Add(Diagnostic.Create(
-                AtomUIDiagnosticDescriptors.ControlTokenInvalidName,
+                classSymbol.IsAbstract
+                    ? AtomUIDiagnosticDescriptors.AbstractControlTokenInvalidName
+                    : AtomUIDiagnosticDescriptors.ControlTokenInvalidName,
                 node.Identifier.GetLocation(),
-                classSymbol.Name));
+                classSymbol.IsAbstract
+                    ? ControlTokenInheritanceModel.GetDiagnosticTypeName(classSymbol)
+                    : classSymbol.Name));
             return;
         }
 
-        ControlTokenInfo.ControlName = classSymbol.Name.Substring(0, classSymbol.Name.Length - suffix.Length);
-    }
-
-    private void ValidateInheritance(ClassDeclarationSyntax node, INamedTypeSymbol classSymbol)
-    {
-        if (classSymbol.BaseType is not { } baseType)
+        if (ControlTokenInfo.IsTerminal)
         {
-            return;
-        }
-
-        var baseTypeName = baseType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-        if (!string.Equals(baseTypeName, BaseControlTokenClass, StringComparison.Ordinal))
-        {
-            ControlTokenInfo.Diagnostics.Add(Diagnostic.Create(
-                AtomUIDiagnosticDescriptors.ControlTokenInheritance,
-                node.Identifier.GetLocation(),
-                classSymbol.Name,
-                baseType.Name));
+            ControlTokenInfo.ControlName = classSymbol.Name.Substring(0, classSymbol.Name.Length - suffix.Length);
         }
     }
-    
-    private void AddTokenProperties(ITypeSymbol classSymbol)
+
+    private void AddTokenProperties(
+        INamedTypeSymbol terminalType,
+        IReadOnlyList<ControlTokenLayerInfo> layers)
     {
-        foreach (var property in classSymbol.GetMembers().OfType<IPropertySymbol>())
+        var flattened = new Dictionary<string, FlattenedControlTokenProperty>(StringComparer.Ordinal);
+        var inheritedMemberTypes = GetInheritedMemberTypes(layers[0].Symbol.BaseType);
+        var terminalTypeName = terminalType.ToDisplayString(GeneratorSymbolDisplay.FullyQualifiedType);
+        foreach (var layer in layers)
         {
-            if (property.IsStatic ||
-                property.GetMethod is null ||
-                property.SetMethod is null ||
-                property.DeclaredAccessibility == Accessibility.Private ||
-                HasNotTokenDefinition(property))
+            var declaredMembers = layer.Symbol.GetMembers()
+                                       .Where(static member => !member.IsImplicitlyDeclared)
+                                       .ToArray();
+            var conflictingNames = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var member in declaredMembers)
             {
-                continue;
+                if (conflictingNames.Contains(member.Name))
+                {
+                    continue;
+                }
+
+                if (flattened.TryGetValue(member.Name, out var inheritedToken))
+                {
+                    AddPropertyConflict(
+                        member.Name,
+                        member.Locations.FirstOrDefault(),
+                        inheritedToken.DeclaringType,
+                        layer.Symbol);
+                    conflictingNames.Add(member.Name);
+                    continue;
+                }
+
+                if (member is IPropertySymbol property &&
+                    !HasNotTokenDefinition(property) &&
+                    inheritedMemberTypes.TryGetValue(property.Name, out var inheritedMemberType))
+                {
+                    AddPropertyConflict(
+                        property.Name,
+                        property.Locations.FirstOrDefault(),
+                        inheritedMemberType,
+                        layer.Symbol);
+                    conflictingNames.Add(property.Name);
+                }
             }
 
+            foreach (var property in declaredMembers.OfType<IPropertySymbol>())
+            {
+                if (conflictingNames.Contains(property.Name) || HasNotTokenDefinition(property))
+                {
+                    continue;
+                }
+
+                if (!TryValidateProperty(property, out var reason))
+                {
+                    ControlTokenInfo.Diagnostics.Add(Diagnostic.Create(
+                        AtomUIDiagnosticDescriptors.ControlTokenInvalidProperty,
+                        property.Locations.FirstOrDefault(),
+                        layer.Symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+                        property.Name,
+                        reason));
+                    continue;
+                }
+
+                var candidate = new FlattenedControlTokenProperty(
+                    property.Name,
+                    property.Type.ToDisplayString(GeneratorSymbolDisplay.FullyQualifiedType),
+                    layer.Symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+                    terminalTypeName,
+                    property.Locations.FirstOrDefault(),
+                    !SymbolEqualityComparer.Default.Equals(layer.Symbol, terminalType));
+                if (flattened.TryGetValue(property.Name, out var existing))
+                {
+                    AddPropertyConflict(
+                        property.Name,
+                        candidate.Location,
+                        existing.DeclaringType,
+                        layer.Symbol);
+                    continue;
+                }
+
+                flattened.Add(property.Name, candidate);
+            }
+
+            foreach (var member in declaredMembers)
+            {
+                if (!inheritedMemberTypes.ContainsKey(member.Name))
+                {
+                    inheritedMemberTypes.Add(
+                        member.Name,
+                        layer.Symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
+                }
+            }
+        }
+
+        if (ControlTokenInfo.Diagnostics.Count != 0)
+        {
+            return;
+        }
+
+        foreach (var property in flattened.Values)
+        {
             ControlTokenInfo.Tokens.Add(new TokenName(property.Name, string.Empty));
             ControlTokenInfo.SchemaTokens.Add(new SchemaTokenInfo(
                 property.Name,
-                property.Type.ToDisplayString(GeneratorSymbolDisplay.FullyQualifiedType),
-                ControlTokenInfo.GetFullyQualifiedTokenTypeName().StartsWith("global::", StringComparison.Ordinal)
-                    ? ControlTokenInfo.GetFullyQualifiedTokenTypeName()
-                    : $"global::{ControlTokenInfo.GetFullyQualifiedTokenTypeName()}",
+                property.ValueType,
+                property.TerminalType,
                 SchemaTokenStage.Control));
         }
+    }
+
+    private void AddPropertyConflict(
+        string memberName,
+        Location? location,
+        string inheritedDeclaringType,
+        INamedTypeSymbol currentLayer)
+    {
+        ControlTokenInfo.Diagnostics.Add(Diagnostic.Create(
+            AtomUIDiagnosticDescriptors.ControlTokenPropertyConflict,
+            location,
+            memberName,
+            inheritedDeclaringType,
+            currentLayer.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)));
+    }
+
+    private static Dictionary<string, string> GetInheritedMemberTypes(INamedTypeSymbol? baseType)
+    {
+        var result = new Dictionary<string, string>(StringComparer.Ordinal);
+        for (var current = baseType; current is not null; current = current.BaseType)
+        {
+            foreach (var member in current.GetMembers().Where(static member => !member.IsImplicitlyDeclared))
+            {
+                if (!result.ContainsKey(member.Name))
+                {
+                    result.Add(
+                        member.Name,
+                        current.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private bool TryValidateProperty(IPropertySymbol property, out string reason)
+    {
+        if (property.IsStatic)
+        {
+            reason = "static properties are not supported";
+            return false;
+        }
+        if (property.IsIndexer)
+        {
+            reason = "indexers are not supported";
+            return false;
+        }
+        if (property.ExplicitInterfaceImplementations.Length != 0)
+        {
+            reason = "explicit interface implementations are not supported";
+            return false;
+        }
+        if (property.IsVirtual || property.IsAbstract || property.IsOverride)
+        {
+            reason = "virtual, abstract, and override properties are not supported";
+            return false;
+        }
+        if (property.IsRequired)
+        {
+            reason = "required properties are not supported by the generated parameterless factory";
+            return false;
+        }
+        if (property.GetMethod is null || property.SetMethod is null)
+        {
+            reason = "both getter and setter are required";
+            return false;
+        }
+        if (property.SetMethod.IsInitOnly)
+        {
+            reason = "init-only setters are not supported by generated runtime writers";
+            return false;
+        }
+        if (!_semanticModel.Compilation.IsSymbolAccessibleWithin(
+                property.GetMethod,
+                _semanticModel.Compilation.Assembly) ||
+            !_semanticModel.Compilation.IsSymbolAccessibleWithin(
+                property.SetMethod,
+                _semanticModel.Compilation.Assembly))
+        {
+            reason = "getter and setter must be accessible to generated code";
+            return false;
+        }
+
+        reason = string.Empty;
+        return true;
     }
 
     private static bool HasNotTokenDefinition(IPropertySymbol property)

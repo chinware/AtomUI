@@ -4,7 +4,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class FloatButtonToken : AbstractControlDesignToken
+internal sealed class FloatButtonToken : AbstractControlDesignToken
 {
 
     public FloatButtonToken()

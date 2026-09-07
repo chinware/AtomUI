@@ -6,7 +6,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class WindowTitleBarToken : AbstractControlDesignToken
+internal sealed class WindowTitleBarToken : AbstractControlDesignToken
 {
     
     /// <summary>

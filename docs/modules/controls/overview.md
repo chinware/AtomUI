@@ -5,6 +5,8 @@
 ## 职责
 
 - 提供桌面控件包复用的基础控件、抽象控件和 Primitives。
+- 承载至少被两个产品终端真实复用的平台无关抽象 Control Token 定义；抽象定义层无 identity，
+  Desktop/Mobile 产品包分别拥有 `sealed` 终端 Token。
 - 提供公共主题 Provider：`CommonControlThemesProvider` 与 `BrowserCommonControlThemesProvider`。
 - 注册公共控件 Token、本地化 Catalog 和内置 Translation Bundle。
 - 提供 Icon、ItemsControl、ScrollViewer、Form、Watermark、QRCode、Badge 抽象等公共能力。
@@ -54,3 +56,6 @@ Source/Size 访问和释放遵守 UI dispatcher ownership。
 | `Badge/`、`Buttons/`、`Select/` | 多个桌面控件复用的抽象层 |
 
 具体桌面控件文档应放在 [../../controls/desktop/overview.md](../../controls/desktop/overview.md)，本模块文档只解释公共基础层。
+Control Token 定义层的提取门槛、Generator 扁平化和运行时隔离见
+[Control Design Token 继承架构](../../architecture/systems/theming/control-design-token-inheritance.md)。该能力不表示仓库已经存在
+Mobile 终端或共享 Token 基类。

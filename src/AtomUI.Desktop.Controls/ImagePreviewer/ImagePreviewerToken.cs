@@ -6,7 +6,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class ImagePreviewerToken : AbstractControlDesignToken
+internal sealed class ImagePreviewerToken : AbstractControlDesignToken
 {
     
     /// <summary>

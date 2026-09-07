@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class UploadToken : AbstractControlDesignToken
+internal sealed class UploadToken : AbstractControlDesignToken
 {
     /// <summary>
     /// 操作按扭颜色

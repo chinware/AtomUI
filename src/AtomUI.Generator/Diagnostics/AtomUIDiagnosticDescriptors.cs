@@ -214,8 +214,8 @@ internal static class AtomUIDiagnosticDescriptors
 
     public static readonly DiagnosticDescriptor ControlTokenInheritance = new(
         AtomUIDiagnosticIds.ControlTokenInheritance,
-        "Control design token cannot inherit another Control Token",
-        "Control design token type '{0}' cannot inherit Control Token type '{1}'; inherit AbstractControlDesignToken directly",
+        "Control design token inheritance chain is invalid",
+        "Control design token inheritance chain is invalid at '{0}': {1}",
         AtomUIDiagnosticCategories.Generator,
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
@@ -270,6 +270,69 @@ internal static class AtomUIDiagnosticDescriptors
         AtomUIDiagnosticIds.ControlTokenGlobalNameConflict,
         "Control Own Token conflicts with a Global Token",
         "Control '{0}' Own Token '{1}' conflicts with a Global Token",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ControlTokenMustBeSealed = new(
+        AtomUIDiagnosticIds.ControlTokenMustBeSealed,
+        "Concrete Control design token must be sealed",
+        "Concrete Control design token type '{0}' must be sealed",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ControlTokenGenericLayer = new(
+        AtomUIDiagnosticIds.ControlTokenGenericLayer,
+        "Control design token layer must be non-generic",
+        "Control design token type '{0}' must be non-generic",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ControlTokenPropertyConflict = new(
+        AtomUIDiagnosticIds.ControlTokenPropertyConflict,
+        "Control design token member conflicts with an inherited token name",
+        "Control Own Token name '{0}' conflicts across the inheritance chain ('{1}' and '{2}')",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ControlTokenInvalidProperty = new(
+        AtomUIDiagnosticIds.ControlTokenInvalidProperty,
+        "Control design token property shape is invalid",
+        "Property '{1}' on Control design token type '{0}' cannot define an Own Token: {2}",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ControlTokenInvalidCalculationChain = new(
+        AtomUIDiagnosticIds.ControlTokenInvalidCalculationChain,
+        "Control design token calculation chain is invalid",
+        "CalculateTokenValues on Control design token type '{0}' has an invalid calculation chain: {1}",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor AbstractControlTokenInvalidName = new(
+        AtomUIDiagnosticIds.AbstractControlTokenInvalidName,
+        "Abstract Control design token name does not follow convention",
+        "The abstract Control design token type '{0}' must end with 'Token'",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ControlTokenNestedType = new(
+        AtomUIDiagnosticIds.ControlTokenNestedType,
+        "Control design token type must be top-level",
+        "Control design token type '{0}' must be declared as a top-level class",
         AtomUIDiagnosticCategories.Generator,
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,

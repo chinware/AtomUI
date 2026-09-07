@@ -6,7 +6,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class ScrollViewerToken : AbstractControlDesignToken
+internal sealed class ScrollViewerToken : AbstractControlDesignToken
 {
     
     /// <summary>

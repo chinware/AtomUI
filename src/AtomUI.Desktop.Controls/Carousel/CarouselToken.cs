@@ -3,7 +3,7 @@ using AtomUI.Theme.DesignTokens;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class CarouselToken : AbstractControlDesignToken
+internal sealed class CarouselToken : AbstractControlDesignToken
 {
 
     public CarouselToken()

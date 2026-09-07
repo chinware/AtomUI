@@ -4,7 +4,7 @@ using Avalonia;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class TimePickerToken : AbstractControlDesignToken
+internal sealed class TimePickerToken : AbstractControlDesignToken
 {
     
     public TimePickerToken()

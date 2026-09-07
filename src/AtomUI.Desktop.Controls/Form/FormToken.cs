@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class FormToken : AbstractControlDesignToken
+internal sealed class FormToken : AbstractControlDesignToken
 {
     
     public FormToken()

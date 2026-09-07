@@ -182,10 +182,10 @@ discover terminal
 
 - 根以外每层自身都有 `[ControlDesignToken]`；
 - 中间层为 `abstract`，终端为非抽象 `sealed`；
-- 每层 `Arity == 0`；
+- 每层都是顶级类，且自身及 containing type 链均非泛型；
 - 链中没有具体中间 Token 或未标记普通类。
 
-每层只读取直接声明的属性。合法属性必须是实例、非 indexer，getter/setter 均可由终端程序集的生成代码访问，未标记 `[NotTokenDefinition]`，具有受支持 converter，不是显式接口实现，也不是 virtual、abstract、override 或 `new` 隐藏属性。
+每层只读取直接声明的属性。合法属性必须是实例、非 indexer，普通 getter/setter 均可由终端程序集的生成代码访问，未标记 `[NotTokenDefinition]`，不是 `init`-only、`required`、显式接口实现、virtual、abstract、override 或 `new` 隐藏属性。值类型继续服从现有 `TokenValueConverterRegistry` 运行时契约，本次继承生成器不新增 converter 白名单诊断。
 
 使用 `Dictionary<string, FlattenedControlTokenProperty>` 检测名称冲突，不依赖对象相等的 `HashSet` 静默去重。扁平属性模型至少保存名称、值类型、原始声明层和 location、终端类型、是否继承；声明层只用于诊断。生成 delegate 统一转换为终端类型：
 
@@ -227,13 +227,14 @@ static (token, value) =>
 | `ATOMUIGEN020` | 具体终端 `[ControlDesignToken]` 未 `sealed` |
 | `ATOMUIGEN021` | 抽象层或终端 Token 使用泛型 |
 | `ATOMUIGEN022` | 继承属性同名、隐藏或形成重复 schema key |
-| `ATOMUIGEN023` | 属性形态无效：indexer、不可访问访问器、virtual/abstract/override 等 |
+| `ATOMUIGEN023` | 属性形态无效：indexer、不可访问访问器、`init`-only、`required`、virtual/abstract/override 等 |
 | `ATOMUIGEN024` | `CalculateTokenValues` base 调用缺失、重复、非首条或参数错误 |
 | `ATOMUIGEN025` | 抽象 Token 名称不符合 `*Token` 约定 |
+| `ATOMUIGEN026` | Control Token 声明为嵌套类型；位于泛型容器时仍使用 `ATOMUIGEN021` |
 
 现有职责保持：`ATOMUIGEN012` 表示终端名称不能产生合法 Control 名称，`014` 表示没有匹配 public Control，`015` 表示匹配多个 Control，`019` 表示扁平 Own Token 与 Global Token 同名。
 
-诊断定位到最接近的可修改声明：终端类型、类型参数、中间基类引用、冲突属性或 override 方法。metadata 基类没有源码 location 时，消息包含完整 metadata type name。
+诊断定位到最接近的可修改声明：终端或定义层类型、中间基类、冲突成员或 override 方法。metadata 基类没有源码 location 时，消息包含完整 metadata type name。
 
 ## 7. 跨包、兼容性与 AOT
 
@@ -278,7 +279,7 @@ static (token, value) =>
 - abstract Token 可独立编译且不生成 identity；
 - 单层、多层、共享基类和跨程序集终端成功；
 - 非 sealed、泛型、未标记/具体中间层、错误根类型失败；
-- 继承属性、`[NotTokenDefinition]`、converter 和 accessibility 正确；
+- 继承属性、`[NotTokenDefinition]`、accessibility 与现有 converter 运行时契约正确；
 - indexer、virtual/override/new、重复名称、Global 冲突失败；
 - slot 和生成源码顺序确定。
 

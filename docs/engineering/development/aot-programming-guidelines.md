@@ -399,6 +399,9 @@ factory 合并 Part 样式。`.semantic-*` marker 只参与 Avalonia 原生 Sele
 - 第三方 Control 包必须使用 AtomUI generator，并只通过一个真实的包级入口调用生成 registration helper，注册 Control、
   可选 Own Token 和主题资产；不提供手写 descriptor、手工 manifest 或反射 fallback 旁路。
 - Own Token 可以放在包内正常源码位置并使用 `[ControlDesignToken]` 标记；禁止泛型 Control 参数和手写 ID。
+- Control Token 定义继承只允许 Generator 在编译期把显式标记的抽象层扁平化到 `sealed` 终端。抽象层不生成
+  identity、descriptor、Registration Unit 或动态 root，运行时不扫描或遍历 Token 基类。完整契约见
+  [Control Design Token 继承架构](../../architecture/systems/theming/control-design-token-inheritance.md)。
 
 ### Token value converter 注册
 

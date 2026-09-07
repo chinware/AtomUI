@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class ToolTipToken : AbstractControlDesignToken
+internal sealed class ToolTipToken : AbstractControlDesignToken
 {
     
     public ToolTipToken()

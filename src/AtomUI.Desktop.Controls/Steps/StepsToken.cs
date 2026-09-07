@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class StepsToken : AbstractControlDesignToken
+internal sealed class StepsToken : AbstractControlDesignToken
 {
 
     public StepsToken()

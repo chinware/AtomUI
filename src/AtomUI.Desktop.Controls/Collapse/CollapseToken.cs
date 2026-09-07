@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class CollapseToken : AbstractControlDesignToken
+internal sealed class CollapseToken : AbstractControlDesignToken
 {
     
     public CollapseToken()

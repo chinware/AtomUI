@@ -40,7 +40,7 @@ public class TokenResourceKeyGenerator : IIncrementalGenerator
             (node, token) => true,
             (context, token) =>
             {
-                var walker = new ControlTokenPropertyWalker(context.SemanticModel);
+                var walker = new ControlTokenPropertyWalker(context.SemanticModel, token);
                 walker.Visit(context.TargetNode);
                 return walker.ControlTokenInfo;
             }).Collect();

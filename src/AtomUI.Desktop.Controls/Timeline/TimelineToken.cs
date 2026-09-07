@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class TimelineToken : AbstractControlDesignToken
+internal sealed class TimelineToken : AbstractControlDesignToken
 {
     /// <summary>
     /// Timeline 轨迹颜色

@@ -6,7 +6,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class DrawerToken : AbstractControlDesignToken
+internal sealed class DrawerToken : AbstractControlDesignToken
 {
     
     public DrawerToken()

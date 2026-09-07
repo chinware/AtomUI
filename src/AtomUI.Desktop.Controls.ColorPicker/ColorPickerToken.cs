@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-public class ColorPickerToken : AbstractControlDesignToken
+public sealed class ColorPickerToken : AbstractControlDesignToken
 {
 
     /// <summary>

@@ -9,6 +9,8 @@ Analyzer 方式被多个项目引用。AOT/Trim usage、Sidecar 和 Application 
 - 根据 Global Token 定义生成强类型 schema、资源键和投影代码。
 - 根据 public 可主题化 Control、无参数 `[ControlDesignToken]` 标记的可选 Own Token 类型和命名/目录约定生成独立
   Control identity 与 descriptor；Attribute 只负责 Token 发现，不携带 Control 类型、identity 或 ID。
+- Control Token 定义继承要求 Generator 区分无 identity 的标记抽象层与 `sealed` 终端类型，将跨程序集
+  继承属性扁平化到终端 schema，并在构建期验证继承链、属性冲突和默认计算 base 调用。
 - 分析构建系统提供的 `Themes/**/*.axaml`，生成 ControlTheme asset owner、引用 identity、Semantic Part 契约和
   包级 manifest；不收集 Global Token 消费白名单。
 - 为每个 Control 包生成包级注册 helper 和 manifest，由真实 `UseXxxControls()` 入口调用；不要求逐 Control 或逐 Theme
@@ -43,6 +45,8 @@ Analyzer 方式被多个项目引用。AOT/Trim usage、Sidecar 和 Application 
 
 ## 专题文档
 
+- [Control Design Token 继承架构](../../architecture/systems/theming/control-design-token-inheritance.md)：抽象/终端类型模型、
+  跨程序集属性扁平化、diagnostic、schema revision 和运行时/AOT 边界。
 - [Scoped Resource Host Generator](scoped-resource-host-generator.md)：目标识别、生成输出、生命周期状态机、diagnostic 和测试契约。
 - [Scoped Resource Host 开发规范](../../engineering/development/scoped-resource-host.md)：Control 作者的适用场景、owner 生命周期、验证和 review 规则。
 - [Semantic Part Generator 设计](semantic-part-generator.md)：Control 语义区域的声明、AXAML 校验、descriptor、
@@ -69,3 +73,6 @@ Analyzer 方式被多个项目引用。AOT/Trim usage、Sidecar 和 Application 
 callee body 或生成 Unit 间调用；普通 Debug/Release 必须从 compiler command line 上完全排除 linked analyzer。对于非 Visual
 `AvaloniaObject` 资源宿主类需求，按 [Scoped Resource Host 开发规范](../../engineering/development/scoped-resource-host.md)
 管理 owner 生命周期，并由本模块的 Generator 生成样板代码。
+
+实现 Control Token 定义继承时，抽象层不得生成 identity、descriptor、resource key、Registration Unit 或 linked fragment；
+只有终端 Token 产生运行时输出。声明层类型、程序集和继承深度不得进入终端 schema fingerprint。

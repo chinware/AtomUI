@@ -6,7 +6,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class ToggleSwitchToken : AbstractControlDesignToken
+internal sealed class ToggleSwitchToken : AbstractControlDesignToken
 {
     
     public ToggleSwitchToken()

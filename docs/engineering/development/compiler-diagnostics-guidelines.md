@@ -77,6 +77,14 @@ dotnet_diagnostic.ATOMUIAOT001.severity = error
 | `ATOMUIGEN002` | Generator | Warning | `[GenerateScopedResourceHost]` 标记的类型未继承 `AvaloniaObject` | 只在非 Visual `AvaloniaObject` 描述对象上使用该 attribute | ScopedResourceHost |
 | `ATOMUIGEN003` | Generator | Warning | `[GenerateScopedResourceHost]` 标记的类型继承了 `Control`、`StyledElement` 或 `Visual` | Visual 控件应使用视觉树资源宿主，不使用该 attribute | ScopedResourceHost |
 | `ATOMUIGEN004` | Generator | Warning | `[GenerateScopedResourceHost]` 标记的类型已经实现 `IResourceHost` 或 `IThemeVariantHost` | 删除手写实现后再使用该 attribute，或移除该 attribute | ScopedResourceHost |
+| `ATOMUIGEN013` | Generator | Error | Control Design Token 继承链包含未标记或具体中间层，或没有到达 `AbstractControlDesignToken` | 显式标记每个非根层，并把中间层改为 `abstract` | ControlDesignToken |
+| `ATOMUIGEN020` | Generator | Error | 具体 `[ControlDesignToken]` 终端未声明 `sealed` | 封闭终端；需要复用时另建标记的抽象定义层 | ControlDesignToken |
+| `ATOMUIGEN021` | Generator | Error | Control Design Token 定义层或终端使用泛型 | 改为非泛型 Token 类型 | ControlDesignToken |
+| `ATOMUIGEN022` | Generator | Error | 继承链中的属性同名、隐藏或形成重复 schema key | 只保留一个具有稳定语义的属性声明 | ControlDesignToken |
+| `ATOMUIGEN023` | Generator | Error | Own Token 属性为 static、indexer、显式接口实现、访问器不可访问、`init`-only、`required` 或 virtual/abstract/override | 改为生成代码可访问的非 virtual 实例普通 get/set 属性，或使用 `[NotTokenDefinition]` 排除辅助属性 | ControlDesignToken |
+| `ATOMUIGEN024` | Generator | Error | 后续层 `CalculateTokenValues` 没有把唯一的直接 base 调用放在 block body 第一条并原样转发参数 | 以 `base.CalculateTokenValues(isDarkMode);` 开始方法，再计算本层值 | ControlDesignToken |
+| `ATOMUIGEN025` | Generator | Error | 抽象 Control Design Token 定义层名称不以非空 `Token` 后缀结束 | 使用表达家族语义的 `*Token` 名称 | ControlDesignToken |
+| `ATOMUIGEN026` | Generator | Error | Control Design Token 声明为嵌套类型 | 把 Token 移到 namespace 下作为顶级类；泛型容器中的嵌套 Token 仍使用 `ATOMUIGEN021` | ControlDesignToken |
 | `ATOMUIGEN101` | Generator | Warning | Gallery source code display generator 发现参与默认源码匹配的 `ShowCasePanel` 缺少 `Name` | 给 `ShowCasePanel` 设置稳定 `Name`，或使用显式源码 key 规则 | GallerySourceCodeDisplay |
 | `ATOMUILOC001` | Localization | Error | AtomUI 固定语言数据记录的 schema、标识符、BCP 47 标签或元数据无效 | 按数据 schema 修正发生错误的具体记录 | LanguageTags |
 | `ATOMUILOC002` | Localization | Error | AtomUI 固定语言数据包含重复的属性标识符或规范 BCP 47 标签 | 删除重复记录并为每个属性和标签保留唯一映射 | LanguageTags |

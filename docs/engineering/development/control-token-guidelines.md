@@ -4,7 +4,8 @@
 Control Token、ControlTheme Asset 与组合主题规则。完整编译、snapshot 和资源发布模型见
 [AtomUI 主题系统架构](../../architecture/systems/theming/runtime.md)。单个 Control 的 `token.md` 只记录 Own Token 语义和必要的
 Global Token 使用示例；全部 Global Token 都可覆盖，不在单 Control 文档中复制支持清单。面向主题作者的完整定制流程见
-[主题定制指南](../../guides/theming/customization.md)。
+[主题定制指南](../../guides/theming/customization.md)。Control Own Token 的定义继承、终端封闭、跨程序集复用和扁平 schema
+契约见 [Control Design Token 继承架构](../../architecture/systems/theming/control-design-token-inheritance.md)。
 
 ## Token 分层
 
@@ -71,15 +72,35 @@ internal sealed class RatingToken : AbstractControlDesignToken
 约束：
 
 - `RatingToken.cs` 只在 Rating 存在 Own Token 时创建。
-- Own Token 类型使用无参数 `[ControlDesignToken]` 标记，供生成器稳定发现。
+- Own Token 定义层和终端类型都使用无参数 `[ControlDesignToken]` 标记，供生成器稳定发现；Attribute 不隐式继承，
+  继承链每一层都要显式标记。
 - `[ControlDesignToken]` 不携带 Control 类型、identity、ID 或主题资产路径；Control 关联继续由命名和目录约定建立。
-- Token 类型只继承统一基础类型，禁止继承另一个 Control Token。
+- 标记的 `abstract` 类型是无 identity 的定义复用层；标记的具体类型是匹配 Control 的终端 Token，必须 `sealed`。
+- 终端可以直接继承 `AbstractControlDesignToken`，也可以继承一层或多层显式标记的抽象 Token；不能继承具体 Token，
+  也不能在链中插入未标记类型。
+- 抽象层和终端都必须是非泛型顶级类；Token 属性禁止 virtual、abstract、override、indexer、`new` 隐藏、`init`-only setter 和
+  `required`。
 - Own Token 禁止与任一 Global Token 同名。
 - 禁止泛型 `[ControlDesignToken<TControl>]`、手写 ID 或 Theme Asset glob。
 - Control 没有 Own Token 时仍然拥有 identity，并天然可以覆盖完整 Global Token schema。
 
 多个 Control 需要相同值时，先判断它是否属于全局设计语言。属于时提升为 Global Token；不属于时分别定义语义
-清晰的 Own Token。不能通过 Control Token 继承共享实现，纯计算复用可以使用无 identity 的 internal helper。
+清晰的 Own Token。只有至少两个真实终端共享同一 Control 视觉语义、默认计算依赖一致且平台差异仍可由终端表达时，
+才提取无 identity 的抽象 `[ControlDesignToken]` 层；不能为了可能的复用提前建立空继承层。
+
+抽象层可以位于另一个程序集。对第三方开放时使用 `public abstract`，仅供已知第一方包复用时可以使用
+`internal abstract` 与正常的 `InternalsVisibleTo`。跨 Desktop/Mobile 的产品视觉语义放在最低且正确的共同上游
+`AtomUI.Controls`，不因复用下沉到 `AtomUI.Core` 或 `AtomUI.Controls.Shared`。
+
+### 默认值计算继承
+
+Generator 只为终端生成 evaluator，默认计算使用 C# virtual dispatch。继承链后续层 override
+`CalculateTokenValues(bool isDarkMode)` 时，第一条可执行语句必须且只能调用一次
+`base.CalculateTokenValues(isDarkMode)`，随后再计算本层属性。base 调用不能是条件性的，也不能转发其他参数。
+
+直接继承 `AbstractControlDesignToken` 的终端和直接重写根方法的第一层抽象 Token 不要求调用根类型空实现；某层没有
+override 时正常继承基类实现。定义 public 抽象 Token 的包必须启用兼容版本 Generator，使方法体契约在产生 metadata
+前得到验证。
 
 ## 可配置 Token 契约
 
@@ -251,7 +272,10 @@ NativeAOT 验证的大型多控件包才启用 `AtomUIRegistrationGranularity=Di
 以下情况必须构建失败：
 
 - Own Token 与 Global Token 同名。
-- Control Token 继承另一个 Control Token。
+- 具体 `[ControlDesignToken]` 未 `sealed`，或作为另一 Token 的基类。
+- Token 继承链包含泛型、未标记中间层、具体中间层或没有到达 `AbstractControlDesignToken`。
+- 继承属性同名、隐藏、形态无效，或形成重复 schema key。
+- `CalculateTokenValues` 的直接 base 调用缺失、重复、不是第一条可执行语句或未原样转发参数。
 - TokenResource 引用了不存在或归属错误的 Token。
 - Control 配置包含既不是 Global Token、也不是当前 Own Token 的名称。
 - Control、Token、主题资产和 identity 约定存在歧义。
@@ -267,6 +291,7 @@ NativeAOT 验证的大型多控件包才启用 `AtomUIRegistrationGranularity=Di
 | --- | --- |
 | 新增 Control | 验证 identity、可选 Own Token、主题 manifest、包级注册和无反射路径。 |
 | 修改 Own Token | 验证强类型 key、默认计算、override 和 AXAML 消费。 |
+| 修改 Own Token 继承层 | 验证继承链诊断、属性扁平化、base 计算顺序、跨程序集增量失效、sibling 隔离和 schema revision 等价。 |
 | 修改 Control 对 Global Token 的使用 | 验证 Effective Global 覆盖、Global fallback、算法间接派生和跨 Control 隔离。 |
 | 修改 Semantic Part | 验证 selector marker、ContractType、cardinality、模板变体和文档 descriptor 一致性。 |
 | 修改 Semantic Part Theme | 额外验证 owner/Part Token 分工、TargetType 和默认/实例替换。 |

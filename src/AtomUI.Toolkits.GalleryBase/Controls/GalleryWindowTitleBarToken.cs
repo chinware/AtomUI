@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Toolkits.GalleryBase.Controls;
 
 [ControlDesignToken]
-internal class GalleryWindowTitleBarToken : AbstractControlDesignToken
+internal sealed class GalleryWindowTitleBarToken : AbstractControlDesignToken
 {
 
     public FontWeight MenuFontWeight { get; set; }

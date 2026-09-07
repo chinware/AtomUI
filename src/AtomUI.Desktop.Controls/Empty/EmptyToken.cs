@@ -4,7 +4,7 @@ using Avalonia;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class EmptyToken : AbstractControlDesignToken
+internal sealed class EmptyToken : AbstractControlDesignToken
 {
     
     /// <summary>

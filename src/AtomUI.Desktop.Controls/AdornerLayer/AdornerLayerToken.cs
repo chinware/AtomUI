@@ -4,7 +4,7 @@ using Avalonia;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class AdornerLayerToken : AbstractControlDesignToken
+internal sealed class AdornerLayerToken : AbstractControlDesignToken
 {
 
     public AdornerLayerToken()

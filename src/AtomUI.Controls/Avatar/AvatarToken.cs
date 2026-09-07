@@ -4,7 +4,7 @@ using Avalonia.Media;
 namespace AtomUI.Controls;
 
 [ControlDesignToken]
-internal class AvatarToken : AbstractControlDesignToken
+internal sealed class AvatarToken : AbstractControlDesignToken
 {
     public double ContainerSize { get; set; }
 

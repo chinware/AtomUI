@@ -11,7 +11,14 @@ internal static class GeneratorSymbolDisplay
             ~SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
 }
 
-internal class ControlTokenInfo
+internal enum ControlTokenRole
+{
+    Invalid,
+    AbstractLayer,
+    Terminal
+}
+
+internal sealed class ControlTokenInfo
 {
     public string TokenNamespace { get; set; }
     public string TokenName { get; set; }
@@ -20,7 +27,12 @@ internal class ControlTokenInfo
     public HashSet<SchemaTokenInfo> SchemaTokens { get; }
     public List<Diagnostic> Diagnostics { get; }
     public Location? DeclarationLocation { get; set; }
-    public bool IsValid => Diagnostics.Count == 0 && !string.IsNullOrWhiteSpace(ControlName);
+    public ControlTokenRole Role { get; set; }
+    public bool IsTerminal => Role == ControlTokenRole.Terminal;
+    public bool IsValid => Diagnostics.Count == 0 &&
+                           (Role == ControlTokenRole.AbstractLayer ||
+                            (Role == ControlTokenRole.Terminal &&
+                             !string.IsNullOrWhiteSpace(ControlName)));
 
     public ControlTokenInfo(string ns, string tokenName, HashSet<TokenName> tokens)
     {

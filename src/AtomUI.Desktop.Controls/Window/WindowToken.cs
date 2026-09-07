@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class WindowToken : AbstractControlDesignToken
+internal sealed class WindowToken : AbstractControlDesignToken
 {
 
     /// <summary>

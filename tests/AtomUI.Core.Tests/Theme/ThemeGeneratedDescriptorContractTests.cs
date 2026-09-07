@@ -38,12 +38,19 @@ public class ThemeGeneratedDescriptorContractTests
     public void Control_Token_Attribute_Is_A_Zero_Argument_Discovery_Marker()
     {
         var attribute = new ControlDesignTokenAttribute();
+        var usage = attribute.GetType()
+                             .GetCustomAttributes(typeof(AttributeUsageAttribute), inherit: false)
+                             .Cast<AttributeUsageAttribute>()
+                             .ShouldHaveSingleItem();
 
         attribute.GetType().GetConstructors().ShouldHaveSingleItem()
                  .GetParameters().ShouldBeEmpty();
         attribute.GetType().GetProperties()
                  .Where(static property => property.DeclaringType == typeof(ControlDesignTokenAttribute))
                  .ShouldBeEmpty();
+        usage.ValidOn.ShouldBe(AttributeTargets.Class);
+        usage.Inherited.ShouldBeFalse();
+        usage.AllowMultiple.ShouldBeFalse();
     }
 
     [Fact]

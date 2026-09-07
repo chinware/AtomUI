@@ -4,7 +4,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class SplitterToken : AbstractControlDesignToken
+internal sealed class SplitterToken : AbstractControlDesignToken
 {
     
     public SplitterToken()

@@ -36,6 +36,10 @@ flowchart LR
 - iOS/Android Host 是下游组合入口，只负责生命周期、平台初始化、签名/部署和 adapter 提供。
 - `AtomUI.Desktop.Controls` 不在 Mobile 的依赖闭包中。
 
+Mobile Control Own Token 必须遵循 [Control Design Token 继承](../../architecture/systems/theming/control-design-token-inheritance.md)：
+具体 Token 是 `sealed` 终端；只有 Desktop 与 Mobile 已有至少两个真实消费者且共享语义稳定时，才把显式标记的抽象定义层
+放入 `AtomUI.Controls`。当前没有 `AtomUI.Mobile.Controls` 源码，因此不能据此创建推测性的共享 Token 基类。
+
 具体当前/目标依赖视图见 [项目依赖关系](../../architecture/foundations/dependency-graph.md)。
 
 ## 启动与消费

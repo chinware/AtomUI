@@ -41,6 +41,11 @@ type/identity、允许零 Own Token 的 descriptor、ControlTheme asset manifest
 registry 后不扫描上层程序集或 AXAML。它对多个上层项目开放 `InternalsVisibleTo`，因此修改内部 API 时需要同时
 检查上层 Control 包。
 
+Core 拥有 `AbstractControlDesignToken`、`ControlDesignTokenAttribute` 和终端 descriptor 的运行时协议，但不拥有具体
+Control 家族的共享视觉语义。跨 Desktop/Mobile 的抽象 Control Token 定义属于 `AtomUI.Controls`；Generator 在编译期
+扁平化这些定义，Core 运行时不遍历继承链。完整契约见
+[Control Design Token 继承架构](../../architecture/systems/theming/control-design-token-inheritance.md)。
+
 ## 图片加载生命周期职责
 
 Core 增加内部 `IAtomUIOwnedService`、Builder factory 收集和 `ApplicationScope` 的 attach/回滚/逆序 dispose。该机制供
@@ -55,6 +60,7 @@ Application 映射由 Shared 的 `ImageLoaderStore` 管理；Core 不增加 `App
 ## 相关文档
 
 - [主题系统架构](../../architecture/systems/theming/runtime.md)
+- [Control Design Token 继承架构](../../architecture/systems/theming/control-design-token-inheritance.md)
 - [Semantic Part 系统设计](../../architecture/systems/theming/semantic-parts.md)
 - [AtomUI 本地化系统架构](../../architecture/systems/localization/overview.md)
 - [主题定制指南](../../guides/theming/customization.md)

@@ -4,7 +4,7 @@ using Avalonia;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class SeparatorToken : AbstractControlDesignToken
+internal sealed class SeparatorToken : AbstractControlDesignToken
 {
 
     public SeparatorToken()

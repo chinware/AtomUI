@@ -3,7 +3,7 @@ using AtomUI.Theme.DesignTokens;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class StatisticToken : AbstractControlDesignToken
+internal sealed class StatisticToken : AbstractControlDesignToken
 {
     
     /// <summary>

@@ -3,7 +3,7 @@ using AtomUI.Theme.DesignTokens;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class TreeSelectToken : AbstractControlDesignToken
+internal sealed class TreeSelectToken : AbstractControlDesignToken
 {
     
     /// <summary>

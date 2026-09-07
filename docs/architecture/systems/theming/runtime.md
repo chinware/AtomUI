@@ -317,8 +317,9 @@ Evaluate(effectiveSeed, previousMap?) -> nextMap
 `ThemeSchemaRegistry.Revision` 根据排序后的完整 descriptor schema 确定性计算，输入至少包含 Global Token
 schema、Control identity、Control CLR type、Own Token name/kind/stage/value type/resource key schema、主题资产
 结构、算法枚举值/revision 及其外观声明。ControlTheme 或 C# 实现消费了哪些 Global Token 不属于 schema，也不进入
-revision。注册顺序不影响 revision；任何会改变配置绑定、Token 类型或资源投影结构的 descriptor 变化都必须
-改变 revision。
+revision。Control Own Token 属性声明在终端类型还是显式标记的抽象定义层、定义层所在程序集和继承深度也不进入
+revision。注册顺序不影响 revision；任何会改变配置绑定、Token 类型或资源投影结构的 descriptor 变化都必须改变
+revision。
 
 Registry 在首个 snapshot 编译前冻结。Manager 构建完成后不能追加 Token、Control、算法或主题资产
 descriptor；可选控件包必须在 `UseAtomUI` Builder 阶段完成显式注册。
@@ -331,7 +332,8 @@ descriptor；可选控件包必须在 `UseAtomUI` Builder 阶段完成显式注�
 descriptor 和资源扩展，只省略 Own Token builder/schema：
 
 - 稳定的 `ControlTokenIdentity`，包括 catalog 和 control id。
-- 发现无参数 `[ControlDesignToken]` 标记的可选 Own Token 类型；Attribute 不参与 Control identity 或资产关联。
+- 发现无参数 `[ControlDesignToken]` 标记的可选 Own Token 类型；标记的抽象类型只贡献
+  定义，标记的 `sealed` 具体类型是终端 Own Token。Attribute 和抽象定义层都不参与 Control identity 或资产关联。
 - Own Token name 对应的强类型赋值委托查找表；没有 Own Token 时为空。
 - Own Token value 到 Avalonia resource value 的投影；没有 Own Token 时为空。
 - 可选 Own Token builder 的直接构造委托。
@@ -351,10 +353,15 @@ Own Token；两者的分类只存在于 schema、配置和编译层，不泄漏�
 内置路径删除
 `Activator.CreateInstance`、`Type.GetProperties`、`PropertyInfo.GetValue/SetValue` 和枚举反射。
 
+Control Design Token CLR 继承只在生成期复用 Own Token 定义。Generator 把显式标记的抽象链扁平化到终端
+descriptor，运行时不保存声明层、继承深度或基类 identity。完整契约见
+[Control Design Token 继承架构](control-design-token-inheritance.md)。
+
 第三方 Control 包必须使用 AtomUI 源生成器，并且只通过一个带 `[ControlPackageRegistrationEntry]` 的公开包级入口注册
 Control descriptor、可选 Own Token 和主题资产。普通第三方包默认以整个 Package 作为一个安全 Registration Unit，不维护
 Unit ownership 或依赖图。Own Token 使用无参数 `[ControlDesignToken]` 供生成器发现，但不声明 Control 类型、identity 或
-ID。不存在手写 descriptor/manifest、运行时程序集扫描或 AXAML 文本扫描 fallback。完整接入步骤见
+ID。目标继承契约允许第三方包从上游 `public abstract` `[ControlDesignToken]` 定义层派生自己的 `sealed` 终端 Token；抽象层不生成
+注册产物。不存在手写 descriptor/manifest、运行时程序集扫描或 AXAML 文本扫描 fallback。完整接入步骤见
 [第三方 AtomUI Control Package 指南](../../../guides/theming/third-party-control-packages.md)。
 
 ## 6. 主题文件
@@ -1008,8 +1015,9 @@ TokenResourceBinder.CreateControlTokenBinding(
 转运 Token 的隐藏 StyledProperty，也不得在运行时观察资源访问来推导 schema。
 
 基类代码读取 Effective Global Token 时按实例 exact CLR type 解析，因此注册的派生 Control 使用自己的 identity。
-Own Token 始终显式属于某一 Control，不随 CLR 继承动态替换。未注册 exact type 使用 Control Effective API 时
-必须明确失败，不能退回基类 identity。internal part 不创建公开 identity，由公开 owner 负责绑定。
+Own Token 始终显式属于某一终端 Control，不随 Control CLR 继承或 Token 定义继承动态替换。在目标继承模型中，Token
+定义继承由 Generator 在生成期扁平化；未注册 exact type 使用 Control Effective API 时必须明确失败，不能退回基类 identity。internal part
+不创建公开 identity，由公开 owner 负责绑定。
 
 ### 13.3 强类型 Token key 编码
 
@@ -1491,8 +1499,10 @@ ThemeManager 提交 snapshot，Resources 只读取已提交 snapshot。Compilati
 - `ControlTokenRegistration(Type)`、反射 schema、Activator fallback 和对应 AOT suppress。
 - `ControlTokenScope.Identity` 及其旧 Catalog/Id 形式、ControlTheme ambient scope，以及按 TargetType、Control
   继承、ControlTheme `BasedOn` 或运行时反射推断 Control identity 的逻辑。
-- Control Token 跨 Control 继承、Own Token 与 Global Token 同名，以及按 Global Token 消费白名单限制 Control
-  配置的 schema。
+- Control Token identity、descriptor、配置、snapshot 或资源值跨 Control 继承，以及任何 Token 基类 identity
+  fallback。显式标记抽象层的源码定义继承是生成期机制，遵循
+  [Control Design Token 继承架构](control-design-token-inheritance.md)。
+- Own Token 与 Global Token 同名，以及按 Global Token 消费白名单限制 Control 配置的 schema。
 - `ControlThemeAssets` glob Attribute、逐 Theme Module、手工 asset manifest 和只为聚合主题创建的额外 AXAML。
 - cache pin、父 snapshot Version cache key 和字符串拼接 cache key。
 - 旧主题 XML 的 `ControlTokens/ControlToken` 结构。

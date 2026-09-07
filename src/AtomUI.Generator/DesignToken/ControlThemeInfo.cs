@@ -125,14 +125,22 @@ internal static class ControlThemeModelBuilder
     {
         var controls = GetPublicControls(compilation.Assembly.GlobalNamespace).ToArray();
         var result = new Dictionary<string, ControlThemeInfo>(StringComparer.Ordinal);
+        var reportedTokenDiagnostics = new HashSet<string>(StringComparer.Ordinal);
 
         foreach (var ownToken in ownTokens)
         {
             foreach (var diagnostic in ownToken.Diagnostics)
             {
-                reportDiagnostic(diagnostic);
+                if (reportedTokenDiagnostics.Add(GetDiagnosticKey(diagnostic)))
+                {
+                    reportDiagnostic(diagnostic);
+                }
             }
             if (!ownToken.IsValid)
+            {
+                continue;
+            }
+            if (!ownToken.IsTerminal)
             {
                 continue;
             }
@@ -252,6 +260,15 @@ internal static class ControlThemeModelBuilder
         }
 
         return result.Values.OrderBy(static info => info.ControlName, StringComparer.Ordinal).ToArray();
+    }
+
+    private static string GetDiagnosticKey(Diagnostic diagnostic)
+    {
+        var location = diagnostic.Location;
+        var locationKey = location == Location.None
+            ? "<none>"
+            : $"{location.SourceTree?.FilePath ?? location.GetLineSpan().Path}:{location.SourceSpan.Start}:{location.SourceSpan.Length}";
+        return $"{diagnostic.Id}\u001f{locationKey}\u001f{diagnostic.GetMessage()}";
     }
 
     private static IEnumerable<INamedTypeSymbol> FindMatchingControls(

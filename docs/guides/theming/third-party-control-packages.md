@@ -132,6 +132,49 @@ internal sealed class RatingToken : AbstractControlDesignToken
 Generator 会从真实 CLR 类型、Token 和 AXAML 生成 identity、descriptor、资源键、Theme Asset manifest、full registrar 和
 leaf Registration Unit fragment。NuGet Pack 自动生成对应 Sidecar，不要为每个 Theme 再写一份 C# 注册代码。
 
+### 复用抽象 Control Token 定义
+
+一个上游包可以提供无 identity 的公开抽象 Token，多个产品包分别声明自己的终端 Token：
+
+```csharp
+namespace Acme.Controls.Foundation;
+
+[ControlDesignToken]
+public abstract class CommonRatingToken : AbstractControlDesignToken
+{
+    public double StarSize { get; set; }
+
+    public override void CalculateTokenValues(bool isDarkMode)
+    {
+        StarSize = EffectiveGlobalToken.ControlHeight;
+    }
+}
+```
+
+```csharp
+namespace Acme.Controls.Desktop;
+
+[ControlDesignToken]
+internal sealed class RatingToken : CommonRatingToken
+{
+    public double StarGap { get; set; }
+
+    public override void CalculateTokenValues(bool isDarkMode)
+    {
+        base.CalculateTokenValues(isDarkMode);
+        StarGap = EffectiveGlobalToken.UniformlyMarginXS;
+    }
+}
+```
+
+抽象层和终端都必须显式标记 `[ControlDesignToken]`，终端必须 `sealed`。抽象层不产生 identity、descriptor、资源键或
+Registration Unit；Generator 把继承属性扁平化为终端 Control 的独立 schema。发布抽象层的包也必须启用兼容版本
+Generator，以便在生成 metadata 前验证继承结构和 `CalculateTokenValues` 调用链。
+
+属性名、值类型和默认计算语义属于公开抽象 Token 的兼容性契约。不要使用泛型 Token、属性 override/隐藏或运行时反射
+发现派生类型。完整规则见
+[Control Design Token 继承架构](../../architecture/systems/theming/control-design-token-inheritance.md)。
+
 ## 第三步：提供 Theme Provider
 
 Provider 的 ID 与 Package identity 保持一致：

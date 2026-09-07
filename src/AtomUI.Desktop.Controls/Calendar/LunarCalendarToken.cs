@@ -4,7 +4,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class LunarCalendarToken : AbstractControlDesignToken
+internal sealed class LunarCalendarToken : AbstractControlDesignToken
 {
     public double MiniContentHeight { get; set; }
     public double MiniDateCellSize { get; set; }

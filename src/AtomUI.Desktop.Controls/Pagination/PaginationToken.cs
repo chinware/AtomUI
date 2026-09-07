@@ -5,7 +5,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
-internal class PaginationToken : AbstractControlDesignToken
+internal sealed class PaginationToken : AbstractControlDesignToken
 {
 
     /// <summary>
