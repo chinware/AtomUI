@@ -16,7 +16,7 @@ public enum ClockIdentifierType
     HourClock24
 }
 
-public class TimePicker : InfoPickerInput
+public partial class TimePicker : InfoPickerInput
 {
     #region 公共属性定义
 
@@ -314,25 +314,21 @@ public class TimePicker : InfoPickerInput
 
     private void CalculatePreferredWidth()
     {
-        if (!double.IsNaN(Width) || HorizontalAlignment == HorizontalAlignment.Stretch)
-        {
-            PreferredInputWidth = double.NaN;
-        }
-        else
-        {
-            var preferredInputWidth = CalculateContentPreferredWidth();
+        // 输入框预留宽度始终按内容基线计算：placeholder 与选中值共用同一宽度基线，
+        // 避免显式 Width / Stretch 场景下输入区宽度随文本内容跳变；控件总宽在显式
+        // Width / Stretch 时仍交给外部布局决定。
+        var preferredInputWidth = CalculateContentPreferredWidth();
 
-            if (!double.IsNaN(MinWidth))
-            {
-                preferredInputWidth = Math.Max(MinWidth, preferredInputWidth);
-            }
-
-            if (!double.IsNaN(MaxWidth))
-            {
-                preferredInputWidth = Math.Min(MaxWidth, preferredInputWidth);
-            }
-            PreferredInputWidth = preferredInputWidth;
+        if (!double.IsNaN(MinWidth))
+        {
+            preferredInputWidth = Math.Max(MinWidth, preferredInputWidth);
         }
+
+        if (!double.IsNaN(MaxWidth))
+        {
+            preferredInputWidth = Math.Min(MaxWidth, preferredInputWidth);
+        }
+        PreferredInputWidth = preferredInputWidth;
     }
 
     private double CalculateContentPreferredWidth()

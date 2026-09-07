@@ -172,7 +172,7 @@
 | CrossVisualRoot | `true` |
 | RuntimeCreated | `false` |
 | AtomUI 节点 | 单选：`InfoPickerInputTheme.axaml` 中 `PART_Popup` 的 `ArrowDecoratedBox`；范围：`RangeDatePickerTheme.axaml` 中的 `DualMonthArrowDecoratedBox` |
-| 职责 | 弹层内容根视觉盒子，承载背景、边框、阴影与浮动箭头。 |
+| 职责 | 弹层内容根视觉盒子，承载背景、边框、阴影与浮动箭头；`BorderThickness` 定制为非零时盒子进入 `:bordered` 状态，内置主题自动隐藏浮动箭头（内置视觉不支持箭头与边框的融合呈现）。 |
 | 相关 API | `IsArrowVisible`（经 `IsArrowVisibleEffective`）、`ArrowPosition`、`IsMotionEnabled` |
 | 相关 Token | PopupToken |
 | 稳定性 | stable since 6.0 |

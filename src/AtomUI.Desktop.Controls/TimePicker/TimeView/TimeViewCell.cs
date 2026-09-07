@@ -1,5 +1,6 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
+using AtomUI.Generated.AtomUIDesktopControls;
 using Avalonia;
 using Avalonia.Interactivity;
 
@@ -26,6 +27,7 @@ public class TimeViewCell : AvaloniaListBoxItem
     {
         base.OnInitialized();
         this.DisableTransitions();
+        Classes.Add(TimePickerSemanticParts.PopupItemClass);
     }
 
     protected override void OnLoaded(RoutedEventArgs e)

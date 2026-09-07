@@ -4755,7 +4755,7 @@ Source: ./controls/date-picker/semantic-cn.md
 | CrossVisualRoot | `true` |
 | RuntimeCreated | `false` |
 | AtomUI 节点 | 单选：`InfoPickerInputTheme.axaml` 中 `PART_Popup` 的 `ArrowDecoratedBox`；范围：`RangeDatePickerTheme.axaml` 中的 `DualMonthArrowDecoratedBox` |
-| 职责 | 弹层内容根视觉盒子，承载背景、边框、阴影与浮动箭头。 |
+| 职责 | 弹层内容根视觉盒子，承载背景、边框、阴影与浮动箭头；`BorderThickness` 定制为非零时盒子进入 `:bordered` 状态，内置主题自动隐藏浮动箭头（内置视觉不支持箭头与边框的融合呈现）。 |
 | 相关 API | `IsArrowVisible`（经 `IsArrowVisibleEffective`）、`ArrowPosition`、`IsMotionEnabled` |
 | 相关 Token | PopupToken |
 | 稳定性 | stable since 6.0 |
@@ -4869,7 +4869,7 @@ Source: ./controls/date-picker/semantic-cn.md
 | Selector | `.semantic-popup-footer` |
 | SelectorRoute | `/template/ .semantic-popup-root >> .semantic-popup-footer` |
 | Style Type | `DatePickerPopupFooterStyle` / `RangeDatePickerPopupFooterStyle` |
-| ContractType | `Border` |
+| ContractType | `PixelAlignedBorder` |
 | Cardinality | `Single` |
 | Customization | `Selector` |
 | CrossVisualRoot | `true` |
@@ -7687,13 +7687,290 @@ Source: ./controls/time-picker/semantic-cn.md
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `TimePicker` | 数据录入控件根语义区域，承载 public API、值状态、验证状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `input` | `输入或编辑区域` | 承载用户输入、当前值、占位、格式化或只读状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `trigger` | `触发区域` | 承载清除、展开、提交、步进、上传或辅助操作。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `popup` | `弹层或候选区域` | 承载下拉、候选项、日历、颜色面板或异步内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `validation` | `校验反馈区域` | 承载 Form、status、错误、警告、help 或 loading 状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+`TimePicker` 公开 11 个 Semantic Part，`RangeTimePicker` 公开 12 个 Semantic Part（后者多出范围双输入框的
+`secondaryInput`）。声明分别位于 `TimePicker.SemanticParts.cs` 与 `RangeTimePicker.SemanticParts.cs` partial 文件。
+
+触发区部件的 marker 分布：
+
+- 单值 `TimePicker` 的宿主模板是共享 `InfoPickerInputTheme.axaml`（`TimePickerTheme.axaml` 纯 `BasedOn` 继承，
+  无自有模板）；`RangeTimePicker` 的宿主模板是自有 `RangeTimePickerTheme.axaml` 模板覆写（共享
+  `RangeInfoPickerInputTheme.axaml` 保持无 semantic 标注）。两个宿主模板按同一模式标注
+  `semantic-scope-input`（AddOnDecoratedBox 节点）、`semantic-input`（`PART_InfoInputBox`）、`semantic-suffix`
+  （右侧内容 StackPanel）、`semantic-scope-handle`（PickerClearUpButton 节点）与 `semantic-popup-root`
+  （`PART_Popup` 内的 `ArrowDecoratedBox`），Range 模板另标注 `semantic-secondary-input`
+  （`PART_SecondaryInfoInputBox`）。
+- `prefix` 借用共享 `AddOnDecoratedBoxTheme` 的 `.semantic-scope-prefix` scope 锚点路由到宿主模板
+  `AddOnContentPresenter` 投影节点（与 Select、DatePicker 家族同构；投影节点以
+  `CompiledBinding $parent[atom:InfoPickerInput].ContentLeftAddOn` 呈现公共 API 值）。
+- `clear` 的物理按钮在共享 `PickerClearUpButtonTheme.axaml` 模板内（`PART_ClearButton`），声明
+  `CrossNestedOwners=true`，生成器沿 PickerClearUpButton 主题链校验。
+- 范围 `RangeTimePicker` 与单值 `TimePicker` 共用同一弹层 presenter（`TimePickerPresenter`），弹层 marker
+  对两个 owner 同时成立。
+
+弹层部件的 marker 分布（弹层内容全部由 owner `CreatePickerPresenter` 在首次打开时运行时创建）：
+
+- `popup.container` / `popup.footer` 标注 presenter 主题模板节点：`popup.container` 为
+  `TimePickerPresenterTheme.axaml` 的 `DockPanel #PART_MainLayout`，`popup.footer` 为同模板的
+  `PixelAlignedBorder #PART_ButtonsFrame`。
+- `popup.content` / `popup.column` 标注 `TimeViewTheme.axaml` 模板节点：`popup.content` 为时间列布局容器
+  `Grid #PART_PickerContainer`，`popup.column` 为四个列宿主 Panel（`PART_HourHost` / `PART_MinuteHost` /
+  `PART_SecondHost` / `PART_PeriodHost`）。
+- `popup.item` 为运行时注入：`DateTimePickerPanel.CreateOrDestroyItems` 创建 `TimeViewCell` 时追加生成
+  selector class 常量，覆盖滚动复用与循环搬移路径。
+- `popup.*` 除 `popup.root` 外统一声明 `RuntimeCreated=true`（presenter 子树在运行时组装，生成器豁免宿主模板
+  marker 校验，由控件行为测试兜底），其中 `popup.root` 为宿主模板静态节点、`RuntimeCreated=false`。
+- **TimeView 子树类名避让**：`TimeView` 同时被 DatePicker 带时间弹层内嵌（`DatePickerPresenterTheme.axaml` 与
+  `TimedRangeDatePickerPresenterTheme.axaml`）。因此落在 TimeView 子树内的三个 marker 类名使用 `time-` 中缀
+  （`semantic-time-content` / `semantic-time-column` / `semantic-time-item`），避开 DatePicker 家族已声明的
+  `semantic-popup-content` / `semantic-popup-body` / `semantic-cell` 等类名，防止 DatePicker 弹层上下文中的
+  契约误命中（详见 §6 对照差异）。
+
+### `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `TimePicker` / `RangeTimePicker` |
+| Part | `root` |
+| Selector | owner 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
+| ContractType | `TimePicker` / `RangeTimePicker` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | TimePicker / RangeTimePicker owner |
+| 职责 | owner 是时间值、约束、弹层状态、Form 值与验证状态的组织边界。 |
+| 相关 API | 全部 TimePicker / RangeTimePicker public API |
+| 相关 Token | TimePickerToken、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+### `prefix`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `TimePicker` / `RangeTimePicker` |
+| Part | `prefix` |
+| Selector | `.semantic-prefix` |
+| SelectorRoute | `/template/ .semantic-scope-input /template/ .semantic-scope-prefix > .semantic-prefix` |
+| Style Type | `TimePickerPrefixStyle` / `RangeTimePickerPrefixStyle` |
+| ContractType | `ContentPresenter` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | 宿主模板中承载 `ContentLeftAddOn` 的 `AddOnContentPresenter` 投影节点 |
+| 职责 | 输入区内容前缀区域，承载 `ContentLeftAddOn` 用户内容，在内容框内联展示。 |
+| 相关 API | `ContentLeftAddOn`、`ContentLeftAddOnTemplate` |
+| 相关 Token | SharedToken |
+| 稳定性 | stable since 6.0 |
+
+### `input`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `TimePicker` / `RangeTimePicker` |
+| Part | `input` |
+| Selector | `.semantic-input` |
+| SelectorRoute | `/template/ .semantic-input` |
+| Style Type | `TimePickerInputStyle` / `RangeTimePickerInputStyle` |
+| ContractType | `TextBox` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | 宿主模板的 `InfoPickerTextBox #PART_InfoInputBox`（起始端输入框） |
+| 职责 | 时间文本输入框，承载格式化显示值、占位符与只读/校验状态。 |
+| 相关 API | `Text`、`PlaceholderText`、`IsReadOnly`、`PreferredInputWidth` |
+| 相关 Token | SharedToken |
+| 稳定性 | stable since 6.0 |
+
+### `secondaryInput`（仅 RangeTimePicker）
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `RangeTimePicker` |
+| Part | `secondaryInput` |
+| Selector | `.semantic-secondary-input` |
+| SelectorRoute | `/template/ .semantic-secondary-input` |
+| Style Type | `RangeTimePickerSecondaryInputStyle` |
+| ContractType | `TextBox` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | `RangeTimePickerTheme.axaml` 的 `InfoPickerTextBox #PART_SecondaryInfoInputBox`（结束端输入框） |
+| 职责 | 范围选择的结束端时间文本输入框，与 `input` 共用格式与宽度基线。 |
+| 相关 API | `SecondaryText`、`SecondaryPlaceholderText` |
+| 相关 Token | SharedToken |
+| 稳定性 | stable since 6.0 |
+
+### `suffix`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `TimePicker` / `RangeTimePicker` |
+| Part | `suffix` |
+| Selector | `.semantic-suffix` |
+| SelectorRoute | `/template/ .semantic-scope-input /template/ .semantic-scope-suffix > .semantic-suffix` |
+| Style Type | `TimePickerSuffixStyle` / `RangeTimePickerSuffixStyle` |
+| ContractType | `StackPanel` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | 宿主模板中投影给 `ContentRightAddOn` 的水平 StackPanel（含清除按钮与 `PART_ContentRightAddOnPresenter`） |
+| 职责 | 输入区后缀区域，承载清除按钮、Form 反馈与用户后缀内容。 |
+| 相关 API | `ContentRightAddOn`、`ContentRightAddOnTemplate` |
+| 相关 Token | SharedToken |
+| 稳定性 | stable since 6.0 |
+
+### `clear`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `TimePicker` / `RangeTimePicker` |
+| Part | `clear` |
+| Selector | `.semantic-clear` |
+| SelectorRoute | `>> .semantic-scope-handle /template/ .semantic-clear` |
+| Style Type | `TimePickerClearStyle` / `RangeTimePickerClearStyle` |
+| ContractType | `IconButton` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossNestedOwners | `true` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | 共享 `PickerClearUpButtonTheme.axaml` 模板内的 `InputClearIconButton #PART_ClearButton` |
+| 职责 | 后缀区清除按钮，进入清除模式（hover / focus）时渲染。 |
+| 相关 API | `ShowClearButtonPredicate`、`Clear` / `Reset` |
+| 相关 Token | SharedToken |
+| 稳定性 | stable since 6.0 |
+
+### `popup.root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `TimePicker` / `RangeTimePicker` |
+| Part | `popup.root` |
+| Selector | `.semantic-popup-root` |
+| SelectorRoute | `/template/ .semantic-popup-root` |
+| Style Type | `TimePickerPopupRootStyle` / `RangeTimePickerPopupRootStyle` |
+| ContractType | `ArrowDecoratedBox` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | 单选：`InfoPickerInputTheme.axaml` 中 `PART_Popup` 的 `ArrowDecoratedBox`；范围：`RangeTimePickerTheme.axaml` 中的 `ArrowDecoratedBox` |
+| 职责 | 弹层内容根视觉盒子，承载背景、边框、阴影与浮动箭头。 |
+| 相关 API | `IsArrowVisible`（经 `IsArrowVisibleEffective`）、`ArrowPosition`、`IsMotionEnabled` |
+| 相关 Token | PopupToken |
+| 稳定性 | stable since 6.0 |
+
+### `popup.container`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `TimePicker` / `RangeTimePicker` |
+| Part | `popup.container` |
+| Selector | `.semantic-popup-container` |
+| SelectorRoute | `/template/ .semantic-popup-root >> .semantic-popup-container` |
+| Style Type | `TimePickerPopupContainerStyle` / `RangeTimePickerPopupContainerStyle` |
+| ContractType | `DockPanel` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | `TimePickerPresenterTheme.axaml` 模板的 `DockPanel #PART_MainLayout` |
+| 职责 | 时间面板内容容器，组织时间区与底部按钮区的布局。 |
+| 相关 API | 无（面板内容布局容器） |
+| 相关 Token | TimePickerToken |
+| 稳定性 | stable since 6.0 |
+
+### `popup.content`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `TimePicker` / `RangeTimePicker` |
+| Part | `popup.content` |
+| Selector | `.semantic-time-content` |
+| SelectorRoute | `/template/ .semantic-popup-root >> .semantic-time-content` |
+| Style Type | `TimePickerPopupContentStyle` / `RangeTimePickerPopupContentStyle` |
+| ContractType | `Grid` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | `TimeViewTheme.axaml` 的 `Grid #PART_PickerContainer`（时/分/秒/时段四列布局容器） |
+| 职责 | 时间列布局容器，按 12/24 小时制组织全部时间列。 |
+| 相关 API | 无（随 `popup.container` 呈现） |
+| 相关 Token | TimePickerToken |
+| 稳定性 | stable since 6.0 |
+
+### `popup.column`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `TimePicker` / `RangeTimePicker` |
+| Part | `popup.column` |
+| Selector | `.semantic-time-column` |
+| SelectorRoute | `/template/ .semantic-popup-root >> .semantic-time-column` |
+| Style Type | `TimePickerPopupColumnStyle` / `RangeTimePickerPopupColumnStyle` |
+| ContractType | `Panel` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | `TimeViewTheme.axaml` 的四个列宿主 Panel：`PART_HourHost` / `PART_MinuteHost` / `PART_SecondHost` / `PART_PeriodHost`（各列宽度 owner） |
+| 职责 | 单个时间列宿主，承载滚动视口与列宽基线（时/分/秒列宽 = `ItemWidth`，时段列宽 = `PeriodHostWidth`）。 |
+| 相关 API | 无（随 `popup.content` 呈现） |
+| 相关 Token | TimePickerToken（`ItemWidth`、`PeriodHostWidth`） |
+| 稳定性 | stable since 6.0 |
+
+### `popup.item`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `TimePicker` / `RangeTimePicker` |
+| Part | `popup.item` |
+| Selector | `.semantic-time-item` |
+| SelectorRoute | `/template/ .semantic-popup-root >> .semantic-time-item` |
+| Style Type | `TimePickerPopupItemStyle` / `RangeTimePickerPopupItemStyle` |
+| ContractType | `ListBoxItem` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | `DateTimePickerPanel` 视口内运行时创建的 `TimeViewCell`（`CreateOrDestroyItems` 创建路径，创建时注入 marker） |
+| 职责 | 时间格子项，承载可选时间值与选中 / hover 状态视觉。 |
+| 相关 API | 无（随 `popup.column` 呈现） |
+| 相关 Token | TimePickerToken（`ItemHeight`） |
+| 稳定性 | stable since 6.0 |
+
+### `popup.footer`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `TimePicker` / `RangeTimePicker` |
+| Part | `popup.footer` |
+| Selector | `.semantic-popup-footer` |
+| SelectorRoute | `/template/ .semantic-popup-root >> .semantic-popup-footer` |
+| Style Type | `TimePickerPopupFooterStyle` / `RangeTimePickerPopupFooterStyle` |
+| ContractType | `PixelAlignedBorder` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | `TimePickerPresenterTheme.axaml` 的 `PixelAlignedBorder #PART_ButtonsFrame`（内含 `PART_NowButton` / `PART_ConfirmButton`） |
+| 职责 | 面板底部操作区，承载此刻 / 确认按钮。 |
+| 相关 API | `IsNeedConfirm`、`IsShowNow` |
+| 相关 Token | TimePickerToken |
+| 稳定性 | stable since 6.0 |
+
+`ContractType` 不参与 selector 匹配，只约束生成 Style 的 `x:SetterTargetType` 与模板校验的类型兼容；internal
+实现类型（`InfoPickerTextBox`、`TimePickerPresenter`、`TimeView`、`DateTimePickerPanel`）统一承诺到最低 public
+基类或公开包装类型（`TextBox`、`ContentPresenter`、`DockPanel`、`Grid`、`Panel`、`ListBoxItem`、
+`PixelAlignedBorder`——footer 物理节点是 `PixelAlignedBorder`，它继承 `DashedBorder` 而非 Avalonia `Border`，
+与 DatePicker 家族的 `popup.footer` 契约保持一致）。
 
 ## Abstract AXAML Structure
 
@@ -7870,6 +8147,7 @@ TimePicker Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 控件文档、源码 public surface、Token 类型或生成数据与源码契约的一致性。
+- Semantic Part marker 的维护边界：共享 `InfoPickerInputTheme.axaml` 承载单选触发区静态 marker（`semantic-scope-input`、`semantic-prefix`、`semantic-input`、`semantic-suffix`、`semantic-scope-handle`、`semantic-popup-root`）；`RangeTimePickerTheme.axaml` 承载范围触发区同名 marker 与 `semantic-secondary-input`；共享 `PickerClearUpButtonTheme.axaml` 承载 `semantic-clear` marker（`clear` Part 声明 `CrossNestedOwners=true`，生成器沿 PickerClearUpButton 主题链校验）；`TimePickerPresenterTheme.axaml` 承载 `semantic-popup-container` / `semantic-popup-footer`；`TimeViewTheme.axaml` 承载 `semantic-time-content` / `semantic-time-column`（×4 列宿主）。运行时注入点：`DateTimePickerPanel.CreateOrDestroyItems` 创建 `TimeViewCell` 时追加 `popup.item` 的生成 selector class 常量。marker 随实例创建一次，滚动复用、循环搬移、`ClockIdentifier` 切换、弹层重开和容器回收路径不得增删；`TimeViewTheme` 的 `semantic-time-*` marker 对未声明该契约的 DatePicker 家族保持 inert，共享主题 marker 中的同名 Part 类（`semantic-popup-*`）在两个 picker 家族各自的弹层内互不嵌套。
 
 Source: ./controls/toggle-switch/semantic-cn.md
 
@@ -8663,7 +8941,7 @@ TreeSelect
 | `PlaceholderText` | template node (TextBlock) | `TreeSelectTheme.axaml` | TreeSelect | `IsPlaceholderTextVisible`, `PlaceholderForeground`, `PlaceholderText` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_SingleFilterInput` | template node (SelectFilterTextBox) | `TreeSelectTheme.axaml` | TreeSelect | `FontFamily`, `FontSize`, `FontStyle`, `FontWeight`, `IsShowOverflowTip`, `OverflowTipDelay` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `SelectedItemsBox` | template node (SelectTagAwareTextBox) | `TreeSelectTheme.axaml` | TreeSelect | `EffectiveSelectedItems`, `Height`, `IsDropDownOpen`, `IsFilterEnabled`, `IsResponsiveTagMode`, `IsShowOverflowTip` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_Popup` | template node (Popup) | `TreeSelectTheme.axaml` | TreeSelect | `EffectivePopupWidth`, `IsDropDownOpen`, `MaxPopupHeight`, `PopupContentPadding`, `PopupPlacement`, `ShouldUseOverlayPopup` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_Popup` | template node (Popup) | `TreeSelectTheme.axaml` | TreeSelect | `EffectivePopupWidth`, `MaxPopupHeight`, `PopupContentPadding`, `PopupPlacement`, `ShouldUseOverlayPopup` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PopupFrame` | template node (Border) | `TreeSelectTheme.axaml` | TreeSelect | `EffectivePopupWidth`, `MaxPopupHeight`, `PopupContentPadding` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `TreeViewSelectTreeViewItem` | item container control theme | `TreeSelectTreeViewItemTheme.axaml` | TreeSelect | `BorderThickness`, `FilterHighlightForeground`, `FilterHighlightWords`, `FilterStrategy`, `Focusable`, `GroupName` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `StackPanel` | template node (StackPanel) | `TreeSelectTreeViewItemTheme.axaml` | TreeViewSelectTreeViewItem | `BorderThickness`, `FilterHighlightForeground`, `FilterHighlightWords`, `FilterStrategy`, `Focusable`, `GroupName` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |

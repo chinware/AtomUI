@@ -2,6 +2,12 @@
 
 本文档记录 DatePicker 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-09-07
+
+- Fixed
+  - Keep the DatePicker/RangeDatePicker input reserved width on the content baseline when an explicit `Width` or `HorizontalAlignment=Stretch` is set; the input zone no longer jumps between the placeholder and the selected text widths while the owner width stays governed by the external layout.
+
+
 ## 2026-09-06
 
 - Architecture

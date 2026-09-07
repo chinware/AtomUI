@@ -12,7 +12,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
-public class RangeTimePicker : RangeInfoPickerInput
+public partial class RangeTimePicker : RangeInfoPickerInput
 {
     #region 公共属性定义
 

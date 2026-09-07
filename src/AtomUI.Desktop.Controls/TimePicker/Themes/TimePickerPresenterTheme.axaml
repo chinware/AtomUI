@@ -8,8 +8,9 @@
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:TimePickerPresenter">
                 <Border>
-                    <DockPanel Name="PART_MainLayout" LastChildFill="True">
+                    <DockPanel Name="PART_MainLayout" LastChildFill="True" Classes.semantic-popup-container="True">
                         <atom:PixelAlignedBorder Name="PART_ButtonsFrame"
+                                                 Classes.semantic-popup-footer="True"
                                                  BorderThickness="{TemplateBinding BorderThickness, Converter={StaticResource BorderThicknessFilterConverter}}"
                                                  IsVisible="{TemplateBinding IsButtonsPanelVisible}"
                                                  DockPanel.Dock="Bottom">

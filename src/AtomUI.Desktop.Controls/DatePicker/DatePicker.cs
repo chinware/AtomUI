@@ -347,26 +347,22 @@ public partial class DatePicker : InfoPickerInput
 
     private void CalculatePreferredWidth()
     {
-        if (!double.IsNaN(Width) || HorizontalAlignment == HorizontalAlignment.Stretch)
-        {
-            PreferredInputWidth = double.NaN;
-        }
-        else
-        {
-            var formatInfo = DatePickerFormattingHelper.CreateFormatInfo(ClockIdentifier, AmText, PmText);
-            PreferredInputWidth = DatePickerFormattingHelper.CalculateBoundedPreferredInputWidth(
-                Format,
-                PickerMode,
-                IsShowTime,
-                ClockIdentifier,
-                FontSize,
-                FontFamily,
-                FontStyle,
-                FontWeight,
-                MinWidth,
-                MaxWidth,
-                formatInfo);
-        }
+        // 输入框预留宽度始终按内容基线计算：placeholder 与选中值共用同一宽度基线，
+        // 避免显式 Width / Stretch 场景下输入区宽度随文本内容跳变；控件总宽在显式
+        // Width / Stretch 时仍交给外部布局决定。
+        var formatInfo = DatePickerFormattingHelper.CreateFormatInfo(ClockIdentifier, AmText, PmText);
+        PreferredInputWidth = DatePickerFormattingHelper.CalculateBoundedPreferredInputWidth(
+            Format,
+            PickerMode,
+            IsShowTime,
+            ClockIdentifier,
+            FontSize,
+            FontFamily,
+            FontStyle,
+            FontWeight,
+            MinWidth,
+            MaxWidth,
+            formatInfo);
     }
 
     protected override bool ShowClearButtonPredicate()

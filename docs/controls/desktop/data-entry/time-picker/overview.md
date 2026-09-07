@@ -2,7 +2,9 @@
 
 本文档定义 `TimePicker` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。共享输入分层见 [输入控件共享架构设计](../input-control-architecture-design.md)，通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [TimePicker 桌面版实现原理](implementation.md)，TimePicker Token 的专项设计见 [TimePicker Token 设计](token.md)，设计和契约变化记录见 [TimePicker Changelog](changelog.md)。
 
-该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。本控件的语义 owner 为 `InfoPickerInput`，其 internal `IsPopupPinnedOpen` 只供测试和内部诊断使用；设置为 true 时保持 picker open state 并 relay 到 `PickerPopup`，设置为 false 时只解除关闭拦截。控件卸载、锚点失效、TopLevel 改变和模板重建仍按共享生命周期规则清理。
+该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。本控件的语义 owner 为 `InfoPickerInput`，其 `IsPopupPinnedOpen` 供测试、内部诊断和 Semantic Parts 预览钉住弹层使用；设置为 true 时保持 picker open state 并 relay 到 `PickerPopup`，设置为 false 时只解除关闭拦截。控件卸载、锚点失效、TopLevel 改变和模板重建仍按共享生命周期规则清理。
+
+TimePicker 家族包含 `TimePicker` 与 `RangeTimePicker` 两个 Semantic owner，分别公开 11 个和 12 个 Semantic Part（触发区 `root` / `prefix` / `input` / `suffix` / `clear`，Range 额外有 `secondaryInput`；弹层 `popup.root` / `popup.container` / `popup.content` / `popup.column` / `popup.item` / `popup.footer`），与 Ant Design TimePicker / TimePicker.RangePicker 共用的 Semantic Part 语义对齐（TimeView 头部与滚动虚拟化机制等内部实现不经 TimePicker 发布）；完整 Part 表、单值/范围存在条件、Selector 用法与定制边界见 [TimePicker Semantic Part 契约](semantic-part.md)。
 
 ## 1. 控件定位
 
@@ -175,6 +177,7 @@ TimePicker 的当前项状态必须由单一 owner 推导。public 选择属性�
 关联文档：
 
 - [TimePicker 桌面版实现原理](implementation.md)
+- [TimePicker Semantic Part 契约](semantic-part.md)
 - [TimePicker Token 设计](token.md)
 - [TimePicker Changelog](changelog.md)
 

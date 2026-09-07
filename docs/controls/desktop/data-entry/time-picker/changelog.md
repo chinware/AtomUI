@@ -2,6 +2,36 @@
 
 本文档记录 TimePicker 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-09-07
+
+- Fixed
+  - Keep the TimePicker/RangeTimePicker input reserved width on the content baseline when an explicit `Width` or `HorizontalAlignment=Stretch` is set; the input zone no longer jumps between the placeholder and the selected text widths while the owner width stays governed by the external layout.
+  - Align `RangeTimePickerTheme.axaml` with the shared code-driven popup open model: drop the template `IsOpen` two-way binding so the physical popup opens through `ApplyPopupOpenState` after the pinned relay, placement and light-dismiss suppression are prepared; add pinned light-dismiss regression tests for `TimePicker` and `RangeTimePicker`.
+  - Add `TimePickerInputWidthStabilityTests` covering explicit-width, stretch and natural-width selection stability.
+- Fixed
+  - Keep the TimePicker/RangeTimePicker input reserved width on the content baseline when an explicit `Width` or `HorizontalAlignment=Stretch` is set; the input zone no longer jumps between the placeholder and the selected text widths while the owner width stays governed by the external layout.
+  - Add `TimePickerInputWidthStabilityTests` covering explicit-width, stretch and natural-width selection stability.
+
+
+## 2026-09-06
+
+- Architecture
+  - Publish the TimePicker family Semantic Part contract with eleven parts on `TimePicker` and twelve on `RangeTimePicker` (`root`, `prefix`, `input`, `secondaryInput` (range only), `suffix`, `clear`, `popup.root`, `popup.container`, `popup.content`, `popup.column`, `popup.item`, `popup.footer`) aligned with the Ant Design `TimePicker` / `TimePicker.RangePicker` semantic structure; see `TimePicker.SemanticParts.cs`, `RangeTimePicker.SemanticParts.cs` and `semantic-part.md`.
+  - Reuse the shared `InfoPickerInputTheme.axaml` / `PickerClearUpButtonTheme.axaml` trigger-zone markers (also serving the DatePicker family) for the single-value owner, and add a marked template override in `RangeTimePickerTheme.axaml` while keeping the shared `RangeInfoPickerInputTheme.axaml` free of semantic markers.
+  - Mark `popup.container` / `popup.footer` in `TimePickerPresenterTheme.axaml` and `popup.content` / `popup.column` in `TimeViewTheme.axaml`; inject `popup.item` markers on `TimeViewCell` creation in `DateTimePickerPanel` so scrolling reuse, loop shifting, increment changes and popup reopen keep the marker set stable.
+  - Use `semantic-time-content` / `semantic-time-column` / `semantic-time-item` marker classes inside the shared `TimeView` subtree so DatePicker popups embedding a `TimeView` never match the DatePicker-family `popup.content` / `popup.body` / `popup.cell` contracts.
+  - Add an AtomUI-specific `popup.column` part targeting the four column host panels (the per-column width owners); upstream Ant Design has no column-level slot.
+- API
+  - Make `IsPickerOpen` and `IsPopupPinnedOpen` public on the shared `InfoPickerInput` base (covering `TimePicker`, `RangeTimePicker`, and the DatePicker family), following the Mentions precedent so Semantic Parts previews and applications can drive and pin the picker popup programmatically, matching the upstream Ant Design `open` prop.
+- Gallery
+  - Add the TimePicker Semantic Parts tab with a pinned-open `RangeTimePicker` preview presenting 12/24-hour columns and localized part descriptions; migrate the showcase host from `GalleryStickyTabsHost` to `GalleryShowCaseHost` per the standard Semantic Part page model.
+  - Add the "Custom Semantic Part styling" example with owner-scoped `TimePicker*Style` / `RangeTimePicker*Style` demos covering prefix, popup root, popup item, input and popup column.
+- Tests
+  - Add `TimePickerSemanticPartTests` covering descriptor shape (11/12 parts), trigger and popup marker inventory, shared-range-theme non-consumption, generated style hits, popup marker exposure with counts, `ClockIdentifier` toggle / increment change / reopen marker persistence, hidden footer marker survival and the SizeType height baseline regression.
+  - Update `TimePickerShowCasePageTests` and `TimePickerShowCaseExamples.snapshot` for the migrated host, semantic preview template, style example and deferred materialization assertions.
+- Docs
+  - Add `semantic-part.md` as the single source of the public contract and sync `overview.md` / `implementation.md` semantic sections, the size-and-state baseline matrix and marker maintenance boundaries.
+
 ## 2026-09-04
 
 - Behavior

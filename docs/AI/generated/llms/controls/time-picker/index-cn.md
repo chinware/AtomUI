@@ -99,7 +99,7 @@ TimePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/Views/TimePickerShowCase.axaml:35`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/Views/TimePickerShowCase.axaml:98`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -109,7 +109,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### SelectedTime 绑定
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/Views/TimePickerShowCase.axaml:47`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/Views/TimePickerShowCase.axaml:110`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -158,7 +158,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 弹出面板显示时间
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/Views/TimePickerShowCase.axaml:98`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/Views/TimePickerShowCase.axaml:161`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -168,7 +168,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 12 小时和 24 小时格式
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/Views/TimePickerShowCase.axaml:111`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/Views/TimePickerShowCase.axaml:174`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -259,6 +259,7 @@ TimePicker Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 - `src/AtomUI.Desktop.Controls/TimePicker/Themes/TimeViewCellTheme.axaml`
 - `src/AtomUI.Desktop.Controls/TimePicker/Themes/TimeViewTheme.axaml`
 - `src/AtomUI.Desktop.Controls/TimePicker/TimePicker.cs`
+- `src/AtomUI.Desktop.Controls/TimePicker/RangeTimePicker.SemanticParts.cs` 与 `src/AtomUI.Desktop.Controls/TimePicker/TimePicker.SemanticParts.cs`：TimePicker 家族两个 Semantic owner 的 Semantic Part 声明（见 [TimePicker Semantic Part 契约](semantic-part.md)）。
 - `src/AtomUI.Desktop.Controls/TimePicker/TimePickerPresenter.cs`
 - `src/AtomUI.Desktop.Controls/TimePicker/TimePickerToken.cs`
 - `src/AtomUI.Desktop.Controls/TimePicker/TimeView/DateTimePickerPanel.cs`
@@ -277,6 +278,7 @@ TimePicker Token 只表达组件级视觉变量，例如尺寸、间距、颜色
 
 - 源设计文档：`docs/controls/desktop/data-entry/time-picker/overview.md`
 - 实现文档：`docs/controls/desktop/data-entry/time-picker/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-entry/time-picker/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-entry/time-picker/token.md`
 - 变更记录：`docs/controls/desktop/data-entry/time-picker/changelog.md`
 - 语义结构：`./semantic-cn.md`

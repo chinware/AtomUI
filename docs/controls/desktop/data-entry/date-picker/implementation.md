@@ -174,7 +174,7 @@ DatePicker 的交互事件应从输入源收敛到控件级语义事件：
 - `PlaceholderText` 和 `SecondaryPlaceholderText` 不参与 `PreferredInputWidth` / `PreferredWidth` 计算；placeholder 只能在已预留的输入内容区域内显示，超出时由文本呈现层使用 ellipsis 省略，不能反向撑大控件默认宽度。
 - `Text` 和 `SecondaryText` 只表达当前显示值或 hover preview，不作为 `PreferredInputWidth` / `PreferredWidth` 的计算来源。
 - `IsShowTime`、`Format`、`ClockIdentifier`、AM/PM 文本和字体变化会重新计算格式预留宽度；选中值、hover 值和范围端点切换不得改变预留宽度。
-- `Width` 显式设置或 `HorizontalAlignment=Stretch` 时，控件应交给外部布局系统决定实际宽度，不再强制内部预留宽度。
+- `Width` 显式设置或 `HorizontalAlignment=Stretch` 时，控件总宽交给外部布局系统决定；`PreferredInputWidth`（输入框预留宽度）仍按内容基线计算，保证 placeholder 与选中值之间输入区宽度稳定不跳变。
 - 范围选择的两端输入使用同一个格式预留宽度，`RangePickerIndicator` 和 popup placement 只跟随稳定输入框 bounds，不反向驱动输入框测量。
 - 范围输入模板的内部 `AddOnDecoratedBox` 和 content presenter 必须在控件内部 stretch；范围整体测量以 `base.MeasureOverride` 的完整宽度为基础，只替换两端输入框宽度为 `PreferredWidth`，不得重新手算 padding、spacing、icon 或 add-on 宽度。
 

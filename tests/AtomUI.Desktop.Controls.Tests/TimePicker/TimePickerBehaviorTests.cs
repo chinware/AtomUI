@@ -1,7 +1,9 @@
 using System.ComponentModel;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 using AvaloniaWindow = Avalonia.Controls.Window;
@@ -55,25 +57,100 @@ public class TimePickerBehaviorTests
         });
     }
 
+    [Fact]
+    public void Pinned_Open_Request_Suppresses_Light_Dismiss_Before_First_Open_And_Unpin_Restores_It()
+    {
+        var timePicker = new TimePicker
+        {
+            Width             = 240,
+            IsMotionEnabled   = false,
+            IsPopupPinnedOpen = true
+        };
+
+        ShowInWindow(timePicker, () =>
+        {
+            var popup = timePicker.GetVisualDescendants()
+                                  .OfType<Popup>()
+                                  .Single(item => item.Name == "PART_Popup");
+
+            popup.IsOpen.ShouldBeTrue();
+            popup.IsLightDismissEnabled.ShouldBeFalse();
+
+            timePicker.IsPopupPinnedOpen = false;
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsPopupPinnedOpen.ShouldBeFalse();
+            popup.IsLightDismissEnabled.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public void Range_Pinned_Open_Request_Suppresses_Light_Dismiss_Before_First_Open_And_Unpin_Restores_It()
+    {
+        var rangePicker = new RangeTimePicker
+        {
+            Width             = 420,
+            IsMotionEnabled   = false,
+            IsPopupPinnedOpen = true
+        };
+
+        ShowInWindow(rangePicker, () =>
+        {
+            var popup = rangePicker.GetVisualDescendants()
+                                   .OfType<Popup>()
+                                   .Single(item => item.Name == "PART_Popup");
+
+            popup.IsOpen.ShouldBeTrue();
+            popup.IsLightDismissEnabled.ShouldBeFalse();
+
+            rangePicker.IsPopupPinnedOpen = false;
+            Dispatcher.UIThread.RunJobs();
+
+            popup.IsPopupPinnedOpen.ShouldBeFalse();
+            popup.IsLightDismissEnabled.ShouldBeTrue();
+        });
+    }
+
     private static void ShowInWindow(Control content, Action assertion)
     {
+        var visualLayerManager = new VisualLayerManager
+        {
+            EnableAdornerLayer = true,
+            EnableOverlayLayer = true,
+            Child = content
+        };
+        EnablePopupOverlayLayer(visualLayerManager);
         var window = new AvaloniaWindow
         {
             Width   = 360,
             Height  = 240,
-            Content = content
+            Content = visualLayerManager
         };
 
         try
         {
             window.Show();
             Dispatcher.UIThread.RunJobs();
+            content.ApplyTemplate();
+            window.UpdateLayout();
+            Dispatcher.UIThread.RunJobs();
             assertion();
         }
         finally
         {
             window.Close();
+            Dispatcher.UIThread.RunJobs();
         }
+    }
+
+    private static void EnablePopupOverlayLayer(VisualLayerManager visualLayerManager)
+    {
+        var property = typeof(VisualLayerManager).GetProperty(
+            "EnablePopupOverlayLayer",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+
+        property.ShouldNotBeNull();
+        property.SetValue(visualLayerManager, true);
     }
 
     private sealed class TimePickerBindingViewModel : INotifyPropertyChanged

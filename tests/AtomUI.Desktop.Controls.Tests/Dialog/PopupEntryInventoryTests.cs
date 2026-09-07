@@ -23,6 +23,7 @@ public class PopupEntryInventoryTests
         "src/AtomUI.Desktop.Controls/Primitives/InfoPickerInput/Themes/InfoPickerInputTheme.axaml",
         "src/AtomUI.Desktop.Controls/Primitives/InfoPickerInput/Themes/RangeInfoPickerInputTheme.axaml",
         "src/AtomUI.Desktop.Controls/Select/Themes/SelectTheme.axaml",
+        "src/AtomUI.Desktop.Controls/TimePicker/Themes/RangeTimePickerTheme.axaml",
         "src/AtomUI.Desktop.Controls/Tour/Themes/TourTheme.axaml",
         "src/AtomUI.Desktop.Controls/TreeSelect/Themes/TreeSelectTheme.axaml"
     ];
