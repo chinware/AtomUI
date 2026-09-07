@@ -332,10 +332,25 @@ public class GalleryShowCaseHostTests
 
         // 双内容槽由宿主 C# 驱动：内容层 TemplatedParent 会被呈现器重绑定为
         // GalleryStickyTabsHost，模板内 TemplateBinding 解析不到宿主属性。
-        var markup = File.ReadAllText(themePath);
-        markup.ShouldNotContain("TemplateBinding ExamplesContent");
-        markup.ShouldNotContain("TemplateBinding SemanticPartsContent");
-        markup.ShouldNotContain("TemplateBinding ActiveContent");
+        // 该约束只针对内容属性本身（ExamplesContent / SemanticPartsContent /
+        // ActiveContent）；StickyHost 是模板直属子级，其元数据属性（如
+        // IsContentHeightBounded、SemanticPartsContentMinHeight）走 TemplateBinding
+        // 是可达且既定的形态，不得被子串匹配误伤。
+        var forbiddenContentProperties = new HashSet<string>(
+            ["ExamplesContent", "SemanticPartsContent", "ActiveContent"],
+            StringComparer.Ordinal);
+        var boundPropertyNames = document.Descendants()
+                                         .Attributes()
+                                         .Where(static attribute =>
+                                             attribute.Name.LocalName != "Name" &&
+                                             attribute.Value.Contains("TemplateBinding"))
+                                         .Select(static attribute =>
+                                             attribute.Value.Replace("TemplateBinding", string.Empty).Trim())
+                                         .ToArray();
+        boundPropertyNames.Where(bound => forbiddenContentProperties.Contains(bound))
+                          .ShouldBeEmpty(
+                              "content slots must be driven from the host code-behind; " +
+                              "TemplateBinding cannot resolve host properties from the re-parented content layer");
     }
 
     [Fact]

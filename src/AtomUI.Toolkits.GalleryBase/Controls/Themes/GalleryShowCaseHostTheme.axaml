@@ -21,7 +21,8 @@
                     Header="{TemplateBinding Header}"
                     StickyContent="{TemplateBinding NavigationContent}"
                     StickyContentPadding="{TemplateBinding StickyContentPadding}"
-                    IsContentHeightBounded="{TemplateBinding IsSemanticPartsContentHeightBounded}">
+                    IsContentHeightBounded="{TemplateBinding IsSemanticPartsContentHeightBounded}"
+                    ContentMinHeight="{TemplateBinding SemanticPartsContentMinHeight}">
                     <Panel>
                         <ContentPresenter Name="PART_ExamplesContentHost" />
                         <ContentPresenter Name="PART_SemanticPartsContentHost" />

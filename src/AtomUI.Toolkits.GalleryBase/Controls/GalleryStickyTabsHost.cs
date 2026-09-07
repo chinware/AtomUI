@@ -63,6 +63,20 @@ public class GalleryStickyTabsHost : TemplatedControl
             nameof(ContentMaxHeight),
             host => host.ContentMaxHeight);
 
+    /// <summary>
+    /// 限高模式下内容宿主 MaxHeight 的下限。视口剩余高度小于该下限时，钳制值
+    /// 保持在下限而不是继续收缩，页面 ScrollViewer 的 extent 超过 viewport，
+    /// 垂直滚动条得以出现；未限高（下限为 0）时行为不变。
+    /// </summary>
+    internal static readonly StyledProperty<double> ContentMinHeightProperty =
+        AvaloniaProperty.Register<GalleryStickyTabsHost, double>(nameof(ContentMinHeight));
+
+    internal double ContentMinHeight
+    {
+        get => GetValue(ContentMinHeightProperty);
+        set => SetValue(ContentMinHeightProperty, value);
+    }
+
     public object? Header
     {
         get => GetValue(HeaderProperty);
@@ -201,7 +215,8 @@ public class GalleryStickyTabsHost : TemplatedControl
         {
             QueueStickyElevationUpdate();
         }
-        else if (change.Property == IsContentHeightBoundedProperty)
+        else if (change.Property == IsContentHeightBoundedProperty ||
+                 change.Property == ContentMinHeightProperty)
         {
             UpdateContentMaxHeight();
         }
@@ -269,7 +284,11 @@ public class GalleryStickyTabsHost : TemplatedControl
         var headerHeight = _headerHost?.Bounds.Height ?? 0;
         var stickyHeight = _stickySlotPlaceholder?.Bounds.Height
                            ?? _inlineStickyContentHost?.Bounds.Height ?? 0;
-        _contentHost.MaxHeight = Math.Max(0, _scrollViewer.Viewport.Height - headerHeight - stickyHeight);
+        // 视口剩余高度不足内容下限时保持下限：内容以最小可用高度参与页面
+        // 布局并触发页面垂直滚动，而不是被钳制到视口内导致裁切且无法滚动。
+        _contentHost.MaxHeight = Math.Max(
+            ContentMinHeight,
+            Math.Max(0, _scrollViewer.Viewport.Height - headerHeight - stickyHeight));
         ContentMaxHeight       = _contentHost.MaxHeight;
     }
 

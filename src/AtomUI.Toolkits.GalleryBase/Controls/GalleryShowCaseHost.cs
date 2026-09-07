@@ -66,6 +66,11 @@ public class GalleryShowCaseHost : TemplatedControl
             nameof(IsSemanticPartsContentHeightBounded),
             host => host.IsSemanticPartsContentHeightBounded);
 
+    internal static readonly DirectProperty<GalleryShowCaseHost, double> SemanticPartsContentMinHeightProperty =
+        AvaloniaProperty.RegisterDirect<GalleryShowCaseHost, double>(
+            nameof(SemanticPartsContentMinHeight),
+            host => host.SemanticPartsContentMinHeight);
+
     private AtomUITabStrip? _tabStrip;
     private ContentPresenter? _examplesContentHost;
     private ContentPresenter? _semanticPartsContentHost;
@@ -77,6 +82,7 @@ public class GalleryShowCaseHost : TemplatedControl
     private bool _hasSemanticParts;
     private bool _isSemanticPartsContentMaterialized;
     private bool _isSemanticPartsContentHeightBounded;
+    private double _semanticPartsContentMinHeight;
     private bool _isSynchronizingSelection;
 
     public object? Header
@@ -141,6 +147,17 @@ public class GalleryShowCaseHost : TemplatedControl
     {
         get => _isSemanticPartsContentHeightBounded;
         private set => SetAndRaise(IsSemanticPartsContentHeightBoundedProperty, ref _isSemanticPartsContentHeightBounded, value);
+    }
+
+    /// <summary>
+    /// 限高模式下语义内容的最小可用高度：舞台配置下限加检查面板固定上下内边距
+    /// （与 PaneMaxHeight 换算共用同一组内边距）。视口剩余高度不足该值时，宿主
+    /// 钳制保持在下限，页面出现垂直滚动条而不是裁切内容。
+    /// </summary>
+    internal double SemanticPartsContentMinHeight
+    {
+        get => _semanticPartsContentMinHeight;
+        private set => SetAndRaise(SemanticPartsContentMinHeightProperty, ref _semanticPartsContentMinHeight, value);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -346,6 +363,13 @@ public class GalleryShowCaseHost : TemplatedControl
         // reachable through the page scroll.
         IsSemanticPartsContentHeightBounded =
             isSemanticTab && _semanticPartPreviews.Count == 1;
+
+        // 限高钳制的下限：视口剩余高度不足时内容保持最小可用高度，由页面
+        // 垂直滚动条兜底；未限高时下限为 0，不影响内容尺寸布局。
+        SemanticPartsContentMinHeight = IsSemanticPartsContentHeightBounded
+            ? _semanticPartPreviews[0].PreviewStageMinHeight
+              + SemanticPartPaneMaxHeightConverter.InspectionPanelVerticalInsets
+            : 0;
     }
 
     private Control? EnsureSemanticPartsContent()

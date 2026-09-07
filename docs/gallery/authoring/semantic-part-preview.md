@@ -171,6 +171,10 @@ Preview 使用一个完整边框包围预览区和 Part 列表，不能把两栏
   列表内容不足该高度时面板仍按内容决定高度并在内容区顶部对齐，不会被页面剩余高度强制拉伸成大面积空白舞台。
   绑定链是：宿主 code-behind 计算的 Content 宿主 MaxHeight → Preview 继承的 MaxHeight →
   `SemanticPartPreview.PaneMaxHeightConverter` 换算后的布局面板 `PaneMaxHeight`。
+- 限高钳制保留下限：`GalleryShowCaseHost` 通过 `GalleryStickyTabsHost.ContentMinHeight` 传入单 Preview 的
+  `PreviewStageMinHeight + 54`。视口剩余高度不足该下限时，钳制值保持在下限而不是继续收缩，页面 ScrollViewer 的
+  extent 超过 viewport，出现页面级垂直滚动条兜底（钉住弹层、详情区等被裁切内容必须可滚动到达）；
+  窗口足够高时限高填充行为不变。禁止回到"钳制无下限"的形态——那会把内容挤出可视区且无法滚动。
 - 模板堆叠多个 Preview 或宿主未限高时，宽屏 Part 列表以 `PaneMaxHeight`（默认 400）为上限并在列表内部滚动。页面测量链为
   Preview 提供无限高度，若不对列表高度设上限，列表会按全部行高撑高整个面板，把预览区挤出页面视口（短窗口下尤其明显），
   浏览靠后的 Part 就只能滚动页面而不是滚动列表本身；多 Preview 模板保持内容尺寸布局，避免第一个 Preview 占满视口余量后
