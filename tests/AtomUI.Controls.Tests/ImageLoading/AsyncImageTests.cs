@@ -24,7 +24,7 @@ public class AsyncImageTests
             Width = 32,
             Height = 32,
             DecodeMode = ImageDecodeMode.Explicit,
-            Source = ImageLoadSource.FromImage(borrowed)
+            Source = new BorrowedImageSource(borrowed)
         };
         using var host = new ImageControlTestHost(image);
 
@@ -51,7 +51,7 @@ public class AsyncImageTests
         {
             Width = 32,
             Height = 32,
-            Source = ImageLoadSource.FromImage(borrowed)
+            Source = new BorrowedImageSource(borrowed)
         };
         image.ImageOpened += (_, args) => opened = args;
 
@@ -84,7 +84,7 @@ public class AsyncImageTests
         {
             Width = 32,
             Height = 32,
-            Source = ImageLoadSource.FromImage(new TestBorrowedImage())
+            Source = new BorrowedImageSource(new TestBorrowedImage())
         };
         image.ImageOpened += (_, _) => throw new InvalidOperationException("observer failed");
         image.ImageOpened += (_, _) => Interlocked.Increment(ref observed);
@@ -105,8 +105,8 @@ public class AsyncImageTests
         {
             Width = 32,
             Height = 32,
-            Source = ImageLoadSource.FromBytes(new byte[] { 1 }, "invalid", "v1"),
-            FallbackSource = ImageLoadSource.FromImage(fallback)
+            Source = new BytesImageSource(new byte[] { 1 }, "invalid"),
+            FallbackSource = new BorrowedImageSource(fallback)
         };
         image.ImageOpened += (_, args) => opened = args;
         using var host = new ImageControlTestHost(image);
@@ -127,7 +127,7 @@ public class AsyncImageTests
         {
             Width = 32,
             Height = 32,
-            Source = ImageLoadSource.FromBytes(new byte[] { 1 }, "invalid", "v1"),
+            Source = new BytesImageSource(new byte[] { 1 }, "invalid"),
             ErrorContent = "Unable to load"
         };
         image.ImageFailed += (_, args) => failed = args;
@@ -151,7 +151,7 @@ public class AsyncImageTests
     {
         var firstStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var releaseFirst = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var first = ImageLoadSource.FromStream(
+        var first = new StreamImageSource(
             async _ =>
             {
                 firstStarted.TrySetResult();
@@ -161,7 +161,7 @@ public class AsyncImageTests
             "first",
             "v1");
         var secondImage = new TestBorrowedImage();
-        var second = ImageLoadSource.FromImage(secondImage);
+        var second = new BorrowedImageSource(secondImage);
         var image = new AsyncImage { Width = 32, Height = 32, Source = first };
         using var host = new ImageControlTestHost(image);
         ImageControlTestHost.WaitUntil(() => firstStarted.Task.IsCompleted, "first request start");
@@ -183,7 +183,7 @@ public class AsyncImageTests
     {
         var bytes = ImageControlTestHost.CreatePng(32, 32);
         var reads = 0;
-        var source = ImageLoadSource.FromStream(
+        var source = new StreamImageSource(
             _ =>
             {
                 Interlocked.Increment(ref reads);
@@ -213,7 +213,7 @@ public class AsyncImageTests
         {
             Width = 32,
             Height = 32,
-            Source = ImageLoadSource.FromImage(borrowed)
+            Source = new BorrowedImageSource(borrowed)
         };
         using var host = new ImageControlTestHost(image);
         ImageControlTestHost.WaitUntil(() => image.IsLoaded, "initial attach load");
@@ -237,7 +237,7 @@ public class AsyncImageTests
         {
             Width = 17,
             Height = 17,
-            Source = ImageLoadSource.FromBytes(bytes, "bucket", "v1")
+            Source = new BytesImageSource(bytes, "bucket")
         };
         image.ImageOpened += (_, args) => opened = args;
         using var host = new ImageControlTestHost(image);
@@ -257,7 +257,7 @@ public class AsyncImageTests
         var image = new AsyncImage
         {
             Width = 168.5,
-            Source = ImageLoadSource.FromImage(new TestBorrowedImage(523, 349))
+            Source = new BorrowedImageSource(new TestBorrowedImage(523, 349))
         };
 
         image.Measure(new Size(168.5, double.PositiveInfinity));
@@ -274,7 +274,7 @@ public class AsyncImageTests
         {
             Width = 48,
             Height = 32,
-            Source = ImageLoadSource.FromAsset(
+            Source = new AssetImageSource(
                 new Uri("avares://AtomUI.Controls.Tests/Assets/ImageLoading/Test.svg"))
         };
         using var host = new ImageControlTestHost(image, width: 48, height: 32);
@@ -292,7 +292,7 @@ public class AsyncImageTests
     public void Asset_Svg_Can_Be_Released_By_Background_Cache_Clear()
     {
         var loader = Application.Current.ShouldNotBeNull().GetImageLoader();
-        var source = ImageLoadSource.FromAsset(
+        var source = new AssetImageSource(
             new Uri("avares://AtomUI.Controls.Tests/Assets/ImageLoading/Test.svg"));
         ImageLoadResult? result = null;
         Exception? loadException = null;

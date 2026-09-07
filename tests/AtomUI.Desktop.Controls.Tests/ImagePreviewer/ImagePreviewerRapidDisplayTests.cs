@@ -38,8 +38,8 @@ public class ImagePreviewerRapidDisplayTests
                 ItemsSource = items
             };
             using var host = new PreviewerHost(holdPreviewer, renderScaling: 1);
-            items.Add(new ImagePreviewItem(ImageLoadSource.FromBytes(
-                png, $"display-seed-{Guid.NewGuid():N}", "v1")));
+            items.Add(new ImagePreviewItem(new BytesImageSource(
+                png, $"display-seed-{Guid.NewGuid():N}")));
             Dispatcher.UIThread.RunJobs();
             holdPreviewer.OpenDialog();
             Dispatcher.UIThread.RunJobs();
@@ -50,7 +50,7 @@ public class ImagePreviewerRapidDisplayTests
                 // 30ms 源 + 50ms 切换周期：加载略慢于切换的稳态场景（与真实 demo 节奏一致，
                 // 测试应用 loader 为串行并发）。完成者持续出现，经采纳在途请求与保留帧种子
                 // 补充显示——显示通道不允许出现占位符空洞（即非悬停时的频闪）。
-                items.Add(new ImagePreviewItem(ImageLoadSource.FromStream(
+                items.Add(new ImagePreviewItem(new StreamImageSource(
                     async token =>
                     {
                         await Task.Delay(30, token);
@@ -80,7 +80,7 @@ public class ImagePreviewerRapidDisplayTests
     }
 
     [Fact]
-    public void Immediate_Shows_The_Loading_Placeholder_After_Grace_With_Slow_Loads()
+    public void Immediate_Shows_The_Loading_Placeholder_During_Continuous_Slow_Target_Switches()
     {
         Dispatcher.UIThread.Invoke(() =>
         {
@@ -95,38 +95,49 @@ public class ImagePreviewerRapidDisplayTests
                 ItemsSource = items
             };
             using var host = new PreviewerHost(immediatePreviewer, renderScaling: 1);
-            items.Add(new ImagePreviewItem(ImageLoadSource.FromBytes(
-                png, $"imm-seed-{Guid.NewGuid():N}", "v1")));
+            items.Add(new ImagePreviewItem(new BytesImageSource(
+                png, $"imm-seed-{Guid.NewGuid():N}")));
             Dispatcher.UIThread.RunJobs();
             immediatePreviewer.OpenDialog();
             Dispatcher.UIThread.RunJobs();
+            WaitUntil(
+                () => !DescribeDisplay(immediatePreviewer).Contains("img=null "),
+                "initial preview image");
 
-            var sawPlaceholder = false;
             for (var tick = 0; tick < 6; tick++)
             {
-                // 700ms 慢源 + 1000ms 喂图节奏：每轮目标在宽限期(300ms)后才加载完成，
-                // Immediate 必须出现 loading 占位（:loading:not(:has-image) 门控的 presenter）
-                items.Add(new ImagePreviewItem(ImageLoadSource.FromStream(
+                // 目标加载明显慢于切换周期；Immediate 必须从每次目标切换的同一 UI 周期
+                // 清空旧图并显示 loading，不能等待源请求实际开始或某个固定延迟。
+                items.Add(new ImagePreviewItem(new StreamImageSource(
                     async token =>
                     {
-                        await Task.Delay(700, token);
+                        await Task.Delay(300, token);
                         return new MemoryStream(png);
                     },
                     $"imm-slow-{tick}-{Guid.NewGuid():N}", "v1")));
                 immediatePreviewer.CurrentIndex = items.Count - 1;
-
-                // 在 300ms 宽限后、700ms 完成前采样 loading 占位可见性
-                Thread.Sleep(450);
                 Dispatcher.UIThread.RunJobs();
-                var line = $"t{tick} " + DescribeDisplay(immediatePreviewer);
-                if (line.Contains("loadingVisible=True"))
-                {
-                    sawPlaceholder = true;
-                }
-            }
 
-            sawPlaceholder.ShouldBeTrue("Immediate 慢加载超过宽限期后必须显示 loading 占位");
+                var line = $"t{tick} " + DescribeDisplay(immediatePreviewer);
+                line.ShouldContain("img=null ");
+                line.ShouldContain("loadingVisible=True");
+                line.ShouldContain("hasImagePseudo=False");
+            }
         });
+    }
+
+    private static void WaitUntil(Func<bool> predicate, string description)
+    {
+        for (var attempt = 0; attempt < 200; attempt++)
+        {
+            Dispatcher.UIThread.RunJobs();
+            if (predicate())
+            {
+                return;
+            }
+            Thread.Sleep(10);
+        }
+        throw new TimeoutException($"Timed out waiting for {description}.");
     }
 
     private static string DescribeDisplay(global::AtomUI.Desktop.Controls.ImagePreviewer previewer)

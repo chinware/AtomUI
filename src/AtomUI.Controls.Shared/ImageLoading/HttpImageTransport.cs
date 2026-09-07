@@ -53,7 +53,7 @@ internal sealed class HttpImageTransport : IDisposable
         CancellationToken cancellationToken)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        var initialUri = (Uri)request.Source.Value;
+        var initialUri = ((HttpImageSource)request.Source).Uri;
         ValidateUri(initialUri, request.Source.DisplayName);
         var currentUri = initialUri;
         var initialOrigin = ImageCacheKey.NormalizeOrigin(initialUri);
@@ -299,7 +299,7 @@ internal sealed class HttpImageTransport : IDisposable
         return new ImageEncodedContent(
             bytes,
             response.Content.Headers.ContentType?.MediaType?.ToLowerInvariant(),
-            ImageCacheSource.Network,
+            ImageLoadOrigin.Network,
             receivedAt,
             freshUntil,
             response.Headers.ETag?.ToString(),
@@ -333,7 +333,7 @@ internal sealed class HttpImageTransport : IDisposable
         var maxAge = metadata.MaxAge ?? staleContent.MaxAge;
         return staleContent with
         {
-            CacheSource = ImageCacheSource.Revalidated,
+            SourceValidation = ImageSourceValidation.Revalidated,
             StoredAt = metadata.StoredAt,
             FreshUntil = CalculateFreshUntil(
                 metadata.StoredAt,

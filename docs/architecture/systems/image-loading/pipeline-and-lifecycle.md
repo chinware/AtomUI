@@ -17,8 +17,8 @@ src/AtomUI.Controls.Shared/ImageLoading/
 ├── SvgImageLoadingOptionsBuilder.cs
 ├── ImageLoadingBuilderExtensions.cs
 ├── IImageLoader.cs
-├── ImageLoadSource.cs
-├── ImageLoadSourceConverter.cs
+├── ImageSource.cs
+├── ImageSourceConverter.cs
 ├── ImageRequestOptions.cs
 ├── ImageLoadRequest.cs
 ├── ImageLoadResult.cs
@@ -30,6 +30,8 @@ src/AtomUI.Controls.Shared/ImageLoading/
 ├── ImageLoaderSnapshot.cs
 ├── ImageLoaderEventArgs.cs
 ├── ImageCacheKey.cs
+├── ImageSourceSnapshot.cs
+├── ImageSourceSnapshotIndex.cs
 ├── ImageRequestScheduler.cs
 ├── ImageRequestCoordinator.cs
 ├── ImageLoaderPipeline.cs
@@ -114,7 +116,7 @@ Gallery 自然得到同一个应用 loader。
 
 - 默认调用只补缺省值，不覆盖用户显式配置。
 - scalar 显式配置按 configure callback 顺序取最后值，并在冻结时统一校验。
-- 内置 source reader 由 pipeline 按 `ImageLoadSourceKind` 静态构造，每个 kind 必须恰好一个；重复或缺失立即失败。
+- 内置 source reader 由 pipeline 按 `ImageSourceKind` 静态构造，每个 kind 必须恰好一个；重复或缺失立即失败。
 - codec 以稳定 Id 和 Version 去重；Id 相同但实现类型或版本不同立即失败。
 - 每个 source kind 必须恰好有一个 reader；每个受支持格式必须有唯一最高匹配 codec，不允许依赖注册顺序碰运气。
 - Loader 构建完成后 registry 不可变，不支持运行时插件发现或程序集扫描。
@@ -124,17 +126,17 @@ Gallery 自然得到同一个应用 loader。
 ```mermaid
 flowchart TD
     Control["Control / Previewer waiter"] --> Normalize["规范化 Source 和 Options snapshot"]
-    Normalize --> CandidateLookup["registered codec decoded-key candidates 查询"]
-    CandidateLookup -->|hit| Lease["创建独立结果租约"]
-    CandidateLookup -->|miss| EncodedLookup["encoded key 查询"]
-    EncodedLookup -->|hit| Validate["当前 security policy 内容校验"]
-    EncodedLookup -->|miss| EncodedJoin["加入或创建 encoded in-flight"]
-    EncodedJoin --> Read["HTTP / File / Asset / Storage / Bytes / Stream reader"]
-    Read --> Validate
-    Validate --> CodecSelect["唯一 codec 选择与精确 decoded key"]
+    Normalize --> Snapshot["SourceKey snapshot lookup"]
+    Snapshot --> Resolve["按 CacheRead 验证 SourceVersion"]
+    Resolve -->|需要访问来源| SourceJoin["加入或创建 source-resolution in-flight"]
+    SourceJoin --> Read["HTTP / File / Asset / Storage / Bytes / Stream reader"]
+    Resolve -->|snapshot 可接受| ContentLookup["按 ContentId 查询 encoded content"]
+    Read --> Validate["内容安全验证 + SHA-256 ContentId"]
+    Validate --> ContentLookup
+    ContentLookup --> CodecSelect
     CodecSelect --> DecodedLookup["精确 decoded cache 查询"]
-    DecodedLookup -->|hit| Lease
-    DecodedLookup -->|miss| DecodedJoin["加入或创建 decoded in-flight"]
+    DecodedLookup -->|hit| Lease["创建独立结果租约"]
+    DecodedLookup -->|miss| DecodedJoin["加入或创建 decode in-flight"]
     DecodedJoin --> DecodeQueue["decode priority queue"]
     DecodeQueue --> Codec["显式 codec decode"]
     Codec --> Insert["decoded cache insert"]
@@ -143,12 +145,14 @@ flowchart TD
 
 管线阶段固定为：
 
-1. 对 `ImageLoadSource` 和 `ImageRequestOptions` 做不可变快照、协议校验和身份规范化。
-2. 计算 source identity 和 encoded key；registry 为每个显式 codec 生成确定的 decoded-key candidate，先查询 decoded memory。
-3. candidate 全部 miss 时加入 encoded in-flight；encoded memory/file 命中和新读取内容都按当前 security policy 验证。
-4. encoded miss 时由 source reader 获取拥有明确所有权的编码流或 borrowed image；只有验证成功的 encoded content 可以写缓存。
-5. 执行长度、MIME、Magic Bytes、raster header 或 SVG XML/CSS/资源预算、维度、像素和估算解码字节校验。
-6. 选择唯一 codec 并生成精确 decoded key；再次查询 decoded cache，miss 时才加入 decoded in-flight 和 decode scheduler。
+1. 对 `ImageSource` 和 `ImageRequestOptions` 做不可变快照、协议校验和 `ImageSourceKey` 规范化。
+2. 按 `ImageCacheReadPolicy` 读取并验证 SourceSnapshot；普通请求不得在来源验证前用 SourceKey 直接查询 decoded cache。
+3. snapshot 可接受时按其 `ImageContentId` 查询 encoded memory/persistent store；否则加入 source-resolution in-flight 并访问 reader。
+4. reader 获取拥有明确所有权的编码流或 borrowed image；编码内容经过长度、MIME、Magic Bytes、raster header 或 SVG
+   XML/CSS/资源预算、维度、像素和估算解码字节校验，然后以精确字节计算 SHA-256 `ImageContentId`。
+5. 新内容先按 ContentId 写 encoded store，再以单调 commit generation 提交 SourceKey -> SourceVersion -> ContentId snapshot。
+6. 选择唯一 codec，用 ContentId 和 `ImageDecodeSpec` 生成精确 `ImageDecodeKey`；查询 decoded cache，miss 时才加入 decode
+   in-flight 和 decode scheduler。
 7. codec 生成 decoded entry；pipeline 在接收 scheduler 结果时先建立 operation reference，随后才检查取消并尝试写 cache；任一
    提交异常都释放该引用。cache hit 在 cache lock 内原子建立 result lease 或 operation reference，成功后再把所有权交给 waiter。
 8. 调用方在 UI dispatcher 校验 generation 后提交结果；过期结果立即释放。
@@ -158,33 +162,34 @@ flowchart TD
 的本地读取槽位；本地读取仍使用独立的有界队列，不能退化为无限并发。Cache 不启动任务，transport 不写 decoded cache，codec 不做
 HTTP 或控件状态提交，职责不能重新揉进 `ImageLoader` 巨型类。
 
-## 身份与键
+## 来源身份、内容身份与解码身份
 
-source identity 不包含目标解码尺寸：
+`ImageSourceKey` 描述“如何再次访问来源”，不包含目标解码尺寸：
 
 - HTTP：scheme/host 小写、IDN 规范化、移除默认端口和 fragment、解析 dot segment；保留 path/query 的语义顺序，
   禁止 URI user-info。
 - File：转换为绝对规范路径，使用平台正确的大小写 comparer；不把相对路径当前目录变化带入 key。
 - Asset：只接受规范绝对 `avares` URI。
-- StorageFile：优先使用显式 `cacheKey + version`；缺失时只在当前对象和应用生命周期内共享，不进入持久缓存。
-- Bytes/Stream：有显式 `cacheKey + version` 才跨请求缓存；否则使用实例身份，只允许本次/同实例合并。
-- Image：使用对象身份，始终 borrowed，不进入可释放 decoded cache 或持久缓存。
+- StorageFile：有显式 revision 时使用稳定 storage URI；缺失时使用当前对象身份，不进入持久缓存。
+- Bytes：构造时复制字节并立即计算内容摘要，调用方后续修改原 buffer 不影响 source。
+- Stream：有显式 identity + revision 才跨实例复用并允许持久 snapshot；否则使用 delegate 对象身份。
+- Borrowed image：使用图片对象身份，始终 borrowed，不进入可释放 decoded cache 或持久缓存。
 
-encoded key 由 source identity、`Variant`、`CachePartition`、影响响应内容的请求 header 摘要和 source-reader contract 版本组成。
-header 原值不进入 key 的可打印形式。decoded key 在 encoded key 上增加 codec Id/版本、security policy version 和
-codec-specific options。raster codec 的 options 包含物理像素尺寸桶；`SvgImageCodec` 是尺寸无关 codec，不把目标尺寸加入 key。
-因此不同控件可共享一次下载，64 px Avatar 和原图 Previewer 不会共享错误尺寸的 Bitmap，但同一静态 SVG 可以共享一个矢量
-decoded entry。
+SourceKey 还包含 `Variant`、`CachePartition`、所有请求 header 的摘要和 source-reader contract；header 原值不进入日志、文件名或
+metadata。来源验证产生 `ImageSourceVersion`，读取并验证正文后产生 SHA-256 `ImageContentId`。encoded store 只按
+`(partition, ContentId)` 保存内容，decoded key 则是 `(partition, ContentId, ImageDecodeSpec)`。raster spec 包含物理像素尺寸桶；
+`SvgImageCodec` 是尺寸无关 codec，不把目标尺寸加入 key。因此不同来源的相同字节可共享内容与解码结果，64 px Avatar 和原图
+Previewer 不会共享错误尺寸的 Bitmap，同一静态 SVG 则可共享一个矢量 decoded entry。
 
 ## 两级在途合并与取消
 
 下载/读取和解码必须分别合并：
 
-- 相同 encoded key 共享编码获取，即使调用方请求不同尺寸。
+- 相同 SourceKey 与兼容读取策略共享来源解析，即使调用方请求不同尺寸。
 - 相同 decoded key 共享同一次解码；raster 不同尺寸建立不同 decoded operation，SVG 不因显示尺寸不同重复构建矢量模型。
-- cache mode、partition、variant 或内容相关 header 不同的请求不得合并。
-- `Reload` 不加入普通缓存读取 operation；兼容的同时 Reload 请求可以彼此合并，但不能把普通 waiter 静默升级为 Reload。
-- `NoStore` 可以在同一时刻合并完全相同请求以节省工作，但完成后不写 memory/file cache；无 partition 的认证请求是例外，
+- cache read policy、partition、variant 或内容相关 header 不同的请求不得合并。
+- `RefreshSource` 不加入普通 `ValidateSource` operation；兼容的同时 RefreshSource 请求可以彼此合并，不能把普通 waiter 静默升级。
+- `CacheStorage=None` 可以在同一时刻合并完全相同请求以节省工作，但完成后不写 memory/file cache；无 partition 的认证请求是例外，
   每个请求独立执行。
 
 每个 waiter 有独立 cancellation registration 和 completion source。取消一个 waiter 只移除该 waiter；共享 operation 仍有其他

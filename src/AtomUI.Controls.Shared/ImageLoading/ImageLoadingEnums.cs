@@ -1,6 +1,6 @@
 namespace AtomUI.Controls;
 
-public enum ImageLoadSourceKind
+public enum ImageSourceKind
 {
     Http,
     File,
@@ -8,7 +8,13 @@ public enum ImageLoadSourceKind
     StorageFile,
     Bytes,
     Stream,
-    Image
+    Borrowed
+}
+
+public enum ImageFileValidationMode
+{
+    Metadata,
+    ContentHash
 }
 
 public enum ImageLoadState
@@ -19,12 +25,19 @@ public enum ImageLoadState
     Failed
 }
 
-public enum ImageCacheMode
+public enum ImageCacheReadPolicy
 {
-    Default,
-    Reload,
-    NoStore,
+    ValidateSource,
+    RefreshSource,
+    PreferCache,
     CacheOnly
+}
+
+public enum ImageCacheStoragePolicy
+{
+    None,
+    Memory,
+    MemoryAndDisk
 }
 
 public enum ImageDecodeMode
@@ -43,15 +56,22 @@ public enum ImageRequestPriority
     Preload
 }
 
-public enum ImageCacheSource
+public enum ImageLoadOrigin
 {
-    None,
+    Borrowed,
     DecodedMemory,
     EncodedMemory,
     Persistent,
-    Revalidated,
     Network,
     Local
+}
+
+public enum ImageSourceValidation
+{
+    NotRequired,
+    Current,
+    Revalidated,
+    Unverified
 }
 
 public enum ImageLoadStage

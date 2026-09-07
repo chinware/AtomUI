@@ -51,7 +51,7 @@ internal sealed class ImageLoader : IImageLoader, IAtomUIOwnedService
         ArgumentNullException.ThrowIfNull(request);
         var normalized = ImageCacheKey.Normalize(request, _options, forceReload: false);
         var stopwatch = Stopwatch.StartNew();
-        RaiseEvent(ImageLoaderEventKind.Started, normalized.Source.Kind, ImageCacheSource.None, null, stopwatch.Elapsed);
+        RaiseEvent(ImageLoaderEventKind.Started, normalized.Source.Kind, null, null, stopwatch.Elapsed);
 
         using var timeoutCancellation = new CancellationTokenSource(normalized.Timeout);
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(
@@ -63,8 +63,8 @@ internal sealed class ImageLoader : IImageLoader, IAtomUIOwnedService
             var result = await _pipeline.LoadAsync(
                 normalized,
                 linked.Token).ConfigureAwait(false);
-            if (result.CacheSource is ImageCacheSource.DecodedMemory or ImageCacheSource.EncodedMemory or
-                ImageCacheSource.Persistent or ImageCacheSource.Revalidated)
+            if (result.Origin is ImageLoadOrigin.DecodedMemory or ImageLoadOrigin.EncodedMemory or
+                ImageLoadOrigin.Persistent || result.SourceValidation == ImageSourceValidation.Revalidated)
             {
                 Interlocked.Increment(ref _cacheHits);
             }
@@ -73,12 +73,12 @@ internal sealed class ImageLoader : IImageLoader, IAtomUIOwnedService
                 Interlocked.Increment(ref _cacheMisses);
             }
             RaiseEvent(
-                result.CacheSource is ImageCacheSource.DecodedMemory or ImageCacheSource.EncodedMemory or
-                    ImageCacheSource.Persistent or ImageCacheSource.Revalidated
+                result.Origin is ImageLoadOrigin.DecodedMemory or ImageLoadOrigin.EncodedMemory or
+                    ImageLoadOrigin.Persistent || result.SourceValidation == ImageSourceValidation.Revalidated
                     ? ImageLoaderEventKind.CacheHit
                     : ImageLoaderEventKind.Completed,
                 normalized.Source.Kind,
-                result.CacheSource,
+                result.Origin,
                 null,
                 stopwatch.Elapsed);
             return result;
@@ -86,7 +86,7 @@ internal sealed class ImageLoader : IImageLoader, IAtomUIOwnedService
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
             Interlocked.Increment(ref _canceledLoads);
-            RaiseEvent(ImageLoaderEventKind.Canceled, normalized.Source.Kind, ImageCacheSource.None, null, stopwatch.Elapsed);
+            RaiseEvent(ImageLoaderEventKind.Canceled, normalized.Source.Kind, null, null, stopwatch.Elapsed);
             throw;
         }
         catch (OperationCanceledException) when (timeoutCancellation.IsCancellationRequested)
@@ -96,7 +96,7 @@ internal sealed class ImageLoader : IImageLoader, IAtomUIOwnedService
                 ImageLoadErrorCode.Timeout,
                 "The image request timed out.",
                 SourceDisplayName: normalized.Source.DisplayName);
-            RaiseEvent(ImageLoaderEventKind.Failed, normalized.Source.Kind, ImageCacheSource.None, error.Code, stopwatch.Elapsed);
+            RaiseEvent(ImageLoaderEventKind.Failed, normalized.Source.Kind, null, error.Code, stopwatch.Elapsed);
             return new ImageLoadResult(error, normalized.Timing.Snapshot());
         }
         catch (OperationCanceledException) when (_rootCancellation.IsCancellationRequested)
@@ -111,7 +111,7 @@ internal sealed class ImageLoader : IImageLoader, IAtomUIOwnedService
             RaiseEvent(
                 ImageLoaderEventKind.Canceled,
                 normalized.Source.Kind,
-                ImageCacheSource.None,
+                null,
                 null,
                 stopwatch.Elapsed);
             throw;
@@ -126,7 +126,7 @@ internal sealed class ImageLoader : IImageLoader, IAtomUIOwnedService
             RaiseEvent(
                 ImageLoaderEventKind.Failed,
                 normalized.Source.Kind,
-                ImageCacheSource.None,
+                null,
                 exception.Error.Code,
                 stopwatch.Elapsed);
             return new ImageLoadResult(exception.Error, normalized.Timing.Snapshot());
@@ -142,7 +142,7 @@ internal sealed class ImageLoader : IImageLoader, IAtomUIOwnedService
             RaiseEvent(
                 ImageLoaderEventKind.Failed,
                 normalized.Source.Kind,
-                ImageCacheSource.None,
+                null,
                 error.Code,
                 stopwatch.Elapsed);
             return new ImageLoadResult(error, normalized.Timing.Snapshot());
@@ -224,15 +224,15 @@ internal sealed class ImageLoader : IImageLoader, IAtomUIOwnedService
 
     private void RaiseEvent(
         ImageLoaderEventKind kind,
-        ImageLoadSourceKind sourceKind,
-        ImageCacheSource cacheSource,
+        ImageSourceKind sourceKind,
+        ImageLoadOrigin? origin,
         ImageLoadErrorCode? errorCode,
         TimeSpan elapsed)
     {
         ImageLoadEventDispatcher.Dispatch(
             LoadEvent,
             this,
-            new ImageLoaderEventArgs(kind, sourceKind, cacheSource, errorCode, elapsed));
+            new ImageLoaderEventArgs(kind, sourceKind, origin, errorCode, elapsed));
     }
 
     private static bool IsNonFatal(Exception exception) =>

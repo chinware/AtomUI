@@ -44,7 +44,7 @@ public class ImageLoaderLifecycleTests
         application.TryGetImageLoader().ShouldBeNull();
         await Should.ThrowAsync<ObjectDisposedException>(() =>
             loader.LoadAsync(
-                new ImageLoadRequest(ImageLoadSource.FromBytes(new byte[] { 1 })))
+                new ImageLoadRequest(new BytesImageSource(new byte[] { 1 })))
                   .AsTask());
     }
 
@@ -54,7 +54,7 @@ public class ImageLoaderLifecycleTests
         var readStarted = NewSignal();
         var releaseRead = NewSignal();
         var underlyingCanceled = 0;
-        var source = ImageLoadSource.FromStream(
+        var source = new StreamImageSource(
             async token =>
             {
                 using var registration = token.Register(() => Interlocked.Exchange(ref underlyingCanceled, 1));
@@ -99,7 +99,7 @@ public class ImageLoaderLifecycleTests
     public async Task Unexpected_Source_Exception_Is_Reported_As_A_Typed_Failure()
     {
         using var loader = CreateLoader();
-        var source = ImageLoadSource.FromStream(
+        var source = new StreamImageSource(
             _ => ValueTask.FromException<Stream>(new InvalidOperationException("source failed")),
             "throwing-source");
 
@@ -121,7 +121,7 @@ public class ImageLoaderLifecycleTests
         loader.LoadEvent += (_, _) => Interlocked.Increment(ref observed);
 
         using var result = await loader.LoadAsync(
-            new ImageLoadRequest(ImageLoadSource.FromBytes(ImageLoadingTestSupport.CreatePngHeader())),
+            new ImageLoadRequest(new BytesImageSource(ImageLoadingTestSupport.CreatePngHeader())),
             TestContext.Current.CancellationToken);
 
         result.IsSuccess.ShouldBeTrue();
@@ -133,7 +133,7 @@ public class ImageLoaderLifecycleTests
     {
         using var loader = CreateLoader();
         using var result = await loader.LoadAsync(
-            new ImageLoadRequest(ImageLoadSource.FromBytes(ImageLoadingTestSupport.CreatePngHeader()))
+            new ImageLoadRequest(new BytesImageSource(ImageLoadingTestSupport.CreatePngHeader()))
             {
                 Progress = new ThrowingProgress()
             },
@@ -147,7 +147,7 @@ public class ImageLoaderLifecycleTests
     {
         var readStarted = NewSignal();
         var releaseRead = NewSignal();
-        var source = ImageLoadSource.FromStream(
+        var source = new StreamImageSource(
             async token =>
             {
                 readStarted.TrySetResult();
@@ -203,7 +203,7 @@ public class ImageLoaderLifecycleTests
 
         internal override int Version => 1;
 
-        internal override bool CanDecode(ImageProbeResult probe, ImageLoadSource source) => true;
+        internal override bool CanDecode(ImageProbeResult probe, ImageSource source) => true;
 
         internal override Task<ImageDecodedCacheEntry> DecodeAsync(
             ImageEncodedContent content,
@@ -222,7 +222,7 @@ public class ImageLoaderLifecycleTests
                 height,
                 checked((long)width * height * 4),
                 probe.MediaType,
-                content.CacheSource));
+                content.Origin));
         }
     }
 }

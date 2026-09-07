@@ -14,7 +14,9 @@ public sealed class ImageLoadResult : IDisposable
         int decodedPixelWidth,
         int decodedPixelHeight,
         string? mediaType,
-        ImageCacheSource cacheSource,
+        ImageLoadOrigin origin,
+        ImageSourceValidation sourceValidation,
+        string? contentId,
         IReadOnlyDictionary<ImageLoadStage, TimeSpan>? stageDurations = null)
     {
         Image = image ?? throw new ArgumentNullException(nameof(image));
@@ -24,7 +26,9 @@ public sealed class ImageLoadResult : IDisposable
         DecodedPixelWidth = decodedPixelWidth;
         DecodedPixelHeight = decodedPixelHeight;
         MediaType = mediaType;
-        CacheSource = cacheSource;
+        Origin = origin;
+        SourceValidation = sourceValidation;
+        ContentId = contentId;
         StageDurations = stageDurations ?? EmptyDurations;
     }
 
@@ -52,7 +56,11 @@ public sealed class ImageLoadResult : IDisposable
 
     public string? MediaType { get; }
 
-    public ImageCacheSource CacheSource { get; }
+    public ImageLoadOrigin Origin { get; }
+
+    public ImageSourceValidation SourceValidation { get; }
+
+    public string? ContentId { get; }
 
     public IReadOnlyDictionary<ImageLoadStage, TimeSpan> StageDurations { get; }
 

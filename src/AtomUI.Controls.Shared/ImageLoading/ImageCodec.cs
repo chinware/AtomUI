@@ -8,16 +8,20 @@ internal abstract class ImageCodec
 
     internal virtual bool IsDecodeSizeDependent => true;
 
-    internal ImageDecodedCacheKey CreateDecodedCacheKey(NormalizedImageRequest request)
+    internal ImageDecodeKey CreateDecodeKey(
+        NormalizedImageRequest request,
+        ImageContentId contentId)
     {
-        return new ImageDecodedCacheKey(
-            request.EncodedKey,
-            IsDecodeSizeDependent ? request.DecodePixelWidth : 0,
-            IsDecodeSizeDependent ? request.DecodePixelHeight : 0,
-            $"{Id}:v{Version}:security-v{ImageSecurityPolicy.Version}");
+        return new ImageDecodeKey(
+            request.PartitionHash,
+            contentId,
+            new ImageDecodeSpec(
+                IsDecodeSizeDependent ? request.DecodePixelWidth : 0,
+                IsDecodeSizeDependent ? request.DecodePixelHeight : 0,
+                $"{Id}:{Version}:security:{ImageSecurityPolicy.Version}"));
     }
 
-    internal abstract bool CanDecode(ImageProbeResult probe, ImageLoadSource source);
+    internal abstract bool CanDecode(ImageProbeResult probe, ImageSource source);
 
     internal abstract Task<ImageDecodedCacheEntry> DecodeAsync(
         ImageEncodedContent content,
@@ -58,15 +62,7 @@ internal sealed class ImageCodecRegistry
         _codecs = result;
     }
 
-    internal IEnumerable<ImageDecodedCacheKey> CreateDecodedKeyCandidates(NormalizedImageRequest request)
-    {
-        foreach (var codec in _codecs)
-        {
-            yield return codec.CreateDecodedCacheKey(request);
-        }
-    }
-
-    internal ImageCodec Select(ImageProbeResult probe, ImageLoadSource source)
+    internal ImageCodec Select(ImageProbeResult probe, ImageSource source)
     {
         var matches = _codecs.Where(codec => codec.CanDecode(probe, source)).ToArray();
         return matches.Length switch

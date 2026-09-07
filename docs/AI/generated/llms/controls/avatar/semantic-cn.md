@@ -66,7 +66,7 @@ Avatar 通过 `ImageLoadController` 使用当前 `Application` 的 `IImageLoader
 4. 同来源 Reload 或尺寸变化可在 Loading 期间保留旧图片，成功后原子替换；最终失败后释放旧租约。
 5. 结果回到 UI dispatcher 后再次校验 generation 和 attach 状态，旧结果只能释放，不能回写。
 
-HTTP 条件重验证、非网络来源 Reload 强制重读、两级请求合并、缓存、安全限制和应用销毁由统一 loader 负责，Avatar
+HTTP 条件重验证、非网络来源 Reload 强制重读、source/decode 两级请求合并、缓存、安全限制和应用销毁由统一 loader 负责，Avatar
 不复制 transport、cache 或 scheduler。
 
 ## Theme and Token Boundaries
@@ -101,7 +101,7 @@ Avatar Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - `ImageOpened`、`ImageFailed`、状态属性和伪类必须来自同一个 generation。
 - Template reapply 必须解除旧 `PART_TextPresenter.SizeChanged` 订阅。
 - detach 必须取消 waiter、释放图片租约和 motion binding；reattach 根据当前配置重新请求。
-- borrowed `ImageLoadSource.FromImage` 永不由 Avatar 销毁。
+- borrowed `new BorrowedImageSource(image)` 永不由 Avatar 销毁。
 - Public API、Theme、Gallery 示例和 `AtomUI.Controls.Tests` 必须同步验证。
 
 维护不变量：

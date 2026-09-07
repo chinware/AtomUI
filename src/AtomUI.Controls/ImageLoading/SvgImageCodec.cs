@@ -16,7 +16,7 @@ internal sealed class SvgImageCodec : ImageCodec
 
     internal override bool IsDecodeSizeDependent => false;
 
-    internal override bool CanDecode(ImageProbeResult probe, ImageLoadSource source)
+    internal override bool CanDecode(ImageProbeResult probe, ImageSource source)
     {
         return probe.Format == ImageContentFormat.Svg && probe.SvgMetadata is not null;
     }
@@ -58,7 +58,7 @@ internal sealed class SvgImageCodec : ImageCodec
                 height,
                 probe.SvgMetadata!.EstimatedDecodedCost,
                 probe.MediaType,
-                content.CacheSource);
+                content.Origin);
             image = null;
             return entry;
         }

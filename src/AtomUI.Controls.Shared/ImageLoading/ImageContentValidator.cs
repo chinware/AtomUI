@@ -32,12 +32,12 @@ internal sealed class ImageContentValidator
         _svgValidator = new SvgContentValidator(options, ValidateEmbeddedRaster);
     }
 
-    internal ImageProbeResult Validate(ImageEncodedContent content, ImageLoadSource source) =>
+    internal ImageProbeResult Validate(ImageEncodedContent content, ImageSource source) =>
         Validate(content, source, CancellationToken.None);
 
     internal ImageProbeResult Validate(
         ImageEncodedContent content,
-        ImageLoadSource source,
+        ImageSource source,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -99,7 +99,7 @@ internal sealed class ImageContentValidator
     private ImageProbeResult ValidateEmbeddedRaster(
         byte[] bytes,
         string mediaType,
-        ImageLoadSource source)
+        ImageSource source)
     {
         var span = bytes.AsSpan();
         ImageProbeResult probe;
@@ -124,7 +124,7 @@ internal sealed class ImageContentValidator
         return probe;
     }
 
-    private void ValidateDimensions(ImageProbeResult probe, ImageLoadSource source)
+    private void ValidateDimensions(ImageProbeResult probe, ImageSource source)
     {
         if (probe.Format == ImageContentFormat.Svg)
         {
@@ -175,7 +175,7 @@ internal sealed class ImageContentValidator
     private static void ValidateMediaType(
         string? declaredMediaType,
         ImageProbeResult probe,
-        ImageLoadSource source)
+        ImageSource source)
     {
         var normalizedMediaType = NormalizeMediaType(declaredMediaType);
         if (normalizedMediaType is null || normalizedMediaType == "application/octet-stream")
@@ -198,7 +198,7 @@ internal sealed class ImageContentValidator
         }
     }
 
-    private static ImageProbeResult ProbePng(ReadOnlySpan<byte> bytes, ImageLoadSource source)
+    private static ImageProbeResult ProbePng(ReadOnlySpan<byte> bytes, ImageSource source)
     {
         if (bytes.Length < 33)
         {
@@ -236,7 +236,7 @@ internal sealed class ImageContentValidator
         return new ImageProbeResult(ImageContentFormat.Png, "image/png", width, height, animated);
     }
 
-    private static ImageProbeResult ProbeJpeg(ReadOnlySpan<byte> bytes, ImageLoadSource source)
+    private static ImageProbeResult ProbeJpeg(ReadOnlySpan<byte> bytes, ImageSource source)
     {
         var offset = 2;
         while (offset + 4 <= bytes.Length)
@@ -283,7 +283,7 @@ internal sealed class ImageContentValidator
         throw Failure(ImageLoadErrorCode.InvalidImageData, "JPEG dimensions could not be read.", source);
     }
 
-    private static ImageProbeResult ProbeGif(ReadOnlySpan<byte> bytes, ImageLoadSource source)
+    private static ImageProbeResult ProbeGif(ReadOnlySpan<byte> bytes, ImageSource source)
     {
         if (bytes.Length < 13)
         {
@@ -365,7 +365,7 @@ internal sealed class ImageContentValidator
         throw Failure(ImageLoadErrorCode.InvalidImageData, "GIF trailer is missing.", source);
     }
 
-    private static ImageProbeResult ProbeBmp(ReadOnlySpan<byte> bytes, ImageLoadSource source)
+    private static ImageProbeResult ProbeBmp(ReadOnlySpan<byte> bytes, ImageSource source)
     {
         if (bytes.Length < 26)
         {
@@ -382,7 +382,7 @@ internal sealed class ImageContentValidator
         return new ImageProbeResult(ImageContentFormat.Bmp, "image/bmp", width, height, false);
     }
 
-    private static ImageProbeResult ProbeWebP(ReadOnlySpan<byte> bytes, ImageLoadSource source)
+    private static ImageProbeResult ProbeWebP(ReadOnlySpan<byte> bytes, ImageSource source)
     {
         if (bytes.Length < 30)
         {
@@ -470,7 +470,7 @@ internal sealed class ImageContentValidator
         return value.Value >= int.MaxValue ? int.MaxValue : (int)Math.Ceiling(value.Value);
     }
 
-    private static void ValidateSvgDimension(double? value, int limit, ImageLoadSource source)
+    private static void ValidateSvgDimension(double? value, int limit, ImageSource source)
     {
         if (value is null)
         {
@@ -489,7 +489,7 @@ internal sealed class ImageContentValidator
         }
     }
 
-    private static int ReadPngDimension(ReadOnlySpan<byte> value, ImageLoadSource source)
+    private static int ReadPngDimension(ReadOnlySpan<byte> value, ImageSource source)
     {
         var dimension = BinaryPrimitives.ReadUInt32BigEndian(value);
         if (dimension > int.MaxValue)
@@ -502,7 +502,7 @@ internal sealed class ImageContentValidator
     private static void SkipGifSubBlocks(
         ReadOnlySpan<byte> bytes,
         ref int index,
-        ImageLoadSource source)
+        ImageSource source)
     {
         while (true)
         {
@@ -555,7 +555,7 @@ internal sealed class ImageContentValidator
     private static ImageLoadFailureException Failure(
         ImageLoadErrorCode code,
         string message,
-        ImageLoadSource source)
+        ImageSource source)
     {
         return ImageSourceReadHelpers.Failure(code, message, source.DisplayName);
     }

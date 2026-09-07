@@ -34,7 +34,7 @@ internal class UploadPictureShapePreviewContent : AbstractUploadPictureContent
         {
             if (FilePath != null)
             {
-                SetCurrentValue(ItemsSourceProperty, new[] { new ImagePreviewItem(ImageLoadSource.FromUri(FilePath)) });
+                SetCurrentValue(ItemsSourceProperty, new[] { new ImagePreviewItem(ImageSource.Parse(FilePath.AbsoluteUri)) });
             }
             else
             {

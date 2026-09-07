@@ -20,7 +20,7 @@ internal sealed class ImageDecodedCacheEntry
         int decodedPixelHeight,
         long decodedBytes,
         string? mediaType,
-        ImageCacheSource originCacheSource = ImageCacheSource.Local)
+        ImageLoadOrigin origin = ImageLoadOrigin.Local)
     {
         _image = image ?? throw new ArgumentNullException(nameof(image));
         _ownsImage = ownsImage;
@@ -30,7 +30,7 @@ internal sealed class ImageDecodedCacheEntry
         DecodedPixelHeight = decodedPixelHeight;
         DecodedBytes = decodedBytes;
         MediaType = mediaType;
-        OriginCacheSource = originCacheSource;
+        Origin = origin;
     }
 
     internal int OriginalPixelWidth { get; }
@@ -45,7 +45,7 @@ internal sealed class ImageDecodedCacheEntry
 
     internal string? MediaType { get; }
 
-    internal ImageCacheSource OriginCacheSource { get; }
+    internal ImageLoadOrigin Origin { get; }
 
     internal void AddCacheMembership()
     {
@@ -70,7 +70,9 @@ internal sealed class ImageDecodedCacheEntry
     }
 
     internal ImageLoadResult AcquireResult(
-        ImageCacheSource cacheSource,
+        ImageLoadOrigin origin,
+        ImageSourceValidation sourceValidation,
+        string? contentId,
         IReadOnlyDictionary<ImageLoadStage, TimeSpan>? stageDurations = null)
     {
         IImage image;
@@ -88,7 +90,9 @@ internal sealed class ImageDecodedCacheEntry
             DecodedPixelWidth,
             DecodedPixelHeight,
             MediaType,
-            cacheSource,
+            origin,
+            sourceValidation,
+            contentId,
             stageDurations);
     }
 

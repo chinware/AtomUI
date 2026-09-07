@@ -2,9 +2,9 @@ namespace AtomUI.Controls;
 
 public interface IImageLoadControl
 {
-    ImageLoadSource? Source { get; set; }
+    ImageSource? Source { get; set; }
 
-    ImageLoadSource? FallbackSource { get; set; }
+    ImageSource? FallbackSource { get; set; }
 
     ImageRequestOptions? RequestOptions { get; set; }
 
@@ -30,24 +30,24 @@ public interface IImageLoadControl
 public sealed class ImageOpenedEventArgs : EventArgs
 {
     internal ImageOpenedEventArgs(
-        ImageLoadSource source,
+        ImageSource source,
         bool isFallback,
-        ImageCacheSource cacheSource,
+        ImageLoadOrigin origin,
         int pixelWidth,
         int pixelHeight)
     {
         Source = source;
         IsFallback = isFallback;
-        CacheSource = cacheSource;
+        Origin = origin;
         PixelWidth = pixelWidth;
         PixelHeight = pixelHeight;
     }
 
-    public ImageLoadSource Source { get; }
+    public ImageSource Source { get; }
 
     public bool IsFallback { get; }
 
-    public ImageCacheSource CacheSource { get; }
+    public ImageLoadOrigin Origin { get; }
 
     public int PixelWidth { get; }
 
@@ -56,14 +56,14 @@ public sealed class ImageOpenedEventArgs : EventArgs
 
 public sealed class ImageFailedEventArgs : EventArgs
 {
-    internal ImageFailedEventArgs(ImageLoadSource source, bool isFallback, ImageLoadError error)
+    internal ImageFailedEventArgs(ImageSource source, bool isFallback, ImageLoadError error)
     {
         Source = source;
         IsFallback = isFallback;
         Error = error;
     }
 
-    public ImageLoadSource Source { get; }
+    public ImageSource Source { get; }
 
     public bool IsFallback { get; }
 

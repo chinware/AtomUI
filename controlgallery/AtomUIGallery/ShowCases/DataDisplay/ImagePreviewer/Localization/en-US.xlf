@@ -88,7 +88,7 @@
     </unit>
     <unit id="RapidSwitchDescription">
       <segment>
-        <source>Append a new image every 200 ms and track the latest one. Toggle the mode to compare Immediate blank-frame switching with WaitForLoaded hold-until-loaded switching.</source>
+        <source>Append a new image every 200 ms and track the latest one. Toggle the mode to compare Immediate loading-placeholder switching with WaitForLoaded hold-until-loaded switching.</source>
       </segment>
     </unit>
     <unit id="RapidSwitchModeImmediate">
@@ -124,6 +124,21 @@
     <unit id="RemoteImageLoadingTitle">
       <segment>
         <source>Remote image loading</source>
+      </segment>
+    </unit>
+    <unit id="SamePathReplacementAction">
+      <segment>
+        <source>Replace at the same path</source>
+      </segment>
+    </unit>
+    <unit id="SamePathReplacementDescription">
+      <segment>
+        <source>Replace the file contents, clear and re-add the item with the same path, and verify that source validation displays the new image without clearing the application cache.</source>
+      </segment>
+    </unit>
+    <unit id="SamePathReplacementTitle">
+      <segment>
+        <source>Same-path file replacement</source>
       </segment>
     </unit>
     <unit id="ScenarioExamples">

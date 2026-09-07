@@ -3,21 +3,21 @@ namespace AtomUI.Controls;
 internal sealed class ImageRequestCoordinator : IDisposable
 {
     private readonly object _gate = new();
-    private readonly Dictionary<ImageEncodedOperationKey, SharedOperation<ImageValidatedContent>> _encoded = [];
+    private readonly Dictionary<ImageSourceOperationKey, SharedOperation<ImageValidatedContent>> _sources = [];
     private readonly Dictionary<ImageDecodedOperationKey, SharedOperation<ImageDecodedCacheEntry>> _decoded = [];
     private bool _disposed;
 
-    internal Task<ImageValidatedContent> GetEncodedAsync(
-        ImageEncodedOperationKey key,
-        ImageRequestPriority priority,
+    internal Task<ImageValidatedContent> GetSourceAsync(
+        ImageSourceOperationKey key,
+        ImageRequestPriorityState priorityState,
         Func<SharedOperationContext, CancellationToken, Task<ImageValidatedContent>> factory,
         IProgress<ImageLoadProgress>? progress,
         CancellationToken cancellationToken)
     {
         return JoinAsync(
-            _encoded,
+            _sources,
             key,
-            priority,
+            priorityState,
             factory,
             static value => value,
             progress,
@@ -27,7 +27,7 @@ internal sealed class ImageRequestCoordinator : IDisposable
 
     internal Task<TResult> GetDecodedAsync<TResult>(
         ImageDecodedOperationKey key,
-        ImageRequestPriority priority,
+        ImageRequestPriorityState priorityState,
         Func<SharedOperationContext, CancellationToken, Task<ImageDecodedCacheEntry>> factory,
         Func<ImageDecodedCacheEntry, TResult> resultSelector,
         IProgress<ImageLoadProgress>? progress,
@@ -36,7 +36,7 @@ internal sealed class ImageRequestCoordinator : IDisposable
         return JoinAsync(
             _decoded,
             key,
-            priority,
+            priorityState,
             factory,
             resultSelector,
             progress,
@@ -49,11 +49,11 @@ internal sealed class ImageRequestCoordinator : IDisposable
         SharedOperationBase[] operations;
         lock (_gate)
         {
-            operations = _encoded
-                .Where(pair => partitionHash is null || pair.Key.CacheKey.PartitionHash == partitionHash)
+            operations = _sources
+                .Where(pair => partitionHash is null || pair.Key.SourceKey.PartitionHash == partitionHash)
                 .Select(pair => (SharedOperationBase)pair.Value)
                 .Concat(_decoded
-                    .Where(pair => partitionHash is null || pair.Key.CacheKey.EncodedKey.PartitionHash == partitionHash)
+                    .Where(pair => partitionHash is null || pair.Key.DecodeKey.PartitionHash == partitionHash)
                     .Select(pair => (SharedOperationBase)pair.Value))
                 .Distinct()
                 .ToArray();
@@ -70,7 +70,7 @@ internal sealed class ImageRequestCoordinator : IDisposable
         {
             lock (_gate)
             {
-                return _encoded.Count != 0 || _decoded.Count != 0;
+                return _sources.Count != 0 || _decoded.Count != 0;
             }
         }
     }
@@ -85,11 +85,11 @@ internal sealed class ImageRequestCoordinator : IDisposable
                 return;
             }
             _disposed = true;
-            operations = _encoded.Values.Cast<SharedOperationBase>()
+            operations = _sources.Values.Cast<SharedOperationBase>()
                 .Concat(_decoded.Values)
                 .Distinct()
                 .ToArray();
-            _encoded.Clear();
+            _sources.Clear();
             _decoded.Clear();
         }
         foreach (var operation in operations)
@@ -101,7 +101,7 @@ internal sealed class ImageRequestCoordinator : IDisposable
     private Task<TResult> JoinAsync<TKey, TValue, TResult>(
         Dictionary<TKey, SharedOperation<TValue>> operations,
         TKey key,
-        ImageRequestPriority priority,
+        ImageRequestPriorityState priorityState,
         Func<SharedOperationContext, CancellationToken, Task<TValue>> factory,
         Func<TValue, TResult> resultSelector,
         IProgress<ImageLoadProgress>? progress,
@@ -115,7 +115,7 @@ internal sealed class ImageRequestCoordinator : IDisposable
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
             if (operations.TryGetValue(key, out operation!) &&
-                !operation.TryAddWaiter(priority, progress, out waiterId))
+                !operation.TryAddWaiter(priorityState, progress, out waiterId))
             {
                 operations.Remove(key);
                 operation = null!;
@@ -134,7 +134,7 @@ internal sealed class ImageRequestCoordinator : IDisposable
                         }
                     }
                 };
-                if (!operation.TryAddWaiter(priority, progress, out waiterId))
+                if (!operation.TryAddWaiter(priorityState, progress, out waiterId))
                 {
                     throw new InvalidOperationException("A new image operation rejected its first waiter.");
                 }
@@ -223,7 +223,7 @@ internal sealed class ImageRequestCoordinator : IDisposable
         private readonly Action<T>? _releaseValue;
         private readonly CancellationTokenSource _cancellation = new();
         private readonly object _cancellationGate = new();
-        private readonly Dictionary<long, ImageRequestPriority> _waiters = [];
+        private readonly Dictionary<long, ImageRequestPriorityState> _waiters = [];
         private readonly SharedOperationContext _context = new();
         private Task<T>? _task;
         private T? _completedValue;
@@ -254,7 +254,7 @@ internal sealed class ImageRequestCoordinator : IDisposable
         }
 
         internal bool TryAddWaiter(
-            ImageRequestPriority priority,
+            ImageRequestPriorityState priorityState,
             IProgress<ImageLoadProgress>? progress,
             out long waiterId)
         {
@@ -266,7 +266,8 @@ internal sealed class ImageRequestCoordinator : IDisposable
                     return false;
                 }
                 waiterId = ++_nextWaiterId;
-                _waiters.Add(waiterId, priority);
+                _waiters.Add(waiterId, priorityState);
+                priorityState.PriorityChanged += HandlePriorityChanged;
                 _context.AddProgress(waiterId, progress);
                 UpdatePriorityCore();
                 return true;
@@ -280,7 +281,10 @@ internal sealed class ImageRequestCoordinator : IDisposable
             var disposeCancellation = false;
             lock (_gate)
             {
-                _waiters.Remove(waiterId);
+                if (_waiters.Remove(waiterId, out var priorityState))
+                {
+                    priorityState.PriorityChanged -= HandlePriorityChanged;
+                }
                 _context.RemoveProgress(waiterId);
                 UpdatePriorityCore();
                 if (_waiters.Count == 0)
@@ -379,7 +383,18 @@ internal sealed class ImageRequestCoordinator : IDisposable
         {
             _context.SetPriority(_waiters.Count == 0
                 ? ImageRequestPriority.Preload
-                : _waiters.Values.Min());
+                : _waiters.Values.Min(state => state.Priority));
+        }
+
+        private void HandlePriorityChanged()
+        {
+            lock (_gate)
+            {
+                if (!_completed)
+                {
+                    UpdatePriorityCore();
+                }
+            }
         }
 
         private void CancelCancellation()

@@ -9,9 +9,9 @@ public class ImagePreviewItemTests
     [Fact]
     public void ImagePreviewItem_Exposes_Init_Only_Configuration()
     {
-        var source = ImageLoadSource.FromUri("avares://AtomUI.Tests/Assets/full.png");
-        var thumbnail = ImageLoadSource.FromUri("avares://AtomUI.Tests/Assets/thumb.png");
-        var fallback = ImageLoadSource.FromUri("avares://AtomUI.Tests/Assets/fallback.png");
+        var source = ImageSource.Parse("avares://AtomUI.Tests/Assets/full.png");
+        var thumbnail = ImageSource.Parse("avares://AtomUI.Tests/Assets/thumb.png");
+        var fallback = ImageSource.Parse("avares://AtomUI.Tests/Assets/fallback.png");
         var options = new ImageRequestOptions { Variant = "dark" };
         var tag = new object();
 
@@ -42,7 +42,7 @@ public class ImagePreviewItemTests
     [Fact]
     public void With_Expression_Creates_A_New_Item_Without_Mutating_The_Original()
     {
-        var source = ImageLoadSource.FromUri("avares://AtomUI.Tests/Assets/source.png");
+        var source = ImageSource.Parse("avares://AtomUI.Tests/Assets/source.png");
         var original = new ImagePreviewItem(source) { Title = "Original" };
 
         var changed = original with { Title = "Changed" };

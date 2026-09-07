@@ -630,6 +630,11 @@ internal class ImagePreviewerDialog : Window,
         UpdateEffectivePreviewTitle();
     }
 
+    internal void RefreshImageSwitchMode()
+    {
+        _displayTracker.Refresh();
+    }
+
     private void UpdateCurrentImageState()
     {
         SetCurrentValue(CurrentImageProperty, _displayTracker.EffectiveImage);

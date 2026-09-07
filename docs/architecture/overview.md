@@ -94,7 +94,7 @@ flowchart LR
     Desktop --> Gallery["AtomUIGallery\n只消费 AtomUI AsyncImage"]
 ```
 
-Core 只提供通用应用托管服务收集、attach、回滚和逆序销毁，不引用 `ImageLoadSource`、HTTP、codec 或 cache。完整公共 API、
+Core 只提供通用应用托管服务收集、attach、回滚和逆序销毁，不引用 `ImageSource`、HTTP、codec 或 cache。完整公共 API、
 管线、平台和验证契约由 [统一图片加载系统](systems/image-loading/overview.md)拥有；各 Control 文档描述对应控件契约，不得
 另行维护平行的图片加载 API。
 

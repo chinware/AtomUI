@@ -30,7 +30,7 @@ public class ImagePreviewerTitleTests
     [Fact]
     public void DefaultImagePreviewTitleResolver_Uses_DisplayName_From_Stream_Source()
     {
-        var item = new ImagePreviewItem(ImageLoadSource.FromStream(
+        var item = new ImagePreviewItem(new StreamImageSource(
             _ => new ValueTask<Stream>(Stream.Null),
             displayName: "stream image.png"));
         var context = new ImagePreviewTitleResolveContext(item, 0, 1);
@@ -106,7 +106,7 @@ public class ImagePreviewerTitleTests
                 ItemsSource =
                 [
                     new ImagePreviewEntry(new ImagePreviewItem(
-                        ImageLoadSource.FromUri("avares://AtomUI.Tests/Assets/source.png"))
+                        ImageSource.Parse("avares://AtomUI.Tests/Assets/source.png"))
                     {
                         Title = "Item title"
                     })
@@ -332,7 +332,7 @@ public class ImagePreviewerTitleTests
 
     private static string? Resolve(string source)
     {
-        var item    = new ImagePreviewItem(ImageLoadSource.Parse(source));
+        var item    = new ImagePreviewItem(ImageSource.Parse(source));
         var context = new ImagePreviewTitleResolveContext(item, 0, 1);
         return DefaultImagePreviewTitleResolver.Instance.ResolveTitle(context);
     }
@@ -349,7 +349,7 @@ public class ImagePreviewerTitleTests
 
     private static ImagePreviewEntry CreateEntry(string source)
     {
-        return new ImagePreviewEntry(new ImagePreviewItem(ImageLoadSource.Parse(source)));
+        return new ImagePreviewEntry(new ImagePreviewItem(ImageSource.Parse(source)));
     }
 
     private static string GetRepoFile(string relativePath)

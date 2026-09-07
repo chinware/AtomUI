@@ -9,7 +9,7 @@ internal sealed class HttpImageSourceReader : ImageSourceReader
         _transport = transport;
     }
 
-    internal override ImageLoadSourceKind Kind => ImageLoadSourceKind.Http;
+    internal override ImageSourceKind Kind => ImageSourceKind.Http;
 
     internal override async Task<ImageSourceReadResult> ReadAsync(
         NormalizedImageRequest request,
@@ -22,6 +22,6 @@ internal sealed class HttpImageSourceReader : ImageSourceReader
             staleContent,
             progress,
             cancellationToken).ConfigureAwait(false);
-        return new ImageSourceReadResult(content);
+        return new ImageSourceReadResult(content, SourceValidation: content.SourceValidation);
     }
 }

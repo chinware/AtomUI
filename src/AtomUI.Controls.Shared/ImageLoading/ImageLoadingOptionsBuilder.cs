@@ -80,9 +80,10 @@ public sealed class ImageLoadingOptionsBuilder
         _credentialForwardingOrigins.Add(NormalizeOrigin(origin));
     }
 
-    internal ImageLoadingOptions Build(string applicationId)
+    internal ImageLoadingOptions Build(string? applicationName)
     {
         Validate();
+        applicationName = string.IsNullOrWhiteSpace(applicationName) ? "AtomUI" : applicationName;
         var persistentCacheDirectory = PersistentCacheDirectory;
         if (IsPersistentCacheEnabled && string.IsNullOrWhiteSpace(persistentCacheDirectory))
         {
@@ -93,9 +94,9 @@ public sealed class ImageLoadingOptionsBuilder
             }
             persistentCacheDirectory = Path.Combine(
                 root,
-                "AtomUI",
-                "ImageCache",
-                ImageCacheKey.Hash(applicationId)[..16]);
+                applicationName,
+                "image-cache",
+                ImageCacheKey.Hash(applicationName)[..16]);
         }
         return new ImageLoadingOptions(
             MaxConcurrentDownloads,

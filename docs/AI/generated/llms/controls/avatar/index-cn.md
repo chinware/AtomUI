@@ -38,9 +38,9 @@ Avatar 使用有限面积内的强识别内容表达主体身份。图片是首�
 
 | 契约 | 默认值 | 语义 |
 | --- | --- | --- |
-| `Source: ImageLoadSource?` | `null` | 唯一主图片来源，支持 HTTP、File、Asset、Storage、Bytes、Stream 和已有 `IImage` |
-| `FallbackSource: ImageLoadSource?` | `null` | 主来源终态失败后的单次备用来源 |
-| `RequestOptions: ImageRequestOptions?` | `null` | cache mode、partition、variant、timeout 和 HTTP headers |
+| `Source: ImageSource?` | `null` | 唯一主图片来源，支持 HTTP、File、Asset、Storage、Bytes、Stream 和已有 `IImage` |
+| `FallbackSource: ImageSource?` | `null` | 主来源终态失败后的单次备用来源 |
+| `RequestOptions: ImageRequestOptions?` | `null` | cache read/storage policy、partition、variant、timeout 和 HTTP headers |
 | `Text: string?` | `null` | 无已加载图片时优先于 Icon 展示的文字内容，也是 content property |
 | `Icon: PathIcon?` | `null` | 无已加载图片和 Text 时展示的图标 |
 | `Gap: double` | `4` | 文本与头像边缘的最小逻辑间距，用于文本缩放 |
@@ -58,7 +58,7 @@ Avatar 使用有限面积内的强识别内容表达主体身份。图片是首�
 
 命令式入口与事件：
 
-- `Reload()` 使用 `ImageCacheMode.Reload` 重新请求当前来源。
+- `Reload()` 以单次 `ImageCacheReadPolicy.RefreshSource` 覆盖重新请求当前来源，不修改已绑定的 RequestOptions。
 - `ImageOpened` 只在主来源或 fallback 成功并成为当前图片时触发。
 - `ImageFailed` 只在最终失败时触发；主来源失败但 fallback 成功不触发最终失败事件。
 
@@ -147,7 +147,7 @@ Avatar 通过 `ImageLoadController` 使用当前 `Application` 的 `IImageLoader
 4. 同来源 Reload 或尺寸变化可在 Loading 期间保留旧图片，成功后原子替换；最终失败后释放旧租约。
 5. 结果回到 UI dispatcher 后再次校验 generation 和 attach 状态，旧结果只能释放，不能回写。
 
-HTTP 条件重验证、非网络来源 Reload 强制重读、两级请求合并、缓存、安全限制和应用销毁由统一 loader 负责，Avatar
+HTTP 条件重验证、非网络来源 Reload 强制重读、source/decode 两级请求合并、缓存、安全限制和应用销毁由统一 loader 负责，Avatar
 不复制 transport、cache 或 scheduler。
 
 ## 主题与 Design Token

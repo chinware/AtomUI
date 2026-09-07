@@ -40,7 +40,7 @@ public class HttpImageTransportTests
             TestContext.Current.CancellationToken);
 
         result.Bytes.ShouldBeSameAs(stale.Bytes);
-        result.CacheSource.ShouldBe(ImageCacheSource.Revalidated);
+        result.SourceValidation.ShouldBe(ImageSourceValidation.Revalidated);
         result.ETag.ShouldBe("\"v2\"");
         result.MustRevalidate.ShouldBeTrue();
         result.FreshUntil.ShouldNotBeNull();
@@ -72,7 +72,7 @@ public class HttpImageTransportTests
             TestContext.Current.CancellationToken);
 
         calls.ShouldBe(2);
-        result.CacheSource.ShouldBe(ImageCacheSource.Network);
+        result.Origin.ShouldBe(ImageLoadOrigin.Network);
     }
 
     [Fact]
@@ -103,7 +103,7 @@ public class HttpImageTransportTests
             null,
             TestContext.Current.CancellationToken);
 
-        result.CacheSource.ShouldBe(ImageCacheSource.Network);
+        result.Origin.ShouldBe(ImageLoadOrigin.Network);
         handler.CallCount.ShouldBe(2);
     }
 
@@ -263,7 +263,7 @@ public class HttpImageTransportTests
     {
         options ??= ImageLoadingTestSupport.CreateOptions();
         return ImageCacheKey.Normalize(
-            new ImageLoadRequest(ImageLoadSource.FromUri(source)) { Options = requestOptions },
+            new ImageLoadRequest(ImageSource.Parse(source)) { Options = requestOptions },
             options,
             forceReload: false);
     }

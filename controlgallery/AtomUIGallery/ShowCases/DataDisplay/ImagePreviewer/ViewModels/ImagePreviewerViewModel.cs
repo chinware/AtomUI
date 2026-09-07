@@ -14,6 +14,8 @@ public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
     private const int RapidSwitchIntervalMs      = 200;
     private const int RapidSwitchLoadDelayMs     = 300;
     private const int RapidSwitchMaxItems        = 40;
+    private const string ReplacementFirstAsset   = "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/1.png";
+    private const string ReplacementSecondAsset  = "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/Fallback.png";
 
     private static readonly string[] RapidSwitchAssets =
     [
@@ -126,15 +128,30 @@ public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
 
     public ReactiveCommand<Unit, Unit> StartRapidSwitchCommand { get; }
     public ReactiveCommand<Unit, Unit> StopRapidSwitchCommand { get; }
+    public ReactiveCommand<Unit, Unit> ReplaceSamePathCommand { get; }
+
+    public bool IsFileReplacementAvailable => !OperatingSystem.IsBrowser();
+
+    private ObservableCollection<ImagePreviewItem>? _samePathImages;
+
+    public ObservableCollection<ImagePreviewItem>? SamePathImages
+    {
+        get => _samePathImages;
+        set => this.RaiseAndSetIfChanged(ref _samePathImages, value);
+    }
 
     private DispatcherTimer? _rapidSwitchTimer;
     private int _rapidSwitchCounter;
+    private string? _replacementDirectory;
+    private string? _replacementFilePath;
+    private int _replacementAssetIndex;
 
     public ImagePreviewerViewModel(IScreen screen)
     {
         HostScreen            = screen;
         StartRapidSwitchCommand = ReactiveCommand.Create(HandleStartRapidSwitch);
         StopRapidSwitchCommand  = ReactiveCommand.Create(HandleStopRapidSwitch);
+        ReplaceSamePathCommand  = ReactiveCommand.CreateFromTask(HandleReplaceSamePathAsync);
     }
 
     public void EnsurePreviewAssets()
@@ -183,14 +200,15 @@ public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
         ];
         FallbackImages =
         [
-            new ImagePreviewItem(ImageLoadSource.FromUri("https://example.invalid/missing-image.png"))
+            new ImagePreviewItem(ImageSource.Parse("https://example.invalid/missing-image.png"))
             {
-                FallbackSource = ImageLoadSource.FromUri(
+                FallbackSource = ImageSource.Parse(
                     "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/Fallback.png")
             }
         ];
         RapidImages      = [CreateRapidItem(_rapidSwitchCounter++)];
         RapidCurrentIndex = 0;
+        EnsureSamePathImage();
     }
 
     public void ClearPreviewAssets()
@@ -203,7 +221,9 @@ public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
         TwentyRemoteImages = null;
         FallbackImages     = null;
         RapidImages        = null;
+        SamePathImages     = null;
         RapidCurrentIndex  = 0;
+        CleanupReplacementDirectory();
     }
 
     private void HandleStartRapidSwitch()
@@ -240,10 +260,58 @@ public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
         RapidCurrentIndex = items.Count - 1;
     }
 
+    private void EnsureSamePathImage()
+    {
+        if (!IsFileReplacementAvailable)
+        {
+            SamePathImages = null;
+            return;
+        }
+        CleanupReplacementDirectory();
+        _replacementDirectory = Path.Combine(
+            Path.GetTempPath(),
+            $"atomui-image-previewer-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(_replacementDirectory);
+        _replacementFilePath = Path.Combine(_replacementDirectory, "current-image");
+        _replacementAssetIndex = 0;
+        File.WriteAllBytes(_replacementFilePath, ReadAssetBytes(ReplacementFirstAsset));
+        SamePathImages = [CreateSamePathItem()];
+    }
+
+    private async Task HandleReplaceSamePathAsync()
+    {
+        if (_replacementFilePath is null || SamePathImages is null)
+        {
+            return;
+        }
+        _replacementAssetIndex = (_replacementAssetIndex + 1) % 2;
+        var asset = _replacementAssetIndex == 0 ? ReplacementFirstAsset : ReplacementSecondAsset;
+        var nextPath = _replacementFilePath + ".next";
+        await File.WriteAllBytesAsync(nextPath, ReadAssetBytes(asset));
+        File.Move(nextPath, _replacementFilePath, overwrite: true);
+        File.SetLastWriteTimeUtc(_replacementFilePath, DateTime.UtcNow.AddSeconds(_replacementAssetIndex + 1));
+
+        SamePathImages.Clear();
+        SamePathImages.Add(CreateSamePathItem());
+    }
+
+    private ImagePreviewItem CreateSamePathItem() =>
+        new ImagePreviewItem(new FileImageSource(_replacementFilePath!));
+
+    private void CleanupReplacementDirectory()
+    {
+        if (_replacementDirectory is not null && Directory.Exists(_replacementDirectory))
+        {
+            Directory.Delete(_replacementDirectory, recursive: true);
+        }
+        _replacementDirectory = null;
+        _replacementFilePath = null;
+    }
+
     private static ImagePreviewItem CreateRapidItem(int index)
     {
         var assetIndex = Math.Abs(index) % RapidSwitchAssets.Length;
-        return new ImagePreviewItem(ImageLoadSource.FromStream(
+        return new ImagePreviewItem(new StreamImageSource(
             async token =>
             {
                 // 模拟磁盘读取/解码耗时，制造可观察的加载窗口用于对比两种切换模式
@@ -276,8 +344,16 @@ public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
         return bytes;
     }
 
+    private static byte[] ReadAssetBytes(string source)
+    {
+        using var stream = AssetLoader.Open(new Uri(source));
+        using var memory = new MemoryStream();
+        stream.CopyTo(memory);
+        return memory.ToArray();
+    }
+
     private static ImagePreviewItem CreateItem(string source)
     {
-        return new ImagePreviewItem(ImageLoadSource.FromUri(source));
+        return new ImagePreviewItem(ImageSource.Parse(source));
     }
 }

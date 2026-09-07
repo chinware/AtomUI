@@ -4,18 +4,18 @@ namespace AtomUI.Desktop.Controls;
 
 public sealed class ImagePreviewOpenedEventArgs : EventArgs
 {
-    internal ImagePreviewOpenedEventArgs(ImagePreviewItem item, int index, ImageCacheSource cacheSource)
+    internal ImagePreviewOpenedEventArgs(ImagePreviewItem item, int index, ImageLoadOrigin origin)
     {
         Item = item;
         Index = index;
-        CacheSource = cacheSource;
+        Origin = origin;
     }
 
     public ImagePreviewItem Item { get; }
 
     public int Index { get; }
 
-    public ImageCacheSource CacheSource { get; }
+    public ImageLoadOrigin Origin { get; }
 }
 
 public sealed class ImagePreviewFailedEventArgs : EventArgs

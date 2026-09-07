@@ -24,7 +24,7 @@ public class AvatarImageLoadingTests
         var avatar = new Avatar
         {
             Size = 64,
-            Source = ImageLoadSource.FromUri(source)
+            Source = ImageSource.Parse(source)
         };
         var window = new Window
         {

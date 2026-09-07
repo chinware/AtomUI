@@ -30,17 +30,23 @@ public class ImageRequestCoordinatorTests
 
         var firstTask = coordinator.GetDecodedAsync(
             key,
-            ImageRequestPriority.Normal,
+            new ImageRequestPriorityState(ImageRequestPriority.Normal),
             Factory,
-            entry => entry.AcquireResult(ImageCacheSource.Local),
+            entry => entry.AcquireResult(
+                ImageLoadOrigin.Local,
+                ImageSourceValidation.Current,
+                contentId: null),
             null,
             CancellationToken.None);
         await started.Task;
         var secondTask = coordinator.GetDecodedAsync(
             key,
-            ImageRequestPriority.High,
+            new ImageRequestPriorityState(ImageRequestPriority.High),
             Factory,
-            entry => entry.AcquireResult(ImageCacheSource.Local),
+            entry => entry.AcquireResult(
+                ImageLoadOrigin.Local,
+                ImageSourceValidation.Current,
+                contentId: null),
             null,
             CancellationToken.None);
         release.TrySetResult();
@@ -63,7 +69,7 @@ public class ImageRequestCoordinatorTests
     {
         using var coordinator = new ImageRequestCoordinator();
         using var firstCancellation = new CancellationTokenSource();
-        var key = CreateEncodedOperationKey("cancel-one");
+        var key = CreateSourceOperationKey("cancel-one");
         var started = NewSignal();
         var release = NewSignal();
         var underlyingCanceled = false;
@@ -85,16 +91,16 @@ public class ImageRequestCoordinatorTests
             }
         }
 
-        var first = coordinator.GetEncodedAsync(
+        var first = coordinator.GetSourceAsync(
             key,
-            ImageRequestPriority.Normal,
+            new ImageRequestPriorityState(ImageRequestPriority.Normal),
             Factory,
             null,
             firstCancellation.Token);
         await started.Task;
-        var second = coordinator.GetEncodedAsync(
+        var second = coordinator.GetSourceAsync(
             key,
-            ImageRequestPriority.Normal,
+            new ImageRequestPriorityState(ImageRequestPriority.Normal),
             Factory,
             null,
             CancellationToken.None);
@@ -116,9 +122,9 @@ public class ImageRequestCoordinatorTests
         var started = NewSignal();
         var underlyingCanceled = NewSignal();
 
-        var task = coordinator.GetEncodedAsync(
-            CreateEncodedOperationKey("cancel-last"),
-            ImageRequestPriority.Normal,
+        var task = coordinator.GetSourceAsync(
+            CreateSourceOperationKey("cancel-last"),
+            new ImageRequestPriorityState(ImageRequestPriority.Normal),
             async (_, token) =>
             {
                 started.TrySetResult();
@@ -148,7 +154,7 @@ public class ImageRequestCoordinatorTests
     {
         using var coordinator = new ImageRequestCoordinator();
         var calls = 0;
-        var key = CreateEncodedOperationKey("completed");
+        var key = CreateSourceOperationKey("completed");
 
         Task<ImageValidatedContent> Factory(
             ImageRequestCoordinator.SharedOperationContext context,
@@ -159,15 +165,15 @@ public class ImageRequestCoordinatorTests
             ]));
         }
 
-        var first = await coordinator.GetEncodedAsync(
+        var first = await coordinator.GetSourceAsync(
             key,
-            ImageRequestPriority.Normal,
+            new ImageRequestPriorityState(ImageRequestPriority.Normal),
             Factory,
             null,
             CancellationToken.None);
-        var second = await coordinator.GetEncodedAsync(
+        var second = await coordinator.GetSourceAsync(
             key,
-            ImageRequestPriority.Normal,
+            new ImageRequestPriorityState(ImageRequestPriority.Normal),
             Factory,
             null,
             CancellationToken.None);
@@ -185,7 +191,7 @@ public class ImageRequestCoordinatorTests
         var contextSignal = new TaskCompletionSource<ImageRequestCoordinator.SharedOperationContext>(
             TaskCreationOptions.RunContinuationsAsynchronously);
         var release = NewSignal();
-        var key = CreateEncodedOperationKey("priority");
+        var key = CreateSourceOperationKey("priority");
 
         async Task<ImageValidatedContent> Factory(
             ImageRequestCoordinator.SharedOperationContext context,
@@ -196,17 +202,20 @@ public class ImageRequestCoordinatorTests
             return CreateValidated([1]);
         }
 
-        var preload = coordinator.GetEncodedAsync(
+        var preloadPriority = new ImageRequestPriorityState(ImageRequestPriority.Preload);
+        var preload = coordinator.GetSourceAsync(
             key,
-            ImageRequestPriority.Preload,
+            preloadPriority,
             Factory,
             null,
             CancellationToken.None);
         var context = await contextSignal.Task;
         context.Priority.ShouldBe(ImageRequestPriority.Preload);
-        var critical = coordinator.GetEncodedAsync(
+        preloadPriority.Promote(ImageRequestPriority.High);
+        context.Priority.ShouldBe(ImageRequestPriority.High);
+        var critical = coordinator.GetSourceAsync(
             key,
-            ImageRequestPriority.Critical,
+            new ImageRequestPriorityState(ImageRequestPriority.Critical),
             Factory,
             null,
             criticalCancellation.Token);
@@ -214,7 +223,7 @@ public class ImageRequestCoordinatorTests
 
         criticalCancellation.Cancel();
         await Should.ThrowAsync<OperationCanceledException>(async () => await critical);
-        context.Priority.ShouldBe(ImageRequestPriority.Preload);
+        context.Priority.ShouldBe(ImageRequestPriority.High);
 
         release.TrySetResult();
         await preload;
@@ -227,9 +236,9 @@ public class ImageRequestCoordinatorTests
         var started = NewSignal();
         var canceled = NewSignal();
         var release = NewSignal();
-        var loadTask = coordinator.GetEncodedAsync(
-            CreateEncodedOperationKey("dispose-non-blocking"),
-            ImageRequestPriority.Normal,
+        var loadTask = coordinator.GetSourceAsync(
+            CreateSourceOperationKey("dispose-non-blocking"),
+            new ImageRequestPriorityState(ImageRequestPriority.Normal),
             async (_, token) =>
             {
                 using var registration = token.Register(() => canceled.TrySetResult());
@@ -278,27 +287,28 @@ public class ImageRequestCoordinatorTests
     private static ImageValidatedContent CreateValidated(byte[] bytes)
     {
         return new ImageValidatedContent(
-            ImageLoadingTestSupport.CreateContent(bytes),
-            new ImageProbeResult(ImageContentFormat.Png, "image/png", 1, 1, false));
+            ImageLoadingTestSupport.CreateContent(bytes).MarkValidated(),
+            new ImageProbeResult(ImageContentFormat.Png, "image/png", 1, 1, false),
+            ImageSourceValidation.Current);
     }
 
-    private static ImageEncodedOperationKey CreateEncodedOperationKey(string value)
+    private static ImageSourceOperationKey CreateSourceOperationKey(string value)
     {
-        return new ImageEncodedOperationKey(
-            new ImageEncodedCacheKey(value, string.Empty),
-            ImageCacheMode.Default,
+        return new ImageSourceOperationKey(
+            new ImageSourceKey(value, string.Empty),
+            ImageCacheReadPolicy.ValidateSource,
+            ImageCacheStoragePolicy.MemoryAndDisk,
             string.Empty);
     }
 
     private static ImageDecodedOperationKey CreateDecodedOperationKey(string value)
     {
         return new ImageDecodedOperationKey(
-            new ImageDecodedCacheKey(
-                new ImageEncodedCacheKey(value, string.Empty),
-                10,
-                10,
-                "codec"),
-            ImageCacheMode.Default,
+            new ImageDecodeKey(
+                string.Empty,
+                new ImageContentId(ImageCacheKey.Hash(value)),
+                new ImageDecodeSpec(10, 10, "codec")),
+            ImageCacheStoragePolicy.MemoryAndDisk,
             string.Empty);
     }
 

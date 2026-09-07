@@ -12,11 +12,11 @@ namespace AtomUI.Controls;
 [PseudoClasses(":loading", ":loaded", ":failed", ":fallback", ":has-image")]
 public class AsyncImage : TemplatedControl, IImageLoadControl, IImageLoadControllerHost
 {
-    public static readonly StyledProperty<ImageLoadSource?> SourceProperty =
-        AvaloniaProperty.Register<AsyncImage, ImageLoadSource?>(nameof(Source));
+    public static readonly StyledProperty<ImageSource?> SourceProperty =
+        AvaloniaProperty.Register<AsyncImage, ImageSource?>(nameof(Source));
 
-    public static readonly StyledProperty<ImageLoadSource?> FallbackSourceProperty =
-        AvaloniaProperty.Register<AsyncImage, ImageLoadSource?>(nameof(FallbackSource));
+    public static readonly StyledProperty<ImageSource?> FallbackSourceProperty =
+        AvaloniaProperty.Register<AsyncImage, ImageSource?>(nameof(FallbackSource));
 
     public static readonly StyledProperty<ImageRequestOptions?> RequestOptionsProperty =
         AvaloniaProperty.Register<AsyncImage, ImageRequestOptions?>(nameof(RequestOptions));
@@ -89,13 +89,13 @@ public class AsyncImage : TemplatedControl, IImageLoadControl, IImageLoadControl
         _controller = new ImageLoadController(this);
     }
 
-    public ImageLoadSource? Source
+    public ImageSource? Source
     {
         get => GetValue(SourceProperty);
         set => SetValue(SourceProperty, value);
     }
 
-    public ImageLoadSource? FallbackSource
+    public ImageSource? FallbackSource
     {
         get => GetValue(FallbackSourceProperty);
         set => SetValue(FallbackSourceProperty, value);

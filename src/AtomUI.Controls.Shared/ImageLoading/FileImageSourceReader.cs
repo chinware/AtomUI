@@ -9,7 +9,7 @@ internal sealed class FileImageSourceReader : ImageSourceReader
         _options = options;
     }
 
-    internal override ImageLoadSourceKind Kind => ImageLoadSourceKind.File;
+    internal override ImageSourceKind Kind => ImageSourceKind.File;
 
     internal override async Task<ImageSourceReadResult> ReadAsync(
         NormalizedImageRequest request,
@@ -25,45 +25,40 @@ internal sealed class FileImageSourceReader : ImageSourceReader
                 request.Source.DisplayName);
         }
 
-        var path = (string)request.Source.Value;
+        var source = (FileImageSource)request.Source;
+        var path = source.Path;
         try
         {
-            var info = new FileInfo(path);
-            if (!info.Exists)
-            {
-                throw ImageSourceReadHelpers.Failure(
-                    ImageLoadErrorCode.NotFound,
-                    "Image file was not found.",
-                    request.Source.DisplayName);
-            }
-            var version = $"{info.Length}:{info.LastWriteTimeUtc.Ticks}";
-            if (request.CacheMode != ImageCacheMode.Reload &&
-                staleContent is not null &&
-                staleContent.SourceVersion == version)
-            {
-                return new ImageSourceReadResult(staleContent.WithCacheSource(ImageCacheSource.EncodedMemory));
-            }
             await using var stream = new FileStream(
                 path,
                 FileMode.Open,
                 FileAccess.Read,
-                FileShare.Read,
+                FileShare.ReadWrite | FileShare.Delete,
                 64 * 1024,
                 FileOptions.Asynchronous | FileOptions.SequentialScan);
+            var creation = File.GetCreationTimeUtc(stream.SafeFileHandle).Ticks;
+            var lastWrite = File.GetLastWriteTimeUtc(stream.SafeFileHandle).Ticks;
+            var version = new ImageSourceVersion($"{creation}:{stream.Length}:{lastWrite}");
+            if (source.Validation == ImageFileValidationMode.Metadata &&
+                request.CacheRead != ImageCacheReadPolicy.RefreshSource &&
+                staleContent is not null &&
+                staleContent.SourceVersion == version)
+            {
+                return new ImageSourceReadResult(staleContent, SourceValidation: ImageSourceValidation.Current);
+            }
             ImageProgressDispatcher.Report(progress, ImageLoadProgress.Create(ImageLoadStage.Reading));
             var bytes = await ImageSourceReadHelpers.ReadAllBytesAsync(
                 stream,
                 _options.MaxResponseBytes,
                 ImageLoadStage.Reading,
                 progress,
-                info.Length,
+                stream.Length,
                 cancellationToken).ConfigureAwait(false);
             return new ImageSourceReadResult(new ImageEncodedContent(
                 bytes,
                 null,
-                ImageCacheSource.Local,
+                ImageLoadOrigin.Local,
                 DateTimeOffset.UtcNow,
-                FreshUntil: DateTimeOffset.MaxValue,
                 SourceVersion: version));
         }
         catch (ImageLoadFailureException)
@@ -75,6 +70,14 @@ internal sealed class FileImageSourceReader : ImageSourceReader
             throw ImageSourceReadHelpers.Failure(
                 ImageLoadErrorCode.AccessDenied,
                 "Access to the image file was denied.",
+                request.Source.DisplayName,
+                exception);
+        }
+        catch (FileNotFoundException exception)
+        {
+            throw ImageSourceReadHelpers.Failure(
+                ImageLoadErrorCode.NotFound,
+                "Image file was not found.",
                 request.Source.DisplayName,
                 exception);
         }

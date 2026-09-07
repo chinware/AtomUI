@@ -22,16 +22,17 @@
 
 1. HTTP 大小写、默认端口、fragment、dot segment 的规范化，以及 path/query 语义顺序保持不变。
 2. embedded credentials、未知 scheme、相对歧义路径和非法 Asset URI 的拒绝。
-3. File 平台 comparer、Storage/Bytes/Stream 有无 cacheKey/version 的共享边界。
-4. header、Variant、CachePartition、reader/codec/security policy version 和 codec-specific options 对 encoded/decoded key 的影响；
+3. File 平台 comparer、Storage/Stream 有无 identity/revision 的共享边界，以及 Bytes 的防御性复制与内容身份。
+4. header、Variant、CachePartition、reader/codec/security policy version 和 codec-specific options 对 SourceKey/DecodeKey 的影响；
    raster decode bucket 改变 key，SVG decode bucket 不改变 key。
 5. 错误、snapshot、event 和 file metadata 不泄漏 header、partition 或 URI user-info。
 
 ### 调度与两级合并
 
-1. 同 encoded key、不同 raster decoded size 只读取一次并解码两次；同 SVG source、不同显示尺寸只构建一个矢量 decoded entry。
+1. 同 SourceKey、不同 raster decoded size 只解析来源一次并解码两次；不同 SourceKey 的相同 ContentId 可共享相同尺寸的 decoded
+   entry；同 SVG 内容、不同显示尺寸只构建一个矢量 decoded entry。
 2. 同 decoded key 多 waiter 只读取/解码一次，返回不同结果租约。
-3. Reload、NoStore、CacheOnly 和 Default 不发生非法跨模式合并。
+3. `RefreshSource`、`ValidateSource`、`PreferCache`、`CacheOnly` 以及不同 storage policy 不发生非法跨策略合并。
 4. Critical/High/Normal/Low/Preload 排队顺序、同优先级 FIFO、aging 和 preload 空闲启动。
 5. HTTP 下载、本地读取和 decode 各自不超过对应并发；慢 HTTP 占满下载池时，Asset/File/Storage/Bytes/Stream
    仍可从独立本地读取池推进，取消排队项不打开资源。
@@ -53,8 +54,9 @@
 3. decoded entry 被驱逐但有 lease 时延迟 dispose；最后 lease 释放恰好 dispose 一次。
 4. 替换、Clear、partition clear 和 loader dispose 共用正确状态机。
 5. borrowed `IImage` 在成功、失败、Source 替换、控件 detach 和 loader dispose 中都不被 AtomUI dispose。
-6. file cache 原子写、并发同 key、损坏 metadata/body/hash、schema 升级、容量清理和崩溃残留恢复。
-7. partition clear 取消目标在途请求并递增 epoch；清理前启动、清理后完成的 operation 不能重新写入 cache。
+6. file cache 的稳定 `image-cache/` 布局、content-first 原子写、并发同 key、损坏 metadata/body/hash、内部 format revision
+   重建、容量清理和崩溃残留恢复。
+7. partition clear 取消目标在途请求并递增 epoch；清理前启动、清理后完成的 operation 不能重新写入 memory 或 persistent cache。
 8. decoded cache lookup 与 result lease/operation reference 的取得保持原子；并发 clear、驱逐或 dispose 不能在所有权建立前销毁命中项。
 
 ### HTTP 与安全
@@ -80,8 +82,8 @@
 - detach/reattach、跨 TopLevel scaling、Bounds bucket 和 RequestOptions 变化的 generation 行为。
 - fallback 至多一次、主失败后 fallback 成功只触发 opened、最终失败才触发 failed；取消不触发 fallback。
 - progress 只属于当前 generation，未知长度不产生伪百分比。
-- Reload 保留同来源旧图直到原子替换，但使用 Reload cache 语义。
-- owned cache image 与 borrowed `FromImage` 的释放责任。
+- Reload 保留同来源旧图直到原子替换，但单次请求使用 `CacheRead=RefreshSource`。
+- owned cache image 与 `new BorrowedImageSource(image)` 的释放责任。
 - Theme loading/error content 不改写 loader 状态，Template 清除不会遗留 controller 订阅。
 
 Avatar 额外断言成功 Source、成功 FallbackSource、Text、Icon 的固定优先级，以及加载中继续显示 Text/Icon；首次 Window Arrange
@@ -99,6 +101,8 @@ Stretch、SVG 尺寸无关复用和 loading/error template。Masonry 的 `AsyncI
   不同步等待 UI，也不跨线程访问 `SvgImage`。
 - 每项 FallbackSource 只作用于该项；一个 item 失败不替换全组。
 - `ReloadCurrent()`、`ReloadItem()`、`ReloadCover()` 只影响目标 entry。
+- 同一路径文件被替换后，普通 ValidateSource 请求显示新 ContentId；collection Clear/Reset/Re-add 不调用应用 cache clear，也不能
+  重新显示旧 decoded entry。
 - dialog、overlay、cover 和 group host 关闭/切换时取消 waiter 并释放租约，无 window/visual retained reference。
 - Title 优先使用 item.Title，resolver 收到 immutable item/index/count，异常不会破坏图片状态机。
 

@@ -19,7 +19,7 @@ public class ImageSourceReaderReloadTests
         try
         {
             var options = ImageLoadingTestSupport.CreateOptions();
-            var request = NormalizeReload(ImageLoadSource.FromFile(path), options);
+            var request = NormalizeReload(new FileImageSource(path), options);
             var stale = ImageLoadingTestSupport.CreateContent([1, 2, 3]) with
             {
                 SourceVersion = $"{fresh.Length}:{File.GetLastWriteTimeUtc(path).Ticks}"
@@ -46,7 +46,7 @@ public class ImageSourceReaderReloadTests
         AvaloniaLocator.CurrentMutable.Bind<IAssetLoader>().ToConstant(new TestAssetLoader(fresh));
         var options = ImageLoadingTestSupport.CreateOptions();
         var request = NormalizeReload(
-            ImageLoadSource.FromAsset(new Uri(
+            new AssetImageSource(new Uri(
                 "avares://AtomUI.Controls.Shared.Tests/Resources/reload-source.bin")),
             options);
         var stale = ImageLoadingTestSupport.CreateContent([1, 2, 3]) with
@@ -70,7 +70,7 @@ public class ImageSourceReaderReloadTests
         var options = ImageLoadingTestSupport.CreateOptions();
         var file = new TestStorageFile([4, 5, 6]);
         var request = NormalizeReload(
-            ImageLoadSource.FromStorageFile(file, "storage", "v1"),
+            new StorageFileImageSource(file, "v1"),
             options);
         var stale = ImageLoadingTestSupport.CreateContent([1, 2, 3]) with { SourceVersion = "v1" };
 
@@ -89,7 +89,7 @@ public class ImageSourceReaderReloadTests
     {
         var options = ImageLoadingTestSupport.CreateOptions();
         var openCount = 0;
-        var source = ImageLoadSource.FromStream(
+        var source = new StreamImageSource(
             _ =>
             {
                 Interlocked.Increment(ref openCount);
@@ -111,13 +111,13 @@ public class ImageSourceReaderReloadTests
     }
 
     private static NormalizedImageRequest NormalizeReload(
-        ImageLoadSource source,
+        ImageSource source,
         ImageLoadingOptions options)
     {
         return ImageCacheKey.Normalize(
             new ImageLoadRequest(source)
             {
-                Options = new ImageRequestOptions { CacheMode = ImageCacheMode.Reload }
+                Options = new ImageRequestOptions { CacheRead = ImageCacheReadPolicy.RefreshSource }
             },
             options,
             forceReload: false);

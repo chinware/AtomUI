@@ -57,11 +57,9 @@ public static class ImageLoadingBuilderExtensions
                 throw new InvalidOperationException("Image loader has already been built.");
             }
             _built = true;
-            var applicationId = application.GetType().Assembly.GetName().Name ??
-                                application.GetType().FullName ??
-                                "Application";
+            var applicationName = application.GetType().Assembly.GetName().Name;
             return new ImageLoader(
-                Options.Build(applicationId),
+                Options.Build(applicationName),
                 _codecFactories.Select(factory => factory()));
         }
     }

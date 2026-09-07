@@ -56,8 +56,6 @@ public class ImagePreviewer : AbstractImagePreviewer
 
     private ImagePreviewEntry? _coverEntry;
     private ImagePreviewEntry? _retainedCoverEntry;
-    private bool _coverPlaceholderExpired;
-    private long _coverGraceGeneration;
     private IImage? _effectiveCoverImage;
     private ImageLoadState _coverLoadState;
     private ImageLoadError? _coverLoadError;
@@ -122,6 +120,10 @@ public class ImagePreviewer : AbstractImagePreviewer
         {
             ConfigureCoverEntry();
         }
+        else if (change.Property == ImageSwitchModeProperty)
+        {
+            UpdateCoverState();
+        }
     }
 
     private protected override void OnEffectiveItemsChanged()
@@ -146,7 +148,6 @@ public class ImagePreviewer : AbstractImagePreviewer
     {
         SetCoverEntry(null);
         SetRetainedCoverEntry(null);
-        StopCoverGraceTimer();
         base.OnDetachedFromVisualTree(e);
     }
 
@@ -167,7 +168,6 @@ public class ImagePreviewer : AbstractImagePreviewer
             return;
         }
         // 订阅不变量：entry 被订阅 ⇔ 它是 cover 或 retained cover
-        _coverPlaceholderExpired = false;
         var previous = _coverEntry;
         _coverEntry = entry;
         if (previous is not null && !ReferenceEquals(previous, _retainedCoverEntry))
@@ -238,67 +238,30 @@ public class ImagePreviewer : AbstractImagePreviewer
         IImage? displayImage = _coverEntry?.ThumbnailImage;
         if (displayImage is not null)
         {
-            SetRetainedCoverEntry(_coverEntry);
-            _coverPlaceholderExpired = false;
-            StopCoverGraceTimer();
+            SetRetainedCoverEntry(
+                ImageSwitchMode == ImageSwitchMode.WaitForLoaded ? _coverEntry : null);
         }
         else if (_coverEntry is { ThumbnailImage: null, IsThumbnailFailed: false } &&
-                 !_coverPlaceholderExpired)
+                 ImageSwitchMode == ImageSwitchMode.WaitForLoaded)
         {
-            // 两种模式都保持显示连续性（与 DisplayTracker 一致）：目标尚无图期间保留
-            // 上一张封面；Immediate 超过宽限期仍无图才回退骨架占位。
-            // 回退条件不能用 ThumbnailState==Loading——LoadThumbnail 前的 Idle 瞬态
-            // 会输出短暂 null，经 mask 透明度过渡放大为闪烁。
+            // WaitForLoaded 在目标尚无图期间保留上一张封面。
             displayImage = _retainedCoverEntry?.ThumbnailImage;
-            if (displayImage is not null && ImageSwitchMode == ImageSwitchMode.Immediate)
-            {
-                StartCoverGraceTimer();
-            }
-            else
-            {
-                StopCoverGraceTimer();
-            }
         }
         else
         {
-            StopCoverGraceTimer();
+            // Immediate 从切换瞬间的 Idle 开始即清空旧图并进入加载占位。
+            SetRetainedCoverEntry(null);
         }
 
         SetAndRaise(EffectiveCoverImageProperty, ref _effectiveCoverImage, displayImage);
         SetAndRaise(CoverLoadStateProperty, ref _coverLoadState, state);
         SetAndRaise(CoverLoadErrorProperty, ref _coverLoadError, _coverEntry?.ThumbnailError);
         SetAndRaise(CoverLoadProgressProperty, ref _coverLoadProgress, _coverEntry?.ThumbnailProgress);
-        SetAndRaise(IsCoverLoadingProperty, ref _isCoverLoading, state == ImageLoadState.Loading);
+        var isLoading = state == ImageLoadState.Loading ||
+                        _coverEntry is { ThumbnailImage: null, IsThumbnailFailed: false };
+        SetAndRaise(IsCoverLoadingProperty, ref _isCoverLoading, isLoading);
         SetAndRaise(IsCoverLoadedProperty, ref _isCoverLoaded, state == ImageLoadState.Loaded);
         SetAndRaise(IsCoverFailedProperty, ref _isCoverFailed, state == ImageLoadState.Failed);
-    }
-
-    private void StartCoverGraceTimer()
-    {
-        var generation = ++_coverGraceGeneration;
-        _ = Task.Delay(TimeSpan.FromMilliseconds(ImagePreviewDisplayTracker.PlaceholderGraceMilliseconds)).ContinueWith(
-            _ =>
-            {
-                Avalonia.Threading.Dispatcher.UIThread.Post(() =>
-                {
-                    if (generation != _coverGraceGeneration)
-                    {
-                        return;
-                    }
-                    if (ImageSwitchMode == ImageSwitchMode.Immediate &&
-                        _coverEntry is { ThumbnailImage: null, IsThumbnailFailed: false })
-                    {
-                        _coverPlaceholderExpired = true;
-                    }
-                    UpdateCoverState();
-                });
-            },
-            TaskScheduler.Default);
-    }
-
-    private void StopCoverGraceTimer()
-    {
-        _coverGraceGeneration++;
     }
 
     private (int Width, int Height) GetCoverDecodeSize()

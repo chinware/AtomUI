@@ -32,7 +32,7 @@ public class ImageLoaderDisposeTests
             [new DispatcherBlockingCodec(decodeStarted, releaseDecode)]);
 
         var loadTask = loader.LoadAsync(
-            new ImageLoadRequest(ImageLoadSource.FromBytes(CreatePngHeader())),
+            new ImageLoadRequest(new BytesImageSource(CreatePngHeader())),
             TestContext.Current.CancellationToken).AsTask();
         await decodeStarted.Task.WaitAsync(
             TimeSpan.FromSeconds(2),
@@ -83,7 +83,7 @@ public class ImageLoaderDisposeTests
 
         internal override int Version => 1;
 
-        internal override bool CanDecode(ImageProbeResult probe, ImageLoadSource source) => true;
+        internal override bool CanDecode(ImageProbeResult probe, ImageSource source) => true;
 
         internal override async Task<ImageDecodedCacheEntry> DecodeAsync(
             ImageEncodedContent content,
@@ -106,7 +106,7 @@ public class ImageLoaderDisposeTests
                 probe.PixelHeight,
                 checked((long)probe.PixelWidth * probe.PixelHeight * 4),
                 probe.MediaType,
-                content.CacheSource);
+                content.Origin);
         }
     }
 

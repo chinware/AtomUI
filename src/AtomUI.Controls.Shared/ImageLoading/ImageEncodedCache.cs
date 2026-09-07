@@ -3,8 +3,8 @@ namespace AtomUI.Controls;
 internal sealed class ImageEncodedCache : IDisposable
 {
     private readonly object _gate = new();
-    private readonly Dictionary<ImageEncodedCacheKey, CacheItem> _items = [];
-    private readonly LinkedList<ImageEncodedCacheKey> _lru = [];
+    private readonly Dictionary<ImageEncodedContentKey, CacheItem> _items = [];
+    private readonly LinkedList<ImageEncodedContentKey> _lru = [];
     private readonly long _maxBytes;
     private readonly int _maxEntries;
     private long _bytes;
@@ -26,7 +26,7 @@ internal sealed class ImageEncodedCache : IDisposable
         get { lock (_gate) return _bytes; }
     }
 
-    internal bool TryGet(ImageEncodedCacheKey key, out ImageEncodedContent? content)
+    internal bool TryGet(ImageEncodedContentKey key, out ImageEncodedContent? content)
     {
         lock (_gate)
         {
@@ -38,18 +38,19 @@ internal sealed class ImageEncodedCache : IDisposable
             }
             _lru.Remove(item.Node);
             _lru.AddFirst(item.Node);
-            content = item.Content.WithCacheSource(ImageCacheSource.EncodedMemory);
+            content = item.Content.WithOrigin(ImageLoadOrigin.EncodedMemory);
             return true;
         }
     }
 
-    internal void Set(ImageEncodedCacheKey key, ImageEncodedContent content)
+    internal bool Set(ImageEncodedContentKey key, ImageEncodedContent content)
     {
         if (content.NoStore ||
             content.SecurityPolicyVersion != ImageSecurityPolicy.Version ||
+            content.ContentId != key.ContentId ||
             content.Size > _maxBytes)
         {
-            return;
+            return false;
         }
 
         lock (_gate)
@@ -57,13 +58,15 @@ internal sealed class ImageEncodedCache : IDisposable
             ThrowIfDisposed();
             RemoveCore(key);
             var node = _lru.AddFirst(key);
-            _items.Add(key, new CacheItem(content with { CacheSource = ImageCacheSource.None }, node));
-            _bytes += content.Size;
+            var stored = content.ForContentStore();
+            _items.Add(key, new CacheItem(stored, node));
+            _bytes += stored.Size;
             TrimCore();
+            return _items.ContainsKey(key);
         }
     }
 
-    internal void Remove(ImageEncodedCacheKey key)
+    internal void Remove(ImageEncodedContentKey key)
     {
         lock (_gate)
         {
@@ -119,7 +122,7 @@ internal sealed class ImageEncodedCache : IDisposable
         }
     }
 
-    private void RemoveCore(ImageEncodedCacheKey key)
+    private void RemoveCore(ImageEncodedContentKey key)
     {
         if (!_items.Remove(key, out var existing))
         {
@@ -134,5 +137,5 @@ internal sealed class ImageEncodedCache : IDisposable
         ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
-    private sealed record CacheItem(ImageEncodedContent Content, LinkedListNode<ImageEncodedCacheKey> Node);
+    private sealed record CacheItem(ImageEncodedContent Content, LinkedListNode<ImageEncodedContentKey> Node);
 }

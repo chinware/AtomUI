@@ -8,7 +8,7 @@ internal sealed class RasterImageCodec : ImageCodec
 
     internal override int Version => 1;
 
-    internal override bool CanDecode(ImageProbeResult probe, ImageLoadSource source)
+    internal override bool CanDecode(ImageProbeResult probe, ImageSource source)
     {
         return probe.Format != ImageContentFormat.Svg;
     }
@@ -53,7 +53,7 @@ internal sealed class RasterImageCodec : ImageCodec
                 decodedHeight,
                 decodedBytes,
                 probe.MediaType,
-                content.CacheSource));
+                content.Origin));
         }
         catch (ImageLoadFailureException)
         {

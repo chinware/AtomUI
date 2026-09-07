@@ -592,6 +592,11 @@ internal class ImagePreviewerOverlayHost : ContentControl,
         }
     }
 
+    internal void RefreshImageSwitchMode()
+    {
+        _displayTracker.Refresh();
+    }
+
     private void UpdateCurrentImageState()
     {
         SetCurrentValue(CurrentImageProperty, _displayTracker.EffectiveImage);

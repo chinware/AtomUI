@@ -7,7 +7,7 @@
 ## 设计定位
 
 SVG 是统一图片系统支持的静态矢量格式，不是独立 loader，也不允许控件或 SVG renderer 建立第二条网络通道。HTTP/HTTPS
-SVG 主文档与 raster 图片共用 `ImageLoadSource`、`HttpImageTransport`、请求合并、缓存、取消、诊断和结果租约；
+SVG 主文档与 raster 图片共用 `ImageSource`、`HttpImageTransport`、请求合并、缓存、取消、诊断和结果租约；
 SVG 专属逻辑只负责受限 XML/CSS 验证和矢量模型构建。
 
 核心不变量：
@@ -178,21 +178,21 @@ Bytes 和 Stream 不再按 source kind 分配不同 SVG codec。
 decoded key 包含：
 
 ```text
-encoded key
-+ codec id
-+ codec version
+cache partition
++ SHA-256 ImageContentId
++ codec id/version
 + security policy version
 + codec-specific decode options
 ```
 
-SVG key 不包含目标 decode width/height；raster key 继续包含物理像素尺寸桶。`ImageCodecRegistry` 可以在读取 encoded content 前
-为每个显式 codec 生成确定的 decoded-key candidate，先尝试 decoded memory hit；全部 miss 后才进入 encoded operation，完成
-验证和 codec 选择，再使用选中 codec 的精确 key 加入 decoded in-flight。这样既保留 raster/矢量 decoded 快速命中，也避免
-未知格式依赖注册顺序。
+SVG key 不包含目标 decode width/height；raster key 继续包含物理像素尺寸桶。Loader 必须先按 SourceKey 解析或验证
+SourceVersion，取得 snapshot 对应的 ContentId 后才能形成 decoded key。不存在“根据来源猜测 codec 并在来源验证前返回 decoded
+entry”的 candidate fast path。这样既保留 content-addressed raster/矢量复用，也保证同一 URL 或文件路径被替换后不会显示旧图。
 
-encoded in-flight 的产物必须已经通过 `ImageContentValidator`。`ImageSecurityPolicy.Version` 固定为 `2`；raw reader output 的
-version 为 `0`。encoded memory/file cache 只存储标记为当前 version 的已验证内容；持久缓存读取发现 schema、摘要或 policy
-version 不匹配时删除并按 miss 处理。策略升级后旧字节可以重新下载或重新验证，但不能直接进入 codec。
+source-resolution in-flight 的编码产物必须已经通过 `ImageContentValidator` 并计算 ContentId。
+`ImageSecurityPolicy.Version` 固定为 `2`；raw reader output 的 version 为 `0`。encoded memory/file cache 只存储标记为当前
+version 的已验证内容；持久缓存读取发现 schema、摘要、ContentId 或 policy version 不匹配时删除并按 miss 处理。策略升级后旧
+字节可以重新下载或重新验证，但不能直接进入 codec。
 
 SVG decoded cache 的字节成本按以下 checked 估算：主文档 encoded bytes、嵌入 raster decoded estimate、元素和属性模型成本之和，
 并设置最小非零成本。不能按 `viewBox.Width * viewBox.Height * 4` 把纯矢量画布错误当成完整像素缓冲，也不能按对象数量把复杂
@@ -204,9 +204,11 @@ path 当成零成本。
 
 ```text
 normalize request
--> decoded candidate lookup
--> encoded cache/in-flight/read
+-> source snapshot lookup
+-> validate/refresh SourceVersion
+-> encoded content lookup or source read
 -> ImageContentValidator + SvgContentValidator
+-> SHA-256 ImageContentId
 -> SvgImageCodec selection
 -> exact decoded cache/in-flight lookup
 -> decode scheduler: SvgSource.Load(stream, secure parameters)
@@ -267,7 +269,7 @@ NativeAOT publish/启动、Browser managed publish/启动和 Browser AOT publish
 
 - 合法 DiceBear 风格 SVG、同文档 defs/use、inline CSS 和 data raster。
 - 每种危险 XML/CSS/URI 输入及每个资源预算边界。
-- HTTP MIME、缓存、重验证、NoStore、取消、encoded/decoded coalescing 和 security policy 升级。
+- HTTP MIME、缓存、重验证、`CacheStorage=None`、取消、source/decode coalescing 和 security policy 升级。
 - off-thread decode、UI thread Size/Measure/Draw、后台 cache clear 和 loader dispose。
 - Avatar 首次 Window layout、Masonry skeleton、ImagePreviewer cover/full/切换/detach 和 Masonry 到 Previewer 导航无死锁。
 - `Empty`、`Result`、Gallery shell 等直接使用 `Svg.Controls.Avalonia` 的既有场景，防止依赖升级造成相邻回归。

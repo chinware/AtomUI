@@ -2,4 +2,5 @@ namespace AtomUI.Controls;
 
 internal sealed record ImageValidatedContent(
     ImageEncodedContent Content,
-    ImageProbeResult Probe);
+    ImageProbeResult Probe,
+    ImageSourceValidation SourceValidation);

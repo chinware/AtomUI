@@ -9,7 +9,7 @@ internal sealed class StreamImageSourceReader : ImageSourceReader
         _options = options;
     }
 
-    internal override ImageLoadSourceKind Kind => ImageLoadSourceKind.Stream;
+    internal override ImageSourceKind Kind => ImageSourceKind.Stream;
 
     internal override async Task<ImageSourceReadResult> ReadAsync(
         NormalizedImageRequest request,
@@ -17,13 +17,13 @@ internal sealed class StreamImageSourceReader : ImageSourceReader
         IProgress<ImageLoadProgress>? progress,
         CancellationToken cancellationToken)
     {
-        if (request.CacheMode != ImageCacheMode.Reload &&
-            staleContent is not null && request.Source.Version is not null &&
-            staleContent.SourceVersion == request.Source.Version)
+        if (request.CacheRead != ImageCacheReadPolicy.RefreshSource &&
+            staleContent is not null && request.Source.SourceRevision is not null &&
+            staleContent.SourceVersion == request.Source.SourceRevision)
         {
-            return new ImageSourceReadResult(staleContent.WithCacheSource(ImageCacheSource.EncodedMemory));
+            return new ImageSourceReadResult(staleContent.WithOrigin(ImageLoadOrigin.EncodedMemory));
         }
-        var factory = (Func<CancellationToken, ValueTask<Stream>>)request.Source.Value;
+        var factory = ((StreamImageSource)request.Source).OpenStream;
         await using var stream = await factory(cancellationToken).ConfigureAwait(false);
         if (stream is null)
         {
@@ -43,9 +43,9 @@ internal sealed class StreamImageSourceReader : ImageSourceReader
         return new ImageSourceReadResult(new ImageEncodedContent(
             bytes,
             null,
-            ImageCacheSource.Local,
+            ImageLoadOrigin.Local,
             DateTimeOffset.UtcNow,
-            FreshUntil: request.Source.Version is null ? null : DateTimeOffset.MaxValue,
-            SourceVersion: request.Source.Version));
+            FreshUntil: request.Source.SourceRevision is null ? null : DateTimeOffset.MaxValue,
+            SourceVersion: request.Source.SourceRevision));
     }
 }

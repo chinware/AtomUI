@@ -2,7 +2,9 @@ namespace AtomUI.Controls;
 
 public sealed record ImageRequestOptions
 {
-    public ImageCacheMode CacheMode { get; init; } = ImageCacheMode.Default;
+    public ImageCacheReadPolicy CacheRead { get; init; } = ImageCacheReadPolicy.ValidateSource;
+
+    public ImageCacheStoragePolicy CacheStorage { get; init; } = ImageCacheStoragePolicy.MemoryAndDisk;
 
     public string? CachePartition { get; init; }
 

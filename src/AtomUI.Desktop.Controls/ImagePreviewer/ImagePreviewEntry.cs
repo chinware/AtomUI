@@ -10,6 +10,8 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
 {
     private ImageCancellationState? _fullCancellation;
     private ImageCancellationState? _thumbnailCancellation;
+    private ImageRequestPriorityState? _fullPriorityState;
+    private ImageRequestPriorityState? _thumbnailPriorityState;
     private ImageLoadResult? _fullResult;
     private ImageLoadResult? _thumbnailResult;
     private PixelSize? _fullRequestSize;
@@ -24,7 +26,7 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
     private ImageLoadError? _thumbnailError;
     private ImageLoadProgress? _fullProgress;
     private ImageLoadProgress? _thumbnailProgress;
-    private ImageCacheSource _fullCacheSource;
+    private ImageLoadOrigin _fullOrigin;
     private bool _disposed;
 
     internal ImagePreviewEntry(ImagePreviewItem item)
@@ -142,7 +144,11 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
 
     internal bool IsThumbnailFailed => ThumbnailState == ImageLoadState.Failed;
 
-    internal ImageCacheSource FullCacheSource => _fullCacheSource;
+    internal ImageLoadOrigin FullOrigin => _fullOrigin;
+
+    internal long DisplayTargetOwnerId { get; set; }
+
+    internal long DisplayTargetRevision { get; set; }
 
     internal void LoadFull(
         int decodePixelWidth,
@@ -152,6 +158,11 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         var requestSize = new PixelSize(decodePixelWidth, decodePixelHeight);
+        if (!reload && FullState == ImageLoadState.Loading && Covers(_fullRequestSize, requestSize))
+        {
+            _fullPriorityState?.Promote(priority);
+            return;
+        }
         if (!RequiresLoad(
                 FullState,
                 requestSize,
@@ -164,7 +175,9 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
         var generation = ++_fullGeneration;
         Cancel(ref _fullCancellation);
         var cancellation = new ImageCancellationState();
+        var priorityState = new ImageRequestPriorityState(priority);
         _fullCancellation = cancellation;
+        _fullPriorityState = priorityState;
         _fullRequestSize = requestSize;
         FullError = null;
         FullProgress = null;
@@ -173,7 +186,7 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
             generation,
             decodePixelWidth,
             decodePixelHeight,
-            priority,
+            priorityState,
             reload,
             cancellation));
     }
@@ -186,6 +199,11 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         var requestSize = new PixelSize(decodePixelWidth, decodePixelHeight);
+        if (!reload && ThumbnailState == ImageLoadState.Loading && Covers(_thumbnailRequestSize, requestSize))
+        {
+            _thumbnailPriorityState?.Promote(priority);
+            return;
+        }
         if (!RequiresLoad(
                 ThumbnailState,
                 requestSize,
@@ -198,7 +216,9 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
         var generation = ++_thumbnailGeneration;
         Cancel(ref _thumbnailCancellation);
         var cancellation = new ImageCancellationState();
+        var priorityState = new ImageRequestPriorityState(priority);
         _thumbnailCancellation = cancellation;
+        _thumbnailPriorityState = priorityState;
         _thumbnailRequestSize = requestSize;
         ThumbnailError = null;
         ThumbnailProgress = null;
@@ -207,7 +227,7 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
             generation,
             decodePixelWidth,
             decodePixelHeight,
-            priority,
+            priorityState,
             reload,
             cancellation));
     }
@@ -215,6 +235,7 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
     internal void CancelFullLoad()
     {
         _fullGeneration++;
+        Interlocked.Exchange(ref _fullPriorityState, null);
         Cancel(ref _fullCancellation);
         _fullRequestSize = _fullResultRequestSize;
         FullError = null;
@@ -232,6 +253,7 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
     internal void CancelThumbnailLoad()
     {
         _thumbnailGeneration++;
+        Interlocked.Exchange(ref _thumbnailPriorityState, null);
         Cancel(ref _thumbnailCancellation);
         _thumbnailRequestSize = _thumbnailResultRequestSize;
         ThumbnailError = null;
@@ -250,36 +272,54 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
     {
         _fullGeneration++;
         _thumbnailGeneration++;
+        Interlocked.Exchange(ref _fullPriorityState, null);
+        Interlocked.Exchange(ref _thumbnailPriorityState, null);
         Cancel(ref _fullCancellation);
         Cancel(ref _thumbnailCancellation);
-        Interlocked.Exchange(ref _fullResult, null)?.Dispose();
-        Interlocked.Exchange(ref _thumbnailResult, null)?.Dispose();
+        var fullResult = Interlocked.Exchange(ref _fullResult, null);
+        var thumbnailResult = Interlocked.Exchange(ref _thumbnailResult, null);
         _fullRequestSize = null;
         _thumbnailRequestSize = null;
         _fullResultRequestSize = null;
         _thumbnailResultRequestSize = null;
-        FullError = null;
-        ThumbnailError = null;
-        FullProgress = null;
-        ThumbnailProgress = null;
-        FullState = ImageLoadState.Idle;
-        ThumbnailState = ImageLoadState.Idle;
-        RaisePropertyChanged(nameof(FullImage));
-        RaisePropertyChanged(nameof(ThumbnailImage));
+        try
+        {
+            FullError = null;
+            ThumbnailError = null;
+            FullProgress = null;
+            ThumbnailProgress = null;
+            FullState = ImageLoadState.Idle;
+            ThumbnailState = ImageLoadState.Idle;
+            RaisePropertyChanged(nameof(FullImage));
+            RaisePropertyChanged(nameof(ThumbnailImage));
+        }
+        finally
+        {
+            fullResult?.Dispose();
+            thumbnailResult?.Dispose();
+        }
     }
 
     internal void UnloadFull()
     {
         _fullGeneration++;
+        Interlocked.Exchange(ref _fullPriorityState, null);
         Cancel(ref _fullCancellation);
-        Interlocked.Exchange(ref _fullResult, null)?.Dispose();
+        var fullResult = Interlocked.Exchange(ref _fullResult, null);
         _fullRequestSize = null;
         _fullResultRequestSize = null;
-        FullError = null;
-        FullProgress = null;
-        FullState = ImageLoadState.Idle;
-        RaisePropertyChanged(nameof(FullImage));
-        RaisePropertyChanged(nameof(ThumbnailImage));
+        try
+        {
+            FullError = null;
+            FullProgress = null;
+            FullState = ImageLoadState.Idle;
+            RaisePropertyChanged(nameof(FullImage));
+            RaisePropertyChanged(nameof(ThumbnailImage));
+        }
+        finally
+        {
+            fullResult?.Dispose();
+        }
     }
 
     public void Dispose()
@@ -289,12 +329,22 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
             return;
         }
         _disposed = true;
+        Interlocked.Exchange(ref _fullPriorityState, null);
+        Interlocked.Exchange(ref _thumbnailPriorityState, null);
         Cancel(ref _fullCancellation);
         Cancel(ref _thumbnailCancellation);
-        Interlocked.Exchange(ref _fullResult, null)?.Dispose();
-        Interlocked.Exchange(ref _thumbnailResult, null)?.Dispose();
-        NotifyDisposedReset();
-        PropertyChanged = null;
+        var fullResult = Interlocked.Exchange(ref _fullResult, null);
+        var thumbnailResult = Interlocked.Exchange(ref _thumbnailResult, null);
+        try
+        {
+            NotifyDisposedReset();
+        }
+        finally
+        {
+            PropertyChanged = null;
+            fullResult?.Dispose();
+            thumbnailResult?.Dispose();
+        }
     }
 
     // Dispose 会静默释放位图租约；先通知持有者丢弃图像引用，
@@ -337,7 +387,7 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
         long generation,
         int width,
         int height,
-        ImageRequestPriority priority,
+        ImageRequestPriorityState priorityState,
         bool reload,
         ImageCancellationState cancellation)
     {
@@ -347,7 +397,7 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
                 [Item.Source, Item.FallbackSource],
                 width,
                 height,
-                priority,
+                priorityState,
                 reload,
                 progress => PublishFullProgress(generation, progress),
                 cancellation.Token).ConfigureAwait(false);
@@ -373,6 +423,7 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
         }
         finally
         {
+            Interlocked.CompareExchange(ref _fullPriorityState, null, priorityState);
             CompleteCancellation(ref _fullCancellation, cancellation);
         }
     }
@@ -400,7 +451,7 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
         long generation,
         int width,
         int height,
-        ImageRequestPriority priority,
+        ImageRequestPriorityState priorityState,
         bool reload,
         ImageCancellationState cancellation)
     {
@@ -410,7 +461,7 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
                 [Item.ThumbnailSource, Item.Source, Item.FallbackSource],
                 width,
                 height,
-                priority,
+                priorityState,
                 reload,
                 progress => PublishThumbnailProgress(generation, progress),
                 cancellation.Token).ConfigureAwait(false);
@@ -436,6 +487,7 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
         }
         finally
         {
+            Interlocked.CompareExchange(ref _thumbnailPriorityState, null, priorityState);
             CompleteCancellation(ref _thumbnailCancellation, cancellation);
         }
     }
@@ -459,10 +511,10 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
     }
 
     private async Task<ImageLoadResult> LoadWithFallbackAsync(
-        IEnumerable<ImageLoadSource?> sources,
+        IEnumerable<ImageSource?> sources,
         int width,
         int height,
-        ImageRequestPriority priority,
+        ImageRequestPriorityState priorityState,
         bool reload,
         Action<ImageLoadProgress> reportProgress,
         CancellationToken cancellationToken)
@@ -472,13 +524,16 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
             var loader = (Application.Current ?? throw new InvalidOperationException(
                 "ImagePreviewer requires an active Avalonia Application.")).GetImageLoader();
             var options = reload
-                ? (Item.RequestOptions ?? new ImageRequestOptions()) with { CacheMode = ImageCacheMode.Reload }
+                ? (Item.RequestOptions ?? new ImageRequestOptions()) with
+                {
+                    CacheRead = ImageCacheReadPolicy.RefreshSource
+                }
                 : Item.RequestOptions;
             var seen = new HashSet<string>(StringComparer.Ordinal);
             ImageLoadResult? lastFailure = null;
             foreach (var source in sources)
             {
-                if (source is null || !seen.Add(source.Identity))
+                if (source is null || !seen.Add(source.CacheIdentity))
                 {
                     continue;
                 }
@@ -489,7 +544,8 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
                         Options = options,
                         DecodePixelWidth = width,
                         DecodePixelHeight = height,
-                        Priority = priority,
+                        Priority = priorityState.Priority,
+                        PriorityState = priorityState,
                         Progress = new CallbackProgress<ImageLoadProgress>(reportProgress)
                     },
                     cancellationToken).ConfigureAwait(false);
@@ -526,7 +582,7 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
             _fullResult = result;
             _fullResultRequestSize = requestSize;
             _fullRequestSize = requestSize;
-            _fullCacheSource = result.CacheSource;
+            _fullOrigin = result.Origin;
             FullError = null;
             FullState = ImageLoadState.Loaded;
             RaisePropertyChanged(nameof(FullImage));
@@ -535,14 +591,20 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
         }
         else
         {
-            FullError = result.Error;
-            FullState = ImageLoadState.Failed;
             var previous = Interlocked.Exchange(ref _fullResult, null);
             _fullResultRequestSize = null;
-            RaisePropertyChanged(nameof(FullImage));
-            RaisePropertyChanged(nameof(ThumbnailImage));
-            previous?.Dispose();
-            result.Dispose();
+            try
+            {
+                FullError = result.Error;
+                FullState = ImageLoadState.Failed;
+                RaisePropertyChanged(nameof(FullImage));
+                RaisePropertyChanged(nameof(ThumbnailImage));
+            }
+            finally
+            {
+                previous?.Dispose();
+                result.Dispose();
+            }
         }
     }
 
@@ -567,13 +629,19 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
         }
         else
         {
-            ThumbnailError = result.Error;
-            ThumbnailState = ImageLoadState.Failed;
             var previous = Interlocked.Exchange(ref _thumbnailResult, null);
             _thumbnailResultRequestSize = null;
-            RaisePropertyChanged(nameof(ThumbnailImage));
-            previous?.Dispose();
-            result.Dispose();
+            try
+            {
+                ThumbnailError = result.Error;
+                ThumbnailState = ImageLoadState.Failed;
+                RaisePropertyChanged(nameof(ThumbnailImage));
+            }
+            finally
+            {
+                previous?.Dispose();
+                result.Dispose();
+            }
         }
     }
 
@@ -663,8 +731,8 @@ internal sealed class ImagePreviewEntry : INotifyPropertyChanged, IDisposable
         }
         return state switch
         {
-            // 同尺寸桶下的在途请求直接采纳（含优先级提升）：
-            // 重启会丢弃接近完成的进度，使"切换快于加载"场景下永远没有请求能完成
+            // 同尺寸桶下的在途请求由 LoadFull/LoadThumbnail 提升优先级后直接采纳；
+            // 不重启接近完成的源读取或解码。
             ImageLoadState.Loading => !Covers(activeRequestSize, requestSize),
             ImageLoadState.Loaded => !Covers(resultRequestSize, requestSize),
             _ => true

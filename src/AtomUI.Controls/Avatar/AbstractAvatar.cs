@@ -29,11 +29,11 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl, II
     public static readonly StyledProperty<PathIcon?> IconProperty =
         AvaloniaProperty.Register<AbstractAvatar, PathIcon?>(nameof(Icon));
 
-    public static readonly StyledProperty<ImageLoadSource?> SourceProperty =
-        AvaloniaProperty.Register<AbstractAvatar, ImageLoadSource?>(nameof(Source));
+    public static readonly StyledProperty<ImageSource?> SourceProperty =
+        AvaloniaProperty.Register<AbstractAvatar, ImageSource?>(nameof(Source));
 
-    public static readonly StyledProperty<ImageLoadSource?> FallbackSourceProperty =
-        AvaloniaProperty.Register<AbstractAvatar, ImageLoadSource?>(nameof(FallbackSource));
+    public static readonly StyledProperty<ImageSource?> FallbackSourceProperty =
+        AvaloniaProperty.Register<AbstractAvatar, ImageSource?>(nameof(FallbackSource));
 
     public static readonly StyledProperty<ImageRequestOptions?> RequestOptionsProperty =
         AvaloniaProperty.Register<AbstractAvatar, ImageRequestOptions?>(nameof(RequestOptions));
@@ -124,13 +124,13 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl, II
         set => SetValue(IconProperty, value);
     }
 
-    public ImageLoadSource? Source
+    public ImageSource? Source
     {
         get => GetValue(SourceProperty);
         set => SetValue(SourceProperty, value);
     }
 
-    public ImageLoadSource? FallbackSource
+    public ImageSource? FallbackSource
     {
         get => GetValue(FallbackSourceProperty);
         set => SetValue(FallbackSourceProperty, value);

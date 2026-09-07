@@ -4,7 +4,7 @@ namespace AtomUI.Controls;
 
 internal sealed class BorrowedImageSourceReader : ImageSourceReader
 {
-    internal override ImageLoadSourceKind Kind => ImageLoadSourceKind.Image;
+    internal override ImageSourceKind Kind => ImageSourceKind.Borrowed;
 
     internal override Task<ImageSourceReadResult> ReadAsync(
         NormalizedImageRequest request,
@@ -14,6 +14,8 @@ internal sealed class BorrowedImageSourceReader : ImageSourceReader
     {
         cancellationToken.ThrowIfCancellationRequested();
         ImageProgressDispatcher.Report(progress, ImageLoadProgress.Create(ImageLoadStage.Reading));
-        return Task.FromResult(new ImageSourceReadResult(BorrowedImage: (IImage)request.Source.Value));
+        return Task.FromResult(new ImageSourceReadResult(
+            BorrowedImage: ((BorrowedImageSource)request.Source).Image,
+            SourceValidation: ImageSourceValidation.NotRequired));
     }
 }

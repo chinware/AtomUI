@@ -3,8 +3,8 @@ namespace AtomUI.Controls;
 internal sealed class ImageDecodedCache : IDisposable
 {
     private readonly object _gate = new();
-    private readonly Dictionary<ImageDecodedCacheKey, CacheItem> _items = [];
-    private readonly LinkedList<ImageDecodedCacheKey> _lru = [];
+    private readonly Dictionary<ImageDecodeKey, CacheItem> _items = [];
+    private readonly LinkedList<ImageDecodeKey> _lru = [];
     private readonly long _maxBytes;
     private readonly int _maxEntries;
     private long _bytes;
@@ -27,8 +27,9 @@ internal sealed class ImageDecodedCache : IDisposable
     }
 
     internal bool TryAcquireResult(
-        ImageDecodedCacheKey key,
-        ImageCacheSource cacheSource,
+        ImageDecodeKey key,
+        ImageLoadOrigin origin,
+        ImageSourceValidation sourceValidation,
         IReadOnlyDictionary<ImageLoadStage, TimeSpan>? stageDurations,
         out ImageLoadResult? result)
     {
@@ -42,12 +43,16 @@ internal sealed class ImageDecodedCache : IDisposable
             }
             _lru.Remove(item.Node);
             _lru.AddFirst(item.Node);
-            result = item.Entry.AcquireResult(cacheSource, stageDurations);
+            result = item.Entry.AcquireResult(
+                origin,
+                sourceValidation,
+                key.ContentId.Value,
+                stageDurations);
             return true;
         }
     }
 
-    internal bool TryRetain(ImageDecodedCacheKey key, out ImageDecodedCacheEntry? entry)
+    internal bool TryRetain(ImageDecodeKey key, out ImageDecodedCacheEntry? entry)
     {
         lock (_gate)
         {
@@ -65,7 +70,7 @@ internal sealed class ImageDecodedCache : IDisposable
         }
     }
 
-    internal bool TryAdd(ImageDecodedCacheKey key, ImageDecodedCacheEntry entry)
+    internal bool TryAdd(ImageDecodeKey key, ImageDecodedCacheEntry entry)
     {
         ArgumentNullException.ThrowIfNull(entry);
         if (entry.DecodedBytes > _maxBytes)
@@ -109,7 +114,7 @@ internal sealed class ImageDecodedCache : IDisposable
             }
             var keys = partitionHash is null
                 ? _items.Keys.ToArray()
-                : _items.Keys.Where(key => key.EncodedKey.PartitionHash == partitionHash).ToArray();
+                : _items.Keys.Where(key => key.PartitionHash == partitionHash).ToArray();
             foreach (var key in keys)
             {
                 var entry = _items[key].Entry;
@@ -120,23 +125,27 @@ internal sealed class ImageDecodedCache : IDisposable
         ReleaseMemberships(removed);
     }
 
-    internal void RemoveByEncodedKey(ImageEncodedCacheKey encodedKey)
+    internal List<ImageDecodedCacheEntry> ExtractByContentId(
+        string partitionHash,
+        ImageContentId contentId)
     {
         List<ImageDecodedCacheEntry> removed = [];
         lock (_gate)
         {
             if (_disposed)
             {
-                return;
+                return removed;
             }
-            foreach (var key in _items.Keys.Where(key => key.EncodedKey == encodedKey).ToArray())
+            foreach (var key in _items.Keys
+                         .Where(key => key.PartitionHash == partitionHash && key.ContentId == contentId)
+                         .ToArray())
             {
                 var entry = _items[key].Entry;
                 RemoveCore(key);
                 removed.Add(entry);
             }
         }
-        ReleaseMemberships(removed);
+        return removed;
     }
 
     public void Dispose()
@@ -167,7 +176,7 @@ internal sealed class ImageDecodedCache : IDisposable
         }
     }
 
-    private void RemoveCore(ImageDecodedCacheKey key)
+    private void RemoveCore(ImageDecodeKey key)
     {
         if (!_items.Remove(key, out var item))
         {
@@ -177,7 +186,7 @@ internal sealed class ImageDecodedCache : IDisposable
         _bytes -= item.Entry.DecodedBytes;
     }
 
-    private static void ReleaseMemberships(IEnumerable<ImageDecodedCacheEntry> entries)
+    internal static void ReleaseMemberships(IEnumerable<ImageDecodedCacheEntry> entries)
     {
         foreach (var entry in entries)
         {
@@ -190,5 +199,5 @@ internal sealed class ImageDecodedCache : IDisposable
         ObjectDisposedException.ThrowIf(_disposed, this);
     }
 
-    private sealed record CacheItem(ImageDecodedCacheEntry Entry, LinkedListNode<ImageDecodedCacheKey> Node);
+    private sealed record CacheItem(ImageDecodedCacheEntry Entry, LinkedListNode<ImageDecodeKey> Node);
 }

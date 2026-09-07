@@ -4,11 +4,12 @@ namespace AtomUI.Controls;
 
 internal sealed record ImageSourceReadResult(
     ImageEncodedContent? EncodedContent = null,
-    IImage? BorrowedImage = null);
+    IImage? BorrowedImage = null,
+    ImageSourceValidation SourceValidation = ImageSourceValidation.Current);
 
 internal abstract class ImageSourceReader
 {
-    internal abstract ImageLoadSourceKind Kind { get; }
+    internal abstract ImageSourceKind Kind { get; }
 
     internal abstract Task<ImageSourceReadResult> ReadAsync(
         NormalizedImageRequest request,
@@ -19,11 +20,11 @@ internal abstract class ImageSourceReader
 
 internal sealed class ImageSourceReaderRegistry
 {
-    private readonly IReadOnlyDictionary<ImageLoadSourceKind, ImageSourceReader> _readers;
+    private readonly IReadOnlyDictionary<ImageSourceKind, ImageSourceReader> _readers;
 
     internal ImageSourceReaderRegistry(IEnumerable<ImageSourceReader> readers)
     {
-        var dictionary = new Dictionary<ImageLoadSourceKind, ImageSourceReader>();
+        var dictionary = new Dictionary<ImageSourceKind, ImageSourceReader>();
         foreach (var reader in readers)
         {
             if (!dictionary.TryAdd(reader.Kind, reader))
@@ -31,7 +32,7 @@ internal sealed class ImageSourceReaderRegistry
                 throw new InvalidOperationException($"Image source reader '{reader.Kind}' is registered more than once.");
             }
         }
-        foreach (var kind in Enum.GetValues<ImageLoadSourceKind>())
+        foreach (var kind in Enum.GetValues<ImageSourceKind>())
         {
             if (!dictionary.ContainsKey(kind))
             {
@@ -41,7 +42,7 @@ internal sealed class ImageSourceReaderRegistry
         _readers = dictionary;
     }
 
-    internal ImageSourceReader Get(ImageLoadSourceKind kind) => _readers[kind];
+    internal ImageSourceReader Get(ImageSourceKind kind) => _readers[kind];
 }
 
 internal sealed class ImageLoadFailureException : Exception

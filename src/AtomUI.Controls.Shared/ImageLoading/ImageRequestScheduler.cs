@@ -26,12 +26,12 @@ internal sealed class ImageRequestScheduler : IDisposable
     internal int QueuedDecodes => _decodeScheduler.QueuedCount;
 
     internal Task<T> ScheduleReadAsync<T>(
-        ImageLoadSourceKind sourceKind,
+        ImageSourceKind sourceKind,
         Func<CancellationToken, Task<T>> action,
         Func<ImageRequestPriority> priority,
         CancellationToken cancellationToken)
     {
-        var scheduler = sourceKind == ImageLoadSourceKind.Http
+        var scheduler = sourceKind == ImageSourceKind.Http
             ? _downloadScheduler
             : _localReadScheduler;
         return scheduler.ScheduleAsync(action, priority, cancellationToken);

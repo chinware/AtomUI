@@ -399,6 +399,10 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         {
             RequestClosedStateLoads();
         }
+        else if (change.Property == ImageSwitchModeProperty)
+        {
+            _openState?.RefreshImageSwitchMode();
+        }
     }
 
     private void HandleItemsSourceChanged(IEnumerable<ImagePreviewItem>? oldValue)
@@ -796,7 +800,7 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
                     new ImagePreviewOpenedEventArgs(
                         _currentEntry.Item,
                         index,
-                        _currentEntry.FullCacheSource));
+                        _currentEntry.FullOrigin));
             }
             else if (state == ImageLoadState.Failed && _currentEntry.FullError is { } error)
             {
@@ -1287,6 +1291,8 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
     private interface IImagePreviewerOpenState : IDisposable
     {
         TopLevel TopLevel { get; }
+
+        void RefreshImageSwitchMode();
     }
 
     private class DialogOpenState : IImagePreviewerOpenState
@@ -1310,6 +1316,11 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
             _presenterCleanup = presenterCleanup;
         }
 
+        public void RefreshImageSwitchMode()
+        {
+            DialogHost.RefreshImageSwitchMode();
+        }
+
         public void Dispose()
         {
             _presenterCleanup?.Dispose();
@@ -1330,6 +1341,11 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
 
         public ImagePreviewerOverlayHost PreviewHost { get; }
         public TopLevel TopLevel { get; }
+
+        public void RefreshImageSwitchMode()
+        {
+            PreviewHost.RefreshImageSwitchMode();
+        }
 
         public void Dispose()
         {

@@ -13,7 +13,8 @@ Mobile 不重建 Ant Design 或 AtomUI 的全局主题系统。它复用现有 T
 | Theme Algorithm | 现有 AtomUI Theme Algorithm |
 | 应用级和局部主题作用域 | `ThemeConfigProvider` 与资源作用域 |
 | Mobile 共享视觉语义 | Mobile Alias Token，满足创建门槛后新增 |
-| 单 Control 视觉差异 | Mobile Control Own Token |
+| Desktop/Mobile Control 家族共享定义 | `AtomUI.Controls` 中无 identity 的抽象 `[ControlDesignToken]` 层 |
+| 单 Control 视觉差异 | Mobile 产品包中 `sealed` 终端 Control Own Token |
 | ControlTheme、pseudo-class、Semantic Part | 对应 Mobile Control 契约 |
 | Safe Area、IME、方向、选择、打开和手势进度 | Mobile Runtime 状态，不是 Token |
 
@@ -25,6 +26,15 @@ Mobile Alias Token 只有同时满足以下条件才新增：
 4. 名称表达 AtomUI 稳定语义，不复制上游 CSS variable 名称。
 
 平台最小触控目标来自 platform profile。Theme 可以消费已经解析的尺寸资源，但不能读取 OS 名称决定 Token。
+
+Desktop 与 Mobile Control 只有在 Own Token 名称、语义和默认计算依赖真正一致时，才从 `AtomUI.Controls` 中显式标记的
+抽象 Token 层复用定义。抽象层不匹配 Control，也不生成 identity、descriptor、资源键或注册产物；Desktop 与 Mobile
+分别声明自己的 `sealed` 终端 Token，并拥有完全隔离的配置、snapshot 和资源投影。平台差异继续由终端 Token 表达，不能
+写入共享层后再根据 OS 名称分支。
+
+该继承只在 Generator 中扁平化 schema，不形成运行时 Token identity fallback。若 Desktop/Mobile 同名 Control 需要在同一
+组合根同时注册，其 Catalog/identity 冲突必须由产品包组合架构单独解决，不能依赖 Token 基类。正式契约见
+[Control Design Token 继承架构](../theming/control-design-token-inheritance.md)。
 
 ## `ConfigProvider` 职责映射
 
@@ -81,6 +91,7 @@ Mobile 不新增同名 `ConfigProvider` Control：
 ## AOT 与资源边界
 
 - Token、Localization、ControlTheme 和 descriptor 使用现有 Generator 或显式静态注册。
+- 抽象 Control Token 不生成运行时注册产物；终端 descriptor 使用静态类型引用保留完整基类链。
 - 不通过反射扫描程序集、字符串成员访问或动态 factory 发现 Mobile Control。
 - 非 Visual `AvaloniaObject` 需要动态资源时遵循 scoped resource host 规范。
 - owner/container/template reapply 必须有 acquire/release 对。
@@ -94,6 +105,7 @@ Mobile 不新增同名 `ConfigProvider` Control：
 4. iOS 与 Android 共享 Public API 和文本契约。
 5. API 复用由语义一致性决定，不由同名 Control 决定。
 6. `ConfigProvider` 职责由现有 AtomUI 系统承接。
+7. Control Token 抽象层只复用定义，Mobile 终端 Token 始终 `sealed` 并独立拥有 identity。
 
 主题系统入口见 [AtomUI 主题系统](../theming/overview.md)，本地化入口见
 [AtomUI 本地化系统](../localization/overview.md)。

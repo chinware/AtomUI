@@ -2,13 +2,18 @@
 
 > 状态：当前架构。本文定义统一 loader 的缓存一致性和不可信内容边界；任何控件都不得降级这些规则。
 
-## 三层缓存
+## 来源索引与内容存储
 
-| 层 | 内容 | 默认状态 | Owner |
+| 层 | 键与内容 | 默认状态 | Owner |
 | --- | --- | --- | --- |
-| decoded memory | 已解码 raster 或受限静态 SVG 绘制对象、codec/security identity、租约计数 | 启用 | `ImageDecodedCache` |
-| encoded memory | 当前安全策略已验证的编码字节、格式 metadata、HTTP/local metadata | 启用 | `ImageEncodedCache` |
-| persistent encoded | 已验证编码字节、校验摘要、格式 metadata 和重验证 metadata | 实现但默认关闭 | `ImageFileCache` |
+| source snapshot index | `ImageSourceKey -> ImageSourceVersion -> ImageContentId` 与 validator、freshness、commit generation | memory 启用；可选持久化 | `ImageSourceSnapshotIndex` / `ImageFileCache` |
+| encoded content | `(partition hash, ImageContentId)` 对应已验证的精确编码字节和内容 metadata | memory 启用；持久层默认关闭 | `ImageEncodedCache` / `ImageFileCache` |
+| decoded content | `(partition hash, ImageContentId, ImageDecodeSpec)` 对应 raster 或受限静态 SVG 绘制对象、租约计数 | memory 启用 | `ImageDecodedCache` |
+
+来源地址不是内容身份。`ImageSourceKey` 只描述如何再次访问来源；来源验证先产生 `ImageSourceVersion`，读取到的新正文再以
+SHA-256 产生 `ImageContentId`。只有此后才能形成 `ImageDecodeKey` 并查询 decoded store。任何根据旧 SourceKey 直接返回 decoded
+image 的捷径都违反一致性契约。相同字节即使来自不同路径或 URI，也可在同一 cache partition 下共享 encoded/decoded 内容；
+相同路径的不同字节一定得到不同 ContentId。
 
 缓存同时受最大字节数和最大条目数约束，任一到达上限都触发 LRU 驱逐。单条目大于该层字节预算时可以返回给当前 waiter，
 但不得插入该层。容量统计使用实际 encoded buffer 大小；raster decoded 使用 codec 报告值，无法报告时按
@@ -33,36 +38,47 @@ lock 外 retain。LRU 驱逐先原子地从 key map/LRU 移除 membership，使�
 
 替换相同 key、清空缓存和 loader dispose 都走同一状态机。图片 dispose、codec release callback、operation release 和租约完成
 回调必须在 cache lock 外执行。decode scheduler 把新 entry 交给 pipeline 后，pipeline 必须先建立 operation reference；其后的
-取消、cache insert 拒绝或异常都释放该引用，不能遗留无 owner 的 decoded image。`ImageLoadSource.FromImage(IImage)` 是 borrowed
+取消、cache insert 拒绝或异常都释放该引用，不能遗留无 owner 的 decoded image。`new BorrowedImageSource(IImage)` 是 borrowed
 特例：cache 不获得 membership ownership，结果释放永远不 dispose 调用方对象。
 
 `ClearCacheAsync` 对目标分区/层递增 cache epoch，并默认取消相同 scope 的 encoded/decoded in-flight operation。operation
 完成写入前必须比较创建 epoch；旧 epoch 只能把结果交给仍允许完成的直接 waiter，不能重新污染已清理 cache。清理不强制
 销毁控件正在持有的租约。
 
-encoded entry 的 byte owner 只属于 cache 或当前 pipeline；插入成功后所有权转移，插入失败/被拒绝时由 pipeline 释放。
-file cache 读取必须先验证 metadata schema、长度、内容摘要和集中定义的安全策略版本，任何不一致都按 miss 删除，不能把损坏
+encoded entry 的 byte owner 只属于 cache 或当前 pipeline。source snapshot 只有在所引用 encoded content 已成功写入后才能提交；
+每个 SourceKey 的单调 commit generation 阻止较早完成的刷新覆盖较新映射。file cache 读取必须先验证 metadata 格式、长度、
+内容摘要、ContentId 和集中定义的安全策略版本，任何不一致都按 miss 删除，不能把损坏
 或旧策略条目送入 codec。当前 `ImageSecurityPolicy.Version` 为 `2`；reader raw content 使用 `0`，完整验证后才标记为 `2`。
 memory encoded entry 同样记录安全策略版本；策略版本变化时必须重新验证完全相同的不可变字节，重新验证失败即移除，不能依赖
 旧验证结论。
 
-## CacheMode 语义
+## 缓存读取与存储策略
 
-| 模式 | 读取 | 网络/本地源 | 写入 |
+读取策略和存储位置是两个正交维度：
+
+| `ImageCacheReadPolicy` | 现有 snapshot | 来源访问 | 结果验证状态 |
 | --- | --- | --- | --- |
-| `Default` | 使用 fresh decoded/encoded/file entry；stale HTTP entry 按策略重验证 | cache miss 时允许 | 遵守响应缓存指令 |
-| `Reload` | 跳过 decoded 直接命中；HTTP 有 validator 时强制条件请求，否则重新获取 | 允许 | 成功后替换允许缓存的 entry |
-| `NoStore` | 不读取共享缓存 | 允许 | 不写 memory/file cache；同一时刻仍可合并完全相同的 NoStore 请求 |
-| `CacheOnly` | 只读可接受的 decoded/encoded/file entry | 禁止访问原始网络/File/Asset/Storage/Stream source；允许读取已启用的 file cache，borrowed/inline Bytes 可直接消费 | 不写；miss 返回 `CacheMiss` |
+| `ValidateSource` | 只有按来源规则确认仍有效后才能复用 | freshness/version 不足时访问 | `Current`、`Revalidated` 或 `NotRequired` |
+| `RefreshSource` | 不直接接受旧 snapshot | 始终访问来源；HTTP 可发条件请求 | `Revalidated` 或新内容的 `Current` |
+| `PreferCache` | 有完整 snapshot + content 即接受 | 仅 cache miss 时访问 | cache hit 为 `Unverified` |
+| `CacheOnly` | 有完整 snapshot + content 即接受 | 禁止访问原始来源 | cache hit 为 `Unverified`，miss 为 `CacheMiss` |
 
-本地 Asset/File/Storage 的版本判断由 source reader 提供。没有稳定 version 的 Stream/Bytes/Storage source 不进入持久缓存。
-错误结果和 4xx/5xx 不做负缓存；重试只由新的显式请求或 `Reload()` 发起。
+| `ImageCacheStoragePolicy` | 读取共享 cache | memory 写入 | persistent 写入 |
+| --- | --- | --- | --- |
+| `None` | 允许，除非认证隔离规则禁止 | 否 | 否 |
+| `Memory` | 允许 | 是 | 否 |
+| `MemoryAndDisk` | 允许 | 是 | 仅来源具备可持久身份且应用启用 file cache 时 |
 
-File cache entry 保存规范路径、长度和 last-write token；`Default` 复用前由 reader probe 比较，变化即失效。Asset 在单个
-Application build/resource identity 内视为不可变；StorageFile 优先使用调用方 version，未提供稳定 version 时只允许当前
-对象生命周期 memory reuse。`CacheOnly` 明确禁止访问原始 File/Storage/Stream 做 freshness probe，但允许使用已经通过
-metadata、摘要和当前内容安全策略校验的本地缓存 body；这是一项显式的 stale-cache 选择，不代表 `Default` 可以跳过 freshness
-检查。远程 HTTP 条目仍必须满足当前可接受的 freshness/validator 规则，不能因为 `CacheOnly` 绕过网络一致性策略。
+`CacheStorage=None` 不是“强制回源”；它只禁止本次结果进入 store。需要强制访问来源时使用
+`CacheRead=RefreshSource`。从 persistent 读取的命中在通过当前安全策略校验前不能进入 memory；`CacheStorage=None` 的命中
+不得执行这种 read-through 提升。错误结果和 4xx/5xx 不做负缓存；控件的 `Reload()` 仅为一次请求覆盖
+`CacheRead=RefreshSource`，不修改调用方保存的 `ImageRequestOptions`。
+
+本地 Asset/File/Storage 的版本判断由 source reader 提供。File 的 `Metadata` 模式在同一已打开句柄上取得长度并读取正文，
+以 creation/length/last-write token 判断已有 snapshot；`ContentHash` 模式每次读取并计算正文摘要，用于元数据可能不变的原子
+替换场景。Asset 在单个 Application resource identity 内视为不可变；StorageFile/Stream 只有调用方提供稳定 revision 才跨实例
+复用或进入持久缓存。`PreferCache` 和 `CacheOnly` 明确允许 stale snapshot，因此返回 `Unverified`，不能与默认
+`ValidateSource` 的一致性保证混淆。
 
 ## HTTP 缓存一致性
 
@@ -81,18 +97,21 @@ HTTP entry 保存 `ETag`、`Last-Modified`、`Date`、`Age`、`Expires`、解析
 - `Vary: *`：不缓存；其他 `Vary` 字段记录请求 header 摘要，字段值不匹配视为 miss。
 
 重验证优先使用 `If-None-Match`，其次 `If-Modified-Since`。`304 Not Modified` 必须合并规范允许更新的 metadata，保留原 body，
-重新执行当前安全策略版本校验，并以 `ImageCacheSource.Revalidated` 返回。304 没有可用旧 body 属于协议/缓存损坏，重新完整请求
+重新执行当前安全策略版本校验，并以原内容 `Origin` 加 `SourceValidation=Revalidated` 返回。304 没有可用旧 body 属于协议/缓存损坏，重新完整请求
 一次后仍异常才失败，不能构造空图片。
 
-`Reload` 表示强制重验证/重新获取，不等同永久 `NoStore`。服务端返回 `no-store` 时仍必须清除已有相同 cache variant。
+`RefreshSource` 表示强制重验证/重新获取，不等同 `CacheStorage=None`。服务端返回 `no-store` 时必须在 source generation 与 cache
+epoch 仍为当前值时清除已有相同 source、encoded 和 decoded variant；persistent 清理与写入串行化，迟到的 `no-store` 响应不能
+删除更新 snapshot。
 
 ## 认证与分区
 
 以下 header 被视为认证上下文：`Authorization`、`Proxy-Authorization`、`Cookie`，以及应用在全局配置中声明的自定义认证
-header。存在认证上下文但 `ImageRequestOptions.CachePartition` 为空时，loader 强制 `NoStore`，且禁止与其他请求合并。
+header。存在认证上下文但 `ImageRequestOptions.CachePartition` 为空时，loader 强制 `CacheStorage=None`、禁止读取共享 cache，
+且禁止与其他请求合并。
 
-存在 partition 时，partition 的不可逆摘要进入 encoded key；原值不写日志、文件名或 metadata。所有自定义请求 header 的
-名称和值摘要都进入第一次 in-flight identity，避免在服务器返回 `Vary` 之前错误合并。持久化认证响应还需应用显式启用
+存在 partition 时，partition 的不可逆摘要进入 SourceKey、encoded content key 和 DecodeKey；原值不写日志、文件名或 metadata。
+所有自定义请求 header 的名称和值摘要都进入第一次 source-resolution identity，避免在服务器返回 `Vary` 之前错误合并。持久化认证响应还需应用显式启用
 `AllowAuthenticatedPersistentCache`，其默认值为 false；启用后 metadata 只保存摘要，不保存认证值。
 
 Application 之间永不共享内存或文件 cache 实例。多租户应用必须为用户/租户切换新的 `CachePartition`；注销时通过
@@ -158,14 +177,31 @@ DTD 或外部资源。嵌入 raster 继续受本表的宽高、像素和 decoded
 
 ## 持久缓存
 
-`ImageFileCache` 必须完整实现但默认关闭。启用时：
+`ImageFileCache` 必须完整实现但默认关闭。默认根目录名固定为 `image-cache`，不带版本后缀。启用时的稳定布局为：
 
-- 目录由应用显式配置或使用带 Application Id 的平台 cache 目录，绝不使用工作目录。
-- 文件名只包含 encoded key 的加密哈希；metadata 使用版本化、AOT-safe 的显式序列化格式。
+```text
+image-cache/
+├── manifest
+├── sources/<partition-hash>/<source-key-hash>.meta
+├── content/<partition-hash>/<content-prefix>/<content-id>.bin
+├── content-metadata/<partition-hash>/<content-prefix>/<content-id>.meta
+├── locks/
+└── temp/
+```
+
+规则如下：
+
+- 目录由应用显式配置，或使用
+  `<LocalApplicationData>/<Application 程序集名>/image-cache/<应用身份摘要>/`；程序集名无法解析时才使用
+  `AtomUI`。默认目录绝不使用工作目录。
+- `manifest` 中的 `formatRevision` 只是 internal 存储格式号；格式不匹配时丢弃并重建已知 store，不暴露迁移 API。
+- content 文件只按 partition 与 `ImageContentId` 寻址；source metadata 单独保存 SourceKey、SourceVersion、ContentId、validator、
+  freshness 和 commit generation。
+- 文件名只包含身份摘要；metadata 使用 AOT-safe 的显式二进制序列化格式。
 - metadata 保存集中定义的 `ImageSecurityPolicy.Version` 和格式验证 metadata；版本不匹配的条目删除后按 miss 处理。
-- 写入采用同目录临时文件、flush、原子 replace/rename；崩溃残留临时文件在下次启动清理。
+- content/metadata 写入采用临时文件、flush、原子 replace/rename；只有 content 已可读取后才能发布 source snapshot。
 - 一个跨进程 lock 保护同 key 写入；竞争失败可以回退网络，不允许读半文件。
-- lock 名称按 encoded key 稳定存在，不能在释放句柄后无条件删除：在 Unix 上这会产生删除后重新创建同名 lock 的
+- lock 名称按 content/source key 摘要稳定存在，不能在释放句柄后无条件删除：在 Unix 上这会产生删除后重新创建同名 lock 的
   TOCTOU 窗口并破坏跨进程互斥。lock 文件不计入 encoded byte/entry 限额，启动恢复只清理临时文件和孤儿 bin/meta；
   宿主若长期生成大量历史 key，应把持久缓存目录按应用/租户生命周期整体淘汰，而不是由 loader 删除可能仍被其他进程使用的 lock。
 - LRU index 可重建，index 损坏不能使整个 loader 启动失败。

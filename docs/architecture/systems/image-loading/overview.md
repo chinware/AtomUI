@@ -8,7 +8,7 @@ AtomUI 统一图片加载系统负责把网络、本地文件、Avalonia Asset�
 
 ## 设计原则
 
-- 所有 AtomUI 控件只消费 `ImageLoadSource`，不按 URL、Bitmap、Asset、文件和 Stream 分裂公共属性。
+- 所有 AtomUI 控件只消费 `ImageSource`，不按 URL、Bitmap、Asset、文件和 Stream 分裂公共属性。
 - Loader 按 `Application` 隔离，不存在进程级静态 loader、静态可变缓存或控件私有 `HttpClient`。
 - `ImageLoadResult` 是解码图片的消费租约；最后一个租约释放后，缓存才可以真正销毁图片。
 - 相同来源共享编码数据获取；raster 只在解码尺寸一致时共享，SVG 等尺寸无关 codec 按 codec/security 版本共享矢量结果。
@@ -51,9 +51,10 @@ flowchart LR
 
 | 术语 | 含义 |
 | --- | --- |
-| source identity | 不包含解码尺寸的规范化来源身份，用于编码缓存和下载合并 |
-| encoded key | 来源身份、请求头摘要、缓存分区和变体组成的编码数据键 |
-| decoded key | encoded key 再加入 codec/security 版本和 codec-specific options 后的图片键；只有尺寸相关 codec 加入解码尺寸 |
+| source key | 如何再次访问来源的规范化身份，包含 partition、variant、请求头摘要和 reader contract，不等同内容身份 |
+| source version | 某次来源解析得到的版本证据，例如文件 metadata token、HTTP validator 或调用方 revision |
+| content id | 已读取并验证的精确编码字节的 SHA-256 身份；相同字节跨来源复用 |
+| decode key | cache partition、content id 和 decode spec 组成的解码结果身份；只有尺寸相关 codec 加入解码尺寸 |
 | waiter | 对共享在途操作等待结果的单个调用方，拥有独立 cancellation |
 | lease | 控件或直接调用方对解码图片的活动持有；`ImageLoadResult.Dispose()` 释放 |
 | fallback | 主 Source 失败后由控件发起的至多一次备用 Source 请求 |
@@ -64,7 +65,7 @@ flowchart LR
 
 | 被替换的分散入口 | 当前统一契约 |
 | --- | --- |
-| Avatar 使用 `Src`、`BitmapSrc`，Issue 需求提出 `BitmapUrl` | 三者全部由 `Source: ImageLoadSource?` 取代 |
+| Avatar 使用 `Src`、`BitmapSrc`，Issue 需求提出 `BitmapUrl` | 三者全部由 `Source: ImageSource?` 取代 |
 | ImagePreviewer 使用 `IImagePreviewSource`、`Source`、`Sources` 和控件私有 loader/scheduler | 使用 `ItemsSource: IEnumerable<ImagePreviewItem>?`，全部请求进入应用级 loader |
 | Gallery Masonry 使用 `AsyncImageLoader.Avalonia` 附加属性 | 使用 AtomUI `AsyncImage` 和 `IsLoading`/`LoadState` |
 | Previewer loader 同时识别 Bitmap 和 SVG | raster 由 Shared codec 处理；网络和本地 SVG 由 Controls 显式 `SvgImageCodec` 处理，全部请求复用应用级 loader |
@@ -78,7 +79,7 @@ flowchart LR
 - 图片编辑、裁剪、滤镜、上传、视频缩略图和动画图片时间轴播放。
 - 任意脚本、动态交互 SVG、HTML、非 SVG XML、外部 SVG 资源获取和 SVG 动画时间轴。
 - 业务层头像权限、登录状态、Token 刷新和 CDN URL 生成。
-- 调用方传入 `IImage` 的销毁；`ImageLoadSource.FromImage` 始终采用 borrowed ownership。
+- 调用方传入 `IImage` 的销毁；`new BorrowedImageSource(image)` 始终采用 borrowed ownership。
 
 ## 文档导航
 

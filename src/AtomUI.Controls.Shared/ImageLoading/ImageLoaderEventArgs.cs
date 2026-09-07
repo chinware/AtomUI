@@ -4,23 +4,23 @@ public sealed class ImageLoaderEventArgs : EventArgs
 {
     internal ImageLoaderEventArgs(
         ImageLoaderEventKind kind,
-        ImageLoadSourceKind sourceKind,
-        ImageCacheSource cacheSource,
+        ImageSourceKind sourceKind,
+        ImageLoadOrigin? origin,
         ImageLoadErrorCode? errorCode,
         TimeSpan elapsed)
     {
         Kind = kind;
         SourceKind = sourceKind;
-        CacheSource = cacheSource;
+        Origin = origin;
         ErrorCode = errorCode;
         Elapsed = elapsed;
     }
 
     public ImageLoaderEventKind Kind { get; }
 
-    public ImageLoadSourceKind SourceKind { get; }
+    public ImageSourceKind SourceKind { get; }
 
-    public ImageCacheSource CacheSource { get; }
+    public ImageLoadOrigin? Origin { get; }
 
     public ImageLoadErrorCode? ErrorCode { get; }
 

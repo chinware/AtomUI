@@ -23,20 +23,59 @@ public class ImagePreviewerImageLoadingTests
     }
 
     [Fact]
+    public void Clearing_And_Readding_The_Same_File_Path_Loads_Replaced_Content()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var directory = Path.Combine(
+                Path.GetTempPath(),
+                $"atomui-previewer-file-revalidation-{Guid.NewGuid():N}");
+            var path = Path.Combine(directory, "image.png");
+            Directory.CreateDirectory(directory);
+            try
+            {
+                File.WriteAllBytes(path, CreatePng(13, 17));
+                var items = new ObservableCollection<ImagePreviewItem>
+                {
+                    new(new FileImageSource(path))
+                };
+                var previewer = CreatePreviewer(items);
+                using var host = new PreviewerHost(previewer);
+                var firstEntry = previewer.EffectiveItems.ShouldNotBeNull().Single();
+                WaitUntil(() => firstEntry.ThumbnailState == ImageLoadState.Loaded, "initial file cover");
+                GetThumbnailOriginalSize(firstEntry).ShouldBe(new PixelSize(13, 17));
+
+                File.WriteAllBytes(path, CreatePng(29, 31));
+                File.SetLastWriteTimeUtc(path, DateTime.UtcNow.AddSeconds(2));
+                items.Clear();
+                items.Add(new ImagePreviewItem(new FileImageSource(path)));
+
+                var secondEntry = previewer.EffectiveItems.ShouldNotBeNull().Single();
+                WaitUntil(() => secondEntry.ThumbnailState == ImageLoadState.Loaded, "replaced file cover");
+                GetThumbnailOriginalSize(secondEntry).ShouldBe(new PixelSize(29, 31));
+            }
+            finally
+            {
+                Directory.Delete(directory, recursive: true);
+            }
+        });
+    }
+
+    [Fact]
     public void Open_Previewer_Loads_Replacement_Enumerable_Current_Item()
     {
         Dispatcher.UIThread.Invoke(() =>
         {
             var first = new TestImage();
             var second = new TestImage();
-            var previewer = CreatePreviewer(new ImagePreviewItem(ImageLoadSource.FromImage(first)));
+            var previewer = CreatePreviewer(new ImagePreviewItem(new BorrowedImageSource(first)));
             using var host = new PreviewerHost(previewer);
             previewer.OpenDialog();
             WaitUntil(() => previewer.IsCurrentLoaded, "initial current item");
 
             previewer.ItemsSource =
             [
-                new ImagePreviewItem(ImageLoadSource.FromImage(second))
+                new ImagePreviewItem(new BorrowedImageSource(second))
             ];
 
             WaitUntil(() => previewer.IsCurrentLoaded, "replacement current item");
@@ -53,7 +92,7 @@ public class ImagePreviewerImageLoadingTests
         {
             var firstStarted = NewSignal();
             var releaseFirst = NewSignal();
-            var firstSource = ImageLoadSource.FromStream(
+            var firstSource = new StreamImageSource(
                 async token =>
                 {
                     firstStarted.TrySetResult();
@@ -65,7 +104,7 @@ public class ImagePreviewerImageLoadingTests
             var secondImage = new TestImage();
             var previewer = CreatePreviewer(
                 new ImagePreviewItem(firstSource),
-                new ImagePreviewItem(ImageLoadSource.FromImage(secondImage)));
+                new ImagePreviewItem(new BorrowedImageSource(secondImage)));
             using var host = new PreviewerHost(previewer);
 
             previewer.OpenDialog();
@@ -97,7 +136,7 @@ public class ImagePreviewerImageLoadingTests
             var second = new TestImage();
             var items = new ResettableCollection<ImagePreviewItem>(
             [
-                new ImagePreviewItem(ImageLoadSource.FromImage(first))
+                new ImagePreviewItem(new BorrowedImageSource(first))
             ]);
             var previewer = CreatePreviewer(items);
             using var host = new PreviewerHost(previewer);
@@ -106,7 +145,7 @@ public class ImagePreviewerImageLoadingTests
 
             items.ResetWith(
             [
-                new ImagePreviewItem(ImageLoadSource.FromImage(second))
+                new ImagePreviewItem(new BorrowedImageSource(second))
             ]);
 
             WaitUntil(() => previewer.IsCurrentLoaded, "reset current item");
@@ -162,9 +201,9 @@ public class ImagePreviewerImageLoadingTests
         {
             var full = new TestImage();
             var thumbnail = new TestImage();
-            var first = new ImagePreviewItem(ImageLoadSource.FromImage(full))
+            var first = new ImagePreviewItem(new BorrowedImageSource(full))
             {
-                ThumbnailSource = ImageLoadSource.FromImage(thumbnail)
+                ThumbnailSource = new BorrowedImageSource(thumbnail)
             };
             var items = new ObservableCollection<ImagePreviewItem>([first]);
             var previewer = CreatePreviewer(items);
@@ -197,7 +236,7 @@ public class ImagePreviewerImageLoadingTests
         Dispatcher.UIThread.Invoke(() =>
         {
             var image = new TestImage();
-            var item = new ImagePreviewItem(ImageLoadSource.FromImage(image));
+            var item = new ImagePreviewItem(new BorrowedImageSource(image));
             using var first = new ImagePreviewEntry(item);
             using var second = new ImagePreviewEntry(item);
 
@@ -218,9 +257,9 @@ public class ImagePreviewerImageLoadingTests
         Dispatcher.UIThread.Invoke(() =>
         {
             var image = new TestImage();
-            var item = new ImagePreviewItem(ImageLoadSource.FromImage(image))
+            var item = new ImagePreviewItem(new BorrowedImageSource(image))
             {
-                ThumbnailSource = ImageLoadSource.FromImage(new TestImage())
+                ThumbnailSource = new BorrowedImageSource(new TestImage())
             };
             var entry = new ImagePreviewEntry(item);
             var fullImageReset = false;
@@ -267,10 +306,9 @@ public class ImagePreviewerImageLoadingTests
     {
         Dispatcher.UIThread.Invoke(() =>
         {
-            var source = ImageLoadSource.FromBytes(
+            var source = new BytesImageSource(
                 CreatePng(128, 128),
-                $"cover-size-{Guid.NewGuid():N}",
-                "v1");
+                $"cover-size-{Guid.NewGuid():N}");
             var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
             {
                 CoverWidth = 16,
@@ -299,10 +337,9 @@ public class ImagePreviewerImageLoadingTests
     {
         Dispatcher.UIThread.Invoke(() =>
         {
-            var source = ImageLoadSource.FromBytes(
+            var source = new BytesImageSource(
                 CreatePng(512, 512),
-                $"auto-sized-cover-{Guid.NewGuid():N}",
-                "v1");
+                $"auto-sized-cover-{Guid.NewGuid():N}");
             var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
             {
                 Width = 200,
@@ -328,7 +365,7 @@ public class ImagePreviewerImageLoadingTests
         {
             var reads = 0;
             var bytes = CreatePng(128, 128);
-            var source = ImageLoadSource.FromStream(
+            var source = new StreamImageSource(
                 _ =>
                 {
                     reads++;
@@ -338,7 +375,7 @@ public class ImagePreviewerImageLoadingTests
                 "v1");
             var item = new ImagePreviewItem(source)
             {
-                RequestOptions = new ImageRequestOptions { CacheMode = ImageCacheMode.NoStore }
+                RequestOptions = new ImageRequestOptions { CacheStorage = ImageCacheStoragePolicy.None }
             };
             using var entry = new ImagePreviewEntry(item);
 
@@ -361,7 +398,7 @@ public class ImagePreviewerImageLoadingTests
         {
             var reads = 0;
             var bytes = CreatePng(512, 256);
-            var source = ImageLoadSource.FromStream(
+            var source = new StreamImageSource(
                 _ =>
                 {
                     reads++;
@@ -371,7 +408,7 @@ public class ImagePreviewerImageLoadingTests
                 "v1");
             var item = new ImagePreviewItem(source)
             {
-                RequestOptions = new ImageRequestOptions { CacheMode = ImageCacheMode.NoStore }
+                RequestOptions = new ImageRequestOptions { CacheStorage = ImageCacheStoragePolicy.None }
             };
             using var entry = new ImagePreviewEntry(item);
 
@@ -395,7 +432,7 @@ public class ImagePreviewerImageLoadingTests
             var bytes = Encoding.UTF8.GetBytes(
                 "<svg xmlns='http://www.w3.org/2000/svg' width='128' height='96' " +
                 "viewBox='0 0 128 96'><rect width='128' height='96' fill='#1677ff'/></svg>");
-            var source = ImageLoadSource.FromStream(
+            var source = new StreamImageSource(
                 _ =>
                 {
                     reads++;
@@ -413,7 +450,7 @@ public class ImagePreviewerImageLoadingTests
 
             reads.ShouldBe(1);
             entry.FullImage.ShouldBeSameAs(entry.ThumbnailImage);
-            entry.FullCacheSource.ShouldBe(ImageCacheSource.DecodedMemory);
+            entry.FullOrigin.ShouldBe(ImageLoadOrigin.DecodedMemory);
             entry.FullImage.ShouldNotBeNull().Size.ShouldBe(new Size(128, 96));
         });
     }
@@ -425,7 +462,7 @@ public class ImagePreviewerImageLoadingTests
         {
             var reads = 0;
             var bytes = CreatePng(512, 256);
-            var source = ImageLoadSource.FromStream(
+            var source = new StreamImageSource(
                 _ =>
                 {
                     reads++;
@@ -440,7 +477,7 @@ public class ImagePreviewerImageLoadingTests
                 [
                     new ImagePreviewItem(source)
                     {
-                        RequestOptions = new ImageRequestOptions { CacheMode = ImageCacheMode.NoStore }
+                        RequestOptions = new ImageRequestOptions { CacheStorage = ImageCacheStoragePolicy.None }
                     }
                 ]
             };
@@ -463,10 +500,9 @@ public class ImagePreviewerImageLoadingTests
     {
         Dispatcher.UIThread.Invoke(() =>
         {
-            var source = ImageLoadSource.FromBytes(
+            var source = new BytesImageSource(
                 CreatePng(1004, 986),
-                $"width-only-cover-{Guid.NewGuid():N}",
-                "v1");
+                $"width-only-cover-{Guid.NewGuid():N}");
             var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
             {
                 Width = 200,
@@ -491,7 +527,7 @@ public class ImagePreviewerImageLoadingTests
             var upgradeStarted = NewSignal();
             var releaseUpgrade = NewSignal();
             var bytes = CreatePng(128, 128);
-            var source = ImageLoadSource.FromStream(
+            var source = new StreamImageSource(
                 async token =>
                 {
                     if (Interlocked.Increment(ref reads) == 2)
@@ -505,7 +541,7 @@ public class ImagePreviewerImageLoadingTests
                 "v1");
             var item = new ImagePreviewItem(source)
             {
-                RequestOptions = new ImageRequestOptions { CacheMode = ImageCacheMode.NoStore }
+                RequestOptions = new ImageRequestOptions { CacheStorage = ImageCacheStoragePolicy.None }
             };
             using var entry = new ImagePreviewEntry(item);
 
@@ -537,12 +573,12 @@ public class ImagePreviewerImageLoadingTests
         {
             var fallback = new TestImage();
             var current = new ImagePreviewItem(
-                ImageLoadSource.FromBytes(new byte[] { 1 }, "current-primary", "v1"))
+                new BytesImageSource(new byte[] { 1 }, "current-primary"))
             {
-                FallbackSource = ImageLoadSource.FromImage(fallback)
+                FallbackSource = new BorrowedImageSource(fallback)
             };
             var neighbor = new ImagePreviewItem(
-                ImageLoadSource.FromBytes(new byte[] { 2 }, "neighbor-primary", "v1"));
+                new BytesImageSource(new byte[] { 2 }, "neighbor-primary"));
             var previewer = new TestPreviewer
             {
                 Width = 96,
@@ -613,7 +649,7 @@ public class ImagePreviewerImageLoadingTests
         {
             var thumbnailReads = 0;
             var full = new TestImage();
-            var previewer = CreatePreviewer(new ImagePreviewItem(ImageLoadSource.FromImage(full))
+            var previewer = CreatePreviewer(new ImagePreviewItem(new BorrowedImageSource(full))
             {
                 ThumbnailSource = CreateFailingStreamSource("cover-thumbnail", () => thumbnailReads++)
             });
@@ -646,9 +682,9 @@ public class ImagePreviewerImageLoadingTests
                 Height = 96,
                 ItemsSource =
                 [
-                    new ImagePreviewItem(ImageLoadSource.FromImage(full))
+                    new ImagePreviewItem(new BorrowedImageSource(full))
                     {
-                        ThumbnailSource = ImageLoadSource.FromImage(thumbnail)
+                        ThumbnailSource = new BorrowedImageSource(thumbnail)
                     }
                 ]
             };
@@ -751,7 +787,7 @@ public class ImagePreviewerImageLoadingTests
             var first = new TestImage();
             var secondStarted = NewSignal();
             var releaseSecond = NewSignal();
-            var secondSource = ImageLoadSource.FromStream(
+            var secondSource = new StreamImageSource(
                 async token =>
                 {
                     secondStarted.TrySetResult();
@@ -767,7 +803,7 @@ public class ImagePreviewerImageLoadingTests
                 ImageSwitchMode = ImageSwitchMode.WaitForLoaded,
                 ItemsSource = new[]
                 {
-                    new ImagePreviewItem(ImageLoadSource.FromImage(first)),
+                    new ImagePreviewItem(new BorrowedImageSource(first)),
                     new ImagePreviewItem(secondSource)
                 }
             };
@@ -799,6 +835,115 @@ public class ImagePreviewerImageLoadingTests
     }
 
     [Fact]
+    public void Dialog_Immediate_Clears_The_Previous_Image_And_Activates_Loading_Before_The_Request_Starts()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var first = new TestImage();
+            var secondStarted = NewSignal();
+            var releaseSecond = NewSignal();
+            var secondSource = new StreamImageSource(
+                async token =>
+                {
+                    secondStarted.TrySetResult();
+                    await releaseSecond.Task.WaitAsync(token);
+                    return new MemoryStream(CreatePng(32, 32));
+                },
+                $"dialog-immediate-{Guid.NewGuid():N}", "v1");
+            var previewer = new TestPreviewer
+            {
+                Width = 96,
+                Height = 96,
+                PreloadCount = 0,
+                ImageSwitchMode = ImageSwitchMode.Immediate,
+                ItemsSource = new[]
+                {
+                    new ImagePreviewItem(new BorrowedImageSource(first)),
+                    new ImagePreviewItem(secondSource)
+                }
+            };
+            using var host = new PreviewerHost(previewer);
+            var entries = previewer.EffectiveItems.ShouldNotBeNull();
+            previewer.RequestPreviewLoads();
+            WaitUntil(() => entries[0].FullState == ImageLoadState.Loaded, "first full load");
+
+            var dialog = new ImagePreviewerDialog(new global::Avalonia.Controls.Window(), previewer)
+            {
+                ItemsSource = entries
+            };
+            Dispatcher.UIThread.RunJobs();
+            dialog.CurrentImage.ShouldBeSameAs(first);
+
+            dialog.CurrentIndex = 1;
+            Dispatcher.UIThread.RunJobs();
+
+            dialog.CurrentImage.ShouldBeNull();
+            dialog.IsCurrentImageLoading.ShouldBeTrue();
+            var viewer = dialog.Content.ShouldBeOfType<ImageViewer>();
+            viewer.Classes.Contains(":has-image").ShouldBeFalse();
+            viewer.Classes.Contains(":loading").ShouldBeTrue();
+
+            entries[1].LoadFull(16, 16, ImageRequestPriority.Critical);
+            WaitUntil(() => secondStarted.Task.IsCompleted, "second load start");
+            dialog.CurrentImage.ShouldBeNull();
+            dialog.IsCurrentImageLoading.ShouldBeTrue();
+
+            releaseSecond.TrySetResult();
+            WaitUntil(() => entries[1].FullImage is not null &&
+                            ReferenceEquals(dialog.CurrentImage, entries[1].FullImage),
+                "second display");
+            dialog.IsCurrentImageLoading.ShouldBeFalse();
+
+            dialog.Close();
+        });
+    }
+
+    [Fact]
+    public void Dialog_Changing_To_Immediate_Recomputes_The_Pending_Target_Immediately()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var first = new TestImage();
+            var secondStarted = NewSignal();
+            var releaseSecond = NewSignal();
+            var secondSource = CreateGatedSource(
+                $"dialog-mode-change-{Guid.NewGuid():N}",
+                secondStarted,
+                releaseSecond);
+            var previewer = new TestPreviewer
+            {
+                Width = 96,
+                Height = 96,
+                PreloadCount = 0,
+                ImageSwitchMode = ImageSwitchMode.WaitForLoaded,
+                ItemsSource =
+                [
+                    new ImagePreviewItem(new BorrowedImageSource(first)),
+                    new ImagePreviewItem(secondSource)
+                ]
+            };
+            using var host = new PreviewerHost(previewer);
+            var entries = previewer.EffectiveItems.ShouldNotBeNull();
+            previewer.OpenDialog();
+            WaitUntil(() => entries[0].FullState == ImageLoadState.Loaded, "first full load");
+            var dialog = FindOpenHost(previewer).ShouldBeOfType<ImagePreviewerDialog>();
+
+            previewer.CurrentIndex = 1;
+            WaitUntil(() => secondStarted.Task.IsCompleted, "second load start");
+            dialog.CurrentImage.ShouldBeSameAs(first);
+
+            previewer.ImageSwitchMode = ImageSwitchMode.Immediate;
+            Dispatcher.UIThread.RunJobs();
+
+            dialog.CurrentImage.ShouldBeNull();
+            dialog.IsCurrentImageLoading.ShouldBeTrue();
+
+            releaseSecond.TrySetResult();
+            previewer.IsOpen = false;
+        });
+    }
+
+    [Fact]
     public void Dialog_WaitForLoaded_Shows_Error_When_The_Target_Fails()
     {
         Dispatcher.UIThread.Invoke(() =>
@@ -812,8 +957,8 @@ public class ImagePreviewerImageLoadingTests
                 ImageSwitchMode = ImageSwitchMode.WaitForLoaded,
                 ItemsSource = new[]
                 {
-                    new ImagePreviewItem(ImageLoadSource.FromImage(first)),
-                    new ImagePreviewItem(ImageLoadSource.FromBytes(new byte[] { 1 }, "dialog-fail", "v1"))
+                    new ImagePreviewItem(new BorrowedImageSource(first)),
+                    new ImagePreviewItem(new BytesImageSource(new byte[] { 1 }, "dialog-fail"))
                 }
             };
             using var host = new PreviewerHost(previewer);
@@ -839,7 +984,7 @@ public class ImagePreviewerImageLoadingTests
             var first = new TestImage();
             var secondStarted = NewSignal();
             var releaseSecond = NewSignal();
-            var secondSource = ImageLoadSource.FromStream(
+            var secondSource = new StreamImageSource(
                 async token =>
                 {
                     secondStarted.TrySetResult();
@@ -849,7 +994,7 @@ public class ImagePreviewerImageLoadingTests
                 $"dialog-remove-{Guid.NewGuid():N}", "v1");
             var items = new ObservableCollection<ImagePreviewItem>(
             [
-                new ImagePreviewItem(ImageLoadSource.FromImage(first)),
+                new ImagePreviewItem(new BorrowedImageSource(first)),
                 new ImagePreviewItem(secondSource)
             ]);
             var previewer = new TestPreviewer
@@ -941,7 +1086,7 @@ public class ImagePreviewerImageLoadingTests
                         var feedFile = Path.Combine(feedDir, $"frame-{round}-{counter:D6}.png");
                         File.Copy(templates[counter % templates.Length], feedFile, true);
                         counter++;
-                        items.Add(new ImagePreviewItem(ImageLoadSource.FromUri(new Uri(feedFile))));
+                        items.Add(new ImagePreviewItem(ImageSource.Parse(new Uri(feedFile).AbsoluteUri)));
                         if (items.Count > 60)
                         {
                             items.RemoveAt(0);
@@ -974,7 +1119,7 @@ public class ImagePreviewerImageLoadingTests
         {
             var started = NewSignal();
             var release = NewSignal();
-            var source = ImageLoadSource.FromStream(
+            var source = new StreamImageSource(
                 async token =>
                 {
                     started.TrySetResult();
@@ -1022,7 +1167,7 @@ public class ImagePreviewerImageLoadingTests
             var first = new TestImage();
             var secondStarted = NewSignal();
             var releaseSecond = NewSignal();
-            var secondSource = ImageLoadSource.FromStream(
+            var secondSource = new StreamImageSource(
                 async token =>
                 {
                     secondStarted.TrySetResult();
@@ -1037,7 +1182,7 @@ public class ImagePreviewerImageLoadingTests
                 ImageSwitchMode = ImageSwitchMode.WaitForLoaded,
                 ItemsSource = new[]
                 {
-                    new ImagePreviewItem(ImageLoadSource.FromImage(first)),
+                    new ImagePreviewItem(new BorrowedImageSource(first)),
                     new ImagePreviewItem(secondSource)
                 }
             };
@@ -1060,21 +1205,21 @@ public class ImagePreviewerImageLoadingTests
     }
 
     [Fact]
-    public void Cover_Immediate_Holds_Within_Grace_Then_Falls_Back_To_Placeholder()
+    public void Cover_Immediate_Clears_The_Previous_Image_And_Shows_Loading_While_The_New_Cover_Loads()
     {
         Dispatcher.UIThread.Invoke(() =>
         {
             var first = new TestImage();
             var secondStarted = NewSignal();
             var releaseSecond = NewSignal();
-            var secondSource = ImageLoadSource.FromStream(
+            var secondSource = new StreamImageSource(
                 async token =>
                 {
                     secondStarted.TrySetResult();
                     await releaseSecond.Task.WaitAsync(token);
                     return new MemoryStream(CreatePng(32, 32));
                 },
-                $"cover-grace-{Guid.NewGuid():N}", "v1");
+                $"cover-immediate-{Guid.NewGuid():N}", "v1");
             var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
             {
                 Width = 96,
@@ -1082,7 +1227,7 @@ public class ImagePreviewerImageLoadingTests
                 ImageSwitchMode = ImageSwitchMode.Immediate,
                 ItemsSource = new[]
                 {
-                    new ImagePreviewItem(ImageLoadSource.FromImage(first)),
+                    new ImagePreviewItem(new BorrowedImageSource(first)),
                     new ImagePreviewItem(secondSource)
                 }
             };
@@ -1092,12 +1237,47 @@ public class ImagePreviewerImageLoadingTests
             previewer.CoverIndex = 1;
             WaitUntil(() => secondStarted.Task.IsCompleted, "second cover load start");
             Dispatcher.UIThread.RunJobs();
-            previewer.EffectiveCoverImage.ShouldBeSameAs(first); // 宽限期内保留旧图
-
-            // 宽限期届满仍未就绪：回退骨架占位（Immediate 与 WaitForLoaded 的语义差异）
-            WaitUntil(() => previewer.EffectiveCoverImage is null, "cover placeholder after grace");
+            previewer.EffectiveCoverImage.ShouldBeNull();
             previewer.IsCoverLoading.ShouldBeTrue();
 
+            releaseSecond.TrySetResult();
+        });
+    }
+
+    [Fact]
+    public void Cover_Changing_To_Immediate_Recomputes_The_Pending_Target_Immediately()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var first = new TestImage();
+            var secondStarted = NewSignal();
+            var releaseSecond = NewSignal();
+            var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
+            {
+                Width = 96,
+                Height = 96,
+                ImageSwitchMode = ImageSwitchMode.WaitForLoaded,
+                ItemsSource =
+                [
+                    new ImagePreviewItem(new BorrowedImageSource(first)),
+                    new ImagePreviewItem(CreateGatedSource(
+                        $"cover-mode-change-{Guid.NewGuid():N}",
+                        secondStarted,
+                        releaseSecond))
+                ]
+            };
+            using var host = new PreviewerHost(previewer);
+            WaitUntil(() => previewer.IsCoverLoaded, "first cover load");
+
+            previewer.CoverIndex = 1;
+            WaitUntil(() => secondStarted.Task.IsCompleted, "second cover load start");
+            previewer.EffectiveCoverImage.ShouldBeSameAs(first);
+
+            previewer.ImageSwitchMode = ImageSwitchMode.Immediate;
+            Dispatcher.UIThread.RunJobs();
+
+            previewer.EffectiveCoverImage.ShouldBeNull();
+            previewer.IsCoverLoading.ShouldBeTrue();
             releaseSecond.TrySetResult();
         });
     }
@@ -1110,7 +1290,7 @@ public class ImagePreviewerImageLoadingTests
             var first = new TestImage();
             var secondStarted = NewSignal();
             var releaseSecond = NewSignal();
-            var secondSource = ImageLoadSource.FromStream(
+            var secondSource = new StreamImageSource(
                 async token =>
                 {
                     secondStarted.TrySetResult();
@@ -1125,7 +1305,7 @@ public class ImagePreviewerImageLoadingTests
                 ImageSwitchMode = ImageSwitchMode.WaitForLoaded,
                 ItemsSource = new[]
                 {
-                    new ImagePreviewItem(ImageLoadSource.FromImage(first)),
+                    new ImagePreviewItem(new BorrowedImageSource(first)),
                     new ImagePreviewItem(secondSource)
                 }
             };
@@ -1148,36 +1328,58 @@ public class ImagePreviewerImageLoadingTests
     }
 
     [Fact]
-    public void Same_Bucket_Priority_Upgrade_Adopts_The_Running_Request()
+    public void Same_Bucket_Priority_Upgrade_Promotes_The_Queued_Request_Without_Restarting_It()
     {
         Dispatcher.UIThread.Invoke(() =>
         {
-            var started = NewSignal();
-            var release = NewSignal();
-            var source = ImageLoadSource.FromStream(
-                async token =>
-                {
-                    started.TrySetResult();
-                    await release.Task.WaitAsync(token);
-                    return new MemoryStream(CreatePng(32, 32));
-                },
-                $"adopt-upgrade-{Guid.NewGuid():N}", "v1");
-            var entry = new ImagePreviewEntry(new ImagePreviewItem(source));
+            var blockerStarted = NewSignal();
+            var releaseBlocker = NewSignal();
+            var promotedStarted = NewSignal();
+            var releasePromoted = NewSignal();
+            var competingStarted = NewSignal();
+            var releaseCompeting = NewSignal();
+            var loader = Application.Current.ShouldNotBeNull().GetImageLoader();
+            var blockerTask = loader.LoadAsync(new ImageLoadRequest(CreateGatedSource(
+                $"priority-blocker-{Guid.NewGuid():N}",
+                blockerStarted,
+                releaseBlocker))).AsTask();
+            WaitUntil(() => blockerStarted.Task.IsCompleted, "priority blocker");
 
-            entry.LoadFull(16, 16, ImageRequestPriority.Preload);
-            WaitUntil(() => started.Task.IsCompleted, "preload request start");
+            var promoted = new ImagePreviewEntry(new ImagePreviewItem(CreateGatedSource(
+                $"priority-promoted-{Guid.NewGuid():N}",
+                promotedStarted,
+                releasePromoted)));
+            var competing = new ImagePreviewEntry(new ImagePreviewItem(CreateGatedSource(
+                $"priority-competing-{Guid.NewGuid():N}",
+                competingStarted,
+                releaseCompeting)));
 
-            // 同尺寸桶下优先级提升（Preload→Critical）不得重启请求：
-            // 重启会丢弃在途进度，使快于加载完成的切换场景永远没有请求能完成
-            entry.LoadFull(16, 16, ImageRequestPriority.Critical);
-            Dispatcher.UIThread.RunJobs();
-            started.Task.IsCompleted.ShouldBeTrue();
+            try
+            {
+                promoted.LoadFull(16, 16, ImageRequestPriority.Preload);
+                competing.LoadFull(16, 16, ImageRequestPriority.High);
 
-            release.TrySetResult();
-            WaitUntil(() => entry.FullState == ImageLoadState.Loaded, "adopted request completes");
-            entry.FullImage.ShouldNotBeNull();
+                // 同尺寸桶下 Preload→Critical 必须提升原在途 waiter，不能取消并重启源。
+                promoted.LoadFull(16, 16, ImageRequestPriority.Critical);
+                releaseBlocker.TrySetResult();
 
-            entry.Dispose();
+                WaitUntil(
+                    () => promotedStarted.Task.IsCompleted || competingStarted.Task.IsCompleted,
+                    "first queued request");
+                promotedStarted.Task.IsCompleted.ShouldBeTrue();
+                competingStarted.Task.IsCompleted.ShouldBeFalse();
+            }
+            finally
+            {
+                releaseBlocker.TrySetResult();
+                releasePromoted.TrySetResult();
+                releaseCompeting.TrySetResult();
+                promoted.Dispose();
+                competing.Dispose();
+            }
+
+            WaitUntil(() => blockerTask.IsCompleted, "priority blocker completion");
+            blockerTask.GetAwaiter().GetResult().Dispose();
         });
     }
 
@@ -1201,12 +1403,12 @@ public class ImagePreviewerImageLoadingTests
 
     private static ImagePreviewItem CreateItem(string key)
     {
-        return new ImagePreviewItem(ImageLoadSource.FromImage(new TestImage(), key));
+        return new ImagePreviewItem(new BorrowedImageSource(new TestImage(), key));
     }
 
-    private static ImageLoadSource CreateFailingStreamSource(string key, Action onOpen)
+    private static ImageSource CreateFailingStreamSource(string key, Action onOpen)
     {
-        return ImageLoadSource.FromStream(
+        return new StreamImageSource(
             _ =>
             {
                 onOpen();
@@ -1216,12 +1418,12 @@ public class ImagePreviewerImageLoadingTests
             "v1");
     }
 
-    private static ImageLoadSource CreateGatedSource(
+    private static ImageSource CreateGatedSource(
         string key,
         TaskCompletionSource started,
         TaskCompletionSource release)
     {
-        return ImageLoadSource.FromStream(
+        return new StreamImageSource(
             async token =>
             {
                 started.TrySetResult();
@@ -1247,6 +1449,30 @@ public class ImagePreviewerImageLoadingTests
                 "_thumbnailResultRequestSize",
                 System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!
             .GetValue(entry);
+    }
+
+    private static PixelSize GetThumbnailOriginalSize(ImagePreviewEntry entry)
+    {
+        var result = (ImageLoadResult?)typeof(ImagePreviewEntry)
+            .GetField(
+                "_thumbnailResult",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!
+            .GetValue(entry);
+        result.ShouldNotBeNull();
+        return new PixelSize(result.OriginalPixelWidth, result.OriginalPixelHeight);
+    }
+
+    private static Control? FindOpenHost(AbstractImagePreviewer previewer)
+    {
+        var state = typeof(AbstractImagePreviewer)
+            .GetField("_openState", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!
+            .GetValue(previewer);
+        if (state is null)
+        {
+            return null;
+        }
+        return state.GetType().GetProperty("DialogHost")?.GetValue(state) as Control
+               ?? state.GetType().GetProperty("PreviewHost")?.GetValue(state) as Control;
     }
 
     private static byte[] CreatePng(int width, int height)

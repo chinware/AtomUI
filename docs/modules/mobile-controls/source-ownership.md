@@ -38,6 +38,10 @@ Mobile 复用现有 Global Token、Theme Algorithm、`ThemeConfigProvider`、Cat
 移动特有的运行时状态不进入 Token；平台 adapter 不提供产品文案；内置资产通过生成式 descriptor 或显式静态注册进入
 启动链路，不使用反射扫描或字符串成员访问。
 
+Desktop/Mobile 真正共享的 Control Own Token 定义由 `AtomUI.Controls` 中显式标记的抽象 Token 层拥有；Mobile 包只拥有
+自己的 `sealed` 终端 Token、identity、配置和资源投影。抽象层不生成运行时注册产物，平台差异不得下沉到共享定义层。
+完整边界见 [Control Design Token 继承架构](../../architecture/systems/theming/control-design-token-inheritance.md)。
+
 ## 平台与 Native 边界
 
 平台目录只实现统一 internal capability contract，不新增平台专属 Public Control API。能由 Avalonia 公共 API 表达的能力

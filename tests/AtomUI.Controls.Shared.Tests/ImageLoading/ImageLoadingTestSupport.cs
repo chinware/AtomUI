@@ -48,7 +48,7 @@ internal static class ImageLoadingTestSupport
     internal static ImageEncodedContent CreateContent(
         byte[] bytes,
         string? mediaType = "image/png",
-        ImageCacheSource cacheSource = ImageCacheSource.Local,
+        ImageLoadOrigin cacheSource = ImageLoadOrigin.Local,
         bool noStore = false)
     {
         return new ImageEncodedContent(

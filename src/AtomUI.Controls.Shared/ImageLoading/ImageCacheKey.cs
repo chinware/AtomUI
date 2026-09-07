@@ -4,45 +4,73 @@ using System.Text;
 
 namespace AtomUI.Controls;
 
-internal readonly record struct ImageEncodedCacheKey(string Value, string PartitionHash);
+internal readonly record struct ImageSourceKey(string Value, string PartitionHash);
 
-internal readonly record struct ImageDecodedCacheKey(
-    ImageEncodedCacheKey EncodedKey,
-    int DecodePixelWidth,
-    int DecodePixelHeight,
-    string CodecScope);
+internal readonly record struct ImageSourceVersion(string Value)
+{
+    public static implicit operator ImageSourceVersion(string value) => new(value);
 
-internal readonly record struct ImageEncodedOperationKey(
-    ImageEncodedCacheKey CacheKey,
-    ImageCacheMode CacheMode,
+    public override string ToString() => Value;
+}
+
+internal readonly record struct ImageContentId(string Value)
+{
+    internal static ImageContentId Create(ReadOnlySpan<byte> bytes) =>
+        new(ImageCacheKey.HashBytes(bytes));
+
+    public override string ToString() => Value;
+}
+
+internal readonly record struct ImageEncodedContentKey(string PartitionHash, ImageContentId ContentId);
+
+internal readonly record struct ImageDecodeSpec(int PixelWidth, int PixelHeight, string CodecScope);
+
+internal readonly record struct ImageDecodeKey(
+    string PartitionHash,
+    ImageContentId ContentId,
+    ImageDecodeSpec Spec);
+
+internal readonly record struct ImageSourceOperationKey(
+    ImageSourceKey SourceKey,
+    ImageCacheReadPolicy CacheRead,
+    ImageCacheStoragePolicy CacheStorage,
     string ShareScope);
 
 internal readonly record struct ImageDecodedOperationKey(
-    ImageDecodedCacheKey CacheKey,
-    ImageCacheMode CacheMode,
+    ImageDecodeKey DecodeKey,
+    ImageCacheStoragePolicy CacheStorage,
     string ShareScope);
 
 internal sealed record NormalizedImageRequest(
-    ImageLoadSource Source,
+    ImageSource Source,
     FrozenDictionary<string, string> Headers,
-    ImageCacheMode CacheMode,
+    ImageCacheReadPolicy CacheRead,
+    ImageCacheStoragePolicy CacheStorage,
     string? CachePartition,
     string PartitionHash,
     string? Variant,
     TimeSpan Timeout,
-    ImageRequestPriority Priority,
+    ImageRequestPriorityState PriorityState,
     int DecodePixelWidth,
     int DecodePixelHeight,
     IProgress<ImageLoadProgress>? Progress,
     ImageLoadTimingTracker Timing,
-    ImageEncodedCacheKey EncodedKey,
-    ImageEncodedOperationKey EncodedOperationKey,
+    ImageSourceKey SourceKey,
+    ImageSourceOperationKey SourceOperationKey,
     bool HasAuthentication,
     bool CanShare,
-    bool CanPersist);
+    bool CanReadSharedCache,
+    bool CanWriteMemory,
+    bool CanReadPersistent,
+    bool CanPersist)
+{
+    internal ImageRequestPriority Priority => PriorityState.Priority;
+}
 
 internal static class ImageCacheKey
 {
+    private const string ReaderContract = "reader:1";
+
     private static readonly FrozenSet<string> s_forbiddenHeaders = new HashSet<string>(
         StringComparer.OrdinalIgnoreCase)
     {
@@ -66,10 +94,12 @@ internal static class ImageCacheKey
         var hasAuthentication = headers.Keys.Any(options.AuthenticationHeaderNames.Contains);
         var partition = NormalizeOptionalValue(requestOptions.CachePartition, nameof(requestOptions.CachePartition));
         var variant = NormalizeOptionalValue(requestOptions.Variant, nameof(requestOptions.Variant));
-        var cacheMode = forceReload ? ImageCacheMode.Reload : requestOptions.CacheMode;
-        if (hasAuthentication && partition is null)
+        var cacheRead = forceReload ? ImageCacheReadPolicy.RefreshSource : requestOptions.CacheRead;
+        var cacheStorage = requestOptions.CacheStorage;
+        var privateUnpartitioned = hasAuthentication && partition is null;
+        if (privateUnpartitioned)
         {
-            cacheMode = ImageCacheMode.NoStore;
+            cacheStorage = ImageCacheStoragePolicy.None;
         }
 
         var timeout = requestOptions.Timeout ?? options.DefaultRequestTimeout;
@@ -82,67 +112,61 @@ internal static class ImageCacheKey
         var timing = new ImageLoadTimingTracker();
         var progress = timing.Wrap(request.Progress);
         var headerHash = HashHeaders(headers);
-        var shareScope = hasAuthentication && partition is null ? Guid.NewGuid().ToString("N") : string.Empty;
-        var encodedIdentity = string.Join(
+        var shareScope = privateUnpartitioned ? Guid.NewGuid().ToString("N") : string.Empty;
+        var sourceIdentity = string.Join(
             ':',
-            request.Source.Identity,
+            request.Source.CacheIdentity,
             Hash(variant ?? string.Empty),
             partitionHash,
             headerHash,
-            "reader-v1");
-        var encodedKey = new ImageEncodedCacheKey(Hash(encodedIdentity), partitionHash);
-        var encodedOperationKey = new ImageEncodedOperationKey(encodedKey, cacheMode, shareScope);
-        var canPersist = request.Source.Kind switch
-        {
-            ImageLoadSourceKind.Http or ImageLoadSourceKind.Asset or ImageLoadSourceKind.File => true,
-            ImageLoadSourceKind.StorageFile or ImageLoadSourceKind.Bytes or ImageLoadSourceKind.Stream =>
-                request.Source.CacheKey is not null && request.Source.Version is not null,
-            _ => false
-        };
+            ReaderContract);
+        var sourceKey = new ImageSourceKey(Hash(sourceIdentity), partitionHash);
+        var canUsePersistent = request.Source.CanPersistSourceSnapshot;
         if (hasAuthentication && !options.AllowAuthenticatedPersistentCache)
         {
-            canPersist = false;
+            canUsePersistent = false;
         }
 
         return new NormalizedImageRequest(
             request.Source,
             headers,
-            cacheMode,
+            cacheRead,
+            cacheStorage,
             partition,
             partitionHash,
             variant,
             timeout,
-            request.Priority,
+            request.PriorityState ?? new ImageRequestPriorityState(request.Priority),
             request.DecodePixelWidth,
             request.DecodePixelHeight,
             progress,
             timing,
-            encodedKey,
-            encodedOperationKey,
+            sourceKey,
+            new ImageSourceOperationKey(sourceKey, cacheRead, cacheStorage, shareScope),
             hasAuthentication,
-            !(hasAuthentication && partition is null),
-            canPersist);
+            !privateUnpartitioned,
+            !privateUnpartitioned,
+            !privateUnpartitioned && cacheStorage is not ImageCacheStoragePolicy.None,
+            !privateUnpartitioned && canUsePersistent,
+            !privateUnpartitioned && canUsePersistent &&
+            cacheStorage == ImageCacheStoragePolicy.MemoryAndDisk);
     }
 
     internal static ImageDecodedOperationKey CreateDecodedOperationKey(
         NormalizedImageRequest request,
-        ImageDecodedCacheKey decodedKey)
-    {
-        return new ImageDecodedOperationKey(
-            decodedKey,
-            request.CacheMode,
-            request.EncodedOperationKey.ShareScope);
-    }
+        ImageDecodeKey decodeKey) =>
+        new(decodeKey, request.CacheStorage, request.SourceOperationKey.ShareScope);
 
     internal static ImageDecodedOperationKey CreateBorrowedDecodedOperationKey(
         NormalizedImageRequest request)
     {
-        var decodedKey = new ImageDecodedCacheKey(
-            request.EncodedKey,
-            0,
-            0,
-            "atomui.borrowed-image:v1:security-v0");
-        return CreateDecodedOperationKey(request, decodedKey);
+        var contentId = new ImageContentId(Hash(request.Source.CacheIdentity));
+        return CreateDecodedOperationKey(
+            request,
+            new ImageDecodeKey(
+                request.PartitionHash,
+                contentId,
+                new ImageDecodeSpec(0, 0, "atomui.borrowed-image:1:security:0")));
     }
 
     internal static string NormalizeOrigin(Uri uri)

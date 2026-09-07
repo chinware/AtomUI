@@ -41,9 +41,9 @@ Avatar 使用有限面积内的强识别内容表达主体身份。图片是首�
 
 | 契约 | 默认值 | 语义 |
 | --- | --- | --- |
-| `Source: ImageLoadSource?` | `null` | 唯一主图片来源，支持 HTTP、File、Asset、Storage、Bytes、Stream 和已有 `IImage` |
-| `FallbackSource: ImageLoadSource?` | `null` | 主来源终态失败后的单次备用来源 |
-| `RequestOptions: ImageRequestOptions?` | `null` | cache mode、partition、variant、timeout 和 HTTP headers |
+| `Source: ImageSource?` | `null` | 唯一主图片来源，支持 HTTP、File、Asset、Storage、Bytes、Stream 和已有 `IImage` |
+| `FallbackSource: ImageSource?` | `null` | 主来源终态失败后的单次备用来源 |
+| `RequestOptions: ImageRequestOptions?` | `null` | cache read/storage policy、partition、variant、timeout 和 HTTP headers |
 | `Text: string?` | `null` | 无已加载图片时优先于 Icon 展示的文字内容，也是 content property |
 | `Icon: PathIcon?` | `null` | 无已加载图片和 Text 时展示的图标 |
 | `Gap: double` | `4` | 文本与头像边缘的最小逻辑间距，用于文本缩放 |
@@ -61,7 +61,7 @@ Avatar 使用有限面积内的强识别内容表达主体身份。图片是首�
 
 命令式入口与事件：
 
-- `Reload()` 使用 `ImageCacheMode.Reload` 重新请求当前来源。
+- `Reload()` 以单次 `ImageCacheReadPolicy.RefreshSource` 覆盖重新请求当前来源，不修改已绑定的 RequestOptions。
 - `ImageOpened` 只在主来源或 fallback 成功并成为当前图片时触发。
 - `ImageFailed` 只在最终失败时触发；主来源失败但 fallback 成功不触发最终失败事件。
 
@@ -114,7 +114,7 @@ Avatar 通过 `ImageLoadController` 使用当前 `Application` 的 `IImageLoader
 4. 同来源 Reload 或尺寸变化可在 Loading 期间保留旧图片，成功后原子替换；最终失败后释放旧租约。
 5. 结果回到 UI dispatcher 后再次校验 generation 和 attach 状态，旧结果只能释放，不能回写。
 
-HTTP 条件重验证、非网络来源 Reload 强制重读、两级请求合并、缓存、安全限制和应用销毁由统一 loader 负责，Avatar
+HTTP 条件重验证、非网络来源 Reload 强制重读、source/decode 两级请求合并、缓存、安全限制和应用销毁由统一 loader 负责，Avatar
 不复制 transport、cache 或 scheduler。
 
 ## 5. 视觉与主题模型
@@ -148,15 +148,16 @@ transport、cache、scheduler 或 service locator。
 - `ImageOpened`、`ImageFailed`、状态属性和伪类必须来自同一个 generation。
 - Template reapply 必须解除旧 `PART_TextPresenter.SizeChanged` 订阅。
 - detach 必须取消 waiter、释放图片租约和 motion binding；reattach 根据当前配置重新请求。
-- borrowed `ImageLoadSource.FromImage` 永不由 Avatar 销毁。
+- borrowed `new BorrowedImageSource(image)` 永不由 Avatar 销毁。
 - Public API、Theme、Gallery 示例和 `AtomUI.Controls.Tests` 必须同步验证。
 
 ## 8. 专项模型
 
 ### 8.1 来源与 fallback 模型
 
-`Source` 是唯一主来源，`FallbackSource` 只在主来源终态失败后尝试一次。两者 identity 相同时不重复请求。`Reload()` 只改变
-当前请求的 cache mode，不创建第二套来源状态；HTTP 执行条件重验证，File、Asset、StorageFile、Bytes 和 Stream 强制重读。
+`Source` 是唯一主来源，`FallbackSource` 只在主来源终态失败后尝试一次。两者 identity 相同时不重复请求。`Reload()` 只把
+当前请求的 `CacheRead` 覆盖为 `RefreshSource`，不创建第二套来源状态；HTTP 执行条件重验证，File、Asset、StorageFile、Bytes
+和 Stream 强制重读。
 
 ### 8.2 内容降级模型
 

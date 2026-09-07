@@ -8,55 +8,95 @@ Shared 的公开图片类型、Builder 扩展和 Application 扩展位于 `AtomU
 
 ## 来源、请求和状态模型
 
-所有加载型控件只接收 `ImageLoadSource`。该类型是封闭的来源值对象，不允许应用通过继承注入未注册的 source kind。
+所有加载型控件只接收 `ImageSource`。它是封闭的抽象基类：外部程序集不能调用其构造函数，也不能注入未注册的 source kind；
+所有具体来源均为不可变 sealed 类型。
 
 ```csharp
-[TypeConverter(typeof(ImageLoadSourceConverter))]
-public sealed class ImageLoadSource
+[TypeConverter(typeof(ImageSourceConverter))]
+public abstract class ImageSource
 {
-    public ImageLoadSourceKind Kind { get; }
     public string? DisplayName { get; }
+    public static ImageSource Parse(string source);
+    public static bool TryParse(string? source, out ImageSource? result);
+}
 
-    public static ImageLoadSource Parse(string source);
-    public static bool TryParse(string? source, out ImageLoadSource? result);
-    public static ImageLoadSource FromUri(string uri);
-    public static ImageLoadSource FromUri(Uri uri);
-    public static ImageLoadSource FromFile(string path);
-    public static ImageLoadSource FromAsset(Uri uri);
-    public static ImageLoadSource FromStorageFile(
-        IStorageFile storageFile,
-        string? cacheKey = null,
-        string? version = null);
-    public static ImageLoadSource FromBytes(
-        ReadOnlyMemory<byte> bytes,
-        string? cacheKey = null,
-        string? version = null);
-    public static ImageLoadSource FromStream(
+public sealed class HttpImageSource : ImageSource
+{
+    public HttpImageSource(Uri uri);
+    public Uri Uri { get; }
+}
+
+public sealed class FileImageSource : ImageSource
+{
+    public FileImageSource(
+        string path,
+        ImageFileValidationMode validation = ImageFileValidationMode.Metadata);
+    public string Path { get; }
+    public ImageFileValidationMode Validation { get; }
+}
+
+public sealed class AssetImageSource : ImageSource
+{
+    public AssetImageSource(Uri uri);
+    public Uri Uri { get; }
+}
+
+public sealed class StorageFileImageSource : ImageSource
+{
+    public StorageFileImageSource(IStorageFile file, string? revision = null);
+    public IStorageFile File { get; }
+    public string? Revision { get; }
+}
+
+public sealed class BytesImageSource : ImageSource
+{
+    public BytesImageSource(ReadOnlyMemory<byte> bytes, string? displayName = null);
+    public ReadOnlyMemory<byte> Bytes { get; }
+}
+
+public sealed class StreamImageSource : ImageSource
+{
+    public StreamImageSource(
         Func<CancellationToken, ValueTask<Stream>> openStream,
-        string? cacheKey = null,
-        string? version = null,
+        string? identity = null,
+        string? revision = null,
         string? displayName = null);
-    public static ImageLoadSource FromImage(IImage image, string? cacheKey = null);
+    public Func<CancellationToken, ValueTask<Stream>> OpenStream { get; }
+    public string? Identity { get; }
+    public string? Revision { get; }
+}
+
+public sealed class BorrowedImageSource : ImageSource
+{
+    public BorrowedImageSource(IImage image, string? displayName = null);
+    public IImage Image { get; }
 }
 ```
 
-`ImageLoadSourceKind` 固定为 `Http`、`File`、`Asset`、`StorageFile`、`Bytes`、`Stream` 和 `Image`。
+诊断使用的 `ImageSourceKind` 固定为 `Http`、`File`、`Asset`、`StorageFile`、`Bytes`、`Stream` 和 `Borrowed`。
 字符串转换只接受 `http`、`https`、`avares`、`file` 和平台绝对路径；未知 scheme 不回退为文件路径。
-`Parse()`/`FromUri()` 对无效输入抛出 `FormatException`/`ArgumentException`，`TryParse()` 返回 false；
+`Parse()` 对无效输入抛出 `FormatException`，具体来源构造器对无效参数抛出 `ArgumentException`，`TryParse()` 返回 false；
 `UnsupportedScheme` 保留给合法 source kind 在当前平台不可执行等加载期错误。
 
-`FromStream` 只接受可重复打开的工厂。每次调用必须返回新的可读流，loader 拥有并关闭该次返回流。
-`FromFile` 在构造时捕获绝对规范路径；`FromBytes` 防御性复制输入，避免调用方后续修改破坏缓存身份。
-`FromImage` 始终是 borrowed：loader、缓存和控件均不销毁调用方提供的 `IImage`，也不把它写入可释放 decoded cache。
-其可选 `cacheKey` 只参与诊断/业务 variant，对象引用身份仍是 key 的必要部分，两个不同 `IImage` 不能仅因字符串相同而合并。
+`StreamImageSource` 只接受可重复打开的工厂，每次调用必须返回新的可读流，loader 拥有并关闭该次返回流。
+`FileImageSource` 在构造时捕获绝对规范路径；`BytesImageSource` 防御性复制输入及公开读取结果，避免调用方修改破坏内容身份。
+`BorrowedImageSource` 始终是 borrowed：loader、缓存和控件均不销毁调用方提供的 `IImage`，也不把它写入可释放 decoded cache。
+对象引用身份始终参与 borrowed source identity，两个不同 `IImage` 不能仅因显示名相同而合并。
 borrowed image 不执行重采样或格式校验，request 的 decode width/height 对它无效，result 报告调用方图像的实际尺寸。
+
+`FileImageSource` 默认采用 `ImageFileValidationMode.Metadata`，比较当前打开文件可观察的 identity/creation、长度和修改令牌；
+必须识别“字节已变但可观察元数据保持不变”的场景时使用 `ContentHash`，它会在每次普通读取时重新读取并计算内容摘要。
+`StorageFileImageSource` 和 `StreamImageSource` 的 revision 是调用方承诺：revision 不变时内容不变；无法承诺时必须省略。
 
 每次请求的跨来源配置集中在一个对象中：
 
 ```csharp
 public sealed record ImageRequestOptions
 {
-    public ImageCacheMode CacheMode { get; init; } = ImageCacheMode.Default;
+    public ImageCacheReadPolicy CacheRead { get; init; } =
+        ImageCacheReadPolicy.ValidateSource;
+    public ImageCacheStoragePolicy CacheStorage { get; init; } =
+        ImageCacheStoragePolicy.MemoryAndDisk;
     public string? CachePartition { get; init; }
     public string? Variant { get; init; }
     public TimeSpan? Timeout { get; init; }
@@ -64,9 +104,9 @@ public sealed record ImageRequestOptions
 }
 ```
 
-控件通过替换完整 `RequestOptions` 修改请求，不依赖对象内部 property change。`Headers` 按请求开始时再做防御性不可变快照，
-调用方不得在提交后修改底层 dictionary。认证 header 存在而 `CachePartition` 为空时，请求强制按 `NoStore`
-执行；控件不能覆盖这条安全降级。
+控件通过替换完整 `RequestOptions` 修改请求，不依赖对象内部 property change。`Headers` 在请求开始时做防御性不可变快照；
+调用方随后修改原 dictionary 不会影响已经开始的请求。认证 header 存在而 `CachePartition` 为空时，请求禁止共享读取、共享写入、请求合并和
+持久化，并把本次有效 `CacheStorage` 收紧为 `None`；控件不能覆盖这条安全降级。
 
 应用级容量、并发、安全上限和扩展点通过 `UseImageLoading()` 配置，而不是散落在控件属性上：
 
@@ -152,10 +192,12 @@ allowlist 只影响跨 origin redirect，不能允许 HTTPS downgrade。封闭 s
 
 ```text
 ImageLoadState       Idle | Loading | Loaded | Failed
-ImageCacheMode       Default | Reload | NoStore | CacheOnly
+ImageCacheReadPolicy ValidateSource | RefreshSource | PreferCache | CacheOnly
+ImageCacheStoragePolicy None | Memory | MemoryAndDisk
 ImageDecodeMode      Auto | Original | Explicit
 ImageRequestPriority Critical | High | Normal | Low | Preload
-ImageCacheSource     None | DecodedMemory | EncodedMemory | Persistent | Revalidated | Network | Local
+ImageLoadOrigin      Borrowed | DecodedMemory | EncodedMemory | Persistent | Network | Local
+ImageSourceValidation NotRequired | Current | Revalidated | Unverified
 ```
 
 Loader 的进度是阶段化快照，不以不可靠的百分比冒充确定进度：
@@ -222,9 +264,9 @@ public sealed record ImageCacheClearRequest
 ```csharp
 public sealed class ImageLoadRequest
 {
-    public ImageLoadRequest(ImageLoadSource source);
+    public ImageLoadRequest(ImageSource source);
 
-    public ImageLoadSource Source { get; }
+    public ImageSource Source { get; }
     public ImageRequestOptions? Options { get; init; }
     public int DecodePixelWidth { get; init; }
     public int DecodePixelHeight { get; init; }
@@ -242,7 +284,9 @@ public sealed class ImageLoadRequest
 控件主 Source 和 FallbackSource 是两个连续 attempt，各自使用相同 timeout 配置。
 
 `ImageLoadResult` 实现 `IDisposable`。成功结果的 `Image` 只在结果未释放期间有效；失败结果没有 Image，携带
-`ImageLoadError`。结果同时提供原始像素尺寸、实际解码尺寸、媒体类型、`ImageCacheSource` 和阶段耗时。
+`ImageLoadError`。成功结果同时提供原始像素尺寸、实际解码尺寸、媒体类型、`ImageLoadOrigin`、
+`ImageSourceValidation`、SHA-256 `ContentId` 和阶段耗时。`Origin` 只回答字节/图片从何处交付，`SourceValidation` 独立回答
+本次请求如何确认来源映射；例如 HTTP `304` 可以同时是 `DecodedMemory` 与 `Revalidated`。
 调用方不得直接 dispose `ImageLoadResult.Image`。
 
 普通加载失败以失败 `ImageLoadResult` 返回，不因 404、格式错误或解码失败抛异常；参数错误、调用方取消和已销毁 loader

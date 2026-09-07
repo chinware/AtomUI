@@ -319,7 +319,7 @@ public class MasonryLayoutTests
     {
         var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var source = ImageLoadSource.FromStream(
+        var source = new StreamImageSource(
             async token =>
             {
                 started.TrySetResult();
@@ -337,7 +337,7 @@ public class MasonryLayoutTests
             RowGap = 16,
             HorizontalAlignment = HorizontalAlignment.Stretch,
             ItemsSource = new[] { source },
-            ItemTemplate = new FuncDataTemplate<ImageLoadSource>(
+            ItemTemplate = new FuncDataTemplate<ImageSource>(
                 _ => true,
                 item => image = new AsyncImage
                 {

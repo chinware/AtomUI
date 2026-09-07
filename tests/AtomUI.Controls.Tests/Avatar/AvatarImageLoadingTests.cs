@@ -18,7 +18,7 @@ public class AvatarImageLoadingTests
     {
         var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var source = ImageLoadSource.FromStream(
+        var source = new StreamImageSource(
             async _ =>
             {
                 started.TrySetResult();
@@ -59,7 +59,7 @@ public class AvatarImageLoadingTests
     {
         var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var source = ImageLoadSource.FromStream(
+        var source = new StreamImageSource(
             async token =>
             {
                 started.TrySetResult();

@@ -85,7 +85,7 @@ public class MasonryViewModel : ReactiveObject, IRoutableViewModel
                     index: i + 1,
                     height: heights[i],
                     isSpecial: true,
-                    coverSource: ImageLoadSource.FromUri(
+                    coverSource: ImageSource.Parse(
                         "https://images.unsplash.com/photo-1491961865842-98f7befd1a60?w=523&auto=format"),
                     title: "I'm Special",
                     description: "Let's have a meal"));
@@ -146,7 +146,7 @@ public class MasonryViewModel : ReactiveObject, IRoutableViewModel
         var items = new ObservableCollection<MasonryImageItem>();
         for (var i = 0; i < imageSources.Length; i++)
         {
-            items.Add(new MasonryImageItem(i + 1, ImageLoadSource.FromUri(imageSources[i])));
+            items.Add(new MasonryImageItem(i + 1, ImageSource.Parse(imageSources[i])));
         }
 
         ImageItems = items;
@@ -215,7 +215,7 @@ public class MasonryViewModel : ReactiveObject, IRoutableViewModel
 
 }
 
-public sealed record MasonryImageItem(int Index, ImageLoadSource ImageSource);
+public sealed record MasonryImageItem(int Index, ImageSource ImageSource);
 
 public sealed class MasonryDynamicItem : ReactiveObject
 {
@@ -250,12 +250,12 @@ public sealed class MasonryBasicItem
     public int Index { get; }
     public double Height { get; }
     public bool IsSpecial { get; }
-    public ImageLoadSource? CoverSource { get; }
+    public ImageSource? CoverSource { get; }
     public string? Title { get; }
     public string? Description { get; }
 
     public MasonryBasicItem(int index, double height, bool isSpecial = false,
-        ImageLoadSource? coverSource = null, string? title = null, string? description = null)
+        ImageSource? coverSource = null, string? title = null, string? description = null)
     {
         Index       = index;
         Height      = height;

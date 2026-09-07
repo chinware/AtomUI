@@ -9,9 +9,9 @@ internal interface IImageLoadControllerHost
 {
     Visual Visual { get; }
 
-    ImageLoadSource? Source { get; }
+    ImageSource? Source { get; }
 
-    ImageLoadSource? FallbackSource { get; }
+    ImageSource? FallbackSource { get; }
 
     ImageRequestOptions? RequestOptions { get; }
 
@@ -155,7 +155,7 @@ internal sealed class ImageLoadController : IDisposable
         {
             CancelCurrentRequest();
             ReleaseCurrentResult();
-            _currentSourceIdentity = source.Identity;
+            _currentSourceIdentity = source.CacheIdentity;
             _lastDecodeSize = null;
             _host.SetLoadedImage(null);
             _host.SetLoadState(ImageLoadState.Failed, configurationError, null, false);
@@ -163,14 +163,14 @@ internal sealed class ImageLoadController : IDisposable
             return;
         }
 
-        var sourceChanged = _currentSourceIdentity is not null && _currentSourceIdentity != source.Identity;
+        var sourceChanged = _currentSourceIdentity is not null && _currentSourceIdentity != source.CacheIdentity;
         if (sourceChanged)
         {
             CancelCurrentRequest();
             ReleaseCurrentResult();
             _host.SetLoadedImage(null);
         }
-        _currentSourceIdentity = source.Identity;
+        _currentSourceIdentity = source.CacheIdentity;
 
         if (decodeSize is null)
         {
@@ -202,8 +202,8 @@ internal sealed class ImageLoadController : IDisposable
     }
 
     private async Task LoadGenerationAsync(
-        ImageLoadSource source,
-        ImageLoadSource? fallback,
+        ImageSource source,
+        ImageSource? fallback,
         ImageRequestOptions? requestOptions,
         ImageRequestPriority priority,
         (int Width, int Height) decodeSize,
@@ -220,7 +220,10 @@ internal sealed class ImageLoadController : IDisposable
             var options = requestOptions;
             if (reload)
             {
-                options = (options ?? new ImageRequestOptions()) with { CacheMode = ImageCacheMode.Reload };
+                options = (options ?? new ImageRequestOptions()) with
+                {
+                    CacheRead = ImageCacheReadPolicy.RefreshSource
+                };
             }
             var progress = new CallbackProgress<ImageLoadProgress>(value => PublishProgress(generation, value));
             var primaryResult = await loader.LoadAsync(
@@ -241,7 +244,7 @@ internal sealed class ImageLoadController : IDisposable
 
             var primaryError = primaryResult.Error!;
             primaryResult.Dispose();
-            if (fallback is not null && fallback.Identity != source.Identity)
+            if (fallback is not null && fallback.CacheIdentity != source.CacheIdentity)
             {
                 var fallbackResult = await loader.LoadAsync(
                     new ImageLoadRequest(fallback)
@@ -303,7 +306,7 @@ internal sealed class ImageLoadController : IDisposable
 
     private async Task CommitSuccessAsync(
         long generation,
-        ImageLoadSource source,
+        ImageSource source,
         ImageLoadResult result,
         bool isFallback)
     {
@@ -327,7 +330,7 @@ internal sealed class ImageLoadController : IDisposable
                 _host.RaiseImageOpened(new ImageOpenedEventArgs(
                     source,
                     isFallback,
-                    owned.CacheSource,
+                    owned.Origin,
                     owned.DecodedPixelWidth,
                     owned.DecodedPixelHeight));
             });
@@ -340,7 +343,7 @@ internal sealed class ImageLoadController : IDisposable
 
     private async Task CommitFailureAsync(
         long generation,
-        ImageLoadSource source,
+        ImageSource source,
         ImageLoadError error,
         bool isFallback)
     {

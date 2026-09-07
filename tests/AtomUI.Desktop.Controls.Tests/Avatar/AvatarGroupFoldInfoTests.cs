@@ -345,7 +345,7 @@ public class AvatarGroupFoldInfoTests
         {
             Size      = 64,
             Shape  = AvatarShape.Circle,
-            Source = ImageLoadSource.FromImage(bitmap)
+            Source = new BorrowedImageSource(bitmap)
         };
         avatar.Measure(new Size(64, 64));
         avatar.Arrange(new Rect(0, 0, 64, 64));

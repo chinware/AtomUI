@@ -11,7 +11,7 @@ internal sealed class StorageFileImageSourceReader : ImageSourceReader
         _options = options;
     }
 
-    internal override ImageLoadSourceKind Kind => ImageLoadSourceKind.StorageFile;
+    internal override ImageSourceKind Kind => ImageSourceKind.StorageFile;
 
     internal override async Task<ImageSourceReadResult> ReadAsync(
         NormalizedImageRequest request,
@@ -19,15 +19,16 @@ internal sealed class StorageFileImageSourceReader : ImageSourceReader
         IProgress<ImageLoadProgress>? progress,
         CancellationToken cancellationToken)
     {
-        if (request.CacheMode != ImageCacheMode.Reload &&
-            staleContent is not null && request.Source.Version is not null &&
-            staleContent.SourceVersion == request.Source.Version)
+        if (request.CacheRead != ImageCacheReadPolicy.RefreshSource &&
+            staleContent is not null && request.Source.SourceRevision is not null &&
+            staleContent.SourceVersion == request.Source.SourceRevision)
         {
-            return new ImageSourceReadResult(staleContent.WithCacheSource(ImageCacheSource.EncodedMemory));
+            return new ImageSourceReadResult(staleContent.WithOrigin(ImageLoadOrigin.EncodedMemory));
         }
         try
         {
-            await using var stream = await ((IStorageFile)request.Source.Value).OpenReadAsync().ConfigureAwait(false);
+            await using var stream = await ((StorageFileImageSource)request.Source).File
+                .OpenReadAsync().ConfigureAwait(false);
             ImageProgressDispatcher.Report(progress, ImageLoadProgress.Create(ImageLoadStage.Reading));
             var bytes = await ImageSourceReadHelpers.ReadAllBytesAsync(
                 stream,
@@ -39,10 +40,10 @@ internal sealed class StorageFileImageSourceReader : ImageSourceReader
             return new ImageSourceReadResult(new ImageEncodedContent(
                 bytes,
                 null,
-                ImageCacheSource.Local,
+                ImageLoadOrigin.Local,
                 DateTimeOffset.UtcNow,
-                FreshUntil: request.Source.Version is null ? null : DateTimeOffset.MaxValue,
-                SourceVersion: request.Source.Version));
+                FreshUntil: request.Source.SourceRevision is null ? null : DateTimeOffset.MaxValue,
+                SourceVersion: request.Source.SourceRevision));
         }
         catch (UnauthorizedAccessException exception)
         {

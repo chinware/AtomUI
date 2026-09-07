@@ -77,7 +77,7 @@ public class MasonryShowCasePageTests
         viewModel.BasicItems[4].IsSpecial.ShouldBeTrue();
         viewModel.BasicItems[4].CoverSource.ShouldNotBeNull();
         viewModel.BasicItems[4].CoverSource!.ToString().ShouldBe(
-            ImageLoadSource.FromUri(
+            ImageSource.Parse(
                 "https://images.unsplash.com/photo-1491961865842-98f7befd1a60?w=523&auto=format").ToString());
         viewModel.BasicItems[4].Title.ShouldBe("I'm Special");
         viewModel.BasicItems[4].Description.ShouldBe("Let's have a meal");
@@ -170,7 +170,7 @@ public class MasonryShowCasePageTests
             "https://images.unsplash.com/photo-1731901245099-20ac7f85dbaa?w=523&auto=format",
             "https://images.unsplash.com/photo-1617694455303-59af55af7e58?w=523&auto=format",
             "https://images.unsplash.com/photo-1709198165282-1dab551df890?w=523&auto=format"
-        }.Select(source => ImageLoadSource.FromUri(source).ToString()));
+        }.Select(source => ImageSource.Parse(source).ToString()));
     }
 
     [Fact]

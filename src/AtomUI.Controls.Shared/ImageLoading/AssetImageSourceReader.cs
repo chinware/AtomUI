@@ -11,7 +11,7 @@ internal sealed class AssetImageSourceReader : ImageSourceReader
         _options = options;
     }
 
-    internal override ImageLoadSourceKind Kind => ImageLoadSourceKind.Asset;
+    internal override ImageSourceKind Kind => ImageSourceKind.Asset;
 
     internal override async Task<ImageSourceReadResult> ReadAsync(
         NormalizedImageRequest request,
@@ -19,13 +19,13 @@ internal sealed class AssetImageSourceReader : ImageSourceReader
         IProgress<ImageLoadProgress>? progress,
         CancellationToken cancellationToken)
     {
-        if (request.CacheMode != ImageCacheMode.Reload && staleContent is not null)
+        if (request.CacheRead != ImageCacheReadPolicy.RefreshSource && staleContent is not null)
         {
-            return new ImageSourceReadResult(staleContent.WithCacheSource(ImageCacheSource.EncodedMemory));
+            return new ImageSourceReadResult(staleContent.WithOrigin(ImageLoadOrigin.EncodedMemory));
         }
         try
         {
-            await using var stream = AssetLoader.Open((Uri)request.Source.Value);
+            await using var stream = AssetLoader.Open(((AssetImageSource)request.Source).Uri);
             ImageProgressDispatcher.Report(progress, ImageLoadProgress.Create(ImageLoadStage.Reading));
             var bytes = await ImageSourceReadHelpers.ReadAllBytesAsync(
                 stream,
@@ -37,11 +37,11 @@ internal sealed class AssetImageSourceReader : ImageSourceReader
             return new ImageSourceReadResult(new ImageEncodedContent(
                 bytes,
                 null,
-                ImageCacheSource.Local,
+                ImageLoadOrigin.Local,
                 DateTimeOffset.UtcNow,
                 FreshUntil: DateTimeOffset.MaxValue,
                 IsTrustedAsset: true,
-                SourceVersion: "application-resource-v1"));
+                SourceVersion: request.Source.SourceRevision));
         }
         catch (FileNotFoundException exception)
         {

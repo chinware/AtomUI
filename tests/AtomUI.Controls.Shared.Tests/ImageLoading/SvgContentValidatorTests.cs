@@ -143,7 +143,7 @@ public class SvgContentValidatorTests
 
         Should.Throw<OperationCanceledException>(() => validator.Validate(
             CreateContent("<svg xmlns='http://www.w3.org/2000/svg'/>", "image/svg+xml"),
-            ImageLoadSource.FromUri("https://example.com/avatar.svg"),
+            ImageSource.Parse("https://example.com/avatar.svg"),
             cancellation.Token));
     }
 
@@ -155,7 +155,7 @@ public class SvgContentValidatorTests
         var validator = new ImageContentValidator(ImageLoadingTestSupport.CreateOptions(configure));
         return validator.Validate(
             CreateContent(svg, mediaType),
-            ImageLoadSource.FromUri("https://example.com/avatar.svg"));
+            ImageSource.Parse("https://example.com/avatar.svg"));
     }
 
     private static void AssertSvgFailure(

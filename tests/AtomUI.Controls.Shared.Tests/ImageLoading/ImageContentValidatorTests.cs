@@ -12,7 +12,7 @@ public class ImageContentValidatorTests
         var validator = new ImageContentValidator(ImageLoadingTestSupport.CreateOptions());
         var probe = validator.Validate(
             ImageLoadingTestSupport.CreateContent(ImageLoadingTestSupport.CreatePngHeader(32, 24)),
-            ImageLoadSource.FromBytes(new byte[] { 1 }, "png", "v1"),
+            new BytesImageSource(new byte[] { 1 }, "png"),
             TestContext.Current.CancellationToken);
 
         probe.Format.ShouldBe(ImageContentFormat.Png);
@@ -29,7 +29,7 @@ public class ImageContentValidatorTests
             ImageLoadingTestSupport.CreateContent(
                 ImageLoadingTestSupport.CreatePngHeader(),
                 "image/jpeg"),
-            ImageLoadSource.FromBytes(new byte[] { 1 }, "png", "v1"));
+            new BytesImageSource(new byte[] { 1 }, "png"));
     }
 
     [Fact]
@@ -40,7 +40,7 @@ public class ImageContentValidatorTests
             ImageLoadingTestSupport.CreateContent(
                 "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\"/>"u8.ToArray(),
                 "image/svg+xml"),
-            ImageLoadSource.FromUri("https://example.com/image.svg"),
+            ImageSource.Parse("https://example.com/image.svg"),
             TestContext.Current.CancellationToken);
 
         probe.Format.ShouldBe(ImageContentFormat.Svg);
@@ -60,7 +60,7 @@ public class ImageContentValidatorTests
 
         var probe = validator.Validate(
             content,
-            ImageLoadSource.FromUri("avares://AtomUI.Tests/Assets/image.svg"),
+            ImageSource.Parse("avares://AtomUI.Tests/Assets/image.svg"),
             TestContext.Current.CancellationToken);
 
         probe.Format.ShouldBe(ImageContentFormat.Svg);
@@ -106,7 +106,7 @@ public class ImageContentValidatorTests
 
         var probe = new ImageContentValidator(ImageLoadingTestSupport.CreateOptions()).Validate(
             ImageLoadingTestSupport.CreateContent(bytes, "image/gif"),
-            ImageLoadSource.FromBytes(new byte[] { 1 }, "gif", "v1"),
+            new BytesImageSource(new byte[] { 1 }, "gif"),
             TestContext.Current.CancellationToken);
 
         probe.IsAnimated.ShouldBeFalse();
@@ -125,7 +125,7 @@ public class ImageContentValidatorTests
         AssertFailure(
             ImageLoadErrorCode.DimensionLimitExceeded,
             ImageLoadingTestSupport.CreateContent(png),
-            ImageLoadSource.FromBytes(new byte[] { 1 }, "png", "overflow"));
+            new BytesImageSource(new byte[] { 1 }, "png"));
 
         var bmp = new byte[26];
         bmp[0] = (byte)'B';
@@ -135,7 +135,7 @@ public class ImageContentValidatorTests
         AssertFailure(
             ImageLoadErrorCode.DimensionLimitExceeded,
             ImageLoadingTestSupport.CreateContent(bmp, "image/bmp"),
-            ImageLoadSource.FromBytes(new byte[] { 1 }, "bmp", "overflow"));
+            new BytesImageSource(new byte[] { 1 }, "bmp"));
     }
 
     [Fact]
@@ -155,13 +155,13 @@ public class ImageContentValidatorTests
     private static void AssertFailure(
         ImageLoadErrorCode expected,
         ImageEncodedContent content,
-        ImageLoadSource? source = null,
+        ImageSource? source = null,
         ImageLoadingOptions? options = null)
     {
         var validator = new ImageContentValidator(options ?? ImageLoadingTestSupport.CreateOptions());
         var exception = Should.Throw<ImageLoadFailureException>(() => validator.Validate(
             content,
-            source ?? ImageLoadSource.FromBytes(new byte[] { 1 }, "content", "v1")));
+            source ?? new BytesImageSource(new byte[] { 1 }, "content")));
         exception.Error.Code.ShouldBe(expected);
     }
 }

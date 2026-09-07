@@ -13,8 +13,8 @@
 ```csharp
 public interface IImageLoadControl
 {
-    ImageLoadSource? Source { get; set; }
-    ImageLoadSource? FallbackSource { get; set; }
+    ImageSource? Source { get; set; }
+    ImageSource? FallbackSource { get; set; }
     ImageRequestOptions? RequestOptions { get; set; }
 
     ImageLoadState LoadState { get; }
@@ -50,8 +50,8 @@ Idle 并 no-op；加载中调用会创建新 generation。状态映射到统一 
 ```csharp
 public class AsyncImage : TemplatedControl, IImageLoadControl
 {
-    public ImageLoadSource? Source { get; set; }
-    public ImageLoadSource? FallbackSource { get; set; }
+    public ImageSource? Source { get; set; }
+    public ImageSource? FallbackSource { get; set; }
     public ImageRequestOptions? RequestOptions { get; set; }
 
     public Stretch Stretch { get; set; } = Stretch.Uniform;
@@ -80,7 +80,7 @@ public class AsyncImage : TemplatedControl, IImageLoadControl
 `Auto` 根据有效 arranged width、有限高度约束与 TopLevel render scaling 计算物理像素目标，并使用稳定尺寸桶抑制微小布局变化；无界内容布局只使用宽度桶，避免加载结果的固有高度反馈到父布局；
 `Original` 请求原始尺寸；`Explicit` 使用 `DecodePixelWidth`/`DecodePixelHeight` 形成保持宽高比的最大边界，至少一边
 必须大于零；明确配置 0 x 0 时不启动 loader，并以 typed `InvalidSource` 进入 Failed。`Reload()` 对当前有效来源执行一次
-`Reload` 语义，不永久修改 `RequestOptions.CacheMode`。
+`CacheRead=ImageCacheReadPolicy.RefreshSource`，不永久修改 `RequestOptions`。
 
 `LoadingContent` 只在当前没有可显示租约时替代图片 presenter；同来源替换仍显示旧图并保持 `:loading`。最终失败释放图片并
 显示 `ErrorContent`。template reapply 不重启身份、尺寸和 options 均未变化的请求，也不泄漏旧 part 订阅。
@@ -95,8 +95,8 @@ Avatar 不再区分 URL、Bitmap 和本地 SVG 属性：
 ```csharp
 public abstract class AbstractAvatar : TemplatedControl, IImageLoadControl
 {
-    public ImageLoadSource? Source { get; set; }
-    public ImageLoadSource? FallbackSource { get; set; }
+    public ImageSource? Source { get; set; }
+    public ImageSource? FallbackSource { get; set; }
     public ImageRequestOptions? RequestOptions { get; set; }
 
     public string? Text { get; set; }
@@ -125,11 +125,11 @@ Previewer 使用不可变配置项，而不是把加载状态写进调用方集�
 ```csharp
 public sealed record ImagePreviewItem
 {
-    public ImagePreviewItem(ImageLoadSource source);
+    public ImagePreviewItem(ImageSource source);
 
-    public ImageLoadSource Source { get; init; }
-    public ImageLoadSource? ThumbnailSource { get; init; }
-    public ImageLoadSource? FallbackSource { get; init; }
+    public ImageSource Source { get; init; }
+    public ImageSource? ThumbnailSource { get; init; }
+    public ImageSource? FallbackSource { get; init; }
     public ImageRequestOptions? RequestOptions { get; init; }
     public string? Title { get; init; }
     public object? Tag { get; init; }

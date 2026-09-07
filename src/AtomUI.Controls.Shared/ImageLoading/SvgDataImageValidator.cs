@@ -13,10 +13,10 @@ internal sealed class SvgDataImageValidator
         "image/webp"
     };
 
-    private readonly Func<byte[], string, ImageLoadSource, ImageProbeResult> _rasterValidator;
+    private readonly Func<byte[], string, ImageSource, ImageProbeResult> _rasterValidator;
 
     internal SvgDataImageValidator(
-        Func<byte[], string, ImageLoadSource, ImageProbeResult> rasterValidator)
+        Func<byte[], string, ImageSource, ImageProbeResult> rasterValidator)
     {
         _rasterValidator = rasterValidator;
     }
@@ -24,7 +24,7 @@ internal sealed class SvgDataImageValidator
     internal SvgDataImageValidationResult Validate(
         string value,
         long remainingEncodedBytes,
-        ImageLoadSource source)
+        ImageSource source)
     {
         if (!value.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
         {
@@ -79,7 +79,7 @@ internal sealed class SvgDataImageValidator
     private static byte[] DecodeBase64(
         ReadOnlySpan<char> payload,
         long remainingEncodedBytes,
-        ImageLoadSource source)
+        ImageSource source)
     {
         if (payload.IsEmpty || payload.Length % 4 != 0)
         {
@@ -128,7 +128,7 @@ internal sealed class SvgDataImageValidator
     private static byte[] DecodePercentEncoded(
         ReadOnlySpan<char> payload,
         long remainingEncodedBytes,
-        ImageLoadSource source)
+        ImageSource source)
     {
         if (payload.Length > remainingEncodedBytes * 3)
         {
@@ -185,13 +185,13 @@ internal sealed class SvgDataImageValidator
         return false;
     }
 
-    private static ImageLoadFailureException Invalid(string message, ImageLoadSource source) =>
+    private static ImageLoadFailureException Invalid(string message, ImageSource source) =>
         ImageSourceReadHelpers.Failure(ImageLoadErrorCode.InvalidImageData, message, source.DisplayName);
 
-    private static ImageLoadFailureException Unsafe(string message, ImageLoadSource source) =>
+    private static ImageLoadFailureException Unsafe(string message, ImageSource source) =>
         ImageSourceReadHelpers.Failure(ImageLoadErrorCode.UnsafeVectorContent, message, source.DisplayName);
 
-    private static ImageLoadFailureException EmbeddedLimit(ImageLoadSource source) =>
+    private static ImageLoadFailureException EmbeddedLimit(ImageSource source) =>
         ImageSourceReadHelpers.Failure(
             ImageLoadErrorCode.EmbeddedResourceLimitExceeded,
             "SVG embedded image bytes exceed the configured limit.",

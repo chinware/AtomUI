@@ -109,7 +109,7 @@ Loader snapshot 和 event 只暴露有界 diagnostics：队列长度、active co
 - source reader、codec、owned service 和 package integration 全部显式代码注册。
 - 不使用程序集扫描、`Type.GetType(string)`、反射构造、动态代理或运行时生成序列化 metadata。
 - file-cache metadata 使用手写 binary contract 或 source-generated serializer，并带 schema version。
-- `ImageLoadSourceConverter` 是直接引用的 converter 类型，不按名称反射查找。
+- `ImageSourceConverter` 是直接引用的 converter 类型，不按名称反射查找。
 - AXAML 只绑定公开/生成式可保留成员；`AsyncImage` Theme 与 Avatar Theme 的 Source/状态属性进入正常 Control descriptor/asset
   注册，不通过运行时枚举属性。
 - linked publish 的 registration closure 必须保留 `UseCommonControls()` 引入的 image service factory、raster reader/codec、

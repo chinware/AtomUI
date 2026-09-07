@@ -51,7 +51,7 @@ public class ImagePreviewDisplayTrackerTests
     }
 
     [Fact]
-    public void Immediate_Holds_The_Previous_Image_Within_Grace_Then_Falls_Back_To_Placeholder()
+    public void Immediate_Clears_The_Previous_Image_And_Reports_Loading_While_The_Target_Is_Pending()
     {
         Dispatcher.UIThread.Invoke(() =>
         {
@@ -66,13 +66,13 @@ public class ImagePreviewDisplayTrackerTests
             WaitUntil(() => ReferenceEquals(tracker.EffectiveImage, first.FullImage), "first display");
 
             tracker.SetCurrentItem(second);
+            tracker.EffectiveImage.ShouldBeNull();
+            tracker.IsCurrentLoading.ShouldBeTrue(); // Idle 瞬态也必须立即驱动 loading presenter
+
             StartGatedLoad(second);
             WaitUntil(() => secondStarted.Task.IsCompleted, "second load start");
             Dispatcher.UIThread.RunJobs();
-            tracker.EffectiveImage.ShouldBeSameAs(first.FullImage); // 宽限期内保留旧图：无空白帧
-
-            // 宽限期（300ms）届满仍未就绪：Immediate 回退加载占位
-            WaitUntil(() => tracker.EffectiveImage is null, "placeholder after grace");
+            tracker.EffectiveImage.ShouldBeNull();
             tracker.IsCurrentLoading.ShouldBeTrue();
 
             releaseSecond.TrySetResult();
@@ -89,8 +89,8 @@ public class ImagePreviewDisplayTrackerTests
         Dispatcher.UIThread.Invoke(() =>
         {
             var first = NewLoadedEntry("first");
-            var failing = new ImagePreviewEntry(new ImagePreviewItem(ImageLoadSource.FromBytes(
-                new byte[] { 1 }, $"tracker-fail-{Guid.NewGuid():N}", "v1")));
+            var failing = new ImagePreviewEntry(new ImagePreviewItem(new BytesImageSource(
+                new byte[] { 1 }, $"tracker-fail-{Guid.NewGuid():N}")));
             var mode = ImageSwitchMode.WaitForLoaded;
             using var tracker = NewTracker(() => mode);
 
@@ -133,6 +133,99 @@ public class ImagePreviewDisplayTrackerTests
 
             releaseSecond.TrySetResult();
             second.Dispose();
+        });
+    }
+
+    [Fact]
+    public void Disposing_An_Entry_Clears_Display_Holders_Before_Releasing_The_Image_Lease()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var image = new TestImage();
+            ImagePreviewDisplayTracker? tracker = null;
+            IImage? displayAtLeaseRelease = image;
+            var lease = new CallbackDisposable(() => displayAtLeaseRelease = tracker?.EffectiveImage);
+            var result = new ImageLoadResult(
+                image,
+                lease,
+                24,
+                24,
+                24,
+                24,
+                "image/test",
+                ImageLoadOrigin.Local,
+                ImageSourceValidation.Current,
+                "test-content");
+            var entry = new ImagePreviewEntry(
+                new ImagePreviewItem(new BorrowedImageSource(image, "dispose-order")));
+            typeof(ImagePreviewEntry)
+                .GetField("_fullResult", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!
+                .SetValue(entry, result);
+            var mode = ImageSwitchMode.WaitForLoaded;
+            tracker = NewTracker(() => mode);
+            tracker.SetCurrentItem(entry);
+            tracker.EffectiveImage.ShouldBeSameAs(image);
+
+            entry.Dispose();
+
+            displayAtLeaseRelease.ShouldBeNull();
+            tracker.EffectiveImage.ShouldBeNull();
+            tracker.Dispose();
+        });
+    }
+
+    [Fact]
+    public void Unloading_An_Entry_Clears_Display_Holders_Before_Releasing_The_Image_Lease()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var image = new TestImage();
+            ImagePreviewDisplayTracker? tracker = null;
+            IImage? displayAtLeaseRelease = image;
+            var entry = NewEntryWithInjectedFullResult(
+                image,
+                new CallbackDisposable(() => displayAtLeaseRelease = tracker?.EffectiveImage),
+                "unload-order");
+            var mode = ImageSwitchMode.WaitForLoaded;
+            tracker = NewTracker(() => mode);
+            tracker.SetCurrentItem(entry);
+            tracker.EffectiveImage.ShouldBeSameAs(image);
+
+            entry.UnloadFull();
+
+            displayAtLeaseRelease.ShouldBeNull();
+            tracker.EffectiveImage.ShouldBeNull();
+            tracker.Dispose();
+            entry.Dispose();
+        });
+    }
+
+    [Fact]
+    public void Failed_Commit_Never_Publishes_A_Failed_State_With_The_Previous_Image()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var image = new TestImage();
+            var entry = NewEntryWithInjectedFullResult(
+                image,
+                new CallbackDisposable(() => { }),
+                "failed-commit",
+                new BytesImageSource(new byte[] { 1 }, $"failed-commit-{Guid.NewGuid():N}"));
+            var mode = ImageSwitchMode.WaitForLoaded;
+            ImagePreviewDisplayTracker? tracker = null;
+            var observedInvalidState = false;
+            tracker = new ImagePreviewDisplayTracker(
+                () => mode,
+                () => observedInvalidState |= tracker!.IsCurrentFailed && tracker.EffectiveImage is not null);
+            tracker.SetCurrentItem(entry);
+
+            entry.LoadFull(24, 24, ImageRequestPriority.Critical, reload: true);
+            WaitUntil(() => tracker.IsCurrentFailed, "failed replacement commit");
+
+            observedInvalidState.ShouldBeFalse();
+            tracker.EffectiveImage.ShouldBeNull();
+            tracker.Dispose();
+            entry.Dispose();
         });
     }
 
@@ -208,30 +301,27 @@ public class ImagePreviewDisplayTrackerTests
     }
 
     [Fact]
-    public void Immediate_Mode_Retained_Bound_Within_Grace()
+    public void Immediate_Mode_Does_Not_Retain_The_Previous_Entry()
     {
         Dispatcher.UIThread.Invoke(() =>
         {
-            // 统一显示连续性后 Immediate 在宽限期内也持有保留帧，
-            // 上界仍为 1 且只在有可用图时持有
             var first = NewLoadedEntry("first");
-            var second = NewLoadedEntry("second");
+            var pending = new ImagePreviewEntry(
+                new ImagePreviewItem(new BytesImageSource(
+                    new byte[] { 1 }, $"tracker-immediate-pending-{Guid.NewGuid():N}")));
             var mode = ImageSwitchMode.Immediate;
             using var tracker = NewTracker(() => mode);
 
             tracker.SetCurrentItem(first);
             WaitUntil(() => tracker.EffectiveImage is not null, "first display");
-            tracker.SetCurrentItem(second);
-            WaitUntil(() => ReferenceEquals(tracker.EffectiveImage, second.FullImage), "second display");
+            tracker.SetCurrentItem(pending);
 
-            var retained = GetRetainedItem(tracker);
-            if (retained is not null)
-            {
-                retained.FullImage.ShouldNotBeNull();
-            }
+            tracker.EffectiveImage.ShouldBeNull();
+            tracker.IsCurrentLoading.ShouldBeTrue();
+            GetRetainedItem(tracker).ShouldBeNull();
 
             first.Dispose();
-            second.Dispose();
+            pending.Dispose();
         });
     }
 
@@ -274,8 +364,8 @@ public class ImagePreviewDisplayTrackerTests
             var first = NewLoadedEntry("first");
             // 目标项尚处 Idle（LoadFull 未调用）：切换瞬间的重算不得产生显示空洞
             var pending = new ImagePreviewEntry(
-                new ImagePreviewItem(ImageLoadSource.FromBytes(
-                    new byte[] { 1 }, $"tracker-idle-{Guid.NewGuid():N}", "v1")));
+                new ImagePreviewItem(new BytesImageSource(
+                    new byte[] { 1 }, $"tracker-idle-{Guid.NewGuid():N}")));
             var mode = ImageSwitchMode.WaitForLoaded;
             using var tracker = NewTracker(() => mode);
 
@@ -292,21 +382,32 @@ public class ImagePreviewDisplayTrackerTests
     }
 
     [Fact]
-    public void WaitForLoaded_Pulls_The_Retained_Seed_When_The_Current_Never_Completes()
+    public void WaitForLoaded_Pulls_A_Seed_Targeted_By_The_Current_Tracker()
     {
         Dispatcher.UIThread.Invoke(() =>
         {
-            var seed = NewLoadedEntry("seed");
+            var seedStarted = NewSignal();
+            var releaseSeed = NewSignal();
+            var seed = NewGatedEntry("seed", seedStarted, releaseSeed);
             var pending = new ImagePreviewEntry(
-                new ImagePreviewItem(ImageLoadSource.FromBytes(
-                    new byte[] { 1 }, $"tracker-seed-{Guid.NewGuid():N}", "v1")));
+                new ImagePreviewItem(new BytesImageSource(
+                    new byte[] { 1 }, $"tracker-seed-{Guid.NewGuid():N}")));
+            ImagePreviewEntry? latestLoaded = null;
             var mode = ImageSwitchMode.WaitForLoaded;
             using var tracker = new ImagePreviewDisplayTracker(
                 () => mode,
                 () => { },
-                () => seed);
+                () => latestLoaded);
 
-            tracker.SetCurrentItem(pending); // 无图目标：从种子补充保留帧
+            tracker.SetCurrentItem(seed);
+            StartGatedLoad(seed);
+            WaitUntil(() => seedStarted.Task.IsCompleted, "seed load start");
+            tracker.SetCurrentItem(pending);
+
+            releaseSeed.TrySetResult();
+            WaitUntil(() => seed.FullImage is not null, "superseded seed completion");
+            latestLoaded = seed;
+            tracker.Refresh();
 
             tracker.EffectiveImage.ShouldBeSameAs(seed.FullImage);
 
@@ -314,6 +415,150 @@ public class ImagePreviewDisplayTrackerTests
             WaitUntil(() => tracker.EffectiveImage is null, "seed invalidated clears display");
 
             pending.Dispose();
+        });
+    }
+
+    [Fact]
+    public void WaitForLoaded_Does_Not_Reuse_A_Target_Marker_From_Another_Tracker_Session()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var seed = NewLoadedEntry("other-session-seed");
+            var mode = ImageSwitchMode.WaitForLoaded;
+            using (var otherTracker = NewTracker(() => mode))
+            {
+                otherTracker.SetCurrentItem(seed);
+            }
+            var pending = new ImagePreviewEntry(
+                new ImagePreviewItem(new BytesImageSource(
+                    new byte[] { 1 }, $"tracker-new-session-{Guid.NewGuid():N}")));
+            using var tracker = new ImagePreviewDisplayTracker(
+                () => mode,
+                () => { },
+                () => seed);
+
+            tracker.SetCurrentItem(pending);
+
+            tracker.EffectiveImage.ShouldBeNull();
+            tracker.IsCurrentLoading.ShouldBeTrue();
+
+            pending.Dispose();
+            seed.Dispose();
+        });
+    }
+
+    [Fact]
+    public void WaitForLoaded_Does_Not_Display_A_Preloaded_Entry_That_Was_Never_A_Target()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var preload = NewLoadedEntry("preload");
+            var pending = new ImagePreviewEntry(
+                new ImagePreviewItem(new BytesImageSource(
+                    new byte[] { 1 }, $"tracker-current-{Guid.NewGuid():N}")));
+            var mode = ImageSwitchMode.WaitForLoaded;
+            using var tracker = new ImagePreviewDisplayTracker(
+                () => mode,
+                () => { },
+                () => preload);
+
+            tracker.SetCurrentItem(pending);
+
+            tracker.EffectiveImage.ShouldBeNull();
+            tracker.IsCurrentLoading.ShouldBeTrue();
+
+            pending.Dispose();
+            preload.Dispose();
+        });
+    }
+
+    [Fact]
+    public void WaitForLoaded_Advances_To_A_Newer_Completed_Previous_Target()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var first = NewLoadedEntry("first");
+            var secondStarted = NewSignal();
+            var releaseSecond = NewSignal();
+            var second = NewGatedEntry("second", secondStarted, releaseSecond);
+            var thirdStarted = NewSignal();
+            var releaseThird = NewSignal();
+            var third = NewGatedEntry("third", thirdStarted, releaseThird);
+            ImagePreviewEntry latestLoaded = first;
+            var mode = ImageSwitchMode.WaitForLoaded;
+            using var tracker = new ImagePreviewDisplayTracker(
+                () => mode,
+                () => { },
+                () => latestLoaded);
+
+            tracker.SetCurrentItem(first);
+            WaitUntil(() => ReferenceEquals(tracker.EffectiveImage, first.FullImage), "first display");
+
+            tracker.SetCurrentItem(second);
+            StartGatedLoad(second);
+            WaitUntil(() => secondStarted.Task.IsCompleted, "second load start");
+            tracker.SetCurrentItem(third);
+
+            releaseSecond.TrySetResult();
+            WaitUntil(() => second.FullImage is not null, "second load completion");
+            latestLoaded = second;
+            tracker.SetCurrentItem(third); // 当前目标未变时也允许重新计算最新完成候选
+
+            tracker.EffectiveImage.ShouldBeSameAs(second.FullImage);
+            tracker.IsCurrentLoading.ShouldBeTrue();
+
+            StartGatedLoad(third);
+            WaitUntil(() => thirdStarted.Task.IsCompleted, "third load start");
+            releaseThird.TrySetResult();
+            WaitUntil(() => third.FullImage is not null &&
+                            ReferenceEquals(tracker.EffectiveImage, third.FullImage),
+                "third display");
+
+            third.Dispose();
+            second.Dispose();
+            first.Dispose();
+        });
+    }
+
+    [Fact]
+    public void WaitForLoaded_Does_Not_Regress_When_An_Older_Target_Completes_Late()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var first = NewLoadedEntry("first");
+            var olderStarted = NewSignal();
+            var releaseOlder = NewSignal();
+            var older = NewGatedEntry("older", olderStarted, releaseOlder);
+            var newer = NewLoadedEntry("newer");
+            var pending = new ImagePreviewEntry(
+                new ImagePreviewItem(new BytesImageSource(
+                    new byte[] { 1 }, $"tracker-pending-{Guid.NewGuid():N}")));
+            ImagePreviewEntry latestLoaded = first;
+            var mode = ImageSwitchMode.WaitForLoaded;
+            using var tracker = new ImagePreviewDisplayTracker(
+                () => mode,
+                () => { },
+                () => latestLoaded);
+
+            tracker.SetCurrentItem(first);
+            tracker.SetCurrentItem(older);
+            StartGatedLoad(older);
+            WaitUntil(() => olderStarted.Task.IsCompleted, "older load start");
+            tracker.SetCurrentItem(newer);
+            WaitUntil(() => ReferenceEquals(tracker.EffectiveImage, newer.FullImage), "newer display");
+            tracker.SetCurrentItem(pending);
+
+            releaseOlder.TrySetResult();
+            WaitUntil(() => older.FullImage is not null, "older late completion");
+            latestLoaded = older;
+            tracker.SetCurrentItem(pending);
+
+            tracker.EffectiveImage.ShouldBeSameAs(newer.FullImage);
+
+            pending.Dispose();
+            newer.Dispose();
+            older.Dispose();
+            first.Dispose();
         });
     }
 
@@ -325,7 +570,7 @@ public class ImagePreviewDisplayTrackerTests
     private static ImagePreviewEntry NewLoadedEntry(string key)
     {
         var entry = new ImagePreviewEntry(
-            new ImagePreviewItem(ImageLoadSource.FromImage(new TestImage(), key)));
+            new ImagePreviewItem(new BorrowedImageSource(new TestImage(), key)));
         // tracker 不发起加载，测试显式驱动（与既有 entry 级测试一致）
         entry.LoadFull(16, 16, ImageRequestPriority.Critical);
         WaitUntil(() => entry.FullState == ImageLoadState.Loaded, $"{key} load");
@@ -337,7 +582,7 @@ public class ImagePreviewDisplayTrackerTests
         TaskCompletionSource started,
         TaskCompletionSource release)
     {
-        return new ImagePreviewEntry(new ImagePreviewItem(ImageLoadSource.FromStream(
+        return new ImagePreviewEntry(new ImagePreviewItem(new StreamImageSource(
             async token =>
             {
                 started.TrySetResult();
@@ -360,6 +605,31 @@ public class ImagePreviewDisplayTrackerTests
                 "_retainedItem",
                 System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!
             .GetValue(tracker);
+    }
+
+    private static ImagePreviewEntry NewEntryWithInjectedFullResult(
+        IImage image,
+        IDisposable lease,
+        string key,
+        ImageSource? source = null)
+    {
+        var result = new ImageLoadResult(
+            image,
+            lease,
+            24,
+            24,
+            24,
+            24,
+            "image/test",
+            ImageLoadOrigin.Local,
+            ImageSourceValidation.Current,
+            "test-content");
+        var entry = new ImagePreviewEntry(
+            new ImagePreviewItem(source ?? new BorrowedImageSource(image, key)));
+        typeof(ImagePreviewEntry)
+            .GetField("_fullResult", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!
+            .SetValue(entry, result);
+        return entry;
     }
 
     private static TaskCompletionSource NewSignal() =>
@@ -445,6 +715,16 @@ public class ImagePreviewDisplayTrackerTests
 
         public void Draw(DrawingContext context, Rect sourceRect, Rect destRect)
         {
+        }
+    }
+
+    private sealed class CallbackDisposable(Action callback) : IDisposable
+    {
+        private Action? _callback = callback;
+
+        public void Dispose()
+        {
+            Interlocked.Exchange(ref _callback, null)?.Invoke();
         }
     }
 }

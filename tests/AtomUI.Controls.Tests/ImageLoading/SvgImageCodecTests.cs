@@ -45,7 +45,7 @@ public class SvgImageCodecTests
         var handler = new SvgResponseHandler(ValidSvg);
         var options = new ImageLoadingOptionsBuilder().Build("svg-codec-tests");
         using var loader = new ImageLoader(options, [new SvgImageCodec()], handler);
-        var source = ImageLoadSource.FromUri("https://example.com/avatar.svg");
+        var source = ImageSource.Parse("https://example.com/avatar.svg");
 
         var firstTask = Task.Run(async () => await loader.LoadAsync(
             new ImageLoadRequest(source) { DecodePixelWidth = 32, DecodePixelHeight = 32 },
@@ -61,7 +61,7 @@ public class SvgImageCodecTests
 
         first.IsSuccess.ShouldBeTrue();
         second.IsSuccess.ShouldBeTrue();
-        second.CacheSource.ShouldBe(ImageCacheSource.DecodedMemory);
+        second.Origin.ShouldBe(ImageLoadOrigin.DecodedMemory);
         second.Image.ShouldBeSameAs(first.Image);
         first.Image.ShouldNotBeNull().Size.ShouldBe(new Size(48, 32));
         var backgroundSize = await Task.Run(
@@ -78,7 +78,7 @@ public class SvgImageCodecTests
         var options = new ImageLoadingOptionsBuilder().Build("svg-release-tests");
         using var loader = new ImageLoader(options, [new SvgImageCodec()], handler);
         var loadTask = Task.Run(async () => await loader.LoadAsync(
-            new ImageLoadRequest(ImageLoadSource.FromUri("https://example.com/release.svg")),
+            new ImageLoadRequest(ImageSource.Parse("https://example.com/release.svg")),
             TestContext.Current.CancellationToken));
         ImageControlTestHost.WaitUntil(() => loadTask.IsCompleted, "SVG release test load");
         var result = await loadTask;
@@ -101,12 +101,12 @@ public class SvgImageCodecTests
     public async Task Invalid_Model_Is_Reported_As_DecodeFailed()
     {
         var options = new ImageLoadingOptionsBuilder().Build("svg-invalid-model-tests");
-        var source = ImageLoadSource.FromBytes("<svg"u8.ToArray(), "invalid-svg", "v1");
+        var source = new BytesImageSource("<svg"u8.ToArray(), "invalid-svg");
         var request = ImageCacheKey.Normalize(new ImageLoadRequest(source), options, forceReload: false);
         var content = new ImageEncodedContent(
             "<svg"u8.ToArray(),
             "image/svg+xml",
-            ImageCacheSource.Local,
+            ImageLoadOrigin.Local,
             DateTimeOffset.UtcNow).MarkValidated();
         var metadata = new SvgContentMetadata(
             1,

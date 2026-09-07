@@ -105,8 +105,8 @@
     </unit>
     <unit id="RapidSwitchDescription">
       <segment>
-        <source>Append a new image every 200 ms and track the latest one. Toggle the mode to compare Immediate blank-frame switching with WaitForLoaded hold-until-loaded switching.</source>
-        <target state="translated">每 200 毫秒追加一張圖片並跟蹤顯示最新一張。切換模式對比 Immediate（清空閃爍）與 WaitForLoaded（保留上一張直到載入完成）。</target>
+        <source>Append a new image every 200 ms and track the latest one. Toggle the mode to compare Immediate loading-placeholder switching with WaitForLoaded hold-until-loaded switching.</source>
+        <target state="translated">每 200 毫秒追加一張圖片並跟蹤顯示最新一張。切換模式對比 Immediate（立即顯示載入提示）與 WaitForLoaded（保留上一張直到載入完成）。</target>
       </segment>
     </unit>
     <unit id="RapidSwitchModeImmediate">
@@ -149,6 +149,24 @@
       <segment>
         <source>Remote image loading</source>
         <target state="translated">遠程圖片載入</target>
+      </segment>
+    </unit>
+    <unit id="SamePathReplacementAction">
+      <segment>
+        <source>Replace at the same path</source>
+        <target state="translated">替換同一路徑內容</target>
+      </segment>
+    </unit>
+    <unit id="SamePathReplacementDescription">
+      <segment>
+        <source>Replace the file contents, clear and re-add the item with the same path, and verify that source validation displays the new image without clearing the application cache.</source>
+        <target state="translated">替換檔案內容後，清空並以相同路徑重新加入預覽項；來源驗證會顯示新圖片，無需清理應用程式快取。</target>
+      </segment>
+    </unit>
+    <unit id="SamePathReplacementTitle">
+      <segment>
+        <source>Same-path file replacement</source>
+        <target state="translated">同路徑檔案替換</target>
       </segment>
     </unit>
     <unit id="ScenarioExamples">

@@ -42,7 +42,7 @@ public class UploadImageLoadingTests
     {
         content.FilePath = first;
         var firstItem = getItems(content).ShouldNotBeNull().Single();
-        firstItem.Source.Kind.ShouldBe(ImageLoadSourceKind.Http);
+        firstItem.Source.Kind.ShouldBe(ImageSourceKind.Http);
         firstItem.Source.DisplayName.ShouldBe("first.png");
 
         content.FilePath = second;

@@ -105,13 +105,14 @@ AvatarGroup
 成功的 `ImageLoadResult` 是图片使用租约。Controller 持有当前租约，来源变化、detach、最终失败或 controller dispose 时释放。
 替换图片时先接管新租约，再释放旧租约，避免 decoded cache entry 在视觉切换前被销毁。
 
-`Reload()` 不创建新的公开来源状态；它对当前 Source 发起 `ImageCacheMode.Reload` 请求：
+`Reload()` 不创建新的公开来源状态；它复制当前 options，并只把本次请求的
+`CacheRead` 覆盖为 `ImageCacheReadPolicy.RefreshSource`：
 
 - HTTP 允许使用已有 metadata 做条件重验证。
 - File、Asset、StorageFile、Bytes 和 Stream 强制重新读取来源。
 - Reload 期间可保留旧图片；新结果只有通过 generation 校验后才能替换。
 
-`ImageLoadSource.FromImage` 是 borrowed source。其结果租约只约束消费期，不能 dispose 调用方的 `IImage`。
+`new BorrowedImageSource(image)` 是 borrowed source。其结果租约只约束消费期，不能 dispose 调用方的 `IImage`。
 
 | 获取/建立 | 对应释放 |
 | --- | --- |
@@ -168,4 +169,4 @@ CornerRadius。图片请求尺寸来自 Bounds 与 TopLevel render scaling，而
 - 主失败/fallback 成功、最终失败、事件顺序和 progress generation。
 - owned cache image 与 borrowed image 的释放责任。
 - AvatarTheme 独立于 Desktop 类型，AvatarGroup 仍能消费同一 Token。
-- Gallery 示例只使用 `Source`/`ImageLoadSource`。
+- Gallery 示例只使用 `Source`/`ImageSource`。

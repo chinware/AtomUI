@@ -7,7 +7,7 @@ internal sealed class SvgCssReferenceValidator
     internal void Validate(
         string css,
         Action<string> referenceHandler,
-        ImageLoadSource source)
+        ImageSource source)
     {
         ArgumentNullException.ThrowIfNull(css);
         ArgumentNullException.ThrowIfNull(referenceHandler);
@@ -17,7 +17,7 @@ internal sealed class SvgCssReferenceValidator
     private static void Scan(
         ReadOnlySpan<char> css,
         Action<string> referenceHandler,
-        ImageLoadSource source,
+        ImageSource source,
         bool rejectFontSource)
     {
         var index = 0;
@@ -89,7 +89,7 @@ internal sealed class SvgCssReferenceValidator
     private static ReadOnlySpan<char> ReadBlock(
         ReadOnlySpan<char> css,
         ref int index,
-        ImageLoadSource source)
+        ImageSource source)
     {
         var start = ++index;
         var depth = 1;
@@ -123,7 +123,7 @@ internal sealed class SvgCssReferenceValidator
     private static string ReadUrl(
         ReadOnlySpan<char> css,
         ref int index,
-        ImageLoadSource source)
+        ImageSource source)
     {
         index++;
         SkipWhitespaceAndComments(css, ref index, source);
@@ -182,7 +182,7 @@ internal sealed class SvgCssReferenceValidator
     private static string ReadIdentifier(
         ReadOnlySpan<char> css,
         ref int index,
-        ImageLoadSource source)
+        ImageSource source)
     {
         var builder = new StringBuilder();
         while (index < css.Length && (IsIdentifierCharacter(css[index]) || css[index] == '\\'))
@@ -195,7 +195,7 @@ internal sealed class SvgCssReferenceValidator
     private static string ReadString(
         ReadOnlySpan<char> css,
         ref int index,
-        ImageLoadSource source)
+        ImageSource source)
     {
         var quote = css[index++];
         var builder = new StringBuilder();
@@ -218,7 +218,7 @@ internal sealed class SvgCssReferenceValidator
     private static void SkipString(
         ReadOnlySpan<char> css,
         ref int index,
-        ImageLoadSource source)
+        ImageSource source)
     {
         _ = ReadString(css, ref index, source);
     }
@@ -227,7 +227,7 @@ internal sealed class SvgCssReferenceValidator
         ReadOnlySpan<char> css,
         ref int index,
         StringBuilder builder,
-        ImageLoadSource source)
+        ImageSource source)
     {
         if (css[index] != '\\')
         {
@@ -277,7 +277,7 @@ internal sealed class SvgCssReferenceValidator
     private static void SkipWhitespaceAndComments(
         ReadOnlySpan<char> css,
         ref int index,
-        ImageLoadSource source)
+        ImageSource source)
     {
         while (index < css.Length)
         {
@@ -298,7 +298,7 @@ internal sealed class SvgCssReferenceValidator
     private static void SkipComment(
         ReadOnlySpan<char> css,
         ref int index,
-        ImageLoadSource source)
+        ImageSource source)
     {
         index += 2;
         while (index + 1 < css.Length)
@@ -343,9 +343,9 @@ internal sealed class SvgCssReferenceValidator
         return false;
     }
 
-    private static ImageLoadFailureException Unsafe(string message, ImageLoadSource source) =>
+    private static ImageLoadFailureException Unsafe(string message, ImageSource source) =>
         ImageSourceReadHelpers.Failure(ImageLoadErrorCode.UnsafeVectorContent, message, source.DisplayName);
 
-    private static ImageLoadFailureException Invalid(string message, ImageLoadSource source) =>
+    private static ImageLoadFailureException Invalid(string message, ImageSource source) =>
         ImageSourceReadHelpers.Failure(ImageLoadErrorCode.InvalidImageData, message, source.DisplayName);
 }

@@ -20,7 +20,7 @@ internal sealed class SvgContentValidator
 
     internal SvgContentValidator(
         ImageLoadingOptions options,
-        Func<byte[], string, ImageLoadSource, ImageProbeResult> rasterValidator)
+        Func<byte[], string, ImageSource, ImageProbeResult> rasterValidator)
     {
         _options = options;
         _dataImageValidator = new SvgDataImageValidator(rasterValidator);
@@ -28,7 +28,7 @@ internal sealed class SvgContentValidator
 
     internal SvgContentMetadata Validate(
         ReadOnlyMemory<byte> bytes,
-        ImageLoadSource source,
+        ImageSource source,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -119,7 +119,7 @@ internal sealed class SvgContentValidator
         exception.Message.Contains("MaxCharactersInDocument", StringComparison.OrdinalIgnoreCase) ||
         exception.Message.Contains("maximum number of characters", StringComparison.OrdinalIgnoreCase);
 
-    private static ImageLoadFailureException Unsafe(string message, ImageLoadSource source) =>
+    private static ImageLoadFailureException Unsafe(string message, ImageSource source) =>
         ImageSourceReadHelpers.Failure(ImageLoadErrorCode.UnsafeVectorContent, message, source.DisplayName);
 
     private sealed class ValidationState
@@ -127,7 +127,7 @@ internal sealed class SvgContentValidator
         private readonly ImageLoadingOptions _options;
         private readonly SvgCssReferenceValidator _cssValidator;
         private readonly SvgDataImageValidator _dataImageValidator;
-        private readonly ImageLoadSource _source;
+        private readonly ImageSource _source;
         private readonly Stack<string?> _elementIds = new();
         private readonly Dictionary<string, HashSet<string>> _references = new(StringComparer.Ordinal);
         private readonly HashSet<string> _ids = new(StringComparer.Ordinal);
@@ -150,7 +150,7 @@ internal sealed class SvgContentValidator
             ImageLoadingOptions options,
             SvgCssReferenceValidator cssValidator,
             SvgDataImageValidator dataImageValidator,
-            ImageLoadSource source)
+            ImageSource source)
         {
             _options = options;
             _cssValidator = cssValidator;

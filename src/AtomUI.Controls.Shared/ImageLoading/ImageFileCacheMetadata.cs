@@ -1,10 +1,87 @@
 namespace AtomUI.Controls;
 
-internal sealed record ImageFileCacheMetadata(
+internal sealed record ImageStoredContentMetadata(
     string PartitionHash,
+    string ContentId,
     long ContentLength,
     string ContentDigest,
     string? MediaType,
+    long StoredAtUtcTicks,
+    int SecurityPolicyVersion)
+{
+    private const int FormatRevision = 1;
+
+    internal static ImageStoredContentMetadata FromContent(
+        ImageEncodedContentKey key,
+        ImageEncodedContent content) =>
+        new(
+            key.PartitionHash,
+            key.ContentId.Value,
+            content.Bytes.LongLength,
+            ImageCacheKey.HashBytes(content.Bytes),
+            content.MediaType,
+            content.StoredAt.UtcTicks,
+            content.SecurityPolicyVersion);
+
+    internal ImageEncodedContent ToContent(byte[] bytes) =>
+        new(
+            bytes,
+            MediaType,
+            ImageLoadOrigin.Persistent,
+            new DateTimeOffset(StoredAtUtcTicks, TimeSpan.Zero),
+            SecurityPolicyVersion: SecurityPolicyVersion,
+            ContentId: new ImageContentId(ContentId));
+
+    internal void Write(Stream stream)
+    {
+        using var writer = new BinaryWriter(stream, System.Text.Encoding.UTF8, leaveOpen: true);
+        writer.Write(FormatRevision);
+        writer.Write(PartitionHash);
+        writer.Write(ContentId);
+        writer.Write(ContentLength);
+        writer.Write(ContentDigest);
+        WriteNullable(writer, MediaType);
+        writer.Write(StoredAtUtcTicks);
+        writer.Write(SecurityPolicyVersion);
+    }
+
+    internal static ImageStoredContentMetadata Read(Stream stream)
+    {
+        using var reader = new BinaryReader(stream, System.Text.Encoding.UTF8, leaveOpen: true);
+        if (reader.ReadInt32() != FormatRevision)
+        {
+            throw new InvalidDataException("Unsupported image content metadata format revision.");
+        }
+        return new ImageStoredContentMetadata(
+            reader.ReadString(),
+            reader.ReadString(),
+            reader.ReadInt64(),
+            reader.ReadString(),
+            ReadNullableString(reader),
+            reader.ReadInt64(),
+            reader.ReadInt32());
+    }
+
+    private static void WriteNullable(BinaryWriter writer, string? value)
+    {
+        writer.Write(value is not null);
+        if (value is not null)
+        {
+            writer.Write(value);
+        }
+    }
+
+    private static string? ReadNullableString(BinaryReader reader) =>
+        reader.ReadBoolean() ? reader.ReadString() : null;
+
+}
+
+internal sealed record ImageStoredSourceSnapshot(
+    string PartitionHash,
+    string SourceKey,
+    string SourceVersion,
+    string ContentId,
+    long CommitGeneration,
     long StoredAtUtcTicks,
     long? FreshUntilUtcTicks,
     string? ETag,
@@ -13,7 +90,6 @@ internal sealed record ImageFileCacheMetadata(
     bool MustRevalidate,
     bool IsRemote,
     bool IsTrustedAsset,
-    string? SourceVersion,
     string[]? VaryHeaders,
     string? VaryDigest,
     long? ResponseDateUtcTicks,
@@ -23,74 +99,64 @@ internal sealed record ImageFileCacheMetadata(
     bool IsPrivate,
     int SecurityPolicyVersion)
 {
-    private const int SchemaVersion = 2;
+    private const int FormatRevision = 1;
 
-    internal static ImageFileCacheMetadata FromContent(
-        string partitionHash,
-        ImageEncodedContent content)
-    {
-        return new ImageFileCacheMetadata(
-            partitionHash,
-            content.Bytes.LongLength,
-            ImageCacheKey.HashBytes(content.Bytes),
-            content.MediaType,
-            content.StoredAt.UtcTicks,
-            content.FreshUntil?.UtcTicks,
-            content.ETag,
-            content.LastModified?.UtcTicks,
-            content.NoCache,
-            content.MustRevalidate,
-            content.IsRemote,
-            content.IsTrustedAsset,
-            content.SourceVersion,
-            content.VaryHeaders,
-            content.VaryDigest,
-            content.ResponseDate?.UtcTicks,
-            content.ResponseAge?.Ticks,
-            content.Expires?.UtcTicks,
-            content.MaxAge?.Ticks,
-            content.IsPrivate,
-            content.SecurityPolicyVersion);
-    }
+    internal static ImageStoredSourceSnapshot FromSnapshot(ImageSourceSnapshot snapshot) =>
+        new(
+            snapshot.SourceKey.PartitionHash,
+            snapshot.SourceKey.Value,
+            snapshot.SourceVersion.Value,
+            snapshot.ContentId.Value,
+            snapshot.CommitGeneration,
+            snapshot.StoredAt.UtcTicks,
+            snapshot.FreshUntil?.UtcTicks,
+            snapshot.ETag,
+            snapshot.LastModified?.UtcTicks,
+            snapshot.NoCache,
+            snapshot.MustRevalidate,
+            snapshot.IsRemote,
+            snapshot.IsTrustedAsset,
+            snapshot.VaryHeaders,
+            snapshot.VaryDigest,
+            snapshot.ResponseDate?.UtcTicks,
+            snapshot.ResponseAge?.Ticks,
+            snapshot.Expires?.UtcTicks,
+            snapshot.MaxAge?.Ticks,
+            snapshot.IsPrivate,
+            snapshot.SecurityPolicyVersion);
 
-    internal ImageEncodedContent ToContent(byte[] bytes)
-    {
-        return new ImageEncodedContent(
-            bytes,
-            MediaType,
-            ImageCacheSource.Persistent,
+    internal ImageSourceSnapshot ToSnapshot() =>
+        new(
+            new ImageSourceKey(SourceKey, PartitionHash),
+            new ImageSourceVersion(SourceVersion),
+            new ImageContentId(ContentId),
+            CommitGeneration,
             new DateTimeOffset(StoredAtUtcTicks, TimeSpan.Zero),
-            FreshUntil: FreshUntilUtcTicks is { } fresh ? new DateTimeOffset(fresh, TimeSpan.Zero) : null,
-            ETag: ETag,
-            LastModified: LastModifiedUtcTicks is { } modified
-                ? new DateTimeOffset(modified, TimeSpan.Zero)
-                : null,
-            NoStore: false,
-            NoCache: NoCache,
-            MustRevalidate: MustRevalidate,
-            IsRemote: IsRemote,
-            IsTrustedAsset: IsTrustedAsset,
-            SourceVersion: SourceVersion,
-            VaryHeaders: VaryHeaders,
-            VaryDigest: VaryDigest,
-            SecurityPolicyVersion: SecurityPolicyVersion,
-            ResponseDate: ResponseDateUtcTicks is { } responseDate
-                ? new DateTimeOffset(responseDate, TimeSpan.Zero)
-                : null,
-            ResponseAge: ResponseAgeTicks is { } responseAge ? TimeSpan.FromTicks(responseAge) : null,
-            Expires: ExpiresUtcTicks is { } expires ? new DateTimeOffset(expires, TimeSpan.Zero) : null,
-            MaxAge: MaxAgeTicks is { } maxAge ? TimeSpan.FromTicks(maxAge) : null,
-            IsPrivate: IsPrivate);
-    }
+            FreshUntilUtcTicks is { } fresh ? new DateTimeOffset(fresh, TimeSpan.Zero) : null,
+            ETag,
+            LastModifiedUtcTicks is { } modified ? new DateTimeOffset(modified, TimeSpan.Zero) : null,
+            NoCache,
+            MustRevalidate,
+            IsRemote,
+            IsTrustedAsset,
+            VaryHeaders,
+            VaryDigest,
+            ResponseDateUtcTicks is { } responseDate ? new DateTimeOffset(responseDate, TimeSpan.Zero) : null,
+            ResponseAgeTicks is { } responseAge ? TimeSpan.FromTicks(responseAge) : null,
+            ExpiresUtcTicks is { } expires ? new DateTimeOffset(expires, TimeSpan.Zero) : null,
+            MaxAgeTicks is { } maxAge ? TimeSpan.FromTicks(maxAge) : null,
+            IsPrivate,
+            SecurityPolicyVersion);
 
     internal void Write(Stream stream)
     {
         using var writer = new BinaryWriter(stream, System.Text.Encoding.UTF8, leaveOpen: true);
-        writer.Write(SchemaVersion);
+        writer.Write(FormatRevision);
         writer.Write(PartitionHash);
-        writer.Write(ContentLength);
-        writer.Write(ContentDigest);
-        WriteNullable(writer, MediaType);
+        writer.Write(SourceKey);
+        writer.Write(SourceVersion);
+        writer.Write(ContentId);
+        writer.Write(CommitGeneration);
         writer.Write(StoredAtUtcTicks);
         WriteNullable(writer, FreshUntilUtcTicks);
         WriteNullable(writer, ETag);
@@ -99,7 +165,6 @@ internal sealed record ImageFileCacheMetadata(
         writer.Write(MustRevalidate);
         writer.Write(IsRemote);
         writer.Write(IsTrustedAsset);
-        WriteNullable(writer, SourceVersion);
         WriteNullable(writer, VaryHeaders);
         WriteNullable(writer, VaryDigest);
         WriteNullable(writer, ResponseDateUtcTicks);
@@ -110,18 +175,19 @@ internal sealed record ImageFileCacheMetadata(
         writer.Write(SecurityPolicyVersion);
     }
 
-    internal static ImageFileCacheMetadata Read(Stream stream)
+    internal static ImageStoredSourceSnapshot Read(Stream stream)
     {
         using var reader = new BinaryReader(stream, System.Text.Encoding.UTF8, leaveOpen: true);
-        if (reader.ReadInt32() != SchemaVersion)
+        if (reader.ReadInt32() != FormatRevision)
         {
-            throw new InvalidDataException("Unsupported image cache metadata version.");
+            throw new InvalidDataException("Unsupported image source metadata format revision.");
         }
-        return new ImageFileCacheMetadata(
+        return new ImageStoredSourceSnapshot(
+            reader.ReadString(),
+            reader.ReadString(),
+            reader.ReadString(),
             reader.ReadString(),
             reader.ReadInt64(),
-            reader.ReadString(),
-            ReadNullableString(reader),
             reader.ReadInt64(),
             ReadNullableInt64(reader),
             ReadNullableString(reader),
@@ -130,7 +196,6 @@ internal sealed record ImageFileCacheMetadata(
             reader.ReadBoolean(),
             reader.ReadBoolean(),
             reader.ReadBoolean(),
-            ReadNullableString(reader),
             ReadNullableStrings(reader),
             ReadNullableString(reader),
             ReadNullableInt64(reader),
@@ -186,15 +251,15 @@ internal sealed record ImageFileCacheMetadata(
             return null;
         }
         var count = reader.ReadInt32();
-        if (count < 0 || count > 256)
+        if (count is < 0 or > 256)
         {
-            throw new InvalidDataException("Image cache metadata contains an invalid header count.");
+            throw new InvalidDataException("Image source metadata contains an invalid header count.");
         }
-        var values = new string[count];
+        var result = new string[count];
         for (var index = 0; index < count; index++)
         {
-            values[index] = reader.ReadString();
+            result[index] = reader.ReadString();
         }
-        return values;
+        return result;
     }
 }

@@ -9,7 +9,7 @@ internal sealed class BytesImageSourceReader : ImageSourceReader
         _options = options;
     }
 
-    internal override ImageLoadSourceKind Kind => ImageLoadSourceKind.Bytes;
+    internal override ImageSourceKind Kind => ImageSourceKind.Bytes;
 
     internal override Task<ImageSourceReadResult> ReadAsync(
         NormalizedImageRequest request,
@@ -18,7 +18,7 @@ internal sealed class BytesImageSourceReader : ImageSourceReader
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var bytes = (byte[])request.Source.Value;
+        var bytes = ((BytesImageSource)request.Source).Content.ToArray();
         if (bytes.LongLength > _options.MaxResponseBytes)
         {
             throw ImageSourceReadHelpers.Failure(
@@ -30,9 +30,10 @@ internal sealed class BytesImageSourceReader : ImageSourceReader
         return Task.FromResult(new ImageSourceReadResult(new ImageEncodedContent(
             bytes,
             null,
-            ImageCacheSource.Local,
+            ImageLoadOrigin.Local,
             DateTimeOffset.UtcNow,
-            FreshUntil: request.Source.Version is null ? null : DateTimeOffset.MaxValue,
-            SourceVersion: request.Source.Version)));
+            FreshUntil: DateTimeOffset.MaxValue,
+            SourceVersion: request.Source.SourceRevision),
+            SourceValidation: ImageSourceValidation.NotRequired));
     }
 }
