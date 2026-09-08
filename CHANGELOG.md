@@ -4,6 +4,33 @@ All notable changes to AtomUI are documented in this file.
 
 `AtomUI` follows Semantic Versioning 2.0.0.
 
+## 6.1.8
+
+`2026-09-08`
+
+- Breaking Changes
+  - DataGrid: replace collection-backed `ItemsSource` and mutable collection-view state with the range-based `IDataGridSource`, immutable `DataGridQuery`, `DataGridSelectionState` and `CurrentRowKey` contracts. Local collections must be wrapped with `DataGridLocalSource<T>`; remote sources implement `IDataGridSource`. Columns now bind query behavior through `FieldId` and source schema instead of member-path sorting/filtering APIs.
+  - Image Loading: replace `ImageLoadSource` and its factories with the closed `ImageSource` hierarchy; split `ImageCacheMode` into `ImageCacheReadPolicy` and `ImageCacheStoragePolicy`; and replace cache-source result reporting with `ImageLoadOrigin`, `ImageSourceValidation` and content identity.
+  - Theme: concrete `[ControlDesignToken]` types must now be sealed. Shared inheritance must use explicitly marked abstract token layers; `ColorPickerToken` is now sealed and can no longer be subclassed. See [6.1.8 API change examples](docs/releases/6.1.8-api-changes.md).
+- DataGrid
+  - Add immutable query, page, group-expansion and declarative selection state over range-based local or remote sources, including bounded viewport loading, cancellation, snapshot validation and remote-capability interfaces. #455
+  - Preserve selected-row styling when sorting, and reset viewport range and automatic row-height estimates correctly when data changes. #454 #457
+- Image Loading and ImagePreviewer
+  - Add a closed, strongly typed image-source model with source validation, content-addressed caching, independent cache read/storage policies and safer borrowed-image ownership.
+  - Add `ImageSwitchMode.Immediate` and `WaitForLoaded`, and fix rapid preview switching so stale loads cannot replace the current image. #450
+- Window and Navigation
+  - Add `Window.IsTitleVisible`, improve live title-bar logo fallback behavior and extend the Gallery title-bar examples. #451
+  - Make NavMenu pointer and keyboard activation ordering deterministic, protect reentrant selection changes and restore pressed-state visuals and motion easing. #452
+- Select Family
+  - Fix multiple-selection prefix spacing in Select, TreeSelect and Cascader, and align empty-result indicators across Select, AutoComplete and Mentions.
+- NativeAOT, Browser Gallery and Build
+  - Preserve cross-project and binary-only linked-registration closure for trimmed and NativeAOT applications. #453
+  - Keep native WebAssembly linking enabled for ordinary Browser Gallery builds so SkiaSharp native assets are present at runtime.
+  - Fix NuGet release artifact upload paths, standardize canonical XLIFF output on one trailing LF, and add automatic VSTest temporary-directory cleanup without collecting crash dumps.
+- Gallery, Dependencies and Platform
+  - Reduce ShowCase masonry flicker while resizing.
+  - Upgrade Avalonia to `12.1.2` and simplify platform-specific project wiring.
+
 ## 6.1.7
 
 `2026-09-02`

@@ -6,6 +6,33 @@ AtomUI 的重要变更记录在此文件中。
 
 英文版本见 [CHANGELOG.md](CHANGELOG.md)。
 
+## 6.1.8
+
+`2026-09-08`
+
+- 破坏性变更
+  - DataGrid：以基于 Range 的 `IDataGridSource`、不可变 `DataGridQuery`、`DataGridSelectionState` 和 `CurrentRowKey` 契约替代集合型 `ItemsSource` 与可变 CollectionView 状态。本地集合必须包装为 `DataGridLocalSource<T>`，远端数据源需实现 `IDataGridSource`；列查询改为通过 `FieldId` 和 Source Schema 绑定，不再使用成员路径排序/过滤 API。
+  - 图片加载：以封闭的 `ImageSource` 类型层次及其构造器替代 `ImageLoadSource` 工厂；将 `ImageCacheMode` 拆分为 `ImageCacheReadPolicy` 与 `ImageCacheStoragePolicy`；加载结果改用 `ImageLoadOrigin`、`ImageSourceValidation` 和内容身份描述缓存与校验状态。
+  - 主题：具体 `[ControlDesignToken]` 类型现在必须为 `sealed`；需要共享继承时必须引入显式标记的抽象 Token 层。`ColorPickerToken` 现已封闭，不能继续派生。迁移示例见 [6.1.8 API 变更示例](docs/releases/6.1.8-api-changes.zh-CN.md)。
+- DataGrid
+  - 新增基于本地或远端 Range Source 的不可变查询、分页、分组展开与声明式选择状态，支持有界 Viewport 加载、取消、Snapshot 校验和远端能力接口。#455
+  - 修复排序后选中行样式丢失，并在数据变化时正确重置 Viewport Range 与自动行高估值。#454 #457
+- 图片加载与 ImagePreviewer
+  - 新增封闭的强类型图片来源模型、来源校验、内容寻址缓存、独立的缓存读取/存储策略以及更安全的 borrowed image 所有权。
+  - 新增 `ImageSwitchMode.Immediate` 和 `WaitForLoaded`，并修复快速切换预览时过期加载覆盖当前图片的问题。#450
+- Window 与导航
+  - 新增 `Window.IsTitleVisible`，改进标题栏 Logo 的实时回退行为，并扩充 Gallery 标题栏示例。#451
+  - 统一 NavMenu 指针和键盘激活顺序，保护可重入选择变化，并恢复 Pressed 视觉与动效 Easing。#452
+- Select 家族
+  - 修复 Select、TreeSelect 和 Cascader 多选模式的 Prefix 间距，并统一 Select、AutoComplete 与 Mentions 的空结果提示。
+- NativeAOT、Browser Gallery 与构建
+  - 保留 trimmed/NativeAOT 应用跨项目和 binary-only 依赖的 linked-registration 闭包。#453
+  - 普通 Browser Gallery 构建继续启用原生 WebAssembly 链接，确保运行时包含 SkiaSharp 原生资产。
+  - 修复 NuGet 发布产物上传路径，将 canonical XLIFF 统一为单个末尾 LF，并新增 VSTest 临时目录自动清理且不收集崩溃 Dump。
+- Gallery、依赖与平台
+  - 降低 ShowCase Masonry 在窗口缩放过程中的闪烁。
+  - 将 Avalonia 升级到 `12.1.2`，并简化平台相关项目接线。
+
 ## 6.1.7
 
 `2026-09-02`
