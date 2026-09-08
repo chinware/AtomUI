@@ -5,6 +5,15 @@
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:vm="using:AtomUIGallery.ShowCases.BorderBeam"
              x:DataType="vm:BorderBeamViewModel">
+    <UserControl.Styles>
+        <Style Selector="atom|BorderBeam.show-on-hover">
+            <Setter Property="IsMotionEnabled" Value="False" />
+        </Style>
+        <Style Selector="atom|BorderBeam.show-on-hover:pointerover">
+            <Setter Property="IsMotionEnabled" Value="True" />
+        </Style>
+    </UserControl.Styles>
+
     <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
         <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
             <gallery:GalleryStickyTabsHost.Header>
@@ -28,6 +37,7 @@
                                    DeferredLoadBatchSize="2"
                                    ContentMargin="28,10,28,28">
                 <gallery:ShowCaseItem
+                    SourceKey="border-beam-basic"
                     Title="{gallery:BorderBeamShowCaseLangResource BasicTitle}"
                     Description="{gallery:BorderBeamShowCaseLangResource BasicDescription}"
                     IsDeferredContentEnabled="True">
@@ -73,6 +83,51 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
+                    SourceKey="border-beam-show-on-hover"
+                    Title="{gallery:BorderBeamShowCaseLangResource ShowOnHoverTitle}"
+                    Description="{gallery:BorderBeamShowCaseLangResource ShowOnHoverDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:BorderBeamViewModel">
+                            <atom:BorderBeam Width="360"
+                                             Classes="show-on-hover"
+                                             HorizontalAlignment="Left">
+                                <atom:Card Header="{gallery:BorderBeamShowCaseLangResource ShowOnHoverCardTitle}"
+                                           BorderThickness="1"
+                                           CornerRadius="8">
+                                    <atom:TextBlock Text="{gallery:BorderBeamShowCaseLangResource ShowOnHoverCardDescription}"
+                                                    TextWrapping="Wrap"
+                                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                                </atom:Card>
+                            </atom:BorderBeam>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    SourceKey="border-beam-multiple-beams"
+                    Title="{gallery:BorderBeamShowCaseLangResource MultipleBeamsTitle}"
+                    Description="{gallery:BorderBeamShowCaseLangResource MultipleBeamsDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:BorderBeamViewModel">
+                            <atom:BorderBeam Width="360"
+                                             Count="3"
+                                             HorizontalAlignment="Left">
+                                <atom:Card Header="{gallery:BorderBeamShowCaseLangResource MultipleBeamsCardTitle}"
+                                           BorderThickness="1"
+                                           CornerRadius="8">
+                                    <atom:TextBlock Text="{gallery:BorderBeamShowCaseLangResource MultipleBeamsCardDescription}"
+                                                    TextWrapping="Wrap"
+                                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                                </atom:Card>
+                            </atom:BorderBeam>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    SourceKey="border-beam-non-uniform-radius"
                     Title="{gallery:BorderBeamShowCaseLangResource NonUniformRadiusTitle}"
                     Description="{gallery:BorderBeamShowCaseLangResource NonUniformRadiusDescription}"
                     IsDeferredContentEnabled="True">
@@ -103,6 +158,7 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
+                    SourceKey="border-beam-customized-color"
                     Title="{gallery:BorderBeamShowCaseLangResource CustomizedColorTitle}"
                     Description="{gallery:BorderBeamShowCaseLangResource CustomizedColorDescription}"
                     IsDeferredContentEnabled="True"

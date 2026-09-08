@@ -6,7 +6,7 @@
 
 BorderBeam 是 AtomUI 桌面其他类控件中的装饰性包装控件，用于在容器边界上绘制持续流动的高光效果。它强化某个容器的视觉关注度，但不表达焦点态、校验态、选中态、错误态、警告态或任何业务状态。
 
-BorderBeam 的职责是围绕一个内容控件绘制流光边界，并在不拦截内容交互的前提下提供颜色、渐变、外扩、圆角、线宽和动效控制。它不拥有内容控件的布局语义，不改变内容控件的输入、焦点、命中测试、状态同步、数据绑定或模板结构。
+BorderBeam 的职责是围绕一个内容控件绘制一个或多个流光边界，并在不拦截内容交互的前提下提供数量、颜色、渐变、外扩、圆角、线宽和动效控制。它不拥有内容控件的布局语义，不改变内容控件的输入、焦点、命中测试、状态同步、数据绑定或模板结构。
 
 ## 包与命名空间
 
@@ -29,6 +29,7 @@ BorderBeam 的设计语言是“非业务状态的动态强调”。它通过沿
 | 品牌强调 | 默认颜色来自主题主色。 | `ColorPrimary`、`ColorPrimaryHover`。 |
 | 渐变尾迹 | 用户停靠点映射到可见段，尾部保留透明衰减。 | `ColorStops.Percent` 映射到可见段。 |
 | 持续流动 | 默认流光不跟随全局动效开关关闭，保持装饰强调一致可见。 | `IsMotionEnabled` 实例开关。 |
+| 均匀分布 | 多个光束共享一个周期，并沿同一边界保持等距。 | `Count` 与共享 `Progress`。 |
 
 BorderBeam 不应绘制成一个新的实体边框，也不应让被装饰控件看起来拥有新的可交互状态。流光层应贴合容器边界，透明尾迹应保持连续，圆角转弯处不应出现断裂。
 
@@ -49,6 +50,7 @@ BorderBeam 控件 API：
 | `IsMotionEnabled` | `bool` | 控制当前实例的流光动画是否启用；默认值不绑定全局 motion 设置。 |
 | `Duration` | `TimeSpan` | 流光运行一周的时长。 |
 | `BeamSize` | `double` | 流光高光段基准尺寸。 |
+| `Count` | `int` | 沿同一边界均匀分布的光束数量；默认值为 `1`，小于 `1` 时按 `1` 渲染。 |
 
 `ColorStops` 非空时优先于 `Color`。`ColorStops` 为空且 `Color` 不为空时，使用单色流光。两者均为空时，使用主题默认渐变。
 
@@ -87,9 +89,9 @@ event EventHandler? BorderBeamGeometryChanged;
 
 ### 基础
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:36`
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:46`
 
-Gallery key：`ExamplesContent` / item `0`
+SourceKey：`border-beam-basic`
 
 ```axaml
 <atom:BorderBeam Width="360"
@@ -129,11 +131,51 @@ Gallery key：`ExamplesContent` / item `0`
 </atom:BorderBeam>
 ```
 
+### 悬停显示
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:92`
+
+SourceKey：`border-beam-show-on-hover`
+
+```axaml
+<atom:BorderBeam Width="360"
+                 Classes="show-on-hover"
+                 HorizontalAlignment="Left">
+    <atom:Card Header="将指针移到卡片上"
+               BorderThickness="1"
+               CornerRadius="8">
+        <atom:TextBlock Text="当指针移到此卡片上时，边框流光会显示。"
+                        TextWrapping="Wrap"
+                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+    </atom:Card>
+</atom:BorderBeam>
+```
+
+### 多光束
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:114`
+
+SourceKey：`border-beam-multiple-beams`
+
+```axaml
+<atom:BorderBeam Width="360"
+                 Count="3"
+                 HorizontalAlignment="Left">
+    <atom:Card Header="多光束"
+               BorderThickness="1"
+               CornerRadius="8">
+        <atom:TextBlock Text="三个光束共享同一个动画周期，并沿卡片边界保持等距。"
+                        TextWrapping="Wrap"
+                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+    </atom:Card>
+</atom:BorderBeam>
+```
+
 ### 非统一圆角
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:81`
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:136`
 
-Gallery key：`ExamplesContent` / item `1`
+SourceKey：`border-beam-non-uniform-radius`
 
 ```axaml
 <atom:BorderBeam Width="360"
@@ -158,53 +200,6 @@ Gallery key：`ExamplesContent` / item `1`
 </atom:BorderBeam>
 ```
 
-### 自定义颜色
-
-来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:112`
-
-Gallery key：`ExamplesContent` / item `2`
-
-```axaml
-<StackPanel Spacing="16"
-            HorizontalAlignment="Left">
-    <atom:Segmented ItemsSource="{Binding ColorPresets}"
-                    SelectedItem="{Binding SelectedColorPreset}"
-                    HorizontalAlignment="Left" />
-    <atom:BorderBeam Width="420"
-                     ColorStops="{Binding SelectedColorStops}"
-                     HorizontalAlignment="Left">
-        <atom:Card Header="{Binding SelectedColorPreset.Name}"
-                   BorderThickness="1"
-                   CornerRadius="8">
-            <StackPanel Spacing="12">
-                <atom:TextBlock Text="分段选择器会切换流光使用的颜色停靠点集合。"
-                                TextWrapping="Wrap"
-                                Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
-                <StackPanel Orientation="Horizontal"
-                            Spacing="8">
-                    <Border Width="28"
-                            Height="12"
-                            CornerRadius="6"
-                            Background="#1677FF" />
-                    <Border Width="28"
-                            Height="12"
-                            CornerRadius="6"
-                            Background="#36CFC9" />
-                    <Border Width="28"
-                            Height="12"
-                            CornerRadius="6"
-                            Background="#F759AB" />
-                    <Border Width="28"
-                            Height="12"
-                            CornerRadius="6"
-                            Background="#B37FEB" />
-                </StackPanel>
-            </StackPanel>
-        </atom:Card>
-    </atom:BorderBeam>
-</StackPanel>
-```
-
 ## 状态模型
 
 BorderBeam 的行为优先级：
@@ -219,13 +214,20 @@ IsVisible=false
 
 BorderBeam 不拦截鼠标、触控、键盘或焦点。流光 presenter 必须 `IsHitTestVisible=false`，内容控件继续承担自身交互。BorderBeam 不改变内容控件的 `IsEnabled`、`:pointerover`、`:pressed`、`:focus`、`:disabled` 或任何伪类。
 
-effective state 由几何状态、颜色状态和动效状态组成：
+effective state 由几何状态、颜色状态、数量状态和动效状态组成：
 
 - 几何状态：优先读取 `IBorderBeamAwareControl`，未命中时使用 BorderBeam 自身 `BorderThickness` 与 `CornerRadius`。
 - 颜色状态：`ColorStops` 优先，其次 `Color`，最后使用主题默认渐变。
+- 数量状态：`effectiveCount = Math.Max(1, Count)`；`Count` 变化只触发 presenter 重绘，不替换模板或重启动画。
 - 动效状态：实例级 `IsMotionEnabled`、可见性和有效尺寸共同决定动画是否运行；默认主题不从全局 `EnableMotion` 覆盖该属性。
 
-`Progress` 是 internal animation state。它不形成公共 API，不参与样式选择器，不允许外部绑定。
+`Progress` 是所有光束共享的 internal animation state。第 `i` 个光束使用
+`NormalizeProgress(Progress + i / effectiveCount)` 计算相位。`Progress` 不形成公共 API，不参与样式选择器，
+不允许外部绑定。
+
+“仅悬停时显示”不是 BorderBeam 的内置状态或公共属性。调用方可以用 Style 在默认状态设置
+`IsMotionEnabled=false`，并在 BorderBeam 根控件的 `:pointerover` 状态设置为 `true`；该组合会复用现有动画
+启动与停止路径，内容控件仍保留完整交互。
 
 ## 主题与 Design Token
 
@@ -240,7 +242,7 @@ BorderBeam
 
 视觉层级要求：
 
-- `BorderBeamPresenter` 覆盖内容层边界，但不得改变内容层测量和排列结果。
+- `BorderBeamPresenter` 覆盖内容层边界，在一个 presenter 内绘制 `effectiveCount` 个等距光束，但不得改变内容层测量和排列结果。
 - `BorderBeamPresenter` 必须 `IsHitTestVisible=false`。
 - 不把 beam 层插入被装饰控件模板内部，不修改 Card、Button、GroupBox 等控件的模板结构。
 - 不使用全局 `ScopeAwareAdornerLayer` 作为默认实现。
@@ -250,7 +252,7 @@ BorderBeam Theme 只负责装配内容层和流光 presenter，并设置默认 t
 
 Token 来源：
 
-BorderBeamToken 是 BorderBeam 的组件级设计变量层。它只承载流光装饰自身需要的默认动效、尺寸和渐变映射参数。颜色、线宽和圆角优先复用 SharedToken；motion 开关保留为实例行为，不由 BorderBeamToken 或 `SharedToken.EnableMotion` 决定。
+BorderBeamToken 是 BorderBeam 的组件级设计变量层。它只承载流光装饰自身需要的默认动效、尺寸和渐变映射参数。颜色、线宽和圆角优先复用 SharedToken；motion 开关与光束数量保留为实例行为，不由 BorderBeamToken 或 `SharedToken.EnableMotion` 决定。
 
 BorderBeamToken 服务以下主题和控件：
 
@@ -258,22 +260,29 @@ BorderBeamToken 服务以下主题和控件：
 - internal `BorderBeamPresenter`
 - BorderBeam 渐变归一和动画默认值
 
-BorderBeamToken 不承载 `Content`、`Color`、`ColorStops`、`Outset`、`Progress`、`EffectiveBorderThickness`、`EffectiveCornerRadius` 等实例状态。这些状态由 BorderBeam 状态模型和边界感知接口处理。
+BorderBeamToken 不承载 `Content`、`Color`、`ColorStops`、`Outset`、`Count`、`Progress`、`EffectiveBorderThickness`、`EffectiveCornerRadius` 等实例状态。这些状态由 BorderBeam 状态模型和边界感知接口处理。
 
 ## AOT 与裁剪注意事项
 
 BorderBeam 不使用反射，不访问内容控件 internal 属性或 template part。集成通过 `IBorderBeamAwareControl` 完成。
 
-实例级 motion 未启用时不应启动循环动画。隐藏祖先下的动画必须暂停；动画取消资源必须在 detached、模板替换、content 替换和实例 motion 关闭时释放。
+实例级 motion 未启用时不应启动循环动画。隐藏祖先下的动画必须暂停；动画取消资源必须在 detached、模板替换、
+实例 motion 关闭或动画重启时释放。Content 替换只更新 effective geometry，不重启动画。
 
 ColorStops 使用实例级集合，避免共享默认集合。集合变更应触发渐变重建和 presenter 重绘，不应重建整个模板。
+
+`Count=N` 的结构成本为：1 个 presenter、1 个 Animation、1 个 CancellationTokenSource、每帧 1 次路径指标构建和
+N 次光束 draw call。额外持久内存保持 `O(1)`，单帧绘制成本为 `O(N)`；实现不创建 phase 集合、每光束 Control、
+每光束 animation 或跨帧路径缓存。
 
 ## 源码索引
 
 主要源码：
 
-- `src/AtomUI.Desktop.Controls/BorderBeam/BorderBeam.cs`：公共 API、Content 几何感知、颜色归一、动画控制和 template part 接入。
-- `src/AtomUI.Desktop.Controls/BorderBeam/BorderBeamPresenter.cs`：internal 渲染层，绘制边框环和流动高光。
+- `src/AtomUI.Desktop.Controls/BorderBeam/BorderBeam.cs`：公共 API、Content 几何感知、effective geometry 和
+  `ColorStops` 集合变更通知。
+- `src/AtomUI.Desktop.Controls/BorderBeam/BorderBeamPresenter.cs`：internal 渲染层，负责颜色归一、动画生命周期、
+  单时钟多相位路径采样以及边框环内的流动高光绘制。
 - `src/AtomUI.Desktop.Controls/BorderBeam/IBorderBeamAwareControl.cs`：被装饰控件边界感知接口。
 - `src/AtomUI.Desktop.Controls/BorderBeam/BorderBeamGeometry.cs`：边框厚度和圆角几何值。
 - `src/AtomUI.Desktop.Controls/BorderBeam/BorderBeamColorStop.cs`：单个渐变停靠点。

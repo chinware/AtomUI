@@ -41,6 +41,9 @@ public class BorderBeam : ContentControl,
     public static readonly StyledProperty<double> BeamSizeProperty =
         AvaloniaProperty.Register<BorderBeam, double>(nameof(BeamSize), 100d);
 
+    public static readonly StyledProperty<int> CountProperty =
+        AvaloniaProperty.Register<BorderBeam, int>(nameof(Count), 1);
+
     public Color? Color
     {
         get => GetValue(ColorProperty);
@@ -100,6 +103,12 @@ public class BorderBeam : ContentControl,
     {
         get => GetValue(BeamSizeProperty);
         set => SetValue(BeamSizeProperty, value);
+    }
+
+    public int Count
+    {
+        get => GetValue(CountProperty);
+        set => SetValue(CountProperty, value);
     }
 
     #endregion

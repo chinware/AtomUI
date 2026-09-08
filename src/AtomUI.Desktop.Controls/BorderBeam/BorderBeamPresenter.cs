@@ -38,6 +38,9 @@ internal class BorderBeamPresenter : Control
     internal static readonly StyledProperty<double> BeamSizeProperty =
         AvaloniaProperty.Register<BorderBeamPresenter, double>(nameof(BeamSize), 100d);
 
+    internal static readonly StyledProperty<int> CountProperty =
+        AvaloniaProperty.Register<BorderBeamPresenter, int>(nameof(Count), 1);
+
     internal static readonly StyledProperty<double> BeamOpacityProperty =
         AvaloniaProperty.Register<BorderBeamPresenter, double>(nameof(BeamOpacity), 0.95d);
 
@@ -98,6 +101,12 @@ internal class BorderBeamPresenter : Control
         set => SetValue(BeamSizeProperty, value);
     }
 
+    internal int Count
+    {
+        get => GetValue(CountProperty);
+        set => SetValue(CountProperty, value);
+    }
+
     internal double BeamOpacity
     {
         get => GetValue(BeamOpacityProperty);
@@ -145,6 +154,7 @@ internal class BorderBeamPresenter : Control
             BorderBeamGeometryProperty,
             IsMotionEnabledProperty,
             BeamSizeProperty,
+            CountProperty,
             BeamOpacityProperty,
             MaxVisibleStopPercentProperty,
             DefaultStartColorProperty,
@@ -206,15 +216,21 @@ internal class BorderBeamPresenter : Control
             return;
         }
 
-        var progressPoint = BorderBeamPathSampler.GetPointAtProgress(renderBounds, BeamSize, Progress);
-        var beamBrush     = CreateBeamBrush();
-        var beamTransform = BorderBeamPathSampler.CreateBeamTransform(progressPoint, BeamSize);
-        var beamBounds    = CreateBeamBounds();
+        var effectiveCount = Math.Max(1, Count);
+        var pathMetrics    = BorderBeamPathSampler.CreateMetrics(renderBounds, BeamSize);
+        var beamBrush      = CreateBeamBrush();
+        var beamBounds     = CreateBeamBounds();
 
-        using var opacityState   = context.PushOpacity(Math.Clamp(BeamOpacity, 0d, 1d));
-        using var clipState      = context.PushGeometryClip(borderGeometry);
-        using var transformState = context.PushTransform(beamTransform);
-        context.DrawRectangle(beamBrush, null, beamBounds);
+        using var opacityState = context.PushOpacity(Math.Clamp(BeamOpacity, 0d, 1d));
+        using var clipState    = context.PushGeometryClip(borderGeometry);
+        for (var index = 0; index < effectiveCount; index++)
+        {
+            var beamProgress = BorderBeamPathSampler.GetBeamProgress(Progress, index, effectiveCount);
+            var pathPoint    = BorderBeamPathSampler.GetPointAtProgress(pathMetrics, beamProgress);
+            var transform    = BorderBeamPathSampler.CreateBeamTransform(pathPoint, BeamSize);
+            using var transformState = context.PushTransform(transform);
+            context.DrawRectangle(beamBrush, null, beamBounds);
+        }
     }
 
     private void RestartAnimation()
@@ -437,17 +453,33 @@ internal class BorderBeamPresenter : Control
 
 internal readonly record struct BorderBeamPathPoint(Point Point, Vector Tangent);
 
+internal readonly record struct BorderBeamPathMetrics(
+    RoundRectGeometryBuilder.RoundedRectKeypoints Keypoints,
+    double Perimeter,
+    Point FallbackPoint);
+
 internal static class BorderBeamPathSampler
 {
     private const double QuarterTurn               = Math.PI / 2d;
     private const int    ArcLengthIntegrationSteps = 12;
     private const int    ArcLengthSearchIterations = 12;
 
+    internal static double GetBeamProgress(double progress, int index, int count)
+    {
+        var effectiveCount = Math.Max(1, count);
+        return NormalizeProgress(progress + index / (double)effectiveCount);
+    }
+
     internal static BorderBeamPathPoint GetPointAtProgress(Rect bounds, double pathCornerRadius, double progress)
+    {
+        return GetPointAtProgress(CreateMetrics(bounds, pathCornerRadius), progress);
+    }
+
+    internal static BorderBeamPathMetrics CreateMetrics(Rect bounds, double pathCornerRadius)
     {
         if (bounds.Width <= 0 || bounds.Height <= 0)
         {
-            return new BorderBeamPathPoint(bounds.TopLeft, new Vector(1, 0));
+            return new BorderBeamPathMetrics(default, 0d, bounds.TopLeft);
         }
 
         var keypoints = RoundRectGeometryBuilder.CalculateRoundedCornersRectangleWinUI(
@@ -456,12 +488,18 @@ internal static class BorderBeamPathSampler
             new CornerRadius(Math.Max(pathCornerRadius, 0d)),
             BackgroundSizing.OuterBorderEdge);
         var perimeter = GetPerimeter(ref keypoints);
-        if (MathUtils.IsZero(perimeter))
+        return new BorderBeamPathMetrics(keypoints, perimeter, bounds.TopLeft);
+    }
+
+    internal static BorderBeamPathPoint GetPointAtProgress(BorderBeamPathMetrics metrics, double progress)
+    {
+        if (MathUtils.IsZero(metrics.Perimeter))
         {
-            return new BorderBeamPathPoint(bounds.TopLeft, new Vector(1, 0));
+            return new BorderBeamPathPoint(metrics.FallbackPoint, new Vector(1, 0));
         }
 
-        var distance = NormalizeProgress(progress) * perimeter;
+        var keypoints = metrics.Keypoints;
+        var distance  = NormalizeProgress(progress) * metrics.Perimeter;
         return GetPointAtDistance(ref keypoints, distance);
     }
 

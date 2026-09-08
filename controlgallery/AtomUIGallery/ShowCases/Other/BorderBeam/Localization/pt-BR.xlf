@@ -43,6 +43,30 @@
         <target state="translated">Customized cor</target>
       </segment>
     </unit>
+    <unit id="MultipleBeamsCardDescription">
+      <segment>
+        <source>Three beams share one animation cycle and remain evenly spaced around the card.</source>
+        <target state="translated">Três feixes compartilham um ciclo de animação e permanecem uniformemente espaçados ao redor do cartão.</target>
+      </segment>
+    </unit>
+    <unit id="MultipleBeamsCardTitle">
+      <segment>
+        <source>Multiple beams</source>
+        <target state="translated">Vários feixes</target>
+      </segment>
+    </unit>
+    <unit id="MultipleBeamsDescription">
+      <segment>
+        <source>Use Count to distribute multiple beams evenly along one container boundary.</source>
+        <target state="translated">Use Count para distribuir vários feixes uniformemente ao longo da borda de um contêiner.</target>
+      </segment>
+    </unit>
+    <unit id="MultipleBeamsTitle">
+      <segment>
+        <source>Multiple beams</source>
+        <target state="translated">Vários feixes</target>
+      </segment>
+    </unit>
     <unit id="NonUniformRadiusCardDescription">
       <segment>
         <source>The top corners keep a larger radius while the bottom corners remain square.</source>
@@ -77,6 +101,30 @@
       <segment>
         <source>Examples</source>
         <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="ShowOnHoverCardDescription">
+      <segment>
+        <source>The border beam appears when the pointer moves over this card.</source>
+        <target state="translated">O feixe da borda aparece quando o ponteiro passa sobre este cartão.</target>
+      </segment>
+    </unit>
+    <unit id="ShowOnHoverCardTitle">
+      <segment>
+        <source>Hover over the card</source>
+        <target state="translated">Passe o mouse sobre o cartão</target>
+      </segment>
+    </unit>
+    <unit id="ShowOnHoverDescription">
+      <segment>
+        <source>Hide the border beam by default, and reveal it when hovering over the container.</source>
+        <target state="translated">Oculte o feixe da borda por padrão e revele-o ao passar o ponteiro sobre o contêiner.</target>
+      </segment>
+    </unit>
+    <unit id="ShowOnHoverTitle">
+      <segment>
+        <source>Show on hover</source>
+        <target state="translated">Mostrar ao passar o mouse</target>
       </segment>
     </unit>
   </file>

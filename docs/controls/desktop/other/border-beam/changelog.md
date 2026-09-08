@@ -3,6 +3,32 @@
 本文档记录 BorderBeam 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-09-08
+
+- API
+  - 新增 `Count` StyledProperty，默认值为 `1`；渲染层将非正值按一个光束处理。
+- Theme
+  - 默认 ControlTheme 通过 `TemplateBinding` 将 `Count` 转发给现有 `PART_BeamPresenter`，不增加新的
+    template part、Token 或 Visual。
+- Implementation
+  - 在单一 presenter、单一 `Progress`、单一 Animation 和单一 CancellationTokenSource 内按等距 phase
+    绘制多个光束。
+  - 一次 render 只构建一份圆角路径关键点和周长度量，由所有光束共享；draw call 随 `Count` 线性增加。
+  - `Count` 变化只触发重绘，不重启共享动画。
+- Gallery
+  - 新增 `Show on hover` 和 `Multiple beams` 延迟加载示例；hover 通过页面 Style 组合 `:pointerover` 与
+    `IsMotionEnabled`，不新增公共 hover API。
+  - 为五个 BorderBeam 示例补充稳定 `SourceKey`，并同步英语、巴西葡萄牙语、简体中文和繁体中文资源。
+- Tests
+  - 增加 `Count` 默认值与模板转发、等距相位、非正值回退、实际绘制数量，以及 Gallery 示例和本地化契约测试。
+- Docs
+  - 落地 [BorderBeam 多光束与悬停展示设计规格](../../../../superpowers/specs/2026-09-08-border-beam-multi-beam-hover-design.md)，
+    明确 `Count` 使用单 presenter、单动画时钟和等距 phase 的架构边界。
+  - 明确悬停展示通过 `IsMotionEnabled` 与 `:pointerover` 样式组合表达，不引入 `ShowOnHover` 公共属性。
+  - 修正实现文档的模板接入描述：默认模板使用 `TemplateBinding`，BorderBeam 不在 `OnApplyTemplate` 中持有
+    template part 引用。
+  - 明确 `IBorderBeamAwareControl` 是 opt-in 几何契约，当前产品控件没有内置适配。
+
 ## 2026-08-25
 
 - Fixed

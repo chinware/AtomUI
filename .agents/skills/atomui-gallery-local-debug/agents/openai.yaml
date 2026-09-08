@@ -1,0 +1,4 @@
+interface:
+  display_name: "AtomUI Gallery Local Debug"
+  short_description: "Launch and verify the current workspace Gallery binary"
+  default_prompt: "Use $atomui-gallery-local-debug to build and launch the current AtomUI Gallery for visual inspection."

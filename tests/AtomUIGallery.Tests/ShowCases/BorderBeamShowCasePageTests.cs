@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using AtomUI.Toolkits.GalleryBase.Localization;
 using AtomUI.Toolkits.GalleryBase.Navigation;
 using AtomUIGallery.ShowCases.BorderBeam;
@@ -106,14 +107,36 @@ public class BorderBeamShowCasePageTests
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml");
 
+        Regex.Matches(source, @"<gallery:ShowCaseItem\s").Count.ShouldBe(5);
+        source.Split("<gallery:ShowCaseItem.DeferredContentTemplate>").Length.ShouldBe(6);
+
         var basicDemo = ExtractShowCaseItemMarkup(source, "BorderBeamShowCaseLangResource BasicTitle");
+        basicDemo.ShouldContain("SourceKey=\"border-beam-basic\"");
         basicDemo.ShouldContain("<atom:BorderBeam");
         basicDemo.ShouldContain("<atom:Card Header=\"Workspace overview\"");
         basicDemo.ShouldContain("Users");
         basicDemo.ShouldContain("Projects");
         basicDemo.ShouldContain("Tasks");
 
+        var hoverDemo = ExtractShowCaseItemMarkup(source, "BorderBeamShowCaseLangResource ShowOnHoverTitle");
+        hoverDemo.ShouldContain("SourceKey=\"border-beam-show-on-hover\"");
+        hoverDemo.ShouldContain("Classes=\"show-on-hover\"");
+        hoverDemo.ShouldContain("BorderBeamShowCaseLangResource ShowOnHoverCardTitle");
+        hoverDemo.ShouldContain("BorderBeamShowCaseLangResource ShowOnHoverCardDescription");
+
+        source.ShouldContain("<Style Selector=\"atom|BorderBeam.show-on-hover\">");
+        source.ShouldContain("<Style Selector=\"atom|BorderBeam.show-on-hover:pointerover\">");
+        source.ShouldContain("<Setter Property=\"IsMotionEnabled\" Value=\"False\" />");
+        source.ShouldContain("<Setter Property=\"IsMotionEnabled\" Value=\"True\" />");
+
+        var multipleBeamsDemo = ExtractShowCaseItemMarkup(source, "BorderBeamShowCaseLangResource MultipleBeamsTitle");
+        multipleBeamsDemo.ShouldContain("SourceKey=\"border-beam-multiple-beams\"");
+        multipleBeamsDemo.ShouldContain("Count=\"3\"");
+        multipleBeamsDemo.ShouldContain("BorderBeamShowCaseLangResource MultipleBeamsCardTitle");
+        multipleBeamsDemo.ShouldContain("BorderBeamShowCaseLangResource MultipleBeamsCardDescription");
+
         var customizedColorDemo = ExtractShowCaseItemMarkup(source, "BorderBeamShowCaseLangResource CustomizedColorTitle");
+        customizedColorDemo.ShouldContain("SourceKey=\"border-beam-customized-color\"");
         customizedColorDemo.ShouldContain("<atom:Segmented");
         customizedColorDemo.ShouldContain("ItemsSource=\"{Binding ColorPresets}\"");
         customizedColorDemo.ShouldContain("SelectedItem=\"{Binding SelectedColorPreset}\"");
@@ -125,6 +148,7 @@ public class BorderBeamShowCasePageTests
         customizedColorDemo.ShouldContain("TextWrapping=\"Wrap\"");
 
         var nonUniformRadiusDemo = ExtractShowCaseItemMarkup(source, "BorderBeamShowCaseLangResource NonUniformRadiusTitle");
+        nonUniformRadiusDemo.ShouldContain("SourceKey=\"border-beam-non-uniform-radius\"");
         nonUniformRadiusDemo.ShouldContain("Outset=\"0\"");
         nonUniformRadiusDemo.ShouldContain("CornerRadius=\"20,20,0,0\"");
         nonUniformRadiusDemo.ShouldContain("ClipToBounds=\"True\"");
@@ -139,6 +163,12 @@ public class BorderBeamShowCasePageTests
         var basicIndex = source.IndexOf(
             "BorderBeamShowCaseLangResource BasicTitle",
             StringComparison.Ordinal);
+        var showOnHoverIndex = source.IndexOf(
+            "BorderBeamShowCaseLangResource ShowOnHoverTitle",
+            StringComparison.Ordinal);
+        var multipleBeamsIndex = source.IndexOf(
+            "BorderBeamShowCaseLangResource MultipleBeamsTitle",
+            StringComparison.Ordinal);
         var nonUniformRadiusIndex = source.IndexOf(
             "BorderBeamShowCaseLangResource NonUniformRadiusTitle",
             StringComparison.Ordinal);
@@ -147,14 +177,57 @@ public class BorderBeamShowCasePageTests
             StringComparison.Ordinal);
 
         basicIndex.ShouldBeGreaterThanOrEqualTo(0);
-        nonUniformRadiusIndex.ShouldBeGreaterThan(basicIndex);
+        showOnHoverIndex.ShouldBeGreaterThan(basicIndex);
+        multipleBeamsIndex.ShouldBeGreaterThan(showOnHoverIndex);
+        nonUniformRadiusIndex.ShouldBeGreaterThan(multipleBeamsIndex);
         customizedColorIndex.ShouldBeGreaterThan(nonUniformRadiusIndex);
+
+        var basicDemo = ExtractShowCaseItemMarkup(source, "BorderBeamShowCaseLangResource BasicTitle");
+        basicDemo.ShouldNotContain("IsOccupyEntireRow=\"True\"");
+
+        var hoverDemo = ExtractShowCaseItemMarkup(source, "BorderBeamShowCaseLangResource ShowOnHoverTitle");
+        hoverDemo.ShouldNotContain("IsOccupyEntireRow=\"True\"");
+
+        var multipleBeamsDemo = ExtractShowCaseItemMarkup(source, "BorderBeamShowCaseLangResource MultipleBeamsTitle");
+        multipleBeamsDemo.ShouldNotContain("IsOccupyEntireRow=\"True\"");
 
         var nonUniformRadiusDemo = ExtractShowCaseItemMarkup(source, "BorderBeamShowCaseLangResource NonUniformRadiusTitle");
         nonUniformRadiusDemo.ShouldNotContain("IsOccupyEntireRow=\"True\"");
 
         var customizedColorDemo = ExtractShowCaseItemMarkup(source, "BorderBeamShowCaseLangResource CustomizedColorTitle");
         customizedColorDemo.ShouldContain("IsOccupyEntireRow=\"True\"");
+    }
+
+    [Fact]
+    public void BorderBeam_ShowCase_Localizes_Hover_And_Multiple_Beam_Examples()
+    {
+        var localizationPaths = new[]
+        {
+            "controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Localization/en-US.xlf",
+            "controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Localization/pt-BR.xlf",
+            "controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Localization/zh-CN.xlf",
+            "controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Localization/zh-TW.xlf"
+        };
+        var expectedKeys = new[]
+        {
+            "ShowOnHoverTitle",
+            "ShowOnHoverDescription",
+            "ShowOnHoverCardTitle",
+            "ShowOnHoverCardDescription",
+            "MultipleBeamsTitle",
+            "MultipleBeamsDescription",
+            "MultipleBeamsCardTitle",
+            "MultipleBeamsCardDescription"
+        };
+
+        foreach (var path in localizationPaths)
+        {
+            var localization = XliffTestDocument.Read(path);
+            foreach (var key in expectedKeys)
+            {
+                localization.ContainsKey(key).ShouldBeTrue($"{path} should contain {key}");
+            }
+        }
     }
 
     [Fact]

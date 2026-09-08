@@ -43,7 +43,7 @@ BorderBeam
 | `BorderBeam` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `BorderBeam` | control theme | `BorderBeamTheme.axaml` | 用户代码 / 控件宿主 | `BeamOpacity`, `BeamSize`, `Color`, `ColorStops`, `Content`, `ContentTemplate` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `BorderBeamTheme.axaml` | BorderBeam | `Content`, `ContentTemplate`, `HorizontalContentAlignment`, `VerticalContentAlignment` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_BeamPresenter` | template node (BorderBeamPresenter) | `BorderBeamTheme.axaml` | BorderBeam | `BeamOpacity`, `BeamSize`, `Color`, `ColorStops`, `DefaultEndColor`, `DefaultStartColor` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_BeamPresenter` | template node (BorderBeamPresenter) | `BorderBeamTheme.axaml` | BorderBeam | `BeamOpacity`, `BeamSize`, `Color`, `ColorStops`, `Count`, `DefaultEndColor` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 
@@ -56,13 +56,16 @@ BorderBeam
 
 BorderBeam 不拦截鼠标、触控、键盘或焦点。流光 presenter 必须 `IsHitTestVisible=false`，内容控件继续承担自身交互。BorderBeam 不改变内容控件的 `IsEnabled`、`:pointerover`、`:pressed`、`:focus`、`:disabled` 或任何伪类。
 
-effective state 由几何状态、颜色状态和动效状态组成：
+effective state 由几何状态、颜色状态、数量状态和动效状态组成：
 
 - 几何状态：优先读取 `IBorderBeamAwareControl`，未命中时使用 BorderBeam 自身 `BorderThickness` 与 `CornerRadius`。
 - 颜色状态：`ColorStops` 优先，其次 `Color`，最后使用主题默认渐变。
+- 数量状态：`effectiveCount = Math.Max(1, Count)`；`Count` 变化只触发 presenter 重绘，不替换模板或重启动画。
 - 动效状态：实例级 `IsMotionEnabled`、可见性和有效尺寸共同决定动画是否运行；默认主题不从全局 `EnableMotion` 覆盖该属性。
 
-`Progress` 是 internal animation state。它不形成公共 API，不参与样式选择器，不允许外部绑定。
+`Progress` 是所有光束共享的 internal animation state。第 `i` 个光束使用
+`NormalizeProgress(Progress + i / effectiveCount)` 计算相位。`Progress` 不形成公共 API，不参与样式选择器，
+不允许外部绑定。
 
 ## State Flow
 
@@ -78,13 +81,20 @@ IsVisible=false
 
 BorderBeam 不拦截鼠标、触控、键盘或焦点。流光 presenter 必须 `IsHitTestVisible=false`，内容控件继续承担自身交互。BorderBeam 不改变内容控件的 `IsEnabled`、`:pointerover`、`:pressed`、`:focus`、`:disabled` 或任何伪类。
 
-effective state 由几何状态、颜色状态和动效状态组成：
+effective state 由几何状态、颜色状态、数量状态和动效状态组成：
 
 - 几何状态：优先读取 `IBorderBeamAwareControl`，未命中时使用 BorderBeam 自身 `BorderThickness` 与 `CornerRadius`。
 - 颜色状态：`ColorStops` 优先，其次 `Color`，最后使用主题默认渐变。
+- 数量状态：`effectiveCount = Math.Max(1, Count)`；`Count` 变化只触发 presenter 重绘，不替换模板或重启动画。
 - 动效状态：实例级 `IsMotionEnabled`、可见性和有效尺寸共同决定动画是否运行；默认主题不从全局 `EnableMotion` 覆盖该属性。
 
-`Progress` 是 internal animation state。它不形成公共 API，不参与样式选择器，不允许外部绑定。
+`Progress` 是所有光束共享的 internal animation state。第 `i` 个光束使用
+`NormalizeProgress(Progress + i / effectiveCount)` 计算相位。`Progress` 不形成公共 API，不参与样式选择器，
+不允许外部绑定。
+
+“仅悬停时显示”不是 BorderBeam 的内置状态或公共属性。调用方可以用 Style 在默认状态设置
+`IsMotionEnabled=false`，并在 BorderBeam 根控件的 `:pointerover` 状态设置为 `true`；该组合会复用现有动画
+启动与停止路径，内容控件仍保留完整交互。
 
 ## Theme and Token Boundaries
 
@@ -99,7 +109,7 @@ BorderBeam
 
 视觉层级要求：
 
-- `BorderBeamPresenter` 覆盖内容层边界，但不得改变内容层测量和排列结果。
+- `BorderBeamPresenter` 覆盖内容层边界，在一个 presenter 内绘制 `effectiveCount` 个等距光束，但不得改变内容层测量和排列结果。
 - `BorderBeamPresenter` 必须 `IsHitTestVisible=false`。
 - 不把 beam 层插入被装饰控件模板内部，不修改 Card、Button、GroupBox 等控件的模板结构。
 - 不使用全局 `ScopeAwareAdornerLayer` 作为默认实现。
@@ -109,7 +119,7 @@ BorderBeam Theme 只负责装配内容层和流光 presenter，并设置默认 t
 
 Token 边界：
 
-BorderBeamToken 是 BorderBeam 的组件级设计变量层。它只承载流光装饰自身需要的默认动效、尺寸和渐变映射参数。颜色、线宽和圆角优先复用 SharedToken；motion 开关保留为实例行为，不由 BorderBeamToken 或 `SharedToken.EnableMotion` 决定。
+BorderBeamToken 是 BorderBeam 的组件级设计变量层。它只承载流光装饰自身需要的默认动效、尺寸和渐变映射参数。颜色、线宽和圆角优先复用 SharedToken；motion 开关与光束数量保留为实例行为，不由 BorderBeamToken 或 `SharedToken.EnableMotion` 决定。
 
 BorderBeamToken 服务以下主题和控件：
 
@@ -117,7 +127,7 @@ BorderBeamToken 服务以下主题和控件：
 - internal `BorderBeamPresenter`
 - BorderBeam 渐变归一和动画默认值
 
-BorderBeamToken 不承载 `Content`、`Color`、`ColorStops`、`Outset`、`Progress`、`EffectiveBorderThickness`、`EffectiveCornerRadius` 等实例状态。这些状态由 BorderBeam 状态模型和边界感知接口处理。
+BorderBeamToken 不承载 `Content`、`Color`、`ColorStops`、`Outset`、`Count`、`Progress`、`EffectiveBorderThickness`、`EffectiveCornerRadius` 等实例状态。这些状态由 BorderBeam 状态模型和边界感知接口处理。
 
 ## Customization Boundaries
 
@@ -130,6 +140,9 @@ BorderBeam 设计和实现必须保持以下不变量：
 - BorderBeam 不修改内容控件模板，不依赖内容控件 template part 名称。
 - `IBorderBeamAwareControl` 只暴露边界几何，不暴露业务状态。
 - `ColorStops.Percent` 的 public 输入范围固定为 `0~100`。
+- `Count` 的 public 默认值固定为 `1`；非正值按一个光束渲染。
+- 多光束不得按数量增加 Presenter、Visual、Animation 或 cancellation owner。
+- 悬停展示通过调用方 Style 组合，不新增或依赖 BorderBeam 专用伪类。
 - 动效禁用时不应持续产生 UI 线程动画或 render invalidation。
 - 颜色和线宽默认值必须跟随主题 token，支持 light / dark 主题切换。
 
@@ -141,9 +154,13 @@ BorderBeam 设计和实现必须保持以下不变量：
 
 - BorderBeam 包装内容，不修改内容模板。
 - beam presenter 不参与命中测试。
+- 默认模板通过 `TemplateBinding` 连接 presenter，不在 BorderBeam 代码中持有模板部件引用。
+- 默认模板始终只有一个 beam presenter；多光束共享一个 animation owner。
 - 感知接口只暴露边框厚度和圆角。
 - content 替换时旧事件订阅必须释放。
 - 实例 motion 关闭或 detached 后不持续 invalidation。
 - 渐变尾迹连续，圆角转弯处不分段卡顿。
 - 非统一圆角只影响边框环裁剪，不直接拆分运动路径。
 - public `ColorStops.Percent` 仍按 `0~100` 解释。
+- public `Count` 默认值为 `1`，非正值按一个光束渲染；变化只重绘，不重启动画。
+- hover 是调用方 Style 对 `IsMotionEnabled` 的组合，不新增事件处理或控件伪类。

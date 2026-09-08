@@ -32,6 +32,7 @@ public class BorderBeamTests
         borderBeam.IsMotionEnabled.ShouldBeTrue();
         borderBeam.Duration.ShouldBe(TimeSpan.FromSeconds(6));
         borderBeam.BeamSize.ShouldBe(100d);
+        borderBeam.Count.ShouldBe(1);
     }
 
     [Fact]
@@ -163,6 +164,29 @@ public class BorderBeamTests
         });
     }
 
+    [Fact]
+    public void Count_Is_Forwarded_To_The_Single_Beam_Presenter()
+    {
+        var borderBeam = new AtomUI.Desktop.Controls.BorderBeam
+        {
+            Width = 120,
+            Height = 60,
+            Count = 3,
+            Content = new Border()
+        };
+
+        ShowInWindow(borderBeam, () =>
+        {
+            borderBeam.ApplyTemplate();
+            var presenters = borderBeam.GetVisualDescendants()
+                                       .OfType<BorderBeamPresenter>()
+                                       .ToArray();
+
+            presenters.Length.ShouldBe(1);
+            presenters[0].Count.ShouldBe(3);
+        });
+    }
+
     private sealed class TestBorderBeamAwareControl : Control, IBorderBeamAwareControl
     {
         private BorderBeamGeometry _geometry;
@@ -217,6 +241,22 @@ public class BorderBeamTests
         point.Tangent.ShouldBe(new Vector(1, 0));
     }
 
+    [Theory]
+    [InlineData(0.90, 0, 3, 0.90)]
+    [InlineData(0.90, 1, 3, 0.23333333333333334)]
+    [InlineData(0.90, 2, 3, 0.5666666666666667)]
+    [InlineData(0.25, 0, 0, 0.25)]
+    [InlineData(0.25, 0, -2, 0.25)]
+    public void Beam_Progress_Is_Evenly_Distributed_And_Normalized(
+        double progress,
+        int index,
+        int count,
+        double expected)
+    {
+        BorderBeamPathSampler.GetBeamProgress(progress, index, count)
+                             .ShouldBe(expected, 0.000000000001d);
+    }
+
     [Fact]
     public void Beam_Transform_Uses_Ant_Design_Offset_Anchor()
     {
@@ -225,6 +265,26 @@ public class BorderBeamTests
 
         transform.Transform(new Point(90, 50)).ShouldBe(pathPoint.Point);
         transform.Transform(new Point(100, 50)).ShouldBe(new Point(110, 0));
+    }
+
+    [Theory]
+    [InlineData(3, 3)]
+    [InlineData(0, 1)]
+    public void Presenter_Draws_One_Beam_Per_Effective_Count(int count, int expectedDrawingCount)
+    {
+        var presenter = new BorderBeamPresenter
+        {
+            Count = count,
+            BeamSize = 40,
+            IsMotionEnabled = true,
+            BorderBeamGeometry = new BorderBeamGeometry(new Thickness(1), new CornerRadius(8))
+        };
+        presenter.Measure(new Size(160, 80));
+        presenter.Arrange(new Rect(0, 0, 160, 80));
+
+        var drawing = RenderToDrawingGroup(presenter);
+
+        EnumerateGeometryDrawings(drawing).Count().ShouldBe(expectedDrawingCount);
     }
 
     [Fact]
@@ -251,5 +311,31 @@ public class BorderBeamTests
     private static double GetDistance(Point start, Point end)
     {
         return new Vector(end.X - start.X, end.Y - start.Y).Length;
+    }
+
+    private static DrawingGroup RenderToDrawingGroup(Control control)
+    {
+        var drawingGroup = new DrawingGroup();
+        using (var context = drawingGroup.Open())
+        {
+            control.Render(context);
+        }
+
+        return drawingGroup;
+    }
+
+    private static IEnumerable<GeometryDrawing> EnumerateGeometryDrawings(Drawing drawing)
+    {
+        if (drawing is GeometryDrawing geometryDrawing)
+        {
+            yield return geometryDrawing;
+        }
+        else if (drawing is DrawingGroup drawingGroup)
+        {
+            foreach (var child in drawingGroup.Children.SelectMany(EnumerateGeometryDrawings))
+            {
+                yield return child;
+            }
+        }
     }
 }
