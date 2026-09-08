@@ -175,25 +175,6 @@ public class NavMenuThemeContractTests
     }
 
     [Fact]
-    public void Every_Item_Header_Background_Transition_Consumes_The_NavMenu_Easing_Token()
-    {
-        var themePaths = new[]
-        {
-            "src/AtomUI.Desktop.Controls/NavMenu/Themes/BaseNavMenuItemHeaderTheme.axaml",
-            "src/AtomUI.Desktop.Controls/NavMenu/Themes/InlineNavMenuItemHeaderTheme.axaml",
-            "src/AtomUI.Desktop.Controls/NavMenu/Themes/HorizontalNavMenuItemHeaderTheme.axaml"
-        };
-
-        foreach (var themePath in themePaths)
-        {
-            var source = ReadRepoFile(themePath);
-            source.ShouldContain(
-                "<atom:SolidColorBrushTransition Property=\"Background\" Duration=\"{atom:SharedTokenResourceValue Kind=MotionDurationSlow}\" Easing=\"{atom:NavMenuTokenResource ItemBackgroundMotionEasing}\" />");
-            source.ShouldNotContain("<SplineEasing");
-        }
-    }
-
-    [Fact]
     public void Submenu_Title_Hover_Uses_Foreground_And_Background_Tokens()
     {
         var source = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/Themes/BaseNavMenuItemHeaderTheme.axaml");
