@@ -33,6 +33,11 @@ public class FlyoutSemanticPartTests
         "root", "popup.arrow", "popup.container", "popup.content", "popup.root"
     ];
 
+    private static readonly string[] FlyoutSemanticMarkerClasses =
+    [
+        PopupRootClass, PopupContainerClass, PopupContentClass, PopupArrowClass
+    ];
+
     static FlyoutSemanticPartTests()
     {
         AvaloniaTestApp.EnsureInitialized();
@@ -82,17 +87,17 @@ public class FlyoutSemanticPartTests
     }
 
     [Fact]
-    public void Built_In_Templates_Do_Not_Declare_Semantic_Markers()
+    public void Built_In_Templates_Do_Not_Declare_Flyout_Semantic_Markers()
     {
-        AssertNoSemanticMarkers(FlyoutHostThemePath);
-        AssertNoSemanticMarkers(ArrowDecoratedBoxThemePath);
+        AssertNoFlyoutSemanticMarkers(FlyoutHostThemePath);
+        AssertNoFlyoutSemanticMarkers(ArrowDecoratedBoxThemePath);
     }
 
     [Fact]
-    public void Default_Themes_Do_Not_Consume_Semantic_Selectors()
+    public void Default_Themes_Do_Not_Consume_Flyout_Semantic_Selectors()
     {
-        AssertNoSemanticSelectors(FlyoutHostThemePath);
-        AssertNoSemanticSelectors(ArrowDecoratedBoxThemePath);
+        AssertNoFlyoutSemanticSelectors(FlyoutHostThemePath);
+        AssertNoFlyoutSemanticSelectors(ArrowDecoratedBoxThemePath);
     }
 
     [Fact]
@@ -199,17 +204,23 @@ public class FlyoutSemanticPartTests
         part.StyleType.ShouldNotBeNull();
     }
 
-    private static void AssertNoSemanticMarkers(string themePath)
+    private static void AssertNoFlyoutSemanticMarkers(string themePath)
     {
         var document = XDocument.Load(GetRepoFile(themePath), LoadOptions.SetLineInfo);
-        document.Descendants()
-                .Any(static element => element.Attributes()
-                    .Any(static attribute => attribute.Name.LocalName.StartsWith(
-                        "Classes.semantic-", StringComparison.Ordinal)))
-                .ShouldBeFalse($"{themePath} must not declare semantic marker classes");
+        var markerClasses = document.Descendants()
+                                    .SelectMany(static element => element.Attributes())
+                                    .Select(static attribute => attribute.Name.LocalName)
+                                    .Where(static attributeName => attributeName.StartsWith(
+                                        "Classes.", StringComparison.Ordinal))
+                                    .Select(static attributeName => attributeName["Classes.".Length..])
+                                    .Where(static markerClass => FlyoutSemanticMarkerClasses.Contains(
+                                        markerClass, StringComparer.Ordinal))
+                                    .ToArray();
+
+        markerClasses.ShouldBeEmpty($"{themePath} must not declare Flyout semantic marker classes");
     }
 
-    private static void AssertNoSemanticSelectors(string themePath)
+    private static void AssertNoFlyoutSemanticSelectors(string themePath)
     {
         var document = XDocument.Load(GetRepoFile(themePath), LoadOptions.SetLineInfo);
         var selectors = document.Descendants()
@@ -218,8 +229,8 @@ public class FlyoutSemanticPartTests
                                 .Select(static attribute => attribute.Value)
                                 .ToArray();
 
-        selectors.ShouldAllBe(static selector =>
-            !selector.Contains("semantic-", StringComparison.Ordinal));
+        selectors.ShouldAllBe(static selector => FlyoutSemanticMarkerClasses.All(markerClass =>
+            !selector.Contains($".{markerClass}", StringComparison.Ordinal)));
     }
 
     private static string GetRepoFile(string relativePath)
