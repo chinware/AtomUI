@@ -18,7 +18,11 @@
 - Gallery
   - 新增 `Show on hover` 和 `Multiple beams` 延迟加载示例；hover 通过页面 Style 组合 `:pointerover` 与
     `IsMotionEnabled`，不新增公共 hover API。
-  - 为五个 BorderBeam 示例补充稳定 `SourceKey`，并同步英语、巴西葡萄牙语、简体中文和繁体中文资源。
+  - `Multiple beams` 在同一稳定示例中纵向展示 `Count=3` 与 `Count=2` 两张卡片，并使用不绑定具体数量的共享文案。
+  - 新增 `Custom container` 延迟加载示例，以标准 Avalonia `Border` 验证普通内容可通过 BorderBeam 自身的
+    `BorderThickness` 和 `CornerRadius` 显式对齐边界几何，无需新增运行时 API。
+  - Show on hover、Multiple beams 和 Custom container 使用 AtomUI 当前版本 `v6.1.8` 的 Showcase 徽标。
+  - 为六个 BorderBeam 示例补充稳定 `SourceKey`，并同步英语、巴西葡萄牙语、简体中文和繁体中文资源。
 - Tests
   - 增加 `Count` 默认值与模板转发、等距相位、非正值回退、实际绘制数量，以及 Gallery 示例和本地化契约测试。
 - Docs

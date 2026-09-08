@@ -25,6 +25,24 @@
         <target state="translated">v6.0.5</target>
       </segment>
     </unit>
+    <unit id="CustomContainerContent">
+      <segment>
+        <source>Review task status, deployment health, and recent automation activity in one custom container.</source>
+        <target state="translated">在一個自訂容器中檢視任務狀態、部署健康度和最近的自動化活動。</target>
+      </segment>
+    </unit>
+    <unit id="CustomContainerDescription">
+      <segment>
+        <source>BorderBeam can decorate any Avalonia container. When the content does not implement IBorderBeamAwareControl, set matching BorderThickness and CornerRadius on BorderBeam.</source>
+        <target state="translated">BorderBeam 可以裝飾任意 Avalonia 容器。當內容未實作 IBorderBeamAwareControl 時，請在 BorderBeam 上設定與容器一致的 BorderThickness 和 CornerRadius。</target>
+      </segment>
+    </unit>
+    <unit id="CustomContainerTitle">
+      <segment>
+        <source>Custom container</source>
+        <target state="translated">自訂容器</target>
+      </segment>
+    </unit>
     <unit id="CustomizedColorCardDescription">
       <segment>
         <source>The segmented selector switches the color stop collection used by the beam.</source>
@@ -45,8 +63,8 @@
     </unit>
     <unit id="MultipleBeamsCardDescription">
       <segment>
-        <source>Three beams share one animation cycle and remain evenly spaced around the card.</source>
-        <target state="translated">三個光束共用同一個動畫週期，並沿卡片邊界保持等距。</target>
+        <source>Set Count to distribute multiple beams evenly around the container border.</source>
+        <target state="translated">設定 Count 可沿容器邊界均勻分布多個光束。</target>
       </segment>
     </unit>
     <unit id="MultipleBeamsCardTitle">

@@ -107,8 +107,8 @@ public class BorderBeamShowCasePageTests
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml");
 
-        Regex.Matches(source, @"<gallery:ShowCaseItem\s").Count.ShouldBe(5);
-        source.Split("<gallery:ShowCaseItem.DeferredContentTemplate>").Length.ShouldBe(6);
+        Regex.Matches(source, @"<gallery:ShowCaseItem\s").Count.ShouldBe(6);
+        source.Split("<gallery:ShowCaseItem.DeferredContentTemplate>").Length.ShouldBe(7);
 
         var basicDemo = ExtractShowCaseItemMarkup(source, "BorderBeamShowCaseLangResource BasicTitle");
         basicDemo.ShouldContain("SourceKey=\"border-beam-basic\"");
@@ -131,9 +131,19 @@ public class BorderBeamShowCasePageTests
 
         var multipleBeamsDemo = ExtractShowCaseItemMarkup(source, "BorderBeamShowCaseLangResource MultipleBeamsTitle");
         multipleBeamsDemo.ShouldContain("SourceKey=\"border-beam-multiple-beams\"");
-        multipleBeamsDemo.ShouldContain("Count=\"3\"");
+        Regex.Matches(multipleBeamsDemo, @"<atom:BorderBeam\s").Count.ShouldBe(2);
+        Regex.Matches(multipleBeamsDemo, "Count=\"3\"").Count.ShouldBe(1);
+        Regex.Matches(multipleBeamsDemo, "Count=\"2\"").Count.ShouldBe(1);
         multipleBeamsDemo.ShouldContain("BorderBeamShowCaseLangResource MultipleBeamsCardTitle");
         multipleBeamsDemo.ShouldContain("BorderBeamShowCaseLangResource MultipleBeamsCardDescription");
+
+        var customContainerDemo = ExtractShowCaseItemMarkup(source, "BorderBeamShowCaseLangResource CustomContainerTitle");
+        customContainerDemo.ShouldContain("SourceKey=\"border-beam-custom-container\"");
+        customContainerDemo.ShouldContain("<atom:BorderBeam Width=\"420\"");
+        customContainerDemo.ShouldContain("BorderThickness=\"1\"");
+        customContainerDemo.ShouldContain("CornerRadius=\"8\"");
+        customContainerDemo.ShouldContain("<Border MinHeight=\"160\"");
+        customContainerDemo.ShouldContain("BorderBeamShowCaseLangResource CustomContainerContent");
 
         var customizedColorDemo = ExtractShowCaseItemMarkup(source, "BorderBeamShowCaseLangResource CustomizedColorTitle");
         customizedColorDemo.ShouldContain("SourceKey=\"border-beam-customized-color\"");
@@ -169,6 +179,9 @@ public class BorderBeamShowCasePageTests
         var multipleBeamsIndex = source.IndexOf(
             "BorderBeamShowCaseLangResource MultipleBeamsTitle",
             StringComparison.Ordinal);
+        var customContainerIndex = source.IndexOf(
+            "BorderBeamShowCaseLangResource CustomContainerTitle",
+            StringComparison.Ordinal);
         var nonUniformRadiusIndex = source.IndexOf(
             "BorderBeamShowCaseLangResource NonUniformRadiusTitle",
             StringComparison.Ordinal);
@@ -179,7 +192,8 @@ public class BorderBeamShowCasePageTests
         basicIndex.ShouldBeGreaterThanOrEqualTo(0);
         showOnHoverIndex.ShouldBeGreaterThan(basicIndex);
         multipleBeamsIndex.ShouldBeGreaterThan(showOnHoverIndex);
-        nonUniformRadiusIndex.ShouldBeGreaterThan(multipleBeamsIndex);
+        customContainerIndex.ShouldBeGreaterThan(multipleBeamsIndex);
+        nonUniformRadiusIndex.ShouldBeGreaterThan(customContainerIndex);
         customizedColorIndex.ShouldBeGreaterThan(nonUniformRadiusIndex);
 
         var basicDemo = ExtractShowCaseItemMarkup(source, "BorderBeamShowCaseLangResource BasicTitle");
@@ -191,6 +205,9 @@ public class BorderBeamShowCasePageTests
         var multipleBeamsDemo = ExtractShowCaseItemMarkup(source, "BorderBeamShowCaseLangResource MultipleBeamsTitle");
         multipleBeamsDemo.ShouldNotContain("IsOccupyEntireRow=\"True\"");
 
+        var customContainerDemo = ExtractShowCaseItemMarkup(source, "BorderBeamShowCaseLangResource CustomContainerTitle");
+        customContainerDemo.ShouldNotContain("IsOccupyEntireRow=\"True\"");
+
         var nonUniformRadiusDemo = ExtractShowCaseItemMarkup(source, "BorderBeamShowCaseLangResource NonUniformRadiusTitle");
         nonUniformRadiusDemo.ShouldNotContain("IsOccupyEntireRow=\"True\"");
 
@@ -199,7 +216,7 @@ public class BorderBeamShowCasePageTests
     }
 
     [Fact]
-    public void BorderBeam_ShowCase_Localizes_Hover_And_Multiple_Beam_Examples()
+    public void BorderBeam_ShowCase_Localizes_New_Examples()
     {
         var localizationPaths = new[]
         {
@@ -217,7 +234,10 @@ public class BorderBeamShowCasePageTests
             "MultipleBeamsTitle",
             "MultipleBeamsDescription",
             "MultipleBeamsCardTitle",
-            "MultipleBeamsCardDescription"
+            "MultipleBeamsCardDescription",
+            "CustomContainerTitle",
+            "CustomContainerDescription",
+            "CustomContainerContent"
         };
 
         foreach (var path in localizationPaths)
@@ -227,6 +247,23 @@ public class BorderBeamShowCasePageTests
             {
                 localization.ContainsKey(key).ShouldBeTrue($"{path} should contain {key}");
             }
+        }
+    }
+
+    [Fact]
+    public void BorderBeam_New_ShowCases_Are_Marked_With_Current_Version()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml");
+        var titleMarkers = new[]
+        {
+            "BorderBeamShowCaseLangResource ShowOnHoverTitle",
+            "BorderBeamShowCaseLangResource MultipleBeamsTitle",
+            "BorderBeamShowCaseLangResource CustomContainerTitle"
+        };
+
+        foreach (var titleMarker in titleMarkers)
+        {
+            ExtractShowCaseItemMarkup(source, titleMarker).ShouldContain("BadgeText=\"v6.1.8\"");
         }
     }
 

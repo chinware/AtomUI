@@ -1,6 +1,8 @@
 # BorderBeam 多光束与悬停展示设计
 
-> 状态：2026-09-08 已实现；控件与 Gallery 全量测试、Desktop Gallery 构建和 LLMS 一致性验证已通过。视觉走查未使用同名应用回退：当前 CUA 不接受构建目录中的裸 Mach-O 绝对路径，故按本地调试 Skill 的身份约束标记为受阻。
+> 状态：2026-09-08 已实现；控件与 Gallery 全量测试、Desktop Gallery 构建和 LLMS 一致性验证已通过。
+> 视觉走查由本地调试 Skill 输出的当前工作区绝对二进制身份与用户截图共同确认；CUA 不接受裸 Mach-O
+> 绝对路径，整个过程未回退到同名应用或 bundle id。
 >
 > 上游基线：Ant Design `6.6.3`，重点参考 `BorderBeam.tsx`、`BorderBeamEffect.tsx`、
 > `style/index.ts`、`util.ts` 与 `demo/hover.tsx`。
@@ -51,7 +53,8 @@ AtomUI 不复制 DOM、portal、CSS mask 或 `offset-path` 结构，只保持以
 - 将 `Count` 通过默认 ControlTheme 转发给 internal presenter。
 - 在一套 `Progress` 动画中计算并绘制多个等距 phase。
 - 复用一次 render 内的路径度量、边框环 clip 和 brush。
-- 在 Gallery 增加 `Multiple beams` 与 `Show on hover` 稳定示例。
+- 在 Gallery 增加 `Multiple beams` 与 `Show on hover` 稳定示例；前者在同一示例中成对展示 `Count=3` 与
+  `Count=2`。
 - 同步控件测试、Gallery 测试、控件文档和 LLMS 来源。
 
 ### 3.2 非目标
@@ -230,7 +233,8 @@ Presenter 继续拥有唯一 `Animation` 和 `CancellationTokenSource`：
 
 Gallery 增加两个独立、可复制的稳定示例：
 
-- `border-beam-multiple-beams`：展示 `Count` 与默认周期共享关系；
+- `border-beam-multiple-beams`：在同一纵向示例中以 `Count=3` 和 `Count=2` 两张卡片展示数量变化与默认周期
+  共享关系；
 - `border-beam-show-on-hover`：展示 class、`:pointerover` 与 `IsMotionEnabled` 的组合。
 
 现有文档级示例同步补稳定 `SourceKey`，但不因示例新增而改变页面滚动、延迟挂载或 Masonry 语义。
@@ -267,7 +271,8 @@ Gallery 增加两个独立、可复制的稳定示例：
 
 ### 12.3 Gallery、文档与产品走查
 
-- Gallery 的多光束和 hover 示例具有稳定 `SourceKey`，四套本地化资源完整。
+- Gallery 的多光束和 hover 示例具有稳定 `SourceKey`，多光束示例同时包含 `Count=3` 与 `Count=2`，四套
+  本地化资源完整。
 - Light/Dark 与不同 render scale 下，光束数量、边框贴合和圆角连续性可辨认。
 - hover 卡片左、中、右区域都能触发根控件 `:pointerover`，卡片内容交互不受影响。
 - Gallery 页面测试、控件定向测试、主题契约检查、LLMS verify 和 `git diff --check` 通过。

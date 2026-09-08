@@ -84,6 +84,7 @@
 
                 <gallery:ShowCaseItem
                     SourceKey="border-beam-show-on-hover"
+                    BadgeText="v6.1.8"
                     Title="{gallery:BorderBeamShowCaseLangResource ShowOnHoverTitle}"
                     Description="{gallery:BorderBeamShowCaseLangResource ShowOnHoverDescription}"
                     IsDeferredContentEnabled="True">
@@ -106,21 +107,64 @@
 
                 <gallery:ShowCaseItem
                     SourceKey="border-beam-multiple-beams"
+                    BadgeText="v6.1.8"
                     Title="{gallery:BorderBeamShowCaseLangResource MultipleBeamsTitle}"
                     Description="{gallery:BorderBeamShowCaseLangResource MultipleBeamsDescription}"
                     IsDeferredContentEnabled="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:BorderBeamViewModel">
-                            <atom:BorderBeam Width="360"
-                                             Count="3"
+                            <StackPanel Orientation="Vertical"
+                                        Spacing="12"
+                                        HorizontalAlignment="Left">
+                                <atom:BorderBeam Width="360"
+                                                 Count="3"
+                                                 HorizontalAlignment="Left">
+                                    <atom:Card Header="{gallery:BorderBeamShowCaseLangResource MultipleBeamsCardTitle}"
+                                               BorderThickness="1"
+                                               CornerRadius="8">
+                                        <atom:TextBlock Text="{gallery:BorderBeamShowCaseLangResource MultipleBeamsCardDescription}"
+                                                        TextWrapping="Wrap"
+                                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                                    </atom:Card>
+                                </atom:BorderBeam>
+                                <atom:BorderBeam Width="360"
+                                                 Count="2"
+                                                 HorizontalAlignment="Left">
+                                    <atom:Card Header="{gallery:BorderBeamShowCaseLangResource MultipleBeamsCardTitle}"
+                                               BorderThickness="1"
+                                               CornerRadius="8">
+                                        <atom:TextBlock Text="{gallery:BorderBeamShowCaseLangResource MultipleBeamsCardDescription}"
+                                                        TextWrapping="Wrap"
+                                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                                    </atom:Card>
+                                </atom:BorderBeam>
+                            </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    SourceKey="border-beam-custom-container"
+                    BadgeText="v6.1.8"
+                    Title="{gallery:BorderBeamShowCaseLangResource CustomContainerTitle}"
+                    Description="{gallery:BorderBeamShowCaseLangResource CustomContainerDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:BorderBeamViewModel">
+                            <atom:BorderBeam Width="420"
+                                             BorderThickness="1"
+                                             CornerRadius="8"
                                              HorizontalAlignment="Left">
-                                <atom:Card Header="{gallery:BorderBeamShowCaseLangResource MultipleBeamsCardTitle}"
-                                           BorderThickness="1"
-                                           CornerRadius="8">
-                                    <atom:TextBlock Text="{gallery:BorderBeamShowCaseLangResource MultipleBeamsCardDescription}"
+                                <Border MinHeight="160"
+                                        Padding="24"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                                        Background="{atom:SharedTokenResource ColorBgContainer}">
+                                    <atom:TextBlock Text="{gallery:BorderBeamShowCaseLangResource CustomContainerContent}"
                                                     TextWrapping="Wrap"
                                                     Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
-                                </atom:Card>
+                                </Border>
                             </atom:BorderBeam>
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>

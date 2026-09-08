@@ -227,4 +227,4 @@ LLMS 导出来源：
 | 渲染 | 默认渐变、单色、多 stop、单/多光束、统一圆角、非统一圆角、Outset、实例禁用 motion 和命中测试。 |
 | Token | Light / dark 主题下默认颜色、线宽、圆角和 motion 默认值正确。 |
 | Public API | `Count` 默认值与模板转发、普通内容、感知内容、无内容、零尺寸、不可见状态不抛异常。 |
-| Gallery | Basic、Show on hover、Multiple beams、Non-uniform radius、Customized color 的稳定 SourceKey、布局和四语资源。 |
+| Gallery | Basic、Show on hover、Multiple beams、Custom container、Non-uniform radius、Customized color 的稳定 SourceKey、布局和四语资源；Multiple beams 在同一示例中成对展示 `Count=3` 与 `Count=2`；Custom container 以标准 Avalonia `Border` 验证普通内容的显式几何契约；本次新增的 Show on hover、Multiple beams 和 Custom container 均标记 AtomUI 当前版本 `v6.1.8`。 |

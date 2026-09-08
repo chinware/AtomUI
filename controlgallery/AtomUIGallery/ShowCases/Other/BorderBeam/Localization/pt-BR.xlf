@@ -25,6 +25,24 @@
         <target state="translated">v6.0.5</target>
       </segment>
     </unit>
+    <unit id="CustomContainerContent">
+      <segment>
+        <source>Review task status, deployment health, and recent automation activity in one custom container.</source>
+        <target state="translated">Revise o status das tarefas, a integridade das implantações e as atividades recentes de automação em um contêiner personalizado.</target>
+      </segment>
+    </unit>
+    <unit id="CustomContainerDescription">
+      <segment>
+        <source>BorderBeam can decorate any Avalonia container. When the content does not implement IBorderBeamAwareControl, set matching BorderThickness and CornerRadius on BorderBeam.</source>
+        <target state="translated">BorderBeam pode decorar qualquer contêiner Avalonia. Quando o conteúdo não implementar IBorderBeamAwareControl, defina BorderThickness e CornerRadius correspondentes no BorderBeam.</target>
+      </segment>
+    </unit>
+    <unit id="CustomContainerTitle">
+      <segment>
+        <source>Custom container</source>
+        <target state="translated">Contêiner personalizado</target>
+      </segment>
+    </unit>
     <unit id="CustomizedColorCardDescription">
       <segment>
         <source>The segmented selector switches the color stop collection used by the beam.</source>
@@ -45,8 +63,8 @@
     </unit>
     <unit id="MultipleBeamsCardDescription">
       <segment>
-        <source>Three beams share one animation cycle and remain evenly spaced around the card.</source>
-        <target state="translated">Três feixes compartilham um ciclo de animação e permanecem uniformemente espaçados ao redor do cartão.</target>
+        <source>Set Count to distribute multiple beams evenly around the container border.</source>
+        <target state="translated">Defina Count para distribuir vários feixes uniformemente ao redor da borda do contêiner.</target>
       </segment>
     </unit>
     <unit id="MultipleBeamsCardTitle">

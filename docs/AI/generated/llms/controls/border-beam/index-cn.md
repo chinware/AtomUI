@@ -133,7 +133,7 @@ SourceKey：`border-beam-basic`
 
 ### 悬停显示
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:92`
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:93`
 
 SourceKey：`border-beam-show-on-hover`
 
@@ -153,50 +153,60 @@ SourceKey：`border-beam-show-on-hover`
 
 ### 多光束
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:114`
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:116`
 
 SourceKey：`border-beam-multiple-beams`
 
 ```axaml
-<atom:BorderBeam Width="360"
-                 Count="3"
-                 HorizontalAlignment="Left">
-    <atom:Card Header="多光束"
-               BorderThickness="1"
-               CornerRadius="8">
-        <atom:TextBlock Text="三个光束共享同一个动画周期，并沿卡片边界保持等距。"
-                        TextWrapping="Wrap"
-                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
-    </atom:Card>
-</atom:BorderBeam>
-```
-
-### 非统一圆角
-
-来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:136`
-
-SourceKey：`border-beam-non-uniform-radius`
-
-```axaml
-<atom:BorderBeam Width="360"
-                 Outset="0"
-                 BorderThickness="1"
-                 CornerRadius="20,20,0,0"
-                 HorizontalAlignment="Left">
-    <atom:PixelAlignedBorder ClipToBounds="True"
-                             CornerRadius="20,20,0,0"
-                             BorderThickness="1"
-                             BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
-                             Background="{atom:SharedTokenResource ColorBgContainer}"
-                             Padding="24">
-        <StackPanel Spacing="8">
-            <atom:TextBlock Text="Non-uniform radius"
-                            FontWeight="Bold" />
-            <atom:TextBlock Text="顶部圆角保持较大半径，底部角保持直角。"
+<StackPanel Orientation="Vertical"
+            Spacing="12"
+            HorizontalAlignment="Left">
+    <atom:BorderBeam Width="360"
+                     Count="3"
+                     HorizontalAlignment="Left">
+        <atom:Card Header="多光束"
+                   BorderThickness="1"
+                   CornerRadius="8">
+            <atom:TextBlock Text="设置 Count 可沿容器边界均匀分布多个光束。"
                             TextWrapping="Wrap"
                             Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
-        </StackPanel>
-    </atom:PixelAlignedBorder>
+        </atom:Card>
+    </atom:BorderBeam>
+    <atom:BorderBeam Width="360"
+                     Count="2"
+                     HorizontalAlignment="Left">
+        <atom:Card Header="多光束"
+                   BorderThickness="1"
+                   CornerRadius="8">
+            <atom:TextBlock Text="设置 Count 可沿容器边界均匀分布多个光束。"
+                            TextWrapping="Wrap"
+                            Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+        </atom:Card>
+    </atom:BorderBeam>
+</StackPanel>
+```
+
+### 自定义容器
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml:154`
+
+SourceKey：`border-beam-custom-container`
+
+```axaml
+<atom:BorderBeam Width="420"
+                 BorderThickness="1"
+                 CornerRadius="8"
+                 HorizontalAlignment="Left">
+    <Border MinHeight="160"
+            Padding="24"
+            BorderThickness="1"
+            CornerRadius="8"
+            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+            Background="{atom:SharedTokenResource ColorBgContainer}">
+        <atom:TextBlock Text="在一个自定义容器中查看任务状态、部署健康度和最近的自动化活动。"
+                        TextWrapping="Wrap"
+                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+    </Border>
 </atom:BorderBeam>
 ```
 
