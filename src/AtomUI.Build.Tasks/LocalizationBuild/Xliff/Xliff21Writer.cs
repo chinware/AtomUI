@@ -46,7 +46,7 @@ internal static class Xliff21Writer
         {
             xml.Save(xmlWriter);
         }
-        return textWriter.ToString();
+        return string.Concat(textWriter.ToString(), "\n");
     }
 
     private static XElement CreateUnit(XNamespace ns, XliffUnitModel unit)

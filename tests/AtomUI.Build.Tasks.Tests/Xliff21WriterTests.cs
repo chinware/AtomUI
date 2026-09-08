@@ -26,6 +26,8 @@ public class Xliff21WriterTests
 
         first.ShouldBe(second);
         first.ShouldStartWith("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+        first.ShouldEndWith("</xliff>\n");
+        first.ShouldNotEndWith("</xliff>\n\n");
         first.IndexOf("id=\"Body\"", StringComparison.Ordinal)
              .ShouldBeLessThan(first.IndexOf("id=\"Retired\"", StringComparison.Ordinal));
         first.ShouldNotContain("name=\"");
