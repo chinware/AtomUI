@@ -17,6 +17,7 @@
                         <TextBlock HorizontalAlignment="Center" Text="{TemplateBinding IndicatorText}" />
                     </Border>
                     <Border Name="ActionFrame"
+                            Classes.semantic-popup-actions="True"
                             Background="{TemplateBinding Background}"
                             CornerRadius="{TemplateBinding CornerRadius}"
                             Padding="{TemplateBinding Padding}">
@@ -57,9 +58,9 @@
         <Setter Property="Foreground"
                 Value="{atom:ImagePreviewerTokenResource PreviewOperationColor}" />
         <Setter Property="Background"
-                Value="{atom:ImagePreviewerTokenResource NavButtonBgHoverColor}" />
+                Value="{atom:ImagePreviewerTokenResource NavButtonBgColor}" />
         <Setter Property="Padding" Value="{atom:ImagePreviewerTokenResource FloatToolbarPadding}" />
-        <Setter Property="Margin" Value="{atom:SharedTokenResource MarginLG}" />
+        <Setter Property="Margin" Value="{atom:SharedTokenResource MarginXL}" />
         <Style Selector="^ /template/ atom|IconButton">
             <Setter Property="IconWidth"
                     Value="{atom:ImagePreviewerTokenResource PreviewOperationSize}" />
@@ -101,10 +102,11 @@
         </Style>
 
         <Style Selector="^ /template/ StackPanel#RootLayout">
-            <Setter Property="Spacing" Value="{atom:SharedTokenResource SpacingXS}" />
+            <Setter Property="Spacing" Value="{atom:SharedTokenResource Spacing}" />
         </Style>
 
         <Style Selector="^ /template/ Border#IndicatorFrame">
+            <Setter Property="Background" Value="Transparent" />
             <Setter Property="Padding"
                     Value="{atom:ImagePreviewerTokenResource FloatToolbarIndicatorPadding}" />
         </Style>

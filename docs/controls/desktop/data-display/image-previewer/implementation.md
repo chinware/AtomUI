@@ -1,7 +1,8 @@
 # ImagePreviewer 桌面版实现原理
 
 本文档描述 ImagePreviewer 的源码 ownership、entry 状态机、集合同步、应用级加载集成、宿主生命周期和维护不变量。
-公共契约见 [ImagePreviewer 桌面版架构设计](overview.md)，Token 语义见 [ImagePreviewer Token 设计](token.md)，
+公共契约见 [ImagePreviewer 桌面版架构设计](overview.md)，Semantic Part 契约见
+[ImagePreviewer Semantic Part 契约](semantic-part.md)，Token 语义见 [ImagePreviewer Token 设计](token.md)，
 切换显示策略与保留帧状态机见 [ImagePreviewer 切换显示设计](switch-display-design.md)，变化记录见
 [ImagePreviewer Changelog](changelog.md)。
 
@@ -22,6 +23,8 @@
 | `ImagePreviewDisplayTracker` | internal 宿主显示状态机：目标项、tracker 会话标识、会话内单调目标序号与 WaitForLoaded 保留帧跟踪、显示图三值解析（见[切换显示设计](switch-display-design.md)） |
 | `ImagePreviewer` | 单封面选择、状态投影和 `ReloadCover()` |
 | `ImageGroupPreviewer` | 多封面 ItemsControl、点击索引和关闭态缩略图请求 |
+| `ImagePreviewer.SemanticParts.cs` | `ImagePreviewer` owner 的 `[SemanticPart]` 声明（partial），生成 descriptor、marker 常量与强类型 Semantic Style |
+| `ImageGroupPreviewer.SemanticParts.cs` | `ImageGroupPreviewer` owner 的 `[SemanticPart]` 声明（partial） |
 | `ImagePreviewerDialog` | Desktop native window、标题算法、CurrentIndex relay 和 viewer 组合 |
 | `ImagePreviewerOverlayHost` | Browser/无原生窗口平台的 overlay 宿主 |
 | `ImageViewer` | 导航、变换、fit-to-window 和 loading/error 状态呈现 |
@@ -138,6 +141,29 @@ ImagePreviewer / ImageGroupPreviewer
 | `ImageViewer` | internal control | Theme | host | navigation、move、scale、rotate | internal-observable | 不直接加载 Source |
 | `PART_ImageRenderer` | renderer part | viewer Theme | template | current image visuals | template-stable | 只消费 entry 的 `IImage` |
 
+### 5.1 Semantic marker 节点映射
+
+公开 Semantic Part 的 marker 分布在两个 owner 模板与多个内部协作控件的主题中。路由锚点 `.semantic-scope-*` 只用于
+descriptor 路由，不发布为 Part：
+
+| Marker | 载体 | 注入方式 | 存在条件 |
+| --- | --- | --- | --- |
+| `.semantic-scope-cover` | `ImagePreviewerTheme` 内 `ImagePreviewerCover` 节点 | 静态模板 marker | 单封面模板 |
+| `.semantic-scope-items` | `ImageGroupPreviewerTheme` 内 `PART_CoverItemsControl` | 静态模板 marker | 多封面模板 |
+| `.semantic-image` | `ImagePreviewerCoverTheme` 内 `ImagePreviewRenderer` | 静态模板 marker | 封面物化（单/组共用） |
+| `.semantic-cover` | `ImagePreviewerCoverTheme` 内 `#Mask` | 静态模板 marker | 封面物化（单/组共用） |
+| `.semantic-popup-root` | native dialog 内容根包裹 Panel / overlay 宿主模板根 Panel（纯容器） | 代码注入（生成常量）/ 静态模板 marker | 宿主打开 |
+| `.semantic-popup-mask` | `ImagePreviewerOverlayHostTheme` 根 Panel 内新增的全铺遮罩子元素 | 静态模板 marker | 仅 overlay 宿主打开 |
+| `.semantic-popup-body` | `ImageViewerTheme` 内 `PART_ImageViewerScene` | 静态模板 marker | 宿主打开 |
+| `.semantic-popup-footer` | `ImageViewerTheme` 内 `ImagePreviewFloatToolbar` 节点 | 静态模板 marker | 宿主打开 |
+| `.semantic-popup-actions` | `ImagePreviewFloatToolbarTheme` 内 `#ActionFrame` | 静态模板 marker | 宿主打开 |
+| `.semantic-popup-close` | `ImagePreviewerOverlayHostTheme` 内 `PART_CloseButton` | 静态模板 marker | 仅 overlay 宿主打开 |
+
+native dialog 侧 `popup.root` 的 marker 由宿主创建路径用生成的 `ImagePreviewerSemanticParts.PopupRootClass` 常量注入到
+包裹 `PART_ImageViewer` 的 Panel 上；overlay 宿主模板根 Panel 与关闭按钮使用静态 marker。overlay 宿主的半透明黑背景由根
+Panel 迁移到新增的全铺 `popup.mask` 子元素，根 Panel 仅保留容器职责。两个宿主通过各自的路径提供同一 `popup.root` 契约，
+`popup.mask` 与 `popup.close` 只存在于 overlay 宿主，因此两者都声明为 `Optional`。
+
 ## 6. 生命周期与模板接入
 
 attach 时订阅当前 `ItemsSource`、TopLevel `SizeChanged` / `ScalingChanged`，物化 entries 并按 `IsOpen` 请求 Full 或 Thumbnail。
@@ -145,6 +171,11 @@ TopLevel 尺寸或 render scaling 变化后重新计算物理像素 bucket；相
 时解除这些订阅和集合订阅，取消两个通道的 waiter，释放全部 leases，并清理 open host。打开宿主建立 relay bindings、事件、
 logical parent 和 modal subscription，并构造显示 tracker；关闭时先处理可取消 `DialogClosing`，再释放 host state（含清空显示 tracker 与 WaitForLoaded 保留帧）
 和全部 Full leases，最后恢复关闭态 Thumbnail 策略。Template 只绑定 entry 状态和图片，不持有结果 lease。
+
+Semantic marker 与承载节点同生命周期：native dialog 创建时把 `popup.root` marker 注入内容根包裹 Panel，宿主关闭销毁整棵
+visual subtree 后不残留任何 marker 或订阅；`viewer`、float toolbar 与 overlay 根节点由宿主代码或宿主模板创建，marker 静态
+声明在各自主题中；overlay 的 `popup.mask` marker 静态声明在新增遮罩子元素上，随 overlay 模板创建/销毁。打开与重开不维护
+任何跨打开的 marker 状态，宿主 detach 与 close 路径不需要额外的 marker 清理步骤。
 
 ## 7. 交互与事件处理
 
@@ -301,6 +332,9 @@ Loading/error 自定义模板只替换内容。模板不能通过视觉存在与
 - Browser overlay 与 Desktop dialog 共用同一 entry/load model；平台差异只位于宿主能力。
 - Application dispose 统一取消底层 loader；控件仍负责尽快取消 waiter 和释放自身租约。
 - borrowed `IImage` 始终由调用方拥有，loader、cache、entry 和 Application dispose 都不能销毁它。
+- Semantic marker 使用静态 `Classes.semantic-*="True"`，编译为模板初始化的一次 `Classes.Set`，不建立 Binding、selector
+  activator 或持久订阅；`popup.*` 部件不引入 VisualTree 搜索、运行时注册或反射发现。
+- descriptor、marker 常量和生成 Semantic Style 全部由生成器静态产生；宿主只引用生成的类常量，不解析 route 字符串。
 
 ## 10. 维护不变量
 
@@ -333,8 +367,45 @@ Loading/error 自定义模板只替换内容。模板不能通过视觉存在与
   “lease 已释放 + 显示仍持有旧图”的中间状态。
 - viewer 加载指示器只在无显示图时呈现（`:loading:not(:has-image)` 门控）；封面 mask 只由 `IsShowCoverMask` 决定，
   与加载/失败状态解耦；错误呈现仍绑定 `IsCurrentImageFailed`。
+- 封面 mask 铺满整个 owner root（含 padding 环与边框），对齐上游 `genImageCoverStyle` 的 `position:absolute; inset:0`
+  cover：`ImagePreviewerCover` 以 internal `OwnerPadding` / `OwnerBorderThickness` 中继 owner 几何（单封面经
+  `TemplateBinding`，组封面 DataTemplate 经 `RelativeSource AncestorType` 绑定），并把两者之和的负值写入
+  `OwnerMaskMargin`，owner 模板用 `{Binding OwnerMaskMargin, RelativeSource TemplatedParent}` 应用到 `#Mask` 的
+  `Margin`——这是运行时几何（宿主 padding 是用户属性），ControlTheme 无法静态表达，因此以代码计算 + 模板绑定兜底；
+  hover 遮罩压暗 padding 环是上游固有视觉（白色 padding 被压成约 178 灰），不得当作缺陷回退该几何。
+- 裁剪职责归 owner 根：`ImagePreviewerCover` 的 ControlTheme 不得声明 `ClipToBounds` Setter，且控件静态构造必须
+  `ClipToBoundsProperty.OverrideDefaultValue<ImagePreviewerCover>(false)`——Avalonia `TemplatedControl` 的类级默认值
+  是 `true`（合成层裁剪，同时约束 hit-test 与 effective viewport），会把负 Margin 铺出边界的遮罩裁回 cover 内区；
+  该裁剪不体现在 `Bounds` 上，布局断言不可见，必须以“遮罩矩形在所有 ClipToBounds 祖先坐标空间内完整包含”的
+  结构断言锁定。root 圆角对齐上游 `overflow:hidden + border-radius`：owner 模板的 `PixelAlignedBorder`
+  （用户可设 `ClipToBounds` + `CornerRadius`）负责 root 圆角裁剪，但遮罩以负 Margin 越过 owner padding、
+  不被 owner 圆角裁剪覆盖，因此 `#Mask` 与 cover 模板内 border/loading/error presenter 的圆角必须经
+  `OwnerCornerRadius` 中继直接跟随 owner `CornerRadius`（单封面 `TemplateBinding`，组封面
+  `RelativeSource AncestorType` 绑定），回归测试断言 `mask.CornerRadius` 与 owner 一致。
+- 封面图片圆角独立于 root 圆角：上游 `styles.image` 可为 image 元素单独设置 `borderRadius`（示例 4px，root 8px），
+  AtomUI 的 image part（`ImagePreviewRenderer`）以 `Border.CornerRadiusProperty.AddOwner` 暴露 `CornerRadius`，
+  并把 `RoundRectGeometryBuilder` 的 WinUI 关键点圆角几何（与 `DashedBorder.ClipContentToCornerRadius` 同算法）
+  设到子 `Image` 的 `Clip` 属性上——渲染管线在遍历每个 Visual 时应用其 `Clip`，Image 只渲染一次且带裁剪；
+  不得改为 `Render` override 中 `PushGeometryClip` 包着 `image.Render` 手绘——子 Image 是 VisualChild，渲染器在
+  父 `Render` 之后还会独立遍历 VisualChildren 再绘制一次无裁剪的 Image，覆盖手绘结果；该值不由内置主题默认设置
+  （对齐上游默认 image 无圆角），经生成 `ImagePreviewerImageStyle` 由用户 Semantic Style 定制，Setter 属性名必须写
+  限定名 `Property="Border.CornerRadius"`（直接写 `CornerRadius` 会经 internal 渲染器类型自身的字段解析，
+  XAML 编译期不做可见性检查，运行时抛 `FieldAccessException`），`x:SetterTargetType="atom:ImagePreviewRenderer"`
+  提供类型上下文；回归测试断言生成 Style 的 `CornerRadius` Setter 经 owner 作用域命中模板内 renderer
+  （`renderer.CornerRadius == 4`），并断言圆角落到子 `Image.Clip` 的圆角几何（外角点在几何外、直边内点在几何内、
+  零圆角清除 Clip、Clip 边界跟随子 Image 布局变化重建）。
 - renderer、loading presenter 和 error presenter 只消费状态，不发起 I/O 或拥有结果。
 - native dialog 与 Browser overlay 必须共享 item、current、navigation、loading 和关闭语义。
+- 两个 owner 的 Semantic descriptor 与所有内置主题的 marker 完整一致；模板变体无法提供部件时必须声明 `Optional`
+  （`popup.mask` 与 `popup.close` 即 overlay 宿主限定部件）。
+- 内置主题不得用 `.semantic-*` selector 实现默认视觉；`.semantic-scope-*` 锚点不作为公开契约。
+- popup 部件的 SelectorRoute 不设中间 scope 锚点（overlay 宿主模板根与 viewer 在逻辑树上为兄弟，锚点式路由无法在双宿主间
+  一致命中），`popup.actions` 只允许以已发布的 `.semantic-popup-footer` 作为模板跨入锚点。
+- overlay 宿主模板根 Panel 只承担 `popup.root` 容器职责、不得直接涂背景；半透明遮罩背景必须由独立的 `popup.mask` 子元素
+  承担，与上游 `.ant-image-preview`（root）与 `.ant-image-preview-mask`（mask）的分层一致。
+- 宿主必须保持挂入 owner 的 logical parent 链与 ThemeVariant binding 中继；popup 部件生成 Selector 依赖该链命中 overlay
+  宿主子树（overlay 与 owner 同 TopLevel）。native dialog 是独立 Window/TopLevel，owner 作用域样式不跨其边界级联，dialog 内
+  预览视觉经 host 契约（owner 属性/Token 中继与 App 级 `ImageViewer` 主题）定制；破坏该链只破坏 overlay 宿主的 `popup.*` 命中。
 
 ## 11. 测试与验证
 
@@ -355,6 +426,26 @@ Loading/error 自定义模板只替换内容。模板不能通过视觉存在与
 - 显示 tracker 的订阅配对（Clear/切换后事件不再触达）、`Immediate` 零持有、WaitForLoaded 保留帧上界、会话隔离与目标序号单调前进不变量。
 - 打开态预览与单封面运行时切换到 `Immediate` 后立即重算，不等待下一条 entry 通知。
 - viewer `:loading` / `:has-image` 伪类与 `PART_LoadingPresenter` 门控选择器的主题契约断言。
+- 封面遮罩几何：单封面与组封面的 `#Mask` 在 owner 坐标系中铺满整个 root（含 padding 环），`pointerover`
+  伪类把 `MaskOpacity` 从 0 提升到 1、移出后归零（回归测试固定 hover 全铺遮罩契约）；遮罩矩形换算到每个
+  `ClipToBounds` 祖先坐标空间后必须仍被其边界完整包含（锁定 cover 主题/控件默认值不得重新引入合成层裁剪）；
+  单封面与组封面的 `mask.CornerRadius` 必须跟随 owner `CornerRadius`（锁定圆角视觉对齐上游
+  `overflow:hidden + border-radius`）。
+- 封面图片圆角：`ImagePreviewRenderer.CornerRadius`（AddOwner `Border.CornerRadiusProperty`）属性传播断言，
+  及生成 `ImagePreviewerImageStyle` 的 `CornerRadius` Setter 经 owner 作用域命中模板内 renderer
+  （`renderer.CornerRadius == 4`，对齐上游 `styles.image.borderRadius`）。
 - current/cover clamp 不破坏 TwoWay CurrentIndex。
 - PreviewTitle、item.Title、resolver 的优先级与默认 DisplayName。
 - Gallery 高频场景显式把 `CoverIndex` 与 `CurrentIndex` 绑定到同一索引，验证封面与预览目标同步；同时维护 Browser、NativeAOT 和 public API baseline。
+- Semantic descriptor 断言：两个 owner 的部件名集合、Selector、SelectorRoute、ContractType、Cardinality 与
+  cross-root/runtime 标志；内置模板不消费 `.semantic-*` selector。
+- 模板 marker 完整性：`ImagePreviewerTheme`、`ImageGroupPreviewerTheme`、`ImagePreviewerCoverTheme`、`ImageViewerTheme`、
+  `ImagePreviewFloatToolbarTheme`、`ImagePreviewerOverlayHostTheme` 的静态 marker 清单（含 overlay 新增 `popup.mask`
+  遮罩子元素），及 native dialog 运行时注入 `popup.root` marker 的断言。
+- 生成 Semantic Style 命中：嵌套 Semantic Style 在 overlay 宿主命中全部 `popup.*`（overlay 与 owner 同 TopLevel）；
+  native dialog 内 marker 完整存在但 owner 作用域样式不跨 Window/TopLevel 级联（以回归测试固定该边界）；`popup.mask` 与
+  `popup.close` 在 overlay 命中、在 native dialog 不存在的 Optional 语义。
+- popup 生命周期：open-close-reopen、owner detach 与 close 后不残留 marker、多个 owner 实例的宿主隔离、source 替换后
+  marker 与命中关系保持不变。
+- Gallery 语义预览：`root`/`image`/`cover` 在 owner 模板内高亮，`popup.*` 因宿主 internal 且无公开访问器仅列出描述、不参与
+  高亮；NativeAOT publish。

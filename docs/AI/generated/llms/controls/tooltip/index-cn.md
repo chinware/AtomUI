@@ -83,7 +83,7 @@ Tooltip 的公共契约由 public/protected 类型成员、Avalonia 属性、事
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tooltip/Views/TooltipShowCase.axaml:60`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tooltip/Views/TooltipShowCase.axaml:63`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -97,7 +97,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 弹出位置
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tooltip/Views/TooltipShowCase.axaml:75`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tooltip/Views/TooltipShowCase.axaml:79`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -166,6 +166,44 @@ Gallery key：`ExamplesContent` / item `1`
     </atom:Button>
 
 </Grid>
+```
+
+### 自定义 Semantic Part 样式
+
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tooltip/Views/TooltipShowCase.axaml:360`
+
+SourceKey：`tooltip-semantic-part`
+
+```axaml
+<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="20">
+    <StackPanel.Styles>
+        <Style Selector="atom|ToolTip.semantic-styles-demo">
+            <atom:ToolTipContainerStyle x:SetterTargetType="Border">
+                <Setter Property="Padding" Value="10" />
+                <Setter Property="CornerRadius" Value="12" />
+                <Setter Property="BoxShadow" Value="inset 0 0 8 #cccccc" />
+            </atom:ToolTipContainerStyle>
+        </Style>
+        <Style Selector="atom|ToolTip.semantic-styles-filled-demo">
+            <atom:ToolTipContainerStyle x:SetterTargetType="Border">
+                <Setter Property="Background" Value="#CC35477D" />
+                <Setter Property="TextElement.Foreground" Value="#FFFFFF" />
+                <Setter Property="Padding" Value="12" />
+                <Setter Property="CornerRadius" Value="4" />
+            </atom:ToolTipContainerStyle>
+        </Style>
+    </StackPanel.Styles>
+    <atom:Button Content="Object Style" atom:ToolTip.IsArrowVisible="False">
+        <atom:ToolTip.Tip>
+            <atom:ToolTip Classes="semantic-styles-demo" Content="Object text" />
+        </atom:ToolTip.Tip>
+    </atom:Button>
+    <atom:Button ButtonType="Primary" Content="Function Style" atom:ToolTip.IsArrowVisible="False">
+        <atom:ToolTip.Tip>
+            <atom:ToolTip Classes="semantic-styles-filled-demo" Content="Function text" />
+        </atom:ToolTip.Tip>
+    </atom:Button>
+</StackPanel>
 ```
 
 ## 状态模型

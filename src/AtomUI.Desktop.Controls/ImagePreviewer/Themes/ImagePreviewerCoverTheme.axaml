@@ -11,9 +11,10 @@
                                          Padding="{TemplateBinding Padding}"
                                          BorderThickness="{TemplateBinding BorderThickness}"
                                          BorderBrush="{TemplateBinding BorderBrush}"
-                                         CornerRadius="{TemplateBinding CornerRadius}">
+                                         CornerRadius="{TemplateBinding OwnerCornerRadius}">
                     <Panel>
                         <atom:ImagePreviewRenderer Source="{TemplateBinding ImageSource}"
+                                                   Classes.semantic-image="True"
                                                    Stretch="Uniform"
                                                    IsVisible="{TemplateBinding ImageSource, Converter={x:Static ObjectConverters.IsNotNull}}" />
                         <Border Name="PART_LoadingPresenter"
@@ -22,6 +23,7 @@
                                 MinWidth="{atom:ImagePreviewerTokenResource CoverImageWidth}"
                                 MinHeight="{atom:ImagePreviewerTokenResource CoverImageWidth}"
                                 Background="{atom:SharedTokenResource ColorFillTertiary}"
+                                CornerRadius="{TemplateBinding OwnerCornerRadius}"
                                 IsVisible="False">
                             <Panel HorizontalAlignment="Center"
                                    VerticalAlignment="Center">
@@ -41,6 +43,7 @@
                                 MinWidth="{atom:ImagePreviewerTokenResource CoverImageWidth}"
                                 MinHeight="{atom:ImagePreviewerTokenResource CoverImageWidth}"
                                 Background="{atom:SharedTokenResource ColorFillTertiary}"
+                                CornerRadius="{TemplateBinding OwnerCornerRadius}"
                                 IsVisible="{TemplateBinding HasError}">
                             <Panel HorizontalAlignment="Center"
                                    VerticalAlignment="Center">
@@ -63,9 +66,14 @@
                                                   IsVisible="{TemplateBinding ErrorContent, Converter={x:Static ObjectConverters.IsNotNull}}" />
                             </Panel>
                         </Border>
-                        <Border Name="Mask" 
+                        <Border Name="Mask"
+                                Classes.semantic-cover="True"
                                 Opacity="{TemplateBinding MaskOpacity}"
-                                IsVisible="{TemplateBinding IsCoverMaskVisible}">
+                                IsVisible="{TemplateBinding IsCoverMaskVisible}"
+                                Background="{atom:ImagePreviewerTokenResource MaskBgColor}"
+                                TextBlock.Foreground="{atom:SharedTokenResource ColorTextLightSolid}"
+                                CornerRadius="{TemplateBinding OwnerCornerRadius}"
+                                Margin="{Binding OwnerMaskMargin, RelativeSource={RelativeSource TemplatedParent}}">
                             <ContentPresenter Name="MaskContentPresenter"
                                               Content="{TemplateBinding Content}"
                                               ContentTemplate="{TemplateBinding ContentTemplate}" />
@@ -79,13 +87,7 @@
             <Setter Property="Cursor" Value="Hand" />
         </Style>
       
-        <Setter Property="ClipToBounds" Value="True" />
         <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
-        <Style Selector="^ /template/ Border#Mask">
-            <Setter Property="Background" Value="{atom:ImagePreviewerTokenResource MaskBgColor}" />
-            <Setter Property="TemplatedControl.Foreground"
-                    Value="{atom:SharedTokenResource ColorTextLightSolid}" />
-        </Style>
         <Style Selector="^ /template/ TextBlock#DefaultErrorText">
             <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextTertiary}" />
         </Style>

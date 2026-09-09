@@ -7,7 +7,7 @@ using Avalonia.Layout;
 
 namespace AtomUI.Desktop.Controls;
 
-public class ImageGroupPreviewer : AbstractImagePreviewer
+public partial class ImageGroupPreviewer : AbstractImagePreviewer
 {
     #region 公共属性定义
     

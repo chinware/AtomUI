@@ -4,15 +4,208 @@
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `AbstractImagePreviewer` | 归一 items、current、open state、宿主和加载策略 | `ItemsSource`、`CurrentIndex`、`IsOpen`、`PreloadCount` | SharedToken、ImagePreviewerToken | public |
-| `cover` | `ImagePreviewer` / `PART_CoverItemsControl` | 展示单封面或 group 缩略图及 loading/error 状态 | Cover size/state、`ItemsPanel` | Cover size、mask、radius Token | public/template-stable |
-| `host` | `ImagePreviewerDialog` / `ImagePreviewerOverlayHost` | 承载 Desktop window 或 Browser overlay | dialog、modal、topmost、title、motion API | Window、overlay、motion Token | internal-observable |
-| `viewer` | `ImageViewer` / `PART_ImageViewerScene` | 当前项导航、fit、拖拽、缩放和旋转 | interaction、scale、CurrentIndex | Viewer background、toolbar Token | internal-observable |
-| `renderer` | `PART_ImageRenderer` | 只渲染 entry 已持有的 `IImage` | current load state | 无独立加载 Token | template-stable |
-| `loading` | `PART_LoadingPresenter` | 呈现 Skeleton 或 Spin，不拥有请求 | LoadingContent/Template | Loading、Skeleton、Spin Token | template-stable |
-| `error` | `PART_ErrorPresenter` | 呈现最终失败内容，不改变状态机 | ErrorContent/Template | Error semantic Token | template-stable |
+ImagePreviewer 家族公开 9 个 Semantic Part，由两个 public owner 分别声明生成式 descriptor：`ImagePreviewer`（单封面入口）与
+`ImageGroupPreviewer`（多封面入口）。`root` 由生成器隐式加入，不要求 `.semantic-root`。除 `root` 外每个 Part 生成 public
+强类型 Semantic Style，命名规则为 `AtomUI.Theme.Styling.<Control><PartPath>Style`（如 `ImagePreviewerPopupRootStyle`），
+用户在外层普通 `Style` 中按 owner 作用域嵌套使用。
+
+9 个 Part 与上游 Image 控件的 Semantic DOM 一一对齐：`root`/`image`/`cover` 对应 `.ant-image`/`.ant-image-img`/
+`.ant-image-cover`；`popup.root`/`popup.mask`/`popup.body`/`popup.footer`/`popup.actions`/`popup.close` 对应
+`.ant-image-preview` 及其内部 `mask`（半透明遮罩层）、`body`（居中图片区）、`footer`（底部操作区）、`actions`（footer 内操作
+按钮组）、`close`（右上角关闭按钮）五个子节点。上游的左右切换按钮与页码指示不是语义部件，AtomUI 同样不将其公开为 Part。
+
+`popup.*` 属于独立宿主部件：预览宿主（native `ImagePreviewerDialog` 或 Browser `ImagePreviewerOverlayHost`）由
+`OpenDialog()` 运行时创建，并经 logical parent 挂入 owner，宿主 ThemeVariant 经 binding 中继。owner 作用域 Semantic Style
+只在 overlay 宿主（与 owner 同 TopLevel 的树内浮层，对齐上游 `.ant-image-preview`）保证命中；native `ImagePreviewerDialog`
+是独立 `Window`/TopLevel，Avalonia 样式级联不跨 TopLevel 边界，因此 owner 作用域 Semantic Style 不进入 dialog，dialog 内的
+预览视觉经 host 契约（owner 属性/Token 中继与 App 级 `ImageViewer` 主题）定制。`popup.*` 部件随宿主打开而存在、随关闭而销毁，
+因此统一声明 `CrossVisualRoot=true`、`CrossNestedOwners=true`、`RuntimeCreated=true`，路由以 `>>` 从 owner 直接定位 marker
+节点，不设中间 scope 锚点（overlay 宿主模板根与 viewer 在逻辑树上为兄弟，锚点式路由无法在双宿主间一致命中）。`popup.mask`
+与 `popup.close` 仅 Overlay 宿主存在（`Optional`）：两者承担上游浮层的"压暗下层页面"与"内嵌关闭按钮"职能；native
+`ImagePreviewerDialog` 是独立窗口、无下层页面可压暗，关闭由 OS 标题栏按钮承担。Gallery Semantic Preview 中 `popup.*` 部件
+需示例显式提供宿主 Visual 根作为 `AdditionalRoots` 才能解析；但宿主（`ImagePreviewerDialog` 与 `ImagePreviewerOverlayHost`）
+均为 internal、`OpenDialog()` 不返回宿主、产品不暴露任何 Preview 专用 API，Gallery 示例无法取得该根，因此 `popup.*` 部件在
+Gallery 仅列出描述、不参与高亮；触发区部件（`root`/`image`/`cover`）在 owner 模板内正常解析。所有 marker 使用静态
+`Classes.semantic-*="True"` 声明，内置主题不使用 `.semantic-*` selector 实现默认视觉。
+
+### `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ImagePreviewer` / `ImageGroupPreviewer` |
+| Part | `root` |
+| Selector | 不适用（root 无 `.semantic-root`） |
+| SelectorRoute | 不适用 |
+| ContractType | `ImagePreviewer` / `ImageGroupPreviewer` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | 控件根（隐式） |
+| 职责 | 单封面入口（`ImagePreviewer`）/ 多封面入口（`ImageGroupPreviewer`）与完整预览 owner |
+| 相关 API | `ItemsSource`、`CurrentIndex`、`IsOpen`；group 额外 `ItemsPanel` |
+| 相关 Token | SharedToken、ImagePreviewerToken |
+| 稳定性 | stable since 6.0 |
+
+### `image`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ImagePreviewer` / `ImageGroupPreviewer` |
+| Part | `image` |
+| Selector | `.semantic-image` |
+| SelectorRoute | `ImagePreviewer`：`/template/ .semantic-scope-cover /template/ .semantic-image`；`ImageGroupPreviewer`：`/template/ .semantic-scope-items >> .semantic-image` |
+| ContractType | `Control` |
+| Cardinality | `ImagePreviewer`：`Single`；`ImageGroupPreviewer`：`Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| CrossNestedOwners | `true` |
+| RuntimeCreated | `ImagePreviewer`：`false`；`ImageGroupPreviewer`：`true` |
+| AtomUI 节点 | `ImagePreviewerCover` 模板内 `ImagePreviewRenderer`（单封面静态 / 多封面 ItemsControl 项运行时物化） |
+| 职责 | 关闭态封面图片元素 / 各封面缩略图元素 |
+| 相关 API | `EffectiveCoverImage`、`CoverWidth`、`CoverHeight`；group `ItemsSource`、`ItemsPanel` |
+| 相关 Token | Cover 尺寸相关 Token |
+| 稳定性 | stable since 6.0 |
+
+### `cover`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ImagePreviewer` / `ImageGroupPreviewer` |
+| Part | `cover` |
+| Selector | `.semantic-cover` |
+| SelectorRoute | `ImagePreviewer`：`/template/ .semantic-scope-cover /template/ .semantic-cover`；`ImageGroupPreviewer`：`/template/ .semantic-scope-items >> .semantic-cover` |
+| ContractType | `Border` |
+| Cardinality | `ImagePreviewer`：`Single`；`ImageGroupPreviewer`：`Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `false` |
+| CrossNestedOwners | `true` |
+| RuntimeCreated | `ImagePreviewer`：`false`；`ImageGroupPreviewer`：`true` |
+| AtomUI 节点 | `ImagePreviewerCover` 模板内 `#Mask`（单封面静态 / 多封面 ItemsControl 项运行时物化） |
+| 职责 | 封面悬浮提示层：遮罩 + 指示内容。遮罩经负 Margin 铺满整个 owner root（含 padding 环与边框），对齐上游 `genImageCoverStyle` 的 `position:absolute; inset:0` cover 几何 |
+| 相关 API | `IsShowCoverMask`、`CoverIndicatorContent(Template)`、owner `Padding` / `BorderThickness`（经中继参与遮罩几何） |
+| 相关 Token | `MaskBgColor`、mask 透明度与圆角 Token |
+| 稳定性 | stable since 6.0 |
+
+### `popup.root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ImagePreviewer` / `ImageGroupPreviewer` |
+| Part | `popup.root` |
+| Selector | `.semantic-popup-root` |
+| SelectorRoute | `>> .semantic-popup-root` |
+| ContractType | `Panel` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| CrossNestedOwners | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | native dialog 内容根包裹 Panel（代码创建并注入 marker）；overlay 宿主模板根 Panel（静态 marker、纯容器，不带背景） |
+| 职责 | 预览容器根：承载遮罩层、内容区与关闭按钮的根层（对齐上游 `.ant-image-preview`）；窗口 chrome 不属于契约 |
+| 相关 API | `IsOpen`、`OpenDialog()`、`IsDialogModal`、`IsDialogTopmost` |
+| 相关 Token | Dialog 背景 Token |
+| 稳定性 | stable since 6.0 |
+
+### `popup.mask`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ImagePreviewer` / `ImageGroupPreviewer` |
+| Part | `popup.mask` |
+| Selector | `.semantic-popup-mask` |
+| SelectorRoute | `>> .semantic-popup-mask` |
+| ContractType | `Panel` |
+| Cardinality | `Optional` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| CrossNestedOwners | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | Overlay 宿主模板根 Panel 内新增的全铺遮罩子元素（静态 marker；半透明黑背景，由原宿主根 Panel 背景迁移而来） |
+| 职责 | 预览遮罩层：全铺 `popup.root` 的半透明暗色背景，位于 `popup.body` 之下（对齐上游 `.ant-image-preview-mask`）；仅 Overlay 宿主存在 |
+| 相关 API | `IsOpen`（随 overlay 宿主打开出现；点击关闭行为当前未实现，见兼容性与验证） |
+| 相关 Token | 遮罩色使用共享 `ColorBgMask`，与上游 `.ant-image-preview-mask` 的 `colorBgMask` 语义一致 |
+| 稳定性 | stable since 6.0 |
+
+### `popup.body`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ImagePreviewer` / `ImageGroupPreviewer` |
+| Part | `popup.body` |
+| Selector | `.semantic-popup-body` |
+| SelectorRoute | `>> .semantic-popup-body` |
+| ContractType | `Panel` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| CrossNestedOwners | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | `ImageViewer` 模板内 `PART_ImageViewerScene` Canvas |
+| 职责 | 预览内容区：居中承载图片渲染与指针交互（对齐上游 `.ant-image-preview-body`） |
+| 相关 API | 缩放、拖拽、旋转与 fit-to-window 交互 API |
+| 相关 Token | 无独立 Token（沿用 viewer 背景与交互 Token） |
+| 稳定性 | stable since 6.0 |
+
+### `popup.footer`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ImagePreviewer` / `ImageGroupPreviewer` |
+| Part | `popup.footer` |
+| Selector | `.semantic-popup-footer` |
+| SelectorRoute | `>> .semantic-popup-footer` |
+| ContractType | `Control` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| CrossNestedOwners | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | `ImageViewer` 模板内 `ImagePreviewFloatToolbar` 节点 |
+| 职责 | 预览页脚：底部居中操作区域，含页码指示与操作组（对齐上游 `.ant-image-preview-footer`） |
+| 相关 API | `CurrentIndex`、Count 与 scale/fit 状态投影 |
+| 相关 Token | `FloatToolbarPadding`、`NavButtonBgColor` |
+| 稳定性 | stable since 6.0 |
+
+### `popup.actions`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ImagePreviewer` / `ImageGroupPreviewer` |
+| Part | `popup.actions` |
+| Selector | `.semantic-popup-actions` |
+| SelectorRoute | `>> .semantic-popup-footer /template/ .semantic-popup-actions` |
+| ContractType | `Border` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| CrossNestedOwners | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | `ImagePreviewFloatToolbarTheme` 内 `#ActionFrame` |
+| 职责 | 预览操作组：footer 内的胶囊形操作按钮组（对齐上游 `.ant-image-preview-actions`） |
+| 相关 API | 缩放、翻转、旋转与 fit-to-window 命令 |
+| 相关 Token | `PreviewOperationSize`、`PreviewOperationColor` |
+| 稳定性 | stable since 6.0 |
+
+### `popup.close`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `ImagePreviewer` / `ImageGroupPreviewer` |
+| Part | `popup.close` |
+| Selector | `.semantic-popup-close` |
+| SelectorRoute | `>> .semantic-popup-close` |
+| ContractType | `IconButton` |
+| Cardinality | `Optional` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| CrossNestedOwners | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | `ImagePreviewerOverlayHostTheme` 内 `PART_CloseButton` |
+| 职责 | 预览关闭按钮：`popup.root` 右上角圆形按钮（对齐上游 `.ant-image-preview-close`）；仅 overlay 宿主存在，native dialog 由 OS 标题栏关闭按钮承担 |
+| 相关 API | `IsOpen`、`DialogClosing`、`DialogClosed` |
+| 相关 Token | `PreviewOperationSize`、`NavButtonBgColor`、`NavButtonBgHoverColor` |
+| 稳定性 | stable since 6.0 |
 
 ## Abstract AXAML Structure
 
@@ -76,6 +269,7 @@ ImagePreviewer
   -> ImagePreviewerDialog (control theme, ImagePreviewerDialogTheme.axaml)
   -> ImagePreviewerOverlayHost (control theme, ImagePreviewerOverlayHostTheme.axaml)
      -> Panel (template-stable)
+        -> Panel (template-stable)
         -> ContentPresenter (internal-observable)
         -> IconButton#PART_CloseButton (template-stable)
   -> ImagePreviewer (control theme, ImagePreviewerTheme.axaml)
@@ -158,29 +352,30 @@ ImagePreviewer
 | `PART_VerticalFlipButton` | template node (IconButton) | `ImagePreviewToolbarTheme.axaml` | ImagePreviewToolbar | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_RotateLeftButton` | template node (IconButton) | `ImagePreviewToolbarTheme.axaml` | ImagePreviewToolbar | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_RotateRightButton` | template node (IconButton) | `ImagePreviewToolbarTheme.axaml` | ImagePreviewToolbar | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `ImagePreviewerCover` | control theme | `ImagePreviewerCoverTheme.axaml` | ImagePreviewer | `Background`, `BorderBrush`, `BorderThickness`, `Content`, `ContentTemplate`, `CornerRadius` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `ImagePreviewerCover` | control theme | `ImagePreviewerCoverTheme.axaml` | ImagePreviewer | `Background`, `BorderBrush`, `BorderThickness`, `Content`, `ContentTemplate`, `ErrorContent` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `Panel` | template node (Panel) | `ImagePreviewerCoverTheme.axaml` | ImagePreviewerCover | `Content`, `ContentTemplate`, `ErrorContent`, `ErrorContentTemplate`, `HasError`, `ImageSource` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_LoadingPresenter` | template node (Border) | `ImagePreviewerCoverTheme.axaml` | ImagePreviewerCover | `LoadingContent`, `LoadingContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_LoadingPresenter` | template node (Border) | `ImagePreviewerCoverTheme.axaml` | ImagePreviewerCover | `LoadingContent`, `LoadingContentTemplate`, `OwnerCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_LoadingSkeleton` | template node (SkeletonImage) | `ImagePreviewerCoverTheme.axaml` | ImagePreviewerCover | `LoadingContent` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `ContentPresenter` | template node (ContentPresenter) | `ImagePreviewerCoverTheme.axaml` | ImagePreviewerCover | `LoadingContent`, `LoadingContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `PART_ErrorPresenter` | template node (Border) | `ImagePreviewerCoverTheme.axaml` | ImagePreviewerCover | `ErrorContent`, `ErrorContentTemplate`, `HasError` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ErrorPresenter` | template node (Border) | `ImagePreviewerCoverTheme.axaml` | ImagePreviewerCover | `ErrorContent`, `ErrorContentTemplate`, `HasError`, `OwnerCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `DefaultErrorLayout` | template node (StackPanel) | `ImagePreviewerCoverTheme.axaml` | ImagePreviewerCover | `ErrorContent` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `DefaultErrorIcon` | template node (PictureOutlined) | `ImagePreviewerCoverTheme.axaml` | ImagePreviewerCover | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `DefaultErrorText` | template node (TextBlock) | `ImagePreviewerCoverTheme.axaml` | ImagePreviewerCover | 主题状态 / visual state | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `Mask` | template node (Border) | `ImagePreviewerCoverTheme.axaml` | ImagePreviewerCover | `Content`, `ContentTemplate`, `IsCoverMaskVisible`, `MaskOpacity` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `Mask` | template node (Border) | `ImagePreviewerCoverTheme.axaml` | ImagePreviewerCover | `Content`, `ContentTemplate`, `IsCoverMaskVisible`, `MaskOpacity`, `OwnerCornerRadius` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `MaskContentPresenter` | template node (ContentPresenter) | `ImagePreviewerCoverTheme.axaml` | ImagePreviewerCover | `Content`, `ContentTemplate` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 
 ## Template Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `AbstractImagePreviewer` | 归一 items、current、open state、宿主和加载策略 | `ItemsSource`、`CurrentIndex`、`IsOpen`、`PreloadCount` | SharedToken、ImagePreviewerToken | public |
-| `cover` | `ImagePreviewer` / `PART_CoverItemsControl` | 展示单封面或 group 缩略图及 loading/error 状态 | Cover size/state、`ItemsPanel` | Cover size、mask、radius Token | public/template-stable |
-| `host` | `ImagePreviewerDialog` / `ImagePreviewerOverlayHost` | 承载 Desktop window 或 Browser overlay | dialog、modal、topmost、title、motion API | Window、overlay、motion Token | internal-observable |
-| `viewer` | `ImageViewer` / `PART_ImageViewerScene` | 当前项导航、fit、拖拽、缩放和旋转 | interaction、scale、CurrentIndex | Viewer background、toolbar Token | internal-observable |
-| `renderer` | `PART_ImageRenderer` | 只渲染 entry 已持有的 `IImage` | current load state | 无独立加载 Token | template-stable |
-| `loading` | `PART_LoadingPresenter` | 呈现 Skeleton 或 Spin，不拥有请求 | LoadingContent/Template | Loading、Skeleton、Spin Token | template-stable |
-| `error` | `PART_ErrorPresenter` | 呈现最终失败内容，不改变状态机 | ErrorContent/Template | Error semantic Token | template-stable |
+| Template Part | AtomUI 节点 | 职责 | 稳定性 |
+| --- | --- | --- | --- |
+| `PART_CoverItemsControl` | `ImageGroupPreviewerTheme` | group 封面集合 | template-stable |
+| `PART_ImageViewerScene` | `ImageViewerTheme` | 预览图片坐标空间 | template-stable |
+| `PART_ImageRenderer` | `ImageViewerTheme` | 只渲染 entry 已持有的 `IImage` | template-stable |
+| `PART_LoadingPresenter` | `ImagePreviewerCoverTheme` / `ImageViewerTheme` | 封面 Skeleton / viewer Spin 状态占位 | template-stable |
+| `PART_ErrorPresenter` | `ImagePreviewerCoverTheme` / `ImageViewerTheme` | 失败内容占位 | template-stable |
+| `PART_PreviousButton` / `PART_NextButton` | `ImageViewerTheme` | 上一张 / 下一张导航 | template-stable |
+| `PART_TitleLayout` / `PART_IconPresenter` | `ImagePreviewerTitleBarTheme` | dialog 标题与图标 | template-stable |
+| `PART_CloseButton` | `ImagePreviewerOverlayHostTheme` | overlay 关闭入口 | template-stable |
 
 ## Pseudo Classes
 
@@ -188,6 +383,14 @@ ImagePreviewer
 - 不允许同步 I/O、固定延迟、反射发现 reader/codec/serializer，或在 Previewer 内创建 `HttpClient`、cache 或 scheduler。
 - SourceSnapshot、encoded content 和 decoded content 的共享范围都受 CachePartition 限制；安全分区之间不共享命中或诊断。
 - borrowed `IImage` 始终由调用方拥有，任何 loader/cache/control 生命周期都不能 dispose 它。
+- Semantic Part：删除或重命名 Part、修改 SelectorRoute 命中范围、收窄 `ContractType` 都属于破坏性变更；`popup.*` 部件仅宿主
+  打开期间存在，关闭后不残留任何 marker 节点；内置主题不使用 `.semantic-*` selector 实现默认视觉；`.semantic-scope-*`
+  路由锚点不是公开 Part，不进入兼容承诺；native dialog 的窗口 chrome（标题栏、caption 按钮、窗口边框）不属于任何 Part；
+  宿主必须保持挂入 owner 的 logical parent 链，popup 部件的生成 Selector 依赖该链命中 overlay 宿主（与 owner 同 TopLevel）；
+  native dialog 是独立 TopLevel，owner 作用域样式不跨窗口级联，预览视觉经 host 契约定制。
+- 宿主分层与上游 DOM 对齐：overlay 宿主模板根 Panel 只承担 `popup.root` 容器职责、不带背景，遮罩背景必须由独立的
+  `popup.mask` 子元素承担；`popup.mask` 与 `popup.close` 仅 Overlay 宿主存在（`Optional`），native dialog 不物化这两个部件。
+- 遮罩点击关闭（上游 `maskClosable=true` 默认）当前未在 overlay 宿主实现，关闭仅经 `popup.close`；Part 契约只承诺样式命中，
 
 ## State Flow
 
@@ -367,6 +570,7 @@ ImagePreviewer Token 只表达组件级视觉变量，例如尺寸、间距、�
 - 来源变化不依赖集合 Clear、控件重建或手工 cache clear 才能被识别。
 - Previewer 的 Add/Remove/Replace/Move/Reset/Clear、host close 和 detach 不能清除 Application cache。
 - 关闭 dialog/overlay 释放宿主 binding、订阅、logical parent 和全部 Full lease；detach 释放 Full/Thumbnail waiter 与 lease。
+- reattach：重新物化集合并按 IsOpen 选择当前加载策略。
 - TopLevel resize 或 render scaling 变化重新计算物理像素 bucket；相同 bucket 不重复读取，不同 bucket 异步升级。
 - source replacement、collection remove/reset、旧 generation 和已关闭 host 都不能回写当前 entry。
 - Full 与 Thumbnail 通道保持取消、状态、错误、进度、尺寸和 lease 隔离。
@@ -375,6 +579,15 @@ ImagePreviewer Token 只表达组件级视觉变量，例如尺寸、间距、�
 - 不允许同步 I/O、固定延迟、反射发现 reader/codec/serializer，或在 Previewer 内创建 `HttpClient`、cache 或 scheduler。
 - SourceSnapshot、encoded content 和 decoded content 的共享范围都受 CachePartition 限制；安全分区之间不共享命中或诊断。
 - borrowed `IImage` 始终由调用方拥有，任何 loader/cache/control 生命周期都不能 dispose 它。
+- Semantic Part：删除或重命名 Part、修改 SelectorRoute 命中范围、收窄 `ContractType` 都属于破坏性变更；`popup.*` 部件仅宿主
+  打开期间存在，关闭后不残留任何 marker 节点；内置主题不使用 `.semantic-*` selector 实现默认视觉；`.semantic-scope-*`
+  路由锚点不是公开 Part，不进入兼容承诺；native dialog 的窗口 chrome（标题栏、caption 按钮、窗口边框）不属于任何 Part；
+  宿主必须保持挂入 owner 的 logical parent 链，popup 部件的生成 Selector 依赖该链命中 overlay 宿主（与 owner 同 TopLevel）；
+  native dialog 是独立 TopLevel，owner 作用域样式不跨窗口级联，预览视觉经 host 契约定制。
+- 宿主分层与上游 DOM 对齐：overlay 宿主模板根 Panel 只承担 `popup.root` 容器职责、不带背景，遮罩背景必须由独立的
+  `popup.mask` 子元素承担；`popup.mask` 与 `popup.close` 仅 Overlay 宿主存在（`Optional`），native dialog 不物化这两个部件。
+- 遮罩点击关闭（上游 `maskClosable=true` 默认）当前未在 overlay 宿主实现，关闭仅经 `popup.close`；Part 契约只承诺样式命中，
+  不承诺该行为，属行为对齐的既有差异。
 
 维护不变量：
 
@@ -407,5 +620,42 @@ ImagePreviewer Token 只表达组件级视觉变量，例如尺寸、间距、�
   “lease 已释放 + 显示仍持有旧图”的中间状态。
 - viewer 加载指示器只在无显示图时呈现（`:loading:not(:has-image)` 门控）；封面 mask 只由 `IsShowCoverMask` 决定，
   与加载/失败状态解耦；错误呈现仍绑定 `IsCurrentImageFailed`。
+- 封面 mask 铺满整个 owner root（含 padding 环与边框），对齐上游 `genImageCoverStyle` 的 `position:absolute; inset:0`
+  cover：`ImagePreviewerCover` 以 internal `OwnerPadding` / `OwnerBorderThickness` 中继 owner 几何（单封面经
+  `TemplateBinding`，组封面 DataTemplate 经 `RelativeSource AncestorType` 绑定），并把两者之和的负值写入
+  `OwnerMaskMargin`，owner 模板用 `{Binding OwnerMaskMargin, RelativeSource TemplatedParent}` 应用到 `#Mask` 的
+  `Margin`——这是运行时几何（宿主 padding 是用户属性），ControlTheme 无法静态表达，因此以代码计算 + 模板绑定兜底；
+  hover 遮罩压暗 padding 环是上游固有视觉（白色 padding 被压成约 178 灰），不得当作缺陷回退该几何。
+- 裁剪职责归 owner 根：`ImagePreviewerCover` 的 ControlTheme 不得声明 `ClipToBounds` Setter，且控件静态构造必须
+  `ClipToBoundsProperty.OverrideDefaultValue<ImagePreviewerCover>(false)`——Avalonia `TemplatedControl` 的类级默认值
+  是 `true`（合成层裁剪，同时约束 hit-test 与 effective viewport），会把负 Margin 铺出边界的遮罩裁回 cover 内区；
+  该裁剪不体现在 `Bounds` 上，布局断言不可见，必须以“遮罩矩形在所有 ClipToBounds 祖先坐标空间内完整包含”的
+  结构断言锁定。root 圆角对齐上游 `overflow:hidden + border-radius`：owner 模板的 `PixelAlignedBorder`
+  （用户可设 `ClipToBounds` + `CornerRadius`）负责 root 圆角裁剪，但遮罩以负 Margin 越过 owner padding、
+  不被 owner 圆角裁剪覆盖，因此 `#Mask` 与 cover 模板内 border/loading/error presenter 的圆角必须经
+  `OwnerCornerRadius` 中继直接跟随 owner `CornerRadius`（单封面 `TemplateBinding`，组封面
+  `RelativeSource AncestorType` 绑定），回归测试断言 `mask.CornerRadius` 与 owner 一致。
+- 封面图片圆角独立于 root 圆角：上游 `styles.image` 可为 image 元素单独设置 `borderRadius`（示例 4px，root 8px），
+  AtomUI 的 image part（`ImagePreviewRenderer`）以 `Border.CornerRadiusProperty.AddOwner` 暴露 `CornerRadius`，
+  并把 `RoundRectGeometryBuilder` 的 WinUI 关键点圆角几何（与 `DashedBorder.ClipContentToCornerRadius` 同算法）
+  设到子 `Image` 的 `Clip` 属性上——渲染管线在遍历每个 Visual 时应用其 `Clip`，Image 只渲染一次且带裁剪；
+  不得改为 `Render` override 中 `PushGeometryClip` 包着 `image.Render` 手绘——子 Image 是 VisualChild，渲染器在
+  父 `Render` 之后还会独立遍历 VisualChildren 再绘制一次无裁剪的 Image，覆盖手绘结果；该值不由内置主题默认设置
+  （对齐上游默认 image 无圆角），经生成 `ImagePreviewerImageStyle` 由用户 Semantic Style 定制，Setter 属性名必须写
+  限定名 `Property="Border.CornerRadius"`（直接写 `CornerRadius` 会经 internal 渲染器类型自身的字段解析，
+  XAML 编译期不做可见性检查，运行时抛 `FieldAccessException`），`x:SetterTargetType="atom:ImagePreviewRenderer"`
+  提供类型上下文；回归测试断言生成 Style 的 `CornerRadius` Setter 经 owner 作用域命中模板内 renderer
+  （`renderer.CornerRadius == 4`），并断言圆角落到子 `Image.Clip` 的圆角几何（外角点在几何外、直边内点在几何内、
+  零圆角清除 Clip、Clip 边界跟随子 Image 布局变化重建）。
 - renderer、loading presenter 和 error presenter 只消费状态，不发起 I/O 或拥有结果。
 - native dialog 与 Browser overlay 必须共享 item、current、navigation、loading 和关闭语义。
+- 两个 owner 的 Semantic descriptor 与所有内置主题的 marker 完整一致；模板变体无法提供部件时必须声明 `Optional`
+  （`popup.mask` 与 `popup.close` 即 overlay 宿主限定部件）。
+- 内置主题不得用 `.semantic-*` selector 实现默认视觉；`.semantic-scope-*` 锚点不作为公开契约。
+- popup 部件的 SelectorRoute 不设中间 scope 锚点（overlay 宿主模板根与 viewer 在逻辑树上为兄弟，锚点式路由无法在双宿主间
+  一致命中），`popup.actions` 只允许以已发布的 `.semantic-popup-footer` 作为模板跨入锚点。
+- overlay 宿主模板根 Panel 只承担 `popup.root` 容器职责、不得直接涂背景；半透明遮罩背景必须由独立的 `popup.mask` 子元素
+  承担，与上游 `.ant-image-preview`（root）与 `.ant-image-preview-mask`（mask）的分层一致。
+- 宿主必须保持挂入 owner 的 logical parent 链与 ThemeVariant binding 中继；popup 部件生成 Selector 依赖该链命中 overlay
+  宿主子树（overlay 与 owner 同 TopLevel）。native dialog 是独立 Window/TopLevel，owner 作用域样式不跨其边界级联，dialog 内
+  预览视觉经 host 契约（owner 属性/Token 中继与 App 级 `ImageViewer` 主题）定制；破坏该链只破坏 overlay 宿主的 `popup.*` 命中。

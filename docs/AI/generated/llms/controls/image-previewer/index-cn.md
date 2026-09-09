@@ -241,11 +241,18 @@ public enum ImageCacheStoragePolicy
 `CurrentIndex` 设置为该项索引，再打开预览。单封面控件的 CoverIndex 只决定关闭态封面；点击单封面只打开预览，不隐式把
 CurrentIndex 同步为 CoverIndex。
 
-稳定 template part 包括 `PART_CoverItemsControl`、`PART_ImageViewerScene`、`PART_ImageRenderer`、
-`PART_LoadingPresenter`、`PART_ErrorPresenter`、`PART_PreviousButton`、`PART_NextButton`、`PART_TitleLayout`、
-`PART_IconPresenter` 和 `PART_CloseButton`。
+稳定 template part 契约：
 
-LLMS 语义区域：
+| Template Part | AtomUI 节点 | 职责 | 稳定性 |
+| --- | --- | --- | --- |
+| `PART_CoverItemsControl` | `ImageGroupPreviewerTheme` | group 封面集合 | template-stable |
+| `PART_ImageViewerScene` | `ImageViewerTheme` | 预览图片坐标空间 | template-stable |
+| `PART_ImageRenderer` | `ImageViewerTheme` | 只渲染 entry 已持有的 `IImage` | template-stable |
+| `PART_LoadingPresenter` | `ImagePreviewerCoverTheme` / `ImageViewerTheme` | 封面 Skeleton / viewer Spin 状态占位 | template-stable |
+| `PART_ErrorPresenter` | `ImagePreviewerCoverTheme` / `ImageViewerTheme` | 失败内容占位 | template-stable |
+| `PART_PreviousButton` / `PART_NextButton` | `ImageViewerTheme` | 上一张 / 下一张导航 | template-stable |
+| `PART_TitleLayout` / `PART_IconPresenter` | `ImagePreviewerTitleBarTheme` | dialog 标题与图标 | template-stable |
+| `PART_CloseButton` | `ImagePreviewerOverlayHostTheme` | overlay 关闭入口 | template-stable |
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
@@ -256,6 +263,9 @@ LLMS 语义区域：
 | `renderer` | `PART_ImageRenderer` | 只渲染 entry 已持有的 `IImage` | current load state | 无独立加载 Token | template-stable |
 | `loading` | `PART_LoadingPresenter` | 呈现 Skeleton 或 Spin，不拥有请求 | LoadingContent/Template | Loading、Skeleton、Spin Token | template-stable |
 | `error` | `PART_ErrorPresenter` | 呈现最终失败内容，不改变状态机 | ErrorContent/Template | Error semantic Token | template-stable |
+
+Semantic Part 公开契约（`root`、`image`、`cover` 与 `popup.*` 分组）见 [Semantic Parts](#semantic-parts) 章节。`PART_*`
+名称继续只服务控件代码查找，与 Semantic Part 承担不同职责。
 
 ## 事件与命令
 
@@ -270,7 +280,7 @@ LLMS 语义区域：
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:36`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:134`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -280,7 +290,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 远程图片加载
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:48`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:146`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -290,7 +300,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 容错
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:60`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:158`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -300,7 +310,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 20 张远程图片
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:72`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:170`
 
 Gallery key：`ExamplesContent` / item `3`
 
@@ -496,6 +506,9 @@ ImagePreviewer Token 只表达组件级视觉变量，例如尺寸、间距、�
 - Browser overlay 与 Desktop dialog 共用同一 entry/load model；平台差异只位于宿主能力。
 - Application dispose 统一取消底层 loader；控件仍负责尽快取消 waiter 和释放自身租约。
 - borrowed `IImage` 始终由调用方拥有，loader、cache、entry 和 Application dispose 都不能销毁它。
+- Semantic marker 使用静态 `Classes.semantic-*="True"`，编译为模板初始化的一次 `Classes.Set`，不建立 Binding、selector
+  activator 或持久订阅；`popup.*` 部件不引入 VisualTree 搜索、运行时注册或反射发现。
+- descriptor、marker 常量和生成 Semantic Style 全部由生成器静态产生；宿主只引用生成的类常量，不解析 route 字符串。
 
 ## 源码索引
 
@@ -509,6 +522,8 @@ ImagePreviewer Token 只表达组件级视觉变量，例如尺寸、间距、�
 | `ImagePreviewDisplayTracker` | internal 宿主显示状态机：目标项、tracker 会话标识、会话内单调目标序号与 WaitForLoaded 保留帧跟踪、显示图三值解析（见[切换显示设计](switch-display-design.md)） |
 | `ImagePreviewer` | 单封面选择、状态投影和 `ReloadCover()` |
 | `ImageGroupPreviewer` | 多封面 ItemsControl、点击索引和关闭态缩略图请求 |
+| `ImagePreviewer.SemanticParts.cs` | `ImagePreviewer` owner 的 `[SemanticPart]` 声明（partial），生成 descriptor、marker 常量与强类型 Semantic Style |
+| `ImageGroupPreviewer.SemanticParts.cs` | `ImageGroupPreviewer` owner 的 `[SemanticPart]` 声明（partial） |
 | `ImagePreviewerDialog` | Desktop native window、标题算法、CurrentIndex relay 和 viewer 组合 |
 | `ImagePreviewerOverlayHost` | Browser/无原生窗口平台的 overlay 宿主 |
 | `ImageViewer` | 导航、变换、fit-to-window 和 loading/error 状态呈现 |
@@ -522,6 +537,7 @@ ImagePreviewer Token 只表达组件级视觉变量，例如尺寸、间距、�
 
 - 源设计文档：`docs/controls/desktop/data-display/image-previewer/overview.md`
 - 实现文档：`docs/controls/desktop/data-display/image-previewer/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-display/image-previewer/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-display/image-previewer/token.md`
 - 变更记录：`docs/controls/desktop/data-display/image-previewer/changelog.md`
 - 语义结构：`./semantic-cn.md`

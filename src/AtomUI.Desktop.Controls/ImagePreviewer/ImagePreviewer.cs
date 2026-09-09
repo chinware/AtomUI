@@ -8,7 +8,7 @@ using Avalonia.Metadata;
 
 namespace AtomUI.Desktop.Controls;
 
-public class ImagePreviewer : AbstractImagePreviewer
+public partial class ImagePreviewer : AbstractImagePreviewer
 {
     public static readonly StyledProperty<object?> CoverIndicatorContentProperty =
         AvaloniaProperty.Register<ImagePreviewer, object?>(nameof(CoverIndicatorContent));

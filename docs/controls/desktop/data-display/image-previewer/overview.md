@@ -242,11 +242,18 @@ public enum ImageCacheStoragePolicy
 `CurrentIndex` 设置为该项索引，再打开预览。单封面控件的 CoverIndex 只决定关闭态封面；点击单封面只打开预览，不隐式把
 CurrentIndex 同步为 CoverIndex。
 
-稳定 template part 包括 `PART_CoverItemsControl`、`PART_ImageViewerScene`、`PART_ImageRenderer`、
-`PART_LoadingPresenter`、`PART_ErrorPresenter`、`PART_PreviousButton`、`PART_NextButton`、`PART_TitleLayout`、
-`PART_IconPresenter` 和 `PART_CloseButton`。
+稳定 template part 契约：
 
-LLMS 语义区域：
+| Template Part | AtomUI 节点 | 职责 | 稳定性 |
+| --- | --- | --- | --- |
+| `PART_CoverItemsControl` | `ImageGroupPreviewerTheme` | group 封面集合 | template-stable |
+| `PART_ImageViewerScene` | `ImageViewerTheme` | 预览图片坐标空间 | template-stable |
+| `PART_ImageRenderer` | `ImageViewerTheme` | 只渲染 entry 已持有的 `IImage` | template-stable |
+| `PART_LoadingPresenter` | `ImagePreviewerCoverTheme` / `ImageViewerTheme` | 封面 Skeleton / viewer Spin 状态占位 | template-stable |
+| `PART_ErrorPresenter` | `ImagePreviewerCoverTheme` / `ImageViewerTheme` | 失败内容占位 | template-stable |
+| `PART_PreviousButton` / `PART_NextButton` | `ImageViewerTheme` | 上一张 / 下一张导航 | template-stable |
+| `PART_TitleLayout` / `PART_IconPresenter` | `ImagePreviewerTitleBarTheme` | dialog 标题与图标 | template-stable |
+| `PART_CloseButton` | `ImagePreviewerOverlayHostTheme` | overlay 关闭入口 | template-stable |
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
@@ -257,6 +264,9 @@ LLMS 语义区域：
 | `renderer` | `PART_ImageRenderer` | 只渲染 entry 已持有的 `IImage` | current load state | 无独立加载 Token | template-stable |
 | `loading` | `PART_LoadingPresenter` | 呈现 Skeleton 或 Spin，不拥有请求 | LoadingContent/Template | Loading、Skeleton、Spin Token | template-stable |
 | `error` | `PART_ErrorPresenter` | 呈现最终失败内容，不改变状态机 | ErrorContent/Template | Error semantic Token | template-stable |
+
+Semantic Part 公开契约（`root`、`image`、`cover` 与 `popup.*` 分组）见 [Semantic Parts](#semantic-parts) 章节。`PART_*`
+名称继续只服务控件代码查找，与 Semantic Part 承担不同职责。
 
 ## 4. 行为与状态模型
 
@@ -421,6 +431,20 @@ Renderer 只消费 entry 已提交的 `IImage`，不得自行打开 Source 或�
 本设计不改变现有缩放、拖拽、旋转、导航、标题栏、封面 mask、Token 和 Light/Dark 视觉契约。Token 的来源、计算和消费位置见
 [ImagePreviewer Token 设计](token.md)。
 
+## Semantic Parts
+
+ImagePreviewer 家族公开 9 个 Semantic Part：`root`、`image`、`cover`、`popup.root`、`popup.mask`、`popup.body`、
+`popup.footer`、`popup.actions`、`popup.close`，由 `ImagePreviewer`（单封面入口）与 `ImageGroupPreviewer`（多封面入口）
+两个 public owner 共同声明。`root` 为控件根；`image` 为封面图片元素；`cover` 为封面悬浮提示层；`popup.root` 为预览宿主
+容器根；`popup.mask` 为 Overlay 宿主的半透明遮罩层（仅 Overlay 宿主）；`popup.body` 为居中图片区；`popup.footer` 为底部
+操作区；`popup.actions` 为 footer 内操作按钮组；`popup.close` 为右上角关闭按钮（仅 Overlay 宿主）。`popup.*` 属于独立宿主
+部件：预览宿主由 `OpenDialog()` 运行时创建并经 logical parent 挂入 owner，随宿主打开存在、关闭销毁。
+
+Part 命名与 SelectorRoute 与上游 Image 控件的 Semantic DOM 一一对齐。完整 Part 表、逐 Part 说明、Selector 用法、数量语义、
+定制边界与兼容性见 [ImagePreviewer Semantic Part 契约](semantic-part.md)；marker 与宿主/模板节点的映射见
+[ImagePreviewer 桌面版实现原理](implementation.md)；系统级规则见
+[AtomUI Semantic Part 系统设计](../../../../architecture/systems/theming/semantic-parts.md)。
+
 ## 6. 控件家族或集成关系
 
 `AbstractImagePreviewer` 定义共享 item、current、loading、interaction 和 host contract。`ImagePreviewer` 增加单封面投影，
@@ -452,6 +476,7 @@ DecodeSpec 保存解码结果。多个来源只有在同一 CachePartition 中�
 - 来源变化不依赖集合 Clear、控件重建或手工 cache clear 才能被识别。
 - Previewer 的 Add/Remove/Replace/Move/Reset/Clear、host close 和 detach 不能清除 Application cache。
 - 关闭 dialog/overlay 释放宿主 binding、订阅、logical parent 和全部 Full lease；detach 释放 Full/Thumbnail waiter 与 lease。
+- reattach：重新物化集合并按 IsOpen 选择当前加载策略。
 - TopLevel resize 或 render scaling 变化重新计算物理像素 bucket；相同 bucket 不重复读取，不同 bucket 异步升级。
 - source replacement、collection remove/reset、旧 generation 和已关闭 host 都不能回写当前 entry。
 - Full 与 Thumbnail 通道保持取消、状态、错误、进度、尺寸和 lease 隔离。
@@ -460,6 +485,15 @@ DecodeSpec 保存解码结果。多个来源只有在同一 CachePartition 中�
 - 不允许同步 I/O、固定延迟、反射发现 reader/codec/serializer，或在 Previewer 内创建 `HttpClient`、cache 或 scheduler。
 - SourceSnapshot、encoded content 和 decoded content 的共享范围都受 CachePartition 限制；安全分区之间不共享命中或诊断。
 - borrowed `IImage` 始终由调用方拥有，任何 loader/cache/control 生命周期都不能 dispose 它。
+- Semantic Part：删除或重命名 Part、修改 SelectorRoute 命中范围、收窄 `ContractType` 都属于破坏性变更；`popup.*` 部件仅宿主
+  打开期间存在，关闭后不残留任何 marker 节点；内置主题不使用 `.semantic-*` selector 实现默认视觉；`.semantic-scope-*`
+  路由锚点不是公开 Part，不进入兼容承诺；native dialog 的窗口 chrome（标题栏、caption 按钮、窗口边框）不属于任何 Part；
+  宿主必须保持挂入 owner 的 logical parent 链，popup 部件的生成 Selector 依赖该链命中 overlay 宿主（与 owner 同 TopLevel）；
+  native dialog 是独立 TopLevel，owner 作用域样式不跨窗口级联，预览视觉经 host 契约定制。
+- 宿主分层与上游 DOM 对齐：overlay 宿主模板根 Panel 只承担 `popup.root` 容器职责、不带背景，遮罩背景必须由独立的
+  `popup.mask` 子元素承担；`popup.mask` 与 `popup.close` 仅 Overlay 宿主存在（`Optional`），native dialog 不物化这两个部件。
+- 遮罩点击关闭（上游 `maskClosable=true` 默认）当前未在 overlay 宿主实现，关闭仅经 `popup.close`；Part 契约只承诺样式命中，
+  不承诺该行为，属行为对齐的既有差异。
 
 ## 8. 专项模型
 
@@ -526,17 +560,19 @@ fallback 或 `ImageFailed`。
 ## 9. 文档导航、LLMS 导出与验证策略
 
 - [ImagePreviewer 桌面版实现原理](implementation.md)
+- [ImagePreviewer Semantic Part 契约](semantic-part.md)
 - [ImagePreviewer Token 设计](token.md)
 - [ImagePreviewer 切换显示设计](switch-display-design.md)
 - [ImagePreviewer Changelog](changelog.md)
 - [统一图片加载系统](../../../../architecture/systems/image-loading/overview.md)
+- [AtomUI Semantic Part 系统设计](../../../../architecture/systems/theming/semantic-parts.md)
 
 LLMS 导出来源：
 
 | LLMS 内容 | 来源 | 说明 |
 | --- | --- | --- |
 | 单控件完整文档 | overview.md + implementation.md + token.md + Gallery ShowCase | 生成 `controls/image-previewer/index-cn.md` |
-| 单控件语义文档 | overview.md + implementation.md + Themes 文件夹 + theme/template 信息 | 生成 `controls/image-previewer/semantic-cn.md` |
+| 单控件语义文档 | semantic-part.md + implementation.md + Themes 文件夹 + theme/template 信息 | 生成 `controls/image-previewer/semantic-cn.md` |
 | API 表 | overview.md 语义摘要 + 源码 public surface | 不在 overview.md 中机械复制完整 API 表 |
 | Design Token 表 | token.md + `ImagePreviewerToken` | 不在 token.md 中手工复制生成表 |
 | 示例 | Gallery ImagePreviewer ShowCase + source snippet catalog | 只引用稳定示例 |
@@ -551,6 +587,11 @@ LLMS 导出来源：
   host close、detach/reattach 和旧结果拒绝。
 - 显示与主题：两种 ImageSwitchMode 的显示矩阵、稳定 Template Part、伪类、loading/error 门控、标题、Light/Dark 和宿主一致性。
 - 发布：Gallery public API 示例、Shared/Desktop targeted tests、Browser managed publish、Desktop NativeAOT publish 与启动 smoke。
+- Semantic Part：两个 owner 的 descriptor 断言（名称、Selector、SelectorRoute、ContractType、Cardinality 与 cross-root/runtime
+  标志）、全部内置主题的 marker 完整性、生成 Semantic Style 在 overlay 宿主的命中（native dialog 内 marker 完整但 owner
+  作用域样式不跨 TopLevel 级联）、open-close-reopen 生命周期、多 owner 实例隔离、Gallery 语义预览（`root`/`image`/`cover`
+  高亮，`popup.*` 仅列出描述）和 NativeAOT publish。
+- Gallery API 与 ShowCase 只能使用 `ItemsSource` 和 `ImagePreviewItem`。
 
 生成 LLMS 输入来自本文、[实现原理](implementation.md)、[Token 设计](token.md)、源码和 Gallery；不手工编辑
 `docs/AI/generated/llms/`。

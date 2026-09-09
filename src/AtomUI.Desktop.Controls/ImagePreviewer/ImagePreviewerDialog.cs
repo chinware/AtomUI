@@ -1,5 +1,6 @@
 using System.Collections.Specialized;
 using AtomUI.Controls;
+using AtomUI.Generated.AtomUIDesktopControls;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -473,7 +474,14 @@ internal class ImagePreviewerDialog : Window,
             UpdateCurrentImageState,
             () => _imagePreviewer.LatestLoadedFullEntry);
         _imageViewer    = CreateImageViewer();
-        Content         = _imageViewer;
+        // popup.root：native dialog 的内容根包裹 Panel，用生成的 SemanticPart 常量注入
+        // marker（overlay 宿主在模板根静态声明同一 marker）。owner 作用域 Semantic Style
+        // 不跨 Window/TopLevel 级联，仅 overlay 宿主可命中，见 semantic-part.md。
+        Content = new Panel
+        {
+            Children = { _imageViewer },
+            Classes  = { ImagePreviewerSemanticParts.PopupRootClass }
+        };
         SetCurrentValue(TitleProperty, null);
 
         AddHandler(KeyDownEvent, HandleDialogKeyDown, RoutingStrategies.Tunnel | RoutingStrategies.Bubble, handledEventsToo: true);
