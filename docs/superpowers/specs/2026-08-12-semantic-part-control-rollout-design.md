@@ -160,13 +160,13 @@ steps switch table tabs tag time-picker timeline tooltip tour transfer tree tree
 | `Rate` | Ant Design 稳定版 `Rate` 没有公开 Semantic DOM Props。 | 新稳定版公开并实际消费对应 API。 |
 | `Watermark` | Ant Design 稳定版 `Watermark` 没有公开 Semantic DOM Props。 | 新稳定版公开并实际消费对应 API。 |
 | `Icon` | Ant Design Icons 不提供与 AtomUI `Icon` 对应的公开 Semantic DOM owner。 | 稳定发布出现对应公开组件 API。 |
-| `SplitButton` | 最接近的 deprecated `Dropdown.Button` 没有实际消费公开 `classNames` / `styles`；组合内 Button 能力不能上浮。 | 稳定版为 split-button owner 提供独立并实际消费的 API。 |
+| `SplitButton` | 按钮组合结构无独立 owner：deprecated `Dropdown.Button` 仅在类型上继承 `DropdownProps`，实现把调用方传入的 `classNames` / `styles` 经 `...restProps` 透传给 `Space.Compact` 根 `div`，不进入任何语义消费路径（已对 6.6.0–6.6.3 源码逐版本核对）；组合内 Button 能力不能上浮。弹层菜单区域的语义 API 属于 `Dropdown` owner（`root` / `item` / `itemTitle` / `itemIcon` / `itemContent`，6.0.0 起公开且实现实际消费），其中非 `root` 键由 `Dropdown` 实现转发给内部 `Menu`；AtomUI 侧该区域不落在本控件上——弹层根由 `FlyoutHost` 的 `popup.*` 契约承载（SplitButton 的 `Flyout` 即 `FlyoutHost` 所承载的 AtomUI `Flyout`），菜单项语义由 `NavMenu → Menu`（第五批）承载。 | 稳定版为 split-button 按钮组合结构提供独立并实际消费的 Semantic DOM API。 |
 | `FlexPanel` | Ant Design 稳定版没有与该布局 Panel 对应的公开 Semantic DOM owner。 | 新稳定版出现职责直接对应的公开 owner。 |
 | `Grid / Row / Col` | Ant Design Grid 没有公开 Semantic DOM Props；`Layout.Sider` 不能映射到通用 Grid。 | 新稳定版公开 Grid/Row/Col 对应 API。 |
 | `TabStrip` | Ant Design 只在 `Tabs` owner 上公开 API，没有独立 `TabStrip` owner。 | 新稳定版出现独立公开 owner。 |
 | `ButtonSpinner` | Ant Design 没有职责直接对应的公开 Semantic DOM owner；`InputNumber` 的 handle 是其内部区域。 | 新稳定版出现独立 spinner owner。 |
 | `ComboBox` | Ant Design 没有公开 `ComboBox` 组件；`Select` 的 internal combobox mode 不能作为公开 owner。 | 新稳定版出现公开 ComboBox owner。 |
-| `DropdownButton` | deprecated `Dropdown.Button` 虽继承 `DropdownProps`，实现没有消费调用方传入的 Semantic DOM 值。 | 稳定版为该 owner 提供独立并实际消费的 API。 |
+| `DropdownButton` | deprecated `Dropdown.Button` 虽在类型上继承 `DropdownProps`，实现没有消费调用方传入的 Semantic DOM 值（与 `SplitButton` 行同源证据）。弹层菜单区域的语义 API 属于 `Dropdown` owner（见 `SplitButton` 行）；AtomUI 侧其 `MenuFlyout` 弹层内的菜单项语义由 `NavMenu → Menu`（第五批）承载。 | 稳定版为该 owner 提供独立并实际消费的 API。 |
 | `BorderBeam` | Ant Design 稳定版没有该公开组件或对应 Semantic DOM API。 | 稳定版出现职责直接对应的公开 owner。 |
 | `Splash` | Ant Design 稳定版没有职责直接对应的公开 Semantic DOM owner。 | 新稳定版出现对应公开 owner。 |
 | `Menu` | AtomUI `Menu` 是桌面命令、ContextMenu 与 MenuFlyout 家族；Ant Design `Menu` 是页面/模块导航，直接对应 AtomUI `NavMenu`。 | Ant Design 出现职责对应桌面命令菜单的独立公开 owner。 |
