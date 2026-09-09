@@ -59,7 +59,7 @@ public class ImagePreviewerShowCasePageTests
         source.ShouldContain("Name=\"ImageGroupPreviewerSemanticPreview\"");
         source.ShouldContain("SemanticOwnerType=\"{x:Type atom:ImageGroupPreviewer}\"");
         source.ShouldContain("Name=\"ImageGroupPreviewerSemanticOwner\"");
-        CountOccurrences(source, "<gallery:SemanticPartDescription").ShouldBe(18);
+        CountOccurrences(source, "<gallery:SemanticPartDescription").ShouldBe(16);
         source.ShouldContain("Path=\"image\"");
         source.ShouldContain("Path=\"cover\"");
         source.ShouldContain("Path=\"popup.root\"");
@@ -67,7 +67,6 @@ public class ImagePreviewerShowCasePageTests
         source.ShouldContain("Path=\"popup.body\"");
         source.ShouldContain("Path=\"popup.footer\"");
         source.ShouldContain("Path=\"popup.actions\"");
-        source.ShouldContain("Path=\"popup.close\"");
         CountShowCaseItemElements(source).ShouldBe(10);
         CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(10);
         CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(10);

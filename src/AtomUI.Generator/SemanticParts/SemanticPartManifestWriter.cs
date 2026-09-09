@@ -155,6 +155,9 @@ internal sealed class SemanticPartManifestWriter
               .AppendLine("),");
         source.Append("                        ")
               .Append(part.CrossNestedOwners ? "true" : "false")
+              .AppendLine(",");
+        source.Append("                        ")
+              .Append(part.RestHidden ? "true" : "false")
               .AppendLine("),");
     }
 

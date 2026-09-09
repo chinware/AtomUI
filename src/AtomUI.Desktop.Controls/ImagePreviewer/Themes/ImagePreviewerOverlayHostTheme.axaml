@@ -17,7 +17,6 @@
                                       HorizontalAlignment="Stretch"
                                       VerticalAlignment="Stretch" />
                     <atom:IconButton Name="PART_CloseButton"
-                                     Classes.semantic-popup-close="True"
                                      Icon="{antdicons:AntDesignIconProvider CloseOutlined}"
                                      HorizontalAlignment="Right"
                                      VerticalAlignment="Top"

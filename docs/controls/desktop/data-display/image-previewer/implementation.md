@@ -157,12 +157,16 @@ descriptor 路由，不发布为 Part：
 | `.semantic-popup-body` | `ImageViewerTheme` 内 `PART_ImageViewerScene` | 静态模板 marker | 宿主打开 |
 | `.semantic-popup-footer` | `ImageViewerTheme` 内 `ImagePreviewFloatToolbar` 节点 | 静态模板 marker | 宿主打开 |
 | `.semantic-popup-actions` | `ImagePreviewFloatToolbarTheme` 内 `#ActionFrame` | 静态模板 marker | 宿主打开 |
-| `.semantic-popup-close` | `ImagePreviewerOverlayHostTheme` 内 `PART_CloseButton` | 静态模板 marker | 仅 overlay 宿主打开 |
 
 native dialog 侧 `popup.root` 的 marker 由宿主创建路径用生成的 `ImagePreviewerSemanticParts.PopupRootClass` 常量注入到
-包裹 `PART_ImageViewer` 的 Panel 上；overlay 宿主模板根 Panel 与关闭按钮使用静态 marker。overlay 宿主的半透明黑背景由根
+包裹 `PART_ImageViewer` 的 Panel 上；overlay 宿主模板根 Panel 使用静态 marker。overlay 宿主的半透明黑背景由根
 Panel 迁移到新增的全铺 `popup.mask` 子元素，根 Panel 仅保留容器职责。两个宿主通过各自的路径提供同一 `popup.root` 契约，
-`popup.mask` 与 `popup.close` 只存在于 overlay 宿主，因此两者都声明为 `Optional`。
+`popup.mask` 只存在于 overlay 宿主，因此声明为 `Optional`。
+
+控件实现 `AtomUI.Theme.SemanticParts.ISemanticPartCrossRootProvider`（`CrossRootsChanged` + `GetCrossRoots()`），
+把存活宿主（native dialog 窗口 / overlay host）上报给 Gallery 语义预览：打开（`DialogOpened`）、对话框表面模板就绪
+（`RootTemplateApplied`）与关闭回收（`DialogClosed`）位点同步抛 `CrossRootsChanged`，语义预览据此刷新跨根高亮；
+Avalonia `Popup` 宿主路径不受影响。
 
 ## 6. 生命周期与模板接入
 
@@ -397,7 +401,7 @@ Loading/error 自定义模板只替换内容。模板不能通过视觉存在与
 - renderer、loading presenter 和 error presenter 只消费状态，不发起 I/O 或拥有结果。
 - native dialog 与 Browser overlay 必须共享 item、current、navigation、loading 和关闭语义。
 - 两个 owner 的 Semantic descriptor 与所有内置主题的 marker 完整一致；模板变体无法提供部件时必须声明 `Optional`
-  （`popup.mask` 与 `popup.close` 即 overlay 宿主限定部件）。
+  （`popup.mask` 即 overlay 宿主限定部件）。
 - 内置主题不得用 `.semantic-*` selector 实现默认视觉；`.semantic-scope-*` 锚点不作为公开契约。
 - popup 部件的 SelectorRoute 不设中间 scope 锚点（overlay 宿主模板根与 viewer 在逻辑树上为兄弟，锚点式路由无法在双宿主间
   一致命中），`popup.actions` 只允许以已发布的 `.semantic-popup-footer` 作为模板跨入锚点。
@@ -443,8 +447,8 @@ Loading/error 自定义模板只替换内容。模板不能通过视觉存在与
   `ImagePreviewFloatToolbarTheme`、`ImagePreviewerOverlayHostTheme` 的静态 marker 清单（含 overlay 新增 `popup.mask`
   遮罩子元素），及 native dialog 运行时注入 `popup.root` marker 的断言。
 - 生成 Semantic Style 命中：嵌套 Semantic Style 在 overlay 宿主命中全部 `popup.*`（overlay 与 owner 同 TopLevel）；
-  native dialog 内 marker 完整存在但 owner 作用域样式不跨 Window/TopLevel 级联（以回归测试固定该边界）；`popup.mask` 与
-  `popup.close` 在 overlay 命中、在 native dialog 不存在的 Optional 语义。
+  native dialog 内 marker 完整存在但 owner 作用域样式不跨 Window/TopLevel 级联（以回归测试固定该边界）；`popup.mask`
+  在 overlay 命中、在 native dialog 不存在的 Optional 语义。
 - popup 生命周期：open-close-reopen、owner detach 与 close 后不残留 marker、多个 owner 实例的宿主隔离、source 替换后
   marker 与命中关系保持不变。
 - Gallery 语义预览：`root`/`image`/`cover` 在 owner 模板内高亮，`popup.*` 因宿主 internal 且无公开访问器仅列出描述、不参与

@@ -269,6 +269,13 @@ internal static class SemanticPartTargetResolver
             return false;
         }
 
+        // RestHidden 部件的静止态透明是设计语义（如 ImagePreviewer cover 悬停遮罩），
+        // 语义预览必须在不可见状态下仍能定位描边。
+        if (part.RestHidden)
+        {
+            return true;
+        }
+
         return candidate.GetSelfAndVisualAncestors().All(static ancestor => ancestor.Opacity > 0);
     }
 }

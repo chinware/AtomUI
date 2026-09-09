@@ -433,11 +433,11 @@ Renderer 只消费 entry 已提交的 `IImage`，不得自行打开 Source 或�
 
 ## Semantic Parts
 
-ImagePreviewer 家族公开 9 个 Semantic Part：`root`、`image`、`cover`、`popup.root`、`popup.mask`、`popup.body`、
-`popup.footer`、`popup.actions`、`popup.close`，由 `ImagePreviewer`（单封面入口）与 `ImageGroupPreviewer`（多封面入口）
+ImagePreviewer 家族公开 8 个 Semantic Part：`root`、`image`、`cover`、`popup.root`、`popup.mask`、`popup.body`、
+`popup.footer`、`popup.actions`，由 `ImagePreviewer`（单封面入口）与 `ImageGroupPreviewer`（多封面入口）
 两个 public owner 共同声明。`root` 为控件根；`image` 为封面图片元素；`cover` 为封面悬浮提示层；`popup.root` 为预览宿主
 容器根；`popup.mask` 为 Overlay 宿主的半透明遮罩层（仅 Overlay 宿主）；`popup.body` 为居中图片区；`popup.footer` 为底部
-操作区；`popup.actions` 为 footer 内操作按钮组；`popup.close` 为右上角关闭按钮（仅 Overlay 宿主）。`popup.*` 属于独立宿主
+操作区；`popup.actions` 为 footer 内操作按钮组。`popup.*` 属于独立宿主
 部件：预览宿主由 `OpenDialog()` 运行时创建并经 logical parent 挂入 owner，随宿主打开存在、关闭销毁。
 
 Part 命名与 SelectorRoute 与上游 Image 控件的 Semantic DOM 一一对齐。完整 Part 表、逐 Part 说明、Selector 用法、数量语义、
@@ -491,8 +491,8 @@ DecodeSpec 保存解码结果。多个来源只有在同一 CachePartition 中�
   宿主必须保持挂入 owner 的 logical parent 链，popup 部件的生成 Selector 依赖该链命中 overlay 宿主（与 owner 同 TopLevel）；
   native dialog 是独立 TopLevel，owner 作用域样式不跨窗口级联，预览视觉经 host 契约定制。
 - 宿主分层与上游 DOM 对齐：overlay 宿主模板根 Panel 只承担 `popup.root` 容器职责、不带背景，遮罩背景必须由独立的
-  `popup.mask` 子元素承担；`popup.mask` 与 `popup.close` 仅 Overlay 宿主存在（`Optional`），native dialog 不物化这两个部件。
-- 遮罩点击关闭（上游 `maskClosable=true` 默认）当前未在 overlay 宿主实现，关闭仅经 `popup.close`；Part 契约只承诺样式命中，
+  `popup.mask` 子元素承担；`popup.mask` 仅 Overlay 宿主存在（`Optional`），native dialog 不物化该部件。
+- 遮罩点击关闭（上游 `maskClosable=true` 默认）当前未在 overlay 宿主实现，关闭经 overlay 宿主内嵌关闭按钮（非语义部件）；Part 契约只承诺样式命中，
   不承诺该行为，属行为对齐的既有差异。
 
 ## 8. 专项模型

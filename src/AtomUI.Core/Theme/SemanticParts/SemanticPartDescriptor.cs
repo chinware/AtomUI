@@ -18,7 +18,8 @@ public sealed class SemanticPartDescriptor
         bool runtimeCreated,
         string? selectorRoute = null,
         Type? styleType = null,
-        bool crossNestedOwners = false)
+        bool crossNestedOwners = false,
+        bool restHidden = false)
     {
         ValidatePartName(name, nameof(name));
         ValidatePartPath(path, nameof(path));
@@ -122,6 +123,7 @@ public sealed class SemanticPartDescriptor
         Since = string.IsNullOrWhiteSpace(since) ? null : since;
         RuntimeCreated = runtimeCreated;
         CrossNestedOwners = crossNestedOwners;
+        RestHidden = restHidden;
         StyleType = styleType;
     }
 
@@ -137,6 +139,10 @@ public sealed class SemanticPartDescriptor
     public string? Since { get; }
     public bool RuntimeCreated { get; }
     public bool CrossNestedOwners { get; }
+
+    /// <summary>部件静止态透明/隐藏是设计语义；语义预览定位跳过 Opacity 资格过滤。</summary>
+    public bool RestHidden { get; }
+
     public Type? StyleType { get; }
 
     private static void ValidatePartName(string value, string parameterName)

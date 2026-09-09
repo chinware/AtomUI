@@ -14,6 +14,7 @@ namespace AtomUI.Desktop.Controls;
     SelectorClass = "semantic-cover",
     SelectorRoute = "/template/ .semantic-scope-cover /template/ .semantic-cover",
     CrossNestedOwners = true,
+    RestHidden = true,
     ContractType = typeof(Border),
     Since = "6.0")]
 [SemanticPart("popup.root",
@@ -56,15 +57,6 @@ namespace AtomUI.Desktop.Controls;
     CrossNestedOwners = true,
     RuntimeCreated = true,
     ContractType = typeof(Border),
-    Since = "6.0")]
-[SemanticPart("popup.close",
-    SelectorClass = "semantic-popup-close",
-    SelectorRoute = ">> .semantic-popup-close",
-    CrossVisualRoot = true,
-    CrossNestedOwners = true,
-    RuntimeCreated = true,
-    Cardinality = SemanticPartCardinality.Optional,
-    ContractType = typeof(IconButton),
     Since = "6.0")]
 public partial class ImagePreviewer
 {

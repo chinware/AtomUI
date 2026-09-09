@@ -147,6 +147,7 @@ Customization
 CrossVisualRoot
 Since
 RuntimeCreated
+RestHidden
 ```
 
 具体产品 Gallery 只能按 Part path 提供本地化职责描述和必要的代码片段覆盖，不能覆盖 selector、ContractType、cardinality
@@ -240,7 +241,10 @@ class 搜索。
 - 节点是已附加的 Visual。
 - `Classes` 包含 descriptor 的 `SelectorClass`。
 - 节点的 `TemplatedParent` 与 owner 相同。
-- 节点 `IsEffectivelyVisible=true`，Bounds 非零，并且所在祖先链没有完全透明节点。
+- 节点 `IsEffectivelyVisible=true` 且 Bounds 非零。
+- 所在祖先链没有完全透明节点。`RestHidden=true` 的 Part 例外：静止态透明/隐藏是该 Part 的设计语义（如
+  ImagePreviewer `cover` 的悬停遮罩），目标解析跳过 Opacity 过滤，在不可见状态下仍定位并描边；`IsEffectivelyVisible`
+  与非零 Bounds 检查保留，closed popup 中的目标依旧不会误命中。`RestHidden` 只是预览定位元数据，不改变控件运行时行为。
 
 不能只按 `.semantic-*` 扫描整个 owner 子树。不同 Control 可以合法复用 `.semantic-icon` 等 class，缺少 owner 边界会误命中
 嵌套子 Control 的 Semantic Part。
@@ -291,6 +295,9 @@ VisualRoot 手动换算屏幕坐标。
 - 视觉对齐 antd SemanticPreview 的 `Marker`：金框沿目标边界外侧绘制，主目标在 2px 全不透明金框外再画 1px 白色外环
   （对应 antd `boxShadow: 0 0 0 1px #fff`）；其余目标使用同色 `1px`、85% 不透明描边。
 - 描边落在目标 bounds 外沿，细窄目标（如 4px 高的 slider tracks）也能获得清晰可见的金框。
+- 描边矩形钳制到 adorner 所在 AdornerLayer（窗口客户区）内：贴边满区目标（如 ImagePreviewer native 预览对话框的
+  `popup.root` / `popup.body`）外扩后左、右、下边会越出窗口表面被 OS 裁剪，视觉只剩贴窗的一条边；钳制保留外扩与
+  笔宽余量，贴边目标的描边贴窗口边缘完整显示。层不可达或交集退化时按原矩形绘制，不抛错、不隐形。
 - 构造时必须设置 `AdornerLayer.SetIsClipEnabled(adorner, false)`。Avalonia `AdornerLayer` 默认会根据 adorned target 的祖先
   裁剪状态合成 clip；如果目标位于 `ClipToBounds=true` 的 Border、Panel、Masonry、ScrollViewer 或其他模板节点中，默认 clip
   会把顶部、左侧或底部的外扩描边截回目标矩形。关闭该 attached property 是 Semantic Preview 的基础设施契约，不能由具体
@@ -325,6 +332,28 @@ Children 删除 Visual 不能作为完整生命周期契约。
 因此，遇到边缘缺线时，维护者必须先检查 adorner 的 clip 配置和 Bounds；不得通过修改控件 `ClipToBounds`、Preview 对齐、Masonry
 坐标或模板 Padding 来修复 Semantic Preview 的渲染问题。该规则适用于所有控件，不是 Masonry 专用约定。
 
+### 9.2 RestHidden 部件的预览显现契约
+
+`RestHidden=true` 的部件静止态透明/隐藏是设计语义（如 ImagePreviewer `cover` 的悬停遮罩）。语义预览激活这类部件时，
+除描边外还要把目标本体显现出来，让用户看到部件的真实视觉：
+
+- 高亮会话对每个解析出的目标设置 `AtomUI.Theme.SemanticParts.SemanticPartPreviewState.IsPreviewTarget=true`
+  （会话释放与刷新时置回 `false`）。该附加属性是预览状态契约，位于 AtomUI.Core——写入方（GalleryBase 会话）与
+  读取方（控件 ControlTheme）分属不同程序集，依赖方向要求契约下沉；伪类是 `protected`，外部无法设置。
+- 控件 ControlTheme 以属性条件选择器响应并自行决定显现方式。cover 遮罩的显现是把遮罩 Border 的 `Opacity` 提到 1
+  （Style 优先级高于 TemplateBinding，状态移除后自动回落到 `MaskOpacity` 绑定）：
+
+```xml
+<Style Selector="^ /template/ Border#Mask[(atom|SemanticPartPreviewState.IsPreviewTarget)=True]">
+    <Setter Property="Opacity" Value="1" />
+</Style>
+```
+
+- 拥有 `RestHidden` 部件的控件必须在 ControlTheme 中声明对应显现样式；缺失时该部件只有描边、本体不显形（降级可见，
+  不报错）。选择器语法注意：属性条件中的 XML 命名空间前缀用 `|` 分隔（CSS 惯例），不是 `:`。
+- 该状态只影响预览观感，不改变控件运行时行为；不用 `.semantic-*` class 表达，内置主题默认视觉依旧不经 `.semantic-*`
+  selector 实现。
+
 ## 10. Popup 与独立宿主
 
 `CrossVisualRoot=true` 的模板 Popup 使用 owner-scoped 路径：
@@ -343,6 +372,29 @@ Children 删除 Visual 不能作为完整生命周期契约。
 
 Modal、Message、Notification 等由服务创建且不再能从 owner Popup 到达的独立宿主，不使用隐藏全局搜索。具体 Gallery Demo
 可以向 Preview 显式提供 `AdditionalRoots`；该能力属于 Gallery 接入信息，不得要求产品 Control 增加 Preview 接口。
+
+### 10.1 独立窗口宿主（ISemanticPartCrossRootProvider）
+
+控件把部件活体承载在独立 TopLevel（如 ImagePreviewer 的 native 预览对话框窗口）时，模板内不存在 `Popup` 对象，
+Popup 订阅路径无从发现宿主。此类控件实现 `AtomUI.Theme.SemanticParts.ISemanticPartCrossRootProvider`：
+
+```csharp
+public interface ISemanticPartCrossRootProvider
+{
+    event EventHandler? CrossRootsChanged;      // 宿主集合出现/消失/表面就绪时触发
+    IReadOnlyList<Visual> GetCrossRoots();      // 当前存活的跨根宿主视觉根
+}
+```
+
+- 高亮会话发现 owner 实现该接口即订阅 `CrossRootsChanged`（与 Popup 的 `Opened`/`Closed` 订阅同构，Render 优先级
+  合并刷新），并把 `GetCrossRoots()` 结果并入附加根集合；`Dispose` 统一退订。
+- **触发位点必须覆盖宿主生命周期全程**：宿主打开、宿主表面模板就绪（模板应用晚于 `Show()` 的同步路径，ImagePreviewer
+  在 `RootTemplateApplied` 补抛一次）、宿主关闭回收。漏掉表面就绪会导致首次刷新时目标未附加而拿空结果且不再重试。
+- 描边 adorner 按 `AdornerLayer.GetAdornerLayer(target)` 落在宿主窗口自己的 AdornerLayer；`RestHidden` 显现状态
+  （`SemanticPartPreviewState.IsPreviewTarget`）直接设在目标节点上——二者天然跨根，无需额外处理。
+- 宿主关闭后控件必须把根从 `GetCrossRoots()` 收回（如置空 open state），会话刷新后高亮与显现状态一并释放。
+- 契约位于 AtomUI.Core：写入方（GalleryBase 会话）与实现方（控件）依赖方向都指向 Core；不要求产品 Control 增加
+  Gallery 专用接口。宿主根的生命周期由控件自己管理，会话不做逻辑树推断或全局 TopLevel 扫描。
 
 带模板 Popup 的控件（AutoComplete 先例）演示 `popup.*` 部件时，演示控件按以下模式钉住弹层常开，使 `popup.root`、
 `popup.list`、`popup.listItem` 随时可解析、可高亮：

@@ -63,9 +63,6 @@
                                 <gallery:SemanticPartDescription
                                     Path="popup.actions"
                                     Description="{gallery:ImagePreviewerShowCaseLangResource SemanticPopupActionsDescription}" />
-                                <gallery:SemanticPartDescription
-                                    Path="popup.close"
-                                    Description="{gallery:ImagePreviewerShowCaseLangResource SemanticPopupCloseDescription}" />
                             </gallery:SemanticPartPreview.PartDescriptions>
                         </gallery:SemanticPartPreview>
 
@@ -110,9 +107,6 @@
                                 <gallery:SemanticPartDescription
                                     Path="popup.actions"
                                     Description="{gallery:ImagePreviewerShowCaseLangResource SemanticPopupActionsDescription}" />
-                                <gallery:SemanticPartDescription
-                                    Path="popup.close"
-                                    Description="{gallery:ImagePreviewerShowCaseLangResource SemanticPopupCloseDescription}" />
                             </gallery:SemanticPartPreview.PartDescriptions>
                         </gallery:SemanticPartPreview>
                     </StackPanel>

@@ -2,6 +2,15 @@
 
 本文档记录 ImagePreviewer 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-09-09
+
+- 移除 `popup.close` 语义部件：关闭职能在 native dialog 由 OS 标题栏按钮、在 overlay 宿主由内嵌关闭按钮（`PART_CloseButton`，非语义部件）承担，发布部件 9 → 8；同步移除生成 `ImagePreviewerPopupCloseStyle` / `ImageGroupPreviewerPopupCloseStyle`、overlay 模板 marker 与示例描述。
+- 语义预览支持独立预览窗口：`AbstractImagePreviewer` 实现 `AtomUI.Theme.SemanticParts.ISemanticPartCrossRootProvider`，
+  把存活的 native 预览对话框窗口 / overlay 宿主上报为跨根宿主，并在 `DialogOpened`、`RootTemplateApplied`（对话框表面
+  模板就绪）与 `DialogClosed` 位点触发 `CrossRootsChanged`；Gallery 语义部件页签在预览窗口打开时即可对窗口内的
+  `popup.body` / `popup.footer` 等部件定位描边与显现，关闭窗口后自动释放。该契约为通用机制，窗口宿主家族控件
+  （如 Dialog/WindowDialogPresenter）可直接复用。
+
 ## 2026-09-08
 
 - Semantic Part style alignment（严格对齐上游 Image 语义 DOM 样式）

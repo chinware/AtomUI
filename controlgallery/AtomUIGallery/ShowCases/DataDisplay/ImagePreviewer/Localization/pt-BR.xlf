@@ -211,12 +211,6 @@
         <target state="translated">Área central de interação da imagem do visualizador de pré-visualização.</target>
       </segment>
     </unit>
-    <unit id="SemanticPopupCloseDescription">
-      <segment>
-        <source>Close button of the overlay preview surface (overlay host only).</source>
-        <target state="translated">Botão de fechar da superfície de pré-visualização em overlay (apenas host overlay).</target>
-      </segment>
-    </unit>
     <unit id="SemanticPopupFooterDescription">
       <segment>
         <source>Bottom toolbar area with the page indicator and action group.</source>

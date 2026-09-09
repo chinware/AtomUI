@@ -280,7 +280,7 @@ Semantic Part 公开契约（`root`、`image`、`cover` 与 `popup.*` 分组）�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:134`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:128`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -290,7 +290,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 远程图片加载
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:146`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:140`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -300,7 +300,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 容错
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:158`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:152`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -310,7 +310,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 20 张远程图片
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:170`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml:164`
 
 Gallery key：`ExamplesContent` / item `3`
 

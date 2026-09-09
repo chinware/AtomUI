@@ -1,4 +1,3 @@
-using AtomUI.Controls.Primitives;
 using AtomUI.Theme;
 using Avalonia.Controls;
 
@@ -60,15 +59,6 @@ namespace AtomUI.Desktop.Controls;
     CrossNestedOwners = true,
     RuntimeCreated = true,
     ContractType = typeof(Border),
-    Since = "6.0")]
-[SemanticPart("popup.close",
-    SelectorClass = "semantic-popup-close",
-    SelectorRoute = ">> .semantic-popup-close",
-    CrossVisualRoot = true,
-    CrossNestedOwners = true,
-    RuntimeCreated = true,
-    Cardinality = SemanticPartCardinality.Optional,
-    ContractType = typeof(IconButton),
     Since = "6.0")]
 public partial class ImageGroupPreviewer
 {

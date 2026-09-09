@@ -7,6 +7,7 @@ using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
 using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Theme.SemanticParts;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -31,7 +32,9 @@ public enum ImageSwitchMode
     WaitForLoaded = 1,
 }
 
-public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareControl
+public abstract class AbstractImagePreviewer : TemplatedControl,
+                                               IMotionAwareControl,
+                                               ISemanticPartCrossRootProvider
 {
     #region 公共属性定义
     public static readonly StyledProperty<IEnumerable<ImagePreviewItem>?> ItemsSourceProperty =
@@ -311,6 +314,30 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
     public event EventHandler<CancelEventArgs>? DialogClosing;
     public event EventHandler<ImagePreviewOpenedEventArgs>? ImageOpened;
     public event EventHandler<ImagePreviewFailedEventArgs>? ImageFailed;
+
+    /// <inheritdoc />
+    public event EventHandler? CrossRootsChanged;
+
+    #endregion
+
+    #region ISemanticPartCrossRootProvider 实现
+
+    /// <summary>
+    /// 预览面承载在独立 Window（ImagePreviewerDialog）中，属 owner 视觉树之外的跨根宿主；
+    /// 语义预览经该契约发现宿主并在打开/关闭/表面就绪时跟随刷新。overlay 宿主
+    /// （同窗口内）同样经此上报，两路径统一。
+    /// </summary>
+    public IReadOnlyList<Visual> GetCrossRoots()
+    {
+        return _openState?.RootVisual is { } rootVisual
+            ? new Visual[] { rootVisual }
+            : Array.Empty<Visual>();
+    }
+
+    private void RaiseCrossRootsChanged()
+    {
+        CrossRootsChanged?.Invoke(this, EventArgs.Empty);
+    }
 
     #endregion
 
@@ -988,6 +1015,7 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
                     dialogAwareDataContext.NotifyClosed();
                 }
                 DialogClosed?.Invoke(this, EventArgs.Empty);
+                RaiseCrossRootsChanged();
             });
         });
 
@@ -1034,6 +1062,7 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
             SetCurrentValue(IsOpenProperty, true);
         }
         DialogOpened?.Invoke(this, EventArgs.Empty);
+        RaiseCrossRootsChanged();
         _dialogOpening = false;
     }
 
@@ -1090,6 +1119,7 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
                         dialogAwareDataContext.NotifyClosed();
                     }
                     DialogClosed?.Invoke(this, EventArgs.Empty);
+                    RaiseCrossRootsChanged();
                 });
             });
 
@@ -1101,6 +1131,7 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
                 SetCurrentValue(IsOpenProperty, true);
             }
             DialogOpened?.Invoke(this, EventArgs.Empty);
+            RaiseCrossRootsChanged();
             _dialogOpening = false;
         }
         catch
@@ -1235,6 +1266,9 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
 
             dialogOpenState.SetPresenterSubscription(presenterSubscription);
         }
+
+        // 对话框表面模板就绪晚于 Show 的同步路径；语义预览的跨根扫描以此刻为准。
+        RaiseCrossRootsChanged();
     }
 
     private void SetTemplatedParentAndApplyChildTemplates(Control? control)
@@ -1292,6 +1326,9 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
     {
         TopLevel TopLevel { get; }
 
+        /// <summary>存活宿主的视觉根（native 对话框窗口 / overlay 宿主），供跨根契约上报。</summary>
+        Visual? RootVisual { get; }
+
         void RefreshImageSwitchMode();
     }
 
@@ -1309,6 +1346,8 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
 
         public ImagePreviewerDialog DialogHost { get; }
         public TopLevel TopLevel { get; }
+
+        public Visual? RootVisual => DialogHost;
 
         public void SetPresenterSubscription(IDisposable? presenterCleanup)
         {
@@ -1341,6 +1380,8 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
 
         public ImagePreviewerOverlayHost PreviewHost { get; }
         public TopLevel TopLevel { get; }
+
+        public Visual? RootVisual => PreviewHost;
 
         public void RefreshImageSwitchMode()
         {

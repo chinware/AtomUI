@@ -44,7 +44,6 @@ public enum ImagePreviewerShowCaseLangResourceKind
     SemanticPopupBodyDescription,
     SemanticPopupFooterDescription,
     SemanticPopupActionsDescription,
-    SemanticPopupCloseDescription,
     SemanticPartStyleTitle,
     SemanticPartStyleDescription
 }

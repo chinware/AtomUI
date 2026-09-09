@@ -176,11 +176,6 @@
         <source>Centered image interaction area of the preview viewer.</source>
       </segment>
     </unit>
-    <unit id="SemanticPopupCloseDescription">
-      <segment>
-        <source>Close button of the overlay preview surface (overlay host only).</source>
-      </segment>
-    </unit>
     <unit id="SemanticPopupFooterDescription">
       <segment>
         <source>Bottom toolbar area with the page indicator and action group.</source>

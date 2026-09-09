@@ -29,11 +29,10 @@ public class ImagePreviewerSemanticPartTests
     private const string PopupBodyClass = "semantic-popup-body";
     private const string PopupFooterClass = "semantic-popup-footer";
     private const string PopupActionsClass = "semantic-popup-actions";
-    private const string PopupCloseClass = "semantic-popup-close";
 
     private static readonly string[] ApprovedPartNames =
     [
-        "root", "cover", "image", "popup.actions", "popup.body", "popup.close",
+        "root", "cover", "image", "popup.actions", "popup.body",
         "popup.footer", "popup.mask", "popup.root"
     ];
 
@@ -44,7 +43,7 @@ public class ImagePreviewerSemanticPartTests
         ["ImagePreviewerCoverTheme.axaml"] = [ImageClass, CoverClass],
         ["ImageViewerTheme.axaml"] = [PopupBodyClass, PopupFooterClass],
         ["ImagePreviewFloatToolbarTheme.axaml"] = [PopupActionsClass],
-        ["ImagePreviewerOverlayHostTheme.axaml"] = [PopupRootClass, PopupMaskClass, PopupCloseClass]
+        ["ImagePreviewerOverlayHostTheme.axaml"] = [PopupRootClass, PopupMaskClass]
     };
 
     static ImagePreviewerSemanticPartTests()
@@ -76,8 +75,6 @@ public class ImagePreviewerSemanticPartTests
         AssertPopupPart(descriptor, "popup.actions", PopupActionsClass, typeof(Border),
             ">> .semantic-popup-footer /template/ .semantic-popup-actions",
             SemanticPartCardinality.Single);
-        AssertPopupPart(descriptor, "popup.close", PopupCloseClass, typeof(IconButton),
-            ">> .semantic-popup-close", SemanticPartCardinality.Optional);
     }
 
     [Fact]
@@ -104,8 +101,6 @@ public class ImagePreviewerSemanticPartTests
         AssertPopupPart(descriptor, "popup.actions", PopupActionsClass, typeof(Border),
             ">> .semantic-popup-footer /template/ .semantic-popup-actions",
             SemanticPartCardinality.Single);
-        AssertPopupPart(descriptor, "popup.close", PopupCloseClass, typeof(IconButton),
-            ">> .semantic-popup-close", SemanticPartCardinality.Optional);
     }
 
     [Fact]
@@ -289,7 +284,6 @@ public class ImagePreviewerSemanticPartTests
             FindSemanticControl<Panel>(window, PopupBodyClass).Tag.ShouldBe("popup.body");
             FindSemanticControl<Control>(window, PopupFooterClass).Tag.ShouldBe("popup.footer");
             FindSemanticControl<Border>(window, PopupActionsClass).Tag.ShouldBe("popup.actions");
-            FindSemanticControl<IconButton>(window, PopupCloseClass).Tag.ShouldBe("popup.close");
         }
         finally
         {
@@ -328,9 +322,8 @@ public class ImagePreviewerSemanticPartTests
             dialog.GetVisualDescendants().OfType<Control>().Single(c => c.Classes.Contains(PopupFooterClass)).ShouldNotBeNull();
             dialog.GetVisualDescendants().OfType<Border>().Single(c => c.Classes.Contains(PopupActionsClass)).ShouldNotBeNull();
 
-            // Optional：native dialog 无遮罩层与内嵌关闭按钮。
+            // Optional：native dialog 无遮罩层（关闭由 OS 窗口原语承担，无内嵌关闭部件）。
             dialog.GetVisualDescendants().OfType<Panel>().Any(c => c.Classes.Contains(PopupMaskClass)).ShouldBeFalse();
-            dialog.GetVisualDescendants().OfType<IconButton>().Any(c => c.Classes.Contains(PopupCloseClass)).ShouldBeFalse();
         }
         finally
         {

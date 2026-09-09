@@ -211,12 +211,6 @@
         <target state="translated">預覽檢視器的居中圖片互動區域。</target>
       </segment>
     </unit>
-    <unit id="SemanticPopupCloseDescription">
-      <segment>
-        <source>Close button of the overlay preview surface (overlay host only).</source>
-        <target state="translated">overlay 預覽浮層的關閉按鈕（僅 overlay 宿主存在）。</target>
-      </segment>
-    </unit>
     <unit id="SemanticPopupFooterDescription">
       <segment>
         <source>Bottom toolbar area with the page indicator and action group.</source>

@@ -18,7 +18,8 @@ internal sealed class SemanticPartDeclaration
         bool runtimeCreated,
         Location location,
         ITypeSymbol? themeTargetType = null,
-        bool crossNestedOwners = false)
+        bool crossNestedOwners = false,
+        bool restHidden = false)
     {
         Name = name;
         Path = path;
@@ -32,6 +33,7 @@ internal sealed class SemanticPartDeclaration
         Since = since;
         RuntimeCreated = runtimeCreated;
         CrossNestedOwners = crossNestedOwners;
+        RestHidden = restHidden;
         Location = location;
         ThemeTargetType = themeTargetType;
     }
@@ -48,6 +50,7 @@ internal sealed class SemanticPartDeclaration
     internal string? Since { get; }
     internal bool RuntimeCreated { get; }
     internal bool CrossNestedOwners { get; }
+    internal bool RestHidden { get; }
     internal Location Location { get; }
     internal ITypeSymbol? ThemeTargetType { get; }
 
@@ -67,7 +70,8 @@ internal sealed class SemanticPartDeclaration
             RuntimeCreated,
             Location,
             targetType,
-            CrossNestedOwners);
+            CrossNestedOwners,
+            RestHidden);
     }
 
     internal SemanticPartDeclaration WithSelectorRoute(string selectorRoute)
@@ -86,7 +90,8 @@ internal sealed class SemanticPartDeclaration
             RuntimeCreated,
             Location,
             ThemeTargetType,
-            CrossNestedOwners);
+            CrossNestedOwners,
+            RestHidden);
     }
 }
 
@@ -164,6 +169,7 @@ internal sealed class SemanticControlDeclaration
         string? since = null;
         var runtimeCreated = false;
         var crossNestedOwners = false;
+        var restHidden = false;
 
         foreach (var argument in attribute.NamedArguments)
         {
@@ -202,6 +208,9 @@ internal sealed class SemanticControlDeclaration
                 case "CrossNestedOwners":
                     crossNestedOwners = argument.Value.Value is true;
                     break;
+                case "RestHidden":
+                    restHidden = argument.Value.Value is true;
+                    break;
             }
         }
 
@@ -220,6 +229,7 @@ internal sealed class SemanticControlDeclaration
             runtimeCreated,
             location,
             null,
-            crossNestedOwners);
+            crossNestedOwners,
+            restHidden);
     }
 }

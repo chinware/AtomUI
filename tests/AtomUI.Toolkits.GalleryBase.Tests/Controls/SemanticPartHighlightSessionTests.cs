@@ -540,4 +540,42 @@ public class SemanticPartHighlightSessionTests
         SemanticPartAdorner.GetMarkerRect(new Size(207, 10), 3, 1)
                            .ShouldBe(new Rect(2, 2, 203, 6));
     }
+
+    [Fact]
+    public void Marker_Rect_Is_Clamped_Inside_The_Host_Window_For_Edge_To_Edge_Targets()
+    {
+        // native 预览对话框的 popup.root/body 是贴边满区目标：adorner 经负 Margin 外扩 3px
+        // 并平移到标题栏下方（层坐标 (-3, 37)）后，未钳制的描边矩形左、右、下三条边越出
+        // 1210x691 的窗口表面被 OS 裁剪，视觉上只剩顶部一条线。
+        var markerRect = SemanticPartAdorner.GetMarkerRect(new Size(1216, 657), 3, 1);
+
+        var clamped = SemanticPartAdorner.ClampMarkerRect(
+            markerRect,
+            new Rect(0, 0, 1210, 691),
+            new Point(-3, 37),
+            3);
+
+        // 钳制后描边完整落在窗口表面内，且仍保有可见的面积（贴边而非消失）。
+        clamped.X.ShouldBeGreaterThanOrEqualTo(0);
+        clamped.Y.ShouldBeGreaterThanOrEqualTo(0);
+        clamped.Right.ShouldBeLessThanOrEqualTo(1210);
+        clamped.Bottom.ShouldBeLessThanOrEqualTo(691);
+        clamped.Width.ShouldBeGreaterThan(100);
+        clamped.Height.ShouldBeGreaterThan(100);
+    }
+
+    [Fact]
+    public void Marker_Rect_Clamp_Keeps_Interior_Targets_Untouched()
+    {
+        // 有余量的常规目标（cover 演示位）钳制不应改变描边。
+        var markerRect = SemanticPartAdorner.GetMarkerRect(new Size(246, 242), 3, 1);
+
+        var clamped = SemanticPartAdorner.ClampMarkerRect(
+            markerRect,
+            new Rect(0, 0, 1300, 900),
+            new Point(321, 250.5),
+            3);
+
+        clamped.ShouldBe(markerRect);
+    }
 }

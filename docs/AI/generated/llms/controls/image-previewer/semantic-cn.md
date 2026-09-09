@@ -4,15 +4,15 @@
 
 ## Semantic Parts
 
-ImagePreviewer 家族公开 9 个 Semantic Part，由两个 public owner 分别声明生成式 descriptor：`ImagePreviewer`（单封面入口）与
+ImagePreviewer 家族公开 8 个 Semantic Part，由两个 public owner 分别声明生成式 descriptor：`ImagePreviewer`（单封面入口）与
 `ImageGroupPreviewer`（多封面入口）。`root` 由生成器隐式加入，不要求 `.semantic-root`。除 `root` 外每个 Part 生成 public
 强类型 Semantic Style，命名规则为 `AtomUI.Theme.Styling.<Control><PartPath>Style`（如 `ImagePreviewerPopupRootStyle`），
 用户在外层普通 `Style` 中按 owner 作用域嵌套使用。
 
-9 个 Part 与上游 Image 控件的 Semantic DOM 一一对齐：`root`/`image`/`cover` 对应 `.ant-image`/`.ant-image-img`/
-`.ant-image-cover`；`popup.root`/`popup.mask`/`popup.body`/`popup.footer`/`popup.actions`/`popup.close` 对应
-`.ant-image-preview` 及其内部 `mask`（半透明遮罩层）、`body`（居中图片区）、`footer`（底部操作区）、`actions`（footer 内操作
-按钮组）、`close`（右上角关闭按钮）五个子节点。上游的左右切换按钮与页码指示不是语义部件，AtomUI 同样不将其公开为 Part。
+8 个 Part 中 `root`/`image`/`cover` 对应 `.ant-image`/`.ant-image-img`/`.ant-image-cover`；`popup.root`/`popup.mask`/
+`popup.body`/`popup.footer`/`popup.actions` 对应 `.ant-image-preview` 及其内部 `mask`（半透明遮罩层）、`body`（居中图片区）、
+`footer`（底部操作区）、`actions`（footer 内操作按钮组）四个子节点。上游的右上角关闭按钮、左右切换按钮与页码指示不是语义
+部件，AtomUI 同样不将其公开为 Part。
 
 `popup.*` 属于独立宿主部件：预览宿主（native `ImagePreviewerDialog` 或 Browser `ImagePreviewerOverlayHost`）由
 `OpenDialog()` 运行时创建，并经 logical parent 挂入 owner，宿主 ThemeVariant 经 binding 中继。owner 作用域 Semantic Style
@@ -21,8 +21,8 @@ ImagePreviewer 家族公开 9 个 Semantic Part，由两个 public owner 分别�
 预览视觉经 host 契约（owner 属性/Token 中继与 App 级 `ImageViewer` 主题）定制。`popup.*` 部件随宿主打开而存在、随关闭而销毁，
 因此统一声明 `CrossVisualRoot=true`、`CrossNestedOwners=true`、`RuntimeCreated=true`，路由以 `>>` 从 owner 直接定位 marker
 节点，不设中间 scope 锚点（overlay 宿主模板根与 viewer 在逻辑树上为兄弟，锚点式路由无法在双宿主间一致命中）。`popup.mask`
-与 `popup.close` 仅 Overlay 宿主存在（`Optional`）：两者承担上游浮层的"压暗下层页面"与"内嵌关闭按钮"职能；native
-`ImagePreviewerDialog` 是独立窗口、无下层页面可压暗，关闭由 OS 标题栏按钮承担。Gallery Semantic Preview 中 `popup.*` 部件
+仅 Overlay 宿主存在（`Optional`），承担上游浮层"压暗下层页面"的职能；native `ImagePreviewerDialog` 是独立窗口、无下层页面
+可压暗。关闭在 overlay 宿主由内嵌关闭按钮（`PART_CloseButton`，非语义部件）承担，native dialog 由 OS 标题栏按钮承担。Gallery Semantic Preview 中 `popup.*` 部件
 需示例显式提供宿主 Visual 根作为 `AdditionalRoots` 才能解析；但宿主（`ImagePreviewerDialog` 与 `ImagePreviewerOverlayHost`）
 均为 internal、`OpenDialog()` 不返回宿主、产品不暴露任何 Preview 专用 API，Gallery 示例无法取得该根，因此 `popup.*` 部件在
 Gallery 仅列出描述、不参与高亮；触发区部件（`root`/`image`/`cover`）在 owner 模板内正常解析。所有 marker 使用静态
@@ -185,26 +185,6 @@ Gallery 仅列出描述、不参与高亮；触发区部件（`root`/`image`/`co
 | 职责 | 预览操作组：footer 内的胶囊形操作按钮组（对齐上游 `.ant-image-preview-actions`） |
 | 相关 API | 缩放、翻转、旋转与 fit-to-window 命令 |
 | 相关 Token | `PreviewOperationSize`、`PreviewOperationColor` |
-| 稳定性 | stable since 6.0 |
-
-### `popup.close`
-
-| 字段 | 值 |
-| --- | --- |
-| Owner | `ImagePreviewer` / `ImageGroupPreviewer` |
-| Part | `popup.close` |
-| Selector | `.semantic-popup-close` |
-| SelectorRoute | `>> .semantic-popup-close` |
-| ContractType | `IconButton` |
-| Cardinality | `Optional` |
-| Customization | `Selector` |
-| CrossVisualRoot | `true` |
-| CrossNestedOwners | `true` |
-| RuntimeCreated | `true` |
-| AtomUI 节点 | `ImagePreviewerOverlayHostTheme` 内 `PART_CloseButton` |
-| 职责 | 预览关闭按钮：`popup.root` 右上角圆形按钮（对齐上游 `.ant-image-preview-close`）；仅 overlay 宿主存在，native dialog 由 OS 标题栏关闭按钮承担 |
-| 相关 API | `IsOpen`、`DialogClosing`、`DialogClosed` |
-| 相关 Token | `PreviewOperationSize`、`NavButtonBgColor`、`NavButtonBgHoverColor` |
 | 稳定性 | stable since 6.0 |
 
 ## Abstract AXAML Structure
@@ -389,8 +369,8 @@ ImagePreviewer
   宿主必须保持挂入 owner 的 logical parent 链，popup 部件的生成 Selector 依赖该链命中 overlay 宿主（与 owner 同 TopLevel）；
   native dialog 是独立 TopLevel，owner 作用域样式不跨窗口级联，预览视觉经 host 契约定制。
 - 宿主分层与上游 DOM 对齐：overlay 宿主模板根 Panel 只承担 `popup.root` 容器职责、不带背景，遮罩背景必须由独立的
-  `popup.mask` 子元素承担；`popup.mask` 与 `popup.close` 仅 Overlay 宿主存在（`Optional`），native dialog 不物化这两个部件。
-- 遮罩点击关闭（上游 `maskClosable=true` 默认）当前未在 overlay 宿主实现，关闭仅经 `popup.close`；Part 契约只承诺样式命中，
+  `popup.mask` 子元素承担；`popup.mask` 仅 Overlay 宿主存在（`Optional`），native dialog 不物化该部件。
+- 遮罩点击关闭（上游 `maskClosable=true` 默认）当前未在 overlay 宿主实现，关闭经 overlay 宿主内嵌关闭按钮（非语义部件）；Part 契约只承诺样式命中，
 
 ## State Flow
 
@@ -585,8 +565,8 @@ ImagePreviewer Token 只表达组件级视觉变量，例如尺寸、间距、�
   宿主必须保持挂入 owner 的 logical parent 链，popup 部件的生成 Selector 依赖该链命中 overlay 宿主（与 owner 同 TopLevel）；
   native dialog 是独立 TopLevel，owner 作用域样式不跨窗口级联，预览视觉经 host 契约定制。
 - 宿主分层与上游 DOM 对齐：overlay 宿主模板根 Panel 只承担 `popup.root` 容器职责、不带背景，遮罩背景必须由独立的
-  `popup.mask` 子元素承担；`popup.mask` 与 `popup.close` 仅 Overlay 宿主存在（`Optional`），native dialog 不物化这两个部件。
-- 遮罩点击关闭（上游 `maskClosable=true` 默认）当前未在 overlay 宿主实现，关闭仅经 `popup.close`；Part 契约只承诺样式命中，
+  `popup.mask` 子元素承担；`popup.mask` 仅 Overlay 宿主存在（`Optional`），native dialog 不物化该部件。
+- 遮罩点击关闭（上游 `maskClosable=true` 默认）当前未在 overlay 宿主实现，关闭经 overlay 宿主内嵌关闭按钮（非语义部件）；Part 契约只承诺样式命中，
   不承诺该行为，属行为对齐的既有差异。
 
 维护不变量：
@@ -650,7 +630,7 @@ ImagePreviewer Token 只表达组件级视觉变量，例如尺寸、间距、�
 - renderer、loading presenter 和 error presenter 只消费状态，不发起 I/O 或拥有结果。
 - native dialog 与 Browser overlay 必须共享 item、current、navigation、loading 和关闭语义。
 - 两个 owner 的 Semantic descriptor 与所有内置主题的 marker 完整一致；模板变体无法提供部件时必须声明 `Optional`
-  （`popup.mask` 与 `popup.close` 即 overlay 宿主限定部件）。
+  （`popup.mask` 即 overlay 宿主限定部件）。
 - 内置主题不得用 `.semantic-*` selector 实现默认视觉；`.semantic-scope-*` 锚点不作为公开契约。
 - popup 部件的 SelectorRoute 不设中间 scope 锚点（overlay 宿主模板根与 viewer 在逻辑树上为兄弟，锚点式路由无法在双宿主间
   一致命中），`popup.actions` 只允许以已发布的 `.semantic-popup-footer` 作为模板跨入锚点。

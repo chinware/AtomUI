@@ -1,9 +1,12 @@
 using AtomUI.Theme.Schema;
+using AtomUI.Theme.SemanticParts;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Media;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Toolkits.GalleryBase.Controls;
 
@@ -11,6 +14,8 @@ internal sealed class SemanticPartHighlightSession : IDisposable
 {
     private readonly List<AdornerEntry> _adorners = [];
     private readonly List<Popup> _popups = [];
+    private readonly List<Visual> _revealedTargets = [];
+    private readonly List<ISemanticPartCrossRootProvider> _crossRootProviders = [];
     private Control[] _owners;
     private SemanticPartDescriptor? _part;
     private SemanticPartRegistry? _registry;
@@ -77,6 +82,11 @@ internal sealed class SemanticPartHighlightSession : IDisposable
         _refreshQueued = false;
         ClearAdorners();
         UnsubscribeFromOwnerPopups();
+        foreach (var provider in _crossRootProviders)
+        {
+            provider.CrossRootsChanged -= HandleCrossRootsChanged;
+        }
+        _crossRootProviders.Clear();
         _additionalRoots = [];
         _owners = [];
         _part = null;
@@ -93,6 +103,14 @@ internal sealed class SemanticPartHighlightSession : IDisposable
 
         foreach (var owner in _owners)
         {
+            if (owner is ISemanticPartCrossRootProvider provider)
+            {
+                // 独立窗口宿主（native 预览对话框等）：控件经契约上报存活宿主，
+                // 集合变化时刷新；与 Popup 宿主的 Opened/Closed 订阅同构。
+                provider.CrossRootsChanged += HandleCrossRootsChanged;
+                _crossRootProviders.Add(provider);
+            }
+
             if (owner is not TemplatedControl templatedOwner)
             {
                 continue;
@@ -130,6 +148,11 @@ internal sealed class SemanticPartHighlightSession : IDisposable
     private void HandlePopupClosed(object? sender, EventArgs e)
     {
         Refresh();
+    }
+
+    private void HandleCrossRootsChanged(object? sender, EventArgs e)
+    {
+        QueueRefresh();
     }
 
     private void HandleTargetDetached(object? sender, VisualTreeAttachmentEventArgs e)
@@ -196,6 +219,18 @@ internal sealed class SemanticPartHighlightSession : IDisposable
 
         TotalMatchCount = totalMatchCount;
 
+        // RestHidden 部件的静止态透明是设计语义（如 ImagePreviewer cover 悬停遮罩）：
+        // 预览该部件时给目标打预览状态，由各控件 ControlTheme 的属性条件选择器决定
+        // 如何显现目标本体（PseudoClasses 是 protected，外部契约只能用附加属性表达）。
+        if (part.RestHidden)
+        {
+            foreach (var target in targets.OfType<Visual>())
+            {
+                SemanticPartPreviewState.SetIsPreviewTarget(target, true);
+                _revealedTargets.Add(target);
+            }
+        }
+
         for (var index = 0; index < targets.Count; index++)
         {
             var target = targets[index];
@@ -214,12 +249,12 @@ internal sealed class SemanticPartHighlightSession : IDisposable
 
     private IReadOnlyList<Visual> CollectAdditionalRoots()
     {
-        if (_popups.Count == 0)
+        if (_popups.Count == 0 && _crossRootProviders.Count == 0)
         {
             return _additionalRoots;
         }
 
-        var roots = new List<Visual>(_additionalRoots.Length + _popups.Count);
+        var roots = new List<Visual>(_additionalRoots.Length + _popups.Count + _crossRootProviders.Count);
         roots.AddRange(_additionalRoots);
         foreach (var popup in _popups)
         {
@@ -227,6 +262,10 @@ internal sealed class SemanticPartHighlightSession : IDisposable
             {
                 roots.Add(child);
             }
+        }
+        foreach (var provider in _crossRootProviders)
+        {
+            roots.AddRange(provider.GetCrossRoots());
         }
         return roots;
     }
@@ -243,6 +282,13 @@ internal sealed class SemanticPartHighlightSession : IDisposable
             entry.Target.DetachedFromVisualTree -= HandleTargetDetached;
         }
         _adorners.Clear();
+
+        foreach (var revealed in _revealedTargets)
+        {
+            SemanticPartPreviewState.SetIsPreviewTarget(revealed, false);
+        }
+        _revealedTargets.Clear();
+
         TotalMatchCount = 0;
     }
 
