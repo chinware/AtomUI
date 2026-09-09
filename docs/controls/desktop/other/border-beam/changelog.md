@@ -3,6 +3,15 @@
 本文档记录 BorderBeam 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-09-09
+
+- Fixed
+  - 修正默认 `Outset=null` 时的边框几何：流光现在贴合内容边界，不再整体绘制在边框外围。
+  - 修复仅作用于 `BorderBeamPresenter.Render()` 的绘制坐标，不改变 `Measure`、`Arrange`、`DesiredSize`、`Bounds` 或父容器布局。
+  - 显式 `Outset` 仍只控制 Render 阶段的绘制偏移。
+- Tests
+  - 增加默认边界不外扩、显式 `Outset` 偏移以及布局边界保持不变的回归测试。
+
 ## 2026-09-08
 
 - API
@@ -22,7 +31,12 @@
   - 新增 `Custom container` 延迟加载示例，以标准 Avalonia `Border` 验证普通内容可通过 BorderBeam 自身的
     `BorderThickness` 和 `CornerRadius` 显式对齐边界几何，无需新增运行时 API。
   - Show on hover、Multiple beams 和 Custom container 使用 AtomUI 当前版本 `v6.1.8` 的 Showcase 徽标。
-  - 为六个 BorderBeam 示例补充稳定 `SourceKey`，并同步英语、巴西葡萄牙语、简体中文和繁体中文资源。
+  - 重构 `Customized color` 示例：六组预设使用各自的用途、说明、渐变颜色和显式百分比；Card 通过动态
+    Filled Tag 展示用途与颜色停靠点，并使用最大宽度 480 的铺满式 Segmented 布局。
+  - 新增 `Duration`、`Size` 和 `Line width` 延迟加载示例，分别展示 `3s` / `6s` / `12s` 动画周期、
+    `100` / `56` / `160` 流光段尺寸，以及通过匹配 `BorderThickness=2` 对齐流光与内容边框线宽。
+  - Duration、Size 和 Line width 使用 AtomUI 当前版本 `v6.1.8` 的 Showcase 徽标。
+  - 为九个 BorderBeam 示例补充稳定 `SourceKey`，并同步英语、巴西葡萄牙语、简体中文和繁体中文资源。
 - Tests
   - 增加 `Count` 默认值与模板转发、等距相位、非正值回退、实际绘制数量，以及 Gallery 示例和本地化契约测试。
 - Docs

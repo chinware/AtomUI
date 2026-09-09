@@ -209,44 +209,208 @@
                     IsOccupyEntireRow="True">
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:BorderBeamViewModel">
-                            <StackPanel Spacing="16"
-                                        HorizontalAlignment="Left">
+                            <StackPanel MaxWidth="480"
+                                        Spacing="16"
+                                        HorizontalAlignment="Stretch">
                                 <atom:Segmented ItemsSource="{Binding ColorPresets}"
                                                 SelectedItem="{Binding SelectedColorPreset}"
-                                                HorizontalAlignment="Left" />
-                                <atom:BorderBeam Width="420"
-                                                 ColorStops="{Binding SelectedColorStops}"
-                                                 HorizontalAlignment="Left">
+                                                HorizontalAlignment="Stretch" />
+                                <atom:BorderBeam ColorStops="{Binding SelectedColorStops}"
+                                                 HorizontalAlignment="Stretch">
                                     <atom:Card Header="{Binding SelectedColorPreset.Name}"
                                                BorderThickness="1"
                                                CornerRadius="8">
-                                        <StackPanel Spacing="12">
+                                        <atom:Card.Extra>
+                                            <atom:Tag Text="{Binding SelectedColorPreset.Usage}"
+                                                      Variant="Filled" />
+                                        </atom:Card.Extra>
+                                        <StackPanel Spacing="16">
+                                            <atom:TextBlock Text="{Binding SelectedColorPreset.Description}"
+                                                            TextWrapping="Wrap"
+                                                            Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                                            <ItemsControl ItemsSource="{Binding SelectedColorPreset.Stops}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <WrapPanel ItemSpacing="8"
+                                                                   LineSpacing="8" />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate x:DataType="vm:BorderBeamColorPresetStop">
+                                                        <atom:Tag TagColor="{Binding Color}"
+                                                                  Text="{Binding Label}"
+                                                                  Variant="Filled" />
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
                                             <atom:TextBlock Text="{gallery:BorderBeamShowCaseLangResource CustomizedColorCardDescription}"
                                                             TextWrapping="Wrap"
                                                             Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
-                                            <StackPanel Orientation="Horizontal"
-                                                        Spacing="8">
-                                                <Border Width="28"
-                                                        Height="12"
-                                                        CornerRadius="6"
-                                                        Background="#1677FF" />
-                                                <Border Width="28"
-                                                        Height="12"
-                                                        CornerRadius="6"
-                                                        Background="#36CFC9" />
-                                                <Border Width="28"
-                                                        Height="12"
-                                                        CornerRadius="6"
-                                                        Background="#F759AB" />
-                                                <Border Width="28"
-                                                        Height="12"
-                                                        CornerRadius="6"
-                                                        Background="#B37FEB" />
-                                            </StackPanel>
                                         </StackPanel>
                                     </atom:Card>
                                 </atom:BorderBeam>
                             </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    SourceKey="border-beam-duration"
+                    BadgeText="v6.1.8"
+                    Title="{gallery:BorderBeamShowCaseLangResource DurationTitle}"
+                    Description="{gallery:BorderBeamShowCaseLangResource DurationDescription}"
+                    IsDeferredContentEnabled="True"
+                    IsOccupyEntireRow="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:BorderBeamViewModel">
+                            <WrapPanel MaxWidth="480"
+                                       ItemSpacing="16"
+                                       LineSpacing="16"
+                                       HorizontalAlignment="Left">
+                                <atom:BorderBeam Width="220"
+                                                 Duration="0:0:3">
+                                    <atom:Card Header="{gallery:BorderBeamShowCaseLangResource DurationFastCardTitle}"
+                                               BorderThickness="1"
+                                               CornerRadius="8">
+                                        <atom:Card.Extra>
+                                            <atom:Tag Text="3s"
+                                                      Variant="Filled" />
+                                        </atom:Card.Extra>
+                                        <atom:TextBlock Text="{gallery:BorderBeamShowCaseLangResource DurationFastCardDescription}"
+                                                        TextWrapping="Wrap"
+                                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                                    </atom:Card>
+                                </atom:BorderBeam>
+                                <atom:BorderBeam Width="220"
+                                                 Duration="0:0:6">
+                                    <atom:Card Header="{gallery:BorderBeamShowCaseLangResource DurationDefaultCardTitle}"
+                                               BorderThickness="1"
+                                               CornerRadius="8">
+                                        <atom:Card.Extra>
+                                            <atom:Tag Text="6s"
+                                                      Variant="Filled" />
+                                        </atom:Card.Extra>
+                                        <atom:TextBlock Text="{gallery:BorderBeamShowCaseLangResource DurationDefaultCardDescription}"
+                                                        TextWrapping="Wrap"
+                                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                                    </atom:Card>
+                                </atom:BorderBeam>
+                                <atom:BorderBeam Width="220"
+                                                 Duration="0:0:12">
+                                    <atom:Card Header="{gallery:BorderBeamShowCaseLangResource DurationSlowCardTitle}"
+                                               BorderThickness="1"
+                                               CornerRadius="8">
+                                        <atom:Card.Extra>
+                                            <atom:Tag Text="12s"
+                                                      Variant="Filled" />
+                                        </atom:Card.Extra>
+                                        <atom:TextBlock Text="{gallery:BorderBeamShowCaseLangResource DurationSlowCardDescription}"
+                                                        TextWrapping="Wrap"
+                                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                                    </atom:Card>
+                                </atom:BorderBeam>
+                            </WrapPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    SourceKey="border-beam-size"
+                    BadgeText="v6.1.8"
+                    Title="{gallery:BorderBeamShowCaseLangResource SizeTitle}"
+                    Description="{gallery:BorderBeamShowCaseLangResource SizeDescription}"
+                    IsDeferredContentEnabled="True"
+                    IsOccupyEntireRow="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:BorderBeamViewModel">
+                            <Grid MaxWidth="960"
+                                  ColumnDefinitions="*,*"
+                                  RowDefinitions="Auto,Auto"
+                                  ColumnSpacing="32"
+                                  RowSpacing="32"
+                                  HorizontalAlignment="Stretch">
+                                <atom:BorderBeam Grid.Row="0"
+                                                 Grid.Column="0"
+                                                 HorizontalAlignment="Stretch">
+                                    <atom:Card Header="{gallery:BorderBeamShowCaseLangResource SizeDefaultCardTitle}"
+                                               BorderThickness="1"
+                                               CornerRadius="8">
+                                        <atom:Card.Extra>
+                                            <atom:Tag Text="100px"
+                                                      Variant="Filled" />
+                                        </atom:Card.Extra>
+                                        <Grid MinHeight="112">
+                                            <atom:TextBlock Text="{gallery:BorderBeamShowCaseLangResource SizeDefaultCardDescription}"
+                                                            TextWrapping="Wrap"
+                                                            VerticalAlignment="Center"
+                                                            Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                                        </Grid>
+                                    </atom:Card>
+                                </atom:BorderBeam>
+                                <atom:BorderBeam Grid.Row="0"
+                                                 Grid.Column="1"
+                                                 BeamSize="56"
+                                                 HorizontalAlignment="Stretch">
+                                    <atom:Card Header="{gallery:BorderBeamShowCaseLangResource SizeCompactCardTitle}"
+                                               BorderThickness="1"
+                                               CornerRadius="8">
+                                        <atom:Card.Extra>
+                                            <atom:Tag Text="56px"
+                                                      Variant="Filled" />
+                                        </atom:Card.Extra>
+                                        <Grid MinHeight="112">
+                                            <atom:TextBlock Text="{gallery:BorderBeamShowCaseLangResource SizeCompactCardDescription}"
+                                                            TextWrapping="Wrap"
+                                                            VerticalAlignment="Center"
+                                                            Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                                        </Grid>
+                                    </atom:Card>
+                                </atom:BorderBeam>
+                                <atom:BorderBeam Grid.Row="1"
+                                                 Grid.Column="0"
+                                                 Grid.ColumnSpan="2"
+                                                 BeamSize="160"
+                                                 HorizontalAlignment="Stretch">
+                                    <atom:Card Header="{gallery:BorderBeamShowCaseLangResource SizeExtendedCardTitle}"
+                                               BorderThickness="1"
+                                               CornerRadius="8">
+                                        <atom:Card.Extra>
+                                            <atom:Tag Text="160px"
+                                                      Variant="Filled" />
+                                        </atom:Card.Extra>
+                                        <Grid MinHeight="192">
+                                            <atom:TextBlock Text="{gallery:BorderBeamShowCaseLangResource SizeExtendedCardDescription}"
+                                                            TextWrapping="Wrap"
+                                                            VerticalAlignment="Center"
+                                                            Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                                        </Grid>
+                                    </atom:Card>
+                                </atom:BorderBeam>
+                            </Grid>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    SourceKey="border-beam-line-width"
+                    BadgeText="v6.1.8"
+                    Title="{gallery:BorderBeamShowCaseLangResource LineWidthTitle}"
+                    Description="{gallery:BorderBeamShowCaseLangResource LineWidthDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:BorderBeamViewModel">
+                            <atom:BorderBeam Width="360"
+                                             BorderThickness="2"
+                                             CornerRadius="8"
+                                             HorizontalAlignment="Left">
+                                <atom:Card Header="{gallery:BorderBeamShowCaseLangResource LineWidthCardTitle}"
+                                           BorderThickness="2"
+                                           CornerRadius="8">
+                                    <atom:TextBlock Text="{gallery:BorderBeamShowCaseLangResource LineWidthCardDescription}"
+                                                    TextWrapping="Wrap"
+                                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                                </atom:Card>
+                            </atom:BorderBeam>
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>

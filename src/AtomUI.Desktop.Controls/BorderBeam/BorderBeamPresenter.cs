@@ -209,7 +209,7 @@ internal class BorderBeamPresenter : Control
         }
 
         var borderThickness = BorderUtils.BuildRenderScaleAwareThickness(this, BorderBeamGeometry.BorderThickness);
-        var renderBounds    = GetRenderBounds(borderThickness);
+        var renderBounds    = GetRenderBounds();
         var borderGeometry  = CreateBorderGeometry(renderBounds, borderThickness, BorderBeamGeometry.CornerRadius);
         if (borderGeometry is null)
         {
@@ -313,12 +313,14 @@ internal class BorderBeamPresenter : Control
                HasVisibleBorder(BorderBeamGeometry.BorderThickness);
     }
 
-    private Rect GetRenderBounds(Thickness borderThickness)
+    private Rect GetRenderBounds()
     {
         var renderBounds = new Rect(Bounds.Size);
+        // Keep the default beam on the presenter's boundary. Outset is a
+        // paint-only offset and must not expand the control's layout bounds.
         var outset = Outset.HasValue
             ? BorderUtils.BuildRenderScaleAwareThickness(this, Outset.Value)
-            : borderThickness;
+            : default;
         return renderBounds.Inflate(outset);
     }
 

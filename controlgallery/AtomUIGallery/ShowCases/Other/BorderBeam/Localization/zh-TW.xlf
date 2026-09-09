@@ -45,20 +45,92 @@
     </unit>
     <unit id="CustomizedColorCardDescription">
       <segment>
-        <source>The segmented selector switches the color stop collection used by the beam.</source>
-        <target state="translated">分段選擇器會切換流光使用的顏色停靠點集合。</target>
+        <source>Stop positions use the public 0-100 input range.</source>
+        <target state="translated">色標位置使用公開的 0–100 輸入範圍。</target>
       </segment>
     </unit>
     <unit id="CustomizedColorDescription">
       <segment>
-        <source>Use multiple color stops to build different beam presets, following the Ant Design customized color demo.</source>
-        <target state="translated">使用多個顏色停靠點建立不同流光預設，對齊 Ant Design 的自訂顏色範例。</target>
+        <source>Display six gradient beam palettes and switch between them.</source>
+        <target state="translated">展示六組漸變流光配色，並在它們之間切換。</target>
       </segment>
     </unit>
     <unit id="CustomizedColorTitle">
       <segment>
         <source>Customized color</source>
         <target state="translated">自訂顏色</target>
+      </segment>
+    </unit>
+    <unit id="DurationDefaultCardDescription">
+      <segment>
+        <source>The original pacing for most emphasized containers.</source>
+        <target state="translated">適合大多數強調型容器的預設節奏。</target>
+      </segment>
+    </unit>
+    <unit id="DurationDefaultCardTitle">
+      <segment>
+        <source>Default</source>
+        <target state="translated">預設</target>
+      </segment>
+    </unit>
+    <unit id="DurationDescription">
+      <segment>
+        <source>Use Duration to control how long the beam takes to complete one loop. The default is 6 seconds.</source>
+        <target state="translated">使用 Duration 控制流光完成一圈所需的時間，預設值為 6 秒。</target>
+      </segment>
+    </unit>
+    <unit id="DurationFastCardDescription">
+      <segment>
+        <source>A quick loop for temporary highlights and active modules.</source>
+        <target state="translated">快速循環適用於暫時強調和活躍模組。</target>
+      </segment>
+    </unit>
+    <unit id="DurationFastCardTitle">
+      <segment>
+        <source>Fast</source>
+        <target state="translated">快速</target>
+      </segment>
+    </unit>
+    <unit id="DurationSlowCardDescription">
+      <segment>
+        <source>A calmer loop for persistent panels and ambient surfaces.</source>
+        <target state="translated">舒緩循環適用於常駐面板和環境式介面。</target>
+      </segment>
+    </unit>
+    <unit id="DurationSlowCardTitle">
+      <segment>
+        <source>Slow</source>
+        <target state="translated">慢速</target>
+      </segment>
+    </unit>
+    <unit id="DurationTitle">
+      <segment>
+        <source>Duration</source>
+        <target state="translated">動畫時長</target>
+      </segment>
+    </unit>
+    <unit id="LineWidthCardDescription">
+      <segment>
+        <source>Set BorderThickness to match the border width of this container.</source>
+        <target state="translated">設定 BorderThickness，使流光線寬與此容器的邊框寬度一致。</target>
+      </segment>
+    </unit>
+    <unit id="LineWidthCardTitle">
+      <segment>
+        <source>Custom line width</source>
+        <target state="translated">自訂線寬</target>
+      </segment>
+    </unit>
+    <unit id="LineWidthDescription">
+      <segment>
+        <source>Use BorderThickness to adjust the beam width. Its default value follows the shared border thickness token.</source>
+        <target state="translated">使用 BorderThickness 調整流光線寬，其預設值跟隨共用邊框厚度 Token。</target>
+      </segment>
+    </unit>
+    <unit id="LineWidthTitle">
+      <segment>
+        <source>Line width</source>
+        <target state="translated">線寬</target>
       </segment>
     </unit>
     <unit id="MultipleBeamsCardDescription">
@@ -119,6 +191,54 @@
       <segment>
         <source>Examples</source>
         <target state="translated">範例</target>
+      </segment>
+    </unit>
+    <unit id="SizeCompactCardDescription">
+      <segment>
+        <source>Keeps the highlight shorter for dense card groups.</source>
+        <target state="translated">為密集卡片群組使用較短的高光段。</target>
+      </segment>
+    </unit>
+    <unit id="SizeCompactCardTitle">
+      <segment>
+        <source>Compact</source>
+        <target state="translated">緊湊</target>
+      </segment>
+    </unit>
+    <unit id="SizeDefaultCardDescription">
+      <segment>
+        <source>Uses the default 100px visible beam segment.</source>
+        <target state="translated">使用預設的 100px 可見流光段。</target>
+      </segment>
+    </unit>
+    <unit id="SizeDefaultCardTitle">
+      <segment>
+        <source>Default</source>
+        <target state="translated">預設</target>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>Use BeamSize to control the size of the visible beam segment. The default is 100 device-independent pixels.</source>
+        <target state="translated">使用 BeamSize 控制可見流光段的尺寸，預設值為 100 個裝置獨立像素。</target>
+      </segment>
+    </unit>
+    <unit id="SizeExtendedCardDescription">
+      <segment>
+        <source>Creates a longer highlight for wider feature panels.</source>
+        <target state="translated">為較寬的功能面板建立更長的高光段。</target>
+      </segment>
+    </unit>
+    <unit id="SizeExtendedCardTitle">
+      <segment>
+        <source>Extended</source>
+        <target state="translated">延伸</target>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
+        <target state="translated">尺寸</target>
       </segment>
     </unit>
     <unit id="ShowOnHoverCardDescription">

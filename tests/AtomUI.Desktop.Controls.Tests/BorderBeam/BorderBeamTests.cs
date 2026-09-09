@@ -1,3 +1,4 @@
+using System.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Configuration;
 using AtomUI.Theme.Resources;
@@ -267,6 +268,44 @@ public class BorderBeamTests
         transform.Transform(new Point(100, 50)).ShouldBe(new Point(110, 0));
     }
 
+    [Fact]
+    public void Default_Outset_Keeps_Rendering_On_Content_Bounds_Without_Changing_Layout()
+    {
+        var presenter = new BorderBeamPresenter
+        {
+            BeamSize            = 40,
+            IsMotionEnabled     = true,
+            BorderBeamGeometry  = new BorderBeamGeometry(new Thickness(2), new CornerRadius(8))
+        };
+        presenter.Measure(new Size(160, 80));
+        presenter.Arrange(new Rect(0, 0, 160, 80));
+
+        var desiredSize = presenter.DesiredSize;
+        var bounds      = presenter.Bounds;
+        var renderBounds = InvokeRenderBounds(presenter);
+
+        renderBounds.ShouldBe(new Rect(0, 0, 160, 80));
+        presenter.DesiredSize.ShouldBe(desiredSize);
+        presenter.Bounds.ShouldBe(bounds);
+    }
+
+    [Fact]
+    public void Explicit_Outset_Only_Offsets_Rendering_Bounds()
+    {
+        var presenter = new BorderBeamPresenter
+        {
+            Outset             = new Thickness(4),
+            BeamSize           = 40,
+            IsMotionEnabled    = true,
+            BorderBeamGeometry = new BorderBeamGeometry(new Thickness(2), new CornerRadius(8))
+        };
+        presenter.Measure(new Size(160, 80));
+        presenter.Arrange(new Rect(0, 0, 160, 80));
+
+        InvokeRenderBounds(presenter)
+            .ShouldBe(new Rect(-4, -4, 168, 88));
+    }
+
     [Theory]
     [InlineData(3, 3)]
     [InlineData(0, 1)]
@@ -322,6 +361,16 @@ public class BorderBeamTests
         }
 
         return drawingGroup;
+    }
+
+    private static Rect InvokeRenderBounds(BorderBeamPresenter presenter)
+    {
+        var method = typeof(BorderBeamPresenter).GetMethod(
+            "GetRenderBounds",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+
+        method.ShouldNotBeNull();
+        return (Rect)method!.Invoke(presenter, Array.Empty<object>())!;
     }
 
     private static IEnumerable<GeometryDrawing> EnumerateGeometryDrawings(Drawing drawing)

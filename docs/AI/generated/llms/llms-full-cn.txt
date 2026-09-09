@@ -22585,12 +22585,12 @@ BorderBeam 控件 API：
 | `Content` | `object?` | 被装饰内容，继承自 `ContentControl`。 |
 | `Color` | `Color?` | 单色流光配置。 |
 | `ColorStops` | `AvaloniaList<BorderBeamColorStop>` | 渐变流光停靠点集合。 |
-| `Outset` | `Thickness?` | 流光层相对有效边界的外扩距离；`null` 时按有效边框厚度计算。 |
-| `BorderThickness` | `Thickness` | 未命中感知接口时使用的边框厚度。 |
+| `Outset` | `Thickness?` | 流光层相对有效边界的渲染偏移；`null` 时贴合有效边界，不额外改变绘制范围。 |
+| `BorderThickness` | `Thickness` | 未命中感知接口时使用的边框厚度，同时决定流光线宽；默认值来自共享边框厚度 Token。 |
 | `CornerRadius` | `CornerRadius` | 未命中感知接口时使用的圆角。 |
 | `IsMotionEnabled` | `bool` | 控制当前实例的流光动画是否启用；默认值不绑定全局 motion 设置。 |
-| `Duration` | `TimeSpan` | 流光运行一周的时长。 |
-| `BeamSize` | `double` | 流光高光段基准尺寸。 |
+| `Duration` | `TimeSpan` | 流光运行一周的时长；默认值为 `6s`。 |
+| `BeamSize` | `double` | 流光高光段的设备无关像素基准尺寸；默认值为 `100`。 |
 | `Count` | `int` | 沿同一边界均匀分布的光束数量；默认值为 `1`，小于 `1` 时按 `1` 渲染。 |
 
 `ColorStops` 非空时优先于 `Color`。`ColorStops` 为空且 `Color` 不为空时，使用单色流光。两者均为空时，使用主题默认渐变。

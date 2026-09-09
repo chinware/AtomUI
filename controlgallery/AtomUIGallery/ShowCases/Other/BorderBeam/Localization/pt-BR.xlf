@@ -45,20 +45,92 @@
     </unit>
     <unit id="CustomizedColorCardDescription">
       <segment>
-        <source>The segmented selector switches the color stop collection used by the beam.</source>
-        <target state="translated">O segmented selector switches o cor stop collection usado por o beam.</target>
+        <source>Stop positions use the public 0-100 input range.</source>
+        <target state="translated">As posições das paradas usam o intervalo público de entrada de 0 a 100.</target>
       </segment>
     </unit>
     <unit id="CustomizedColorDescription">
       <segment>
-        <source>Use multiple color stops to build different beam presets, following the Ant Design customized color demo.</source>
-        <target state="translated">Usar múltiplos cor stops para build diferente beam presets, seguinte o Ant Design customized cor demo.</target>
+        <source>Display six gradient beam palettes and switch between them.</source>
+        <target state="translated">Exiba seis paletas de gradiente do feixe e alterne entre elas.</target>
       </segment>
     </unit>
     <unit id="CustomizedColorTitle">
       <segment>
         <source>Customized color</source>
         <target state="translated">Customized cor</target>
+      </segment>
+    </unit>
+    <unit id="DurationDefaultCardDescription">
+      <segment>
+        <source>The original pacing for most emphasized containers.</source>
+        <target state="translated">O ritmo original para a maioria dos contêineres destacados.</target>
+      </segment>
+    </unit>
+    <unit id="DurationDefaultCardTitle">
+      <segment>
+        <source>Default</source>
+        <target state="translated">Padrão</target>
+      </segment>
+    </unit>
+    <unit id="DurationDescription">
+      <segment>
+        <source>Use Duration to control how long the beam takes to complete one loop. The default is 6 seconds.</source>
+        <target state="translated">Use Duration para controlar quanto tempo o feixe leva para completar um ciclo. O padrão é 6 segundos.</target>
+      </segment>
+    </unit>
+    <unit id="DurationFastCardDescription">
+      <segment>
+        <source>A quick loop for temporary highlights and active modules.</source>
+        <target state="translated">Um ciclo rápido para destaques temporários e módulos ativos.</target>
+      </segment>
+    </unit>
+    <unit id="DurationFastCardTitle">
+      <segment>
+        <source>Fast</source>
+        <target state="translated">Rápido</target>
+      </segment>
+    </unit>
+    <unit id="DurationSlowCardDescription">
+      <segment>
+        <source>A calmer loop for persistent panels and ambient surfaces.</source>
+        <target state="translated">Um ciclo mais suave para painéis persistentes e superfícies ambientes.</target>
+      </segment>
+    </unit>
+    <unit id="DurationSlowCardTitle">
+      <segment>
+        <source>Slow</source>
+        <target state="translated">Lento</target>
+      </segment>
+    </unit>
+    <unit id="DurationTitle">
+      <segment>
+        <source>Duration</source>
+        <target state="translated">Duração</target>
+      </segment>
+    </unit>
+    <unit id="LineWidthCardDescription">
+      <segment>
+        <source>Set BorderThickness to match the border width of this container.</source>
+        <target state="translated">Defina BorderThickness para corresponder à largura da borda deste contêiner.</target>
+      </segment>
+    </unit>
+    <unit id="LineWidthCardTitle">
+      <segment>
+        <source>Custom line width</source>
+        <target state="translated">Espessura de linha personalizada</target>
+      </segment>
+    </unit>
+    <unit id="LineWidthDescription">
+      <segment>
+        <source>Use BorderThickness to adjust the beam width. Its default value follows the shared border thickness token.</source>
+        <target state="translated">Use BorderThickness para ajustar a espessura do feixe. O valor padrão segue o token compartilhado de espessura da borda.</target>
+      </segment>
+    </unit>
+    <unit id="LineWidthTitle">
+      <segment>
+        <source>Line width</source>
+        <target state="translated">Espessura da linha</target>
       </segment>
     </unit>
     <unit id="MultipleBeamsCardDescription">
@@ -119,6 +191,54 @@
       <segment>
         <source>Examples</source>
         <target state="translated">Exemplos</target>
+      </segment>
+    </unit>
+    <unit id="SizeCompactCardDescription">
+      <segment>
+        <source>Keeps the highlight shorter for dense card groups.</source>
+        <target state="translated">Mantém o destaque mais curto para grupos densos de cartões.</target>
+      </segment>
+    </unit>
+    <unit id="SizeCompactCardTitle">
+      <segment>
+        <source>Compact</source>
+        <target state="translated">Compacto</target>
+      </segment>
+    </unit>
+    <unit id="SizeDefaultCardDescription">
+      <segment>
+        <source>Uses the default 100px visible beam segment.</source>
+        <target state="translated">Usa o segmento de feixe visível padrão de 100px.</target>
+      </segment>
+    </unit>
+    <unit id="SizeDefaultCardTitle">
+      <segment>
+        <source>Default</source>
+        <target state="translated">Padrão</target>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>Use BeamSize to control the size of the visible beam segment. The default is 100 device-independent pixels.</source>
+        <target state="translated">Use BeamSize para controlar o tamanho do segmento visível do feixe. O padrão é 100 pixels independentes do dispositivo.</target>
+      </segment>
+    </unit>
+    <unit id="SizeExtendedCardDescription">
+      <segment>
+        <source>Creates a longer highlight for wider feature panels.</source>
+        <target state="translated">Cria um destaque mais longo para painéis de recursos mais largos.</target>
+      </segment>
+    </unit>
+    <unit id="SizeExtendedCardTitle">
+      <segment>
+        <source>Extended</source>
+        <target state="translated">Estendido</target>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
+        <target state="translated">Tamanho</target>
       </segment>
     </unit>
     <unit id="ShowOnHoverCardDescription">

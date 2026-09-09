@@ -44,12 +44,12 @@ BorderBeam 控件 API：
 | `Content` | `object?` | 被装饰内容，继承自 `ContentControl`。 |
 | `Color` | `Color?` | 单色流光配置。 |
 | `ColorStops` | `AvaloniaList<BorderBeamColorStop>` | 渐变流光停靠点集合。 |
-| `Outset` | `Thickness?` | 流光层相对有效边界的外扩距离；`null` 时按有效边框厚度计算。 |
-| `BorderThickness` | `Thickness` | 未命中感知接口时使用的边框厚度。 |
+| `Outset` | `Thickness?` | 流光层相对有效边界的渲染偏移；`null` 时贴合有效边界，不额外改变绘制范围。 |
+| `BorderThickness` | `Thickness` | 未命中感知接口时使用的边框厚度，同时决定流光线宽；默认值来自共享边框厚度 Token。 |
 | `CornerRadius` | `CornerRadius` | 未命中感知接口时使用的圆角。 |
 | `IsMotionEnabled` | `bool` | 控制当前实例的流光动画是否启用；默认值不绑定全局 motion 设置。 |
-| `Duration` | `TimeSpan` | 流光运行一周的时长。 |
-| `BeamSize` | `double` | 流光高光段基准尺寸。 |
+| `Duration` | `TimeSpan` | 流光运行一周的时长；默认值为 `6s`。 |
+| `BeamSize` | `double` | 流光高光段的设备无关像素基准尺寸；默认值为 `100`。 |
 | `Count` | `int` | 沿同一边界均匀分布的光束数量；默认值为 `1`，小于 `1` 时按 `1` 渲染。 |
 
 `ColorStops` 非空时优先于 `Color`。`ColorStops` 为空且 `Color` 不为空时，使用单色流光。两者均为空时，使用主题默认渐变。
@@ -227,4 +227,4 @@ LLMS 导出来源：
 | 渲染 | 默认渐变、单色、多 stop、单/多光束、统一圆角、非统一圆角、Outset、实例禁用 motion 和命中测试。 |
 | Token | Light / dark 主题下默认颜色、线宽、圆角和 motion 默认值正确。 |
 | Public API | `Count` 默认值与模板转发、普通内容、感知内容、无内容、零尺寸、不可见状态不抛异常。 |
-| Gallery | Basic、Show on hover、Multiple beams、Custom container、Non-uniform radius、Customized color 的稳定 SourceKey、布局和四语资源；Multiple beams 在同一示例中成对展示 `Count=3` 与 `Count=2`；Custom container 以标准 Avalonia `Border` 验证普通内容的显式几何契约；本次新增的 Show on hover、Multiple beams 和 Custom container 均标记 AtomUI 当前版本 `v6.1.8`。 |
+| Gallery | Basic、Show on hover、Multiple beams、Custom container、Non-uniform radius、Customized color、Duration、Size、Line width 的稳定 SourceKey、布局和四语资源；Multiple beams 在同一示例中成对展示 `Count=3` 与 `Count=2`；Custom container 以标准 Avalonia `Border` 验证普通内容的显式几何契约；Customized color 提供六组可切换预设，并同步展示用途、说明和显式颜色/百分比 Tag；Duration 对比 `3s`、`6s`、`12s`，Size 对比默认 `100`、`56`、`160`，Line width 通过匹配 BorderBeam 与内容容器的 `BorderThickness=2` 展示线宽；本次新增的 Show on hover、Multiple beams、Custom container、Duration、Size 和 Line width 均标记 AtomUI 当前版本 `v6.1.8`。 |

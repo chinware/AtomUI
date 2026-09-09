@@ -38,17 +38,77 @@
     </unit>
     <unit id="CustomizedColorCardDescription">
       <segment>
-        <source>The segmented selector switches the color stop collection used by the beam.</source>
+        <source>Stop positions use the public 0-100 input range.</source>
       </segment>
     </unit>
     <unit id="CustomizedColorDescription">
       <segment>
-        <source>Use multiple color stops to build different beam presets, following the Ant Design customized color demo.</source>
+        <source>Display six gradient beam palettes and switch between them.</source>
       </segment>
     </unit>
     <unit id="CustomizedColorTitle">
       <segment>
         <source>Customized color</source>
+      </segment>
+    </unit>
+    <unit id="DurationDefaultCardDescription">
+      <segment>
+        <source>The original pacing for most emphasized containers.</source>
+      </segment>
+    </unit>
+    <unit id="DurationDefaultCardTitle">
+      <segment>
+        <source>Default</source>
+      </segment>
+    </unit>
+    <unit id="DurationDescription">
+      <segment>
+        <source>Use Duration to control how long the beam takes to complete one loop. The default is 6 seconds.</source>
+      </segment>
+    </unit>
+    <unit id="DurationFastCardDescription">
+      <segment>
+        <source>A quick loop for temporary highlights and active modules.</source>
+      </segment>
+    </unit>
+    <unit id="DurationFastCardTitle">
+      <segment>
+        <source>Fast</source>
+      </segment>
+    </unit>
+    <unit id="DurationSlowCardDescription">
+      <segment>
+        <source>A calmer loop for persistent panels and ambient surfaces.</source>
+      </segment>
+    </unit>
+    <unit id="DurationSlowCardTitle">
+      <segment>
+        <source>Slow</source>
+      </segment>
+    </unit>
+    <unit id="DurationTitle">
+      <segment>
+        <source>Duration</source>
+      </segment>
+    </unit>
+    <unit id="LineWidthCardDescription">
+      <segment>
+        <source>Set BorderThickness to match the border width of this container.</source>
+      </segment>
+    </unit>
+    <unit id="LineWidthCardTitle">
+      <segment>
+        <source>Custom line width</source>
+      </segment>
+    </unit>
+    <unit id="LineWidthDescription">
+      <segment>
+        <source>Use BorderThickness to adjust the beam width. Its default value follows the shared border thickness token.</source>
+      </segment>
+    </unit>
+    <unit id="LineWidthTitle">
+      <segment>
+        <source>Line width</source>
       </segment>
     </unit>
     <unit id="MultipleBeamsCardDescription">
@@ -99,6 +159,46 @@
     <unit id="ScenarioExamples">
       <segment>
         <source>Examples</source>
+      </segment>
+    </unit>
+    <unit id="SizeCompactCardDescription">
+      <segment>
+        <source>Keeps the highlight shorter for dense card groups.</source>
+      </segment>
+    </unit>
+    <unit id="SizeCompactCardTitle">
+      <segment>
+        <source>Compact</source>
+      </segment>
+    </unit>
+    <unit id="SizeDefaultCardDescription">
+      <segment>
+        <source>Uses the default 100px visible beam segment.</source>
+      </segment>
+    </unit>
+    <unit id="SizeDefaultCardTitle">
+      <segment>
+        <source>Default</source>
+      </segment>
+    </unit>
+    <unit id="SizeDescription">
+      <segment>
+        <source>Use BeamSize to control the size of the visible beam segment. The default is 100 device-independent pixels.</source>
+      </segment>
+    </unit>
+    <unit id="SizeExtendedCardDescription">
+      <segment>
+        <source>Creates a longer highlight for wider feature panels.</source>
+      </segment>
+    </unit>
+    <unit id="SizeExtendedCardTitle">
+      <segment>
+        <source>Extended</source>
+      </segment>
+    </unit>
+    <unit id="SizeTitle">
+      <segment>
+        <source>Size</source>
       </segment>
     </unit>
     <unit id="ShowOnHoverCardDescription">

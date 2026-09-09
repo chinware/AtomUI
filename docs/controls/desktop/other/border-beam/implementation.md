@@ -146,7 +146,7 @@ count 和主题资源变化只使当前 presenter 重绘。
 
 ### 8.1 几何归一
 
-有效边框和圆角来自感知接口或 BorderBeam 自身属性。`Outset=null` 时按有效边框厚度向外扩，`Outset` 非空时使用显式外扩。圆角半径应按 Avalonia 圆角矩形规则夹取，避免半径超过控件尺寸时产生自交路径。
+有效边框和圆角来自感知接口或 BorderBeam 自身属性。Presenter 的 `Bounds` 与内容层共享同一布局边界，`Outset=null` 时直接使用该边界绘制边框环，不改变 `Measure`、`Arrange` 或任何布局尺寸；`Outset` 非空时仅在 Render 阶段按显式值偏移绘制范围。圆角半径应按 Avalonia 圆角矩形规则夹取，避免半径超过控件尺寸时产生自交路径。
 
 ### 8.2 渐变归一
 
@@ -221,6 +221,6 @@ N 次光束 draw call。额外持久内存保持 `O(1)`，单帧绘制成本为 
 - 统一圆角和非统一圆角下流光转角连续。
 - 实例级 `IsMotionEnabled=false`、自身或祖先不可见、detached 和零尺寸不产生持续 animation tick。
 - presenter 不拦截内容点击、焦点和键盘事件。
-- Gallery hover、同一 Multiple beams 示例内 `Count=3` / `Count=2` 对照，以及标准 Avalonia `Border` 自定义容器示例的 Style、SourceKey、延迟加载结构和四语资源。
-- Show on hover、Multiple beams 和 Custom container 三个本次新增 ShowcaseItem 使用 AtomUI 当前版本 `v6.1.8` 的 `BadgeText`。
+- Gallery hover、同一 Multiple beams 示例内 `Count=3` / `Count=2` 对照、标准 Avalonia `Border` 自定义容器示例、Customized color 六组预设，以及 Duration `3s` / `6s` / `12s`、BeamSize `100` / `56` / `160`、BorderThickness `2` 线宽对照的 Style、SourceKey、延迟加载结构和四语资源。
+- Show on hover、Multiple beams、Custom container、Duration、Size 和 Line width 六个本次新增 ShowcaseItem 使用 AtomUI 当前版本 `v6.1.8` 的 `BadgeText`。
 - 文档改动运行 `git diff --check`。
