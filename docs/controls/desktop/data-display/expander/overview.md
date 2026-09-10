@@ -124,8 +124,11 @@ PART_ContentMotionActor.IsVisible
 动效状态：
 
 - `IsMotionEnabled=false` 时直接同步 `PART_ContentMotionActor.IsVisible` 和透明度。
-- `IsMotionEnabled=true` 时使用 `ExpandMotion` / `CollapseMotion` 运行布局感知动效。
-- 展开状态在动画中再次变化时，当前 motion 会取消并以最新 `IsExpanded` 重新归一到最终可见状态。
+- Core 共用内容展开机制在上下方向改变内容视口高度，左右方向改变宽度，内容按正常尺寸排版并由视口裁剪。
+- 播放中反转必须从当前已呈现的尺寸和透明度接续；最终状态以最新 `IsExpanded` 为准，旧请求不能覆盖新请求。
+- 四个方向共同保持内容与标题的锚定边、分隔线相邻关系、自然内容尺寸及首尾帧连续性。具体执行路径由本控件实现文档描述。
+
+共享设计来源：`docs/architecture/systems/control-infrastructure/content-expansion.md`。
 
 自定义 padding：
 
@@ -177,7 +180,7 @@ Expander 属于 Data Display 分类，是单面板折叠容器。
 集成关系：
 
 - Avalonia `Expander`：继承 Header、Content、IsExpanded 和 ExpandDirection 基础语义。
-- MotionScene：通过 `LayoutAwareMotionActor`、`ExpandMotion` 和 `CollapseMotion` 处理展开/收起动画。
+- MotionScene：提供内容动效基础设施；共用执行职责由[内容展开与收起动效设计](../../../../architecture/systems/control-infrastructure/content-expansion.md)定义，Expander 保留 `IsExpanded`、方向和模板接入所有权。
 - Button/Icon：`PART_ExpandButton` 使用 AtomUI `IconButton` 和 默认 `RightOutlined` 默认图标。
 - Token 系统：通过 `ExpanderToken.ScopeProvider` 注册控件 Token 资源作用域。
 - Gallery：通过 Basic、Size、Borderless、Ghost、Custom Padding、Direction、Nested、No Arrow、Icon Position 和 Trigger 示例展示契约。
@@ -223,7 +226,15 @@ Expander 与 Collapse 的边界：
 
 ### 8.4 Motion 归一模型
 
-动效的最终状态以最新 `IsExpanded` 为准。取消旧 motion 后必须清理 `Height`、`MotionTransform`、`MotionTransformOperations` 和 `Transitions` 等临时值，再进入下一次 motion 或稳定状态。
+动效的目标状态由 `IsExpanded` 单独拥有。公共机制负责尺寸、透明度、内容测量和执行生命周期，不给 Expander 增加
+手风琴状态或公开动画配置。时长继续消费 `MotionDurationSlow` 的有效值，收放使用统一进度曲线。
+
+横向展开保持完整内容的排版宽度，不能逐帧用缩小的视口宽度重新换行。Down / Right 以内容起边锚定，Up / Left
+以靠近标题的尾边锚定，分隔线随内容保持在对应边。仅改变方向时按新方向和当前目标建立稳定布局，释放旧轴临时值。
+
+取消前先保存当前画面，旧执行失效后才能取消并接续新动画；关动效、模板重套用和 detach 直接归一到当前目标。
+尺寸接管同时覆盖高度与宽度，清理仅解除机制自身的内部进度和布局接入，保留模板原有尺寸、变换及绑定。完整算法及验证边界见
+[内容展开与收起动效设计](../../../../architecture/systems/control-infrastructure/content-expansion.md)。
 
 ### 8.5 结构化分隔线模型
 
@@ -236,6 +247,7 @@ Header/Content 分隔线由未命名的 Content `PixelAlignedBorder` 拥有，�
 关联文档：
 
 - [Expander 桌面版实现原理](implementation.md)
+- [内容展开与收起动效设计](../../../../architecture/systems/control-infrastructure/content-expansion.md)
 - [Expander Token 设计](token.md)
 - [Expander Changelog](changelog.md)
 
@@ -266,6 +278,7 @@ LLMS 导出来源：
 | --- | --- |
 | Public API | `SizeType`、`IsShowExpandIcon`、`ExpandIcon`、`AddOnContent`、`IsGhostStyle`、`IsBorderless`、`TriggerType`、`ExpandIconPosition`、`HeaderPadding`、`ContentPadding`、`IsMotionEnabled`。 |
 | 状态行为 | Header/Icon 触发差异、禁用状态、展开方向、嵌套 Expander、动画中状态切换、模板重套用和 detach。 |
+| 内容动效设计 | 四方向逐帧验证尺寸、文字排版、锚定边及分隔线；覆盖首尾 tick、反转、关动效、方向切换和原有滚动约束。 |
 | AXAML / Template | 稳定 template part、方向 selector、padding 伪类、图标位置 selector、禁用前景和 Header/Content padding。 |
 | Token | Header/Content padding、背景、圆角、展开图标 margin 与 Token 类型、生成数据和 token.md 语义说明一致。 |
 | Gallery | Basic、Size、Borderless、Ghost、Custom Padding、Direction、Nested、No Arrow、Icon Position、Trigger 示例。 |

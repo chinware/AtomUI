@@ -3,7 +3,6 @@ using AtomUI.Controls;
 using AtomUI.Icons.AntDesign;
 using AtomUI.MotionScene;
 using Avalonia;
-using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
@@ -197,13 +196,9 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
 
     #endregion
 
-    private static readonly CubicEaseOut DefaultExpandMotionEasing = new();
-    private static readonly CubicEaseIn DefaultCollapseMotionEasing = new();
-
-    private BaseMotionActor? _motionActor;
     private Control? _headerDecorator;
     private IconButton? _expandButton;
-    private CancellationTokenSource? _contentMotionCancellation;
+    private ContentExpansionAnimator? _contentExpansion;
 
     public Expander()
     {
@@ -218,15 +213,15 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
             _expandButton.Click -= HandleExpandButtonClicked;
         }
 
-        CancelContentMotionAndClearValues();
-        _motionActor     = e.NameScope.Find<BaseMotionActor>("PART_ContentMotionActor");
+        _contentExpansion?.ApplyState(IsExpanded);
+        var motionActor = e.NameScope.Find<BaseMotionActor>("PART_ContentMotionActor");
+        _contentExpansion = motionActor is null
+            ? null
+            : new ContentExpansionAnimator(motionActor, motionActor.NotifyMotionPreStart, motionActor.NotifyMotionCompleted);
         _headerDecorator = e.NameScope.Find<Control>("PART_HeaderDecorator");
         _expandButton    = e.NameScope.Find<IconButton>("PART_ExpandButton");
 
-        if (_motionActor is not null)
-        {
-            ApplyContentStableState(_motionActor, IsExpanded);
-        }
+        _contentExpansion?.ApplyState(IsExpanded);
 
         if (_expandButton is not null)
         {
@@ -240,13 +235,16 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
         UpdatePseudoClasses();
     }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        _contentExpansion?.ApplyState(IsExpanded);
+    }
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        if (_motionActor is { } motionActor)
-        {
-            ApplyContentStableState(motionActor, IsExpanded);
-        }
+        _contentExpansion?.ApplyState(IsExpanded);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -263,6 +261,12 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
         if (change.Property == IsExpandedProperty)
         {
             UpdateContentVisibility(IsExpanded);
+        }
+
+        if ((change.Property == IsMotionEnabledProperty && !IsMotionEnabled) ||
+            change.Property == ExpandDirectionProperty)
+        {
+            _contentExpansion?.ApplyState(IsExpanded);
         }
 
         if (change.Property == BorderThicknessProperty ||
@@ -357,134 +361,15 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
         };
     }
 
-    private void UpdateContentVisibility(bool isVisible)
+    private async void UpdateContentVisibility(bool isVisible)
     {
-        var motionActor = _motionActor;
-        if (motionActor is null)
+        if (_contentExpansion is not { } expansion)
         {
             return;
         }
 
-        if (!IsMotionEnabled)
-        {
-            ApplyContentStableState(motionActor, isVisible);
-            return;
-        }
-
-        if (!isVisible && !motionActor.IsVisible && _contentMotionCancellation is null)
-        {
-            ApplyContentStableState(motionActor, false);
-            return;
-        }
-
-        var cancellation = BeginContentMotion();
-        Dispatcher.InvokeAsync(async () => await RunContentMotionAsync(motionActor, isVisible, cancellation));
-    }
-
-    private async Task RunContentMotionAsync(BaseMotionActor motionActor,
-                                             bool targetVisible,
-                                             CancellationTokenSource cancellation)
-    {
-        try
-        {
-            await RunContentLayoutMotionAsync(motionActor, targetVisible, cancellation.Token);
-        }
-        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
-        {
-        }
-        finally
-        {
-            CompleteContentMotion(motionActor, targetVisible, cancellation);
-        }
-    }
-
-    private async Task RunContentLayoutMotionAsync(BaseMotionActor motionActor,
-                                                   bool targetVisible,
-                                                   CancellationToken cancellationToken)
-    {
-        ClearContentMotionValues(motionActor);
-        AbstractMotion motion = targetVisible
-            ? new ExpandMotion(DirectionFromExpandDirection(ExpandDirection), MotionDuration, DefaultExpandMotionEasing)
-            : new CollapseMotion(DirectionFromExpandDirection(ExpandDirection), MotionDuration, DefaultCollapseMotionEasing);
-        await motion.RunAsync(motionActor,
-            targetVisible ? () => motionActor.SetCurrentValue(IsVisibleProperty, true) : null,
-            cancellationToken);
-    }
-
-    private CancellationTokenSource BeginContentMotion()
-    {
-        CancelContentMotion();
-        var cancellation = new CancellationTokenSource();
-        _contentMotionCancellation = cancellation;
-        return cancellation;
-    }
-
-    private void CompleteContentMotion(BaseMotionActor motionActor,
-                                       bool targetVisible,
-                                       CancellationTokenSource cancellation)
-    {
-        if (!IsCurrentContentMotion(cancellation))
-        {
-            cancellation.Dispose();
-            return;
-        }
-
-        _contentMotionCancellation = null;
-        if (!ReferenceEquals(_motionActor, motionActor) || cancellation.IsCancellationRequested)
-        {
-            cancellation.Dispose();
-            return;
-        }
-
-        cancellation.Dispose();
-        if (IsExpanded == targetVisible)
-        {
-            ApplyContentStableState(motionActor, targetVisible);
-        }
-        else
-        {
-            UpdateContentVisibility(IsExpanded);
-        }
-    }
-
-    private void CancelContentMotion()
-    {
-        var cancellation = _contentMotionCancellation;
-        if (cancellation is not null)
-        {
-            _contentMotionCancellation = null;
-            cancellation.Cancel();
-        }
-    }
-
-    private void CancelContentMotionAndClearValues()
-    {
-        CancelContentMotion();
-        if (_motionActor is { } motionActor)
-        {
-            ClearContentMotionValues(motionActor);
-        }
-    }
-
-    private bool IsCurrentContentMotion(CancellationTokenSource cancellation)
-    {
-        return ReferenceEquals(_contentMotionCancellation, cancellation);
-    }
-
-    private void ApplyContentStableState(BaseMotionActor motionActor, bool isVisible)
-    {
-        CancelContentMotion();
-        ClearContentMotionValues(motionActor);
-        motionActor.Opacity   = isVisible ? 1.0 : 0.0;
-        motionActor.IsVisible = isVisible;
-    }
-
-    private static void ClearContentMotionValues(BaseMotionActor motionActor)
-    {
-        motionActor.Transitions               = null;
-        motionActor.MotionTransform           = null;
-        motionActor.MotionTransformOperations = null;
-        motionActor.ClearValue(HeightProperty);
+        var duration = IsMotionEnabled ? MotionDuration : TimeSpan.Zero;
+        await expansion.RunAsync(isVisible, DirectionFromExpandDirection(ExpandDirection), duration);
     }
 
     private static Direction DirectionFromExpandDirection(ExpandDirection expandDirection)

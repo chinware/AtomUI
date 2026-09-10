@@ -2464,7 +2464,7 @@ NavMenu 的交互行为由 mode 决定。所有 mode 共用项激活事务契约
 - 合法释放带子菜单的项目时切换 `IsSubMenuOpen`。
 - 子菜单在当前视觉树中展开，使用 `LayoutAwareMotionActor` 承载展开收起 motion。
 - 合法释放叶子节点时提交选择，并更新所有祖先 `IsInSelectedPath`。
-- `IsAccordionMode=true` 时，顶层子菜单互斥展开。
+- `IsAccordionMode=true` 时，顶层子菜单互斥展开；Inline 模式下旧分支收起与新分支展开同时开始，高度连续变化，动画期间再次点击可从当前进度反向切换。
 - `IsInlineCollapsed=true` 时，public `Mode` 仍保持 `Inline`，但内部有效模式切换为 vertical popup 语义：顶层只显示图标或无图标首字符，inline 子树不在主视觉树中展开，带子菜单的顶层项目通过 popup 打开。
 - 有效 inline collapsed 状态下，顶层叶子节点通过实际 header control 承载 Tooltip。节点显式 `Tooltip` 优先；未设置时回退到 `Header`；菜单级或节点级 Tooltip 被禁用、节点拥有子菜单或退出有效折叠状态时，不创建有效提示内容。
 - 进入折叠时缓存当前 inline 打开路径并关闭主视觉树中的 inline 子菜单；退出折叠时恢复缓存路径。折叠和展开不得清空 `SelectedItem` 或 selected path。
@@ -2499,6 +2499,10 @@ NavMenu 的交互行为由 mode 决定。所有 mode 共用项激活事务契约
 结构 entry 不进入公共交互状态：分组和分隔线不产生 `Selected`、`KeyboardActive`、`Open`、`ItemKey` 或 `Command`。分组中的节点仍使用最近的节点祖先作为 `ParentNode`；分组本身不增加 `Level`，也不进入 `TreeNodePath`。
 
 ## Theme and Token Boundaries
+
+Inline 内容动效的共享设计要求稳定内容排版、完整高度裁剪、从当前帧反转及当前请求独占完成权；菜单选择、路径和
+顶层互斥继续由 NavMenu 拥有。具体执行路径由本控件实现文档描述，根菜单宽度切换和 Popup 动效分别维护。
+共享设计来源：`docs/architecture/systems/control-infrastructure/content-expansion.md`。
 
 NavMenu Theme 按 mode、dark style、header state 和 item background model 分层。
 
@@ -8585,6 +8589,12 @@ Public API / inherited command / item source / user input
 - 内容可见性、箭头方向和动效目标只从 `IsSelected` 派生；模板节点之间不得双向同步展开状态。
 - 模板重套用、items reset/replace/clear 和模式切换后必须保持 selection model、容器与内容视觉一致。
 
+普通模式与手风琴模式使用 Core 共用内容展开机制：
+内容按正常尺寸排版，通过高度和透明度呈现收放，反转从当前帧接续。手风琴在 selection 提交时同步产生旧项收起和
+新项展开目标，两项使用同一进度交换空间，互斥不依赖动画完成事件。关闭动效及模板生命周期边界直接投影当前状态，
+释放仅限该机制拥有的动画和内部布局控制，保留自定义尺寸与变换。
+共享设计来源：`docs/architecture/systems/control-infrastructure/content-expansion.md`。
+
 ## Theme and Token Boundaries
 
 Collapse 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
@@ -9323,8 +9333,11 @@ PART_ContentMotionActor.IsVisible
 动效状态：
 
 - `IsMotionEnabled=false` 时直接同步 `PART_ContentMotionActor.IsVisible` 和透明度。
-- `IsMotionEnabled=true` 时使用 `ExpandMotion` / `CollapseMotion` 运行布局感知动效。
-- 展开状态在动画中再次变化时，当前 motion 会取消并以最新 `IsExpanded` 重新归一到最终可见状态。
+- Core 共用内容展开机制在上下方向改变内容视口高度，左右方向改变宽度，内容按正常尺寸排版并由视口裁剪。
+- 播放中反转必须从当前已呈现的尺寸和透明度接续；最终状态以最新 `IsExpanded` 为准，旧请求不能覆盖新请求。
+- 四个方向共同保持内容与标题的锚定边、分隔线相邻关系、自然内容尺寸及首尾帧连续性。具体执行路径由本控件实现文档描述。
+
+共享设计来源：`docs/architecture/systems/control-infrastructure/content-expansion.md`。
 
 自定义 padding：
 
@@ -9409,8 +9422,8 @@ ExpanderToken 不承载以下状态：
 - detach 时必须取消 motion 并清理临时值。
 - `TriggerType=Icon` 不能通过 Header 点击切换状态。
 - 默认 `ExpandIcon` 为空时必须使用 `RightOutlined`，且不覆盖用户显式图标。
-- `IsMotionEnabled=false` 不能留下 Height 或 transform 临时值。
-- `CompleteContentMotion` 必须校验当前 cancellation 和当前 motion actor。
+- `IsMotionEnabled=false` 立即释放内部进度和布局接入，保留用户或模板的尺寸与变换。
+- 只有当前动画执行器的当前执行可以提交稳定状态或完成通知；旧 actor 的回调不能影响替换后的模板。
 - Header/Content 分隔线只能由方向、边框厚度和视觉模式决定，不能依赖 `IsExpanded` 或 motion 时序。
 - `ExpandDirection` 的 motion 方向、Header dock、Header transform 和图标旋转必须同步维护。
 - 自定义 HeaderPadding 下的图标间距必须跟随 HeaderPadding 对应方向，不回退到默认 SizeType token。

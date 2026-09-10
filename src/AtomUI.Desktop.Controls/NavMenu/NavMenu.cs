@@ -797,16 +797,21 @@ public class NavMenu : ItemsControl,
             PinOpenPath(openedItem);
         }
 
-        if (IsAccordionMode)
+        if (EffectiveMode != NavMenuMode.Inline && e.Source is INavMenuItem menuItem)
         {
-            if (e.Source is INavMenuItem menuItem && menuItem.Parent == this)
+            CloseOtherTopLevelSubmenus(menuItem);
+        }
+    }
+
+    internal void CloseOtherTopLevelSubmenus(INavMenuItem menuItem)
+    {
+        if (IsAccordionMode && menuItem.Parent == this)
+        {
+            foreach (var child in NavMenuSemanticNavigator.EnumerateDirectItems(this))
             {
-                foreach (var child in NavMenuSemanticNavigator.EnumerateDirectItems(this))
+                if (child != menuItem && child.IsSubMenuOpen)
                 {
-                    if (child != menuItem && child.IsSubMenuOpen)
-                    {
-                        child.IsSubMenuOpen = false;
-                    }
+                    child.IsSubMenuOpen = false;
                 }
             }
         }

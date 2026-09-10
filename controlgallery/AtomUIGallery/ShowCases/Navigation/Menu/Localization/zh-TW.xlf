@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="zh-TW" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.MenuShowCaseLangResourceKind">
+    <unit id="AccordionMenuDescription">
+      <segment>
+        <source>In accordion mode, only one top-level submenu can be expanded at a time. Opening another top-level submenu automatically collapses the previous one.</source>
+        <target state="translated">手風琴模式下，同一時間只能展開一個頂層子選單。展開其他頂層子選單時，會自動收起之前展開的子選單。</target>
+      </segment>
+    </unit>
+    <unit id="AccordionMenuTitle">
+      <segment>
+        <source>Accordion mode</source>
+        <target state="translated">手風琴模式</target>
+      </segment>
+    </unit>
     <unit id="BasicDescription">
       <segment>
         <source>Simplest Usage.</source>

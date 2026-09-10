@@ -8,7 +8,7 @@
 - [主题系统](theming/overview.md)：主题运行时、Token、Semantic Part、定制 Guide 和 XML Reference。
 - [字体子系统](typography/overview.md)：字体资源注册、字体族回退、字号阶梯派生和文本度量边界。
 - [本地化系统](localization/overview.md)：运行时、Generator、Build Tasks、语言包和 XLIFF Reference。
-- [Control 基础设施](control-infrastructure/overview.md)：异步加载、过滤和响应式共享契约。
+- [Control 基础设施](control-infrastructure/overview.md)：异步加载、过滤、响应式共享契约，以及内容展开与收起的统一动效设计。
 - [统一图片加载系统](image-loading/overview.md)：当前统一 Source、应用级 loader、两级缓存、内容安全与控件 API。
 - [渲染系统](rendering/overview.md)：边框渲染、视觉层职责和跨树宿主选择。
 - [Windowing 系统](windowing/overview.md)：窗口合成、CSD 所有权、平台能力和验证矩阵。

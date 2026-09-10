@@ -2,6 +2,25 @@
 
 本文档记录 NavMenu 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-09-10
+
+- Design
+  - 登记与 Collapse、Expander 共用的[内容展开与收起动效设计](../../../../architecture/systems/control-infrastructure/content-expansion.md)，明确 Core 执行职责、菜单状态和事件所有权、模板裁剪及嵌套测量边界。
+- Implementation
+  - 展开进度由动画执行器的私有附加属性持有，基础 actor 通过内部 `IMotionActorLayout` 协作，分离通用布局与内容开合职责。
+  - `NavMenuItem` 接入 Core 内部 `ContentExpansionAnimator`，原生 `Animation` 同步驱动内部布局进度与透明度；控件继续拥有展开状态、排队请求身份和完成事件。
+- Behavior
+  - Inline 手风琴互斥在打开请求时生效，使旧分支收起与新分支展开同时开始。
+  - 收放动画覆盖含内部间距的完整高度和透明度，连续点击从当前画面接续；过期动画不得提交完成状态或事件。
+  - 第一个时钟 tick 前保持当前帧，完成 tick 后保持最终帧，避免动画与稳定状态交接时闪烁或位置突跳。
+- Theme
+  - Inline 收放改用 `MotionDurationMid`，配合统一缓动与既有 actor 裁剪，保留自然文字尺寸、最终布局和滚动契约。
+  - 将 `VerticalChildItemsMargin` 放入内部内容 frame，随 viewport 高度裁剪，避免结束时外部间距先恢复再消失导致文字回弹。
+- Lifecycle
+  - 关闭 motion、重新应用模板及 visual detach 时使请求失效，取消动画并解除内部进度和布局接入，保留自定义尺寸与变换。
+- Verification
+  - 新增真实指针输入与可控时钟测试，覆盖完整高度插值、等高分支切换、快速反转、多分支连续切换、过期事件、motion 关闭与 detach/reattach，并检查首个时钟 tick 前、完成 continuation 前的画面状态及子项文字坐标。
+
 ## 2026-09-04
 
 - Architecture

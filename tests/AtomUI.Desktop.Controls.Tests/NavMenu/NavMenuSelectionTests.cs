@@ -885,14 +885,14 @@ public class NavMenuSelectionTests
             var parentContainer = (Control)menu.ContainerFromItem(parent)!;
             SetTimeSpanProperty(parentContainer, "OpenCloseMotionDuration", TimeSpan.FromMilliseconds(1));
 
+            var actor = GetChildItemsMotionActor(parentContainer);
             var parentMenuItem = (INavMenuItem)parentContainer;
             parentMenuItem.Open();
-            DrainDispatcher();
+            WaitForInlineMotionCompletion(actor);
 
             parentMenuItem.Close();
-            DrainDispatcher();
+            WaitForInlineMotionCompletion(actor);
 
-            var actor = GetChildItemsMotionActor(parentContainer);
             actor.IsVisible.ShouldBeFalse();
             actor.Opacity.ShouldBe(0.0);
 
@@ -1014,7 +1014,7 @@ public class NavMenuSelectionTests
 
             SetTimeSpanProperty(parentContainer, "OpenCloseMotionDuration", TimeSpan.FromMilliseconds(1));
             parentMenuItem.Open();
-            DrainDispatcher();
+            WaitForInlineMotionCompletion(GetChildItemsMotionActor(parentContainer));
 
             SetTimeSpanProperty(parentContainer, "OpenCloseMotionDuration", TimeSpan.FromMilliseconds(500));
             parentMenuItem.Close();
@@ -1023,7 +1023,7 @@ public class NavMenuSelectionTests
 
             var actor = GetChildItemsMotionActor(parentContainer);
             actor.IsVisible.ShouldBeTrue();
-            actor.Transitions.ShouldNotBeNull();
+            actor.IsAnimating(Visual.OpacityProperty).ShouldBeTrue();
 
             menu.IsMotionEnabled = false;
             Dispatcher.UIThread.RunJobs();
@@ -1033,7 +1033,9 @@ public class NavMenuSelectionTests
 
             parentMenuItem.IsSubMenuOpen.ShouldBeTrue();
 
+            actor.IsAnimating(Visual.OpacityProperty).ShouldBeFalse();
             Thread.Sleep(600);
+            AvaloniaHeadlessPlatform.ForceRenderTimerTick();
             Dispatcher.UIThread.RunJobs();
 
             actor.IsVisible.ShouldBeTrue();
@@ -1162,10 +1164,30 @@ public class NavMenuSelectionTests
             : null;
     }
 
+    private static void WaitForInlineMotionCompletion(BaseMotionActor actor)
+    {
+        var deadline = DateTime.UtcNow + TimeSpan.FromSeconds(2);
+        do
+        {
+            Dispatcher.UIThread.RunJobs();
+            AvaloniaHeadlessPlatform.ForceRenderTimerTick();
+            Dispatcher.UIThread.RunJobs();
+            if (!actor.IsAnimating(Visual.OpacityProperty))
+            {
+                return;
+            }
+            Thread.Sleep(10);
+        } while (DateTime.UtcNow < deadline);
+
+        actor.IsAnimating(Visual.OpacityProperty).ShouldBeFalse();
+    }
+
     private static void DrainDispatcher()
     {
         Dispatcher.UIThread.RunJobs();
+        AvaloniaHeadlessPlatform.ForceRenderTimerTick();
         Thread.Sleep(20);
+        AvaloniaHeadlessPlatform.ForceRenderTimerTick();
         Dispatcher.UIThread.RunJobs();
     }
 

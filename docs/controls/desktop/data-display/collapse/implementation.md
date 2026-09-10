@@ -14,6 +14,7 @@
 - `src/AtomUI.Desktop.Controls/Collapse/CollapseItem.cs`
 - `src/AtomUI.Desktop.Controls/Collapse/CollapseToken.cs`
 - `src/AtomUI.Desktop.Controls/Collapse/ICollapseItemData.cs`
+- `src/AtomUI.Core/MotionScene/ContentExpansionAnimator.cs`：三个控件共用的内容测量、进度插值和执行资源 owner。
 - `src/AtomUI.Desktop.Controls/Collapse/Themes/CollapseItemTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Collapse/Themes/CollapseTheme.axaml`
 
@@ -110,6 +111,8 @@ Header 模式下，header 区域和展开图标触发 selection；Icon 模式下
 
 ## 7. 内部算法与关键流程
 
+### 7.1 选择与内容显示
+
 关键流程：
 
 1. `IsAccordion` 变化时先切换 selection mode，再通过 selection model 归一非法多选状态；容器准备期间若新容器携带显式选中值，则在基础 selection 投影后保留已有的较小已选索引。
@@ -117,6 +120,28 @@ Header 模式下，header 区域和展开图标触发 selection；Icon 模式下
 3. `CollapseItem.IsSelected` 变化只改变内容目标可见性和箭头方向。
 4. 新 content motion 开始前取消旧 motion；完成时仅在目标仍与最新 `IsSelected` 一致时应用稳定状态。
 5. content 顶边是 content frame 的固定视觉，收起时随 content 一起被裁剪，不需要父控件等待动画完成。
+
+### 7.2 共用内容展开执行链
+
+`CollapseItem` 为当前 `PART_ContentMotionActor` 持有 Core 内部 `ContentExpansionAnimator`，直接把
+`IsSelected`、`Direction.Bottom` 和有效 `MotionDuration` 提交给动画执行器。动画执行器使用同一个 Avalonia 原生
+`Animation` 驱动存储在 actor 上的私有展开进度附加属性与 `Opacity`，收放共用 `Spline(0.645, 0.045, 0.355, 1)`。
+进度属性及其布局失效通知由动画执行器拥有；`BaseMotionActor` 仅通过内部 `IMotionActorLayout` 委托测量和排列。
+视口高度参与父布局并裁剪完整尺寸的内容，不缩放文字或图标。
+源码所有权与算法见 [内容展开与收起动效设计](../../../../architecture/systems/control-infrastructure/content-expansion.md)。
+
+动画执行器在取消旧动画前采样当前 Bounds 高度和有效透明度，使旧执行身份失效后建立新起点。内部进度的同步起点覆盖
+首个 tick 前的绘制窗口，`FillMode.Forward` 保持最终 tick 到异步 continuation 的终点。只有当前执行可以提交稳定
+显示状态及 actor 完成通知；item 的 selection 与图标状态继续由 `IsSelected` 决定。
+
+### 7.3 接入与生命周期边界
+
+- `Collapse` 通过 selection model 同步产生互斥目标，两项动画由同一动画时钟交换空间；完成回调不重新选择 item。
+- `PART_ContentFrame` 内的 padding 与顶部边框包含在自然高度中，收起到零时随内容裁剪；item shell 底线保持结构所有权。
+- 内容、字体、padding、宿主约束或嵌套内容尺寸改变通过布局失效更新自然测量；执行中的目标变化从当前帧接续并保持原截止时间。
+- 关闭动效、初始模板接入、模板替换、detach / reattach 和容器回收按当前 selection 投影稳定布局。
+- 动画执行器释放自己的动画、取消源、内部进度和布局接入；不清除用户或模板的 `Height`、`Width`、transform 或 transition。
+- `ColorPickerCollapse` 通过继承消费相同路径，调色板内容与 `IsOpen` 到 `IsSelected` 的投影继续由派生接入层处理。
 
 ## 8. 资源、性能与 AOT 边界
 
@@ -159,3 +184,12 @@ Header 模式下，header 区域和展开图标触发 selection；Icon 模式下
 - 视觉测试覆盖默认、Borderless、Ghost 的首项、中间项、末项以及展开/收起/反向动画过程。
 - 生命周期测试覆盖 template reapply、旧按钮解绑、detach 和 motion cancellation。
 - 运行 Collapse 定向测试、Gallery 测试和 `git diff --check`。
+
+共享动效设计的验证要求：
+
+- 在固定尺寸及原有滚动容器内，对等高和不等高内容执行手风琴切换，逐帧检查内容总占位及后续元素位置。
+- 覆盖首个 tick 前、最终 tick 后且 continuation 前、播放中反转和连续切换多个面板，验证尺寸、透明度及旧回调隔离。
+- 对多行文本、三层嵌套、Borderless / Ghost 和显式 padding 采样 1× / 2× 画面，检查文字局部坐标和结构分隔线。
+- 验证关动效、detach / reattach、模板重套用及容器回收后的当前状态，并覆盖 ColorPicker 的直接消费路径。
+- `CollapseBehaviorTests` 负责状态、输入、结构边线和生命周期；`ContentExpansionMotionTests` 与
+  `ContentExpansionBoundaryTests` 负责共享机制的帧边界、几何和执行边界。不能以 transform 非空或终态可见性替代中间帧验证。

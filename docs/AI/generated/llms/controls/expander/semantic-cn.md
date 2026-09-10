@@ -138,8 +138,11 @@ PART_ContentMotionActor.IsVisible
 动效状态：
 
 - `IsMotionEnabled=false` 时直接同步 `PART_ContentMotionActor.IsVisible` 和透明度。
-- `IsMotionEnabled=true` 时使用 `ExpandMotion` / `CollapseMotion` 运行布局感知动效。
-- 展开状态在动画中再次变化时，当前 motion 会取消并以最新 `IsExpanded` 重新归一到最终可见状态。
+- Core 共用内容展开机制在上下方向改变内容视口高度，左右方向改变宽度，内容按正常尺寸排版并由视口裁剪。
+- 播放中反转必须从当前已呈现的尺寸和透明度接续；最终状态以最新 `IsExpanded` 为准，旧请求不能覆盖新请求。
+- 四个方向共同保持内容与标题的锚定边、分隔线相邻关系、自然内容尺寸及首尾帧连续性。具体执行路径由本控件实现文档描述。
+
+共享设计来源：`docs/architecture/systems/control-infrastructure/content-expansion.md`。
 
 自定义 padding：
 
@@ -224,8 +227,8 @@ ExpanderToken 不承载以下状态：
 - detach 时必须取消 motion 并清理临时值。
 - `TriggerType=Icon` 不能通过 Header 点击切换状态。
 - 默认 `ExpandIcon` 为空时必须使用 `RightOutlined`，且不覆盖用户显式图标。
-- `IsMotionEnabled=false` 不能留下 Height 或 transform 临时值。
-- `CompleteContentMotion` 必须校验当前 cancellation 和当前 motion actor。
+- `IsMotionEnabled=false` 立即释放内部进度和布局接入，保留用户或模板的尺寸与变换。
+- 只有当前动画执行器的当前执行可以提交稳定状态或完成通知；旧 actor 的回调不能影响替换后的模板。
 - Header/Content 分隔线只能由方向、边框厚度和视觉模式决定，不能依赖 `IsExpanded` 或 motion 时序。
 - `ExpandDirection` 的 motion 方向、Header dock、Header transform 和图标旋转必须同步维护。
 - 自定义 HeaderPadding 下的图标间距必须跟随 HeaderPadding 对应方向，不回退到默认 SizeType token。

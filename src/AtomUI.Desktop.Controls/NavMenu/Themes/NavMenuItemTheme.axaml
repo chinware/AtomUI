@@ -200,16 +200,13 @@
 
         <Style Selector="^[Mode=Inline]">
             <Setter Property="OpenCloseMotionDuration"
-                    Value="{atom:SharedTokenResource MotionDurationSlow}" />
+                    Value="{atom:SharedTokenResource MotionDurationMid}" />
 
             <Setter Property="Focusable" Value="False" />
             <Style Selector="^[IsItemBackgroundEnabled=True]">
-                <Style Selector="^ /template/ atom|LayoutAwareMotionActor#PART_ChildItemsLayoutTransform">
+                <Style Selector="^ /template/ Border#PART_ChildItemsFrame">
                     <Setter Property="Margin"
                             Value="{atom:NavMenuTokenResource VerticalChildItemsMargin}" />
-                </Style>
-
-                <Style Selector="^ /template/ Border#PART_ChildItemsFrame">
                     <Setter Property="Background"
                             Value="{atom:NavMenuTokenResource SubMenuItemBg}" />
                 </Style>

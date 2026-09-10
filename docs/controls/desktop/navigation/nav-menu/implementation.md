@@ -175,8 +175,10 @@ Inline handler：
 
 - 父节点合法释放时切换 `IsSubMenuOpen`；按下阶段不切换。
 - 叶子节点合法释放进入 selection coordinator。
-- `IsAccordionMode=true` 时关闭同层其他打开项。
-- Inline 展开收起保持 motion，不通过临时关闭 motion 规避问题。
+- `IsAccordionMode=true` 时，根 `NavMenu` 在顶层节点请求打开时同步关闭其他顶层节点；互斥协调不等待 `SubmenuOpened` 动画完成事件，因此旧分支收起与新分支展开并行进行。
+- Inline 收放由 `NavMenuItem` 为既有 child actor 持有的 Core 内部 `ContentExpansionAnimator` 统一执行，通过原生 `Animation` 驱动内部进度和透明度。展开目标取当前宽度下的自然测量高度，收起目标为零；内容保持正常文字尺寸，由 actor 裁剪溢出区域。`VerticalChildItemsMargin` 固定应用于内部 `PART_ChildItemsFrame`，随完整内容高度一起裁剪，不作为 actor 外部的独立动画值，避免首尾间距恢复引发文字回弹。
+- 收放共用 `MotionDurationMid` 和 `Spline(0.645,0.045,0.355,1)` 缓动。新的请求从当前呈现的高度和透明度接续，取消旧动画，不忽略动画期间的点击；只有当前执行可以提交稳定状态，菜单层同时校验排队请求身份、当前 animator 和目标状态后发布完成事件。
+- 启动动画前显式保持当前高度和透明度，覆盖第一个时钟 tick 之前的绘制窗口；使用 `FillMode.Forward` 保持最终帧，覆盖时钟完成到异步清理之间的绘制窗口。动画完成后解除内部进度与布局接入，恢复自然布局；关闭 motion、template 重应用和 visual detach 时取消动画并恢复请求状态。每次动画的取消令牌在完成或取消后释放，已失效操作不得继续写入旧 actor。
 - 当 `IsInlineCollapsed=true` 时不使用 Inline handler；有效交互切换到 Default handler，使带子菜单的顶层项通过 popup 打开。
 
 Default handler：
@@ -367,6 +369,22 @@ open path cache 应记录路径语义而不是持有容器引用。容器可能�
 
 折叠视觉由 theme 层表达：顶层 header 隐藏标题和箭头，icon 使用 `CollapsedIconSize` 居中；没有 icon 的顶层项从 `NodeHeader` 显示首字符。顶层叶子项的 `EffectiveCollapsedTooltip` 附加到真实 header control，显式节点 `Tooltip` 优先，未设置时回退到 `NodeHeader`；带子菜单节点使用 popup，不同时显示折叠 Tooltip。根分组标题隐藏，分组容器把 owner 已解析的 effective inline-collapsed 状态继续投影给子 entry，使任意层透明根分组都保持顶层折叠视觉；节点或 popup 内的非根分组从其 owner 接收 `false`，继续显示普通 vertical 标题和 item。root 宽度约束属于控件布局状态，由 C# metadata coercion 表达，以保留用户的 base `Width` / binding。inline collapsed 宽度过渡由内部 `InlineCollapsedLayoutWidth` motion 临时接管 coercion 输入，完成后必须清理回 `double.NaN`，让稳态宽度重新由 `InlineCollapsedWidth` 或用户原始 `Width` / binding 决定。C# 层不应为了折叠视觉改写 `Header` 或临时替换 `HeaderTemplate`。
 
+### 7.10 内容展开的共享接入边界
+
+`NavMenuItem.SetInlineChildItemsOpenAsync` 将目标状态、方向和有效时长提交给 Core 内部
+`ContentExpansionAnimator`。动画执行器持有私有展开进度附加属性、布局失效通知、单次执行的取消源与原生 `Animation`；
+进度值和透明度在同一 actor 上同步播放。`BaseMotionActor` 只通过内部 `IMotionActorLayout` 委托自然测量和完整内容排列。
+算法所有者见 [内容展开与收起动效设计](../../../../architecture/systems/control-infrastructure/content-expansion.md)。
+
+- 根 `NavMenu` 同步协调顶层互斥；item 持有 `IsSubMenuOpen`、排队请求身份和当前模板的 animator。
+- Dispatcher 回调在接触 actor 前核对请求版本、animator、mode 与目标状态，完成后再次确认有效性；同值旧请求不能因当前布尔值相同而重新获得执行权。
+- 测量输入包含 `PART_ChildItemsFrame` 的完整内容及间距。裁剪主轴为高度，内容靠近 header 的顶边为锚点。
+- 取消前捕获呈现值、首个 tick 前保持起点、最终 tick 后保持终点以及执行资源释放由动画执行器统一处理。
+- 完成结果返回 item 后，由菜单层发送对应完成事件及处理命令可用性；取消与过期请求不发布完成事件。
+- mode 切换、进入 Inline Collapsed、模板替换及 detach 使旧请求与执行失效；共用层不操作路径缓存、selection 或 Popup。
+- 内容或嵌套子菜单尺寸变化沿布局失效更新自然尺寸，正在执行的展开目标从当前帧接续且保留原截止时间。
+- 稳定状态解除内部进度与布局接管，保留用户或模板的尺寸、transform 和 transition；根菜单折叠宽度动画使用独立职责。
+
 ## 8. 资源、性能与 AOT 边界
 
 NavMenu 不应通过反射访问 template part 或内部状态。Header、popup、inline child frame 和 active indicator 均通过稳定 template part 和 Avalonia 属性接入。
@@ -482,3 +500,5 @@ inline collapsed cache 不得持有 `NavMenuItem`、header、popup 或 template 
 - Header/Footer 固定区域、空 slot 退化、Horizontal 左右区域、root/popup/collapsed 分组视觉和 divider orientation 稳定。
 - 纯节点容器数量保持不变，三种 generated container recycle key 相互隔离，键盘移动不创建扁平 item list。
 - 文档改动运行 `git diff --check`。
+- 共用内容动效的验证还需覆盖不等高分支交换、三层嵌套中内容尺寸变化、原有 ScrollViewer 约束与命中范围；
+  使用可控时钟和 1× / 2× 帧采样验证共享契约，不能只检查最终可见性。

@@ -376,6 +376,40 @@
     </gallery:ShowCaseItem>
 
     <gallery:ShowCaseItem
+        Title="{gallery:MenuShowCaseLangResource AccordionMenuTitle}"
+        Description="{gallery:MenuShowCaseLangResource AccordionMenuDescription}"
+        SourceKey="nav-menu-accordion"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="viewModels:MenuViewModel">
+        <atom:NavMenu Mode="Inline" IsAccordionMode="True" Width="300" Margin="0, 0, 0, 20">
+            <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationOne}"
+                              Icon="{antdicons:AntDesignIconProvider Kind=MailOutlined}">
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderItemN1}">
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN1}" />
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN2}" />
+                </atom:NavMenuNode>
+            </atom:NavMenuNode>
+            <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationTwo}"
+                              Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}">
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderItemN2}">
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN3}" />
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN4}" />
+                </atom:NavMenuNode>
+            </atom:NavMenuNode>
+            <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationThreeSubmenu}"
+                              Icon="{antdicons:AntDesignIconProvider Kind=SettingOutlined}">
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderItemN1}">
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN5}" />
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN6}" />
+                </atom:NavMenuNode>
+            </atom:NavMenuNode>
+        </atom:NavMenu>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
         Title="{gallery:MenuShowCaseLangResource NavMenuNodeCommandTitle}"
         Description="{gallery:MenuShowCaseLangResource NavMenuNodeCommandDescription}"
         BadgeText="v6.1.0"

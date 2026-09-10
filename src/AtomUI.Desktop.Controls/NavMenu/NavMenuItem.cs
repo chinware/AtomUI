@@ -6,13 +6,11 @@ using AtomUI.Exceptions;
 using AtomUI.Input;
 using AtomUI.MotionScene;
 using Avalonia;
-using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Converters;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
@@ -528,8 +526,8 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     private DispatcherOperation? _pendingCanExecuteUpdate;
 
     private Control? _itemHeader;
-    private bool _isInlineMotionRunning;
-    private CancellationTokenSource? _inlineMotionCancellation;
+    private ContentExpansionAnimator? _inlineExpansion;
+    private long _inlineRequestVersion;
     private CompositeDisposable? _nodeBindingDisposables;
     private IDisposable? _popupPinnedOpenBinding;
     private bool _isClosingForLifecycle;
@@ -570,6 +568,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
 
     internal void ClearEntryContext()
     {
+        ApplyInlineChildItemsStateImmediately(IsSubMenuOpen && HasSubMenu);
         OwnerMenu          = null;
         SemanticParentItem = null;
         EntryOwner         = null;
@@ -593,11 +592,6 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     
     public void Open()
     {
-        if (ShouldIgnoreInlineToggleDuringMotion())
-        {
-            return;
-        }
-
         IsSubMenuOpen = true;
     }
     
@@ -608,17 +602,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
             return;
         }
 
-        if (ShouldIgnoreInlineToggleDuringMotion())
-        {
-            return;
-        }
-
         Dispatcher.InvokeAsync(async () => await CloseItemAsync(this));
-    }
-
-    private bool ShouldIgnoreInlineToggleDuringMotion()
-    {
-        return Mode == NavMenuMode.Inline && IsMotionEnabled && _isInlineMotionRunning;
     }
     
     public async Task CloseItemAsync(INavMenuItem menuItem)
@@ -764,6 +748,11 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
             {
                 HandleSubMenuOpenChanged(change);
             }
+        }
+        else if (change.Property == IsMotionEnabledProperty && !IsMotionEnabled &&
+                 _childItemsLayoutTransform is not null)
+        {
+            ApplyInlineChildItemsStateImmediately(IsSubMenuOpen && HasSubMenu);
         }
         else if (change.Property == CommandProperty)
         {
@@ -925,22 +914,26 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     private void HandleSubMenuOpenChanged(AvaloniaPropertyChangedEventArgs change)
     {
         var value = (bool)change.NewValue!;
+        var requestVersion = ++_inlineRequestVersion;
+        var expansion = _inlineExpansion;
         
         if (Mode == NavMenuMode.Inline)
         {
+            if (value)
+            {
+                OwnerMenu?.CloseOtherTopLevelSubmenus(this);
+            }
+
             Dispatcher.InvokeAsync(async () =>
             {
-                // 在这里我们有一个动画的效果
-                if (value)
+                if (!IsCurrentInlineRequest(requestVersion, expansion, value) ||
+                    !await SetInlineChildItemsOpenAsync(value) ||
+                    !IsCurrentInlineRequest(requestVersion, expansion, value))
                 {
-                    await SetInlineChildItemsOpenAsync(isOpen: true);
-                    RaiseEvent(new RoutedEventArgs(SubmenuOpenedEvent));
+                    return;
                 }
-                else
-                {
-                    await SetInlineChildItemsOpenAsync(isOpen: false);
-                    RaiseEvent(new RoutedEventArgs(SubmenuClosedEvent));
-                }
+
+                RaiseEvent(new RoutedEventArgs(value ? SubmenuOpenedEvent : SubmenuClosedEvent));
               
                 for (var i = 0; i < ItemsView.Count; i++)
                 {
@@ -971,110 +964,29 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         }
     }
     
-    private async Task SetInlineChildItemsOpenAsync(bool isOpen)
+    private Task<bool> SetInlineChildItemsOpenAsync(bool isOpen)
     {
-        var actor = _childItemsLayoutTransform;
-        if (!HasSubMenu || actor is null)
+        if (!HasSubMenu || _inlineExpansion is not { } expansion)
         {
-            return;
+            return Task.FromResult(true);
         }
 
-        if (!ShouldAnimateInlineChildItems(actor, isOpen))
-        {
-            ApplyInlineChildItemsStateImmediately(actor, isOpen);
-            return;
-        }
-
-        if (_isInlineMotionRunning)
-        {
-            return;
-        }
-
-        var cancellation = BeginInlineMotion();
-        try
-        {
-            var motion = CreateInlineChildItemsMotion(isOpen);
-            await motion.RunAsync(actor,
-                () => { actor.IsVisible = true; },
-                cancellation.Token);
-            if (IsCurrentInlineMotion(cancellation) && !cancellation.IsCancellationRequested)
-            {
-                ApplyInlineChildItemsStableState(actor, isOpen);
-            }
-        }
-        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
-        {
-        }
-        finally
-        {
-            CompleteInlineMotion(cancellation);
-        }
+        var duration = IsMotionEnabled ? OpenCloseMotionDuration : TimeSpan.Zero;
+        return expansion.RunAsync(isOpen, Direction.Bottom, duration);
     }
 
-    private bool ShouldAnimateInlineChildItems(BaseMotionActor actor, bool isOpen)
+    private void ApplyInlineChildItemsStateImmediately(bool isOpen)
     {
-        return IsMotionEnabled && (isOpen || actor.IsVisible);
+        ++_inlineRequestVersion;
+        _inlineExpansion?.ApplyState(isOpen);
     }
 
-    private AbstractMotion CreateInlineChildItemsMotion(bool isOpen)
+    private bool IsCurrentInlineRequest(long version, ContentExpansionAnimator? expansion, bool isOpen)
     {
-        return isOpen
-            ? new SlideUpInMotion(OpenCloseMotionDuration, new CubicEaseOut())
-            : new SlideUpOutMotion(OpenCloseMotionDuration, new CubicEaseIn());
+        return version == _inlineRequestVersion && ReferenceEquals(expansion, _inlineExpansion) &&
+               Mode == NavMenuMode.Inline && isOpen == IsSubMenuOpen && this.IsAttachedToVisualTree();
     }
 
-    private CancellationTokenSource BeginInlineMotion()
-    {
-        CancelInlineMotion();
-        var cancellation = new CancellationTokenSource();
-        _inlineMotionCancellation = cancellation;
-        _isInlineMotionRunning    = true;
-        return cancellation;
-    }
-
-    private void CompleteInlineMotion(CancellationTokenSource cancellation)
-    {
-        if (IsCurrentInlineMotion(cancellation))
-        {
-            _inlineMotionCancellation = null;
-            _isInlineMotionRunning    = false;
-        }
-
-        cancellation.Dispose();
-    }
-
-    private void CancelInlineMotion()
-    {
-        var cancellation = _inlineMotionCancellation;
-        if (cancellation is null)
-        {
-            return;
-        }
-
-        _inlineMotionCancellation = null;
-        _isInlineMotionRunning    = false;
-        cancellation.Cancel();
-    }
-
-    private bool IsCurrentInlineMotion(CancellationTokenSource cancellation)
-    {
-        return ReferenceEquals(_inlineMotionCancellation, cancellation);
-    }
-
-    private void ApplyInlineChildItemsStateImmediately(BaseMotionActor actor, bool isOpen)
-    {
-        CancelInlineMotion();
-        ApplyInlineChildItemsStableState(actor, isOpen);
-    }
-
-    private static void ApplyInlineChildItemsStableState(BaseMotionActor actor, bool isOpen)
-    {
-        actor.Transitions     = null;
-        actor.MotionTransform = null;
-        actor.Opacity         = isOpen ? 1.0 : 0.0;
-        actor.IsVisible       = isOpen;
-    }
-    
     private void CloseSubmenus()
     {
         foreach (var child in NavMenuSemanticNavigator.EnumerateDirectItems(this))
@@ -1229,6 +1141,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        ApplyInlineChildItemsStateImmediately(IsSubMenuOpen && HasSubMenu);
         UpdatePseudoClasses();
         TryUpdateCanExecute();
         TryOpenPinned();
@@ -1243,6 +1156,11 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        if (_childItemsLayoutTransform is not null)
+        {
+            ApplyInlineChildItemsStateImmediately(IsSubMenuOpen && HasSubMenu);
+        }
+
         if (IsPopupPinnedOpen)
         {
             CloseForLifecycle();
@@ -1279,7 +1197,10 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        CancelInlineMotion();
+        if (_childItemsLayoutTransform is not null)
+        {
+            ApplyInlineChildItemsStateImmediately(IsSubMenuOpen && HasSubMenu);
+        }
         base.OnApplyTemplate(e);
         if (_popup != null)
         {
@@ -1307,14 +1228,16 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
 
         _itemHeader = e.NameScope.Find<Control>("PART_Header");
         _childItemsLayoutTransform = null;
-        
+        _inlineExpansion = null;
+
         if (Mode == NavMenuMode.Inline)
         {
             _childItemsLayoutTransform =
                 e.NameScope.Find<BaseMotionActor>("PART_ChildItemsLayoutTransform");
             if (_childItemsLayoutTransform is not null)
             {
-                _childItemsLayoutTransform.SetCurrentValue(IsVisibleProperty, IsSubMenuOpen && HasSubMenu);
+                _inlineExpansion = new ContentExpansionAnimator(_childItemsLayoutTransform);
+                _inlineExpansion.ApplyState(IsSubMenuOpen && HasSubMenu);
             }
         }
     }

@@ -107,5 +107,7 @@ public enum MenuShowCaseLangResourceKind
     P2HeaderPersonalGroup,
     P2HeaderProfile,
     P2HeaderSecurity,
-    P2TextCurrentWorkspace
+    P2TextCurrentWorkspace,
+    AccordionMenuTitle,
+    AccordionMenuDescription
 }

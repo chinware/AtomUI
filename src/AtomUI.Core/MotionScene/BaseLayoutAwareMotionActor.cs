@@ -84,7 +84,7 @@ public abstract class BaseLayoutAwareMotionActor : BaseMotionActor
     
     protected override Size ArrangeOverride(Size finalSize)
     {
-        if (MotionTransformRoot == null || (MotionTransform == null && MotionTransformOperations == null) || UseRenderTransform)
+        if (MotionLayout is not null || MotionTransformRoot == null || (MotionTransform == null && MotionTransformOperations == null) || UseRenderTransform)
         {
             // TODO 这里可能会引起混淆，因为我们不会对 Target 实施 Scale 转换
             return base.ArrangeOverride(finalSize);
@@ -135,7 +135,7 @@ public abstract class BaseLayoutAwareMotionActor : BaseMotionActor
     
     protected override Size MeasureOverride(Size availableSize)
     {
-        if (MotionTransformRoot == null || (MotionTransform == null && MotionTransformOperations == null) || UseRenderTransform)
+        if (MotionLayout is not null || MotionTransformRoot == null || (MotionTransform == null && MotionTransformOperations == null) || UseRenderTransform)
         {
             return base.MeasureOverride(availableSize);
         }

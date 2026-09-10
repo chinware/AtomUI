@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.MenuShowCaseLangResourceKind">
+    <unit id="AccordionMenuDescription">
+      <segment>
+        <source>In accordion mode, only one top-level submenu can be expanded at a time. Opening another top-level submenu automatically collapses the previous one.</source>
+      </segment>
+    </unit>
+    <unit id="AccordionMenuTitle">
+      <segment>
+        <source>Accordion mode</source>
+      </segment>
+    </unit>
     <unit id="BasicDescription">
       <segment>
         <source>Simplest Usage.</source>

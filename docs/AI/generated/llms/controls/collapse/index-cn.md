@@ -199,6 +199,12 @@ Public API / inherited command / item source / user input
 - 内容可见性、箭头方向和动效目标只从 `IsSelected` 派生；模板节点之间不得双向同步展开状态。
 - 模板重套用、items reset/replace/clear 和模式切换后必须保持 selection model、容器与内容视觉一致。
 
+普通模式与手风琴模式使用 Core 共用内容展开机制：
+内容按正常尺寸排版，通过高度和透明度呈现收放，反转从当前帧接续。手风琴在 selection 提交时同步产生旧项收起和
+新项展开目标，两项使用同一进度交换空间，互斥不依赖动画完成事件。关闭动效及模板生命周期边界直接投影当前状态，
+释放仅限该机制拥有的动画和内部布局控制，保留自定义尺寸与变换。
+共享设计来源：`docs/architecture/systems/control-infrastructure/content-expansion.md`。
+
 ## 主题与 Design Token
 
 Collapse 的视觉模型由控件模板、ControlTheme、SharedToken 和必要的控件 Token 共同构成。
@@ -260,6 +266,7 @@ Collapse Token 只表达组件级视觉变量，例如尺寸、间距、颜色�
 - `src/AtomUI.Desktop.Controls/Collapse/CollapseItem.cs`
 - `src/AtomUI.Desktop.Controls/Collapse/CollapseToken.cs`
 - `src/AtomUI.Desktop.Controls/Collapse/ICollapseItemData.cs`
+- `src/AtomUI.Core/MotionScene/ContentExpansionAnimator.cs`：三个控件共用的内容测量、进度插值和执行资源 owner。
 - `src/AtomUI.Desktop.Controls/Collapse/Themes/CollapseItemTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Collapse/Themes/CollapseTheme.axaml`
 

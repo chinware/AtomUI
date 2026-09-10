@@ -190,8 +190,11 @@ PART_ContentMotionActor.IsVisible
 动效状态：
 
 - `IsMotionEnabled=false` 时直接同步 `PART_ContentMotionActor.IsVisible` 和透明度。
-- `IsMotionEnabled=true` 时使用 `ExpandMotion` / `CollapseMotion` 运行布局感知动效。
-- 展开状态在动画中再次变化时，当前 motion 会取消并以最新 `IsExpanded` 重新归一到最终可见状态。
+- Core 共用内容展开机制在上下方向改变内容视口高度，左右方向改变宽度，内容按正常尺寸排版并由视口裁剪。
+- 播放中反转必须从当前已呈现的尺寸和透明度接续；最终状态以最新 `IsExpanded` 为准，旧请求不能覆盖新请求。
+- 四个方向共同保持内容与标题的锚定边、分隔线相邻关系、自然内容尺寸及首尾帧连续性。具体执行路径由本控件实现文档描述。
+
+共享设计来源：`docs/architecture/systems/control-infrastructure/content-expansion.md`。
 
 自定义 padding：
 
@@ -259,7 +262,7 @@ ExpanderToken 不承载以下状态：
 生命周期边界：
 
 - `_expandButton.Click` 在模板重套用时先解除旧订阅，再订阅新 part。
-- `_contentMotionCancellation` 在新 motion、稳定状态、模板重套用和 detach 时取消并释放。
+- `_contentExpansion` 随当前 actor 建立；单次执行的取消源由动画执行器在完成或取消后释放。
 - motion actor 临时值必须在状态归一时清理。
 
 AOT 边界：
@@ -284,6 +287,8 @@ AOT 边界：
 - `src/AtomUI.Desktop.Controls/Expander/ExpanderToken.cs`：Expander 控件 Token。
 - `src/AtomUI.Desktop.Controls/Expander/Themes/ExpanderTheme.axaml`：控件模板、SizeType 分支、方向分支、图标位置分支、触发分支、Borderless/Ghost 分支和 token 引用。
 - `tests/AtomUI.Desktop.Controls.Tests/Expander/ExpanderBehaviorTests.cs`：Expander 行为和布局回归测试。
+- `src/AtomUI.Core/MotionScene/ContentExpansionAnimator.cs`：共用内容测量、进度插值与执行资源 owner。
+- `tests/AtomUI.Desktop.Controls.Tests/Motion`：共用展开机制的帧级几何和边界回归。
 
 ## 相关文档
 

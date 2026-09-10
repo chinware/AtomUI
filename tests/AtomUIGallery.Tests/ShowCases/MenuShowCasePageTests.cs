@@ -45,10 +45,10 @@ public class MenuShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:MenuShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(18);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(18);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(18);
-        CountOccurrences(source, "DataTemplate x:DataType=\"viewModels:MenuViewModel\"").ShouldBe(18);
+        CountShowCaseItemElements(source).ShouldBe(19);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(19);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(19);
+        CountOccurrences(source, "DataTemplate x:DataType=\"viewModels:MenuViewModel\"").ShouldBe(19);
         source.ShouldContain("MenuShowCaseLangResource BasicTitle");
         source.ShouldContain("MenuShowCaseLangResource IconAndSubmenuTitle");
         source.ShouldContain("MenuShowCaseLangResource MenuItemItemsSourceTitle");

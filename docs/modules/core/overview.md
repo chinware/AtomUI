@@ -59,6 +59,7 @@ Application 映射由 Shared 的 `ImageLoaderStore` 管理；Core 不增加 `App
 
 ## 相关文档
 
+- [内容展开与收起动效设计](../../architecture/systems/control-infrastructure/content-expansion.md)：共享动效职责与上层控件接入契约，实现证据由各控件维护。
 - [主题系统架构](../../architecture/systems/theming/runtime.md)
 - [Control Design Token 继承架构](../../architecture/systems/theming/control-design-token-inheritance.md)
 - [Semantic Part 系统设计](../../architecture/systems/theming/semantic-parts.md)

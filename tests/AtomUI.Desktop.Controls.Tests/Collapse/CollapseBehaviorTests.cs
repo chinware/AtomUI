@@ -926,10 +926,9 @@ public class CollapseBehaviorTests
             item.IsSelected = true;
             item.IsSelected = false;
             Dispatcher.UIThread.RunJobs();
-            Thread.Sleep(20);
-            Dispatcher.UIThread.RunJobs();
-
             var motionActor = GetContentMotionActor(item);
+            WaitForLayoutCondition(() => !motionActor.IsAnimating(Visual.OpacityProperty) &&
+                                         motionActor.IsVisible == item.IsSelected);
             item.IsSelected.ShouldBeFalse();
             motionActor.IsVisible.ShouldBeFalse();
         }
@@ -984,17 +983,18 @@ public class CollapseBehaviorTests
 
             item.IsSelected = true;
             Dispatcher.UIThread.RunJobs();
-            motionActor.MotionTransform.ShouldNotBeNull();
+            motionActor.IsAnimating(Visual.OpacityProperty).ShouldBeTrue();
 
             item.IsSelected = false;
             item.IsSelected = true;
             Dispatcher.UIThread.RunJobs();
             WaitForLayoutCondition(() => motionActor.IsVisible &&
-                                         motionActor.MotionTransform is null &&
-                                         motionActor.Transitions is null);
+                                         !motionActor.IsAnimating(Visual.OpacityProperty) &&
+                                         motionActor.Opacity == 1);
 
             item.IsSelected.ShouldBeTrue();
             motionActor.IsVisible.ShouldBeTrue();
+            motionActor.IsAnimating(Visual.OpacityProperty).ShouldBeFalse();
             motionActor.MotionTransform.ShouldBeNull();
             motionActor.Transitions.ShouldBeNull();
             itemBorderChangeCount.ShouldBe(0);
@@ -1046,9 +1046,12 @@ public class CollapseBehaviorTests
             Dispatcher.UIThread.RunJobs();
 
             var oldMotionActor = GetContentMotionActor(item);
-            oldMotionActor.MotionTransform.ShouldNotBeNull();
+            oldMotionActor.IsAnimating(Visual.OpacityProperty).ShouldBeTrue();
             item.ApplyTemplateParts(new IconButton(), new LayoutAwareMotionActor());
 
+            oldMotionActor.IsAnimating(Visual.OpacityProperty).ShouldBeFalse();
+            oldMotionActor.IsVisible.ShouldBeTrue();
+            oldMotionActor.Opacity.ShouldBe(1);
             oldMotionActor.MotionTransform.ShouldBeNull();
             oldMotionActor.MotionTransformOperations.ShouldBeNull();
             oldMotionActor.Transitions.ShouldBeNull();
@@ -1089,11 +1092,14 @@ public class CollapseBehaviorTests
             Dispatcher.UIThread.RunJobs();
 
             var motionActor = GetContentMotionActor(item);
-            motionActor.MotionTransform.ShouldNotBeNull();
+            motionActor.IsAnimating(Visual.OpacityProperty).ShouldBeTrue();
 
             window.Content = null;
             Dispatcher.UIThread.RunJobs();
 
+            motionActor.IsAnimating(Visual.OpacityProperty).ShouldBeFalse();
+            motionActor.IsVisible.ShouldBeTrue();
+            motionActor.Opacity.ShouldBe(1);
             motionActor.MotionTransform.ShouldBeNull();
             motionActor.MotionTransformOperations.ShouldBeNull();
             motionActor.Transitions.ShouldBeNull();
@@ -1106,7 +1112,7 @@ public class CollapseBehaviorTests
     }
 
     [Fact]
-    public void Item_Content_Motion_Uses_Layout_Aware_Transform_Instead_Of_Height()
+    public void Item_Content_Motion_Animates_Viewport_Without_Overriding_Height_Or_Scaling_Content()
     {
         var item = new AtomUICollapseItem
         {
@@ -1138,7 +1144,8 @@ public class CollapseBehaviorTests
             Dispatcher.UIThread.RunJobs();
 
             var motionActor = GetContentMotionActor(item);
-            motionActor.MotionTransform.ShouldNotBeNull();
+            motionActor.IsAnimating(Visual.OpacityProperty).ShouldBeTrue();
+            motionActor.MotionTransform.ShouldBeNull();
             motionActor.Height.ShouldBe(double.NaN);
         }
         finally
@@ -1148,7 +1155,7 @@ public class CollapseBehaviorTests
     }
 
     [Fact]
-    public void Item_Content_Motion_Clears_Local_Height_After_Completion()
+    public void Item_Content_Motion_Completes_With_Natural_Height()
     {
         var item = new AtomUICollapseItem
         {
@@ -1178,10 +1185,10 @@ public class CollapseBehaviorTests
 
             item.IsSelected = true;
             Dispatcher.UIThread.RunJobs();
-            Thread.Sleep(20);
-            Dispatcher.UIThread.RunJobs();
-
             var motionActor = GetContentMotionActor(item);
+            WaitForLayoutCondition(() => !motionActor.IsAnimating(Visual.OpacityProperty) &&
+                                         motionActor.IsVisible == item.IsSelected);
+            motionActor.Opacity.ShouldBe(1);
             motionActor.Height.ShouldBe(double.NaN);
         }
         finally
@@ -1427,6 +1434,8 @@ public class CollapseBehaviorTests
         while (DateTime.UtcNow < deadline)
         {
             Dispatcher.UIThread.RunJobs();
+            AvaloniaHeadlessPlatform.ForceRenderTimerTick();
+            Dispatcher.UIThread.RunJobs();
             if (condition())
             {
                 return;
@@ -1435,7 +1444,9 @@ public class CollapseBehaviorTests
             Thread.Sleep(10);
         }
 
+        AvaloniaHeadlessPlatform.ForceRenderTimerTick();
         Dispatcher.UIThread.RunJobs();
+        condition().ShouldBeTrue("The expected layout or animation state did not settle before the timeout.");
     }
 
     private static void Click(Control control, AvaloniaWindow window)

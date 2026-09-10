@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="2.1" srcLang="en-US" trgLang="pt-BR" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="AtomUIGallery.Localization.MenuShowCaseLangResourceKind">
+    <unit id="AccordionMenuDescription">
+      <segment>
+        <source>In accordion mode, only one top-level submenu can be expanded at a time. Opening another top-level submenu automatically collapses the previous one.</source>
+        <target state="translated">No modo acordeão, apenas um submenu de nível superior pode ficar expandido por vez. Ao abrir outro submenu de nível superior, o anterior é recolhido automaticamente.</target>
+      </segment>
+    </unit>
+    <unit id="AccordionMenuTitle">
+      <segment>
+        <source>Accordion mode</source>
+        <target state="translated">Modo acordeão</target>
+      </segment>
+    </unit>
     <unit id="BasicDescription">
       <segment>
         <source>Simplest Usage.</source>
