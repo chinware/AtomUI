@@ -1537,6 +1537,15 @@ public partial class DataGrid
                 AddNewCellPrivate(dataGridRow, ColumnsItemsInternal[columnIndex]);
             }
         }
+
+        // Recycled rows retain their cells and OwningColumn references, so assigning the same column
+        // does not invoke DataGridCell.OnOwningColumnSet again. Reproject transient column state here
+        // before the row is presented for a new query generation.
+        for (int columnIndex = 0; columnIndex < dataGridRow.Cells.Count; columnIndex++)
+        {
+            var cell = dataGridRow.Cells[columnIndex];
+            cell.IsSorting = cell.OwningColumn?.SortState.Direction is not null;
+        }
     }
 
     private void ComputeScrollBarsLayout()
