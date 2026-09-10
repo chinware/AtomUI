@@ -2,6 +2,8 @@ namespace AtomUI.Controls;
 
 public sealed class SvgImageLoadingOptionsBuilder
 {
+    public SvgConformanceMode ConformanceMode { get; set; } = SvgConformanceMode.Compatible;
+
     public long MaxDocumentBytes { get; set; } = 4L * 1024 * 1024;
 
     public long MaxXmlCharacters { get; set; } = 8_000_000;
@@ -22,6 +24,10 @@ public sealed class SvgImageLoadingOptionsBuilder
 
     internal SvgImageLoadingOptions Build()
     {
+        if (!Enum.IsDefined(ConformanceMode))
+        {
+            throw new InvalidOperationException($"{nameof(ConformanceMode)} must be a defined value.");
+        }
         ValidatePositive(MaxDocumentBytes, nameof(MaxDocumentBytes));
         ValidatePositive(MaxXmlCharacters, nameof(MaxXmlCharacters));
         ValidatePositive(MaxElementCount, nameof(MaxElementCount));
@@ -33,6 +39,7 @@ public sealed class SvgImageLoadingOptionsBuilder
         ValidatePositive(MaxEmbeddedImageBytes, nameof(MaxEmbeddedImageBytes));
 
         return new SvgImageLoadingOptions(
+            ConformanceMode,
             MaxDocumentBytes,
             MaxXmlCharacters,
             MaxElementCount,

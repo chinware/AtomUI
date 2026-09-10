@@ -34,12 +34,16 @@
                                VerticalAlignment="Center"
                                Source="{TemplateBinding LoadedImage}" />
                     </Border>
-                    <TextBlock Name="PART_TextPresenter"
-                               Text="{TemplateBinding Text}"
-                               RenderTransform="{TemplateBinding TextRenderTransform}"
-                               IsVisible="False"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center" />
+                    <Border Padding="{TemplateBinding TextPadding}">
+                        <Viewbox Stretch="Uniform"
+                                 StretchDirection="DownOnly">
+                            <TextBlock Name="PART_TextPresenter"
+                                       Text="{TemplateBinding Text}"
+                                       IsVisible="False"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" />
+                        </Viewbox>
+                    </Border>
                 </Panel>
             </ControlTemplate>
         </Setter>

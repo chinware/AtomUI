@@ -7585,7 +7585,7 @@ Source: ./controls/avatar/semantic-cn.md
 | `root` | `Avatar` | 归一图片来源、内容优先级、尺寸、形状和加载状态。 | `Source`、`FallbackSource`、`RequestOptions`、`Text`、`Icon`、`SizeType`、`Size`、`Shape` | `AvatarToken`、SharedToken | public |
 | `surface` | `Frame` | 绘制背景、边框和圆角。 | `Shape`、`SizeType`、`Size` | Avatar background、border、size Token | internal-observable |
 | `image` | `ImagePresenter` | 展示当前有效 `IImage`，不自行加载来源。 | `LoadState`、`IsLoaded` | Avatar size/radius Token | internal-observable |
-| `text` | `PART_TextPresenter` | 展示 Text 并应用基于 Gap 的缩放。 | `Text`、`Gap` | Font、size Token | template-stable |
+| `text` | `Viewbox` + `PART_TextPresenter` | 在 Gap 定义的内容区内展示 Text，只在空间不足时等比缩小并保持居中。 | `Text`、`Gap` | Font、size Token | template-stable |
 | `icon` | `IconPresenter` | 在无图片和 Text 时展示 Icon。 | `Icon` | Icon size Token | internal-observable |
 | `group` | `AvatarGroup` | 排列子 Avatar、折叠超出项并管理 Flyout。 | `Children`、`MaxDisplayCount`、`FoldAvatarFlyoutTriggerType` | AvatarGroup spacing/fold Token | public |
 
@@ -7604,7 +7604,7 @@ Source: ./controls/avatar/semantic-cn.md
 | `root` | `Avatar` | 归一图片来源、内容优先级、尺寸、形状和加载状态。 | `Source`、`FallbackSource`、`RequestOptions`、`Text`、`Icon`、`SizeType`、`Size`、`Shape` | `AvatarToken`、SharedToken | public |
 | `surface` | `Frame` | 绘制背景、边框和圆角。 | `Shape`、`SizeType`、`Size` | Avatar background、border、size Token | internal-observable |
 | `image` | `ImagePresenter` | 展示当前有效 `IImage`，不自行加载来源。 | `LoadState`、`IsLoaded` | Avatar size/radius Token | internal-observable |
-| `text` | `PART_TextPresenter` | 展示 Text 并应用基于 Gap 的缩放。 | `Text`、`Gap` | Font、size Token | template-stable |
+| `text` | `Viewbox` + `PART_TextPresenter` | 在 Gap 定义的内容区内展示 Text，只在空间不足时等比缩小并保持居中。 | `Text`、`Gap` | Font、size Token | template-stable |
 | `icon` | `IconPresenter` | 在无图片和 Text 时展示 Icon。 | `Icon` | Icon size Token | internal-observable |
 | `group` | `AvatarGroup` | 排列子 Avatar、折叠超出项并管理 Flyout。 | `Children`、`MaxDisplayCount`、`FoldAvatarFlyoutTriggerType` | AvatarGroup spacing/fold Token | public |
 
@@ -7654,10 +7654,12 @@ HTTP 条件重验证、非网络来源 Reload 强制重读、source/decode 两�
 | `Frame` | 背景、边框和圆角 |
 | `IconPresenter` | Icon 内容 |
 | `ImagePresenter` | 已加载 `IImage` |
-| `PART_TextPresenter` | Avalonia 原生 `TextBlock`，负责文字和缩放 transform |
+| `PART_TextPresenter` | Avalonia 原生 `TextBlock`，提供文字的自然排版尺寸 |
+| Text `Viewbox` | 在 Gap 定义的水平内容区内向下缩放并居中文字 |
 
 `PART_TextPresenter` 不依赖 Desktop Controls，保证 `Avatar` 可以由 `AtomUI.Controls` 独立提供。Circle 形状根据最终宽度设置
-圆角；文本宽度超过可用区域时按 `Gap` 计算缩放，不改变布局尺寸。
+圆角；Text `Viewbox` 使用 `Gap` 投影出的左右内边距作为可用区域，并直接消费 TextBlock 的自然排版尺寸。空间不足时只做
+等比缩小，短文本不放大，缩放前后都由模板布局保持水平和垂直居中。
 
 `AvatarGroupTheme.axaml` 位于 `AtomUI.Desktop.Controls/Avatar/Themes`，消费同一个 `AvatarToken`，但只负责 group spacing、
 overlap、折叠头像颜色和桌面 Flyout 视觉。
@@ -7675,9 +7677,10 @@ Avatar Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - 当前 API 只有 `Source`、`FallbackSource` 和 `RequestOptions`；不恢复旧来源属性或兼容 shim。
 - 图片、Text、Icon 的优先级和 Loading 期间的 fallback 内容必须稳定。
 - `ImageOpened`、`ImageFailed`、状态属性和伪类必须来自同一个 generation。
-- Template reapply 必须解除旧 `PART_TextPresenter.SizeChanged` 订阅。
+- `PART_TextPresenter` 保持原生 TextBlock；文字尺寸、字体和 Gap 变化由模板布局重新测量，不建立模板部件事件订阅或独立文字测量路径。
 - detach 必须取消 waiter、释放图片租约和 motion binding；reattach 根据当前配置重新请求。
 - borrowed `new BorrowedImageSource(image)` 永不由 Avatar 销毁。
+- SVG 一致性策略只由 Application loader 冻结；Avatar 和 `ImageRequestOptions` 不提供 per-control/per-request 覆盖或安全绕过。
 - Public API、Theme、Gallery 示例和 `AtomUI.Controls.Tests` 必须同步验证。
 
 维护不变量：
@@ -7686,7 +7689,9 @@ Avatar Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 - 内容优先级始终为 Image、Text、Icon；Loading 和取消不清空可用降级内容。
 - 每个已提交 cache image 必须由一个有效 lease 支撑；borrowed image 永不由控件销毁。
 - Source、options、尺寸或 attach generation 变化后，旧结果只能释放，不能回写状态。
+- `Compatible`/`Strict` 差异只能来自 Shared `SvgContentValidator`；Avatar 不按 Asset/File/HTTP 或单次请求改写该结论。
 - Template reapply、detach、group rebuild 和 Application dispose 都有明确的取消、解绑和释放路径。
+- 文字的自然尺寸、可用宽度、缩放和居中必须由同一个模板布局路径完成；不得恢复独立文字测量或补偿平移。
 - 单头像和 Token 只存在于 `AtomUI.Controls`，Desktop 包只拥有 AvatarGroup 组合能力。
 
 Source: ./controls/badge/semantic-cn.md

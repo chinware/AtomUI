@@ -128,12 +128,14 @@ internal sealed class SvgContentValidator
         private readonly SvgCssReferenceValidator _cssValidator;
         private readonly SvgDataImageValidator _dataImageValidator;
         private readonly ImageSource _source;
-        private readonly Stack<string?> _elementIds = new();
-        private readonly Dictionary<string, HashSet<string>> _references = new(StringComparer.Ordinal);
-        private readonly HashSet<string> _ids = new(StringComparer.Ordinal);
+        private readonly Stack<int> _elementNodes = new();
+        private readonly Dictionary<int, List<int>> _children = new();
+        private readonly Dictionary<int, HashSet<string>> _references = new();
+        private readonly Dictionary<string, int> _firstIdNodes = new(StringComparer.Ordinal);
         private StringBuilder? _styleText;
         private int _styleDepth = -1;
         private bool _rootSeen;
+        private bool _hasDuplicateId;
         private int _elementCount;
         private int _attributeCount;
         private int _maxElementDepth;
@@ -183,18 +185,25 @@ internal sealed class SvgContentValidator
             var attributes = ReadAttributes(reader);
             var elementId = attributes.FirstOrDefault(attribute =>
                 attribute.LocalName == "id" && attribute.NamespaceUri.Length == 0).Value;
-            if (!string.IsNullOrEmpty(elementId) && !_ids.Add(elementId))
+            var nodeId = _elementCount - 1;
+            if (_elementNodes.Count > 0)
             {
-                throw Invalid("SVG contains a duplicate id.");
+                AddChild(_elementNodes.Peek(), nodeId);
+            }
+            if (!string.IsNullOrEmpty(elementId))
+            {
+                if (!_firstIdNodes.TryAdd(elementId, nodeId))
+                {
+                    _hasDuplicateId = true;
+                }
             }
             if (reader.Depth == 0)
             {
                 ReadRootDimensions(attributes);
             }
-            var referenceOwnerId = elementId ?? (_elementIds.Count > 0 ? _elementIds.Peek() : null);
             foreach (var attribute in attributes)
             {
-                ValidateAttribute(reader.LocalName, referenceOwnerId, attribute);
+                ValidateAttribute(reader.LocalName, nodeId, attribute);
             }
 
             if (reader.LocalName.Equals("style", StringComparison.OrdinalIgnoreCase))
@@ -204,11 +213,11 @@ internal sealed class SvgContentValidator
             }
             if (!reader.IsEmptyElement)
             {
-                _elementIds.Push(elementId);
+                _elementNodes.Push(nodeId);
             }
             else if (_styleDepth == reader.Depth)
             {
-                ValidateStyle(elementId);
+                ValidateStyle(nodeId);
             }
         }
 
@@ -216,11 +225,11 @@ internal sealed class SvgContentValidator
         {
             if (_styleDepth == reader.Depth)
             {
-                ValidateStyle(_elementIds.Count > 0 ? _elementIds.Peek() : null);
+                ValidateStyle(_elementNodes.Peek());
             }
-            if (_elementIds.Count > 0)
+            if (_elementNodes.Count > 0)
             {
-                _elementIds.Pop();
+                _elementNodes.Pop();
             }
         }
 
@@ -236,6 +245,10 @@ internal sealed class SvgContentValidator
                 throw Invalid("SVG document has no root element.");
             }
             var maxReferenceDepth = ValidateReferenceGraph();
+            if (_hasDuplicateId && _options.Svg.ConformanceMode == SvgConformanceMode.Strict)
+            {
+                throw Invalid("SVG contains a duplicate id.");
+            }
             var referenceCount = _references.Sum(pair => pair.Value.Count);
             long estimatedCost;
             try
@@ -288,7 +301,7 @@ internal sealed class SvgContentValidator
             return attributes;
         }
 
-        private void ValidateAttribute(string elementName, string? elementId, SvgAttribute attribute)
+        private void ValidateAttribute(string elementName, int sourceNodeId, SvgAttribute attribute)
         {
             if (attribute.LocalName.StartsWith("on", StringComparison.OrdinalIgnoreCase))
             {
@@ -315,32 +328,32 @@ internal sealed class SvgContentValidator
             }
             if (attribute.LocalName == "href")
             {
-                ProcessReference(attribute.Value, elementName, elementId);
+                ProcessReference(attribute.Value, elementName, sourceNodeId);
                 return;
             }
             _cssValidator.Validate(
                 attribute.Value,
-                value => ProcessReference(value, elementName, elementId),
+                value => ProcessReference(value, elementName, sourceNodeId),
                 _source);
         }
 
-        private void ValidateStyle(string? elementId)
+        private void ValidateStyle(int sourceNodeId)
         {
             var css = _styleText?.ToString() ?? string.Empty;
             _styleText = null;
             _styleDepth = -1;
             _cssValidator.Validate(
                 css,
-                value => ProcessReference(value, "style", elementId),
+                value => ProcessReference(value, "style", sourceNodeId),
                 _source);
         }
 
-        private void ProcessReference(string value, string elementName, string? sourceId)
+        private void ProcessReference(string value, string elementName, int sourceNodeId)
         {
             var reference = value.Trim();
             if (reference.StartsWith('#') && reference.Length > 1)
             {
-                AddReference(sourceId, reference[1..]);
+                AddReference(sourceNodeId, reference[1..]);
                 return;
             }
             if (reference.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
@@ -388,64 +401,77 @@ internal sealed class SvgContentValidator
             }
         }
 
-        private void AddReference(string? sourceId, string targetId)
+        private void AddReference(int sourceNodeId, string targetId)
         {
-            if (sourceId is null)
-            {
-                return;
-            }
-            if (!_references.TryGetValue(sourceId, out var targets))
+            if (!_references.TryGetValue(sourceNodeId, out var targets))
             {
                 targets = new HashSet<string>(StringComparer.Ordinal);
-                _references.Add(sourceId, targets);
+                _references.Add(sourceNodeId, targets);
             }
             targets.Add(targetId);
         }
 
+        private void AddChild(int parentNodeId, int childNodeId)
+        {
+            if (!_children.TryGetValue(parentNodeId, out var children))
+            {
+                children = new List<int>();
+                _children.Add(parentNodeId, children);
+            }
+            children.Add(childNodeId);
+        }
+
         private int ValidateReferenceGraph()
         {
-            var states = new Dictionary<string, byte>(StringComparer.Ordinal);
-            var depths = new Dictionary<string, int>(StringComparer.Ordinal);
+            var states = new Dictionary<int, byte>();
+            var depths = new Dictionary<int, int>();
             var maxDepth = 0;
-            foreach (var id in _ids)
+            for (var nodeId = 0; nodeId < _elementCount; nodeId++)
             {
-                maxDepth = Math.Max(maxDepth, Visit(id, states, depths));
+                maxDepth = Math.Max(maxDepth, Visit(nodeId, states, depths));
             }
             return maxDepth;
         }
 
         private int Visit(
-            string id,
-            Dictionary<string, byte> states,
-            Dictionary<string, int> depths)
+            int nodeId,
+            Dictionary<int, byte> states,
+            Dictionary<int, int> depths)
         {
-            if (depths.TryGetValue(id, out var knownDepth))
+            if (depths.TryGetValue(nodeId, out var knownDepth))
             {
                 return knownDepth;
             }
-            if (states.TryGetValue(id, out var state) && state == 1)
+            if (states.TryGetValue(nodeId, out var state) && state == 1)
             {
                 throw Complexity("SVG local reference graph contains a cycle.");
             }
-            states[id] = 1;
+            states[nodeId] = 1;
             var depth = 0;
-            if (_references.TryGetValue(id, out var targets))
+            if (_children.TryGetValue(nodeId, out var children))
+            {
+                foreach (var childNodeId in children)
+                {
+                    depth = Math.Max(depth, Visit(childNodeId, states, depths));
+                }
+            }
+            if (_references.TryGetValue(nodeId, out var targets))
             {
                 foreach (var target in targets)
                 {
-                    if (!_ids.Contains(target))
+                    if (!_firstIdNodes.TryGetValue(target, out var targetNodeId))
                     {
                         continue;
                     }
-                    depth = Math.Max(depth, checked(Visit(target, states, depths) + 1));
+                    depth = Math.Max(depth, checked(Visit(targetNodeId, states, depths) + 1));
                     if (depth > _options.Svg.MaxReferenceDepth)
                     {
                         throw Complexity("SVG local reference depth exceeds the configured limit.");
                     }
                 }
             }
-            states[id] = 2;
-            depths[id] = depth;
+            states[nodeId] = 2;
+            depths[nodeId] = depth;
             return depth;
         }
 

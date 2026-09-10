@@ -155,11 +155,21 @@ public sealed class ImageLoadingOptionsBuilder
 }
 ```
 
-SVG 配置只调整有界资源预算，不允许应用放开脚本、DTD 或外部资源：
+SVG 配置提供应用级一致性模式和有界资源预算。默认 `Compatible` 接受经过完整安全/复杂度校验的重复 `id`，`Strict` 保持重复
+`id` 即失败的规范校验；两种模式都不允许应用放开脚本、DTD 或外部资源：
 
 ```csharp
+public enum SvgConformanceMode
+{
+    Compatible,
+    Strict
+}
+
 public sealed class SvgImageLoadingOptionsBuilder
 {
+    public SvgConformanceMode ConformanceMode { get; set; } =
+        SvgConformanceMode.Compatible;
+
     public long MaxDocumentBytes { get; set; } = 4L * 1024 * 1024;
     public long MaxXmlCharacters { get; set; } = 8_000_000;
     public int MaxElementCount { get; set; } = 20_000;
@@ -171,6 +181,11 @@ public sealed class SvgImageLoadingOptionsBuilder
     public long MaxEmbeddedImageBytes { get; set; } = 8L * 1024 * 1024;
 }
 ```
+
+`SvgConformanceMode` 只属于 `ImageLoadingOptionsBuilder.Svg`，在 Application loader 构建时验证并冻结。它不属于
+`ImageRequestOptions`，不提供 per-control/per-source/per-request 覆盖，也不接受任意 validator delegate。`Compatible` 与
+`Strict` 的差异仅限[网络 SVG 加载设计](network-svg.md#校验分层与一致性模式)明确列出的可恢复一致性问题；不可关闭的安全边界和
+资源预算在两种模式下完全相同。
 
 `MaxConcurrentDownloads` 只限制 HTTP/HTTPS 下载。Asset、File、Storage、Bytes 和 Stream 使用独立的内部有界读取池，
 因此慢网络请求不会阻塞本地图片，同时大量本地 source 也不会形成无限并发。
@@ -198,6 +213,7 @@ ImageDecodeMode      Auto | Original | Explicit
 ImageRequestPriority Critical | High | Normal | Low | Preload
 ImageLoadOrigin      Borrowed | DecodedMemory | EncodedMemory | Persistent | Network | Local
 ImageSourceValidation NotRequired | Current | Revalidated | Unverified
+SvgConformanceMode   Compatible | Strict
 ```
 
 Loader 的进度是阶段化快照，不以不可靠的百分比冒充确定进度：

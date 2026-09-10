@@ -17,6 +17,12 @@ public enum ImageFileValidationMode
     ContentHash
 }
 
+public enum SvgConformanceMode
+{
+    Compatible,
+    Strict
+}
+
 public enum ImageLoadState
 {
     Idle,

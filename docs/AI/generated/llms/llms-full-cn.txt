@@ -12028,6 +12028,11 @@ Avatar 使用有限面积内的强识别内容表达主体身份。图片是首�
 
 Avatar 不公开 URL、Bitmap 或 loader 属性族，也不允许单个控件替换应用级 loader。
 
+本地或网络 SVG 的一致性模式由 `UseImageLoading(options => options.Svg.ConformanceMode = ...)` 在 Application loader 构建时统一
+选择；默认 `Compatible` 接受通过完整安全/复杂度校验的重复 `id`，`Strict` 将其报告为 `InvalidImageData`。Avatar 不增加 SVG
+专属属性，`RequestOptions`、`Source` 和 `FallbackSource` 也不能覆盖应用级模式。DTD、script、外部资源、危险 CSS 和资源预算在
+两种模式下始终执行同一套拒绝规则。
+
 `AvatarGroup` 的桌面端 API 包括 `Children`、`MaxDisplayCount`、`FoldAvatarFlyoutTriggerType`、
 `FoldInfoAvatarBackground`、`FoldInfoAvatarForeground`、`SizeType`、`Size` 和 `Shape`。Group 只组织子控件，不接管
 每个 Avatar 的 Source、加载状态、结果租约或 Reload。
@@ -12041,7 +12046,7 @@ LLMS 语义区域：
 | `root` | `Avatar` | 归一图片来源、内容优先级、尺寸、形状和加载状态。 | `Source`、`FallbackSource`、`RequestOptions`、`Text`、`Icon`、`SizeType`、`Size`、`Shape` | `AvatarToken`、SharedToken | public |
 | `surface` | `Frame` | 绘制背景、边框和圆角。 | `Shape`、`SizeType`、`Size` | Avatar background、border、size Token | internal-observable |
 | `image` | `ImagePresenter` | 展示当前有效 `IImage`，不自行加载来源。 | `LoadState`、`IsLoaded` | Avatar size/radius Token | internal-observable |
-| `text` | `PART_TextPresenter` | 展示 Text 并应用基于 Gap 的缩放。 | `Text`、`Gap` | Font、size Token | template-stable |
+| `text` | `Viewbox` + `PART_TextPresenter` | 在 Gap 定义的内容区内展示 Text，只在空间不足时等比缩小并保持居中。 | `Text`、`Gap` | Font、size Token | template-stable |
 | `icon` | `IconPresenter` | 在无图片和 Text 时展示 Icon。 | `Icon` | Icon size Token | internal-observable |
 | `group` | `AvatarGroup` | 排列子 Avatar、折叠超出项并管理 Flyout。 | `Children`、`MaxDisplayCount`、`FoldAvatarFlyoutTriggerType` | AvatarGroup spacing/fold Token | public |
 
@@ -12123,10 +12128,12 @@ HTTP 条件重验证、非网络来源 Reload 强制重读、source/decode 两�
 | `Frame` | 背景、边框和圆角 |
 | `IconPresenter` | Icon 内容 |
 | `ImagePresenter` | 已加载 `IImage` |
-| `PART_TextPresenter` | Avalonia 原生 `TextBlock`，负责文字和缩放 transform |
+| `PART_TextPresenter` | Avalonia 原生 `TextBlock`，提供文字的自然排版尺寸 |
+| Text `Viewbox` | 在 Gap 定义的水平内容区内向下缩放并居中文字 |
 
 `PART_TextPresenter` 不依赖 Desktop Controls，保证 `Avatar` 可以由 `AtomUI.Controls` 独立提供。Circle 形状根据最终宽度设置
-圆角；文本宽度超过可用区域时按 `Gap` 计算缩放，不改变布局尺寸。
+圆角；Text `Viewbox` 使用 `Gap` 投影出的左右内边距作为可用区域，并直接消费 TextBlock 的自然排版尺寸。空间不足时只做
+等比缩小，短文本不放大，缩放前后都由模板布局保持水平和垂直居中。
 
 `AvatarGroupTheme.axaml` 位于 `AtomUI.Desktop.Controls/Avatar/Themes`，消费同一个 `AvatarToken`，但只负责 group spacing、
 overlap、折叠头像颜色和桌面 Flyout 视觉。
@@ -12143,9 +12150,11 @@ Avatar Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 - 不进行同步网络或文件 I/O。
 - 不使用固定延迟等待布局；Arrange 和尺寸 bucket 是唯一尺寸就绪信号。
+- 文字适配使用无状态的 Border/Viewbox 布局，不重复测量字形，不持有 template part 事件订阅。
 - 不创建控件私有 `HttpClient`、cache 或 scheduler。
 - Theme、codec 和 loader 通过静态注册保留，不使用反射扫描。
 - Browser 使用统一 loader 的 Browser 能力矩阵；Avatar 不增加平台分支 API。
+- SVG 一致性模式是封闭的应用级 enum；Avatar 不持有 validator delegate，不增加反射或 NativeAOT 动态发现边界。
 - 快速 Source 切换只允许当前 generation 回写，旧结果必须及时释放。
 
 ## 源码索引

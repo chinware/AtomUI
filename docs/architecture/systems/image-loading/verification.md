@@ -24,7 +24,8 @@
 2. embedded credentials、未知 scheme、相对歧义路径和非法 Asset URI 的拒绝。
 3. File 平台 comparer、Storage/Stream 有无 identity/revision 的共享边界，以及 Bytes 的防御性复制与内容身份。
 4. header、Variant、CachePartition、reader/codec/security policy version 和 codec-specific options 对 SourceKey/DecodeKey 的影响；
-   raster decode bucket 改变 key，SVG decode bucket 不改变 key。
+   raster decode bucket 改变 key，SVG decode bucket 不改变 key。`SvgConformanceMode` 在 Application loader 构建时冻结，不是
+   per-request key 维度；persistent 命中仍按当前模式重新验证。
 5. 错误、snapshot、event 和 file metadata 不泄漏 header、partition 或 URI user-info。
 
 ### 调度与两级合并
@@ -72,6 +73,11 @@
 9. DTD/entity、script、`on*`、`foreignObject`、`xml:base`、外部 URI、危险 CSS、递归 SVG data URI 和每项复杂度预算拒绝。
 10. `data:image/png|jpeg|webp` 的 MIME、base64/percent decoding、数量、累计 encoded bytes、像素和 decoded estimate 受限。
 11. encoded memory/file cache 只保存已验证内容；security policy version 变化后重新验证或删除，不把旧结论直接送入 codec。
+12. 默认 `SvgConformanceMode.Compatible` 加载 Gallery `AvatarShowCase/AntDesign.svg` 这类重复 `id` 资源；同字节在 `Strict`
+    下返回 `InvalidImageData`，两种模式对全部安全项和预算边界保持相同拒绝结果。
+13. 重复 id 位于引用目标、引用发起节点、带 id 的嵌套子树、环和深度边界时，验证器按“元素 occurrence node + 权重为 0 的
+    containment edge + 权重为 1 的 reference edge + 原始 id 首声明映射”计算完整引用图；后续同名元素不能被合并或跳过，
+    嵌套 id 也不能切断外层引用依赖或借此绕过复杂度限制。
 
 ## 控件测试
 
@@ -87,8 +93,10 @@
 - Theme loading/error content 不改写 loader 状态，Template 清除不会遗留 controller 订阅。
 
 Avatar 额外断言成功 Source、成功 FallbackSource、Text、Icon 的固定优先级，以及加载中继续显示 Text/Icon；首次 Window Arrange
-即可启动 HTTP raster/SVG，网络 SVG、本地 SVG 和 raster 使用同一个 Source 属性。`AsyncImage` 额外断言 Auto/Original/Explicit、
-Stretch、SVG 尺寸无关复用和 loading/error template。Masonry 的 `AsyncImage` 在 raster/SVG 请求完成前都必须保持 skeleton。
+即可启动 HTTP raster/SVG，网络 SVG、本地 SVG 和 raster 使用同一个 Source 属性。默认 Application `Compatible` 模式下，含重复
+id 的本地 SVG 成功成为 Image；`Strict` 模式下主 Source 以 `InvalidImageData` 失败并继续遵守现有 fallback/最终失败语义。Avatar
+和 `ImageRequestOptions` 均不能覆盖应用模式。`AsyncImage` 额外断言 Auto/Original/Explicit、Stretch、SVG 尺寸无关复用和
+loading/error template。Masonry 的 `AsyncImage` 在 raster/SVG 请求完成前都必须保持 skeleton。
 
 ## Previewer 测试
 
@@ -129,7 +137,8 @@ Stretch、SVG 尺寸无关复用和 loading/error template。Masonry 的 `AsyncI
 
 1. `AtomUI.Controls.Shared/ImageLoading/`、Core owned-service 生命周期、Controls `AsyncImage`/controller/Avatar 和 Desktop
    Previewer 的实现与本文档保持一致。
-2. Avatar、ImagePreviewer、Masonry/Gallery 源码、Themes、tests、ShowCase、API 表和 Control 文档同步到新 API。
+2. Avatar、ImagePreviewer、Masonry/Gallery 源码、Themes、tests、ShowCase、API 表和 Control 文档同步到新 API；SVG validator 的
+   公共模式、底层语义、缓存约束和安全边界同步到本架构目录与 Controls.Shared 模块文档。
 3. 仓库中 `AsyncImageLoader.Avalonia` package/reference/namespace/attached property 为零。
 4. 已删除的旧 public API 在 source、AXAML、Gallery 和 tests 中为零；只允许 release breaking-change 文档和历史
    changelog 提到旧名称。

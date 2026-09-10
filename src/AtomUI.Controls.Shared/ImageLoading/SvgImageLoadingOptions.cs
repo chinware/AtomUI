@@ -1,6 +1,7 @@
 namespace AtomUI.Controls;
 
 internal sealed record SvgImageLoadingOptions(
+    SvgConformanceMode ConformanceMode,
     long MaxDocumentBytes,
     long MaxXmlCharacters,
     int MaxElementCount,

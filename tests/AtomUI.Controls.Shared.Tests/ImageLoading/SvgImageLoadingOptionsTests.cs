@@ -11,6 +11,7 @@ public class SvgImageLoadingOptionsTests
     {
         var options = ImageLoadingTestSupport.CreateOptions();
 
+        options.Svg.ConformanceMode.ShouldBe(SvgConformanceMode.Compatible);
         options.Svg.MaxDocumentBytes.ShouldBe(4L * 1024 * 1024);
         options.Svg.MaxXmlCharacters.ShouldBe(8_000_000);
         options.Svg.MaxElementCount.ShouldBe(20_000);
@@ -20,6 +21,26 @@ public class SvgImageLoadingOptionsTests
         options.Svg.MaxPathDataCharacters.ShouldBe(2_000_000);
         options.Svg.MaxEmbeddedImageCount.ShouldBe(16);
         options.Svg.MaxEmbeddedImageBytes.ShouldBe(8L * 1024 * 1024);
+    }
+
+    [Fact]
+    public void Svg_Conformance_Mode_Is_Frozen_When_Image_Options_Are_Built()
+    {
+        var builder = new ImageLoadingOptionsBuilder();
+        builder.Svg.ConformanceMode = SvgConformanceMode.Strict;
+
+        var options = builder.Build("svg-conformance-options-test");
+        builder.Svg.ConformanceMode = SvgConformanceMode.Compatible;
+
+        options.Svg.ConformanceMode.ShouldBe(SvgConformanceMode.Strict);
+    }
+
+    [Fact]
+    public void Svg_Conformance_Mode_Must_Be_Defined()
+    {
+        Should.Throw<InvalidOperationException>(() =>
+            ImageLoadingTestSupport.CreateOptions(builder =>
+                builder.Svg.ConformanceMode = (SvgConformanceMode)int.MaxValue));
     }
 
     [Fact]

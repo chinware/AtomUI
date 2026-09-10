@@ -2,6 +2,17 @@
 
 本文档记录 Avatar 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-09-10
+
+- Behavior
+  - Make the template layout the single owner of text measurement, downscaling and centering for short, boundary-width and long labels.
+- Theme
+  - Replace the manual TextBlock resize subscription and scale/translate transform with a Gap-constrained Viewbox while preserving `PART_TextPresenter`.
+- Docs
+  - Document that Avatar inherits the Application-scoped SVG conformance mode instead of exposing a per-control or per-request override.
+  - Define the default `Compatible` behavior for safe local SVG resources with duplicate ids and the `Strict` `InvalidImageData` behavior.
+  - Keep SVG security checks, resource budgets, reference-graph validation and renderer handoff owned by the shared image-loading pipeline.
+
 ## 2026-09-07
 
 - Breaking API

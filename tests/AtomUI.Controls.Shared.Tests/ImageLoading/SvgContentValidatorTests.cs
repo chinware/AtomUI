@@ -48,6 +48,124 @@ public class SvgContentValidatorTests
             .Format.ShouldBe(ImageContentFormat.Svg);
     }
 
+    [Fact]
+    public void Compatible_Mode_Accepts_Duplicate_Ids()
+    {
+        var probe = ValidateSvg("""
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <path id="shape" d="M0 0"/>
+              <path id="shape" d="M1 1"/>
+            </svg>
+            """);
+
+        probe.Format.ShouldBe(ImageContentFormat.Svg);
+    }
+
+    [Fact]
+    public void Strict_Mode_Rejects_Duplicate_Ids()
+    {
+        AssertSvgFailure(
+            ImageLoadErrorCode.InvalidImageData,
+            """
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <path id="shape" d="M0 0"/>
+              <path id="shape" d="M1 1"/>
+            </svg>
+            """,
+            configure: builder => builder.Svg.ConformanceMode = SvgConformanceMode.Strict);
+    }
+
+    [Fact]
+    public void Strict_Duplicate_Id_Does_Not_Mask_Unsafe_Content()
+    {
+        AssertSvgFailure(
+            ImageLoadErrorCode.UnsafeVectorContent,
+            """
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <g id="same"/>
+              <g id="same" onclick="run()"/>
+            </svg>
+            """,
+            configure: builder => builder.Svg.ConformanceMode = SvgConformanceMode.Strict);
+    }
+
+    [Fact]
+    public void Strict_Duplicate_Id_Does_Not_Mask_Reference_Complexity()
+    {
+        AssertSvgFailure(
+            ImageLoadErrorCode.VectorComplexityLimitExceeded,
+            """
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <g id="same"><use href="#same"/></g>
+              <g id="same"/>
+            </svg>
+            """,
+            configure: builder => builder.Svg.ConformanceMode = SvgConformanceMode.Strict);
+    }
+
+    [Theory]
+    [InlineData(SvgConformanceMode.Compatible)]
+    [InlineData(SvgConformanceMode.Strict)]
+    public void Duplicate_Id_Nested_References_Cannot_Bypass_Reference_Depth(SvgConformanceMode mode)
+    {
+        AssertSvgFailure(
+            ImageLoadErrorCode.VectorComplexityLimitExceeded,
+            """
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <g id="same"><g id="inner"><use href="#leaf"/></g></g>
+              <g id="same"><use href="#same"/></g>
+              <path id="leaf" d="M0 0"/>
+            </svg>
+            """,
+            configure: builder =>
+            {
+                builder.Svg.ConformanceMode = mode;
+                builder.Svg.MaxReferenceDepth = 1;
+            });
+    }
+
+    [Fact]
+    public void Compatible_Mode_Keeps_Duplicate_Id_Occurrences_As_Separate_Reference_Nodes()
+    {
+        var probe = ValidateSvg("""
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <g id="same"><use href="#leaf"/></g>
+              <g id="same"><use href="#same"/></g>
+              <path id="leaf" d="M0 0"/>
+            </svg>
+            """);
+
+        probe.SvgMetadata.ShouldNotBeNull();
+        probe.SvgMetadata.MaxReferenceDepth.ShouldBe(2);
+    }
+
+    [Fact]
+    public void Compatible_Mode_Counts_References_From_Every_Duplicate_Id_Occurrence()
+    {
+        AssertSvgFailure(
+            ImageLoadErrorCode.VectorComplexityLimitExceeded,
+            """
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <g id="same"/>
+              <g id="same"><use href="#middle"/></g>
+              <g id="middle"><use href="#leaf"/></g>
+              <path id="leaf" d="M0 0"/>
+            </svg>
+            """,
+            configure: builder => builder.Svg.MaxReferenceDepth = 1);
+    }
+
+    [Theory]
+    [InlineData(SvgConformanceMode.Compatible)]
+    [InlineData(SvgConformanceMode.Strict)]
+    public void Conformance_Mode_Does_Not_Change_Security_Rejection(SvgConformanceMode mode)
+    {
+        AssertSvgFailure(
+            ImageLoadErrorCode.UnsafeVectorContent,
+            "<svg xmlns='http://www.w3.org/2000/svg'><script>throw 1</script></svg>",
+            configure: builder => builder.Svg.ConformanceMode = mode);
+    }
+
     [Theory]
     [InlineData("<!DOCTYPE svg [<!ENTITY xxe SYSTEM 'file:///etc/passwd'>]><svg xmlns='http://www.w3.org/2000/svg'>&xxe;</svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><script>throw 1</script></svg>")]

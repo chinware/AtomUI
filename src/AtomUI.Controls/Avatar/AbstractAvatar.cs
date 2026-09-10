@@ -1,12 +1,10 @@
 using System.Diagnostics;
-using AtomUI.Media;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Media;
-using Avalonia.Media.Transformation;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
 
@@ -76,8 +74,8 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl, II
     internal static readonly StyledProperty<double> EffectiveIconSizeProperty =
         AvaloniaProperty.Register<AbstractAvatar, double>(nameof(EffectiveIconSize));
 
-    internal static readonly StyledProperty<ITransform?> TextRenderTransformProperty =
-        AvaloniaProperty.Register<AbstractAvatar, ITransform?>(nameof(TextRenderTransform));
+    internal static readonly StyledProperty<Thickness> TextPaddingProperty =
+        AvaloniaProperty.Register<AbstractAvatar, Thickness>(nameof(TextPadding));
 
     internal static readonly DirectProperty<AbstractAvatar, AvatarContentType> ContentTypeProperty =
         AvaloniaProperty.RegisterDirect<AbstractAvatar, AvatarContentType>(
@@ -90,7 +88,6 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl, II
 
     private readonly ImageLoadController _controller;
     private CustomizableSizeType? _originSizeType;
-    private TextBlock? _textPresenter;
     private AvatarContentType _contentType = AvatarContentType.Icon;
     private IImage? _loadedImage;
     private ImageLoadState _loadState;
@@ -103,13 +100,14 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl, II
 
     static AbstractAvatar()
     {
-        AffectsMeasure<AbstractAvatar>(SizeTypeProperty, TextProperty);
+        AffectsMeasure<AbstractAvatar>(SizeTypeProperty, TextProperty, GapProperty);
         AffectsRender<AbstractAvatar>(ShapeProperty, IconProperty, SourceProperty, GapProperty);
     }
 
     protected AbstractAvatar()
     {
         _controller = new ImageLoadController(this);
+        ConfigureTextPadding();
     }
 
     public double Gap
@@ -195,10 +193,10 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl, II
         set => SetValue(EffectiveIconSizeProperty, value);
     }
 
-    internal ITransform? TextRenderTransform
+    internal Thickness TextPadding
     {
-        get => GetValue(TextRenderTransformProperty);
-        set => SetValue(TextRenderTransformProperty, value);
+        get => GetValue(TextPaddingProperty);
+        set => SetValue(TextPaddingProperty, value);
     }
 
     internal AvatarContentType ContentType
@@ -239,9 +237,9 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl, II
         {
             ConfigureContentType();
         }
-        if (change.Property == ContentTypeProperty || change.Property == GapProperty)
+        if (change.Property == GapProperty)
         {
-            ConfigureTextRenderTransform();
+            ConfigureTextPadding();
         }
         else if (change.Property == ShapeProperty)
         {
@@ -252,15 +250,6 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl, II
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        if (_textPresenter is not null)
-        {
-            _textPresenter.SizeChanged -= HandleTextPresenterSizeChanged;
-        }
-        _textPresenter = e.NameScope.Find<TextBlock>("PART_TextPresenter");
-        if (_textPresenter is not null)
-        {
-            _textPresenter.SizeChanged += HandleTextPresenterSizeChanged;
-        }
         ConfigureShape();
         ConfigureIconSize();
         ConfigureContentType();
@@ -373,29 +362,8 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl, II
                 : AvatarContentType.Icon;
     }
 
-    private void HandleTextPresenterSizeChanged(object? sender, SizeChangedEventArgs e)
-    {
-        ConfigureTextRenderTransform();
-    }
-
-    private void ConfigureTextRenderTransform()
-    {
-        if (ContentType != AvatarContentType.Text || _textPresenter is null || Gap * 2 >= Width)
-        {
-            TextRenderTransform = null;
-            return;
-        }
-        var textWidth = TextUtils.CalculateTextSize(Text ?? string.Empty, FontSize, FontFamily).Width;
-        var scale = Math.Min((Width - Gap * 2) / textWidth, 1.0);
-        var builder = new TransformOperations.Builder(2);
-        builder.AppendScale(scale, scale);
-        if (scale < 1.0)
-        {
-            var offsetX = scale * (textWidth - Width) / 2;
-            builder.AppendTranslate(-offsetX, 0);
-        }
-        TextRenderTransform = builder.Build();
-    }
+    private void ConfigureTextPadding() =>
+        SetValue(TextPaddingProperty, new Thickness(Gap, 0), BindingPriority.Template);
 
     private void ConfigureShape()
     {

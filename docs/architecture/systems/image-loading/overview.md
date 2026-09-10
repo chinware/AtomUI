@@ -16,8 +16,8 @@ AtomUI 统一图片加载系统负责把网络、本地文件、Avalonia Asset�
 - 缓存必须同时受字节数和条目数约束，不允许无限持有可释放 Bitmap。
 - 网络内容在解码前执行协议、按平台可观测能力的重定向、长度、MIME、Magic Bytes、尺寸、像素数和格式校验；Browser
   不虚构不可观测的中间跳审计。
-- 网络和本地 SVG 通过显式注册的 `SvgImageCodec` 进入统一 `Source` API；主文档下载仍只走统一 transport，DTD、script、
-  外部资源和超预算内容在 codec 前拒绝。
+- 网络和本地 SVG 通过显式注册的 `SvgImageCodec` 进入统一 `Source` API；主文档下载仍只走统一 transport。不可关闭的安全边界和
+  资源预算始终在 codec 前执行，应用级 `SvgConformanceMode` 只决定安全子集内的可恢复规范问题采用兼容或严格校验。
 - 所有 codec、source reader 和应用服务均显式注册，不使用程序集扫描或反射发现，保持 Browser、trimming 和
   NativeAOT 可预测。
 - 控件使用 generation 和 per-control cancellation 防止旧请求覆盖新 Source；不使用任意延迟规避滚动加载。
@@ -42,7 +42,7 @@ flowchart LR
 | 模块 | 拥有职责 | 明确不拥有 |
 | --- | --- | --- |
 | `AtomUI.Core` | `IAtomUIOwnedService` 生命周期、Builder 收集、Application 挂载和逆序销毁 | 图片来源、HTTP、缓存、解码和控件状态 |
-| `AtomUI.Controls.Shared` | `IImageLoader`、`ImageLoader`、`ImageLoaderStore`、来源模型、请求调度、在途合并、缓存、HTTP、本地读取、raster/SVG 内容安全校验、raster codec | ControlTheme、Avatar fallback、Previewer 当前项策略、SVG Avalonia 渲染桥接 |
+| `AtomUI.Controls.Shared` | `IImageLoader`、`ImageLoader`、`ImageLoaderStore`、来源模型、请求调度、在途合并、缓存、HTTP、本地读取、raster 校验、SVG 安全/资源/一致性校验、raster codec | ControlTheme、Avatar fallback、Previewer 当前项策略、SVG Avalonia 渲染桥接 |
 | `AtomUI.Controls` | `AsyncImage`、`IImageLoadControl`、`ImageLoadController`、Avatar 来源与 fallback 状态、`SvgImageCodec` 与 Avalonia SVG owned wrapper | Previewer 导航、窗口和 overlay、第二条 SVG 下载通道 |
 | `AtomUI.Desktop.Controls` | Previewer item 模型、封面/当前项/邻项预加载策略、桌面预览宿主 | 独立网络栈、独立缓存和独立并发调度器 |
 | `AtomUIGallery` | 使用 `AsyncImage` 展示网络图片并绑定公开加载状态 | 第三方图片 loader 或 Gallery 私有下载逻辑 |
@@ -59,6 +59,7 @@ flowchart LR
 | lease | 控件或直接调用方对解码图片的活动持有；`ImageLoadResult.Dispose()` 释放 |
 | fallback | 主 Source 失败后由控件发起的至多一次备用 Source 请求 |
 | restricted vector | 通过 AtomUI XML/CSS/资源预算验证并由显式 SVG codec 解析的静态 SVG；无论来源都不能触发外部 I/O |
+| SVG conformance mode | Application loader 冻结的 `Compatible`/`Strict` 一致性策略；只处理安全边界内明确列出的可恢复规范问题，不属于单次请求 |
 | cache partition | 把认证用户、租户或业务安全域隔离开的缓存身份组成部分 |
 
 ## 已完成的统一边界
@@ -89,7 +90,7 @@ flowchart LR
 | [控件 API](control-apis.md) | AsyncImage、Avatar、ImagePreviewItem、ImagePreviewer 与无兼容删除面 |
 | [管线、并发与生命周期](pipeline-and-lifecycle.md) | 目录、owned service、两级 in-flight、调度、取消、generation 和租约 |
 | [缓存、HTTP 与内容安全](caching-and-security.md) | memory/file cache、HTTP 重验证、认证分区、重定向和不可信内容限制 |
-| [网络 SVG 加载](network-svg.md) | SVG 依赖基线、静态安全子集、XML/CSS 验证、矢量缓存、线程和控件集成 |
+| [网络 SVG 加载](network-svg.md) | SVG 依赖基线、安全/资源/一致性分层、重复 id 引用语义、矢量缓存、线程和控件集成 |
 | [平台、性能与 AOT 边界](platforms-and-aot.md) | Desktop/Browser 能力、codec、physical-pixel decode、线程与静态注册 |
 | [验证与完成门禁](verification.md) | 单元/集成/平台/AOT/泄漏测试和无兼容迁移验收 |
 

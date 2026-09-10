@@ -52,6 +52,11 @@ encoded entry 的 byte owner 只属于 cache 或当前 pipeline。source snapsho
 memory encoded entry 同样记录安全策略版本；策略版本变化时必须重新验证完全相同的不可变字节，重新验证失败即移除，不能依赖
 旧验证结论。
 
+SVG `ConformanceMode` 随 Application loader 一次性冻结，同一 cache 实例不会混用模式，所以它不是 per-request key 维度。
+persistent body 仍须经过当前 loader 的完整内容验证后才能提升到 memory 或进入 codec；历史 probe/metadata 不能绕过当前一致性模式。
+若未来允许同一 loader 按请求切换模式，策略身份必须同时进入 source in-flight、验证 stamp 和 decoded key，而不是只修改 cache
+lookup 的某一层。
+
 ## 缓存读取与存储策略
 
 读取策略和存储位置是两个正交维度：
@@ -149,10 +154,15 @@ container 并忽略 `Set-Cookie`；Browser transport 默认使用 Fetch `credent
 `ContentTypeMismatch`。SVG 实际内容允许 `image/svg+xml`、`application/xml`、`text/xml`、`application/octet-stream` 或缺失
 MIME；`text/html`、`application/xhtml+xml`、非 SVG XML 和 HTML/XML/SVG polyglot 始终拒绝。
 
-网络、File、Storage、Bytes、Stream 和 Asset SVG 使用同一受限静态子集。验证器拒绝 DTD/entity、script、任意 `on*`、
-`foreignObject`、`xml:base`、外部 image/use/filter/paint/stylesheet/font URI、危险 CSS 和递归 `data:image/svg+xml`；只允许
-同文档 `#id` 引用、内联 CSS、内联 SVG font 和预算内的 `data:image/png|jpeg|webp`。Asset 来源同样不能触发 renderer 隐式 I/O。
-完整规则和错误映射见[网络 SVG 加载设计](network-svg.md)。
+网络、File、Storage、Bytes、Stream 和 Asset SVG 使用同一受限静态子集。SVG 校验明确分为不可关闭的安全边界、应用级有界资源
+预算和格式一致性三层。验证器始终拒绝 DTD/entity、script、任意 `on*`、`foreignObject`、`xml:base`、外部
+image/use/filter/paint/stylesheet/font URI、危险 CSS 和递归 `data:image/svg+xml`；只允许同文档 `#id` 引用、内联 CSS、内联
+SVG font 和预算内的 `data:image/png|jpeg|webp`。Asset 来源同样不能触发 renderer 隐式 I/O。
+
+格式一致性由 Application loader 构建时冻结的 `SvgImageLoadingOptionsBuilder.ConformanceMode` 决定：默认 `Compatible` 允许重复
+`id`，`Strict` 将其映射为 `InvalidImageData`。兼容模式不重写或清洗字节，也不降低引用图和复杂度检查；两种模式对所有安全项和
+资源预算给出相同结果。模式不进入 `ImageRequestOptions`，不存在 per-request/per-control 绕过或任意 validator delegate。完整规则、
+重复 id 引用语义和错误映射见[网络 SVG 加载设计](network-svg.md)。
 
 ## 资源上限
 
@@ -172,8 +182,9 @@ MIME；`text/html`、`application/xhtml+xml`、非 SVG XML 和 HTML/XML/SVG poly
 内容读入内存。压缩传输的限制以解压后的实际响应字节为准。
 
 SVG 主文档还受 `ImageLoadingOptionsBuilder.Svg` 的文档字符、元素、属性、深度、path 字符、引用深度、data image 数量和累计
-字节预算约束；主文档字节上限取 `MaxResponseBytes` 与 `Svg.MaxDocumentBytes` 的较小值。配置只能调整资源预算，不能允许脚本、
-DTD 或外部资源。嵌入 raster 继续受本表的宽高、像素和 decoded-byte 上限约束。
+字节预算约束；主文档字节上限取 `MaxResponseBytes` 与 `Svg.MaxDocumentBytes` 的较小值。配置可以选择 `Compatible`/`Strict`
+一致性模式并调整有界资源预算，但不能允许脚本、DTD、外部资源或关闭复杂度检查。嵌入 raster 继续受本表的宽高、像素和
+decoded-byte 上限约束。
 
 ## 持久缓存
 

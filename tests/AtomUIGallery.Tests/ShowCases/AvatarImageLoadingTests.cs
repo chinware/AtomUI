@@ -17,6 +17,7 @@ public class AvatarImageLoadingTests
     }
 
     [Theory]
+    [InlineData("avares://AtomUIGallery/Assets/AvatarShowCase/AntDesign.svg")]
     [InlineData("avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar1.svg")]
     [InlineData("avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar4.png")]
     public void Gallery_Avatar_Assets_Load_Through_The_Shared_Pipeline(string source)

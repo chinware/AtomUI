@@ -49,6 +49,7 @@ src/AtomUI.Desktop.Controls/Avatar/
 Source / FallbackSource / RequestOptions / Bounds / render scaling
   -> ImageLoadController generation
   -> Application.GetImageLoader().LoadAsync(...)
+  -> ImageContentValidator / SvgContentValidator (Application SVG conformance mode)
   -> ImageLoadResult lease
   -> UI dispatcher generation check
   -> LoadedImage + LoadState/Error/Progress
@@ -59,6 +60,9 @@ Source / FallbackSource / RequestOptions / Bounds / render scaling
 `AbstractAvatar` 实现 `IImageLoadControllerHost`。它只向 controller 暴露当前 Visual、Normal priority、attach 状态、16 px
 量化后的物理解码尺寸和状态提交回调，不直接访问 transport 或 cache。
 
+`SvgContentValidator` 位于 Shared loader 管线中，在 codec 和 Avatar 状态提交之前执行。Application 构建时冻结默认
+`Compatible`/可选 `Strict` 模式；Avatar 不把模式写入 `ImageRequestOptions`，也不根据来源类型选择另一条 SVG 校验路径。
+
 Source、FallbackSource 或 RequestOptions 变化调用 `SourceConfigurationChanged()`。Arrange 完成后调用 `RefreshSize()`；只有有效
 Bounds 产生新的尺寸 bucket 时才需要新请求。属性快照和状态提交均在 UI 线程边界完成。
 
@@ -68,10 +72,14 @@ Bounds 产生新的尺寸 bucket 时才需要新请求。属性快照和状态�
 
 ```text
 Avatar
-  -> Border#Frame (internal-observable)
-     -> ContentPresenter#IconPresenter (internal-observable)
-     -> Image#ImagePresenter (internal-observable)
-     -> TextBlock#PART_TextPresenter (template-stable)
+  -> Panel#RootLayout
+     -> PixelAlignedBorder#Frame (internal-observable)
+     -> IconPresenter#IconPresenter (internal-observable)
+     -> Border
+        -> Image#ImagePresenter (internal-observable)
+     -> Border
+        -> Viewbox (internal-observable)
+           -> TextBlock#PART_TextPresenter (template-stable)
 
 AvatarGroup
   -> child Avatar collection (public)
@@ -84,7 +92,8 @@ AvatarGroup
 | --- | --- | --- | --- | --- | --- | --- |
 | `Avatar` | public control | `AvatarTheme.axaml` | visual tree | 单头像全部 API | public | 用户可直接使用 |
 | `ImageLoadController` | internal coordinator | C# | `AbstractAvatar` | Source、fallback、状态、Reload | internal-observable | 只用于理解统一状态机 |
-| `PART_TextPresenter` | `TextBlock` | `AvatarTheme.axaml` | template | Text、Gap、Size | template-stable | 改名需同步实现、主题和文档 |
+| Text `Viewbox` | layout presenter | `AvatarTheme.axaml` | visual tree | Text、Gap、Size、Font | internal-observable | 负责自然尺寸测量、向下缩放和居中，不作为独立 API 暴露 |
+| `PART_TextPresenter` | `TextBlock` | `AvatarTheme.axaml` | template | Text、Font | template-stable | 提供自然排版尺寸；改名需同步实现、主题和文档 |
 | `AvatarGroup` | public control | `AvatarGroupTheme.axaml` | visual tree | Children、折叠和尺寸投影 | public | 用户可直接使用 |
 | fold Avatar/Flyout | internal visual | C# + Theme | `AvatarGroup` | MaxDisplayCount、trigger、fold colors | internal-observable | 不作为独立 API 暴露 |
 
@@ -118,12 +127,12 @@ AvatarGroup
 | --- | --- |
 | controller attach 与 loader waiter | visual detach 时 controller detach/cancel |
 | 当前 `ImageLoadResult` lease | Source 清空、替换终态、detach 或 dispose |
-| `PART_TextPresenter.SizeChanged` | template reapply 前解除 |
 | AvatarGroup motion binding | group detach 时 dispose |
 | AvatarGroup fold Flyout/临时视觉 | rebuild、detach 或 owner 释放时清理 |
 
-Reattach 时 controller 使用当前 Source 和当前尺寸重新请求。模板重套用必须先解除旧 TextBlock 事件，再连接新
-`PART_TextPresenter`。AvatarGroup 只管理组合视觉，不取消或复用子 Avatar 的图片请求。
+Reattach 时 controller 使用当前 Source 和当前尺寸重新请求。文字布局不订阅 template part 事件；模板重套用后由 Border、Viewbox
+和 TextBlock 的标准 measure/arrange 流程重新建立可用宽度、自然尺寸与缩放关系。AvatarGroup 只管理组合视觉，不取消或复用子
+Avatar 的图片请求。
 
 ## 7. 交互与事件处理
 
@@ -136,8 +145,10 @@ generation 和 attach 状态，再提交结果。成功时先保存 lease、状�
 `AvatarTheme.axaml` 通过 internal `ContentType` 选择 Image、Text 或 Icon presenter。唯一稳定 template part 是
 `PART_TextPresenter: Avalonia.Controls.TextBlock`。
 
-模板重套用时先解除旧 `SizeChanged` 订阅，再取得并订阅新 TextBlock。文本缩放输入为最终控件宽度、`Gap`、FontSize 和
-FontFamily；缩放上限为 1，不放大短文本。`Gap * 2 >= Width` 或非 Text 状态时清除 transform。
+`AbstractAvatar` 只把 `Gap` 投影为模板内部的水平 Text padding。Border 用该 padding 定义文字可用区域，Viewbox 以
+`PART_TextPresenter` 的自然排版尺寸为输入并使用 `StretchDirection=DownOnly`：自然宽度不超过可用宽度时保持原尺寸，超过时
+等比缩小到可用区域。缩放和居中由同一个模板布局坐标系负责，不单独调用文字测量工具，也不叠加横向补偿 transform；Text、
+Font、Gap 或控件尺寸变化通过 Avalonia measure/arrange 自动重新计算。
 
 `Size` 非 `NaN` 时保存原 SizeType 并切换到 Custom；恢复 `NaN` 后回到原 SizeType。Circle 形状把最终宽度的一半写入模板
 CornerRadius。图片请求尺寸来自 Bounds 与 TopLevel render scaling，而不是 Token 名称或逻辑像素直接值。
@@ -146,9 +157,11 @@ CornerRadius。图片请求尺寸来自 Bounds 与 TopLevel render scaling，而
 
 - 不进行同步网络或文件 I/O。
 - 不使用固定延迟等待布局；Arrange 和尺寸 bucket 是唯一尺寸就绪信号。
+- 文字适配使用无状态的 Border/Viewbox 布局，不重复测量字形，不持有 template part 事件订阅。
 - 不创建控件私有 `HttpClient`、cache 或 scheduler。
 - Theme、codec 和 loader 通过静态注册保留，不使用反射扫描。
 - Browser 使用统一 loader 的 Browser 能力矩阵；Avatar 不增加平台分支 API。
+- SVG 一致性模式是封闭的应用级 enum；Avatar 不持有 validator delegate，不增加反射或 NativeAOT 动态发现边界。
 - 快速 Source 切换只允许当前 generation 回写，旧结果必须及时释放。
 
 ## 10. 维护不变量
@@ -157,7 +170,9 @@ CornerRadius。图片请求尺寸来自 Bounds 与 TopLevel render scaling，而
 - 内容优先级始终为 Image、Text、Icon；Loading 和取消不清空可用降级内容。
 - 每个已提交 cache image 必须由一个有效 lease 支撑；borrowed image 永不由控件销毁。
 - Source、options、尺寸或 attach generation 变化后，旧结果只能释放，不能回写状态。
+- `Compatible`/`Strict` 差异只能来自 Shared `SvgContentValidator`；Avatar 不按 Asset/File/HTTP 或单次请求改写该结论。
 - Template reapply、detach、group rebuild 和 Application dispose 都有明确的取消、解绑和释放路径。
+- 文字的自然尺寸、可用宽度、缩放和居中必须由同一个模板布局路径完成；不得恢复独立文字测量或补偿平移。
 - 单头像和 Token 只存在于 `AtomUI.Controls`，Desktop 包只拥有 AvatarGroup 组合能力。
 
 ## 11. 测试与验证
@@ -169,4 +184,7 @@ CornerRadius。图片请求尺寸来自 Bounds 与 TopLevel render scaling，而
 - 主失败/fallback 成功、最终失败、事件顺序和 progress generation。
 - owned cache image 与 borrowed image 的释放责任。
 - AvatarTheme 独立于 Desktop 类型，AvatarGroup 仍能消费同一 Token。
+- 短文本不放大；临界宽度与长文本缩小后保持水平居中，宽度不超过 `Width - 2 * Gap`；运行时 Gap 变化重新布局。
 - Gallery 示例只使用 `Source`/`ImageSource`。
+- 默认 Application `Compatible` 模式加载含重复 id 的本地 SVG；`Strict` 下同一来源报告 `InvalidImageData`，并继续验证
+  FallbackSource、`ImageFailed`、伪类和 generation 语义。两种模式对不安全或超预算 SVG 的结果完全相同。
