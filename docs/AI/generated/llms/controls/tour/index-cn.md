@@ -80,7 +80,7 @@ Tour 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 
 ### 位置
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tour/Views/TourShowCase.axaml:203`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tour/Views/TourShowCase.axaml:209`
 
 Gallery key：`ExamplesContent` / item `2`
 

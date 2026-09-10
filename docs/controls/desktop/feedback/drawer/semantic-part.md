@@ -6,21 +6,21 @@
 
 Drawer 的语义 owner 是 `AtomUI.Desktop.Controls.Drawer` 本身（无模板的零尺寸标记控件）。全部非 root 部件位于运行时创建的 `DrawerContainer`（注入 `ScopeAwareAdornerLayer`，在 owner 可视子树之外、同一 TopLevel 之内），因此统一声明 `CrossVisualRoot=true` + `RuntimeCreated=true`；marker 静态声明在两个内部容器主题上（`DrawerContainerTheme.axaml`、`DrawerInfoContainerTheme.axaml`），运行时无需代码注入。
 
-与上游 antd Drawer Semantic DOM（v6 `_semantic.tsx`，10 部件）的映射：
+与上游 Drawer 的语义 DOM（`_semantic.tsx`，10 个槽位）的映射：
 
-| antd 部件 | AtomUI 部件 | 说明 |
+| 上游 Drawer 槽位 | AtomUI 部件 | 说明 |
 | --- | --- | --- |
-| `root` | `root`（隐式，owner 契约） | antd 的 root 是 fixed 定位容器；AtomUI 遵循系统契约 root=owner 控件，antd root 对应内部 `DrawerContainer` 基础设施，不作为部件暴露。内联语义预览中 owner 拉伸铺满舞台，root 高亮即整个内联容器，视觉语义对齐上游。 |
+| `root` | `root`（隐式，owner 契约） | 上游 root 是 fixed 定位容器；AtomUI 遵循系统契约 root=owner 控件，上游 root 对应内部 `DrawerContainer` 基础设施，不作为部件暴露。内联语义预览中 owner 拉伸铺满舞台，root 高亮即整个内联容器，视觉语义对齐上游。 |
 | `mask` | `mask` | 一一对应；`IsShowMask=false` 时不呈现（Optional）。 |
-| `section` | `section` | antd v6 由 `content` 改名而来；AtomUI 由 `DrawerInfoContainer` 模板中的 `Frame` Border 承载（背景/阴影层）。 |
+| `section` | `section` | 上游 v6 由 `content` 改名而来；AtomUI 由 `DrawerInfoContainer` 模板中的 `Frame` Border 承载（背景/阴影层）。 |
 | `header` | `header` | 一一对应（`InfoHeader` Grid）。 |
 | `title` | `title` | 一一对应（`HeaderText`）。 |
 | `extra` | `extra` | 一一对应（`ExtraContentPresenter`）。 |
 | `body` | `body` | 一一对应（`InfoContainer` presenter，`ContentPadding` 落点）。 |
 | `footer` | `footer` | 一一对应（`InfoFooter` presenter，仅设置 Footer 时可见）。 |
 | `close` | `close` | 一一对应（`PART_CloseButton` IconButton）。 |
-| `dragger` | 不暴露 | antd v6 的 resizable 拖拽手柄；AtomUI Drawer 暂无 resizable 能力，待能力落地后按上游补齐。 |
-| `wrapper` | 不暴露 | antd 动效包装容器，上游语义预览清单同样不包含它；对应 AtomUI 的 `PART_InfoContainerMotionActor` 动效基础设施。 |
+| `dragger` | 不暴露 | 上游 v6 的 resizable 拖拽手柄；AtomUI Drawer 暂无 resizable 能力，待能力落地后按上游补齐。 |
+| `wrapper` | 不暴露 | 上游动效包装容器，其语义预览清单同样不包含它；对应 AtomUI 的 `PART_InfoContainerMotionActor` 动效基础设施。 |
 
 部件明细：
 
@@ -158,7 +158,7 @@ Drawer 的语义 owner 是 `AtomUI.Desktop.Controls.Drawer` 本身（无模板�
 - 部件仅在 `IsOpen=true` 且 `DrawerContainer` 挂到 `ScopeAwareAdornerLayer` 时物化；关闭后容器脱离 layer，所有部件目标消失。
 - 容器挂层时通过 `ISetLogicalParent.SetParent(drawer)` 挂到 owner 逻辑树下（先于 `layer.Children.Add`，脱离时置空），owner 嵌套的生成 Semantic Style 因此可达；同时按 ImagePreviewer 先例显式中继 `ThemeVariantScope.ActualThemeVariant`。
 - `Drawer : ISemanticPartCrossRootProvider` 在容器挂层/脱离/释放时触发 `CrossRootsChanged`，`GetCrossRoots()` 返回存活容器；Gallery 语义预览据此自动收集跨根，无需页面 code-behind 注册 `AdditionalRoots`（区别于 DropdownButton 的 Popup 根注册模式）。
-- `IsPinnedOpen=true` 时遮罩点击与关闭按钮不再把 `IsOpen` 置 false（对齐 antd 语义演示的受控常开）；外部代码直接设置 `IsOpen` 仍正常关闭。
+- `IsPinnedOpen=true` 时遮罩点击与关闭按钮不再把 `IsOpen` 置 false（对齐上游语义演示的受控常开）；外部代码直接设置 `IsOpen` 仍正常关闭。
 
 ## 3. 数量语义
 
@@ -195,7 +195,7 @@ Drawer 的语义 owner 是 `AtomUI.Desktop.Controls.Drawer` 本身（无模板�
 
 ## 5. 定制边界
 
-以下模板节点**不属于**语义部件，不承载稳定定制契约：`PART_RootClip`（宿主圆角裁剪）、`RootLayout`（两个容器各自的布局 Panel）、`InfoLayout`（行布局 Grid）、两条 `Separator`（分割线，随 header/footer 存在性显示）、`PART_InfoContainerMotionActor`（动效宿主）。antd 的 `wrapper`/`dragger` 不暴露（见 §1 映射表）。
+以下模板节点**不属于**语义部件，不承载稳定定制契约：`PART_RootClip`（宿主圆角裁剪）、`RootLayout`（两个容器各自的布局 Panel）、`InfoLayout`（行布局 Grid）、两条 `Separator`（分割线，随 header/footer 存在性显示）、`PART_InfoContainerMotionActor`（动效宿主）。上游的 `wrapper`/`dragger` 不暴露（见 §1 映射表）。
 
 ## 6. 兼容性与验证
 
@@ -203,7 +203,7 @@ Drawer 的语义 owner 是 `AtomUI.Desktop.Controls.Drawer` 本身（无模板�
 
 与上游差异（设计决定，非缺陷）：
 
-- `root` 指向 owner 控件（系统级契约），antd root（fixed 容器）对应内部 `DrawerContainer`；内联语义预览通过让 owner 铺满舞台保持视觉等价。
+- `root` 指向 owner 控件（系统级契约），上游 root（fixed 容器）对应内部 `DrawerContainer`；内联语义预览通过让 owner 铺满舞台保持视觉等价。
 - `dragger` 未实现（AtomUI Drawer 暂无 resizable）；`wrapper` 为动效基础设施，上游预览亦不暴露。
 
 验证要求（均为可失败契约测试）：

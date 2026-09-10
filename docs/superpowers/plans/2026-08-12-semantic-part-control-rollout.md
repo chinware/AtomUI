@@ -59,11 +59,13 @@
 
 - [x] 第一批：基础控件，共 16 个家族。
 - [x] 第二批：集合与容器，共 16 个家族。（2026-08-27 复核：全部家族均已按用户授权提交）
-- [ ] 第三批：输入与选择，共 15 个家族。（进行中：Upload、LineEdit、SearchEdit、OtpLineEdit、NumericUpDown、Form、Transfer、AutoComplete 已提交，其中 NumericUpDown 视觉验收已通过；Cascader、ColorPicker、DatePicker、Mentions、Select、TimePicker、TreeSelect 未开始。）
-- [ ] 第四批：Popup 与独立宿主，共 9 个家族。
-- [ ] 第五批：高密度控件，共 2 个家族。
+- [x] 第三批：输入与选择，共 15 个家族。（2026-09-10 复核：15 个家族全部按用户授权提交；视觉验收 NumericUpDown、Form、Transfer、AutoComplete、Cascader 已关闭，ColorPicker、Select、DatePicker 待视觉验收，Mentions、TimePicker、TreeSelect 尚无验收文档；本批次收尾测试尚未执行。）
+- [ ] 第四批：Popup 与独立宿主，共 9 个家族。（2026-09-10 复核：ImagePreviewer、InfoFlyout、ToolTip、Tour、Drawer 已按用户授权提交；Message、Modal / Dialog、Notification、PopupConfirm 未开始。）
+- [ ] 第五批：高密度控件，共 2 个家族。（未开始：NavMenu、DataGrid。）
 
 合计待改造：58 个控件家族。
+
+计划外交付：`DropdownButton` 已于 `6abaf6100` 落地独立语义契约（descriptor、`semantic-part.md`、测试与 Gallery），但[全量改造设计](../specs/2026-08-12-semantic-part-control-rollout-design.md)的排除映射仍把该控件列为不适用。两者需要用户裁决：把 `DropdownButton` 正式并入改造范围并从排除映射移除，还是回退该实现。裁决前本计划不计入该控件。
 
 ## 3. 单控件强制执行循环
 
@@ -150,6 +152,8 @@
 
 **进度（2026-09-03）：** Upload、LineEdit（含 TextArea）、SearchEdit、OtpLineEdit、NumericUpDown、Form、Transfer、AutoComplete、Cascader 已提交；NumericUpDown、Form、Transfer、AutoComplete、Cascader 五家族视觉验收已关闭（NumericUpDown、Form 经用户截图走查后确认通过；Transfer、AutoComplete 由用户授权豁免关闭；Cascader 经用户授权按裁剪范围关闭——弹层钉住与 1.6 静态判定截图确认通过，基线回归走查项裁剪，记录见 docs/superpowers/specs/ 各验收文档）；AutoComplete 的暂存实现曾随专用工作树（`feature/semantic-AutoComplete`）丢失，后已按原计划重做并提交；ColorPicker、DatePicker、Mentions、Select、TimePicker、TreeSelect 未开始。
 
+**进度（2026-09-10 复核）：** 上述“未开始”的 6 个家族随后均已按用户授权提交：ColorPicker（`9659cc7e0`，2026-09-04）、Mentions（`96930c96c`）、Select（`6f7c3bac2`）、TreeSelect（`bf570d14e`）、DatePicker（`1cc89992e`）、TimePicker（`683b7dc71`，均 2026-09-05～09-07）。视觉验收：ColorPicker、Select、DatePicker 仍为“待视觉验收”，对应 `docs/superpowers/specs/` 文档未收到用户回传截图；Mentions、TimePicker、TreeSelect 尚未建立验收文档。故 15 个家族已全部提交，但本批次收尾测试与完整视觉验收尚未关闭。
+
 - [ ] 开放 input frame/content/icon 区域前，必须分析 SizeType 和布局 Setter。
 - [ ] candidate、option、calendar 和 time panel 必须提供 Popup 打开-关闭-重新打开的证据。
 - [ ] 15 个家族全部提交后，运行输入、选择、本地化和 Gallery NativeAOT 验证。
@@ -157,6 +161,8 @@
 ### 任务 4：第四批 - Popup 与独立宿主
 
 **计划：** [第四批任务清单](2026-08-12-semantic-part-batch-4-hosts-windows.md)
+
+**进度（2026-09-10 复核）：** ImagePreviewer（`08aa3e6ef`、`f32e2b258`）、InfoFlyout（`e067b12a4`）、ToolTip（`5fe34ab8a`）、Tour（`b6ee2e315`）、Drawer（`e415b81f9`）已按用户授权提交，共 5/9；Message、Modal / Dialog、Notification、PopupConfirm 未开始。已交付家族的 LLMS 生成产物在 2026-09-10 复核时补齐（Drawer、Tour 原提交遗漏 `docs/AI/generated` 重生成，且 Drawer 文档存在禁用外部项目名）。
 
 - [ ] 每项设计获批前，必须明确 Visual root ownership 和释放路径。
 - [ ] 测试多宿主隔离、关闭/detach 清理和 Gallery `AdditionalRoots`，不得引入生产 Preview API。
@@ -202,7 +208,7 @@ pwsh -NoLogo -NoProfile -File controlgallery/AtomUIGallery.Desktop/scripts/Publi
 
 ## 6. 全量改造收尾
 
-- [ ] 确认 57 个家族都通过各自经用户授权的提交达到 `Committed` 状态。
+- [ ] 确认 58 个家族都通过各自经用户授权的提交达到 `Committed` 状态。
 - [ ] 重新扫描 public 控件和全部叶子主题，检查未声明的 `.semantic-*`、缺少的已批准 marker，以及 Descriptor 与文档不一致。
 - [ ] 确认 20 个排除控件仍然没有通过最新稳定发布源码公开 API 准入 Gate。
 - [ ] 运行全部通用测试、DataGrid 测试、LLMS verify、NativeAOT publish 和 `git diff --check`。

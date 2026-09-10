@@ -28,11 +28,11 @@
 
 **风险类型：** Overlay/Dialog 宿主、多个 public 子控件、异步图片加载、renderer 和 motion。
 
-- [ ] **Gate A 设计审核：** 审计 previewer/group/dialog/overlay host、viewer/renderer、title bar、toolbar/nav/cover/item 的 owner；确认 image viewport、loading/error、title、toolbar/nav/close/mask 区域，明确 service/dialog/overlay Visual root、source 切换和释放路径。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、cross-root/runtime 标志、owner/session 生命周期、真实节点、兼容性和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/ImagePreviewer/ImagePreviewerSemanticPartTests.cs`，覆盖 single/group、loading/error/success、navigation、toolbar/title、overlay/dialog open-close-reopen、source 替换和 owner 隔离；Gallery 使用显式 additional root，并执行 NativeAOT 验证。
-- [ ] 运行 Generator Semantic 测试、目标宿主/控件测试、GalleryBase 和 Gallery 测试、LLMS verify、NativeAOT publish 以及 `git diff --check`；当契约依赖原生/窗口行为时执行平台冒烟检查。
-- [ ] **强制停止：** 保持 ImagePreviewer 的所有实现改动未提交，直到用户验证真实宿主行为并明确授权提交。
+- [x] **Gate A 设计审核：** 审计 previewer/group/dialog/overlay host、viewer/renderer、title bar、toolbar/nav/cover/item 的 owner；确认 image viewport、loading/error、title、toolbar/nav/close/mask 区域，明确 service/dialog/overlay Visual root、source 切换和释放路径。
+- [x] 更新两份控件文档，写明准确的 Descriptor、cross-root/runtime 标志、owner/session 生命周期、真实节点、兼容性和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/ImagePreviewer/ImagePreviewerSemanticPartTests.cs`，覆盖 single/group、loading/error/success、navigation、toolbar/title、overlay/dialog open-close-reopen、source 替换和 owner 隔离；Gallery 使用显式 additional root，并执行 NativeAOT 验证。
+- [x] 运行 Generator Semantic 测试、目标宿主/控件测试、GalleryBase 和 Gallery 测试、LLMS verify、NativeAOT publish 以及 `git diff --check`；当契约依赖原生/窗口行为时执行平台冒烟检查。
+- [x] **强制停止：** 保持 ImagePreviewer 的所有实现改动未提交，直到用户验证真实宿主行为并明确授权提交。
 
 ### 任务 2：InfoFlyout
 
@@ -42,11 +42,11 @@
 
 **风险类型：** PopupFlyoutBase、延迟创建的 Popup、menu/tree presenter、资源生命周期。
 
-- [ ] **Gate A 设计审核：** 审计 `FlyoutHost`、Flyout/FlyoutPresenter、Menu/TreeView flyout presenter 的 owner；确认 anchor content 与 popup arrow/surface/content/item 区域，区分 host root 与 Flyout presenter root，记录 Popup 延迟创建、overlay 与 PopupRoot 差异、open-close 和 resource bridge。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、cross-root/runtime 标志、owner/session 生命周期、真实节点、兼容性和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Flyouts/FlyoutSemanticPartTests.cs`，覆盖 content/menu/tree variants、arrow placements/flips、overlay/PopupRoot、open-close-reopen、presenter 资源生命周期 和 item containers。
-- [ ] 运行 Generator Semantic 测试、目标宿主/控件测试、GalleryBase 和 Gallery 测试、LLMS verify、NativeAOT publish 以及 `git diff --check`；当契约依赖原生/窗口行为时执行平台冒烟检查。
-- [ ] **强制停止：** 保持 InfoFlyout 的所有实现改动未提交，直到用户验证真实宿主行为并明确授权提交。
+- [x] **Gate A 设计审核：** 审计 `FlyoutHost`、Flyout/FlyoutPresenter、Menu/TreeView flyout presenter 的 owner；确认 anchor content 与 popup arrow/surface/content/item 区域，区分 host root 与 Flyout presenter root，记录 Popup 延迟创建、overlay 与 PopupRoot 差异、open-close 和 resource bridge。
+- [x] 更新两份控件文档，写明准确的 Descriptor、cross-root/runtime 标志、owner/session 生命周期、真实节点、兼容性和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Flyouts/FlyoutSemanticPartTests.cs`，覆盖 content/menu/tree variants、arrow placements/flips、overlay/PopupRoot、open-close-reopen、presenter 资源生命周期 和 item containers。
+- [x] 运行 Generator Semantic 测试、目标宿主/控件测试、GalleryBase 和 Gallery 测试、LLMS verify、NativeAOT publish 以及 `git diff --check`；当契约依赖原生/窗口行为时执行平台冒烟检查。
+- [x] **强制停止：** 保持 InfoFlyout 的所有实现改动未提交，直到用户验证真实宿主行为并明确授权提交。
 
 ### 任务 3：ToolTip
 
@@ -56,11 +56,11 @@
 
 **风险类型：** Attached service、Popup/overlay 模式、延迟、detached owner。
 
-- [ ] **Gate A 设计审核：** 审计 ToolTip instance、attached `ToolTipService` 和 OverflowTip owner，确认 content/arrow/surface regions、service-created tooltip ownership 和 Popup modes；记录 delay timers、anchor detach、overlay vs PopupRoot 和 repeated show/hide。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、cross-root/runtime 标志、owner/session 生命周期、真实节点、兼容性和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Tooltip/ToolTipSemanticPartTests.cs`，覆盖 explicit/service/overflow tooltip、placement、overlay/PopupRoot、show-hide-reopen、delay cancellation 和 detach cleanup；Gallery additional root 只存在于示例侧。
-- [ ] 运行 Generator Semantic 测试、目标宿主/控件测试、GalleryBase 和 Gallery 测试、LLMS verify、NativeAOT publish 以及 `git diff --check`；当契约依赖原生/窗口行为时执行平台冒烟检查。
-- [ ] **强制停止：** 保持 ToolTip 的所有实现改动未提交，直到用户验证真实宿主行为并明确授权提交。
+- [x] **Gate A 设计审核：** 审计 ToolTip instance、attached `ToolTipService` 和 OverflowTip owner，确认 content/arrow/surface regions、service-created tooltip ownership 和 Popup modes；记录 delay timers、anchor detach、overlay vs PopupRoot 和 repeated show/hide。
+- [x] 更新两份控件文档，写明准确的 Descriptor、cross-root/runtime 标志、owner/session 生命周期、真实节点、兼容性和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Tooltip/ToolTipSemanticPartTests.cs`，覆盖 explicit/service/overflow tooltip、placement、overlay/PopupRoot、show-hide-reopen、delay cancellation 和 detach cleanup；Gallery additional root 只存在于示例侧。
+- [x] 运行 Generator Semantic 测试、目标宿主/控件测试、GalleryBase 和 Gallery 测试、LLMS verify、NativeAOT publish 以及 `git diff --check`；当契约依赖原生/窗口行为时执行平台冒烟检查。
+- [x] **强制停止：** 保持 ToolTip 的所有实现改动未提交，直到用户验证真实宿主行为并明确授权提交。
 
 ### 任务 4：Tour
 
@@ -70,11 +70,11 @@
 
 **风险类型：** Popup 与 overlay mask、step 容器、target tracking、motion。
 
-- [ ] **Gate A 设计审核：** 审计 Tour/TourLayer、step/steps view、indicators 和 Popup owner；确认 mask/spotlight、panel/title/content/actions/indicator/arrow regions，记录 target switch、placement, step rebuild, open-close 和 target detach。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、cross-root/runtime 标志、owner/session 生命周期、真实节点、兼容性和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Tour/TourSemanticPartTests.cs`，覆盖 steps navigation、default/text indicator、placement、target change/detach、Popup reopen、overlay mask 和 step collection lifecycle；验证 NativeAOT 和 additional root。
-- [ ] 运行 Generator Semantic 测试、目标宿主/控件测试、GalleryBase 和 Gallery 测试、LLMS verify、NativeAOT publish 以及 `git diff --check`；当契约依赖原生/窗口行为时执行平台冒烟检查。
-- [ ] **强制停止：** 保持 Tour 的所有实现改动未提交，直到用户验证真实宿主行为并明确授权提交。
+- [x] **Gate A 设计审核：** 审计 Tour/TourLayer、step/steps view、indicators 和 Popup owner；确认 mask/spotlight、panel/title/content/actions/indicator/arrow regions，记录 target switch、placement, step rebuild, open-close 和 target detach。
+- [x] 更新两份控件文档，写明准确的 Descriptor、cross-root/runtime 标志、owner/session 生命周期、真实节点、兼容性和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Tour/TourSemanticPartTests.cs`，覆盖 steps navigation、default/text indicator、placement、target change/detach、Popup reopen、overlay mask 和 step collection lifecycle；验证 NativeAOT 和 additional root。
+- [x] 运行 Generator Semantic 测试、目标宿主/控件测试、GalleryBase 和 Gallery 测试、LLMS verify、NativeAOT publish 以及 `git diff --check`；当契约依赖原生/窗口行为时执行平台冒烟检查。
+- [x] **强制停止：** 保持 Tour 的所有实现改动未提交，直到用户验证真实宿主行为并明确授权提交。
 
 ### 任务 5：Drawer
 
@@ -84,11 +84,11 @@
 
 **风险类型：** Window overlay layer、运行时容器、stacked session、motion。
 
-- [ ] **Gate A 设计审核：** 审计 Drawer owner、DrawerContainer/InfoContainer 和 overlay layer；确认 mask/panel/header/title/extra/content/footer/close regions，明确 nested/stacked drawers、placement, motion, drawn-titlebar overlay bounds 和 teardown。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、cross-root/runtime 标志、owner/session 生命周期、真实节点、兼容性和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Drawer/DrawerSemanticPartTests.cs`，覆盖四种 placement、header/footer/close 变体、stacked/open-close-reopen、owner Window detach，并证明不会保留旧容器；验证 Gallery additional root 和 NativeAOT。
-- [ ] 运行 Generator Semantic 测试、目标宿主/控件测试、GalleryBase 和 Gallery 测试、LLMS verify、NativeAOT publish 以及 `git diff --check`；当契约依赖原生/窗口行为时执行平台冒烟检查。
-- [ ] **强制停止：** 保持 Drawer 的所有实现改动未提交，直到用户验证真实宿主行为并明确授权提交。
+- [x] **Gate A 设计审核：** 审计 Drawer owner、DrawerContainer/InfoContainer 和 overlay layer；确认 mask/panel/header/title/extra/content/footer/close regions，明确 nested/stacked drawers、placement, motion, drawn-titlebar overlay bounds 和 teardown。
+- [x] 更新两份控件文档，写明准确的 Descriptor、cross-root/runtime 标志、owner/session 生命周期、真实节点、兼容性和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Drawer/DrawerSemanticPartTests.cs`，覆盖四种 placement、header/footer/close 变体、stacked/open-close-reopen、owner Window detach，并证明不会保留旧容器；验证 Gallery additional root 和 NativeAOT。
+- [x] 运行 Generator Semantic 测试、目标宿主/控件测试、GalleryBase 和 Gallery 测试、LLMS verify、NativeAOT publish 以及 `git diff --check`；当契约依赖原生/窗口行为时执行平台冒烟检查。
+- [x] **强制停止：** 保持 Drawer 的所有实现改动未提交，直到用户验证真实宿主行为并明确授权提交。
 
 ### 任务 6：Message
 
@@ -147,6 +147,8 @@
 - [ ] **强制停止：** 保持 PopupConfirm 的所有实现改动未提交，直到用户验证真实宿主行为并明确授权提交。
 
 ## 批次收尾
+
+> 2026-09-10 复核：ImagePreviewer、InfoFlyout、ToolTip、Tour、Drawer 五个家族的单项任务框已置为已完成（均已按用户授权提交）。Message、Modal / Dialog、Notification、PopupConfirm 四个家族未开始，本批次仍未收尾。
 
 - [ ] 确认 9 个控件家族分别拥有用户授权的独立提交。
 - [ ] 运行完整 Desktop Controls、Generator、GalleryBase 和 Gallery 测试，并执行 Popup/Overlay 生命周期筛选。

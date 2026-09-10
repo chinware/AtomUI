@@ -18238,13 +18238,154 @@ Source: ./controls/drawer/semantic-cn.md
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `Drawer` | 反馈控件根语义区域，承载 public API、反馈状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `host` | `宿主或弹层区域` | 承载 overlay、popup、portal、message host、drawer 或 modal 容器。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `surface` | `反馈表面` | 承载背景、边框、阴影、尺寸、placement 和视觉状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载标题、正文、图标、进度、结果、操作或关闭入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效区域` | 表达进入退出、loading、progress、skeleton 或水印刷新反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+Drawer 的语义 owner 是 `AtomUI.Desktop.Controls.Drawer` 本身（无模板的零尺寸标记控件）。全部非 root 部件位于运行时创建的 `DrawerContainer`（注入 `ScopeAwareAdornerLayer`，在 owner 可视子树之外、同一 TopLevel 之内），因此统一声明 `CrossVisualRoot=true` + `RuntimeCreated=true`；marker 静态声明在两个内部容器主题上（`DrawerContainerTheme.axaml`、`DrawerInfoContainerTheme.axaml`），运行时无需代码注入。
+
+与上游 Drawer 的语义 DOM（`_semantic.tsx`，10 个槽位）的映射：
+
+| 上游 Drawer 槽位 | AtomUI 部件 | 说明 |
+| --- | --- | --- |
+| `root` | `root`（隐式，owner 契约） | 上游 root 是 fixed 定位容器；AtomUI 遵循系统契约 root=owner 控件，上游 root 对应内部 `DrawerContainer` 基础设施，不作为部件暴露。内联语义预览中 owner 拉伸铺满舞台，root 高亮即整个内联容器，视觉语义对齐上游。 |
+| `mask` | `mask` | 一一对应；`IsShowMask=false` 时不呈现（Optional）。 |
+| `section` | `section` | 上游 v6 由 `content` 改名而来；AtomUI 由 `DrawerInfoContainer` 模板中的 `Frame` Border 承载（背景/阴影层）。 |
+| `header` | `header` | 一一对应（`InfoHeader` Grid）。 |
+| `title` | `title` | 一一对应（`HeaderText`）。 |
+| `extra` | `extra` | 一一对应（`ExtraContentPresenter`）。 |
+| `body` | `body` | 一一对应（`InfoContainer` presenter，`ContentPadding` 落点）。 |
+| `footer` | `footer` | 一一对应（`InfoFooter` presenter，仅设置 Footer 时可见）。 |
+| `close` | `close` | 一一对应（`PART_CloseButton` IconButton）。 |
+| `dragger` | 不暴露 | 上游 v6 的 resizable 拖拽手柄；AtomUI Drawer 暂无 resizable 能力，待能力落地后按上游补齐。 |
+| `wrapper` | 不暴露 | 上游动效包装容器，其语义预览清单同样不包含它；对应 AtomUI 的 `PART_InfoContainerMotionActor` 动效基础设施。 |
+
+部件明细：
+
+#### `mask`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner / Part | `Drawer` / `mask` |
+| Selector | `.semantic-mask` |
+| SelectorRoute | `>> .semantic-mask` |
+| Style Type | `AtomUI.Theme.Styling.DrawerMaskStyle` |
+| ContractType | `Avalonia.Controls.Border` |
+| Cardinality | Optional（`IsShowMask=false` 时不呈现） |
+| CrossVisualRoot / RuntimeCreated | true / true |
+| AtomUI 节点 | `DrawerContainerTheme.axaml` 的 `PART_Mask`（静态 marker） |
+| 职责 | 遮罩层：绝对定位、层级、`ColorBgMask` 背景、指针事件命中 |
+| 相关 API | `IsShowMask`、`IsCloseOnMaskClick` |
+| 相关 Token | `ColorBgMask` |
+
+#### `section`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner / Part | `Drawer` / `section` |
+| Selector | `.semantic-section` |
+| SelectorRoute | `>> .semantic-section` |
+| Style Type | `AtomUI.Theme.Styling.DrawerSectionStyle` |
+| ContractType | `Avalonia.Controls.Border` |
+| Cardinality | Single |
+| CrossVisualRoot / RuntimeCreated | true / true |
+| AtomUI 节点 | `DrawerInfoContainerTheme.axaml` 的 `Frame`（静态 marker） |
+| 职责 | 抽屉面板容器：flex 布局、宽高、背景、按 Placement 的边缘阴影 |
+| 相关 API | `DialogSize`、`Placement`、`SizeType` |
+| 相关 Token | `ColorBgElevated`、`BoxShadowDrawer{Left,Right,Up,Down}` |
+
+#### `header`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner / Part | `Drawer` / `header` |
+| Selector | `.semantic-header` |
+| SelectorRoute | `>> .semantic-header` |
+| Style Type | `AtomUI.Theme.Styling.DrawerHeaderStyle` |
+| ContractType | `Avalonia.Controls.Grid` |
+| Cardinality | Single |
+| CrossVisualRoot / RuntimeCreated | true / true |
+| AtomUI 节点 | `DrawerInfoContainerTheme.axaml` 的 `InfoHeader`（静态 marker） |
+| 职责 | 头部区域：标题/关闭按钮/额外操作的排布、内边距 |
+| 相关 API | `Title`、`Extra`、`IsShowCloseButton` |
+| 相关 Token | `HeaderMargin` |
+
+#### `title`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner / Part | `Drawer` / `title` |
+| Selector | `.semantic-title` |
+| SelectorRoute | `>> .semantic-title` |
+| Style Type | `AtomUI.Theme.Styling.DrawerTitleStyle` |
+| ContractType | `AtomUI.Desktop.Controls.TextBlock` |
+| Cardinality | Single |
+| CrossVisualRoot / RuntimeCreated | true / true |
+| AtomUI 节点 | `DrawerInfoContainerTheme.axaml` 的 `HeaderText`（静态 marker） |
+| 职责 | 标题文字排版 |
+| 相关 API | `Title` |
+| 相关 Token | `FontSizeLG`、`FontHeightLG`、`FontWeightStrong` |
+
+#### `extra`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner / Part | `Drawer` / `extra` |
+| Selector | `.semantic-extra` |
+| SelectorRoute | `>> .semantic-extra` |
+| Style Type | `AtomUI.Theme.Styling.DrawerExtraStyle` |
+| ContractType | `Avalonia.Controls.Presenters.ContentPresenter` |
+| Cardinality | Single |
+| CrossVisualRoot / RuntimeCreated | true / true |
+| AtomUI 节点 | `DrawerInfoContainerTheme.axaml` 的 `ExtraContentPresenter`（静态 marker） |
+| 职责 | 头部尾缘的额外操作内容呈现 |
+| 相关 API | `Extra`、`ExtraTemplate` |
+
+#### `body`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner / Part | `Drawer` / `body` |
+| Selector | `.semantic-body` |
+| SelectorRoute | `>> .semantic-body` |
+| Style Type | `AtomUI.Theme.Styling.DrawerBodyStyle` |
+| ContractType | `Avalonia.Controls.Presenters.ContentPresenter` |
+| Cardinality | Single |
+| CrossVisualRoot / RuntimeCreated | true / true |
+| AtomUI 节点 | `DrawerInfoContainerTheme.axaml` 的 `InfoContainer`（静态 marker） |
+| 职责 | 主内容区：flex 占比、内边距、滚动 |
+| 相关 API | `Content`、`ContentTemplate`、`ContentPadding` |
+| 相关 Token | `ContentPadding` |
+
+#### `footer`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner / Part | `Drawer` / `footer` |
+| Selector | `.semantic-footer` |
+| SelectorRoute | `>> .semantic-footer` |
+| Style Type | `AtomUI.Theme.Styling.DrawerFooterStyle` |
+| ContractType | `Avalonia.Controls.Presenters.ContentPresenter` |
+| Cardinality | Single |
+| CrossVisualRoot / RuntimeCreated | true / true |
+| AtomUI 节点 | `DrawerInfoContainerTheme.axaml` 的 `InfoFooter`（静态 marker） |
+| 职责 | 底部操作区：上分隔线、内边距；仅设置 Footer 时可见 |
+| 相关 API | `Footer`、`FooterTemplate` |
+| 相关 Token | `FooterPadding` |
+
+#### `close`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner / Part | `Drawer` / `close` |
+| Selector | `.semantic-close` |
+| SelectorRoute | `>> .semantic-close` |
+| Style Type | `AtomUI.Theme.Styling.DrawerCloseStyle` |
+| ContractType | `AtomUI.Controls.IconButton` |
+| Cardinality | Single |
+| CrossVisualRoot / RuntimeCreated | true / true |
+| AtomUI 节点 | `DrawerInfoContainerTheme.axaml` 的 `PART_CloseButton`（静态 marker） |
+| 职责 | 关闭按钮：图标、hover/pressed 反馈；钉住预览时忽略其关闭请求 |
+| 相关 API | `IsShowCloseButton`、`IsPinnedOpen` |
+| 相关 Token | `CloseIconPadding`、`CloseIconMargin` |
+
+隐式 `root`：由生成器无条件加入，`StyleType=null`，定制走 owner 级普通 Style（见系统文档）。
 
 ## Abstract AXAML Structure
 
@@ -18307,7 +18448,7 @@ Drawer
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
 | 内容与数据 | `Content`、`ContentTemplate`、`ExtraTemplate`、`FooterTemplate`、`Title` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 交互与状态 | `IsCloseOnMaskClick`、`IsMotionEnabled`、`IsOpen`、`IsShowCloseButton`、`IsShowMask` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
+| 交互与状态 | `IsCloseOnMaskClick`、`IsMotionEnabled`、`IsOpen`、`IsPinnedOpen`、`IsShowCloseButton`、`IsShowMask` | 表达用户可观察状态、可用性、清除、加载或反馈语义；`IsPinnedOpen` 钉住常开（语义预览用），拦截遮罩点击与关闭按钮，不拦截外部 `IsOpen` 赋值。 |
 | 视觉与布局 | `DialogSize`、`Placement`、`PushOffsetPercent`、`SizeType` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 其他稳定入口 | `Extra`、`Footer`、`OpenOn` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 

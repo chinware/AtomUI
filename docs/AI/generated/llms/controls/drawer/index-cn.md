@@ -42,7 +42,7 @@ Drawer 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
 | 内容与数据 | `Content`、`ContentTemplate`、`ExtraTemplate`、`FooterTemplate`、`Title` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 交互与状态 | `IsCloseOnMaskClick`、`IsMotionEnabled`、`IsOpen`、`IsShowCloseButton`、`IsShowMask` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
+| 交互与状态 | `IsCloseOnMaskClick`、`IsMotionEnabled`、`IsOpen`、`IsPinnedOpen`、`IsShowCloseButton`、`IsShowMask` | 表达用户可观察状态、可用性、清除、加载或反馈语义；`IsPinnedOpen` 钉住常开（语义预览用），拦截遮罩点击与关闭按钮，不拦截外部 `IsOpen` 赋值。 |
 | 视觉与布局 | `DialogSize`、`Placement`、`PushOffsetPercent`、`SizeType` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 其他稳定入口 | `Extra`、`Footer`、`OpenOn` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
@@ -77,7 +77,7 @@ Drawer 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:40`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:111`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -98,7 +98,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 多层抽屉
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:60`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:131`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -144,7 +144,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 额外区域和页脚
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:105`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:176`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -191,7 +191,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 无遮罩
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:249`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml:320`
 
 Gallery key：`ExamplesContent` / item `4`
 
@@ -278,6 +278,7 @@ Drawer Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 主要源码文件：
 
 - `src/AtomUI.Desktop.Controls/Drawer/Drawer.cs`
+- `src/AtomUI.Desktop.Controls/Drawer/Drawer.SemanticParts.cs`
 - `src/AtomUI.Desktop.Controls/Drawer/DrawerContainer.cs`
 - `src/AtomUI.Desktop.Controls/Drawer/DrawerInfoContainer.cs`
 - `src/AtomUI.Desktop.Controls/Drawer/DrawerPlacement.cs`
@@ -299,6 +300,7 @@ Drawer Token 只表达组件级视觉变量，例如尺寸、间距、颜色、�
 
 - 源设计文档：`docs/controls/desktop/feedback/drawer/overview.md`
 - 实现文档：`docs/controls/desktop/feedback/drawer/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/feedback/drawer/semantic-part.md`
 - Token 文档：`docs/controls/desktop/feedback/drawer/token.md`
 - 变更记录：`docs/controls/desktop/feedback/drawer/changelog.md`
 - 语义结构：`./semantic-cn.md`

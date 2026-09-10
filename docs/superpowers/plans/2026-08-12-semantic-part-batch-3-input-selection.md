@@ -27,11 +27,11 @@
 
 **风险类型：** ICustomizableSizeTypeAware、派生输入变体、候选项 Popup、异步数据。
 
-- [ ] **Gate A 设计审核：** 审计 `AutoComplete`、SearchEdit/TextArea variants、option/candidate popup 与 decorated input owner；确认 input、clear/search controls、popup、option/empty/loading regions，记录 async populate、filter、Popup open-close、容器生命周期 和 SizeType/Custom。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/AutoComplete/AutoCompleteSemanticPartTests.cs`，覆盖 line/search/textarea 变体、async option、empty/loading、option 重建、Popup reopen、全部 SizeType 和嵌套 input owner 隔离。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
-- [ ] **强制停止：** 保持 AutoComplete 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
+- [x] **Gate A 设计审核：** 审计 `AutoComplete`、SearchEdit/TextArea variants、option/candidate popup 与 decorated input owner；确认 input、clear/search controls、popup、option/empty/loading regions，记录 async populate、filter、Popup open-close、容器生命周期 和 SizeType/Custom。
+- [x] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/AutoComplete/AutoCompleteSemanticPartTests.cs`，覆盖 line/search/textarea 变体、async option、empty/loading、option 重建、Popup reopen、全部 SizeType 和嵌套 input owner 隔离。
+- [x] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
+- [x] **强制停止：** 保持 AutoComplete 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
 
 ### 任务 2：Cascader
 
@@ -55,11 +55,11 @@
 
 **风险类型：** 可选包注册、ICustomizableSizeTypeAware、Popup、多个 public 子控件、rendering 热路径。
 
-- [ ] **Gate A 设计审核：** 逐 owner 审计 solid/gradient picker、palette、color view/spectrum、sliders/tracks/thumbs/input/block/collapse；区分 picker root popup regions 与 public child descriptors，记录 gradient stop changes、pointer/render hot paths、SizeType 和 package registration。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 创建 `tests/AtomUI.Desktop.Controls.Tests/ColorPicker/ColorPickerSemanticPartTests.cs`，覆盖 solid/gradient、Popup reopen、palette group/item、spectrum/slider/thumb、custom size 和运行时更新；运行可选包注册测试、Gallery 测试和 NativeAOT publish。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
-- [ ] **强制停止：** 保持 ColorPicker 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
+- [x] **Gate A 设计审核：** 逐 owner 审计 solid/gradient picker、palette、color view/spectrum、sliders/tracks/thumbs/input/block/collapse；区分 picker root popup regions 与 public child descriptors，记录 gradient stop changes、pointer/render hot paths、SizeType 和 package registration。
+- [x] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [x] **Gate B 实现与验证：** 创建 `tests/AtomUI.Desktop.Controls.Tests/ColorPicker/ColorPickerSemanticPartTests.cs`，覆盖 solid/gradient、Popup reopen、palette group/item、spectrum/slider/thumb、custom size 和运行时更新；运行可选包注册测试、Gallery 测试和 NativeAOT publish。
+- [x] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
+- [x] **强制停止：** 保持 ColorPicker 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
 
 ### 任务 4：DatePicker
 
@@ -72,8 +72,8 @@
 - [x] **Gate A 设计审核：** 审计 DatePicker/RangeDatePicker input regions、public presenters、calendar/day/month/year buttons、dual/timed presenters；确认 prefix/input/clear/suffix/popup/panel/cell/footer职责及 owner，记录 range modes、Popup、calendar rebuild 和 SizeType。
 - [x] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
 - [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/DatePicker/DatePickerSemanticPartTests.cs`，覆盖 date/range/dual/timed、calendar modes、cell rebuild、clear/prefix/suffix、Popup reopen、invalid/disabled 和 所有尺寸。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
-- [ ] **强制停止：** 保持 DatePicker 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
+- [x] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
+- [x] **强制停止：** 保持 DatePicker 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
 
 ### 任务 5：Form
 
@@ -83,11 +83,11 @@
 
 **风险类型：** ICustomizableSizeTypeAware 传递、item 容器、validation feedback、子控件 ownership。
 
-- [ ] **Gate A 设计审核：** 审计 `Form`、`FormItem`、decorator、feedback、submit/reset/delete control 的 owner；确认 label/control/help/extra/required/feedback 区域，记录 SizeType 向 `ISizeTypeAware`/`ICustomizableSizeTypeAware` 的传递、validation 更新和 item 生命周期。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Form/FormSemanticPartTests.cs`，覆盖各类 layout、validation 状态、label/help/extra、动态 item、包含 Custom 在内的 SizeType 传递和嵌套 semantic control 隔离。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
-- [ ] **强制停止：** 保持 Form 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
+- [x] **Gate A 设计审核：** 审计 `Form`、`FormItem`、decorator、feedback、submit/reset/delete control 的 owner；确认 label/control/help/extra/required/feedback 区域，记录 SizeType 向 `ISizeTypeAware`/`ICustomizableSizeTypeAware` 的传递、validation 更新和 item 生命周期。
+- [x] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Form/FormSemanticPartTests.cs`，覆盖各类 layout、validation 状态、label/help/extra、动态 item、包含 Custom 在内的 SizeType 传递和嵌套 semantic control 隔离。
+- [x] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
+- [x] **强制停止：** 保持 Form 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
 
 ### 任务 6：LineEdit
 
@@ -97,11 +97,11 @@
 
 **风险类型：** ICustomizableSizeTypeAware、原生文本 editor、可选控件、TextArea resize、共享 SearchEdit 主题/页面。
 
-- [ ] **Gate A 设计审核：** 审计 TextBox/LineEdit/TextArea owners，确认 text presenter/placeholder/clear/reveal/prefix/suffix/add-on/count/form feedback/resize handle responsibilities；记录 native editor boundary、validation、Custom size natural measurement 和 TextArea auto-size/drag。SearchEdit regions remain separate Gate A。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Input/LineEditSemanticPartTests.cs`，覆盖 TextBox/LineEdit/TextArea variants、clear/reveal/count/add-ons/validation、所有尺寸、Custom padding/height、auto-size/resize 和共享 page lazy Preview。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
-- [ ] **强制停止：** 保持 LineEdit 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
+- [x] **Gate A 设计审核：** 审计 TextBox/LineEdit/TextArea owners，确认 text presenter/placeholder/clear/reveal/prefix/suffix/add-on/count/form feedback/resize handle responsibilities；记录 native editor boundary、validation、Custom size natural measurement 和 TextArea auto-size/drag。SearchEdit regions remain separate Gate A。
+- [x] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Input/LineEditSemanticPartTests.cs`，覆盖 TextBox/LineEdit/TextArea variants、clear/reveal/count/add-ons/validation、所有尺寸、Custom padding/height、auto-size/resize 和共享 page lazy Preview。
+- [x] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
+- [x] **强制停止：** 保持 LineEdit 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
 
 ### 任务 7：Mentions
 
@@ -111,11 +111,11 @@
 
 **风险类型：** ICustomizableSizeTypeAware、TextArea composition、候选项 Popup、异步数据。
 
-- [ ] **Gate A 设计审核：** 审计 Mentions/MentionTextArea/MentionOption owner，确认 input、clear/count/resize 和 candidate popup/option/empty/loading regions；记录 trigger parsing、async populate、Popup placement/reopen, option lifecycle 和 SizeType。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Mentions/MentionsSemanticPartTests.cs`，覆盖 candidate trigger/populate、option selection、Popup reopen、textarea resize/count、所有尺寸、collection reset 和 nested owner 隔离。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
-- [ ] **强制停止：** 保持 Mentions 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
+- [x] **Gate A 设计审核：** 审计 Mentions/MentionTextArea/MentionOption owner，确认 input、clear/count/resize 和 candidate popup/option/empty/loading regions；记录 trigger parsing、async populate、Popup placement/reopen, option lifecycle 和 SizeType。
+- [x] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Mentions/MentionsSemanticPartTests.cs`，覆盖 candidate trigger/populate、option selection、Popup reopen、textarea resize/count、所有尺寸、collection reset 和 nested owner 隔离。
+- [x] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
+- [x] **强制停止：** 保持 Mentions 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
 
 ### 任务 8：NumericUpDown
 
@@ -139,11 +139,11 @@
 
 **风险类型：** ICustomizableSizeTypeAware、运行时 cell、隐藏 editor、separator、缺少独立 Gallery。
 
-- [ ] **Gate A 设计审核：** 审计 OtpLineEdit、cell、OtpTextBox 和 separator owner，确认 repeated cell/content/mask/separator/focus regions；记录 length changes、paste/focus/completion、runtime cell rebuild 和 SizeType。先按 Gallery organization 明确正式展示 ownership，不创建临时页面。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/OtpLineEdit/OtpLineEditSemanticPartTests.cs`，覆盖 length rebuild、text/paste、mask、separator、focus/completion 和所有尺寸；新增经 Gate A 批准的 Gallery route/page 测试并验证延迟创建。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
-- [ ] **强制停止：** 保持 OtpLineEdit 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
+- [x] **Gate A 设计审核：** 审计 OtpLineEdit、cell、OtpTextBox 和 separator owner，确认 repeated cell/content/mask/separator/focus regions；记录 length changes、paste/focus/completion、runtime cell rebuild 和 SizeType。先按 Gallery organization 明确正式展示 ownership，不创建临时页面。
+- [x] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/OtpLineEdit/OtpLineEditSemanticPartTests.cs`，覆盖 length rebuild、text/paste、mask、separator、focus/completion 和所有尺寸；新增经 Gate A 批准的 Gallery route/page 测试并验证延迟创建。
+- [x] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
+- [x] **强制停止：** 保持 OtpLineEdit 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
 
 ### 任务 10：SearchEdit
 
@@ -153,11 +153,11 @@
 
 **风险类型：** 派生 LineEdit 契约、ICustomizableSizeTypeAware、public Button typed theme、共享源码/页面。
 
-- [ ] **Gate A 设计审核：** 审计 SearchEdit 自有搜索按钮/decorated box 与继承 LineEdit regions，确认 `SearchButtonTheme` 是否对应真实 public Button 的 `SelectorAndTheme`，避免重复声明继承 Part 或穿透 Button template；记录 operating/loading、Enter/button 和 Custom size。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Input/SearchEditSemanticPartTests.cs`，覆盖 inherited 与 owned Descriptor、button/Enter、operating/loading、text/icon search button、所有尺寸、typed theme 替换和 owner selector 隔离。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
-- [ ] **强制停止：** 保持 SearchEdit 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
+- [x] **Gate A 设计审核：** 审计 SearchEdit 自有搜索按钮/decorated box 与继承 LineEdit regions，确认 `SearchButtonTheme` 是否对应真实 public Button 的 `SelectorAndTheme`，避免重复声明继承 Part 或穿透 Button template；记录 operating/loading、Enter/button 和 Custom size。
+- [x] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Input/SearchEditSemanticPartTests.cs`，覆盖 inherited 与 owned Descriptor、button/Enter、operating/loading、text/icon search button、所有尺寸、typed theme 替换和 owner selector 隔离。
+- [x] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
+- [x] **强制停止：** 保持 SearchEdit 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
 
 ### 任务 11：Select
 
@@ -167,11 +167,11 @@
 
 **风险类型：** ICustomizableSizeTypeAware、Popup、候选项容器、tag、异步数据、虚拟化。
 
-- [ ] **Gate A 设计审核：** 审计 Select root input/decorated box、handle/clear/filter/result tags/max indicator、candidate popup/list/item；明确 single/multiple/tags, selected item vs candidate item owner, async loading, virtualization, Popup 和 SizeType。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Select/SelectSemanticPartTests.cs`，覆盖 single/multiple/tags、filter/clear、max tag/count、async/empty/loading、candidate recycle、Popup reopen 和所有尺寸；记录可见 item 的 marker 数量，并证明不会保留旧 Popup/container。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
-- [ ] **强制停止：** 保持 Select 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
+- [x] **Gate A 设计审核：** 审计 Select root input/decorated box、handle/clear/filter/result tags/max indicator、candidate popup/list/item；明确 single/multiple/tags, selected item vs candidate item owner, async loading, virtualization, Popup 和 SizeType。
+- [x] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Select/SelectSemanticPartTests.cs`，覆盖 single/multiple/tags、filter/clear、max tag/count、async/empty/loading、candidate recycle、Popup reopen 和所有尺寸；记录可见 item 的 marker 数量，并证明不会保留旧 Popup/container。
+- [x] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
+- [x] **强制停止：** 保持 Select 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
 
 ### 任务 12：TimePicker
 
@@ -181,11 +181,11 @@
 
 **风险类型：** Popup presenter、range 变体、time cell 容器、SizeType。
 
-- [ ] **Gate A 设计审核：** 审计 TimePicker/RangeTimePicker input regions、presenter、TimeView/panels/cells 和 footer actions；确认 input/clear/suffix/popup/column/cell/now/confirm responsibilities, range ownership, Popup 和 SizeType。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/TimePicker/TimePickerSemanticPartTests.cs`，覆盖 single/range、12/24h、cell lists、scroll/selection、clear/footer、Popup reopen、disabled 和 sizes。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
-- [ ] **强制停止：** 保持 TimePicker 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
+- [x] **Gate A 设计审核：** 审计 TimePicker/RangeTimePicker input regions、presenter、TimeView/panels/cells 和 footer actions；确认 input/clear/suffix/popup/column/cell/now/confirm responsibilities, range ownership, Popup 和 SizeType。
+- [x] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/TimePicker/TimePickerSemanticPartTests.cs`，覆盖 single/range、12/24h、cell lists、scroll/selection、clear/footer、Popup reopen、disabled 和 sizes。
+- [x] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
+- [x] **强制停止：** 保持 TimePicker 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
 
 ### 任务 13：Transfer
 
@@ -195,11 +195,11 @@
 
 **风险类型：** ICustomizableSizeTypeAware、多个 view、item 容器、嵌套 Select/Tree/List owner。
 
-- [ ] **Gate A 设计审核：** 审计 ListTransfer/TreeTransfer、source/target view、item decorator、action button/dropdown 和嵌套 list/tree owner；确认 header/body/search/list/item/footer/action 职责，不得侵占嵌套控件的 internal Part；记录 selection/move/filter、容器生命周期和 SizeType。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Transfer/TransferSemanticPartTests.cs`，覆盖 list/tree, source-target move, select all/filter, item reset, action dropdown, 所有尺寸 和 nested semantic-owner 隔离。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
-- [ ] **强制停止：** 保持 Transfer 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
+- [x] **Gate A 设计审核：** 审计 ListTransfer/TreeTransfer、source/target view、item decorator、action button/dropdown 和嵌套 list/tree owner；确认 header/body/search/list/item/footer/action 职责，不得侵占嵌套控件的 internal Part；记录 selection/move/filter、容器生命周期和 SizeType。
+- [x] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Transfer/TransferSemanticPartTests.cs`，覆盖 list/tree, source-target move, select all/filter, item reset, action dropdown, 所有尺寸 和 nested semantic-owner 隔离。
+- [x] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
+- [x] **强制停止：** 保持 Transfer 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
 
 ### 任务 14：TreeSelect
 
@@ -209,11 +209,11 @@
 
 **风险类型：** 派生自 Select 的 input、TreeView Popup、分层容器、共享主题。
 
-- [ ] **Gate A 设计审核：** 审计 TreeSelect 自有 input/decorated box、popup tree 和 tree item overrides；明确继承 Select Part、TreeSelect 自有 regions 与 nested TreeView owner，记录 checked strategies、async hierarchy、Popup 和 SizeType。共享 Select/TreeView 文件须相关 Gate A 批准。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/TreeSelect/TreeSelectSemanticPartTests.cs`，覆盖 single/multiple/check strategies、filter、async tree、Popup reopen、container recycle、所有尺寸 和 descriptor inheritance/owner 隔离。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
-- [ ] **强制停止：** 保持 TreeSelect 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
+- [x] **Gate A 设计审核：** 审计 TreeSelect 自有 input/decorated box、popup tree 和 tree item overrides；明确继承 Select Part、TreeSelect 自有 regions 与 nested TreeView owner，记录 checked strategies、async hierarchy、Popup 和 SizeType。共享 Select/TreeView 文件须相关 Gate A 批准。
+- [x] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/TreeSelect/TreeSelectSemanticPartTests.cs`，覆盖 single/multiple/check strategies、filter、async tree、Popup reopen、container recycle、所有尺寸 和 descriptor inheritance/owner 隔离。
+- [x] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
+- [x] **强制停止：** 保持 TreeSelect 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
 
 ### 任务 15：Upload
 
@@ -223,15 +223,17 @@
 
 **风险类型：** 运行时 task/item Visual、多个 list 变体、异步生命周期、preview overlay。
 
-- [ ] **Gate A 设计审核：** 审计 Upload/trigger/drop zone/default drop area/list/text/picture/picture-card items 和 state contents；确认 trigger/drop/list/item/status/progress/action/preview regions与 public child owners，记录 queue/state transitions、auto remove、item 重建、image preview 和 detach。
-- [ ] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
-- [ ] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Upload/UploadSemanticPartTests.cs`，覆盖 text/picture/picture-card、pending/uploading/success/error、add/remove/reset/auto-remove、preview open-close 和运行时 marker 稳定性；运行生命周期检查和 NativeAOT 验证。
-- [ ] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
-- [ ] **强制停止：** 保持 Upload 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
+- [x] **Gate A 设计审核：** 审计 Upload/trigger/drop zone/default drop area/list/text/picture/picture-card items 和 state contents；确认 trigger/drop/list/item/status/progress/action/preview regions与 public child owners，记录 queue/state transitions、auto remove、item 重建、image preview 和 detach。
+- [x] 更新两份控件文档，写明准确的 Descriptor、节点/owner 映射、布局与 Popup 生命周期、兼容性边界和验证矩阵；运行 LLMS verify 和 `git diff --check`；随后停止并等待用户批准。
+- [x] **Gate B 实现与验证：** 新增 `tests/AtomUI.Desktop.Controls.Tests/Upload/UploadSemanticPartTests.cs`，覆盖 text/picture/picture-card、pending/uploading/success/error、add/remove/reset/auto-remove、preview open-close 和运行时 marker 稳定性；运行生命周期检查和 NativeAOT 验证。
+- [x] 运行 Generator Semantic 测试、目标 Desktop 测试、GalleryBase 测试、目标 Gallery 测试、LLMS verify 和 `git diff --check`；对 Popup/可选包/运行时敏感改动执行 NativeAOT 验证。
+- [x] **强制停止：** 保持 Upload 的所有实现改动未提交，直到用户验证运行结果并明确授权提交。
 
 ## 批次收尾
 
-- [ ] 确认 15 个控件家族分别拥有用户授权的独立提交。
+- [x] 确认 15 个控件家族分别拥有用户授权的独立提交。
 - [ ] 运行完整 Desktop Controls、Generator、GalleryBase 和 Gallery 测试，并执行输入、选择和本地化筛选。
 - [ ] 运行 LLMS verify、Gallery NativeAOT publish 和 `git diff --check`。
 - [ ] 更新总计划清单，不额外创建批次提交。
+
+> 2026-09-10 复核：15 个家族已全部提交，故单项任务框与第一条收尾项置为已完成。**批次级测试扫描尚未执行**，因此后两条收尾项保持未勾选；每个家族 Gate B 的目标测试、NativeAOT 与 LLMS 证据记录在各家族提交中，不等价于批次收尾的全量重跑结论。

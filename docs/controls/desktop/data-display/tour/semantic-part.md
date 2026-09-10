@@ -362,9 +362,9 @@ marker），路由经 owner 模板的 `.semantic-popup-root` 锚点加第二段 
 TopLevel）；遮罩经共享 `TourLayer` 的逻辑父挂载命中。无需在用户 Style 中复写 `>>` route。
 
 `IsPopupPinnedOpen` 自 6.0 起 public（此前 internal）：钉住弹层常开，用于语义预览与设计检查场景。Gallery
-语义预览对齐 antd `_semantic.tsx`（默认打开、居中锚点按钮、首步带封面），并在舞台作用域用
+语义预览对齐上游 `_semantic.tsx`（默认打开、居中锚点按钮、首步带封面），并在舞台作用域用
 `TourPopupMaskStyle` 设置 `IsHitTestVisible=False`——遮罩全屏覆盖且默认参与命中测试，预览舞台需放行指针事件
-才能 hover 部件卡；这同时演示了 antd mask 语义中的"指针事件"定制维度。
+才能 hover 部件卡；这同时演示了上游 mask 语义中的"指针事件"定制维度。
 
 不得使用以下写法：
 
@@ -378,9 +378,9 @@ TopLevel）；遮罩经共享 `TourLayer` 的逻辑父挂载命中。无需在�
 
 以下区域不属于 Tour Semantic Part：
 
-- **箭头**：共享 `ArrowDecoratedBox` 的 `semantic-arrow` marker 存在，但不发布为 Tour 部件（antd 未将 arrow 列为
+- **箭头**：共享 `ArrowDecoratedBox` 的 `semantic-arrow` marker 存在，但不发布为 Tour 部件（上游未将 arrow 列为
   semantics；上游 `arrow=false` 由 `IsArrowVisible` API 承担）。
-- **操作按钮个体**：`popup.actions` 只承诺按钮组容器本体，上一步/下一步/完成按钮不单独发布（antd 同样只发布
+- **操作按钮个体**：`popup.actions` 只承诺按钮组容器本体，上一步/下一步/完成按钮不单独发布（上游同样只发布
   actions 容器）。
 - **指示器文本**：`TextTourIndicator` 的文本呈现不是语义部件；`popup.indicator` 只对 `DefaultTourIndicator` 物化。
 - **遮罩镂空几何**：目标区域镂空、圆角与偏移由 `GapRadius`/`GapOffsetX/Y` 与 `TourLayer.Render` 承担，
