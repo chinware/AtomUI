@@ -11,6 +11,7 @@
                         CornerRadius="{TemplateBinding CornerRadius}">
                     <Panel Name="RootLayout">
                         <Border Name="PART_Mask"
+                                Classes.semantic-mask="True"
                                 IsVisible="{TemplateBinding IsShowMask}"
                                 Background="{TemplateBinding Background}" />
                         <atom:MotionActor

@@ -26,7 +26,7 @@ public class DrawerShowCasePageTests
         source.ShouldNotContain("Tag=\"Examples\"");
         source.ShouldNotContain("Tag=\"Api\"");
         source.ShouldNotContain("Tag=\"DesignToken\"");
-        source.ShouldContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldContain("<gallery:GalleryShowCaseHost");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
         source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
@@ -42,18 +42,60 @@ public class DrawerShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:DrawerShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(8);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(8);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(8);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:DrawerViewModel\"").ShouldBe(8);
+        CountShowCaseItemElements(source).ShouldBe(9);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(9);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(9);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:DrawerViewModel\"").ShouldBe(10);
         source.ShouldContain("DrawerShowCaseLangResource BasicTitle");
         source.ShouldContain("DrawerShowCaseLangResource MultiLevelTitle");
         source.ShouldContain("DrawerShowCaseLangResource FormInDrawerTitle");
         source.ShouldContain("DrawerShowCaseLangResource PresetSizeTitle");
+        source.ShouldContain("DrawerShowCaseLangResource SemanticStylesTitle");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
+    }
+
+    [Fact]
+    public void Drawer_ShowCase_Semantic_Preview_Follows_The_Inline_Pinned_Pattern()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Drawer/Views/DrawerShowCase.axaml");
+
+        source.ShouldContain("GalleryShowCaseHost.SemanticPartsContentTemplate");
+        source.ShouldContain("<gallery:SemanticPartPreview Name=\"DrawerSemanticPreview\"");
+        source.ShouldContain("SemanticOwnerType=\"{x:Type atom:Drawer}\"");
+        source.ShouldContain("SemanticOwner=\"{Binding #DrawerSemanticOwner}\"");
+        source.ShouldContain("Name=\"DrawerSemanticStage\"");
+        source.ShouldContain("Name=\"DrawerSemanticOwner\"");
+        source.ShouldContain("IsOpen=\"True\"");
+        source.ShouldContain("IsPinnedOpen=\"True\"");
+        source.ShouldContain("IsMotionEnabled=\"False\"");
+        source.ShouldContain("DialogSize=\"300\"");
+        source.ShouldContain("OpenOn=\"{Binding #DrawerSemanticStage}\"");
+
+        // PartDescriptions 顺序对齐 antd _semantic.tsx（去掉 dragger）。
+        var paths = Regex.Matches(source, "SemanticPartDescription Path=\"([^\"]+)\"")
+                         .Select(static m => m.Groups[1].Value).ToArray();
+        paths.ShouldBe(["root", "mask", "section", "header", "title", "extra", "body", "footer", "close"]);
+
+        // 跨根经 ISemanticPartCrossRootProvider 上报，不允许出现 DropdownButton 式的 code-behind 根注册。
+        source.ShouldNotContain("HandleSemanticPreviewLoaded");
+        source.ShouldNotContain("HandleSemanticPreviewUnloaded");
+
+        // SemanticStyles 示例必须用生成 Style 类定制（专用 Style 唯一定制入口）。
+        var semanticStylesItem = ExtractShowCaseItem(source, "SemanticStylesTitle");
+        semanticStylesItem.ShouldContain("atom:DrawerMaskStyle");
+        semanticStylesItem.ShouldContain("atom:DrawerSectionStyle");
+        semanticStylesItem.ShouldContain("atom:DrawerHeaderStyle");
+        semanticStylesItem.ShouldContain("atom:DrawerTitleStyle");
+        semanticStylesItem.ShouldContain("atom:DrawerExtraStyle");
+        semanticStylesItem.ShouldContain("atom:DrawerBodyStyle");
+        semanticStylesItem.ShouldContain("atom:DrawerFooterStyle");
+        semanticStylesItem.ShouldContain("atom:DrawerCloseStyle");
+        // 禁止以事件处理器为特征的代码回退。
+        semanticStylesItem.ShouldNotContain(".Loaded=");
+        semanticStylesItem.ShouldNotContain(".Unloaded=");
     }
 
     [Fact]

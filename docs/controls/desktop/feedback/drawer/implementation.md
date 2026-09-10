@@ -11,6 +11,7 @@
 主要源码文件：
 
 - `src/AtomUI.Desktop.Controls/Drawer/Drawer.cs`
+- `src/AtomUI.Desktop.Controls/Drawer/Drawer.SemanticParts.cs`
 - `src/AtomUI.Desktop.Controls/Drawer/DrawerContainer.cs`
 - `src/AtomUI.Desktop.Controls/Drawer/DrawerInfoContainer.cs`
 - `src/AtomUI.Desktop.Controls/Drawer/DrawerPlacement.cs`
@@ -84,6 +85,14 @@ Public API / ItemsSource / Command / Event
 - `PART_InfoContainer`：稳定模板协作入口，重命名前必须同步主题和实现。
 - `PART_InfoContainerMotionActor`：稳定模板协作入口，重命名前必须同步主题和实现。
 - `PART_Mask`：稳定模板协作入口，重命名前必须同步主题和实现。
+
+### 语义部件基础设施
+
+- 全部非 root 语义部件位于运行时创建的 `DrawerContainer` 内，统一 `CrossVisualRoot + RuntimeCreated`，marker 静态声明在 `DrawerContainerTheme.axaml`（`PART_Mask`）与 `DrawerInfoContainerTheme.axaml`（`Frame`、`InfoHeader`、`HeaderText`、`ExtraContentPresenter`、`InfoContainer`、`InfoFooter`、`PART_CloseButton`）。
+- 容器可达性不变量：`AttachToLayer` 在 `layer.Children.Add` 之前调用 `((ISetLogicalParent)this).SetParent(drawer)`（Panel 不会覆盖已显式设置的逻辑父），`DetachFromLayer` 置空；owner 嵌套生成 Semantic Style 的命中依赖此不变量。
+- `BindToDrawer` 显式中继 `ThemeVariantScope.ActualThemeVariant`（ImagePreviewer 先例），保证容器跟随 owner 主题变体。
+- `Drawer : ISemanticPartCrossRootProvider`：容器挂层（`Open` 末尾）、`NotifyClosed`、`ReleaseDrawerContainer` 三处触发 `CrossRootsChanged`；`GetCrossRoots()` 仅在容器有视觉父时返回 `[container]`。
+- `IsPinnedOpen`：`DrawerContainer.OnPointerReleased`（遮罩点击）与 `HandleCloseRequested`（关闭按钮）两处拦截，钉住时不落 `IsOpen=false`。
 
 ## 6. 交互与事件处理
 

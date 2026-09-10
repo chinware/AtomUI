@@ -14,7 +14,6 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
 using Avalonia.VisualTree;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -247,7 +246,9 @@ internal class DrawerContainer : ContentControl
             Bind(IsShowCloseButtonProperty, drawer[!AtomUI.Desktop.Controls.Drawer.IsShowCloseButtonProperty]),
             Bind(IsMotionEnabledProperty, drawer[!AtomUI.Desktop.Controls.Drawer.IsMotionEnabledProperty]),
             Bind(IsCloseOnMaskClickProperty, drawer[!AtomUI.Desktop.Controls.Drawer.IsCloseOnMaskClickProperty]),
-            Bind(PushOffsetPercentProperty, drawer[!AtomUI.Desktop.Controls.Drawer.PushOffsetPercentProperty])
+            Bind(PushOffsetPercentProperty, drawer[!AtomUI.Desktop.Controls.Drawer.PushOffsetPercentProperty]),
+            Bind(ThemeVariantScope.ActualThemeVariantProperty,
+                drawer.GetBindingObservable(ThemeVariantScope.ActualThemeVariantProperty))
         };
     }
 
@@ -445,6 +446,14 @@ internal class DrawerContainer : ContentControl
             currentParent.Children.Remove(this);
         }
 
+        // 语义部件契约：容器必须逻辑挂到 Drawer owner 下，owner 嵌套的生成
+        // Semantic Style 才能命中容器子树。必须在 Children.Add 之前设置：
+        // Panel 收集子项不会覆盖已显式设置的逻辑父（先例：ImagePreviewer 的 OverlayHost）。
+        if (Drawer is not null && Drawer.TryGetTarget(out var drawer))
+        {
+            ((ISetLogicalParent)this).SetParent(drawer);
+        }
+
         if (!layer.Children.Contains(this))
         {
             layer.Children.Add(this);
@@ -462,6 +471,7 @@ internal class DrawerContainer : ContentControl
             layer?.Children.Remove(this);
         }
 
+        ((ISetLogicalParent)this).SetParent(null);
         ScopeAwareAdornerLayer.SetAdornedElement(this, null);
         ClearHostMargin();
     }
@@ -557,6 +567,11 @@ internal class DrawerContainer : ContentControl
         {
             if (Drawer != null && Drawer.TryGetTarget(out var drawer))
             {
+                if (drawer.IsPinnedOpen)
+                {
+                    return;
+                }
+
                 drawer.IsOpen = false;
             }
         }
@@ -584,6 +599,11 @@ internal class DrawerContainer : ContentControl
     {
         if (Drawer != null && Drawer.TryGetTarget(out var drawer))
         {
+            if (drawer.IsPinnedOpen)
+            {
+                return;
+            }
+
             drawer.IsOpen = false;
         }
     }

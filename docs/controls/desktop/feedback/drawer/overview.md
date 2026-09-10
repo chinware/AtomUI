@@ -40,7 +40,7 @@ Drawer 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
 | 内容与数据 | `Content`、`ContentTemplate`、`ExtraTemplate`、`FooterTemplate`、`Title` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 交互与状态 | `IsCloseOnMaskClick`、`IsMotionEnabled`、`IsOpen`、`IsShowCloseButton`、`IsShowMask` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
+| 交互与状态 | `IsCloseOnMaskClick`、`IsMotionEnabled`、`IsOpen`、`IsPinnedOpen`、`IsShowCloseButton`、`IsShowMask` | 表达用户可观察状态、可用性、清除、加载或反馈语义；`IsPinnedOpen` 钉住常开（语义预览用），拦截遮罩点击与关闭按钮，不拦截外部 `IsOpen` 赋值。 |
 | 视觉与布局 | `DialogSize`、`Placement`、`PushOffsetPercent`、`SizeType` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 其他稳定入口 | `Extra`、`Footer`、`OpenOn` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
@@ -161,18 +161,23 @@ Drawer 的视觉选项通过 public API 归一为 theme variables、伪类或模
 关联文档：
 
 - [Drawer 桌面版实现原理](implementation.md)
+- [Drawer Semantic Part 契约](semantic-part.md)
 - [Drawer Token 设计](token.md)
 - [Drawer Changelog](changelog.md)
 
-LLMS 语义区域：
+LLMS 语义区域（完整契约见 [semantic-part.md](semantic-part.md)）：
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `Drawer` | 反馈控件根语义区域，承载 public API、反馈状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `host` | `宿主或弹层区域` | 承载 overlay、popup、portal、message host、drawer 或 modal 容器。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `surface` | `反馈表面` | 承载背景、边框、阴影、尺寸、placement 和视觉状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载标题、正文、图标、进度、结果、操作或关闭入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效区域` | 表达进入退出、loading、progress、skeleton 或水印刷新反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `root` | `Drawer`（owner，零尺寸标记控件） | 语义身份与 owner 级样式定制入口；antd fixed root 对应内部 `DrawerContainer`，不暴露。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `mask` | `PART_Mask`（Border） | 遮罩层：定位、层级、背景、指针事件。 | `IsShowMask`、`IsCloseOnMaskClick` | `ColorBgMask` | stable |
+| `section` | `Frame`（Border） | 面板容器：flex 布局、宽高、背景、边缘阴影。 | `DialogSize`、`Placement` | `ColorBgElevated`、`BoxShadowDrawer*` | stable |
+| `header` | `InfoHeader`（Grid） | 头部排布与内边距。 | `Title`、`Extra`、`IsShowCloseButton` | `HeaderMargin` | stable |
+| `title` | `HeaderText`（TextBlock） | 标题文字排版。 | `Title` | `FontSizeLG`、`FontWeightStrong` | stable |
+| `extra` | `ExtraContentPresenter` | 头部尾缘额外操作内容。 | `Extra`、`ExtraTemplate` | - | stable |
+| `body` | `InfoContainer`（ContentPresenter） | 主内容区：占位、内边距、滚动。 | `Content`、`ContentPadding` | `ContentPadding` | stable |
+| `footer` | `InfoFooter`（ContentPresenter） | 底部操作区，仅设置 Footer 时可见。 | `Footer`、`FooterTemplate` | `FooterPadding` | stable |
+| `close` | `PART_CloseButton`（IconButton） | 关闭按钮；钉住预览忽略其关闭请求。 | `IsShowCloseButton`、`IsPinnedOpen` | `CloseIconPadding`、`CloseIconMargin` | stable |
 
 LLMS 导出来源：
 

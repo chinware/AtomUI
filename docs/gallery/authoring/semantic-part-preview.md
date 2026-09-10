@@ -414,6 +414,24 @@ public interface ISemanticPartCrossRootProvider
 Popup 首次打开竞态、直接 Child wrapper 契约和 pinned light-dismiss 的完整排查记录见
 [Semantic Part Popup 首次打开生命周期竞态案例](../../engineering/case-studies/semantic-part-popup-first-open-lifecycle-case-study.md)。
 
+非 Popup 宿主的遮罩类弹层控件（Drawer 先例）演示语义部件时，不走 Popup 钉住模式，改用**内联常开舞台**，
+即上游 antd `getContainer={false}` 的等价物：
+
+1. 预览内容根是一个 `ScrollContentPresenter`，内含舞台 Border（限高、裁剪、浅色填充）。`ScrollContentPresenter`
+   是 `ScopeAwareAdornerLayer` 层解析的最近宿主：层注入只包裹舞台自身。若缺少该局部宿主，层解析会逃逸到页面级
+   滚动容器，`InjectLayer` 重挂整页内容导致 `GalleryShowCaseHost` 脱离视觉树并释放语义预览——这是已踩过的坑，
+   不得回退。
+2. 演示控件声明式设置 `IsOpen="True"` + `IsPinnedOpen="True"`（钉住后忽略遮罩点击与关闭按钮）+
+   `IsMotionEnabled="False"`，`OpenOn` 绑定舞台 Border，遮罩与面板渲染于舞台局部 layer 内。
+3. 舞台内容用 `Grid` 让零尺寸 owner 拉伸铺满舞台：`root` 卡片高亮 = 整个内联容器，对齐上游 root 语义
+   （resolver 对零尺寸目标不建 Adorner，此布局同时解决该问题）。
+4. 跨根根集合由控件自身的 `ISemanticPartCrossRootProvider` 上报，页面无需 code-behind 注册
+   `AdditionalRoots`（区别于 DropdownButton 的 Popup 根注册模式）。
+5. 舞台 Border 用 `MinHeight` + 默认拉伸，禁止固定 `Height`：限高钳制模式下画布会随宿主收缩，
+   固定高度会与视口相抵被裁（遮罩/面板连同高亮框越出可见区）。`PreviewStageMinHeight`
+   地板必须覆盖舞台内容的真实期望：视口 = 地板 − 62（面板开销），需 ≥ 舞台 MinHeight + 边距
+   （Drawer 先例：MinHeight 320 + 边距 48 → 地板 434）。
+
 ## 11. 高密度预算
 
 `Multiple` Part 只处理已实例化且可见的节点。单次 `SemanticPartHighlightSession` 默认最多创建 32 个 Adorner：
