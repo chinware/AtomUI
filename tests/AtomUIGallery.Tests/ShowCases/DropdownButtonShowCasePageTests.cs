@@ -26,7 +26,8 @@ public class DropdownButtonShowCasePageTests
         source.ShouldNotContain("Tag=\"Examples\"");
         source.ShouldNotContain("Tag=\"Api\"");
         source.ShouldNotContain("Tag=\"DesignToken\"");
-        source.ShouldContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldContain("<gallery:GalleryShowCaseHost");
+        source.ShouldContain("gallery:GalleryShowCaseHost.SemanticPartsContentTemplate");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
         source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
@@ -42,10 +43,11 @@ public class DropdownButtonShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:DropdownButtonShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(5);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(5);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(5);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:DropdownButtonViewModel\"").ShouldBe(5);
+        CountShowCaseItemElements(source).ShouldBe(6);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(6);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(6);
+        // 6 个示例模板 + 1 个语义部件预览模板
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:DropdownButtonViewModel\"").ShouldBe(7);
         CountOccurrences(source, "<gallery:ShowCaseItem.Styles>").ShouldBe(2);
         source.ShouldContain("DropdownButtonShowCaseLangResource BasicTitle");
         source.ShouldContain("DropdownButtonShowCaseLangResource ButtonTypesTitle");
@@ -58,6 +60,61 @@ public class DropdownButtonShowCasePageTests
         source.ShouldContain("Padding=\"18,0\"");
         source.ShouldContain("FontSize=\"15\"");
         source.ShouldContain("DropdownButtonShowCaseLangResource PlacementTitle");
+        source.ShouldContain("DropdownButtonShowCaseLangResource SemanticStylesTitle");
+        source.ShouldContain("DropdownButtonShowCaseLangResource SemanticStylesDescription");
+        source.ShouldContain("DropdownButtonShowCaseLangResource SemanticStylesObjectButton");
+        source.ShouldContain("DropdownButtonShowCaseLangResource SemanticStylesFunctionButton");
+        source.ShouldContain("DropdownButtonShowCaseLangResource SemanticStylesItemProfile");
+        source.ShouldContain("DropdownButtonShowCaseLangResource SemanticStylesItemSettings");
+        source.ShouldContain("DropdownButtonShowCaseLangResource SemanticStylesItemLogout");
+        source.ShouldContain("<StackPanel Spacing=\"24\">");
+        source.ShouldContain("ButtonType=\"Primary\"");
+        source.ShouldContain("TriggerType=\"Click\"");
+        // 命名对齐全局惯例（AbstractSelect/TreeSelect/Cascader/AutoComplete 的 IsPopupMatchSelectWidth）。
+        source.ShouldContain("IsPopupMatchSelectWidth=\"True\"");
+        source.ShouldNotContain("MatchAnchorWidth");
+        source.ShouldContain("Value=\"#d9d9d9\"");
+        source.ShouldContain("Value=\"4\"");
+        source.ShouldContain("Value=\"#1890ff\"");
+        source.ShouldContain("Value=\"8\"");
+        source.ShouldContain("Kind=LogoutOutlined");
+        source.ShouldContain("Kind=SettingOutlined");
+        source.ShouldContain("<atom:MenuSeparator />");
+        source.ShouldContain("Foreground=\"{atom:SharedTokenResource ColorError}\"");
+        source.ShouldContain("SemanticOwnerType=\"{x:Type atom:DropdownButton}\"");
+        source.ShouldContain("SemanticOwner=\"{Binding #DropdownButtonSemanticOwner}\"");
+        source.ShouldContain("<atom:DropdownButtonPopupRootStyle x:SetterTargetType=\"atom:ArrowDecoratedBox\">");
+        source.ShouldContain("<atom:DropdownButtonItemStyle x:SetterTargetType=\"atom:MenuItem\">");
+        source.ShouldContain("<atom:DropdownButtonItemIconStyle x:SetterTargetType=\"atom:IconPresenter\">");
+        source.ShouldContain("<atom:DropdownButtonItemContentStyle x:SetterTargetType=\"ContentPresenter\">");
+        source.ShouldContain("<atom:MenuItemGroup");
+        source.ShouldContain("DropdownButtonShowCaseLangResource SemanticPreviewGroupTitle");
+        source.ShouldContain("DropdownButtonShowCaseLangResource SemanticPreviewFirstMenuItem");
+        source.ShouldContain("DropdownButtonShowCaseLangResource SemanticPreviewSecondMenuItem");
+        source.ShouldContain("DropdownButtonShowCaseLangResource SemanticPreviewSubMenu");
+        source.ShouldContain("DropdownButtonShowCaseLangResource SemanticPreviewItem1");
+        source.ShouldContain("DropdownButtonShowCaseLangResource SemanticPreviewOption1");
+        source.ShouldContain("DropdownButtonShowCaseLangResource SemanticPreviewOption2");
+        source.ShouldContain("Kind=SaveOutlined");
+        source.ShouldContain("Kind=EditOutlined");
+        source.ShouldContain("Kind=DeleteOutlined");
+        source.ShouldContain("IsSubMenuOpen=\"True\"");
+        source.ShouldContain("DropdownButtonShowCaseLangResource SemanticItemTitleDescription");
+        source.ShouldContain("Path=\"itemTitle\"");
+        source.IndexOf("Path=\"popup.root\"", StringComparison.Ordinal)
+            .ShouldBeLessThan(source.IndexOf("Path=\"itemTitle\"", StringComparison.Ordinal));
+        source.IndexOf("Path=\"itemTitle\"", StringComparison.Ordinal)
+            .ShouldBeLessThan(source.IndexOf("Path=\"item\"", StringComparison.Ordinal));
+        source.IndexOf("Path=\"item\"", StringComparison.Ordinal)
+            .ShouldBeLessThan(source.IndexOf("Path=\"itemContent\"", StringComparison.Ordinal));
+        source.IndexOf("Path=\"itemContent\"", StringComparison.Ordinal)
+            .ShouldBeLessThan(source.IndexOf("Path=\"itemIcon\"", StringComparison.Ordinal));
+        // 弹层根注册处理器（AdditionalRoots）是跨视觉根弹层语义预览的仓库既定模式
+        // （同 InfoFlyout）：仅允许挂在 SemanticPartPreview 上，其余元素禁止 Loaded/Unloaded。
+        source.ShouldContain("Loaded=\"HandleSemanticPreviewLoaded\"");
+        source.ShouldContain("Unloaded=\"HandleSemanticPreviewUnloaded\"");
+        CountOccurrences(source, "Loaded=\"").ShouldBe(1);
+        CountOccurrences(source, "Unloaded=\"").ShouldBe(1);
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain("<atom:DataGrid");

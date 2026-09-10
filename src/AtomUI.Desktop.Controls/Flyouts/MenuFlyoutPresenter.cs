@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using AtomUI.Controls;
+using AtomUI.Generated.AtomUIDesktopControls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Platform;
@@ -172,12 +173,19 @@ public class MenuFlyoutPresenter : MenuBase,
             return new MenuSeparator();
         }
 
-        return new MenuItem();
+        if (item is MenuItemGroupData)
+        {
+            return new MenuItemGroup();
+        }
+
+        var menuItem = new MenuItem();
+        menuItem.Classes.Add(DropdownButtonSemanticParts.ItemClass);
+        return menuItem;
     }
 
     protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
     {
-        if (item is MenuItem or MenuSeparator)
+        if (item is MenuItem or MenuSeparator or MenuItemGroup)
         {
             recycleKey = null;
             return false;
@@ -191,6 +199,8 @@ public class MenuFlyoutPresenter : MenuBase,
     {
         if (container is MenuItem menuItem)
         {
+            menuItem.Classes.Add(DropdownButtonSemanticParts.ItemClass);
+
             if (item != null && item is not Visual)
             {
                 if (!menuItem.IsSet(MenuItem.HeaderProperty))
@@ -239,6 +249,10 @@ public class MenuFlyoutPresenter : MenuBase,
         {
             menuSeparator.Orientation = Orientation.Horizontal;
         }
+        else if (container is MenuItemGroup)
+        {
+            // 分组标题与子项的样式由 MenuItemGroup 自身的模板与容器逻辑处理。
+        }
         else
         {
             throw new ArgumentOutOfRangeException(nameof(container),
@@ -271,6 +285,12 @@ public class MenuFlyoutPresenter : MenuBase,
         base.OnApplyTemplate(e);
         _arrowDecoratedBox =
             e.NameScope.Find<ArrowDecoratedBox>(AbstractArrowDecoratedBox.ArrowDecoratorPart);
+        // popup.root 语义部件指向弹层根视觉面（ArrowDecoratedBox），而非共享的
+        // MenuFlyoutPresenter 容器：边框 / 背景 / 圆角由 ArrowDecoratedBox 的
+        // PART_ContentDecorator 渲染。标记类无法在共享 ArrowDecoratedBox 主题上静态声明
+        // （会污染其他 ArrowDecoratedBox 弹层），因此按 DropdownButton 语义部件契约在
+        // 模板应用时运行时注入。
+        _arrowDecoratedBox?.Classes.Add(DropdownButtonSemanticParts.PopupRootClass);
         ConfigureMaxPopupHeight();
     }
 

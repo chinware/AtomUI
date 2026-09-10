@@ -85,8 +85,7 @@
                             IsLightDismissEnabled="False"
                             RequestedPlacement="RightEdgeAlignedTop"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                            ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
-                            IsOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
+                            ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}">
                     <Border Name="PopupFrame"
                             MaxHeight="{TemplateBinding MaxPopupHeight}"
                             Padding="{TemplateBinding PopupPadding}">

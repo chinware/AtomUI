@@ -1,10 +1,12 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Generated.AtomUIDesktopControls;
 using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
@@ -166,6 +168,7 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData, IScrollAwareControl
     {
         if (change.Property == IsSubMenuOpenProperty)
         {
+            SyncSubMenuPopupOpenState();
             if (change.GetNewValue<bool>())
             {
                 ConfigureDetachedTitleBarPopupPlacement();
@@ -227,12 +230,19 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData, IScrollAwareControl
             return new MenuSeparator();
         }
 
-        return new MenuItem();
+        if (item is MenuItemGroupData)
+        {
+            return new MenuItemGroup();
+        }
+
+        var menuItem = new MenuItem();
+        menuItem.Classes.Add(DropdownButtonSemanticParts.ItemClass);
+        return menuItem;
     }
 
     protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
     {
-        if (item is MenuItem or MenuSeparator)
+        if (item is MenuItem or MenuSeparator or MenuItemGroup)
         {
             recycleKey = null;
             return false;
@@ -247,6 +257,8 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData, IScrollAwareControl
         base.PrepareContainerForItemOverride(container, item, index);
         if (container is MenuItem menuItem)
         {
+            menuItem.Classes.Add(DropdownButtonSemanticParts.ItemClass);
+
             if (item != null && item is not Visual)
             {
                 if (!menuItem.IsSet(HeaderProperty))
@@ -293,6 +305,10 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData, IScrollAwareControl
         {
             menuSeparator.Orientation = Orientation.Horizontal;
         }
+        else if (container is MenuItemGroup)
+        {
+            // 分组标题与子项的样式由 MenuItemGroup 自身的模板与容器逻辑处理。
+        }
         else if (container is not MenuSeparator)
         {
             throw new ArgumentOutOfRangeException(nameof(container),
@@ -309,19 +325,78 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData, IScrollAwareControl
         ClearDetachedTitleBarPopupPlacement();
         _popupPinnedOpenBinding?.Dispose();
         _popupPinnedOpenBinding = null;
+        if (_popup is not null)
+        {
+            _popup.Opened -= HandleSubMenuPopupOpened;
+            _popup.Closed -= HandleSubMenuPopupClosed;
+        }
+
         base.OnApplyTemplate(e);
+        e.NameScope.Find<IconPresenter>("ItemIconPresenter")?
+         .Classes.Add(DropdownButtonSemanticParts.ItemIconClass);
+        e.NameScope.Find<ContentPresenter>("ItemTextPresenter")?
+         .Classes.Add(DropdownButtonSemanticParts.ItemContentClass);
         _popup = e.NameScope.Find<Popup>("PART_Popup");
         if (_popup != null)
         {
+            _popup.Opened += HandleSubMenuPopupOpened;
+            _popup.Closed += HandleSubMenuPopupClosed;
             _popupPinnedOpenBinding = BindUtils.RelayBind(
                 this,
                 IsPopupPinnedOpenProperty,
                 _popup,
                 Popup.IsPopupPinnedOpenProperty);
+            if (IsSubMenuOpen)
+            {
+                DeferSubMenuPopupOpen(_popup);
+            }
         }
         ConfigureDetachedTitleBarPopupPlacement();
         UpdatePseudoClasses();
         ConfigureMaxPopupHeight();
+    }
+
+    private void SyncSubMenuPopupOpenState()
+    {
+        // 模板尚未应用时（声明式 IsSubMenuOpen="True"）由 OnApplyTemplate 延迟同步：
+        // 子菜单弹层不能在模板应用 / 父弹层的强制布局期间同步 Open()。
+        if (_popup is null)
+        {
+            return;
+        }
+
+        _popup.IsOpen = IsSubMenuOpen;
+    }
+
+    private void DeferSubMenuPopupOpen(Popup popup)
+    {
+        // 声明式打开（IsSubMenuOpen="True"，对应上游 defaultOpenKeys）在模板应用时物化。
+        // 此刻通常处于父弹层 OverlayPopupHost.Show 的强制布局 / 模板应用期间，
+        // 同步 Open() 会在 PopupOverlayLayer.MeasureOverride 枚举 Children 时修改集合
+        // （Collection was modified），因此延迟到下一个调度帧再打开。
+        Dispatcher.Post(() =>
+        {
+            if (ReferenceEquals(popup, _popup) && IsSubMenuOpen && !popup.IsOpen)
+            {
+                popup.IsOpen = true;
+            }
+        });
+    }
+
+    private void HandleSubMenuPopupOpened(object? sender, EventArgs e)
+    {
+        if (!IsSubMenuOpen)
+        {
+            SetCurrentValue(IsSubMenuOpenProperty, true);
+        }
+    }
+
+    private void HandleSubMenuPopupClosed(object? sender, EventArgs e)
+    {
+        if (IsSubMenuOpen)
+        {
+            SetCurrentValue(IsSubMenuOpenProperty, false);
+        }
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)

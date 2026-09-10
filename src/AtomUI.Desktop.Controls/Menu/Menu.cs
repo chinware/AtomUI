@@ -99,12 +99,17 @@ public class Menu : AvaloniaMenu,
             return new MenuSeparator();
         }
 
+        if (item is MenuItemGroupData)
+        {
+            return new MenuItemGroup();
+        }
+
         return new MenuItem();
     }
 
     protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
     {
-        if (item is MenuItem or MenuSeparator)
+        if (item is MenuItem or MenuSeparator or MenuItemGroup)
         {
             recycleKey = null;
             return false;
@@ -166,6 +171,10 @@ public class Menu : AvaloniaMenu,
         else if (container is MenuSeparator menuSeparator)
         {
             menuSeparator.Orientation = Orientation.Vertical;
+        }
+        else if (container is MenuItemGroup)
+        {
+            // 分组标题与子项的样式由 MenuItemGroup 自身的模板与容器逻辑处理。
         }
         else
         {
