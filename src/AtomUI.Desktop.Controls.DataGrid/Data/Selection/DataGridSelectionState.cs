@@ -180,9 +180,14 @@ public sealed class DataGridSelectionState : IEquatable<DataGridSelectionState>
         ValidateKey(key, nameof(key));
         if (single)
         {
-            return isSelected
-                ? new DataGridSelectionState([key], null, [], [])
-                : Empty;
+            if (isSelected)
+            {
+                return new DataGridSelectionState([key], null, [], []);
+            }
+
+            return ContainsKey(ExplicitKeys, key)
+                ? Empty
+                : this;
         }
 
         if (isSelected)

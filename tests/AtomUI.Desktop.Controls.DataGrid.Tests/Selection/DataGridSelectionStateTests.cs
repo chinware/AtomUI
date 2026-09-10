@@ -119,6 +119,33 @@ public class DataGridSelectionStateTests
     }
 
     [Fact]
+    public void Single_Mode_Deselecting_Previous_Key_Does_Not_Clear_Current_Selection()
+    {
+        var scope = Scope("s1");
+        var selected = DataGridSelectionState.Empty
+            .WithKey(Key(1), 0, scope, isSelected: true, single: true)
+            .WithKey(Key(2), 1, scope, isSelected: true, single: true);
+
+        var afterPreviousRowDeselected = selected.WithKey(
+            Key(1),
+            0,
+            scope,
+            isSelected: false,
+            single: true);
+
+        afterPreviousRowDeselected.ShouldBeSameAs(selected);
+        afterPreviousRowDeselected.ExplicitKeys.ShouldBe([Key(2)]);
+
+        afterPreviousRowDeselected.WithKey(
+                Key(2),
+                1,
+                scope,
+                isSelected: false,
+                single: true)
+            .ShouldBeSameAs(DataGridSelectionState.Empty);
+    }
+
+    [Fact]
     public void Selecting_A_Row_Already_Covered_By_A_Broad_Expression_Does_Not_Grow_Explicit_Keys()
     {
         var scope = Scope("s1");
