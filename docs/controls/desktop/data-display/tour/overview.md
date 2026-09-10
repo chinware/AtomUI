@@ -1,8 +1,8 @@
 # Tour 桌面版架构设计
 
-本文档定义 `Tour` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Tour 桌面版实现原理](implementation.md)，Tour Token 的专项设计见 [Tour Token 设计](token.md)，设计和契约变化记录见 [Tour Changelog](changelog.md)。
+本文档定义 `Tour` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/development/control-development-guidelines.md)，内部实现原理见 [Tour 桌面版实现原理](implementation.md)，Tour Token 的专项设计见 [Tour Token 设计](token.md)，Semantic Part 契约见 [Tour Semantic Part 契约](semantic-part.md)，设计和契约变化记录见 [Tour Changelog](changelog.md)。
 
-该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。本控件的语义 owner 为 `Tour`，其 internal `IsPopupPinnedOpen` 只供测试和内部诊断使用；设置为 true 时保持 `Tour.IsOpen` 并 relay 到 `PART_Popup`，设置为 false 时只解除关闭拦截。控件卸载、锚点失效、TopLevel 改变和模板重建仍按共享生命周期规则清理。
+该控件的 Popup 钉住打开属于共享弹层契约，详见 [Popup 钉住打开设计](../../other/popup/popup-pinned-open-design.md)。本控件的语义 owner 为 `Tour`，其 public `IsPopupPinnedOpen` 用于语义预览与设计检查场景钉住弹层常开；设置为 true 时保持 `Tour.IsOpen` 并 relay 到 `PART_Popup`，设置为 false 时只解除关闭拦截。控件卸载、锚点失效、TopLevel 改变和模板重建仍按共享生命周期规则清理。
 
 ## 1. 控件定位
 
@@ -43,7 +43,7 @@ Tour 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 | --- | --- | --- |
 | 内容与数据 | `CloseIcon`、`CoverTemplate`、`Description`、`DescriptionTemplate`、`ItemSpacing`、`ItemTemplate`、`Title`、`TitleTemplate` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
 | 选择与集合 | `ActiveIndex`、`CurrentIndex`、`IndicatorActiveColor`、`StepCount` | 维护选择、展开、过滤、分页、分组或集合状态；`CurrentIndex` 默认双向绑定。 |
-| 交互与状态 | `IsArrowVisible`、`IsDisabledInteraction`、`IsMotionEnabled`、`IsOpen`、`IsPointAtCenter`、`IsScrollIntoView`、`IsShowMask` | 表达用户可观察状态、可用性、清除、加载或反馈语义；`IsOpen` 默认双向绑定。 |
+| 交互与状态 | `IsArrowVisible`、`IsDisabledInteraction`、`IsMotionEnabled`、`IsOpen`、`IsPointAtCenter`、`IsPopupPinnedOpen`、`IsScrollIntoView`、`IsShowMask` | 表达用户可观察状态、可用性、清除、加载或反馈语义；`IsOpen` 默认双向绑定；`IsPopupPinnedOpen` 钉住弹层常开（语义预览场景）。 |
 | 视觉与布局 | `Background`、`GapOffsetX`、`GapOffsetY`、`GapRadius`、`IndicatorColor`、`IndicatorSize`、`MaskColor`、`Placement`、`StyleType`、`TargetRegionCornerRadius` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 其他稳定入口 | `Cover`、`Indicator`、`Target`、`TargetRegion` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
@@ -166,17 +166,26 @@ Tour 的视觉选项通过 public API 归一为 theme variables、伪类或模�
 
 - [Tour 桌面版实现原理](implementation.md)
 - [Tour Token 设计](token.md)
+- [Tour Semantic Part 契约](semantic-part.md)
 - [Tour Changelog](changelog.md)
 
-LLMS 语义区域：
+LLMS 语义区域（完整字段契约见 [Tour Semantic Part 契约](semantic-part.md)）：
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `Tour` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `root` | `Tour` | 引导流程 owner：步骤集合、受控开关状态与目标锚定。 | `IsOpen`、`CurrentIndex`、`Steps` | 无独立 Token | stable since 6.0 |
+| `popup.root` | `PART_ArrowDecorator`（ArrowDecoratedBox） | 引导卡片容器根，承载内容与箭头。 | `Placement`、`IsArrowVisible` | `TourBorderRadius` | stable since 6.0 |
+| `popup.mask` | 共享 `TourLayer`（逻辑父挂载） | 整屏遮罩、镂空高亮目标并阻挡交互。 | `IsShowMask`、`MaskColor`、`GapRadius` | `ColorBgMask` | stable since 6.0 |
+| `popup.section` | ArrowDecoratedBox `PART_ContentDecorator` | 卡片主要内容区域（圆角/背景/内边距）。 | `StyleType` | `TourBorderRadius` | stable since 6.0 |
+| `popup.cover` | TourStep 模板 `CoverPresenter` | 步骤封面区域。 | `TourStep.Cover` | 无 | stable since 6.0 |
+| `popup.close` | TourStep 模板 `CloseButton` | 关闭按钮，结束引导。 | `CloseIcon` | `CloseBtnSize` | stable since 6.0 |
+| `popup.header` | TourStep 模板 header Border | 头部容器（标题 + 关闭按钮）。 | 无独立 API | 无 | stable since 6.0 |
+| `popup.title` | TourStep 模板 `Title` | 标题文字。 | `TourStep.Title` | `HeaderColor` | stable since 6.0 |
+| `popup.description` | TourStep 模板 `DescriptionPresenter` | 描述文字。 | `TourStep.Description` | 无 | stable since 6.0 |
+| `popup.footer` | TourStepsView 模板 `FooterFrame` | 底部操作区（指示器 + 按钮组）。 | 无独立 API | 无 | stable since 6.0 |
+| `popup.actions` | TourStepsView 模板 `ActionsLayout` | 操作按钮组容器。 | `CustomActions` | `PrimaryPrevBtnBg` | stable since 6.0 |
+| `popup.indicators` | TourStepsView 模板 `IndicatorPresenter` | 指示器组容器。 | `Indicator` | 无 | stable since 6.0 |
+| `popup.indicator` | DefaultTourIndicator 物化圆点 | 单个步骤指示器圆点（含激活态）。 | `IndicatorSize`、`IndicatorColor` | `IndicatorSize` | stable since 6.0 |
 
 LLMS 导出来源：
 

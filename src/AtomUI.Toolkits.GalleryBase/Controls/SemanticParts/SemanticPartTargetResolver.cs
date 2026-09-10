@@ -60,6 +60,19 @@ internal static class SemanticPartTargetResolver
         if (string.Equals(part.Path, "root", StringComparison.Ordinal))
         {
             AddMatch(owner);
+
+            // 弹层承载型控件（如 Tour）的 owner 布局尺寸为零，root 没有可定位的宿主表面。
+            // 对齐上游语义（Tour 的 root 即可见的弹层容器）：owner 不可定位时回退到
+            // 其 "popup.root" 部件的标记节点（模板弹层根）。回退目标是 popup.root 契约
+            // 的实例，不能复用 AddMatch——那会按 root 部件的契约（owner 类型）把它拒绝；
+            // 资格校验由回退逻辑按 popup.root 部件执行，此处直接入列。
+            if (targets.Count == 0 &&
+                TryResolvePopupRootFallback(owner, registry, additionalRoots) is { } popupRoot)
+            {
+                totalMatchCount++;
+                targets.Add(popupRoot);
+            }
+
             return new SemanticPartTargetResolution(targets, totalMatchCount);
         }
 
@@ -112,6 +125,82 @@ internal static class SemanticPartTargetResolver
         }
 
         return new SemanticPartTargetResolution(targets, totalMatchCount);
+    }
+
+    /// <summary>
+    /// 弹层承载型控件（owner 布局尺寸为零，如 Tour）的 root 回退解析：定位 owner 模板
+    /// 弹层中的 "popup.root" 标记节点（该节点的可视范围即上游语义中的控件根容器）。
+    /// </summary>
+    private static Visual? TryResolvePopupRootFallback(
+        Control owner,
+        SemanticPartRegistry registry,
+        IEnumerable<Visual>? additionalRoots)
+    {
+        if (!registry.TryGetControl(owner.GetType(), out var descriptor))
+        {
+            return null;
+        }
+
+        SemanticPartDescriptor? popupRootPart = null;
+        foreach (var candidate in descriptor.Parts)
+        {
+            if (string.Equals(candidate.Path, "popup.root", StringComparison.Ordinal))
+            {
+                popupRootPart = candidate;
+                break;
+            }
+        }
+
+        if (popupRootPart?.SelectorClass is not { } selectorClass)
+        {
+            return null;
+        }
+
+        Visual? MatchInSubtree(Visual root)
+        {
+            if (IsLocatablePopupRootMarker(root))
+            {
+                return root;
+            }
+
+            return root.GetVisualDescendants().FirstOrDefault(IsLocatablePopupRootMarker);
+        }
+
+        // 回退节点是 "popup.root" 契约的实例，资格校验（含契约类型）按 popup.root
+        // 部件执行，而不是发起回退的 root 部件（其契约为 owner 类型）。
+        bool IsLocatablePopupRootMarker(Visual candidate)
+        {
+            return HasMarker(candidate, popupRootPart) && IsEligible(candidate, popupRootPart);
+        }
+
+        foreach (var popup in owner.GetVisualDescendants().OfType<Popup>())
+        {
+            if (popup.Child is { } child &&
+                MatchInSubtree(child) is { } fromPopup)
+            {
+                return fromPopup;
+            }
+        }
+
+        foreach (var root in additionalRoots ?? Array.Empty<Visual>())
+        {
+            if (root is null)
+            {
+                continue;
+            }
+
+            if (ReferenceEquals(root, owner))
+            {
+                continue;
+            }
+
+            if (MatchInSubtree(root) is { } fromRoot)
+            {
+                return fromRoot;
+            }
+        }
+
+        return null;
     }
 
     private static bool CrossesNestedOwnerBoundary(

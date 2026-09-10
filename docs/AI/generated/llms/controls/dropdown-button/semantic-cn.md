@@ -4,16 +4,148 @@
 
 ## Semantic Parts
 
-| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
-| --- | --- | --- | --- | --- | --- |
-| `root` | `DropdownButton` | 导航控件根语义区域，承载 public API、状态归一和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `icon` | `PART_ButtonIcon` | 展示用户设置的动作图标。 | `Icon`、`IconWidth`、`IconHeight` | SharedToken `IconSize*` | stable |
-| `loadingIcon` | `PART_LoadingIcon` | 展示 loading 状态图标。 | `IsLoading`、`IconWidth`、`IconHeight` | SharedToken `IconSize*`、DropdownButton `OnlyIconSize*` | stable |
-| `indicator` | `PART_DropdownIndicator` | 展示独立的下拉方向指示器。 | `OpenIndicator`、`IsShowOpenIndicator` | DropdownButton indicator size / spacing resources | stable |
-| `trigger` | `触发区域` | 承载点击、键盘、打开关闭、跳转或提交入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `导航项区域` | 承载当前项、选中项、禁用项、层级项或分页项状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `popup` | `弹层或内容区域` | 承载 flyout、dropdown、tab content、submenu 或候选内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效区域` | 表达打开关闭、选中指示、切换和过渡反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+DropdownButton 是唯一 Semantic owner，公开 5 个 Semantic Part，语义对齐上游 Dropdown 的 Semantic DOM
+（`root` / `itemTitle` / `item` / `itemContent` / `itemIcon`）。上游 Dropdown 语义部件全部位于弹层侧——
+`root` 是弹层根、`itemTitle` 是菜单分组标题、`item` / `itemIcon` / `itemContent` 是菜单项及菜单项内部槽位，
+触发节点不是 Dropdown 的语义部件。AtomUI 保留 `root` 作为 owner 自身的隐式 Part（由生成器统一注册），因此
+上游的弹层根 `root` 映射为 `popup.root`；`itemTitle` 对应上游的分组标题（`ant-menu-item-group-title`），
+由 `MenuItemGroup` 的标题 ContentPresenter 承载。声明位于
+`DropdownButton.SemanticParts.cs` partial 文件；`root` 为隐式 Part，不在该文件中显式声明。
+
+五个弹层部件全部声明 `CrossVisualRoot=true` + `RuntimeCreated=true`，marker 在运行时注入：`popup.root` 由
+`MenuFlyoutPresenter.OnApplyTemplate` 创建弹层根视觉面 `ArrowDecoratedBox` 时注入（边框 / 背景 / 圆角由
+`ArrowDecoratedBox` 的 `PART_ContentDecorator` 渲染，`MenuFlyoutPresenter` 只是共享的菜单宿主容器）；`item` 由
+`MenuFlyoutPresenter` 与 `MenuItem`
+的容器创建路径（`CreateContainerForItemOverride` + `PrepareContainerForItemOverride`）注入，同时覆盖顶层菜单项
+与嵌套子菜单项；`itemIcon` / `itemContent` 由 `MenuItem.OnApplyTemplate` 注入到 `ItemIconPresenter` /
+`ItemTextPresenter` 模板节点（另声明 `CrossNestedOwners=true`）；`itemTitle` 由 `MenuItemGroup.OnApplyTemplate`
+注入到分组标题 `GroupTitlePresenter` 模板节点（分组容器本身带 `semantic-item-title-group` 中间标记类，
+另声明 `CrossNestedOwners=true`）。该形态沿用 FlyoutHost → FlyoutPresenter 的
+跨视觉根弹层先例，避免把 marker 静态写进被 SplitButton、DataGrid、TabControl、Transfer 等复用的共享
+MenuFlyout / MenuItem 控件。
+
+#### `root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `DropdownButton` |
+| Part | `root` |
+| Selector | DropdownButton 本身 |
+| SelectorRoute | 不适用 |
+| Style Type | 不适用（root 不生成 Style） |
+| ContractType | `DropdownButton` |
+| Cardinality | `Single` |
+| Customization | `Root` |
+| CrossVisualRoot | `false` |
+| RuntimeCreated | `false` |
+| AtomUI 节点 | DropdownButton owner |
+| 职责 | DropdownButton root 是动作内容、菜单数据、弹层与状态的组织边界。 |
+| 相关 API | 全部 DropdownButton public API |
+| 相关 Token | DropdownButtonToken、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `popup.root`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `DropdownButton` |
+| Part | `popup.root` |
+| Selector | `.semantic-popup-root` |
+| SelectorRoute | `>> .semantic-popup-root` |
+| Style Type | `DropdownButtonPopupRootStyle` |
+| ContractType | `ArrowDecoratedBox` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | `MenuFlyoutPresenter.OnApplyTemplate` 定位到的弹层根视觉面 `ArrowDecoratedBox`（模板应用时注入 marker，其逻辑祖先链经 Popup `PlacementTarget` 回到 DropdownButton） |
+| 职责 | 下拉菜单弹层的根视觉面，承载菜单项集合与弹层根视觉（边框 / 背景 / 圆角由 `ArrowDecoratedBox` 渲染，对应上游的 `root`）。 |
+| 相关 API | `DropdownFlyout`、`Items`、`ItemTemplate`、`ItemContainerTheme` |
+| 相关 Token | MenuToken、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `itemTitle`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `DropdownButton` |
+| Part | `itemTitle` |
+| Selector | `.semantic-item-title` |
+| SelectorRoute | `>> .semantic-item-title-group /template/ .semantic-item-title` |
+| Style Type | `DropdownButtonItemTitleStyle` |
+| ContractType | `ContentPresenter` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| CrossNestedOwners | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | `MenuItemGroup` 模板 `GroupTitlePresenter`（`ContentPresenter`，`MenuItemGroup.OnApplyTemplate` 时注入 marker；分组容器本身带 `semantic-item-title-group` 中间标记类） |
+| 职责 | 菜单分组标题节点（对应上游的 `itemTitle`，即 `ant-menu-item-group-title`）。 |
+| 相关 API | `MenuItemGroup.Header`、`MenuItemGroup.HeaderTemplate` |
+| 相关 Token | MenuToken、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `item`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `DropdownButton` |
+| Part | `item` |
+| Selector | `.semantic-item` |
+| SelectorRoute | `>> .semantic-item` |
+| Style Type | `DropdownButtonItemStyle` |
+| ContractType | `MenuItem` |
+| Cardinality | `Multiple` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | `MenuFlyoutPresenter.CreateContainerForItemOverride` / `PrepareContainerForItemOverride` 与 `MenuItem.CreateContainerForItemOverride` / `PrepareContainerForItemOverride` 容器路径生成的 `MenuItem`（顶层与任意嵌套层级的子菜单项，回收复用时 marker 保持不变） |
+| 职责 | 弹层中的单个菜单项容器，承载该项的状态、内容、图标与子菜单（对应上游的 `item`）。 |
+| 相关 API | `Items`、`MenuItem.Header`、`MenuItem.Icon`、`MenuItem.Items`、`ItemTemplate` |
+| 相关 Token | MenuToken、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `itemIcon`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `DropdownButton` |
+| Part | `itemIcon` |
+| Selector | `.semantic-item-icon` |
+| SelectorRoute | `>> .semantic-item /template/ .semantic-item-icon` |
+| Style Type | `DropdownButtonItemIconStyle` |
+| ContractType | `IconPresenter` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| CrossNestedOwners | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | `MenuItem` 模板 `ItemIconPresenter`（`IconPresenter`，`MenuItem.OnApplyTemplate` 时注入 marker） |
+| 职责 | 菜单项模板内的图标节点（对应上游的 `itemIcon`）。 |
+| 相关 API | `MenuItem.Icon` |
+| 相关 Token | MenuToken、SharedToken |
+| 稳定性 | stable since 6.0 |
+
+#### `itemContent`
+
+| 字段 | 值 |
+| --- | --- |
+| Owner | `DropdownButton` |
+| Part | `itemContent` |
+| Selector | `.semantic-item-content` |
+| SelectorRoute | `>> .semantic-item /template/ .semantic-item-content` |
+| Style Type | `DropdownButtonItemContentStyle` |
+| ContractType | `ContentPresenter` |
+| Cardinality | `Single` |
+| Customization | `Selector` |
+| CrossVisualRoot | `true` |
+| CrossNestedOwners | `true` |
+| RuntimeCreated | `true` |
+| AtomUI 节点 | `MenuItem` 模板 `ItemTextPresenter`（`ContentPresenter`，`MenuItem.OnApplyTemplate` 时注入 marker） |
+| 职责 | 菜单项模板内的文本内容节点（对应上游的 `itemContent`）。 |
+| 相关 API | `MenuItem.Header`、`MenuItem.HeaderTemplate`、`ItemTemplate` |
+| 相关 Token | MenuToken、SharedToken |
+| 稳定性 | stable since 6.0 |
 
 ## Abstract AXAML Structure
 

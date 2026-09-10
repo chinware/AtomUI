@@ -307,6 +307,68 @@ public class SemanticPartTargetResolverTests
         });
     }
 
+    [Fact]
+    public void Resolves_Root_To_The_Popup_Root_Marker_When_The_Owner_Has_No_Locatable_Surface()
+    {
+        // 弹层承载型控件（如 Tour）：owner 布局尺寸为零，root 没有可定位的宿主表面，
+        // 回退到 "popup.root" 部件的标记节点（弹层卡片根）。
+        var owner = new Grid
+        {
+            Width  = 180,
+            Height = 0
+        };
+        var popupRootFrame = new Border
+        {
+            Width   = 200,
+            Height  = 80,
+            Classes = { "semantic-popup-root" }
+        };
+        var host = new Grid
+        {
+            Children = { owner, popupRootFrame }
+        };
+        var descriptor = PopupCarrierDescriptor(typeof(Grid), "PopupCarrierGrid");
+        var registry = new SemanticPartRegistry([descriptor]);
+
+        ShowInWindow(host, () =>
+        {
+            var root = Resolve(owner, descriptor, "root", registry, popupRootFrame);
+
+            root.TotalMatchCount.ShouldBe(1);
+            root.Targets.Single().ShouldBe(popupRootFrame);
+        });
+    }
+
+    [Fact]
+    public void Resolves_Root_To_The_Owner_Itself_When_The_Owner_Is_Locatable()
+    {
+        var owner = new Grid
+        {
+            Width  = 180,
+            Height = 100
+        };
+        var popupRootFrame = new Border
+        {
+            Width   = 200,
+            Height  = 80,
+            Classes = { "semantic-popup-root" }
+        };
+        var host = new Grid
+        {
+            Children = { owner, popupRootFrame }
+        };
+        var descriptor = PopupCarrierDescriptor(typeof(Grid), "PopupCarrierGrid");
+        var registry = new SemanticPartRegistry([descriptor]);
+
+        ShowInWindow(host, () =>
+        {
+            var root = Resolve(owner, descriptor, "root", registry, popupRootFrame);
+
+            root.TotalMatchCount.ShouldBe(1);
+            root.Targets.ShouldBe([owner]);
+        });
+    }
+
     private static SemanticPartTargetResolution Resolve(
         Control owner,
         ControlSemanticDescriptor descriptor,
@@ -361,6 +423,32 @@ public class SemanticPartTargetResolverTests
             controlType,
             new ControlTokenIdentity("GalleryTests", id),
             [Root(controlType)]);
+    }
+
+    /// <summary>
+    /// 弹层承载型控件的 descriptor 形态：root 之外声明 "popup.root" 部件，
+    /// 供 root 回退解析（owner 布局尺寸为零时定位弹层根）测试复用。
+    /// </summary>
+    private static ControlSemanticDescriptor PopupCarrierDescriptor(Type controlType, string id)
+    {
+        return new ControlSemanticDescriptor(
+            controlType,
+            new ControlTokenIdentity("GalleryTests", id),
+            [
+                Root(controlType),
+                new SemanticPartDescriptor(
+                    "popup.root",
+                    "popup.root",
+                    "semantic-popup-root",
+                    typeof(Control),
+                    SemanticPartCardinality.Single,
+                    SemanticPartCustomization.Selector,
+                    null,
+                    true,
+                    null,
+                    true,
+                    "/template/ .semantic-popup-root")
+            ]);
     }
 
     private static SemanticPartDescriptor Root(Type controlType)

@@ -161,5 +161,6 @@ Token 来源：
 
 - 源设计文档：`docs/controls/desktop/navigation/dropdown-button/overview.md`
 - 实现文档：`docs/controls/desktop/navigation/dropdown-button/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/navigation/dropdown-button/semantic-part.md`
 - 变更记录：`docs/controls/desktop/navigation/dropdown-button/changelog.md`
 - 语义结构：`./semantic-cn.md`

@@ -553,15 +553,13 @@ public class SemanticPartHighlightSessionTests
             markerRect,
             new Rect(0, 0, 1210, 691),
             new Point(-3, 37),
-            3);
+            2);
 
-        // 钳制后描边完整落在窗口表面内，且仍保有可见的面积（贴边而非消失）。
-        clamped.X.ShouldBeGreaterThanOrEqualTo(0);
-        clamped.Y.ShouldBeGreaterThanOrEqualTo(0);
-        clamped.Right.ShouldBeLessThanOrEqualTo(1210);
-        clamped.Bottom.ShouldBeLessThanOrEqualTo(691);
-        clamped.Width.ShouldBeGreaterThan(100);
-        clamped.Height.ShouldBeGreaterThan(100);
+        // 钳制只内收半个笔宽（对齐上游 Marker：描边沿目标边缘、不内收留白）。
+        // 换算回层坐标断言：被钳制的左/右/下边缘距层边缘正好 1px（2px 主笔宽的一半），
+        // 描边整条完整落在窗口表面内；顶部本就在层内（标题栏下方 39px），保持原位。
+        var layerRect = clamped.Translate(new Vector(-3, 37));
+        layerRect.ShouldBe(new Rect(1, 39, 1208, 651));
     }
 
     [Fact]

@@ -7,8 +7,8 @@
 
 ## 1. Semantic Parts 总览
 
-Tooltip 只有一个 public owner：`ToolTip`，公开 3 个语义键：`root`、`container`、`arrow`（与上游 antd Tooltip 的
-语义 DOM `root` / `container` / `arrow` 对齐）。声明位于
+Tooltip 只有一个 public owner：`ToolTip`，公开 3 个语义键：`root`、`container`、`arrow`（与上游 Tooltip 的
+语义部件结构 `root` / `container` / `arrow` 对齐）。声明位于
 `src/AtomUI.Desktop.Controls/Tooltip/ToolTip.SemanticParts.cs` partial 文件。
 
 `container` 与 `arrow` 均声明 `CrossNestedOwners=true`：`ToolTip` 的控件模板把自己的内容直接交给共享原语

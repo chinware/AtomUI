@@ -43,7 +43,7 @@ Tour 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 | --- | --- | --- |
 | 内容与数据 | `CloseIcon`、`CoverTemplate`、`Description`、`DescriptionTemplate`、`ItemSpacing`、`ItemTemplate`、`Title`、`TitleTemplate` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
 | 选择与集合 | `ActiveIndex`、`CurrentIndex`、`IndicatorActiveColor`、`StepCount` | 维护选择、展开、过滤、分页、分组或集合状态；`CurrentIndex` 默认双向绑定。 |
-| 交互与状态 | `IsArrowVisible`、`IsDisabledInteraction`、`IsMotionEnabled`、`IsOpen`、`IsPointAtCenter`、`IsScrollIntoView`、`IsShowMask` | 表达用户可观察状态、可用性、清除、加载或反馈语义；`IsOpen` 默认双向绑定。 |
+| 交互与状态 | `IsArrowVisible`、`IsDisabledInteraction`、`IsMotionEnabled`、`IsOpen`、`IsPointAtCenter`、`IsPopupPinnedOpen`、`IsScrollIntoView`、`IsShowMask` | 表达用户可观察状态、可用性、清除、加载或反馈语义；`IsOpen` 默认双向绑定；`IsPopupPinnedOpen` 钉住弹层常开（语义预览场景）。 |
 | 视觉与布局 | `Background`、`GapOffsetX`、`GapOffsetY`、`GapRadius`、`IndicatorColor`、`IndicatorSize`、`MaskColor`、`Placement`、`StyleType`、`TargetRegionCornerRadius` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 其他稳定入口 | `Cover`、`Indicator`、`Target`、`TargetRegion` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
@@ -80,7 +80,7 @@ Tour 的公共契约由 public/protected 类型成员、Avalonia 属性、事件
 
 ### 位置
 
-来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tour/Views/TourShowCase.axaml:110`
+来源：`controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tour/Views/TourShowCase.axaml:203`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -188,6 +188,7 @@ Tour Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 - `src/AtomUI.Desktop.Controls/Tour/Themes/TourStepsViewTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Tour/Themes/TourTheme.axaml`
 - `src/AtomUI.Desktop.Controls/Tour/Tour.cs`
+- `src/AtomUI.Desktop.Controls/Tour/Tour.SemanticParts.cs`
 - `src/AtomUI.Desktop.Controls/Tour/TourIndicator.cs`
 - `src/AtomUI.Desktop.Controls/Tour/TourLayer.cs`
 - `src/AtomUI.Desktop.Controls/Tour/TourPlacementMode.cs`
@@ -208,6 +209,7 @@ Tour Token 只表达组件级视觉变量，例如尺寸、间距、颜色、圆
 
 - 源设计文档：`docs/controls/desktop/data-display/tour/overview.md`
 - 实现文档：`docs/controls/desktop/data-display/tour/implementation.md`
+- Semantic Part 文档：`docs/controls/desktop/data-display/tour/semantic-part.md`
 - Token 文档：`docs/controls/desktop/data-display/tour/token.md`
 - 变更记录：`docs/controls/desktop/data-display/tour/changelog.md`
 - 语义结构：`./semantic-cn.md`

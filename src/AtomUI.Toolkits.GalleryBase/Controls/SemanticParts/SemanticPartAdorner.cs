@@ -62,9 +62,10 @@ internal sealed class SemanticPartAdorner : Control
     {
         var markerRect = GetMarkerRect(Bounds.Size, _layoutOutset, markerOutset);
 
-        // 贴边满区目标（如 native 预览对话框的 popup.root/body）外扩描边会越出窗口
-        // 表面被 OS 裁剪（只剩贴窗的一条边）。钳制到 adorner 所在层（窗口客户区）内，
-        // 并预留笔宽与外扩余量；层不可达或余量不足时按原矩形绘制。
+        // 贴边满区目标（如 popup 根、native 预览对话框的 popup.root/body）外扩描边会越出
+        // 宿主窗口表面被 OS 裁剪。钳制到 adorner 所在层（窗口/弹层客户区）内，仅内收
+        // 半个笔宽让描边贴边完整可见——对齐上游 Marker（border 沿目标边缘、不内收留白）；
+        // 层不可达或余量不足时按原矩形绘制。
         var layer = _layer ??= this.GetVisualAncestors().OfType<AdornerLayer>().FirstOrDefault();
         if (layer is not null)
         {
@@ -72,28 +73,29 @@ internal sealed class SemanticPartAdorner : Control
             var positionInLayer = new Point(
                 Bounds.Position.X + transform.M31,
                 Bounds.Position.Y + transform.M32);
-            markerRect = ClampMarkerRect(markerRect, layer.Bounds, positionInLayer, _layoutOutset);
+            markerRect = ClampMarkerRect(markerRect, layer.Bounds, positionInLayer, pen.Thickness);
         }
 
         context.DrawRectangle(null, pen, markerRect);
     }
 
     /// <summary>
-    /// 把描边矩形钳制到层（窗口客户区）在 adorner 本地坐标空间的范围内。钳制量保留
-    /// 外扩与笔宽余量，保证四条边完整落在窗口表面内；交集退化（层过小）时返回原矩形。
+    /// 把描边矩形钳制到层（窗口/弹层客户区）在 adorner 本地坐标空间的范围内。仅内收
+    /// 半个笔宽：超出层的边贴到层边缘，描边中心落在层边界上，一半线宽完整可见；
+    /// 交集退化（层过小）时返回原矩形。
     /// </summary>
     internal static Rect ClampMarkerRect(
         Rect markerRect,
         Rect layerBounds,
         Point adornerPositionInLayer,
-        double layoutOutset)
+        double penThickness)
     {
         var layerLocal = new Rect(
             -adornerPositionInLayer.X,
             -adornerPositionInLayer.Y,
             layerBounds.Width,
             layerBounds.Height);
-        var clamped = markerRect.Intersect(layerLocal.Deflate(layoutOutset + 2));
+        var clamped = markerRect.Intersect(layerLocal.Deflate(penThickness / 2));
         return clamped.Width >= 1 && clamped.Height >= 1 ? clamped : markerRect;
     }
 
