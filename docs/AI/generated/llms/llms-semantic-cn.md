@@ -14309,10 +14309,10 @@ WindowTitleBar
 | `WindowTitleBarLayoutPanel` | template node (WindowTitleBarLayoutPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `CanMaximize`, `CanMinimize`, `CaptionButtonCommand`, `EffectiveLogo`, `EffectiveLogoTemplate`, `HostWindowState` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
 | `DockPanel` | template node (DockPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `EffectiveLogo`, `EffectiveLogoTemplate`, `IsEffectiveLogoVisible`, `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Logo` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `EffectiveLogo`, `EffectiveLogoTemplate`, `IsEffectiveLogoVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_LeftAddOn` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn`, `LeftAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_LeftAddOn` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsMotionEnabled`, `IsWindowActive`, `LeftAddOn`, `LeftAddOnTemplate`, `OsType` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_ContentPresenter` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsEffectiveTitleVisible`, `Title`, `TitleTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `StackPanel` | template node (StackPanel) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `CanMaximize`, `CanMinimize`, `CaptionButtonCommand`, `HostWindowState`, `IsCloseCaptionButtonVisible`, `IsFullScreenCaptionButtonVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
-| `PART_RightAddOn` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsMotionEnabled`, `IsWindowActive`, `RightAddOn`, `RightAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_RightAddOn` | template node (ContentPresenter) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `IsMotionEnabled`, `IsWindowActive`, `OsType`, `RightAddOn`, `RightAddOnTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_CaptionButtonGroup` | template node (CaptionButtonGroup) | `WindowTitleBarTheme.axaml` | WindowTitleBar | `CanMaximize`, `CanMinimize`, `CaptionButtonCommand`, `HostWindowState`, `IsCloseCaptionButtonVisible`, `IsFullScreenCaptionButtonVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `WindowTitleBarToggleButton` | control theme | `WindowTitleBarToggleButtonTheme.axaml` | 用户代码 / 控件宿主 | 主题状态 / visual state | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
 | `WindowsCaptionButton` | control theme | `WindowsCaptionButtonTheme.axaml` | WindowTitleBar | `Background`, `EffectiveCornerRadius`, `EffectiveIcon`, `IconHeight`, `IconWidth`, `Padding` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
@@ -14326,8 +14326,8 @@ WindowTitleBar
 | `Frame` | `Border` | 绘制标题栏背景并提供完整可见 frame 的布局边界。 |
 | `PART_Logo` | `ContentPresenter` | 展示有效 Logo；Windows/Linux 模板中位于 Leading 最左侧，macOS 模板中位于 Title 内容前。 |
 | `PART_ContentPresenter` | `ContentPresenter` | 展示标题，可见性绑定 `IsEffectiveTitleVisible`；字符串标题在安全宽度不足时使用字符省略号，且不参与命中测试。 |
-| `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容；Windows/Linux 中由 Leading 容器负责它与有效 Logo 之间的条件间距。 |
-| `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on。 |
+| `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容并投影 AddOn active、motion 和 platform 上下文；Windows/Linux 中由 Leading 容器负责它与有效 Logo 之间的条件间距。 |
+| `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on 并投影 AddOn active、motion 和 platform 上下文。 |
 | `PART_CaptionButtonGroup` | `CaptionButtonGroup` | 消费宿主投影，推导 managed button 状态并转发固定窗口操作。 |
 
 ## Pseudo Classes
@@ -14425,8 +14425,8 @@ Minimize、Maximize 和 Close 默认显示，FullScreen 和 Pin 默认隐藏。�
 | `Frame` | `Border` | 绘制标题栏背景并提供完整可见 frame 的布局边界。 |
 | `PART_Logo` | `ContentPresenter` | 展示有效 Logo；Windows/Linux 模板中位于 Leading 最左侧，macOS 模板中位于 Title 内容前。 |
 | `PART_ContentPresenter` | `ContentPresenter` | 展示标题，可见性绑定 `IsEffectiveTitleVisible`；字符串标题在安全宽度不足时使用字符省略号，且不参与命中测试。 |
-| `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容；Windows/Linux 中由 Leading 容器负责它与有效 Logo 之间的条件间距。 |
-| `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on。 |
+| `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容并投影 AddOn active、motion 和 platform 上下文；Windows/Linux 中由 Leading 容器负责它与有效 Logo 之间的条件间距。 |
+| `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on 并投影 AddOn active、motion 和 platform 上下文。 |
 | `PART_CaptionButtonGroup` | `CaptionButtonGroup` | 消费宿主投影，推导 managed button 状态并转发固定窗口操作。 |
 
 `PART_CaptionButtonGroup` 是 `WindowTitleBar` 模板中的稳定协作 part，通过 `TemplateBinding` 接收能力、requested visibility、窗口状态和宿主命令。其内部 `PART_CloseButton`、`PART_MinimizeButton`、`PART_MaximizeButton`、`PART_FullScreenButton` 和 `PART_PinButton` 属于 `CaptionButtonGroup` 模板，不是 `WindowTitleBar` 的 public template part。
@@ -14475,6 +14475,7 @@ Token 负责尺寸、间距、字体和状态颜色，不负责以下运行时�
 - Leading/Trailing 为零宽时不产生操作区间距；add-on margin 只通过 `DesiredSize` 计入一次。
 - ImagePreviewer 与两个全屏标题宿主复用同一标题布局模型。
 - Title 不参与命中测试；add-on 与 caption buttons 保持可交互。
+- Windows AddOn 仅对齐 managed caption 几何、背景反馈和光标；不设置 `WindowDecorationProperties.ElementRole`，不获得 snap hover、native glyph 或窗口操作命令。Linux/macOS 保持原有圆角、Hand 光标与内容驱动尺寸。
 - `WindowTitleBarToken`、generated resource key 和 Theme 消费名保持同步。
 
 Source: ./controls/border-beam/semantic-cn.md

@@ -38,11 +38,11 @@ Token 负责尺寸、间距、字体和状态颜色，不负责以下运行时�
 | --- | --- | --- |
 | `CaptionButtonIconSize` | 通用 caption action icon 尺寸。 | Linux/macOS buttons、Windows extended actions、全屏 buttons、WindowTitleBar AddOn buttons |
 | `WindowsCaptionIconSize` | Windows minimize/maximize/close glyph 尺寸。 | `WindowsCaptionButton` |
-| `CaptionButtonPadding` | 通用圆形 caption button 内容 padding。 | `CaptionButtonTheme`、WindowTitleBar AddOn button themes |
-| `CaptionGroupSpacing` | 非 Windows caption buttons、全屏操作和 AddOn button group 之间的语义间距。 | CaptionButtonGroup、全屏标题宿主、AddOn 容器 |
+| `CaptionButtonPadding` | managed caption button 内容 padding；Windows AddOn 的外部命中面仍由标题栏可用高度决定。 | `CaptionButtonTheme`、WindowTitleBar AddOn button themes |
+| `CaptionGroupSpacing` | 非 Windows caption buttons、全屏操作和非 Windows AddOn button group 的可选语义间距。 | CaptionButtonGroup、全屏标题宿主、应用 AddOn 容器 |
 | `FullscreenCaptionButtonSize` | 全屏标题宿主中 caption button 的固定尺寸。 | Window drawn decorations、fullscreen popover |
 
-Windows 原生风格 caption buttons 连续贴合排列，group spacing 为零；Linux/macOS 与全屏操作使用 `CaptionGroupSpacing`。Linux 的按钮背景 inset 属于 Theme 状态视觉，不改变按钮布局占用尺寸。
+Windows 原生风格 caption buttons 连续贴合排列，group spacing 为零；Windows AddOn 需要连续 hover 按钮带时，其应用容器同样设置零 spacing。Linux/macOS 与全屏操作可使用 `CaptionGroupSpacing`。`LeftAddOn` / `RightAddOn` 允许任意内容，因此容器 spacing 始终由应用所有，Theme 不强制覆盖。Linux 的按钮背景 inset 属于 Theme 状态视觉，不改变按钮布局占用尺寸。
 
 ### 2.3 Active 与 inactive 视觉
 
@@ -96,8 +96,8 @@ SharedToken
 | `WindowTitleBarTheme.axaml` | 标题栏高度、Padding、标题字体、Logo、active/inactive 前景、Windows/Linux Logo/LeftAddOn 间距和标题内容间距。 |
 | `CaptionButtonGroupTheme.axaml` | 平台按钮 icon size 与 group spacing。 |
 | `CaptionButtonTheme.axaml` | 系统通用按钮 padding、背景、active/inactive、hover、pressed 和 motion。 |
-| `WindowTitleBarButtonTheme.axaml` | AddOn 普通图标按钮的尺寸、背景、active/inactive、hover、pressed、disabled 和 motion。 |
-| `WindowTitleBarToggleButtonTheme.axaml` | AddOn checked/unchecked 图标按钮的尺寸、背景、active/inactive、hover、pressed、disabled 和 motion。 |
+| `WindowTitleBarButtonTheme.axaml` | AddOn 普通图标按钮的尺寸、背景、active/inactive、hover、pressed、disabled 和 motion；Windows 分支使用方形直角交互面。 |
+| `WindowTitleBarToggleButtonTheme.axaml` | AddOn checked/unchecked 图标按钮的尺寸、背景、active/inactive、hover、pressed、disabled 和 motion；Windows 分支使用方形直角交互面。 |
 | `WindowsCaptionButtonTheme.axaml` | Windows glyph、hover/pressed 以及 close danger state。 |
 | `WindowDrawnDecorationsTheme.axaml` | 全屏标题、Logo 和 caption operations。 |
 | `FullscreenPopoverLayerTheme.axaml` | 非 CSD 全屏弹出标题栏。 |
@@ -129,7 +129,7 @@ SharedToken
 
 - `TitleBarPadding` 变化验证四种显式标题对齐、native inset 和窄窗口退化。
 - `LogoAndLeftAddOnSpacing` 变化验证 Windows/Linux 中两个 presenter 同时可见、任一 presenter 缺失或隐藏、动态替换以及 Leading 安全宽度更新。
-- caption 尺寸或间距变化验证 Window、ImagePreviewer 和全屏标题宿主。
+- caption 尺寸或间距变化验证 Window、ImagePreviewer 和全屏标题宿主；Windows AddOn 额外验证交互面跟随标题栏高度且业务图标仍消费 `CaptionButtonIconSize`。
 - 颜色变化验证 Light/Dark、active/inactive、hover、pressed 和 Windows close danger state。
 - Token 名称或默认值变化核对 generated `WindowTitleBarTokenKind`、`WindowTitleBarTokenResource` 和全部 AXAML 引用。
 

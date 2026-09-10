@@ -2,6 +2,18 @@
 
 本文档记录 WindowTitleBar 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-09-10
+
+- Platform
+  - Align Windows `WindowTitleBarButton` and `WindowTitleBarToggleButton` with managed caption-button geometry: a full-height square hit surface, square corners, transparent resting background and Arrow cursor, while preserving Linux/macOS managed visuals.
+- Theme
+  - Project `WindowTitleBar.OsType` through both AddOn presenters and select Windows-specific active, inactive, hover, pressed and disabled states without assigning native caption roles or window commands.
+  - Keep both AddOn theme assets as top-level `ControlTheme` documents so `x:Class` remains valid for IDE tooling and compiled theme loading.
+- Architecture
+  - Share a stateless `WindowsCaptionButtonLayout` measurement helper between system Windows caption buttons and public AddOn buttons; keep application-owned container spacing and business icon sizing independent from the hit surface.
+- Verification
+  - Cover Windows button and toggle geometry, host platform projection and detach fallback, real pointer hover/pressed/exit feedback, and non-Windows size, corner-radius and cursor preservation in `WindowTitleBarButtonTests`.
+
 ## 2026-09-04
 
 - Design

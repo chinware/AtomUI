@@ -79,16 +79,8 @@ internal class WindowsCaptionButton : CaptionButton
     
     protected override Size MeasureOverride(Size availableSize)
     {
-        var width  = availableSize.Width;
-        var height = availableSize.Height;
-        if (double.IsInfinity(width))
-        {
-            width = height;
-        }
-        var availableMinSize = Math.Min(width, height);
-        var size             = base.MeasureOverride(new Size(width, height));
-        var minSize          = Math.Min(size.Width, size.Height);
-        var finalSize = Math.Max(minSize, availableMinSize);
-        return new Size(finalSize, finalSize);
+        var measureConstraint = WindowsCaptionButtonLayout.NormalizeMeasureConstraint(availableSize);
+        var measuredSize = base.MeasureOverride(measureConstraint);
+        return WindowsCaptionButtonLayout.ResolveDesiredSize(measureConstraint, measuredSize);
     }
 }

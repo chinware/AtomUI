@@ -19,6 +19,12 @@ internal sealed class WindowTitleBarHostContext
             defaultValue: true,
             inherits: true);
 
+    public static readonly AttachedProperty<OsType> HostOsTypeProperty =
+        AvaloniaProperty.RegisterAttached<WindowTitleBarHostContext, StyledElement, OsType>(
+            "HostOsType",
+            defaultValue: OsType.Unknown,
+            inherits: true);
+
     public static void SetIsWindowActive(StyledElement element, bool value)
     {
         element.SetValue(IsWindowActiveProperty, value);
@@ -37,5 +43,15 @@ internal sealed class WindowTitleBarHostContext
     public static bool GetHostMotionEnabled(StyledElement element)
     {
         return element.GetValue(HostMotionEnabledProperty);
+    }
+
+    public static void SetHostOsType(StyledElement element, OsType value)
+    {
+        element.SetValue(HostOsTypeProperty, value);
+    }
+
+    public static OsType GetHostOsType(StyledElement element)
+    {
+        return element.GetValue(HostOsTypeProperty);
     }
 }

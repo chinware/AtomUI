@@ -80,7 +80,7 @@ Add-on 可以包含可交互控件，也可以是 `null`、隐藏节点或当前
 需要与标题栏 managed caption visual 保持一致的应用操作，可以直接使用 `WindowTitleBarButton` 或
 `WindowTitleBarToggleButton`。前者继承 `IconButton`，使用 `Icon`、`Command` 和标准按钮输入语义；后者继承
 `ToggleIconButton`，使用 `CheckedIcon`、`UnCheckedIcon`、`IsChecked` 和标准 ToggleButton 输入语义。两个控件的
-业务命令、启用状态和 checked 状态仍由应用所有，不映射到 Window 的系统操作。
+业务命令、启用状态和 checked 状态仍由应用所有，不映射到 Window 的系统操作。Windows 中两者默认占满标题栏可用高度并形成方形交互面，使用直角、透明常态背景和 Arrow 光标，业务图标继续使用 `CaptionButtonIconSize`；Linux/macOS 保持内容驱动的圆角 managed visual 与 Hand 光标。按钮容器间距由应用内容所有，Windows 中需要连续 hover 按钮带时应使用零 spacing。
 
 ### 3.3 宿主状态
 
@@ -182,8 +182,8 @@ Minimize、Maximize 和 Close 默认显示，FullScreen 和 Pin 默认隐藏。�
 | `Frame` | `Border` | 绘制标题栏背景并提供完整可见 frame 的布局边界。 |
 | `PART_Logo` | `ContentPresenter` | 展示有效 Logo；Windows/Linux 模板中位于 Leading 最左侧，macOS 模板中位于 Title 内容前。 |
 | `PART_ContentPresenter` | `ContentPresenter` | 展示标题，可见性绑定 `IsEffectiveTitleVisible`；字符串标题在安全宽度不足时使用字符省略号，且不参与命中测试。 |
-| `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容；Windows/Linux 中由 Leading 容器负责它与有效 Logo 之间的条件间距。 |
-| `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on。 |
+| `PART_LeftAddOn` | `ContentPresenter` | 展示 Leading 内容并投影 AddOn active、motion 和 platform 上下文；Windows/Linux 中由 Leading 容器负责它与有效 Logo 之间的条件间距。 |
+| `PART_RightAddOn` | `ContentPresenter` | 展示 Trailing add-on 并投影 AddOn active、motion 和 platform 上下文。 |
 | `PART_CaptionButtonGroup` | `CaptionButtonGroup` | 消费宿主投影，推导 managed button 状态并转发固定窗口操作。 |
 
 `PART_CaptionButtonGroup` 是 `WindowTitleBar` 模板中的稳定协作 part，通过 `TemplateBinding` 接收能力、requested visibility、窗口状态和宿主命令。其内部 `PART_CloseButton`、`PART_MinimizeButton`、`PART_MaximizeButton`、`PART_FullScreenButton` 和 `PART_PinButton` 属于 `CaptionButtonGroup` 模板，不是 `WindowTitleBar` 的 public template part。
@@ -248,7 +248,7 @@ Windows/Linux 的 Leading 容器使用 `HorizontalSpacing` 消费 `LogoAndLeftAd
 - `WindowTitleBarLayoutStrategyTests`：平台 `Auto`、CSD、WindowState 与 native inset 归一。
 - `WindowTitleBarTokenTests`：Token 默认值、三平台 caption 视觉和 Windows edge layout。
 - `WindowCaptionButtonConfigurationTests`：caption visibility 默认值、能力隔离、状态矩阵、内容区/多标题栏宿主发现、真实 pointer 双击切换、宿主切换、动态投影和模板生命周期。
-- `WindowTitleBarButtonTests`：AddOn 按钮继承关系、active/motion 状态投影、checked/unchecked 图标切换、脱离宿主回退、独立主题资产注册和指针输入隔离。
+- `WindowTitleBarButtonTests`：AddOn 按钮继承关系，active/motion/platform 状态投影，checked/unchecked 图标切换，detach 回退，Windows 40×40 与自定义高度方形几何，真实 pointer hover/pressed/exit 状态，Linux/macOS 尺寸、圆角与光标回归，以及独立主题资产注册和指针输入隔离。
 - `ImagePreviewerTitleBarThemeTests`：派生标题栏的标题组、操作区和平台模板契约。
 
 LLMS 语义区域：

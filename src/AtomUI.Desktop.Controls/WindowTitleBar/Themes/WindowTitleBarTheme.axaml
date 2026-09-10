@@ -42,6 +42,7 @@
                                               VerticalContentAlignment="Center"
                                               atom:WindowTitleBarHostContext.IsWindowActive="{TemplateBinding IsWindowActive}"
                                               atom:WindowTitleBarHostContext.HostMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                              atom:WindowTitleBarHostContext.HostOsType="{TemplateBinding OsType}"
                                               Content="{TemplateBinding LeftAddOn}"
                                               ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
                                               IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
@@ -70,6 +71,7 @@
                                               VerticalContentAlignment="Center"
                                               atom:WindowTitleBarHostContext.IsWindowActive="{TemplateBinding IsWindowActive}"
                                               atom:WindowTitleBarHostContext.HostMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                              atom:WindowTitleBarHostContext.HostOsType="{TemplateBinding OsType}"
                                               Content="{TemplateBinding RightAddOn}"
                                               ContentTemplate="{TemplateBinding RightAddOnTemplate}"
                                               IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
@@ -127,6 +129,7 @@
                                               VerticalContentAlignment="Center"
                                               atom:WindowTitleBarHostContext.IsWindowActive="{TemplateBinding IsWindowActive}"
                                               atom:WindowTitleBarHostContext.HostMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                              atom:WindowTitleBarHostContext.HostOsType="{TemplateBinding OsType}"
                                               Content="{TemplateBinding LeftAddOn}"
                                               ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
                                               IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
@@ -155,6 +158,7 @@
                                               VerticalContentAlignment="Center"
                                               atom:WindowTitleBarHostContext.IsWindowActive="{TemplateBinding IsWindowActive}"
                                               atom:WindowTitleBarHostContext.HostMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                              atom:WindowTitleBarHostContext.HostOsType="{TemplateBinding OsType}"
                                               Content="{TemplateBinding RightAddOn}"
                                               ContentTemplate="{TemplateBinding RightAddOnTemplate}"
                                               IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
@@ -199,6 +203,7 @@
                                           VerticalContentAlignment="Center"
                                           atom:WindowTitleBarHostContext.IsWindowActive="{TemplateBinding IsWindowActive}"
                                           atom:WindowTitleBarHostContext.HostMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                          atom:WindowTitleBarHostContext.HostOsType="{TemplateBinding OsType}"
                                           Content="{TemplateBinding LeftAddOn}"
                                           ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
                                           IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
@@ -235,6 +240,7 @@
                                               VerticalContentAlignment="Center"
                                               atom:WindowTitleBarHostContext.IsWindowActive="{TemplateBinding IsWindowActive}"
                                               atom:WindowTitleBarHostContext.HostMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                              atom:WindowTitleBarHostContext.HostOsType="{TemplateBinding OsType}"
                                               Content="{TemplateBinding RightAddOn}"
                                               ContentTemplate="{TemplateBinding RightAddOnTemplate}"
                                               IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
