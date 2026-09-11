@@ -42,7 +42,10 @@ WindowMessageManager (root，对应上游 list)
   负责安全区外边距，具体对齐由 `ReversibleStackPanel#PART_Items`（`listContent`）实际承担。因此"放置"语义在
   AtomUI 由 `root`（`Position` 属性与宿主层范围的作用域）与 `listContent`（实际排列容器）共同表达。以无宿主构造
   内联使用时没有宿主层，`root` 退化为普通可放置控件，placement 语义不适用。当前控件未在
-  `Position` 变化时更新伪类，主题中的 `:topcenter` 对齐选择器不可达，位置对齐尚未生效（见第 7 节残余风险）。
+  `Position` 变化时更新伪类，主题中的 `:topcenter` 对齐选择器不可达（见第 7 节残余风险）。实测宿主构造
+  （`WindowFeedbackLayer`）下卡片顶部贴顶、水平居中：窗口 1280×900 时卡片 `x=347`、`y=0`、宽 586，即
+  居中值 `(1280-586)/2=347`，与上游默认的视口顶部居中浮层一致；可见上边距来自 `list`（manager）的内边距，
+  而不是卡片自身外边距（见 §5.2）。
 - 上游 `wrapper` 用 flex `gap: marginXS` + `align-items: center` 排列 icon 与 title；AtomUI `DockPanel` 无 `Spacing`，
   等价的图标间距由 `IconPresenter` 的 `MessageIconMargin`（右外边距 `UniformlyMarginXS`）表达，视觉结果一致。
 
@@ -74,7 +77,7 @@ WindowMessageManager (root，对应上游 list)
 | AtomUI 节点 | MessageCard owner（表面投影到 `Border#PART_Frame`，动效由 `MotionActor` 承载） |
 | 职责 | 单条消息项根元素：承载 `Message`、`MessageType`、`Icon`、`IsClosing`、`IsClosed`、`IsMotionEnabled` 与进入/退出动效；根表面（背景、圆角、阴影、内边距）投影到模板中的 `Border#PART_Frame`。对应上游 notice root。 |
 | 相关 API | `Message`、`MessageType`、`Icon`、`IsClosing`、`IsClosed`、`IsMotionEnabled`、`Close()`、`MessageClosed` |
-| 相关 Token | `ContentBg`、`ContentPadding`、`MessageTopMargin`、SharedToken（`BoxShadows`、`BorderRadiusLG`） |
+| 相关 Token | `ContentBg`、`ContentPadding`、SharedToken（`BoxShadows`、`BorderRadiusLG`） |
 | 稳定性 | stable since 6.0 |
 
 #### `wrapper`
@@ -195,12 +198,15 @@ API，`IsClosing` / `IsClosed` 关闭状态，以及 `IsMotionEnabled` 与进出
 
 - 单条消息的根语义与状态机：`Close()` 置 `IsClosing`，关闭动效完成后提交一次 `IsClosed=true` 并抛出
   `MessageClosed`。
-- 根视觉表面：背景（`ContentBg`）、内边距（`ContentPadding`）、圆角（`BorderRadiusLG`）、阴影（`BoxShadows`）
-  与卡片间距（`MessageTopMargin`），投影到模板中的 `Border#PART_Frame`。
+- 根视觉表面：背景（`ContentBg`）、内边距（`ContentPadding`）、圆角（`BorderRadiusLG`）、阴影（`BoxShadows`），
+  投影到模板中的 `Border#PART_Frame`。卡片**不承担**消息间距：`root` 的几何等于可见卡片本身（四边零外边距），
+  消息间距由 `listContent` 的 `Spacing` 表达（见 §5.2）。
 - 作为 `wrapper` / `icon` / `title` owner-scoped Selector 的作用域边界。
 
-适合通过 `Background`、`Padding`、`CornerRadius`、`Foreground`、`FontSize` 等 owner 侧 Setter 定制整卡视觉。
-`root` 不表示模板中的 `MotionActor`、`Border#PART_Frame` 或 `DockPanel#PART_HeaderContainer` 节点本身。
+适合通过 `Background`、`BorderBrush`、`BorderThickness`、`CornerRadius`、`BoxShadow`、`Padding` 等 owner 侧 Setter
+定制整卡视觉——这些属性经模板内 `Border#PART_Frame` 的 `TemplateBinding` 投影到卡片外框，是上游 `root` styles
+（背景色、圆角、阴影、内边距）的 AtomUI 等价表达。`root` 不表示模板中的 `MotionActor`、`Border#PART_Frame` 或
+`DockPanel#PART_HeaderContainer` 节点本身。
 
 ### 2.2 MessageCard wrapper / icon / title
 
@@ -300,7 +306,7 @@ Message 没有 `SizeType` 分档，视觉基线由 `MessageCardToken` 与全局 
 - 卡片背景 `ContentBg`（`ColorBgElevated`），内边距 `ContentPadding`
   （垂直 `(ControlHeightLG - FontSize * RelativeLineHeight) / 2`，水平 `UniformlyPaddingXS`），对齐上游
   `contentPadding` 与 `notificationPaddingVertical` / `notificationPaddingHorizontal`。
-- 卡片间距 `MessageTopMargin`（上 `UniformlyMargin`，其余 0，下 0），圆角 SharedToken `BorderRadiusLG`，
+- 圆角 SharedToken `BorderRadiusLG`，
   阴影 SharedToken `BoxShadows`。
 - 图标尺寸 `MessageIconSize`（`FontSizeSM * RelativeLineHeightSM`），图标外边距 `MessageIconMargin`
   （右 `UniformlyMarginXS`，对齐上游 `gap: marginXS`）。
@@ -314,6 +320,47 @@ Message 没有 `SizeType` 分档，视觉基线由 `MessageCardToken` 与全局 
 Semantic Style 覆盖 `wrapper` / `listContent` 的 `Padding` / `Margin` / 对齐时，应验证 notice 仍正确对齐、
 `root` 的圆角/阴影仍完整可见；覆盖 `icon` 尺寸时应验证文本基线与垂直居中没有被破坏。注意 `listContent` 当前没有
 生效的 `Position` 对齐基线（见第 7 节残余风险），覆盖对齐前应先确认该缺口是否已修复。
+
+## 5.1 list / listContent / root 的几何归属
+
+上游把三个层级的职责分得很清楚，AtomUI 严格对齐：
+
+| 上游 | AtomUI 节点 | 承担 |
+| --- | --- | --- |
+| `.ant-message-list`（`padding: marginLG`） | `WindowMessageManager`（`root`）+ 模板内 `Border` 消费 `Padding` | 列表容器内边距与定位 |
+| `.ant-message-list-content`（`gap: margin`） | `ReversibleStackPanel#PART_Items`（`listContent`） | 消息项排列与间距 |
+| `.ant-message-notice`（无外边距） | `MessageCard`（`root`） | 单条消息，几何等于可见卡片 |
+
+据此，`root`（卡片）的高亮框与可见卡片完全重合（四边间距为 0），`listContent` 高亮框相对 `list(root)` 四边各
+内缩一个内边距，形成两个大小不同、间距对称的矩形——与上游悬停 `list` / `listContent` 的表现一致。
+
+历史上 AtomUI 把间距塞进卡片外边距（`MessageCardToken.MessageTopMargin = (m, m, m, 0)`），导致 `root` 高亮框
+左/上/右各多出一个间距、下边为 0。该 token 已删除：间距改由 `listContent` 的 `Spacing` 承担，卡片自身不再有
+外边距。注意这与 `MessageCard` 的 `BoxShadow` 无关——阴影不参与布局，不产生 Bounds。
+
+## 5.2 单预览合并两个 owner
+
+对齐上游 `message#semantic-dom` 的单预览形态：一个 `SemanticPartPreview` 通过 `SemanticOwners` 声明
+`WindowMessageManager` 与 `MessageCard` 两个 owner，Part 列表按 owner 声明顺序合并（6 项）。`root` 等重名路径
+在合并列表里靠 `SemanticPartDescription.OwnerType` 消歧，列表行的 owner 标签用于区分归属；高亮按 Part 所属
+owner 解析，只会在该 owner 的实例作用域内命中。单 owner 页面可继续用 `SemanticOwner` / `SemanticOwnerType`
+且描述可省略 `OwnerType`；多 owner 时每一条描述都必须声明 `OwnerType`，否则报错而不是静默归属。
+
+## 5.3 反馈层样式作用域
+
+宿主构造下 `WindowMessageManager` 会被挂进 `WindowFeedbackLayer`，该层在页面视觉树之外。实测结论（同一
+TopLevel 内三种作用域同时尝试命中卡片）：
+
+| 样式声明位置 | 是否命中反馈层卡片 |
+| --- | --- |
+| 页面视觉树内的 `Style` / `Styles` | 否 |
+| `WindowMessageManager.Styles`（manager 自身） | 是 |
+| `Window.Styles` | 是 |
+| `Application.Styles` | 是 |
+
+因此按 owner 作用域定制反馈层消息时，样式必须落在 manager 自身、Window 或 Application 之一。Gallery 的
+`Custom Semantic Part styling` 示例把生成的专用 Style 类写在页面 AXAML 的 `UserControl.Resources` 里
+（声明式、类型安全），再由 code-behind 挂到 manager 的 `Styles`；挂载是唯一的代码步骤，不涉及任何部件属性改写。
 
 ## 6. 定制边界
 

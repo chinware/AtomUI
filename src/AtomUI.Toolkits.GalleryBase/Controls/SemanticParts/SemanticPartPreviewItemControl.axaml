@@ -30,9 +30,19 @@
               ColumnSpacing="12">
             <StackPanel Grid.Column="0"
                         Spacing="8">
-                <atom:TextBlock Text="{Binding Name}"
-                                FontSize="14"
-                                FontWeight="SemiBold" />
+                <StackPanel Orientation="Horizontal"
+                            Spacing="6">
+                    <atom:TextBlock Text="{Binding Name}"
+                                    FontSize="14"
+                                    FontWeight="SemiBold" />
+                    <!-- 多 owner Preview 时标注 Part 归属（如 Message 的 root 同时存在于两个 owner 上）。
+                         用轻量 TextBlock 而非 Tag：行内不再引入额外徽标控件，保持面板结构扁平。 -->
+                    <atom:TextBlock IsVisible="{Binding IsOwnerLabelVisible}"
+                                    VerticalAlignment="Center"
+                                    FontSize="11"
+                                    Foreground="{atom:SharedTokenResource ColorTextTertiary}"
+                                    Text="{Binding OwnerTypeName}" />
+                </StackPanel>
 
                 <atom:TextBlock Text="{Binding Description}"
                                 TextWrapping="Wrap"

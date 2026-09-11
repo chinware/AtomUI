@@ -18572,7 +18572,10 @@ WindowMessageManager (root，对应上游 list)
   负责安全区外边距，具体对齐由 `ReversibleStackPanel#PART_Items`（`listContent`）实际承担。因此"放置"语义在
   AtomUI 由 `root`（`Position` 属性与宿主层范围的作用域）与 `listContent`（实际排列容器）共同表达。以无宿主构造
   内联使用时没有宿主层，`root` 退化为普通可放置控件，placement 语义不适用。当前控件未在
-  `Position` 变化时更新伪类，主题中的 `:topcenter` 对齐选择器不可达，位置对齐尚未生效（见第 7 节残余风险）。
+  `Position` 变化时更新伪类，主题中的 `:topcenter` 对齐选择器不可达（见第 7 节残余风险）。实测宿主构造
+  （`WindowFeedbackLayer`）下卡片顶部贴顶、水平居中：窗口 1280×900 时卡片 `x=347`、`y=0`、宽 586，即
+  居中值 `(1280-586)/2=347`，与上游默认的视口顶部居中浮层一致；可见上边距来自 `list`（manager）的内边距，
+  而不是卡片自身外边距（见 §5.2）。
 - 上游 `wrapper` 用 flex `gap: marginXS` + `align-items: center` 排列 icon 与 title；AtomUI `DockPanel` 无 `Spacing`，
   等价的图标间距由 `IconPresenter` 的 `MessageIconMargin`（右外边距 `UniformlyMarginXS`）表达，视觉结果一致。
 
@@ -18604,7 +18607,7 @@ WindowMessageManager (root，对应上游 list)
 | AtomUI 节点 | MessageCard owner（表面投影到 `Border#PART_Frame`，动效由 `MotionActor` 承载） |
 | 职责 | 单条消息项根元素：承载 `Message`、`MessageType`、`Icon`、`IsClosing`、`IsClosed`、`IsMotionEnabled` 与进入/退出动效；根表面（背景、圆角、阴影、内边距）投影到模板中的 `Border#PART_Frame`。对应上游 notice root。 |
 | 相关 API | `Message`、`MessageType`、`Icon`、`IsClosing`、`IsClosed`、`IsMotionEnabled`、`Close()`、`MessageClosed` |
-| 相关 Token | `ContentBg`、`ContentPadding`、`MessageTopMargin`、SharedToken（`BoxShadows`、`BorderRadiusLG`） |
+| 相关 Token | `ContentBg`、`ContentPadding`、SharedToken（`BoxShadows`、`BorderRadiusLG`） |
 | 稳定性 | stable since 6.0 |
 
 #### `wrapper`
@@ -18739,9 +18742,9 @@ Message
 | 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `Message` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `MessageCard` | control theme | `MessageCardTheme.axaml` | 用户代码 / 控件宿主 | `Icon`, `Message` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
-| `{x:Static atom:BaseMotionActor.MotionActorPart}` | template node (MotionActor) | `MessageCardTheme.axaml` | MessageCard | `Icon`, `Message` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
-| `PART_Frame` | template node (Border) | `MessageCardTheme.axaml` | MessageCard | `Icon`, `Message` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `MessageCard` | control theme | `MessageCardTheme.axaml` | 用户代码 / 控件宿主 | `Background`, `BorderBrush`, `BorderThickness`, `BoxShadow`, `CornerRadius`, `Icon` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `{x:Static atom:BaseMotionActor.MotionActorPart}` | template node (MotionActor) | `MessageCardTheme.axaml` | MessageCard | `Background`, `BorderBrush`, `BorderThickness`, `BoxShadow`, `CornerRadius`, `Icon` | internal-observable | 用于理解结构和状态流，不应指导用户代码直接依赖。 |
+| `PART_Frame` | template node (Border) | `MessageCardTheme.axaml` | MessageCard | `Background`, `BorderBrush`, `BorderThickness`, `BoxShadow`, `CornerRadius`, `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_HeaderContainer` | template node (DockPanel) | `MessageCardTheme.axaml` | MessageCard | `Icon`, `Message` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_IconContent` | template node (IconPresenter) | `MessageCardTheme.axaml` | MessageCard | `Icon` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 | `PART_Message` | template node (SelectableTextBlock) | `MessageCardTheme.axaml` | MessageCard | `Message` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |

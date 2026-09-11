@@ -115,6 +115,11 @@ Semantic Parts 仍选中时重新 attach，宿主重新构建 Preview 和轻量 
 §8.4）。内容根必须在 factory 返回时已经通过普通 visual children 包含至少一个 Preview；不得把 Preview 隐藏在尚未应用的
 ControlTemplate 中，再依赖宿主主动应用模板或扫描任意逻辑树。
 
+内容根不得是 `ContentPresenter` 家族（`ContentPresenter` / `ScrollContentPresenter`）：模板刚 Build 出来尚未附加到视觉树时，
+呈现器还没有把 `Content` 实现成子节点（`Child` 为 `null`、逻辑子元素为空），视觉树与逻辑树都搜不到 Preview，宿主会判定为
+空模板并抛 `InvalidOperationException`。需要滚动时由宿主自身的 `ScrollViewer` 承担；遮罩类弹层控件需要局部层宿主时
+（Drawer 先例），`ScrollContentPresenter` 放在 `PreviewContent` 的舞台内部，而不是模板根。
+
 ## 6. Preview 模型
 
 `SemanticPartPreview` 是 GalleryBase 控件。它承载一个真实 Preview 内容，并解析一个明确的 owner descriptor 与一组 owner 实例：
@@ -292,8 +297,11 @@ VisualRoot 手动换算屏幕坐标。
 `SemanticPartAdorner` 必须：
 
 - 只绘制高亮边框，不设置背景或半透明填充，不覆盖或改变目标原有颜色、文字和图形。
-- 视觉对齐 antd SemanticPreview 的 `Marker`：金框沿目标边界外侧绘制，主目标在 2px 全不透明金框外再画 1px 白色外环
-  （对应 antd `boxShadow: 0 0 0 1px #fff`）；其余目标使用同色 `1px`、85% 不透明描边。
+- 视觉对齐 antd SemanticPreview 的 `Marker`：金框沿目标边界外侧绘制，主目标使用 `2px` 全不透明金框；其余目标使用同色
+  `1px`、85% 不透明描边。
+- 主目标不绘制 antd `Marker` 的 `boxShadow: 0 0 0 1px #fff` 白色外环。该外环在浅色舞台上会显出一条突兀的白线，属于
+  上游为深色背景做的对比补偿；AtomUI 舞台以浅色为主，按产品决定不采用。外环移除后 layout 外扩量即为笔宽所需的半个
+  线宽，主目标外扩 `2px`、次目标外扩 `1px`。
 - 描边落在目标 bounds 外沿，细窄目标（如 4px 高的 slider tracks）也能获得清晰可见的金框。
 - 描边矩形钳制到 adorner 所在 AdornerLayer（窗口客户区）内：贴边满区目标（如 ImagePreviewer native 预览对话框的
   `popup.root` / `popup.body`）外扩后左、右、下边会越出窗口表面被 OS 裁剪，视觉只剩贴窗的一条边；钳制保留外扩与

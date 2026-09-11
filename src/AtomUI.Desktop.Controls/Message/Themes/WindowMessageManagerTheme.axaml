@@ -4,10 +4,17 @@
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:WindowMessageManager}" TargetType="atom:WindowMessageManager">
+        <Setter Property="Padding" Value="{atom:SharedTokenResource MarginLG}" />
         <Setter Property="Template">
             <ControlTemplate>
-                <ReversibleStackPanel Name="PART_Items"
-                                      Classes.semantic-list-content="True" />
+                <!-- 对齐上游结构：list 承担内边距（.ant-message-list padding: marginLG），
+                     listContent 承担消息项排列间距（gap: margin），notice(root) 自身零外边距。
+                     Border 消费 owner 的 Padding：manager(root/list) 由此比 listContent 大一圈。 -->
+                <Border Padding="{TemplateBinding Padding}">
+                    <ReversibleStackPanel Name="PART_Items"
+                                          Classes.semantic-list-content="True"
+                                          Spacing="{atom:SharedTokenResource UniformlyMargin}" />
+                </Border>
             </ControlTemplate>
         </Setter>
 

@@ -9,12 +9,11 @@ namespace AtomUI.Toolkits.GalleryBase.Controls;
 
 internal sealed class SemanticPartAdorner : Control
 {
-    private const double PrimaryLayoutOutset = 3;
+    private const double PrimaryLayoutOutset = 2;
     private const double SecondaryLayoutOutset = 1;
 
     private static readonly ImmutablePen PrimaryPen = new(0xFFFAAD14, 2);
     private static readonly ImmutablePen SecondaryPen = new(0xD9FAAD14, 1);
-    private static readonly ImmutablePen PrimaryHaloPen = new(0xFFFFFFFF, 1);
 
     private readonly bool _isPrimary;
     private readonly double _layoutOutset;
@@ -47,9 +46,12 @@ internal sealed class SemanticPartAdorner : Control
 
         // AdornerLayer 按目标尺寸排列 child。负 Margin 让 adorner 自身覆盖外扩区域，
         // 避免把描边画到 Bounds 之外后在目标左侧或上侧被裁掉。
+        //
+        // 主标记只画一条金色描边，不带白色外环。上游 dumi Marker 的
+        // `box-shadow: 0 0 0 1px #fff` 会在浅色舞台背景上显出一条突兀的白线，
+        // 产品决定不采用。
         if (_isPrimary)
         {
-            DrawMarker(context, PrimaryHaloPen, 2.5);
             DrawMarker(context, PrimaryPen, 1);
         }
         else

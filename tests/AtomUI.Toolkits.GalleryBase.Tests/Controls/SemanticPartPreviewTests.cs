@@ -600,6 +600,129 @@ public class SemanticPartPreviewTests
         return CreatePreviewCore(content, ownerType);
     }
 
+    [Fact]
+    public void Multi_Owner_Preview_Merges_Part_Lists_In_Declaration_Order()
+    {
+        // Message 场景：单个预览同时承载列表宿主与消息卡片两个 owner。合并后 Part 列表顺序 = owner
+        // 声明顺序，重名路径（两侧都有 root）靠 OwnerType 消歧，且高亮按 Part 所属 owner 解析。
+        var manager = new AtomUI.Desktop.Controls.WindowMessageManager(null) { IsMotionEnabled = false };
+        var card = new AtomUI.Desktop.Controls.MessageCard
+        {
+            MessageType     = AtomUI.Desktop.Controls.MessageType.Success,
+            Message         = "Merged",
+            IsMotionEnabled = false
+        };
+        // 与页面一致：manager 拉伸铺满舞台，卡片叠在舞台内居中；垂直 StackPanel 会把
+        // 拉伸的 manager 压成 0 高，导致 root 目标不可解析。
+        var stage = new Panel
+        {
+            Children =
+            {
+                manager,
+                new StackPanel
+                {
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment   = VerticalAlignment.Center,
+                    Children            = { card }
+                }
+            }
+        };
+        var preview = new SemanticPartPreview { PreviewContent = stage };
+        preview.SemanticOwners.Add(new SemanticPartPreviewOwner
+        {
+            Owner     = manager,
+            OwnerType = typeof(AtomUI.Desktop.Controls.WindowMessageManager)
+        });
+        preview.SemanticOwners.Add(new SemanticPartPreviewOwner
+        {
+            Owner     = card,
+            OwnerType = typeof(AtomUI.Desktop.Controls.MessageCard)
+        });
+        preview.PartDescriptions.Add(new SemanticPartDescription
+        {
+            OwnerType = typeof(AtomUI.Desktop.Controls.WindowMessageManager),
+            Path      = "root",
+            Description = "manager root"
+        });
+        preview.PartDescriptions.Add(new SemanticPartDescription
+        {
+            OwnerType = typeof(AtomUI.Desktop.Controls.WindowMessageManager),
+            Path      = "listContent",
+            Description = "list content"
+        });
+        preview.PartDescriptions.Add(new SemanticPartDescription
+        {
+            OwnerType = typeof(AtomUI.Desktop.Controls.MessageCard),
+            Path      = "root",
+            Description = "card root"
+        });
+        preview.PartDescriptions.Add(new SemanticPartDescription
+        {
+            OwnerType = typeof(AtomUI.Desktop.Controls.MessageCard),
+            Path      = "icon",
+            Description = "card icon"
+        });
+
+        var window = new AtomUIWindow { Width = 640, Height = 400, Content = preview };
+        window.Show();
+        preview.ActivatePreview();
+        Dispatcher.UIThread.RunJobs();
+
+        // manager 声明在前 -> 它的 Part 先入列表。
+        preview.Items.Select(static item => (item.OwnerType.Name, item.Path)).ShouldBe(
+        [
+            ("WindowMessageManager", "root"),
+            ("WindowMessageManager", "listContent"),
+            ("MessageCard", "root"),
+            ("MessageCard", "icon"),
+            ("MessageCard", "title"),
+            ("MessageCard", "wrapper")
+        ]);
+        // 重名 root 的描述按 owner 取到各自条目。
+        preview.Items.Where(static item => item.Path == "root")
+               .Select(static item => item.Description)
+               .ShouldBe(["manager root", "card root"]);
+        preview.Items.ShouldAllBe(static item => item.IsOwnerLabelVisible);
+
+        // 高亮按 Part 所属 owner 解析：manager 的 root 命中 manager 自身，card 的 icon 命中卡片模板图标。
+        var managerRoot = preview.Items.Single(static item =>
+            item.OwnerType.Name == "WindowMessageManager" && item.Path == "root");
+        preview.TogglePinnedPart(managerRoot);
+        Dispatcher.UIThread.RunJobs();
+        preview.ActiveHighlightSession.ShouldNotBeNull().TotalMatchCount.ShouldBe(1);
+
+        var cardIcon = preview.Items.Single(static item =>
+            item.OwnerType.Name == "MessageCard" && item.Path == "icon");
+        preview.TogglePinnedPart(cardIcon);
+        Dispatcher.UIThread.RunJobs();
+        preview.ActiveHighlightSession.ShouldNotBeNull().TotalMatchCount.ShouldBe(1);
+
+        window.Close();
+    }
+
+    [Fact]
+    public void Multi_Owner_Description_Without_OwnerType_Is_Rejected()
+    {
+        var manager = new AtomUI.Desktop.Controls.WindowMessageManager(null);
+        var card = new AtomUI.Desktop.Controls.MessageCard();
+        var preview = new SemanticPartPreview { PreviewContent = new StackPanel { Children = { manager, card } } };
+        preview.SemanticOwners.Add(new SemanticPartPreviewOwner
+        {
+            Owner = manager, OwnerType = typeof(AtomUI.Desktop.Controls.WindowMessageManager)
+        });
+        preview.SemanticOwners.Add(new SemanticPartPreviewOwner
+        {
+            Owner = card, OwnerType = typeof(AtomUI.Desktop.Controls.MessageCard)
+        });
+        preview.PartDescriptions.Add(new SemanticPartDescription { Path = "root" });
+
+        var window = new AtomUIWindow { Width = 640, Height = 400, Content = preview };
+        window.Show();
+        var exception = Should.Throw<InvalidOperationException>(() => preview.ActivatePreview());
+        exception.Message.ShouldContain("OwnerType");
+        window.Close();
+    }
+
     private static SemanticPartPreview CreatePreviewCore(Avalonia.Controls.Control content, Type ownerType)
     {
         var preview = new SemanticPartPreview

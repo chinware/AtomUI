@@ -5,12 +5,14 @@ using AtomUI.Theme.Schema;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 using AtomIconPresenter = AtomUI.Controls.IconPresenter;
+using AtomUIDesktopMessage = AtomUI.Desktop.Controls.Message;
 using AtomUIMessageCard = AtomUI.Desktop.Controls.MessageCard;
 using AtomUIMessageManager = AtomUI.Desktop.Controls.WindowMessageManager;
 using AtomUIMessageType = AtomUI.Desktop.Controls.MessageType;
@@ -243,6 +245,108 @@ public class MessageSemanticPartTests
         {
             window.Close();
         }
+    }
+
+    [Fact]
+    public void Root_Surface_Properties_Project_Onto_The_Frame_And_Keep_Token_Defaults()
+    {
+        // root 的定制契约：卡片表面（背景/边框/圆角/内边距/阴影）必须能从 owner 属性投影到
+        // Border#PART_Frame。上游 style-class 示例正是靠 root 的背景、边框、圆角与硬阴影表达，
+        // 缺少这条透传时 root 样式会静默失效。
+        var card = CreateCard(AtomUIMessageType.Success, "Styled");
+        card.Background      = Avalonia.Media.Brushes.Red;
+        card.BorderBrush     = Avalonia.Media.Brushes.Lime;
+        card.BorderThickness = new Thickness(2);
+        card.CornerRadius    = new CornerRadius(16);
+        card.Padding         = new Thickness(20);
+        card.BoxShadow       = BoxShadows.Parse("4 4 0 #D9F7BE");
+
+        var window = ShowInWindow(card);
+        try
+        {
+            var frame = FindFrame(card);
+            frame.Background.ShouldBe(Avalonia.Media.Brushes.Red);
+            frame.BorderBrush.ShouldBe(Avalonia.Media.Brushes.Lime);
+            frame.BorderThickness.ShouldBe(new Thickness(2));
+            frame.CornerRadius.ShouldBe(new CornerRadius(16));
+            frame.Padding.ShouldBe(new Thickness(20));
+            frame.BoxShadow.ShouldBe(BoxShadows.Parse("4 4 0 #D9F7BE"));
+
+            // BoxShadow 必须是 MessageCard 自己的 StyledProperty，才能在 owner-scoped Style 中定制。
+            AtomUIMessageCard.BoxShadowProperty.ShouldNotBeNull();
+        }
+        finally
+        {
+            window.Close();
+        }
+
+        // 未设置时必须回落到 Token 默认视觉，默认外观不因透传而改变。
+        var defaultCard = CreateCard(AtomUIMessageType.Success, "Default");
+        var defaultWindow = ShowInWindow(defaultCard);
+        try
+        {
+            var frame = FindFrame(defaultCard);
+            frame.Background.ShouldNotBeNull();
+            frame.BoxShadow.ShouldNotBe(default(BoxShadows));
+            frame.CornerRadius.ShouldNotBe(new CornerRadius(0));
+            frame.Padding.ShouldNotBe(new Thickness(0));
+        }
+        finally
+        {
+            defaultWindow.Close();
+        }
+    }
+
+    [Fact]
+    public void Root_Frame_Has_No_Own_Margin_And_List_Insets_ListContent_Symmetrically()
+    {
+        // root 语义几何契约（对齐上游：notice 自身零外边距，list 承担 padding: marginLG，
+        // listContent 承担 gap: margin）：
+        //  1) root 高亮框必须等于可见卡片 —— 四边间距都应为 0，不能把间距塞进卡片外边距；
+        //  2) list(root) 比 listContent 四边各内缩一致，形成两个不同大小的矩形。
+        var host = new Border { Width = 600, Height = 200 };
+        var manager = CreateManager();
+        manager.MaxItems = 3;
+        host.Child = manager;
+        var window = new AvaloniaWindow { Width = 700, Height = 300, Content = host };
+        window.Show();
+        Dispatcher.UIThread.RunJobs();
+        manager.Show(new AtomUIDesktopMessage(content: "One", type: AtomUIMessageType.Information, expiration: TimeSpan.Zero));
+        for (var i = 0; i < 6; i++)
+        {
+            Dispatcher.UIThread.RunJobs();
+            window.UpdateLayout();
+        }
+
+        // 1) root == 可见外框，四边零间距（间距不再由卡片外边距承担）。
+        var card  = manager.GetVisualDescendants().OfType<AtomUIMessageCard>().First();
+        var frame = FindFrame(card);
+        var cardOrigin  = card.TranslatePoint(new Point(0, 0), host)!.Value;
+        var frameOrigin = frame.TranslatePoint(new Point(0, 0), host)!.Value;
+        frameOrigin.X.ShouldBe(cardOrigin.X);
+        frameOrigin.Y.ShouldBe(cardOrigin.Y);
+        frame.Bounds.Width.ShouldBe(card.Bounds.Width);
+        frame.Bounds.Height.ShouldBe(card.Bounds.Height);
+
+        // 2) list 与 listContent：四边内缩一致且非零。
+        var listContent = FindSemanticControl<ReversibleStackPanel>(manager, "semantic-list-content");
+        var listOrigin    = manager.TranslatePoint(new Point(0, 0), host)!.Value;
+        var contentOrigin = listContent.TranslatePoint(new Point(0, 0), host)!.Value;
+        var left   = contentOrigin.X - listOrigin.X;
+        var top    = contentOrigin.Y - listOrigin.Y;
+        var right  = (listOrigin.X + manager.Bounds.Width) - (contentOrigin.X + listContent.Bounds.Width);
+        var bottom = (listOrigin.Y + manager.Bounds.Height) - (contentOrigin.Y + listContent.Bounds.Height);
+        left.ShouldBeGreaterThan(0);
+        left.ShouldBe(top);
+        left.ShouldBe(right);
+        left.ShouldBe(bottom);
+        listContent.Spacing.ShouldBeGreaterThan(0);
+        window.Close();
+    }
+
+    private static Border FindFrame(AtomUIMessageCard card)
+    {
+        return card.GetVisualDescendants().OfType<Border>().Single(static border => border.Name == "PART_Frame");
     }
 
     [Fact]

@@ -201,25 +201,25 @@ public class TourSemanticPartHighlightTests
             rootMarker.Target.ShouldBe(popupRootMarker.Target);
             rootMarker.WindowRect.ShouldBe(popupRootMarker.WindowRect);
 
-            // 弹层卡片标记贴边：adorner 在目标四周各外扩 3px（主标记 layout outset），
-            // 不向内收缩——对齐上游 Marker（描边沿目标边缘、无内收留白）。
+            // 弹层卡片标记贴边：adorner 在目标四周各外扩 2px（主标记 layout outset，主笔宽 2px 的一半），
+            // 不向内收缩——对齐上游 Marker（描边沿目标边缘、无内收留白），且不绘制白色外环。
             var cardRect = new Rect(
                 popupRootMarker.Target.TranslatePoint(new Point(0, 0), window)!.Value,
                 popupRootMarker.Target.Bounds.Size);
-            popupRootMarker.WindowRect.Left.ShouldBe(cardRect.Left - 3, tolerance: 1);
-            popupRootMarker.WindowRect.Top.ShouldBe(cardRect.Top - 3, tolerance: 1);
-            popupRootMarker.WindowRect.Right.ShouldBe(cardRect.Right + 3, tolerance: 1);
-            popupRootMarker.WindowRect.Bottom.ShouldBe(cardRect.Bottom + 3, tolerance: 1);
+            popupRootMarker.WindowRect.Left.ShouldBe(cardRect.Left - 2, tolerance: 1);
+            popupRootMarker.WindowRect.Top.ShouldBe(cardRect.Top - 2, tolerance: 1);
+            popupRootMarker.WindowRect.Right.ShouldBe(cardRect.Right + 2, tolerance: 1);
+            popupRootMarker.WindowRect.Bottom.ShouldBe(cardRect.Bottom + 2, tolerance: 1);
 
-            // 遮罩标记贴舞台边缘：同样只外扩 3px，不内收。
+            // 遮罩标记贴舞台边缘：同样只外扩 2px，不内收。
             var maskMarker = HoverCardAndCaptureMarker(cards, window, "popup.mask");
             var stageRect = new Rect(
                 stage.TranslatePoint(new Point(0, 0), window)!.Value,
                 stage.Bounds.Size);
-            maskMarker.WindowRect.Left.ShouldBe(stageRect.Left - 3, tolerance: 1);
-            maskMarker.WindowRect.Top.ShouldBe(stageRect.Top - 3, tolerance: 1);
-            maskMarker.WindowRect.Right.ShouldBe(stageRect.Right + 3, tolerance: 1);
-            maskMarker.WindowRect.Bottom.ShouldBe(stageRect.Bottom + 3, tolerance: 1);
+            maskMarker.WindowRect.Left.ShouldBe(stageRect.Left - 2, tolerance: 1);
+            maskMarker.WindowRect.Top.ShouldBe(stageRect.Top - 2, tolerance: 1);
+            maskMarker.WindowRect.Right.ShouldBe(stageRect.Right + 2, tolerance: 1);
+            maskMarker.WindowRect.Bottom.ShouldBe(stageRect.Bottom + 2, tolerance: 1);
         }
         finally
         {

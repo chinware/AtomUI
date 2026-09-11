@@ -10,10 +10,12 @@ internal sealed class SemanticPartPreviewItem : INotifyPropertyChanged
 
     public SemanticPartPreviewItem(
         SemanticPartDescriptor descriptor,
+        Type ownerType,
         string description,
         string? codeSnippet)
     {
         Descriptor      = descriptor;
+        OwnerType       = ownerType;
         Description     = description;
         CodeSnippet     = codeSnippet;
         Name            = descriptor.Name;
@@ -32,6 +34,15 @@ internal sealed class SemanticPartPreviewItem : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
     internal SemanticPartDescriptor Descriptor { get; }
+
+    /// <summary>Part 所属 owner 类型；多 owner Preview 用于在 UI 上标注归属并按 owner 解析高亮。</summary>
+    internal Type OwnerType { get; }
+
+    /// <summary>owner 类型短名，供列表行显示。</summary>
+    public string OwnerTypeName => OwnerType.Name;
+
+    /// <summary>多 owner Preview 时在列表行标注 Part 归属；单 owner 时隐藏，避免噪音。</summary>
+    public bool IsOwnerLabelVisible { get; internal set; }
 
     internal string? CodeSnippet { get; }
 

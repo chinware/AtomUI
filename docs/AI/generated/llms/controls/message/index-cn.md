@@ -82,7 +82,7 @@ Message 的公共契约由 public/protected 类型成员、Avalonia 属性、事
 
 ### 基础用法
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageShowCase.axaml:105`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageShowCase.axaml:145`
 
 Gallery key：`ExamplesContent` / item `0`
 
@@ -92,7 +92,7 @@ Gallery key：`ExamplesContent` / item `0`
 
 ### 其他消息类型
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageShowCase.axaml:116`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageShowCase.axaml:156`
 
 Gallery key：`ExamplesContent` / item `1`
 
@@ -107,7 +107,7 @@ Gallery key：`ExamplesContent` / item `1`
 
 ### 带加载指示器的消息
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageShowCase.axaml:131`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageShowCase.axaml:171`
 
 Gallery key：`ExamplesContent` / item `2`
 
@@ -117,7 +117,7 @@ Gallery key：`ExamplesContent` / item `2`
 
 ### 回调
 
-来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageShowCase.axaml:142`
+来源：`controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageShowCase.axaml:182`
 
 Gallery key：`ExamplesContent` / item `3`
 

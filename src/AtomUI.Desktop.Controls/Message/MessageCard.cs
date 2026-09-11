@@ -8,6 +8,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
@@ -56,6 +57,13 @@ public partial class MessageCard : TemplatedControl, IMotionAwareControl
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<MessageCard>();
+
+    /// <summary>
+    /// Defines the <see cref="BoxShadow" /> property. The card frame projects it onto the template's
+    /// frame border, so the implicit <c>root</c> Semantic Part can express the upstream card shadow.
+    /// </summary>
+    public static readonly StyledProperty<BoxShadows> BoxShadowProperty =
+        Border.BoxShadowProperty.AddOwner<MessageCard>();
 
     /// <summary>
     /// Determines if the notification is already closing.
@@ -109,6 +117,15 @@ public partial class MessageCard : TemplatedControl, IMotionAwareControl
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the shadow painted on the card frame.
+    /// </summary>
+    public BoxShadows BoxShadow
+    {
+        get => GetValue(BoxShadowProperty);
+        set => SetValue(BoxShadowProperty, value);
     }
 
     #endregion

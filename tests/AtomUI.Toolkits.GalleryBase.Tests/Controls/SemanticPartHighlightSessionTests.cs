@@ -27,15 +27,29 @@ public class SemanticPartHighlightSessionTests
     public void Adorner_Draws_An_Outline_Without_Covering_The_Target()
     {
         var primary = RenderAdorner(true);
-        primary.Length.ShouldBe(2);
-        primary.ShouldAllBe(static drawing => drawing.Brush == null);
-        AssertPen(primary[0], Colors.White, 1);
-        AssertPen(primary[1], Color.FromArgb(0xFF, 0xFA, 0xAD, 0x14), 2);
+        primary.Length.ShouldBe(1, "primary marker paints a single gold outline and no white halo");
+        primary[0].Brush.ShouldBeNull();
+        AssertPen(primary[0], Color.FromArgb(0xFF, 0xFA, 0xAD, 0x14), 2);
+        primary.ShouldNotContain(
+            static drawing => IsNearWhite(drawing),
+            "primary marker must not paint the upstream dumi white halo ring");
 
         var secondary = RenderAdorner(false);
         secondary.Length.ShouldBe(1);
         secondary[0].Brush.ShouldBeNull();
         AssertPen(secondary[0], Color.FromArgb(0xD9, 0xFA, 0xAD, 0x14), 1);
+        secondary.ShouldNotContain(static drawing => IsNearWhite(drawing));
+    }
+
+    private static bool IsNearWhite(GeometryDrawing drawing)
+    {
+        return IsNearWhiteBrush(drawing.Brush) || IsNearWhiteBrush(drawing.Pen?.Brush);
+    }
+
+    private static bool IsNearWhiteBrush(IBrush? brush)
+    {
+        return brush is ISolidColorBrush { Color: { A: > 200 } color } &&
+               color.R > 240 && color.G > 240 && color.B > 240;
     }
 
     [Fact]
@@ -100,7 +114,7 @@ public class SemanticPartHighlightSessionTests
         var adorner = context.Layer.Children.OfType<SemanticPartAdorner>().Single();
         AdornerLayer.GetIsClipEnabled(adorner).ShouldBeFalse();
         adorner.Clip.ShouldBeNull();
-        adorner.Bounds.ShouldBe(new Rect(-3, -3, target.Bounds.Width + 6, target.Bounds.Height + 6));
+        adorner.Bounds.ShouldBe(new Rect(-2, -2, target.Bounds.Width + 4, target.Bounds.Height + 4));
 
         session.Dispose();
         var rootPart = descriptor.Parts.Single(static candidate => candidate.Path == "root");
@@ -153,7 +167,7 @@ public class SemanticPartHighlightSessionTests
         var secondary = adorners.Single(adorner =>
             AdornerLayer.GetAdornedElement(adorner) == secondaryTarget);
 
-        AssertOutwardMarkerBounds(primaryTarget, primary, context.Layer, 3);
+        AssertOutwardMarkerBounds(primaryTarget, primary, context.Layer, 2);
         AssertOutwardMarkerBounds(secondaryTarget, secondary, context.Layer, 1);
     }
 
@@ -525,40 +539,38 @@ public class SemanticPartHighlightSessionTests
     [Fact]
     public void Adorner_Marker_Rect_Stays_Inside_The_Expanded_Adorner_Bounds()
     {
-        // 50x40 目标的主 adorner 四周各扩 3px，因此 Bounds 为 56x46。
-        // 白色 halo 和金框都完全位于这个 Bounds 内，视觉上仍落在目标外侧。
-        SemanticPartAdorner.GetMarkerRect(new Size(56, 46), 3, 2.5)
-                           .ShouldBe(new Rect(0.5, 0.5, 55, 45));
-        SemanticPartAdorner.GetMarkerRect(new Size(56, 46), 3, 1)
-                           .ShouldBe(new Rect(2, 2, 52, 42));
+        // 50x40 目标的主 adorner 四周各扩 2px，因此 Bounds 为 54x44。
+        // 金框完全位于这个 Bounds 内，视觉上仍落在目标外侧。
+        SemanticPartAdorner.GetMarkerRect(new Size(54, 44), 2, 1)
+                           .ShouldBe(new Rect(1, 1, 52, 42));
 
         // 副 adorner 四周各扩 1px，1px 描边也保留完整的四条边。
         SemanticPartAdorner.GetMarkerRect(new Size(52, 42), 1, 0.5)
                            .ShouldBe(new Rect(0.5, 0.5, 51, 41));
 
-        // 201x4 的细窄目标扩展后为 207x10，金框不会退化或越出 adorner。
-        SemanticPartAdorner.GetMarkerRect(new Size(207, 10), 3, 1)
-                           .ShouldBe(new Rect(2, 2, 203, 6));
+        // 201x4 的细窄目标扩展后为 205x8，金框不会退化或越出 adorner。
+        SemanticPartAdorner.GetMarkerRect(new Size(205, 8), 2, 1)
+                           .ShouldBe(new Rect(1, 1, 203, 6));
     }
 
     [Fact]
     public void Marker_Rect_Is_Clamped_Inside_The_Host_Window_For_Edge_To_Edge_Targets()
     {
-        // native 预览对话框的 popup.root/body 是贴边满区目标：adorner 经负 Margin 外扩 3px
-        // 并平移到标题栏下方（层坐标 (-3, 37)）后，未钳制的描边矩形左、右、下三条边越出
+        // native 预览对话框的 popup.root/body 是贴边满区目标：adorner 经负 Margin 外扩 2px
+        // 并平移到标题栏下方（层坐标 (-2, 38)）后，未钳制的描边矩形左、右、下三条边越出
         // 1210x691 的窗口表面被 OS 裁剪，视觉上只剩顶部一条线。
-        var markerRect = SemanticPartAdorner.GetMarkerRect(new Size(1216, 657), 3, 1);
+        var markerRect = SemanticPartAdorner.GetMarkerRect(new Size(1218, 659), 2, 1);
 
         var clamped = SemanticPartAdorner.ClampMarkerRect(
             markerRect,
             new Rect(0, 0, 1210, 691),
-            new Point(-3, 37),
+            new Point(-2, 38),
             2);
 
         // 钳制只内收半个笔宽（对齐上游 Marker：描边沿目标边缘、不内收留白）。
         // 换算回层坐标断言：被钳制的左/右/下边缘距层边缘正好 1px（2px 主笔宽的一半），
         // 描边整条完整落在窗口表面内；顶部本就在层内（标题栏下方 39px），保持原位。
-        var layerRect = clamped.Translate(new Vector(-3, 37));
+        var layerRect = clamped.Translate(new Vector(-2, 38));
         layerRect.ShouldBe(new Rect(1, 39, 1208, 651));
     }
 
@@ -566,7 +578,7 @@ public class SemanticPartHighlightSessionTests
     public void Marker_Rect_Clamp_Keeps_Interior_Targets_Untouched()
     {
         // 有余量的常规目标（cover 演示位）钳制不应改变描边。
-        var markerRect = SemanticPartAdorner.GetMarkerRect(new Size(246, 242), 3, 1);
+        var markerRect = SemanticPartAdorner.GetMarkerRect(new Size(246, 242), 2, 1);
 
         var clamped = SemanticPartAdorner.ClampMarkerRect(
             markerRect,

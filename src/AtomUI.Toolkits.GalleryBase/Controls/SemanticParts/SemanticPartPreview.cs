@@ -85,9 +85,9 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
     private IReadOnlyList<SemanticPartPreviewItem> _items = Array.Empty<SemanticPartPreviewItem>();
     private Control? _infoContent;
     private Control? _codeContent;
-    private ControlSemanticDescriptor? _controlDescriptor;
+    private readonly List<OwnerBinding> _ownerBindings = [];
+    private ControlDescriptorBundle? _controlDescriptor;
     private SemanticPartRegistry? _registry;
-    private Control? _effectiveOwner;
     private SemanticPartPreviewItem? _hoveredPart;
     private SemanticPartPreviewItem? _pinnedPart;
     private SemanticPartHighlightSession? _activeHighlightSession;
@@ -100,6 +100,7 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
     public SemanticPartPreview()
     {
         PartDescriptions.CollectionChanged += (_, _) => ResetPresentation();
+        SemanticOwners.CollectionChanged += (_, _) => ResetPresentation();
     }
 
     public Control? PreviewContent
@@ -125,6 +126,12 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
         get => GetValue(TitleProperty);
         set => SetValue(TitleProperty, value);
     }
+
+    /// <summary>
+    /// 单个 Preview 覆盖多个公开 owner 时的 owner 声明集合（按声明顺序合并 Part 列表）。
+    /// 声明后忽略 <see cref="SemanticOwner" /> / <see cref="SemanticOwnerType" /> 的单 owner 路径。
+    /// </summary>
+    public AvaloniaList<SemanticPartPreviewOwner> SemanticOwners { get; } = [];
 
     public AvaloniaList<SemanticPartDescription> PartDescriptions { get; } = [];
 
@@ -204,7 +211,7 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
     internal void ShowPartInfo(SemanticPartPreviewItem item)
     {
         EnsureKnownItem(item);
-        var code = item.CodeSnippet ?? BuildCodeSnippet(item.Descriptor);
+        var code = item.CodeSnippet ?? BuildCodeSnippet(item.Descriptor, item.OwnerType);
         _codeViewer ??= new GalleryCodeViewer
         {
             Language = "xml",
@@ -261,8 +268,8 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
         CodeContent = null;
         Items = Array.Empty<SemanticPartPreviewItem>();
         _controlDescriptor = null;
+        _ownerBindings.Clear();
         _registry = null;
-        _effectiveOwner = null;
         _pinnedPart = null;
         _isDisposed = true;
     }
@@ -274,11 +281,89 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
             return;
         }
 
-        var owner = SemanticOwner ?? PreviewContent ??
-                    throw new InvalidOperationException(
-                        $"{nameof(SemanticPartPreview)} requires {nameof(SemanticOwner)} or {nameof(PreviewContent)}.");
-        var ownerType = SemanticOwnerType ?? owner.GetType();
         var registry = Application.Current?.GetThemeManager()?.SemanticParts ?? SemanticPartRegistry.Empty;
+        var bindings = ResolveOwnerBindings(registry);
+        if (bindings.Count == 0)
+        {
+            return;
+        }
+
+        var descriptions = BuildDescriptionMap(bindings);
+        var items = new List<SemanticPartPreviewItem>();
+        foreach (var binding in bindings)
+        {
+            var partsByPath = binding.Descriptor.Parts.ToDictionary(static part => part.Path, StringComparer.Ordinal);
+            // 顺序契约：先按 PartDescriptions 的声明顺序列出该 owner 已描述的 Part，再追加其余 Part。
+            var describedPaths = descriptions.Keys
+                                             .Where(key => key.OwnerType == binding.Descriptor.ControlType)
+                                             .Select(static key => key.Path)
+                                             .ToList();
+            var orderedParts = describedPaths.Select(path => partsByPath[path])
+                                             .Concat(binding.Descriptor.Parts.Where(part =>
+                                                 !describedPaths.Contains(part.Path, StringComparer.Ordinal)));
+            foreach (var part in orderedParts)
+            {
+                descriptions.TryGetValue((binding.Descriptor.ControlType, part.Path), out var description);
+                items.Add(new SemanticPartPreviewItem(
+                    part,
+                    binding.Descriptor.ControlType,
+                    description?.Description ?? GetFallbackDescription(part),
+                    description?.CodeSnippet));
+            }
+        }
+
+        _ownerBindings.Clear();
+        _ownerBindings.AddRange(bindings);
+        _registry = registry;
+        var isMultiOwner = bindings.Count > 1;
+        _controlDescriptor = new ControlDescriptorBundle(
+            isMultiOwner,
+            bindings.Select(static binding => binding.Descriptor.ControlType).ToArray());
+        foreach (var item in items)
+        {
+            item.IsOwnerLabelVisible = isMultiOwner;
+        }
+        Items = items.ToArray();
+    }
+
+    // owner 解析：声明了 SemanticOwners 时逐个解析并按顺序合并；否则退回单 owner 路径。
+    private List<OwnerBinding> ResolveOwnerBindings(SemanticPartRegistry registry)
+    {
+        var bindings = new List<OwnerBinding>();
+        if (SemanticOwners.Count > 0)
+        {
+            foreach (var declaration in SemanticOwners)
+            {
+                ArgumentNullException.ThrowIfNull(declaration);
+                var owner = declaration.Owner ??
+                            throw new InvalidOperationException(
+                                $"{nameof(SemanticPartPreviewOwner)} requires {nameof(SemanticPartPreviewOwner.Owner)}.");
+                var ownerType = declaration.OwnerType ?? owner.GetType();
+                bindings.Add(CreateBinding(registry, owner, ownerType));
+            }
+            return bindings;
+        }
+
+        var single = SemanticOwner ?? PreviewContent;
+        if (single is null)
+        {
+            if (_controlDescriptor is null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(SemanticPartPreview)} requires {nameof(SemanticOwner)} or {nameof(PreviewContent)}.");
+            }
+            return bindings;
+        }
+
+        bindings.Add(CreateBinding(registry, single, SemanticOwnerType ?? single.GetType()));
+        return bindings;
+    }
+
+    private static OwnerBinding CreateBinding(
+        SemanticPartRegistry registry,
+        Control owner,
+        Type ownerType)
+    {
         if (!registry.TryGetControl(ownerType, out var descriptor))
         {
             throw new InvalidOperationException(
@@ -291,49 +376,45 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
                 $"'{descriptor.ControlType.FullName}'.");
         }
 
-        var descriptions = BuildDescriptions(descriptor);
-        var partsByPath = descriptor.Parts.ToDictionary(static part => part.Path, StringComparer.Ordinal);
-        var describedParts = PartDescriptions.Select(description => partsByPath[description.Path]);
-        var orderedParts =
-            describedParts.Concat(descriptor.Parts.Where(part => !descriptions.ContainsKey(part.Path)));
-        _effectiveOwner = owner;
-        _registry = registry;
-        _controlDescriptor = descriptor;
-        Items = orderedParts.Select(part =>
-                            {
-                                descriptions.TryGetValue(part.Path, out var description);
-                                return new SemanticPartPreviewItem(
-                                    part,
-                                    description?.Description ?? GetFallbackDescription(part),
-                                    description?.CodeSnippet);
-                            })
-                            .ToArray();
+        return new OwnerBinding(descriptor, owner);
     }
 
-    private Dictionary<string, SemanticPartDescription> BuildDescriptions(ControlSemanticDescriptor descriptor)
+    // 描述映射以 (ownerType, path) 为键：多 owner 下 root 等路径会在不同 owner 上重名。
+    private Dictionary<(Type OwnerType, string Path), SemanticPartDescription> BuildDescriptionMap(
+        IReadOnlyList<OwnerBinding> bindings)
     {
-        var result = new Dictionary<string, SemanticPartDescription>(StringComparer.Ordinal);
+        // 单 owner 时描述可省略 OwnerType，默认归属该唯一 owner；多 owner 时必须显式区分。
+        var singleOwnerType = bindings.Count == 1 ? bindings[0].Descriptor.ControlType : null;
+        var result = new Dictionary<(Type, string), SemanticPartDescription>();
         foreach (var description in PartDescriptions)
         {
             ArgumentNullException.ThrowIfNull(description);
             ArgumentException.ThrowIfNullOrWhiteSpace(description.Path);
-            if (!result.TryAdd(description.Path, description))
+            var ownerType = description.OwnerType ?? singleOwnerType ??
+                            throw new InvalidOperationException(
+                                $"Semantic Part description path '{description.Path}' requires " +
+                                $"{nameof(SemanticPartDescription.OwnerType)} when the Preview covers multiple owners.");
+            if (!result.TryAdd((ownerType, description.Path), description))
             {
                 throw new InvalidOperationException(
-                    $"Semantic Part description path '{description.Path}' is duplicated.");
+                    $"Semantic Part description path '{description.Path}' on '{ownerType.FullName}' is duplicated.");
             }
         }
 
-        var knownPaths = descriptor.Parts.Select(static part => part.Path).ToHashSet(StringComparer.Ordinal);
-        foreach (var path in result.Keys)
+        // 未知路径必须拒绝：description 只能在所属 owner 的真实 Part 上声明。
+        var knownPaths = bindings.ToDictionary(
+            static binding => binding.Descriptor.ControlType,
+            static binding => binding.Descriptor.Parts.Select(static part => part.Path)
+                                    .ToHashSet(StringComparer.Ordinal));
+        foreach (var (ownerType, path) in result.Keys)
         {
-            if (!knownPaths.Contains(path))
+            if (!knownPaths.TryGetValue(ownerType, out var paths) || !paths.Contains(path))
             {
                 throw new InvalidOperationException(
-                    $"Semantic Part description path '{path}' does not exist on " +
-                    $"'{descriptor.ControlType.FullName}'.");
+                    $"Semantic Part description path '{path}' does not exist on '{ownerType.FullName}'.");
             }
         }
+
         return result;
     }
 
@@ -345,8 +426,8 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
         InfoContent = null;
         CodeContent = null;
         _controlDescriptor = null;
+        _ownerBindings.Clear();
         _registry = null;
-        _effectiveOwner = null;
         _hoveredPart = null;
         _pinnedPart = null;
         Items = Array.Empty<SemanticPartPreviewItem>();
@@ -385,22 +466,26 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
         ReleaseHighlightSession();
         if (!IsPreviewActive ||
             EffectivePart is not { } item ||
-            _effectiveOwner is not { } owner ||
             _registry is not { } registry)
         {
             return;
         }
 
+        var anchor = _ownerBindings.FirstOrDefault(binding => binding.Descriptor.ControlType == item.OwnerType)?.Anchor;
+        if (anchor is null)
+        {
+            return;
+        }
+
         _activeHighlightSession = SemanticPartHighlightSession.Start(
-            CollectOwnerInstances(owner),
+            CollectOwnerInstances(anchor, item.OwnerType),
             item.Descriptor,
             registry,
             AdditionalRoots);
     }
 
-    private IReadOnlyList<Control> CollectOwnerInstances(Control anchor)
+    private IReadOnlyList<Control> CollectOwnerInstances(Control anchor, Type ownerType)
     {
-        var ownerType = _controlDescriptor?.ControlType ?? SemanticOwnerType ?? anchor.GetType();
         var scope = PreviewContent ?? anchor;
         var instances = new List<Control>();
         if (ownerType.IsInstanceOfType(scope))
@@ -467,9 +552,9 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
                string.Format(CultureInfo.CurrentCulture, fallback, arguments);
     }
 
-    private string BuildCodeSnippet(SemanticPartDescriptor part)
+    private string BuildCodeSnippet(SemanticPartDescriptor part, Type? ownerTypeOverride = null)
     {
-        var ownerType = _controlDescriptor?.ControlType ?? SemanticOwnerType ?? _effectiveOwner?.GetType() ??
+        var ownerType = ownerTypeOverride ?? SemanticOwnerType ??
                         throw new InvalidOperationException("Semantic owner metadata is unavailable.");
         const string atomPrefix = "atom";
         var targetType = GetSetterTargetType(part.ContractType, atomPrefix);
@@ -515,4 +600,10 @@ public class SemanticPartPreview : TemplatedControl, IDisposable
                 ? string.Empty
                 : char.ToUpperInvariant(segment[0]) + segment.Substring(1)));
     }
+
+    // 一个 Preview 内的单个 owner 绑定：descriptor + 实例锚点。
+    private sealed record OwnerBinding(ControlSemanticDescriptor Descriptor, Control Anchor);
+
+    // 单 owner 与多 owner 的解析结果：多 owner 时 Part 列表按 owner 声明顺序合并。
+    private sealed record ControlDescriptorBundle(bool IsMultiOwner, Type[] OwnerTypes);
 }
